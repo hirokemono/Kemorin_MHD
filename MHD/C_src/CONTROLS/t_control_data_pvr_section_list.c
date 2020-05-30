@@ -20,8 +20,13 @@ void get_label_pvr_sections_ctl(int index, char *label){
     return;
 };
 
-void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
+struct pvr_section_ctl_c * init_pvr_section_ctl_c(){
 	int i;
+    struct pvr_section_ctl_c *pvr_sect_c;
+    if((pvr_sect_c = (struct pvr_section_ctl_c *) malloc(sizeof(struct pvr_section_ctl_c))) == NULL) {
+        printf("malloc error for pvr_section_ctl_c \n");
+        exit(0);
+    }
 	
 	pvr_sect_c->maxlen = 0;
 	for (i=0;i<NLBL_PVR_SECTIONS_CTL;i++){
@@ -37,15 +42,14 @@ void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 	
 	pvr_sect_c->opacity_ctl = init_real_ctl_item_c();
 	
-	return;
+	return pvr_sect_c;
 };
 
 void dealloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c){
 	dealloc_psf_define_ctl_c(pvr_sect_c->psf_def_c);
 	free(pvr_sect_c->opacity_ctl);
 	free(pvr_sect_c->fname_sect_ctl);
-	pvr_sect_c->iflag_psf_define_ctl = 0;
-	
+    free(pvr_sect_c);
 	return;
 };
 
@@ -117,11 +121,7 @@ struct pvr_sect_ctl_list *add_pvr_section_ctl_list_after(struct pvr_sect_ctl_lis
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->pvr_sect_c = (struct pvr_section_ctl_c *) malloc(sizeof(struct pvr_section_ctl_c))) == NULL) {
-        printf("malloc error for pvr_sect_c\n");
-        exit(0);
-    }
-	alloc_pvr_section_ctl_c(added->pvr_sect_c);
+	added->pvr_sect_c = init_pvr_section_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -138,7 +138,6 @@ void delete_pvr_section_ctl_list(struct pvr_sect_ctl_list *current){
 	struct pvr_sect_ctl_list *old_next = current->_next;
 	
 	dealloc_pvr_section_ctl_c(current->pvr_sect_c);
-    free(current->pvr_sect_c);
 	free(current);
 	
     old_prev->_next = old_next;

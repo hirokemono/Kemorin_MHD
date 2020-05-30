@@ -32,14 +32,12 @@ int main(int argc,char *argv[])
     printf("read LIC-PVR control file name: %s\n", file_name);
     printf("Write LIC-PVR control file name: %s\n", file_name_2);
 
-    lic_pvr_c0 = (struct LIC_pvr_ctl_c *) malloc(sizeof(struct LIC_pvr_ctl_c));
-	alloc_LIC_pvr_ctl_c(lic_pvr_c0);
+    lic_pvr_c0 = init_LIC_pvr_ctl_c();
 	iflag = read_LIC_pvr_ctl_file_c(file_name, buf, lic_pvr_c0);
     
     rename_LIC_pvr_ctl_subfiles(lic_pvr_c0);
 	iflag = write_LIC_pvr_ctl_file_c(file_name_2, lic_pvr_c0);
 
     dealloc_LIC_pvr_ctl_c(lic_pvr_c0);
-	free(lic_pvr_c0);
 	return 0;
 }

@@ -45,8 +45,13 @@ void get_label_mhd_control_ctl(int index, char *label){
 };
 
 
-void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
+struct mhd_model_control_c * init_mhd_model_control_c(){
     int i;
+    struct mhd_model_control_c *model_ctl;
+    if((model_ctl = (struct mhd_model_control_c *) malloc(sizeof(struct mhd_model_control_c))) == NULL) {
+        printf("malloc error for mhd_model_control_c \n");
+        exit(0);
+    }
     
     model_ctl->iflag_use = 0;
     model_ctl->maxlen = 0;
@@ -58,22 +63,15 @@ void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
     
     model_ctl->fld_ctl = (struct field_ctl_c *) malloc(sizeof(struct field_ctl_c));
 	alloc_field_ctl_c(model_ctl->fld_ctl);
-	model_ctl->evo_ctl = (struct mhd_evolution_ctl_c *) malloc(sizeof(struct mhd_evolution_ctl_c));
-	alloc_mhd_evolution_ctl_c(model_ctl->evo_ctl);
-	model_ctl->earea_ctl = (struct mhd_evo_area_ctl_c *) malloc(sizeof(struct mhd_evo_area_ctl_c));
-	alloc_mhd_evo_area_ctl_c(model_ctl->earea_ctl);
+	model_ctl->evo_ctl = init_mhd_evolution_ctl_c();
+	model_ctl->earea_ctl = init_mhd_evo_area_ctl_c();
 	
-	model_ctl->nbc_ctl = (struct MHD_boundary_ctl_c *) malloc(sizeof(struct MHD_boundary_ctl_c));
-	alloc_MHD_node_bc_ctl_c(model_ctl->nbc_ctl);
-	model_ctl->sbc_ctl = (struct MHD_boundary_ctl_c *) malloc(sizeof(struct MHD_boundary_ctl_c));
-	alloc_MHD_surf_bc_ctl_c(model_ctl->sbc_ctl);
+	model_ctl->nbc_ctl = init_MHD_node_bc_ctl_c();
+	model_ctl->sbc_ctl = init_MHD_surf_bc_ctl_c();
 	
-    model_ctl->frc_ctl = (struct forces_ctl_c *) malloc(sizeof(struct forces_ctl_c));
-    alloc_forces_ctl_c(model_ctl->frc_ctl);
-	model_ctl->dless_ctl = (struct dimless_ctl_c *) malloc(sizeof(struct dimless_ctl_c));
-	alloc_dimless_ctl_c(model_ctl->dless_ctl);
-	model_ctl->eqs_ctl = (struct equations_ctl_c *) malloc(sizeof(struct equations_ctl_c));
-	alloc_equations_ctl_c(model_ctl->eqs_ctl);
+    model_ctl->frc_ctl = init_forces_ctl_c();
+	model_ctl->dless_ctl = init_dimless_ctl_c();
+	model_ctl->eqs_ctl = init_equations_ctl_c();
 	
 	model_ctl->g_ctl = init_gravity_ctl_c();
 	model_ctl->cor_ctl = init_coriolis_ctl_c();
@@ -84,29 +82,22 @@ void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	
 	model_ctl->sgs_ctl = init_SGS_model_ctl_c();
 	
-	return;
+	return model_ctl;
 }
 
 void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	dealloc_field_ctl_c(model_ctl->fld_ctl);
 	free(model_ctl->fld_ctl);
 	dealloc_mhd_evolution_ctl_c(model_ctl->evo_ctl);
-	free(model_ctl->evo_ctl);
 	dealloc_mhd_evo_area_ctl_c(model_ctl->earea_ctl);
-	free(model_ctl->earea_ctl);
 	
 	dealloc_MHD_boundary_ctl_c(model_ctl->nbc_ctl);
-	free(model_ctl->nbc_ctl);
 	dealloc_MHD_boundary_ctl_c(model_ctl->sbc_ctl);
-	free(model_ctl->sbc_ctl);
 	
 	
     dealloc_forces_ctl_c(model_ctl->frc_ctl);
-    free(model_ctl->frc_ctl);
 	dealloc_dimless_ctl_c(model_ctl->dless_ctl);
-	free(model_ctl->dless_ctl);
 	dealloc_equations_ctl_c(model_ctl->eqs_ctl);
-	free(model_ctl->eqs_ctl);
 	
 	dealloc_gravity_ctl_c(model_ctl->g_ctl);
 	dealloc_coriolis_ctl_c(model_ctl->cor_ctl);
@@ -117,7 +108,7 @@ void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	
 	dealloc_SGS_model_ctl_c(model_ctl->sgs_ctl);
     
-    model_ctl->iflag_use = 0;
+    free(model_ctl);
 	return;
 }
 
@@ -203,8 +194,13 @@ int write_mhd_model_ctl_c(FILE *fp, int level, const char *label,
 }
 
 
-void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl){
+struct sph_mhd_control_control_c * init_sph_mhd_control_control_c(){
     int i;
+    struct sph_mhd_control_control_c *control_ctl;
+    if((control_ctl = (struct sph_mhd_control_control_c *) malloc(sizeof(struct sph_mhd_control_control_c))) == NULL) {
+        printf("malloc error for sph_mhd_control_control_c \n");
+        exit(0);
+    }
     
     control_ctl->iflag_use = 0;
     control_ctl->maxlen = 0;
@@ -217,7 +213,7 @@ void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_c
 	control_ctl->tctl = init_time_data_control_c();
 	control_ctl->mrst_ctl = init_mhd_restart_control_c();
 	control_ctl->mevo_ctl = init_mhd_evo_scheme_control_c();
-	return;
+	return control_ctl;
 }
 
 void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl){
@@ -225,7 +221,7 @@ void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control
 	dealloc_mhd_restart_control_c(control_ctl->mrst_ctl);
 	dealloc_mhd_evo_scheme_control_c(control_ctl->mevo_ctl);
     
-    control_ctl->iflag_use = 0;
+    free(control_ctl);
 	return;
 }
 

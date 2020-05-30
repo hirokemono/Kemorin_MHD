@@ -8,11 +8,15 @@
 #include "t_control_data_PVR_ctl_list.h"
 
 
-void alloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c){
+struct volume_rendering_ctl_c * init_volume_rendering_ctl_c(){
+    struct volume_rendering_ctl_c *v_render_c;
+    if((v_render_c = (struct volume_rendering_ctl_c *) malloc(sizeof(struct volume_rendering_ctl_c))) == NULL) {
+        printf("malloc error for volume_rendering_ctl_c \n");
+        exit(0);
+    }
 	v_render_c->fname_pvr_ctl = (char *)calloc(KCHARA_C, sizeof(char));
 	v_render_c->pvr_c = init_pvr_ctl_c();
-	return;
-
+	return v_render_c;
 };
 
 void dealloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c){
@@ -77,11 +81,7 @@ struct PVR_ctl_list *add_PVR_ctl_list_after(struct PVR_ctl_list *current){
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->v_render_c = (struct volume_rendering_ctl_c *) malloc(sizeof(struct volume_rendering_ctl_c))) == NULL) {
-        printf("malloc error for v_render_c\n");
-        exit(0);
-    }
-	alloc_volume_rendering_ctl_c(added->v_render_c);
+	added->v_render_c = init_volume_rendering_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;

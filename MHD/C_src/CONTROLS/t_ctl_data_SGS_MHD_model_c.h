@@ -60,7 +60,7 @@ struct sph_mhd_control_control_c{
 void get_label_mhd_model_ctl(int index, char *label);
 void get_label_mhd_control_ctl(int index, char *label);
 
-void alloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
+struct mhd_model_control_c * init_mhd_model_control_c();
 void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl);
 
 void read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
@@ -68,7 +68,7 @@ void read_mhd_model_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_mhd_model_ctl_c(FILE *fp, int level, const char *label,
 			struct mhd_model_control_c *model_ctl);
 
-void alloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl);
+struct sph_mhd_control_control_c * init_sph_mhd_control_control_c();
 void dealloc_sph_mhd_control_control_c(struct sph_mhd_control_control_c *control_ctl);
 void read_mhd_control_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct sph_mhd_control_control_c *control_ctl);

@@ -33,7 +33,7 @@ struct sph_zonal_means_ctl_c{
 /* Prototypes */
 void get_label_sph_zonal_means_ctl(int index, char *label);
 
-void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls);
+struct sph_zonal_means_ctl_c * init_sph_zonal_means_controls_c();
 void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls);
 void read_zonal_mean_control_c(FILE *fp, char buf[LENGTHBUF], const char *label, 
 			struct sph_zonal_means_ctl_c *zm_ctls);

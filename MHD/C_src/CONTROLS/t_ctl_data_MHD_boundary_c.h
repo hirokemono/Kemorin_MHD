@@ -34,8 +34,8 @@ struct MHD_boundary_ctl_c{
 void get_label_MHD_node_bc_ctl(int index, char *label);
 void get_label_MHD_surf_bc_ctl(int index, char *label);
 
-void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl);
-void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl);
+struct MHD_boundary_ctl_c *init_MHD_node_bc_ctl_c();
+struct MHD_boundary_ctl_c * init_MHD_surf_bc_ctl_c();
 void dealloc_MHD_boundary_ctl_c(struct MHD_boundary_ctl_c *bc_ctl);
 void read_MHD_node_bc_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct MHD_boundary_ctl_c *nod_bc_ctl);

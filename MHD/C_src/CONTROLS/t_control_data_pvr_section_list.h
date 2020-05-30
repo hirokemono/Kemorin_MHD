@@ -36,7 +36,7 @@ struct pvr_sect_ctl_list{
 
 void get_label_pvr_sections_ctl(int index, char *label);
 
-void alloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c);
+struct pvr_section_ctl_c * init_pvr_section_ctl_c();
 void dealloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c);
 int read_pvr_section_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct pvr_section_ctl_c *pvr_sect_c);

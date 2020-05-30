@@ -8,18 +8,22 @@
 #include "t_control_data_ISO_ctl_list.h"
 
 
-void alloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c){
+struct isosurface_ctl_c * init_isosurface_ctl_c(){
+    struct isosurface_ctl_c *isosurfs_c;
+    if ((isosurfs_c = (struct isosurface_ctl_c *) malloc(sizeof(struct isosurface_ctl_c))) == NULL) {
+        printf("malloc error for isosurface_ctl_c\n");
+        exit(0);
+    }
 	isosurfs_c->iflag_iso_ctl = 0;
 	isosurfs_c->fname_iso_ctl = (char *)calloc(KCHARA_C, sizeof(char));
 	isosurfs_c->iso_c = init_iso_ctl_c();
-	return;
-
+	return isosurfs_c;
 };
 
 void dealloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c){
 	dealloc_iso_ctl_c(isosurfs_c->iso_c);
 	free(isosurfs_c->fname_iso_ctl);
-	isosurfs_c->iflag_iso_ctl = 0;
+    free(isosurfs_c);
 	return;
 };
 
@@ -79,11 +83,7 @@ struct ISO_ctl_list *add_ISO_ctl_list_after(struct ISO_ctl_list *current){
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->isosurfs_c = (struct isosurface_ctl_c *) malloc(sizeof(struct isosurface_ctl_c))) == NULL) {
-        printf("malloc error for isosurfs_c\n");
-        exit(0);
-    }
-	alloc_isosurface_ctl_c(added->isosurfs_c);
+	added->isosurfs_c = init_isosurface_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -100,7 +100,6 @@ void delete_ISO_ctl_list(struct ISO_ctl_list *current){
 	struct ISO_ctl_list *old_next = current->_next;
 	
 	dealloc_isosurface_ctl_c(current->isosurfs_c);
-    free(current->isosurfs_c);
 	free(current);
 	
     old_prev->_next = old_next;

@@ -30,7 +30,7 @@ struct LIC_PVR_ctl_list{
 
 /* prototypes */
 
-void alloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c);
+struct LIC_rendering_ctl_c * init_LIC_rendering_ctl_c();
 void dealloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c);
 int read_LIC_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct LIC_rendering_ctl_c *lic_render_c);

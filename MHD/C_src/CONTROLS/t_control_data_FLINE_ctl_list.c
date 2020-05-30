@@ -8,18 +8,22 @@
 #include "t_control_data_FLINE_ctl_list.h"
 
 
-void alloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c){
+struct fieldline_ctl_c * init_fieldline_ctl_c(){
+    struct fieldline_ctl_c *fldlines_c;
+    if ((fldlines_c = (struct fieldline_ctl_c *) malloc(sizeof(struct fieldline_ctl_c))) == NULL) {
+        printf("malloc error for fieldline_ctl_c\n");
+        exit(0);
+    }
 	fldlines_c->iflag_fline_ctl = 0;
 	fldlines_c->fname_fline_ctl = (char *)calloc(KCHARA_C, sizeof(char));
 	fldlines_c->fline_c = init_fline_ctl_c();
-	return;
-
+	return fldlines_c;
 };
 
 void dealloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c){
 	dealloc_fline_ctl_c(fldlines_c->fline_c);
 	free(fldlines_c->fname_fline_ctl);
-	fldlines_c->iflag_fline_ctl = 0;
+    free(fldlines_c);
 	return;
 };
 
@@ -79,11 +83,7 @@ struct FLINE_ctl_list *add_FLINE_ctl_list_after(struct FLINE_ctl_list *current){
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->fldlines_c = (struct fieldline_ctl_c *) malloc(sizeof(struct fieldline_ctl_c))) == NULL) {
-        printf("malloc error for fldlines_c\n");
-        exit(0);
-    }
-	alloc_fieldline_ctl_c(added->fldlines_c);
+	added->fldlines_c = init_fieldline_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -100,7 +100,6 @@ void delete_FLINE_ctl_list(struct FLINE_ctl_list *current){
 	struct FLINE_ctl_list *old_next = current->_next;
 	
 	dealloc_fieldline_ctl_c(current->fldlines_c);
-    free(current->fldlines_c);
 	free(current);
 	
     old_prev->_next = old_next;

@@ -30,7 +30,7 @@ struct ISO_ctl_list{
 
 /* prototypes */
 
-void alloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c);
+struct isosurface_ctl_c * init_isosurface_ctl_c();
 void dealloc_isosurface_ctl_c(struct isosurface_ctl_c *isosurfs_c);
 int read_isosurface_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct isosurface_ctl_c *isosurfs_c);

@@ -21,8 +21,13 @@ void get_label_node_monitor_ctl(int index, char *label){
     return;
 };
 
-void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
+struct node_monitor_ctl_c * init_node_monitor_ctl_c(){
     int i;
+    struct node_monitor_ctl_c *nmtr_ctl;
+    if((nmtr_ctl = (struct node_monitor_ctl_c *) malloc(sizeof(struct node_monitor_ctl_c))) == NULL) {
+        printf("malloc error for node_monitor_ctl_c \n");
+        exit(0);
+    }
     
     nmtr_ctl->iflag_use = 0;
     nmtr_ctl->maxlen = 0;
@@ -45,7 +50,7 @@ void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     init_int2_clist(nmtr_ctl->node_4_monitor_list);
     sprintf(nmtr_ctl->node_4_monitor_list->i1_name, "Index");
     sprintf(nmtr_ctl->node_4_monitor_list->i2_name, "Node_ID");
-    return;
+    return nmtr_ctl;
 };
 
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
@@ -56,7 +61,7 @@ void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     clear_int2_clist(nmtr_ctl->node_4_monitor_list);
     free(nmtr_ctl->node_4_monitor_list);
 	
-    nmtr_ctl->iflag_use = 0;
+    free(nmtr_ctl);
     return;
 };
 

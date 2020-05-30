@@ -67,9 +67,13 @@ static void alloc_MHD_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
     return;
 };
 
-void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
+struct MHD_boundary_ctl_c *init_MHD_node_bc_ctl_c(){
 	int i;
-	
+    struct MHD_boundary_ctl_c *nod_bc_ctl;
+    if ((nod_bc_ctl = (struct MHD_boundary_ctl_c *) malloc(sizeof(struct MHD_boundary_ctl_c))) == NULL) {
+        printf("malloc error for MHD_boundary_ctl_c\n");
+        exit(0);
+    }
     nod_bc_ctl->iflag_use = 0;
 	nod_bc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_NODE_BC_CTL;i++){
@@ -78,12 +82,16 @@ void alloc_MHD_node_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
 		};
 	};
     alloc_MHD_bc_ctl_c(nod_bc_ctl);
-	return;
+	return nod_bc_ctl;
 };
 
-void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl){
+struct MHD_boundary_ctl_c * init_MHD_surf_bc_ctl_c(){
 	int i;
-	
+    struct MHD_boundary_ctl_c *surf_bc_ctl;
+    if ((surf_bc_ctl = (struct MHD_boundary_ctl_c *) malloc(sizeof(struct MHD_boundary_ctl_c))) == NULL) {
+        printf("malloc error for MHD_boundary_ctl_c\n");
+        exit(0);
+    }
     surf_bc_ctl->iflag_use = 0;
 	surf_bc_ctl->maxlen = 0;
 	for (i=0;i<NLBL_SURF_BC_CTL;i++){
@@ -92,7 +100,7 @@ void alloc_MHD_surf_bc_ctl_c(struct MHD_boundary_ctl_c *surf_bc_ctl){
 		};
 	};
     alloc_MHD_bc_ctl_c(surf_bc_ctl);
-	return;
+	return surf_bc_ctl;
 };
 
 void dealloc_MHD_boundary_ctl_c(struct MHD_boundary_ctl_c *bc_ctl){
@@ -116,7 +124,7 @@ void dealloc_MHD_boundary_ctl_c(struct MHD_boundary_ctl_c *bc_ctl){
     free(bc_ctl->bc_J_ctl);
     free(bc_ctl->bc_infty_ctl);
 
-    bc_ctl->iflag_use = 0;
+    free(bc_ctl);
 	return;
 };
 

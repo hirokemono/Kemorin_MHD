@@ -8,20 +8,22 @@
 #include "t_control_data_LIC_ctl_list.h"
 
 
-void alloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c){
+struct LIC_rendering_ctl_c * init_LIC_rendering_ctl_c(){
+    struct LIC_rendering_ctl_c *lic_render_c;
+    if ((lic_render_c = (struct LIC_rendering_ctl_c *) malloc(sizeof(struct LIC_rendering_ctl_c))) == NULL) {
+        printf("malloc error for LIC_rendering_ctl_c\n");
+        exit(0);
+    }
 	lic_render_c->iflag_lic_pvr_ctl = 0;
 	lic_render_c->fname_lic_pvr_ctl = (char *)calloc(KCHARA_C, sizeof(char));
-	lic_render_c->lic_pvr_c = (struct LIC_pvr_ctl_c *) malloc(sizeof(struct LIC_pvr_ctl_c));
-	alloc_LIC_pvr_ctl_c(lic_render_c->lic_pvr_c);
-	return;
-
+	lic_render_c->lic_pvr_c = init_LIC_pvr_ctl_c();
+	return lic_render_c;
 };
 
 void dealloc_LIC_rendering_ctl_c(struct LIC_rendering_ctl_c *lic_render_c){
 	dealloc_LIC_pvr_ctl_c(lic_render_c->lic_pvr_c);
-	free(lic_render_c->lic_pvr_c);
 	free(lic_render_c->fname_lic_pvr_ctl);
-	lic_render_c->iflag_lic_pvr_ctl = 0;
+    free(lic_render_c);
 	return;
 };
 
@@ -81,11 +83,7 @@ struct LIC_PVR_ctl_list *add_LIC_PVR_ctl_list_after(struct LIC_PVR_ctl_list *cur
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->lic_render_c = (struct LIC_rendering_ctl_c *) malloc(sizeof(struct LIC_rendering_ctl_c))) == NULL) {
-        printf("malloc error for lic_render_c\n");
-        exit(0);
-    }
-	alloc_LIC_rendering_ctl_c(added->lic_render_c);
+	added->lic_render_c = init_LIC_rendering_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -102,7 +100,6 @@ void delete_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *current){
 	struct LIC_PVR_ctl_list *old_next = current->_next;
 	
 	dealloc_LIC_rendering_ctl_c(current->lic_render_c);
-    free(current->lic_render_c);
 	free(current);
 	
     old_prev->_next = old_next;

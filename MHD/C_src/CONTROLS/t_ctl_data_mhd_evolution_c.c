@@ -30,8 +30,13 @@ void get_label_mhd_evo_area_ctl(int index, char *label){
 };
 
 
-void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
+struct mhd_evolution_ctl_c * init_mhd_evolution_ctl_c(){
 	int i;
+    struct mhd_evolution_ctl_c *evo_ctl;
+    if((evo_ctl = (struct mhd_evolution_ctl_c *) malloc(sizeof(struct mhd_evolution_ctl_c))) == NULL) {
+        printf("malloc error for mhd_evolution_ctl_c \n");
+        exit(0);
+    }
 	
     evo_ctl->iflag_use = 0;
 	evo_ctl->maxlen = 0;
@@ -43,13 +48,13 @@ void alloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 	
     evo_ctl->t_evo_field_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(evo_ctl->t_evo_field_list);	
-	return;
+	return evo_ctl;
 };
 
 void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
 	clear_chara_clist(evo_ctl->t_evo_field_list);
     free(evo_ctl->t_evo_field_list);
-    evo_ctl->iflag_use = 0;
+    free(evo_ctl);
 
 	return;
 };
@@ -79,9 +84,14 @@ int write_mhd_evolution_ctl_c(FILE *fp, int level,
 };
 
 
-void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
+struct mhd_evo_area_ctl_c * init_mhd_evo_area_ctl_c(){
 	int i;
-	
+    struct mhd_evo_area_ctl_c *earea_ctl;
+    if((earea_ctl = (struct mhd_evo_area_ctl_c *) malloc(sizeof(struct mhd_evo_area_ctl_c))) == NULL) {
+        printf("malloc error for mhd_evo_area_ctl_c \n");
+        exit(0);
+    }
+    
     earea_ctl->iflag_use = 0;
 	earea_ctl->maxlen = 0;
 	for (i=0;i<NLBL_MHD_EVO_AREA_CTL;i++){
@@ -95,7 +105,7 @@ void alloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
 	init_chara_clist(earea_ctl->evo_fluid_group_list);
 	init_chara_clist(earea_ctl->evo_conduct_group_list);
 	
-	return;
+	return earea_ctl;
 };
 
 void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
@@ -103,7 +113,8 @@ void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
 	clear_chara_clist(earea_ctl->evo_conduct_group_list);
     free(earea_ctl->evo_fluid_group_list);
     free(earea_ctl->evo_conduct_group_list);
-    earea_ctl->iflag_use = 0;
+
+    free(earea_ctl);
 
     return;
 };

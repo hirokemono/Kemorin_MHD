@@ -48,7 +48,7 @@ struct lic_ctl_c * init_lic_ctl_c(){
 	init_lic_masking_ctl_list(&lic_c->lic_mask_list);
 	
 	lic_c->lic_nze_c = init_lic_noise_ctl_c();
-	lic_c->lic_knl_c = alloc_lic_kernel_ctl_c();
+	lic_c->lic_knl_c = init_lic_kernel_ctl_c();
 	return lic_c;
 };
 

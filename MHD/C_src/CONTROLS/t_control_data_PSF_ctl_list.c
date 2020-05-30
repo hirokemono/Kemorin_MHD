@@ -8,18 +8,22 @@
 #include "t_control_data_PSF_ctl_list.h"
 
 
-void alloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c){
+struct sectioning_ctl_c * init_sectioning_ctl_c(){
+    struct sectioning_ctl_c *sections_c;
+    if((sections_c = (struct sectioning_ctl_c *) malloc(sizeof(struct sectioning_ctl_c))) == NULL) {
+        printf("malloc error for sectioning_ctl_c \n");
+        exit(0);
+    }
 	sections_c->iflag_psf_ctl = 0;
 	sections_c->fname_psf_ctl = (char *)calloc(KCHARA_C, sizeof(char));
 	sections_c->psf_c = init_psf_ctl_c();
-	return;
-
+	return sections_c;
 };
 
 void dealloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c){
 	dealloc_psf_ctl_c(sections_c->psf_c);
 	free(sections_c->fname_psf_ctl);
-	sections_c->iflag_psf_ctl = 0;
+    free(sections_c);
 	return;
 };
 
@@ -79,11 +83,7 @@ struct PSF_ctl_list *add_PSF_ctl_list_after(struct PSF_ctl_list *current){
 	printf("malloc error\n");
 	exit(0);
 	}
-    if ((added->sections_c = (struct sectioning_ctl_c *) malloc(sizeof(struct sectioning_ctl_c))) == NULL) {
-        printf("malloc error for sections_c\n");
-        exit(0);
-    }
-	alloc_sectioning_ctl_c(added->sections_c);
+	added->sections_c = init_sectioning_ctl_c();
 	
 	/* replace from  current -> next to current -> new -> next */
 	old_next= current->_next;
@@ -100,7 +100,6 @@ void delete_PSF_ctl_list(struct PSF_ctl_list *current){
 	struct PSF_ctl_list *old_next = current->_next;
 	
 	dealloc_sectioning_ctl_c(current->sections_c);
-    free(current->sections_c);
 	free(current);
 	
     old_prev->_next = old_next;

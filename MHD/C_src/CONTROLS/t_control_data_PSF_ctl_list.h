@@ -30,7 +30,7 @@ struct PSF_ctl_list{
 
 /* prototypes */
 
-void alloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c);
+struct sectioning_ctl_c * init_sectioning_ctl_c();
 void dealloc_sectioning_ctl_c(struct sectioning_ctl_c *sections_c);
 int read_sectioning_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct sectioning_ctl_c *sections_c);

@@ -44,8 +44,13 @@ void get_label_magneto_cv_ctl(int index, char *label){
 };
 
 
-void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
+struct forces_ctl_c * init_forces_ctl_c(){
 	int i;
+    struct forces_ctl_c *frc_ctl;
+    if((frc_ctl = (struct forces_ctl_c *) malloc(sizeof(struct forces_ctl_c))) == NULL) {
+        printf("malloc error for forces_ctl_c \n");
+        exit(0);
+    }
 	
     frc_ctl->iflag_use = 0;
 	frc_ctl->maxlen = 0;
@@ -58,13 +63,13 @@ void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
     frc_ctl->force_names_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
 	init_chara_clist(frc_ctl->force_names_list);
 	
-	return;
+	return frc_ctl;
 };
 
 void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
 	clear_chara_clist(frc_ctl->force_names_list);
     free(frc_ctl->force_names_list);
-    frc_ctl->iflag_use = 0;
+    free(frc_ctl);
 
     return;
 };

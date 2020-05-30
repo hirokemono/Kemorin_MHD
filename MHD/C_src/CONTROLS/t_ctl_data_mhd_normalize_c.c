@@ -84,9 +84,14 @@ void get_label_equations_ctl(int index, char *label){
 };
 
 
-void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
+struct momentum_equation_ctl_c * init_momentum_equation_ctl_c(){
 	int i;
-	
+    struct momentum_equation_ctl_c *mom_ctl_c;
+    if((mom_ctl_c = (struct momentum_equation_ctl_c *) malloc(sizeof(struct momentum_equation_ctl_c))) == NULL) {
+        printf("malloc error for momentum_equation_ctl_c \n");
+        exit(0);
+    }
+    	
     mom_ctl_c->iflag_use = 0;
 	mom_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
@@ -125,7 +130,7 @@ void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
     sprintf(mom_ctl_c->coef_4_Coriolis_list->r1_name, "power");
     sprintf(mom_ctl_c->coef_4_Lorentz_list->r1_name, "power");
 	
-	return;
+	return mom_ctl_c;
 };
 
 void dealloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
@@ -146,7 +151,7 @@ void dealloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c){
     free(mom_ctl_c->coef_4_Coriolis_list);
     free(mom_ctl_c->coef_4_Lorentz_list);
 
-    mom_ctl_c->iflag_use = 0;
+    free(mom_ctl_c);
     return;
 };
 
@@ -190,9 +195,14 @@ int write_momentum_equation_ctl_c(FILE *fp, int level,
 };
 
 
-void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_c){
+struct induction_equation_ctl_c * init_induction_equation_ctl_c(){
 	int i;
-	
+    struct induction_equation_ctl_c *induct_ctl_c;
+    if((induct_ctl_c = (struct induction_equation_ctl_c *) malloc(sizeof(struct induction_equation_ctl_c))) == NULL) {
+        printf("malloc error for induction_equation_ctl_c \n");
+        exit(0);
+    }
+    
     induct_ctl_c->iflag_use = 0;
 	induct_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
@@ -218,7 +228,7 @@ void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_
     sprintf(induct_ctl_c->coef_4_mag_potential_list->r1_name, "power");
     sprintf(induct_ctl_c->coef_4_induction_list->r1_name, "power");
 	
-	return;
+	return induct_ctl_c;
 };
 
 void dealloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_c){
@@ -231,7 +241,7 @@ void dealloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ct
     free(induct_ctl_c->coef_4_mag_potential_list);
     free(induct_ctl_c->coef_4_induction_list);
 
-    induct_ctl_c->iflag_use = 0;
+    free(induct_ctl_c);
     return;
 };
 
@@ -284,9 +294,14 @@ void alloc_scalar_advection_eq_ctl_c(struct heat_equation_ctl_c *scalar_ctl_c){
     return;
 };
 
-void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
+struct heat_equation_ctl_c * init_heat_equation_ctl_c(){
 	int i;
-	
+    struct heat_equation_ctl_c *heat_ctl_c;
+    if((heat_ctl_c = (struct heat_equation_ctl_c *) malloc(sizeof(struct heat_equation_ctl_c))) == NULL) {
+        printf("malloc error for heat_equation_ctl_c \n");
+        exit(0);
+    }
+    
     heat_ctl_c->iflag_use = 0;
 	heat_ctl_c->maxlen = 0;
 	for (i=0;i<NLBL_MOMENTUM_EQ_CTL;i++){
@@ -296,7 +311,7 @@ void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
 	};
 	
     alloc_scalar_advection_eq_ctl_c(heat_ctl_c);
-	return;
+	return heat_ctl_c;
 };
 
 void dealloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
@@ -308,7 +323,7 @@ void dealloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c){
     free(heat_ctl_c->coef_4_diffuse_list);
     free(heat_ctl_c->coef_4_source_list);
 	
-    heat_ctl_c->iflag_use = 0;
+    free(heat_ctl_c);
 	return;
 };
 
@@ -341,8 +356,13 @@ int write_heat_equation_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_comp_equation_ctl_c(struct heat_equation_ctl_c *comp_ctl_c){
+struct heat_equation_ctl_c * init_comp_equation_ctl_c(){
 	int i;
+    struct heat_equation_ctl_c *comp_ctl_c;
+    if((comp_ctl_c = (struct heat_equation_ctl_c *) malloc(sizeof(struct heat_equation_ctl_c))) == NULL) {
+        printf("malloc error for heat_equation_ctl_c \n");
+        exit(0);
+    }
 	
     comp_ctl_c->iflag_use = 0;
 	comp_ctl_c->maxlen = 0;
@@ -353,7 +373,7 @@ void alloc_comp_equation_ctl_c(struct heat_equation_ctl_c *comp_ctl_c){
 	};
 	
     alloc_scalar_advection_eq_ctl_c(comp_ctl_c);
-	return;
+	return comp_ctl_c;
 };
 
 void read_comp_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
@@ -385,8 +405,13 @@ int write_comp_equation_ctl_c(FILE *fp, int level,
 };
 
 
-void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
+struct dimless_ctl_c * init_dimless_ctl_c(){
 	int i;
+    struct dimless_ctl_c *dless_ctl_c;
+    if((dless_ctl_c = (struct dimless_ctl_c *) malloc(sizeof(struct dimless_ctl_c))) == NULL) {
+        printf("malloc error for dimless_ctl_c \n");
+        exit(0);
+    }
 	
     dless_ctl_c->iflag_use = 0;
 	dless_ctl_c->maxlen = 0;
@@ -400,15 +425,14 @@ void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	init_chara_real_clist(dless_ctl_c->dimless_list);
     sprintf(dless_ctl_c->dimless_list->c1_name, "Name");
     sprintf(dless_ctl_c->dimless_list->r1_name, "Value");
-	return;
+	return dless_ctl_c;
 };
 
 void dealloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c){
 	
 	clear_chara_real_clist(dless_ctl_c->dimless_list);
     free(dless_ctl_c->dimless_list);
-    dless_ctl_c->iflag_use = 0;
-	
+    free(dless_ctl_c);
 	return;
 };
 
@@ -437,8 +461,13 @@ int write_dimless_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c){
+struct equations_ctl_c * init_equations_ctl_c(){
 	int i;
+    struct equations_ctl_c *eqs_ctl_c;
+    if((eqs_ctl_c = (struct equations_ctl_c *) malloc(sizeof(struct equations_ctl_c))) == NULL) {
+        printf("malloc error for equations_ctl_c \n");
+        exit(0);
+    }
 	
     eqs_ctl_c->iflag_use = 0;
 	eqs_ctl_c->maxlen = 0;
@@ -448,16 +477,12 @@ void alloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c){
 		};
 	};
 	
-	eqs_ctl_c->mom_ctl_c = (struct momentum_equation_ctl_c *) malloc(sizeof(struct momentum_equation_ctl_c));
-	alloc_momentum_equation_ctl_c(eqs_ctl_c->mom_ctl_c);
-	eqs_ctl_c->induct_ctl_c = (struct induction_equation_ctl_c *) malloc(sizeof(struct induction_equation_ctl_c));
-	alloc_induction_equation_ctl_c(eqs_ctl_c->induct_ctl_c);
-	eqs_ctl_c->heat_ctl_c = (struct heat_equation_ctl_c *) malloc(sizeof(struct heat_equation_ctl_c));
-	alloc_heat_equation_ctl_c(eqs_ctl_c->heat_ctl_c);
-	eqs_ctl_c->comp_ctl_c = (struct heat_equation_ctl_c *) malloc(sizeof(struct heat_equation_ctl_c));
-	alloc_comp_equation_ctl_c(eqs_ctl_c->comp_ctl_c);
+	eqs_ctl_c->mom_ctl_c = init_momentum_equation_ctl_c();
+	eqs_ctl_c->induct_ctl_c = init_induction_equation_ctl_c();
+	eqs_ctl_c->heat_ctl_c = init_heat_equation_ctl_c();
+	eqs_ctl_c->comp_ctl_c = init_comp_equation_ctl_c();
 	
-	return;
+	return eqs_ctl_c;
 };
 
 void dealloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c){
@@ -467,12 +492,7 @@ void dealloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c){
 	dealloc_heat_equation_ctl_c(eqs_ctl_c->heat_ctl_c);
 	dealloc_heat_equation_ctl_c(eqs_ctl_c->comp_ctl_c);
 	
-	free(eqs_ctl_c->mom_ctl_c);
-	free(eqs_ctl_c->induct_ctl_c);
-	free(eqs_ctl_c->heat_ctl_c);
-	free(eqs_ctl_c->comp_ctl_c);
-    eqs_ctl_c->iflag_use = 0;
-	
+    free(eqs_ctl_c);
 	return;
 };
 

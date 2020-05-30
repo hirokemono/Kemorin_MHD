@@ -34,7 +34,7 @@ struct visualizers_ctl_c{
 /* prototypes */
 void get_label_viz_ctl(int index, char *label);
 
-void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
+struct visualizers_ctl_c * init_vizs_ctl_c();
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c);
 void read_vizs_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct visualizers_ctl_c *viz_c);

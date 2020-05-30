@@ -30,7 +30,7 @@ struct parallel_sph_shell_control_c{
 /* prototypes */
 void get_label_sph_shell_ctl(int index, char *label);
 
-void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
+struct parallel_sph_shell_control_c * init_parallel_sph_shell_control_c();
 void dealloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl);
 void read_spherical_shell_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct parallel_sph_shell_control_c *shell_ctl);

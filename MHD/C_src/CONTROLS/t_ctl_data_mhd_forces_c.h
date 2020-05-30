@@ -59,7 +59,7 @@ void get_label_coriolis_ctl(int index, char *label);
 void get_label_magneto_cv_ctl(int index, char *label);
 
 
-void alloc_forces_ctl_c(struct forces_ctl_c *frc_ctl);
+struct forces_ctl_c * init_forces_ctl_c();
 void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl);
 void read_forces_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct forces_ctl_c *frc_ctl);

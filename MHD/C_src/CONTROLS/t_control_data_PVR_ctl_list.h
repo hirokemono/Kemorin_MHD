@@ -30,7 +30,7 @@ struct PVR_ctl_list{
 
 /* prototypes */
 
-void alloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c);
+struct volume_rendering_ctl_c * init_volume_rendering_ctl_c();
 void dealloc_volume_rendering_ctl_c(struct volume_rendering_ctl_c *v_render_c);
 int read_volume_rendering_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct volume_rendering_ctl_c *v_render_c);

@@ -21,8 +21,13 @@ void get_label_sph_zonal_means_ctl(int index, char *label){
 };
 
 
-void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
+struct sph_zonal_means_ctl_c * init_sph_zonal_means_controls_c(){
 	int i;
+    struct sph_zonal_means_ctl_c *zm_ctls;
+    if((zm_ctls = (struct sph_zonal_means_ctl_c *) malloc(sizeof(struct sph_zonal_means_ctl_c))) == NULL) {
+        printf("malloc error for sph_zonal_means_ctl_c \n");
+        exit(0);
+    }
 	
     zm_ctls->iflag_use = 0;
 	zm_ctls->maxlen = 0;
@@ -42,7 +47,7 @@ void alloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	zm_ctls->zrms_psf_c = init_psf_ctl_c();
 	
 	zm_ctls->crust_filter_c = init_crustal_filter_ctl_c();
-	return;
+	return zm_ctls;
 }
 
 void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
@@ -56,7 +61,7 @@ void dealloc_sph_zonal_means_controls_c(struct sph_zonal_means_ctl_c *zm_ctls){
 	free(zm_ctls->zmean_psf_file_name);
 	free(zm_ctls->zrms_psf_file_name);
     
-    zm_ctls->iflag_use = 0;
+    free(zm_ctls);
 	return;
 }
 

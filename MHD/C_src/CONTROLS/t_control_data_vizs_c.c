@@ -26,8 +26,13 @@ void get_label_viz_ctl(int index, char *label){
     return;
 };
 
-void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
+struct visualizers_ctl_c * init_vizs_ctl_c(){
 	int i;
+    struct visualizers_ctl_c *viz_c;
+    if ((viz_c = (struct visualizers_ctl_c *) malloc(sizeof(struct visualizers_ctl_c))) == NULL) {
+        printf("malloc error for visualizers_ctl_c\n");
+        exit(0);
+    }
 	
     viz_c->iflag_use = 0;
 	viz_c->maxlen = 0;
@@ -43,7 +48,7 @@ void alloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	init_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	init_FLINE_ctl_list(&viz_c->fline_ctl_list);
 	
-	return;
+	return viz_c;
 };
 
 void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
@@ -53,8 +58,7 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	clear_PVR_ctl_list(&viz_c->pvr_ctl_list);
 	clear_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	clear_FLINE_ctl_list(&viz_c->fline_ctl_list);
-	
-    viz_c->iflag_use = 0;
+    clear_FLINE_ctl_list(&viz_c);
 	return;
 };
 

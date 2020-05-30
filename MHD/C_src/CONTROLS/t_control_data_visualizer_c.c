@@ -25,20 +25,23 @@ void get_label_viz_only_ctl(int index, char *label){
     return;
 };
 
-void alloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
+struct viz_only_ctl_c * init_visualizers_ctl_c(){
+    struct viz_only_ctl_c *viz_only;
+    if ((viz_only = (struct viz_only_ctl_c *) malloc(sizeof(struct viz_only_ctl_c))) == NULL) {
+        printf("malloc error for viz_only_ctl_c\n");
+        exit(0);
+    }
 	viz_only->files = init_platform_data_control_c();
 	viz_only->tctl = init_time_data_control_c();
-	viz_only->viz_c = (struct visualizers_ctl_c *) malloc(sizeof(struct visualizers_ctl_c));
-	alloc_vizs_ctl_c(viz_only->viz_c);
-	return;
+	viz_only->viz_c = init_vizs_ctl_c();
+	return viz_only;
 };
 
 void dealloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only){
 	dealloc_platform_data_control_c(viz_only->files);
 	dealloc_time_data_control_c(viz_only->tctl);
 	dealloc_vizs_ctl_c(viz_only->viz_c);
-	free(viz_only->viz_c);
-
+    free(viz_only);
     return;
 };
 

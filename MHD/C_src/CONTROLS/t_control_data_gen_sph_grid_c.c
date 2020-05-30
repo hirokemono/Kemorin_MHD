@@ -23,9 +23,13 @@ void get_label_gen_sph_grid_ctl(int index, char *label){
     return;
 };
 
-void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
+struct gen_sph_grid_ctl_c * init_gen_sph_shell_ctl_c(){
 	int i;
-	
+    struct gen_sph_grid_ctl_c *gen_sph_c;
+    if ((gen_sph_c = (struct gen_sph_grid_ctl_c *) malloc(sizeof(struct gen_sph_grid_ctl_c))) == NULL) {
+        printf("malloc error for gen_sph_grid_ctl_c\n");
+        exit(0);
+    }
 	gen_sph_c->maxlen = 0;
 	for (i=0;i<NLBL_GEN_SPH_GRID_CTL;i++){
 		if(strlen(label_gen_sph_grid_ctl[i]) > gen_sph_c->maxlen){
@@ -34,15 +38,15 @@ void alloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 	};
 
 	gen_sph_c->files = init_platform_data_control_c();
-	gen_sph_c->shell_ctl = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c));
-	alloc_parallel_sph_shell_control_c(gen_sph_c->shell_ctl);
-	return;
+	gen_sph_c->shell_ctl = init_parallel_sph_shell_control_c();
+	return gen_sph_c;
 };
 
 void dealloc_gen_sph_shell_ctl_c(struct gen_sph_grid_ctl_c *gen_sph_c){
 	dealloc_platform_data_control_c(gen_sph_c->files);
 	dealloc_parallel_sph_shell_control_c(gen_sph_c->shell_ctl);
-	free(gen_sph_c->shell_ctl);
+
+    free(gen_sph_c);
     return;
 };
 

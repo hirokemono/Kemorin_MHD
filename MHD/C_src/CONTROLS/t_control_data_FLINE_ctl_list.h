@@ -30,7 +30,7 @@ struct FLINE_ctl_list{
 
 /* prototypes */
 
-void alloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c);
+struct fieldline_ctl_c * init_fieldline_ctl_c();
 void dealloc_fieldline_ctl_c(struct fieldline_ctl_c *fldlines_c);
 int read_fieldline_ctl_c(FILE *fp, char buf[LENGTHBUF], 
 			const char *label, struct fieldline_ctl_c *fldlines_c);

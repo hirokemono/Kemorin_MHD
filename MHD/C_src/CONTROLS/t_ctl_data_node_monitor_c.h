@@ -29,7 +29,7 @@ struct node_monitor_ctl_c{
 /* prototype */
 void get_label_node_monitor_ctl(int index, char *label);
 
-void alloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl);
+struct node_monitor_ctl_c * init_node_monitor_ctl_c();
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl);
 void read_node_monitor_ctl_c(FILE *fp, char buf[LENGTHBUF],
 			const char *label, struct node_monitor_ctl_c *nmtr_ctl);

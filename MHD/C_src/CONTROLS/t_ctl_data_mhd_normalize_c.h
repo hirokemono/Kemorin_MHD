@@ -76,14 +76,14 @@ void get_label_comp_equation_ctl(int index, char *label);
 void get_label_dimless_ctl(int index, char *label);
 void get_label_equations_ctl(int index, char *label);
 
-void alloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c);
+struct momentum_equation_ctl_c * init_momentum_equation_ctl_c();
 void dealloc_momentum_equation_ctl_c(struct momentum_equation_ctl_c *mom_ctl_c);
 void read_momentum_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct momentum_equation_ctl_c *mom_ctl_c);
 int write_momentum_equation_ctl_c(FILE *fp, int level, const char *label, 
                                   struct momentum_equation_ctl_c *mom_ctl_c);
 
-void alloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_c);
+struct induction_equation_ctl_c * init_induction_equation_ctl_c();
 void dealloc_induction_equation_ctl_c(struct induction_equation_ctl_c *induct_ctl_c);
 void read_induction_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct induction_equation_ctl_c *induct_ctl_c);
@@ -91,27 +91,27 @@ int write_induction_equation_ctl_c(FILE *fp, int level, const char *label,
                                    struct induction_equation_ctl_c *induct_ctl_c);
 
 void alloc_scalar_advection_eq_ctl_c(struct heat_equation_ctl_c *scalar_ctl_c);
-void alloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c);
+struct heat_equation_ctl_c * init_heat_equation_ctl_c();
 void dealloc_heat_equation_ctl_c(struct heat_equation_ctl_c *heat_ctl_c);
 void read_heat_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct heat_equation_ctl_c *heat_ctl_c);
 int write_heat_equation_ctl_c(FILE *fp, int level, const char *label, 
                               struct heat_equation_ctl_c *heat_ctl_c);
 
-void alloc_comp_equation_ctl_c(struct heat_equation_ctl_c *comp_ctl_c);
+struct heat_equation_ctl_c * init_comp_equation_ctl_c();
 void read_comp_equation_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct heat_equation_ctl_c *comp_ctl_c);
 int write_comp_equation_ctl_c(FILE *fp, int level, const char *label, 
                               struct heat_equation_ctl_c *comp_ctl_c);
 
-void alloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c);
+struct dimless_ctl_c * init_dimless_ctl_c();
 void dealloc_dimless_ctl_c(struct dimless_ctl_c *dless_ctl_c);
 void read_dimless_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct dimless_ctl_c *dless_ctl_c);
 int write_dimless_ctl_c(FILE *fp, int level, const char *label,
                         struct dimless_ctl_c *dless_ctl_c);
 
-void alloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c);
+struct equations_ctl_c * init_equations_ctl_c();
 void dealloc_equations_ctl_c(struct equations_ctl_c *eqs_ctl_c);
 void read_equations_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct equations_ctl_c *eqs_ctl_c);

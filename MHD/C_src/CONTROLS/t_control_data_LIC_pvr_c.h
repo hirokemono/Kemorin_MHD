@@ -28,7 +28,7 @@ struct LIC_pvr_ctl_c{
 };
 
 /* prototypes */
-void alloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c);
+struct LIC_pvr_ctl_c * init_LIC_pvr_ctl_c();
 void dealloc_LIC_pvr_ctl_c(struct LIC_pvr_ctl_c *lic_pvr_c);
 int read_LIC_pvr_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct LIC_pvr_ctl_c *lic_pvr_c);

@@ -32,13 +32,11 @@ int main(int argc,char *argv[])
     printf("read visualizer control file name: %s\n", file_name);
     printf("Write visualizer control file name: %s\n", file_name_2);
 
-    shell_ctl0 = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c));
-	alloc_parallel_sph_shell_control_c(shell_ctl0);
+    shell_ctl0 = init_parallel_sph_shell_control_c();
     
 	iflag = read_spherical_shell_file_c(file_name, buf, shell_ctl0);
 	iflag = write_spherical_shell_file_c(file_name_2, shell_ctl0);
 
     dealloc_parallel_sph_shell_control_c(shell_ctl0);
-	free(shell_ctl0);
 	return 0;
 }

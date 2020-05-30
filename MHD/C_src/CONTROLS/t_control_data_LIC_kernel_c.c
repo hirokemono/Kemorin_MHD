@@ -23,7 +23,7 @@ struct label_list_f * init_ctl_label_LIC_kernel_f(){
 	return label_list;
 };
 
-struct lic_kernel_ctl_c * alloc_lic_kernel_ctl_c(){
+struct lic_kernel_ctl_c * init_lic_kernel_ctl_c(){
     struct lic_kernel_ctl_c *lic_knl_c;
     if((lic_knl_c = (struct lic_kernel_ctl_c *) malloc(sizeof(struct lic_kernel_ctl_c))) == NULL) {
         printf("malloc error for lic_kernel_ctl_c \n");

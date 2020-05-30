@@ -32,14 +32,12 @@ int main(int argc,char *argv[])
     printf("read visualizer control file name: %s\n", file_name);
     printf("Write visualizer control file name: %s\n", file_name_2);
 
-    gen_sph_c0 = (struct gen_sph_grid_ctl_c *) malloc(sizeof(struct gen_sph_grid_ctl_c));
-	alloc_gen_sph_shell_ctl_c(gen_sph_c0);
+    gen_sph_c0 = init_gen_sph_shell_ctl_c();
     
 	iflag = read_gen_sph_shell_file_c(file_name, buf, gen_sph_c0);
     rename_gen_sph_subfiles_c(gen_sph_c0);
 	iflag = write_gen_sph_shell_file_c(file_name_2, gen_sph_c0);
 
     dealloc_gen_sph_shell_ctl_c(gen_sph_c0);
-	free(gen_sph_c0);
 	return 0;
 }

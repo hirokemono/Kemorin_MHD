@@ -24,8 +24,13 @@ void get_label_sph_shell_ctl(int index, char *label){
     return;
 };
 
-void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl){
+struct parallel_sph_shell_control_c * init_parallel_sph_shell_control_c(){
 	int i;
+    struct parallel_sph_shell_control_c *shell_ctl;
+    if((shell_ctl = (struct parallel_sph_shell_control_c *) malloc(sizeof(struct parallel_sph_shell_control_c))) == NULL) {
+        printf("malloc error for parallel_sph_shell_control_c \n");
+        exit(0);
+    }
 	
     shell_ctl->iflag_use_file = 0;
 	shell_ctl->maxlen = 0;
@@ -41,14 +46,15 @@ void alloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *she
 	shell_ctl->sdctl_c = init_sphere_domain_ctl_c();
 	shell_ctl->spctl_c = init_sphere_data_ctl_c();
 	
-	return;
+	return shell_ctl;
 }
 
 void dealloc_parallel_sph_shell_control_c(struct parallel_sph_shell_control_c *shell_ctl){
 	dealloc_FEM_mesh_control_c(shell_ctl->Fmesh_ctl);
 	dealloc_sphere_domain_ctl_c(shell_ctl->sdctl_c);
 	dealloc_sphere_data_ctl_c(shell_ctl->spctl_c);
-    shell_ctl->iflag_use_file = 0;
+
+    free(shell_ctl);
 	return;
 }
 

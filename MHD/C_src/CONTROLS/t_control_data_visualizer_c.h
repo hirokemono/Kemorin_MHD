@@ -28,7 +28,7 @@ struct viz_only_ctl_c{
 /* prototypes */
 void get_label_viz_only_ctl(int index, char *label);
 
-void alloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only);
+struct viz_only_ctl_c * init_visualizers_ctl_c();
 void dealloc_visualizers_ctl_c(struct viz_only_ctl_c *viz_only);
 int read_visualizers_ctl_c(FILE *fp, char buf[LENGTHBUF], 
                            const char *label, struct viz_only_ctl_c *viz_only);
