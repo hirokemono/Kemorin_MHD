@@ -10,7 +10,7 @@
 
 struct chara_ctl_item * init_chara_ctl_item_c(){
     struct chara_ctl_item *c_item;
-    if(c_item = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item)) == NULL) {
+    if((c_item = (struct chara_ctl_item *) malloc(sizeof(struct chara_ctl_item))) == NULL) {
         printf("malloc error for chara_ctl_item\n");
         exit(0);
     }
