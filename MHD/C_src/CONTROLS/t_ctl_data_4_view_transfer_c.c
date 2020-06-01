@@ -256,17 +256,13 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 		};
 	};
 	
-    mat_c->modelview_mat_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-	init_chara2_real_clist(mat_c->modelview_mat_ctl);
+    mat_c->modelview_mat_ctl = init_chara2_real_clist();
 	
-    mat_c->lookpoint_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    mat_c->viewpoint_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    mat_c->up_dir_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    mat_c->view_rot_vec_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-	init_chara_real_clist(mat_c->lookpoint_list);
-	init_chara_real_clist(mat_c->viewpoint_list);
-	init_chara_real_clist(mat_c->up_dir_list);
-	init_chara_real_clist(mat_c->view_rot_vec_list);
+    mat_c->lookpoint_list =    init_chara_real_clist();
+    mat_c->viewpoint_list =    init_chara_real_clist();
+    mat_c->up_dir_list =       init_chara_real_clist();
+    mat_c->view_rot_vec_list = init_chara_real_clist();
+
     sprintf(mat_c->lookpoint_list->c1_name, "Direction");
     sprintf(mat_c->viewpoint_list->c1_name, "Direction");
     sprintf(mat_c->up_dir_list->c1_name, "Direction");
@@ -279,10 +275,9 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
     mat_c->view_rotation_deg_ctl = init_real_ctl_item_c();
     mat_c->scale_factor_ctl =      init_real_ctl_item_c();
 	
-    mat_c->scale_vector_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    mat_c->viewpt_in_viewer_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-	init_chara_real_clist(mat_c->scale_vector_list);
-	init_chara_real_clist(mat_c->viewpt_in_viewer_list);
+    mat_c->scale_vector_list =     init_chara_real_clist();
+    mat_c->viewpt_in_viewer_list = init_chara_real_clist();
+
     sprintf(mat_c->scale_vector_list->c1_name, "Direction");
     sprintf(mat_c->viewpt_in_viewer_list->r1_name, "Value");
     sprintf(mat_c->scale_vector_list->c1_name, "Direction");
@@ -301,25 +296,18 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 
 void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	
-	clear_chara2_real_clist(mat_c->modelview_mat_ctl);
-    free(mat_c->modelview_mat_ctl);
+	dealloc_chara2_real_clist(mat_c->modelview_mat_ctl);
 	
-	clear_chara_real_clist(mat_c->lookpoint_list);
-	clear_chara_real_clist(mat_c->viewpoint_list);
-	clear_chara_real_clist(mat_c->up_dir_list);
-	clear_chara_real_clist(mat_c->view_rot_vec_list);
-    free(mat_c->lookpoint_list);
-    free(mat_c->viewpoint_list);
-    free(mat_c->up_dir_list);
-    free(mat_c->view_rot_vec_list);
+	dealloc_chara_real_clist(mat_c->lookpoint_list);
+	dealloc_chara_real_clist(mat_c->viewpoint_list);
+	dealloc_chara_real_clist(mat_c->up_dir_list);
+	dealloc_chara_real_clist(mat_c->view_rot_vec_list);
 	
 	free(mat_c->view_rotation_deg_ctl);
 	free(mat_c->scale_factor_ctl);
 	
-	clear_chara_real_clist(mat_c->scale_vector_list);
-	clear_chara_real_clist(mat_c->viewpt_in_viewer_list);
-    free(mat_c->scale_vector_list);
-    free(mat_c->viewpt_in_viewer_list);
+	dealloc_chara_real_clist(mat_c->scale_vector_list);
+	dealloc_chara_real_clist(mat_c->viewpt_in_viewer_list);
 	
 	dealloc_image_size_ctl_c(mat_c->img_size_c);
 	dealloc_streo_view_ctl_c(mat_c->streo_view_c);

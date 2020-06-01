@@ -20,8 +20,14 @@ void get_label_field_ctl(int index, char *label){
 };
 
 
-void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
+struct field_ctl_c * init_field_ctl_c(){
 	int i;
+    struct field_ctl_c *fld_ctl;
+    if((fld_ctl = (struct field_ctl_c *) malloc(sizeof(struct field_ctl_c))) == NULL) {
+        printf("malloc error for field_ctl_c \n");
+        exit(0);
+    }
+    
 	
     fld_ctl->iflag_use = 0;
 	fld_ctl->maxlen = 0;
@@ -36,7 +42,7 @@ void alloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	init_chara_int2_ctl_list(&fld_ctl->field_list);
 	init_chara_ctl_list(&fld_ctl->quad_phys_list);
 	
-	return;
+	return fld_ctl;
 };
 
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
@@ -46,7 +52,7 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	clear_chara_int2_ctl_list(&fld_ctl->field_list);
 	clear_chara_ctl_list(&fld_ctl->quad_phys_list);
 	
-    fld_ctl->iflag_use = 0;
+    free(fld_ctl);
 	return;
 };
 

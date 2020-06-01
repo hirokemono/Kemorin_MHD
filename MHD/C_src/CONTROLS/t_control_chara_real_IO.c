@@ -11,7 +11,7 @@
 struct chara_real_ctl_item * init_chara_real_ctl_item_c(){
     struct chara_real_ctl_item *cr_item;
     if((cr_item = (struct chara_real_ctl_item *) malloc(sizeof(struct chara_real_ctl_item))) == NULL) {
-        printf("malloc error for cr_item\n");
+        printf("malloc error for chara_real_ctl_item\n");
         exit(0);
     }
 	cr_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
@@ -282,7 +282,12 @@ static void set_from_chara_real_ctl_list_at_c_tbl(char *ref, struct chara_real_c
 };
 
 
-void init_chara_real_clist(struct chara_real_clist *cr_clst){
+struct chara_real_clist * init_chara_real_clist(){
+    struct chara_real_clist *cr_clst;
+    if((cr_clst = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist))) == NULL) {
+        printf("malloc error for chara_real_clist\n");
+        exit(0);
+    }
     init_chara_real_ctl_list(&cr_clst->cr_item_head);
     
     cr_clst->clist_name = (char *)calloc(32,sizeof(char));
@@ -290,13 +295,15 @@ void init_chara_real_clist(struct chara_real_clist *cr_clst){
     cr_clst->r1_name = (char *)calloc(32,sizeof(char));
      return;
 };
-void clear_chara_real_clist(struct chara_real_clist *cr_clst){
+void dealloc_chara_real_clist(struct chara_real_clist *cr_clst){
     clear_chara_real_ctl_list(&cr_clst->cr_item_head);
 	
 	free(cr_clst->clist_name);
     free(cr_clst->c1_name);
     free(cr_clst->r1_name);
-     return;
+    
+    free(cr_clst);
+    return;
 };
 int count_chara_real_clist(struct chara_real_clist *cr_clst){
     return count_chara_real_ctl_list(&cr_clst->cr_item_head);

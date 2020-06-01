@@ -37,8 +37,7 @@ struct node_monitor_ctl_c * init_node_monitor_ctl_c(){
         };
 	};
 	
-    nmtr_ctl->group_4_monitor_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-    init_chara_clist(nmtr_ctl->group_4_monitor_list);
+    nmtr_ctl->group_4_monitor_list = init_chara_clist();
 
     nmtr_ctl->xx_4_monitor_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
     init_real3_clist(nmtr_ctl->xx_4_monitor_list);
@@ -54,8 +53,7 @@ struct node_monitor_ctl_c * init_node_monitor_ctl_c(){
 };
 
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
-    clear_chara_clist(nmtr_ctl->group_4_monitor_list);
-    free(nmtr_ctl->group_4_monitor_list);
+    dealloc_chara_clist(nmtr_ctl->group_4_monitor_list);
     clear_real3_clist(nmtr_ctl->xx_4_monitor_list);
     free(nmtr_ctl->xx_4_monitor_list);
     clear_int2_clist(nmtr_ctl->node_4_monitor_list);

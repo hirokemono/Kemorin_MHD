@@ -54,8 +54,8 @@ void set_from_chara2_ctl_item_c(struct chara2_ctl_item *c2_item,
 			char *c1_out, char *c2_out);
 
 
-void init_chara2_clist(struct chara2_clist *c2_clst);
-void clear_chara2_clist(struct chara2_clist *c2_clst);
+struct chara2_clist * init_chara2_clist();
+void dealloc_chara2_clist(struct chara2_clist *c2_clst);
 int count_chara2_clist(struct chara2_clist *c2_clst);
 
 int read_chara2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

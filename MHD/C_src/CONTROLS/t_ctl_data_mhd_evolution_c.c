@@ -46,16 +46,13 @@ struct mhd_evolution_ctl_c * init_mhd_evolution_ctl_c(){
 		};
 	};
 	
-    evo_ctl->t_evo_field_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(evo_ctl->t_evo_field_list);	
+    evo_ctl->t_evo_field_list = init_chara_clist();	
 	return evo_ctl;
 };
 
 void dealloc_mhd_evolution_ctl_c(struct mhd_evolution_ctl_c *evo_ctl){
-	clear_chara_clist(evo_ctl->t_evo_field_list);
-    free(evo_ctl->t_evo_field_list);
+	dealloc_chara_clist(evo_ctl->t_evo_field_list);
     free(evo_ctl);
-
 	return;
 };
 
@@ -100,22 +97,16 @@ struct mhd_evo_area_ctl_c * init_mhd_evo_area_ctl_c(){
 		};
 	};
 	
-    earea_ctl->evo_fluid_group_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-    earea_ctl->evo_conduct_group_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(earea_ctl->evo_fluid_group_list);
-	init_chara_clist(earea_ctl->evo_conduct_group_list);
+    earea_ctl->evo_fluid_group_list =   init_chara_clist();
+    earea_ctl->evo_conduct_group_list = init_chara_clist();
 	
 	return earea_ctl;
 };
 
 void dealloc_mhd_evo_area_ctl_c(struct mhd_evo_area_ctl_c *earea_ctl){
-	clear_chara_clist(earea_ctl->evo_fluid_group_list);
-	clear_chara_clist(earea_ctl->evo_conduct_group_list);
-    free(earea_ctl->evo_fluid_group_list);
-    free(earea_ctl->evo_conduct_group_list);
-
+	dealloc_chara_clist(earea_ctl->evo_fluid_group_list);
+	dealloc_chara_clist(earea_ctl->evo_conduct_group_list);
     free(earea_ctl);
-
     return;
 };
 

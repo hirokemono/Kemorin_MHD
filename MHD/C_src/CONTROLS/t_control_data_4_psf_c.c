@@ -75,14 +75,11 @@ struct psf_define_ctl_c * init_psf_define_ctl_c(){
 	
 	psf_def_c->section_method_ctl = init_chara_ctl_item_c();
 	
-    psf_def_c->psf_coefs_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    psf_def_c->psf_normal_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    psf_def_c->psf_center_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-    psf_def_c->psf_axis_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-	init_chara_real_clist(psf_def_c->psf_coefs_list);
-	init_chara_real_clist(psf_def_c->psf_normal_list);
-	init_chara_real_clist(psf_def_c->psf_center_list);
-	init_chara_real_clist(psf_def_c->psf_axis_list);
+    psf_def_c->psf_coefs_list =  init_chara_real_clist();
+    psf_def_c->psf_normal_list = init_chara_real_clist();
+    psf_def_c->psf_center_list = init_chara_real_clist();
+    psf_def_c->psf_axis_list =   init_chara_real_clist();
+
     sprintf(psf_def_c->psf_coefs_list->c1_name, "Term");
     sprintf(psf_def_c->psf_normal_list->c1_name, "Direction");
     sprintf(psf_def_c->psf_center_list->c1_name, "Direction");
@@ -95,8 +92,7 @@ struct psf_define_ctl_c * init_psf_define_ctl_c(){
 	psf_def_c->radius_psf_ctl = init_real_ctl_item_c();
 	psf_def_c->psf_group_name_ctl = init_chara_ctl_item_c();
 	
-    psf_def_c->psf_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(psf_def_c->psf_area_list);
+    psf_def_c->psf_area_list = init_chara_clist();
 	
 	return psf_def_c;
 };
@@ -105,20 +101,15 @@ void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	
 	dealloc_chara_ctl_item_c(psf_def_c->section_method_ctl);
 	
-	clear_chara_real_clist(psf_def_c->psf_coefs_list);
-	clear_chara_real_clist(psf_def_c->psf_normal_list);
-	clear_chara_real_clist(psf_def_c->psf_center_list);
-	clear_chara_real_clist(psf_def_c->psf_axis_list);
-    free(psf_def_c->psf_coefs_list);
-    free(psf_def_c->psf_normal_list);
-    free(psf_def_c->psf_center_list);
-    free(psf_def_c->psf_axis_list);
+	dealloc_chara_real_clist(psf_def_c->psf_coefs_list);
+	dealloc_chara_real_clist(psf_def_c->psf_normal_list);
+	dealloc_chara_real_clist(psf_def_c->psf_center_list);
+	dealloc_chara_real_clist(psf_def_c->psf_axis_list);
 	
 	free(psf_def_c->radius_psf_ctl);
 	dealloc_chara_ctl_item_c(psf_def_c->psf_group_name_ctl);
 	
-	clear_chara_clist(psf_def_c->psf_area_list);	
-    free(psf_def_c->psf_area_list);    
+	dealloc_chara_clist(psf_def_c->psf_area_list);	
     free(psf_def_c);    
 	return;
 };
@@ -198,16 +189,13 @@ struct psf_field_ctl_c * init_psf_field_ctl_c(){
 		};
 	};
 	
-    psf_fld_c->psf_out_field_list = (struct chara2_clist *) malloc(sizeof(struct chara2_clist));
-	init_chara2_clist(psf_fld_c->psf_out_field_list);
-	
+    psf_fld_c->psf_out_field_list = init_chara2_clist();
 	return psf_fld_c;
 };
 
 void dealloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
 	
-	clear_chara2_clist(psf_fld_c->psf_out_field_list);
-    free(psf_fld_c->psf_out_field_list);
+	dealloc_chara2_clist(psf_fld_c->psf_out_field_list);
     free(psf_fld_c);
 	
 	return;

@@ -57,8 +57,8 @@ void append_chara_real_ctl_list(char *c_in, double r_in,
 void del_chara_real_ctl_list_by_c_tbl(char *ref, struct chara_real_ctl_list *head);
 
 
-void init_chara_real_clist(struct chara_real_clist *cr_clst);
-void clear_chara_real_clist(struct chara_real_clist *cr_clst);
+struct chara_real_clist * init_chara_real_clist();
+void dealloc_chara_real_clist(struct chara_real_clist *cr_clst);
 int count_chara_real_clist(struct chara_real_clist *cr_clst);
 
 int read_chara_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

@@ -11,7 +11,7 @@
 struct chara_int3_ctl_item * init_chara_int3_ctl_item_c(){
     struct chara_int3_ctl_item *ci3_item;
     if ((ci3_item = (struct chara_int3_ctl_item *) malloc(sizeof(struct chara_int3_ctl_item))) == NULL) {
-        printf("malloc error for ci3_item\n");
+        printf("malloc error for chara_int3_ctl_item\n");
         exit(0);
     }
 	ci3_item->c_tbl = (char *)calloc(KCHARA_C, sizeof(char));
@@ -289,7 +289,13 @@ static void set_from_chara_int3_ctl_list_at_c_tbl(char *ref, struct chara_int3_c
 };
 
 
-void init_chara_int3_clist(struct chara_int3_clist *ci3_clst){
+struct chara_int3_clist * init_chara_int3_clist(){
+    struct chara_int3_clist *ci3_clst;
+    if ((ci3_clst = (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist))) == NULL) {
+        printf("malloc error for chara_int3_clist\n");
+        exit(0);
+    }
+
     init_chara_int3_ctl_list(&ci3_clst->ci3_item_head);
 
     ci3_clst->clist_name = (char *)calloc(32,sizeof(char));
@@ -297,9 +303,10 @@ void init_chara_int3_clist(struct chara_int3_clist *ci3_clst){
     ci3_clst->i1_name = (char *)calloc(32,sizeof(char));
     ci3_clst->i2_name = (char *)calloc(32,sizeof(char));
     ci3_clst->i3_name = (char *)calloc(32,sizeof(char));
-    return;
+	return ci3_clst;
 };
-void clear_chara_int3_clist(struct chara_int3_clist *ci3_clst){
+
+void dealloc_chara_int3_clist(struct chara_int3_clist *ci3_clst){
     clear_chara_int3_ctl_list(&ci3_clst->ci3_item_head);
     
     free(ci3_clst->clist_name);
@@ -307,7 +314,9 @@ void clear_chara_int3_clist(struct chara_int3_clist *ci3_clst){
     free(ci3_clst->i1_name);
     free(ci3_clst->i2_name);
     free(ci3_clst->i3_name);
-    return;
+
+    free(ci3_clst);
+	return;
 };
 int count_chara_int3_clist(struct chara_int3_clist *ci3_clst){
     return count_chara_int3_ctl_list(&ci3_clst->ci3_item_head);

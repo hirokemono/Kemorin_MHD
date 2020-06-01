@@ -60,17 +60,14 @@ struct forces_ctl_c * init_forces_ctl_c(){
 		};
 	};
 	
-    frc_ctl->force_names_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(frc_ctl->force_names_list);
+    frc_ctl->force_names_list = init_chara_clist();
 	
 	return frc_ctl;
 };
 
 void dealloc_forces_ctl_c(struct forces_ctl_c *frc_ctl){
-	clear_chara_clist(frc_ctl->force_names_list);
-    free(frc_ctl->force_names_list);
+	dealloc_chara_clist(frc_ctl->force_names_list);
     free(frc_ctl);
-
     return;
 };
 
@@ -115,8 +112,7 @@ struct gravity_ctl_c * init_gravity_ctl_c(){
 		};
 	};
 	
-    g_ctl->gravity_vec_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-	init_chara_real_clist(g_ctl->gravity_vec_list);
+    g_ctl->gravity_vec_list = init_chara_real_clist();
     sprintf(g_ctl->gravity_vec_list->c1_name, "Direction");
     sprintf(g_ctl->gravity_vec_list->r1_name, "Value");
 	
@@ -127,9 +123,7 @@ struct gravity_ctl_c * init_gravity_ctl_c(){
 
 void dealloc_gravity_ctl_c(struct gravity_ctl_c *g_ctl){
 	
-	clear_chara_real_clist(g_ctl->gravity_vec_list);
-    free(g_ctl->gravity_vec_list);
-	
+	dealloc_chara_real_clist(g_ctl->gravity_vec_list);
 	dealloc_chara_ctl_item_c(g_ctl->gravity_c);
     free(g_ctl);
 	return;
@@ -179,18 +173,15 @@ struct coriolis_ctl_c * init_coriolis_ctl_c(){
 		};
 	};
 	
-    cor_ctl->system_rotation_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-	init_chara_real_clist(cor_ctl->system_rotation_list);
+    cor_ctl->system_rotation_list = init_chara_real_clist();
     sprintf(cor_ctl->system_rotation_list->c1_name, "Direction");
     sprintf(cor_ctl->system_rotation_list->r1_name, "Value");
 	
 	return cor_ctl;
 };
 
-void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){
-	
-	clear_chara_real_clist(cor_ctl->system_rotation_list);
-    free(cor_ctl->system_rotation_list);
+void dealloc_coriolis_ctl_c(struct coriolis_ctl_c *cor_ctl){	
+	dealloc_chara_real_clist(cor_ctl->system_rotation_list);
     free(cor_ctl);
 	return;
 };
@@ -236,8 +227,7 @@ struct magneto_cv_ctl_c * init_magneto_cv_ctl_c(){
 		};
 	};
 	
-    mcv_ctl->ext_magne_list = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist));
-	init_chara_real_clist(mcv_ctl->ext_magne_list);
+    mcv_ctl->ext_magne_list = init_chara_real_clist();
     sprintf(mcv_ctl->ext_magne_list->c1_name, "Direction");
     sprintf(mcv_ctl->ext_magne_list->r1_name, "Value");
 	
@@ -247,11 +237,9 @@ struct magneto_cv_ctl_c * init_magneto_cv_ctl_c(){
 };
 
 void dealloc_magneto_cv_ctl_c(struct magneto_cv_ctl_c *mcv_ctl){
-	
-	clear_chara_real_clist(mcv_ctl->ext_magne_list);
-    free(mcv_ctl->ext_magne_list);
-	
+	dealloc_chara_real_clist(mcv_ctl->ext_magne_list);
 	dealloc_chara_ctl_item_c(mcv_ctl->magneto_cv_c);
+
     free(mcv_ctl);
 	return;
 };

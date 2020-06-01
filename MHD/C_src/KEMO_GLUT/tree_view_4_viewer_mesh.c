@@ -12,9 +12,7 @@ struct ci3_clist_view * init_domain_views_4_viewer(){
 	char tmp_name[128];
 	
 	struct ci3_clist_view *domain_vws = (struct ci3_clist_view *)  malloc(sizeof(struct ci3_clist_view));
-	domain_vws->ci3_clist_gtk =  (struct chara_int3_clist *)  malloc(sizeof(struct chara_int3_clist));
-	
-	init_chara_int3_clist(domain_vws->ci3_clist_gtk);
+	domain_vws->ci3_clist_gtk = init_chara_int3_clist();
 	
 	sprintf(domain_vws->ci3_clist_gtk->clist_name,"%s", "Domain Data");
 	sprintf(domain_vws->ci3_clist_gtk->c1_name,"%s", "Name");
@@ -38,9 +36,7 @@ struct ci_clist_view * init_node_group_views(){
 	struct kv_string *groupname;
 	
     struct ci_clist_view *nod_grp_vws =  (struct ci_clist_view *)  malloc(sizeof(struct ci_clist_view));
-    nod_grp_vws->ci_clist_gtk =  (struct chara_int_clist *)  malloc(sizeof(struct chara_int_clist));
-	
-	init_chara_int_clist(nod_grp_vws->ci_clist_gtk);
+    nod_grp_vws->ci_clist_gtk = init_chara_int_clist();
 	
 	sprintf(nod_grp_vws->ci_clist_gtk->clist_name,"%s", "Node group");
 	sprintf(nod_grp_vws->ci_clist_gtk->c1_name,"%s", "Name");
@@ -62,9 +58,7 @@ struct ci3_clist_view * init_ele_group_views(){
 	struct kv_string *groupname;
 	
     struct ci3_clist_view *ele_grp_vws =  (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
-    ele_grp_vws->ci3_clist_gtk =  (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
-	
-	init_chara_int3_clist(ele_grp_vws->ci3_clist_gtk);
+    ele_grp_vws->ci3_clist_gtk = init_chara_int3_clist();
 	
 	sprintf(ele_grp_vws->ci3_clist_gtk->clist_name,"%s", "Element group");
 	sprintf(ele_grp_vws->ci3_clist_gtk->c1_name,"%s", "Name");
@@ -90,9 +84,7 @@ struct ci3_clist_view * init_surface_group_views(){
 	struct kv_string *groupname;
 	
 	struct  ci3_clist_view *surf_grp_vws = (struct ci3_clist_view *) malloc(sizeof(struct ci3_clist_view));
-	surf_grp_vws->ci3_clist_gtk = (struct chara_int3_clist *) malloc(sizeof(struct chara_int3_clist));
-	
-	init_chara_int3_clist(surf_grp_vws->ci3_clist_gtk);
+	surf_grp_vws->ci3_clist_gtk = init_chara_int3_clist();
 	
 	sprintf(surf_grp_vws->ci3_clist_gtk->clist_name,"%s", "Surface group");
 	sprintf(surf_grp_vws->ci3_clist_gtk->c1_name,"%s", "Name");
@@ -114,14 +106,12 @@ struct ci3_clist_view * init_surface_group_views(){
 }
 
 void dealloc_group_views_4_viewer(struct ci3_clist_view *domain_vws){
-	clear_chara_int3_clist(domain_vws->ci3_clist_gtk);
-	free(domain_vws->ci3_clist_gtk);
+	dealloc_chara_int3_clist(domain_vws->ci3_clist_gtk);
 	free(domain_vws);
     return;
 }
 void dealloc_nod_grp_views_4_viewer(struct ci_clist_view *nod_grp_vws){
-	clear_chara_int_clist(nod_grp_vws->ci_clist_gtk);
-	free(nod_grp_vws->ci_clist_gtk);
+	dealloc_chara_int_clist(nod_grp_vws->ci_clist_gtk);
 	free(nod_grp_vws);
     return;
 }

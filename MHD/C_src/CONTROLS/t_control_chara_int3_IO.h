@@ -72,8 +72,8 @@ int write_chara_int3_ctl_list(FILE *fp, int level, const char *label,
 void del_chara_int3_ctl_list_by_c_tbl(char *ref, struct chara_int3_ctl_list *head);
 
 
-void init_chara_int3_clist(struct chara_int3_clist *ci3_clst);
-void clear_chara_int3_clist(struct chara_int3_clist *ci3_clst);
+struct chara_int3_clist * init_chara_int3_clist();
+void dealloc_chara_int3_clist(struct chara_int3_clist *ci3_clst);
 int count_chara_int3_clist(struct chara_int3_clist *ci3_clst);
 
 int read_chara_int3_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

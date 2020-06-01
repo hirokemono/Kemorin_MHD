@@ -61,8 +61,7 @@ struct fline_ctl_c * init_fline_ctl_c(){
 	fline_c->fline_color_field_ctl = init_chara_ctl_item_c();
 	fline_c->fline_color_comp_ctl = init_chara_ctl_item_c();
 	
-    fline_c->fline_area_grp_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(fline_c->fline_area_grp_list);
+    fline_c->fline_area_grp_list = init_chara_clist();
 	
 	fline_c->starting_type_ctl = init_chara_ctl_item_c();
 	fline_c->selection_type_ctl = init_chara_ctl_item_c();
@@ -95,8 +94,7 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	dealloc_chara_ctl_item_c(fline_c->fline_color_field_ctl);
 	dealloc_chara_ctl_item_c(fline_c->fline_color_comp_ctl);
 	
-	clear_chara_clist(fline_c->fline_area_grp_list);
-    free(fline_c->fline_area_grp_list);
+	dealloc_chara_clist(fline_c->fline_area_grp_list);
 	
 	dealloc_chara_ctl_item_c(fline_c->starting_type_ctl);
 	dealloc_chara_ctl_item_c(fline_c->selection_type_ctl);

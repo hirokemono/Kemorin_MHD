@@ -76,8 +76,7 @@ struct iso_define_ctl_c * init_iso_define_ctl_c(){
 	
 	iso_def_c->isosurf_value_ctl = init_real_ctl_item_c();
 	
-    iso_def_c->iso_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(iso_def_c->iso_area_list);
+    iso_def_c->iso_area_list = init_chara_clist();
 	
 	return iso_def_c;
 };
@@ -89,8 +88,7 @@ void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	
 	free(iso_def_c->isosurf_value_ctl);
 	
-	clear_chara_clist(iso_def_c->iso_area_list);
-    free(iso_def_c->iso_area_list);
+	dealloc_chara_clist(iso_def_c->iso_area_list);
     free(iso_def_c);
 	return;
 };
@@ -163,8 +161,7 @@ struct iso_field_ctl_c * init_iso_field_ctl_c(){
 	iso_fld_c->iso_result_type_ctl = init_chara_ctl_item_c();
 	
 	iso_fld_c->result_value_iso_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
-    iso_fld_c->iso_out_field_list = (struct chara2_clist *) malloc(sizeof(struct chara2_clist));
-	init_chara2_clist(iso_fld_c->iso_out_field_list);
+    iso_fld_c->iso_out_field_list = init_chara2_clist();
 	
 	return iso_fld_c;
 };
@@ -174,8 +171,7 @@ void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	dealloc_chara_ctl_item_c(iso_fld_c->iso_result_type_ctl);
 	free(iso_fld_c->result_value_iso_ctl);
 	
-	clear_chara2_clist(iso_fld_c->iso_out_field_list);
-    free(iso_fld_c->iso_out_field_list);
+	dealloc_chara2_clist(iso_fld_c->iso_out_field_list);
     free(iso_fld_c);
 	
 	return;

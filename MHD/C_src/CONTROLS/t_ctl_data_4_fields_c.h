@@ -43,7 +43,7 @@ struct all_field_ctl_c{
 /* prototype */
 void get_label_field_ctl(int index, char *label);
 
-void alloc_field_ctl_c(struct field_ctl_c *fld_ctl);
+struct field_ctl_c * init_field_ctl_c();
 void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl);
 void read_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct field_ctl_c *fld_ctl);

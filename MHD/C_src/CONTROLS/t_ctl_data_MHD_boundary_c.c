@@ -46,24 +46,15 @@ void get_label_MHD_surf_bc_ctl(int index, char *label){
 
 
 static void alloc_MHD_bc_ctl_c(struct MHD_boundary_ctl_c *nod_bc_ctl){
-    nod_bc_ctl->bc_T_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_U_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_P_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_C_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_B_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_MP_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_A_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_J_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    nod_bc_ctl->bc_infty_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-    init_chara2_real_clist(nod_bc_ctl->bc_T_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_U_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_P_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_C_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_B_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_MP_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_A_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_J_ctl);
-    init_chara2_real_clist(nod_bc_ctl->bc_infty_ctl);
+    nod_bc_ctl->bc_T_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_U_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_P_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_C_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_B_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_MP_ctl =    init_chara2_real_clist();
+    nod_bc_ctl->bc_A_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_J_ctl =     init_chara2_real_clist();
+    nod_bc_ctl->bc_infty_ctl = init_chara2_real_clist();
     return;
 };
 
@@ -105,24 +96,15 @@ struct MHD_boundary_ctl_c * init_MHD_surf_bc_ctl_c(){
 
 void dealloc_MHD_boundary_ctl_c(struct MHD_boundary_ctl_c *bc_ctl){
 	
-	clear_chara2_real_clist(bc_ctl->bc_T_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_U_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_P_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_C_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_B_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_MP_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_A_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_J_ctl);
-	clear_chara2_real_clist(bc_ctl->bc_infty_ctl);
-    free(bc_ctl->bc_T_ctl);
-    free(bc_ctl->bc_U_ctl);
-    free(bc_ctl->bc_P_ctl);
-    free(bc_ctl->bc_C_ctl);
-    free(bc_ctl->bc_B_ctl);
-    free(bc_ctl->bc_MP_ctl);
-    free(bc_ctl->bc_A_ctl);
-    free(bc_ctl->bc_J_ctl);
-    free(bc_ctl->bc_infty_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_T_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_U_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_P_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_C_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_B_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_MP_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_A_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_J_ctl);
+	dealloc_chara2_real_clist(bc_ctl->bc_infty_ctl);
 
     free(bc_ctl);
 	return;

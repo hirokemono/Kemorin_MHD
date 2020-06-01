@@ -299,22 +299,32 @@ static void set_from_chara3_ctl_list_at_c_tbl(char *ref_1, char *ref_2, char *re
 
 
 
-void init_chara3_clist(struct chara3_clist *c3_clst){
+struct chara3_clist * init_chara3_clist(){
+    struct chara3_clist *c3_clst;
+    if((c3_clst = (struct chara3_clist *) malloc(sizeof(struct chara3_clist))) == NULL) {
+        printf("malloc error for chara3_clist\n");
+        exit(0);
+    }
 	init_chara3_ctl_list(&c3_clst->c3_item_head);
 
     c3_clst->clist_name = (char *)calloc(32,sizeof(char));
     c3_clst->c1_name = (char *)calloc(32,sizeof(char));
     c3_clst->c2_name = (char *)calloc(32,sizeof(char));
     c3_clst->c3_name = (char *)calloc(32,sizeof(char));
+    return c3_clst;
 };
-void clear_chara3_clist(struct chara3_clist *c3_clst){
+
+void dealloc_chara3_clist(struct chara3_clist *c3_clst){
 	clear_chara3_ctl_list(&c3_clst->c3_item_head);
 
     free(c3_clst->clist_name);
     free(c3_clst->c1_name);
     free(c3_clst->c2_name);
     free(c3_clst->c3_name);
+    free(c3_clst);
+    return;
 };
+
 int count_chara3_clist(struct chara3_clist *c3_clst){
 	 return count_chara3_ctl_list(&c3_clst->c3_item_head);
 };

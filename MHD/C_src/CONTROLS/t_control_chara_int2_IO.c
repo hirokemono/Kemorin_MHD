@@ -286,23 +286,30 @@ static void set_from_chara_int2_ctl_list_at_c_tbl(char *ref, struct chara_int2_c
 };
 
 
-void init_chara_int2_clist(struct chara_int2_clist *ci2_clst){
+struct chara_int2_clist * init_chara_int2_clist(){
+    struct chara_int2_clist *ci2_clst;
+    if((ci2_clst = (struct chara_int2_clist *) malloc(sizeof(struct chara_int2_clist))) == NULL){
+        printf("malloc error for chara_int2_clist\n");
+        exit(0);
+    }
     init_chara_int2_ctl_list(&ci2_clst->ci2_item_head);
 
     ci2_clst->clist_name = (char *)calloc(32,sizeof(char));
     ci2_clst->c1_name = (char *)calloc(32,sizeof(char));
     ci2_clst->i1_name = (char *)calloc(32,sizeof(char));
     ci2_clst->i2_name = (char *)calloc(32,sizeof(char));
-    return;
+    return ci2_clst;
 };
-void clear_chara_int2_clist(struct chara_int2_clist *ci2_clst){
+void dealloc_chara_int2_clist(struct chara_int2_clist *ci2_clst){
     clear_chara_int2_ctl_list(&ci2_clst->ci2_item_head);
     
     free(ci2_clst->clist_name);
     free(ci2_clst->c1_name);
     free(ci2_clst->i1_name);
     free(ci2_clst->i2_name);
-    return;
+
+    free(ci2_clst);
+	return;
 };
 int count_chara_int2_clist(struct chara_int2_clist *ci2_clst){
     return count_chara_int2_ctl_list(&ci2_clst->ci2_item_head);

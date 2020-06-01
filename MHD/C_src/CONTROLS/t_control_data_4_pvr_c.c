@@ -81,10 +81,9 @@ struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c(){
 		};
 	};
 	
-    area_c->pvr_area_list = (struct chara_clist *) malloc(sizeof(struct chara_clist));
-	init_chara_clist(area_c->pvr_area_list);
-    area_c->surf_enhanse_ctl = (struct chara2_real_clist *) malloc(sizeof(struct chara2_real_clist));
-	init_chara2_real_clist(area_c->surf_enhanse_ctl);
+    area_c->pvr_area_list =init_chara_clist();
+    area_c->surf_enhanse_ctl = init_chara2_real_clist();
+    
     sprintf(area_c->surf_enhanse_ctl->c1_name, "Group_name");
     sprintf(area_c->surf_enhanse_ctl->c2_name, "Direction");
     sprintf(area_c->surf_enhanse_ctl->r1_name, "Opacity");
@@ -94,10 +93,8 @@ struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c(){
 
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c){
 	
-	clear_chara_clist(area_c->pvr_area_list);
-    free(area_c->pvr_area_list);
-	clear_chara2_real_clist(area_c->surf_enhanse_ctl);
-    free(area_c->surf_enhanse_ctl);
+	dealloc_chara_clist(area_c->pvr_area_list);
+	dealloc_chara2_real_clist(area_c->surf_enhanse_ctl);
     free(area_c);
 	return;
 };

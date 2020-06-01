@@ -75,7 +75,6 @@ void get_label_sphere_domain_ctl(int index, char *label);
 void get_label_sphere_data_ctl(int index, char *label);
 
 struct chara_int_clist * init_ndomain_list_c();
-void dealloc_ndomain_list_c(struct chara_int_clist *ndomain_list);
 
 struct sphere_domain_ctl_c * init_sphere_domain_ctl_c();
 void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c);

@@ -57,8 +57,8 @@ void set_from_chara3_ctl_item_c(struct chara3_ctl_item *c3_item,
                               char *c1_out, char *c2_out, char *c3_out);
 
 
-void init_chara3_clist(struct chara3_clist *c3_clst);
-void clear_chara3_clist(struct chara3_clist *c3_clst);
+struct chara3_clist * init_chara3_clist();
+void dealloc_chara3_clist(struct chara3_clist *c3_clst);
 int count_chara3_clist(struct chara3_clist *c3_clst);
 
 int read_chara3_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

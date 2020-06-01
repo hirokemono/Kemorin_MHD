@@ -57,24 +57,11 @@ void get_label_sphere_data_ctl(int index, char *label){
 };
 
 struct chara_int_clist * init_ndomain_list_c(){
-    struct chara_int_clist *ndomain_list;
-    if((ndomain_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist))) == NULL) {
-        printf("malloc error for chara_int_clist \n");
-        exit(0);
-    }
-    
-	init_chara_int_clist(ndomain_list);
+    struct chara_int_clist *ndomain_list = init_chara_int_clist();
     sprintf(ndomain_list->c1_name, "Direction");
     sprintf(ndomain_list->i1_name, "Value");
 	
 	return ndomain_list;
-};
-
-void dealloc_ndomain_list_c(struct chara_int_clist *ndomain_list){
-	clear_chara_int_clist(ndomain_list);
-    free(ndomain_list);
-	
-	return;
 };
 
 struct sphere_domain_ctl_c * init_sphere_domain_ctl_c(){
@@ -112,9 +99,9 @@ void dealloc_sphere_domain_ctl_c(struct sphere_domain_ctl_c *sdctl_c){
 	free(sdctl_c->num_radial_domain_c);
 	free(sdctl_c->num_horiz_domain_c);
 	
-	dealloc_ndomain_list_c(sdctl_c->ndomain_sph_grid_list);
-	dealloc_ndomain_list_c(sdctl_c->ndomain_legendre_list);
-	dealloc_ndomain_list_c(sdctl_c->ndomain_spectr_list);
+	dealloc_chara_int_clist(sdctl_c->ndomain_sph_grid_list);
+	dealloc_chara_int_clist(sdctl_c->ndomain_legendre_list);
+	dealloc_chara_int_clist(sdctl_c->ndomain_spectr_list);
 	
     free(sdctl_c);
 	return;
@@ -190,8 +177,7 @@ struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
     sprintf(spctl_c->radius_list->i1_name, "Radial_ID");
     sprintf(spctl_c->radius_list->r1_name, "Radious");
     
-    spctl_c->radial_grp_list = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist));
-	init_chara_int_clist(spctl_c->radial_grp_list);
+    spctl_c->radial_grp_list = init_chara_int_clist();
     sprintf(spctl_c->radial_grp_list->c1_name, "Name");
     sprintf(spctl_c->radial_grp_list->i1_name, "Index");
 	
@@ -233,8 +219,7 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	
 	clear_int_real_clist(spctl_c->radius_list);
     free(spctl_c->radius_list);
-	clear_chara_int_clist(spctl_c->radial_grp_list);
-    free(spctl_c->radial_grp_list);
+	dealloc_chara_int_clist(spctl_c->radial_grp_list);
 	
 	dealloc_chara_ctl_item_c(spctl_c->radial_grid_type_c);
 	free(spctl_c->num_fluid_grid_c);

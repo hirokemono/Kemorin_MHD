@@ -61,8 +61,7 @@ struct mhd_model_control_c * init_mhd_model_control_c(){
         };
     };
     
-    model_ctl->fld_ctl = (struct field_ctl_c *) malloc(sizeof(struct field_ctl_c));
-	alloc_field_ctl_c(model_ctl->fld_ctl);
+    model_ctl->fld_ctl = init_field_ctl_c();
 	model_ctl->evo_ctl = init_mhd_evolution_ctl_c();
 	model_ctl->earea_ctl = init_mhd_evo_area_ctl_c();
 	
@@ -87,7 +86,6 @@ struct mhd_model_control_c * init_mhd_model_control_c(){
 
 void dealloc_mhd_model_control_c(struct mhd_model_control_c *model_ctl){
 	dealloc_field_ctl_c(model_ctl->fld_ctl);
-	free(model_ctl->fld_ctl);
 	dealloc_mhd_evolution_ctl_c(model_ctl->evo_ctl);
 	dealloc_mhd_evo_area_ctl_c(model_ctl->earea_ctl);
 	

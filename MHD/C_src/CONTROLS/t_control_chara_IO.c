@@ -288,20 +288,27 @@ static void set_from_chara_ctl_list_at_c_tbl(char *ref, struct chara_ctl_list *h
 };
 
 
-void init_chara_clist(struct chara_clist *c_clst){
+struct chara_clist * init_chara_clist(){
+    struct chara_clist *c_clst;
+    if((c_clst = (struct chara_clist *) malloc(sizeof(struct chara_clist))) == NULL) {
+        printf("malloc error for chara_clist\n");
+        exit(0);
+    }
+
     init_chara_ctl_list(&c_clst->c_item_head);
 
     c_clst->iflag_use = 0;
     c_clst->clist_name = (char *)calloc(32,sizeof(char));
     c_clst->c1_name = (char *)calloc(32,sizeof(char));
-    return;
+    return c_clst;
 };
-void clear_chara_clist(struct chara_clist *c_clst){
+void dealloc_chara_clist(struct chara_clist *c_clst){
     clear_chara_ctl_list(&c_clst->c_item_head);
     
     free(c_clst->clist_name);
     free(c_clst->c1_name);
-    c_clst->iflag_use = 0;
+
+    free(c_clst);
     return;
 };
 

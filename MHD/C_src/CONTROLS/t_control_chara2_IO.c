@@ -285,20 +285,29 @@ static void set_from_chara2_ctl_list_at_c_tbl(char *ref_1, char *ref_2,
 
 
 
-void init_chara2_clist(struct chara2_clist *c2_clst){
+struct chara2_clist * init_chara2_clist(){
+    struct chara2_clist *c2_clst;
+    if((c2_clst = (struct chara2_clist *) malloc(sizeof(struct chara2_clist))) == NULL) {
+        printf("malloc error for chara2_clist\n");
+        exit(0);
+    }
 	init_chara2_ctl_list(&c2_clst->c2_item_head);
 
     c2_clst->clist_name = (char *)calloc(32,sizeof(char));
     c2_clst->c1_name = (char *)calloc(32,sizeof(char));
     c2_clst->c2_name = (char *)calloc(32,sizeof(char));
+    return c2_clst;
 };
-void clear_chara2_clist(struct chara2_clist *c2_clst){
+void dealloc_chara2_clist(struct chara2_clist *c2_clst){
 	clear_chara2_ctl_list(&c2_clst->c2_item_head);
     
     free(c2_clst->clist_name);
     free(c2_clst->c1_name);
     free(c2_clst->c2_name);
+    free(c2_clst);
+    return;
 };
+
 int count_chara2_clist(struct chara2_clist *c2_clst){
 	 return count_chara2_ctl_list(&c2_clst->c2_item_head);
 };

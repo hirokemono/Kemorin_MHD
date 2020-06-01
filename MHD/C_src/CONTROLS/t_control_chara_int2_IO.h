@@ -71,8 +71,8 @@ int write_chara_int2_ctl_list(FILE *fp, int level, const char *label,
 void del_chara_int2_ctl_list_by_c_tbl(char *ref, struct chara_int2_ctl_list *head);
 
 
-void init_chara_int2_clist(struct chara_int2_clist *ci2_clst);
-void clear_chara_int2_clist(struct chara_int2_clist *ci2_clst);
+struct chara_int2_clist * init_chara_int2_clist();
+void dealloc_chara_int2_clist(struct chara_int2_clist *ci2_clst);
 int count_chara_int2_clist(struct chara_int2_clist *ci2_clst);
 
 int read_chara_int2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 
