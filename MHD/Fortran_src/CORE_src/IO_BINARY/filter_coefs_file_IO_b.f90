@@ -33,7 +33,10 @@
 !
       implicit none
 !
-      type(binary_IO_buffer), private :: bbuf_fcoef
+      integer(kind = kint), parameter :: id_read_fil =  21
+      integer(kind = kint), parameter :: id_write_fil = 22
+      type(binary_IO_buffer) :: bbuf_fcoef
+      private :: id_read_fil, id_write_fil, bbuf_fcoef
 !
       private :: read_3d_filter_stack_b, write_3d_filter_stack_b
       private :: read_3d_filter_weights_coef_b
@@ -61,6 +64,7 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
+      bbuf_fcoef%id_binary = id_read_fil
       call open_read_binary_file(file_name, id_rank, bbuf_fcoef)
       if(bbuf_fcoef%ierr_bin .ne. 0) goto 99
       call read_filter_geometry_b                                       &
@@ -74,7 +78,7 @@
      &   (bbuf_fcoef, filter_IO%filters)
 !
   99  continue
-      call close_binary_file
+      call close_binary_file(bbuf_fcoef)
       ierr = bbuf_fcoef%ierr_bin
 !
       end subroutine read_sorted_filter_coef_file_b
@@ -96,6 +100,7 @@
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
+      bbuf_fcoef%id_binary = id_write_fil
       call open_write_binary_file(file_name, bbuf_fcoef)
       if(bbuf_fcoef%ierr_bin .gt. 0) go to 99
       call write_filter_geometry_b                                      &
@@ -107,7 +112,7 @@
      &   (filter_IO%filters, bbuf_fcoef)
 !
   99  continue
-      call close_binary_file
+      call close_binary_file(bbuf_fcoef)
       ierr = bbuf_fcoef%ierr_bin
 !
       call dealloc_filter_geometry_data(filter_IO)
@@ -133,13 +138,14 @@
         write(*,*) 'Read binary filter file: ', trim(file_name)
       end if
 !
+      bbuf_fcoef%id_binary = id_read_fil
       call open_read_binary_file(file_name, id_rank, bbuf_fcoef)
       if(bbuf_fcoef%ierr_bin .ne. 0) goto 99
       call read_filter_geometry_b                                       &
      &   (id_rank, bbuf_fcoef, filter_IO%nod_comm, filter_IO%node)
 !
   99  continue
-      call close_binary_file
+      call close_binary_file(bbuf_fcoef)
       ierr = bbuf_fcoef%ierr_bin
 !
       end subroutine read_filter_geometry_file_b
@@ -162,13 +168,14 @@
         write(*,*) 'Write binary filter file: ', trim(file_name)
       end if
 !
+      bbuf_fcoef%id_binary = id_write_fil
       call open_write_binary_file(file_name, bbuf_fcoef)
       if(bbuf_fcoef%ierr_bin .gt. 0) go to 99
       call write_filter_geometry_b                                      &
      &   (id_rank, filter_IO%nod_comm, filter_IO%node, bbuf_fcoef)
 !
   99  continue
-      call close_binary_file
+      call close_binary_file(bbuf_fcoef)
       ierr = bbuf_fcoef%ierr_bin
 !
       call dealloc_filter_geometry_data(filter_IO)

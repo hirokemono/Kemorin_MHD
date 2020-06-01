@@ -293,13 +293,15 @@
       type(noise_cube), intent(in) :: nze
 !
       integer(kind = kint_gl), parameter :: ithree64 = 3
+      integer(kind = kint), parameter :: id_write_nze = 22
       type(binary_IO_buffer)  :: bbuf
 !
 !
+      bbuf%id_binary = id_write_nze
       call open_write_binary_file(file_name, bbuf)
       call write_mul_integer_b(ithree64, nze%nidx_xyz(1), bbuf)
       call write_mul_one_character_b(nze%n_cube, nze%cnoise, bbuf)
-      call close_binary_file
+      call close_binary_file(bbuf)
 !
       end subroutine write_3d_charanoise
 !
@@ -315,10 +317,12 @@
       type(noise_cube), intent(inout) :: nze
 !
       type(binary_IO_buffer)  :: bbuf
+      integer(kind = kint), parameter :: id_read_nze =  21
       integer(kind = kint) :: nx(3)
       integer(kind = kint_gl), parameter :: ithree64 = 3
 !
 !
+      bbuf%id_binary = id_read_nze
       call open_read_binary_file(file_name, my_rank, bbuf)
       call read_mul_integer_b(bbuf, ithree64, nx(1))
 !
@@ -326,7 +330,7 @@
       call alloc_3d_cube_noise_IO(nze)
 !
       call read_mul_one_character_b(bbuf, nze%n_cube, nze%cnoise)
-      call close_binary_file
+      call close_binary_file(bbuf)
 !
       end subroutine read_alloc_3d_charanoise
 !

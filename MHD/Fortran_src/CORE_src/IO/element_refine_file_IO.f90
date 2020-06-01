@@ -30,8 +30,13 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter, private :: id_refine_table = 19
-      type(binary_IO_buffer), private :: bbuf_rfin
+      integer(kind = kint), parameter :: id_refine_table = 19
+      integer(kind = kint), parameter :: id_read_rfin =  21
+      integer(kind = kint), parameter :: id_write_rfin = 22
+      type(binary_IO_buffer) :: bbuf_rfin
+!
+      private :: id_refine_table, id_read_rfin, id_write_rfin
+      private :: bbuf_rfin
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,6 +65,7 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
+        bbuf_rfin%id_binary = id_read_rfin
         call open_read_binary_file(refine_fname, id_rank, bbuf_rfin)
         if(bbuf_rfin%ierr_bin .ne. 0) goto 99
 !
@@ -79,7 +85,7 @@
         call read_element_refine_data_b(bbuf_rfin, e_ref_IO)
 !
   99    continue
-        call close_binary_file
+        call close_binary_file(bbuf_rfin)
         if(bbuf_rfin%ierr_bin .ne. 0) stop "Reading error"
       else
         write(*,*) 'element refine information: ',                      &
@@ -118,6 +124,7 @@
       if (ifile_type .eq. 1) then
         write(*,*) 'binary element refine information: ',               &
      &            trim(refine_fname)
+        bbuf_rfin%id_binary = id_write_rfin
         call open_write_binary_file(refine_fname, bbuf_rfin)
         if(bbuf_rfin%ierr_bin .gt. 0) go to 99
 !
@@ -135,7 +142,7 @@
         if(bbuf_rfin%ierr_bin .ne. 0) go to 99
 !
   99    continue
-        call close_binary_file
+        call close_binary_file(bbuf_rfin)
         ierr = bbuf_rfin%ierr_bin
       else
         write(*,*) 'element refine information: ',                      &

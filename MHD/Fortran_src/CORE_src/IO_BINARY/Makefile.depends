@@ -1,4 +1,4 @@
-binary_IO.o: $(BINARY_IO_DIR)/binary_IO.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_binary_IO_buffer.o set_parallel_file_name.o binary_file_access.o transfer_to_long_integers.o
+binary_IO.o: $(BINARY_IO_DIR)/binary_IO.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_binary_IO_buffer.o set_parallel_file_name.o transfer_to_long_integers.o
 	$(F90) -c $(F90FLAGS) $<
 domain_data_IO_b.o: $(BINARY_IO_DIR)/domain_data_IO_b.f90 m_precision.o t_comm_table.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<

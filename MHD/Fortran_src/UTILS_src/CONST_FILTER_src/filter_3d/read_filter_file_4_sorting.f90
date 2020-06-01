@@ -25,7 +25,10 @@
 !
       implicit none
 !
-      type(binary_IO_buffer), private :: bbuf_flt
+      integer(kind = kint), parameter :: id_read_filter =  21
+      type(binary_IO_buffer) :: bbuf_flt
+!
+      private :: id_read_filter, bbuf_flt
 !
       private :: set_num_filter_group_4_sort
       private :: count_num_neib_4_filter_sort
@@ -87,6 +90,7 @@
      &      fil_gen%nmax_nod_near_all_w)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
+        bbuf_flt%id_binary = id_read_filter
         call open_read_binary_file(file_name, id_rank, bbuf_flt)
         if(bbuf_flt%ierr_bin .ne. 0) goto 99
         call read_filter_geometry_b                                     &
@@ -110,7 +114,7 @@
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
 !
   99    continue
-        call close_binary_file
+        call close_binary_file(bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) stop "Error rading"
       end if
 !
@@ -160,6 +164,7 @@
      &      fil_gen%fil_coef, fil_gen%fil_sorted)
         close(filter_coef_code)
       else if( ifile_type .eq. 1) then
+        bbuf_flt%id_binary = id_read_filter
         call open_read_binary_file(file_name, id_rank, bbuf_flt)
         if(bbuf_flt%ierr_bin .ne. 0) goto 98
         call read_filter_geometry_b                                     &
@@ -181,7 +186,7 @@
      &      fil_gen%fil_coef, fil_gen%fil_sorted)
 !
   98    continue
-        call close_binary_file
+        call close_binary_file(bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) stop "Error rading"
       end if
 !

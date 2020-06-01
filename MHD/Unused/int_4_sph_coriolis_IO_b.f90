@@ -13,7 +13,11 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: id_read_cor =  21
+      integer(kind = kint), parameter :: id_write_cor = 22
       type(binary_IO_buffer), private :: bbuf_cor
+!
+      private :: bbuf_cor, id_read_cor, id_write_cor
 !
 ! -----------------------------------------------------------------------
 !
@@ -32,6 +36,7 @@
 !
       write(*,'(a,a)') 'Write tri-integration data file: ',             &
      &                trim(sph_cor_file_name)
+      bbuf_cor%id_binary = id_write_cor
       call open_write_binary_file(sph_cor_file_name, bbuf_cor)
       if(bbuf_cor%ierr_bin .gt. 0) go to 99
       call write_one_integer_b(ltr_cor_IO, bbuf_cor)
@@ -71,7 +76,7 @@
         if(bbuf_cor%ierr_bin .gt. 0) go to 99
       end do
   99  contninue
-      call close_binary_file
+      call close_binary_file(bbuf_cor)
       ierr = bbuf_cor%ierr_bin
 !
       call deallocate_int_sph_cor_IO
@@ -95,6 +100,7 @@
 !
       write(*,*) 'read integrals for coriolis: ',                       &
      &           trim(sph_cor_file_name)
+      bbuf_cor%id_binary = id_read_cor
       call open_read_binary_file                                        &
      &   (sph_cor_file_name, my_rank, bbuf_cor)
       if(bbuf_cor%ierr_bin .ne. 0) goto 99
@@ -140,7 +146,7 @@
       end do
 !
   99  continue
-      call close_binary_file
+      call close_binary_file(bbuf_cor)
       ierr = bbuf_cor%ierr_IO
 !
       end subroutine read_int_4_sph_coriolis_b

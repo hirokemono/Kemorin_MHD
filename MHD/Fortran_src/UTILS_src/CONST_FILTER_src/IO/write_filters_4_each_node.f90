@@ -28,7 +28,9 @@
 !
       implicit none
 !
-      type(binary_IO_buffer), private :: bbuf_flt
+      integer(kind = kint), parameter :: id_write_fil =  22
+      type(binary_IO_buffer) :: bbuf_flt
+      private :: id_write_fil, bbuf_flt
 !
 ! -----------------------------------------------------------------------
 !
@@ -57,13 +59,14 @@
         call write_filter_coef_4_each(filter_coef_code, fil_coef)
 !
       else if (ifmt_3d_filter .eq. iflag_bin) then
+        bbuf_flt%id_binary = id_write_fil
         call open_append_binary_file(file_name, bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
         call write_filter_coef_4_each_b(fil_coef, bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
 !
   99    continue
-        call close_binary_file
+        call close_binary_file(bbuf_flt)
         ierr = bbuf_flt%ierr_bin
       end if
 !
@@ -87,6 +90,7 @@
      &           inod, fil_coef%nnod_4_1nod_w, izero
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
+        bbuf_flt%id_binary = id_write_fil
         call open_append_binary_file(file_name, bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
         call write_one_integer_b(fil_coef%nnod_4_1nod_w, bbuf_flt)
@@ -95,7 +99,7 @@
         if(bbuf_flt%ierr_bin .ne. 0) go to 99
 !
   99    continue
-        call close_binary_file
+        call close_binary_file(bbuf_flt)
         ierr = bbuf_flt%ierr_bin
       end if
 !
@@ -123,6 +127,7 @@
      &          (fil_coef%nnod_4_1nod_w), fil_coef%ilevel_exp_1nod_w
         close(org_filter_coef_code)
       else if (ifmt_3d_filter .eq. iflag_bin) then
+        bbuf_flt%id_binary = id_write_fil
         call open_append_binary_file(file_name, bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
         call write_one_integer_b(-fil_coef%nnod_4_1nod_w, bbuf_flt)
@@ -131,7 +136,7 @@
         if(bbuf_flt%ierr_bin .gt. 0) go to 99
 !
   99    continue
-        call close_binary_file
+        call close_binary_file(bbuf_flt)
         ierr = bbuf_flt%ierr_bin
       end if
 !

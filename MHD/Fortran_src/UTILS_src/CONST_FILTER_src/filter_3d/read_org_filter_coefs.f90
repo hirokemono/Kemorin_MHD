@@ -21,9 +21,11 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private                          &
-      &                               :: id_org_filter_coef = 23
-      type(binary_IO_buffer), private :: bbuf_flt
+      integer(kind = kint), parameter :: id_org_filter_coef = 23
+      integer(kind = kint), parameter :: id_read_filter =  21
+      type(binary_IO_buffer) :: bbuf_flt
+!
+      private :: id_org_filter_coef, id_read_filter, bbuf_flt
 !
 !  ---------------------------------------------------------------------
 !
@@ -80,6 +82,7 @@
         close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
         write(*,*) 'binary coefficients file name: ', trim(file_name)
+        bbuf_flt%id_binary = id_read_filter
         call open_read_binary_file(file_name, id_rank, bbuf_flt)
         if(bbuf_flt%ierr_bin .ne. 0) goto 98
         call read_filter_geometry_b                                     &
@@ -91,7 +94,7 @@
      &     (bbuf_flt, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
   98    continue
-        call close_binary_file
+        call close_binary_file(bbuf_flt)
         if(bbuf_flt%ierr_bin .gt. 0) stop "Error rading"
       end if
 !
