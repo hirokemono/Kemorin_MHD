@@ -282,18 +282,24 @@ static void set_from_real3_ctl_list_at_c_tbl(double ref_1, double ref_2, double 
 };
 
 
-void init_real3_clist(struct real3_clist *r3_clst){
+struct real3_clist * init_real3_clist(){
+    struct real3_clist *r3_clst;
+    if((r3_clst = (struct real3_clist *) malloc(sizeof(struct real3_clist))) == NULL) {
+        printf("malloc error for real3_clist \n");
+        exit(0);
+    }
     init_real3_ctl_list(&r3_clst->r3_item_head);
 
     r3_clst->clist_name = (char *)calloc(32,sizeof(char));
     r3_clst->r1_name = (char *)calloc(32,sizeof(char));
     r3_clst->r2_name = (char *)calloc(32,sizeof(char));
     r3_clst->r3_name = (char *)calloc(32,sizeof(char));
-    return;
+    return r3_clst;
 };
 
-void clear_real3_clist(struct real3_clist *r3_clst){
+void dealloc_real3_clist(struct real3_clist *r3_clst){
     clear_real3_ctl_list(&r3_clst->r3_item_head);
+    free(r3_clst);
     return;
 };
 int count_real3_clist(struct real3_clist *r3_clst){

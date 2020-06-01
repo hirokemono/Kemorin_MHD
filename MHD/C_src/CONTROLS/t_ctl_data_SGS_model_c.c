@@ -251,8 +251,7 @@ struct layering_ctl_c * init_layering_ctl_c(){
     elayer_c->ngrp_SGS_on_sphere_c = init_int_ctl_item_c();
 	
     elayer_c->layer_grp_name_list = init_chara_clist();
-    elayer_c->igrp_stack_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-	init_int_clist(elayer_c->igrp_stack_layer_list);
+    elayer_c->igrp_stack_layer_list = init_int_clist();
     sprintf(elayer_c->igrp_stack_layer_list->i1_name, "Group_stack");
 	
 	return elayer_c;
@@ -266,8 +265,7 @@ void dealloc_layering_ctl_c(struct layering_ctl_c *elayer_c){
 	
 	dealloc_chara_clist(elayer_c->layer_grp_name_list);
 	
-	clear_int_clist(elayer_c->igrp_stack_layer_list);
-    free(elayer_c->igrp_stack_layer_list);
+	dealloc_int_clist(elayer_c->igrp_stack_layer_list);
 		
 	free(elayer_c->num_layering_grp_c);
 	free(elayer_c->num_fl_layer_grp_c);

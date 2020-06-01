@@ -267,21 +267,28 @@ static void copy_to_int_ctl_list(int num, int *iv1, struct int_ctl_list *head){
 
 
 
-
-void init_int_clist(struct int_clist *i_clst){
+struct int_clist * init_int_clist(){
+    struct int_clist *i_clst;
+    if((i_clst = (struct int_clist *) malloc(sizeof(struct int_clist))) == NULL) {
+        printf("malloc error for int_clist \n");
+        exit(0);
+    }
+    
     init_int_ctl_list(&i_clst->i_item_head);
     
     i_clst->clist_name = (char *)calloc(32,sizeof(char));
     i_clst->i1_name = (char *)calloc(32,sizeof(char));
-    return;
+    return i_clst;
 };
 
-void clear_int_clist(struct int_clist *i_clst){
+void dealloc_int_clist(struct int_clist *i_clst){
     clear_int_ctl_list(&i_clst->i_item_head);
 
     free(i_clst->clist_name);
     free(i_clst->i1_name);
-    return;
+
+    free(i_clst);
+	return;
 };
 int count_int_clist(struct int_clist *i_clst){
     return count_int_ctl_list(&i_clst->i_item_head);

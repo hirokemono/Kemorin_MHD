@@ -48,8 +48,8 @@ void update_real_ctl_item_c(double r1_in, struct real_ctl_item *r_item);
 void set_from_real_ctl_item_c(struct real_ctl_item *r_item, double *r1_out);
 
 
-void init_real_clist(struct real_clist *r_clst);
-void clear_real_clist(struct real_clist *r_clst);
+struct real_clist * init_real_clist();
+void dealloc_real_clist(struct real_clist *r_clst);
 int count_real_clist(struct real_clist *r_clst);
 
 int read_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

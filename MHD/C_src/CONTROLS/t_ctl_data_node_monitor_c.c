@@ -39,14 +39,12 @@ struct node_monitor_ctl_c * init_node_monitor_ctl_c(){
 	
     nmtr_ctl->group_4_monitor_list = init_chara_clist();
 
-    nmtr_ctl->xx_4_monitor_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
-    init_real3_clist(nmtr_ctl->xx_4_monitor_list);
+    nmtr_ctl->xx_4_monitor_list = init_real3_clist();
     sprintf(nmtr_ctl->xx_4_monitor_list->r1_name, "x");
     sprintf(nmtr_ctl->xx_4_monitor_list->r2_name, "y");
     sprintf(nmtr_ctl->xx_4_monitor_list->r3_name, "z");
     
-    nmtr_ctl->node_4_monitor_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
-    init_int2_clist(nmtr_ctl->node_4_monitor_list);
+    nmtr_ctl->node_4_monitor_list = init_int2_clist();
     sprintf(nmtr_ctl->node_4_monitor_list->i1_name, "Index");
     sprintf(nmtr_ctl->node_4_monitor_list->i2_name, "Node_ID");
     return nmtr_ctl;
@@ -54,10 +52,8 @@ struct node_monitor_ctl_c * init_node_monitor_ctl_c(){
 
 void dealloc_node_monitor_ctl_c(struct node_monitor_ctl_c *nmtr_ctl){
     dealloc_chara_clist(nmtr_ctl->group_4_monitor_list);
-    clear_real3_clist(nmtr_ctl->xx_4_monitor_list);
-    free(nmtr_ctl->xx_4_monitor_list);
-    clear_int2_clist(nmtr_ctl->node_4_monitor_list);
-    free(nmtr_ctl->node_4_monitor_list);
+    dealloc_real3_clist(nmtr_ctl->xx_4_monitor_list);
+    dealloc_int2_clist(nmtr_ctl->node_4_monitor_list);
 	
     free(nmtr_ctl);
     return;

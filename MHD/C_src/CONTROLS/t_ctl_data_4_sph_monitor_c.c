@@ -105,34 +105,28 @@ struct pick_spectr_control_c * init_pick_spectr_control_c(){
 	
 	pspec_ctl_c->picked_mode_head_c = init_chara_ctl_item_c();
 		
-    pspec_ctl_c->idx_pick_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-    init_int_clist(pspec_ctl_c->idx_pick_layer_list);
+    pspec_ctl_c->idx_pick_layer_list = init_int_clist();
     sprintf(pspec_ctl_c->idx_pick_layer_list->i1_name, "Radial_ID");
-    pspec_ctl_c->idx_pick_sph_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
-    init_int2_clist(pspec_ctl_c->idx_pick_sph_list);
+    
+    pspec_ctl_c->idx_pick_sph_list = init_int2_clist();
     sprintf(pspec_ctl_c->idx_pick_sph_list->i1_name, "Degree");
     sprintf(pspec_ctl_c->idx_pick_sph_list->i2_name, "Order");
 
-    pspec_ctl_c->idx_pick_sph_l_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-    pspec_ctl_c->idx_pick_sph_m_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-    init_int_clist(pspec_ctl_c->idx_pick_sph_l_list);
-    init_int_clist(pspec_ctl_c->idx_pick_sph_m_list);
+    pspec_ctl_c->idx_pick_sph_l_list = init_int_clist();
     sprintf(pspec_ctl_c->idx_pick_sph_l_list->i1_name, "Degree");
+
+    pspec_ctl_c->idx_pick_sph_m_list = init_int_clist();
     sprintf(pspec_ctl_c->idx_pick_sph_m_list->i1_name, "Order");
 	
 	return pspec_ctl_c;
 };
 
 void dealloc_pick_spectr_control_c(struct pick_spectr_control_c *pspec_ctl_c){
-    clear_int2_clist(pspec_ctl_c->idx_pick_sph_list);
-    free(pspec_ctl_c->idx_pick_sph_list);
+    dealloc_int2_clist(pspec_ctl_c->idx_pick_sph_list);
 
-    clear_int_clist(pspec_ctl_c->idx_pick_sph_l_list);
-    clear_int_clist(pspec_ctl_c->idx_pick_sph_m_list);
-    clear_int_clist(pspec_ctl_c->idx_pick_layer_list);
-    free(pspec_ctl_c->idx_pick_sph_l_list);
-    free(pspec_ctl_c->idx_pick_sph_m_list);
-    free(pspec_ctl_c->idx_pick_layer_list);
+    dealloc_int_clist(pspec_ctl_c->idx_pick_sph_l_list);
+    dealloc_int_clist(pspec_ctl_c->idx_pick_sph_m_list);
+    dealloc_int_clist(pspec_ctl_c->idx_pick_layer_list);
 	
     dealloc_chara_ctl_item_c(pspec_ctl_c->picked_mode_head_c);
     free(pspec_ctl_c);
@@ -196,29 +190,23 @@ struct gauss_spectr_control_c * init_gauss_spectr_control_c(){
 	g_pwr->gauss_coefs_prefix_c = init_chara_ctl_item_c();
     g_pwr->gauss_coefs_radius_c = init_real_ctl_item_c();
 	
-    g_pwr->idx_gauss_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
-	init_int2_clist(g_pwr->idx_gauss_list);
+    g_pwr->idx_gauss_list = init_int2_clist();
     sprintf(g_pwr->idx_gauss_list->i1_name, "Degree");
     sprintf(g_pwr->idx_gauss_list->i2_name, "Order");
 
-    g_pwr->idx_gauss_l_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-    g_pwr->idx_gauss_m_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-	init_int_clist(g_pwr->idx_gauss_l_list);
-	init_int_clist(g_pwr->idx_gauss_m_list);
+    g_pwr->idx_gauss_l_list = init_int_clist();
     sprintf(g_pwr->idx_gauss_l_list->i1_name, "Degree");
+    
+    g_pwr->idx_gauss_m_list = init_int_clist();
     sprintf(g_pwr->idx_gauss_m_list->i1_name, "Order");
 	
 	return g_pwr;
 };
 
 void dealloc_gauss_spectr_control_c(struct gauss_spectr_control_c *g_pwr){
-	clear_int2_clist(g_pwr->idx_gauss_list);
-    free(g_pwr->idx_gauss_list);
-
-    clear_int_clist(g_pwr->idx_gauss_l_list);
-	clear_int_clist(g_pwr->idx_gauss_m_list);
-    free(g_pwr->idx_gauss_l_list);
-    free(g_pwr->idx_gauss_m_list);
+	dealloc_int2_clist(g_pwr->idx_gauss_list);
+    dealloc_int_clist(g_pwr->idx_gauss_l_list);
+	dealloc_int_clist(g_pwr->idx_gauss_m_list);
 	
 	dealloc_chara_ctl_item_c(g_pwr->gauss_coefs_prefix_c);
     free(g_pwr);
@@ -285,15 +273,13 @@ struct layerd_spectr_control_c * init_layerd_spectr_control_c(){
 	lp_ctl->diff_lm_spectr_switch_c = init_chara_ctl_item_c();
 	lp_ctl->axis_spectr_switch_c = init_chara_ctl_item_c();
 	
-    lp_ctl->idx_spec_layer_list = (struct int_clist *) malloc(sizeof(struct int_clist));
-    init_int_clist(lp_ctl->idx_spec_layer_list);
+    lp_ctl->idx_spec_layer_list = init_int_clist();
     sprintf(lp_ctl->idx_spec_layer_list->i1_name, "Radial_ID");
 	return lp_ctl;
 };
 
 void dealloc_layerd_spectr_control_c(struct layerd_spectr_control_c *lp_ctl){
-    clear_int_clist(lp_ctl->idx_spec_layer_list);
-    free(lp_ctl->idx_spec_layer_list);
+    dealloc_int_clist(lp_ctl->idx_spec_layer_list);
 	
     dealloc_chara_ctl_item_c(lp_ctl->degree_spectr_switch_c);
     dealloc_chara_ctl_item_c(lp_ctl->order_spectr_switch_c);

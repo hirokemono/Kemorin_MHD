@@ -268,19 +268,28 @@ static void copy_to_real_ctl_list(int num, double *v1, struct real_ctl_list *hea
 	return;
 };
 
-void init_real_clist(struct real_clist *r_clst){
+
+struct real_clist * init_real_clist(){
+    struct real_clist *r_clst;
+    if((r_clst = (struct real_clist *) malloc(sizeof(struct real_clist))) == NULL) {
+        printf("malloc error for real_clist \n");
+        exit(0);
+    }
+    
 	init_real_ctl_list(&r_clst->r_item_head);
     
     r_clst->clist_name = (char *)calloc(32,sizeof(char));
     r_clst->r1_name = (char *)calloc(32,sizeof(char));
-	return;
+	return r_clst;
 };
 
-void clear_real_clist(struct real_clist *r_clst){
+void dealloc_real_clist(struct real_clist *r_clst){
     clear_real_ctl_list(&r_clst->r_item_head);
 
     free(r_clst->clist_name);
     free(r_clst->r1_name);
+
+    free(r_clst);
     return;
 };
 int count_real_clist(struct real_clist *r_clst){

@@ -333,7 +333,11 @@ static void dup_real2_ctl_list(struct real2_ctl_list *head_src,
 
 
 struct real2_clist * init_real2_clist(void){
-	struct real2_clist *r2_clst = (struct real2_clist *) malloc(sizeof(struct real2_clist));
+    struct real2_clist *r2_clst;
+    if((r2_clst = (struct real2_clist *) malloc(sizeof(struct real2_clist))) == NULL) {
+        printf("malloc error for real2_clist \n");
+        exit(0);
+    }
     init_real2_ctl_list(&r2_clst->r2_item_head);
     
     r2_clst->clist_name = (char *)calloc(32,sizeof(char));

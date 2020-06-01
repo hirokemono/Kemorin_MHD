@@ -48,8 +48,8 @@ void update_int_ctl_item_c(int index, struct int_ctl_item *i_item);
 int set_from_int_ctl_item_c(struct int_ctl_item *i_item);
 
 
-void init_int_clist(struct int_clist *i_clst);
-void clear_int_clist(struct int_clist *i_clst);
+struct int_clist * init_int_clist();
+void dealloc_int_clist(struct int_clist *i_clst);
 int count_int_clist(struct int_clist *i_clst);
 
 int read_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

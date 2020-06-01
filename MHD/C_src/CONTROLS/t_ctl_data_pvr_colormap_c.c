@@ -107,8 +107,7 @@ struct colormap_ctl_c * init_colormap_ctl_c(){
     sprintf(cmap_c->linear_opacity_list->r1_name, "data");
     sprintf(cmap_c->linear_opacity_list->r2_name, "opacity");
 
-    cmap_c->step_opacity_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
-	init_real3_clist(cmap_c->step_opacity_list);
+    cmap_c->step_opacity_list = init_real3_clist();
     sprintf(cmap_c->step_opacity_list->r1_name, "lower_value");
     sprintf(cmap_c->step_opacity_list->r2_name, "upper_value");
     sprintf(cmap_c->step_opacity_list->r3_name, "opacity");
@@ -136,8 +135,7 @@ void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c){
 	free(cmap_c->fix_opacity_ctl);
 	
 	dealloc_real2_clist(cmap_c->linear_opacity_list);
-	clear_real3_clist(cmap_c->step_opacity_list);
-    free(cmap_c->step_opacity_list);
+	dealloc_real3_clist(cmap_c->step_opacity_list);
 	
 	free(cmap_c->range_min_ctl);
 	free(cmap_c->range_max_ctl);
@@ -231,8 +229,7 @@ struct lighting_ctl_c * init_lighting_ctl_c(){
     light_c->diffuse_coef_ctl =  init_real_ctl_item_c();
     light_c->specular_coef_ctl = init_real_ctl_item_c();
 	
-    light_c->light_position_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
-	init_real3_clist(light_c->light_position_list);
+    light_c->light_position_list = init_real3_clist();
     sprintf(light_c->light_position_list->r1_name, "x");
     sprintf(light_c->light_position_list->r2_name, "y");
     sprintf(light_c->light_position_list->r3_name, "z");
@@ -245,8 +242,7 @@ void dealloc_lighting_ctl_c(struct lighting_ctl_c *light_c){
 	free(light_c->diffuse_coef_ctl);
 	free(light_c->specular_coef_ctl);
 	
-	clear_real3_clist(light_c->light_position_list);	
-    free(light_c->light_position_list);    
+	dealloc_real3_clist(light_c->light_position_list);	
 
     free(light_c);
     return;

@@ -279,22 +279,29 @@ static void copy_to_int2_ctl_list(int num, int *iv1, int *iv2,
 
 
 
-
-void init_int2_clist(struct int2_clist *i2_clst){
+struct int2_clist * init_int2_clist(){
+    struct int2_clist *i2_clst;
+    if((i2_clst = (struct int2_clist *) malloc(sizeof(struct int2_clist))) == NULL) {
+        printf("malloc error for int2_clist \n");
+        exit(0);
+    }
+    
     init_int2_ctl_list(&i2_clst->i2_item_head);
     
     i2_clst->clist_name = (char *)calloc(32,sizeof(char));
     i2_clst->i1_name = (char *)calloc(32,sizeof(char));
     i2_clst->i2_name = (char *)calloc(32,sizeof(char));
-    return;
+    return i2_clst;
 };
 
-void clear_int2_clist(struct int2_clist *i2_clst){
+void dealloc_int2_clist(struct int2_clist *i2_clst){
     clear_int2_ctl_list(&i2_clst->i2_item_head);
 
     free(i2_clst->clist_name);
     free(i2_clst->i1_name);
     free(i2_clst->i2_name);
+    
+    free(i2_clst);
     return;
 };
 int count_int2_clist(struct int2_clist *i2_clst){

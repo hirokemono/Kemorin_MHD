@@ -53,8 +53,8 @@ void set_from_int2_ctl_item_c(struct int2_ctl_item *i2_item,
 
 
 
-void init_int2_clist(struct int2_clist *i2_clst);
-void clear_int2_clist(struct int2_clist *i2_clst);
+struct int2_clist * init_int2_clist();
+void dealloc_int2_clist(struct int2_clist *i2_clst);
 int count_int2_clist(struct int2_clist *i2_clst);
 
 int read_int2_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

@@ -172,8 +172,7 @@ struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
     spctl_c->ngrid_elevation_c = init_int_ctl_item_c();
     spctl_c->ngrid_azimuth_c =   init_int_ctl_item_c();
 	
-    spctl_c->radius_list = (struct int_real_clist *) malloc(sizeof(struct int_real_clist));
-	init_int_real_clist(spctl_c->radius_list);
+    spctl_c->radius_list = init_int_real_clist();
     sprintf(spctl_c->radius_list->i1_name, "Radial_ID");
     sprintf(spctl_c->radius_list->r1_name, "Radious");
     
@@ -194,12 +193,11 @@ struct sphere_data_ctl_c * init_sphere_data_ctl_c(){
     spctl_c->num_radial_layer_c = init_int_ctl_item_c();
     spctl_c->num_med_layer_c =    init_int_ctl_item_c();
 	
-    spctl_c->radial_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
-    spctl_c->med_layer_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
-	init_int2_clist(spctl_c->radial_layer_list);
-	init_int2_clist(spctl_c->med_layer_list);
+    spctl_c->radial_layer_list = init_int2_clist();
     sprintf(spctl_c->radial_layer_list->i1_name, "Start_ID");
     sprintf(spctl_c->radial_layer_list->i2_name, "End_ID");
+
+    spctl_c->med_layer_list =    init_int2_clist();
     sprintf(spctl_c->med_layer_list->i1_name, "Start_ID");
     sprintf(spctl_c->med_layer_list->i2_name, "End_ID");
 	
@@ -217,8 +215,7 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	free(spctl_c->ngrid_elevation_c);
 	free(spctl_c->ngrid_azimuth_c);
 	
-	clear_int_real_clist(spctl_c->radius_list);
-    free(spctl_c->radius_list);
+	dealloc_int_real_clist(spctl_c->radius_list);
 	dealloc_chara_int_clist(spctl_c->radial_grp_list);
 	
 	dealloc_chara_ctl_item_c(spctl_c->radial_grid_type_c);
@@ -234,10 +231,8 @@ void dealloc_sphere_data_ctl_c(struct sphere_data_ctl_c *spctl_c){
 	free(spctl_c->num_radial_layer_c);
 	free(spctl_c->num_med_layer_c);
 	
-	clear_int2_clist(spctl_c->radial_layer_list);
-	clear_int2_clist(spctl_c->med_layer_list);
-    free(spctl_c->radial_layer_list);
-    free(spctl_c->med_layer_list);
+	dealloc_int2_clist(spctl_c->radial_layer_list);
+	dealloc_int2_clist(spctl_c->med_layer_list);
     
     free(spctl_c);
 	

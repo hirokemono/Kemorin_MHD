@@ -66,8 +66,8 @@ void copy_to_real3_ctl_list(int num, double *v1, double *v2, double *v3,
 			struct real3_ctl_list *head);
 
 
-void init_real3_clist(struct real3_clist *r3_clst);
-void clear_real3_clist(struct real3_clist *r3_clst);
+struct real3_clist * init_real3_clist();
+void dealloc_real3_clist(struct real3_clist *r3_clst);
 int count_real3_clist(struct real3_clist *r3_clst);
 
 int read_real3_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

@@ -281,21 +281,28 @@ static void copy_to_int_real_ctl_list(int num, int *iv1, double *v2,
 
 
 
-void init_int_real_clist(struct int_real_clist *ir_clst){
+struct int_real_clist * init_int_real_clist(){
+    struct int_real_clist *ir_clst;
+    if((ir_clst = (struct int_real_clist *) malloc(sizeof(struct int_real_clist))) == NULL) {
+        printf("malloc error for int_real_clist \n");
+        exit(0);
+    }
     init_int_real_ctl_list(&ir_clst->ir_item_head);
     
     ir_clst->clist_name = (char *)calloc(32,sizeof(char));
     ir_clst->i1_name = (char *)calloc(32,sizeof(char));
     ir_clst->r1_name = (char *)calloc(32,sizeof(char));
-    return;
+    return ir_clst;
 };
 
-void clear_int_real_clist(struct int_real_clist *ir_clst){
+void dealloc_int_real_clist(struct int_real_clist *ir_clst){
     clear_int_real_ctl_list(&ir_clst->ir_item_head);
     
     free(ir_clst->clist_name);
     free(ir_clst->i1_name);
     free(ir_clst->r1_name);
+
+    free(ir_clst);
     return;
 };
 int count_int_real_clist(struct int_real_clist *ir_clst){

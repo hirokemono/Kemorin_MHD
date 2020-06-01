@@ -22,8 +22,7 @@ struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights)
 
 	struct lightparams_view *light_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
 	light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
-	light_vws->light_rtp_vws->r3_clist_gtk = (struct real3_clist *) malloc(sizeof(struct real3_clist));
-	init_real3_clist(light_vws->light_rtp_vws->r3_clist_gtk);
+	light_vws->light_rtp_vws->r3_clist_gtk = init_real3_clist();
 	
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->clist_name, "Ligut position");
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->r1_name, "radius");

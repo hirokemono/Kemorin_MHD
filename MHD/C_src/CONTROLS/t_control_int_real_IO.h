@@ -54,8 +54,8 @@ void set_from_int_real_ctl_item_c(struct int_real_ctl_item *ir_item,
 
 
 
-void init_int_real_clist(struct int_real_clist *ir_clst);
-void clear_int_real_clist(struct int_real_clist *ir_clst);
+struct int_real_clist * init_int_real_clist();
+void dealloc_int_real_clist(struct int_real_clist *ir_clst);
 int count_int_real_clist(struct int_real_clist *ir_clst);
 
 int read_int_real_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

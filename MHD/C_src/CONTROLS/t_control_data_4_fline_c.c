@@ -71,14 +71,12 @@ struct fline_ctl_c * init_fline_ctl_c(){
     fline_c->num_fieldline_ctl =     init_int_ctl_item_c();
     fline_c->max_line_stepping_ctl = init_int_ctl_item_c();
 	
-    fline_c->seed_point_list = (struct real3_clist *) malloc(sizeof(struct real3_clist));
-	init_real3_clist(fline_c->seed_point_list);
+    fline_c->seed_point_list = init_real3_clist();
     sprintf(fline_c->seed_point_list->r1_name, "x");
     sprintf(fline_c->seed_point_list->r2_name, "y");
     sprintf(fline_c->seed_point_list->r3_name, "z");
 
-    fline_c->seed_surface_list = (struct int2_clist *) malloc(sizeof(struct int2_clist));
-	init_int2_clist(fline_c->seed_surface_list);
+    fline_c->seed_surface_list = init_int2_clist();
     sprintf(fline_c->seed_surface_list->i1_name, "Element_ID");
     sprintf(fline_c->seed_surface_list->i2_name, "Surface_ID");
 	
@@ -104,10 +102,8 @@ void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c){
 	free(fline_c->num_fieldline_ctl);
 	free(fline_c->max_line_stepping_ctl);
 	
-	clear_real3_clist(fline_c->seed_point_list);
-    free(fline_c->seed_point_list);
-	clear_int2_clist(fline_c->seed_surface_list);
-    free(fline_c->seed_surface_list);
+	dealloc_real3_clist(fline_c->seed_point_list);
+	dealloc_int2_clist(fline_c->seed_surface_list);
 	
 	free(fline_c);
 	return;
