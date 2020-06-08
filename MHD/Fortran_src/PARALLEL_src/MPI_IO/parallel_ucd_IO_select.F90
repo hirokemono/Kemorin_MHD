@@ -118,7 +118,7 @@
      &             ucd_param%iflag_format, my_rank, istep_ucd)
       end if
 !
-      if      (ucd_param%iflag_format .eq. iflag_sgl_vtk) then
+      if(ucd_param%iflag_format .eq. iflag_sgl_vtk) then
         call write_vtk_file_mpi(file_name, ucd, m_ucd)
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtd) then
         call write_vtk_phys_mpi(file_name, ucd, m_ucd)
@@ -127,7 +127,21 @@
       else if (ucd_param%iflag_format .eq. iflag_sgl_udt) then
         call write_ucd_phys_mpi(file_name, ucd, m_ucd)
 !
+      else if(ucd_param%iflag_format .eq. iflag_ucd_bin                 &
+     &   .or. ucd_param%iflag_format .eq. iflag_sgl_ucd_bin) then
+        call write_ucd_file_mpi_b(file_name, ucd, m_ucd)
+      else if(ucd_param%iflag_format .eq. iflag_udt_bin                 &
+     &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin) then
+        call write_ucd_phys_mpi_b(file_name, ucd, m_ucd)
+!
 #ifdef ZLIB_IO
+      else if(ucd_param%iflag_format .eq. iflag_ucd_bin_gz              &
+     &   .or. ucd_param%iflag_format .eq. iflag_sgl_ucd_bin_gz) then
+        call gz_write_ucd_file_mpi_b(file_name, ucd, m_ucd)
+      else if(ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
+     &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin_gz) then
+        call gz_write_ucd_phys_mpi_b(file_name, ucd, m_ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtk_gz) then
         call gz_write_vtk_file_mpi(file_name, ucd, m_ucd)
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtd_gz) then
@@ -201,7 +215,15 @@
       else if(ucd_param%iflag_format .eq. iflag_sgl_udt) then
         call write_ucd_grid_mpi(file_name, ucd, m_ucd)
 !
+      else if(ucd_param%iflag_format .eq. iflag_udt_bin                 &
+     &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin) then
+        call write_ucd_grid_mpi_b(file_name, ucd, m_ucd)
+!
 #ifdef ZLIB_IO
+      else if(ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
+     &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin_gz) then
+        call gz_write_ucd_grid_mpi_b(file_name, ucd, m_ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtd_gz) then
         call gz_write_vtk_grid_mpi(file_name, ucd, m_ucd)
       else if(ucd_param%iflag_format .eq. iflag_sgl_udt_gz) then

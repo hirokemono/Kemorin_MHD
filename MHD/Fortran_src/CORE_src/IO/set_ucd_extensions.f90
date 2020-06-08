@@ -14,6 +14,13 @@
 !!      character(len = kchara) function add_grd_extension(file_head)
 !!                put ".grd" at the end
 !!
+!!      character(len = kchara) function add_ucb_extension(file_head)
+!!                put ".inb" at the end
+!!      character(len = kchara) function add_udb_extension(file_head)
+!!                put ".udb" at the end
+!!      character(len = kchara) function add_grb_extension(file_head)
+!!                put ".grb" at the end
+!!
 !!      character(len = kchara) function add_pvtk_extension(file_head)
 !!                put ".pvtk" at the end
 !!      character(len = kchara) function add_vtk_extension(file_head)
@@ -55,6 +62,10 @@
       character(len=3), parameter, private :: udt_ext = "udt"
       character(len=3), parameter, private :: grd_ext = "grd"
 !
+      character(len=3), parameter, private :: inb_ext = "inb"
+      character(len=3), parameter, private :: udb_ext = "udb"
+      character(len=3), parameter, private :: grb_ext = "grb"
+!
       character(len=3), parameter, private :: vtk_ext = "vtk"
       character(len=3), parameter, private :: vtd_ext = "vtd"
       character(len=3), parameter, private :: vtg_ext = "vtg"
@@ -92,6 +103,37 @@
       add_grd_extension = add_3chara_extension(file_head, grd_ext)
 !
       end function add_grd_extension
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function add_ucb_extension(file_head)
+!
+      character(len=kchara), intent(in) :: file_head
+!
+      add_ucb_extension = add_3chara_extension(file_head, inb_ext)
+!
+      end function add_ucb_extension
+!
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function add_udb_extension(file_head)
+!
+      character(len=kchara), intent(in) :: file_head
+!
+      add_udb_extension = add_3chara_extension(file_head, udb_ext)
+!
+      end function add_udb_extension
+!
+!-----------------------------------------------------------------------
+!
+      character(len = kchara) function add_grb_extension(file_head)
+!
+      character(len=kchara), intent(in) :: file_head
+!
+      add_grb_extension = add_3chara_extension(file_head, grb_ext)
+!
+      end function add_grb_extension
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

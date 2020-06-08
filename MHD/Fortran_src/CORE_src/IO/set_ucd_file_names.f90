@@ -112,6 +112,10 @@
         fname_tmp = add_ucd_extension(file_name)
       else if(mod(itype_file,icent)/iten .eq. iflag_udt/iten) then
         fname_tmp = add_udt_extension(file_name)
+      else if(mod(itype_file,icent)/iten .eq. iflag_ucd_bin/iten) then
+        fname_tmp = add_ucb_extension(file_name)
+      else if(mod(itype_file,icent)/iten .eq. iflag_udt_bin/iten) then
+        fname_tmp = add_udb_extension(file_name)
       else
         fname_tmp = add_fld_extension(file_name)
       end if
