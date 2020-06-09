@@ -78,8 +78,10 @@
 !
 !   set fiale name
 !
+      call init_field_type_flags
       call choose_ucd_file_format(pu_plt%field_file_fmt_ctl%charavalue, &
      &    pu_plt%field_file_fmt_ctl%iflag, ifmt_result_udt_file)
+      call dealloc_field_type_flags
 !
       if(prod_ctl%product_udt_1_head_ctl%iflag .ne. 0) then
         prod1_ucd_param%file_prefix                                     &

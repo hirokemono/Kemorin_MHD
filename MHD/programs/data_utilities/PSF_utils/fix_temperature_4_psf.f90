@@ -62,8 +62,10 @@
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
 !
+      call init_field_type_flags
       call choose_ucd_file_format                                       &
      &   (psf_format, ione, psf_file_param%iflag_format)
+      call dealloc_field_type_flags
 !
       call load_psf_data_to_link_IO                                     &
      &   (istep_start, psf_file_param, psf_u, psf_ucd)
