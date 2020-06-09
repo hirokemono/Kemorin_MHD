@@ -82,9 +82,9 @@
         ucd_param%file_prefix = file_prefix_ctl%charavalue
       end if
 !
-      call choose_para_fld_file_format                                  &
-     &   (file_format_ctl%charavalue, file_format_ctl%iflag,            &
-     &    ucd_param%iflag_format)
+      ucd_param%iflag_format                                            &
+     &        = choose_para_fld_file_format(file_format_ctl%charavalue, &
+     &                                      file_format_ctl%iflag)
 !
       end subroutine set_merged_ucd_file_ctl
 !
@@ -243,66 +243,5 @@
       end subroutine sel_write_parallel_ucd_mesh
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine choose_para_fld_file_format(file_fmt_ctl, i_file_fmt,  &
-     &          id_field_file_format)
-!
-      use skip_comment_f
-!
-      integer(kind= kint), intent(in) :: i_file_fmt
-      character(len=kchara), intent(in) :: file_fmt_ctl
-      integer(kind= kint), intent(inout) :: id_field_file_format
-!
-!
-      call init_mgd_field_type_flags
-!
-      if (i_file_fmt .eq. 0) then
-        id_field_file_format = iflag_sgl_vtk
-        return
-      end if
-!
-      if     (check_mul_flags(file_fmt_ctl, mgd_ucd_labels)) then
-           id_field_file_format = iflag_sgl_udt
-      else if(check_mul_flags(file_fmt_ctl, mgd_udt_gz_labels)) then
-           id_field_file_format = iflag_sgl_udt_gz
-!
-      else if(check_mul_flags(file_fmt_ctl, mgd_ucd_labels)) then
-           id_field_file_format = iflag_sgl_ucd
-      else if(check_mul_flags(file_fmt_ctl, mgd_ucd_gz_labels)) then
-           id_field_file_format = iflag_sgl_ucd_gz
-!
-      else if(check_mul_flags(file_fmt_ctl, mgd_vtd_labels)) then
-           id_field_file_format = iflag_sgl_vtd
-      else if(check_mul_flags(file_fmt_ctl, mgd_vtd_gz_labels)) then
-           id_field_file_format = iflag_sgl_vtd_gz
-!
-      else if(check_mul_flags(file_fmt_ctl, mgd_vtk_labels)) then
-           id_field_file_format = iflag_sgl_vtk
-      else if(check_mul_flags(file_fmt_ctl, mgd_vtk_gz_labels)) then
-           id_field_file_format = iflag_sgl_vtk_gz
-!
-      else if(check_mul_flags(file_fmt_ctl, mgd_iso_labels)) then
-           id_field_file_format = iflag_sgl_ucd_bin
-      else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)) then
-           id_field_file_format = iflag_sgl_ucd_bin_gz
-!
-      else if(check_mul_flags(file_fmt_ctl, mgd_psf_labels)) then
-           id_field_file_format = iflag_sgl_udt_bin
-      else if(check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)) then
-           id_field_file_format = iflag_sgl_udt_bin_gz
-!
-      else if(check_mul_flags(file_fmt_ctl, mgd_hdf_labels)) then
-           id_field_file_format = iflag_sgl_hdf5
-!
-      else
-        call choose_ucd_file_format(file_fmt_ctl, i_file_fmt,           &
-     &          id_field_file_format)
-      end if
-      call dealloc_mgd_field_type_flags
-!
-      end subroutine choose_para_fld_file_format
-!
-! -----------------------------------------------------------------------
 !
       end module parallel_ucd_IO_select

@@ -8,8 +8,10 @@
 !!
 !!
 !!@verbatim
-!!      subroutine choose_ucd_file_format(file_fmt_ctl, i_file_fmt,     &
-!!     &          id_field_file_format)
+!!      integer(kind = kint) function choose_para_fld_file_format       &
+!!     &                            (file_fmt_ctl, i_file_fmt)
+!!      integer(kind = kint) function choose_ucd_file_format            &
+!!     &                            (file_fmt_ctl, i_file_fmt)
 !!      subroutine input_ucd_file_format_code(iflag_psf_fmt, file_head)
 !!
 !! ------------------------------------------------------------------
@@ -157,59 +159,117 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine choose_ucd_file_format(file_fmt_ctl, i_file_fmt,       &
-     &          id_field_file_format)
+      integer(kind = kint) function choose_para_fld_file_format         &
+     &                            (file_fmt_ctl, i_file_fmt)
 !
       use skip_comment_f
 !
       integer(kind= kint), intent(in) :: i_file_fmt
       character(len=kchara), intent(in) :: file_fmt_ctl
-      integer(kind= kint), intent(inout) :: id_field_file_format
+!
+!
+      call init_mgd_field_type_flags
+!
+      if (i_file_fmt .eq. 0) then
+        choose_para_fld_file_format = iflag_sgl_vtk
+        return
+      end if
+!
+      if     (check_mul_flags(file_fmt_ctl, mgd_udt_labels)) then
+        choose_para_fld_file_format = iflag_sgl_udt
+      else if(check_mul_flags(file_fmt_ctl, mgd_udt_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_udt_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_ucd_labels)) then
+        choose_para_fld_file_format = iflag_sgl_ucd
+      else if(check_mul_flags(file_fmt_ctl, mgd_ucd_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_ucd_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtd_labels)) then
+        choose_para_fld_file_format = iflag_sgl_vtd
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtd_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_vtd_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtk_labels)) then
+        choose_para_fld_file_format = iflag_sgl_vtk
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtk_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_vtk_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_iso_labels)) then
+        choose_para_fld_file_format = iflag_sgl_ucd_bin
+      else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_ucd_bin_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_psf_labels)) then
+        choose_para_fld_file_format = iflag_sgl_udt_bin
+      else if(check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_udt_bin_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_hdf_labels)) then
+        choose_para_fld_file_format = iflag_sgl_hdf5
+!
+      else
+        choose_para_fld_file_format                                     &
+     &        = choose_ucd_file_format(file_fmt_ctl, i_file_fmt)
+      end if
+      call dealloc_mgd_field_type_flags
+!
+      end function choose_para_fld_file_format
+!
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function choose_ucd_file_format              &
+     &                            (file_fmt_ctl, i_file_fmt)
+!
+      use skip_comment_f
+!
+      integer(kind= kint), intent(in) :: i_file_fmt
+      character(len=kchara), intent(in) :: file_fmt_ctl
 !
 !
       if (i_file_fmt .eq. 0) then
-        id_field_file_format = iflag_fld
+        choose_ucd_file_format = iflag_fld
         return
       end if
 !
       if     (check_mul_flags(file_fmt_ctl, field_ascii_labels)) then
-           id_field_file_format = iflag_fld
+           choose_ucd_file_format = iflag_fld
       else if(check_mul_flags(file_fmt_ctl, field_gz_labels)) then
-           id_field_file_format = iflag_fld + iflag_gzip
+           choose_ucd_file_format = iflag_fld + iflag_gzip
       else if(check_mul_flags(file_fmt_ctl, udt_flags)) then
-           id_field_file_format = iflag_udt
+           choose_ucd_file_format = iflag_udt
       else if(check_mul_flags(file_fmt_ctl, udt_gz_flags)) then
-           id_field_file_format = iflag_udt + iflag_gzip
+           choose_ucd_file_format = iflag_udt + iflag_gzip
 !
       else if(check_mul_flags(file_fmt_ctl, ucd_flags)) then
-           id_field_file_format = iflag_ucd
+           choose_ucd_file_format = iflag_ucd
       else if(check_mul_flags(file_fmt_ctl, ucd_gz_flags)) then
-           id_field_file_format = iflag_ucd + iflag_gzip
+           choose_ucd_file_format = iflag_ucd + iflag_gzip
 !
       else if(check_mul_flags(file_fmt_ctl, vtd_flags)) then
-           id_field_file_format = iflag_vtd
+           choose_ucd_file_format = iflag_vtd
       else if(check_mul_flags(file_fmt_ctl, vtd_gz_flags)) then
-           id_field_file_format = iflag_vtd + iflag_gzip
+           choose_ucd_file_format = iflag_vtd + iflag_gzip
 !
       else if(check_mul_flags(file_fmt_ctl, vtk_flags)) then
-           id_field_file_format = iflag_vtk
+           choose_ucd_file_format = iflag_vtk
       else if(check_mul_flags(file_fmt_ctl, vtk_gz_flags)) then
-           id_field_file_format = iflag_vtk + iflag_gzip
+           choose_ucd_file_format = iflag_vtk + iflag_gzip
 !
       else if(check_mul_flags(file_fmt_ctl, iso_flags)) then
-           id_field_file_format = iflag_ucd_bin
+           choose_ucd_file_format = iflag_ucd_bin
       else if(check_mul_flags(file_fmt_ctl, iso_gz_flags)) then
-           id_field_file_format = iflag_ucd_bin + iflag_gzip
+           choose_ucd_file_format = iflag_ucd_bin + iflag_gzip
 !
       else if(check_mul_flags(file_fmt_ctl, psf_flags)) then
-           id_field_file_format = iflag_udt_bin
+           choose_ucd_file_format = iflag_udt_bin
       else if(check_mul_flags(file_fmt_ctl, psf_gz_flags)) then
-           id_field_file_format = iflag_udt_bin + iflag_gzip
+           choose_ucd_file_format = iflag_udt_bin + iflag_gzip
       else
-           id_field_file_format = iflag_udt
+           choose_ucd_file_format = iflag_udt
       end if
 !
-      end subroutine choose_ucd_file_format
+      end function choose_ucd_file_format
 !
 ! -----------------------------------------------------------------------
 !

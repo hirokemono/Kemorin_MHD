@@ -128,9 +128,9 @@
       end if
 
       call init_field_type_flags
-      call choose_ucd_file_format                                       &
-     &   (pg_fld_ctl%psf_data_fmt_ctl%charavalue,                       &
-     &    pg_fld_ctl%psf_data_fmt_ctl%iflag, iflag_pg_psf_fmt)
+      iflag_pg_psf_fmt                                                  &
+     & = choose_ucd_file_format(pg_fld_ctl%psf_data_fmt_ctl%charavalue, &
+     &                          pg_fld_ctl%psf_data_fmt_ctl%iflag)
       call dealloc_field_type_flags
 !
       if(pg_fld_ctl%map_grid_file_ctl%iflag .gt. 0) then

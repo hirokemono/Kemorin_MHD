@@ -77,8 +77,9 @@
      &       ucd_param%file_prefix = plt%field_file_prefix%charavalue
 !
       call init_field_type_flags
-      call choose_ucd_file_format(plt%field_file_fmt_ctl%charavalue,    &
-     &    plt%field_file_fmt_ctl%iflag, ucd_param%iflag_format)
+      ucd_param%iflag_format                                            &
+     &      = choose_ucd_file_format(plt%field_file_fmt_ctl%charavalue, &
+     &                               plt%field_file_fmt_ctl%iflag)
       call dealloc_field_type_flags
 !
       end subroutine set_ucd_file_define

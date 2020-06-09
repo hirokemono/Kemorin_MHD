@@ -42,6 +42,7 @@
       end type section_define
 !
       private :: default_psf_prefix
+      private :: set_merged_psf_file_ctl, choose_para_psf_file_format
 !
 !  ---------------------------------------------------------------------
 !
@@ -101,7 +102,7 @@
 !
 !
       ierr = 0
-      call set_merged_ucd_file_ctl(default_psf_prefix,                  &
+      call set_merged_psf_file_ctl(default_psf_prefix,                  &
      &    psf_c%psf_file_head_ctl, psf_c%psf_output_type_ctl,           &
      &    psf_file_IO)
       if((psf_file_IO%iflag_format/iflag_single) .eq. 0) then
@@ -189,5 +190,102 @@
       end subroutine set_control_4_psf
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine set_merged_psf_file_ctl(default_prefix,                &
+     &          file_prefix_ctl, file_format_ctl, ucd_param)
+!
+      use t_control_array_character
+      use t_file_IO_parameter
+!
+      character(len = kchara), intent(in) :: default_prefix
+      type(read_character_item), intent(in) :: file_prefix_ctl
+      type(read_character_item), intent(in) :: file_format_ctl
+      type(field_IO_params), intent(inout) :: ucd_param
+!
+!
+      ucd_param%iflag_IO = file_prefix_ctl%iflag
+      if(ucd_param%iflag_IO .eq. 0) then
+        ucd_param%iflag_format = -1
+        ucd_param%file_prefix = default_prefix
+        return
+      else
+        ucd_param%file_prefix = file_prefix_ctl%charavalue
+      end if
+!
+      ucd_param%iflag_format                                            &
+     &        = choose_para_psf_file_format(file_format_ctl%charavalue, &
+     &                                      file_format_ctl%iflag)
+!
+      end subroutine set_merged_psf_file_ctl
+!
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function choose_para_psf_file_format         &
+     &                            (file_fmt_ctl, i_file_fmt)
+!
+      use m_merged_field_fmt_labels
+      use m_field_file_format
+      use t_multi_flag_labels
+!
+      integer(kind= kint), intent(in) :: i_file_fmt
+      character(len=kchara), intent(in) :: file_fmt_ctl
+!
+!
+      call init_mgd_field_type_flags
+!
+      if(i_file_fmt .eq. 0) then
+        choose_para_psf_file_format = iflag_sgl_vtk
+        return
+      end if
+!
+      if     (check_mul_flags(file_fmt_ctl, mgd_udt_labels)             &
+     &   .or. check_mul_flags(file_fmt_ctl, udt_flags)) then
+        choose_para_psf_file_format = iflag_sgl_udt
+      else if(check_mul_flags(file_fmt_ctl, mgd_udt_gz_labels)          &
+     &   .or. check_mul_flags(file_fmt_ctl, udt_gz_flags)) then
+        choose_para_psf_file_format = iflag_sgl_udt_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_ucd_labels)             &
+     &   .or. check_mul_flags(file_fmt_ctl, ucd_flags)) then
+        choose_para_psf_file_format = iflag_sgl_ucd
+      else if(check_mul_flags(file_fmt_ctl, mgd_ucd_gz_labels)          &
+     &   .or. check_mul_flags(file_fmt_ctl, ucd_gz_flags)) then
+        choose_para_psf_file_format = iflag_sgl_ucd_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtd_labels)             &
+     &   .or. check_mul_flags(file_fmt_ctl, vtd_flags)) then
+        choose_para_psf_file_format = iflag_sgl_vtd
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtd_gz_labels)          &
+     &   .or. check_mul_flags(file_fmt_ctl, vtd_gz_flags)) then
+        choose_para_psf_file_format = iflag_sgl_vtd_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtk_labels)             &
+     &   .or. check_mul_flags(file_fmt_ctl, vtk_flags)) then
+        choose_para_psf_file_format = iflag_sgl_vtk
+      else if(check_mul_flags(file_fmt_ctl, mgd_vtk_gz_labels)          &
+     &   .or. check_mul_flags(file_fmt_ctl, vtk_gz_flags)) then
+        choose_para_psf_file_format = iflag_sgl_vtk_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_iso_labels)             &
+     &   .or. check_mul_flags(file_fmt_ctl, iso_flags)) then
+        choose_para_psf_file_format = iflag_sgl_ucd_bin
+      else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)          &
+     &   .or. check_mul_flags(file_fmt_ctl, iso_gz_flags)) then
+        choose_para_psf_file_format = iflag_sgl_ucd_bin_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_psf_labels)             &
+     &   .or. check_mul_flags(file_fmt_ctl, psf_flags)) then
+        choose_para_psf_file_format = iflag_sgl_udt_bin
+      else if(check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)          &
+     &   .or. check_mul_flags(file_fmt_ctl, psf_gz_flags)) then
+        choose_para_psf_file_format = iflag_sgl_udt_bin_gz
+      else
+        choose_para_psf_file_format = iflag_sgl_vtk
+      end if
+      call dealloc_mgd_field_type_flags
+!
+      end function choose_para_psf_file_format
+!
+! -----------------------------------------------------------------------
 !
       end module t_control_params_4_psf
