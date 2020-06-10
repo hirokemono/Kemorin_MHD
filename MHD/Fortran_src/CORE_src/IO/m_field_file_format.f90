@@ -136,11 +136,11 @@
       integer(kind = kint), parameter :: iflag_udt_bin_gz =  22
 !
 !>      Integer flag for merged gzipped binary data
-      integer(kind = kint), parameter :: iflag_sgl_bin_gz = 102
+      integer(kind = kint), parameter :: iflag_sgl_bin_gz = 103
 !>      Integer flag for merged binary field and grid data
-      integer(kind = kint), parameter :: iflag_sgl_ucd_bin_gz =  172
+      integer(kind = kint), parameter :: iflag_sgl_ucd_bin_gz =  173
 !>      Integer flag for merged binary field data
-      integer(kind = kint), parameter :: iflag_sgl_udt_bin_gz =  182
+      integer(kind = kint), parameter :: iflag_sgl_udt_bin_gz =  183
 !
 !>      Integer flag for merged gzipped UCD data
       integer(kind = kint), parameter :: iflag_sgl_ucd_gz = 113
