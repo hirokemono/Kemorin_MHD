@@ -39,6 +39,7 @@
 !
       use m_precision
       use m_constants
+      use m_file_format_labels
       use t_multi_flag_labels
 !
       implicit    none
@@ -57,22 +58,10 @@
 !>      flag for binary data for Sectioning
       character(len = kchara), parameter :: psf_name(1) = (/'PSF'/)
 !
-!>      flag parts for ascii data
-      character(len = kchara), parameter :: ascii_names(2)              &
-     &                        = (/'ascii ', 'text  '/)
-!>      flag parts for compressed data
-      character(len = kchara), parameter :: gzip_names(2)               &
-     &                        = (/'gzip ', 'gz   '/)
 !>      flag parts for field data
       character(len = kchara), parameter :: field_flg(2)                &
      &                        = (/'field ', 'fld   '/)
 !
-!>     Character lables for ASCII
-!!        'gzip', 'gz' 
-      type(multi_flag_labels), save :: ascii_flags
-!>     Character lables for UCD
-!!        'gzip', 'gz' 
-      type(multi_flag_labels), save :: gzip_flags
 !
 !>      flag parts for field data format
 !!        'field', 'fld ' 
@@ -143,8 +132,8 @@
 !
       integer(kind = kint) :: icou
 !
-      call init_multi_flags_by_labels(itwo, ascii_names, ascii_flags)
-      call init_multi_flags_by_labels(itwo, gzip_names, gzip_flags)
+      call init_file_format_flags()
+!
       call init_multi_flags_by_labels(itwo, field_flg, field_labels)
 !
       call init_field_ascii_flags()
@@ -175,8 +164,8 @@
 !
       subroutine dealloc_field_type_flags()
 !
-      call dealloc_multi_flags(ascii_flags)
-      call dealloc_multi_flags(gzip_flags)
+      call dealloc_file_format_flags()
+!
       call dealloc_multi_flags(field_labels)
 !
       call dealloc_multi_flags(field_ascii_labels)

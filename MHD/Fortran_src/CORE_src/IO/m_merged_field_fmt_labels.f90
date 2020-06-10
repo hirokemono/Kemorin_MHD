@@ -16,24 +16,16 @@
       module m_merged_field_fmt_labels
 !
       use m_precision
+      use m_file_format_labels
       use m_field_file_format_labels
       use t_multi_flag_labels
 !
       implicit    none
 !
 !
-!>      flag parts for MPI-IO usage
-      character(len = kchara), parameter :: merged_names(2)             &
-     &                        = (/'merged ', 'single '/)
 !>      flag parts for HDF data
       character(len = kchara), parameter :: hdf5_names(3)               &
      &            = (/'HDF5        ', 'merged_HDF5 ', 'single_HDF5 '/)
-!
-!
-!
-!>     Character lables for merged data by MPI-IO
-!!       'merged', 'single' 
-      type(multi_flag_labels), save :: merged_flags
 !
 !>     Character lables for merged UCD
 !!       'merged_UCD', 'single_UCD', 'UCD_merged', 'UCD_single' 
@@ -135,8 +127,6 @@
 !
       call init_field_type_flags()
 !
-      call init_multi_flags_by_labels(itwo, merged_names, merged_flags)
-!
       call init_from_two_kinds_flags                                    &
      &   (merged_flags, udt_flags, mgd_udt_labels, icou)
       call append_multi_flag_labels(merged_flags, mgd_udt_labels)
@@ -176,8 +166,6 @@
 !
 !
       call dealloc_field_type_flags()
-!
-      call dealloc_multi_flags(merged_flags)
 !
       call dealloc_multi_flags(mgd_ucd_labels)
       call dealloc_multi_flags(mgd_udt_labels)

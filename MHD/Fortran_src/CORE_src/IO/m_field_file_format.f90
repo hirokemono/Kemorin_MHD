@@ -195,15 +195,15 @@
       else if(check_mul_flags(file_fmt_ctl, mgd_vtk_gz_labels)) then
         choose_para_fld_file_format = iflag_sgl_vtk_gz
 !
-      else if(check_mul_flags(file_fmt_ctl, mgd_iso_labels)) then
-        choose_para_fld_file_format = iflag_sgl_ucd_bin
-      else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)) then
-        choose_para_fld_file_format = iflag_sgl_ucd_bin_gz
+!      else if(check_mul_flags(file_fmt_ctl, mgd_iso_labels)) then
+!        choose_para_fld_file_format = iflag_sgl_ucd_bin
+!      else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)) then
+!        choose_para_fld_file_format = iflag_sgl_ucd_bin_gz
 !
-      else if(check_mul_flags(file_fmt_ctl, mgd_psf_labels)) then
-        choose_para_fld_file_format = iflag_sgl_udt_bin
-      else if(check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)) then
-        choose_para_fld_file_format = iflag_sgl_udt_bin_gz
+!      else if(check_mul_flags(file_fmt_ctl, mgd_psf_labels)) then
+!        choose_para_fld_file_format = iflag_sgl_udt_bin
+!      else if(check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)) then
+!        choose_para_fld_file_format = iflag_sgl_udt_bin_gz
 !
       else if(check_mul_flags(file_fmt_ctl, mgd_hdf_labels)) then
         choose_para_fld_file_format = iflag_sgl_hdf5
@@ -256,15 +256,15 @@
       else if(check_mul_flags(file_fmt_ctl, vtk_gz_flags)) then
            choose_ucd_file_format = iflag_vtk + iflag_gzip
 !
-      else if(check_mul_flags(file_fmt_ctl, iso_flags)) then
-           choose_ucd_file_format = iflag_ucd_bin
-      else if(check_mul_flags(file_fmt_ctl, iso_gz_flags)) then
-           choose_ucd_file_format = iflag_ucd_bin + iflag_gzip
+!      else if(check_mul_flags(file_fmt_ctl, iso_flags)) then
+!           choose_ucd_file_format = iflag_ucd_bin
+!      else if(check_mul_flags(file_fmt_ctl, iso_gz_flags)) then
+!           choose_ucd_file_format = iflag_ucd_bin + iflag_gzip
 !
-      else if(check_mul_flags(file_fmt_ctl, psf_flags)) then
-           choose_ucd_file_format = iflag_udt_bin
-      else if(check_mul_flags(file_fmt_ctl, psf_gz_flags)) then
-           choose_ucd_file_format = iflag_udt_bin + iflag_gzip
+!      else if(check_mul_flags(file_fmt_ctl, psf_flags)) then
+!           choose_ucd_file_format = iflag_udt_bin
+!      else if(check_mul_flags(file_fmt_ctl, psf_gz_flags)) then
+!           choose_ucd_file_format = iflag_udt_bin + iflag_gzip
       else
            choose_ucd_file_format = iflag_udt
       end if
