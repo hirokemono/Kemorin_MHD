@@ -79,8 +79,7 @@
       write(id_vtk_file,'(a,i6,a)')                                     &
      &     '       numberOfPieces="', nprocs, '" >'
       do ip = 0, nprocs-1
-        file_name = set_parallel_ucd_file_name(fname_nodir, iflag_vtk,  &
-     &                                         ip, istep)
+        file_name = set_parallel_vtk_file_name(fname_nodir, ip, istep)
         write(id_vtk_file,'(3a)') '   <Piece fileName="',               &
      &                       trim(file_name), '" />'
       end do

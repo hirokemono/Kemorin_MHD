@@ -110,13 +110,8 @@
       character(len=kchara) :: file_name
 !
 !
-      if( (ucd_param%iflag_format/icent) .eq. 1) then
-        file_name = set_single_ucd_file_name(ucd_param%file_prefix,     &
-     &             ucd_param%iflag_format, istep_ucd)
-      else
-        file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,   &
-     &             ucd_param%iflag_format, my_rank, istep_ucd)
-      end if
+      file_name = set_parallel_ucd_file_name(ucd_param%file_prefix,     &
+     &           ucd_param%iflag_format, my_rank, istep_ucd)
 !
       if(ucd_param%iflag_format .eq. iflag_sgl_vtk) then
         call write_vtk_file_mpi(file_name, ucd, m_ucd)
@@ -205,10 +200,8 @@
       character(len=kchara) :: file_name
 !
 !
-      if( (ucd_param%iflag_format/icent) .eq. 1) then
-        file_name = set_single_grd_file_name                            &
-     &            (ucd_param%file_prefix, ucd_param%iflag_format)
-      end if
+      file_name = set_parallel_grd_file_name                            &
+     &          (ucd_param%file_prefix, ucd_param%iflag_format)
 !
       if(ucd_param%iflag_format .eq. iflag_sgl_vtd) then
         call write_vtk_grid_mpi(file_name, ucd, m_ucd)
