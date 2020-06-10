@@ -201,7 +201,7 @@
 !
 !
       file_name = set_parallel_grd_file_name                            &
-     &          (ucd_param%file_prefix, ucd_param%iflag_format)
+     &        (ucd_param%file_prefix, ucd_param%iflag_format, my_rank)
 !
       if(ucd_param%iflag_format .eq. iflag_sgl_vtd) then
         call write_vtk_grid_mpi(file_name, ucd, m_ucd)
