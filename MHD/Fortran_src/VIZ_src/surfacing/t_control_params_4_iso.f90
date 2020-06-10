@@ -103,8 +103,11 @@
         iso_def%id_iso_result_type = iflag_field_iso
       end if
 !
+      iso_fld%num_phys =     izero
+      iso_fld%num_phys_viz = izero
       if      (iso_def%id_iso_result_type .eq. iflag_constant_iso) then
-        iso_fld%num_phys = ione
+        iso_fld%num_phys =     ione
+        iso_fld%num_phys_viz = ione
       else if (iso_def%id_iso_result_type .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
      &     iso_c%iso_out_field_ctl%num, iso_c%iso_out_field_ctl%c1_tbl, &
