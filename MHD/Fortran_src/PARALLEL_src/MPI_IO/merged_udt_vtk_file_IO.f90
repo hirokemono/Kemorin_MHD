@@ -342,7 +342,8 @@
      &   (file_name, nprocs, my_rank, IO_param)
 !
       call mpi_write_ucd_mesh_data_b                                    &
-     &   (IO_param, ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie)
+     &   (IO_param, ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, &
+     &    m_ucd%istack_merged_intnod)
       call write_ucd_data_mpi_b(IO_param,                               &
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
      &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
@@ -400,7 +401,8 @@
      &   (file_name, nprocs, my_rank, IO_param)
 !
       call mpi_write_ucd_mesh_data_b                                    &
-     &   (IO_param, ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie)
+     &   (IO_param, ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, &
+     &    m_ucd%istack_merged_intnod)
       call close_mpi_file(IO_param)
 !
       end subroutine write_ucd_grid_mpi_b

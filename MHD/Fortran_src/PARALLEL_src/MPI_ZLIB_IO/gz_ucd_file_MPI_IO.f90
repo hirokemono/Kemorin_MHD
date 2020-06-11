@@ -11,7 +11,8 @@
 !!     &          nnod, num_field, ntot_comp, ncomp_field,              &
 !!     &          field_name, d_nod, istack_merged_intnod)
 !!      subroutine gz_mpi_write_ucd_mesh_data_b                         &
-!!     &         (IO_param, nnod, nele, nnod_ele, xx, ie)
+!!     &         (IO_param, nnod, nele, nnod_ele, xx, ie,               &
+!!     &          istack_merged_intnod)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!
 !!      subroutine gz_write_ucd_data_mpi(id_vtk, ioff_gl,               &
@@ -64,25 +65,34 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint) :: nd
+      integer(kind = kint_gl) :: n_internal(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
+!
+!
+      n_internal(1) = istack_merged_intnod(my_rank+1)                   &
+     &               - istack_merged_intnod(my_rank)
 !
       call gz_mpi_write_process_id_b(IO_param)
-!      call gz_mpi_write_merged_stack_b(IO_param,                       &
-!     &    IO_param%nprocs_in, istack_merged_intnod)
+      call gz_mpi_write_int8_vector_b(IO_param, ione64, n_internal(1))
 !
       call gz_mpi_write_one_inthead_b(IO_param, num_field)
       call gz_mpi_write_mul_inthead_b(IO_param, num_field, ncomp_field)
       call gz_mpi_write_mul_charahead_b                                 &
      &   (IO_param, num_field, field_name)
 !
-      call gz_mpi_write_2d_vector_b                                     &
-     &   (IO_param, nnod, ntot_comp, d_nod)
+      do nd = 1, ntot_comp
+        call gz_mpi_write_1d_vector_b                                   &
+     &     (IO_param, n_internal(1), d_nod(1,nd))
+      end do
 !
       end subroutine gz_write_ucd_data_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
       subroutine gz_mpi_write_ucd_mesh_data_b                           &
-     &         (IO_param, nnod, nele, nnod_ele, xx, ie)
+     &         (IO_param, nnod, nele, nnod_ele, xx, ie,                 &
+     &          istack_merged_intnod)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -92,25 +102,32 @@
 !
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: nnod, nele
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
       integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: n_internal(1)
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: num64(1)
 !
 !
+      n_internal(1) = istack_merged_intnod(my_rank+1)                   &
+     &               - istack_merged_intnod(my_rank)
+!
       call gz_mpi_write_process_id_b(IO_param)
+      call gz_mpi_write_int8_vector_b(IO_param, ione64, n_internal(1))
 !
-      num64(1) = nnod
-      call gz_mpi_write_int8_vector_b(IO_param, ione64, num64)
+      call gz_mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,1))
+      call gz_mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,2))
+      call gz_mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,3))
 !
-      call gz_mpi_write_2d_vector_b                                     &
-     &   (IO_param, num64(1), n_vector, xx)
-!
+      call gz_mpi_write_one_inthead_b(IO_param, nnod_ele)
       call gz_mpi_write_one_inthead_b                                   &
      &   (IO_param, linear_eletype_from_num(nnod_ele))
+!
       num64(1) = nele
       call gz_mpi_write_int8_vector_b(IO_param, ione64, num64)
 !

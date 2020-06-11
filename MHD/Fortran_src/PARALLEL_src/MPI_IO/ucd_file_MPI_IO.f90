@@ -11,7 +11,8 @@
 !!     &          nnod, num_field, ntot_comp, ncomp_field,              &
 !!     &          field_name, d_nod, istack_merged_intnod)
 !!      subroutine mpi_write_ucd_mesh_data_b                            &
-!!     &         (IO_param, nnod, nele, nnod_ele, xx, ie)
+!!     &         (IO_param, nnod, nele, nnod_ele, xx, ie,               &
+!!     &          istack_merged_intnod, istack_merged_ele)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!
 !!      subroutine write_ucd_data_mpi(id_vtk, ioff_gl,                  &
@@ -61,27 +62,35 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
-      integer(kind = kint_gl) :: num64(1)
+      integer(kind = kint) :: nd
+      integer(kind = kint_gl) :: n_internal(1)
+      integer(kind = kint_gl), parameter :: ione64 = 1
 !
+!
+      n_internal(1) = istack_merged_intnod(my_rank+1)                   &
+     &               - istack_merged_intnod(my_rank)
 !
       call mpi_write_process_id_b(IO_param)
-      num64(1) = IO_param%nprocs_in
-!      call mpi_write_i8stack_head_b(IO_param,                          &
-!     &    num64(1), istack_merged_intnod)
+!
+      call set_istack_4_fixed_num(ione, IO_param)
+      call mpi_write_int8_vector_b(IO_param, ione64, n_internal(1))
 !
       call mpi_write_one_inthead_b(IO_param, num_field)
       call mpi_write_mul_inthead_b(IO_param, num_field, ncomp_field)
       call mpi_write_mul_charahead_b(IO_param, num_field, field_name)
 !
-      call mpi_write_2d_vector_b                                        &
-     &   (IO_param, nnod, ntot_comp, d_nod)
+      do nd = 1, ntot_comp
+        call mpi_write_1d_vector_b                                      &
+     &     (IO_param, n_internal(1), d_nod(1,nd))
+      end do
 !
       end subroutine write_ucd_data_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
       subroutine mpi_write_ucd_mesh_data_b                              &
-     &         (IO_param, nnod, nele, nnod_ele, xx, ie)
+     &         (IO_param, nnod, nele, nnod_ele, xx, ie,                 &
+     &          istack_merged_intnod)
 !
       use m_phys_constants
       use MPI_binary_data_IO
@@ -90,29 +99,37 @@
 !
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: nnod, nele
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
       integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
       real(kind = kreal), intent(in) :: xx(nnod,3)
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint_gl) :: n_internal(1)
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: num64(1)
 !
 !
+      n_internal(1) = istack_merged_intnod(my_rank+1)                   &
+     &               - istack_merged_intnod(my_rank)
+!
       call mpi_write_process_id_b(IO_param)
 !
-      num64(1) = nnod
       call set_istack_4_fixed_num(ione, IO_param)
-      call mpi_write_int8_vector_b(IO_param, ione64, num64)
+      call mpi_write_int8_vector_b(IO_param, ione64, n_internal(1))
 !
-      call mpi_write_2d_vector_b                                        &
-     &   (IO_param, num64(1), n_vector, xx)
+      call mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,1))
+      call mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,2))
+      call mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,3))
 !
+      call mpi_write_one_inthead_b(IO_param, nnod_ele)
       call mpi_write_one_inthead_b                                      &
      &   (IO_param, linear_eletype_from_num(nnod_ele))
+!
       num64(1) = nele
       call set_istack_4_fixed_num(ione, IO_param)
-      call mpi_write_int8_vector_b(IO_param, ione64, num64)
+      call mpi_write_int8_vector_b(IO_param, ione64, num64(1))
 !
       num64(1) = nele * nnod_ele
       call istack64_4_parallel_data(num64(1), IO_param)
@@ -163,7 +180,6 @@
 !
       ioffset = ioff_gl + ilen_n * istack_merged_intnod(my_rank)
       ioff_gl = ioff_gl + ilen_n * nt_nod
-      
 !
       if(num .le. 0) return
 !
