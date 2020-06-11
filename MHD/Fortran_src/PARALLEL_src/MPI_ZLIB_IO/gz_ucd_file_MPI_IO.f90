@@ -132,7 +132,7 @@
       num64(1) = nele
       call gz_mpi_write_int8_vector_b(IO_param, ione64, num64)
 !
-      do nd = 1, ntot_comp
+      do nd = 1, nnod_ele
         call gz_mpi_write_int8_vector_b(IO_param, num64(1), ie(1,nd))
       end do
 !
