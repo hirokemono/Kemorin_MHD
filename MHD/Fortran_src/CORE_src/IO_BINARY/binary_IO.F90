@@ -354,6 +354,7 @@
       read(bbuf%id_binary, err=99, end=99)  int_dat(1)
 !
       bbuf%iflag_swap = endian_check(id_rank, int_dat(1))
+      return
 !
   99  continue
       bbuf%ierr_bin = ierr_file
@@ -426,6 +427,7 @@
         l8_byte = num * kint_4b
         call byte_swap_32bit_f(l8_byte, int_dat(1))
       end if
+      return
 !
   99  continue
       bbuf%ierr_bin = ierr_file
@@ -450,6 +452,7 @@
         l8_byte = num * kint_gl
         call byte_swap_64bit_f(l8_byte, int_gl_dat(1))
       end if
+      return
 !
   99  continue
       bbuf%ierr_bin = ierr_file
@@ -513,6 +516,7 @@
         l8_byte = num * kchara
         call byte_swap_64bit_f(l8_byte, chara_dat(1))
       end if
+      return
 !
   99  continue
       bbuf%ierr_bin = ierr_file
@@ -534,6 +538,7 @@
       if(bbuf%iflag_swap .eq. iendian_FLIP) then
         call byte_swap_64bit_f(num, chara_dat(1))
       end if
+      return
 !
   99  continue
       bbuf%ierr_bin = ierr_file
