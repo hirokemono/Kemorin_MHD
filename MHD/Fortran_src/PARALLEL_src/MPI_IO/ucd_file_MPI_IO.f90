@@ -33,6 +33,7 @@
       use m_calypso_mpi_IO
       use vtk_data_to_buffer
       use ucd_data_to_buffer
+      use t_calypso_mpi_IO_param
 !
       implicit none
 !
@@ -101,6 +102,7 @@
       call mpi_write_process_id_b(IO_param)
 !
       num64(1) = nnod
+      call set_istack_4_fixed_num(ione, IO_param)
       call mpi_write_int8_vector_b(IO_param, ione64, num64)
 !
       call mpi_write_2d_vector_b                                        &
@@ -109,9 +111,11 @@
       call mpi_write_one_inthead_b                                      &
      &   (IO_param, linear_eletype_from_num(nnod_ele))
       num64(1) = nele
+      call set_istack_4_fixed_num(ione, IO_param)
       call mpi_write_int8_vector_b(IO_param, ione64, num64)
 !
       num64(1) = nele * nnod_ele
+      call istack64_4_parallel_data(num64(1), IO_param)
       call mpi_write_int8_vector_b(IO_param, num64(1), ie)
 !
       end subroutine mpi_write_ucd_mesh_data_b
