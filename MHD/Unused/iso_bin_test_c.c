@@ -3,8 +3,6 @@
 #include "skip_comment_c.h"
 #include "calypso_zlib_io_c.h"
 
-FILE *fp_y;
-
 void swap_4byte(char *buf8){
 	int j;
 	char tmpbuf[4];

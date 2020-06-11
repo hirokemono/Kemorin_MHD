@@ -3,8 +3,6 @@
 #ifndef M_PSF_DATA_4_VIEWER_C_
 #define M_PSF_DATA_4_VIEWER_C_
 
-#define UCD_LABEL_LEN		1024
-
 #define IFLAG_MESH       99
 #define IFLAG_SURFACES   2
 #define IFLAG_LINES      1

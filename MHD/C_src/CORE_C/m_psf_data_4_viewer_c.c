@@ -45,7 +45,7 @@ void alloc_psf_field_name_c(struct psf_data *viz_s){
 	
 	viz_s->data_name = (char **)calloc(viz_s->nfield, sizeof(char *));
 	for (i = 0; i < viz_s->nfield; i++) {
-		viz_s->data_name[i] = (char *)calloc(UCD_LABEL_LEN, sizeof(char));
+		viz_s->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
 	};
 };
 

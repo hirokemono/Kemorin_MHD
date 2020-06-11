@@ -293,7 +293,7 @@ struct chara_real_clist * init_chara_real_clist(){
     cr_clst->clist_name = (char *)calloc(32,sizeof(char));
     cr_clst->c1_name = (char *)calloc(32,sizeof(char));
     cr_clst->r1_name = (char *)calloc(32,sizeof(char));
-     return;
+    return cr_clst;
 };
 void dealloc_chara_real_clist(struct chara_real_clist *cr_clst){
     clear_chara_real_ctl_list(&cr_clst->cr_item_head);
