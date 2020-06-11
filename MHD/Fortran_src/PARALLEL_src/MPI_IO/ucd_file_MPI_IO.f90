@@ -107,6 +107,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !
+      integer(kind = kint) :: nd
       integer(kind = kint_gl) :: n_internal(1)
       integer(kind = kint_gl), parameter :: ione64 = 1
       integer(kind = kint_gl) :: num64(1)
@@ -133,9 +134,10 @@
       call set_istack_4_fixed_num(ione, IO_param)
       call mpi_write_int8_vector_b(IO_param, ione64, num64(1))
 !
-      num64(1) = nele * nnod_ele
       call istack64_4_parallel_data(num64(1), IO_param)
-      call mpi_write_int8_vector_b(IO_param, num64(1), ie)
+      do nd = 1, nnod_ele
+        call mpi_write_int8_vector_b(IO_param, num64(1), ie(1,nd))
+      end do
 !
       end subroutine mpi_write_ucd_mesh_data_b
 !
