@@ -66,8 +66,8 @@
 !
 !
       call gz_mpi_write_process_id_b(IO_param)
-      call gz_mpi_write_merged_stack_b(IO_param,                        &
-     &    IO_param%nprocs_in, istack_merged_intnod)
+!      call gz_mpi_write_merged_stack_b(IO_param,                       &
+!     &    IO_param%nprocs_in, istack_merged_intnod)
 !
       call gz_mpi_write_one_inthead_b(IO_param, num_field)
       call gz_mpi_write_mul_inthead_b(IO_param, num_field, ncomp_field)

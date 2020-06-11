@@ -65,8 +65,8 @@
 !
       call mpi_write_process_id_b(IO_param)
       num64(1) = IO_param%nprocs_in
-      call mpi_write_i8stack_head_b(IO_param,                           &
-     &    num64(1), istack_merged_intnod)
+!      call mpi_write_i8stack_head_b(IO_param,                          &
+!     &    num64(1), istack_merged_intnod)
 !
       call mpi_write_one_inthead_b(IO_param, num_field)
       call mpi_write_mul_inthead_b(IO_param, num_field, ncomp_field)
