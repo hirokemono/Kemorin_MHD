@@ -79,6 +79,7 @@
       call mpi_write_mul_inthead_b(IO_param, num_field, ncomp_field)
       call mpi_write_mul_charahead_b(IO_param, num_field, field_name)
 !
+      call istack64_4_parallel_data(n_internal(1), IO_param)
       do nd = 1, ntot_comp
         call mpi_write_1d_vector_b                                      &
      &     (IO_param, n_internal(1), d_nod(1,nd))
@@ -119,6 +120,7 @@
       call set_istack_4_fixed_num(ione, IO_param)
       call mpi_write_int8_vector_b(IO_param, ione64, n_internal(1))
 !
+      call istack64_4_parallel_data(n_internal(1), IO_param)
       call mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,1))
       call mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,2))
       call mpi_write_1d_vector_b(IO_param, n_internal(1), xx(1,3))
