@@ -87,23 +87,23 @@ struct vtk_field{
 
 /* prototypes */
 
-void alloc_viz_node_s(struct psf_data *viz_s);
-void alloc_viz_ele_s(struct psf_data *viz_s);
-void alloc_psf_field_name_c(struct psf_data *viz_s);
-void alloc_psf_data_s(struct psf_data *viz_s);
-void alloc_psf_field_data_c(struct psf_data *viz_s);
-void alloc_psf_cutting_4_map(struct psf_data *viz_s);
+void alloc_viz_node_s(struct psf_data *psf_s);
+void alloc_viz_ele_s(struct psf_data *psf_s);
+void alloc_psf_field_name_c(struct psf_data *psf_s);
+void alloc_psf_data_s(struct psf_data *psf_s);
+void alloc_psf_field_data_c(struct psf_data *psf_s);
+void alloc_psf_cutting_4_map(struct psf_data *psf_s);
 
-void alloc_psf_norm_s(struct psf_data *viz_s);
-void alloc_psf_length_s(struct psf_data *viz_s);
-void alloc_psf_cutting_4_map(struct psf_data *viz_s);
+void alloc_psf_norm_s(struct psf_data *psf_s);
+void alloc_psf_length_s(struct psf_data *psf_s);
+void alloc_psf_cutting_4_map(struct psf_data *psf_s);
 
-void dealloc_psf_mesh_c(struct psf_data *viz_s);
-void dealloc_psf_field_data_c(struct psf_data *viz_s);
-void dealloc_psf_data_s(struct psf_data *viz_s);
-void dealloc_psf_cutting_4_map(struct psf_data *viz_s);
-void deallc_all_psf_data(struct psf_data *viz_s);
-void deallc_all_fline_data(struct psf_data *viz_s);
+void dealloc_psf_mesh_c(struct psf_data *psf_s);
+void dealloc_psf_field_data_c(struct psf_data *psf_s);
+void dealloc_psf_data_s(struct psf_data *psf_s);
+void dealloc_psf_cutting_4_map(struct psf_data *psf_s);
+void deallc_all_psf_data(struct psf_data *psf_s);
+void deallc_all_fline_data(struct psf_data *psf_s);
 
 struct vtk_field *alloc_vtk_fields_list_c(void);
 void alloc_vtk_field_data_c(vtk_fields_t *vtk_s);
@@ -118,5 +118,8 @@ void copy_viewer_udt_data(struct psf_data *viz_copied, struct psf_data *viz_org)
 
 void copy_vtk_list_2_udt_name(struct psf_data *viz_copied, struct vtk_field *vtk_list);
 void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk_list);
+
+void check_psf_read(struct psf_data *psf_s);
+void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z);
 
 #endif

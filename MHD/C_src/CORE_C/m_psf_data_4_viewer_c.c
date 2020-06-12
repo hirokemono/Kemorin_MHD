@@ -5,242 +5,242 @@
 #include "m_psf_data_4_viewer_c.h"
 
 
-void alloc_viz_node_s(struct psf_data *viz_s){
+void alloc_viz_node_s(struct psf_data *psf_s){
 	int i;
 	/* allocate memory  xx_viz[node #][direction]*/
-	viz_s->xx_viz = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->xx_viz[i] =  (double *)calloc(3,sizeof(double));
+	psf_s->xx_viz = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nnod_viz; i++){
+		psf_s->xx_viz[i] =  (double *)calloc(3,sizeof(double));
 	};
 	
-	viz_s->inod_viz = (long *)calloc(viz_s->nnod_viz,sizeof(long));
+	psf_s->inod_viz = (long *)calloc(psf_s->nnod_viz,sizeof(long));
 	return;
 };
 
-void alloc_viz_ele_s(struct psf_data *viz_s){
+void alloc_viz_ele_s(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  ie_viz[patch #][connection]*/
-	viz_s->ie_viz = (long **) malloc(viz_s->nele_viz*sizeof(long *));
-	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->ie_viz[i] = (long *)calloc(viz_s->nnod_4_ele_viz,sizeof(long));
+	psf_s->ie_viz = (long **) malloc(psf_s->nele_viz*sizeof(long *));
+	for (i = 0; i < psf_s->nele_viz; i++){
+		psf_s->ie_viz[i] = (long *)calloc(psf_s->nnod_4_ele_viz,sizeof(long));
 	};
 	
 	/* allocate memory  x_ele_viz[patch #][direction]*/
-	viz_s->x_ele_viz = (double **) malloc(viz_s->nele_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->x_ele_viz[i] = (double *)calloc(3,sizeof(double));
+	psf_s->x_ele_viz = (double **) malloc(psf_s->nele_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nele_viz; i++){
+		psf_s->x_ele_viz[i] = (double *)calloc(3,sizeof(double));
 	};
 	
 	return;
 };
 
-void alloc_psf_field_name_c(struct psf_data *viz_s){
+void alloc_psf_field_name_c(struct psf_data *psf_s){
 	int i;
 	
-	viz_s->ncomp =       (long *)calloc(viz_s->nfield,sizeof(long));
-	viz_s->istack_comp = (long *)calloc(viz_s->nfield+1,sizeof(long));
+	psf_s->ncomp =       (long *)calloc(psf_s->nfield,sizeof(long));
+	psf_s->istack_comp = (long *)calloc(psf_s->nfield+1,sizeof(long));
 
-	viz_s->id_coord =    (int *)calloc(viz_s->nfield,sizeof(int));
+	psf_s->id_coord =    (int *)calloc(psf_s->nfield,sizeof(int));
 	
-	viz_s->data_name = (char **)malloc(viz_s->nfield*sizeof(char *));
-	for (i = 0; i < viz_s->nfield; i++) {
-		viz_s->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
+	psf_s->data_name = (char **)malloc(psf_s->nfield*sizeof(char *));
+	for (i = 0; i < psf_s->nfield; i++) {
+		psf_s->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
 	};
 };
 
-void alloc_psf_field_data_c(struct psf_data *viz_s){
+void alloc_psf_field_data_c(struct psf_data *psf_s){
 	int i;
 	/* allocate memory  d_nod[node #][component]*/
-	viz_s->d_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->d_nod[i] = (double *)calloc(viz_s->ncomptot,sizeof(double));
+	psf_s->d_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nnod_viz; i++){
+		psf_s->d_nod[i] = (double *)calloc(psf_s->ncomptot,sizeof(double));
 	};
 };
 
-void alloc_psf_data_s(struct psf_data *viz_s){
+void alloc_psf_data_s(struct psf_data *psf_s){
 	int i;
 	/* allocate memory  d_amp[node #][field]*/
-	viz_s->d_amp = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->d_amp[i] = (double *)calloc(viz_s->nfield,sizeof(double));
+	psf_s->d_amp = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nnod_viz; i++){
+		psf_s->d_amp[i] = (double *)calloc(psf_s->nfield,sizeof(double));
 	};
 	
 	/* allocate memory  color_nod[node #][rgba code]*/
-	viz_s->color_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->color_nod[i] = (double *)calloc(IFOUR,sizeof(double));
+	psf_s->color_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nnod_viz; i++){
+		psf_s->color_nod[i] = (double *)calloc(IFOUR,sizeof(double));
 	};
 	
-	viz_s->d_min = (double *)calloc(viz_s->ncomptot,sizeof(double));
-	viz_s->d_max = (double *)calloc(viz_s->ncomptot,sizeof(double));
-	viz_s->d_ave = (double *)calloc(viz_s->ncomptot,sizeof(double));
-	viz_s->d_rms = (double *)calloc(viz_s->ncomptot,sizeof(double));
+	psf_s->d_min = (double *)calloc(psf_s->ncomptot,sizeof(double));
+	psf_s->d_max = (double *)calloc(psf_s->ncomptot,sizeof(double));
+	psf_s->d_ave = (double *)calloc(psf_s->ncomptot,sizeof(double));
+	psf_s->d_rms = (double *)calloc(psf_s->ncomptot,sizeof(double));
 	
-	viz_s->amp_min = (double *)calloc(viz_s->nfield,sizeof(double));
-	viz_s->amp_max = (double *)calloc(viz_s->nfield,sizeof(double));
+	psf_s->amp_min = (double *)calloc(psf_s->nfield,sizeof(double));
+	psf_s->amp_max = (double *)calloc(psf_s->nfield,sizeof(double));
 	
 	return;
 };
 
-void alloc_psf_norm_s(struct psf_data *viz_s){
+void alloc_psf_norm_s(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  norm_ele[patch #][component]*/
-	viz_s->norm_ele = (double **)malloc(viz_s->nele_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->norm_ele[i] = (double *)calloc(3,sizeof(double));
+	psf_s->norm_ele = (double **)malloc(psf_s->nele_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nele_viz; i++){
+		psf_s->norm_ele[i] = (double *)calloc(3,sizeof(double));
 	};
 	
-	viz_s->area_viz = (double *)calloc(viz_s->nele_viz,sizeof(double));
+	psf_s->area_viz = (double *)calloc(psf_s->nele_viz,sizeof(double));
 	
 	/* allocate memory  norm_nod[node #][component]*/
-	viz_s->norm_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->norm_nod[i] = (double *)calloc(3,sizeof(double));
+	psf_s->norm_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nnod_viz; i++){
+		psf_s->norm_nod[i] = (double *)calloc(3,sizeof(double));
 	};
 	
 	return;
 };
 
-void alloc_psf_length_s(struct psf_data *viz_s){
+void alloc_psf_length_s(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  dir_ele[patch #][component]*/
-	viz_s->dir_ele = (double **)malloc(viz_s->nele_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->dir_ele[i] = (double *)calloc(3,sizeof(double));
+	psf_s->dir_ele = (double **)malloc(psf_s->nele_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nele_viz; i++){
+		psf_s->dir_ele[i] = (double *)calloc(3,sizeof(double));
 	};
 	
-	viz_s->length_ele = (double *)calloc(viz_s->nele_viz,sizeof(double));
+	psf_s->length_ele = (double *)calloc(psf_s->nele_viz,sizeof(double));
 	
 	/* allocate memory  dir_nod[node #][component]*/
-	viz_s->dir_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
-	for (i = 0; i < viz_s->nnod_viz; i++){
-		viz_s->dir_nod[i] = (double *)calloc(3,sizeof(double));
+	psf_s->dir_nod = (double **)malloc(psf_s->nnod_viz*sizeof(double *));
+	for (i = 0; i < psf_s->nnod_viz; i++){
+		psf_s->dir_nod[i] = (double *)calloc(3,sizeof(double));
 	};
 	
 	return;
 };
 
-void alloc_psf_cutting_4_map(struct psf_data *viz_s){
+void alloc_psf_cutting_4_map(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  dir_ele[patch #][component]*/
-	viz_s->inod_org_4_map_itp = (int **)malloc(viz_s->nnod_added_4_map*sizeof(int *));
-	viz_s->coef_4_map_itp = (double **)malloc(viz_s->nnod_added_4_map*sizeof(int *));
-	for (i = 0; i < viz_s->nnod_added_4_map; i++){
-		viz_s->inod_org_4_map_itp[i] = (int *)calloc(2,sizeof(int));
-		viz_s->coef_4_map_itp[i] = (double *)calloc(2,sizeof(double));
+	psf_s->inod_org_4_map_itp = (int **)malloc(psf_s->nnod_added_4_map*sizeof(int *));
+	psf_s->coef_4_map_itp = (double **)malloc(psf_s->nnod_added_4_map*sizeof(int *));
+	for (i = 0; i < psf_s->nnod_added_4_map; i++){
+		psf_s->inod_org_4_map_itp[i] = (int *)calloc(2,sizeof(int));
+		psf_s->coef_4_map_itp[i] = (double *)calloc(2,sizeof(double));
 	};
 	return;
 };
 
-static void dealloc_psf_norm_s(struct psf_data *viz_s){
+static void dealloc_psf_norm_s(struct psf_data *psf_s){
 	int i;
 	/* deallocate memory*/
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->norm_nod[i]);
-	free(viz_s->norm_nod);
-	for (i = 0; i < viz_s->nele_viz; i++) free(viz_s->norm_ele[i]);
-	free(viz_s->norm_ele);
-	free(viz_s->area_viz);
+	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->norm_nod[i]);
+	free(psf_s->norm_nod);
+	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->norm_ele[i]);
+	free(psf_s->norm_ele);
+	free(psf_s->area_viz);
 	
 	return;
 };
 
-static void dealloc_psf_length_s(struct psf_data *viz_s){
+static void dealloc_psf_length_s(struct psf_data *psf_s){
 	int i;
 	/* deallocate memory*/
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->dir_nod[i]);
-	free(viz_s->dir_nod);
-	for (i = 0; i < viz_s->nele_viz; i++) free(viz_s->dir_ele[i]);
-	free(viz_s->dir_ele);
-	free(viz_s->length_ele);
+	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->dir_nod[i]);
+	free(psf_s->dir_nod);
+	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->dir_ele[i]);
+	free(psf_s->dir_ele);
+	free(psf_s->length_ele);
 	
 	return;
 };
 
-void dealloc_psf_field_data_c(struct psf_data *viz_s){
+void dealloc_psf_field_data_c(struct psf_data *psf_s){
 	int i;
 
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->d_nod[i]);
-	free(viz_s->d_nod);
+	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->d_nod[i]);
+	free(psf_s->d_nod);
 	
-	free(viz_s->ncomp);
-	free(viz_s->istack_comp);
+	free(psf_s->ncomp);
+	free(psf_s->istack_comp);
 	
-	for (i = 0; i < viz_s->nfield; i++) free(viz_s->data_name[i]);
-	free(viz_s->data_name);
+	for (i = 0; i < psf_s->nfield; i++) free(psf_s->data_name[i]);
+	free(psf_s->data_name);
 	
 	return;
 };
 
-void dealloc_psf_data_s(struct psf_data *viz_s){
+void dealloc_psf_data_s(struct psf_data *psf_s){
 	int i;
 	/* deallocate memory*/
-	free(viz_s->d_rms);
-	free(viz_s->d_ave);
-	free(viz_s->d_max);
-	free(viz_s->d_min);
-	free(viz_s->amp_max);
-	free(viz_s->amp_min);
+	free(psf_s->d_rms);
+	free(psf_s->d_ave);
+	free(psf_s->d_max);
+	free(psf_s->d_min);
+	free(psf_s->amp_max);
+	free(psf_s->amp_min);
 	
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->color_nod[i]);
-	free(viz_s->color_nod);
+	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->color_nod[i]);
+	free(psf_s->color_nod);
 	
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->d_amp[i]);
-	free(viz_s->d_amp);
+	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->d_amp[i]);
+	free(psf_s->d_amp);
 	
-	free(viz_s->id_coord);
+	free(psf_s->id_coord);
 	
-    dealloc_psf_field_data_c(viz_s);
+    dealloc_psf_field_data_c(psf_s);
 		
-	viz_s->ncomptot = 0;
-	viz_s->nfield =   0;
+	psf_s->ncomptot = 0;
+	psf_s->nfield =   0;
 	return;
 };
 
-void dealloc_psf_mesh_c(struct psf_data *viz_s){
+void dealloc_psf_mesh_c(struct psf_data *psf_s){
 	int i;
-	for (i = 0; i < viz_s->nele_viz; i++) free(viz_s->x_ele_viz[i]);
-	free(viz_s->x_ele_viz);
+	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->x_ele_viz[i]);
+	free(psf_s->x_ele_viz);
 	
-	for (i = 0; i < viz_s->nele_viz; i++) free(viz_s->ie_viz[i]);
-	free(viz_s->ie_viz);
-	free(viz_s->inod_viz);
+	for (i = 0; i < psf_s->nele_viz; i++) free(psf_s->ie_viz[i]);
+	free(psf_s->ie_viz);
+	free(psf_s->inod_viz);
 	
-	for (i = 0; i < viz_s->nnod_viz; i++) free(viz_s->xx_viz[i]);
-	free(viz_s->xx_viz);
+	for (i = 0; i < psf_s->nnod_viz; i++) free(psf_s->xx_viz[i]);
+	free(psf_s->xx_viz);
 	
 	return;
 }
 
-void dealloc_psf_cutting_4_map(struct psf_data *viz_s){
+void dealloc_psf_cutting_4_map(struct psf_data *psf_s){
 	int i;
 	
 	/* allocate memory  dir_ele[patch #][component]*/
-	for (i = 0; i < viz_s->nnod_added_4_map; i++){
-		free(viz_s->inod_org_4_map_itp[i]);
-		free(viz_s->coef_4_map_itp[i]);
+	for (i = 0; i < psf_s->nnod_added_4_map; i++){
+		free(psf_s->inod_org_4_map_itp[i]);
+		free(psf_s->coef_4_map_itp[i]);
 	};
-	free(viz_s->inod_org_4_map_itp);
-	free(viz_s->coef_4_map_itp);
+	free(psf_s->inod_org_4_map_itp);
+	free(psf_s->coef_4_map_itp);
 	return;
 };
 
-void deallc_all_psf_data(struct psf_data *viz_s){
-	dealloc_psf_cutting_4_map(viz_s);
-	dealloc_psf_norm_s(viz_s);
-	dealloc_psf_data_s(viz_s);
-	dealloc_psf_mesh_c(viz_s);
+void deallc_all_psf_data(struct psf_data *psf_s){
+	dealloc_psf_cutting_4_map(psf_s);
+	dealloc_psf_norm_s(psf_s);
+	dealloc_psf_data_s(psf_s);
+	dealloc_psf_mesh_c(psf_s);
 	return;
 };
 
-void deallc_all_fline_data(struct psf_data *viz_s){
-	dealloc_psf_norm_s(viz_s);
-	dealloc_psf_length_s(viz_s);
-	dealloc_psf_data_s(viz_s);
-	dealloc_psf_mesh_c(viz_s);
+void deallc_all_fline_data(struct psf_data *psf_s){
+	dealloc_psf_norm_s(psf_s);
+	dealloc_psf_length_s(psf_s);
+	dealloc_psf_data_s(psf_s);
+	dealloc_psf_mesh_c(psf_s);
 	return;
 };
 
@@ -370,3 +370,80 @@ void copy_vtk_list_2_udt_data(struct psf_data *viz_copied, struct vtk_field *vtk
     };
 	return;
 }
+
+void check_psf_read(struct psf_data *psf_s){
+	int i;
+	
+	printf("psf_s->nnod_viz %ld \n", psf_s->nnod_viz);
+	printf("xx_1 %le %le %le \n", psf_s->xx_viz[0][0], psf_s->xx_viz[0][1], psf_s->xx_viz[0][2]);
+	printf("xx_2 %le %le %le \n", psf_s->xx_viz[1][0], psf_s->xx_viz[1][1], psf_s->xx_viz[1][2]);
+	printf("xx_3 %le %le %le \n", psf_s->xx_viz[2][0], psf_s->xx_viz[2][1], psf_s->xx_viz[2][2]);
+	
+	printf("xx_3 %le %le %le \n", psf_s->xx_viz[psf_s->nnod_viz-3][0],
+		   psf_s->xx_viz[psf_s->nnod_viz-3][1], psf_s->xx_viz[psf_s->nnod_viz-3][2]);
+	printf("xx_2 %le %le %le \n", psf_s->xx_viz[psf_s->nnod_viz-2][0],
+		   psf_s->xx_viz[psf_s->nnod_viz-2][1], psf_s->xx_viz[psf_s->nnod_viz-2][2]);
+	printf("xx_1 %le %le %le \n", psf_s->xx_viz[psf_s->nnod_viz-1][0],
+		   psf_s->xx_viz[psf_s->nnod_viz-1][1], psf_s->xx_viz[psf_s->nnod_viz-1][2]);
+	
+	printf("psf_s->nnod_4_ele_viz %ld \n", psf_s->nnod_4_ele_viz);
+	printf("psf_s->nele_viz %ld \n", psf_s->nele_viz);
+	printf("ie_1 %ld %ld %ld \n", psf_s->ie_viz[0][0], psf_s->ie_viz[0][1], psf_s->ie_viz[0][2]);
+	printf("ie_2 %ld %ld %ld \n", psf_s->ie_viz[1][0], psf_s->ie_viz[1][1], psf_s->ie_viz[1][2]);
+	printf("ie_3 %ld %ld %ld \n", psf_s->ie_viz[2][0], psf_s->ie_viz[2][1], psf_s->ie_viz[2][2]);
+	
+	printf("ie_3 %ld %ld %ld \n", psf_s->ie_viz[psf_s->nele_viz-3][0], 
+		   psf_s->ie_viz[psf_s->nele_viz-3][1], psf_s->ie_viz[psf_s->nele_viz-3][2]);
+	printf("ie_2 %ld %ld %ld \n", psf_s->ie_viz[psf_s->nele_viz-2][0], 
+		   psf_s->ie_viz[psf_s->nele_viz-2][1], psf_s->ie_viz[psf_s->nele_viz-2][2]);
+	printf("ie_1 %ld %ld %ld \n", psf_s->ie_viz[psf_s->nele_viz-1][0], 
+		   psf_s->ie_viz[psf_s->nele_viz-1][1], psf_s->ie_viz[psf_s->nele_viz-1][2]);
+	
+	printf("psf_s->nfield %ld \n", psf_s->nfield);
+	printf("psf_s->ncomp ");
+	for(i=0;i<psf_s->nfield;i++){printf("%ld ", psf_s->ncomp[i]);};
+	printf("\n");
+	printf("psf_s->data_name ");
+	for(i=0;i<psf_s->nfield;i++){printf("%d %s \n", i, psf_s->data_name[i]);};
+	printf("\n");
+	printf("d_nod_1 %le \n", psf_s->d_nod[0][0]);
+	printf("d_nod_2 %le \n", psf_s->d_nod[1][0]);
+	printf("d_nod_3 %le \n", psf_s->d_nod[2][0]);
+	
+	printf("d_nod_3 %le \n", psf_s->d_nod[psf_s->nnod_viz-3][0]);
+	printf("d_nod_2 %le \n", psf_s->d_nod[psf_s->nnod_viz-2][0]);
+	printf("d_nod_1 %le \n", psf_s->d_nod[psf_s->nnod_viz-1][0]);
+	
+}
+
+void compare_psf_data(struct psf_data *psf_s, struct psf_data *psf_z){
+	int i, j;
+	printf("Error xx_viz \n");
+	for(j=0;j<3;j++){
+		for(i=0;i<psf_s->nnod_viz;i++){
+			if(psf_s->xx_viz[i][j] != psf_z->xx_viz[i][j]){
+				printf("%d %d %le %le\n", j, i, psf_s->xx_viz[i][j], psf_z->xx_viz[i][j]);
+			};
+		};
+	};
+	
+	printf("Error ie_viz \n");
+	for(j=0;j<psf_s->nnod_4_ele_viz;j++){
+		for(i=0;i<psf_s->nele_viz;i++){
+			if(psf_s->ie_viz[i][j] != psf_z->ie_viz[i][j]){
+				printf("%d %d %ld %ld\n", j, i, psf_s->ie_viz[i][j], psf_z->ie_viz[i][j]);
+			};
+		};
+	};
+	
+	printf("Error d_nod \n");
+	for(j=0;j<psf_s->ncomptot;j++){
+		for(i=0;i<psf_s->nnod_viz;i++){
+			if(psf_z->d_nod[i][j] != psf_z->d_nod[i][j]){
+				printf("%d %d %le %le\n", j, i, psf_z->d_nod[i][j], psf_z->d_nod[i][j]);
+			};
+		};
+	};
+	printf("\n");
+	return;
+};

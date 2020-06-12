@@ -30,11 +30,13 @@ OBJ_KEMO_C = \
  read_viewer_mesh_c.o \
  read_grouping_mesh_c.o \
  read_psf_data_viewer_c.o \
+ read_psf_bin_data_c.o \
  read_psf_vtk_data_c.o \
  set_psf_viewer.o \
  \
  read_viewer_mesh_gz_c.o \
  read_psf_data_gz_c.o \
+ read_psf_bin_data_gz_c.o \
  read_psf_vtk_data_gz_c.o \
  \
  set_surface_mesh_data.o \
