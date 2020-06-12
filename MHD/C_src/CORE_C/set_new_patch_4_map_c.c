@@ -49,10 +49,10 @@ int count_new_patch_at_phi180(double *xyz_tri){
 	return num_map_patch;
 }
 
-int cut_new_patch_at_phi180(double *xyz_org, int ie_cut[9],
-							int inod_src[4], double coef_cut[4]){
+int cut_new_patch_at_phi180(double *xyz_org, long ie_cut[9],
+							long inod_src[4], double coef_cut[4]){
 	int num_map_patch;
-	int i;
+	long i;
 	double y[3];
 	
 	for (i=0; i<3; i++){y[i] = xyz_org[3*i+1];};

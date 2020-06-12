@@ -12,7 +12,7 @@ static void read_gz_viz_node_data(struct psf_data *viz_s){
 	lbuf[0] = LENGTHBUF;
 	
 	get_one_line_from_gz(lbuf, num_word, nchara, buf);
-	sscanf(buf, "%d %d %d %d %d",
+	sscanf(buf, "%ld %ld %ld %d %d",
 			&viz_s->nnod_viz, &viz_s->nele_viz, 
 			&viz_s->ncomptot, &itmp, &itmp);
 	
@@ -20,7 +20,7 @@ static void read_gz_viz_node_data(struct psf_data *viz_s){
 	
 	for (i = 0; i < viz_s->nnod_viz; i++) {
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
-		sscanf(buf, "%d %lf %lf %lf",
+		sscanf(buf, "%ld %lf %lf %lf",
 			&viz_s->inod_viz[i], &viz_s->xx_viz[i][0], 
 			&viz_s->xx_viz[i][1], &viz_s->xx_viz[i][2]);
 	};
@@ -64,35 +64,35 @@ static int read_gz_kemoview_connect_data(struct psf_data *viz_s){
 	alloc_viz_ele_s(viz_s);
 	
 	if(viz_s->nnod_4_ele_viz == 3){
-		sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp,
+		sscanf(buf, "%d %d tri %ld %ld %ld", &itmp, &itmp,
 		   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 	
 		for (i = 1; i < viz_s->nele_viz; i++) {
 			get_one_line_from_gz(lbuf, num_word, nchara, buf);
-			sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp, 
+			sscanf(buf, "%d %d tri %ld %ld %ld", &itmp, &itmp, 
 					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 		};
 	}
 	
 	else if(viz_s->nnod_4_ele_viz == 2){
-		sscanf(buf, "%d %d line %d %d %d", &itmp, &itmp,
+		sscanf(buf, "%d %d line %ld %ld %ld", &itmp, &itmp,
 				&viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
 			get_one_line_from_gz(lbuf, num_word, nchara, buf);
-			sscanf(buf, "%d %d line %d %d %d", &itmp, &itmp, 
+			sscanf(buf, "%d %d line %ld %ld %ld", &itmp, &itmp, 
 					&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 		};
 	}
 	
 	else if(viz_s->nnod_4_ele_viz == 4){
-		sscanf(buf, "%d %d quad %d %d %d %d", &itmp, &itmp,
+		sscanf(buf, "%d %d quad %ld %ld %ld %ld", &itmp, &itmp,
 			   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1],
 			   &viz_s->ie_viz[0][2], &viz_s->ie_viz[0][3]);
 		
 		for (i = 1; i < viz_s->nele_viz; i++) {
 			get_one_line_from_gz(lbuf, num_word, nchara, buf);
-			sscanf(buf, "%d %d quad %d %d %d %d", &itmp, &itmp, 
+			sscanf(buf, "%d %d quad %ld %ld %ld %ld", &itmp, &itmp, 
 				   &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
 				   &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
 		};
@@ -118,12 +118,12 @@ static int read_gz_psf_connect_data(struct psf_data *viz_s){
 	viz_s->nnod_4_ele_viz = 3;
 	alloc_viz_ele_s(viz_s);
 	
-	sscanf(buf, "%d %d %3s %d %d %d", &itmp, &itmp, celllabel,
+	sscanf(buf, "%d %d %3s %ld %ld %ld", &itmp, &itmp, celllabel,
 		   &viz_s->ie_viz[0][0], &viz_s->ie_viz[0][1], &viz_s->ie_viz[0][2]);
 	
 	for (i = 1; i < viz_s->nele_viz; i++) {
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
-		sscanf(buf, "%d %d tri %d %d %d", &itmp, &itmp, 
+		sscanf(buf, "%d %d tri %ld %ld %ld", &itmp, &itmp, 
 			&viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1], &viz_s->ie_viz[i][2]);
 	};
 	return IFLAG_SURFACES;
@@ -139,13 +139,13 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 	
 	iread = 0;
 	get_one_line_from_gz(lbuf, num_word, nchara, buf);
-	sscanf(buf, "%d%n", &viz_s->nfield, &nread);
+	sscanf(buf, "%ld%n", &viz_s->nfield, &nread);
 	iread = iread + nread;
 	
 	alloc_psf_field_name_c(viz_s);
 	j = 0;
 	for (i = 0; i < num_word[0]-1; i++) {
-		sscanf(&buf[iread], "%d%n", &viz_s->ncomp[j], &nread);
+		sscanf(&buf[iread], "%ld%n", &viz_s->ncomp[j], &nread);
 		j = j+1;
 		iread = iread + nread;
 	}
@@ -155,7 +155,7 @@ static void read_gz_viz_phys_data(struct psf_data *viz_s){
 		get_one_line_from_gz(lbuf, num_word, nchara, buf);
         
 		for (i = 0; i < num_word[0]; i++) {
-			sscanf(&buf[iread], "%d%n", &viz_s->ncomp[j], &nread);
+			sscanf(&buf[iread], "%ld%n", &viz_s->ncomp[j], &nread);
 			j = j+1;
 			iread = iread + nread;
 			/*printf("ncomp: %d \n", viz_s->ncomp[i]); */

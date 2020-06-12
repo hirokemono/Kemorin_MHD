@@ -15,7 +15,8 @@ int count_psf_nodes_to_buf(int ist_psf, int ied_psf){
 void set_psf_nodes_to_buf(int ist_psf, int ied_psf, int shading_mode, 
 			struct psf_data **psf_s, struct psf_menu_val **psf_m, 
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, k, nd, ipsf;
+    long inum, iele, inod;
+    int k, nd, ipsf;
 	
 	for(inum=0; inum<(ied_psf-ist_psf); inum++){
 		ipsf = psf_a->ipsf_viz_far[inum+ist_psf]-1;
@@ -41,7 +42,8 @@ void set_psf_nodes_to_buf(int ist_psf, int ied_psf, int shading_mode,
 
 void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, k, ipsf;
+    long inum, iele, inod;
+    int k, ipsf;
 	int iflag;
 	double xx_tri[9], rtp_patch[9];
 	
@@ -68,7 +70,8 @@ void set_psf_textures_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s,
 
 void set_psf_map_to_buf(int ist_psf, int ied_psf, struct psf_data **psf_s, 
 			struct kemo_array_control *psf_a, struct gl_strided_buffer *strided_buf){
-	int inum, iele, inod, ipsf, nd, k;
+    long inum, iele, inod;
+    int ipsf, nd, k;
 	double xx_tri[9], xyz_map[9];
 	
 	for(inum=0; inum<(ied_psf-ist_psf); inum++){

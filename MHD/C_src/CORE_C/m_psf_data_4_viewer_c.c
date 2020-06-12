@@ -13,7 +13,7 @@ void alloc_viz_node_s(struct psf_data *viz_s){
 		viz_s->xx_viz[i] =  (double *)calloc(3,sizeof(double));
 	};
 	
-	viz_s->inod_viz = (int *)calloc(viz_s->nnod_viz,sizeof(int));
+	viz_s->inod_viz = (long *)calloc(viz_s->nnod_viz,sizeof(long));
 	return;
 };
 
@@ -21,9 +21,9 @@ void alloc_viz_ele_s(struct psf_data *viz_s){
 	int i;
 	
 	/* allocate memory  ie_viz[patch #][connection]*/
-	viz_s->ie_viz = (int **)calloc(viz_s->nele_viz,sizeof(int *));
+	viz_s->ie_viz = (long **)calloc(viz_s->nele_viz,sizeof(long *));
 	for (i = 0; i < viz_s->nele_viz; i++){
-		viz_s->ie_viz[i] = (int *)calloc(viz_s->nnod_4_ele_viz,sizeof(int));
+		viz_s->ie_viz[i] = (long *)calloc(viz_s->nnod_4_ele_viz,sizeof(long));
 	};
 	
 	/* allocate memory  x_ele_viz[patch #][direction]*/
@@ -38,8 +38,8 @@ void alloc_viz_ele_s(struct psf_data *viz_s){
 void alloc_psf_field_name_c(struct psf_data *viz_s){
 	int i;
 	
-	viz_s->ncomp =       (int *)calloc(viz_s->nfield,sizeof(int));
-	viz_s->istack_comp = (int *)calloc(viz_s->nfield+1,sizeof(int));
+	viz_s->ncomp =       (long *)calloc(viz_s->nfield,sizeof(long));
+	viz_s->istack_comp = (long *)calloc(viz_s->nfield+1,sizeof(long));
 
 	viz_s->id_coord =    (int *)calloc(viz_s->nfield,sizeof(int));
 	

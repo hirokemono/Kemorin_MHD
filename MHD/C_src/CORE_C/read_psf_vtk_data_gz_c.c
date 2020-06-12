@@ -21,7 +21,7 @@ static void read_psf_vtk_node_data_gz(struct psf_data *viz_s){
     get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);     /* DATASET UNSTRUCTURED_GRID */
     
 	get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);     /* POINTS    nnod_viz  float */
-	sscanf(buf, "%6s %d %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
+	sscanf(buf, "%6s %ld %5s", tmpchara, &viz_s->nnod_viz, tmpchara);
 	
 	alloc_viz_node_s(viz_s);
 	
@@ -44,7 +44,7 @@ static int read_psf_vtk_connect_data_gz(struct psf_data *viz_s){
 	int iflag_datatype = IFLAG_SURFACES;
     
 	get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);     /* CELLS    nele_viz  nele*nnod_4_ele */
-	sscanf(buf, "%5s %d %d", tmpchara, &viz_s->nele_viz, &num_index);
+	sscanf(buf, "%5s %ld %d", tmpchara, &viz_s->nele_viz, &num_index);
     
     viz_s->nnod_4_ele_viz = (num_index / viz_s->nele_viz) - 1;
 	alloc_viz_ele_s(viz_s);
@@ -54,7 +54,7 @@ static int read_psf_vtk_connect_data_gz(struct psf_data *viz_s){
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
             get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);
-            sscanf(buf, "%d %d %d %d %d", &itmp,
+            sscanf(buf, "%d %ld %ld %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2], &viz_s->ie_viz[i][3]);
         };
@@ -64,7 +64,7 @@ static int read_psf_vtk_connect_data_gz(struct psf_data *viz_s){
 		iflag_datatype = IFLAG_SURFACES;
         for (i = 0; i < viz_s->nele_viz; i++) {
             get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);
-            sscanf(buf, "%d %d %d %d", &itmp,
+            sscanf(buf, "%d %ld %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1],
                    &viz_s->ie_viz[i][2]);
         };
@@ -74,7 +74,7 @@ static int read_psf_vtk_connect_data_gz(struct psf_data *viz_s){
 		iflag_datatype = IFLAG_LINES;
         for (i = 0; i < viz_s->nele_viz; i++) {
             get_one_line_from_gz(&lbuf, &num_word, &nchara, buf);
-            sscanf(buf, "%d %d %d", &itmp,
+            sscanf(buf, "%d %ld %ld", &itmp,
                    &viz_s->ie_viz[i][0], &viz_s->ie_viz[i][1]);
         };
     };

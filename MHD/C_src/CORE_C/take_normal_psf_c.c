@@ -38,15 +38,15 @@ void cal_psf_grid_range(struct psf_data *viz_s){
 }
 
 static void take_normal_ele_psf(struct psf_data *viz_s){
-	int i, i1, i2, i3;
+	long i, i1, i2, i3;
 	
 	for (i = 0; i < viz_s->nele_viz; i++){
 		i1 = viz_s->ie_viz[i][0] - 1;
 		i2 = viz_s->ie_viz[i][1] - 1;
 		i3 = viz_s->ie_viz[i][2] - 1;
-		if(i1 <0 || i1 >= viz_s->nnod_viz) printf("i1 fault %d %d %d\n", i, i1, viz_s->nnod_viz);
-		if(i2 <0 || i2 >= viz_s->nnod_viz) printf("i2 fault %d %d %d\n", i, i2, viz_s->nnod_viz);
-		if(i3 <0 || i3 >= viz_s->nnod_viz) printf("i3 fault %d %d %d\n", i, i3, viz_s->nnod_viz);
+		if(i1 <0 || i1 >= viz_s->nnod_viz) printf("i1 fault %ld %ld %ld\n", i, i1, viz_s->nnod_viz);
+		if(i2 <0 || i2 >= viz_s->nnod_viz) printf("i2 fault %ld %ld %ld\n", i, i2, viz_s->nnod_viz);
+		if(i3 <0 || i3 >= viz_s->nnod_viz) printf("i3 fault %ld %ld %ld\n", i, i3, viz_s->nnod_viz);
 		cal_center_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2], viz_s->xx_viz[i3],
 								viz_s->x_ele_viz[i]);
 		viz_s->area_viz[i] = cal_normal_4_triangle_c(viz_s->xx_viz[i1], viz_s->xx_viz[i2],
@@ -61,7 +61,8 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 };
 
 static void easy_normal_nod_psf(struct psf_data *viz_s){
-	int i, i1, k;
+	int k;
+    long i, i1;
 	double d;
     int *nele_for_nod;
     
@@ -107,7 +108,8 @@ static void easy_normal_nod_psf(struct psf_data *viz_s){
 };
 
 static void take_normal_nod_psf(struct psf_data *viz_s){
-	int n, i, i1, i2, i3, k, ist, ied, l;
+	int n, k, ist, ied, l;
+    long i, i1, i2, i3;
 	double d, xe[3], d2h[3];
     int *nele_for_nod;
     int *istack_ele_for_nod;
@@ -223,7 +225,8 @@ static void take_normal_nod_psf(struct psf_data *viz_s){
 };
 
 static void take_length_ele_fline(struct psf_data *viz_s){
-	int i, i1, i2, nd;
+    long i, i1, i2;
+    int nd;
 	double len, len2;
 	
 	viz_s->area_total = 0.0;
@@ -304,7 +307,8 @@ static void take_length_ele_fline(struct psf_data *viz_s){
 
 
 static void take_rms_ave_psf(struct psf_data *viz_s){
-	int icomp, i, i1, i2, i3;
+    int icomp;
+    long i, i1, i2, i3;
 	double d;
 	
 	for (icomp = 0; icomp < viz_s->ncomptot; icomp++){
@@ -329,7 +333,8 @@ static void take_rms_ave_psf(struct psf_data *viz_s){
 }
 
 static void take_rms_ave_fline(struct psf_data *viz_s){
-	int icomp, i, i1, i2;
+    int icomp;
+    long i, i1, i2;
 	double d;
 	
 	for (icomp = 0; icomp < viz_s->ncomptot; icomp++){

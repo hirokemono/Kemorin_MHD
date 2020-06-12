@@ -6,8 +6,8 @@
 void check_psf_data_c(struct psf_data *tako){
 	int i;
 	/*int kst, ked;
-	printf("nnod_viz: %d \n", tako->nnod_viz);
-	printf("nele_viz: %d \n", tako->nele_viz);
+	printf("nnod_viz: %ld \n", tako->nnod_viz);
+	printf("nele_viz: %ld \n", tako->nele_viz);
 
 	 printf("node \n");
 	for (i = 0; i < tako->nnod_viz; i++) {
@@ -23,18 +23,18 @@ void check_psf_data_c(struct psf_data *tako){
 	*/
 	
 	
-	printf("nfield: %d \n", tako->nfield);
-	printf("ncomptot: %d \n", tako->ncomptot);
+	printf("nfield: %ld \n", tako->nfield);
+	printf("ncomptot: %ld \n", tako->ncomptot);
 	
 	printf("istack_comp");
 	for (i = 0; i < tako->nfield+1; i++) {
-		printf(" %d ", tako->istack_comp[i]);
+		printf(" %ld ", tako->istack_comp[i]);
 	};
 	printf("\n");
 	
 	printf("field name and ncomp \n");
 	for (i = 0; i < tako->nfield; i++) {
-		printf("%s %d \n", tako->data_name[i], tako->ncomp[i]);
+		printf("%s %ld \n", tako->data_name[i], tako->ncomp[i]);
 		/*
 		 kst = tako->istack_comp[i];
 		 ked = tako->istack_comp[i+1];

@@ -17,19 +17,19 @@
 
 
 struct psf_data{
-	int nnod_viz;
-	int nele_viz;
-	int nnod_4_ele_viz;
+	long nnod_viz;
+	long nele_viz;
+	long nnod_4_ele_viz;
 	
-	int nfield;
-	int ncomptot;
+	long nfield;
+	long ncomptot;
 	
-	int *inod_viz;
-	int **ie_viz;
+	long *inod_viz;
+	long **ie_viz;
 	
 	int *id_coord;
-	int *ncomp;
-	int *istack_comp;
+	long *ncomp;
+	long *istack_comp;
 	
 	double **xx_viz;
 	double **d_nod;

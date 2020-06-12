@@ -13,7 +13,7 @@
 void projection_patch_4_map(double *xyz_patch, double *xyz_map);
 
 int count_new_patch_at_phi180(double *xyz_tri);
-int cut_new_patch_at_phi180(double *xyz_org, int ie_cut[9],
-							int inod_src[4], double coef_cut[4]);
+int cut_new_patch_at_phi180(double *xyz_org, long ie_cut[9],
+							long inod_src[4], double coef_cut[4]);
 
 #endif
