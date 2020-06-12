@@ -7,18 +7,21 @@
 !> @brief Output merged VTK file usgin MPI-IO
 !!
 !!@verbatim
-!!      subroutine read_psf_node_num_bin                                &
-!!     &         (nprocs, nnod, itmp1_mp, bbuf)
 !!      subroutine read_psf_phys_num_bin                                &
 !!     &         (nprocs, nnod, num_field, itmp1_mp, bbuf)
 !!      subroutine read_psf_phys_name_bin                               &
 !!     &         (num_field, ntot_comp, ncomp_field, field_name, bbuf)
 !!      subroutine read_psf_phys_data_bin                               &
 !!     &         (nprocs, nnod, ntot_comp, d_nod, itmp1_mp, bbuf)
+!!
+!!      subroutine read_psf_node_num_bin(nprocs, nnod, itmp1_mp, bbuf)
+!!      subroutine read_psf_node_data_bin                               &
+!!     &         (nprocs, nnod, inod_global, xx, itmp1_mp, bbuf)
 !!      subroutine read_psf_ele_num_bin                                 &
 !!     &         (nprocs, nele, nnod_ele, itmp1_mp, bbuf)
 !!      subroutine read_psf_ele_connect_bin                             &
-!!     &         (nprocs, nele, nnod_ele, ie_psf, itmp1_mp, bbuf)
+!!     &         (nprocs, nele, nnod_ele, iele_global, ie_psf,          &
+!!     &          itmp1_mp, bbuf)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
 !!@endverbatim
 !
@@ -38,38 +41,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_psf_node_num_bin                                  &
-     &         (nprocs, nnod, itmp1_mp, bbuf)
-!
-      use binary_IO
-      use transfer_to_long_integers
-!
-      integer, intent(in) :: nprocs
-!
-      integer(kind=kint_gl), intent(inout) :: nnod
-      integer(kind = kint_gl), intent(inout) :: itmp1_mp(nprocs)
-      type(binary_IO_buffer), intent(inout) :: bbuf
-!
-      integer(kind = kint_gl), allocatable :: n_inter(:)
-!
-!
-      allocate(n_inter(nprocs))
-      call read_mul_int8_b(bbuf, cast_long(nprocs), itmp1_mp)
-      call read_mul_int8_b(bbuf, cast_long(nprocs), n_inter)
-      nnod = sum(n_inter)
-!
-!      write(*,*) 'n_inter', n_inter
-      deallocate(n_inter)
-!
-      end subroutine read_psf_node_num_bin
-!
-! -----------------------------------------------------------------------
-!
       subroutine read_psf_phys_num_bin                                  &
      &         (nprocs, nnod, num_field, itmp1_mp, bbuf)
 !
       use binary_IO
-      use transfer_to_long_integers
 !
       integer, intent(in) :: nprocs
       integer(kind=kint_gl), intent(in) :: nnod
@@ -78,24 +53,13 @@
       integer(kind = kint_gl), intent(inout) :: itmp1_mp(nprocs)
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
-      integer(kind = kint_gl), allocatable :: n_inter(:)
       integer(kind = kint_gl) :: nnod_gl
 !
 !
-      allocate(n_inter(nprocs))
-      call read_mul_int8_b(bbuf, cast_long(nprocs), itmp1_mp)
-      call read_mul_int8_b(bbuf, cast_long(nprocs), n_inter)
-      nnod_gl = sum(n_inter)
+      call read_psf_node_num_bin(nprocs, nnod_gl, itmp1_mp, bbuf)
+      if(nnod .ne. nnod_gl) stop 'Grid and field data are inconsistent'
 !
       call read_one_integer_b(bbuf, num_field)
-!
-!      write(*,*) 'n_inter', n_inter
-      deallocate(n_inter)
-
-      if(nnod .ne. nnod_gl) then
-        write(*,*) 'Grid and field data are inconsistent'
-        stop
-      end if
 !
       end subroutine read_psf_phys_num_bin
 !
@@ -148,6 +112,60 @@
       end subroutine read_psf_phys_data_bin
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_psf_node_num_bin(nprocs, nnod, itmp1_mp, bbuf)
+!
+      use binary_IO
+      use transfer_to_long_integers
+!
+      integer, intent(in) :: nprocs
+!
+      integer(kind=kint_gl), intent(inout) :: nnod
+      integer(kind = kint_gl), intent(inout) :: itmp1_mp(nprocs)
+      type(binary_IO_buffer), intent(inout) :: bbuf
+!
+      integer(kind = kint_gl), allocatable :: n_inter(:)
+!
+!
+      allocate(n_inter(nprocs))
+      call read_mul_int8_b(bbuf, cast_long(nprocs), itmp1_mp)
+      call read_mul_int8_b(bbuf, cast_long(nprocs), n_inter)
+      nnod = sum(n_inter)
+!
+!      write(*,*) 'n_inter', n_inter
+      deallocate(n_inter)
+!
+      end subroutine read_psf_node_num_bin
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_psf_node_data_bin                                 &
+     &         (nprocs, nnod, inod_global, xx, itmp1_mp, bbuf)
+!
+      integer, intent(in) :: nprocs
+      integer(kind=kint_gl), intent(in) :: nnod
+!
+      integer(kind=kint_gl), intent(inout) :: inod_global(nnod)
+      real(kind = kreal), intent(inout) :: xx(nnod,3)
+      integer(kind = kint_gl), intent(inout) :: itmp1_mp(nprocs)
+      type(binary_IO_buffer), intent(inout) :: bbuf
+!
+      integer(kind = kint_gl) :: i
+!
+!
+      call read_psf_phys_data_bin                                       &
+     &   (nprocs, nnod, ithree, xx, itmp1_mp, bbuf)
+!
+!$omp parallel do
+      do i = 1, nnod
+        inod_global(i) = i
+      end do
+!$omp end parallel do
+!
+      end subroutine read_psf_node_data_bin
+!
+! -----------------------------------------------------------------------
 !
       subroutine read_psf_ele_num_bin                                   &
      &         (nprocs, nele, nnod_ele, itmp1_mp, bbuf)
@@ -187,7 +205,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_psf_ele_connect_bin                               &
-     &         (nprocs, nele, nnod_ele, ie_psf, itmp1_mp, bbuf)
+     &         (nprocs, nele, nnod_ele, iele_global, ie_psf,            &
+     &          itmp1_mp, bbuf)
 !
       use binary_IO
       use transfer_to_long_integers
@@ -196,17 +215,25 @@
       integer(kind = kint), intent(in) :: nnod_ele
       integer(kind = kint_gl), intent(in) :: nele
 !
+      integer(kind = kint_gl), intent(inout) :: iele_global(nele)
       integer(kind = kint_gl), intent(inout) :: ie_psf(nele,nnod_ele)
       integer(kind = kint_gl), intent(inout) :: itmp1_mp(nprocs)
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
       integer(kind = kint) :: nd
+      integer(kind = kint_gl) :: i
 !
 !
       do nd = 1, nnod_ele
         call read_mul_int8_b(bbuf, cast_long(nprocs), itmp1_mp)
         call read_mul_int8_b(bbuf, nele, ie_psf(1,nd))
       end do
+!
+!$omp parallel do
+      do i = 1, nele
+        iele_global(i) = i
+      end do
+!$omp end parallel do
 !
       end subroutine read_psf_ele_connect_bin
 !

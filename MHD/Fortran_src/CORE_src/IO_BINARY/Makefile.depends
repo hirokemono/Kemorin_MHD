@@ -38,6 +38,8 @@ node_geometry_IO_b.o: $(BINARY_IO_DIR)/node_geometry_IO_b.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 read_psf_binary_data.o: $(BINARY_IO_DIR)/read_psf_binary_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
+read_psf_binary_file.o: $(BINARY_IO_DIR)/read_psf_binary_file.f90 m_precision.o m_constants.o m_machine_parameter.o t_binary_IO_buffer.o t_ucd_data.o binary_IO.o read_psf_binary_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
 sph_global_1d_idx_IO_b.o: $(BINARY_IO_DIR)/sph_global_1d_idx_IO_b.f90 m_precision.o t_node_id_spherical_IO.o t_binary_IO_buffer.o binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_modes_grids_data_IO_b.o: $(BINARY_IO_DIR)/sph_modes_grids_data_IO_b.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_node_id_spherical_IO.o t_spheric_group.o t_binary_IO_buffer.o domain_data_IO_b.o spherical_model_IO_b.o sph_global_1d_idx_IO_b.o binary_IO.o groups_IO_b.o
