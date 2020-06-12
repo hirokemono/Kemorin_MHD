@@ -8,7 +8,7 @@
 void alloc_viz_node_s(struct psf_data *viz_s){
 	int i;
 	/* allocate memory  xx_viz[node #][direction]*/
-	viz_s->xx_viz = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
+	viz_s->xx_viz = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->xx_viz[i] =  (double *)calloc(3,sizeof(double));
 	};
@@ -21,13 +21,13 @@ void alloc_viz_ele_s(struct psf_data *viz_s){
 	int i;
 	
 	/* allocate memory  ie_viz[patch #][connection]*/
-	viz_s->ie_viz = (long **)calloc(viz_s->nele_viz,sizeof(long *));
+	viz_s->ie_viz = (long **) malloc(viz_s->nele_viz*sizeof(long *));
 	for (i = 0; i < viz_s->nele_viz; i++){
 		viz_s->ie_viz[i] = (long *)calloc(viz_s->nnod_4_ele_viz,sizeof(long));
 	};
 	
 	/* allocate memory  x_ele_viz[patch #][direction]*/
-	viz_s->x_ele_viz = (double **)calloc(viz_s->nele_viz,sizeof(double *));
+	viz_s->x_ele_viz = (double **) malloc(viz_s->nele_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nele_viz; i++){
 		viz_s->x_ele_viz[i] = (double *)calloc(3,sizeof(double));
 	};
@@ -43,7 +43,7 @@ void alloc_psf_field_name_c(struct psf_data *viz_s){
 
 	viz_s->id_coord =    (int *)calloc(viz_s->nfield,sizeof(int));
 	
-	viz_s->data_name = (char **)calloc(viz_s->nfield, sizeof(char *));
+	viz_s->data_name = (char **)malloc(viz_s->nfield*sizeof(char *));
 	for (i = 0; i < viz_s->nfield; i++) {
 		viz_s->data_name[i] = (char *)calloc(KCHARA_C, sizeof(char));
 	};
@@ -52,7 +52,7 @@ void alloc_psf_field_name_c(struct psf_data *viz_s){
 void alloc_psf_field_data_c(struct psf_data *viz_s){
 	int i;
 	/* allocate memory  d_nod[node #][component]*/
-	viz_s->d_nod = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
+	viz_s->d_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->d_nod[i] = (double *)calloc(viz_s->ncomptot,sizeof(double));
 	};
@@ -61,13 +61,13 @@ void alloc_psf_field_data_c(struct psf_data *viz_s){
 void alloc_psf_data_s(struct psf_data *viz_s){
 	int i;
 	/* allocate memory  d_amp[node #][field]*/
-	viz_s->d_amp = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
+	viz_s->d_amp = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->d_amp[i] = (double *)calloc(viz_s->nfield,sizeof(double));
 	};
 	
 	/* allocate memory  color_nod[node #][rgba code]*/
-	viz_s->color_nod = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
+	viz_s->color_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->color_nod[i] = (double *)calloc(IFOUR,sizeof(double));
 	};
@@ -87,7 +87,7 @@ void alloc_psf_norm_s(struct psf_data *viz_s){
 	int i;
 	
 	/* allocate memory  norm_ele[patch #][component]*/
-	viz_s->norm_ele = (double **)calloc(viz_s->nele_viz,sizeof(double *));
+	viz_s->norm_ele = (double **)malloc(viz_s->nele_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nele_viz; i++){
 		viz_s->norm_ele[i] = (double *)calloc(3,sizeof(double));
 	};
@@ -95,7 +95,7 @@ void alloc_psf_norm_s(struct psf_data *viz_s){
 	viz_s->area_viz = (double *)calloc(viz_s->nele_viz,sizeof(double));
 	
 	/* allocate memory  norm_nod[node #][component]*/
-	viz_s->norm_nod = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
+	viz_s->norm_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->norm_nod[i] = (double *)calloc(3,sizeof(double));
 	};
@@ -107,7 +107,7 @@ void alloc_psf_length_s(struct psf_data *viz_s){
 	int i;
 	
 	/* allocate memory  dir_ele[patch #][component]*/
-	viz_s->dir_ele = (double **)calloc(viz_s->nele_viz,sizeof(double *));
+	viz_s->dir_ele = (double **)malloc(viz_s->nele_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nele_viz; i++){
 		viz_s->dir_ele[i] = (double *)calloc(3,sizeof(double));
 	};
@@ -115,7 +115,7 @@ void alloc_psf_length_s(struct psf_data *viz_s){
 	viz_s->length_ele = (double *)calloc(viz_s->nele_viz,sizeof(double));
 	
 	/* allocate memory  dir_nod[node #][component]*/
-	viz_s->dir_nod = (double **)calloc(viz_s->nnod_viz,sizeof(double *));
+	viz_s->dir_nod = (double **)malloc(viz_s->nnod_viz*sizeof(double *));
 	for (i = 0; i < viz_s->nnod_viz; i++){
 		viz_s->dir_nod[i] = (double *)calloc(3,sizeof(double));
 	};
@@ -127,8 +127,8 @@ void alloc_psf_cutting_4_map(struct psf_data *viz_s){
 	int i;
 	
 	/* allocate memory  dir_ele[patch #][component]*/
-	viz_s->inod_org_4_map_itp = (int **)calloc(viz_s->nnod_added_4_map,sizeof(int *));
-	viz_s->coef_4_map_itp = (double **)calloc(viz_s->nnod_added_4_map,sizeof(int *));
+	viz_s->inod_org_4_map_itp = (int **)malloc(viz_s->nnod_added_4_map*sizeof(int *));
+	viz_s->coef_4_map_itp = (double **)malloc(viz_s->nnod_added_4_map*sizeof(int *));
 	for (i = 0; i < viz_s->nnod_added_4_map; i++){
 		viz_s->inod_org_4_map_itp[i] = (int *)calloc(2,sizeof(int));
 		viz_s->coef_4_map_itp[i] = (double *)calloc(2,sizeof(double));
