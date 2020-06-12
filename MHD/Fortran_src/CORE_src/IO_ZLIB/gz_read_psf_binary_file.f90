@@ -7,7 +7,7 @@
 !> @brief read gzipped binary section file
 !!
 !!@verbatim
-!!      subroutine read_alloc_iso_binary_gz_file(gzip_name, ucd_z)
+!!      subroutine gz_read_alloc_iso_bin_file(gzip_name, ucd_z)
 !!      subroutine gz_read_alloc_psf_bin_grid(gzip_name, nprocs, ucd_z)
 !!      subroutine gz_read_alloc_psf_bin_file(gzip_name, nprocs, ucd_z)
 !!        character(len = kchara), intent(in) :: gzip_name
@@ -31,7 +31,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_alloc_iso_binary_gz_file(gzip_name, ucd_z)
+      subroutine gz_read_alloc_iso_bin_file(gzip_name, ucd_z)
 !
       use gz_binary_IO
       use gzip_file_access
@@ -84,7 +84,7 @@
       call close_gzfile_b
       deallocate(itmp1_mp_gz)
 !
-      end subroutine read_alloc_iso_binary_gz_file
+      end subroutine gz_read_alloc_iso_bin_file
 !
 !  ---------------------------------------------------------------------
 !
