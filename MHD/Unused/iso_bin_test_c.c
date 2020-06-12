@@ -220,6 +220,30 @@ void read_alloc_psf_bin_data(struct psf_data *psf_b, struct psf_bin_work *psf_b_
 	return;
 };
 
+void read_alloc_psf_bin_mesh(const char *bin_name, struct psf_data *psf_b){
+	struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+	read_alloc_psf_bin_node(psf_b, psf_b_WK);
+	read_alloc_psf_bin_ele(psf_b, psf_b_WK);
+	close_read_psf_bin_file(psf_b_WK);
+	return;
+};
+
+void read_alloc_psf_bin_file(const char *bin_name, struct psf_data *psf_b){
+	struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+	read_alloc_psf_bin_data(psf_b, psf_b_WK);
+	close_read_psf_bin_file(psf_b_WK);
+	return;
+};
+
+void read_alloc_iso_bin_file(const char *bin_name, struct psf_data *psf_b){
+	struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+	read_alloc_psf_bin_node(psf_b, psf_b_WK);
+	read_alloc_psf_bin_ele(psf_b, psf_b_WK);
+	read_alloc_psf_bin_data(psf_b, psf_b_WK);
+	close_read_psf_bin_file(psf_b_WK);
+	return;
+};
+
 
 struct psf_bin_work * open_read_gz_psf_bin_file(const char *gzip_name){
 	struct psf_bin_work *psf_z_WK = init_psf_bin_work();
@@ -380,6 +404,31 @@ void gz_read_alloc_psf_bin_data(struct psf_data *psf_z, struct psf_bin_work *psf
 	return;
 };
 
+void gz_read_alloc_psf_bin_mesh(const char *gzip_name, struct psf_data *psf_z){
+	struct psf_bin_work *psf_z_WK = open_read_gz_psf_bin_file(gzip_name);
+	gz_read_alloc_psf_bin_node(psf_z, psf_z_WK);
+	gz_read_alloc_psf_bin_ele(psf_z, psf_z_WK);
+	close_read_gz_psf_bin_file(psf_z_WK);
+	return;
+};
+
+void gz_read_alloc_psf_bin_file(const char *gzip_name, struct psf_data *psf_z){
+	struct psf_bin_work *psf_z_WK = open_read_gz_psf_bin_file(gzip_name);
+	gz_read_alloc_psf_bin_data(psf_z, psf_z_WK);
+	close_read_gz_psf_bin_file(psf_z_WK);
+	return;
+};
+
+void gz_read_alloc_iso_bin_file(const char *gzip_name, struct psf_data *psf_z){
+	struct psf_bin_work *psf_z_WK = open_read_gz_psf_bin_file(gzip_name);
+	gz_read_alloc_psf_bin_node(psf_z, psf_z_WK);
+	gz_read_alloc_psf_bin_ele(psf_z, psf_z_WK);
+	gz_read_alloc_psf_bin_data(psf_z, psf_z_WK);
+	close_read_gz_psf_bin_file(psf_z_WK);
+	return;
+};
+
+
 void swap_4byte(char *buf8){
 	int j;
 	char tmpbuf[4];
@@ -486,24 +535,14 @@ int main(){
 	char bin_name[255] = "iso_temp2.800001.inb";
 	char gzip_name[255] = "iso_temp3.800001.inb.gz";
 	
-	struct psf_data *psf_b = (struct psf_data *) malloc(sizeof(struct psf_data));;
-	struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
-	read_alloc_psf_bin_node(psf_b, psf_b_WK);
-	read_alloc_psf_bin_ele(psf_b, psf_b_WK);
-	
-	read_alloc_psf_bin_data(psf_b, psf_b_WK);
-	close_read_psf_bin_file(psf_b_WK);
-	
+	struct psf_data *psf_b = (struct psf_data *) malloc(sizeof(struct psf_data));
+	read_alloc_iso_bin_file(bin_name, psf_b);
 	check_psf_read(psf_b);
 	
-	struct psf_data *psf_z = (struct psf_data *) malloc(sizeof(struct psf_data));;
-	struct psf_bin_work *psf_z_WK = open_read_gz_psf_bin_file(gzip_name);
-	gz_read_alloc_psf_bin_node(psf_z, psf_z_WK);
-	gz_read_alloc_psf_bin_ele(psf_z, psf_z_WK);
-	gz_read_alloc_psf_bin_data(psf_z, psf_z_WK);
-	close_read_gz_psf_bin_file(psf_z_WK);
-	
+	struct psf_data *psf_z = (struct psf_data *) malloc(sizeof(struct psf_data));
+	gz_read_alloc_iso_bin_file(gzip_name, psf_z);
 	check_psf_read(psf_z);
+	
 	compare_psf_data(psf_b, psf_z);
 	return 0;
 }
