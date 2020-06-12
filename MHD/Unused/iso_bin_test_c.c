@@ -102,7 +102,6 @@ int main(){
 	long *n_inter2;
 	long *num_comp;
 	char **name;
-	double *d_nod;
 	
 	long *n_inter_gz, *nele_gz;
 	long eletype_gz;
@@ -111,7 +110,6 @@ int main(){
 	long *n_inter2_gz;
 	long *num_comp_gz;
 	char **name_gz;
-	double *d_nod_gz;
 	
 	struct psf_data *psf_b = (struct psf_data *) malloc(sizeof(struct psf_data));;
 	struct psf_data *psf_z = (struct psf_data *) malloc(sizeof(struct psf_data));;
@@ -243,13 +241,16 @@ int main(){
 	};
 	
 	alloc_psf_field_data_c(psf_b);
-	d_nod = (double *) calloc(psf_b->ncomptot*psf_b->nnod_viz,sizeof(double));
+	double *d_nod = (double *) calloc(psf_b->nnod_viz,sizeof(double));
 	
-	for(i=0;i<psf_b->ncomptot;i++){
+	for(j=0;j<psf_b->ncomptot;j++){
 		psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
 		rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
 		psf_b_WK->ilength = psf_b->nnod_viz * sizeof(double);
-		rawread_64bit_psf(psf_b_WK, &d_nod[psf_b->nnod_viz*i]);
+		rawread_64bit_psf(psf_b_WK, &d_nod[0]);
+		for(i=0;i<psf_b->nnod_viz;i++){
+			psf_b->d_nod[i][j] = d_nod[i];
+		};
 	};
 	
 	
@@ -263,13 +264,13 @@ int main(){
 	printf("name ");
 	for(i=0;i<psf_b->nfield;i++){printf("%d %s \n", i, name[i]);};
 	printf("\n");
-	printf("d_nod_1 %le \n", d_nod[0]);
-	printf("d_nod_2 %le \n", d_nod[1]);
-	printf("d_nod_3 %le \n", d_nod[2]);
+	printf("d_nod_1 %le \n", psf_b->d_nod[0][0]);
+	printf("d_nod_2 %le \n", psf_b->d_nod[1][0]);
+	printf("d_nod_3 %le \n", psf_b->d_nod[2][0]);
 	
-	printf("d_nod_3 %le \n", d_nod[psf_b->nnod_viz-3]);
-	printf("d_nod_2 %le \n", d_nod[psf_b->nnod_viz-2]);
-	printf("d_nod_1 %le \n", d_nod[psf_b->nnod_viz-1]);
+	printf("d_nod_3 %le \n", psf_b->d_nod[psf_b->nnod_viz-3][0]);
+	printf("d_nod_2 %le \n", psf_b->d_nod[psf_b->nnod_viz-2][0]);
+	printf("d_nod_1 %le \n", psf_b->d_nod[psf_b->nnod_viz-1][0]);
 	
 	close_rawfile();
 	
@@ -400,15 +401,18 @@ int main(){
 	};
 	
 	alloc_psf_field_data_c(psf_z);
-	d_nod_gz = (double *) calloc(psf_z->ncomptot*psf_z->nnod_viz,sizeof(double));
+	double *d_nod_gz = (double *) calloc(psf_z->nnod_viz,sizeof(double));
 	
-	for(i=0;i<psf_z->ncomptot;i++){
+	for(j=0;j<psf_z->ncomptot;j++){
 		psf_z_WK->ilength = psf_z_WK->nprocs*sizeof(long);
 		gzread_64bit_psf(psf_z_WK, (char *) psf_b_WK->itmp_mp);
 		psf_z_WK->ilength = psf_z->nnod_viz * sizeof(double);
-		gzread_64bit_psf(psf_z_WK, (char *) &d_nod_gz[psf_z->nnod_viz*i]);
+		gzread_64bit_psf(psf_z_WK, (char *) d_nod_gz);
+		for(i=0;i<psf_z->nnod_viz;i++){
+			psf_z->d_nod[i][j] = d_nod_gz[i];
+		};
 	};
-	
+	free(d_nod_gz);
 	
 	printf("n_inter2_gz ");
 	for(i=0;i<psf_z_WK->nprocs;i++){printf("%ld ", n_inter2_gz[i]);};
@@ -420,13 +424,13 @@ int main(){
 	printf("name_gz ");
 	for(i=0;i<psf_z->nfield;i++){printf("%d %s \n", i, name_gz[i]);};
 	printf("\n");
-	printf("d_nod_gz_1 %le \n", d_nod_gz[0]);
-	printf("d_nod_gz_2 %le \n", d_nod_gz[1]);
-	printf("d_nod_gz_3 %le \n", d_nod_gz[2]);
+	printf("d_nod_gz_1 %le \n", psf_z->d_nod[0][0]);
+	printf("d_nod_gz_2 %le \n", psf_z->d_nod[1][0]);
+	printf("d_nod_gz_3 %le \n", psf_z->d_nod[2][0]);
 	
-	printf("d_nod_gz_3 %le \n", d_nod_gz[psf_z->nnod_viz-3]);
-	printf("d_nod_gz_2 %le \n", d_nod_gz[psf_z->nnod_viz-2]);
-	printf("d_nod_gz_1 %le \n", d_nod_gz[psf_z->nnod_viz-1]);
+	printf("d_nod_gz_3 %le \n", psf_z->d_nod[psf_z->nnod_viz-3][0]);
+	printf("d_nod_gz_2 %le \n", psf_z->d_nod[psf_z->nnod_viz-2][0]);
+	printf("d_nod_gz_1 %le \n", psf_z->d_nod[psf_z->nnod_viz-1][0]);
 	
 	close_gzfile();
 	
@@ -456,8 +460,8 @@ int main(){
 	printf("Error d_nod \n");
 	for(j=0;j<psf_b->ncomptot;j++){
 		for(i=0;i<psf_b->nnod_viz;i++){
-			if(d_nod[i+j*psf_b->nnod_viz] != d_nod_gz[i+j*psf_b->nnod_viz]){
-				printf("%d %d %le %le\n", j, i, d_nod[i+j*psf_b->nnod_viz], d_nod_gz[i+j*psf_b->nnod_viz]);
+			if(psf_z->d_nod[i][j] != psf_z->d_nod[i][j]){
+				printf("%d %d %le %le\n", j, i, psf_z->d_nod[i][j], psf_z->d_nod[i][j]);
 			};
 		};
 	};
