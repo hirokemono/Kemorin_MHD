@@ -97,7 +97,6 @@ int main(){
 	
 	long *n_inter,    *nele;
 	long eletype;
-	double *xx;
 	
 	long *n_inter2;
 	long *num_comp;
@@ -105,7 +104,6 @@ int main(){
 	
 	long *n_inter_gz, *nele_gz;
 	long eletype_gz;
-	double *xx_gz;
 	
 	long *n_inter2_gz;
 	long *num_comp_gz;
@@ -140,14 +138,18 @@ int main(){
 	for(i=0;i<psf_b_WK->nprocs;i++){psf_b->nnod_viz = psf_b->nnod_viz + n_inter[i];};
 	
 	alloc_viz_node_s(psf_b);
-	xx = (double *) calloc(3*psf_b->nnod_viz,sizeof(double));
+	double *xx = (double *) calloc(psf_b->nnod_viz,sizeof(double));
 	
-	for(i=0;i<3;i++){
+	for(j=0;j<3;j++){
 		psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
 		rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
 		psf_b_WK->ilength = psf_b->nnod_viz*sizeof(double);
-		rawread_64bit_psf(psf_b_WK, &xx[psf_b->nnod_viz*i]);
+		rawread_64bit_psf(psf_b_WK, xx);
+		for(i=0;i<psf_b->nnod_viz;i++){
+			psf_b->xx_viz[i][j] = xx[i];
+		};
 	};
+	free(xx);
 	
 	psf_b_WK->ilength = sizeof(long);
 	rawread_64bit_psf(psf_b_WK, &psf_b->nnod_4_ele_viz);
@@ -178,13 +180,16 @@ int main(){
 	for(i=0;i<psf_b_WK->nprocs;i++){printf("%ld ", n_inter[i]);};
 	printf("\n");
 	printf("psf_b->nnod_viz %d \n", psf_b->nnod_viz);
-	printf("xx_1 %le %le %le \n", xx[0], xx[psf_b->nnod_viz  ], xx[2*psf_b->nnod_viz  ]);
-	printf("xx_2 %le %le %le \n", xx[1], xx[psf_b->nnod_viz+1], xx[2*psf_b->nnod_viz+1]);
-	printf("xx_3 %le %le %le \n", xx[2], xx[psf_b->nnod_viz+2], xx[2*psf_b->nnod_viz+2]);
+	printf("xx_1 %le %le %le \n", psf_b->xx_viz[0][0], psf_b->xx_viz[0][1], psf_b->xx_viz[0][2]);
+	printf("xx_2 %le %le %le \n", psf_b->xx_viz[1][0], psf_b->xx_viz[1][1], psf_b->xx_viz[1][2]);
+	printf("xx_3 %le %le %le \n", psf_b->xx_viz[2][0], psf_b->xx_viz[2][1], psf_b->xx_viz[2][2]);
 	
-	printf("xx_1 %le %le %le \n", xx[psf_b->nnod_viz-3], xx[2*psf_b->nnod_viz-3], xx[3*psf_b->nnod_viz-3]);
-	printf("xx_1 %le %le %le \n", xx[psf_b->nnod_viz-2], xx[2*psf_b->nnod_viz-2], xx[3*psf_b->nnod_viz-2]);
-	printf("xx_1 %le %le %le \n", xx[psf_b->nnod_viz-1], xx[2*psf_b->nnod_viz-1], xx[3*psf_b->nnod_viz-1]);
+	printf("xx_3 %le %le %le \n", psf_b->xx_viz[psf_b->nnod_viz-3][0],
+		   psf_b->xx_viz[psf_b->nnod_viz-3][1], psf_b->xx_viz[psf_b->nnod_viz-3][2]);
+	printf("xx_2 %le %le %le \n", psf_b->xx_viz[psf_b->nnod_viz-2][0],
+		   psf_b->xx_viz[psf_b->nnod_viz-2][1], psf_b->xx_viz[psf_b->nnod_viz-2][2]);
+	printf("xx_1 %le %le %le \n", psf_b->xx_viz[psf_b->nnod_viz-1][0],
+		   psf_b->xx_viz[psf_b->nnod_viz-1][1], psf_b->xx_viz[psf_b->nnod_viz-1][2]);
 	
 	printf("psf_b->nnod_4_ele_viz %d \n", psf_b->nnod_4_ele_viz);
 	printf("eletype %d \n", eletype);
@@ -295,14 +300,18 @@ int main(){
 	for(i=0;i<psf_z_WK->nprocs;i++){psf_z->nnod_viz = psf_z->nnod_viz + n_inter_gz[i];};
 	
 	alloc_viz_node_s(psf_z);
-	xx_gz = (double *) calloc(3*psf_z->nnod_viz,sizeof(double));
+	double *xx_gz = (double *) calloc(psf_z->nnod_viz,sizeof(double));
 	
-	for(i=0;i<3;i++){
+	for(j=0;j<3;j++){
 		psf_z_WK->ilength = psf_z_WK->nprocs * sizeof(long);
 		gzread_64bit_psf(psf_z_WK, (char *) psf_z_WK->itmp_mp);
 		psf_z_WK->ilength = psf_z->nnod_viz * sizeof(double);
-		gzread_64bit_psf(psf_z_WK, (char *) &xx_gz[i*psf_z->nnod_viz]);
+		gzread_64bit_psf(psf_z_WK, (char *) xx_gz);
+		for(i=0;i<psf_z->nnod_viz;i++){
+			psf_z->xx_viz[i][j] = xx_gz[i];
+		};
 	};
+	free(xx_gz);
 	
 	psf_z_WK->ilength = sizeof(long);
 	gzread_64bit_psf(psf_z_WK, (char *) &psf_z->nnod_4_ele_viz);
@@ -335,13 +344,16 @@ int main(){
 	printf("\n");
 	printf("psf_z->nnod_viz %d \n", psf_z->nnod_viz);
 	
-	printf("xx_gz_1 %le %le %le \n", xx_gz[0], xx_gz[psf_z->nnod_viz  ], xx_gz[2*psf_z->nnod_viz  ]);
-	printf("xx_gz_2 %le %le %le \n", xx_gz[1], xx_gz[psf_z->nnod_viz+1], xx_gz[2*psf_z->nnod_viz+1]);
-	printf("xx_gz_3 %le %le %le \n", xx_gz[2], xx_gz[psf_z->nnod_viz+2], xx_gz[2*psf_z->nnod_viz+2]);
+	printf("xx_gz_1 %le %le %le \n", psf_z->xx_viz[0][0], psf_z->xx_viz[0][1], psf_z->xx_viz[0][2]);
+	printf("xx_gz_2 %le %le %le \n", psf_z->xx_viz[1][0], psf_z->xx_viz[1][1], psf_z->xx_viz[1][2]);
+	printf("xx_gz_3 %le %le %le \n", psf_z->xx_viz[2][0], psf_z->xx_viz[2][1], psf_z->xx_viz[2][2]);
 	
-	printf("xx_gz_1 %le %le %le \n", xx_gz[psf_z->nnod_viz-3], xx_gz[2*psf_z->nnod_viz-3], xx_gz[3*psf_z->nnod_viz-3]);
-	printf("xx_gz_1 %le %le %le \n", xx_gz[psf_z->nnod_viz-2], xx_gz[2*psf_z->nnod_viz-2], xx_gz[3*psf_z->nnod_viz-2]);
-	printf("xx_gz_1 %le %le %le \n", xx_gz[psf_z->nnod_viz-1], xx_gz[2*psf_z->nnod_viz-1], xx_gz[3*psf_z->nnod_viz-1]);
+	printf("xx_gz_3 %le %le %le \n", psf_z->xx_viz[psf_z->nnod_viz-3][0],
+		   psf_z->xx_viz[psf_z->nnod_viz-3][1], psf_z->xx_viz[psf_z->nnod_viz-3][2]);
+	printf("xx_gz_2 %le %le %le \n", psf_z->xx_viz[psf_z->nnod_viz-2][0],
+		   psf_z->xx_viz[psf_z->nnod_viz-2][1], psf_z->xx_viz[psf_z->nnod_viz-2][2]);
+	printf("xx_gz_1 %le %le %le \n", psf_z->xx_viz[psf_z->nnod_viz-1][0],
+		   psf_z->xx_viz[psf_z->nnod_viz-1][1], psf_z->xx_viz[psf_z->nnod_viz-1][2]);
 	
 	printf("psf_z->nnod_4_ele_viz %d \n", psf_z->nnod_4_ele_viz);
 	printf("eletype_gz %d \n", eletype_gz);
@@ -439,11 +451,11 @@ int main(){
 	printf("\n");
 	
 	
-	printf("Error xx \n");
+	printf("Error xx_viz \n");
 	for(j=0;j<3;j++){
 		for(i=0;i<psf_b->nnod_viz;i++){
-			if(xx[i+j*psf_b->nnod_viz] != xx_gz[i+j*psf_b->nnod_viz]){
-				printf("%d %d %le %le\n", j, i, xx[i+j*psf_b->nnod_viz], xx_gz[i+j*psf_b->nnod_viz]);
+			if(psf_b->xx_viz[i][j] != psf_z->xx_viz[i][j]){
+				printf("%d %d %le %le\n", j, i, psf_b->xx_viz[i][j], psf_z->xx_viz[i][j]);
 			};
 		};
 	};
