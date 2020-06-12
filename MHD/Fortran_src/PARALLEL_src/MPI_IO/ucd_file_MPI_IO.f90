@@ -10,7 +10,7 @@
 !!      subroutine write_ucd_data_mpi_b(IO_param,                       &
 !!     &          nnod, num_field, ntot_comp, ncomp_field,              &
 !!     &          field_name, d_nod, istack_merged_intnod)
-!!      subroutine mpi_write_ucd_mesh_data_b                            &
+!!      subroutine write_ucd_mesh_data_mpi_b                            &
 !!     &         (IO_param, nnod, nele, nnod_ele, xx, ie,               &
 !!     &          istack_merged_intnod, istack_merged_ele)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -89,7 +89,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine mpi_write_ucd_mesh_data_b                              &
+      subroutine write_ucd_mesh_data_mpi_b                              &
      &         (IO_param, nnod, nele, nnod_ele, xx, ie,                 &
      &          istack_merged_intnod)
 !
@@ -139,7 +139,7 @@
         call mpi_write_int8_vector_b(IO_param, num64(1), ie(1,nd))
       end do
 !
-      end subroutine mpi_write_ucd_mesh_data_b
+      end subroutine write_ucd_mesh_data_mpi_b
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
