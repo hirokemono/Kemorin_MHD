@@ -79,13 +79,17 @@ void alloc_set_grd_field_file_name(int iformat_ucd_file, const char *ucd_header,
 	
 	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
 		sprintf(ucd_m->string, "%s.0.grd.gz",ucd_header);
-	} else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
+	}else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
 		sprintf(ucd_m->string, "%s.0.vtg.gz",ucd_header);
-	} else if(iformat_ucd_file == IFLAG_SURF_UDT){
+    }else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ) {
+        sprintf(ucd_m->string, "%s.0.sgd.gz",ucd_header);
+    }else if(iformat_ucd_file == IFLAG_SURF_SDT) {
+        sprintf(ucd_m->string, "%s.0.sgd",ucd_header);
+	}else if(iformat_ucd_file == IFLAG_SURF_UDT){
 		sprintf(ucd_m->string, "%s.0.grd",ucd_header);
-	} else if(iformat_ucd_file == IFLAG_SURF_VTD){
+	}else if(iformat_ucd_file == IFLAG_SURF_VTD){
 		sprintf(ucd_m->string, "%s.0.vtg",ucd_header);
-	} else {
+	}else{
 		sprintf(ucd_m->string, "%s.0.inp",ucd_header);
 	};
 	return;

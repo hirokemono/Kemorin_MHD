@@ -71,13 +71,6 @@ static void close_read_psf_bin_file(struct psf_bin_work *psf_b_WK){
 static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
     int i, j;
     
-    psf_b_WK->ilength = sizeof(long);
-    rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
-    /*
-     printf("psf_b_WK->nprocs %d \n", psf_b_WK->nprocs);
-     */
-    psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
-    
     long *n_inter =  (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
     rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
@@ -152,14 +145,6 @@ static int read_alloc_psf_ele_bin(struct psf_data *psf_b, struct psf_bin_work *p
 
 static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
     int i, j;
-    long nprocs2 = 0;
-    
-    psf_b_WK->ilength = sizeof(long);
-    rawread_64bit_psf(psf_b_WK, &nprocs2);
-    if(psf_b_WK->nprocs != nprocs2){
-        printf("Number of processes is wrong!\n");
-    };
-    
     long *n_inter2 =  (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
     rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
@@ -212,6 +197,10 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
 int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
     int iflag_datatype;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+    psf_b_WK->ilength = sizeof(long);
+    rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
+    psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
+    
     read_alloc_psf_node_bin(psf_b, psf_b_WK);
     iflag_datatype = read_alloc_psf_ele_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
@@ -220,16 +209,33 @@ int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
 
 int read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b){
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+    
+    psf_b_WK->ilength = sizeof(long);
+    rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
+    psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
+    
     read_alloc_psf_data_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
     return 0;
 };
 
 int read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b){
+    long nprocs2;
     int iflag_datatype;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
+    psf_b_WK->ilength = sizeof(long);
+    rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
+    psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
+    
     read_alloc_psf_node_bin(psf_b, psf_b_WK);
     iflag_datatype = read_alloc_psf_ele_bin(psf_b, psf_b_WK);
+    
+    psf_b_WK->ilength = sizeof(long);
+    rawread_64bit_psf(psf_b_WK, &nprocs2);
+    if(psf_b_WK->nprocs != nprocs2){
+        printf("Number of processes is wrong!\n");
+    };
+    
     read_alloc_psf_data_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
     return iflag_datatype;

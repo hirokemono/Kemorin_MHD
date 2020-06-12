@@ -40,13 +40,6 @@ static void close_read_psf_bin_gz_file(struct psf_bin_work *psf_z_WK){
 static void read_alloc_psf_node_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
     int i, j;
     
-    psf_z_WK->ilength = sizeof(long);
-    gzread_64bit_psf(psf_z_WK, (char *) &psf_z_WK->nprocs);
-    /*
-     printf("psf_z_WK->nprocs %d \n", psf_z_WK->nprocs);
-     */
-    psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
-    
     long *n_inter_gz =  (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     psf_z_WK->ilength = psf_z_WK->nprocs * sizeof(long);
     gzread_64bit_psf(psf_z_WK, (char *) psf_z_WK->itmp_mp);
@@ -122,14 +115,6 @@ static int read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work
 
 static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
     int i, j;
-    
-    long nprocs2_gz = 0;
-    psf_z_WK->ilength = sizeof(long);
-    gzread_64bit_psf(psf_z_WK, (char *) &nprocs2_gz);
-    if(psf_z_WK->nprocs != nprocs2_gz){
-        printf("Number of processes is wrong!\n");
-    };
-    
     long *n_inter2_gz =  (long *) calloc(psf_z_WK->nprocs,sizeof(long));
     
     psf_z_WK->ilength = psf_z_WK->nprocs*sizeof(long);
@@ -185,6 +170,10 @@ static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_wo
 int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
 	int iflag_datatype;
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
+    psf_z_WK->ilength = sizeof(long);
+    gzread_64bit_psf(psf_z_WK, (char *) &psf_z_WK->nprocs);
+    psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
+    
     read_alloc_psf_node_bin_gz(psf_z, psf_z_WK);
     iflag_datatype = read_alloc_psf_ele_bin_gz(psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(psf_z_WK);
@@ -193,6 +182,10 @@ int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
 
 int read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z){
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
+    
+    psf_z_WK->ilength = sizeof(long);
+    gzread_64bit_psf(psf_z_WK, (char *) &psf_z_WK->nprocs);
+    psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     read_alloc_psf_data_bin_gz(psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(psf_z_WK);
     return 0;
@@ -201,8 +194,20 @@ int read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z){
 int read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z){
 	int iflag_datatype;
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
+    psf_z_WK->ilength = sizeof(long);
+    gzread_64bit_psf(psf_z_WK, (char *) &psf_z_WK->nprocs);
+    psf_z_WK->itmp_mp = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
+    
     read_alloc_psf_node_bin_gz(psf_z, psf_z_WK);
     iflag_datatype = read_alloc_psf_ele_bin_gz(psf_z, psf_z_WK);
+    
+    long nprocs2_gz = 0;
+    psf_z_WK->ilength = sizeof(long);
+    gzread_64bit_psf(psf_z_WK, (char *) &nprocs2_gz);
+    if(psf_z_WK->nprocs != nprocs2_gz){
+        printf("Number of processes is wrong!\n");
+    };
+    
     read_alloc_psf_data_bin_gz(psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(psf_z_WK);
     return iflag_datatype;
