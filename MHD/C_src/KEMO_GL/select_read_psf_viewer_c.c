@@ -21,6 +21,10 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *u
         iflag_datatype = read_kemoview_ucd_gz(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTK_GZ){
         iflag_datatype = read_kemoview_vtk_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_PSF_BIN_GZ){
+        iflag_datatype = read_alloc_iso_bin_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_PSF_BIN){
+        iflag_datatype = read_alloc_iso_bin(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTK){
         iflag_datatype = read_kemoview_vtk(ucd_m->string, viz_s);
     } else {
@@ -42,6 +46,10 @@ int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
         iflag_datatype = read_psf_grd_gz(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
         iflag_datatype = read_psf_vtg_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ){
+        iflag_datatype = read_alloc_psf_mesh_bin_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_SDT){
+        iflag_datatype = read_alloc_psf_mesh_bin(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTD){
         iflag_datatype = read_psf_vtg(ucd_m->string, viz_s);
     } else {
@@ -65,6 +73,10 @@ void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_h
         ierr = read_psf_udt_gz(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
         ierr = read_psf_vtd_gz(ucd_m->string, viz_s);
+	} else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ){
+		ierr = read_alloc_psf_bin_gz(ucd_m->string, viz_s);
+    } else if(iformat_ucd_file == IFLAG_SURF_SDT){
+		ierr = read_alloc_psf_bin(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTD){
         ierr = read_psf_vtd(ucd_m->string, viz_s);
     } else {

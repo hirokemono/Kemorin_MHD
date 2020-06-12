@@ -78,14 +78,17 @@ static void read_alloc_psf_node_bin_gz(struct psf_data *psf_z, struct psf_bin_wo
     return;
 };
 
-static void read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
+static int read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
     int i, j;
     long eletype_gz;
+	int iflag_datatype = IFLAG_SURFACES;
     
     psf_z_WK->ilength = sizeof(long);
     gzread_64bit_psf(psf_z_WK, (char *) &psf_z->nnod_4_ele_viz);
     gzread_64bit_psf(psf_z_WK, (char *) &eletype_gz);
     /*    printf("eletype_gz %d \n", eletype_gz); */
+	
+	if(psf_z->nnod_4_ele_viz == 2){iflag_datatype = IFLAG_LINES;};
     
     long *nele_gz = (long *)calloc(psf_z_WK->nprocs,sizeof(long));
     psf_z_WK->ilength = psf_z_WK->nprocs * sizeof(long);
@@ -114,7 +117,7 @@ static void read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_wor
         };
     };
     free(ie_gz);
-    return;
+    return iflag_datatype;
 };
 
 static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
@@ -162,6 +165,7 @@ static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_wo
     psf_z->ncomptot = psf_z->istack_comp[psf_z->nfield];
     
     alloc_psf_field_data_c(psf_z);
+    alloc_psf_data_s(psf_z);
     double *d_nod_gz = (double *) calloc(psf_z->nnod_viz,sizeof(double));
     
     for(j=0;j<psf_z->ncomptot;j++){
@@ -178,27 +182,29 @@ static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_wo
 };
 
 
-void read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+	int iflag_datatype;
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
     read_alloc_psf_node_bin_gz(psf_z, psf_z_WK);
-    read_alloc_psf_ele_bin_gz(psf_z, psf_z_WK);
+    iflag_datatype = read_alloc_psf_ele_bin_gz(psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(psf_z_WK);
-    return;
+    return iflag_datatype;
 };
 
-void read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+int read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z){
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
     read_alloc_psf_data_bin_gz(psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(psf_z_WK);
-    return;
+    return 0;
 };
 
-void read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+int read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+	int iflag_datatype;
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
     read_alloc_psf_node_bin_gz(psf_z, psf_z_WK);
-    read_alloc_psf_ele_bin_gz(psf_z, psf_z_WK);
+    iflag_datatype = read_alloc_psf_ele_bin_gz(psf_z, psf_z_WK);
     read_alloc_psf_data_bin_gz(psf_z, psf_z_WK);
     close_read_psf_bin_gz_file(psf_z_WK);
-    return;
+    return iflag_datatype;
 };
 

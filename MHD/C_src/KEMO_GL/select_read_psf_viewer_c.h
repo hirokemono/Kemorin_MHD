@@ -20,6 +20,8 @@
 #include "read_psf_vtk_data_c.h"
 #include "read_psf_data_gz_c.h"
 #include "read_psf_vtk_data_gz_c.h"
+#include "read_psf_bin_data_c.h"
+#include "read_psf_bin_data_gz_c.h"
 
 /* prototypes */
 

@@ -45,21 +45,29 @@ void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *
 			struct kv_string *ucd_m){
 	alloc_kvstringitem(strlen(ucd_header)+25, ucd_m);
 	
-	if (iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
-		sprintf(ucd_m->string, "%s.%d.udt.gz",ucd_header, istep);
-	} else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
-		sprintf(ucd_m->string, "%s.%d.vtd.gz",ucd_header, istep);
-	} else if (iformat_ucd_file == IFLAG_SURF_UCD_GZ) {
-		sprintf(ucd_m->string, "%s.%d.inp.gz",ucd_header, istep);
-	} else if(iformat_ucd_file == IFLAG_SURF_VTK_GZ){
+	if      (iformat_ucd_file == IFLAG_SURF_VTK_GZ){
 		sprintf(ucd_m->string, "%s.%d.vtk.gz",ucd_header, istep);
-	} else if(iformat_ucd_file == IFLAG_SURF_VTD){
-		sprintf(ucd_m->string, "%s.%d.vtd",ucd_header, istep);
-	} else if(iformat_ucd_file == IFLAG_SURF_UDT){
-		sprintf(ucd_m->string, "%s.%d.udt",ucd_header, istep);
-	} else if(iformat_ucd_file == IFLAG_SURF_VTK){
+	}else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
+		sprintf(ucd_m->string, "%s.%d.vtd.gz",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ) {
+		sprintf(ucd_m->string, "%s.%d.sdt.gz",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_PSF_BIN_GZ) {
+		sprintf(ucd_m->string, "%s.%d.psf.gz",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
+		sprintf(ucd_m->string, "%s.%d.udt.gz",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_SURF_UCD_GZ) {
+		sprintf(ucd_m->string, "%s.%d.inp.gz",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_SURF_VTK){
 		sprintf(ucd_m->string, "%s.%d.vtk",ucd_header, istep);
-	} else {
+	}else if(iformat_ucd_file == IFLAG_SURF_VTD){
+		sprintf(ucd_m->string, "%s.%d.vtd",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_SURF_SDT) {
+		sprintf(ucd_m->string, "%s.%d.sdt",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_PSF_BIN) {
+		sprintf(ucd_m->string, "%s.%d.psf",ucd_header, istep);
+	}else if(iformat_ucd_file == IFLAG_SURF_UDT){
+		sprintf(ucd_m->string, "%s.%d.udt",ucd_header, istep);
+	}else{
 		sprintf(ucd_m->string, "%s.%d.inp",ucd_header, istep);
 	};
 	return;

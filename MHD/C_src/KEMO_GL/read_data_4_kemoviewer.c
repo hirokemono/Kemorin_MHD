@@ -92,14 +92,22 @@ static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
 	int iflag_datatype;
 	
-    if(   psf_m->iflag_psf_file == IFLAG_SURF_UDT || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
-       || psf_m->iflag_psf_file == IFLAG_SURF_VTD || psf_m->iflag_psf_file == IFLAG_SURF_VTD_GZ){
+	if(psf_m->iflag_psf_file == IFLAG_SURF_UDT
+	   || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
+	   || psf_m->iflag_psf_file == IFLAG_SURF_VTD
+	   || psf_m->iflag_psf_file == IFLAG_SURF_VTD_GZ
+	   || psf_m->iflag_psf_file == IFLAG_SURF_SDT
+	   || psf_m->iflag_psf_file == IFLAG_SURF_SDT_GZ){
 		iflag_datatype = check_gzip_psf_grd_first(psf_m->iflag_psf_file, psf_m->psf_header->string, 
 					ucd_tmp);
 		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header->string, 
 					ucd_tmp);
-	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
-              || psf_m->iflag_psf_file == IFLAG_SURF_VTK || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ){
+	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD
+			  || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
+			  || psf_m->iflag_psf_file == IFLAG_SURF_VTK
+			  || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ
+			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN
+			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN_GZ){
 		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, psf_m->psf_header->string, ucd_tmp);
 	}
     deallc_all_psf_data(psf_s);

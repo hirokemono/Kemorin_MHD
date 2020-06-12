@@ -542,7 +542,9 @@
 }
 
 - (IBAction) OpenPsfFile:(id)pId{
-	NSArray *psfFileTypes = [NSArray arrayWithObjects:@"udt",@"inp",@"vtk",@"vtd",@"gz",
+	NSArray *psfFileTypes = [NSArray arrayWithObjects:
+                             @"psf",@"PSF",@"sdt",@"SDT",
+                             @"udt",@"inp",@"vtk",@"vtd",@"gz",
                              @"UDT",@"INP",@"VTK",@"VTD",@"GZ",nil];
 	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];
 	[PsfOpenPanelObj setTitle:@"Choose surface rendering data"];

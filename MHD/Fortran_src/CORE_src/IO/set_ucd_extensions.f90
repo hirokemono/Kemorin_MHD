@@ -14,12 +14,12 @@
 !!      character(len = kchara) function add_grd_extension(file_head)
 !!                put ".grd" at the end
 !!
-!!      character(len = kchara) function add_ucb_extension(file_head)
-!!                put ".inb" at the end
-!!      character(len = kchara) function add_udb_extension(file_head)
-!!                put ".udb" at the end
-!!      character(len = kchara) function add_grb_extension(file_head)
-!!                put ".grb" at the end
+!!      character(len = kchara) function add_sdt_extension(file_head)
+!!                put ".sdt" at the end
+!!      character(len = kchara) function add_psf_extension(file_head)
+!!                put ".psf" at the end
+!!      character(len = kchara) function add_sgd_extension(file_head)
+!!                put ".sgd" at the end
 !!
 !!      character(len = kchara) function add_pvtk_extension(file_head)
 !!                put ".pvtk" at the end
@@ -62,9 +62,9 @@
       character(len=3), parameter, private :: udt_ext = "udt"
       character(len=3), parameter, private :: grd_ext = "grd"
 !
-      character(len=3), parameter, private :: inb_ext = "inb"
-      character(len=3), parameter, private :: udb_ext = "udb"
-      character(len=3), parameter, private :: grb_ext = "grb"
+      character(len=3), parameter, private :: psf_ext = "psf"
+      character(len=3), parameter, private :: sdt_ext = "sdt"
+      character(len=3), parameter, private :: sgd_ext = "sgd"
 !
       character(len=3), parameter, private :: vtk_ext = "vtk"
       character(len=3), parameter, private :: vtd_ext = "vtd"
@@ -107,33 +107,33 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      character(len = kchara) function add_ucb_extension(file_head)
+      character(len = kchara) function add_sdt_extension(file_head)
 !
       character(len=kchara), intent(in) :: file_head
 !
-      add_ucb_extension = add_3chara_extension(file_head, inb_ext)
+      add_sdt_extension = add_3chara_extension(file_head, sdt_ext)
 !
-      end function add_ucb_extension
+      end function add_sdt_extension
 !
 !-----------------------------------------------------------------------
 !
-      character(len = kchara) function add_udb_extension(file_head)
+      character(len = kchara) function add_psf_extension(file_head)
 !
       character(len=kchara), intent(in) :: file_head
 !
-      add_udb_extension = add_3chara_extension(file_head, udb_ext)
+      add_psf_extension = add_3chara_extension(file_head, psf_ext)
 !
-      end function add_udb_extension
+      end function add_psf_extension
 !
 !-----------------------------------------------------------------------
 !
-      character(len = kchara) function add_grb_extension(file_head)
+      character(len = kchara) function add_sgd_extension(file_head)
 !
       character(len=kchara), intent(in) :: file_head
 !
-      add_grb_extension = add_3chara_extension(file_head, grb_ext)
+      add_sgd_extension = add_3chara_extension(file_head, sgd_ext)
 !
-      end function add_grb_extension
+      end function add_sgd_extension
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

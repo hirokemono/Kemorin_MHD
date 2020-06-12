@@ -62,12 +62,16 @@
 #define IFLAG_SURF_UCD   11
 #define IFLAG_SURF_VTD   20
 #define IFLAG_SURF_VTK   21
+#define IFLAG_SURF_SDT   30
+#define IFLAG_PSF_BIN    31
 
 #define IFLAG_SURF_MESH_GZ  101
 #define IFLAG_SURF_UDT_GZ   110
 #define IFLAG_SURF_UCD_GZ   111
 #define IFLAG_SURF_VTD_GZ   120
 #define IFLAG_SURF_VTK_GZ   121
+#define IFLAG_SURF_SDT_GZ   130
+#define IFLAG_PSF_BIN_GZ    131
 
 #define OFF 0
 #define ON  1

@@ -87,10 +87,10 @@ static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work 
      for(i=0;i<psf_b_WK->nprocs;i++){printf("%ld ", n_inter[i]);};
      printf("\n");
      */
-    free(n_inter);
     
     psf_b->nnod_viz = 0;
     for(i=0;i<psf_b_WK->nprocs;i++){psf_b->nnod_viz = psf_b->nnod_viz + n_inter[i];};
+    free(n_inter);
     
     alloc_viz_node_s(psf_b);
     double *xx = (double *) calloc(psf_b->nnod_viz,sizeof(double));
@@ -109,15 +109,18 @@ static void read_alloc_psf_node_bin(struct psf_data *psf_b, struct psf_bin_work 
     return;
 };
 
-static void read_alloc_psf_ele_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
-    int i, j;
-    long eletype;
-    
-    psf_b_WK->ilength = sizeof(long);
+static int read_alloc_psf_ele_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
+	int i, j;
+	long eletype;
+	int iflag_datatype = IFLAG_SURFACES;
+	
+	psf_b_WK->ilength = sizeof(long);
     rawread_64bit_psf(psf_b_WK, &psf_b->nnod_4_ele_viz);
     rawread_64bit_psf(psf_b_WK, &eletype);
     /*    printf("eletype %d \n", eletype); */
-    
+	
+	if(psf_b->nnod_4_ele_viz == 2){iflag_datatype = IFLAG_LINES;};
+	
     long *nele = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
     psf_b_WK->ilength = psf_b_WK->nprocs * sizeof(long);
     rawread_64bit_psf(psf_b_WK, psf_b_WK->itmp_mp);
@@ -144,7 +147,7 @@ static void read_alloc_psf_ele_bin(struct psf_data *psf_b, struct psf_bin_work *
             psf_b->ie_viz[i][j] = ie[i];
         };
     };
-    return;
+    return iflag_datatype;
 };
 
 static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work *psf_b_WK){
@@ -190,6 +193,7 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
     psf_b->ncomptot = psf_b->istack_comp[psf_b->nfield];
     
     alloc_psf_field_data_c(psf_b);
+    alloc_psf_data_s(psf_b);
     double *d_nod = (double *) calloc(psf_b->nnod_viz,sizeof(double));
     
     for(j=0;j<psf_b->ncomptot;j++){
@@ -205,27 +209,29 @@ static void read_alloc_psf_data_bin(struct psf_data *psf_b, struct psf_bin_work 
 };
 
 
-void read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
+int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
+    int iflag_datatype;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
     read_alloc_psf_node_bin(psf_b, psf_b_WK);
-    read_alloc_psf_ele_bin(psf_b, psf_b_WK);
+    iflag_datatype = read_alloc_psf_ele_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
-    return;
+    return iflag_datatype;
 };
 
-void read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b){
+int read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b){
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
     read_alloc_psf_data_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
-    return;
+    return 0;
 };
 
-void read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b){
+int read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b){
+    int iflag_datatype;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
     read_alloc_psf_node_bin(psf_b, psf_b_WK);
-    read_alloc_psf_ele_bin(psf_b, psf_b_WK);
+    iflag_datatype = read_alloc_psf_ele_bin(psf_b, psf_b_WK);
     read_alloc_psf_data_bin(psf_b, psf_b_WK);
     close_read_psf_bin_file(psf_b_WK);
-    return;
+    return iflag_datatype;
 };
 

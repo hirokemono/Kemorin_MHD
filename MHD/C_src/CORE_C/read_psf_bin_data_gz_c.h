@@ -18,8 +18,8 @@
 
 /*  prototype  */
 
-void read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z);
-void read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z);
-void read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z);
+int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z);
+int read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z);
+int read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z);
 
 #endif /* read_psf_bin_data_c_gz_h_ */

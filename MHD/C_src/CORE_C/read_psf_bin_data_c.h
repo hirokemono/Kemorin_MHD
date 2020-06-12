@@ -33,8 +33,8 @@ struct psf_bin_work{
 struct psf_bin_work * init_psf_bin_work();
 void dealloc_psf_bin_work(struct psf_bin_work *psf_b_WK);
 
-void read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b);
-void read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b);
-void read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b);
+int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b);
+int read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b);
+int read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b);
 
 #endif /* read_psf_bin_data_c_h_ */
