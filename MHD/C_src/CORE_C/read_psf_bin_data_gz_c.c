@@ -7,20 +7,20 @@
 
 #include "read_psf_bin_data_gz_c.h"
 
-void gzread_64bit_psf(struct psf_bin_work *psf_z_WK, char *textbuf){
+static void gzread_64bit_psf(struct psf_bin_work *psf_z_WK, char *textbuf){
     gzread_64bit_f(&psf_z_WK->iflag_swap, &psf_z_WK->ilength, 
                    textbuf, &psf_z_WK->ierr);
     return;
 };
 
-void gzread_64bit_psfchara(struct psf_bin_work *psf_z_WK, char *textbuf){
+static void gzread_64bit_psfchara(struct psf_bin_work *psf_z_WK, char *textbuf){
     gzread_64bit_f(&psf_z_WK->iflag_keep, &psf_z_WK->ilength, 
                    textbuf, &psf_z_WK->ierr);
     return;
 };
 
 
-struct psf_bin_work * open_read_psf_bin_gz_file(const char *gzip_name){
+static struct psf_bin_work * open_read_psf_bin_gz_file(const char *gzip_name){
     struct psf_bin_work *psf_z_WK = init_psf_bin_work();
     int itmp_gz = 0;
     open_rd_gzfile(gzip_name);
@@ -31,13 +31,13 @@ struct psf_bin_work * open_read_psf_bin_gz_file(const char *gzip_name){
     
     return psf_z_WK;
 };
-void close_read_psf_bin_gz_file(struct psf_bin_work *psf_z_WK){
+static void close_read_psf_bin_gz_file(struct psf_bin_work *psf_z_WK){
     close_gzfile();
     dealloc_psf_bin_work(psf_z_WK);
     return;
 };
 
-void read_alloc_psf_node_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
+static void read_alloc_psf_node_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
     int i, j;
     
     psf_z_WK->ilength = sizeof(long);
@@ -78,7 +78,7 @@ void read_alloc_psf_node_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf
     return;
 };
 
-void read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
+static void read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
     int i, j;
     long eletype_gz;
     
@@ -117,7 +117,7 @@ void read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_
     return;
 };
 
-void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
+static void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK){
     int i, j;
     
     long nprocs2_gz = 0;

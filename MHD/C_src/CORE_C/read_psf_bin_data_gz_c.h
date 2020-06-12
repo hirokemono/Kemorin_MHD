@@ -18,15 +18,6 @@
 
 /*  prototype  */
 
-void gzread_64bit_psf(struct psf_bin_work *psf_z_WK, char *textbuf);
-void gzread_64bit_psfchara(struct psf_bin_work *psf_z_WK, char *textbuf);
-
-struct psf_bin_work * open_read_psf_bin_gz_file(const char *gzip_name);
-void close_read_psf_bin_gz_file(struct psf_bin_work *psf_z_WK);
-void read_alloc_psf_node_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK);
-void read_alloc_psf_ele_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK);
-void read_alloc_psf_data_bin_gz(struct psf_data *psf_z, struct psf_bin_work *psf_z_WK);
-
 void read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z);
 void read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z);
 void read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z);
