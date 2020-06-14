@@ -13,7 +13,6 @@
       character(len = kchara) :: bin_name = 'iso_temp2.800001.inb'
       character(len = kchara) :: gzip_name = 'iso_temp3.800001.inb.gz'
       character(len = kchara) :: out_name = 'iso_temp_x.800001.vtk'
-      integer(kind = kint), parameter :: id_vtk_file = 16
 !
       type(ucd_data), save :: ucd_b
       type(ucd_data), save :: ucd_z
@@ -31,7 +30,7 @@
       call compare_read_ucd_data(ucd_b, ucd_z)
       call deallocate_ucd_mesh(ucd_b)
 !
-      call write_vtk_file(out_name, id_vtk_file, ucd_z)
+      call write_vtk_file(0, out_name, ucd_z)
       call deallocate_ucd_mesh(ucd_z)
 !
       end program iso_bin_test

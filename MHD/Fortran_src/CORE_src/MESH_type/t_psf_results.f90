@@ -77,8 +77,7 @@
       type(ucd_data) :: read_psf
 !
 !
-      call sel_read_ucd_file                                            &
-     &   (-1, istep, ithree, psf_file_param, read_psf)
+      call sel_read_ucd_file(-1, istep, psf_file_param, read_psf)
 !
       call set_psf_udt_mesh                                             &
      &   (read_psf, psf_dat%psf_nod, psf_dat%psf_ele, psf_dat%psf_phys)

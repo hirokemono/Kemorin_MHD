@@ -21,7 +21,7 @@
       use set_mesh_extensions
       use set_ucd_extensions
       use set_ucd_data_to_type
-      use write_ucd_to_vtk_file
+      use vtk_file_IO
       use nod_phys_send_recv
 !
       type(lic_old_noise) :: noise_p1
@@ -112,7 +112,7 @@
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)
 !
-      call write_udt_data_2_vtk_file(id_rank, file_name, ucd)
+      call write_vtk_file(id_rank, file_name, ucd)
 !
       call calypso_mpi_barrier
       call calypso_MPI_finalize

@@ -97,7 +97,8 @@
       use m_geometry_constants
       use t_ucd_data
       use set_parallel_file_name
-      use write_ucd_to_vtk_file
+      use set_ucd_file_names
+      use vtk_file_IO
 !
       character(len=kchara), intent(in) :: mesh_file_head
       integer(kind = kint), intent(in) :: ist_mesh, num_grp
@@ -123,7 +124,7 @@
         f_tmp = add_int_suffix((igrp+ist_mesh-1), mesh_file_head)
         write(*,*) 'grp_ucd: ', ist_mesh, f_tmp
         file_name = set_parallel_grd_file_name(f_tmp, iflag_vtd, -1)
-        call read_udt_data_2_vtk_grid(-1, file_name, grp_ucd(igrp))
+        call read_vtk_grid(-1, file_name, grp_ucd(igrp))
       end do
 !
 !

@@ -16,7 +16,7 @@ m_dynamobench_data_by_psf.o: $(PSF_UTIL_MAINDIR)/m_dynamobench_data_by_psf.f90 m
 	$(F90) -c $(F90OPTFLAGS) $<
 m_line_from_psf.o: $(PSF_UTIL_MAINDIR)/m_line_from_psf.f90 m_precision.o m_constants.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o m_geometry_constants.o ucd_IO_select.o t_geometry_data.o t_phys_data.o m_psf_edge_connect.o const_section_from_triangle.o set_node_on_edge_quad_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_merdional_grouping_patch.o: $(PSF_UTIL_MAINDIR)/m_merdional_grouping_patch.f90 m_precision.o t_group_data.o skip_comment_f.o set_parallel_file_name.o m_geometry_constants.o t_ucd_data.o write_ucd_to_vtk_file.o
+m_merdional_grouping_patch.o: $(PSF_UTIL_MAINDIR)/m_merdional_grouping_patch.f90 m_precision.o t_group_data.o skip_comment_f.o set_parallel_file_name.o m_geometry_constants.o t_ucd_data.o set_ucd_file_names.o vtk_file_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_psf_edge_connect.o: $(PSF_UTIL_MAINDIR)/m_psf_edge_connect.f90 t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

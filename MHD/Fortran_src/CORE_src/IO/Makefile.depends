@@ -170,15 +170,17 @@ t_ucd_data.o: $(IO_DIR)/t_ucd_data.f90 m_precision.o m_constants.o m_field_file_
 	$(F90) -c $(F90OPTFLAGS) $<
 time_data_IO.o: $(IO_DIR)/time_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ucd_IO_select.o: $(IO_DIR)/ucd_IO_select.F90 m_precision.o m_constants.o m_file_format_switch.o m_field_file_format.o udt_file_IO.o ucd_field_file_IO.o ucd_field_file_IO_b.o write_ucd_to_vtk_file.o set_ucd_file_names.o gz_udt_file_IO.o gz_ucd_field_file_IO.o gz_vtk_file_IO.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o t_ctl_data_4_platforms.o
+ucd_IO_select.o: $(IO_DIR)/ucd_IO_select.F90 m_precision.o m_constants.o m_file_format_switch.o m_field_file_format.o udt_file_IO.o ucd_field_file_IO.o ucd_field_file_IO_b.o vtk_file_IO.o set_ucd_file_names.o gz_udt_file_IO.o gz_ucd_field_file_IO.o gz_vtk_file_IO.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o t_ctl_data_4_platforms.o
 	$(F90) -c $(F90FLAGS) $<
-ucd_data_to_buffer.o: $(IO_DIR)/ucd_data_to_buffer.f90 m_precision.o m_constants.o m_geometry_constants.o
+ucd_data_to_buffer.o: $(IO_DIR)/ucd_data_to_buffer.f90 m_precision.o m_constants.o m_geometry_constants.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ucd_field_file_IO.o: $(IO_DIR)/ucd_field_file_IO.f90 m_precision.o m_machine_parameter.o m_constants.o m_field_file_format.o t_time_data.o t_ucd_data.o time_data_IO.o field_data_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 udt_data_IO.o: $(IO_DIR)/udt_data_IO.f90 m_precision.o m_constants.o ucd_data_to_buffer.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-udt_file_IO.o: $(IO_DIR)/udt_file_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_field_file_format.o t_ucd_data.o set_ucd_file_names.o set_parallel_file_name.o udt_data_IO.o
+udt_file_IO.o: $(IO_DIR)/udt_file_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_ucd_data.o udt_type_data_IO.o udt_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
+udt_type_data_IO.o: $(IO_DIR)/udt_type_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_ucd_data.o udt_data_IO.o ucd_data_to_buffer.o
 	$(F90) -c $(F90OPTFLAGS) $<
 viewer_file_IO.o: $(IO_DIR)/viewer_file_IO.f90 m_precision.o m_file_format_switch.o t_merged_viewer_mesh.o t_file_IO_parameter.o set_parallel_file_name.o viewer_mesh_data_IO.o viewer_group_data_IO.o set_mesh_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -186,11 +188,11 @@ viewer_group_data_IO.o: $(IO_DIR)/viewer_group_data_IO.f90 m_precision.o m_const
 	$(F90) -c $(F90OPTFLAGS) $<
 viewer_mesh_data_IO.o: $(IO_DIR)/viewer_mesh_data_IO.f90 m_precision.o m_constants.o t_viewer_mesh.o t_merged_viewer_mesh.o m_viewer_mesh_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-vtk_data_IO.o: $(IO_DIR)/vtk_data_IO.f90 m_precision.o m_constants.o vtk_data_to_buffer.o m_phys_constants.o m_geometry_constants.o skip_comment_f.o
+vtk_data_IO.o: $(IO_DIR)/vtk_data_IO.f90 m_precision.o m_constants.o m_phys_constants.o vtk_data_to_buffer.o m_geometry_constants.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 vtk_data_to_buffer.o: $(IO_DIR)/vtk_data_to_buffer.f90 m_precision.o m_constants.o m_phys_constants.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-vtk_file_IO.o: $(IO_DIR)/vtk_file_IO.f90 m_precision.o m_constants.o vtk_data_IO.o t_ucd_data.o m_phys_constants.o
+vtk_file_IO.o: $(IO_DIR)/vtk_file_IO.f90 m_precision.o m_constants.o m_machine_parameter.o vtk_data_IO.o t_ucd_data.o set_parallel_file_name.o set_ucd_file_names.o set_ucd_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_bmp_image.o: $(IO_DIR)/write_bmp_image.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -199,7 +201,5 @@ write_control_elements.o: $(IO_DIR)/write_control_elements.f90 m_precision.o m_m
 write_djds_matrix_data.o: $(IO_DIR)/write_djds_matrix_data.f90 m_precision.o m_machine_parameter.o t_solver_djds.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_field_labels.o: $(IO_DIR)/write_field_labels.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
-write_ucd_to_vtk_file.o: $(IO_DIR)/write_ucd_to_vtk_file.f90 m_precision.o m_constants.o m_machine_parameter.o m_field_file_format.o t_ucd_data.o set_ucd_file_names.o set_parallel_file_name.o set_ucd_extensions.o vtk_file_IO.o vtk_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
