@@ -252,7 +252,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &   'write gzipped binary mesh and fielddata by MPI-IO: ',         &
+     &   'write gzipped binary mesh and field data by MPI-IO: ',        &
      &    trim(gzip_name)
 !
       call open_write_gz_mpi_file_b                                     &
@@ -286,7 +286,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &   'write gzipped binary field data by MPI-IO: ', trim(gzip_name)
+     &   'write gzipped binary field file by MPI-IO: ', trim(gzip_name)
 !
       call open_write_gz_mpi_file_b                                     &
      &   (gzip_name, nprocs, my_rank, IO_param)
@@ -314,7 +314,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Write gzipped binary merged grid file: ', trim(gzip_name)
+     &  'Write gzipped binary grid file by MPI-IO: ', trim(gzip_name)
 !
       call open_write_gz_mpi_file_b                                     &
      &   (gzip_name, nprocs, my_rank, IO_param)

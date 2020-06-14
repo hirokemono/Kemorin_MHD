@@ -22,6 +22,11 @@
 !!      subroutine read_gz_vtk_phys(id_rank, gzip_name, ucd)
 !!      subroutine read_gz_vtk_grid(id_rank, gzip_name, ucd)
 !!        type(ucd_data), intent(inout) :: ucd
+!!
+!!      subroutine read_alloc_gz_vtk_file(id_rank, gzip_name, ucd)
+!!      subroutine read_alloc_gz_vtk_phys(id_rank, gzip_name, ucd)
+!!      subroutine read_alloc_gz_vtk_grid(id_rank, gzip_name, ucd)
+!!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !
       module gz_vtk_file_IO
@@ -33,13 +38,11 @@
 !
       use t_ucd_data
       use t_buffer_4_gzip
-      use gz_vtk_data_IO
+      use gz_udt_to_VTK_data_IO
 !
       implicit none
 !
       type(buffer_4_gzip), private :: zbuf_vtk
-!
-      private :: read_gz_ucd_field_by_vtk, read_gz_ucd_mesh_by_vtk
 !
 !  ---------------------------------------------------------------------
 !
@@ -115,11 +118,8 @@
      &    'Write gzipped VTK data: ', trim(gzip_name)
 !
       call open_wt_gzfile_a(gzip_name, zbuf_vtk)
-      call write_gz_vtk_mesh                                            &
-     &   (ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, zbuf_vtk)
-      call write_gz_vtk_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,    &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf_vtk)
-!
+      call write_gz_ucd_mesh_to_VTK(ucd, zbuf_vtk)
+      call write_gz_ucd_field_to_VTK(ucd, zbuf_vtk)
       call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_vtk_file
@@ -140,8 +140,7 @@
      &    'Write gzipped VTK field: ', trim(gzip_name)
 !
       call open_wt_gzfile_a(gzip_name, zbuf_vtk)
-      call write_gz_vtk_data(ucd%nnod, ucd%num_field, ucd%ntot_comp,    &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd, zbuf_vtk)
+      call write_gz_ucd_field_to_VTK(ucd, zbuf_vtk)
       call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_vtk_phys
@@ -162,8 +161,7 @@
      &    'Write gzipped VTK grid: ', trim(gzip_name)
 !
       call open_wt_gzfile_a(gzip_name, zbuf_vtk)
-      call write_gz_vtk_mesh                                            &
-     &   (ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, zbuf_vtk)
+      call write_gz_ucd_mesh_to_VTK(ucd, zbuf_vtk)
       call close_gzfile_a(zbuf_vtk)
 !
       end subroutine write_gz_vtk_grid
@@ -184,8 +182,8 @@
      &     'Read gzipped ascii VTK file: ', trim(gzip_name)
 !
       call open_rd_gzfile_a(gzip_name, zbuf_vtk)
-      call read_gz_ucd_mesh_by_vtk(ucd, zbuf_vtk)
-      call read_gz_ucd_field_by_vtk(ucd, zbuf_vtk)
+      call read_gz_ucd_grd_from_VTK(ucd, zbuf_vtk)
+      call read_gz_udt_field_from_VTK(ucd, zbuf_vtk)
       call close_gzfile_a(zbuf_vtk)
 !
       end subroutine read_gz_vtk_file
@@ -205,7 +203,7 @@
      &     'Read gzipped ascii VTK fields: ', trim(gzip_name)
 !
       call open_rd_gzfile_a(gzip_name, zbuf_vtk)
-      call read_gz_ucd_field_by_vtk(ucd, zbuf_vtk)
+      call read_gz_udt_field_from_VTK(ucd, zbuf_vtk)
       call close_gzfile_a(zbuf_vtk)
 !
       end subroutine read_gz_vtk_phys
@@ -225,102 +223,72 @@
      &     'Read gzipped ascii VTK mesh: ', trim(gzip_name)
 !
       call open_rd_gzfile_a(gzip_name, zbuf_vtk)
-      call read_gz_ucd_mesh_by_vtk(ucd, zbuf_vtk)
+      call read_gz_ucd_grd_from_VTK(ucd, zbuf_vtk)
       call close_gzfile_a(zbuf_vtk)
 !
       end subroutine read_gz_vtk_grid
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine read_gz_ucd_mesh_by_vtk(ucd, zbuf)
+      subroutine read_alloc_gz_vtk_file(id_rank, gzip_name, ucd)
 !
-      use gz_vtk_data_IO
+      use skip_gz_comment
 !
+      character(len=kchara), intent(in) :: gzip_name
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      integer(kind = kint_gl) :: inod, iele
 !
 !
-      call read_gz_vtk_node_head(ucd%nnod, zbuf)
-      call allocate_ucd_node(ucd)
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &     'Read gzipped ascii VTK file: ', trim(gzip_name)
 !
-      call read_gz_vtk_each_field                                       &
-     &   (ucd%nnod, ithree, ucd%nnod, ucd%xx, zbuf)
+      call open_rd_gzfile_a(gzip_name, zbuf_vtk)
+      call read_alloc_gz_ucd_grd_from_VTK(ucd, zbuf_vtk)
+      call read_alloc_gz_udt_fld_from_VTK(ucd, zbuf_vtk)
+      call close_gzfile_a(zbuf_vtk)
 !
-!$omp parallel do
-      do inod = 1, ucd%nnod
-        ucd%inod_global(inod) = inod
-      end do
-!$omp end parallel do
-!
-      call read_gz_vtk_connect_head(ucd%nele, ucd%nnod_4_ele, zbuf)
-      call allocate_ucd_ele(ucd)
-!
-      call read_gz_vtk_connect_data                                     &
-     &   (ucd%nele, ucd%nnod_4_ele, ucd%nele, ucd%ie, zbuf)
-      call read_gz_vtk_cell_type(ucd%nele, zbuf)
-!
-!$omp parallel do
-      do iele = 1, ucd%nele
-        ucd%iele_global(iele) = iele
-      end do
-!$omp end parallel do
-!
-      end subroutine read_gz_ucd_mesh_by_vtk
+      end subroutine read_alloc_gz_vtk_file
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_ucd_field_by_vtk(ucd, zbuf)
+      subroutine read_alloc_gz_vtk_phys(id_rank, gzip_name, ucd)
 !
-      use gz_vtk_data_IO
+      use skip_gz_comment
 !
+      character(len=kchara), intent(in) :: gzip_name
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      type(ucd_data) :: tmp
-!
-      integer(kind = kint) :: iflag_end, ncomp_field
-      character(len=kchara)  :: field_name
-      real(kind = kreal), allocatable :: d_tmp(:,:)
 !
 !
-      call read_gz_vtk_fields_head(ucd%nnod, zbuf)
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &     'Read gzipped ascii VTK fields: ', trim(gzip_name)
 !
-      tmp%nnod = ucd%nnod
-      ucd%num_field = 0
-      ucd%ntot_comp = 0
-      call allocate_ucd_phys_name(ucd)
-      call allocate_ucd_phys_data(ucd)
+      call open_rd_gzfile_a(gzip_name, zbuf_vtk)
+      call read_alloc_gz_udt_fld_from_VTK(ucd, zbuf_vtk)
+      call close_gzfile_a(zbuf_vtk)
 !
-      do
-        call read_gz_vtk_each_field_head                                &
-     &     (iflag_end, ncomp_field, field_name, zbuf)
-        if(iflag_end .ne. izero) exit
+      end subroutine read_alloc_gz_vtk_phys
 !
-        tmp%num_field = ucd%num_field
-        tmp%ntot_comp = ucd%ntot_comp
-        call allocate_ucd_phys_name(tmp)
-        call allocate_ucd_phys_data(tmp)
+!-----------------------------------------------------------------------
 !
-        call append_new_ucd_field_name                                  &
-     &     (field_name, ncomp_field, tmp, ucd)
+      subroutine read_alloc_gz_vtk_grid(id_rank, gzip_name, ucd)
 !
-        allocate(d_tmp(ucd%nnod,ncomp_field))
+      use skip_gz_comment
 !
-        call read_gz_vtk_each_field                                     &
-     &     (ucd%nnod, ncomp_field, ucd%nnod, d_tmp(1,1), zbuf)
-        call append_new_ucd_field_data(ncomp_field, d_tmp,              &
-     &      tmp, ucd)
+      character(len=kchara), intent(in) :: gzip_name
+      integer, intent(in) :: id_rank
+      type(ucd_data), intent(inout) :: ucd
 !
-        deallocate(d_tmp)
-        call deallocate_ucd_data(tmp)
 !
-        iflag_end = izero
-      end do
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &     'Read gzipped ascii VTK mesh: ', trim(gzip_name)
 !
-      end subroutine read_gz_ucd_field_by_vtk
+      call open_rd_gzfile_a(gzip_name, zbuf_vtk)
+      call read_alloc_gz_ucd_grd_from_VTK(ucd, zbuf_vtk)
+      call close_gzfile_a(zbuf_vtk)
+!
+      end subroutine read_alloc_gz_vtk_grid
 !
 !-----------------------------------------------------------------------
 !

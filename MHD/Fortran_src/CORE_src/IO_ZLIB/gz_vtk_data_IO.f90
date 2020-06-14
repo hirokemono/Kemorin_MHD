@@ -7,10 +7,18 @@
 !> @brief Output routine for gzipped VTK data segments
 !!
 !!@verbatim
+!!      subroutine write_gz_vtk_fields_head(nnod, zbuf)
+!!      subroutine write_gz_vtk_each_field                              &
+!!     &         (ntot_nod, ncomp_field, nnod, d_nod, zbuf)
 !!      subroutine write_gz_vtk_data(nnod, num_field, ntot_comp,        &
 !!     &          ncomp_field, field_name, d_nod, zbuf)
-!!      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie, zbuf)
 !!       type(buffer_4_gzip), intent(inout) :: zbuf
+!!
+!!      subroutine write_gz_vtk_node_head(nnod, zbuf)
+!!      subroutine write_gz_vtk_connect_head(nele, nnod_ele, zbuf)
+!!      subroutine write_gz_vtk_cell_type(nele, nnod_ele, zbuf)
+!!      subroutine write_gz_vtk_connect_data                            &
+!!     &         (ntot_ele, nnod_ele, nele, ie, zbuf)
 !!
 !!      subroutine read_gz_vtk_fields_head(nnod, zbuf)
 !!      subroutine read_gz_vtk_each_field_head                          &
@@ -48,10 +56,7 @@
 !
       implicit none
 !
-      private :: write_gz_vtk_fields_head
-      private :: write_gz_vtk_each_field_head, write_gz_vtk_each_field
-      private :: write_gz_vtk_node_head, write_gz_vtk_connect_head
-      private :: write_gz_vtk_cell_type, write_gz_vtk_connect_data
+      private :: write_gz_vtk_each_field_head
 !
 !  ---------------------------------------------------------------------
 !
@@ -244,8 +249,6 @@
       integer(kind = kint) :: icou, j
 !
 !
-      call write_gz_vtk_fields_head(nnod, zbuf)
-!
       IF(ntot_comp .ge. 1) then
         icou = 1
         do j = 1, num_field
@@ -258,28 +261,6 @@
       end if
 !
       end subroutine write_gz_vtk_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_gz_vtk_mesh(nnod, nele, nnod_ele, xx, ie, zbuf)
-!
-      integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint_gl), intent(in) :: nnod, nele
-      integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      call write_gz_vtk_node_head(nnod, zbuf)
-      call write_gz_vtk_each_field(nnod, n_vector, nnod, xx, zbuf)
-!
-      call write_gz_vtk_connect_head(nele, nnod_ele, zbuf)
-      call write_gz_vtk_connect_data(nele, nnod_ele, nele, ie, zbuf)
-!
-      call write_gz_vtk_cell_type(nele, nnod_ele, zbuf)
-!
-      end subroutine write_gz_vtk_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

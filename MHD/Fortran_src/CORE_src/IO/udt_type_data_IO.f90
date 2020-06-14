@@ -4,7 +4,7 @@
 !! @author H. Matsui
 !! @date   Programmed in July, 2006
 !
-!> @brief gzipped UCD format data IO
+!> @brief  UCD format data IO
 !!
 !!@verbatim
 !!      subroutine write_udt_type_fields(id_ucd, ucd)

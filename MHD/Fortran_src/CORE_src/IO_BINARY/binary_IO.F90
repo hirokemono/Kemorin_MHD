@@ -86,7 +86,7 @@
       type(binary_IO_buffer), intent(inout) :: bbuf
 !
 !
-      open(bbuf%id_binary, file = file_name,                            &
+      open(bbuf%id_binary, file = file_name, STATUS = 'OLD',            &
      &     FORM='UNFORMATTED', ACCESS='STREAM', POSITION='APPEND')
 !
       end subroutine open_append_binary_file
@@ -103,7 +103,7 @@
 !
 !
       bbuf%ierr_bin = 0
-      open(bbuf%id_binary, file = file_name,                            &
+      open(bbuf%id_binary, file = file_name, STATUS = 'OLD',            &
      &     FORM='UNFORMATTED', ACCESS='STREAM')
       call read_endian_flag(bbuf, id_rank)
 !

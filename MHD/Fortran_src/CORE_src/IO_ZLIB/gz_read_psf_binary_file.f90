@@ -12,6 +12,12 @@
 !!      subroutine gz_read_alloc_psf_bin_file(gzip_name, nprocs, ucd_z)
 !!        character(len = kchara), intent(in) :: gzip_name
 !!        type(ucd_data), intent(inout) :: ucd_z
+!!
+!!      subroutine gz_read_iso_bin_file(gzip_name, ucd_z)
+!!      subroutine gz_read_psf_bin_grid(gzip_name, nprocs, ucd_z)
+!!      subroutine gz_read_psf_bin_file(gzip_name, nprocs, ucd_z)
+!!        character(len = kchara), intent(in) :: gzip_name
+!!        type(ucd_data), intent(inout) :: ucd_z
 !!@endverbatim
 !
       module gz_read_psf_binary_file
@@ -25,6 +31,9 @@
 !
       implicit none
 !
+      type(buffer_4_gzip), save, private :: zbuf_ucd
+      integer(kind = kint_gl), allocatable, private :: itmp1_mp(:)
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -35,54 +44,24 @@
 !
       use gz_binary_IO
       use gzip_file_access
-      use gz_read_psf_binary_data
+      use gz_read_udt_from_bin_data
 !
       character(len = kchara), intent(in) :: gzip_name
       type(ucd_data), intent(inout) :: ucd_z
 !
-      type(buffer_4_gzip), save :: zbuf
-      integer :: nprocs, nprocs2
-      integer(kind = kint_gl), allocatable :: itmp1_mp_gz(:)
+      integer :: nprocs
 !
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf)
-      call gz_read_one_integer_b(zbuf, nprocs)
-      allocate(itmp1_mp_gz(nprocs))
+      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call gz_read_one_integer_b(zbuf_ucd, nprocs)
+      allocate(itmp1_mp(nprocs))
 !
-      call read_psf_node_num_bin_gz                                     &
-     &   (nprocs, ucd_z%nnod, itmp1_mp_gz, zbuf)
-!
-      call allocate_ucd_node(ucd_z)
-      call read_psf_node_data_bin_gz                                    &
-     &   (nprocs, ucd_z%nnod, ucd_z%inod_global, ucd_z%xx,              &
-     &    itmp1_mp_gz, zbuf)
-!
-      call read_psf_ele_num_bin_gz                                      &
-     &   (nprocs, ucd_z%nele, ucd_z%nnod_4_ele, itmp1_mp_gz, zbuf)
-!
-      call allocate_ucd_ele(ucd_z)
-      call read_psf_ele_connect_bin_gz                                  &
-     &   (nprocs, ucd_z%nele, ucd_z%nnod_4_ele,                         &
-     &    ucd_z%iele_global, ucd_z%ie, itmp1_mp_gz, zbuf)
-!
-!
-      call gz_read_one_integer_b(zbuf, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-!
-      call read_psf_phys_num_bin_gz                                     &
-     &   (nprocs, ucd_z%nnod, ucd_z%num_field, itmp1_mp_gz, zbuf)
-!
-      call allocate_ucd_phys_name(ucd_z)
-      call read_psf_phys_name_bin_gz                                    &
-     &   (ucd_z%num_field, ucd_z%ntot_comp, ucd_z%num_comp,             &
-     &    ucd_z%phys_name, zbuf)
-!
-      call allocate_ucd_phys_data(ucd_z)
-      call read_psf_phys_data_bin_gz                                    &
-     &   (nprocs, ucd_z%nnod, ucd_z%ntot_comp, ucd_z%d_ucd,             &
-     &    itmp1_mp_gz, zbuf)
+      call gz_read_alloc_psf_bin_grid_data                              &
+     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
+      call gz_read_alloc_psf_bin_fld_data                               &
+     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
       call close_gzfile_b
-      deallocate(itmp1_mp_gz)
+      deallocate(itmp1_mp)
 !
       end subroutine gz_read_alloc_iso_bin_file
 !
@@ -92,38 +71,21 @@
 !
       use gz_binary_IO
       use gzip_file_access
-      use gz_read_psf_binary_data
+      use gz_read_udt_from_bin_data
 !
       character(len = kchara), intent(in) :: gzip_name
       integer, intent(inout) :: nprocs
       type(ucd_data), intent(inout) :: ucd_z
 !
-      type(buffer_4_gzip), save :: zbuf
-      integer(kind = kint_gl), allocatable :: itmp1_mp_gz(:)
 !
+      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call gz_read_one_integer_b(zbuf_ucd, nprocs)
+      allocate(itmp1_mp(nprocs))
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf)
-      call gz_read_one_integer_b(zbuf, nprocs)
-      allocate(itmp1_mp_gz(nprocs))
-!
-      call read_psf_node_num_bin_gz                                     &
-     &   (nprocs, ucd_z%nnod, itmp1_mp_gz, zbuf)
-!
-      call allocate_ucd_node(ucd_z)
-      call read_psf_node_data_bin_gz                                    &
-     &   (nprocs, ucd_z%nnod, ucd_z%inod_global, ucd_z%xx,              &
-     &    itmp1_mp_gz, zbuf)
-!
-      call read_psf_ele_num_bin_gz                                      &
-     &   (nprocs, ucd_z%nele, ucd_z%nnod_4_ele, itmp1_mp_gz, zbuf)
-!
-      call allocate_ucd_ele(ucd_z)
-      call read_psf_ele_connect_bin_gz                                  &
-     &   (nprocs, ucd_z%nele, ucd_z%nnod_4_ele,                         &
-     &    ucd_z%iele_global, ucd_z%ie, itmp1_mp_gz, zbuf)
-!
+      call gz_read_alloc_psf_bin_grid_data                              &
+     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
       call close_gzfile_b
-      deallocate(itmp1_mp_gz)
+      deallocate(itmp1_mp)
 !
       end subroutine gz_read_alloc_psf_bin_grid
 !
@@ -133,39 +95,95 @@
 !
       use gz_binary_IO
       use gzip_file_access
-      use gz_read_psf_binary_data
+      use gz_read_udt_from_bin_data
 !
       character(len = kchara), intent(in) :: gzip_name
       integer, intent(in) :: nprocs
       type(ucd_data), intent(inout) :: ucd_z
 !
-      type(buffer_4_gzip), save :: zbuf
-      integer :: nprocs2
-      integer(kind = kint_gl), allocatable :: itmp1_mp_gz(:)
 !
+      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      allocate(itmp1_mp(nprocs))
 !
-      call open_rd_gzfile_b(gzip_name, izero, zbuf)
-!
-      call gz_read_one_integer_b(zbuf, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-      allocate(itmp1_mp_gz(nprocs))
-!
-      call read_psf_phys_num_bin_gz                                     &
-     &   (nprocs, ucd_z%nnod, ucd_z%num_field, itmp1_mp_gz, zbuf)
-!
-      call allocate_ucd_phys_name(ucd_z)
-      call read_psf_phys_name_bin_gz                                    &
-     &   (ucd_z%num_field, ucd_z%ntot_comp, ucd_z%num_comp,             &
-     &    ucd_z%phys_name, zbuf)
-!
-      call allocate_ucd_phys_data(ucd_z)
-      call read_psf_phys_data_bin_gz                                    &
-     &   (nprocs, ucd_z%nnod, ucd_z%ntot_comp, ucd_z%d_ucd,             &
-     &    itmp1_mp_gz, zbuf)
+      call gz_read_alloc_psf_bin_fld_data                               &
+     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
       call close_gzfile_b
-      deallocate(itmp1_mp_gz)
+      deallocate(itmp1_mp)
 !
       end subroutine gz_read_alloc_psf_bin_file
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine gz_read_iso_bin_file(gzip_name, ucd_z)
+!
+      use gz_binary_IO
+      use gzip_file_access
+      use gz_read_udt_from_bin_data
+!
+      character(len = kchara), intent(in) :: gzip_name
+      type(ucd_data), intent(inout) :: ucd_z
+!
+      integer :: nprocs
+!
+!
+      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call gz_read_one_integer_b(zbuf_ucd, nprocs)
+      allocate(itmp1_mp(nprocs))
+!
+      call gz_read_psf_bin_grid_data(nprocs, ucd_z, zbuf_ucd, itmp1_mp)
+      call gz_read_psf_bin_field_data                                   &
+     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
+      call close_gzfile_b
+      deallocate(itmp1_mp)
+!
+      end subroutine gz_read_iso_bin_file
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine gz_read_psf_bin_grid(gzip_name, nprocs, ucd_z)
+!
+      use gz_binary_IO
+      use gzip_file_access
+      use gz_read_udt_from_bin_data
+!
+      character(len = kchara), intent(in) :: gzip_name
+      integer, intent(inout) :: nprocs
+      type(ucd_data), intent(inout) :: ucd_z
+!
+!
+      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      call gz_read_one_integer_b(zbuf_ucd, nprocs)
+      allocate(itmp1_mp(nprocs))
+!
+      call gz_read_psf_bin_grid_data(nprocs, ucd_z, zbuf_ucd, itmp1_mp)
+      call close_gzfile_b
+      deallocate(itmp1_mp)
+!
+      end subroutine gz_read_psf_bin_grid
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine gz_read_psf_bin_file(gzip_name, nprocs, ucd_z)
+!
+      use gz_binary_IO
+      use gzip_file_access
+      use gz_read_udt_from_bin_data
+!
+      character(len = kchara), intent(in) :: gzip_name
+      integer, intent(in) :: nprocs
+      type(ucd_data), intent(inout) :: ucd_z
+!
+!
+      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
+      allocate(itmp1_mp(nprocs))
+!
+      call gz_read_psf_bin_field_data                                   &
+     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
+      call close_gzfile_b
+      deallocate(itmp1_mp)
+!
+      end subroutine gz_read_psf_bin_file
 !
 !  ---------------------------------------------------------------------
 !

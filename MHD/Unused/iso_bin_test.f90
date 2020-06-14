@@ -2,35 +2,49 @@
 !
       use m_precision
       use m_constants
+      use m_field_file_format
 !
+      use t_file_IO_parameter
       use t_ucd_data
-      use read_psf_binary_file
-      use gz_read_psf_binary_file
-      use vtk_file_IO
+      use ucd_IO_select
 !
       implicit none
 !
-      character(len = kchara) :: bin_name = 'iso_temp2.800001.inb'
-      character(len = kchara) :: gzip_name = 'iso_temp3.800001.inb.gz'
-      character(len = kchara) :: out_name = 'iso_temp_x.800001.vtk'
+      type(field_IO_params), parameter :: ucd_param2                    &
+     &   = field_IO_params(iflag_IO = 0,                                &
+     &                     file_prefix = 'iso/iso_temp2',               &
+                           iflag_format = iflag_ucd_bin)
+      type(field_IO_params), parameter :: ucd_param3                    &
+     &   = field_IO_params(iflag_IO = 0,                                &
+     &                     file_prefix = 'iso/iso_temp3',               &
+                           iflag_format = iflag_ucd_bin_gz)
+      type(field_IO_params), parameter :: vtk_out                       &
+     &   = field_IO_params(iflag_IO = 0,                                &
+     &                     file_prefix = 'iso_temp_x',                  &
+                           iflag_format = iflag_vtk)
+!
+      integer(kind = kint), parameter :: istep = 800001
+      type(time_data), save :: t_IO
 !
       type(ucd_data), save :: ucd_b
       type(ucd_data), save :: ucd_z
 !
+      write(*,*) 'sel_read_alloc_ucd_file ucd_b'
+      call sel_read_alloc_ucd_file(0, istep, ucd_param2, ucd_b)
 !
-      call read_alloc_iso_bindary_file(bin_name, ucd_b)
-!
-!      write(*,*) 'nprocs', nprocs
+      write(*,*) 'check_read_ucd_data ucd_b'
       call check_read_ucd_data(ucd_b)
 !
-      call gz_read_alloc_iso_bin_file(gzip_name, ucd_z)
+      write(*,*) 'sel_read_alloc_ucd_file ucd_z'
+      call sel_read_alloc_ucd_file(0, istep, ucd_param3, ucd_z)
 !
-!      write(*,*) 'nprocs_gz', nprocs_gz
+      write(*,*) 'check_read_ucd_data ucd_z'
       call check_read_ucd_data(ucd_z)
+      write(*,*) 'compare_read_ucd_data ucd_z'
       call compare_read_ucd_data(ucd_b, ucd_z)
       call deallocate_ucd_mesh(ucd_b)
 !
-      call write_vtk_file(0, out_name, ucd_z)
+      call sel_write_ucd_file(0, istep, vtk_out, t_IO, ucd_z)
       call deallocate_ucd_mesh(ucd_z)
 !
       end program iso_bin_test

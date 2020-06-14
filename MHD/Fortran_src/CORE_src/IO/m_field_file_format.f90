@@ -130,10 +130,10 @@
       integer(kind = kint), parameter :: iflag_vtd_gz =      43
 !
 !>      Integer flag for UCD data
-      integer(kind = kint), parameter :: iflag_ucd_bin_gz =  12
+      integer(kind = kint), parameter :: iflag_ucd_bin_gz =  73
 !>      Integer flag for UCD data
 !!         (Separated by FEM mesh part and field part)
-      integer(kind = kint), parameter :: iflag_udt_bin_gz =  22
+      integer(kind = kint), parameter :: iflag_udt_bin_gz =  83
 !
 !>      Integer flag for merged gzipped binary data
       integer(kind = kint), parameter :: iflag_sgl_bin_gz = 103

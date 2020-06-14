@@ -7,12 +7,15 @@
 !> @brief Output routine for VTK data segments
 !!
 !!@verbatim
+!!      subroutine write_vtk_fields_head(id_vtk, nnod)
 !!      subroutine write_vtk_each_field                                 &
 !!     &         (id_vtk, ntot_nod, ncomp_field, nnod, d_nod)
-!!
 !!      subroutine write_vtk_data(id_vtk, nnod, num_field, ntot_comp,   &
 !!     &          ncomp_field, field_name, d_nod)
-!!      subroutine write_vtk_mesh(id_vtk, nnod, nele, nnod_ele,  xx, ie)
+!!
+!!      subroutine write_vtk_node_head(id_vtk, nnod)
+!!      subroutine write_vtk_connect_data                               &
+!!     &         (id_vtk, ntot_ele, nnod_ele, nele, ie)
 !!
 !!      subroutine read_vtk_fields_head(id_vtk, nnod)
 !!      subroutine read_vtk_each_field_head                             &
@@ -48,8 +51,7 @@
 !
       implicit none
 !
-      private :: write_vtk_fields_head, write_vtk_each_field_head
-      private :: write_vtk_node_head, write_vtk_connect_data
+      private :: write_vtk_each_field_head
 !
 !  ---------------------------------------------------------------------
 !
@@ -177,18 +179,15 @@
       subroutine write_vtk_data(id_vtk, nnod, num_field, ntot_comp,     &
      &          ncomp_field, field_name, d_nod)
 !
+      integer(kind = kint), intent(in) ::  id_vtk
       integer(kind=kint_gl), intent(in) :: nnod
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
 !
-      integer(kind = kint), intent(in) ::  id_vtk
-!
       integer(kind = kint) :: icou, j
 !
-!
-      call write_vtk_fields_head(id_vtk, nnod)
 !
       IF(ntot_comp .ge. 1) then
         icou = 1
@@ -202,25 +201,6 @@
       end if
 !
       end subroutine write_vtk_data
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_vtk_mesh(id_vtk, nnod, nele, nnod_ele,  xx, ie)
-!
-      integer(kind = kint), intent(in) :: nnod_ele
-      integer(kind = kint_gl), intent(in) :: nnod, nele
-      integer(kind = kint_gl), intent(in) :: ie(nele,nnod_ele)
-      real(kind = kreal), intent(in) :: xx(nnod,3)
-!
-      integer(kind = kint), intent(in) ::  id_vtk
-!
-!
-      call write_vtk_node_head(id_vtk, nnod)
-      call write_vtk_each_field(id_vtk, nnod, ithree, nnod, xx)
-!
-      call write_vtk_connect_data(id_vtk, nele, nnod_ele, nele, ie)
-!
-      end subroutine write_vtk_mesh
 !
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

@@ -95,8 +95,11 @@
 !
       fname_tmp = add_int_suffix(istep_ucd, file_prefix)
 !
-      if (id_rank .ge. 0                                                &
-     &      .and. (itype_file/icent) .eq. (iflag_para/icent)) then
+      if(     mod(itype_file,icent)/iten .eq. iflag_ucd_bin/iten        &
+     &   .or. mod(itype_file,icent)/iten .eq. iflag_udt_bin/iten) then
+        file_name = fname_tmp
+      else if(id_rank .ge. 0                                            &
+     &        .and. (itype_file/icent) .eq. (iflag_para/icent)) then
         file_name = add_process_id(id_rank, fname_tmp)
       else
         file_name = fname_tmp
@@ -147,7 +150,9 @@
 !
       fname_tmp = add_int_suffix(izero, file_prefix)
 !
-      if (id_rank .ge. 0                                                &
+      if(     mod(itype_file,icent)/iten .eq. iflag_udt_bin/iten) then
+        file_name = fname_tmp
+      else if(id_rank .ge. 0                                            &
      &     .and. itype_file/icent .eq. iflag_para/icent) then
         file_name = add_process_id(id_rank, fname_tmp)
       else

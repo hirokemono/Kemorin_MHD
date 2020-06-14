@@ -24,6 +24,13 @@
 !!        integer, intent(in) :: id_rank
 !!        character(len=kchara), intent(in) :: file_name
 !!        type(ucd_data), intent(inout) :: ucd
+!!
+!!      subroutine read_alloc_vtk_file(id_rank, file_name, ucd)
+!!      subroutine read_alloc_vtk_phys(id_rank, file_name, ucd)
+!!      subroutine read_alloc_vtk_grid(id_rank, file_name, ucd)
+!!        integer, intent(in) :: id_rank
+!!        character(len=kchara), intent(in) :: file_name
+!!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !
       module vtk_file_IO
@@ -32,15 +39,13 @@
       use m_constants
       use m_machine_parameter
 !
-      use vtk_data_IO
+      use udt_to_VTK_data_IO
       use t_ucd_data
 !
       implicit none
 !
 !>      file ID for VTK file
       integer(kind = kint), parameter, private :: id_vtk_file = 16
-!
-      private :: read_ucd_mesh_by_vtk, read_ucd_field_by_vtk
 !
 !  ---------------------------------------------------------------------
 !
@@ -103,12 +108,8 @@
 !
       open(id_vtk_file, file=file_name, form='formatted',               &
      &     status ='unknown')
-!
-      call write_vtk_mesh(id_vtk_file, ucd%nnod,                        &
-     &    ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie)
-      call write_vtk_data(id_vtk_file, ucd%nnod, ucd%num_field,         &
-     &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd)
-!
+      call write_ucd_mesh_to_VTK(id_vtk_file, ucd)
+      call write_ucd_field_to_VTK(id_vtk_file, ucd)
       close(id_vtk_file)
 !
       end subroutine write_vtk_file
@@ -127,11 +128,7 @@
 !
       open(id_vtk_file, file=file_name, form='formatted',               &
      &     status ='unknown')
-!
-      call write_vtk_data                                               &
-     &   (id_vtk_file, ucd%nnod, ucd%num_field, ucd%ntot_comp,          &
-     &    ucd%num_comp, ucd%phys_name, ucd%d_ucd)
-!
+      call write_ucd_field_to_VTK(id_vtk_file, ucd)
       close(id_vtk_file)
 !
       end subroutine write_vtk_phys
@@ -150,8 +147,7 @@
 !
       open(id_vtk_file, file=file_name, form='formatted',               &
      &     status ='unknown')
-      call write_vtk_mesh(id_vtk_file, ucd%nnod,                        &
-     &    ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie)
+      call write_ucd_mesh_to_VTK(id_vtk_file, ucd)
       close(id_vtk_file)
 !
       end subroutine write_vtk_grid
@@ -171,8 +167,8 @@
 !
       open(id_vtk_file, file=file_name,                                 &
      &    form='formatted', status ='old')
-      call read_ucd_mesh_by_vtk(id_vtk_file, ucd)
-      call read_ucd_field_by_vtk(id_vtk_file, ucd)
+      call read_ucd_mesh_from_VTK(id_vtk_file, ucd)
+      call read_udt_field_from_VTK(id_vtk_file, ucd)
       close(id_vtk_file)
 !
       end subroutine read_vtk_file
@@ -191,7 +187,7 @@
 !
       open(id_vtk_file, file=file_name,                                 &
      &    form='formatted', status ='old')
-      call read_ucd_field_by_vtk(id_vtk_file, ucd)
+      call read_udt_field_from_VTK(id_vtk_file, ucd)
       close(id_vtk_file)
 !
       end subroutine read_vtk_phys
@@ -210,7 +206,7 @@
 !
       open(id_vtk_file, file=file_name,                                 &
      &    form='formatted', status ='old')
-      call read_ucd_mesh_by_vtk(id_vtk_file, ucd)
+      call read_ucd_mesh_from_VTK(id_vtk_file, ucd)
       close(id_vtk_file)
 !
       end subroutine read_vtk_grid
@@ -218,90 +214,62 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_ucd_mesh_by_vtk(id_vtk, ucd)
+      subroutine read_alloc_vtk_file(id_rank, file_name, ucd)
 !
-      integer(kind = kint), intent(in) ::  id_vtk
+      integer, intent(in) :: id_rank
+      character(len=kchara), intent(in) :: file_name
       type(ucd_data), intent(inout) :: ucd
 !
-      integer(kind = kint_gl) :: inod, iele
 !
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &     'Read ascii VTK file: ', trim(file_name)
 !
-      call read_vtk_node_head(id_vtk, ucd%nnod)
-      call allocate_ucd_node(ucd)
+      open(id_vtk_file, file=file_name,                                 &
+     &    form='formatted', status ='old')
+      call read_alloc_ucd_mesh_from_VTK(id_vtk_file, ucd)
+      call read_alloc_udt_field_from_VTK(id_vtk_file, ucd)
+      close(id_vtk_file)
 !
-      call read_vtk_each_field                                          &
-     &   (id_vtk, ucd%nnod, ithree, ucd%nnod, ucd%xx)
-!
-!$omp parallel do
-      do inod = 1, ucd%nnod
-        ucd%inod_global(inod) = inod
-      end do
-!$omp end parallel do
-!
-      call read_vtk_connect_head(id_vtk, ucd%nele, ucd%nnod_4_ele)
-      call allocate_ucd_ele(ucd)
-!
-      call read_vtk_connect_data                                        &
-     &   (id_vtk, ucd%nele, ucd%nnod_4_ele, ucd%nele, ucd%ie)
-      call read_vtk_cell_type(id_vtk, ucd%nele)
-!
-!$omp parallel do
-      do iele = 1, ucd%nele
-        ucd%iele_global(iele) = iele
-      end do
-!$omp end parallel do
-!
-      end subroutine read_ucd_mesh_by_vtk
+      end subroutine read_alloc_vtk_file
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_ucd_field_by_vtk(id_vtk, ucd)
+      subroutine read_alloc_vtk_phys(id_rank, file_name, ucd)
 !
-      integer(kind = kint), intent(in) ::  id_vtk
+      character(len=kchara), intent(in) :: file_name
+      integer, intent(in) :: id_rank
       type(ucd_data), intent(inout) :: ucd
 !
-      type(ucd_data) :: tmp
 !
-      integer(kind = kint) :: iflag_end, ncomp_field
-      character(len=kchara)  :: field_name
-      real(kind = kreal), allocatable :: d_tmp(:,:)
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &     'Read ascii VTK fields: ', trim(file_name)
 !
+      open(id_vtk_file, file=file_name,                                 &
+     &    form='formatted', status ='old')
+      call read_alloc_udt_field_from_VTK(id_vtk_file, ucd)
+      close(id_vtk_file)
 !
-      call read_vtk_fields_head(id_vtk, ucd%nnod)
-!
-      tmp%nnod =      ucd%nnod
-      ucd%num_field = 0
-      ucd%ntot_comp = 0
-      call allocate_ucd_phys_name(ucd)
-      call allocate_ucd_phys_data(ucd)
-!
-      do
-        call read_vtk_each_field_head                                   &
-     &    (id_vtk, iflag_end, ncomp_field, field_name)
-        if(iflag_end .ne. izero) exit
-!
-        tmp%num_field = ucd%num_field
-        tmp%ntot_comp = ucd%ntot_comp
-        call allocate_ucd_phys_name(tmp)
-        call allocate_ucd_phys_data(tmp)
-!
-        call append_new_ucd_field_name(field_name, ncomp_field,         &
-     &      tmp, ucd)
-!
-        allocate(d_tmp(ucd%nnod,ncomp_field))
-!
-        call read_vtk_each_field                                        &
-     &     (id_vtk, ucd%nnod, ncomp_field, ucd%nnod, d_tmp(1,1))
-        call append_new_ucd_field_data(ncomp_field, d_tmp, tmp, ucd)
-!
-        deallocate(d_tmp)
-        call deallocate_ucd_data(tmp)
-!
-        iflag_end = izero
-      end do
-!
-      end subroutine read_ucd_field_by_vtk
+      end subroutine read_alloc_vtk_phys
 !
 !-----------------------------------------------------------------------
+!
+      subroutine read_alloc_vtk_grid(id_rank, file_name, ucd)
+!
+      character(len=kchara), intent(in) :: file_name
+      integer, intent(in) :: id_rank
+      type(ucd_data), intent(inout) :: ucd
+!
+!
+      if(id_rank.le.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &     'Read ascii VTK mesh: ', trim(file_name)
+!
+      open(id_vtk_file, file=file_name,                                 &
+     &    form='formatted', status ='old')
+      call read_alloc_ucd_mesh_from_VTK(id_vtk_file, ucd)
+      close(id_vtk_file)
+!
+      end subroutine read_alloc_vtk_grid
+!
+! -----------------------------------------------------------------------
 !
       end module vtk_file_IO
