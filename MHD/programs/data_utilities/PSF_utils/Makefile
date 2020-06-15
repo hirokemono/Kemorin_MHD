@@ -4,6 +4,7 @@
 
 PSF_UTIL_MAINDIR = $$(DATA_UTILS_DIR)/PSF_utils
 
+TARGET_PSF_2_VTK = psf_to_vtk
 TARGET_PSF_AVES =  psf_average
 TARGET_PSF_RANGE_AVES =  psf_range_ave
 
@@ -47,6 +48,9 @@ ifdef FORTRAN_C_CONNECT
 endif
 
 SOURCES = $(shell ls *.f90)
+
+MOD_PSF_2_VTK = \
+psf_file_to_VTK.o
 
 MOD_PSF_AVES = \
 psf_rms_aves.o \
@@ -128,6 +132,7 @@ dir_list:
 	@echo 'PSF_UTIL_MAINDIR = $(PSF_UTIL_MAINDIR)' >> $(MAKENAME)
 
 target_list:
+	@echo 'TARGET_PSF_2_VTK =    $$(BUILDDIR)/$(TARGET_PSF_2_VTK)'        >> $(MAKENAME)
 	@echo 'TARGET_PSF_AVES =     $$(BUILDDIR)/$(TARGET_PSF_AVES)'         >> $(MAKENAME)
 	@echo 'TARGET_PSF_RANGE_AVES = $$(BUILDDIR)/$(TARGET_PSF_RANGE_AVES)' >> $(MAKENAME)
 	@echo 'TARGET_DRAW_CZ =      $$(BUILDDIR)/$(TARGET_DRAW_CZ)'          >> $(MAKENAME)
@@ -142,13 +147,21 @@ target_list:
 
 target_task:
 	@echo psf_utils: \
-	'$$(TARGET_PSF_AVES)       $$(TARGET_PSF_RANGE_AVES)'    \
-    '$$(TARGET_DBENCH_ON_PSF)  $$(TARGET_LINE_ON_PSF)'  >> $(MAKENAME)
+	'$$(TARGET_PSF_2_VTK)      $$(TARGET_PSF_AVES)'     \
+	'$$(TARGET_PSF_RANGE_AVES) $$(TARGET_LINE_ON_PSF)'  \
+	'$$(TARGET_DBENCH_ON_PSF)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
 	'$$(TARGET_DRAW_CX) $$(TARGET_DRAW_CY)  ' \
 	'$$(TARGET_FIX_TEMP_PSF) $$(TARGET_FIX_SGS_MF_WK_PSF)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_PSF_2_VTK)': '$$(MOD_PSF_2_VTK)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_2_VTK)' \
+	'$$(MOD_PSF_2_VTK)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
@@ -234,6 +247,8 @@ lib_name:
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
+	@echo  MOD_PSF_2_VTK =  \\       >> $(MAKENAME)
+	@echo  $(MOD_PSF_2_VTK)          >> $(MAKENAME)
 	@echo  MOD_PSF_AVES =  \\        >> $(MAKENAME)
 	@echo  $(MOD_PSF_AVES)           >> $(MAKENAME)
 	@echo  MOD_PSF_RANGE_AVES =  \\  >> $(MAKENAME)

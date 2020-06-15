@@ -12,6 +12,7 @@
 !
       use m_psf_results
       use m_field_file_format
+      use m_section_file_extensions
       use set_parallel_file_name
       use skip_comment_f
 !
@@ -40,8 +41,9 @@
 ! . for local 
 !  ===========
 !
-      call input_ucd_file_format_code                                   &
-     &    (psf_file_param%iflag_format, psf_file_param%file_prefix)
+      write(*,*) 'input file prefix'
+      read(*,*) psf_file_param%file_prefix
+      psf_file_param%iflag_format = section_format_id_from_input()
 !
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
