@@ -1,5 +1,5 @@
-!>@file   ISO_control_label_to_c.f90
-!!@brief  module ISO_control_label_to_c
+!>@file   PSF_control_label_to_c.f90
+!!@brief  module PSF_control_label_to_c
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -29,7 +29,7 @@
 !!      subroutine set_primary_section_coef_flag_f(names)  bind(c)
 !!@endverbatim
 !
-      module ISO_control_label_to_c
+      module PSF_control_label_to_c
 !
       use ISO_C_BINDING
 !
@@ -246,4 +246,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module ISO_control_label_to_c
+      end module PSF_control_label_to_c
