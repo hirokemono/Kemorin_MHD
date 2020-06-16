@@ -9,11 +9,12 @@
 !!@verbatim
 !!      subroutine set_coefs_4_psf(num_const, c_name_psf, const_psf_ctl,&
 !!                c_surf)
-!!      subroutine set_coefs_4_plane(psf_c, c_surf)
-!!      subroutine set_coefs_4_sphere(psf_c, c_surf)
-!!      subroutine set_coefs_4_ellipsode(psf_c, c_surf)
-!!      subroutine set_coefs_4_hyperboloide(psf_c, c_surf)
-!!      subroutine set_coefs_4_parabolic(psf_c, c_surf)
+!!      subroutine set_coefs_4_plane(psf_def_c, c_surf)
+!!      subroutine set_coefs_4_sphere(psf_def_c, c_surf)
+!!      subroutine set_coefs_4_ellipsode(psf_def_c, c_surf)
+!!      subroutine set_coefs_4_hyperboloide(psf_def_c, c_surf)
+!!      subroutine set_coefs_4_parabolic(psf_def_c, c_surf)
+!!        type(psf_define_ctl), intent(in) :: psf_def_c
 !!@endverbatim
 !
       module set_cross_section_coefs
@@ -21,7 +22,7 @@
       use m_precision
 !
       use m_constants
-      use t_control_data_4_psf
+      use t_control_data_4_psf_def
 !
       implicit  none
 !
@@ -136,18 +137,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_coefs_4_plane(psf_c, c_surf)
+      subroutine set_coefs_4_plane(psf_def_c, c_surf)
 !
-      type(psf_ctl), intent(in) :: psf_c
+      type(psf_define_ctl), intent(in) :: psf_def_c
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf_c%psf_normal_ctl%num,            &
-     &    psf_c%psf_normal_ctl%c_tbl, psf_c%psf_normal_ctl%vect, axc)
-      call set_parameter_2_vectors(psf_c%psf_center_ctl%num,            &
-     &    psf_c%psf_center_ctl%c_tbl, psf_c%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf_def_c%psf_normal_ctl%num,        &
+     &    psf_def_c%psf_normal_ctl%c_tbl,                               &
+     &    psf_def_c%psf_normal_ctl%vect, axc)
+      call set_parameter_2_vectors(psf_def_c%psf_center_ctl%num,        &
+     &    psf_def_c%psf_center_ctl%c_tbl,                               &
+     &    psf_def_c%psf_center_ctl%vect, xc)
 !
       c_surf( 1) =  zero
       c_surf( 2) =  zero
@@ -164,18 +167,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_coefs_4_sphere(psf_c, c_surf)
+      subroutine set_coefs_4_sphere(psf_def_c, c_surf)
 !
-      type(psf_ctl), intent(in) :: psf_c
+      type(psf_define_ctl), intent(in) :: psf_def_c
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
       real(kind = kreal) :: xc(3), r
 !
 !
-      call set_parameter_2_vectors(psf_c%psf_center_ctl%num,            &
-     &    psf_c%psf_center_ctl%c_tbl, psf_c%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf_def_c%psf_center_ctl%num,        &
+     &    psf_def_c%psf_center_ctl%c_tbl,                               &
+     &    psf_def_c%psf_center_ctl%vect, xc)
 !
-      r = psf_c%radius_psf_ctl%realvalue
+      r = psf_def_c%radius_psf_ctl%realvalue
 !
       c_surf( 1) =  one
       c_surf( 2) =  one
@@ -192,18 +196,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_coefs_4_ellipsode(psf_c, c_surf)
+      subroutine set_coefs_4_ellipsode(psf_def_c, c_surf)
 !
-      type(psf_ctl), intent(in) :: psf_c
+      type(psf_define_ctl), intent(in) :: psf_def_c
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf_c%psf_center_ctl%num,            &
-     &    psf_c%psf_center_ctl%c_tbl, psf_c%psf_center_ctl%vect, xc)
-      call set_parameter_2_vectors(psf_c%psf_axis_ctl%num,              &
-     &    psf_c%psf_axis_ctl%c_tbl, psf_c%psf_axis_ctl%vect, axc)
+      call set_parameter_2_vectors(psf_def_c%psf_center_ctl%num,        &
+     &    psf_def_c%psf_center_ctl%c_tbl,                               &
+     &    psf_def_c%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf_def_c%psf_axis_ctl%num,          &
+     &    psf_def_c%psf_axis_ctl%c_tbl, psf_def_c%psf_axis_ctl%vect,    &
+     &    axc)
 !
       c_surf(1:9) = zero
       c_surf(10) =  -one
@@ -230,18 +236,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_coefs_4_hyperboloide(psf_c, c_surf)
+      subroutine set_coefs_4_hyperboloide(psf_def_c, c_surf)
 !
-      type(psf_ctl), intent(in) :: psf_c
+      type(psf_define_ctl), intent(in) :: psf_def_c
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf_c%psf_center_ctl%num,            &
-     &    psf_c%psf_center_ctl%c_tbl, psf_c%psf_center_ctl%vect, xc)
-      call set_parameter_2_vectors(psf_c%psf_axis_ctl%num,              &
-     &    psf_c%psf_axis_ctl%c_tbl, psf_c%psf_axis_ctl%vect, axc)
+      call set_parameter_2_vectors(psf_def_c%psf_center_ctl%num,        &
+     &    psf_def_c%psf_center_ctl%c_tbl,                               &
+     &    psf_def_c%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf_def_c%psf_axis_ctl%num,          &
+     &    psf_def_c%psf_axis_ctl%c_tbl, psf_def_c%psf_axis_ctl%vect,    &
+     &    axc)
 !
       c_surf( 1) =  one / (axc(1)*axc(1))
       c_surf( 2) =  one / (axc(2)*axc(2))
@@ -261,18 +269,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_coefs_4_parabolic(psf_c, c_surf)
+      subroutine set_coefs_4_parabolic(psf_def_c, c_surf)
 !
-      type(psf_ctl), intent(in) :: psf_c
+      type(psf_define_ctl), intent(in) :: psf_def_c
       real(kind = kreal), intent(inout) :: c_surf(10)
 !
       real(kind = kreal) :: xc(3), axc(3)
 !
 !
-      call set_parameter_2_vectors(psf_c%psf_center_ctl%num,            &
-     &    psf_c%psf_center_ctl%c_tbl, psf_c%psf_center_ctl%vect, xc)
-      call set_parameter_2_vectors(psf_c%psf_axis_ctl%num,              &
-     &    psf_c%psf_axis_ctl%c_tbl, psf_c%psf_axis_ctl%vect, axc)
+      call set_parameter_2_vectors(psf_def_c%psf_center_ctl%num,        &
+     &    psf_def_c%psf_center_ctl%c_tbl,                               &
+     &    psf_def_c%psf_center_ctl%vect, xc)
+      call set_parameter_2_vectors(psf_def_c%psf_axis_ctl%num,          &
+     &    psf_def_c%psf_axis_ctl%c_tbl, psf_def_c%psf_axis_ctl%vect,    &
+     &    axc)
 !
       c_surf( 1) =  one / (axc(1)*axc(1))
       c_surf( 2) = -one / (axc(2)*axc(2))

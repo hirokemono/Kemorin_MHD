@@ -18,6 +18,7 @@
       implicit none
 !
       private :: set_med_grp_patch_ctl
+      private :: set_med_grp_patch_psf_def_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -132,18 +133,9 @@
         psf_ctl_struct(igrp)%psf_output_type_ctl%iflag = 1
         psf_ctl_struct(igrp)%psf_output_type_ctl%charavalue = 'VTD'
 !
-        psf_ctl_struct(igrp)%section_method_ctl%charavalue = cflag_eq
-!
-        psf_ctl_struct(igrp)%psf_coefs_ctl%num = 1
-        call alloc_control_array_c_r(psf_ctl_struct(igrp)%psf_coefs_ctl)
-        psf_ctl_struct(igrp)%psf_coefs_ctl%c_tbl(1) = 'y'
-        psf_ctl_struct(igrp)%psf_coefs_ctl%vect(1) = -1.0d0
-!
-        psf_ctl_struct(igrp)%psf_area_ctl%num = 1
-        call alloc_control_array_chara                                  &
-     &     (psf_ctl_struct(igrp)%psf_area_ctl)
-        psf_ctl_struct(igrp)%psf_area_ctl%c_tbl(1)                      &
-     &      = femmesh_FUTIL%group%ele_grp%grp_name(igrp)
+        call set_med_grp_patch_psf_def_ctl                              &
+     &     (femmesh_FUTIL%group%ele_grp%grp_name(igrp),                 &
+     &      psf_ctl_struct(igrp)%psf_def_c)
 !
         psf_ctl_struct(igrp)%psf_out_field_ctl%num = 1
         call alloc_control_array_c2                                     &
@@ -155,6 +147,30 @@
       end do
 !
       end subroutine set_med_grp_patch_ctl
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_med_grp_patch_psf_def_ctl(grp_name, psf_def_c)
+!
+      use t_control_data_4_psf_def
+      use set_coefs_of_sections
+!
+      character(len = kchara), intent(in) :: grp_name
+      type(psf_define_ctl), intent(inout) :: psf_def_c
+!
+!
+      psf_def_c%section_method_ctl%charavalue = cflag_eq
+!
+      psf_def_c%psf_coefs_ctl%num = 1
+      call alloc_control_array_c_r(psf_def_c%psf_coefs_ctl)
+      psf_def_c%psf_coefs_ctl%c_tbl(1) = 'y'
+      psf_def_c%psf_coefs_ctl%vect(1) = -1.0d0
+!
+      psf_def_c%psf_area_ctl%num = 1
+      call alloc_control_array_chara(psf_def_c%psf_area_ctl)
+      psf_def_c%psf_area_ctl%c_tbl(1) = grp_name
+!
+      end subroutine set_med_grp_patch_psf_def_ctl
 !
 ! ----------------------------------------------------------------------
 !

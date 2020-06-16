@@ -16,6 +16,9 @@
 !!      subroutine set_label_iso_define_control_f(names)  bind(c)
 !!      subroutine set_label_fld_on_iso_control_f(names)  bind(c)
 !!      subroutine set_label_iso_type_f(names)  bind(c)
+!!
+!!      integer(c_int) function num_label_psf_define_control_f() bind(c)
+!!      subroutine set_label_psf_define_control_f(names)  bind(c)
 !!@endverbatim
 !
       module ISO_control_label_to_c
@@ -64,7 +67,7 @@
 !
       integer(c_int) function num_label_fld_on_iso_control_f() bind(c)
 !
-      use t_control_data_4_fld_on_iso
+      use t_control_data_4_fld_on_psf
 !
       num_label_fld_on_iso_control_f = num_label_fld_on_iso_control()
       return
@@ -107,7 +110,7 @@
 !
       subroutine set_label_fld_on_iso_control_f(names)  bind(c)
 !
-      use t_control_data_4_fld_on_iso
+      use t_control_data_4_fld_on_psf
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -124,6 +127,61 @@
 !
       call set_label_iso_type(names)
       end subroutine set_label_iso_type_f
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(c_int) function num_label_psf_define_control_f() bind(c)
+!
+      use t_control_data_4_psf_def
+!
+      num_label_psf_define_control_f = num_label_psf_define_control()
+      return
+      end function num_label_psf_define_control_f
+!
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_label_psf_def_type_f() bind(c)
+!
+      use set_coefs_of_sections
+!
+      num_label_psf_def_type_f = num_label_psf_def_type()
+      return
+      end function num_label_psf_def_type_f
+!
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
+!
+      use set_coefs_of_sections
+!
+      num_label_psf_def_type_grp_f = num_label_psf_def_type_grp()
+      return
+      end function num_label_psf_def_type_grp_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_psf_define_control_f(names)  bind(c)
+!
+      use t_control_data_4_psf_def
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_psf_define_control(names)
+      end subroutine set_label_psf_define_control_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_psf_def_type_grp_f(names)  bind(c)
+!
+      use set_coefs_of_sections
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_psf_def_type_grp(names)
+      end subroutine set_label_psf_def_type_grp_f
 !
 !  ---------------------------------------------------------------------
 !

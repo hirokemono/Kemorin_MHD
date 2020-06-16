@@ -55,7 +55,7 @@
 !
       use m_machine_parameter
       use t_read_control_elements
-      use t_control_data_4_psf
+      use t_control_data_4_psf_def
       use t_control_array_real
       use t_control_array_character
       use t_control_array_chara2real
@@ -66,7 +66,7 @@
 !
       type pvr_section_ctl
         character(len = kchara) :: fname_sect_ctl
-        type(psf_ctl) :: psf_c
+        type(psf_define_ctl) :: psf_def_c
         type(read_real_item) :: opacity_ctl
       end type pvr_section_ctl
 !
@@ -78,8 +78,11 @@
 !
 !     4th level for area group
 !
-      character(len=kchara) :: hd_pvr_opacity =   'opacity_ctl'
-      private :: hd_pvr_opacity
+      character(len=kchara), parameter                                  &
+     &                  :: hd_surface_define =  'surface_define'
+      character(len=kchara), parameter                                  &
+     &                  :: hd_pvr_opacity =   'opacity_ctl'
+      private :: hd_pvr_opacity, hd_surface_define
 !
       private :: read_control_pvr_section_def
       private :: read_pvr_section_ctl
@@ -153,11 +156,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_pvr_section_def                           &
-     &         (id_control, fname_sect_ctl, psf_c)
+     &         (id_control, fname_sect_ctl, psf_def_c)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_sect_ctl
-      type(psf_ctl), intent(inout) :: psf_c
+      type(psf_define_ctl), intent(inout) :: psf_def_c
 !
       type(buffer_for_control) :: c_buf1
 !
@@ -168,7 +171,8 @@
       do
         call load_one_line_from_control(id_control, c_buf1)
         if(check_begin_flag(c_buf1, hd_surface_define)) then
-          call read_section_def_control(id_control, psf_c, c_buf1)
+          call read_section_def_control(id_control, hd_surface_define,  &
+     &                                  psf_def_c, c_buf1)
           exit
         end if
       end do
@@ -188,7 +192,7 @@
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
-      pvr_sect_ctl%psf_c%i_surface_define = 0
+      pvr_sect_ctl%psf_def_c%i_surface_define = 0
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
@@ -198,19 +202,19 @@
           write(*,'(a)', ADVANCE='NO') ' is read from file... '
           pvr_sect_ctl%fname_sect_ctl = third_word(c_buf)
           call read_control_pvr_section_def(id_control+2,               &
-     &        pvr_sect_ctl%fname_sect_ctl, pvr_sect_ctl%psf_c)
+     &        pvr_sect_ctl%fname_sect_ctl, pvr_sect_ctl%psf_def_c)
         end if
         if(check_begin_flag(c_buf, hd_surface_define)) then
           write(*,*) ' is included'
           pvr_sect_ctl%fname_sect_ctl = 'NO_FILE'
-          call read_section_def_control                                 &
-     &       (id_control, pvr_sect_ctl%psf_c, c_buf)
+          call read_section_def_control(id_control, hd_surface_define,  &
+     &                                  pvr_sect_ctl%psf_def_c, c_buf)
         end if
 !
         call read_real_ctl_type                                         &
      &     (c_buf, hd_pvr_opacity, pvr_sect_ctl%opacity_ctl)
       end do
-      pvr_sect_ctl%psf_c%i_surface_define = 1
+      pvr_sect_ctl%psf_def_c%i_surface_define = 1
 !
       end subroutine read_pvr_section_ctl
 !
@@ -235,11 +239,9 @@
       do i = 1, pvr_scts_c%num_pvr_sect_ctl
         call MPI_BCAST(pvr_scts_c%pvr_sect_ctl(i)%fname_sect_ctl,       &
      &      kchara, CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-        call MPI_BCAST(pvr_scts_c%pvr_sect_ctl(i)%psf_c%i_psf_ctl,      &
-     &      1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
         call bcast_section_def_control                                  &
-     &     (pvr_scts_c%pvr_sect_ctl(i)%psf_c)
+     &     (pvr_scts_c%pvr_sect_ctl(i)%psf_def_c)
         call bcast_ctl_type_r1(pvr_scts_c%pvr_sect_ctl(i)%opacity_ctl)
       end do
 !
@@ -331,8 +333,8 @@
       type(pvr_section_ctl), intent(inout) :: new_pvr_sect_c
 !
 !
-      call dup_control_4_psf                                            &
-     &   (org_pvr_sect_c%psf_c, new_pvr_sect_c%psf_c)
+      call dup_control_4_psf_def                                        &
+     &   (org_pvr_sect_c%psf_def_c, new_pvr_sect_c%psf_def_c)
       new_pvr_sect_c%fname_sect_ctl = org_pvr_sect_c%fname_sect_ctl
 !
       call copy_real_ctl(org_pvr_sect_c%opacity_ctl,                    &
@@ -347,7 +349,7 @@
       type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
 !
 !
-      call dealloc_cont_dat_4_psf(pvr_sect_ctl%psf_c)
+      call dealloc_cont_dat_4_psf_def(pvr_sect_ctl%psf_def_c)
       pvr_sect_ctl%opacity_ctl%iflag =    0
 !
       end subroutine dealloc_pvr_section_ctl

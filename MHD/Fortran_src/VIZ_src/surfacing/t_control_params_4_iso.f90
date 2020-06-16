@@ -211,7 +211,7 @@
       use set_field_comp_for_viz
       use t_group_data
       use t_file_IO_parameter
-      use t_control_data_4_fld_on_iso
+      use t_control_data_4_fld_on_psf
       use t_phys_data
       use t_psf_patch_data
 !
@@ -266,7 +266,7 @@
       use set_area_4_viz
       use set_field_comp_for_viz
       use t_group_data
-      use t_control_data_4_fld_on_iso
+      use t_control_data_4_fld_on_psf
       use t_phys_data
       use t_psf_patch_data
 !

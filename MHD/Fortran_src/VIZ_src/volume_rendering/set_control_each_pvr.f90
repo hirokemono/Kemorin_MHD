@@ -225,8 +225,8 @@
 !
         do i = 1, field_pvr%num_sections
           call s_set_coefs_of_sections                                  &
-     &       (pvr_scts_c%pvr_sect_ctl(i)%psf_c, id_section_method,      &
-     &        field_pvr%coefs(1:10,i), ierr)
+     &       (pvr_scts_c%pvr_sect_ctl(i)%psf_def_c,                     &
+     &        id_section_method, field_pvr%coefs(1:10,i), ierr)
           if(ierr .gt. 0) call calypso_mpi_abort                        &
      &         (ierr, 'Set section parameters for pvr')
 !

@@ -68,7 +68,7 @@
       use t_read_control_elements
       use t_control_array_real
       use t_control_array_character
-      use t_control_data_4_fld_on_iso
+      use t_control_data_4_fld_on_psf
 !
       implicit  none
 !
@@ -103,6 +103,7 @@
       integer(kind = kint), parameter :: n_label_iso_define_ctl = 4
 !
       private :: hd_iso_area, hd_iso_value, hd_iso_comp, hd_iso_field
+      private :: n_label_iso_define_ctl
 !
 !  ---------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
-!>@file   t_control_data_4_fld_on_iso.f90
-!!@brief  module t_control_data_4_fld_on_iso
+!>@file   t_control_data_4_fld_on_psf.f90
+!!@brief  module t_control_data_4_fld_on_psf
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
@@ -44,7 +44,7 @@
 !!    result_value: (Original name: specified_color)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!@endverbatim
 !
-      module t_control_data_4_fld_on_iso
+      module t_control_data_4_fld_on_psf
 !
       use m_precision
 !
@@ -213,4 +213,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_control_data_4_fld_on_iso
+      end module t_control_data_4_fld_on_psf
