@@ -91,7 +91,7 @@
 !>        Structure of isosurface define control
         type(iso_define_ctl) :: iso_def_c
 !>        Structure of fields on isosurface control
-        type(field_on_iso_ctl) :: fld_on_iso_c
+        type(field_on_psf_ctl) :: fld_on_iso_c
 !
 !>        Structure for file prefix
         type(read_character_item) :: iso_file_head_ctl
@@ -125,6 +125,7 @@
       private :: hd_iso_result, hd_field_on_iso
       private :: hd_iso_define, hd_iso_out_type
       private :: hd_isosurf_prefix, hd_iso_file_head
+      private :: n_label_iso_ctl, n_label_iso_ctl_w_dpl
 !
 !  ---------------------------------------------------------------------
 !
@@ -138,7 +139,7 @@
 !
 !
       call init_iso_define_control(iso_c%iso_def_c)
-      call init_fld_on_iso_control(iso_c%fld_on_iso_c)
+      call init_fld_on_psf_control(iso_c%fld_on_iso_c)
 !
       end subroutine init_iso_ctl_stract
 !
@@ -155,7 +156,7 @@
       iso_c%i_iso_ctl =         0
 !
       call dealloc_iso_define_control(iso_c%iso_def_c)
-      call dealloc_fld_on_iso_control(iso_c%fld_on_iso_c)
+      call dealloc_fld_on_psf_control(iso_c%fld_on_iso_c)
 !
       end subroutine dealloc_cont_dat_4_iso
 !
@@ -176,7 +177,7 @@
 !
       call dup_iso_define_control                                       &
      &   (org_iso_c%iso_def_c, new_iso_c%iso_def_c)
-      call dup_fld_on_iso_control                                       &
+      call dup_fld_on_psf_control                                       &
      &   (org_iso_c%fld_on_iso_c, new_iso_c%fld_on_iso_c)
 !
       end subroutine dup_control_4_iso
@@ -199,9 +200,9 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-        call read_fld_on_iso_control(id_control, hd_field_on_iso,       &
+        call read_fld_on_psf_control(id_control, hd_field_on_iso,       &
      &      iso_c%fld_on_iso_c, c_buf)
-        call read_fld_on_iso_control(id_control, hd_iso_result,         &
+        call read_fld_on_psf_control(id_control, hd_iso_result,         &
      &      iso_c%fld_on_iso_c, c_buf)
 !
         call read_iso_define_data                                       &
@@ -237,7 +238,7 @@
       call bcast_ctl_type_c1(iso_c%iso_output_type_ctl)
 !
       call bcast_iso_define_control(iso_c%iso_def_c)
-      call bcast_fld_on_iso_control(iso_c%fld_on_iso_c)
+      call bcast_fld_on_psf_control(iso_c%fld_on_iso_c)
 !
       end subroutine bcast_iso_control_data
 !
@@ -279,7 +280,7 @@
      &                         :: names(n_label_iso_ctl_w_dpl)
 !
 !
-      call set_label_iso_define_control(names(1))
+      call set_label_iso_ctl(names(1))
       call set_control_labels(hd_iso_file_head,  names( 5))
       call set_control_labels(hd_iso_result,     names( 6))
 !

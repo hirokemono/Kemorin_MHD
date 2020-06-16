@@ -9,16 +9,24 @@
 !!      integer(c_int) function num_label_iso_ctl_f() bind(c)
 !!      integer(c_int) function num_label_iso_ctl_w_dpl_f() bind(c)
 !!      integer(c_int) function num_label_iso_define_control_f() bind(c)
-!!      integer(c_int) function num_label_fld_on_iso_control_f() bind(c)
 !!      integer(c_int) function num_label_iso_type_f() bind(c)
 !!
 !!      subroutine set_label_iso_ctl_w_dpl_f(names)  bind(c)
 !!      subroutine set_label_iso_define_control_f(names)  bind(c)
-!!      subroutine set_label_fld_on_iso_control_f(names)  bind(c)
 !!      subroutine set_label_iso_type_f(names)  bind(c)
 !!
+!!      integer(c_int) function num_label_fld_on_psf_control_f() bind(c)
 !!      integer(c_int) function num_label_psf_define_control_f() bind(c)
+!!      integer(c_int) function num_label_psf_def_type_f() bind(c)
+!!      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
+!!      integer(c_int) function num_label_psf_dirs_f() bind(c)
+!!      integer(c_int) function num_label_psf_coefs_f() bind(c)
+!!      subroutine set_label_fld_on_psf_control_f(names)  bind(c)
 !!      subroutine set_label_psf_define_control_f(names)  bind(c)
+!!      subroutine set_label_psf_def_type_grp_f(names)  bind(c)
+!!      subroutine set_label_psf_dirs_f(names)  bind(c)
+!!      subroutine set_label_psf_coefs_f(names)  bind(c)
+!!      subroutine set_primary_section_coef_flag_f(names)  bind(c)
 !!@endverbatim
 !
       module ISO_control_label_to_c
@@ -65,16 +73,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      integer(c_int) function num_label_fld_on_iso_control_f() bind(c)
-!
-      use t_control_data_4_fld_on_psf
-!
-      num_label_fld_on_iso_control_f = num_label_fld_on_iso_control()
-      return
-      end function num_label_fld_on_iso_control_f
-!
-! ----------------------------------------------------------------------
-!
       integer(c_int) function num_label_iso_type_f() bind(c)
 !
       use t_control_params_4_iso
@@ -108,17 +106,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_label_fld_on_iso_control_f(names)  bind(c)
-!
-      use t_control_data_4_fld_on_psf
-!
-      character(C_CHAR), intent(inout) :: names(*)
-!
-      call set_label_fld_on_iso_control(names)
-      end subroutine set_label_fld_on_iso_control_f
-!
-!  ---------------------------------------------------------------------
-!
       subroutine set_label_iso_type_f(names)  bind(c)
 !
       use t_control_params_4_iso
@@ -131,6 +118,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
+!
+      integer(c_int) function num_label_fld_on_psf_control_f() bind(c)
+!
+      use t_control_data_4_fld_on_psf
+!
+      num_label_fld_on_psf_control_f = num_label_fld_on_psf_control()
+      return
+      end function num_label_fld_on_psf_control_f
+!
+! ----------------------------------------------------------------------
 !
       integer(c_int) function num_label_psf_define_control_f() bind(c)
 !
@@ -161,7 +158,38 @@
       end function num_label_psf_def_type_grp_f
 !
 ! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_label_psf_dirs_f() bind(c)
+!
+      use m_section_coef_flags
+!
+      num_label_psf_dirs_f = num_label_psf_dirs()
+      return
+      end function num_label_psf_dirs_f
+!
 ! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_label_psf_coefs_f() bind(c)
+!
+      use m_section_coef_flags
+!
+      num_label_psf_coefs_f = num_label_psf_coefs()
+      return
+      end function num_label_psf_coefs_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_fld_on_psf_control_f(names)  bind(c)
+!
+      use t_control_data_4_fld_on_psf
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_fld_on_psf_control(names)
+      end subroutine set_label_fld_on_psf_control_f
+!
+!  ---------------------------------------------------------------------
 !
       subroutine set_label_psf_define_control_f(names)  bind(c)
 !
@@ -182,6 +210,39 @@
 !
       call set_label_psf_def_type_grp(names)
       end subroutine set_label_psf_def_type_grp_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_psf_dirs_f(names)  bind(c)
+!
+      use m_section_coef_flags
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_psf_dirs(names)
+      end subroutine set_label_psf_dirs_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_psf_coefs_f(names)  bind(c)
+!
+      use m_section_coef_flags
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_psf_coefs(names)
+      end subroutine set_label_psf_coefs_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_primary_section_coef_flag_f(names)  bind(c)
+!
+      use m_section_coef_flags
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_primary_section_coef_flag(names(1))
+      end subroutine set_primary_section_coef_flag_f
 !
 !  ---------------------------------------------------------------------
 !

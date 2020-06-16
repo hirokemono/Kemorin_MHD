@@ -45,6 +45,8 @@
       private :: default_psf_prefix
       private :: set_merged_psf_file_ctl
       private :: count_control_4_psf_define, set_control_psf_define
+      private :: count_control_4_field_on_psf
+      private :: set_control_4_field_on_psf
 !
 !  ---------------------------------------------------------------------
 !
@@ -112,10 +114,8 @@
      &                            + iflag_single
       end if
 !
-      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &   psf_c%psf_out_field_ctl%num, psf_c%psf_out_field_ctl%c1_tbl,   &
-     &   psf_fld%num_phys, psf_fld%num_phys_viz)
-!
+      call count_control_4_field_on_psf                                 &
+     &   (psf_c%fld_on_psf_c, num_nod_phys, phys_nod_name, psf_fld)
       call count_control_4_psf_define                                   &
      &   (psf_c%psf_def_c, ele_grp, psf_param, ierr)
 !
@@ -132,10 +132,6 @@
       use t_group_data
       use t_phys_data
       use t_psf_patch_data
-      use set_cross_section_coefs
-      use set_area_4_viz
-      use set_coefs_of_sections
-      use set_field_comp_for_viz
 !
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
@@ -155,14 +151,8 @@
      &   (psf_c%psf_def_c, ele_grp, sf_grp, psf_param, psf_def, ierr)
 !
       call alloc_output_comps_psf(psf_fld%num_phys, psf_param)
-      if ( psf_fld%num_phys .gt. 0 ) then
-        call set_components_4_viz(num_nod_phys, phys_nod_name,          &
-     &     psf_c%psf_out_field_ctl%num, psf_c%psf_out_field_ctl%c1_tbl, &
-     &     psf_c%psf_out_field_ctl%c2_tbl, psf_fld%num_phys,            &
-     &     psf_param%id_output, psf_param%icomp_output,                 &
-     &     psf_fld%num_component, psf_param%ncomp_org,                  &
-     &     psf_fld%phys_name)
-      end if
+      call set_control_4_field_on_psf(psf_c%fld_on_psf_c,               &
+     &    num_nod_phys, phys_nod_name,  psf_fld, psf_param)
 !
       end subroutine set_control_4_psf
 !
@@ -240,6 +230,61 @@
       end if
 !
       end subroutine set_control_psf_define
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_control_4_field_on_psf                           &
+     &         (fld_on_psf_c, num_nod_phys, phys_nod_name, psf_fld)
+!
+      use t_control_data_4_fld_on_psf
+      use t_phys_data
+      use t_psf_patch_data
+      use set_field_comp_for_viz
+!
+      integer(kind = kint), intent(in) :: num_nod_phys
+      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
+!
+      type(phys_data), intent(inout) :: psf_fld
+!
+!
+      call check_field_4_viz(num_nod_phys, phys_nod_name,               &
+     &    fld_on_psf_c%field_output_ctl%num,                            &
+     &    fld_on_psf_c%field_output_ctl%c1_tbl,                         &
+     &    psf_fld%num_phys, psf_fld%num_phys_viz)
+!
+      end subroutine count_control_4_field_on_psf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_control_4_field_on_psf                             &
+     &         (fld_on_psf_c, num_nod_phys, phys_nod_name,              &
+     &          psf_fld, psf_param)
+!
+      use t_control_data_4_fld_on_psf
+      use t_phys_data
+      use t_psf_patch_data
+      use set_field_comp_for_viz
+!
+      integer(kind = kint), intent(in) :: num_nod_phys
+      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(field_on_psf_ctl), intent(in) :: fld_on_psf_c
+!
+      type(phys_data), intent(inout) :: psf_fld
+      type(psf_parameters), intent(inout) :: psf_param
+!
+!
+      if ( psf_fld%num_phys .gt. 0 ) then
+        call set_components_4_viz(num_nod_phys, phys_nod_name,          &
+     &      fld_on_psf_c%field_output_ctl%num,                          &
+     &      fld_on_psf_c%field_output_ctl%c1_tbl,                       &
+     &      fld_on_psf_c%field_output_ctl%c2_tbl, psf_fld%num_phys,     &
+     &     psf_param%id_output, psf_param%icomp_output,                 &
+     &     psf_fld%num_component, psf_param%ncomp_org,                  &
+     &     psf_fld%phys_name)
+      end if
+!
+      end subroutine set_control_4_field_on_psf
 !
 !  ---------------------------------------------------------------------
 !

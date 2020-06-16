@@ -49,6 +49,7 @@
      &         (psf_def_c, id_section_method, const_psf, ierr)
 !
       use m_error_IDs
+      use m_section_coef_flags
       use t_control_data_4_psf_def
       use t_psf_patch_data
       use set_cross_section_coefs

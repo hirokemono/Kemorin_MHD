@@ -137,12 +137,12 @@
      &     (femmesh_FUTIL%group%ele_grp%grp_name(igrp),                 &
      &      psf_ctl_struct(igrp)%psf_def_c)
 !
-        psf_ctl_struct(igrp)%psf_out_field_ctl%num = 1
+        psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl%num = 1
         call alloc_control_array_c2                                     &
-     &     (psf_ctl_struct(igrp)%psf_out_field_ctl)
-        psf_ctl_struct(igrp)%psf_out_field_ctl%c1_tbl(1)                &
+     &     (psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl)
+        psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl%c1_tbl(1)    &
      &      = field_FUTIL%phys_name(1)
-        psf_ctl_struct(igrp)%psf_out_field_ctl%c2_tbl(1)                &
+        psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl%c2_tbl(1)    &
      &      = 'scalar'
       end do
 !

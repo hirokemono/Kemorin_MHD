@@ -218,7 +218,7 @@
       use set_area_4_viz
       use skip_comment_f
 !
-      type(field_on_iso_ctl), intent(in) :: fld_on_iso_c
+      type(field_on_psf_ctl), intent(in) :: fld_on_iso_c
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
@@ -228,16 +228,16 @@
       character(len=kchara) :: tmpchara
 !
 !
-      if(       fld_on_iso_c%iso_out_field_ctl%num .gt. 0               &
-     &    .and. fld_on_iso_c%result_value_iso_ctl%iflag .gt. 0) then
-        tmpchara = fld_on_iso_c%iso_result_type_ctl%charavalue
+      if(       fld_on_iso_c%field_output_ctl%num .gt. 0                &
+     &    .and. fld_on_iso_c%output_value_ctl%iflag .gt. 0) then
+        tmpchara = fld_on_iso_c%output_type_ctl%charavalue
         if(cmp_no_case(tmpchara, cflag_field_iso)) then
           iso_def%id_iso_result_type = iflag_field_iso
         else if(cmp_no_case(tmpchara, cflag_const_iso)) then
           iso_def%id_iso_result_type = iflag_constant_iso
         end if
 !
-      else if(fld_on_iso_c%iso_out_field_ctl%num .eq. 0) then
+      else if(fld_on_iso_c%field_output_ctl%num .eq. 0) then
         iso_def%id_iso_result_type = iflag_constant_iso
       else
         iso_def%id_iso_result_type = iflag_field_iso
@@ -250,8 +250,8 @@
         iso_fld%num_phys_viz = ione
       else if (iso_def%id_iso_result_type .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
-     &      fld_on_iso_c%iso_out_field_ctl%num,                         &
-     &      fld_on_iso_c%iso_out_field_ctl%c1_tbl,                      &
+     &      fld_on_iso_c%field_output_ctl%num,                          &
+     &      fld_on_iso_c%field_output_ctl%c1_tbl,                       &
      &      iso_fld%num_phys, iso_fld%num_phys_viz)
       end if
 !
@@ -270,7 +270,7 @@
       use t_phys_data
       use t_psf_patch_data
 !
-      type(field_on_iso_ctl), intent(in) :: fld_on_iso_c
+      type(field_on_psf_ctl), intent(in) :: fld_on_iso_c
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
@@ -282,7 +282,7 @@
       call alloc_output_comps_psf(iso_fld%num_phys, iso_param)
       if (iso_def%id_iso_result_type .eq. iflag_constant_iso) then
         iso_def%result_value_iso                                        &
-     &     = fld_on_iso_c%result_value_iso_ctl%realvalue
+     &     = fld_on_iso_c%output_value_ctl%realvalue
         iso_param%id_output(1) = iflag_constant_iso
         iso_param%icomp_output(1) = 0
         iso_fld%num_component(1) = 1
@@ -290,9 +290,9 @@
 !
       else if(iso_def%id_iso_result_type .eq. iflag_field_iso) then
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
-     &      fld_on_iso_c%iso_out_field_ctl%num,                         &
-     &      fld_on_iso_c%iso_out_field_ctl%c1_tbl,                      &
-     &      fld_on_iso_c%iso_out_field_ctl%c2_tbl, iso_fld%num_phys,    &
+     &      fld_on_iso_c%field_output_ctl%num,                          &
+     &      fld_on_iso_c%field_output_ctl%c1_tbl,                       &
+     &      fld_on_iso_c%field_output_ctl%c2_tbl, iso_fld%num_phys,     &
      &      iso_param%id_output, iso_param%icomp_output,                &
      &      iso_fld%num_component, iso_param%ncomp_org,                 &
      &      iso_fld%phys_name)

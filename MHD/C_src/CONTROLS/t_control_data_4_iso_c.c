@@ -158,9 +158,9 @@ struct iso_field_ctl_c * init_iso_field_ctl_c(){
 		};
 	};
 	
-	iso_fld_c->iso_result_type_ctl = init_chara_ctl_item_c();
+	iso_fld_c->output_type_ctl = init_chara_ctl_item_c();
 	
-	iso_fld_c->result_value_iso_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
+	iso_fld_c->output_value_ctl = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item));
     iso_fld_c->iso_out_field_list = init_chara2_clist();
 	
 	return iso_fld_c;
@@ -168,8 +168,8 @@ struct iso_field_ctl_c * init_iso_field_ctl_c(){
 
 void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	
-	dealloc_chara_ctl_item_c(iso_fld_c->iso_result_type_ctl);
-	free(iso_fld_c->result_value_iso_ctl);
+	dealloc_chara_ctl_item_c(iso_fld_c->output_type_ctl);
+	free(iso_fld_c->output_value_ctl);
 	
 	dealloc_chara2_clist(iso_fld_c->iso_out_field_list);
     free(iso_fld_c);
@@ -182,8 +182,8 @@ int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_ctl_item_c(buf, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
-		read_real_ctl_item_c(buf, label_iso_field_ctl[ 1], iso_fld_c->result_value_iso_ctl);
+		read_chara_ctl_item_c(buf, label_iso_field_ctl[ 0], iso_fld_c->output_type_ctl);
+		read_real_ctl_item_c(buf, label_iso_field_ctl[ 1], iso_fld_c->output_value_ctl);
 		
 		read_chara2_clist(fp, buf, label_iso_field_ctl[ 2], iso_fld_c->iso_out_field_list);
 	};
@@ -194,8 +194,8 @@ int write_iso_field_ctl_c(FILE *fp, int level, const char *label,
 			struct iso_field_ctl_c *iso_fld_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 0], iso_fld_c->iso_result_type_ctl);
-	write_real_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 1], iso_fld_c->result_value_iso_ctl);
+	write_chara_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 0], iso_fld_c->output_type_ctl);
+	write_real_ctl_item_c(fp, level, iso_fld_c->maxlen, label_iso_field_ctl[ 1], iso_fld_c->output_value_ctl);
 	
 	write_chara2_clist(fp, level, label_iso_field_ctl[ 2], iso_fld_c->iso_out_field_list);
 	

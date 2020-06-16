@@ -6,21 +6,21 @@
 !>@brief control data for field on isosurface
 !!
 !!@verbatim
-!!      subroutine init_fld_on_iso_control(fld_on_iso_c)
-!!      subroutine dealloc_fld_on_iso_control(fld_on_iso_c)
-!!        type(field_on_iso_ctl), intent(inout) :: fld_on_iso_c
-!!      subroutine dup_fld_on_iso_control                               &
+!!      subroutine init_fld_on_psf_control(fld_on_psf_c)
+!!      subroutine dealloc_fld_on_psf_control(fld_on_psf_c)
+!!        type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
+!!      subroutine dup_fld_on_psf_control                               &
 !!     &         (org_fld_on_iso_c, new_fld_on_iso_c)
-!!        type(field_on_iso_ctl), intent(in) :: org_fld_on_iso_c
-!!        type(field_on_iso_ctl), intent(inout) :: new_fld_on_iso_c
+!!        type(field_on_psf_ctl), intent(in) :: org_fld_on_iso_c
+!!        type(field_on_psf_ctl), intent(inout) :: new_fld_on_iso_c
 !!
-!!      subroutine read_fld_on_iso_control                              &
-!!     &         (id_control, hd_block, fld_on_iso_c, c_buf)
-!!      subroutine bcast_fld_on_iso_control(fld_on_iso_c)
-!!        type(field_on_iso_ctl), intent(inout) :: fld_on_iso_c
+!!      subroutine read_fld_on_psf_control                              &
+!!     &         (id_control, hd_block, fld_on_psf_c, c_buf)
+!!      subroutine bcast_fld_on_psf_control(fld_on_psf_c)
+!!        type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !!
-!!      integer(kind = kint) function num_label_fld_on_iso_control()
-!!      subroutine set_label_fld_on_iso_control(names)
+!!      integer(kind = kint) function num_label_fld_on_psf_control()
+!!      subroutine set_label_fld_on_psf_control(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's surface rendering
 !!
@@ -59,18 +59,18 @@
       implicit  none
 !
 !>      Structure of fields on isosurface control
-      type field_on_iso_ctl
+      type field_on_psf_ctl
 !>      Structure for list of output field
-!!@n      iso_out_field_ctl%c1_tbl: Name of field
-!!@n      iso_out_field_ctl%c2_tbl: Name of component
-        type(ctl_array_c2) :: iso_out_field_ctl
+!!@n      field_output_ctl%c1_tbl: Name of field
+!!@n      field_output_ctl%c2_tbl: Name of component
+        type(ctl_array_c2) :: field_output_ctl
 !>        Structure for single number for isosurface
-        type(read_real_item) :: result_value_iso_ctl
+        type(read_real_item) :: output_value_ctl
 !>        Structure for result type
-        type(read_character_item) :: iso_result_type_ctl
+        type(read_character_item) :: output_type_ctl
 !
         integer (kind=kint) :: i_iso_result =    0
-      end type field_on_iso_ctl
+      end type field_on_psf_ctl
 !
 !     3rd level for field_on_isosurf
       character(len=kchara), parameter                                  &
@@ -80,7 +80,7 @@
       character(len=kchara), parameter                                  &
      &             :: hd_result_value =      'result_value'
 !
-      integer(kind = kint), parameter :: n_label_fld_on_iso_ctl = 3
+      integer(kind = kint), parameter :: n_label_fld_on_psf_ctl = 3
 !
       private :: hd_result_type, hd_iso_result_field, hd_result_value
 !
@@ -90,126 +90,126 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_fld_on_iso_control(fld_on_iso_c)
+      subroutine init_fld_on_psf_control(fld_on_psf_c)
 !
-      type(field_on_iso_ctl), intent(inout) :: fld_on_iso_c
-!
-!
-      fld_on_iso_c%iso_out_field_ctl%num = 0
-      fld_on_iso_c%result_value_iso_ctl%realvalue = 0.0d0
-!
-      end subroutine init_fld_on_iso_control
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_fld_on_iso_control(fld_on_iso_c)
-!
-      type(field_on_iso_ctl), intent(inout) :: fld_on_iso_c
+      type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !
 !
-      fld_on_iso_c%result_value_iso_ctl%iflag = 0
-      fld_on_iso_c%iso_result_type_ctl%iflag =  0
+      fld_on_psf_c%field_output_ctl%num = 0
+      fld_on_psf_c%output_value_ctl%realvalue = 0.0d0
 !
-      call dealloc_control_array_c2(fld_on_iso_c%iso_out_field_ctl)
-      fld_on_iso_c%iso_out_field_ctl%num =  0
-      fld_on_iso_c%iso_out_field_ctl%icou = 0
-!
-      fld_on_iso_c%i_iso_result =      0
-!
-      end subroutine dealloc_fld_on_iso_control
+      end subroutine init_fld_on_psf_control
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dup_fld_on_iso_control                                 &
+      subroutine dealloc_fld_on_psf_control(fld_on_psf_c)
+!
+      type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
+!
+!
+      fld_on_psf_c%output_value_ctl%iflag = 0
+      fld_on_psf_c%output_type_ctl%iflag =  0
+!
+      call dealloc_control_array_c2(fld_on_psf_c%field_output_ctl)
+      fld_on_psf_c%field_output_ctl%num =  0
+      fld_on_psf_c%field_output_ctl%icou = 0
+!
+      fld_on_psf_c%i_iso_result =      0
+!
+      end subroutine dealloc_fld_on_psf_control
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dup_fld_on_psf_control                                 &
      &         (org_fld_on_iso_c, new_fld_on_iso_c)
 !
-      type(field_on_iso_ctl), intent(in) :: org_fld_on_iso_c
-      type(field_on_iso_ctl), intent(inout) :: new_fld_on_iso_c
+      type(field_on_psf_ctl), intent(in) :: org_fld_on_iso_c
+      type(field_on_psf_ctl), intent(inout) :: new_fld_on_iso_c
 !
 !
-      call copy_real_ctl(org_fld_on_iso_c%result_value_iso_ctl,         &
-     &                   new_fld_on_iso_c%result_value_iso_ctl)
-      call copy_chara_ctl(org_fld_on_iso_c%iso_result_type_ctl,         &
-     &                    new_fld_on_iso_c%iso_result_type_ctl)
-      call dup_control_array_c2(org_fld_on_iso_c%iso_out_field_ctl,     &
-     &                          new_fld_on_iso_c%iso_out_field_ctl)
+      call copy_real_ctl(org_fld_on_iso_c%output_value_ctl,             &
+     &                   new_fld_on_iso_c%output_value_ctl)
+      call copy_chara_ctl(org_fld_on_iso_c%output_type_ctl,             &
+     &                    new_fld_on_iso_c%output_type_ctl)
+      call dup_control_array_c2(org_fld_on_iso_c%field_output_ctl,      &
+     &                          new_fld_on_iso_c%field_output_ctl)
 !
       new_fld_on_iso_c%i_iso_result =    org_fld_on_iso_c%i_iso_result
 !
-      end subroutine dup_fld_on_iso_control
+      end subroutine dup_fld_on_psf_control
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_fld_on_iso_control                                &
-     &         (id_control, hd_block, fld_on_iso_c, c_buf)
+      subroutine read_fld_on_psf_control                                &
+     &         (id_control, hd_block, fld_on_psf_c, c_buf)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      type(field_on_iso_ctl), intent(inout) :: fld_on_iso_c
+      type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
       type(buffer_for_control), intent(inout)  :: c_buf
 !
 !
       if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(fld_on_iso_c%i_iso_result .gt. 0) return
+      if(fld_on_psf_c%i_iso_result .gt. 0) return
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_control_array_c2(id_control,                          &
-     &      hd_iso_result_field, fld_on_iso_c%iso_out_field_ctl, c_buf)
+     &      hd_iso_result_field, fld_on_psf_c%field_output_ctl, c_buf)
 !
         call read_chara_ctl_type(c_buf, hd_result_type,                 &
-     &      fld_on_iso_c%iso_result_type_ctl)
+     &      fld_on_psf_c%output_type_ctl)
 !
         call read_real_ctl_type(c_buf, hd_result_value,                 &
-     &      fld_on_iso_c%result_value_iso_ctl)
+     &      fld_on_psf_c%output_value_ctl)
       end do
-      fld_on_iso_c%i_iso_result = 1
+      fld_on_psf_c%i_iso_result = 1
 !
-      end subroutine read_fld_on_iso_control
+      end subroutine read_fld_on_psf_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_fld_on_iso_control(fld_on_iso_c)
+      subroutine bcast_fld_on_psf_control(fld_on_psf_c)
 !
       use calypso_mpi
       use bcast_control_arrays
 !
-      type(field_on_iso_ctl), intent(inout) :: fld_on_iso_c
+      type(field_on_psf_ctl), intent(inout) :: fld_on_psf_c
 !
 !
-      call bcast_ctl_type_r1(fld_on_iso_c%result_value_iso_ctl)
-      call bcast_ctl_type_c1(fld_on_iso_c%iso_result_type_ctl)
-      call bcast_ctl_array_c2(fld_on_iso_c%iso_out_field_ctl)
+      call bcast_ctl_type_r1(fld_on_psf_c%output_value_ctl)
+      call bcast_ctl_type_c1(fld_on_psf_c%output_type_ctl)
+      call bcast_ctl_array_c2(fld_on_psf_c%field_output_ctl)
 !
-      call MPI_BCAST(fld_on_iso_c%i_iso_result,  1,                     &
+      call MPI_BCAST(fld_on_psf_c%i_iso_result,  1,                     &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
 !
-      end subroutine bcast_fld_on_iso_control
+      end subroutine bcast_fld_on_psf_control
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      integer(kind = kint) function num_label_fld_on_iso_control()
-      num_label_fld_on_iso_control = n_label_fld_on_iso_ctl
+      integer(kind = kint) function num_label_fld_on_psf_control()
+      num_label_fld_on_psf_control = n_label_fld_on_psf_ctl
       return
-      end function num_label_fld_on_iso_control
+      end function num_label_fld_on_psf_control
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_label_fld_on_iso_control(names)
+      subroutine set_label_fld_on_psf_control(names)
 !
       character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_fld_on_iso_ctl)
+     &                         :: names(n_label_fld_on_psf_ctl)
 !
 !
       call set_control_labels(hd_result_type,      names( 1))
       call set_control_labels(hd_iso_result_field, names( 2))
       call set_control_labels(hd_result_value,  names( 3))
 !
-      end subroutine set_label_fld_on_iso_control
+      end subroutine set_label_fld_on_psf_control
 !
 !  ---------------------------------------------------------------------
 !

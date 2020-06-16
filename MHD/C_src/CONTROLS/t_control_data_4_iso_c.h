@@ -31,8 +31,8 @@ struct iso_define_ctl_c{
 struct iso_field_ctl_c{
 	int maxlen;
 	
-	struct chara_ctl_item *iso_result_type_ctl;
-	struct real_ctl_item *result_value_iso_ctl;
+	struct chara_ctl_item *output_type_ctl;
+	struct real_ctl_item *output_value_ctl;
 	
 	struct chara2_clist *iso_out_field_list;
 };
