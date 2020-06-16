@@ -22,6 +22,7 @@
 !!        type(phys_data), intent(inout) :: psf_fld
 !!        type(psf_parameters), intent(inout) :: psf_param
 !!        type(section_define), intent(inout) :: psf_def
+!!      integer(kind = kint) function sel_psf_file_format(file_fmt_ctl)
 !
       module t_control_params_4_psf
 !
@@ -42,7 +43,7 @@
       end type section_define
 !
       private :: default_psf_prefix
-      private :: set_merged_psf_file_ctl, choose_para_psf_file_format
+      private :: set_merged_psf_file_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -196,6 +197,7 @@
 !
       use t_control_array_character
       use t_file_IO_parameter
+      use m_field_file_format
 !
       character(len = kchara), intent(in) :: default_prefix
       type(read_character_item), intent(in) :: file_prefix_ctl
@@ -212,79 +214,74 @@
         ucd_param%file_prefix = file_prefix_ctl%charavalue
       end if
 !
-      ucd_param%iflag_format                                            &
-     &        = choose_para_psf_file_format(file_format_ctl%charavalue, &
-     &                                      file_format_ctl%iflag)
+      if(file_format_ctl%iflag .eq. 0) then
+        ucd_param%iflag_format = iflag_sgl_vtk
+      else
+        ucd_param%iflag_format                                          &
+     &        = sel_psf_file_format(file_format_ctl%charavalue)
+      end if
 !
       end subroutine set_merged_psf_file_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function choose_para_psf_file_format         &
-     &                            (file_fmt_ctl, i_file_fmt)
+      integer(kind = kint) function sel_psf_file_format(file_fmt_ctl)
 !
       use m_merged_field_fmt_labels
       use m_field_file_format
       use t_multi_flag_labels
 !
-      integer(kind= kint), intent(in) :: i_file_fmt
       character(len=kchara), intent(in) :: file_fmt_ctl
 !
 !
       call init_mgd_field_type_flags
-!
-      if(i_file_fmt .eq. 0) then
-        choose_para_psf_file_format = iflag_sgl_vtk
-        return
-      end if
-!
       if     (check_mul_flags(file_fmt_ctl, mgd_udt_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, udt_flags)) then
-        choose_para_psf_file_format = iflag_sgl_udt
+        sel_psf_file_format = iflag_sgl_udt
       else if(check_mul_flags(file_fmt_ctl, mgd_udt_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, udt_gz_flags)) then
-        choose_para_psf_file_format = iflag_sgl_udt_gz
+        sel_psf_file_format = iflag_sgl_udt_gz
 !
       else if(check_mul_flags(file_fmt_ctl, mgd_ucd_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, ucd_flags)) then
-        choose_para_psf_file_format = iflag_sgl_ucd
+        sel_psf_file_format = iflag_sgl_ucd
       else if(check_mul_flags(file_fmt_ctl, mgd_ucd_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, ucd_gz_flags)) then
-        choose_para_psf_file_format = iflag_sgl_ucd_gz
+        sel_psf_file_format = iflag_sgl_ucd_gz
 !
       else if(check_mul_flags(file_fmt_ctl, mgd_vtd_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, vtd_flags)) then
-        choose_para_psf_file_format = iflag_sgl_vtd
+        sel_psf_file_format = iflag_sgl_vtd
       else if(check_mul_flags(file_fmt_ctl, mgd_vtd_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, vtd_gz_flags)) then
-        choose_para_psf_file_format = iflag_sgl_vtd_gz
+        sel_psf_file_format = iflag_sgl_vtd_gz
 !
       else if(check_mul_flags(file_fmt_ctl, mgd_vtk_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, vtk_flags)) then
-        choose_para_psf_file_format = iflag_sgl_vtk
+        sel_psf_file_format = iflag_sgl_vtk
       else if(check_mul_flags(file_fmt_ctl, mgd_vtk_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, vtk_gz_flags)) then
-        choose_para_psf_file_format = iflag_sgl_vtk_gz
+        sel_psf_file_format = iflag_sgl_vtk_gz
 !
       else if(check_mul_flags(file_fmt_ctl, mgd_iso_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, iso_flags)) then
-        choose_para_psf_file_format = iflag_sgl_ucd_bin
+        sel_psf_file_format = iflag_sgl_ucd_bin
       else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, iso_gz_flags)) then
-        choose_para_psf_file_format = iflag_sgl_ucd_bin_gz
+        sel_psf_file_format = iflag_sgl_ucd_bin_gz
 !
       else if(check_mul_flags(file_fmt_ctl, mgd_psf_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, psf_flags)) then
-        choose_para_psf_file_format = iflag_sgl_udt_bin
+        sel_psf_file_format = iflag_sgl_udt_bin
       else if(check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, psf_gz_flags)) then
-        choose_para_psf_file_format = iflag_sgl_udt_bin_gz
+        sel_psf_file_format = iflag_sgl_udt_bin_gz
       else
-        choose_para_psf_file_format = iflag_sgl_vtk
+        sel_psf_file_format = iflag_sgl_vtk
       end if
       call dealloc_mgd_field_type_flags
 !
-      end function choose_para_psf_file_format
+      end function sel_psf_file_format
 !
 ! -----------------------------------------------------------------------
 !

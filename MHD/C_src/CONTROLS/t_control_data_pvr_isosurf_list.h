@@ -19,7 +19,7 @@
 struct pvr_isosurf_ctl_c{
 	int maxlen;
 	
-	struct real_ctl_item *isosurf_value_ctl;
+	struct real_ctl_item *iso_value_ctl;
 	struct real_ctl_item *opacity_ctl;
 	struct chara_ctl_item *isosurf_type_ctl;
 };

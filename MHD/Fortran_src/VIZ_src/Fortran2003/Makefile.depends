@@ -1,3 +1,5 @@
+ISO_control_label_to_c.o: $(VIZ_F2003_DIR)/ISO_control_label_to_c.f90 m_precision.o t_control_data_4_iso.o t_control_data_4_iso_def.o t_control_data_4_fld_on_iso.o t_control_params_4_iso.o
+	$(F90) -c $(F90OPTFLAGS) $<
 LIC_control_label_to_c.o: $(VIZ_F2003_DIR)/LIC_control_label_to_c.f90 m_precision.o t_control_data_lic_pvr.o t_control_data_lic.o t_control_data_LIC_noise.o t_control_data_LIC_kernel.o t_control_data_LIC_masking.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

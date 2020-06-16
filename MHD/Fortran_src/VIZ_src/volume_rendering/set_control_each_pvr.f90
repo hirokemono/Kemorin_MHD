@@ -263,10 +263,10 @@
       call alloc_pvr_isosurfaces(field_pvr)
 !
       do i = 1, field_pvr%num_isosurf
-        iflag = pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%iflag
+        iflag = pvr_isos_c%pvr_iso_ctl(i)%iso_value_ctl%iflag
         if(iflag .gt. 0) then
           field_pvr%iso_value(i)                                        &
-     &        = pvr_isos_c%pvr_iso_ctl(i)%isosurf_value_ctl%realvalue
+     &        = pvr_isos_c%pvr_iso_ctl(i)%iso_value_ctl%realvalue
         end if
 !
         iflag = pvr_isos_c%pvr_iso_ctl(i)%opacity_ctl%iflag

@@ -35,8 +35,8 @@ struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c(){
 		};
 	};
 	
-    pvr_iso_c->isosurf_value_ctl = init_real_ctl_item_c();
-    pvr_iso_c->opacity_ctl =       init_real_ctl_item_c();
+    pvr_iso_c->iso_value_ctl = init_real_ctl_item_c();
+    pvr_iso_c->opacity_ctl =   init_real_ctl_item_c();
 	
 	pvr_iso_c->isosurf_type_ctl = init_chara_ctl_item_c();
 	
@@ -45,7 +45,7 @@ struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c(){
 
 void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c){
 	
-	free(pvr_iso_c->isosurf_value_ctl);
+	free(pvr_iso_c->iso_value_ctl);
 	free(pvr_iso_c->opacity_ctl);
 	
 	dealloc_chara_ctl_item_c(pvr_iso_c->isosurf_type_ctl);
@@ -58,7 +58,7 @@ int read_pvr_isosurf_ctl_c(FILE *fp, char buf[LENGTHBUF],
 	
 	skip_comment_read_line(fp, buf);
 	while(find_control_end_flag_c(buf, label) == 0){
-		read_real_ctl_item_c(buf, label_pvr_isosurf_ctl[ 0], pvr_iso_c->isosurf_value_ctl);
+		read_real_ctl_item_c(buf, label_pvr_isosurf_ctl[ 0], pvr_iso_c->iso_value_ctl);
 		read_real_ctl_item_c(buf, label_pvr_isosurf_ctl[ 1], pvr_iso_c->opacity_ctl);
 		read_chara_ctl_item_c(buf, label_pvr_isosurf_ctl[ 2], pvr_iso_c->isosurf_type_ctl);
 
@@ -73,7 +73,7 @@ int write_pvr_isosurf_ctl_c(FILE *fp, int level, const char *label,
 	
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_real_ctl_item_c(fp, level, pvr_iso_c->maxlen, label_pvr_isosurf_ctl[ 0], pvr_iso_c->isosurf_value_ctl);
+	write_real_ctl_item_c(fp, level, pvr_iso_c->maxlen, label_pvr_isosurf_ctl[ 0], pvr_iso_c->iso_value_ctl);
 	write_real_ctl_item_c(fp, level, pvr_iso_c->maxlen, label_pvr_isosurf_ctl[ 1], pvr_iso_c->opacity_ctl);
 	write_chara_ctl_item_c(fp, level, pvr_iso_c->maxlen, label_pvr_isosurf_ctl[ 2], pvr_iso_c->isosurf_type_ctl);
 	
