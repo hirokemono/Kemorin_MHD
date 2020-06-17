@@ -105,9 +105,9 @@
 !
 !>  Structure of control data for PVR rendering
       type pvr_parameter_ctl
-!>  file name for modelves matrix
+!>  file name for modelview matrix
         character(len=kchara) :: view_file_ctl
-!>  file name for modelves matrix
+!>  file name for coloemap file
         character(len=kchara) :: color_file_ctl
 !
 !>    Structure for modelview marices

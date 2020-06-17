@@ -19,27 +19,27 @@
 !!     begin image_size_ctl
 !!       x_pixel_ctl  640
 !!       y_pixel_ctl  480
-!!     end
+!!     end image_size_ctl
 !!
-!!    array look_at_point_ctl   3
+!!    array look_at_point_ctl
 !!      look_at_point_ctl  x      3.0
 !!      look_at_point_ctl  y     -8.0
 !!      look_at_point_ctl  z      6.0 
 !!    end  array look_at_point_ctl
 !!
-!!    array viewpoint_ctl    3
+!!    array viewpoint_ctl
 !!      viewpoint_ctl  x      3.0
 !!      viewpoint_ctl  y     -8.0
 !!      viewpoint_ctl  z      6.0 
 !!    end array viewpoint_ctl
 !!
-!!    array up_direction_ctl    3
+!!    array up_direction_ctl
 !!      up_direction_ctl  x      0.0
 !!      up_direction_ctl  y      0.0
 !!      up_direction_ctl  z      1.0
 !!    end array up_direction_ctl
 !!
-!!    array view_rotation_vec_ctl      3
+!!    array view_rotation_vec_ctl
 !!      view_rotation_vec_ctl  x      0.0
 !!      view_rotation_vec_ctl  y      0.0
 !!      view_rotation_vec_ctl  z      1.0
@@ -48,19 +48,19 @@
 !!    view_rotation_deg_ctl    60.0
 !!
 !!    scale_factor_ctl            1.0
-!!    array scale_factor_vec_ctl       3
+!!    array scale_factor_vec_ctl
 !!      scale_factor_vec_ctl  x      0.0
 !!      scale_factor_vec_ctl  y      0.0
 !!      scale_factor_vec_ctl  z      1.0
 !!    end array scale_factor_vec_ctl
 !!
-!!    array viewpoint_in_viewer_ctl   3
+!!    array viewpoint_in_viewer_ctl
 !!      viewpoint_in_viewer_ctl  x      0.0
 !!      viewpoint_in_viewer_ctl  y      0.0
 !!      viewpoint_in_viewer_ctl  z      10.0
 !!    end array viewpoint_in_viewer_ctl
 !!
-!!    array  modelview_matrix_ctl  16
+!!    array  modelview_matrix_ctl
 !!      modelview_matrix_ctl   1  1  1.0  end
 !!      modelview_matrix_ctl   2  1  0.0  end
 !!      modelview_matrix_ctl   3  1  0.0  end
@@ -116,62 +116,9 @@
 !
       implicit  none
 !
-!
-      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
-!
-!     3rd level for view_transform_define
-      character(len=kchara) :: hd_image_size =    'image_size_ctl'
-      character(len=kchara) :: hd_model_mat =   'modelview_matrix_ctl'
-      character(len=kchara) :: hd_project_mat = 'projection_matrix_ctl'
-!
-      character(len=kchara) :: hd_look_point =  'look_at_point_ctl'
-      character(len=kchara) :: hd_view_point =  'viewpoint_ctl'
-      character(len=kchara) :: hd_up_dir =      'up_direction_ctl'
-!
-!
-      character(len=kchara) :: hd_view_rot_deg                          &
-     &                        = 'view_rotation_deg_ctl'
-      character(len=kchara) :: hd_view_rot_dir                          &
-     &                        = 'view_rotation_vec_ctl'
-!
-      character(len=kchara) :: hd_scale_factor                          &
-     &                             = 'scale_factor_ctl'
-      character(len=kchara) :: hd_scale_fac_dir                         &
-     &                        = 'scale_factor_vec_ctl'
-      character(len=kchara) :: hd_viewpt_in_view                        &
-     &                        = 'viewpoint_in_viewer_ctl'
-!
-      character(len=kchara) :: hd_stereo_view                           &
-     &                        = 'streo_view_parameter_ctl'
-!
-!     4th level for projection_matrix
-      character(len=kchara) :: hd_perspect_angle                        &
-     &                        = 'perspective_angle_ctl'
-      character(len=kchara) :: hd_perspect_xy =                         &
-     &                        'perspective_xy_ratio_ctl'
-      character(len=kchara) :: hd_perspect_near =                       &
-     &                        'perspective_near_ctl'
-      character(len=kchara) :: hd_perspect_far =                        &
-     &                        'perspective_far_ctl'
-!
-!     4th level for image size
-      character(len=kchara) :: hd_x_pixel = 'x_pixel_ctl'
-      character(len=kchara) :: hd_y_pixel = 'y_pixel_ctl'
-!
-!     4th level for stereo view
-      character(len=kchara) :: hd_focalpoint =     'focal_point_ctl'
-      character(len=kchara) :: hd_eye_separation = 'eye_separation_ctl'
-!
-!
+      character(len=kchara), parameter                                  &
+     &                      :: hd_view_transform = 'view_transform_ctl'
       private :: hd_view_transform
-      private :: hd_x_pixel, hd_y_pixel
-      private :: hd_project_mat, hd_view_point, hd_up_dir, hd_image_size
-      private :: hd_model_mat
-      private :: hd_perspect_angle, hd_perspect_xy
-      private :: hd_perspect_near, hd_perspect_far
-      private :: hd_viewpt_in_view, hd_stereo_view
-      private :: hd_focalpoint,  hd_eye_separation
-      private :: hd_view_rot_deg, hd_view_rot_dir, hd_scale_fac_dir
 !
       private :: read_projection_mat_ctl
       private :: read_stereo_view_ctl

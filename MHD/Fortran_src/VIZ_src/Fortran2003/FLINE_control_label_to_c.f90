@@ -3,7 +3,7 @@
 !!
 !!@date  Programmed by H.Matsui in May, 2006
 !
-!>@brief control parameter for isuosurfaces
+!>@brief control parameter for field lines
 !!
 !!@verbatim
 !!      integer(c_int) function num_label_fline_ctl_f() bind(c)

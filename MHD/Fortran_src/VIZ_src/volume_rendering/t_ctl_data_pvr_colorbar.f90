@@ -16,6 +16,8 @@
 !!        type(pvr_colorbar_ctl), intent(in) :: org_cbar_c
 !!        type(pvr_colorbar_ctl), intent(inout) :: new_cbar_c
 !!
+!!      integer(kind = kint) function num_label_pvr_colorbar()
+!!      subroutine set_label_pvr_colorbar(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of color control for Kemo's volume rendering
 !!
@@ -76,10 +78,12 @@
 !
       character(len=kchara) :: hd_axis_switch = 'axis_label_switch'
 !
+      integer(kind = kint), parameter :: n_label_pvr_colorbar = 7
+!
       private :: hd_colorbar_switch, hd_colorbar_scale
       private :: hd_pvr_font_size, hd_cbar_range
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
-      private :: hd_axis_switch
+      private :: hd_axis_switch, n_label_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
 !
@@ -199,6 +203,33 @@
      &                    new_cbar_c%cbar_range_ctl)
 !
       end subroutine copy_pvr_colorbar_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_colorbar()
+      num_label_pvr_colorbar = n_label_pvr_colorbar
+      return
+      end function num_label_pvr_colorbar
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_pvr_colorbar(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_colorbar)
+!
+!
+      call set_control_labels(hd_colorbar_switch,  names( 1))
+      call set_control_labels(hd_colorbar_scale,   names( 2))
+      call set_control_labels(hd_pvr_font_size,    names( 3))
+      call set_control_labels(hd_pvr_numgrid_cbar, names( 4))
+      call set_control_labels(hd_zeromarker_flag,  names( 5))
+      call set_control_labels(hd_cbar_range,       names( 6))
+!
+      call set_control_labels(hd_axis_switch,      names( 7))
+!
+      end subroutine set_label_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
 !

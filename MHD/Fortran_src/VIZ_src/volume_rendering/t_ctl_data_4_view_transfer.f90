@@ -9,6 +9,13 @@
 !!@verbatim
 !!      subroutine dealloc_view_transfer_ctl(mat)
 !!        type(modeview_ctl), intent(inout) :: mat
+!!
+!!      integer(kind = kint) function num_label_pvr_modelview()
+!!      integer(kind = kint) function num_label_pvr_pixels()
+!!      integer(kind = kint) function num_label_pvr_streo()
+!!      subroutine set_label_pvr_modelview(names)
+!!      subroutine set_label_pvr_pixels(names)
+!!      subroutine set_label_pvr_streo(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -17,27 +24,27 @@
 !!     begin image_size_ctl
 !!       x_pixel_ctl  640
 !!       y_pixel_ctl  480
-!!     end
+!!     end image_size_ctl
 !!
-!!    array look_at_point_ctl   3
+!!    array look_at_point_ctl
 !!      look_at_point_ctl  x      3.0
 !!      look_at_point_ctl  y     -8.0
 !!      look_at_point_ctl  z      6.0 
 !!    end  array look_at_point_ctl
 !!
-!!    array viewpoint_ctl    3
+!!    array viewpoint_ctl
 !!      viewpoint_ctl  x      3.0
 !!      viewpoint_ctl  y     -8.0
 !!      viewpoint_ctl  z      6.0 
 !!    end array viewpoint_ctl
 !!
-!!    array up_direction_ctl    3
+!!    array up_direction_ctl
 !!      up_direction_ctl  x      0.0
 !!      up_direction_ctl  y      0.0
 !!      up_direction_ctl  z      1.0
 !!    end array up_direction_ctl
 !!
-!!    array view_rotation_vec_ctl      3
+!!    array view_rotation_vec_ctl
 !!      view_rotation_vec_ctl  x      0.0
 !!      view_rotation_vec_ctl  y      0.0
 !!      view_rotation_vec_ctl  z      1.0
@@ -46,19 +53,19 @@
 !!    view_rotation_deg_ctl    60.0
 !!
 !!    scale_factor_ctl            1.0
-!!    array scale_factor_vec_ctl       3
+!!    array scale_factor_vec_ctl
 !!      scale_factor_vec_ctl  x      0.0
 !!      scale_factor_vec_ctl  y      0.0
 !!      scale_factor_vec_ctl  z      1.0
 !!    end array scale_factor_vec_ctl
 !!
-!!    array viewpoint_in_viewer_ctl   3
+!!    array viewpoint_in_viewer_ctl
 !!      viewpoint_in_viewer_ctl  x      0.0
 !!      viewpoint_in_viewer_ctl  y      0.0
 !!      viewpoint_in_viewer_ctl  z      10.0
 !!    end array viewpoint_in_viewer_ctl
 !!
-!!    array  modelview_matrix_ctl  16
+!!    array  modelview_matrix_ctl
 !!      modelview_matrix_ctl   1  1  1.0  end
 !!      modelview_matrix_ctl   2  1  0.0  end
 !!      modelview_matrix_ctl   3  1  0.0  end
@@ -191,6 +198,56 @@
         integer (kind=kint) :: i_stereo_view = 0
       end type modeview_ctl
 !
+!
+!     3rd level for view_transform_define
+      character(len=kchara) :: hd_image_size =    'image_size_ctl'
+      character(len=kchara) :: hd_model_mat =   'modelview_matrix_ctl'
+      character(len=kchara) :: hd_project_mat = 'projection_matrix_ctl'
+!
+      character(len=kchara) :: hd_look_point =  'look_at_point_ctl'
+      character(len=kchara) :: hd_view_point =  'viewpoint_ctl'
+      character(len=kchara) :: hd_up_dir =      'up_direction_ctl'
+!
+!
+      character(len=kchara) :: hd_view_rot_deg                          &
+     &                        = 'view_rotation_deg_ctl'
+      character(len=kchara) :: hd_view_rot_dir                          &
+     &                        = 'view_rotation_vec_ctl'
+!
+      character(len=kchara) :: hd_scale_factor                          &
+     &                             = 'scale_factor_ctl'
+      character(len=kchara) :: hd_scale_fac_dir                         &
+     &                        = 'scale_factor_vec_ctl'
+      character(len=kchara) :: hd_viewpt_in_view                        &
+     &                        = 'viewpoint_in_viewer_ctl'
+!
+      character(len=kchara) :: hd_stereo_view                           &
+     &                        = 'streo_view_parameter_ctl'
+!
+!     4th level for projection_matrix
+      character(len=kchara) :: hd_perspect_angle                        &
+     &                        = 'perspective_angle_ctl'
+      character(len=kchara) :: hd_perspect_xy =                         &
+     &                        'perspective_xy_ratio_ctl'
+      character(len=kchara) :: hd_perspect_near =                       &
+     &                        'perspective_near_ctl'
+      character(len=kchara) :: hd_perspect_far =                        &
+     &                        'perspective_far_ctl'
+!
+!     4th level for image size
+      character(len=kchara) :: hd_x_pixel = 'x_pixel_ctl'
+      character(len=kchara) :: hd_y_pixel = 'y_pixel_ctl'
+!
+!     4th level for stereo view
+      character(len=kchara) :: hd_focalpoint =     'focal_point_ctl'
+      character(len=kchara) :: hd_eye_separation = 'eye_separation_ctl'
+!
+      integer(kind = kint), parameter :: n_label_pvr_modelview =  12
+      integer(kind = kint), parameter :: n_label_pvr_pixels =      2
+      integer(kind = kint), parameter :: n_label_pvr_streo =       2
+      private :: n_label_pvr_modelview
+      private :: n_label_pvr_pixels, n_label_pvr_streo
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -255,5 +312,80 @@
       end subroutine dealloc_view_transfer_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_modelview()
+      num_label_pvr_modelview = n_label_pvr_modelview
+      return
+      end function num_label_pvr_modelview
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_pixels()
+      num_label_pvr_pixels = n_label_pvr_pixels
+      return
+      end function num_label_pvr_pixels
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_streo()
+      num_label_pvr_streo = n_label_pvr_streo
+      return
+      end function num_label_pvr_streo
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_pvr_modelview(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_modelview)
+!
+!
+      call set_control_labels(hd_image_size,   names( 1))
+!
+      call set_control_labels(hd_look_point,   names( 2))
+      call set_control_labels(hd_view_point,   names( 3))
+      call set_control_labels(hd_up_dir,       names( 4))
+      call set_control_labels(hd_view_rot_dir, names( 5))
+      call set_control_labels(hd_view_rot_deg, names( 6))
+!
+      call set_control_labels(hd_scale_factor,   names( 7))
+      call set_control_labels(hd_scale_fac_dir,  names( 8))
+      call set_control_labels(hd_viewpt_in_view, names( 9))
+!
+      call set_control_labels(hd_project_mat, names(10))
+      call set_control_labels(hd_model_mat,   names(11))
+!
+      call set_control_labels(hd_stereo_view, names(12))
+!
+      end subroutine set_label_pvr_modelview
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_pvr_pixels(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_pixels)
+!
+!
+      call set_control_labels(hd_x_pixel, names( 1))
+      call set_control_labels(hd_y_pixel, names( 2))
+!
+      end subroutine set_label_pvr_pixels
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_pvr_streo(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_streo)
+!
+!
+      call set_control_labels(hd_focalpoint,     names( 1))
+      call set_control_labels(hd_eye_separation, names( 2))
+!
+      end subroutine set_label_pvr_streo
+!
+! ----------------------------------------------------------------------
 !
       end module t_ctl_data_4_view_transfer
