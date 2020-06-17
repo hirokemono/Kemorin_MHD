@@ -40,6 +40,8 @@
 !!  end image_rotation_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!    movie_mode_ctl:   view_matrices, rotation, apature, LIC_kernel
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
       module t_control_data_pvr_movie

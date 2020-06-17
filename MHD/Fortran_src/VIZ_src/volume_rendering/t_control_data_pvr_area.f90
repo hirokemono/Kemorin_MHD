@@ -19,6 +19,9 @@
 !!        type(pvr_render_area_ctl), intent(inout) :: render_area_c
 !!      subroutine bcast_pvr_render_area_ctl(render_area_c)
 !!        type(pvr_render_area_ctl), intent(inout) :: render_area_c
+!!
+!!      integer(kind = kint) function num_label_pvr_area()
+!!      subroutine set_label_pvr_area(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!  begin plot_area_ctl
@@ -61,7 +64,9 @@
       character(len=kchara) :: hd_plot_grp = 'chosen_ele_grp_ctl'
       character(len=kchara) :: hd_sf_enhanse = 'surface_enhanse_ctl'
 !
-      private :: hd_plot_grp, hd_sf_enhanse
+      integer(kind = kint), parameter :: n_label_pvr_area =   2
+!
+      private :: hd_plot_grp, hd_sf_enhanse, n_label_pvr_area
 !
 !  ---------------------------------------------------------------------
 !
@@ -148,5 +153,26 @@
       end subroutine bcast_pvr_render_area_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_area()
+      num_label_pvr_area = n_label_pvr_area
+      return
+      end function num_label_pvr_area
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_pvr_area(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_area)
+!
+!
+      call set_control_labels(hd_plot_grp,    names( 1))
+      call set_control_labels(hd_sf_enhanse,    names( 2))
+!
+      end subroutine set_label_pvr_area
+!
+! ----------------------------------------------------------------------
 !
       end module  t_control_data_pvr_area

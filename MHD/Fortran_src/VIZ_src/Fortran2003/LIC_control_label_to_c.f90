@@ -8,15 +8,15 @@
 !> @brief Routines to tell control labels into C programs
 !!
 !!@verbatim
-!!      integer(c_int) function num_ctl_label_LIC_f()                   &
-!!     &              bind(c, name="num_ctl_label_LIC_f")
-!!      subroutine set_ctl_label_LIC_f(labels)                          &
-!!     &          bind(c, name="set_ctl_label_LIC_f")
-!!
 !!      integer(c_int) function num_ctl_label_LIC_pvr_f()               &
 !!     &              bind(c, name="num_ctl_label_LIC_pvr_f")
 !!      subroutine set_ctl_label_LIC_pvr_f(labels)                      &
 !!     &          bind(c, name="set_ctl_label_LIC_pvr_f")
+!!
+!!      integer(c_int) function num_ctl_label_LIC_f()                   &
+!!     &              bind(c, name="num_ctl_label_LIC_f")
+!!      subroutine set_ctl_label_LIC_f(labels)                          &
+!!     &          bind(c, name="set_ctl_label_LIC_f")
 !!
 !!      integer(c_int) function num_ctl_label_LIC_noise_f()             &
 !!     &              bind(c, name="num_ctl_label_LIC_noise_f")
@@ -42,6 +42,11 @@
 !!     &              bind(c, name="num_label_LIC_movie_f")
 !!      subroutine set_label_LIC_movie_f(labels)                        &
 !!     &          bind(c, name="set_label_LIC_movie_f")
+!!
+!!      integer(c_int) function num_flag_LIC_movie_mode_f()             &
+!!     &              bind(c, name="num_flag_LIC_movie_mode_f")
+!!      subroutine set_flag_LIC_movie_mode_f(labels)                    &
+!!     &          bind(c, name="set_flag_LIC_movie_mode_f")
 !!@endverbatim
 !
       module LIC_control_label_to_c
@@ -56,31 +61,6 @@
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      integer(c_int) function num_ctl_label_LIC_f()                     &
-     &              bind(c, name="num_ctl_label_LIC_f")
-!
-      use t_control_data_lic
-!
-      num_ctl_label_LIC_f = num_ctl_label_LIC()
-!
-      end function num_ctl_label_LIC_f
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ctl_label_LIC_f(labels)                            &
-     &          bind(c, name="set_ctl_label_LIC_f")
-!
-      use t_control_data_lic
-!
-      character(C_CHAR), intent(inout) :: labels(*)
-!
-      call set_ctl_label_LIC(labels(1))
-!
-      end subroutine set_ctl_label_LIC_f
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       integer(c_int) function num_ctl_label_LIC_pvr_f()                 &
@@ -104,6 +84,31 @@
       call set_ctl_label_LIC_pvr(labels(1))
 !
       end subroutine set_ctl_label_LIC_pvr_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_ctl_label_LIC_f()                     &
+     &              bind(c, name="num_ctl_label_LIC_f")
+!
+      use t_control_data_lic
+!
+      num_ctl_label_LIC_f = num_ctl_label_LIC()
+!
+      end function num_ctl_label_LIC_f
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ctl_label_LIC_f(labels)                            &
+     &          bind(c, name="set_ctl_label_LIC_f")
+!
+      use t_control_data_lic
+!
+      character(C_CHAR), intent(inout) :: labels(*)
+!
+      call set_ctl_label_LIC(labels(1))
+!
+      end subroutine set_ctl_label_LIC_f
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -228,6 +233,30 @@
       call set_label_LIC_movie(labels(1))
 !
       end subroutine set_label_LIC_movie_f
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_flag_LIC_movie_mode_f()               &
+     &              bind(c, name="num_flag_LIC_movie_mode_f")
+!
+      use t_control_params_4_pvr
+!
+      num_flag_LIC_movie_mode_f = num_flag_LIC_movie_mode()
+      return
+      end function num_flag_LIC_movie_mode_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_flag_LIC_movie_mode_f(labels)                      &
+     &          bind(c, name="set_flag_LIC_movie_mode_f")
+!
+      use t_control_params_4_pvr
+!
+      character(C_CHAR), intent(inout) :: labels(*)
+!
+      call set_flag_LIC_movie_mode(labels)
+      end subroutine set_flag_LIC_movie_mode_f
 !
 ! ----------------------------------------------------------------------
 !

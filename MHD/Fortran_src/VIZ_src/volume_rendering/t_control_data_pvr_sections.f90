@@ -34,6 +34,9 @@
 !!
 !!      subroutine dealloc_pvr_section_ctl(pvr_sect_ctl)
 !!        type(pvr_section_ctl), intent(inout) :: pvr_sect_ctl
+!!
+!!      integer(kind = kint) function num_label_pvr_section()
+!!      subroutine set_label_pvr_section(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  array section_ctl
 !!    file section_ctl     ctl_psf_eq
@@ -78,11 +81,14 @@
 !
 !     4th level for area group
 !
+      integer(kind = kint), parameter :: n_label_pvr_section =   2
+!
       character(len=kchara), parameter                                  &
      &                  :: hd_surface_define =  'surface_define'
       character(len=kchara), parameter                                  &
      &                  :: hd_pvr_opacity =   'opacity_ctl'
-      private :: hd_pvr_opacity, hd_surface_define
+!
+      private :: hd_pvr_opacity, hd_surface_define, n_label_pvr_section
 !
       private :: read_control_pvr_section_def
       private :: read_pvr_section_ctl
@@ -355,5 +361,26 @@
       end subroutine dealloc_pvr_section_ctl
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_section()
+      num_label_pvr_section = n_label_pvr_section
+      return
+      end function num_label_pvr_section
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_pvr_section(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_section)
+!
+!
+      call set_control_labels(hd_surface_define, names( 1))
+      call set_control_labels(hd_pvr_opacity,    names( 2))
+!
+      end subroutine set_label_pvr_section
+!
+! ----------------------------------------------------------------------
 !
       end module t_control_data_pvr_sections

@@ -18,6 +18,9 @@
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!
+!!      integer(kind = kint) function num_label_pvr_ctl()
+!!      integer(kind = kint) function num_label_pvr_ctl_w_dup()
+!!      subroutine set_label_pvr_ctl_w_dup(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's volume rendering
 !!
@@ -184,25 +187,32 @@
       character(len=kchara), parameter                                  &
      &             :: hd_pvr_colorbar =  'colorbar_ctl'
       character(len=kchara), parameter                                  &
-     &             :: hd_pvr_rotation =  'image_rotation_ctl'
+     &             :: hd_pvr_movie =     'movie_mode_ctl'
 !
 !     3rd level for surface_define
 !
       character(len=kchara), parameter                                  &
      &             :: hd_plot_area =   'plot_area_ctl'
 !
-!     3rd level for rotation
-!
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
       character(len=kchara) :: hd_colormap =      'colormap_ctl'
       character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
-      private :: hd_view_transform, hd_pvr_lighting
-      private :: hd_colormap
+!
+!       Deprecated label
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_rotation =  'image_rotation_ctl'
+!
+      integer(kind = kint), parameter :: n_label_pvr_ctl =       18
+      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 19
+!
 !
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
       private :: hd_output_field_def, hd_pvr_monitor
-      private :: hd_plot_area, hd_output_comp_def
+      private :: hd_plot_area, hd_output_comp_def, hd_pvr_movie
+      private :: hd_view_transform, hd_pvr_lighting
+      private :: hd_colormap
+      private :: n_label_pvr_ctl, n_label_pvr_ctl_w_dup
 !
 !  ---------------------------------------------------------------------
 !
@@ -320,6 +330,8 @@
      &      pvr_ctl%render_area_c, c_buf)
         call read_lighting_ctl(id_control, hd_pvr_lighting,             &
      &      pvr_ctl%light, c_buf)
+        call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
+     &      pvr_ctl%movie, c_buf)
         call read_pvr_rotation_ctl(id_control, hd_pvr_rotation,         &
      &      pvr_ctl%movie, c_buf)
 !
@@ -378,5 +390,56 @@
       end subroutine read_pvr_update_flag
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_ctl()
+      num_label_pvr_ctl = n_label_pvr_ctl
+      return
+      end function num_label_pvr_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_pvr_ctl_w_dup()
+      num_label_pvr_ctl_w_dup = n_label_pvr_ctl_w_dup
+      return
+      end function num_label_pvr_ctl_w_dup
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_pvr_ctl_w_dup(names)
+!
+      use t_read_control_elements
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_pvr_ctl_w_dup)
+!
+!
+      call set_control_labels(hd_pvr_updated,        names( 1))
+      call set_control_labels(hd_pvr_file_head,      names( 2))
+      call set_control_labels(hd_pvr_out_type,       names( 3))
+      call set_control_labels(hd_pvr_monitor,        names( 4))
+      call set_control_labels(hd_pvr_rgba_type,      names( 5))
+!
+      call set_control_labels(hd_pvr_maxpe_composit, names( 6))
+      call set_control_labels(hd_pvr_streo,          names( 7))
+      call set_control_labels(hd_pvr_anaglyph,       names( 8))
+!
+      call set_control_labels(hd_output_field_def, names( 9))
+      call set_control_labels(hd_output_comp_def,  names(10))
+!
+      call set_control_labels(hd_plot_area,      names(11))
+      call set_control_labels(hd_view_transform, names(12))
+      call set_control_labels(hd_colormap,       names(13))
+      call set_control_labels(hd_pvr_lighting,   names(14))
+!
+      call set_control_labels(hd_pvr_sections, names(15))
+      call set_control_labels(hd_pvr_isosurf,  names(16))
+      call set_control_labels(hd_pvr_colorbar, names(17))
+      call set_control_labels(hd_pvr_movie,    names(18))
+      call set_control_labels(hd_pvr_rotation, names(19))
+!
+      end subroutine set_label_pvr_ctl_w_dup
+!
+! ----------------------------------------------------------------------
 !
       end module t_control_data_4_pvr

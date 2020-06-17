@@ -14,6 +14,9 @@
 !!     &          view_param, iflag_enhanse, enhansed_opacity,          &
 !!     &          numele, numsurf, isf_4_ele, arccos_sf)
 !!        type(surface_group_data), intent(in) :: surf_grp
+!!
+!!      integer(kind = kint) function num_flag_pvr_isosurf_dir()
+!!      subroutine set_flag_pvr_isosurf_dir(names)
 !!@endverbatim
 !
       module pvr_surface_enhancement
@@ -41,6 +44,8 @@
      &                        :: LABEL_FORWARD = 'forward_surface'
       character(len = kchara), parameter                                &
      &                        :: LABEL_REVERSE = 'reverse_surface'
+!
+      integer(kind = kint), parameter :: n_flag_pvr_isosurf_dir =   3
 !
       integer(kind = kint), parameter :: IFLAG_NONE =          0
       integer(kind = kint), parameter :: IFLAG_SHOW_EDGE =     2
@@ -177,5 +182,29 @@
       end subroutine set_opacity_for_boundaries
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_flag_pvr_isosurf_dir()
+      num_flag_pvr_isosurf_dir = n_flag_pvr_isosurf_dir
+      return
+      end function num_flag_pvr_isosurf_dir
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_flag_pvr_isosurf_dir(names)
+!
+      use t_read_control_elements
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_flag_pvr_isosurf_dir)
+!
+!
+      call set_control_labels(LABEL_FORWARD, names( 1))
+      call set_control_labels(LABEL_REVERSE, names( 2))
+      call set_control_labels(LABEL_EDGE,    names( 3))
+!
+      end subroutine set_flag_pvr_isosurf_dir
+!
+! ----------------------------------------------------------------------
 !
       end module pvr_surface_enhancement
