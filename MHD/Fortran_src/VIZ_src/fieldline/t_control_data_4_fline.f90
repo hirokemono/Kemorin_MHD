@@ -17,14 +17,16 @@
 !!        type(fline_ctl), intent(in) :: org_fln
 !!        type(fline_ctl), intent(inout) :: new_fln
 !!
+!!      integer(kind = kint) function num_label_fline_ctl()
+!!      subroutine set_label_fline_ctl(names)
 !!  ---------------------------------------------------------------------
 !!     example of control for Kemo's field line
 !!
 !!  begin fieldline
-!!    fline_file_head    'psf'
+!!    fline_file_head    'fline'
 !!    fline_output_type   ucd
 !!
-!!    array chosen_ele_grp_ctl 1
+!!    array chosen_ele_grp_ctl
 !!      chosen_ele_grp_ctl   outer_core   end
 !!    end array chosen_ele_grp_ctl
 !!
@@ -138,6 +140,8 @@
       character(len=kchara) :: hd_max_line_stepping                     &
      &                        = 'max_line_stepping_ctl'
       character(len=kchara) :: hd_line_direction = 'line_direction_ctl'
+!
+      integer(kind = kint), parameter :: n_label_fline_ctl = 14
 !
       private :: hd_fline_file_head, hd_fline_output_type
       private :: hd_fline_grp, hd_line_direction
@@ -339,5 +343,41 @@
       end subroutine dup_control_4_fline
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function num_label_fline_ctl()
+      num_label_fline_ctl = n_label_fline_ctl
+      return
+      end function num_label_fline_ctl
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_label_fline_ctl(names)
+!
+      character(len = kchara), intent(inout)                            &
+     &                         :: names(n_label_fline_ctl)
+!
+!
+      call set_control_labels(hd_fline_file_head,   names( 1))
+      call set_control_labels(hd_fline_output_type, names( 2))
+!
+      call set_control_labels(hd_fline_grp,        names( 3))
+      call set_control_labels(hd_field_line_field, names( 4))
+      call set_control_labels(hd_coloring_field,   names( 5))
+      call set_control_labels(hd_coloring_comp,    names( 6))
+!
+      call set_control_labels(hd_num_fieldline,     names( 7))
+      call set_control_labels(hd_line_direction,    names( 8))
+      call set_control_labels(hd_max_line_stepping, names( 9))
+!
+      call set_control_labels(hd_starting_type,     names(10))
+      call set_control_labels(hd_selection_type,    names(11))
+      call set_control_labels(hd_start_surf_grp,    names(12))
+      call set_control_labels(hd_xx_start_point,    names(13))
+      call set_control_labels(hd_start_global_surf, names(14))
+!
+      end subroutine set_label_fline_ctl
+!
+! ----------------------------------------------------------------------
 !
       end module t_control_data_4_fline

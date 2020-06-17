@@ -17,12 +17,14 @@
 !!
 !!      integer(c_int) function num_label_fld_on_psf_control_f() bind(c)
 !!      integer(c_int) function num_label_psf_define_control_f() bind(c)
+!!      integer(c_int) function num_label_psf_ctl_w_dpl_f() bind(c)
 !!      integer(c_int) function num_label_psf_def_type_f() bind(c)
 !!      integer(c_int) function num_label_psf_def_type_grp_f() bind(c)
 !!      integer(c_int) function num_label_psf_dirs_f() bind(c)
 !!      integer(c_int) function num_label_psf_coefs_f() bind(c)
 !!      subroutine set_label_fld_on_psf_control_f(names)  bind(c)
 !!      subroutine set_label_psf_define_control_f(names)  bind(c)
+!!      subroutine set_label_psf_ctl_w_dpl_f(names)  bind(c)
 !!      subroutine set_label_psf_def_type_grp_f(names)  bind(c)
 !!      subroutine set_label_psf_dirs_f(names)  bind(c)
 !!      subroutine set_label_psf_coefs_f(names)  bind(c)
@@ -139,6 +141,16 @@
 !
 ! ----------------------------------------------------------------------
 !
+      integer(c_int) function num_label_psf_ctl_w_dpl_f() bind(c)
+!
+      use t_control_data_4_psf
+!
+      num_label_psf_ctl_w_dpl_f = num_label_psf_ctl_w_dpl()
+      return
+      end function num_label_psf_ctl_w_dpl_f
+!
+! ----------------------------------------------------------------------
+!
       integer(c_int) function num_label_psf_def_type_f() bind(c)
 !
       use set_coefs_of_sections
@@ -199,6 +211,17 @@
 !
       call set_label_psf_define_control(names)
       end subroutine set_label_psf_define_control_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_psf_ctl_w_dpl_f(names)  bind(c)
+!
+      use t_control_data_4_psf
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_psf_ctl_w_dpl(names)
+      end subroutine set_label_psf_ctl_w_dpl_f
 !
 !  ---------------------------------------------------------------------
 !

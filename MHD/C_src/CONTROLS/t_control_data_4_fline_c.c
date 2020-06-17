@@ -21,11 +21,12 @@ const char label_fline_ctl[NLBL_FLINE_CTL][KCHARA_C] = {
 	/*[ 4]*/	{"coloring_field_ctl"},
 	/*[ 5]*/	{"coloring_comp_ctl"},
 	
+    /*[ 6]*/    {"num_fieldline_ctl"},
+    /*[ 7]*/    {"line_direction_ctl"},
+    /*[ 8]*/    {"max_line_stepping_ctl"},
+    
 	/*[ 6]*/	{"starting_type_ctl"},
 	/*[ 7]*/	{"selection_type_ctl"},
-	/*[ 8]*/	{"line_direction_ctl"},
-	/*[ 9]*/	{"num_fieldline_ctl"},
-	/*[10]*/	{"max_line_stepping_ctl"},
 	
 	/*[11]*/	{"start_surf_grp_ctl"},
 	/*[12]*/	{"starting_point_ctl"},
@@ -123,12 +124,12 @@ int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_ctl_item_c(buf, label_fline_ctl[ 4], fline_c->fline_color_field_ctl);
 		read_chara_ctl_item_c(buf, label_fline_ctl[ 5], fline_c->fline_color_comp_ctl);
 		
-		read_chara_ctl_item_c(buf, label_fline_ctl[ 6], fline_c->starting_type_ctl);
-		read_chara_ctl_item_c(buf, label_fline_ctl[ 7], fline_c->selection_type_ctl);
-		read_chara_ctl_item_c(buf, label_fline_ctl[ 8], fline_c->line_direction_ctl);
-		
-		read_integer_ctl_item_c(buf, label_fline_ctl[ 9], fline_c->num_fieldline_ctl);
-		read_integer_ctl_item_c(buf, label_fline_ctl[10], fline_c->max_line_stepping_ctl);
+        read_integer_ctl_item_c(buf, label_fline_ctl[ 6], fline_c->num_fieldline_ctl);
+        read_chara_ctl_item_c(buf, label_fline_ctl[ 7], fline_c->line_direction_ctl);
+        read_integer_ctl_item_c(buf, label_fline_ctl[ 8], fline_c->max_line_stepping_ctl);
+        
+		read_chara_ctl_item_c(buf, label_fline_ctl[ 9], fline_c->starting_type_ctl);
+		read_chara_ctl_item_c(buf, label_fline_ctl[10], fline_c->selection_type_ctl);
 		
 		read_chara_ctl_item_c(buf, label_fline_ctl[11], fline_c->start_surf_grp_ctl);
 		
@@ -152,12 +153,12 @@ int write_fline_ctl_c(FILE *fp, int level, const char *label,
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 4], fline_c->fline_color_field_ctl);
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 5], fline_c->fline_color_comp_ctl);
 	
-	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 6], fline_c->starting_type_ctl);
-	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 7], fline_c->selection_type_ctl);
-	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 8], fline_c->line_direction_ctl);
-	
-	write_integer_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 9], fline_c->num_fieldline_ctl);
-	write_integer_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[10], fline_c->max_line_stepping_ctl);
+    write_integer_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 6], fline_c->num_fieldline_ctl);
+    write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 7], fline_c->line_direction_ctl);
+    write_integer_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 8], fline_c->max_line_stepping_ctl);
+    
+	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[ 9], fline_c->starting_type_ctl);
+	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[10], fline_c->selection_type_ctl);
 	
 	write_chara_ctl_item_c(fp, level, fline_c->maxlen, label_fline_ctl[11], fline_c->start_surf_grp_ctl);
 	
