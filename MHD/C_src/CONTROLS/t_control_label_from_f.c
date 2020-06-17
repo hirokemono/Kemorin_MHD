@@ -52,7 +52,7 @@ void check_control_labels_f(struct control_labels_f *ctl_list){
 	printf("ctl_list->len_f %d \n", ctl_list->len_f);
 	printf("ctl_list->num_labels %d \n", ctl_list->num_labels);
 	for(i=0;i<ctl_list->num_labels;i++){
-		printf("%d %s \n", i, ctl_list->label[i]);
+		printf("label[%d]   %s \n", i, ctl_list->label[i]);
 	};
     printf("\n");
 	return;

@@ -68,6 +68,34 @@ load_MHD_control_c.o: \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_zonal_means_c.h \
  $(C_SRCDIR)/CONTROLS/t_ctl_data_crust_filter_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+m_FLINE_control_labels_from_f.o: \
+ $(C_SRCDIR)/CONTROLS/m_FLINE_control_labels_from_f.c \
+ $(C_SRCDIR)/CONTROLS/m_FLINE_control_labels_from_f.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+m_LIC_control_labels_from_f.o: \
+ $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.c \
+ $(C_SRCDIR)/CONTROLS/m_LIC_control_labels_from_f.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+m_PSF_control_labels_from_f.o: \
+ $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.c \
+ $(C_SRCDIR)/CONTROLS/m_PSF_control_labels_from_f.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+m_PVR_control_labels_from_f.o: \
+ $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.c \
+ $(C_SRCDIR)/CONTROLS/m_PVR_control_labels_from_f.h \
+ $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+ $(C_SRCDIR)/CORE_C/calypso_param_c.h \
+ $(C_SRCDIR)/CONTROLS/t_control_label_from_f.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_color_table_c.o: \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.c \
  $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
