@@ -66,7 +66,7 @@ struct pvr_ctl_c{
 	struct pvr_plot_area_ctl_c *area_c;
     
 	char *pvr_modelview_file_name;
-	struct modeview_ctl_c *mat_c;
+	struct modelview_ctl_c *mat_c;
     
 	struct lighting_ctl_c *light_c;
 	

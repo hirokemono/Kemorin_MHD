@@ -9,7 +9,7 @@
 
 #include "write_modelview_matrix.h"
 
-struct modeview_ctl_c *mat_c0;
+struct modelview_ctl_c *mat_c0;
 
 void copy_mat44_from_ctl(struct chara2_real_ctl_list *head, double mat44[16]) {
 	int i, j;
@@ -71,7 +71,7 @@ void copy_GL_stereo_params_to_ctl(struct view_element *view, struct streo_view_c
 }
 
 
-void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modeview_ctl_c *mat_c) {
+void copy_GL_modelview_params_to_ctl(struct view_element *view, struct modelview_ctl_c *mat_c) {
 	int i;
 	double viewpt_in_view[3];
 	double lookat_in_view[3];
@@ -113,7 +113,7 @@ void copy_GL_stereo_params_from_ctl(struct streo_view_ctl_c *streo_view_c, struc
 	return;
 }
 
-void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view_element *view) {
+void copy_GL_modelview_params_from_ctl(struct modelview_ctl_c *mat_c, struct view_element *view) {
 	int i;
 	double viewpt_in_view[3];
 	double lookat_in_view[3];
@@ -157,8 +157,8 @@ void copy_GL_modelview_params_from_ctl(struct modeview_ctl_c *mat_c, struct view
 
 void write_GL_modelview_file(struct kv_string *filename, struct view_element *view){
 	
-	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
-	alloc_modeview_ctl_c(mat_c0);
+	mat_c0 = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
+	alloc_modelview_ctl_c(mat_c0);
 	
 	copy_GL_modelview_params_to_ctl(view, mat_c0);
 	if(view->iflag_view_type == VIEW_STEREO){
@@ -166,7 +166,7 @@ void write_GL_modelview_file(struct kv_string *filename, struct view_element *vi
 		copy_GL_stereo_params_to_ctl(view, mat_c0->streo_view_c);
 	};
     
-	write_modeview_file_c(filename->string, mat_c0);
+	write_modelview_file_c(filename->string, mat_c0);
 	free(mat_c0);
 	return;
 }
@@ -175,10 +175,10 @@ void write_GL_modelview_file(struct kv_string *filename, struct view_element *vi
 void read_GL_modelview_file(struct kv_string *filename, struct view_element *view){
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
-	mat_c0 = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
-	alloc_modeview_ctl_c(mat_c0);
+	mat_c0 = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
+	alloc_modelview_ctl_c(mat_c0);
 	
-	read_modeview_file_c(filename->string, buf, mat_c0);
+	read_modelview_file_c(filename->string, buf, mat_c0);
     
 	copy_GL_modelview_params_from_ctl(mat_c0, view);
 	if(mat_c0->streo_view_c->iflag_use > 0){

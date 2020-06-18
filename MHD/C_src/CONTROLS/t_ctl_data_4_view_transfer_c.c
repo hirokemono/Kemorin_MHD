@@ -245,7 +245,7 @@ int write_projection_mat_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
+void alloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
 	int i;
 	
     mat_c->iflag_use = 0;
@@ -294,7 +294,7 @@ void alloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	return;
 };
 
-void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
+void dealloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
 	
 	dealloc_chara2_real_clist(mat_c->modelview_mat_ctl);
 	
@@ -319,8 +319,8 @@ void dealloc_modeview_ctl_c(struct modeview_ctl_c *mat_c){
 	return;
 };
 
-void read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct modeview_ctl_c *mat_c){
+void read_modelview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+			struct modelview_ctl_c *mat_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
@@ -351,8 +351,8 @@ void read_modeview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
     return;
 };
 
-int write_modeview_ctl_c(FILE *fp, int level, const char *label, 
-			struct modeview_ctl_c *mat_c){
+int write_modelview_ctl_c(FILE *fp, int level, const char *label, 
+			struct modelview_ctl_c *mat_c){
     if(mat_c->iflag_use == 0) return level;
     
     fprintf(fp, "!\n");
@@ -385,8 +385,8 @@ int write_modeview_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
-			struct modeview_ctl_c *mat_c){
+void read_modelview_file_c(const char *file_name, char buf[LENGTHBUF],
+			struct modelview_ctl_c *mat_c){
 	
     printf("Read PVR modelview file name: %s\n", file_name);
 	if ((FP_View = fopen(file_name, "r")) == NULL) {
@@ -396,7 +396,7 @@ void read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 	
 	skip_comment_read_line(FP_View, buf);
 	if(right_begin_flag_c(buf, label_modeview_head) > 0){
-		read_modeview_ctl_c(FP_View, buf, label_modeview_head, mat_c);
+		read_modelview_ctl_c(FP_View, buf, label_modeview_head, mat_c);
 	};
 	fclose(FP_View);
 	
@@ -404,7 +404,7 @@ void read_modeview_file_c(const char *file_name, char buf[LENGTHBUF],
 	return;
 };
 
-void write_modeview_file_c(const char *file_name, struct modeview_ctl_c *mat_c){
+void write_modelview_file_c(const char *file_name, struct modelview_ctl_c *mat_c){
 	int level = 0;
 	
     printf("Write PVR modelview file name: %s\n", file_name);
@@ -413,7 +413,7 @@ void write_modeview_file_c(const char *file_name, struct modeview_ctl_c *mat_c){
 		exit (2);                    /* terminate with error message */
 	};
 	
-	level = write_modeview_ctl_c(FP_View, 0, label_modeview_head, mat_c);
+	level = write_modelview_ctl_c(FP_View, 0, label_modeview_head, mat_c);
 	fclose(FP_View);
 	
 	return;

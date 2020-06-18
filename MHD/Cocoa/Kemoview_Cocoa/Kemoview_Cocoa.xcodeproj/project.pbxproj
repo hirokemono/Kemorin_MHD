@@ -14,7 +14,6 @@
 		180FF7D21DDFB55500D20198 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7D11DDFB55500D20198 /* CoreMedia.framework */; };
 		182174D62492F5640044ECA0 /* calypso_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D22492F5630044ECA0 /* calypso_param_c.c */; };
 		182174D72492F5640044ECA0 /* calypso_zlib_io_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */; };
-		182174DA2492F7110044ECA0 /* t_ctl_data_pvr_colormap_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 182174D82492F7100044ECA0 /* t_ctl_data_pvr_colormap_c.c */; };
 		1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */; };
 		1825197616A11A24006D5158 /* delete_file_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825197416A11A24006D5158 /* delete_file_c.c */; };
 		1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1825198016A28AF9006D5158 /* read_psf_vtk_data_c.c */; };
@@ -33,26 +32,13 @@
 		185CB9B1212F593D00BB3C0B /* t_control_chara_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB949212F593C00BB3C0B /* t_control_chara_int_IO.c */; };
 		185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB94B212F593C00BB3C0B /* t_control_chara_IO.c */; };
 		185CB9B3212F593D00BB3C0B /* t_control_chara_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB94D212F593C00BB3C0B /* t_control_chara_real_IO.c */; };
-		185CB9B4212F593D00BB3C0B /* t_control_data_4_fline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB94F212F593C00BB3C0B /* t_control_data_4_fline_c.c */; };
-		185CB9B9212F593D00BB3C0B /* t_control_data_gen_sph_grid_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB959212F593C00BB3C0B /* t_control_data_gen_sph_grid_c.c */; };
-		185CB9C3212F593D00BB3C0B /* t_control_data_sph_grid_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB96D212F593C00BB3C0B /* t_control_data_sph_grid_c.c */; };
 		185CB9C6212F593D00BB3C0B /* t_control_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB973212F593C00BB3C0B /* t_control_int2_IO.c */; };
 		185CB9C7212F593D00BB3C0B /* t_control_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB975212F593C00BB3C0B /* t_control_int_IO.c */; };
 		185CB9C8212F593D00BB3C0B /* t_control_int_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB977212F593C00BB3C0B /* t_control_int_real_IO.c */; };
 		185CB9C9212F593D00BB3C0B /* t_control_real2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB979212F593C00BB3C0B /* t_control_real2_IO.c */; };
 		185CB9CA212F593D00BB3C0B /* t_control_real3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97B212F593C00BB3C0B /* t_control_real3_IO.c */; };
 		185CB9CB212F593D00BB3C0B /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97D212F593C00BB3C0B /* t_control_real_IO.c */; };
-		185CB9CC212F593D00BB3C0B /* t_ctl_data_4_FEM_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB97F212F593C00BB3C0B /* t_ctl_data_4_FEM_mesh_c.c */; };
-		185CB9CE212F593D00BB3C0B /* t_ctl_data_4_platforms_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB983212F593C00BB3C0B /* t_ctl_data_4_platforms_c.c */; };
-		185CB9CF212F593D00BB3C0B /* t_ctl_data_4_sph_monitor_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB985212F593C00BB3C0B /* t_ctl_data_4_sph_monitor_c.c */; };
-		185CB9D0212F593D00BB3C0B /* t_ctl_data_4_sphere_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB987212F593C00BB3C0B /* t_ctl_data_4_sphere_model_c.c */; };
-		185CB9D1212F593D00BB3C0B /* t_ctl_data_4_time_steps_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB989212F593C00BB3C0B /* t_ctl_data_4_time_steps_c.c */; };
-		185CB9D2212F593D00BB3C0B /* t_ctl_data_4_view_transfer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB98B212F593C00BB3C0B /* t_ctl_data_4_view_transfer_c.c */; };
-		185CB9D3212F593D00BB3C0B /* t_ctl_data_4_volume_spectr_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB98D212F593C00BB3C0B /* t_ctl_data_4_volume_spectr_list.c */; };
-		185CB9D9212F593D00BB3C0B /* t_ctl_data_node_monitor_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB999212F593D00BB3C0B /* t_ctl_data_node_monitor_c.c */; };
-		185CB9DE212F593D00BB3C0B /* t_ctl_data_temp_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 185CB9A3212F593D00BB3C0B /* t_ctl_data_temp_model_c.c */; };
 		1862C4102311BC6B000306E6 /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */; };
-		18753CD222FB63A500FEA6D9 /* t_ctl_data_crust_filter_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */; };
 		1888414A22E64C090039BA2B /* psf_patch_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 1888414822E64C090039BA2B /* psf_patch_buffer.c */; };
 		188BA7512305E13100348842 /* invert_small_matrix_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7502305E13100348842 /* invert_small_matrix_c.c */; };
 		188BA75B2306BB0500348842 /* draw_map_4_PSF.c in Sources */ = {isa = PBXBuildFile; fileRef = 188BA7592306BB0400348842 /* draw_map_4_PSF.c */; };
@@ -97,6 +83,8 @@
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
 		18CE99DC23DB7BB7005D8886 /* draw_messages_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CE99DA23DB7BB6005D8886 /* draw_messages_gl.c */; };
 		18CFFEB722FBFDAD005D7739 /* vartex_array_object_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */; };
+		18D3CA64249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D3CA62249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c */; };
+		18D3CA67249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D3CA65249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c */; };
 		18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */; };
 		18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */; };
 		18D7E72D1562D359009B05FF /* check_viewer_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D7E6531562D359009B05FF /* check_viewer_mesh_c.c */; };
@@ -198,8 +186,6 @@
 		182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = calypso_zlib_io_c.c; sourceTree = "<group>"; };
 		182174D42492F5630044ECA0 /* calypso_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calypso_param_c.h; sourceTree = "<group>"; };
 		182174D52492F5640044ECA0 /* calypso_zlib_io_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calypso_zlib_io_c.h; sourceTree = "<group>"; };
-		182174D82492F7100044ECA0 /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
-		182174D92492F7110044ECA0 /* t_ctl_data_pvr_colormap_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_pvr_colormap_c.h; sourceTree = "<group>"; };
 		1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KemoviewerLightingControl.m; sourceTree = "<group>"; };
 		1824FD35230FD49500990F41 /* KemoviewerLightingControl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KemoviewerLightingControl.h; sourceTree = "<group>"; };
 		1825197416A11A24006D5158 /* delete_file_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = delete_file_c.c; sourceTree = "<group>"; };
@@ -236,12 +222,6 @@
 		185CB94C212F593C00BB3C0B /* t_control_chara_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_chara_IO.h; sourceTree = "<group>"; };
 		185CB94D212F593C00BB3C0B /* t_control_chara_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_chara_real_IO.c; sourceTree = "<group>"; };
 		185CB94E212F593C00BB3C0B /* t_control_chara_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_chara_real_IO.h; sourceTree = "<group>"; };
-		185CB94F212F593C00BB3C0B /* t_control_data_4_fline_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_data_4_fline_c.c; sourceTree = "<group>"; };
-		185CB950212F593C00BB3C0B /* t_control_data_4_fline_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_data_4_fline_c.h; sourceTree = "<group>"; };
-		185CB959212F593C00BB3C0B /* t_control_data_gen_sph_grid_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_data_gen_sph_grid_c.c; sourceTree = "<group>"; };
-		185CB95A212F593C00BB3C0B /* t_control_data_gen_sph_grid_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_data_gen_sph_grid_c.h; sourceTree = "<group>"; };
-		185CB96D212F593C00BB3C0B /* t_control_data_sph_grid_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_data_sph_grid_c.c; sourceTree = "<group>"; };
-		185CB96E212F593C00BB3C0B /* t_control_data_sph_grid_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_data_sph_grid_c.h; sourceTree = "<group>"; };
 		185CB973212F593C00BB3C0B /* t_control_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_int2_IO.c; sourceTree = "<group>"; };
 		185CB974212F593C00BB3C0B /* t_control_int2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_int2_IO.h; sourceTree = "<group>"; };
 		185CB975212F593C00BB3C0B /* t_control_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_int_IO.c; sourceTree = "<group>"; };
@@ -254,28 +234,8 @@
 		185CB97C212F593C00BB3C0B /* t_control_real3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real3_IO.h; sourceTree = "<group>"; };
 		185CB97D212F593C00BB3C0B /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_control_real_IO.c; sourceTree = "<group>"; };
 		185CB97E212F593C00BB3C0B /* t_control_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_control_real_IO.h; sourceTree = "<group>"; };
-		185CB97F212F593C00BB3C0B /* t_ctl_data_4_FEM_mesh_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_FEM_mesh_c.c; sourceTree = "<group>"; };
-		185CB980212F593C00BB3C0B /* t_ctl_data_4_FEM_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_FEM_mesh_c.h; sourceTree = "<group>"; };
-		185CB983212F593C00BB3C0B /* t_ctl_data_4_platforms_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_platforms_c.c; sourceTree = "<group>"; };
-		185CB984212F593C00BB3C0B /* t_ctl_data_4_platforms_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_platforms_c.h; sourceTree = "<group>"; };
-		185CB985212F593C00BB3C0B /* t_ctl_data_4_sph_monitor_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_sph_monitor_c.c; sourceTree = "<group>"; };
-		185CB986212F593C00BB3C0B /* t_ctl_data_4_sph_monitor_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_sph_monitor_c.h; sourceTree = "<group>"; };
-		185CB987212F593C00BB3C0B /* t_ctl_data_4_sphere_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_sphere_model_c.c; sourceTree = "<group>"; };
-		185CB988212F593C00BB3C0B /* t_ctl_data_4_sphere_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_sphere_model_c.h; sourceTree = "<group>"; };
-		185CB989212F593C00BB3C0B /* t_ctl_data_4_time_steps_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_time_steps_c.c; sourceTree = "<group>"; };
-		185CB98A212F593C00BB3C0B /* t_ctl_data_4_time_steps_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_time_steps_c.h; sourceTree = "<group>"; };
-		185CB98B212F593C00BB3C0B /* t_ctl_data_4_view_transfer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_view_transfer_c.c; sourceTree = "<group>"; };
-		185CB98C212F593C00BB3C0B /* t_ctl_data_4_view_transfer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_view_transfer_c.h; sourceTree = "<group>"; };
-		185CB98D212F593C00BB3C0B /* t_ctl_data_4_volume_spectr_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_volume_spectr_list.c; sourceTree = "<group>"; };
-		185CB98E212F593C00BB3C0B /* t_ctl_data_4_volume_spectr_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_volume_spectr_list.h; sourceTree = "<group>"; };
-		185CB999212F593D00BB3C0B /* t_ctl_data_node_monitor_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_node_monitor_c.c; sourceTree = "<group>"; };
-		185CB99A212F593D00BB3C0B /* t_ctl_data_node_monitor_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_node_monitor_c.h; sourceTree = "<group>"; };
-		185CB9A3212F593D00BB3C0B /* t_ctl_data_temp_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_temp_model_c.c; sourceTree = "<group>"; };
-		185CB9A4212F593D00BB3C0B /* t_ctl_data_temp_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_temp_model_c.h; sourceTree = "<group>"; };
 		1862C40E2311BC69000306E6 /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_rgba_table_c.h; sourceTree = "<group>"; };
 		1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_rgba_table_c.c; sourceTree = "<group>"; };
-		18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_crust_filter_c.c; sourceTree = "<group>"; };
-		18753CD322FB63AB00FEA6D9 /* t_ctl_data_crust_filter_c.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_crust_filter_c.h; sourceTree = "<group>"; };
 		1888414822E64C090039BA2B /* psf_patch_buffer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = psf_patch_buffer.c; sourceTree = "<group>"; };
 		1888414922E64C090039BA2B /* psf_patch_buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = psf_patch_buffer.h; sourceTree = "<group>"; };
 		188BA74F2305E13100348842 /* invert_small_matrix_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = invert_small_matrix_c.h; sourceTree = "<group>"; };
@@ -346,6 +306,10 @@
 		18CE99DB23DB7BB7005D8886 /* draw_messages_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_messages_gl.h; sourceTree = "<group>"; };
 		18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vartex_array_object_gl.c; sourceTree = "<group>"; };
 		18CFFEB622FBFDAD005D7739 /* vartex_array_object_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vartex_array_object_gl.h; sourceTree = "<group>"; };
+		18D3CA62249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_4_view_transfer_c.c; sourceTree = "<group>"; };
+		18D3CA63249B4C100081B787 /* t_ctl_data_4_view_transfer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_4_view_transfer_c.h; sourceTree = "<group>"; };
+		18D3CA65249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
+		18D3CA66249B4C500081B787 /* t_ctl_data_pvr_colormap_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_ctl_data_pvr_colormap_c.h; sourceTree = "<group>"; };
 		18D7E64F1562D359009B05FF /* cal_surface_center_normal_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cal_surface_center_normal_c.c; sourceTree = "<group>"; };
 		18D7E6501562D359009B05FF /* cal_surface_center_normal_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cal_surface_center_normal_c.h; sourceTree = "<group>"; };
 		18D7E6511562D359009B05FF /* check_psf_data_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = check_psf_data_viewer_c.c; sourceTree = "<group>"; };
@@ -594,12 +558,6 @@
 				185CB94C212F593C00BB3C0B /* t_control_chara_IO.h */,
 				185CB94D212F593C00BB3C0B /* t_control_chara_real_IO.c */,
 				185CB94E212F593C00BB3C0B /* t_control_chara_real_IO.h */,
-				185CB94F212F593C00BB3C0B /* t_control_data_4_fline_c.c */,
-				185CB950212F593C00BB3C0B /* t_control_data_4_fline_c.h */,
-				185CB959212F593C00BB3C0B /* t_control_data_gen_sph_grid_c.c */,
-				185CB95A212F593C00BB3C0B /* t_control_data_gen_sph_grid_c.h */,
-				185CB96D212F593C00BB3C0B /* t_control_data_sph_grid_c.c */,
-				185CB96E212F593C00BB3C0B /* t_control_data_sph_grid_c.h */,
 				185CB973212F593C00BB3C0B /* t_control_int2_IO.c */,
 				185CB974212F593C00BB3C0B /* t_control_int2_IO.h */,
 				185CB975212F593C00BB3C0B /* t_control_int_IO.c */,
@@ -612,28 +570,10 @@
 				185CB97C212F593C00BB3C0B /* t_control_real3_IO.h */,
 				185CB97D212F593C00BB3C0B /* t_control_real_IO.c */,
 				185CB97E212F593C00BB3C0B /* t_control_real_IO.h */,
-				185CB97F212F593C00BB3C0B /* t_ctl_data_4_FEM_mesh_c.c */,
-				185CB980212F593C00BB3C0B /* t_ctl_data_4_FEM_mesh_c.h */,
-				185CB983212F593C00BB3C0B /* t_ctl_data_4_platforms_c.c */,
-				185CB984212F593C00BB3C0B /* t_ctl_data_4_platforms_c.h */,
-				185CB985212F593C00BB3C0B /* t_ctl_data_4_sph_monitor_c.c */,
-				185CB986212F593C00BB3C0B /* t_ctl_data_4_sph_monitor_c.h */,
-				185CB987212F593C00BB3C0B /* t_ctl_data_4_sphere_model_c.c */,
-				185CB988212F593C00BB3C0B /* t_ctl_data_4_sphere_model_c.h */,
-				185CB989212F593C00BB3C0B /* t_ctl_data_4_time_steps_c.c */,
-				185CB98A212F593C00BB3C0B /* t_ctl_data_4_time_steps_c.h */,
-				185CB98B212F593C00BB3C0B /* t_ctl_data_4_view_transfer_c.c */,
-				185CB98C212F593C00BB3C0B /* t_ctl_data_4_view_transfer_c.h */,
-				185CB98D212F593C00BB3C0B /* t_ctl_data_4_volume_spectr_list.c */,
-				185CB98E212F593C00BB3C0B /* t_ctl_data_4_volume_spectr_list.h */,
-				185CB999212F593D00BB3C0B /* t_ctl_data_node_monitor_c.c */,
-				185CB99A212F593D00BB3C0B /* t_ctl_data_node_monitor_c.h */,
-				185CB9A3212F593D00BB3C0B /* t_ctl_data_temp_model_c.c */,
-				185CB9A4212F593D00BB3C0B /* t_ctl_data_temp_model_c.h */,
-				18753CD122FB63A400FEA6D9 /* t_ctl_data_crust_filter_c.c */,
-				18753CD322FB63AB00FEA6D9 /* t_ctl_data_crust_filter_c.h */,
-				182174D82492F7100044ECA0 /* t_ctl_data_pvr_colormap_c.c */,
-				182174D92492F7110044ECA0 /* t_ctl_data_pvr_colormap_c.h */,
+				18D3CA62249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c */,
+				18D3CA63249B4C100081B787 /* t_ctl_data_4_view_transfer_c.h */,
+				18D3CA65249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c */,
+				18D3CA66249B4C500081B787 /* t_ctl_data_pvr_colormap_c.h */,
 				1862C40F2311BC6A000306E6 /* set_rgba_table_c.c */,
 				1862C40E2311BC69000306E6 /* set_rgba_table_c.h */,
 			);
@@ -1076,13 +1016,13 @@
 				182174D62492F5640044ECA0 /* calypso_param_c.c in Sources */,
 				18D7E72E1562D359009B05FF /* coordinate_converter_c.c in Sources */,
 				18438A04230C910C0074FC31 /* m_kemoview_mesh_menu.c in Sources */,
-				185CB9D2212F593D00BB3C0B /* t_ctl_data_4_view_transfer_c.c in Sources */,
 				18D7E72F1562D359009B05FF /* get_ysglbitmap.c in Sources */,
 				18D7E7301562D359009B05FF /* jacobian_trilinear_c.c in Sources */,
 				188BA7672307C56300348842 /* set_colorbar_to_buffer.c in Sources */,
 				188FFDA22309B3A100F5A0DE /* set_coastline_to_buf.c in Sources */,
 				188BA75D23075E5200348842 /* ysglmaketextbitmap.c in Sources */,
 				1824FD34230FD47300990F41 /* KemoviewerLightingControl.m in Sources */,
+				18D3CA67249B4C500081B787 /* t_ctl_data_pvr_colormap_c.c in Sources */,
 				18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */,
 				18D7E7351562D359009B05FF /* m_grouping_mesh_4_viewer_c.c in Sources */,
 				18D7E7361562D359009B05FF /* m_map_data_4_viewer_c.c in Sources */,
@@ -1112,11 +1052,8 @@
 				185CB9AF212F593D00BB3C0B /* t_control_chara3_IO.c in Sources */,
 				18D7E7471562D359009B05FF /* set_psf_viewer.c in Sources */,
 				188C9422230DBE9F00A4DB14 /* m_kemoview_fline.c in Sources */,
-				185CB9DE212F593D00BB3C0B /* t_ctl_data_temp_model_c.c in Sources */,
 				18D7E7481562D359009B05FF /* set_rgb_colors_c.c in Sources */,
-				182174DA2492F7110044ECA0 /* t_ctl_data_pvr_colormap_c.c in Sources */,
 				18F56FC823720B270029D20D /* m_kemoview_fline_menu.c in Sources */,
-				185CB9D9212F593D00BB3C0B /* t_ctl_data_node_monitor_c.c in Sources */,
 				18CE99DC23DB7BB7005D8886 /* draw_messages_gl.c in Sources */,
 				185CB9B1212F593D00BB3C0B /* t_control_chara_int_IO.c in Sources */,
 				185CB9C6212F593D00BB3C0B /* t_control_int2_IO.c in Sources */,
@@ -1138,7 +1075,6 @@
 				188FFD9923092C8C00F5A0DE /* set_map_isolines_to_buf.c in Sources */,
 				188FFD8223087CCB00F5A0DE /* shaders.c in Sources */,
 				18D7E7551562D359009B05FF /* draw_colorbar_gl.c in Sources */,
-				185CB9D0212F593D00BB3C0B /* t_ctl_data_4_sphere_model_c.c in Sources */,
 				18D7E7561562D359009B05FF /* draw_fieldlines.c in Sources */,
 				185CB9B0212F593D00BB3C0B /* t_control_chara_int2_IO.c in Sources */,
 				18D7E75E1562D359009B05FF /* draw_patch_4_mesh_c.c in Sources */,
@@ -1152,7 +1088,6 @@
 				18D7E7681562D359009B05FF /* m_gl_transfer_matrix.c in Sources */,
 				18D7E76A1562D359009B05FF /* m_kemoviewer_structure.c in Sources */,
 				18D7E76C1562D359009B05FF /* modify_object_4_viewer_c.c in Sources */,
-				18753CD222FB63A500FEA6D9 /* t_ctl_data_crust_filter_c.c in Sources */,
 				188BA75B2306BB0500348842 /* draw_map_4_PSF.c in Sources */,
 				188C9428230DDC7B00A4DB14 /* m_kemoviewer_data.c in Sources */,
 				18D7E76D1562D359009B05FF /* modify_stereo_view_gl.c in Sources */,
@@ -1166,6 +1101,7 @@
 				18D7E7741562D359009B05FF /* set_color_code_on_nodes.c in Sources */,
 				185CB9B2212F593D00BB3C0B /* t_control_chara_IO.c in Sources */,
 				185CB9AB212F593D00BB3C0B /* m_direction_labels_c.c in Sources */,
+				18D3CA64249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c in Sources */,
 				185CB9C8212F593D00BB3C0B /* t_control_int_real_IO.c in Sources */,
 				18D7E7751562D359009B05FF /* set_kemoviewer_ucd_data.c in Sources */,
 				18D7E7761562D359009B05FF /* set_texture_4_psf.c in Sources */,
@@ -1194,30 +1130,22 @@
 				18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */,
 				18D7E7931562D359009B05FF /* PSFArrayControler.m in Sources */,
 				18D7E7941562D359009B05FF /* PsfController.m in Sources */,
-				185CB9B4212F593D00BB3C0B /* t_control_data_4_fline_c.c in Sources */,
 				185CB9CA212F593D00BB3C0B /* t_control_real3_IO.c in Sources */,
-				185CB9C3212F593D00BB3C0B /* t_control_data_sph_grid_c.c in Sources */,
-				185CB9CC212F593D00BB3C0B /* t_ctl_data_4_FEM_mesh_c.c in Sources */,
 				18D7E7951562D359009B05FF /* ResetViewControll.m in Sources */,
 				18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */,
 				185CB9C7212F593D00BB3C0B /* t_control_int_IO.c in Sources */,
-				185CB9CE212F593D00BB3C0B /* t_ctl_data_4_platforms_c.c in Sources */,
 				18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */,
 				18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */,
 				1825197616A11A24006D5158 /* delete_file_c.c in Sources */,
 				1825198116A28AF9006D5158 /* read_psf_vtk_data_c.c in Sources */,
-				185CB9D3212F593D00BB3C0B /* t_ctl_data_4_volume_spectr_list.c in Sources */,
-				185CB9D1212F593D00BB3C0B /* t_ctl_data_4_time_steps_c.c in Sources */,
 				1852CFAF236B7B5B0043C983 /* m_colorbar_work.c in Sources */,
 				182D092116C040ED0073D215 /* glsl.c in Sources */,
 				188FFD8D2308B39500F5A0DE /* set_mesh_node_2_gl_buf.c in Sources */,
-				185CB9CF212F593D00BB3C0B /* t_ctl_data_4_sph_monitor_c.c in Sources */,
 				18E2A550230879E20048A57A /* set_mesh_patch_2_gl_buf.c in Sources */,
 				188C9416230CAB2500A4DB14 /* m_kemoview_psf.c in Sources */,
 				185CB9AD212F593D00BB3C0B /* t_control_chara2_IO.c in Sources */,
 				18FC007517EE0B7200B5F684 /* select_read_psf_viewer_c.c in Sources */,
 				18FC007817EF4D6300B5F684 /* read_psf_vtk_data_gz_c.c in Sources */,
-				185CB9B9212F593D00BB3C0B /* t_control_data_gen_sph_grid_c.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

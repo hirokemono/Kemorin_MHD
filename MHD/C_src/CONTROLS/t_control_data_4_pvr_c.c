@@ -218,8 +218,8 @@ struct pvr_ctl_c * init_pvr_ctl_c(){
 	pvr_c->area_c = init_pvr_plot_area_ctl_c();
 	
     pvr_c->pvr_modelview_file_name = (char *)calloc(KCHARA_C, sizeof(char));
-	pvr_c->mat_c = (struct modeview_ctl_c *) malloc(sizeof(struct modeview_ctl_c));
-	alloc_modeview_ctl_c(pvr_c->mat_c);
+	pvr_c->mat_c = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
+	alloc_modelview_ctl_c(pvr_c->mat_c);
 	
 	pvr_c->light_c = init_lighting_ctl_c();
 	
@@ -252,7 +252,7 @@ void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c){
     
 	dealloc_pvr_plot_area_ctl_c(pvr_c->area_c);
 	
-	dealloc_modeview_ctl_c(pvr_c->mat_c);
+	dealloc_modelview_ctl_c(pvr_c->mat_c);
 	free(pvr_c->mat_c);
     free(pvr_c->pvr_modelview_file_name);
 	
@@ -289,7 +289,7 @@ void read_pvr_ctl_items(FILE *fp, char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 		read_pvr_plot_area_ctl_c(fp, buf, label_pvr_ctl[ 9], pvr_c->area_c);
 	};
 	if(right_begin_flag_c(buf, label_pvr_ctl[10]) > 0){
-		read_modeview_ctl_c(fp, buf, label_pvr_ctl[10], pvr_c->mat_c);
+		read_modelview_ctl_c(fp, buf, label_pvr_ctl[10], pvr_c->mat_c);
 	} else if(right_file_flag_c(buf, label_pvr_ctl[10])){
 		pvr_c->mat_c->iflag_use = read_file_flag_c(buf, pvr_c->pvr_modelview_file_name);
 	};
@@ -338,7 +338,7 @@ int write_pvr_ctl_items(FILE *fp, int level, struct pvr_ctl_c *pvr_c){
     level = write_pvr_plot_area_ctl_c(fp, level, label_pvr_ctl[ 9], pvr_c->area_c);
 	
 	if(pvr_c->mat_c->iflag_use > 0){
-		level = write_modeview_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->mat_c);
+		level = write_modelview_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->mat_c);
 	} else if(pvr_c->mat_c->iflag_use == -1){
 		write_file_flag_for_ctl_c(fp, level, label_pvr_ctl[10], pvr_c->pvr_modelview_file_name);
 	};
@@ -401,7 +401,7 @@ void rename_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
 
 void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 	if(pvr_c->mat_c->iflag_use ==-1){
-		read_modeview_file_c(pvr_c->pvr_modelview_file_name, buf, pvr_c->mat_c);
+		read_modelview_file_c(pvr_c->pvr_modelview_file_name, buf, pvr_c->mat_c);
 	};
 	if(pvr_c->cmap_cbar_c->iflag_use ==-1){
 		read_colormap_file_c(pvr_c->pvr_colormap_file_name, buf, pvr_c->cmap_cbar_c);
@@ -413,7 +413,7 @@ void read_pvr_ctl_subfiles(char buf[LENGTHBUF], struct pvr_ctl_c *pvr_c){
 
 void write_pvr_ctl_subfiles(struct pvr_ctl_c *pvr_c){
 	if(pvr_c->mat_c->iflag_use ==-1){
-		write_modeview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
+		write_modelview_file_c(pvr_c->pvr_modelview_file_name, pvr_c->mat_c);
 	};
 	if(pvr_c->iflag_cmap_cbar_ctl ==-1){
 		write_colormap_file_c(pvr_c->pvr_colormap_file_name, pvr_c->cmap_cbar_c);
