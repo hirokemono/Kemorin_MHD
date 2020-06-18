@@ -9,11 +9,9 @@
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl, &
-!!     &          hd_lic_ctl, hd_lic_colordef,                          &
-!!     &          pvr_ctl_type, lic_ctl_type)
+!!     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
 !!      subroutine read_lic_pvr_ctl                                     &
-!!     &         (id_control, hd_block, hd_lic_colordef,                &
-!!     &          pvr, lic_ctl, c_buf)
+!!     &         (id_control, hd_block, pvr, lic_ctl, c_buf)
 !!      subroutine dealloc_lic_count_data(pvr, lic_ctl)
 !!        type(pvr_parameter_ctl), intent(inout) :: pvr
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
@@ -81,37 +79,63 @@
 !
 !     2nd level for volume_rendering
 !
-      character(len=kchara) :: hd_pvr_updated =     'updated_sign'
-      character(len=kchara) :: hd_lic_file_head =   'lic_file_prefix'
-      character(len=kchara) :: hd_lic_out_type =    'lic_image_format'
-      character(len=kchara) :: hd_pvr_monitor =   'monitoring_mode'
-      character(len=kchara) :: hd_pvr_rgba_type = 'image_tranceparency'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_updated =     'updated_sign'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lic_file_head =   'lic_file_prefix'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lic_out_type =    'lic_image_format'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_monitor =   'monitoring_mode'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_rgba_type = 'image_tranceparency'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_maxpe_composit = 'max_pe_4_composit'
 !
-      character(len=kchara) :: hd_pvr_streo =    'streo_imaging'
-      character(len=kchara) :: hd_pvr_anaglyph = 'anaglyph_image'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_streo =    'streo_imaging'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_anaglyph = 'anaglyph_image'
 !
-      character(len=kchara) :: hd_lic_control = 'LIC_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lic_control = 'LIC_ctl'
 !
 !     3rd level for surface_define
 !
-      character(len=kchara) :: hd_plot_area =   'plot_area_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_plot_area =   'plot_area_ctl'
 !
 !     3rd level for rotation
 !
-      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
-      character(len=kchara) :: hd_colormap =      'colormap_ctl'
-      character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_view_transform = 'view_transform_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_lic_colordef =  'LIC_color_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_colormap =      'colormap_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_colorbar =  'colorbar_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_lighting =  'lighting_ctl'
 !
-      integer(kind = kint), parameter :: n_label_LIC_pvr = 12
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_sections = 'section_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_isosurf =  'isosurface_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_movie =    'movie_mode_ctl'
+!
+      integer(kind = kint), parameter :: n_label_LIC_pvr = 18
 !
 !
-      private :: hd_view_transform, hd_pvr_lighting
+      private :: hd_view_transform, hd_pvr_lighting, hd_lic_colordef
       private :: hd_colormap, n_label_LIC_pvr
 !
       private :: hd_lic_file_head, hd_lic_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
-      private :: hd_lic_control, hd_pvr_monitor
-      private :: hd_plot_area
+      private :: hd_lic_control, hd_pvr_monitor, hd_pvr_movie
+      private :: hd_pvr_sections, hd_pvr_isosurf, hd_pvr_colorbar
+      private :: hd_plot_area, hd_pvr_maxpe_composit
 !
 !  ---------------------------------------------------------------------
 !
@@ -120,12 +144,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_control_lic_pvr_file(id_control, fname_lic_ctl,   &
-     &          hd_lic_ctl, hd_lic_colordef,                            &
-     &          pvr_ctl_type, lic_ctl_type)
+     &          hd_lic_ctl, pvr_ctl_type, lic_ctl_type)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: hd_lic_ctl
-      character(len = kchara), intent(in) :: hd_lic_colordef
       character(len = kchara), intent(in) :: fname_lic_ctl
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
       type(lic_parameter_ctl), intent(inout) :: lic_ctl_type
@@ -141,8 +163,7 @@
       do
         call load_one_line_from_control(id_control, c_buf1)
         call read_lic_pvr_ctl                                           &
-     &     (id_control, hd_lic_ctl, hd_lic_colordef,                    &
-     &      pvr_ctl_type, lic_ctl_type, c_buf1)
+     &     (id_control, hd_lic_ctl, pvr_ctl_type, lic_ctl_type, c_buf1)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)
@@ -152,8 +173,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_lic_pvr_ctl                                       &
-     &         (id_control, hd_block, hd_lic_colordef,                  &
-     &          pvr, lic_ctl, c_buf)
+     &         (id_control, hd_block, pvr, lic_ctl, c_buf)
 !
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
@@ -162,7 +182,6 @@
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      character(len = kchara), intent(in) :: hd_lic_colordef
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
@@ -195,14 +214,15 @@
           write(*,'(3a)', ADVANCE='NO')                                 &
      &               'Read file for ', trim(hd_lic_colordef), '... '
           pvr%color_file_ctl = third_word(c_buf)
-          call read_control_pvr_colormap_file(id_control+2,             &
-     &        pvr%color_file_ctl, hd_lic_colordef, pvr%cmap_cbar_c)
+          call read_control_pvr_colormap_file                           &
+     &       (id_control+2, pvr%color_file_ctl, hd_lic_colordef,        &
+     &        pvr%cmap_cbar_c)
         end if
 !
         if(pvr%cmap_cbar_c%i_cmap_cbar .eq. 0) then
-          call read_pvr_colordef_ctl(id_control, hd_colormap,           &
-     &        pvr%cmap_cbar_c%color, c_buf)
           call read_pvr_colordef_ctl(id_control, hd_lic_colordef,       &
+     &        pvr%cmap_cbar_c%color, c_buf)
+          call read_pvr_colordef_ctl(id_control, hd_colormap,           &
      &        pvr%cmap_cbar_c%color, c_buf)
 !
           call read_pvr_colorbar_ctl(id_control, hd_pvr_colorbar,       &
@@ -223,7 +243,7 @@
      &      pvr%render_area_c, c_buf)
         call read_lighting_ctl(id_control, hd_pvr_lighting,             &
      &      pvr%light, c_buf)
-        call read_pvr_rotation_ctl(id_control, hd_pvr_rotation,         &
+        call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
      &      pvr%movie, c_buf)
 !
         call read_lic_control_data                                      &
@@ -244,6 +264,9 @@
      &     (c_buf, hd_pvr_streo, pvr%streo_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_pvr_anaglyph, pvr%anaglyph_ctl)
+!
+        call read_integer_ctl_type                                      &
+     &     (c_buf, hd_pvr_maxpe_composit, pvr%maxpe_composit_ctl)
       end do
       pvr%i_pvr_ctl = 1
 !
@@ -285,15 +308,22 @@
       call set_control_labels(hd_pvr_monitor,    names( 4))
       call set_control_labels(hd_pvr_rgba_type,  names( 5))
 !
-      call set_control_labels(hd_pvr_streo,      names( 6))
-      call set_control_labels(hd_pvr_anaglyph,   names( 7))
+      call set_control_labels(hd_pvr_maxpe_composit, names( 6))
+      call set_control_labels(hd_pvr_streo,          names( 7))
+      call set_control_labels(hd_pvr_anaglyph,       names( 8))
 !
-      call set_control_labels(hd_lic_control,    names( 8))
+      call set_control_labels(hd_lic_control,    names( 9))
 !
-      call set_control_labels(hd_plot_area,      names( 9))
-      call set_control_labels(hd_view_transform, names(10))
-      call set_control_labels(hd_colormap,       names(11))
-      call set_control_labels(hd_pvr_lighting,   names(12))
+      call set_control_labels(hd_plot_area,      names(10))
+      call set_control_labels(hd_view_transform, names(11))
+      call set_control_labels(hd_lic_colordef,   names(12))
+      call set_control_labels(hd_colormap,       names(13))
+      call set_control_labels(hd_pvr_lighting,   names(14))
+      call set_control_labels(hd_pvr_colorbar,   names(15))
+!
+      call set_control_labels(hd_pvr_sections,   names(16))
+      call set_control_labels(hd_pvr_isosurf,    names(17))
+      call set_control_labels(hd_pvr_movie,      names(18))
 !
       end subroutine set_ctl_label_LIC_pvr
 !

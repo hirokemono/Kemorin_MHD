@@ -185,8 +185,6 @@
      &             :: hd_pvr_isosurf =  'isosurface_ctl'
 !
       character(len=kchara), parameter                                  &
-     &             :: hd_pvr_colorbar =  'colorbar_ctl'
-      character(len=kchara), parameter                                  &
      &             :: hd_pvr_movie =     'movie_mode_ctl'
 !
 !     3rd level for surface_define
@@ -194,24 +192,32 @@
       character(len=kchara), parameter                                  &
      &             :: hd_plot_area =   'plot_area_ctl'
 !
-      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
-      character(len=kchara) :: hd_colormap =      'colormap_ctl'
-      character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
+      character(len=kchara), parameter                                  &
+     &              :: hd_view_transform = 'view_transform_ctl'
+      character(len=kchara), parameter                                  &
+     &              :: hd_pvr_colordef =  'pvr_color_ctl'
+      character(len=kchara), parameter                                  &
+     &              :: hd_colormap =      'colormap_ctl'
+      character(len=kchara), parameter                                  &
+     &              :: hd_pvr_lighting =  'lighting_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_pvr_colorbar =  'colorbar_ctl'
 !
 !       Deprecated label
       character(len=kchara), parameter                                  &
      &             :: hd_pvr_rotation =  'image_rotation_ctl'
 !
-      integer(kind = kint), parameter :: n_label_pvr_ctl =       18
-      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 19
+      integer(kind = kint), parameter :: n_label_pvr_ctl =       19
+      integer(kind = kint), parameter :: n_label_pvr_ctl_w_dup = 20
 !
 !
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
       private :: hd_output_field_def, hd_pvr_monitor
       private :: hd_plot_area, hd_output_comp_def, hd_pvr_movie
-      private :: hd_view_transform, hd_pvr_lighting
-      private :: hd_colormap
+      private :: hd_view_transform, hd_pvr_lighting, hd_colormap
+      private :: hd_pvr_sections, hd_pvr_isosurf, hd_pvr_colorbar
+      private :: hd_pvr_maxpe_composit
       private :: n_label_pvr_ctl, n_label_pvr_ctl_w_dup
 !
 !  ---------------------------------------------------------------------
@@ -263,13 +269,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_pvr_ctl                                           &
-     &         (id_control, hd_block, hd_pvr_colordef, pvr_ctl, c_buf)
+     &         (id_control, hd_block, pvr_ctl, c_buf)
 !
       use read_control_pvr_modelview
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
-      character(len = kchara), intent(in) :: hd_pvr_colordef
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl
       type(buffer_for_control), intent(inout)  :: c_buf
@@ -415,6 +420,7 @@
 !
 !
       call set_control_labels(hd_pvr_updated,        names( 1))
+!
       call set_control_labels(hd_pvr_file_head,      names( 2))
       call set_control_labels(hd_pvr_out_type,       names( 3))
       call set_control_labels(hd_pvr_monitor,        names( 4))
@@ -429,14 +435,15 @@
 !
       call set_control_labels(hd_plot_area,      names(11))
       call set_control_labels(hd_view_transform, names(12))
-      call set_control_labels(hd_colormap,       names(13))
-      call set_control_labels(hd_pvr_lighting,   names(14))
+      call set_control_labels(hd_pvr_colordef,   names(13))
+      call set_control_labels(hd_colormap,       names(14))
+      call set_control_labels(hd_pvr_lighting,   names(15))
+      call set_control_labels(hd_pvr_colorbar,   names(16))
 !
-      call set_control_labels(hd_pvr_sections, names(15))
-      call set_control_labels(hd_pvr_isosurf,  names(16))
-      call set_control_labels(hd_pvr_colorbar, names(17))
-      call set_control_labels(hd_pvr_movie,    names(18))
-      call set_control_labels(hd_pvr_rotation, names(19))
+      call set_control_labels(hd_pvr_sections, names(17))
+      call set_control_labels(hd_pvr_isosurf,  names(18))
+      call set_control_labels(hd_pvr_movie,    names(19))
+      call set_control_labels(hd_pvr_rotation, names(20))
 !
       end subroutine set_label_pvr_ctl_w_dup
 !

@@ -30,9 +30,6 @@
 !
       implicit  none
 !
-      character(len=kchara), parameter                                  &
-     &                    :: hd_lic_colordef =  'LIC_color_ctl'
-!
       type lic_rendering_controls
         integer(kind = kint) :: num_lic_ctl = 0
         character(len = kchara), allocatable :: fname_lic_ctl(:)
@@ -114,8 +111,7 @@
           write(*,'(3a,i4,a)', ADVANCE='NO') 'Read file for ',          &
      &        trim(hd_lic_ctl),  ' No. ', lic_ctls%num_lic_ctl, '... '
           call read_control_lic_pvr_file(id_control+2,                  &
-     &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl),             &
-     &        hd_lic_ctl, hd_lic_colordef,                              &
+     &        lic_ctls%fname_lic_ctl(lic_ctls%num_lic_ctl), hd_lic_ctl, &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
      &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl))
         end if
@@ -126,8 +122,7 @@
 !
           write(*,*) 'Control for', trim(hd_lic_ctl), ' No. ',          &
      &              lic_ctls%num_lic_ctl, ' is included'
-          call read_lic_pvr_ctl                                         &
-     &       (id_control, hd_lic_ctl, hd_lic_colordef,                  &
+          call read_lic_pvr_ctl(id_control, hd_lic_ctl,                 &
      &        lic_ctls%pvr_ctl_type(lic_ctls%num_lic_ctl),              &
      &        lic_ctls%lic_ctl_type(lic_ctls%num_lic_ctl), c_buf)
         end if

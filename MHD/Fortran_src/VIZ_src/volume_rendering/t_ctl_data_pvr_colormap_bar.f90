@@ -110,11 +110,14 @@
 !
 !     2nd level for colormap and colorbar
 !
+      character(len=kchara) :: hd_colormap_file =  "pvr_color_ctl"
+!
       character(len=kchara) :: hd_colormap =      'colormap_ctl'
       character(len=kchara) :: hd_pvr_colorbar =  'colorbar_ctl'
       integer(kind = kint), parameter :: n_label_pvr_cmap_bar = 2
 !
       private :: hd_colormap, hd_pvr_colorbar, n_label_pvr_cmap_bar
+      private :: hd_colormap_file
 !
 !  ---------------------------------------------------------------------
 !
@@ -144,6 +147,8 @@
       do
         call load_one_line_from_control(id_control, c_buf1)
         call read_pvr_cmap_cbar(id_control, hd_block,                   &
+     &      cmap_cbar_c, c_buf1)
+        call read_pvr_cmap_cbar(id_control, hd_colormap_file,           &
      &      cmap_cbar_c, c_buf1)
         if(cmap_cbar_c%i_cmap_cbar .gt. 0) exit
       end do

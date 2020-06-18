@@ -131,8 +131,7 @@
       do i_lic = 1, lic_ctls%num_lic_ctl
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE') then
           call read_control_lic_pvr_file                                &
-     &     (id_control, lic_ctls%fname_lic_ctl(i_lic),                  &
-     &      hd_lic_ctl, hd_lic_colordef,                                &
+     &     (id_control, lic_ctls%fname_lic_ctl(i_lic), hd_lic_ctl,      &
      &      lic_ctls%pvr_ctl_type(i_lic), lic_ctls%lic_ctl_type(i_lic))
         end if
       end do

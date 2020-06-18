@@ -146,8 +146,8 @@
       do i_pvr = 1, pvr_ctls%num_pvr_ctl
         if(pvr_ctls%fname_pvr_ctl(i_pvr) .ne. 'NO_FILE') then
           call read_control_pvr_file                                    &
-     &     (id_control, pvr_ctls%fname_pvr_ctl(i_pvr),                  &
-     &      hd_pvr_ctl, hd_pvr_colordef, pvr_ctls%pvr_ctl_type(i_pvr))
+     &     (id_control, pvr_ctls%fname_pvr_ctl(i_pvr), hd_pvr_ctl,      &
+     &      pvr_ctls%pvr_ctl_type(i_pvr))
         end if
       end do
 !

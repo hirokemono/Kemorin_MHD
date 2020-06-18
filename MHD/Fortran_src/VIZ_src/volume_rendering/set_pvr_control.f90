@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine read_control_pvr_file(id_control, fname_pvr_ctl,     &
-!!     &          hd_pvr_ctl, hd_pvr_colordef, pvr_ctl_type)
+!!     &          hd_pvr_ctl, pvr_ctl_type)
 !!      subroutine bcast_pvr_controls                                   &
 !!     &         (num_pvr_ctl, pvr_ctl, cflag_update)
 !!        integer(kind = kint), intent(in) :: num_pvr_ctl
@@ -151,12 +151,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine read_control_pvr_file(id_control, fname_pvr_ctl,       &
-     &          hd_pvr_ctl, hd_pvr_colordef, pvr_ctl_type)
+     &          hd_pvr_ctl, pvr_ctl_type)
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_pvr_ctl
       character(len = kchara), intent(in) :: hd_pvr_ctl
-      character(len = kchara), intent(in) :: hd_pvr_colordef
       type(pvr_parameter_ctl), intent(inout) :: pvr_ctl_type
 !
       type(buffer_for_control) :: c_buf1
@@ -167,8 +166,7 @@
       open(id_control, file=fname_pvr_ctl, status='old')
       do
         call load_one_line_from_control(id_control, c_buf1)
-        call read_pvr_ctl(id_control, hd_pvr_ctl, hd_pvr_colordef,      &
-     &      pvr_ctl_type, c_buf1)
+        call read_pvr_ctl(id_control, hd_pvr_ctl, pvr_ctl_type, c_buf1)
         if(pvr_ctl_type%i_pvr_ctl .gt. 0) exit
       end do
       close(id_control)

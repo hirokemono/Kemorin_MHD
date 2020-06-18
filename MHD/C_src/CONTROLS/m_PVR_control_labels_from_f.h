@@ -9,9 +9,9 @@
 /*
 Labels for PVR module controls
 
-Check pvr_ctl_labls->num_label_pvr_ctl_c 18
+Check pvr_ctl_labls->num_label_pvr_ctl_c 19
 Check pvr_ctl_labls->label_pvr_ctl_w_dpl
-ctl_list->num_labels 19 
+ctl_list->num_labels 20 
 label[0]   updated_sign 
 label[1]   pvr_file_head 
 label[2]   pvr_output_type 
@@ -24,13 +24,14 @@ label[8]   output_field
 label[9]   output_component 
 label[10]   plot_area_ctl 
 label[11]   view_transform_ctl 
-label[12]   colormap_ctl 
-label[13]   lighting_ctl 
-label[14]   section_ctl 
-label[15]   isosurface_ctl 
-label[16]   colorbar_ctl 
-label[17]   movie_mode_ctl 
-label[18]   image_rotation_ctl 
+label[12]   pvr_color_ctl 
+label[13]   colormap_ctl 
+label[14]   lighting_ctl 
+label[15]   colorbar_ctl 
+label[16]   section_ctl 
+label[17]   isosurface_ctl 
+label[18]   movie_mode_ctl 
+label[19]   image_rotation_ctl 
 
 Check pvr_ctl_labls->label_pvr_modelview
 ctl_list->num_labels 12 
