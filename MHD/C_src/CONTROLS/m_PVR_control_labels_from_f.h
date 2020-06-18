@@ -108,14 +108,16 @@ label[0]   isosurf_value
 label[1]   opacity_ctl 
 label[2]   surface_direction 
 
-Check pvr_ctl_labls->label_pvr_movie
-ctl_list->num_labels 6 
+Check pvr_ctl_labls->num_label_pvr_movie_c 6
+Check lic_ctl_labls->label_lic_movie
+ctl_list->num_labels 7 
 label[0]   movie_mode_ctl 
 label[1]   num_frames_ctl 
 label[2]   rotation_axis_ctl 
 label[3]   start_view_control 
 label[4]   end_view_control 
 label[5]   apature_range 
+label[6]   LIC_kernel_peak_range 
 
 Check pvr_ctl_labls->label_pvr_dirs
 ctl_list->num_labels 3 
@@ -134,6 +136,13 @@ ctl_list->num_labels 3
 label[0]   forward_surface 
 label[1]   reverse_surface 
 label[2]   boarder 
+
+Check lic_ctl_labls->label_lic_dirs
+ctl_list->num_labels 4 
+label[0]   rotation 
+label[1]   apature 
+label[2]   view_matrices 
+label[3]   LIC_kernel 
 */
 
 #include <stdlib.h>
@@ -159,14 +168,27 @@ struct pvr_control_labels{
 	struct control_labels_f *label_pvr_cmap_bar;
 	struct control_labels_f *label_pvr_section;
 	struct control_labels_f *label_pvr_isosurf;
-	struct control_labels_f *label_pvr_movie;
+	
+	int num_label_pvr_movie_c;
+	struct control_labels_f *label_lic_movie;
 	
 	struct control_labels_f *label_pvr_dirs;
-	struct control_labels_f *flag_pvr_movie_mode;
 	struct control_labels_f *flag_pvr_isosurf_dir;
+	
+	int num_flag_pvr_movie_mode_c;
+	struct control_labels_f *flag_lic_movie_mode;
 };
 
 /*  prototype */
+
+struct control_labels_f * init_label_pvr_pixels();
+struct control_labels_f * init_label_pvr_modelview();
+
+struct control_labels_f * init_label_lic_movie();
+struct control_labels_f * init_label_pvr_cmap();
+struct control_labels_f * init_label_pvr_cbar();
+struct control_labels_f * init_label_pvr_cmap_bar();
+struct control_labels_f * init_flag_lic_movie_mode();
 
 struct pvr_control_labels * init_pvr_control_labels();
 void dealloc_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls);

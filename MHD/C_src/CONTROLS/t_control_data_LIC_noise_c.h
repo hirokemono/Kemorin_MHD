@@ -16,9 +16,10 @@
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "m_LIC_control_labels_from_f.h"
 
 struct lic_noise_ctl_c{
-	struct label_list_f *label_lic_noise;
+	struct control_labels_f *label_lic_noise;
 	
 	struct chara_ctl_item *noise_type_ctl_c;
 	struct chara_ctl_item *noise_file_name_ctl_c;

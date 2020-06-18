@@ -83,10 +83,6 @@ struct pvr_colormap_bar_ctl_c{
 };
 
 /* prototypes */
-void get_label_colormap_ctl(int index, char *label);
-void get_label_lighting_ctl(int index, char *label);
-void get_label_colorbar_ctl(int index, char *label);
-
 struct colormap_ctl_c * init_colormap_ctl_c();
 void dealloc_colormap_ctl_c(struct colormap_ctl_c *cmap_c);
 void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

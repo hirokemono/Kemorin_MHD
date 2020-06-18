@@ -19,9 +19,10 @@
 #include "t_control_data_lic_masking_list.h"
 #include "t_control_data_LIC_noise_c.h"
 #include "t_control_data_LIC_kernel_c.h"
+#include "m_LIC_control_labels_from_f.h"
 
 struct lic_ctl_c{
-	struct label_list_f *label_lic_ctl;
+	struct control_labels_f *label_lic_ctl;
 	
 	struct chara_ctl_item *LIC_field_ctl;
 	

@@ -16,9 +16,10 @@
 #include "t_control_int_IO.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "m_LIC_control_labels_from_f.h"
 
 struct lic_kernel_ctl_c{
-	struct label_list_f *label_lic_kernel;
+	struct control_labels_f *label_lic_kernel;
 	
 	struct chara_ctl_item *kernel_function_type_ctl;
 	struct int_ctl_item *kernel_resolution_ctl_c;

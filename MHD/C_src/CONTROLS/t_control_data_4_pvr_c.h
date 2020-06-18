@@ -18,6 +18,7 @@
 #include "t_control_chara2_real_IO.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
+#include "t_control_data_4_pvr_movie_c.h"
 #include "t_control_data_pvr_section_list.h"
 #include "t_control_data_pvr_isosurf_list.h"
 
@@ -31,14 +32,6 @@ struct pvr_plot_area_ctl_c{
 	
 	struct chara_clist *pvr_area_list;
 	struct chara2_real_clist *surf_enhanse_ctl;
-};
-
-struct pvr_movie_ctl_c{
-    int iflag_use;
-	int maxlen;
-	
-	struct chara_ctl_item *rotation_axis_ctl;
-	struct int_ctl_item *num_frames_ctl;
 };
 
 struct pvr_ctl_c{
@@ -82,7 +75,6 @@ struct pvr_ctl_c{
 /* prototypes */
 
 void get_label_pvr_plot_area_ctl(int index, char *label);
-void get_label_pvr_movie_ctl(int index, char *label);
 void get_label_pvr_ctl(int index, char *label);
 
 struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c();
@@ -91,13 +83,6 @@ void read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct pvr_plot_area_ctl_c *area_c);
 int write_pvr_plot_area_ctl_c(FILE *fp, int level, const char *label,
 			struct pvr_plot_area_ctl_c *area_c);
-
-struct pvr_movie_ctl_c * init_pvr_movie_ctl_c();
-void dealloc_pvr_movie_ctl_c(struct pvr_movie_ctl_c *movie_c);
-void read_pvr_movie_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct pvr_movie_ctl_c *movie_c);
-int write_pvr_movie_ctl_c(FILE *fp, int level, const char *label,
-			struct pvr_movie_ctl_c *movie_c);
 
 struct pvr_ctl_c * init_pvr_ctl_c();
 void dealloc_pvr_ctl_c(struct pvr_ctl_c *pvr_c);

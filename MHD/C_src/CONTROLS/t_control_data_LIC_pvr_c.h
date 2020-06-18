@@ -16,11 +16,13 @@
 #include "t_control_data_4_psf_c.h"
 #include "t_ctl_data_pvr_colormap_c.h"
 #include "t_ctl_data_4_view_transfer_c.h"
+#include "t_control_data_4_pvr_movie_c.h"
 #include "t_control_data_4_pvr_c.h"
 #include "t_control_data_LIC_c.h"
+#include "m_LIC_control_labels_from_f.h"
 
 struct LIC_pvr_ctl_c{
-	struct label_list_f *label_lic_pvr;
+	struct control_labels_f *label_lic_pvr;
 	struct pvr_ctl_c *pvr_c;
 	
 	int iflag_lic_ctl;

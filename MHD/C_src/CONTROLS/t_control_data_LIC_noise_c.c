@@ -7,32 +7,13 @@
 
 #include "t_control_data_LIC_noise_c.h"
 
-#define NLBL_LIC_CTL  18
-
-int num_ctl_label_LIC_noise_f();
-void set_ctl_label_LIC_noise_f(char *label_1d);
-
-
-struct label_list_f * init_ctl_label_LIC_noise_f(){
-	int len_fix = lengthchara_f();
-	struct label_list_f *label_list = alloc_ctl_label();
-	label_list->num_labels = num_ctl_label_LIC_noise_f();
-	
-    char *packed_name = alloc_string((long) (len_fix*label_list->num_labels));
-	set_ctl_label_LIC_noise_f(packed_name);
-	set_labels_from_packed(len_fix, packed_name, label_list);
-	free(packed_name);
-	return label_list;
-};
-
-
 struct lic_noise_ctl_c * init_lic_noise_ctl_c(){
     struct lic_noise_ctl_c *lic_nze_c;
     if((lic_nze_c = (struct lic_noise_ctl_c *) malloc(sizeof(struct lic_noise_ctl_c))) == NULL) {
         printf("malloc error for lic_noise_ctl_c \n");
         exit(0);
     }
-	lic_nze_c->label_lic_noise = init_ctl_label_LIC_noise_f();
+	lic_nze_c->label_lic_noise = init_label_LIC_noise_f();
 	
 	lic_nze_c->noise_type_ctl_c = init_chara_ctl_item_c();
 	lic_nze_c->noise_file_name_ctl_c = init_chara_ctl_item_c();
@@ -48,7 +29,7 @@ struct lic_noise_ctl_c * init_lic_noise_ctl_c(){
 
 
 void dealloc_lic_noise_ctl_c(struct lic_noise_ctl_c *lic_nze_c){
-	dealloc_ctl_label(lic_nze_c->label_lic_noise);
+	dealloc_control_labels_f(lic_nze_c->label_lic_noise);
 	dealloc_chara_ctl_item_c(lic_nze_c->noise_type_ctl_c);
 	dealloc_chara_ctl_item_c(lic_nze_c->noise_file_name_ctl_c);
 	dealloc_chara_ctl_item_c(lic_nze_c->noise_file_format_ctl_c);

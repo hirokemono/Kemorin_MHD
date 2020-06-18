@@ -58,7 +58,7 @@ void dealloc_vizs_ctl_c(struct visualizers_ctl_c *viz_c){
 	clear_PVR_ctl_list(&viz_c->pvr_ctl_list);
 	clear_LIC_PVR_ctl_list(&viz_c->lic_ctl_list);
 	clear_FLINE_ctl_list(&viz_c->fline_ctl_list);
-    clear_FLINE_ctl_list(&viz_c);
+    free(viz_c);
 	return;
 };
 

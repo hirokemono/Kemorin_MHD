@@ -7,23 +7,6 @@
 
 #include "t_control_data_LIC_c.h"
 
-int num_ctl_label_LIC_f();
-void set_ctl_label_LIC_f(char *label_1d);
-
-struct label_list_f * init_ctl_label_LIC_f(){
-	int len_fix = lengthchara_f();
-    struct label_list_f *label_list = alloc_ctl_label();
-	
-    label_list->num_labels = num_ctl_label_LIC_f();
-	char *packed_name = alloc_string((long) (len_fix*label_list->num_labels));
-	
-	set_ctl_label_LIC_f(packed_name);
-	set_labels_from_packed(len_fix, packed_name, label_list);
-	free(packed_name);
-	return label_list;
-};
-
-
 struct lic_ctl_c * init_lic_ctl_c(){
     struct lic_ctl_c *lic_c;
     if((lic_c = (struct lic_ctl_c *) malloc(sizeof(struct lic_ctl_c))) == NULL) {
@@ -31,7 +14,7 @@ struct lic_ctl_c * init_lic_ctl_c(){
         exit(0);
     }
     
-	lic_c->label_lic_ctl = init_ctl_label_LIC_f();
+	lic_c->label_lic_ctl = init_label_LIC_ctl_f();
 	lic_c->LIC_field_ctl = init_chara_ctl_item_c();
 	
 	lic_c->color_field_ctl = init_chara_ctl_item_c();
@@ -54,7 +37,7 @@ struct lic_ctl_c * init_lic_ctl_c(){
 
 
 void dealloc_lic_ctl_c(struct lic_ctl_c *lic_c){
-	dealloc_ctl_label(lic_c->label_lic_ctl);
+	dealloc_control_labels_f(lic_c->label_lic_ctl);
 	
 	dealloc_chara_ctl_item_c(lic_c->LIC_field_ctl);
 	

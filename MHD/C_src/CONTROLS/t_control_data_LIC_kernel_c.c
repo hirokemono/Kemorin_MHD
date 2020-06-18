@@ -7,22 +7,6 @@
 
 #include "t_control_data_LIC_kernel_c.h"
 
-int num_ctl_label_LIC_kernel_f();
-void set_ctl_label_LIC_kernel_f(char *label_1d);
-
-struct label_list_f * init_ctl_label_LIC_kernel_f(){
-	int len_fix = lengthchara_f();
-	struct label_list_f *label_list = alloc_ctl_label();
-	label_list->num_labels = num_ctl_label_LIC_kernel_f();
-	
-    char *packed_name = alloc_string((long) (len_fix*label_list->num_labels));
-	
-	set_ctl_label_LIC_kernel_f(packed_name);
-	set_labels_from_packed(len_fix, packed_name, label_list);
-	free(packed_name);
-	return label_list;
-};
-
 struct lic_kernel_ctl_c * init_lic_kernel_ctl_c(){
     struct lic_kernel_ctl_c *lic_knl_c;
     if((lic_knl_c = (struct lic_kernel_ctl_c *) malloc(sizeof(struct lic_kernel_ctl_c))) == NULL) {
@@ -30,7 +14,7 @@ struct lic_kernel_ctl_c * init_lic_kernel_ctl_c(){
         exit(0);
     }
     
-	lic_knl_c->label_lic_kernel = init_ctl_label_LIC_kernel_f();
+	lic_knl_c->label_lic_kernel = init_label_LIC_kernel_f();
 	lic_knl_c->kernel_function_type_ctl = init_chara_ctl_item_c();
 	
 	lic_knl_c->kernel_resolution_ctl_c = init_int_ctl_item_c();
@@ -47,7 +31,7 @@ struct lic_kernel_ctl_c * init_lic_kernel_ctl_c(){
 
 
 void dealloc_lic_kernel_ctl_c(struct lic_kernel_ctl_c *lic_knl_c){
-	dealloc_ctl_label(lic_knl_c->label_lic_kernel);
+	dealloc_control_labels_f(lic_knl_c->label_lic_kernel);
 	dealloc_chara_ctl_item_c(lic_knl_c->kernel_function_type_ctl);
 	free(lic_knl_c->kernel_resolution_ctl_c);
 	free(lic_knl_c->kernel_sigma_ctl_c);

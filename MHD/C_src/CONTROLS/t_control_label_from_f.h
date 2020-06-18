@@ -16,6 +16,7 @@
 
 struct control_labels_f{
 	int len_f;
+	int maxlen;
 	
 	int num_labels;
 	char **label;

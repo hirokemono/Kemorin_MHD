@@ -32,8 +32,10 @@ struct control_labels_f * init_control_labels_f(int (*num_list_func)(void),
 		exit(0);
 	}
 	
+	ctl_list->maxlen = 0;
 	for(i=0;i<ctl_list->num_labels;i++){
 		len = strlen(&packed_name[ctl_list->len_f * i]);
+		if(len > ctl_list->maxlen){ctl_list->maxlen = len;};
 		ctl_list->label[i] = alloc_string(len);
 		strcpy(ctl_list->label[i], &packed_name[ctl_list->len_f * i]);
 	}

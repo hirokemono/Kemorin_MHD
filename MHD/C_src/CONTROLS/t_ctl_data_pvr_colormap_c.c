@@ -10,7 +10,7 @@
 FILE *FP_Colormap;
 
 const char label_colormap_ctl[NLBL_COLORMAP_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"colormap_ctl"},
+	/*[ 0]*/	{"colormap_mode_ctl"},
 	
 	/*[ 1]*/	{"LIC_color_field"},
 	/*[ 2]*/	{"LIC_color_componenet"},
@@ -18,15 +18,14 @@ const char label_colormap_ctl[NLBL_COLORMAP_CTL][KCHARA_C] = {
 	/*[ 4]*/	{"LIC_transparent_componenet"},
 	
 	/*[ 5]*/	{"data_mapping_ctl"},
-	/*[ 6]*/	{"color_table_ctl"},
+	/*[ 6]*/	{"range_min_ctl"},
+	/*[ 7]*/	{"range_max_ctl"},
+	/*[ 8]*/	{"color_table_ctl"},
 	
-	/*[ 7]*/	{"opacity_style_ctl"},
-	/*[ 8]*/	{"constant_opacity_ctl"},
-	/*[ 9]*/	{"linear_opacity_ctl"},
-	/*[10]*/	{"step_opacity_ctl"},
-	
-	/*[11]*/	{"range_min_ctl"},
-	/*[12]*/	{"range_max_ctl"}
+	/*[ 9]*/	{"opacity_style_ctl"},
+	/*[10]*/	{"constant_opacity_ctl"},
+	/*[11]*/	{"linear_opacity_ctl"},
+	/*[12]*/	{"step_opacity_ctl"}
 };
 
 const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
@@ -40,10 +39,10 @@ const char label_lighting_ctl[NLBL_LIGHTING_CTL][KCHARA_C] = {
 const char label_colorbar_ctl[NLBL_PVR_COLORBAR_CTL][KCHARA_C] = {
 	/*[ 0]*/	{"colorbar_switch_ctl"},
 	/*[ 1]*/	{"colorbar_scale_ctl"},
-	/*[ 2]*/	{"iflag_zeromarker"},
-	/*[ 3]*/	{"colorbar_range"},
-	/*[ 4]*/	{"font_size_ctl"},
-	/*[ 5]*/	{"num_grid_ctl"},
+	/*[ 2]*/	{"font_size_ctl"},
+	/*[ 3]*/	{"num_grid_ctl"},
+	/*[ 4]*/	{"iflag_zeromarker"},
+	/*[ 5]*/	{"colorbar_range"},
 	
 	/*[ 6]*/	{"axis_label_switch"},
 };
@@ -56,20 +55,6 @@ const char label_cmap_cbar_ctl[NLBL_CMAP_CBAR_CTL][KCHARA_C] = {
 const char label_colormap_head[KCHARA_C] = "pvr_color_ctl";
 
 
-void get_label_colormap_ctl(int index, char *label){
-    if(index < NLBL_COLORMAP_CTL) strngcopy(label, label_colormap_ctl[index]);
-    return;
-};
-void get_label_lighting_ctl(int index, char *label){
-    if(index < NLBL_LIGHTING_CTL) strngcopy(label, label_lighting_ctl[index]);
-    return;
-};
-void get_label_colorbar_ctl(int index, char *label){
-    if(index < NLBL_PVR_COLORBAR_CTL) strngcopy(label, label_colorbar_ctl[index]);
-    return;
-};
-
-
 struct colormap_ctl_c * init_colormap_ctl_c(){
 	int i;
     struct colormap_ctl_c *cmap_c;
@@ -77,6 +62,7 @@ struct colormap_ctl_c * init_colormap_ctl_c(){
         printf("malloc error for colormap_ctl_c \n");
         exit(0);
     }
+	/* lic_ctl_labls->label_lic_cmap = init_label_LIC_cmap(); */
 	
     cmap_c->iflag_use = 0;
 	cmap_c->maxlen = 0;
@@ -161,16 +147,16 @@ void read_colormap_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_item_c(buf, label_colormap_ctl[ 5], cmap_c->data_mapping_ctl);
 		
-		read_real2_clist(fp, buf, label_colormap_ctl[ 6], cmap_c->colortbl_list);
+		read_real2_clist(fp, buf, label_colormap_ctl[ 8], cmap_c->colortbl_list);
 		
-		read_chara_ctl_item_c(buf, label_colormap_ctl[ 7], cmap_c->opacity_style_ctl);
-		read_real_ctl_item_c(buf, label_colormap_ctl[ 8], cmap_c->fix_opacity_ctl);
+		read_chara_ctl_item_c(buf, label_colormap_ctl[ 9], cmap_c->opacity_style_ctl);
+		read_real_ctl_item_c(buf, label_colormap_ctl[10], cmap_c->fix_opacity_ctl);
 		
-		read_real2_clist(fp, buf, label_colormap_ctl[ 9], cmap_c->linear_opacity_list);
-		read_real3_clist(fp, buf, label_colormap_ctl[10], cmap_c->step_opacity_list);
+		read_real2_clist(fp, buf, label_colormap_ctl[11], cmap_c->linear_opacity_list);
+		read_real3_clist(fp, buf, label_colormap_ctl[12], cmap_c->step_opacity_list);
 		
-		read_real_ctl_item_c(buf, label_colormap_ctl[11], cmap_c->range_min_ctl);
-		read_real_ctl_item_c(buf, label_colormap_ctl[12], cmap_c->range_max_ctl);
+		read_real_ctl_item_c(buf, label_colormap_ctl[ 6], cmap_c->range_min_ctl);
+		read_real_ctl_item_c(buf, label_colormap_ctl[ 7], cmap_c->range_max_ctl);
 	};
 	cmap_c->iflag_use = 1;
     return;
@@ -192,17 +178,17 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 5], cmap_c->data_mapping_ctl);
 	
-	write_real2_clist(fp, level, label_colormap_ctl[ 6], cmap_c->colortbl_list);
+	write_real2_clist(fp, level, label_colormap_ctl[ 8], cmap_c->colortbl_list);
 	
 	fprintf(fp, "!\n");
-	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 7], cmap_c->opacity_style_ctl);
-	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 8], cmap_c->fix_opacity_ctl);
+	write_chara_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 9], cmap_c->opacity_style_ctl);
+	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[10], cmap_c->fix_opacity_ctl);
 	
-	write_real2_clist(fp, level, label_colormap_ctl[ 9], cmap_c->linear_opacity_list);
-	write_real3_clist(fp, level, label_colormap_ctl[10], cmap_c->step_opacity_list);
+	write_real2_clist(fp, level, label_colormap_ctl[11], cmap_c->linear_opacity_list);
+	write_real3_clist(fp, level, label_colormap_ctl[12], cmap_c->step_opacity_list);
 	
-	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[11], cmap_c->range_min_ctl);
-	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[12], cmap_c->range_max_ctl);
+	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 6], cmap_c->range_min_ctl);
+	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 7], cmap_c->range_max_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -288,6 +274,7 @@ struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(){
         printf("malloc error for pvr_colorbar_ctl_c \n");
         exit(0);
     }
+	/*cbar_c->label_pvr_cbar = init_label_pvr_cbar(); */
 	
     cbar_c->iflag_use = 0;
 	cbar_c->maxlen = 0;
@@ -338,12 +325,11 @@ void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		
 		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 0], cbar_c->colorbar_switch_ctl);
 		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
-		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 2], cbar_c->zeromarker_flag_ctl);
 		
-		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 3], cbar_c->cbar_range_ctl);
-		
-		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 4], cbar_c->font_size_ctl);
-		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->ngrid_cbar_ctl);
+		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 2], cbar_c->font_size_ctl);
+		read_integer_ctl_item_c(buf, label_colorbar_ctl[ 3], cbar_c->ngrid_cbar_ctl);
+		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 4], cbar_c->zeromarker_flag_ctl);
+		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->cbar_range_ctl);
 		
 		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
 	};
@@ -358,16 +344,23 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 0], cbar_c->colorbar_switch_ctl);
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 1], cbar_c->colorbar_scale_ctl);
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 2], cbar_c->zeromarker_flag_ctl);
+	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 0],
+						   cbar_c->colorbar_switch_ctl);
+	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 1],
+						   cbar_c->colorbar_scale_ctl);
 	
-	write_real2_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 3], cbar_c->cbar_range_ctl);
+	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 2],
+							 cbar_c->font_size_ctl);
+	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 3],
+							 cbar_c->ngrid_cbar_ctl);
 	
-	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 4], cbar_c->font_size_ctl);
-	write_integer_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 5], cbar_c->ngrid_cbar_ctl);
+	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 4],
+						   cbar_c->zeromarker_flag_ctl);
+	write_real2_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 5],
+						   cbar_c->cbar_range_ctl);
 	
-	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
+	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 6],
+						   cbar_c->axis_switch_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -381,8 +374,10 @@ struct pvr_colormap_bar_ctl_c * init_colormap_colorbar_ctl_c(){
         printf("malloc error for pvr_colormap_bar_ctl_c \n");
         exit(0);
     }
-    	
-    cmap_cbar_c->iflag_use = 0;
+	
+	/*cmap_cbar_c->label_pvr_cmap_bar = init_label_pvr_cmap_bar(); */
+	
+	cmap_cbar_c->iflag_use = 0;
 	cmap_cbar_c->maxlen = 0;
 	for (i=0;i<NLBL_CMAP_CBAR_CTL;i++){
 		if(strlen(label_cmap_cbar_ctl[i]) > cmap_cbar_c->maxlen){

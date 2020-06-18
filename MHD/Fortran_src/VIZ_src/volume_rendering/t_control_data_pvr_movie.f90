@@ -76,9 +76,9 @@
 !>        Structure of start and end of LIC kernel peak
         type(read_real2_item) :: LIC_kernel_peak_range_ctl
 !
-!>  file name for start modelview matrix
+!>        file name for start modelview matrix
         character(len=kchara) :: start_view_file_ctl
-!>  file name for end modelview matrix
+!>        file name for end modelview matrix
         character(len=kchara) :: end_view_file_ctl
 !>    Structure for start modelview marices
         type(modeview_ctl) :: view_start_ctl

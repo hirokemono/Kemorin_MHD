@@ -10,24 +10,16 @@
 int num_label_psf_dirs_f();
 void set_label_psf_dirs_f(char *name1);
 
-int num_label_pvr_modelview_f();
-int num_label_pvr_pixels_f();
 int num_label_pvr_streo_f();
 int num_label_pvr_area_f();
 int num_label_pvr_light_f();
-int num_label_pvr_colorbar_f();
-int num_label_pvr_cmap_bar_f();
 int num_label_pvr_section_f();
 int num_label_pvr_isosurface_f();
 int num_flag_pvr_isosurf_dir_f();
 
-void set_label_pvr_modelview_f(char *name1);
-void set_label_pvr_pixels_f(char *name1);
 void set_label_pvr_streo_f(char *name1);
 void set_label_pvr_area_f(char *name1);
 void set_label_pvr_light_f(char *name1);
-void set_label_pvr_colorbar_f(char *name1);
-void set_label_pvr_cmap_bar_f(char *name1);
 void set_label_pvr_section_f(char *name1);
 void set_label_pvr_isosurface_f(char *name1);
 void set_flag_pvr_isosurf_dir_f(char *name1);
@@ -37,17 +29,47 @@ int num_ctl_label_LIC_f();
 int num_ctl_label_LIC_noise_f();
 int num_ctl_label_LIC_kernel_f();
 int num_label_LIC_colormap_f();
-int num_label_LIC_movie_f();
-int num_label_LIC_movie_f();
-int num_flag_LIC_movie_mode_f();
 
 void set_ctl_label_LIC_pvr_f(char *name1);
 void set_ctl_label_LIC_f(char *name1);
 void set_ctl_label_LIC_noise_f(char *name1);
 void set_ctl_label_LIC_kernel_f(char *name1);
 void set_label_LIC_colormap_f(char *name1);
-void set_label_LIC_movie_f(char *name1);
-void set_flag_LIC_movie_mode_f(char *name1);
+
+struct control_labels_f * init_label_LIC_pvr_ctl_f(){
+	struct control_labels_f *label_LIC_pvr_ctl_f
+			= init_control_labels_f(num_ctl_label_LIC_pvr_f, 
+									set_ctl_label_LIC_pvr_f);
+	return label_LIC_pvr_ctl_f;
+};
+
+struct control_labels_f * init_label_LIC_ctl_f(){
+	struct control_labels_f *label_LIC_ctl_f
+			= init_control_labels_f(num_ctl_label_LIC_f, 
+									set_ctl_label_LIC_f);
+	return label_LIC_ctl_f;
+};
+
+struct control_labels_f * init_label_LIC_noise_f(){
+	struct control_labels_f *label_LIC_noise_f
+			= init_control_labels_f(num_ctl_label_LIC_noise_f, 
+									set_ctl_label_LIC_noise_f);
+	return label_LIC_noise_f;
+};
+
+struct control_labels_f * init_label_LIC_kernel_f(){
+	struct control_labels_f *label_LIC_kernel_f
+			= init_control_labels_f(num_ctl_label_LIC_kernel_f, 
+									set_ctl_label_LIC_kernel_f);
+	return label_LIC_kernel_f;
+};
+
+struct control_labels_f * init_label_LIC_cmap(){
+	struct control_labels_f *label_lic_cmap
+			= init_control_labels_f(num_label_LIC_colormap_f, 
+									set_label_LIC_colormap_f);
+	return label_lic_cmap;
+};
 
 struct lic_control_labels * init_lic_control_labels(){
 		struct lic_control_labels *lic_ctl_labls;
@@ -56,25 +78,13 @@ struct lic_control_labels * init_lic_control_labels(){
 		exit(0);
 	};
 	
-	lic_ctl_labls->label_LIC_pvr_ctl_f
-			= init_control_labels_f(num_ctl_label_LIC_pvr_f, 
-									set_ctl_label_LIC_pvr_f);
-	lic_ctl_labls->label_LIC_ctl_f
-			= init_control_labels_f(num_ctl_label_LIC_f, 
-									set_ctl_label_LIC_f);
-	lic_ctl_labls->label_LIC_noise_f
-			= init_control_labels_f(num_ctl_label_LIC_noise_f, 
-									set_ctl_label_LIC_noise_f);
-	lic_ctl_labls->label_LIC_kernel_f
-			= init_control_labels_f(num_ctl_label_LIC_kernel_f, 
-									set_ctl_label_LIC_kernel_f);
+	lic_ctl_labls->label_LIC_pvr_ctl_f = init_label_LIC_pvr_ctl_f();
+	lic_ctl_labls->label_LIC_ctl_f =     init_label_LIC_ctl_f();
+	lic_ctl_labls->label_LIC_noise_f =   init_label_LIC_noise_f();
+	lic_ctl_labls->label_LIC_kernel_f =  init_label_LIC_kernel_f();
 	
-	lic_ctl_labls->label_lic_modelview
-			= init_control_labels_f(num_label_pvr_modelview_f, 
-									set_label_pvr_modelview_f);
-	lic_ctl_labls->label_lic_pixels
-			= init_control_labels_f(num_label_pvr_pixels_f, 
-									set_label_pvr_pixels_f);
+	lic_ctl_labls->label_lic_pixels =    init_label_pvr_pixels();
+	lic_ctl_labls->label_lic_modelview = init_label_pvr_modelview();
 	lic_ctl_labls->label_lic_streo
 			= init_control_labels_f(num_label_pvr_streo_f, 
 									set_label_pvr_streo_f);
@@ -85,31 +95,21 @@ struct lic_control_labels * init_lic_control_labels(){
 	lic_ctl_labls->label_lic_light
 			= init_control_labels_f(num_label_pvr_light_f, 
 									set_label_pvr_light_f);
-	lic_ctl_labls->label_lic_cmap
-			= init_control_labels_f(num_label_LIC_colormap_f, 
-									set_label_LIC_colormap_f);
-	lic_ctl_labls->label_lic_cbar
-			= init_control_labels_f(num_label_pvr_colorbar_f, 
-									set_label_pvr_colorbar_f);
-	lic_ctl_labls->label_lic_cmap_bar
-			= init_control_labels_f(num_label_pvr_cmap_bar_f, 
-									set_label_pvr_cmap_bar_f);
+	lic_ctl_labls->label_lic_cmap = init_label_LIC_cmap();
+	lic_ctl_labls->label_lic_cbar = init_label_pvr_cbar();
+	lic_ctl_labls->label_lic_cmap_bar = init_label_pvr_cmap_bar();
 	lic_ctl_labls->label_lic_section
 			= init_control_labels_f(num_label_pvr_section_f, 
 									set_label_pvr_section_f);
 	lic_ctl_labls->label_lic_isosurf
 			= init_control_labels_f(num_label_pvr_isosurface_f, 
 									set_label_pvr_isosurface_f);
-	lic_ctl_labls->label_lic_movie
-			= init_control_labels_f(num_label_LIC_movie_f, 
-									set_label_LIC_movie_f);
+	lic_ctl_labls->label_lic_movie = init_label_lic_movie();
 	
 	lic_ctl_labls->label_lic_dirs
 			= init_control_labels_f(num_label_psf_dirs_f, 
 									set_label_psf_dirs_f);
-	lic_ctl_labls->flag_lic_movie_mode
-			= init_control_labels_f(num_flag_LIC_movie_mode_f, 
-									set_flag_LIC_movie_mode_f);
+	lic_ctl_labls->flag_lic_movie_mode = init_flag_lic_movie_mode();
 	lic_ctl_labls->flag_lic_isosurf_dir
 			= init_control_labels_f(num_flag_pvr_isosurf_dir_f, 
 									set_flag_pvr_isosurf_dir_f);
