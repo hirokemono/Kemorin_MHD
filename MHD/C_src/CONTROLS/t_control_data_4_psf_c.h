@@ -17,9 +17,10 @@
 #include "t_control_chara_IO.h"
 #include "t_control_chara_real_IO.h"
 #include "t_control_chara2_IO.h"
+#include "m_PSF_control_labels_from_f.h"
 
 struct psf_define_ctl_c{
-	int maxlen;
+	struct control_labels_f *label_psf_def_ctl;
 	
 	struct chara_ctl_item *section_method_ctl;
 	
@@ -35,13 +36,13 @@ struct psf_define_ctl_c{
 };
 
 struct psf_field_ctl_c{
-	int maxlen;
+	struct control_labels_f *label_fld_on_psf_ctl;
 	
 	struct chara2_clist *psf_out_field_list;
 };
 
 struct psf_ctl_c{
-	int maxlen;
+	struct control_labels_f *label_psf_ctl;
 	
 	struct chara_ctl_item *psf_file_head_ctl;
 	struct chara_ctl_item *psf_output_type_ctl;
@@ -55,11 +56,6 @@ struct psf_ctl_c{
 
 
 /* prototypes */
-
-void get_label_psf_define_ctl(int index, char *label);
-void get_label_psf_field_ctl(int index, char *label);
-void get_label_psf_ctl(int index, char *label);
-
 struct psf_define_ctl_c * init_psf_define_ctl_c();
 void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c);
 int read_psf_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
@@ -83,8 +79,11 @@ int write_psf_ctl_c(FILE *fp, int level, const char *label,
 
 
 int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
-			struct psf_define_ctl_c *psf_def_c);
-int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_def_c);
+                           struct control_labels_f *label_psf_ctl,
+                           struct psf_define_ctl_c *psf_def_c);
+int write_psf_define_file_c(const char *file_name, 
+                            struct control_labels_f *label_psf_ctl,
+                            struct psf_define_ctl_c *psf_def_c);
 
 void rename_psf_define_file_c(struct psf_ctl_c *psf_c);
 int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],

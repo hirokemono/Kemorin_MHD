@@ -18,7 +18,7 @@ label[5]   radius
 label[6]   group_name 
 label[7]   section_area_ctl 
 
-Check psf_ctl_lbls->label_fld_on_psf_ctl
+Check psf_ctl_lbls->label_psf_ctl
 ctl_list->num_labels 5 
 label[0]   section_file_prefix 
 label[1]   psf_output_type 
@@ -26,7 +26,7 @@ label[2]   surface_define
 label[3]   output_field_define 
 label[4]   psf_file_head 
 
-Check psf_ctl_lbls->label_psf_ctl
+Check psf_ctl_lbls->label_fld_on_psf_ctl
 ctl_list->num_labels 3 
 label[0]   result_type 
 label[1]   output_field 
@@ -131,16 +131,6 @@ label[5]   ISO_gzip
 #define M_PSF_CONTROL_LABELS_FROM_F_
 
 
-struct iso_control_labels{
-	int num_label_iso_ctl_c;
-	struct control_labels_f *label_iso_ctl_w_dpl;
-	struct control_labels_f *label_iso_define_ctl;
-	struct control_labels_f *label_fld_on_iso_ctl;
-	
-	struct control_labels_f *label_iso_type;
-	struct control_labels_f *label_iso_format;
-};
-
 struct psf_control_labels{
 	struct control_labels_f *label_psf_def_ctl;
 	struct control_labels_f *label_fld_on_psf_ctl;
@@ -153,7 +143,24 @@ struct psf_control_labels{
 	struct control_labels_f *label_psf_coefs;
 };
 
+struct iso_control_labels{
+	int num_label_iso_ctl_c;
+	struct control_labels_f *label_iso_ctl_w_dpl;
+	struct control_labels_f *label_iso_define_ctl;
+	struct control_labels_f *label_fld_on_iso_ctl;
+	
+	struct control_labels_f *label_iso_type;
+	struct control_labels_f *label_iso_format;
+};
+
 /*  prototype */
+
+struct control_labels_f * init_label_psf_ctl();
+struct control_labels_f * init_label_psf_def_ctl();
+struct control_labels_f * init_label_fld_on_psf_ctl();
+
+struct control_labels_f * init_label_iso_ctl_w_dpl();
+struct control_labels_f * init_label_iso_define_ctl();
 
 struct psf_control_labels * init_psf_control_labels();
 void dealloc_psf_control_labels(struct psf_control_labels *psf_ctl_lbls);

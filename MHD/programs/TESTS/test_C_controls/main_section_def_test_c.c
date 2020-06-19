@@ -11,6 +11,7 @@
 #include "t_control_data_4_psf_c.h"
 
 
+struct control_labels_f *label_psf_ctl0;
 struct psf_define_ctl_c *psf_def_c0;
 
 int main(int argc,char *argv[])
@@ -33,9 +34,10 @@ int main(int argc,char *argv[])
 	printf("Copied file name: %s\n", file_name_2);
 	
 	psf_def_c0 = init_psf_define_ctl_c();
+    label_psf_ctl0 = init_label_psf_ctl();
 	
-	iflag = read_psf_define_file_c(file_name, buf, psf_def_c0);
-	iflag = write_psf_define_file_c(file_name_2, psf_def_c0);
+	iflag = read_psf_define_file_c(file_name, buf, label_psf_ctl0, psf_def_c0);
+	iflag = write_psf_define_file_c(file_name_2, label_psf_ctl0, psf_def_c0);
     dealloc_psf_define_ctl_c(psf_def_c0);
 	return 0;
 }

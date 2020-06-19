@@ -40,6 +40,44 @@ void set_label_psf_coefs_f(char *name1);
 
 void set_primary_section_coef_flag_f(char *name1);
 
+
+struct control_labels_f * init_label_psf_ctl(){
+	struct control_labels_f *label_psf_ctl
+			= init_control_labels_f(num_label_psf_ctl_w_dpl_f, 
+									set_label_psf_ctl_w_dpl_f);
+	return label_psf_ctl;
+};
+
+struct control_labels_f * init_label_psf_def_ctl(){
+	struct control_labels_f *label_psf_def_ctl
+			= init_control_labels_f(num_label_psf_define_control_f, 
+									set_label_psf_define_control_f);
+	return label_psf_def_ctl;
+};
+
+struct control_labels_f * init_label_fld_on_psf_ctl(){
+	struct control_labels_f *label_fld_on_psf_ctl
+			= init_control_labels_f(num_label_fld_on_psf_control_f, 
+									set_label_fld_on_psf_control_f);
+	return label_fld_on_psf_ctl;
+};
+
+
+struct control_labels_f * init_label_iso_ctl_w_dpl(){
+	struct control_labels_f *label_iso_ctl_w_dpl
+			= init_control_labels_f(num_label_iso_ctl_w_dpl_f, 
+									set_label_iso_ctl_w_dpl_f);
+	return label_iso_ctl_w_dpl;
+};
+
+struct control_labels_f * init_label_iso_define_ctl(){
+	struct control_labels_f *label_iso_define_ctl
+			= init_control_labels_f(num_label_iso_define_control_f, 
+									set_label_iso_define_control_f);
+	return label_iso_define_ctl;
+};
+
+
 struct psf_control_labels * init_psf_control_labels(){
 		struct psf_control_labels *psf_ctl_lbls;
 	if((psf_ctl_lbls = (struct psf_control_labels *) malloc(sizeof(struct psf_control_labels))) == NULL){
@@ -47,15 +85,9 @@ struct psf_control_labels * init_psf_control_labels(){
 		exit(0);
 	};
 	
-	psf_ctl_lbls->label_psf_def_ctl
-			= init_control_labels_f(num_label_psf_define_control_f, 
-									set_label_psf_define_control_f);
-	psf_ctl_lbls->label_fld_on_psf_ctl
-			= init_control_labels_f(num_label_psf_ctl_w_dpl_f, 
-									set_label_psf_ctl_w_dpl_f);
-	psf_ctl_lbls->label_psf_ctl
-			= init_control_labels_f(num_label_fld_on_psf_control_f, 
-									set_label_fld_on_psf_control_f);
+	psf_ctl_lbls->label_psf_ctl =        init_label_psf_ctl();
+	psf_ctl_lbls->label_psf_def_ctl =    init_label_psf_def_ctl();
+	psf_ctl_lbls->label_fld_on_psf_ctl = init_label_fld_on_psf_ctl();
 	
 	psf_ctl_lbls->num_label_psf_def_type_c = num_label_psf_def_type_f();
 	psf_ctl_lbls->label_psf_define_ctl
@@ -115,15 +147,10 @@ struct iso_control_labels * init_iso_control_labels(){
 	};
 	
 	iso_ctl_lbls->num_label_iso_ctl_c = num_label_iso_ctl_f();
-	iso_ctl_lbls->label_iso_ctl_w_dpl
-			= init_control_labels_f(num_label_iso_ctl_w_dpl_f, 
-									set_label_iso_ctl_w_dpl_f);
-	iso_ctl_lbls->label_iso_define_ctl
-			= init_control_labels_f(num_label_iso_define_control_f, 
-									set_label_iso_define_control_f);
-	iso_ctl_lbls->label_fld_on_iso_ctl
-			= init_control_labels_f(num_label_fld_on_psf_control_f, 
-									set_label_fld_on_psf_control_f);
+	iso_ctl_lbls->label_iso_ctl_w_dpl = init_label_iso_ctl_w_dpl();
+	iso_ctl_lbls->label_iso_define_ctl = init_label_iso_define_ctl();
+	iso_ctl_lbls->label_fld_on_iso_ctl = init_label_fld_on_psf_ctl();
+	
 	iso_ctl_lbls->label_iso_type
 			= init_control_labels_f(num_label_iso_type_f, set_label_iso_type_f);
 	iso_ctl_lbls->label_iso_format

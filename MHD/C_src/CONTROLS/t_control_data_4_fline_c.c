@@ -14,7 +14,6 @@ FILE *FP_fline;
 const char label_fline_head[KCHARA_C] = "fieldline";
 
 struct fline_ctl_c * init_fline_ctl_c(){
-	int i;
     struct fline_ctl_c *fline_c;
     if((fline_c = (struct fline_ctl_c *) malloc(sizeof(struct fline_ctl_c))) == NULL) {
         printf("malloc error for fline_ctl_c \n");

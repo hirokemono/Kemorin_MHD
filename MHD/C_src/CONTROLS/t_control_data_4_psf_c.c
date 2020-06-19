@@ -7,72 +7,19 @@
 
 #include "t_control_data_4_psf_c.h"
 
-#define NLBL_PSF_DEFINE_CTL   10
-#define NLBL_PSF_FIELD_CTL    1
-#define NLBL_PSF_CTL          5
-
 FILE *FP_PSF;
-
-const char label_psf_define_ctl[NLBL_PSF_DEFINE_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"section_method"},
-	/*[ 1]*/	{"coefs_ctl"},
-	/*[ 2]*/	{"normal_vector"},
-	/*[ 3]*/	{"center_position"},
-	/*[ 4]*/	{"axial_length"},
-	/*[ 5]*/	{"radius"},
-	/*[ 6]*/	{"group_name"},
-	/*[ 7]*/	{"section_area_ctl"},
-	
-    /*[ 8]*/    {"plot_area_ctl"},
-    /*[ 9]*/    {"chosen_ele_grp_ctl"}
-};
-
-const char label_psf_field_ctl[NLBL_PSF_FIELD_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"output_field"}
-};
-
-const char label_psf_ctl[NLBL_PSF_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"section_file_prefix"},
-	/*[ 1]*/	{"psf_output_type"},
-	
-	/*[ 2]*/	{"surface_define"},
-	/*[ 3]*/	{"output_field_define"},
-	
-    /*[ 4]*/    {"psf_file_head"}
-};
 
 const char label_psf_head[KCHARA_C] = "cross_section_ctl";
 const char label_old_psf_head[KCHARA_C] = "surface_rendering";
 
-
-void get_label_psf_define_ctl(int index, char *label){
-    if(index < NLBL_PSF_DEFINE_CTL) strngcopy(label, label_psf_define_ctl[index]);
-    return;
-};
-void get_label_psf_field_ctl(int index, char *label){
-    if(index < NLBL_PSF_FIELD_CTL) strngcopy(label, label_psf_field_ctl[index]);
-    return;
-};
-void get_label_psf_ctl(int index, char *label){
-    if(index < NLBL_PSF_CTL) strngcopy(label, label_psf_ctl[index]);
-    return;
-};
-
 struct psf_define_ctl_c * init_psf_define_ctl_c(){
-	int i;
     struct psf_define_ctl_c *psf_def_c;
     if((psf_def_c = (struct psf_define_ctl_c *) malloc(sizeof(struct psf_define_ctl_c))) == NULL) {
         printf("malloc error for psf_define_ctl_c \n");
         exit(0);
     }
-    	
-	psf_def_c->maxlen = 0;
-	for (i=0;i<NLBL_PSF_DEFINE_CTL;i++){
-		if(strlen(label_psf_define_ctl[i]) > psf_def_c->maxlen){
-			psf_def_c->maxlen = (int) strlen(label_psf_define_ctl[i]);
-		};
-	};
 	
+	psf_def_c->label_psf_def_ctl = init_label_psf_def_ctl();
 	psf_def_c->section_method_ctl = init_chara_ctl_item_c();
 	
     psf_def_c->psf_coefs_list =  init_chara_real_clist();
@@ -99,6 +46,7 @@ struct psf_define_ctl_c * init_psf_define_ctl_c(){
 
 void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	
+	dealloc_control_labels_f(psf_def_c->label_psf_def_ctl);
 	dealloc_chara_ctl_item_c(psf_def_c->section_method_ctl);
 	
 	dealloc_chara_real_clist(psf_def_c->psf_coefs_list);
@@ -114,16 +62,6 @@ void dealloc_psf_define_ctl_c(struct psf_define_ctl_c *psf_def_c){
 	return;
 };
 
-int read_psf_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
-			struct psf_define_ctl_c *psf_def_c){
-	while(find_control_end_flag_c(buf, label) == 0){
-		skip_comment_read_line(fp, buf);
-		
-		read_chara_clist(fp, buf, label_psf_define_ctl[ 9], psf_def_c->psf_area_list);
-	};
-	return 1;
-};
-
 int read_psf_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct psf_define_ctl_c *psf_def_c){
 	int iflag;
@@ -131,23 +69,26 @@ int read_psf_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_ctl_item_c(buf, label_psf_define_ctl[ 0], psf_def_c->section_method_ctl);
+		read_chara_ctl_item_c(buf, psf_def_c->label_psf_def_ctl->label[ 0],
+							  psf_def_c->section_method_ctl);
 		
-		read_chara_real_clist(fp, buf, label_psf_define_ctl[ 1], psf_def_c->psf_coefs_list);
-		read_chara_real_clist(fp, buf, label_psf_define_ctl[ 2], psf_def_c->psf_normal_list);
-		read_chara_real_clist(fp, buf, label_psf_define_ctl[ 3], psf_def_c->psf_center_list);
-		read_chara_real_clist(fp, buf, label_psf_define_ctl[ 4], psf_def_c->psf_axis_list);
+		read_chara_real_clist(fp, buf, psf_def_c->label_psf_def_ctl->label[ 1],
+							  psf_def_c->psf_coefs_list);
+		read_chara_real_clist(fp, buf, psf_def_c->label_psf_def_ctl->label[ 2],
+							  psf_def_c->psf_normal_list);
+		read_chara_real_clist(fp, buf, psf_def_c->label_psf_def_ctl->label[ 3],
+							  psf_def_c->psf_axis_list);
+		read_chara_real_clist(fp, buf, psf_def_c->label_psf_def_ctl->label[ 4],
+							  psf_def_c->psf_center_list);
 		
-		read_real_ctl_item_c(buf, label_psf_define_ctl[ 5], psf_def_c->radius_psf_ctl);
+		read_real_ctl_item_c(buf, psf_def_c->label_psf_def_ctl->label[ 5],
+							 psf_def_c->radius_psf_ctl);
 		
-		read_chara_ctl_item_c(buf, label_psf_define_ctl[ 6], psf_def_c->psf_group_name_ctl);
+		read_chara_ctl_item_c(buf, psf_def_c->label_psf_def_ctl->label[ 6],
+							  psf_def_c->psf_group_name_ctl);
 		
-		read_chara_clist(fp, buf, label_psf_define_ctl[ 7], psf_def_c->psf_area_list);
-		
-		if(right_begin_flag_c(buf, label_psf_define_ctl[ 8]) > 0){
-			iflag = read_psf_area_ctl_c(fp, buf, 
-						label_psf_define_ctl[ 8], psf_def_c);
-		};
+		read_chara_clist(fp, buf, psf_def_c->label_psf_def_ctl->label[ 7],
+						 psf_def_c->psf_area_list);
 	};
 	return 1;
 };
@@ -156,18 +97,29 @@ int write_psf_define_ctl_c(FILE *fp, int level, const char *label,
 			struct psf_define_ctl_c *psf_def_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 0], psf_def_c->section_method_ctl);
+	write_chara_ctl_item_c(fp, level, psf_def_c->label_psf_def_ctl->maxlen,
+						   psf_def_c->label_psf_def_ctl->label[ 0],
+						   psf_def_c->section_method_ctl);
 	
-	write_chara_real_clist(fp, level, label_psf_define_ctl[ 1], psf_def_c->psf_coefs_list);
-	write_chara_real_clist(fp, level, label_psf_define_ctl[ 2], psf_def_c->psf_normal_list);
-	write_chara_real_clist(fp, level, label_psf_define_ctl[ 3], psf_def_c->psf_center_list);
-	write_chara_real_clist(fp, level, label_psf_define_ctl[ 4], psf_def_c->psf_axis_list);
+	write_chara_real_clist(fp, level, psf_def_c->label_psf_def_ctl->label[ 1],
+						   psf_def_c->psf_coefs_list);
+	write_chara_real_clist(fp, level, psf_def_c->label_psf_def_ctl->label[ 2],
+						   psf_def_c->psf_normal_list);
+	write_chara_real_clist(fp, level, psf_def_c->label_psf_def_ctl->label[ 3],
+						   psf_def_c->psf_axis_list);
+	write_chara_real_clist(fp, level, psf_def_c->label_psf_def_ctl->label[ 4],
+						   psf_def_c->psf_center_list);
 	
-	write_real_ctl_item_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 5], psf_def_c->radius_psf_ctl);
+	write_real_ctl_item_c(fp, level,  psf_def_c->label_psf_def_ctl->maxlen,
+						  psf_def_c->label_psf_def_ctl->label[ 5],
+						  psf_def_c->radius_psf_ctl);
 	
-	write_chara_ctl_item_c(fp, level, psf_def_c->maxlen, label_psf_define_ctl[ 6], psf_def_c->psf_group_name_ctl);
+	write_chara_ctl_item_c(fp, level,  psf_def_c->label_psf_def_ctl->maxlen,
+						   psf_def_c->label_psf_def_ctl->label[ 6],
+						   psf_def_c->psf_group_name_ctl);
 	
-	write_chara_clist(fp, level, label_psf_define_ctl[ 7], psf_def_c->psf_area_list);
+	write_chara_clist(fp, level, psf_def_c->label_psf_def_ctl->label[ 7],
+					  psf_def_c->psf_area_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -175,26 +127,19 @@ int write_psf_define_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct psf_field_ctl_c * init_psf_field_ctl_c(){
-	int i;
     struct psf_field_ctl_c *psf_fld_c;
     if((psf_fld_c = (struct psf_field_ctl_c *) malloc(sizeof(struct psf_field_ctl_c))) == NULL){
         printf("malloc error for psf_field_ctl_c \n");
         exit(0);
     }
 	
-	psf_fld_c->maxlen = 0;
-	for (i=0;i<NLBL_PSF_FIELD_CTL;i++){
-		if(strlen(label_psf_field_ctl[i]) > psf_fld_c->maxlen){
-			psf_fld_c->maxlen = (int) strlen(label_psf_field_ctl[i]);
-		};
-	};
-	
+	psf_fld_c->label_fld_on_psf_ctl = init_label_fld_on_psf_ctl();
     psf_fld_c->psf_out_field_list = init_chara2_clist();
 	return psf_fld_c;
 };
 
 void dealloc_psf_field_ctl_c(struct psf_field_ctl_c *psf_fld_c){
-	
+	dealloc_control_labels_f(psf_fld_c->label_fld_on_psf_ctl);
 	dealloc_chara2_clist(psf_fld_c->psf_out_field_list);
     free(psf_fld_c);
 	
@@ -206,16 +151,18 @@ int read_psf_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara2_clist(fp, buf, label_psf_field_ctl[ 0], psf_fld_c->psf_out_field_list);
+		read_chara2_clist(fp, buf, psf_fld_c->label_fld_on_psf_ctl->label[ 1],
+						  psf_fld_c->psf_out_field_list);
 	};
 	return 1;
 };
 
 int write_psf_field_ctl_c(FILE *fp, int level, const char *label, 
-			struct psf_field_ctl_c *psf_fld_c){
+						  struct psf_field_ctl_c *psf_fld_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara2_clist(fp, level, label_psf_field_ctl[ 0], psf_fld_c->psf_out_field_list);
+	write_chara2_clist(fp, level, psf_fld_c->label_fld_on_psf_ctl->label[ 1],
+					   psf_fld_c->psf_out_field_list);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;
@@ -223,19 +170,13 @@ int write_psf_field_ctl_c(FILE *fp, int level, const char *label,
 
 
 struct psf_ctl_c * init_psf_ctl_c(){
-	int i;
     struct psf_ctl_c *psf_c;
     if((psf_c = (struct psf_ctl_c *) malloc(sizeof(struct psf_ctl_c))) == NULL) {
         printf("malloc error for psf_ctl_c \n");
         exit(0);
     }
     
-	psf_c->maxlen = 0;
-	for (i=0;i<NLBL_PSF_CTL;i++){
-		if(strlen(label_psf_ctl[i]) > psf_c->maxlen){
-			psf_c->maxlen = (int) strlen(label_psf_ctl[i]);
-		};
-	};
+	psf_c->label_psf_ctl = init_label_psf_ctl();
 	
 	psf_c->iflag_surface_define = 0;
 	psf_c->iflag_output_field = 0;
@@ -251,6 +192,7 @@ struct psf_ctl_c * init_psf_ctl_c(){
 };
 
 void dealloc_psf_ctl_c(struct psf_ctl_c *psf_c){
+	dealloc_control_labels_f(psf_c->label_psf_ctl);
 	dealloc_psf_define_ctl_c(psf_c->psf_def_c);
     free(psf_c->psf_def_file_name);
 	dealloc_psf_field_ctl_c(psf_c->psf_fld_c);
@@ -269,20 +211,27 @@ int read_psf_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_ctl_item_c(buf, label_psf_ctl[ 0], psf_c->psf_file_head_ctl);
-        read_chara_ctl_item_c(buf, label_psf_ctl[ 4], psf_c->psf_file_head_ctl);
+		read_chara_ctl_item_c(buf, psf_c->label_psf_ctl->label[ 0],
+							  psf_c->psf_file_head_ctl);
+		read_chara_ctl_item_c(buf, psf_c->label_psf_ctl->label[ 4],
+							  psf_c->psf_file_head_ctl);
         
-		read_chara_ctl_item_c(buf, label_psf_ctl[ 1], psf_c->psf_output_type_ctl);
+		read_chara_ctl_item_c(buf, psf_c->label_psf_ctl->label[ 1],
+							  psf_c->psf_output_type_ctl);
 		
-		if(right_begin_flag_c(buf, label_psf_ctl[ 2]) > 0){
-			psf_c->iflag_surface_define = read_psf_define_ctl_c(fp, buf, 
-						label_psf_ctl[ 2], psf_c->psf_def_c);
-        } else if(right_file_flag_c(buf, label_psf_ctl[ 2])){
+		if(right_begin_flag_c(buf, psf_c->label_psf_ctl->label[ 2]) > 0){
+			psf_c->iflag_surface_define
+					= read_psf_define_ctl_c(fp, buf, 
+											psf_c->label_psf_ctl->label[ 2],
+											psf_c->psf_def_c);
+        } else if(right_file_flag_c(buf, psf_c->label_psf_ctl->label[ 2])){
             psf_c->iflag_surface_define = read_file_flag_c(buf, psf_c->psf_def_file_name);
         };
-		if(right_begin_flag_c(buf, label_psf_ctl[ 3]) > 0){
-			psf_c->iflag_output_field = read_psf_field_ctl_c(fp, buf, 
-						label_psf_ctl[ 3], psf_c->psf_fld_c);
+		if(right_begin_flag_c(buf, psf_c->label_psf_ctl->label[ 3]) > 0){
+			psf_c->iflag_output_field
+					= read_psf_field_ctl_c(fp, buf, 
+										   psf_c->label_psf_ctl->label[ 3],
+										   psf_c->psf_fld_c);
 		};
 	};
 	return 1;
@@ -292,19 +241,26 @@ int write_psf_ctl_c(FILE *fp, int level, const char *label,
 			struct psf_ctl_c *psf_c){
     level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-	write_chara_ctl_item_c(fp, level, psf_c->maxlen, label_psf_ctl[ 0], psf_c->psf_file_head_ctl);
-	write_chara_ctl_item_c(fp, level, psf_c->maxlen, label_psf_ctl[ 1], psf_c->psf_output_type_ctl);
+	write_chara_ctl_item_c(fp, level, psf_c->label_psf_ctl->maxlen,
+						   psf_c->label_psf_ctl->label[ 0],
+						   psf_c->psf_file_head_ctl);
+	write_chara_ctl_item_c(fp, level, psf_c->label_psf_ctl->maxlen,
+						   psf_c->label_psf_ctl->label[ 1],
+						   psf_c->psf_output_type_ctl);
 	
     if(psf_c->iflag_surface_define == 1){
         fprintf(fp, "!\n");
-        level = write_psf_define_ctl_c(fp, level, label_psf_ctl[ 2], psf_c->psf_def_c);
+		level = write_psf_define_ctl_c(fp, level, psf_c->label_psf_ctl->label[ 2],
+									   psf_c->psf_def_c);
     } else if(psf_c->iflag_surface_define == -1){
         fprintf(fp, "!\n");
-        write_file_flag_for_ctl_c(fp, level, label_psf_ctl[ 2],psf_c->psf_def_file_name);
+		write_file_flag_for_ctl_c(fp, level, psf_c->label_psf_ctl->label[ 2],
+								  psf_c->psf_def_file_name);
     };
     if(psf_c->iflag_output_field > 0){
         fprintf(fp, "!\n");
-        level = write_psf_field_ctl_c(fp, level, label_psf_ctl[ 3], psf_c->psf_fld_c);
+		level = write_psf_field_ctl_c(fp, level, psf_c->label_psf_ctl->label[ 3],
+									  psf_c->psf_fld_c);
     };
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
@@ -312,7 +268,8 @@ int write_psf_ctl_c(FILE *fp, int level, const char *label,
 };
 
 int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
-			struct psf_define_ctl_c *psf_def_c){
+						   struct control_labels_f *label_psf_ctl,
+						   struct psf_define_ctl_c *psf_def_c){
 	int iflag = 0;
 	
     printf("read PVR sections file name: %s\n", file_name);
@@ -322,14 +279,16 @@ int read_psf_define_file_c(const char *file_name, char buf[LENGTHBUF],
 	};
 	
 	skip_comment_read_line(FP_PSF, buf);
-	if(right_begin_flag_c(buf, label_psf_ctl[2]) > 0){
-		iflag = read_psf_define_ctl_c(FP_PSF, buf, label_psf_ctl[2], psf_def_c);
+	if(right_begin_flag_c(buf, label_psf_ctl->label[2]) > 0){
+		iflag = read_psf_define_ctl_c(FP_PSF, buf, label_psf_ctl->label[2], psf_def_c);
 	};
 	fclose(FP_PSF);
 	
 	return iflag;
 };
-int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_def_c){
+int write_psf_define_file_c(const char *file_name, 
+							struct control_labels_f *label_psf_ctl,
+							struct psf_define_ctl_c *psf_def_c){
 	int level;
 	
     printf("write PVR sections file name: %s\n", file_name);
@@ -338,7 +297,8 @@ int write_psf_define_file_c(const char *file_name, struct psf_define_ctl_c *psf_
 		exit (2);                    /* terminate with error message */
 	};
 	
-	level = write_psf_define_ctl_c(FP_PSF, 0, label_psf_ctl[2], psf_def_c);
+	level = write_psf_define_ctl_c(FP_PSF, 0, label_psf_ctl->label[2],
+								   psf_def_c);
 	fclose(FP_PSF);
 	
 	return level;
@@ -371,7 +331,7 @@ int read_psf_ctl_file_c(const char *file_name, char buf[LENGTHBUF],
 	
     if(psf_c->iflag_surface_define ==-1){
         read_psf_define_file_c(psf_c->psf_def_file_name, buf,
-                               psf_c->psf_def_c);
+                               psf_c->label_psf_ctl, psf_c->psf_def_c);
     };
     
 	return iflag;
@@ -380,7 +340,8 @@ int write_psf_ctl_file_c(const char *file_name, struct psf_ctl_c *psf_c){
 	int level;
     
     if(psf_c->iflag_surface_define ==-1){
-        write_psf_define_file_c(psf_c->psf_def_file_name, psf_c->psf_def_c);
+		write_psf_define_file_c(psf_c->psf_def_file_name, psf_c->label_psf_ctl, 
+								psf_c->psf_def_c);
     };
 	
     printf("write PVR control file name: %s\n", file_name);
