@@ -10,20 +10,6 @@
 int num_label_psf_dirs_f();
 void set_label_psf_dirs_f(char *name1);
 
-int num_label_pvr_streo_f();
-int num_label_pvr_area_f();
-int num_label_pvr_light_f();
-int num_label_pvr_section_f();
-int num_label_pvr_isosurface_f();
-int num_flag_pvr_isosurf_dir_f();
-
-void set_label_pvr_streo_f(char *name1);
-void set_label_pvr_area_f(char *name1);
-void set_label_pvr_light_f(char *name1);
-void set_label_pvr_section_f(char *name1);
-void set_label_pvr_isosurface_f(char *name1);
-void set_flag_pvr_isosurf_dir_f(char *name1);
-
 int num_ctl_label_LIC_pvr_f();
 int num_ctl_label_LIC_f();
 int num_ctl_label_LIC_noise_f();
@@ -85,34 +71,25 @@ struct lic_control_labels * init_lic_control_labels(){
 	
 	lic_ctl_labls->label_lic_pixels =    init_label_pvr_pixels();
 	lic_ctl_labls->label_lic_modelview = init_label_pvr_modelview();
-	lic_ctl_labls->label_lic_streo
-			= init_control_labels_f(num_label_pvr_streo_f, 
-									set_label_pvr_streo_f);
+	lic_ctl_labls->label_lic_project =   init_label_pvr_project();
+	lic_ctl_labls->label_lic_streo =     init_label_pvr_streo();
 	
-	lic_ctl_labls->label_lic_area
-			= init_control_labels_f(num_label_pvr_area_f, 
-									set_label_pvr_area_f);
-	lic_ctl_labls->label_lic_light
-			= init_control_labels_f(num_label_pvr_light_f, 
-									set_label_pvr_light_f);
-	lic_ctl_labls->label_lic_cmap = init_label_LIC_cmap();
-	lic_ctl_labls->label_lic_cbar = init_label_pvr_cbar();
+	lic_ctl_labls->label_lic_area = init_label_pvr_area();
+	
+	lic_ctl_labls->label_lic_light =    init_label_pvr_light();
+	lic_ctl_labls->label_lic_cmap =     init_label_LIC_cmap();
+	lic_ctl_labls->label_lic_cbar =     init_label_pvr_cbar();
 	lic_ctl_labls->label_lic_cmap_bar = init_label_pvr_cmap_bar();
-	lic_ctl_labls->label_lic_section
-			= init_control_labels_f(num_label_pvr_section_f, 
-									set_label_pvr_section_f);
-	lic_ctl_labls->label_lic_isosurf
-			= init_control_labels_f(num_label_pvr_isosurface_f, 
-									set_label_pvr_isosurface_f);
+	
+	lic_ctl_labls->label_lic_section = init_label_pvr_section();
+	lic_ctl_labls->label_lic_isosurf = init_label_pvr_isosurf();
 	lic_ctl_labls->label_lic_movie = init_label_lic_movie();
 	
 	lic_ctl_labls->label_lic_dirs
 			= init_control_labels_f(num_label_psf_dirs_f, 
 									set_label_psf_dirs_f);
 	lic_ctl_labls->flag_lic_movie_mode = init_flag_lic_movie_mode();
-	lic_ctl_labls->flag_lic_isosurf_dir
-			= init_control_labels_f(num_flag_pvr_isosurf_dir_f, 
-									set_flag_pvr_isosurf_dir_f);
+	lic_ctl_labls->flag_lic_isosurf_dir = init_flag_pvr_isosurf_dir();
 	return lic_ctl_labls;
 };
 void dealloc_lic_control_labels(struct lic_control_labels *lic_ctl_labls){
@@ -123,6 +100,7 @@ void dealloc_lic_control_labels(struct lic_control_labels *lic_ctl_labls){
 	
 	dealloc_control_labels_f(lic_ctl_labls->label_lic_modelview);
 	dealloc_control_labels_f(lic_ctl_labls->label_lic_pixels);
+	dealloc_control_labels_f(lic_ctl_labls->label_lic_project);
 	dealloc_control_labels_f(lic_ctl_labls->label_lic_streo);
 	dealloc_control_labels_f(lic_ctl_labls->label_lic_area);
 	dealloc_control_labels_f(lic_ctl_labls->label_lic_light);
@@ -153,6 +131,8 @@ void check_lic_control_labels(struct lic_control_labels *lic_ctl_labls){
 	check_control_labels_f(lic_ctl_labls->label_lic_modelview);
 	printf("Check lic_ctl_labls->label_lic_pixels\n");
 	check_control_labels_f(lic_ctl_labls->label_lic_pixels);
+	printf("Check lic_ctl_labls->label_lic_project\n");
+	check_control_labels_f(lic_ctl_labls->label_lic_project);
 	printf("Check lic_ctl_labls->label_lic_streo\n");
 	check_control_labels_f(lic_ctl_labls->label_lic_streo);
 	printf("Check lic_ctl_labls->label_lic_area\n");

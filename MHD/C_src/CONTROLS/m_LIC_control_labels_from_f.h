@@ -63,23 +63,6 @@ label[4]   trace_length_mode
 label[5]   half_length_ctl 
 label[6]   max_trace_count 
 
-Check lic_ctl_labls->label_lic_streo
-ctl_list->num_labels 2 
-label[0]   focal_point_ctl 
-label[1]   eye_separation_ctl 
-
-Check lic_ctl_labls->label_lic_area
-ctl_list->num_labels 2 
-label[0]   chosen_ele_grp_ctl 
-label[1]   surface_enhanse_ctl 
-
-Check lic_ctl_labls->label_lic_light
-ctl_list->num_labels 4 
-label[0]   position_of_lights 
-label[1]   ambient_coef_ctl 
-label[2]   diffuse_coef_ctl 
-label[3]   specular_coef_ctl 
-
 Check lic_ctl_labls->label_lic_cmap
 ctl_list->num_labels 13 
 label[0]   colormap_mode_ctl 
@@ -96,28 +79,11 @@ label[10]   constant_opacity_ctl
 label[11]   linear_opacity_ctl 
 label[12]   step_opacity_ctl 
 
-Check lic_ctl_labls->label_lic_section
-ctl_list->num_labels 2 
-label[0]   surface_define 
-label[1]   opacity_ctl 
-
-Check lic_ctl_labls->label_lic_isosurf
-ctl_list->num_labels 3 
-label[0]   isosurf_value 
-label[1]   opacity_ctl 
-label[2]   surface_direction 
-
 Check lic_ctl_labls->label_lic_dirs
 ctl_list->num_labels 3 
 label[0]   X 
 label[1]   Y 
 label[2]   Z 
-
-Check lic_ctl_labls->flag_lic_isosurf_dir
-ctl_list->num_labels 3 
-label[0]   forward_surface 
-label[1]   reverse_surface 
-label[2]   boarder 
 */
 
 #include <stdlib.h>
@@ -139,7 +105,9 @@ struct lic_control_labels{
 	
 	struct control_labels_f *label_lic_modelview;
 	struct control_labels_f *label_lic_pixels;
+	struct control_labels_f *label_lic_project;
 	struct control_labels_f *label_lic_streo;
+	
 	struct control_labels_f *label_lic_area;
 	struct control_labels_f *label_lic_light;
 	struct control_labels_f *label_lic_cmap;
@@ -160,6 +128,8 @@ struct control_labels_f * init_label_LIC_pvr_ctl_f();
 struct control_labels_f * init_label_LIC_ctl_f();
 struct control_labels_f * init_label_LIC_noise_f();
 struct control_labels_f * init_label_LIC_kernel_f();
+struct control_labels_f * init_label_LIC_cmap();
+
 
 struct lic_control_labels * init_lic_control_labels();
 void dealloc_lic_control_labels(struct lic_control_labels *lic_ctl_labls);

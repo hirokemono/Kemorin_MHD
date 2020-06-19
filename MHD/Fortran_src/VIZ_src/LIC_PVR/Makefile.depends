@@ -32,7 +32,7 @@ t_control_data_LIC_noise.o: $(LIC_DIR)/t_control_data_LIC_noise.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_LIC_pvrs.o: $(LIC_DIR)/t_control_data_LIC_pvrs.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_control_data_4_pvr.o t_control_data_lic_pvr.o t_read_control_elements.o skip_comment_f.o bcast_control_data_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_lic_pvr.o: $(LIC_DIR)/t_control_data_lic_pvr.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_pvr.o t_control_data_LIC.o skip_comment_f.o t_control_data_pvr_isosurfs.o t_control_data_pvr_movie.o t_control_data_pvr_area.o read_control_pvr_modelview.o
+t_control_data_lic_pvr.o: $(LIC_DIR)/t_control_data_lic_pvr.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_data_4_pvr.o t_control_data_LIC.o skip_comment_f.o t_ctl_data_4_view_transfer.o t_control_data_pvr_isosurfs.o t_control_data_pvr_movie.o t_control_data_pvr_area.o read_control_pvr_modelview.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_param_LIC.o: $(LIC_DIR)/t_control_param_LIC.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o skip_comment_f.o t_control_params_4_pvr.o t_control_param_LIC_masking.o t_noise_node_data.o t_3d_noise.o t_LIC_kernel.o t_control_data_LIC.o set_field_comp_for_viz.o set_components_flags.o set_parallel_file_name.o set_ucd_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<

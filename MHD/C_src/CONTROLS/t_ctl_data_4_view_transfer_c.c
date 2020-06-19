@@ -32,41 +32,23 @@ const char label_projection_mat_ctl[NLBL_PROJECTION_MAT_CTL][KCHARA_C] = {
 };
 
 const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
-	/*[ 0]*/	{"look_at_point_ctl"},
-	/*[ 1]*/	{"viewpoint_ctl"},
-	/*[ 2]*/	{"up_direction_ctl"},
-	/*[ 3]*/	{"view_rotation_vec_ctl"},
-	/*[ 4]*/	{"view_rotation_deg_ctl"},
-	/*[ 5]*/	{"scale_factor_ctl"},
-	/*[ 6]*/	{"scale_factor_vec_ctl"},
-	/*[ 7]*/	{"viewpoint_in_viewer_ctl"},
+	/*[ 0]*/	{"image_size_ctl"},
 	
-	/*[ 8]*/	{"modelview_matrix_ctl"},
+	/*[ 1]*/	{"look_at_point_ctl"},
+	/*[ 2]*/	{"viewpoint_ctl"},
+	/*[ 3]*/	{"up_direction_ctl"},
+	/*[ 4]*/	{"view_rotation_vec_ctl"},
+	/*[ 5]*/	{"view_rotation_deg_ctl"},
+	/*[ 6]*/	{"scale_factor_ctl"},
+	/*[ 7]*/	{"scale_factor_vec_ctl"},
+	/*[ 8]*/	{"viewpoint_in_viewer_ctl"},
 	
-	/*[ 9]*/	{"image_size_ctl"},
-	/*[10]*/	{"projection_matrix_ctl"},
+	/*[ 9]*/	{"projection_matrix_ctl"},
+	/*[10]*/	{"modelview_matrix_ctl"},
 	/*[11]*/	{"streo_view_parameter_ctl"}
 };
 
 const char label_modeview_head[KCHARA_C] = "view_transform_ctl";
-
-void get_label_image_size_ctl(int index, char *label){
-    if(index < NLBL_IMAGE_SIZE_CTL) strngcopy(label, label_image_size_ctl[index]);
-    return;
-};
-void get_label_streo_view_ctl(int index, char *label){
-    if(index < NLBL_STEREO_VIEW_CTL) strngcopy(label, label_streo_view_ctl[index]);
-    return;
-};
-void get_label_projection_mat_ctl(int index, char *label){
-    if(index < NLBL_PROJECTION_MAT_CTL) strngcopy(label, label_projection_mat_ctl[index]);
-    return;
-};
-void get_label_modeview_ctl(int index, char *label){
-    if(index < NLBL_MODELVIEW_CTL) strngcopy(label, label_modeview_ctl[index]);
-    return;
-};
-
 
 struct image_size_ctl_c * init_image_size_ctl_c(){
 	int i;
@@ -76,6 +58,8 @@ struct image_size_ctl_c * init_image_size_ctl_c(){
         exit(0);
     }
 	
+    /* img_size_c->iflag_use = init_label_pvr_pixels */
+    
     img_size_c->iflag_use = 0;
 	img_size_c->maxlen = 0;
 	for (i=0;i<NLBL_IMAGE_SIZE_CTL;i++){
@@ -127,8 +111,15 @@ int write_image_size_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c){
+struct streo_view_ctl_c * init_streo_view_ctl_c(){
 	int i;
+    struct streo_view_ctl_c *streo_view_c;
+    if((streo_view_c = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c))) == NULL) {
+        printf("malloc error for streo_view_ctl_c \n");
+        exit(0);
+    }
+	
+	/* streo_view_c->label_pvr_streo = init_label_pvr_streo() */
 	
     streo_view_c->iflag_use = 0;
 	streo_view_c->maxlen = 0;
@@ -140,7 +131,7 @@ void alloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c){
 	
     streo_view_c->focalpoint_ctl =     init_real_ctl_item_c();
     streo_view_c->eye_separation_ctl = init_real_ctl_item_c();	
-	return;
+	return streo_view_c;
 };
 
 void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c){
@@ -181,10 +172,17 @@ int write_streo_view_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
+struct projection_mat_ctl_c * init_projection_mat_ctl_c(){
 	int i;
+    struct projection_mat_ctl_c *projection_c;
+    if((projection_c = (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c))) == NULL) {
+        printf("malloc error for projection_mat_ctl_c \n");
+        exit(0);
+    }
 	
-    projection_c->iflag_use = 0;
+	/* 	projection_c->label_pvr_project =   init_label_pvr_project(); */
+	
+	projection_c->iflag_use = 0;
 	projection_c->maxlen = 0;
 	for (i=0;i<NLBL_PROJECTION_MAT_CTL;i++){
 		if(strlen(label_projection_mat_ctl[i]) > projection_c->maxlen){
@@ -196,7 +194,7 @@ void alloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
     projection_c->perspective_xy_ratio_ctl = init_real_ctl_item_c();
     projection_c->perspective_near_ctl =     init_real_ctl_item_c();
     projection_c->perspective_far_ctl =      init_real_ctl_item_c();
-	return;
+	return projection_c;
 };
 
 void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c){
@@ -245,9 +243,15 @@ int write_projection_mat_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-void alloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
+struct modelview_ctl_c * init_modelview_ctl_c(){
 	int i;
+    struct modelview_ctl_c *mat_c;
+    if((mat_c = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c))) == NULL) {
+        printf("malloc error for modelview_ctl_c \n");
+        exit(0);
+    }
 	
+	/* mat_c->label_pvr_modelview = init_label_pvr_modelview(); */
     mat_c->iflag_use = 0;
 	mat_c->maxlen = 0;
 	for (i=0;i<NLBL_MODELVIEW_CTL;i++){
@@ -284,14 +288,10 @@ void alloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
     sprintf(mat_c->viewpt_in_viewer_list->r1_name, "Value");
 	
 	mat_c->img_size_c = init_image_size_ctl_c();
+	mat_c->streo_view_c = init_streo_view_ctl_c();
+	mat_c->projection_c = init_projection_mat_ctl_c();
 	
-	mat_c->streo_view_c = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c));
-	alloc_streo_view_ctl_c(mat_c->streo_view_c);
-	
-	mat_c->projection_c = (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c));
-	alloc_projection_mat_ctl_c(mat_c->projection_c);
-	
-	return;
+	return mat_c;
 };
 
 void dealloc_modelview_ctl_c(struct modelview_ctl_c *mat_c){
@@ -324,27 +324,32 @@ void read_modelview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 0], mat_c->lookpoint_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 1], mat_c->viewpoint_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 2], mat_c->up_dir_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 3], mat_c->view_rot_vec_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 1], mat_c->lookpoint_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 2], mat_c->viewpoint_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 3], mat_c->up_dir_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 4], mat_c->view_rot_vec_list);
 		
-		read_real_ctl_item_c(buf, label_modeview_ctl[ 4], mat_c->view_rotation_deg_ctl);
-		read_real_ctl_item_c(buf, label_modeview_ctl[ 5], mat_c->scale_factor_ctl);
+		read_real_ctl_item_c(buf, label_modeview_ctl[ 5], mat_c->view_rotation_deg_ctl);
+		read_real_ctl_item_c(buf, label_modeview_ctl[ 6], mat_c->scale_factor_ctl);
 		
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 6], mat_c->scale_vector_list);
-		read_chara_real_clist(fp, buf, label_modeview_ctl[ 7], mat_c->viewpt_in_viewer_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 7],
+							  mat_c->scale_vector_list);
+		read_chara_real_clist(fp, buf, label_modeview_ctl[ 8],
+							  mat_c->viewpt_in_viewer_list);
 		
-		read_chara2_real_clist(fp, buf, label_modeview_ctl[ 8], mat_c->modelview_mat_ctl);
+		read_chara2_real_clist(fp, buf, label_modeview_ctl[10],
+							   mat_c->modelview_mat_ctl);
 		
-		if(right_begin_flag_c(buf, label_modeview_ctl[ 9]) > 0){
-			read_image_size_ctl_c(fp, buf, label_modeview_ctl[ 9], mat_c->img_size_c);
+		if(right_begin_flag_c(buf, label_modeview_ctl[ 0]) > 0){
+			read_image_size_ctl_c(fp, buf, label_modeview_ctl[ 0], mat_c->img_size_c);
 		};
-        if(right_begin_flag_c(buf, label_modeview_ctl[10]) > 0){
-            read_projection_mat_ctl_c(fp, buf, label_modeview_ctl[10], mat_c->projection_c);
+        if(right_begin_flag_c(buf, label_modeview_ctl[ 9]) > 0){
+			read_projection_mat_ctl_c(fp, buf, label_modeview_ctl[ 9],
+									  mat_c->projection_c);
         };
 		if(right_begin_flag_c(buf, label_modeview_ctl[11]) > 0){
-			read_streo_view_ctl_c(fp, buf, label_modeview_ctl[11], mat_c->streo_view_c);
+			read_streo_view_ctl_c(fp, buf, label_modeview_ctl[11],
+								  mat_c->streo_view_c);
 		};
 	};
 	mat_c->iflag_use = 1;
@@ -358,27 +363,33 @@ int write_modelview_ctl_c(FILE *fp, int level, const char *label,
     fprintf(fp, "!\n");
 	level = write_begin_flag_for_ctl_c(fp, level, label);
 	
-    level = write_image_size_ctl_c(fp, level, label_modeview_ctl[ 9], mat_c->img_size_c);
+	level = write_image_size_ctl_c(fp, level, label_modeview_ctl[ 0],
+								   mat_c->img_size_c);
 	
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 7], mat_c->viewpt_in_viewer_list);
-	
-	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
-				label_modeview_ctl[ 5], mat_c->scale_factor_ctl);
-	
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 0], mat_c->lookpoint_list);
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 1], mat_c->viewpoint_list);
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 2], mat_c->up_dir_list);
-    write_chara_real_clist(fp, level, label_modeview_ctl[ 3], mat_c->view_rot_vec_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 8],
+						   mat_c->viewpt_in_viewer_list);
 	
 	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
-				label_modeview_ctl[ 4], mat_c->view_rotation_deg_ctl);
+				label_modeview_ctl[ 6], mat_c->scale_factor_ctl);
 	
-	write_chara_real_clist(fp, level, label_modeview_ctl[ 6], mat_c->scale_vector_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 1], mat_c->lookpoint_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 2], mat_c->viewpoint_list);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 3], mat_c->up_dir_list);
+    write_chara_real_clist(fp, level, label_modeview_ctl[ 4], mat_c->view_rot_vec_list);
 	
-	write_chara2_real_clist(fp, level, label_modeview_ctl[ 8], mat_c->modelview_mat_ctl);
+	write_real_ctl_item_c(fp, level, mat_c->maxlen, 
+				label_modeview_ctl[ 5], mat_c->view_rotation_deg_ctl);
 	
-    level = write_projection_mat_ctl_c(fp, level, label_modeview_ctl[10], mat_c->projection_c);
-    level = write_streo_view_ctl_c(fp, level, label_modeview_ctl[11], mat_c->streo_view_c);
+	write_chara_real_clist(fp, level, label_modeview_ctl[ 7],
+						   mat_c->scale_vector_list);
+	
+	write_chara2_real_clist(fp, level, label_modeview_ctl[10],
+							mat_c->modelview_mat_ctl);
+	
+	level = write_projection_mat_ctl_c(fp, level, label_modeview_ctl[ 9],
+									   mat_c->projection_c);
+	level = write_streo_view_ctl_c(fp, level, label_modeview_ctl[11],
+								   mat_c->streo_view_c);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

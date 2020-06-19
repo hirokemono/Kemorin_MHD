@@ -31,8 +31,7 @@ int main(int argc,char *argv[])
 	printf("Input file name: %s\n", file_name);
 	printf("Copied file name: %s\n", file_name_2);
 	
-	mat_c0 = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
-	alloc_modelview_ctl_c(mat_c0);
+	mat_c0 = init_modelview_ctl_c();
 	
 	iflag = read_modelview_file_c(file_name, buf, mat_c0);
 	iflag = write_modelview_file_c(file_name_2, mat_c0);

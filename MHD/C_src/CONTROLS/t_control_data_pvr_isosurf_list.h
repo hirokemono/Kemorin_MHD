@@ -15,9 +15,10 @@
 #include "control_elements_IO_c.h"
 #include "t_control_real_IO.h"
 #include "t_control_chara_IO.h"
+#include "m_PVR_control_labels_from_f.h"
 
 struct pvr_isosurf_ctl_c{
-	int maxlen;
+	struct control_labels_f *label_pvr_isosurf;
 	
 	struct real_ctl_item *iso_value_ctl;
 	struct real_ctl_item *opacity_ctl;
@@ -32,8 +33,6 @@ struct pvr_iso_ctl_list{
 };
 
 /* prototypes */
-void get_label_pvr_isosurf_ctl(int index, char *label);
-
 struct pvr_isosurf_ctl_c * init_pvr_isosurf_ctl_c();
 void dealloc_pvr_isosurf_ctl_c(struct pvr_isosurf_ctl_c *pvr_iso_c);
 int read_pvr_isosurf_ctl_c(FILE *fp, char buf[LENGTHBUF], 

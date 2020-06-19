@@ -1,6 +1,6 @@
 bcast_control_data_4_pvr.o: $(PVR_DIR)/bcast_control_data_4_pvr.f90 m_precision.o calypso_mpi.o t_control_data_4_pvr.o t_ctl_data_pvr_colormap_bar.o t_ctl_data_pvr_light.o t_ctl_data_pvr_colorbar.o t_control_data_pvr_sections.o t_control_data_pvr_isosurfs.o t_control_data_pvr_movie.o t_control_data_pvr_area.o t_ctl_data_4_view_transfer.o bcast_control_arrays.o bcast_dup_view_transfer_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-bcast_dup_view_transfer_ctl.o: $(PVR_DIR)/bcast_dup_view_transfer_ctl.f90 m_precision.o calypso_mpi.o m_constants.o t_ctl_data_4_view_transfer.o bcast_control_arrays.o t_control_array_real.o
+bcast_dup_view_transfer_ctl.o: $(PVR_DIR)/bcast_dup_view_transfer_ctl.f90 m_precision.o calypso_mpi.o m_constants.o t_ctl_data_4_view_transfer.o bcast_control_arrays.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_pvr_modelview_mat.o: $(PVR_DIR)/cal_pvr_modelview_mat.f90 m_precision.o m_constants.o m_machine_parameter.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o cal_inverse_small_matrix.o cal_matrix_vector_smp.o transform_mat_operations.o mag_of_field_smp.o cal_products_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -42,7 +42,7 @@ pvr_surface_enhancement.o: $(PVR_DIR)/pvr_surface_enhancement.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 ray_trace_4_each_image.o: $(PVR_DIR)/ray_trace_4_each_image.f90 m_precision.o m_constants.o m_geometry_constants.o calypso_mpi.o set_rgba_4_each_pixel.o t_control_params_4_pvr.o t_geometry_data.o t_surface_data.o t_geometries_in_pvr_screen.o cal_field_on_surf_viz.o cal_fline_in_cube.o set_coefs_of_sections.o
 	$(F90) -c $(F90OPTFLAGS) $<
-read_control_pvr_modelview.o: $(PVR_DIR)/read_control_pvr_modelview.f90 m_precision.o m_constants.o m_machine_parameter.o t_ctl_data_4_view_transfer.o t_read_control_elements.o t_control_array_charareal.o t_control_array_chara2real.o skip_comment_f.o calypso_mpi.o m_error_IDs.o t_control_array_real.o
+read_control_pvr_modelview.o: $(PVR_DIR)/read_control_pvr_modelview.f90 m_precision.o m_constants.o m_machine_parameter.o t_ctl_data_4_view_transfer.o t_read_control_elements.o calypso_mpi.o m_error_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rendering_and_image_nums.o: $(PVR_DIR)/rendering_and_image_nums.f90 m_precision.o calypso_mpi.o t_control_data_4_pvr.o t_rendering_vr_image.o t_pvr_image_array.o skip_comment_f.o set_composition_pe_range.o set_control_each_pvr.o set_parallel_file_name.o t_control_params_4_pvr.o set_area_4_viz.o output_image_sel_4_png.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -64,7 +64,7 @@ set_projection_matrix.o: $(PVR_DIR)/set_projection_matrix.f90 m_precision.o m_co
 	$(F90) -c $(F90OPTFLAGS) $<
 set_pvr_control.o: $(PVR_DIR)/set_pvr_control.f90 m_precision.o calypso_mpi.o t_control_data_4_pvr.o read_control_pvr_modelview.o bcast_control_data_4_pvr.o t_group_data.o t_phys_data.o t_rendering_vr_image.o t_geometries_in_pvr_screen.o t_control_data_pvr_sections.o set_control_each_pvr.o set_field_comp_for_viz.o set_pvr_modelview_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_pvr_modelview_matrix.o: $(PVR_DIR)/set_pvr_modelview_matrix.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o t_ctl_data_4_view_transfer.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o skip_comment_f.o
+set_pvr_modelview_matrix.o: $(PVR_DIR)/set_pvr_modelview_matrix.f90 m_precision.o calypso_mpi.o m_constants.o m_error_IDs.o t_ctl_data_4_view_transfer.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_pvr_ray_start_point.o: $(PVR_DIR)/set_pvr_ray_start_point.f90 m_precision.o calypso_mpi.o m_constants.o m_geometry_constants.o t_control_params_4_pvr.o cal_field_on_surf_viz.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -90,7 +90,13 @@ t_control_data_vizs.o: $(PVR_DIR)/t_control_data_vizs.f90 m_precision.o m_machin
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_params_4_pvr.o: $(PVR_DIR)/t_control_params_4_pvr.f90 m_precision.o m_constants.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_4_view_transfer.o: $(PVR_DIR)/t_ctl_data_4_view_transfer.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_integer.o t_control_array_charareal.o t_control_array_chara2real.o skip_comment_f.o
+t_ctl_data_4_projection.o: $(PVR_DIR)/t_ctl_data_4_projection.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o skip_comment_f.o bcast_control_arrays.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_4_screen_pixel.o: $(PVR_DIR)/t_ctl_data_4_screen_pixel.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_integer.o skip_comment_f.o bcast_control_arrays.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_4_streo_view.o: $(PVR_DIR)/t_ctl_data_4_streo_view.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o skip_comment_f.o bcast_control_arrays.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_4_view_transfer.o: $(PVR_DIR)/t_ctl_data_4_view_transfer.f90 m_precision.o m_constants.o m_machine_parameter.o t_read_control_elements.o t_control_array_real.o t_control_array_charareal.o t_control_array_chara2real.o t_ctl_data_4_screen_pixel.o t_ctl_data_4_projection.o t_ctl_data_4_streo_view.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_pvr_colorbar.o: $(PVR_DIR)/t_ctl_data_pvr_colorbar.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_character.o t_control_array_integer.o t_control_array_real2.o skip_comment_f.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<

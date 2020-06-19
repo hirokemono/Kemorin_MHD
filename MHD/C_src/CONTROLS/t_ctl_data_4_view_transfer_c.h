@@ -67,11 +67,6 @@ struct modelview_ctl_c{
 };
 
 /* prototypes */
-void get_label_image_size_ctl(int index, char *label);
-void get_label_streo_view_ctl(int index, char *label);
-void get_label_projection_mat_ctl(int index, char *label);
-void get_label_modeview_ctl(int index, char *label);
-
 struct image_size_ctl_c * init_image_size_ctl_c();
 void dealloc_image_size_ctl_c(struct image_size_ctl_c *img_size_c);
 void read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
@@ -79,21 +74,21 @@ void read_image_size_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 int write_image_size_ctl_c(FILE *fp, int level, const char *label, 
 			struct image_size_ctl_c *img_size_c);
 
-void alloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c);
+struct streo_view_ctl_c * init_streo_view_ctl_c();
 void dealloc_streo_view_ctl_c(struct streo_view_ctl_c *streo_view_c);
 void read_streo_view_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct streo_view_ctl_c *streo_view_c);
 int write_streo_view_ctl_c(FILE *fp, int level, const char *label, 
 			struct streo_view_ctl_c *streo_view_c);
 
-void alloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c);
+struct projection_mat_ctl_c * init_projection_mat_ctl_c();
 void dealloc_projection_mat_ctl_c(struct projection_mat_ctl_c *projection_c);
 void read_projection_mat_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct projection_mat_ctl_c *projection_c);
 int write_projection_mat_ctl_c(FILE *fp, int level, const char *label, 
 			struct projection_mat_ctl_c *projection_c);
 
-void alloc_modelview_ctl_c(struct modelview_ctl_c *mat_c);
+struct modelview_ctl_c * init_modelview_ctl_c();
 void dealloc_modelview_ctl_c(struct modelview_ctl_c *mat_c);
 void read_modelview_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct modelview_ctl_c *mat_c);

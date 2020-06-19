@@ -157,8 +157,7 @@ void copy_GL_modelview_params_from_ctl(struct modelview_ctl_c *mat_c, struct vie
 
 void write_GL_modelview_file(struct kv_string *filename, struct view_element *view){
 	
-	mat_c0 = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
-	alloc_modelview_ctl_c(mat_c0);
+	mat_c0 = init_modelview_ctl_c();
 	
 	copy_GL_modelview_params_to_ctl(view, mat_c0);
 	if(view->iflag_view_type == VIEW_STEREO){
@@ -175,8 +174,7 @@ void write_GL_modelview_file(struct kv_string *filename, struct view_element *vi
 void read_GL_modelview_file(struct kv_string *filename, struct view_element *view){
 	char buf[LENGTHBUF];      /* character buffer for reading line */
 	
-	mat_c0 = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c));
-	alloc_modelview_ctl_c(mat_c0);
+	mat_c0 = init_modelview_ctl_c();
 	
 	read_modelview_file_c(filename->string, buf, mat_c0);
     

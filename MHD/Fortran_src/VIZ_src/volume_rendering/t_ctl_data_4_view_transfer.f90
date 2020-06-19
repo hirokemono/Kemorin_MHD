@@ -7,15 +7,13 @@
 !>@brief Control inputs for PVR view parameter
 !!
 !!@verbatim
+!!      subroutine read_view_transfer_ctl                               &
+!!     &         (id_control, hd_block, mat, c_buf)
 !!      subroutine dealloc_view_transfer_ctl(mat)
 !!        type(modeview_ctl), intent(inout) :: mat
 !!
 !!      integer(kind = kint) function num_label_pvr_modelview()
-!!      integer(kind = kint) function num_label_pvr_pixels()
-!!      integer(kind = kint) function num_label_pvr_streo()
 !!      subroutine set_label_pvr_modelview(names)
-!!      subroutine set_label_pvr_pixels(names)
-!!      subroutine set_label_pvr_streo(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -115,9 +113,11 @@
       use m_machine_parameter
       use t_read_control_elements
       use t_control_array_real
-      use t_control_array_integer
       use t_control_array_charareal
       use t_control_array_chara2real
+      use t_ctl_data_4_screen_pixel
+      use t_ctl_data_4_projection
+      use t_ctl_data_4_streo_view
       use skip_comment_f
 !
       implicit  none
@@ -125,32 +125,19 @@
 !
 !>    Structure for modelview marices
       type modeview_ctl
+!>      Structure of screen resolution
+        type(screen_pixel_ctl) :: pixel
+!>    Structure for projection parameters
+        type(projection_ctl) :: proj
+!>      Structure of streo view parameters
+        type(streo_view_ctl) :: streo
 !
-!>    Structure for number of horizontal pixels
-        type(read_integer_item) :: num_xpixel_ctl
-!>    Structure for number of vertical pixels
-        type(read_integer_item) :: num_ypixel_ctl
 !
 !>    Structure for opacity controls
 !!@n      modelview_mat_ctl%c1_tbl:  1st component name for matrix
 !!@n      modelview_mat_ctl%c2_tbl:  2nd component name for matrix
 !!@n      modelview_mat_ctl%vect:    Modelview matrix
         type(ctl_array_c2r) :: modelview_mat_ctl
-!
-!>    Structure for perspective view angle
-        type(read_real_item) :: perspective_angle_ctl
-!>    Structure for aspect ration of screen
-        type(read_real_item) :: perspective_xy_ratio_ctl
-!>    Structure for Near point of view
-        type(read_real_item) :: perspective_near_ctl
-!>    Structure for Far point of view
-        type(read_real_item) :: perspective_far_ctl
-!
-!>    Structure for focal point
-        type(read_real_item) :: focalpoint_ctl
-!>    Structure for eye separation
-        type(read_real_item) :: eye_separation_ctl
-!
 !
 !>      Structure for look at  controls
 !!@n      lookpoint_ctl%c_tbl:   component of lookpoint
@@ -193,64 +180,97 @@
 !
 !     3rd level for view_transform_define
         integer (kind=kint) :: i_image_size =  0
-        integer (kind=kint) :: i_project_mat = 0
-!
-        integer (kind=kint) :: i_stereo_view = 0
       end type modeview_ctl
 !
 !
 !     3rd level for view_transform_define
-      character(len=kchara) :: hd_image_size =    'image_size_ctl'
-      character(len=kchara) :: hd_model_mat =   'modelview_matrix_ctl'
-      character(len=kchara) :: hd_project_mat = 'projection_matrix_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_image_size =    'image_size_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_model_mat =   'modelview_matrix_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_project_mat = 'projection_matrix_ctl'
 !
-      character(len=kchara) :: hd_look_point =  'look_at_point_ctl'
-      character(len=kchara) :: hd_view_point =  'viewpoint_ctl'
-      character(len=kchara) :: hd_up_dir =      'up_direction_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_look_point =  'look_at_point_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_view_point =  'viewpoint_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_up_dir =      'up_direction_ctl'
 !
 !
-      character(len=kchara) :: hd_view_rot_deg                          &
-     &                        = 'view_rotation_deg_ctl'
-      character(len=kchara) :: hd_view_rot_dir                          &
-     &                        = 'view_rotation_vec_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_view_rot_deg = 'view_rotation_deg_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_view_rot_dir = 'view_rotation_vec_ctl'
 !
-      character(len=kchara) :: hd_scale_factor                          &
-     &                             = 'scale_factor_ctl'
-      character(len=kchara) :: hd_scale_fac_dir                         &
-     &                        = 'scale_factor_vec_ctl'
-      character(len=kchara) :: hd_viewpt_in_view                        &
-     &                        = 'viewpoint_in_viewer_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_scale_factor = 'scale_factor_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_scale_fac_dir = 'scale_factor_vec_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_viewpt_in_view = 'viewpoint_in_viewer_ctl'
 !
-      character(len=kchara) :: hd_stereo_view                           &
-     &                        = 'streo_view_parameter_ctl'
-!
-!     4th level for projection_matrix
-      character(len=kchara) :: hd_perspect_angle                        &
-     &                        = 'perspective_angle_ctl'
-      character(len=kchara) :: hd_perspect_xy =                         &
-     &                        'perspective_xy_ratio_ctl'
-      character(len=kchara) :: hd_perspect_near =                       &
-     &                        'perspective_near_ctl'
-      character(len=kchara) :: hd_perspect_far =                        &
-     &                        'perspective_far_ctl'
-!
-!     4th level for image size
-      character(len=kchara) :: hd_x_pixel = 'x_pixel_ctl'
-      character(len=kchara) :: hd_y_pixel = 'y_pixel_ctl'
-!
-!     4th level for stereo view
-      character(len=kchara) :: hd_focalpoint =     'focal_point_ctl'
-      character(len=kchara) :: hd_eye_separation = 'eye_separation_ctl'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_stereo_view = 'streo_view_parameter_ctl'
 !
       integer(kind = kint), parameter :: n_label_pvr_modelview =  12
-      integer(kind = kint), parameter :: n_label_pvr_pixels =      2
-      integer(kind = kint), parameter :: n_label_pvr_streo =       2
       private :: n_label_pvr_modelview
-      private :: n_label_pvr_pixels, n_label_pvr_streo
 !
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_view_transfer_ctl                                 &
+     &         (id_control, hd_block, mat, c_buf)
+!
+      integer(kind = kint), intent(in) :: id_control
+      character(len=kchara), intent(in) :: hd_block
+!
+      type(modeview_ctl), intent(inout) :: mat
+      type(buffer_for_control), intent(inout)  :: c_buf
+!
+!
+      if (mat%i_view_transform .gt. 0) return
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_projection_mat_ctl                                    &
+     &     (id_control, hd_project_mat, mat%proj, c_buf)
+        call read_image_size_ctl                                        &
+     &     (id_control, hd_image_size, mat%pixel, c_buf)
+        call read_stereo_view_ctl                                       &
+     &     (id_control, hd_stereo_view, mat%streo, c_buf)
+!
+!
+        call read_control_array_c_r(id_control,                         &
+     &      hd_look_point, mat%lookpoint_ctl, c_buf)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_view_point, mat%viewpoint_ctl, c_buf)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_up_dir, mat%up_dir_ctl, c_buf)
+!
+        call read_control_array_c_r(id_control,                         &
+     &      hd_view_rot_dir, mat%view_rot_vec_ctl, c_buf)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_scale_fac_dir, mat%scale_vector_ctl, c_buf)
+        call read_control_array_c_r(id_control,                         &
+     &      hd_viewpt_in_view, mat%viewpt_in_viewer_ctl, c_buf)
+!
+        call read_control_array_c2_r(id_control,                        &
+     &      hd_model_mat, mat%modelview_mat_ctl, c_buf)
+!
+        call read_real_ctl_type(c_buf, hd_view_rot_deg,                 &
+     &        mat%view_rotation_deg_ctl)
+        call read_real_ctl_type(c_buf, hd_scale_factor,                 &
+     &        mat%scale_factor_ctl)
+      end do
+      mat%i_view_transform = 1
+!
+      end subroutine read_view_transfer_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -286,28 +306,15 @@
       mat%viewpt_in_viewer_ctl%icou = 0
 !
 !
-      mat%perspective_angle_ctl%realvalue =    0.0d0
-      mat%perspective_xy_ratio_ctl%realvalue = 0.0d0
-      mat%perspective_near_ctl%realvalue =     0.0d0
-      mat%perspective_far_ctl%realvalue =      0.0d0
-!
-      mat%perspective_far_ctl%realvalue =      0.0d0
-!
-      mat%focalpoint_ctl%realvalue =    0.0d0
-      mat%eye_separation_ctl%realvalue = 0.0d0
-!
       mat%view_rotation_deg_ctl%realvalue =      0.0d0
       mat%scale_factor_ctl%realvalue =           1.0d0
-!
-!
-      mat%i_project_mat = 0
-!
 !
       mat%view_rotation_deg_ctl%iflag = 0
       mat%scale_factor_ctl%iflag = 0
 !
-      mat%i_image_size =  0
-      mat%i_stereo_view = 0
+      call reset_image_size_ctl(mat%pixel)
+      call reset_projection_view_ctl(mat%proj)
+      call reset_stereo_view_ctl(mat%streo)
 !
       end subroutine dealloc_view_transfer_ctl
 !
@@ -320,20 +327,6 @@
       end function num_label_pvr_modelview
 !
 !  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_pixels()
-      num_label_pvr_pixels = n_label_pvr_pixels
-      return
-      end function num_label_pvr_pixels
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function num_label_pvr_streo()
-      num_label_pvr_streo = n_label_pvr_streo
-      return
-      end function num_label_pvr_streo
-!
-! ----------------------------------------------------------------------
 !
       subroutine set_label_pvr_modelview(names)
 !
@@ -359,32 +352,6 @@
       call set_control_labels(hd_stereo_view, names(12))
 !
       end subroutine set_label_pvr_modelview
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_pixels(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_pixels)
-!
-!
-      call set_control_labels(hd_x_pixel, names( 1))
-      call set_control_labels(hd_y_pixel, names( 2))
-!
-      end subroutine set_label_pvr_pixels
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_pvr_streo(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_pvr_streo)
-!
-!
-      call set_control_labels(hd_focalpoint,     names( 1))
-      call set_control_labels(hd_eye_separation, names( 2))
-!
-      end subroutine set_label_pvr_streo
 !
 ! ----------------------------------------------------------------------
 !

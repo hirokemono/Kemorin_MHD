@@ -17,9 +17,10 @@
 #include "t_control_chara_IO.h"
 #include "t_control_int2_IO.h"
 #include "t_control_real3_IO.h"
+#include "m_FLINE_control_labels_from_f.h"
 
 struct fline_ctl_c{
-	int maxlen;
+	struct fline_control_labels *fline_ctl_lbls;
 	
 	struct chara_ctl_item *fline_file_head_ctl;
 	struct chara_ctl_item *fline_output_type_ctl;
@@ -43,9 +44,6 @@ struct fline_ctl_c{
 };
 
 /* prototypes */
-
-void get_label_fline_ctl(int index, char *label);
-
 struct fline_ctl_c * init_fline_ctl_c();
 void dealloc_fline_ctl_c(struct fline_ctl_c *fline_c);
 int read_fline_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

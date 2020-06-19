@@ -44,8 +44,8 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-      call copy_pvr_image_size(mat, view_param)
-      call copy_pvr_perspective_matrix(mat, view_param)
+      call copy_pvr_image_size(mat%pixel, view_param)
+      call copy_pvr_perspective_matrix(mat%proj, mat%streo, view_param)
 !
       if (mat%modelview_mat_ctl%num .gt. 0) then
         call copy_pvr_modelview_matrix(mat, view_param)
@@ -74,20 +74,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_pvr_image_size(mat, view_param)
+      subroutine copy_pvr_image_size(pixel, view_param)
 !
-      type(modeview_ctl), intent(in) :: mat
+      use t_ctl_data_4_screen_pixel
+!
+      type(screen_pixel_ctl), intent(in) :: pixel
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-      if (mat%num_xpixel_ctl%iflag .gt. 0) then
-        view_param%n_pvr_pixel(1) = mat%num_xpixel_ctl%intvalue
+      if(pixel%num_xpixel_ctl%iflag .gt. 0) then
+        view_param%n_pvr_pixel(1) = pixel%num_xpixel_ctl%intvalue
       else
         view_param%n_pvr_pixel(1) = 640
       end if
 !
-      if (mat%num_ypixel_ctl%iflag .gt. 0) then
-        view_param%n_pvr_pixel(2) = mat%num_ypixel_ctl%intvalue
+      if(pixel%num_ypixel_ctl%iflag .gt. 0) then
+        view_param%n_pvr_pixel(2) = pixel%num_ypixel_ctl%intvalue
       else
         view_param%n_pvr_pixel(2) = 480
       end if
@@ -96,62 +98,67 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_pvr_perspective_matrix(mat, view_param)
+      subroutine copy_pvr_perspective_matrix(proj, streo, view_param)
 !
-      type(modeview_ctl), intent(in) :: mat
+      use t_ctl_data_4_projection
+      use t_ctl_data_4_streo_view
+!
+      type(projection_ctl), intent(in) :: proj
+      type(streo_view_ctl), intent(in) :: streo
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-      if (mat%perspective_angle_ctl%iflag .gt. 0) then
+      if (proj%perspective_angle_ctl%iflag .gt. 0) then
         view_param%perspective_angle                                    &
-     &          = mat%perspective_angle_ctl%realvalue
+     &          = proj%perspective_angle_ctl%realvalue
       else
         view_param%perspective_angle = 10.0d0
       end if
 !
-      if (mat%perspective_xy_ratio_ctl%iflag .gt. 0) then
+      if (proj%perspective_xy_ratio_ctl%iflag .gt. 0) then
         view_param%perspective_xy_ratio                                 &
-     &          = mat%perspective_xy_ratio_ctl%realvalue
+     &          = proj%perspective_xy_ratio_ctl%realvalue
       else
         view_param%perspective_xy_ratio = one
       end if
 !
-      if (mat%perspective_near_ctl%iflag .gt. 0) then
+      if (proj%perspective_near_ctl%iflag .gt. 0) then
         view_param%perspective_near                                     &
-     &          = mat%perspective_near_ctl%realvalue
+     &          = proj%perspective_near_ctl%realvalue
       else
         view_param%perspective_near = 0.1d0
       end if
 !
-      if (mat%perspective_far_ctl%iflag .gt. 0) then
+      if (proj%perspective_far_ctl%iflag .gt. 0) then
         view_param%perspective_far                                      &
-     &          = mat%perspective_far_ctl%realvalue
+     &          = proj%perspective_far_ctl%realvalue
       else
         view_param%perspective_far = 1.0d2
       end if
 !
       view_param%iflag_perspective                                      &
-     &      = mat%perspective_angle_ctl%iflag                           &
-     &       * mat%perspective_xy_ratio_ctl%iflag                       &
-     &       * mat%perspective_near_ctl%iflag                           &
-     &       * mat%perspective_far_ctl%iflag
+     &      = proj%perspective_angle_ctl%iflag                          &
+     &       * proj%perspective_xy_ratio_ctl%iflag                      &
+     &       * proj%perspective_near_ctl%iflag                          &
+     &       * proj%perspective_far_ctl%iflag
 !
 !
-      if (mat%focalpoint_ctl%iflag .gt. 0) then
-        view_param%focalLength = mat%focalpoint_ctl%realvalue
+      if(streo%focalpoint_ctl%iflag .gt. 0) then
+        view_param%focalLength = streo%focalpoint_ctl%realvalue
       else
         view_param%focalLength = 1.0d1
       end if
 !
-      if (mat%eye_separation_ctl%iflag .gt. 0) then
-        view_param%eye_separation = mat%eye_separation_ctl%realvalue
+      if(streo%eye_separation_ctl%iflag .gt. 0) then
+        view_param%eye_separation = streo%eye_separation_ctl%realvalue
       else
         view_param%eye_separation = 1.0d-1
       end if
 !
       if(view_param%iflag_stereo_pvr .gt. 0) then
         view_param%iflag_stereo_pvr                                     &
-     &      = mat%focalpoint_ctl%iflag * mat%eye_separation_ctl%iflag
+     &      =  streo%focalpoint_ctl%iflag                               &
+     &       * streo%eye_separation_ctl%iflag
         if(view_param%iflag_stereo_pvr.eq.0 .and. my_rank.eq.0) then
           write(*,*) 'Streo view paramters are missing.'
           write(*,*) 'Turn off streo view.'

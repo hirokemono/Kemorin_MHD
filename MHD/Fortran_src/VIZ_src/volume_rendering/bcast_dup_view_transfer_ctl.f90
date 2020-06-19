@@ -25,11 +25,6 @@
 !
       implicit  none
 !
-      private :: bcast_view_matrix_ctl, dup_view_matrix_ctl
-      private :: bcast_projection_mat_ctl, copy_projection_mat_ctl
-      private :: bcast_image_size_ctl, copy_image_size_ctl 
-      private :: bcast_stereo_view_ctl, copy_stereo_view_ctl
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -38,37 +33,10 @@
 !
       subroutine bcast_view_transfer_ctl(mat)
 !
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call bcast_view_matrix_ctl(mat)
-      call bcast_projection_mat_ctl(mat)
-      call bcast_image_size_ctl(mat)
-      call bcast_stereo_view_ctl(mat)
-!
-      end subroutine bcast_view_transfer_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dup_view_transfer_ctl(org_mat, new_mat)
-!
-      type(modeview_ctl), intent(in) :: org_mat
-      type(modeview_ctl), intent(inout) :: new_mat
-!
-!
-      call dup_view_matrix_ctl(org_mat, new_mat)
-      call copy_projection_mat_ctl(org_mat, new_mat)
-      call copy_image_size_ctl(org_mat, new_mat)
-      call copy_stereo_view_ctl(org_mat, new_mat)
-!
-      end subroutine dup_view_transfer_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_view_matrix_ctl(mat)
-!
       use bcast_control_arrays
+      use t_ctl_data_4_screen_pixel
+      use t_ctl_data_4_projection
+      use t_ctl_data_4_streo_view
 !
       type(modeview_ctl), intent(inout) :: mat
 !
@@ -89,67 +57,20 @@
       call bcast_ctl_type_r1(mat%view_rotation_deg_ctl)
       call bcast_ctl_type_r1(mat%scale_factor_ctl)
 !
-      end subroutine bcast_view_matrix_ctl
+!
+      call bcast_projection_mat_ctl(mat%proj)
+      call bcast_image_size_ctl(mat%pixel)
+      call bcast_stereo_view_ctl(mat%streo)
+!
+      end subroutine bcast_view_transfer_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine bcast_projection_mat_ctl(mat)
+      subroutine dup_view_transfer_ctl(org_mat, new_mat)
 !
-      use bcast_control_arrays
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_project_mat,  1,                             &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(mat%perspective_angle_ctl)
-      call bcast_ctl_type_r1(mat%perspective_xy_ratio_ctl)
-      call bcast_ctl_type_r1(mat%perspective_near_ctl)
-      call bcast_ctl_type_r1(mat%perspective_far_ctl)
-!
-      end subroutine bcast_projection_mat_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_image_size_ctl(mat)
-!
-      use bcast_control_arrays
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_image_size,  1,                              &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_i1(mat%num_xpixel_ctl)
-      call bcast_ctl_type_i1(mat%num_ypixel_ctl)
-!
-      end subroutine bcast_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_stereo_view_ctl(mat)
-!
-      use bcast_control_arrays
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_stereo_view,  1,                             &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(mat%focalpoint_ctl)
-      call bcast_ctl_type_r1(mat%eye_separation_ctl)
-!
-      end subroutine bcast_stereo_view_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dup_view_matrix_ctl(org_mat, new_mat)
-!
-      use t_control_array_real
+      use t_ctl_data_4_screen_pixel
+      use t_ctl_data_4_projection
+      use t_ctl_data_4_streo_view
 !
       type(modeview_ctl), intent(in) :: org_mat
       type(modeview_ctl), intent(inout) :: new_mat
@@ -179,66 +100,11 @@
       call copy_real_ctl(org_mat%scale_factor_ctl,                      &
      &                   new_mat%scale_factor_ctl)
 !
-      end subroutine dup_view_matrix_ctl
+      call copy_projection_mat_ctl(org_mat%proj, new_mat%proj)
+      call copy_image_size_ctl(org_mat%pixel, new_mat%pixel)
+      call copy_stereo_view_ctl(org_mat%streo, new_mat%streo)
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_projection_mat_ctl(org_mat, new_mat)
-!
-      use t_control_array_real
-!
-      type(modeview_ctl), intent(in) :: org_mat
-      type(modeview_ctl), intent(inout) :: new_mat
-!
-!
-      new_mat%i_project_mat = org_mat%i_project_mat
-!
-      call copy_real_ctl(org_mat%perspective_angle_ctl,                 &
-     &                   new_mat%perspective_angle_ctl)
-      call copy_real_ctl(org_mat%perspective_xy_ratio_ctl,              &
-     &                   new_mat%perspective_xy_ratio_ctl)
-      call copy_real_ctl(org_mat%perspective_near_ctl,                  &
-     &                   new_mat%perspective_near_ctl)
-      call copy_real_ctl(org_mat%perspective_far_ctl,                   &
-     &                   new_mat%perspective_far_ctl)
-!
-      end subroutine copy_projection_mat_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_image_size_ctl(org_mat, new_mat)
-!
-      type(modeview_ctl), intent(in) :: org_mat
-      type(modeview_ctl), intent(inout) :: new_mat
-!
-!
-      new_mat%i_image_size = org_mat%i_image_size
-!
-      call copy_integer_ctl(org_mat%num_xpixel_ctl,                     &
-     &                      new_mat%num_xpixel_ctl)
-      call copy_integer_ctl(org_mat%num_ypixel_ctl,                     &
-     &                      new_mat%num_ypixel_ctl)
-!
-      end subroutine copy_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_stereo_view_ctl(org_mat, new_mat)
-!
-      use t_control_array_real
-!
-      type(modeview_ctl), intent(in) :: org_mat
-      type(modeview_ctl), intent(inout) :: new_mat
-!
-!
-      new_mat%i_stereo_view = org_mat%i_stereo_view
-!
-      call copy_real_ctl(org_mat%focalpoint_ctl,                        &
-     &                   new_mat%focalpoint_ctl)
-      call copy_real_ctl(org_mat%eye_separation_ctl,                    &
-     &                   new_mat%eye_separation_ctl)
-!
-      end subroutine copy_stereo_view_ctl
+      end subroutine dup_view_transfer_ctl
 !
 !  ---------------------------------------------------------------------
 !

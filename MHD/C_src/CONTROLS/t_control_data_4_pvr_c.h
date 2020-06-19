@@ -21,14 +21,14 @@
 #include "t_control_data_4_pvr_movie_c.h"
 #include "t_control_data_pvr_section_list.h"
 #include "t_control_data_pvr_isosurf_list.h"
+#include "m_PVR_control_labels_from_f.h"
 
-#define NLBL_PVR_PLOT_AREA_CTL  2
 #define NLBL_PVR_MOVIE_CTL      2
 #define NLBL_PVR_CTL            19
 
 struct pvr_plot_area_ctl_c{
     int iflag_use;
-	int maxlen;
+	struct control_labels_f *label_pvr_area;
 	
 	struct chara_clist *pvr_area_list;
 	struct chara2_real_clist *surf_enhanse_ctl;
@@ -37,6 +37,7 @@ struct pvr_plot_area_ctl_c{
 struct pvr_ctl_c{
     int iflag_use;
 	int maxlen;
+	struct control_labels_f *label_pvr_ctl_w_dpl;
 	
 	char *view_file_ctl;
 	char *color_file_ctl;
@@ -73,10 +74,6 @@ struct pvr_ctl_c{
 };
 
 /* prototypes */
-
-void get_label_pvr_plot_area_ctl(int index, char *label);
-void get_label_pvr_ctl(int index, char *label);
-
 struct pvr_plot_area_ctl_c * init_pvr_plot_area_ctl_c();
 void dealloc_pvr_plot_area_ctl_c(struct pvr_plot_area_ctl_c *area_c);
 void read_pvr_plot_area_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,

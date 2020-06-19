@@ -15,12 +15,15 @@
 #include "control_elements_IO_c.h"
 #include "t_control_real_IO.h"
 #include "t_control_data_4_psf_c.h"
+#include "m_PVR_control_labels_from_f.h"
 
 struct pvr_section_ctl_c{
 	int maxlen;
 	
 	char *fname_sect_ctl;
 	int iflag_psf_define_ctl;
+	struct control_labels_f *label_pvr_section;
+	
 	struct psf_define_ctl_c *psf_def_c;
 	struct real_ctl_item *opacity_ctl;
 };
@@ -33,9 +36,6 @@ struct pvr_sect_ctl_list{
 };
 
 /* prototypes */
-
-void get_label_pvr_sections_ctl(int index, char *label);
-
 struct pvr_section_ctl_c * init_pvr_section_ctl_c();
 void dealloc_pvr_section_ctl_c(struct pvr_section_ctl_c *pvr_sect_c);
 int read_pvr_section_ctl_c(FILE *fp, char buf[LENGTHBUF], 

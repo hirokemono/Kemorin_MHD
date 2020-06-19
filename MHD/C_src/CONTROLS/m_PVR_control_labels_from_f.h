@@ -53,6 +53,14 @@ ctl_list->num_labels 2
 label[0]   x_pixel_ctl 
 label[1]   y_pixel_ctl 
 
+Check pvr_ctl_labls->label_pvr_project
+ctl_list->len_f 255 
+ctl_list->num_labels 4 
+label[0]   perspective_angle_ctl 
+label[1]   perspective_xy_ratio_ctl 
+label[2]   perspective_near_ctl 
+label[3]   perspective_far_ctl 
+
 Check pvr_ctl_labls->label_pvr_streo
 ctl_list->num_labels 2 
 label[0]   focal_point_ctl 
@@ -160,6 +168,7 @@ struct pvr_control_labels{
 	struct control_labels_f *label_pvr_ctl_w_dpl;
 	struct control_labels_f *label_pvr_modelview;
 	struct control_labels_f *label_pvr_pixels;
+	struct control_labels_f *label_pvr_project;
 	struct control_labels_f *label_pvr_streo;
 	struct control_labels_f *label_pvr_area;
 	struct control_labels_f *label_pvr_light;
@@ -181,13 +190,26 @@ struct pvr_control_labels{
 
 /*  prototype */
 
+struct control_labels_f * init_label_pvr_ctl_w_dpl();
+
 struct control_labels_f * init_label_pvr_pixels();
+struct control_labels_f * init_label_pvr_project();
+struct control_labels_f * init_label_pvr_streo();
 struct control_labels_f * init_label_pvr_modelview();
 
-struct control_labels_f * init_label_lic_movie();
+struct control_labels_f * init_label_pvr_area();
+
+struct control_labels_f * init_label_pvr_light();
 struct control_labels_f * init_label_pvr_cmap();
 struct control_labels_f * init_label_pvr_cbar();
 struct control_labels_f * init_label_pvr_cmap_bar();
+
+struct control_labels_f * init_label_pvr_section();
+
+struct control_labels_f * init_label_pvr_isosurf();
+struct control_labels_f * init_flag_pvr_isosurf_dir();
+
+struct control_labels_f * init_label_lic_movie();
 struct control_labels_f * init_flag_lic_movie_mode();
 
 struct pvr_control_labels * init_pvr_control_labels();

@@ -16,6 +16,7 @@ int num_label_pvr_ctl_w_dup_f();
 int num_label_pvr_modelview_f();
 int num_label_pvr_pixels_f();
 int num_label_pvr_streo_f();
+int num_label_pvr_projection_f();
 int num_label_pvr_area_f();
 int num_label_pvr_light_f();
 int num_label_pvr_colormap_f();
@@ -31,6 +32,7 @@ void set_label_pvr_ctl_w_dup_f(char *name1);
 void set_label_pvr_modelview_f(char *name1);
 void set_label_pvr_pixels_f(char *name1);
 void set_label_pvr_streo_f(char *name1);
+void set_label_pvr_projection_f(char *name1);
 void set_label_pvr_area_f(char *name1);
 void set_label_pvr_light_f(char *name1);
 void set_label_pvr_colormap_f(char *name1);
@@ -47,11 +49,30 @@ int num_flag_LIC_movie_mode_f();
 void set_label_LIC_movie_f(char *name1);
 void set_flag_LIC_movie_mode_f(char *name1);
 
+struct control_labels_f * init_label_pvr_ctl_w_dpl(){
+	struct control_labels_f *label_pvr_ctl_w_dpl
+			= init_control_labels_f(num_label_pvr_ctl_w_dup_f, 
+									set_label_pvr_ctl_w_dup_f);
+	return label_pvr_ctl_w_dpl;
+};
+
 struct control_labels_f * init_label_pvr_pixels(){
 	struct control_labels_f *label_pvr_pixels
 			= init_control_labels_f(num_label_pvr_pixels_f, 
 									set_label_pvr_pixels_f);
 	return label_pvr_pixels;
+};
+struct control_labels_f * init_label_pvr_project(){
+	struct control_labels_f *label_pvr_project
+			= init_control_labels_f(num_label_pvr_projection_f, 
+									set_label_pvr_projection_f);
+	return label_pvr_project;
+};
+struct control_labels_f * init_label_pvr_streo(){
+	struct control_labels_f *label_pvr_streo
+			= init_control_labels_f(num_label_pvr_streo_f, 
+									set_label_pvr_streo_f);
+	return label_pvr_streo;
 };
 
 struct control_labels_f * init_label_pvr_modelview(){
@@ -61,6 +82,19 @@ struct control_labels_f * init_label_pvr_modelview(){
 	return label_pvr_modelview;
 };
 
+struct control_labels_f * init_label_pvr_area(){
+	struct control_labels_f *label_pvr_area
+			= init_control_labels_f(num_label_pvr_area_f, 
+									set_label_pvr_area_f);
+	return label_pvr_area;
+};
+
+struct control_labels_f * init_label_pvr_light(){
+	struct control_labels_f *label_pvr_light
+			= init_control_labels_f(num_label_pvr_light_f, 
+									set_label_pvr_light_f);
+	return label_pvr_light;
+};
 struct control_labels_f * init_label_pvr_cmap(){
 	struct control_labels_f *label_pvr_cmap
 			= init_control_labels_f(num_label_pvr_colormap_f, 
@@ -79,6 +113,26 @@ struct control_labels_f * init_label_pvr_cmap_bar(){
 									set_label_pvr_cmap_bar_f);
 	return label_pvr_cmap_bar;
 };
+
+struct control_labels_f * init_label_pvr_section(){
+	struct control_labels_f *label_pvr_section
+			= init_control_labels_f(num_label_pvr_section_f, 
+									set_label_pvr_section_f);
+	return label_pvr_section;
+};
+struct control_labels_f * init_label_pvr_isosurf(){
+	struct control_labels_f *label_pvr_isosurf
+			= init_control_labels_f(num_label_pvr_isosurface_f, 
+									set_label_pvr_isosurface_f);
+	return label_pvr_isosurf;
+};
+struct control_labels_f * init_flag_pvr_isosurf_dir(){
+	struct control_labels_f *flag_pvr_isosurf_dir
+			= init_control_labels_f(num_flag_pvr_isosurf_dir_f, 
+									set_flag_pvr_isosurf_dir_f);
+	return flag_pvr_isosurf_dir;
+};
+
 
 struct control_labels_f * init_label_lic_movie(){
 	struct control_labels_f *label_lic_movie
@@ -102,30 +156,21 @@ struct pvr_control_labels * init_pvr_control_labels(){
 	};
 	
 	pvr_ctl_labls->num_label_pvr_ctl_c = num_label_pvr_ctl_f();
-	pvr_ctl_labls->label_pvr_ctl_w_dpl
-			= init_control_labels_f(num_label_pvr_ctl_w_dup_f, 
-									set_label_pvr_ctl_w_dup_f);
+	pvr_ctl_labls->label_pvr_ctl_w_dpl = init_label_pvr_ctl_w_dpl();
 	pvr_ctl_labls->label_pvr_pixels =    init_label_pvr_pixels();
 	pvr_ctl_labls->label_pvr_modelview = init_label_pvr_modelview();
-	pvr_ctl_labls->label_pvr_streo
-			= init_control_labels_f(num_label_pvr_streo_f, 
-									set_label_pvr_streo_f);
+	pvr_ctl_labls->label_pvr_project =   init_label_pvr_project();
+	pvr_ctl_labls->label_pvr_streo =     init_label_pvr_streo();
 	
-	pvr_ctl_labls->label_pvr_area
-			= init_control_labels_f(num_label_pvr_area_f, 
-									set_label_pvr_area_f);
-	pvr_ctl_labls->label_pvr_light
-			= init_control_labels_f(num_label_pvr_light_f, 
-									set_label_pvr_light_f);
+	pvr_ctl_labls->label_pvr_area = init_label_pvr_area();
+	
+	pvr_ctl_labls->label_pvr_light =    init_label_pvr_light();
 	pvr_ctl_labls->label_pvr_cmap =     init_label_pvr_cmap();
 	pvr_ctl_labls->label_pvr_cbar =     init_label_pvr_cbar();
 	pvr_ctl_labls->label_pvr_cmap_bar = init_label_pvr_cmap_bar();
-	pvr_ctl_labls->label_pvr_section
-			= init_control_labels_f(num_label_pvr_section_f, 
-									set_label_pvr_section_f);
-	pvr_ctl_labls->label_pvr_isosurf
-			= init_control_labels_f(num_label_pvr_isosurface_f, 
-									set_label_pvr_isosurface_f);
+	
+	pvr_ctl_labls->label_pvr_section = init_label_pvr_section();
+	pvr_ctl_labls->label_pvr_isosurf = init_label_pvr_isosurf();
 	
 	pvr_ctl_labls->num_label_pvr_movie_c = num_label_pvr_movie_f();
 	pvr_ctl_labls->label_lic_movie = init_label_lic_movie();
@@ -138,9 +183,7 @@ struct pvr_control_labels * init_pvr_control_labels(){
 			= num_flag_pvr_movie_mode_f();
 	pvr_ctl_labls->flag_lic_movie_mode = init_flag_lic_movie_mode();
 	
-	pvr_ctl_labls->flag_pvr_isosurf_dir
-			= init_control_labels_f(num_flag_pvr_isosurf_dir_f, 
-									set_flag_pvr_isosurf_dir_f);
+	pvr_ctl_labls->flag_pvr_isosurf_dir = init_flag_pvr_isosurf_dir();
 	return pvr_ctl_labls;
 };
 
@@ -148,6 +191,7 @@ void dealloc_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls){
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_ctl_w_dpl);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_modelview);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_pixels);
+	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_project);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_streo);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_area);
 	dealloc_control_labels_f(pvr_ctl_labls->label_pvr_light);
@@ -174,6 +218,8 @@ void check_pvr_control_labels(struct pvr_control_labels *pvr_ctl_labls){
 	check_control_labels_f(pvr_ctl_labls->label_pvr_modelview);
 	printf("Check pvr_ctl_labls->label_pvr_pixels\n");
 	check_control_labels_f(pvr_ctl_labls->label_pvr_pixels);
+	printf("Check pvr_ctl_labls->label_pvr_project\n");
+	check_control_labels_f(pvr_ctl_labls->label_pvr_project);
 	printf("Check pvr_ctl_labls->label_pvr_streo\n");
 	check_control_labels_f(pvr_ctl_labls->label_pvr_streo);
 	

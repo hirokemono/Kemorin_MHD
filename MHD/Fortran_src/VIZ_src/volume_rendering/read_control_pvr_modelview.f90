@@ -9,8 +9,6 @@
 !!@verbatim
 !!      subroutine read_control_modelview_file                          &
 !!     &         (id_control, viewctl_file_name, mat)
-!!      subroutine read_view_transfer_ctl                               &
-!!     &         (id_control, hd_block, mat, c_buf)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
 !
@@ -110,19 +108,12 @@
       use m_machine_parameter
       use t_ctl_data_4_view_transfer
       use t_read_control_elements
-      use t_control_array_charareal
-      use t_control_array_chara2real
-      use skip_comment_f
 !
       implicit  none
 !
       character(len=kchara), parameter                                  &
      &                      :: hd_view_transform = 'view_transform_ctl'
       private :: hd_view_transform
-!
-      private :: read_projection_mat_ctl
-      private :: read_stereo_view_ctl
-      private :: read_image_size_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -135,6 +126,7 @@
 !
       use calypso_mpi
       use m_error_IDs
+      use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: viewctl_file_name
@@ -161,147 +153,6 @@
       end if
 !
       end subroutine read_control_modelview_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_view_transfer_ctl                                 &
-     &         (id_control, hd_block, mat, c_buf)
-!
-      use t_control_array_real
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(modeview_ctl), intent(inout) :: mat
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if (mat%i_view_transform .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_projection_mat_ctl                                    &
-     &     (id_control, hd_project_mat, mat, c_buf)
-        call read_image_size_ctl                                        &
-     &     (id_control, hd_image_size, mat, c_buf)
-        call read_stereo_view_ctl                                       &
-     &     (id_control, hd_stereo_view, mat, c_buf)
-!
-!
-        call read_control_array_c_r(id_control,                         &
-     &      hd_look_point, mat%lookpoint_ctl, c_buf)
-        call read_control_array_c_r(id_control,                         &
-     &      hd_view_point, mat%viewpoint_ctl, c_buf)
-        call read_control_array_c_r(id_control,                         &
-     &      hd_up_dir, mat%up_dir_ctl, c_buf)
-!
-        call read_control_array_c_r(id_control,                         &
-     &      hd_view_rot_dir, mat%view_rot_vec_ctl, c_buf)
-        call read_control_array_c_r(id_control,                         &
-     &      hd_scale_fac_dir, mat%scale_vector_ctl, c_buf)
-        call read_control_array_c_r(id_control,                         &
-     &      hd_viewpt_in_view, mat%viewpt_in_viewer_ctl, c_buf)
-!
-        call read_control_array_c2_r(id_control,                        &
-     &      hd_model_mat, mat%modelview_mat_ctl, c_buf)
-!
-        call read_real_ctl_type(c_buf, hd_view_rot_deg,                 &
-     &        mat%view_rotation_deg_ctl)
-        call read_real_ctl_type(c_buf, hd_scale_factor,                 &
-     &        mat%scale_factor_ctl)
-      end do
-      mat%i_view_transform = 1
-!
-      end subroutine read_view_transfer_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_projection_mat_ctl                                &
-     &         (id_control, hd_block, mat, c_buf)
-!
-      use t_control_array_real
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(modeview_ctl), intent(inout) :: mat
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if (mat%i_project_mat.gt.0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_real_ctl_type(c_buf, hd_perspect_angle,               &
-     &      mat%perspective_angle_ctl)
-        call read_real_ctl_type(c_buf, hd_perspect_xy,                  &
-     &      mat%perspective_xy_ratio_ctl)
-        call read_real_ctl_type(c_buf, hd_perspect_near,                &
-     &      mat%perspective_near_ctl)
-        call read_real_ctl_type(c_buf, hd_perspect_far,                 &
-     &      mat%perspective_far_ctl)
-      end do
-      mat%i_project_mat = 1
-!
-      end subroutine read_projection_mat_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_image_size_ctl(id_control, hd_block, mat, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(modeview_ctl), intent(inout) :: mat
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if (mat%i_image_size.gt.0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_x_pixel, mat%num_xpixel_ctl)
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_y_pixel, mat%num_ypixel_ctl)
-      end do
-      mat%i_image_size = 1
-!
-      end subroutine read_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_stereo_view_ctl(id_control, hd_block, mat, c_buf)
-!
-      use t_control_array_real
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(modeview_ctl), intent(inout) :: mat
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if (mat%i_stereo_view.gt.0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-        call read_real_ctl_type(c_buf, hd_focalpoint,                   &
-     &      mat%focalpoint_ctl)
-        call read_real_ctl_type(c_buf, hd_eye_separation,               &
-     &      mat%eye_separation_ctl)
-      end do
-      mat%i_stereo_view = 1
-!
-      end subroutine read_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
 !

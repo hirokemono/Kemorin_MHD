@@ -175,6 +175,7 @@
       subroutine read_lic_pvr_ctl                                       &
      &         (id_control, hd_block, pvr, lic_ctl, c_buf)
 !
+      use t_ctl_data_4_view_transfer
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
       use t_control_data_pvr_area

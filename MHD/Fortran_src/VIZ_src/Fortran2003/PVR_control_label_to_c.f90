@@ -17,6 +17,9 @@
 !!      subroutine set_label_pvr_pixels_f(names)  bind(c)
 !!      subroutine set_label_pvr_streo_f(names)  bind(c)
 !!
+!!      integer(c_int) function num_label_pvr_projection_f() bind(c)
+!!      subroutine set_label_pvr_projection_f(names)  bind(c)
+!!
 !!      integer(c_int) function num_label_pvr_area_f() bind(c)
 !!      subroutine set_label_pvr_area_f(names)  bind(c)
 !!
@@ -106,7 +109,7 @@
 !
       integer(c_int) function num_label_pvr_pixels_f() bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use t_ctl_data_4_screen_pixel
 !
       num_label_pvr_pixels_f = num_label_pvr_pixels()
       return
@@ -116,7 +119,7 @@
 !
       integer(c_int) function num_label_pvr_streo_f() bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use t_ctl_data_4_streo_view
 !
       num_label_pvr_streo_f = num_label_pvr_streo()
       return
@@ -138,7 +141,7 @@
 !
       subroutine set_label_pvr_pixels_f(names)  bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use t_ctl_data_4_screen_pixel
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -149,7 +152,7 @@
 !
       subroutine set_label_pvr_streo_f(names)  bind(c)
 !
-      use t_ctl_data_4_view_transfer
+      use t_ctl_data_4_streo_view
 !
       character(C_CHAR), intent(inout) :: names(*)
 !
@@ -158,6 +161,28 @@
 !
 !  ---------------------------------------------------------------------
 ! ----------------------------------------------------------------------
+!
+      integer(c_int) function num_label_pvr_projection_f() bind(c)
+!
+      use t_ctl_data_4_projection
+!
+      num_label_pvr_projection_f = num_label_pvr_projection()
+      return
+      end function num_label_pvr_projection_f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_label_pvr_projection_f(names)  bind(c)
+!
+      use t_ctl_data_4_projection
+!
+      character(C_CHAR), intent(inout) :: names(*)
+!
+      call set_label_pvr_projection(names)
+      end subroutine set_label_pvr_projection_f
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       integer(c_int) function num_label_pvr_area_f() bind(c)
 !
