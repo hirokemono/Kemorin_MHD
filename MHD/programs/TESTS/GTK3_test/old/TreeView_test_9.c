@@ -23,34 +23,7 @@ enum {
 
 static void sum_selected_rows(GtkTreeSelection *selection, gpointer user_data)
 {
-	GtkLabel *label;
-	GtkTreeModel *model;
-	GList *list;
-	GList *cur;
-	gint sum = 0;
-	gchar buf[64];
-
-	label = g_object_get_data(G_OBJECT(selection), "label");
-
-	list = gtk_tree_selection_get_selected_rows(selection, &model);
-	if (list == NULL) {
-		gtk_label_set_text(label, "");
-		return;
-	}
-
-	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
-		GtkTreeIter iter;
-		gint num;
-		if (gtk_tree_model_get_iter(model, &iter, (GtkTreePath *)cur->data) == TRUE) {
-			gtk_tree_model_get(model, &iter, COLUMN_FIELD_INDEX, &num, -1);
-			sum += num;
-		}
-		gtk_tree_path_free((GtkTreePath *)cur->data);
-	}
-	g_list_free(list);
-
-	snprintf(buf, sizeof(buf), "%d", sum);
-	gtk_label_set_text(label, buf);
+	return;
 }
 
 /* Append new data at the end of list */
@@ -79,6 +52,13 @@ static void init_model_data(GtkTreeView *tree_view)
 		};
 	}
 }
+
+static void cb_close_window(GtkButton *button, gpointer user_data){
+	GtkWidget *window = (GtkWidget *) user_data;
+	gtk_widget_destroy(window);
+	gtk_widget_show_all(main_window);
+};
+
 
 static void append_model_data(GtkButton *button, gpointer user_data)
 {
@@ -150,13 +130,13 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	list = gtk_tree_selection_get_selected_rows(selection, NULL);
 	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 
-	/* 最初にパスからリファレンスを作成する */
-	/* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+	/* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
 	reference_list = NULL;
 	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *child_path;
 		GtkTreeRowReference *child_reference;
-		/* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+		/* Convert tree model sort path into tree model path */
 		child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), (GtkTreePath *)cur->data);
 
 		child_reference = gtk_tree_row_reference_new(child_model, child_path);
@@ -167,10 +147,10 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	}
 	g_list_free(list);
 
-	/* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
+	/* Temporary block the changed signal of GtkTreeSelection */
 	block_changed_signal(G_OBJECT(child_model));
 
-	/* リファレンスをパスに戻して削除 */
+	/* Return reference into path and delete reference */
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -180,11 +160,11 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
         /*
         printf("To be deleted: %d, %s: %s\n", index_field, row_string,
-               all_fld_list->fld_list->field_name[index_field]);
-*/
-		/* DElete */
+               all_fld_list->fld_list->field_name[index_field]); 
+         */
+		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model), &iter);
-		delete_field_in_ctl(index_field, all_fld_list,
+		delete_field_in_ctl(index_field, all_fld_list, 
 							&mhd_ctl->model_ctl->fld_ctl->field_list);
 
 		gtk_tree_path_free(tree_path);
@@ -192,81 +172,58 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	}
 	g_list_free(reference_list);
 
-	/* changedシグナルのブロックを解除する */
+	/* Release the block of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model));
     /*
     check_field_ctl_list(&mhd_ctl->model_ctl->fld_ctl->field_list);
      */
 }
 
-static GtkWidget *create_window(GtkWidget *tree_view, gint window_id)
+static GtkWidget *create_box_in_bottuns(GtkWidget *tree_view, GtkWidget *window)
 {
-	GtkWidget *window;
-	gchar *title;
-	GtkWidget *vbox;
 	GtkWidget *hbox;
 	GtkWidget *button;
-	GtkWidget *label;
-	GtkWidget *scrolled_window;
+	
+	hbox = gtk_hbox_new(FALSE, 0);
+	/* Add data bottun */
+	button = gtk_button_new_from_stock(GTK_STOCK_ADD);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(append_model_data), tree_view);
+
+	/* Delete data bottun */
+	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(remove_model_data), tree_view);
+
+	/* Close window bottun */
+	button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
+	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(cb_close_window), window);
+	
+	return hbox;
+};
+
+static void set_selection_property(GtkWidget *tree_view){
 	GtkTreeSelection *selection;
 	GtkTreeModel *model;
 	GtkTreeModel *child_model;
 	gulong changed_handler_id;
 	GList *list;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	title = g_strdup_printf("GtkTreeModelSort #%d", window_id);
-	gtk_window_set_title(GTK_WINDOW(window), title);
-	g_free(title);
-
-	vbox = gtk_vbox_new(FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	/* データ追加ボタン */
-	button = gtk_button_new_from_stock(GTK_STOCK_ADD);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(append_model_data), tree_view);
-
-	/* データ削除ボタン */
-	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
-	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(remove_model_data), tree_view);
-
-	/* ラベル */
-	label = gtk_label_new("");
-	gtk_box_pack_end(GTK_BOX(hbox), label, TRUE, TRUE, 0);
-
-	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrolled_window, 400, 300);
-	gtk_container_add(GTK_CONTAINER(scrolled_window), tree_view);
-
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
-
-	gtk_container_add(GTK_CONTAINER(window), vbox);
-
+	
 	/*
 	 * selectionにchangedシグナルハンドラを登録する。
 	 * 後で同じchild_modelを使用しているselectionのchangedシグナルをブロック出来るように
 	 * child_modelにselectionのリストを、selectionにシグナルハンドラIDを登録する。
-	 * changedハンドラ内で使用するlabelも同様に登録しておく。
 	 */
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
 	changed_handler_id = g_signal_connect(G_OBJECT(selection), "changed", G_CALLBACK(sum_selected_rows), NULL);
 	g_object_set_data(G_OBJECT(selection), "changed_handler_id", GUINT_TO_POINTER(changed_handler_id));
-	g_object_set_data(G_OBJECT(selection), "label", label);
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(tree_view));
 	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 	list = g_object_get_data(G_OBJECT(child_model), "selection_list");
 	list = g_list_append(list, selection);
 	g_object_set_data(G_OBJECT(child_model), "selection_list", list);
-
-	gtk_widget_show_all(window);
-
-	return window;
 }
 
 static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
@@ -304,18 +261,22 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column_id, order);
 }
 
-static void create_tree_view_window(GtkButton *button, gpointer user_data)
+static GtkWidget * create_field_list_window(GtkWidget *window)
 {
-	static gint window_id = 0;
-	GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);
+/*	GtkTreeModel *child_model = GTK_TREE_MODEL(user_data);*/
 	GtkTreeModel *model;
 	GtkWidget *tree_view;
 	GtkCellRenderer *renderer;
 	GtkTreeViewColumn *column;
 	GtkTreeSelection *selection;
+		
+	GtkListStore *child_model;
 	
-	int i;
-	
+	/* Construct empty list storage */
+	child_model = gtk_list_store_new(6, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
+				G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
+	g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
+
 	/* ソート用のモデルを作成してツリービューにセットする */
 	tree_view = gtk_tree_view_new();
 	model = gtk_tree_model_sort_new_with_model(child_model);
@@ -400,14 +361,52 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 	
 	init_model_data(tree_view);
+	set_selection_property(tree_view);
+	
+	return tree_view;
+}
+
+static void create_tree_view_window(GtkButton *button, gpointer user_data)
+{
+	GtkWidget *window;
+	GtkWidget *tree_view;
+	
+	GtkWidget *vbox;
+	GtkWidget *hbox;
+	GtkWidget *scrolled_window;
+	
+	gchar *title;
+	static gint window_id = 0;
+	
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	title = g_strdup_printf("GtkTreeModelSort #%d", ++window_id);
+	gtk_window_set_title(GTK_WINDOW(window), title);
+	g_free(title);
+	
+	
+	hbox = create_box_in_bottuns(tree_view, window);
+	
+	tree_view = create_field_list_window(window);
+	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
+				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrolled_window, 400, 300);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), tree_view);
+	
 	
 	/* ウィンドウ作成 */
-	create_window(tree_view, ++window_id);
-}
+	
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
+	
+	gtk_widget_show_all(window);
+
+};
 
 int main(int argc, char **argv)
 {
-	GtkListStore *store;
 	GtkWidget *hbox;
 	GtkWidget *button;
 
@@ -422,11 +421,6 @@ int main(int argc, char **argv)
 	
 	gtk_init(&argc, &argv);
 
-	/* 空のリストストアを作成する */
-	store = gtk_list_store_new(6, G_TYPE_INT, G_TYPE_STRING, G_TYPE_STRING,
-				G_TYPE_INT, G_TYPE_INT, G_TYPE_INT);
-	g_object_set_data(G_OBJECT(store), "selection_list", NULL);
-
 	main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(main_window), "GtkTreeModelSort");
 	g_signal_connect(G_OBJECT(main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
@@ -434,7 +428,7 @@ int main(int argc, char **argv)
 	hbox = gtk_hbox_new(TRUE, 10);
 
 	button = gtk_button_new_with_label("Create Window");
-	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), store);
+	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(create_tree_view_window), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 	gtk_container_add(GTK_CONTAINER(main_window), hbox);

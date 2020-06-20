@@ -19,6 +19,8 @@
 #include "m_PSF_control_labels_from_f.h"
 
 struct iso_define_ctl_c{
+    int iflag_use;
+
 	struct control_labels_f *label_iso_define_ctl;
 	
 	struct chara_ctl_item *isosurf_data_ctl;
@@ -30,6 +32,8 @@ struct iso_define_ctl_c{
 };
 
 struct iso_field_ctl_c{
+    int iflag_use;
+    
 	struct control_labels_f *label_fld_on_iso_ctl;
 	
 	struct chara_ctl_item *output_type_ctl;
@@ -40,28 +44,28 @@ struct iso_field_ctl_c{
 
 struct iso_ctl_c{
 	struct control_labels_f *label_iso_ctl_w_dpl;
-	int maxlen;
 	
 	struct chara_ctl_item *iso_file_head_ctl;
 	struct chara_ctl_item *iso_output_type_ctl;
 	
-	int iflag_isosurf_define;
 	struct iso_define_ctl_c *iso_def_c;
 	int iflag_iso_output_field;
 	struct iso_field_ctl_c *iso_fld_c;
 };
 
 /* prototypes */
+char * isosurface_control_head();
+
 struct iso_define_ctl_c * init_iso_define_ctl_c();
 void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c);
-int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_define_ctl_c *iso_def_c);
 int write_iso_define_ctl_c(FILE *fp, int level, const char *label, 
 			struct iso_define_ctl_c *iso_def_c);
 
 struct iso_field_ctl_c * init_iso_field_ctl_c();
 void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c);
-int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_field_ctl_c *iso_fld_c);
 int write_iso_field_ctl_c(FILE *fp, int level, const char *label, 
 			struct iso_field_ctl_c *iso_fld_c);

@@ -31,13 +31,13 @@ static void delete_dless_data(gpointer user_data)
     selection = gtk_tree_view_get_selection(coefs_vw->coefs_tree_view);
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     
-    /* 最初にパスからリファレンスを作成する */
-    /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+    /* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
     reference_list = NULL;
     for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *child_path;
         GtkTreeRowReference *child_reference;
-        /* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+        /* Convert tree model sort path into tree model path */
         child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_del), 
                                                                     (GtkTreePath *)cur->data);
         
@@ -49,10 +49,10 @@ static void delete_dless_data(gpointer user_data)
     }
     g_list_free(list);
     
-    /* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
+    /* Temporary block the changed signal of GtkTreeSelection */
     block_changed_signal(G_OBJECT(child_model_to_del));
     
-    /* リファレンスをパスに戻して削除 */
+    /* Return reference into path and delete reference */
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *tree_path;
         GtkTreeIter iter;
@@ -75,7 +75,7 @@ static void delete_dless_data(gpointer user_data)
     }
     g_list_free(reference_list);
     
-    /* changedシグナルのブロックを解除する */
+    /* Release the block of changed signal */
     unblock_changed_signal(G_OBJECT(child_model_to_del));
 }
 

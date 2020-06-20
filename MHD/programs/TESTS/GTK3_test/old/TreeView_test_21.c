@@ -66,6 +66,7 @@ int main(int argc, char **argv)
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 	
 	fields_vws = init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl);
+    check_field_name_f(fields_vws->all_fld_list->fld_list);
 	
 	gtk_init(&argc, &argv);
 

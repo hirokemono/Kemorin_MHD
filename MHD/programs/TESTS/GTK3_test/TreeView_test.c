@@ -1,18 +1,19 @@
 
-#include "tree_view_4_pvr_colormap.h"
-#include "t_SGS_MHD_control_c.h"
+//#include "tree_view_4_pvr_colormap.h"
+#include <gtk/gtk.h>
+#include "skip_comment_c.h"
 
 struct SGS_MHD_control_c *mhd_ctl;
 char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_MHD";
 char buf[LENGTHBUF];      /* character buffer for reading line */
 
 static GtkWidget *main_window = NULL;
-
+/*
 void init_second_colormap_views(struct PVR_ctl_list *pvr1, struct colormap_view *color_vws){
 	init_colormap_views_4_ctl(pvr1->_next->_next->v_render_c->pvr_c->cmap_cbar_c->cmap_c, color_vws);
     return;
 }
-
+*/
 static void cb_close_window(GtkButton *button, gpointer user_data){
     GtkWidget *window = (GtkWidget *) user_data;
     gtk_widget_destroy(window);
@@ -65,13 +66,13 @@ int main(int argc, char **argv)
     struct colormap_view *color_vws;
     
     srand((unsigned)time(NULL));
+    /*
     
     mhd_ctl = alloc_SGS_MHD_control_c();
     read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
-    
     color_vws = (struct colormap_view *) malloc(sizeof(struct colormap_view));
     init_second_colormap_views(&mhd_ctl->viz_c->pvr_ctl_list, color_vws);
-
+*/
     gtk_init(&argc, &argv);
     
     main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);

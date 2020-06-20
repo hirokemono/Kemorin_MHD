@@ -12,13 +12,19 @@ FILE *FP_ISO;
 const char label_iso_head[KCHARA_C] = "isosurface_ctl";
 const char label_old_iso_head[KCHARA_C] = "isosurf_rendering";
 
+char * isosurface_control_head(){
+    char * label = (char *)calloc(KCHARA_C, sizeof(char));
+    strngcopy(label, label_iso_head);
+    return label;
+};
+
 struct iso_define_ctl_c * init_iso_define_ctl_c(){
     struct iso_define_ctl_c *iso_def_c;
     if((iso_def_c = (struct iso_define_ctl_c *) malloc(sizeof(struct iso_define_ctl_c))) == NULL) {
         printf("malloc error for iso_define_ctl_c \n");
         exit(0);
     }
-	
+    iso_def_c->iflag_use = 0;
 	iso_def_c->label_iso_define_ctl = init_label_iso_define_ctl();
 	
 	iso_def_c->isosurf_data_ctl = init_chara_ctl_item_c();
@@ -43,10 +49,8 @@ void dealloc_iso_define_ctl_c(struct iso_define_ctl_c *iso_def_c){
 	return;
 };
 
-int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_define_ctl_c *iso_def_c){
-    int iflag;
-
     while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
 		
@@ -61,7 +65,8 @@ int read_iso_define_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara_clist(fp, buf, iso_def_c->label_iso_define_ctl->label[ 3],
 						 iso_def_c->iso_area_list);
 	};
-	return 1;
+    iso_def_c->iflag_use = 1;
+	return;
 };
 
 int write_iso_define_ctl_c(FILE *fp, int level, const char *label, 
@@ -115,7 +120,7 @@ void dealloc_iso_field_ctl_c(struct iso_field_ctl_c *iso_fld_c){
 	return;
 };
 
-int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
+void read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 			struct iso_field_ctl_c *iso_fld_c){
 	while(find_control_end_flag_c(buf, label) == 0){
 		skip_comment_read_line(fp, buf);
@@ -128,7 +133,8 @@ int read_iso_field_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_chara2_clist(fp, buf, iso_fld_c->label_fld_on_iso_ctl->label[ 2],
 						  iso_fld_c->iso_out_field_list);
 	};
-	return 1;
+    iso_fld_c->iflag_use = 1;
+	return;
 };
 
 int write_iso_field_ctl_c(FILE *fp, int level, const char *label, 
@@ -158,11 +164,10 @@ struct iso_ctl_c * init_iso_ctl_c(){
     }
 	
 	iso_c->label_iso_ctl_w_dpl = init_label_iso_ctl_w_dpl();
-	iso_c->iflag_isosurf_define = 0;
-	iso_c->iflag_iso_output_field = 0;
 	
 	iso_c->iso_def_c = init_iso_define_ctl_c();
 	iso_c->iso_fld_c = init_iso_field_ctl_c();
+    iso_c->iso_fld_c->iflag_use = 0;
 	
 	iso_c->iso_file_head_ctl = init_chara_ctl_item_c();
 	iso_c->iso_output_type_ctl = init_chara_ctl_item_c();
@@ -176,10 +181,6 @@ void dealloc_iso_ctl_c(struct iso_ctl_c *iso_c){
 	
 	dealloc_chara_ctl_item_c(iso_c->iso_file_head_ctl);
 	dealloc_chara_ctl_item_c(iso_c->iso_output_type_ctl);
-	
-	iso_c->iflag_isosurf_define = 0;
-	iso_c->iflag_iso_output_field = 0;
-	
     free(iso_c);
 	return;
 };
@@ -197,22 +198,16 @@ int read_iso_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 							  iso_c->iso_output_type_ctl);
 		
 		if(right_begin_flag_c(buf, iso_c->label_iso_ctl_w_dpl->label[ 2]) > 0){
-			iso_c->iflag_isosurf_define
-					= read_iso_define_ctl_c(fp, buf, 
-											iso_c->label_iso_ctl_w_dpl->label[ 2],
-											iso_c->iso_def_c);
+            read_iso_define_ctl_c(fp, buf, iso_c->label_iso_ctl_w_dpl->label[ 2],
+                                  iso_c->iso_def_c);
 		};
 		if(right_begin_flag_c(buf, iso_c->label_iso_ctl_w_dpl->label[ 3]) > 0){
-			iso_c->iflag_iso_output_field
-					= read_iso_field_ctl_c(fp, buf, 
-										   iso_c->label_iso_ctl_w_dpl->label[ 3],
-										   iso_c->iso_fld_c);
+			read_iso_field_ctl_c(fp, buf, iso_c->label_iso_ctl_w_dpl->label[ 3],
+                                 iso_c->iso_fld_c);
 		};
         if(right_begin_flag_c(buf, iso_c->label_iso_ctl_w_dpl->label[ 5]) > 0){
-			iso_c->iflag_iso_output_field
-					= read_iso_field_ctl_c(fp, buf, 
-										   iso_c->label_iso_ctl_w_dpl->label[ 5],
-										   iso_c->iso_fld_c);
+            read_iso_field_ctl_c(fp, buf, iso_c->label_iso_ctl_w_dpl->label[ 5],
+                                 iso_c->iso_fld_c);
         };
 	};
 	return 1;
@@ -229,12 +224,12 @@ int write_iso_ctl_c(FILE *fp, int level, const char *label,
 						   iso_c->label_iso_ctl_w_dpl->label[ 1],
 						   iso_c->iso_output_type_ctl);
 	
-    if(iso_c->iflag_isosurf_define > 0){
+    if(iso_c->iso_def_c->iflag_use > 0){
         fprintf(fp, "!\n");
 		level = write_iso_define_ctl_c(fp, level, iso_c->label_iso_ctl_w_dpl->label[ 2],
 									   iso_c->iso_def_c);
     };
-    if(iso_c->iflag_iso_output_field > 0){
+    if(iso_c->iso_fld_c->iflag_use > 0){
         fprintf(fp, "!\n");
 		level = write_iso_field_ctl_c(fp, level, iso_c->label_iso_ctl_w_dpl->label[ 3],
 									  iso_c->iso_fld_c);

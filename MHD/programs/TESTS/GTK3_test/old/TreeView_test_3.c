@@ -108,13 +108,13 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	list = gtk_tree_selection_get_selected_rows(selection, NULL);
 	child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
 
-	/* 最初にパスからリファレンスを作成する */
-	/* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+	/* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
 	reference_list = NULL;
 	for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *child_path;
 		GtkTreeRowReference *child_reference;
-		/* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+		/* Convert tree model sort path into tree model path */
 		child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model), (GtkTreePath *)cur->data);
 
 		child_reference = gtk_tree_row_reference_new(child_model, child_path);
@@ -125,17 +125,17 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	}
 	g_list_free(list);
 
-	/* GtkTreeSelectionのchangedシグナルを一時的にブロックする */
+	/* Temporary block the changed signal of GtkTreeSelection */
 	block_changed_signal(G_OBJECT(child_model));
 
-	/* リファレンスをパスに戻して削除 */
+	/* Return reference into path and delete reference */
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
 		tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
 		gtk_tree_model_get_iter(child_model, &iter, tree_path);
 
-		/* 削除 */
+		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model), &iter);
 
 		gtk_tree_path_free(tree_path);
@@ -143,7 +143,7 @@ static void remove_model_data(GtkButton *button, gpointer user_data)
 	}
 	g_list_free(reference_list);
 
-	/* changedシグナルのブロックを解除する */
+	/* Release the block of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model));
 }
 
@@ -177,12 +177,12 @@ static GtkWidget *create_window(GtkWidget *tree_view, gint window_id)
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(append_model_data), tree_view);
 
-	/* データ削除ボタン */
+	/* Delete button */
 	button = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(remove_model_data), tree_view);
 
-	/* ラベル */
+	/* label */
 	label = gtk_label_new("");
 	gtk_box_pack_end(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 

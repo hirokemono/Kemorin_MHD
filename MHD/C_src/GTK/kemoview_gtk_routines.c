@@ -48,7 +48,7 @@ void wrap_into_expanded_frame_gtk(const char *title, int width, int height,
 	expander = gtk_expander_new_with_mnemonic(title);
 	gtk_container_add(GTK_CONTAINER(expander), scroll);
 	
-	gtk_box_pack_start(GTK_BOX(box_out), expander, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_out), expander, FALSE, FALSE, 0);
 	return;
 }
 

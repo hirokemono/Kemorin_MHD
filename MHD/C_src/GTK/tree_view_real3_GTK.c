@@ -167,12 +167,12 @@ GList * set_selected_r3_list_items(GtkTreeView *r3_tree_view, double org_value[3
     GtkTreeIter iter;
 	
     if(g_list_first(list) == NULL) return reference_list;
-    /* 最初にパスからリファレンスを作成する */
-    /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+    /* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
     for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *child_path;
         GtkTreeRowReference *child_reference;
-        /* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+        /* Convert tree model sort path into tree model path */
         child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_change), 
                                                                     (GtkTreePath *)cur->data);
         
@@ -213,13 +213,13 @@ int add_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clist){
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     
     if(g_list_first(list) == NULL) return index;
-    /* 最初にパスからリファレンスを作成する */
-    /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+    /* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
     reference_list = NULL;
     for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *child_path;
         GtkTreeRowReference *child_reference;
-        /* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+        /* Convert tree model sort path into tree model path */
         child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_add), 
                                                                     (GtkTreePath *)cur->data);
         
@@ -277,13 +277,13 @@ void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clis
     list = gtk_tree_selection_get_selected_rows(selection, NULL);
     if(g_list_first(list) == NULL) return;
     
-    /* 最初にパスからリファレンスを作成する */
-    /* データの削除を行なうと取得済みのパスが(大抵の場合)無効になる */
+    /* Make reference from path */
+    /* After deleting data, obtained path would not be valied */
     reference_list = NULL;
     for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *child_path;
         GtkTreeRowReference *child_reference;
-        /* ツリーモデルソートのパスをツリーモデルのパスに変換する */
+        /* Convert tree model sort path into tree model path */
         child_path = gtk_tree_model_sort_convert_path_to_child_path(GTK_TREE_MODEL_SORT(model_to_del), 
                                                                     (GtkTreePath *)cur->data);
         
@@ -296,7 +296,7 @@ void delete_r3_list_items(GtkTreeView *r3_tree_view, struct real3_clist *r3_clis
     g_list_free(list);
     
     
-    /* リファレンスをパスに戻して削除 */
+    /* Return reference into path and delete reference */
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
         GtkTreePath *tree_path;
         GtkTreeIter iter;

@@ -33,6 +33,7 @@ struct field_names_f{
 
 struct field_names_f * init_field_name_f();
 void dealloc_field_name_f(struct field_names_f *fld_list);
+void check_field_name_f(struct field_names_f *fld_list);
 
 #endif
 

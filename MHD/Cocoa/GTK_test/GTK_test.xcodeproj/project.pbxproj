@@ -7,103 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1813DAD1212107EB003AB1B9 /* t_control_chara2_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAC5212107EA003AB1B9 /* t_control_chara2_real_IO.c */; };
-		1813DAD2212107EB003AB1B9 /* t_control_chara_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAC7212107EA003AB1B9 /* t_control_chara_int_IO.c */; };
-		1813DAD3212107EB003AB1B9 /* t_control_chara3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAC9212107EA003AB1B9 /* t_control_chara3_IO.c */; };
-		1813DAD4212107EB003AB1B9 /* t_control_chara2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DACA212107EA003AB1B9 /* t_control_chara2_IO.c */; };
-		1813DAD5212107EB003AB1B9 /* t_control_chara_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DACB212107EA003AB1B9 /* t_control_chara_real_IO.c */; };
-		1813DAD6212107EB003AB1B9 /* t_control_chara_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DACE212107EB003AB1B9 /* t_control_chara_IO.c */; };
-		1813DAE321210809003AB1B9 /* t_control_int_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAD921210807003AB1B9 /* t_control_int_real_IO.c */; };
-		1813DAE421210809003AB1B9 /* t_control_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DADA21210807003AB1B9 /* t_control_int_IO.c */; };
-		1813DAE521210809003AB1B9 /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DADC21210808003AB1B9 /* t_control_real_IO.c */; };
-		1813DAE621210809003AB1B9 /* t_control_real2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DADD21210808003AB1B9 /* t_control_real2_IO.c */; };
-		1813DAE721210809003AB1B9 /* t_control_real3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAE021210808003AB1B9 /* t_control_real3_IO.c */; };
-		1813DAE821210809003AB1B9 /* t_control_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAE221210809003AB1B9 /* t_control_int2_IO.c */; };
-		1813DAFD212203AE003AB1B9 /* t_control_chara_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 1813DAFC212203AE003AB1B9 /* t_control_chara_int2_IO.c */; };
-		1832D27822CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 1832D27722CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c */; };
-		183A3F202129C55F00ACF6BD /* tree_view_real2_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 183A3F1F2129C55F00ACF6BD /* tree_view_real2_GTK.c */; };
-		183B85ED2129EBDE00148B24 /* tree_view_4_pvr_colormap.c in Sources */ = {isa = PBXBuildFile; fileRef = 183B85EC2129EBDE00148B24 /* tree_view_4_pvr_colormap.c */; };
-		1843AA632123A8F20073BCB1 /* m_direction_labels_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1843AA612123A8F10073BCB1 /* m_direction_labels_c.c */; };
-		1843AA6C2124B4810073BCB1 /* tree_view_4_force_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 1843AA692124B4800073BCB1 /* tree_view_4_force_GTK.c */; };
-		1843AA6D2124B4810073BCB1 /* control_panel_4_dimless_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 1843AA6A2124B4810073BCB1 /* control_panel_4_dimless_GTK.c */; };
-		1843AA762124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 1843AA752124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c */; };
-		1852E58422CE45CD00E3C3E2 /* tree_view_real3_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 1852E58222CE45CD00E3C3E2 /* tree_view_real3_GTK.c */; };
-		18779AEE23319E1A00D886CB /* tree_view_4_colormap.c in Sources */ = {isa = PBXBuildFile; fileRef = 18779AEC23319E1A00D886CB /* tree_view_4_colormap.c */; };
-		18779AF123319E9E00D886CB /* create_tree_view_columns_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18779AF023319E9E00D886CB /* create_tree_view_columns_GTK.c */; };
-		18779AF423319EFB00D886CB /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18779AF323319EFB00D886CB /* set_rgba_table_c.c */; };
-		18779AFA23319F6700D886CB /* kemoview_gtk_routines.c in Sources */ = {isa = PBXBuildFile; fileRef = 18779AF923319F6700D886CB /* kemoview_gtk_routines.c */; };
-		18779AFD23319FA200D886CB /* t_ctl_data_crust_filter_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18779AFC23319FA200D886CB /* t_ctl_data_crust_filter_c.c */; };
-		18779AFF2331A1B100D886CB /* TreeView_test_35.c in Sources */ = {isa = PBXBuildFile; fileRef = 18779AFE2331A1B100D886CB /* TreeView_test_35.c */; };
-		187D27DE212B2E4D00007329 /* m_color_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27DD212B2E4D00007329 /* m_color_table_c.c */; };
-		187D27E4212B447F00007329 /* control_panel_4_field_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27E2212B447E00007329 /* control_panel_4_field_GTK.c */; };
-		187D27E7212B44C100007329 /* tree_view_4_field_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27E5212B44C100007329 /* tree_view_4_field_GTK.c */; };
-		187D27EE212C9A7200007329 /* tree_view_chara_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27EC212C9A7200007329 /* tree_view_chara_GTK.c */; };
-		187D27F4212CDFFC00007329 /* tree_view_chara_int_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187D27F2212CDFFC00007329 /* tree_view_chara_int_GTK.c */; };
-		187F130B22C7FD7700B0F844 /* ctl_panel_platforms_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F130922C7FD7700B0F844 /* ctl_panel_platforms_GTK.c */; };
-		187F131422C94ED100B0F844 /* ctl_panel_para_sph_shell_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 187F131222C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.c */; };
-		18812B88211EC37400BF714B /* libgtk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B87211EC37400BF714B /* libgtk-3.a */; };
-		18812B8A211EC39400BF714B /* libglib-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B89211EC39400BF714B /* libglib-2.0.a */; };
-		18812B8C211EC6CC00BF714B /* libgdk-3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B8B211EC6CC00BF714B /* libgdk-3.a */; };
-		18812B8E211EC6F000BF714B /* libpangocairo-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B8D211EC6F000BF714B /* libpangocairo-1.0.a */; };
-		18812B90211EC6F900BF714B /* libpango-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B8F211EC6F900BF714B /* libpango-1.0.a */; };
-		18812B92211EC71000BF714B /* libfribidi.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B91211EC71000BF714B /* libfribidi.dylib */; };
-		18812B94211EC71D00BF714B /* libatk-1.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B93211EC71D00BF714B /* libatk-1.0.a */; };
-		18812B96211EC73700BF714B /* libcairo-gobject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B95211EC73700BF714B /* libcairo-gobject.a */; };
-		18812B98211EC74600BF714B /* libcairo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B97211EC74500BF714B /* libcairo.a */; };
-		18812B9A211EC76200BF714B /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B99211EC76200BF714B /* libgdk_pixbuf-2.0.dylib */; };
-		18812B9C211EC76900BF714B /* libgio-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B9B211EC76900BF714B /* libgio-2.0.a */; };
-		18812B9E211EC77A00BF714B /* libgobject-2.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B9D211EC77A00BF714B /* libgobject-2.0.a */; };
-		18812BA0211EC79900BF714B /* libintl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18812B9F211EC79900BF714B /* libintl.a */; };
-		18812BF8211F762200BF714B /* t_ctl_data_4_volume_spectr_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BAD211F761F00BF714B /* t_ctl_data_4_volume_spectr_list.c */; };
-		18812BF9211F762200BF714B /* t_ctl_data_SGS_MHD_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BAF211F762000BF714B /* t_ctl_data_SGS_MHD_model_c.c */; };
-		18812BFA211F762200BF714B /* t_ctl_data_sph_filter_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BB7211F762000BF714B /* t_ctl_data_sph_filter_list.c */; };
-		18812BFB211F762200BF714B /* t_SGS_MHD_control_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BB8211F762000BF714B /* t_SGS_MHD_control_c.c */; };
-		18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BB9211F762000BF714B /* t_ctl_data_mhd_evolution_c.c */; };
-		18812BFD211F762200BF714B /* t_control_data_4_psf_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BBB211F762000BF714B /* t_control_data_4_psf_c.c */; };
-		18812BFE211F762200BF714B /* t_control_data_gen_sph_grid_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BBC211F762000BF714B /* t_control_data_gen_sph_grid_c.c */; };
-		18812BFF211F762200BF714B /* t_control_data_lic_masking_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BBE211F762000BF714B /* t_control_data_lic_masking_list.c */; };
-		18812C00211F762200BF714B /* t_ctl_data_node_monitor_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BBF211F762000BF714B /* t_ctl_data_node_monitor_c.c */; };
-		18812C01211F762200BF714B /* t_ctl_data_SGS_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC0211F762000BF714B /* t_ctl_data_SGS_model_c.c */; };
-		18812C02211F762200BF714B /* t_ctl_data_temp_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC1211F762000BF714B /* t_ctl_data_temp_model_c.c */; };
-		18812C03211F762200BF714B /* t_control_data_4_fline_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC3211F762000BF714B /* t_control_data_4_fline_c.c */; };
-		18812C04211F762200BF714B /* t_control_data_LIC_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC4211F762000BF714B /* t_control_data_LIC_c.c */; };
-		18812C05211F762200BF714B /* t_ctl_data_4_sphere_model_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC5211F762000BF714B /* t_ctl_data_4_sphere_model_c.c */; };
-		18812C06211F762200BF714B /* t_ctl_data_pvr_colormap_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC6211F762100BF714B /* t_ctl_data_pvr_colormap_c.c */; };
-		18812C07211F762200BF714B /* t_control_data_4_pvr_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC7211F762100BF714B /* t_control_data_4_pvr_c.c */; };
-		18812C08211F762200BF714B /* t_control_data_sph_grid_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BC9211F762100BF714B /* t_control_data_sph_grid_c.c */; };
-		18812C09211F762200BF714B /* t_ctl_data_MHD_boundary_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BCA211F762100BF714B /* t_ctl_data_MHD_boundary_c.c */; };
-		18812C0A211F762200BF714B /* t_ctl_data_4_fields_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BCE211F762100BF714B /* t_ctl_data_4_fields_c.c */; };
-		18812C0B211F762200BF714B /* t_control_data_pvr_isosurf_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BCF211F762100BF714B /* t_control_data_pvr_isosurf_list.c */; };
-		18812C0C211F762200BF714B /* t_ctl_data_mhd_forces_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BD0211F762100BF714B /* t_ctl_data_mhd_forces_c.c */; };
-		18812C0D211F762300BF714B /* t_ctl_data_mhd_evo_scheme_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BD2211F762100BF714B /* t_ctl_data_mhd_evo_scheme_c.c */; };
-		18812C0E211F762300BF714B /* t_control_data_FLINE_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BD4211F762100BF714B /* t_control_data_FLINE_ctl_list.c */; };
-		18812C0F211F762300BF714B /* t_control_data_LIC_pvr_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BD9211F762100BF714B /* t_control_data_LIC_pvr_c.c */; };
-		18812C10211F762300BF714B /* t_ctl_data_4_platforms_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BDE211F762200BF714B /* t_ctl_data_4_platforms_c.c */; };
-		18812C11211F762300BF714B /* t_control_data_PSF_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BE0211F762200BF714B /* t_control_data_PSF_ctl_list.c */; };
-		18812C12211F762300BF714B /* t_control_data_4_iso_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BE1211F762200BF714B /* t_control_data_4_iso_c.c */; };
-		18812C13211F762300BF714B /* t_control_data_visualizer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BE3211F762200BF714B /* t_control_data_visualizer_c.c */; };
-		18812C14211F762300BF714B /* t_ctl_data_4_FEM_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BE4211F762200BF714B /* t_ctl_data_4_FEM_mesh_c.c */; };
-		18812C15211F762300BF714B /* t_ctl_data_zonal_means_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BE7211F762200BF714B /* t_ctl_data_zonal_means_c.c */; };
-		18812C16211F762300BF714B /* t_ctl_data_4_view_transfer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BE8211F762200BF714B /* t_ctl_data_4_view_transfer_c.c */; };
-		18812C17211F762300BF714B /* t_ctl_data_mhd_normalize_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BEA211F762200BF714B /* t_ctl_data_mhd_normalize_c.c */; };
-		18812C18211F762300BF714B /* t_ctl_data_4_time_steps_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BED211F762200BF714B /* t_ctl_data_4_time_steps_c.c */; };
-		18812C19211F762300BF714B /* t_control_data_PVR_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BEF211F762200BF714B /* t_control_data_PVR_ctl_list.c */; };
-		18812C1A211F762300BF714B /* t_control_data_vizs_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BF0211F762200BF714B /* t_control_data_vizs_c.c */; };
-		18812C1B211F762300BF714B /* t_control_data_pvr_section_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BF1211F762200BF714B /* t_control_data_pvr_section_list.c */; };
-		18812C1C211F762300BF714B /* t_ctl_data_4_sph_monitor_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BF4211F762200BF714B /* t_ctl_data_4_sph_monitor_c.c */; };
-		18812C1D211F762300BF714B /* t_control_data_LIC_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BF5211F762200BF714B /* t_control_data_LIC_ctl_list.c */; };
-		18812C1E211F762300BF714B /* t_control_data_ISO_ctl_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812BF7211F762200BF714B /* t_control_data_ISO_ctl_list.c */; };
-		18812C21211F764400BF714B /* all_field_names_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C1F211F764300BF714B /* all_field_names_c.c */; };
-		18812C24211F765500BF714B /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C22211F765400BF714B /* skip_comment_c.c */; };
-		18812C27211F765A00BF714B /* kemosrc_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C25211F765900BF714B /* kemosrc_param_c.c */; };
-		18812C30211F773300BF714B /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C2C211F773200BF714B /* control_elements_IO_c.c */; };
-		18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18812C33211F864800BF714B /* control_elements_IO_GTK.c */; };
-		1881F759212B0ADA002B63DA /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1881F757212B0ADA002B63DA /* quicksort_c.c */; };
-		1881F75C212B0EDB002B63DA /* set_rgb_colors_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 1881F75A212B0EDB002B63DA /* set_rgb_colors_c.c */; };
-		18F5F37F2125EF7A004320C7 /* tree_view_chara_real_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */; };
-		18F5F38321260020004320C7 /* tree_view_4_each_term_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */; };
-		18F5F386212625E1004320C7 /* tree_view_chara2_real_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F384212625E1004320C7 /* tree_view_chara2_real_GTK.c */; };
-		18F5F389212637B0004320C7 /* tree_view_4_temp_BC_GTK.c in Sources */ = {isa = PBXBuildFile; fileRef = 18F5F387212637B0004320C7 /* tree_view_4_temp_BC_GTK.c */; };
+		181FFB67249D42C800BB1E52 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB66249D42C800BB1E52 /* libgtk-3.dylib */; };
+		181FFB69249D430F00BB1E52 /* libgdk-3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB68249D430F00BB1E52 /* libgdk-3.0.dylib */; };
+		181FFB6C249D43E100BB1E52 /* libpango-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB6A249D43E100BB1E52 /* libpango-1.0.dylib */; };
+		181FFB6D249D43E100BB1E52 /* libpangocairo-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB6B249D43E100BB1E52 /* libpangocairo-1.0.dylib */; };
+		181FFB6F249D440F00BB1E52 /* libcairo.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB6E249D440F00BB1E52 /* libcairo.dylib */; };
+		181FFB71249D441E00BB1E52 /* libcairo-gobject.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB70249D441E00BB1E52 /* libcairo-gobject.dylib */; };
+		181FFB73249D443A00BB1E52 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB72249D443A00BB1E52 /* libatk-1.0.dylib */; };
+		181FFB75249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB74249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib */; };
+		181FFB77249D445700BB1E52 /* libgio-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB76249D445700BB1E52 /* libgio-2.0.dylib */; };
+		181FFB79249D446D00BB1E52 /* libgobject-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB78249D446C00BB1E52 /* libgobject-2.0.dylib */; };
+		181FFB7B249D448D00BB1E52 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFB7A249D448D00BB1E52 /* libglib-2.0.dylib */; };
+		181FFB91249D44ED00BB1E52 /* t_control_chara3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB81249D44EC00BB1E52 /* t_control_chara3_IO.c */; };
+		181FFB92249D44ED00BB1E52 /* t_control_chara_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB82249D44EC00BB1E52 /* t_control_chara_int_IO.c */; };
+		181FFB93249D44ED00BB1E52 /* t_control_chara_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB85249D44EC00BB1E52 /* t_control_chara_real_IO.c */; };
+		181FFB94249D44ED00BB1E52 /* t_control_chara_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB88249D44EC00BB1E52 /* t_control_chara_IO.c */; };
+		181FFB95249D44ED00BB1E52 /* t_control_chara2_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB8A249D44ED00BB1E52 /* t_control_chara2_real_IO.c */; };
+		181FFB96249D44ED00BB1E52 /* t_control_chara_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB8B249D44ED00BB1E52 /* t_control_chara_int2_IO.c */; };
+		181FFB97249D44ED00BB1E52 /* t_control_chara2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB8E249D44ED00BB1E52 /* t_control_chara2_IO.c */; };
+		181FFB98249D44ED00BB1E52 /* t_control_chara_int3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFB8F249D44ED00BB1E52 /* t_control_chara_int3_IO.c */; };
+		181FFBA6249D455F00BB1E52 /* t_control_real2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBA1249D455F00BB1E52 /* t_control_real2_IO.c */; };
+		181FFBA7249D455F00BB1E52 /* t_control_real3_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBA2249D455F00BB1E52 /* t_control_real3_IO.c */; };
+		181FFBA8249D455F00BB1E52 /* t_control_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBA4249D455F00BB1E52 /* t_control_real_IO.c */; };
+		181FFBAF249D456700BB1E52 /* t_control_int_real_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBAB249D456700BB1E52 /* t_control_int_real_IO.c */; };
+		181FFBB0249D456700BB1E52 /* t_control_int_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBAD249D456700BB1E52 /* t_control_int_IO.c */; };
+		181FFBB1249D456700BB1E52 /* t_control_int2_IO.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBAE249D456700BB1E52 /* t_control_int2_IO.c */; };
+		181FFBB4249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBB2249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.c */; };
+		181FFBB7249D45B300BB1E52 /* m_direction_labels_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBB5249D45B300BB1E52 /* m_direction_labels_c.c */; };
+		181FFBC0249D461500BB1E52 /* set_rgba_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBBF249D461500BB1E52 /* set_rgba_table_c.c */; };
+		181FFBC3249D464700BB1E52 /* m_color_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBC2249D464700BB1E52 /* m_color_table_c.c */; };
+		181FFBD3249D480100BB1E52 /* skip_comment_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBD1249D480100BB1E52 /* skip_comment_c.c */; };
+		181FFBD6249D48DB00BB1E52 /* control_elements_IO_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBD5249D48DB00BB1E52 /* control_elements_IO_c.c */; };
+		181FFBD9249D48EF00BB1E52 /* calypso_param_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBD7249D48EE00BB1E52 /* calypso_param_c.c */; };
+		181FFBDC249D491400BB1E52 /* set_rgb_colors_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBDA249D491400BB1E52 /* set_rgb_colors_c.c */; };
+		181FFBE2249D49B500BB1E52 /* quicksort_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBE0249D49B500BB1E52 /* quicksort_c.c */; };
+		181FFBE4249D4FF000BB1E52 /* file_dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBE3249D4FF000BB1E52 /* file_dialog.c */; };
+		181FFBE7249D571000BB1E52 /* t_control_data_4_iso_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBE6249D571000BB1E52 /* t_control_data_4_iso_c.c */; };
+		181FFBEA249D574A00BB1E52 /* t_control_label_from_f.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBE8249D574A00BB1E52 /* t_control_label_from_f.c */; };
+		181FFBED249D576D00BB1E52 /* m_PSF_control_labels_from_f.c in Sources */ = {isa = PBXBuildFile; fileRef = 181FFBEB249D576D00BB1E52 /* m_PSF_control_labels_from_f.c */; };
+		181FFBEF249D57B800BB1E52 /* libkemo_viz.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFBEE249D57B800BB1E52 /* libkemo_viz.a */; };
+		181FFBF1249D599E00BB1E52 /* libkemo_core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 181FFBF0249D599E00BB1E52 /* libkemo_core.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -131,186 +74,73 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1813DAC5212107EA003AB1B9 /* t_control_chara2_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara2_real_IO.c; path = ../../C_src/CONTROLS/t_control_chara2_real_IO.c; sourceTree = "<group>"; };
-		1813DAC6212107EA003AB1B9 /* t_control_chara_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_real_IO.h; path = ../../C_src/CONTROLS/t_control_chara_real_IO.h; sourceTree = "<group>"; };
-		1813DAC7212107EA003AB1B9 /* t_control_chara_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int_IO.c; path = ../../C_src/CONTROLS/t_control_chara_int_IO.c; sourceTree = "<group>"; };
-		1813DAC8212107EA003AB1B9 /* t_control_chara2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara2_IO.h; path = ../../C_src/CONTROLS/t_control_chara2_IO.h; sourceTree = "<group>"; };
-		1813DAC9212107EA003AB1B9 /* t_control_chara3_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara3_IO.c; path = ../../C_src/CONTROLS/t_control_chara3_IO.c; sourceTree = "<group>"; };
-		1813DACA212107EA003AB1B9 /* t_control_chara2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara2_IO.c; path = ../../C_src/CONTROLS/t_control_chara2_IO.c; sourceTree = "<group>"; };
-		1813DACB212107EA003AB1B9 /* t_control_chara_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_real_IO.c; path = ../../C_src/CONTROLS/t_control_chara_real_IO.c; sourceTree = "<group>"; };
-		1813DACC212107EB003AB1B9 /* t_control_chara2_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara2_real_IO.h; path = ../../C_src/CONTROLS/t_control_chara2_real_IO.h; sourceTree = "<group>"; };
-		1813DACD212107EB003AB1B9 /* t_control_chara3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara3_IO.h; path = ../../C_src/CONTROLS/t_control_chara3_IO.h; sourceTree = "<group>"; };
-		1813DACE212107EB003AB1B9 /* t_control_chara_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_IO.c; path = ../../C_src/CONTROLS/t_control_chara_IO.c; sourceTree = "<group>"; };
-		1813DACF212107EB003AB1B9 /* t_control_chara_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_IO.h; path = ../../C_src/CONTROLS/t_control_chara_IO.h; sourceTree = "<group>"; };
-		1813DAD0212107EB003AB1B9 /* t_control_chara_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int_IO.h; path = ../../C_src/CONTROLS/t_control_chara_int_IO.h; sourceTree = "<group>"; };
-		1813DAD721210806003AB1B9 /* t_control_int2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int2_IO.h; path = ../../C_src/CONTROLS/t_control_int2_IO.h; sourceTree = "<group>"; };
-		1813DAD821210807003AB1B9 /* t_control_int_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int_real_IO.h; path = ../../C_src/CONTROLS/t_control_int_real_IO.h; sourceTree = "<group>"; };
-		1813DAD921210807003AB1B9 /* t_control_int_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int_real_IO.c; path = ../../C_src/CONTROLS/t_control_int_real_IO.c; sourceTree = "<group>"; };
-		1813DADA21210807003AB1B9 /* t_control_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int_IO.c; path = ../../C_src/CONTROLS/t_control_int_IO.c; sourceTree = "<group>"; };
-		1813DADB21210808003AB1B9 /* t_control_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_real_IO.h; path = ../../C_src/CONTROLS/t_control_real_IO.h; sourceTree = "<group>"; };
-		1813DADC21210808003AB1B9 /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real_IO.c; path = ../../C_src/CONTROLS/t_control_real_IO.c; sourceTree = "<group>"; };
-		1813DADD21210808003AB1B9 /* t_control_real2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real2_IO.c; path = ../../C_src/CONTROLS/t_control_real2_IO.c; sourceTree = "<group>"; };
-		1813DADE21210808003AB1B9 /* t_control_real2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_real2_IO.h; path = ../../C_src/CONTROLS/t_control_real2_IO.h; sourceTree = "<group>"; };
-		1813DADF21210808003AB1B9 /* t_control_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int_IO.h; path = ../../C_src/CONTROLS/t_control_int_IO.h; sourceTree = "<group>"; };
-		1813DAE021210808003AB1B9 /* t_control_real3_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real3_IO.c; path = ../../C_src/CONTROLS/t_control_real3_IO.c; sourceTree = "<group>"; };
-		1813DAE121210808003AB1B9 /* t_control_real3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_real3_IO.h; path = ../../C_src/CONTROLS/t_control_real3_IO.h; sourceTree = "<group>"; };
-		1813DAE221210809003AB1B9 /* t_control_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int2_IO.c; path = ../../C_src/CONTROLS/t_control_int2_IO.c; sourceTree = "<group>"; };
-		1813DAE921210968003AB1B9 /* control_elements_IO_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_GTK.h; path = ../../C_src/GTK/control_elements_IO_GTK.h; sourceTree = "<group>"; };
-		1813DAFB212203A2003AB1B9 /* t_control_chara_int2_IO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int2_IO.h; path = ../../C_src/CONTROLS/t_control_chara_int2_IO.h; sourceTree = "<group>"; };
-		1813DAFC212203AE003AB1B9 /* t_control_chara_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int2_IO.c; path = ../../C_src/CONTROLS/t_control_chara_int2_IO.c; sourceTree = "<group>"; };
-		1832D27622CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ctl_panel_SPH_MHD_model_GTK.h; path = ../../C_src/GTK/ctl_panel_SPH_MHD_model_GTK.h; sourceTree = "<group>"; };
-		1832D27722CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_SPH_MHD_model_GTK.c; path = ../../C_src/GTK/ctl_panel_SPH_MHD_model_GTK.c; sourceTree = "<group>"; };
-		183A3F1F2129C55F00ACF6BD /* tree_view_real2_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_real2_GTK.c; path = ../../C_src/GTK/tree_view_real2_GTK.c; sourceTree = "<group>"; };
-		183A3F212129C56C00ACF6BD /* tree_view_real2_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_real2_GTK.h; path = ../../C_src/GTK/tree_view_real2_GTK.h; sourceTree = "<group>"; };
-		183B85EC2129EBDE00148B24 /* tree_view_4_pvr_colormap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_pvr_colormap.c; path = ../../C_src/GTK/tree_view_4_pvr_colormap.c; sourceTree = "<group>"; };
-		183B85EE2129EBE800148B24 /* tree_view_4_pvr_colormap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_4_pvr_colormap.h; path = ../../C_src/GTK/tree_view_4_pvr_colormap.h; sourceTree = "<group>"; };
-		1843AA612123A8F10073BCB1 /* m_direction_labels_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_direction_labels_c.c; path = ../../C_src/CONTROLS/m_direction_labels_c.c; sourceTree = "<group>"; };
-		1843AA622123A8F20073BCB1 /* m_direction_labels_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_direction_labels_c.h; path = ../../C_src/CONTROLS/m_direction_labels_c.h; sourceTree = "<group>"; };
-		1843AA682124B4800073BCB1 /* control_panel_4_dimless_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_panel_4_dimless_GTK.h; path = ../../C_src/GTK/control_panel_4_dimless_GTK.h; sourceTree = "<group>"; };
-		1843AA692124B4800073BCB1 /* tree_view_4_force_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_force_GTK.c; path = ../../C_src/GTK/tree_view_4_force_GTK.c; sourceTree = "<group>"; };
-		1843AA6A2124B4810073BCB1 /* control_panel_4_dimless_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_panel_4_dimless_GTK.c; path = ../../C_src/GTK/control_panel_4_dimless_GTK.c; sourceTree = "<group>"; };
-		1843AA6B2124B4810073BCB1 /* tree_view_4_force_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_force_GTK.h; path = ../../C_src/GTK/tree_view_4_force_GTK.h; sourceTree = "<group>"; };
-		1843AA742124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_views_4_fixed_lists_GTK.h; path = ../../C_src/GTK/tree_views_4_fixed_lists_GTK.h; sourceTree = "<group>"; };
-		1843AA752124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_views_4_fixed_lists_GTK.c; path = ../../C_src/GTK/tree_views_4_fixed_lists_GTK.c; sourceTree = "<group>"; };
-		1852E58222CE45CD00E3C3E2 /* tree_view_real3_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_real3_GTK.c; path = ../../C_src/GTK/tree_view_real3_GTK.c; sourceTree = "<group>"; };
-		1852E58322CE45CD00E3C3E2 /* tree_view_real3_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_real3_GTK.h; path = ../../C_src/GTK/tree_view_real3_GTK.h; sourceTree = "<group>"; };
-		18779AEC23319E1A00D886CB /* tree_view_4_colormap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_colormap.c; path = ../../C_src/GTK/tree_view_4_colormap.c; sourceTree = "<group>"; };
-		18779AED23319E1A00D886CB /* tree_view_4_colormap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_colormap.h; path = ../../C_src/GTK/tree_view_4_colormap.h; sourceTree = "<group>"; };
-		18779AEF23319E9E00D886CB /* create_tree_view_columns_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = create_tree_view_columns_GTK.h; path = ../../C_src/GTK/create_tree_view_columns_GTK.h; sourceTree = "<group>"; };
-		18779AF023319E9E00D886CB /* create_tree_view_columns_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = create_tree_view_columns_GTK.c; path = ../../C_src/GTK/create_tree_view_columns_GTK.c; sourceTree = "<group>"; };
-		18779AF223319EFA00D886CB /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_rgba_table_c.h; path = ../../C_src/CONTROLS/set_rgba_table_c.h; sourceTree = "<group>"; };
-		18779AF323319EFB00D886CB /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_rgba_table_c.c; path = ../../C_src/CONTROLS/set_rgba_table_c.c; sourceTree = "<group>"; };
-		18779AF823319F6600D886CB /* kemoview_gtk_routines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_routines.h; path = ../../C_src/GTK/kemoview_gtk_routines.h; sourceTree = "<group>"; };
-		18779AF923319F6700D886CB /* kemoview_gtk_routines.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_routines.c; path = ../../C_src/GTK/kemoview_gtk_routines.c; sourceTree = "<group>"; };
-		18779AFB23319FA200D886CB /* t_ctl_data_crust_filter_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_crust_filter_c.h; path = ../../C_src/CONTROLS/t_ctl_data_crust_filter_c.h; sourceTree = "<group>"; };
-		18779AFC23319FA200D886CB /* t_ctl_data_crust_filter_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_crust_filter_c.c; path = ../../C_src/CONTROLS/t_ctl_data_crust_filter_c.c; sourceTree = "<group>"; };
-		18779AFE2331A1B100D886CB /* TreeView_test_35.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = TreeView_test_35.c; path = ../../../programs/TESTS/GTK3_test/TreeView_test_35.c; sourceTree = "<group>"; };
-		187D27DC212B2E4C00007329 /* m_color_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_color_table_c.h; path = ../../C_src/CORE_C/m_color_table_c.h; sourceTree = "<group>"; };
-		187D27DD212B2E4D00007329 /* m_color_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_color_table_c.c; path = ../../C_src/CORE_C/m_color_table_c.c; sourceTree = "<group>"; };
-		187D27E2212B447E00007329 /* control_panel_4_field_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_panel_4_field_GTK.c; path = ../../C_src/GTK/control_panel_4_field_GTK.c; sourceTree = "<group>"; };
-		187D27E3212B447E00007329 /* control_panel_4_field_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_panel_4_field_GTK.h; path = ../../C_src/GTK/control_panel_4_field_GTK.h; sourceTree = "<group>"; };
-		187D27E5212B44C100007329 /* tree_view_4_field_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_field_GTK.c; path = ../../C_src/GTK/tree_view_4_field_GTK.c; sourceTree = "<group>"; };
-		187D27E6212B44C100007329 /* tree_view_4_field_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_field_GTK.h; path = ../../C_src/GTK/tree_view_4_field_GTK.h; sourceTree = "<group>"; };
-		187D27EC212C9A7200007329 /* tree_view_chara_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_GTK.c; path = ../../C_src/GTK/tree_view_chara_GTK.c; sourceTree = "<group>"; };
-		187D27ED212C9A7200007329 /* tree_view_chara_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_GTK.h; path = ../../C_src/GTK/tree_view_chara_GTK.h; sourceTree = "<group>"; };
-		187D27F2212CDFFC00007329 /* tree_view_chara_int_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_int_GTK.c; path = ../../C_src/GTK/tree_view_chara_int_GTK.c; sourceTree = "<group>"; };
-		187D27F3212CDFFC00007329 /* tree_view_chara_int_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_int_GTK.h; path = ../../C_src/GTK/tree_view_chara_int_GTK.h; sourceTree = "<group>"; };
-		187F130922C7FD7700B0F844 /* ctl_panel_platforms_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_platforms_GTK.c; path = ../../C_src/GTK/ctl_panel_platforms_GTK.c; sourceTree = "<group>"; };
-		187F130A22C7FD7700B0F844 /* ctl_panel_platforms_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ctl_panel_platforms_GTK.h; path = ../../C_src/GTK/ctl_panel_platforms_GTK.h; sourceTree = "<group>"; };
-		187F131222C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ctl_panel_para_sph_shell_GTK.c; path = ../../C_src/GTK/ctl_panel_para_sph_shell_GTK.c; sourceTree = "<group>"; };
-		187F131322C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ctl_panel_para_sph_shell_GTK.h; path = ../../C_src/GTK/ctl_panel_para_sph_shell_GTK.h; sourceTree = "<group>"; };
+		181FFB66249D42C800BB1E52 /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../../opt/local/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
+		181FFB68249D430F00BB1E52 /* libgdk-3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.0.dylib"; path = "../../../../../../../opt/local/lib/libgdk-3.0.dylib"; sourceTree = "<group>"; };
+		181FFB6A249D43E100BB1E52 /* libpango-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpango-1.0.dylib"; path = "../../../../../../../opt/local/lib/libpango-1.0.dylib"; sourceTree = "<group>"; };
+		181FFB6B249D43E100BB1E52 /* libpangocairo-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libpangocairo-1.0.dylib"; path = "../../../../../../../opt/local/lib/libpangocairo-1.0.dylib"; sourceTree = "<group>"; };
+		181FFB6E249D440F00BB1E52 /* libcairo.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.dylib; path = ../../../../../../../opt/local/lib/libcairo.dylib; sourceTree = "<group>"; };
+		181FFB70249D441E00BB1E52 /* libcairo-gobject.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.dylib"; path = "../../../../../../../opt/local/lib/libcairo-gobject.dylib"; sourceTree = "<group>"; };
+		181FFB72249D443A00BB1E52 /* libatk-1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libatk-1.0.dylib"; path = "../../../../../../../opt/local/lib/libatk-1.0.dylib"; sourceTree = "<group>"; };
+		181FFB74249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
+		181FFB76249D445700BB1E52 /* libgio-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgio-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgio-2.0.dylib"; sourceTree = "<group>"; };
+		181FFB78249D446C00BB1E52 /* libgobject-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgobject-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgobject-2.0.dylib"; sourceTree = "<group>"; };
+		181FFB7A249D448D00BB1E52 /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../../opt/local/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
+		181FFB81249D44EC00BB1E52 /* t_control_chara3_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara3_IO.c; path = ../../C_src/CONTROLS/t_control_chara3_IO.c; sourceTree = "<group>"; };
+		181FFB82249D44EC00BB1E52 /* t_control_chara_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int_IO.c; path = ../../C_src/CONTROLS/t_control_chara_int_IO.c; sourceTree = "<group>"; };
+		181FFB83249D44EC00BB1E52 /* t_control_chara_int2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int2_IO.h; path = ../../C_src/CONTROLS/t_control_chara_int2_IO.h; sourceTree = "<group>"; };
+		181FFB84249D44EC00BB1E52 /* t_control_chara_int3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int3_IO.h; path = ../../C_src/CONTROLS/t_control_chara_int3_IO.h; sourceTree = "<group>"; };
+		181FFB85249D44EC00BB1E52 /* t_control_chara_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_real_IO.c; path = ../../C_src/CONTROLS/t_control_chara_real_IO.c; sourceTree = "<group>"; };
+		181FFB86249D44EC00BB1E52 /* t_control_chara2_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara2_real_IO.h; path = ../../C_src/CONTROLS/t_control_chara2_real_IO.h; sourceTree = "<group>"; };
+		181FFB87249D44EC00BB1E52 /* t_control_chara3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara3_IO.h; path = ../../C_src/CONTROLS/t_control_chara3_IO.h; sourceTree = "<group>"; };
+		181FFB88249D44EC00BB1E52 /* t_control_chara_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_IO.c; path = ../../C_src/CONTROLS/t_control_chara_IO.c; sourceTree = "<group>"; };
+		181FFB89249D44EC00BB1E52 /* t_control_chara_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_IO.h; path = ../../C_src/CONTROLS/t_control_chara_IO.h; sourceTree = "<group>"; };
+		181FFB8A249D44ED00BB1E52 /* t_control_chara2_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara2_real_IO.c; path = ../../C_src/CONTROLS/t_control_chara2_real_IO.c; sourceTree = "<group>"; };
+		181FFB8B249D44ED00BB1E52 /* t_control_chara_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int2_IO.c; path = ../../C_src/CONTROLS/t_control_chara_int2_IO.c; sourceTree = "<group>"; };
+		181FFB8C249D44ED00BB1E52 /* t_control_chara_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_real_IO.h; path = ../../C_src/CONTROLS/t_control_chara_real_IO.h; sourceTree = "<group>"; };
+		181FFB8D249D44ED00BB1E52 /* t_control_chara2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara2_IO.h; path = ../../C_src/CONTROLS/t_control_chara2_IO.h; sourceTree = "<group>"; };
+		181FFB8E249D44ED00BB1E52 /* t_control_chara2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara2_IO.c; path = ../../C_src/CONTROLS/t_control_chara2_IO.c; sourceTree = "<group>"; };
+		181FFB8F249D44ED00BB1E52 /* t_control_chara_int3_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_chara_int3_IO.c; path = ../../C_src/CONTROLS/t_control_chara_int3_IO.c; sourceTree = "<group>"; };
+		181FFB90249D44ED00BB1E52 /* t_control_chara_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_chara_int_IO.h; path = ../../C_src/CONTROLS/t_control_chara_int_IO.h; sourceTree = "<group>"; };
+		181FFBA0249D455F00BB1E52 /* t_control_real3_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_real3_IO.h; path = ../../C_src/CONTROLS/t_control_real3_IO.h; sourceTree = "<group>"; };
+		181FFBA1249D455F00BB1E52 /* t_control_real2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real2_IO.c; path = ../../C_src/CONTROLS/t_control_real2_IO.c; sourceTree = "<group>"; };
+		181FFBA2249D455F00BB1E52 /* t_control_real3_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real3_IO.c; path = ../../C_src/CONTROLS/t_control_real3_IO.c; sourceTree = "<group>"; };
+		181FFBA3249D455F00BB1E52 /* t_control_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_real_IO.h; path = ../../C_src/CONTROLS/t_control_real_IO.h; sourceTree = "<group>"; };
+		181FFBA4249D455F00BB1E52 /* t_control_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_real_IO.c; path = ../../C_src/CONTROLS/t_control_real_IO.c; sourceTree = "<group>"; };
+		181FFBA5249D455F00BB1E52 /* t_control_real2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_real2_IO.h; path = ../../C_src/CONTROLS/t_control_real2_IO.h; sourceTree = "<group>"; };
+		181FFBA9249D456700BB1E52 /* t_control_int2_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int2_IO.h; path = ../../C_src/CONTROLS/t_control_int2_IO.h; sourceTree = "<group>"; };
+		181FFBAA249D456700BB1E52 /* t_control_int_real_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int_real_IO.h; path = ../../C_src/CONTROLS/t_control_int_real_IO.h; sourceTree = "<group>"; };
+		181FFBAB249D456700BB1E52 /* t_control_int_real_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int_real_IO.c; path = ../../C_src/CONTROLS/t_control_int_real_IO.c; sourceTree = "<group>"; };
+		181FFBAC249D456700BB1E52 /* t_control_int_IO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_int_IO.h; path = ../../C_src/CONTROLS/t_control_int_IO.h; sourceTree = "<group>"; };
+		181FFBAD249D456700BB1E52 /* t_control_int_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int_IO.c; path = ../../C_src/CONTROLS/t_control_int_IO.c; sourceTree = "<group>"; };
+		181FFBAE249D456700BB1E52 /* t_control_int2_IO.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_int2_IO.c; path = ../../C_src/CONTROLS/t_control_int2_IO.c; sourceTree = "<group>"; };
+		181FFBB2249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_pvr_colormap_c.c; path = ../../C_src/CONTROLS/t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
+		181FFBB3249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_pvr_colormap_c.h; path = ../../C_src/CONTROLS/t_ctl_data_pvr_colormap_c.h; sourceTree = "<group>"; };
+		181FFBB5249D45B300BB1E52 /* m_direction_labels_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_direction_labels_c.c; path = ../../C_src/CONTROLS/m_direction_labels_c.c; sourceTree = "<group>"; };
+		181FFBB6249D45B300BB1E52 /* m_direction_labels_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_direction_labels_c.h; path = ../../C_src/CONTROLS/m_direction_labels_c.h; sourceTree = "<group>"; };
+		181FFBBE249D461500BB1E52 /* set_rgba_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_rgba_table_c.h; path = ../../C_src/CONTROLS/set_rgba_table_c.h; sourceTree = "<group>"; };
+		181FFBBF249D461500BB1E52 /* set_rgba_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_rgba_table_c.c; path = ../../C_src/CONTROLS/set_rgba_table_c.c; sourceTree = "<group>"; };
+		181FFBC1249D464700BB1E52 /* m_color_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_color_table_c.h; path = ../../C_src/CONTROLS/m_color_table_c.h; sourceTree = "<group>"; };
+		181FFBC2249D464700BB1E52 /* m_color_table_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_color_table_c.c; path = ../../C_src/CONTROLS/m_color_table_c.c; sourceTree = "<group>"; };
+		181FFBD1249D480100BB1E52 /* skip_comment_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = skip_comment_c.c; path = ../../C_src/CORE_C/skip_comment_c.c; sourceTree = "<group>"; };
+		181FFBD2249D480100BB1E52 /* skip_comment_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = skip_comment_c.h; path = ../../C_src/CORE_C/skip_comment_c.h; sourceTree = "<group>"; };
+		181FFBD4249D48DB00BB1E52 /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
+		181FFBD5249D48DB00BB1E52 /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
+		181FFBD7249D48EE00BB1E52 /* calypso_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = calypso_param_c.c; path = ../../C_src/CORE_C/calypso_param_c.c; sourceTree = "<group>"; };
+		181FFBD8249D48EF00BB1E52 /* calypso_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = calypso_param_c.h; path = ../../C_src/CORE_C/calypso_param_c.h; sourceTree = "<group>"; };
+		181FFBDA249D491400BB1E52 /* set_rgb_colors_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_rgb_colors_c.c; path = ../../C_src/CORE_C/set_rgb_colors_c.c; sourceTree = "<group>"; };
+		181FFBDB249D491400BB1E52 /* set_rgb_colors_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_rgb_colors_c.h; path = ../../C_src/CORE_C/set_rgb_colors_c.h; sourceTree = "<group>"; };
+		181FFBE0249D49B500BB1E52 /* quicksort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quicksort_c.c; path = ../../C_src/CORE_C/quicksort_c.c; sourceTree = "<group>"; };
+		181FFBE1249D49B500BB1E52 /* quicksort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
+		181FFBE3249D4FF000BB1E52 /* file_dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_dialog.c; path = ../../programs/TESTS/GTK3_test/file_dialog.c; sourceTree = "<group>"; };
+		181FFBE5249D571000BB1E52 /* t_control_data_4_iso_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_iso_c.h; path = ../../C_src/CONTROLS/t_control_data_4_iso_c.h; sourceTree = "<group>"; };
+		181FFBE6249D571000BB1E52 /* t_control_data_4_iso_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_iso_c.c; path = ../../C_src/CONTROLS/t_control_data_4_iso_c.c; sourceTree = "<group>"; };
+		181FFBE8249D574A00BB1E52 /* t_control_label_from_f.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_label_from_f.c; path = ../../C_src/CONTROLS/t_control_label_from_f.c; sourceTree = "<group>"; };
+		181FFBE9249D574A00BB1E52 /* t_control_label_from_f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_label_from_f.h; path = ../../C_src/CONTROLS/t_control_label_from_f.h; sourceTree = "<group>"; };
+		181FFBEB249D576D00BB1E52 /* m_PSF_control_labels_from_f.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = m_PSF_control_labels_from_f.c; path = ../../C_src/CONTROLS/m_PSF_control_labels_from_f.c; sourceTree = "<group>"; };
+		181FFBEC249D576D00BB1E52 /* m_PSF_control_labels_from_f.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = m_PSF_control_labels_from_f.h; path = ../../C_src/CONTROLS/m_PSF_control_labels_from_f.h; sourceTree = "<group>"; };
+		181FFBEE249D57B800BB1E52 /* libkemo_viz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_viz.a; path = ../../../../../src_kemo/work/libkemo_viz.a; sourceTree = "<group>"; };
+		181FFBF0249D599E00BB1E52 /* libkemo_core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkemo_core.a; path = ../../../../../src_kemo/work/libkemo_core.a; sourceTree = "<group>"; };
 		18812AE8211EB5B000BF714B /* GTK_test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GTK_test; sourceTree = BUILT_PRODUCTS_DIR; };
-		18812B87211EC37400BF714B /* libgtk-3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgtk-3.a"; path = "../../../../../../../opt/local/lib/libgtk-3.a"; sourceTree = "<group>"; };
-		18812B89211EC39400BF714B /* libglib-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libglib-2.0.a"; path = "../../../../../../../opt/local/lib/libglib-2.0.a"; sourceTree = "<group>"; };
-		18812B8B211EC6CC00BF714B /* libgdk-3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgdk-3.a"; path = "../../../../../../../opt/local/lib/libgdk-3.a"; sourceTree = "<group>"; };
-		18812B8D211EC6F000BF714B /* libpangocairo-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpangocairo-1.0.a"; path = "../../../../../../../opt/local/lib/libpangocairo-1.0.a"; sourceTree = "<group>"; };
-		18812B8F211EC6F900BF714B /* libpango-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpango-1.0.a"; path = "../../../../../../../opt/local/lib/libpango-1.0.a"; sourceTree = "<group>"; };
-		18812B91211EC71000BF714B /* libfribidi.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfribidi.dylib; path = ../../../../../../../opt/local/lib/libfribidi.dylib; sourceTree = "<group>"; };
-		18812B93211EC71D00BF714B /* libatk-1.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libatk-1.0.a"; path = "../../../../../../../opt/local/lib/libatk-1.0.a"; sourceTree = "<group>"; };
-		18812B95211EC73700BF714B /* libcairo-gobject.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcairo-gobject.a"; path = "../../../../../../../opt/local/lib/libcairo-gobject.a"; sourceTree = "<group>"; };
-		18812B97211EC74500BF714B /* libcairo.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcairo.a; path = ../../../../../../../opt/local/lib/libcairo.a; sourceTree = "<group>"; };
-		18812B99211EC76200BF714B /* libgdk_pixbuf-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk_pixbuf-2.0.dylib"; path = "../../../../../../../opt/local/lib/libgdk_pixbuf-2.0.dylib"; sourceTree = "<group>"; };
-		18812B9B211EC76900BF714B /* libgio-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgio-2.0.a"; path = "../../../../../../../opt/local/lib/libgio-2.0.a"; sourceTree = "<group>"; };
-		18812B9D211EC77A00BF714B /* libgobject-2.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgobject-2.0.a"; path = "../../../../../../../opt/local/lib/libgobject-2.0.a"; sourceTree = "<group>"; };
-		18812B9F211EC79900BF714B /* libintl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libintl.a; path = ../../../../../../../opt/local/lib/libintl.a; sourceTree = "<group>"; };
-		18812BAA211F761F00BF714B /* t_control_data_lic_masking_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_lic_masking_list.h; path = ../../C_src/CONTROLS/t_control_data_lic_masking_list.h; sourceTree = "<group>"; };
-		18812BAB211F761F00BF714B /* t_control_data_LIC_pvr_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_LIC_pvr_c.h; path = ../../C_src/CONTROLS/t_control_data_LIC_pvr_c.h; sourceTree = "<group>"; };
-		18812BAC211F761F00BF714B /* t_control_data_PVR_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_PVR_ctl_list.h; path = ../../C_src/CONTROLS/t_control_data_PVR_ctl_list.h; sourceTree = "<group>"; };
-		18812BAD211F761F00BF714B /* t_ctl_data_4_volume_spectr_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_volume_spectr_list.c; path = ../../C_src/CONTROLS/t_ctl_data_4_volume_spectr_list.c; sourceTree = "<group>"; };
-		18812BAE211F762000BF714B /* t_control_data_pvr_section_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_pvr_section_list.h; path = ../../C_src/CONTROLS/t_control_data_pvr_section_list.h; sourceTree = "<group>"; };
-		18812BAF211F762000BF714B /* t_ctl_data_SGS_MHD_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_SGS_MHD_model_c.c; path = ../../C_src/CONTROLS/t_ctl_data_SGS_MHD_model_c.c; sourceTree = "<group>"; };
-		18812BB0211F762000BF714B /* t_ctl_data_pvr_colormap_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_pvr_colormap_c.h; path = ../../C_src/CONTROLS/t_ctl_data_pvr_colormap_c.h; sourceTree = "<group>"; };
-		18812BB1211F762000BF714B /* t_ctl_data_SGS_MHD_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_SGS_MHD_model_c.h; path = ../../C_src/CONTROLS/t_ctl_data_SGS_MHD_model_c.h; sourceTree = "<group>"; };
-		18812BB2211F762000BF714B /* t_control_data_4_pvr_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_pvr_c.h; path = ../../C_src/CONTROLS/t_control_data_4_pvr_c.h; sourceTree = "<group>"; };
-		18812BB3211F762000BF714B /* t_control_data_pvr_isosurf_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_pvr_isosurf_list.h; path = ../../C_src/CONTROLS/t_control_data_pvr_isosurf_list.h; sourceTree = "<group>"; };
-		18812BB4211F762000BF714B /* t_control_data_FLINE_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_FLINE_ctl_list.h; path = ../../C_src/CONTROLS/t_control_data_FLINE_ctl_list.h; sourceTree = "<group>"; };
-		18812BB5211F762000BF714B /* t_control_data_ISO_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_ISO_ctl_list.h; path = ../../C_src/CONTROLS/t_control_data_ISO_ctl_list.h; sourceTree = "<group>"; };
-		18812BB6211F762000BF714B /* t_ctl_data_4_platforms_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_platforms_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_platforms_c.h; sourceTree = "<group>"; };
-		18812BB7211F762000BF714B /* t_ctl_data_sph_filter_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_sph_filter_list.c; path = ../../C_src/CONTROLS/t_ctl_data_sph_filter_list.c; sourceTree = "<group>"; };
-		18812BB8211F762000BF714B /* t_SGS_MHD_control_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_SGS_MHD_control_c.c; path = ../../C_src/CONTROLS/t_SGS_MHD_control_c.c; sourceTree = "<group>"; };
-		18812BB9211F762000BF714B /* t_ctl_data_mhd_evolution_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_evolution_c.c; path = ../../C_src/CONTROLS/t_ctl_data_mhd_evolution_c.c; sourceTree = "<group>"; };
-		18812BBA211F762000BF714B /* t_ctl_data_4_time_steps_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_time_steps_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_time_steps_c.h; sourceTree = "<group>"; };
-		18812BBB211F762000BF714B /* t_control_data_4_psf_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_psf_c.c; path = ../../C_src/CONTROLS/t_control_data_4_psf_c.c; sourceTree = "<group>"; };
-		18812BBC211F762000BF714B /* t_control_data_gen_sph_grid_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_gen_sph_grid_c.c; path = ../../C_src/CONTROLS/t_control_data_gen_sph_grid_c.c; sourceTree = "<group>"; };
-		18812BBD211F762000BF714B /* t_ctl_data_4_FEM_mesh_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_FEM_mesh_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_FEM_mesh_c.h; sourceTree = "<group>"; };
-		18812BBE211F762000BF714B /* t_control_data_lic_masking_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_lic_masking_list.c; path = ../../C_src/CONTROLS/t_control_data_lic_masking_list.c; sourceTree = "<group>"; };
-		18812BBF211F762000BF714B /* t_ctl_data_node_monitor_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_node_monitor_c.c; path = ../../C_src/CONTROLS/t_ctl_data_node_monitor_c.c; sourceTree = "<group>"; };
-		18812BC0211F762000BF714B /* t_ctl_data_SGS_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_SGS_model_c.c; path = ../../C_src/CONTROLS/t_ctl_data_SGS_model_c.c; sourceTree = "<group>"; };
-		18812BC1211F762000BF714B /* t_ctl_data_temp_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_temp_model_c.c; path = ../../C_src/CONTROLS/t_ctl_data_temp_model_c.c; sourceTree = "<group>"; };
-		18812BC2211F762000BF714B /* t_ctl_data_mhd_normalize_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_normalize_c.h; path = ../../C_src/CONTROLS/t_ctl_data_mhd_normalize_c.h; sourceTree = "<group>"; };
-		18812BC3211F762000BF714B /* t_control_data_4_fline_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_fline_c.c; path = ../../C_src/CONTROLS/t_control_data_4_fline_c.c; sourceTree = "<group>"; };
-		18812BC4211F762000BF714B /* t_control_data_LIC_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_LIC_c.c; path = ../../C_src/CONTROLS/t_control_data_LIC_c.c; sourceTree = "<group>"; };
-		18812BC5211F762000BF714B /* t_ctl_data_4_sphere_model_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_sphere_model_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_sphere_model_c.c; sourceTree = "<group>"; };
-		18812BC6211F762100BF714B /* t_ctl_data_pvr_colormap_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_pvr_colormap_c.c; path = ../../C_src/CONTROLS/t_ctl_data_pvr_colormap_c.c; sourceTree = "<group>"; };
-		18812BC7211F762100BF714B /* t_control_data_4_pvr_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_pvr_c.c; path = ../../C_src/CONTROLS/t_control_data_4_pvr_c.c; sourceTree = "<group>"; };
-		18812BC8211F762100BF714B /* t_control_data_4_fline_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_fline_c.h; path = ../../C_src/CONTROLS/t_control_data_4_fline_c.h; sourceTree = "<group>"; };
-		18812BC9211F762100BF714B /* t_control_data_sph_grid_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_sph_grid_c.c; path = ../../C_src/CONTROLS/t_control_data_sph_grid_c.c; sourceTree = "<group>"; };
-		18812BCA211F762100BF714B /* t_ctl_data_MHD_boundary_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_MHD_boundary_c.c; path = ../../C_src/CONTROLS/t_ctl_data_MHD_boundary_c.c; sourceTree = "<group>"; };
-		18812BCB211F762100BF714B /* t_ctl_data_SGS_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_SGS_model_c.h; path = ../../C_src/CONTROLS/t_ctl_data_SGS_model_c.h; sourceTree = "<group>"; };
-		18812BCC211F762100BF714B /* t_ctl_data_MHD_boundary_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_MHD_boundary_c.h; path = ../../C_src/CONTROLS/t_ctl_data_MHD_boundary_c.h; sourceTree = "<group>"; };
-		18812BCD211F762100BF714B /* t_control_data_4_iso_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_iso_c.h; path = ../../C_src/CONTROLS/t_control_data_4_iso_c.h; sourceTree = "<group>"; };
-		18812BCE211F762100BF714B /* t_ctl_data_4_fields_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_fields_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_fields_c.c; sourceTree = "<group>"; };
-		18812BCF211F762100BF714B /* t_control_data_pvr_isosurf_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_pvr_isosurf_list.c; path = ../../C_src/CONTROLS/t_control_data_pvr_isosurf_list.c; sourceTree = "<group>"; };
-		18812BD0211F762100BF714B /* t_ctl_data_mhd_forces_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_forces_c.c; path = ../../C_src/CONTROLS/t_ctl_data_mhd_forces_c.c; sourceTree = "<group>"; };
-		18812BD1211F762100BF714B /* t_control_data_LIC_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_LIC_ctl_list.h; path = ../../C_src/CONTROLS/t_control_data_LIC_ctl_list.h; sourceTree = "<group>"; };
-		18812BD2211F762100BF714B /* t_ctl_data_mhd_evo_scheme_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_evo_scheme_c.c; path = ../../C_src/CONTROLS/t_ctl_data_mhd_evo_scheme_c.c; sourceTree = "<group>"; };
-		18812BD3211F762100BF714B /* t_ctl_data_mhd_evo_scheme_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_evo_scheme_c.h; path = ../../C_src/CONTROLS/t_ctl_data_mhd_evo_scheme_c.h; sourceTree = "<group>"; };
-		18812BD4211F762100BF714B /* t_control_data_FLINE_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_FLINE_ctl_list.c; path = ../../C_src/CONTROLS/t_control_data_FLINE_ctl_list.c; sourceTree = "<group>"; };
-		18812BD5211F762100BF714B /* t_control_data_gen_sph_grid_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_gen_sph_grid_c.h; path = ../../C_src/CONTROLS/t_control_data_gen_sph_grid_c.h; sourceTree = "<group>"; };
-		18812BD6211F762100BF714B /* t_control_data_vizs_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_vizs_c.h; path = ../../C_src/CONTROLS/t_control_data_vizs_c.h; sourceTree = "<group>"; };
-		18812BD7211F762100BF714B /* t_ctl_data_node_monitor_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_node_monitor_c.h; path = ../../C_src/CONTROLS/t_ctl_data_node_monitor_c.h; sourceTree = "<group>"; };
-		18812BD9211F762100BF714B /* t_control_data_LIC_pvr_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_LIC_pvr_c.c; path = ../../C_src/CONTROLS/t_control_data_LIC_pvr_c.c; sourceTree = "<group>"; };
-		18812BDA211F762200BF714B /* t_ctl_data_4_sph_monitor_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_sph_monitor_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_sph_monitor_c.h; sourceTree = "<group>"; };
-		18812BDB211F762200BF714B /* t_ctl_data_4_sphere_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_sphere_model_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_sphere_model_c.h; sourceTree = "<group>"; };
-		18812BDC211F762200BF714B /* t_control_data_4_psf_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_4_psf_c.h; path = ../../C_src/CONTROLS/t_control_data_4_psf_c.h; sourceTree = "<group>"; };
-		18812BDD211F762200BF714B /* t_ctl_data_sph_filter_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_sph_filter_list.h; path = ../../C_src/CONTROLS/t_ctl_data_sph_filter_list.h; sourceTree = "<group>"; };
-		18812BDE211F762200BF714B /* t_ctl_data_4_platforms_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_platforms_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_platforms_c.c; sourceTree = "<group>"; };
-		18812BDF211F762200BF714B /* t_ctl_data_mhd_forces_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_forces_c.h; path = ../../C_src/CONTROLS/t_ctl_data_mhd_forces_c.h; sourceTree = "<group>"; };
-		18812BE0211F762200BF714B /* t_control_data_PSF_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_PSF_ctl_list.c; path = ../../C_src/CONTROLS/t_control_data_PSF_ctl_list.c; sourceTree = "<group>"; };
-		18812BE1211F762200BF714B /* t_control_data_4_iso_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_4_iso_c.c; path = ../../C_src/CONTROLS/t_control_data_4_iso_c.c; sourceTree = "<group>"; };
-		18812BE2211F762200BF714B /* t_control_data_sph_grid_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_sph_grid_c.h; path = ../../C_src/CONTROLS/t_control_data_sph_grid_c.h; sourceTree = "<group>"; };
-		18812BE3211F762200BF714B /* t_control_data_visualizer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_visualizer_c.c; path = ../../C_src/CONTROLS/t_control_data_visualizer_c.c; sourceTree = "<group>"; };
-		18812BE4211F762200BF714B /* t_ctl_data_4_FEM_mesh_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_FEM_mesh_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_FEM_mesh_c.c; sourceTree = "<group>"; };
-		18812BE5211F762200BF714B /* t_control_data_LIC_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_LIC_c.h; path = ../../C_src/CONTROLS/t_control_data_LIC_c.h; sourceTree = "<group>"; };
-		18812BE6211F762200BF714B /* t_ctl_data_temp_model_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_temp_model_c.h; path = ../../C_src/CONTROLS/t_ctl_data_temp_model_c.h; sourceTree = "<group>"; };
-		18812BE7211F762200BF714B /* t_ctl_data_zonal_means_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_zonal_means_c.c; path = ../../C_src/CONTROLS/t_ctl_data_zonal_means_c.c; sourceTree = "<group>"; };
-		18812BE8211F762200BF714B /* t_ctl_data_4_view_transfer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_view_transfer_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_view_transfer_c.c; sourceTree = "<group>"; };
-		18812BE9211F762200BF714B /* t_ctl_data_4_volume_spectr_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_volume_spectr_list.h; path = ../../C_src/CONTROLS/t_ctl_data_4_volume_spectr_list.h; sourceTree = "<group>"; };
-		18812BEA211F762200BF714B /* t_ctl_data_mhd_normalize_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_mhd_normalize_c.c; path = ../../C_src/CONTROLS/t_ctl_data_mhd_normalize_c.c; sourceTree = "<group>"; };
-		18812BEB211F762200BF714B /* t_control_data_PSF_ctl_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_PSF_ctl_list.h; path = ../../C_src/CONTROLS/t_control_data_PSF_ctl_list.h; sourceTree = "<group>"; };
-		18812BEC211F762200BF714B /* t_ctl_data_4_fields_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_fields_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_fields_c.h; sourceTree = "<group>"; };
-		18812BED211F762200BF714B /* t_ctl_data_4_time_steps_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_time_steps_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_time_steps_c.c; sourceTree = "<group>"; };
-		18812BEE211F762200BF714B /* t_ctl_data_4_view_transfer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_4_view_transfer_c.h; path = ../../C_src/CONTROLS/t_ctl_data_4_view_transfer_c.h; sourceTree = "<group>"; };
-		18812BEF211F762200BF714B /* t_control_data_PVR_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_PVR_ctl_list.c; path = ../../C_src/CONTROLS/t_control_data_PVR_ctl_list.c; sourceTree = "<group>"; };
-		18812BF0211F762200BF714B /* t_control_data_vizs_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_vizs_c.c; path = ../../C_src/CONTROLS/t_control_data_vizs_c.c; sourceTree = "<group>"; };
-		18812BF1211F762200BF714B /* t_control_data_pvr_section_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_pvr_section_list.c; path = ../../C_src/CONTROLS/t_control_data_pvr_section_list.c; sourceTree = "<group>"; };
-		18812BF2211F762200BF714B /* t_SGS_MHD_control_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_SGS_MHD_control_c.h; path = ../../C_src/CONTROLS/t_SGS_MHD_control_c.h; sourceTree = "<group>"; };
-		18812BF3211F762200BF714B /* t_ctl_data_mhd_evolution_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_ctl_data_mhd_evolution_c.h; path = ../../C_src/CONTROLS/t_ctl_data_mhd_evolution_c.h; sourceTree = "<group>"; };
-		18812BF4211F762200BF714B /* t_ctl_data_4_sph_monitor_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_ctl_data_4_sph_monitor_c.c; path = ../../C_src/CONTROLS/t_ctl_data_4_sph_monitor_c.c; sourceTree = "<group>"; };
-		18812BF5211F762200BF714B /* t_control_data_LIC_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_LIC_ctl_list.c; path = ../../C_src/CONTROLS/t_control_data_LIC_ctl_list.c; sourceTree = "<group>"; };
-		18812BF6211F762200BF714B /* t_control_data_visualizer_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = t_control_data_visualizer_c.h; path = ../../C_src/CONTROLS/t_control_data_visualizer_c.h; sourceTree = "<group>"; };
-		18812BF7211F762200BF714B /* t_control_data_ISO_ctl_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = t_control_data_ISO_ctl_list.c; path = ../../C_src/CONTROLS/t_control_data_ISO_ctl_list.c; sourceTree = "<group>"; };
-		18812C1F211F764300BF714B /* all_field_names_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = all_field_names_c.c; path = ../../C_src/CONTROLS/all_field_names_c.c; sourceTree = "<group>"; };
-		18812C20211F764300BF714B /* all_field_names_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = all_field_names_c.h; path = ../../C_src/CONTROLS/all_field_names_c.h; sourceTree = "<group>"; };
-		18812C22211F765400BF714B /* skip_comment_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = skip_comment_c.c; path = ../../C_src/CORE_C/skip_comment_c.c; sourceTree = "<group>"; };
-		18812C23211F765500BF714B /* skip_comment_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = skip_comment_c.h; path = ../../C_src/CORE_C/skip_comment_c.h; sourceTree = "<group>"; };
-		18812C25211F765900BF714B /* kemosrc_param_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemosrc_param_c.c; path = ../../C_src/CORE_C/kemosrc_param_c.c; sourceTree = "<group>"; };
-		18812C26211F765A00BF714B /* kemosrc_param_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemosrc_param_c.h; path = ../../C_src/CORE_C/kemosrc_param_c.h; sourceTree = "<group>"; };
-		18812C2C211F773200BF714B /* control_elements_IO_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_c.c; path = ../../C_src/CONTROLS/control_elements_IO_c.c; sourceTree = "<group>"; };
-		18812C2F211F773300BF714B /* control_elements_IO_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = control_elements_IO_c.h; path = ../../C_src/CONTROLS/control_elements_IO_c.h; sourceTree = "<group>"; };
-		18812C33211F864800BF714B /* control_elements_IO_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = control_elements_IO_GTK.c; path = ../../C_src/GTK/control_elements_IO_GTK.c; sourceTree = "<group>"; };
-		1881F757212B0ADA002B63DA /* quicksort_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = quicksort_c.c; path = ../../C_src/CORE_C/quicksort_c.c; sourceTree = "<group>"; };
-		1881F758212B0ADA002B63DA /* quicksort_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = quicksort_c.h; path = ../../C_src/CORE_C/quicksort_c.h; sourceTree = "<group>"; };
-		1881F75A212B0EDB002B63DA /* set_rgb_colors_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = set_rgb_colors_c.c; path = ../../C_src/CORE_C/set_rgb_colors_c.c; sourceTree = "<group>"; };
-		1881F75B212B0EDB002B63DA /* set_rgb_colors_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = set_rgb_colors_c.h; path = ../../C_src/CORE_C/set_rgb_colors_c.h; sourceTree = "<group>"; };
-		18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara_real_GTK.c; path = ../../C_src/GTK/tree_view_chara_real_GTK.c; sourceTree = "<group>"; };
-		18F5F3802125EF84004320C7 /* tree_view_chara_real_GTK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree_view_chara_real_GTK.h; path = ../../C_src/GTK/tree_view_chara_real_GTK.h; sourceTree = "<group>"; };
-		18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_each_term_GTK.c; path = ../../C_src/GTK/tree_view_4_each_term_GTK.c; sourceTree = "<group>"; };
-		18F5F38221260020004320C7 /* tree_view_4_each_term_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_each_term_GTK.h; path = ../../C_src/GTK/tree_view_4_each_term_GTK.h; sourceTree = "<group>"; };
-		18F5F384212625E1004320C7 /* tree_view_chara2_real_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_chara2_real_GTK.c; path = ../../C_src/GTK/tree_view_chara2_real_GTK.c; sourceTree = "<group>"; };
-		18F5F385212625E1004320C7 /* tree_view_chara2_real_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_chara2_real_GTK.h; path = ../../C_src/GTK/tree_view_chara2_real_GTK.h; sourceTree = "<group>"; };
-		18F5F387212637B0004320C7 /* tree_view_4_temp_BC_GTK.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_temp_BC_GTK.c; path = ../../C_src/GTK/tree_view_4_temp_BC_GTK.c; sourceTree = "<group>"; };
-		18F5F388212637B0004320C7 /* tree_view_4_temp_BC_GTK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree_view_4_temp_BC_GTK.h; path = ../../C_src/GTK/tree_view_4_temp_BC_GTK.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -318,44 +148,76 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18812B92211EC71000BF714B /* libfribidi.dylib in Frameworks */,
-				18812B9E211EC77A00BF714B /* libgobject-2.0.a in Frameworks */,
-				18812B96211EC73700BF714B /* libcairo-gobject.a in Frameworks */,
-				18812B9A211EC76200BF714B /* libgdk_pixbuf-2.0.dylib in Frameworks */,
-				18812B8E211EC6F000BF714B /* libpangocairo-1.0.a in Frameworks */,
-				18812B8A211EC39400BF714B /* libglib-2.0.a in Frameworks */,
-				18812B94211EC71D00BF714B /* libatk-1.0.a in Frameworks */,
-				18812B88211EC37400BF714B /* libgtk-3.a in Frameworks */,
-				18812B8C211EC6CC00BF714B /* libgdk-3.a in Frameworks */,
-				18812B98211EC74600BF714B /* libcairo.a in Frameworks */,
-				18812B9C211EC76900BF714B /* libgio-2.0.a in Frameworks */,
-				18812B90211EC6F900BF714B /* libpango-1.0.a in Frameworks */,
-				18812BA0211EC79900BF714B /* libintl.a in Frameworks */,
+				181FFB75249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib in Frameworks */,
+				181FFB77249D445700BB1E52 /* libgio-2.0.dylib in Frameworks */,
+				181FFB79249D446D00BB1E52 /* libgobject-2.0.dylib in Frameworks */,
+				181FFB6C249D43E100BB1E52 /* libpango-1.0.dylib in Frameworks */,
+				181FFB7B249D448D00BB1E52 /* libglib-2.0.dylib in Frameworks */,
+				181FFB67249D42C800BB1E52 /* libgtk-3.dylib in Frameworks */,
+				181FFB69249D430F00BB1E52 /* libgdk-3.0.dylib in Frameworks */,
+				181FFBEF249D57B800BB1E52 /* libkemo_viz.a in Frameworks */,
+				181FFB6F249D440F00BB1E52 /* libcairo.dylib in Frameworks */,
+				181FFB71249D441E00BB1E52 /* libcairo-gobject.dylib in Frameworks */,
+				181FFB6D249D43E100BB1E52 /* libpangocairo-1.0.dylib in Frameworks */,
+				181FFB73249D443A00BB1E52 /* libatk-1.0.dylib in Frameworks */,
+				181FFBF1249D599E00BB1E52 /* libkemo_core.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		181FFB65249D426F00BB1E52 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				181FFB66249D42C800BB1E52 /* libgtk-3.dylib */,
+				181FFB68249D430F00BB1E52 /* libgdk-3.0.dylib */,
+				181FFB6A249D43E100BB1E52 /* libpango-1.0.dylib */,
+				181FFB6B249D43E100BB1E52 /* libpangocairo-1.0.dylib */,
+				181FFB70249D441E00BB1E52 /* libcairo-gobject.dylib */,
+				181FFB6E249D440F00BB1E52 /* libcairo.dylib */,
+				181FFB72249D443A00BB1E52 /* libatk-1.0.dylib */,
+				181FFB74249D444900BB1E52 /* libgdk_pixbuf-2.0.dylib */,
+				181FFB76249D445700BB1E52 /* libgio-2.0.dylib */,
+				181FFB78249D446C00BB1E52 /* libgobject-2.0.dylib */,
+				181FFB7A249D448D00BB1E52 /* libglib-2.0.dylib */,
+				181FFBEE249D57B800BB1E52 /* libkemo_viz.a */,
+				181FFBF0249D599E00BB1E52 /* libkemo_core.a */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		181FFB99249D450200BB1E52 /* CORE_C */ = {
+			isa = PBXGroup;
+			children = (
+				181FFBDA249D491400BB1E52 /* set_rgb_colors_c.c */,
+				181FFBDB249D491400BB1E52 /* set_rgb_colors_c.h */,
+				181FFBD7249D48EE00BB1E52 /* calypso_param_c.c */,
+				181FFBD8249D48EF00BB1E52 /* calypso_param_c.h */,
+				181FFBD1249D480100BB1E52 /* skip_comment_c.c */,
+				181FFBD2249D480100BB1E52 /* skip_comment_c.h */,
+				181FFBE0249D49B500BB1E52 /* quicksort_c.c */,
+				181FFBE1249D49B500BB1E52 /* quicksort_c.h */,
+			);
+			name = CORE_C;
+			sourceTree = "<group>";
+		};
+		181FFBC4249D468A00BB1E52 /* KEMO_GL */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = KEMO_GL;
+			sourceTree = "<group>";
+		};
 		18812ADF211EB5B000BF714B = {
 			isa = PBXGroup;
 			children = (
-				18812AEA211EB5B000BF714B /* GTK_test */,
-				18812C32211F863700BF714B /* GTK_routines */,
-				18812B87211EC37400BF714B /* libgtk-3.a */,
-				18812B8B211EC6CC00BF714B /* libgdk-3.a */,
-				18812B8D211EC6F000BF714B /* libpangocairo-1.0.a */,
-				18812B8F211EC6F900BF714B /* libpango-1.0.a */,
-				18812B91211EC71000BF714B /* libfribidi.dylib */,
-				18812B93211EC71D00BF714B /* libatk-1.0.a */,
-				18812B95211EC73700BF714B /* libcairo-gobject.a */,
-				18812B97211EC74500BF714B /* libcairo.a */,
-				18812B99211EC76200BF714B /* libgdk_pixbuf-2.0.dylib */,
-				18812B9B211EC76900BF714B /* libgio-2.0.a */,
-				18812B9D211EC77A00BF714B /* libgobject-2.0.a */,
-				18812B89211EC39400BF714B /* libglib-2.0.a */,
-				18812B9F211EC79900BF714B /* libintl.a */,
+				181FFBE3249D4FF000BB1E52 /* file_dialog.c */,
+				181FFB99249D450200BB1E52 /* CORE_C */,
 				18812BA9211F75DC00BF714B /* CONTROLS */,
+				181FFBC4249D468A00BB1E52 /* KEMO_GL */,
+				18812C32211F863700BF714B /* GTK_routines */,
+				181FFB65249D426F00BB1E52 /* Libraries */,
 				18812AE9211EB5B000BF714B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -368,140 +230,53 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		18812AEA211EB5B000BF714B /* GTK_test */ = {
-			isa = PBXGroup;
-			children = (
-				18779AFE2331A1B100D886CB /* TreeView_test_35.c */,
-			);
-			path = GTK_test;
-			sourceTree = "<group>";
-		};
 		18812BA9211F75DC00BF714B /* CONTROLS */ = {
 			isa = PBXGroup;
 			children = (
-				187D27DD212B2E4D00007329 /* m_color_table_c.c */,
-				187D27DC212B2E4C00007329 /* m_color_table_c.h */,
-				1881F75A212B0EDB002B63DA /* set_rgb_colors_c.c */,
-				1881F75B212B0EDB002B63DA /* set_rgb_colors_c.h */,
-				18779AF323319EFB00D886CB /* set_rgba_table_c.c */,
-				18779AF223319EFA00D886CB /* set_rgba_table_c.h */,
-				1881F757212B0ADA002B63DA /* quicksort_c.c */,
-				1881F758212B0ADA002B63DA /* quicksort_c.h */,
-				1843AA612123A8F10073BCB1 /* m_direction_labels_c.c */,
-				1843AA622123A8F20073BCB1 /* m_direction_labels_c.h */,
-				18812C2C211F773200BF714B /* control_elements_IO_c.c */,
-				18812C2F211F773300BF714B /* control_elements_IO_c.h */,
-				18812C25211F765900BF714B /* kemosrc_param_c.c */,
-				18812C26211F765A00BF714B /* kemosrc_param_c.h */,
-				18812C1F211F764300BF714B /* all_field_names_c.c */,
-				18812C20211F764300BF714B /* all_field_names_c.h */,
-				18812C22211F765400BF714B /* skip_comment_c.c */,
-				18812C23211F765500BF714B /* skip_comment_c.h */,
-				1813DAC7212107EA003AB1B9 /* t_control_chara_int_IO.c */,
-				1813DAD0212107EB003AB1B9 /* t_control_chara_int_IO.h */,
-				1813DACE212107EB003AB1B9 /* t_control_chara_IO.c */,
-				1813DACF212107EB003AB1B9 /* t_control_chara_IO.h */,
-				1813DACB212107EA003AB1B9 /* t_control_chara_real_IO.c */,
-				1813DAC6212107EA003AB1B9 /* t_control_chara_real_IO.h */,
-				1813DACA212107EA003AB1B9 /* t_control_chara2_IO.c */,
-				1813DAC8212107EA003AB1B9 /* t_control_chara2_IO.h */,
-				1813DAC5212107EA003AB1B9 /* t_control_chara2_real_IO.c */,
-				1813DACC212107EB003AB1B9 /* t_control_chara2_real_IO.h */,
-				1813DAC9212107EA003AB1B9 /* t_control_chara3_IO.c */,
-				1813DACD212107EB003AB1B9 /* t_control_chara3_IO.h */,
-				1813DADA21210807003AB1B9 /* t_control_int_IO.c */,
-				1813DADF21210808003AB1B9 /* t_control_int_IO.h */,
-				1813DAD921210807003AB1B9 /* t_control_int_real_IO.c */,
-				1813DAD821210807003AB1B9 /* t_control_int_real_IO.h */,
-				1813DAE221210809003AB1B9 /* t_control_int2_IO.c */,
-				1813DAD721210806003AB1B9 /* t_control_int2_IO.h */,
-				1813DADC21210808003AB1B9 /* t_control_real_IO.c */,
-				1813DADB21210808003AB1B9 /* t_control_real_IO.h */,
-				1813DADD21210808003AB1B9 /* t_control_real2_IO.c */,
-				1813DADE21210808003AB1B9 /* t_control_real2_IO.h */,
-				1813DAE021210808003AB1B9 /* t_control_real3_IO.c */,
-				1813DAE121210808003AB1B9 /* t_control_real3_IO.h */,
-				1813DAFC212203AE003AB1B9 /* t_control_chara_int2_IO.c */,
-				1813DAFB212203A2003AB1B9 /* t_control_chara_int2_IO.h */,
-				18812BC3211F762000BF714B /* t_control_data_4_fline_c.c */,
-				18812BC8211F762100BF714B /* t_control_data_4_fline_c.h */,
-				18812BE1211F762200BF714B /* t_control_data_4_iso_c.c */,
-				18812BCD211F762100BF714B /* t_control_data_4_iso_c.h */,
-				18812BBB211F762000BF714B /* t_control_data_4_psf_c.c */,
-				18812BDC211F762200BF714B /* t_control_data_4_psf_c.h */,
-				18812BC7211F762100BF714B /* t_control_data_4_pvr_c.c */,
-				18812BB2211F762000BF714B /* t_control_data_4_pvr_c.h */,
-				18812BD4211F762100BF714B /* t_control_data_FLINE_ctl_list.c */,
-				18812BB4211F762000BF714B /* t_control_data_FLINE_ctl_list.h */,
-				18812BBC211F762000BF714B /* t_control_data_gen_sph_grid_c.c */,
-				18812BD5211F762100BF714B /* t_control_data_gen_sph_grid_c.h */,
-				18812BF7211F762200BF714B /* t_control_data_ISO_ctl_list.c */,
-				18812BB5211F762000BF714B /* t_control_data_ISO_ctl_list.h */,
-				18812BC4211F762000BF714B /* t_control_data_LIC_c.c */,
-				18812BE5211F762200BF714B /* t_control_data_LIC_c.h */,
-				18812BF5211F762200BF714B /* t_control_data_LIC_ctl_list.c */,
-				18812BD1211F762100BF714B /* t_control_data_LIC_ctl_list.h */,
-				18812BBE211F762000BF714B /* t_control_data_lic_masking_list.c */,
-				18812BAA211F761F00BF714B /* t_control_data_lic_masking_list.h */,
-				18812BD9211F762100BF714B /* t_control_data_LIC_pvr_c.c */,
-				18812BAB211F761F00BF714B /* t_control_data_LIC_pvr_c.h */,
-				18812BE0211F762200BF714B /* t_control_data_PSF_ctl_list.c */,
-				18812BEB211F762200BF714B /* t_control_data_PSF_ctl_list.h */,
-				18812BEF211F762200BF714B /* t_control_data_PVR_ctl_list.c */,
-				18812BAC211F761F00BF714B /* t_control_data_PVR_ctl_list.h */,
-				18812BCF211F762100BF714B /* t_control_data_pvr_isosurf_list.c */,
-				18812BB3211F762000BF714B /* t_control_data_pvr_isosurf_list.h */,
-				18812BF1211F762200BF714B /* t_control_data_pvr_section_list.c */,
-				18812BAE211F762000BF714B /* t_control_data_pvr_section_list.h */,
-				18812BC9211F762100BF714B /* t_control_data_sph_grid_c.c */,
-				18812BE2211F762200BF714B /* t_control_data_sph_grid_c.h */,
-				18812BE3211F762200BF714B /* t_control_data_visualizer_c.c */,
-				18812BF6211F762200BF714B /* t_control_data_visualizer_c.h */,
-				18812BF0211F762200BF714B /* t_control_data_vizs_c.c */,
-				18812BD6211F762100BF714B /* t_control_data_vizs_c.h */,
-				18812BE4211F762200BF714B /* t_ctl_data_4_FEM_mesh_c.c */,
-				18812BBD211F762000BF714B /* t_ctl_data_4_FEM_mesh_c.h */,
-				18812BCE211F762100BF714B /* t_ctl_data_4_fields_c.c */,
-				18812BEC211F762200BF714B /* t_ctl_data_4_fields_c.h */,
-				18812BDE211F762200BF714B /* t_ctl_data_4_platforms_c.c */,
-				18812BB6211F762000BF714B /* t_ctl_data_4_platforms_c.h */,
-				18812BF4211F762200BF714B /* t_ctl_data_4_sph_monitor_c.c */,
-				18812BDA211F762200BF714B /* t_ctl_data_4_sph_monitor_c.h */,
-				18812BC5211F762000BF714B /* t_ctl_data_4_sphere_model_c.c */,
-				18812BDB211F762200BF714B /* t_ctl_data_4_sphere_model_c.h */,
-				18812BED211F762200BF714B /* t_ctl_data_4_time_steps_c.c */,
-				18812BBA211F762000BF714B /* t_ctl_data_4_time_steps_c.h */,
-				18812BE8211F762200BF714B /* t_ctl_data_4_view_transfer_c.c */,
-				18812BEE211F762200BF714B /* t_ctl_data_4_view_transfer_c.h */,
-				18812BAD211F761F00BF714B /* t_ctl_data_4_volume_spectr_list.c */,
-				18812BE9211F762200BF714B /* t_ctl_data_4_volume_spectr_list.h */,
-				18812BCA211F762100BF714B /* t_ctl_data_MHD_boundary_c.c */,
-				18812BCC211F762100BF714B /* t_ctl_data_MHD_boundary_c.h */,
-				18812BD2211F762100BF714B /* t_ctl_data_mhd_evo_scheme_c.c */,
-				18812BD3211F762100BF714B /* t_ctl_data_mhd_evo_scheme_c.h */,
-				18812BB9211F762000BF714B /* t_ctl_data_mhd_evolution_c.c */,
-				18812BF3211F762200BF714B /* t_ctl_data_mhd_evolution_c.h */,
-				18812BD0211F762100BF714B /* t_ctl_data_mhd_forces_c.c */,
-				18812BDF211F762200BF714B /* t_ctl_data_mhd_forces_c.h */,
-				18812BEA211F762200BF714B /* t_ctl_data_mhd_normalize_c.c */,
-				18812BC2211F762000BF714B /* t_ctl_data_mhd_normalize_c.h */,
-				18812BBF211F762000BF714B /* t_ctl_data_node_monitor_c.c */,
-				18812BD7211F762100BF714B /* t_ctl_data_node_monitor_c.h */,
-				18812BC6211F762100BF714B /* t_ctl_data_pvr_colormap_c.c */,
-				18812BB0211F762000BF714B /* t_ctl_data_pvr_colormap_c.h */,
-				18812BAF211F762000BF714B /* t_ctl_data_SGS_MHD_model_c.c */,
-				18812BB1211F762000BF714B /* t_ctl_data_SGS_MHD_model_c.h */,
-				18812BC0211F762000BF714B /* t_ctl_data_SGS_model_c.c */,
-				18812BCB211F762100BF714B /* t_ctl_data_SGS_model_c.h */,
-				18812BB7211F762000BF714B /* t_ctl_data_sph_filter_list.c */,
-				18812BDD211F762200BF714B /* t_ctl_data_sph_filter_list.h */,
-				18812BC1211F762000BF714B /* t_ctl_data_temp_model_c.c */,
-				18812BE6211F762200BF714B /* t_ctl_data_temp_model_c.h */,
-				18812BE7211F762200BF714B /* t_ctl_data_zonal_means_c.c */,
-				18779AFC23319FA200D886CB /* t_ctl_data_crust_filter_c.c */,
-				18779AFB23319FA200D886CB /* t_ctl_data_crust_filter_c.h */,
-				18812BB8211F762000BF714B /* t_SGS_MHD_control_c.c */,
-				18812BF2211F762200BF714B /* t_SGS_MHD_control_c.h */,
+				181FFBEB249D576D00BB1E52 /* m_PSF_control_labels_from_f.c */,
+				181FFBEC249D576D00BB1E52 /* m_PSF_control_labels_from_f.h */,
+				181FFBE8249D574A00BB1E52 /* t_control_label_from_f.c */,
+				181FFBE9249D574A00BB1E52 /* t_control_label_from_f.h */,
+				181FFBE6249D571000BB1E52 /* t_control_data_4_iso_c.c */,
+				181FFBE5249D571000BB1E52 /* t_control_data_4_iso_c.h */,
+				181FFBD5249D48DB00BB1E52 /* control_elements_IO_c.c */,
+				181FFBD4249D48DB00BB1E52 /* control_elements_IO_c.h */,
+				181FFBC2249D464700BB1E52 /* m_color_table_c.c */,
+				181FFBC1249D464700BB1E52 /* m_color_table_c.h */,
+				181FFBBF249D461500BB1E52 /* set_rgba_table_c.c */,
+				181FFBBE249D461500BB1E52 /* set_rgba_table_c.h */,
+				181FFBB5249D45B300BB1E52 /* m_direction_labels_c.c */,
+				181FFBB6249D45B300BB1E52 /* m_direction_labels_c.h */,
+				181FFBB2249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.c */,
+				181FFBB3249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.h */,
+				181FFBAD249D456700BB1E52 /* t_control_int_IO.c */,
+				181FFBAC249D456700BB1E52 /* t_control_int_IO.h */,
+				181FFBAB249D456700BB1E52 /* t_control_int_real_IO.c */,
+				181FFBAA249D456700BB1E52 /* t_control_int_real_IO.h */,
+				181FFBAE249D456700BB1E52 /* t_control_int2_IO.c */,
+				181FFBA9249D456700BB1E52 /* t_control_int2_IO.h */,
+				181FFBA4249D455F00BB1E52 /* t_control_real_IO.c */,
+				181FFBA3249D455F00BB1E52 /* t_control_real_IO.h */,
+				181FFBA1249D455F00BB1E52 /* t_control_real2_IO.c */,
+				181FFBA5249D455F00BB1E52 /* t_control_real2_IO.h */,
+				181FFBA2249D455F00BB1E52 /* t_control_real3_IO.c */,
+				181FFBA0249D455F00BB1E52 /* t_control_real3_IO.h */,
+				181FFB82249D44EC00BB1E52 /* t_control_chara_int_IO.c */,
+				181FFB90249D44ED00BB1E52 /* t_control_chara_int_IO.h */,
+				181FFB8B249D44ED00BB1E52 /* t_control_chara_int2_IO.c */,
+				181FFB83249D44EC00BB1E52 /* t_control_chara_int2_IO.h */,
+				181FFB8F249D44ED00BB1E52 /* t_control_chara_int3_IO.c */,
+				181FFB84249D44EC00BB1E52 /* t_control_chara_int3_IO.h */,
+				181FFB88249D44EC00BB1E52 /* t_control_chara_IO.c */,
+				181FFB89249D44EC00BB1E52 /* t_control_chara_IO.h */,
+				181FFB85249D44EC00BB1E52 /* t_control_chara_real_IO.c */,
+				181FFB8C249D44ED00BB1E52 /* t_control_chara_real_IO.h */,
+				181FFB8E249D44ED00BB1E52 /* t_control_chara2_IO.c */,
+				181FFB8D249D44ED00BB1E52 /* t_control_chara2_IO.h */,
+				181FFB8A249D44ED00BB1E52 /* t_control_chara2_real_IO.c */,
+				181FFB86249D44EC00BB1E52 /* t_control_chara2_real_IO.h */,
+				181FFB81249D44EC00BB1E52 /* t_control_chara3_IO.c */,
+				181FFB87249D44EC00BB1E52 /* t_control_chara3_IO.h */,
 			);
 			name = CONTROLS;
 			sourceTree = "<group>";
@@ -509,48 +284,6 @@
 		18812C32211F863700BF714B /* GTK_routines */ = {
 			isa = PBXGroup;
 			children = (
-				18779AF923319F6700D886CB /* kemoview_gtk_routines.c */,
-				18779AF823319F6600D886CB /* kemoview_gtk_routines.h */,
-				18812C33211F864800BF714B /* control_elements_IO_GTK.c */,
-				1813DAE921210968003AB1B9 /* control_elements_IO_GTK.h */,
-				1843AA6A2124B4810073BCB1 /* control_panel_4_dimless_GTK.c */,
-				1843AA682124B4800073BCB1 /* control_panel_4_dimless_GTK.h */,
-				187D27E2212B447E00007329 /* control_panel_4_field_GTK.c */,
-				187D27E3212B447E00007329 /* control_panel_4_field_GTK.h */,
-				18779AF023319E9E00D886CB /* create_tree_view_columns_GTK.c */,
-				18779AEF23319E9E00D886CB /* create_tree_view_columns_GTK.h */,
-				187F130922C7FD7700B0F844 /* ctl_panel_platforms_GTK.c */,
-				187F130A22C7FD7700B0F844 /* ctl_panel_platforms_GTK.h */,
-				187F131222C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.c */,
-				187F131322C94ED000B0F844 /* ctl_panel_para_sph_shell_GTK.h */,
-				1832D27722CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c */,
-				1832D27622CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.h */,
-				187D27EC212C9A7200007329 /* tree_view_chara_GTK.c */,
-				187D27ED212C9A7200007329 /* tree_view_chara_GTK.h */,
-				18F5F37E2125EF79004320C7 /* tree_view_chara_real_GTK.c */,
-				18F5F3802125EF84004320C7 /* tree_view_chara_real_GTK.h */,
-				187D27F2212CDFFC00007329 /* tree_view_chara_int_GTK.c */,
-				187D27F3212CDFFC00007329 /* tree_view_chara_int_GTK.h */,
-				18F5F384212625E1004320C7 /* tree_view_chara2_real_GTK.c */,
-				18F5F385212625E1004320C7 /* tree_view_chara2_real_GTK.h */,
-				187D27E5212B44C100007329 /* tree_view_4_field_GTK.c */,
-				187D27E6212B44C100007329 /* tree_view_4_field_GTK.h */,
-				1843AA692124B4800073BCB1 /* tree_view_4_force_GTK.c */,
-				1843AA6B2124B4810073BCB1 /* tree_view_4_force_GTK.h */,
-				1843AA752124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c */,
-				1843AA742124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.h */,
-				18F5F38121260020004320C7 /* tree_view_4_each_term_GTK.c */,
-				18F5F38221260020004320C7 /* tree_view_4_each_term_GTK.h */,
-				18F5F387212637B0004320C7 /* tree_view_4_temp_BC_GTK.c */,
-				18F5F388212637B0004320C7 /* tree_view_4_temp_BC_GTK.h */,
-				183B85EC2129EBDE00148B24 /* tree_view_4_pvr_colormap.c */,
-				183B85EE2129EBE800148B24 /* tree_view_4_pvr_colormap.h */,
-				18779AEC23319E1A00D886CB /* tree_view_4_colormap.c */,
-				18779AED23319E1A00D886CB /* tree_view_4_colormap.h */,
-				183A3F1F2129C55F00ACF6BD /* tree_view_real2_GTK.c */,
-				183A3F212129C56C00ACF6BD /* tree_view_real2_GTK.h */,
-				1852E58222CE45CD00E3C3E2 /* tree_view_real3_GTK.c */,
-				1852E58322CE45CD00E3C3E2 /* tree_view_real3_GTK.h */,
 			);
 			name = GTK_routines;
 			sourceTree = "<group>";
@@ -613,90 +346,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				18812C21211F764400BF714B /* all_field_names_c.c in Sources */,
-				18812C10211F762300BF714B /* t_ctl_data_4_platforms_c.c in Sources */,
-				18812C30211F773300BF714B /* control_elements_IO_c.c in Sources */,
-				1843AA6D2124B4810073BCB1 /* control_panel_4_dimless_GTK.c in Sources */,
-				18812C14211F762300BF714B /* t_ctl_data_4_FEM_mesh_c.c in Sources */,
-				18779AFF2331A1B100D886CB /* TreeView_test_35.c in Sources */,
-				18812C18211F762300BF714B /* t_ctl_data_4_time_steps_c.c in Sources */,
-				18812C09211F762200BF714B /* t_ctl_data_MHD_boundary_c.c in Sources */,
-				18812C1D211F762300BF714B /* t_control_data_LIC_ctl_list.c in Sources */,
-				18812C08211F762200BF714B /* t_control_data_sph_grid_c.c in Sources */,
-				18812C06211F762200BF714B /* t_ctl_data_pvr_colormap_c.c in Sources */,
-				18812C01211F762200BF714B /* t_ctl_data_SGS_model_c.c in Sources */,
-				18812BF9211F762200BF714B /* t_ctl_data_SGS_MHD_model_c.c in Sources */,
-				18812BF8211F762200BF714B /* t_ctl_data_4_volume_spectr_list.c in Sources */,
-				187F131422C94ED100B0F844 /* ctl_panel_para_sph_shell_GTK.c in Sources */,
-				18812C0A211F762200BF714B /* t_ctl_data_4_fields_c.c in Sources */,
-				18779AF423319EFB00D886CB /* set_rgba_table_c.c in Sources */,
-				18812C11211F762300BF714B /* t_control_data_PSF_ctl_list.c in Sources */,
-				18779AEE23319E1A00D886CB /* tree_view_4_colormap.c in Sources */,
-				18812C03211F762200BF714B /* t_control_data_4_fline_c.c in Sources */,
-				1843AA632123A8F20073BCB1 /* m_direction_labels_c.c in Sources */,
-				18812C19211F762300BF714B /* t_control_data_PVR_ctl_list.c in Sources */,
-				1813DAE421210809003AB1B9 /* t_control_int_IO.c in Sources */,
-				18812C34211F864800BF714B /* control_elements_IO_GTK.c in Sources */,
-				1813DAE521210809003AB1B9 /* t_control_real_IO.c in Sources */,
-				187D27E7212B44C100007329 /* tree_view_4_field_GTK.c in Sources */,
-				18F5F38321260020004320C7 /* tree_view_4_each_term_GTK.c in Sources */,
-				1813DAD1212107EB003AB1B9 /* t_control_chara2_real_IO.c in Sources */,
-				18812C0C211F762200BF714B /* t_ctl_data_mhd_forces_c.c in Sources */,
-				18812BFC211F762200BF714B /* t_ctl_data_mhd_evolution_c.c in Sources */,
-				18812C02211F762200BF714B /* t_ctl_data_temp_model_c.c in Sources */,
-				18F5F386212625E1004320C7 /* tree_view_chara2_real_GTK.c in Sources */,
-				18812C12211F762300BF714B /* t_control_data_4_iso_c.c in Sources */,
-				18812C1E211F762300BF714B /* t_control_data_ISO_ctl_list.c in Sources */,
-				18779AFD23319FA200D886CB /* t_ctl_data_crust_filter_c.c in Sources */,
-				18812BFA211F762200BF714B /* t_ctl_data_sph_filter_list.c in Sources */,
-				1813DAD6212107EB003AB1B9 /* t_control_chara_IO.c in Sources */,
-				183B85ED2129EBDE00148B24 /* tree_view_4_pvr_colormap.c in Sources */,
-				1843AA6C2124B4810073BCB1 /* tree_view_4_force_GTK.c in Sources */,
-				18812C13211F762300BF714B /* t_control_data_visualizer_c.c in Sources */,
-				187D27DE212B2E4D00007329 /* m_color_table_c.c in Sources */,
-				1832D27822CAA961005673BB /* ctl_panel_SPH_MHD_model_GTK.c in Sources */,
-				187D27F4212CDFFC00007329 /* tree_view_chara_int_GTK.c in Sources */,
-				1813DAD5212107EB003AB1B9 /* t_control_chara_real_IO.c in Sources */,
-				183A3F202129C55F00ACF6BD /* tree_view_real2_GTK.c in Sources */,
-				1881F75C212B0EDB002B63DA /* set_rgb_colors_c.c in Sources */,
-				18812C16211F762300BF714B /* t_ctl_data_4_view_transfer_c.c in Sources */,
-				18812BFB211F762200BF714B /* t_SGS_MHD_control_c.c in Sources */,
-				18812C05211F762200BF714B /* t_ctl_data_4_sphere_model_c.c in Sources */,
-				18812C0B211F762200BF714B /* t_control_data_pvr_isosurf_list.c in Sources */,
-				187D27EE212C9A7200007329 /* tree_view_chara_GTK.c in Sources */,
-				18812C17211F762300BF714B /* t_ctl_data_mhd_normalize_c.c in Sources */,
-				18812C0E211F762300BF714B /* t_control_data_FLINE_ctl_list.c in Sources */,
-				18779AFA23319F6700D886CB /* kemoview_gtk_routines.c in Sources */,
-				18812C0D211F762300BF714B /* t_ctl_data_mhd_evo_scheme_c.c in Sources */,
-				1813DAFD212203AE003AB1B9 /* t_control_chara_int2_IO.c in Sources */,
-				187F130B22C7FD7700B0F844 /* ctl_panel_platforms_GTK.c in Sources */,
-				18F5F37F2125EF7A004320C7 /* tree_view_chara_real_GTK.c in Sources */,
-				1813DAE621210809003AB1B9 /* t_control_real2_IO.c in Sources */,
-				1813DAE721210809003AB1B9 /* t_control_real3_IO.c in Sources */,
-				1852E58422CE45CD00E3C3E2 /* tree_view_real3_GTK.c in Sources */,
-				187D27E4212B447F00007329 /* control_panel_4_field_GTK.c in Sources */,
-				18812C1B211F762300BF714B /* t_control_data_pvr_section_list.c in Sources */,
-				1813DAD3212107EB003AB1B9 /* t_control_chara3_IO.c in Sources */,
-				18812C1A211F762300BF714B /* t_control_data_vizs_c.c in Sources */,
-				18812BFF211F762200BF714B /* t_control_data_lic_masking_list.c in Sources */,
-				18812C07211F762200BF714B /* t_control_data_4_pvr_c.c in Sources */,
-				1813DAE321210809003AB1B9 /* t_control_int_real_IO.c in Sources */,
-				18812C15211F762300BF714B /* t_ctl_data_zonal_means_c.c in Sources */,
-				18779AF123319E9E00D886CB /* create_tree_view_columns_GTK.c in Sources */,
-				18812C24211F765500BF714B /* skip_comment_c.c in Sources */,
-				18812BFD211F762200BF714B /* t_control_data_4_psf_c.c in Sources */,
-				18F5F389212637B0004320C7 /* tree_view_4_temp_BC_GTK.c in Sources */,
-				1813DAD2212107EB003AB1B9 /* t_control_chara_int_IO.c in Sources */,
-				18812BFE211F762200BF714B /* t_control_data_gen_sph_grid_c.c in Sources */,
-				1843AA762124BFBE0073BCB1 /* tree_views_4_fixed_lists_GTK.c in Sources */,
-				18812C00211F762200BF714B /* t_ctl_data_node_monitor_c.c in Sources */,
-				1813DAE821210809003AB1B9 /* t_control_int2_IO.c in Sources */,
-				18812C04211F762200BF714B /* t_control_data_LIC_c.c in Sources */,
-				18812C1C211F762300BF714B /* t_ctl_data_4_sph_monitor_c.c in Sources */,
-				1813DAD4212107EB003AB1B9 /* t_control_chara2_IO.c in Sources */,
-				18812C27211F765A00BF714B /* kemosrc_param_c.c in Sources */,
-				1881F759212B0ADA002B63DA /* quicksort_c.c in Sources */,
-				18812C0F211F762300BF714B /* t_control_data_LIC_pvr_c.c in Sources */,
+				181FFBB7249D45B300BB1E52 /* m_direction_labels_c.c in Sources */,
+				181FFBAF249D456700BB1E52 /* t_control_int_real_IO.c in Sources */,
+				181FFBB0249D456700BB1E52 /* t_control_int_IO.c in Sources */,
+				181FFB98249D44ED00BB1E52 /* t_control_chara_int3_IO.c in Sources */,
+				181FFBC3249D464700BB1E52 /* m_color_table_c.c in Sources */,
+				181FFB92249D44ED00BB1E52 /* t_control_chara_int_IO.c in Sources */,
+				181FFB93249D44ED00BB1E52 /* t_control_chara_real_IO.c in Sources */,
+				181FFBE2249D49B500BB1E52 /* quicksort_c.c in Sources */,
+				181FFB95249D44ED00BB1E52 /* t_control_chara2_real_IO.c in Sources */,
+				181FFB97249D44ED00BB1E52 /* t_control_chara2_IO.c in Sources */,
+				181FFBA6249D455F00BB1E52 /* t_control_real2_IO.c in Sources */,
+				181FFB91249D44ED00BB1E52 /* t_control_chara3_IO.c in Sources */,
+				181FFBD3249D480100BB1E52 /* skip_comment_c.c in Sources */,
+				181FFBD9249D48EF00BB1E52 /* calypso_param_c.c in Sources */,
+				181FFBA7249D455F00BB1E52 /* t_control_real3_IO.c in Sources */,
+				181FFBDC249D491400BB1E52 /* set_rgb_colors_c.c in Sources */,
+				181FFB94249D44ED00BB1E52 /* t_control_chara_IO.c in Sources */,
+				181FFBD6249D48DB00BB1E52 /* control_elements_IO_c.c in Sources */,
+				181FFBA8249D455F00BB1E52 /* t_control_real_IO.c in Sources */,
+				181FFBE7249D571000BB1E52 /* t_control_data_4_iso_c.c in Sources */,
+				181FFBB1249D456700BB1E52 /* t_control_int2_IO.c in Sources */,
+				181FFBB4249D459500BB1E52 /* t_ctl_data_pvr_colormap_c.c in Sources */,
+				181FFBEA249D574A00BB1E52 /* t_control_label_from_f.c in Sources */,
+				181FFBE4249D4FF000BB1E52 /* file_dialog.c in Sources */,
+				181FFB96249D44ED00BB1E52 /* t_control_chara_int2_IO.c in Sources */,
+				181FFBED249D576D00BB1E52 /* m_PSF_control_labels_from_f.c in Sources */,
+				181FFBC0249D461500BB1E52 /* set_rgba_table_c.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -890,6 +566,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					/Users/matsui/src_kemo/work,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -902,6 +579,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/opt/local/lib,
+					/Users/matsui/src_kemo/work,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

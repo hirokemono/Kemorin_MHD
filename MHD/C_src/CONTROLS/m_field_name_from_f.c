@@ -308,3 +308,22 @@ void dealloc_field_name_f(struct field_names_f *fld_list){
 	free(fld_list->istack_fields);
 	return;
 }
+
+void check_field_name_f(struct field_names_f *fld_list){
+    int i, j;
+    
+    printf("ntot_field_groups %d %d \n", 
+           fld_list->len_f, fld_list->ntot_field_groups);
+    for(i=0;i<fld_list->ntot_field_groups;i++){
+        printf("group: %d: %d: %d: %s\n", i, fld_list->num_fields[i],
+               fld_list->istack_fields[i], fld_list->field_group_name[i]);
+        for(j=fld_list->istack_fields[i];j<fld_list->istack_fields[i+1];j++){
+            printf("name: %d: %d: %s: %s\n", j, fld_list->num_comp[j],
+                   fld_list->field_name[j], fld_list->field_math[j]);
+        };
+        printf("\n");
+    };
+    printf("ntot_fields %d \n", fld_list->ntot_fields);
+    printf("\n");
+    return;
+};
