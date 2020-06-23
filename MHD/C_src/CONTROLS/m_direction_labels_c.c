@@ -7,10 +7,6 @@
 
 #include "m_direction_labels_c.h"
 
-const struct direction_flag_def scalar_flags[NUM_SCALAR_FLAG] = {
-			{"scalar", "$$  S  $$"},
-};
-
 const struct direction_flag_def vector_flags[NUM_VECTOR_FLAG] = {
 			{"vector", "$$  (V_{x}, V_{y}, V_{z})  $$"},
 			{"spherical_vector", "$$  (V_{r}, V_{\\theta}, V_{\\phi})  $$"},
@@ -29,9 +25,9 @@ const struct direction_flag_def vector_flags[NUM_VECTOR_FLAG] = {
 
 const struct direction_flag_def sym_tensor_flags[NUM_SYM_TENSOR_FLAG] = {
 			{"sym_tensor", "$$  (T_{xx}, T_{xy}, T_{xz}, T_{yy}, T_{yz}, T_{zz})  $$"},
-			{"spherical_vector", "$$  (T_{rr}, T_{r \\theta}, T_{r \\phi}, T_{\\theta \\theta}, T_{\\theta \\phi}, T_{\\phi \\phi})  $$"},
-			{"spherical_sym_tensor", "$$  (T_{ss}, T_{s \\phi}, T_{sz}, T_{\\phi \\phi}, T_{\\phi z}, T_{zz})  $$"},
-			{"cylindrical_sym_tensor", "$$  || T ||  $$"},
+			{"spherical_sym_tensor", "$$  (T_{rr}, T_{r \\theta}, T_{r \\phi}, T_{\\theta \\theta}, T_{\\theta \\phi}, T_{\\phi \\phi})  $$"},
+			{"cylindrical_sym_tensor", "$$  (T_{ss}, T_{s \\phi}, T_{sz}, T_{\\phi \\phi}, T_{\\phi z}, T_{zz})  $$"},
+			{"magnitude", "$$  || T ||  $$"},
 
 			{"xx", "$$  T_{xx}  $$"},
 			{"xy", "$$  T_{xy}  $$"},
@@ -163,23 +159,6 @@ static void get_constant_flags(struct constant_flag_def flags,
         math[j] = flags.flag_math[j];
     };
     *value = flags.value;
-    return;
-};
-
-void get_scalar_flags(char *name, char *math){
-	get_flags(scalar_flags[0], name, math);
-    return;
-};
-
-void get_vector_flags(int index, char *name, char *math){
-	if(index < -1 || index >= NUM_VECTOR_FLAG) return;
-	get_flags(vector_flags[index], name, math);
-    return;
-};
-
-void get_sym_tensor_flags(int index, char *name, char *math){
-	if(index < -1 || index >= NUM_SYM_TENSOR_FLAG) return;
-	get_flags(sym_tensor_flags[index], name, math);
     return;
 };
 

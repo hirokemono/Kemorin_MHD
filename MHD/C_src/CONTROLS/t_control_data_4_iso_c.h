@@ -35,6 +35,7 @@ struct iso_field_ctl_c{
     int iflag_use;
     
 	struct control_labels_f *label_fld_on_iso_ctl;
+    struct control_labels_f *flag_iso_color;
 	
 	struct chara_ctl_item *output_type_ctl;
 	struct real_ctl_item *output_value_ctl;
@@ -44,12 +45,12 @@ struct iso_field_ctl_c{
 
 struct iso_ctl_c{
 	struct control_labels_f *label_iso_ctl_w_dpl;
+    struct control_labels_f *flag_iso_format;
 	
 	struct chara_ctl_item *iso_file_head_ctl;
 	struct chara_ctl_item *iso_output_type_ctl;
 	
 	struct iso_define_ctl_c *iso_def_c;
-	int iflag_iso_output_field;
 	struct iso_field_ctl_c *iso_fld_c;
 };
 

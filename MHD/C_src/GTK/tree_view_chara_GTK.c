@@ -9,12 +9,13 @@
 
 
 /* Append new data at the end of list */
-int append_c_item_to_tree(int index, char *c_tbl, GtkTreeModel *child_model){
+int append_c_item_to_tree(int index, const char *c_tbl, GtkTreeModel *child_model){
     GtkTreeIter iter;
     
     gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_INDEX, c_tbl,
+                       COLUMN_FIELD_INDEX, index,
+                       COLUMN_FIELD_NAME,  c_tbl,
                        -1);
     return index + 1;
 }
@@ -28,6 +29,18 @@ int append_c_list_from_ctl(int index, struct chara_ctl_list *head,
     while (head != NULL){
         index = append_c_item_to_tree(index, head->c_item->c_tbl, child_model);
         head = head->_next;
+    };
+    return index;
+}
+
+int append_c_list_from_array(int index, int num, char **c_tbl, 
+                             GtkTreeView *c_tree_view)
+{
+    int i;
+    GtkTreeModel *model = gtk_tree_view_get_model(c_tree_view);  
+    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
+    for(i=0;i<num;i++){
+        index = append_c_item_to_tree(index, c_tbl[i], child_model);
     };
     return index;
 }
@@ -65,9 +78,7 @@ static void column_clicked(GtkTreeViewColumn *column, gpointer user_data)
     gint cur_id;
     GtkSortType order;
     GtkTreeViewColumn *cur_column;
-    
-    GtkTreeViewColumn *button;
-    
+        
     if (gtk_widget_is_focus(GTK_WIDGET(tree_view)) == FALSE) {
         gtk_widget_grab_focus(GTK_WIDGET(tree_view));
     }
@@ -153,7 +164,6 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add,
     GList *cur;
     
     gchar *old_strng;
-    int index_field;
 	int index = 0;
     
     /* Get path of selected raw */
@@ -207,7 +217,7 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add,
     g_list_free(reference_list);
 	
 	gtk_list_store_clear(GTK_LIST_STORE(child_model_to_add));
-	append_c_list_from_ctl(index, &c_clist->c_item_head, tree_view_to_add);
+	index = append_c_list_from_ctl(index, &c_clist->c_item_head, tree_view_to_add);
     /* Release the block of changed signal */
 	unblock_changed_signal(G_OBJECT(child_model_to_add));
 	return index;
@@ -224,7 +234,6 @@ void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
     GList *cur;
     
     gchar *old_strng;
-    int index_field;
     
     /* Get path of selected raw */
     /* The path is for tree_model_sort */
@@ -263,7 +272,7 @@ void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
         gtk_tree_model_get_iter(child_model_to_del, &iter, tree_path);
         gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &old_strng, -1);
         
-/*        printf("To be moved: %d, %s\n", index_field, old_strng); */
+/*        printf("To be moved: %s\n", old_strng); */
         /* Delete */
         gtk_list_store_remove(GTK_LIST_STORE(child_model_to_del), &iter);
 
@@ -332,10 +341,6 @@ void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view,
     GtkWidget *hbox;
     GtkWidget *scrolled_window;
     
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
-    
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
     
@@ -363,10 +368,6 @@ void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view,
     GtkCellRenderer *column_add;
     
     GtkWidget *scrolled_window;
-    
-    char *c_label;
-    
-    c_label = (char *)calloc(KCHARA_C, sizeof(char));
     
     hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);

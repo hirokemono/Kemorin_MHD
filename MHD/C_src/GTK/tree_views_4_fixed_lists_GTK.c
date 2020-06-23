@@ -98,53 +98,22 @@ void create_fixed_constant_tree(GtkWidget *label_tree)
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
 }
 
-void append_scalar_componnet_label(GtkWidget *label_tree){
+void append_vector_componnet_label(struct flag_with_math_f *components_flag, GtkWidget *label_tree){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     int i;
     GtkTreeIter iter;
-    for(i=0;i<NUM_SCALAR_FLAG;i++){
+    for(i=0;i<components_flag->num_flags;i++){
         gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
         gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
                            COLUMN_FIELD_INDEX, i,
-                           COLUMN_FIELD_NAME, scalar_flags[i].flag_name,
-                           COLUMN_FIELD_MATH, scalar_flags[i].flag_math,
+                           COLUMN_FIELD_NAME, components_flag->component_name[i],
+                           COLUMN_FIELD_MATH, components_flag->component_math[i],
                            -1);
     }
     
 }
 
-void append_vector_componnet_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
-    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    int i;
-    GtkTreeIter iter;
-    for(i=0;i<NUM_VECTOR_FLAG;i++){
-        gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-        gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                           COLUMN_FIELD_INDEX, i,
-                           COLUMN_FIELD_NAME, vector_flags[i].flag_name,
-                           COLUMN_FIELD_MATH, vector_flags[i].flag_math,
-                           -1);
-    }
-    
-}
-
-void append_sym_tensor_componnet_label(GtkWidget *label_tree){
-    GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
-    GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
-    int i;
-    GtkTreeIter iter;
-    for(i=0;i<NUM_SYM_TENSOR_FLAG;i++){
-        gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-        gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                           COLUMN_FIELD_INDEX, i,
-                           COLUMN_FIELD_NAME, sym_tensor_flags[i].flag_name,
-                           COLUMN_FIELD_MATH, sym_tensor_flags[i].flag_math,
-                           -1);
-    }
-    
-}
 void append_xyz_componnet_label(GtkWidget *label_tree){
     GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree));  
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));

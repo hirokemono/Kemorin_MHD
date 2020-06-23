@@ -28,6 +28,7 @@
 !!      subroutine set_label_psf_def_type_grp_f(names)  bind(c)
 !!      subroutine set_label_psf_dirs_f(names)  bind(c)
 !!      subroutine set_label_psf_coefs_f(names)  bind(c)
+!!
 !!      subroutine set_primary_section_coef_flag_f(names)  bind(c)
 !!@endverbatim
 !
@@ -257,14 +258,19 @@
       end subroutine set_label_psf_coefs_f
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine set_primary_section_coef_flag_f(names)  bind(c)
 !
+      use skip_comment_f
       use m_section_coef_flags
 !
       character(C_CHAR), intent(inout) :: names(*)
+      character(len=kchara) :: name_f
 !
-      call set_primary_section_coef_flag(names(1))
+      name_f = fill_from_null(names(1))
+      call set_primary_section_coef_flag(name_f)
+!
       end subroutine set_primary_section_coef_flag_f
 !
 !  ---------------------------------------------------------------------

@@ -33,7 +33,7 @@
 !
       character(len=kchara), parameter :: default_iso_prefix = 'iso'
 !
-      character(len=kchara), parameter :: cflag_const_iso = 'const'
+      character(len=kchara), parameter :: cflag_const_iso = 'constant'
       character(len=kchara), parameter :: cflag_field_iso = 'field'
 !
       integer(kind = kint), parameter :: iflag_constant_iso = -1
@@ -346,6 +346,7 @@
 !
 !
       call init_mgd_field_type_flags
+!
       if     (check_mul_flags(file_fmt_ctl, mgd_udt_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, mgd_ucd_labels)             &
      &   .or. check_mul_flags(file_fmt_ctl, udt_flags)                  &

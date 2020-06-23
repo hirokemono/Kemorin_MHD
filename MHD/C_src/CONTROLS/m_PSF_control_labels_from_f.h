@@ -104,12 +104,12 @@ label[0]   result_type
 label[1]   output_field 
 label[2]   result_value 
 
-Check iso_ctl_lbls->label_iso_type
+Check iso_ctl_lbls->flag_iso_color
 ctl_list->num_labels 2 
 label[0]   const 
 label[1]   field 
 
-Check iso_ctl_lbls->label_iso_format
+Check iso_ctl_lbls->flag_iso_format
 ctl_list->num_labels 6 
 label[0]   UCD 
 label[1]   VTK 
@@ -149,8 +149,8 @@ struct iso_control_labels{
 	struct control_labels_f *label_iso_define_ctl;
 	struct control_labels_f *label_fld_on_iso_ctl;
 	
-	struct control_labels_f *label_iso_type;
-	struct control_labels_f *label_iso_format;
+	struct control_labels_f *flag_iso_color;
+	struct control_labels_f *flag_iso_format;
 };
 
 /*  prototype */
@@ -161,6 +161,11 @@ struct control_labels_f * init_label_fld_on_psf_ctl();
 
 struct control_labels_f * init_label_iso_ctl_w_dpl();
 struct control_labels_f * init_label_iso_define_ctl();
+struct control_labels_f * init_flag_iso_format();
+struct control_labels_f * init_flag_iso_color();
+
+void set_primary_psf_format_flag_c(char *name);
+void set_primary_iso_format_flag_c(char *name);
 
 struct psf_control_labels * init_psf_control_labels();
 void dealloc_psf_control_labels(struct psf_control_labels *psf_ctl_lbls);

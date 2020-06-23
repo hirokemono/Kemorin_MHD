@@ -16,28 +16,20 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	int iflag_viz, iflag_monitor, num_comp, iflag_quad;
 	int i;
 	
-	GtkWidget **unused_field_tree_view 
-			= (GtkWidget **) g_object_get_data(G_OBJECT(button), "unused_trees");
-	GtkWidget *used_tree_view
-			= GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "used_tree"));
-	struct all_field_ctl_c *all_fld_list 
-			= (struct all_field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "all_fields");
-	struct field_ctl_c *fld_ctl_gtk
-			= (struct field_ctl_c *) g_object_get_data(G_OBJECT(user_data), "fields_gtk");
-	
+	struct field_views *fields_vws = (struct field_views *) user_data;
 	/* Get path of selected raw */
 	/* The path is for tree_model_sort */
 	GtkTreeModel *model_for_used 
-			= gtk_tree_view_get_model(GTK_TREE_VIEW(used_tree_view));
+			= gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->used_tree_view));
 	GtkTreeModel *child_model_for_used 
 			= gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_for_used));
 	
 	GtkTreeSelection *selection
-			= gtk_tree_view_get_selection(GTK_TREE_VIEW(used_tree_view));
+			= gtk_tree_view_get_selection(GTK_TREE_VIEW(fields_vws->used_tree_view));
 	GList *list = gtk_tree_selection_get_selected_rows(selection, NULL);
 	
 	
-	int num_group = all_fld_list->fld_list->ntot_field_groups;
+	int num_group = fields_vws->all_fld_list->fld_list->ntot_field_groups;
 	GtkTreeModel **model_for_unused;
 	GtkTreeModel **child_model_for_unused;
 	if ((model_for_unused
@@ -52,7 +44,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	}
 	
 	for(i=0;i<num_group;i++){
-		model_for_unused[i] = gtk_tree_view_get_model(GTK_TREE_VIEW(unused_field_tree_view[i]));
+		model_for_unused[i] = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->unused_field_tree_view[i]));
 		child_model_for_unused[i] = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_for_unused[i]));
 	};
 
@@ -81,6 +73,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 		block_changed_signal(G_OBJECT(child_model_for_unused[i]));
 	};
 	/* Back the reference to path and delete */
+
 	for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
 		GtkTreePath *tree_path;
 		GtkTreeIter iter;
@@ -95,15 +88,15 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
         gtk_tree_model_get(child_model_for_used, &iter, COLUMN_QUADRATURE, &iflag_quad, -1);
         
         printf("To be moved: %d, %s: %s\n", index_field, field_name,
-               all_fld_list->fld_list->field_name[index_field]);
+               fields_vws->all_fld_list->fld_list->field_name[index_field]);
 		/* Delete */
 		gtk_list_store_remove(GTK_LIST_STORE(child_model_for_used), &iter);
 		
 		/* Add */
 		for(i=0;i<num_group;i++){
-			if(index_field >= all_fld_list->fld_list->istack_fields[i] &&
-			   index_field < all_fld_list->fld_list->istack_fields[i+1]){
-				append_field_model_data(index_field, all_fld_list, 
+			if(index_field >= fields_vws->all_fld_list->fld_list->istack_fields[i] &&
+			   index_field < fields_vws->all_fld_list->fld_list->istack_fields[i+1]){
+				append_field_model_data(index_field, fields_vws->all_fld_list, 
 										GTK_LIST_STORE(child_model_for_unused[i]));
 			};
 		};
@@ -112,7 +105,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 		
 		/* Update control data */
 		printf("Delete field list \n");
-		delete_field_wqflag_in_ctl(index_field, all_fld_list, fld_ctl_gtk);
+		delete_field_wqflag_in_ctl(index_field, fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
 	}
 	g_list_free(reference_list);
 	
@@ -125,7 +118,7 @@ static void remove_field_to_use(GtkButton *button, gpointer user_data)
 	free(child_model_for_unused);
 	free(model_for_unused);
     /*
-    check_field_ctl_list(fld_ctl_gtk);
+    check_field_ctl_list(fields_vws->fld_ctl_gtk);
      */
 	return;
 }
@@ -226,6 +219,29 @@ static void add_field_to_use(GtkButton *button, gpointer user_data)
 	return;
 }
 
+static void cb_set_component_name(GtkComboBox *combobox_comp, gpointer user_data)
+{
+	struct field_views *fields_vws = (struct field_views *) user_data;
+	GtkTreeModel *model_comp = gtk_combo_box_get_model(combobox_comp);  
+	GtkTreeIter iter;
+	
+	gchar *row_string;
+	
+	gint idx = gtk_combo_box_get_active(combobox_comp);
+    if(idx < 0) return;
+    
+	GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+	
+    gtk_tree_model_get_iter(model_comp, &iter, path);  
+	gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_INDEX,
+					   &fields_vws->selected_component_id, -1);
+    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+    
+	printf("Selected component %d, %s\n", 
+		   fields_vws->selected_component_id, row_string);
+	return;
+}
+
 static void cb_set_field_name(GtkComboBox *combobox_field, gpointer user_data)
 {
 	struct field_views *fields_vws = (struct field_views *) user_data;
@@ -267,25 +283,33 @@ static void cb_set_field_name(GtkComboBox *combobox_field, gpointer user_data)
 	return;
 }
 
-static void cb_set_component_name(GtkComboBox *combobox_comp, gpointer user_data)
+static void cb_set_group_name(GtkComboBox *combobox_group, gpointer user_data)
 {
-	GtkTreeModel *model_comp = gtk_combo_box_get_model(combobox_comp);  
+	struct field_views *fields_vws = (struct field_views *) user_data;
+	GtkWidget *combobox_field = g_object_get_data(G_OBJECT(combobox_group), "cbox_field");
+	
+	GtkTreeModel *model_group = gtk_combo_box_get_model(combobox_group);
 	GtkTreeIter iter;
 	
 	gchar *row_string;
-	int index_comp;
+	int index_field;
 	
-	gint idx = gtk_combo_box_get_active(combobox_comp);
+	gint idx = gtk_combo_box_get_active(combobox_group);
     if(idx < 0) return;
     
 	GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
 	
-    gtk_tree_model_get_iter(model_comp, &iter, path);  
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_INDEX, &index_comp, -1);
-    gtk_tree_model_get(model_comp, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    
-    printf("Selected component %d, %s\n", index_comp, row_string);
+    gtk_tree_model_get_iter(model_group, &iter, path);  
+    gtk_tree_model_get(model_group, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
+    gtk_tree_model_get(model_group, &iter, COLUMN_FIELD_NAME, &row_string, -1);
+   
+    printf("Selected field %d %s\n", index_field, row_string);
+	GtkTreeModel *model_field
+			= gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->all_field_tree_view[index_field]));
 	
+	gtk_combo_box_set_model(GTK_COMBO_BOX(combobox_field), model_field);
+	gtk_combo_box_set_active (GTK_COMBO_BOX(combobox_field), 0);
+	cb_set_field_name(GTK_COMBO_BOX(combobox_field), user_data);
 	return;
 }
 
@@ -350,31 +374,20 @@ void add_unused_field_boxes(struct field_views *fields_vws, GtkWidget *vbox)
 	wrap_into_expanded_frame_gtk("Field to add", 260, 200, vbox_1, vbox);
 };
 
-void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
+void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox_out)
 {
 	GtkWidget *hbox;
 	GtkWidget *button;
 	GtkWidget *scrolled_window;
-	GtkWidget *entry;
 	
 	char *c_label = (char *)calloc(KCHARA_C, sizeof(char));
 	get_label_MHD_control_head(c_label);
 	
-	entry = gtk_entry_new();
-	g_object_set_data(G_OBJECT(entry), "unused_trees",
-					  (gpointer) fields_vws->unused_field_tree_view);
-	g_object_set_data(G_OBJECT(entry), "used_tree",
-					  (gpointer) fields_vws->used_tree_view);
-	g_object_set_data(G_OBJECT(entry), "all_fields",
-					  (gpointer) fields_vws->all_fld_list);
-	g_object_set_data(G_OBJECT(entry), "fields_gtk",
-					  (gpointer) fields_vws->fld_ctl_gtk);
-	
 	/* Delete data bottun */
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	button = gtk_button_new_with_label("Remove");
-    g_signal_connect(G_OBJECT(button), "clicked", 
-                     G_CALLBACK(remove_field_to_use), (gpointer) entry);
+	g_signal_connect(G_OBJECT(button), "clicked", 
+					 G_CALLBACK(remove_field_to_use), (gpointer) fields_vws);
 	gtk_box_pack_start(GTK_BOX(hbox), button, FALSE, FALSE, 0);
 
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -382,54 +395,103 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox)
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrolled_window, 400, 300);
 	gtk_container_add(GTK_CONTAINER(scrolled_window), fields_vws->used_tree_view);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_out), scrolled_window, TRUE, TRUE, 0);
 	
 	/* Set signals for sorting
 	add_sorting_signal_w_label(GTK_TREE_VIEW(fields_vws->used_tree_view), hbox);
 	*/
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_out), hbox, FALSE, FALSE, 0);
 	
 	/* Construct unused field panel */
-	add_unused_field_boxes(fields_vws, vbox);
+	add_unused_field_boxes(fields_vws, vbox_out);
 };
 
-void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox)
+void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox_out)
 {
-	GtkTreeModel *model_field;
-	GtkTreeModel *model_comp;
-	GtkWidget *hbox;
-	GtkWidget *combobox_field;
-    GtkCellRenderer *column_field;
-	GtkWidget *combobox_comp;
-    GtkCellRenderer *column_comp;
+	GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	
-	model_field = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->used_tree_view));
-	model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->vector_label_view));
+	GtkTreeModel *model_field = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->used_tree_view));
+	GtkWidget *combobox_field = gtk_combo_box_new_with_model(model_field);
+	GtkCellRenderer *column_field = gtk_cell_renderer_text_new();
 	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-	combobox_field = gtk_combo_box_new_with_model(model_field);
-	g_signal_connect(G_OBJECT(combobox_field), "changed", 
-				G_CALLBACK(cb_set_field_name), (gpointer) fields_vws);
-	column_field = gtk_cell_renderer_text_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), column_field, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,
-				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_box_pack_start(GTK_BOX(hbox), combobox_field, FALSE, FALSE, 0);
-	
-	
-	combobox_comp = gtk_combo_box_new_with_model(model_comp);
-	g_signal_connect(G_OBJECT(combobox_comp), "changed", 
-				G_CALLBACK(cb_set_component_name), NULL);
+	GtkTreeModel *model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->vector_label_view));
+	GtkWidget *combobox_comp = gtk_combo_box_new_with_model(model_comp);
+	GtkCellRenderer *column_comp = gtk_cell_renderer_text_new();
 	
 	g_object_set_data(G_OBJECT(combobox_field), "cbox_comp", combobox_comp);
 	g_object_set_data(G_OBJECT(combobox_field), "column_comp", combobox_comp);
-	gtk_box_pack_start(GTK_BOX(hbox), combobox_comp, FALSE, FALSE, 0);
 	
-	column_comp = gtk_cell_renderer_text_new();
+	g_signal_connect(G_OBJECT(combobox_field), "changed", 
+				G_CALLBACK(cb_set_field_name), (gpointer) fields_vws);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), column_field, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,
+				"text", COLUMN_FIELD_NAME, NULL);
+	
+	g_signal_connect(G_OBJECT(combobox_comp), "changed", 
+				G_CALLBACK(cb_set_component_name), fields_vws);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), column_comp, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), column_comp,
 				"text", COLUMN_FIELD_NAME, NULL);
 	
+	gtk_box_pack_start(GTK_BOX(hbox), combobox_field, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), combobox_comp, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_out), hbox, FALSE, FALSE, 0);
+}
+
+void add_all_field_combobox_vbox(char *field_ctl_label, char *comp_ctl_label, 
+								 struct field_views *fields_vws, GtkWidget *vbox_out)
+{
+	GtkWidget *hbox_fld =  gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	GtkWidget *hbox_comp = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	
+	GtkWidget *label_field = gtk_label_new(duplicate_underscore(field_ctl_label));
+	GtkTreeModel *model_group = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->field_group_tree_view));
+	GtkWidget *combobox_group = gtk_combo_box_new_with_model(model_group);
+	GtkCellRenderer *column_group = gtk_cell_renderer_text_new();
+	
+	GtkTreeModel *model_field = gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->all_field_tree_view[0]));
+	GtkWidget *combobox_field = gtk_combo_box_new_with_model(model_field);
+	GtkCellRenderer *column_field = gtk_cell_renderer_text_new();
+	
+	GtkWidget *label_comp =  gtk_label_new(duplicate_underscore(comp_ctl_label));
+	GtkTreeModel *model_comp =  gtk_tree_view_get_model(GTK_TREE_VIEW(fields_vws->vector_label_view));
+	GtkWidget *combobox_comp = gtk_combo_box_new_with_model(model_comp);
+	GtkCellRenderer *column_comp = gtk_cell_renderer_text_new();
+	
+	g_object_set_data(G_OBJECT(combobox_group), "cbox_field", combobox_field);
+	g_object_set_data(G_OBJECT(combobox_field), "cbox_comp", combobox_comp);
+	g_object_set_data(G_OBJECT(combobox_field), "column_comp", combobox_comp);
+	
+	g_signal_connect(G_OBJECT(combobox_group), "changed", 
+				G_CALLBACK(cb_set_group_name), (gpointer) fields_vws);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_group), column_group, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_group), column_group,
+				"text", COLUMN_FIELD_NAME, NULL);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_group), 0);
+	
+	g_signal_connect(G_OBJECT(combobox_field), "changed", 
+				G_CALLBACK(cb_set_field_name), (gpointer) fields_vws);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), column_field, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,
+				"text", COLUMN_FIELD_NAME, NULL);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), 0);
+	
+	g_signal_connect(G_OBJECT(combobox_comp), "changed",
+				G_CALLBACK(cb_set_component_name), fields_vws);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), column_comp, TRUE);
+	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), column_comp,
+				"text", COLUMN_FIELD_NAME, NULL);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), 0);
+	
+	
+	gtk_box_pack_start(GTK_BOX(hbox_fld), label_field, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_fld), combobox_group, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_fld), combobox_field, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(hbox_comp), label_comp, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_comp), combobox_comp, FALSE, FALSE, 0);
+	
+	gtk_box_pack_start(GTK_BOX(vbox_out), hbox_fld, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_out), hbox_comp, FALSE, FALSE, 0);
 }

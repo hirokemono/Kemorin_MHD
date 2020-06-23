@@ -25,12 +25,20 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	gchar *title;
 	
 	
-	fields_vws->used_tree_view = create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
-    fields_vws->unused_field_tree_view = create_unused_field_tree_views(fields_vws->all_fld_list);
-    create_direction_tree_views(fields_vws);
+	fields_vws->used_tree_view 
+			= create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
+	fields_vws->unused_field_tree_view
+			= create_unused_field_tree_views(fields_vws->all_fld_list);
+	
+	fields_vws->field_group_tree_view
+			= create_field_group_tree_view(fields_vws->all_fld_list);
+	fields_vws->all_field_tree_view
+			= create_all_field_tree_views(fields_vws->all_fld_list);
+	
+	create_direction_tree_views(fields_vws);
 	
 	
-	/* ウィンドウ作成 */
+	/* Create window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	title = g_strdup_printf("GtkTreeModelSort #%d", ++window_id);
 	gtk_window_set_title(GTK_WINDOW(window), title);
@@ -47,6 +55,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	add_field_selection_box(fields_vws, vbox);
 	
 	add_field_combobox_vbox(fields_vws, vbox);
+	add_all_field_combobox_vbox("Field_ctl:", "Comp_ctl:", fields_vws, vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 	
 	

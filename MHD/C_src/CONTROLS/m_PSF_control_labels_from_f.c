@@ -38,6 +38,8 @@ void set_label_psf_def_type_grp_f(char *name1);
 void set_label_psf_dirs_f(char *name1);
 void set_label_psf_coefs_f(char *name1);
 
+void set_primary_psf_format_flag_f(char *name1);
+void set_primary_iso_format_flag_f(char *name1);
 void set_primary_section_coef_flag_f(char *name1);
 
 
@@ -77,6 +79,25 @@ struct control_labels_f * init_label_iso_define_ctl(){
 	return label_iso_define_ctl;
 };
 
+struct control_labels_f * init_flag_iso_format(){
+	struct control_labels_f *flag_iso_format
+			= init_control_labels_f(num_label_iso_format_f, 
+									set_ctl_label_iso_format_f);
+	return flag_iso_format;
+};
+
+struct control_labels_f * init_flag_iso_color(){
+	struct control_labels_f *flag_iso_color
+			= init_control_labels_f(num_label_iso_type_f, set_label_iso_type_f);
+	return flag_iso_color;
+};
+
+void set_primary_psf_format_flag_c(char *name){
+	set_primary_psf_format_flag_f(name);
+};
+void set_primary_iso_format_flag_c(char *name){
+	set_primary_iso_format_flag_f(name);
+};
 
 struct psf_control_labels * init_psf_control_labels(){
 		struct psf_control_labels *psf_ctl_lbls;
@@ -151,11 +172,8 @@ struct iso_control_labels * init_iso_control_labels(){
 	iso_ctl_lbls->label_iso_define_ctl = init_label_iso_define_ctl();
 	iso_ctl_lbls->label_fld_on_iso_ctl = init_label_fld_on_psf_ctl();
 	
-	iso_ctl_lbls->label_iso_type
-			= init_control_labels_f(num_label_iso_type_f, set_label_iso_type_f);
-	iso_ctl_lbls->label_iso_format
-			= init_control_labels_f(num_label_iso_format_f, 
-									set_ctl_label_iso_format_f);
+	iso_ctl_lbls->flag_iso_color = init_flag_iso_color();
+	iso_ctl_lbls->flag_iso_format = init_flag_iso_format();
 	return iso_ctl_lbls;
 };
 
@@ -163,8 +181,8 @@ void dealloc_iso_control_labels(struct iso_control_labels *iso_ctl_lbls){
 	dealloc_control_labels_f(iso_ctl_lbls->label_iso_ctl_w_dpl);
 	dealloc_control_labels_f(iso_ctl_lbls->label_iso_define_ctl);
 	dealloc_control_labels_f(iso_ctl_lbls->label_fld_on_iso_ctl);
-	dealloc_control_labels_f(iso_ctl_lbls->label_iso_type);
-	dealloc_control_labels_f(iso_ctl_lbls->label_iso_format);
+	dealloc_control_labels_f(iso_ctl_lbls->flag_iso_color);
+	dealloc_control_labels_f(iso_ctl_lbls->flag_iso_format);
 	free(iso_ctl_lbls);
 	return;
 };
@@ -178,10 +196,10 @@ void check_iso_control_labels(struct iso_control_labels *iso_ctl_lbls){
 	check_control_labels_f(iso_ctl_lbls->label_iso_define_ctl);
 	printf("Check iso_ctl_lbls->label_fld_on_iso_ctl\n");
 	check_control_labels_f(iso_ctl_lbls->label_fld_on_iso_ctl);
-	printf("Check iso_ctl_lbls->label_iso_type\n");
-	check_control_labels_f(iso_ctl_lbls->label_iso_type);
-	printf("Check iso_ctl_lbls->label_iso_format\n");
-	check_control_labels_f(iso_ctl_lbls->label_iso_format);
+	printf("Check iso_ctl_lbls->flag_iso_color\n");
+	check_control_labels_f(iso_ctl_lbls->flag_iso_color);
+	printf("Check iso_ctl_lbls->flag_iso_format\n");
+	check_control_labels_f(iso_ctl_lbls->flag_iso_format);
 	return;
 };
 

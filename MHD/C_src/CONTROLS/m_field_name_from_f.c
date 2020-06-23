@@ -55,6 +55,20 @@ void set_wide_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 void set_force_with_SGS_labels_f(int *ncomp1, char *name1, char *math1);
 void set_true_SGS_term_labels_f(int *ncomp1, char *name1, char *math1);
 
+
+int num_flag_scalar_comp_f();
+int num_flag_vector_comp_f();
+int num_flag_sym_tensor_comp_f();
+int num_flag_asym_tensor_comp_f();
+
+void set_flag_scalar_comp_f(int *ncomp1, char *name1, char *math1);
+void set_flag_vector_comp_f(int *ncomp1, char *name1, char *math1);
+void set_flag_sym_tensor_comp_f(int *ncomp1, char *name1, char *math1);
+void set_flag_asym_tensor_comp_f(int *ncomp1, char *name1, char *math1);
+
+void set_primary_componnet_flag_f(char *name1);
+
+
 static void set_field_groups_from_f(struct field_names_f *fld_list){
 	int i, len;
 	char *packed_name;
@@ -325,5 +339,61 @@ void check_field_name_f(struct field_names_f *fld_list){
     };
     printf("ntot_fields %d \n", fld_list->ntot_fields);
     printf("\n");
+    return;
+};
+
+
+
+struct flag_with_math_f * init_scalar_components_flag(){
+    struct flag_with_math_f *scalar_components_flag
+    = init_flag_with_math_f(num_flag_scalar_comp_f, 
+                            set_flag_scalar_comp_f);
+    return scalar_components_flag;
+};
+struct flag_with_math_f * init_vector_components_flag(){
+    struct flag_with_math_f *vector_components_flag
+    = init_flag_with_math_f(num_flag_vector_comp_f, 
+                            set_flag_vector_comp_f);
+    return vector_components_flag;
+};
+struct flag_with_math_f * init_sym_tensor_components_flag(){
+    struct flag_with_math_f *sym_tensor_components_flag
+    = init_flag_with_math_f(num_flag_sym_tensor_comp_f, 
+                            set_flag_sym_tensor_comp_f);
+    return sym_tensor_components_flag;
+};
+struct flag_with_math_f * init_asym_tensor_components_flag(){
+    struct flag_with_math_f *asym_tensor_components_flag
+    = init_flag_with_math_f(num_flag_asym_tensor_comp_f, 
+                            set_flag_asym_tensor_comp_f);
+    return asym_tensor_components_flag;
+};
+
+struct component_flags_f * init_component_flags_f(){
+    struct component_flags_f *comp_flags;
+    if((comp_flags = (struct component_flags_f *) malloc(sizeof(struct component_flags_f))) == NULL){
+        printf("malloc error for component_flags_f\n");
+        exit(0);
+    };
+    
+    comp_flags->scalar_components_flag =      init_scalar_components_flag();
+    comp_flags->vector_components_flag =      init_vector_components_flag();
+    comp_flags->sym_tensor_components_flag = init_sym_tensor_components_flag();
+    comp_flags->asym_tensor_components_flag = init_asym_tensor_components_flag();
+    return comp_flags;
+};
+void dealloc_component_flags_f(struct component_flags_f *comp_flags){
+    dealloc_flag_with_math_f(comp_flags->scalar_components_flag);
+    dealloc_flag_with_math_f(comp_flags->vector_components_flag);
+    dealloc_flag_with_math_f(comp_flags->sym_tensor_components_flag);
+    dealloc_flag_with_math_f(comp_flags->asym_tensor_components_flag);
+    free(comp_flags);
+    return;
+};
+void check_component_flags_f(struct component_flags_f *comp_flags){
+    check_flag_with_math_f(comp_flags->scalar_components_flag);
+    check_flag_with_math_f(comp_flags->vector_components_flag);
+    check_flag_with_math_f(comp_flags->sym_tensor_components_flag);
+    check_flag_with_math_f(comp_flags->asym_tensor_components_flag);
     return;
 };

@@ -1,4 +1,5 @@
 
+#include <string.h>
 #include <gtk/gtk.h>
 #include "control_elements_IO_c.h"
 #include "t_control_int_IO.h"
@@ -6,6 +7,7 @@
 #include "t_control_chara_IO.h"
 
 #include "control_elements_IO_GTK.h"
+#include "control_combobox_GTK.h"
 #include "t_control_data_4_iso_c.h"
 #include "kemoview_gtk_routines.h"
 
@@ -94,7 +96,11 @@ static void cb_Open(GtkButton *button, gpointer data)
         int iflag = read_iso_ctl_file_c(read_file_name, buf, iso_c0);
         iflag_read_iso = 1;
 		g_free(read_file_name);
+		printf("iso_output_type_ctl original %s\n", iso_c0->iso_output_type_ctl->c_tbl);
+        set_primary_iso_format_flag_c(iso_c0->iso_output_type_ctl->c_tbl);
+		printf("iso_output_type_ctl modified %s\n", iso_c0->iso_output_type_ctl->c_tbl);
 		
+        
 		draw_MHD_control_list(vbox_0, iso_c0, ptem_test);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
@@ -160,24 +166,50 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 	gtk_widget_show_all(window);
 };
 
+GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_2[2];
+	
+	char *c_label;
+	
+	GtkWidget *color_flags_tree_view
+			= create_control_flags_tree_view(iso_fld_c->flag_iso_color);
+	
+	add_control_combobox_vbox(iso_fld_c->label_fld_on_iso_ctl->label[ 0], 
+							  iso_fld_c->output_type_ctl, 
+							  iso_fld_c->flag_iso_color, 
+							  color_flags_tree_view, vbox_1);
+	printf("%le\n", iso_fld_c->output_value_ctl->r_data);
+	c_label = duplicate_underscore(iso_fld_c->label_fld_on_iso_ctl->label[ 2]);
+	vbox_2[0] = make_real_hbox(1, c_label, iso_fld_c->output_value_ctl);
+	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
+	
+	return vbox_1;
+};
+
+
 void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c, struct chara_ctl_item *ptem_t){
 	GtkWidget *vbox_1;
 	GtkWidget *vbox_2[iso_c->label_iso_ctl_w_dpl->num_labels];
 	
 	char *c_label;
 	
+	GtkWidget *file_fmt_flags_tree_view
+			= create_control_flags_tree_view(iso_c->flag_iso_format);
+	
 	/* Generate expander */
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
 	vbox_2[0] = make_text_hbox(0, duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 0]), iso_c->iso_file_head_ctl);
-	vbox_2[1] = make_text_hbox(0, duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 1]),
-							   iso_c->iso_output_type_ctl);
-	
+
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[1], FALSE, FALSE, 0);
+	add_control_combobox_vbox(iso_c->label_iso_ctl_w_dpl->label[ 1], 
+							  iso_c->iso_output_type_ctl, 
+							  iso_c->flag_iso_format, 
+							  file_fmt_flags_tree_view, vbox_1);
 	
 	vbox_2[2] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	vbox_2[3] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	vbox_2[3] = iso_field_ctl_list_box(iso_c->iso_fld_c);
 	wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
 			 400, 200, vbox_2[2], vbox_1);

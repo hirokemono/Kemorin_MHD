@@ -11,7 +11,6 @@
 #include <stdio.h>
 #include "calypso_param_c.h"
 
-#define NUM_SCALAR_FLAG      1
 #define NUM_VECTOR_FLAG     11
 #define NUM_SYM_TENSOR_FLAG 22
 
@@ -40,7 +39,6 @@ struct constant_flag_def{
 };
 
 
-extern const struct direction_flag_def scalar_flags[NUM_SCALAR_FLAG];
 extern const struct direction_flag_def vector_flags[NUM_VECTOR_FLAG];
 extern const struct direction_flag_def sym_tensor_flags[NUM_SYM_TENSOR_FLAG];
 extern const struct direction_flag_def xyz_vector_flags[NUM_XYZ_FLAG];
@@ -54,9 +52,6 @@ extern const char boundary_type_def[NUM_BOUNDARY_TYPE_DEF][NCHARA_FLAG];
 
 /* prototypes */
 
-void get_scalar_flags(char *name, char *math);
-void get_vector_flags(int index, char *name, char *math);
-void get_sym_tensor_flags(int index, char *name, char *math);
 void get_vector_direction_flags(int index, char *name, char *math);
 void get_surface_equation_flags(int index, char *name, char *math);
 
