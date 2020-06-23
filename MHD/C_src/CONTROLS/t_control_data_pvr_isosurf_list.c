@@ -74,7 +74,7 @@ int write_pvr_isosurf_ctl_c(FILE *fp, int level, const char *label,
 
 
 void init_pvr_iso_ctl_list(struct pvr_iso_ctl_list *head){
-	
+    head->pvr_iso_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

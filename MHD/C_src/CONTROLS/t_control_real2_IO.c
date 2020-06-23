@@ -65,6 +65,7 @@ void set_from_real2_ctl_item_c(struct real2_ctl_item *r2_item,
 
 
 static void init_real2_ctl_list(struct real2_ctl_list *head){
+    head->r2_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

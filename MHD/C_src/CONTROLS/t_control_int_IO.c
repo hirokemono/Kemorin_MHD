@@ -56,6 +56,7 @@ int set_from_int_ctl_item_c(struct int_ctl_item *i_item){
 
 
 static void init_int_ctl_list(struct int_ctl_list *head){
+    head->i_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

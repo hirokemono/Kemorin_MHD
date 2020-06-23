@@ -98,7 +98,7 @@ void write_pvr_section_subfile_c(struct pvr_section_ctl_c *pvr_sect_c){
 
 
 void init_pvr_section_ctl_list(struct pvr_sect_ctl_list *head){
-	
+    head->pvr_sect_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

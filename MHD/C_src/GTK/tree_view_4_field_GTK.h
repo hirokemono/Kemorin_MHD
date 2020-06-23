@@ -57,4 +57,9 @@ GtkWidget * create_field_group_tree_view(struct all_field_ctl_c *all_fld_list);
 
 void create_direction_tree_views(struct field_views *fields_vws);
 
+
+int find_field_address(const char *field_in, struct field_names_f *fld_list);
+int find_field_group(const int i_field, struct field_names_f *fld_list);
+int find_comp_address(char *comp_in, int i_field, struct field_names_f *fld_list,
+					  struct component_flags_f *comp_flags);
 #endif /* tree_view_4_field_GTK_h_ */

@@ -97,7 +97,7 @@ int write_lic_masking_ctl_c(FILE *fp, int level, const char *label,
 
 
 void init_lic_masking_ctl_list(struct lic_masking_ctl_list *head){
-	
+    head->lic_mask_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

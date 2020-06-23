@@ -459,6 +459,17 @@ void add_all_field_combobox_vbox(char *field_ctl_label, char *comp_ctl_label,
 	GtkWidget *combobox_comp = gtk_combo_box_new_with_model(model_comp);
 	GtkCellRenderer *column_comp = gtk_cell_renderer_text_new();
 	
+	int i_field = find_field_address(fields_vws->selected_field_ctl->c_tbl,
+									 fields_vws->all_fld_list->fld_list);
+	int i_grp = find_field_group(i_field, fields_vws->all_fld_list->fld_list);
+	int i_comp = find_comp_address(fields_vws->selected_component_ctl->c_tbl, i_field, 
+								   fields_vws->all_fld_list->fld_list,
+								   fields_vws->comp_flags);
+	
+	printf("%d %d selected_field_ctl: %s\n", i_grp, i_field, 
+		   fields_vws->selected_field_ctl->c_tbl);
+    printf("%d selected_component_ctl: %s\n", i_comp, fields_vws->selected_component_ctl->c_tbl);
+    
 	g_object_set_data(G_OBJECT(combobox_group), "cbox_field", combobox_field);
 	g_object_set_data(G_OBJECT(combobox_field), "cbox_comp", combobox_comp);
 	g_object_set_data(G_OBJECT(combobox_field), "column_comp", combobox_comp);
@@ -468,21 +479,21 @@ void add_all_field_combobox_vbox(char *field_ctl_label, char *comp_ctl_label,
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_group), column_group, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_group), column_group,
 				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_group), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_group), i_grp);
 	
 	g_signal_connect(G_OBJECT(combobox_field), "changed", 
 				G_CALLBACK(cb_set_field_name), (gpointer) fields_vws);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), column_field, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), column_field,
 				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), i_field);
 	
 	g_signal_connect(G_OBJECT(combobox_comp), "changed",
 				G_CALLBACK(cb_set_component_name), fields_vws);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_comp), column_comp, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_comp), column_comp,
 				"text", COLUMN_FIELD_NAME, NULL);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), 0);
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_comp), i_comp);
 	
 	
 	gtk_box_pack_start(GTK_BOX(hbox_fld), label_field, FALSE, FALSE, 0);

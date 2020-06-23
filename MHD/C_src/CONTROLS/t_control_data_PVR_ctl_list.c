@@ -67,7 +67,7 @@ void write_volume_rendering_ctl_file_c(struct volume_rendering_ctl_c *v_render_c
 
 
 void init_PVR_ctl_list(struct PVR_ctl_list *head){
-	
+    head->v_render_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

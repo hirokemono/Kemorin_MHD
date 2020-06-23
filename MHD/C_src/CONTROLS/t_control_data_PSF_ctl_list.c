@@ -69,7 +69,7 @@ void write_sectioning_ctl_file_c(struct sectioning_ctl_c *sections_c){
 
 
 void init_PSF_ctl_list(struct PSF_ctl_list *head){
-	
+    head->sections_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

@@ -69,7 +69,7 @@ void write_fieldline_ctl_file_c(struct fieldline_ctl_c *fldlines_c){
 
 
 void init_FLINE_ctl_list(struct FLINE_ctl_list *head){
-	
+    head->fldlines_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

@@ -96,7 +96,7 @@ int write_volume_spectr_control_c(FILE *fp, int level, const char *label,
 
 
 void init_sph_vol_spectr_list(struct volume_spectr_ctl_list *head){
-	
+    head->v_pwr_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

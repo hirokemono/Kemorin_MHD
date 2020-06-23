@@ -96,6 +96,7 @@ void copy_to_chara_ctl_item(const char *c_data, struct chara_ctl_item *c_item){
 
 
 void init_chara_ctl_list(struct chara_ctl_list *head){
+    head->c_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;
@@ -294,7 +295,6 @@ struct chara_clist * init_chara_clist(){
         printf("malloc error for chara_clist\n");
         exit(0);
     }
-
     init_chara_ctl_list(&c_clst->c_item_head);
 
     c_clst->iflag_use = 0;

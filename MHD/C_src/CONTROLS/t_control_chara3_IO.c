@@ -79,6 +79,7 @@ void set_from_chara3_ctl_item_c(struct chara3_ctl_item *c3_item,
 
 
 static void init_chara3_ctl_list(struct chara3_ctl_list *head){
+    head->c3_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

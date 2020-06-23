@@ -69,7 +69,7 @@ void write_isosurface_ctl_file_c(struct isosurface_ctl_c *isosurfs_c){
 
 
 void init_ISO_ctl_list(struct ISO_ctl_list *head){
-	
+    head->isosurfs_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

@@ -74,6 +74,7 @@ void set_from_chara2_ctl_item_c(struct chara2_ctl_item *c2_item,
 
 
 static void init_chara2_ctl_list(struct chara2_ctl_list *head){
+    head->c2_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

@@ -58,6 +58,7 @@ void set_from_real_ctl_item_c(struct real_ctl_item *r_item, double *r1_out){
 
 
 static void init_real_ctl_list(struct real_ctl_list *head){
+    head->r_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

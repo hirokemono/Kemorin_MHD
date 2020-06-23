@@ -58,12 +58,12 @@ void c_tree_name_edited(gchar *path_str, gchar *new_text,
     gchar *old_text;
 
     gtk_tree_model_get_iter(child_model, &iter, child_path);  
-    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_INDEX, &old_text, -1);
+    gtk_tree_model_get(child_model, &iter, COLUMN_FIELD_NAME, &old_text, -1);
     
     printf("Change %s to %s\n", old_text, new_text);
 
     gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_INDEX, new_text, -1);
+                       COLUMN_FIELD_NAME, new_text, -1);
     gtk_tree_path_free(child_path);  
     gtk_tree_path_free(path);  
     
@@ -128,7 +128,7 @@ int add_c_list_from_combobox_GTK(int index, GtkTreePath *path, GtkTreeModel *tre
     gchar *row_string;
     
     gtk_tree_model_get_iter(tree_model, &iter, path);  
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_INDEX, &row_string, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     
     index = append_c_item_to_tree(index, row_string, child_model_to_add);
     append_chara_clist(row_string, c_clist);
@@ -146,7 +146,7 @@ int add_c_list_from_combobox_GTK_w_one(int index, GtkTreePath *path, GtkTreeMode
     gchar *row_string;
     
     gtk_tree_model_get_iter(tree_model, &iter, path);  
-    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_INDEX, &row_string, -1);
+    gtk_tree_model_get(tree_model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
     
     index = append_c_item_to_tree(index, row_string, child_model_to_add);
     append_chara_clist(row_string, c_clist);
@@ -202,7 +202,7 @@ int add_c_list_items_GTK(GtkTreeView *tree_view_to_add,
 	cur = g_list_first(reference_list);
 	tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
 	gtk_tree_model_get_iter(child_model_to_add, &iter, tree_path);
-	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_INDEX, &old_strng, -1);
+	gtk_tree_model_get(child_model_to_add, &iter, COLUMN_FIELD_NAME, &old_strng, -1);
     for (cur = g_list_first(reference_list); cur != NULL; cur = g_list_next(cur)) {
         
         /* Add */
@@ -270,7 +270,7 @@ void delete_c_list_items_GTK(GtkTreeView *tree_view_to_del,
         GtkTreeIter iter;
         tree_path = gtk_tree_row_reference_get_path((GtkTreeRowReference *)cur->data);
         gtk_tree_model_get_iter(child_model_to_del, &iter, tree_path);
-        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_INDEX, &old_strng, -1);
+        gtk_tree_model_get(child_model_to_del, &iter, COLUMN_FIELD_NAME, &old_strng, -1);
         
 /*        printf("To be moved: %s\n", old_strng); */
         /* Delete */
@@ -313,11 +313,11 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
     gtk_tree_view_column_set_title(column, "Field name");
     g_object_set(G_OBJECT(renderer_text), "editable", TRUE, NULL);
     gtk_tree_view_column_pack_start(column, renderer_text, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_text, "text", COLUMN_FIELD_INDEX, NULL);
+    gtk_tree_view_column_set_attributes(column, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
     g_object_set(renderer_text, "width", (gint)150, NULL);
     gtk_tree_view_column_set_resizable(column, TRUE);
     gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_INDEX));
+    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
     g_signal_connect(G_OBJECT(column), "clicked", 
                      G_CALLBACK(column_clicked), (gpointer) c_tree_view);
     
@@ -327,10 +327,10 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
     
     /* sort */
-    column = gtk_tree_view_get_column(c_tree_view, COLUMN_FIELD_INDEX);
+    column = gtk_tree_view_get_column(c_tree_view, COLUMN_FIELD_NAME);
     gtk_tree_view_column_set_sort_order(column, GTK_SORT_ASCENDING);
     gtk_tree_view_column_set_sort_indicator(column, TRUE);
-    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_INDEX, GTK_SORT_ASCENDING);
+    gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), COLUMN_FIELD_NAME, GTK_SORT_ASCENDING);
 }
 
 
@@ -382,7 +382,7 @@ void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view,
     column_add = gtk_cell_renderer_text_new();
     gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_add), column_add, TRUE);
     gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_add), column_add,
-                                   "text", COLUMN_FIELD_INDEX, NULL);
+                                   "text", COLUMN_FIELD_NAME, NULL);
 	
 	
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);

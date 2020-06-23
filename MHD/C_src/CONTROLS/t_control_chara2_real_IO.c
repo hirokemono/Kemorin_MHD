@@ -78,6 +78,7 @@ void set_from_chara2_real_ctl_item_c(struct chara2_real_ctl_item *c2r_item,
 
 
 static void init_c2r_ctl_list(struct chara2_real_ctl_list *head){
+    head->c2r_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

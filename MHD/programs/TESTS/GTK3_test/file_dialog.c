@@ -10,6 +10,7 @@
 #include "control_combobox_GTK.h"
 #include "t_control_data_4_iso_c.h"
 #include "kemoview_gtk_routines.h"
+#include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
 
 void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c);
@@ -184,32 +185,70 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 	gtk_widget_show_all(window);
 };
 
+static void cb_add(GtkButton *button, gpointer user_data)
+{
+	GtkWidget *c_tree_view = GTK_WIDGET(user_data);
+	struct chara_clist *iso_area_list
+			= (struct chara_clist *) g_object_get_data(G_OBJECT(user_data), "chara_list");
+	add_c_list_items_GTK(GTK_TREE_VIEW(c_tree_view), iso_area_list);
+}
+static void cb_delete(GtkButton *button, gpointer user_data)
+{
+	GtkWidget *c_tree_view = GTK_WIDGET(user_data);
+	struct chara_clist *iso_area_list
+			= (struct chara_clist *) g_object_get_data(G_OBJECT(user_data), "chara_list");
+	delete_c_list_items_GTK(GTK_TREE_VIEW(c_tree_view), iso_area_list);
+}
+
 GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *vbox_2[2];
 	
-	struct field_ctl_c *field_ctl = init_field_ctl_c();
-	struct field_views *fields_vws = init_field_views_GTK(field_ctl);
-	fields_vws->used_tree_view 
-			= create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
-	fields_vws->unused_field_tree_view
-			= create_unused_field_tree_views(fields_vws->all_fld_list);
+	iso_GTK0->iso_field_ctl = init_field_ctl_c();
+	iso_GTK0->iso_fields_vws = init_field_views_GTK(iso_GTK0->iso_field_ctl);
+	iso_GTK0->iso_fields_vws->used_tree_view 
+			= create_field_tree_view(iso_GTK0->iso_fields_vws->all_fld_list,
+									 iso_GTK0->iso_fields_vws->fld_ctl_gtk);
+	iso_GTK0->iso_fields_vws->unused_field_tree_view
+			= create_unused_field_tree_views(iso_GTK0->iso_fields_vws->all_fld_list);
 	
-	fields_vws->field_group_tree_view
-			= create_field_group_tree_view(fields_vws->all_fld_list);
-	fields_vws->all_field_tree_view
-			= create_all_field_tree_views(fields_vws->all_fld_list);
-	fields_vws->selected_field_ctl =     iso_def_c->isosurf_data_ctl;
-	fields_vws->selected_component_ctl = iso_def_c->isosurf_comp_ctl;
+	iso_GTK0->iso_fields_vws->field_group_tree_view
+			= create_field_group_tree_view(iso_GTK0->iso_fields_vws->all_fld_list);
+	iso_GTK0->iso_fields_vws->all_field_tree_view
+			= create_all_field_tree_views(iso_GTK0->iso_fields_vws->all_fld_list);
+	iso_GTK0->iso_fields_vws->selected_field_ctl =     iso_def_c->isosurf_data_ctl;
+	iso_GTK0->iso_fields_vws->selected_component_ctl = iso_def_c->isosurf_comp_ctl;
 	
-	create_direction_tree_views(fields_vws);
-	add_all_field_combobox_vbox("Field_ctl:", "Comp_ctl:", fields_vws, vbox_1);
+	create_direction_tree_views(iso_GTK0->iso_fields_vws);
 	
-	char *c_label = duplicate_underscore(iso_def_c->label_iso_define_ctl->label[ 2]);
-	vbox_2[0] = make_real_hbox(1, c_label, iso_def_c->isosurf_value_ctl);
+	printf("isosurf_data_ctl: %s\n", iso_def_c->isosurf_data_ctl->c_tbl);
+	printf("isosurf_comp_ctl: %s\n", iso_def_c->isosurf_comp_ctl->c_tbl);
+	add_all_field_combobox_vbox("Field_ctl:", "Comp_ctl:", 
+								iso_GTK0->iso_fields_vws, vbox_1);
+	
+	vbox_2[0] = make_real_hbox(1, iso_def_c->label_iso_define_ctl->label[ 2],
+							   iso_def_c->isosurf_value_ctl);
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
+	
+	printf("iso_area_list %d\n", count_chara_clist(iso_def_c->iso_area_list));
+	int index = 0;
+	GtkWidget *c_tree_view = create_fixed_label_w_index_tree();
+	index = append_c_list_from_ctl(index, &iso_def_c->iso_area_list->c_item_head, 
+								   c_tree_view);
+	printf("index %d\n", index);
+	GtkWidget *button_A = gtk_button_new_with_label("Add");
+	GtkWidget *button_D = gtk_button_new_with_label("Delete");
+	g_object_set_data(G_OBJECT(c_tree_view), "chara_list",
+					  (gpointer) iso_def_c->iso_area_list);
+	g_signal_connect(G_OBJECT(button_A), "clicked", G_CALLBACK(cb_add),
+					 (gpointer) c_tree_view);
+	g_signal_connect(G_OBJECT(button_D), "clicked", G_CALLBACK(cb_delete),
+					 (gpointer) c_tree_view);
+	add_chara_list_box_w_addbottun(c_tree_view, 
+								   button_A, button_D, vbox_1);
 	return vbox_1;
 };
+
 
 GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
@@ -217,18 +256,19 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	
 	char *c_label;
 	
-	struct field_ctl_c *field_ctl = init_field_ctl_c();
-	struct field_views *fields_vws = init_field_views_GTK(field_ctl);
-	fields_vws->used_tree_view 
-			= create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
-	fields_vws->unused_field_tree_view
-			= create_unused_field_tree_views(fields_vws->all_fld_list);
+	iso_GTK0->color_field_ctl = init_field_ctl_c();
+	iso_GTK0->color_fields_vws = init_field_views_GTK(iso_GTK0->color_field_ctl);
+	iso_GTK0->color_fields_vws->used_tree_view 
+			= create_field_tree_view(iso_GTK0->color_fields_vws->all_fld_list,
+									 iso_GTK0->color_fields_vws->fld_ctl_gtk);
+	iso_GTK0->color_fields_vws->unused_field_tree_view
+			= create_unused_field_tree_views(iso_GTK0->color_fields_vws->all_fld_list);
 	
-	fields_vws->field_group_tree_view
-			= create_field_group_tree_view(fields_vws->all_fld_list);
-	fields_vws->all_field_tree_view
-			= create_all_field_tree_views(fields_vws->all_fld_list);
-	create_direction_tree_views(fields_vws);
+	iso_GTK0->color_fields_vws->field_group_tree_view
+			= create_field_group_tree_view(iso_GTK0->color_fields_vws->all_fld_list);
+	iso_GTK0->color_fields_vws->all_field_tree_view
+			= create_all_field_tree_views(iso_GTK0->color_fields_vws->all_fld_list);
+	create_direction_tree_views(iso_GTK0->color_fields_vws);
 	
 	
 	GtkWidget *color_flags_tree_view
@@ -242,7 +282,7 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	c_label = duplicate_underscore(iso_fld_c->label_fld_on_iso_ctl->label[ 2]);
 	vbox_2[0] = make_real_hbox(1, c_label, iso_fld_c->output_value_ctl);
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
-	add_field_selection_box(fields_vws, vbox_1);
+	add_field_selection_box(iso_GTK0->color_fields_vws, vbox_1);
 	
 	return vbox_1;
 };

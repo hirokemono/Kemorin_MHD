@@ -7,8 +7,6 @@
 
 #include "t_control_data_4_pvr_movie_c.h"
 
-FILE *FP_PVR;
-
 struct pvr_movie_ctl_c * init_pvr_movie_ctl_c(){
 	int i;
     struct pvr_movie_ctl_c *movie_c;

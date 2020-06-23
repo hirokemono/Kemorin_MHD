@@ -108,7 +108,7 @@ int write_sph_filter_ctl_c(FILE *fp, int level, const char *label,
 
 
 void init_sph_filter_ctl_list(struct sph_filter_ctl_list *head){
-	
+    head->sph_filter_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;

@@ -71,6 +71,7 @@ void set_from_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item,
 
 
 static void init_chara_real_ctl_list(struct chara_real_ctl_list *head){
+    head->cr_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

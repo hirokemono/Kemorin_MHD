@@ -65,6 +65,7 @@ void set_from_int2_ctl_item_c(struct int2_ctl_item *i2_item,
 
 
 static void init_int2_ctl_list(struct int2_ctl_list *head){
+    head->i2_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

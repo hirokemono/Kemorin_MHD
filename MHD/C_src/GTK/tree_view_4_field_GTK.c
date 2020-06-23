@@ -399,11 +399,12 @@ static int find_each_comp_address(char *comp_in, struct flag_with_math_f *compon
 	return -1;
 }
 
-int find_comp_address(char *comp_in, int num_comp, struct component_flags_f *comp_flags){
+int find_comp_address(char *comp_in, int i_field, struct field_names_f *fld_list,
+					  struct component_flags_f *comp_flags){
 	int i_comp;
-	if(num_comp == 6){
+	if(fld_list->num_comp[i_field] == 6){
 		i_comp = find_each_comp_address(comp_in, comp_flags->sym_tensor_components_flag);
-	}else if(num_comp == 3){
+	}else if(fld_list->num_comp[i_field] == 3){
 		i_comp = find_each_comp_address(comp_in, comp_flags->vector_components_flag);
 	}else{
 		i_comp = find_each_comp_address(comp_in, comp_flags->scalar_components_flag);

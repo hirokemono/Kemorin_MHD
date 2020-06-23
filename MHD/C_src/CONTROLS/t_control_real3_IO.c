@@ -67,6 +67,7 @@ void set_from_real3_ctl_item_c(struct real3_ctl_item *r3_item,
 
 
 static void init_real3_ctl_list(struct real3_ctl_list *head){
+    head->r3_item = NULL;
     head->_prev = NULL;
     head->_next = NULL;
     return;

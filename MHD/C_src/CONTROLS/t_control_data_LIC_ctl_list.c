@@ -69,7 +69,7 @@ void write_LIC_rendering_ctl_file_c(struct LIC_rendering_ctl_c *lic_render_c){
 
 
 void init_LIC_PVR_ctl_list(struct LIC_PVR_ctl_list *head){
-	
+    head->lic_render_c = NULL;
 	head->_prev = NULL;
 	head->_next = NULL;
 	return;
