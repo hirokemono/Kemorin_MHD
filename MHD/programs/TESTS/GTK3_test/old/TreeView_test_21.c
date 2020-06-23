@@ -16,7 +16,6 @@ static void cb_close_window(GtkButton *button, gpointer user_data){
 
 static void create_tree_view_window(GtkButton *button, gpointer user_data)
 {
-	struct field_views *fields_vws = (struct field_views *) user_data;
 	
 	static gint window_id = 0;
 	GtkWidget *window;
@@ -25,6 +24,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	gchar *title;
 	
 	
+	struct field_views *fields_vws = (struct field_views *) user_data;
 	fields_vws->used_tree_view 
 			= create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
 	fields_vws->unused_field_tree_view
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	read_SGS_MHD_control_file_c(file_name, buf, mhd_ctl);
 	
 	fields_vws = init_field_views_GTK(mhd_ctl->model_ctl->fld_ctl);
-    check_field_name_f(fields_vws->all_fld_list->fld_list);
+	check_field_name_f(fields_vws->all_fld_list->fld_list);
 	
 	gtk_init(&argc, &argv);
 

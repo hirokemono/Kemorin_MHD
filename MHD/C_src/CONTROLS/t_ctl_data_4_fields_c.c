@@ -41,6 +41,7 @@ struct field_ctl_c * init_field_ctl_c(){
 	
 	init_chara_int2_ctl_list(&fld_ctl->field_list);
 	init_chara_ctl_list(&fld_ctl->quad_phys_list);
+    init_chara_ctl_list(&fld_ctl->viz_comp_list);
 	
 	return fld_ctl;
 };
@@ -51,6 +52,7 @@ void dealloc_field_ctl_c(struct field_ctl_c *fld_ctl){
 	
 	clear_chara_int2_ctl_list(&fld_ctl->field_list);
 	clear_chara_ctl_list(&fld_ctl->quad_phys_list);
+    clear_chara_ctl_list(&fld_ctl->viz_comp_list);
 	
     free(fld_ctl);
 	return;
@@ -347,6 +349,15 @@ static void check_field_in_quad_list(struct chara_ctl_list *quad_phys_list){
 	return;	
 };
 
+static void check_field_in_component_list(struct chara_ctl_list *viz_comp_list){
+    viz_comp_list = viz_comp_list->_next;
+    while (viz_comp_list != NULL){
+        printf("Component in the field list: %s\n", viz_comp_list->c_item->c_tbl); 
+        viz_comp_list = viz_comp_list->_next;
+    };
+    return;    
+};
+
 
 void add_field_wqflag_to_ctl(int i_fld, struct all_field_ctl_c *all_fld_list, 
 			struct field_ctl_c *fld_ctl){
@@ -407,4 +418,10 @@ void check_field_ctl_list(struct field_ctl_c *fld_ctl){
 	check_field_in_list(&fld_ctl->field_list);
 	check_field_in_quad_list(&fld_ctl->quad_phys_list);
 	return;	
+};
+
+void check_field_and_comp_ctl_list(struct field_ctl_c *fld_ctl){
+    check_field_in_list(&fld_ctl->field_list);
+    check_field_in_component_list(&fld_ctl->viz_comp_list);
+    return;    
 };

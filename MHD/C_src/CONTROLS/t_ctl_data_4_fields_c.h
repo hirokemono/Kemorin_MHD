@@ -29,6 +29,7 @@ struct field_ctl_c{
 	struct chara_int2_ctl_list field_list;
 	
 	struct chara_ctl_list quad_phys_list;
+    struct chara_ctl_list viz_comp_list;
 };
 
 struct all_field_ctl_c{
@@ -68,5 +69,6 @@ void reflesh_field_ctl_list(struct all_field_ctl_c *all_fld_list,
 			struct field_ctl_c *fld_ctl);
 
 void check_field_ctl_list(struct field_ctl_c *fld_ctl);
+void check_field_and_comp_ctl_list(struct field_ctl_c *fld_ctl);
 
 #endif /* t_ctl_data_4_fields_c_h_ */

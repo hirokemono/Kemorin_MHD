@@ -10,11 +10,24 @@
 #include "control_combobox_GTK.h"
 #include "t_control_data_4_iso_c.h"
 #include "kemoview_gtk_routines.h"
+#include "tree_view_4_field_GTK.h"
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c, struct chara_ctl_item *ptem_t);
+void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c);
 
 int iflag_read_iso = 0;
-struct iso_ctl_c *iso_c0;
+
+struct iso_ctl_GTK{
+	struct iso_ctl_c *iso_c;
+	
+	struct field_ctl_c *iso_field_ctl;
+	struct field_views *iso_fields_vws;
+	
+	struct field_ctl_c *color_field_ctl;
+	struct field_views *color_fields_vws;
+};
+
+
+struct iso_ctl_GTK *iso_GTK0;
 
 
 // struct SGS_MHD_control_c *mhd_ctl;
@@ -48,7 +61,7 @@ boolean_to_text (GBinding *binding,
 
 static void cb_New(GtkButton *button, gpointer data)
 {
-	draw_MHD_control_list(vbox_0, iso_c0, ptem_test);
+	draw_MHD_control_list(vbox_0, iso_GTK0->iso_c);
 	gtk_widget_show_all(window);
 }
 static void cb_Open(GtkButton *button, gpointer data)
@@ -91,17 +104,21 @@ static void cb_Open(GtkButton *button, gpointer data)
     /* Show file name in entry */ 
 		gtk_entry_set_text(entry, read_file_name);
 		
-        
-        iso_c0 = init_iso_ctl_c();        
-        int iflag = read_iso_ctl_file_c(read_file_name, buf, iso_c0);
-        iflag_read_iso = 1;
-		g_free(read_file_name);
-		printf("iso_output_type_ctl original %s\n", iso_c0->iso_output_type_ctl->c_tbl);
-        set_primary_iso_format_flag_c(iso_c0->iso_output_type_ctl->c_tbl);
-		printf("iso_output_type_ctl modified %s\n", iso_c0->iso_output_type_ctl->c_tbl);
+		if((iso_GTK0 = (struct iso_ctl_GTK *) malloc(sizeof(struct iso_ctl_GTK))) == NULL) {
+			printf("malloc error for iso_ctl_GTK \n");
+			exit(0);
+		}
 		
-        
-		draw_MHD_control_list(vbox_0, iso_c0, ptem_test);
+		iso_GTK0->iso_c = init_iso_ctl_c();        
+		int iflag = read_iso_ctl_file_c(read_file_name, buf, iso_GTK0->iso_c);
+		iflag_read_iso = 1;
+		g_free(read_file_name);
+		printf("iso_output_type_ctl original %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
+		set_primary_iso_format_flag_c(iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
+		printf("iso_output_type_ctl modified %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
+		
+		
+		draw_MHD_control_list(vbox_0, iso_GTK0->iso_c);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -141,8 +158,9 @@ static void cb_Save(GtkButton *button, gpointer data)
 		
 		gtk_entry_set_text(entry, write_file_name);
 		
-		write_iso_ctl_file_c(write_file_name, iso_c0);
-		dealloc_iso_ctl_c(iso_c0);
+		write_iso_ctl_file_c(write_file_name, iso_GTK0->iso_c);
+		dealloc_iso_ctl_c(iso_GTK0->iso_c);
+		free(iso_GTK0);
 		g_free(write_file_name);
 		iflag_read_iso = 0;
 		
@@ -166,11 +184,52 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 	gtk_widget_show_all(window);
 };
 
+GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	GtkWidget *vbox_2[2];
+	
+	struct field_ctl_c *field_ctl = init_field_ctl_c();
+	struct field_views *fields_vws = init_field_views_GTK(field_ctl);
+	fields_vws->used_tree_view 
+			= create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
+	fields_vws->unused_field_tree_view
+			= create_unused_field_tree_views(fields_vws->all_fld_list);
+	
+	fields_vws->field_group_tree_view
+			= create_field_group_tree_view(fields_vws->all_fld_list);
+	fields_vws->all_field_tree_view
+			= create_all_field_tree_views(fields_vws->all_fld_list);
+	fields_vws->selected_field_ctl =     iso_def_c->isosurf_data_ctl;
+	fields_vws->selected_component_ctl = iso_def_c->isosurf_comp_ctl;
+	
+	create_direction_tree_views(fields_vws);
+	add_all_field_combobox_vbox("Field_ctl:", "Comp_ctl:", fields_vws, vbox_1);
+	
+	char *c_label = duplicate_underscore(iso_def_c->label_iso_define_ctl->label[ 2]);
+	vbox_2[0] = make_real_hbox(1, c_label, iso_def_c->isosurf_value_ctl);
+	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
+	return vbox_1;
+};
+
 GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	GtkWidget *vbox_2[2];
 	
 	char *c_label;
+	
+	struct field_ctl_c *field_ctl = init_field_ctl_c();
+	struct field_views *fields_vws = init_field_views_GTK(field_ctl);
+	fields_vws->used_tree_view 
+			= create_field_tree_view(fields_vws->all_fld_list, fields_vws->fld_ctl_gtk);
+	fields_vws->unused_field_tree_view
+			= create_unused_field_tree_views(fields_vws->all_fld_list);
+	
+	fields_vws->field_group_tree_view
+			= create_field_group_tree_view(fields_vws->all_fld_list);
+	fields_vws->all_field_tree_view
+			= create_all_field_tree_views(fields_vws->all_fld_list);
+	create_direction_tree_views(fields_vws);
+	
 	
 	GtkWidget *color_flags_tree_view
 			= create_control_flags_tree_view(iso_fld_c->flag_iso_color);
@@ -183,12 +242,13 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	c_label = duplicate_underscore(iso_fld_c->label_fld_on_iso_ctl->label[ 2]);
 	vbox_2[0] = make_real_hbox(1, c_label, iso_fld_c->output_value_ctl);
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
+	add_field_selection_box(fields_vws, vbox_1);
 	
 	return vbox_1;
 };
 
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c, struct chara_ctl_item *ptem_t){
+void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c){
 	GtkWidget *vbox_1;
 	GtkWidget *vbox_2[iso_c->label_iso_ctl_w_dpl->num_labels];
 	
@@ -208,14 +268,14 @@ void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c, struct cha
 							  iso_c->flag_iso_format, 
 							  file_fmt_flags_tree_view, vbox_1);
 	
-	vbox_2[2] = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+	vbox_2[2] = iso_define_ctl_list_box(iso_c->iso_def_c);
 	vbox_2[3] = iso_field_ctl_list_box(iso_c->iso_fld_c);
 	wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
 			 400, 200, vbox_2[2], vbox_1);
 	wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 3]), 
-			 400, 200, vbox_2[3], vbox_1);
+			 400, 500, vbox_2[3], vbox_1);
 	c_label = isosurface_control_head();
 	wrap_into_expanded_frame_gtk(duplicate_underscore(c_label), 
 								 400, 600, vbox_1, vbox0);
@@ -261,11 +321,8 @@ void draw_MHD_control_bottuns(GtkWidget *vbox0){
 
 int main(int argc, char** argv)
 {
-	iso_c0 = init_iso_ctl_c();
-	iflag_read_iso = 1;
-	
 	gtk_init(&argc, &argv);
-
+	
 	window =gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), "FileChooser");
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
