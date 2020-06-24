@@ -7,7 +7,6 @@
 
 #include "tree_view_chara_GTK.h"
 
-
 /* Append new data at the end of list */
 int append_c_item_to_tree(int index, const char *c_tbl, GtkTreeModel *child_model){
     GtkTreeIter iter;
@@ -27,6 +26,7 @@ int append_c_list_from_ctl(int index, struct chara_ctl_list *head,
     GtkTreeModel *child_model = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model));
     head = head->_next;
     while (head != NULL){
+        printf("Aho %s\n", head->c_item->c_tbl);
         index = append_c_item_to_tree(index, head->c_item->c_tbl, child_model);
         head = head->_next;
     };
@@ -295,12 +295,13 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
 	
     GtkTreeModel *model;
     GtkTreeViewColumn *column;
+    GtkTreeViewColumn *column_1st;
     GtkTreeSelection *selection;
     
     GtkListStore *child_model;
 
 	/* Construct empty list storage */
-    child_model = gtk_list_store_new(1, G_TYPE_STRING);
+    child_model = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_STRING);
     g_object_set_data(G_OBJECT(child_model), "selection_list", NULL);
     
     /* Construct model for sorting and set to tree view */
@@ -308,20 +309,20 @@ void create_text_tree_view(GtkTreeView *c_tree_view,
     gtk_tree_view_set_model(GTK_TREE_VIEW(c_tree_view), model);
     
     /* First raw */
-    column = gtk_tree_view_column_new();
-    gtk_tree_view_append_column(c_tree_view, column);
-    gtk_tree_view_column_set_title(column, "Field name");
+	column_1st = gtk_tree_view_column_new();
+    gtk_tree_view_append_column(c_tree_view, column_1st);
+    gtk_tree_view_column_set_title(column_1st, "Field name");
+    gtk_tree_view_column_set_resizable(column_1st, TRUE);
+    gtk_tree_view_column_set_clickable(column_1st, TRUE);
+    g_object_set_data(G_OBJECT(column_1st), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
+    g_signal_connect(G_OBJECT(column_1st), "clicked", 
+					 G_CALLBACK(column_clicked), (gpointer) c_tree_view);
+    
+    gtk_tree_view_column_pack_start(column_1st, renderer_text, TRUE);
+    gtk_tree_view_column_set_attributes(column_1st, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
+	g_object_set(renderer_text, "width", (gint)120, NULL);
     g_object_set(G_OBJECT(renderer_text), "editable", TRUE, NULL);
-    gtk_tree_view_column_pack_start(column, renderer_text, TRUE);
-    gtk_tree_view_column_set_attributes(column, renderer_text, "text", COLUMN_FIELD_NAME, NULL);
-    g_object_set(renderer_text, "width", (gint)150, NULL);
-    gtk_tree_view_column_set_resizable(column, TRUE);
-    gtk_tree_view_column_set_clickable(column, TRUE);
-    g_object_set_data(G_OBJECT(column), "column_id", GINT_TO_POINTER(COLUMN_FIELD_NAME));
-    g_signal_connect(G_OBJECT(column), "clicked", 
-                     G_CALLBACK(column_clicked), (gpointer) c_tree_view);
-    
-    
+	
     /* 選択モード */
     selection = gtk_tree_view_get_selection(c_tree_view);
     gtk_tree_selection_set_mode(selection, GTK_SELECTION_MULTIPLE);
@@ -353,7 +354,7 @@ void add_chara_list_box_w_addbottun(GtkTreeView *c_tree_view,
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 400, 300);
+    gtk_widget_set_size_request(scrolled_window, 150, 300);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     
@@ -388,7 +389,7 @@ void add_chara_list_box_w_combobox(GtkTreeView *c_tree_view,
     scrolled_window = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_window),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    gtk_widget_set_size_request(scrolled_window, 400, 300);
+    gtk_widget_set_size_request(scrolled_window, 150, 300);
     gtk_container_add(GTK_CONTAINER(scrolled_window), GTK_WIDGET(c_tree_view));
     gtk_box_pack_start(GTK_BOX(vbox), scrolled_window, TRUE, TRUE, 0);
     

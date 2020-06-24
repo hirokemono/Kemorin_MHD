@@ -531,7 +531,6 @@ void add_chara2_real_list_box_w_addbottun(GtkTreeView *c2r_tree_view,
     
 	
     add_sorting_signal_w_label(c2r_tree_view, hbox);
-    
 };
 
 void add_chara2_real_list_box_w_combobox(GtkTreeView *c2r_tree_view, 

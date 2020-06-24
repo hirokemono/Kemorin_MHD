@@ -185,6 +185,12 @@ void expander_MHD_ctl_callback(GObject *object, GParamSpec *param_spec, gpointer
 	gtk_widget_show_all(window);
 };
 
+static void cb_edited_egrp(GtkCellRendererText *cell, gchar *path_str, 
+                           gchar *new_text, gpointer user_data){
+    printf("path_str %s\n", path_str);
+    printf("new_text %s\n", new_text);
+}
+
 static void cb_add(GtkButton *button, gpointer user_data)
 {
 	GtkWidget *c_tree_view = GTK_WIDGET(user_data);
@@ -232,9 +238,15 @@ GtkWidget * iso_define_ctl_list_box(struct iso_define_ctl_c *iso_def_c){
 	
 	printf("iso_area_list %d\n", count_chara_clist(iso_def_c->iso_area_list));
 	int index = 0;
-	GtkWidget *c_tree_view = create_fixed_label_w_index_tree();
-	index = append_c_list_from_ctl(index, &iso_def_c->iso_area_list->c_item_head, 
-								   c_tree_view);
+	GtkWidget *c_tree_view = gtk_tree_view_new();
+    GtkCellRenderer *renderer_text = gtk_cell_renderer_text_new();
+
+    create_text_tree_view(c_tree_view, renderer_text, iso_def_c->iso_area_list);
+    index = append_c_list_from_ctl(index, &iso_def_c->iso_area_list->c_item_head, c_tree_view);
+    g_signal_connect(G_OBJECT(renderer_text), "edited", 
+                     G_CALLBACK(cb_edited_egrp), (gpointer) iso_def_c);
+    
+    
 	printf("index %d\n", index);
 	GtkWidget *button_A = gtk_button_new_with_label("Add");
 	GtkWidget *button_D = gtk_button_new_with_label("Delete");

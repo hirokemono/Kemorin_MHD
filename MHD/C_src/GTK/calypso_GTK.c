@@ -9,21 +9,13 @@
 
 static void set_last_field_to_label_CB(GtkTreeSelection *selection, gpointer user_data)
 {
-    GtkLabel *label;
     GtkTreeModel *model;
-    GList *list;
     GList *cur;
     gchar *row_string;
     GtkTreeIter iter;
 
-    label = g_object_get_data(G_OBJECT(selection), "label");
+    GList *list = gtk_tree_selection_get_selected_rows(selection, &model);
 
-    list = gtk_tree_selection_get_selected_rows(selection, &model);
-    if (list == NULL) {
-        gtk_label_set_text(label, "");
-        return;
-    }
-    
     for (cur = g_list_first(list); cur != NULL; cur = g_list_next(cur)) {
         if (gtk_tree_model_get_iter(model, &iter, (GtkTreePath *)cur->data) == TRUE) {
             gtk_tree_model_get(model, &iter, COLUMN_FIELD_NAME, &row_string, -1);
@@ -31,8 +23,6 @@ static void set_last_field_to_label_CB(GtkTreeSelection *selection, gpointer use
         gtk_tree_path_free((GtkTreePath *)cur->data);
     }
     g_list_free(list);
-    
-    gtk_label_set_text(label, row_string);
 }
 
 
