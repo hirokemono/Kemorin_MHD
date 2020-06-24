@@ -86,7 +86,7 @@ m_SPH_SGS_structure.o: $(SGS_MHD_SPH_DIR)/m_SPH_SGS_structure.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_data_sph_SGS_MHD.o: $(SGS_MHD_SPH_DIR)/m_ctl_data_sph_SGS_MHD.f90 m_precision.o t_ctl_data_SGS_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-momentum_w_SGS_explicit.o: $(SGS_MHD_SPH_DIR)/momentum_w_SGS_explicit.f90 m_precision.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_SPH_SGS_structure.o t_SPH_mesh_field_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_phys_address.o t_SGS_model_addresses.o cal_vorticity_terms_adams.o cal_nonlinear_sph_MHD.o explicit_scalars_sph_w_SGS.o sel_diff_induction_MHD.o select_diff_adv_source.o
+momentum_w_SGS_explicit.o: $(SGS_MHD_SPH_DIR)/momentum_w_SGS_explicit.f90 m_precision.o t_SGS_control_parameter.o t_control_parameter.o t_physical_property.o t_SPH_SGS_structure.o t_SPH_mesh_field_data.o t_fdm_coefs.o t_schmidt_poly_on_rtm.o t_boundary_data_sph_MHD.o t_boundary_params_sph_MHD.o t_phys_address.o t_SGS_model_addresses.o cal_vorticity_terms_adams.o cal_nonlinear_sph_MHD.o explicit_scalars_sph_w_SGS.o cal_explicit_SGS_induction.o sel_diff_induction_MHD.o select_diff_adv_source.o
 	$(F90) -c $(F90OPTFLAGS) $<
 nolinear_gradient_terms_sph.o: $(SGS_MHD_SPH_DIR)/nolinear_gradient_terms_sph.f90 m_precision.o m_constants.o m_machine_parameter.o t_control_parameter.o t_spheric_parameter.o t_spheric_rtp_data.o t_base_field_labels.o t_grad_field_labels.o t_diff_vector_labels.o t_SGS_term_labels.o t_addresses_sph_transform.o t_sph_filtering_data.o sel_sph_SGS_nl_gradient.o
 	$(F90) -c $(F90OPTFLAGS) $<

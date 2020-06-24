@@ -88,6 +88,7 @@
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
       use explicit_scalars_sph_w_SGS
+      use cal_explicit_SGS_induction
       use sel_diff_induction_MHD
 !
       real(kind = kreal), intent(in) :: dt
@@ -107,14 +108,14 @@
      &    ipol%base, ipol%exp_work, ipol%diffusion,                     &
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_diff_induction_MHD_adams(SGS_par%model_p, dt,            &
-     &    MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
+      call sel_diff_induction_MHD_adams                                 &
+     &  (SGS_par%model_p, dt, MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
 !
       call explicit_scalars_sph_SGS_adams(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%exp_work, ipol%diffusion, ipol%forces,        &
-     &    ipol_LES%force_by_filter, ipol_LES%div_SGS, rj_fld)
+     &    ipol%base, ipol%exp_work, ipol%forces, ipol%diffusion,        &
+     &    ipol_LES%div_SGS, rj_fld)
 !
       end subroutine cal_explicit_sph_SGS_adams
 !
@@ -125,6 +126,7 @@
 !
       use cal_vorticity_terms_adams
       use explicit_scalars_sph_w_SGS
+      use cal_explicit_SGS_induction
       use sel_diff_induction_MHD
 !
       real(kind = kreal), intent(in) :: dt
@@ -144,14 +146,14 @@
      &    ipol%base, ipol%exp_work, ipol%diffusion,                     &
      &    dt, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_diff_induction_MHD_euler(SGS_par%model_p, dt,            &
-     &    MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
+      call sel_diff_induction_MHD_euler                                 &
+     &  (SGS_par%model_p, dt, MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
 !
       call explicit_scalars_sph_SGS_euler(dt, SGS_par%model_p,          &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%diffusion, ipol%forces,                       &
-     &    ipol_LES%force_by_filter, ipol_LES%div_SGS, rj_fld)
+     &    ipol%base, ipol%forces, ipol%diffusion, ipol_LES%div_SGS,     &
+     &    rj_fld)
 !
       end subroutine cal_explicit_sph_SGS_euler
 !
@@ -163,6 +165,7 @@
       use cal_vorticity_terms_adams
       use select_diff_adv_source
       use explicit_scalars_sph_w_SGS
+      use cal_explicit_SGS_induction
       use sel_diff_induction_MHD
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -177,14 +180,14 @@
       call set_ini_adams_inertia(MHD_prop%fl_prop, ipol%exp_work,       &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_ini_adams_mag_induct(SGS_par%model_p, MHD_prop%cd_prop,  &
-     &    ipol, ipol_LES, rj_fld)
+      call sel_ini_adams_mag_induct                                     &
+     &   (SGS_par%model_p, MHD_prop%cd_prop, ipol, ipol_LES, rj_fld)
 !
       call first_scalars_SGS_prev_adams(SGS_par%model_p,                &
      &    sph_rj, MHD_prop%ht_prop, MHD_prop%cp_prop,                   &
      &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
-     &    ipol%base, ipol%exp_work, ipol%forces,                        &
-     &    ipol_LES%force_by_filter, ipol_LES%div_SGS, rj_fld)
+     &    ipol%base, ipol%exp_work, ipol%forces, ipol_LES%div_SGS,      &
+     &    rj_fld)
 !
       end subroutine cal_first_SGS_prev_step_adams
 !
