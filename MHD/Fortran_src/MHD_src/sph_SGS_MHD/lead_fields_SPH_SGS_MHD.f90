@@ -230,11 +230,13 @@
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
      &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
      &      then
-        if (iflag_debug.gt.0) write(*,*) 'cal_nonlinear_pole_MHD'
-        call cal_nonlinear_pole_MHD(sph%sph_rtp, MHD_prop,              &
-     &      trns_fil_snap%b_trns_LES%filter_fld,                        &
-     &      trns_fil_MHD%f_trns_LES%force_by_filter,                    &
-     &      trns_fil_snap%backward, trns_fil_MHD%forward)
+        if (iflag_debug.gt.0) write(*,*) 'nonlinear_terms_on_node'
+        call nonlinear_terms_on_node(MHD_prop,                          &
+     &     trns_fil_snap%b_trns_LES%filter_fld,                         &
+     &     trns_fil_MHD%f_trns_LES%force_by_filter,                     &
+     &     sph%sph_rtp%nnod_pole, trns_fil_snap%backward%ncomp,         &
+     &     trns_fil_snap%backward%fld_pole, trns_fil_MHD%forward%ncomp, &
+     &     trns_fil_MHD%forward%fld_pole)
       end if
 !
       end subroutine lead_filter_flds_by_sph_trans

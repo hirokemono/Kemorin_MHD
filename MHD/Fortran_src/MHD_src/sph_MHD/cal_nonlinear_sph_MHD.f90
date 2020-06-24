@@ -126,7 +126,6 @@
      &          b_trns_base, f_trns_frc, trns_b_snap, trns_f_MHD)
 !
       use const_wz_coriolis_rtp
-      use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(MHD_evolution_param), intent(in) :: MHD_prop
