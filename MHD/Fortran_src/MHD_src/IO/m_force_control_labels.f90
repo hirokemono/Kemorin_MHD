@@ -31,9 +31,6 @@
 !!     composite_buoyancy   (Compositional_buoyancy, composite_gravity
 !!                           compositional_gravity)
 !!
-!!     filtered_buoyancy      (Filtered_gravity)
-!!     filtered_comp_buoyancy (Filtered_compositional_gravity)
-!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
@@ -42,12 +39,11 @@
       use m_precision
 !
       use t_base_force_labels
-      use m_filtered_force_labels
 !
       implicit  none
 ! 
       integer(kind = kint), parameter, private :: nadvect_label = 4
-      integer(kind = kint), parameter, private :: nforce_label =  7
+      integer(kind = kint), parameter, private :: nforce_label =  4
 !
 !       Opthional names of force control labels
 !
@@ -86,22 +82,6 @@
      &             :: comp_gravity_e5 = 'Composite_gravity'
       character(len=kchara), parameter                                  &
      &             :: comp_gravity_e6 = 'Composite_buoyancy'
-!
-!>       Filtered thermal buoyancy label
-      character(len=kchara), parameter                                  &
-     &             :: Filtered_gravity_label = 'Filtered_buoyancy'
-!
-      character(len=kchara), parameter                                  &
-     &             :: Filtered_gravity_e1 = 'Filtered_gravity'
-!
-!>       Filtered compositional buoyancy label
-      character(len=kchara), parameter                                  &
-     &             :: Filtered_comp_gravity_label                       &
-     &                        = 'Filtered_compositional_buoyancy'
-!
-      character(len=kchara), parameter                                  &
-     &             :: Filtered_comp_gravity_e1                          &
-     &                        = 'Filtered_compositional_gravity'
 !
 !   --------------------------------------------------------------------
 !
@@ -160,13 +140,6 @@
      &    n_comps( 3), names( 3), maths( 3))
       call set_field_labels(composite_buoyancy,                         &
      &    n_comps( 4), names( 4), maths( 4))
-!
-      call set_field_labels(Lorentz_force_by_filtered,                  &
-     &    n_comps( 5), names( 5), maths( 5))
-      call set_field_labels(filtered_buoyancy,                          &
-     &    n_comps( 6), names( 6), maths( 6))
-      call set_field_labels(filtered_comp_buoyancy,                     &
-     &    n_comps( 7), names( 7), maths( 7))
 !
       end subroutine set_force_control_labels
 !

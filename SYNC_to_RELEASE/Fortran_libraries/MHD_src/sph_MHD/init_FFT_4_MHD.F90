@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine init_fourier_transform_4_MHD(ncomp_tot,              &
-!!     &          sph_rtp, comm_rtp, trns_MHD, WK_sph, MHD_mul_FFTW)
+!!     &          sph_rtp, comm_rtp, trns_MHD, WK_sph)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!       Current problem
 !!      FFTW crashes when both single and multi transforms are 
@@ -50,7 +49,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_fourier_transform_4_MHD(ncomp_tot,                &
-     &          sph_rtp, comm_rtp, trns_MHD, WK_sph, MHD_mul_FFTW)
+     &          sph_rtp, comm_rtp, trns_MHD, WK_sph)
 !
       use m_solver_SR
 !
@@ -60,7 +59,6 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
-      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
@@ -189,7 +187,8 @@
      &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%backward%fld_rtp, &
      &    WK_FFTs)
       call fwd_FFT_select_to_send(sph_rtp, comm_rtp,                    &
-     &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward, WS, WK_FFTs)
+     &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward%fld_rtp, WS,   &
+     &    WK_FFTs)
       endtime = MPI_WTIME() - starttime
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'

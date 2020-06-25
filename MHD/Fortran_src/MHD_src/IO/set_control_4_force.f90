@@ -26,6 +26,22 @@
 !
       implicit  none
 !
+!>       Filtered thermal buoyancy label
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_gravity_label = 'Filtered_buoyancy'
+!
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_gravity_e1 = 'Filtered_gravity'
+!
+!>       Filtered compositional buoyancy label
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_comp_gravity_label                       &
+     &                        = 'Filtered_compositional_buoyancy'
+!
+      character(len=kchara), parameter                                  &
+     &             :: Filtered_comp_gravity_e1                          &
+     &                        = 'Filtered_compositional_gravity'
+!
       private :: set_control_force_flags, set_control_4_gravity
       private :: set_control_4_Coriolis_force, set_control_4_induction
 !
