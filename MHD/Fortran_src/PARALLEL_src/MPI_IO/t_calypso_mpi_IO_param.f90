@@ -82,11 +82,12 @@
       allocate(IO_param%num_gl(IO_param%nprocs_in))
       allocate(IO_param%istack_merged(0:IO_param%nprocs_in))
 !
-      IO_param%istack_merged = 0
+      IO_param%istack_merged(0) = 0
       if(IO_param%nprocs_in .gt. 0) then
 !$omp parallel workshare
-        IO_param%num_lc = 0
-        IO_param%num_gl = 0
+        IO_param%istack_merged(1:IO_param%nprocs_in) = 0
+        IO_param%num_lc(1:IO_param%nprocs_in) = 0
+        IO_param%num_gl(1:IO_param%nprocs_in) = 0
 !$omp end parallel workshare
       end if
 !
