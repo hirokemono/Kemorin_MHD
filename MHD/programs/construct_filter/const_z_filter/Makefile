@@ -98,14 +98,14 @@ target_task:
 	@echo '$$(TARGET_Z_FILTER)': '$$(MOD_Z_FILTER_PLUG)' \
 	'$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_Z_FILTER)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_Z_FILTER)' \
 	'$$(MOD_Z_FILTER_PLUG)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_TEST_DZ)': '$$(MOD_TEST_DZ_PLUG)' \
 	'$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TEST_DZ)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_TEST_DZ)' \
 	'$$(MOD_TEST_DZ_PLUG)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

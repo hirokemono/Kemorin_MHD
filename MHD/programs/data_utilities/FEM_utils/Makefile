@@ -173,7 +173,7 @@ target_task:
 	'$$(MOD_DIFF_FIELDS)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DIFF_FIELDS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_DIFF_FIELDS)' \
 	'$$(MOD_DIFF_FIELDS)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -182,7 +182,8 @@ target_task:
 	'$$(MOD_AVE_FIELDS)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_AVE_FIELDS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_AVE_FIELDS)' \
 	'$$(MOD_AVE_FIELDS)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -191,7 +192,8 @@ target_task:
 	@echo '$$(TARGET_PROD_FIELDS)': '$$(MOD_PROD_FIELDS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PROD_FIELDS)' '$$(MOD_PROD_FIELDS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+ -o '$$(TARGET_PROD_FIELDS)' '$$(MOD_PROD_FIELDS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -199,7 +201,8 @@ target_task:
 	@echo '$$(TARGET_RATIO_FIELDS)': '$$(MOD_RATIO_FIELDS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_RATIO_FIELDS)' '$$(MOD_RATIO_FIELDS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_RATIO_FIELDS)' '$$(MOD_RATIO_FIELDS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -208,7 +211,8 @@ target_task:
 	'$$(MOD_CORRELATE_FIELDS)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CORR_FIELDS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CORR_FIELDS)' \
 	'$$(MOD_CORRELATE_FIELDS)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -218,7 +222,8 @@ target_task:
 	'$$(MOD_CORRELATE_ONECOMP)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CORR_ONECOMP)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CORR_ONECOMP)' \
 	'$$(MOD_CORRELATE_ONECOMP)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -228,7 +233,8 @@ target_task:
 	'$$(MOD_MED_PATCH)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MED_PATCH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MED_PATCH)' \
 	'$$(MOD_MED_PATCH)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -238,7 +244,8 @@ target_task:
 	'$$(MOD_MED_GRP_UDT)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MED_GRP_UDT)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MED_GRP_UDT)' \
 	'$$(MOD_MED_GRP_UDT)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -247,7 +254,8 @@ target_task:
 	@echo '$$(TARGET_TAVE_LAYER_EVO)': '$$(MOD_T_AVE_M_COEF)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TAVE_LAYER_EVO)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_TAVE_LAYER_EVO)' \
 	'$$(MOD_T_AVE_M_COEF)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -256,7 +264,8 @@ target_task:
 	@echo '$$(TARGET_PICK_NODE_MONITOR): $$(MOD_PICK_NODE_MONITOR)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_NODE_MONITOR)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PICK_NODE_MONITOR)' \
 	'$$(MOD_PICK_NODE_MONITOR) -L. $$(LIBS_UDT_UTIL)' \
     '$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -265,7 +274,8 @@ target_task:
 	'$$(MOD_MHD_LENGH_SCALE)' '$$(MOD_UDT_UTILS)' \
 	'$$(LIB_FILES_UDT_UTIL)'  \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MHD_LENGH_SCALE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MHD_LENGH_SCALE)' \
 	'$$(MOD_MHD_LENGH_SCALE)' '$$(MOD_UDT_UTILS)' \
 	'-L. $$(LIBS_UDT_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

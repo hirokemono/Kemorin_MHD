@@ -36,13 +36,15 @@ target_list:
 target_task:
 	@echo '$$(TARGET_ITP_UDT)': '$$(MOD_ITP_FIELDS)' '$$(LIB_FILES_INTERPOLATE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ITP_UDT)' '$$(MOD_ITP_FIELDS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ITP_UDT)' '$$(MOD_ITP_FIELDS)' \
 	'-L. $$(LIBS_INTERPOLATE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ITP_RST)': '$$(MOD_ITP_RESTART)' '$$(LIB_FILES_INTERPOLATE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ITP_RST)' '$$(MOD_ITP_RESTART)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ITP_RST)' '$$(MOD_ITP_RESTART)' \
 	'-L. $$(LIBS_INTERPOLATE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

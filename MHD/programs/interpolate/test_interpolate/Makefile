@@ -46,7 +46,8 @@ target_task:
 	@echo '$$(TARGET_ITP_TEST)': \
 	'$$(MOD_ITP_MESH)' '$$(LIB_FILES_INTERPOLATE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ITP_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ITP_TEST)' \
 	'$$(MOD_ITP_MESH)' \
 	'-L. $$(LIBS_INTERPOLATE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -55,7 +56,8 @@ target_task:
 	@echo '$$(TARGET_ITP_ELE_TEST)': \
 	'$$(MOD_ITP_ELE_MESH)' '$$(LIB_FILES_INTERPOLATE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ITP_ELE_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ITP_ELE_TEST)' \
 	'$$(MOD_ITP_ELE_MESH)' \
 	'-L. $$(LIBS_INTERPOLATE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

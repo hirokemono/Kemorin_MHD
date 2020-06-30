@@ -53,7 +53,8 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_BC_FILE_TEST): $$(MOD_BC_FILE_TEST) $$(LIB_FILES_BCFILE_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_BC_FILE_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_BC_FILE_TEST)' \
 	'$$(MOD_BC_FILE_TEST)' \
 	'-L. $$(LIBS_BC_FILE_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

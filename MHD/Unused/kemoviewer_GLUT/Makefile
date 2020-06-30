@@ -59,7 +59,8 @@ target_task:
 	@echo '$$(TARGET_KEMOVIEW_F)': '$$(MOD_KEMOVIEW_MAIN)' \
 	'$$(LIB_FILES_KEMOVIEW)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_KEMOVIEW_F)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_KEMOVIEW_F)' \
 	'$$(MOD_KEMOVIEW_MAIN)' '-L. $$(LIBS_KEMOVIEW)' \
 	'$$(OPENGL_LIBS)' '$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

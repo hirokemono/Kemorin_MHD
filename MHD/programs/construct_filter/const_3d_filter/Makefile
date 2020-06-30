@@ -82,7 +82,7 @@ target_task:
 	@echo '$$(TARGET_3D_COMM_X)': \
 	'$$(MOD_GEN_FILTER3D_FX)' '$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_3D_COMM_X)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_3D_COMM_X)' \
 	'$$(MOD_GEN_FILTER3D_FX)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -90,7 +90,7 @@ target_task:
 	@echo '$$(TARGET_SORT_3D_FILTER)':  \
 	'$$(MOD_SORT_FILTER3D)' '$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SORT_3D_FILTER)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SORT_3D_FILTER)' \
 	'$$(MOD_SORT_FILTER3D)' '-L.  $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -98,7 +98,7 @@ target_task:
 	@echo '$$(TARGET_NEWMESH_MOMENT)': \
 	'$$(MOD_MOMENT_NEWMESH)' '$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWMESH_MOMENT)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_NEWMESH_MOMENT)' \
 	'$$(MOD_MOMENT_NEWMESH)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -106,7 +106,7 @@ target_task:
 	@echo '$$(TARGET_NEWMESH_FILTER)': \
 	'$$(MOD_FILTER_NEWMESH)' '$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWMESH_FILTER)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_NEWMESH_FILTER)' \
 	'$$(MOD_FILTER_NEWMESH)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -114,7 +114,7 @@ target_task:
 	@echo '$$(TARGET_FILTER_TRANS)': \
 	'$$(MOD_FILTER_COEF_TRANS)' '$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FILTER_TRANS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_FILTER_TRANS)' \
 	'$$(MOD_FILTER_COEF_TRANS)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -122,7 +122,7 @@ target_task:
 	@echo '$$(TARGET_NEWMESH_FLT_SGL)':  \
 	'$$(MOD_FILTER_NMESH_SGL)' '$$(LIB_FILES_COMMUTE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_NEWMESH_FLT_SGL)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_NEWMESH_FLT_SGL)' \
 	'$$(MOD_FILTER_NMESH_SGL)' '-L. $$(LIBS_COMMUTE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

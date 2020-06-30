@@ -74,7 +74,8 @@ target_task:
 	@echo '$$(TARGET_COMM_TEST)': \
 	'$$(LIB_FILES_COMM_TEST)   $$(MOD_COMM_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_COMM_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_COMM_TEST)' \
 	'$$(MOD_COMM_TEST)' \
 	'-L. $$(LIBS_COMM_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -82,7 +83,8 @@ target_task:
 	@echo '$$(TARGET_F_COMM_TEST)': \
 	'$$(LIB_FILES_COMM_TEST) $$(MOD_FILTER_COMM_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_F_COMM_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_F_COMM_TEST)' \
 	'$$(MOD_FILTER_COMM_TEST)' \
 	'-L. $$(LIBS_COMM_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

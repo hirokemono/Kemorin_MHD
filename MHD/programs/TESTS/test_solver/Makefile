@@ -90,7 +90,8 @@ target_task:
 	@echo '$$(TARGET_SOLVERTEST)': \
 	'$$(MOD_SOLVERTEST) $$(LIB_FILES_SOLVER_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SOLVERTEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SOLVERTEST)' \
 	'$$(MOD_SOLVERTEST)' \
 	'-L. $$(LIBS_SOLVER_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -98,26 +99,30 @@ target_task:
 	@echo '$$(TARGET_DJDSTEST)':  \
 	'$$(MOD_DJDSTEST) $$(LIB_FILES_SOLVER_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DJDSTEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_DJDSTEST)' \
 	'$$(MOD_DJDSTEST)' \
 	'-L. $$(LIBS_SOLVER_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_LUTEST): $$(MOD_LUTEST) $$(LIB_FILES_SOLVER_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_LUTEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_LUTEST)' \
 	'$$(MOD_LUTEST)' \
 	'-L. $$(LIBS_SOLVER_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MUL_LUTEST): $$(MOD_MUL_LUTEST) $$(LIB_FILES_SOLVER_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MUL_LUTEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MUL_LUTEST)' \
 	'$$(MOD_MUL_LUTEST)' \
 	'-L. $$(LIBS_SOLVER_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_5LUTEST): $$(MOD_5LUTEST) $$(LIB_FILES_SOLVER_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_5LUTEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_5LUTEST)' \
 	'$$(MOD_5LUTEST)' \
 	'-L. $$(LIBS_SOLVER_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

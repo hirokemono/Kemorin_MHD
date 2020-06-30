@@ -43,7 +43,8 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFT_TEST)': '$$(MOD_FFT_TEST)' \
 	'$$(LIB_FILES_FFT_TEST)' >> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FFT_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FFT_TEST)' \
 	'$$(MOD_FFT_TEST)  -L. $$(LIBS_FFT_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 

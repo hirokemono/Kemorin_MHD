@@ -49,13 +49,15 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_F_ZLIB_TEST)': '$$(MOD_F_ZLIB_TEST) $$(LIB_KEMO_FILE) $$(LIB_KEMO_C_FILE)' \
 	 >> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_F_ZLIB_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_F_ZLIB_TEST)' \
 	'$$(MOD_F_ZLIB_TEST)  -L. $$(LIB_KEMO_C) $$(LIB_KEMO) $$(LIB_KEMO_C)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GETARG_TEST)': '$$(MOD_GETARG_TEST)' \
 	 >> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GETARG_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GETARG_TEST)' \
 	'$$(MOD_GETARG_TEST)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 

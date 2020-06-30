@@ -48,7 +48,8 @@ target_task:
 	@echo '$$(TARGET_GEN_SPH_GRID)': '$$(MOD_GEN_SPH_GRID)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_SPH_GRID)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GEN_SPH_GRID)' \
 	'$$(MOD_GEN_SPH_GRID)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -56,7 +57,8 @@ target_task:
 	@echo '$$(TARGET_MAKE_SPH_RADIUS): $$(MOD_MAKE_SPH_RADIUS)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAKE_SPH_RADIUS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MAKE_SPH_RADIUS)' \
 	'$$(MOD_MAKE_SPH_RADIUS)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -64,7 +66,8 @@ target_task:
 	@echo '$$(TARGET_TEST_SPH_GRID):' \
 	'$$(MOD_TEST_SPH_GRID) $$(LIB_FILES_MESH_CHECK)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TEST_SPH_GRID)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_TEST_SPH_GRID)' \
 	'$$(MOD_TEST_SPH_GRID)' \
 	'-L. $$(LIBS_MESH_CHECK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

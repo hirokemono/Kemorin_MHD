@@ -1,4 +1,4 @@
-!>@file   delete_data_files.f90
+!>@file   delete_data_files.F90
 !!@brief  module delete_data_files
 !!
 !!@author H. Matsui

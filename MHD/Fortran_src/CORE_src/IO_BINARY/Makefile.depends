@@ -1,5 +1,5 @@
 binary_IO.o: $(BINARY_IO_DIR)/binary_IO.F90 m_precision.o m_constants.o m_machine_parameter.o m_error_IDs.o t_binary_IO_buffer.o set_parallel_file_name.o transfer_to_long_integers.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 domain_data_IO_b.o: $(BINARY_IO_DIR)/domain_data_IO_b.f90 m_precision.o t_comm_table.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 edge_data_IO_b.o: $(BINARY_IO_DIR)/edge_data_IO_b.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o t_binary_IO_buffer.o binary_IO.o m_fem_mesh_labels.o domain_data_IO_b.o element_connect_IO_b.o node_geometry_IO_b.o

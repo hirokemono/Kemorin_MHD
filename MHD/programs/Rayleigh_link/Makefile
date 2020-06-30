@@ -114,7 +114,8 @@ target_task:
 	@echo '$$(TARGET_FEM_MESH_RAYLEIGH)': '$$(MOD_FEM_MESH_RAYLEIGH)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FEM_MESH_RAYLEIGH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FEM_MESH_RAYLEIGH)' \
 	'$$(MOD_FEM_MESH_RAYLEIGH)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -122,28 +123,32 @@ target_task:
 	@echo '$$(TARGET_CVT_RAYLEIGH_SPH)': '$$(MOD_CVT_RAYLEIGH_SPH)' \
 	'$$(LIB_FILES_RAYLEIGH_LINK)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CVT_RAYLEIGH_SPH)' '$$(MOD_CVT_RAYLEIGH_SPH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CVT_RAYLEIGH_SPH)' '$$(MOD_CVT_RAYLEIGH_SPH)' \
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CVT_RAYLEIGH_FLD)': '$$(MOD_CVT_RAYLEIGH_FLD)' \
 	'$$(LIB_FILES_RAYLEIGH_LINK)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CVT_RAYLEIGH_FLD)' '$$(MOD_CVT_RAYLEIGH_FLD)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CVT_RAYLEIGH_FLD)' '$$(MOD_CVT_RAYLEIGH_FLD)' \
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_RAYLEIGH_VIZ)': '$$(MOD_RAYLEIGH_VIZ)' \
 	'$$(LIB_FILES_RAYLEIGH_LINK)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_RAYLEIGH_VIZ)' '$$(MOD_RAYLEIGH_VIZ)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_RAYLEIGH_VIZ)' '$$(MOD_RAYLEIGH_VIZ)' \
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PICK_RAYLEIGH_SPH)': '$$(MOD_PICK_RAYLEIGH_SPH)' \
 	'$$(LIB_FILES_RAYLEIGH_LINK)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_RAYLEIGH_SPH)' '$$(MOD_PICK_RAYLEIGH_SPH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PICK_RAYLEIGH_SPH)' '$$(MOD_PICK_RAYLEIGH_SPH)' \
 	'-L. $$(LIBS_RAYLEIGH_LINK)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

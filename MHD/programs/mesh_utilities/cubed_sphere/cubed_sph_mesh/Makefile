@@ -46,7 +46,8 @@ target_task:
 	@echo '$$(TARGET_CUBED_SPH)': '$$(MOD_CUBED_SPH_MESH)' \
 	 '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CUBED_SPH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CUBED_SPH)' \
 	'$$(MOD_CUBED_SPH_MESH)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -54,7 +55,8 @@ target_task:
 	@echo '$$(TARGET_RECT_SPH)': '$$(MOD_CUBED_SPH2_MESH)' \
 	 '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_RECT_SPH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_RECT_SPH)' \
 	'$$(MOD_CUBED_SPH2_MESH)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -62,7 +64,8 @@ target_task:
 	@echo '$$(TARGET_SQURE_CIRC)': '$$(MOD_SQURE_CIRC_MESH)' \
 	 '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SQURE_CIRC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SQURE_CIRC)' \
 	'$$(MOD_SQURE_CIRC_MESH)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

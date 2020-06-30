@@ -9,7 +9,7 @@ comm_table_IO.o: $(IO_DIR)/comm_table_IO.f90 m_precision.o skip_comment_f.o
 data_IO_to_textline.o: $(IO_DIR)/data_IO_to_textline.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 delete_data_files.o: $(IO_DIR)/delete_data_files.F90 m_precision.o m_file_format_switch.o set_parallel_file_name.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 domain_data_IO.o: $(IO_DIR)/domain_data_IO.f90 m_precision.o m_constants.o t_comm_table.o field_data_IO.o comm_table_IO.o m_error_IDs.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 edge_data_IO.o: $(IO_DIR)/edge_data_IO.f90 m_precision.o t_comm_table.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o m_fem_surface_labels.o domain_data_IO.o element_connect_IO.o m_fem_mesh_labels.o node_geometry_IO.o
@@ -23,7 +23,7 @@ element_file_IO.o: $(IO_DIR)/element_file_IO.f90 m_precision.o m_machine_paramet
 element_geometry_file_IO.o: $(IO_DIR)/element_geometry_file_IO.f90 m_precision.o m_machine_parameter.o m_file_format_switch.o t_read_mesh_data.o set_mesh_file_names.o element_data_IO.o surface_data_IO.o edge_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 element_mesh_IO_select.o: $(IO_DIR)/element_mesh_IO_select.F90 m_precision.o t_file_IO_parameter.o t_mesh_data.o m_file_format_switch.o mesh_file_name_by_param.o element_file_IO.o element_file_IO_b.o gz_element_file_IO.o gz_element_file_IO_b.o set_mesh_file_names.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 element_refine_file_IO.o: $(IO_DIR)/element_refine_file_IO.f90 m_precision.o t_element_refinement_IO.o t_interpolate_tbl_dest.o t_interpolate_tbl_org.o t_binary_IO_buffer.o itp_table_data_IO.o itp_table_data_IO_b.o set_parallel_file_name.o binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 endian_swaps.o: $(IO_DIR)/endian_swaps.f90 m_precision.o
@@ -39,7 +39,7 @@ filter_mom_type_data_IO.o: $(IO_DIR)/filter_mom_type_data_IO.f90 m_precision.o t
 filter_mom_type_on_ele_IO.o: $(IO_DIR)/filter_mom_type_on_ele_IO.f90 m_precision.o t_filter_elength.o skip_comment_f.o filter_moms_elen_data_IO.o t_filter_moments.o
 	$(F90) -c $(F90OPTFLAGS) $<
 filter_moment_IO_select.o: $(IO_DIR)/filter_moment_IO_select.F90 m_precision.o m_filter_file_names.o m_file_format_switch.o t_filter_file_data.o t_filter_coefficients.o filter_coefs_file_IO.o filter_coefs_file_IO_b.o gz_filter_coefs_file_IO.o t_filter_elength.o t_filter_moments.o filter_moments_type_file_IO.o filter_moments_file_IO_b.o gz_filter_moms_type_file_IO.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 filter_moments_IO.o: $(IO_DIR)/filter_moments_IO.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 filter_moments_type_file_IO.o: $(IO_DIR)/filter_moments_type_file_IO.f90 m_precision.o m_machine_parameter.o t_filter_elength.o m_file_format_switch.o filter_mom_type_data_IO.o set_parallel_file_name.o t_filter_moments.o m_filter_file_names.o
@@ -85,7 +85,7 @@ m_sph_modes_grid_labels.o: $(IO_DIR)/m_sph_modes_grid_labels.f90 m_precision.o
 m_viewer_mesh_labels.o: $(IO_DIR)/m_viewer_mesh_labels.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_IO_select.o: $(IO_DIR)/mesh_IO_select.F90 m_precision.o t_file_IO_parameter.o t_mesh_data.o m_file_format_switch.o mesh_file_name_by_param.o mesh_file_IO.o mesh_file_IO_b.o gz_mesh_file_IO.o gz_mesh_file_IO_b.o set_mesh_file_names.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 mesh_data_IO.o: $(IO_DIR)/mesh_data_IO.f90 m_precision.o t_mesh_data.o t_comm_table.o t_geometry_data.o domain_data_IO.o node_geometry_IO.o element_connect_IO.o m_fem_mesh_labels.o groups_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_file_IO.o: $(IO_DIR)/mesh_file_IO.f90 m_precision.o m_machine_parameter.o t_mesh_data.o mesh_data_IO.o set_parallel_file_name.o
@@ -95,7 +95,7 @@ mesh_file_name_by_param.o: $(IO_DIR)/mesh_file_name_by_param.f90 m_precision.o t
 node_geometry_IO.o: $(IO_DIR)/node_geometry_IO.f90 m_precision.o t_geometry_data.o t_read_mesh_data.o t_surf_edge_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 output_image_sel_4_png.o: $(IO_DIR)/output_image_sel_4_png.F90 m_precision.o t_png_file_access.o write_bmp_image.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 read_bmp_image.o: $(IO_DIR)/read_bmp_image.f90 m_precision.o write_bmp_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rst_data_IO_by_fld.o: $(IO_DIR)/rst_data_IO_by_fld.f90 m_precision.o m_machine_parameter.o t_time_data.o t_field_data_IO.o time_data_IO.o set_parallel_file_name.o field_data_IO.o skip_comment_f.o transfer_to_long_integers.o set_restart_data.o
@@ -125,7 +125,7 @@ set_ucd_file_names.o: $(IO_DIR)/set_ucd_file_names.f90 m_precision.o m_constants
 skip_comment_f.o: $(IO_DIR)/skip_comment_f.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_file_IO_select.o: $(IO_DIR)/sph_file_IO_select.F90 m_precision.o m_file_format_switch.o t_spheric_data_IO.o t_file_IO_parameter.o set_parallel_file_name.o set_mesh_file_names.o sph_modes_grids_file_IO.o sph_modes_grids_file_IO_b.o gz_sph_modes_grids_file_IO.o gz_sph_modes_file_IO_b.o delete_data_files.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 sph_global_1d_idx_IO.o: $(IO_DIR)/sph_global_1d_idx_IO.f90 m_precision.o t_node_id_spherical_IO.o skip_comment_f.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sph_mean_spectr_IO.o: $(IO_DIR)/sph_mean_spectr_IO.f90 m_precision.o t_time_data.o t_spheric_parameter.o t_rms_4_sph_spectr.o t_sph_volume_mean_square.o t_energy_label_parameters.o sph_mean_spectr_header_IO.o
@@ -173,7 +173,7 @@ t_ucd_data.o: $(IO_DIR)/t_ucd_data.f90 m_precision.o m_constants.o m_field_file_
 time_data_IO.o: $(IO_DIR)/time_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_time_data.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ucd_IO_select.o: $(IO_DIR)/ucd_IO_select.F90 m_precision.o m_constants.o m_file_format_switch.o m_field_file_format.o udt_file_IO.o ucd_field_file_IO.o ucd_field_file_IO_b.o vtk_file_IO.o read_psf_binary_file.o set_ucd_file_names.o gz_udt_file_IO.o gz_ucd_field_file_IO.o gz_vtk_file_IO.o gz_read_psf_binary_file.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o t_ctl_data_4_platforms.o
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 ucd_data_to_buffer.o: $(IO_DIR)/ucd_data_to_buffer.f90 m_precision.o m_constants.o m_geometry_constants.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ucd_field_file_IO.o: $(IO_DIR)/ucd_field_file_IO.f90 m_precision.o m_machine_parameter.o m_constants.o m_field_file_format.o t_time_data.o t_ucd_data.o time_data_IO.o field_data_IO.o skip_comment_f.o

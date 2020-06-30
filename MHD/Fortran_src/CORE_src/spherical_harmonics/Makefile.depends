@@ -1,7 +1,7 @@
 ACDC_Legendre_Poly.o: $(SPH_DIR)/ACDC_Legendre_Poly.F90
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 ACDC_Theta_Derivatives.o: $(SPH_DIR)/ACDC_Theta_Derivatives.F90
-	$(F90) -c $(F90FLAGS) $<
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 cal_gaunt_itgs.o: $(SPH_DIR)/cal_gaunt_itgs.f90 m_precision.o m_constants.o normgi.o normei.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_int_sph_nonlinear.o: $(SPH_DIR)/cal_int_sph_nonlinear.f90 m_precision.o t_integrals_sph_nonlinear.o cal_gaunt_itgs.o

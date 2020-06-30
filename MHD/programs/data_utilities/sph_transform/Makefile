@@ -130,7 +130,8 @@ target_task:
 	@echo '$$(TARGET_SPH_TRANS)': '$$(MOD_SPH_TRANS)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_TRANS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPH_TRANS)' \
 	'$$(MOD_SPH_TRANS)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -138,7 +139,8 @@ target_task:
 	@echo '$$(TARGET_GAUSS_B_TRANS):  $$(MOD_GAUSS_B_TRANS)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GAUSS_B_TRANS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GAUSS_B_TRANS)' \
 	'$$(MOD_GAUSS_B_TRANS)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -146,7 +148,8 @@ target_task:
 	@echo '$$(TARGET_ZMEAN_TRANS)': '$$(MOD_ZM_F_TRANS)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZMEAN_TRANS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ZMEAN_TRANS)' \
 	'$$(MOD_ZM_F_TRANS)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -154,7 +157,8 @@ target_task:
 	@echo '$$(TARGET_ZMEAN_STREAM)': '$$(MOD_ZMEAN_STREAM)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZMEAN_STREAM)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ZMEAN_STREAM)' \
 	'$$(MOD_ZMEAN_STREAM)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -162,7 +166,8 @@ target_task:
 	@echo '$$(TARGET_PICK_ZM_FLD_SPH)': '$$(MOD_PICK_ZM_FLD_SPH)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_ZM_FLD_SPH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PICK_ZM_FLD_SPH)' \
 	'$$(MOD_PICK_ZM_FLD_SPH)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -170,14 +175,16 @@ target_task:
 	@echo '$$(TARGET_ZRMS_SPH_DATA)': '$$(MOD_ZRMS_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZRMS_SPH_DATA)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ZRMS_SPH_DATA)' \
 	'$$(MOD_ZRMS_SPH_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ZMEAN_KENE)': '$$(MOD_ZMEAN_KENE)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZMEAN_KENE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ZMEAN_KENE)' \
 	'$$(MOD_ZMEAN_KENE)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

@@ -14,8 +14,6 @@ MOD_CUBED_SPH = $(addsuffix .o,$(basename $(SOURCES)) )
 #  -------------------------------------------------------------------------
 #
 
-.f90.o:; $(F90) -c $(F90FLAGS) $<
-
 dir_list:
 	@echo 'CUBED_SPH_DIR = $(CUBED_SPH_DIR)' >> $(MAKENAME)
 

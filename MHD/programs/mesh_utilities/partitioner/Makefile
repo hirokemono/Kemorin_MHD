@@ -50,28 +50,32 @@ target_task:
 	@echo '$$(TARGET_PART_KEMO)': '$$(MOD_PARTITIONER)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PART_KEMO)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PART_KEMO)' \
 	'$$(MOD_PARTITIONER)' '-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ITP_PART)': '$$(MOD_ITP_PART)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ITP_PART)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ITP_PART)' \
 	'$$(MOD_ITP_PART)' '-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SLEEVE_EXTEND)': '$$(MOD_SLEEVE_EXTEND)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SLEEVE_EXTEND)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SLEEVE_EXTEND)' \
 	'$$(MOD_SLEEVE_EXTEND)' '-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAKE_SURF_MESH)': '$$(MOD_MAKE_SURF_MESH)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAKE_SURF_MESH)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MAKE_SURF_MESH)' \
 	'$$(MOD_MAKE_SURF_MESH)' '-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

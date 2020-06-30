@@ -132,7 +132,8 @@ target_task:
 	@echo '$$(TARGET_SPEC_INI)': '$$(MOD_FFT_PLANE_RST)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPEC_INI)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPEC_INI)' \
 	'$$(MOD_FFT_PLANE_RST)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -140,21 +141,24 @@ target_task:
 	@echo '$$(TARGET_SPEC_UDT)': '$$(MOD_FFT_PLANE_UDT)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPEC_UDT)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPEC_UDT)' \
 	'$$(MOD_FFT_PLANE_UDT)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFT_PLANE): $$(MOD_FFT_PLANE_SPECTR) $$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FFT_PLANE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FFT_PLANE)' \
 	'$$(MOD_FFT_PLANE_SPECTR) -L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPEC_ENE)': '$$(MOD_FFT_PLANE_ENETOT)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPEC_ENE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPEC_ENE)' \
 	'$$(MOD_FFT_PLANE_ENETOT)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -163,7 +167,8 @@ target_task:
 	@echo '$$(TARGET_SPEC_E_PLANE)': '$$(MOD_FFT_PLANE_ENEPLANE)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPEC_E_PLANE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPEC_E_PLANE)' \
 	'$$(MOD_FFT_PLANE_ENEPLANE)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -172,7 +177,8 @@ target_task:
 	@echo '$$(TARGET_SPEC_MODE)': '$$(MOD_FFT_PLANE_MODES)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPEC_MODE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPEC_MODE)' \
 	'$$(MOD_FFT_PLANE_MODES)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -181,7 +187,8 @@ target_task:
 	@echo '$$(TARGET_SPEC_TAVE_PLANE)': '$$(MOD_FFT_PLANE_TAVE_ENE)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPEC_TAVE_PLANE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SPEC_TAVE_PLANE)' \
 	'$$(MOD_FFT_PLANE_TAVE_ENE)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -190,7 +197,8 @@ target_task:
 	@echo '$$(TARGET_PICK_MODE_PLANE)': '$$(MOD_PICK_MODE_PLANE)' \
 	'$$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_MODE_PLANE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PICK_MODE_PLANE)' \
 	'$$(MOD_PICK_MODE_PLANE)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -198,7 +206,8 @@ target_task:
 	
 	@echo '$$(TARGET_COR_SNAP): $$(MOD_COR_PLANE_SNAP) $$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_COR_SNAP)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_COR_SNAP)' \
 	'$$(MOD_COR_PLANE_SNAP)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -206,7 +215,8 @@ target_task:
 	
 	@echo '$$(TARGET_COR_PLANE): $$(MOD_COR_PLANE) $$(LIB_FILES_PLANE_DATA)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_COR_PLANE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_COR_PLANE)' \
 	'$$(MOD_COR_PLANE)' \
 	'-L. $$(LIBS_PLANE_DATA)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

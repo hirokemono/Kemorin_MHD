@@ -52,7 +52,8 @@ target_task:
 	@echo '$$(TARGET_CUBMESH311)': '$$(MOD_CUBMESH311)' \
 	 '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CUBMESH311)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CUBMESH311)' \
 	'$$(MOD_CUBMESH311)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -61,7 +62,8 @@ target_task:
 	@echo '$$(TARGET_CUBMESH322)': '$$(MOD_CUBMESH322)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_CUBMESH322)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CUBMESH322)' \
 	'$$(MOD_CUBMESH322)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -70,7 +72,8 @@ target_task:
 	@echo '$$(TARGET_INI_T_CUBE)': '$$(MOD_INI_T_CUBE)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_INI_T_CUBE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_INI_T_CUBE)' \
 	'$$(MOD_INI_T_CUBE)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -79,7 +82,8 @@ target_task:
 	@echo '$$(TARGET_INI_B_CUBE)': '$$(MOD_INI_B_CUBE)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_INI_B_CUBE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_INI_B_CUBE)' \
 	'$$(MOD_INI_B_CUBE)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

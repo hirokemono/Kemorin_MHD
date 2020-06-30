@@ -43,7 +43,8 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MESH_TEST): $$(MOD_MESH_TEST) $$(LIB_FILES_MESH_TEST)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MESH_TEST)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MESH_TEST)' \
 	'$$(MOD_MESH_TEST)' \
 	'-L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

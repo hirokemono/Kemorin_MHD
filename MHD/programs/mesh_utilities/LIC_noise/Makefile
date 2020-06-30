@@ -44,7 +44,8 @@ target_task:
 	@echo '$$(TARGET_GEN_CUBE_NOISE)': '$$(MOD_GEN_CUBE_NOISE)' \
 	'$$(LIB_FILES_CUBE_NOISE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_CUBE_NOISE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GEN_CUBE_NOISE)' \
 	'$$(MOD_GEN_CUBE_NOISE)' \
 	'-L. $$(LIBS_CUBE_NOISE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -52,7 +53,8 @@ target_task:
 	@echo '$$(TARGET_MAKE_NOISE_2_VTK): $$(MOD_MAKE_NOISE_2_VTK)' \
 	'$$(LIB_FILES_CUBE_NOISE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAKE_NOISE_2_VTK)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MAKE_NOISE_2_VTK)' \
 	'$$(MOD_MAKE_NOISE_2_VTK)' \
 	'-L. $$(LIBS_CUBE_NOISE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -60,7 +62,8 @@ target_task:
 	@echo '$$(TARGET_TEST_OLD_NOISE):' \
 	'$$(MOD_TEST_OLD_NOISE) $$(LIB_FILES_CUBE_NOISE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TEST_OLD_NOISE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_TEST_OLD_NOISE)' \
 	'$$(MOD_TEST_OLD_NOISE)' \
 	'-L. $$(LIBS_CUBE_NOISE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

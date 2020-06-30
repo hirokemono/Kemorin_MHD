@@ -83,25 +83,29 @@ target_task:
 	@echo '$$(TARGET_VIZ):  $$(MOD_VIZ_PLUG)' \
 	'$$(PSF_PLUGLIB_FILE)' '$$(LIB_FILES_VIZ)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_VIZ)' '$$(MOD_VIZ_PLUG)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_VIZ)' '$$(MOD_VIZ_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF): $$(MOD_PSF_PLUG)' \
 	'$$(PSF_PLUGLIB_FILE)' '$$(LIB_FILES_VIZ)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF)' '$$(MOD_PSF_PLUG)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PSF)' '$$(MOD_PSF_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FLINE): $$(MOD_FLINE_PLUG)' \
 	'$$(PSF_PLUGLIB_FILE)' '$$(LIB_FILES_VIZ)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FLINE)' '$$(MOD_FLINE_PLUG)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FLINE)' '$$(MOD_FLINE_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PVR):  $$(MOD_VIZ_PLUG)' \
 	'$$(PSF_PLUGLIB_FILE)' '$$(LIB_FILES_VIZ)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PVR)' '$$(MOD_VIZ_PLUG)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PVR)' '$$(MOD_VIZ_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 

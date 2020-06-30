@@ -33,7 +33,8 @@ target_task:
 	@echo '$$(TARGET_PICK_SURF)': '$$(MOD_PICK_SURF_MAIN)' \
 	'$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_SURF)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PICK_SURF)' \
 	'$$(MOD_PICK_SURF_MAIN)' '-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

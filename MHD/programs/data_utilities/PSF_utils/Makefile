@@ -159,77 +159,88 @@ target_task:
 	@echo '$$(TARGET_PSF_2_VTK)': '$$(MOD_PSF_2_VTK)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_2_VTK)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PSF_2_VTK)' \
 	'$$(MOD_PSF_2_VTK)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_AVES)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PSF_AVES)' \
 	'$$(MOD_PSF_AVES)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_RANGE_AVES)': '$$(MOD_PSF_RANGE_AVES)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSF_RANGE_AVES)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PSF_RANGE_AVES)' \
 	'$$(MOD_PSF_RANGE_AVES)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CZ)': '$$(MOD_ZCPLANE_PG)' \
 	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CZ)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_DRAW_CZ)' \
 	'$$(MOD_ZCPLANE_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CX)': '$$(MOD_XCPLANE_PG)' \
 	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CX)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_DRAW_CX)' \
 	'$$(MOD_XCPLANE_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_CY)': '$$(MOD_YCPLANE_PG)' \
 	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_CY)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_DRAW_CY)' \
 	'$$(MOD_YCPLANE_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DRAW_MAP)': '$$(MOD_MAP_PG)' \
 	'$$(LIB_FILES_PG_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90_LOCAL)' '$$(F90FLAGS)' -o '$$(TARGET_DRAW_MAP)' \
+	@echo '	''$$(F90_LOCAL)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_DRAW_MAP)' \
 	'$$(MOD_MAP_PG)' '-L. $$(LIBS_PG_UTIL)' \
 	'$$(PGPLOT_LIBS) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_LINE_ON_PSF)': '$$(MOD_LINE_ON_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_LINE_ON_PSF)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_LINE_ON_PSF)' \
 	'$$(MOD_LINE_ON_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DBENCH_ON_PSF)': '$$(MOD_DYNAMOBENCH_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DBENCH_ON_PSF)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_DBENCH_ON_PSF)' \
 	'$$(MOD_DYNAMOBENCH_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FIX_TEMP_PSF)': '$$(MOD_FIX_TEMP_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FIX_TEMP_PSF)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FIX_TEMP_PSF)' \
 	'$$(MOD_FIX_TEMP_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FIX_SGS_MF_WK_PSF)': '$$(MOD_FIX_SGS_MF_WK_PSF)' \
 	'$$(LIB_FILES_PSF_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FIX_SGS_MF_WK_PSF)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FIX_SGS_MF_WK_PSF)' \
 	'$$(MOD_FIX_SGS_MF_WK_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

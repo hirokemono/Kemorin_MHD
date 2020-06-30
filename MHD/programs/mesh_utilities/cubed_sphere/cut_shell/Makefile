@@ -24,7 +24,8 @@ target_list:
 target_task:
 	@echo '$$(TARGET_CUTSHELL)': '$$(MOD_CUTSHELL)'  '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)  $$(F90FLAGS) -o  $$(TARGET_CUTSHELL)' \
+	@echo '	$$(F90)  $$(F90OPTFLAGS)  $$(F90CPPFLAGS)' \
+	'-o  $$(TARGET_CUTSHELL)' \
 	'$$(MOD_CUTSHELL)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

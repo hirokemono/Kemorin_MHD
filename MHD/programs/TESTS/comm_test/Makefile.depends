@@ -6,6 +6,8 @@ collect_diff_4_comm_test.o: $(COMM_TEST_DIR)/collect_diff_4_comm_test.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 collect_diff_filter_ctest.o: $(COMM_TEST_DIR)/collect_diff_filter_ctest.f90 m_precision.o calypso_mpi.o m_geometry_filter_comm_test.o collect_diff_4_comm_test.o
 	$(F90) -c $(F90OPTFLAGS) $<
+hybrid_test.o: $(COMM_TEST_DIR)/hybrid_test.f90
+	$(F90) -c $(F90OPTFLAGS) $<
 input_ctl_filter_comm_test.o: $(COMM_TEST_DIR)/input_ctl_filter_comm_test.f90 m_precision.o calypso_mpi.o t_filter_file_data.o t_filtering_data.o t_ctl_data_filter_comm_test.o m_machine_parameter.o m_nod_filter_comm_table.o m_filter_file_names.o filter_coefs_file_IO.o set_filter_geometry_4_IO.o m_file_format_switch.o t_ctl_data_filter_files.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_geometry_4_comm_test.o: $(COMM_TEST_DIR)/m_geometry_4_comm_test.f90 m_precision.o m_constants.o calypso_mpi.o

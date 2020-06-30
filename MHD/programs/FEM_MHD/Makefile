@@ -100,36 +100,42 @@ target_task:
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET):  $$(MOD_MHD_PLUG)  $$(LIB_FILES_MHD)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET)' '$$(MOD_MHD_PLUG)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET)' '$$(MOD_MHD_PLUG)' \
 	'-L. $$(LIBS_MHD)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SNAP)': '$$(MOD_SNAP_PLUG)' '$$(LIB_FILES_MHD)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SNAP)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SNAP)' \
 	'$$(MOD_SNAP_PLUG) -L.  $$(LIBS_MHD)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SNAP_TMP)': '$$(MOD_SNAP_TMP)' '$$(LIB_FILES_MHD)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SNAP_TMP)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_SNAP_TMP)' \
 	'$$(MOD_SNAP_TMP) -L.  $$(LIBS_MHD)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FILTER)': '$$(MOD_FILTERING_ALL) $$(LIB_FILES_MHD)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_FILTER)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FILTER)' \
 	'$$(MOD_FILTERING_ALL) -L. $$(LIBS_MHD)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_VOL_AVE)': '$$(MOD_SNAP_VOL_AVE) $$(LIB_FILES_MHD)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_VOL_AVE)'  \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_VOL_AVE)'  \
 	'$$(MOD_SNAP_VOL_AVE) -L. $$(LIBS_MHD)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MHD_MAT)': '$$(MOD_MHD_MAT) $$(LIB_FILES_MHD)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MHD_MAT)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_MHD_MAT)' \
 	'$$(MOD_MHD_MAT) -L. $$(LIBS_MHD)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)

@@ -22,7 +22,8 @@ target_task:
 	@echo '$$(TARGET_PERI_CUBE)': '$$(MOD_PERI_CUBE_MESH)' \
 	 '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PERI_CUBE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_PERI_CUBE)' \
 	'$$(MOD_PERI_CUBE_MESH)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

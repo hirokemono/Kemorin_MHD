@@ -201,8 +201,6 @@ MOD_T_AVE_NUSSELT = \
 t_average_nusselt.o
 
 MOD_SPH_ENE_CHECK = \
-m_precision.o \
-skip_comment_f.o \
 compare_sph_mean_square.o
 
 #
@@ -270,7 +268,7 @@ target_task:
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ENE_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_ENE_SPEC)' \
 	'$$(MOD_SPH_ENE_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -278,7 +276,7 @@ target_task:
 	@echo '$$(TARGET_SPH_ENE_LAYER)': '$$(MOD_SPH_ENE_LAYER)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ENE_LAYER)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_ENE_LAYER)' \
 	'$$(MOD_SPH_ENE_LAYER)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -286,7 +284,7 @@ target_task:
 	@echo '$$(TARGET_PICK_SPH_VOL_ENE)': '$$(MOD_PICK_SPH_VOL_ENE)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_SPH_VOL_ENE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PICK_SPH_VOL_ENE)' \
 	'$$(MOD_PICK_SPH_VOL_ENE)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -294,7 +292,7 @@ target_task:
 	@echo '$$(TARGET_PICK_SPH_ENE)': '$$(MOD_PICK_SPH_ENE)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_SPH_ENE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PICK_SPH_ENE)' \
 	'$$(MOD_PICK_SPH_ENE)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -302,7 +300,7 @@ target_task:
 	@echo '$$(TARGET_PICK_SPH_SPEC)': '$$(MOD_PICK_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_SPH_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PICK_SPH_SPEC)' \
 	'$$(MOD_PICK_SPH_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -310,7 +308,7 @@ target_task:
 	@echo '$$(TARGET_PICK_GAUSS_COEF)': '$$(MOD_PICK_GAUSS_COEF)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PICK_GAUSS_COEF)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PICK_GAUSS_COEF)' \
 	'$$(MOD_PICK_GAUSS_COEF)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -318,28 +316,28 @@ target_task:
 	@echo '$$(TARGET_RENAME_SPH_FLD)': '$$(MOD_RENAME_SPH_FLD)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_RENAME_SPH_FLD)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_RENAME_SPH_FLD)' \
 	'$$(MOD_RENAME_SPH_FLD)' \
 	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DIFF_SPH_SPEC)': '$$(MOD_DIFF_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_DIFF_SPH_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_DIFF_SPH_SPEC)' \
 	'$$(MOD_DIFF_SPH_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ZM_SPH_SPEC)': '$$(MOD_ZM_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ZM_SPH_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_ZM_SPH_SPEC)' \
 	'$$(MOD_ZM_SPH_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)  $$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_SPEC)': '$$(MOD_TAVE_SPH_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_SPEC)' \
 	'$$(MOD_TAVE_SPH_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -347,7 +345,7 @@ target_task:
 	@echo '$$(TARGET_SPH_NEUTRAL)': '$$(MOD_SPH_NEUTRAL)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_NEUTRAL)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_NEUTRAL)' \
 	'$$(MOD_SPH_NEUTRAL)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -355,7 +353,7 @@ target_task:
 	@echo '$$(TARGET_TAVE_SPH_ENE_SPEC)': '$$(MOD_TAVE_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_TAVE_SPH_ENE_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_TAVE_SPH_ENE_SPEC)' \
 	'$$(MOD_TAVE_SPH_ENE_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -363,7 +361,7 @@ target_task:
 	@echo '$$(TARGET_T_AVE_GAUSS_COEFS)': '$$(MOD_T_AVE_GAUSS_COEFS)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_GAUSS_COEFS)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_GAUSS_COEFS)' \
 	'$$(MOD_T_AVE_GAUSS_COEFS)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -371,7 +369,7 @@ target_task:
 	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(MOD_T_AVE_PICK_SPH)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -379,7 +377,7 @@ target_task:
 	@echo '$$(TARGET_PSUM_SPH_ENE_SPEC)': '$$(MOD_PSUM_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSUM_SPH_ENE_SPEC)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_PSUM_SPH_ENE_SPEC)' \
 	'$$(MOD_PSUM_SPH_ENE_SPEC)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -387,7 +385,7 @@ target_task:
 	@echo '$$(TARGET_T_AVE_NUSSELT)': '$$(MOD_T_AVE_NUSSELT)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_NUSSELT)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_T_AVE_NUSSELT)' \
 	'$$(MOD_T_AVE_NUSSELT)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -395,7 +393,7 @@ target_task:
 	@echo '$$(TARGET_MAX_SPH_ENE)': '$$(MOD_MAX_SPH_ENE)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAX_SPH_ENE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_MAX_SPH_ENE)' \
 	'$$(MOD_MAX_SPH_ENE)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
@@ -403,15 +401,17 @@ target_task:
 	@echo '$$(TARGET_SPH_ULI_LSCALE)': '$$(MOD_SPH_ULI_LSCALE)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ULI_LSCALE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_ULI_LSCALE)' \
 	'$$(MOD_SPH_ULI_LSCALE)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_CHECK)': '$$(MOD_SPH_ENE_CHECK)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ENE_CHECK)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' -o '$$(TARGET_SPH_ENE_CHECK)' \
 	'$$(MOD_SPH_ENE_CHECK)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 

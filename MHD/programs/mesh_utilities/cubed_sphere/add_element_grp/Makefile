@@ -37,7 +37,8 @@ target_task:
 	@echo '$$(TARGET_ADDGRP_SPH)': '$$(MOD_ADDGRP_SPH)' \
 	 '$$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90) $$(F90FLAGS) -o $$(TARGET_ADDGRP_SPH)' \
+	@echo '	$$(F90) $$(F90OPTFLAGS) $$(F90CPPFLAGS)' \
+	'-o $$(TARGET_ADDGRP_SPH)' \
 	'$$(MOD_ADDGRP_SPH)' \
 	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)

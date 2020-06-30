@@ -35,14 +35,16 @@ target_list:
 target_task:
 	@echo '$$(TARGET_GEN_TABLE)': '$$(MOD_GEN_TABLE)' '$$(LIB_FILES_INTERPOLATE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_TABLE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GEN_TABLE)' \
 	'$$(MOD_GEN_TABLE)' '-L. $$(LIBS_INTERPOLATE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 	@echo '$$(TARGET_GEN_ELE_TABLE)': '$$(MOD_GEN_ELE_TABLE)' '$$(LIB_FILES_INTERPOLATE)' \
 	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_GEN_ELE_TABLE)' \
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GEN_ELE_TABLE)' \
 	'$$(MOD_GEN_ELE_TABLE)'  '-L. $$(LIBS_INTERPOLATE)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
