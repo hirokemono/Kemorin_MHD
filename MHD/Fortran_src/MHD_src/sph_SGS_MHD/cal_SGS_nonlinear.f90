@@ -160,6 +160,8 @@
      &    SPH_MHD%ipol%forces, SPH_MHD%ipol%rot_forces, SPH_MHD%fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
+      if(SPH_model%MHD_prop%fl_prop%iflag_scheme .eq. id_no_evolution)  &
+     &      return
 !
 !   ----  Sum all explicit forces
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
