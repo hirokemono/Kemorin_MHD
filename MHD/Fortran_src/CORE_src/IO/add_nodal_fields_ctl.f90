@@ -10,6 +10,9 @@
 !!      logical function check_field_list_ctl(fld_name, field_ctl)
 !!      subroutine add_phys_name_ctl(fld_name, field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!      subroutine add_field_name_type_to_ctl(field, field_ctl)
+!!        type(field_def), intent(in) :: field
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !
       module add_nodal_fields_ctl
@@ -18,8 +21,6 @@
       use t_control_array_character3
 !
       implicit  none
-!
-      type(read_chara3_item), private :: field_tmp_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -58,11 +59,13 @@
       character(len=kchara), intent(in) :: fld_name
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
+      type(read_chara3_item) :: field_tmp_ctl
+!
 !
       if(check_field_list_ctl(fld_name, field_ctl)) return
 !
       field_tmp_ctl%iflag = 1
-      field_tmp_ctl%charavalue(1) = fld_name
+      field_tmp_ctl%charavalue(1) = trim(fld_name)
       field_tmp_ctl%charavalue(2) = 'Viz_off'
       field_tmp_ctl%charavalue(3) = 'Monitor_off'
 !
@@ -74,6 +77,22 @@
       end if
 !
       end subroutine add_phys_name_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine add_field_name_type_to_ctl(field, field_ctl)
+!
+      use t_field_labels
+!
+      type(field_def), intent(in) :: field
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+      character(len=kchara) :: tmpchara
+!
+      write(tmpchara,'(a)') trim(field%name)
+      call add_phys_name_ctl(tmpchara, field_ctl)
+!
+      end subroutine add_field_name_type_to_ctl
 !
 ! -----------------------------------------------------------------------
 !
