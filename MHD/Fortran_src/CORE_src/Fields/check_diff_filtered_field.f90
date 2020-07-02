@@ -37,34 +37,32 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(check_field_list_ctl(div_filtered_velo%name, field_ctl))       &
+      if(check_field_list_ctl(div_filtered_velo, field_ctl))            &
      &   call add_phys_name_ctl(filter_velocity, field_ctl)
-      if(check_field_list_ctl(div_filtered_magne%name, field_ctl))      &
+      if(check_field_list_ctl(div_filtered_magne, field_ctl))           &
      &   call add_phys_name_ctl(filter_magne, field_ctl)
-      if(check_field_list_ctl(div_filtered_vector_potential%name,       &
+      if(check_field_list_ctl(div_filtered_vector_potential,            &
      &                        field_ctl))                               &
      &   call add_phys_name_ctl(filter_vector_potential, field_ctl)
 !
-      if(check_field_list_ctl(grad_filtered_temp%name, field_ctl))      &
+      if(check_field_list_ctl(grad_filtered_temp, field_ctl))           &
      &   call add_phys_name_ctl(filter_temperature, field_ctl)
-      if(check_field_list_ctl(grad_filtered_pert_temp%name, field_ctl)) &
+      if(check_field_list_ctl(grad_filtered_pert_temp, field_ctl))      &
      &   call add_phys_name_ctl(filter_pert_temperature, field_ctl)
 !
-      if(check_field_list_ctl(grad_filtered_comp%name, field_ctl))      &
+      if(check_field_list_ctl(grad_filtered_comp, field_ctl))           &
      &   call add_phys_name_ctl(filter_composition, field_ctl)
-      if(check_field_list_ctl(grad_filtered_pert_comp%name, field_ctl)) &
+      if(check_field_list_ctl(grad_filtered_pert_comp, field_ctl))      &
      &   call add_phys_name_ctl(perturbation_density, field_ctl)
 !
-      if(check_field_list_ctl(grad_filtered_density%name, field_ctl))   &
+      if(check_field_list_ctl(grad_filtered_density, field_ctl))        &
      &   call add_phys_name_ctl(filter_density, field_ctl)
-      if(check_field_list_ctl(grad_filtered_pert_density%name,          &
-     &                        field_ctl))                               &
+      if(check_field_list_ctl(grad_filtered_pert_density, field_ctl))   &
      &   call add_phys_name_ctl(filter_pert_density, field_ctl)
 !
-      if(check_field_list_ctl(grad_filtered_entropy%name, field_ctl))   &
+      if(check_field_list_ctl(grad_filtered_entropy, field_ctl))        &
      &   call add_phys_name_ctl(filter_entropy, field_ctl)
-      if(check_field_list_ctl(grad_filtered_pert_entropy%name,          &
-     &                        field_ctl))                               &
+      if(check_field_list_ctl(grad_filtered_pert_entropy, field_ctl))   &
      &   call add_phys_name_ctl(filter_pert_entropy, field_ctl)
 !
       end subroutine add_field_ctl_4_grad_fil_field
@@ -80,26 +78,26 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(   check_field_list_ctl(grad_filtered_v_1%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_v_2%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_v_3%name, field_ctl))    &
+      if(   check_field_list_ctl(grad_filtered_v_1, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_v_2, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_v_3, field_ctl))         &
      &  call add_phys_name_ctl(filter_velocity, field_ctl)
-      if(   check_field_list_ctl(grad_filtered_w_1%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_w_2%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_w_3%name, field_ctl))    &
+      if(   check_field_list_ctl(grad_filtered_w_1, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_w_2, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_w_3, field_ctl))         &
      &  call add_phys_name_ctl(filter_vorticity, field_ctl)
 !
-      if(   check_field_list_ctl(grad_filtered_b_1%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_b_2%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_b_3%name, field_ctl))    &
+      if(   check_field_list_ctl(grad_filtered_b_1, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_b_2, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_b_3, field_ctl))         &
      &  call add_phys_name_ctl(filter_magne, field_ctl)
-      if(   check_field_list_ctl(grad_filtered_a_1%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_a_2%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_a_3%name, field_ctl))    &
+      if(   check_field_list_ctl(grad_filtered_a_1, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_a_2, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_a_3, field_ctl))         &
      &  call add_phys_name_ctl(filter_vector_potential, field_ctl)
-      if(   check_field_list_ctl(grad_filtered_j_1%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_j_2%name, field_ctl)     &
-     & .or. check_field_list_ctl(grad_filtered_j_3%name, field_ctl))    &
+      if(   check_field_list_ctl(grad_filtered_j_1, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_j_2, field_ctl)          &
+     & .or. check_field_list_ctl(grad_filtered_j_3, field_ctl))         &
      &  call add_phys_name_ctl(filter_current, field_ctl)
 !
       end subroutine add_field_ctl_4_diff_fil_vect
