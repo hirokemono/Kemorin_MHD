@@ -41,10 +41,9 @@
 !
       if(fl_prop%iflag_FEM_gravity .eq. id_FORCE_at_node) then
         if(fl_prop%iflag_4_filter_gravity)                              &
-     &    call add_phys_name_ctl(filtered_buoyancy%name, field_ctl)
+     &    call add_phys_name_ctl(filtered_buoyancy, field_ctl)
         if(fl_prop%iflag_4_filter_comp_buo)                             &
-     &    call add_phys_name_ctl(filtered_comp_buoyancy%name,           &
-     &                           field_ctl)
+     &    call add_phys_name_ctl(filtered_comp_buoyancy, field_ctl)
       end if
 !
       end subroutine add_filtered_buoyancy_4_FEM_MHD
@@ -70,25 +69,24 @@
 !   work area for SGS model
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call add_phys_name_ctl(temp_4_SGS%name, field_ctl)
+        call add_phys_name_ctl(temp_4_SGS, field_ctl)
       end if
       if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-        call add_phys_name_ctl(comp_4_SGS%name, field_ctl)
+        call add_phys_name_ctl(comp_4_SGS, field_ctl)
       end if
 !
       if (SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-        call add_phys_name_ctl(SGS_momentum_flux%name, field_ctl)
-        call add_phys_name_ctl(div_SGS_m_flux%name, field_ctl)
-        call add_phys_name_ctl(Reynolds_work%name, field_ctl)
+        call add_phys_name_ctl(SGS_momentum_flux, field_ctl)
+        call add_phys_name_ctl(div_SGS_m_flux, field_ctl)
+        call add_phys_name_ctl(Reynolds_work, field_ctl)
 !
         if(fl_prop%iflag_4_gravity) then
-          call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-          call add_phys_name_ctl(SGS_buoyancy_flux%name, field_ctl)
+          call add_phys_name_ctl(SGS_heat_flux, field_ctl)
+          call add_phys_name_ctl(SGS_buoyancy_flux, field_ctl)
         end if
         if(fl_prop%iflag_4_composit_buo) then
-          call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-          call add_phys_name_ctl                                        &
-     &       (SGS_comp_buoyancy_flux%name, field_ctl)
+          call add_phys_name_ctl(SGS_composit_flux, field_ctl)
+          call add_phys_name_ctl(SGS_comp_buoyancy_flux, field_ctl)
         end if
       end if
 !
@@ -100,36 +98,35 @@
      &    .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. velocity%name) then
-            call add_phys_name_ctl(grad_v_1%name, field_ctl)
-            call add_phys_name_ctl(grad_v_2%name, field_ctl)
-            call add_phys_name_ctl(grad_v_3%name, field_ctl)
+            call add_phys_name_ctl(grad_v_1, field_ctl)
+            call add_phys_name_ctl(grad_v_2, field_ctl)
+            call add_phys_name_ctl(grad_v_3, field_ctl)
 !          if(      field_ctl%c1_tbl(i) .eq. vorticity%name) then
-!            call add_phys_name_ctl(grad_w_1%name, field_ctl)
-!            call add_phys_name_ctl(grad_w_2%name, field_ctl)
-!            call add_phys_name_ctl(grad_w_3%name, field_ctl)
+!            call add_phys_name_ctl(grad_w_1, field_ctl)
+!            call add_phys_name_ctl(grad_w_2, field_ctl)
+!            call add_phys_name_ctl(grad_w_3, field_ctl)
 !          else if(field_ctl%c1_tbl(i) .eq. vector_potential%name) then
-!            call add_phys_name_ctl(grad_a_1%name, field_ctl)
-!            call add_phys_name_ctl(grad_a_2%name, field_ctl)
-!            call add_phys_name_ctl(grad_a_3%name, field_ctl)
+!            call add_phys_name_ctl(grad_a_1, field_ctl)
+!            call add_phys_name_ctl(grad_a_2, field_ctl)
+!            call add_phys_name_ctl(grad_a_3, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
-            call add_phys_name_ctl(grad_b_1%name, field_ctl)
-            call add_phys_name_ctl(grad_b_2%name, field_ctl)
-            call add_phys_name_ctl(grad_b_3%name, field_ctl)
+            call add_phys_name_ctl(grad_b_1, field_ctl)
+            call add_phys_name_ctl(grad_b_2, field_ctl)
+            call add_phys_name_ctl(grad_b_3, field_ctl)
 !          else if(field_ctl%c1_tbl(i) .eq. current_density%name) then
-!            call add_phys_name_ctl(grad_j_1%name, field_ctl)
-!            call add_phys_name_ctl(grad_j_2%name, field_ctl)
-!            call add_phys_name_ctl(grad_j_3%name, field_ctl)
+!            call add_phys_name_ctl(grad_j_1, field_ctl)
+!            call add_phys_name_ctl(grad_j_2, field_ctl)
+!            call add_phys_name_ctl(grad_j_3, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
-            call add_phys_name_ctl(grad_temp%name, field_ctl)
+            call add_phys_name_ctl(grad_temp, field_ctl)
           else if(field_ctl%c1_tbl(i)                                   &
      &             .eq. reference_temperature%name) then
-            call add_phys_name_ctl(grad_pert_temp%name, field_ctl)
+            call add_phys_name_ctl(grad_pert_temp, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. composition%name) then
-            call add_phys_name_ctl(grad_composition%name, field_ctl)
+            call add_phys_name_ctl(grad_composition, field_ctl)
           else if(field_ctl%c1_tbl(i)                                   &
      &              .eq. reference_composition%name) then
-            call add_phys_name_ctl(grad_pert_composition%name,          &
-     &                             field_ctl)
+            call add_phys_name_ctl(grad_pert_composition, field_ctl)
           end if
         end do
       end if
@@ -140,16 +137,15 @@
      &     .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. velocity%name) then
-            call add_phys_name_ctl(filter_velocity%name, field_ctl)
+            call add_phys_name_ctl(filter_velocity, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. vector_potential%name) then
-            call add_phys_name_ctl                                      &
-     &         (filter_vector_potential%name, field_ctl)
+            call add_phys_name_ctl(filter_vector_potential, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. magnetic_field%name) then
-            call add_phys_name_ctl(filter_magne%name, field_ctl)
+            call add_phys_name_ctl(filter_magne, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. temperature%name) then
-            call add_phys_name_ctl(filter_temperature%name, field_ctl)
+            call add_phys_name_ctl(filter_temperature, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. composition%name) then
-            call add_phys_name_ctl(filter_composition%name, field_ctl)
+            call add_phys_name_ctl(filter_composition, field_ctl)
           end if
         end do
       end if
@@ -160,17 +156,16 @@
      &     .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. filter_velocity%name) then
-            call add_phys_name_ctl                                      &
-     &         (wide_filter_velocity%name, field_ctl)
+            call add_phys_name_ctl(wide_filter_velocity, field_ctl)
           else if( field_ctl%c1_tbl(i)                                  &
      &                         .eq. filter_vector_potential%name) then
             call add_phys_name_ctl                                      &
-     &         (wide_filter_vector_potential%name, field_ctl)
+     &         (wide_filter_vector_potential, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. filter_magne%name) then
-            call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
+            call add_phys_name_ctl(wide_filter_magne, field_ctl)
           else if(field_ctl%c1_tbl(i)                                   &
      &                          .eq. filter_temperature%name) then
-            call add_phys_name_ctl(wide_filter_temp%name, field_ctl)
+            call add_phys_name_ctl(wide_filter_temp, field_ctl)
           end if
         end do
       end if
@@ -178,7 +173,7 @@
 !   field labels for turbulence diffusivity
 !
       if (SGS_param%iflag_SGS .eq. id_SGS_diffusion) then
-        call add_phys_name_ctl(SGS_diffuse%name, field_ctl)
+        call add_phys_name_ctl(SGS_diffuse, field_ctl)
       end if
 !
       end subroutine add_work_area_4_sgs_model
@@ -196,26 +191,26 @@
 !
       if(      SGS_param%iflag_dynamic.eq.id_SGS_DYNAMIC_OFF            &
      &   .and. SGS_param%iflag_SGS.eq.id_SGS_NL_grad) then
-        call add_phys_name_ctl(SGS_grad%name, field_ctl)
+        call add_phys_name_ctl(SGS_grad, field_ctl)
       else if (SGS_param%iflag_dynamic.eq.id_SGS_DYNAMIC_OFF            &
      &     .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
-        call add_phys_name_ctl(SGS_simi%name, field_ctl)
+        call add_phys_name_ctl(SGS_simi, field_ctl)
       else if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call add_phys_name_ctl(SGS_grad%name, field_ctl)
-        call add_phys_name_ctl(SGS_simi%name, field_ctl)
-        call add_phys_name_ctl(SGS_grad_f%name, field_ctl)
+        call add_phys_name_ctl(SGS_grad, field_ctl)
+        call add_phys_name_ctl(SGS_simi, field_ctl)
+        call add_phys_name_ctl(SGS_grad_f, field_ctl)
 !
         if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-          call add_phys_name_ctl(temp_4_SGS%name, field_ctl)
+          call add_phys_name_ctl(temp_4_SGS, field_ctl)
         end if
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
-          call add_phys_name_ctl(comp_4_SGS%name, field_ctl)
+          call add_phys_name_ctl(comp_4_SGS, field_ctl)
         end if
       end if
 !
       if(     (SGS_param%iflag_SGS_m_flux .eq. id_SGS_diffusion)        &
      &   .or. (SGS_param%iflag_SGS_lorentz .eq. id_SGS_diffusion)) then
-        call add_phys_name_ctl(SGS_diffuse%name, field_ctl)
+        call add_phys_name_ctl(SGS_diffuse, field_ctl)
       end if
 !
       end subroutine add_work_area_4_dynamic_sgs

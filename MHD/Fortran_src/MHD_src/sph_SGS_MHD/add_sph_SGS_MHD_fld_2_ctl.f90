@@ -47,88 +47,88 @@
 !   Add SGS terms
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(SGS_inertia%name, field_ctl)
-        call add_phys_name_ctl(rot_SGS_inertia%name, field_ctl)
-        call add_phys_name_ctl(div_SGS_inertia%name, field_ctl)
+        call add_phys_name_ctl(SGS_inertia, field_ctl)
+        call add_phys_name_ctl(rot_SGS_inertia, field_ctl)
+        call add_phys_name_ctl(div_SGS_inertia, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
-        call add_phys_name_ctl(SGS_Lorentz%name, field_ctl)
-        call add_phys_name_ctl(rot_SGS_Lorentz%name, field_ctl)
-        call add_phys_name_ctl(div_SGS_Lorentz%name, field_ctl)
+        call add_phys_name_ctl(SGS_Lorentz, field_ctl)
+        call add_phys_name_ctl(rot_SGS_Lorentz, field_ctl)
+        call add_phys_name_ctl(div_SGS_Lorentz, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-        call add_phys_name_ctl(SGS_vecp_induction%name, field_ctl)
-        call add_phys_name_ctl(SGS_induction%name, field_ctl)
+        call add_phys_name_ctl(SGS_vecp_induction, field_ctl)
+        call add_phys_name_ctl(SGS_induction, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(SGS_heat_flux%name, field_ctl)
-        call add_phys_name_ctl(div_SGS_h_flux%name, field_ctl)
+        call add_phys_name_ctl(SGS_heat_flux, field_ctl)
+        call add_phys_name_ctl(div_SGS_h_flux, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(SGS_composit_flux%name, field_ctl)
-        call add_phys_name_ctl(div_SGS_c_flux%name, field_ctl)
+        call add_phys_name_ctl(SGS_composit_flux, field_ctl)
+        call add_phys_name_ctl(div_SGS_c_flux, field_ctl)
       end if
 !
 !   Add fieltered field
 !
       if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_vorticity%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_vorticity, field_ctl)
       else if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_w_1%name, field_ctl)
-        call add_phys_name_ctl(grad_w_2%name, field_ctl)
-        call add_phys_name_ctl(grad_w_3%name, field_ctl)
+        call add_phys_name_ctl(grad_v_1, field_ctl)
+        call add_phys_name_ctl(grad_v_2, field_ctl)
+        call add_phys_name_ctl(grad_v_3, field_ctl)
+        call add_phys_name_ctl(grad_w_1, field_ctl)
+        call add_phys_name_ctl(grad_w_2, field_ctl)
+        call add_phys_name_ctl(grad_w_3, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(filter_magne%name, field_ctl)
-        call add_phys_name_ctl(filter_current%name, field_ctl)
+        call add_phys_name_ctl(filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_current, field_ctl)
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_j_1%name, field_ctl)
-        call add_phys_name_ctl(grad_j_2%name, field_ctl)
-        call add_phys_name_ctl(grad_j_3%name, field_ctl)
-        call add_phys_name_ctl(grad_b_1%name, field_ctl)
-        call add_phys_name_ctl(grad_b_2%name, field_ctl)
-        call add_phys_name_ctl(grad_b_3%name, field_ctl)
+        call add_phys_name_ctl(grad_j_1, field_ctl)
+        call add_phys_name_ctl(grad_j_2, field_ctl)
+        call add_phys_name_ctl(grad_j_3, field_ctl)
+        call add_phys_name_ctl(grad_b_1, field_ctl)
+        call add_phys_name_ctl(grad_b_2, field_ctl)
+        call add_phys_name_ctl(grad_b_3, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_magne%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_magne, field_ctl)
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_b_1%name, field_ctl)
-        call add_phys_name_ctl(grad_b_2%name, field_ctl)
-        call add_phys_name_ctl(grad_b_3%name, field_ctl)
+        call add_phys_name_ctl(grad_v_1, field_ctl)
+        call add_phys_name_ctl(grad_v_2, field_ctl)
+        call add_phys_name_ctl(grad_v_3, field_ctl)
+        call add_phys_name_ctl(grad_b_1, field_ctl)
+        call add_phys_name_ctl(grad_b_2, field_ctl)
+        call add_phys_name_ctl(grad_b_3, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_temperature%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_temperature, field_ctl)
       else if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_temp%name, field_ctl)
+        call add_phys_name_ctl(grad_v_1, field_ctl)
+        call add_phys_name_ctl(grad_v_2, field_ctl)
+        call add_phys_name_ctl(grad_v_3, field_ctl)
+        call add_phys_name_ctl(grad_temp, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_composition%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_composition, field_ctl)
       else if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_composition%name, field_ctl)
+        call add_phys_name_ctl(grad_v_1, field_ctl)
+        call add_phys_name_ctl(grad_v_2, field_ctl)
+        call add_phys_name_ctl(grad_v_3, field_ctl)
+        call add_phys_name_ctl(grad_composition, field_ctl)
       end if
 !
       end subroutine add_field_name_4_SGS
@@ -157,160 +157,157 @@
 !   Add model coefficients
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(Csim_SGS_inertia%name, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_inertia, field_ctl)
       end if
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none) then
-        call add_phys_name_ctl(Csim_SGS_Lorentz%name, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_Lorentz, field_ctl)
       end if
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-        call add_phys_name_ctl(Csim_SGS_induction%name, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_induction, field_ctl)
       end if
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(Csim_SGS_heat_flux%name, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_heat_flux, field_ctl)
       end if
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none) then
-        call add_phys_name_ctl(Csim_SGS_composit_flux%name, field_ctl)
+        call add_phys_name_ctl(Csim_SGS_composit_flux, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
         if(fl_prop%iflag_4_gravity) then
-          call add_phys_name_ctl(Csim_SGS_buoyancy%name, field_ctl)
+          call add_phys_name_ctl(Csim_SGS_buoyancy, field_ctl)
         end if
         if(fl_prop%iflag_4_composit_buo) then
-          call add_phys_name_ctl(Csim_SGS_composit_buo%name, field_ctl)
+          call add_phys_name_ctl(Csim_SGS_composit_buo, field_ctl)
         end if
       end if
 !
 !    Add filtered field
 !
       if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(wide_filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(wide_filter_vorticity%name, field_ctl)
+        call add_phys_name_ctl(wide_filter_velocity, field_ctl)
+        call add_phys_name_ctl(wide_filter_vorticity, field_ctl)
       else if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_vorticity%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_vorticity, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
-        call add_phys_name_ctl(wide_filter_current%name, field_ctl)
+        call add_phys_name_ctl(wide_filter_magne, field_ctl)
+        call add_phys_name_ctl(wide_filter_current, field_ctl)
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(filter_magne%name, field_ctl)
-        call add_phys_name_ctl(filter_current%name, field_ctl)
+        call add_phys_name_ctl(filter_magne, field_ctl)
+        call add_phys_name_ctl(filter_current, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(wide_filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(wide_filter_magne%name, field_ctl)
+        call add_phys_name_ctl(wide_filter_velocity, field_ctl)
+        call add_phys_name_ctl(wide_filter_magne, field_ctl)
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_magne%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_magne, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(wide_filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(wide_filter_temp%name, field_ctl)
+        call add_phys_name_ctl(wide_filter_velocity, field_ctl)
+        call add_phys_name_ctl(wide_filter_temp, field_ctl)
       else if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_temperature%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_temperature, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_similarity) then
-        call add_phys_name_ctl(wide_filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(wide_filter_composition%name, field_ctl)
+        call add_phys_name_ctl(wide_filter_velocity, field_ctl)
+        call add_phys_name_ctl(wide_filter_composition, field_ctl)
       else if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-        call add_phys_name_ctl(filter_composition%name, field_ctl)
+        call add_phys_name_ctl(filter_velocity, field_ctl)
+        call add_phys_name_ctl(filter_composition, field_ctl)
       end if
 !
 !
       if(SGS_param%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_filtered_w_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_w_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_w_3%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_w_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_w_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_w_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_filtered_j_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_j_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_j_3%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_b_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_b_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_b_3%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_j_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_j_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_j_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_3, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_b_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_b_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_b_3%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_b_3, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_temp%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_temp, field_ctl)
       end if
 !
       if(SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
-        call add_phys_name_ctl(grad_filtered_v_1%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_2%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_v_3%name, field_ctl)
-        call add_phys_name_ctl(grad_filtered_comp%name, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_1, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_2, field_ctl)
+        call add_phys_name_ctl(grad_filtered_v_3, field_ctl)
+        call add_phys_name_ctl(grad_filtered_comp, field_ctl)
       end if
 !
 !       Add SGS fluxes
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(wide_SGS_inertia%name, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_inertia, field_ctl)
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none)                  &
-     &   call add_phys_name_ctl(wide_SGS_Lorentz%name, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_Lorentz, field_ctl)
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none)                      &
-     &   call add_phys_name_ctl(wide_SGS_vp_induction%name, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_vp_induction, field_ctl)
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(wide_SGS_heat_flux%name, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_heat_flux, field_ctl)
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(wide_SGS_composit_flux%name, field_ctl)
+     &   call add_phys_name_ctl(wide_SGS_composit_flux, field_ctl)
 !
 !
       if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
-        call add_phys_name_ctl(Reynolds_work%name, field_ctl)
+        call add_phys_name_ctl(Reynolds_work, field_ctl)
 !
         if(fl_prop%iflag_4_gravity) then
-          call add_phys_name_ctl(SGS_buoyancy_flux%name, field_ctl)
+          call add_phys_name_ctl(SGS_buoyancy_flux, field_ctl)
         end if
 !
         if(fl_prop%iflag_4_composit_buo) then
-          call add_phys_name_ctl                                        &
-     &       (SGS_comp_buoyancy_flux%name, field_ctl)
+          call add_phys_name_ctl(SGS_comp_buoyancy_flux, field_ctl)
         end if
       end if
 !
 !
       if(SGS_param%iflag_SGS_m_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(double_SGS_inertia%name, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_inertia, field_ctl)
       if(SGS_param%iflag_SGS_lorentz .gt. id_SGS_none)                  &
-     &   call add_phys_name_ctl(double_SGS_Lorentz%name, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_Lorentz, field_ctl)
       if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none)                      &
-     &   call add_phys_name_ctl(double_SGS_vp_induction%name,           &
-     &                          field_ctl)
+     &   call add_phys_name_ctl(double_SGS_vp_induction, field_ctl)
       if(SGS_param%iflag_SGS_h_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(double_SGS_heat_flux%name, field_ctl)
+     &   call add_phys_name_ctl(double_SGS_heat_flux, field_ctl)
       if(SGS_param%iflag_SGS_c_flux .gt. id_SGS_none)                   &
-     &   call add_phys_name_ctl(double_SGS_composit_flux%name,          &
-     &                          field_ctl)
+     &   call add_phys_name_ctl(double_SGS_composit_flux, field_ctl)
 !
 !      if(SGS_param%iflag_SGS_gravity .gt. id_SGS_none) then
-!        call add_phys_name_ctl(filter_velocity%name, field_ctl)
-!        call add_phys_name_ctl(filter_temperature%name, field_ctl)
+!        call add_phys_name_ctl(filter_velocity, field_ctl)
+!        call add_phys_name_ctl(filter_temperature, field_ctl)
 !
-!        call add_phys_name_ctl(SGS_composit_buoyancy%name, field_ctl)
+!        call add_phys_name_ctl(SGS_composit_buoyancy, field_ctl)
 !      end if
 !
       end subroutine add_field_name_dynamic_SGS

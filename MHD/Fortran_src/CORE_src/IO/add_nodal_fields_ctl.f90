@@ -8,9 +8,7 @@
 !!
 !!@verbatim
 !!      logical function check_field_list_ctl(fld_name, field_ctl)
-!!      subroutine add_phys_name_ctl(fld_name, field_ctl)
-!!        type(ctl_array_c3), intent(inout) :: field_ctl
-!!      subroutine add_field_name_type_to_ctl(field, field_ctl)
+!!      subroutine add_phys_name_ctl(field, field_ctl)
 !!        type(field_def), intent(in) :: field
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
@@ -21,6 +19,8 @@
       use t_control_array_character3
 !
       implicit  none
+!
+      private :: add_field_name_to_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_phys_name_ctl(fld_name, field_ctl)
+      subroutine add_field_name_to_ctl(fld_name, field_ctl)
 !
       use m_machine_parameter
 !
@@ -76,11 +76,11 @@
      &            ' is added at field ID ',   field_ctl%num
       end if
 !
-      end subroutine add_phys_name_ctl
+      end subroutine add_field_name_to_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_field_name_type_to_ctl(field, field_ctl)
+      subroutine add_phys_name_ctl(field, field_ctl)
 !
       use t_field_labels
 !
@@ -90,9 +90,9 @@
       character(len=kchara) :: tmpchara
 !
       write(tmpchara,'(a)') trim(field%name)
-      call add_phys_name_ctl(tmpchara, field_ctl)
+      call add_field_name_to_ctl(tmpchara, field_ctl)
 !
-      end subroutine add_field_name_type_to_ctl
+      end subroutine add_phys_name_ctl
 !
 ! -----------------------------------------------------------------------
 !
