@@ -179,12 +179,13 @@
       integer(kind=kint), intent(in) :: ifld_msq, ncomp_msq
       character(len=kchara), intent(in) :: msq_name
 !
+      character(len=kchara) :: tmpchara
       character(len=kchara) :: vector_label(3)
 !
 !
       if(ifld_msq .eq. iphys_base%i_velo) then
         if(msq_name .eq. velocity%name) then
-          call set_vector_label(velocity%name, vector_label)
+          call set_vector_label(msq_name, vector_label)
           call write_vector_label(id_ave, vector_label)
           call write_one_label(id_msq, e_hd_k_ene)
 !
@@ -195,13 +196,13 @@
         end if
 !
       else if(ifld_msq .eq. iphys_base%i_vort) then
-          call vector_label_4_step(id_ave, id_msq, vorticity%name)
-          call write_one_label(id_msq, e_hd_rms_w)
+        write(tmpchara,'(a)') trim(vorticity%name)
+        call vector_label_4_step(id_ave, id_msq, tmpchara)
+        call write_one_label(id_msq, e_hd_rms_w)
 !
       else if(ifld_msq .eq. iphys_base%i_vecp) then
         if(msq_name .eq. vector_potential%name) then
-          call vector_label_4_step                                      &
-     &       (id_ave, id_msq, vector_potential%name)
+          call vector_label_4_step(id_ave, id_msq, msq_name)
           call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)
         else if(msq_name .eq. e_hd_div_a) then
           call scalar_label_4_step(id_ave, id_msq, e_hd_div_a)
@@ -212,7 +213,7 @@
           call write_three_labels                                       &
      &       (id_msq, e_hd_m_ene, e_hd_m_ene_cd, e_hd_div_b)
 !
-          call set_vector_label(magnetic_field%name, vector_label)
+          call set_vector_label(msq_name, vector_label)
           call write_vector_label(id_ave, vector_label)
           call write_vector_label(id_ave, e_hd_bvec_cd)
           call write_one_label(id_ave, e_hd_div_b)
@@ -221,8 +222,8 @@
         end if
 !
       else if(ifld_msq .eq. iphys_base%i_current) then
-        call vector_label_4_step                                        &
-     &     (id_ave, id_msq, current_density%name)
+        write(tmpchara,'(a)') trim(current_density%name)
+        call vector_label_4_step(id_ave, id_msq, tmpchara)
         call vector_label_4_step(id_ave, id_msq, e_hd_sq_j_cd)
         call write_one_label(id_msq, e_hd_rms_j)
         call write_one_label(id_msq, e_hd_rms_j_cd)
@@ -232,7 +233,7 @@
           call write_one_label(id_msq, e_hd_fil_k_ene)
           call write_one_label(id_msq, e_hd_fil_div_v)
 !
-          call set_vector_label(filter_velocity%name, vector_label)
+          call set_vector_label(msq_name, vector_label)
           call write_vector_label(id_ave, vector_label)
           call write_one_label(id_ave, e_hd_fil_div_v)
           call write_vector_label(id_ave, e_hd_fil_lvec)
@@ -242,8 +243,7 @@
 !
       else if(ifld_msq .eq. iphys_fil%i_vecp) then
         if(msq_name .eq. filter_vector_potential%name) then
-          call vector_label_4_step                                      &
-     &       (id_ave, id_msq, filter_vector_potential%name)
+          call vector_label_4_step(id_ave, id_msq, msq_name)
           call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_a)
         else if(msq_name .eq. e_hd_fil_div_a) then
           call scalar_label_4_step(id_ave, id_msq, e_hd_fil_div_a)
@@ -254,7 +254,7 @@
           call write_three_labels(id_msq,                               &
      &        e_hd_fil_m_ene, e_hd_fil_m_ene_cd, e_hd_fil_div_b)
 !
-          call set_vector_label(filter_magne%name, vector_label)
+          call set_vector_label(msq_name, vector_label)
           call write_vector_label(id_ave, vector_label)
           call write_vector_label(id_ave, e_hd_fil_bvec_cd)
           call write_one_label(id_ave, e_hd_fil_div_b)
