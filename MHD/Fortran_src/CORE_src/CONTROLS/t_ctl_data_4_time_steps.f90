@@ -11,10 +11,10 @@
 !!
 !!      subroutine read_control_time_step_data                          &
 !!     &         (id_control, hd_block, tctl, c_buf)
-!!        type(platform_data_control), intent(inout) :: tctl
+!!        type(time_data_control), intent(inout) :: tctl
 !!      subroutine write_control_time_step_data                         &
 !!     &         (id_control, hd_block, tctl, level)
-!!        type(platform_data_control), intent(in) :: tctl
+!!        type(time_data_control), intent(in) :: tctl
 !!
 !! ------------------------------------------------------------------
 !!      Example of control parameters for flexible time step
@@ -34,7 +34,8 @@
 !!
 !!      delta_t_check_ctl        2.0e-5
 !!      delta_t_rst_ctl          1.0e-2
-!!      delta_t_psf_ctl          1.0e-3
+!!      delta_t_sectioning_ctl   1.0e-3
+!!      delta_t_isosurface_ctl   1.0e-3
 !!      delta_t_pvr_ctl          1.0e-2
 !!      delta_t_fline_ctl        1.0e-1
 !!      delta_t_LIC_ctl          1.0e-1
@@ -105,6 +106,8 @@
 !>                Increment time for restart data output
 !>@n@param      delta_t_psf_ctl
 !>                Increment time for surface rendering data output
+!>@n@param      delta_t_iso_ctl
+!>                Increment time for isosurface rendering data output
 !>@n@param      delta_t_pvr_ctl
 !>                Increment time for volume rendering data output
 !>@n@param      delta_t_fline_ctl
@@ -271,9 +274,9 @@
       character(len=kchara), parameter                                  &
      &       :: hd_delta_t_rst =       'delta_t_rst_ctl'
       character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_psf =       'delta_t_psf_ctl'
+     &       :: hd_delta_t_section =   'delta_t_sectioning_ctl'
       character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_iso =       'delta_t_iso_ctl'
+     &       :: hd_delta_t_isosurf =   'delta_t_isosurface_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_delta_t_pvr =       'delta_t_pvr_ctl'
       character(len=kchara), parameter                                  &
@@ -334,7 +337,7 @@
       private :: hd_max_eps_to_shrink, hd_min_eps_to_expand
       private :: hd_start_rst_step, hd_end_rst_step
       private :: hd_delta_t_check, hd_delta_t_rst, hd_delta_t_ucd
-      private :: hd_delta_t_psf, hd_delta_t_iso
+      private :: hd_delta_t_section, hd_delta_t_isosurf
       private :: hd_delta_t_pvr, hd_delta_t_fline
       private :: hd_delta_t_monitor, hd_delta_t_sgs_coefs
       private :: hd_delta_t_boundary
@@ -394,9 +397,9 @@
      &      tctl%delta_t_check_ctl)
         call read_real_ctl_type(c_buf, hd_delta_t_rst,                  &
      &      tctl%delta_t_rst_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_psf,                  &
+        call read_real_ctl_type(c_buf, hd_delta_t_section,              &
      &      tctl%delta_t_psf_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_iso,                  &
+        call read_real_ctl_type(c_buf, hd_delta_t_isosurf,              &
      &      tctl%delta_t_iso_ctl)
         call read_real_ctl_type(c_buf, hd_delta_t_pvr,                  &
      &      tctl%delta_t_pvr_ctl)
@@ -493,8 +496,8 @@
       maxlen = max(maxlen, len_trim(hd_min_eps_to_expand))
       maxlen = max(maxlen, len_trim(hd_delta_t_check))
       maxlen = max(maxlen, len_trim(hd_delta_t_rst))
-      maxlen = max(maxlen, len_trim(hd_delta_t_psf))
-      maxlen = max(maxlen, len_trim(hd_delta_t_iso))
+      maxlen = max(maxlen, len_trim(hd_delta_t_section))
+      maxlen = max(maxlen, len_trim(hd_delta_t_isosurf))
       maxlen = max(maxlen, len_trim(hd_delta_t_pvr))
       maxlen = max(maxlen, len_trim(hd_delta_t_fline))
       maxlen = max(maxlen, len_trim(hd_delta_t_lic))
@@ -582,9 +585,9 @@
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_rst, tctl%delta_t_rst_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_psf, tctl%delta_t_psf_ctl)
+     &    hd_delta_t_section, tctl%delta_t_psf_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
-     &    hd_delta_t_iso, tctl%delta_t_iso_ctl)
+     &    hd_delta_t_isosurf, tctl%delta_t_iso_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
      &    hd_delta_t_pvr, tctl%delta_t_pvr_ctl)
       call write_real_ctl_type(id_control, level, maxlen,               &
