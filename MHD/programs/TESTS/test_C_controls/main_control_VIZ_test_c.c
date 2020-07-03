@@ -16,7 +16,7 @@ struct viz_only_ctl_c *viz_only0;
 int main(int argc,char *argv[])
 {
 	char buf[LENGTHBUF];      /* character buffer for reading line */
-	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/ctl_viz";
+	char file_name[LENGTHBUF] = "/Users/matsui/work/C_test/control_viz";
 	char file_name_2[LENGTHBUF];
 	int iflag;
 	
