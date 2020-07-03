@@ -150,7 +150,7 @@
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
      &    FEM_model%MHD_prop, SGS_MHD_wk%fem_int,                       &
      &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
-     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
+     &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
 !
 !   time evolution loop start!
 !  
