@@ -41,6 +41,6 @@ ln -s ../programs/VIZ_only/ctl_iso
 ln -s ../programs/VIZ_only/ctl_psf
 ln -s ../programs/VIZ_only/ctl_pvr
 ln -s ../programs/VIZ_only/ctl_pvr_psf
-ln -s ../programs/VIZ_only/ctl_viz
+ln -s ../programs/VIZ_only/control_viz
 ln -s ../programs/interpolate/ctl_gen_table
 ln -s ../programs/interpolate/ctl_interpolate
