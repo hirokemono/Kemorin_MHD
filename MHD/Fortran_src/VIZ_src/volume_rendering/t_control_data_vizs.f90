@@ -18,18 +18,36 @@
 !!    array  cross_section_ctl  1
 !!      ....
 !!    end array cross_section_ctl
+!!
 !!    array  isosurface_ctl  1
 !!      ....
 !!    end array isosurface_ctl
+!!
 !!    array  volume_rendering  1
 !!      ....
 !!    end array volume_rendering
+!!
 !!    array  fieldline  1
 !!      ....
 !!    end array fieldline
+!!
 !!    array  LIC_rendering  1
 !!      ....
 !!    end array LIC_rendering
+!!
+!!    delta_t_sectioning_ctl   1.0e-3
+!!    i_step_sectioning_ctl    400
+!!    delta_t_isosurface_ctl   1.0e-3
+!!    i_step_isosurface_ctl    400
+!!    delta_t_pvr_ctl          1.0e-2
+!!    i_step_pvr_ctl           400
+!!    delta_t_fline_ctl        1.0e-1
+!!    i_step_fline_ctl         400
+!!    delta_t_LIC_ctl          1.0e-1
+!!    i_step_LIC_ctl           400
+!!    delta_t_field_ctl        1.0e-3
+!!    i_step_field_ctl         800
+!!    output_field_file_fmt_ctl   'VTK'
 !!  end visual_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -46,6 +64,8 @@
       use t_control_data_pvrs
       use t_control_data_flines
       use t_control_data_LIC_pvrs
+      use t_control_array_character
+      use t_control_array_integer
 !
       implicit  none
 !
@@ -76,6 +96,7 @@
       character(len=kchara), parameter                                  &
      &             :: hd_lic_ctl = 'LIC_rendering'
       character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
+!
 !
 !      Deprecated labels
       character(len=kchara), parameter                                  &
