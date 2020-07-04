@@ -182,7 +182,7 @@
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, geofem%mesh, FEM_model%MHD_mesh,           &
-     &    nod_fld, MHD_files%ucd_file_IO, MHD_IO%fem_ucd)
+     &    nod_fld, MHD_files%ucd_file_IO, MHD_IO%ucd)
 !
       call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
 !       call s_open_boundary_monitor(my_rank, geofem%group%sf_grp)
@@ -197,6 +197,7 @@
      &          flex_MHD, MHD_step, visval, retval, MHD_CG, FEM_SGS,    &
      &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !
+      use t_ucd_file
       use t_FEM_MHD_mean_square
       use construct_matrices
       use lead_physical_values
@@ -302,7 +303,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
         call s_output_ucd_file_control                                  &
      &     (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,        &
-     &      MHD_step%time_d, MHD_step%ucd_step, MHD_IO%fem_ucd)
+     &      MHD_step%time_d, MHD_step%ucd_step, MHD_IO%ucd)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
@@ -371,13 +372,15 @@
 !
       subroutine FEM_finalize_MHD(MHD_files, MHD_step, MHD_IO)
 !
+      use t_ucd_file
+!
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
       type(MHD_IO_data), intent(inout) :: MHD_IO
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO, MHD_IO%fem_ucd)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, MHD_IO%ucd)
         call dealloc_phys_range(MHD_IO%range)
       end if
 !      call close_boundary_monitor(my_rank)

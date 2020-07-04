@@ -5,7 +5,7 @@
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files, fem, iphys,  &
 !!     &          FEM_model, ak_MHD, MHD_step, visval, FEM_SGS,         &
-!!     &          SGS_MHD_wk, nod_fld, fem_ucd, MHD_IO, fem_sq)
+!!     &          SGS_MHD_wk, nod_fld, ucd, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: fem
 !!        type(phys_address), intent(in) :: iphys
@@ -14,7 +14,7 @@
 !!        type(FEM_SGS_structure), intent(inout) :: FEM_SGS
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(ucd_file_data), intent(inout) :: fem_ucd
+!!        type(ucd_data), intent(inout) :: ucd
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !
@@ -30,7 +30,7 @@
       use t_IO_step_parameter
       use t_MHD_step_parameter
       use t_MHD_file_parameter
-      use t_ucd_file
+      use t_ucd_data
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
       use t_MHD_IO_data
@@ -50,10 +50,11 @@
 !
       subroutine FEM_analyze_filtered(i_step, MHD_files, fem, iphys,    &
      &          FEM_model, ak_MHD, MHD_step, visval, FEM_SGS,           &
-     &          SGS_MHD_wk, nod_fld, fem_ucd, MHD_IO, fem_sq)
+     &          SGS_MHD_wk, nod_fld, ucd, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
       use t_FEM_MHD_mean_square
+      use t_ucd_file
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -85,7 +86,7 @@
       type(FEM_SGS_structure), intent(inout) :: FEM_SGS
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !
-      type(ucd_file_data), intent(inout) :: fem_ucd
+      type(ucd_data), intent(inout) :: ucd
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_IO_data), intent(inout) :: MHD_IO
 !
@@ -177,7 +178,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,          &
-     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd)
+     &    MHD_step%time_d, MHD_step%ucd_step, ucd)
 !
 !     ----
 !

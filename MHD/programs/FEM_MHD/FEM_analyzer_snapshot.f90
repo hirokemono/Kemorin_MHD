@@ -107,7 +107,7 @@
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, FEM_model%MHD_mesh, nod_fld, &
-     &    MHD_files%ucd_file_IO, MHD_IO%fem_ucd)
+     &    MHD_files%ucd_file_IO, MHD_IO%ucd)
 !
       call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
 !
@@ -238,7 +238,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,          &
-     &    MHD_step%time_d, MHD_step%ucd_step, MHD_IO%fem_ucd)
+     &    MHD_step%time_d, MHD_step%ucd_step, MHD_IO%ucd)
 !
 !     ----
 !
@@ -259,7 +259,7 @@
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO, MHD_IO%fem_ucd)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, MHD_IO%ucd)
         call dealloc_phys_range(MHD_IO%range)
       end if
 !      call close_boundary_monitor(my_rank)

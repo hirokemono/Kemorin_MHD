@@ -78,8 +78,7 @@
         call FEM_analyze_filtered                                       &
      &     (i_step, MHD_files1, FEM_MHD1%geofem, FEM_MHD1%iphys,        &
      &      FEM_model1, MHD_CG1%ak_MHD, MHD_step1, visval, FEM_SGS1,    &
-     &      SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1%fem_ucd,               &
-     &      MHD_IO1, fem_sq1)
+     &      SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1%ucd, MHD_IO1, fem_sq1)
 !
 !  Visualization
         if (visval.eq.0) then

@@ -72,6 +72,7 @@
       use t_MHD_file_parameter
       use t_cal_max_indices
       use t_MHD_IO_data
+      use t_ucd_file
 !
       use set_table_4_RHS_assemble
       use FEM_analyzer_sph_MHD
@@ -118,7 +119,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot(MHD_files%ucd_file_IO,            &
-     &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%fem_ucd)
+     &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%ucd)
 !
 !  -------------------------------
 !
