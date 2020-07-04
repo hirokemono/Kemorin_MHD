@@ -24,8 +24,8 @@ main_surface_rendering.o: $(VIZ_PLUG_DIR)/main_surface_rendering.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 main_visualization.o: $(VIZ_PLUG_DIR)/main_visualization.f90 m_precision.o calypso_mpi.o analyzer_viz.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_all_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_all_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_vizs.o skip_comment_f.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o
+t_control_data_all_vizs.o: $(VIZ_PLUG_DIR)/t_control_data_all_vizs.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_vizs.o skip_comment_f.o viz_step_ctls_to_time_ctl.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_section_only.o: $(VIZ_PLUG_DIR)/t_control_data_section_only.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_sections.o t_control_data_isosurfaces.o skip_comment_f.o read_sections_control_data.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o
+t_control_data_section_only.o: $(VIZ_PLUG_DIR)/t_control_data_section_only.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_data_surfacings.o skip_comment_f.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

@@ -112,6 +112,9 @@
 !
       subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl)
 !
+      use t_ctl_data_SPH_MHD_control
+      use viz_step_ctls_to_time_ctl
+!
       character(len=kchara), intent(in) :: file_name
       type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !
@@ -128,6 +131,9 @@
           if(MHD_ctl%i_mhd_ctl .gt. 0) exit
         end do
         close(ctl_file_code)
+!
+        call s_viz_step_ctls_to_time_ctl                                &
+     &     (MHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)

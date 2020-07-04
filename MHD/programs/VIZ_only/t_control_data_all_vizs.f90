@@ -82,6 +82,7 @@
       subroutine read_control_file_vizs(vizs_ctl)
 !
       use skip_comment_f
+      use viz_step_ctls_to_time_ctl
 !
       type(control_data_vizs), intent(inout) :: vizs_ctl
       type(buffer_for_control) :: c_buf1
@@ -96,6 +97,9 @@
           if(vizs_ctl%i_viz_only_file .gt. 0) exit
         end do
         close(viz_ctl_file_code)
+!
+        call s_viz_step_ctls_to_time_ctl                                &
+     &     (vizs_ctl%viz_ctl_v, vizs_ctl%t_viz_ctl)
       end if
 !
       call bcast_vizs_control_data(vizs_ctl)

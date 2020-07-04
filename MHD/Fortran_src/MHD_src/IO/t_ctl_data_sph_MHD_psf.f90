@@ -45,6 +45,8 @@
 !
       subroutine read_control_4_sph_MHD_w_psf(file_name, DMHD_ctl)
 !
+      use t_control_data_surfacings
+!
       character(len=kchara), intent(in) :: file_name
       type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !
@@ -61,6 +63,9 @@
           if(DMHD_ctl%i_mhd_ctl .gt. 0) exit
         end do
         close(ctl_file_code)
+!
+        call section_step_ctls_to_time_ctl                              &
+     &     (DMHD_ctl%surfacing_ctls, DMHD_ctl%smctl_ctl%tctl)
       end if
 !
       call bcast_sph_mhd_ctl_w_psf(DMHD_ctl)

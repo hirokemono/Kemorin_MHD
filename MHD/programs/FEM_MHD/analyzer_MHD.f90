@@ -96,7 +96,7 @@
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%field,                          &
      &        SGS_MHD_wk1%fem_int%next_tbl%neib_ele,                    &
-     &        SGS_MHD_wk1%fem_int%jacs, vizs_F)
+     &        SGS_MHD_wk1%fem_int%jcs, vizs_F)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         end if
 !

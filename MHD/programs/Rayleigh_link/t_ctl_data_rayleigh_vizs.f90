@@ -7,7 +7,7 @@
 !>@brief  Main loop of visualization of Rayleigh data
 !!
 !!@verbatim
-!!      subroutine read_ctl_file_reayleigh_viz(rayleigh_vizs_ctl)
+!!      subroutine read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl)
 !!      subroutine dealloc_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
 !!        type(control_data_rayleigh_vizs), intent(inout)               &
 !!     &                     :: vizs_ctlrayleigh_vizs_ctl
@@ -105,9 +105,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_file_reayleigh_viz(rayleigh_vizs_ctl)
+      subroutine read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl)
 !
       use skip_comment_f
+      use viz_step_ctls_to_time_ctl
 !
       type(control_data_rayleigh_vizs), intent(inout)                   &
      &                         :: rayleigh_vizs_ctl
@@ -124,11 +125,14 @@
           if(rayleigh_vizs_ctl%i_viz_only_file .gt. 0) exit
         end do
         close(viz_ctl_file_code)
+!
+        call s_viz_step_ctls_to_time_ctl                                &
+     &     (rayleigh_vizs_ctl%viz_ctl_v, rayleigh_vizs_ctl%t_viz_ctl)
       end if
 !
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
 !
-      end subroutine read_ctl_file_reayleigh_viz
+      end subroutine read_ctl_file_rayleigh_viz
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

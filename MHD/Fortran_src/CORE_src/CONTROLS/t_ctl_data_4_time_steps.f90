@@ -167,6 +167,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
+      use t_read_control_elements
 !
       implicit  none
 !
@@ -301,9 +302,9 @@
       character(len=kchara), parameter, private                         &
      &       :: hd_delta_t_pvr =       'delta_t_pvr_ctl'
       character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_fline =     'delta_t_fline_ctl'
-      character(len=kchara), parameter, private                         &
      &       :: hd_delta_t_lic =       'delta_t_LIC_ctl'
+      character(len=kchara), parameter, private                         &
+     &       :: hd_delta_t_fline =     'delta_t_fline_ctl'
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_delta_t_ucd =       'delta_t_field_ctl'
@@ -450,10 +451,10 @@
      &      tctl%i_step_iso_ctl)
         call read_integer_ctl_type(c_buf, hd_i_step_pvr,                &
      &      tctl%i_step_pvr_ctl)
-        call read_integer_ctl_type(c_buf, hd_i_step_fline,              &
-     &      tctl%i_step_fline_ctl)
         call read_integer_ctl_type(c_buf, hd_i_step_lic,                &
      &      tctl%i_step_lic_ctl)
+        call read_integer_ctl_type(c_buf, hd_i_step_fline,              &
+     &      tctl%i_step_fline_ctl)
 !
         call read_integer_ctl_type(c_buf, hd_i_step_ucd,                &
      &      tctl%i_step_ucd_ctl)

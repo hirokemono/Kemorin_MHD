@@ -35,14 +35,14 @@
       use t_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
-      use t_control_data_sections
-      use t_control_data_isosurfaces
+      use t_control_data_surfacings
 !
       implicit  none
 !
 !
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
-      character(len = kchara), parameter :: fname_viz_ctl = "ctl_viz"
+      character(len = kchara), parameter                                &
+     &                        :: fname_viz_ctl = "control_viz"
 !
       type control_data_section_only
 !>      Structure for file settings
@@ -50,8 +50,8 @@
 !>      Structure for time stepping control
         type(time_data_control) :: t_sect_ctl
 !
-        type(section_controls) :: sect_psf_ctls
-        type(isosurf_controls) :: sect_iso_ctls
+!>        Structures of visualization controls
+        type(surfacing_controls) :: surfacing_ctls
 !
         integer (kind=kint) :: i_viz_only_file = 0
       end type control_data_section_only
@@ -65,9 +65,10 @@
      &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
+      character(len=kchara), parameter :: hd_viz_ctl = 'visual_control'
 !
       private :: hd_viz_only_file
-      private :: hd_platform, hd_time_step
+      private :: hd_platform, hd_time_step, hd_viz_ctl
 !
       private :: viz_ctl_file_code, fname_viz_ctl
 !
@@ -82,6 +83,7 @@
       subroutine read_control_data_section_only(sec_viz_ctl)
 !
       use skip_comment_f
+      use t_control_data_surfacings
 !
       type(control_data_section_only), intent(inout) :: sec_viz_ctl
       type(buffer_for_control) :: c_buf1
@@ -96,6 +98,9 @@
           if(sec_viz_ctl%i_viz_only_file .gt. 0) exit
         end do
         close(viz_ctl_file_code)
+!
+        call section_step_ctls_to_time_ctl                              &
+     &     (sec_viz_ctl%surfacing_ctls, sec_viz_ctl%t_sect_ctl)
       end if
 !
       call bcast_section_control_data(sec_viz_ctl)
@@ -109,7 +114,6 @@
      &         (id_control, hd_block, sec_viz_ctl, c_buf)
 !
       use skip_comment_f
-      use read_sections_control_data
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -129,8 +133,8 @@
         call read_control_time_step_data                                &
      &     (id_control, hd_time_step, sec_viz_ctl%t_sect_ctl, c_buf)
 !
-        call s_read_sections_control_data(id_control,                   &
-     &     sec_viz_ctl%sect_psf_ctls, sec_viz_ctl%sect_iso_ctls, c_buf)
+        call read_surfacing_controls                                    &
+     &     (id_control, hd_viz_ctl, sec_viz_ctl%surfacing_ctls, c_buf)
       end do
       sec_viz_ctl%i_viz_only_file = 1
 !
@@ -148,8 +152,7 @@
 !
       call bcast_ctl_data_4_platform(sec_viz_ctl%sect_plt)
       call bcast_ctl_data_4_time_step(sec_viz_ctl%t_sect_ctl)
-      call bcast_files_4_psf_ctl(sec_viz_ctl%sect_psf_ctls)
-      call bcast_files_4_iso_ctl(sec_viz_ctl%sect_iso_ctls)
+      call bcast_surfacing_controls(sec_viz_ctl%surfacing_ctls)
 !
       call MPI_BCAST(sec_viz_ctl%i_viz_only_file, 1,                    &
      &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
@@ -164,8 +167,7 @@
 !
 !
       call reset_control_platforms(sec_viz_ctl%sect_plt)
-      call dealloc_psf_ctl_stract(sec_viz_ctl%sect_psf_ctls)
-      call dealloc_iso_ctl_stract(sec_viz_ctl%sect_iso_ctls)
+      call bcast_surfacing_controls(sec_viz_ctl%surfacing_ctls)
 !
       sec_viz_ctl%i_viz_only_file = 0
 !

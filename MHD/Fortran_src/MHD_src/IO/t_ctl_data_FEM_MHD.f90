@@ -97,6 +97,8 @@
       subroutine read_control_4_fem_MHD                                 &
      &         (file_name, FEM_MHD_ctl, viz_ctls)
 !
+      use viz_step_ctls_to_time_ctl
+!
       character(len=kchara), intent(in) :: file_name
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -114,6 +116,9 @@
           if(FEM_MHD_ctl%i_mhd_ctl .gt. 0) exit
         end do
         close(ctl_file_code)
+!
+        call s_viz_step_ctls_to_time_ctl                                &
+     &     (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)
       end if
 !
       call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)

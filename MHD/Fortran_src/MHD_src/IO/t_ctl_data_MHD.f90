@@ -34,8 +34,7 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
-      use t_control_data_sections
-      use t_control_data_isosurfaces
+      use t_control_data_surfacings
       use t_control_data_dynamo_vizs
 !
       implicit none
@@ -62,10 +61,8 @@
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
 !
-!>        Structures of setioning controls
-        type(section_controls) :: psf_ctls
-!>        Structures of isosurface controls
-        type(isosurf_controls) :: iso_ctls
+!>        Structures of visualization controls
+        type(surfacing_controls) :: surfacing_ctls
 !
 !>        Structures of zonal mean controls
         type(sph_dynamo_viz_controls) :: zm_ctls
@@ -90,6 +87,7 @@
       character(len=kchara), parameter                                  &
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
+      character(len=kchara), parameter :: hd_viz_ctl = 'visual_control'
       character(len=kchara), parameter                                  &
      &                    :: hd_dynamo_viz_ctl = 'dynamo_vizs_control'
 !
@@ -100,7 +98,7 @@
       private :: hd_platform, hd_org_data, hd_new_data
       private :: hd_sph_shell, hd_model, hd_control
       private :: hd_pick_sph, hd_monitor_data
-      private :: hd_dynamo_viz_ctl, hd_zm_viz_ctl
+      private :: hd_viz_ctl, hd_dynamo_viz_ctl, hd_zm_viz_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,8 +108,6 @@
 !
       subroutine read_sph_mhd_ctl_w_psf                                 &
      &         (id_control, hd_block, DMHD_ctl, c_buf)
-!
-      use read_sections_control_data
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -145,13 +141,13 @@
         call read_sph_monitoring_ctl                                    &
      &     (id_control, hd_pick_sph, DMHD_ctl%smonitor_ctl, c_buf)
 !
-        call s_read_sections_control_data                               &
-     &     (id_control, DMHD_ctl%psf_ctls, DMHD_ctl%iso_ctls, c_buf)
+        call read_surfacing_controls                                    &
+     &     (id_control, hd_viz_ctl, DMHD_ctl%surfacing_ctls, c_buf)
 !
         call read_dynamo_viz_control                                    &
      &     (id_control, hd_dynamo_viz_ctl, DMHD_ctl%zm_ctls, c_buf)
-      call read_dynamo_viz_control                                    &
-	 &     (id_control, hd_zm_viz_ctl, DMHD_ctl%zm_ctls, c_buf)
+        call read_dynamo_viz_control                                    &
+     &     (id_control, hd_zm_viz_ctl, DMHD_ctl%zm_ctls, c_buf)
       end do
       DMHD_ctl%i_mhd_ctl = 1
 !
@@ -207,8 +203,7 @@
 !
 !
       call bcast_sph_mhd_ctl_data(DMHD_ctl)
-      call bcast_files_4_psf_ctl(DMHD_ctl%psf_ctls)
-      call bcast_files_4_iso_ctl(DMHD_ctl%iso_ctls)
+      call bcast_surfacing_controls(DMHD_ctl%surfacing_ctls)
       call bcast_dynamo_viz_control(DMHD_ctl%zm_ctls)
 !
       end subroutine bcast_sph_mhd_ctl_w_psf

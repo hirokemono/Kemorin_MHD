@@ -55,8 +55,7 @@
 !
 !  VIZ Initialization
       call init_visualize_surface(femmesh_VIZ, field_VIZ,               &
-     &    sec_viz_ctl1%sect_psf_ctls, sec_viz_ctl1%sect_iso_ctls,       &
-     &    viz_psfs_v)
+     &    sec_viz_ctl1%surfacing_ctls, viz_psfs_v)
 !
       end subroutine init_analyzer
 !

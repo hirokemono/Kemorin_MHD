@@ -128,6 +128,8 @@
 !
       subroutine read_control_data_sph_trans(spt_ctl)
 !
+      use viz_step_ctls_to_time_ctl
+!
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !
       type(buffer_for_control) :: c_buf1
@@ -142,6 +144,9 @@
           if(spt_ctl%i_sph_trans_ctl .gt. 0) exit
         end do
         close(control_file_code)
+!
+        call s_viz_step_ctls_to_time_ctl                                &
+     &     (spt_ctl%viz_ctls, spt_ctl%t_ctl)
       end if
 !
       call bcast_sph_trans_control_data(spt_ctl)
