@@ -52,8 +52,6 @@
       type(time_data), save :: time_IO_FUTIL
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_FUTIL
-!>        Instance for numbers of FEM mesh for merged IO
-      type(merged_ucd_data), save :: m_ucd_FUTIL
 !
       type(shape_finctions_at_points), save :: spfs_FUTIL
 !>      Stracture for Jacobians

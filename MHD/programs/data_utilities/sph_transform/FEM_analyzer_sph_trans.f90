@@ -14,7 +14,7 @@
 !!        type(field_IO), intent(inout) :: fld_IO
 !!      subroutine FEM_finalize_sph_trans(udt_file_param, m_ucd)
 !!        type(field_IO_params), intent(in) :: udt_file_param
-!!        type(merged_ucd_data), intent(inout) :: m_ucd
+!!        type(ucd_data), intent(inout) :: ucd
 !
       module FEM_analyzer_sph_trans
 !
@@ -124,18 +124,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_sph_trans(udt_file_param, m_ucd)
+      subroutine FEM_finalize_sph_trans(udt_file_param, ucd)
 !
       use t_ctl_params_sph_trans
       use t_ucd_data
       use output_parallel_ucd_file
 !
       type(field_IO_params), intent(in) :: udt_file_param
-      type(merged_ucd_data), intent(inout) :: m_ucd
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       if(t_STR%ucd_step%increment .gt. 0) then
-        call finalize_ucd_file_output(udt_file_param, m_ucd)
+        call finalize_ucd_file_output(udt_file_param, ucd)
       end if
 !
       end subroutine FEM_finalize_sph_trans

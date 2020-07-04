@@ -62,8 +62,6 @@
 !
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_VIZ
-!>        Instance for numbers of FEM mesh for merged IO
-!      type(merged_ucd_data), save :: m_ucd_SPH_TRNS
 !
 !>   Structure of included element list for each node
       type(element_around_node), save :: ele_4_nod_VIZ

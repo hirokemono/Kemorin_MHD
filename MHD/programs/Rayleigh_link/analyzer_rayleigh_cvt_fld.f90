@@ -190,7 +190,6 @@
       integer(kind = kint) :: istep_increment = 1
 !
       type(ucd_data), save :: ucd_m
-      type(merged_ucd_data), save :: mucd_m
 !
       character(len=kchara) :: file_name
 !
@@ -206,10 +205,10 @@
 !        write(*,*) 'init_merged_ucd'
         call init_merged_ucd(new_fld_file%iflag_format,                 &
      &      geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,    &
-     &     ucd_m, mucd_m)
+     &      ucd_m)
       end if
 !
-      call sel_write_parallel_ucd_mesh(new_fld_file, ucd_m, mucd_m)
+      call sel_write_parallel_ucd_mesh(new_fld_file, ucd_m)
 !
       allocate(org_fIO(nprocs))
 !
@@ -237,7 +236,7 @@
 !
 !        write(*,*) 'sel_write_parallel_ucd_file'
         call sel_write_parallel_ucd_file                                &
-     &     (istep, new_fld_file, t_IO_m, ucd_m, mucd_m)
+     &     (istep, new_fld_file, t_IO_m, ucd_m)
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_u)
       call dealloc_numnod_stack(org_mesh(my_rank+1)%node)

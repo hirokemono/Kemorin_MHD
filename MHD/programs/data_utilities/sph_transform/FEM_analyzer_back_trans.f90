@@ -5,12 +5,11 @@
 !      Written by H. Matsui
 !
 !!      subroutine FEM_initialize_back_trans                            &
-!!     &         (ucd_param, viz_step, ele_4_nod, jacobians, ucd, m_ucd)
+!!     &         (ucd_param, viz_step, ele_4_nod, jacobians, ucd)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(ucd_data), intent(inout) :: ucd
-!!        type(merged_ucd_data), intent(inout)  :: m_ucd
 !!      subroutine FEM_analyze_back_trans                               &
 !!     &         (ucd_param, t_IO, ucd, i_step, viz_step, visval)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
@@ -37,7 +36,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_back_trans                              &
-     &         (ucd_param, viz_step, ele_4_nod, jacobians, ucd, m_ucd)
+     &         (ucd_param, viz_step, ele_4_nod, jacobians, ucd)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
@@ -62,7 +61,6 @@
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_type), intent(inout) :: jacobians
       type(ucd_data), intent(inout) :: ucd
-      type(merged_ucd_data), intent(inout)  :: m_ucd
 !
       integer(kind = kint) :: iflag
 !
@@ -97,7 +95,7 @@
       if(t_STR%ucd_step%increment .eq. 0) return
       call link_output_grd_file                                         &
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
-     &    femmesh_STR%mesh%nod_comm, field_STR, ucd_param, ucd, m_ucd)
+     &    femmesh_STR%mesh%nod_comm, field_STR, ucd_param, ucd)
 !
       call calypso_mpi_barrier
 !

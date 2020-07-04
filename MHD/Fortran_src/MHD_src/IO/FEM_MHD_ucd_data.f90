@@ -69,13 +69,11 @@
       call link_field_data_to_ucd(nod_fld, fem_ucd%ucd)
 !
       if (ucd_param%iflag_format/icent .eq. iflag_single/icent) then
-        call init_merged_ucd                                            &
-     &     (ucd_param%iflag_format, mesh%node, mesh%ele, mesh%nod_comm, &
-     &      fem_ucd%ucd, fem_ucd%m_ucd)
+        call init_merged_ucd(ucd_param%iflag_format,                    &
+     &      mesh%node, mesh%ele, mesh%nod_comm, fem_ucd%ucd)
       end if
 !
-      call sel_write_parallel_ucd_mesh                                  &
-     &   (ucd_param, fem_ucd%ucd, fem_ucd%m_ucd)
+      call sel_write_parallel_ucd_mesh(ucd_param, fem_ucd%ucd)
 !
       if(   mod(ucd_param%iflag_format,icent)/iten .eq. iflag_udt/iten  &
      & .or. mod(ucd_param%iflag_format,icent)/iten .eq. iflag_vtd/iten) &

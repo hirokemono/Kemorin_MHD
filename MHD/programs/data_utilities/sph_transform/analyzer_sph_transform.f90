@@ -96,7 +96,7 @@
       end do
 !
       call FEM_finalize_sph_trans                                       &
-     &   (files_STR%org_ucd_file_IO, m_ucd_SPH_TRNS)
+     &   (files_STR%org_ucd_file_IO, ucd_SPH_TRNS)
 !
       call output_elapsed_times
 !

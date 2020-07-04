@@ -160,7 +160,6 @@
       type(field_IO), allocatable :: org_fIO(:)
 !
       type(ucd_data), save :: ucd_m
-      type(merged_ucd_data), save :: mucd_m
 !
 !
       call link_num_field_2_ucd(new_fld, ucd_m)
@@ -172,13 +171,12 @@
       if(asbl_param_u%new_fld_file%iflag_format/icent                   &
      &       .eq. iflag_single/icent) then
         call init_merged_ucd(asbl_param_u%new_fld_file%iflag_format,    &
-     &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm,             &
-     &     ucd_m, mucd_m)
+     &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm, ucd_m)
       end if
 !
       if(iflag_debug .gt. .0) write(*,*) 'sel_write_parallel_ucd_mesh'
       call sel_write_parallel_ucd_mesh                                  &
-     &   (asbl_param_u%new_fld_file, ucd_m, mucd_m)
+     &   (asbl_param_u%new_fld_file, ucd_m)
 !
       do istep = asbl_param_u%istep_start, asbl_param_u%istep_end,      &
      &          asbl_param_u%increment_step
@@ -192,7 +190,7 @@
         call nod_fields_send_recv(new_mesh, new_fld)
 !
         call sel_write_parallel_ucd_file                                &
-     &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m, mucd_m)
+     &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_u)
 !

@@ -65,7 +65,7 @@
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
       call FEM_initialize_back_trans                                    &
      &   (files_STR%ucd_file_IO, viz_step_STR, ele_4_nod_SPH_TRANS,     &
-     &    jacobians_STR, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
+     &    jacobians_STR, ucd_SPH_TRNS)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
@@ -118,7 +118,7 @@
       end do
 !
       call FEM_finalize_sph_trans                                       &
-     &   (files_STR%org_ucd_file_IO, m_ucd_SPH_TRNS)
+     &   (files_STR%org_ucd_file_IO, ucd_SPH_TRNS)
 !
       call output_elapsed_times
 !

@@ -59,7 +59,7 @@
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
       call FEM_initialize_back_trans                                    &
      &   (files_STR%ucd_file_IO, viz_step_STR, ele_4_nod_SPH_TRANS,     &
-     &    jacobians_STR, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
+     &    jacobians_STR, ucd_SPH_TRNS)
 !
 !  ------  initialize spectr data
 !

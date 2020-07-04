@@ -54,9 +54,8 @@
 !>      Increment for visualizations
       type(VIZ_step_params), save :: viz_step_STR
 !
+!>        Instance for numbers of FEM field for merged IO
       type(ucd_data), save :: ucd_SPH_TRNS
-!>        Instance for numbers of FEM mesh for merged IO
-      type(merged_ucd_data), save :: m_ucd_SPH_TRNS
 !
 !>   Structure of included element list for each node
       type(element_around_node), save :: ele_4_nod_SPH_TRANS

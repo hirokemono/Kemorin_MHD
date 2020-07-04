@@ -6,18 +6,16 @@
 !      subroutine parallel_init_hdf5
 !      subroutine parallel_finalize_hdf5
 !
-!!      subroutine parallel_write_hdf5_mesh_file                        &
-!!     &         (file_prefix, ucd, m_ucd)
+!!      subroutine parallel_write_hdf5_mesh_file(file_prefix, ucd)
 !!      subroutine parallel_write_hdf5_field_file                       &
-!!     &        (file_prefix, cur_step, ucd, m_ucd)
+!!     &        (file_prefix, cur_step, ucd)
 !
 !!      subroutine parallel_write_xdmf_snap_file                        &
-!!     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
+!!     &         (file_prefix, istep_hdf5, t_IO, ucd)
 !!      subroutine parallel_write_xdmf_evo_file                         &
-!!     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
+!!     &         (file_prefix, istep_hdf5, t_IO, ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
-!!        type(merged_ucd_data), intent(in) :: m_ucd
 !
       module hdf5_file_IO
 !
@@ -205,12 +203,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine parallel_write_hdf5_mesh_file                          &
-     &         (file_prefix, ucd, m_ucd)
+      subroutine parallel_write_hdf5_mesh_file(file_prefix, ucd)
 !
       character(len = kchara), intent(in) :: file_prefix
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 #ifdef HDF5_IO
       character(len=kchara), parameter                                  &
@@ -234,8 +230,8 @@
       integer :: hdferr
 !
 !
-      nnod = int(m_ucd%istack_merged_intnod(my_rank+1)                  &
-     &         - m_ucd%istack_merged_intnod(my_rank)  )
+      nnod = int(ucd%istack_merged_intnod(my_rank+1)                    &
+     &         - ucd%istack_merged_intnod(my_rank  ))
       allocate(fld_hdf5(9*nnod))
       allocate(ie_hdf5(ucd%nnod_4_ele*ucd%nele))
 !
@@ -268,7 +264,7 @@
 !
         dataspace_dims = 2
         node_dataspace_dim(1) = n_vector
-        node_dataspace_dim(2) = m_ucd%istack_merged_intnod(nprocs)
+        node_dataspace_dim(2) = ucd%istack_merged_intnod(nprocs)
         call h5screate_simple_f(dataspace_dims, node_dataspace_dim,     &
             node_dataspace_id, hdferr)
 !
@@ -276,7 +272,7 @@
 !
         dataspace_dims = 2
         elem_dataspace_dim(1) = ucd%nnod_4_ele
-        elem_dataspace_dim(2) = m_ucd%istack_merged_ele(nprocs)
+        elem_dataspace_dim(2) = ucd%istack_merged_ele(nprocs)
         call h5screate_simple_f(dataspace_dims, elem_dataspace_dim,     &
             elem_dataspace_id, hdferr)
 !
@@ -298,7 +294,7 @@
         hyperslab_size(1) =   3
         hyperslab_size(2) = nnod
         hyperslab_offset(1) = 0
-        hyperslab_offset(2) = m_ucd%istack_merged_intnod(my_rank)
+        hyperslab_offset(2) = ucd%istack_merged_intnod(my_rank)
         call h5screate_simple_f(dataspace_dims, hyperslab_size,         &
             node_memory_dataspace, hdferr)
 !
@@ -314,7 +310,7 @@
         hyperslab_size(1) = ucd%nnod_4_ele
         hyperslab_size(2) = ucd%nele
         hyperslab_offset(1) = 0
-        hyperslab_offset(2) = m_ucd%istack_merged_ele(my_rank)
+        hyperslab_offset(2) = ucd%istack_merged_ele(my_rank)
 
         call h5screate_simple_f(dataspace_dims, hyperslab_size,         &
             elem_memory_dataspace, hdferr)
@@ -374,12 +370,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine parallel_write_hdf5_field_file                         &
-     &        (file_prefix, cur_step, ucd, m_ucd)
+     &        (file_prefix, cur_step, ucd)
 !
       character(len = kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: cur_step
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 #ifdef HDF5_IO
       integer(kind = kint) :: istep, icou, nnod
@@ -421,8 +416,8 @@
 !
 ! Go through each of the fields
 !
-      nnod = int(m_ucd%istack_merged_intnod(my_rank+1)                  &
-     &         - m_ucd%istack_merged_intnod(my_rank)  )
+      nnod = int(ucd%istack_merged_intnod(my_rank+1)                    &
+     &         - ucd%istack_merged_intnod(my_rank  ))
       allocate(fld_hdf5(9*nnod))
 !
       icou = 0
@@ -450,7 +445,7 @@
 !
         dataspace_dims = 2
         field_dataspace_dim(1) = ncomp_hdf5
-        field_dataspace_dim(2) = m_ucd%istack_merged_intnod(nprocs)
+        field_dataspace_dim(2) = ucd%istack_merged_intnod(nprocs)
         call h5screate_simple_f(dataspace_dims, field_dataspace_dim,    &
             field_dataspace_id, hdferr)
 
@@ -470,7 +465,7 @@
         hyperslab_size(1) = ncomp_hdf5
         hyperslab_size(2) = nnod
         hyperslab_offset(1) = 0
-        hyperslab_offset(2) = m_ucd%istack_merged_intnod(my_rank)
+        hyperslab_offset(2) = ucd%istack_merged_intnod(my_rank)
         call h5screate_simple_f(dataspace_dims, hyperslab_size,         &
             field_memory_dataspace, hdferr)
 !
@@ -523,13 +518,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine parallel_write_xdmf_snap_file                          &
-     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
+     &         (file_prefix, istep_hdf5, t_IO, ucd)
 !
       character(len = kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
 !
       character(len = kchara) :: xdmf_dir_file
 !
@@ -541,20 +535,19 @@
      &    = set_merged_snap_xdmf_file_name(file_prefix, istep_hdf5)
 ! Open the XDMF file to append
       call parallel_write_xdmf_file(file_prefix, xdmf_dir_file,         &
-     &    istep_hdf5, t_IO, ucd, m_ucd)
+     &    istep_hdf5, t_IO, ucd)
 !
       end subroutine parallel_write_xdmf_snap_file
 !
 ! ----------------------------------------------------------------------
 !
       subroutine parallel_write_xdmf_evo_file                           &
-     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
+     &         (file_prefix, istep_hdf5, t_IO, ucd)
 !
       character(len = kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
 !
       character(len = kchara) :: xdmf_dir_file
 !
@@ -565,7 +558,7 @@
       xdmf_dir_file = set_merged_xdmf_file_name(file_prefix)
 ! Open the XDMF file to append
       call parallel_write_xdmf_file(file_prefix, xdmf_dir_file,         &
-     &    istep_hdf5, t_IO, ucd, m_ucd)
+     &    istep_hdf5, t_IO, ucd)
 !
       end subroutine parallel_write_xdmf_evo_file
 !
@@ -573,14 +566,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine parallel_write_xdmf_file(file_prefix, xdmf_dir_file,   &
-     &          istep_hdf5, t_IO, ucd, m_ucd)
+     &          istep_hdf5, t_IO, ucd)
 !
       character(len = kchara), intent(in) :: file_prefix
       character(len = kchara), intent(in) :: xdmf_dir_file
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
 !
       character(len = kchara) :: mesh_dir_file, mesh_file_name
       character(len = kchara) :: field_dir_file, field_file_name
@@ -597,8 +589,8 @@
       i_adjusted = kreal
       call int_to_str(i_adjusted, bite_str)
       call int_to_str(ithree, dim_str)
-      call lint_to_str(m_ucd%istack_merged_intnod(nprocs), node_str)
-      call lint_to_str(m_ucd%istack_merged_ele(nprocs), elem_str)
+      call lint_to_str(ucd%istack_merged_intnod(nprocs), node_str)
+      call lint_to_str(ucd%istack_merged_ele(nprocs), elem_str)
 !
 ! Open the XDMF file to append
       open(id_xdmf, file=xdmf_dir_file, status='old',                   &
