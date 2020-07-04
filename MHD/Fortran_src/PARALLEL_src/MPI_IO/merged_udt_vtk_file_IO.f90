@@ -102,9 +102,7 @@
      &    dbl_id1%inod_local, dbl_id1%irank_home,                       &
      &    ucd%nele, ucd%nnod_4_ele, ucd%ie)
 !
-      if(iflag_format .eq. iflag_sgl_hdf5) then
-        call parallel_init_hdf5(ucd, m_ucd)
-      end if
+      if(iflag_format .eq. iflag_sgl_hdf5) call parallel_init_hdf5
 !
       end subroutine init_merged_ucd
 !
@@ -118,9 +116,8 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      if(iflag_format .eq. iflag_sgl_hdf5) then
-        call parallel_finalize_hdf5(m_ucd)
-      end if
+      if(iflag_format .eq. iflag_sgl_hdf5) call parallel_finalize_hdf5
+!
       call dealloc_double_numbering(dbl_id1)
       call unlink_merged_ucd_nod_stack(m_ucd)
       call dealloc_merged_ucd_ele_stack(m_ucd)
