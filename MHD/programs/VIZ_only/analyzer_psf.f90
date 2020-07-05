@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine init_analyzer_psf
+!      subroutine analyze_psf
 !
       module analyzer_psf
 !
@@ -28,7 +28,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine init_analyzer_psf
 !
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
@@ -57,11 +57,11 @@
       call init_visualize_surface(femmesh_VIZ, field_VIZ,               &
      &    sec_viz_ctl1%surfacing_ctls, viz_psfs_v)
 !
-      end subroutine init_analyzer
+      end subroutine init_analyzer_psf
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_psf
 !
       integer(kind=kint ) :: i_step
 !
@@ -82,7 +82,7 @@
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_psf
 !
 !  ---------------------------------------------------------------------
 !
