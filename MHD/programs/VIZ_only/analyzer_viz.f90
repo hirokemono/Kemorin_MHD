@@ -55,7 +55,7 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs(ucd_file_VIZ, viz_step_V)
+      call FEM_initialize_vizs(ucd_file_VIZ, viz_step_V, ucd_VIZ)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -78,7 +78,7 @@
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
         call FEM_analyze_vizs                                           &
-     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V, visval)
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V, ucd_VIZ, visval)
 !
 !  Rendering
         if(visval .eq. 0) then

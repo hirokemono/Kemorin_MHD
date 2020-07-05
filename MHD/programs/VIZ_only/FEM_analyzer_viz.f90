@@ -4,11 +4,13 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_vizs(ucd_param, viz_step)
+!!      subroutine FEM_initialize_vizs(ucd_param, viz_step, ucd)
 !!      subroutine FEM_analyze_vizs                                     &
-!!     &         (i_step, ucd_param, time_VIZ, viz_step, visval)
+!!     &         (i_step, ucd_param, time_VIZ, viz_step, ucd, visval)
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_step_param), intent(inout) :: time_VIZ
 !!        type(VIZ_step_params), intent(inout) :: viz_step
+!!        type(ucd_data), intent(inout) :: ucd
 !
       module FEM_analyzer_viz
 !
@@ -22,6 +24,7 @@
       use t_IO_step_parameter
       use t_mesh_data
       use t_file_IO_parameter
+      use t_ucd_data
       use m_visualization
 !
       implicit none
@@ -32,10 +35,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vizs(ucd_param, viz_step)
+      subroutine FEM_initialize_vizs(ucd_param, viz_step, ucd)
 !
       type(field_IO_params), intent(in) :: ucd_param
       type(VIZ_step_params), intent(inout) :: viz_step
+      type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint) :: iflag
 !
@@ -44,7 +48,7 @@
 !   --------------------------------
 !
       call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, t_VIZ,            &
-     &    femmesh_VIZ, VIZ_time_IO, ucd_VIZ, field_VIZ)
+     &    femmesh_VIZ, VIZ_time_IO, ucd, field_VIZ)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
@@ -70,21 +74,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_vizs                                       &
-     &         (i_step, ucd_param, time_VIZ, viz_step, visval)
+     &         (i_step, ucd_param, time_VIZ, viz_step, ucd, visval)
 !
       use t_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: ucd_param
       type(time_step_param), intent(inout) :: time_VIZ
-      integer(kind=kint ), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
+      type(ucd_data), intent(inout) :: ucd
+      integer(kind=kint ), intent(inout) :: visval
 !
 !
       visval = iflag_vizs_w_fix_step(i_step, viz_step)
       call istep_viz_w_fix_dt(i_step, viz_step)
       call set_field_data_4_VIZ(visval, i_step, ucd_param,              &
-     &   femmesh_VIZ, VIZ_time_IO, ucd_VIZ, time_VIZ%time_d, field_VIZ)
+     &   femmesh_VIZ, VIZ_time_IO, ucd, time_VIZ%time_d, field_VIZ)
 !
       end subroutine FEM_analyze_vizs
 !

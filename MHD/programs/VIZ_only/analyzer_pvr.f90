@@ -40,7 +40,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_pvr
+      call FEM_initialize_pvr(ucd_file_VIZ, ucd_VIZ)
 !
 !  VIZ Initialization
       call PVR_initialize(femmesh_VIZ, field_VIZ,                       &
@@ -63,7 +63,8 @@
         call set_IO_step_flag(i_step,t_VIZ%ucd_step)
 !
 !  Load field data
-        call FEM_analyze_pvr(i_step, t_VIZ, viz_step_V%PVR_t)
+        call FEM_analyze_pvr                                            &
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V%PVR_t, ucd_VIZ)
 !
 !  Rendering
         call PVR_visualize(viz_step_V%PVR_t%istep_file,                 &

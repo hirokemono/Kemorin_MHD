@@ -51,7 +51,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_surface(ucd_file_VIZ)
+      call FEM_initialize_surface(ucd_file_VIZ, ucd_VIZ)
 !
 !  VIZ Initialization
       call init_visualize_surface(femmesh_VIZ, field_VIZ,               &
@@ -72,7 +72,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V)
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V, ucd_VIZ)
 !
 !  Generate field lines
         call visualize_surface(viz_step_V, t_VIZ%time_d,                &

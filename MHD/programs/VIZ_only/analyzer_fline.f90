@@ -43,7 +43,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline(ucd_file_VIZ)
+      call FEM_initialize_fline(ucd_file_VIZ, ucd_VIZ)
 !
 !  VIZ Initialization
       call FLINE_initialize(femmesh_VIZ, field_VIZ,                     &
@@ -64,7 +64,7 @@
 !
 !  Load field data
         call FEM_analyze_fline                                          &
-     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V%FLINE_t)
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V%FLINE_t, ucd_VIZ)
 !
 !  Generate field lines
         call FLINE_visualize                                            &

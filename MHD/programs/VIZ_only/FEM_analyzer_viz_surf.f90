@@ -4,11 +4,13 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_surface(ucd_param)
+!!      subroutine FEM_initialize_surface(ucd_param, ucd)
 !!      subroutine FEM_analyze_surface                                  &
-!!     &         (i_step, ucd_param, time_VIZ, viz_step)
+!!     &         (i_step, ucd_param, time_VIZ, viz_step, ucd)
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_step_param), intent(inout) :: time_VIZ
 !!        type(VIZ_step_params), intent(inout) :: viz_step
+!!        type(ucd_data), intent(inout) :: ucd
 !
       module FEM_analyzer_viz_surf
 !
@@ -21,6 +23,7 @@
       use t_VIZ_step_parameter
       use t_IO_step_parameter
       use t_file_IO_parameter
+      use t_ucd_data
       use m_visualization
 !
       implicit none
@@ -31,16 +34,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_surface(ucd_param)
+      subroutine FEM_initialize_surface(ucd_param, ucd)
 !
       type(field_IO_params), intent(in) :: ucd_param
+      type(ucd_data), intent(inout) :: ucd
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
       call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, t_VIZ,            &
-     &    femmesh_VIZ, VIZ_time_IO, ucd_VIZ, field_VIZ)
+     &    femmesh_VIZ, VIZ_time_IO, ucd, field_VIZ)
 !
 !     ---------------------
 !
@@ -53,12 +57,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_surface                                    &
-     &         (i_step, ucd_param, time_VIZ, viz_step)
+     &         (i_step, ucd_param, time_VIZ, viz_step, ucd)
 !
       integer (kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: ucd_param
       type(time_step_param), intent(inout) :: time_VIZ
       type(VIZ_step_params), intent(inout) :: viz_step
+      type(ucd_data), intent(inout) :: ucd
 !
       integer (kind =kint) :: visval, iflag
 !
@@ -70,7 +75,7 @@
 !
       iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
       call set_field_data_4_VIZ(iflag, i_step, ucd_param,               &
-     &   femmesh_VIZ, VIZ_time_IO, ucd_VIZ, time_VIZ%time_d, field_VIZ)
+     &   femmesh_VIZ, VIZ_time_IO, ucd, time_VIZ%time_d, field_VIZ)
 !
       end subroutine FEM_analyze_surface
 !
