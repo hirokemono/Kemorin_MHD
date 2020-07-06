@@ -22,7 +22,6 @@
 !!     &          flex_MHD, MHD_step, visval, retval, MHD_CG, FEM_SGS,  &
 !!     &          SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_address), intent(in) :: iphys
@@ -199,6 +198,8 @@
 !
       use t_ucd_file
       use t_FEM_MHD_mean_square
+      use t_flex_delta_t_parameter
+!
       use construct_matrices
       use lead_physical_values
       use update_after_evolution

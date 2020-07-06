@@ -72,6 +72,8 @@
      &         (MHD_step, mesh, MHD_mesh, MHD_prop, iphys, nod_fld,     &
      &          fem_int, rhs_mat, flex_MHD)
 !
+      use t_flex_delta_t_parameter
+!
       type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh

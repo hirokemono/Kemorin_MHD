@@ -111,13 +111,14 @@
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_correle_all
       use SGS_MHD_zonal_mean_viz
+      use set_time_step_params
 !
       integer(kind = kint) :: visval, iflag
 !
 !*  -----------  set initial step data --------------
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
-      call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
+      call set_from_initial_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
 !*

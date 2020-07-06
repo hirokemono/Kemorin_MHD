@@ -114,7 +114,7 @@
      &          Csims_FEM_MHD, flex_p, mk_MHD, rhs_mat, MHD_CG)
 !
       use t_time_data
-      use t_flex_delta_t_data
+      use t_flex_delta_t_parameter
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par

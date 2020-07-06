@@ -25,6 +25,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_flex_delta_t_parameter
       use t_flex_delta_t_data
 !
       implicit  none
@@ -64,6 +65,7 @@
       use t_work_FEM_integration
       use t_FEM_MHD_time_stepping
       use t_MHD_step_parameter
+!
 !
       use check_deltat_by_prev_rms
 !
@@ -142,7 +144,6 @@
       use t_phys_data
       use t_phys_address
       use t_jacobians
-      use t_flex_delta_t_data
       use t_physical_property
       use t_work_FEM_integration
 !

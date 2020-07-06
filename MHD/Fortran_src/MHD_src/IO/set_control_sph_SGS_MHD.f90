@@ -280,7 +280,6 @@
       use set_control_sph_data_MHD
       use set_control_4_force
       use set_control_4_normalize
-      use set_control_4_time_steps
       use set_control_sph_mhd
 !
       use set_control_4_pickup_sph
