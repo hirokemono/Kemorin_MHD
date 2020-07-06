@@ -17,7 +17,7 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) ::   fem
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs

@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine lead_fields_by_FEM                                   &
-!!     &         (istep, MHD_step, FEM_prm, SGS_par, fem, MHD_mesh,     &
+!!     &         (istep, MHD_step, FEM_prm, SGS_par, geofem, MHD_mesh,  &
 !!     &          MHD_prop, FEM_MHD_BCs, iphys, iphys_LES, ak_MHD,      &
 !!     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) ::   fem
+!!        type(mesh_data), intent(in) ::   geofem
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
@@ -67,7 +67,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_fields_by_FEM                                     &
-     &         (istep, MHD_step, FEM_prm, SGS_par, fem, MHD_mesh,       &
+     &         (istep, MHD_step, FEM_prm, SGS_par, geofem, MHD_mesh,    &
      &          MHD_prop, FEM_MHD_BCs, iphys, iphys_LES, ak_MHD,        &
      &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
@@ -81,7 +81,7 @@
       type(MHD_step_param), intent(in) :: MHD_step
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(mesh_data), intent(in) ::   fem
+      type(mesh_data), intent(in) ::   geofem
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(FEM_MHD_BC_data), intent(in) :: FEM_MHD_BCs
@@ -98,30 +98,30 @@
       if(lead_field_data_flag(istep, MHD_step) .ne. 0) return
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
-      call cal_potential_on_edge(fem%mesh%node, fem%mesh%ele,           &
-     &    fem%mesh%edge, iphys, nod_fld)
+      call cal_potential_on_edge(geofem%mesh%node, geofem%mesh%ele,     &
+     &    geofem%mesh%edge, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'update_FEM_fields'
-      call update_FEM_fields(MHD_step%time_d, FEM_prm, SGS_par, fem,    &
+      call update_FEM_fields(MHD_step%time_d, FEM_prm, SGS_par, geofem, &
      &    MHD_mesh, FEM_MHD_BCs, iphys, iphys_LES, FEM_filters,         &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
 !
       call cal_field_by_rotation(MHD_step%time_d%dt, FEM_prm,           &
-     &    SGS_par%model_p, SGS_par%commute_p, fem%mesh, fem%group,      &
-     &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
-     &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys%base,        &
-     &    SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,                &
-     &    SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                    &
-     &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,        &
-     &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, &
-     &    nod_fld)
+     &   SGS_par%model_p, SGS_par%commute_p, geofem%mesh, geofem%group, &
+     &   MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,            &
+     &   FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys%base,         &
+     &   SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,                 &
+     &   SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                     &
+     &   Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,         &
+     &   SGS_MHD_wk%mk_MHD, SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,  &
+     &   nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
       call cal_helicity(iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
       call cal_energy_fluxes(MHD_step%time_d%dt, FEM_prm, SGS_par,      &
-     &    fem%mesh, fem%group, MHD_mesh, MHD_prop,                      &
+     &    geofem%mesh, geofem%group, MHD_mesh, MHD_prop,                &
      &    FEM_MHD_BCs%nod_bcs, FEM_MHD_BCs%surf_bcs, iphys, iphys_LES,  &
      &    SGS_MHD_wk%iphys_ele_base, ak_MHD, SGS_MHD_wk%fem_int,        &
      &    FEM_filters%FEM_elens, Csims_FEM_MHD, FEM_filters%filtering,  &
