@@ -42,11 +42,18 @@
 !
       implicit none
 !
-!       Structure for time stepping parameters
-      type(time_step_param), save :: t_VIZ
+!
+!       Structure of time stepping structures for viz_only
+      type VIZ_only_step_param
+!>        Increment for visualizations
+        type(VIZ_step_params) :: viz_step
+      end type VIZ_only_step_param
 !
 !>      Increment for visualizations
-      type(VIZ_step_params), save :: viz_step_V
+      type(VIZ_only_step_param), save :: Vonly_steps
+!
+!       Structure for time stepping parameters
+      type(time_step_param), save :: t_VIZ
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_VIZ

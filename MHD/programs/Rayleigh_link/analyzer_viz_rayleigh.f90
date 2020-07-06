@@ -56,7 +56,8 @@
       call set_ctl_params_rayleigh_viz                                  &
      &   (rayleigh_vizs_ctl1%t_viz_ctl, rayleigh_vizs_ctl1%viz_plt,     &
      &    rayleigh_vizs_ctl1%sdctl, rayleigh_vizs_ctl1%field_ctl,       &
-     &    t_VIZ, viz_step_V, rayleigh_ftbl1, rayleigh_rtp_V, ierr)
+     &    t_VIZ, Vonly_steps%viz_step, rayleigh_ftbl1,                  &
+     &    rayleigh_rtp_V, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !      call check_rayleigh_field_address(rayleigh_ftbl1)
@@ -64,7 +65,7 @@
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
       call FEM_initialize_viz_rayleigh                                  &
-     &   (t_VIZ%init_d%i_time_step, viz_step_V)
+     &   (t_VIZ%init_d%i_time_step, Vonly_steps%viz_step)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -88,14 +89,14 @@
         if(iflag_debug .gt. 0)                                          &
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
         call FEM_analyze_viz_rayleigh                                   &
-     &     (i_step, t_VIZ, viz_step_V, visval)
+     &     (i_step, t_VIZ, Vonly_steps%viz_step, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all                                            &
-     &       (viz_step_V, t_VIZ%time_d, femmesh_VIZ, field_VIZ,         &
-     &        ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
+     &       (Vonly_steps%viz_step, t_VIZ%time_d, femmesh_VIZ,          &
+     &        field_VIZ, ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
         end if
       end do
 !
