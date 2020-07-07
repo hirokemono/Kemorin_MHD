@@ -11,11 +11,11 @@
       use m_precision
       use m_work_time
 !
-      use FEM_analyzer_viz_surf
       use t_surfacing
       use t_viz_sections
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
+      use FEM_analyzer_viz_surf
 !
       implicit none
 !

@@ -13,15 +13,21 @@
 !!
 !!@verbatim
 !!      subroutine init_visualize_surface                               &
-!!     &         (fem, nod_fld, surfacing_ctls, viz_psfs)
-!!      subroutine visualize_surface                                    &
-!!     &        (viz_step, time_d, fem, nod_fld, viz_psfs)
-!!        type(VIZ_step_params), intent(in) :: viz_step
-!!        type(time_data), intent(in) :: time_d
-!!        type(mesh_data), intent(in) :: fem
+!!     &         (geofem, nod_fld, ucd_step, output_vtk_fmt_ctl,        &
+!!     &          ucd_file_IO, vtk_file_IO, vtk_out)
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(surfacing_controls), intent(inout) :: surfacing_ctls
-!!        type(surfacing_modules), intent(inout) :: viz_psfs
+!!        type(IO_step_param), intent(in) :: ucd_step
+!!        type(field_IO_params), intent(in) :: ucd_file_IO
+!!        type(read_character_item), intent(in) :: output_vtk_fmt_ctl
+!!        type(field_IO_params), intent(inout) :: vtk_file_IO
+!!        type(ucd_data), intent(inout) :: vtk_out
+!!      subroutine visualize_convert_vtk                                &
+!!     &         (ucd_step, time_d, vtk_file_IO, vtk_out)
+!!        type(time_data), intent(in) :: time_d
+!!        type(IO_step_param), intent(inout) :: ucd_step
+!!        type(field_IO_params), intent(in) :: vtk_file_IO
+!!        type(ucd_data), intent(in) :: vtk_out
 !!@endverbatim
 !
       module t_viz_VTK_convert
@@ -48,14 +54,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_visualize_convert_vtk                             &
-     &         (fem, nod_fld, ucd_step, ucd_file_IO,                    &
-     &          output_vtk_fmt_ctl, vtk_file_IO, vtk_out)
+     &         (geofem, nod_fld, ucd_step, output_vtk_fmt_ctl,          &
+     &          ucd_file_IO, vtk_file_IO, vtk_out)
 !
       use m_field_file_format
       use t_control_array_character
-      use t_ucd_file
+      use output_parallel_ucd_file
 !
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(IO_step_param), intent(in) :: ucd_step
       type(field_IO_params), intent(in) :: ucd_file_IO
@@ -85,8 +91,10 @@
       end if
 !
 !
-      call output_grd_file_4_snapshot                                   &
-     &   (vtk_file_IO, ucd_step, fem%mesh, nod_fld, vtk_out)
+      if(ucd_step%increment .eq. 0) return
+      call link_output_grd_file                                         &
+     &   (geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,      &
+     &    nod_fld, vtk_file_IO, vtk_out)
 !
       end subroutine init_visualize_convert_vtk
 !
@@ -95,18 +103,19 @@
       subroutine visualize_convert_vtk                                  &
      &         (ucd_step, time_d, vtk_file_IO, vtk_out)
 !
-      use t_ucd_file
+      use parallel_ucd_IO_select
 !
-      type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(inout) :: ucd_step
 !
+      type(time_data), intent(in) :: time_d
       type(field_IO_params), intent(in) :: vtk_file_IO
       type(ucd_data), intent(in) :: vtk_out
 !
 !
+      if(ucd_step%increment .eq. 0) return
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
-      call s_output_ucd_file_control                                    &
-     &   (vtk_file_IO, time_d%i_time_step, time_d, ucd_step, vtk_out)
+      call sel_write_parallel_ucd_file                                  &
+     &   (ucd_step%istep_file, vtk_file_IO, time_d, vtk_out)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
       end subroutine visualize_convert_vtk

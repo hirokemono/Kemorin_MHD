@@ -9,6 +9,7 @@
       module analyzer_pvr
 !
       use m_precision
+      use calypso_mpi
 !
       use m_visualization
 !
@@ -35,7 +36,7 @@
 !
       subroutine initialize_pvr
 !
-      use calypso_mpi
+      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -53,7 +54,7 @@
 !
 !  VIZ Initialization
       call PVR_initialize(femmesh_VIZ, field_VIZ,                       &
-     &    vizs_ctl3%viz_ctl_v%fline_ctls, pvr_v)
+     &    vizs_ctl3%viz_ctl_v%pvr_ctls, pvr_v)
       call calypso_MPI_barrier
 !
       end subroutine initialize_pvr

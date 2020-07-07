@@ -37,6 +37,8 @@
         type(field_IO_params) :: mesh_file_IO
 !>        Structure for field file IO paramters
         type(field_IO_params) :: ucd_file_IO
+!>        Structure for VTK file output paramters
+        type(field_IO_params) :: vtk_file_IO
 !
 !>       Structure for mesh data
 !>        (position, connectivity, group, and communication)
@@ -44,8 +46,9 @@
 !>         Structure for nodal field data
         type(phys_data) :: nod_fld
 !
-!>          Instance for FEM field data IO
+!>          time data from data input
         type(time_data) :: read_ucd_time
+!>          FEM field data IO
         type(ucd_data) :: ucd_in
       end type surfacing_only
 !

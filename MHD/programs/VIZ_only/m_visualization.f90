@@ -46,9 +46,9 @@
 !>         Structure for nodal field data
         type(phys_data), save :: field_VIZ
 !
-!>          Instance for FEM field data IO
+!>          Instance of time data from data input
         type(time_data), save :: VIZ_time_IO
-!>          Instance for FEM field data IO
+!>          Instance of FEM field data IO
         type(ucd_data), save :: ucd_VIZ
 !
 !>        Structure of included element list for each node

@@ -26,6 +26,7 @@
       use t_IO_step_parameter
       use t_file_IO_parameter
       use t_ucd_data
+      use m_visualization
 !
       implicit none
 !
@@ -67,8 +68,8 @@
 !
       integer (kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: ucd_param
-      type(time_data), intent(in) :: time_d
 !
+      type(time_data), intent(inout) :: time_d
       type(VIZ_step_params), intent(inout)  :: viz_step
       type(ucd_data), intent(inout) :: ucd
 !

@@ -4,10 +4,11 @@
 
 VIZ_PLUG_DIR = $$(PROG_DIR)/VIZ_only
 
-TARGET_VIZ =   viz_kemo
-TARGET_PSF =   surface_kemo
-TARGET_PVR =   pvr_kemo
-TARGET_FLINE = fieldline_kemo
+TARGET_VIZ =         viz_kemo
+TARGET_PSF =         sectioning
+TARGET_PVR =         pvr_kemo
+TARGET_FLINE =       fieldline_kemo
+TARGET_VTK_CONVERT = field_to_VTK
 
 LIBS_VIZ = \
 '$$(LIB_VIZ)'    \
@@ -42,14 +43,13 @@ MOD_PSF_PLUG = \
 main_surface_rendering.o \
 analyzer_psf.o \
 FEM_analyzer_viz_surf.o \
-m_visualization.o \
 t_surfacing.o \
 t_control_data_section_only.o \
 load_mesh_and_field_4_viz.o
 
 MOD_PVR_PLUG =  \
-main_visualization.o  \
-analyzer_viz.o \
+main_pvr.o  \
+analyzer_pvr.o \
 FEM_analyzer_viz_pvr.o \
 m_visualization.o \
 t_control_data_all_vizs.o \
@@ -63,6 +63,14 @@ m_visualization.o \
 t_control_data_all_vizs.o \
 load_mesh_and_field_4_viz.o
 
+MOD_VTK_CONVERT_PLUG = \
+main_VTK_convert.o \
+analyzer_VTK_convert.o \
+FEM_analyzer_VTK_convert.o \
+t_viz_VTK_convert.o \
+t_control_data_section_only.o \
+load_mesh_and_field_4_viz.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -71,10 +79,11 @@ dir_list:
 	@echo 'VIZ_PLUG_DIR =  $(VIZ_PLUG_DIR)'         >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_PSF =   $$(BUILDDIR)/$(TARGET_PSF)' >> $(MAKENAME)
-	@echo 'TARGET_VIZ =   $$(BUILDDIR)/$(TARGET_VIZ)' >> $(MAKENAME)
-	@echo 'TARGET_PVR =   $$(BUILDDIR)/$(TARGET_PVR)' >> $(MAKENAME)
-	@echo 'TARGET_FLINE = $$(BUILDDIR)/$(TARGET_FLINE)' >> $(MAKENAME)
+	@echo 'TARGET_PSF =         $$(BUILDDIR)/$(TARGET_PSF)' >> $(MAKENAME)
+	@echo 'TARGET_VIZ =         $$(BUILDDIR)/$(TARGET_VIZ)' >> $(MAKENAME)
+	@echo 'TARGET_PVR =         $$(BUILDDIR)/$(TARGET_PVR)' >> $(MAKENAME)
+	@echo 'TARGET_FLINE =       $$(BUILDDIR)/$(TARGET_FLINE)' >> $(MAKENAME)
+	@echo 'TARGET_VTK_CONVERT = $$(BUILDDIR)/$(TARGET_VTK_CONVERT)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -83,6 +92,7 @@ target_task:
 	'$$(TARGET_PSF)' \
 	'$$(TARGET_PVR)' \
 	'$$(TARGET_FLINE)' \
+	'$$(TARGET_VTK_CONVERT)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_VIZ):  $$(MOD_VIZ_PLUG)' \
@@ -106,11 +116,18 @@ target_task:
 	-o '$$(TARGET_FLINE)' '$$(MOD_FLINE_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_PVR):  $$(MOD_VIZ_PLUG)' \
+	@echo '$$(TARGET_PVR):  $$(MOD_PVR_PLUG)' \
 	'$$(PSF_PLUGLIB_FILE)' '$$(LIB_FILES_VIZ)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_PVR)' '$$(MOD_VIZ_PLUG)' \
+	-o '$$(TARGET_PVR)' '$$(MOD_PVR_PLUG)' \
+	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_VTK_CONVERT):  $$(MOD_VTK_CONVERT_PLUG)' \
+	'$$(PSF_PLUGLIB_FILE)' '$$(LIB_FILES_VIZ)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_VTK_CONVERT)' '$$(MOD_VTK_CONVERT_PLUG)' \
 	'-L. $$(LIBS_VIZ) $$(F90LIBS) $$(PNG_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
@@ -123,14 +140,16 @@ lib_name:
 
 
 mod_list:
-	@echo  MOD_PSF_PLUG=  \\ >> $(MAKENAME)
-	@echo  $(MOD_PSF_PLUG) >> $(MAKENAME)
-	@echo  MOD_VIZ_PLUG=  \\ >> $(MAKENAME)
-	@echo  $(MOD_VIZ_PLUG) >> $(MAKENAME)
-	@echo  MOD_PVR_PLUG=  \\ >> $(MAKENAME)
-	@echo  $(MOD_PVR_PLUG) >> $(MAKENAME)
-	@echo  MOD_FLINE_PLUG=  \\ >> $(MAKENAME)
-	@echo  $(MOD_FLINE_PLUG) >> $(MAKENAME)
+	@echo  MOD_PSF_PLUG=  \\         >> $(MAKENAME)
+	@echo  $(MOD_PSF_PLUG)           >> $(MAKENAME)
+	@echo  MOD_VIZ_PLUG=  \\         >> $(MAKENAME)
+	@echo  $(MOD_VIZ_PLUG)           >> $(MAKENAME)
+	@echo  MOD_PVR_PLUG=  \\         >> $(MAKENAME)
+	@echo  $(MOD_PVR_PLUG)           >> $(MAKENAME)
+	@echo  MOD_FLINE_PLUG=  \\       >> $(MAKENAME)
+	@echo  $(MOD_FLINE_PLUG)         >> $(MAKENAME)
+	@echo  MOD_VTK_CONVERT_PLUG=  \\ >> $(MAKENAME)
+	@echo  $(MOD_VTK_CONVERT_PLUG)   >> $(MAKENAME)
 	@echo  '#' >> $(MAKENAME)
 
 
