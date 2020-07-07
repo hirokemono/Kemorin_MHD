@@ -47,7 +47,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline(ucd_file_VIZ, ucd_VIZ)
+      call FEM_initialize_fline(t_VIZ%init_d, ucd_file_VIZ, ucd_VIZ)
 !
 !  VIZ Initialization
       call FLINE_initialize(femmesh_VIZ, field_VIZ,                     &

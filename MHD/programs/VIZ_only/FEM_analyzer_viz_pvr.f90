@@ -4,7 +4,10 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_pvr(ucd_param, ucd)
+!!      subroutine FEM_initialize_pvr(init_d, ucd_param, ucd)
+!!        type(time_data), intent(in) :: init_d
+!!        type(field_IO_params), intent(in) :: ucd_param
+!!        type(ucd_data), intent(inout) :: ucd
 !!      subroutine FEM_analyze_pvr                                      &
 !!     &         (i_step, ucd_param, time_d, viz_step, ucd)
 !!        type(field_IO_params), intent(in) :: ucd_param
@@ -32,10 +35,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_pvr(ucd_param, ucd)
+      subroutine FEM_initialize_pvr(init_d, ucd_param, ucd)
 !
       use load_mesh_and_field_4_viz
 !
+      type(time_data), intent(in) :: init_d
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(inout) :: ucd
 !
@@ -43,7 +47,7 @@
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, t_VIZ%init_d,     &
+      call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, init_d,           &
      &    femmesh_VIZ, VIZ_time_IO, ucd, field_VIZ)
 !
 !     --------------------- init for PVR
@@ -75,7 +79,7 @@
       call istep_file_w_fix_dt(i_step, viz_step%PVR_t)
       call set_field_data_4_VIZ                                         &
      &   (viz_step%PVR_t%istep_file, i_step, ucd_param,                 &
-     &   femmesh_VIZ, VIZ_time_IO, ucd, t_VIZ%time_d, field_VIZ)
+     &   femmesh_VIZ, VIZ_time_IO, ucd, time_d, field_VIZ)
 !
       end subroutine FEM_analyze_pvr
 !

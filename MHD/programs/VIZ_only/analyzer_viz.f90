@@ -56,7 +56,8 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs(ucd_file_VIZ, t_VIZ%viz_step, ucd_VIZ)
+      call FEM_initialize_vizs                                          &
+     &   (ucd_file_VIZ, t_VIZ%init_d, t_VIZ%viz_step, ucd_VIZ)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
