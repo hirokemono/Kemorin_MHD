@@ -3,6 +3,9 @@
 !
 !     Written by H. Matsui on July, 2006
 !
+!!      subroutine initialize_pvr
+!!      subroutine analyze_pvr
+!
       module analyzer_pvr
 !
       use m_precision
@@ -24,7 +27,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine initialization
+      subroutine initialize_pvr
 !
       use calypso_mpi
 !
@@ -47,11 +50,11 @@
      &    vizs_ctl1%viz_ctl_v%fline_ctls, pvr_v)
       call calypso_MPI_barrier
 !
-      end subroutine initialization
+      end subroutine initialize_pvr
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_pvr
 !
       use t_IO_step_parameter
 !
@@ -71,7 +74,7 @@
      &      femmesh_VIZ, jacobians_VIZ, field_VIZ, pvr_v)
       end do
 !
-      end subroutine analyze
+      end subroutine analyze_pvr
 !
 !  ---------------------------------------------------------------------
 !

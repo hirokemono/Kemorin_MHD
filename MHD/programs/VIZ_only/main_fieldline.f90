@@ -20,7 +20,7 @@
       call calypso_MPI_init
 !
       call initialize_fline
-      call analyze
+      call analyze_fline
 !
       call  calypso_MPI_finalize
 !

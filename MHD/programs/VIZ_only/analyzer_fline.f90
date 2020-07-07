@@ -3,6 +3,9 @@
 !
 !     Written by H. Matsui on July, 2006
 !
+!!      subroutine initialize_fline
+!!      subroutine analyze_fline
+!
       module analyzer_fline
 !
       use m_precision
@@ -53,7 +56,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_fline
 !
       integer(kind = kint) :: i_step
 !
@@ -71,7 +74,7 @@
      &      femmesh_VIZ, ele_4_nod_VIZ, field_VIZ, fline_v)
       end do
 !
-      end subroutine analyze
+      end subroutine analyze_fline
 !
 !  ---------------------------------------------------------------------
 !

@@ -18,8 +18,8 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer(ierr)
-      call analyze
+      call initialize_pvr
+      call analyze_pvr
 !
       call  calypso_MPI_finalize
 !
