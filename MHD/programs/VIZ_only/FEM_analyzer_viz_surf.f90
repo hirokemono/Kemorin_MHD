@@ -51,7 +51,7 @@
 !   --------------------------------
 !
       call mesh_setup_4_VIZ(sfcing%mesh_file_IO, sfcing%ucd_file_IO,    &
-     &    init_d, sfcing%geofem, sfcing%read_ucd_time, sfcing%read_ucd, &
+     &    init_d, sfcing%geofem, sfcing%read_ucd_time, sfcing%ucd_in,   &
      &    sfcing%nod_fld)
       call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
 !
@@ -80,7 +80,7 @@
 !
       iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
       call set_field_data_4_VIZ(iflag, i_step, sfcing%ucd_file_IO,      &
-     &    sfcing%geofem, sfcing%read_ucd_time, sfcing%read_ucd, time_d, &
+     &    sfcing%geofem, sfcing%read_ucd_time, sfcing%ucd_in, time_d,   &
      &    sfcing%nod_fld)
 !
       end subroutine FEM_analyze_surface

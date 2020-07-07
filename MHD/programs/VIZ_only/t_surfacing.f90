@@ -46,7 +46,7 @@
 !
 !>          Instance for FEM field data IO
         type(time_data) :: read_ucd_time
-        type(ucd_data) :: read_ucd
+        type(ucd_data) :: ucd_in
       end type surfacing_only
 !
       end module t_surfacing

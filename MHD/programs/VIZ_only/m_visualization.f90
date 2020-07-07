@@ -7,8 +7,8 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_control_params_4_viz                             &
-!!     &         (tctl, plt, mesh_file, ucd_param, ierr)
+!!      subroutine element_normals_4_VIZ                                &
+!!     &         (geofem, ele_4_nod, spfs, jacobians)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(field_IO_params), intent(inout) :: mesh_file
@@ -31,14 +31,9 @@
       use t_shape_functions
       use t_jacobians
       use t_file_IO_parameter
-      use t_VIZ_only_step_parameter
 !
       implicit none
 !
-!
-!>         Structure for time stepping parameters
-!!          with field and visualization
-        type(time_step_param_w_viz), save :: t_VIZ
 !
 !>        Structure for mesh file IO paramters
         type(field_IO_params), save :: mesh_file_VIZ
@@ -53,6 +48,7 @@
 !
 !>          Instance for FEM field data IO
         type(time_data), save :: VIZ_time_IO
+!>          Instance for FEM field data IO
         type(ucd_data), save :: ucd_VIZ
 !
 !>        Structure of included element list for each node
@@ -68,7 +64,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine element_normals_4_VIZ(fem, ele_4_nod, spfs, jacobians)
+      subroutine element_normals_4_VIZ                                  &
+     &         (geofem, ele_4_nod, spfs, jacobians)
 !
       use int_volume_of_domain
       use set_table_4_RHS_assemble
@@ -76,7 +73,7 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
 !
-      type(mesh_data), intent(inout) :: fem
+      type(mesh_data), intent(inout) :: geofem
       type(element_around_node), intent(inout) :: ele_4_nod
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacobians
@@ -85,14 +82,14 @@
 !     --------------------- init for fieldline and PVR
 !
       if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-      call set_element_on_node_in_mesh(fem%mesh, ele_4_nod)
+      call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
 !
       if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
       allocate(jacobians%g_FEM)
       call sel_max_int_point_by_etype                                   &
-     &   (fem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
+     &   (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    fem%mesh, fem%group, spfs, jacobians)
+     &    geofem%mesh, geofem%group, spfs, jacobians)
 !
       end subroutine element_normals_4_VIZ
 !
