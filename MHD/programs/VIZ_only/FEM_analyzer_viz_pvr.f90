@@ -34,6 +34,8 @@
 !
       subroutine FEM_initialize_pvr(ucd_param, ucd)
 !
+      use load_mesh_and_field_4_viz
+!
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(inout) :: ucd
 !
@@ -49,10 +51,6 @@
       call element_normals_4_VIZ                                        &
      &   (femmesh_VIZ, ele_4_nod_VIZ, spfs_VIZ, jacobians_VIZ)
 !
-!     ---------------------
-!
-      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
-!
       end subroutine FEM_initialize_pvr
 !
 !-----------------------------------------------------------------------
@@ -60,6 +58,8 @@
 !
       subroutine FEM_analyze_pvr                                        &
      &         (i_step, ucd_param, time_d, viz_step, ucd)
+!
+      use load_mesh_and_field_4_viz
 !
       integer (kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: ucd_param

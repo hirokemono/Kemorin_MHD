@@ -40,7 +40,9 @@
 !
 !>      Structure of sectioning and isosurfaceing modules
       type surfacing_modules
+!>        Structure of cross sections
         type(sectioning_module) :: psf
+!>        Structure of isosurfaces
         type(isosurface_module) :: iso
       end type surfacing_modules
 !

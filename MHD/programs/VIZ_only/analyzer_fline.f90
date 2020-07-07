@@ -10,6 +10,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use m_visualization
 !
       use FEM_analyzer_viz_fline
@@ -29,8 +30,8 @@
 !
       subroutine initialize_fline
 !
-      use calypso_mpi
       use t_control_data_vizs
+      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !

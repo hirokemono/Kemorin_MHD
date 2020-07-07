@@ -14,20 +14,6 @@
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: ucd_param
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!
-!!      subroutine mesh_setup_4_VIZ                                     &
-!!     &         (mesh_file, ucd_param, init_d, fem, t_IO, ucd, field)
-!!        type(field_IO_params), intent(in) :: mesh_file
-!!        type(field_IO_params), intent(in) :: ucd_param
-!!        type(time_data), intent(in) :: init_d
-!!        type(mesh_data), intent(inout) :: fem
-!!        type(time_data), intent(inout) :: t_IO
-!!        type(ucd_data), intent(inout) :: ucd
-!!        type(phys_data), intent(inout) :: field
-!!      subroutine element_normals_4_VIZ
-!!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
-!!        type(field_IO_params), intent(in) :: ucd_param
-!!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
 !
       module m_visualization
@@ -50,116 +36,35 @@
       implicit none
 !
 !
-!>       Structure for time stepping parameters
-!!        with field and visualization
-      type(time_step_param_w_viz), save :: t_VIZ
+!>         Structure for time stepping parameters
+!!          with field and visualization
+        type(time_step_param_w_viz), save :: t_VIZ
 !
-!>      Structure for mesh file IO paramters
-      type(field_IO_params), save :: mesh_file_VIZ
-!>      Structure for field file IO paramters
-      type(field_IO_params), save :: ucd_file_VIZ
+!>        Structure for mesh file IO paramters
+        type(field_IO_params), save :: mesh_file_VIZ
+!>        Structure for field file IO paramters
+        type(field_IO_params), save :: ucd_file_VIZ
 !
-!
-!>     Structure for mesh data
+!>       Structure for mesh data
 !>        (position, connectivity, group, and communication)
-      type(mesh_data), save :: femmesh_VIZ
-!>       Structure for nodal field data
-      type(phys_data), save :: field_VIZ
+        type(mesh_data), save :: femmesh_VIZ
+!>         Structure for nodal field data
+        type(phys_data), save :: field_VIZ
 !
+!>          Instance for FEM field data IO
+        type(time_data), save :: VIZ_time_IO
+        type(ucd_data), save :: ucd_VIZ
 !
-!>        Instance for FEM field data IO
-      type(time_data), save :: VIZ_time_IO
-      type(ucd_data), save :: ucd_VIZ
-!
-!>   Structure of included element list for each node
-      type(element_around_node), save :: ele_4_nod_VIZ
-!
-      type(shape_finctions_at_points), save :: spfs_VIZ
-!>      Stracture for Jacobians
-      type(jacobians_type), save :: jacobians_VIZ
+!>        Structure of included element list for each node
+        type(element_around_node), save :: ele_4_nod_VIZ
+!>        Structure of shape function for PVR and fieldline
+        type(shape_finctions_at_points), save :: spfs_VIZ
+!>        Stracture for Jacobians
+        type(jacobians_type), save :: jacobians_VIZ
 !
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_control_params_4_viz(tctl, plt,                    &
-     &          mesh_file, ucd_param, t_viz_param, ierr)
-!
-      use t_ucd_data
-      use t_file_IO_parameter
-      use t_ctl_data_4_platforms
-      use t_ctl_data_4_time_steps
-!
-      use m_file_format_switch
-      use m_default_file_prefix
-      use set_control_platform_data
-      use ucd_IO_select
-!
-      type(time_data_control), intent(in) :: tctl
-      type(platform_data_control), intent(in) :: plt
-!
-      integer(kind = kint), intent(inout) :: ierr
-      type(field_IO_params), intent(inout) :: mesh_file
-      type(field_IO_params), intent(inout) :: ucd_param
-      type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!
-!
-      call turn_off_debug_flag_by_ctl(my_rank, plt)
-      call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, mesh_file)
-      call set_ucd_file_define(plt, ucd_param)
-!
-      call set_fixed_t_step_params_w_viz                                &
-     &   (tctl, t_viz_param, ierr, e_message)
-      call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
-!
-      end subroutine set_control_params_4_viz
-!
-! ----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine mesh_setup_4_VIZ                                       &
-     &         (mesh_file, ucd_param, init_d, fem, t_IO, ucd, field)
-!
-      use m_array_for_send_recv
-      use mpi_load_mesh_data
-      use nod_phys_send_recv
-      use parallel_FEM_mesh_init
-      use set_parallel_file_name
-      use set_ucd_data_to_type
-      use ucd_IO_select
-!
-      type(field_IO_params), intent(in) :: mesh_file
-      type(field_IO_params), intent(in) :: ucd_param
-      type(time_data), intent(in) :: init_d
-!
-      type(mesh_data), intent(inout) :: fem
-      type(time_data), intent(inout) :: t_IO
-      type(ucd_data), intent(inout) :: ucd
-      type(phys_data), intent(inout) :: field
-!
-!
-!   --------------------------------
-!       setup mesh information
-!   --------------------------------
-!
-!       load mesh informations
-      call mpi_input_mesh(mesh_file, nprocs, fem)
-!
-       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-       call FEM_mesh_initialization(fem%mesh, fem%group)
-!
-!     ---------------------
-!
-      ucd%nnod = fem%mesh%node%numnod
-      call sel_read_udt_param                                           &
-     &   (my_rank, init_d%i_time_step, ucd_param, t_IO, ucd)
-      call alloc_phys_data_type_by_output                               &
-     &   (ucd, fem%mesh%node, field)
-!
-      end subroutine mesh_setup_4_VIZ
 !
 ! ----------------------------------------------------------------------
 !
@@ -190,35 +95,6 @@
      &    fem%mesh, fem%group, spfs, jacobians)
 !
       end subroutine element_normals_4_VIZ
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_field_data_4_VIZ(iflag, istep_ucd, ucd_param,      &
-     &         fem, t_IO, ucd, time_d, field)
-!
-      use set_ucd_data_to_type
-      use nod_phys_send_recv
-!
-      integer(kind = kint), intent(in) :: iflag, istep_ucd
-      type(field_IO_params), intent(in) :: ucd_param
-      type(mesh_data), intent(in) :: fem
-!
-      type(time_data), intent(inout) :: t_IO
-      type(ucd_data), intent(inout) :: ucd
-      type(time_data), intent(inout) :: time_d
-      type(phys_data), intent(inout) :: field
-!
-!
-      if(iflag .ne. 0) return
-      call set_data_by_read_ucd(my_rank, istep_ucd,                     &
-     &    ucd_param, t_IO, ucd, field)
-      call copy_time_step_size_data(t_IO, time_d)
-!
-      if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(fem%mesh, field)
-!
-      end subroutine set_field_data_4_VIZ
 !
 ! ----------------------------------------------------------------------
 !

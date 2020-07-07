@@ -35,28 +35,33 @@ main_visualization.o  \
 analyzer_viz.o \
 FEM_analyzer_viz.o \
 m_visualization.o \
-t_control_data_all_vizs.o
+t_control_data_all_vizs.o \
+load_mesh_and_field_4_viz.o
 
 MOD_PSF_PLUG = \
 main_surface_rendering.o \
 analyzer_psf.o \
 FEM_analyzer_viz_surf.o \
 m_visualization.o \
-t_control_data_section_only.o
+t_surfacing.o \
+t_control_data_section_only.o \
+load_mesh_and_field_4_viz.o
 
 MOD_PVR_PLUG =  \
 main_visualization.o  \
 analyzer_viz.o \
 FEM_analyzer_viz_pvr.o \
 m_visualization.o \
-t_control_data_all_vizs.o
+t_control_data_all_vizs.o \
+load_mesh_and_field_4_viz.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \
 analyzer_fline.o \
 FEM_analyzer_viz_fline.o \
 m_visualization.o \
-t_control_data_all_vizs.o
+t_control_data_all_vizs.o \
+load_mesh_and_field_4_viz.o
 
 #
 #  -------------------------------------------------------------------------

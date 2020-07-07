@@ -34,6 +34,8 @@
 !
       subroutine FEM_initialize_fline(ucd_param, ucd)
 !
+      use load_mesh_and_field_4_viz
+!
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(inout) :: ucd
 !
@@ -57,6 +59,8 @@
 !
       subroutine FEM_analyze_fline                                      &
      &         (i_step, ucd_param, time_d, viz_step, ucd)
+!
+      use load_mesh_and_field_4_viz
 !
       integer (kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: ucd_param

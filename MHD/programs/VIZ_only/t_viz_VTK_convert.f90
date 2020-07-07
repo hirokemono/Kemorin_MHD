@@ -97,8 +97,8 @@
 !
       use t_ucd_file
 !
-      type(IO_step_param), intent(inout) :: ucd_step
       type(time_data), intent(in) :: time_d
+      type(IO_step_param), intent(inout) :: ucd_step
 !
       type(field_IO_params), intent(in) :: vtk_file_IO
       type(ucd_data), intent(in) :: vtk_out

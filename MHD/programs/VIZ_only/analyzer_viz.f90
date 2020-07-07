@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine initialize_vizs
+!      subroutine analyze_vizs
 !
       module analyzer_viz
 !
@@ -29,11 +29,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine initialize_vizs
 !
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -62,11 +63,13 @@
       call init_visualize                                               &
      &   (femmesh_VIZ, field_VIZ, vizs_ctl1%viz_ctl_v, vizs_v)
 !
-      end subroutine init_analyzer
+      end subroutine initialize_vizs
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine analyze_vizs
+!
+      use load_mesh_and_field_4_viz
 !
       integer(kind=kint ) :: i_step, visval
 !
@@ -92,7 +95,7 @@
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !
-      end subroutine analyze
+      end subroutine analyze_vizs
 !
 !  ---------------------------------------------------------------------
 !

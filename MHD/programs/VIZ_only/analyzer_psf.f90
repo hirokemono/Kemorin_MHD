@@ -9,18 +9,25 @@
       module analyzer_psf
 !
       use m_precision
-!
       use m_work_time
-      use m_visualization
 !
       use FEM_analyzer_viz_surf
+      use t_surfacing
       use t_viz_sections
+      use t_VIZ_only_step_parameter
       use t_control_data_section_only
 !
       implicit none
 !
-      type(control_data_section_only), save :: sec_viz_ctl1
-      type(surfacing_modules), save :: viz_psfs_v
+!>         Structure for time stepping parameters
+!!          with field and visualization
+      type(time_step_param_w_viz), save :: t_VIZ2
+!>      Structure of control data for sectioning only
+      type(control_data_section_only), save :: sec_viz_ctl2
+!>      Structure of mesh and field for sectioning only
+      type(surfacing_only), save :: sfcing2
+!>      Structure of sectioning and isosurfaceing modules
+      type(surfacing_modules), save :: viz_psfs2
 !
 !  ---------------------------------------------------------------------
 !
@@ -33,6 +40,7 @@
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -44,18 +52,18 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
-      call read_control_data_section_only(sec_viz_ctl1)
+      call read_control_data_section_only(sec_viz_ctl2)
       call set_control_params_4_viz                                     &
-     &   (sec_viz_ctl1%t_sect_ctl, sec_viz_ctl1%sect_plt,               &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, ierr)
+     &   (sec_viz_ctl2%t_sect_ctl, sec_viz_ctl2%sect_plt,               &
+     &    sfcing2%mesh_file_IO, sfcing2%ucd_file_IO, t_VIZ2, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_surface(ucd_file_VIZ, ucd_VIZ)
+      call FEM_initialize_surface(t_VIZ2%init_d, sfcing2)
 !
 !  VIZ Initialization
-      call init_visualize_surface(femmesh_VIZ, field_VIZ,               &
-     &    sec_viz_ctl1%surfacing_ctls, viz_psfs_v)
+      call init_visualize_surface(sfcing2%geofem, sfcing2%nod_fld,      &
+     &    sec_viz_ctl2%surfacing_ctls, viz_psfs2)
 !
       end subroutine init_analyzer_psf
 !
@@ -66,17 +74,17 @@
       integer(kind=kint ) :: i_step
 !
 !
-      do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
-        call set_IO_step_flag(i_step,t_VIZ%ucd_step)
+      do i_step = t_VIZ2%init_d%i_time_step, t_VIZ2%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ2%ucd_step) .ne. izero) cycle
+        call set_IO_step_flag(i_step,t_VIZ2%ucd_step)
 !
 !  Load field data
-        call FEM_analyze_surface(i_step, ucd_file_VIZ,                  &
-     &      t_VIZ%time_d, t_VIZ%viz_step, ucd_VIZ)
+        call FEM_analyze_surface                                        &
+     &     (i_step, t_VIZ2%time_d, t_VIZ2%viz_step, sfcing2)
 !
 !  Generate field lines
-        call visualize_surface(t_VIZ%viz_step, t_VIZ%time_d,            &
-     &      femmesh_VIZ, field_VIZ, viz_psfs_v)
+        call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
+     &      sfcing2%geofem, sfcing2%nod_fld, viz_psfs2)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

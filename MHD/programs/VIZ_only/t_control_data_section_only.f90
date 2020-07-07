@@ -44,6 +44,7 @@
       character(len = kchara), parameter                                &
      &                        :: fname_viz_ctl = "control_viz"
 !
+!>      Structure of control data for sectioning only
       type control_data_section_only
 !>      Structure for file settings
         type(platform_data_control) :: sect_plt

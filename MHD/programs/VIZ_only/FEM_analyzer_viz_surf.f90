@@ -1,16 +1,22 @@
-!FEM_analyzer_viz_surf.f90
+!>@file   FEM_analyzer_viz_surf.f90
+!!@brief  module FEM_analyzer_viz_surf
+!!
+!!@author H. Matsui
+!!@date Programmed in June, 2006
 !
-!      module FEM_analyzer_viz_surf
-!
-!       Written by H. Matsui
-!
-!!      subroutine FEM_initialize_surface(ucd_param, ucd)
+!>@brief FEM top routines for surfacing
+!!
+!!@verbatim
+!!      subroutine FEM_initialize_surface(init_d, sfcing)
+!!        type(time_data), intent(in) :: init_d
+!!        type(surfacing_only), intent(inout) :: sfcing
 !!      subroutine FEM_analyze_surface                                  &
-!!     &         (i_step, ucd_param, time_d, viz_step, ucd)
+!!     &         (i_step, time_d, viz_step, sfcing)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_data), intent(inout) :: time_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(ucd_data), intent(inout) :: ucd
+!!@endverbatim
 !
       module FEM_analyzer_viz_surf
 !
@@ -19,11 +25,11 @@
 !
       use m_machine_parameter
       use calypso_mpi
+!
+      use t_surfacing
+      use t_time_data
       use t_VIZ_step_parameter
       use t_IO_step_parameter
-      use t_file_IO_parameter
-      use t_ucd_data
-      use m_visualization
 !
       implicit none
 !
@@ -33,22 +39,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_surface(ucd_param, ucd)
+      subroutine FEM_initialize_surface(init_d, sfcing)
 !
-      type(field_IO_params), intent(in) :: ucd_param
-      type(ucd_data), intent(inout) :: ucd
+      use load_mesh_and_field_4_viz
+!
+      type(time_data), intent(in) :: init_d
+      type(surfacing_only), intent(inout) :: sfcing
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ(mesh_file_VIZ, ucd_param, t_VIZ%init_d,     &
-     &    femmesh_VIZ, VIZ_time_IO, ucd, field_VIZ)
-!
-!     ---------------------
-!
-      call deallocate_surface_geom_type(femmesh_VIZ%mesh%surf)
-      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
+      call mesh_setup_4_VIZ(sfcing%mesh_file_IO, sfcing%ucd_file_IO,    &
+     &    init_d, sfcing%geofem, sfcing%read_ucd_time, sfcing%read_ucd, &
+     &    sfcing%nod_fld)
+      call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
 !
       end subroutine FEM_initialize_surface
 !
@@ -56,25 +61,27 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_surface                                    &
-     &         (i_step, ucd_param, time_d, viz_step, ucd)
+     &         (i_step, time_d, viz_step, sfcing)
+!
+      use load_mesh_and_field_4_viz
 !
       integer (kind =kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
-      type(ucd_data), intent(inout) :: ucd
+      type(surfacing_only), intent(inout) :: sfcing
 !
       integer (kind =kint) :: visval, iflag
 !
 !
-      visval = output_IO_flag(i_step, viz_step%PSF_t)                   &
-     &      * output_IO_flag(i_step, viz_step%ISO_t)
+      visval =  output_IO_flag(i_step, viz_step%PSF_t)                  &
+     &        * output_IO_flag(i_step, viz_step%ISO_t)
       call istep_file_w_fix_dt(i_step, viz_step%PSF_t)
       call istep_file_w_fix_dt(i_step, viz_step%ISO_t)
 !
       iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
-      call set_field_data_4_VIZ(iflag, i_step, ucd_param,               &
-     &   femmesh_VIZ, VIZ_time_IO, ucd, time_d, field_VIZ)
+      call set_field_data_4_VIZ(iflag, i_step, sfcing%ucd_file_IO,      &
+     &    sfcing%geofem, sfcing%read_ucd_time, sfcing%read_ucd, time_d, &
+     &    sfcing%nod_fld)
 !
       end subroutine FEM_analyze_surface
 !

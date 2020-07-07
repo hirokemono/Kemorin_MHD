@@ -18,8 +18,8 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
-      call analyze
+      call initialize_vizs
+      call analyze_vizs
 !
       call  calypso_MPI_finalize
 !

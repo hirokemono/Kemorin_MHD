@@ -36,6 +36,8 @@
 !
       subroutine FEM_initialize_vizs(ucd_param, viz_step, ucd)
 !
+      use load_mesh_and_field_4_viz
+!
       type(field_IO_params), intent(in) :: ucd_param
       type(VIZ_step_params), intent(inout) :: viz_step
       type(ucd_data), intent(inout) :: ucd
@@ -59,10 +61,6 @@
      &     (femmesh_VIZ, ele_4_nod_VIZ, spfs_VIZ, jacobians_VIZ)
       end if
 !
-!     --------------------- 
-!
-      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
-!
 !     ---------------------
 !
       call calypso_mpi_barrier
@@ -76,6 +74,7 @@
      &         (i_step, ucd_param, time_d, viz_step, ucd, visval)
 !
       use t_ucd_data
+      use load_mesh_and_field_4_viz
 !
       integer (kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: ucd_param
