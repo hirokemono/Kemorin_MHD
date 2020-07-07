@@ -47,7 +47,7 @@
         type(phys_data) :: nod_fld
 !
 !>          time data from data input
-        type(time_data) :: read_ucd_time
+        type(time_data) :: ucd_time
 !>          FEM field data IO
         type(ucd_data) :: ucd_in
       end type FEM_mesh_field_4_surfacing

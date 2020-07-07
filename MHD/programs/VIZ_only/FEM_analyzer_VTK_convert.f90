@@ -51,7 +51,7 @@
 !   --------------------------------
 !
       call mesh_setup_4_VIZ(sfcing%mesh_file_IO, sfcing%ucd_file_IO,    &
-     &    init_d, sfcing%geofem, sfcing%read_ucd_time, sfcing%ucd_in,   &
+     &    init_d, sfcing%geofem, sfcing%ucd_time, sfcing%ucd_in,        &
      &    sfcing%nod_fld)
       call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
 !
@@ -74,7 +74,7 @@
       call istep_file_w_fix_dt(i_step, ucd_step)
       call set_field_data_4_VIZ                                         &
      &   (ucd_step%istep_file, i_step, sfcing%ucd_file_IO,              &
-     &    sfcing%geofem, sfcing%read_ucd_time, sfcing%ucd_in, time_d,   &
+     &    sfcing%geofem, sfcing%ucd_time, sfcing%ucd_in, time_d,        &
      &    sfcing%nod_fld)
 !
       end subroutine FEM_analyze_VTK_convert

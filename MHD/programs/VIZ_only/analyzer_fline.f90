@@ -11,20 +11,23 @@
       use m_precision
 !
       use calypso_mpi
-      use m_visualization
 !
       use FEM_analyzer_viz_fline
       use t_fieldline
       use t_control_data_all_vizs
       use t_VIZ_only_step_parameter
+      use t_visualization
 !
       implicit none
 !
 !>         Structure for time stepping parameters
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ4
-!
+!>      Structure of control data for visualization
       type(control_data_vizs), save :: vizs_ctl4
+!>      Structure of mesh and field for visualization only
+      type(FEM_mesh_field_4_viz), save :: viz4
+!>      Structure of field line module
       type(fieldline_module), save :: fline_v
 !
 !  ---------------------------------------------------------------------
@@ -47,15 +50,15 @@
       call read_control_file_vizs(vizs_ctl4)
       call set_control_params_4_viz                                     &
      &   (vizs_ctl4%t_viz_ctl, vizs_ctl4%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ4, ierr)
+     &    viz4%mesh_file_IO, viz4%ucd_file_IO, t_VIZ4, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline(t_VIZ4%init_d, ucd_file_VIZ, ucd_VIZ)
+      call FEM_initialize_fline(t_VIZ4%init_d, viz4)
 !
 !  VIZ Initialization
-      call FLINE_initialize(femmesh_VIZ, field_VIZ,                     &
+      call FLINE_initialize(viz4%geofem, viz4%nod_fld,                  &
      &    vizs_ctl4%viz_ctl_v%fline_ctls, fline_v)
 !
       end subroutine initialize_fline
@@ -72,12 +75,12 @@
         call set_IO_step_flag(i_step,t_VIZ4%ucd_step)
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, ucd_file_VIZ,                    &
-     &      t_VIZ4%time_d, t_VIZ4%viz_step, ucd_VIZ)
+        call FEM_analyze_fline                                          &
+     &     (i_step, t_VIZ4%time_d, t_VIZ4%viz_step, viz4)
 !
 !  Generate field lines
         call FLINE_visualize(t_VIZ4%viz_step%FLINE_t,                   &
-     &      femmesh_VIZ, ele_4_nod_VIZ, field_VIZ, fline_v)
+     &      viz4%geofem, viz4%ele_4_nod, viz4%nod_fld, fline_v)
       end do
 !
       end subroutine analyze_fline

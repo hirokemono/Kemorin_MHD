@@ -10,14 +10,14 @@
 !
       use m_precision
       use m_machine_parameter
-!
       use m_work_time
-      use m_visualization
+      use calypso_mpi
 !
       use FEM_analyzer_viz
       use t_control_data_all_vizs
       use t_visualizer
       use t_VIZ_only_step_parameter
+      use t_visualization
 !
       implicit none
 !
@@ -25,7 +25,11 @@
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ1
 !
+!>      Structure of control data for visualization
       type(control_data_vizs), save :: vizs_ctl1
+!>      Structure of mesh and field for visualization only
+      type(FEM_mesh_field_4_viz), save :: viz1
+!>      Structure of viualization modules
       type(visualize_modules), save :: vizs_v
 !
 !  ---------------------------------------------------------------------
@@ -36,7 +40,6 @@
 !
       subroutine initialize_vizs
 !
-      use calypso_mpi
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use load_mesh_and_field_4_viz
@@ -55,19 +58,19 @@
       call read_control_file_vizs(vizs_ctl1)
       call set_control_params_4_viz                                     &
      &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ1, ierr)
+     &    viz1%mesh_file_IO, viz1%ucd_file_IO, t_VIZ1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
       call FEM_initialize_vizs                                          &
-     &   (ucd_file_VIZ, t_VIZ1%init_d, t_VIZ1%viz_step, ucd_VIZ)
+     &   (t_VIZ1%init_d, t_VIZ1%viz_step, viz1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (femmesh_VIZ, field_VIZ, vizs_ctl1%viz_ctl_v, vizs_v)
+     &   (viz1%geofem, viz1%nod_fld, vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine initialize_vizs
 !
@@ -86,15 +89,15 @@
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs(i_step, ucd_file_VIZ,                     &
-     &      t_VIZ1%time_d, t_VIZ1%viz_step, ucd_VIZ, visval)
+        call FEM_analyze_vizs                                           &
+     &     (i_step, t_VIZ1%time_d, t_VIZ1%viz_step, viz1, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,            &
-     &        femmesh_VIZ, field_VIZ, ele_4_nod_VIZ, jacobians_VIZ,     &
-     &        vizs_v)
+     &       viz1%geofem, viz1%nod_fld, viz1%ele_4_nod, viz1%jacobians, &
+     &       vizs_v)
         end if
       end do
 !

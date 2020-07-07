@@ -1,5 +1,5 @@
-!>@file   m_visualization.f90
-!!@brief  module m_visualization
+!>@file   t_visualization.f90
+!!@brief  module t_visualization
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -16,7 +16,7 @@
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!@endverbatim
 !
-      module m_visualization
+      module t_visualization
 !
       use m_precision
       use m_machine_parameter
@@ -35,28 +35,31 @@
       implicit none
 !
 !
+!>      Structure of mesh and field for visualization only
+      type FEM_mesh_field_4_viz
 !>        Structure for mesh file IO paramters
-        type(field_IO_params), save :: mesh_file_VIZ
+        type(field_IO_params), save :: mesh_file_IO
 !>        Structure for field file IO paramters
-        type(field_IO_params), save :: ucd_file_VIZ
+        type(field_IO_params), save :: ucd_file_IO
 !
 !>       Structure for mesh data
 !>        (position, connectivity, group, and communication)
-        type(mesh_data), save :: femmesh_VIZ
+        type(mesh_data), save :: geofem
 !>         Structure for nodal field data
-        type(phys_data), save :: field_VIZ
+        type(phys_data), save :: nod_fld
 !
 !>          Instance of time data from data input
-        type(time_data), save :: VIZ_time_IO
+        type(time_data), save :: ucd_time
 !>          Instance of FEM field data IO
-        type(ucd_data), save :: ucd_VIZ
+        type(ucd_data), save :: ucd
 !
 !>        Structure of included element list for each node
-        type(element_around_node), save :: ele_4_nod_VIZ
+        type(element_around_node), save :: ele_4_nod
 !>        Structure of shape function for PVR and fieldline
-        type(shape_finctions_at_points), save :: spfs_VIZ
+        type(shape_finctions_at_points), save :: spfs
 !>        Stracture for Jacobians
-        type(jacobians_type), save :: jacobians_VIZ
+        type(jacobians_type), save :: jacobians
+      end type FEM_mesh_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
@@ -95,4 +98,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module m_visualization
+      end module t_visualization
