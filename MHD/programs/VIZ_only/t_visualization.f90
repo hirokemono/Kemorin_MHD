@@ -38,27 +38,27 @@
 !>      Structure of mesh and field for visualization only
       type FEM_mesh_field_4_viz
 !>        Structure for mesh file IO paramters
-        type(field_IO_params), save :: mesh_file_IO
+        type(field_IO_params) :: mesh_file_IO
 !>        Structure for field file IO paramters
-        type(field_IO_params), save :: ucd_file_IO
+        type(field_IO_params) :: ucd_file_IO
 !
 !>       Structure for mesh data
 !>        (position, connectivity, group, and communication)
-        type(mesh_data), save :: geofem
+        type(mesh_data) :: geofem
 !>         Structure for nodal field data
-        type(phys_data), save :: nod_fld
+        type(phys_data) :: nod_fld
 !
 !>          Instance of time data from data input
-        type(time_data), save :: ucd_time
+        type(time_data) :: ucd_time
 !>          Instance of FEM field data IO
-        type(ucd_data), save :: ucd
+        type(ucd_data) :: ucd
 !
 !>        Structure of included element list for each node
-        type(element_around_node), save :: ele_4_nod
+        type(element_around_node) :: ele_4_nod
 !>        Structure of shape function for PVR and fieldline
-        type(shape_finctions_at_points), save :: spfs
+        type(shape_finctions_at_points) :: spfs
 !>        Stracture for Jacobians
-        type(jacobians_type), save :: jacobians
+        type(jacobians_type) :: jacobians
       end type FEM_mesh_field_4_viz
 !
 ! ----------------------------------------------------------------------
