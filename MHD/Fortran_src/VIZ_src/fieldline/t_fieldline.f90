@@ -9,8 +9,9 @@
 !!@verbatim
 !!      subroutine FLINE_initialize(fem, nod_fld, fline_ctls, fline)
 !!      subroutine FLINE_visualize                                      &
-!!     &         (istep_fline, fem, ele_4_nod, nod_fld, fline)
+!!     &         (FLINE_t, fem, ele_4_nod, nod_fld, fline)
 !!      subroutine FLINE_finalize(fline)
+!!        type(IO_step_param), intent(in) :: FLINE_t
 !!        type(mesh_data), intent(in) :: fem
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(phys_data), intent(in) :: nod_fld
@@ -25,8 +26,9 @@
       use m_machine_parameter
       use m_geometry_constants
       use t_mesh_data
-      use t_next_node_ele_4_node
       use t_phys_data
+      use t_next_node_ele_4_node
+      use t_IO_step_parameter
       use t_control_params_4_fline
       use t_source_of_filed_line
       use t_local_fline
@@ -101,13 +103,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine FLINE_visualize                                        &
-     &         (istep_fline, fem, ele_4_nod, nod_fld, fline)
+     &         (FLINE_t, fem, ele_4_nod, nod_fld, fline)
 !
       use set_fields_for_fieldline
       use const_field_lines
       use collect_fline_data
 !
-      integer(kind = kint), intent(in) :: istep_fline
+      type(IO_step_param), intent(in) :: FLINE_t
 !
       type(mesh_data), intent(in) :: fem
       type(element_around_node), intent(in) :: ele_4_nod
@@ -118,7 +120,7 @@
       integer(kind = kint) :: i_fln
 !
 !
-      if (fline%num_fline.le.0 .or. istep_fline .le. 0) return
+      if (fline%num_fline.le.0 .or. FLINE_t%istep_file .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       do i_fln = 1, fline%num_fline
@@ -139,7 +141,8 @@
      &      fline%fln_tce(i_fln), fline%fline_lc)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-       call s_collect_fline_data(istep_fline, fline%fln_prm(i_fln),     &
+       call s_collect_fline_data                                        &
+     &    (FLINE_t%istep_file, fline%fln_prm(i_fln),                    &
      &     fline%fline_lc, fline%fline_gl)
       end do
 !

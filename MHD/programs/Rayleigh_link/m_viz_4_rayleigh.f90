@@ -8,14 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz                          &
-!!     &         (tctl, plt, sdctl, field_ctl,                          &
-!!     &          time_v, viz_step, rayleigh_ftbl, rayleigh_rtp, ierr)
+!!     &         (tctl, plt, sdctl, field_ctl, t_viz_param,             &
+!!     &          rayleigh_ftbl, rayleigh_rtp, ierr)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_domain_control), intent(in) :: sdctl
 !!        type(field_control), intent(in) :: field_ctl
-!!        type(time_step_param), intent(inout) :: time_v
-!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !!      subroutine element_normals_4_VIZ
@@ -37,21 +36,13 @@
       use t_jacobians
       use t_file_IO_parameter
       use t_time_data
-      use t_VIZ_step_parameter
+      use t_VIZ_only_step_parameter
 !
       implicit none
 !
-!       Structure of time stepping structures for viz_only
-      type VIZ_only_step_param
-!>        Increment for visualizations
-        type(VIZ_step_params) :: viz_step
-      end type VIZ_only_step_param
-!
-!>      Increment for visualizations
-      type(VIZ_only_step_param), save :: Vonly_steps
-!
-!       Structure for time stepping parameters
-      type(time_step_param), save :: t_VIZ
+!>       Structure for time stepping parameters
+!!        with field and visualization
+      type(time_step_param_w_viz), save :: t_VIZ
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_VIZ
@@ -83,8 +74,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ctl_params_rayleigh_viz                            &
-     &         (tctl, plt, sdctl, field_ctl,                            &
-     &          time_v, viz_step, rayleigh_ftbl, rayleigh_rtp, ierr)
+     &         (tctl, plt, sdctl, field_ctl, t_viz_param,               &
+     &          rayleigh_ftbl, rayleigh_rtp, ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
@@ -92,7 +83,6 @@
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_fields
       use t_ctl_data_4_divide_sphere
-      use t_VIZ_step_parameter
       use t_rayleigh_field_address
       use t_rayleigh_field_IO
 !
@@ -105,8 +95,7 @@
       type(field_control), intent(in) :: field_ctl
 !
       integer(kind = kint), intent(inout) :: ierr
-      type(time_step_param), intent(inout) :: time_v
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
       type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
@@ -115,13 +104,10 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
 !
-      call set_fixed_time_step_params                                   &
-     &   (tctl, time_v, ierr, e_message)
+      call set_fixed_t_step_params_w_viz                                &
+     &   (tctl, t_viz_param, ierr, e_message)
+      call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
       if(ierr .gt. 0) return
-!
-      call viz_fixed_time_step_params                                   &
-     &   (time_v%init_d%dt, tctl, viz_step)
-      call copy_delta_t(time_v%init_d, time_v%time_d)
 !
       call set_ctl_rayleigh_field_address                               &
      &   (plt, field_ctl, rayleigh_ftbl, e_message, ierr)

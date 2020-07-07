@@ -38,8 +38,7 @@
       call read_control_file_vizs(vizs_ctl1)
       call set_control_params_4_viz                                     &
      &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, Vonly_steps%viz_step,     &
-     &    ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -64,14 +63,12 @@
         call set_IO_step_flag(i_step,t_VIZ%ucd_step)
 !
 !  Load field data
-        call FEM_analyze_fline                                          &
-     &     (i_step, ucd_file_VIZ, t_VIZ, Vonly_steps%viz_step%FLINE_t,  &
-     &      ucd_VIZ)
+        call FEM_analyze_fline(i_step, ucd_file_VIZ,                    &
+     &      t_VIZ%time_d, t_VIZ%viz_step, ucd_VIZ)
 !
 !  Generate field lines
-        call FLINE_visualize                                            &
-     &     (Vonly_steps%viz_step%FLINE_t%istep_file, femmesh_VIZ,       &
-     &      ele_4_nod_VIZ, field_VIZ, fline_v)
+        call FLINE_visualize(t_VIZ%viz_step%FLINE_t,                    &
+     &      femmesh_VIZ, ele_4_nod_VIZ, field_VIZ, fline_v)
       end do
 !
       end subroutine analyze

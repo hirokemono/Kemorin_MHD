@@ -13,9 +13,17 @@
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: ucd_param
-!!        type(time_step_param), intent(inout) :: time_v
-!!        type(VIZ_step_params), intent(inout) :: viz_step
-!!      subroutine mesh_setup_4_VIZ(ucd_param)
+!!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
+!!
+!!      subroutine mesh_setup_4_VIZ                                     &
+!!     &         (mesh_file, ucd_param, init_d, fem, t_IO, ucd, field)
+!!        type(field_IO_params), intent(in) :: mesh_file
+!!        type(field_IO_params), intent(in) :: ucd_param
+!!        type(time_data), intent(in) :: init_d
+!!        type(mesh_data), intent(inout) :: fem
+!!        type(time_data), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) :: ucd
+!!        type(phys_data), intent(inout) :: field
 !!      subroutine element_normals_4_VIZ
 !!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
 !!        type(field_IO_params), intent(in) :: ucd_param
@@ -37,23 +45,14 @@
       use t_shape_functions
       use t_jacobians
       use t_file_IO_parameter
-      use t_time_data
-      use t_VIZ_step_parameter
+      use t_VIZ_only_step_parameter
 !
       implicit none
 !
 !
-!       Structure of time stepping structures for viz_only
-      type VIZ_only_step_param
-!>        Increment for visualizations
-        type(VIZ_step_params) :: viz_step
-      end type VIZ_only_step_param
-!
-!>      Increment for visualizations
-      type(VIZ_only_step_param), save :: Vonly_steps
-!
-!       Structure for time stepping parameters
-      type(time_step_param), save :: t_VIZ
+!>       Structure for time stepping parameters
+!!        with field and visualization
+      type(time_step_param_w_viz), save :: t_VIZ
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_VIZ
@@ -86,13 +85,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_params_4_viz(tctl, plt,                    &
-     &          mesh_file, ucd_param, time_v, viz_step, ierr)
+     &          mesh_file, ucd_param, t_viz_param, ierr)
 !
       use t_ucd_data
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
-      use t_VIZ_step_parameter
 !
       use m_file_format_switch
       use m_default_file_prefix
@@ -105,8 +103,7 @@
       integer(kind = kint), intent(inout) :: ierr
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: ucd_param
-      type(time_step_param), intent(inout) :: time_v
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
@@ -114,20 +111,17 @@
       call set_control_mesh_def(plt, mesh_file)
       call set_ucd_file_define(plt, ucd_param)
 !
-      call set_fixed_time_step_params(tctl, time_v, ierr, e_message)
-      call viz_fixed_time_step_params                                   &
-     &   (time_v%init_d%dt, tctl, viz_step)
-      call copy_delta_t(time_v%init_d, time_v%time_d)
-!
-      if(ierr .gt. 0) return
+      call set_fixed_t_step_params_w_viz                                &
+     &   (tctl, t_viz_param, ierr, e_message)
+      call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
 !
       end subroutine set_control_params_4_viz
 !
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_VIZ(mesh_file, ucd_param, time_v,         &
-     &          fem, t_IO, ucd, field)
+      subroutine mesh_setup_4_VIZ                                       &
+     &         (mesh_file, ucd_param, init_d, fem, t_IO, ucd, field)
 !
       use m_array_for_send_recv
       use mpi_load_mesh_data
@@ -139,7 +133,8 @@
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(field_IO_params), intent(in) :: ucd_param
-      type(time_step_param), intent(in) :: time_v
+      type(time_data), intent(in) :: init_d
+!
       type(mesh_data), intent(inout) :: fem
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
@@ -159,8 +154,8 @@
 !     ---------------------
 !
       ucd%nnod = fem%mesh%node%numnod
-      call sel_read_udt_param(my_rank, time_v%init_d%i_time_step,       &
-     &    ucd_param, t_IO, ucd)
+      call sel_read_udt_param                                           &
+     &   (my_rank, init_d%i_time_step, ucd_param, t_IO, ucd)
       call alloc_phys_data_type_by_output                               &
      &   (ucd, fem%mesh%node, field)
 !

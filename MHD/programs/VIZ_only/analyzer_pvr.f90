@@ -36,8 +36,7 @@
       call read_control_file_vizs(vizs_ctl1)
       call set_control_params_4_viz                                     &
      &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, Vonly_steps%viz_step,     &
-     &    ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
@@ -64,11 +63,11 @@
         call set_IO_step_flag(i_step,t_VIZ%ucd_step)
 !
 !  Load field data
-        call FEM_analyze_pvr(i_step, ucd_file_VIZ, t_VIZ,               &
-     &      Vonly_steps%viz_step%PVR_t, ucd_VIZ)
+        call FEM_analyze_pvr(i_step, ucd_file_VIZ,                      &
+     &      t_VIZ%time_d, t_VIZ%viz_step, ucd_VIZ)
 !
 !  Rendering
-        call PVR_visualize(Vonly_steps%viz_step%PVR_t%istep_file,       &
+        call PVR_visualize(t_VIZ%viz_step%PVR_t,                        &
      &      femmesh_VIZ, jacobians_VIZ, field_VIZ, pvr_v)
       end do
 !

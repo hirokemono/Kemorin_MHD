@@ -49,15 +49,13 @@
       call read_control_file_vizs(vizs_ctl1)
       call set_control_params_4_viz                                     &
      &   (vizs_ctl1%t_viz_ctl, vizs_ctl1%viz_plt,                       &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, Vonly_steps%viz_step,     &
-     &    ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs                                          &
-     &   (ucd_file_VIZ, Vonly_steps%viz_step, ucd_VIZ)
+      call FEM_initialize_vizs(ucd_file_VIZ, t_VIZ%viz_step, ucd_VIZ)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -79,13 +77,13 @@
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs(i_step, ucd_file_VIZ, t_VIZ,              &
-     &      Vonly_steps%viz_step, ucd_VIZ, visval)
+        call FEM_analyze_vizs(i_step, ucd_file_VIZ,                     &
+     &      t_VIZ%time_d, t_VIZ%viz_step, ucd_VIZ, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call visualize_all(Vonly_steps%viz_step, t_VIZ%time_d,        &
+          call visualize_all(t_VIZ%viz_step, t_VIZ%time_d,              &
      &        femmesh_VIZ, field_VIZ, ele_4_nod_VIZ, jacobians_VIZ,     &
      &        vizs_v)
         end if

@@ -11,7 +11,7 @@
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !!      subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
-!!      subroutine LIC_visualize(istep_pvr, fem, jacs, nod_fld, lic)
+!!      subroutine LIC_visualize(LIC_t, fem, jacs, nod_fld, lic)
 !!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: fem
 !!        type(node_data), intent(in) :: node
@@ -38,6 +38,7 @@
       use t_phys_data
       use t_jacobians
 !
+      use t_IO_step_parameter
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_control_param_LIC_PVR
@@ -215,15 +216,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize(istep_pvr, fem, jacs, nod_fld, lic)
+      subroutine LIC_visualize(LIC_t, fem, jacs, nod_fld, lic)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
       use each_LIC_rendering
       use write_PVR_image
 !
-      integer(kind = kint), intent(in) :: istep_pvr
-!
+      type(IO_step_param), intent(in) :: LIC_t
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
@@ -233,15 +233,16 @@
       integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
 !
-      if(lic%pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
+      if(lic%pvr%num_pvr.le.0 .or. LIC_t%istep_file.le.0) return
 !
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+1)
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering(istep_pvr, fem%mesh, jacs, nod_fld,   &
-     &        lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),             &
-     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+        call s_each_LIC_rendering                                       &
+     &     (LIC_t%istep_file, fem%mesh, jacs, nod_fld,                  &
+     &      lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),               &
+     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -255,7 +256,7 @@
       end do
       do i_lic = 1, lic%pvr%num_pvr_images
         call sel_write_pvr_image_file                                   &
-     &     (iminus, istep_pvr, lic%pvr%pvr_rgb(i_lic))
+     &     (iminus, LIC_t%istep_file, lic%pvr%pvr_rgb(i_lic))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+2)
 !
@@ -264,7 +265,7 @@
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot(istep_pvr,                    &
+          call s_each_LIC_rendering_w_rot(LIC_t%istep_file,             &
      &        fem%mesh, fem%group, jacs, nod_fld,                       &
      &        lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),             &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))

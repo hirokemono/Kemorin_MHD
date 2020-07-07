@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_viz_rayleigh(viz_step)
+!!        type(time_data), intent(in) :: init_d
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!      subroutine FEM_analyze_viz_rayleigh                             &
-!!     &         (i_step, time_VIZ, viz_step, visval)
-!!        type(time_step_param), intent(inout) :: time_VIZ
+!!     &         (i_step, time_d, viz_step, visval)
+!!        type(time_data), intent(inout) :: time_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!@endverbatim
 !
@@ -61,7 +63,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz_rayleigh(i_step, viz_step)
+      subroutine FEM_initialize_viz_rayleigh(init_d, viz_step)
 !
       use const_fem_nodes_4_rayleigh
       use const_FEM_mesh_sph_mhd
@@ -70,7 +72,7 @@
       use copy_mesh_structures
       use mpi_load_mesh_data
 !
-      integer (kind =kint), intent(in) :: i_step
+      type(time_data), intent(in) :: init_d
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       character(len=kchara) :: file_name
@@ -83,7 +85,7 @@
       file_name = 'Spherical_3D/00007000_grid'
       write(file_name,'(a,a1,i8.8,a5)')                                 &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
-     &                     i_step, '_grid'
+     &                     init_d%i_time_step, '_grid'
       call read_rayleigh_field_param(file_name, rayleigh_rtp_V)
       call bcast_rayleigh_field_param(rayleigh_rtp_V)
       call set_rayleigh_parallel_param(rayleigh_rtp_V)
@@ -154,22 +156,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_viz_rayleigh                               &
-     &         (i_step, time_VIZ, viz_step, visval)
+     &         (i_step, time_d, viz_step, visval)
 !
       use t_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
-      type(time_step_param), intent(inout) :: time_VIZ
-      integer(kind=kint ), intent(inout) :: visval
+      integer(kind = kint), intent(inout) :: visval
+      type(time_data), intent(inout) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
       visval = iflag_vizs_w_fix_step(i_step, viz_step)
       call istep_viz_w_fix_dt(i_step, viz_step)
 !
-      time_VIZ%time_d%i_time_step = i_step
-      time_VIZ%time_d%time = 0.0d0
-      time_VIZ%time_d%dt = 0.0d0
+      time_d%i_time_step = i_step
+      time_d%time = 0.0d0
+      time_d%dt = 0.0d0
       call set_field_data_4_VIZ2                                        &
      &   (visval, i_step, femmesh_VIZ, field_VIZ)
 !

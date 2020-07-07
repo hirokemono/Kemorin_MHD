@@ -47,8 +47,7 @@
       call read_control_data_section_only(sec_viz_ctl1)
       call set_control_params_4_viz                                     &
      &   (sec_viz_ctl1%t_sect_ctl, sec_viz_ctl1%sect_plt,               &
-     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, Vonly_steps%viz_step,     &
-     &    ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, t_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
@@ -72,11 +71,11 @@
         call set_IO_step_flag(i_step,t_VIZ%ucd_step)
 !
 !  Load field data
-        call FEM_analyze_surface                                        &
-     &     (i_step, ucd_file_VIZ, t_VIZ, Vonly_steps%viz_step, ucd_VIZ)
+        call FEM_analyze_surface(i_step, ucd_file_VIZ,                  &
+     &      t_VIZ%time_d, t_VIZ%viz_step, ucd_VIZ)
 !
 !  Generate field lines
-        call visualize_surface(Vonly_steps%viz_step, t_VIZ%time_d,      &
+        call visualize_surface(t_VIZ%viz_step, t_VIZ%time_d,            &
      &      femmesh_VIZ, field_VIZ, viz_psfs_v)
       end do
 !

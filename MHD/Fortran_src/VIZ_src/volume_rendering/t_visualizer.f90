@@ -112,28 +112,26 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
-      call SECTIONING_visualize(viz_step%PSF_t%istep_file, time_d,      &
-     &    fem, nod_fld, vizs%psf)
+      call SECTIONING_visualize                                         &
+     &   (viz_step%PSF_t, time_d, fem, nod_fld, vizs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call ISOSURF_visualize(viz_step%ISO_t%istep_file, time_d,         &
-     &    fem, nod_fld, vizs%iso)
+      call ISOSURF_visualize                                            &
+     &   (viz_step%ISO_t, time_d, fem, nod_fld, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-      call PVR_visualize(viz_step%PVR_t%istep_file,                     &
-     &    fem, jacs, nod_fld, vizs%pvr)
+      call PVR_visualize(viz_step%PVR_t, fem, jacs, nod_fld, vizs%pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-      call FLINE_visualize(viz_step%FLINE_t%istep_file,                 &
-     &    fem, ele_4_nod, nod_fld, vizs%fline)
+      call FLINE_visualize                                              &
+     &   (viz_step%FLINE_t, fem, ele_4_nod, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize(viz_step%LIC_t%istep_file,                     &
-     &    fem, jacs, nod_fld, vizs%lic)
+      call LIC_visualize(viz_step%LIC_t, fem, jacs, nod_fld, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       end subroutine visualize_all
