@@ -25,7 +25,7 @@
 !>      Structure of control data for sectioning only
       type(control_data_section_only), save :: sec_viz_ctl5
 !>      Structure of mesh and field for sectioning only
-      type(surfacing_only), save :: sfcing5
+      type(FEM_mesh_field_4_surfacing), save :: sfcing5
 !>          FEM field data to VTK
       type(ucd_data), save :: vtk_out5
 !

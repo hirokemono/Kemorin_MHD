@@ -9,13 +9,13 @@
 !!@verbatim
 !!      subroutine FEM_initialize_VTK_convert(init_d, sfcing)
 !!        type(time_data), intent(in) :: init_d
-!!        type(surfacing_only), intent(inout) :: sfcing
+!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !!      subroutine FEM_analyze_VTK_convert                              &
 !!     &         (i_step, time_d, ucd_step, sfcing)
 !!        integer (kind =kint), intent(in) :: i_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(IO_step_param), intent(inout) :: ucd_step
-!!        type(surfacing_only), intent(inout) :: sfcing
+!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !!@endverbatim
 !
       module FEM_analyzer_VTK_convert
@@ -44,7 +44,7 @@
       use load_mesh_and_field_4_viz
 !
       type(time_data), intent(in) :: init_d
-      type(surfacing_only), intent(inout) :: sfcing
+      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
 !   --------------------------------
 !       setup mesh information
@@ -68,7 +68,7 @@
       integer (kind =kint), intent(in) :: i_step
       type(time_data), intent(inout) :: time_d
       type(IO_step_param), intent(inout) :: ucd_step
-      type(surfacing_only), intent(inout) :: sfcing
+      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
 !
       call istep_file_w_fix_dt(i_step, ucd_step)

@@ -32,7 +32,7 @@
 !
 !
 !>      Structure of mesh and field for sectioning only
-      type surfacing_only
+      type FEM_mesh_field_4_surfacing
 !>        Structure for mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure for field file IO paramters
@@ -50,6 +50,6 @@
         type(time_data) :: read_ucd_time
 !>          FEM field data IO
         type(ucd_data) :: ucd_in
-      end type surfacing_only
+      end type FEM_mesh_field_4_surfacing
 !
       end module t_surfacing

@@ -25,7 +25,7 @@
 !>      Structure of control data for sectioning only
       type(control_data_section_only), save :: sec_viz_ctl2
 !>      Structure of mesh and field for sectioning only
-      type(surfacing_only), save :: sfcing2
+      type(FEM_mesh_field_4_surfacing), save :: sfcing2
 !>      Structure of sectioning and isosurfaceing modules
       type(surfacing_modules), save :: viz_psfs2
 !

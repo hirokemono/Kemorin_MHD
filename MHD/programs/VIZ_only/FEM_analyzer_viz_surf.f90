@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine FEM_initialize_surface(init_d, sfcing)
 !!        type(time_data), intent(in) :: init_d
-!!        type(surfacing_only), intent(inout) :: sfcing
+!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !!      subroutine FEM_analyze_surface                                  &
 !!     &         (i_step, time_d, viz_step, sfcing)
 !!        type(field_IO_params), intent(in) :: ucd_param
@@ -44,7 +44,7 @@
       use load_mesh_and_field_4_viz
 !
       type(time_data), intent(in) :: init_d
-      type(surfacing_only), intent(inout) :: sfcing
+      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
 !   --------------------------------
 !       setup mesh information
@@ -68,7 +68,7 @@
       integer (kind =kint), intent(in) :: i_step
       type(time_data), intent(inout) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
-      type(surfacing_only), intent(inout) :: sfcing
+      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
       integer (kind =kint) :: visval, iflag
 !
