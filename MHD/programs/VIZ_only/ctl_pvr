@@ -49,7 +49,7 @@ begin volume_rendering   (BMP or PNG)
     end section_ctl
   end array section_ctl
 !
-  array isosurface_ctl   2
+  array isosurface_ctl
     begin isosurface_ctl
       opacity_ctl       0.5
       isosurf_value     0.2

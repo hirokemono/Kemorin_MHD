@@ -18,23 +18,23 @@
 !!      subroutine set_label_vizs(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
-!!    array  cross_section_ctl  1
+!!    array  cross_section_ctl
 !!      ....
 !!    end array cross_section_ctl
 !!
-!!    array  isosurface_ctl  1
+!!    array  isosurface_ctl
 !!      ....
 !!    end array isosurface_ctl
 !!
-!!    array  volume_rendering  1
+!!    array  volume_rendering
 !!      ....
 !!    end array volume_rendering
 !!
-!!    array  fieldline  1
+!!    array  fieldline
 !!      ....
 !!    end array fieldline
 !!
-!!    array  LIC_rendering  1
+!!    array  LIC_rendering
 !!      ....
 !!    end array LIC_rendering
 !!

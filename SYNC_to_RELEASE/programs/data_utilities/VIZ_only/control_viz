@@ -1,5 +1,4 @@
 begin visualizer
-!
   begin data_files_def
     num_subdomain_ctl           2
     num_smp_ctl                 4
@@ -15,11 +14,9 @@ begin visualizer
     i_step_init_ctl           0
     i_step_number_ctl      2000
 !
+    i_step_field_ctl        400
     i_step_sectioning_ctl   400
     i_step_isosurface_ctl   400
-    i_step_pvr_ctl          400
-    i_step_fline_ctl        400
-    i_step_LIC_ctl          400
   end time_step_ctl
 !
   begin visual_control
@@ -32,17 +29,7 @@ begin visualizer
       file   isosurface_ctl   'ctl_iso_p_p1e4'
     end array isosurface_ctl
 !
-    array  volume_rendering
-      file  volume_rendering  'ctl_pvr_temp'
-    end array volume_rendering
-!
-    array  fieldline
-      file  fieldline  'ctl_fline_magne'
-    end array fieldline
-!
-    array  LIC_rendering
-      file  LIC_rendering  'ctl_LIC_magne'
-    end array LIC_rendering
+    output_field_file_fmt_ctl   'merged_VTK'
   end  visual_control
 !
 end  visualizer
