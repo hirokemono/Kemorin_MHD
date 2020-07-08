@@ -85,8 +85,9 @@
 !  Load field data
         if(iflag_debug .gt. 0)                                          &
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
+        visval = iflag_vizs_w_fix_step(i_step, t_VIZ%viz_step)
         call FEM_analyze_viz_rayleigh                                   &
-     &     (i_step, t_VIZ%time_d, t_VIZ%viz_step, visval)
+     &     (visval, i_step, t_VIZ%time_d, t_VIZ%viz_step)
 !
 !  Rendering
         if(visval .eq. 0) then

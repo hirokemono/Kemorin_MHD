@@ -4,8 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_analyze_zm_energies                              &
-!!     &         (i_step, files_param, viz_step,                        &
-!!     &          SPH_MHD, t_IO, fld_IO, visval)
+!!     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
@@ -37,8 +36,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_energies                                &
-     &         (i_step, files_param, viz_step,                          &
-     &          SPH_MHD, t_IO, fld_IO, visval)
+     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
 !
       use t_phys_address
       use t_SPH_mesh_field_data
@@ -59,15 +57,15 @@
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(VIZ_step_params), intent(in) :: viz_step
 !
-      integer(kind = kint), intent(inout) :: visval
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(field_IO), intent(inout) :: fld_IO
       type(time_data), intent(inout) :: t_IO
 !
+      integer(kind = kint) :: visval
+!
 !
       visval = iflag_vizs_w_fix_step(i_step, viz_step)                  &
     &         * output_IO_flag(i_step, t_STR%ucd_step)
-!
       if(visval .eq. 0) then
 !
 !   Input spectr data

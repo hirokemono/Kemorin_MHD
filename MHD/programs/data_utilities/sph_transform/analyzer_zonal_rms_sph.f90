@@ -91,14 +91,14 @@
       use sph_rtp_zonal_rms_data
       use coordinate_convert_4_sph
 !
-      integer(kind=kint ) :: visval, i_step
+      integer(kind = kint) :: visval, i_step
 !
 !
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
         call FEM_analyze_sph_trans                                      &
-     &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS, visval)
+     &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS)
 !
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
@@ -107,9 +107,10 @@
         call zonal_rms_all_rtp_field (SPH_TRNS%sph%sph_rtp,             &
      &      femmesh_STR%mesh%node, field_STR)
 !
+        visval = iflag_vizs_w_fix_step(i_step, viz_step_STR)
         call FEM_analyze_back_trans                                     &
      &     (files_STR%zonal_ucd_param, time_IO_TRNS, ucd_SPH_TRNS,      &
-     &      i_step, viz_step_STR, visval)
+     &      i_step, visval, viz_step_STR)
 !
         if(visval .eq. 0) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &

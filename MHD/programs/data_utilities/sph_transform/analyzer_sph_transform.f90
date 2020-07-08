@@ -81,14 +81,14 @@
 !
       subroutine analyze_sph_transform
 !
-      integer(kind = kint) :: i_step, visval
+      integer(kind = kint) :: i_step
 !
 !
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
         call FEM_analyze_sph_trans                                      &
-     &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS, visval)
+     &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS)
 !
 !   Spherical transform
         call SPH_analyze_sph_trans                                      &

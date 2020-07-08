@@ -3,8 +3,7 @@
 !!      subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!
-!!      subroutine FEM_analyze_sph_trans                                &
-!!     &         (i_step, udt_file_param, t_IO, visval)
+!!      subroutine FEM_analyze_sph_trans(i_step, udt_file_param, t_IO)
 !!
 !!      subroutine SPH_to_FEM_bridge_sph_trans                          &
 !!     &         (udt_file_param, rj_fld, fld_IO)
@@ -77,8 +76,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_trans                                  &
-     &         (i_step, udt_file_param, t_IO, visval)
+      subroutine FEM_analyze_sph_trans(i_step, udt_file_param, t_IO)
 !
       use t_ctl_params_sph_trans
       use set_ucd_data_to_type
@@ -87,8 +85,8 @@
       integer(kind =kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: udt_file_param
       type(time_data), intent(inout) :: t_IO
-      integer(kind =kint), intent(inout) :: visval
 !
+      integer(kind = kint) :: visval
       integer(kind = kint) :: istep_ucd
 !
 !*  ----------   Count steps for visualization

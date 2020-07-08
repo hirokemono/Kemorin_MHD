@@ -5,7 +5,7 @@
 !
 !!      subroutine SPH_init_gauss_back_trans(files_param, SPH_MHD)
 !!      subroutine SPH_analyze_gauss_back_trans                         &
-!!     &         (i_step, viz_step, SPH_MHD, visval)
+!!     &         (i_step, viz_step, SPH_MHD)
 !
       module SPH_analyzer_gauss_b_trans
 !
@@ -76,7 +76,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_gauss_back_trans                           &
-     &         (i_step, viz_step, SPH_MHD, visval)
+     &         (i_step, viz_step, SPH_MHD)
 !
       use t_ctl_params_sph_trans
       use t_VIZ_step_parameter
@@ -90,17 +90,16 @@
       integer(kind = kint), intent(in) :: i_step
       type(VIZ_step_params), intent(in) :: viz_step
 !
-      integer(kind = kint), intent(inout) :: visval
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       character(len=kchara) :: fname_tmp
+      integer(kind = kint) :: visval
 !
 !
       visval = iflag_vizs_w_fix_step(i_step, viz_step)                  &
      &        * output_IO_flag(i_step, t_STR%ucd_step)
 !
       if(visval .eq. 0) then
-!
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'read_gauss_global_coefs'

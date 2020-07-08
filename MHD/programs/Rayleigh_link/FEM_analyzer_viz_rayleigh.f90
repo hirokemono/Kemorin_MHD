@@ -11,7 +11,7 @@
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!      subroutine FEM_analyze_viz_rayleigh                             &
-!!     &         (i_step, time_d, viz_step, visval)
+!!     &         (visval, i_step, time_d, viz_step)
 !!        type(time_data), intent(inout) :: time_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!@endverbatim
@@ -156,17 +156,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_viz_rayleigh                               &
-     &         (i_step, time_d, viz_step, visval)
+     &         (visval, i_step, time_d, viz_step)
 !
       use t_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
-      integer(kind = kint), intent(inout) :: visval
+      integer(kind = kint), intent(in) :: visval
       type(time_data), intent(inout) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      visval = iflag_vizs_w_fix_step(i_step, viz_step)
       call istep_viz_w_fix_dt(i_step, viz_step)
 !
       time_d%i_time_step = i_step

@@ -4,8 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_analyze_zm_streamfunc                            &
-!!     &         (i_step, files_param, viz_step,                        &
-!!     &          SPH_MHD, t_IO, fld_IO, visval)
+!!     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
@@ -36,8 +35,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_streamfunc                              &
-     &         (i_step, files_param, viz_step,                          &
-     &          SPH_MHD, t_IO, fld_IO, visval)
+     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
 !
       use t_SPH_mesh_field_data
       use t_time_data
@@ -59,9 +57,10 @@
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
-      integer(kind = kint), intent(inout) :: visval
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
+!
+      integer(kind = kint) :: visval
 !
 !
       visval = iflag_vizs_w_fix_step(i_step, viz_step)                  &

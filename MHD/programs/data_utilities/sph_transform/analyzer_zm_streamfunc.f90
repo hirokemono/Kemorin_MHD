@@ -90,11 +90,12 @@
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_zm_streamfunc(i_step, files_STR, viz_step_STR, &
-     &      SPH_TRNS, time_IO_TRNS, sph_trns_IO, visval)
+     &      SPH_TRNS, time_IO_TRNS, sph_trns_IO)
 !
+        visval = iflag_vizs_w_fix_step(i_step, viz_step_STR)
         call FEM_analyze_back_trans                                     &
      &     (files_STR%ucd_file_IO, time_IO_TRNS, ucd_SPH_TRNS, i_step,  &
-     &      viz_step_STR, visval)
+     &      visval, viz_step_STR)
 !
         if(visval .eq. 0) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &

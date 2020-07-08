@@ -88,9 +88,9 @@
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs                                           &
-     &     (i_step, t_VIZ1%ucd_step, t_VIZ1%time_d, t_VIZ1%viz_step,    &
-     &      viz1, visval)
+        visval = iflag_vizs_w_fix_step(i_step, t_VIZ1%viz_step)
+        call FEM_analyze_vizs(visval, i_step,                           &
+     &      t_VIZ1%ucd_step, t_VIZ1%time_d, t_VIZ1%viz_step, viz1)
 !
 !  Rendering
         if(visval .eq. 0) then

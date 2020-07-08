@@ -11,7 +11,7 @@
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(ucd_data), intent(inout) :: ucd
 !!      subroutine FEM_analyze_back_trans                               &
-!!     &         (ucd_param, t_IO, ucd, i_step, viz_step, visval)
+!!     &         (ucd_param, t_IO, ucd, i_step, visval, viz_step)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !
       module FEM_analyzer_back_trans
@@ -105,7 +105,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_back_trans                                 &
-     &         (ucd_param, t_IO, ucd, i_step, viz_step, visval)
+     &         (ucd_param, t_IO, ucd, i_step, visval, viz_step)
 !
       use t_ctl_params_sph_trans
       use t_time_data
@@ -115,18 +115,17 @@
       use ucd_IO_select
       use nod_phys_send_recv
 !
-      integer (kind =kint), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: visval
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
-      integer (kind =kint), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
 !*  ----------   Count steps for visualization
 !*
-      visval = iflag_vizs_w_fix_step(i_step, viz_step)
       call istep_viz_w_fix_dt(i_step, viz_step)
 !
       if(visval .eq. 0) then
