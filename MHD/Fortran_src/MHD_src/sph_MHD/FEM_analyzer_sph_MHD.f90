@@ -142,7 +142,7 @@
       call istep_viz_w_fix_dt(MHD_step%time_d%i_time_step,              &
      &                             MHD_step%viz_step)
       if(lead_field_data_flag(MHD_step%time_d%i_time_step,MHD_step)     &
-     &  .ne. 0) return
+     &    .eqv. .FALSE.) return
 !
 !*  ----------- Data communication  --------------
 !

@@ -4,8 +4,7 @@
 !     programmed by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      integer(kind = kint) function lead_field_data_flag              &
-!!     &                   (i_step, MHD_step)
+!!      logical function lead_field_data_flag(i_step, MHD_step)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!      subroutine MHD_viz_routine_flag_and_step                        &
 !!     &         (flex_p, time_d, viz_step, viz_flag)
@@ -30,31 +29,30 @@
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function lead_field_data_flag                &
-     &                   (i_step, MHD_step)
+      logical function lead_field_data_flag(i_step, MHD_step)
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_step_param), intent(in) :: MHD_step
 !
+      integer(kind = kint) :: iflag
 !
-      lead_field_data_flag                                              &
-     &      = iflag_vizs_w_fix_step(i_step, MHD_step%viz_step)          &
+      iflag = iflag_vizs_w_fix_step(i_step, MHD_step%viz_step)          &
      &       * output_IO_flag(i_step, MHD_step%rst_step)                &
      &       * output_IO_flag(i_step, MHD_step%ucd_step)                &
      &       * output_IO_flag(i_step, MHD_step%rms_step)                &
      &       * output_IO_flag(i_step, MHD_step%point_step)              &
      &       * output_IO_flag(i_step, MHD_step%sgs_IO_step)
+      lead_field_data_flag = (iflag .eq. 0)
 !
-      if (iflag_debug.eq.1) then
-        write(*,*) 'irst: ', output_IO_flag(i_step, MHD_step%rst_step)
-        write(*,*) 'i_udt: ', output_IO_flag(i_step, MHD_step%ucd_step)
-        write(*,*) 'i_monitor: ',                                       &
+      if(iflag_debug .eq. 0) return
+      write(*,*) 'irst: ', output_IO_flag(i_step, MHD_step%rst_step)
+      write(*,*) 'i_udt: ', output_IO_flag(i_step, MHD_step%ucd_step)
+      write(*,*) 'i_monitor: ',                                         &
      &            output_IO_flag(i_step, MHD_step%point_step)
-        write(*,*) 'i_step_rms: ',                                      &
+      write(*,*) 'i_step_rms: ',                                        &
      &            output_IO_flag(i_step, MHD_step%rms_step)
-        write(*,*) 'i_model_coef: ',                                    &
+      write(*,*) 'i_model_coef: ',                                      &
      &            output_IO_flag(i_step, MHD_step%sgs_IO_step)
-      end if
 !
       end function lead_field_data_flag
 !

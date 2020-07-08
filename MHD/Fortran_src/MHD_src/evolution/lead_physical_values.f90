@@ -95,7 +95,7 @@
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !
 !
-      if(lead_field_data_flag(istep, MHD_step) .ne. 0) return
+      if(lead_field_data_flag(istep, MHD_step) .eqv. .FALSE.) return
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
       call cal_potential_on_edge(geofem%mesh%node, geofem%mesh%ele,     &

@@ -111,8 +111,8 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
-        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
-     &      .eq. 0) then
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
+     &                          MHD_step1)) then
           call alloc_sph_trans_area_snap                                &
      &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
         end if
@@ -124,8 +124,8 @@
 !*  -----------  output field data --------------
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
-     &      .eq. 0) then
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
+     &                          MHD_step1)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
           call SPH_to_FEM_bridge_SGS_MHD                                &
      &       (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,          &
@@ -137,8 +137,8 @@
      &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
-        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
-     &      .eq. 0) then
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
+     &                          MHD_step1)) then
           call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
         end if
 !

@@ -80,9 +80,8 @@
 !*  -----------  output field data --------------
 !*
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-        iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
-     &                               MHD_step1)
-        if(iflag .eq. 0) then
+        if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
+     &                          MHD_step1)) then
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
           call SPH_to_FEM_bridge_special_snap                           &
@@ -212,7 +211,7 @@
       call trans_per_temp_to_temp_sph(SPH_model,                        &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
 !*
-      if(lead_field_data_flag(i_step, MHD_step) .eq. 0) then
+      if(lead_field_data_flag(i_step, MHD_step)) then
         call lead_fields_4_SPH_SGS_MHD                                  &
      &     (SPH_SGS%SGS_par, SPH_WK%monitor, SPH_WK%r_2nd,              &
      &      SPH_model%MHD_prop, SPH_model%sph_MHD_bc, SPH_WK%trans_p,   &
