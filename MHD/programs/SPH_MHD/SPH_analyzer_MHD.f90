@@ -246,7 +246,6 @@
       if      (MHD_step%finish_d%i_end_step .eq. -1                     &
      &   .and.  MHD_step%finish_d%elapsed_max                           &
      &        .gt. MHD_step%finish_d%elapsed_time) then
-        MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
         call output_sph_restart_control(MHD_step%finish_d%i_end_step,   &
      &      MHD_files%fst_file_IO, MHD_step%time_d, SPH_MHD%fld,        &
