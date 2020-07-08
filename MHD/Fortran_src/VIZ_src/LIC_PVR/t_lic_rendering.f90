@@ -54,8 +54,8 @@
       implicit  none
 !
 !
-!      integer(kind = kint), parameter :: IFLAG_THROUGH = 1
-!      integer(kind = kint), parameter :: IFLAG_UPDATE =  0
+!      integer(kind = kint), parameter :: IFLAG_THROUGH =    1
+!      integer(kind = kint), parameter :: IFLAG_DRAW =       0
 !      integer(kind = kint), parameter :: IFLAG_TERMINATE = -1
 !
 !
@@ -105,7 +105,7 @@
           if(cmp_no_case(tmpchara, 'end')) then
             iflag_update = IFLAG_TERMINATE
           else if(lic%pvr%cflag_update .ne. tmpchara) then
-            iflag_update = IFLAG_UPDATE
+            iflag_update = IFLAG_DRAW
             lic%pvr%cflag_update = tmpchara
           end if
         end if

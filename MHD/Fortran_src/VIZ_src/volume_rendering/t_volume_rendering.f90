@@ -7,7 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine check_PVR_update                                     &
-!!     &         (id_control, pvr_ctls, pvr, iflag_update)
+!!     &         (id_control, pvr_ctls, pvr, iflag_redraw)
 !!      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
 !!      subroutine PVR_initialize(fem, nod_fld, pvr)
 !!      subroutine PVR_visualize(PVR_t, fem, jacs, nod_fld, pvr)
@@ -53,8 +53,8 @@
       implicit  none
 !
 !
-      integer(kind = kint), parameter :: IFLAG_THROUGH = 1
-      integer(kind = kint), parameter :: IFLAG_UPDATE =  0
+      integer(kind = kint), parameter :: IFLAG_THROUGH =    1
+      integer(kind = kint), parameter :: IFLAG_DRAW =       0
       integer(kind = kint), parameter :: IFLAG_TERMINATE = -1
 !
 !
@@ -93,7 +93,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_PVR_update                                       &
-     &         (id_control, pvr_ctls, pvr, iflag_update)
+     &         (id_control, pvr_ctls, pvr, iflag_redraw)
 !
       use set_pvr_control
       use skip_comment_f
@@ -101,7 +101,7 @@
       integer(kind = kint), intent(in) :: id_control
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
-      integer(kind = kint), intent(inout) :: iflag_update
+      integer(kind = kint), intent(inout) :: iflag_redraw
 !
       character(len = kchara) :: tmpchara
 !
@@ -111,20 +111,20 @@
      &     (id_control, pvr_ctls%fname_pvr_ctl(1),                      &
      &      hd_pvr_ctl, pvr_ctls%pvr_ctl_type(1))
 !
-        iflag_update = IFLAG_THROUGH
+        iflag_redraw = IFLAG_THROUGH
         if(pvr_ctls%pvr_ctl_type(1)%updated_ctl%iflag .gt. 0) then
           tmpchara = pvr_ctls%pvr_ctl_type(1)%updated_ctl%charavalue
           if(cmp_no_case(tmpchara, 'end')) then
-            iflag_update = IFLAG_TERMINATE
+            iflag_redraw = IFLAG_TERMINATE
           else if(pvr%cflag_update .ne. tmpchara) then
-            iflag_update = IFLAG_UPDATE
+            iflag_redraw = IFLAG_DRAW
             pvr%cflag_update = tmpchara
           end if
         end if
         call reset_pvr_update_flags(pvr_ctls%pvr_ctl_type(1))
       end if
 !
-      call mpi_Bcast(iflag_update, 1, CALYPSO_INTEGER, 0,               &
+      call mpi_Bcast(iflag_redraw, 1, CALYPSO_INTEGER, 0,               &
      &    CALYPSO_COMM, ierr_MPI)
       call calypso_mpi_barrier
 !

@@ -223,6 +223,7 @@
 !
       integer(kind = kint) :: visval
 !
+      integer(kind = kint) :: iflag_redraw
       real(kind = kreal) :: total_max, total_time, total_prev
 !
 !     ---------------------
@@ -283,14 +284,14 @@
 !*
       do
         call check_PVR_update(ctl_file_code,                            &
-     &      MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr, visval)
+     &      MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr, iflag_redraw)
         call calypso_mpi_barrier
 !
-        if(visval .eq. IFLAG_TERMINATE) then
+        if(iflag_redraw .eq. IFLAG_TERMINATE) then
           if (my_rank.eq.0) write(*,*) 'end flag is recieved'
           exit
 !
-        else if(visval .eq. IFLAG_UPDATE) then
+        else if(iflag_redraw .eq. IFLAG_DRAW) then
           if (my_rank.eq.0) then
             write(*,*) 'visualization start!'
             write(*,*) 'Current elapsed time: ', total_time
