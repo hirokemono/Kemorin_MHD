@@ -23,7 +23,7 @@
 !!        type(field_IO_params), intent(inout) :: vtk_file_IO
 !!        type(ucd_data), intent(inout) :: vtk_out
 !!      subroutine visualize_convert_vtk                                &
-!!     &         (ucd_step, time_d, vtk_file_IO, vtk_out)
+!!     &         (i_step, ucd_step, time_d, vtk_file_IO, vtk_out)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(inout) :: ucd_step
 !!        type(field_IO_params), intent(in) :: vtk_file_IO
@@ -101,21 +101,24 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_convert_vtk                                  &
-     &         (ucd_step, time_d, vtk_file_IO, vtk_out)
+     &         (i_step, ucd_step, time_d, vtk_file_IO, vtk_out)
 !
       use parallel_ucd_IO_select
 !
-      type(IO_step_param), intent(inout) :: ucd_step
-!
+      integer(kind = kint), intent(in) :: i_step
+      type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: time_d
       type(field_IO_params), intent(in) :: vtk_file_IO
       type(ucd_data), intent(in) :: vtk_out
 !
+      integer(kind = kint) :: istep_ucd
+!
 !
       if(ucd_step%increment .eq. 0) return
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+11)
+      istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
       call sel_write_parallel_ucd_file                                  &
-     &   (ucd_step%istep_file, vtk_file_IO, time_d, vtk_out)
+     &   (istep_ucd, vtk_file_IO, time_d, vtk_out)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+11)
 !
       end subroutine visualize_convert_vtk

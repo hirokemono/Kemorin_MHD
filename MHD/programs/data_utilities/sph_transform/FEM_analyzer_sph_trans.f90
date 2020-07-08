@@ -56,6 +56,7 @@
       type(field_IO_params), intent(in) :: udt_file_param
       type(time_data), intent(inout) :: t_IO
 !
+      integer(kind = kint) :: istep_ucd
 !
 !  -----    construct geometry informations
 !
@@ -66,8 +67,10 @@
 !  -------------------------------
 !
       input_ucd%nnod = ione
-      call sel_read_udt_param(my_rank, t_STR%init_d%i_time_step,        &
-    &     udt_file_param, t_IO, input_ucd)
+      istep_ucd = IO_step_exc_zero_inc(t_STR%init_d%i_time_step,        &
+     &                                 t_STR%ucd_step)
+      call sel_read_udt_param                                           &
+     &   (my_rank, istep_ucd, udt_file_param, t_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
@@ -86,18 +89,17 @@
       type(time_data), intent(inout) :: t_IO
       integer(kind =kint), intent(inout) :: visval
 !
+      integer(kind = kint) :: istep_ucd
 !
 !*  ----------   Count steps for visualization
-!*
-      visval =  mod(i_step,t_STR%ucd_step%increment)
+      visval = mod(i_step,t_STR%ucd_step%increment)
+      if(visval .ne. 0) return 
 !
 !*  -----------  Output volume data --------------
-!*
-      if(visval .eq. 0) then
-        call set_data_by_read_ucd                                       &
+      istep_ucd = IO_step_exc_zero_inc(i_step, t_STR%ucd_step)
+      call set_data_by_read_ucd                                         &
      &    (my_rank, i_step, udt_file_param, t_IO, input_ucd, field_STR)
-        call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
-      end if
+      call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
 !
       end subroutine FEM_analyze_sph_trans
 !

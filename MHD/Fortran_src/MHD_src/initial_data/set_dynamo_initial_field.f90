@@ -98,7 +98,7 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(MHD_files, rst_step,            &
+        call input_MHD_restart_file_ctl(rst_step, MHD_files,            &
      &      layer_tbl, node, ele, fluid, SGS_par,                       &
      &      FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_diff, sgs_coefs,           &
      &      diff_coefs, nod_fld, init_d, time_d, flex_p)

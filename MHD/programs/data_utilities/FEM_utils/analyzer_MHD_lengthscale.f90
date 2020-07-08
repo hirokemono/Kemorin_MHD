@@ -80,20 +80,19 @@
       use set_ucd_data_to_type
       use FEM_MHD_length_scale
 !
-      integer(kind=kint ) :: istep
+      integer(kind=kint ) :: istep, istep_ucd
 !
 !
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
         if(output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
-        call set_IO_step_flag(istep,time_U%ucd_step)
+        istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
-        call set_data_by_read_ucd_once                                  &
-     &     (my_rank, time_U%ucd_step%istep_file,                        &
+        call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
      &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
         call const_MHD_length_scales                                    &
      &     (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,          &
-     &      time_U%ucd_step%istep_file, time_IO_FUTIL, ucd_FUTIL)
+     &      istep_ucd, time_IO_FUTIL, ucd_FUTIL)
       end do
 !
       call deallocate_work_4_lscale

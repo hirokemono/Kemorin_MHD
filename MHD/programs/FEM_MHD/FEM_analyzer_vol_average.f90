@@ -129,8 +129,8 @@
       if (my_rank.eq.0) write(*,*) 'step: ', i_step
 !
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-      call read_udt_4_snap(i_step, MHD_files%org_ucd_file_IO,           &
-     &    nod_fld, SNAP_time_IO, MHD_step%ucd_step)
+      call read_udt_4_snap(i_step, MHD_step%ucd_step,                   &
+     &    MHD_files%org_ucd_file_IO, nod_fld, SNAP_time_IO)
       MHD_step%time_d%time = MHD_step%init_d%time                       &
      &                      + MHD_step%time_d%dt * dble(i_step)
 !

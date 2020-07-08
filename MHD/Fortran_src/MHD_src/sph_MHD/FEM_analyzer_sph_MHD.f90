@@ -158,7 +158,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+5)
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, MHD_step%time_d%i_time_step,           &
-     &    MHD_step%time_d, MHD_step%ucd_step, MHD_IO%ucd)
+     &    MHD_step%ucd_step, MHD_step%time_d, MHD_IO%ucd)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
 !
       end subroutine FEM_analyze_sph_MHD

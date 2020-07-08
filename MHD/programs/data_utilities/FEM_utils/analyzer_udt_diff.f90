@@ -69,7 +69,7 @@
       use ucd_IO_select
       use output_parallel_ucd_file
 !
-      integer(kind = kint) :: istep
+      integer(kind = kint) :: istep, istep_ucd
 !
 !
 !
@@ -78,22 +78,21 @@
 !
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
         if (output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
-        call set_IO_step_flag(istep,time_U%ucd_step)
+        istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
-        call set_data_by_read_ucd_once                                  &
-     &     (my_rank, time_U%ucd_step%istep_file,                        &
+        call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
      &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
-        call subtract_by_ucd_data(my_rank, time_U%ucd_step%istep_file,  &
-     &      second_ucd_param, field_FUTIL)
+        call subtract_by_ucd_data                                       &
+     &     (my_rank, istep_ucd, second_ucd_param, field_FUTIL)
 !
         call s_divide_phys_by_delta_t(time_U%time_d%dt, field_FUTIL)
 !
         call nod_fields_send_recv(femmesh_FUTIL%mesh, field_FUTIL)
 !
 !    output udt data
-        call link_output_ucd_file_once(time_U%ucd_step%istep_file,      &
-     &      field_FUTIL, diff_ucd_param, time_IO_FUTIL)
+        call link_output_ucd_file_once                                  &
+     &     (istep_ucd, field_FUTIL, diff_ucd_param, time_IO_FUTIL)
       end do
 !
       end subroutine analyze_udt_diff

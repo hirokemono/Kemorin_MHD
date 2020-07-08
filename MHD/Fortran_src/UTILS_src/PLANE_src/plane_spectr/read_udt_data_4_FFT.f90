@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!!      subroutine init_ucd_data_4_FFT(istep, ucd_param, t_IO, ucd)
-!!      subroutine s_read_udt_data_4_FFT                                &
-!!     &         (istep, ucd_param, mgd_mesh, plane_fft_wk, t_IO, ucd)
+!!      subroutine init_ucd_data_4_FFT(istep_ucd, ucd_param, t_IO, ucd)
+!!      subroutine s_read_udt_data_4_FFT(istep_ucd, ucd_param,          &
+!!     &          mgd_mesh, plane_fft_wk, t_IO, ucd)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(merged_mesh), intent(in) :: mgd_mesh
 !!        type(time_data), intent(inout) :: t_IO
@@ -31,7 +31,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_ucd_data_4_FFT(istep, ucd_param, t_IO, ucd)
+      subroutine init_ucd_data_4_FFT(istep_ucd, ucd_param, t_IO, ucd)
 !
       use m_constants
       use set_control_assemble
@@ -45,14 +45,14 @@
       use set_ucd_data_to_type
       use copy_pick_udt_data_plane
 !
-      integer (kind = kint), intent(in) :: istep
+      integer (kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(0, istep, ucd_param, t_IO, ucd)
+      call sel_read_udt_param(0, istep_ucd, ucd_param, t_IO, ucd)
 !
       call alloc_phys_name_type_by_output(ucd, plane_phys)
       call deallocate_ucd_phys_data(ucd)
@@ -61,8 +61,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_udt_data_4_FFT                                  &
-     &         (istep, ucd_param, mgd_mesh, plane_fft_wk, t_IO, ucd)
+      subroutine s_read_udt_data_4_FFT(istep_ucd, ucd_param,            &
+     &          mgd_mesh, plane_fft_wk, t_IO, ucd)
 !
       use m_file_format_switch
       use t_spectr_4_ispack
@@ -74,7 +74,7 @@
 !
       use set_list_4_FFT
 !
-      integer (kind = kint), intent(in) :: istep
+      integer (kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
       type(merged_mesh), intent(in) :: mgd_mesh
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
@@ -86,7 +86,7 @@
 ! ========================
 !
       call read_udt_data_4_plane_model                                  &
-     &   (mgd_mesh%num_pe, istep, plane_fft_wk%num_spectr,              &
+     &   (mgd_mesh%num_pe, istep_ucd, plane_fft_wk%num_spectr,          &
      &    plane_fft_wk%num_fft, plane_fft_wk%icomp_fft,                 &
      &    plane_fft_wk%ifield_fft, plane_fft_wk%phys_d,                 &
      &    mgd_mesh%merge_tbl%nnod_max, mgd_mesh%subdomain,              &

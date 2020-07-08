@@ -4,7 +4,7 @@
 !    constract spectr data from simulation results 
 !     By H. Matsui
 !
-      program    fft_4_plane 
+      program fft_4_plane 
 !
       use m_precision
 !

@@ -280,7 +280,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
         call s_output_ucd_file_control                                  &
      &     (ucd_param, MHD_step%flex_p%istep_max_dt,                    &
-     &      MHD_step%time_d, MHD_step%ucd_step, MHD_IO%ucd)
+     &      MHD_step%ucd_step, MHD_step%time_d, MHD_IO%ucd)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)

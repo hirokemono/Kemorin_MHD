@@ -1,7 +1,7 @@
 !
 ! ----- program  correlation_4_plane
 !
-      program    correlation_4_plane 
+      program correlation_4_plane 
 !
 !    constract spectr data from simulation results 
 !     By H. Matsui

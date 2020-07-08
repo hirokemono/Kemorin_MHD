@@ -4,10 +4,10 @@
 !     Written by H. Matsui on Feb., 2007
 !
 !!      subroutine init_udt_4_correlate                                 &
-!!     &         (istep, cor_ucd_param, ref_ucd_param,                  &
+!!     &         (istep_ucd, cor_ucd_param, ref_ucd_param,              &
 !!     &          nod_fld, t_IO, ucd)
 !!      subroutine read_udt_4_correlate                                 &
-!!     &         (istep, cor_ucd_param, ref_ucd_param,                  &
+!!     &         (istep_ucd, cor_ucd_param, ref_ucd_param,              &
 !!     &          mgd_mesh, sec_mesh, pcor, t_IO, ucd)
 !!        type(field_IO_params), intent(in) :: cor_ucd_param
 !!        type(field_IO_params), intent(in) :: ref_ucd_param
@@ -37,7 +37,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_udt_4_correlate                                   &
-     &         (istep, cor_ucd_param, ref_ucd_param,                    &
+     &         (istep_ucd, cor_ucd_param, ref_ucd_param,                &
      &          nod_fld, t_IO, ucd)
 !
       use m_file_format_switch
@@ -46,7 +46,7 @@
       use copy_pick_udt_data_plane
       use cal_minmax_and_stacks
 !
-      integer (kind = kint), intent(in) :: istep
+      integer (kind = kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: cor_ucd_param
       type(field_IO_params), intent(in) :: ref_ucd_param
 !
@@ -57,17 +57,17 @@
 !
 !
       call init_by_ucd_4_plane_model                                    &
-     &   (istep, cor_ucd_param, nod_fld, t_IO, ucd)
+     &   (istep_ucd, cor_ucd_param, nod_fld, t_IO, ucd)
 !
       call init_by_ucd_4_plane_model                                    &
-     &   (istep, ref_ucd_param, nod_fld, t_IO, ucd)
+     &   (istep_ucd, ref_ucd_param, nod_fld, t_IO, ucd)
 !
       end subroutine init_udt_4_correlate
 !
 !-----------------------------------------------------------------------
 !
       subroutine read_udt_4_correlate                                   &
-     &         (istep, cor_ucd_param, ref_ucd_param,                    &
+     &         (istep_ucd, cor_ucd_param, ref_ucd_param,                &
      &          mgd_mesh, sec_mesh, pcor, t_IO, ucd)
 !
       use t_mesh_data_4_merge
@@ -75,7 +75,7 @@
       use copy_pick_udt_data_plane
       use ucd_IO_select
 !
-      integer (kind = kint), intent(in) :: istep
+      integer (kind = kint), intent(in) :: istep_ucd
       type(merged_mesh), intent(in) :: mgd_mesh
       type(second_mesh), intent(in) :: sec_mesh
       type(field_IO_params), intent(in) :: cor_ucd_param
@@ -86,14 +86,14 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call read_udt_data_4_plane_model(mgd_mesh%num_pe, istep,          &
+      call read_udt_data_4_plane_model(mgd_mesh%num_pe, istep_ucd,      &
      &    pcor%num_domain_c, pcor%num_crt,                              &
      &    pcor%icomp_crt, pcor%ifield_crt, pcor%phys_d1(1),             &
      &    mgd_mesh%merge_tbl%nnod_max, mgd_mesh%subdomain,              &
      &    cor_ucd_param, t_IO, ucd)
 !
 !
-      call read_udt_data_4_plane_model(sec_mesh%num_pe2, istep,         &
+      call read_udt_data_4_plane_model(sec_mesh%num_pe2, istep_ucd,     &
      &    pcor%num_domain_c, pcor%num_crt,                              &
      &    pcor%icomp_crt, pcor%ifield_crt2, pcor%phys_d2(1),            &
      &    sec_mesh%merge_tbl_2%nnod_max, sec_mesh%subdomains_2,         &

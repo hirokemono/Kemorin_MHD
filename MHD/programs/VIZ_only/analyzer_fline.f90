@@ -55,7 +55,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline(t_VIZ4%init_d, viz4)
+      call FEM_initialize_fline(t_VIZ4%ucd_step, t_VIZ4%init_d, viz4)
 !
 !  VIZ Initialization
       call FLINE_initialize(viz4%geofem, viz4%nod_fld,                  &
@@ -72,11 +72,11 @@
 !
       do i_step = t_VIZ4%init_d%i_time_step, t_VIZ4%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ4%ucd_step) .ne. izero) cycle
-        call set_IO_step_flag(i_step,t_VIZ4%ucd_step)
 !
 !  Load field data
         call FEM_analyze_fline                                          &
-     &     (i_step, t_VIZ4%time_d, t_VIZ4%viz_step, viz4)
+     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, t_VIZ4%viz_step,    &
+     &      viz4)
 !
 !  Generate field lines
         call FLINE_visualize(t_VIZ4%viz_step%FLINE_t,                   &

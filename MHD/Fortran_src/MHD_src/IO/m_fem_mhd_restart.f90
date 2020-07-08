@@ -232,12 +232,14 @@
       type(IO_step_param), intent(inout) :: rst_step
       type(field_IO), intent(inout) :: fem_fst_IO
 !
+      integer(kind = kint) :: istep_rst
 !
-      if (output_IO_flag(i_step, rst_step) .ne. 0) return
 !
-      call set_IO_step_flag(i_step, rst_step)
-      call sel_read_step_FEM_field_file(nprocs, my_rank,                &
-     &    rst_step%istep_file, fst_file_IO, t_IO, fem_fst_IO)
+      if(output_IO_flag(i_step, rst_step) .ne. 0) return
+!
+      istep_rst = set_IO_step(i_step, rst_step)
+      call sel_read_step_FEM_field_file                                 &
+     &   (nprocs, my_rank, istep_rst, fst_file_IO, t_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
 !

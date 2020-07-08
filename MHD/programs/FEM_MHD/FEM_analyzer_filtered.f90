@@ -108,8 +108,8 @@
       else if (MHD_step%ucd_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
         call read_udt_4_snap                                            &
-     &     (MHD_step%flex_p%istep_max_dt, MHD_files%org_ucd_file_IO,    &
-     &      nod_fld, SNAP_time_IO, MHD_step%ucd_step)
+     &     (MHD_step%flex_p%istep_max_dt, MHD_step%ucd_step,            &
+     &      MHD_files%org_ucd_file_IO, nod_fld, SNAP_time_IO)
 !
         MHD_step%time_d%time = MHD_step%init_d%time                     &
      &       + MHD_step%time_d%dt * dble(MHD_step%flex_p%istep_max_dt)
@@ -178,7 +178,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,          &
-     &    MHD_step%time_d, MHD_step%ucd_step, ucd)
+     &    MHD_step%ucd_step, MHD_step%time_d, ucd)
 !
 !     ----
 !

@@ -19,8 +19,6 @@
 !!        type(IO_step_param), intent(in) :: IO_step
 !!      integer(kind = kint) function set_IO_step(i_step, IO_step)
 !!        type(IO_step_param), intent(inout) :: IO_step
-!!      subroutine set_IO_step_flag(i_step, IO_step)
-!!        type(IO_step_param), intent(inout) :: IO_step
 !!
 !!      subroutine set_monitor_param_4_fixed_step(istep_def, istep_ctl, &
 !!     &          delta_t_ctl, istep_out, dt_out)
@@ -90,19 +88,23 @@
 !
       end function set_IO_step
 !
+
 !-----------------------------------------------------------------------
 !
-      subroutine set_IO_step_flag(i_step, IO_step)
+      integer(kind = kint) function IO_step_exc_zero_inc                &
+     &                            (i_step, IO_step)
 !
       integer (kind =kint), intent(in) :: i_step
-      type(IO_step_param), intent(inout) :: IO_step
+      type(IO_step_param), intent(in) :: IO_step
 !
 !
-      if(IO_step%increment .gt. 0) then
-         IO_step%istep_file = i_step / IO_step%increment
-       end if
+      if(IO_step%increment .le. 0) then
+        IO_step_exc_zero_inc = -1
+      else
+        IO_step_exc_zero_inc = i_step / IO_step%increment
+      end if
 !
-      end subroutine set_IO_step_flag
+      end function IO_step_exc_zero_inc
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

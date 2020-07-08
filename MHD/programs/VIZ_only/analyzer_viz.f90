@@ -65,7 +65,7 @@
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
       call FEM_initialize_vizs                                          &
-     &   (t_VIZ1%init_d, t_VIZ1%viz_step, viz1)
+     &   (t_VIZ1%ucd_step, t_VIZ1%init_d, t_VIZ1%viz_step, viz1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -85,12 +85,12 @@
 !
       do i_step = t_VIZ1%init_d%i_time_step, t_VIZ1%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ1%ucd_step) .ne. izero) cycle
-        call set_IO_step_flag(i_step,t_VIZ1%ucd_step)
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
         call FEM_analyze_vizs                                           &
-     &     (i_step, t_VIZ1%time_d, t_VIZ1%viz_step, viz1, visval)
+     &     (i_step, t_VIZ1%ucd_step, t_VIZ1%time_d, t_VIZ1%viz_step,    &
+     &      viz1, visval)
 !
 !  Rendering
         if(visval .eq. 0) then

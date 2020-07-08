@@ -142,7 +142,7 @@
 !
       use correlation_all_layerd_data
 !
-      integer(kind=kint) :: istep
+      integer(kind = kint) :: istep, istep_ucd
 !
 !
       call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
@@ -162,10 +162,9 @@
 !
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
         if (output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
-        call set_IO_step_flag(istep,time_U%ucd_step)
+        istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
-        call set_data_by_read_ucd_once                                  &
-     &     (my_rank, time_U%ucd_step%istep_file,                        &
+        call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
      &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
         call fields_send_recv(femmesh_p_FUT%mesh%nod_comm, field_FUTIL)
@@ -185,9 +184,8 @@
      &      phys_ref, wk_correlate)
 !
         if (iflag_debug .gt. 0) write(*,*)                              &
-     &     ' write_layerd_correlate_data', time_U%ucd_step%istep_file
-        call write_layerd_correlate_data                                &
-     &     (my_rank, time_U%ucd_step%istep_file)
+     &     ' write_layerd_correlate_data', istep_ucd
+        call write_layerd_correlate_data(my_rank, istep_ucd)
       end do
 !
 !
