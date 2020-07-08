@@ -129,16 +129,15 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dmc, iflag2
+      integer (kind = kint) :: iflag2
+      logical :: iflag_dmc
 !
 !   set model coefficients for vector potential
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
-!
-!
       if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &
      &     .and. iphys_fil%i_vecp .ne. 0                                &
-     &     .and. iflag_dmc .eq. 0) then
+     &     .and. iflag_dmc) then
 !
         if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
@@ -225,7 +224,7 @@
 !   required field for explicit filtering
 !
        if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
-     &     .and. iflag_dmc .eq. 0) then
+     &     .and. iflag_dmc) then
          if (SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity   &
      &      .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)  &
      &    then

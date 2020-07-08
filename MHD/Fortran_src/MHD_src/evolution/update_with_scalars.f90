@@ -124,12 +124,11 @@
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dmc, iflag2
+      integer (kind = kint) :: iflag2
+      logical :: iflag_dmc
 !
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
-!
-!
       if (iphys_SGS_wk%i_sgs_temp .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &      write(*,*) 'iflag_SGS_parterbuation',                       &
@@ -152,7 +151,7 @@
         if(SGS_par%model_p%iflag_SGS_h_flux .ne. id_SGS_none) then
 !
           if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
-     &         .and. iflag_dmc .eq. 0) then
+     &         .and. iflag_dmc) then
             iflag2 = 1
           else if (SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &     then
@@ -171,7 +170,7 @@
             nod_fld%iflag_update(iphys_fil%i_temp) = 1
           end if
 !
-          if(iphys_wfl%i_temp.ne.0 .and. iflag_dmc.eq.0) then
+          if(iphys_wfl%i_temp.ne.0 .and. iflag_dmc) then
             if (iflag_debug.gt.0) write(*,*) 'cal_w_filtered_scalar',   &
      &                           iphys_wfl%i_temp
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
@@ -202,7 +201,7 @@
       end if
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
-     &     .and. iflag_dmc .eq. 0) then
+     &     .and. iflag_dmc) then
          if(SGS_par%commute_p%iflag_c_temp .eq. id_SGS_commute_ON) then
            if(diff_coefs%iflag_field(iak_diff_base%i_temp) .eq. 0) then
 !
@@ -275,7 +274,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dmc, iflag2
+      integer (kind = kint) :: iflag2
+      logical :: iflag_dmc
 !
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
@@ -304,7 +304,7 @@
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
 !
-        if (iphys_wfl%i_light.ne.0 .and. iflag_dmc.eq.0) then
+        if (iphys_wfl%i_light.ne.0 .and. iflag_dmc) then
           if (iflag_debug.gt.0) write(*,*) 'cal_w_filtered_scalar',     &
      &                         iphys_wfl%i_temp
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
@@ -316,7 +316,7 @@
 !
 !
        if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
-     &   .and. iflag_dmc .eq. 0) then
+     &   .and. iflag_dmc) then
          if(SGS_par%commute_p%iflag_c_light .eq. id_SGS_commute_ON)     &
      &    then
            if(diff_coefs%iflag_field(iak_diff_base%i_light).eq. 0) then

@@ -122,7 +122,8 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dmc, iflag2
+      integer (kind = kint) :: iflag2
+      logical :: iflag_dmc
 !
 !
       iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
@@ -148,7 +149,7 @@
 !
       if (iphys_fil%i_velo .ne. 0) then
         if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
-     &      .and. iflag_dmc.eq.0) then
+     &      .and. iflag_dmc) then
           iflag2 = 1
         else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity) then
           iflag2 = 1
@@ -169,7 +170,7 @@
         end if
       end if
 !
-      if(iphys_wfl%i_velo.ne.0 .and. iflag_dmc.eq.0) then
+      if(iphys_wfl%i_velo.ne.0 .and. iflag_dmc) then
         if(SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity               &
      &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)  &
      &   then
@@ -187,7 +188,7 @@
 !
        if (SGS_par%model_p%iflag_SGS.eq.id_SGS_NL_grad                  &
      &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
-     &    .and. iflag_dmc.eq.0) then
+     &    .and. iflag_dmc) then
 !
          if (iphys_ele_fil%i_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &

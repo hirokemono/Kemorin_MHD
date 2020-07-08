@@ -123,7 +123,7 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dmc, iflag2
+      integer (kind = kint) :: iflag2
 !
 !
       if (iphys_ele_base%i_magne .ne. 0) then
@@ -134,9 +134,8 @@
       end if
 !
 !
-      iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
-     &     .and.  iflag_dmc .eq. 0) then
+     &     .and. dynamic_SGS_flag(i_step, SGS_par)) then
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity     &
      &    .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)    &
      &   then

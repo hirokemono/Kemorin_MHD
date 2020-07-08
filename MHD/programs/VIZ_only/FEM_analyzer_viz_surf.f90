@@ -74,11 +74,9 @@
       type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
-      integer (kind =kint) :: visval, iflag
+      integer (kind =kint) :: iflag
 !
 !
-      visval =  output_IO_flag(i_step, viz_step%PSF_t)                  &
-     &        * output_IO_flag(i_step, viz_step%ISO_t)
       call istep_file_w_fix_dt(i_step, viz_step%PSF_t)
       call istep_file_w_fix_dt(i_step, viz_step%ISO_t)
 !

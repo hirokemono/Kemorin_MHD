@@ -72,10 +72,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_4_viz), intent(inout) :: viz
 !
-      integer (kind =kint) :: visval
 !
-!
-      visval = output_IO_flag(i_step, viz_step%FLINE_t)
       call istep_file_w_fix_dt(i_step, viz_step%FLINE_t)
       call set_field_data_4_VIZ(viz_step%FLINE_t%istep_file,            &
      &    i_step, ucd_step, viz%ucd_file_IO,                            &

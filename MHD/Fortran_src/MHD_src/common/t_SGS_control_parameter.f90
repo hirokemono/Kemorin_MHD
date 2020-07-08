@@ -277,7 +277,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function dynamic_SGS_flag(i_step, SGS_par)
+      logical function dynamic_SGS_flag(i_step, SGS_par)
 !
       use t_IO_step_parameter
 !
@@ -285,7 +285,8 @@
       type(SGS_paremeters), intent(in) :: SGS_par
 !
 !
-      dynamic_SGS_flag = output_flag(i_step, SGS_par%i_step_sgs_coefs)
+      dynamic_SGS_flag                                                  &
+     &  = (output_flag(i_step, SGS_par%i_step_sgs_coefs) .eq. 0)
 !
       end function dynamic_SGS_flag
 !

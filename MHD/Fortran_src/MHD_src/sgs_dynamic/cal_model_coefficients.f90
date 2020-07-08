@@ -123,7 +123,8 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(dynamic_SGS_flag(time_d%i_time_step, SGS_par) .ne. 0) return
+      if(dynamic_SGS_flag(time_d%i_time_step, SGS_par)                  &
+     &   .eqv. .FALSE.) return
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &        'set Csim', time_d%i_time_step, SGS_par%i_step_sgs_coefs
