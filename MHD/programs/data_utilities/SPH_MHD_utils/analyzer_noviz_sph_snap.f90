@@ -93,7 +93,6 @@
       use output_viz_file_control
       use set_time_step_params
 !
-      integer(kind = kint) :: visval
       integer(kind = kint) :: iflag
 !
 !*  -----------  set initial step data --------------
@@ -134,9 +133,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD                                        &
-     &     (MHD_files1, FEM_d1%geofem, FEM_d1%field,                    &
-     &      MHD_step1, visval, MHD_IO1)
+        call FEM_analyze_sph_MHD(MHD_files1,                            &
+     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
         if(lead_field_data_flag(MHD_step1%time_d%i_time_step,MHD_step1) &
