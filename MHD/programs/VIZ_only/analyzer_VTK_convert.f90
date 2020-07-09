@@ -74,7 +74,7 @@
 !
       subroutine analyze_VTK_convert
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, istep_ucd
 !
 !
       do i_step = t_VIZ5%init_d%i_time_step, t_VIZ5%finish_d%i_end_step
@@ -85,9 +85,8 @@
      &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, sfcing5)
 !
 !  Generate field lines
-        t_VIZ5%ucd_step%istep_file = istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)
-        call visualize_convert_vtk                                      &
-     &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d,                     &
+        istep_ucd = istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)
+        call visualize_convert_vtk(i_step, istep_ucd, t_VIZ5%time_d,    &
      &      sfcing5%vtk_file_IO, vtk_out5)
       end do
 !

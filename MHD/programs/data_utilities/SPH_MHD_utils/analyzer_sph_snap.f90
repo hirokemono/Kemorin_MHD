@@ -302,7 +302,7 @@
           call PVR_initialize(FEM_d1%geofem, FEM_d1%field,              &
      &        MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
           call calypso_MPI_barrier
-          call PVR_visualize(MHD_step1%viz_step%PVR_t%istep_file,       &
+          call PVR_visualize(MHD_step1%viz_step%istep_pvr,              &
      &        FEM_d1%geofem, jacobians_VIZ1, FEM_d1%field, vizs1%pvr)
           call dealloc_pvr_data(vizs1%pvr)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)

@@ -77,7 +77,7 @@
       istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
       call sel_write_parallel_ucd_file                                  &
      &   (istep_ucd, ucd_param, time_d, ucd)
-!      call output_range_data(node, nod_fld, ucd_step%istep_file, time)
+!      call output_range_data(node, nod_fld, istep_ucd, time)
 !
       end subroutine s_output_ucd_file_control
 !

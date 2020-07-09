@@ -110,15 +110,17 @@
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: ucd_step
 !
+      integer(kind = kint) :: istep_ucd
 !
-      ucd_step%istep_file = init_d%i_time_step / ucd_step%increment
+!
+      istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
       call find_field_id_in_read_ucd                                    &
-     &   (my_rank, ucd_step%istep_file, prod1_ucd_param,                &
+     &   (my_rank, istep_ucd, prod1_ucd_param,                          &
      &    numnod, product_field_1_name, i_field_product1,               &
      &    ncomp_4_product1, t_IO)
 !
       call find_field_id_in_read_ucd                                    &
-     &   (my_rank, ucd_step%istep_file, prod2_ucd_param,                &
+     &   (my_rank, istep_ucd, prod2_ucd_param,                          &
      &    numnod, product_field_2_name, i_field_product2,               &
      &    ncomp_4_product2, t_IO)
 !

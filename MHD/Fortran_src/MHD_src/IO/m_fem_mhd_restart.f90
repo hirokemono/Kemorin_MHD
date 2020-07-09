@@ -109,10 +109,12 @@
       type(IO_step_param), intent(inout) :: rst_step
       type(field_IO), intent(inout) :: fem_fst_IO
 !
+      integer(kind = kint) :: istep_rst
 !
-      rst_step%istep_file = i_step / rst_step%increment
+!
+      istep_rst = IO_step_exc_zero_inc(i_step, rst_step)
       call sel_read_alloc_FEM_fld_head(nprocs, my_rank,                 &
-     &    rst_step%istep_file, fst_file_IO, t_IO, fem_fst_IO)
+     &    istep_rst, fst_file_IO, t_IO, fem_fst_IO)
 !
       fem_fst_IO%nnod_IO = node%numnod
       call alloc_phys_data_IO(fem_fst_IO)

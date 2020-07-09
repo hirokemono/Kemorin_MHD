@@ -50,9 +50,6 @@
         integer(kind=kint) :: increment
 !>        Time interval for output
         real(kind=kreal)   :: delta_t
-!
-!>        step number for data file
-        integer(kind=kint) :: istep_file
       end type IO_step_param
 !
 ! -----------------------------------------------------------------------
