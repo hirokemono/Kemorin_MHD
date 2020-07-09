@@ -24,7 +24,7 @@
 !!     &          delta_t_ctl, istep_out, dt_out)
 !!      subroutine set_monitor_param_4_flex_step(istep_def, dt_max,     &
 !!     &          istep_ctl, delta_t_ctl, istep_out, dt_out)
-!!      integer(kind = kint) function output_flag(i_step, increment)
+!!      logical function output_flag(i_step, increment)
 !!
 !!      logical function iflag_viz_flex_step(time_d, IO_step)
 !!        type(time_data), intent(in) :: time_d
@@ -65,7 +65,7 @@
       type(IO_step_param), intent(in) :: IO_step
 !
 !
-      output_IO_flag = (output_flag(i_step, IO_step%increment) .eq. 0)
+      output_IO_flag = output_flag(i_step, IO_step%increment)
 !
       end function output_IO_flag
 !
@@ -167,15 +167,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function output_flag(i_step, increment)
+      logical function output_flag(i_step, increment)
 !
       integer (kind = kint), intent(in) :: i_step, increment
 !
 !
-      output_flag = ione
+      output_flag = .FALSE.
       if(increment .eq. 0) return
 !
-      output_flag = mod(i_step,increment)
+      output_flag = (mod(i_step,increment) .eq. 0)
 !
       end function output_flag
 !

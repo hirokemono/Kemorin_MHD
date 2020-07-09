@@ -285,8 +285,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
 !
 !
-      dynamic_SGS_flag                                                  &
-     &  = (output_flag(i_step, SGS_par%i_step_sgs_coefs) .eq. 0)
+      dynamic_SGS_flag = output_flag(i_step, SGS_par%i_step_sgs_coefs)
 !
       end function dynamic_SGS_flag
 !
