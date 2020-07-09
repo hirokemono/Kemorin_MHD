@@ -543,7 +543,7 @@
 
 - (IBAction) OpenPsfFile:(id)pId{
 	NSArray *psfFileTypes = [NSArray arrayWithObjects:
-                             @"psf",@"PSF",@"sdt",@"SDT",
+                             @"sfm",@"SFM",@"sdt",@"SDT",
                              @"udt",@"inp",@"vtk",@"vtd",@"gz",
                              @"UDT",@"INP",@"VTK",@"VTD",@"GZ",nil];
 	NSOpenPanel *PsfOpenPanelObj	= [NSOpenPanel openPanel];

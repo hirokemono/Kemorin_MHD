@@ -52,7 +52,7 @@ void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *
 	}else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ) {
 		sprintf(ucd_m->string, "%s.%d.sdt.gz",ucd_header, istep);
 	}else if(iformat_ucd_file == IFLAG_PSF_BIN_GZ) {
-		sprintf(ucd_m->string, "%s.%d.psf.gz",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.sfm.gz",ucd_header, istep);
 	}else if(iformat_ucd_file == IFLAG_SURF_UDT_GZ) {
 		sprintf(ucd_m->string, "%s.%d.udt.gz",ucd_header, istep);
 	}else if(iformat_ucd_file == IFLAG_SURF_UCD_GZ) {
@@ -64,7 +64,7 @@ void alloc_set_ucd_field_file_name(int iformat_ucd_file, int istep, const char *
 	}else if(iformat_ucd_file == IFLAG_SURF_SDT) {
 		sprintf(ucd_m->string, "%s.%d.sdt",ucd_header, istep);
 	}else if(iformat_ucd_file == IFLAG_PSF_BIN) {
-		sprintf(ucd_m->string, "%s.%d.psf",ucd_header, istep);
+		sprintf(ucd_m->string, "%s.%d.sfm",ucd_header, istep);
 	}else if(iformat_ucd_file == IFLAG_SURF_UDT){
 		sprintf(ucd_m->string, "%s.%d.udt",ucd_header, istep);
 	}else{
