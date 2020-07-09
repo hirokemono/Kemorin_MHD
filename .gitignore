@@ -3,6 +3,7 @@ MHD/Cocoa/Fortran_codes/Fortran_codes.xcodeproj/
 *.DS_Store
 bin/
 work/
+MHD/programs/TESTS/Doxygen_test/html/
 
 *.log
 
