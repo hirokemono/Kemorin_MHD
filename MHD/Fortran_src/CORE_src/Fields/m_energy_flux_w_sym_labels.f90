@@ -243,133 +243,160 @@
      &                      // ' (B_{asym} \times  u_{sym}) $')
 !
 !>        Field label of energy flux of magnetic stretch term
-!!         @f$ B \cdot \left(B_{sym} \nabla) u_{sym} @f$
+!!         @f$ B \cdot \left(B_{sym} \cdot \nabla \right) u_{sym} @f$
       type(field_def), parameter :: B_dot_Bsym_nabla_usym               &
      &    = field_def(n_comp = n_scalar,                                &
      &           name = 'B_dot_Bsym_nabla_usym',                        &
-     &           math = '$ B \cdot \left(B_{sym} \nabla) u_{sym} $')
+     &           math = '$ B \cdot \left(B_{sym} \cdot'                 &
+     &                // ' \nabla \right) u_{sym} $')
 !>        Field label of energy flux of magnetic stretch term
-!!         @f$ B \cdot \left(B_{asym} \nabla) u_{asym} @f$
+!!         @f$ B \cdot \left(B_{asym} \cdot \nabla \right) u_{asym} @f$
       type(field_def), parameter :: B_dot_Basym_nabla_uasym             &
      &    = field_def(n_comp = n_scalar,                                &
      &           name = 'B_dot_Basym_nabla_uasym',                      &
-     &           math = '$ B \cdot \left(B_{asym} \nabla) u_{asym} $')
+     &           math = '$ B \cdot \left(B_{asym} \cdot'                &
+     &                // ' \nabla \right) u_{asym} $')
 !>        Field label of energy flux of magnetic stretch term
-!!         @f$ B \cdot \left(B_{sym} \nabla) u_{asym} @f$
+!!         @f$ B \cdot \left(B_{sym} \cdot \nabla \right) u_{asym} @f$
       type(field_def), parameter :: B_dot_Bsym_nabla_uasym              &
      &    = field_def(n_comp = n_scalar,                                &
      &           name = 'B_dot_Bsym_nabla_uasym',                       &
-     &           math = '$ B \cdot \left(B_{sym} \nabla) u_{asym} $')
+     &           math = '$ B \cdot \left(B_{sym} \cdot'                 &
+     &                // ' \nabla \right) u_{asym} $')
 !>        Field label of energy flux of magnetic stretch term
-!!         @f$ B \cdot \left(B_{asym} \nabla) u_{sym} @f$
+!!         @f$ B \cdot \left(B_{asym} \cdot \nabla \right) u_{sym} @f$
       type(field_def), parameter :: B_dot_Basym_nabla_usym              &
      &    = field_def(n_comp = n_scalar,                                &
      &           name = 'B_dot_Basym_nabla_usym',                       &
-     &           math = '$ B \cdot \left(B_{asym} \nabla) u_{sym} $')
+     &           math = '$ B \cdot \left(B_{asym} \cdot'                &
+     &                // ' \nabla \right) u_{sym} $')
 !
 !>        Field label of temperature flux
-!!         @f$ T (u_{sim} \nabla) T_{sym} @f$
+!!         @f$ T \left(u_{sim} \cdot \nabla \right) T_{sym} @f$
       type(field_def), parameter :: T_usym_nabla_Tsym                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'T_usym_nabla_Tsym',                     &
-     &                  math = '$ T (u_{sim} \nabla) T_{sym}  $')
+     &                  math = '$ T \left(u_{sim} \cdot \nabla'         &
+     &                       // ' \right) T_{sym}  $')
 !>        Field label of temperature flux
-!!         @f$ T (u_{asym} \nabla) T_{asym} @f$
+!!         @f$ T \left(u_{asym} \cdot \nabla \right) T_{asym} @f$
       type(field_def), parameter :: T_uasym_nabla_Tasym                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'T_uasym_nabla_Tasym',                   &
-     &                  math = '$ T (u_{asym} \nabla) T_{asym}  $')
+     &                  math = '$ T \left(u_{asym} \cdot \nabla'        &
+     &                       // ' \right) T_{asym}  $')
 !>        Field label of temperature flux
-!!         @f$ T (u_{sym} \nabla) T_{asym} @f$
+!!         @f$ T \left(u_{sym} \cdot \nabla \right) T_{asym} @f$
       type(field_def), parameter :: T_usym_nabla_Tasym                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'T_usym_nabla_Tasym',                    &
-     &                  math = '$ T (u_{sym} \nabla) T_{asym}  $')
+     &                  math = '$ T \left(u_{sym} \cdot \nabla'         &
+     &                       // ' \right) T_{asym}  $')
 !>        Field label of temperature flux
-!!         @f$ T (u_{asym} \nabla) T_{sym} @f$
+!!         @f$ T \left(u_{asym} \cdot \nabla \right) T_{sym} @f$
       type(field_def), parameter :: T_uasym_nabla_Tsym                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'T_uasym_nabla_Tsym',                    &
-     &                  math = '$ T (u_{asym} \nabla) T_{sym}  $')
+     &                  math = '$ T \left(u_{asym} \cdot \nabla'        &
+     &                       // ' \right) T_{sym}  $')
 !
 !>        Field label of perturbation temperature flux
-!!         @f$ \Theta (u_{sym} \partial_{i}) \Theta_{sym} @f$
+!!         @f$ \Theta \left(u_{sym} \cdot \nabla \right) \Theta_{sym} @f$
       type(field_def), parameter :: pT_usym_nabla_pTsym                 &
      &    = field_def(n_comp = n_scalar,                                &
      &       name = 'pT_usym_nabla_pTsym',                              &
-     &       math = '$ \Theta (u_{sym} \partial_{i}) \Theta_{sym} $')
+     &       math = '$ \Theta \left(u_{sym} \cdot \nabla'               &
+     &           // ' \right) \Theta_{sym} $')
 !>        Field label of perturbation temperature flux
-!!         @f$ \Theta (u_{asym} \partial_{i}) \Theta_{asym} @f$
+!!         @f$ \Theta \left(u_{asym} \cdot \nabla \right)
+!!             \Theta_{asym} @f$
       type(field_def), parameter :: pT_uasym_nabla_pTasym               &
      &    = field_def(n_comp = n_scalar,                                &
      &       name = 'pT_uasym_nabla_pTasym',                            &
-     &       math = '$ \Theta (u_{asym} \partial_{i}) \Theta_{asym} $')
+     &       math = '$ \Theta \left(u_{asym} \cdot \nabla'              &
+     &           // ' \right) \Theta_{asym} $')
 !>        Field label of perturbation temperature flux
-!!         @f$ \Theta (u_{sym} \partial_{i}) \Theta_{asym} @f$
+!!         @f$ \Theta \left(u_{sym} \cdot \nabla \right)
+!!             \Theta_{asym} @f$
       type(field_def), parameter :: pT_usym_nabla_pTasym                &
      &    = field_def(n_comp = n_scalar,                                &
      &       name = 'pT_usym_nabla_pTasym',                             &
-     &       math = '$ \Theta (u_{sym} \partial_{i}) \Theta_{asym} $')
+     &       math = '$ \Theta \left(u_{sym} \cdot \nabla'               &
+     &           // '  \right) \Theta_{asym} $')
 !>        Field label of perturbation temperature flux
-!!         @f$ \Theta (u_{asym} \partial_{i}) \Theta_{sym} @f$
+!!         @f$ \Theta \left(u_{asym} \cdot \nabla \right)
+!!             \Theta_{sym} @f$
       type(field_def), parameter :: pT_uasym_nabla_pTsym                &
      &    = field_def(n_comp = n_scalar,                                &
      &       name = 'pT_uasym_nabla_pTsym',                             &
-     &       math = '$ \Theta (u_{asym} \partial_{i}) \Theta_{sym} $')
+     &       math = '$ \Theta \left(u_{asym} \cdot \nabla'              &
+     &           // '  \right) \Theta_{sym} $')
 !
 !>        Field label of composition flux
-!!         @f$ C (u_{sim} \nabla C_{sym}) @f$
+!!         @f$ C \left(u_{sim} \cdot \nabla C_{sym} \right) @f$
       type(field_def), parameter :: C_usym_nabla_Csym                   &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'C_usym_nabla_Csym',                     &
-     &                  math = '$ C (u_{sim} \nabla C_{sim}) $')
+     &                  math = '$ C \left(u_{sim} \cdot \nabla'         &
+     &                      // '  C_{sim} \right) $')
 !>        Field label of composition flux
-!!         @f$ C (u_{asym} \nabla C_{asym}) @f$
+!!         @f$ C \left(u_{asym} \cdot \nabla C_{asym} \right) @f$
       type(field_def), parameter :: C_uasym_nabla_Casym                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'C_uasym_nabla_Casym',                   &
-     &                  math = '$ C (u_{asym} \nabla C_{asym}) $')
+     &                  math = '$ C \left(u_{asym} \cdot \nabla'        &
+     &                      // ' C_{asym} \right) $')
 !>        Field label of composition flux
-!!         @f$ C (u_{sym} \nabla C_{asym}) @f$
+!!         @f$ C \left(u_{sym} \cdot \nabla C_{asym} \right) @f$
       type(field_def), parameter :: C_usym_nabla_Casym                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'C_usym_nabla_Casym',                    &
-     &                  math = '$ C (u_{sym} \nabla C_{asym}) $')
+     &                  math = '$ C \left(u_{sym} \cdot'                &
+     &                      // ' \nabla C_{asym} \right) $')
 !>        Field label of composition flux
-!!         @f$ C (u_{asym} \nabla C_{sym}) @f$
+!!         @f$ C \left(u_{asym} \cdot \nabla C_{sym} \right) @f$
       type(field_def), parameter :: C_uasym_nabla_Csym                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'C_uasym_nabla_Csym',                    &
-     &                  math = '$ C (u_{asym} \nabla C_{sym}) $')
+     &                  math = '$ C \left(u_{asym} \cdot'               &
+     &                      // ' \nabla C_{sym} \right) $')
 !
 !>        Field label of composition flux
-!!         @f$ (C - C_0) (u_{sym} \partial_{i}) (C_{sym} - C_0) @f$
+!!         @f$ (C - C_0) \left(u_{sym} \cdot \partial_{i} \right)
+!!             (C_{sym} - C_0) @f$
       type(field_def), parameter :: pC_usym_nabla_pCsym                 &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'pC_usym_nabla_pCsym',                   &
-     &                  math = '$ (C - C_0) (u_{sym} \partial_{i})'//   &
-     &                        ' (C_{sym} - C_0) $')
+     &                  math = '$ (C - C_0) \left(u_{sym} \cdot'        &
+     &                      // ' \partial_{i} \right)'                  &
+     &                      // ' (C_{sym} - C_0) $')
 !>        Field label of composition flux
-!!         @f$ (C - C_0) (u_{asym} \partial_{i}) (C_{asym} - C_0) @f$
+!!         @f$ (C - C_0) \left(u_{asym} \cdot  \partial_{i} \right)
+!!             (C_{asym} - C_0) @f$
       type(field_def), parameter :: pC_uasym_nabla_pCasym               &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'pC_uasym_nabla_pCasym',                 &
-     &                  math = '$ (C - C_0) (u_{asym} \partial_{i})'//  &
-     &                        ' (C_{asym} - C_0) $')
+     &                  math = '$ (C - C_0) \left(u_{asym} \cdot'       &
+     &                      // ' \partial_{i} \right)'                  &
+     &                      // ' (C_{asym} - C_0) $')
 !>        Field label of composition flux
-!!         @f$ (C - C_0) (u_{sym} \partial_{i} )(C_{asym} - C_0) @f$
+!!         @f$ (C - C_0) \left(u_{sym} \cdot \partial_{i} \right)
+!!             (C_{asym} - C_0) @f$
       type(field_def), parameter :: pC_usym_nabla_pCasym                &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'pC_usym_nabla_pCasym',                  &
-     &                  math = '$ (C - C_0) (u_{sym} \partial_{i})'//   &
-     &                        ' (C_{asym} - C_0) $')
+     &                  math = '$ (C - C_0) \left(u_{sym} \cdot'        &
+     &                      // ' \partial_{i} \right)'                  &
+     &                      // ' (C_{asym} - C_0) $')
 !>        Field label of composition flux
-!!         @f$ (C - C_0) (u_{asym} \partial_{i}) (C_{sym} - C_0) @f$
+!!         @f$ (C - C_0) \left(u_{asym} \cdot \partial_{i} \right)
+!!             (C_{sym} - C_0) @f$
       type(field_def), parameter :: pC_uasym_nabla_pCsym                &
      &    = field_def(n_comp = n_scalar,                                &
      &                  name = 'pC_uasym_nabla_pCsym',                  &
-     &                  math = '$ (C - C_0) (u_{asym} \partial_{i})'//  &
-     &                        ' (C_{sym} - C_0) $')
+     &                  math = '$ (C - C_0) \left(u_{asym} \cdot'       &
+     &                      // ' \partial_{i} \right)'                  &
+     &                      // ' (C_{sym} - C_0) $')
 !
 ! ----------------------------------------------------------------------
 !

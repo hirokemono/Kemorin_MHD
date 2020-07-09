@@ -297,29 +297,29 @@
      &           math = '$ \nabla \times (u_{asym} \times B_{sym}) $')
 !
 !>        Field label of magnetic stretch term
-!!         @f$ \left(B_{sym} \nabla) u_{sym} @f$
+!!         @f$ (B_{sym} \cdot \nabla) u_{sym} @f$
       type(field_def), parameter :: Bsym_nabla_usym                     &
      &    = field_def(n_comp = n_vector,                                &
      &                  name = 'Bsym_nabla_usym',                       &
-     &                  math = '$ \left(B_{sym} \nabla) u_{sym} $')
+     &                  math = '$ (B_{sym} \cdot \nabla) u_{sym} $')
 !>        Field label of magnetic stretch term
-!!         @f$ \left(B_{asym} \nabla) u_{asym} @f$
+!!         @f$ (B_{asym} \cdot \nabla) u_{asym} @f$
       type(field_def), parameter :: Basym_nabla_uasym                   &
      &    = field_def(n_comp = n_vector,                                &
      &                  name = 'Basym_nabla_uasym',                     &
-     &                  math = '$ \left(B_{asym} \nabla) u_{asym} $')
+     &                  math = '$ (B_{asym} \cdot \nabla) u_{asym} $')
 !>        Field label of magnetic stretch term
-!!         @f$ \left(B_{sym} \nabla) u_{asym} @f$
+!!         @f$ (B_{sym} \cdot \nabla) u_{asym} @f$
       type(field_def), parameter :: Bsym_nabla_uasym                    &
      &    = field_def(n_comp = n_vector,                                &
      &                  name = 'Bsym_nabla_uasym',                      &
-     &                  math = '$ \left(B_{sym} \nabla) u_{asym} $')
+     &                  math = '$ (B_{sym} \cdot \nabla) u_{asym} $')
 !>        Field label of magnetic stretch term
-!!         @f$ \left(B_{asym} \nabla) u_{sym} @f$
+!!         @f$ (B_{asym} \cdot \nabla) u_{sym} @f$
       type(field_def), parameter :: Basym_nabla_usym                    &
      &    = field_def(n_comp = n_vector,                                &
      &                  name = 'Basym_nabla_usym',                      &
-     &                  math = '$ \left(B_{asym} \nabla) u_{sym} $')
+     &                  math = '$ (B_{asym} \cdot \nabla) u_{sym} $')
 !
 !>        Field label of Tensor of magnetic induction
 !!         @f$ u_{sym} B_{sym}  - B_{sym} u_{sym} @f$

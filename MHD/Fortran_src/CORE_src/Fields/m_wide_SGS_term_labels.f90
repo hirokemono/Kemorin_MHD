@@ -73,29 +73,29 @@
      &                     // ' - \bar{u}_{i}\bar{C} $')
 !
 !>        Field label for SGS inertia term with wider filter
-!!         @f$ e_{ijk}\left(\overline{\omega_{j}u_{k}}
+!!         @f$ e_{ijk} \left(\overline{\omega_{j}u_{k}}
 !!            - \bar{\omega}_{j}\bar{u}_{k} \right) @f$
       type(field_def), parameter :: wide_SGS_inertia                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'wide_SGS_inertia',                        &
-     &                math = '$ e_{ijk} (\overline{\omega_{j}u_{k}}'    &
-     &                     // ' - \bar{\omega}_{j}\bar{u}_{k}) $')
+     &              math = '$ e_{ijk} \left(\overline{\omega_{j}u_{k}}' &
+     &                  // ' - \bar{\omega}_{j}\bar{u}_{k} \right) $')
 !>        Field label for SGS Lorentz force with wider filter
-!!         @f$ e_{ijk}\left(\overline{\J_{j}B_{k}}
+!!         @f$ e_{ijk} \left(\overline{J_{j}B_{k}}
 !!            - \bar{J}_{j}\bar{B}_{k} \right) @f$
       type(field_def), parameter :: wide_SGS_Lorentz                    &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'wide_SGS_Lorentz',                        &
-     &                math = '$ e_{ijk} (\overline{J_{j}B_{k}}'         &
-     &                     // ' - \bar{J}_{j}\bar{B}_{k}) $')
+     &                math = '$ e_{ijk} \left(\overline{J_{j}B_{k}}'    &
+     &                     // ' - \bar{J}_{j}\bar{B}_{k} \right) $')
 !>        Field label for SGS induction with wider filter
-!!         @f$ e_{ijk}\left(\overline{\u_{j}B_{k}}
+!!         @f$ e_{ijk} \left(\overline{u_{j}B_{k}}
 !!            - \bar{u}_{j}\bar{B}_{k} \right) @f$
       type(field_def), parameter :: wide_SGS_vp_induction               &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'wide_SGS_vp_induction',                   &
-     &                math = '$ e_{ijk} (\overline{u_{j}B_{k}}'         &
-     &                     // ' - \bar{u}_{j}\bar{B}_{k}) $')
+     &                math = '$ e_{ijk} \left(\overline{u_{j}B_{k}}'    &
+     &                     // ' - \bar{u}_{j}\bar{B}_{k} \right) $')
 !
 !      SGS terms by double filtering
 !
@@ -117,29 +117,35 @@
      &           // ' - \tilde{\tilde{u}}_{i}\tilde{\tilde{C}} $')
 !
 !>        Field label for SGS inertia term with wider filter
-!!         @f$ e_{ijk}\left(\widetilde{\widetilde{\omega_{j}u_{k}}}
+!!         @f$ e_{ijk} \left(\widetilde{\widetilde{\omega_{j}u_{k}}}
 !!          - \tilde{\tilde{\omega}}_{j}\tilde{\tilde{u}}_{k} \right) @f$
       type(field_def), parameter :: double_SGS_inertia                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'double_SGS_inertia',                      &
-     &     math = '$ e_{ijk} (\widetilde{\widetilde{\omega_{j}u_{k}}}'  &
-     &      // ' - \tilde{\tilde{\omega}}_{j}\tilde{\tilde{u}}_{k}) $')
+     &     math = '$ e_{ijk}'                                           &
+     &          // ' \left(\widetilde{\widetilde{\omega_{j}u_{k}}}'     &
+     &          // ' - \tilde{\tilde{\omega}}_{j}\tilde{\tilde{u}}_{k}' &
+     &          // ' \right) $')
 !>        Field label for SGS Lorentz force with wider filter
-!!         @f$ e_{ijk}\left(\widetilde{\widetilde{\J_{j}B_{k}}}
+!!         @f$ e_{ijk} \left(\widetilde{\widetilde{J_{j}B_{k}}}
 !!            - \tilde{\tilde{J}}_{j}\tilde{\tilde{B}}_{k} \right) @f$
       type(field_def), parameter :: double_SGS_Lorentz                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'double_SGS_Lorentz',                      &
-     &       math = '$ e_{ijk} (\widetilde{\widetilde{J_{j}B_{k}}}'     &
-     &           // ' - \tilde{\tilde{J}}_{j}\tilde{\tilde{B}}_{k}) $')
+     &       math = '$ e_{ijk}'                                         &
+     &               // ' \left(\widetilde{\widetilde{J_{j}B_{k}}}'     &
+     &               // ' - \tilde{\tilde{J}}_{j}\tilde{\tilde{B}}_{k}' &
+     &               // ' \right) $')
 !>        Field label for SGS induction with wider filter
-!!         @f$ e_{ijk}\left(\widetilde{\widetilde{\u_{j}B_{k}}}
+!!         @f$ e_{ijk} \left(\widetilde{\widetilde{u_{j}B_{k}}}
 !!            - \tilde{\tilde{u}}_{j}\tilde{\tilde{B}}_{k} \right) @f$
       type(field_def), parameter :: double_SGS_vp_induction             &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'double_SGS_vp_induction',                 &
-     &       math = '$ e_{ijk} (\widetilde{\widetilde{u_{j}B_{k}}}'     &
-     &           // ' - \tilde{\tilde{u}}_{j}\tilde{\tilde{B}}_{k}) $')
+     &       math = '$ e_{ijk}'                                         &
+     &               // ' \left(\widetilde{\widetilde{u_{j}B_{k}}}'     &
+     &               // ' - \tilde{\tilde{u}}_{j}\tilde{\tilde{B}}_{k}' &
+     &               // ' \right) $')
 !
 ! ----------------------------------------------------------------------
 !

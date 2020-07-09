@@ -85,7 +85,7 @@
      &                     // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
 !
 !>        Field label for energy flux of SGS induction
-!!         @f$ B_{i} e_{ijk} \partual_{j} e_{klm} 
+!!         @f$ B_{i} e_{ijk} \partial_{j} e_{klm} 
 !!            (\widetilde{u_{l}B_{m}} - \tilde{u}_{l}\tilde{B}_{m} ) @f$
       type(field_def), parameter :: SGS_mag_induction_flux              &
      &    = field_def(n_comp = n_scalar,                                &
@@ -134,7 +134,7 @@
         integer (kind=kint) :: i_SGS_comp_buo_wk = izero
 !
 !>        Field address for energy flux of SGS induction
-!!         @f$ B_{i} e_{ijk} \partual_{j} e_{klm} 
+!!         @f$ B_{i} e_{ijk} \partial_{j} e_{klm} 
 !!            (\widetilde{u_{l}B_{m}} - \tilde{u}_{l}\tilde{B}_{m} ) @f$
         integer (kind=kint) :: i_SGS_me_gen =      izero
 !

@@ -51,91 +51,97 @@
       integer(kind = kint), parameter, private :: nforce_w_SGS = 9
 !
 !>        Field label of momentum flux with SGS term
-!!         @f$ u_{i} u_{j}
-!!            + (\widetilde{u_{i}u_{j}} - \tilde{u}_{i}\tilde{u}_{j})@f$
+!!         @f$ u_{i} u_{j} + \left(\widetilde{u_{i}u_{j}}
+!!                          - \tilde{u}_{i}\tilde{u}_{j} \right)@f$
       type(field_def), parameter :: momentum_flux_w_SGS                 &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'momentum_flux_w_SGS',                     &
-     &                math = '$ u_{i}u_{j} + (\widetilde{u_{i}u_{j}}'   &
-     &                     // ' - \tilde{u}_{i}\tilde{u}_{j}) $')
+     &                math = '$ u_{i}u_{j}'                             &
+     &                    // ' + \left(\widetilde{u_{i}u_{j}}'          &
+     &                    // ' - \tilde{u}_{i}\tilde{u}_{j} \right)$')
 !>        Field label of momentum flux with SGS term
-!!         @f$ B_{i} B_{j}
-!!            + (\widetilde{B_{i}B_{j}} - \tilde{B}_{i}\tilde{B}_{j}) @f$
+!!         @f$ B_{i} B_{j} + \left(\widetilde{B_{i}B_{j}}
+!!                          - \tilde{B}_{i}\tilde{B}_{j} \right) @f$
       type(field_def), parameter :: maxwell_tensor_w_SGS                &
      &    = field_def(n_comp = n_sym_tensor,                            &
      &                name = 'maxwell_tensor_w_SGS',                    &
-     &                math = '$ B_{i}B_{j} + (\widetilde{B_{i}B_{j}}'   &
-     &                     // ' - \tilde{B}_{i}\tilde{B}_{j})$')
+     &                math = '$ B_{i}B_{j}'                             &
+     &                    // ' + \left(\widetilde{B_{i}B_{j}}'          &
+     &                    // ' - \tilde{B}_{i}\tilde{B}_{j} \right)$')
 !>        Field label of Tensor for magnetic induction with SGS term
-!!         @f$ u_{i} B_{j}  - B_{i} u_{J}
-!!         @f$ + \widetilde{u_{i}B_{j}} - \tilde{u}_{i}\tilde{B}_{j}
-!!             - \widetilde{B_{i}u_{j}} + \tilde{B}_{i}\tilde{u}_{j} @f$
+!!         @f$ u_{i} B_{j}  - B_{i} u_{j}
+!!        + \left(\widetilde{u_{i}B_{j}} - \widetilde{B_{i}u_{j}}\right)
+!!        - \left(\tilde{u}_{i}\tilde{B}_{j} 
+!!              - \tilde{B}_{i}\tilde{u}_{j} \right)@f$
       type(field_def), parameter :: induction_tensor_w_SGS              &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'induction_tensor_w_SGS',                  &
-     &                math = '$ u_{i} B_{j}  - B_{i} u_{J}'             &
-     &                     // ' + \widetilde{u_{i}B_{j}}'               &
-     &                     // ' - \tilde{u}_{i}\tilde{B}_{j}'           &
-     &                     // ' - \widetilde{B_{i}u_{j}}'               &
-     &                     // ' + \tilde{B}_{i}\tilde{u}_{j} $')
+     &                math = '$ u_{i} B_{j}  - B_{i} u_{j}'             &
+     &                     // ' + \left( \widetilde{u_{i}B_{j}}'        &
+     &                     // ' - \widetilde{B_{i}u_{j}} \right)'       &
+     &                     // ' - \left( \tilde{u}_{i}\tilde{B}_{j}'    &
+     &                     // ' + \tilde{B}_{i}\tilde{u}_{j} \right)$')
 !
 !>        Field label of heat flux with SGS term
-!!         @f$ u_{i}T + (\widetilde{u_{i}T} - \tilde{u}_{i}\tilde{T}) @f$
+!!         @f$ u_{i}T + \left(\widetilde{u_{i}T}
+!!                          - \tilde{u}_{i}\tilde{T} \right) @f$
       type(field_def), parameter :: heat_flux_w_SGS                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'heat_flux_w_SGS',                         &
-     &                math = '$ u_{i} T + (\widetilde{u_{i}T}'          &
-     &                             // ' - \tilde{u}_{i}\tilde{T}) $')
+     &                math = '$ u_{i} T + \left(\widetilde{u_{i}T}'     &
+     &                    // ' - \tilde{u}_{i}\tilde{T} \right) $')
 !>        Field label of compositinoal flux with SGS term
-!!         @f$ u_{i} C + (\widetilde{u_{i}C} - \tilde{u}_{i}\tilde{C}) @f$
+!!         @f$ u_{i} C + \left(\widetilde{u_{i}C} 
+!!                           - \tilde{u}_{i}\tilde{C} \right) @f$
       type(field_def), parameter :: compostion_flux_w_SGS               &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'compostion_flux_w_SGS',                   &
-     &                math = '$ u_{i} C + (\widetilde{u_{i}C}'          &
-     &                             // ' - \tilde{u}_{i}\tilde{C}) $')
+     &                math = '$ u_{i} C + \left(\widetilde{u_{i}C}'     &
+     &                    // ' - \tilde{u}_{i}\tilde{C} \right) $')
 !
 !>        Field label of advection for momentum with SGS term
 !!         @f$ e_{ijk} \omega_{j} u_{k}
-!!           + e_{ijk} (\widetilde{\omega_{j}u_{k}}
-!!            - \tilde{\omega}_{j}\tilde{u}_{k}) @f$
+!!           + e_{ijk} \left(\widetilde{\omega_{j}u_{k}}
+!!            - \tilde{\omega}_{j}\tilde{u}_{k} \right) @f$
       type(field_def), parameter :: intertia_w_SGS                      &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'intertia_w_SGS',                          &
      &                math = '$ e_{ijk} \omega_{j} u_{k}'               &
-     &                  // ' + e_{ijk} (\widetilde{\omega_{j}u_{k}}'    &
-     &                  // ' - \tilde{\omega}_{j}\tilde{u}_{k}) $')
+     &                // ' + e_{ijk} \left(\widetilde{\omega_{j}u_{k}}' &
+     &                // ' - \tilde{\omega}_{j}\tilde{u}_{k} \right)$')
 !>        Field label of Lorentz force with SGS term
 !!         @f$ e_{ijk} J_{j} B_{k}
-!!           + e_{ijk} (\widetilde{J_{j}B_{k}}
+!!           + e_{ijk} \left(\widetilde{J_{j}B_{k}}
 !!            - \tilde{J}_{j}\tilde{B}_{k} \right) @f$
       type(field_def), parameter :: Lorentz_w_SGS                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'Lorentz_w_SGS',                           &
      &                math = '$ e_{ijk} J_{j} B_{k}'                    &
-     &                    // ' + e_{ijk} (\widetilde{J_{j}B_{k}}'       &
-     &                    // ' - \tilde{J}_{j}\tilde{B}_{k})$')
+     &                    // ' + e_{ijk} \left(\widetilde{J_{j}B_{k}}'  &
+     &                    // ' - \tilde{J}_{j}\tilde{B}_{k} \right)$')
 !
 !>        Field label of inductino for vector potential with SGS term
-!!         @f$ e_{ijk} u_{j} B_{k} @f$
-!!           + e_{ijk} (\widetilde{u{j}B_{k}}
-!!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
+!!         @f$ e_{ijk} u_{j} B_{k} 
+!!           + e_{ijk} \left(\widetilde{u{j}B_{k}}
+!!            - \tilde{u}_{j}\tilde{B}_{k} \right) @f$
       type(field_def), parameter :: vecp_induction_w_SGS                &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'vecp_induction_w_SGS',                    &
      &                math = '$ e_{ijk} u_{j}B_{k}'                     &
-     &                    // ' + e_{ijk} (\widetilde{u{j}B_{k}}'        &
-     &                    // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
+     &                    // ' + e_{ijk} \left(\widetilde{u{j}B_{k}}'   &
+     &                    // ' - \tilde{u}_{j}\tilde{B}_{k} \right)$')
 !>        Field label of magnetic induction with SGS term
-!!         @f$ e_{ijk} \partial_{j} (e_{klm}u_{l}B_{m})  
-!!           + e_{ijk} \partial_{j}(e_{klm} (\widetilde{u{l}B_{m}}
-!!                              - \tilde{u}_{l}\tilde{B}_{m})) @f$
+!!         @f$ e_{ijk} \partial_{j} \left(e_{klm}u_{l}B_{m} \right)  
+!!           + e_{ijk} \partial_{j} e_{klm} \left(\widetilde{u{l}B_{m}}
+!!                            - \tilde{u}_{l}\tilde{B}_{m} \right) @f$
       type(field_def), parameter :: induction_w_SGS                     &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'induction_w_SGS',                         &
-     &                math = '$e_{ijk} \partial_{j}(e_{klm}u_{l}B_{m})' &
-     &                    // ' + e_{ijk} \partial_{j}(e_{klm}'          &
-     &                    // ' (\widetilde{u{l}B_{m}}'                  &
-     &                    // ' - \tilde{u}_{l}\tilde{B}_{m})) $')
+     &                math = '$e_{ijk} \partial_{j}'                    &
+     &                    // ' \left(e_{klm}u_{l}B_{m} \right)'         &
+     &                    // ' + e_{ijk} \partial_{j}'                  &
+     &                    // ' e_{klm} \left(\widetilde{u{l}B_{m}}'     &
+     &                    // ' - \tilde{u}_{l}\tilde{B}_{m}) \right)$')
 !
 ! ----------------------------------------------------------------------
 !

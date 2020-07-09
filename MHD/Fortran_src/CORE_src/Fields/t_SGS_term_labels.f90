@@ -121,22 +121,22 @@
      &                math = '$ -C^{sim} \alpha_{C} g_{i} I_{Ci} $')
 !
 !>        Field label for SGS induction for vector potential
-!!         @f$ e_{ijk} (\widetilde{u_{j}B_{k}}
-!!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
+!!         @f$ e_{ijk} \left(\widetilde{u_{j}B_{k}}
+!!            - \tilde{u}_{j}\tilde{B}_{k} \right) @f$
       type(field_def), parameter :: SGS_vecp_induction                  &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_vecp_induction',                      &
-     &                math = '$ e_{ijk} (\widetilde{u_{j}B_{k}}'        &
-     &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
+     &                math = '$ e_{ijk} \left(\widetilde{u_{j}B_{k}}'   &
+     &                     // ' - \tilde{u}_{j}\tilde{B}_{k} \right)$')
 !>        Field label for SGS magnetic induction
-!!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
-!!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
+!!         @f$ e_{ijk} \partial_{j} e_{klm} \left(\widetilde{u_{l}B_{m}}
+!!            - \tilde{u}_{l}\tilde{B}_{m} \right) @f$
       type(field_def), parameter :: SGS_induction                       &
      &    = field_def(n_comp = n_vector,                                &
      &                name = 'SGS_induction',                           &
-     &                math = '$ e_{ijk} \partual_{j} e_{klm}'           &
-     &                     // ' (\widetilde{u_{l}B_{m}}'                &
-     &                     // ' - \tilde{u}_{j}\tilde{B}_{k}) $')
+     &                math = '$ e_{ijk} \partial_{j} e_{klm}'           &
+     &                     // ' \left(\widetilde{u_{l}B_{m}}'           &
+     &                     // ' - \tilde{u}_{j}\tilde{B}_{k} \right)$')
 !
 !
 !>       Structure of start address for SGS terms
@@ -173,13 +173,13 @@
         integer (kind=kint) :: i_SGS_comp_buo =   izero
 !
 !>        start address for SGS induction for vector potential
-!!         @f$ e_{ijk} (\widetilde{u_{j}B_{k}}
-!!            - \tilde{u}_{j}\tilde{B}_{k}) @f$
+!!         @f$ e_{ijk} \left(\widetilde{u_{j}B_{k}}
+!!            - \tilde{u}_{j}\tilde{B}_{k} \right) @f$
         integer (kind=kint) :: i_SGS_vp_induct =   izero
 !
 !>        start address for SGS induction for vector potential
-!!         @f$ e_{ijk} \partual_{j} e_{klm} (\widetilde{u_{l}B_{m}}
-!!            - \tilde{u}_{l}\tilde{B}_{m} ) @f$
+!!         @f$ e_{ijk} \partial_{j} e_{klm} \left(\widetilde{u_{l}B_{m}}
+!!            - \tilde{u}_{l}\tilde{B}_{m} \right) @f$
         integer (kind=kint) :: i_SGS_induction =   izero
       end type SGS_term_address
 !

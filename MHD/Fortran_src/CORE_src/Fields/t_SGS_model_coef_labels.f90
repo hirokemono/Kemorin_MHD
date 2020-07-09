@@ -94,7 +94,7 @@
      &                name = 'Csim_SGS_Lorentz',                        &
      &                math = '$ C^{sim}_{M}} $')
 !>        Field label for model coefficient of SGS induction
-!!         @f$ C^{sim}_{\alphs} @f$
+!!         @f$ C^{sim}_{\alpha} @f$
       type(field_def), parameter :: Csim_SGS_induction                  &
      &    = field_def(n_comp = n_scalar,                                &
      &                name = 'Csim_SGS_induction',                      &
