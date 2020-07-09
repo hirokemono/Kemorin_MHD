@@ -81,11 +81,11 @@
         if(output_IO_flag(i_step,t_VIZ5%ucd_step) .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)
         call FEM_analyze_VTK_convert                                    &
      &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, sfcing5)
 !
 !  Generate field lines
+        call istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)
         call visualize_convert_vtk                                      &
      &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d,                     &
      &      sfcing5%vtk_file_IO, vtk_out5)

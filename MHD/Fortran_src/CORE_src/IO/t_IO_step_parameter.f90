@@ -26,8 +26,7 @@
 !!     &          istep_ctl, delta_t_ctl, istep_out, dt_out)
 !!      integer(kind = kint) function output_flag(i_step, increment)
 !!
-!!      integer(kind = kint) function iflag_viz_flex_step               &
-!!     &                            (time_d, IO_step)
+!!      logical function iflag_viz_flex_step(time_d, IO_step)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: IO_step
 !!      subroutine istep_file_w_fix_dt(i_step, IO_step)
@@ -183,8 +182,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function iflag_viz_flex_step                 &
-     &                            (time_d, IO_step)
+      logical function iflag_viz_flex_step(time_d, IO_step)
 !
       use t_time_data
 !
@@ -195,13 +193,13 @@
       integer(kind = kint) :: i_now, i_next
 !
 !
-      iflag_viz_flex_step = 1
+      iflag_viz_flex_step = .FALSE.
       if (IO_step%delta_t .eq. zero) return
 !
       t_next = time_d%time + time_d%dt
       i_next = int(t_next / IO_step%delta_t,KIND(i_next))
       i_now =  int(time_d%time / IO_step%delta_t,KIND(i_now))
-      if(i_next .ne. i_now) iflag_viz_flex_step = 0
+      iflag_viz_flex_step = (i_next .ne. i_now)
 !
       end function iflag_viz_flex_step
 !

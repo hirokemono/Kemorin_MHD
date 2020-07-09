@@ -76,11 +76,11 @@
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
         call FEM_analyze_fline                                          &
      &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, viz4)
 !
 !  Generate field lines
+        call istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
         call FLINE_visualize(t_VIZ4%viz_step%FLINE_t,                   &
      &      viz4%geofem, viz4%ele_4_nod, viz4%nod_fld, fline_v)
       end do

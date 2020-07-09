@@ -69,14 +69,13 @@
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
 !
-      integer(kind = kint) :: iflag
 !
-      iflag = iflag_viz_flex_step(time_d, viz_step%PSF_t)               &
-     &     * iflag_viz_flex_step(time_d, viz_step%ISO_t)                &
-     &     * iflag_viz_flex_step(time_d, viz_step%PVR_t)                &
-     &     * iflag_viz_flex_step(time_d, viz_step%FLINE_t)              &
-     &     * iflag_viz_flex_step(time_d, viz_step%LIC_t)
-      iflag_vizs_w_flex_step = (iflag .eq. 0)
+      iflag_vizs_w_flex_step                                            &
+     &      = iflag_viz_flex_step(time_d, viz_step%PSF_t)               &
+     &   .or. iflag_viz_flex_step(time_d, viz_step%ISO_t)               &
+     &   .or. iflag_viz_flex_step(time_d, viz_step%PVR_t)               &
+     &   .or. iflag_viz_flex_step(time_d, viz_step%FLINE_t)             &
+     &   .or. iflag_viz_flex_step(time_d, viz_step%LIC_t)
 !
       end function iflag_vizs_w_flex_step
 !

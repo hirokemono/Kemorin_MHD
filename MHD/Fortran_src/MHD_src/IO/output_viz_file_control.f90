@@ -95,7 +95,7 @@
 !
       iflag_viz_output = .FALSE.
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        iflag_viz_output = (iflag_viz_flex_step(time_d, IO_step) .eq. 0)
+        iflag_viz_output = iflag_viz_flex_step(time_d, IO_step)
       else
         iflag_viz_output = output_IO_flag(i_step_fix, IO_step)
       end if
