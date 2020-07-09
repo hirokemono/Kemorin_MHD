@@ -15,7 +15,7 @@
 !!        type(read_integer_item), intent(inout) :: step_ctl
 !!        type(read_real_item), intent(inout) :: delta_t_ctl
 !!        type(IO_step_param), intent(inout) :: IO_step
-!!      integer(kind = kint) function output_IO_flag(i_step, IO_step)
+!!      logical function output_IO_flag(i_step, IO_step)
 !!        type(IO_step_param), intent(in) :: IO_step
 !!      integer(kind = kint) function set_IO_step(i_step, IO_step)
 !!        type(IO_step_param), intent(inout) :: IO_step
@@ -60,13 +60,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind = kint) function output_IO_flag(i_step, IO_step)
+      logical function output_IO_flag(i_step, IO_step)
 !
       integer (kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(in) :: IO_step
 !
 !
-      output_IO_flag = output_flag(i_step, IO_step%increment)
+      output_IO_flag = (output_flag(i_step, IO_step%increment) .eq. 0)
 !
       end function output_IO_flag
 !

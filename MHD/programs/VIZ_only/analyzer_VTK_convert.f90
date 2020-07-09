@@ -78,7 +78,7 @@
 !
 !
       do i_step = t_VIZ5%init_d%i_time_step, t_VIZ5%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ5%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(i_step,t_VIZ5%ucd_step) .eqv. .FALSE.) cycle
 !
 !  Load field data
         call istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)

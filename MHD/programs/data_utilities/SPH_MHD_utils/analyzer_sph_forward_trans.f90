@@ -96,8 +96,6 @@
       use FEM_analyzer_sph_MHD
       use set_time_step_params
 !
-      integer(kind = kint) :: iflag
-!
 !*  -----------  set initial step data --------------
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+2)
@@ -108,9 +106,8 @@
       do
         call add_one_step(MHD_step1%time_d)
 !
-        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,            &
-     &                         MHD_step1%rst_step)
-        if(iflag .ne. 0) cycle
+        if(output_IO_flag(MHD_step1%time_d%i_time_step,                 &
+     &                    MHD_step1%rst_step) .eqv. .FALSE.) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*

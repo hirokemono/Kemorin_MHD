@@ -62,7 +62,7 @@
 !
 !
       if(      iflag_vizs_w_fix_step(i_step, viz_step)                  &
-     &    .or. output_IO_flag(i_step, t_STR%ucd_step) .eq. 0) then
+     &    .or. output_IO_flag(i_step, t_STR%ucd_step)) then
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'

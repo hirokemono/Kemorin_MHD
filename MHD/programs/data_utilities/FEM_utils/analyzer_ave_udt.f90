@@ -80,7 +80,7 @@
 !
       icou = 1
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
-        if (output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
+        if (output_IO_flag(istep,time_U%ucd_step) .eqv. .FALSE.) cycle
         icou = icou + 1
 !
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)

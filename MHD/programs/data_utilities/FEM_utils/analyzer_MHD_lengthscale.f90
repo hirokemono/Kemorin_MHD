@@ -84,7 +84,7 @@
 !
 !
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
-        if(output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(istep,time_U%ucd_step) .eqv. .FALSE.) cycle
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
         call set_data_by_read_ucd_once(my_rank, istep_ucd,              &

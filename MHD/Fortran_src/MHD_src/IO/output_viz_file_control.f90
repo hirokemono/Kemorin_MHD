@@ -34,16 +34,14 @@
       integer(kind = kint), intent(in) :: i_step
       type(MHD_step_param), intent(in) :: MHD_step
 !
-      integer(kind = kint) :: iflag
 !
-      iflag =  output_IO_flag(i_step, MHD_step%rst_step)                &
-     &       * output_IO_flag(i_step, MHD_step%ucd_step)                &
-     &       * output_IO_flag(i_step, MHD_step%rms_step)                &
-     &       * output_IO_flag(i_step, MHD_step%point_step)              &
-     &       * output_IO_flag(i_step, MHD_step%sgs_IO_step)
       lead_field_data_flag                                              &
      &      = iflag_vizs_w_fix_step(i_step, MHD_step%viz_step)          &
-     &   .or. (iflag .eq. 0)
+     &    .or. output_IO_flag(i_step, MHD_step%rst_step)                &
+     &    .or. output_IO_flag(i_step, MHD_step%ucd_step)                &
+     &    .or. output_IO_flag(i_step, MHD_step%rms_step)                &
+     &    .or. output_IO_flag(i_step, MHD_step%point_step)              &
+     &    .or. output_IO_flag(i_step, MHD_step%sgs_IO_step)
 !
       if(iflag_debug .eq. 0) return
       write(*,*) 'irst: ', output_IO_flag(i_step, MHD_step%rst_step)
@@ -83,8 +81,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function iflag_viz_output                    &
-     &              (iflag_flexible_step, i_step_fix, time_d, IO_step)
+      logical function iflag_viz_output                                 &
+     &               (iflag_flexible_step, i_step_fix, time_d, IO_step)
 !
       use t_time_data
       use t_flex_delta_t_parameter
@@ -95,8 +93,9 @@
       type(IO_step_param), intent(in) :: IO_step
 !
 !
+      iflag_viz_output = .FALSE.
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        iflag_viz_output = iflag_viz_flex_step(time_d, IO_step)
+        iflag_viz_output = (iflag_viz_flex_step(time_d, IO_step) .eq. 0)
       else
         iflag_viz_output = output_IO_flag(i_step_fix, IO_step)
       end if
@@ -114,14 +113,15 @@
       integer(kind = kint), intent(in) :: iflag_flexible_step
       integer(kind = kint), intent(in) :: i_step_fix
       type(time_data), intent(in) :: time_d
-      type(IO_step_param), intent(in) :: IO_step
+      type(IO_step_param), intent(inout) :: IO_step
 !
 !
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        viz_time_step = iflag_viz_flex_step(time_d, IO_step)
+        call istep_file_w_flex_dt(time_d, IO_step)
       else
-        viz_time_step = output_IO_flag(i_step_fix, IO_step)
+        call istep_file_w_fix_dt(i_step_fix, IO_step)
       end if
+      viz_time_step = IO_step%istep_file
 !
       end function viz_time_step
 !

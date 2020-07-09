@@ -43,7 +43,6 @@
       use SPH_analyzer_snap
       use set_time_step_params
 !
-      integer(kind = kint) :: iflag
       type(field_IO), save  :: sph_fst_IO
 !
 !*  -----------  set initial step data --------------
@@ -55,11 +54,8 @@
 !*
       do
         call add_one_step(MHD_step1%time_d)
-!
-        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,            &
-     &                         MHD_step1%rst_step)
-        if(iflag .ne. 0) cycle
-!
+        if(output_IO_flag(MHD_step1%time_d%i_time_step,                 &
+     &                    MHD_step1%rst_step) .eqv. .FALSE.) cycle
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
@@ -118,8 +114,6 @@
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
 !
-      integer(kind = kint) :: iflag
-!
 !
       MHD_files%org_rst_file_IO%iflag_format                            &
      &    = fst_file_IO%iflag_format
@@ -137,9 +131,8 @@
       call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call set_sph_restart_num_to_IO(SPH_MHD%fld, sph_fst_IO)
 !
-      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
-     &                       MHD_step%rst_step)
-      if(iflag .eq. 0) then
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
+     &                  MHD_step%rst_step)) then
         call output_sph_restart_control(MHD_step%time_d%i_time_step,    &
      &      fst_file_IO, MHD_step%time_d, SPH_MHD%fld,                  &
      &      MHD_step%rst_step, sph_fst_IO)
@@ -148,9 +141,8 @@
 !*  -----------  lead energy data --------------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
-     &                       MHD_step%rms_step)
-      if(iflag .eq. 0) then
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
+     &                  MHD_step%rms_step)) then
         if(iflag_debug .gt. 0)                                          &
      &                write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &

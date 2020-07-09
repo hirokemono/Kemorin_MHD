@@ -72,7 +72,7 @@
 !
 !
       if(ucd_param%iflag_format .lt. 0) return
-      if(output_IO_flag(i_step,ucd_step) .ne. 0) return
+      if(output_IO_flag(i_step,ucd_step) .eqv. .FALSE.) return
 !
       istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
       call sel_write_parallel_ucd_file(ucd_step%istep_file,             &
@@ -119,7 +119,7 @@
       integer(kind = kint) :: istep_ucd
 !
 !
-      if(output_IO_flag(i_step,ucd_step) .ne. izero) return
+      if(output_IO_flag(i_step,ucd_step) .eqv. .FALSE.) return
       istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
       call set_data_by_read_ucd_once                                    &
     &    (my_rank, istep_ucd, udt_file_param, nod_fld, t_IO)

@@ -198,12 +198,9 @@
 !
       type(sph_mhd_monitor_data), intent(inout) :: monitor
 !
-      integer(kind = kint) :: iflag
 !
-!
-      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
-     &                       MHD_step%rms_step)
-      if(iflag .ne. 0) return
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
+     &                  MHD_step%rms_step)) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_w_SGS_in_shell                                &

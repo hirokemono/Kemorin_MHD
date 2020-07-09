@@ -81,7 +81,7 @@
 !
 !
       do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(i_step,t_VIZ%ucd_step) .eqv. .FALSE.) cycle
 !
 !  Load field data
         if(iflag_debug .gt. 0)                                          &

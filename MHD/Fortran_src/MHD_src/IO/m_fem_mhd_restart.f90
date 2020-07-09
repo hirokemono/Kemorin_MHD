@@ -235,7 +235,7 @@
       integer(kind = kint) :: istep_rst
 !
 !
-      if(output_IO_flag(i_step, rst_step) .ne. 0) return
+      if(output_IO_flag(i_step, rst_step) .eqv. .FALSE.) return
 !
       istep_rst = set_IO_step(i_step, rst_step)
       call sel_read_step_FEM_field_file                                 &

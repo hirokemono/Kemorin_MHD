@@ -93,7 +93,8 @@
       integer(kind = kint) :: istep_rst
 !
 !
-      if(output_IO_flag(flex_p%istep_max_dt,rst_step) .eq. 0) then
+      if(output_IO_flag(flex_p%istep_max_dt,rst_step)                   &
+     &     .eqv. .FALSE.) then
         istep_rst = IO_step_exc_zero_inc(flex_p%istep_max_dt, rst_step)
         call output_MHD_restart_file(istep_rst, time_d, SGS_par,        &
      &      MHD_files, mesh, iphys, FEM_SGS_wk, nod_fld, fem_fst_IO)

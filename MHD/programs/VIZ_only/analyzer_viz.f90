@@ -84,7 +84,7 @@
 !
 !
       do i_step = t_VIZ1%init_d%i_time_step, t_VIZ1%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ1%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(i_step,t_VIZ1%ucd_step) .eqv. .FALSE.) cycle
         if(iflag_vizs_w_fix_step(i_step, t_VIZ1%viz_step)               &
      &        .eqv. .FALSE.) cycle
 !

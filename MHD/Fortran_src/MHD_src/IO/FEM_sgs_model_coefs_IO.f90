@@ -140,7 +140,8 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(output_IO_flag(i_step_max,MHD_step%sgs_IO_step) .ne. 0) return
+      if(output_IO_flag(i_step_max,MHD_step%sgs_IO_step)                &
+     &     .eqv. .FALSE.) return
       if(my_rank .ne. 0) return
 !
       call output_layered_model_coefs_file                              &

@@ -53,14 +53,12 @@
       integer(kind = kint), intent(in) :: i_step
       type(VIZ_step_params), intent(in) :: viz_step
 !
-      integer(kind = kint) :: iflag
 !
-      iflag = output_IO_flag(i_step, viz_step%PSF_t)    &
-     &                     * output_IO_flag(i_step, viz_step%ISO_t)     &
-     &                     * output_IO_flag(i_step, viz_step%PVR_t)     &
-     &                     * output_IO_flag(i_step, viz_step%FLINE_t)   &
-     &                     * output_IO_flag(i_step, viz_step%LIC_t)
-      iflag_vizs_w_fix_step = (iflag .eq. 0)
+      iflag_vizs_w_fix_step = output_IO_flag(i_step, viz_step%PSF_t)    &
+     &                   .or. output_IO_flag(i_step, viz_step%ISO_t)    &
+     &                   .or. output_IO_flag(i_step, viz_step%PVR_t)    &
+     &                   .or. output_IO_flag(i_step, viz_step%FLINE_t)  &
+     &                   .or. output_IO_flag(i_step, viz_step%LIC_t)
 !
       end function iflag_vizs_w_fix_step
 !

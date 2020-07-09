@@ -203,7 +203,7 @@
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
+      if(output_IO_flag(i_step, MHD_step%rms_step)) then
         if(iflag_debug .gt. 0)                                          &
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
         call output_rms_sph_SGS_mhd_control                             &

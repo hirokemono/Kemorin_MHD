@@ -141,7 +141,7 @@
       integer (kind = kint) :: nd
 !
 !
-      if(output_IO_flag(istep, rms_step) .ne. 0) return
+      if(output_IO_flag(istep, rms_step) .eqv. .FALSE.) return
       if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')                 &
      &            'i_step=', time_d%i_time_step,'time=', time_d%time
 !

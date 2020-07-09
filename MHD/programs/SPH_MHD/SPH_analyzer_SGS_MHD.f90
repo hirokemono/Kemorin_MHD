@@ -202,8 +202,6 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
-      integer(kind = kint) :: iflag
-!
 !*  ----------  add time evolution -----------------
 !*
 !
@@ -254,9 +252,8 @@
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+6)
-      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
-     &                         MHD_step%rst_step)
-      if(iflag .eq. 0) then
+      if(output_IO_flag(MHD_step%time_d%i_time_step,                    &
+     &                  MHD_step%rst_step)) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &     'output_sph_SGS_MHD_rst_control'
         call output_sph_SGS_MHD_rst_control                             &
@@ -282,8 +279,7 @@
 !*  -----------  lead energy data --------------
 !*
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
-      iflag = output_IO_flag(i_step, MHD_step%rms_step)
-      if(iflag .eq. 0) then
+      if(output_IO_flag(i_step, MHD_step%rms_step)) then
         if(iflag_debug .gt. 0)                                          &
      &                write(*,*) 'output_rms_sph_SGS_mhd_control'
         call output_rms_sph_SGS_mhd_control                             &
