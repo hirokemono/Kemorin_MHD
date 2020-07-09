@@ -36,13 +36,14 @@
 !
       integer(kind = kint) :: iflag
 !
-      iflag = iflag_vizs_w_fix_step(i_step, MHD_step%viz_step)          &
-     &       * output_IO_flag(i_step, MHD_step%rst_step)                &
+      iflag =  output_IO_flag(i_step, MHD_step%rst_step)                &
      &       * output_IO_flag(i_step, MHD_step%ucd_step)                &
      &       * output_IO_flag(i_step, MHD_step%rms_step)                &
      &       * output_IO_flag(i_step, MHD_step%point_step)              &
      &       * output_IO_flag(i_step, MHD_step%sgs_IO_step)
-      lead_field_data_flag = (iflag .eq. 0)
+      lead_field_data_flag                                              &
+     &      = iflag_vizs_w_fix_step(i_step, MHD_step%viz_step)          &
+     &   .or. (iflag .eq. 0)
 !
       if(iflag_debug .eq. 0) return
       write(*,*) 'irst: ', output_IO_flag(i_step, MHD_step%rst_step)
@@ -66,7 +67,7 @@
       type(time_data), intent(in) :: time_d
       type(flexible_stepping_parameter), intent(in) :: flex_p
       type(VIZ_step_params), intent(inout) :: viz_step
-      integer(kind = kint), intent(inout) :: viz_flag
+      logical, intent(inout) :: viz_flag
 !
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then

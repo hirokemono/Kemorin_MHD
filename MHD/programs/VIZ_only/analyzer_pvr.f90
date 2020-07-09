@@ -66,16 +66,17 @@
 !
       use t_IO_step_parameter
 !
-      integer(kind=kint ) :: i_step
+      integer(kind = kint) :: i_step
 !
 !
       do i_step = t_VIZ3%init_d%i_time_step, t_VIZ3%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ3%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(i_step,t_VIZ3%viz_step%PVR_t) .ne. izero) cycle
 !
 !  Load field data
+        call istep_file_w_fix_dt(i_step, t_VIZ3%viz_step%PVR_t)
         call FEM_analyze_pvr                                            &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, t_VIZ3%viz_step,    &
-     &      viz3)
+     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, viz3)
 !
 !  Rendering
         call PVR_visualize(t_VIZ3%viz_step%PVR_t,                       &

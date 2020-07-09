@@ -26,8 +26,8 @@
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(phys_data), intent(inout) :: field
-!!      subroutine set_field_data_4_VIZ(iflag, istep,                   &
-!!     &          ucd_step, ucd_param, fem, t_IO, ucd, time_d, field)
+!!      subroutine set_field_data_4_VIZ(istep, ucd_step, ucd_param,     &
+!!     &          fem, t_IO, ucd, time_d, field)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
@@ -136,13 +136,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_data_4_VIZ(iflag, istep,                     &
-     &          ucd_step, ucd_param, fem, t_IO, ucd, time_d, field)
+      subroutine set_field_data_4_VIZ(istep, ucd_step, ucd_param,       &
+     &          fem, t_IO, ucd, time_d, field)
 !
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
-      integer(kind = kint), intent(in) :: iflag, istep
+      integer(kind = kint), intent(in) :: istep
       type(IO_step_param), intent(in) :: ucd_step
       type(field_IO_params), intent(in) :: ucd_param
       type(mesh_data), intent(in) :: fem
@@ -155,7 +155,6 @@
       integer(kind = kint) :: istep_ucd
 !
 !
-      if(iflag .ne. 0) return
       istep_ucd = IO_step_exc_zero_inc(istep, ucd_step)
       call set_data_by_read_ucd(my_rank, istep_ucd,                     &
      &    ucd_param, t_IO, ucd, field)

@@ -8,10 +8,8 @@
 !> @brief Parameteres for time steppings
 !!
 !!@verbatim
-!!      integer(kind = kint) function iflag_vizs_w_fix_step             &
-!!     &                            (i_step, viz_step)
-!!      integer(kind = kint) function iflag_vizs_w_flex_step            &
-!!     &                            (time_d, viz_step)
+!!      logical function iflag_vizs_w_fix_step(i_step, viz_step)
+!!      logical function iflag_vizs_w_flex_step(time_d, viz_step)
 !!      subroutine istep_viz_w_fix_dt(i_step, viz_step)
 !!      subroutine istep_viz_w_flex_dt(time_d, viz_step)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
@@ -50,36 +48,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function iflag_vizs_w_fix_step               &
-     &                            (i_step, viz_step)
+      logical function iflag_vizs_w_fix_step(i_step, viz_step)
 !
       integer(kind = kint), intent(in) :: i_step
       type(VIZ_step_params), intent(in) :: viz_step
 !
+      integer(kind = kint) :: iflag
 !
-      iflag_vizs_w_fix_step = output_IO_flag(i_step, viz_step%PSF_t)    &
+      iflag = output_IO_flag(i_step, viz_step%PSF_t)    &
      &                     * output_IO_flag(i_step, viz_step%ISO_t)     &
      &                     * output_IO_flag(i_step, viz_step%PVR_t)     &
      &                     * output_IO_flag(i_step, viz_step%FLINE_t)   &
      &                     * output_IO_flag(i_step, viz_step%LIC_t)
+      iflag_vizs_w_fix_step = (iflag .eq. 0)
 !
       end function iflag_vizs_w_fix_step
 !
 !-----------------------------------------------------------------------
 !
-      integer(kind = kint) function iflag_vizs_w_flex_step              &
-     &                            (time_d, viz_step)
+      logical function iflag_vizs_w_flex_step(time_d, viz_step)
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
 !
+      integer(kind = kint) :: iflag
 !
-      iflag_vizs_w_flex_step                                            &
-     &      = iflag_viz_flex_step(time_d, viz_step%PSF_t)               &
+      iflag = iflag_viz_flex_step(time_d, viz_step%PSF_t)               &
      &     * iflag_viz_flex_step(time_d, viz_step%ISO_t)                &
      &     * iflag_viz_flex_step(time_d, viz_step%PVR_t)                &
      &     * iflag_viz_flex_step(time_d, viz_step%FLINE_t)              &
      &     * iflag_viz_flex_step(time_d, viz_step%LIC_t)
+      iflag_vizs_w_flex_step = (iflag .eq. 0)
 !
       end function iflag_vizs_w_flex_step
 !

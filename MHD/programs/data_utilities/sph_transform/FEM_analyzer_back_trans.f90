@@ -115,8 +115,8 @@
       use ucd_IO_select
       use nod_phys_send_recv
 !
+      logical, intent(in) :: visval
       integer(kind = kint), intent(in) :: i_step
-      integer(kind = kint), intent(in) :: visval
       type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
@@ -127,10 +127,7 @@
 !*  ----------   Count steps for visualization
 !*
       call istep_viz_w_fix_dt(i_step, viz_step)
-!
-      if(visval .eq. 0) then
-        call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
-      end if
+      if(visval) call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
 !
 !*  -----------  Output volume data --------------
 !*

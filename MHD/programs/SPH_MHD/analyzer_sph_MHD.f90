@@ -110,7 +110,7 @@
       use output_viz_file_control
       use t_sph_trans_arrays_SGS_MHD
 !
-      integer(kind = kint) :: visval, iflag_finish
+      integer(kind = kint) :: iflag_finish
 !
 !     ---------------------
 !
@@ -160,9 +160,8 @@
 !
 !*  ----------- Visualization --------------
 !*
-        visval = iflag_vizs_w_fix_step(MHD_step1%time_d%i_time_step,    &
-     &                                 MHD_step1%viz_step)
-        if(visval .eq. 0) then
+        if(iflag_vizs_w_fix_step(MHD_step1%time_d%i_time_step,          &
+     &                           MHD_step1%viz_step)) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all', my_rank
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &

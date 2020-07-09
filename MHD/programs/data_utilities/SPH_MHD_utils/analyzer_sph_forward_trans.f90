@@ -96,7 +96,7 @@
       use FEM_analyzer_sph_MHD
       use set_time_step_params
 !
-      integer(kind = kint) :: visval, iflag
+      integer(kind = kint) :: iflag
 !
 !*  -----------  set initial step data --------------
 !*

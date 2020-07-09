@@ -83,7 +83,8 @@
 !
       subroutine analyze_zm_kinetic_energy
 !
-      integer(kind=kint ) :: visval, i_step
+      integer(kind=kint ) :: i_step
+      logical :: visval
 !
 !
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
@@ -97,7 +98,7 @@
      &     (files_STR%ucd_file_IO, time_IO_TRNS, ucd_SPH_TRNS, i_step,  &
      &      visval, viz_step_STR)
 !
-        if(visval .eq. 0) then
+        if(visval) then
           call visualize_all(viz_step_STR, t_STR%time_d,                &
      &        femmesh_STR, field_STR, ele_4_nod_SPH_TRANS,              &
      &        jacobians_STR, vizs_TRNS)

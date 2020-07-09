@@ -72,11 +72,12 @@
 !
       do i_step = t_VIZ4%init_d%i_time_step, t_VIZ4%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ4%ucd_step) .ne. izero) cycle
+        if(output_IO_flag(i_step,t_VIZ4%viz_step%FLINE_t) .ne. izero) cycle
 !
 !  Load field data
+        call istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
         call FEM_analyze_fline                                          &
-     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, t_VIZ4%viz_step,    &
-     &      viz4)
+     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, viz4)
 !
 !  Generate field lines
         call FLINE_visualize(t_VIZ4%viz_step%FLINE_t,                   &

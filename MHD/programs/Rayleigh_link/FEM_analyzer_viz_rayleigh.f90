@@ -56,6 +56,7 @@
       type(comm_table_4_assemble), save :: asbl_comm_R
 !
       private :: gen_sph_R, rayleigh_fem, sph_const
+      private :: set_field_data_4_VIZ2
 !
 !-----------------------------------------------------------------------
 !
@@ -160,8 +161,8 @@
 !
       use t_ucd_data
 !
-      integer (kind =kint), intent(in) :: i_step
-      integer(kind = kint), intent(in) :: visval
+      logical, intent(in) :: visval
+      integer(kind = kint), intent(in) :: i_step
       type(time_data), intent(inout) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -171,15 +172,15 @@
       time_d%i_time_step = i_step
       time_d%time = 0.0d0
       time_d%dt = 0.0d0
-      call set_field_data_4_VIZ2                                        &
-     &   (visval, i_step, femmesh_VIZ, field_VIZ)
+      if(visval) call set_field_data_4_VIZ2(i_step,                     &
+     &                                      femmesh_VIZ, field_VIZ)
 !
       end subroutine FEM_analyze_viz_rayleigh
 !
 !-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_data_4_VIZ2(iflag, i_step, fem, field)
+      subroutine set_field_data_4_VIZ2(i_step, fem, field)
 !
       use assemble_nodal_fields
       use nod_phys_send_recv
@@ -187,7 +188,6 @@
       use coordinate_convert_4_sph
       use share_field_data
 !
-      integer(kind = kint), intent(in) :: iflag
       integer(kind = kint), intent(in) :: i_step
       type(mesh_data), intent(in) :: fem
 !
@@ -198,7 +198,6 @@
       integer(kind = kint) :: nd
 !
 !
-      if(iflag .ne. 0) return
       call init_fields_IO_by_rayleigh(rayleigh_ftbl1,                   &
      &    rayleigh_pmesh(my_rank+1), rayleigh_fIO(my_rank+1))
 !

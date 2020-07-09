@@ -76,7 +76,8 @@
 !
       subroutine analyze_viz_rayleigh
 !
-      integer(kind=kint ) :: i_step, visval
+      integer(kind = kint) :: i_step
+      logical :: visval
 !
 !
       do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
@@ -90,7 +91,7 @@
      &     (visval, i_step, t_VIZ%time_d, t_VIZ%viz_step)
 !
 !  Rendering
-        if(visval .eq. 0) then
+        if(visval) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all                                            &
      &       (t_VIZ%viz_step, t_VIZ%time_d, femmesh_VIZ,                &

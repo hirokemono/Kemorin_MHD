@@ -74,8 +74,10 @@
 !
       subroutine evolution_MHD
 !
-      integer(kind=kint ) :: visval
+      use output_viz_file_control
+!
       integer(kind=kint ) :: retval
+      logical :: visval
 !
 !
       retval = 1
@@ -85,13 +87,16 @@
 !  Time evolution
         call FEM_analyze_MHD                                            &
      &     (MHD_files1, FEM_MHD1%geofem, FEM_MHD1%iphys,                &
-     &      FEM_model1, flex_MHD1, MHD_step1, visval, retval, MHD_CG1,  &
+     &      FEM_model1, flex_MHD1, MHD_step1, retval, MHD_CG1,          &
      &      FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1, fem_sq1)
 !
 !     ---------------------
 !
 !  Visualization
-        if (visval.eq.0) then
+        call MHD_viz_routine_flag_and_step                              &
+     &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step,     &
+     &      visval)
+        if (visval) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%field,                          &

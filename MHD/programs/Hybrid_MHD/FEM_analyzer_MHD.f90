@@ -9,7 +9,7 @@
 !!        type(mesh_data), intent(inout) :: fem
 !!      subroutine FEM_analyze_MHD                                      &
 !!     &         (MHD_files, fem, iphys, FEM_model,                     &
-!!     &          flex_MHD, MHD_step, visval, retval, iphys, nod_fld,   &
+!!     &          flex_MHD, MHD_step, retval, iphys, nod_fld,           &
 !!     &          MHD_CG, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, MHD_IO)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -170,7 +170,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_MHD(MHD_files, fem, iphys, FEM_model,      &
-     &          flex_MHD, MHD_step, visval, retval, iphys, nod_fld,     &
+     &          flex_MHD, MHD_step, retval, iphys, nod_fld,             &
      &          MHD_CG, FEM_SGS, SGS_MHD_wk, MHD_IO, fem_sq)
 !
       use t_ucd_file
@@ -200,7 +200,6 @@
 !
       type(FEM_MHD_model_data), intent(in) :: FEM_model
 !
-      integer(kind=kint), intent(inout) :: visval
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -322,10 +321,6 @@
      &         .ge. MHD_step%finish_d%i_end_step) retval = 0
         end if
       end if
-!
-!   Set visualization flag and step
-      call MHD_viz_routine_flag_and_step                                &
-     &   (MHD_step%flex_p, MHD_step%time_d, MHD_step%viz_step, visval)
 !
 !     --------------------- 
 !

@@ -18,7 +18,7 @@
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!      subroutine FEM_analyze_snapshot(i_step, MHD_files, femmesh,     &
-!!     &          iphys, FEM_model, ak_MHD, MHD_step, visval,           &
+!!     &          iphys, FEM_model, ak_MHD, MHD_step,                   &
 !!     &          FEM_SGS, SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: femmesh
@@ -116,7 +116,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_snapshot(i_step, MHD_files, femmesh,       &
-     &          iphys, FEM_model, ak_MHD, MHD_step, visval,             &
+     &          iphys, FEM_model, ak_MHD, MHD_step,                     &
      &          FEM_SGS, SGS_MHD_wk, nod_fld, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
@@ -143,7 +143,6 @@
       type(phys_address), intent(in) :: iphys
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
-      integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       type(FEM_MHD_model_data), intent(inout) :: FEM_model
@@ -239,11 +238,6 @@
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,          &
      &    MHD_step%ucd_step, MHD_step%time_d, MHD_IO%ucd)
-!
-!     ----
-!
-      call MHD_viz_routine_flag_and_step                                &
-     &   (MHD_step%flex_p, MHD_step%time_d, MHD_step%viz_step, visval)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine FEM_analyze_snapshot

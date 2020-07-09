@@ -73,12 +73,9 @@
       type(time_data), intent(inout) :: time_d
       type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
-      integer(kind = kint) :: istep_ucd
 !
-!
-      call istep_file_w_fix_dt(i_step, ucd_step)
-      call set_field_data_4_VIZ(ucd_step%istep_file, i_step, ucd_step,  &
-     &    sfcing%ucd_file_IO, sfcing%geofem,                            &
+      call set_field_data_4_VIZ                                         &
+     &   (i_step, ucd_step, sfcing%ucd_file_IO, sfcing%geofem,          &
      &    sfcing%ucd_time, sfcing%ucd_in, time_d, sfcing%nod_fld)
 !
       end subroutine FEM_analyze_VTK_convert

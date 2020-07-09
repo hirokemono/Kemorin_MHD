@@ -61,12 +61,9 @@
       type(field_IO), intent(inout) :: fld_IO
       type(time_data), intent(inout) :: t_IO
 !
-      integer(kind = kint) :: visval
 !
-!
-      visval = iflag_vizs_w_fix_step(i_step, viz_step)                  &
-    &         * output_IO_flag(i_step, t_STR%ucd_step)
-      if(visval .eq. 0) then
+      if(      iflag_vizs_w_fix_step(i_step, viz_step)                  &
+    &     .or. output_IO_flag(i_step, t_STR%ucd_step) .eq. 0) then
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'

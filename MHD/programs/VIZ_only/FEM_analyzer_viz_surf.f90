@@ -11,12 +11,10 @@
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
-!!      subroutine FEM_analyze_surface                                  &
-!!     &         (i_step, ucd_step, time_d, viz_step, sfcing)
+!!      subroutine FEM_analyze_surface(i_step, ucd_step, time_d, sfcing)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_data), intent(inout) :: time_d
-!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !
@@ -63,26 +61,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_surface                                    &
-     &         (i_step, ucd_step, time_d, viz_step, sfcing)
+      subroutine FEM_analyze_surface(i_step, ucd_step, time_d, sfcing)
 !
       use load_mesh_and_field_4_viz
 !
       integer (kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(inout) :: time_d
-      type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
-      integer (kind =kint) :: iflag
 !
-!
-      call istep_file_w_fix_dt(i_step, viz_step%PSF_t)
-      call istep_file_w_fix_dt(i_step, viz_step%ISO_t)
-!
-      iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
-      call set_field_data_4_VIZ(iflag, i_step, ucd_step,                &
-     &    sfcing%ucd_file_IO, sfcing%geofem,                            &
+      call set_field_data_4_VIZ                                         &
+     &   (i_step, ucd_step, sfcing%ucd_file_IO, sfcing%geofem,          &
      &    sfcing%ucd_time, sfcing%ucd_in, time_d, sfcing%nod_fld)
 !
       end subroutine FEM_analyze_surface

@@ -77,11 +77,14 @@
 !
       do i_step = t_VIZ2%init_d%i_time_step, t_VIZ2%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ2%ucd_step) .ne. izero) cycle
+        if(iflag_vizs_w_fix_step(i_step,t_VIZ2%viz_step)                &
+     &       .eqv. .FALSE.) cycle
 !
 !  Load field data
+        call istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%PSF_t)
+        call istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%ISO_t)
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, t_VIZ2%viz_step,    &
-     &      sfcing2)
+     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, sfcing2)
 !
 !  Generate field lines
         call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &

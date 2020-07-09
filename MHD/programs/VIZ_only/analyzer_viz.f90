@@ -80,25 +80,25 @@
 !
       use load_mesh_and_field_4_viz
 !
-      integer(kind=kint ) :: i_step, visval
+      integer(kind=kint ) :: i_step
 !
 !
       do i_step = t_VIZ1%init_d%i_time_step, t_VIZ1%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ1%ucd_step) .ne. izero) cycle
+        if(iflag_vizs_w_fix_step(i_step, t_VIZ1%viz_step)               &
+     &        .eqv. .FALSE.) cycle
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        visval = iflag_vizs_w_fix_step(i_step, t_VIZ1%viz_step)
-        call FEM_analyze_vizs(visval, i_step,                           &
-     &      t_VIZ1%ucd_step, t_VIZ1%time_d, t_VIZ1%viz_step, viz1)
+        call FEM_analyze_vizs                                           &
+     &     (i_step, t_VIZ1%ucd_step, t_VIZ1%time_d, viz1)
 !
 !  Rendering
-        if(visval .eq. 0) then
-          if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,            &
-     &       viz1%geofem, viz1%nod_fld, viz1%ele_4_nod, viz1%jacobians, &
-     &       vizs_v)
-        end if
+        if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
+        call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
+        call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
+     &     viz1%geofem, viz1%nod_fld, viz1%ele_4_nod, viz1%jacobians,   &
+     &     vizs_v)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

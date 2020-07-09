@@ -93,13 +93,10 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       character(len=kchara) :: fname_tmp
-      integer(kind = kint) :: visval
 !
 !
-      visval = iflag_vizs_w_fix_step(i_step, viz_step)                  &
-     &        * output_IO_flag(i_step, t_STR%ucd_step)
-!
-      if(visval .eq. 0) then
+      if(      iflag_vizs_w_fix_step(i_step, viz_step)                  &
+     &    .or. output_IO_flag(i_step, t_STR%ucd_step) .eq. 0) then
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'read_gauss_global_coefs'

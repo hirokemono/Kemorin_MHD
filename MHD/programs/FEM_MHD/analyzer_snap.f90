@@ -68,7 +68,10 @@
 !
       subroutine analyze
 !
-      integer(kind=kint ) :: i_step, visval
+      use output_viz_file_control
+!
+      integer(kind = kint) :: i_step
+      logical :: visval
 !
 !
       do i_step = MHD_step1%init_d%i_time_step,                         &
@@ -77,11 +80,13 @@
 !  Read and generate fields
         call FEM_analyze_snapshot(i_step, MHD_files1, FEM_MHD1%geofem,  &
      &      FEM_MHD1%iphys, FEM_model1, MHD_CG1%ak_MHD, MHD_step1,      &
-     &      visval, FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field,              &
-     &      MHD_IO1, fem_sq1)
+     &      FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1, fem_sq1)
 !
 !  Visualization
-        if (visval.eq.0) then
+        call MHD_viz_routine_flag_and_step                              &
+     &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step,     &
+     &      visval)
+        if(visval) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_MHD1%geofem, FEM_MHD1%field,                          &

@@ -74,13 +74,14 @@
 !
       subroutine analyze_VTK_convert
 !
-      integer(kind=kint ) :: i_step
+      integer(kind = kint) :: i_step
 !
 !
       do i_step = t_VIZ5%init_d%i_time_step, t_VIZ5%finish_d%i_end_step
         if(output_IO_flag(i_step,t_VIZ5%ucd_step) .ne. izero) cycle
 !
 !  Load field data
+        call istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)
         call FEM_analyze_VTK_convert                                    &
      &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, sfcing5)
 !

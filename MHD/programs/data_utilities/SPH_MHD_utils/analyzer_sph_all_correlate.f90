@@ -113,7 +113,7 @@
       use SGS_MHD_zonal_mean_viz
       use set_time_step_params
 !
-      integer(kind = kint) :: visval, iflag
+      integer(kind = kint) :: iflag
 !
 !*  -----------  set initial step data --------------
 !*
@@ -153,9 +153,8 @@
 !
 !*  ----------- Visualization --------------
 !*
-        visval = iflag_vizs_w_fix_step(MHD_step1%time_d%i_time_step,    &
-     &                                 MHD_step1%viz_step)
-        if(visval .eq. 0) then
+        if(iflag_vizs_w_fix_step(MHD_step1%time_d%i_time_step,          &
+     &                           MHD_step1%viz_step)) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &

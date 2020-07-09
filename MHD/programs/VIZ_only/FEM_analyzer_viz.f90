@@ -8,12 +8,10 @@
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
-!!      subroutine FEM_analyze_vizs                                     &
-!!     &         (visval, i_step, ucd_step, time_d, viz_step, viz)
+!!      subroutine FEM_analyze_vizs(i_step, ucd_step, time_d, viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(time_data), intent(inout) :: time_d
-!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
 !
       module FEM_analyzer_viz
@@ -76,23 +74,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vizs                                       &
-     &         (visval, i_step, ucd_step, time_d, viz_step, viz)
+      subroutine FEM_analyze_vizs(i_step, ucd_step, time_d, viz)
 !
       use t_ucd_data
       use load_mesh_and_field_4_viz
 !
-      integer(kind = kint), intent(in) :: visval
       integer(kind = kint), intent(in) :: i_step
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(inout) :: time_d
-      type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_4_viz), intent(inout) :: viz
 !
 !
-      call istep_viz_w_fix_dt(i_step, viz_step)
-      call set_field_data_4_VIZ                                         &
-     &   (visval, i_step, ucd_step, viz%ucd_file_IO,                    &
+      call set_field_data_4_VIZ(i_step, ucd_step, viz%ucd_file_IO,      &
      &    viz%geofem, viz%ucd_time, viz%ucd, time_d, viz%nod_fld)
 !
       end subroutine FEM_analyze_vizs

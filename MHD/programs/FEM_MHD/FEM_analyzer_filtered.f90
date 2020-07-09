@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_files, fem, iphys,  &
-!!     &          FEM_model, ak_MHD, MHD_step, visval, FEM_SGS,         &
+!!     &          FEM_model, ak_MHD, MHD_step, FEM_SGS,                 &
 !!     &          SGS_MHD_wk, nod_fld, ucd, MHD_IO, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(mesh_data), intent(in) :: fem
@@ -49,7 +49,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered(i_step, MHD_files, fem, iphys,    &
-     &          FEM_model, ak_MHD, MHD_step, visval, FEM_SGS,           &
+     &          FEM_model, ak_MHD, MHD_step, FEM_SGS,                   &
      &          SGS_MHD_wk, nod_fld, ucd, MHD_IO, fem_sq)
 !
       use m_fem_mhd_restart
@@ -79,7 +79,6 @@
       type(FEM_MHD_model_data), intent(in) :: FEM_model
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !
-      integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -179,11 +178,6 @@
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, MHD_step%flex_p%istep_max_dt,          &
      &    MHD_step%ucd_step, MHD_step%time_d, ucd)
-!
-!     ----
-!
-      call MHD_viz_routine_flag_and_step                                &
-     &   (MHD_step%flex_p, MHD_step%time_d, MHD_step%viz_step, visval)
 !
       end subroutine FEM_analyze_filtered
 !
