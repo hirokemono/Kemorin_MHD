@@ -66,7 +66,7 @@
 !
       use t_IO_step_parameter
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, istep_pvr
 !
 !
       do i_step = t_VIZ3%init_d%i_time_step, t_VIZ3%finish_d%i_end_step
@@ -79,9 +79,9 @@
      &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, viz3)
 !
 !  Rendering
-        t_VIZ3%viz_step%PVR_t%istep_file = istep_file_w_fix_dt(i_step, t_VIZ3%viz_step%PVR_t)
-        call PVR_visualize(t_VIZ3%viz_step%PVR_t,                       &
-     &      viz3%geofem, viz3%jacobians, viz3%nod_fld, pvr_v)
+        istep_pvr = istep_file_w_fix_dt(i_step, t_VIZ3%viz_step%PVR_t)
+        call PVR_visualize(istep_pvr, viz3%geofem, viz3%jacobians,      &
+     &      viz3%nod_fld, pvr_v)
       end do
 !
       end subroutine analyze_pvr

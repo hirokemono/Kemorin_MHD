@@ -87,12 +87,12 @@
         if(iflag_debug .gt. 0)                                          &
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
         visval = iflag_vizs_w_fix_step(i_step, t_VIZ%viz_step)
-        call FEM_analyze_viz_rayleigh                                   &
-     &     (visval, i_step, t_VIZ%time_d, t_VIZ%viz_step)
+        call FEM_analyze_viz_rayleigh(visval, i_step, t_VIZ%time_d)
 !
 !  Rendering
         if(visval) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
+          call istep_viz_w_fix_dt(i_step, t_VIZ%viz_step)
           call visualize_all                                            &
      &       (t_VIZ%viz_step, t_VIZ%time_d, femmesh_VIZ,                &
      &        field_VIZ, ele_4_nod_VIZ, jacobians_VIZ, vizs_v)

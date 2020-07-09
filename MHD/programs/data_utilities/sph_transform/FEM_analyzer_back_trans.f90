@@ -11,8 +11,7 @@
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(ucd_data), intent(inout) :: ucd
 !!      subroutine FEM_analyze_back_trans                               &
-!!     &         (ucd_param, t_IO, ucd, i_step, visval, viz_step)
-!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!     &         (ucd_param, t_IO, ucd, i_step, visval)
 !
       module FEM_analyzer_back_trans
 !
@@ -105,7 +104,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_back_trans                                 &
-     &         (ucd_param, t_IO, ucd, i_step, visval, viz_step)
+     &         (ucd_param, t_IO, ucd, i_step, visval)
 !
       use t_ctl_params_sph_trans
       use t_time_data
@@ -121,12 +120,9 @@
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
-      type(VIZ_step_params), intent(inout) :: viz_step
-!
 !
 !*  ----------   Count steps for visualization
 !*
-      call istep_viz_w_fix_dt(i_step, viz_step)
       if(visval) call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
 !
 !*  -----------  Output volume data --------------

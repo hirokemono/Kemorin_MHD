@@ -148,6 +148,8 @@
      &                           MHD_step1%viz_step)) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+          call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
+     &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,      &
      &        jacobians_VIZ1, vizs1)

@@ -94,11 +94,11 @@
      &      SPH_TRNS, time_IO_TRNS, sph_trns_IO)
 !
         visval = iflag_vizs_w_fix_step(i_step, viz_step_STR)
-        call FEM_analyze_back_trans                                     &
-     &     (files_STR%ucd_file_IO, time_IO_TRNS, ucd_SPH_TRNS, i_step,  &
-     &      visval, viz_step_STR)
+        call FEM_analyze_back_trans(files_STR%ucd_file_IO,              &
+     &      time_IO_TRNS, ucd_SPH_TRNS, i_step, visval)
 !
         if(visval) then
+          call istep_viz_w_fix_dt(i_step, viz_step_STR)
           call visualize_all(viz_step_STR, t_STR%time_d,                &
      &        femmesh_STR, field_STR, ele_4_nod_SPH_TRANS,              &
      &        jacobians_STR, vizs_TRNS)

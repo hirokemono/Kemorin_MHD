@@ -161,16 +161,19 @@
      &                           MHD_step1%viz_step)) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+          call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
+     &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,      &
      &        jacobians_VIZ1, vizs1)
 !*
 !*  ----------- Zonal means --------------
 !*
-          call SGS_MHD_zmean_sections                                   &
-     &       (MHD_step1%viz_step, MHD_step1%time_d,                     &
-     &        SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK, SPH_SGS1,   &
-     &        FEM_d1%field, zmeans1)
+          if(MHD_step1%viz_step%istep_psf .ge. 0) then
+            call SGS_MHD_zmean_sections(MHD_step1%viz_step%istep_psf,   &
+     &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
+     &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field, zmeans1)
+          end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
 !
@@ -267,6 +270,8 @@
      &                         MHD_step1%viz_step)) then
         if (iflag_debug.eq.1) write(*,*) 'visualize_all'
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
+        call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,           &
+     &                          MHD_step1%viz_step)
         call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,        &
      &      FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,        &
      &      jacobians_VIZ1, vizs1)
@@ -297,7 +302,7 @@
           call PVR_initialize(FEM_d1%geofem, FEM_d1%field,              &
      &        MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
           call calypso_MPI_barrier
-          call PVR_visualize(MHD_step1%viz_step%PVR_t,                  &
+          call PVR_visualize(MHD_step1%viz_step%PVR_t%istep_file,       &
      &        FEM_d1%geofem, jacobians_VIZ1, FEM_d1%field, vizs1%pvr)
           call dealloc_pvr_data(vizs1%pvr)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)

@@ -67,7 +67,7 @@
 !
       subroutine analyze_fline
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, istep_fline
 !
 !
       do i_step = t_VIZ4%init_d%i_time_step, t_VIZ4%finish_d%i_end_step
@@ -80,9 +80,10 @@
      &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, viz4)
 !
 !  Generate field lines
-        t_VIZ4%viz_step%FLINE_t%istep_file = istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
-        call FLINE_visualize(t_VIZ4%viz_step%FLINE_t,                   &
-     &      viz4%geofem, viz4%ele_4_nod, viz4%nod_fld, fline_v)
+        istep_fline                                                     &
+     &      = istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
+        call FLINE_visualize(istep_fline, viz4%geofem, viz4%ele_4_nod,  &
+     &      viz4%nod_fld, fline_v)
       end do
 !
       end subroutine analyze_fline

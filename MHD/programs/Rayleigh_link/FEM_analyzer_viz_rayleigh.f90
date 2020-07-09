@@ -10,10 +10,8 @@
 !!      subroutine FEM_initialize_viz_rayleigh(viz_step)
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
-!!      subroutine FEM_analyze_viz_rayleigh                             &
-!!     &         (visval, i_step, time_d, viz_step)
+!!      subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d)
 !!        type(time_data), intent(inout) :: time_d
-!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!@endverbatim
 !
       module FEM_analyzer_viz_rayleigh
@@ -156,18 +154,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_viz_rayleigh                               &
-     &         (visval, i_step, time_d, viz_step)
+      subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d)
 !
       use t_ucd_data
 !
       logical, intent(in) :: visval
       integer(kind = kint), intent(in) :: i_step
       type(time_data), intent(inout) :: time_d
-      type(VIZ_step_params), intent(inout) :: viz_step
 !
-!
-      call istep_viz_w_fix_dt(i_step, viz_step)
 !
       time_d%i_time_step = i_step
       time_d%time = 0.0d0

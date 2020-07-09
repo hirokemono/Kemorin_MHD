@@ -36,10 +36,21 @@
         type(IO_step_param) :: ISO_t
 !>        time step paremters for volume rendering
         type(IO_step_param) :: PVR_t
-!>        time step paremters for field lines
-        type(IO_step_param) :: FLINE_t
 !>        time step paremters for LIC volume rendering
         type(IO_step_param) :: LIC_t
+!>        time step paremters for field lines
+        type(IO_step_param) :: FLINE_t
+!
+!>        step number for sectioning file
+        integer(kind = kint) :: istep_psf = 0
+!>        step number for isosurface file
+        integer(kind = kint) :: istep_iso = 0
+!>        step number for volume rendering file
+        integer(kind = kint) :: istep_pvr = 0
+!>        step number for LIC volume rendering file
+        integer(kind = kint) :: istep_lic = 0
+!>        step number for field lines file
+        integer(kind = kint) :: istep_fline = 0
       end type VIZ_step_params
 !
 !-----------------------------------------------------------------------
@@ -87,11 +98,12 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      viz_step%PSF_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%PSF_t)
-      viz_step%ISO_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%ISO_t)
-      viz_step%PVR_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%PVR_t)
-      viz_step%FLINE_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%FLINE_t)
-      viz_step%LIC_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%LIC_t)
+      viz_step%istep_psf = istep_file_w_fix_dt(i_step, viz_step%PSF_t)
+      viz_step%istep_iso = istep_file_w_fix_dt(i_step, viz_step%ISO_t)
+      viz_step%istep_pvr = istep_file_w_fix_dt(i_step, viz_step%PVR_t)
+      viz_step%istep_lic = istep_file_w_fix_dt(i_step, viz_step%LIC_t)
+      viz_step%istep_fline                                              &
+     &          = istep_file_w_fix_dt(i_step, viz_step%FLINE_t)
 !
       end subroutine istep_viz_w_fix_dt
 !
@@ -103,11 +115,12 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      viz_step%PSF_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%PSF_t)
-      viz_step%ISO_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%ISO_t)
-      viz_step%PVR_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%PVR_t)
-      viz_step%FLINE_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%FLINE_t)
-      viz_step%LIC_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%LIC_t)
+      viz_step%istep_psf = istep_file_w_flex_dt(time_d, viz_step%PSF_t)
+      viz_step%istep_iso = istep_file_w_flex_dt(time_d, viz_step%ISO_t)
+      viz_step%istep_pvr = istep_file_w_flex_dt(time_d, viz_step%PVR_t)
+      viz_step%istep_lic = istep_file_w_flex_dt(time_d, viz_step%LIC_t)
+      viz_step%istep_fline                                              &
+     &          = istep_file_w_flex_dt(time_d, viz_step%FLINE_t)
 !
       end subroutine istep_viz_w_flex_dt
 !

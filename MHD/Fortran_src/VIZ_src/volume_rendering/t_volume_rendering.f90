@@ -10,10 +10,9 @@
 !!     &         (id_control, pvr_ctls, pvr, iflag_redraw)
 !!      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
 !!      subroutine PVR_initialize(fem, nod_fld, pvr)
-!!      subroutine PVR_visualize(PVR_t, fem, jacs, nod_fld, pvr)
+!!      subroutine PVR_visualize(istep_pvr, fem, jacs, nod_fld, pvr)
 !!      subroutine alloc_pvr_data(pvr)
 !!      subroutine dealloc_pvr_data(pvr)
-!!        type(IO_step_param), intent(in) :: PVR_t
 !!        type(mesh_data), intent(in) :: fem
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,7 +38,6 @@
       use t_phys_data
       use t_jacobians
 !
-      use t_IO_step_parameter
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -229,12 +227,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine PVR_visualize(PVR_t, fem, jacs, nod_fld, pvr)
+      subroutine PVR_visualize(istep_pvr, fem, jacs, nod_fld, pvr)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
 !
-      type(IO_step_param), intent(in) :: PVR_t
+      integer(kind = kint), intent(in) :: istep_pvr
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
@@ -244,14 +242,13 @@
       integer(kind = kint) :: i_pvr, ist_rdr, ist_img
 !
 !
-      if(pvr%num_pvr.le.0 .or. PVR_t%istep_file.le.0) return
+      if(pvr%num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+1)
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call each_PVR_rendering                                         &
-     &     (PVR_t%istep_file, fem%mesh, jacs, nod_fld,                  &
+        call each_PVR_rendering(istep_pvr, fem%mesh, jacs, nod_fld,     &
      &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),                &
      &      pvr%pvr_rgb(ist_img))
       end do
@@ -268,7 +265,7 @@
       end do
       do i_pvr = 1, pvr%num_pvr_images
         call sel_write_pvr_image_file                                   &
-     &     (iminus, PVR_t%istep_file, pvr%pvr_rgb(i_pvr))
+     &     (iminus, istep_pvr, pvr%pvr_rgb(i_pvr))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+2)
 !
@@ -279,8 +276,8 @@
         if(pvr%pvr_param(i_pvr)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
           ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-          call each_PVR_rendering_w_rot(PVR_t%istep_file,               &
-     &        fem%mesh, fem%group, jacs, nod_fld,                       &
+          call each_PVR_rendering_w_rot                                 &
+     &       (istep_pvr, fem%mesh, fem%group, jacs, nod_fld,            &
      &        pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),              &
      &        pvr%pvr_rgb(ist_img))
         end if

@@ -3,9 +3,8 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!!      subroutine SGS_MHD_zmean_sections(viz_step, time_d,             &
+!!      subroutine SGS_MHD_zmean_sections(istep_psf, time_d,            &
 !!     &          sph, fem, WK, SPH_SGS, nod_fld, zmeans)
-!!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) :: sph
 !!        type(time_data), intent(in) :: time_d
@@ -24,7 +23,6 @@
       use calypso_mpi
 !
       use t_SGS_control_parameter
-      use t_VIZ_step_parameter
       use t_time_data
       use t_mesh_data
       use t_phys_data
@@ -45,13 +43,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_MHD_zmean_sections(viz_step, time_d,               &
+      subroutine SGS_MHD_zmean_sections(istep_psf, time_d,              &
      &          sph, fem, WK, SPH_SGS, nod_fld, zmeans)
 !
       use FEM_analyzer_sph_SGS_MHD
       use nod_phys_send_recv
 !
-      type(VIZ_step_params), intent(in) :: viz_step
+      integer(kind = kint), intent(in) :: istep_psf
       type(sph_grids), intent(in) :: sph
 !
       type(time_data), intent(in) :: time_d
@@ -63,17 +61,19 @@
       type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
 !
 !
-      call SPH_MHD_zonal_mean_section(viz_step, time_d,                 &
-     &    sph, fem, nod_fld, zmeans%zm_psf)
-      call SGS_MHD_zonal_RMS_section(viz_step, time_d, SPH_SGS%SGS_par, &
-     &    sph, fem, WK, SPH_SGS%trns_WK_LES, nod_fld, zmeans%zrms_psf)
+      call SPH_MHD_zonal_mean_section                                   &
+     &   (istep_psf, time_d, sph, fem, nod_fld, zmeans%zm_psf)
+!
+      call SGS_MHD_zonal_RMS_section                                    &
+     &   (istep_psf, time_d, SPH_SGS%SGS_par, sph, fem,                 &
+     &    WK, SPH_SGS%trns_WK_LES, nod_fld, zmeans%zrms_psf)
 !
       end subroutine SGS_MHD_zmean_sections
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_MHD_zonal_RMS_section(viz_step, time_d, SGS_par,   &
+      subroutine SGS_MHD_zonal_RMS_section(istep_psf, time_d, SGS_par,  &
      &          sph, fem, WK, WK_LES, nod_fld, zrms_psf)
 !
       use m_elapsed_labels_4_VIZ
@@ -81,7 +81,7 @@
       use sph_rtp_zonal_rms_data
       use nod_phys_send_recv
 !
-      type(VIZ_step_params), intent(in) :: viz_step
+      integer(kind = kint), intent(in) :: istep_psf
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
 !
@@ -94,7 +94,6 @@
       type(sectioning_module), intent(inout) :: zrms_psf
 !
 !
-      if(viz_step%PSF_t%istep_file.le.0) return
       if(zrms_psf%num_psf .le. 0) return
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
@@ -108,7 +107,7 @@
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if(iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'
       call SECTIONING_visualize                                         &
-     &   (viz_step%PSF_t, time_d, fem, nod_fld, zrms_psf)
+     &   (istep_psf, time_d, fem, nod_fld, zrms_psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       end subroutine SGS_MHD_zonal_RMS_section

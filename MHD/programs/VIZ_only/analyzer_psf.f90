@@ -85,8 +85,11 @@
      &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, sfcing2)
 !
 !  Generate field lines
-        t_VIZ2%viz_step%PSF_t%istep_file = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%PSF_t)
-        t_VIZ2%viz_step%ISO_t%istep_file = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%ISO_t)
+        t_VIZ2%viz_step%istep_psf                                       &
+     &     = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%PSF_t)
+        t_VIZ2%viz_step%istep_iso                                       &
+     &     = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%ISO_t)
+!
         call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
      &      sfcing2%geofem, sfcing2%nod_fld, viz_psfs2)
       end do
