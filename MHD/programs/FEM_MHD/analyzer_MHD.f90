@@ -93,9 +93,10 @@
 !     ---------------------
 !
 !  Visualization
-        call MHD_viz_routine_flag_and_step                              &
-     &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step,     &
-     &      visval)
+       visval = MHD_viz_routine_flag                                    &
+     &       (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
+       call MHD_viz_routine_step                                        &
+     &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
         if (visval) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &

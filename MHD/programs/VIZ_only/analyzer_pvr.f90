@@ -79,7 +79,7 @@
      &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, viz3)
 !
 !  Rendering
-        call istep_file_w_fix_dt(i_step, t_VIZ3%viz_step%PVR_t)
+        t_VIZ3%viz_step%PVR_t%istep_file = istep_file_w_fix_dt(i_step, t_VIZ3%viz_step%PVR_t)
         call PVR_visualize(t_VIZ3%viz_step%PVR_t,                       &
      &      viz3%geofem, viz3%jacobians, viz3%nod_fld, pvr_v)
       end do

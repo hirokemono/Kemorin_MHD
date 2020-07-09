@@ -29,10 +29,12 @@
 !!      logical function iflag_viz_flex_step(time_d, IO_step)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(in) :: IO_step
-!!      subroutine istep_file_w_fix_dt(i_step, IO_step)
-!!      subroutine istep_file_w_flex_dt(time_d, IO_step)
+!!      integer(kind = kint) function istep_file_w_fix_dt               &
+!!     &                            (i_step, IO_step)
+!!      integer(kind = kint) function                                   &
+!!     &                    istep_file_w_flex_dt(time_d, IO_step)
 !!        type(time_data), intent(in) :: time_d
-!!        type(IO_step_param), intent(inout) :: IO_step
+!!        type(IO_step_param), intent(in) :: IO_step
 !!@endverbatim
 !!
       module  t_IO_step_parameter
@@ -206,42 +208,44 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine istep_file_w_fix_dt(i_step, IO_step)
+      integer(kind = kint) function istep_file_w_fix_dt                 &
+     &                            (i_step, IO_step)
 !
       integer(kind = kint), intent(in) :: i_step
-      type(IO_step_param), intent(inout) :: IO_step
+      type(IO_step_param), intent(in) :: IO_step
 !
 !
-      IO_step%istep_file = -ione
+      istep_file_w_fix_dt = -ione
       if(IO_step%increment .eq. izero) return
       if (mod(i_step,IO_step%increment) .eq. izero) then
-        IO_step%istep_file = i_step / IO_step%increment
+        istep_file_w_fix_dt = i_step / IO_step%increment
       end if
 !
-      end subroutine istep_file_w_fix_dt
+      end function istep_file_w_fix_dt
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine istep_file_w_flex_dt(time_d, IO_step)
+      integer(kind = kint) function                                     &
+     &                    istep_file_w_flex_dt(time_d, IO_step)
 !
       use t_time_data
 !
       type(time_data), intent(in) :: time_d
-      type(IO_step_param), intent(inout) :: IO_step
+      type(IO_step_param), intent(in) :: IO_step
 !
       real(kind= kreal) :: t_next
       integer(kind = kint) :: i_now, i_next
 !
 !
-      IO_step%istep_file = -ione
+      istep_file_w_flex_dt = -ione
       if(IO_step%delta_t .eq. zero) return
 !
       t_next = time_d%time + time_d%dt
       i_next = int(t_next / IO_step%delta_t, KIND(i_next))
       i_now =  int(time_d%time / IO_step%delta_t, KIND(i_now))
-      if(i_next .ne. i_now) IO_step%istep_file = i_next
+      if(i_next .ne. i_now) istep_file_w_flex_dt = i_next
 !
-      end subroutine istep_file_w_flex_dt
+      end function istep_file_w_flex_dt
 !
 ! -----------------------------------------------------------------------
 !

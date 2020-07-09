@@ -87,11 +87,11 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      call istep_file_w_fix_dt(i_step, viz_step%PSF_t)
-      call istep_file_w_fix_dt(i_step, viz_step%ISO_t)
-      call istep_file_w_fix_dt(i_step, viz_step%PVR_t)
-      call istep_file_w_fix_dt(i_step, viz_step%FLINE_t)
-      call istep_file_w_fix_dt(i_step, viz_step%LIC_t)
+      viz_step%PSF_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%PSF_t)
+      viz_step%ISO_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%ISO_t)
+      viz_step%PVR_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%PVR_t)
+      viz_step%FLINE_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%FLINE_t)
+      viz_step%LIC_t%istep_file = istep_file_w_fix_dt(i_step, viz_step%LIC_t)
 !
       end subroutine istep_viz_w_fix_dt
 !
@@ -103,11 +103,11 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      call istep_file_w_flex_dt(time_d, viz_step%PSF_t)
-      call istep_file_w_flex_dt(time_d, viz_step%ISO_t)
-      call istep_file_w_flex_dt(time_d, viz_step%PVR_t)
-      call istep_file_w_flex_dt(time_d, viz_step%FLINE_t)
-      call istep_file_w_flex_dt(time_d, viz_step%LIC_t)
+      viz_step%PSF_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%PSF_t)
+      viz_step%ISO_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%ISO_t)
+      viz_step%PVR_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%PVR_t)
+      viz_step%FLINE_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%FLINE_t)
+      viz_step%LIC_t%istep_file = istep_file_w_flex_dt(time_d, viz_step%LIC_t)
 !
       end subroutine istep_viz_w_flex_dt
 !
