@@ -12,6 +12,7 @@
 #import "KemoViewerOpenGLView.h"
 #import "KemoviewerController.h"
 #import "RGBAMapController.h"
+#import "ElasticMenuWindow.h"
 #include "kemoviewer.h"
 
 @interface PsfController : NSObject {
@@ -21,6 +22,8 @@
 	IBOutlet KemoviewerController*  _kemoviewControl;
     IBOutlet NSPathControl *_psfPathControl;
     IBOutlet NSColorWell *PSFPatchColorWell;
+    
+    IBOutlet ElasticMenuWindowController * _ElasticControl;
     
 	RGBAMapController * rgbaMapObject;
 	ColorMapController * colorMapObject;

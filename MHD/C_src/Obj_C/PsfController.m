@@ -127,6 +127,7 @@
 	self.rgbaMapObject =    [RGBAMapController alloc];
 	self.colorMapObject =   [ColorMapController alloc];
 	self.opacityMapObject = [OpacityMapController alloc];
+    [_ElasticControl UpdateWindow:0];
 }
 
 - (id) CopyPsfDisplayFlagsFromC
@@ -461,6 +462,7 @@
 	[_kemoviewControl SetViewTypeMenu:id_viewtype];
 	
 	self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
+    [_ElasticControl UpdateWindow:self.DrawPsfFlag];
 	[self CopyPsfDisplayFlagsFromC];
 	[self SetPsfFieldMenu];
 	[self SetPsfComponentMenu:0];
@@ -566,6 +568,7 @@
     [self ResetCurrentPsfParam];
     int num_loaded = kemoview_close_PSF_view();
     self.DrawPsfFlag = kemoview_get_PSF_loaded_params(DRAW_SWITCH);
+    [_ElasticControl UpdateWindow:self.DrawPsfFlag];
     
 	if(num_loaded > 0){
         [self CopyPsfDisplayFlagsFromC];

@@ -11,7 +11,6 @@
 		1878DDBB1405A7F10081E876 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1878DDB81405A7F10081E876 /* OpenGL.framework */; };
 		1878DDBC1405A7F10081E876 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1878DDB91405A7F10081E876 /* libz.dylib */; };
 		1878DEFD1405A8CD0081E876 /* Colormap_EditorAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1878DEFC1405A8CD0081E876 /* Colormap_EditorAppDelegate.m */; };
-		18BA1CC015E4747000AA4F3B /* gl2ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 18BA1CB615E4747000AA4F3B /* gl2ps.c */; };
 		18BA1D6A15E4753C00AA4F3B /* cal_surface_center_normal_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18BA1CC815E4753C00AA4F3B /* cal_surface_center_normal_c.c */; };
 		18BA1D6B15E4753C00AA4F3B /* check_psf_data_viewer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18BA1CCA15E4753C00AA4F3B /* check_psf_data_viewer_c.c */; };
 		18BA1D6C15E4753C00AA4F3B /* check_viewer_mesh_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18BA1CCC15E4753C00AA4F3B /* check_viewer_mesh_c.c */; };
@@ -98,7 +97,6 @@
 		18C4C502140623430019B915 /* ElementGroupTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C497140623420019B915 /* ElementGroupTableController.m */; };
 		18C4C503140623430019B915 /* fillRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C499140623420019B915 /* fillRectView.m */; };
 		18C4C504140623430019B915 /* FlineController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C49B140623420019B915 /* FlineController.m */; };
-		18C4C506140623430019B915 /* GLString.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C49F140623420019B915 /* GLString.m */; };
 		18C4C508140623430019B915 /* Kemoview_IO_Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C4A3140623420019B915 /* Kemoview_IO_Controller.m */; };
 		18C4C509140623430019B915 /* KemoviewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C4A5140623420019B915 /* KemoviewerController.m */; };
 		18C4C50A140623430019B915 /* KemoviewerObjectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 18C4C4A7140623420019B915 /* KemoviewerObjectController.m */; };
@@ -127,8 +125,6 @@
 		1878DDBF1405A8000081E876 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		1878DEFB1405A8CD0081E876 /* Colormap_EditorAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Colormap_EditorAppDelegate.h; sourceTree = "<group>"; };
 		1878DEFC1405A8CD0081E876 /* Colormap_EditorAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Colormap_EditorAppDelegate.m; sourceTree = "<group>"; };
-		18BA1CB615E4747000AA4F3B /* gl2ps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gl2ps.c; sourceTree = "<group>"; };
-		18BA1CB715E4747000AA4F3B /* gl2ps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gl2ps.h; sourceTree = "<group>"; };
 		18BA1CC815E4753C00AA4F3B /* cal_surface_center_normal_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cal_surface_center_normal_c.c; sourceTree = "<group>"; };
 		18BA1CC915E4753C00AA4F3B /* cal_surface_center_normal_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cal_surface_center_normal_c.h; sourceTree = "<group>"; };
 		18BA1CCA15E4753C00AA4F3B /* check_psf_data_viewer_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = check_psf_data_viewer_c.c; sourceTree = "<group>"; };
@@ -300,8 +296,6 @@
 		18C4C499140623420019B915 /* fillRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fillRectView.m; sourceTree = "<group>"; };
 		18C4C49A140623420019B915 /* FlineController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlineController.h; sourceTree = "<group>"; };
 		18C4C49B140623420019B915 /* FlineController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlineController.m; sourceTree = "<group>"; };
-		18C4C49E140623420019B915 /* GLString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLString.h; sourceTree = "<group>"; };
-		18C4C49F140623420019B915 /* GLString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLString.m; sourceTree = "<group>"; };
 		18C4C4A2140623420019B915 /* Kemoview_IO_Controller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kemoview_IO_Controller.h; sourceTree = "<group>"; };
 		18C4C4A3140623420019B915 /* Kemoview_IO_Controller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Kemoview_IO_Controller.m; sourceTree = "<group>"; };
 		18C4C4A4140623420019B915 /* KemoviewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KemoviewerController.h; sourceTree = "<group>"; };
@@ -378,16 +372,6 @@
 				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
-		18BA1CB315E4747000AA4F3B /* gl2ps-1.3.6 */ = {
-			isa = PBXGroup;
-			children = (
-				18BA1CB615E4747000AA4F3B /* gl2ps.c */,
-				18BA1CB715E4747000AA4F3B /* gl2ps.h */,
-			);
-			name = "gl2ps-1.3.6";
-			path = "../External_libs/gl2ps-1.3.6";
 			sourceTree = "<group>";
 		};
 		18BA1CC715E4753C00AA4F3B /* CORE_C */ = {
@@ -570,7 +554,6 @@
 			children = (
 				18BA1CC715E4753C00AA4F3B /* CORE_C */,
 				18BA1D1315E4753C00AA4F3B /* KEMO_GL */,
-				18BA1CB315E4747000AA4F3B /* gl2ps-1.3.6 */,
 			);
 			name = C_src;
 			path = ../../C_src;
@@ -589,8 +572,6 @@
 				18C4C499140623420019B915 /* fillRectView.m */,
 				18C4C49A140623420019B915 /* FlineController.h */,
 				18C4C49B140623420019B915 /* FlineController.m */,
-				18C4C49E140623420019B915 /* GLString.h */,
-				18C4C49F140623420019B915 /* GLString.m */,
 				18C4C4A2140623420019B915 /* Kemoview_IO_Controller.h */,
 				18C4C4A3140623420019B915 /* Kemoview_IO_Controller.m */,
 				18C4C4A4140623420019B915 /* KemoviewerController.h */,
@@ -692,6 +673,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Colormap_Editor" */;
 			compatibilityVersion = "Xcode 3.1";
 			developmentRegion = English;
@@ -735,7 +719,6 @@
 				18C4C502140623430019B915 /* ElementGroupTableController.m in Sources */,
 				18C4C503140623430019B915 /* fillRectView.m in Sources */,
 				18C4C504140623430019B915 /* FlineController.m in Sources */,
-				18C4C506140623430019B915 /* GLString.m in Sources */,
 				18C4C508140623430019B915 /* Kemoview_IO_Controller.m in Sources */,
 				18C4C509140623430019B915 /* KemoviewerController.m in Sources */,
 				18C4C50A140623430019B915 /* KemoviewerObjectController.m in Sources */,
@@ -747,7 +730,6 @@
 				18C4C512140623430019B915 /* ResetViewControll.m in Sources */,
 				18C4C513140623430019B915 /* RGBAMapController.m in Sources */,
 				18C4C514140623430019B915 /* SurfaceGroupTableController.m in Sources */,
-				18BA1CC015E4747000AA4F3B /* gl2ps.c in Sources */,
 				18BA1D6A15E4753C00AA4F3B /* cal_surface_center_normal_c.c in Sources */,
 				18BA1D6B15E4753C00AA4F3B /* check_psf_data_viewer_c.c in Sources */,
 				18BA1D6C15E4753C00AA4F3B /* check_viewer_mesh_c.c in Sources */,
@@ -871,8 +853,9 @@
 					"$(inherited)",
 					/usr/X11/lib,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Colormap_Editor;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -891,34 +874,78 @@
 					"$(inherited)",
 					/usr/X11/lib,
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Colormap_Editor;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
