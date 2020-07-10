@@ -174,7 +174,7 @@ void set_mesh_opacity(int iflag_group, double opacity_in, struct kemoview_mesh *
 };
 
 double get_mesh_opacity(struct kemoview_mesh *kemo_mesh, int iflag_group){
-	double opacity_out;
+	double opacity_out = 1.0;
 	if(iflag_group == DOMAIN_FLAG){
 		opacity_out = kemo_mesh->mesh_m->domain_opacity;
 	}else if(iflag_group == ELEM_GRP_FLAG){

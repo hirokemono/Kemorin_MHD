@@ -44,7 +44,7 @@ struct chara3_clist{
 
 /* prototypes */
 
-struct chara3_ctl_item * init_chara3_ctl_item_c();
+struct chara3_ctl_item * init_chara3_ctl_item_c(void);
 void dealloc_chara3_ctl_item_c(struct chara3_ctl_item *c3_item);
 int read_chara3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                            struct chara3_ctl_item *c3_item);
@@ -57,7 +57,7 @@ void set_from_chara3_ctl_item_c(struct chara3_ctl_item *c3_item,
                               char *c1_out, char *c2_out, char *c3_out);
 
 
-struct chara3_clist * init_chara3_clist();
+struct chara3_clist * init_chara3_clist(void);
 void dealloc_chara3_clist(struct chara3_clist *c3_clst);
 int count_chara3_clist(struct chara3_clist *c3_clst);
 

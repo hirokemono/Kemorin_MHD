@@ -50,7 +50,7 @@ const char label_modeview_ctl[NLBL_MODELVIEW_CTL][KCHARA_C] = {
 
 const char label_modeview_head[KCHARA_C] = "view_transform_ctl";
 
-struct image_size_ctl_c * init_image_size_ctl_c(){
+struct image_size_ctl_c * init_image_size_ctl_c(void){
 	int i;
     struct image_size_ctl_c *img_size_c;
     if((img_size_c = (struct image_size_ctl_c *) malloc(sizeof(struct image_size_ctl_c))) == NULL) {
@@ -111,7 +111,7 @@ int write_image_size_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-struct streo_view_ctl_c * init_streo_view_ctl_c(){
+struct streo_view_ctl_c * init_streo_view_ctl_c(void){
 	int i;
     struct streo_view_ctl_c *streo_view_c;
     if((streo_view_c = (struct streo_view_ctl_c *) malloc(sizeof(struct streo_view_ctl_c))) == NULL) {
@@ -172,7 +172,7 @@ int write_streo_view_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-struct projection_mat_ctl_c * init_projection_mat_ctl_c(){
+struct projection_mat_ctl_c * init_projection_mat_ctl_c(void){
 	int i;
     struct projection_mat_ctl_c *projection_c;
     if((projection_c = (struct projection_mat_ctl_c *) malloc(sizeof(struct projection_mat_ctl_c))) == NULL) {
@@ -243,7 +243,7 @@ int write_projection_mat_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-struct modelview_ctl_c * init_modelview_ctl_c(){
+struct modelview_ctl_c * init_modelview_ctl_c(void){
 	int i;
     struct modelview_ctl_c *mat_c;
     if((mat_c = (struct modelview_ctl_c *) malloc(sizeof(struct modelview_ctl_c))) == NULL) {

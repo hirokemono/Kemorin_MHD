@@ -32,7 +32,7 @@ static int set_cyclic_id_by_N_c(int inum, int iloop, int i_min, int i_max){
 	return ival;
 }
 
-static int set_same_id_by_N_c(int inum, int iloop, int i_min, int i_max){
+int set_same_id_by_N_c(int inum, int iloop, int i_min, int i_max){
 	int ival;
 	int irest, i_int, ncomp;
 	

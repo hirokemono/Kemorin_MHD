@@ -195,7 +195,7 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-struct lighting_ctl_c * init_lighting_ctl_c(){
+struct lighting_ctl_c * init_lighting_ctl_c(void){
 	int i;
     struct lighting_ctl_c *light_c;
     if((light_c = (struct lighting_ctl_c *) malloc(sizeof(struct lighting_ctl_c))) == NULL) {
@@ -267,7 +267,7 @@ int write_lighting_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(){
+struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(void){
 	int i;
     struct pvr_colorbar_ctl_c *cbar_c;
     if((cbar_c = (struct pvr_colorbar_ctl_c *) malloc(sizeof(struct pvr_colorbar_ctl_c))) == NULL) {
@@ -367,7 +367,7 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 };
 
 
-struct pvr_colormap_bar_ctl_c * init_colormap_colorbar_ctl_c(){
+struct pvr_colormap_bar_ctl_c * init_colormap_colorbar_ctl_c(void){
 	int i;
     struct pvr_colormap_bar_ctl_c *cmap_cbar_c;
     if((cmap_cbar_c = (struct pvr_colormap_bar_ctl_c *) malloc(sizeof(struct pvr_colormap_bar_ctl_c))) == NULL) {

@@ -8,7 +8,7 @@
 #include "t_control_real3_IO.h"
 
 
-struct real3_ctl_item * init_real3_ctl_item_c(){
+struct real3_ctl_item * init_real3_ctl_item_c(void){
 	int i;
     struct real3_ctl_item *r3_item;
     if((r3_item = (struct real3_ctl_item *) malloc(sizeof(struct real3_ctl_item))) == NULL) {
@@ -283,7 +283,7 @@ static void set_from_real3_ctl_list_at_c_tbl(double ref_1, double ref_2, double 
 };
 
 
-struct real3_clist * init_real3_clist(){
+struct real3_clist * init_real3_clist(void){
     struct real3_clist *r3_clst;
     if((r3_clst = (struct real3_clist *) malloc(sizeof(struct real3_clist))) == NULL) {
         printf("malloc error for real3_clist \n");

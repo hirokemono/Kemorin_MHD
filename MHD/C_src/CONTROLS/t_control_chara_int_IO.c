@@ -8,7 +8,7 @@
 #include "t_control_chara_int_IO.h"
 
 
-struct chara_int_ctl_item * init_chara_int_ctl_item_c(){
+struct chara_int_ctl_item * init_chara_int_ctl_item_c(void){
     struct chara_int_ctl_item *ci_item;
     if((ci_item = (struct chara_int_ctl_item *) malloc(sizeof(struct chara_int_ctl_item))) == NULL) {
         printf("malloc error for ci_item\n");
@@ -288,7 +288,7 @@ static void set_from_chara_int_ctl_list_at_c_tbl(char *ref, struct chara_int_ctl
 };
 
 
-struct chara_int_clist * init_chara_int_clist(){
+struct chara_int_clist * init_chara_int_clist(void){
     struct chara_int_clist *ci_clst;
     if((ci_clst = (struct chara_int_clist *) malloc(sizeof(struct chara_int_clist))) == NULL){
         printf("malloc error for chara_int_clist\n");

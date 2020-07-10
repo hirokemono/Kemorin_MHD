@@ -199,7 +199,7 @@ void set_direction_from_ctl(int i, char *c_tbl){
 	return;
 };
 
-struct label_list_f * alloc_ctl_label(){
+struct label_list_f * alloc_ctl_label(void){
 	struct label_list_f *label_list;
 	if((label_list = (struct label_list_f *) malloc(sizeof(struct label_list_f))) == NULL){
 		printf("malloc error for label_list_f\n");

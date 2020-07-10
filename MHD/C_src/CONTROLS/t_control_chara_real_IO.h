@@ -40,7 +40,7 @@ struct chara_real_clist{
 
 /* prototypes */
 
-struct chara_real_ctl_item * init_chara_real_ctl_item_c();
+struct chara_real_ctl_item * init_chara_real_ctl_item_c(void);
 void dealloc_chara_real_ctl_item_c(struct chara_real_ctl_item *cr_item);
 int read_chara_real_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                                struct chara_real_ctl_item *cr_item);
@@ -57,7 +57,7 @@ void append_chara_real_ctl_list(char *c_in, double r_in,
 void del_chara_real_ctl_list_by_c_tbl(char *ref, struct chara_real_ctl_list *head);
 
 
-struct chara_real_clist * init_chara_real_clist();
+struct chara_real_clist * init_chara_real_clist(void);
 void dealloc_chara_real_clist(struct chara_real_clist *cr_clst);
 int count_chara_real_clist(struct chara_real_clist *cr_clst);
 

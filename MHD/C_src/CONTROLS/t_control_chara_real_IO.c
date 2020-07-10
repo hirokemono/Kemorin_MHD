@@ -8,7 +8,7 @@
 #include "t_control_chara_real_IO.h"
 
 
-struct chara_real_ctl_item * init_chara_real_ctl_item_c(){
+struct chara_real_ctl_item * init_chara_real_ctl_item_c(void){
     struct chara_real_ctl_item *cr_item;
     if((cr_item = (struct chara_real_ctl_item *) malloc(sizeof(struct chara_real_ctl_item))) == NULL) {
         printf("malloc error for chara_real_ctl_item\n");
@@ -283,7 +283,7 @@ static void set_from_chara_real_ctl_list_at_c_tbl(char *ref, struct chara_real_c
 };
 
 
-struct chara_real_clist * init_chara_real_clist(){
+struct chara_real_clist * init_chara_real_clist(void){
     struct chara_real_clist *cr_clst;
     if((cr_clst = (struct chara_real_clist *) malloc(sizeof(struct chara_real_clist))) == NULL) {
         printf("malloc error for chara_real_clist\n");

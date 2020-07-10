@@ -131,7 +131,7 @@ static void dealloc_edge_4_sf_viewer_s(struct grouping_data *mesh_g){
 	return;
 };
 
-static void dealloc_mesh_draw_s(struct grouping_data *mesh_g){
+void dealloc_mesh_draw_s(struct grouping_data *mesh_g){
 	int i;
 	/* deallocate memory  xx_l_draw[node #][direction]*/
 	for (i = 0; i < mesh_g->numnod_layer; i++) free(mesh_g->xx_l_draw[i]);

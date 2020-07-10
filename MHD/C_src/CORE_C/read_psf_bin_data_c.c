@@ -7,7 +7,7 @@
 
 #include "read_psf_bin_data_c.h"
 
-struct psf_bin_work * init_psf_bin_work(){
+struct psf_bin_work * init_psf_bin_work(void){
     char UNIX[4] = "UNIX";
     struct psf_bin_work *psf_b_WK;
     if ((psf_b_WK = (struct psf_bin_work *) malloc(sizeof(struct psf_bin_work))) == NULL) {

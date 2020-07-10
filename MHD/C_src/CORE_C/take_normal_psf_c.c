@@ -8,7 +8,7 @@
 #include "take_normal_psf_c.h"
 
 
-void cal_psf_grid_range(struct psf_data *viz_s){
+static void cal_psf_grid_range(struct psf_data *viz_s){
 	int i, nd;
     double r_tmp;
 	
@@ -60,7 +60,7 @@ static void take_normal_ele_psf(struct psf_data *viz_s){
 	return;
 };
 
-static void easy_normal_nod_psf(struct psf_data *viz_s){
+void easy_normal_nod_psf(struct psf_data *viz_s){
 	int k;
     long i, i1;
 	double d;

@@ -42,7 +42,7 @@ struct real3_clist{
 /* prototypes */
 
 
-struct real3_ctl_item * init_real3_ctl_item_c();
+struct real3_ctl_item * init_real3_ctl_item_c(void);
 int read_real3_ctl_item_c(char buf[LENGTHBUF], const char *label, 
 			struct real3_ctl_item *r3_item);
 int write_real3_ctl_item_c(FILE *fp, int level, int maxlen, 
@@ -66,7 +66,7 @@ void copy_to_real3_ctl_list(int num, double *v1, double *v2, double *v3,
 			struct real3_ctl_list *head);
 
 
-struct real3_clist * init_real3_clist();
+struct real3_clist * init_real3_clist(void);
 void dealloc_real3_clist(struct real3_clist *r3_clst);
 int count_real3_clist(struct real3_clist *r3_clst);
 

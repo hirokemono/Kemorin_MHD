@@ -8,7 +8,7 @@
 #include "t_control_chara3_IO.h"
 
 
-struct chara3_ctl_item * init_chara3_ctl_item_c(){
+struct chara3_ctl_item * init_chara3_ctl_item_c(void){
     struct chara3_ctl_item *c3_item;
     if ((c3_item = (struct chara3_ctl_item *) malloc(sizeof(struct chara3_ctl_item))) == NULL) {
         printf("malloc error for c3_item\n");
@@ -300,7 +300,7 @@ static void set_from_chara3_ctl_list_at_c_tbl(char *ref_1, char *ref_2, char *re
 
 
 
-struct chara3_clist * init_chara3_clist(){
+struct chara3_clist * init_chara3_clist(void){
     struct chara3_clist *c3_clst;
     if((c3_clst = (struct chara3_clist *) malloc(sizeof(struct chara3_clist))) == NULL) {
         printf("malloc error for chara3_clist\n");

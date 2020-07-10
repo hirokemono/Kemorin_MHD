@@ -8,7 +8,7 @@
 #include "t_control_int_IO.h"
 
 
-struct int_ctl_item * init_int_ctl_item_c(){
+struct int_ctl_item * init_int_ctl_item_c(void){
     struct int_ctl_item *i_item;
     if((i_item = (struct int_ctl_item *) malloc(sizeof(struct int_ctl_item))) == NULL) {
         printf("malloc error for int_ctl_item \n");
@@ -268,7 +268,7 @@ static void copy_to_int_ctl_list(int num, int *iv1, struct int_ctl_list *head){
 
 
 
-struct int_clist * init_int_clist(){
+struct int_clist * init_int_clist(void){
     struct int_clist *i_clst;
     if((i_clst = (struct int_clist *) malloc(sizeof(struct int_clist))) == NULL) {
         printf("malloc error for int_clist \n");

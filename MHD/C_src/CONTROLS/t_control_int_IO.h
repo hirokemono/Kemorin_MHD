@@ -38,7 +38,7 @@ struct int_clist{
 
 /* prototypes */
 
-struct int_ctl_item * init_int_ctl_item_c();
+struct int_ctl_item * init_int_ctl_item_c(void);
 int read_integer_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct int_ctl_item *i_item);
 int write_integer_ctl_item_c(FILE *fp, int level, int maxlen, 
@@ -48,7 +48,7 @@ void update_int_ctl_item_c(int index, struct int_ctl_item *i_item);
 int set_from_int_ctl_item_c(struct int_ctl_item *i_item);
 
 
-struct int_clist * init_int_clist();
+struct int_clist * init_int_clist(void);
 void dealloc_int_clist(struct int_clist *i_clst);
 int count_int_clist(struct int_clist *i_clst);
 

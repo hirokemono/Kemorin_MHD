@@ -40,7 +40,7 @@ struct int2_clist{
 
 /* prototypes */
 
-struct int2_ctl_item * init_int2_ctl_item_c();
+struct int2_ctl_item * init_int2_ctl_item_c(void);
 int read_int2_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct int2_ctl_item *i2_item);
 int write_int2_ctl_item_c(FILE *fp, int level, int maxlen, 
@@ -53,7 +53,7 @@ void set_from_int2_ctl_item_c(struct int2_ctl_item *i2_item,
 
 
 
-struct int2_clist * init_int2_clist();
+struct int2_clist * init_int2_clist(void);
 void dealloc_int2_clist(struct int2_clist *i2_clst);
 int count_int2_clist(struct int2_clist *i2_clst);
 

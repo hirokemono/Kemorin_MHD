@@ -413,7 +413,7 @@
                     </menu>
                 </menuItem>
             </items>
-            <point key="canvasLocation" x="76" y="-25"/>
+            <point key="canvasLocation" x="79" y="-174"/>
         </menu>
         <customObject id="1215" customClass="Kemoview_IO_Controller">
             <connections>
@@ -432,7 +432,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="30" y="105" width="1044" height="712"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="372">
                 <rect key="frame" x="0.0" y="0.0" width="1044" height="712"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1067,7 +1067,6 @@
                 <outlet property="content" destination="3Oj-aY-RpN" id="pA7-Kx-Rpt"/>
             </connections>
         </objectController>
-        <customObject id="3573" customClass="SetCocoaGLMessases"/>
         <customObject id="703" customClass="DomainTableController">
             <connections>
                 <outlet property="_DomainLineColorItem" destination="1715" id="1728"/>
@@ -1138,7 +1137,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1001" y="214" width="388" height="604"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="722">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="604"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1158,7 +1157,7 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <clipView key="contentView" id="Meu-5Y-hVs">
                                                 <rect key="frame" x="1" y="0.0" width="322" height="177"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="760" id="761">
                                                         <rect key="frame" x="0.0" y="0.0" width="322" height="160"/>
@@ -2165,7 +2164,7 @@
                 <binding destination="703" name="visible" keyPath="self.DrawMeshFlag" id="3762"/>
                 <outlet property="delegate" destination="703" id="2985"/>
             </connections>
-            <point key="canvasLocation" x="759" y="383"/>
+            <point key="canvasLocation" x="822" y="203"/>
         </window>
         <customObject id="1932" customClass="FlineController">
             <connections>
@@ -2183,7 +2182,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1196" y="87" width="228" height="816"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" misplaced="YES" id="1065">
                 <rect key="frame" x="0.0" y="0.0" width="228" height="816"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -3269,7 +3268,7 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1016" y="436" width="234" height="415"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="1945">
                 <rect key="frame" x="0.0" y="0.0" width="234" height="415"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -3735,7 +3734,7 @@
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="230" y="139" width="299" height="573"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="878"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" misplaced="YES" id="2203">
                 <rect key="frame" x="0.0" y="0.0" width="299" height="573"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -4160,7 +4159,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="0.0" width="229" height="117"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="229" height="94"/>
@@ -5023,7 +5022,7 @@
             </subviews>
             <point key="canvasLocation" x="139" y="168.5"/>
         </customView>
-        <drawer trailingOffset="15" id="2223">
+        <drawer trailingOffset="15" id="2223" userLabel="ViewMatrix Drawer">
             <size key="contentSize" width="212" height="400"/>
             <size key="maxContentSize" width="212" height="10000"/>
             <connections>
@@ -5097,7 +5096,7 @@
                 <outlet property="content" destination="1157" id="2715"/>
             </connections>
         </objectController>
-        <drawer trailingOffset="15" id="2492">
+        <drawer trailingOffset="15" id="2492" userLabel="Colormap Drawer">
             <size key="contentSize" width="195" height="0.0"/>
             <size key="maxContentSize" width="195" height="10000"/>
             <connections>

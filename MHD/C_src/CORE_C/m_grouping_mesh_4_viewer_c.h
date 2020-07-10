@@ -44,6 +44,7 @@ void alloc_grouping_mesh_draw(struct grouping_data *mesh_g);
 
 void alloc_group_coefs(struct grouping_data *mesh_g);
 
+void dealloc_mesh_draw_s(struct grouping_data *mesh_g);
 void dealloc_group_coefs(struct grouping_data *mesh_g);
 void dealloc_group_mesh(struct grouping_data *mesh_g);
 

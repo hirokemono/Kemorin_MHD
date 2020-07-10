@@ -41,7 +41,7 @@ struct chara2_real_clist{
 
 /* prototypes */
 
-struct chara2_real_ctl_item * init_c2r_ctl_item_c();
+struct chara2_real_ctl_item * init_c2r_ctl_item_c(void);
 void dealloc_c2r_ctl_item_c(struct chara2_real_ctl_item *c2r_item);
 int read_c2r_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                         struct chara2_real_ctl_item *c2r_item);
@@ -55,7 +55,7 @@ void set_from_chara2_real_ctl_item_c(struct chara2_real_ctl_item *c2r_item,
 
 
 
-struct chara2_real_clist * init_chara2_real_clist();
+struct chara2_real_clist * init_chara2_real_clist(void);
 void dealloc_chara2_real_clist(struct chara2_real_clist *c2r_clst);
 int count_chara2_real_clist(struct chara2_real_clist *c2r_clst);
 

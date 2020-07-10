@@ -162,7 +162,7 @@ void alloc_normal_surf_viewer_s(struct viewer_mesh *mesh_s);
 void alloc_domain_center_s(struct viewer_mesh *mesh_s);
 void alloc_mesh_draw_s(struct viewer_mesh *mesh_s);
 
-struct viewer_mesh * alloc_viewer_mesh();
+struct viewer_mesh * alloc_viewer_mesh(void);
 void dealloc_all_mesh_4_viewer_s(struct viewer_mesh *mesh_s);
 
 #endif

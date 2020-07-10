@@ -42,7 +42,7 @@ struct chara_int_clist{
 
 /* prototypes */
 
-struct chara_int_ctl_item * init_chara_int_ctl_item_c();
+struct chara_int_ctl_item * init_chara_int_ctl_item_c(void);
 void dealloc_chara_int_ctl_item_c(struct chara_int_ctl_item *ci_item);
 int read_chara_int_ctl_item_c(char buf[LENGTHBUF], const char *label, struct chara_int_ctl_item *ci_item);
 int write_chara_int_ctl_item_c(FILE *fp, int level, int maxlen[2], 
@@ -54,7 +54,7 @@ void set_from_chara_int_ctl_item_c( struct chara_int_ctl_item *ci_item,
                               char *c_out, int *i1_out);
 
 
-struct chara_int_clist * init_chara_int_clist();
+struct chara_int_clist * init_chara_int_clist(void);
 void dealloc_chara_int_clist(struct chara_int_clist *ci_clst);
 int count_chara_int_clist(struct chara_int_clist *ci_clst);
 void read_chara_int_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

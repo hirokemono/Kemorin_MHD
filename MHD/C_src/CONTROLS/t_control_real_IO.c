@@ -8,7 +8,7 @@
 #include "t_control_real_IO.h"
 
 
-struct real_ctl_item * init_real_ctl_item_c(){
+struct real_ctl_item * init_real_ctl_item_c(void){
     struct real_ctl_item *r_item;
     if((r_item = (struct real_ctl_item *) malloc(sizeof(struct real_ctl_item))) == NULL) {
         printf("malloc error for real_ctl_item \n");
@@ -270,7 +270,7 @@ static void copy_to_real_ctl_list(int num, double *v1, struct real_ctl_list *hea
 };
 
 
-struct real_clist * init_real_clist(){
+struct real_clist * init_real_clist(void){
     struct real_clist *r_clst;
     if((r_clst = (struct real_clist *) malloc(sizeof(struct real_clist))) == NULL) {
         printf("malloc error for real_clist \n");

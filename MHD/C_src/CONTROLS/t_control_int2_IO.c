@@ -8,7 +8,7 @@
 #include "t_control_int2_IO.h"
 
 
-struct int2_ctl_item * init_int2_ctl_item_c(){
+struct int2_ctl_item * init_int2_ctl_item_c(void){
     struct int2_ctl_item *i2_item;
     if((i2_item = (struct int2_ctl_item *) malloc(sizeof(struct int2_ctl_item))) == NULL) {
         printf("malloc error for int2_ctl_item \n");
@@ -280,7 +280,7 @@ static void copy_to_int2_ctl_list(int num, int *iv1, int *iv2,
 
 
 
-struct int2_clist * init_int2_clist(){
+struct int2_clist * init_int2_clist(void){
     struct int2_clist *i2_clst;
     if((i2_clst = (struct int2_clist *) malloc(sizeof(struct int2_clist))) == NULL) {
         printf("malloc error for int2_clist \n");

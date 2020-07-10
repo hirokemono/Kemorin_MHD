@@ -39,7 +39,7 @@ struct chara_clist{
 
 /* prototypes */
 
-struct chara_ctl_item * init_chara_ctl_item_c();
+struct chara_ctl_item * init_chara_ctl_item_c(void);
 void dealloc_chara_ctl_item_c(struct chara_ctl_item *c_item);
 int read_chara_ctl_item_c(char buf[LENGTHBUF], const char *label, 
                           struct chara_ctl_item *c_item);
@@ -74,7 +74,7 @@ void append_chara_ctl_list(char *c_in, struct chara_ctl_list *head);
 void del_chara_ctl_list_by_c_tbl(char *ref, struct chara_ctl_list *head);
 
 
-struct chara_clist * init_chara_clist();
+struct chara_clist * init_chara_clist(void);
 void dealloc_chara_clist(struct chara_clist *c_clst);
 int count_chara_clist(struct chara_clist *c_clst);
 void read_chara_clist(FILE *fp, char buf[LENGTHBUF], const char *label, 

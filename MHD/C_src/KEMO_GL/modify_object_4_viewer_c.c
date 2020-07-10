@@ -96,7 +96,7 @@ void modify_object_multi_viewer_c(double dist, struct viewer_mesh *mesh_s){
 	return;
 }
 
-static void modify_object_sngl_viewer_c(struct viewer_mesh *mesh_s){
+void modify_object_sngl_viewer_c(struct viewer_mesh *mesh_s){
 	int i;
 	
 	for (i = 0; i < mesh_s->nnod_viewer; i++) {

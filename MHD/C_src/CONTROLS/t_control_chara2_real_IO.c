@@ -8,7 +8,7 @@
 #include "t_control_chara2_real_IO.h"
 
 
-struct chara2_real_ctl_item * init_c2r_ctl_item_c(){
+struct chara2_real_ctl_item * init_c2r_ctl_item_c(void){
     struct chara2_real_ctl_item *c2r_item;
     if((c2r_item = (struct chara2_real_ctl_item *) malloc(sizeof(struct chara2_real_ctl_item))) == NULL) {
         printf("malloc error for c2r_item\n");

@@ -8,7 +8,7 @@
 #include "t_control_real2_IO.h"
 
 
-struct real2_ctl_item * init_real2_ctl_item_c(){
+struct real2_ctl_item * init_real2_ctl_item_c(void){
     struct real2_ctl_item *r2_item;
     if((r2_item = (struct real2_ctl_item *) malloc(sizeof(struct real2_ctl_item))) == NULL) {
         printf("malloc error for real2_ctl_item \n");
