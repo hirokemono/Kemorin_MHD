@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Kemoview_Cocoa.xcodeproj">
+      location = "self:/Users/matsui/git/Kemorin_MHD/MHD/Cocoa/CalypsoView_Cocoa/CalypsoView_Cocoa.xcodeproj">
    </FileRef>
 </Workspace>

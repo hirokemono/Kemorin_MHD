@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8D1107260486CEB800E47090"
-               BuildableName = "Kemoview_Cocoa.app"
-               BlueprintName = "Kemoview_Cocoa"
-               ReferencedContainer = "container:Kemoview_Cocoa.xcodeproj">
+               BuildableName = "CalypsoView_Cocoa.app"
+               BlueprintName = "CalypsoView_Cocoa"
+               ReferencedContainer = "container:CalypsoView_Cocoa.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -34,9 +34,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "Kemoview_Cocoa.app"
-            BlueprintName = "Kemoview_Cocoa"
-            ReferencedContainer = "container:Kemoview_Cocoa.xcodeproj">
+            BuildableName = "CalypsoView_Cocoa.app"
+            BlueprintName = "CalypsoView_Cocoa"
+            ReferencedContainer = "container:CalypsoView_Cocoa.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "Kemoview_Cocoa.app"
-            BlueprintName = "Kemoview_Cocoa"
-            ReferencedContainer = "container:Kemoview_Cocoa.xcodeproj">
+            BuildableName = "CalypsoView_Cocoa.app"
+            BlueprintName = "CalypsoView_Cocoa"
+            ReferencedContainer = "container:CalypsoView_Cocoa.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -77,9 +77,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "Kemoview_Cocoa.app"
-            BlueprintName = "Kemoview_Cocoa"
-            ReferencedContainer = "container:Kemoview_Cocoa.xcodeproj">
+            BuildableName = "CalypsoView_Cocoa.app"
+            BlueprintName = "CalypsoView_Cocoa"
+            ReferencedContainer = "container:CalypsoView_Cocoa.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
