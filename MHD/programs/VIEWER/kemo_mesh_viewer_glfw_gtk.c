@@ -135,11 +135,12 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	
 	
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), quitButton, FALSE, FALSE, 0);
 	
 	make_gtk_main_menu_box(mbot, gtk_win);
 
     vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_main), quitButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
     gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
 

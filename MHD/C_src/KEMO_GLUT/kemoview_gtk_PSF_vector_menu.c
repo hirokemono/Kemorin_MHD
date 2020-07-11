@@ -146,7 +146,8 @@ void set_gtk_psf_vector_menu(struct psf_vector_gtk_menu *psf_vector_menu){
 	return;
 };
 
-void make_gtk_psf_vector_menu(struct colormap_view *color_vws, struct psf_vector_gtk_menu *psf_vector_menu){
+void make_gtk_psf_vector_menu(GtkWidget *window, struct colormap_view *color_vws,
+                              struct psf_vector_gtk_menu *psf_vector_menu){
 	GtkWidget *hbox_draw;
 	GtkWidget *hbox_vecmode, *hbox_veccolor;
 	GtkWidget *hbox_12, *hbox_22, *hbox_32;
@@ -274,6 +275,6 @@ void make_gtk_psf_vector_menu(struct colormap_view *color_vws, struct psf_vector
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_32, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox_vec), hbox_22, TRUE, TRUE, 0);
 	
-	wrap_into_expanded_frame_gtk("Vector", 425, 300, vbox_vec, psf_vector_menu->vector_box);
+	wrap_into_expanded_frame_gtk_2("Vector", 425, 300, window, vbox_vec, psf_vector_menu->vector_box);
 	return;
 }

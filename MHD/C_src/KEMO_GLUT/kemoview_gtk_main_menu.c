@@ -70,13 +70,15 @@ static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 			istep = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
 			mbot->evo_gmenu->evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 			add_evoluaiton_menu_box(istep, window, mbot->evo_gmenu);
-			wrap_into_expanded_frame_gtk("Evolution", 360, 240, mbot->evo_gmenu->evo_box, mbot->evolutionBox);
+			wrap_into_expanded_frame_gtk_2("Evolution", 360, 240, window, 
+                                           mbot->evo_gmenu->evo_box, mbot->evolutionBox);
 			gtk_box_pack_start(GTK_BOX(mbot->psfBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		} else {
 			istep = kemoview_get_fline_file_step_prefix(file_prefix);
 			mbot->evo_gmenu->evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 			add_evoluaiton_menu_box(istep, window, mbot->evo_gmenu);
-			wrap_into_expanded_frame_gtk("Evolution", 360, 240, mbot->evo_gmenu->evo_box, mbot->evolutionBox);
+			wrap_into_expanded_frame_gtk_2("Evolution", 360, 240, window, 
+                                           mbot->evo_gmenu->evo_box, mbot->evolutionBox);
 			gtk_box_pack_start(GTK_BOX(mbot->flineBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		};
 		kemoview_free_kvstring(file_prefix);
@@ -90,6 +92,9 @@ static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->psfBox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->flineBox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->menuHbox), mbot->meshBox, FALSE, FALSE, 0);
+	
+	gtk_window_resize(GTK_WINDOW(window), 240, 200);
+	
 	
 	gtk_widget_show_all(mbot->menuHbox);
 	if(nload_psf == 0) gtk_widget_hide(mbot->psfBox);
@@ -569,6 +574,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	int iflag_mode;
 	
 	/* Set buttons   */
+    
+    
 	entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
@@ -657,9 +664,7 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_viewtype), combobox_viewtype, FALSE, FALSE, 0);
 	
-	mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-//	gtk_container_add(GTK_CONTAINER(window_main), mbot->vbox_menu);
-	
+    
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_open, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), hbox_image_save, FALSE, FALSE, 0);
 	
@@ -672,16 +677,19 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	add_rotation_menu_box(window_main, mbot->rot_gmenu);
 
 	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	wrap_into_expanded_frame_gtk("Rotation", 360, 200, mbot->rot_gmenu->rot_box, mbot->rotationBox);
+	wrap_into_expanded_frame_gtk_2("Rotation", 360, 200, window_main, 
+                                   mbot->rot_gmenu->rot_box, mbot->rotationBox);
 		
 	mbot->viewBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_viewmatrix_menu_box(window_main, mbot->view_menu);
-	wrap_into_expanded_frame_gtk("View parameters", 360, 400, mbot->view_menu->box_view, mbot->viewBox);
+	wrap_into_expanded_frame_gtk_2("View parameters", 360, 400, window_main, 
+                                   mbot->view_menu->box_view, mbot->viewBox);
 	
 	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	mbot->pref_gmenu->box_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_GTK_preference_box(mbot->pref_gmenu);
-	wrap_into_expanded_frame_gtk("Preferences", 360, 400, mbot->pref_gmenu->box_pref, mbot->prefBox);
+	wrap_into_expanded_frame_gtk_2("Preferences", 360, 400, window_main,
+                                   mbot->pref_gmenu->box_pref, mbot->prefBox);
 
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->rotationBox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);

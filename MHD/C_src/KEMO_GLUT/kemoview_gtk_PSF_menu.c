@@ -90,23 +90,23 @@ void make_psf_menu_box(GtkWidget *window, struct psf_gtk_menu *psf_gmenu){
 	psf_gmenu->psf_isoline_menu->isoline_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_gtk_isoline_menu(window, psf_gmenu->psf_isoline_menu);
 	set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
-	wrap_into_expanded_frame_gtk("Isolines", 425, 220, psf_gmenu->psf_isoline_menu->isoline_box, 
-								 psf_gmenu->psf_vbox);
+	wrap_into_expanded_frame_gtk_2("Isolines", 425, 220, window, 
+                                 psf_gmenu->psf_isoline_menu->isoline_box, psf_gmenu->psf_vbox);
 
 	psf_gmenu->psf_surface_menu->patch_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_gtk_psf_surface_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_surface_menu);
 	set_gtk_surface_menu_values(psf_gmenu->psf_surface_menu);
-	wrap_into_expanded_frame_gtk("Surface", 420, 320, psf_gmenu->psf_surface_menu->patch_box,
-								 psf_gmenu->psf_vbox);
+	wrap_into_expanded_frame_gtk_2("Surface", 420, 320, window, 
+                                 psf_gmenu->psf_surface_menu->patch_box, psf_gmenu->psf_vbox);
 	
 	psf_gmenu->psf_color_menu->color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_gtk_psf_colormap_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_color_menu);
-	wrap_into_expanded_frame_gtk("Color map editor", 420, 450, psf_gmenu->psf_color_menu->color_box,
-								 psf_gmenu->psf_vbox);
+	wrap_into_expanded_frame_gtk_2("Color map editor", 420, 450, window, 
+                                 psf_gmenu->psf_color_menu->color_box, psf_gmenu->psf_vbox);
 	
 	psf_gmenu->psf_vector_menu->vector_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3){
-		make_gtk_psf_vector_menu(psf_gmenu->color_vws, psf_gmenu->psf_vector_menu);
+		make_gtk_psf_vector_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_vector_menu);
 		set_gtk_psf_vector_menu(psf_gmenu->psf_vector_menu);
 	};
 	gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vbox), psf_gmenu->psf_vector_menu->vector_box,

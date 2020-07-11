@@ -182,23 +182,23 @@ void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
 	
 	mesh_vws->domain_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_domain_draw_box(window, mesh_vws->domain_group_gmenu);
-	wrap_into_expanded_frame_gtk("Domain", 400, 300, mesh_vws->domain_group_gmenu->box_grp,
-								 mesh_vws->box_out);
+	wrap_into_expanded_frame_gtk_2("Domain", 400, 300, window, 
+                                 mesh_vws->domain_group_gmenu->box_grp, mesh_vws->box_out);
 	
 	mesh_vws->node_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_nod_group_draw_box(window, mesh_vws->node_group_gmenu);
-	wrap_into_expanded_frame_gtk("Node group", 400, 300, mesh_vws->node_group_gmenu->box_grp,
-								 mesh_vws->box_out);
+	wrap_into_expanded_frame_gtk_2("Node group", 400, 300, window, 
+                                 mesh_vws->node_group_gmenu->box_grp, mesh_vws->box_out);
 
 	mesh_vws->ele_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_ele_group_draw_box(window, mesh_vws->ele_group_gmenu);
-	wrap_into_expanded_frame_gtk("Element group", 400, 300, mesh_vws->ele_group_gmenu->box_grp,
-								 mesh_vws->box_out);
+	wrap_into_expanded_frame_gtk_2("Element group", 400, 300, window, 
+                                 mesh_vws->ele_group_gmenu->box_grp, mesh_vws->box_out);
 
 	mesh_vws->surf_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_surf_group_draw_box(window, mesh_vws->surf_group_gmenu);
-	wrap_into_expanded_frame_gtk("Surface group", 400, 300, mesh_vws->surf_group_gmenu->box_grp,
-								 mesh_vws->box_out);
+	wrap_into_expanded_frame_gtk_2("Surface group", 400, 300, window, 
+                                 mesh_vws->surf_group_gmenu->box_grp, mesh_vws->box_out);
 
 	return;
 }
