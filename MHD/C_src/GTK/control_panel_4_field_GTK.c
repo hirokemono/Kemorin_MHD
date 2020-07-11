@@ -357,7 +357,7 @@ static void add_unused_field_box(int igrp, struct field_views *fields_vws,
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	
 	char *tmpchara = duplicate_underscore(fields_vws->all_fld_list->fld_list->field_group_name[igrp]);
-	wrap_into_expanded_frame_gtk_2(tmpchara, 250, 200, window, hbox_1, vbox);
+	wrap_into_expanded_frame_gtk(tmpchara, 250, 200, window, hbox_1, vbox);
 };
 
 void add_unused_field_boxes(struct field_views *fields_vws, 
@@ -371,7 +371,7 @@ void add_unused_field_boxes(struct field_views *fields_vws,
 		add_unused_field_box(igrp, fields_vws, window, vbox_1);
 	};
 	
-	wrap_into_expanded_frame_gtk_2("Field to add", 260, 200, window, vbox_1, vbox);
+	wrap_into_expanded_frame_gtk("Field to add", 260, 200, window, vbox_1, vbox);
 };
 
 void add_field_selection_box(struct field_views *fields_vws, 

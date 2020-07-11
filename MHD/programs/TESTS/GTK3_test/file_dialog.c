@@ -324,14 +324,14 @@ void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c
 	
 	vbox_2[2] = iso_define_ctl_list_box(iso_c->iso_def_c);
 	vbox_2[3] = iso_field_ctl_list_box(iso_c->iso_fld_c);
-	wrap_into_expanded_frame_gtk_2
+	wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
 			 400, 200, window, vbox_2[2], vbox_1);
-	wrap_into_expanded_frame_gtk_2
+	wrap_into_expanded_frame_gtk
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 3]), 
 			 400, 500, window, vbox_2[3], vbox_1);
 	c_label = isosurface_control_head();
-	wrap_into_expanded_frame_gtk_2(duplicate_underscore(c_label), 
+	wrap_into_expanded_frame_gtk(duplicate_underscore(c_label), 
 								 400, 600, window, vbox_1, vbox0);
 	return;
 };

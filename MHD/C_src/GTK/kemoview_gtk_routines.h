@@ -20,10 +20,8 @@
 
 void wrap_into_frame_gtk(const char *title, 
 			GtkWidget *box_in, GtkWidget *box_out);
-void wrap_into_expanded_frame_gtk(const char *title, int width, int height,
-			GtkWidget *box_in, GtkWidget *box_out);
-void wrap_into_expanded_frame_gtk_2(const char *title, int width, int height, GtkWidget *window,
-                                    GtkWidget *box_in, GtkWidget *box_out);
+void wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
+                                  GtkWidget *window, GtkWidget *box_in, GtkWidget *box_out);
 
 int gtk_selected_combobox_index(GtkComboBox *combobox);
 

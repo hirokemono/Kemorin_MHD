@@ -28,33 +28,10 @@ void wrap_into_frame_gtk(const char *title,
 
 static void expander_CB(GObject *object, GParamSpec *param_spec, gpointer user_data)
 {
-    GtkExpander *expander = GTK_EXPANDER (object);
-    GtkWidget *box_out = GTK_WIDGET(user_data);
-    
-    if (gtk_expander_get_expanded(expander))
-    {
-        printf("Expanded \n");
-    }
-    else
-    {
-        printf("Hided \n");
-    }
-    gint minimum_width,  natural_width;
-    gint minimum_height, natural_height;
-    gtk_widget_get_preferred_width(box_out,
-                                   &minimum_width, &natural_width);
-    gtk_widget_get_preferred_height(box_out,
-                                    &minimum_height, &natural_height);
-    printf("minimum %d %d \n", minimum_width, minimum_height);
-    printf("natural %d %d \n", natural_width, minimum_height);
-}
-
-static void expander_CB2(GObject *object, GParamSpec *param_spec, gpointer user_data)
-{
-    GtkExpander *expander = GTK_EXPANDER (object);
+    GtkWidget *expander = GTK_WIDGET(object);
     GtkWidget *window = GTK_WIDGET(user_data);
-    
-    if (gtk_expander_get_expanded(expander))
+    /*
+    if (gtk_expander_get_expanded(GTK_EXPANDER(expander)))
     {
         printf("Expanded \n");
     }
@@ -62,49 +39,24 @@ static void expander_CB2(GObject *object, GParamSpec *param_spec, gpointer user_
     {
         printf("Hided \n");
     }
+    */
     gint minimum_width,  natural_width;
     gint minimum_height, natural_height;
     gtk_widget_get_preferred_width(expander,
                                    &minimum_width, &natural_width);
     gtk_widget_get_preferred_height(expander,
                                     &minimum_height, &natural_height);
+    /*
     printf("minimum %d %d \n", minimum_width, minimum_height);
     printf("natural %d %d \n", natural_width, natural_height);
+     */
+    
     gtk_window_resize(GTK_WINDOW(window), minimum_width, minimum_height);
     gtk_widget_queue_draw(window);
 }
 
-
-void wrap_into_expanded_frame_gtk(const char *title, int width, int height,
-			GtkWidget *box_in, GtkWidget *box_out){
-	
-	GtkWidget *expander, *scroll, *Frame, *hbox;
-	
-	Frame = gtk_frame_new("");
-	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
-	gtk_container_add(GTK_CONTAINER(Frame), box_in);
-	
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("  "), FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(hbox), Frame, TRUE, TRUE, 0);
-	
-	scroll = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scroll, (gint) width, (gint) height);
-	gtk_container_add(GTK_CONTAINER(scroll), hbox);
-	
-	expander = gtk_expander_new_with_mnemonic(title);
-    g_signal_connect(expander, "notify::expanded", 
-                     G_CALLBACK(expander_CB), (gpointer) box_out);
-	gtk_container_add(GTK_CONTAINER(expander), scroll);
-	
-	gtk_box_pack_start(GTK_BOX(box_out), expander, FALSE, FALSE, 0);
-	return;
-}
-
-void wrap_into_expanded_frame_gtk_2(const char *title, int width, int height, GtkWidget *window,
-                                  GtkWidget *box_in, GtkWidget *box_out){
+void wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
+                                  GtkWidget *window, GtkWidget *box_in, GtkWidget *box_out){
     
     GtkWidget *expander, *scroll, *Frame, *hbox;
     
@@ -124,7 +76,7 @@ void wrap_into_expanded_frame_gtk_2(const char *title, int width, int height, Gt
     
     expander = gtk_expander_new_with_mnemonic(title);
     g_signal_connect(expander, "notify::expanded", 
-                     G_CALLBACK(expander_CB2), (gpointer) window);
+                     G_CALLBACK(expander_CB), (gpointer) window);
     gtk_container_add(GTK_CONTAINER(expander), scroll);
     
     gtk_box_pack_start(GTK_BOX(box_out), expander, FALSE, FALSE, 0);
