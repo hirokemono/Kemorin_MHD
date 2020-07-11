@@ -14,6 +14,8 @@ int iflag_glfw_end = 0;
 int iflag_gtk_focus = 0;
 
 GtkWidget *gtk_win;
+GtkWidget *vbox_main;
+
 struct main_buttons *mbot;
 
 static void mainloop_4_glfw(){
@@ -42,14 +44,14 @@ static void gtkWindowclose_CB(GtkButton *button, gpointer user_data){
 }
 
 static void gtkFocus_in_CB (GtkWidget *window, GtkDirectionType direction, gpointer user_data){
-	printf ("Focus-in GTK window \n");
+/*	printf ("Focus-in GTK window \n"); */
 	iflag_gtk_focus = 1;
 	iflag_glfw_focus = 0;
 	return;
 }
 
 static void gtkFocus_out_CB (GtkWidget *window, GtkDirectionType direction, gpointer user_data){
-	printf ("Focus-out GTK window \n");
+/*	printf ("Focus-out GTK window \n"); */
 	iflag_gtk_focus = 0;
 	if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == GLFW_TRUE) iflag_glfw_focus = 1;
 	return;
@@ -59,10 +61,10 @@ static void gtkFocus_out_CB (GtkWidget *window, GtkDirectionType direction, gpoi
 
 void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
 	if(focused){
-		printf("GLFW window focused\n");
+/*		printf("GLFW window focused\n"); */
 		iflag_glfw_focus = 1;
 	} else {
-		printf("GLFW window lost focuse\n");
+/*		printf("GLFW window lost focuse\n"); */
 		iflag_glfw_focus = 0;
 	}
 }
@@ -78,7 +80,6 @@ void glfwWindowclose_CB(GLFWwindow *window) {
 
 void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
 	struct kv_string *filename;
-	printf("dropFileToGlfw_CB %d\n", num);
 	for (int i = 0; i < num; i++) {
 		printf("%s\n", paths[i]);
 		filename = kemoview_init_kvstring_by_string(paths[i]);
@@ -115,7 +116,6 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 /* Main GTK window */
 
 void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
-	GtkWidget *vbox;
 	GtkWidget *quitButton;
 	
 	mbot = init_main_buttons(kemoviewer_data);
@@ -133,17 +133,18 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
 	
 	
-	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add(GTK_CONTAINER(gtk_win), vbox);
 	
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	
-	gtk_box_pack_start(GTK_BOX(vbox), quitButton, FALSE, FALSE, 0);
 	make_gtk_main_menu_box(mbot, gtk_win);
-	gtk_box_pack_start(GTK_BOX(vbox), mbot->menuHbox, FALSE, FALSE, 0);
+
+    vbox_main = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_main), quitButton, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox_main), mbot->menuHbox, FALSE, FALSE, 0);
+    gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
 
 	gtk_widget_show(quitButton);
-	gtk_widget_show(vbox);
+	gtk_widget_show(vbox_main);
 	gtk_widget_show_all(mbot->menuHbox);
 	gtk_widget_show(gtk_win);
 	return;

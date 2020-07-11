@@ -198,7 +198,9 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
 	GtkWidget *window_main = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
 
-	set_viewtype_mode(VIEW_3D);
+    int num_loaded = kemoview_close_PSF_view();
+
+    set_viewtype_mode(VIEW_3D);
 	dealloc_colormap_views_4_viewer(mbot->psf_gmenu->color_vws);
 	
 	delete_kemoview_menu(mbot);
