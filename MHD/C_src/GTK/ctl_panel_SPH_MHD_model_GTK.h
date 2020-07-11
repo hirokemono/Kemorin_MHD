@@ -18,8 +18,8 @@
 
 /* prototypes */
 
-GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, 
-			struct mhd_model_control_c *model_ctl);
+GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, struct mhd_model_control_c *model_ctl,
+                                   GtkWidget *window);
 GtkWidget *make_mhd_control_ctl_hbox(const char *label_hd, 
 			struct sph_mhd_control_control_c *control_ctl);
 

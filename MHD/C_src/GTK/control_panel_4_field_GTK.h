@@ -20,7 +20,8 @@
 
 /* prototypes */
 
-void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox_out);
+void add_field_selection_box(struct field_views *fields_vws, 
+                             GtkWidget *window, GtkWidget *vbox_out);
 void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox_out);
 void add_all_field_combobox_vbox(char *field_ctl_label, char *comp_ctl_label, 
                                  struct field_views *fields_vws, GtkWidget *vbox_out);

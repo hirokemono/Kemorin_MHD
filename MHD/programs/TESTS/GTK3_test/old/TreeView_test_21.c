@@ -52,7 +52,7 @@ static void create_tree_view_window(GtkButton *button, gpointer user_data)
 	g_signal_connect(G_OBJECT(button), "clicked", 
 				G_CALLBACK(cb_close_window), window);
 	
-	add_field_selection_box(fields_vws, vbox);
+	add_field_selection_box(fields_vws, window, vbox);
 	
 	add_field_combobox_vbox(fields_vws, vbox);
 	add_all_field_combobox_vbox("Field_ctl:", "Comp_ctl:", fields_vws, vbox);

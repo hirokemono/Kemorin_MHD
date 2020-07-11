@@ -235,7 +235,7 @@ GtkWidget *make_control_hbox(){
 				mhd_ctl->shell_ctl, sph_save_bottun);
 	
 	get_label_SGS_MHD_ctl(4, c_label);
-	hbox_3[4] = make_mhd_model_ctl_hbox(c_label, mhd_ctl->model_ctl);
+	hbox_3[4] = make_mhd_model_ctl_hbox(c_label, mhd_ctl->model_ctl, window);
 	
 	get_label_SGS_MHD_ctl(5, c_label);
     hbox_3[5] = make_mhd_control_ctl_hbox(c_label, mhd_ctl->control_ctl);

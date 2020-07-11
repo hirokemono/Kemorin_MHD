@@ -313,8 +313,8 @@ static void cb_set_group_name(GtkComboBox *combobox_group, gpointer user_data)
 	return;
 }
 
-static void add_unused_field_box(int igrp, struct field_views *fields_vws, GtkWidget *vbox)
-{
+static void add_unused_field_box(int igrp, struct field_views *fields_vws, 
+                                 GtkWidget *window, GtkWidget *vbox){
 	GtkWidget *hbox_1, *vbox_1, *Frame_1;
 	GtkWidget *button_1;
 	GtkWidget *scrolled_window_1;
@@ -357,25 +357,25 @@ static void add_unused_field_box(int igrp, struct field_views *fields_vws, GtkWi
 	gtk_box_pack_start(GTK_BOX(hbox_1), Frame_1, TRUE, TRUE, 0);
 	
 	char *tmpchara = duplicate_underscore(fields_vws->all_fld_list->fld_list->field_group_name[igrp]);
-	wrap_into_expanded_frame_gtk(tmpchara, 250, 200, hbox_1, vbox);
+	wrap_into_expanded_frame_gtk_2(tmpchara, 250, 200, window, hbox_1, vbox);
 };
 
-void add_unused_field_boxes(struct field_views *fields_vws, GtkWidget *vbox)
-{
+void add_unused_field_boxes(struct field_views *fields_vws, 
+                            GtkWidget *window, GtkWidget *vbox){
 	int igrp;
 	GtkWidget *vbox_1;
 	
 	/* Construct unused field panel */
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	for(igrp=0;igrp<fields_vws->all_fld_list->fld_list->ntot_field_groups;igrp++){
-		add_unused_field_box(igrp, fields_vws, vbox_1);
+		add_unused_field_box(igrp, fields_vws, window, vbox_1);
 	};
 	
-	wrap_into_expanded_frame_gtk("Field to add", 260, 200, vbox_1, vbox);
+	wrap_into_expanded_frame_gtk_2("Field to add", 260, 200, window, vbox_1, vbox);
 };
 
-void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox_out)
-{
+void add_field_selection_box(struct field_views *fields_vws, 
+                             GtkWidget *window, GtkWidget *vbox_out){
 	GtkWidget *hbox;
 	GtkWidget *button;
 	GtkWidget *scrolled_window;
@@ -403,7 +403,7 @@ void add_field_selection_box(struct field_views *fields_vws, GtkWidget *vbox_out
 	gtk_box_pack_start(GTK_BOX(vbox_out), hbox, FALSE, FALSE, 0);
 	
 	/* Construct unused field panel */
-	add_unused_field_boxes(fields_vws, vbox_out);
+	add_unused_field_boxes(fields_vws, window, vbox_out);
 };
 
 void add_field_combobox_vbox(struct field_views *fields_vws, GtkWidget *vbox_out)

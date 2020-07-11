@@ -223,7 +223,7 @@ GtkWidget *make_control_hbox(){
     create_direction_tree_views(fields_vws);
     
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-	add_field_selection_box(fields_vws, vbox_1);
+	add_field_selection_box(fields_vws, window, vbox_1);
     
 	get_label_MHD_control_head(c_label);
     hbox = make_expand_ctl_hbox(c_label, &iflag_read_mhd, 700, vbox_1);

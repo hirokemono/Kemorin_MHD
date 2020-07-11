@@ -7,8 +7,8 @@
 
 #include "ctl_panel_SPH_MHD_model_GTK.h"
 
-GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, 
-			struct mhd_model_control_c *model_ctl){
+GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd, struct mhd_model_control_c *model_ctl,
+                                   GtkWidget *window){
 	int i;
 	
 	GtkWidget *hbox_3[NLBL_MHD_MODEL_CTL];
@@ -25,7 +25,7 @@ GtkWidget *make_mhd_model_ctl_hbox(const char *label_hd,
     create_direction_tree_views(fields_vws);
     
     vbox_3 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    add_field_selection_box(fields_vws, vbox_3);
+    add_field_selection_box(fields_vws, window, vbox_3);
     
 	get_label_mhd_model_ctl(0, c_label);
 	hbox_3[0] = make_expand_ctl_hbox(c_label, &model_ctl->fld_ctl->iflag_use,

@@ -13,7 +13,7 @@
 #include "tree_view_chara_GTK.h"
 #include "tree_view_4_field_GTK.h"
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c);
+void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c);
 
 int iflag_read_iso = 0;
 
@@ -62,7 +62,7 @@ boolean_to_text (GBinding *binding,
 
 static void cb_New(GtkButton *button, gpointer data)
 {
-	draw_MHD_control_list(vbox_0, iso_GTK0->iso_c);
+	draw_MHD_control_list(window, vbox_0, iso_GTK0->iso_c);
 	gtk_widget_show_all(window);
 }
 static void cb_Open(GtkButton *button, gpointer data)
@@ -119,7 +119,7 @@ static void cb_Open(GtkButton *button, gpointer data)
 		printf("iso_output_type_ctl modified %s\n", iso_GTK0->iso_c->iso_output_type_ctl->c_tbl);
 		
 		
-		draw_MHD_control_list(vbox_0, iso_GTK0->iso_c);
+		draw_MHD_control_list(window, vbox_0, iso_GTK0->iso_c);
 		gtk_widget_show_all(window);
 	}else if( response == GTK_RESPONSE_CANCEL ){
 		g_print( "Cancel button was pressed.\n" );
@@ -294,13 +294,13 @@ GtkWidget * iso_field_ctl_list_box(struct iso_field_ctl_c *iso_fld_c){
 	c_label = duplicate_underscore(iso_fld_c->label_fld_on_iso_ctl->label[ 2]);
 	vbox_2[0] = make_real_hbox(1, c_label, iso_fld_c->output_value_ctl);
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
-	add_field_selection_box(iso_GTK0->color_fields_vws, vbox_1);
+	add_field_selection_box(iso_GTK0->color_fields_vws, window, vbox_1);
 	
 	return vbox_1;
 };
 
 
-void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c){
+void draw_MHD_control_list(GtkWidget *window, GtkWidget *vbox0, struct iso_ctl_c *iso_c){
 	GtkWidget *vbox_1;
 	GtkWidget *vbox_2[iso_c->label_iso_ctl_w_dpl->num_labels];
 	
@@ -312,7 +312,9 @@ void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c){
 	/* Generate expander */
 	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
 	
-	vbox_2[0] = make_text_hbox(0, duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 0]), iso_c->iso_file_head_ctl);
+	vbox_2[0] = make_text_hbox
+    		(0, duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 0]),
+             iso_c->iso_file_head_ctl);
 
 	gtk_box_pack_start(GTK_BOX(vbox_1), vbox_2[0], FALSE, FALSE, 0);
 	add_control_combobox_vbox(iso_c->label_iso_ctl_w_dpl->label[ 1], 
@@ -322,15 +324,15 @@ void draw_MHD_control_list(GtkWidget *vbox0, struct iso_ctl_c *iso_c){
 	
 	vbox_2[2] = iso_define_ctl_list_box(iso_c->iso_def_c);
 	vbox_2[3] = iso_field_ctl_list_box(iso_c->iso_fld_c);
-	wrap_into_expanded_frame_gtk
+	wrap_into_expanded_frame_gtk_2
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 2]), 
-			 400, 200, vbox_2[2], vbox_1);
-	wrap_into_expanded_frame_gtk
+			 400, 200, window, vbox_2[2], vbox_1);
+	wrap_into_expanded_frame_gtk_2
 			(duplicate_underscore(iso_c->label_iso_ctl_w_dpl->label[ 3]), 
-			 400, 500, vbox_2[3], vbox_1);
+			 400, 500, window, vbox_2[3], vbox_1);
 	c_label = isosurface_control_head();
-	wrap_into_expanded_frame_gtk(duplicate_underscore(c_label), 
-								 400, 600, vbox_1, vbox0);
+	wrap_into_expanded_frame_gtk_2(duplicate_underscore(c_label), 
+								 400, 600, window, vbox_1, vbox0);
 	return;
 };
 
