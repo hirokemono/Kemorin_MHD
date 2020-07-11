@@ -55,12 +55,12 @@ static void expander_CB(GObject *object, GParamSpec *param_spec, gpointer user_d
     gtk_widget_queue_draw(window);
 }
 
-void wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
-                                  GtkWidget *window, GtkWidget *box_in, GtkWidget *box_out){
+GtkWidget * wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
+                                  GtkWidget *window, GtkWidget *box_in){
+    GtkWidget *expander;
+    GtkWidget *scroll, *hbox;
     
-    GtkWidget *expander, *scroll, *Frame, *hbox;
-    
-    Frame = gtk_frame_new("");
+    GtkWidget *Frame = gtk_frame_new("");
     gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
     gtk_container_add(GTK_CONTAINER(Frame), box_in);
     
@@ -78,9 +78,7 @@ void wrap_into_expanded_frame_gtk(const char *title, int width, int height,
     g_signal_connect(expander, "notify::expanded", 
                      G_CALLBACK(expander_CB), (gpointer) window);
     gtk_container_add(GTK_CONTAINER(expander), scroll);
-    
-    gtk_box_pack_start(GTK_BOX(box_out), expander, FALSE, FALSE, 0);
-    return;
+    return expander;
 }
 
 int gtk_selected_combobox_index(GtkComboBox *combobox){

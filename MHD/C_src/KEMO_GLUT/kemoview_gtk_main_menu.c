@@ -70,15 +70,17 @@ static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 			istep = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
 			mbot->evo_gmenu->evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 			add_evoluaiton_menu_box(istep, window, mbot->evo_gmenu);
-			wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, 
-                                           mbot->evo_gmenu->evo_box, mbot->evolutionBox);
+			GtkWidget *expand_psf_evo = wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, 
+                                           mbot->evo_gmenu->evo_box);
+            gtk_box_pack_start(GTK_BOX(mbot->evolutionBox), expand_psf_evo, FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(mbot->psfBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		} else {
 			istep = kemoview_get_fline_file_step_prefix(file_prefix);
 			mbot->evo_gmenu->evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 			add_evoluaiton_menu_box(istep, window, mbot->evo_gmenu);
-			wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, 
-                                           mbot->evo_gmenu->evo_box, mbot->evolutionBox);
+			GtkWidget *expand_fline_evo = wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, 
+                                           mbot->evo_gmenu->evo_box);
+            gtk_box_pack_start(GTK_BOX(mbot->evolutionBox), expand_fline_evo, FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(mbot->flineBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		};
 		kemoview_free_kvstring(file_prefix);
@@ -677,19 +679,22 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	add_rotation_menu_box(window_main, mbot->rot_gmenu);
 
 	mbot->rotationBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	wrap_into_expanded_frame_gtk("Rotation", 360, 200, window_main, 
-                                   mbot->rot_gmenu->rot_box, mbot->rotationBox);
+	GtkWidget *expander_rot = wrap_into_expanded_frame_gtk("Rotation", 360, 200, window_main, 
+                                   mbot->rot_gmenu->rot_box);
+    gtk_box_pack_start(GTK_BOX(mbot->rotationBox), expander_rot, FALSE, FALSE, 0);
 		
 	mbot->viewBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	gtk_viewmatrix_menu_box(window_main, mbot->view_menu);
-	wrap_into_expanded_frame_gtk("View parameters", 360, 400, window_main, 
-                                   mbot->view_menu->box_view, mbot->viewBox);
+	GtkWidget *expander_view = wrap_into_expanded_frame_gtk("View parameters", 360, 400, window_main, 
+                                   mbot->view_menu->box_view);
+    gtk_box_pack_start(GTK_BOX(mbot->viewBox), expander_view, FALSE, FALSE, 0);
 	
 	mbot->prefBox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	mbot->pref_gmenu->box_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_GTK_preference_box(mbot->pref_gmenu);
-	wrap_into_expanded_frame_gtk("Preferences", 360, 400, window_main,
-                                   mbot->pref_gmenu->box_pref, mbot->prefBox);
+	GtkWidget *expander_pref = wrap_into_expanded_frame_gtk("Preferences", 360, 400, window_main,
+                                   mbot->pref_gmenu->box_pref);
+    gtk_box_pack_start(GTK_BOX(mbot->prefBox), expander_pref, FALSE, FALSE, 0);
 
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->rotationBox, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), mbot->viewBox, FALSE, FALSE, 0);

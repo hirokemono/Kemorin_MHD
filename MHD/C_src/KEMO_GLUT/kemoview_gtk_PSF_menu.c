@@ -86,27 +86,34 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 void make_psf_menu_box(GtkWidget *window, struct psf_gtk_menu *psf_gmenu){
 	int if_psf = kemoview_get_each_PSF_field_param(FIELD_SEL_FLAG);
 	int ncomp = kemoview_get_PSF_num_component(if_psf);
+    
+    
 	
 	psf_gmenu->psf_isoline_menu->isoline_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_gtk_isoline_menu(window, psf_gmenu->psf_isoline_menu);
 	set_gtk_isoline_menu_values(psf_gmenu->psf_isoline_menu);
-	wrap_into_expanded_frame_gtk("Isolines", 425, 220, window, 
-                                 psf_gmenu->psf_isoline_menu->isoline_box, psf_gmenu->psf_vbox);
+	GtkWidget *expander_iso = wrap_into_expanded_frame_gtk("Isolines", 425, 220, window, 
+                                 psf_gmenu->psf_isoline_menu->isoline_box);
+    gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vbox), expander_iso, FALSE, FALSE, 0);
 
 	psf_gmenu->psf_surface_menu->patch_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_gtk_psf_surface_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_surface_menu);
 	set_gtk_surface_menu_values(psf_gmenu->psf_surface_menu);
-	wrap_into_expanded_frame_gtk("Surface", 420, 320, window, 
-                                 psf_gmenu->psf_surface_menu->patch_box, psf_gmenu->psf_vbox);
+	GtkWidget *expander_surf = wrap_into_expanded_frame_gtk("Surface", 420, 320, window, 
+                                 psf_gmenu->psf_surface_menu->patch_box);
+    gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vbox), expander_surf, FALSE, FALSE, 0);
 	
 	psf_gmenu->psf_color_menu->color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	add_gtk_psf_colormap_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_color_menu);
-	wrap_into_expanded_frame_gtk("Color map editor", 420, 450, window, 
-                                 psf_gmenu->psf_color_menu->color_box, psf_gmenu->psf_vbox);
+	GtkWidget *expander_color = wrap_into_expanded_frame_gtk("Color map editor", 420, 450, window, 
+                                 psf_gmenu->psf_color_menu->color_box);
+    gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vbox), expander_color, FALSE, FALSE, 0);
 	
 	psf_gmenu->psf_vector_menu->vector_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3){
-		make_gtk_psf_vector_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_vector_menu);
+		GtkWidget *expander_vect = make_gtk_psf_vector_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_vector_menu);
+        gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vector_menu->vector_box),
+                           expander_vect, FALSE, FALSE, 0);
 		set_gtk_psf_vector_menu(psf_gmenu->psf_vector_menu);
 	};
 	gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vbox), psf_gmenu->psf_vector_menu->vector_box,
