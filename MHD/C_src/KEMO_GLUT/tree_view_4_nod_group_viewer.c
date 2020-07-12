@@ -128,9 +128,8 @@ static void create_node_group_view(struct ci_clist_view *nod_grp_vws)
     
 }
 
-void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu){
-	float color4[4];
-	
+static void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu){
+    float color4[4] = {0.0, 0.0, 0.0, 1.0};
 	int iflag_color = kemoview_get_mesh_color_flag(NODE_GRP_FLAG, SURFSOLID_TOGGLE);
 	if(iflag_color == GROUP_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(node_group_gmenu->combobox_node_color), 3);
@@ -149,56 +148,41 @@ void set_nod_group_draw_box(struct nod_grp_gtk_menu *node_group_gmenu){
 	return;
 };
 
-void add_nod_group_draw_box(GtkWidget *window_mesh, struct nod_grp_gtk_menu *node_group_gmenu){
-	GtkWidget *scrolled_table;
+GtkWidget * init_nod_group_draw_expander(GtkWidget *window, struct nod_grp_gtk_menu *node_group_gmenu){
+	GtkWidget *expander_node;
 	
-	GtkWidget *button_draw_node, *button_hide_node;
-	GtkWidget *hbox_draw, *hbox_hide;
-	
-	GtkWidget *hbox_node_color;
-	
-	GtkWidget *label_tree_node_color;
-	GtkCellRenderer *renderer_node_color;
-	GtkTreeModel *model_node_color;
-	GtkTreeModel *child_model_node_color;
-	
-	GtkWidget *vbox_table, *hbox_table, *Frame;
-
-	float color4[4] = {0.0, 0.0, 0.0, 1.0};
-	int index;
-	
-	create_node_group_view(node_group_gmenu->nod_grp_vws);
+    create_node_group_view(node_group_gmenu->nod_grp_vws);
 	
 	/* Delete data bottun */
-	scrolled_table = gtk_scrolled_window_new(NULL, NULL);
+	GtkWidget *scrolled_table = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolled_table),
 				GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrolled_table, 400, 300);
 	gtk_container_add(GTK_CONTAINER(scrolled_table), node_group_gmenu->nod_grp_vws->tree_view);
 	
 	/* Set signals for sorting */
-	vbox_table = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	GtkWidget *vbox_table = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
 	gtk_box_pack_start(GTK_BOX(vbox_table), scrolled_table, TRUE, TRUE, 0);
 	add_sorting_signal_w_label(GTK_TREE_VIEW(node_group_gmenu->nod_grp_vws->tree_view), vbox_table);
 	
-    button_draw_node = gtk_button_new_with_label("Draw nodes");
+    GtkWidget *button_draw_node = gtk_button_new_with_label("Draw nodes");
     g_signal_connect(G_OBJECT(button_draw_node), "clicked", 
                      G_CALLBACK(draw_all_nod_grp_nodes_CB), (gpointer) node_group_gmenu->nod_grp_vws);
-    button_hide_node = gtk_button_new_with_label("Hide nodes");
+    GtkWidget *button_hide_node = gtk_button_new_with_label("Hide nodes");
     g_signal_connect(G_OBJECT(button_hide_node), "clicked", 
                      G_CALLBACK(hide_all_nod_grp_nodes_CB), (gpointer) node_group_gmenu->nod_grp_vws);
 	
 	
-	label_tree_node_color = create_fixed_label_w_index_tree();
-	model_node_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_node_color));  
-	child_model_node_color = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_node_color));
-	index = 0;
+	GtkWidget *label_tree_node_color = create_fixed_label_w_index_tree();
+	GtkTreeModel *model_node_color = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_node_color));  
+	GtkTreeModel *child_model_node_color = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_node_color));
+	int index = 0;
 	index = append_ci_item_to_tree(index, "White",           WHITE_SURFACE, child_model_node_color);
 	index = append_ci_item_to_tree(index, "Single color",    SINGLE_COLOR, child_model_node_color);
 	index = append_ci_item_to_tree(index, "Color by domain", DOMAIN_COLOR, child_model_node_color);
 	index = append_ci_item_to_tree(index, "Color by group",  GROUP_COLOR, child_model_node_color);
 	
-	renderer_node_color = gtk_cell_renderer_text_new();
+	GtkCellRenderer *renderer_node_color = gtk_cell_renderer_text_new();
 	node_group_gmenu->combobox_node_color = gtk_combo_box_new_with_model(child_model_node_color);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(node_group_gmenu->combobox_node_color), 2);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(node_group_gmenu->combobox_node_color), 
@@ -206,40 +190,45 @@ void add_nod_group_draw_box(GtkWidget *window_mesh, struct nod_grp_gtk_menu *nod
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(node_group_gmenu->combobox_node_color), 
 								   renderer_node_color, "text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(node_group_gmenu->combobox_node_color), "changed", 
-				G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) window_mesh);
+				G_CALLBACK(nod_grp_node_colormode_CB), (gpointer) window);
 	
+    float color4[4] = {0.0, 0.0, 0.0, 1.0};
 	kemoview_get_mesh_color_code(NODE_GRP_FLAG, SURFSOLID_TOGGLE, color4);
 	set_color_to_GTK(color4, &node_group_gmenu->gcolor);
 	node_group_gmenu->button_node_color = gtk_color_button_new_with_rgba(&node_group_gmenu->gcolor);
     g_signal_connect(G_OBJECT(node_group_gmenu->button_node_color), "clicked", 
-				G_CALLBACK(set_single_nod_grp_nodes_color_CB), (gpointer) window_mesh);
+				G_CALLBACK(set_single_nod_grp_nodes_color_CB), (gpointer) window);
 	
 	set_nod_group_draw_box(node_group_gmenu);
 
-	Frame = gtk_frame_new("");
+	GtkWidget *Frame = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame), vbox_table);
 	
-	hbox_table = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_table = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_table), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_table), Frame, TRUE, TRUE, 0);
 	
-	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw all: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_node, TRUE, FALSE, 0);
 	
-	hbox_hide = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_hide = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), gtk_label_new("Hide all: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_node, TRUE, FALSE, 0);
 	
-	hbox_node_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_node_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), gtk_label_new("Node color: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), node_group_gmenu->combobox_node_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), node_group_gmenu->button_node_color, TRUE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(node_group_gmenu->box_grp), hbox_table, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(node_group_gmenu->box_grp), hbox_draw, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(node_group_gmenu->box_grp), hbox_hide, TRUE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(node_group_gmenu->box_grp), hbox_node_color, TRUE, FALSE, 0);
+    GtkWidget *box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(box_grp), hbox_table, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_grp), hbox_draw, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_grp), hbox_hide, TRUE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_grp), hbox_node_color, TRUE, FALSE, 0);
+    
+    expander_node = wrap_into_expanded_frame_gtk("Node group", 400, 300, window, box_grp);
+    return expander_node;
 };
 

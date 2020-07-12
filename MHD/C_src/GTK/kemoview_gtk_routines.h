@@ -18,8 +18,7 @@
 
 /*  prototypes */
 
-void wrap_into_frame_gtk(const char *title, 
-			GtkWidget *box_in, GtkWidget *box_out);
+GtkWidget * wrap_into_frame_gtk(const char *title, GtkWidget *box_in);
 GtkWidget * wrap_into_expanded_frame_gtk(const char *title, int width, int height, 
                                   GtkWidget *window, GtkWidget *box_in);
 

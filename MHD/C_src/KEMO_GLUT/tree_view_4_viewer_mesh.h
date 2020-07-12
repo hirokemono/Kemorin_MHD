@@ -41,10 +41,8 @@ struct ci3_clist_view{
 
 struct group_gtk_menu{
 	struct ci3_clist_view *group_vws;
-	
-	GtkWidget *box_grp;
-	
-	GtkWidget *combobox_patch_color;
+
+    GtkWidget *combobox_patch_color;
 	GtkWidget *combobox_grid_color;
 	GtkWidget *combobox_node_color;
 	GtkWidget *button_patch_color;
@@ -58,8 +56,6 @@ struct group_gtk_menu{
 struct nod_grp_gtk_menu{
 	struct ci_clist_view *nod_grp_vws;
 	
-	GtkWidget *box_grp;
-	
 	GtkWidget *combobox_node_color;
 	GtkWidget *button_node_color;
 	GdkRGBA gcolor;
@@ -70,8 +66,6 @@ struct kemoview_mesh_view{
 	struct nod_grp_gtk_menu  *node_group_gmenu;
 	struct group_gtk_menu *ele_group_gmenu;
 	struct group_gtk_menu *surf_group_gmenu;
-	
-	GtkWidget *box_out;
 	
 	GtkWidget *spin_dist;
 	GtkWidget *spin_node_size, *spin_node_digit;

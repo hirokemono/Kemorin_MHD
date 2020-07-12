@@ -251,14 +251,13 @@ void add_lightposition_list_box(struct lightparams_view *light_vws, GtkWidget *v
                      G_CALLBACK(delete_lightposition_list_items_cb), (gpointer) light_vws);
 };
 
-void add_light_list_box(struct lightparams_view *light_vws, GtkWidget *vbox){
+GtkWidget * init_light_list_frame(struct lightparams_view *light_vws){
 	GtkWidget *Frame_1;
-    GtkWidget *vbox_1, *hbox_1;
 	
-	vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	GtkWidget *vbox_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	add_lightposition_list_box(light_vws, vbox_1);
 	
-	hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	GtkWidget *hbox_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start(GTK_BOX(hbox_1), vbox_1, TRUE, TRUE, 0);
 	
 	light_vws->scrolled_window = gtk_scrolled_window_new(NULL, NULL);
@@ -273,7 +272,8 @@ void add_light_list_box(struct lightparams_view *light_vws, GtkWidget *vbox){
 	Frame_1 = gtk_frame_new("");
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame_1), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame_1), hbox_1);
-	gtk_box_pack_start(GTK_BOX(vbox), Frame_1, TRUE, TRUE, 0);
+    
+    return Frame_1;
 };
 
 

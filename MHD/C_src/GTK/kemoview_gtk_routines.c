@@ -9,21 +9,17 @@
 
 #include "kemoview_gtk_routines.h"
 
-void wrap_into_frame_gtk(const char *title, 
-			GtkWidget *box_in, GtkWidget *box_out){
+GtkWidget * wrap_into_frame_gtk(const char *title, GtkWidget *box_in){
+	GtkWidget *hbox;
 	
-	GtkWidget *Frame, *hbox;
-	
-	Frame = gtk_frame_new(title);
+	GtkWidget *Frame = gtk_frame_new(title);
 	gtk_frame_set_shadow_type(GTK_FRAME(Frame), GTK_SHADOW_IN);
 	gtk_container_add(GTK_CONTAINER(Frame), box_in);
 	
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), Frame, TRUE, TRUE, 0);
-	
-	gtk_box_pack_start(GTK_BOX(box_out), hbox, FALSE, FALSE, 0);
-	return;
+	return hbox;
 }
 
 static void expander_CB(GObject *object, GParamSpec *param_spec, gpointer user_data)

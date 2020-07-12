@@ -54,7 +54,7 @@ static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer use
 };
 
 
-void add_axis_menu_box(GtkWidget *box_out){
+GtkWidget * make_axis_menu_box(void){
 	GtkWidget *vbox;
 	
 	GtkWidget *hbox_axis, *hbox_sph_grid, *hbox_coastline;
@@ -194,7 +194,6 @@ void add_axis_menu_box(GtkWidget *box_out){
 	
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_shading, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox_surf_dir, TRUE, FALSE, 0);
-	
-	wrap_into_frame_gtk("Axis and grids", vbox, box_out);
-	return;
+
+    return wrap_into_frame_gtk("Axis and grids", vbox);
 }

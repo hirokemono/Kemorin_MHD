@@ -158,8 +158,8 @@ static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
 	return;
 };
 
-void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
-	GtkWidget *entry = gtk_entry_new();
+GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window){
+    GtkWidget *expander_view;
 	
     char windowsize_x_text[30];
     char windowsize_y_text[30];
@@ -178,6 +178,7 @@ void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 	sprintf(current_lookat_z_text, "    %f    ",
 			(float) kemoview_get_view_parameter(ISET_VWPOINT, 2));
 	
+    GtkWidget *entry = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry), "parent", (gpointer) window);
 	g_object_set_data(G_OBJECT(entry), "menu", (gpointer) view_menu);
 	
@@ -350,12 +351,12 @@ void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 	gtk_box_pack_start(GTK_BOX(view_menu->hbox_viewmatrix_save), view_menu->loadView_Button, FALSE, FALSE, 0);
 
 	
-	view_menu->box_view = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_win, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_eye, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_looking, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_rotation, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_aperture, FALSE, FALSE, 0);
+	GtkWidget *box_view = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_win, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_eye, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_looking, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_rotation, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_aperture, FALSE, FALSE, 0);
 	
 	if(kemoview_get_view_type_flag() == VIEW_STEREO){
 		view_menu->spin_focus = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_focus), 0, 3);
@@ -378,10 +379,11 @@ void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu){
 		gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_streo), GTK_SHADOW_IN);
 		gtk_container_add(GTK_CONTAINER(view_menu->Frame_streo), view_menu->vbox_streo);
 		
-		gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
 	};
 	
-	gtk_box_pack_start(GTK_BOX(view_menu->box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
-	return;
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
+    expander_view = wrap_into_expanded_frame_gtk("View parameters", 360, 400, window, box_view);
+    return expander_view;
 }
 

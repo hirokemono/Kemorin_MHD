@@ -100,8 +100,8 @@ void set_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws){
 	return;
 };
 
-void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
-	
+void add_gtk_mesh_menu(struct kemoview_mesh_view *mesh_vws,
+                       GtkWidget *window, GtkWidget *vbox_add){	
 	GtkWidget *hbox_distance;
 	GtkAdjustment *adj_dist;
 	
@@ -173,37 +173,20 @@ void add_gtk_mesh_menu(GtkWidget *window, struct kemoview_mesh_view *mesh_vws){
 	gtk_box_pack_start(GTK_BOX(hbox_num_loop), gtk_label_new("Number of color loop: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_num_loop), mesh_vws->spin_num_loop, TRUE, TRUE, 0);
 	
-	gtk_container_add(GTK_CONTAINER(window), mesh_vws->box_out);
-	
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_distance, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_node_size, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_color_mode, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), hbox_num_loop, FALSE, FALSE, 0);
-	
-	mesh_vws->domain_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_domain_draw_box(window, mesh_vws->domain_group_gmenu);
-	GtkWidget *expander_domain = wrap_into_expanded_frame_gtk("Domain", 400, 300, window, 
-                                 mesh_vws->domain_group_gmenu->box_grp);
-    gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), expander_domain, FALSE, FALSE, 0);
-	
-	mesh_vws->node_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_nod_group_draw_box(window, mesh_vws->node_group_gmenu);
-	GtkWidget *expander_node = wrap_into_expanded_frame_gtk("Node group", 400, 300, window, 
-                                 mesh_vws->node_group_gmenu->box_grp);
-    gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), expander_node, FALSE, FALSE, 0);
-
-	mesh_vws->ele_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_ele_group_draw_box(window, mesh_vws->ele_group_gmenu);
-	GtkWidget *expander_ele = wrap_into_expanded_frame_gtk("Element group", 400, 300, window, 
-                                 mesh_vws->ele_group_gmenu->box_grp);
-    gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), expander_ele, FALSE, FALSE, 0);
-
-	mesh_vws->surf_group_gmenu->box_grp = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	add_surf_group_draw_box(window, mesh_vws->surf_group_gmenu);
-	GtkWidget *expander_surf = wrap_into_expanded_frame_gtk("Surface group", 400, 300, window, 
-                                 mesh_vws->surf_group_gmenu->box_grp);
-    gtk_box_pack_start(GTK_BOX(mesh_vws->box_out), expander_surf, FALSE, FALSE, 0);
-
+    GtkWidget *expander_domain = init_domain_draw_expander(window, mesh_vws->domain_group_gmenu);
+	GtkWidget *expander_node = init_nod_group_draw_expander(window, mesh_vws->node_group_gmenu);
+	GtkWidget *expander_ele = init_ele_group_draw_expander(window, mesh_vws->ele_group_gmenu);
+	GtkWidget *expander_surf = init_surf_group_draw_expander(window, mesh_vws->surf_group_gmenu);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_add), hbox_distance, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_add), hbox_node_size, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_add), hbox_color_mode, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_add), hbox_num_loop, FALSE, FALSE, 0);
+    
+    gtk_box_pack_start(GTK_BOX(vbox_add), expander_domain, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_add), expander_node, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_add), expander_ele, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox_add), expander_surf, FALSE, FALSE, 0);
 	return;
 }
 

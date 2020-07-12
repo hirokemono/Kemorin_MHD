@@ -27,7 +27,6 @@
 #endif
 
 struct psf_isoline_gtk_menu{
-	GtkWidget *isoline_box;
 	GtkWidget *switch_1, *switch_zero;
 	
 	GtkWidget *combobox_gdcolor;
@@ -42,6 +41,6 @@ struct psf_isoline_gtk_menu{
 
 /*  prototypes */
 void set_gtk_isoline_menu_values(struct psf_isoline_gtk_menu *psf_isoline_menu);
-void add_gtk_isoline_menu(GtkWidget *window, struct psf_isoline_gtk_menu *psf_isoline_menu);
+GtkWidget * init_isoline_menu_expander(GtkWidget *window, struct psf_isoline_gtk_menu *psf_isoline_menu);
 
 #endif

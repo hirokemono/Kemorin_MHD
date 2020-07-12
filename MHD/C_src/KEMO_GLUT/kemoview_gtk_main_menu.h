@@ -38,13 +38,12 @@ struct main_buttons{
 	GtkWidget *menuHbox;
 	
 	GtkWidget *vbox_menu;
-	GtkWidget *viewBox;
-	struct view_widgets *view_menu;
+
+    struct view_widgets *view_menu;
 	
 	GtkWidget *psfBox;
 	struct psf_gtk_menu *psf_gmenu;
 	
-	GtkWidget *prefBox;
 	struct preference_gtk_menu  *pref_gmenu;
 	
 	GtkWidget *flineBox;
@@ -53,7 +52,6 @@ struct main_buttons{
 	GtkWidget *meshBox;
 	struct kemoview_mesh_view *mesh_vws;
 	
-	GtkWidget *rotationBox;
 	struct rotation_gtk_menu *rot_gmenu;
 	
 	GtkWidget *evolutionBox;

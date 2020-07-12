@@ -24,10 +24,7 @@
 	#include "view_modifier_gtk.h"
 #endif
 
-
 /* prototypes */
-
-void set_domain_draw_box(struct group_gtk_menu *domain_group_gmenu);
-void add_domain_draw_box(GtkWidget *window_mesh, struct group_gtk_menu *domain_group_gmenu);
+GtkWidget * init_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *domain_group_gmenu);
 
 #endif /* tree_view_4_domain_viewer */

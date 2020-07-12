@@ -25,8 +25,6 @@
 #endif
 
 /* prototypes */
-
-void set_ele_group_draw_box(struct group_gtk_menu *ele_group_gmenu);
-void add_ele_group_draw_box(GtkWidget *window_mesh, struct group_gtk_menu *ele_group_gmenu);
+GtkWidget * init_ele_group_draw_expander(GtkWidget *window, struct group_gtk_menu *ele_group_gmenu);
 
 #endif /* tree_view_4_ele_group_viewer */

@@ -32,9 +32,7 @@ struct rotation_gtk_menu{
 	
 	int inc_deg;
 	int iaxis_rot;
-	
-	GtkWidget *rot_box;
-	
+		
 	GtkWidget *combobox_rotation_dir;
 	GtkWidget *spin_rot_increment;
 	
@@ -47,6 +45,6 @@ struct rotation_gtk_menu{
 /*  prototypes */
 
 struct rotation_gtk_menu * init_rotation_menu_box(void);
-void add_rotation_menu_box(GtkWidget *window_main, struct rotation_gtk_menu *rot_gmenu);
+GtkWidget * init_rotation_menu_expander(struct rotation_gtk_menu *rot_gmenu, GtkWidget *window);
 	
 #endif

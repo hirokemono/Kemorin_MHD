@@ -63,7 +63,7 @@ static void ShinenessChange(GtkWidget *entry, gpointer data)
 	return;
 }
 
-void set_GTK_preference_menu(struct preference_gtk_menu *pref_gmenu){
+static void set_GTK_preference_menu(struct preference_gtk_menu *pref_gmenu){
 	double current_value;
 	current_value = kemoview_get_material_parameter(AMBIENT_FLAG);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pref_gmenu->spin_ambient), current_value);
@@ -76,34 +76,32 @@ void set_GTK_preference_menu(struct preference_gtk_menu *pref_gmenu){
 	return;
 }
 
-void add_GTK_preference_box(struct preference_gtk_menu *pref_gmenu){
-	GtkWidget *hbox11, *hbox12, *hbox13, *hbox14;
-	GtkWidget *entry;
-	GtkWidget *BGselButton;
-	GtkAdjustment *adj1, *adj2, *adj3, *adj4;
-	
-	float current_value = 0.0;
-	float color[4];
-	
+GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, GtkWidget *window){
+    GtkWidget *expander_pref;
+
+    float color[4];
 	kemoview_get_background_color(color);
 	
 	/* Set buttons   */
-	entry = gtk_entry_new();
-	BGselButton = gtk_button_new_with_label("Set Background");
+	GtkWidget *entry = gtk_entry_new();
+	GtkWidget *BGselButton = gtk_button_new_with_label("Set Background");
 	g_signal_connect(G_OBJECT(BGselButton), "clicked", 
 				G_CALLBACK(kemoview_gtk_BGcolorsel), (gpointer)entry);
+
+    GtkWidget *Frame_1 = init_light_list_frame(pref_gmenu->lightparams_vws);
 	
 	
-	adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+    float current_value = 0.0;
+	GtkAdjustment *adj1 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	pref_gmenu->spin_ambient = gtk_spin_button_new(GTK_ADJUSTMENT(adj1),0,2);
 	
-	adj2 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	GtkAdjustment *adj2 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	pref_gmenu->spin_diffuse = gtk_spin_button_new(GTK_ADJUSTMENT(adj2),0,2);
 	
-	adj3 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
+	GtkAdjustment *adj3 = gtk_adjustment_new(current_value, 0.0, 1.0, 0.01, 0.01, 0.0);
 	pref_gmenu->spin_specular = gtk_spin_button_new(GTK_ADJUSTMENT(adj3),0,2);
 	
-	adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
+	GtkAdjustment *adj4 = gtk_adjustment_new(current_value, 0.0, 100.0, 0.1, 0.1, 0.0);
 	pref_gmenu->spin_shineness = gtk_spin_button_new( GTK_ADJUSTMENT(adj4),0,2);
 	
 	g_signal_connect(pref_gmenu->spin_ambient, "value-changed", G_CALLBACK(AmbientChange), NULL);
@@ -113,31 +111,31 @@ void add_GTK_preference_box(struct preference_gtk_menu *pref_gmenu){
 	
 	set_GTK_preference_menu(pref_gmenu);
 	
-	hbox11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	GtkWidget *hbox11 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox11), gtk_label_new("Ambient:   "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox11), pref_gmenu->spin_ambient, FALSE, FALSE, 0);
 	
-	hbox12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	GtkWidget *hbox12 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox12), gtk_label_new("Diffuse:   "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox12), pref_gmenu->spin_diffuse, FALSE, FALSE, 0);
 	
-	hbox13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	GtkWidget *hbox13 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox13), gtk_label_new("Specular:  "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox13), pref_gmenu->spin_specular, FALSE, FALSE, 0);
 	
-	hbox14 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	GtkWidget *hbox14 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start(GTK_BOX(hbox14), gtk_label_new("Shineness: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox14), pref_gmenu->spin_shineness, FALSE, FALSE, 0);
+		
+    GtkWidget *box_pref = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_pack_start(GTK_BOX(box_pref), BGselButton, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box_pref), Frame_1, TRUE, TRUE, 0);
 	
+	gtk_box_pack_start(GTK_BOX(box_pref), hbox11, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_pref), hbox12, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_pref), hbox13, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_pref), hbox14, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->box_pref), BGselButton, FALSE, FALSE, 0);
-	add_light_list_box(pref_gmenu->lightparams_vws, pref_gmenu->box_pref);
-	
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->box_pref), hbox11, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->box_pref), hbox12, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->box_pref), hbox13, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(pref_gmenu->box_pref), hbox14, FALSE, FALSE, 0);
-	
-	gtk_widget_show_all(pref_gmenu->box_pref);
-	return;
+    expander_pref = wrap_into_expanded_frame_gtk("Preferences", 360, 400, window, box_pref);
+	return expander_pref;
 }

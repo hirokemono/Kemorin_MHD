@@ -28,7 +28,6 @@
 #endif
 
 struct psf_surface_gtk_menu{
-	GtkWidget *patch_box;	
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
@@ -43,7 +42,7 @@ struct psf_surface_gtk_menu{
 /*  prototypes */
 
 void set_gtk_surface_menu_values(struct psf_surface_gtk_menu *gtk_psf_surface);
-void add_gtk_psf_surface_menu(GtkWidget *window_cmap, struct colormap_view *color_vws, 
+GtkWidget * init_gtk_psf_surface_menu_expander(GtkWidget *window_cmap, struct colormap_view *color_vws, 
 							  struct psf_surface_gtk_menu *psf_surface_menu);
 
 #endif

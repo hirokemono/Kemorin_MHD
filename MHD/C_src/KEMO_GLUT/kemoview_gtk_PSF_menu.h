@@ -34,8 +34,6 @@
 #endif
 
 struct psf_color_gtk_menu{
-	GtkWidget *color_box;
-	
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
@@ -66,6 +64,7 @@ struct psf_gtk_menu{
 struct psf_gtk_menu * alloc_psf_gtk_menu();
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-void make_psf_menu_box(GtkWidget *window, struct psf_gtk_menu *psf_gmenu);
+GtkWidget * init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu, 
+                               GtkWidget *window, GtkWidget *psf_vbox);
 
 #endif

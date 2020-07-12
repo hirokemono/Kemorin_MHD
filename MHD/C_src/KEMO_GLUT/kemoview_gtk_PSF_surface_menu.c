@@ -215,24 +215,9 @@ void set_gtk_surface_menu_values(struct psf_surface_gtk_menu *psf_surface_menu){
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_digit_max), i_digit);
 };
 
-void add_gtk_psf_surface_menu(GtkWidget *window_cmap, struct colormap_view *color_vws, 
+GtkWidget * init_gtk_psf_surface_menu_expander(GtkWidget *window, struct colormap_view *color_vws, 
 							  struct psf_surface_gtk_menu *psf_surface_menu){
-	GtkWidget *hbox_draw, *hbox_bar, *hbox_color;
-	GtkWidget *hbox_one_opacity;
-	GtkWidget *hbox_max_range, *hbox_min_range;
-	
-	GtkWidget *label_tree_sfcolor;
-	GtkCellRenderer *renderer_sfcolor;
-	GtkTreeModel *model_sfcolor;
-	GtkTreeModel *child_model_sfcolor;
-	
-	int index = 0;
-	
-	GtkAdjustment *adj_opacity1;
-	
-	GtkAdjustment *adj_range_min, *adj_digit_min;
-	GtkAdjustment *adj_range_max, *adj_digit_max;
-
+	GtkWidget *expander_surf;
 	
 	psf_surface_menu->switch_draw = gtk_switch_new();
 	gtk_switch_set_active(GTK_SWITCH(psf_surface_menu->switch_draw), TRUE);
@@ -245,44 +230,44 @@ void add_gtk_psf_surface_menu(GtkWidget *window_cmap, struct colormap_view *colo
 				G_CALLBACK(psf_colorbar_switch_CB), NULL);
 	
 	
-	label_tree_sfcolor = create_fixed_label_w_index_tree();
-	model_sfcolor = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_sfcolor));  
-	child_model_sfcolor = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_sfcolor));
-	index = 0;
+	GtkWidget *label_tree_sfcolor = create_fixed_label_w_index_tree();
+	GtkTreeModel *model_sfcolor = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_sfcolor));  
+	GtkTreeModel *child_model_sfcolor = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_sfcolor));
+	int index = 0;
 	index = append_ci_item_to_tree(index, "Contour", RAINBOW_PSF_SURF, child_model_sfcolor);
 	index = append_ci_item_to_tree(index, "White", WHITE_SURFACE, child_model_sfcolor);
 	index = append_ci_item_to_tree(index, "Single color", SINGLE_COLOR, child_model_sfcolor);
 	index = append_ci_item_to_tree(index, "Change color", CHANGE_PSF_COLOR, child_model_sfcolor);
 	index = append_ci_item_to_tree(index, "Texture", TEXTURE_PSF_SURF, child_model_sfcolor);
 	
-	renderer_sfcolor = gtk_cell_renderer_text_new();
+	GtkCellRenderer *renderer_sfcolor = gtk_cell_renderer_text_new();
 	psf_surface_menu->combobox_sfcolor = gtk_combo_box_new_with_model(child_model_sfcolor);
 	gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 0);
 	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(psf_surface_menu->combobox_sfcolor), renderer_sfcolor, TRUE);
 	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(psf_surface_menu->combobox_sfcolor), renderer_sfcolor,
 				"text", COLUMN_FIELD_NAME, NULL);
 	g_signal_connect(G_OBJECT(psf_surface_menu->combobox_sfcolor), "changed", 
-				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window_cmap);
+				G_CALLBACK(psf_surf_colormode_CB), (gpointer) window);
 	
 	psf_surface_menu->label_range_min = gtk_label_new(" ");
 	psf_surface_menu->label_range_max = gtk_label_new(" ");
 	
-	adj_opacity1 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);
+	GtkAdjustment *adj_opacity1 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);
 	psf_surface_menu->spin_opacity1 = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
 	g_signal_connect(psf_surface_menu->spin_opacity1, "value-changed",
 					 G_CALLBACK(set_psf_opacity_CB), NULL);
 	
-	adj_range_min = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
-	adj_digit_min = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
+	GtkAdjustment *adj_range_min = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
+	GtkAdjustment *adj_digit_min = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
 	psf_surface_menu->spin_range_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_range_min),0,2);
 	psf_surface_menu->spin_digit_min = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit_min),0,0);
 	g_signal_connect(psf_surface_menu->spin_range_min, "value-changed", 
 					 G_CALLBACK(MinRangeValueChange_CB), NULL);
 	g_signal_connect(psf_surface_menu->spin_digit_min, "value-changed",
 					 G_CALLBACK(MinRangeDigitChange_CB), NULL);
-
-	adj_range_max = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
-	adj_digit_max = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
+	
+	GtkAdjustment *adj_range_max = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
+	GtkAdjustment *adj_digit_max = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
 	psf_surface_menu->spin_range_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_range_max),0,2);
 	psf_surface_menu->spin_digit_max = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit_max),0,0);
 	g_signal_connect(psf_surface_menu->spin_range_max, "value-changed",
@@ -290,41 +275,44 @@ void add_gtk_psf_surface_menu(GtkWidget *window_cmap, struct colormap_view *colo
 	g_signal_connect(psf_surface_menu->spin_digit_max, "value-changed",
 					 G_CALLBACK(MaxRangeDigitChange_CB), NULL);
 	
-	hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw surface: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), psf_surface_menu->switch_draw, FALSE, FALSE, 0);
 	
-	hbox_bar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_bar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_bar), gtk_label_new("Draw color bar: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_bar), psf_surface_menu->switch_bar, FALSE, FALSE, 0);
 	
-	hbox_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_color), gtk_label_new("Color mode: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_color), psf_surface_menu->combobox_sfcolor, FALSE, FALSE, 0);
 	
-	hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), gtk_label_new("Opacity"), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), psf_surface_menu->spin_opacity1, FALSE, FALSE, 0);
 	
-	hbox_min_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_min_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_min_range), psf_surface_menu->label_range_min, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_min_range), psf_surface_menu->spin_range_min, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_min_range), gtk_label_new("x10^"), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_min_range), psf_surface_menu->spin_digit_min, FALSE, FALSE, 0);
 	
-	hbox_max_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_max_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_max_range), psf_surface_menu->label_range_max, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_max_range), psf_surface_menu->spin_range_max, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_max_range), gtk_label_new("x10^"), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_max_range), psf_surface_menu->spin_digit_max, FALSE, FALSE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), hbox_draw, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), hbox_bar, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), hbox_color, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), hbox_one_opacity, TRUE, TRUE, 0);
+    GtkWidget *patch_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(patch_box), hbox_draw, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(patch_box), hbox_bar, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(patch_box), hbox_color, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(patch_box), hbox_one_opacity, TRUE, TRUE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), gtk_label_new("Range"), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), hbox_min_range, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(psf_surface_menu->patch_box), hbox_max_range, TRUE, TRUE, 0);
-	return;
+	gtk_box_pack_start(GTK_BOX(patch_box), gtk_label_new("Range"), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(patch_box), hbox_min_range, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(patch_box), hbox_max_range, TRUE, TRUE, 0);
+    
+    expander_surf = wrap_into_expanded_frame_gtk("Surface", 420, 320, window, patch_box);
+	return expander_surf;
 }

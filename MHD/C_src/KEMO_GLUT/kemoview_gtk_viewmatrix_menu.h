@@ -29,8 +29,6 @@
 
 
 struct view_widgets{
-	GtkWidget *box_view;
-	
 	GtkAdjustment *adj_win_x, *adj_win_y;
 	GtkWidget *spin_win_x, *spin_win_y;
 	GtkWidget *hbox_win_x, *hbox_win_y;
@@ -84,5 +82,5 @@ struct view_widgets{
 void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window);
 void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window);
 
-void gtk_viewmatrix_menu_box(GtkWidget *window, struct view_widgets *view_menu);
+GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window);
 #endif
