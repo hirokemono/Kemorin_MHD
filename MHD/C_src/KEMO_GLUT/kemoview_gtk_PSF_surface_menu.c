@@ -200,8 +200,8 @@ void set_gtk_surface_menu_values(struct psf_surface_gtk_menu *psf_surface_menu){
 	value_max = kemoview_get_each_PSF_data_range(ISET_COLOR_MAX, icomp);
 	sprintf(min_text, "Min(%1.2e): ", value_min);
 	sprintf(max_text, "Max(%1.2e): ", value_max);
-	gtk_label_set_text(psf_surface_menu->label_range_min, min_text);
-	gtk_label_set_text(psf_surface_menu->label_range_max, max_text);
+	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_min), min_text);
+	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_max), max_text);
 	
 	current_value = kemoview_get_each_PSF_colormap_range(ISET_OPACITY_MAX);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(psf_surface_menu->spin_opacity1), current_value);

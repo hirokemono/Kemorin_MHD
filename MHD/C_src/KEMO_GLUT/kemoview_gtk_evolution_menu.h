@@ -34,8 +34,6 @@ struct evolution_gtk_menu{
 	int iend_evo;
 	int inc_evo;
 	
-	GtkWidget *evo_box;
-	
 	GtkWidget *spin_evo_start;
 	GtkWidget *spin_evo_end;
 	GtkWidget *spin_evo_increment;
@@ -46,6 +44,6 @@ struct evolution_gtk_menu{
 /*  prototypes */
 
 struct evolution_gtk_menu * init_evoluaiton_menu_box(void);
-void add_evoluaiton_menu_box(int istep, GtkWidget *window_main, struct evolution_gtk_menu *evo_gmenu);
+GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct evolution_gtk_menu *evo_gmenu);
 	
 #endif

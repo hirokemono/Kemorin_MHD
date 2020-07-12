@@ -63,18 +63,12 @@ static void update_kemoview_menu(struct main_buttons *mbot, GtkWidget *window){
 		struct kv_string *file_prefix = kemoview_alloc_kvstring();
 		if(nload_psf > 0){
 			istep = kemoview_get_PSF_full_path_file_prefix(file_prefix, &iflag);
-			mbot->evo_gmenu->evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-			add_evoluaiton_menu_box(istep, window, mbot->evo_gmenu);
-			GtkWidget *expand_psf_evo = wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, 
-                                           mbot->evo_gmenu->evo_box);
+			GtkWidget *expand_psf_evo = init_evoluaiton_menu_expander(istep, window, mbot->evo_gmenu);
             gtk_box_pack_start(GTK_BOX(mbot->evolutionBox), expand_psf_evo, FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(mbot->psfBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		} else {
 			istep = kemoview_get_fline_file_step_prefix(file_prefix);
-			mbot->evo_gmenu->evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-			add_evoluaiton_menu_box(istep, window, mbot->evo_gmenu);
-			GtkWidget *expand_fline_evo = wrap_into_expanded_frame_gtk("Evolution", 360, 240, window, 
-                                           mbot->evo_gmenu->evo_box);
+			GtkWidget *expand_fline_evo = init_evoluaiton_menu_expander(istep, window, mbot->evo_gmenu);
             gtk_box_pack_start(GTK_BOX(mbot->evolutionBox), expand_fline_evo, FALSE, FALSE, 0);
 			gtk_box_pack_start(GTK_BOX(mbot->flineBox), mbot->evolutionBox, FALSE, FALSE, 0);
 		};
@@ -481,12 +475,10 @@ void gtk_fieldline_menu_box(struct main_buttons *mbot, GtkWidget *window){
 				G_CALLBACK(close_fline_CB), entry_file);
 	
 	mbot->fline_menu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
-	mbot->fline_menu->menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-	gtk_box_pack_start(GTK_BOX(mbot->fline_menu->menu_box), 
-					   closeButton, FALSE, FALSE, 0);
-	add_gtk_fieldline_menu(mbot->fline_menu);
+	GtkWidget *menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+	gtk_box_pack_start(GTK_BOX(menu_box), closeButton, FALSE, FALSE, 0);
+	GtkWidget *hbox = init_fieldline_menu_hbox(mbot->fline_menu, menu_box);
 	set_gtk_fieldline_menu(mbot->fline_menu);
-	GtkWidget *hbox = wrap_into_frame_gtk("Fieldline", mbot->fline_menu->menu_box);
     gtk_box_pack_start(GTK_BOX(mbot->flineBox), hbox, FALSE, FALSE, 0);
 	
 	gtk_widget_show(mbot->flineBox);

@@ -154,7 +154,7 @@ void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu){
 	return;
 };
 
-void add_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu){
+GtkWidget * init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu, GtkWidget *menu_box){
 	GtkWidget *hbox_tube, *hbox_color;
 	GtkWidget *hbox_thickness;
 	GtkWidget *hbox_range_min, *hbox_range_max;
@@ -255,14 +255,15 @@ void add_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu){
 	gtk_box_pack_start(GTK_BOX(hbox_range_max), fline_menu->spin_max_digit, TRUE, TRUE, 0);
 	
 	
-	add_fline_draw_field_box(fline_menu->menu_box);
-	add_fline_draw_component_box(fline_menu->menu_box);
-	gtk_box_pack_start(GTK_BOX(fline_menu->menu_box), hbox_color, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(fline_menu->menu_box), hbox_tube, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(fline_menu->menu_box), hbox_thickness, TRUE, TRUE, 0);
+	add_fline_draw_field_box(menu_box);
+	add_fline_draw_component_box(menu_box);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_color, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_tube, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_thickness, TRUE, TRUE, 0);
 	
-	gtk_box_pack_start(GTK_BOX(fline_menu->menu_box), gtk_label_new("Range"), TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(fline_menu->menu_box), hbox_range_min, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(fline_menu->menu_box), hbox_range_max, TRUE, TRUE, 0);
-	return;
+	gtk_box_pack_start(GTK_BOX(menu_box), gtk_label_new("Range"), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_min, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(menu_box), hbox_range_max, TRUE, TRUE, 0);
+    
+	return wrap_into_frame_gtk("Fieldline", menu_box);
 }

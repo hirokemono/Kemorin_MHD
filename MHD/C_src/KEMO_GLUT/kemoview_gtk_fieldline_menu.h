@@ -25,8 +25,6 @@
 #endif
 
 struct fieldline_gtk_menu{
-	GtkWidget *menu_box;
-	
 	GtkWidget *combobox_color;
 	GtkWidget *switch_tube;
 	
@@ -40,6 +38,6 @@ struct fieldline_gtk_menu{
 /*  prototypes */
 
 void set_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
-void add_gtk_fieldline_menu(struct fieldline_gtk_menu *fline_menu);
+GtkWidget * init_fieldline_menu_hbox(struct fieldline_gtk_menu *fline_menu, GtkWidget *menu_box);
 
 #endif
