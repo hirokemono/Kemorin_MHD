@@ -1,9 +1,13 @@
-!FEM_analyzer_viz.f90
+!>@file  FEM_analyzer_viz.f90
+!!       module FEM_analyzer_viz
+!!
+!!@author H. Matsui
+!!@date   Programmed in May, 2015
 !
-!      module FEM_analyzer_viz
-!
-!       Written by H. Matsui
-!
+!> @brief FEM routine for visualization
+!!
+!!@verbatim
+!!@verbatim
 !!      subroutine FEM_initialize_vizs(ucd_step, viz_step, viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
@@ -13,6 +17,7 @@
 !!        type(time_data), intent(in) :: init_d
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
+!!@endverbatim
 !
       module FEM_analyzer_viz
 !
