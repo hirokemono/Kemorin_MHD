@@ -57,7 +57,7 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	struct rotation_gtk_menu *rot_gmenu 
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
 	
-	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoViewer");
+	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
 	gtk_window_set_focus(GTK_WINDOW(window), NULL);
 	write_rotate_views(NO_SAVE_FILE, image_prefix, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
@@ -173,7 +173,7 @@ GtkWidget * init_rotation_menu_expander(struct rotation_gtk_menu *rot_gmenu, Gtk
 	
 	
 	GtkWidget *hbox_rotation_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), gtk_label_new("Surface direction: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), gtk_label_new("Rotation axis: "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_rotation_dir), rot_gmenu->combobox_rotation_dir, TRUE, TRUE, 0);
 	
 	GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);

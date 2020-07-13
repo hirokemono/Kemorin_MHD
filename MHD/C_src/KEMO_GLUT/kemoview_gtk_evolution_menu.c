@@ -28,7 +28,7 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 	gtk_widget_destroy(window);
 	gtk_main_quit();
 	
-	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoViewer");
+	struct kv_string *image_prefix = kemoview_init_kvstring_by_string("CalypsoView");
 	
 	write_evolution_views(NO_SAVE_FILE, image_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
 						  evo_gmenu->inc_evo);

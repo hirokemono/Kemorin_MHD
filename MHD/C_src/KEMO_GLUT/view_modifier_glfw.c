@@ -258,10 +258,9 @@ static void keyFuncCB(GLFWwindow* window, int key, int scancode, int action, int
 }
 
 GLFWwindow * open_kemoviwer_glfw_window(int npixel_x, int npixel_y){
-	glfw_window = glfwCreateWindow(npixel_x, npixel_y, "CalypsoViewer", NULL, NULL);
+	glfw_window = glfwCreateWindow(npixel_x, npixel_y, "CalypsoView", NULL, NULL);
 	if (!glfw_window)
 	{
-        printf("Baka!!\n");
 		glfwTerminate();
 		exit(1);
 	}
