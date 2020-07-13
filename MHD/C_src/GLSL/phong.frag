@@ -7,7 +7,7 @@ in vec3 normal;
 out vec4 out_Color;
 
 #define MAX_LIGHTS 10
-struct LightSourceParameters{   
+struct LightSourceParameters{
 	vec4 ambient;              // Aclarri   
 	vec4 diffuse;              // Dcli   
 	vec4 specular;             // Scli   

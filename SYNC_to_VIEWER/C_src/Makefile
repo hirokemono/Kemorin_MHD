@@ -101,7 +101,8 @@ depends:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		CC='$(CC)'   \
+		F90_LOCAL='$(F90_LOCAL)'   \
+		CC='$(CC)'                 \
 		MHDDIR='$(MHDDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		DEPFLAGS='$(DEPFLAGS)' \

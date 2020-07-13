@@ -101,13 +101,15 @@ depends:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		CC='$(CC)'   \
+		F90_LOCAL='$(F90_LOCAL)'   \
+		CC='$(CC)'                 \
 		MHDDIR='$(MHDDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
+		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
 		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
 		depends \
 		) \

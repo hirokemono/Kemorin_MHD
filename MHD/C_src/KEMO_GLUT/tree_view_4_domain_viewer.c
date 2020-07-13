@@ -452,34 +452,34 @@ GtkWidget * init_domain_draw_expander(GtkWidget *window, struct group_gtk_menu *
 	gtk_box_pack_start(GTK_BOX(hbox_table), gtk_label_new("  "), FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_table), Frame, TRUE, TRUE, 0);
 	
-	GtkTreeModel *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_draw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), gtk_label_new("Draw all: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_patch, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_grid, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_draw), button_draw_node, TRUE, FALSE, 0);
 	
-	GtkTreeModel *hbox_hide = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_hide = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), gtk_label_new("Hide all: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_patch, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_grid, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_hide), button_hide_node, TRUE, FALSE, 0);
 	
-	GtkTreeModel *hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_one_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), gtk_label_new("Opacity: "), TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_one_opacity), domain_group_gmenu->spin_opacity, TRUE, TRUE, 0);
 	
     
-	GtkTreeModel *hbox_patch_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	GtkWidget *hbox_patch_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_patch_color), gtk_label_new("Patch color: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_patch_color), domain_group_gmenu->combobox_patch_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_patch_color), domain_group_gmenu->button_patch_color, TRUE, FALSE, 0);
 
-    GtkTreeModel *hbox_grid_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    GtkWidget *hbox_grid_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_grid_color), gtk_label_new("Grid color: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_grid_color), domain_group_gmenu->combobox_grid_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_grid_color), domain_group_gmenu->button_grid_color, TRUE, FALSE, 0);
 	
-    GtkTreeModel *hbox_node_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    GtkWidget *hbox_node_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), gtk_label_new("Node color: "), TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), domain_group_gmenu->combobox_node_color, TRUE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox_node_color), domain_group_gmenu->button_node_color, TRUE, FALSE, 0);

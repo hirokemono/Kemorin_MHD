@@ -94,7 +94,8 @@ depends:
 		MHDDIR='$(MHDDIR)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		CC="$(CC)"   \
+		F90_LOCAL='$(F90_LOCAL)'   \
+		CC="$(CC)"                 \
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
 		C_INCLUDE='$(C_INCLUDE)' \
@@ -124,8 +125,7 @@ makemake:
 	@echo '#' >> $(MAKENAME)
 	@echo '# Compiler commands' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo CC=$(MPICC)            >> $(MAKENAME)
-	@echo F90=$(MPIF90)          >> $(MAKENAME)
+	@echo CC=$(CC)               >> $(MAKENAME)
 	@echo CXX=$(CXX)             >> $(MAKENAME)
 	@echo AR=$(AR)               >> $(MAKENAME)
 	@echo RANLIB=$(RANLIB) >> $(MAKENAME)

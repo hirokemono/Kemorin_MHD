@@ -17,16 +17,19 @@ $(SHADER_PREFIX).o
 MAKE_C_SHADER = shader_into_c
 CURRENTDIR = $(shell pwd)
 
-SRC_MAKE_SHADER = ../../module_dependency/$(MAKE_C_SHADER).f90
+SRC_MAKE_SHADER = $(MAKE_C_SHADER).f90
 SRC_SHADERS = $(shell ls *.vert *.frag)
 
 #
 #  -------------------------------------------------------------------------
 #
 
-all: $(SHADER_PREFIX).c
+all: wrap_shader
+
+wrap_shader: $(SHADER_PREFIX).c
 
 $(SHADER_PREFIX).c: $(SRC_SHADERS) $(SRC_MAKE_SHADER)
+	@echo 'Wrap shader sources in C source'
 	$(F90_LOCAL) -o $(MAKE_C_SHADER) $(SRC_MAKE_SHADER)
 	./$(MAKE_C_SHADER) $(SHADER_PREFIX) $(CURRENTDIR) $(SRC_SHADERS)
 	rm $(MAKE_C_SHADER) shader_into_c_source.*
@@ -45,7 +48,7 @@ mod_list:
 module:
 	@cat Makefile.depends >> $(MAKENAME)
 
-depends:
+depends: wrap_shader
 	@echo 'Construct dependencies in C_src/GLSL'
 	@echo '#' > $(MAKENAME).tmp
 	@for sources in $(SRC_GLSL_C) ; do \
