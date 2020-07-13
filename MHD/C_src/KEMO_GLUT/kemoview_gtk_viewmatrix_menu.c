@@ -383,7 +383,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	};
 	
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
-    expander_view = wrap_into_expanded_frame_gtk("View parameters", 360, 400, window, box_view);
+    expander_view = wrap_into_expanded_frame_gtk("View parameters", 360, 480, window, box_view);
     return expander_view;
 }
 

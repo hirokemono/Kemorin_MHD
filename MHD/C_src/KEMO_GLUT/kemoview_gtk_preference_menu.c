@@ -136,6 +136,6 @@ GtkWidget * init_preference_expander(struct preference_gtk_menu *pref_gmenu, Gtk
 	gtk_box_pack_start(GTK_BOX(box_pref), hbox13, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_pref), hbox14, FALSE, FALSE, 0);
 	
-    expander_pref = wrap_into_expanded_frame_gtk("Preferences", 360, 400, window, box_pref);
+    expander_pref = wrap_into_expanded_frame_gtk("Preferences", 160, 400, window, box_pref);
 	return expander_pref;
 }
