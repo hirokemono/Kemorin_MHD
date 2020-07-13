@@ -4120,7 +4120,7 @@
                                         </connections>
                                     </textFieldCell>
                                     <connections>
-                                        <action selector="UpdateLightTable:" target="3Oj-aY-RpN" id="x1o-DG-siS"/>
+                                        <action selector="SetSpecularMaterialAction:" target="3Oj-aY-RpN" id="jdK-7f-G0v"/>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="JSQ-2C-jwe">
@@ -4183,7 +4183,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Vae-Vq-U6W">
                                         <rect key="frame" x="1" y="0.0" width="229" height="117"/>
-                                        <autoresizingMask key="autoresizingMask"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" alternatingRowBackgroundColors="YES" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" headerView="8Zb-aV-5rs" id="Gdj-Kb-Y6t">
                                                 <rect key="frame" x="0.0" y="0.0" width="229" height="94"/>

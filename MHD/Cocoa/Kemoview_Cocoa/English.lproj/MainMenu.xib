@@ -4104,7 +4104,7 @@
                                         </connections>
                                     </textFieldCell>
                                     <connections>
-                                        <action selector="UpdateLightTable:" target="3Oj-aY-RpN" id="x1o-DG-siS"/>
+                                        <action selector="SetSpecularMaterialAction:" target="3Oj-aY-RpN" id="N6Y-gQ-oPp"/>
                                     </connections>
                                 </textField>
                                 <textField verticalHuggingPriority="750" misplaced="YES" id="JSQ-2C-jwe">
