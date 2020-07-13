@@ -1,0 +1,21 @@
+Settings for Makefiles
+
+# -------------------------------------------------------------------------------
+# MacBook Pro
+# -------------------------------------------------------------------------------
+#
+./configure --prefix=/Users/matsui/local FC=mpif90 CC=mpicc \
+CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
+--with-blas --enable-fftw3 --enable-cocoa --with-libpng --enable-gl \
+--with-gtk --with-glfw --with-zlib --with-hdf5=/opt/local/bin/h5pcc \
+PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig
+#
+# -------------------------------------------------------------------------------
+# Ubuntu 18 (VirtualBox)
+# -------------------------------------------------------------------------------
+#
+./configure FC=mpif90 CC=mpicc CFLAGS=-O3  FCFLAGS=-O3 \
+--with-blas=/usr/lib/x86_64-linux-gnu/  --with-zlib --with-pgplot \
+--enable-fftw3 --with-libpng --enable-gl --with-gtk --with-glfw \
+PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig/
+#

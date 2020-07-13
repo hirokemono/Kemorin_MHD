@@ -1,0 +1,1 @@
+../../MHD/confdb/ax_mpi.m4

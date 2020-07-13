@@ -94,7 +94,6 @@ depends:
 		MHDDIR='$(MHDDIR)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		64BIT_INT='$(64BIT_INT)'   \
 		CC="$(CC)"   \
 		DEPFLAGS='$(DEPFLAGS)' \
 		OPTFLAGS_GL='$(OPTFLAGS_GL)' \
@@ -193,7 +192,6 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)'          \
 		MAKENAME='$(MAKENAME)'        \
-		64BIT_INT='$(64BIT_INT)'   \
 		F90_LOCAL='$(F90_LOCAL)'   \
 		dir_list; \
 		 ) \
@@ -204,12 +202,13 @@ makemake:
 	@echo '# target lists ' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
-	@echo 'PROGRAMS= parallels utilities' >> $(MAKENAME)
+	@echo 'PROGRAMS= viewer_glfw' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'ifdef OPENGL_LIBS' >> $(MAKENAME)
 	@echo '  ifdef GTK3_LIBS' >> $(MAKENAME)
 	@echo '    ifdef GLFW_LIBS' >> $(MAKENAME)
 	@echo '      PROGRAMS+= viewer_glfw' >> $(MAKENAME)
+	@echo '    endif' >> $(MAKENAME)
 	@echo '  endif' >> $(MAKENAME)
 	@echo 'endif' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -258,7 +257,6 @@ makemake:
 		GLFW_LIBS='$(GLFW_LIBS)'   \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		64BIT_INT='$(64BIT_INT)'   \
 		mod_list; \
 		 ) \
 	done
@@ -288,7 +286,6 @@ makemake:
 		GTK3_LIBS='$(GTK3_LIBS)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		64BIT_INT='$(64BIT_INT)'   \
 		lib_tasks; \
 		 ) \
 	done
@@ -305,7 +302,6 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
-		64BIT_INT='$(64BIT_INT)'   \
 		module; \
 		) \
 	done
@@ -332,56 +328,8 @@ makemake:
 #	@echo '	cp *.mod  $$(INSTDIR)/include'     >> $(MAKENAME)
 	@echo ''       >> $(MAKENAME)
 	@echo 'clean:' >> $(MAKENAME)
-	@echo '	@rm -f m_*.o ;'     >> $(MAKENAME)
-	@echo '	@rm -f m_*.mod ;'   >> $(MAKENAME)
-	@echo '	@rm -f m_*~ ;'      >> $(MAKENAME)
-	@echo '	@rm -f m_*.par ;'   >> $(MAKENAME)
-	@echo '	@rm -f m_*.diag ;'  >> $(MAKENAME)
-	@echo '	@rm -f s_*.o ;'     >> $(MAKENAME)
-	@echo '	@rm -f s_*.mod ;'   >> $(MAKENAME)
-	@echo '	@rm -f s_*~ ;'      >> $(MAKENAME)
-	@echo '	@rm -f s_*.par ;'   >> $(MAKENAME)
-	@echo '	@rm -f s_*.diag ;'  >> $(MAKENAME)
-	@echo '	@rm -f t_*.o ;'     >> $(MAKENAME)
-	@echo '	@rm -f t_*.mod ;'   >> $(MAKENAME)
-	@echo '	@rm -f t_*~ ;'      >> $(MAKENAME)
-	@echo '	@rm -f t_*.par ;'   >> $(MAKENAME)
-	@echo '	@rm -f t_*.diag ;'  >> $(MAKENAME)
-	@echo '	@rm -f cal*.o ;'    >> $(MAKENAME)
-	@echo '	@rm -f cal*.mod ;'  >> $(MAKENAME)
-	@echo '	@rm -f cal*~ ;'     >> $(MAKENAME)
-	@echo '	@rm -f cal*.par ;'  >> $(MAKENAME)
-	@echo '	@rm -f cal*.diag ;' >> $(MAKENAME)
-	@echo '	@rm -f set*.o ;'    >> $(MAKENAME)
-	@echo '	@rm -f set*.mod ;'  >> $(MAKENAME)
-	@echo '	@rm -f set*~ ;'     >> $(MAKENAME)
-	@echo '	@rm -f set*.par ;'  >> $(MAKENAME)
-	@echo '	@rm -f set*.diag ;' >> $(MAKENAME)
-	@echo '	@rm -f sph*.o ;'    >> $(MAKENAME)
-	@echo '	@rm -f sph*.mod ;'  >> $(MAKENAME)
-	@echo '	@rm -f sph*~ ;'     >> $(MAKENAME)
-	@echo '	@rm -f sph*.par ;'  >> $(MAKENAME)
-	@echo '	@rm -f sph*.diag ;' >> $(MAKENAME)
-	@echo '	@rm -f f*.o ;'      >> $(MAKENAME)
-	@echo '	@rm -f f*.mod ;'    >> $(MAKENAME)
-	@echo '	@rm -f f*~ ;'       >> $(MAKENAME)
-	@echo '	@rm -f f*.par ;'    >> $(MAKENAME)
-	@echo '	@rm -f f*.diag ;'   >> $(MAKENAME)
-	@echo '	@rm -f i*.o ;'      >> $(MAKENAME)
-	@echo '	@rm -f i*.mod ;'    >> $(MAKENAME)
-	@echo '	@rm -f i*~ ;'       >> $(MAKENAME)
-	@echo '	@rm -f i*.par ;'    >> $(MAKENAME)
-	@echo '	@rm -f c*.diag ;'   >> $(MAKENAME)
-	@echo '	@rm -f c*.o ;'      >> $(MAKENAME)
-	@echo '	@rm -f c*.mod ;'    >> $(MAKENAME)
-	@echo '	@rm -f c*~ ;'       >> $(MAKENAME)
-	@echo '	@rm -f c*.par ;'    >> $(MAKENAME)
-	@echo '	@rm -f c*.diag ;'   >> $(MAKENAME)
 	@echo '	rm -f *.o ;'       >> $(MAKENAME)
-	@echo '	rm -f *.mod ;'     >> $(MAKENAME)
 	@echo '	rm -f *~ ;'        >> $(MAKENAME)
-	@echo '	rm -f *.par ;'     >> $(MAKENAME)
-	@echo '	rm -f *.diag ;'    >> $(MAKENAME)
 	@echo '	rm -f *.a *.L'     >> $(MAKENAME)
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)

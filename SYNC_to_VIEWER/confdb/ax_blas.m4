@@ -1,0 +1,1 @@
+../../MHD/confdb/ax_blas.m4

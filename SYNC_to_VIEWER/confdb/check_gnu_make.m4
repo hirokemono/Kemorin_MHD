@@ -1,0 +1,1 @@
+../../MHD/confdb/check_gnu_make.m4

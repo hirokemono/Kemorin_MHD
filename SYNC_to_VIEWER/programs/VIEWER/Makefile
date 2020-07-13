@@ -4,7 +4,7 @@
 
 KEMOVIEWER_DIR =    $$(PROG_DIR)/VIEWER
 
-TARGET_KEMOVIEW_GLFW = kemoviewer_GLFW
+TARGET_KEMOVIEW_GLFW = CalypsoView_GLFW
 
 SRC_C = $(shell ls *.c)
 
