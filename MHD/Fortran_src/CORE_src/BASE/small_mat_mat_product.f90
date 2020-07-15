@@ -10,7 +10,7 @@
 !!      subroutine mat_2x2_product(a_left, a_right, a_prod)
 !!      subroutine mat_3x3_product(a_left, a_right, a_prod)
 !!      subroutine mat_4x4_product(a_left, a_right, a_prod)
-!1      subroutine mat_5x5_product(a_left, a_right, a_prod)
+!!      subroutine mat_5x5_product(a_left, a_right, a_prod)
 !!@endverbatim
 !!
 !!@n @param a_left(n,n)       input matrix on left  (2x2 to 5x5)

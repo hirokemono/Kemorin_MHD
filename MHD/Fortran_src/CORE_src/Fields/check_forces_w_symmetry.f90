@@ -5,7 +5,7 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic fields
+!>@brief Check Dependecies for forces with symmetry
 !!
 !!@verbatim
 !!      subroutine add_force_by_sym_asym_ctl(field_ctl)

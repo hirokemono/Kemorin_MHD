@@ -5,7 +5,7 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic fields
+!> @brief Check Dependecies for difference of filtered field
 !!
 !!@verbatim
 !!      subroutine add_field_ctl_4_grad_fil_field(field_ctl)

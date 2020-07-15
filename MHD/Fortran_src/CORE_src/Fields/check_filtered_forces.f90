@@ -5,7 +5,7 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for filtered forces
+!>@brief Check Dependecies for filtered forces
 !!
 !!@verbatim
 !!      subroutine add_field_ctl_4_filter_forces(field_ctl)

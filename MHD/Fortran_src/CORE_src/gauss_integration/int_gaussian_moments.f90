@@ -1,10 +1,10 @@
 !>@file   int_gaussian_moments.f90
 !!        module int_gaussian_moments
 !!
-!! @author H. Matsui
-!! @date   Programmed in 2006
+!!@author H. Matsui
+!!@date   Programmed in 2006
 !!
-!
+!!
 !> @brief Evaluate moments of Gaussian filter
 !!
 !!@verbatim

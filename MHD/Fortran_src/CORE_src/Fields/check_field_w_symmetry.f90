@@ -5,7 +5,7 @@
 !! @date   Programmed in Jan., 2020
 !!
 !!
-!> @brief Labels and addresses for basic fields
+!> @brief Check Dependecies for fields with symmetry
 !!
 !!@verbatim
 !!      subroutine add_field_w_symmetry_ctl(field_ctl)

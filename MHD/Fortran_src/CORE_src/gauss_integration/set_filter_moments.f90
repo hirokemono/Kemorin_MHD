@@ -4,7 +4,7 @@
 !! @author H. Matsui
 !! @date   Programmed in 2004
 !!
-!
+!!
 !> @brief Constants for Gauss-Legendre integration
 !!
 !!@verbatim

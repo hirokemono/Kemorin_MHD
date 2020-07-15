@@ -1,9 +1,9 @@
-!> @file  t_png_file_access.f03
+!> @file  t_png_file_access.f90
 !!      module t_png_file_access
 !!
 !! @author  H. Matsui
 !! @date Written in June, 2009
-!
+!!
 !> @brief routines for libpng access
 !!
 !!@verbatim

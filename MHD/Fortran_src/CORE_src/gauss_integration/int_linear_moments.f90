@@ -1,17 +1,22 @@
-!int_linear_moments.f90
-!
-!      module int_linear_moments
-!
-!      Written by H. Matsui on Aug., 2006
-!
-!      subroutine int_linear_moment_infty(n_level, f_mom, f_width)
-!      subroutine int_linear_moment_w_range(n_level, f_mom, f_width,    &
-!     &          zst, zed)
-!
-!        n_level: upper limit of order of moments
-!        f_mom: moments of filter
-!        f_width:  filter width
-!        zst, zed:  start end end position for integration
+!>@file   int_linear_moments.f90
+!!        module int_linear_moments
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2006
+!!
+!!
+!>@brief Evaluate moments of Gaussian filter
+!!
+!!@verbatim
+!!      subroutine int_linear_moment_infty(n_level, f_mom, f_width)
+!!      subroutine int_linear_moment_w_range(n_level, f_mom, f_width,   &
+!!     &          zst, zed)
+!!
+!!        n_level: upper limit of order of moments
+!!        f_mom: moments of filter
+!!        f_width:  filter width
+!!        zst, zed:  start end end position for integration
+!!@endverbatim
 !
       module int_linear_moments
 !
