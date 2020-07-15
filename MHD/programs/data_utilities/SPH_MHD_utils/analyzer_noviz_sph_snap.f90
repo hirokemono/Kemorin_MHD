@@ -21,10 +21,10 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_SEND_RECV
-      use m_ctl_data_sph_SGS_MHD
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
+      use t_ctl_data_SGS_MHD
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_sph_trans_arrays_MHD
@@ -33,6 +33,13 @@
       use SPH_analyzer_snap
 !
       implicit none
+!
+!>      File name for control file
+      character(len=kchara), parameter                                  &
+     &                      :: snap_ctl_name = 'control_snapshot'
+!>      Control struture for MHD simulation
+      type(sph_sgs_mhd_control), save :: MHD_ctl1
+      private :: snap_ctl_name, MHD_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +50,6 @@
       subroutine initialize_noviz_sph_snap
 !
       use t_ctl_data_SGS_MHD
-      use m_ctl_data_sph_MHD
       use init_sph_MHD_elapsed_label
       use input_control_sph_SGS_MHD
 !

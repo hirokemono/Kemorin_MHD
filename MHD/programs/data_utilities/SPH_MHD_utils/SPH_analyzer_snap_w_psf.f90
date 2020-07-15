@@ -30,9 +30,10 @@
       use m_MHD_step_parameter
       use m_work_time
       use m_elapsed_labels_4_MHD
+      use t_SPH_MHD_model_data
+      use t_control_parameter
       use t_phys_address
       use t_MHD_file_parameter
-      use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_boundary_data_sph_MHD
       use t_work_SPH_MHD
@@ -71,10 +72,10 @@
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
+!
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
-!
 !
 !   Allocate spectr field data
 !
@@ -95,7 +96,7 @@
       call init_sph_transform_MHD                                       &
      &   (SPH_model, iphys, SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD)
 !
-!  -------------------------------
+! ---------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap                                    &
@@ -107,7 +108,7 @@
 !  set original spectr mesh data for extension of B
 !
       call init_radial_sph_interpolation(MHD_files%org_rj_file_IO,      &
-     &   SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj)
+     &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj)
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call open_sph_vol_rms_file_mhd                                    &
@@ -132,15 +133,15 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
 !
-      call read_alloc_sph_rst_4_snap(i_step,                            &
-     &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,              &
+      call read_alloc_sph_rst_4_snap                                    &
+     &   (i_step, MHD_files%org_rj_file_IO, MHD_files%fst_file_IO,      &
      &    MHD_step%rst_step, SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld,    &
      &    MHD_step%init_d)
-!
+
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
@@ -185,7 +186,8 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+7)
       if(output_IO_flag(i_step, MHD_step%rms_step)) then
-        if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
+        if(iflag_debug .gt. 0)                                          &
+     &                write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(MHD_step%time_d, SPH_MHD,       &
      &      SPH_model%sph_MHD_bc, SPH_WK%trans_p%leg, SPH_WK%monitor)
       end if

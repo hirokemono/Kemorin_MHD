@@ -23,10 +23,17 @@
       use m_SPH_MHD_model_data
       use m_SPH_MHD_structure
       use m_MHD_step_parameter
+      use t_ctl_data_MHD
 !
       use SPH_analyzer_licv
 !
       implicit none
+!
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Control struture for MHD simulation
+      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
+      private :: MHD_ctl_name, DNS_MHD_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -37,7 +44,6 @@
       subroutine initialize_sph_licv
 !
       use t_ctl_data_sph_MHD_psf
-      use m_ctl_data_sph_MHD
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !

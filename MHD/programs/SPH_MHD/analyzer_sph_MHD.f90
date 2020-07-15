@@ -24,6 +24,7 @@
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
+      use t_ctl_data_SGS_MHD
       use t_SPH_mesh_field_data
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
@@ -35,6 +36,12 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Control struture for MHD simulation
+      type(sph_sgs_mhd_control), save :: MHD_ctl1
+      private :: MHD_ctl_name, MHD_ctl1
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -43,8 +50,6 @@
 !
       subroutine initialize_sph_mhd
 !
-      use t_ctl_data_SGS_MHD
-      use m_ctl_data_sph_SGS_MHD
       use input_control_sph_SGS_MHD
 !
 !

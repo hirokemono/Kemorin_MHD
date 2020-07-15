@@ -24,6 +24,7 @@
       use m_MHD_step_parameter
       use m_SPH_SGS_structure
       use m_jacobians_VIZ
+      use t_ctl_data_SGS_MHD
       use t_step_parameter
       use t_visualizer
       use t_SPH_mesh_field_data
@@ -34,6 +35,8 @@
 !
       character(len=kchara), parameter, private                         &
      &                      :: ratio_ctl_name = 'control_sph_rms_ratio'
+!>      Control struture for MHD simulation
+      type(sph_sgs_mhd_control), save, private :: MHD_ctl1
 !
        private :: set_ctl_4_second_spectr_data
 !
@@ -44,9 +47,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine initialize_sph_all_rms_ratio
-!
-      use t_ctl_data_SGS_MHD
-      use m_ctl_data_sph_SGS_MHD
 !
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_SGS_MHD

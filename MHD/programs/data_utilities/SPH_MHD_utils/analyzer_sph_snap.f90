@@ -25,6 +25,7 @@
       use m_SPH_MHD_model_data
       use m_jacobians_VIZ
       use m_SPH_SGS_structure
+      use t_ctl_data_SGS_MHD
       use t_step_parameter
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
@@ -35,9 +36,12 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: ctl_file_code = 11
-      character(len=kchara), parameter, private                         &
+      integer(kind = kint), parameter :: ctl_file_code = 11
+      character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
+!>      Control struture for MHD simulation
+      type(sph_sgs_mhd_control), save :: MHD_ctl1
+      private :: ctl_file_code, snap_ctl_name, MHD_ctl1
 !
       real (kind=kreal), private  ::  total_start
 !
@@ -48,9 +52,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine initialize_sph_snap
-!
-      use t_ctl_data_SGS_MHD
-      use m_ctl_data_sph_SGS_MHD
 !
       use init_sph_MHD_elapsed_label
       use input_control_sph_SGS_MHD
@@ -212,7 +213,6 @@
 !
       subroutine evolution_sph_snap_badboy
 !
-      use m_ctl_data_sph_SGS_MHD
       use t_control_data_vizs
       use t_volume_rendering
       use t_sph_trans_arrays_SGS_MHD

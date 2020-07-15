@@ -1,8 +1,12 @@
-!SGS_MHD_zonal_mean_viz.f90
-!      module SGS_MHD_zonal_mean_viz
+!>@file   SGS_MHD_zonal_mean_viz.f90
+!!@brief  module SGS_MHD_zonal_mean_viz
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Apr., 2012
 !
-!      Written by H. Matsui on Apr., 2012
-!
+!>@brief  Make zonal mean sections for SGS dynamo
+!!
+!!@verbatim
 !!      subroutine SGS_MHD_zmean_sections(istep_psf, time_d,            &
 !!     &          sph, fem, WK, SPH_SGS, nod_fld, zmeans)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -13,6 +17,7 @@
 !!        type(SPH_SGS_structure), intent(in) :: SPH_SGS
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sph_zonal_mean_sectioning), intent(inout) :: zmeans
+!!@endverbatim
 !
       module SGS_MHD_zonal_mean_viz
 !

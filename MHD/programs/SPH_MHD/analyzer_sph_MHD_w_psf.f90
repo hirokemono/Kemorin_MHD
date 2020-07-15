@@ -23,6 +23,7 @@
       use m_SPH_MHD_model_data
       use m_MHD_step_parameter
       use m_SPH_MHD_structure
+      use t_ctl_data_MHD
       use t_viz_sections
       use t_SPH_MHD_zonal_mean_viz
       use t_sph_trans_arrays_MHD
@@ -33,6 +34,12 @@
 !
       implicit none
 !
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Control struture for MHD simulation
+      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
+      private :: MHD_ctl_name, DNS_MHD_ctl1
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -42,7 +49,6 @@
       subroutine initialize_sph_mhd_w_psf
 !
       use t_ctl_data_sph_MHD_psf
-      use m_ctl_data_sph_MHD
       use input_control_sph_MHD
 !
 !
@@ -136,7 +142,7 @@
      &                          MHD_step1)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD(SPH_MHD1%sph, SPH_WK1%trns_WK,     &
-     &        FEM_d1%geofem%mesh, FEM_d1%field)
+     &        FEM_d1%geofem, FEM_d1%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

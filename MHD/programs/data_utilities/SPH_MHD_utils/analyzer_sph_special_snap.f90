@@ -80,7 +80,7 @@
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
           call SPH_to_FEM_bridge_special_snap                           &
-     &       (SPH_MHD1%sph, FEM_d1%geofem%mesh, SPH_WK1%trns_WK)
+     &       (SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
@@ -243,24 +243,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_special_snap(sph, mesh, WK)
+      subroutine SPH_to_FEM_bridge_special_snap(sph, geofem, WK)
 !
       use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
 !*
       type(sph_grids), intent(in) :: sph
-      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data), intent(in) :: geofem
       type(works_4_sph_trans_MHD), intent(in) :: WK
 !
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_MHD(sph, WK, mesh, FEM_d1%field)
+      call SPH_to_FEM_bridge_MHD(sph, WK, geofem, FEM_d1%field)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
       call zonal_mean_all_rtp_field                                     &
-     &   (sph%sph_rtp, mesh%node, FEM_d1%field)
+     &   (sph%sph_rtp, geofem%mesh%node, FEM_d1%field)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
 !

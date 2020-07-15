@@ -24,6 +24,7 @@
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
       use m_jacobians_VIZ
+      use t_ctl_data_SGS_MHD
       use t_step_parameter
       use t_SPH_mesh_field_data
       use t_visualizer
@@ -35,6 +36,8 @@
 !
       character(len=kchara), parameter, private                         &
      &                      :: back_ctl_name = 'control_sph_back_trans'
+!>      Control struture for MHD simulation
+      type(sph_sgs_mhd_control), save :: MHD_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,9 +46,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine initialize_sph_back_trans
-!
-      use t_ctl_data_SGS_MHD
-      use m_ctl_data_sph_SGS_MHD
 !
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_SGS_MHD

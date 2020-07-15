@@ -25,12 +25,20 @@
       use m_SPH_MHD_structure
       use m_MHD_step_parameter
 !
+      use t_ctl_data_MHD
       use t_sph_trans_arrays_MHD
+!
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
       use init_sph_MHD_elapsed_label
 !
       implicit none
+!
+!>      File name for control file
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+!>      Control struture for MHD simulation
+      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
+      private :: MHD_ctl_name, DNS_MHD_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +49,6 @@
       subroutine initialize_sph_MHD_noviz
 !
       use t_ctl_data_sph_MHD_psf
-      use m_ctl_data_sph_MHD
       use input_control_sph_MHD
 !
 !
@@ -125,7 +132,7 @@
      &                          MHD_step1)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD(SPH_MHD1%sph, SPH_WK1%trns_WK,     &
-     &        FEM_d1%geofem%mesh, FEM_d1%field)
+     &        FEM_d1%geofem, FEM_d1%field)
           call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
         end if
 !

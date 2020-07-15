@@ -23,6 +23,7 @@
       use m_elapsed_labels_SEND_RECV
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
+      use t_ctl_data_SGS_MHD
       use t_field_on_circle
       use t_spheric_parameter
       use t_file_IO_parameter
@@ -33,8 +34,11 @@
 !
       implicit none
 !
-      character(len=kchara), parameter, private                         &
+      character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
+!>      Control struture for MHD simulation
+      type(sph_sgs_mhd_control), save :: MHD_ctl1
+      private :: snap_ctl_name, MHD_ctl1
 !
       type(sph_grid_maker_in_sim), save, private :: sph_maker1
       type(circle_fld_maker), save, private :: cdat1
@@ -47,9 +51,7 @@
 !
       subroutine initialize_sph_pick_circle
 !
-      use t_ctl_data_SGS_MHD
       use t_const_spherical_grid
-      use m_ctl_data_sph_SGS_MHD
       use sph_mhd_rst_IO_control
       use set_control_sph_SGS_MHD
       use init_sph_MHD_elapsed_label
