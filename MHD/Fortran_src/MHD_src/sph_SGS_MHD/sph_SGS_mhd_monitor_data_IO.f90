@@ -27,8 +27,8 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_SPH_SGS_structure
       use t_SPH_mesh_field_data
+      use t_SPH_SGS_structure
       use t_schmidt_poly_on_rtm
       use t_pickup_sph_spectr_data
       use t_no_heat_Nusselt

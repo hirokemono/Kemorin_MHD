@@ -23,7 +23,7 @@
 !
 !>      Structure of mean square data
       type(spherical_spectr_data_util_ctl), save :: spu_ctl1
-!>      Structure of spetr grid and data
+!>      Structure of spectr grid and data
       type(SPH_mesh_field_data), save :: SPH_dat_ss
 !>        address of nodal SGS term
       type(SGS_model_addresses), save :: ipol_LES_ss

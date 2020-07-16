@@ -19,8 +19,8 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use m_SPH_MHD_model_data
-      use m_SPH_MHD_structure
       use m_MHD_step_parameter
+      use t_SPH_mesh_field_data
       use t_step_parameter
       use t_MHD_file_parameter
       use t_SPH_mesh_field_data
@@ -28,6 +28,9 @@
       use t_sph_mhd_monitor_data_IO
 !
       implicit none
+!
+!>      Structure of spectr grid and data
+      type(SPH_mesh_field_data), save, private :: SPH_MHD1
 !
       private :: SPH_analyze_mod_restart, set_modify_rj_fields
 !
