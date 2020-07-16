@@ -111,7 +111,6 @@
       use t_geometry_data
       use t_edge_data
       use set_edge_position
-      use coordinate_converter
 !
       type(node_data), intent(in) :: nod
       type(edge_data), intent(inout) :: edge
@@ -124,10 +123,6 @@
         call set_linear_edge_position(nod%numnod,                       &
      &      edge%numedge, edge%ie_edge, nod%xx, edge%x_edge )
       end if
-!
-      call position_2_sph(edge%numedge, edge%x_edge,                    &
-     &    edge%r_edge, edge%theta_edge, edge%phi_edge,                  &
-     &    edge%ar_edge, edge%s_edge, edge%as_edge)
 !
       end subroutine set_center_of_edge
 !

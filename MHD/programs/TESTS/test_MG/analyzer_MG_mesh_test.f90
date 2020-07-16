@@ -114,12 +114,6 @@
      &    fem_MG%mesh%node, fem_MG%mesh%edge, spfs_T%spf_1d,            &
      &    jacobians_T)
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
-      call s_cal_edge_vector_spherical(fem_MG%mesh%edge)
-      if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
-      call s_cal_edge_vector_cylindrical(fem_MG%mesh%edge)
-!
-!
       if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
       call output_test_mesh_informations                                &
      &   (my_rank, fem_MG%mesh, mesh_IO, ele_mesh_IO)

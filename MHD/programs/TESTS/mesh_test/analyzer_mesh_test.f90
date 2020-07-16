@@ -138,13 +138,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
       call s_cal_normal_vector_cylindrical(fem_T%mesh%surf)
 !
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
-      call s_cal_edge_vector_spherical(fem_T%mesh%edge)
-      if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
-      call s_cal_edge_vector_cylindrical(fem_T%mesh%edge)
-!
 !  ---------------------------------------------
 !     output element, surface, edge data
 !  ---------------------------------------------

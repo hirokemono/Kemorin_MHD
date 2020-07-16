@@ -102,16 +102,6 @@
      &    edge, ele%numele, surf%numsurf)
       call dealloc_edge_mesh_IO(edge_mesh_IO)
 !
-!       Subsittuiton of set_center_of_edge
-!          and s_int_edge_vector
-!      call copy_edge_geometry_from_IO                                  &
-!     &   (edge_mesh_IO%node, edge_mesh_IO%sfed, edge)
-!      call dealloc_surf_geometry_data(edge_mesh_IO)
-!
-!      call position_2_sph(edge%numedge, edge%x_edge,                   &
-!     &    edge%r_edge, edge%theta_edge, edge%phi_edge,                 &
-!     &    edge%ar_edge, edge%s_edge, edge%as_edge)
-!
       end subroutine set_edge_mesh_from_IO
 !
 !  ---------------------------------------------------------------------
