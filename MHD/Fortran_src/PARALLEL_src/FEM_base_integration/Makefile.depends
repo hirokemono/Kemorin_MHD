@@ -138,7 +138,7 @@ set_delta_2_each_sf_w_cst.o: $(FEM_INT_DIR)/set_delta_2_each_sf_w_cst.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 set_delta_2_each_surface.o: $(FEM_INT_DIR)/set_delta_2_each_surface.f90 m_precision.o m_constants.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_edge_vectors.o: $(FEM_INT_DIR)/set_edge_vectors.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_edge_data.o t_shape_functions.o t_jacobians.o t_jacobian_1d.o int_edge_vector.o cvt_xyz_vector_2_sph_smp.o cvt_xyz_vector_2_cyl_smp.o
+set_edge_vectors.o: $(FEM_INT_DIR)/set_edge_vectors.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_geometry_data.o t_edge_data.o t_shape_functions.o t_jacobians.o t_jacobian_1d.o int_edge_vector.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_index_list_4_crs.o: $(FEM_INT_DIR)/set_index_list_4_crs.f90 m_precision.o m_machine_parameter.o t_crs_matrix.o set_off_diagonal.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -156,7 +156,7 @@ set_nodal_each_ele_w_coef.o: $(FEM_INT_DIR)/set_nodal_each_ele_w_coef.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 set_nodal_each_ele_w_const.o: $(FEM_INT_DIR)/set_nodal_each_ele_w_const.f90 m_precision.o m_constants.o m_machine_parameter.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_normal_vectors.o: $(FEM_INT_DIR)/set_normal_vectors.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_2d.o int_area_normal_4_surface.o cvt_xyz_vector_2_sph_smp.o cvt_xyz_vector_2_cyl_smp.o
+set_normal_vectors.o: $(FEM_INT_DIR)/set_normal_vectors.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o t_jacobian_2d.o int_area_normal_4_surface.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_off_diagonal.o: $(FEM_INT_DIR)/set_off_diagonal.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
