@@ -102,13 +102,6 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
-      call s_cal_normal_vector_spherical(fem_MG%mesh%surf)
-      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
-      call s_cal_normal_vector_cylindrical(fem_MG%mesh%surf)
-!
-!  -------------------------------
-!
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
       call const_edge_vector(my_rank, nprocs,                           &
      &    fem_MG%mesh%node, fem_MG%mesh%edge, spfs_T%spf_1d,            &

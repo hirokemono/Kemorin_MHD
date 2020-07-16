@@ -8,13 +8,13 @@
 !>@brief edge position data in spherical coordinate
 !!
 !!@verbatim
-!!      subroutine alloc_edge_geometory(edge, edge_sph)
+!!      subroutine alloc_edge_spherical_position(edge, edge_sph)
 !!      subroutine alloc_edge_vect_sph(edge, edge_sph)
 !!      subroutine alloc_edge_vect_cyl(edge, edge_sph)
 !!        type(edge_data), intent(in) :: edge
 !!        type(edge_position_sph), intent(inout) :: edge_sph
 !!
-!!      subroutine dealloc_edge_geometory(edge_sph)
+!!      subroutine dealloc_edge_spherical_position(edge_sph)
 !!      subroutine dealloc_edge_vect_sph(edge_sph)
 !!      subroutine dealloc_edge_vect_cyl(edge_sph)
 !!        type(edge_position_sph), intent(inout) :: edge_sph
@@ -72,7 +72,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine alloc_edge_geometory(edge, edge_sph)
+      subroutine alloc_edge_spherical_position(edge, edge_sph)
 !
       type(edge_data), intent(in) :: edge
       type(edge_position_sph), intent(inout) :: edge_sph
@@ -95,7 +95,7 @@
         edge_sph%as_edge =     0.0d0
       end if
 !
-      end subroutine alloc_edge_geometory
+      end subroutine alloc_edge_spherical_position
 !
 !  ---------------------------------------------------------------------
 !
@@ -124,7 +124,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_edge_geometory(edge_sph)
+      subroutine dealloc_edge_spherical_position(edge_sph)
 !
       type(edge_position_sph), intent(inout) :: edge_sph
 !
@@ -132,7 +132,7 @@
       deallocate(edge_sph%theta_edge, edge_sph%phi_edge)
       deallocate(edge_sph%ar_edge, edge_sph%s_edge, edge_sph%as_edge)
 !
-      end subroutine dealloc_edge_geometory
+      end subroutine dealloc_edge_spherical_position
 !
 !  ---------------------------------------------------------------------
 !
@@ -182,8 +182,6 @@
       type(edge_position_sph), intent(inout) :: edge_sph
 !
 !
-      call alloc_edge_vect_sph(edge, edge_sph)
-!
 !$omp parallel
       call cvt_vector_2_sph_smp                                         &
      &   (np_smp, edge%numedge, edge%istack_edge_smp,                   &
@@ -204,8 +202,6 @@
       type(edge_data), intent(in) :: edge
       type(edge_position_sph), intent(inout) :: edge_sph
 !
-!
-      call alloc_edge_vect_cyl(edge, edge_sph)
 !
 !$omp parallel
       call cvt_vector_2_cyl_smp                                         &

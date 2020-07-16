@@ -131,13 +131,6 @@
       call const_edge_vector(my_rank, nprocs,                           &
      &    fem_T%mesh%node, fem_T%mesh%edge, spfs_T%spf_1d, jacobians_T)
 !
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
-      call s_cal_normal_vector_spherical(fem_T%mesh%surf)
-      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
-      call s_cal_normal_vector_cylindrical(fem_T%mesh%surf)
-!
 !  ---------------------------------------------
 !     output element, surface, edge data
 !  ---------------------------------------------

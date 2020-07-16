@@ -97,10 +97,6 @@
      &      surf%numsurf, surf%ie_surf, nod%xx, surf%x_surf)
       end if
 !
-      call position_2_sph(surf%numsurf, surf%x_surf,                    &
-     &    surf%r_surf, surf%theta_surf, surf%phi_surf,                  &
-     &    surf%ar_surf, surf%s_surf, surf%as_surf)
-!
       end subroutine set_center_of_surface
 !
 ! ----------------------------------------------------------------------

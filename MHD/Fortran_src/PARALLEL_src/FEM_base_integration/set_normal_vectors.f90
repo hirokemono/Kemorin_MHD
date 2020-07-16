@@ -1,17 +1,20 @@
-!
-!      module set_normal_vectors
-!
-!     Written by H. Matsui on Aug., 2006
-!
+!>@file   set_normal_vectors.f90
+!!@brief  module set_normal_vectors
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2006
+!!
+!>@brief Construct normal vector on surface data
+!!
+!!@verbatim
 !!      subroutine const_normal_vector                                  &
 !!     &         (id_rank, nprocs, node, surf, spf_2d, jacs)
 !!      subroutine int_normal_4_all_surface(g_FEM, surf, jac_2d)
 !!        type(jacobians_2d), intent(in) :: jac_2d
 !!        type(surface_data), intent(inout) :: surf
 !!        type(jacobians_type), intent(inout) :: jacs
-!!      subroutine s_cal_normal_vector_spherical(surf)
-!!      subroutine s_cal_normal_vector_cylindrical(surf)
-!
+!!@endverbatim
+!!
       module set_normal_vectors
 !
       use m_precision
@@ -76,49 +79,5 @@
       end subroutine int_normal_4_all_surface
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine s_cal_normal_vector_spherical(surf)
-!
-      use cvt_xyz_vector_2_sph_smp
-!
-      type(surface_data), intent(inout) :: surf
-!
-!
-      call allocate_normal_vect_sph_type(surf)
-!
-!$omp parallel
-      call cvt_vector_2_sph_smp                                         &
-     &   (np_smp, surf%numsurf, surf%istack_surf_smp,                   &
-     &    surf%vnorm_surf, surf%vnorm_surf_sph,                         &
-     &    surf%x_surf(1:surf%numsurf,1), surf%x_surf(1:surf%numsurf,2), &
-     &    surf%x_surf(1:surf%numsurf,3), surf%r_surf, surf%s_surf,      &
-     &    surf%ar_surf, surf%as_surf)
-!$omp end parallel
-!
-      end subroutine s_cal_normal_vector_spherical
-!
-! -----------------------------------------------------------------------
-!
-      subroutine s_cal_normal_vector_cylindrical(surf)
-!
-      use cvt_xyz_vector_2_cyl_smp
-!
-      type(surface_data), intent(inout) :: surf
-!
-!
-      call allocate_normal_vect_cyl_type(surf)
-!
-!$omp parallel
-      call cvt_vector_2_cyl_smp                                         &
-     &   (np_smp, surf%numsurf, surf%istack_surf_smp,                   &
-     &    surf%vnorm_surf, surf%vnorm_surf_cyl,                         &
-     &    surf%x_surf(1:surf%numsurf,1), surf%x_surf(1:surf%numsurf,2), &
-     &    surf%s_surf, surf%as_surf)
-!$omp end parallel
-!
-      end subroutine s_cal_normal_vector_cylindrical
-!
-! -----------------------------------------------------------------------
 !
       end module set_normal_vectors
