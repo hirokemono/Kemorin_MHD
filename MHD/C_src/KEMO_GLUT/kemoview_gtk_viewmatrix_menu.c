@@ -24,7 +24,7 @@ void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window){
 	return;
 };
 
-void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window){	
+void set_viewmatrix_value(struct view_widgets *view_menu, GtkWidget *window){	
 	gtk_adjustment_set_value(view_menu->adj_eye_x, -kemoview_get_view_parameter(ISET_SHIFT, 0));
 	gtk_adjustment_set_value(view_menu->adj_eye_y, -kemoview_get_view_parameter(ISET_SHIFT, 1));
 	gtk_adjustment_set_value(view_menu->adj_eye_z, -kemoview_get_view_parameter(ISET_SHIFT, 2));
@@ -38,14 +38,19 @@ void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window){
 	
 	gtk_adjustment_set_value(view_menu->adj_aperture, kemoview_get_view_parameter(ISET_APERTURE, 0));
 	
-	if(kemoview_get_view_type_flag() == VIEW_STEREO){
-		gtk_adjustment_set_value(view_menu->adj_focus, kemoview_get_view_parameter(ISET_FOCUS, 0));
-		gtk_adjustment_set_value(view_menu->adj_eye_sep, kemoview_get_view_parameter(ISET_EYESEP, 0));
-	};
-	
-	gtk_widget_queue_draw(window);
-	return;
+	gtk_adjustment_set_value(view_menu->adj_focus, kemoview_get_view_parameter(ISET_FOCUS, 0));
+	gtk_adjustment_set_value(view_menu->adj_eye_sep, kemoview_get_view_parameter(ISET_EYESEP, 0));
+    return;
 };
+
+void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window){    
+	if(kemoview_get_view_type_flag() != VIEW_STEREO){
+        gtk_widget_hide(view_menu->Frame_streo);
+    };
+    gtk_widget_queue_draw(window);
+    return;
+};
+
 
 static void save_viewmatrix_CB(GtkButton *button, gpointer user_data){
 	int iflag_set = kemoview_gtk_save_file_select(button, user_data);
@@ -198,13 +203,11 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	
 	view_menu->adj_aperture = gtk_adjustment_new(0.0, 0.0, 180.0, 0.01, 0.01, 0.0);
 	
-	if(kemoview_get_view_type_flag() == VIEW_STEREO){
-		view_menu->adj_focus = gtk_adjustment_new(0.0, 0.0, 1000.0, 0.01, 0.01, 0.0);
-		view_menu->adj_eye_sep = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.01, 0.0);
-	};
+	view_menu->adj_focus = gtk_adjustment_new(0.0, 0.0, 1000.0, 0.01, 0.01, 0.0);
+	view_menu->adj_eye_sep = gtk_adjustment_new(0.0, 0.0, 100.0, 0.01, 0.01, 0.0);
 	
 	update_windowsize_menu(view_menu, window);
-	update_viewmatrix_menu(view_menu, window);
+	set_viewmatrix_value(view_menu, window);
 	
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);
 	g_signal_connect(view_menu->spin_eye_x, "value-changed", G_CALLBACK(eye_position_x_CB), NULL);
@@ -358,29 +361,27 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_rotation, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_aperture, FALSE, FALSE, 0);
 	
-	if(kemoview_get_view_type_flag() == VIEW_STEREO){
-		view_menu->spin_focus = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_focus), 0, 3);
-		g_signal_connect(view_menu->spin_focus, "value-changed", G_CALLBACK(focus_CB), entry);
-		view_menu->spin_eye_sep =   gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_sep), 0, 3);
-		g_signal_connect(view_menu->spin_eye_sep, "value-changed", G_CALLBACK(eye_sep_CB), entry);
-		
-		view_menu->hbox_focus = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focus: "), TRUE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), view_menu->spin_focus, FALSE, FALSE, 0);
-		
-		view_menu->hbox_eye_sep = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), gtk_label_new(" Eye separation: "), TRUE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), view_menu->spin_eye_sep, FALSE, FALSE, 0);
-		
-		view_menu->vbox_streo = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_focus, TRUE, TRUE, 0);
-		gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_eye_sep, FALSE, FALSE, 0);
-		view_menu->Frame_streo = gtk_frame_new("Stereo parameter");
-		gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_streo), GTK_SHADOW_IN);
-		gtk_container_add(GTK_CONTAINER(view_menu->Frame_streo), view_menu->vbox_streo);
-		
-		gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
-	};
+	view_menu->spin_focus = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_focus), 0, 3);
+	g_signal_connect(view_menu->spin_focus, "value-changed", G_CALLBACK(focus_CB), entry);
+	view_menu->spin_eye_sep =   gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_sep), 0, 3);
+	g_signal_connect(view_menu->spin_eye_sep, "value-changed", G_CALLBACK(eye_sep_CB), entry);
+	
+	view_menu->hbox_focus = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focus: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), view_menu->spin_focus, FALSE, FALSE, 0);
+	
+	view_menu->hbox_eye_sep = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), gtk_label_new(" Eye separation: "), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->hbox_eye_sep), view_menu->spin_eye_sep, FALSE, FALSE, 0);
+	
+	view_menu->vbox_streo = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_focus, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(view_menu->vbox_streo), view_menu->hbox_eye_sep, FALSE, FALSE, 0);
+	view_menu->Frame_streo = gtk_frame_new("Stereo parameter");
+	gtk_frame_set_shadow_type(GTK_FRAME(view_menu->Frame_streo), GTK_SHADOW_IN);
+	gtk_container_add(GTK_CONTAINER(view_menu->Frame_streo), view_menu->vbox_streo);
+	
+	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_streo, FALSE, FALSE, 0);
 	
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->hbox_viewmatrix_save, FALSE, FALSE, 0);
     expander_view = wrap_into_expanded_frame_gtk("View parameters", 360, 480, window, box_view);

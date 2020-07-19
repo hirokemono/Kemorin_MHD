@@ -12,6 +12,17 @@ const char *label_bluered =   "blue_to_red";
 const char *label_grayscale = "grayscale";
 const char *label_sym_gray  = "symmetric_grayscale";
 
+const char *hd_minmax_c =      "minmax";
+const char *hd_linear_c =      "linear";
+const char *hd_nonlinear_c =   "nonlinear";
+const char *hd_colorlist_c =   "colormap_list";
+
+const char *hd_constant_c =    "constant";
+const char *hd_pointlinear_c = "point_linear";
+const char *hd_pointrange_c =  "point_ranges";
+const char *hd_pointdelta_c =  "point_delta";
+const char *hd_intensity_c =   "intense_chenge";
+
 const char color_labels[4][KCHARA_C] = {
     "rainbow", 
     "grayscale",
@@ -143,48 +154,74 @@ void set_full_opacitymap(struct colormap_params *cmap_s,
 	return;
 }
 
-
 static void copy_color_opacity_to_ctl(struct colormap_params *cmap_s, 
 			struct colormap_ctl_c *cmap_c){
 	int i;
 	double color;
 	double d, v;
+	double d_cmap[2], v_cmap[2];
+	double d_omap[2], v_omap[2];
 	
 	copy_colormap_name_to_ctl(cmap_s, cmap_c->colormap_mode_ctl);
-	copy_to_chara_ctl_item("colormap_list", cmap_c->data_mapping_ctl);
 	
-	dup_real2_clist(cmap_s->colormap, cmap_c->colortbl_list);
+	int num_color =   count_real2_clist(cmap_s->colormap);
+	set_from_real2_clist_at_index(0,           cmap_s->colormap, &d_cmap[0], &v_cmap[0]);
+	set_from_real2_clist_at_index(num_color-1, cmap_s->colormap, &d_cmap[1], &v_cmap[1]);
 	
-	copy_to_chara_ctl_item("point_linear", cmap_c->opacity_style_ctl);
+	int num_opacity = count_real2_clist(cmap_s->opacitymap);
+	set_from_real2_clist_at_index(0, cmap_s->opacitymap, &d_omap[0], &v_omap[0]);
+	set_from_real2_clist_at_index(num_opacity-1, cmap_s->opacitymap, &d_omap[1], &v_omap[1]);
+	
+	int iflag_minmax = 0;
+	if(num_color == 2 && num_opacity == 2 && v_cmap[0] == 0.0 && v_cmap[1] == 1.0){
+		iflag_minmax = 1;
+	};
+	cmap_c->range_min_ctl->iflag =   1;
+	cmap_c->range_max_ctl->iflag =   1;
+	cmap_c->range_min_ctl->r_data = d_cmap[0];
+	cmap_c->range_max_ctl->r_data = d_cmap[1];
+	if(d_omap[0] < d_cmap[0]) cmap_c->range_min_ctl->r_data = d_omap[0];
+	if(d_omap[1] > d_cmap[1]) cmap_c->range_max_ctl->r_data = d_omap[1];
+	
+	
+	if(iflag_minmax == 1){
+		copy_to_chara_ctl_item(hd_minmax_c, cmap_c->data_mapping_ctl);
+		copy_to_chara_ctl_item(hd_constant_c, cmap_c->opacity_style_ctl);
+	} else {
+		copy_to_chara_ctl_item(hd_colorlist_c, cmap_c->data_mapping_ctl);
+		copy_to_chara_ctl_item(hd_pointlinear_c, cmap_c->opacity_style_ctl);
+		dup_real2_clist(cmap_s->colormap, cmap_c->colortbl_list);
+		dup_real2_clist(cmap_s->opacitymap, cmap_c->linear_opacity_list);
+	};
+	
 	struct colormap_array *cmap_tmp = init_colormap_from_list(cmap_s->colormap);
-	for(i=0; i<count_real2_clist(cmap_s->opacitymap); i++){
+	for(i=0; i<num_opacity; i++){
 		set_from_real2_clist_at_index(i, cmap_s->opacitymap, &d, &v);
 		color = color_normalize_linear_segment_c(cmap_tmp->num, 
 					 cmap_tmp->data, cmap_tmp->value, d);
 	}
 	dealloc_colormap_array(cmap_tmp);
 	
-	dup_real2_clist(cmap_s->opacitymap, cmap_c->colortbl_list);
 	update_real_ctl_item_c(cmap_s->min_opacity, cmap_c->fix_opacity_ctl);
 	return;
-	}
+}
 
-void make_colorbar_for_ctl(struct colormap_params *cmap_s, 
+static void make_colorbar_for_ctl(const int iflag_draw_axis, const int draw_psf_cbar,
+                                  struct colormap_params *cmap_s, 
 			struct pvr_colorbar_ctl_c *cbar_c){
-	int num;
-	double d1, v1, d2, v2;
-	set_boolean_by_chara_ctl_item(1, cbar_c->colorbar_switch_ctl);
+    double d_cmap[2], v_cmap[2];
+    
+    set_boolean_by_chara_ctl_item(iflag_draw_axis, cbar_c->axis_switch_ctl);
+	set_boolean_by_chara_ctl_item(draw_psf_cbar, cbar_c->colorbar_switch_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->colorbar_scale_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->zeromarker_flag_ctl);
-	set_boolean_by_chara_ctl_item(1, cbar_c->axis_switch_ctl);
 	
-	num = count_real2_clist(cmap_s->colormap);
-	set_from_real2_clist_at_index(0,     cmap_s->colormap, &d1, &v1);
-	set_from_real2_clist_at_index(num-1, cmap_s->colormap, &d2, &v2);
-	update_real2_ctl_item_c(d1, d2, cbar_c->cbar_range_ctl);
+	int num = count_real2_clist(cmap_s->colormap);
+	set_from_real2_clist_at_index(0,     cmap_s->colormap, &d_cmap[0], &v_cmap[0]);
+	set_from_real2_clist_at_index(num-1, cmap_s->colormap, &d_cmap[1], &v_cmap[1]);
+	update_real2_ctl_item_c(d_cmap[0], d_cmap[1], cbar_c->cbar_range_ctl);
 	update_int_ctl_item_c(1, cbar_c->font_size_ctl);
 	update_int_ctl_item_c(3, cbar_c->ngrid_cbar_ctl);
-
 	return;
 }
 
@@ -211,32 +248,55 @@ void copy_opacity_from_ctl(struct real2_clist *linear_opacity_list,
 }
 
 static void copy_color_opacity_from_ctl(struct colormap_ctl_c *cmap_c, 
-			struct colormap_params *cmap_s){
-	if(compare_string(13, "colormap_list", cmap_c->data_mapping_ctl->c_tbl) == 0){
+										struct colormap_params *cmap_s){
+	
+	if(compare_string(13, hd_minmax_c, cmap_c->data_mapping_ctl->c_tbl) == 0){
+		if((cmap_c->range_min_ctl->iflag * cmap_c->range_max_ctl->iflag) == 0){
+			printf("No color range data in colormap file\n)");
+			return;
+		} else{
+			if(cmap_c->colortbl_list != NULL) dealloc_real2_clist(cmap_c->colortbl_list);
+			cmap_c->colortbl_list = init_real2_clist();
+			append_real2_clist(cmap_c->range_min_ctl->r_data, 0.0, 
+							   cmap_c->colortbl_list);
+			append_real2_clist(cmap_c->range_max_ctl->r_data, 1.0, 
+							   cmap_c->colortbl_list);
+		};
+	}else if(compare_string(13, hd_colorlist_c, cmap_c->data_mapping_ctl->c_tbl) == 0){
 		printf("Something Wrong in colormap file\n)");
 		return;
 	}
 	
-	if(compare_string(12, "point_linear", cmap_c->opacity_style_ctl->c_tbl) == 0){
+	if(compare_string(12, hd_constant_c, cmap_c->opacity_style_ctl->c_tbl) == 0){
+		if(cmap_c->linear_opacity_list != NULL){
+			dealloc_real2_clist(cmap_c->linear_opacity_list);
+		};
+		cmap_c->linear_opacity_list = init_real2_clist();
+		append_real2_clist(cmap_c->range_min_ctl->r_data, cmap_c->fix_opacity_ctl->r_data, 
+						   cmap_c->linear_opacity_list);
+		append_real2_clist(cmap_c->range_max_ctl->r_data, cmap_c->fix_opacity_ctl->r_data, 
+						   cmap_c->linear_opacity_list);
+	}else if(compare_string(12, hd_pointlinear_c, cmap_c->opacity_style_ctl->c_tbl) == 0){
 		printf("Something Wrong in opacity_style_ctl\n)");
 		return;
 	};
 	copy_colormap_from_ctl(cmap_c->colormap_mode_ctl, 
 				cmap_c->colortbl_list, cmap_s);
 	copy_opacity_from_ctl(cmap_c->linear_opacity_list, cmap_s);
-    set_from_real_ctl_item_c(cmap_c->fix_opacity_ctl, &cmap_s->min_opacity);
+	set_from_real_ctl_item_c(cmap_c->fix_opacity_ctl, &cmap_s->min_opacity);
 	
 	return;
 }
 
 
-void check_colormap_control_file_s(struct colormap_params *cmap_s){
+void check_colormap_control_file_s(const int iflag_draw_axis, const int draw_psf_cbar, 
+                                   struct colormap_params *cmap_s){
 	cmap_cbar_c0 = init_colormap_colorbar_ctl_c();
 	
 	cmap_cbar_c0->cmap_c->iflag_use = 1;
 	copy_color_opacity_to_ctl(cmap_s, cmap_cbar_c0->cmap_c);
 	cmap_cbar_c0->cbar_c->iflag_use = 1;
-	make_colorbar_for_ctl(cmap_s, cmap_cbar_c0->cbar_c);
+	make_colorbar_for_ctl(iflag_draw_axis, draw_psf_cbar, cmap_s, cmap_cbar_c0->cbar_c);
 	
 	write_colormap_colorbar_ctl_c(stdout, 0, 
 				"Colormap data", cmap_cbar_c0);
@@ -245,13 +305,14 @@ void check_colormap_control_file_s(struct colormap_params *cmap_s){
     return;
 }
 
-void write_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s){
+void write_colormap_control_file_s(const char *file_name, const int iflag_draw_axis, 
+                                   const int draw_psf_cbar, struct colormap_params *cmap_s){
 	cmap_cbar_c0 = init_colormap_colorbar_ctl_c();
 	
 	cmap_cbar_c0->cmap_c->iflag_use = 1;
 	copy_color_opacity_to_ctl(cmap_s, cmap_cbar_c0->cmap_c);
 	cmap_cbar_c0->cbar_c->iflag_use = 1;
-	make_colorbar_for_ctl(cmap_s, cmap_cbar_c0->cbar_c);
+	make_colorbar_for_ctl(iflag_draw_axis, draw_psf_cbar, cmap_s, cmap_cbar_c0->cbar_c);
 	
 	write_colormap_file_c(file_name, cmap_cbar_c0);
 	dealloc_colormap_colorbar_ctl_c(cmap_cbar_c0);

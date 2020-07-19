@@ -187,6 +187,7 @@ int write_colormap_ctl_c(FILE *fp, int level, const char *label,
 	write_real2_clist(fp, level, label_colormap_ctl[11], cmap_c->linear_opacity_list);
 	write_real3_clist(fp, level, label_colormap_ctl[12], cmap_c->step_opacity_list);
 	
+    fprintf(fp, "!\n");
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 6], cmap_c->range_min_ctl);
 	write_real_ctl_item_c(fp, level, cmap_c->maxlen, label_colormap_ctl[ 7], cmap_c->range_max_ctl);
 	

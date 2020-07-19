@@ -142,10 +142,11 @@ void get_fline_opacity_item(struct fline_menu_val *fline_m,
 	send_opacity_table_items_s(fline_m->cmap_fline, i_point, value, opacity);
 }
 
-void write_fline_colormap_file(struct fline_menu_val *fline_m, struct kv_string *filename){
-	write_colormap_control_file_s(filename->string, fline_m->cmap_fline);
+void write_fline_colormap_file(struct kv_string *filename, 
+                               const int iflag_draw_axis, struct fline_menu_val *fline_m){
+	write_colormap_control_file_s(filename->string, iflag_draw_axis, 0, fline_m->cmap_fline);
 }
-void read_fline_colormap_file(struct fline_menu_val *fline_m, struct kv_string *filename){
+void read_fline_colormap_file(struct kv_string *filename, struct fline_menu_val *fline_m){
 	read_colormap_control_file_s(filename->string, fline_m->cmap_fline);
 }
 

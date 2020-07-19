@@ -14,9 +14,7 @@ static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_dat
 	struct colormap_view *color_vws = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colorview");
 	struct kv_string *filename = kemoview_save_file_panel(window);
 	
-	if(filename->string[0] != '\0'){
-		write_colormap_control_file_s(filename->string, color_vws->cmap_param);
-	};
+	if(filename->string[0] != '\0'){kemoview_write_PSF_colormap_file(filename->string);};
 	kemoview_free_kvstring(filename);
 	return;
 };

@@ -678,15 +678,17 @@ void kemoview_get_PSF_opacity_items(int i_point, double *value, double *opacity)
 }
 
 void kemoview_write_PSF_colormap_file(struct kv_string *filename){
-    write_each_PSF_colormap_control_file(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
-										 filename->string);
+    write_each_PSF_colormap_control_file(filename->string, 
+                                         kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
+                                         kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 }
 void kemoview_read_PSF_colormap_file(struct kv_string *filename){
     read_each_PSF_colormap_control_file(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current],
 										filename->string);
 }
 void kemoview_check_PSF_colormap_control(void){
-    check_each_PSF_colormap_control(kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
+    check_each_PSF_colormap_control(kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
+                                    kemo_sgl->kemo_psf->psf_m[kemo_sgl->kemo_psf->psf_a->id_current]);
 }
 
 
@@ -776,10 +778,11 @@ void kemoview_get_fline_opacity_item(int i_point, double *value, double *opacity
 }
 
 void kemoview_write_fline_colormap_file(struct kv_string *filename){
-	write_fline_colormap_file(kemo_sgl->kemo_fline->fline_m, filename);
+	write_fline_colormap_file(filename, kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis,
+                              kemo_sgl->kemo_fline->fline_m);
 }
 void kemoview_read_fline_colormap_file(struct kv_string *filename){
-	read_fline_colormap_file(kemo_sgl->kemo_fline->fline_m, filename);
+	read_fline_colormap_file(filename, kemo_sgl->kemo_fline->fline_m);
 }
 
 /*  Temporal routines */

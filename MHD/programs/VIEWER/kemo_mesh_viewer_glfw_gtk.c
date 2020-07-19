@@ -27,6 +27,7 @@ static void mainloop_4_glfw(){
 		
 		/* Collect GTK events */
 		if(iflag_glfw_end == 1) return;
+        set_viewmatrix_value(mbot->view_menu, gtk_win);
 		update_viewmatrix_menu(mbot->view_menu, gtk_win);
 		while (gtk_events_pending()) gtk_main_iteration();
 	};

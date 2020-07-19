@@ -532,12 +532,12 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	GtkTreeModel *model_viewtype = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_viewtype));  
 	GtkTreeModel *child_model_viewtype = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_viewtype));
 	int index = 0;
-	index = append_ci_item_to_tree(index, "3D-Viewer", VIEW_3D, child_model_viewtype);
-	index = append_ci_item_to_tree(index, "Stereo-Viewer", VIEW_STEREO, child_model_viewtype);
-	index = append_ci_item_to_tree(index, "Map-Viewer", VIEW_MAP, child_model_viewtype);
-	index = append_ci_item_to_tree(index, "XY-Viewer", VIEW_XY, child_model_viewtype);
-	index = append_ci_item_to_tree(index, "XZ-Viewer", VIEW_XZ, child_model_viewtype);
-	index = append_ci_item_to_tree(index, "YZ-Viewer", VIEW_YZ, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "3D-View", VIEW_3D, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "Stereo-View", VIEW_STEREO, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "Map-View", VIEW_MAP, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "XY-View", VIEW_XY, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "XZ-View", VIEW_XZ, child_model_viewtype);
+	index = append_ci_item_to_tree(index, "YZ-View", VIEW_YZ, child_model_viewtype);
 	
 	GtkWidget *combobox_viewtype = gtk_combo_box_new_with_model(child_model_viewtype);
 	GtkCellRenderer *renderer_viewtype = gtk_cell_renderer_text_new();

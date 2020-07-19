@@ -56,8 +56,10 @@ void copy_colormap_from_ctl(struct chara_ctl_item *colormap_mode_ctl,
 void copy_opacity_from_ctl(struct real2_clist *linear_opacity_list, 
 			struct colormap_params *cmap_s);
 
-void check_colormap_control_file_s(struct colormap_params *cmap_s);
-void write_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);
+void check_colormap_control_file_s(const int iflag_draw_axis, const int draw_psf_cbar, 
+                                   struct colormap_params *cmap_s);
+void write_colormap_control_file_s(const char *file_name, const int iflag_draw_axis, 
+                                   const int draw_psf_cbar, struct colormap_params *cmap_s);
 void read_colormap_control_file_s(const char *file_name, struct colormap_params *cmap_s);
 
 

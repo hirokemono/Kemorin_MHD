@@ -125,8 +125,9 @@ int send_each_PSF_opacity_table_num(struct psf_menu_val *psf_menu);
 void send_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *color);
 void send_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity);
 
-void write_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name);
+void write_each_PSF_colormap_control_file(const char *file_name, const int iflag_draw_axis, 
+                                          struct psf_menu_val *psf_menu);
 void read_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name);
-void check_each_PSF_colormap_control(struct psf_menu_val *psf_menu);
+void check_each_PSF_colormap_control(int iflag_draw_axis, struct psf_menu_val *psf_menu);
 
 #endif
