@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1804E5C3125F025100EC8EAA /* Kemoviewer.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1804E5C2125F025100EC8EAA /* Kemoviewer.icns */; };
+		1804E5C3125F025100EC8EAA /* CalypsoView.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1804E5C2125F025100EC8EAA /* CalypsoView.icns */; };
 		1804E5E6125F028300EC8EAA /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1804E5E3125F028300EC8EAA /* OpenGL.framework */; };
 		180FF7CE1DDFB54700D20198 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CD1DDFB54700D20198 /* AVFoundation.framework */; };
 		180FF7D01DDFB55000D20198 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180FF7CF1DDFB55000D20198 /* CoreVideo.framework */; };
@@ -78,6 +78,7 @@
 		188FFDA52309BE6F00F5A0DE /* set_menu_bottun_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFDA32309BE6E00F5A0DE /* set_menu_bottun_to_buf.c */; };
 		188FFDA82309DE2900F5A0DE /* m_phong_light_table_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 188FFDA62309DE2800F5A0DE /* m_phong_light_table_c.c */; };
 		1899ACC524B8EEC3004E8F1C /* ElasticMenuWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */; };
+		18A4D60B24C203B4005A559B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18A4D60A24C203B4005A559B /* Images.xcassets */; };
 		18AA13E22494183C004A444D /* read_psf_bin_data_gz_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13DF2494183C004A444D /* read_psf_bin_data_gz_c.c */; };
 		18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13E12494183C004A444D /* read_psf_bin_data_c.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
@@ -175,7 +176,7 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		1804E5C2125F025100EC8EAA /* Kemoviewer.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Kemoviewer.icns; sourceTree = "<group>"; };
+		1804E5C2125F025100EC8EAA /* CalypsoView.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = CalypsoView.icns; sourceTree = "<group>"; };
 		1804E5E3125F028300EC8EAA /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		180FF7CD1DDFB54700D20198 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		180FF7CF1DDFB55000D20198 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -295,6 +296,7 @@
 		188FFDA72309DE2900F5A0DE /* m_phong_light_table_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_phong_light_table_c.h; sourceTree = "<group>"; };
 		1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ElasticMenuWindow.m; sourceTree = "<group>"; };
 		1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ElasticMenuWindow.h; sourceTree = "<group>"; };
+		18A4D60A24C203B4005A559B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CalypsoView_Cocoa/Images.xcassets; sourceTree = "<group>"; };
 		18AA13DE2494183B004A444D /* read_psf_bin_data_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = read_psf_bin_data_c.h; sourceTree = "<group>"; };
 		18AA13DF2494183C004A444D /* read_psf_bin_data_gz_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = read_psf_bin_data_gz_c.c; sourceTree = "<group>"; };
 		18AA13E02494183C004A444D /* read_psf_bin_data_gz_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = read_psf_bin_data_gz_c.h; sourceTree = "<group>"; };
@@ -897,7 +899,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				1804E5C2125F025100EC8EAA /* Kemoviewer.icns */,
+				18A4D60A24C203B4005A559B /* Images.xcassets */,
+				1804E5C2125F025100EC8EAA /* CalypsoView.icns */,
 				8D1107310486CEB800E47090 /* CalypsoView_Cocoa-Info.plist */,
 				18F9051315DDEA45001368FA /* MainMenu.xib */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -969,6 +972,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				188FFD7A23087CCB00F5A0DE /* phong.frag in Resources */,
+				18A4D60B24C203B4005A559B /* Images.xcassets in Resources */,
 				188FFD8723087CCB00F5A0DE /* gouraud.frag in Resources */,
 				188FFD7923087CCB00F5A0DE /* menu.frag in Resources */,
 				188FFD8A23087CCB00F5A0DE /* simple.frag in Resources */,
@@ -983,7 +987,7 @@
 				188FFD7E23087CCB00F5A0DE /* dash_lines_3D.vert in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				188FFD7B23087CCB00F5A0DE /* phong_texture.vert in Resources */,
-				1804E5C3125F025100EC8EAA /* Kemoviewer.icns in Resources */,
+				1804E5C3125F025100EC8EAA /* CalypsoView.icns in Resources */,
 				188FFD7F23087CCB00F5A0DE /* phong_texture.frag in Resources */,
 				18F9051515DDEA45001368FA /* MainMenu.xib in Resources */,
 				188FFD8623087CCB00F5A0DE /* phong_1color.frag in Resources */,
@@ -1163,6 +1167,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1189,6 +1194,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = "";

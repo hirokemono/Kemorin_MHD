@@ -63,7 +63,7 @@
                             </menuItem>
                             <menuItem title="Quit CalypsoView_Cocoa" keyEquivalent="q" id="136">
                                 <connections>
-                                    <action selector="terminate:" target="-3" id="449"/>
+                                    <action selector="terminate:" target="-1" id="bjf-p0-Fho"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -1586,7 +1586,7 @@
             </connections>
         </customObject>
         <window title="CalypsoView Controler" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" animationBehavior="default" id="1064">
-            <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" texturedBackground="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenAuxiliary="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="14" y="61" width="485" height="816"/>
@@ -2689,18 +2689,18 @@
                         </connections>
                     </box>
                     <scrollView misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" horizontalScrollElasticity="none" id="3786">
-                        <rect key="frame" x="12" y="52" width="196" height="593"/>
+                        <rect key="frame" x="12" y="55" width="196" height="535"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Wsi-nh-URc">
-                            <rect key="frame" x="1" y="1" width="194" height="591"/>
+                            <rect key="frame" x="1" y="1" width="194" height="533"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <view id="3787">
                                     <rect key="frame" x="0.0" y="0.0" width="196" height="565"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <box autoresizesSubviews="NO" borderType="line" title="Time Evolution" id="1071">
-                                            <rect key="frame" x="4" y="22" width="180" height="186"/>
+                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Time Evolution" id="1071">
+                                            <rect key="frame" x="8" y="-4" width="180" height="186"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="ZTw-eu-QP7">
                                                 <rect key="frame" x="1" y="1" width="178" height="170"/>
@@ -2884,8 +2884,8 @@
                                                 </subviews>
                                             </view>
                                         </box>
-                                        <box autoresizesSubviews="NO" borderType="line" title="Rotation" id="633">
-                                            <rect key="frame" x="4" y="226" width="180" height="147"/>
+                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Rotation" id="633">
+                                            <rect key="frame" x="8" y="186" width="180" height="147"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="3hU-ZR-xfa">
                                                 <rect key="frame" x="1" y="1" width="178" height="131"/>
@@ -3020,8 +3020,8 @@
                                                 </subviews>
                                             </view>
                                         </box>
-                                        <box autoresizesSubviews="NO" borderType="line" title="Surface Type" id="632">
-                                            <rect key="frame" x="4" y="377" width="180" height="58"/>
+                                        <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Surface Type" id="632">
+                                            <rect key="frame" x="8" y="337" width="180" height="58"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="1aT-Dw-0jh">
                                                 <rect key="frame" x="1" y="1" width="178" height="42"/>
@@ -3062,7 +3062,7 @@
                                             </view>
                                         </box>
                                         <box autoresizesSubviews="NO" misplaced="YES" borderType="line" title="Globe" id="3642">
-                                            <rect key="frame" x="4" y="439" width="180" height="126"/>
+                                            <rect key="frame" x="8" y="399" width="180" height="126"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <view key="contentView" id="UEG-wT-T8S">
                                                 <rect key="frame" x="1" y="1" width="178" height="110"/>
@@ -3155,47 +3155,13 @@
                             <rect key="frame" x="-100" y="-100" width="189" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" hidden="YES" autoresizesSubviews="NO" verticalHuggingPriority="750" horizontal="NO" id="3789">
-                            <rect key="frame" x="179" y="1" width="16" height="565"/>
+                        <scroller key="verticalScroller" autoresizesSubviews="NO" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="3789">
+                            <rect key="frame" x="179" y="1" width="16" height="533"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" misplaced="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" controlSize="small" style="bar" id="1897">
-                        <rect key="frame" x="20" y="11" width="196" height="12"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </progressIndicator>
-                    <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" misplaced="YES" maxValue="360" displayedWhenStopped="NO" bezeled="NO" controlSize="small" style="bar" id="1898">
-                        <rect key="frame" x="20" y="11" width="196" height="12"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </progressIndicator>
-                    <textField verticalHuggingPriority="750" misplaced="YES" id="1909">
-                        <rect key="frame" x="83" y="33" width="69" height="11"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Data progress:" id="1910">
-                            <font key="font" metaFont="miniSystem"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <textField verticalHuggingPriority="750" misplaced="YES" id="Wyf-gz-mv9">
-                        <rect key="frame" x="156" y="28" width="62" height="16"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" usesSingleLineMode="YES" id="yer-JQ-Nz9">
-                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="WEq-Gd-SUm"/>
-                            <font key="font" metaFont="miniSystem"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                        <connections>
-                            <binding destination="2637" name="value" keyPath="self.CurrentStep" id="EIv-0Y-HvM">
-                                <dictionary key="options">
-                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
-                                </dictionary>
-                            </binding>
-                        </connections>
-                    </textField>
                     <button verticalHuggingPriority="750" misplaced="YES" id="3591">
-                        <rect key="frame" x="90" y="788" width="124" height="32"/>
+                        <rect key="frame" x="90" y="735" width="124" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Open" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3592">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3206,7 +3172,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" misplaced="YES" id="657">
-                        <rect key="frame" x="90" y="756" width="124" height="32"/>
+                        <rect key="frame" x="90" y="702" width="124" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Save Image" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="663">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
@@ -3217,7 +3183,7 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" misplaced="YES" id="2228">
-                        <rect key="frame" x="90" y="691" width="124" height="32"/>
+                        <rect key="frame" x="90" y="636" width="124" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="View Matrix" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2229">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -3228,7 +3194,7 @@
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" misplaced="YES" id="1519">
-                        <rect key="frame" x="94" y="727" width="117" height="26"/>
+                        <rect key="frame" x="94" y="670" width="117" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="3D-View" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="1522" id="1520">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -3270,7 +3236,7 @@
                         </popUpButtonCell>
                     </popUpButton>
                     <button verticalHuggingPriority="750" misplaced="YES" id="3639">
-                        <rect key="frame" x="90" y="658" width="124" height="32"/>
+                        <rect key="frame" x="90" y="603" width="124" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Axis Off" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="3640">
                             <behavior key="behavior" pushIn="YES" changeContents="YES" lightByContents="YES"/>
@@ -3280,6 +3246,51 @@
                             <action selector="AxisSwitchAction:" target="964" id="3641"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" misplaced="YES" id="FRw-dN-qkX">
+                        <rect key="frame" x="90" y="768" width="124" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5Xc-Ys-ovh">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="terminate:" target="-1" id="eup-sA-uVi"/>
+                        </connections>
+                    </button>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="1909">
+                        <rect key="frame" x="75" y="36" width="69" height="11"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="left" title="Data progress:" id="1910">
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" misplaced="YES" id="Wyf-gz-mv9">
+                        <rect key="frame" x="148" y="31" width="62" height="16"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" controlSize="mini" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" usesSingleLineMode="YES" id="yer-JQ-Nz9">
+                            <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="WEq-Gd-SUm"/>
+                            <font key="font" metaFont="miniSystem"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="2637" name="value" keyPath="self.CurrentStep" id="EIv-0Y-HvM">
+                                <dictionary key="options">
+                                    <bool key="NSAllowsEditingMultipleValuesSelection" value="NO"/>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </textField>
+                    <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" misplaced="YES" maxValue="100" displayedWhenStopped="NO" bezeled="NO" controlSize="small" style="bar" id="1897">
+                        <rect key="frame" x="12" y="11" width="196" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </progressIndicator>
+                    <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" misplaced="YES" maxValue="360" displayedWhenStopped="NO" bezeled="NO" controlSize="small" style="bar" id="1898">
+                        <rect key="frame" x="12" y="11" width="196" height="12"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    </progressIndicator>
                 </subviews>
             </view>
             <contentBorderThickness maxY="0.0"/>
