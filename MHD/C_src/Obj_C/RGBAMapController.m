@@ -54,11 +54,11 @@
 }
 
 - (IBAction) LoadColormapFile:(id)pId;{
-    NSArray *ColormapFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil];
+/*    NSArray *ColormapFileTypes = [NSArray arrayWithObjects:@"dat",@"DAT",nil]; */
     
     NSOpenPanel *ColormapOpenPanelObj	= [NSOpenPanel openPanel];
     [ColormapOpenPanelObj setTitle:@"Choose colormap data"];
-    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes];
+/*    [ColormapOpenPanelObj setAllowedFileTypes:ColormapFileTypes]; */
     [ColormapOpenPanelObj beginSheetModalForWindow:window 
                                    completionHandler:^(NSInteger ColormapOpenInteger){
                                        if(ColormapOpenInteger == NSFileHandlingPanelOKButton){
