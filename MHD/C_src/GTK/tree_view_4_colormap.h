@@ -27,7 +27,7 @@ struct colormap_view{
 	struct chara_ctl_item *colormap_mode_gtk;
     struct r2_clist_view *cmap_vws;
     struct r2_clist_view *opacity_vws;
-
+	
 	struct colormap_params *cmap_param;	
     GtkWidget *scrolled_window;
 };
