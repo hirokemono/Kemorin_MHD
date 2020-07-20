@@ -11,7 +11,6 @@
 
 static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	struct colormap_view *color_vws = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colorview");
 	struct kv_string *filename = kemoview_save_file_panel(window);
 	
 	if(filename->string[0] != '\0'){kemoview_write_PSF_colormap_file(filename->string);};
@@ -21,12 +20,9 @@ static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_dat
 
 static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	struct colormap_view *color_vws = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colorview");
 	struct kv_string *filename = kemoview_read_file_panel(window);
 	
-	if(filename->string[0] != '\0'){
-		read_colormap_control_file_s(filename->string, color_vws->cmap_param);
-	};
+	if(filename->string[0] != '\0'){kemoview_read_PSF_colormap_file(filename);};
 	kemoview_free_kvstring(filename);
 	
 	gtk_widget_queue_draw(window);
@@ -50,7 +46,7 @@ static GtkWidget * init_gtk_psf_colormap_expander(GtkWidget *window, struct colo
 	g_signal_connect(G_OBJECT(loadButton), "clicked", 
 				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(entry));
 	
-    GtkWidget *color_box = init_kemoview_colormap_list_vbox(color_vws);
+	GtkWidget *color_box = init_kemoview_colormap_list_vbox(color_vws);
 	gtk_box_pack_start(GTK_BOX(color_box), saveButton, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(color_box), loadButton, FALSE, FALSE, 0);
 
@@ -98,9 +94,9 @@ GtkWidget * init_psf_menu_hbox(struct psf_gtk_menu *psf_gmenu,
 	
 	psf_gmenu->psf_vector_menu->vector_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	if(ncomp == 3){
-		GtkWidget *expander_vect = make_gtk_psf_vector_menu(window, psf_gmenu->color_vws, psf_gmenu->psf_vector_menu);
-        gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vector_menu->vector_box),
-                           expander_vect, FALSE, FALSE, 0);
+		GtkWidget *expander_vect = make_gtk_psf_vector_menu(window, psf_gmenu->psf_vector_menu);
+		gtk_box_pack_start(GTK_BOX(psf_gmenu->psf_vector_menu->vector_box),
+						   expander_vect, FALSE, FALSE, 0);
 		set_gtk_psf_vector_menu(psf_gmenu->psf_vector_menu);
 	};
     

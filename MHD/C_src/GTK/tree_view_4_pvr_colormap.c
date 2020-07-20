@@ -172,7 +172,7 @@ void add_pvr_colormap_list_box(struct colormap_view *color_vws, GtkWidget *vbox)
 	
 	combobox_cmap = gtk_combo_box_new_with_model(child_model);
 	renderer = gtk_cell_renderer_text_new();
-	iflag = color_vws->cmap_param->id_color_mode;
+	iflag = kemoview_get_PSF_color_param(ISET_COLORMAP);
 	if(iflag == SYM_GRAY_MODE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
 	} else if(iflag == RED_BLUE_MODE){

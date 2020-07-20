@@ -146,8 +146,7 @@ void set_gtk_psf_vector_menu(struct psf_vector_gtk_menu *psf_vector_menu){
 	return;
 };
 
-GtkWidget * make_gtk_psf_vector_menu(GtkWidget *window, struct colormap_view *color_vws,
-                              struct psf_vector_gtk_menu *psf_vector_menu){
+GtkWidget * make_gtk_psf_vector_menu(GtkWidget *window, struct psf_vector_gtk_menu *psf_vector_menu){
     GtkWidget *expander;
     
 	GtkWidget *hbox_draw;
@@ -232,7 +231,7 @@ GtkWidget * make_gtk_psf_vector_menu(GtkWidget *window, struct colormap_view *co
 	adj_vect_width = gtk_adjustment_new(1, 1, 9, 1, 1, 0);
 	psf_vector_menu->spin_vect_width = gtk_spin_button_new(GTK_ADJUSTMENT(adj_vect_width), 0, 0);
 	g_signal_connect(psf_vector_menu->spin_vect_width, "value-changed",
-					 G_CALLBACK(set_vector_width_CB), (gpointer) color_vws);
+					 G_CALLBACK(set_vector_width_CB), NULL);
 	
 	adj_width_digit = gtk_adjustment_new(-3, -10, 10, 1, 1, 0);
 	psf_vector_menu->spin_width_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_width_digit), 0, 0);

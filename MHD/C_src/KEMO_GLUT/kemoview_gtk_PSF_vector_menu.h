@@ -43,7 +43,6 @@ struct psf_vector_gtk_menu{
 /*  prototypes */
 
 void set_gtk_psf_vector_menu(struct psf_vector_gtk_menu *psf_vector_menu);
-GtkWidget * make_gtk_psf_vector_menu(GtkWidget *window, struct colormap_view *color_vws,
-                              struct psf_vector_gtk_menu *psf_vector_menu);
+GtkWidget * make_gtk_psf_vector_menu(GtkWidget *window, struct psf_vector_gtk_menu *psf_vector_menu);
 
 #endif

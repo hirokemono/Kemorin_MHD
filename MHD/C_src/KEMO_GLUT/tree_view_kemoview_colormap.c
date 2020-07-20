@@ -254,7 +254,7 @@ GtkWidget * init_kemoview_colormap_list_vbox(struct colormap_view *color_vws){
 	
 	GtkWidget *combobox_cmap = gtk_combo_box_new_with_model(child_model);
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	int iflag = color_vws->cmap_param->id_color_mode;
+	int iflag = kemoview_get_PSF_color_param(ISET_COLORMAP);
 	if(iflag == SYM_GRAY_MODE){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_cmap), 3);
 	} else if(iflag == RED_BLUE_MODE){
