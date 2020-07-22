@@ -8,6 +8,10 @@ FFT_TEST_DIR =       $$(TESTS_DIR)/FFT_test
 
 TARGET_FFT_TEST =      test_fft
 
+TARGET_FFTPACK_TEST =  test_FFTPACK
+TARGET_ISPACK1_TEST =  test_ISPACK1
+TARGET_FFW3_F_TEST =   test_FFW3_f
+
 LIBS_FFT_TEST = \
 '$$(LIB_MESH)'      \
 '$$(LIB_FFTPACK)'   \
@@ -24,7 +28,48 @@ ifdef FORTRAN_C_CONNECT
 endif
 
 SOURCES = $(shell ls *.f90)
-MOD_FFT_TEST = $(addsuffix .o,$(basename $(SOURCES)) )
+
+MOD_FFT_TEST = \
+t_fft_test_data.o \
+test_FFT.o
+
+MOD_FFTPACK_TEST = \
+m_precision.o \
+m_constants.o \
+m_machine_parameter.o \
+\
+FFTPACK5_wrapper.o \
+t_FFTPACK5_wrapper.o \
+\
+t_fft_test_data.o \
+test_FFTPACK5.o
+
+MOD_ISPACK1_TEST = \
+m_precision.o \
+m_constants.o \
+m_machine_parameter.o \
+\
+ispack_FFT_wrapper.o \
+t_ispack_FFT_wrapper.o \
+\
+t_fft_test_data.o \
+test_ISPACK1_FFT.o
+
+MOD_FFW3_F_TEST = \
+m_precision.o \
+m_constants.o \
+m_machine_parameter.o \
+\
+skip_comment_f.o \
+m_fftw_parameters.o \
+FFTW3_multi_wrapper.o \
+FFTW3_wrapper.o \
+t_FFTW_wrapper.o \
+t_multi_FFTW_wrapper.o \
+\
+t_fft_test_data.o \
+test_FFTW3.o
+
 
 #
 #  ------------------------------------------------------------------
@@ -34,12 +79,17 @@ dir_list:
 	@echo 'FFT_TEST_DIR =  $(FFT_TEST_DIR)'          >> $(MAKENAME)
 
 target_list:
-	@echo 'TARGET_FFT_TEST =      $$(BUILDDIR)/$(TARGET_FFT_TEST)' \
-	>> $(MAKENAME)
+	@echo 'TARGET_FFT_TEST =      $$(BUILDDIR)/$(TARGET_FFT_TEST)'     >> $(MAKENAME)
+	@echo 'TARGET_FFTPACK_TEST =  $$(BUILDDIR)/$(TARGET_FFTPACK_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_ISPACK1_TEST =  $$(BUILDDIR)/$(TARGET_ISPACK1_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_FFW3_F_TEST =   $$(BUILDDIR)/$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
 
 target_task:
-	@echo fft_test: '$$(TARGET_FFT_TEST)' \
+	@echo fft_test: \
+	'$$(TARGET_FFT_TEST)'      '$$(TARGET_FFTPACK_TEST)' \
+	'$$(TARGET_ISPACK1_TEST)'  '$$(TARGET_FFW3_F_TEST)'\
 	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFT_TEST)': '$$(MOD_FFT_TEST)' \
 	'$$(LIB_FILES_FFT_TEST)' >> $(MAKENAME)
@@ -47,6 +97,28 @@ target_task:
 	-o '$$(TARGET_FFT_TEST)' \
 	'$$(MOD_FFT_TEST)  -L. $$(LIBS_FFT_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FFTPACK_TEST)': '$$(MOD_FFTPACK_TEST)' \
+	'$$(LIB_FFTPACK_FILE)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FFTPACK_TEST)' \
+	'$$(MOD_FFTPACK_TEST)  -L. $$(LIB_FFTPACK)' \
+	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_ISPACK1_TEST)': '$$(MOD_ISPACK1_TEST)' \
+	'$$(LIB_ISPACK_FILE)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ISPACK1_TEST)' \
+	'$$(MOD_ISPACK1_TEST)  -L. $$(LIB_ISPACK)' \
+	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_FFW3_F_TEST)': '$$(MOD_FFW3_F_TEST)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_FFW3_F_TEST)' \
+	'$$(MOD_FFW3_F_TEST)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -59,6 +131,12 @@ lib_name:
 mod_list:
 	@echo  MOD_FFT_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FFT_TEST)        >> $(MAKENAME)
+	@echo  MOD_FFTPACK_TEST=      \\  >> $(MAKENAME)
+	@echo  $(MOD_FFTPACK_TEST)        >> $(MAKENAME)
+	@echo  MOD_ISPACK1_TEST=      \\  >> $(MAKENAME)
+	@echo  $(MOD_ISPACK1_TEST)        >> $(MAKENAME)
+	@echo  MOD_FFW3_F_TEST=      \\  >> $(MAKENAME)
+	@echo  $(MOD_FFW3_F_TEST)        >> $(MAKENAME)
 
 
 module:
