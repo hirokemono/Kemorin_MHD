@@ -1608,8 +1608,8 @@
       integer ( kind = 4 ) :: iw0
       real ( kind = 8 ) :: wa(iw0)
 
-      real*8, pointer :: zz(:)
-      real*8, pointer :: z1(:)
+      real(kind = 8), pointer :: zz(:)
+      real(kind = 8), pointer :: z1(:)
 !
       inc2 = inc+inc
       nf = fnf
@@ -1733,8 +1733,8 @@
       integer ( kind = 4 ) :: iw0
       real(kind = 8) :: wa(iw0)
 !
-      real*8, pointer :: zz(:)
-      real*8, pointer :: z1(:)
+      real(kind = 8), pointer :: zz(:)
+      real(kind = 8), pointer :: z1(:)
 !
 !
       inc2 = inc+inc
@@ -2075,7 +2075,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cfft1i ( n, wsave, lensav, ier )
+      subroutine cfft1i(n, wsave, lensav, ier)
 
 !*****************************************************************************80
 !
@@ -2132,32 +2132,33 @@
 !    0, successful exit;
 !    2, input parameter LENSAV not big enough.
 
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lensav
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) iw1
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) wsave(lensav)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) iw1
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) + 4) then
-    ier = 2
-    call xerfft ('cfftmi ', 3)
-  end if
+      if(lensav                                                         &
+     &     < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) + 4) then
+        ier = 2
+        call xerfft ('cfftmi ', 3)
+      end if
 
-  if ( n == 1 ) then
-    return
-  end if
+      if ( n == 1 ) then
+        return
+      end if
 
-  iw1 = n+n+1
+      iw1 = n+n+1
 
-  call r4_mcfti1 (n,wsave,wsave(iw1),wsave(iw1+1))
+      call r4_mcfti1 (n,wsave,wsave(iw1),wsave(iw1+1))
 
       return
-      end
+      end subroutine cfft1i
 !
 !  ---------------------------------------------------------------------
 !
@@ -2246,64 +2247,65 @@
 !    5, input parameter LDIM < L;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) ldim
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) ldim
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  complex ( kind = 8 ) c(ldim,m)
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) iw
-  integer ( kind = 4 ) l
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
+      complex ( kind = 8 ) c(ldim,m)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) iw
+      integer ( kind = 4 ) l
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if ( ldim < l ) then
-    ier = 5
-    call xerfft ('cfft2b', -2)
-    return
-  else if (lensav < 2*l + int(log( real ( l, kind = 8 ))/log( 2.0D+00 )) + &
-                    2*m + int(log( real ( m, kind = 8 ))/log( 2.0D+00 )) +8) then
-    ier = 2
-    call xerfft ('cfft2b', 6)
-    return
-  else if (lenwrk < 2*l*m) then
-    ier = 3
-    call xerfft ('cfft2b', 8)
-    return
-  end if
+      if ( ldim < l ) then
+        ier = 5
+        call xerfft ('cfft2b', -2)
+        return
+      else if(lensav                                                    &
+     &      < 2*l + int(log( real(l, kind=8))/log( 2.0D+00 ))           &
+     &       + 2*m + int(log( real(m, kind=8))/log( 2.0D+00 )) +8) then
+        ier = 2
+        call xerfft ('cfft2b', 6)
+        return
+      else if (lenwrk < 2*l*m) then
+        ier = 3
+        call xerfft ('cfft2b', 8)
+        return
+      end if
 !
 !  transform x lines of c array
 !
-  iw = 2*l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 3
+      iw = 2*l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 3
 
-  call cfftmb(l, 1, m, ldim, c, (l-1) + ldim*(m-1) +1, &
-    wsave(iw), 2*m + int(log( real ( m, kind = 8 ))/log( 2.0D+00 )) + 4, &
-    work, 2*l*m, ier1)
+      call cfftmb(l, 1, m, ldim, c, (l-1) + ldim*(m-1) +1, wsave(iw),   &
+     &            2*m + int(log( real(m, kind=8) ) / log(2.0D+00)) + 4, &
+     &            work, 2*l*m, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cfft2b',-5)
-    return
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cfft2b',-5)
+        return
+      end if
 !
 !  transform y lines of c array
 !
-  iw = 1
+      iw = 1
 
-  call cfftmb (m, ldim, l, 1, c, (m-1)*ldim + l, &
-    wsave(iw), 2*l + int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 4, &
-    work, 2*m*l, ier1)
+      call cfftmb(m, ldim, l, 1, c, (m-1)*ldim + l, wsave(iw),          &
+     &            2*l + int(log( real(l, kind=8) )/log( 2.0D+00 )) + 4, &
+     &            work, 2*m*l, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cfft2b',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cfft2b',-5)
+      end if
 
       return
       end subroutine cfft2b
@@ -4886,8 +4888,8 @@ end
       integer ( kind = 4 ) :: iw0
       real ( kind = 8 ) :: wa(iw0)
 
-      complex(kind = 8), pointer :: zz(:)
-      complex(kind = 8), pointer :: z1(:)
+      real(kind = 8), pointer :: zz(:)
+      real(kind = 8), pointer :: z1(:)
 !
       nf = int ( fnf )
       na = 0
@@ -5012,7 +5014,7 @@ end
       integer ( kind = 4 ) ::iw0
       real ( kind = 8 ) :: wa(iw0)
 !
-      complex(kind = 8), pointer :: zz(:)
+      real(kind = 8), pointer :: zz(:)
 !
       nf = int ( fnf )
       na = 0
@@ -5282,54 +5284,62 @@ end
 !    3, input parameter LENWRK not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) lenx
-  real ( kind = 8 ) ssqrt2
-  real ( kind = 8 ) tsqx
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) lenx
+      real ( kind = 8 ) ssqrt2
+      real ( kind = 8 ) tsqx
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
 
-  ier = 0
+      ier = 0
 
-  if (lenx < inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cosq1f', 6)
-    return
-  else if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cosq1f', 8)
-    return
-  else if (lenwrk < n) then
-    ier = 3
-    call xerfft ('cosq1f', 10)
-    return
-  end if
+      if (lenx < inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cosq1f', 6)
+        return
+      else if(lensav                                                    &
+     &      < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('cosq1f', 8)
+        return
+      else if (lenwrk < n) then
+        ier = 3
+        call xerfft ('cosq1f', 10)
+        return
+      end if
 
-      if (n-2) 102,101,103
-  101 ssqrt2 = 1.0D+00 / sqrt ( 2.0D+00 )
-      tsqx = ssqrt2*x(1,2)
-      x(1,2) = 0.5D+00 *x(1,1)-tsqx
-      x(1,1) = 0.5D+00 *x(1,1)+tsqx
-  102 return
-  103 call cosqf1 (n,inc,x,wsave,work,ier1)
+!      if (n-2) 102,101,103
+      if(n .lt. 2) then
+  102   return
+      else if(n .eq. 2) then
+  101   ssqrt2 = 1.0D+00 / sqrt ( 2.0D+00 )
+        tsqx = ssqrt2*x(1,2)
+        x(1,2) = 0.5D+00 *x(1,1)-tsqx
+        x(1,1) = 0.5D+00 *x(1,1)+tsqx
+      else
+  103   call cosqf1 (n,inc,x,wsave,work,ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cosq1f',-5)
-  end if
+        if (ier1 /= 0) then
+          ier = 20
+          call xerfft ('cosq1f',-5)
+        end if
+      end if
 
-  return
-end
-subroutine cosq1i ( n, wsave, lensav, ier )
+      return
+      end subroutine cosq1f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cosq1i ( n, wsave, lensav, ier )
 
 !*****************************************************************************80
 !
@@ -5388,48 +5398,52 @@ subroutine cosq1i ( n, wsave, lensav, ier )
 !    2, input parameter LENSAV not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lensav
 
-  real ( kind = 8 ) dt
-  real ( kind = 8 ) fk
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) pih
-  real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) dt
+      real ( kind = 8 ) fk
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) pih
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cosq1i', 3)
-    return
-  end if
+      if(lensav                                                         &
+     &     < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) + 4) then
+        ier = 2
+        call xerfft ('cosq1i', 3)
+        return
+      end if
 
-  pih = 2.0D+00 * atan ( 1.0D+00 )
-  dt = pih / real  ( n, kind = 8 )
-  fk = 0.0D+00
+      pih = 2.0D+00 * atan ( 1.0D+00 )
+      dt = pih / real  ( n, kind = 8 )
+      fk = 0.0D+00
 
-  do k=1,n
-    fk = fk + 1.0D+00
-    wsave(k) = cos(fk*dt)
-  end do
+      do k=1,n
+        fk = fk + 1.0D+00
+        wsave(k) = cos(fk*dt)
+      end do
 
-  lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4
-  call rfft1i (n, wsave(n+1), lnsv, ier1)
+      lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4
+      call rfft1i (n, wsave(n+1), lnsv, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cosq1i',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cosq1i',-5)
+      end if
 
-  return
-end
-subroutine cosqb1 ( n, inc, x, wsave, work, ier )
+      return
+      end subroutine cosq1i
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cosqb1 ( n, inc, x, wsave, work, ier )
 
 !*****************************************************************************80
 !
@@ -5464,77 +5478,80 @@ subroutine cosqb1 ( n, inc, x, wsave, work, ier )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
+      integer ( kind = 4 ) inc
 
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kc
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) lnwk
-  integer ( kind = 4 ) modn
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) np2
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) work(*)
-  real ( kind = 8 ) wsave(*)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) xim1
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) kc
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) lnwk
+      integer ( kind = 4 ) modn
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) np2
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) work(*)
+      real ( kind = 8 ) wsave(*)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) xim1
 
-  ier = 0
-  ns2 = (n+1)/2
-  np2 = n+2
+      ier = 0
+      ns2 = (n+1)/2
+      np2 = n+2
 
-  do i=3,n,2
-    xim1 = x(1,i-1)+x(1,i)
-    x(1,i) = 0.5D+00 * (x(1,i-1)-x(1,i))
-    x(1,i-1) = 0.5D+00 * xim1
-  end do
+      do i=3,n,2
+        xim1 = x(1,i-1)+x(1,i)
+        x(1,i) = 0.5D+00 * (x(1,i-1)-x(1,i))
+        x(1,i-1) = 0.5D+00 * xim1
+      end do
 
-  x(1,1) = 0.5D+00 * x(1,1)
-  modn = mod(n,2)
+      x(1,1) = 0.5D+00 * x(1,1)
+      modn = mod(n,2)
 
-  if (modn == 0 ) then
-    x(1,n) = 0.5D+00 * x(1,n)
-  end if
+      if (modn == 0 ) then
+        x(1,n) = 0.5D+00 * x(1,n)
+      end if
 
-  lenx = inc*(n-1)  + 1
-  lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) + 4
-  lnwk = n
+      lenx = inc*(n-1)  + 1
+      lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) + 4
+      lnwk = n
 
-  call rfft1b(n,inc,x,lenx,wsave(n+1),lnsv,work,lnwk,ier1)
+      call rfft1b(n,inc,x,lenx,wsave(n+1),lnsv,work,lnwk,ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cosqb1',-5)
-    return
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cosqb1',-5)
+        return
+      end if
 
-  do k=2,ns2
-    kc = np2-k
-    work(k) = wsave(k-1)*x(1,kc)+wsave(kc-1)*x(1,k)
-    work(kc) = wsave(k-1)*x(1,k)-wsave(kc-1)*x(1,kc)
-  end do
+      do k=2,ns2
+        kc = np2-k
+        work(k) = wsave(k-1)*x(1,kc)+wsave(kc-1)*x(1,k)
+        work(kc) = wsave(k-1)*x(1,k)-wsave(kc-1)*x(1,kc)
+      end do
 
-  if (modn == 0) then
-    x(1,ns2+1) = wsave(ns2)*(x(1,ns2+1)+x(1,ns2+1))
-  end if
+      if (modn == 0) then
+        x(1,ns2+1) = wsave(ns2)*(x(1,ns2+1)+x(1,ns2+1))
+      end if
 
-  do k=2,ns2
-    kc = np2-k
-    x(1,k) = work(k)+work(kc)
-    x(1,kc) = work(k)-work(kc)
-  end do
+      do k=2,ns2
+        kc = np2-k
+        x(1,k) = work(k)+work(kc)
+        x(1,kc) = work(k)-work(kc)
+      end do
 
-  x(1,1) = x(1,1)+x(1,1)
+      x(1,1) = x(1,1)+x(1,1)
 
-  return
-end
-subroutine cosqf1 ( n, inc, x, wsave, work, ier )
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cosqf1(n, inc, x, wsave, work, ier)
 
 !*****************************************************************************80
 !
@@ -5569,75 +5586,78 @@ subroutine cosqf1 ( n, inc, x, wsave, work, ier )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
+      integer ( kind = 4 ) inc
 
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kc
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) lnwk
-  integer ( kind = 4 ) modn
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) np2
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) work(*)
-  real ( kind = 8 ) wsave(*)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) xim1
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) kc
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) lnwk
+      integer ( kind = 4 ) modn
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) np2
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) work(*)
+      real ( kind = 8 ) wsave(*)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) xim1
 
-  ier = 0
-  ns2 = (n+1)/2
-  np2 = n+2
+      ier = 0
+      ns2 = (n+1)/2
+      np2 = n+2
 
-  do k=2,ns2
-    kc = np2-k
-    work(k)  = x(1,k)+x(1,kc)
-    work(kc) = x(1,k)-x(1,kc)
-  end do
+      do k=2,ns2
+        kc = np2-k
+        work(k)  = x(1,k)+x(1,kc)
+        work(kc) = x(1,k)-x(1,kc)
+      end do
 
-  modn = mod(n,2)
+      modn = mod(n,2)
 
-  if (modn == 0) then
-    work(ns2+1) = x(1,ns2+1)+x(1,ns2+1)
-  end if
+      if (modn == 0) then
+        work(ns2+1) = x(1,ns2+1)+x(1,ns2+1)
+      end if
 
-  do k=2,ns2
-    kc = np2-k
-    x(1,k)  = wsave(k-1)*work(kc)+wsave(kc-1)*work(k)
-    x(1,kc) = wsave(k-1)*work(k) -wsave(kc-1)*work(kc)
-  end do
+      do k=2,ns2
+        kc = np2-k
+        x(1,k)  = wsave(k-1)*work(kc)+wsave(kc-1)*work(k)
+        x(1,kc) = wsave(k-1)*work(k) -wsave(kc-1)*work(kc)
+      end do
 
-  if (modn == 0) then
-    x(1,ns2+1) = wsave(ns2)*work(ns2+1)
-  end if
+      if (modn == 0) then
+        x(1,ns2+1) = wsave(ns2)*work(ns2+1)
+      end if
 
-  lenx = inc*(n-1)  + 1
-  lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) + 4
-  lnwk = n
+      lenx = inc*(n-1)  + 1
+      lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) + 4
+      lnwk = n
 
-  call rfft1f(n,inc,x,lenx,wsave(n+1),lnsv,work,lnwk,ier1)
+      call rfft1f(n,inc,x,lenx,wsave(n+1),lnsv,work,lnwk,ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cosqf1',-5)
-    return
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cosqf1',-5)
+        return
+      end if
 
-  do i=3,n,2
-    xim1 = 0.5D+00 * (x(1,i-1)+x(1,i))
-    x(1,i) = 0.5D+00 * (x(1,i-1)-x(1,i))
-    x(1,i-1) = xim1
-  end do
+      do i=3,n,2
+        xim1 = 0.5D+00 * (x(1,i-1)+x(1,i))
+        x(1,i) = 0.5D+00 * (x(1,i-1)-x(1,i))
+        x(1,i-1) = xim1
+      end do
 
-  return
-end
-subroutine cosqmb ( lot, jump, n, inc, x, lenx, wsave, lensav, work, lenwrk, &
-  ier )
+      return
+      end subroutine cosqf1
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cosqmb(lot, jump, n, inc, x, lenx,                     &
+     &                  wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -5726,73 +5746,77 @@ subroutine cosqmb ( lot, jump, n, inc, x, lenx, wsave, lensav, work, lenwrk, &
 !    4, input parameters INC,JUMP,N,LOT are not consistent;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lj
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) ssqrt2
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) x1
-  logical xercon
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lj
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) ssqrt2
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) x1
+      logical xercon
 
-  ier = 0
+      ier = 0
 
-  if (lenx < (lot-1)*jump + inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cosqmb', 6)
-    return
-  else if (lensav < &
-    2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cosqmb', 8)
-    return
-  else if (lenwrk < lot*n) then
-    ier = 3
-    call xerfft ('cosqmb', 10)
-    return
-  else if (.not. xercon(inc,jump,n,lot)) then
-    ier = 4
-    call xerfft ('cosqmb', -1)
-    return
-  end if
-
-      lj = (lot-1)*jump+1
-      if (n-2) 101,102,103
- 101  do m=1,lj,jump
-        x(m,1) = x(m,1)
-      end do
-      return
- 102  ssqrt2 = 1.0D+00 / sqrt ( 2.0D+00 )
-      do m=1,lj,jump
-        x1 = x(m,1)+x(m,2)
-        x(m,2) = ssqrt2*(x(m,1)-x(m,2))
-        x(m,1) = x1
-      end do
-      return
-
-  103 call mcsqb1 (lot,jump,n,inc,x,wsave,work,ier1)
-
-      if (ier1 /= 0) then
-        ier = 20
-        call xerfft ('cosqmb',-5)
+      if (lenx < (lot-1)*jump + inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cosqmb', 6)
+        return
+      else if(lensav                                                    &
+     &    < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('cosqmb', 8)
+        return
+      else if (lenwrk < lot*n) then
+        ier = 3
+        call xerfft ('cosqmb', 10)
+        return
+      else if (.not. xercon(inc,jump,n,lot)) then
+        ier = 4
+        call xerfft ('cosqmb', -1)
+        return
       end if
 
-  return
-end
-subroutine cosqmf ( lot, jump, n, inc, x, lenx, wsave, lensav, work, &
-  lenwrk, ier )
+      lj = (lot-1)*jump+1
+!      if (n-2) 101,102,103
+      if(n .lt. 2) then
+ 101    do m=1,lj,jump
+          x(m,1) = x(m,1)
+        end do
+      else if(n .eq. 2) then
+ 102    ssqrt2 = 1.0D+00 / sqrt ( 2.0D+00 )
+        do m=1,lj,jump
+          x1 = x(m,1)+x(m,2)
+          x(m,2) = ssqrt2*(x(m,1)-x(m,2))
+          x(m,1) = x1
+        end do
+      else
+  103   call mcsqb1 (lot,jump,n,inc,x,wsave,work,ier1)
+
+        if (ier1 /= 0) then
+          ier = 20
+          call xerfft ('cosqmb',-5)
+        end if
+      end if
+      
+      return
+      end subroutine cosqmb
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cosqmf(lot, jump, n, inc, x, lenx,                     &
+     &          wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -5882,71 +5906,77 @@ subroutine cosqmf ( lot, jump, n, inc, x, lenx, wsave, lensav, work, &
 !    4, input parameters INC,JUMP,N,LOT are not consistent;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lj
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) ssqrt2
-  real ( kind = 8 ) tsqx
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
-  logical xercon
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lj
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) ssqrt2
+      real ( kind = 8 ) tsqx
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
+      logical xercon
 
-  ier = 0
+      ier = 0
 
-  if (lenx < (lot-1)*jump + inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cosqmf', 6)
-    return
-  else if (lensav < &
-    2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cosqmf', 8)
-    return
-  else if (lenwrk < lot*n) then
-    ier = 3
-    call xerfft ('cosqmf', 10)
-    return
-  else if (.not. xercon(inc,jump,n,lot)) then
-    ier = 4
-    call xerfft ('cosqmf', -1)
-    return
-  end if
-
-  lj = (lot-1)*jump+1
-
-  if (n-2) 102,101,103
-  101 ssqrt2 = 1.0D+00 / sqrt ( 2.0D+00 )
-
-      do m=1,lj,jump
-        tsqx = ssqrt2*x(m,2)
-        x(m,2) = 0.5D+00 * x(m,1)-tsqx
-        x(m,1) = 0.5D+00 * x(m,1)+tsqx
-      end do
-
-  102 return
-
-  103 call mcsqf1 (lot,jump,n,inc,x,wsave,work,ier1)
-
-      if (ier1 /= 0) then
-        ier = 20
-        call xerfft ('cosqmf',-5)
+      if (lenx < (lot-1)*jump + inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cosqmf', 6)
+        return
+      else if (lensav < &
+        2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('cosqmf', 8)
+        return
+      else if (lenwrk < lot*n) then
+        ier = 3
+        call xerfft ('cosqmf', 10)
+        return
+      else if (.not. xercon(inc,jump,n,lot)) then
+        ier = 4
+        call xerfft ('cosqmf', -1)
+        return
       end if
 
-  return
-end
-subroutine cosqmi ( n, wsave, lensav, ier )
+      lj = (lot-1)*jump+1
+
+!      if (n-2) 102,101,103
+      if(n .lt. 2) then
+  102   return
+      else if(n .eq. 2) then
+  101   ssqrt2 = 1.0D+00 / sqrt ( 2.0D+00 )
+
+        do m=1,lj,jump
+          tsqx = ssqrt2*x(m,2)
+          x(m,2) = 0.5D+00 * x(m,1)-tsqx
+          x(m,1) = 0.5D+00 * x(m,1)+tsqx
+        end do
+      else
+  103   call mcsqf1 (lot,jump,n,inc,x,wsave,work,ier1)
+
+        if (ier1 /= 0) then
+          ier = 20
+          call xerfft ('cosqmf',-5)
+        end if
+        return
+      end if
+  
+      return
+      end subroutine cosqmf
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cosqmi(n, wsave, lensav, ier)
 
 !*****************************************************************************80
 !
@@ -6005,49 +6035,54 @@ subroutine cosqmi ( n, wsave, lensav, ier )
 !    2, input parameter LENSAV not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lensav
 
-  real ( kind = 8 ) dt
-  real ( kind = 8 ) fk
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) pih
-  real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) dt
+      real ( kind = 8 ) fk
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) pih
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cosqmi', 3)
-    return
-  end if
+      if(lensav                                                         &
+     &      < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('cosqmi', 3)
+        return
+      end if
 
-  pih = 2.0D+00 * atan ( 1.0D+00 )
-  dt = pih/real ( n, kind = 8 )
-  fk = 0.0D+00
+      pih = 2.0D+00 * atan ( 1.0D+00 )
+      dt = pih/real ( n, kind = 8 )
+      fk = 0.0D+00
 
-  do k=1,n
-    fk = fk + 1.0D+00
-    wsave(k) = cos(fk*dt)
-  end do
+      do k=1,n
+        fk = fk + 1.0D+00
+        wsave(k) = cos(fk*dt)
+      end do
 
-  lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4
+      lnsv = n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4
 
-  call rfftmi (n, wsave(n+1), lnsv, ier1)
+      call rfftmi (n, wsave(n+1), lnsv, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cosqmi',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cosqmi',-5)
+      end if
 
-  return
-end
-subroutine cost1b ( n, inc, x, lenx, wsave, lensav, work, lenwrk, ier )
+      return
+      end subroutine cosqmi
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cost1b(n, inc, x, lenx, wsave, lensav,                 &
+     &                  work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -6126,50 +6161,55 @@ subroutine cost1b ( n, inc, x, lenx, wsave, lensav, work, lenwrk, ier )
 !    3, input parameter LENWRK not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
 
-  ier = 0
+      ier = 0
 
-  if (lenx < inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cost1b', 6)
-    return
-  else if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cost1b', 8)
-    return
-  else if (lenwrk < n-1) then
-    ier = 3
-    call xerfft ('cost1b', 10)
-    return
-  end if
+      if (lenx < inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cost1b', 6)
+        return
+      else if(lensav                                                    &
+     &      < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('cost1b', 8)
+        return
+      else if (lenwrk < n-1) then
+        ier = 3
+        call xerfft ('cost1b', 10)
+        return
+      end if
 
-  if (n == 1) then
-    return
-  end if
+      if (n == 1) then
+        return
+      end if
 
-  call costb1 (n,inc,x,wsave,work,ier1)
+      call costb1 (n,inc,x,wsave,work,ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cost1b',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cost1b',-5)
+      end if
 
-  return
-end
-subroutine cost1f ( n, inc, x, lenx, wsave, lensav, work, lenwrk, ier )
+      return
+      end subroutine cost1b
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cost1f(n, inc, x, lenx, wsave, lensav,                 &
+     &                  work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -6248,50 +6288,54 @@ subroutine cost1f ( n, inc, x, lenx, wsave, lensav, work, lenwrk, ier )
 !    3, input parameter LENWRK not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
 
-  ier = 0
+      ier = 0
 
-  if (lenx < inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cost1f', 6)
-    return
-  else if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('cost1f', 8)
-    return
-  else if (lenwrk < n-1) then
-    ier = 3
-    call xerfft ('cost1f', 10)
-    return
-  end if
+      if (lenx < inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cost1f', 6)
+        return
+      else if(lensav                                                    &
+     &      < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('cost1f', 8)
+        return
+      else if (lenwrk < n-1) then
+        ier = 3
+        call xerfft ('cost1f', 10)
+        return
+      end if
 
-  if (n == 1) then
-    return
-  end if
+      if (n == 1) then
+        return
+      end if
 
-  call costf1(n,inc,x,wsave,work,ier1)
+      call costf1(n,inc,x,wsave,work,ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cost1f',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cost1f',-5)
+      end if
 
-  return
-end
-subroutine cost1i ( n, wsave, lensav, ier )
+      return
+      end subroutine cost1f
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cost1i(n, wsave, lensav, ier)
 
 !*****************************************************************************80
 !
@@ -12500,30 +12544,34 @@ end
 !    6, input parameter LDIM < 2*(L/2+1);
 !    20, input error returned by lower level routine.
 !
+      use iso_c_binding
+!
       implicit none
 
-      integer ( kind = 4 ) ldim
-      integer ( kind = 4 ) lensav
-      integer ( kind = 4 ) lenwrk
-      integer ( kind = 4 ) m
+      integer ( kind = 4 ) :: ldim
+      integer ( kind = 4 ) :: lensav
+      integer ( kind = 4 ) :: lenwrk
+      integer ( kind = 4 ) :: m
 
-      integer ( kind = 4 ) i
-      integer ( kind = 4 ) ier
-      integer ( kind = 4 ) ier1
-      integer ( kind = 4 ) j
-      integer ( kind = 4 ) l
-      integer ( kind = 4 ) ldh
-      integer ( kind = 4 ) ldw
-      integer ( kind = 4 ) ldx
-      integer ( kind = 4 ) lwsav
-      integer ( kind = 4 ) mmsav
-      integer ( kind = 4 ) modl
-      integer ( kind = 4 ) modm
-      integer ( kind = 4 ) mwsav
-      real ( kind = 8 ) work(lenwrk)
-      real ( kind = 8 ) wsave(lensav)
-      real ( kind = 8 ) r(ldim,m)
+      integer ( kind = 4 ) :: i
+      integer ( kind = 4 ) :: ier
+      integer ( kind = 4 ) :: ier1
+      integer ( kind = 4 ) :: j
+      integer ( kind = 4 ) :: l
+      integer ( kind = 4 ) :: ldh
+      integer ( kind = 4 ) :: ldw
+      integer ( kind = 4 ) :: ldx
+      integer ( kind = 4 ) :: lwsav
+      integer ( kind = 4 ) :: mmsav
+      integer ( kind = 4 ) :: modl
+      integer ( kind = 4 ) :: modm
+      integer ( kind = 4 ) :: mwsav
+      real ( kind = 8 ), target :: work(lenwrk)
+      real ( kind = 8 ) :: wsave(lensav)
+      real ( kind = 8 ) :: r(ldim,m)
 
+      complex(kind = 8), pointer :: c_tgt(:)
+!
       ier = 0
 !
 !  verify lensav
@@ -12564,8 +12612,8 @@ end
       do j=3,m,2
         r(1,j) = -r(1,j)
       end do
-      call rfftmb(1,1,m,ldim,r,m*ldim,                                  &
-                  wsave(lwsav+mwsav+1),mmsav,work,lenwrk,ier1)
+      call rfftmb(1, 1, m, ldim, r, m*ldim,                             &
+                  wsave(lwsav+mwsav+1), mmsav, work, lenwrk, ier1)
       ldh = int((l+1)/2)
       if( 1 < ldh ) then
         ldw = ldh+ldh
@@ -12574,8 +12622,9 @@ end
 !  of the input to complex cfftmf must be even.
 !
         call r2w(ldim,ldw,l,m,r,work)
-        call cfftmb(ldh-1,1,m,ldh,work(2),ldh*m,                        &
-                    wsave(lwsav+1),mwsav,r,l*m, ier1)
+        call c_f_pointer(C_LOC(work(2)), c_tgt, [ldh*m])
+        call cfftmb(ldh-1, 1, m, ldh, c_tgt, ldh*m,                     &
+     &              wsave(lwsav+1),mwsav,r,l*m, ier1)
 
         if(ier1/=0) then
           ier=20
@@ -12588,30 +12637,31 @@ end
 
       if(modl == 0) then
       do j=2,2*((m+1)/2)-1
-      r(l,j) = r(l,j)+r(l,j)
+        r(l,j) = r(l,j)+r(l,j)
       end do
       do j=3,m,2
-      r(l,j) = -r(l,j)
+        r(l,j) = -r(l,j)
       end do
-      call rfftmb(1,1,m,ldim,r(l,1),m*ldim, &
-           wsave(lwsav+mwsav+1),mmsav,work,lenwrk,ier1)
+      call rfftmb(1, 1, m, ldim, r(l,1), m*ldim,                        &
+     &            wsave(lwsav+mwsav+1), mmsav, work, lenwrk, ier1)
       end if
 !
 !  transform first dimension of array
 !
       ldx = 2*int((l+1)/2)-1
       do i=2,ldx
+        do j=1,m
+          r(i,j) = r(i,j)+r(i,j)
+        end do
+      end do
       do j=1,m
-      r(i,j) = r(i,j)+r(i,j)
+        do i=3,ldx,2
+          r(i,j) = -r(i,j)
+        end do
       end do
-      end do
-      do j=1,m
-      do i=3,ldx,2
-      r(i,j) = -r(i,j)
-      end do
-      end do
-      call rfftmb(m,ldim,l,1,r,m*ldim,wsave(1), &
-           l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 ))+4,work,lenwrk,ier1)
+      call rfftmb(m, ldim, l, 1, r, m*ldim, wsave(1),                   &
+     &            l+int(log( real(l, kind=8) )/log( 2.0D+00 ))+4,       &
+     &            work, lenwrk, ier1)
 
       if(ier1/=0) then
          ier=20
@@ -12627,8 +12677,8 @@ end
 
   100 continue
 
-  return
-end
+      return
+      end
 !
 !  ---------------------------------------------------------------------
 !
@@ -13391,13 +13441,13 @@ subroutine rffti1 ( n, wa, fac )
          l1 = l2
   110 continue
 
-  return
-end
+      return
+      end
 !
 !  ---------------------------------------------------------------------
 !
-subroutine rfftmb ( lot, jump, n, inc, r, lenr, wsave, lensav, work, lenwrk, &
-  ier )
+      subroutine rfftmb(lot, jump, n, inc, r, lenr,                          &
+     &          wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
