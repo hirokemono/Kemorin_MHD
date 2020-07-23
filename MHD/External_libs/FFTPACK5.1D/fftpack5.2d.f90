@@ -9,8 +9,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine c1f2kb ( ido, l1, na, cc, in1, ch, in2, wa )
-
+      subroutine c1f2kb(ido, l1, na, cc, in1, ch, in2, wa)
+!
 !*****************************************************************************80
 !
 !! C1F2KB is an FFTPACK5.1 auxiliary routine.
@@ -44,60 +44,61 @@
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(in1,l1,ido,2)
-  real ( kind = 8 ) ch(in2,l1,2,ido)
-  real ( kind = 8 ) chold1
-  real ( kind = 8 ) chold2
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) na
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) wa(ido,1,2)
+      real ( kind = 8 ) cc(in1,l1,ido,2)
+      real ( kind = 8 ) ch(in2,l1,2,ido)
+      real ( kind = 8 ) chold1
+      real ( kind = 8 ) chold2
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) na
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) wa(ido,1,2)
 
-  if ( ido <= 1 .and. na /= 1 ) then
+      if ( ido <= 1 .and. na /= 1 ) then
 
-    do k=1,l1
-      chold1 = cc(1,k,1,1)+cc(1,k,1,2)
-      cc(1,k,1,2) = cc(1,k,1,1)-cc(1,k,1,2)
-      cc(1,k,1,1) = chold1
-      chold2 = cc(2,k,1,1)+cc(2,k,1,2)
-      cc(2,k,1,2) = cc(2,k,1,1)-cc(2,k,1,2)
-      cc(2,k,1,1) = chold2
-    end do
+        do k=1,l1
+          chold1 = cc(1,k,1,1)+cc(1,k,1,2)
+          cc(1,k,1,2) = cc(1,k,1,1)-cc(1,k,1,2)
+          cc(1,k,1,1) = chold1
+          chold2 = cc(2,k,1,1)+cc(2,k,1,2)
+          cc(2,k,1,2) = cc(2,k,1,1)-cc(2,k,1,2)
+          cc(2,k,1,1) = chold2
+        end do
+        return
+      end if
 
-    return
+      do k=1,l1
+        ch(1,k,1,1) = cc(1,k,1,1)+cc(1,k,1,2)
+        ch(1,k,2,1) = cc(1,k,1,1)-cc(1,k,1,2)
+        ch(2,k,1,1) = cc(2,k,1,1)+cc(2,k,1,2)
+        ch(2,k,2,1) = cc(2,k,1,1)-cc(2,k,1,2)
+      end do
 
-  end if
+      do i=2,ido
+        do k=1,l1
+          ch(1,k,1,i) = cc(1,k,i,1)+cc(1,k,i,2)
+          tr2 = cc(1,k,i,1)-cc(1,k,i,2)
+          ch(2,k,1,i) = cc(2,k,i,1)+cc(2,k,i,2)
+          ti2 = cc(2,k,i,1)-cc(2,k,i,2)
+          ch(2,k,2,i) = wa(i,1,1)*ti2+wa(i,1,2)*tr2
+          ch(1,k,2,i) = wa(i,1,1)*tr2-wa(i,1,2)*ti2
+        end do
+      end do
 
-  do k=1,l1
-    ch(1,k,1,1) = cc(1,k,1,1)+cc(1,k,1,2)
-    ch(1,k,2,1) = cc(1,k,1,1)-cc(1,k,1,2)
-    ch(2,k,1,1) = cc(2,k,1,1)+cc(2,k,1,2)
-    ch(2,k,2,1) = cc(2,k,1,1)-cc(2,k,1,2)
-  end do
-
-  do i=2,ido
-    do k=1,l1
-      ch(1,k,1,i) = cc(1,k,i,1)+cc(1,k,i,2)
-      tr2 = cc(1,k,i,1)-cc(1,k,i,2)
-      ch(2,k,1,i) = cc(2,k,i,1)+cc(2,k,i,2)
-      ti2 = cc(2,k,i,1)-cc(2,k,i,2)
-      ch(2,k,2,i) = wa(i,1,1)*ti2+wa(i,1,2)*tr2
-      ch(1,k,2,i) = wa(i,1,1)*tr2-wa(i,1,2)*ti2
-    end do
-  end do
-
-  return
-end
-subroutine c1f2kf ( ido, l1, na, cc, in1, ch, in2, wa )
+      return
+      end subroutine c1f2kb
+!
+! ------------------------------------------------------------------
+!
+      subroutine c1f2kf(ido, l1, na, cc, in1, ch, in2, wa)
 
 !*****************************************************************************80
 !
@@ -132,24 +133,24 @@ subroutine c1f2kf ( ido, l1, na, cc, in1, ch, in2, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(in1,l1,ido,2)
-  real ( kind = 8 ) ch(in2,l1,2,ido)
-  real ( kind = 8 ) chold1
-  real ( kind = 8 ) chold2
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) na
-  real ( kind = 8 ) sn
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) wa(ido,1,2)
+      real ( kind = 8 ) cc(in1,l1,ido,2)
+      real ( kind = 8 ) ch(in2,l1,2,ido)
+      real ( kind = 8 ) chold1
+      real ( kind = 8 ) chold2
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) na
+      real ( kind = 8 ) sn
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) wa(ido,1,2)
 
       if (  1 < ido ) go to 102
 
@@ -195,9 +196,12 @@ subroutine c1f2kf ( ido, l1, na, cc, in1, ch, in2, wa )
          end do
       end do
 
-  return
-end
-subroutine c1f3kb ( ido, l1, na, cc, in1, ch, in2, wa )
+      return
+      end subroutine c1f2kf
+!
+! ------------------------------------------------------------------
+!
+      subroutine c1f3kb(ido, l1, na, cc, in1, ch, in2, wa)
 
 !*****************************************************************************80
 !
@@ -232,31 +236,31 @@ subroutine c1f3kb ( ido, l1, na, cc, in1, ch, in2, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(in1,l1,ido,3)
-  real ( kind = 8 ) ch(in2,l1,3,ido)
-  real ( kind = 8 ) ci2
-  real ( kind = 8 ) ci3
-  real ( kind = 8 ) cr2
-  real ( kind = 8 ) cr3
-  real ( kind = 8 ) di2
-  real ( kind = 8 ) di3
-  real ( kind = 8 ) dr2
-  real ( kind = 8 ) dr3
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) na
-  real ( kind = 8 ), parameter :: taui =  0.866025403784439D+00
-  real ( kind = 8 ), parameter :: taur = -0.5D+00
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) wa(ido,2,2)
+      real ( kind = 8 ) cc(in1,l1,ido,3)
+      real ( kind = 8 ) ch(in2,l1,3,ido)
+      real ( kind = 8 ) ci2
+      real ( kind = 8 ) ci3
+      real ( kind = 8 ) cr2
+      real ( kind = 8 ) cr3
+      real ( kind = 8 ) di2
+      real ( kind = 8 ) di3
+      real ( kind = 8 ) dr2
+      real ( kind = 8 ) dr3
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) na
+      real ( kind = 8 ), parameter :: taui =  0.866025403784439D+00
+      real ( kind = 8 ), parameter :: taur = -0.5D+00
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) wa(ido,2,2)
 
       if ( 1 < ido .or. na == 1) go to 102
 
@@ -274,11 +278,9 @@ subroutine c1f3kb ( ido, l1, na, cc, in1, ch, in2, wa )
          cc(2,k,1,2) = ci2+cr3
          cc(2,k,1,3) = ci2-cr3
       end do
-
       return
 
   102 continue
-
       do k=1,l1
          tr2 = cc(1,k,1,2)+cc(1,k,1,3)
          cr2 = cc(1,k,1,1)+taur*tr2
@@ -315,9 +317,12 @@ subroutine c1f3kb ( ido, l1, na, cc, in1, ch, in2, wa )
          end do
        end do
 
-  return
-end
-subroutine c1f3kf ( ido, l1, na, cc, in1, ch, in2, wa )
+      return
+      end subroutine c1f3kb
+!
+! ------------------------------------------------------------------
+!
+      subroutine c1f3kf(ido, l1, na, cc, in1, ch, in2, wa)
 
 !*****************************************************************************80
 !
@@ -352,110 +357,113 @@ subroutine c1f3kf ( ido, l1, na, cc, in1, ch, in2, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(in1,l1,ido,3)
-  real ( kind = 8 ) ch(in2,l1,3,ido)
-  real ( kind = 8 ) ci2
-  real ( kind = 8 ) ci3
-  real ( kind = 8 ) cr2
-  real ( kind = 8 ) cr3
-  real ( kind = 8 ) di2
-  real ( kind = 8 ) di3
-  real ( kind = 8 ) dr2
-  real ( kind = 8 ) dr3
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) na
-  real ( kind = 8 ) sn
-  real ( kind = 8 ), parameter :: taui = -0.866025403784439D+00
-  real ( kind = 8 ), parameter :: taur = -0.5D+00
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) wa(ido,2,2)
+      real ( kind = 8 ) cc(in1,l1,ido,3)
+      real ( kind = 8 ) ch(in2,l1,3,ido)
+      real ( kind = 8 ) ci2
+      real ( kind = 8 ) ci3
+      real ( kind = 8 ) cr2
+      real ( kind = 8 ) cr3
+      real ( kind = 8 ) di2
+      real ( kind = 8 ) di3
+      real ( kind = 8 ) dr2
+      real ( kind = 8 ) dr3
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) na
+      real ( kind = 8 ) sn
+      real ( kind = 8 ), parameter :: taui = -0.866025403784439D+00
+      real ( kind = 8 ), parameter :: taur = -0.5D+00
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) wa(ido,2,2)
 
       if ( 1 < ido ) go to 102
       sn = 1.0D+00 / real ( 3 * l1, kind = 8 )
       if (na == 1) go to 106
 
       do k=1,l1
-         tr2 = cc(1,k,1,2)+cc(1,k,1,3)
-         cr2 = cc(1,k,1,1)+taur*tr2
-         cc(1,k,1,1) = sn*(cc(1,k,1,1)+tr2)
-         ti2 = cc(2,k,1,2)+cc(2,k,1,3)
-         ci2 = cc(2,k,1,1)+taur*ti2
-         cc(2,k,1,1) = sn*(cc(2,k,1,1)+ti2)
-         cr3 = taui*(cc(1,k,1,2)-cc(1,k,1,3))
-         ci3 = taui*(cc(2,k,1,2)-cc(2,k,1,3))
-         cc(1,k,1,2) = sn*(cr2-ci3)
-         cc(1,k,1,3) = sn*(cr2+ci3)
-         cc(2,k,1,2) = sn*(ci2+cr3)
-         cc(2,k,1,3) = sn*(ci2-cr3)
+        tr2 = cc(1,k,1,2)+cc(1,k,1,3)
+        cr2 = cc(1,k,1,1)+taur*tr2
+        cc(1,k,1,1) = sn*(cc(1,k,1,1)+tr2)
+        ti2 = cc(2,k,1,2)+cc(2,k,1,3)
+        ci2 = cc(2,k,1,1)+taur*ti2
+        cc(2,k,1,1) = sn*(cc(2,k,1,1)+ti2)
+        cr3 = taui*(cc(1,k,1,2)-cc(1,k,1,3))
+        ci3 = taui*(cc(2,k,1,2)-cc(2,k,1,3))
+        cc(1,k,1,2) = sn*(cr2-ci3)
+        cc(1,k,1,3) = sn*(cr2+ci3)
+        cc(2,k,1,2) = sn*(ci2+cr3)
+        cc(2,k,1,3) = sn*(ci2-cr3)
       end do
-
       return
 
-  106 do k=1,l1
-         tr2 = cc(1,k,1,2)+cc(1,k,1,3)
-         cr2 = cc(1,k,1,1)+taur*tr2
-         ch(1,k,1,1) = sn*(cc(1,k,1,1)+tr2)
-         ti2 = cc(2,k,1,2)+cc(2,k,1,3)
-         ci2 = cc(2,k,1,1)+taur*ti2
-         ch(2,k,1,1) = sn*(cc(2,k,1,1)+ti2)
-         cr3 = taui*(cc(1,k,1,2)-cc(1,k,1,3))
-         ci3 = taui*(cc(2,k,1,2)-cc(2,k,1,3))
-         ch(1,k,2,1) = sn*(cr2-ci3)
-         ch(1,k,3,1) = sn*(cr2+ci3)
-         ch(2,k,2,1) = sn*(ci2+cr3)
-         ch(2,k,3,1) = sn*(ci2-cr3)
+  106 continue
+      do k=1,l1
+        tr2 = cc(1,k,1,2)+cc(1,k,1,3)
+        cr2 = cc(1,k,1,1)+taur*tr2
+        ch(1,k,1,1) = sn*(cc(1,k,1,1)+tr2)
+        ti2 = cc(2,k,1,2)+cc(2,k,1,3)
+        ci2 = cc(2,k,1,1)+taur*ti2
+        ch(2,k,1,1) = sn*(cc(2,k,1,1)+ti2)
+        cr3 = taui*(cc(1,k,1,2)-cc(1,k,1,3))
+        ci3 = taui*(cc(2,k,1,2)-cc(2,k,1,3))
+        ch(1,k,2,1) = sn*(cr2-ci3)
+        ch(1,k,3,1) = sn*(cr2+ci3)
+        ch(2,k,2,1) = sn*(ci2+cr3)
+        ch(2,k,3,1) = sn*(ci2-cr3)
       end do
-
       return
 
-  102 do 103 k=1,l1
-         tr2 = cc(1,k,1,2)+cc(1,k,1,3)
-         cr2 = cc(1,k,1,1)+taur*tr2
-         ch(1,k,1,1) = cc(1,k,1,1)+tr2
-         ti2 = cc(2,k,1,2)+cc(2,k,1,3)
-         ci2 = cc(2,k,1,1)+taur*ti2
-         ch(2,k,1,1) = cc(2,k,1,1)+ti2
-         cr3 = taui*(cc(1,k,1,2)-cc(1,k,1,3))
-         ci3 = taui*(cc(2,k,1,2)-cc(2,k,1,3))
-         ch(1,k,2,1) = cr2-ci3
-         ch(1,k,3,1) = cr2+ci3
-         ch(2,k,2,1) = ci2+cr3
-         ch(2,k,3,1) = ci2-cr3
-  103 continue
+  102 continue
+      do k=1,l1
+        tr2 = cc(1,k,1,2)+cc(1,k,1,3)
+        cr2 = cc(1,k,1,1)+taur*tr2
+        ch(1,k,1,1) = cc(1,k,1,1)+tr2
+        ti2 = cc(2,k,1,2)+cc(2,k,1,3)
+        ci2 = cc(2,k,1,1)+taur*ti2
+        ch(2,k,1,1) = cc(2,k,1,1)+ti2
+        cr3 = taui*(cc(1,k,1,2)-cc(1,k,1,3))
+        ci3 = taui*(cc(2,k,1,2)-cc(2,k,1,3))
+        ch(1,k,2,1) = cr2-ci3
+        ch(1,k,3,1) = cr2+ci3
+        ch(2,k,2,1) = ci2+cr3
+        ch(2,k,3,1) = ci2-cr3
+      end do
 
-      do 105 i=2,ido
-        do 104 k=1,l1
-            tr2 = cc(1,k,i,2)+cc(1,k,i,3)
-            cr2 = cc(1,k,i,1)+taur*tr2
-            ch(1,k,1,i) = cc(1,k,i,1)+tr2
-            ti2 = cc(2,k,i,2)+cc(2,k,i,3)
-            ci2 = cc(2,k,i,1)+taur*ti2
-            ch(2,k,1,i) = cc(2,k,i,1)+ti2
-            cr3 = taui*(cc(1,k,i,2)-cc(1,k,i,3))
-            ci3 = taui*(cc(2,k,i,2)-cc(2,k,i,3))
-            dr2 = cr2-ci3
-            dr3 = cr2+ci3
-            di2 = ci2+cr3
-            di3 = ci2-cr3
-            ch(2,k,2,i) = wa(i,1,1)*di2-wa(i,1,2)*dr2
-            ch(1,k,2,i) = wa(i,1,1)*dr2+wa(i,1,2)*di2
-            ch(2,k,3,i) = wa(i,2,1)*di3-wa(i,2,2)*dr3
-            ch(1,k,3,i) = wa(i,2,1)*dr3+wa(i,2,2)*di3
-  104    continue
-  105 continue
-
-  return
-end
-subroutine c1f4kb ( ido, l1, na, cc, in1, ch, in2, wa )
+      do i=2,ido
+        do k=1,l1
+          tr2 = cc(1,k,i,2)+cc(1,k,i,3)
+          cr2 = cc(1,k,i,1)+taur*tr2
+          ch(1,k,1,i) = cc(1,k,i,1)+tr2
+          ti2 = cc(2,k,i,2)+cc(2,k,i,3)
+          ci2 = cc(2,k,i,1)+taur*ti2
+          ch(2,k,1,i) = cc(2,k,i,1)+ti2
+          cr3 = taui*(cc(1,k,i,2)-cc(1,k,i,3))
+          ci3 = taui*(cc(2,k,i,2)-cc(2,k,i,3))
+          dr2 = cr2-ci3
+          dr3 = cr2+ci3
+          di2 = ci2+cr3
+          di3 = ci2-cr3
+          ch(2,k,2,i) = wa(i,1,1)*di2-wa(i,1,2)*dr2
+          ch(1,k,2,i) = wa(i,1,1)*dr2+wa(i,1,2)*di2
+          ch(2,k,3,i) = wa(i,2,1)*di3-wa(i,2,2)*dr3
+          ch(1,k,3,i) = wa(i,2,1)*dr3+wa(i,2,2)*di3
+        end do
+      end do
+!
+      return
+      end subroutine c1f3kf
+!
+! ------------------------------------------------------------------
+!
+      subroutine c1f4kb(ido, l1, na, cc, in1, ch, in2, wa)
 
 !*****************************************************************************80
 !
@@ -490,33 +498,33 @@ subroutine c1f4kb ( ido, l1, na, cc, in1, ch, in2, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(in1,l1,ido,4)
-  real ( kind = 8 ) ch(in2,l1,4,ido)
-  real ( kind = 8 ) ci2
-  real ( kind = 8 ) ci3
-  real ( kind = 8 ) ci4
-  real ( kind = 8 ) cr2
-  real ( kind = 8 ) cr3
-  real ( kind = 8 ) cr4
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) na
-  real ( kind = 8 ) ti1
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) ti3
-  real ( kind = 8 ) ti4
-  real ( kind = 8 ) tr1
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) tr3
-  real ( kind = 8 ) tr4
-  real ( kind = 8 ) wa(ido,3,2)
+      real ( kind = 8 ) cc(in1,l1,ido,4)
+      real ( kind = 8 ) ch(in2,l1,4,ido)
+      real ( kind = 8 ) ci2
+      real ( kind = 8 ) ci3
+      real ( kind = 8 ) ci4
+      real ( kind = 8 ) cr2
+      real ( kind = 8 ) cr3
+      real ( kind = 8 ) cr4
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) na
+      real ( kind = 8 ) ti1
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) ti3
+      real ( kind = 8 ) ti4
+      real ( kind = 8 ) tr1
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) tr3
+      real ( kind = 8 ) tr4
+      real ( kind = 8 ) wa(ido,3,2)
 
       if ( 1 < ido .or. na == 1) go to 102
 
@@ -541,55 +549,59 @@ subroutine c1f4kb ( ido, l1, na, cc, in1, ch, in2, wa )
 
       return
 
-  102 do 103 k=1,l1
-         ti1 = cc(2,k,1,1)-cc(2,k,1,3)
-         ti2 = cc(2,k,1,1)+cc(2,k,1,3)
-         tr4 = cc(2,k,1,4)-cc(2,k,1,2)
-         ti3 = cc(2,k,1,2)+cc(2,k,1,4)
-         tr1 = cc(1,k,1,1)-cc(1,k,1,3)
-         tr2 = cc(1,k,1,1)+cc(1,k,1,3)
-         ti4 = cc(1,k,1,2)-cc(1,k,1,4)
-         tr3 = cc(1,k,1,2)+cc(1,k,1,4)
-         ch(1,k,1,1) = tr2+tr3
-         ch(1,k,3,1) = tr2-tr3
-         ch(2,k,1,1) = ti2+ti3
-         ch(2,k,3,1) = ti2-ti3
-         ch(1,k,2,1) = tr1+tr4
-         ch(1,k,4,1) = tr1-tr4
-         ch(2,k,2,1) = ti1+ti4
-         ch(2,k,4,1) = ti1-ti4
-  103 continue
+  102 continue
+      do k=1,l1
+        ti1 = cc(2,k,1,1)-cc(2,k,1,3)
+        ti2 = cc(2,k,1,1)+cc(2,k,1,3)
+        tr4 = cc(2,k,1,4)-cc(2,k,1,2)
+        ti3 = cc(2,k,1,2)+cc(2,k,1,4)
+        tr1 = cc(1,k,1,1)-cc(1,k,1,3)
+        tr2 = cc(1,k,1,1)+cc(1,k,1,3)
+        ti4 = cc(1,k,1,2)-cc(1,k,1,4)
+        tr3 = cc(1,k,1,2)+cc(1,k,1,4)
+        ch(1,k,1,1) = tr2+tr3
+        ch(1,k,3,1) = tr2-tr3
+        ch(2,k,1,1) = ti2+ti3
+        ch(2,k,3,1) = ti2-ti3
+        ch(1,k,2,1) = tr1+tr4
+        ch(1,k,4,1) = tr1-tr4
+        ch(2,k,2,1) = ti1+ti4
+        ch(2,k,4,1) = ti1-ti4
+      end do
 
-      do 105 i=2,ido
-         do 104 k=1,l1
-            ti1 = cc(2,k,i,1)-cc(2,k,i,3)
-            ti2 = cc(2,k,i,1)+cc(2,k,i,3)
-            ti3 = cc(2,k,i,2)+cc(2,k,i,4)
-            tr4 = cc(2,k,i,4)-cc(2,k,i,2)
-            tr1 = cc(1,k,i,1)-cc(1,k,i,3)
-            tr2 = cc(1,k,i,1)+cc(1,k,i,3)
-            ti4 = cc(1,k,i,2)-cc(1,k,i,4)
-            tr3 = cc(1,k,i,2)+cc(1,k,i,4)
-            ch(1,k,1,i) = tr2+tr3
-            cr3 = tr2-tr3
-            ch(2,k,1,i) = ti2+ti3
-            ci3 = ti2-ti3
-            cr2 = tr1+tr4
-            cr4 = tr1-tr4
-            ci2 = ti1+ti4
-            ci4 = ti1-ti4
-            ch(1,k,2,i) = wa(i,1,1)*cr2-wa(i,1,2)*ci2
-            ch(2,k,2,i) = wa(i,1,1)*ci2+wa(i,1,2)*cr2
-            ch(1,k,3,i) = wa(i,2,1)*cr3-wa(i,2,2)*ci3
-            ch(2,k,3,i) = wa(i,2,1)*ci3+wa(i,2,2)*cr3
-            ch(1,k,4,i) = wa(i,3,1)*cr4-wa(i,3,2)*ci4
-            ch(2,k,4,i) = wa(i,3,1)*ci4+wa(i,3,2)*cr4
-  104    continue
-  105 continue
+      do i=2,ido
+        do k=1,l1
+          ti1 = cc(2,k,i,1)-cc(2,k,i,3)
+          ti2 = cc(2,k,i,1)+cc(2,k,i,3)
+          ti3 = cc(2,k,i,2)+cc(2,k,i,4)
+          tr4 = cc(2,k,i,4)-cc(2,k,i,2)
+          tr1 = cc(1,k,i,1)-cc(1,k,i,3)
+          tr2 = cc(1,k,i,1)+cc(1,k,i,3)
+          ti4 = cc(1,k,i,2)-cc(1,k,i,4)
+          tr3 = cc(1,k,i,2)+cc(1,k,i,4)
+          ch(1,k,1,i) = tr2+tr3
+          cr3 = tr2-tr3
+          ch(2,k,1,i) = ti2+ti3
+          ci3 = ti2-ti3
+          cr2 = tr1+tr4
+          cr4 = tr1-tr4
+          ci2 = ti1+ti4
+          ci4 = ti1-ti4
+          ch(1,k,2,i) = wa(i,1,1)*cr2-wa(i,1,2)*ci2
+          ch(2,k,2,i) = wa(i,1,1)*ci2+wa(i,1,2)*cr2
+          ch(1,k,3,i) = wa(i,2,1)*cr3-wa(i,2,2)*ci3
+          ch(2,k,3,i) = wa(i,2,1)*ci3+wa(i,2,2)*cr3
+          ch(1,k,4,i) = wa(i,3,1)*cr4-wa(i,3,2)*ci4
+          ch(2,k,4,i) = wa(i,3,1)*ci4+wa(i,3,2)*cr4
+        end do
+      end do
 
-  return
-end
-subroutine c1f4kf ( ido, l1, na, cc, in1, ch, in2, wa )
+      return
+      end subroutine c1f4kb
+!
+! ------------------------------------------------------------------
+!
+      subroutine c1f4kf(ido, l1, na, cc, in1, ch, in2, wa)
 
 !*****************************************************************************80
 !
@@ -624,128 +636,130 @@ subroutine c1f4kf ( ido, l1, na, cc, in1, ch, in2, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(in1,l1,ido,4)
-  real ( kind = 8 ) ch(in2,l1,4,ido)
-  real ( kind = 8 ) ci2
-  real ( kind = 8 ) ci3
-  real ( kind = 8 ) ci4
-  real ( kind = 8 ) cr2
-  real ( kind = 8 ) cr3
-  real ( kind = 8 ) cr4
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) na
-  real ( kind = 8 ) sn
-  real ( kind = 8 ) ti1
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) ti3
-  real ( kind = 8 ) ti4
-  real ( kind = 8 ) tr1
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) tr3
-  real ( kind = 8 ) tr4
-  real ( kind = 8 ) wa(ido,3,2)
+      real ( kind = 8 ) cc(in1,l1,ido,4)
+      real ( kind = 8 ) ch(in2,l1,4,ido)
+      real ( kind = 8 ) ci2
+      real ( kind = 8 ) ci3
+      real ( kind = 8 ) ci4
+      real ( kind = 8 ) cr2
+      real ( kind = 8 ) cr3
+      real ( kind = 8 ) cr4
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) na
+      real ( kind = 8 ) sn
+      real ( kind = 8 ) ti1
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) ti3
+      real ( kind = 8 ) ti4
+      real ( kind = 8 ) tr1
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) tr3
+      real ( kind = 8 ) tr4
+      real ( kind = 8 ) wa(ido,3,2)
 
       if ( 1 < ido ) go to 102
       sn = 1.0D+00 / real ( 4 * l1, kind = 8 )
       if (na == 1) go to 106
 
       do k=1,l1
-         ti1 = cc(2,k,1,1)-cc(2,k,1,3)
-         ti2 = cc(2,k,1,1)+cc(2,k,1,3)
-         tr4 = cc(2,k,1,2)-cc(2,k,1,4)
-         ti3 = cc(2,k,1,2)+cc(2,k,1,4)
-         tr1 = cc(1,k,1,1)-cc(1,k,1,3)
-         tr2 = cc(1,k,1,1)+cc(1,k,1,3)
-         ti4 = cc(1,k,1,4)-cc(1,k,1,2)
-         tr3 = cc(1,k,1,2)+cc(1,k,1,4)
-         cc(1,k,1,1) = sn*(tr2+tr3)
-         cc(1,k,1,3) = sn*(tr2-tr3)
-         cc(2,k,1,1) = sn*(ti2+ti3)
-         cc(2,k,1,3) = sn*(ti2-ti3)
-         cc(1,k,1,2) = sn*(tr1+tr4)
-         cc(1,k,1,4) = sn*(tr1-tr4)
-         cc(2,k,1,2) = sn*(ti1+ti4)
-         cc(2,k,1,4) = sn*(ti1-ti4)
+        ti1 = cc(2,k,1,1)-cc(2,k,1,3)
+        ti2 = cc(2,k,1,1)+cc(2,k,1,3)
+        tr4 = cc(2,k,1,2)-cc(2,k,1,4)
+        ti3 = cc(2,k,1,2)+cc(2,k,1,4)
+        tr1 = cc(1,k,1,1)-cc(1,k,1,3)
+        tr2 = cc(1,k,1,1)+cc(1,k,1,3)
+        ti4 = cc(1,k,1,4)-cc(1,k,1,2)
+        tr3 = cc(1,k,1,2)+cc(1,k,1,4)
+        cc(1,k,1,1) = sn*(tr2+tr3)
+        cc(1,k,1,3) = sn*(tr2-tr3)
+        cc(2,k,1,1) = sn*(ti2+ti3)
+        cc(2,k,1,3) = sn*(ti2-ti3)
+        cc(1,k,1,2) = sn*(tr1+tr4)
+        cc(1,k,1,4) = sn*(tr1-tr4)
+        cc(2,k,1,2) = sn*(ti1+ti4)
+        cc(2,k,1,4) = sn*(ti1-ti4)
       end do
 
       return
 
-  106 do 107 k=1,l1
-         ti1 = cc(2,k,1,1)-cc(2,k,1,3)
-         ti2 = cc(2,k,1,1)+cc(2,k,1,3)
-         tr4 = cc(2,k,1,2)-cc(2,k,1,4)
-         ti3 = cc(2,k,1,2)+cc(2,k,1,4)
-         tr1 = cc(1,k,1,1)-cc(1,k,1,3)
-         tr2 = cc(1,k,1,1)+cc(1,k,1,3)
-         ti4 = cc(1,k,1,4)-cc(1,k,1,2)
-         tr3 = cc(1,k,1,2)+cc(1,k,1,4)
-         ch(1,k,1,1) = sn*(tr2+tr3)
-         ch(1,k,3,1) = sn*(tr2-tr3)
-         ch(2,k,1,1) = sn*(ti2+ti3)
-         ch(2,k,3,1) = sn*(ti2-ti3)
-         ch(1,k,2,1) = sn*(tr1+tr4)
-         ch(1,k,4,1) = sn*(tr1-tr4)
-         ch(2,k,2,1) = sn*(ti1+ti4)
-         ch(2,k,4,1) = sn*(ti1-ti4)
-  107 continue
-
+  106 continue
+      do k=1,l1
+        ti1 = cc(2,k,1,1)-cc(2,k,1,3)
+        ti2 = cc(2,k,1,1)+cc(2,k,1,3)
+        tr4 = cc(2,k,1,2)-cc(2,k,1,4)
+        ti3 = cc(2,k,1,2)+cc(2,k,1,4)
+        tr1 = cc(1,k,1,1)-cc(1,k,1,3)
+        tr2 = cc(1,k,1,1)+cc(1,k,1,3)
+        ti4 = cc(1,k,1,4)-cc(1,k,1,2)
+        tr3 = cc(1,k,1,2)+cc(1,k,1,4)
+        ch(1,k,1,1) = sn*(tr2+tr3)
+        ch(1,k,3,1) = sn*(tr2-tr3)
+        ch(2,k,1,1) = sn*(ti2+ti3)
+        ch(2,k,3,1) = sn*(ti2-ti3)
+        ch(1,k,2,1) = sn*(tr1+tr4)
+        ch(1,k,4,1) = sn*(tr1-tr4)
+        ch(2,k,2,1) = sn*(ti1+ti4)
+        ch(2,k,4,1) = sn*(ti1-ti4)
+      end do
       return
 
-  102 do 103 k=1,l1
-         ti1 = cc(2,k,1,1)-cc(2,k,1,3)
-         ti2 = cc(2,k,1,1)+cc(2,k,1,3)
-         tr4 = cc(2,k,1,2)-cc(2,k,1,4)
-         ti3 = cc(2,k,1,2)+cc(2,k,1,4)
-         tr1 = cc(1,k,1,1)-cc(1,k,1,3)
-         tr2 = cc(1,k,1,1)+cc(1,k,1,3)
-         ti4 = cc(1,k,1,4)-cc(1,k,1,2)
-         tr3 = cc(1,k,1,2)+cc(1,k,1,4)
-         ch(1,k,1,1) = tr2+tr3
-         ch(1,k,3,1) = tr2-tr3
-         ch(2,k,1,1) = ti2+ti3
-         ch(2,k,3,1) = ti2-ti3
-         ch(1,k,2,1) = tr1+tr4
-         ch(1,k,4,1) = tr1-tr4
-         ch(2,k,2,1) = ti1+ti4
-         ch(2,k,4,1) = ti1-ti4
-  103 continue
-      do 105 i=2,ido
-         do 104 k=1,l1
-            ti1 = cc(2,k,i,1)-cc(2,k,i,3)
-            ti2 = cc(2,k,i,1)+cc(2,k,i,3)
-            ti3 = cc(2,k,i,2)+cc(2,k,i,4)
-            tr4 = cc(2,k,i,2)-cc(2,k,i,4)
-            tr1 = cc(1,k,i,1)-cc(1,k,i,3)
-            tr2 = cc(1,k,i,1)+cc(1,k,i,3)
-            ti4 = cc(1,k,i,4)-cc(1,k,i,2)
-            tr3 = cc(1,k,i,2)+cc(1,k,i,4)
-            ch(1,k,1,i) = tr2+tr3
-            cr3 = tr2-tr3
-            ch(2,k,1,i) = ti2+ti3
-            ci3 = ti2-ti3
-            cr2 = tr1+tr4
-            cr4 = tr1-tr4
-            ci2 = ti1+ti4
-            ci4 = ti1-ti4
-            ch(1,k,2,i) = wa(i,1,1)*cr2+wa(i,1,2)*ci2
-            ch(2,k,2,i) = wa(i,1,1)*ci2-wa(i,1,2)*cr2
-            ch(1,k,3,i) = wa(i,2,1)*cr3+wa(i,2,2)*ci3
-            ch(2,k,3,i) = wa(i,2,1)*ci3-wa(i,2,2)*cr3
-            ch(1,k,4,i) = wa(i,3,1)*cr4+wa(i,3,2)*ci4
-            ch(2,k,4,i) = wa(i,3,1)*ci4-wa(i,3,2)*cr4
-  104    continue
-  105 continue
+  102 continue
+      do k=1,l1
+        ti1 = cc(2,k,1,1)-cc(2,k,1,3)
+        ti2 = cc(2,k,1,1)+cc(2,k,1,3)
+        tr4 = cc(2,k,1,2)-cc(2,k,1,4)
+        ti3 = cc(2,k,1,2)+cc(2,k,1,4)
+        tr1 = cc(1,k,1,1)-cc(1,k,1,3)
+        tr2 = cc(1,k,1,1)+cc(1,k,1,3)
+        ti4 = cc(1,k,1,4)-cc(1,k,1,2)
+        tr3 = cc(1,k,1,2)+cc(1,k,1,4)
+        ch(1,k,1,1) = tr2+tr3
+        ch(1,k,3,1) = tr2-tr3
+        ch(2,k,1,1) = ti2+ti3
+        ch(2,k,3,1) = ti2-ti3
+        ch(1,k,2,1) = tr1+tr4
+        ch(1,k,4,1) = tr1-tr4
+        ch(2,k,2,1) = ti1+ti4
+        ch(2,k,4,1) = ti1-ti4
+      end do
+!
+      do i=2,ido
+        do k=1,l1
+          ti1 = cc(2,k,i,1)-cc(2,k,i,3)
+          ti2 = cc(2,k,i,1)+cc(2,k,i,3)
+          ti3 = cc(2,k,i,2)+cc(2,k,i,4)
+          tr4 = cc(2,k,i,2)-cc(2,k,i,4)
+          tr1 = cc(1,k,i,1)-cc(1,k,i,3)
+          tr2 = cc(1,k,i,1)+cc(1,k,i,3)
+          ti4 = cc(1,k,i,4)-cc(1,k,i,2)
+          tr3 = cc(1,k,i,2)+cc(1,k,i,4)
+          ch(1,k,1,i) = tr2+tr3
+          cr3 = tr2-tr3
+          ch(2,k,1,i) = ti2+ti3
+          ci3 = ti2-ti3
+          cr2 = tr1+tr4
+          cr4 = tr1-tr4
+          ci2 = ti1+ti4
+          ci4 = ti1-ti4
+          ch(1,k,2,i) = wa(i,1,1)*cr2+wa(i,1,2)*ci2
+          ch(2,k,2,i) = wa(i,1,1)*ci2-wa(i,1,2)*cr2
+          ch(1,k,3,i) = wa(i,2,1)*cr3+wa(i,2,2)*ci3
+          ch(2,k,3,i) = wa(i,2,1)*ci3-wa(i,2,2)*cr3
+          ch(1,k,4,i) = wa(i,3,1)*cr4+wa(i,3,2)*ci4
+          ch(2,k,4,i) = wa(i,3,1)*ci4-wa(i,3,2)*cr4
+        end do
+      end do
 
-  return
-end
+      return
+      end subroutine c1f4kf
 !
 ! ------------------------------------------------------------------
 !
@@ -933,7 +947,7 @@ end
       end do
 
       return
-      end
+      end subroutine c1f5kb
 !
 ! ------------------------------------------------------------------
 !
@@ -1154,7 +1168,7 @@ end
       end do
 
       return
-      end
+      end subroutine c1f5kf
 !
 ! ------------------------------------------------------------------
 !
@@ -1332,7 +1346,7 @@ end
       end do
 !
       return
-      end
+      end subroutine c1fgkb
 !
 ! ------------------------------------------------------------------
 !
@@ -1524,7 +1538,7 @@ end
       end do
 
       return
-      end
+      end subroutine c1fgkf
 !
 ! ------------------------------------------------------------------
 !
@@ -1609,39 +1623,36 @@ end
          ido = n/l2
          lid = l1*ido
          nbr = 1+na+2*min(ip-2,4)
+         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          go to (52,62,53,63,54,64,55,65,56,66), nbr
-   52    call c1f2kb(ido, l1, na, c,  inc2, ch, 2,    wa(iw))
+   52    call c1f2kb(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
-   62    call c1f2kb(ido, l1, na, ch, 2,    c,  inc2, wa(iw))
+   62    call c1f2kb(ido, l1, na, ch, 2,    zz, inc2, wa(iw))
          go to 120
-   53    call c1f3kb(ido, l1, na, c,  inc2, ch, 2,    wa(iw))
+   53    call c1f3kb(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
-   63    call c1f3kb(ido, l1, na, ch, 2,    c,  inc2, wa(iw))
+   63    call c1f3kb(ido, l1, na, ch, 2,    zz, inc2, wa(iw))
          go to 120
-   54    call c1f4kb(ido, l1, na, c,  inc2, ch, 2,    wa(iw))
+   54    call c1f4kb(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
-   64    call c1f4kb(ido, l1, na, ch, 2,    c,  inc2, wa(iw))
+   64    call c1f4kb(ido, l1, na, ch, 2,    zz, inc2, wa(iw))
          go to 120
 !
    55    continue
-         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          call c1f5kb(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
 !
    65    continue
-         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          call c1f5kb(ido, l1, na, ch, 2,    zz,  inc2, wa(iw))
          go to 120
 !
    56    continue
-         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          call c_f_pointer(C_LOC(c(1)), z1, [2*lenc])
          call c1fgkb(ido, ip, l1, lid, na, zz, z1,                      &
      &               inc2, ch,     ch,    2,   wa(iw))
          go to 120
 !
    66    continue
-         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          call c_f_pointer(C_LOC(c(1)), z1, [2*lenc])
          call c1fgkb(ido, ip, l1, lid, na, ch,     ch,                  &
      &               2,    zz,  z1, inc2, wa(iw))
@@ -1723,6 +1734,7 @@ end
       real(kind = 8) :: wa(iw0)
 !
       real*8, pointer :: zz(:)
+      real*8, pointer :: z1(:)
 !
 !
       inc2 = inc+inc
@@ -1738,40 +1750,46 @@ end
          ido = n/l2
          lid = l1*ido
          nbr = 1+na+2*min(ip-2,4)
+         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          go to (52,62,53,63,54,64,55,65,56,66),nbr
-   52    call c1f2kf(ido, l1, na, c,  inc2, ch, 2,    wa(iw))
+   52    call c1f2kf(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
-   62    call c1f2kf(ido, l1, na, ch, 2,    c,  inc2, wa(iw))
+   62    call c1f2kf(ido, l1, na, ch, 2,    zz, inc2, wa(iw))
          go to 120
-   53    call c1f3kf(ido, l1, na, c,  inc2, ch, 2,    wa(iw))
+   53    call c1f3kf(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
-   63    call c1f3kf(ido, l1, na, ch, 2,    c,  inc2, wa(iw))
+   63    call c1f3kf(ido, l1, na, ch, 2,    zz, inc2, wa(iw))
          go to 120
-   54    call c1f4kf(ido, l1, na, c,  inc2, ch, 2,    wa(iw))
+   54    call c1f4kf(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
-   64    call c1f4kf(ido, l1, na, ch, 2,    c,  inc2, wa(iw))
+   64    call c1f4kf(ido, l1, na, ch, 2,    zz, inc2, wa(iw))
          go to 120
 !
    55    continue
-         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          call c1f5kf(ido, l1, na, zz, inc2, ch, 2,    wa(iw))
          go to 120
 !
    65    continue
-         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          call c1f5kf(ido, l1, na, ch, 2,    zz,  inc2, wa(iw))
          go to 120
 !
-   56    call c1fgkf(ido, ip, l1, lid, na, c,  c,  inc2, ch, ch, 2,    wa(iw))
+   56    continue
+         call c_f_pointer(C_LOC(c(1)), z1, [2*lenc])
+         call c1fgkf(ido, ip, l1, lid, na, zz, zz,                      &
+     &               inc2, ch, z1, 2,    wa(iw))
          go to 120
-   66    call c1fgkf(ido, ip, l1, lid, na, ch, ch, 2,    c,  c,  inc2, wa(iw))
+!
+   66    continue
+         call c_f_pointer(C_LOC(c(1)), z1, [2*lenc])
+         call c1fgkf(ido, ip, l1, lid, na, ch, z1,                      &
+     &               2,    zz, zz, inc2, wa(iw))
   120    l1 = l2
          iw = iw+(ip-1)*(ido+ido)
          if(ip <= 5) na = 1-na
       end do
 
       return
-      end
+      end subroutine c1fm1f
 !
 ! ------------------------------------------------------------------
 !
