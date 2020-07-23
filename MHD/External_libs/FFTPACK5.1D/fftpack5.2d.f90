@@ -2147,7 +2147,11 @@ subroutine cfft2b ( ldim, l, m, c, wsave, lensav, work, lenwrk, ier )
 
   return
 end
-subroutine cfft2f ( ldim, l, m, c, wsave, lensav, work, lenwrk, ier )
+!
+! ------------------------------------------------------------------
+!
+      subroutine cfft2f                                                 &
+     &         (ldim, l, m, c, wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -2231,69 +2235,71 @@ subroutine cfft2f ( ldim, l, m, c, wsave, lensav, work, lenwrk, ier )
 !    5, input parameter LDIM < L;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) ldim
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) ldim
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  complex ( kind = 8 ) c(ldim,m)
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) iw
-  integer ( kind = 4 ) l
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
+      complex ( kind = 8 ) c(ldim,m)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) iw
+      integer ( kind = 4 ) l
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if ( ldim < l ) then
-    ier = 5
-    call xerfft ('cfft2f', -2)
-    return
-  else if (lensav < &
-    2*l + int(log( real ( l, kind = 8 ))/log( 2.0D+00 )) + &
-    2*m + int(log( real ( m, kind = 8 ))/log( 2.0D+00 )) +8) then
-    ier = 2
-    call xerfft ('cfft2f', 6)
-    return
-  else if (lenwrk < 2*l*m) then
-    ier = 3
-    call xerfft ('cfft2f', 8)
-    return
-  end if
+      if ( ldim < l ) then
+        ier = 5
+        call xerfft ('cfft2f', -2)
+        return
+      else if (lensav < &
+        2*l + int(log( real ( l, kind = 8 ))/log( 2.0D+00 )) + &
+        2*m + int(log( real ( m, kind = 8 ))/log( 2.0D+00 )) +8) then
+        ier = 2
+        call xerfft ('cfft2f', 6)
+        return
+      else if (lenwrk < 2*l*m) then
+        ier = 3
+        call xerfft ('cfft2f', 8)
+        return
+      end if
 !
 !  transform x lines of c array
 !
-  iw = 2*l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 3
+      iw = 2*l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 3
 
-  call cfftmf ( l, 1, m, ldim, c, (l-1) + ldim*(m-1) +1, &
-    wsave(iw), &
-    2*m + int(log( real ( m, kind = 8 ) )/log( 2.0D+00 )) + 4, &
-    work, 2*l*m, ier1)
+      call cfftmf(l, 1, m, ldim, c, (l-1) + ldim*(m-1) +1, wsave(iw),   &
+     &    2*m + int(log( real ( m, kind = 8 ) )/log( 2.0D+00 )) + 4,    &
+     &    work, 2*l*m, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cfft2f',-5)
-    return
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cfft2f',-5)
+        return
+      end if
 !
 !  transform y lines of c array
 !
-  iw = 1
-  call cfftmf (m, ldim, l, 1, c, (m-1)*ldim + l, &
-    wsave(iw), 2*l + int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 4, &
-    work, 2*m*l, ier1)
+      iw = 1
+      call cfftmf(m, ldim, l, 1, c, (m-1)*ldim + l, wsave(iw),          &
+     &    2*l + int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 4,    &
+     &    work, 2*m*l, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cfft2f',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cfft2f',-5)
+      end if
 
-  return
-end
-subroutine cfft2i ( l, m, wsave, lensav, ier )
+      return
+      end subroutine cfft2f
+!
+! ------------------------------------------------------------------
+!
+      subroutine cfft2i ( l, m, wsave, lensav, ier )
 
 !*****************************************************************************80
 !
@@ -2537,8 +2543,11 @@ subroutine cfftmb ( lot, jump, n, inc, c, lenc, wsave, lensav, work, &
 
   return
 end
-subroutine cfftmf ( lot, jump, n, inc, c, lenc, wsave, lensav, work, &
-  lenwrk, ier )
+!
+! ------------------------------------------------------------------
+!
+      subroutine cfftmf(lot, jump, n, inc, c, lenc, wsave,              &
+     &                  lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -2603,7 +2612,9 @@ subroutine cfftmf ( lot, jump, n, inc, c, lenc, wsave, lensav, work, &
 !    array C, of two consecutive elements within the same sequence to be 
 !    transformed.
 !
-!    Input/output, complex ( kind = 8 ) C(LENC), array containing LOT sequences,
+!
+!    Input/output, complex ( kind = 8 ) C(LENC), 
+!    array is containing LOT sequences, 
 !    each having length N, to be transformed.  C can have any number of 
 !    dimensions, but the total number of locations must be at least LENC.
 !
@@ -2629,50 +2640,56 @@ subroutine cfftmf ( lot, jump, n, inc, c, lenc, wsave, lensav, work, &
 !    3 input parameter LENWRK not big enough;
 !    4 input parameters INC, JUMP, N, LOT are not consistent.
 !
-  implicit none
+      use iso_c_binding
+!
+      implicit none
 
-  integer ( kind = 4 ) lenc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) :: lenc
+      integer ( kind = 4 ) :: lensav
+      integer ( kind = 4 ) :: lenwrk
 
-  complex ( kind = 8 ) c(lenc)
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) iw1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  logical xercon
+      complex(kind = 8) :: c(lenc)
+      integer ( kind = 4 ) :: ier
+      integer ( kind = 4 ) :: inc
+      integer ( kind = 4 ) :: iw1
+      integer ( kind = 4 ) :: jump
+      integer ( kind = 4 ) :: lot
+      integer ( kind = 4 ) :: n
+      real ( kind = 8 ) :: work(lenwrk)
+      real ( kind = 8 ) :: wsave(lensav)
+      logical :: xercon
+!
+      ier = 0
 
-  ier = 0
+      if (lenc < (lot-1)*jump + inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cfftmf ', 6)
+      else if(lensav                                                    &
+     &        < 2*n + int(log( real(n, kind=8))/log(2.0D+00)) + 4) then
+        ier = 2
+        call xerfft ('cfftmf ', 8)
+      else if (lenwrk < 2*lot*n) then
+        ier = 3
+        call xerfft ('cfftmf ', 10)
+      else if (.not. xercon(inc,jump,n,lot)) then
+        ier = 4
+        call xerfft ('cfftmf ', -1)
+      end if
 
-  if (lenc < (lot-1)*jump + inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cfftmf ', 6)
-  else if (lensav < 2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) + 4) then
-    ier = 2
-    call xerfft ('cfftmf ', 8)
-  else if (lenwrk < 2*lot*n) then
-    ier = 3
-    call xerfft ('cfftmf ', 10)
-  else if (.not. xercon(inc,jump,n,lot)) then
-    ier = 4
-    call xerfft ('cfftmf ', -1)
-  end if
+      if (n == 1) then
+        return
+      end if
 
-  if (n == 1) then
-    return
-  end if
+      iw1 = n+n+1
 
-  iw1 = n+n+1
+      call cmfm1f (lot,jump,n,inc,c,work,wsave,wsave(iw1),wsave(iw1+1))
 
-  call cmfm1f (lot,jump,n,inc,c,work,wsave,wsave(iw1),wsave(iw1+1))
-
-  return
-end
-subroutine cfftmi ( n, wsave, lensav, ier )
+      return
+      end
+!
+! ------------------------------------------------------------------
+!
+      subroutine cfftmi ( n, wsave, lensav, ier )
 
 !*****************************************************************************80
 !
@@ -12047,8 +12064,9 @@ subroutine rfft1i ( n, wsave, lensav, ier )
 
   return
 end
-
-
+!
+!  ---------------------------------------------------------------------
+!
       subroutine rfft2b                                                 &
      &         (ldim, l, m, r, wsave, lensav, work, lenwrk, ier)
 
@@ -12262,7 +12280,11 @@ end
 
   return
 end
-subroutine rfft2f ( ldim, l, m, r, wsave, lensav, work, lenwrk, ier )
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine rfft2f                                                 &
+     &         (ldim, l, m, r, wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -12344,37 +12366,41 @@ subroutine rfft2f ( ldim, l, m, r, wsave, lensav, work, lenwrk, ier )
 !    6, input parameter LDIM < 2*(L+1);
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      use iso_c_binding
+!
+      implicit none
 
-  integer ( kind = 4 ) ldim
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
-  integer ( kind = 4 ) m
+      integer ( kind = 4 ) :: ldim
+      integer ( kind = 4 ) :: lensav
+      integer ( kind = 4 ) :: lenwrk
+      integer ( kind = 4 ) :: m
 
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) ldh
-  integer ( kind = 4 ) ldw
-  integer ( kind = 4 ) ldx
-  integer ( kind = 4 ) lwsav
-  integer ( kind = 4 ) mmsav
-  integer ( kind = 4 ) modl
-  integer ( kind = 4 ) modm
-  integer ( kind = 4 ) mwsav
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) r(ldim,m)
-
-  ier = 0
+      integer ( kind = 4 ) :: i
+      integer ( kind = 4 ) :: ier
+      integer ( kind = 4 ) :: ier1
+      integer ( kind = 4 ) :: j
+      integer ( kind = 4 ) :: l
+      integer ( kind = 4 ) :: ldh
+      integer ( kind = 4 ) :: ldw
+      integer ( kind = 4 ) :: ldx
+      integer ( kind = 4 ) :: lwsav
+      integer ( kind = 4 ) :: mmsav
+      integer ( kind = 4 ) :: modl
+      integer ( kind = 4 ) :: modm
+      integer ( kind = 4 ) :: mwsav
+      real ( kind = 8 ), target :: work(lenwrk)
+      real ( kind = 8 ) :: wsave(lensav)
+      real ( kind = 8 ) :: r(ldim,m)
+!
+      complex(kind = 8), pointer :: c_tgt(:)
+!
+      ier = 0
 !
 !  verify lensav
 !
-  lwsav =   l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 ))+4
-  mwsav =   2*m+int(log( real ( m, kind = 8 ) )/log( 2.0D+00 ))+4
-  mmsav =   m+int(log( real ( m, kind = 8 ) )/log( 2.0D+00 ))+4
+      lwsav =   l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 ))+4
+      mwsav =   2*m+int(log( real ( m, kind = 8 ) )/log( 2.0D+00 ))+4
+      mmsav =   m+int(log( real ( m, kind = 8 ) )/log( 2.0D+00 ))+4
 
       if (lensav < lwsav+mwsav+mmsav) then
         ier = 2
@@ -12400,8 +12426,9 @@ subroutine rfft2f ( ldim, l, m, r, wsave, lensav, work, lenwrk, ier )
 !
 !  transform first dimension of array
 !
-      call rfftmf(m,ldim,l,1,r,m*ldim,wsave(1), &
-           l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 ))+4,work,lenwrk,ier1)
+      call rfftmf(m,ldim,l,1,r,m*ldim,wsave(1),                         &
+     &    l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 ))+4,          &
+     &    work,lenwrk,ier1)
 
       if(ier1 /= 0 ) then
          ier=20
@@ -12411,14 +12438,14 @@ subroutine rfft2f ( ldim, l, m, r, wsave, lensav, work, lenwrk, ier )
 
       ldx = 2*int((l+1)/2)-1
       do i=2,ldx
+        do j=1,m
+          r(i,j) = 0.5D+00 * r(i,j)
+        end do
+      end do
       do j=1,m
-      r(i,j) = 0.5D+00 * r(i,j)
-      end do
-      end do
-      do j=1,m
-      do i=3,ldx,2
-      r(i,j) = -r(i,j)
-      end do
+        do i=3,ldx,2
+          r(i,j) = -r(i,j)
+        end do
       end do
 !
 !  reshuffle to add in nyquist imaginary components
@@ -12428,13 +12455,13 @@ subroutine rfft2f ( ldim, l, m, r, wsave, lensav, work, lenwrk, ier )
 !
 !  transform second dimension of array
 !
-      call rfftmf(1,1,m,ldim,r,m*ldim, &
-           wsave(lwsav+mwsav+1),mmsav,work,lenwrk,ier1)
+      call rfftmf(1,1,m,ldim,r,m*ldim,                                  &
+     &            wsave(lwsav+mwsav+1), mmsav, work, lenwrk, ier1)
       do j=2,2*((m+1)/2)-1
-      r(1,j) = 0.5D+00 * r(1,j)
+        r(1,j) = 0.5D+00 * r(1,j)
       end do
       do j=3,m,2
-      r(1,j) = -r(1,j)
+        r(1,j) = -r(1,j)
       end do
       ldh = int((l+1)/2)
       if ( 1 < ldh ) then
@@ -12444,8 +12471,9 @@ subroutine rfft2f ( ldim, l, m, r, wsave, lensav, work, lenwrk, ier )
 !  of the input to complex cfftmf must be even.
 !
       call r2w(ldim,ldw,l,m,r,work)
-      call cfftmf(ldh-1,1,m,ldh,work(2),ldh*m, &
-           wsave(lwsav+1),mwsav,r,l*m, ier1)
+      call c_f_pointer(C_LOC(work(2)), c_tgt, [ldh*m])
+      call cfftmf(ldh-1, 1, m, ldh, c_tgt, ldh*m,                       &
+     &            wsave(lwsav+1), mwsav, r, l*m, ier1)
 
       if(ier1 /= 0 ) then
          ier=20
@@ -13016,6 +13044,9 @@ subroutine rffti1 ( n, wa, fac )
 
   return
 end
+!
+!  ---------------------------------------------------------------------
+!
 subroutine rfftmb ( lot, jump, n, inc, r, lenr, wsave, lensav, work, lenwrk, &
   ier )
 
