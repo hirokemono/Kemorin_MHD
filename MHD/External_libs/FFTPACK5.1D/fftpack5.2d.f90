@@ -2156,9 +2156,13 @@
 
   call r4_mcfti1 (n,wsave,wsave(iw1),wsave(iw1+1))
 
-  return
-end
-subroutine cfft2b ( ldim, l, m, c, wsave, lensav, work, lenwrk, ier )
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cfft2b                                                 &
+     &         (ldim, l, m, c, wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -2301,8 +2305,8 @@ subroutine cfft2b ( ldim, l, m, c, wsave, lensav, work, lenwrk, ier )
     call xerfft ('cfft2b',-5)
   end if
 
-  return
-end
+      return
+      end subroutine cfft2b
 !
 ! ------------------------------------------------------------------
 !
@@ -2455,7 +2459,7 @@ end
 !
 ! ------------------------------------------------------------------
 !
-      subroutine cfft2i ( l, m, wsave, lensav, ier )
+      subroutine cfft2i(l, m, wsave, lensav, ier)
 
 !*****************************************************************************80
 !
@@ -2522,49 +2526,54 @@ end
 !    2, input parameter LENSAV not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lensav
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) iw
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) m
-  real ( kind = 8 ) wsave(lensav)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) iw
+      integer ( kind = 4 ) l
+      integer ( kind = 4 ) m
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if ( lensav < 2 * l + int ( log ( real ( l, kind = 8 ) ) &
-    / log ( 2.0D+00 ) ) + 2 * m + int ( log ( real ( m, kind = 8 ) ) &
-    / log ( 2.0D+00 ) ) + 8 ) then
-    ier = 2
-    call xerfft ('cfft2i', 4)
-    return
-  end if
+      if(lensav                                                         &
+     &    < 2*l + int( log ( real(l, kind=8) ) / log (2.0D+00) )        &
+     &     + 2*m + int ( log ( real(m, kind=8) ) / log ( 2.0D+00 ) )    &
+     &     + 8 ) then
+        ier = 2
+        call xerfft ('cfft2i', 4)
+        return
+      end if
 
-  call cfftmi ( l, wsave(1), 2 * l + int ( log ( real ( l, kind = 8 ) ) &
-    / log ( 2.0D+00 ) ) + 4, ier1 )
+      call cfftmi(l, wsave(1),                                          &
+     &    2*l + int ( log ( real(l, kind=8) ) / log ( 2.0D+00 ) ) + 4,  &
+     &    ier1)
 
-  if ( ier1 /= 0) then
-    ier = 20
-    call xerfft ('cfft2i',-5)
-    return
-  end if
+      if ( ier1 /= 0) then
+        ier = 20
+        call xerfft ('cfft2i',-5)
+        return
+      end if
 
-  call cfftmi ( m, &
-    wsave(2*l+int(log( real ( l, kind = 8 ) )/log( 2.0D+00 )) + 3), &
-    2*m + int(log( real ( m, kind = 8 ) )/log( 2.0D+00 )) + 4, ier1)
+      call cfftmi                                                       &
+     &   (m, wsave(2*l+int(log( real(l, kind=8) )/log( 2.0D+00 )) + 3), &
+     &    2*m + int(log( real(m, kind=8) )/log( 2.0D+00 )) + 4, ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('cfft2i',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('cfft2i',-5)
+      end if
 
-  return
-end
-subroutine cfftmb ( lot, jump, n, inc, c, lenc, wsave, lensav, work, &
-  lenwrk, ier )
+      return
+      end subroutine cfft2i
+!
+! ------------------------------------------------------------------
+!
+      subroutine cfftmb(lot, jump, n, inc, c, lenc, wsave, lensav,      &
+     &                  work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -2656,49 +2665,72 @@ subroutine cfftmb ( lot, jump, n, inc, c, lenc, wsave, lensav, work, &
 !    3, input parameter LENWRK not big enough;
 !    4, input parameters INC, JUMP, N, LOT are not consistent. 
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) lenc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      INTERFACE
+        subroutine cmfm1b(lot, jump, n, inc, lenc, c, lenwrk, ch,       &
+     &            iw0, wa, fnf, iw2, fac)
+          integer ( kind = 4 ) :: lenc
+          complex ( kind = 8 ), target :: c(lenc)
+          integer ( kind = 4 ) :: lenwrk
+          real ( kind = 8 ) :: ch(lenwrk)
+          integer ( kind = 4 ) :: iw2
+          real ( kind = 8 ) :: fac(iw2)
+          real ( kind = 8 ) :: fnf
+!
+          integer ( kind = 4 ) :: inc
+          integer ( kind = 4 ) :: jump
+          integer ( kind = 4 ) :: lot
+          integer ( kind = 4 ) :: n
+!
+          integer ( kind = 4 ) :: iw0
+          real ( kind = 8 ) :: wa(iw0)
+        end subroutine cmfm1b
+      end INTERFACE
+!
+      integer ( kind = 4 ) lenc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  complex ( kind = 8 ) c(lenc)
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) iw1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  logical xercon
+      complex ( kind = 8 ) c(lenc)
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) iw1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      logical xercon
 
-  ier = 0
+      ier = 0
 
-  if (lenc < (lot-1)*jump + inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('cfftmb ', 6)
-  else if (lensav < 2*n + int(log( real ( n, kind = 8 ))/log( 2.0D+00 )) + 4) then
-    ier = 2
-    call xerfft ('cfftmb ', 8)
-  else if (lenwrk < 2*lot*n) then
-    ier = 3
-    call xerfft ('cfftmb ', 10)
-  else if (.not. xercon(inc,jump,n,lot)) then
-    ier = 4
-    call xerfft ('cfftmb ', -1)
-  end if
+      if (lenc < (lot-1)*jump + inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('cfftmb ', 6)
+      else if(lensav                                                    &
+     &    < 2*n + int(log( real(n, kind=8)) / log( 2.0D+00 )) + 4) then
+        ier = 2
+        call xerfft ('cfftmb ', 8)
+      else if (lenwrk < 2*lot*n) then
+        ier = 3
+        call xerfft ('cfftmb ', 10)
+      else if (.not. xercon(inc,jump,n,lot)) then
+        ier = 4
+        call xerfft ('cfftmb ', -1)
+      end if
 
-  if (n == 1) then
-    return
-  end if
+      if (n == 1) then
+        return
+      end if
 
-  iw1 = n+n+1
+      iw1 = n+n+1
 
-  call cmfm1b (lot,jump,n,inc,c,work,wsave,wsave(iw1),wsave(iw1+1))
+      call cmfm1b(lot, jump, n, inc, lenc, c, lenwrk, work,             &
+     &  (iw1-1), wsave(1), wsave(iw1), (lensav-iw1), wsave(iw1+1))
 
-  return
-end
+      return
+      end
 !
 ! ------------------------------------------------------------------
 !
@@ -2948,7 +2980,11 @@ end
 
   return
 end
-subroutine cmf2kb ( lot, ido, l1, na, cc, im1, in1, ch, im2, in2, wa )
+!
+! ------------------------------------------------------------------
+!
+      subroutine cmf2kb                                                 &
+     &         (lot, ido, l1, na, cc, im1, in1, ch, im2, in2, wa )
 
 !*****************************************************************************80
 !
@@ -2983,61 +3019,59 @@ subroutine cmf2kb ( lot, ido, l1, na, cc, im1, in1, ch, im2, in2, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) in1
-  integer ( kind = 4 ) in2
-  integer ( kind = 4 ) l1
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) in1
+      integer ( kind = 4 ) in2
+      integer ( kind = 4 ) l1
 
-  real ( kind = 8 ) cc(2,in1,l1,ido,2)
-  real ( kind = 8 ) ch(2,in2,l1,2,ido)
-  real ( kind = 8 ) chold1
-  real ( kind = 8 ) chold2
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) im1
-  integer ( kind = 4 ) im2
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) m1
-  integer ( kind = 4 ) m1d
-  integer ( kind = 4 ) m2
-  integer ( kind = 4 ) m2s
-  integer ( kind = 4 ) na
-  real ( kind = 8 ) ti2
-  real ( kind = 8 ) tr2
-  real ( kind = 8 ) wa(ido,1,2)
+      real ( kind = 8 ) cc(2,in1,l1,ido,2)
+      real ( kind = 8 ) ch(2,in2,l1,2,ido)
+      real ( kind = 8 ) chold1
+      real ( kind = 8 ) chold2
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) im1
+      integer ( kind = 4 ) im2
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) m1
+      integer ( kind = 4 ) m1d
+      integer ( kind = 4 ) m2
+      integer ( kind = 4 ) m2s
+      integer ( kind = 4 ) na
+      real ( kind = 8 ) ti2
+      real ( kind = 8 ) tr2
+      real ( kind = 8 ) wa(ido,1,2)
 
-  m1d = (lot-1)*im1+1
-  m2s = 1-im2
+      m1d = (lot-1)*im1+1
+      m2s = 1-im2
 
-  if ( 1 < ido .or. na == 1 ) go to 102
+      if ( 1 < ido .or. na == 1 ) go to 102
 
-    do k=1,l1
-      do m1=1,m1d,im1
-        chold1 = cc(1,m1,k,1,1)+cc(1,m1,k,1,2)
-        cc(1,m1,k,1,2) = cc(1,m1,k,1,1)-cc(1,m1,k,1,2)
-        cc(1,m1,k,1,1) = chold1
-        chold2 = cc(2,m1,k,1,1)+cc(2,m1,k,1,2)
-        cc(2,m1,k,1,2) = cc(2,m1,k,1,1)-cc(2,m1,k,1,2)
-        cc(2,m1,k,1,1) = chold2
+      do k=1,l1
+        do m1=1,m1d,im1
+          chold1 = cc(1,m1,k,1,1)+cc(1,m1,k,1,2)
+          cc(1,m1,k,1,2) = cc(1,m1,k,1,1)-cc(1,m1,k,1,2)
+          cc(1,m1,k,1,1) = chold1
+          chold2 = cc(2,m1,k,1,1)+cc(2,m1,k,1,2)
+          cc(2,m1,k,1,2) = cc(2,m1,k,1,1)-cc(2,m1,k,1,2)
+          cc(2,m1,k,1,1) = chold2
+        end do
       end do
-    end do
-
-    return
+      return
 
   102 continue
-
-    do k=1,l1
-      m2 = m2s
-      do m1=1,m1d,im1
-        m2 = m2+im2
-        ch(1,m2,k,1,1) = cc(1,m1,k,1,1)+cc(1,m1,k,1,2)
-        ch(1,m2,k,2,1) = cc(1,m1,k,1,1)-cc(1,m1,k,1,2)
-        ch(2,m2,k,1,1) = cc(2,m1,k,1,1)+cc(2,m1,k,1,2)
-        ch(2,m2,k,2,1) = cc(2,m1,k,1,1)-cc(2,m1,k,1,2)
+      do k=1,l1
+        m2 = m2s
+        do m1=1,m1d,im1
+          m2 = m2+im2
+          ch(1,m2,k,1,1) = cc(1,m1,k,1,1)+cc(1,m1,k,1,2)
+          ch(1,m2,k,2,1) = cc(1,m1,k,1,1)-cc(1,m1,k,1,2)
+          ch(2,m2,k,1,1) = cc(2,m1,k,1,1)+cc(2,m1,k,1,2)
+          ch(2,m2,k,2,1) = cc(2,m1,k,1,1)-cc(2,m1,k,1,2)
+        end do
       end do
-    end do
 
       do i=2,ido
          do k=1,l1
@@ -3052,10 +3086,10 @@ subroutine cmf2kb ( lot, ido, l1, na, cc, im1, in1, ch, im2, in2, wa )
             ch(1,m2,k,2,i) = wa(i,1,1)*tr2-wa(i,1,2)*ti2
          end do
        end do
-  end do
+      end do
 
-  return
-end
+      return
+      end subroutine cmf2kb
 !
 ! ------------------------------------------------------------------
 !
@@ -4440,82 +4474,88 @@ end
 
       if( 1 < ido .or. na == 1) go to 136
 
-      do 120 j=2,ipph
-         jc = ipp2-j
-         do 119 ki=1,lid
-         do 119 m1=1,m1d,im1
+      do j=2,ipph
+        jc = ipp2-j
+        do ki=1,lid
+          do m1=1,m1d,im1
             chold1 = cc1(1,m1,ki,j)-cc1(2,m1,ki,jc)
             chold2 = cc1(1,m1,ki,j)+cc1(2,m1,ki,jc)
             cc1(1,m1,ki,j) = chold1
             cc1(2,m1,ki,jc) = cc1(2,m1,ki,j)-cc1(1,m1,ki,jc)
             cc1(2,m1,ki,j) = cc1(2,m1,ki,j)+cc1(1,m1,ki,jc)
             cc1(1,m1,ki,jc) = chold2
-  119    continue
-  120 continue
-
+          end do
+        end do
+      end do
       return
 
-  136 do 137 ki=1,lid
-         m2 = m2s
-         do 137 m1=1,m1d,im1
-         m2 = m2+im2
-         ch1(1,m2,ki,1) = cc1(1,m1,ki,1)
-         ch1(2,m2,ki,1) = cc1(2,m1,ki,1)
-  137 continue
+  136 continue
+      do ki=1,lid
+        m2 = m2s
+        do m1=1,m1d,im1
+          m2 = m2+im2
+          ch1(1,m2,ki,1) = cc1(1,m1,ki,1)
+          ch1(2,m2,ki,1) = cc1(2,m1,ki,1)
+        end do
+      end do
 
-      do 135 j=2,ipph
-         jc = ipp2-j
-         do 134 ki=1,lid
-         m2 = m2s
-         do 134 m1=1,m1d,im1
-         m2 = m2+im2
+      do j=2,ipph
+        jc = ipp2-j
+        do ki=1,lid
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             ch1(1,m2,ki,j) = cc1(1,m1,ki,j)-cc1(2,m1,ki,jc)
             ch1(1,m2,ki,jc) = cc1(1,m1,ki,j)+cc1(2,m1,ki,jc)
             ch1(2,m2,ki,jc) = cc1(2,m1,ki,j)-cc1(1,m1,ki,jc)
             ch1(2,m2,ki,j) = cc1(2,m1,ki,j)+cc1(1,m1,ki,jc)
-  134    continue
-  135 continue
+          end do
+        end do
+      end do
 
       if (ido == 1) then
         return
       end if
 
-      do 131 i=1,ido
-         do 130 k=1,l1
-         m2 = m2s
-         do 130 m1=1,m1d,im1
-         m2 = m2+im2
+      do i=1,ido
+        do k=1,l1
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             cc(1,m1,k,1,i) = ch(1,m2,k,i,1)
             cc(2,m1,k,1,i) = ch(2,m2,k,i,1)
-  130    continue
-  131 continue
+          end do
+        end do
+      end do
 
-      do 123 j=2,ip
-         do 122 k=1,l1
-         m2 = m2s
-         do 122 m1=1,m1d,im1
-         m2 = m2+im2
+      do j=2,ip
+        do k=1,l1
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             cc(1,m1,k,j,1) = ch(1,m2,k,1,j)
             cc(2,m1,k,j,1) = ch(2,m2,k,1,j)
-  122    continue
-  123 continue
+          end do
+        end do
+      end do
 
-      do 126 j=2,ip
-        do 125 i=2,ido
-          do 124 k=1,l1
+      do j=2,ip
+        do i=2,ido
+          do k=1,l1
             m2 = m2s
-            do 124 m1=1,m1d,im1
-               m2 = m2+im2
-               cc(1,m1,k,j,i) = wa(i,j-1,1)*ch(1,m2,k,i,j) &
-                            -wa(i,j-1,2)*ch(2,m2,k,i,j)
-               cc(2,m1,k,j,i) = wa(i,j-1,1)*ch(2,m2,k,i,j) &
-                            +wa(i,j-1,2)*ch(1,m2,k,i,j)
-  124     continue
-  125   continue
-  126 continue
+            do m1=1,m1d,im1
+              m2 = m2+im2
+              cc(1,m1,k,j,i) = wa(i,j-1,1)*ch(1,m2,k,i,j)               &
+     &                        - wa(i,j-1,2)*ch(2,m2,k,i,j)
+              cc(2,m1,k,j,i) = wa(i,j-1,1)*ch(2,m2,k,i,j)               &
+     &                        + wa(i,j-1,2)*ch(1,m2,k,i,j)
+            end do
+          end do
+        end do
+      end do
 
       return
-      end
+      end subroutine cmfgkb
 !
 !  ---------------------------------------------------------------------
 !
@@ -4603,7 +4643,7 @@ end
           m2 = m2+im2
           ch1(1,m2,ki,1) = cc1(1,m1,ki,1)
           ch1(2,m2,ki,1) = cc1(2,m1,ki,1)
-         end do
+        end do
       end do
 
       do j=2,ipph
@@ -4616,7 +4656,7 @@ end
             ch1(1,m2,ki,jc) = cc1(1,m1,ki,j)-cc1(1,m1,ki,jc)
             ch1(2,m2,ki,j) =  cc1(2,m1,ki,j)+cc1(2,m1,ki,jc)
             ch1(2,m2,ki,jc) = cc1(2,m1,ki,j)-cc1(2,m1,ki,jc)
-           end do
+          end do
         end do
       end do
 !
@@ -4627,138 +4667,161 @@ end
             m2 = m2+im2
             cc1(1,m1,ki,1) = cc1(1,m1,ki,1)+ch1(1,m2,ki,j)
             cc1(2,m1,ki,1) = cc1(2,m1,ki,1)+ch1(2,m2,ki,j)
-           end do
+          end do
         end do
       end do
 !
-      do 116 l=2,ipph
-         lc = ipp2-l
-         do 113 ki=1,lid
-         m2 = m2s
-         do 113 m1=1,m1d,im1
-         m2 = m2+im2
+      do l=2,ipph
+        lc = ipp2-l
+        do ki=1,lid
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             cc1(1,m1,ki,l) = ch1(1,m2,ki,1)+wa(1,l-1,1)*ch1(1,m2,ki,2)
             cc1(1,m1,ki,lc) = -wa(1,l-1,2)*ch1(1,m2,ki,ip)
             cc1(2,m1,ki,l) = ch1(2,m2,ki,1)+wa(1,l-1,1)*ch1(2,m2,ki,2)
             cc1(2,m1,ki,lc) = -wa(1,l-1,2)*ch1(2,m2,ki,ip)
-  113    continue
-         do 115 j=3,ipph
-            jc = ipp2-j
-            idlj = mod((l-1)*(j-1),ip)
-            war = wa(1,idlj,1)
-            wai = -wa(1,idlj,2)
-            do 114 ki=1,lid
-               m2 = m2s
-               do 114 m1=1,m1d,im1
-               m2 = m2+im2
-               cc1(1,m1,ki,l) = cc1(1,m1,ki,l)+war*ch1(1,m2,ki,j)
-               cc1(1,m1,ki,lc) = cc1(1,m1,ki,lc)+wai*ch1(1,m2,ki,jc)
-               cc1(2,m1,ki,l) = cc1(2,m1,ki,l)+war*ch1(2,m2,ki,j)
-               cc1(2,m1,ki,lc) = cc1(2,m1,ki,lc)+wai*ch1(2,m2,ki,jc)
-  114       continue
-  115    continue
-  116 continue
+          end do
+        end do
+!
+        do j=3,ipph
+          jc = ipp2-j
+          idlj = mod((l-1)*(j-1),ip)
+          war = wa(1,idlj,1)
+          wai = -wa(1,idlj,2)
+          do ki=1,lid
+            m2 = m2s
+            do m1=1,m1d,im1
+              m2 = m2+im2
+              cc1(1,m1,ki,l) = cc1(1,m1,ki,l)+war*ch1(1,m2,ki,j)
+              cc1(1,m1,ki,lc) = cc1(1,m1,ki,lc)+wai*ch1(1,m2,ki,jc)
+              cc1(2,m1,ki,l) = cc1(2,m1,ki,l)+war*ch1(2,m2,ki,j)
+              cc1(2,m1,ki,lc) = cc1(2,m1,ki,lc)+wai*ch1(2,m2,ki,jc)
+            end do
+          end do
+        end do
+!
+      end do
+!
       if ( 1 < ido ) go to 136
       sn = 1.0D+00 / real ( ip * l1, kind = 8 )
       if (na == 1) go to 146
-      do 149 ki=1,lid
-         m2 = m2s
-         do 149 m1=1,m1d,im1
-         m2 = m2+im2
-         cc1(1,m1,ki,1) = sn*cc1(1,m1,ki,1)
-         cc1(2,m1,ki,1) = sn*cc1(2,m1,ki,1)
-  149 continue
-      do 120 j=2,ipph
-         jc = ipp2-j
-         do 119 ki=1,lid
-         do 119 m1=1,m1d,im1
+      do ki=1,lid
+        m2 = m2s
+        do m1=1,m1d,im1
+          m2 = m2+im2
+          cc1(1,m1,ki,1) = sn*cc1(1,m1,ki,1)
+          cc1(2,m1,ki,1) = sn*cc1(2,m1,ki,1)
+        end do
+      end do
+!
+      do j=2,ipph
+        jc = ipp2-j
+        do ki=1,lid
+          do m1=1,m1d,im1
             chold1 = sn*(cc1(1,m1,ki,j)-cc1(2,m1,ki,jc))
             chold2 = sn*(cc1(1,m1,ki,j)+cc1(2,m1,ki,jc))
             cc1(1,m1,ki,j) = chold1
             cc1(2,m1,ki,jc) = sn*(cc1(2,m1,ki,j)-cc1(1,m1,ki,jc))
             cc1(2,m1,ki,j) = sn*(cc1(2,m1,ki,j)+cc1(1,m1,ki,jc))
             cc1(1,m1,ki,jc) = chold2
-  119    continue
-  120 continue
-
+          end do
+        end do
+      end do
       return
 
-  146 do 147 ki=1,lid
-         m2 = m2s
-         do 147 m1=1,m1d,im1
-         m2 = m2+im2
-         ch1(1,m2,ki,1) = sn*cc1(1,m1,ki,1)
-         ch1(2,m2,ki,1) = sn*cc1(2,m1,ki,1)
-  147 continue
-      do 145 j=2,ipph
-         jc = ipp2-j
-         do 144 ki=1,lid
-         m2 = m2s
-         do 144 m1=1,m1d,im1
-         m2 = m2+im2
+  146 continue
+      do ki=1,lid
+        m2 = m2s
+        do m1=1,m1d,im1
+          m2 = m2+im2
+          ch1(1,m2,ki,1) = sn*cc1(1,m1,ki,1)
+          ch1(2,m2,ki,1) = sn*cc1(2,m1,ki,1)
+        end do
+      end do
+!
+      do j=2,ipph
+        jc = ipp2-j
+        do ki=1,lid
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             ch1(1,m2,ki,j) = sn*(cc1(1,m1,ki,j)-cc1(2,m1,ki,jc))
             ch1(2,m2,ki,j) = sn*(cc1(2,m1,ki,j)+cc1(1,m1,ki,jc))
             ch1(1,m2,ki,jc) = sn*(cc1(1,m1,ki,j)+cc1(2,m1,ki,jc))
             ch1(2,m2,ki,jc) = sn*(cc1(2,m1,ki,j)-cc1(1,m1,ki,jc))
-  144    continue
-  145 continue
+          end do
+        end do
+      end do
 
-      return
-
-  136 do 137 ki=1,lid
+  136 continue
+      do ki=1,lid
          m2 = m2s
-         do 137 m1=1,m1d,im1
+         do m1=1,m1d,im1
          m2 = m2+im2
          ch1(1,m2,ki,1) = cc1(1,m1,ki,1)
          ch1(2,m2,ki,1) = cc1(2,m1,ki,1)
-  137 continue
-      do 135 j=2,ipph
-         jc = ipp2-j
-         do 134 ki=1,lid
-         m2 = m2s
-         do 134 m1=1,m1d,im1
-         m2 = m2+im2
+        end do
+      end do
+!
+      do j=2,ipph
+        jc = ipp2-j
+        do ki=1,lid
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             ch1(1,m2,ki,j) = cc1(1,m1,ki,j)-cc1(2,m1,ki,jc)
             ch1(2,m2,ki,j) = cc1(2,m1,ki,j)+cc1(1,m1,ki,jc)
             ch1(1,m2,ki,jc) = cc1(1,m1,ki,j)+cc1(2,m1,ki,jc)
             ch1(2,m2,ki,jc) = cc1(2,m1,ki,j)-cc1(1,m1,ki,jc)
-  134    continue
-  135 continue
-      do 131 i=1,ido
-         do 130 k=1,l1
-         m2 = m2s
-         do 130 m1=1,m1d,im1
-         m2 = m2+im2
+          end do
+        end do
+      end do
+!
+      do i=1,ido
+        do k=1,l1
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             cc(1,m1,k,1,i) = ch(1,m2,k,i,1)
             cc(2,m1,k,1,i) = ch(2,m2,k,i,1)
-  130    continue
-  131 continue
-      do 123 j=2,ip
-         do 122 k=1,l1
-         m2 = m2s
-         do 122 m1=1,m1d,im1
-         m2 = m2+im2
+          end do
+        end do
+      end do
+!
+      do j=2,ip
+        do k=1,l1
+          m2 = m2s
+          do m1=1,m1d,im1
+            m2 = m2+im2
             cc(1,m1,k,j,1) = ch(1,m2,k,1,j)
             cc(2,m1,k,j,1) = ch(2,m2,k,1,j)
-  122    continue
-  123 continue
-      do 126 j=2,ip
-         do 125 i=2,ido
-            do 124 k=1,l1
-               m2 = m2s
-               do 124 m1=1,m1d,im1
-               m2 = m2+im2
-               cc(1,m1,k,j,i) = wa(i,j-1,1)*ch(1,m2,k,i,j) &
-                            +wa(i,j-1,2)*ch(2,m2,k,i,j)
-               cc(2,m1,k,j,i) = wa(i,j-1,1)*ch(2,m2,k,i,j) &
-                            -wa(i,j-1,2)*ch(1,m2,k,i,j)
-  124       continue
-  125    continue
-  126 continue
+          end do
+        end do
+      end do
+!
+      do j=2,ip
+        do i=2,ido
+          do k=1,l1
+            m2 = m2s
+            do m1=1,m1d,im1
+              m2 = m2+im2
+              cc(1,m1,k,j,i) = wa(i,j-1,1)*ch(1,m2,k,i,j)               &
+     &                        + wa(i,j-1,2)*ch(2,m2,k,i,j)
+              cc(2,m1,k,j,i) = wa(i,j-1,1)*ch(2,m2,k,i,j)               &
+     &                        - wa(i,j-1,2)*ch(1,m2,k,i,j)
+            end do
+          end do
+        end do
+      end do
 
-  return
-end
-subroutine cmfm1b ( lot, jump, n, inc, c, ch, wa, fnf, fac )
+     return
+     end subroutine cmfgkf
+!
+! ------------------------------------------------------------------
+!
+      subroutine cmfm1b(lot, jump, n, inc, lenc, c, lenwrk, ch,         &
+     &          iw0, wa, fnf, iw2, fac)
 
 !*****************************************************************************80
 !
@@ -4793,28 +4856,39 @@ subroutine cmfm1b ( lot, jump, n, inc, c, ch, wa, fnf, fac )
 !
 !  Parameters:
 !
-  implicit none
+      use iso_c_binding
+!
+      implicit none
+!
+      integer ( kind = 4 ) :: lenc
+      complex ( kind = 8 ), target :: c(lenc)
+      integer ( kind = 4 ) :: lenwrk
+      real ( kind = 8 ) :: ch(lenwrk)
+      integer ( kind = 4 ) :: iw2
+      real ( kind = 8 ) :: fac(iw2)
+      real ( kind = 8 ) :: fnf
+!
+      integer ( kind = 4 ) :: ido
+      integer ( kind = 4 ) :: inc
+      integer ( kind = 4 ) :: ip
+      integer ( kind = 4 ) :: iw
+      integer ( kind = 4 ) :: jump
+      integer ( kind = 4 ) :: k1
+      integer ( kind = 4 ) :: l1
+      integer ( kind = 4 ) :: l2
+      integer ( kind = 4 ) :: lid
+      integer ( kind = 4 ) :: lot
+      integer ( kind = 4 ) :: n
+      integer ( kind = 4 ) :: na
+      integer ( kind = 4 ) :: nbr
+      integer ( kind = 4 ) :: nf
+!
+      integer ( kind = 4 ) :: iw0
+      real ( kind = 8 ) :: wa(iw0)
 
-  complex ( kind = 8 ) c(*)
-  real ( kind = 8 ) ch(*)
-  real ( kind = 8 ) fac(*)
-  real ( kind = 8 ) fnf
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) ip
-  integer ( kind = 4 ) iw
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) k1
-  integer ( kind = 4 ) l1
-  integer ( kind = 4 ) l2
-  integer ( kind = 4 ) lid
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) na
-  integer ( kind = 4 ) nbr
-  integer ( kind = 4 ) nf
-  real ( kind = 8 ) wa(*)
-
+      complex(kind = 8), pointer :: zz(:)
+      complex(kind = 8), pointer :: z1(:)
+!
       nf = int ( fnf )
       na = 0
       l1 = 1
@@ -4825,34 +4899,50 @@ subroutine cmfm1b ( lot, jump, n, inc, c, ch, wa, fnf, fac )
          ido = n/l2
          lid = l1*ido
          nbr = 1+na+2*min(ip-2,4)
+         call c_f_pointer(C_LOC(c(1)), zz, [2*lenc])
          go to (52,62,53,63,54,64,55,65,56,66),nbr
-   52    call cmf2kb (lot,ido,l1,na,c,jump,inc,ch,1,lot,wa(iw))
+   52    call cmf2kb                                                    &
+     &      (lot, ido, l1, na, zz, jump, inc, ch, 1,    lot, wa(iw))
          go to 120
-   62    call cmf2kb (lot,ido,l1,na,ch,1,lot,c,jump,inc,wa(iw))
+   62    call cmf2kb                                                    &
+     &      (lot, ido, l1, na, ch, 1,    lot, zz, jump, inc, wa(iw))
          go to 120
-   53    call cmf3kb (lot,ido,l1,na,c,jump,inc,ch,1,lot,wa(iw))
+   53    call cmf3kb                                                    &
+     &      (lot, ido, l1, na, zz, jump, inc, ch, 1,    lot, wa(iw))
          go to 120
-   63    call cmf3kb (lot,ido,l1,na,ch,1,lot,c,jump,inc,wa(iw))
+   63    call cmf3kb                                                    &
+     &      (lot, ido, l1, na, ch, 1,    lot, zz, jump, inc, wa(iw))
          go to 120
-   54    call cmf4kb (lot,ido,l1,na,c,jump,inc,ch,1,lot,wa(iw))
+   54    call cmf4kb                                                    &
+     &      (lot, ido, l1, na, zz, jump, inc, ch, 1,    lot, wa(iw))
          go to 120
-   64    call cmf4kb (lot,ido,l1,na,ch,1,lot,c,jump,inc,wa(iw))
+   64    call cmf4kb                                                    &
+     &      (lot, ido, l1, na, ch, 1,    lot, zz, jump, inc, wa(iw))
          go to 120
-   55    call cmf5kb (lot,ido,l1,na,c,jump,inc,ch,1,lot,wa(iw))
+   55    call cmf5kb                                                    &
+     &      (lot, ido, l1, na, zz, jump, inc, ch, 1,    lot, wa(iw))
          go to 120
-   65    call cmf5kb (lot,ido,l1,na,ch,1,lot,c,jump,inc,wa(iw))
+   65    call cmf5kb                                                    &
+     &      (lot, ido, l1, na, ch, 1,    lot, zz, jump, inc, wa(iw))
          go to 120
-   56    call cmfgkb (lot,ido,ip,l1,lid,na,c,c,jump,inc,ch,ch,1,lot,wa(iw))
+!
+   56    continue
+         call c_f_pointer(C_LOC(c(1)), z1, [2*lenc])
+         call cmfgkb(lot, ido, ip, l1, lid, na, zz, z1, jump, inc,      &
+     &               ch, ch, 1, lot, wa(iw))
          go to 120
-   66    call cmfgkb (lot,ido,ip,l1,lid,na,ch,ch,1,lot,c,c, &
-           jump,inc,wa(iw))
+!
+   66    continue
+         call c_f_pointer(C_LOC(c(1)), z1, [2*lenc])
+         call cmfgkb(lot, ido, ip, l1, lid, na, ch, ch, 1,    lot,      &
+     &               zz, z1, jump,inc,wa(iw))
   120    l1 = l2
          iw = iw+(ip-1)*(ido+ido)
          if(ip <= 5) na = 1-na
   125 continue
 
-  return
-end
+      return
+      end subroutine cmfm1b
 !
 !  ---------------------------------------------------------------------
 !
