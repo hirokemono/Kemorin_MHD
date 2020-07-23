@@ -6520,18 +6520,24 @@ subroutine costb1 ( n, inc, x, wsave, work, ier )
       np1 = n+1
       ns2 = n/2
 
-      if (n-2) 106,101,102
-  101 x1h = x(1,1)+x(1,2)
-      x(1,2) = x(1,1)-x(1,2)
-      x(1,1) = x1h
-      return
-  102 if ( 3 < n ) go to 103
-      x1p3 = x(1,1)+x(1,3)
-      x2 = x(1,2)
-      x(1,2) = x(1,1)-x(1,3)
-      x(1,1) = x1p3+x2
-      x(1,3) = x1p3-x2
-      return
+!      if (n-2) 106,101,102
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+  101   x1h = x(1,1)+x(1,2)
+        x(1,2) = x(1,1)-x(1,2)
+        x(1,1) = x1h
+        return
+      else if(n .eq. 3) then
+!  102 if ( 3 < n ) go to 103
+        x1p3 = x(1,1)+x(1,3)
+        x2 = x(1,2)
+        x(1,2) = x(1,1)-x(1,3)
+        x(1,1) = x1p3+x2
+        x(1,3) = x1p3-x2
+        return
+      end if
+!
   103 x(1,1) = x(1,1)+x(1,1)
       x(1,n) = x(1,n)+x(1,n)
       dsum = x(1,1)-x(1,n)
@@ -6577,12 +6583,15 @@ subroutine costb1 ( n, inc, x, wsave, work, ier )
       end do
 
       if (modn /= 0) return
-         x(1,n) = dsum
+       x(1,n) = dsum
+!
   106 continue
-
-  return
-end
-subroutine costf1 ( n, inc, x, wsave, work, ier )
+      return
+      end subroutine costb1
+!
+! ------------------------------------------------------------------
+!
+      subroutine costf1 ( n, inc, x, wsave, work, ier )
 
 !*****************************************************************************80
 !
@@ -6617,53 +6626,59 @@ subroutine costf1 ( n, inc, x, wsave, work, ier )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
+      integer ( kind = 4 ) inc
 
-  real ( kind = 8 ) dsum
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kc
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) lnwk
-  integer ( kind = 4 ) modn
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) nm1
-  integer ( kind = 4 ) np1
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) snm1
-  real ( kind = 8 ) t1
-  real ( kind = 8 ) t2
-  real ( kind = 8 ) tx2
-  real ( kind = 8 ) work(*)
-  real ( kind = 8 ) wsave(*)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) x1h
-  real ( kind = 8 ) x1p3
-  real ( kind = 8 ) xi
+      real ( kind = 8 ) dsum
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) kc
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) lnwk
+      integer ( kind = 4 ) modn
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) nm1
+      integer ( kind = 4 ) np1
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) snm1
+      real ( kind = 8 ) t1
+      real ( kind = 8 ) t2
+      real ( kind = 8 ) tx2
+      real ( kind = 8 ) work(*)
+      real ( kind = 8 ) wsave(*)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) x1h
+      real ( kind = 8 ) x1p3
+      real ( kind = 8 ) xi
 
-  ier = 0
+      ier = 0
 
-  nm1 = n-1
-  np1 = n+1
-  ns2 = n/2
+      nm1 = n-1
+      np1 = n+1
+      ns2 = n/2
 
-      if (n-2) 200,101,102
-  101 x1h = x(1,1)+x(1,2)
-      x(1,2) = 0.5D+00 * (x(1,1)-x(1,2))
-      x(1,1) = 0.5D+00 * x1h
-      go to 200
-  102 if ( 3 < n ) go to 103
-      x1p3 = x(1,1)+x(1,3)
-      tx2 = x(1,2)+x(1,2)
-      x(1,2) = 0.5D+00 * (x(1,1)-x(1,3))
-      x(1,1) = 0.25D+00 *(x1p3+tx2)
-      x(1,3) = 0.25D+00 *(x1p3-tx2)
-      go to 200
+!      if (n-2) 200,101,102
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+  101   x1h = x(1,1)+x(1,2)
+        x(1,2) = 0.5D+00 * (x(1,1)-x(1,2))
+        x(1,1) = 0.5D+00 * x1h
+        return
+      else if(n .eq. 3) then
+!  102 if ( 3 < n ) go to 103
+        x1p3 = x(1,1)+x(1,3)
+        tx2 = x(1,2)+x(1,2)
+        x(1,2) = 0.5D+00 * (x(1,1)-x(1,3))
+        x(1,1) = 0.25D+00 *(x1p3+tx2)
+        x(1,3) = 0.25D+00 *(x1p3-tx2)
+        return
+      end if
+!
   103 dsum = x(1,1)-x(1,n)
       x(1,1) = x(1,1)+x(1,n)
       do k=2,ns2
@@ -6687,7 +6702,7 @@ subroutine costf1 ( n, inc, x, wsave, work, ier )
       if (ier1 /= 0) then
         ier = 20
         call xerfft ('costf1',-5)
-        go to 200
+        return
       end if
 
       snm1 = 1.0D+00 / real ( nm1, kind = 8 )
@@ -6706,10 +6721,13 @@ subroutine costf1 ( n, inc, x, wsave, work, ier )
       x(1,n) = 0.5D+00 * x(1,n)
   200 continue
 
-  return
-end
-subroutine costmb ( lot, jump, n, inc, x, lenx, wsave, lensav, work, &
-  lenwrk, ier )
+      return
+      end subroutine costf1
+!
+! ------------------------------------------------------------------
+!
+      subroutine costmb(lot, jump, n, inc, x, lenx,                     &
+     &                  wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -6798,57 +6816,60 @@ subroutine costmb ( lot, jump, n, inc, x, lenx, wsave, lensav, work, &
 !    4, input parameters INC,JUMP,N,LOT are not consistent;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) iw1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
-  logical xercon
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) iw1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
+      logical xercon
 
-  ier = 0
+      ier = 0
 
-  if (lenx < (lot-1)*jump + inc*(n-1) + 1) then
-    ier = 1
-    call xerfft ('costmb', 6)
+      if (lenx < (lot-1)*jump + inc*(n-1) + 1) then
+        ier = 1
+        call xerfft ('costmb', 6)
+        return
+      else if(lensav                                                    &
+            < 2*n + int(log( real(n, kind=8) )/log( 2.0D+00 )) +4) then
+        ier = 2
+        call xerfft ('costmb', 8)
     return
-  else if (lensav < &
-    2*n + int(log( real ( n, kind = 8 ) )/log( 2.0D+00 )) +4) then
-    ier = 2
-    call xerfft ('costmb', 8)
-    return
-  else if (lenwrk < lot*(n+1)) then
-    ier = 3
-    call xerfft ('costmb', 10)
-    return
-  else if (.not. xercon(inc,jump,n,lot)) then
-    ier = 4
-    call xerfft ('costmb', -1)
-    return
-  end if
+      else if (lenwrk < lot*(n+1)) then
+        ier = 3
+        call xerfft ('costmb', 10)
+        return
+      else if (.not. xercon(inc,jump,n,lot)) then
+        ier = 4
+        call xerfft ('costmb', -1)
+        return
+      end if
 
-  iw1 = lot+lot+1
-  call mcstb1(lot,jump,n,inc,x,wsave,work,work(iw1),ier1)
+      iw1 = lot+lot+1
+      call mcstb1(lot,jump,n,inc,x,wsave,work,work(iw1),ier1)
 
-  if (ier1 /= 0) then
-    ier = 20
-    call xerfft ('costmb',-5)
-  end if
+      if (ier1 /= 0) then
+        ier = 20
+        call xerfft ('costmb',-5)
+      end if
 
-  return
-end
-subroutine costmf ( lot, jump, n, inc, x, lenx, wsave, lensav, work, &
-  lenwrk, ier )
+      return
+      end
+!
+! ------------------------------------------------------------------
+!
+      subroutine costmf(lot, jump, n, inc, x, lenx,                     &
+     &          wsave, lensav, work, lenwrk, ier)
 
 !*****************************************************************************80
 !
@@ -7227,9 +7248,12 @@ subroutine mcsqb1 (lot,jump,n,inc,x,wsave,work,ier)
     x(m,1) = x(m,1)+x(m,1)
   end do
 
-  return
-end
-subroutine mcsqf1 (lot,jump,n,inc,x,wsave,work,ier)
+      return
+      end
+!
+! ------------------------------------------------------------------
+!
+      subroutine mcsqf1 (lot,jump,n,inc,x,wsave,work,ier)
 
 !*****************************************************************************80
 !
@@ -7264,57 +7288,57 @@ subroutine mcsqf1 (lot,jump,n,inc,x,wsave,work,ier)
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lot
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lot
 
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kc
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) lnwk
-  integer ( kind = 4 ) lj
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) m1
-  integer ( kind = 4 ) modn
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) np2
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) work(lot,*)
-  real ( kind = 8 ) wsave(*)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) xim1
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) kc
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) lnwk
+      integer ( kind = 4 ) lj
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) m1
+      integer ( kind = 4 ) modn
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) np2
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) work(lot,*)
+      real ( kind = 8 ) wsave(*)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) xim1
 
-  ier = 0
+      ier = 0
 
-  lj = (lot-1)*jump+1
-  ns2 = (n+1)/2
-  np2 = n+2
+      lj = (lot-1)*jump+1
+      ns2 = (n+1)/2
+      np2 = n+2
 
-  do k=2,ns2
-    kc = np2-k
-    m1 = 0
-    do m=1,lj,jump
-      m1 = m1 + 1
-      work(m1,k)  = x(m,k)+x(m,kc)
-      work(m1,kc) = x(m,k)-x(m,kc)
-    end do
-  end do
+      do k=2,ns2
+        kc = np2-k
+        m1 = 0
+        do m=1,lj,jump
+          m1 = m1 + 1
+          work(m1,k)  = x(m,k)+x(m,kc)
+          work(m1,kc) = x(m,k)-x(m,kc)
+        end do
+      end do
 
-  modn = mod(n,2)
+      modn = mod(n,2)
 
-  if (modn == 0) then
-    m1 = 0
-    do m=1,lj,jump
-      m1 = m1 + 1
-      work(m1,ns2+1) = x(m,ns2+1)+x(m,ns2+1)
-    end do
-  end if
+      if (modn == 0) then
+        m1 = 0
+        do m=1,lj,jump
+          m1 = m1 + 1
+          work(m1,ns2+1) = x(m,ns2+1)+x(m,ns2+1)
+        end do
+      end if
 
        do 102 k=2,ns2
          kc = np2-k
@@ -7323,15 +7347,15 @@ subroutine mcsqf1 (lot,jump,n,inc,x,wsave,work,ier)
          m1 = m1 + 1
          x(m,k)  = wsave(k-1)*work(m1,kc)+wsave(kc-1)*work(m1,k)
          x(m,kc) = wsave(k-1)*work(m1,k) -wsave(kc-1)*work(m1,kc)
- 302     continue
+  302    continue
   102 continue
 
       if (modn /= 0) go to 303
       m1 = 0
-      do 304 m=1,lj,jump
+      do m=1,lj,jump
          m1 = m1 + 1
          x(m,ns2+1) = wsave(ns2)*work(m1,ns2+1)
- 304  continue
+      end do
  303  continue
 
       lenx = (lot-1)*jump + inc*(n-1)  + 1
@@ -7345,19 +7369,22 @@ subroutine mcsqf1 (lot,jump,n,inc,x,wsave,work,ier)
         go to 400
       end if
 
-      do 103 i=3,n,2
-         do 203 m=1,lj,jump
+      do i=3,n,2
+         do m=1,lj,jump
             xim1 = 0.5D+00 * (x(m,i-1)+x(m,i))
             x(m,i) = 0.5D+00 * (x(m,i-1)-x(m,i))
             x(m,i-1) = xim1
- 203     continue
-  103 continue
+        end do
+      end do
 
   400 continue
 
-  return
-end
-subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
+      return
+      end subroutine mcsqf1
+!
+! ------------------------------------------------------------------
+!
+      subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
 
 !*****************************************************************************80
 !
@@ -7392,67 +7419,68 @@ subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
+      integer ( kind = 4 ) inc
 
-  real ( kind = 8 ) dsum(*)
-  real ( kind = 8 ) fnm1s2
-  real ( kind = 8 ) fnm1s4
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kc
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lj
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) lnwk
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) m1
-  integer ( kind = 4 ) modn
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) nm1
-  integer ( kind = 4 ) np1
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) t1
-  real ( kind = 8 ) t2
-  real ( kind = 8 ) work(*)
-  real ( kind = 8 ) wsave(*)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) x1h
-  real ( kind = 8 ) x1p3
-  real ( kind = 8 ) x2
-  real ( kind = 8 ) xi
+      real ( kind = 8 ) dsum(*)
+      real ( kind = 8 ) fnm1s2
+      real ( kind = 8 ) fnm1s4
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) kc
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lj
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) lnwk
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) m1
+      integer ( kind = 4 ) modn
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) nm1
+      integer ( kind = 4 ) np1
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) t1
+      real ( kind = 8 ) t2
+      real ( kind = 8 ) work(*)
+      real ( kind = 8 ) wsave(*)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) x1h
+      real ( kind = 8 ) x1p3
+      real ( kind = 8 ) x2
+      real ( kind = 8 ) xi
 
-  ier = 0
+      ier = 0
 
       nm1 = n-1
       np1 = n+1
       ns2 = n/2
       lj = (lot-1)*jump+1
-      if (n-2) 106,101,102
-
-  101 do 111 m=1,lj,jump
-         x1h = x(m,1)+x(m,2)
-         x(m,2) = x(m,1)-x(m,2)
-         x(m,1) = x1h
-  111 continue
-
-      return
-
-  102 if ( 3 < n ) go to 103
-      do 112 m=1,lj,jump
-         x1p3 = x(m,1)+x(m,3)
-         x2 = x(m,2)
-         x(m,2) = x(m,1)-x(m,3)
-         x(m,1) = x1p3+x2
-         x(m,3) = x1p3-x2
-  112 continue
-
-      return
+!      if (n-2) 106,101,102
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+  101   do m=1,lj,jump
+          x1h = x(m,1)+x(m,2)
+          x(m,2) = x(m,1)-x(m,2)
+          x(m,1) = x1h
+        end do
+        return
+      else if(n .eq. 3) then
+!  102 if ( 3 < n ) go to 103
+        do m=1,lj,jump
+           x1p3 = x(m,1)+x(m,3)
+           x2 = x(m,2)
+           x(m,2) = x(m,1)-x(m,3)
+           x(m,1) = x1p3+x2
+           x(m,3) = x1p3-x2
+        end do
+        return
+      end if
 
  103  do m=1,lj,jump
         x(m,1) = x(m,1)+x(m,1)
@@ -7467,9 +7495,9 @@ subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
          x(m,1) = x(m,1)+x(m,n)
       end do
 
-      do 104 k=2,ns2
+      do k=2,ns2
          m1 = 0
-         do 114 m=1,lj,jump
+         do m=1,lj,jump
            m1 = m1+1
            kc = np1-k
            t1 = x(m,k)+x(m,kc)
@@ -7478,14 +7506,15 @@ subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
            t2 = wsave(k)*t2
            x(m,k) = t1-t2
            x(m,kc) = t1+t2
-  114    continue
-  104 continue
+        end do
+      end do
 
       modn = mod(n,2)
       if (modn == 0) go to 124
-         do 123 m=1,lj,jump
-         x(m,ns2+1) = x(m,ns2+1)+x(m,ns2+1)
-  123    continue
+        do m=1,lj,jump
+          x(m,ns2+1) = x(m,ns2+1)+x(m,ns2+1)
+        end do
+!
  124  continue
       lenx = (lot-1)*jump + inc*(nm1-1)  + 1
       lnsv = nm1 + int(log( real ( nm1, kind = 8 ))/log( 2.0D+00 )) + 4
@@ -7496,31 +7525,35 @@ subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
       if (ier1 /= 0) then
         ier = 20
         call xerfft ('mcstb1',-5)
-        go to 106
+        return
       end if
 
       fnm1s2 = real ( nm1, kind = 8 ) /  2.0D+00
       m1 = 0
-      do 10 m=1,lj,jump
-      m1 = m1+1
-      dsum(m1) = 0.5D+00 * dsum(m1)
-      x(m,1) = fnm1s2 * x(m,1)
-   10 continue
+      do m=1,lj,jump
+        m1 = m1+1
+        dsum(m1) = 0.5D+00 * dsum(m1)
+        x(m,1) = fnm1s2 * x(m,1)
+      end do
+!
       if(mod(nm1,2) /= 0) go to 30
-      do 20 m=1,lj,jump
-      x(m,nm1) = x(m,nm1)+x(m,nm1)
-   20 continue
- 30   fnm1s4 = real ( nm1, kind = 8 ) / 4.0D+00
-      do 105 i=3,n,2
+        do m=1,lj,jump
+          x(m,nm1) = x(m,nm1)+x(m,nm1)
+        end do
+!
+ 30   continue
+      fnm1s4 = real ( nm1, kind = 8 ) / 4.0D+00
+      do i=3,n,2
          m1 = 0
-         do 115 m=1,lj,jump
+         do m=1,lj,jump
             m1 = m1+1
             xi = fnm1s4*x(m,i)
             x(m,i) = fnm1s4*x(m,i-1)
             x(m,i-1) = dsum(m1)
             dsum(m1) = dsum(m1)+xi
-  115 continue
-  105 continue
+        end do
+      end do
+!
       if (modn /= 0) return
       m1 = 0
       do m=1,lj,jump
@@ -7529,9 +7562,12 @@ subroutine mcstb1(lot,jump,n,inc,x,wsave,dsum,work,ier)
       end do
   106 continue
 
-  return
-end
-subroutine mcstf1(lot,jump,n,inc,x,wsave,dsum,work,ier)
+      return
+      end subroutine mcstb1
+!
+! ------------------------------------------------------------------
+!
+      subroutine mcstf1(lot,jump,n,inc,x,wsave,dsum,work,ier)
 
 !*****************************************************************************80
 !
@@ -7566,87 +7602,96 @@ subroutine mcstf1(lot,jump,n,inc,x,wsave,dsum,work,ier)
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
+      integer ( kind = 4 ) inc
 
-  real ( kind = 8 ) dsum(*)
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kc
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lj
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) lnwk
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) m1
-  integer ( kind = 4 ) modn
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) nm1
-  integer ( kind = 4 ) np1
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) snm1
-  real ( kind = 8 ) t1
-  real ( kind = 8 ) t2
-  real ( kind = 8 ) tx2
-  real ( kind = 8 ) work(*)
-  real ( kind = 8 ) wsave(*)
-  real ( kind = 8 ) x(inc,*)
-  real ( kind = 8 ) x1h
-  real ( kind = 8 ) x1p3
-  real ( kind = 8 ) xi
+      real ( kind = 8 ) dsum(*)
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) kc
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lj
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) lnwk
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) m
+      integer ( kind = 4 ) m1
+      integer ( kind = 4 ) modn
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) nm1
+      integer ( kind = 4 ) np1
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) snm1
+      real ( kind = 8 ) t1
+      real ( kind = 8 ) t2
+      real ( kind = 8 ) tx2
+      real ( kind = 8 ) work(*)
+      real ( kind = 8 ) wsave(*)
+      real ( kind = 8 ) x(inc,*)
+      real ( kind = 8 ) x1h
+      real ( kind = 8 ) x1p3
+      real ( kind = 8 ) xi
 
-  ier = 0
+      ier = 0
 
-  nm1 = n-1
-  np1 = n+1
-  ns2 = n/2
-  lj = (lot-1)*jump+1
+      nm1 = n-1
+      np1 = n+1
+      ns2 = n/2
+      lj = (lot-1)*jump+1
 
-      if (n-2) 200,101,102
-  101 do 111 m=1,lj,jump
-         x1h = x(m,1)+x(m,2)
-         x(m,2) = 0.5D+00 * (x(m,1)-x(m,2))
-         x(m,1) = 0.5D+00 * x1h
-  111 continue
-      go to 200
-  102 if ( 3 < n ) go to 103
-      do 112 m=1,lj,jump
-         x1p3 = x(m,1)+x(m,3)
-         tx2 = x(m,2)+x(m,2)
-         x(m,2) = 0.5D+00 * (x(m,1)-x(m,3))
-         x(m,1) = 0.25D+00 * (x1p3+tx2)
-         x(m,3) = 0.25D+00 * (x1p3-tx2)
-  112 continue
-      go to 200
-  103 m1 = 0
-      do 113 m=1,lj,jump
-         m1 = m1+1
-         dsum(m1) = x(m,1)-x(m,n)
-         x(m,1) = x(m,1)+x(m,n)
-  113 continue
-      do 104 k=2,ns2
-         m1 = 0
-         do 114 m=1,lj,jump
-         m1 = m1+1
-         kc = np1-k
-         t1 = x(m,k)+x(m,kc)
-         t2 = x(m,k)-x(m,kc)
-         dsum(m1) = dsum(m1)+wsave(kc)*t2
-         t2 = wsave(k)*t2
-         x(m,k) = t1-t2
-         x(m,kc) = t1+t2
-  114    continue
-  104 continue
+!      if (n-2) 200,101,102
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+  101   do m=1,lj,jump
+          x1h = x(m,1)+x(m,2)
+          x(m,2) = 0.5D+00 * (x(m,1)-x(m,2))
+          x(m,1) = 0.5D+00 * x1h
+        end do
+        return
+      else if(n .eq. 3) then
+!  102 if ( 3 < n ) go to 103
+        do m=1,lj,jump
+          x1p3 = x(m,1)+x(m,3)
+          tx2 = x(m,2)+x(m,2)
+          x(m,2) = 0.5D+00 * (x(m,1)-x(m,3))
+          x(m,1) = 0.25D+00 * (x1p3+tx2)
+          x(m,3) = 0.25D+00 * (x1p3-tx2)
+        end do
+        return
+      end if
+!
+  103 continue
+      m1 = 0
+      do m=1,lj,jump
+        m1 = m1+1
+        dsum(m1) = x(m,1)-x(m,n)
+        x(m,1) = x(m,1)+x(m,n)
+      end do
+      do k=2,ns2
+        m1 = 0
+        do m=1,lj,jump
+          m1 = m1+1
+          kc = np1-k
+          t1 = x(m,k)+x(m,kc)
+          t2 = x(m,k)-x(m,kc)
+          dsum(m1) = dsum(m1)+wsave(kc)*t2
+          t2 = wsave(k)*t2
+          x(m,k) = t1-t2
+          x(m,kc) = t1+t2
+        end do
+      end do
+!
       modn = mod(n,2)
       if (modn == 0) go to 124
-         do 123 m=1,lj,jump
-         x(m,ns2+1) = x(m,ns2+1)+x(m,ns2+1)
-  123    continue
+        do m=1,lj,jump
+          x(m,ns2+1) = x(m,ns2+1)+x(m,ns2+1)
+        end do
+!
  124  continue
       lenx = (lot-1)*jump + inc*(nm1-1)  + 1
       lnsv = nm1 + int(log( real ( nm1, kind = 8 ))/log( 2.0D+00 )) + 4
@@ -7661,23 +7706,26 @@ subroutine mcstf1(lot,jump,n,inc,x,wsave,dsum,work,ier)
       end if
 
       snm1 = 1.0D+00 / real ( nm1, kind = 8 )
-      do 10 m=1,lot
-      dsum(m) = snm1*dsum(m)
-   10 continue
+      do m=1,lot
+        dsum(m) = snm1*dsum(m)
+      end do
+!
       if(mod(nm1,2) /= 0) go to 30
-      do 20 m=1,lj,jump
-      x(m,nm1) = x(m,nm1)+x(m,nm1)
-   20 continue
- 30   do 105 i=3,n,2
-         m1 = 0
-         do 115 m=1,lj,jump
-            m1 = m1+1
-            xi = 0.5D+00 * x(m,i)
-            x(m,i) = 0.5D+00 * x(m,i-1)
-            x(m,i-1) = dsum(m1)
-            dsum(m1) = dsum(m1)+xi
-  115 continue
-  105 continue
+        do m=1,lj,jump
+          x(m,nm1) = x(m,nm1)+x(m,nm1)
+        end do
+!
+ 30   continue
+      do i=3,n,2
+        m1 = 0
+        do m=1,lj,jump
+          m1 = m1+1
+          xi = 0.5D+00 * x(m,i)
+          x(m,i) = 0.5D+00 * x(m,i-1)
+          x(m,i-1) = dsum(m1)
+          dsum(m1) = dsum(m1)+xi
+        end do
+      end do
       if (modn /= 0) go to 117
 
       m1 = 0
@@ -7695,9 +7743,12 @@ subroutine mcstf1(lot,jump,n,inc,x,wsave,dsum,work,ier)
 
  200  continue
 
-  return
-end
-subroutine mradb2 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1)
+      return
+      end subroutine mcstf1
+!
+! ------------------------------------------------------------------
+!
+      subroutine mradb2 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1)
 
 !*****************************************************************************80
 !
@@ -11637,8 +11688,8 @@ subroutine r1fgkf (ido,ip,l1,idl1,cc,c1,c2,in1,ch,ch2,in2,wa)
   143    continue
   144 continue
 
-  return
-end
+      return
+      end
 !
 !  ---------------------------------------------------------------------
 !
@@ -11694,7 +11745,7 @@ end
 !
 !  ---------------------------------------------------------------------
 !
-subroutine r4_factor ( n, nf, fac )
+      subroutine r4_factor ( n, nf, fac )
 
 !*****************************************************************************80
 !
@@ -11736,57 +11787,56 @@ subroutine r4_factor ( n, nf, fac )
 !
 !    Output, real ( kind = 8 ) FAC(*), a list of factors of N.
 !
-  implicit none
+      implicit none
 
-  real ( kind = 8 ) fac(*)
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) nf
-  integer ( kind = 4 ) nl
-  integer ( kind = 4 ) nq
-  integer ( kind = 4 ) nr
-  integer ( kind = 4 ) ntry
+      real ( kind = 8 ) fac(*)
+      integer ( kind = 4 ) j
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) nf
+      integer ( kind = 4 ) nl
+      integer ( kind = 4 ) nq
+      integer ( kind = 4 ) nr
+      integer ( kind = 4 ) ntry
 
-  nl = n
-  nf = 0
-  j = 0
+      nl = n
+      nf = 0
+      j = 0
 
-  do while ( 1 < nl )
+      do while ( 1 < nl )
+        j = j + 1
 
-    j = j + 1
+        if ( j == 1 ) then
+          ntry = 4
+        else if ( j == 2 ) then
+          ntry = 2
+        else if ( j == 3 ) then
+          ntry = 3
+        else if ( j == 4 ) then
+          ntry = 5
+        else
+          ntry = ntry + 2
+        end if
 
-    if ( j == 1 ) then
-      ntry = 4
-    else if ( j == 2 ) then
-      ntry = 2
-    else if ( j == 3 ) then
-      ntry = 3
-    else if ( j == 4 ) then
-      ntry = 5
-    else
-      ntry = ntry + 2
-    end if
+        do
+          nq = nl / ntry
+          nr = nl - ntry * nq
 
-    do
+          if ( nr /= 0 ) then
+            exit
+          end if
 
-      nq = nl / ntry
-      nr = nl - ntry * nq
+          nf = nf + 1
+          fac(nf) = real ( ntry, kind = 8 )
+          nl = nq
+        end do
+      end do
 
-      if ( nr /= 0 ) then
-        exit
-      end if
-
-      nf = nf + 1
-      fac(nf) = real ( ntry, kind = 8 )
-      nl = nq
-
-    end do
-
-  end do
-
-  return
-end
-subroutine r4_mcfti1 ( n, wa, fnf, fac )
+      return
+      end subroutine r4_factor
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine r4_mcfti1 ( n, wa, fnf, fac )
 
 !*****************************************************************************80
 !
@@ -11821,41 +11871,44 @@ subroutine r4_mcfti1 ( n, wa, fnf, fac )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  real ( kind = 8 ) fac(*)
-  real ( kind = 8 ) fnf
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) ip
-  integer ( kind = 4 ) iw
-  integer ( kind = 4 ) k1
-  integer ( kind = 4 ) l1
-  integer ( kind = 4 ) l2
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) nf
-  real ( kind = 8 ) wa(*)
+      real ( kind = 8 ) fac(*)
+      real ( kind = 8 ) fnf
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) ip
+      integer ( kind = 4 ) iw
+      integer ( kind = 4 ) k1
+      integer ( kind = 4 ) l1
+      integer ( kind = 4 ) l2
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) nf
+      real ( kind = 8 ) wa(*)
 !
 !  Get the factorization of N.
 !
-  call r4_factor ( n, nf, fac )
-  fnf = real ( nf, kind = 8 )
-  iw = 1
-  l1 = 1
+      call r4_factor ( n, nf, fac )
+      fnf = real ( nf, kind = 8 )
+      iw = 1
+      l1 = 1
 !
 !  Set up the trigonometric tables.
 !
-  do k1 = 1, nf
-    ip = int ( fac(k1) )
-    l2 = l1 * ip
-    ido = n / l2
-    call r4_tables ( ido, ip, wa(iw) )
-    iw = iw + ( ip - 1 ) * ( ido + ido )
-    l1 = l2
-  end do
+      do k1 = 1, nf
+        ip = int ( fac(k1) )
+        l2 = l1 * ip
+        ido = n / l2
+        call r4_tables ( ido, ip, wa(iw) )
+        iw = iw + ( ip - 1 ) * ( ido + ido )
+        l1 = l2
+      end do
 
-  return
-end
-subroutine r4_tables ( ido, ip, wa )
+      return
+      end subroutine r4_mcfti1
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine r4_tables(ido, ip, wa)
 
 !*****************************************************************************80
 !
@@ -11890,46 +11943,47 @@ subroutine r4_tables ( ido, ip, wa )
 !
 !  Parameters:
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) ido
-  integer ( kind = 4 ) ip
+      integer ( kind = 4 ) ido
+      integer ( kind = 4 ) ip
 
-  real ( kind = 8 ) arg1
-  real ( kind = 8 ) arg2
-  real ( kind = 8 ) arg3
-  real ( kind = 8 ) arg4
-  real ( kind = 8 ) argz
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) j
-  real ( kind = 8 ) tpi
-  real ( kind = 8 ) wa(ido,ip-1,2)
+      real ( kind = 8 ) arg1
+      real ( kind = 8 ) arg2
+      real ( kind = 8 ) arg3
+      real ( kind = 8 ) arg4
+      real ( kind = 8 ) argz
+      integer ( kind = 4 ) i
+      integer ( kind = 4 ) j
+      real ( kind = 8 ) tpi
+      real ( kind = 8 ) wa(ido,ip-1,2)
 
-  tpi = 8.0D+00 * atan ( 1.0D+00 )
-  argz = tpi / real ( ip, kind = 8 )
-  arg1 = tpi / real ( ido * ip, kind = 8 )
+      tpi = 8.0D+00 * atan ( 1.0D+00 )
+      argz = tpi / real ( ip, kind = 8 )
+      arg1 = tpi / real ( ido * ip, kind = 8 )
 
-  do j = 2, ip
+      do j = 2, ip
+        arg2 = real ( j - 1, kind = 8 ) * arg1
 
-    arg2 = real ( j - 1, kind = 8 ) * arg1
+        do i = 1, ido
+          arg3 = real ( i - 1, kind = 8 ) * arg2
+          wa(i,j-1,1) = cos ( arg3 )
+          wa(i,j-1,2) = sin ( arg3 )
+        end do
 
-    do i = 1, ido
-      arg3 = real ( i - 1, kind = 8 ) * arg2
-      wa(i,j-1,1) = cos ( arg3 )
-      wa(i,j-1,2) = sin ( arg3 )
-    end do
+        if ( 5 < ip ) then
+          arg4 = real ( j - 1, kind = 8 ) * argz
+          wa(1,j-1,1) = cos ( arg4 )
+          wa(1,j-1,2) = sin ( arg4 )
+        end if
+      end do
 
-    if ( 5 < ip ) then
-      arg4 = real ( j - 1, kind = 8 ) * argz
-      wa(1,j-1,1) = cos ( arg4 )
-      wa(1,j-1,2) = sin ( arg4 )
-    end if
-
-  end do
-
-  return
-end
-subroutine r8_factor ( n, nf, fac )
+      return
+      end subroutine r4_tables
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine r8_factor ( n, nf, fac )
 
 !*****************************************************************************80
 !
