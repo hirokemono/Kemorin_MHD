@@ -118,7 +118,7 @@ t_pvr_stencil_buffer.o: $(PVR_DIR)/t_pvr_stencil_buffer.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 t_rendering_vr_image.o: $(PVR_DIR)/t_rendering_vr_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_pvr_stencil_buffer.o generate_vr_image.o cal_pvr_modelview_mat.o write_PVR_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_stencil_buffer_work.o: $(PVR_DIR)/t_stencil_buffer_work.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_pvr_ray_startpoints.o
+t_stencil_buffer_work.o: $(PVR_DIR)/t_stencil_buffer_work.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o calypso_mpi_int8.o t_pvr_ray_startpoints.o transfer_to_long_integers.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_surf_grp_4_pvr_domain.o: $(PVR_DIR)/t_surf_grp_4_pvr_domain.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

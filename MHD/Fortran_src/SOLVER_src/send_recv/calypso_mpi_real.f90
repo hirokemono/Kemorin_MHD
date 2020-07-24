@@ -8,6 +8,9 @@
 !> @brief MPI communication routines for real in Calypso
 !!
 !!@verbatim
+!!      subroutine calypso_mpi_bcast_one_real(buffer, root)
+!!        integer, intent(in) :: root
+!!        real(kind = kreal), intent(inout) :: buffer
 !!      subroutine calypso_mpi_bcast_real(buffer, count, root)
 !!        integer, intent(in) :: root
 !!        integer(kind = kint_gl), intent(in) :: count
@@ -47,6 +50,23 @@
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine calypso_mpi_bcast_one_real(buffer, root)
+!
+      integer, intent(in) :: root
+      real(kind = kreal), intent(inout) :: buffer
+!
+      real(kind = kreal) :: rtmp(1)
+!
+!
+      rtmp(1) = buffer
+      call MPI_BCAST(rtmp, 1, CALYPSO_REAL,                             &
+     &               root, CALYPSO_COMM, ierr_MPI)
+      buffer = rtmp(1)
+!
+      end subroutine calypso_mpi_bcast_one_real
+!
+!  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_bcast_real(buffer, count, root)
 !

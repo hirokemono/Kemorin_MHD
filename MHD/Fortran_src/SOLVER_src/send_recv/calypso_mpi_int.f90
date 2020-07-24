@@ -4,13 +4,15 @@
 !!@author  H. Matsui
 !!@date Programmed on Feb., 2012
 !
-!
 !> @brief MPI communication routines for integer in Calypso
 !!
 !!@verbatim
 !!@endverbatim
 !!
 !!@n @param  icode       error code
+!!      subroutine calypso_mpi_bcast_one_int(buffer, root)
+!!        integer, intent(in) :: root
+!!        integer(kind = kint), intent(inout) :: buffer
 !!      subroutine calypso_mpi_bcast_int(buffer, count, root)
 !!        integer, intent(in) :: root
 !!        integer(kind = kint_gl), intent(in) :: count
@@ -41,6 +43,23 @@
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine calypso_mpi_bcast_one_int(buffer, root)
+!
+      integer, intent(in) :: root
+      integer(kind = kint), intent(inout) :: buffer
+!
+      integer(kind = kint) :: itmp(1)
+!
+!
+      itmp(1) = buffer
+      call MPI_BCAST(itmp, 1, CALYPSO_REAL,                             &
+     &               root, CALYPSO_COMM, ierr_MPI)
+      buffer = itmp(1)
+!
+      end subroutine calypso_mpi_bcast_one_int
+!
+!  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_bcast_int(buffer, count, root)
 !

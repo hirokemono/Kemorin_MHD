@@ -47,7 +47,9 @@
      &         (irank_image_file, npe_img_composit,                     &
      &          num_pixel_xy, pvr_start, stencil_wk)
 !
+      use calypso_mpi_int8
       use t_pvr_ray_startpoints
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: irank_image_file
       integer(kind = kint), intent(in) :: npe_img_composit
@@ -71,20 +73,20 @@
       end if
 !
       num64 = pvr_start%num_pvr_ray
-      call MPI_REDUCE(num64, num_pvr_ray_gl, 1, CALYPSO_GLOBAL_INT,     &
-     &    MPI_SUM, int(irank_image_file), CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_reduce_one_int8                                  &
+     &   (cast_long(pvr_start%num_pvr_ray), num_pvr_ray_gl,             &
+     &    MPI_SUM, int(irank_image_file))
 !
       call count_local_ray_4_each_pixel(num_pixel_xy,                   &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
      &    num_ray_start_lc, max_ray_start_lc)
 !
       num32 = num_pixel_xy
-      call MPI_REDUCE(num_ray_start_lc, num_ray_start_gl, num32,        &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_REDUCE(max_ray_start_lc, max_ray_start_gl, 1,            &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, int(irank_image_file),           &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_reduce_int8(num_ray_start_lc, num_ray_start_gl,  &
+     &    cast_long(num_pixel_xy), MPI_SUM, int(irank_image_file))
+      call calypso_mpi_reduce_one_int8                                  &
+     &   (max_ray_start_lc, max_ray_start_gl,                           &
+     &    MPI_SUM, int(irank_image_file))
 !
       call alloc_stencil_buffer_work(num_pixel_xy, stencil_wk)
       call set_global_stencil_buffer                                    &
@@ -168,6 +170,9 @@
      &          num_pixel_xy, num_pvr_ray_gl, num_ray_start_gl,         &
      &          stencil_wk)
 !
+      use calypso_mpi_int
+      use transfer_to_long_integers
+!
       integer, intent(in) :: irank_image_file, npe_img_composit
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint_gl), intent(in) :: num_pvr_ray_gl
@@ -223,20 +228,22 @@
         deallocate(istack_ray_start_gl)
       end if
 !
-      call mpi_Bcast(stencil_wk%istack_recv_image, (nprocs+1),          &
-     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (stencil_wk%istack_recv_image, cast_long(nprocs+1),            &
+     &    irank_image_file)
 !
-      num32 = num_pixel_xy
-      call mpi_Bcast(stencil_wk%irank_4_composit, num32,                &
-     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
-      call mpi_Bcast(stencil_wk%irev_recv_image, num32,                 &
-     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (stencil_wk%irank_4_composit, cast_long(num_pixel_xy),         &
+     &    irank_image_file)
+      call calypso_mpi_bcast_int                                        &
+     &   (stencil_wk%irev_recv_image, cast_long(num_pixel_xy),          &
+     &    irank_image_file)
 !
-      call mpi_Bcast(stencil_wk%ntot_recv_image, 1,                     &
-     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(stencil_wk%ntot_recv_image,        &
+     &                               irank_image_file)
       num32 = stencil_wk%ntot_recv_image
-      call mpi_Bcast(stencil_wk%item_recv_image(1), num32,              &
-     &    CALYPSO_INTEGER, irank_image_file, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(stencil_wk%item_recv_image(1),         &
+     &    cast_long(stencil_wk%ntot_recv_image), irank_image_file)
 !
       end subroutine set_global_stencil_buffer
 !
