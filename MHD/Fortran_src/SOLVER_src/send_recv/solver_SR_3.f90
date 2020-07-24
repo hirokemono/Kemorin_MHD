@@ -132,7 +132,7 @@
       enddo
 
       call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig1%req1(1), sta1(1,1), SR_sig1%ierr_MPI)
+     &   (int(NEIBPETOT), SR_sig1%req1(1), SR_sig1sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recv_3
 !
