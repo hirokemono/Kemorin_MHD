@@ -1,25 +1,25 @@
 !
-!     module solver_SR
+!     module solver_RMA
 !
 !    MPI SEND and RECEIVE routine for overlapped partitioning
 !     coded by H. Matsui on Sep. 2002 (ver 1.0)
 !     Modified by H. Matsui on May. 2007 (ver 1.1)
 !
-!      subroutine  SOLVER_SEND_RECV                                     &
+!      subroutine  SOLVER_REMOTE_ACCESS                                 &
 !     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
 !     &                                    STACK_EXPORT, NOD_EXPORT, X)
-!      subroutine  solver_send_recv_x3                                  &
+!      subroutine  solver_remote_access_x3                              &
 !     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
 !     &                                    STACK_EXPORT, NOD_EXPORT,    &
 !     &             X1, X2, X3)
 !
-      module solver_SR
+      module solver_RMA
 !
       use calypso_mpi
       use m_precision
 !
       use m_constants
-      use m_RMA_SR
+      use t_solver_RMA
 !
       implicit none
 !
@@ -30,86 +30,90 @@
 !-----------------------------------------------------------------------
 !
 !C
-!C*** SOLVER_SEND_RECV
+!C*** SOLVER_REMOTE_ACCESS
 !C
-      subroutine  SOLVER_SEND_RECV                                      &
+      subroutine  SOLVER_REMOTE_ACCESS                                  &
      &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
      &                                    STACK_EXPORT, NOD_EXPORT,     &
      &             X)
 !
 ! ......................................................................
 
+!>       number of nodes
       integer(kind=kint ), intent(in)   ::  NP
-! \beginARG       number of nodes
+!>       total neighboring pe count
       integer(kind=kint ), intent(in)   ::  NEIBPETOT
-! \beginARG       total neighboring pe count
+!>       neighboring pe id                        (i-th pe)
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
-! \beginARG       neighboring pe id                        (i-th pe)
+!>       imported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
-! \beginARG       imported node count for each neighbor pe (i-th pe)
+!>       imported node                            (i-th dof)
       integer(kind=kint ), intent(in)                                   &
      &        :: NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
-! \beginARG       imported node                            (i-th dof)
+!>       exported node count for each neighbor pe (i-th pe)
       integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
-! \beginARG       exported node count for each neighbor pe (i-th pe)
+!>       exported node                            (i-th dof)
       integer(kind=kint ), intent(in)                                   &
      &        :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
-! \beginARG       exported node                            (i-th dof)
+!>       communicated result vector
       real   (kind=kreal), intent(inout):: X(NP)
-! \beginARG       communicated result vector
+!>      Structure for RMA of real data
+      type(RMA_real_buffer), intent(inout) :: RMA_r
 
       integer(kind = kint) :: neib, istart, inum, k, ii
-      integer(kind = kint) :: import_NB
+      integer(kind = MPI_ADDRESS_KIND) :: import_NB
 !
 !C    Check array size
 !C
-      if (iflag_init .eq. 0) call init_work_4_SR_fl                     &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT)
-      if (iflag_win .lt. (STACK_IMPORT(NEIBPETOT)) ) then
-        call delete_window_4_SR_fl
-        call init_window_4_SR_fl(ione, NEIBPETOT, STACK_IMPORT)
+      if (RMA_r%iflag_win .lt. (STACK_IMPORT(NEIBPETOT)) ) then
+        call delete_window_4_RMA(RMA_r)
+        call init_window_4_RMA(ione, NEIBPETOT, STACK_IMPORT, RMA_r)
+        call init_work_4_RMA                                            &
+     &     (NEIBPETOT, NEIBPE, STACK_IMPORT, RMA_r%import_a)
       end if
 !
-      call resize_wsend_RMA(ione, STACK_EXPORT(NEIBPETOT))
+      call resize_wsend_RMA(ione, STACK_EXPORT(NEIBPETOT), RMA_r)
 !
 !C
 !C-- SEND
       
       do k= STACK_EXPORT(0)+1, STACK_EXPORT(NEIBPETOT)
         ii   = NOD_EXPORT(k)
-        WS(k  )= X(ii  )
+        RMA_r%WS_RMA(k  )= X(ii  )
       end do
 !
-      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,win,ierr_MPI)
-!      call MPI_WIN_POST(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
-!      call MPI_WIN_START(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE, RMA_r%win, ierr_MPI)
+!      call MPI_WIN_POST(RMA_r%nbr_group, MPI_MODE_NOCHECK,             &
+!     &                  RMA_r%win, ierr_MPI)
+!      call MPI_WIN_START(RMA_r%nbr_group, MPI_MODE_NOCHECK,            &
+!     &                   RMA_r%win, ierr_MPI)
 !
       do neib= 1, NEIBPETOT
         istart= STACK_EXPORT(neib-1) + 1
         inum  = (STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
-        import_NB = import_a(neib) + 1
-        call MPI_PUT (WS(istart), inum, CALYPSO_REAL,                   &
+        import_NB = RMA_i%import_a(neib) + 1
+        call MPI_PUT (RMA_r%WS_RMA(istart), inum, CALYPSO_REAL,         &
      &                NEIBPE(neib), import_NB, inum,                    &
-     &                CALYPSO_REAL, win, ierr_MPI)
+     &                CALYPSO_REAL, RMA_r%win, ierr_MPI)
 !
       enddo
 !
-!      call MPI_WIN_COMPLETE (win, ierr_MPI)
-!      call MPI_WIN_wait (win, ierr_MPI)
-      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,win,ierr_MPI)
+!      call MPI_WIN_COMPLETE (RMA_r%win, ierr_MPI)
+!      call MPI_WIN_wait (RMA_r%win, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED, RMA_r%win, ierr_MPI)
 !
       do k= STACK_IMPORT(0)+1, STACK_IMPORT(NEIBPETOT)
         ii   = NOD_IMPORT(k)
-        X(ii  )= WRecieve(k  )
+        X(ii  ) = RMA_r%WRecieve(k  )
       end do
 
-      end subroutine SOLVER_SEND_RECV
+      end subroutine SOLVER_REMOTE_ACCESS
 !
 !-----------------------------------------------------------------------
 !C
-!C*** SOLVER_SEND_RECV
+!C*** solver_remote_access_x3
 !C
-      subroutine  solver_send_recv_x3                                   &
+      subroutine  solver_remote_access_x3                               &
      &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
      &                                    STACK_EXPORT, NOD_EXPORT,     &
      &             X1, X2, X3)
@@ -129,61 +133,64 @@
       real   (kind=kreal), intent(inout):: X1(NP)
       real   (kind=kreal), intent(inout):: X2(NP)
       real   (kind=kreal), intent(inout):: X3(NP)
-! \beginARG       communicated result vector
+!
+      type(RMA_real_buffer), intent(inout) :: RMA_r
 
       integer (kind = kint) :: neib, istart, inum, k, ii, ix
-      integer(kind = kint) :: import_NB
+      integer(kind = MPI_ADDRESS_KIND) :: import_NB
 !
 !C    Check array size
 !C
-      if (iflag_init .eq. 0) call init_work_4_SR_fl                     &
-     &       ( NEIBPETOT, NEIBPE, STACK_IMPORT)
-      if (iflag_win .lt. (ithree*STACK_IMPORT(NEIBPETOT)) ) then
-        call delete_window_4_SR_fl
-        call init_window_4_SR_fl(ithree, NEIBPETOT, STACK_IMPORT)
+      if (RMA_r%iflag_win .lt. (ithree*STACK_IMPORT(NEIBPETOT)) ) then
+        call delete_window_4_RMA(RMA_r)
+        call init_window_4_RMA(ione, NEIBPETOT, STACK_IMPORT, RMA_r)
+        call init_work_4_RMA                                            &
+     &     (NEIBPETOT, NEIBPE, STACK_IMPORT, RMA_r%import_a)
       end if
 !
-      call resize_wsend_RMA(ithree, STACK_EXPORT(NEIBPETOT))
+      call resize_wsend_RMA(ithree, STACK_EXPORT(NEIBPETOT), RMA_r)
 !C
 !C-- SEND
       
       do k= STACK_EXPORT(0)+1, STACK_EXPORT(NEIBPETOT)
         ii   = NOD_EXPORT(k)
         ix   = ithree * k
-        WS(ix-2)= X1(ii  )
-        WS(ix-1)= X2(ii  )
-        WS(ix  )= X3(ii  )
+        RMA_r%WS_RMA(ix-2)= X1(ii  )
+        RMA_r%WS_RMA(ix-1)= X2(ii  )
+        RMA_r%WS_RMA(ix  )= X3(ii  )
       end do
 !
-      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE,win,ierr_MPI)
-!      call MPI_WIN_POST(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
-!      call MPI_WIN_START(nbr_group ,MPI_MODE_NOCHECK , win, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOPRECEDE, RMA_r%win, ierr_MPI)
+!      call MPI_WIN_POST(RMA_r%nbr_group, MPI_MODE_NOCHECK,             &
+!     &                  RMA_r%win, ierr_MPI)
+!      call MPI_WIN_START(RMA_r%nbr_group, MPI_MODE_NOCHECK,            &
+!     &                   RMA_r%win, ierr_MPI)
 !
       do neib= 1, NEIBPETOT
         istart= ithree*STACK_EXPORT(neib-1)
         inum  = ithree*STACK_EXPORT(neib  ) - istart
-        import_NB = ithree*import_a(neib) + 1
-        call MPI_PUT (WS(istart+1), inum, CALYPSO_REAL,                 &
+        import_NB = ithree*RMA_i%import_a(neib) + 1
+        call MPI_PUT (RMA_r%WS_RMA(istart+1), inum, CALYPSO_REAL,       &
      &                  NEIBPE(neib), import_NB, inum,                  &
-     &                  CALYPSO_REAL, win, ierr_MPI)
+     &                  CALYPSO_REAL, RMA_r%win, ierr_MPI)
 !
       enddo
 !
-!      call MPI_WIN_COMPLETE (win, ierr_MPI)
-!      call MPI_WIN_wait (win, ierr_MPI)
-      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED,win,ierr_MPI)
+!      call MPI_WIN_COMPLETE (RMA_r%win, ierr_MPI)
+!      call MPI_WIN_wait (RMA_r%win, ierr_MPI)
+      call MPI_WIN_FENCE(MPI_MODE_NOSUCCEED, RMA_r%win, ierr_MPI)
 !
       do k= STACK_IMPORT(0)+1, STACK_IMPORT(NEIBPETOT)
         ii   = NOD_IMPORT(k)
         ix   = ithree * k
-        X1(ii  )= WRecieve(ix-2)
-        X2(ii  )= WRecieve(ix-1)
-        X3(ii  )= WRecieve(ix  )
+        X1(ii  ) = RMA_r%WRecieve(ix-2)
+        X2(ii  ) = RMA_r%WRecieve(ix-1)
+        X3(ii  ) = RMA_r%WRecieve(ix  )
       end do
 
-      end subroutine solver_send_recv_x3
+      end subroutine solver_remote_access_x3
 !
 !-----------------------------------------------------------------------
 !
-      end module solver_SR
+      end module solver_RMA
 
