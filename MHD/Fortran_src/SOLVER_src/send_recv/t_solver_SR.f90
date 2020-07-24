@@ -10,12 +10,12 @@
 !>@brief  Work area for data communications
 !!
 !!@verbatim
-!!      subroutine resize_work_SR_t(NB, NPE_SEND, NPE_RECV,             &
+!!      subroutine resize_work_SR(NB, NPE_SEND, NPE_RECV,               &
 !!     &          NTOT_SEND, NTOT_RECV, SR_sig, SR_r)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
-!!      subroutine resize_work_itp_SR_t                                 &
+!!      subroutine resize_work_itp_SR                                   &
 !!     &         (NB, NPE_SEND, NPE_RECV, NTOT_RECV, SR_sig, SR_r)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -81,7 +81,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine resize_work_SR_t(NB, NPE_SEND, NPE_RECV,               &
+      subroutine resize_work_SR(NB, NPE_SEND, NPE_RECV,                 &
      &          NTOT_SEND, NTOT_RECV, SR_sig, SR_r)
 !
       integer(kind = kint), intent(in) ::  NPE_SEND, NPE_RECV
@@ -94,12 +94,12 @@
       call resize_wsend_SR(NB, NTOT_SEND+1, SR_r)
       call resize_wrecv_SR(NB, NTOT_RECV+1, SR_r)
 !
-      end subroutine resize_work_SR_t
+      end subroutine resize_work_SR
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine resize_work_itp_SR_t                                   &
+      subroutine resize_work_itp_SR                                     &
      &         (NB, NPE_SEND, NPE_RECV, NTOT_RECV, SR_sig, SR_r)
 !
       integer(kind = kint), intent(in) ::  NPE_SEND, NPE_RECV
@@ -111,7 +111,7 @@
       call resize_SR_flag(NPE_SEND, NPE_RECV, SR_sig)
       call resize_wrecv_SR(NB, NTOT_RECV, SR_r)
 !
-      end subroutine resize_work_itp_SR_t
+      end subroutine resize_work_itp_SR
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

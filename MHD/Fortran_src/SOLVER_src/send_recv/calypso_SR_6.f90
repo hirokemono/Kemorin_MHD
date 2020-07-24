@@ -126,6 +126,7 @@
      &                         irev_import, X1_org, X2_org, X3_org,     &
      &                                      X1_new, X2_new, X3_new)
 !
+      use t_solver_SR
       use m_solver_SR
       use calypso_SR_core
       use set_to_send_buf_tri
@@ -158,8 +159,8 @@
       real (kind=kreal), intent(inout):: X3_new(isix*nnod_new)
 !
 !
-      call resize_work_4_SR((ithree*isix), npe_send, npe_recv,          &
-     &    istack_send(npe_send), istack_recv(npe_recv))
+      call resize_work_SR((ithree*isix), npe_send, npe_recv,            &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
 !
 !C-- SEND
       call set_to_send_buf_3x6(nnod_org, istack_send(npe_send),         &

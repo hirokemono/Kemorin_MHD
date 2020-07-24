@@ -75,6 +75,8 @@
       use m_precision
       use m_constants
 !
+      use t_solver_SR
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -120,8 +122,8 @@
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
 !
-      call resize_work_4_SR(NB, npe_send, npe_recv,                     &
-     &    istack_send(npe_send), istack_recv(npe_recv))
+      call resize_work_SR(NB, npe_send, npe_recv,                       &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
 !
       if(iflag_SR .eq. iflag_import_rev) then
         call calypso_send_recv_rev_N(NB, nnod_org, nnod_new,            &
@@ -185,8 +187,8 @@
       real (kind=kreal), intent(inout):: X3_new(NB*nnod_new)
 !
 !
-      call resize_work_4_SR( (3*NB), npe_send, npe_recv,                &
-     &    istack_send(npe_send), istack_recv(npe_recv))
+      call resize_work_SR( (3*NB), npe_send, npe_recv,                  &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
 !
       if(iflag_SR .eq. iflag_import_rev) then
         call calypso_send_recv_rev_3xN(NB, nnod_org, nnod_new,          &
@@ -244,8 +246,8 @@
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
 !
-      call resize_work_4_SR(NB, npe_send, npe_recv,                     &
-     &    istack_send(npe_send), istack_recv(npe_recv))
+      call resize_work_SR(NB, npe_send, npe_recv,                       &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
 !
       call calypso_send_recv_check                                      &
      &         (NB, npe_send, isend_self, istack_send,                  &

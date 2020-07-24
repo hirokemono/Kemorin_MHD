@@ -42,6 +42,7 @@
       use m_precision
       use m_constants
       use calypso_mpi
+      use t_solver_SR
 !
       implicit none
 !
@@ -82,8 +83,9 @@
       integer :: inum
 !
 !
-      call resize_work_4_SR(ione, NEIBPETOT, NEIBPETOT,                 &
-     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT) )
+      call resize_work_SR(ione, NEIBPETOT, NEIBPETOT,                   &
+     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
+     &    SR_sig1, SR_r1)
 !
 !C-- SEND
       do neib= 1, NEIBPETOT
@@ -97,7 +99,7 @@
         inum  = int(STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
         call MPI_ISEND (SR_r1%WS(istart), inum, CALYPSO_REAL,           &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  req1(neib), ierr_MPI)
+     &                  SR_sig1%req1(neib), ierr_MPI)
       enddo
 
 !C
@@ -108,10 +110,11 @@
         inum  = int(STACK_IMPORT(neib  ) - STACK_IMPORT(neib-1))
         call MPI_IRECV (SR_r1%WR(istart), inum, CALYPSO_REAL,           &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  req2(neib), ierr_MPI)
+     &                  SR_sig1%req2(neib), ierr_MPI)
       enddo
 
-      call MPI_WAITALL(int(NEIBPETOT), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (int(NEIBPETOT), SR_sig1%req2(1), SR_sig1%sta2(1,1), ierr_MPI)
    
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1) + 1
@@ -121,7 +124,8 @@
         enddo
       enddo
 
-      call MPI_WAITALL(int(NEIBPETOT), req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (int(NEIBPETOT), SR_sig1%req1(1), SR_sig1%sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recv
 !
@@ -152,8 +156,9 @@
       integer :: inum
 !
 !
-      call resize_work_4_SR(ithree, NEIBPETOT, NEIBPETOT,               &
-     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT) )
+      call resize_work_SR(ithree, NEIBPETOT, NEIBPETOT,                 &
+     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT)              &
+     &    , SR_sig1, SR_r1)
 !
 !C-- SEND
       
@@ -170,7 +175,7 @@
         inum  = int(3 * (STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1)))
         call MPI_ISEND (SR_r1%WS(istart), inum, CALYPSO_REAL,           &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  req1(neib), ierr_MPI)
+     &                  SR_sig1%req1(neib), ierr_MPI)
       enddo
 
 !C
@@ -181,10 +186,11 @@
         inum  = int(3 * (STACK_IMPORT(neib  ) - STACK_IMPORT(neib-1)))
         call MPI_IRECV (SR_r1%WR(istart), inum, CALYPSO_REAL,           &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  req2(neib), ierr_MPI)
+     &                  SR_sig1%req2(neib), ierr_MPI)
       enddo
 
-      call MPI_WAITALL (int(NEIBPETOT), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (int(NEIBPETOT), SR_sig1%req2(1), SR_sig1%sta2(1,1), ierr_MPI)
    
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1) + 1
@@ -196,7 +202,8 @@
         enddo
       enddo
 
-      call MPI_WAITALL(int(NEIBPETOT), req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (int(NEIBPETOT), SR_sig1%req1(1), SR_sig1%sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recvx3
 !

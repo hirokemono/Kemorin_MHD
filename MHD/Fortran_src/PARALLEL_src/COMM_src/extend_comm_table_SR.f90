@@ -36,6 +36,7 @@
      &          istack_send_added, ntot_send_added, xx_send_added,      &
      &          istack_recv_added, ntot_recv_added, xx_recv_added)
 !
+      use t_solver_SR
       use m_solver_SR
       use calypso_SR_core
 !
@@ -55,8 +56,9 @@
       integer(kind = kint) :: inum
 !
 !
-      call resize_work_4_SR(n_vector, num_neib, num_neib,               &
-     &    istack_send_added(num_neib), istack_recv_added(num_neib))
+      call resize_work_SR(n_vector, num_neib, num_neib,                 &
+     &    istack_send_added(num_neib), istack_recv_added(num_neib),     &
+     &    SR_sig1, SR_r1)
 !
 !$omp parallel do private(inum)
       do inum = 1, ntot_send_added

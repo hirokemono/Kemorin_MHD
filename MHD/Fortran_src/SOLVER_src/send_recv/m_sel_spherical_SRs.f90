@@ -109,6 +109,7 @@
       subroutine check_calypso_sph_buf_N                                &
      &         (NB, npe_send, istack_send, npe_recv, istack_recv)
 !
+      use t_solver_SR
       use m_solver_SR
       use set_to_send_buffer
 !
@@ -121,8 +122,8 @@
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
 !
-      call resize_work_4_SR(NB, npe_send, npe_recv,                     &
-     &      istack_send(npe_send), istack_recv(npe_recv))
+      call resize_work_SR(NB, npe_send, npe_recv,                       &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
 !
       end subroutine check_calypso_sph_buf_N
 !

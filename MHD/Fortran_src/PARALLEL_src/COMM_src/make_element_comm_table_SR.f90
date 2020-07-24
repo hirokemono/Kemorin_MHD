@@ -84,6 +84,8 @@
       subroutine element_position_reverse_SR(num_neib_e, id_neib_e,     &
      &          istack_import_e, istack_export_e, xe_import, xe_export)
 !
+      use t_solver_SR
+!
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
 !
@@ -100,15 +102,16 @@
       integer :: num
 !
 !
-      call resize_work_4_SR(ithree, num_neib_e, num_neib_e,             &
-     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e))
+      call resize_work_SR(ithree, num_neib_e, num_neib_e,               &
+     &    istack_import_e(num_neib_e), istack_export_e(num_neib_e),     &
+     &    SR_sig1, SR_r1)
 !
       do ip = 1, num_neib_e
         ist = 3*istack_import_e(ip-1)
         num = int(3*(istack_import_e(ip  ) - istack_import_e(ip-1)))
         call MPI_ISEND (xe_import(ist+1), num, CALYPSO_REAL,            &
      &                  int(id_neib_e(ip)), 0, CALYPSO_COMM,            &
-     &                  req1(ip), ierr_MPI)
+     &                  SR_sig1%req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib_e
@@ -116,10 +119,12 @@
         num = int(3*(istack_export_e(ip  ) - istack_export_e(ip-1)))
         call MPI_IRECV (xe_export(ist+1), num, CALYPSO_REAL,            &
      &                 int(id_neib_e(ip)), 0, CALYPSO_COMM,             &
-     &                 req2(ip), ierr_MPI)
+     &                 SR_sig1%req2(ip), ierr_MPI)
       end do
-      call MPI_WAITALL(int(num_neib_e), req2(1), sta2(1,1), ierr_MPI)
-      call MPI_WAITALL(int(num_neib_e), req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL(int                                              &
+     &   (num_neib_e), SR_sig1%req2(1), SR_sig1%sta2(1,1), ierr_MPI)
+      call MPI_WAITALL(int                                              &
+     &   (num_neib_e), SR_sig1%req1(1), SR_sig1%sta1(1,1), ierr_MPI)
 !
       end subroutine element_position_reverse_SR
 !

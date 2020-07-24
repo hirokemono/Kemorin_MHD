@@ -81,7 +81,7 @@
         num = int(NB * (istack_send(neib  ) - istack_send(neib-1)))
         call MPI_ISEND                                                  &
      &      (SR_r1%WS(ist), num, CALYPSO_REAL, int(id_pe_send(neib)),   &
-     &       0, CALYPSO_COMM, req1(neib), ierr_MPI)
+     &       0, CALYPSO_COMM, SR_sig1%req1(neib), ierr_MPI)
       end do
 !C
 !C-- RECEIVE
@@ -91,12 +91,13 @@
           num  = int(NB * (istack_recv(neib  ) - istack_recv(neib-1)))
           call MPI_IRECV                                                &
      &       (SR_r1%WR(ist), num, CALYPSO_REAL, int(id_pe_recv(neib)),  &
-     &        0, CALYPSO_COMM, req2(neib), ierr_MPI)
+     &        0, CALYPSO_COMM, SR_sig1%req2(neib), ierr_MPI)
         end do
       end if
 !
       if(ncomm_recv .gt. 0) then
-        call MPI_WAITALL(ncomm_recv, req2, sta2, ierr_MPI)
+        call MPI_WAITALL                                                &
+     &     (ncomm_recv, SR_sig1%req2, SR_sig1%sta2, ierr_MPI)
       end if
 !
       if (isend_self .eq. 0) return

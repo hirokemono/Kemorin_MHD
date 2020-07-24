@@ -33,6 +33,7 @@
 !
       use m_precision
       use m_constants
+      use t_solver_SR
 !
       implicit none
 !
@@ -71,8 +72,9 @@
       integer (kind = kint) :: neib, istart, inum, k, ii
 !
 !
-      call resize_work_4_SR(isix, NEIBPETOT, NEIBPETOT,                 &
-     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT) )
+      call resize_work_SR(isix, NEIBPETOT, NEIBPETOT,                   &
+     &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
+     &    SR_sig1, SR_r1)
 !C
 !C-- SEND
       
@@ -90,8 +92,8 @@
            SR_r1%WS(6*k  )= X(ii  )
         enddo
         call MPI_ISEND(SR_r1%WS(6*istart+1), int(6*inum), CALYPSO_REAL, &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM, req1(neib),  &
-     &                 ierr_MPI)
+     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
+     &                 SR_sig1%req1(neib), ierr_MPI)
       enddo
 
 !C
@@ -100,27 +102,29 @@
         istart= STACK_IMPORT(neib-1)
         inum  = STACK_IMPORT(neib  ) - istart
         call MPI_IRECV(SR_r1%WR(6*istart+1), int(6*inum), CALYPSO_REAL, &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM, req2(neib),  &
-     &                 ierr_MPI)
+     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
+     &                 SR_sig1%req2(neib), ierr_MPI)
       enddo
 
-      call MPI_WAITALL (int(NEIBPETOT), req2(1), sta2(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (int(NEIBPETOT), SR_sig1%req2(1), SR_sig1%sta2(1,1), ierr_MPI)
    
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
         inum  = STACK_IMPORT(neib  ) - istart
-      do k= istart+1, istart+inum
+        do k= istart+1, istart+inum
           ii   = 6*NOD_IMPORT(k)
-        X(ii-5)= SR_r1%WR(6*k-5)
-        X(ii-4)= SR_r1%WR(6*k-4)
-        X(ii-3)= SR_r1%WR(6*k-3)
-        X(ii-2)= SR_r1%WR(6*k-2)
-        X(ii-1)= SR_r1%WR(6*k-1)
-        X(ii  )= SR_r1%WR(6*k  )
-      enddo
+          X(ii-5)= SR_r1%WR(6*k-5)
+          X(ii-4)= SR_r1%WR(6*k-4)
+          X(ii-3)= SR_r1%WR(6*k-3)
+          X(ii-2)= SR_r1%WR(6*k-2)
+          X(ii-1)= SR_r1%WR(6*k-1)
+          X(ii  )= SR_r1%WR(6*k  )
+        enddo
       enddo
 
-      call MPI_WAITALL (int(NEIBPETOT), req1(1), sta1(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (int(NEIBPETOT), SR_sig1%req1(1), SR_sig1%sta1(1,1), ierr_MPI)
 
       end subroutine SOLVER_SEND_RECV_6
 !

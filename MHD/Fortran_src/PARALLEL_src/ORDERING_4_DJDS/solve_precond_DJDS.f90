@@ -100,6 +100,7 @@
      &          itr_res, ierr)
 !
       use m_solver_SR
+      use t_solver_SR
       use t_iccg_parameter
       use t_solver_djds
 !
@@ -128,10 +129,11 @@
  
         ierr = 1
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR                                         &
+          call resize_work_SR                                           &
      &       (ione, nod_comm%num_neib, nod_comm%num_neib,               &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
-     &        nod_comm%istack_import(nod_comm%num_neib) )
+     &        nod_comm%istack_import(nod_comm%num_neib),                &
+     &        SR_sig1, SR_r1)
         end if
 
       call precond_DJDS11_struct(np_smp, djds_tbl, djds_mat,            &
@@ -158,6 +160,7 @@
      &          itr_res, ierr)
 !
       use m_solver_SR
+      use t_solver_SR
       use t_iccg_parameter
       use t_solver_djds
 !
@@ -185,10 +188,11 @@
         STARTTIME= MPI_WTIME()
 !
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR                                         &
+          call resize_work_SR                                           &
      &       (ithree, nod_comm%num_neib, nod_comm%num_neib,             &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
-     &        nod_comm%istack_import(nod_comm%num_neib) )
+     &        nod_comm%istack_import(nod_comm%num_neib)                 &
+     &        SR_sig1, SR_r1)
         end if
 
         call precond_DJDS33_struct(np_smp, djds_tbl, djds_mat,          &
@@ -217,6 +221,7 @@
      &          itr_res, ierr)
 !
       use m_solver_SR
+      use t_solver_SR
       use t_iccg_parameter
       use t_solver_djds
 !
@@ -243,12 +248,12 @@
         call MPI_BARRIER  (CALYPSO_COMM, ierr_MPI)
         STARTTIME= MPI_WTIME()
 
-        write(*,*) 'resize_work_4_SR'
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR                                         &
+          call resize_work_SR                                           &
      &       (djds_mat%NB, nod_comm%num_neib, nod_comm%num_neib,        &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
-     &        nod_comm%istack_import(nod_comm%num_neib) )
+     &        nod_comm%istack_import(nod_comm%num_neib),                &
+     &        SR_sig1, SR_r1)
         end if
 
       write(*,*) 'precond_DJDSNN'

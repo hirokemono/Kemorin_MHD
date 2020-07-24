@@ -82,6 +82,7 @@
      &                 irev_import, X_org, X_new, CALYPSO_SUB_COMM)
 !
       use m_solver_SR
+      use t_solver_SR
       use calypso_AllToAll
       use select_copy_from_recv
 !
@@ -108,8 +109,8 @@
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
 !
-      call resize_work_4_SR(NB, npe_send, npe_recv,                     &
-     &    istack_send(npe_send), istack_recv(npe_recv))
+      call resize_work_SR(NB, npe_send, npe_recv,                       &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
 !
       if(iflag_SR .eq. iflag_import_rev) then
         call calypso_AllToAllV_rev_N(NB, nnod_org, nnod_new,            &
@@ -164,7 +165,8 @@
 !
 !
       nitem = npe_send*nitem_SR
-      call resize_work_4_SR(NB, npe_send, npe_recv, nitem, nitem)
+      call resize_work_SR(NB, npe_send, npe_recv, nitem, nitem,         &
+     &                      SR_sig1, SR_r1)
 !
       if(iflag_SR .eq. iflag_import_rev) then
         call calypso_AllToAll_rev_N(NB, nnod_org, nnod_new, nitem_SR,   &
