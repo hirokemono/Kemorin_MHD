@@ -114,6 +114,7 @@
      &          jacs, rhs_mat, mhd_fem_wk, fem_sq)
 !
       use calypso_mpi
+      use calypso_mpi_real
       use t_mean_square_values
 !
       use int_bulk

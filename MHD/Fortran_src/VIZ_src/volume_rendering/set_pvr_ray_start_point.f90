@@ -160,6 +160,7 @@
       subroutine check_pvr_ray_startpoint                               &
      &         (npixel_x, npixel_y, num_pvr_ray, id_pixel_start)
 !
+      use calypso_mpi_int
       use write_bmp_image
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y

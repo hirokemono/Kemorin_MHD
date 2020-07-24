@@ -221,6 +221,7 @@
 !
       subroutine mpi_write_merged_grp(nshift8, IO_param, group_IO)
 !
+      use calypso_mpi_int8
       use MPI_ascii_data_IO
       use MPI_domain_data_IO
       use data_IO_to_textline
@@ -280,6 +281,7 @@
       subroutine mpi_write_merged_surf_grp                              &
      &         (nshift8_ele, IO_param, surf_grp_IO)
 !
+      use calypso_mpi_int8
       use MPI_ascii_data_IO
       use MPI_domain_data_IO
       use data_IO_to_textline

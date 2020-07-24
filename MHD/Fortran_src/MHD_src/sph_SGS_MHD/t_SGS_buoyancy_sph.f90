@@ -132,6 +132,7 @@
       subroutine sphere_averaged_SGS_buoyancy                           &
      &         (sph_rj, sph_rtp, ipol_Csim, rj_fld, wk_sgs_buo)
 !
+      use calypso_mpi_real
       use t_rms_4_sph_spectr
       use t_spheric_parameter
       use t_phys_data

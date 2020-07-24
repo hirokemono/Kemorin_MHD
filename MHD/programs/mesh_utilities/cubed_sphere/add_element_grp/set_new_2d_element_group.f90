@@ -91,6 +91,7 @@
       subroutine count_new_2d_element_group(org_ele)
 !
       use calypso_mpi
+      use calypso_mpi_int
       use t_geometry_data
       use m_add_ele_grp_parameter
       use set_ele_grp2_by_2d

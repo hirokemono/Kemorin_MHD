@@ -82,6 +82,7 @@
       subroutine sum_lsq_coefs_4_comps(ncomp_sgs, wk_lsq)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq
@@ -100,6 +101,7 @@
       subroutine sum_lsq_whole_coefs(ncomp_sgs, wk_lsq)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       integer(kind = kint), intent(in) :: ncomp_sgs
       type(dynamic_least_suare_data), intent(inout) :: wk_lsq

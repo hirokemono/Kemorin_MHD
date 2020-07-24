@@ -68,7 +68,7 @@ t_SGS_model_coefs.o: $(MHD_COMMON_DIR)/t_SGS_model_coefs.f90 m_precision.o m_con
 	$(F90) -c $(F90OPTFLAGS) $<
 t_bc_data_MHD.o: $(MHD_COMMON_DIR)/t_bc_data_MHD.f90 m_precision.o m_machine_parameter.o t_bc_data_velo.o t_bc_data_magne.o t_bc_data_temp.o m_boundary_condition_IDs.o t_mesh_data.o t_geometry_data_MHD.o t_control_parameter.o t_nodal_bc_data.o t_boundary_field_IO.o t_bc_data_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_cal_max_indices.o: $(MHD_COMMON_DIR)/t_cal_max_indices.f90 m_precision.o t_geometry_data.o t_phys_data.o calypso_mpi.o write_field_labels.o
+t_cal_max_indices.o: $(MHD_COMMON_DIR)/t_cal_max_indices.f90 m_precision.o t_geometry_data.o t_phys_data.o calypso_mpi.o calypso_mpi_real.o write_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_parameter.o: $(MHD_COMMON_DIR)/t_control_parameter.f90 m_precision.o t_physical_property.o t_reference_scalar_param.o t_normalize_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

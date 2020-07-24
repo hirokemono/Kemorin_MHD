@@ -112,6 +112,8 @@
       subroutine bcast_ele_import_table                                 &
      &         (nnod_4_ele, ele_comm_tmp, ele_comm_gl)
 !
+      use calypso_mpi_int
+!
       integer(kind = kint), intent(in) :: nnod_4_ele
       type(communication_table), intent(inout) :: ele_comm_tmp(nprocs)
       type(work_4_const_export), intent(inout) :: ele_comm_gl(nprocs)

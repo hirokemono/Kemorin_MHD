@@ -389,7 +389,7 @@
         call dealloc_zip_buffer(zbuf)
 !
         if(IO_param%iflag_bin_swap .eq. iendian_FLIP) then
-          call byte_swap_int8_f(num, real_dat(1))
+          call byte_swap_real_f(cast_long(num), real_dat(1))
         end if
       end if
 !

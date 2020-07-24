@@ -28,7 +28,7 @@ main_visualize_rayleigh.o: $(RAYLEIGH_LINK_DIR)/main_visualize_rayleigh.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 palallel_conf_4_rayleigh.o: $(RAYLEIGH_LINK_DIR)/palallel_conf_4_rayleigh.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o t_rayleigh_field_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-rayleigh99_rst_param_IO.o: $(RAYLEIGH_LINK_DIR)/rayleigh99_rst_param_IO.f90 m_precision.o t_rayleigh_restart_IO.o
+rayleigh99_rst_param_IO.o: $(RAYLEIGH_LINK_DIR)/rayleigh99_rst_param_IO.f90 m_precision.o t_rayleigh_restart_IO.o byte_swap_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 rayleigh_restart_IO.o: $(RAYLEIGH_LINK_DIR)/rayleigh_restart_IO.f90 m_precision.o m_constants.o t_field_data_IO.o t_rayleigh_restart_IO.o t_base_field_labels.o t_explicit_term_labels.o set_parallel_file_name.o rayleigh99_rst_param_IO.o calypso_mpi.o delete_data_files.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -42,10 +42,10 @@ t_picked_rayleigh_parameter.o: $(RAYLEIGH_LINK_DIR)/t_picked_rayleigh_parameter.
 	$(F90) -c $(F90OPTFLAGS) $<
 t_picked_rayleigh_spectr.o: $(RAYLEIGH_LINK_DIR)/t_picked_rayleigh_spectr.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_rayleigh_field_IO.o: $(RAYLEIGH_LINK_DIR)/t_rayleigh_field_IO.f90 m_precision.o m_machine_parameter.o m_constants.o m_geometry_constants.o calypso_mpi.o t_field_data_IO.o t_mesh_data.o t_group_data.o MPI_ascii_data_IO.o MPI_binary_head_IO.o m_calypso_mpi_IO.o t_calypso_mpi_IO_param.o MPI_binary_data_IO.o m_error_IDs.o t_ctl_data_4_divide_sphere.o cal_minmax_and_stacks.o
+t_rayleigh_field_IO.o: $(RAYLEIGH_LINK_DIR)/t_rayleigh_field_IO.f90 m_precision.o m_machine_parameter.o m_constants.o m_geometry_constants.o calypso_mpi.o t_field_data_IO.o t_mesh_data.o t_group_data.o MPI_ascii_data_IO.o MPI_binary_head_IO.o byte_swap_f.o m_calypso_mpi_IO.o t_calypso_mpi_IO_param.o MPI_binary_data_IO.o m_error_IDs.o t_ctl_data_4_divide_sphere.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_rayleigh_field_address.o: $(RAYLEIGH_LINK_DIR)/t_rayleigh_field_address.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o m_error_IDs.o t_ctl_data_4_fields.o t_ctl_data_4_platforms.o t_mesh_data.o t_phys_data.o share_field_data.o t_field_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_rayleigh_restart_IO.o: $(RAYLEIGH_LINK_DIR)/t_rayleigh_restart_IO.f90 m_precision.o m_machine_parameter.o m_constants.o
+t_rayleigh_restart_IO.o: $(RAYLEIGH_LINK_DIR)/t_rayleigh_restart_IO.f90 m_precision.o m_machine_parameter.o m_constants.o byte_swap_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

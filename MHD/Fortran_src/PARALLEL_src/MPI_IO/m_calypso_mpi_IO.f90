@@ -695,8 +695,9 @@
       integer(kind = kint) :: ip
 !
 !
-      call calypso_mpi_allgather_int8(zbuf%ilen_gzipped, ione,           &
-     &                                ilen_gzipped_gl, ione)
+      call MPI_Allgather(zbuf%ilen_gzipped, 1, CALYPSO_GLOBAL_INT,      &
+     &    ilen_gzipped_gl, 1, CALYPSO_GLOBAL_INT, CALYPSO_COMM,         &
+     &    ierr_MPI)
 !
       if(zbuf%ilen_gzipped .gt. 0) then
         ioffset = ioff_gl

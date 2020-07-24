@@ -16,7 +16,7 @@ rendering_LIC_image.o: $(LIC_DIR)/rendering_LIC_image.f90 m_precision.o m_machin
 	$(F90) -c $(F90OPTFLAGS) $<
 rendering_streo_LIC_image.o: $(LIC_DIR)/rendering_streo_LIC_image.f90 m_precision.o m_machine_parameter.o m_constants.o m_work_time.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_rendering_vr_image.o t_control_params_4_pvr.o t_control_param_LIC.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o generate_vr_image.o m_elapsed_labels_4_VIZ.o cal_pvr_modelview_mat.o rendering_LIC_image.o write_LIC_image.o write_PVR_image.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_3d_noise.o: $(LIC_DIR)/t_3d_noise.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_data_LIC_noise.o skip_comment_f.o delete_data_files.o cal_3d_noise.o transfer_to_long_integers.o binary_IO.o
+t_3d_noise.o: $(LIC_DIR)/t_3d_noise.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_control_data_LIC_noise.o skip_comment_f.o delete_data_files.o cal_3d_noise.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o binary_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FastNoise.o: $(LIC_DIR)/t_FastNoise.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -156,7 +156,7 @@
 !
       integer, parameter :: id_file = 15
       integer, parameter :: iflag_pi = 314
-      integer :: i4_tmp
+      integer :: i4_tmp(1)
 !
       integer(kind = kint_gl) :: l8_byte
       integer(kind = kint) :: i
@@ -168,8 +168,10 @@
      &       FORM='UNFORMATTED', ACCESS='STREAM')
 !
         rayleigh_rtp%iflag_swap  = iendian_KEEP
-        read(id_file) i4_tmp
-        if(i4_tmp .ne. iflag_pi) rayleigh_rtp%iflag_swap = iendian_FLIP
+        read(id_file) i4_tmp(1)
+        if(i4_tmp(1) .ne. iflag_pi) then
+          rayleigh_rtp%iflag_swap = iendian_FLIP
+        end if
 !
         read(id_file) rayleigh_rtp%nri_gl
         read(id_file) rayleigh_rtp%nth_gl
@@ -177,9 +179,12 @@
 !
         if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
           l8_byte = 1
-          call byte_swap_int4_f(l8_byte, rayleigh_rtp%nri_gl)
-          call byte_swap_int4_f(l8_byte, rayleigh_rtp%nth_gl)
-          call byte_swap_int4_f(l8_byte, rayleigh_rtp%nphi_gl)
+          call byte_swap_int4_f(l8_byte, i4_tmp)
+          rayleigh_rtp%nri_gl = i4_tmp(1)
+          call byte_swap_int4_f(l8_byte, i4_tmp)
+          rayleigh_rtp%nth_gl = i4_tmp(1)
+          call byte_swap_int4_f(l8_byte, i4_tmp)
+          rayleigh_rtp%nphi_gl = i4_tmp(1)
         end if
 !
         call alloc_resolution_4_rayleigh(rayleigh_rtp)

@@ -27,6 +27,8 @@
       subroutine s_sum_normal_4_surf_group(ele, sf_grp, sf_grp_v)
 !
       use calypso_mpi
+      use calypso_mpi_real
+!
       use m_machine_parameter
       use t_geometry_data
       use t_group_data

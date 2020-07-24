@@ -105,6 +105,8 @@
      &         (time, mesh, fluid, cd_prop, iphys, nod_fld,             &
      &          jacs, fem_wk, flex_data)
 !
+      use calypso_mpi_real
+!
       real(kind = kreal), intent(in) :: time
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid
@@ -269,6 +271,8 @@
       subroutine set_ele_rms_4_previous_step                            &
      &         (time_d, mesh, fluid, iphys, nod_fld,                    &
      &          jacs, fem_wk, flex_data)
+!
+      use calypso_mpi_real
 !
       type(time_data), intent(in) :: time_d
       type(mesh_geometry), intent(in) :: mesh

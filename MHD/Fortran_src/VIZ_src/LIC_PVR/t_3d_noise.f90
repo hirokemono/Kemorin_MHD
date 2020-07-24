@@ -175,6 +175,9 @@
 !
       subroutine bcast_3d_cube_noise(nze)
 !
+      use calypso_mpi_real
+      use calypso_mpi_int
+      use calypso_mpi_char
       use transfer_to_long_integers
 !
       type(noise_cube), intent(inout) :: nze

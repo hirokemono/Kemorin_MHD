@@ -45,6 +45,7 @@
 !
       subroutine share_each_comm_table(ip_org, nod_comm)
 !
+      use calypso_mpi_int
       use new_SPH_restart
       use sph_file_MPI_IO_select
       use transfer_to_long_integers
@@ -88,6 +89,8 @@
 !
       subroutine share_each_node_data(ip_org, node)
 !
+      use calypso_mpi_int8
+      use calypso_mpi_real
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
@@ -119,6 +122,8 @@
 !
       subroutine share_each_element_data(ip_org, ele)
 !
+      use calypso_mpi_int
+      use calypso_mpi_int8
       use set_nnod_4_ele_by_type
       use transfer_to_long_integers
 !
@@ -159,6 +164,8 @@
 !
       subroutine share_each_group_data(ip_org, group)
 !
+      use calypso_mpi_int
+      use calypso_mpi_char
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
@@ -199,6 +206,8 @@
 !
       subroutine share_each_surf_group_data(ip_org, sf_group)
 !
+      use calypso_mpi_int
+      use calypso_mpi_char
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
@@ -240,6 +249,7 @@
 !
       subroutine share_doble_numbering(ip_org, dbl_id)
 !
+      use calypso_mpi_int
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org

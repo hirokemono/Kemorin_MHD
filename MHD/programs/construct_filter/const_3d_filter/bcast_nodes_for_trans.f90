@@ -122,6 +122,8 @@
 !
       subroutine bcast_xx_whole_nod(nnod_global, itl_nod_part)
 !
+      use calypso_mpi_real
+      use calypso_mpi_int
       use set_filters_4_new_domains
       use transfer_to_long_integers
 !

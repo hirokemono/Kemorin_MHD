@@ -174,6 +174,7 @@
       subroutine bcast_LIC_kernel(knl)
 !
       use transfer_to_long_integers
+      use calypso_mpi_real
 !
       type(LIC_kernel), intent(inout) :: knl
 !

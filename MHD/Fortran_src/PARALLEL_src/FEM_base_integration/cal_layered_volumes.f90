@@ -215,6 +215,7 @@
      &          (n_layer_d, volumes_layer, vol_total_layer)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       integer (kind = kint), intent(in) :: n_layer_d
       real(kind = kreal), intent(inout) :: volumes_layer(n_layer_d)

@@ -104,6 +104,7 @@
       subroutine import_noise_ary                                       &
      &         (filename, n_raw_data, n_data_size, ierr)
 
+      use calypso_mpi_char
       use set_parallel_file_name
       use binary_file_access
 
@@ -205,6 +206,7 @@
       subroutine import_noise_grad_ary                                  &
      &         (filename, n_grad_data, n_data_size, ierr)
 !
+      use calypso_mpi_char
       use set_parallel_file_name
       use binary_file_access
       use delete_data_files

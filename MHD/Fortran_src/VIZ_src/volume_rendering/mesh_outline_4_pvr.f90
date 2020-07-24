@@ -64,6 +64,8 @@
 !
       subroutine cal_mesh_outline_pvr(numnod, xx, outline)
 !
+      use calypso_mpi_real
+!
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !

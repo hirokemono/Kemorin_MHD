@@ -143,6 +143,7 @@
       subroutine sum_layerd_averages(n_layer_d, wk_cor)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       integer (kind = kint), intent(in) :: n_layer_d
       type(dynamic_correlation_data), intent(inout) :: wk_cor
@@ -166,6 +167,7 @@
       subroutine sum_layerd_correlation(n_layer_d, wk_cor)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       integer (kind = kint), intent(in) :: n_layer_d
       type(dynamic_correlation_data), intent(inout) :: wk_cor
@@ -191,6 +193,7 @@
       subroutine sum_whole_averages(wk_cor)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
@@ -213,6 +216,7 @@
       subroutine sum_whole_correlation(wk_cor)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       type(dynamic_correlation_data), intent(inout) :: wk_cor
 !
