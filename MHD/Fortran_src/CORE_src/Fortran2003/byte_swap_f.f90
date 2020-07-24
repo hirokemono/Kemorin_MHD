@@ -39,7 +39,7 @@
       use m_precision
       implicit none
 !
-      private :: byte_swap_32bit_f
+      private :: byte_swap_32bit_f, byte_swap_64bit_f
 !
 ! -----------------------------------------------------------------------
 !
