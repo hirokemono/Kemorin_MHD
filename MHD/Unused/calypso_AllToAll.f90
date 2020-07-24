@@ -289,7 +289,7 @@
 !
 !C-- SEND
       call set_to_send_buf_int(nnod_org,                                &
-     &    istack_send(npe_send), inod_export, iX_org, iWS)
+     &    istack_send(npe_send), inod_export, iX_org, SR_i1%iWS)
 !C
 !C-- COMM
       call calypso_AllToAllv_intcore                                    &
@@ -298,7 +298,7 @@
 !C-- RECV
       call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
-     &    iWR(1), iX_new)
+     &    SR_i1%iWR(1), iX_new)
 !
       end subroutine calypso_AllToAllV_int
 !

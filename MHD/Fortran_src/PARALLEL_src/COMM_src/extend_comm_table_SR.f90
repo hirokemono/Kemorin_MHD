@@ -155,7 +155,7 @@
      &    istack_send_added(num_neib), istack_recv_added(num_neib))
 !
 !$omp parallel workshare
-        iWS(1:ntot_send_added) = inod_send_added(1:ntot_send_added)
+      SR_i1%iWS(1:ntot_send_added) = inod_send_added(1:ntot_send_added)
 !$omp end parallel workshare
 !
       call calypso_send_recv_intcore                                    &
@@ -163,7 +163,7 @@
      &   num_neib, izero, id_neib, istack_recv_added)
 !
 !$omp parallel workshare
-      inod_recv_added(1:ntot_recv_added) = iWR(1:ntot_recv_added)
+      inod_recv_added(1:ntot_recv_added) = SR_i1%iWR(1:ntot_recv_added)
 !$omp end parallel workshare
 !
       call calypso_send_recv_fin(num_neib, izero)

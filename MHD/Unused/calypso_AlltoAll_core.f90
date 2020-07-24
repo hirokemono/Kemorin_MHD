@@ -94,9 +94,9 @@
       end do
 !
       call MPI_AllToAllV                                                &
-     &             (iWS(1), num_send, istack_send(0), CALYPSO_INTEGER,  &
-     &              iWR(1), num_recv, istack_recv(0), CALYPSO_INTEGER,  &
-     &              CALYPSO_SUB_COMM, ierr_MPI)
+     &   (SR_i1%iWS(1), num_send, istack_send(0), CALYPSO_INTEGER,      &
+     &    SR_i1%iWR(1), num_recv, istack_recv(0), CALYPSO_INTEGER,      &
+     &    CALYPSO_SUB_COMM, ierr_MPI)
 !
       end subroutine calypso_AllToAllv_intcore
 !
@@ -130,9 +130,9 @@
       integer(kind = kint), intent(in) :: nitem_SR
 !
 !
-      call MPI_AllToAll(iWS(1), nitem_SR, CALYPSO_INTEGER,              &
-     &                  iWR(1), nitem_SR, CALYPSO_INTEGER,              &
-     &                  CALYPSO_SUB_COMM, ierr_MPI)
+      call MPI_AllToAll(SR_i1%iWS(1), nitem_SR, CALYPSO_INTEGER,        &
+     &    SR_i1%iWR(1), nitem_SR, CALYPSO_INTEGER,                      &
+     &    CALYPSO_SUB_COMM, ierr_MPI)
 !
       end subroutine calypso_AllToAll_intcore
 !
