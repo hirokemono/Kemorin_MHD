@@ -258,8 +258,9 @@
      &                       CALYPSO_SUB_COMM)
 !
       use calypso_mpi
+      use t_solver_SR_int
       use m_solver_SR
-      use calypso_AlltoAll_core
+      use solver_SR_int
       use set_to_send_buffer
       use select_copy_from_recv
 !
@@ -284,8 +285,8 @@
       integer (kind=kint), intent(inout):: iX_new(nnod_new)
 !
 !
-      call resize_iwork_4_SR(npe_send, npe_recv,                        &
-     &    istack_send(npe_send), istack_recv(npe_recv))
+      call resize_iwork_SR_t(npe_send, npe_recv,                        &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_i1)
 !
 !C-- SEND
       call set_to_send_buf_int(nnod_org,                                &
@@ -293,7 +294,7 @@
 !C
 !C-- COMM
       call calypso_AllToAllv_intcore                                    &
-     &   (npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
+     &   (npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM, SR_i1)
 !
 !C-- RECV
       call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &

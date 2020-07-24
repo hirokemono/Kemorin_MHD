@@ -5,13 +5,14 @@
 !     coded by H. Matsui on Sep. 2002 (ver 1.0)
 !     Modified by H. Matsui on May. 2007 (ver 1.1)
 !
-!      subroutine  SOLVER_REMOTE_ACCESS_3                               &
-!     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-!     &                                    STACK_EXPORT, NOD_EXPORT, X)
-!      subroutine  solver_remote_access_3x3                             &
-!     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-!     &                                    STACK_EXPORT, NOD_EXPORT,    &
-!     &             X1, X2, X3)
+!!      subroutine  SOLVER_REMOTE_ACCESS_3(NP, NEIBPETOT, NEIBPE,       &
+!!     &                                   STACK_IMPORT, NOD_IMPORT,    &
+!!     &                                   STACK_EXPORT, NOD_EXPORT,    &
+!!     &                                   RMA_r, X)
+!!      subroutine  solver_remote_access_3x3(NP, NEIBPETOT, NEIBPE,     &
+!!     &                                     STACK_IMPORT, NOD_IMPORT,  &
+!!     &                                     STACK_EXPORT, NOD_EXPORT,  &
+!!     &                                     RMA_r, X1, X2, X3)
 !
       module solver_RMA_3
 !
@@ -32,9 +33,10 @@
 !C
 !C*** SOLVER_REMOTE_ACCESS_3
 !C
-      subroutine  SOLVER_REMOTE_ACCESS_3                                &
-     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
-     &                                    STACK_EXPORT, NOD_EXPORT, X)
+      subroutine  SOLVER_REMOTE_ACCESS_3(NP, NEIBPETOT, NEIBPE,         &
+     &                                   STACK_IMPORT, NOD_IMPORT,      &
+     &                                   STACK_EXPORT, NOD_EXPORT,      &
+     &                                   RMA_r, X)
 !
 ! ......................................................................
 
@@ -116,10 +118,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine  solver_remote_access_3x3                              &
-     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
-     &                                    STACK_EXPORT, NOD_EXPORT,     &
-     &             X1, X2, X3)
+      subroutine  solver_remote_access_3x3(NP, NEIBPETOT, NEIBPE,       &
+     &                                     STACK_IMPORT, NOD_IMPORT,    &
+     &                                     STACK_EXPORT, NOD_EXPORT,    &
+     &                                     RMA_r, X1, X2, X3)
 
 ! ......................................................................
 

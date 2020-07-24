@@ -135,8 +135,9 @@
      &         istack_send_added, ntot_send_added, inod_send_added,     &
      &         istack_recv_added, ntot_recv_added, inod_recv_added)
 !
+      use t_solver_SR
       use m_solver_SR
-      use calypso_SR_core
+      use solver_SR_int
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -154,8 +155,9 @@
      &                   :: inod_recv_added(ntot_recv_added)
 !
 !
-      call resize_iwork_4_SR(num_neib, num_neib,                        &
-     &    istack_send_added(num_neib), istack_recv_added(num_neib))
+      call resize_iwork_SR_t(num_neib, num_neib,                        &
+     &    istack_send_added(num_neib), istack_recv_added(num_neib),     &
+     &    SR_sig1, SR_i1)
 !
 !$omp parallel workshare
       SR_i1%iWS(1:ntot_send_added) = inod_send_added(1:ntot_send_added)
@@ -163,13 +165,13 @@
 !
       call calypso_send_recv_intcore                                    &
      &  (num_neib, izero, id_neib, istack_send_added,                   &
-     &   num_neib, izero, id_neib, istack_recv_added)
+     &   num_neib, izero, id_neib, istack_recv_added, SR_sig1, SR_i1)
 !
 !$omp parallel workshare
       inod_recv_added(1:ntot_recv_added) = SR_i1%iWR(1:ntot_recv_added)
 !$omp end parallel workshare
 !
-      call calypso_send_recv_fin(num_neib, izero)
+      call calypso_send_recv_fin_t(num_neib, izero, SR_sig1)
 !
       end subroutine added_nod_id_send_recv
 !

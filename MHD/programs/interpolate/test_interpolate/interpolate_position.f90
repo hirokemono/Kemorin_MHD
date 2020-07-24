@@ -203,7 +203,7 @@
      &    itp_org%inod_gl_dest_4_org, ivec8_2nd(1) )
 !
 !
-      if (iflag_debug.eq.1)  write(*,*) 'solver_send_recv_i'
+      if (iflag_debug.eq.1)  write(*,*) 'SOLVER_SEND_RECV_int8_type '
       if (comm_dest%num_neib.gt.0) then
         call SOLVER_SEND_RECV_int8_type                                 &
      &                (NP_dest, comm_dest, ivec8_2nd(1) )

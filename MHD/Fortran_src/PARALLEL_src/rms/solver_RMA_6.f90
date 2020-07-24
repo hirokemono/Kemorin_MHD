@@ -5,9 +5,10 @@
 !     coded by H. Matsui on Sep. 2002 (ver 1.0)
 !     Modified by H. Matsui on May. 2007 (ver 1.1)
 !
-!      subroutine  SOLVER_REMOTE_ACCESS_6                               &
-!     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-!     &                                    STACK_EXPORT, NOD_EXPORT, X)
+!!      subroutine  SOLVER_REMOTE_ACCESS_6(NP, NEIBPETOT, NEIBPE,       &
+!!     &                                   STACK_IMPORT, NOD_IMPORT,    &
+!!     &                                   STACK_EXPORT, NOD_EXPORT,    &
+!!     &                                   RMA_r, X)
 !
       module solver_RMA_6
 !
@@ -28,9 +29,10 @@
 !C
 !C*** SOLVER_REMOTE_ACCESS_6
 !C
-      subroutine  SOLVER_REMOTE_ACCESS_6                                &
-     &            (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
-     &                                    STACK_EXPORT, NOD_EXPORT, X)
+      subroutine  SOLVER_REMOTE_ACCESS_6(NP, NEIBPETOT, NEIBPE,         &
+     &                                   STACK_IMPORT, NOD_IMPORT,      &
+     &                                   STACK_EXPORT, NOD_EXPORT,      &
+     &                                   RMA_r, X)
 
 ! ......................................................................
 

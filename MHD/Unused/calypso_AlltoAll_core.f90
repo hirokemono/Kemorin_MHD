@@ -10,11 +10,8 @@
 !!@verbatim
 !!      subroutine calypso_AllToAllv_Ncore                              &
 !!     &   (NB, npe_sr, istack_send, istack_recv, CALYPSO_SUB_COMM)
-!!      subroutine calypso_AllToAllv_intcore                            &
-!!     &         (npe_sr, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !!
 !!      subroutine calypso_AllToAll_Ncore(NB, nitem_SR, CALYPSO_SUB_COMM)
-!!      subroutine calypso_AllToAll_intcore(nitem_SR, CALYPSO_SUB_COMM)
 !!@endverbatim
 !!
 !!@n @param  NB    Number of components for communication
@@ -71,36 +68,6 @@
       end subroutine calypso_AllToAllv_Ncore
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine calypso_AllToAllv_intcore                              &
-     &         (npe_sr, istack_send, istack_recv, CALYPSO_SUB_COMM)
-!
-      use calypso_mpi
-      use m_solver_SR
-!
-      integer, intent(in)  :: CALYPSO_SUB_COMM
-      integer(kind = kint), intent(in) :: npe_sr
-      integer(kind = kint), intent(in) :: istack_send(0:npe_sr)
-      integer(kind = kint), intent(in) :: istack_recv(0:npe_sr)
-!
-      integer(kind = kint) :: num_send(npe_sr), num_recv(npe_sr)
-!
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, npe_sr
-        num_send(ip) = (istack_send(ip) - istack_send(ip-1))
-        num_recv(ip) = (istack_recv(ip) - istack_recv(ip-1))
-      end do
-!
-      call MPI_AllToAllV                                                &
-     &   (SR_i1%iWS(1), num_send, istack_send(0), CALYPSO_INTEGER,      &
-     &    SR_i1%iWR(1), num_recv, istack_recv(0), CALYPSO_INTEGER,      &
-     &    CALYPSO_SUB_COMM, ierr_MPI)
-!
-      end subroutine calypso_AllToAllv_intcore
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine calypso_AllToAll_Ncore(NB, nitem_SR, CALYPSO_SUB_COMM)
@@ -118,23 +85,6 @@
      &                  CALYPSO_SUB_COMM, ierr_MPI)
 !
       end subroutine calypso_AllToAll_Ncore
-!
-! ----------------------------------------------------------------------
-!
-      subroutine calypso_AllToAll_intcore(nitem_SR, CALYPSO_SUB_COMM)
-!
-      use calypso_mpi
-      use m_solver_SR
-!
-      integer, intent(in)  :: CALYPSO_SUB_COMM
-      integer(kind = kint), intent(in) :: nitem_SR
-!
-!
-      call MPI_AllToAll(SR_i1%iWS(1), nitem_SR, CALYPSO_INTEGER,        &
-     &    SR_i1%iWR(1), nitem_SR, CALYPSO_INTEGER,                      &
-     &    CALYPSO_SUB_COMM, ierr_MPI)
-!
-      end subroutine calypso_AllToAll_intcore
 !
 ! ----------------------------------------------------------------------
 !
