@@ -30,7 +30,7 @@ find_pvr_surf_domain.o: $(PVR_DIR)/find_pvr_surf_domain.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 generate_vr_image.o: $(PVR_DIR)/generate_vr_image.f90 m_precision.o m_machine_parameter.o m_constants.o calypso_mpi.o t_control_params_4_pvr.o t_geometries_in_pvr_screen.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o m_geometry_constants.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_group_geometry.o set_position_pvr_screen.o find_pvr_surf_domain.o pvr_surface_enhancement.o pvr_axis_label.o count_pvr_ray_start_point.o set_pvr_ray_start_point.o cal_field_on_surf_viz.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mesh_outline_4_pvr.o: $(PVR_DIR)/mesh_outline_4_pvr.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_surf_grp_4_pvr_domain.o t_geometry_data.o
+mesh_outline_4_pvr.o: $(PVR_DIR)/mesh_outline_4_pvr.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_surf_grp_4_pvr_domain.o t_geometry_data.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ordering_pvr_sf_domain_grp.o: $(PVR_DIR)/ordering_pvr_sf_domain_grp.f90 m_precision.o m_constants.o t_surf_grp_4_pvr_domain.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<

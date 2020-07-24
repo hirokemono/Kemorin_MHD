@@ -66,6 +66,6 @@ solver_SR_N.o: $(SR_DIR)/solver_SR_N.f90 m_precision.o calypso_mpi.o m_solver_SR
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_SR_int.o: $(SR_DIR)/solver_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o m_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_work_time.o: $(SR_DIR)/t_work_time.f90 m_precision.o m_constants.o calypso_mpi.o set_parallel_file_name.o
+t_work_time.o: $(SR_DIR)/t_work_time.f90 m_precision.o m_constants.o calypso_mpi.o calypso_mpi_real.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

@@ -16,7 +16,7 @@ cal_gradient_on_element.o: $(FEM_INT_DIR)/cal_gradient_on_element.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_layerd_ave_correlate.o: $(FEM_INT_DIR)/cal_layerd_ave_correlate.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_layered_volumes.o: $(FEM_INT_DIR)/cal_layered_volumes.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_layering_ele_list.o calypso_mpi.o
+cal_layered_volumes.o: $(FEM_INT_DIR)/cal_layered_volumes.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_layering_ele_list.o calypso_mpi.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_prod_w_const_skv.o: $(FEM_INT_DIR)/cal_prod_w_const_skv.f90 m_precision.o t_geometry_data.o m_phys_constants.o cal_product_w_const_skv.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -164,7 +164,7 @@ set_surf_grp_vectors.o: $(FEM_INT_DIR)/set_surf_grp_vectors.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 set_table_4_RHS_assemble.o: $(FEM_INT_DIR)/set_table_4_RHS_assemble.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_table_FEM_const.o set_ele_id_4_node_type.o ordering_rhs_assemble_type.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_geometry.o
+sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o calypso_mpi_real.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_geometry.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_volume_of_domain.o: $(FEM_INT_DIR)/sum_volume_of_domain.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -184,6 +184,6 @@ t_table_FEM_const.o: $(FEM_INT_DIR)/t_table_FEM_const.f90 m_precision.o m_machin
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_FEM_integration.o: $(FEM_INT_DIR)/t_work_FEM_integration.f90 m_precision.o t_finite_element_mat.o t_int_surface_data.o t_jacobians.o t_next_node_ele_4_node.o t_table_FEM_const.o t_mesh_data.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_work_layer_correlate.o: $(FEM_INT_DIR)/t_work_layer_correlate.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o
+t_work_layer_correlate.o: $(FEM_INT_DIR)/t_work_layer_correlate.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

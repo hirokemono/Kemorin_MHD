@@ -1,6 +1,6 @@
 MPI_write_single_mesh_data.o: $(MERGE_DIR)/MPI_write_single_mesh_data.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o m_phys_constants.o m_calypso_mpi_IO.o MPI_ascii_data_IO.o data_IO_to_textline.o
 	$(F90) -c $(F90OPTFLAGS) $<
-MPI_write_single_mesh_file.o: $(MERGE_DIR)/MPI_write_single_mesh_file.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o m_phys_constants.o t_mesh_data.o t_para_double_numbering.o t_file_IO_parameter.o m_fem_mesh_labels.o mesh_data_IO.o set_mesh_file_names.o MPI_ascii_data_IO.o MPI_write_single_mesh_data.o MPI_groups_IO.o MPI_integer_list_IO.o MPI_domain_data_IO.o data_IO_to_textline.o
+MPI_write_single_mesh_file.o: $(MERGE_DIR)/MPI_write_single_mesh_file.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o m_phys_constants.o t_mesh_data.o t_para_double_numbering.o t_file_IO_parameter.o m_fem_mesh_labels.o mesh_data_IO.o set_mesh_file_names.o MPI_ascii_data_IO.o MPI_write_single_mesh_data.o MPI_groups_IO.o MPI_integer_list_IO.o calypso_mpi_int8.o MPI_domain_data_IO.o data_IO_to_textline.o
 	$(F90) -c $(F90OPTFLAGS) $<
 assemble_nodal_fields.o: $(MERGE_DIR)/assemble_nodal_fields.f90 m_precision.o m_constants.o m_machine_parameter.o t_phys_data.o t_field_data_IO.o cal_minmax_and_stacks.o t_comm_table_4_assemble.o set_field_to_restart.o field_IO_select.o share_field_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -32,7 +32,7 @@ set_internal_mesh_data.o: $(MERGE_DIR)/set_internal_mesh_data.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 set_merged_restart_data.o: $(MERGE_DIR)/set_merged_restart_data.f90 m_precision.o m_phys_labels.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-share_field_data.o: $(MERGE_DIR)/share_field_data.f90 m_precision.o m_constants.o calypso_mpi.o t_time_data.o t_phys_data.o cal_minmax_and_stacks.o t_field_data_IO.o
+share_field_data.o: $(MERGE_DIR)/share_field_data.f90 m_precision.o m_constants.o calypso_mpi.o t_time_data.o t_phys_data.o cal_minmax_and_stacks.o calypso_mpi_real.o t_field_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 share_mesh_data.o: $(MERGE_DIR)/share_mesh_data.f90 m_precision.o calypso_mpi.o m_constants.o t_geometry_data.o t_comm_table.o t_group_data.o t_para_double_numbering.o calypso_mpi_int.o new_SPH_restart.o sph_file_MPI_IO_select.o transfer_to_long_integers.o calypso_mpi_int8.o calypso_mpi_real.o set_nnod_4_ele_by_type.o calypso_mpi_char.o
 	$(F90) -c $(F90OPTFLAGS) $<
