@@ -12,7 +12,6 @@
 !!     &         (NB, npe_send, isend_self, id_pe_send, istack_send,    &
 !!     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
 !!
-!!      subroutine calypso_send_recv_fin(npe_send, isend_self)
 !!      subroutine calypso_send_recv_check                              &
 !!     &         (NB, npe_send, isend_self, istack_send,                &
 !!     &              npe_recv, irecv_self, istack_recv)
@@ -111,25 +110,6 @@
 !$omp end parallel do
 !
       end subroutine calypso_send_recv_core
-!
-! ----------------------------------------------------------------------
-!
-      subroutine calypso_send_recv_fin(npe_send, isend_self)
-!
-      use calypso_mpi
-      use m_solver_SR
-!
-      integer(kind = kint), intent(in) :: npe_send, isend_self
-!
-      integer :: ncomm_send
-!
-!
-      ncomm_send = int(npe_send - isend_self)
-      if(ncomm_send .gt. 0) then
-        call MPI_WAITALL(ncomm_send, req1, sta1, ierr_MPI)
-      end if
-!
-      end subroutine calypso_send_recv_fin
 !
 ! ----------------------------------------------------------------------
 !

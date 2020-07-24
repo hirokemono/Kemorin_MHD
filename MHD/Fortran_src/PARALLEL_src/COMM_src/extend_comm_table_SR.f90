@@ -80,7 +80,7 @@
       end do
 !$omp end parallel do
 !
-      call calypso_send_recv_fin(num_neib, izero)
+      call calypso_send_recv_fin(num_neib, izero, SR_sig1)
 !
       end subroutine added_geometry_send_recv
 !
@@ -127,7 +127,7 @@
      &        = SR_il1%i8WR(1:ntot_recv_added)
 !$omp end parallel workshare
 !
-      call calypso_send_recv_fin_t(num_neib, izero, SR_sig1)
+      call calypso_send_recv_fin(num_neib, izero, SR_sig1)
 !
       end subroutine added_global_id_send_recv
 !
@@ -173,7 +173,7 @@
       inod_recv_added(1:ntot_recv_added) = SR_i1%iWR(1:ntot_recv_added)
 !$omp end parallel workshare
 !
-      call calypso_send_recv_fin_t(num_neib, izero, SR_sig1)
+      call calypso_send_recv_fin(num_neib, izero, SR_sig1)
 !
       end subroutine added_nod_id_send_recv
 !

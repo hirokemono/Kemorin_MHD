@@ -25,7 +25,7 @@
 !!        integer(kind = kint), intent(in)   ::  NPE_SEND, NPE_RECV
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!
-!!      subroutine calypso_send_recv_fin_t(npe_send, isend_self, SR_sig)
+!!      subroutine calypso_send_recv_fin(npe_send, isend_self, SR_sig)
 !!        integer(kind = kint), intent(in) :: npe_send, isend_self
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
@@ -116,7 +116,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_send_recv_fin_t(npe_send, isend_self, SR_sig)
+      subroutine calypso_send_recv_fin(npe_send, isend_self, SR_sig)
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
       type(send_recv_status), intent(inout) :: SR_sig
@@ -130,7 +130,7 @@
      &     (ncomm_send, SR_sig%req1, SR_sig%sta1, ierr_MPI)
       end if
 !
-      end subroutine calypso_send_recv_fin_t
+      end subroutine calypso_send_recv_fin
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

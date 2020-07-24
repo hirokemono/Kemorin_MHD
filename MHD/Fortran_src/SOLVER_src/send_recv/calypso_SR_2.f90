@@ -115,7 +115,7 @@
      &    SR_r1%WR(1), X_new)
 !
 !C-- WAIT
-      call calypso_send_recv_fin(npe_send, isend_self)
+      call calypso_send_recv_fin(npe_send, isend_self, SR_sig1)
 !
       end subroutine calypso_send_recv_2
 !
@@ -181,7 +181,7 @@
      &    SR_r1%WR(1), X1_new, X2_new, X3_new)
 !
 !C-- WAIT
-      call calypso_send_recv_fin(npe_send, isend_self)
+      call calypso_send_recv_fin(npe_send, isend_self, SR_sig1)
 !
       end subroutine calypso_send_recv_3x2
 !

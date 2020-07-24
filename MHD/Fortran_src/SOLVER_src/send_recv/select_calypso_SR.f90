@@ -223,7 +223,7 @@
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
 !
-      call calypso_send_recv_fin(npe_send, isend_self)
+      call calypso_send_recv_fin(npe_send, isend_self, SR_sig1)
 !
       end subroutine finish_calypso_send_recv
 !
