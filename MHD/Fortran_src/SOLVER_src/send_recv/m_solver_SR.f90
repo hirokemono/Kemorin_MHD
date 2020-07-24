@@ -43,15 +43,6 @@
 !>       status flag for recieving
       integer, save, allocatable :: req2(:  )
 !
-!
-!>       size of send buffer
-      integer(kind = kint) :: n_WS = 0
-!>       size of kint buffer
-      integer(kind = kint) :: n_WR = 0
-!
-!>       work array for send buffer
-      real(kind = kreal), allocatable :: WS(:)
-!
 !>      Structure of communication flags
       type(send_recv_status), save :: SR_sig1
 !>      Structure of communication buffer for 8-byte integer
@@ -80,8 +71,6 @@
       call resize_flag_4_SR(NPE_SEND, NPE_RECV)
       call resize_work_SR_t                                             &
      &   (NB, NPE_SEND, NPE_RECV, NTOT_SEND, NTOT_RECV, SR_sig1, SR_r1)
-      n_WS = SR_r1%n_WS
-      n_WR = SR_r1%n_WR
 !
       end subroutine resize_work_4_SR
 !
@@ -97,8 +86,6 @@
       call resize_flag_4_SR(NPE_SEND, NPE_RECV)
       call resize_work_itp_SR_t                                         &
      &   (NB, NPE_SEND, NPE_RECV, NTOT_RECV, SR_sig1, SR_r1)
-      n_WS = SR_r1%n_WS
-      n_WR = SR_r1%n_WR
 !
       end subroutine resize_work_itp_SR
 !
