@@ -116,9 +116,6 @@
       integer(kind = kint), intent(in) ::    isendbuf(n_send)
       integer(kind = kint), intent(inout) :: irecvbuf(nprocs*n_recv)
 !
-      integer(kind = kint_gl) :: ist
-      integer :: ilen_in
-!
 !
       call MPI_AllGather(isendbuf, int(n_send), CALYPSO_INTEGER,        &
      &    irecvbuf, int(n_recv), CALYPSO_INTEGER, CALYPSO_COMM,         &

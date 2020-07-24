@@ -149,9 +149,6 @@
       real(kind = kreal), intent(in) ::    sendbuf(n_send)
       real(kind = kreal), intent(inout) :: recvbuf(nprocs*n_recv)
 !
-      integer(kind = kint_gl) :: ist
-      integer :: ilen_in
-!
 !
       call MPI_AllGather(sendbuf, int(n_send), CALYPSO_REAL,            &
      &    recvbuf, int(n_recv), CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)

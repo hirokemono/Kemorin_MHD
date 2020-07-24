@@ -159,9 +159,6 @@
       integer(kind = kint_gl), intent(inout)                            &
      &                        :: i8recvbuf(nprocs*n_recv)
 !
-      integer(kind = kint_gl) :: ist
-      integer :: ilen_in
-!
 !
       call MPI_AllGather(i8sendbuf, int(n_send), CALYPSO_GLOBAL_INT,    &
      &    i8recvbuf, int(n_recv), CALYPSO_GLOBAL_INT, CALYPSO_COMM,     &
