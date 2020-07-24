@@ -255,6 +255,7 @@
       subroutine infleat_int8_vector_mul                                &
      &         (iflag_bin_swap, nloop, i8_array, zbuf)
 !
+      use byte_swap_f
       use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
@@ -264,16 +265,14 @@
 !
       integer(kind = kint) :: iloop
 !
-      integer(kind = kint_gl) :: l8_byte
-!
 !
       do iloop = 1, nloop
         call infleate_int8_vector_b                                     &
      &     (i8_array(iloop)%num, i8_array(iloop)%i8_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = i8_array(iloop)%num * kint_gl
-          call byte_swap_64bit_f(l8_byte, i8_array(iloop)%i8_IO(1))
+          call byte_swap_int8_f(i8_array(iloop)%num,                    &
+     &                          i8_array(iloop)%i8_IO(1))
         end if
       end do
 !
@@ -288,6 +287,7 @@
       subroutine infleat_int_vector_mul                                 &
      &         (iflag_bin_swap, nloop, i_array, zbuf)
 !
+      use byte_swap_f
       use transfer_to_long_integers
       use data_convert_by_zlib
 !
@@ -299,16 +299,13 @@
       type(tmp_i8_array)  :: tmp64
       integer(kind = kint) :: iloop
 !
-      integer(kind = kint_gl) :: l8_byte
-!
 !
       do iloop = 1, nloop
         call alloc_1d_i8array(i_array(iloop)%num, tmp64)
         call infleate_int8_vector_b(tmp64%n1, tmp64%id_a, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = tmp64%n1 * kint_gl
-          call byte_swap_64bit_f(l8_byte, tmp64%id_a)
+          call byte_swap_int8_f(tmp64%n1, tmp64%id_a)
         end if
 !
         call dup_to_short_array(tmp64, i_array(iloop)%i_IO)
@@ -325,6 +322,7 @@
       subroutine infleat_int2d_vector_mul                               &
      &        (iflag_bin_swap, nloop, iv_array, zbuf)
 !
+      use byte_swap_f
       use transfer_to_long_integers
       use data_convert_by_zlib
 !
@@ -336,7 +334,6 @@
       type(tmp_i8_array)  :: tmp64
       integer(kind = kint) :: iloop
       integer(kind = kint_gl) :: num
-      integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
@@ -346,8 +343,7 @@
         call dealloc_zip_buffer(zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = tmp64%n1 * kint_gl
-          call byte_swap_64bit_f(l8_byte, tmp64%id_a)
+          call byte_swap_int8_f(tmp64%n1, tmp64%id_a)
         end if
 !
         call dup_to_short_array(tmp64, iv_array(iloop)%iv_IO)
@@ -364,6 +360,7 @@
       subroutine infleat_1d_vector_mul                                  &
      &         (iflag_bin_swap, nloop, r_array, zbuf)
 !
+      use byte_swap_f
       use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
@@ -373,16 +370,14 @@
 !
       integer(kind = kint) :: iloop
 !
-      integer(kind = kint_gl) :: l8_byte
-!
 !
       do iloop = 1, nloop
         call infleate_1d_vector_b                                       &
      &     (r_array(iloop)%num, r_array(iloop)%r_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = r_array(iloop)%num * kreal
-          call byte_swap_64bit_f(l8_byte, r_array(iloop)%r_IO(1))
+          call byte_swap_real_f(r_array(iloop)%num,                     &
+     &                          r_array(iloop)%r_IO(1))
         end if
       end do
 !
@@ -397,6 +392,7 @@
       subroutine infleat_2d_vector_mul                                  &
      &         (iflag_bin_swap, nloop, v_array, zbuf)
 !
+      use byte_swap_f
       use data_convert_by_zlib
 !
       integer, intent(in) :: iflag_bin_swap
@@ -406,7 +402,6 @@
 !
       integer(kind = kint) :: iloop
       integer(kind = kint_gl) :: num
-      integer(kind = kint_gl) :: l8_byte
 !
 !
       do iloop = 1, nloop
@@ -415,8 +410,7 @@
      &     (num, v_array(iloop)%v_IO, zbuf(iloop))
 !
         if(iflag_bin_swap .eq. iendian_FLIP) then
-          l8_byte = num * kreal
-          call byte_swap_64bit_f(l8_byte, v_array(iloop)%v_IO(1,1))
+          call byte_swap_real_f(num, v_array(iloop)%v_IO(1,1))
         end if
       end do
 !

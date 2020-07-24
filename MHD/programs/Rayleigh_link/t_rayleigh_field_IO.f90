@@ -149,6 +149,7 @@
 !
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
+      use byte_swap_f
 !
       character(len = kchara), intent(in) :: file_name
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
@@ -175,10 +176,10 @@
         read(id_file) rayleigh_rtp%nphi_gl
 !
         if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
-          l8_byte = kint_4b
-          call byte_swap_32bit_f(l8_byte, rayleigh_rtp%nri_gl)
-          call byte_swap_32bit_f(l8_byte, rayleigh_rtp%nth_gl)
-          call byte_swap_32bit_f(l8_byte, rayleigh_rtp%nphi_gl)
+          l8_byte = 1
+          call byte_swap_int4_f(l8_byte, rayleigh_rtp%nri_gl)
+          call byte_swap_int4_f(l8_byte, rayleigh_rtp%nth_gl)
+          call byte_swap_int4_f(l8_byte, rayleigh_rtp%nphi_gl)
         end if
 !
         call alloc_resolution_4_rayleigh(rayleigh_rtp)
@@ -188,10 +189,10 @@
         close(id_file)
 !
         if(rayleigh_rtp%iflag_swap .eq. iendian_FLIP) then
-          l8_byte = rayleigh_rtp%nri_gl * kreal
-          call byte_swap_64bit_f(l8_byte, rayleigh_rtp%radius_gl)
-          l8_byte = rayleigh_rtp%nth_gl * kreal
-          call byte_swap_64bit_f(l8_byte, rayleigh_rtp%theta_gl)
+          l8_byte = rayleigh_rtp%nri_gl
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%radius_gl)
+          l8_byte = rayleigh_rtp%nth_gl
+          call byte_swap_real_f(l8_byte, rayleigh_rtp%theta_gl)
         end if
 
 !$omp parallel do private(i)

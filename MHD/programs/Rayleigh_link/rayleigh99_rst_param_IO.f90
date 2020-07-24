@@ -32,6 +32,8 @@
 !
       subroutine read_rayleigh99_restart_params(dir, i_step, ra_rst)
 !
+      use byte_swap_f
+!
       integer(kind = kint), intent(in) :: i_step
       character(len = kchara), intent(in) :: dir
 !
@@ -63,16 +65,15 @@
 !      read(id_file) i4_tmp, ra_rst%new_dt_org, i4_tmp
 !
       if(ra_rst%iflag_swap .eq. iendian_FLIP) then
-        l8_byte = kint_4b
-        call byte_swap_32bit_f                                          &
+        l8_byte = 1
+        call byte_swap_int4_f                                           &
      &     (l8_byte, ra_rst%i_version_from_file)
-        call byte_swap_32bit_f(l8_byte, ra_rst%nri_org)
-        call byte_swap_32bit_f(l8_byte, ra_rst%iflag_rtype)
-        call byte_swap_32bit_f(l8_byte, ra_rst%ltr_org)
-        l8_byte = kreal
-        call byte_swap_64bit_f(l8_byte, ra_rst%dt_org)
-        call byte_swap_64bit_f(l8_byte, ra_rst%dt_new)
- !       call byte_swap_64bit_f(l8_byte, ra_rst%new_dt_org)
+        call byte_swap_int4_f(l8_byte, ra_rst%nri_org)
+        call byte_swap_int4_f(l8_byte, ra_rst%iflag_rtype)
+        call byte_swap_int4_f(l8_byte, ra_rst%ltr_org)
+        call byte_swap_real_f(l8_byte, ra_rst%dt_org)
+        call byte_swap_real_f(l8_byte, ra_rst%dt_new)
+ !       call byte_swap_real_f(l8_byte, ra_rst%new_dt_org)
       end if
 !
       call alloc_rayleigh_radial_grid(ra_rst)
@@ -83,10 +84,10 @@
       close(id_file)
 !
       if(ra_rst%iflag_swap .eq. iendian_FLIP) then
-        l8_byte = ra_rst%nri_org * kreal
-        call byte_swap_64bit_f(l8_byte, ra_rst%r_org)
-        l8_byte = kreal
-        call byte_swap_64bit_f(l8_byte, ra_rst%time_org)
+        l8_byte = ra_rst%nri_org
+        call byte_swap_real_f(l8_byte, ra_rst%r_org)
+        l8_byte = 1
+        call byte_swap_real_f(l8_byte, ra_rst%time_org)
       end if
 !
       end subroutine read_rayleigh99_restart_params
