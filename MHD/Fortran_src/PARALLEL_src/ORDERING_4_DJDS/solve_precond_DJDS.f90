@@ -191,7 +191,7 @@
           call resize_work_SR                                           &
      &       (ithree, nod_comm%num_neib, nod_comm%num_neib,             &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
-     &        nod_comm%istack_import(nod_comm%num_neib)                 &
+     &        nod_comm%istack_import(nod_comm%num_neib),                &
      &        SR_sig1, SR_r1)
         end if
 
