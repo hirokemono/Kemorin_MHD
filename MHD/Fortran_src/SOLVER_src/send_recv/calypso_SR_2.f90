@@ -101,7 +101,7 @@
 !
 !C-- SEND
       call set_to_send_buf_2(nnod_org,                                  &
-     &    istack_send(npe_send), inod_export, X_org, WS)
+     &    istack_send(npe_send), inod_export, X_org, SR_r1%WS)
 !
 !C-- COMM
       call calypso_send_recv_core                                       &
@@ -111,7 +111,7 @@
 !C-- RECV
       call sel_cppy_from_recv_buf_2(iflag_SR, nnod_new,                 &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
-     &    WR(1), X_new)
+     &    SR_r1%WR(1), X_new)
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self)
@@ -166,7 +166,7 @@
 !
 !C-- SEND
       call set_to_send_buf_3x2(nnod_org, istack_send(npe_send),         &
-     &    inod_export, X1_org, X2_org, X3_org, WS)
+     &    inod_export, X1_org, X2_org, X3_org, SR_r1%WS)
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
@@ -176,7 +176,7 @@
 !C-- RECV
       call sel_cppy_from_recv_buf_3x2(iflag_SR, nnod_new,               &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
-     &    WR(1), X1_new, X2_new, X3_new)
+     &    SR_r1%WR(1), X1_new, X2_new, X3_new)
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self)

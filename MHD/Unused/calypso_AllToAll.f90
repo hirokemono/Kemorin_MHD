@@ -101,13 +101,15 @@
 !
 !
       call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
-     &    istack_send(npe_send), istack_send, inod_export, X_org, WS)
+     &    istack_send(npe_send), istack_send, inod_export,              &
+     &    X_org, SR_r1%WS)
 !C
       call calypso_AllToAllv_Ncore                                      &
      &   (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !
       call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
-     &    istack_recv(npe_recv), istack_recv, inod_import, WR, X_new)
+     &    istack_recv(npe_recv), istack_recv, inod_import,              &
+     &    SR_r1%WR, X_new)
 !
       end subroutine calypso_AllToAllV_N
 !
@@ -145,13 +147,13 @@
 !
 !
       call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
-     &    inod_export, X_org, WS)
+     &    inod_export, X_org, SR_r1%WS)
 !C
       call calypso_AllToAllv_Ncore                                      &
      &   (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !
       call set_from_recv_buf_rev_N(NB, nnod_new,                        &
-     &    istack_recv(npe_recv), irev_import, WR, X_new)
+     &    istack_recv(npe_recv), irev_import, SR_r1%WR, X_new)
 !
       end subroutine calypso_AllToAllV_rev_N
 !
@@ -193,13 +195,13 @@
 !
 !C-- SEND
       call set_to_all2all_buf_N(NB, nnod_org, nitem_SR, npe_send,       &
-     &    istack_send, inod_export, X_org, WS)
+     &    istack_send, inod_export, X_org, SR_r1%WS)
 !C-- COMM
       call calypso_AllToAll_Ncore(NB, nitem_SR, CALYPSO_SUB_COMM)
 !
 !C-- RECV
       call set_from_all2all_buf_N(NB, nnod_new, nitem_SR,               &
-     &    npe_recv, istack_recv, inod_import, WR, X_new)
+     &    npe_recv, istack_recv, inod_import, SR_r1%WR, X_new)
 !
       end subroutine calypso_AllToAll_N
 !
@@ -238,13 +240,13 @@
 !
 !C-- SEND
       call set_to_all2all_buf_N(NB, nnod_org, nitem_SR, npe_send,       &
-     &    istack_send, inod_export, X_org, WS)
+     &    istack_send, inod_export, X_org, SR_r1%WS)
 !C-- COMM
       call calypso_AllToAll_Ncore(NB, nitem_SR, CALYPSO_SUB_COMM)
 !
 !C-- RECV
       call set_from_all2all_rev_N(NB, nnod_new, nitem_SR,               &
-     &    npe_recv, irev_import, WR, X_new)
+     &    npe_recv, irev_import, SR_r1%WR, X_new)
 !
       end subroutine calypso_AllToAll_rev_N
 !

@@ -188,15 +188,15 @@
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
-     &    n_WS, n_WR, WS(1), WR(1), WK1_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK1_sph)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%forces%i_vp_induct, f_hbd_trns%forces%i_vp_induct,       &
-     &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &    comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol_LES%SGS_term%i_SGS_vp_induct,                            &
      &    f_hbd_trns_LES%SGS_term%i_SGS_vp_induct,                      &
-     &    comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &    comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
 !
 !
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
@@ -248,11 +248,11 @@
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
-     &    n_WS, n_WR, WS(1), WR(1), WK1_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK1_sph)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%forces%i_vp_induct, f_hbd_trns%i_vp_induct,              &
-     &    comms_sph%comm_rj, n_WR, WR, rj_fld)
+     &    comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR, rj_fld)
 !
       call const_sph_rotation_uxb(sph%sph_rj, SPH_WK%r_2nd, sph_bc_B,   &
      &    g_sph_rj, ipol%forces%i_vp_induct, ipol%forces%i_induction,   &
@@ -306,26 +306,28 @@
      &   (ncomp_rj_2_xyz, comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
-     &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld, n_WS, WS)
+     &    ipol%i_magne, b_hbd_trns%i_magne, rj_fld,                     &
+     &    SR_r1%n_WS, SR_r1%WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%base%i_current, b_hbd_trns%base%i_current,               &
-     &    rj_fld, n_WS, WS)
+     &    rj_fld, SR_r1%n_WS, SR_r1%WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%diffusion%i_b_diffuse, b_hbd_trns%diffusion%i_b_diffuse, &
-     &    rj_fld, n_WS, WS)
+     &    rj_fld, SR_r1%n_WS, SR_r1%WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%forces%i_induction, b_hbd_trns%forces%i_induction,       &
-     &    rj_fld, n_WS, WS)
+     &    rj_fld, SR_r1%n_WS, SR_r1%WS)
       if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
      &      ipol_LES%SGS_term%i_SGS_induction,                          &
      &      b_hbd_trns%i_SGS_vp_induct,                                 &
-     &      rj_fld, n_WS, WS)
+     &      rj_fld, SR_r1%n_WS, SR_r1%WS)
       end if
 !
       call sph_b_trans_w_poles                                          &
      &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
-     &    sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,                  &
+     &    sph, comms_sph, trans_p,                                      &
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                   &
      &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole, WK1_sph)
 !
 !

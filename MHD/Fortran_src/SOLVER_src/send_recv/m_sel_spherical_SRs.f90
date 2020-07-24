@@ -151,7 +151,7 @@
       call calypso_send_recv_core                                       &
      &       (NB, npe_send, isend_self, id_pe_send, istack_send,        &
      &            npe_recv, irecv_self, id_pe_recv, istack_recv)
-      call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
+      call clear_addtional_SR_recv(NB, istack_recv(npe_recv), SR_r1%WR)
       if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+2)
 !
       end subroutine sel_calypso_sph_comm_N

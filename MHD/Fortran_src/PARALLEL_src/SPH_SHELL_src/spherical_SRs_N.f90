@@ -78,10 +78,10 @@
       call check_calypso_sph_comm_buf_N(NB, send_comm, recv_comm)
 !
       call calypso_sph_to_send_N(NB, nnod_send,                         &
-     &    send_comm, n_WS, X_send, WS)
+     &    send_comm, SR_r1%n_WS, X_send, SR_r1%WS)
       call calypso_sph_comm_N(NB, send_comm, recv_comm)
       call calypso_sph_from_recv_N(NB, nnod_recv,                       &
-     &    recv_comm, n_WR, WR, X_recv)
+     &    recv_comm, SR_r1%n_WR, SR_r1%WR, X_recv)
 !
       call finish_send_recv_sph(send_comm)
 !

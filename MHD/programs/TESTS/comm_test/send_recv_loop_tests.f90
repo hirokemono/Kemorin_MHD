@@ -84,7 +84,7 @@
           do k= ist+1, ied
                  ii   = NB * (nod_comm%item_export(k)-1) + nd
                  ix   = NB * (k-1) + nd
-             WS(ix)= xx4(ii)
+             SR_r1%WS(ix)= xx4(ii)
            end do
 !$omp end do nowait
          end do
@@ -119,7 +119,7 @@
           do k= ist+1, ied
             ii   = NB * (nod_comm%item_import(k)-1) + nd
             ix   = NB * (k-1) + nd
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
           end do
 !$omp end do nowait
         enddo
@@ -157,7 +157,7 @@
           do k= ist+1, ied
             ii   = NB * (node%internal_node+k-1) + nd
             ix   = NB * (irev_import(k)-1) + nd
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
           end do
 !$omp end do nowait
         enddo
@@ -193,7 +193,7 @@
           do nd = 1, NB
                  ii   = NB * (nod_comm%item_export(k)-1) + nd
                  ix   = NB * (k-1) + nd
-             WS(ix)= xx4(ii)
+             SR_r1%WS(ix)= xx4(ii)
            end do
          end do
 !$omp end do nowait
@@ -229,7 +229,7 @@
           do k= ist+1, ied
             ii   = NB * (nod_comm%item_import(k)-1) + nd
             ix   = NB * (k-1) + nd
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
           end do
         enddo
 !$omp end do nowait
@@ -267,7 +267,7 @@
           do k= ist+1, ied
             ii   = NB * (node%internal_node+k-1) + nd
             ix   = NB * (irev_import(k)-1) + nd
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
           end do
         enddo
 !$omp end do nowait
@@ -304,7 +304,7 @@
           do k= 1, num
                  ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
                  ix   = k + (nd-1) * num + NB*ist
-             WS(ix)= xx4(ii)
+             SR_r1%WS(ix)= xx4(ii)
            end do
 !$omp end do nowait
          end do
@@ -340,7 +340,7 @@
           do k= 1, num
             ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
           end do
 !$omp end do nowait
         enddo
@@ -379,7 +379,7 @@
           do k= 1, num
             ii   = NB * (node%internal_node+k+ist-1) + nd
             ix   = NB * (irev_import(k+ist)-1) + nd
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
           end do
 !$omp end do nowait
         enddo
@@ -417,7 +417,7 @@
           nd = (inum-k) / NB + ione
                  ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
                  ix   = inum + NB*ist
-             WS(ix)= xx4(ii)
+             SR_r1%WS(ix)= xx4(ii)
         end do
 !$omp end do nowait
       end do
@@ -454,7 +454,7 @@
           k = (inum-nd) / NB + ione
             ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
         end do
 !$omp end do nowait
       enddo
@@ -493,7 +493,7 @@
           k = (inum-nd) / NB + ione
             ii   = NB * (node%internal_node+k+ist-1) + nd
             ix   = (irev_import(k)-ist) + (nd-1) * num + NB*ist
-            xx4(ii)= WR(ix)
+            xx4(ii)= SR_r1%WR(ix)
         end do
 !$omp end do nowait
       enddo

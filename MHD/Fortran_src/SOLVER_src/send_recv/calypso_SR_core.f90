@@ -80,7 +80,7 @@
         ist = NB * istack_send(neib-1) + 1
         num = int(NB * (istack_send(neib  ) - istack_send(neib-1)))
         call MPI_ISEND                                                  &
-     &      (WS(ist), num, CALYPSO_REAL, int(id_pe_send(neib)),         &
+     &      (SR_r1%WS(ist), num, CALYPSO_REAL, int(id_pe_send(neib)),   &
      &       0, CALYPSO_COMM, req1(neib), ierr_MPI)
       end do
 !C
@@ -90,7 +90,7 @@
           ist= NB * istack_recv(neib-1) + 1
           num  = int(NB * (istack_recv(neib  ) - istack_recv(neib-1)))
           call MPI_IRECV                                                &
-     &       (WR(ist), num, CALYPSO_REAL, int(id_pe_recv(neib)),        &
+     &       (SR_r1%WR(ist), num, CALYPSO_REAL, int(id_pe_recv(neib)),  &
      &        0, CALYPSO_COMM, req2(neib), ierr_MPI)
         end do
       end if
@@ -105,7 +105,7 @@
       num = int(NB * (istack_send(npe_send) - istack_send(npe_send-1)))
 !$omp parallel do
       do i = 1, num
-        WR(ist_recv+i) = WS(ist_send+i)
+        SR_r1%WR(ist_recv+i) = SR_r1%WS(ist_send+i)
       end do
 !$omp end parallel do
 !
@@ -159,12 +159,15 @@
         ist = NB * istack_send(neib-1) + 1
         num = NB * (istack_send(neib  ) - istack_send(neib-1))
         if(ist .lt. 0) write(*,*) 'wrong istack_send(0)', my_rank
-        if(ist .gt. size(WS)) write(*,*) 'wrong istack_send(neib)',     &
-     &       my_rank, neib, ist, size(WS)
-        if((ist+num-1) .le. 0) write(*,*)                               &
-     &       'negative num_send(0)', my_rank, neib, ist, num, size(WS)
-        if((ist+num-1) .gt. size(WS)) write(*,*)                        &
-     &       'large num_send(neib)', my_rank, neib, ist, num, size(WS)
+        if(ist .gt. size(SR_r1%WS))                                     &
+     &       write(*,*) 'wrong istack_send(neib)',                      &
+     &       my_rank, neib, ist, size(SR_r1%WS)
+        if((ist+num-1) .le. 0)                                          &
+     &       write(*,*) 'negative num_send(0)',                         &
+     &       my_rank, neib, ist, num, size(SR_r1%WS)
+        if((ist+num-1) .gt. size(SR_r1%WS))                             &
+     &       write(*,*) 'large num_send(neib)',                         &
+     &       my_rank, neib, ist, num, size(SR_r1%WS)
       end do
 !C
 !C-- RECEIVE
@@ -173,12 +176,14 @@
           ist= NB * istack_recv(neib-1) + 1
           num  = NB * (istack_recv(neib  ) - istack_recv(neib-1))
           if(ist .lt. 0) write(*,*) 'wrong istack_recv(0)', my_rank
-          if(ist .gt. size(WR)) write(*,*) 'wrong istack_recv(neib)',   &
-     &       my_rank, neib, ist, size(WR)
-          if((ist+num-1) .le. 0) write(*,*)                             &
-     &       'negative num_recv(0)', my_rank, neib, ist, num, size(WR)
-          if((ist+num-1) .gt. size(WR)) write(*,*)                      &
-     &       'large num_recv(neib)' ,my_rank, neib, ist, num, size(WR)
+          if(ist .gt. size(SR_r1%WR))                                   &
+     &       write(*,*) 'wrong istack_recv(neib)',                      &
+     &       my_rank, neib, ist, size(SR_r1%WR)
+          if((ist+num-1) .le. 0) write(*,*) 'negative num_recv(0)',     &
+     &       my_rank, neib, ist, num, size(SR_r1%WR)
+          if((ist+num-1) .gt. size(SR_r1%WR))                           &
+     &       write(*,*) 'large num_recv(neib)' ,                        &
+     &       my_rank, neib, ist, num, size(SR_r1%WR)
         end do
       end if
 !
@@ -187,24 +192,24 @@
       ist_recv= NB * istack_recv(npe_recv-1)
       num = NB * (istack_send(npe_send  ) - istack_send(npe_send-1))
         if(ist_send .lt. 0) write(*,*) 'wrong istack_send(0)', my_rank
-        if(ist_send .gt. size(WS)) write(*,*)                           &
+        if(ist_send .gt. size(SR_r1%WS)) write(*,*)                     &
      &      'wrong istack_send(npe_send)',                              &
-     &       my_rank, npe_send, ist_send, size(WS)
+     &       my_rank, npe_send, ist_send, size(SR_r1%WS)
         if((ist_send+num-1) .le. 0) write(*,*) 'negative num_send(0)',  &
-     &       my_rank, npe_send, ist_send, num, size(WS)
-        if((ist_send+num-1) .gt. size(WS)) write(*,*)                   &
+     &       my_rank, npe_send, ist_send, num, size(SR_r1%WS)
+        if((ist_send+num-1) .gt. size(SR_r1%WS)) write(*,*)             &
      &      'large num_send(npe_send)',                                 &
-     &       my_rank, npe_send, ist_send, num, size(WS)
+     &       my_rank, npe_send, ist_send, num, size(SR_r1%WS)
 !
         if(ist_recv .lt. 0) write(*,*) 'wrong istack_recv(0)', my_rank
-        if(ist_recv .gt. size(WR)) write(*,*)                           &
+        if(ist_recv .gt. size(SR_r1%WR)) write(*,*)                     &
      &      'wrong istack_recv(npe_recv)',                              &
-     &       my_rank, npe_recv, ist_recv, size(WR)
+     &       my_rank, npe_recv, ist_recv, size(SR_r1%WR)
         if((ist_recv+num-1) .le. 0) write(*,*) 'negative num_send(0)',  &
-     &       my_rank, npe_recv, ist_recv, num, size(WR)
-        if((ist_recv+num-1) .gt. size(WR)) write(*,*)                   &
+     &       my_rank, npe_recv, ist_recv, num, size(SR_r1%WR)
+        if((ist_recv+num-1) .gt. size(SR_r1%WR)) write(*,*)             &
      &       'large num_send(npe_recv)',                                &
-     &      my_rank, npe_recv, ist_recv, num, size(WR)
+     &      my_rank, npe_recv, ist_recv, num, size(SR_r1%WR)
 !
       end subroutine calypso_send_recv_check
 !

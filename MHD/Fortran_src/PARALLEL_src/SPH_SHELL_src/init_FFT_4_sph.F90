@@ -59,7 +59,7 @@
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
         call s_select_fourier_transform(ncomp, sph_rtp, comm_rtp,       &
-     &     n_WS, n_WR, WS, WR, WK_FFTs)
+     &      SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR, WK_FFTs)
         iflag_FFT = iflag_selected
       end if
 !

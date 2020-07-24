@@ -99,7 +99,7 @@
 !
       if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+1)
       call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
-     &    inod_export, X_org, WS)
+     &    inod_export, X_org, SR_r1%WS)
       if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+1)
 !C
       if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+2)
@@ -110,7 +110,7 @@
 !
       if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+3)
       call set_from_recv_buf_rev_N(NB, nnod_new,                        &
-     &    istack_recv(npe_recv), irev_import, WR, X_new)
+     &    istack_recv(npe_recv), irev_import, SR_r1%WR, X_new)
       if(iflag_CSR_time) call end_elapsed_time(ist_elapsed_CSR+3)
 !
       end subroutine calypso_send_recv_rev_N
@@ -160,7 +160,7 @@
 !C-- SEND
 !
       call set_to_send_buf_3xN(NB, nnod_org, istack_send(npe_send),     &
-     &    inod_export, X1_org, X2_org, X3_org, WS)
+     &    inod_export, X1_org, X2_org, X3_org, SR_r1%WS)
 !C
       call calypso_send_recv_core                                       &
      &        ((3*NB), npe_send, isend_self, id_pe_send, istack_send,   &
@@ -168,7 +168,7 @@
 !
       call set_from_recv_buf_rev_3xN(NB, nnod_new,                      &
      &    istack_recv(npe_recv), irev_import,                           &
-     &    WR, X1_new, X2_new, X3_new)
+     &    SR_r1%WR, X1_new, X2_new, X3_new)
 !
       end subroutine calypso_send_recv_rev_3xN
 !

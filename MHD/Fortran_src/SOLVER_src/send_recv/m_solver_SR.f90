@@ -51,11 +51,11 @@
 !
 !>       work array for send buffer
       real(kind = kreal), allocatable :: WS(:)
-!>       work array for recieve buffer
-      real(kind = kreal), allocatable :: WR(:)
 !
 !>      Structure of communication flags
       type(send_recv_status), save :: SR_sig1
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), save :: SR_r1
 !
 !>      Structure of communication buffer for 8-byte integer
       type(send_recv_int_buffer), save :: SR_i1
@@ -63,7 +63,6 @@
       type(send_recv_int8_buffer), save :: SR_il1
 !
       private :: resize_flag_4_SR
-      private :: resize_wsend_SR, resize_wrecv_SR
 !
 ! ----------------------------------------------------------------------
 !
@@ -79,8 +78,10 @@
 !
 !
       call resize_flag_4_SR(NPE_SEND, NPE_RECV)
-      call resize_wsend_SR(NB, NTOT_SEND+1)
-      call resize_wrecv_SR(NB, NTOT_RECV+1)
+      call resize_work_SR_t                                             &
+     &   (NB, NPE_SEND, NPE_RECV, NTOT_SEND, NTOT_RECV, SR_sig1, SR_r1)
+      n_WS = SR_r1%n_WS
+      n_WR = SR_r1%n_WR
 !
       end subroutine resize_work_4_SR
 !
@@ -94,7 +95,10 @@
 !
 !
       call resize_flag_4_SR(NPE_SEND, NPE_RECV)
-      call resize_wrecv_SR(NB, NTOT_RECV)
+      call resize_work_itp_SR_t                                         &
+     &   (NB, NPE_SEND, NPE_RECV, NTOT_RECV, SR_sig1, SR_r1)
+      n_WS = SR_r1%n_WS
+      n_WR = SR_r1%n_WR
 !
       end subroutine resize_work_itp_SR
 !
@@ -125,33 +129,6 @@
       end if
 !
       end subroutine resize_flag_4_SR
-!
-! ----------------------------------------------------------------------
-!
-      subroutine resize_wsend_SR(NB, NTOT_SEND)
-!
-      integer(kind=kint), intent(in)   ::  NB, NTOT_SEND
-!
-      if(allocated(WS) .and. (size(WS) .lt. (NB*NTOT_SEND)) )           &
-     &                                 deallocate(WS)
-      if (allocated(WS) .eqv. .false.) allocate (WS(NB*NTOT_SEND))
-      n_WS = size(WS)
-!
-      end subroutine resize_wsend_SR
-!
-! ----------------------------------------------------------------------
-!
-      subroutine resize_wrecv_SR(NB, NTOT_RECV)
-!
-      integer(kind=kint), intent(in) ::  NB, NTOT_RECV
-!
-!
-      if(allocated(WR) .and. (size(WR) .lt. (NB*NTOT_RECV)) )           &
-     &                              deallocate (WR)
-      if(allocated(WR) .eqv. .false.) allocate (WR(NB*NTOT_RECV))
-      n_WR = size(WR)
-!
-      end subroutine resize_wrecv_SR
 !
 ! ----------------------------------------------------------------------
 !

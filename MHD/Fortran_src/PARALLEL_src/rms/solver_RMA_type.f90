@@ -1,5 +1,5 @@
 !
-!      module SOLVER_RMA_type
+!      module solver_RMA_type
 !
 !        programmed by H.Matsui on Feb. 2003
 !        modified by H. Matsui on June. 2006
@@ -13,7 +13,7 @@
 !!
 !!      subroutine SOLVER_RMA_int_type(NP, comm_tbl, RMA_i, iX)
 !
-      module SOLVER_RMA_type
+      module solver_RMA_type
 !
       use m_precision
 !
@@ -164,4 +164,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module SOLVER_RMA_type
+      end module solver_RMA_type

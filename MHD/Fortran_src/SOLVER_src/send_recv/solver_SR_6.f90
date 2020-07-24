@@ -82,14 +82,14 @@
         
         do k= istart+1, istart+inum
                ii   = 6*NOD_EXPORT(k)
-           WS(6*k-5)= X(ii-5)
-           WS(6*k-4)= X(ii-4)
-           WS(6*k-3)= X(ii-3)
-           WS(6*k-2)= X(ii-2)
-           WS(6*k-1)= X(ii-1)
-           WS(6*k  )= X(ii  )
+           SR_r1%WS(6*k-5)= X(ii-5)
+           SR_r1%WS(6*k-4)= X(ii-4)
+           SR_r1%WS(6*k-3)= X(ii-3)
+           SR_r1%WS(6*k-2)= X(ii-2)
+           SR_r1%WS(6*k-1)= X(ii-1)
+           SR_r1%WS(6*k  )= X(ii  )
         enddo
-        call MPI_ISEND(WS(6*istart+1), int(6*inum), CALYPSO_REAL,       &
+        call MPI_ISEND(SR_r1%WS(6*istart+1), int(6*inum), CALYPSO_REAL, &
      &                 int(NEIBPE(neib)), 0, CALYPSO_COMM, req1(neib),  &
      &                 ierr_MPI)
       enddo
@@ -99,7 +99,7 @@
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
         inum  = STACK_IMPORT(neib  ) - istart
-        call MPI_IRECV(WR(6*istart+1), int(6*inum), CALYPSO_REAL,       &
+        call MPI_IRECV(SR_r1%WR(6*istart+1), int(6*inum), CALYPSO_REAL, &
      &                 int(NEIBPE(neib)), 0, CALYPSO_COMM, req2(neib),  &
      &                 ierr_MPI)
       enddo
@@ -111,12 +111,12 @@
         inum  = STACK_IMPORT(neib  ) - istart
       do k= istart+1, istart+inum
           ii   = 6*NOD_IMPORT(k)
-        X(ii-5)= WR(6*k-5)
-        X(ii-4)= WR(6*k-4)
-        X(ii-3)= WR(6*k-3)
-        X(ii-2)= WR(6*k-2)
-        X(ii-1)= WR(6*k-1)
-        X(ii  )= WR(6*k  )
+        X(ii-5)= SR_r1%WR(6*k-5)
+        X(ii-4)= SR_r1%WR(6*k-4)
+        X(ii-3)= SR_r1%WR(6*k-3)
+        X(ii-2)= SR_r1%WR(6*k-2)
+        X(ii-1)= SR_r1%WR(6*k-1)
+        X(ii  )= SR_r1%WR(6*k  )
       enddo
       enddo
 

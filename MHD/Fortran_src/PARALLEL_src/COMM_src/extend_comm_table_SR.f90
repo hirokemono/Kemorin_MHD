@@ -60,9 +60,9 @@
 !
 !$omp parallel do private(inum)
       do inum = 1, ntot_send_added
-        WS(3*inum-2) = xx_send_added(inum,1)
-        WS(3*inum-1) = xx_send_added(inum,2)
-        WS(3*inum  ) = xx_send_added(inum,3)
+        SR_r1%WS(3*inum-2) = xx_send_added(inum,1)
+        SR_r1%WS(3*inum-1) = xx_send_added(inum,2)
+        SR_r1%WS(3*inum  ) = xx_send_added(inum,3)
       end do
 !$omp end parallel do
 !
@@ -72,9 +72,9 @@
 !
 !$omp parallel do private(inum)
       do inum = 1, ntot_recv_added
-        xx_recv_added(inum,1) = WR(3*inum-2)
-        xx_recv_added(inum,2) = WR(3*inum-1)
-        xx_recv_added(inum,3) = WR(3*inum  )
+        xx_recv_added(inum,1) = SR_r1%WR(3*inum-2)
+        xx_recv_added(inum,2) = SR_r1%WR(3*inum-1)
+        xx_recv_added(inum,3) = SR_r1%WR(3*inum  )
       end do
 !$omp end parallel do
 !

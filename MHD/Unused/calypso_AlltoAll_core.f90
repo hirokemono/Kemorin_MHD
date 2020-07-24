@@ -61,8 +61,8 @@
         ist_recv(ip) = NB*istack_recv(ip-1)
       end do
 !
-      call MPI_AllToAllV(WS(1), num_send, ist_send, CALYPSO_REAL,       &
-     &                   WR(1), num_recv, ist_recv, CALYPSO_REAL,       &
+      call MPI_AllToAllV(SR_r1%WS(1), num_send, ist_send, CALYPSO_REAL, &
+     &                   SR_r1%WR(1), num_recv, ist_recv, CALYPSO_REAL, &
      &                   CALYPSO_SUB_COMM, ierr_MPI)
 !
       end subroutine calypso_AllToAllv_Ncore
@@ -80,8 +80,8 @@
       integer(kind = kint), intent(in) :: nitem_SR
 !
 !
-      call MPI_AllToAll(WS(1), (NB*nitem_SR), CALYPSO_REAL,             &
-     &                  WR(1), (NB*nitem_SR), CALYPSO_REAL,             &
+      call MPI_AllToAll(SR_r1%WS(1), (NB*nitem_SR), CALYPSO_REAL,       &
+     &                  SR_r1%WR(1), (NB*nitem_SR), CALYPSO_REAL,       &
      &                  CALYPSO_SUB_COMM, ierr_MPI)
 !
       end subroutine calypso_AllToAll_Ncore

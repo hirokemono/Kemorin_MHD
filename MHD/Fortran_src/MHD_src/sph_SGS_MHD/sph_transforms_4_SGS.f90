@@ -76,11 +76,12 @@
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       call mhd_spectr_to_sendbuf                                        &
-     &   (trns_bwd, comms_sph%comm_rj, rj_fld, n_WS, WS(1))
+     &   (trns_bwd, comms_sph%comm_rj, rj_fld, SR_r1%n_WS, SR_r1%WS(1))
 !
       call sph_backward_transforms                                      &
      &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
-     &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
+     &    sph, comms_sph, trans_p,                                      &
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
      &    trns_bwd%fld_rtp, WK_sph)
 !
 !
@@ -115,10 +116,10 @@
       call sph_forward_transforms                                       &
      &   (trns_fwd%ncomp, trns_fwd%num_vector, trns_fwd%num_scalar,     &
      &    sph, comms_sph, trans_p, trns_fwd%fld_rtp,                    &
-     &    n_WS, n_WR, WS(1), WR(1), WK_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK_sph)
 !
       call mhd_spectr_from_recvbuf                                      &
-     &   (trns_fwd, comms_sph%comm_rj, n_WR, WR(1), rj_fld)
+     &   (trns_fwd, comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_SGS_MHD
 !

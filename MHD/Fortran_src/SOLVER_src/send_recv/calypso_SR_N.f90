@@ -95,14 +95,16 @@
 !
 !C-- SEND
       call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
-     &    istack_send(npe_send), istack_send, inod_export, X_org, WS)
+     &    istack_send(npe_send), istack_send, inod_export,              &
+     &    X_org, SR_r1%WS)
 !C
       call calypso_send_recv_core                                       &
      &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
       call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
-     &    istack_recv(npe_recv), istack_recv, inod_import, WR, X_new)
+     &    istack_recv(npe_recv), istack_recv, inod_import,              &
+     &    SR_r1%WR, X_new)
 !
       end subroutine calypso_send_recv_N
 !
@@ -158,7 +160,7 @@
       s1time = MPI_WTIME()
       call set_to_send_buf_3xN_mod(NB, nnod_org,                        &
      &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
-     &    X1_org, X2_org, X3_org, WS)
+     &    X1_org, X2_org, X3_org, SR_r1%WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
       call calypso_send_recv_core                                       &
@@ -168,7 +170,7 @@
 !      s2time = MPI_WTIME()
       call set_from_recv_buf_3xN(NB, nnod_new,                          &
      &    npe_recv, istack_recv(npe_recv), istack_recv, inod_import,    &
-     &    WR, X1_new, X2_new, X3_new)
+     &    SR_r1%WR, X1_new, X2_new, X3_new)
 !      elaps3(2) = elaps3(2) + MPI_WTIME() - s2time
 !      elaps3(3) = elaps3(3) + MPI_WTIME() - s1time
 !

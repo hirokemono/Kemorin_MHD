@@ -173,11 +173,12 @@
      &        write(*,*) 'set_all_vec_spec_to_sph_t'
       call set_all_vec_spec_to_sph_t                                    &
      &     (fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,            &
-     &      rj_fld, n_WS, WS)
+     &      rj_fld, SR_r1%n_WS, SR_r1%WS)
 !
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
-     &    sph, comms_sph, trns_param, n_WS, n_WR, WS(1), WR(1),         &
+     &    sph, comms_sph, trns_param,                                   &
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
      &    dall_rtp, dlcl_pole, dall_pole, WK_sph_TRNS)
 !
         if (iflag_debug.gt.0)                                           &
