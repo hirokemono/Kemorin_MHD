@@ -99,14 +99,15 @@
 !
       subroutine sync_field_name_mpi(ilength, field_name)
 !
+      use calypso_mpi_int4
+      use calypso_mpi_char
+!
       integer, intent(inout) :: ilength
       character(len=kchara), intent(inout) :: field_name
 !
 !
-      call MPI_BCAST(ilength, 1, CALYPSO_FOUR_INT, 0,                   &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(field_name, kchara, CALYPSO_CHARACTER, 0,          &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int4(ilength, 0)
+      call calypso_mpi_bcast_character(field_name, kchara, 0)
 !
       end subroutine sync_field_name_mpi
 !

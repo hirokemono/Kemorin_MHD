@@ -248,6 +248,8 @@
       subroutine mpi_write_int8_b                                       &
      &         (id_mpi_file, ioffset, num, i8_vector)
 !
+      use calypso_mpi_int8
+!
       integer, intent(in) ::  id_mpi_file
       integer(kind = MPI_OFFSET_KIND), intent(in) :: ioffset
       integer(kind = kint_gl), intent(in) :: num
