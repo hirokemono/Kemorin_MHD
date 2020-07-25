@@ -10,6 +10,7 @@
       module solver33
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -32,7 +33,8 @@
         integer(kind=kint )                  , intent(inout) :: ERROR
         ERROR= 0
         end subroutine init_solver33
-
+!
+!-----------------------------------------------------------------------
 !C
 !C--- solve
       subroutine  solve33                                               &
@@ -41,7 +43,7 @@
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
      &                   ITERactual, ERROR, METHOD, PRECOND,            &
-     &                   INTARRAY, REALARRAY)
+     &                   INTARRAY, REALARRAY, SR_sig, SR_r)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for 3*3 Block Matrix
@@ -117,6 +119,11 @@
 ! \beginARG       real     array for solver parameters
       real   (kind=kreal)                                 :: SIGMA
 ! \beginARG       solver parameters
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 ! \endSUBROUTINE
 
       integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, NREST, I
@@ -206,7 +213,7 @@
       call CG_3 (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -221,7 +228,7 @@
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -236,7 +243,7 @@
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -251,7 +258,7 @@
      &          (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,  &
      &           PRECOND, SIGMA_DIAG, SIGMA, NREST, RESID, ITER,  ERROR,&
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -361,7 +368,7 @@
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           iterPREmax,                                            &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -473,7 +480,7 @@
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           iterPREmax,                                            &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -587,7 +594,7 @@
      &           PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,       &
      &           iterPREmax,                                            &
      &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &                              STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 

@@ -117,6 +117,7 @@
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
+      use m_solver_SR
       use solver_DJDS33_struct
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
@@ -156,7 +157,7 @@
      &      np_smp, node%numnod, b_vec(1), x_vec(1), itr, itr_res,      &
      &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
      &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
-     &      ierr, iterPREmax)
+     &      ierr, iterPREmax, SR_sig1, SR_r1)
       else
         call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &

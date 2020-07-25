@@ -48,7 +48,7 @@ set_ctl_parallel_platform.o: $(COMMDIR)/set_ctl_parallel_platform.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 set_element_export_item.o: $(COMMDIR)/set_element_export_item.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_type.o: $(COMMDIR)/solver_SR_type.f90 m_precision.o m_work_time.o m_elapsed_labels_SEND_RECV.o t_comm_table.o solver_SR.o solver_SR_3.o solver_SR_6.o m_solver_SR.o solver_SR_N.o t_solver_SR_int.o solver_SR_int.o t_solver_SR_int8.o solver_SR_int8.o t_solver_SR.o
+solver_SR_type.o: $(COMMDIR)/solver_SR_type.f90 m_precision.o m_work_time.o m_elapsed_labels_SEND_RECV.o t_comm_table.o solver_SR.o solver_SR_3.o m_solver_SR.o solver_SR_6.o solver_SR_N.o t_solver_SR_int.o solver_SR_int.o t_solver_SR_int8.o solver_SR_int8.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_calypso_comm_table.o: $(COMMDIR)/t_calypso_comm_table.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

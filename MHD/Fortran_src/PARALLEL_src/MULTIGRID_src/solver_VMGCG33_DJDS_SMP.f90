@@ -10,37 +10,41 @@
 !C***
 !C***  VMGCG33_DJDS_SMP
 !C***
-!      subroutine VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,       &
-!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,          &
-!     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,        &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
-!
-!      subroutine init_VMGCG33_DJDS_SMP(NP, PEsmpTOT,                   &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
-!      subroutine solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
-!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,          &
-!     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,        &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
-!      integer(kind = kint), intent(in) :: num_MG_level
-!      type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
-!      type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
-!      type(DJDS_MATRIX), intent(in) ::         mat33(0:num_MG_level)
-!      type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
-!
-!      integer(kind = kint), intent(in) :: PEsmpTOT
-!      integer(kind = kint), intent(in) :: NP
-!      real(kind = kreal), intent(in), target :: B(3*NP)
-!      real(kind = kreal), intent(inout), target :: X(3*NP)
-!      type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
-!
-!      character (len=kchara), intent(in) :: PRECOND
-!      character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
-!      integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
-!      integer(kind=kint ), intent(in) :: MAXIT
-!      integer(kind=kint ), intent(inout) :: ITR, IER
-!      real(kind = kreal), intent(in) :: EPS
-!      real(kind = kreal), intent(in) :: EPS_MG
-!
+!!      subroutine VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,      &
+!!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,         &
+!!     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,       &
+!!     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax,      &
+!!     &          SR_sig, SR_r)
+!!
+!!      subroutine init_VMGCG33_DJDS_SMP(NP, PEsmpTOT,                  &
+!!     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
+!!      subroutine solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,&
+!!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,         &
+!!     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,       &
+!!     &          PRECOND, METHOD_MG, PRECOND_MG, IER, SR_sig, SR_r)
+!!      integer(kind = kint), intent(in) :: num_MG_level
+!!      type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
+!!      type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
+!!      type(DJDS_MATRIX), intent(in) ::         mat33(0:num_MG_level)
+!!      type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
+!!
+!!      integer(kind = kint), intent(in) :: PEsmpTOT
+!!      integer(kind = kint), intent(in) :: NP
+!!      real(kind = kreal), intent(in), target :: B(3*NP)
+!!      real(kind = kreal), intent(inout), target :: X(3*NP)
+!!      type(vectors_4_solver), intent(inout) :: MG_vect(0:num_MG_level)
+!!
+!!      character (len=kchara), intent(in) :: PRECOND
+!!      character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
+!!      integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
+!!      integer(kind=kint ), intent(in) :: MAXIT
+!!      integer(kind=kint ), intent(inout) :: ITR, IER
+!!      real(kind = kreal), intent(in) :: EPS
+!!      real(kind = kreal), intent(in) :: EPS_MG
+!!
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
 !C     VCG_DJDS_SMP solves the linear system Ax = b 
 !C     using the Conjugate Gradient iterative method with preconditioning.
 !C     Elements are ordered in descending Jagged Diagonal Storage
@@ -49,6 +53,7 @@
       module solver_VMGCG33_DJDS_SMP
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -87,7 +92,8 @@
       subroutine VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
      &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,         &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax,        &
+     &          SR_sig, SR_r)
 !
       use calypso_mpi
       use solver_SR_3
@@ -118,6 +124,11 @@
       integer(kind=kint ), intent(inout) :: ITR, IER
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
 !
       call init_VMGCG33_DJDS_SMP(NP, PEsmpTOT,                          &
      &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
@@ -125,7 +136,7 @@
       call solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
      &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,         &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, SR_sig, SR_r)
 !
       end subroutine VMGCG33_DJDS_SMP
 !
@@ -158,7 +169,7 @@
       subroutine solve_VMGCG33_DJDS_SMP(num_MG_level, MG_comm, MG_itp,  &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
      &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,         &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -202,6 +213,11 @@
       integer(kind=kint ), intent(in) :: MAXIT
       integer(kind=kint ), intent(inout) :: ITR, IER
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
       integer(kind=kint ) :: iter
 !
 !
@@ -234,7 +250,8 @@
       call SOLVER_SEND_RECV_3                                           &
      &   (NP, MG_comm(0)%num_neib, MG_comm(0)%id_neib,                  &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
-     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, X)
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
+     &    SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -330,7 +347,8 @@
       call SOLVER_SEND_RECV_3                                           &
      &   (NP, MG_comm(0)%num_neib, MG_comm(0)%id_neib,                  &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
-     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, W(1,P))
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
+     &    SR_sig, SR_r, W(1,P))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -413,7 +431,8 @@
       call SOLVER_SEND_RECV_3                                           &
      &   (NP, MG_comm(0)%num_neib, MG_comm(0)%id_neib,                  &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
-     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, X)
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
+     &    SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

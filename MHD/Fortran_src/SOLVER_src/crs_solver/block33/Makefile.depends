@@ -2,18 +2,18 @@ crs_matrix_calcs_33.o: $(SOLVER_33_DIR)/crs_matrix_calcs_33.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solver33.o: $(SOLVER_33_DIR)/solver33.f90 m_precision.o calypso_mpi.o solver_BLCG_3.o solver_CG_3.o solver_BiCGSTAB_3.o solver_GPBiCG_3.o solver_GMRES_3.o solver_BLBiCGSTAB_3.o solver_BLGPBiCG_3.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_BLBiCGSTAB_3.o: $(SOLVER_33_DIR)/solver_BLBiCGSTAB_3.f90 m_precision.o calypso_mpi.o solver_SR_3.o solver_BLCG_3.o vector_calc_solver_33.o crs_matrix_calcs_33.o
+solver_BLBiCGSTAB_3.o: $(SOLVER_33_DIR)/solver_BLBiCGSTAB_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_SR_3.o solver_BLCG_3.o vector_calc_solver_33.o crs_matrix_calcs_33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_BLCG_3.o: $(SOLVER_33_DIR)/solver_BLCG_3.f90 m_precision.o calypso_mpi.o solver_SR_3.o vector_calc_solver_33.o crs_matrix_calcs_33.o
+solver_BLCG_3.o: $(SOLVER_33_DIR)/solver_BLCG_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_SR_3.o vector_calc_solver_33.o crs_matrix_calcs_33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_BLGPBiCG_3.o: $(SOLVER_33_DIR)/solver_BLGPBiCG_3.f90 m_precision.o calypso_mpi.o solver_SR_3.o solver_BLCG_3.o
+solver_BLGPBiCG_3.o: $(SOLVER_33_DIR)/solver_BLGPBiCG_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_SR_3.o solver_BLCG_3.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_BiCGSTAB_3.o: $(SOLVER_33_DIR)/solver_BiCGSTAB_3.f90 m_precision.o calypso_mpi.o solver_SR_3.o vector_calc_solver_33.o crs_matrix_calcs_33.o
+solver_BiCGSTAB_3.o: $(SOLVER_33_DIR)/solver_BiCGSTAB_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_SR_3.o vector_calc_solver_33.o crs_matrix_calcs_33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_CG_3.o: $(SOLVER_33_DIR)/solver_CG_3.f90 m_precision.o calypso_mpi.o solver_SR_3.o crs_matrix_calcs_33.o
+solver_CG_3.o: $(SOLVER_33_DIR)/solver_CG_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_SR_3.o crs_matrix_calcs_33.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GMRES_3.o: $(SOLVER_33_DIR)/solver_GMRES_3.f90 m_precision.o calypso_mpi.o m_constants.o solver_SR_3.o
+solver_GMRES_3.o: $(SOLVER_33_DIR)/solver_GMRES_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_constants.o solver_SR_3.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GPBiCG_3.o: $(SOLVER_33_DIR)/solver_GPBiCG_3.f90 m_precision.o calypso_mpi.o solver_SR_3.o
+solver_GPBiCG_3.o: $(SOLVER_33_DIR)/solver_GPBiCG_3.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_SR_3.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

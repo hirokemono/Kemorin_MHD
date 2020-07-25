@@ -6,6 +6,7 @@
       module solver_BLCG_3
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -38,7 +39,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, iterPREmax,                &
      &                  NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 
       use calypso_mpi
 !
@@ -76,6 +77,11 @@
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &       :: NOD_EXPORT
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       real(kind=kreal), dimension(:),    allocatable, save :: SCALE
       real(kind=kreal), dimension(:,:),  allocatable       :: WW
@@ -149,13 +155,13 @@
         enddo
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,1))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,1))
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,2))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,2))
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,3))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,3))
         do i= N+1, NP
           D(1,1,i)= WW(3*i-2,1)
           D(2,1,i)= WW(3*i-1,1)
@@ -179,7 +185,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, SCALE)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, SCALE)
 
       do i= 1, NP
         ip1= 3*i-2
@@ -282,7 +288,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       call subtruct_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,  &
      &    D, AL, AU,  WW(1,R), B, X)
@@ -396,7 +402,7 @@
 
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,ZP))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,ZP))
 
         call a_SCHWARTZ_33_BSSOR(iterPRE, iterPREmax, R, ZP, Z,         &
      &      SIGMA_DIAG, N, NP, NPL, NPU, D, AL, INL, IAL,               &
@@ -494,7 +500,7 @@
 
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,ZP))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,ZP))
 
         call a_SCHWARTZ_33_BSSOR(iterPRE, iterPREmax, R, ZP, Z,         &
      &      SIGMA_DIAG, N, NP, NPL, NPU, D, AL, INL, IAL,               &
@@ -553,7 +559,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P))
 !
         call cal_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU,  WW(1,Q), WW(1,P) )
@@ -627,7 +633,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (WW)
 !

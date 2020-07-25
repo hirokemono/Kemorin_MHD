@@ -6,6 +6,7 @@
       module solver_BLBiCGSTAB_3
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -31,7 +32,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, iterPREmax,                &
      &                  NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 
       use calypso_mpi
 !
@@ -74,6 +75,11 @@
       integer(kind=kint ), intent(in)                                   &
      &       :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       real(kind=kreal), dimension(:,:),  allocatable       :: WW
       real(kind=kreal), dimension(:,:,:),allocatable, save :: ALU
@@ -132,13 +138,13 @@
         enddo
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,1) )
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,1) )
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,2) )
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,2) )
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,3) )
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,3) )
         do i= N+1, NP
           D(1,1,i)= WW(3*i-2,1)
           D(2,1,i)= WW(3*i-1,1)
@@ -194,7 +200,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
 !C
 !C-- BEGIN calculation
@@ -434,7 +440,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,PT) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,PT) )
 
 !C
         call cal_crs_matvec_33 (NP, N, NPL, NPU, INL, INU, IAL, IAU,    &
@@ -634,7 +640,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,ST) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,ST) )
 
 !C
         call cal_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
@@ -700,7 +706,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (WW)
 

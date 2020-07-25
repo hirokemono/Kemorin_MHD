@@ -31,6 +31,8 @@
 !!      subroutine solver_send_recv_int(iflag_SR, NP, N, NEIBPETOT,     &
 !!     &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,  &
 !!     &                         STACK_EXPORT, NOD_EXPORT, iX)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !!
 !!@n @param  NB    Number of components for communication
@@ -67,6 +69,7 @@
 !
       use m_precision
       use m_constants
+      use t_solver_SR
 !
       implicit none
 !

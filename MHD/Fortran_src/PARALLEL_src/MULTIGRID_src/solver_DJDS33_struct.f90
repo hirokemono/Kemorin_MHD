@@ -50,6 +50,7 @@
      &           mat33, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
      &           itr_res)
 !
+      use m_solver_SR
       use t_comm_table
       use solver33_DJDS
 !
@@ -83,7 +84,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
 !
       end subroutine solve33_DJDS_struct
 !
@@ -93,6 +94,7 @@
      &           mat33, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
      &           itr_res)
 !
+      use m_solver_SR
       use t_comm_table
       use solver33_DJDS
 !
@@ -126,7 +128,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
 !
       end subroutine init_solve33_DJDS_struct
 !

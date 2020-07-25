@@ -5,36 +5,38 @@
 !C*** module solver33_DJDS
 !C***
 !
-!      subroutine  init_solver33_DJDS                                   &
-!     &         (NP, PEsmpTOT, METHOD, PRECOND, IER)
-!
-!      subroutine  solve33_DJDS_kemo                                    &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           METHOD, PRECOND, ITERactual)
-!
-!      subroutine  init_solve33_DJDS_kemo                               &
-!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,             &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                    &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT,                             &
-!     &           METHOD, PRECOND, ITERactual)
-!
-!      solver subsystem entry for 3*3 Block Matrix with DJDS ordering
-!      Kenorin's special
+!!      subroutine  init_solver33_DJDS                                  &
+!!     &         (NP, PEsmpTOT, METHOD, PRECOND, IER)
+!!
+!!      subroutine  solve33_DJDS_kemo                                   &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                   &
+!!     &           STACK_IMPORT, NOD_IMPORT,                            &
+!!     &           STACK_EXPORT, NOD_EXPORT,                            &
+!!     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+!!
+!!      subroutine  init_solve33_DJDS_kemo                              &
+!!     &         ( N, NP, NL, NU, NPL, NPU, NVECT, PEsmpTOT,            &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                   &
+!!     &           STACK_IMPORT, NOD_IMPORT,                            &
+!!     &           STACK_EXPORT, NOD_EXPORT,                            &
+!!     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!      solver subsystem entry for 3*3 Block Matrix with DJDS ordering
+!!      Kenorin's special
 !
       module solver33_DJDS
 !
       use m_precision
-      use m_solver_SR
+      use t_solver_SR
 !
       implicit none
 !
@@ -148,7 +150,7 @@
      &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           METHOD, PRECOND, ITERactual)
+     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -244,6 +246,11 @@
       integer(kind=kint )                  , intent(inout)   ::  IER
 ! \beginARG
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
       integer(kind=kint ) :: ITR
       integer :: ierror
 !
@@ -270,7 +277,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig1, SR_r1)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- BiCGSTAB
@@ -287,7 +294,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -308,7 +315,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig1, SR_r1)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- GPBiCG
@@ -326,7 +333,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- CG_only diagonal component
@@ -345,7 +352,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !C
 !C-- CG
       else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
@@ -361,7 +368,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig1, SR_r1)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- CG
@@ -375,7 +382,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C-- Gauss-Zeidel
 
@@ -392,7 +399,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !C
 !C-- Jacobi
 
@@ -410,7 +417,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !
       end if
 !
@@ -440,7 +447,7 @@
      &           EPS, ITER, IER, NEIBPETOT, NEIBPE,                     &
      &           STACK_IMPORT, NOD_IMPORT,                              &
      &           STACK_EXPORT, NOD_EXPORT,                              &
-     &           METHOD, PRECOND, ITERactual)
+     &           METHOD, PRECOND, ITERactual, SR_sig, SR_r)
 
 !      solver subsystem entry for 3*3 Block Matrix with DJDS ordering
 !      Kenorin's special
@@ -505,6 +512,11 @@
       character(len=kchara)                , intent(in):: PRECOND
       integer(kind=kint )                  , intent(inout)   ::  IER
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
       integer(kind=kint ) :: ITR
       integer :: ierror
 !
@@ -531,7 +543,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig1, SR_r1)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- BiCGSTAB
@@ -548,7 +560,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- GPBiCG using n*n solver
@@ -569,7 +581,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig1, SR_r1)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- GPBiCG
@@ -587,7 +599,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- CG_only diagonal component
@@ -606,7 +618,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !C
 !C-- CG
       else if ( ((METHOD(1:1).eq.'C').or.(METHOD(1:1).eq.'c')) .and.    &
@@ -622,7 +634,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax, SR_sig1, SR_r1)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C
 !C-- CG
@@ -636,7 +648,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
 !C-- Gauss-Zeidel
 
@@ -653,7 +665,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !C
 !C-- Jacobi
 
@@ -671,7 +683,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !
       end if
 !

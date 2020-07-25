@@ -80,16 +80,17 @@
 
       call  solve33                                                     &
      &            (node%internal_node, node%numnod,                     &
-     &             tbl_crs%ntot_l, tbl_crs%ntot_u, mat_crs%D_crs,      &
-     &             mat_crs%AL_crs, tbl_crs%istack_l, tbl_crs%item_l,   &
-     &             mat_crs%AU_crs, tbl_crs%istack_u, tbl_crs%item_u,   &
-     &             mat_crs%B_crs, mat_crs%X_crs, mat_crs%PRESET_crs, &
+     &             tbl_crs%ntot_l, tbl_crs%ntot_u, mat_crs%D_crs,       &
+     &             mat_crs%AL_crs, tbl_crs%istack_l, tbl_crs%item_l,    &
+     &             mat_crs%AU_crs, tbl_crs%istack_u, tbl_crs%item_u,    &
+     &             mat_crs%B_crs, mat_crs%X_crs, mat_crs%PRESET_crs,    &
      &             nod_comm%num_neib, nod_comm%id_neib,                 &
      &             nod_comm%istack_import, nod_comm%item_import,        &
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             mat_crs%ITERactual, ierr,                            &
      &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
-     &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs)
+     &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs,         &
+     &             SR_sig1, SR_r1)
 !
       end subroutine solve_by_crs_solver33
 !

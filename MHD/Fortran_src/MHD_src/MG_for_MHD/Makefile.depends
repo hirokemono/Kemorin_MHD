@@ -14,7 +14,7 @@ set_diffusivities_MHD_AMG.o: $(MHD_AMG_DIR)/set_diffusivities_MHD_AMG.f90 m_prec
 	$(F90) -c $(F90OPTFLAGS) $<
 set_layers_4_MHD_AMG.o: $(MHD_AMG_DIR)/set_layers_4_MHD_AMG.f90 m_precision.o m_constants.o t_work_4_MHD_layering.o t_FEM_control_parameter.o t_mesh_data.o t_geometry_data_MHD.o set_layers.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_MGCG_MHD.o: $(MHD_AMG_DIR)/solver_MGCG_MHD.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o calypso_mpi.o t_physical_property.o t_geometry_data.o t_vector_for_solver.o t_interpolate_table.o t_solver_djds.o t_MGCG_parameter.o solver_DJDS11_struct.o solver_DJDS33_struct.o solver_VMGCG11_DJDS_SMP.o solver_VMGCG33_DJDS_SMP.o skip_comment_f.o
+solver_MGCG_MHD.o: $(MHD_AMG_DIR)/solver_MGCG_MHD.f90 m_precision.o m_machine_parameter.o m_work_time.o m_elapsed_labels_4_MHD.o calypso_mpi.o t_physical_property.o t_geometry_data.o t_vector_for_solver.o t_interpolate_table.o t_solver_djds.o t_MGCG_parameter.o solver_DJDS11_struct.o solver_DJDS33_struct.o solver_VMGCG11_DJDS_SMP.o solver_VMGCG33_DJDS_SMP.o skip_comment_f.o m_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_MHD_solvers.o: $(MHD_AMG_DIR)/t_FEM_MHD_solvers.f90 m_precision.o t_control_parameter.o t_iccg_parameter.o t_FEM_control_parameter.o t_mesh_data.o t_sorted_node_MHD.o t_solver_djds.o t_vector_for_solver.o t_solver_djds_MHD.o t_MHD_matrices_pack.o t_physical_property.o t_material_property.o t_MGCG_data.o t_MGCG_data_4_MHD.o t_geometry_data_MHD.o set_djds_connectivity_type.o copy_mesh_structures.o set_djds_connect_type_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<

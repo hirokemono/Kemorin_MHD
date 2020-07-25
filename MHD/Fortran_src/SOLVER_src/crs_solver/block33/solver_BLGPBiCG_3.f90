@@ -6,6 +6,7 @@
       module solver_BLGPBiCG_3
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -17,7 +18,7 @@
 !C
 !C*** BLGPBiCG_3
 !C
-!C    BLBiCGSTAB_3 solves the linear system Ax = b with 3*3 block matrix 
+!C    BLGPBiCG_3  solves the linear system Ax = b with 3*3 block matrix 
 !C    using the Generalized Product Bi-Conjugate Gradient 
 !C    iterative method with the following FULL-BLOCK TYPE preconditioners :
 !C
@@ -31,7 +32,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, iterPREmax,                &
      &                  NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,    &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 
       use calypso_mpi
 !
@@ -71,6 +72,11 @@
       integer(kind=kint ), intent(in)                                   &
      &       :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       real(kind=kreal), dimension(:,:),  allocatable       :: WW
       real(kind=kreal), dimension(:,:,:),allocatable, save :: ALU
@@ -137,13 +143,13 @@
         enddo
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,1) )
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,1) )
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,2) )
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,2) )
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,3) )
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,3) )
         do i= N+1, NP
           D(1,1,i)= WW(3*i-2,1)
           D(2,1,i)= WW(3*i-1,1)
@@ -196,7 +202,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
 !C
 !C-- BEGIN calculation
@@ -287,7 +293,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,R) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R) )
 
 !C
 !C== Block SSOR
@@ -465,7 +471,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P) )
 
       do j= 1, N
            X1= WW(3*j-2,P)
@@ -895,7 +901,7 @@
 !C-- calc. [A]{t_tld}
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,TT) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,TT) )
 
       do j= 1, N
            X1= WW(3*j-2,TT)
@@ -1061,7 +1067,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (WW)
 

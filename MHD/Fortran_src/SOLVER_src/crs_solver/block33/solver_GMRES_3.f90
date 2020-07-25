@@ -6,6 +6,7 @@
       module solver_GMRES_3
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -23,7 +24,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA, NREST,        &
      &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 
 ! \beginSUBROUTINE
 !     GMRES solves the linear system Ax = b using the
@@ -78,6 +79,11 @@
       integer(kind=kint ), intent(in)                                   &
      &       :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       real(kind=kreal), dimension(:),    allocatable, save ::  DD
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
@@ -152,7 +158,7 @@
 
         call SOLVER_SEND_RECV_3                                         &
      &     ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,R))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
 
         do ik= N+1, NP
           D(1,1,ik)= WW(3*ik-2,R)
@@ -249,7 +255,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
 !C
 !C-- BEGIN calculation
@@ -289,7 +295,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT,NOD_EXPORT, WW(1,AV))
+     &     STACK_EXPORT,NOD_EXPORT, SR_sig, SR_r, WW(1,AV))
 
       do ik= 1, NP
         WW(3*ik-2,R)= WW(3*ik-2,AV)
@@ -455,7 +461,7 @@
 !C===
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, WW(1,V+I-1))
+     &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,V+I-1))
 
       do j= 1, N
            X1= WW(3*j-2,V+I-1)
@@ -492,7 +498,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,W))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,W))
 
 !C
 !C-- incomplete CHOLESKY
@@ -747,7 +753,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, X)
+     &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       do j= 1, N
            X1= X(3*j-2)
@@ -790,7 +796,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &    STACK_EXPORT, NOD_EXPORT, WW(1,R))
+     &    STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
 
 !C
 !C-- incomplete CHOLESKY
@@ -938,7 +944,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (H)
       deallocate (WW)

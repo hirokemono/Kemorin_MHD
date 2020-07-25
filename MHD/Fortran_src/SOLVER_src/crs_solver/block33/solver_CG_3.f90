@@ -6,6 +6,7 @@
       module solver_CG_3
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -21,7 +22,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 !
 ! \beginSUBROUTINE
 !     CG_3 solves the linear system Ax = b using the
@@ -83,6 +84,11 @@
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &       :: NOD_EXPORT
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       real(kind=kreal), dimension(:),    allocatable, save ::  DD, SCALE
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
@@ -140,7 +146,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, SCALE)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, SCALE)
 
       do i= 1, N
         ip1= 3*i-2
@@ -298,7 +304,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
 !C
 !C-- BEGIN calculation
@@ -480,7 +486,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P) )
 
 !C
         call cal_crs_matvec_33(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
@@ -556,7 +562,7 @@
 
       call SOLVER_SEND_RECV_3                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (WW)
 
