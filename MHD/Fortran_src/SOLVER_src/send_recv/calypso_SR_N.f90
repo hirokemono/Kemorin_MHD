@@ -92,16 +92,26 @@
 !
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      call resize_work_SR((ithree*NB), npe_send, npe_recv,              &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
 !
 !C-- SEND
       call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
      &    istack_send(npe_send), istack_send, inod_export,              &
      &    X_org, SR_r1%WS)
 !C
+!C-- COMM
       call calypso_send_recv_core                                       &
      &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
+!C-- RECV
       call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
      &    istack_recv(npe_recv), istack_recv, inod_import,              &
      &    SR_r1%WR, X_new)
@@ -150,23 +160,32 @@
       real (kind=kreal), intent(inout):: X2_new(NB*nnod_new)
       real (kind=kreal), intent(inout):: X3_new(NB*nnod_new)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
       real (kind=kreal) :: elaps3(3)
 !
       real(kind = kreal) :: s1time, s2time
 !
 !
-!C-- SEND
+      call resize_work_SR((ithree*NB), npe_send, npe_recv,              &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
 !
+!C-- SEND
       s1time = MPI_WTIME()
       call set_to_send_buf_3xN_mod(NB, nnod_org,                        &
      &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
      &    X1_org, X2_org, X3_org, SR_r1%WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
+!C-- COMM
       call calypso_send_recv_core                                       &
      &        ((3*NB), npe_send, isend_self, id_pe_send, istack_send,   &
      &                 npe_recv, irecv_self, id_pe_recv, istack_recv)
 !
+!C-- RECV
 !      s2time = MPI_WTIME()
       call set_from_recv_buf_3xN(NB, nnod_new,                          &
      &    npe_recv, istack_recv(npe_recv), istack_recv, inod_import,    &
