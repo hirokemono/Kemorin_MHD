@@ -11,6 +11,12 @@
 !!        integer, intent(in) :: root
 !!        integer(kind = kint_4b), intent(inout) :: buffer
 !!
+!!      subroutine calypso_mpi_allreduce_one_int4                       &
+!!     &         (i4_local, i4_global, operation)
+!!        integer, intent(in) :: operation
+!!        integer(kind = kint_4b), intent(in) ::    i4_local
+!!        integer(kind = kint_4b), intent(inout) :: i4_global
+!!
 !!      subroutine calypso_mpi_seek_write_int4                          &
 !!     &         (id_mpi_file, ioffset, num, i4_vector)
 !!        integer, intent(in) ::  id_mpi_file
@@ -63,6 +69,26 @@
       buffer = i4_tmp(1)
 !
       end subroutine calypso_mpi_bcast_one_int4
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_allreduce_one_int4                         &
+     &         (i4_local, i4_global, operation)
+!
+      integer, intent(in) :: operation
+      integer(kind = kint_4b), intent(in) ::    i4_local
+      integer(kind = kint_4b), intent(inout) :: i4_global
+!
+      integer(kind = kint_4b) :: i4_lc(1), i4_gl(1)
+!
+!
+      i4_lc(1) = i4_local
+      call MPI_allREDUCE(i4_lc, i4_gl, 1, CALYPSO_FOUR_INT,           &
+     &                   operation, CALYPSO_COMM, ierr_MPI)
+      i4_global = i4_gl(1)
+!
+      end subroutine calypso_mpi_allreduce_one_int4
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

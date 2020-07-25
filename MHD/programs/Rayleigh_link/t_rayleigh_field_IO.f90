@@ -213,25 +213,24 @@
 !
       subroutine bcast_rayleigh_field_param(rayleigh_rtp)
 !
+      use calypso_mpi_real
+      use calypso_mpi_int4
+!
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
 !
-      call MPI_BCAST(rayleigh_rtp%iflag_swap, 1,                        &
-     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%nri_gl, 1,                            &
-     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%nth_gl, 1,                            &
-     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%nphi_gl, 1,                           &
-     &               CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int4(rayleigh_rtp%iflag_swap, 0)
+      call calypso_mpi_bcast_one_int4(rayleigh_rtp%nri_gl, 0)
+      call calypso_mpi_bcast_one_int4(rayleigh_rtp%nth_gl, 0)
+      call calypso_mpi_bcast_one_int4(rayleigh_rtp%nphi_gl, 0)
 !
       if(my_rank .ne. 0) call alloc_resolution_4_rayleigh(rayleigh_rtp)
-      call MPI_BCAST(rayleigh_rtp%radius_gl, rayleigh_rtp%nri_gl,       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%theta_gl, rayleigh_rtp%nth_gl,        &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%cos_theta, rayleigh_rtp%nth_gl,       &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%radius_gl, rayleigh_rtp%nri_gl, 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%theta_gl, rayleigh_rtp%nth_gl, 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%cos_theta, rayleigh_rtp%nth_gl, 0)
 !
       end subroutine bcast_rayleigh_field_param
 !

@@ -44,14 +44,14 @@
 !
       subroutine bcast_rayleigh_restart_param(ra_rst)
 !
+      use calypso_mpi_int4
+!
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
 !
-      call MPI_Bcast(ra_rst%i_version_from_file, 1,                     &
-     &    CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int4(ra_rst%i_version_from_file, 0)
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%iflag_swap' 
-      call MPI_Bcast(ra_rst%iflag_swap, 1,                              &
-     &    CALYPSO_FOUR_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int4(ra_rst%iflag_swap, 0)
 !
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%ltr_org' 
       call MPI_Bcast(ra_rst%ltr_org, 1,                                 &
