@@ -32,10 +32,10 @@
 !
 !>      Structure of communication flags
       type(send_recv_status), save :: SR_sig1
-!>      Structure of communication buffer for 8-byte integer
+!>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), save :: SR_r1
 !
-!>      Structure of communication buffer for 8-byte integer
+!>      Structure of communication buffer for 4-byte integer
       type(send_recv_int_buffer), save :: SR_i1
 !>      Structure of communication buffer for 8-byte integer
       type(send_recv_int8_buffer), save :: SR_il1

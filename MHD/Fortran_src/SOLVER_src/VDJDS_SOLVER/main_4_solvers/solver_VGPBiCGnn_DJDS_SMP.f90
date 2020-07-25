@@ -126,7 +126,7 @@
 !
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
-!>      Structure of communication buffer for 8-byte integer
+!>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !C
@@ -241,7 +241,7 @@
       real(kind=kreal), intent(inout) :: X(NB*NP)
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
-!>      Structure of communication buffer for 8-byte integer
+!>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
 
       integer(kind=kint ) :: npLX1, npUX1

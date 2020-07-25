@@ -124,7 +124,7 @@
 !
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
-!>      Structure of communication buffer for 8-byte integer
+!>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !C
 !C +-------+
@@ -240,7 +240,7 @@
 !
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
-!>      Structure of communication buffer for 8-byte integer
+!>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      integer :: j, in

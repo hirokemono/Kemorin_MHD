@@ -135,7 +135,7 @@
       subroutine solver_send_recv_N(iflag_SR, NP, N, NB, NEIBPETOT,     &
      &                 NEIBPE, STACK_IMPORT, NOD_IMPORT, REV_IMPORT,    &
      &                         STACK_EXPORT, NOD_EXPORT, X)
-      use select_calypso_SR
+      use calypso_SR_N
 !
       integer(kind = kint), intent(in) :: iflag_SR
       integer(kind = kint), intent(in) :: NB
@@ -159,12 +159,10 @@
 !
       N_ext = NP - N
       if(N_ext .le. 0) return
-      call sel_calypso_send_recv_N(iflag_SR, NB, N, N_ext,              &
+      call calypso_send_recv_N(NB, N, N_ext,                            &
      &    NEIBPETOT, izero, NEIBPE, STACK_EXPORT, NOD_EXPORT,           &
      &    NEIBPETOT, izero, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
-     &    REV_IMPORT, X(1), X(NB*N+NB))
-!
-      call finish_calypso_send_recv(NEIBPETOT, izero)
+     &    REV_IMPORT, SR_sig1, SR_r1, X(1), X(NB*N+NB))
 !
       end subroutine solver_send_recv_N
 !

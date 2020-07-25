@@ -14,13 +14,6 @@
 !!     &                           npe_recv, irecv_self,                &
 !!     &                           id_pe_recv, istack_recv, irev_import,&
 !!     &                           X_org, X_new)
-!!      subroutine calypso_send_recv_rev_3xN(NB, nnod_org, nnod_new,    &
-!!     &                           npe_send, isend_self,                &
-!!     &                           id_pe_send, istack_send, inod_export,&
-!!     &                           npe_recv, irecv_self,                &
-!!     &                           id_pe_recv, istack_recv, irev_import,&
-!!     &                           X1_org, X2_org, X3_org,              &
-!!     &                           X1_new, X2_new, X3_new)
 !!@endverbatim
 !!
 !!@n @param  NB    Number of components for communication
@@ -116,62 +109,5 @@
       end subroutine calypso_send_recv_rev_N
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine calypso_send_recv_rev_3xN(NB, nnod_org, nnod_new,      &
-     &                           npe_send, isend_self,                  &
-     &                           id_pe_send, istack_send, inod_export,  &
-     &                           npe_recv, irecv_self,                  &
-     &                           id_pe_recv, istack_recv, irev_import,  &
-     &                           X1_org, X2_org, X3_org,                &
-     &                           X1_new, X2_new, X3_new)
-!
-      use calypso_mpi
-      use m_solver_SR
-      use calypso_SR_core
-      use set_to_send_buf_tri
-      use set_from_recv_buf_rev_tri
-!
-      integer(kind = kint), intent(in) :: NB
-!
-      integer(kind = kint), intent(in) :: nnod_org
-      integer(kind = kint), intent(in) :: nnod_new
-!
-      integer(kind = kint), intent(in) :: npe_send, isend_self
-      integer(kind = kint), intent(in) :: id_pe_send(npe_send)
-!
-      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
-      integer(kind = kint), intent(in)                                  &
-     &                      :: inod_export( istack_send(npe_send) )
-!
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
-      integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
-      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
-      integer(kind = kint), intent(in) :: irev_import(nnod_new)
-!
-      real (kind=kreal), intent(in)::    X1_org(NB*nnod_org)
-      real (kind=kreal), intent(in)::    X2_org(NB*nnod_org)
-      real (kind=kreal), intent(in)::    X3_org(NB*nnod_org)
-!
-      real (kind=kreal), intent(inout):: X1_new(NB*nnod_new)
-      real (kind=kreal), intent(inout):: X2_new(NB*nnod_new)
-      real (kind=kreal), intent(inout):: X3_new(NB*nnod_new)
-!
-!
-!C-- SEND
-!
-      call set_to_send_buf_3xN(NB, nnod_org, istack_send(npe_send),     &
-     &    inod_export, X1_org, X2_org, X3_org, SR_r1%WS)
-!C
-      call calypso_send_recv_core                                       &
-     &        ((3*NB), npe_send, isend_self, id_pe_send, istack_send,   &
-     &                 npe_recv, irecv_self, id_pe_recv, istack_recv)
-!
-      call set_from_recv_buf_rev_3xN(NB, nnod_new,                      &
-     &    istack_recv(npe_recv), irev_import,                           &
-     &    SR_r1%WR, X1_new, X2_new, X3_new)
-!
-      end subroutine calypso_send_recv_rev_3xN
-!
-! ----------------------------------------------------------------------
-!
+
       end module calypso_SR_rev_N
