@@ -192,15 +192,16 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int8'
+      SR_sig1%iflag_recv = iflag_import_item
       call calypso_send_recv_int8                                       &
-     &   (iflag_import_item, itp_org%ntot_table_org, NP_dest,           &
+     &   (itp_org%ntot_table_org, NP_dest,                              &
      &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &
      &    itp_org%id_dest_domain, itp_org%istack_nod_tbl_org,           &
      &    itp_org%inod_itp_send,                                        &
      &    itp_dest%num_org_domain, itp_dest%iflag_self_itp_recv,        &
      &    itp_dest%id_org_domain, itp_dest%istack_nod_tbl_dest,         &
      &    itp_dest%inod_dest_4_dest, itp_dest%irev_dest_4_dest,         &
-     &    itp_org%inod_gl_dest_4_org, ivec8_2nd(1) )
+     &    SR_sig1, SR_il1, itp_org%inod_gl_dest_4_org, ivec8_2nd(1))
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'SOLVER_SEND_RECV_int8_type '
