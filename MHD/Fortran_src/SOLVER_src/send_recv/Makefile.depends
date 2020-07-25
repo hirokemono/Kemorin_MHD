@@ -18,11 +18,11 @@ calypso_mpi_char.o: $(SR_DIR)/calypso_mpi_char.f90 m_precision.o m_constants.o c
 	$(F90) -c $(F90OPTFLAGS) $<
 calypso_mpi_int.o: $(SR_DIR)/calypso_mpi_int.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
+calypso_mpi_int4.o: $(SR_DIR)/calypso_mpi_int4.f90 m_precision.o m_constants.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
 calypso_mpi_int8.o: $(SR_DIR)/calypso_mpi_int8.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 calypso_mpi_real.o: $(SR_DIR)/calypso_mpi_real.f90 m_precision.o m_constants.o calypso_mpi.o
-	$(F90) -c $(F90OPTFLAGS) $<
-calypso_solver_SR.o: $(SR_DIR)/calypso_solver_SR.f90 m_precision.o m_constants.o t_solver_SR.o set_from_recv_buf_rev.o calypso_SR_N.o calypso_SR_6.o calypso_SR_3.o calypso_SR_2.o calypso_SR.o calypso_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_to_send_buf_tri.o: $(SR_DIR)/copy_to_send_buf_tri.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

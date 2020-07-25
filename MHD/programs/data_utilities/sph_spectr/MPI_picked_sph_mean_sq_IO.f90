@@ -216,7 +216,7 @@
           end do
         end do
 !
-        call calypso_mpi_seek_wrt_mul_chara                             &
+        call mpi_write_mul_chara_b                                      &
      &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if
@@ -324,7 +324,7 @@
      &          ntot_comp_rj, d_rj_out)
         end do
 !
-        call calypso_mpi_seek_wrt_mul_chara                             &
+        call mpi_write_mul_chara_b                                      &
      &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if

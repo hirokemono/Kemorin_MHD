@@ -109,7 +109,7 @@
       len_head = len(pick_sph_header_no_field(picked))
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_write_chara(IO_param%id_file, ioffset,    &
+        call mpi_write_one_chara_b(IO_param%id_file, ioffset,           &
      &      len_head, pick_sph_header_no_field(picked))
 !
         len_fld = 0
@@ -117,11 +117,11 @@
           len_each = len_trim(picked%spectr_name(i)) + 4
           len_fld = len_fld + len_each
           write(textbuf,'(a,a4)') trim(picked%spectr_name(i)), '    '
-          call calypso_mpi_seek_write_chara                             &
+          call mpi_write_one_chara_b                                    &
      &       (IO_param%id_file, ioffset, len_each, textbuf)
         end do
 !
-        call calypso_mpi_seek_write_chara                               &
+        call mpi_write_one_chara_b                                      &
      &     (IO_param%id_file, ioffset, 1, timebuf)
       end if
 !
@@ -193,7 +193,7 @@
           end do
         end do
 !
-        call calypso_mpi_seek_wrt_mul_chara                             &
+        call mpi_write_mul_chara_b                                      &
      &     (IO_param%id_file, ioffset, ilen_n, num, pickedbuf)
         deallocate(d_rj_out, pickedbuf)
       end if

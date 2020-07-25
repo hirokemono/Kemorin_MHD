@@ -178,7 +178,7 @@
       ioffset = ioff_gl + ilength * istack_merged(id_rank)
       do inod = 1, nnod
         v1(1:ncomp) = vector(inod,1:ncomp)
-        call calypso_mpi_seek_write_chara(id_fld, ioffset, ilength,     &
+        call mpi_write_one_chara_b(id_fld, ioffset, ilength,            &
      &      vector_textline(ncomp, v1))
       end do
       ioff_gl = ioff_gl + ilength * istack_merged(num_pe)
@@ -208,7 +208,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        call calypso_mpi_seek_read_lenchara                             &
+        call mpi_read_one_chara_b                                       &
      &     (id_fld, ioffset, len_step_data_buf, textbuf_c)
         call read_step_data_buffer(textbuf_c, iread, t_IO)
 !
@@ -252,7 +252,7 @@
       ilength = int(len(textbuf_d))
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        call calypso_mpi_seek_read_lenchara                             &
+        call mpi_read_one_chara_b                                       &
      &     (id_fld, ioffset, ilength, textbuf_d)
         call read_field_istack_nod_buffer                               &
      &     (textbuf_d, num_pe, istack_merged)
@@ -262,7 +262,7 @@
       ilength = len(textbuf_c)
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        call calypso_mpi_seek_read_lenchara                             &
+        call mpi_read_one_chara_b                                       &
      &       (id_fld, ioffset, ilength, textbuf_c)
         call read_field_num_buffer(textbuf_c, num_field)
       end if
@@ -301,7 +301,7 @@
       ilength = len(charabuf_c)
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        call calypso_mpi_seek_read_lenchara                             &
+        call mpi_read_one_chara_b                                       &
      &       (id_fld, ioffset, ilength, charabuf_c)
         call read_field_comp_buffer(charabuf_c, num_field, ncomp_field)
       end if
@@ -333,7 +333,7 @@
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
         ilength = int(len(textbuf_c))
-        call calypso_mpi_seek_read_lenchara                             &
+        call mpi_read_one_chara_b                                       &
      &     (id_fld, ioffset, ilength, textbuf_c)
         call read_each_field_name_buffer                                &
      &     (textbuf_c, field_name, ilength)
@@ -379,7 +379,7 @@
       ioffset = ioff_gl + ilength * istack_merged(id_rank)
 !
       do inod = 1, nnod
-        call calypso_mpi_seek_read_lenchara                             &
+        call mpi_read_one_chara_b                                       &
      &    (id_fld, ioffset, ilength, textbuf_d)
         call read_vector_textline(textbuf_d, ncomp, v1)
         vector(inod,1:ncomp) = v1(1:ncomp)

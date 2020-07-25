@@ -133,10 +133,10 @@
      &     (ra_rst%nri_org, ra_rst%ltr_org,                             &
      &      k, l, abs(m), ioffset1, ioffset2)
 !
-        call calypso_mpi_seek_read_real(id_mpi_file,                    &
-     &      ra_rst%iflag_swap, ioffset1, ione64, field_re(k))
-        call calypso_mpi_seek_read_real(id_mpi_file,                    &
-     &      ra_rst%iflag_swap, ioffset2, ione64, field_im(k))
+        call mpi_read_real_b(id_mpi_file, ra_rst%iflag_swap,            &
+     &                       ioffset1, ione64, field_re(k))
+        call mpi_read_real_b(id_mpi_file, ra_rst%iflag_swap,            &
+     &                       ioffset2, ione64, field_im(k))
       end do
 !
       end subroutine read_each_mode_from_rayleigh

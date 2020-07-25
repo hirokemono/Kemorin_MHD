@@ -85,7 +85,7 @@
         if(c_array(iloop)%num .gt. 0) then
           ioffset = ioff_gl + istack_merged(id_rank)
           num32 = int(c_array(iloop)%num)
-          call calypso_mpi_seek_write_chara(id_file, ioffset,           &
+          call mpi_write_one_chara_b(id_file, ioffset,                  &
      &        num32, c_array(iloop)%c_IO(1))
         end if
       end do
@@ -113,7 +113,7 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
-        call calypso_mpi_seek_write_int8(id_file, ioffset,              &
+        call mpi_write_int8_b(id_file, ioffset,                         &
      &      i8_array(iloop)%num, i8_array(iloop)%i8_IO)
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
@@ -144,7 +144,7 @@
         ioffset = ioff_gl + istack_merged(id_rank)
         call dup_from_short_array                                       &
      &     (i_array(iloop)%num, i_array(iloop)%i_IO, tmp64)
-        call calypso_mpi_seek_write_int8                                &
+        call mpi_write_int8_b                                           &
      &    (id_file, ioffset, tmp64%n1, tmp64%id_a)
         call dealloc_1d_i8array(tmp64)
       end do
@@ -177,7 +177,7 @@
         ioffset = ioff_gl + istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
         call dup_from_short_array(n_2d, iv_array(iloop)%iv_IO, tmp64)
-        call calypso_mpi_seek_write_int8                                &
+        call mpi_write_int8_b                                           &
      &    (id_file, ioffset, tmp64%n1, tmp64%id_a)
         call dealloc_1d_i8array(tmp64)
       end do
@@ -204,7 +204,7 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
-        call calypso_mpi_seek_write_real                                &
+        call mpi_write_real_b                                           &
      &    (id_file, ioffset, r_array(iloop)%num, r_array(iloop)%r_IO)
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
@@ -232,7 +232,7 @@
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + istack_merged(id_rank)
         n_2d = v_array(iloop)%n1 * v_array(iloop)%n2
-        call calypso_mpi_seek_write_real                                &
+        call mpi_write_real_b                                           &
      &    (id_file, ioffset, n_2d, v_array(iloop)%v_IO)
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
@@ -266,7 +266,7 @@
      &                         - istack_merged(id_rank))
 !
         allocate(c_array(iloop)%c_IO(c_array(iloop)%num))
-        call calypso_mpi_seek_read_mul_chara(id_file, ioffset,          &
+        call mpi_read_mul_chara_b(id_file, ioffset,                     &
      &      1, c_array(iloop)%num, c_array(iloop)%c_IO(1))
       end do
       ioff_gl = ioff_gl + istack_merged(nprocs_in)
@@ -294,8 +294,8 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint_gl * istack_merged(id_rank)
-        call calypso_mpi_seek_read_int8(id_file, iflag_bin_swap,        &
-     &      ioffset, i8_array(iloop)%num, i8_array(iloop)%i8_IO)
+        call mpi_read_int8_b(id_file, iflag_bin_swap, ioffset,          &
+     &      i8_array(iloop)%num, i8_array(iloop)%i8_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -325,8 +325,8 @@
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kint * istack_merged(id_rank)
         call alloc_1d_i8array(i_array(iloop)%num, tmp64)
-        call calypso_mpi_seek_read_int8(id_file, iflag_bin_swap,        &
-     &      ioffset, tmp64%n1, tmp64%id_a)
+        call mpi_read_int8_b(id_file, iflag_bin_swap, ioffset,          &
+     &      tmp64%n1, tmp64%id_a)
         call dup_to_short_array(tmp64, i_array(iloop)%i_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
@@ -359,8 +359,8 @@
         ioffset = ioff_gl + kint * istack_merged(id_rank)
         n_2d = iv_array(iloop)%n1 * iv_array(iloop)%n2
         call alloc_1d_i8array(n_2d, tmp64)
-        call calypso_mpi_seek_read_int8(id_file, iflag_bin_swap,        &
-     &      ioffset, tmp64%n1, tmp64%id_a)
+        call mpi_read_int8_b(id_file, iflag_bin_swap, ioffset,          &
+     &      tmp64%n1, tmp64%id_a)
         call dup_to_short_array(tmp64, iv_array(iloop)%iv_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
@@ -387,8 +387,8 @@
       do iloop = 1, nloop
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kreal * istack_merged(id_rank)
-        call calypso_mpi_seek_read_real(id_file, iflag_bin_swap,        &
-     &      ioffset, r_array(iloop)%num, r_array(iloop)%r_IO)
+        call mpi_read_real_b(id_file, iflag_bin_swap, ioffset,          &
+     &                       r_array(iloop)%num, r_array(iloop)%r_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !
@@ -416,8 +416,8 @@
         id_rank = rank_in_multi_domain(iloop)
         ioffset = ioff_gl + kreal * istack_merged(id_rank)
         n_2d = v_array(iloop)%n1 * v_array(iloop)%n2
-        call calypso_mpi_seek_read_real(id_file, iflag_bin_swap,        &
-     &      ioffset, n_2d, v_array(iloop)%v_IO)
+        call mpi_read_real_b(id_file, iflag_bin_swap, ioffset,          &
+     &                       n_2d, v_array(iloop)%v_IO)
       end do
       ioff_gl = ioff_gl + kreal * istack_merged(nprocs_in)
 !

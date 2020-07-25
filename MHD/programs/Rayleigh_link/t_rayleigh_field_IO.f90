@@ -261,7 +261,7 @@
       call calypso_mpi_read_file_open(file_name, id_mpi_file)
 !
       ioffset = kreal * rayleigh_rtp%istart_rayleigh_in
-      call calypso_mpi_seek_read_real                                   &
+      call mpi_read_real_b                                              &
      &   (id_mpi_file, rayleigh_rtp%iflag_swap, ioffset,                &
      &    rayleigh_rtp%nnod_rayleigh_in, rayleigh_rtp%field_rtp(1))
       call calypso_close_mpi_file(id_mpi_file)

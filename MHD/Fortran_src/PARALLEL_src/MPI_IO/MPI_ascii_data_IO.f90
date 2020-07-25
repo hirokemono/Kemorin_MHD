@@ -124,7 +124,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = IO_param%ioff_gl
-        call calypso_mpi_seek_write_chara                               &
+        call mpi_write_one_chara_b                                      &
      &     (IO_param%id_file, ioffset, ilength, chara_dat)
       end if
       IO_param%ioff_gl = IO_param%ioff_gl + ilength

@@ -86,7 +86,7 @@ field_file_MPI_IO_b.o: $(MPI_IO_DIR)/field_file_MPI_IO_b.f90 m_precision.o m_con
 	$(F90) -c $(F90OPTFLAGS) $<
 hdf5_file_IO.o: $(MPI_IO_DIR)/hdf5_file_IO.F90 m_precision.o m_constants.o m_phys_constants.o calypso_mpi.o t_time_data.o t_ucd_data.o set_ucd_file_names.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
-m_calypso_mpi_IO.o: $(MPI_IO_DIR)/m_calypso_mpi_IO.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o m_error_IDs.o binary_IO.o byte_swap_f.o t_buffer_4_gzip.o calypso_mpi_int8.o
+m_calypso_mpi_IO.o: $(MPI_IO_DIR)/m_calypso_mpi_IO.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o calypso_mpi_char.o calypso_mpi_real.o calypso_mpi_int.o calypso_mpi_int4.o m_error_IDs.o binary_IO.o byte_swap_f.o calypso_mpi_int8.o t_buffer_4_gzip.o
 	$(F90) -c $(F90OPTFLAGS) $<
 merged_udt_vtk_file_IO.o: $(MPI_IO_DIR)/merged_udt_vtk_file_IO.f90 m_precision.o m_constants.o calypso_mpi.o m_field_file_format.o t_ucd_data.o t_para_double_numbering.o t_calypso_mpi_IO_param.o set_ucd_file_names.o t_geometry_data.o t_comm_table.o hdf5_file_IO.o set_ucd_data_to_type.o pickup_internal_element.o const_global_element_ids.o ucd_file_MPI_IO.o vtk_file_MPI_IO.o MPI_binary_head_IO.o MPI_ascii_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
