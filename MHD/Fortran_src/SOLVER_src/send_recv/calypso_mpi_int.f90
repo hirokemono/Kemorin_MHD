@@ -63,7 +63,7 @@
 !
 !
       itmp(1) = buffer
-      call MPI_BCAST(itmp, 1, CALYPSO_REAL,                             &
+      call MPI_BCAST(itmp, 1, CALYPSO_INTEGER,                          &
      &               root, CALYPSO_COMM, ierr_MPI)
       buffer = itmp(1)
 !

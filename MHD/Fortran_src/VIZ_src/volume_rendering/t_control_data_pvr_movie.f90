@@ -244,14 +244,16 @@
       subroutine bcast_pvr_rotation_ctl(movie)
 !
       use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_arrays
       use bcast_dup_view_transfer_ctl
 !
       type(pvr_movie_ctl), intent(inout) :: movie
 !
 !
-      call MPI_BCAST(movie%i_pvr_rotation,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(movie%i_pvr_rotation, 0)
 !
       call bcast_ctl_type_c1(movie%movie_mode_ctl)
       call bcast_ctl_type_i1(movie%num_frames_ctl)
@@ -260,10 +262,10 @@
       call bcast_ctl_type_r2(movie%apature_range_ctl)
       call bcast_ctl_type_r2(movie%LIC_kernel_peak_range_ctl)
 !
-      call MPI_BCAST(movie%start_view_file_ctl, kchara,                 &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(movie%end_view_file_ctl, kchara,                   &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(movie%start_view_file_ctl,       &
+     &                                 cast_long(kchara), 0)
+      call calypso_mpi_bcast_character(movie%end_view_file_ctl,         &
+     &                                 cast_long(kchara), 0)
       call bcast_view_transfer_ctl(movie%view_start_ctl)
       call bcast_view_transfer_ctl(movie%view_end_ctl)
 !

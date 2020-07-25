@@ -230,21 +230,24 @@
       subroutine bcast_pvr_sections_ctl(pvr_scts_c)
 !
       use bcast_control_arrays
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(pvr_sections_ctl), intent(inout) :: pvr_scts_c
 !
       integer(kind = kint) :: i
 !
 !
-      call MPI_BCAST(pvr_scts_c%num_pvr_sect_ctl,  1,                   &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(pvr_scts_c%num_pvr_sect_ctl, 0)
       if(pvr_scts_c%num_pvr_sect_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(pvr_scts_c%pvr_sect_ctl(pvr_scts_c%num_pvr_sect_ctl))
       end if
 !
       do i = 1, pvr_scts_c%num_pvr_sect_ctl
-        call MPI_BCAST(pvr_scts_c%pvr_sect_ctl(i)%fname_sect_ctl,       &
-     &      kchara, CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_character                                &
+     &     (pvr_scts_c%pvr_sect_ctl(i)%fname_sect_ctl,                  &
+     &      cast_long(kchara), 0)
 !
         call bcast_section_def_control                                  &
      &     (pvr_scts_c%pvr_sect_ctl(i)%psf_def_c)
