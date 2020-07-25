@@ -21,6 +21,7 @@
       use m_precision
 !
       use t_solver_djds
+      use m_solver_SR
 !
       implicit none
 !
@@ -84,7 +85,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
 !
       end subroutine solveNN_DJDS_struct
 !
@@ -127,7 +128,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
 !
       end subroutine init_solveNN_DJDS_struct
 !

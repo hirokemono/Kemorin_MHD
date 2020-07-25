@@ -16,6 +16,7 @@
 !
       use calypso_mpi
 !
+      use m_solver_SR
       use t_comm_table
       use t_geometry_data
       use t_crs_matrix
@@ -86,8 +87,8 @@
      &             nod_comm%num_neib, nod_comm%id_neib,                 &
      &             nod_comm%istack_import, nod_comm%item_import,        &
      &             nod_comm%istack_export, nod_comm%item_export,        &
-     &             mat_crs%ITERactual, ierr,                           &
-     &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,           &
+     &             mat_crs%ITERactual, ierr,                            &
+     &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
      &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs)
 !
       end subroutine solve_by_crs_solver33
@@ -120,7 +121,8 @@
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             mat_crs%ITERactual, ierr,                            &
      &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
-     &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs)
+     &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs,         &
+     &             SR_sig1, SR_r1)
 !
       end  subroutine solve_by_crs_solverNN
 !

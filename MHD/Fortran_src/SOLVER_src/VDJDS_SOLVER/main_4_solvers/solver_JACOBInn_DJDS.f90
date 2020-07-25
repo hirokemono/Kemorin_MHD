@@ -10,34 +10,37 @@
 !C***
 !C***  VJACOBInn_DJDS_SMP
 !C***
-!      subroutine VJACOBInn_DJDS_SMP                                    &
-!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!C
-!      subroutine init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT)
-!      subroutine solve_VJACOBInn_DJDS_SMP                              &
-!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,         &
-!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,               &
-!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,          &
-!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,             &
-!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                     &
-!     &           STACK_IMPORT, NOD_IMPORT,                             &
-!     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
-!C
-!C     VCG_DJDS_SMP solves the linear system Ax = b 
-!C     using the Conjugate Gradient iterative method with preconditioning.
-!C     Elements are ordered in descending Jagged Diagonal Storage
-!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
-!C
+!!      subroutine VJACOBInn_DJDS_SMP                                   &
+!!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,        &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT,                            &
+!!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
+!!C
+!!      subroutine init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT)
+!!      subroutine solve_VJACOBInn_DJDS_SMP                             &
+!!     &         ( N, NP, NB, NL, NU, NPL, NPU, NVECT, PEsmpTOT,        &
+!!     &           STACKmcG, STACKmc, NLhyp, NUhyp, IVECT,              &
+!!     &           NtoO, OtoN_L, OtoN_U, NtoO_U, LtoU, D, B, X,         &
+!!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
+!!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
+!!     &           STACK_IMPORT, NOD_IMPORT,                            &
+!!     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!C
+!!C     VCG_DJDS_SMP solves the linear system Ax = b 
+!!C     using the Conjugate Gradient iterative method with preconditioning.
+!!C     Elements are ordered in descending Jagged Diagonal Storage
+!!C     for Vector Processing and Cyclic Ordering for SMP Parallel Computation
+!!C
       module solver_JACOBInn_DJDS
 !
       use m_precision
       use m_constants
+      use t_solver_SR
 !
       implicit none
 !
@@ -77,7 +80,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -118,9 +121,6 @@
       real(kind=kreal), intent(in) :: AL(NPL)
       real(kind=kreal), intent(in) :: AU(NPU)
 
-      real(kind=kreal), intent(inout) :: B(NP)
-      real(kind=kreal), intent(inout) :: X(NP)
-
       real(kind=kreal), intent(in) :: ALU_L(N), ALU_U(N)
 
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -130,6 +130,14 @@
       integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
+!
+      real(kind=kreal), intent(inout) :: B(NP)
+      real(kind=kreal), intent(inout) :: X(NP)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call init_VJACOBInn_DJDS_SMP(NP, NB, PEsmpTOT)
@@ -141,7 +149,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !
 !
       end subroutine VJACOBInn_DJDS_SMP
@@ -170,7 +178,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT,                              &
-     &           STACK_EXPORT, NOD_EXPORT, PRECOND)
+     &           STACK_EXPORT, NOD_EXPORT, PRECOND, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -211,9 +219,6 @@
       real(kind=kreal), intent(in) :: AL(NPL)
       real(kind=kreal), intent(in) :: AU(NPU)
 
-      real(kind=kreal), intent(inout) :: B(NP)
-      real(kind=kreal), intent(inout) :: X(NP)
-
       real(kind=kreal), intent(in) :: ALU_L(N), ALU_U(N)
 
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -223,6 +228,14 @@
       integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in)                                   &
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
+!
+      real(kind=kreal), intent(inout) :: B(NP)
+      real(kind=kreal), intent(inout) :: X(NP)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint ) :: npLX1, npUX1, i
       integer(kind=kint ) :: iter, MAXIT
@@ -252,7 +265,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_N                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -294,7 +307,7 @@
      &            AL, AU, ALU_L, X, B, W(1,iWK))
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 !
         call subtruct_matvec_nn                                         &
      &           (NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
@@ -339,7 +352,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_N                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

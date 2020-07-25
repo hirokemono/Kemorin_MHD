@@ -9,6 +9,7 @@
       module solverNN
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -39,7 +40,7 @@
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
      &                   ITERactual, ERROR, METHOD, PRECOND,            &
-     &                   INTARRAY, REALARRAY)
+     &                   INTARRAY, REALARRAY, SR_sig, SR_r)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry for nb*nb Block Matrix
@@ -114,6 +115,11 @@
       real   (kind=kreal)                                 :: SIGMA
 ! \beginARG       solver parameters
 ! \endSUBROUTINE
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, NREST
       integer(kind=kint) :: i, j, k, jj
@@ -204,8 +210,8 @@
       FLAGmethod = 1
       call CG_N (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,    &
      &           B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR, &
-     &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -219,8 +225,8 @@
       call BiCGSTAB_N                                                   &
      &          (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,    &
      &           B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR, &
-     &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 
@@ -234,8 +240,8 @@
       call GPBiCG_N                                                     &
      &          (N, NP, NB, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,    &
      &           B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR, &
-     &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &           NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,           &
+     &           STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
       endif
       endif
 

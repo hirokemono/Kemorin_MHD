@@ -243,9 +243,9 @@
      &          PEsmpTOT, NP_org, NP_dest, NB, X_org, X_dest)
 !
       use m_solver_SR
+      use solver_SR_N
       use interpolate_fields_1pe
       use select_calypso_SR
-      use solver_SR_N
 !
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table_org), intent(in) ::  tbl_org
@@ -256,6 +256,11 @@
       real(kind = kreal), intent(in) :: X_org(NB*NP_org)
 !
       real(kind = kreal), intent(inout) :: X_dest(NB*NP_dest)
+!
+!>      Structure of communication flags
+!      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+!      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
       call verifty_work_4_itp_field                                     &
@@ -284,7 +289,8 @@
         call SOLVER_SEND_RECV_N                                         &
      &     (NP_dest, NB, comm_dest%num_neib, comm_dest%id_neib,         &
      &      comm_dest%istack_import, comm_dest%item_import,             &
-     &      comm_dest%istack_export, comm_dest%item_export, X_dest(1))
+     &      comm_dest%istack_export, comm_dest%item_export,             &
+     &      SR_sig1, SR_r1, X_dest(1))
       end if
 !
       end subroutine interpolate_mod_N

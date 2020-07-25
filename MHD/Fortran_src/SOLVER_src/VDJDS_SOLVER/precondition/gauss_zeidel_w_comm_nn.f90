@@ -2,73 +2,84 @@
 !      module gauss_zeidel_w_comm_nn
 !
 !     Written by Kemorin
-!
-!    complete Gauss-Zeidel (data communication for each hyperplane)
-!
+!!
+!!    complete Gauss-Zeidel (data communication for each hyperplane)
+!!
 !!       subroutine weak_gauss_zeidel_forward_nn                        &
 !!     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,   &
 !!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
-!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
+!!     &            SR_sig, SR_r)
 !!       subroutine weak_gauss_zeidel_backward_nn                       &
 !!     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,   &
 !!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
-!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
+!!     &            SR_sig, SR_r)
 !!
 !!       subroutine weak_gauss_zeidel_forward_3xnn                      &
 !!     &          (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
-!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           SR_sig, SR_r)
 !!       subroutine weak_gauss_zeidel_backward_3xnn                     &
 !!     &          (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
-!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
-!    complete Gauss-Zeidel (data communication for each hyperplane)
-!
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &           SR_sig, SR_r)
+!!
+!!    complete Gauss-Zeidel (data communication for each hyperplane)
+!!
 !!       subroutine full_gauss_zeidel_forward_nn                        &
 !!     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,   &
 !!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
-!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
+!!     &            SR_sig, SR_r)
 !!       subroutine full_gauss_zeidel_backward_nn                       &
 !!     &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,   &
 !!     &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,  &
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
-!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
+!!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
+!!     &            SR_sig, SR_r)
+!!
 !!       subroutine full_gauss_zeidel_forward_3xnn                      &
 !!     &          (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
-!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &            SR_sig, SR_r)
 !!       subroutine full_gauss_zeidel_backward_3xnn                     &
 !!     &          (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,    &
 !!     &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,   &
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
-!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
-!
-!        at (NB*NB*i-8, NB*NB*i-4, NB*NB*i) 
-!       ALU_U = 1 / Diag (Ordered by DJDS ordering for upper component)
-!        else
-!       ALU_U = Diag (Ordered by DJDS ordering for upper component)
+!!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
+!!     &            SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!        at (NB*NB*i-8, NB*NB*i-4, NB*NB*i) 
+!!       ALU_U = 1 / Diag (Ordered by DJDS ordering for upper component)
+!!        else
+!!       ALU_U = Diag (Ordered by DJDS ordering for upper component)
 !
       module gauss_zeidel_w_comm_nn
 !
       use calypso_mpi
       use m_precision
 !
+      use t_solver_SR
       use m_solver_count_time
       use gauss_zeidel_nn
       use solver_SR_N
@@ -86,7 +97,8 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
+     &            SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -119,6 +131,10 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
        real(kind = kreal), intent(inout) :: W3(NB*NP,3)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        call gauss_zeidel_forward_nn                                     &
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
@@ -130,7 +146,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -143,7 +159,8 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
+     &            SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -176,6 +193,10 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
        real(kind = kreal), intent(inout) :: W3(NB*NP,3)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        call gauss_zeidel_backward_nn                                    &
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
@@ -187,7 +208,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -201,7 +222,8 @@
      &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
-     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -236,6 +258,10 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
        real(kind = kreal), intent(inout) :: W9(NB*NP,9)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
         call gauss_zeidel_forward_3xnn                                  &
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
@@ -246,7 +272,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_nx3                                       &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -259,7 +285,8 @@
      &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
-     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -294,6 +321,11 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
        real(kind = kreal), intent(inout) :: W9(NB*NP,9)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
 !
         call gauss_zeidel_backward_3xnn                                 &
      &           (N, NP, NB, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,     &
@@ -304,7 +336,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_nx3                                       &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -318,7 +350,8 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
+     &            SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -350,6 +383,11 @@
 !
        real(kind = kreal), intent(inout) :: S(NB*NP)
        real(kind = kreal), intent(inout) :: W3(NB*NP,3)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        integer(kind = kint) :: iv
 !
@@ -365,7 +403,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
          END_TIME= MPI_WTIME()
          COMMtime = COMMtime + END_TIME - START_TIME
       end do
@@ -379,7 +417,8 @@
      &            PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,    &
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
-     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
+     &            SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -412,6 +451,11 @@
        real(kind = kreal), intent(inout) :: S(NB*NP)
        real(kind = kreal), intent(inout) :: W3(NB*NP,3)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
        integer(kind = kint) :: iv
 !
 !
@@ -426,7 +470,7 @@
 
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
          END_TIME= MPI_WTIME()
@@ -443,7 +487,8 @@
      &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
-     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -477,6 +522,11 @@
        real(kind = kreal), intent(inout) :: S1(NB*NP), S2(NB*NP)
        real(kind = kreal), intent(inout) :: S3(NB*NP)
        real(kind = kreal), intent(inout) :: W9(NB*NP,9)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        integer(kind = kint) :: iv
 !
@@ -491,7 +541,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_nx3                                       &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
       end do
@@ -505,7 +555,8 @@
      &           PEsmpTOT, STACKmcG, STACKmc, NLhyp, NUhyp, OtoN_L,     &
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
-     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT)
+     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
+     &           SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: NEIBPETOT
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -540,6 +591,11 @@
        real(kind = kreal), intent(inout) :: S3(NB*NP)
        real(kind = kreal), intent(inout) :: W9(NB*NP,9)
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
        integer(kind = kint) :: iv
 !
 !
@@ -553,7 +609,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_nx3                                       &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !

@@ -111,6 +111,7 @@
       subroutine SOLVER_SEND_RECV_N_type(NP, NB, comm_tbl, X)
 !
       use t_comm_table
+      use m_solver_SR
       use solver_SR_N
 !
       type(communication_table), intent(in) :: comm_tbl
@@ -118,12 +119,18 @@
 !
       real(kind = kreal), intent(inout) :: X(NB*NP)
 !
+!>      Structure of communication flags
+!      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+!      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
 !
       if(iflag_FSR_time) call start_elapsed_time(ist_elapsed_FSR+1)
       call SOLVER_SEND_RECV_N                                           &
      &   (NP, NB, comm_tbl%num_neib, comm_tbl%id_neib,                  &
      &   comm_tbl%istack_import, comm_tbl%item_import,                  &
-     &   comm_tbl%istack_export, comm_tbl%item_export, X(1))
+     &   comm_tbl%istack_export, comm_tbl%item_export,                  &
+     &   SR_sig1, SR_r1, X(1))
       if(iflag_FSR_time) call end_elapsed_time(ist_elapsed_FSR+1)
 !
       end subroutine SOLVER_SEND_RECV_N_type

@@ -27,7 +27,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  RESID,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 
 ! \beginSUBROUTINE
 !     BiCGSTAB_N solves the linear system Ax = b using the
@@ -39,7 +39,8 @@
 
       use calypso_mpi
 !
-      use  solver_SR_N
+      use t_solver_SR
+      use solver_SR_N
 !
 
       integer(kind=kint ),                   intent(in   )::  N
@@ -75,6 +76,11 @@
       integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &      :: NOD_EXPORT
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       real(kind=kreal), dimension(:),    allocatable, save ::  DD
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
@@ -129,7 +135,7 @@
 
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &       STACK_EXPORT, NOD_EXPORT, WW(1,R))
+     &       STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,R))
         do k1 = 1, NB
          do i= N+1, NP
           ii = NB*(i-1)
@@ -231,7 +237,7 @@
 
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
 !C
 !C-- BEGIN calculation
@@ -356,7 +362,7 @@
 
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,P))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,P))
 
       do j= 1, NP
         jj = NB*(j-1)
@@ -502,7 +508,7 @@
 
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,PT))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,PT))
 
 !C
 !C-- BEGIN calculation
@@ -583,7 +589,7 @@
 
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,S))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,S))
 
       do j= 1, NP
         jj = NB*(j-1)
@@ -728,7 +734,7 @@
 !C-- INTERFACE data EXCHANGE
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &     STACK_EXPORT, NOD_EXPORT, WW(1,ST))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, WW(1,ST))
 
 !C
 !C-- BEGIN calculation
@@ -833,7 +839,7 @@
 !C-- INTERFACE data EXCHANGE
         call SOLVER_SEND_RECV_n                                         &
      &     ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (WW)
 

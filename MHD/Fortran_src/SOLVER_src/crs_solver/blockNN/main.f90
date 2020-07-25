@@ -4,6 +4,7 @@
       use m_precision
       use calypso_mpi
 !
+      use m_solver_SR
       use solverNN
 
       implicit REAL*8 (A-H,O-Z)
@@ -174,7 +175,8 @@
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
      &                   ITERactual, ERROR,                             &
-     &                   METHOD, PRECOND, INTARRAY, REALARRAY         )
+     &                   METHOD, PRECOND, INTARRAY, REALARRAY,          &
+     &                   SR_sig1, SR_r1)
 
 
       if (my_rank.eq.0) then

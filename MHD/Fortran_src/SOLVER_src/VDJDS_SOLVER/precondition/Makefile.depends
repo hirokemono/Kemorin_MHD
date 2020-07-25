@@ -48,7 +48,7 @@ gauss_zeidel_w_comm_11.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_11.f90 calyp
 	$(F90) -c $(F90OPTFLAGS) $<
 gauss_zeidel_w_comm_33.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_33.f90 calypso_mpi.o m_precision.o m_solver_count_time.o gauss_zeidel_33.o solver_SR_3.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gauss_zeidel_w_comm_nn.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_nn.f90 calypso_mpi.o m_precision.o m_solver_count_time.o gauss_zeidel_nn.o solver_SR_N.o
+gauss_zeidel_w_comm_nn.o: $(SOLVER_PRECOND_DIR)/gauss_zeidel_w_comm_nn.f90 calypso_mpi.o m_precision.o t_solver_SR.o m_solver_count_time.o gauss_zeidel_nn.o solver_SR_N.o
 	$(F90) -c $(F90OPTFLAGS) $<
 i_cholesky_w_asdd_11.o: $(SOLVER_PRECOND_DIR)/i_cholesky_w_asdd_11.f90 m_precision.o ordering_by_o2nl_11.o ordering_by_l2u_11.o ordering_by_new2old_U_11.o vector_calc_solver_11.o forward_substitute_11.o backward_substitute_11.o djds_matrix_calcs_11.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -80,6 +80,6 @@ symmetric_gauss_zeidel_11.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_11.f90
 	$(F90) -c $(F90OPTFLAGS) $<
 symmetric_gauss_zeidel_33.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_33.f90 m_precision.o gauss_zeidel_33.o m_solver_count_time.o solver_SR_3.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-symmetric_gauss_zeidel_nn.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_nn.f90 m_precision.o m_solver_count_time.o gauss_zeidel_nn.o solver_SR_N.o calypso_mpi.o
+symmetric_gauss_zeidel_nn.o: $(SOLVER_PRECOND_DIR)/symmetric_gauss_zeidel_nn.f90 m_precision.o t_solver_SR.o m_solver_count_time.o gauss_zeidel_nn.o solver_SR_N.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

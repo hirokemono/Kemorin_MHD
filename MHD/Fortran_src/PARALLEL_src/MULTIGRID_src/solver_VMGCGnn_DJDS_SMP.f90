@@ -13,19 +13,22 @@
 !      subroutine VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
+!     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax,       &
+!     &          SR_sig, SR_r)
 !
 !      subroutine init_VMGCGnn_DJDS_SMP(NP, NB, PEsmpTOT,               &
 !     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
 !      subroutine solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
 !     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
-!     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+!     &          PRECOND, METHOD_MG, PRECOND_MG, IER, SR_sig, SR_r)
 !      integer(kind = kint), intent(in) :: num_MG_level
 !      type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
 !      type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
 !      type(DJDS_MATRIX), intent(in) ::         matNN(0:num_MG_level)
 !      type(MG_itp_table), intent(in) ::        MG_itp(num_MG_level)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !      integer(kind = kint), intent(in) :: PEsmpTOT
 !      integer(kind = kint), intent(in) :: NP
@@ -48,6 +51,7 @@
       module solver_VMGCGnn_DJDS_SMP
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -82,7 +86,8 @@
       subroutine VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax,        &
+     &          SR_sig, SR_r)
 !
       use t_comm_table
       use t_interpolate_table
@@ -109,6 +114,11 @@
       integer(kind=kint ), intent(inout) :: ITR, IER
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
 !
       call init_VMGCGnn_DJDS_SMP(NP, NB, PEsmpTOT,                      &
      &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
@@ -116,7 +126,7 @@
       call solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, SR_sig, SR_r)
 !
       end subroutine VMGCGnn_DJDS_SMP
 !
@@ -152,7 +162,7 @@
       subroutine solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,  &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
      &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
-     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
+     &          PRECOND, METHOD_MG, PRECOND_MG, IER, SR_sig, SR_r)
 !
       use calypso_mpi
       use solver_SR_N
@@ -162,6 +172,7 @@
       use t_solver_djds
       use t_vector_for_solver
 !
+      use m_solver_SR
       use m_work_4_CG
       use m_solver_count_time
 !
@@ -193,6 +204,11 @@
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
       integer(kind=kint ), intent(inout) :: ITR, IER
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint ) :: iter, MAXIT
 !
@@ -226,7 +242,8 @@
       call SOLVER_SEND_RECV_N                                           &
      &   (NP, NB, MG_comm(0)%num_neib, MG_comm(0)%id_neib,              &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
-     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, X)
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
+     &    SR_sig1, SR_r1, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -322,7 +339,8 @@
       call SOLVER_SEND_RECV_N                                           &
      &   (NP, NB, MG_comm(0)%num_neib, MG_comm(0)%id_neib,              &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
-     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, W(1,P))
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
+     &    SR_sig, SR_r, W(1,P))
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -405,7 +423,8 @@
       call SOLVER_SEND_RECV_N                                           &
      &   (NP, NB, MG_comm(0)%num_neib, MG_comm(0)%id_neib,              &
      &    MG_comm(0)%istack_import, MG_comm(0)%item_import,             &
-     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW, X)
+     &    MG_comm(0)%istack_export, djds_tbl(0)%NOD_EXPORT_NEW,         &
+     &    SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

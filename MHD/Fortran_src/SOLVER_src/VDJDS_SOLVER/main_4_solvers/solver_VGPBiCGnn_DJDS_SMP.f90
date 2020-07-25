@@ -27,7 +27,9 @@
 !!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
 !!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
 !!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!!     &           PRECOND, iterPREmax)
+!!     &           PRECOND, iterPREmax, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!C
 !!C     VGPBiCGnn_DJDS_SMP solves the linear system Ax = b with n*n block
 !!     GPBiCG iterative method with preconditioning.
@@ -39,6 +41,7 @@
 !
       use m_precision
       use m_constants
+      use t_solver_SR
 !
       implicit none
 !
@@ -77,7 +80,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: N, NP, NB, NL, NU, NPL, NPU
       integer(kind=kint ), intent(in) :: PEsmpTOT, NVECT
@@ -105,9 +108,6 @@
       real(kind=kreal), intent(in) :: D(NB*NB*NP )
       real(kind=kreal), intent(in) :: AL(NB*NB*NPL)
       real(kind=kreal), intent(in) :: AU(NB*NB*NPU)
-!
-      real(kind=kreal), intent(inout) :: B(NB*NP)
-      real(kind=kreal), intent(inout) :: X(NB*NP)
 
       real(kind=kreal), intent(in) :: ALU_L(NB*NB*N), ALU_U(NB*NB*N)
 
@@ -121,6 +121,14 @@
 
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
+      real(kind=kreal), intent(inout) :: B(NB*NP)
+      real(kind=kreal), intent(inout) :: X(NB*NP)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
 !C
       call init_VGPBiCGnn_DJDS_SMP                                      &
      &   (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
@@ -132,7 +140,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
       end subroutine VGPBiCGnn_DJDS_SMP
 !
@@ -172,7 +180,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -217,9 +225,6 @@
       real(kind=kreal), intent(in) :: AL(NB*NB*NPL)
       real(kind=kreal), intent(in) :: AU(NB*NB*NPU)
 !
-      real(kind=kreal), intent(inout) :: B(NB*NP)
-      real(kind=kreal), intent(inout) :: X(NB*NP)
-
       real(kind=kreal), intent(in) :: ALU_L(NB*NB*N), ALU_U(NB*NB*N)
 
       integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
@@ -232,6 +237,13 @@
 
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
+      real(kind=kreal), intent(inout) :: B(NB*NP)
+      real(kind=kreal), intent(inout) :: X(NB*NP)
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
 !C
@@ -265,7 +277,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_N                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -318,7 +330,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,R))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,R))
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -353,7 +365,7 @@
               START_TIME= MPI_WTIME()
               call SOLVER_SEND_RECV_N                                   &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,RZ))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,RZ))
               END_TIME= MPI_WTIME()
               COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -395,7 +407,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,P))
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -437,9 +449,9 @@
 !
 !C
         START_TIME= MPI_WTIME()
-        call SOLVER_SEND_RECV_nx3                                       &
-     &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,PT), W(1,T), W(1,T0))
+        call SOLVER_SEND_RECV_nx3(NP, NB, NEIBPETOT, NEIBPE,            &
+     &      STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,         &
+     &      SR_sig, SR_r, W(1,PT), W(1,T), W(1,T0))
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -482,9 +494,9 @@
 !C
 !C-- INTERFACE data EXCHANGE
               START_TIME= MPI_WTIME()
-              call SOLVER_SEND_RECV_nx3                                 &
-     &            (NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
-     &             STACK_EXPORT, NOD_EXPORT, W(1,RX), W(1,RY), W(1,RZ))
+              call SOLVER_SEND_RECV_nx3(NP, NB, NEIBPETOT, NEIBPE,      &
+     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
+     &            SR_sig, SR_r, W(1,RX), W(1,RY), W(1,RZ))
               END_TIME= MPI_WTIME()
               COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -517,7 +529,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV_N                                         &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,TT))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,TT))
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
 !C
@@ -623,7 +635,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV_N                                           &
      &   ( NP, NB, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

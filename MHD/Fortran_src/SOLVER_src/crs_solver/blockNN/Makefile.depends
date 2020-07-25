@@ -4,10 +4,10 @@ main.o: $(SOLVER_NN_DIR)/main.f90 m_precision.o calypso_mpi.o solverNN.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solverNN.o: $(SOLVER_NN_DIR)/solverNN.f90 m_precision.o calypso_mpi.o solver_CG_N.o solver_GPBiCG_N.o solver_BiCGSTAB_N.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_BiCGSTAB_N.o: $(SOLVER_NN_DIR)/solver_BiCGSTAB_N.f90 m_precision.o calypso_mpi.o solver_SR_N.o
+solver_BiCGSTAB_N.o: $(SOLVER_NN_DIR)/solver_BiCGSTAB_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o solver_SR_N.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_CG_N.o: $(SOLVER_NN_DIR)/solver_CG_N.f90 m_precision.o calypso_mpi.o solver_SR_N.o
+solver_CG_N.o: $(SOLVER_NN_DIR)/solver_CG_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o solver_SR_N.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GPBiCG_N.o: $(SOLVER_NN_DIR)/solver_GPBiCG_N.f90 m_precision.o calypso_mpi.o solver_SR_N.o
+solver_GPBiCG_N.o: $(SOLVER_NN_DIR)/solver_GPBiCG_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o solver_SR_N.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

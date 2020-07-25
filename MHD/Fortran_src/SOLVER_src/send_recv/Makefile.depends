@@ -66,7 +66,7 @@ solver_SR_3.o: $(SR_DIR)/solver_SR_3.f90 m_precision.o m_constants.o t_solver_SR
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_SR_6.o: $(SR_DIR)/solver_SR_6.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o m_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_N.o: $(SR_DIR)/solver_SR_N.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_solver_SR.o
+solver_SR_N.o: $(SR_DIR)/solver_SR_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_SR_int.o: $(SR_DIR)/solver_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o t_solver_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
