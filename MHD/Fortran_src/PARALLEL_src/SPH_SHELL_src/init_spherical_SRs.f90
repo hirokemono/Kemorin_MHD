@@ -225,7 +225,7 @@
      &         (NB, comm_rtp, comm_rtm, comm_rlm, comm_rj)
 !
       use calypso_mpi
-      use select_calypso_SR
+      use calypso_SR_core
 !
       integer (kind=kint), intent(in) :: NB
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -235,25 +235,25 @@
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check rtp -> rtm'
-      call check_calypso_send_recv_N                                    &
+      call check_calypso_SR_stack                                       &
      &   (NB, comm_rtp%nneib_domain, comm_rtp%iflag_self,               &
      &    comm_rtp%istack_sr, comm_rtm%nneib_domain,                    &
-     &    comm_rtm%iflag_self, comm_rtm%istack_sr)
+     &    comm_rtm%iflag_self, comm_rtm%istack_sr, SR_sig1, SR_r1)
       if(my_rank .eq. 0) write(*,*) 'check rtm -> rtp'
-      call check_calypso_send_recv_N                                    &
+      call check_calypso_SR_stack                                       &
      &   (NB, comm_rtm%nneib_domain, comm_rtm%iflag_self,               &
      &    comm_rtm%istack_sr, comm_rtp%nneib_domain,                    &
-     &    comm_rtp%iflag_self, comm_rtp%istack_sr)
+     &    comm_rtp%iflag_self, comm_rtp%istack_sr, SR_sig1, SR_r1)
       if(my_rank .eq. 0) write(*,*) 'check rj -> rlm'
-      call check_calypso_send_recv_N                                    &
+      call check_calypso_SR_stack                                       &
      &    (NB, comm_rj%nneib_domain, comm_rj%iflag_self,                &
      &     comm_rj%istack_sr, comm_rlm%nneib_domain,                    &
-     &     comm_rlm%iflag_self, comm_rlm%istack_sr)
+     &     comm_rlm%iflag_self, comm_rlm%istack_sr, SR_sig1, SR_r1)
       if(my_rank .eq. 0) write(*,*) 'check rlm -> rj'
-      call check_calypso_send_recv_N                                    &
+      call check_calypso_SR_stack                                       &
      &   (NB, comm_rlm%nneib_domain, comm_rlm%iflag_self,               &
      &    comm_rlm%istack_sr, comm_rj%nneib_domain,                     &
-     &    comm_rj%iflag_self, comm_rj%istack_sr)
+     &    comm_rj%iflag_self, comm_rj%istack_sr, SR_sig1, SR_r1)
 !
       end subroutine check_spherical_SRs_N
 !

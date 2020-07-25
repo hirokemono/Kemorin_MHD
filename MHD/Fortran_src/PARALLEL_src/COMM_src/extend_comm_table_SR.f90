@@ -70,7 +70,7 @@
 !
       call calypso_send_recv_core(n_vector,                             &
      &    num_neib, izero, id_neib, istack_send_added,                  &
-     &    num_neib, izero, id_neib, istack_recv_added)
+     &    num_neib, izero, id_neib, istack_recv_added, SR_sig1, SR_r1)
 !
 !$omp parallel do private(inum)
       do inum = 1, ntot_recv_added

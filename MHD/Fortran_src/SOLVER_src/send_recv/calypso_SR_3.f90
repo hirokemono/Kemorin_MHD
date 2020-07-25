@@ -112,8 +112,9 @@
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &          (ithree, npe_send, isend_self, id_pe_send, istack_send, &
-     &                   npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &   (ithree, npe_send, isend_self, id_pe_send, istack_send,        &
+     &            npe_recv, irecv_self, id_pe_recv, istack_recv,        &
+     &            SR_sig, SR_r)
 !C
 !C-- RECEIVE
       call sel_cppy_from_recv_buf_3(SR_sig%iflag_recv, nnod_new,        &
@@ -179,8 +180,9 @@
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &           (inine, npe_send, isend_self, id_pe_send, istack_send, &
-     &                   npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &   (inine, npe_send, isend_self, id_pe_send, istack_send,         &
+     &           npe_recv, irecv_self, id_pe_recv, istack_recv,         &
+     &           SR_sig, SR_r)
 !C
 !C-- RECEIVE
       call sel_cppy_from_recv_buf_3x3(SR_sig%iflag_recv, nnod_new,      &

@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/SOLVER_src/send_recv/select_calypso_SR.f90

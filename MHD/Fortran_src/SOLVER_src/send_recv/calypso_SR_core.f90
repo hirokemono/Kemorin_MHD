@@ -8,14 +8,13 @@
 !!@n      using reverse import table
 !!
 !!@verbatim
+!!      subroutine check_calypso_SR_stack                               &
+!!     &         (NB, npe_send, isend_self, istack_send,                &
+!!     &              npe_recv, irecv_self, istack_recv, SR_sig, SR_r)
 !!      subroutine calypso_send_recv_core                               &
 !!     &         (NB, npe_send, isend_self, id_pe_send, istack_send,    &
 !!     &              npe_recv, irecv_self, id_pe_recv, istack_recv,    &
 !!     &              SR_sig, SR_r)
-!!
-!!      subroutine calypso_send_recv_check                              &
-!!     &         (NB, npe_send, isend_self, istack_send,                &
-!!     &              npe_recv, irecv_self, istack_recv, SR_sig, SR_r)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
@@ -48,9 +47,40 @@
 !
       implicit none
 !
+      private :: check_calypso_send_recv_stack
+!
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine check_calypso_SR_stack                                 &
+     &         (NB, npe_send, isend_self, istack_send,                  &
+     &              npe_recv, irecv_self, istack_recv, SR_sig, SR_r)
+!
+      integer(kind = kint), intent(in) :: NB
+!
+      integer(kind = kint), intent(in) :: npe_send, isend_self
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+!
+      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte real
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      call resize_work_SR(NB, npe_send, npe_recv,                       &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
+!
+      call check_calypso_send_recv_stack                                &
+     &   (NB, npe_send, isend_self, istack_send,                        &
+     &        npe_recv, irecv_self, istack_recv, SR_r)
+!
+      end subroutine check_calypso_SR_stack
 !
 !-----------------------------------------------------------------------
 !
@@ -121,9 +151,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine calypso_send_recv_check                                &
+      subroutine check_calypso_send_recv_stack                          &
      &         (NB, npe_send, isend_self, istack_send,                  &
-     &              npe_recv, irecv_self, istack_recv, SR_sig, SR_r)
+     &              npe_recv, irecv_self, istack_recv, SR_r)
 !
       integer(kind = kint), intent(in) :: NB
 !
@@ -200,7 +230,7 @@
      &       'large num_send(npe_recv)',                                &
      &      my_rank, npe_recv, ist_recv, num, size(SR_r%WR)
 !
-      end subroutine calypso_send_recv_check
+      end subroutine check_calypso_send_recv_stack
 !
 ! ----------------------------------------------------------------------
 !

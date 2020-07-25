@@ -37,7 +37,8 @@
 !!     &                         ntot_import, inod_import, irev_import, &
 !!     &                         WR, X1_new, X2_new, X3_new)
 !!      subroutine sel_cppy_from_recv_buf_3xN(iflag_recv, NB, nnod_new, &
-!!     &                         ntot_import, inod_import, irev_import, &
+!!     &                         npe_recv, ntot_import, istack_recv,    &
+!!     &                         inod_import, irev_import,              &
 !!     &                         WR, X1_new, X2_new, X3_new)
 !!
 !!      subroutine sel_cppy_from_recv_buf_int(iflag_recv, nnod_new,     &
@@ -373,7 +374,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_cppy_from_recv_buf_3xN(iflag_recv, NB, nnod_new,   &
-     &                         ntot_import, inod_import, irev_import,   &
+     &                         npe_recv, ntot_import, istack_recv,      &
+     &                         inod_import, irev_import,                &
      &                         WR, X1_new, X2_new, X3_new)
 !
       use set_from_recv_buff_tri
@@ -384,9 +386,11 @@
       integer(kind = kint), intent(in) :: nnod_new
 !
       integer(kind = kint), intent(in) :: ntot_import
+      integer(kind = kint), intent(in) :: npe_recv
+      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
       integer(kind = kint), intent(in) :: inod_import(ntot_import)
       integer(kind = kint), intent(in) :: irev_import(nnod_new)
-      real (kind=kreal), intent(inout):: WR(18*(ntot_import+1))
+      real (kind=kreal), intent(inout):: WR(3*NB*(ntot_import+1))
 !
       real (kind=kreal), intent(inout):: X1_new(NB*nnod_new)
       real (kind=kreal), intent(inout):: X2_new(NB*nnod_new)
@@ -397,8 +401,9 @@
         call set_from_recv_buf_rev_3xN(NB, nnod_new, ntot_import,       &
      &      irev_import, WR(1), X1_new, X2_new, X3_new)
       else
-        call set_from_recv_buf_3xN(NB, nnod_new, ntot_import,           &
-     &      inod_import, WR(1), X1_new, X2_new, X3_new)
+        call set_from_recv_buf_3xN(NB, nnod_new,                        &
+     &      npe_recv, ntot_import, istack_recv, inod_import,            &
+     &      WR(1), X1_new, X2_new, X3_new)
       end if
 !
       end subroutine sel_cppy_from_recv_buf_3xN

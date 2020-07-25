@@ -191,7 +191,7 @@
 !     communication
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int'
+      if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int8'
       call calypso_send_recv_int8                                       &
      &   (iflag_import_item, itp_org%ntot_table_org, NP_dest,           &
      &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &

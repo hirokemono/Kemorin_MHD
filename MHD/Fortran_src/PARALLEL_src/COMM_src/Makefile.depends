@@ -16,7 +16,7 @@ bcast_control_arrays.o: $(COMMDIR)/bcast_control_arrays.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_file_IO_parameter.o: $(COMMDIR)/bcast_file_IO_parameter.f90 m_precision.o m_constants.o calypso_mpi.o t_file_IO_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-calypso_SR_type.o: $(COMMDIR)/calypso_SR_type.f90 m_precision.o m_constants.o t_calypso_comm_table.o calypso_SR.o calypso_SR_3.o select_calypso_SR.o calypso_SR_int.o
+calypso_SR_type.o: $(COMMDIR)/calypso_SR_type.f90 m_precision.o m_constants.o t_calypso_comm_table.o t_solver_SR.o m_solver_SR.o calypso_SR.o calypso_SR_3.o calypso_SR_N.o calypso_SR_int.o calypso_SR_core.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_ele_comm_table_para.o: $(COMMDIR)/const_ele_comm_table_para.f90 m_precision.o calypso_mpi.o m_constants.o t_comm_table.o t_const_export_table.o const_nod_ele_comm_table.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -110,22 +110,24 @@
 !C-- SEND
       call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
      &    istack_send(npe_send), istack_send, inod_export,              &
-     &    X_org, SR_r1%WS)
+     &    X_org, SR_r%WS)
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
-     &              npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &   (NB, npe_send, isend_self, id_pe_send, istack_send,            &
+     &        npe_recv, irecv_self, id_pe_recv, istack_recv,            &
+     &        SR_sig, SR_r)
 !
 !C-- RECV
       call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
      &    istack_recv(npe_recv), istack_recv, inod_import,              &
-     &    SR_r1%WR, X_new)
+     &    SR_r%WR, X_new)
 !
 !C-- RECV
-      call sel_cppy_from_recv_buf_N(SR_sig%iflag_recv, NB, nnod_new,    &
-     &    npe_recv, istack_recv(npe_recv), istack_recv,                 &
-     &    inod_import, irev_import, SR_r%WR(1), X_new)
+      call sel_cppy_from_recv_buf_N                                     &
+     &   (SR_sig%iflag_recv, NB, nnod_new, npe_recv,                    &
+     &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
+     &    SR_r%WR(1), X_new)
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self, SR_sig)
@@ -191,25 +193,19 @@
       s1time = MPI_WTIME()
       call set_to_send_buf_3xN_mod(NB, nnod_org,                        &
      &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
-     &    X1_org, X2_org, X3_org, SR_r1%WS)
+     &    X1_org, X2_org, X3_org, SR_r%WS)
       elaps3(1) = elaps3(1) + MPI_WTIME() - s1time
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &        ((3*NB), npe_send, isend_self, id_pe_send, istack_send,   &
-     &                 npe_recv, irecv_self, id_pe_recv, istack_recv)
+     &   ((3*NB), npe_send, isend_self, id_pe_send, istack_send,        &
+     &            npe_recv, irecv_self, id_pe_recv, istack_recv,        &
+     &            SR_sig, SR_r)
 !
 !C-- RECV
-!      s2time = MPI_WTIME()
-      call set_from_recv_buf_3xN(NB, nnod_new,                          &
-     &    npe_recv, istack_recv(npe_recv), istack_recv, inod_import,    &
-     &    SR_r1%WR, X1_new, X2_new, X3_new)
-!      elaps3(2) = elaps3(2) + MPI_WTIME() - s2time
-!      elaps3(3) = elaps3(3) + MPI_WTIME() - s1time
-!
-!C-- RECV
-      call sel_cppy_from_recv_buf_3xN(SR_sig%iflag_recv, NB, nnod_new,  &
-     &    istack_recv(npe_recv), inod_import, irev_import,              &
+      call sel_cppy_from_recv_buf_3xN                                   &
+     &   (SR_sig%iflag_recv, NB, nnod_new, npe_recv,                    &
+     &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
      &    SR_r%WR(1), X1_new, X2_new, X3_new)
 !
 !C-- WAIT
