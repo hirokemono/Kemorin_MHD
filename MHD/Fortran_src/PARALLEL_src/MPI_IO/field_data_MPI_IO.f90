@@ -101,13 +101,15 @@
 !
       use calypso_mpi_int4
       use calypso_mpi_char
+      use transfer_to_long_integers
 !
       integer, intent(inout) :: ilength
       character(len=kchara), intent(inout) :: field_name
 !
 !
       call calypso_mpi_bcast_one_int4(ilength, 0)
-      call calypso_mpi_bcast_character(field_name, kchara, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (field_name, cast_long(kchara), 0)
 !
       end subroutine sync_field_name_mpi
 !
