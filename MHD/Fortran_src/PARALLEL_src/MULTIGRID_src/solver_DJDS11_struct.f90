@@ -50,6 +50,7 @@
      &           mat11, NP, B, X, METHOD, PRECOND, ierr, eps, itr,      &
      &           itr_res)
 !
+      use m_solver_SR
       use t_comm_table
       use solver_DJDS
 !      use check_DJDS_ordering
@@ -115,7 +116,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
 !
       end subroutine solve_DJDS11_struct
 !
@@ -125,6 +126,7 @@
      &           mat11, NP, B, X, METHOD, PRECOND,ierr, eps, itr,       &
      &           itr_res)
 !
+      use m_solver_SR
       use t_comm_table
       use solver_DJDS
 !
@@ -158,7 +160,7 @@
      &     comm_tbl%num_neib, comm_tbl%id_neib,                         &
      &     comm_tbl%istack_import, comm_tbl%item_import,                &
      &     comm_tbl%istack_export, djds_tbl%NOD_EXPORT_NEW,             &
-     &     METHOD, PRECOND, itr_res)
+     &     METHOD, PRECOND, itr_res, SR_sig1, SR_r1)
 !
       end subroutine init_solve_DJDS11_struct
 !

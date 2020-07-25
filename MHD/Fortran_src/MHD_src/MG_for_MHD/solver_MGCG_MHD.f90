@@ -175,6 +175,7 @@
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,            &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
+      use m_solver_SR
       use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
 !      use solver_CG
@@ -225,7 +226,7 @@
      &      node%numnod, b_vec(1), x_vec(1), itr, itr_res,              &
      &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
      &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
-     &      ierr, iterPREmax)
+     &      ierr, iterPREmax, SR_sig1, SR_r1)
       else
         call solve_DJDS11_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &

@@ -5,21 +5,24 @@
 !C
 !C*** CG
 !C
-!      subroutine CG    (N, NP,  NPL, NPU,                              &
-!     &                  D,  AL, INL, IAL, AU, INU, IAU,                &
-!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,              &
-!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,          &
-!     &                  STACK_IMPORT, NOD_IMPORT,                      &
-!     &                  STACK_EXPORT, NOD_EXPORT, NSET)
-!
-!     CG solves the linear system Ax = b using the
-!     Conjugate Gradient iterative method with preconditioning.
-!
-!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!!      subroutine CG    (N, NP,  NPL, NPU,                             &
+!!     &                  D,  AL, INL, IAL, AU, INU, IAU,               &
+!!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,             &
+!!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
+!!     &                  STACK_IMPORT, NOD_IMPORT,                     &
+!!     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!     CG solves the linear system Ax = b using the
+!!     Conjugate Gradient iterative method with preconditioning.
+!!
+!!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
 !
       module solver_CG
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -40,7 +43,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,           &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -80,6 +83,11 @@
       integer(kind=kint ), intent(in) :: NOD_IMPORT  (:)
       integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
       integer(kind=kint ), intent(in) :: NOD_EXPORT  (:)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       integer(kind = kint) :: MAXIT, IFLAG
       data IFLAG/0/
@@ -114,7 +122,7 @@
 !
           call SOLVER_SEND_RECV                                         &
      &       ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,         &
-     &         STACK_EXPORT, NOD_EXPORT, SCALE)
+     &         STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, SCALE)
 !
           call mat_scaling_crs_ilu(N, NP, NPL, NPU, D, AL, INL, IAL,    &
      &         INU, IAU, AU, SCALE)
@@ -145,7 +153,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 !C
       call subtruct_crs_matvec_11 (NP, N, NPL, NPU, INL, INU, IAL, IAU, &
      &    D, AL, AU, W(1,R), B, X)
@@ -215,7 +223,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,P) )
 
         call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU, W(1,Q), W(1,P) )
@@ -265,7 +273,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 !
       end subroutine        CG
 !

@@ -16,7 +16,7 @@
 !!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
 !!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
 !!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!!     &           PRECOND, iterPREmax)
+!!     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !!
 !!      subroutine init_VBiCGSTAB11_DJDS_SMP                            &
 !!     &         (NP, PEsmpTOT, PRECOND, iterPREmax)
@@ -27,7 +27,9 @@
 !!     &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,            &
 !!     &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                    &
 !!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!!     &           PRECOND, iterPREmax)
+!!     &           PRECOND, iterPREmax, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!C
 !!C     VBiCGSTAB11_DJDS_SMP solves the linear system Ax = b
 !!C     using the BiCGSTAB iterative method with preconditioning.
@@ -38,6 +40,7 @@
       module solver_VBiCGSTAB11_DJDS_SMP
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -77,7 +80,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
       integer(kind=kint ), intent(in) :: N, NP, NL, NU, NPL, NPU, NVECT
       integer(kind=kint ), intent(in) :: PEsmpTOT
@@ -121,6 +124,11 @@
 !
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
 !
       call init_VBiCGSTAB11_DJDS_SMP(NP, PEsmpTOT, PRECOND, iterPREmax)
 !
@@ -131,7 +139,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 !
       end subroutine VBiCGSTAB11_DJDS_SMP
 !
@@ -169,7 +177,7 @@
      &           INL, INU, IAL, IAU, AL, AU, ALU_L, ALU_U,              &
      &           EPS, ITR, IER, NEIBPETOT, NEIBPE,                      &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           PRECOND, iterPREmax)
+     &           PRECOND, iterPREmax, SR_sig, SR_r)
 
       use calypso_mpi
 !
@@ -212,9 +220,6 @@
       real(kind=kreal), intent(in) :: D(NP )
       real(kind=kreal), intent(in) :: AL(NPL)
       real(kind=kreal), intent(in) :: AU(NPU)
-!
-      real(kind=kreal), intent(inout) :: B(NP)
-      real(kind=kreal), intent(inout) :: X(NP)
 
       real(kind=kreal), intent(in) :: ALU_L(N), ALU_U(N)
 
@@ -227,6 +232,14 @@
      &      :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT)) 
 
       integer(kind=kint ), intent(in)  :: iterPREmax
+!
+      real(kind=kreal), intent(inout) :: B(NP)
+      real(kind=kreal), intent(inout) :: X(NP)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
@@ -261,7 +274,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -365,7 +378,7 @@
               START_TIME= MPI_WTIME()
               call SOLVER_SEND_RECV                                     &
      &             ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
-     &             STACK_EXPORT, NOD_EXPORT, W(1,ZQ))
+     &             STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,ZQ))
               END_TIME= MPI_WTIME()
               COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -386,7 +399,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,PT))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,PT))
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -466,8 +479,8 @@
 !C-- INTERFACE data EXCHANGE
               START_TIME= MPI_WTIME()
               call SOLVER_SEND_RECV                                     &
-     &           ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
-     &           STACK_EXPORT, NOD_EXPORT, W(1,ZQ))
+     &           (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,      &
+     &            STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,ZQ))
               END_TIME= MPI_WTIME()
               COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -490,7 +503,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,ST))
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,ST))
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 
@@ -572,7 +585,7 @@
       START_TIME= MPI_WTIME()
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 

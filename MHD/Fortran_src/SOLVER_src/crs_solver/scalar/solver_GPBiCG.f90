@@ -6,24 +6,27 @@
 !C*** module solver_GPBiCG
 !C***
 !
-!      subroutine GPBiCG                                                &
-!     &                 (N, NP,  NPL, NPU,                              &
-!     &                  D,  AL, INL, IAL, AU, INU, IAU,                &
-!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,              &
-!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,          &
-!     &                  STACK_IMPORT, NOD_IMPORT,                      &
-!     &                  STACK_EXPORT, NOD_EXPORT, NSET)
-!
-!     GPBiCG solves the linear system Ax = b using the
-!     GPBiCG iterative method with preconditioning.
-!
-!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
-!     Modified by H. Matsui on jul. 2005 (ver 1.0)
+!!      subroutine GPBiCG                                               &
+!!     &                 (N, NP,  NPL, NPU,                             &
+!!     &                  D,  AL, INL, IAL, AU, INU, IAU,               &
+!!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,             &
+!!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
+!!     &                  STACK_IMPORT, NOD_IMPORT,                     &
+!!     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!     GPBiCG solves the linear system Ax = b using the
+!!     GPBiCG iterative method with preconditioning.
+!!
+!!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!!     Modified by H. Matsui on jul. 2005 (ver 1.0)
 !
 
       module solver_GPBiCG
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -46,7 +49,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,           &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 
       use calypso_mpi
 !
@@ -94,6 +97,11 @@
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &       :: NOD_EXPORT
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       integer(kind=kint ) :: IFLAG, MONITORFLAG
       integer(kind=kint ) :: MAXIT
@@ -124,7 +132,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, D)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, D)
 !C
 !C +-------------------+
 !C | ILU decomposition |
@@ -181,7 +189,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,R) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,R) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -220,7 +228,7 @@
 
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,P) )
 
         call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU, W(1,PT), W(1,P) )
@@ -256,9 +264,9 @@
 !C-- calc. {t_tld} and {t0} by [M] inversion
 !C         {WZ}   = [Minv]{p_tld} 
 !C
-        call SOLVER_SEND_RECVx3                                         &
-     &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,PT), W(1,T), W(1,T0) )
+        call SOLVER_SEND_RECVx3(NP, NEIBPETOT, NEIBPE,                  &
+     &      STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,         &
+     &      SR_sig, SR_r, W(1,PT), W(1,T), W(1,T0))
 
         W(1:NP,TT) = W(1:NP,T)
         W(1:NP,WZ) = W(1:NP,PT)
@@ -282,7 +290,7 @@
 !C-- calc. [A]{t_tld}
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,TT) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,TT) )
 
         call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,     &
      &      D, AL, AU, W(1,WK), W(1,TT) )
@@ -365,7 +373,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 
       deallocate (W)
 

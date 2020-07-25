@@ -123,9 +123,10 @@
 !
       if (comm_dest%num_neib .gt. 0) then
         call SOLVER_SEND_RECV                                           &
-     &      (NP_dest, comm_dest%num_neib, comm_dest%id_neib,            &
-     &       comm_dest%istack_import, comm_dest%item_import,            &
-     &       comm_dest%istack_export, comm_dest%item_export, X_dest(1))
+     &     (NP_dest, comm_dest%num_neib, comm_dest%id_neib,             &
+     &      comm_dest%istack_import, comm_dest%item_import,             &
+     &      comm_dest%istack_export, comm_dest%item_export,             &
+     &      SR_sig1, SR_r1, X_dest(1))
       end if
 !
       end subroutine interpolate_mod_1

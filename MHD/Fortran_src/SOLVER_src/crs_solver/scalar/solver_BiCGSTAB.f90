@@ -2,24 +2,27 @@
 !C*** module solver_BiCGSTAB
 !C***
 !
-!      subroutine BiCGSTAB                                              &
-!     &                 (N, NP,  NPL, NPU,                              &
-!     &                  D,  AL, INL, IAL, AU, INU, IAU,                &
-!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,              &
-!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,          &
-!     &                  STACK_IMPORT, NOD_IMPORT,                      &
-!     &                  STACK_EXPORT, NOD_EXPORT, NSET)
-!
-!
-!     BiCGSTAB solves the linear system Ax = b using the
-!     Bi-Conjugate Gradient Stabilized iterative method with preconditioning.
-!
-!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
-!     Modified by H. Matsui on jul. 2005 (ver 1.0)
+!!      subroutine BiCGSTAB                                             &
+!!     &                 (N, NP,  NPL, NPU,                             &
+!!     &                  D,  AL, INL, IAL, AU, INU, IAU,               &
+!!     &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,             &
+!!     &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,         &
+!!     &                  STACK_IMPORT, NOD_IMPORT,                     &
+!!     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
+!!
+!!
+!!     BiCGSTAB solves the linear system Ax = b using the
+!!     Bi-Conjugate Gradient Stabilized iterative method with preconditioning.
+!!
+!!     coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
+!!     Modified by H. Matsui on jul. 2005 (ver 1.0)
 !
       module solver_BiCGSTAB
 !
       use m_precision
+      use t_solver_SR
 !
       implicit none
 !
@@ -39,7 +42,7 @@
      &                  B,  X, PRECOND, SIGMA_DIAG,SIGMA,               &
      &                  EPS,  ITER, ERROR, NEIBPETOT, NEIBPE,           &
      &                  STACK_IMPORT, NOD_IMPORT,                       &
-     &                  STACK_EXPORT, NOD_EXPORT, NSET)
+     &                  STACK_EXPORT, NOD_EXPORT, NSET, SR_sig, SR_r)
 !
       use calypso_mpi
       use m_constants
@@ -87,6 +90,11 @@
       integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
      &       :: NOD_EXPORT
 ! \beginARG       exported node                            (i-th node)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 
       integer(kind=kint ) :: MAXIT, IFLAG, MONITORFLAG
       real(kind = kreal), allocatable :: W(:,:)
@@ -116,7 +124,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, D)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, D)
 
       if (NSET.ge.1) then
 !C
@@ -187,7 +195,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,P) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,P) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -216,7 +224,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,PT) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,PT) )
 
       call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,       &
      &    D, AL, AU, W(1,V), W(1,PT))
@@ -244,7 +252,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,S) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,S) )
 
 !C
 !C-- incomplete CHOLESKY
@@ -273,7 +281,7 @@
 
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, W(1,ST) )
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, W(1,ST) )
 
       call cal_crs_matvec_11(NP, N, NPL, NPU, INL, INU, IAL, IAU,       &
      &    D, AL, AU, W(1,T), W(1,ST))
@@ -321,7 +329,7 @@
 !C-- INTERFACE data EXCHANGE
       call SOLVER_SEND_RECV                                             &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, X)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, X)
 !
       end subroutine        BiCGSTAB
 !

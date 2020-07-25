@@ -9,7 +9,7 @@
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
 !!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
-!!     &            niter)
+!!     &            niter, SR_sig, SR_r)
 !!
 !!       subroutine full_sym_gauss_zeidel_11                            &
 !!     &           (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,       &
@@ -17,7 +17,7 @@
 !!     &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,   &
 !!     &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                 &
 !!     &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT, &
-!!     &            niter)
+!!     &            niter, SR_sig, SR_r)
 !!
 !!
 !!       subroutine weak_sym_gauss_zeidel_3x11                          &
@@ -26,7 +26,7 @@
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
 !!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!!     &           niter)
+!!     &           niter, SR_sig, SR_r)
 !!
 !!       subroutine full_sym_gauss_zeidel_3x11                          &
 !!     &          (N, NP, NL, NU, NPL, NPU, npLX1, npUX1, NVECT,        &
@@ -34,12 +34,15 @@
 !!     &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,    &
 !!     &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,&
 !!     &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,  &
-!!     &           niter)
+!!     &           niter, SR_sig, SR_r)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       module symmetric_gauss_zeidel_11
 !
       use m_precision
 !
+      use t_solver_SR
       use m_solver_count_time
       use gauss_zeidel_11
       use solver_SR
@@ -58,7 +61,7 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            niter)
+     &            niter, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -94,6 +97,11 @@
 !
        real(kind = kreal), intent(inout) :: S(NP)
        real(kind = kreal), intent(inout) :: W3(NP,3)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        integer(kind = kint) :: icou
 !
@@ -108,7 +116,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -121,7 +129,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECV                                           &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
       end do
@@ -136,7 +144,7 @@
      &            OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,     &
      &            ALU_U, B, S, W3, NEIBPETOT, NEIBPE,                   &
      &            STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,   &
-     &            niter)
+     &            niter, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -172,6 +180,11 @@
 !
        real(kind = kreal), intent(inout) :: S(NP)
        real(kind = kreal), intent(inout) :: W3(NP,3)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        integer(kind = kint) :: icou, iv
 !
@@ -188,7 +201,7 @@
           START_TIME= MPI_WTIME()
           call SOLVER_SEND_RECV                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
            END_TIME= MPI_WTIME()
            COMMtime = COMMtime + END_TIME - START_TIME
         end do
@@ -204,7 +217,7 @@
         START_TIME= MPI_WTIME()
           call SOLVER_SEND_RECV                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
         end do
@@ -221,7 +234,7 @@
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           niter)
+     &           niter, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -257,6 +270,11 @@
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
        real(kind = kreal), intent(inout) :: W9(NP,9)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        integer(kind = kint) :: icou
 !
@@ -271,7 +289,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECVx3                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
@@ -284,7 +302,7 @@
         START_TIME= MPI_WTIME()
         call SOLVER_SEND_RECVx3                                         &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
       end do
@@ -299,7 +317,7 @@
      &           OtoN_U, NtoO_U, LtoU, INL, INU, IAL, IAU, AL, AU,      &
      &           ALU_U, B1, B2, B3, S1, S2, S3, W9, NEIBPETOT, NEIBPE,  &
      &           STACK_IMPORT, NOD_IMPORT, STACK_EXPORT, NOD_EXPORT,    &
-     &           niter)
+     &           niter, SR_sig, SR_r)
 !
       use calypso_mpi
 !
@@ -335,6 +353,11 @@
 !
        real(kind = kreal), intent(inout) :: S1(NP), S2(NP), S3(NP)
        real(kind = kreal), intent(inout) :: W9(NP,9)
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
        integer(kind = kint) :: icou, iv
 !
@@ -350,7 +373,7 @@
           START_TIME= MPI_WTIME()
           call SOLVER_SEND_RECVx3                                       &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
         end do
@@ -365,7 +388,7 @@
           START_TIME= MPI_WTIME()
           call SOLVER_SEND_RECVx3                                       &
      &   ( NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &     STACK_EXPORT, NOD_EXPORT, S1, S2, S3)
+     &     STACK_EXPORT, NOD_EXPORT, SR_sig, SR_r, S1, S2, S3)
           END_TIME= MPI_WTIME()
           COMMtime = COMMtime + END_TIME - START_TIME
 !

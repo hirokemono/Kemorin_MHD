@@ -10,13 +10,16 @@
 !!        in overlapped partitioning
 !!
 !!@verbatim
-!!      subroutine  SOLVER_SEND_RECV                                    &
-!!     &          (N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,      &
-!!     &                                 STACK_EXPORT, NOD_EXPORT, X)
-!!      subroutine  SOLVER_SEND_RECVx3                                  &
-!!     &          (N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,      &
-!!     &                                 STACK_EXPORT, NOD_EXPORT,      &
-!!     &           X1, X2, X3)
+!!      subroutine  SOLVER_SEND_RECV(N, NEIBPETOT, NEIBPE,              &
+!!     &                             STACK_IMPORT, NOD_IMPORT,          &
+!!     &                             STACK_EXPORT, NOD_EXPORT,          &
+!!     &                             SR_sig, SR_r, X)
+!!      subroutine  SOLVER_SEND_RECVx3(N, NEIBPETOT, NEIBPE,            &
+!!     &                               STACK_IMPORT, NOD_IMPORT,        &
+!!     &                               STACK_EXPORT, NOD_EXPORT,        &
+!!     &                               SR_sig, SR_r, X1, X2, X3)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
 !!
 !!@n @param  N     Number of data points
@@ -53,12 +56,10 @@
 ! ----------------------------------------------------------------------
 !C
 !C*** SOLVER_SEND_RECV
-!C
-      subroutine  SOLVER_SEND_RECV                                      &
-     &         ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,        &
-     &                                 STACK_EXPORT, NOD_EXPORT, X)
-
-      use m_solver_SR
+      subroutine  SOLVER_SEND_RECV(N, NEIBPETOT, NEIBPE,                &
+     &                             STACK_IMPORT, NOD_IMPORT,            &
+     &                             STACK_EXPORT, NOD_EXPORT,            &
+     &                             SR_sig, SR_r, X)
 !
 !>       number of nodes
       integer(kind=kint )                , intent(in)   ::  N
@@ -79,13 +80,18 @@
 !>       communicated result vector
       real   (kind=kreal), dimension(N)  , intent(inout):: X
 !
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
+!
       integer (kind = kint) :: neib, istart, iend, k
       integer :: inum
 !
 !
       call resize_work_SR(ione, NEIBPETOT, NEIBPETOT,                   &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
-     &    SR_sig1, SR_r1)
+     &    SR_sig, SR_r)
 !
 !C-- SEND
       do neib= 1, NEIBPETOT
@@ -93,13 +99,13 @@
         iend  = STACK_EXPORT(neib  )
         
         do k= istart, iend
-           SR_r1%WS(k)= X(NOD_EXPORT(k))
+           SR_r%WS(k)= X(NOD_EXPORT(k))
         enddo
         istart= STACK_EXPORT(neib-1) + 1
         inum  = int(STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1))
-        call MPI_ISEND (SR_r1%WS(istart), inum, CALYPSO_REAL,           &
+        call MPI_ISEND (SR_r%WS(istart), inum, CALYPSO_REAL,            &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  SR_sig1%req1(neib), ierr_MPI)
+     &                  SR_sig%req1(neib), ierr_MPI)
       enddo
 
 !C
@@ -108,35 +114,33 @@
       do neib= 1, NEIBPETOT
         istart = STACK_IMPORT(neib-1) + 1
         inum  = int(STACK_IMPORT(neib  ) - STACK_IMPORT(neib-1))
-        call MPI_IRECV (SR_r1%WR(istart), inum, CALYPSO_REAL,           &
+        call MPI_IRECV (SR_r%WR(istart), inum, CALYPSO_REAL,            &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  SR_sig1%req2(neib), ierr_MPI)
+     &                  SR_sig%req2(neib), ierr_MPI)
       enddo
 
       call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig1%req2(1), SR_sig1%sta2(1,1), ierr_MPI)
+     &   (int(NEIBPETOT), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
    
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1) + 1
         iend  = STACK_IMPORT(neib  )
         do k= istart, iend
-          X(NOD_IMPORT(k))= SR_r1%WR(k)
+          X(NOD_IMPORT(k))= SR_r%WR(k)
         enddo
       enddo
 
       call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig1%req1(1), SR_sig1%sta1(1,1), ierr_MPI)
+     &   (int(NEIBPETOT), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine  SOLVER_SEND_RECVx3                                    &
-     &                ( N, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT, &
-     &                                        STACK_EXPORT, NOD_EXPORT, &
-     &                  X1,  X2, X3)
-
-      use m_solver_SR
+      subroutine  SOLVER_SEND_RECVx3(N, NEIBPETOT, NEIBPE,              &
+     &                               STACK_IMPORT, NOD_IMPORT,          &
+     &                               STACK_EXPORT, NOD_EXPORT,          &
+     &                               SR_sig, SR_r, X1, X2, X3)
 !
       integer(kind=kint )                , intent(in)   ::  N
       integer(kind=kint )                , intent(in)   ::  NEIBPETOT
@@ -150,6 +154,11 @@
       real   (kind=kreal), dimension(N)  , intent(inout):: X1
       real   (kind=kreal), dimension(N)  , intent(inout):: X2
       real   (kind=kreal), dimension(N)  , intent(inout):: X3
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 !C
 !
       integer (kind = kint) :: neib, istart, iend, k
@@ -158,7 +167,7 @@
 !
       call resize_work_SR(ithree, NEIBPETOT, NEIBPETOT,                 &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT)              &
-     &    , SR_sig1, SR_r1)
+     &    , SR_sig, SR_r)
 !
 !C-- SEND
       
@@ -167,15 +176,15 @@
         iend  = STACK_EXPORT(neib  )
         
         do k= istart, iend
-           SR_r1%WS(3*k-2)= X1(NOD_EXPORT(k))
-           SR_r1%WS(3*k-1)= X2(NOD_EXPORT(k))
-           SR_r1%WS(3*k  )= X3(NOD_EXPORT(k))
+           SR_r%WS(3*k-2)= X1(NOD_EXPORT(k))
+           SR_r%WS(3*k-1)= X2(NOD_EXPORT(k))
+           SR_r%WS(3*k  )= X3(NOD_EXPORT(k))
         enddo
         istart= 3 *   STACK_EXPORT(neib-1) + 1
         inum  = int(3 * (STACK_EXPORT(neib  ) - STACK_EXPORT(neib-1)))
-        call MPI_ISEND (SR_r1%WS(istart), inum, CALYPSO_REAL,           &
+        call MPI_ISEND (SR_r%WS(istart), inum, CALYPSO_REAL,            &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  SR_sig1%req1(neib), ierr_MPI)
+     &                  SR_sig%req1(neib), ierr_MPI)
       enddo
 
 !C
@@ -184,26 +193,26 @@
       do neib= 1, NEIBPETOT
         istart= 3 *   STACK_IMPORT(neib-1) + 1
         inum  = int(3 * (STACK_IMPORT(neib  ) - STACK_IMPORT(neib-1)))
-        call MPI_IRECV (SR_r1%WR(istart), inum, CALYPSO_REAL,           &
+        call MPI_IRECV (SR_r%WR(istart), inum, CALYPSO_REAL,            &
      &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  SR_sig1%req2(neib), ierr_MPI)
+     &                  SR_sig%req2(neib), ierr_MPI)
       enddo
 
       call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig1%req2(1), SR_sig1%sta2(1,1), ierr_MPI)
+     &   (int(NEIBPETOT), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
    
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1) + 1
         iend  = STACK_IMPORT(neib  )
         do k= istart, iend
-          X1(NOD_IMPORT(k))= SR_r1%WR(3*k-2)
-          X2(NOD_IMPORT(k))= SR_r1%WR(3*k-1)
-          X3(NOD_IMPORT(k))= SR_r1%WR(3*k  )
+          X1(NOD_IMPORT(k))= SR_r%WR(3*k-2)
+          X2(NOD_IMPORT(k))= SR_r%WR(3*k-1)
+          X3(NOD_IMPORT(k))= SR_r%WR(3*k  )
         enddo
       enddo
 
       call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig1%req1(1), SR_sig1%sta1(1,1), ierr_MPI)
+     &   (int(NEIBPETOT), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recvx3
 !

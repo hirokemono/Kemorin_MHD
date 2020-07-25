@@ -43,7 +43,8 @@
       use t_ctl_params_4_gen_filter
       use m_array_for_send_recv
 !
-      use   solver
+      use m_solver_SR
+      use solver
 !
       integer (kind = kint), intent(in) :: nd_dx
 !
@@ -95,7 +96,8 @@
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             itr_res, imonitor_solve,                             &
      &             gfil_p%method_elesize, gfil_p%precond_elesize,       &
-     &    mass%INTARRAY_crs, mass%REALARRAY_crs)
+     &             mass%INTARRAY_crs, mass%REALARRAY_crs,               &
+     &             SR_sig1, SR_r1)
 !
       if (my_rank .eq. 0 ) then
         write(*,*) ' iteration finish:', itr_res

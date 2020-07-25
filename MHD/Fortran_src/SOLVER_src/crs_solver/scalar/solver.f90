@@ -8,6 +8,7 @@
       module solver
 !
       use m_precision
+      use t_solver_SR
 !
       implicit REAL*8(A-H,O-Z)
 !
@@ -39,7 +40,7 @@
      &                   NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,   &
      &                                      STACK_EXPORT, NOD_EXPORT,   &
      &                   ITERactual, ERROR, METHOD, PRECOND,            &
-     &                   INTARRAY, REALARRAY)
+     &                   INTARRAY, REALARRAY, SR_sig, SR_r)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry
@@ -115,6 +116,11 @@
 ! \beginARG       real     array for solver parameters
       real   (kind=kreal)                                 :: SIGMA
 ! \beginARG       solver parameters
+!
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for 8-byte integer
+      type(send_recv_real_buffer), intent(inout) :: SR_r
 ! \endSUBROUTINE
 
       integer(kind=kint) :: ITER, FLAGmethod, FLAGprecond, MONITORFLAG
@@ -201,7 +207,7 @@
           call CG (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU,      &
      &         B, X, PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,   &
      &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &         STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
 
         else if ( ((METHOD(1:1).eq.'B').or.(METHOD(1:1).eq.'b')) .and.  &
      &            ((METHOD(2:2).eq.'I').or.(METHOD(2:2).eq.'i')) .and.  &
@@ -212,7 +218,7 @@
      &        (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,    &
      &         PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,         &
      &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &         STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
 
         else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.  &
      &            ((METHOD(2:2).eq.'P').or.(METHOD(2:2).eq.'p')) .and.  &
@@ -223,7 +229,7 @@
      &        (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,    &
      &         PRECOND, SIGMA_DIAG, SIGMA, RESID, ITER,  ERROR,         &
      &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &         STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
 
         else if ( ((METHOD(1:1).eq.'G').or.(METHOD(1:1).eq.'g')) .and.  &
      &            ((METHOD(2:2).eq.'M').or.(METHOD(2:2).eq.'m')) .and.  &
@@ -234,7 +240,7 @@
      &        (N, NP, NPL, NPU, D, AL, INL, IAL, AU, INU, IAU, B, X,    &
      &         PRECOND, SIGMA_DIAG, SIGMA, NREST, RESID, ITER,  ERROR,  &
      &         NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,             &
-     &                            STACK_EXPORT, NOD_EXPORT, PRESET)
+     &         STACK_EXPORT, NOD_EXPORT, PRESET, SR_sig, SR_r)
         endif
       endif
 

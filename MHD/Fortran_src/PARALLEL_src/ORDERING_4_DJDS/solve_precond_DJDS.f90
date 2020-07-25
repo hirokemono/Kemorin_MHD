@@ -141,7 +141,7 @@
 !C
 !C-- ICCG computation
 
-        write(*,*) 'init_solve_DJDS_kemo'
+      write(*,*) 'init_solve_DJDS11_struct'
       call init_solve_DJDS11_struct(np_smp, nod_comm,                   &
      &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
      &    CG_param%METHOD, CG_param%PRECOND, ierr,                      &

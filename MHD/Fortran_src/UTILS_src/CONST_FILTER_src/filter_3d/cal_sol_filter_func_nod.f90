@@ -93,6 +93,7 @@
       subroutine cal_sol_filter_func_CG(inod, gfil_p, fil_tbl_crs,      &
      &          max_size, mat_size, vec_mat, x_sol, fil_mat_crs)
 !
+      use m_solver_SR
       use t_ctl_params_4_gen_filter
       use copy_2_crs_matrix_4_filter
       use solver_single
@@ -134,7 +135,8 @@
      &    vec_mat, x_sol, fil_mat_crs%PRESET_crs, my_rank,              &
      &    fil_mat_crs%ITERactual, imonitor_solve,                       &
      &    fil_mat_crs%METHOD_crs, fil_mat_crs%PRECOND_crs,              &
-     &    fil_mat_crs%INTARRAY_crs, fil_mat_crs%REALARRAY_crs)
+     &    fil_mat_crs%INTARRAY_crs, fil_mat_crs%REALARRAY_crs,          &
+     &    SR_sig1, SR_r1)
 !
       if (imonitor_solve .ne. 0 ) then
         write(12,*) ' iteration failed at :', my_rank, inod
