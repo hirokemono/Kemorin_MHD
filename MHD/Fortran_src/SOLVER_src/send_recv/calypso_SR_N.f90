@@ -119,11 +119,6 @@
      &        SR_sig, SR_r)
 !
 !C-- RECV
-      call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
-     &    istack_recv(npe_recv), istack_recv, inod_import,              &
-     &    SR_r%WR, X_new)
-!
-!C-- RECV
       call sel_cppy_from_recv_buf_N                                     &
      &   (SR_sig%iflag_recv, NB, nnod_new, npe_recv,                    &
      &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
