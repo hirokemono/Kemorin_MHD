@@ -57,7 +57,8 @@
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             mat_crs%ITERactual, ierr,                            &
      &             mat_crs%METHOD_crs, mat_crs%PRECOND_crs,             &
-     &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs)
+     &             mat_crs%INTARRAY_crs, mat_crs%REALARRAY_crs,         &
+     &             SR_sig1, SR_r1)
 !
       end subroutine solve_by_crs_solver11
 !

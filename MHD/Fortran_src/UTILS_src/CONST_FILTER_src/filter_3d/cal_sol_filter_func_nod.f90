@@ -128,15 +128,14 @@
      &              fil_mat_crs%PRECOND_crs
       end if
 !
-      call solve(fil_tbl_crs%ntot_d, fil_tbl_crs%ntot_d,                &
+      call solve_single(fil_tbl_crs%ntot_d, fil_tbl_crs%ntot_d,         &
      &    fil_tbl_crs%ntot_l, fil_tbl_crs%ntot_u, fil_mat_crs%D_crs,    &
      &    fil_mat_crs%AL_crs, fil_tbl_crs%istack_l, fil_tbl_crs%item_l, &
      &    fil_mat_crs%AU_crs, fil_tbl_crs%istack_u, fil_tbl_crs%item_u, &
      &    vec_mat, x_sol, fil_mat_crs%PRESET_crs, my_rank,              &
      &    fil_mat_crs%ITERactual, imonitor_solve,                       &
      &    fil_mat_crs%METHOD_crs, fil_mat_crs%PRECOND_crs,              &
-     &    fil_mat_crs%INTARRAY_crs, fil_mat_crs%REALARRAY_crs,          &
-     &    SR_sig1, SR_r1)
+     &    fil_mat_crs%INTARRAY_crs, fil_mat_crs%REALARRAY_crs)
 !
       if (imonitor_solve .ne. 0 ) then
         write(12,*) ' iteration failed at :', my_rank, inod

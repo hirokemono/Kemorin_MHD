@@ -35,10 +35,10 @@
 
 !C
 !C--- solve
-      subroutine  solve (N, NP, NPL, NPU,                               &
-     &                   D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,   &
-     &                   id_rank, ITERactual, ERROR, METHOD, PRECOND,   &
-     &                   INTARRAY, REALARRAY         )
+      subroutine  solve_single(N, NP, NPL, NPU,                         &
+     &           D, AL, INL, IAL, AU, INU, IAU, B, X, PRESET,           &
+     &           id_rank, ITERactual, ERROR, METHOD, PRECOND,           &
+     &           INTARRAY, REALARRAY)
 
 ! \beginSUBROUTINE
 !      solver subsystem entry
@@ -241,6 +241,6 @@
       endif
 !C===
 
-      end subroutine solve
+      end subroutine solve_single
 !
       end module solver_single
