@@ -19,7 +19,7 @@
 !!@n @param  icode       error code
 !!@n @param  message    message to output
 !
-      module calypso_mpi_int4
+      module calypso_mpi_logical
 !
       use m_precision
       use m_constants
