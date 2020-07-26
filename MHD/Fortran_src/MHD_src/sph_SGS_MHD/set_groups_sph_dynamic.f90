@@ -50,21 +50,15 @@
       nlayer_fl = num_fluid_layer(sph_params, sph_rtp)
       call alloc_mk_sph_dgrp_flag(nprocs, wk_dgrp1)
 !
-      call MPI_Allgather                                                &
-     &   (sph_rtp%irank_sph_rtp(1), 1, CALYPSO_INTEGER,                 &
-     &    wk_dgrp1%irank_list_r, 1, CALYPSO_INTEGER, CALYPSO_COMM,      &
-     &    ierr_MPI)
-      call MPI_Allgather                                                &
-     &   (sph_rtp%irank_sph_rtp(2), 1, CALYPSO_INTEGER,                 &
-     &    wk_dgrp1%irank_list_t, 1, CALYPSO_INTEGER,                    &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_int                                &
+     &   (sph_rtp%irank_sph_rtp(1), wk_dgrp1%irank_list_r)
+      call calypso_mpi_allgather_one_int                                &
+     &   (sph_rtp%irank_sph_rtp(2), wk_dgrp1%irank_list_t)
 !
-      call MPI_Allgather(nlayer_fl, 1, CALYPSO_INTEGER,                 &
-     &    wk_dgrp1%nri_pe_list, 1, CALYPSO_INTEGER,                     &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_Allgather(sph_rtp%nidx_rtp(2), 1, CALYPSO_INTEGER,       &
-     &    wk_dgrp1%nth_pe_list, 1, CALYPSO_INTEGER,                     &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_int                                &
+     &   (nlayer_fl, wk_dgrp1%nri_pe_list)
+      call calypso_mpi_allgather_one_int                                &
+     &   (sph_rtp%nidx_rtp(2), wk_dgrp1%nth_pe_list)
       wk_dgrp1%nprocs_rt(1) = maxval(wk_dgrp1%irank_list_r,1) + 1
       wk_dgrp1%nprocs_rt(2) = maxval(wk_dgrp1%irank_list_t,1) + 1
 !

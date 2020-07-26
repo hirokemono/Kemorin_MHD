@@ -128,14 +128,12 @@
 !
       allocate(num_recv(nprocs))
 !
-        num_send = ele_comm_tmp(my_rank)%num_neib
-        call MPI_Allgather(num_send, 1, CALYPSO_INTEGER, num_recv,      &
-     &      1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+      num_send = ele_comm_tmp(my_rank)%num_neib
+      call calypso_mpi_allgather_one_int(num_send, num_recv)
       ele_comm_tmp(1:nprocs)%num_neib = num_recv(1:nprocs)
 !
-        num_send = ele_comm_tmp(my_rank)%ntot_import
-        call MPI_Allgather(num_send, 1, CALYPSO_INTEGER, num_recv,      &
-     &      1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+      num_send = ele_comm_tmp(my_rank)%ntot_import
+      call calypso_mpi_allgather_one_int(num_send, num_recv)
       ele_comm_tmp(1:nprocs)%ntot_import = num_recv(1:nprocs)
 !
 !
