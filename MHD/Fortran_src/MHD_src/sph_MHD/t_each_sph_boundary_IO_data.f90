@@ -110,9 +110,9 @@
 !
 !
       call calypso_mpi_bcast_character                                  &
-     &   (bc_ctls%bc_group, cadt_long(kchara), 0)
+     &   (bc_ctls%bc_group, cast_long(kchara), 0)
       call calypso_mpi_bcast_character                                  &
-     &   (bc_ctls%bc_field, cadt_long(kchara), 0)
+     &   (bc_ctls%bc_field, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(bc_ctls%ncomp_bc, 0)
       call calypso_mpi_bcast_one_int(bc_ctls%num_bc_mode, 0)
 !
