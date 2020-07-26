@@ -41,22 +41,24 @@
 !
       subroutine bcast_vr_psf_ctl(pvr)
 !
+      use calypso_mpi_int
+      use calypso_mpi_char
       use bcast_control_arrays
       use bcast_dup_view_transfer_ctl
+      use transfer_to_long_integers
 !
       type(pvr_parameter_ctl), intent(inout) :: pvr
 !
 !
-      call MPI_BCAST(pvr%i_pvr_ctl,  1,                                 &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(pvr%i_pvr_ctl, 0)
 !
 !
-      call MPI_BCAST(pvr%view_file_ctl, kchara,                         &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (pvr%view_file_ctl, cast_long(kchara), 0)
       call bcast_view_transfer_ctl(pvr%mat)
 !
-      call MPI_BCAST(pvr%color_file_ctl, kchara,                        &
-     &               CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (pvr%color_file_ctl, cast_long(kchara), 0)
 !
       call bcast_pvr_isosurfs_ctl(pvr%pvr_isos_c)
       call bcast_pvr_sections_ctl(pvr%pvr_scts_c)

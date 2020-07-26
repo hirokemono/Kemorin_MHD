@@ -157,6 +157,8 @@
 !
       subroutine mpi_write_merged_geometry(IO_param, nod_IO)
 !
+      use calypso_mpi_int8
+      use transfer_to_long_integers
       use MPI_ascii_data_IO
       use MPI_write_single_mesh_data
 !
@@ -169,8 +171,8 @@
 !
       num_item_l(1) = nod_IO%numnod
       num_item_l(2) = nod_IO%internal_node
-      call MPI_allREDUCE(num_item_l(1), istack_g(1), 2,                 &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_int8                                   &
+     &   (num_item_l(1), istack_g(1), cast_long(2), MPI_SUM)
 !
       call mpi_write_charahead(IO_param, len_multi_int_textline(itwo),  &
      &    multi_int8_textline(itwo, istack_g(1)))
@@ -186,6 +188,7 @@
      &         (IO_param, node_IO, ele_IO, dbl_nod)
 !
       use t_para_double_numbering
+      use calypso_mpi_int8
       use MPI_ascii_data_IO
       use MPI_integer_list_IO
       use MPI_write_single_mesh_data
@@ -195,16 +198,14 @@
       type(node_data), intent(in) :: node_IO
       type(parallel_double_numbering), intent(in) :: dbl_nod
 !
-      integer(kind = kint_gl) :: num_item_l(1)
-      integer(kind = kint_gl) :: istack_g(1)
+      integer(kind = kint_gl) :: istack_g
 !
 !
-      num_item_l(1) = ele_IO%numele
-      call MPI_allREDUCE(num_item_l(1), istack_g(1), 1,                 &
-     &    CALYPSO_GLOBAL_INT, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_int8                               &
+     &  (ele_IO%numele, istack_g, MPI_SUM)
 !
       call mpi_write_charahead(IO_param, len_multi_int_textline(ione),  &
-     &    multi_int8_textline(ione, istack_g(1)))
+     &    multi_int8_textline(ione, istack_g))
 !
 !      call mpi_write_num_of_data(IO_param, ele_IO%numele)
       call mpi_write_merged_element_type                                &

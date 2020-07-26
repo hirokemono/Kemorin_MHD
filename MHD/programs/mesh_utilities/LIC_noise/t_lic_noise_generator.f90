@@ -104,7 +104,10 @@
       subroutine import_noise_ary                                       &
      &         (filename, n_raw_data, n_data_size, ierr)
 
+      use calypso_mpi_int
+      use calypso_mpi_int8
       use calypso_mpi_char
+      use transfer_to_long_integers
       use set_parallel_file_name
       use binary_file_access
 
@@ -185,16 +188,11 @@
 !
       end if
 !
-      call MPI_BCAST(ierr, 1,                                           &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(bbuf_nze%ierr_bin, 1,                              &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(bbuf_nze%iflag_swap, 1,                            &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(n_data_size, 3,                                    &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(d_size, 1,                                         &
-     &    CALYPSO_GLOBAL_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ierr, 0)
+      call calypso_mpi_bcast_one_int(bbuf_nze%ierr_bin, 0)
+      call calypso_mpi_bcast_one_int(bbuf_nze%iflag_swap, 0)
+      call calypso_mpi_bcast_int(n_data_size, cast_long(3), 0)
+      call calypso_mpi_bcast_one_int8(d_size, 0)
 !
       if(my_rank .ne. 0) allocate( n_raw_data(d_size))
       call calypso_mpi_bcast_character(n_raw_data(1), d_size, 0)
@@ -206,6 +204,8 @@
       subroutine import_noise_grad_ary                                  &
      &         (filename, n_grad_data, n_data_size, ierr)
 !
+      use calypso_mpi_int
+      use calypso_mpi_int8
       use calypso_mpi_char
       use set_parallel_file_name
       use binary_file_access
@@ -239,10 +239,8 @@
         end if
       end if
 !
-      call MPI_BCAST(ierr, 1,                                           &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(d_size, 1,                                         &
-     &    CALYPSO_GLOBAL_INT, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ierr, 0)
+      call calypso_mpi_bcast_one_int8(d_size, 0)
 !
       if(my_rank .ne. 0) allocate( n_grad_data(d_size))
       call calypso_mpi_bcast_character(n_grad_data(1), d_size, 0)

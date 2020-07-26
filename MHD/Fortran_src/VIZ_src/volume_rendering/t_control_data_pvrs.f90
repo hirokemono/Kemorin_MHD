@@ -127,21 +127,21 @@
 !
       subroutine bcast_files_4_pvr_ctl(pvr_ctls)
 !
-      use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_data_4_pvr
 !
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
 !
 !
-      call MPI_BCAST(pvr_ctls%num_pvr_ctl,  1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(pvr_ctls%num_pvr_ctl, 0)
       if(pvr_ctls%num_pvr_ctl .le. 0) return
 !
       if(my_rank .gt. 0)  call alloc_pvr_ctl_struct(pvr_ctls)
 !
-      call MPI_BCAST                                                    &
-     &   (pvr_ctls%fname_pvr_ctl, int(kchara*pvr_ctls%num_pvr_ctl),     &
-     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(pvr_ctls%fname_pvr_ctl,          &
+     &    cast_long(kchara*pvr_ctls%num_pvr_ctl), 0)
 !
       end subroutine bcast_files_4_pvr_ctl
 !

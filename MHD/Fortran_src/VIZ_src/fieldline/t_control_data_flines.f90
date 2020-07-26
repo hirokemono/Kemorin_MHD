@@ -130,20 +130,21 @@
       subroutine bcast_files_4_fline_ctl(fline_ctls)
 !
       use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(fieldline_controls), intent(inout) :: fline_ctls
       integer (kind=kint) :: i_fline
 !
 !
-      call MPI_BCAST(fline_ctls%num_fline_ctl,  1,                      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fline_ctls%num_fline_ctl, 0)
       if(fline_ctls%num_fline_ctl .le. 0) return
 !
       if(my_rank .gt. 0)  call alloc_fline_ctl_struct(fline_ctls)
 !
-      call MPI_BCAST(fline_ctls%fname_fline_ctl,                        &
-     &   int(kchara*fline_ctls%num_fline_ctl), CALYPSO_CHARACTER, 0,    &
-     &   CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(fline_ctls%fname_fline_ctl,      &
+     &    cast_long(kchara*fline_ctls%num_fline_ctl), 0)
       do i_fline = 1, fline_ctls%num_fline_ctl
         if(fline_ctls%fname_fline_ctl(i_fline) .eq. 'NO_FILE') then
           call bcast_field_line_ctl                                     &

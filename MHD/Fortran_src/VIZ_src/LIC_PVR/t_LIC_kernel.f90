@@ -173,24 +173,22 @@
 !
       subroutine bcast_LIC_kernel(knl)
 !
-      use transfer_to_long_integers
       use calypso_mpi_real
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       type(LIC_kernel), intent(inout) :: knl
 !
 !
-      call MPI_BCAST(knl%iflag_kernel_type, 1, CALYPSO_INTEGER,         &
-     &               0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(knl%kernel_type_name, kchara, CALYPSO_CHARACTER,   &
-     &               0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(knl%iflag_kernel_type, 0)
+      call calypso_mpi_bcast_character                                  &
+     &   (knl%kernel_type_name, cast_long(kchara), 0)
 !
-      call MPI_BCAST(knl%x_peak, 1, CALYPSO_REAL,                       &
-     &               0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(knl%sigma, 1, CALYPSO_REAL,                        &
-     &               0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_real(knl%x_peak, 0)
+      call calypso_mpi_bcast_one_real(knl%sigma, 0)
 !
-      call MPI_BCAST(knl%n_knl, 1, CALYPSO_INTEGER,                     &
-     &               0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(knl%n_knl, 0)
 !
       if(my_rank .gt. 0) call alloc_LIC_kernel(knl)
       call calypso_mpi_bcast_real(knl%k_ary, cast_long(knl%n_knl), 0)

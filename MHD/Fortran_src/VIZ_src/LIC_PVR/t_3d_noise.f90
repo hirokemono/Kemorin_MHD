@@ -177,6 +177,7 @@
 !
       use calypso_mpi_real
       use calypso_mpi_int
+      use calypso_mpi_int8
       use calypso_mpi_char
       use transfer_to_long_integers
 !
@@ -185,8 +186,7 @@
       integer(kind = kint_gl) :: n3_cube
 !
 !
-      call MPI_BCAST(nze%iflag_noise_type, 1, CALYPSO_INTEGER,          &
-     &               0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(nze%iflag_noise_type, 0)
       call calypso_mpi_bcast_character                                  &
      &   (nze%noise_file_name, cast_long(kchara), 0)
 !
@@ -194,10 +194,8 @@
       call calypso_mpi_bcast_real(nze%asize_cube, cast_long(ithree), 0)
 !
       call calypso_mpi_bcast_int(nze%nidx_xyz, cast_long(ithree), 0)
-      call MPI_BCAST(nze%i_stepsize, 1, CALYPSO_INTEGER,                &
-     &               0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(nze%n_cube, 1, CALYPSO_GLOBAL_INT,                 &
-     &               0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(nze%i_stepsize, 0)
+      call calypso_mpi_bcast_one_int8(nze%n_cube, 0)
 !
       if(my_rank .ne. 0) call alloc_3d_cube_noise(nze)
       n3_cube = 3 * nze%n_cube

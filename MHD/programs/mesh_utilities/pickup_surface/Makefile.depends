@@ -1,3 +1,3 @@
-main_pick_surface.o: $(PICK_SURF_SRCDIR)/main_pick_surface.f90 m_precision.o m_constants.o calypso_mpi.o t_file_IO_parameter.o para_const_kemoview_mesh.o find_mesh_file_format.o getarg_kemo.o
+main_pick_surface.o: $(PICK_SURF_SRCDIR)/main_pick_surface.f90 m_precision.o m_constants.o calypso_mpi.o calypso_mpi_int.o calypso_mpi_char.o transfer_to_long_integers.o t_file_IO_parameter.o para_const_kemoview_mesh.o find_mesh_file_format.o getarg_kemo.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

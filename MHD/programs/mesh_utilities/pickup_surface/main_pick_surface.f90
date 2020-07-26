@@ -10,6 +10,9 @@
       use m_precision
       use m_constants
       use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       use t_file_IO_parameter
       use para_const_kemoview_mesh
@@ -42,10 +45,9 @@
         call find_merged_mesh_format(pick_mesh_file)
       end if
       call calypso_mpi_barrier
-      call MPI_BCAST(pick_mesh_file%file_prefix, kchara,                &
-     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(pick_mesh_file%iflag_format, 1,                    &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character                                  &
+     &   (pick_mesh_file%file_prefix, cast_long(kchara), 0)
+      call calypso_mpi_bcast_one_int(pick_mesh_file%iflag_format, 0)
 !
       call pickup_surface_mesh(pick_mesh_file, par_view1)
 !

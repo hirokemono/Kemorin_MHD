@@ -91,6 +91,7 @@
 !
       subroutine write_picked_specr_head_mpi(IO_param, picked)
 !
+      use calypso_mpi_int8
       use MPI_ascii_data_IO
       use write_field_labels
 !
@@ -125,8 +126,7 @@
      &     (IO_param%id_file, ioffset, 1, timebuf)
       end if
 !
-      call MPI_BCAST(len_fld, 1, CALYPSO_GLOBAL_INT, 0,                 &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int8(len_fld, 0)
       IO_param%ioff_gl = IO_param%ioff_gl + len_head + len_fld + ione
 !
       end subroutine write_picked_specr_head_mpi

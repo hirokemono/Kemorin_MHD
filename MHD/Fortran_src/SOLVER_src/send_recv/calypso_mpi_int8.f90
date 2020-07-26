@@ -275,7 +275,7 @@
       end do
 !
       end subroutine calypso_mpi_seek_write_int8
-!mpi_write_int8_b
+!
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_read_int8                             &

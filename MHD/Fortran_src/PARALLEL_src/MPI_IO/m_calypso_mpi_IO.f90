@@ -12,11 +12,11 @@
 !!      subroutine calypso_mpi_write_file_open                          &
 !!     &         (file_name, num_pe, id_mpi_file)
 !!      subroutine calypso_mpi_append_file_open                         &
-!!     &         (file_name, num_pe, id_mpi_file, ioff_gl)
+!!     &         (file_name, num_pe, id_mpi_file, ioffset)
 !!      subroutine calypso_mpi_read_file_open(file_name, id_mpi_file)
 !!      subroutine calypso_close_mpi_file(id_mpi_file)
 !!
-!!      subroutine mpi_write_endian_flag(id_mpi_file, ioff_gl)
+!!      subroutine mpi_write_endian_flag(id_mpi_file, ioffset)
 !!      subroutine mpi_write_one_chara_b                                &
 !!     &         (id_mpi_file, ioffset, ilength, textbuf)
 !!      subroutine mpi_write_mul_chara_b                                &
@@ -31,10 +31,10 @@
 !!     &         (id_mpi_file, ioffset, num, i4_vector)
 !!
 !!      subroutine calypso_mpi_seek_write_head_c                        &
-!!     &         (id_mpi_file, ioff_gl, textbuf)
+!!     &         (id_mpi_file, ioffset, textbuf)
 !!!
 !!      subroutine mpi_read_set_endian_flag                             &
-!!     &         (id_mpi_file, iflag_bin_swap, ioff_gl)
+!!     &         (id_mpi_file, iflag_bin_swap, ioffset)
 !!      subroutine mpi_read_one_chara_b                                 &
 !!     &         (id_mpi_file, ioffset, ilength, charabuf)
 !!      function calypso_mpi_seek_read_chara                            &
@@ -123,12 +123,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_append_file_open                           &
-     &         (file_name, num_pe, id_mpi_file, ioff_gl)
+     &         (file_name, num_pe, id_mpi_file, ioffset)
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: num_pe
       integer, intent(inout) :: id_mpi_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(inout) :: ioffset
 !
 !
       call init_mpi_IO_status
@@ -136,7 +136,7 @@
      &    MPI_MODE_RDWR+MPI_MODE_APPEND+MPI_MODE_CREATE,                &
      &    MPI_INFO_NULL, id_mpi_file, ierr_MPI)
 !
-      call MPI_FILE_GET_SIZE(id_mpi_file, ioff_gl, ierr_MPI)
+      call MPI_FILE_GET_SIZE(id_mpi_file, ioffset, ierr_MPI)
 !
       end subroutine calypso_mpi_append_file_open
 !
@@ -283,12 +283,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_write_head_c                          &
-     &         (id_mpi_file, ioff_gl, textbuf)
+     &         (id_mpi_file, ioffset, textbuf)
 !
       use calypso_mpi_char
 !
       integer, intent(in) ::  id_mpi_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(inout) :: ioffset
       character(len=*), intent(in) :: textbuf
 !
       integer :: ilength
@@ -297,29 +297,27 @@
       ilength = len(textbuf)
       if(my_rank .eq. 0) then
         call calypso_mpi_seek_wrt_one_chara                             &
-     &     (id_mpi_file, ioff_gl, ilength, textbuf, sta1_IO)
+     &     (id_mpi_file, ioffset, ilength, textbuf, sta1_IO)
       end if
-      ioff_gl = ioff_gl + ilength
+      ioffset = ioffset + ilength
 !
       end subroutine calypso_mpi_seek_write_head_c
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mpi_write_endian_flag(id_mpi_file, ioff_gl)
+      subroutine mpi_write_endian_flag(id_mpi_file, ioffset)
 !
       use calypso_mpi_int4
 !
       integer, intent(in) ::  id_mpi_file
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-!
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl), intent(inout) :: ioffset
 !
 !
       if(my_rank .eq. 0) then
         call calypso_mpi_seek_write_one_int4                            &
-     &          (id_mpi_file, ioff_gl, i_UNIX, sta1_IO)
+     &          (id_mpi_file, ioffset, i_UNIX, sta1_IO)
       end if
-      ioff_gl = ioff_gl + ifour
+      ioffset = ioffset + ifour
 !
       end subroutine mpi_write_endian_flag
 !
@@ -327,7 +325,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mpi_read_set_endian_flag                               &
-     &         (id_mpi_file, iflag_bin_swap, ioff_gl)
+     &         (id_mpi_file, iflag_bin_swap, ioffset)
 !
       use m_error_IDs
       use binary_IO
@@ -335,18 +333,17 @@
 !
       integer, intent(in) ::  id_mpi_file
       integer, intent(inout) :: iflag_bin_swap
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(inout) :: ioffset
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer :: iflag_read
 !
 !
       if(my_rank .eq. 0) then
         call calypso_mpi_seek_read_one_int4                             &
-&          (id_mpi_file, ioff_gl, iflag_read, sta1_IO)
+&          (id_mpi_file, ioffset, iflag_read, sta1_IO)
         iflag_bin_swap = endian_check(my_rank, iflag_read)
       end if
-      ioff_gl = ioff_gl + ifour
+      ioffset = ioffset + ifour
 !
       call calypso_mpi_bcast_one_int4(iflag_bin_swap, 0)
 
@@ -447,9 +444,6 @@
       integer, intent(in) :: iflag_bin_swap
       integer(kind = kint_gl), intent(in) :: num
       integer(kind = kint), intent(inout) :: i_vector(num)
-!
-      integer(kind = kint) :: ilen_in
-      integer(kind = kint_gl) :: l8_byte, ist
 !
 !
       call calypso_mpi_seek_read_int                                    &

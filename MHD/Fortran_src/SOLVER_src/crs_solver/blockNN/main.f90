@@ -3,6 +3,10 @@
 
       use m_precision
       use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_real
+      use calypso_mpi_char
+      use transfer_to_long_integers
 !
       use m_solver_SR
       use solverNN
@@ -83,14 +87,10 @@
       endif
 
       call MPI_BARRIER(CALYPSO_COMM,ierr_MPI)
-      call MPI_BCAST  (METHOD  ,20,      CALYPSO_CHARACTER,             &
-     &                   0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST  (PRECOND  ,20,     CALYPSO_CHARACTER,             &
-     &                   0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST  (REALARRAY(1), 10, CALYPSO_REAL,                  &
-     &                 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST  (INTARRAY(1) , 10, CALYPSO_INTEGER,               &
-     &                 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(METHOD  ,cast_long(20), 0)
+      call calypso_mpi_bcast_character(PRECOND  ,cast_long(20), 0)
+      call calypso_mpi_bcast_real(REALARRAY(1), cast_long(10), 0)
+      call calypso_mpi_bcast_int(INTARRAY(1) , cast_long(10), 0)
       call MPI_BARRIER(CALYPSO_COMM,ierr_MPI)
 
 !

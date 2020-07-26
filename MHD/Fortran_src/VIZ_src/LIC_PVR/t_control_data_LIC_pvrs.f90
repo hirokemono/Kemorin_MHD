@@ -134,21 +134,21 @@
 !
       subroutine bcast_files_4_lic_ctl(lic_ctls)
 !
-      use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_char
+      use transfer_to_long_integers
       use bcast_control_data_4_pvr
 !
       type(lic_rendering_controls), intent(inout) :: lic_ctls
 !
 !
-      call MPI_BCAST(lic_ctls%num_lic_ctl,  1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(lic_ctls%num_lic_ctl, 0)
       if(lic_ctls%num_lic_ctl .le. 0) return
 !
       if(my_rank .gt. 0)  call alloc_lic_ctl_struct(lic_ctls)
 !
-      call MPI_BCAST                                                    &
-     &   (lic_ctls%fname_lic_ctl, int(kchara*lic_ctls%num_lic_ctl),     &
-     &    CALYPSO_CHARACTER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_character(lic_ctls%fname_lic_ctl,          &
+     &    cast_long(kchara*lic_ctls%num_lic_ctl), 0)
 !
       end subroutine bcast_files_4_lic_ctl
 !
