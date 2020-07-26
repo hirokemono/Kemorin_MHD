@@ -37,7 +37,7 @@
 !
 !
       call calypso_mpi_bcast_character                                  &
-     &   (file_param%file_prefix, casst_long(kchara), 0)
+     &   (file_param%file_prefix, cast_long(kchara), 0)
       call calypso_mpi_bcast_one_int(file_param%iflag_IO , 0)
       call calypso_mpi_bcast_one_int(file_param%iflag_format, 0)
 !
