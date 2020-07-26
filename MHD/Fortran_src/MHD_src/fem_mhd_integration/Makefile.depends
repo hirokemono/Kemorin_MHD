@@ -1,6 +1,6 @@
 average_on_elements.o: $(MHD_RHS_DIR)/average_on_elements.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_jacobians.o t_phys_data.o cal_fields_on_element.o cal_differences_on_ele.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_average_mag_potential.o: $(MHD_RHS_DIR)/cal_average_mag_potential.f90 m_precision.o t_FEM_control_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_address.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o calypso_mpi.o m_machine_parameter.o m_geometry_constants.o
+cal_average_mag_potential.o: $(MHD_RHS_DIR)/cal_average_mag_potential.f90 m_precision.o t_FEM_control_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_address.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o calypso_mpi.o calypso_mpi_real.o m_machine_parameter.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_coriolis.o: $(MHD_RHS_DIR)/cal_coriolis.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -18,7 +18,7 @@ cal_gradient.o: $(MHD_RHS_DIR)/cal_gradient.f90 m_precision.o m_machine_paramete
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_multi_pass.o: $(MHD_RHS_DIR)/cal_multi_pass.f90 m_precision.o m_phys_constants.o t_FEM_control_parameter.o t_comm_table.o t_geometry_data.o t_phys_data.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o cal_ff_smp_to_ffs.o cal_for_ffs.o int_multi_pass.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_rms_potentials.o: $(MHD_RHS_DIR)/cal_rms_potentials.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o t_mesh_data.o t_phys_data.o t_jacobians.o t_finite_element_mat.o t_mean_square_values.o int_all_energy.o
+cal_rms_potentials.o: $(MHD_RHS_DIR)/cal_rms_potentials.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o t_mesh_data.o t_phys_data.o t_jacobians.o t_finite_element_mat.o t_mean_square_values.o calypso_mpi_real.o int_all_energy.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_rotation.o: $(MHD_RHS_DIR)/cal_rotation.f90 m_precision.o m_machine_parameter.o t_FEM_control_parameter.o t_geometry_data.o t_phys_data.o t_comm_table.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o cal_ff_smp_to_ffs.o cal_for_ffs.o nod_phys_send_recv.o int_vol_vect_differences.o int_vol_vect_diff_upw.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -45,6 +45,7 @@
      &          iphys, nod_fld, inner_core, g_FEM, jac_3d_l)
 !
       use calypso_mpi
+      use calypso_mpi_real
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -68,8 +69,8 @@
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%base%i_mag_p,       &
      &      ave_mp_core_local)
 !
-        call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &
-     &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_one_real                                 &
+     &     (ave_mp_core_local, ave_mp_core, MPI_SUM)
 !
         ave_mp_core = ave_mp_core * inner_core%volume
         if (my_rank.eq.0) write(84,*) ' ave_mp: ', ave_mp_core

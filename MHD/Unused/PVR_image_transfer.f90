@@ -90,6 +90,8 @@
       subroutine share_num_images_to_compose                            &
      &         (num_overlap, istack_overlap, ntot_overlap)
 !
+      use calypso_mpi_int
+!
       integer(kind = kint), intent(in) :: num_overlap
       integer(kind = kint), intent(inout) :: ntot_overlap
       integer(kind = kint), intent(inout) :: istack_overlap(0:nprocs)
@@ -97,9 +99,9 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_Allgather(num_overlap, 1, CALYPSO_INTEGER,               &
-     &                   istack_overlap(1), 1, CALYPSO_INTEGER,         &
-     &                   CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_int                                &
+     &   (num_overlap, istack_overlap(1))
+!
       istack_overlap(0) = 0
       do ip = 1, nprocs
         istack_overlap(ip) =  istack_overlap(ip-1) + istack_overlap(ip)

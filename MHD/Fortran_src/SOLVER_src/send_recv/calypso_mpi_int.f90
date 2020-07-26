@@ -7,9 +7,6 @@
 !> @brief MPI communication routines for integer in Calypso
 !!
 !!@verbatim
-!!@endverbatim
-!!
-!!@n @param  icode       error code
 !!      subroutine calypso_mpi_bcast_one_int(buffer, root)
 !!        integer, intent(in) :: root
 !!        integer(kind = kint), intent(inout) :: buffer
@@ -53,6 +50,9 @@
 !!        integer(kind = kint_gl), intent(in) :: num
 !!        integer(kind = kint), intent(inout) :: i_vector(num)
 !!        integer, intent(inout) :: sta_IO(MPI_STATUS_SIZE)
+!!@endverbatim
+!!
+!!@n @param  icode       error code
 !!@n @param  message    message to output
 !
       module calypso_mpi_int

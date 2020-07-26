@@ -40,6 +40,7 @@
      &          mesh, nod_fld, jacs, fem_wk, fem_msq, rsig,             &
      &          ave_0, rms_0)
 !
+      use calypso_mpi_real
       use int_all_energy
 !
       integer(kind = kint), intent(in) :: iloop
@@ -66,10 +67,10 @@
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
      &    mesh, nod_fld, jacs, fem_wk, fem_msq)
 !
-      call MPI_allREDUCE(fem_msq%ave_local(ja_phi) , ave_mp, 1,         &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(fem_msq%rms_local(ir_phi) , rms_mp, 1,         &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%ave_local(ja_phi) , ave_mp, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%rms_local(ir_phi) , rms_mp, MPI_SUM)
 !
       if (iloop .eq. 0) then
         ave_0 = ave_mp

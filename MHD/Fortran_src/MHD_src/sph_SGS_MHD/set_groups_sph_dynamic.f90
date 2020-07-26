@@ -34,6 +34,7 @@
       use t_SGS_control_parameter
       use t_spheric_parameter
       use t_spheric_rtp_data
+      use calypso_mpi_int
       use cal_minmax_and_stacks
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
