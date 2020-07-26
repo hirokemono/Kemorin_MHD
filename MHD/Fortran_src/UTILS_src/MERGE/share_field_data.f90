@@ -197,7 +197,7 @@
       call calypso_mpi_bcast_int                                        &
      &   (istack_comp, cast_long(num_field+1), 0)
       call calypso_mpi_bcast_character                                  &
-     &   (fld_name, int(num_field*kchara), 0)
+     &   (fld_name, cast_long(num_field*kchara), 0)
       end subroutine share_field_stack
 !
 ! -----------------------------------------------------------------------

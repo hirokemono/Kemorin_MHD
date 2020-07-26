@@ -215,6 +215,7 @@
 !
       use calypso_mpi_real
       use calypso_mpi_int4
+      use transfer_to_long_integers
 !
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
@@ -226,11 +227,11 @@
 !
       if(my_rank .ne. 0) call alloc_resolution_4_rayleigh(rayleigh_rtp)
       call calypso_mpi_bcast_real                                       &
-     &   (rayleigh_rtp%radius_gl, rayleigh_rtp%nri_gl, 0)
+     &   (rayleigh_rtp%radius_gl, cast_long(rayleigh_rtp%nri_gl), 0)
       call calypso_mpi_bcast_real                                       &
-     &   (rayleigh_rtp%theta_gl, rayleigh_rtp%nth_gl, 0)
+     &   (rayleigh_rtp%theta_gl,  cast_long(rayleigh_rtp%nth_gl), 0)
       call calypso_mpi_bcast_real                                       &
-     &   (rayleigh_rtp%cos_theta, rayleigh_rtp%nth_gl, 0)
+     &   (rayleigh_rtp%cos_theta, cast_long(rayleigh_rtp%nth_gl), 0)
 !
       end subroutine bcast_rayleigh_field_param
 !

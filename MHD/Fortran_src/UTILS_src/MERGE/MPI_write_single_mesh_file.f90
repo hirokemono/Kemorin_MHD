@@ -189,6 +189,7 @@
 !
       use t_para_double_numbering
       use calypso_mpi_int8
+      use transfer_to_long_integers
       use MPI_ascii_data_IO
       use MPI_integer_list_IO
       use MPI_write_single_mesh_data
@@ -198,14 +199,14 @@
       type(node_data), intent(in) :: node_IO
       type(parallel_double_numbering), intent(in) :: dbl_nod
 !
-      integer(kind = kint_gl) :: istack_g
+      integer(kind = kint_gl) :: istack_g(1)
 !
 !
       call calypso_mpi_allreduce_one_int8                               &
-     &  (ele_IO%numele, istack_g, MPI_SUM)
+     &   (cast_long(ele_IO%numele), istack_g(1), MPI_SUM)
 !
       call mpi_write_charahead(IO_param, len_multi_int_textline(ione),  &
-     &    multi_int8_textline(ione, istack_g))
+     &    multi_int8_textline(ione, istack_g(1)))
 !
 !      call mpi_write_num_of_data(IO_param, ele_IO%numele)
       call mpi_write_merged_element_type                                &
