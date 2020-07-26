@@ -64,16 +64,15 @@
       subroutine sync_field_time_mpi(t_IO)
 !
       use t_time_data
+      use calypso_mpi_real
+      use calypso_mpi_int
 !
       type(time_data), intent(inout) :: t_IO
 !
 !
-      call MPI_BCAST(t_IO%i_time_step, 1, CALYPSO_INTEGER, 0,           &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(t_IO%time, 1, CALYPSO_REAL, 0,                     &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(t_IO%dt, 1, CALYPSO_REAL, 0,                       &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(t_IO%i_time_step, 0)
+      call calypso_mpi_bcast_one_real(t_IO%time, 0)
+      call calypso_mpi_bcast_one_real(t_IO%dt, 0)
 !
       end subroutine sync_field_time_mpi
 !
@@ -232,8 +231,9 @@
       subroutine read_field_header_mpi(id_fld, num_pe, id_rank,         &
      &          ioff_gl, nnod, num_field, istack_merged)
 !
-      use calypso_mpi_int8
       use m_phys_constants
+      use calypso_mpi_int
+      use calypso_mpi_int8
       use field_data_IO
       use transfer_to_long_integers
 !
@@ -273,8 +273,7 @@
 !
       num64 = int(num_pe+1,KIND(num64))
       call calypso_mpi_bcast_int8(istack_merged, num64 , 0)
-      call MPI_BCAST(num_field, 1, CALYPSO_INTEGER, 0,                  &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(num_field, 0)
 !
       call sync_field_header_mpi(num_pe, id_rank, nnod,                 &
      &    istack_merged)
@@ -287,8 +286,10 @@
      &         (id_fld, ioff_gl, num_field, ncomp_field)
 !
       use m_phys_constants
+      use calypso_mpi_int
       use field_data_IO
       use ucd_data_to_buffer
+      use transfer_to_long_integers
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind=kint), intent(in) :: num_field
@@ -310,8 +311,7 @@
       end if
       ioff_gl = ioff_gl + ilength
 !
-      call MPI_BCAST(ncomp_field, int(num_field), CALYPSO_INTEGER, 0,   &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(ncomp_field, cast_long(num_field), 0)
 !
       end subroutine read_field_num_mpi
 !
