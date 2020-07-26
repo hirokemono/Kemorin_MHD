@@ -37,6 +37,8 @@
       subroutine share_local_num_to_all(n_local, ntot, nmax, num_each,  &
      &          istack)
 !
+      use calypso_mpi_int
+!
       integer(kind = kint), intent(in) :: n_local
 !
       integer(kind = kint), intent(inout) :: ntot, nmax
@@ -46,8 +48,7 @@
       integer(kind = kint) :: ip
 !
 !
-      call MPI_AllGather(n_local, 1, CALYPSO_INTEGER,                   &
-     &    num_each, 1, CALYPSO_INTEGER, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_int(n_local, num_each)
 !
       istack(0) = 0
       do ip = 1, nprocs
@@ -64,6 +65,8 @@
       subroutine share_local_int_to_all(n_local, ntot, nmax, num_each,  &
      &          istack, int_send, int_recv, int_local, int_share)
 !
+      use calypso_mpi_int
+!
       integer(kind = kint), intent(in) :: n_local
       integer(kind = kint), intent(in) :: ntot, nmax
       integer(kind = kint), intent(in) :: num_each(nprocs)
@@ -79,9 +82,8 @@
 !
       int_send(1:n_local) = int_local(1:n_local)
 !
-      call MPI_AllGather(int_send, int(nmax), CALYPSO_INTEGER,          &
-     &    int_recv, int(nmax), CALYPSO_INTEGER, CALYPSO_COMM,           &
-     &    ierr_MPI)
+      call calypso_mpi_allgather_int(int_send, int(nmax),               &
+     &                               int_recv, int(nmax))
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -99,6 +101,8 @@
      &          num_each, istack, real_send, real_recv,                 &
      &          real_local, real_share)
 !
+      use calypso_mpi_real
+!
       integer(kind = kint), intent(in) :: n_local
       integer(kind = kint), intent(in) :: ntot, nmax
       integer(kind = kint), intent(in) :: num_each(nprocs)
@@ -114,9 +118,8 @@
 !
       real_send(1:n_local) = real_local(1:n_local)
 !
-      call MPI_AllGather(real_send(1), int(nmax), CALYPSO_REAL,         &
-     &    real_recv(1), int(nmax), CALYPSO_REAL, CALYPSO_COMM,          &
-     &    ierr_MPI)
+      call calypso_mpi_allgather_real                                   &
+     &   (real_send(1), int(nmax), real_recv(1), int(nmax))
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -133,6 +136,8 @@
       subroutine share_local_vector_to_all(n_local, ntot, nmax,         &
      &          num_each, istack, real_send, real_recv,                 &
      &          vect_local, vect_share)
+!
+      use calypso_mpi_real
 !
       integer(kind = kint), intent(in) :: n_local
       integer(kind = kint), intent(in) :: ntot, nmax
@@ -153,10 +158,8 @@
         real_send(3*inod  ) = vect_local(inod,3)
       end do
 !
-      call MPI_AllGather                                                &
-     &    (real_send(1), int(ithree*nmax), CALYPSO_REAL,                &
-     &     real_recv(1), int(ithree*nmax), CALYPSO_REAL,                &
-     &     CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_real(real_send(1), int(ithree*nmax),   &
+     &                                real_recv(1), int(ithree*nmax))
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)
@@ -175,6 +178,8 @@
       subroutine share_local_tensor_to_all(n_local, ntot, nmax,         &
      &          num_each, istack, real_send, real_recv,                 &
      &          vect_local, vect_share)
+!
+      use calypso_mpi_real
 !
       integer(kind = kint), intent(in) :: n_local
       integer(kind = kint), intent(in) :: ntot, nmax
@@ -198,10 +203,8 @@
         real_send(6*inod  ) = vect_local(inod,6)
       end do
 !
-      call MPI_AllGather                                                &
-     &    (real_send(1), int(isix*nmax), CALYPSO_REAL,                  &
-     &     real_recv(1), int(isix*nmax), CALYPSO_REAL,                  &
-     &     CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_real                                   &
+     &    (real_send(1), int(isix*nmax), real_recv(1), int(isix*nmax))
 !
       do ip = 1, nprocs
         do i = 1, num_each(ip)

@@ -11,8 +11,9 @@
 !
       real(kind=kreal) :: RESID, TOL
       real(kind=kreal) :: ALPHA, OMEGA
-      real(kind=kreal) :: BNRM2,  DNRM2,  C1,  C2, RHO, RHO1
-      real(kind=kreal) :: BNRM20, DNRM20, C20, RHO0
+      real(kind=kreal) :: C1, RHO1
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  C2(1),  RHO(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), C20(1), RHO0(1)
       real(kind=kreal) :: C0(2), CG(2)
 !
 !
