@@ -58,6 +58,9 @@
       use t_next_node_ele_4_node
       use t_local_fline
       use t_source_of_filed_line
+      use calypso_mpi_real
+      use calypso_mpi_int
+      use transfer_to_long_integers
       use extend_field_line
 !
       type(node_data), intent(in) :: node
@@ -73,7 +76,8 @@
 !
       integer(kind = kint) :: iflag_comm
       integer(kind = kint) :: i, ist, ied, ip, nline, inum
-      integer :: src_rank, num4
+      integer(kind = kint_gl) :: num64
+      integer :: src_rank
 !
 !
       if(i_debug .gt. iflag_full_msg) then
@@ -126,12 +130,12 @@
         do ip = 1, nprocs
           src_rank = int(ip - 1)
           ist = fln_tce%istack_current_fline(ip-1)
-          num4 = 7 * fln_tce%num_current_fline(ip)
-          if(num4 .gt. 0) then
-            call mpi_Bcast(fln_tce%id_fline_export(1,ist+1), num4,      &
-     &          CALYPSO_INTEGER, src_rank, CALYPSO_COMM, ierr_MPI)
-            call mpi_Bcast(fln_tce%fline_export(1,ist+1), num4,         &
-     &          CALYPSO_REAL, src_rank, CALYPSO_COMM, ierr_MPI)
+          num64 = 7 * fln_tce%num_current_fline(ip)
+          if(num64 .gt. 0) then
+            call calypso_mpi_bcast_int                                  &
+     &         (fln_tce%id_fline_export(1,ist+1), num64, src_rank)
+            call calypso_mpi_bcast_real                                 &
+     &         (fln_tce%fline_export(1,ist+1), num64, src_rank)
           end if
         end do
 !
@@ -305,6 +309,7 @@
 !
       subroutine set_fline_start_from_neib(fln_tce)
 !
+      use calypso_mpi_int
       use t_source_of_filed_line
 !
       type(each_fieldline_trace), intent(inout) :: fln_tce
@@ -320,9 +325,8 @@
         end if
       end do
 !
-      call MPI_AllGather(icou, 1, CALYPSO_INTEGER,                      &
-     &    fln_tce%num_current_fline, 1, CALYPSO_INTEGER,                &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_int                                &
+     &   (icou, fln_tce%num_current_fline)
 !
       do ip = 1, nprocs
         fln_tce%istack_current_fline(ip)                                &

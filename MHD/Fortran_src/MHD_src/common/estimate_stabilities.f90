@@ -38,6 +38,8 @@
 !
       subroutine cal_stability_4_diffuse(dt, ele, MHD_prop)
 !
+      use calypso_mpi_real
+!
       real(kind = kreal), intent(in) :: dt
       type(element_data), intent(in) :: ele
 !
@@ -53,8 +55,8 @@
        min_length = (min_length)**(2.0d0/3.0d0)*4.0d0 / 6.0d0
 !
        if ( nprocs .gt. 1 ) then
-         call MPI_allREDUCE (min_length, cfl_advect, 1,                 &
-     &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr_MPI)
+         call calypso_mpi_allreduce_one_real                            &
+     &      (min_length, cfl_advect, MPI_MIN)
        else
          cfl_advect = min_length
        endif
@@ -97,6 +99,8 @@
       subroutine cal_stability_4_advect                                 &
      &         (i_step, dt, ele, fluid, ncomp_ele, ivelo_ele, d_ele)
 !
+      use calypso_mpi_real
+!
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
 !
@@ -122,8 +126,8 @@
         cfl_advect0 = min(cfl_advect0,cfl_tmp)
       end do
 !
-      call MPI_allREDUCE (cfl_advect0, cfl_advect, 1,                   &
-     &  CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (cfl_advect0, cfl_advect, MPI_MIN)
 !
       if ( my_rank .eq. 0 ) then
          write(12,*) 'time_step:', i_step, ' Delta t:', dt,             &

@@ -21,9 +21,15 @@
 !!        integer(kind = kint_gl), intent(in) :: count
 !!        real(kind = kreal), intent(in) ::    r_local(count)
 !!        real(kind = kreal), intent(inout) :: r_global(count)
+!!
+!!      subroutine calypso_mpi_allreduce_one_real                       &
+!!     &         (r_local, r_global, operation)
+!!        integer, intent(in) :: operation
+!!        real(kind = kreal), intent(in) ::    r_local
+!!        real(kind = kreal), intent(inout) :: r_global
 !!      subroutine calypso_mpi_allreduce_real                           &
 !!     &         (r_local, r_global, count, operation)
-!!       integer, intent(in) :: operation
+!!        integer, intent(in) :: operation
 !!        integer(kind = kint_gl), intent(in) :: count
 !!        real(kind = kreal), intent(in) ::    r_local(count)
 !!        real(kind = kreal), intent(inout) :: r_global(count)
@@ -129,6 +135,25 @@
       end do
 !
       end subroutine calypso_mpi_reduce_real
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_allreduce_one_real                         &
+     &         (r_local, r_global, operation)
+!
+      integer, intent(in) :: operation
+      real(kind = kreal), intent(in) ::    r_local
+      real(kind = kreal), intent(inout) :: r_global
+!
+      real(kind = kreal) :: r_lc(1), r_gl(1)
+!
+!
+      r_lc(1) = r_local
+      call MPI_allREDUCE(r_lc, r_gl, 1, CALYPSO_REAL,                   &
+     &   operation, CALYPSO_COMM, ierr_MPI)
+      r_global = r_gl(1)
+!
+      end subroutine calypso_mpi_allreduce_one_real
 !
 !  ---------------------------------------------------------------------
 !
