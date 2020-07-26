@@ -1036,9 +1036,14 @@ subroutine mult_i32(a,b,ch,cl)
   integer(INT32), intent(in) :: a,b
   integer(INT32), intent(out) :: ch,cl  ! (ch,cl) = a*b
   integer(INT32) :: tmp,u(0:3)
-  integer(INT32), parameter :: ZE = Z'eeeeeeee'
-  integer(INT32), parameter :: ZC = Z'cccccccc'
-  integer(INT32), parameter :: Z8 = Z'88888888'
+!  integer(INT32), parameter :: ZE = Z'eeeeeeee'
+!  integer(INT32), parameter :: ZC = Z'cccccccc'
+!  integer(INT32), parameter :: Z8 = Z'88888888'
+  integer(INT32) :: ZE
+  integer(INT32) :: ZC
+  integer(INT32) :: Z8
+  data ZE,ZC,Z8/Z'eeeeeeee', Z'cccccccc', Z'88888888'/
+
 
   if (a==0 .or. b ==0) then
     ch = 0
