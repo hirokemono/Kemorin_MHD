@@ -300,7 +300,7 @@
 !C +---------------+
 !C===
 
-      call cal_local_norm_3(NP, PEsmpTOT, STACKmcG, B, BNRM20)
+      call cal_local_norm_3(NP, PEsmpTOT, STACKmcG, B, BNRM20(1))
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -308,7 +308,7 @@
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0
 !C===
       do iter= 1, MAXIT
 !C
@@ -322,11 +322,11 @@
 !C===
 !
         call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,              &
-     &    W(1,R), W(1,RT), RHO0)
+     &    W(1,R), W(1,RT), RHO0(1))
 !
         START_TIME= MPI_WTIME()
-        call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                 &
-     &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        call MPI_allREDUCE(RHO0, RHO, 1, CALYPSO_REAL,                  &
+     &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !C===
@@ -343,7 +343,7 @@
      &        W(1,P), W(1,R) )
         else
           call r_plus_beta_p_sub_omega_v_33(NP, PEsmpTOT, STACKmcG,     &
-     &       W(1,P), W(1,R), W(1,V), OMEGA, ALPHA, RHO, RHO1)
+     &       W(1,P), W(1,R), W(1,V), OMEGA, ALPHA, RHO(1), RHO1)
         end if
 !C===
 
@@ -435,14 +435,14 @@
 !C===
 !
         call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,              &
-     &    W(1,RT), W(1,V), C20)
+     &    W(1,RT), W(1,V), C20(1))
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
-        ALPHA = RHO / C2
+        ALPHA = RHO(1) / C2(1)
 !C===
 
 !C
@@ -565,7 +565,7 @@
 !C===
 !
         call cal_x_and_residual_BiCGSTAB_33(NP, PEsmpTOT, STACKmcG,     &
-     &      DNRM20, X, W(1,R), W(1,PT), W(1,ST), W(1,S), W(1,T),        &
+     &      DNRM20(1), X, W(1,R), W(1,PT), W(1,ST), W(1,S), W(1,T),     &
      &      ALPHA, OMEGA)
 !
         START_TIME= MPI_WTIME()
@@ -573,7 +573,7 @@
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
-        RESID= dsqrt(DNRM2/BNRM2)
+        RESID= dsqrt(DNRM2(1) / BNRM2(1))
 
         if (IER.eq.1 .and. my_rank.eq.0) write (12,'(a33,i5,1p2e16.6)') &
      &            'solver_VBiCGSTAB33_DJDS_SMP: ', ITER, RESID
@@ -586,9 +586,9 @@
         end if
 
         if ( RHO1 .eq.0.0d0 ) then
-          RHO1 = 1.0d-11*RHO
+          RHO1 = 1.0d-11 * RHO(1)
         else
-          RHO1 = RHO
+          RHO1 = RHO(1)
         end if
 
       enddo

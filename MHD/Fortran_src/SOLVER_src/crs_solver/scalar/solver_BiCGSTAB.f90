@@ -150,10 +150,10 @@
       call subtruct_crs_matvec_11 (NP, N, NPL, NPU, INL, INU,           &
      &    IAL, IAU, D, AL, AU, W(1,R), B, X)
 
-      call cal_local_norm_1(NP, N, B, BNRM20)
+      call cal_local_norm_1(NP, N, B, BNRM20(1))
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0
 !C===
 
 !C
@@ -165,7 +165,7 @@
 !C | RHO= {r}{r_tld} |
 !C +-----------------+
 !C===
-      call cal_local_s_product_1(NP, N, W(1,RT), W(1,R), RHO0)
+      call cal_local_s_product_1(NP, N, W(1,RT), W(1,R), RHO0(1))
       call MPI_allREDUCE (RHO0, RHO, 1, CALYPSO_REAL,                   &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !C===
@@ -177,7 +177,7 @@
 !C +----------------------------------------+
 !C===
       if (iter.gt.1) then
-        BETA= (RHO/RHO1) * (ALPHA/OMEGA)
+        BETA= (RHO(1) / RHO1) * (ALPHA/OMEGA)
         W(1:N,P)= W(1:N,R) + BETA*(W(1:N,P) - OMEGA*W(1:N,V))
       else
         W(1:N,P)= W(1:N,R)
@@ -233,10 +233,10 @@
 !C
 !C-- calc. ALPHA
 
-      call cal_local_s_product_1(NP, N, W(1,RT), W(1,V), C20)
+      call cal_local_s_product_1(NP, N, W(1,RT), W(1,V), C20(1))
       call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        ALPHA= RHO / C2
+        ALPHA = RHO(1) / C2(1)
 
 !C
 !C-- {s}= {r} - ALPHA*{V}
@@ -305,15 +305,15 @@
 !C | update {x},{r} |
 !C +----------------+
 !C===
-        RHO1 = RHO
+        RHO1 = RHO(1)
 !
         X (1:N)  =  X(1:N)   + ALPHA*W(1:N,PT) + OMEGA*W(1:N,ST)
         W(1:N,R) = W(1:N,S )                   - OMEGA*W(1:N,T)
 !
-        call cal_local_norm_1(NP, N,  W(1,S), DNRM20)
-        call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
+        call cal_local_norm_1(NP, N,  W(1,S), DNRM20(1))
+        call MPI_allREDUCE(DNRM20, DNRM2, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        RESID= dsqrt(DNRM2/BNRM2)
+        RESID= dsqrt(DNRM2(1) / BNRM2(1))
 
         if (my_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
      &    write (*, 1000) ITER, RESID
