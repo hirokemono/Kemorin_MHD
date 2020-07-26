@@ -1924,15 +1924,15 @@
       integer(kind=kint) :: n, np
       real(kind=kreal), dimension(np,np) :: a
 !
-      integer(kind=kint) :: ierr_g, ierr_l
       integer(kind=kint) :: i, icol, irow, j, k, l, ll
       integer(kind=kint), dimension(n) :: indxc, indxr, ipiv
 
+      real(kind=kreal) :: err_g, err_l
       real(kind=kreal) :: big, dum, pivinv
 
       ipiv= 0
 
-      ierr_l = 0
+      err_l = 0.0d0
       do i= 1, n
         big=0.d0
         do j= 1, n
@@ -1946,15 +1946,15 @@
                 endif
                else if (ipiv(k).gt.1) then
                 write(*,*)'singular matrix in gaussj'
-                ierr_l = 1
+                err_l = 1.0d0
               end if
             enddo
           endif
         enddo
 !
-        call MPI_allREDUCE (ierr_l, ierr_g, 1, MPI_INTEGER,             &
+        call MPI_allREDUCE(err_l, err_g, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        if(ierr_g .gt. 0) return
+        if(err_g .gt. 0.1d0) return
 !
         ipiv(icol)= ipiv(icol) + 1
         if (irow.ne.icol) then
@@ -1970,11 +1970,11 @@
 !
         if (a(icol,icol).eq.0.d0) then
           write(*,*) 'singular matrix in gaussj'
-          ierr_l = 1
+          err_l = 1.0d0
         end if
-        call MPI_allREDUCE (ierr_l, ierr_g, 1, MPI_INTEGER,             &
+        call MPI_allREDUCE (err_l, err_g, 1, CALYPSO_REAL,              &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        if(ierr_g .gt. 0) return
+        if(err_g .gt. 0.1d0) return
 !
         pivinv= 1.d0 / a(icol,icol)
         a(icol,icol)= 1.d0

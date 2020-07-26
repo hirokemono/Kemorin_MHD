@@ -185,23 +185,23 @@
         allocate(lt_max(nprocs))
       end if
 !
-      call MPI_Gather(rayleigh_rtp%irank_r, 1, MPI_INTEGER,             &
-     &                r_rank, 1, MPI_INTEGER,                           &
+      call MPI_Gather(rayleigh_rtp%irank_r, 1, CALYPSO_INTEGER,         &
+     &                r_rank, 1, CALYPSO_INTEGER,                       &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%irank_h, 1, MPI_INTEGER,             &
-     &                h_rank, 1, MPI_INTEGER,                           &
+      call MPI_Gather(rayleigh_rtp%irank_h, 1, CALYPSO_INTEGER,         &
+     &                h_rank, 1, CALYPSO_INTEGER,                       &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%kst, 1, MPI_INTEGER,                 &
-     &                kr_min, 1, MPI_INTEGER,                           &
+      call MPI_Gather(rayleigh_rtp%kst, 1, CALYPSO_INTEGER,             &
+     &                kr_min, 1, CALYPSO_INTEGER,                       &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%ked, 1, MPI_INTEGER,                 &
-     &                kr_max, 1, MPI_INTEGER,                           &
+      call MPI_Gather(rayleigh_rtp%ked, 1, CALYPSO_INTEGER,             &
+     &                kr_max, 1, CALYPSO_INTEGER,                       &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%lst, 1, MPI_INTEGER,                 &
-     &                lt_min, 1, MPI_INTEGER,                           &
+      call MPI_Gather(rayleigh_rtp%lst, 1, CALYPSO_INTEGER,             &
+     &                lt_min, 1, CALYPSO_INTEGER,                       &
      &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%led, 1, MPI_INTEGER,                 &
-     &                lt_max, 1, MPI_INTEGER,                           &
+      call MPI_Gather(rayleigh_rtp%led, 1, CALYPSO_INTEGER,             &
+     &                lt_max, 1, CALYPSO_INTEGER,                       &
      &                0, CALYPSO_COMM, ierr_MPI)
 !
         if(my_rank .eq. 0) then

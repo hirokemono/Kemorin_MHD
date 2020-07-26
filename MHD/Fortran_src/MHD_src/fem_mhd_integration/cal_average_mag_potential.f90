@@ -69,7 +69,7 @@
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%base%i_mag_p,       &
      &      ave_mp_core_local)
 !
-        call calypso_mpi_bcast_one_real                                 &
+        call calypso_mpi_allreduce_one_real                             &
      &     (ave_mp_core_local, ave_mp_core, MPI_SUM)
 !
         ave_mp_core = ave_mp_core * inner_core%volume

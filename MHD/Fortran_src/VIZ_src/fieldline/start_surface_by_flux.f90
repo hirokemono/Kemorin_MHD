@@ -42,6 +42,7 @@
       subroutine s_start_surface_by_flux(node, ele, surf,               &
      &          fln_prm, fln_src, fln_tce)
 !
+      use calypso_mpi_real
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
@@ -86,11 +87,10 @@
      &            = tot_flux_start_l + fln_src%flux_start(i)
       end do
 !
-      call MPI_allREDUCE(tot_flux_start_l, tot_flux_start, 1,           &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_AllGather(abs_flux_start_l, 1,                           &
-     &      CALYPSO_REAL, fln_tce%flux_stack_fline(1), 1,               &
-     &      CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (tot_flux_start_l, tot_flux_start, MPI_SUM)
+      call calypso_mpi_allgather_one_real                               &
+     &   (abs_flux_start_l, fln_tce%flux_stack_fline(1))
 !
       fln_tce%flux_stack_fline(0) = 0.0d0
       do ip = 1, nprocs

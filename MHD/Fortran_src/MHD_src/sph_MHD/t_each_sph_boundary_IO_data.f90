@@ -122,16 +122,17 @@
 !
       subroutine bcast_each_bc_item_ctl(bc_ctls)
 !
-      use calypso_mpi
+      use calypso_mpi_real
+      use calypso_mpi_int
+      use transfer_to_long_integers
 !
       type(each_boundary_spectr), intent(inout) :: bc_ctls
 !
 !
-      call MPI_BCAST(bc_ctls%imode_gl, (2*bc_ctls%num_bc_mode),         &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(bc_ctls%bc_input,                                  &
-     &               (bc_ctls%num_bc_mode*bc_ctls%ncomp_bc),            &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (bc_ctls%imode_gl, cast_long(2*bc_ctls%num_bc_mode), 0)
+      call calypso_mpi_bcast_real(bc_ctls%bc_input,                     &
+     &    cast_long(bc_ctls%num_bc_mode*bc_ctls%ncomp_bc), 0)
 !
       end subroutine bcast_each_bc_item_ctl
 !

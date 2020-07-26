@@ -76,7 +76,7 @@ int_magne_induction.o: $(MHD_RHS_DIR)/int_magne_induction.f90 m_precision.o m_ph
 	$(F90) -c $(F90OPTFLAGS) $<
 int_multi_pass.o: $(MHD_RHS_DIR)/int_multi_pass.f90 m_precision.o m_constants.o m_phys_constants.o t_FEM_control_parameter.o t_comm_table.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o int_vol_multi_pass.o cal_ff_smp_to_ffs.o nod_phys_send_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_norm_div_MHD.o: $(MHD_RHS_DIR)/int_norm_div_MHD.f90 calypso_mpi.o m_machine_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_address.o t_phys_data.o t_jacobians.o t_finite_element_mat.o t_mean_square_values.o fem_skv_div_normal.o sum_normalized_div.o nodal_fld_2_each_element.o
+int_norm_div_MHD.o: $(MHD_RHS_DIR)/int_norm_div_MHD.f90 calypso_mpi.o m_machine_parameter.o t_geometry_data_MHD.o t_geometry_data.o t_phys_address.o t_phys_data.o t_jacobians.o t_finite_element_mat.o t_mean_square_values.o calypso_mpi_real.o fem_skv_div_normal.o sum_normalized_div.o nodal_fld_2_each_element.o
 	$(F90) -c $(F90OPTFLAGS) $<
 int_region_ele_field_2_node.o: $(MHD_RHS_DIR)/int_region_ele_field_2_node.f90 m_precision.o m_constants.o m_phys_constants.o t_geometry_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o int_element_field_2_node.o cal_ff_smp_to_ffs.o
 	$(F90) -c $(F90OPTFLAGS) $<

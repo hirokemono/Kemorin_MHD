@@ -39,6 +39,7 @@
       subroutine s_start_surface_4_fline(node, ele, surf,               &
      &          fln_prm, fln_src, fln_tce)
 !
+      use calypso_mpi_int
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
@@ -78,11 +79,8 @@
         end if
       end do
 !
-!      call calypso_mpi_barrier
-      call MPI_AllGather                                                &
-     &   (fln_src%num_line_local, 1, CALYPSO_INTEGER,                   &
-     &    fln_tce%num_current_fline, 1, CALYPSO_INTEGER,                &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_int                                &
+     &   (fln_src%num_line_local, fln_tce%num_current_fline)
 !
       if(fln_prm%id_fline_direction .eq. iflag_both_trace) then
         fln_tce%num_current_fline(1:nprocs)                             &

@@ -56,6 +56,8 @@
      &         (iloop, node, ele, fluid, iphys, nod_fld, jacs,          &
      &          i_msq, fem_wk, fem_msq, rsig)
 !
+      use calypso_mpi_real
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -75,9 +77,8 @@
      &   (fluid%istack_ele_fld_smp, iphys%base%i_velo,                  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(i_msq%jave_div_v))
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(i_msq%jave_div_v) , div_v_sig, 1,           &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%ave_local(i_msq%jave_div_v), div_v_sig, MPI_SUM)
 !
 !
       div_v_sig = abs(div_v_sig) / fluid%volume
@@ -97,6 +98,8 @@
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
      &          i_msq, fem_wk, fem_msq, rsig)
 !
+      use calypso_mpi_real
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -114,9 +117,8 @@
       call int_norm_divergence(ele%istack_ele_smp, iphys%base%i_magne,  &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(i_msq%jave_div_b))
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(i_msq%jave_div_b) , div_b_sig, 1,           &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%ave_local(i_msq%jave_div_b) , div_b_sig, MPI_SUM)
 !
       div_b_sig = abs(div_b_sig) / ele%volume
 !
@@ -135,6 +137,8 @@
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
      &          i_msq, fem_wk, fem_msq, rsig)
 !
+      use calypso_mpi_real
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -152,9 +156,8 @@
       call int_norm_divergence(ele%istack_ele_smp, iphys%base%i_vecp,   &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%ave_local(i_msq%jave_div_a))
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%ave_local(i_msq%jave_div_a) , div_a_sig, 1,           &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%ave_local(i_msq%jave_div_a), div_a_sig, MPI_SUM)
 !
       div_a_sig = abs(div_a_sig) / ele%volume
 !

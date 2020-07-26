@@ -305,7 +305,7 @@
 !C===
 
       call cal_local_sproduct_and_norm_3(NP, PEsmpTOT, STACKmcG,        &
-     &           B, W(1,R), W(1,RT), RHO0, BNRM20)
+     &           B, W(1,R), W(1,RT), RHO0(1), BNRM20(1))
 
       START_TIME= MPI_WTIME()
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
@@ -315,7 +315,7 @@
       END_TIME= MPI_WTIME()
       COMMtime = COMMtime + END_TIME - START_TIME
 
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0
 !
 !C===
 !C************************************************* Conjugate Gradient Iteration
@@ -427,7 +427,7 @@
 !C-- calc. ALPHA
 !
         call cal_local_s_product_3(NP, PEsmpTOT, STACKmcG,              &
-     &           W(1,RT), W(1,PT), RHO10)
+     &           W(1,RT), W(1,PT), RHO10(1))
 
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,               &
@@ -435,8 +435,8 @@
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
 !
-        ALPHA= RHO / RHO1
-!      if (my_rank.eq.0) write(*,*) 'ALPHA', ALPHA, RHO, RHO1
+        ALPHA= RHO(1) / RHO1(1)
+!      if (my_rank.eq.0) write(*,*) 'ALPHA', ALPHA, RHO(1), RHO1(1)
 !C===
 !C
 !C +------------------------------------------+
@@ -574,7 +574,7 @@
 !C +----------------------------------------------------------+
 !C===
 !
-      call cal_u_and_z_33(NP, PEsmpTOT, STACKmcG,                       &
+        call cal_u_and_z_33(NP, PEsmpTOT, STACKmcG,                     &
      &          W(1,U), W(1,Z), W(1,WZ), W(1,T0), W(1,R),               &
      &          QSI, ETA, ALPHA, BETA)
 !C
@@ -584,9 +584,8 @@
 !C===
 !
         call cal_x_and_residual_GPBiCG_33(NP, PEsmpTOT,                 &
-     &          STACKmcG, DNRM20, COEF10, X, W(1,R), W(1,T0), W(1,P),   &
-     &          W(1,Z), W(1,T), W(1,Y), W(1,TT), W(1,RT), ALPHA,        &
-     &          ETA, QSI)
+     &      STACKmcG, DNRM20(1), COEF10(1), X, W(1,R), W(1,T0), W(1,P), &
+     &      W(1,Z), W(1,T), W(1,Y), W(1,TT), W(1,RT), ALPHA, ETA, QSI)
 !
         START_TIME= MPI_WTIME()
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
@@ -595,7 +594,7 @@
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
         END_TIME= MPI_WTIME()
         COMMtime = COMMtime + END_TIME - START_TIME
-!      if (my_rank.eq.0) write(*,*) 'DNRM2, COEF1', DNRM2, COEF1
+!      if (my_rank.eq.0) write(*,*) 'DNRM2, COEF1', DNRM2(1), COEF1(1)
 !
 !C +---------------------------------+
 !C | BETA = ALPHA*COEF1 / (QSI*RHO)  |
@@ -603,15 +602,15 @@
 !C +---------------------------------+
 !
         call tt_add_beta_pt_33(NP, PEsmpTOT, STACKmcG,                  &
-     &          W(1,W1), W(1,TT), W(1,PT), BETA, RHO,                   &
-     &          ALPHA, COEF1, QSI)
+     &          W(1,W1), W(1,TT), W(1,PT), BETA, RHO(1),                &
+     &          ALPHA, COEF1(1), QSI)
 !
 !
-        RESID= dsqrt(DNRM2/BNRM2)
-        RHO  = COEF1
+        RESID = dsqrt(DNRM2(1) / BNRM2(1))
+        RHO(1)  = COEF1(1)
 !
         if (IER.eq.1 .and. my_rank.eq.0) write (12,'(a30,i5,1p2e16.6)') &
-     &            'solver_VGPBiCG33_DJDS_SMP: ', ITER, RESID, RHO
+     &            'solver_VGPBiCG33_DJDS_SMP: ', ITER, RESID, RHO(1)
         ITR = ITER
 !
         if ( RESID.le.TOL   ) goto 30

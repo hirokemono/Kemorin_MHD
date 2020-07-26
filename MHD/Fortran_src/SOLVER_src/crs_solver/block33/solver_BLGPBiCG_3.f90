@@ -39,6 +39,8 @@
       use solver_SR_3
       use solver_BLCG_3
 !
+      implicit none
+!
 
       integer(kind=kint ), intent(in):: N, NP, NPU, NPL
       integer(kind=kint ), intent(in):: iterPREmax
@@ -81,6 +83,10 @@
       real(kind=kreal), dimension(:,:),  allocatable       :: WW
       real(kind=kreal), dimension(:,:,:),allocatable, save :: ALU
 
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  RHO(1),  RHO1(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), RHO0(1), RHO10(1)
+      real(kind=kreal) :: COEF1(1)
+      real(kind=kreal) :: COEF10(1)
       real(kind=kreal), dimension(5) :: C0, CG
       real(kind=kreal), dimension(2) :: EQ
 

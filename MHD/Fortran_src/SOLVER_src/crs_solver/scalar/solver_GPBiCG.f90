@@ -162,13 +162,13 @@
       W(1:N,W1)= 0.d0
 !
       call cal_local_sproduct_and_norm_1(NP, N,                         &
-     &           B, W(1,R), W(1,RT), RHO0, BNRM20)
+     &           B, W(1,R), W(1,RT), RHO0(1), BNRM20(1))
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0
 !C===
 
 !C
@@ -235,11 +235,11 @@
 !C
 !C-- calc. ALPHA
 
-        call cal_local_s_product_1(NP, N, W(1,RT), W(1,PT), RHO10)
+        call cal_local_s_product_1(NP, N, W(1,RT), W(1,PT), RHO10(1))
 !
         call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-        ALPHA= RHO / RHO1
+        ALPHA= RHO(1) / RHO1(1)
 !C===
 
 !C
@@ -340,7 +340,7 @@
         W(1:N,T0)= W(1:N,T)
 !
         call cal_local_sproduct_norm_1(NP, N, W(1,R), W(1,RT),          &
-     &      COEF10, DNRM20)
+     &      COEF10(1), DNRM20(1))
 
         call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,            &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -352,11 +352,11 @@
 !C | {w} = {tt} + BETA*{pt}          |
 !C +---------------------------------+
 !
-        BETA = ALPHA*COEF1 / (QSI*RHO)
+        BETA = ALPHA * COEF1(1) / (QSI * RHO(1))
         W(1:N,W1)= W(1:N,TT) + BETA*W(1:N,PT)
 !
-        RESID= dsqrt(DNRM2/BNRM2)
-        RHO  = COEF1
+        RESID= dsqrt(DNRM2(1) / BNRM2(1))
+        RHO(1)  = COEF1(1)
 !
         if (my_rank.eq.0 .and. MONITORFLAG.eq.1)                        &
      &    write (*, 1000) ITER, RESID

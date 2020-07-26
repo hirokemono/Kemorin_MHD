@@ -17,10 +17,12 @@
 !
       real(kind=kreal) :: RESID, TOL
       real(kind=kreal) :: ALPHA, BETA, QSI, ETA
-      real(kind=kreal) :: BNRM2,  DNRM2,  COEF1,  RHO,  RHO1
-      real(kind=kreal) :: BNRM20, DNRM20, COEF10, RHO0, RHO10
-      real(kind=kreal), dimension(5) :: C0, CG
-      real(kind=kreal), dimension(2) :: EQ
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  RHO(1),  RHO1(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), RHO0(1), RHO10(1)
+      real(kind=kreal) :: COEF1(1)
+      real(kind=kreal) :: COEF10(1)
+      real(kind=kreal) :: C0(5), CG(5)
+      real(kind=kreal) :: EQ(2)
 !
       integer(kind=kint), parameter ::  R =  1
       integer(kind=kint), parameter :: RT =  2
