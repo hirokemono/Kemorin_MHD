@@ -1017,9 +1017,10 @@ subroutine square_i32(a,ch,cl)
   integer(INT32), intent(out) :: ch,cl   ! (ch,cl) = a**2
   integer(INT32) :: ia,i
   integer(INT64) :: da,dc
+  data dc/Z'0'/
+
   da = a
   if (da < 0) da = da + 2_8**32 ! convert to unsigned
-  dc = Z'0'
   ia = deg_i32(a)
   do i = 0,ia
     if (BTEST(a,i)) then
@@ -1093,13 +1094,14 @@ subroutine mult_i32_old(a,b,ch,cl)
   integer(INT32), intent(out) :: ch,cl  ! (ch,cl) = a*b
   integer(INT32) :: ia,ib,i
   integer(INT64) :: da,db,dc
+  data dc/Z'0'/
+
   da = a
   db = b
   if (da < 0) da = da + 2_8**32 ! convert to unsigned
   if (db < 0) db = db + 2_8**32 ! convert to unsigned
   ia = deg_i32(a)
   ib = deg_i32(b)
-  dc = Z'0'
   do i = 0,ia
     if (BTEST(a,i)) then
       dc = IEOR(dc,db)
