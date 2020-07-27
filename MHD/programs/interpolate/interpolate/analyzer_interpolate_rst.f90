@@ -122,6 +122,8 @@
       subroutine analyze_itp_rst
 !
       use calypso_mpi
+      use calypso_mpi_real
+      use calypso_mpi_int
 !
       use field_IO_select
       use set_parallel_file_name
@@ -157,10 +159,8 @@
           call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
         end if
 !
-        call MPI_Bcast(t_ITP%init_d%time, 1, CALYPSO_REAL,              &
-     &      0, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(t_ITP%init_d%i_time_step, 1, CALYPSO_INTEGER,    &
-     &      0, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_one_real(t_ITP%init_d%time, 0)
+        call calypso_mpi_bcast_one_int(t_ITP%init_d%i_time_step, 0)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &

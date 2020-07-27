@@ -42,7 +42,8 @@
       use t_solver_SR
       use solver_SR_N
 !
-
+      implicit none
+!
       integer(kind=kint ),                   intent(in   )::  N
       integer(kind=kint ),                   intent(in   )::  NB
       integer(kind=kint ),                   intent(in   )::  NP
@@ -86,6 +87,9 @@
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
       real(kind=kreal), dimension(:,:,:),allocatable, save :: ALU
 
+      real(kind=kreal) :: C1, RHO1
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  C2(1),  RHO(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), C20(1), RHO0(1)
       real   (kind=kreal), dimension(2)                :: C0, CG
 
       integer(kind=kint ) :: IFLAG, MAXIT
@@ -96,6 +100,10 @@
       real   (kind=kreal) :: TOL, W, SS
       real   (kind=kreal), dimension(3)                    :: PW
       data IFLAG/0/
+!
+      real   (kind=kreal) :: ALPHA, BETA, OMEGA, WNB, ALO
+      integer(kind=kint ) :: j, j1, j2, jj, k, k1, k2, kk, l
+      integer(kind=kint ) :: i, ii, in, ip, isL, isU, ieL, ieU
 
 !C
 !C-- INIT.
@@ -290,17 +298,17 @@
 
       enddo
 
-      BNRM20= 0.d0
+      BNRM20(1) = 0.d0
       do i= 1, N
         ii = NB* (i-1)
         do k1= 1, NB
-          BNRM20= BNRM20 + B(ii+k1)**2
+          BNRM20(1) = BNRM20(1) + B(ii+k1)**2
         end do
       enddo
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0
 
       iter= 0
 !C===
@@ -314,11 +322,11 @@
 !C | RHO= {r}{r_tld} |
 !C +-----------------+
 !C===
-      RHO0= 0.d0
+      RHO0(1) = 0.d0
       do j= 1, N
           jj = NB*(j-1)
         do k1= 1, NB
-          RHO0  = RHO0 + WW(jj+k1,RT)*WW(jj+k1,R)
+          RHO0(1)  = RHO0(1) + WW(jj+k1,RT)*WW(jj+k1,R)
         end do
       enddo
 
@@ -333,7 +341,7 @@
 !C +----------------------------------------+
 !C===
       if (iter.gt.1) then
-        BETA= (RHO/RHO1) * (ALPHA/OMEGA)
+        BETA= (RHO(1) / RHO1) * (ALPHA/OMEGA)
         do j= 1, N
           jj = NB*(j-1)
           do k1= 1, NB
@@ -557,17 +565,17 @@
 !C
 !C-- calc. ALPHA
 
-      C20= 0.d0
+      C20(1) = 0.d0
       do j= 1, N
         jj = NB*(j-1)
         do k1 = 1, NB
-          C20= C20 + WW(jj+k1,RT)*WW(jj+k1,V)
+          C20(1) = C20(1) + WW(jj+k1,RT)*WW(jj+k1,V)
         end do
       enddo
 
       call MPI_allREDUCE (C20, C2, 1, CALYPSO_REAL,                     &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI) 
-      ALPHA= RHO / C2
+      ALPHA= RHO(1) / C2(1)
 
 !C
 !C-- {s}= {r} - ALPHA*{V}
@@ -808,21 +816,21 @@
 !C | update {x},{r} |
 !C +----------------+
 !C===
-      DNRM20= 0.d0
+      DNRM20(1) = 0.d0
       do j= 1, N
         jj = NB*(j-1)
         do k1 = 1, NB
           X (jj+k1)= X(jj+k1) + ALPHA*WW(jj+k1,PT) + OMEGA*WW(jj+k1,ST)
           WW(jj+k1,R)= WW(jj+k1,S) - OMEGA*WW(jj+k1,T)
-          DNRM20= DNRM20+WW(jj+k1,S)**2
+          DNRM20(1) = DNRM20(1) + WW(jj+k1,S)**2
         end do
       enddo
 
-      RHO1= RHO
+      RHO1= RHO(1)
 
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      RESID= dsqrt(DNRM2/BNRM2)
+      RESID= dsqrt(DNRM2(1) / BNRM2(1))
 
 !C##### ITERATION HISTORY
         if (my_rank.eq.0) write (*, 1000) ITER, RESID

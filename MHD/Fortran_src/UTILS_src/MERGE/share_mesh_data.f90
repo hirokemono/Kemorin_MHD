@@ -58,12 +58,11 @@
 !
         irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-        call MPI_Bcast(nod_comm%num_neib, 1, CALYPSO_INTEGER,           &
-     &      irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(nod_comm%ntot_import, 1, CALYPSO_INTEGER,        &
-     &      irank_org, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(nod_comm%ntot_export, 1, CALYPSO_INTEGER,        &
-     &      irank_org, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_bcast_one_int(nod_comm%num_neib, irank_org)
+        call calypso_mpi_bcast_one_int                                  &
+     &     (nod_comm%ntot_import, irank_org)
+        call calypso_mpi_bcast_one_int                                  &
+     &     (nod_comm%ntot_export, irank_org)
 !
       if(irank_org .ne. my_rank) then
         call alloc_comm_table_num(nod_comm)
@@ -71,12 +70,12 @@
       end if
 !
 !      write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(nod_comm%id_neib, int(nod_comm%num_neib),          &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nod_comm%istack_import, int(nod_comm%num_neib),    &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(nod_comm%istack_export, int(nod_comm%num_neib),    &
-     &    CALYPSO_INTEGER, irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &    (nod_comm%id_neib, cast_long(nod_comm%num_neib), irank_org)
+      call calypso_mpi_bcast_int(nod_comm%istack_import,                &
+     &    cast_long(nod_comm%num_neib), irank_org)
+      call calypso_mpi_bcast_int(nod_comm%istack_export,                &
+     &    cast_long(nod_comm%num_neib), irank_org)
 !
       call calypso_mpi_bcast_int(nod_comm%item_import,                  &
      &    cast_long(nod_comm%ntot_import), irank_org)
@@ -136,10 +135,8 @@
 !
       irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(ele%numele, 1, CALYPSO_INTEGER,                    &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ele%first_ele_type, 1, CALYPSO_INTEGER,            &
-     &     irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ele%numele, irank_org)
+      call calypso_mpi_bcast_one_int(ele%first_ele_type, irank_org)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
         ele%nnod_4_ele = set_nnod_4_ele_by_eletype(ele%first_ele_type)
@@ -176,10 +173,8 @@
 !
       irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(group%num_grp, 1, CALYPSO_INTEGER,                 &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(group%num_item, 1, CALYPSO_INTEGER,                &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(group%num_grp, irank_org)
+      call calypso_mpi_bcast_one_int(group%num_item, irank_org)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
         call alloc_group_num(group)
@@ -218,10 +213,8 @@
 !
       irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(sf_group%num_grp, 1, CALYPSO_INTEGER,              &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(sf_group%num_item, 1, CALYPSO_INTEGER,             &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(sf_group%num_grp, irank_org)
+      call calypso_mpi_bcast_one_int(sf_group%num_item, irank_org)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
         call alloc_sf_group_num(sf_group)

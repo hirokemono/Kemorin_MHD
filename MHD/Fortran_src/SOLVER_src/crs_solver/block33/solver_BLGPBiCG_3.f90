@@ -97,6 +97,13 @@
       real   (kind=kreal) :: TOL, BETA, ALPHA
       data IFLAG/0/
 
+      real(kind=kreal) :: X1,  X2,  X3, WVAL1, WVAL2, WVAL3
+      real(kind=kreal) :: SW1, SW2, SW3
+      real(kind=kreal) :: D11, D22, D33
+      real(kind=kreal) :: aSW1, aSW2, aSW3
+      real(kind=kreal) :: bSW1, bSW2, bSW3
+      real(kind=kreal) :: cSW1, cSW2, cSW3
+      real(kind=kreal) :: ETA, QSI
 !C
 !C-- INIT.
       ERROR= 0
@@ -260,20 +267,21 @@
       enddo
 
 
-      BNRM20= 0.d0
-      RHO0  = 0.0d0
+      BNRM20(1) = 0.d0
+      RHO0(1)  = 0.0d0
       do i= 1, N
-        BNRM20= BNRM20+B(3*i-2)**2+B(3*i-1)**2+B(3*i)**2
-        RHO0  = RHO0 + WW(3*i-2,RT)*WW(3*i-2,R)+WW(3*i-1,RT)*WW(3*i-1,R)&
-     &                                         +WW(3*i  ,RT)*WW(3*i  ,R)
-      enddo
+        BNRM20(1) = BNRM20(1) + B(3*i-2)**2 + B(3*i-1)**2 + B(3*i)**2
+        RHO0(1) =   RHO0(1) + WW(3*i-2,RT)*WW(3*i-2,R)                  &
+     &                      + WW(3*i-1,RT)*WW(3*i-1,R)                  &
+     &                      + WW(3*i  ,RT)*WW(3*i  ,R)
+      end do
 
       call MPI_allREDUCE (BNRM20, BNRM2, 1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0      
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1) = 1.d0      
 !C===
 
 !C
@@ -515,16 +523,17 @@
 !C
 !C-- calc. ALPHA
 
-      RHO10= 0.d0
+      RHO10(1) = 0.d0
       do j= 1, N
-        RHO10= RHO10+WW(3*j-2,RT)*WW(3*j-2,PT)+WW(3*j-1,RT)*WW(3*j-1,PT)&
-     &                                        +WW(3*j  ,RT)*WW(3*j  ,PT)
+        RHO10(1) = RHO10(1) + WW(3*j-2,RT)*WW(3*j-2,PT)                 &
+     &                      + WW(3*j-1,RT)*WW(3*j-1,PT)                 &
+     &                      + WW(3*j  ,RT)*WW(3*j  ,PT)
       enddo
 
       call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,                 &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
-      ALPHA= RHO / RHO1
+      ALPHA= RHO(1) / RHO1(1)
 !C===
 
 !C
@@ -1023,8 +1032,8 @@
 !C | update {x},{r},{w} |
 !C +--------------------+
 !C===
-      DNRM20= 0.d0
-      COEF10= 0.d0
+      DNRM20(1) = 0.d0
+      COEF10(1) = 0.d0
 
       do j= 1, N
         X (3*j-2)= X(3*j-2) + ALPHA*WW(3*j-2,P) + WW(3*j-2,Z)
@@ -1039,9 +1048,12 @@
         WW(3*j-1,T0)= WW(3*j-1,T)
         WW(3*j  ,T0)= WW(3*j  ,T)
 
-        DNRM20= DNRM20 + WW(3*j-2,R)**2+ WW(3*j-1,R)**2+ WW(3*j,R)**2
-        COEF10= COEF10 + WW(3*j-2,R)*WW(3*j-2,RT)                       &
-     &                 + WW(3*j-1,R)*WW(3*j-1,RT) + WW(3*j,R)*WW(3*j,RT)
+        DNRM20(1) = DNRM20(1) + WW(3*j-2,R)**2                         &
+     &                        + WW(3*j-1,R)**2                         &
+     &                        + WW(3*j,R)**2
+        COEF10(1) = COEF10(1) + WW(3*j-2,R)*WW(3*j-2,RT)               &
+     &                        + WW(3*j-1,R)*WW(3*j-1,RT)               &
+     &                        + WW(3*j,R)*WW(3*j,RT)
       enddo
 
       call MPI_allREDUCE  (DNRM20, DNRM2, 1, CALYPSO_REAL,              &
@@ -1049,15 +1061,15 @@
       call MPI_allREDUCE  (COEF10, COEF1, 1, CALYPSO_REAL,              &
      &                     MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
-      BETA = ALPHA*COEF1 / (QSI*RHO)
+      BETA = ALPHA*COEF1(1) / (QSI * RHO(1))
       do j= 1, N
         WW(3*j-2,W1)= WW(3*j-2,TT) + BETA*WW(3*j-2,PT)
         WW(3*j-1,W1)= WW(3*j-1,TT) + BETA*WW(3*j-1,PT)
         WW(3*j  ,W1)= WW(3*j  ,TT) + BETA*WW(3*j  ,PT)
       enddo
 
-      RESID= dsqrt(DNRM2/BNRM2)
-      RHO  = COEF1
+      RESID= dsqrt(DNRM2(1) / BNRM2(1))
+      RHO(1)  = COEF1(1)
 
 !C##### ITERATION HISTORY
 !        if (my_rank.eq.0) write (*, 1000) ITER, RESID

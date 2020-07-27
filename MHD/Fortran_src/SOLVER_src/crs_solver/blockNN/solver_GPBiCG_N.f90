@@ -88,6 +88,10 @@
       real(kind=kreal), dimension(:,:),  allocatable       ::  WW
       real(kind=kreal), dimension(:,:,:),allocatable, save :: ALU
 
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  RHO(1),  RHO1(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), RHO0(1), RHO10(1)
+      real(kind=kreal) :: COEF1(1)
+      real(kind=kreal) :: COEF10(1)
       real(kind=kreal), dimension(5) :: C0, CG
       real(kind=kreal), dimension(2) :: EQ
 
@@ -107,9 +111,8 @@
       real(kind=kreal), dimension(NB) :: SWN, SWN_TT, SWN_W2, SWN_T0
       real(kind=kreal) :: TOL, SS, WNB
       real(kind=kreal), dimension(NB) :: PW, XN, WVAL
-      real(kind=kreal) :: ALO, ALPHA, BETA, BNRM2, BNRM20, RHO0, RHO
-      real(kind=kreal) :: COEF1, COEF10, DNRM2, DNRM20, ETA, QSI
-      real(kind=kreal) :: RHO10, RHO1
+      real(kind=kreal) :: ALO, ALPHA, BETA
+      real(kind=kreal) :: ETA, QSI
 !
       data IFLAG/0/
 
@@ -307,13 +310,13 @@
       enddo
 
 
-      BNRM20= 0.d0
-      RHO0  = 0.0d0
+      BNRM20(1)= 0.d0
+      RHO0(1)  = 0.0d0
       do i= 1, N
         ii = NB* (i-1)
         do k1= 1, NB
-          BNRM20= BNRM20 + B(ii+k1)**2
-          RHO0  = RHO0 + WW(ii+k1,RT)*WW(ii+k1,R)
+          BNRM20(1)= BNRM20(1) + B(ii+k1)**2
+          RHO0(1)  = RHO0(1) + WW(ii+k1,RT)*WW(ii+k1,R)
         end do
       enddo
 
@@ -322,7 +325,7 @@
       call MPI_allREDUCE (RHO0  , RHO,   1, CALYPSO_REAL,               &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
-      if (BNRM2.eq.0.d0) BNRM2= 1.d0      
+      if (BNRM2(1) .eq. 0.d0) BNRM2(1)= 1.d0      
 !C===
 
 !C
@@ -556,18 +559,18 @@
 !C
 !C-- calc. ALPHA
 
-      RHO10= 0.d0
+      RHO10(1) = 0.d0
       do j= 1, N
         jj = NB*(j-1)
         do k1 = 1, NB
-          RHO10 = RHO10 + WW(jj+k1,RT)*WW(jj+k1,PT)
+          RHO10(1) = RHO10(1) + WW(jj+k1,RT)*WW(jj+k1,PT)
         end do
       enddo
 
       call MPI_allREDUCE (RHO10, RHO1, 1, CALYPSO_REAL,                 &
      &                    MPI_SUM, CALYPSO_COMM, ierr_MPI)
 
-      ALPHA= RHO / RHO1
+      ALPHA= RHO(1) / RHO1(1)
 !C===
 
 !C
@@ -986,8 +989,8 @@
 !C | update {x},{r},{w} |
 !C +--------------------+
 !C===
-      DNRM20= 0.d0
-      COEF10= 0.d0
+      DNRM20(1) = 0.d0
+      COEF10(1) = 0.d0
 
       do j= 1, N
         jj = NB*(j-1)
@@ -995,8 +998,8 @@
           X (jj+k1)= X(jj+k1) + ALPHA*WW(jj+k1,P) + WW(jj+k1,Z)
           WW(jj+k1,R)= WW(jj+k1,T) - ETA*WW(jj+k1,Y) - QSI*WW(jj+k1,TT)
           WW(jj+k1,T0)= WW(jj+k1,T)
-          DNRM20= DNRM20 + WW(jj+k1,R)**2
-          COEF10= COEF10 + WW(jj+k1,R)*WW(jj+k1,RT)
+          DNRM20(1) = DNRM20(1) + WW(jj+k1,R)**2
+          COEF10(1) = COEF10(1) + WW(jj+k1,R)*WW(jj+k1,RT)
         end do
 
       enddo
@@ -1012,7 +1015,7 @@
 !C | {w} = {t_tld} + BETA{p_tld}          |
 !C +--------------------------------------+
 !C===
-      BETA = ALPHA*COEF1 / (QSI*RHO)
+      BETA = ALPHA*COEF1(1) / (QSI * RHO(1))
       do j= 1, N
         jj = NB*(j-1)
         do k1 = 1, NB
@@ -1020,8 +1023,8 @@
         end do
       enddo
 
-      RESID= dsqrt(DNRM2/BNRM2)
-      RHO  = COEF1
+      RESID= dsqrt(DNRM2(1) / BNRM2(1))
+      RHO(1)  = COEF1(1)
 
 !C##### ITERATION HISTORY
         if (my_rank.eq.0) write (*, 1000) ITER, RESID

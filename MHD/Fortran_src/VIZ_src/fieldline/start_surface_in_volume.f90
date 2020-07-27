@@ -39,6 +39,7 @@
       subroutine s_start_surface_by_volume                              &
      &         (ele, ele_grp, fln_prm, fln_src, fln_tce)
 !
+      use calypso_mpi_real
       use extend_field_line
       use cal_field_on_surf_viz
       use set_fline_start_surface
@@ -64,9 +65,8 @@
      &     fln_prm%nele_grp_area_fline, fln_prm%id_ele_grp_area_fline,  &
      &     iflag_ele, volume_local)
 !
-      call MPI_AllGather(volume_local, 1,                               &
-     &    CALYPSO_REAL, fln_tce%flux_stack_fline(1), 1,                 &
-     &    CALYPSO_REAL, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allgather_one_real(volume_local,                 &
+     &                                    fln_tce%flux_stack_fline(1))
 !
       fln_tce%flux_stack_fline(0) = 0.0d0
       do ip = 1, nprocs

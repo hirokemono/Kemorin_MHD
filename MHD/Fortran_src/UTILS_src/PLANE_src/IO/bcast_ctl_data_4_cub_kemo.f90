@@ -23,6 +23,7 @@
       subroutine bcsst_control_data_plane_mesh(cubmesh_c)
 !
       use calypso_mpi
+      use calypso_mpi_int
       use t_ctl_data_4_cub_kemo
       use bcast_4_platform_ctl
       use bcast_4_filter_files_ctl
@@ -41,11 +42,8 @@
       call bcast_ctl_type_c1(cubmesh_c%z_filter_head_ctl)
       call bcast_ctl_type_c1(cubmesh_c%vert_filter_type_ctl)
 !
-      call MPI_BCAST(cubmesh_c%i_plane_mesh, 1,                         &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-!
-      call MPI_BCAST(cubmesh_c%i_l_filter_ctl, 1,                       &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(cubmesh_c%i_plane_mesh, 0)
+      call calypso_mpi_bcast_one_int(cubmesh_c%i_l_filter_ctl, 0)
 !
       end subroutine bcsst_control_data_plane_mesh
 !
@@ -53,6 +51,7 @@
 !
       subroutine bcast_plane_model_param_ctl(cube_c)
 !
+      use calypso_mpi_int
       use t_ctl_data_4_plane_model
 !
       type(ctl_data_4_plane_model), intent(inout) :: cube_c
@@ -60,14 +59,13 @@
 !
       call bcast_ctl_type_i3(cube_c%nnod_plane_ctl)
       call bcast_ctl_type_i3(cube_c%ndomain_plane_ctl)
-      call bcast_ctl_type_c1(cube_c%num_of_sleeve_ctl)
+      call bcast_ctl_type_i1(cube_c%num_of_sleeve_ctl)
       call bcast_ctl_type_r3(cube_c%plane_size_ctl)
 !
       call bcast_ctl_array_c3(cube_c%unit_len_plane_ctl)
       call bcast_ctl_array_c1(cube_c%horizontal_grid_ctl)
 !
-      call MPI_BCAST(cube_c%i_plane_def, 1,                             &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(cube_c%i_plane_def, 0)
 !
       end subroutine bcast_plane_model_param_ctl
 !
