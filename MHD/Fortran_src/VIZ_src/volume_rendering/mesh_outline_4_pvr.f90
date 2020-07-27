@@ -127,8 +127,8 @@
         rmax_l = max(rmax_l, r_from_ct)
       end do
 !
-      call MPI_allREDUCE(rmax_l, outline%rmax_g, 1,                     &
-     &    CALYPSO_REAL,  MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real(rmax_l, outline%rmax_g,       &
+     &                                    MPI_MAX)
 !
       end subroutine cal_mesh_outline_pvr
 !

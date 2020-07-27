@@ -48,16 +48,6 @@
       real(kind = kreal), allocatable :: xsurf_diff(:)
       real(kind = kreal), allocatable :: xedge_diff(:)
 !
-!
-      integer(kind = kint) :: ntot_nod_diff_pe
-      integer(kind = kint) :: ntot_ele_diff_pe
-      integer(kind = kint) :: ntot_surf_diff_pe
-      integer(kind = kint) :: ntot_edge_diff_pe
-!
-      integer(kind = kint), allocatable :: num_nod_diff_pe(:)
-      integer(kind = kint), allocatable :: num_ele_diff_pe(:)
-      integer(kind = kint), allocatable :: num_surf_diff_pe(:)
-      integer(kind = kint), allocatable :: num_edge_diff_pe(:)
       integer(kind = kint), allocatable :: istack_nod_diff_pe(:)
       integer(kind = kint), allocatable :: istack_ele_diff_pe(:)
       integer(kind = kint), allocatable :: istack_surf_diff_pe(:)
@@ -176,10 +166,7 @@
 !
       use calypso_mpi
 !
-      allocate( num_nod_diff_pe(nprocs)  )
       allocate( istack_nod_diff_pe(0:nprocs)  )
-!
-      num_nod_diff_pe =     0
       istack_nod_diff_pe =  0
 !
       end subroutine allocate_nod_stack_ctest_IO
@@ -191,15 +178,9 @@
       use calypso_mpi
 !
 !
-      allocate( num_ele_diff_pe(nprocs)  )
-      allocate( num_surf_diff_pe(nprocs) )
-      allocate( num_edge_diff_pe(nprocs) )
       allocate( istack_ele_diff_pe(0:nprocs)  )
       allocate( istack_surf_diff_pe(0:nprocs) )
       allocate( istack_edge_diff_pe(0:nprocs) )
-      num_ele_diff_pe =     0
-      num_surf_diff_pe =    0
-      num_edge_diff_pe =    0
       istack_ele_diff_pe =  0
       istack_surf_diff_pe = 0
       istack_edge_diff_pe = 0
@@ -210,8 +191,10 @@
 !
       subroutine allocate_nod_comm_test_IO
 !
-      allocate( inod_diff_IO(ntot_nod_diff_pe) )
-      allocate( xx_diff_IO(6*ntot_nod_diff_pe) )
+      use calypso_mpi
+!
+      allocate( inod_diff_IO(istack_nod_diff_pe(nprocs)) )
+      allocate( xx_diff_IO(6*istack_nod_diff_pe(nprocs)) )
 !
       inod_diff_IO =     0
       xx_diff_IO =       0.0d0
@@ -222,15 +205,16 @@
 !
       subroutine allocate_geom_comm_test_IO
 !
+      use calypso_mpi
 !
-      allocate( iele_diff_IO(ntot_ele_diff_pe) )
-      allocate( xele_diff_IO(6*ntot_ele_diff_pe) )
+      allocate( iele_diff_IO(istack_ele_diff_pe(nprocs) ) )
+      allocate( xele_diff_IO(6*istack_ele_diff_pe(nprocs) ) )
 !
-      allocate( isurf_diff_IO(ntot_surf_diff_pe) )
-      allocate( xsurf_diff_IO(6*ntot_surf_diff_pe) )
+      allocate( isurf_diff_IO(istack_surf_diff_pe(nprocs)) )
+      allocate( xsurf_diff_IO(6*istack_surf_diff_pe(nprocs)) )
 !
-      allocate( iedge_diff_IO(ntot_edge_diff_pe) )
-      allocate( xedge_diff_IO(6*ntot_edge_diff_pe) )
+      allocate( iedge_diff_IO(istack_edge_diff_pe(nprocs)) )
+      allocate( xedge_diff_IO(6*istack_edge_diff_pe(nprocs)) )
 !
       iele_diff_IO =     0
       xele_diff_IO =     0.0d0
@@ -246,7 +230,6 @@
 !
       subroutine deallocate_nod_stack_ctest_IO
 !
-      deallocate( num_nod_diff_pe    )
       deallocate( istack_nod_diff_pe )
 !
       end subroutine deallocate_nod_stack_ctest_IO
@@ -258,9 +241,6 @@
 !
       call deallocate_nod_stack_ctest_IO
 !
-      deallocate( num_ele_diff_pe     )
-      deallocate( num_surf_diff_pe    )
-      deallocate( num_edge_diff_pe    )
       deallocate( istack_ele_diff_pe  )
       deallocate( istack_surf_diff_pe )
       deallocate( istack_edge_diff_pe )

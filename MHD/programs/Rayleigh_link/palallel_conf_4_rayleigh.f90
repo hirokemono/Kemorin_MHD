@@ -71,6 +71,10 @@
 !
       subroutine load_resolution_4_rayleigh(file_name, rayleigh_rtp)
 !
+      use calypso_mpi_int
+      use calypso_mpi_real
+      use transfer_to_long_integers
+!
       character(len=kchara) :: file_name
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
@@ -118,35 +122,20 @@
         close(13)
       end if
 !
-      call MPI_Scatter(r_rank, 1, CALYPSO_INTEGER,                      &
-     &                 rayleigh_rtp%irank_r, 1, CALYPSO_INTEGER,        &
-     &                 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Scatter(h_rank, 1, CALYPSO_INTEGER,                      &
-     &                 rayleigh_rtp%irank_h, 1, CALYPSO_INTEGER,        &
-     &                 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Scatter(kst_read, 1, CALYPSO_INTEGER,                    &
-     &                 rayleigh_rtp%kst, 1, CALYPSO_INTEGER,            &
-     &                 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Scatter(ked_read, 1, CALYPSO_INTEGER,                    &
-     &                 rayleigh_rtp%ked, 1, CALYPSO_INTEGER,            &
-     &                 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Scatter(lst_read, 1, CALYPSO_INTEGER,                    &
-     &                 rayleigh_rtp%lst, 1, CALYPSO_INTEGER,            &
-     &                 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Scatter(led_read, 1, CALYPSO_INTEGER,                    &
-     &                 rayleigh_rtp%led, 1, CALYPSO_INTEGER,            &
-     &                 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_scatter_one_int(r_rank, rayleigh_rtp%irank_r, 0)
+      call calypso_mpi_scatter_one_int(h_rank, rayleigh_rtp%irank_h, 0)
+      call calypso_mpi_scatter_one_int(kst_read, rayleigh_rtp%kst, 0)
+      call calypso_mpi_scatter_one_int(ked_read, rayleigh_rtp%ked, 0)
+      call calypso_mpi_scatter_one_int(lst_read, rayleigh_rtp%lst, 0)
+      call calypso_mpi_scatter_one_int(led_read, rayleigh_rtp%led, 0)
       if(my_rank .eq. 0) then
         deallocate(r_rank, h_rank)
         deallocate(kst_read, ked_read, lst_read, led_read)
       end if
 !
-      call MPI_BCAST(rayleigh_rtp%ltr, 1, CALYPSO_INTEGER, 0,           &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%nri_gl, 1, CALYPSO_INTEGER, 0,        &
-     &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%nth_gl, 1, CALYPSO_INTEGER, 0,        &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(rayleigh_rtp%ltr, 0)
+      call calypso_mpi_bcast_one_int(rayleigh_rtp%nri_gl, 0)
+      call calypso_mpi_bcast_one_int(rayleigh_rtp%nth_gl, 0)
       rayleigh_rtp%nphi_gl = 2 * rayleigh_rtp%nth_gl
 !
       if(my_rank .ne. 0) then
@@ -154,18 +143,20 @@
         allocate(rayleigh_rtp%cos_theta(rayleigh_rtp%nth_gl))
         allocate(rayleigh_rtp%theta_gl(rayleigh_rtp%nth_gl))
       end if
-      call MPI_BCAST(rayleigh_rtp%radius_gl, rayleigh_rtp%nri_gl,       &
-     &               CALYPSO_REAL, 0,  CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%cos_theta, rayleigh_rtp%nth_gl,       &
-     &               CALYPSO_REAL, 0,CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(rayleigh_rtp%theta_gl, rayleigh_rtp%nth_gl,        &
-     &               CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%radius_gl, cast_long(rayleigh_rtp%nri_gl), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%cos_theta, cast_long(rayleigh_rtp%nth_gl), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (rayleigh_rtp%theta_gl, cast_long(rayleigh_rtp%nth_gl), 0)
 !
       end subroutine load_resolution_4_rayleigh
 !
 ! ----------------------------------------------------------------------
 !
       subroutine write_resolution_4_rayleigh(file_name, rayleigh_rtp)
+!
+      use calypso_mpi_int
 !
       character(len=kchara) :: file_name
       type(rayleigh_field), intent(in) :: rayleigh_rtp
@@ -185,24 +176,12 @@
         allocate(lt_max(nprocs))
       end if
 !
-      call MPI_Gather(rayleigh_rtp%irank_r, 1, CALYPSO_INTEGER,         &
-     &                r_rank, 1, CALYPSO_INTEGER,                       &
-     &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%irank_h, 1, CALYPSO_INTEGER,         &
-     &                h_rank, 1, CALYPSO_INTEGER,                       &
-     &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%kst, 1, CALYPSO_INTEGER,             &
-     &                kr_min, 1, CALYPSO_INTEGER,                       &
-     &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%ked, 1, CALYPSO_INTEGER,             &
-     &                kr_max, 1, CALYPSO_INTEGER,                       &
-     &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%lst, 1, CALYPSO_INTEGER,             &
-     &                lt_min, 1, CALYPSO_INTEGER,                       &
-     &                0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(rayleigh_rtp%led, 1, CALYPSO_INTEGER,             &
-     &                lt_max, 1, CALYPSO_INTEGER,                       &
-     &                0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_gather_one_int(rayleigh_rtp%irank_r, r_rank, 0)
+      call calypso_mpi_gather_one_int(rayleigh_rtp%irank_h, h_rank, 0)
+      call calypso_mpi_gather_one_int(rayleigh_rtp%kst, kr_min, 0)
+      call calypso_mpi_gather_one_int(rayleigh_rtp%ked, kr_max, 0)
+      call calypso_mpi_gather_one_int(rayleigh_rtp%lst, lt_min, 0)
+      call calypso_mpi_gather_one_int(rayleigh_rtp%led, lt_max, 0)
 !
         if(my_rank .eq. 0) then
         open(12, file = file_name)

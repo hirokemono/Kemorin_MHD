@@ -29,8 +29,7 @@ MOD_COMM_TEST_CORE = \
 m_geometry_4_comm_test.o \
 \
 set_diff_geom_comm_test.o \
-collect_diff_4_comm_test.o \
-write_diff_4_comm_test.o \
+write_diff_4_comm_test.o
 
 MOD_COMM_TEST = \
 t_ctl_data_comm_test.o \
@@ -46,11 +45,10 @@ m_geometry_filter_comm_test.o \
 t_ctl_data_filter_comm_test.o \
 input_ctl_filter_comm_test.o \
 set_diff_filter_comm_test.o \
-collect_diff_filter_ctest.o \
 write_diff_filter_comm_test.o \
 \
 analyzer_filter_comm_test.o \
-main_filter_comm_test.o \
+main_filter_comm_test.o
 
 #
 #  ------------------------------------------------------------------

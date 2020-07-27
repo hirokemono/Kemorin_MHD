@@ -12,6 +12,6 @@ t_multi_node_clustering.o: $(NODE_CLUSTERING_TEST_DIR)/t_multi_node_clustering.f
 	$(F90) -c $(F90OPTFLAGS) $<
 t_node_clustering_list.o: $(NODE_CLUSTERING_TEST_DIR)/t_node_clustering_list.f90 m_precision.o m_constants.o t_geometry_data.o t_next_node_ele_4_node.o cal_mesh_position.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_repartition_test.o: $(NODE_CLUSTERING_TEST_DIR)/t_repartition_test.f90 calypso_mpi.o m_precision.o m_constants.o t_mesh_data.o t_next_node_ele_4_node.o t_node_clustering_list.o int_volume_of_single_domain.o copy_mesh_structures.o
+t_repartition_test.o: $(NODE_CLUSTERING_TEST_DIR)/t_repartition_test.f90 calypso_mpi.o calypso_mpi_real.o calypso_mpi_int.o m_precision.o m_constants.o t_mesh_data.o t_next_node_ele_4_node.o t_node_clustering_list.o int_volume_of_single_domain.o copy_mesh_structures.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

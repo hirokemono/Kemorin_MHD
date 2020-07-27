@@ -177,6 +177,7 @@
       use t_FEM_MHD_mean_square
       use t_flex_delta_t_parameter
 !
+      use calypso_mpi_real
       use construct_matrices
       use lead_physical_values
       use update_after_evolution
@@ -288,9 +289,9 @@
 !
       MHD_step%finish_d%elapsed_local                                   &
      &    = MPI_WTIME() - MHD_step%finish_d%started_time
-      call MPI_allREDUCE (MHD_step%finish_d%elapsed_local,              &
-     &    MHD_step%finish_d%elapsed_max, 1, CALYPSO_REAL,               &
-     &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (MHD_step%finish_d%elapsed_local,                              &
+     &    MHD_step%finish_d%elapsed_max, MPI_MAX)
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
      &  MHD_step%finish_d%elapsed_local, MHD_step%finish_d%elapsed_time
 !

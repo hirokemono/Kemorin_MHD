@@ -195,6 +195,8 @@
       use t_rms_4_sph_spectr
       use t_spheric_parameter
       use t_phys_data
+      use calypso_mpi_real
+      use transfer_to_long_integers
       use radial_int_for_sph_spec
       use volume_average_4_sph
       use prod_SGS_model_coefs_sph
@@ -241,9 +243,9 @@
      &                                * wk_sgs_buo%Cbuo_vol_lc(1:2)
       end if
 !
-      call MPI_allREDUCE                                                &
-     &   (wk_sgs_buo%Cbuo_vol_lc, wk_sgs_buo%Cbuo_vol_gl, 2,            &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real                                   &
+     &   (wk_sgs_buo%Cbuo_vol_lc, wk_sgs_buo%Cbuo_vol_gl,               &
+     &    cast_long(2), MPI_SUM)
 !      write(*,*) 'wk_sgs_buo%Cbuo_vol_gl', wk_sgs_buo%Cbuo_vol_gl
 !
       end subroutine volume_averaged_SGS_buoyancy

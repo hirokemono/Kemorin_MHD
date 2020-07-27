@@ -216,6 +216,8 @@
       use t_control_data_vizs
       use t_volume_rendering
       use t_sph_trans_arrays_SGS_MHD
+!
+      use calypso_mpi_real
       use FEM_analyzer_sph_MHD
       use output_viz_file_control
 !
@@ -316,8 +318,8 @@
 !
         if(total_time .gt. MHD_step1%finish_d%elapsed_time) then
           call calypso_mpi_barrier
-          call MPI_allREDUCE (total_time, total_max, 1,                 &
-     &       CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)
+          call calypso_mpi_allreduce_one_real(total_time, total_max,    &
+     &                                        MPI_MAX)
           exit
         end if
       end do

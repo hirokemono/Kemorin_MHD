@@ -17,6 +17,8 @@
       module t_repartition_test
 !
       use calypso_mpi
+      use calypso_mpi_real
+      use calypso_mpi_int
       use m_precision
       use m_constants
       use t_mesh_data
@@ -98,8 +100,8 @@
       end do
 !$omp end parallel do
 
-      call MPI_allREDUCE(volume_nod_domain, volume_nod_total, 1,        &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (volume_nod_domain, volume_nod_total, MPI_SUM)
       volume_target = volume_nod_total / dble(nprocs)
 !
       write(*,*) my_rank, 'volume_nod_domain', volume_nod_domain
@@ -116,8 +118,8 @@
         allocate(istack_seed_each(0))
       end if
 !
-      call MPI_Gather(volume_nod_domain, 1, CALYPSO_REAL,               &
-     &    volume_nod_each, 1, CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_gather_one_real                                  &
+     &   (volume_nod_domain, volume_nod_each, 0)
 !
       if(my_rank .eq. 0) then
         vol_rest = 0.0d0
@@ -136,10 +138,10 @@
       call calypso_mpi_barrier
       return
 !
-      call MPI_Gather(istack_seed_each(0), 1, CALYPSO_INTEGER,          &
-     &    ist_new_pe, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Gather(istack_seed_each(1), 1, CALYPSO_INTEGER,          &
-     &    ied_new_pe, 1, CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_scatter_one_int                                  &
+     &   (istack_seed_each(1), ist_new_pe, 0)
+      call calypso_mpi_scatter_one_int                                  &
+     &   (istack_seed_each(1), ied_new_pe, 0)
       num_seed = ied_new_pe - ist_new_pe
       volume_target = volume_nod_domain / num_seed
 !

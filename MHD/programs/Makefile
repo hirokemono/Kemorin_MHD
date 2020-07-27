@@ -13,11 +13,14 @@ construct_filter \
 \
 mesh_utilities \
 data_utilities \
-VIEWER \
 \
 Rayleigh_link \
 \
 TESTS
+
+ifdef OPENGL_LIBS
+  SUBDIRS += VIEWER
+endif
 
 
 

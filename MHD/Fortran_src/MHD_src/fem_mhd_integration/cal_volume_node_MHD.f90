@@ -143,6 +143,7 @@
 !
       subroutine cal_volume_4_area(ele, area)
 !
+      use calypso_mpi_real
       use sum_volume_of_domain
 !
       type(element_data), intent(in) :: ele
@@ -152,8 +153,8 @@
       call sum_4_volume(ele%numele, ele%interior_ele,                   &
      &    area%istack_ele_fld_smp, ele%volume_ele, vol_fl_local)
 !
-      call MPI_allREDUCE (vol_fl_local, area%volume, 1,                 &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real(vol_fl_local, area%volume,    &
+     &                                    MPI_SUM)
 !
       if (area%volume .eq. 0.0d0) then
         area%a_volume = 1.0d30

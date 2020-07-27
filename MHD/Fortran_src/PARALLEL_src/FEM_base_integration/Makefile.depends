@@ -16,7 +16,7 @@ cal_gradient_on_element.o: $(FEM_INT_DIR)/cal_gradient_on_element.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_layerd_ave_correlate.o: $(FEM_INT_DIR)/cal_layerd_ave_correlate.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_layered_volumes.o: $(FEM_INT_DIR)/cal_layered_volumes.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_layering_ele_list.o calypso_mpi.o calypso_mpi_real.o
+cal_layered_volumes.o: $(FEM_INT_DIR)/cal_layered_volumes.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_layering_ele_list.o calypso_mpi.o calypso_mpi_real.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_prod_w_const_skv.o: $(FEM_INT_DIR)/cal_prod_w_const_skv.f90 m_precision.o t_geometry_data.o m_phys_constants.o cal_product_w_const_skv.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -116,7 +116,7 @@ int_vol_vect_cst_difference.o: $(FEM_INT_DIR)/int_vol_vect_cst_difference.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 int_vol_vect_differences.o: $(FEM_INT_DIR)/int_vol_vect_differences.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o m_phys_constants.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o nodal_fld_2_each_element.o cal_skv_to_ff_smp.o fem_skv_grad.o fem_skv_div.o fem_skv_rot.o fem_skv_div_flux.o fem_skv_div_asym_t.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_volume_of_domain.o: $(FEM_INT_DIR)/int_volume_of_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o set_normal_vectors.o set_surf_grp_vectors.o sum_normal_4_surf_group.o set_connects_4_surf_group.o const_jacobians_3d.o sum_volume_of_domain.o t_layering_ele_list.o cal_layered_volumes.o calypso_mpi.o fem_element_volume.o
+int_volume_of_domain.o: $(FEM_INT_DIR)/int_volume_of_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o set_normal_vectors.o set_surf_grp_vectors.o sum_normal_4_surf_group.o set_connects_4_surf_group.o const_jacobians_3d.o sum_volume_of_domain.o t_layering_ele_list.o cal_layered_volumes.o calypso_mpi_real.o fem_element_volume.o
 	$(F90) -c $(F90OPTFLAGS) $<
 matrix_initialization.o: $(FEM_INT_DIR)/matrix_initialization.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_table_FEM_const.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -44,7 +44,10 @@
 !
       subroutine bcast_rayleigh_restart_param(ra_rst)
 !
+      use calypso_mpi_real
+      use calypso_mpi_int
       use calypso_mpi_int4
+      use transfer_to_long_integers
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
 !
@@ -54,38 +57,30 @@
       call calypso_mpi_bcast_one_int4(ra_rst%iflag_swap, 0)
 !
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%ltr_org' 
-      call MPI_Bcast(ra_rst%ltr_org, 1,                                 &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ra_rst%ltr_org, 0)
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%iflag_rtype' 
-      call MPI_Bcast(ra_rst%iflag_rtype, 1,                             &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ra_rst%iflag_rtype, 0)
 !
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%nri_org' 
-      call MPI_Bcast(ra_rst%nri_org, 1,                                 &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ra_rst%nri_org, 0)
 !
       if(my_rank .ne. 0) call alloc_rayleigh_radial_grid(ra_rst)
       call calypso_mpi_barrier
 !
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%nri_org' 
-      call MPI_Bcast(ra_rst%r_org, ra_rst%nri_org,                      &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_real                                       &
+     &   (ra_rst%r_org, cast_long(ra_rst%nri_org), 0)
 !
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%time_org' 
-      call MPI_Bcast(ra_rst%time_org, 1,                                &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_real(ra_rst%time_org, 0)
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%dt_org' 
-      call MPI_Bcast(ra_rst%dt_org, 1,                                  &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_real(ra_rst%dt_org, 0)
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%dt_new' 
-      call MPI_Bcast(ra_rst%dt_new, 1,                                  &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_real(ra_rst%dt_new, 0)
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%new_dt_org' 
-      call MPI_Bcast(ra_rst%new_dt_org, 1,                              &
-     &    CALYPSO_REAL, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_real(ra_rst%new_dt_org, 0)
 !      if(my_rank .eq. 0) write(*,*) 'MPI_Bcast ra_rst%i_step_org' 
-      call MPI_Bcast(ra_rst%i_step_org, 1,                              &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ra_rst%i_step_org, 0)
 !
       end subroutine bcast_rayleigh_restart_param
 !

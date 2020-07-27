@@ -29,6 +29,7 @@
       subroutine s_int_volume_insulate_core(ele, inner_core)
 !
       use calypso_mpi
+      use calypso_mpi_real
       use sum_volume_of_domain
 !
       type(element_data), intent(in) :: ele
@@ -44,8 +45,8 @@
      &    inner_core%istack_ele_fld_smp, inner_core%iele_fld,           &
      &    vol_i_core_local)
 !
-      call MPI_allREDUCE(vol_i_core_local, inner_core%volume, 1,        &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (vol_i_core_local, inner_core%volume, MPI_SUM)
 !
       if (my_rank.eq.0) write(*,*) inner_core%volume
 !

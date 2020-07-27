@@ -143,6 +143,7 @@ depends:
 		C_INCLUDE='$(C_INCLUDE)' \
 		GTK3_CFLAGS='$(GTK3_CFLAGS)' \
 		GLFW_CFLAGS='$(GLFW_CFLAGS)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		MAKE_MOD_DEP='$(MAKE_MOD_DEP)' \
 		depends; \
 		) \
@@ -262,6 +263,7 @@ makemake:
 		MAKENAME='$(MAKENAME)'        \
 		64BIT_INT='$(64BIT_INT)'   \
 		F90_LOCAL='$(F90_LOCAL)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		dir_list; \
 		 ) \
 	done
@@ -297,6 +299,7 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		BUILDDIR='$(BUILDDIR)' \
 		MAKENAME='$(MAKENAME)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		target_list; \
 		 ) \
 	done
@@ -316,6 +319,7 @@ makemake:
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
 		64BIT_INT='$(64BIT_INT)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		lib_name; \
 		 ) \
 	done
@@ -333,6 +337,7 @@ makemake:
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
 		GLFW_LIBS='$(GLFW_LIBS)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		64BIT_INT='$(64BIT_INT)'   \
@@ -351,6 +356,7 @@ makemake:
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		target_task \
 		) \
 	done
@@ -386,6 +392,7 @@ makemake:
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		64BIT_INT='$(64BIT_INT)'   \
+		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		module; \
 		) \
 	done

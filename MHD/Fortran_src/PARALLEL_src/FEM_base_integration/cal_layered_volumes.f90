@@ -216,20 +216,19 @@
 !
       use calypso_mpi
       use calypso_mpi_real
+      use transfer_to_long_integers
 !
       integer (kind = kint), intent(in) :: n_layer_d
       real(kind = kreal), intent(inout) :: volumes_layer(n_layer_d)
       real(kind = kreal), intent(inout) :: vol_total_layer(1)
 !
-      integer (kind = kint_gl) :: num64
 !
-      num64 = int(n_layer_d,KIND(num64))
       volumes_layer =   zero
-      vol_total_layer = zero
+      vol_total_layer(1) = zero
       call calypso_mpi_allreduce_real                                   &
-     &   (vol_l, volumes_layer, num64, MPI_SUM)
-      call MPI_allREDUCE ( vol_w, vol_total_layer, 1,                   &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+     &   (vol_l, volumes_layer, cast_long(n_layer_d), MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+      &  (vol_w, vol_total_layer(1), MPI_SUM)
 !
       end subroutine sum_volumes_4_layerd
 !

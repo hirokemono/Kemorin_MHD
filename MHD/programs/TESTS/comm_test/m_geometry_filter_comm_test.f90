@@ -16,11 +16,7 @@
 !
       real(kind = kreal), allocatable :: xx_filter_diff(:)
 !
-!
-      integer(kind = kint) :: ntot_nod_filter_diff_pe
-      integer(kind = kint), allocatable :: num_filter_nod_diff_pe(:)
       integer(kind = kint), allocatable :: istack_filter_nod_diff_pe(:)
-!
       integer(kind = kint), allocatable :: inod_filter_diff_IO(:)
 !
       real(kind = kreal), allocatable :: xx_filter_diff_IO(:)
@@ -91,10 +87,7 @@
 !
       use calypso_mpi
 !
-      allocate( num_filter_nod_diff_pe(nprocs)  )
       allocate( istack_filter_nod_diff_pe(0:nprocs)  )
-!
-      num_filter_nod_diff_pe =     0
       istack_filter_nod_diff_pe =  0
 !
       end subroutine allocate_filter_stk_ctest_IO
@@ -103,8 +96,10 @@
 !
       subroutine allocate_filter_comm_test_IO
 !
-      allocate( inod_filter_diff_IO(ntot_nod_filter_diff_pe) )
-      allocate( xx_filter_diff_IO(6*ntot_nod_filter_diff_pe) )
+      use calypso_mpi
+!
+      allocate(inod_filter_diff_IO(istack_filter_nod_diff_pe(nprocs)))
+      allocate(xx_filter_diff_IO(6*istack_filter_nod_diff_pe(nprocs)))
 !
       inod_filter_diff_IO =     0
       xx_filter_diff_IO =       0.0d0
@@ -116,7 +111,6 @@
 !
       subroutine deallocate_filter_stk_ctest_IO
 !
-      deallocate( num_filter_nod_diff_pe    )
       deallocate( istack_filter_nod_diff_pe )
 !
       end subroutine deallocate_filter_stk_ctest_IO

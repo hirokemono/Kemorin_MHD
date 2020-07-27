@@ -26,6 +26,10 @@ calypso_mpi_logical.o: $(SR_DIR)/calypso_mpi_logical.f90 m_precision.o m_constan
 	$(F90) -c $(F90OPTFLAGS) $<
 calypso_mpi_real.o: $(SR_DIR)/calypso_mpi_real.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
+collect_SR_N.o: $(SR_DIR)/collect_SR_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o
+	$(F90) -c $(F90OPTFLAGS) $<
+collect_SR_int.o: $(SR_DIR)/collect_SR_int.f90 m_precision.o calypso_mpi.o t_solver_SR.o
+	$(F90) -c $(F90OPTFLAGS) $<
 copy_to_send_buf_tri.o: $(SR_DIR)/copy_to_send_buf_tri.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_to_send_buffer.o: $(SR_DIR)/copy_to_send_buffer.f90 m_precision.o
@@ -43,6 +47,8 @@ m_work_time.o: $(SR_DIR)/m_work_time.f90 m_precision.o m_constants.o t_work_time
 reverse_SR_int.o: $(SR_DIR)/reverse_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
 reverse_SR_int8.o: $(SR_DIR)/reverse_SR_int8.f90 m_precision.o calypso_mpi.o t_solver_SR.o t_solver_SR_int8.o
+	$(F90) -c $(F90OPTFLAGS) $<
+reverse_SR_real.o: $(SR_DIR)/reverse_SR_real.f90 m_precision.o calypso_mpi.o t_solver_SR.o t_solver_SR_int8.o
 	$(F90) -c $(F90OPTFLAGS) $<
 select_copy_from_recv.o: $(SR_DIR)/select_copy_from_recv.f90 m_precision.o m_constants.o set_from_recv_buffer.o set_from_recv_buf_rev.o set_from_recv_buff_tri.o set_from_recv_buf_rev_tri.o
 	$(F90) -c $(F90OPTFLAGS) $<

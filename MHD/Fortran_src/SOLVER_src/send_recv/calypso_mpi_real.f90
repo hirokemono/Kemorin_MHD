@@ -34,6 +34,11 @@
 !!        real(kind = kreal), intent(in) ::    r_local(count)
 !!        real(kind = kreal), intent(inout) :: r_global(count)
 !!
+!!      subroutine calypso_mpi_gather_one_real(sendbuf, recvbuf, root)
+!!        integer, intent(in) :: root
+!!        real(kind = kreal), intent(in) ::    sendbuf
+!!        real(kind = kreal), intent(inout) :: recvbuf(nprocs)
+!!
 !!      subroutine calypso_mpi_allgather_one_real(sendbuf, recvbuf)
 !!        real(kind = kreal), intent(in) ::    sendbuf
 !!        real(kind = kreal), intent(inout) :: recvbuf(nprocs)
@@ -183,6 +188,24 @@
       end do
 !
       end subroutine calypso_mpi_allreduce_real
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_gather_one_real(sendbuf, recvbuf, root)
+!
+      integer, intent(in) :: root
+      real(kind = kreal), intent(in) ::    sendbuf
+      real(kind = kreal), intent(inout) :: recvbuf(nprocs)
+!
+      real(kind = kreal) :: r_lc(1)
+!
+!
+      r_lc(1) = sendbuf
+      call MPI_Gather(r_lc, 1, CALYPSO_REAL, recvbuf, 1, CALYPSO_REAL,  &
+     &                root, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine calypso_mpi_gather_one_real
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

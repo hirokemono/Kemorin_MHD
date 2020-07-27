@@ -27,6 +27,15 @@
 !!        integer(kind = kint), intent(in) ::    i_local(count)
 !!        integer(kind = kint), intent(inout) :: i_global(count)
 !!
+!!      subroutine calypso_mpi_scatter_one_int(isendbuf, irecvbuf, root)
+!!        integer, intent(in) :: root
+!!        integer(kind = kint), intent(in) ::    isendbuf(nprocs)
+!!        integer(kind = kint), intent(inout) :: irecvbuf
+!!
+!!      subroutine calypso_mpi_gather_one_int(isendbuf, irecvbuf, root)
+!!        integer(kind = kint), intent(in) ::    isendbuf
+!!        integer(kind = kint), intent(inout) :: irecvbuf(nprocs)
+!!
 !!      subroutine calypso_mpi_allgather_one_int(isendbuf, irecvbuf)
 !!        integer(kind = kint), intent(in) ::    isendbuf
 !!        integer(kind = kint), intent(inout) :: irecvbuf(nprocs)
@@ -150,6 +159,44 @@
       end do
 !
       end subroutine calypso_mpi_allreduce_int
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_scatter_one_int(isendbuf, irecvbuf, root)
+!
+      integer, intent(in) :: root
+      integer(kind = kint), intent(in) ::    isendbuf(nprocs)
+      integer(kind = kint), intent(inout) :: irecvbuf
+!
+      integer(kind = kint) :: i_gl(1)
+!
+!
+      call MPI_Scatter(isendbuf, 1, CALYPSO_INTEGER,                    &
+     &                 i_gl, 1, CALYPSO_INTEGER,                        &
+     &                 root, CALYPSO_COMM, ierr_MPI)
+      irecvbuf = i_gl(1)
+!
+      end subroutine calypso_mpi_scatter_one_int
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_gather_one_int(isendbuf, irecvbuf, root)
+!
+      integer, intent(in) :: root
+      integer(kind = kint), intent(in) ::    isendbuf
+      integer(kind = kint), intent(inout) :: irecvbuf(nprocs)
+!
+      integer(kind = kint) :: i_lc(1)
+!
+!
+      i_lc(1) = isendbuf
+      call MPI_Gather(i_lc, 1, CALYPSO_INTEGER,                      &
+     &                irecvbuf, 1, CALYPSO_INTEGER,                  &
+     &                root, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine calypso_mpi_gather_one_int
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

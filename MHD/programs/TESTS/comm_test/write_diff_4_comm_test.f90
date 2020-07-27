@@ -3,8 +3,8 @@
 !
 !      subroutine output_diff_node_comm_test
 !      subroutine output_diff_mesh_comm_test
-!      subroutine write_diff_comm_test(istack_diff_pe, ntot_diff_pe,    &
-!     &          id_diff_IO, x_diff_IO)
+!      subroutine write_diff_comm_test                                  &
+!     &         (istack_diff_pe, id_diff_IO, x_diff_IO)
 !
 !     Written by H. Matsui on Sep., 2007
 !
@@ -30,20 +30,21 @@
 !
       subroutine output_diff_node_comm_test
 !
-      if(ntot_nod_diff_pe .eq. 0) then
+      if(istack_nod_diff_pe(nprocs) .eq. 0) then
         write(*,*) 'No wrong communication for nodes'
         return
       end if
 !
       open(id_comm_test, file = comm_test_name)
 !
-      write(id_comm_test,*) 'ntot_nod_diff_pe', ntot_nod_diff_pe
+      write(id_comm_test,*) 'ntot_nod_diff_pe',                         &
+     &                     istack_nod_diff_pe(nprocs)
       write(id_comm_test,*) 'domain, local_nod_id, ',                   &
      &      'global_nod_org, global_nod_get, ',                         &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
 !
-      call write_diff_comm_test(istack_nod_diff_pe, ntot_nod_diff_pe,   &
-     &    inod_diff_IO, xx_diff_IO)
+      call write_diff_comm_test                                         &
+     &   (istack_nod_diff_pe, inod_diff_IO, xx_diff_IO)
 !
       close(id_comm_test)
 !
@@ -55,8 +56,10 @@
 !
       integer(kind = kint) :: ntot_error
 !
-      ntot_error = ntot_nod_diff_pe + ntot_ele_diff_pe                  &
-     &            + ntot_surf_diff_pe + ntot_edge_diff_pe
+      ntot_error = istack_nod_diff_pe(nprocs)                           &
+     &            + istack_ele_diff_pe(nprocs)                          &
+     &            + istack_surf_diff_pe(nprocs)                         &
+     &            + istack_edge_diff_pe(nprocs)
       if(ntot_error .eq. 0) then
         write(*,*) 'No wrong communication for mesh'
         return
@@ -64,39 +67,43 @@
 !
       open(id_comm_test, file = comm_test_name)
 !
-      write(id_comm_test,*) 'ntot_nod_diff_pe ', ntot_nod_diff_pe
-      write(id_comm_test,*) 'ntot_ele_diff_pe ', ntot_ele_diff_pe
-      write(id_comm_test,*) 'ntot_surf_diff_pe', ntot_surf_diff_pe
-      write(id_comm_test,*) 'ntot_edge_diff_pe', ntot_edge_diff_pe
-      write(*,*) 'ntot_nod_diff_pe ', ntot_nod_diff_pe
-      write(*,*) 'ntot_ele_diff_pe ', ntot_ele_diff_pe
-      write(*,*) 'ntot_surf_diff_pe', ntot_surf_diff_pe
-      write(*,*) 'ntot_edge_diff_pe', ntot_edge_diff_pe
+      write(id_comm_test,*) 'ntot_nod_diff_pe ',                        &
+     &                     istack_nod_diff_pe(nprocs)
+      write(id_comm_test,*) 'ntot_ele_diff_pe ',                        &
+     &                     istack_ele_diff_pe(nprocs) 
+      write(id_comm_test,*) 'ntot_surf_diff_pe',                        &
+     &                     istack_surf_diff_pe(nprocs)
+      write(id_comm_test,*) 'ntot_edge_diff_pe',                        &
+     &                     istack_edge_diff_pe(nprocs)
+      write(*,*) 'ntot_nod_diff_pe ', istack_nod_diff_pe(nprocs)
+      write(*,*) 'ntot_ele_diff_pe ', istack_ele_diff_pe(nprocs) 
+      write(*,*) 'ntot_surf_diff_pe', istack_surf_diff_pe(nprocs)
+      write(*,*) 'ntot_edge_diff_pe', istack_edge_diff_pe(nprocs)
 !
 !
       write(id_comm_test,*) 'domain, local_nod_id, ',                   &
      &      'global_nod_org, global_nod_get, ',                         &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test(istack_nod_diff_pe, ntot_nod_diff_pe,   &
-     &    inod_diff_IO, xx_diff_IO)
+      call write_diff_comm_test                                         &
+     &   (istack_nod_diff_pe, inod_diff_IO, xx_diff_IO)
 !
       write(id_comm_test,*) 'domain, local_ele_id, ',                   &
      &      'global_ele_org, global_ele_get, ',                         &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test(istack_ele_diff_pe, ntot_ele_diff_pe,   &
-     &    iele_diff_IO, xele_diff_IO)
+      call write_diff_comm_test                                         &
+     &   (istack_ele_diff_pe, iele_diff_IO, xele_diff_IO)
 !
       write(id_comm_test,*) 'domain, local_surf_id, ',                  &
      &      'global_surf_org, global_surf_get, ',                       &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test(istack_surf_diff_pe, ntot_surf_diff_pe, &
-     &    isurf_diff_IO, xsurf_diff_IO)
+      call write_diff_comm_test                                         &
+     &   (istack_surf_diff_pe, isurf_diff_IO, xsurf_diff_IO)
 !
       write(id_comm_test,*) 'domain, local_edge_id, ',                  &
      &      'global_edge_org, global_edge_get, ',                       &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test(istack_edge_diff_pe, ntot_edge_diff_pe, &
-     &    iedge_diff_IO, xedge_diff_IO)
+      call write_diff_comm_test                                         &
+     &   (istack_edge_diff_pe, iedge_diff_IO, xedge_diff_IO)
 !
       close(id_comm_test)
 !
@@ -105,13 +112,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_diff_comm_test(istack_diff_pe, ntot_diff_pe,     &
-     &          id_diff_IO, x_diff_IO)
+      subroutine write_diff_comm_test                                   &
+     &         (istack_diff_pe, id_diff_IO, x_diff_IO)
 !
       integer(kind = kint), intent(in) :: istack_diff_pe(0:nprocs)
-      integer(kind = kint), intent(in) :: ntot_diff_pe
-      integer(kind = kint), intent(in) :: id_diff_IO(ntot_diff_pe)
-      real(kind = kreal), intent(in) :: x_diff_IO(6*ntot_diff_pe)
+      integer(kind = kint), intent(in)                                  &
+     &                     :: id_diff_IO(istack_diff_pe(nprocs))
+      real(kind = kreal), intent(in)                                    &
+     &                     :: x_diff_IO(6*istack_diff_pe(nprocs))
 !
       integer(kind = kint) :: ip, id_rank, ist, ied, inum
       integer(kind = kint) :: j1, j2, k1, k2

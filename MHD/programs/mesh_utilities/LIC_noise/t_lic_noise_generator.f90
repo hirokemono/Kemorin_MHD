@@ -109,7 +109,7 @@
       use calypso_mpi_char
       use transfer_to_long_integers
       use set_parallel_file_name
-      use binary_file_access
+!      use binary_file_access
 
 ! parameter for read noise data
       character(len = kchara), intent(in) :: filename
@@ -129,7 +129,7 @@
       if(my_rank .eq. 0) then
         bbuf_nze%iflag_swap = iendian_KEEP
         file_name = add_null_character(filename)
-        call open_rd_rawfile_f(file_name, bbuf_nze)
+        call open_read_binary_file(file_name, 0, bbuf_nze)
         if(bbuf_nze%ierr_bin .ne. 0) go to 99
 ! first line read 3 integer size data, byte 4
         bbuf_nze%iflag_swap = iendian_KEEP
@@ -151,10 +151,10 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'iflag_swap', bbuf_nze%iflag_swap
   99    continue
-        call close_rawfile_f()
+        call close_binary_file(bbuf_nze)
         ierr = bbuf_nze%ierr_bin
 !
-        call open_rd_rawfile_f(file_name, bbuf_nze)
+        call open_read_binary_file(file_name, 0, bbuf_nze)
         if(bbuf_nze%ierr_bin .ne. 0) go to 98
 ! first line read 3 integer size data, byte 4
         call read_mul_int_from_32bit(bbuf_nze, ithree64, isize3d_tmp)
@@ -168,7 +168,7 @@
         call read_mul_one_character_b(bbuf_nze, d_size, n_raw_data)
 !
   98    continue
-        call close_rawfile_f()
+        call close_binary_file(bbuf_nze)
         ierr = bbuf_nze%ierr_bin
 !
         if(iflag_debug .gt. 0) then
@@ -208,7 +208,7 @@
       use calypso_mpi_int8
       use calypso_mpi_char
       use set_parallel_file_name
-      use binary_file_access
+!      use binary_file_access
       use delete_data_files
 !
 ! parameter for read noise data
@@ -224,14 +224,14 @@
         file_name = add_null_character(filename)
         d_size = n_data_size(1)*n_data_size(2)*n_data_size(3)*3
         if(check_file_exist(file_name)) then
-          call open_rd_rawfile_f(file_name, bbuf_nze)
+          call open_read_binary_file(file_name, 0, bbuf_nze)
           if(bbuf_nze%ierr_bin .ne. 0) go to 99
 !
           allocate( n_grad_data(d_size)) 
           call read_mul_one_character_b(bbuf_nze, d_size, n_grad_data)
 !
   99      continue
-          call close_rawfile_f()
+          call close_binary_file(bbuf_nze)
           ierr = bbuf_nze%ierr_bin
         else
           allocate(n_grad_data(d_size))

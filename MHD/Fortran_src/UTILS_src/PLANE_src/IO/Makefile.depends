@@ -1,4 +1,4 @@
-bcast_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/bcast_ctl_data_4_cub_kemo.f90 calypso_mpi.o t_ctl_data_4_cub_kemo.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o t_ctl_data_4_plane_model.o
+bcast_ctl_data_4_cub_kemo.o: $(PLANE_IO_DIR)/bcast_ctl_data_4_cub_kemo.f90 calypso_mpi.o calypso_mpi_int.o t_ctl_data_4_cub_kemo.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o t_ctl_data_4_plane_model.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_merged_groups.o: $(PLANE_IO_DIR)/const_merged_groups.f90 m_precision.o t_group_data.o count_number_with_overlap.o t_mesh_data.o count_merged_groups.o t_merged_geometry_data.o set_merged_groups.o set_overlap_groups.o
 	$(F90) -c $(F90OPTFLAGS) $<

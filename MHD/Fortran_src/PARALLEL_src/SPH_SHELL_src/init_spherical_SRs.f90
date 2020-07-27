@@ -98,6 +98,8 @@
      &          X_rtp, X_rtm, X_rlm, X_rj)
 !
       use calypso_mpi
+      use calypso_mpi_real
+      use transfer_to_long_integers
 !
       use m_sph_communicators
       use m_solver_SR
@@ -145,8 +147,8 @@
       endtime(1) = MPI_WTIME() - starttime
 !
       endtime(1) = MPI_WTIME() - starttime
-      call MPI_allREDUCE (endtime(0), etime_item_import(0), 2,          &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_real(endtime(0), etime_item_import(0), &
+     &                                cast_long(2), MPI_SUM)
       etime_item_import(0:1) = etime_item_import(0:1) / dble(nprocs)
 !
       if(etime_item_import(1) .le. etime_item_import(0)) then

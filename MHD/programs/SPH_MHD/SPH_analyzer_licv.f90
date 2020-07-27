@@ -161,6 +161,7 @@
      &          iflag_finish, SPH_model, MHD_step, sph_fst_IO,          &
      &          SPH_MHD, SPH_WK)
 !
+      use calypso_mpi_real
       use cal_momentum_eq_explicit
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
@@ -232,9 +233,9 @@
 !
       MHD_step%finish_d%elapsed_local                                   &
      &    = MPI_WTIME() - MHD_step%finish_d%started_time
-      call MPI_allREDUCE(MHD_step%finish_d%elapsed_local,               &
-     &    MHD_step%finish_d%elapsed_max, 1, CALYPSO_REAL,               &
-     &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (MHD_step%finish_d%elapsed_local,                              &
+     &    MHD_step%finish_d%elapsed_max, MPI_MAX)
       if(MHD_step%finish_d%i_end_step .eq. -1                           &
      &   .and. MHD_step%finish_d%elapsed_max                            &
      &        .gt. MHD_step%finish_d%elapsed_time) then

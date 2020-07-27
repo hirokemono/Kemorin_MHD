@@ -58,6 +58,8 @@
      &         (iloop, node, ele, fluid, iphys, nod_fld, jacs,          &
      &          i_msq, fem_wk, fem_msq, rsig)
 !
+      use calypso_mpi_real
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -77,9 +79,8 @@
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%rms_local(i_msq%imsq_div_v))
 !
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_msq%imsq_div_v), rms_div_v_sig, 1,        &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%rms_local(i_msq%imsq_div_v), rms_div_v_sig, MPI_SUM)
 !
       rms_div_v_sig = sqrt(rms_div_v_sig / fluid%volume)
 !
@@ -99,6 +100,8 @@
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
      &          i_msq, fem_wk, fem_msq, rsig)
 !
+      use calypso_mpi_real
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -116,9 +119,8 @@
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%rms_local(i_msq%imsq_div_b))
 !
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_msq%imsq_div_b), rms_div_b_sig,           &
-     &    1, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%rms_local(i_msq%imsq_div_b), rms_div_b_sig, MPI_SUM)
 !
       rms_div_b_sig = sqrt(rms_div_b_sig / ele%volume)
 !
@@ -139,6 +141,8 @@
      &         (iloop, node, ele, iphys, nod_fld, jacs,                 &
      &          i_msq, fem_wk, fem_msq, rsig)
 !
+      use calypso_mpi_real
+!
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -157,9 +161,8 @@
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, fem_wk,          &
      &    fem_msq%rms_local(i_msq%imsq_div_a))
 !
-      call MPI_allREDUCE                                                &
-     &   (fem_msq%rms_local(i_msq%imsq_div_a) , rms_div_a_sig,          &
-     &    1, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (fem_msq%rms_local(i_msq%imsq_div_a), rms_div_a_sig, MPI_SUM)
 !
       rms_div_a_sig = sqrt(rms_div_a_sig / ele%volume)
 !

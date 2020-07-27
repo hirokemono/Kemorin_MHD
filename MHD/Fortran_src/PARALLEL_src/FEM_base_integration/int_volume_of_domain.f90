@@ -179,7 +179,7 @@
 !
       subroutine s_int_volume_of_domain(ele, g_FEM, jac_3d)
 !
-      use calypso_mpi
+      use calypso_mpi_real
       use fem_element_volume
       use sum_volume_of_domain
 !
@@ -199,8 +199,8 @@
      &    ele%istack_ele_smp, ele%volume_ele, vol_local)
 !
 !      write(*,*) 'MPI_allREDUCE'
-       call MPI_allREDUCE (vol_local, ele%volume, 1,                    &
-     &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+       call calypso_mpi_allreduce_one_real                              &
+      &   (vol_local, ele%volume, MPI_SUM)
 !
        if (ele%volume .eq. 0.0d0) then
          ele%a_vol = 1.0d30

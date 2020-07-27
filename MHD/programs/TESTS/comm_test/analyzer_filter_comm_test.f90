@@ -13,12 +13,14 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_solver_SR
       use t_filtering_data
 !
       implicit none
 !
       type(filtering_data_type), save :: filtering_test
       type(filtering_work_type), save :: wk_filter_test
+      type(send_recv_status), save :: SR_sig_t
 !
       private :: filtering_test
       private :: nod_filter_send_recv_test
@@ -49,10 +51,10 @@
       subroutine analyze
 !
       use calypso_mpi
+      use collect_SR_int
+      use collect_SR_N
       use m_geometry_filter_comm_test
       use set_diff_filter_comm_test
-      use collect_diff_4_comm_test
-      use collect_diff_filter_ctest
       use write_diff_filter_comm_test
 !
 !
@@ -70,14 +72,20 @@
 !
       call allocate_filter_stk_ctest_IO
 !
-      call allocate_cflag_collect_diff
-      call count_diff_filter_nod_comm_test
+      call resize_SR_flag(nprocs, 1, SR_sig_t)
+      call count_collect_SR_num                                         &
+     &   (nnod_filter_diff_local, istack_filter_nod_diff_pe, SR_sig_t)
 !
       call allocate_filter_comm_test_IO
 !
-      call collect_diff_filter_nod_ctest
-!
-      call deallocate_cflag_collect_diff
+      call collect_send_recv_int                                        &
+     &   (0, nnod_filter_diff_local, inod_filter_diff,                  &
+     &    istack_filter_nod_diff_pe, inod_filter_diff_IO, SR_sig_t)
+      call collect_send_recv_N                                          &
+     &   (0, isix, nnod_filter_diff_local, xx_filter_diff,              &
+     &    istack_filter_nod_diff_pe, xx_filter_diff_IO, SR_sig_t)
+      call dealloc_SR_flag(SR_sig_t)
+!!
       call deallocate_diff_filter_ctest
 !
       if (my_rank .eq. 0) then
