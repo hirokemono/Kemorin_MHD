@@ -36,6 +36,7 @@
 !
       subroutine bcast_sgs_ctl(sgs_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_filter_files_ctl
       use bcast_control_arrays
 !
@@ -49,8 +50,7 @@
       call bcast_ele_layers_control(sgs_ctl%elayer_ctl)
 !
 !
-      call MPI_BCAST(sgs_ctl%num_sph_filter_ctl, 1,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(sgs_ctl%num_sph_filter_ctl, 0)
       if(my_rank .gt. 0 .and. sgs_ctl%num_sph_filter_ctl .gt. 0) then
         call alloc_sph_filter_ctl(sgs_ctl)
       end if
@@ -115,8 +115,7 @@
       call bcast_ctl_type_i1(sgs_ctl%ngrp_radial_ave_ctl)
       call bcast_ctl_type_i1(sgs_ctl%ngrp_med_ave_ctl)
 !
-      call MPI_BCAST(sgs_ctl%i_sgs_ctl, 1,                              &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(sgs_ctl%i_sgs_ctl, 0)
 !
 !      write(*,*) my_rank, 'num_sph_filter_ctl',                        &
 !     &     sgs_ctl%num_sph_filter_ctl
