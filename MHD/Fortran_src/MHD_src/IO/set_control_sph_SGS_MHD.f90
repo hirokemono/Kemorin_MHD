@@ -272,6 +272,7 @@
       use t_sph_boundary_input_data
       use t_ctl_params_gen_sph_shell
       use t_check_and_make_SPH_mesh
+      use t_work_4_sph_trans
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -297,6 +298,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
@@ -339,7 +341,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD(plt, smctl_ctl%mevo_ctl,          &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    MHD_files%fst_file_IO, bc_IO, WK_sph)
+     &    MHD_files%fst_file_IO, bc_IO, WK%WK_sph)
 !
 !   set control parameters
 !

@@ -87,11 +87,11 @@
      &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%model_ctl,           &
      &    DMHD_ctl%smctl_ctl, DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl,     &
      &    MHD_files, SPH_model%bc_IO, MHD_step, SPH_model%MHD_prop,     &
-     &    SPH_model%MHD_BC, WK%WK_sph, sph_maker1)
+     &    SPH_model%MHD_BC, WK, sph_maker1)
 !
       call set_control_SPH_MHD_w_viz(DMHD_ctl%model_ctl,                &
      &    DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, DMHD_ctl%zm_ctls,   &
-     &     SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field, &
+     &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    monitor)
 !
 !  Check and construct spherical shell table
@@ -185,7 +185,7 @@
      &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%model_ctl,           &
      &    DMHD_ctl%smctl_ctl, DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl,     &
      &    MHD_files, SPH_model%bc_IO, MHD_step, SPH_model%MHD_prop,     &
-     &    SPH_model%MHD_BC, WK%WK_sph, sph_maker1)
+     &    SPH_model%MHD_BC, WK, sph_maker1)
 !
       call set_control_SPH_MHD_w_viz(DMHD_ctl%model_ctl,                &
      &    DMHD_ctl%psph_ctl, DMHD_ctl%smonitor_ctl, DMHD_ctl%zm_ctls,   &

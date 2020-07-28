@@ -10,7 +10,8 @@
 !!
 !!
 !!@verbatim
-!!      subroutine leg_backward_trans_long(ncomp, nvector, nscalar,     &
+!!      subroutine leg_backward_trans_long                              &
+!!     &         (iflag_recv, ncomp, nvector, nscalar,                  &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
 !!     &          n_WR, n_WS, WR, WS, WK_spin)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
@@ -23,7 +24,8 @@
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!
 !!    Forward transforms
-!!      subroutine leg_forward_trans_long(ncomp, nvector, nscalar,      &
+!!      subroutine leg_forward_trans_long                               &
+!!     &         (iflag_recv, ncomp, nvector, nscalar,                  &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
 !!     &          n_WR, n_WS, WR, WS, WK_spin)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
@@ -60,13 +62,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_backward_trans_long(ncomp, nvector, nscalar,       &
+      subroutine leg_backward_trans_long                                &
+     &         (iflag_recv, ncomp, nvector, nscalar,                    &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_spin)
 !
       use legendre_bwd_trans_lgloop
       use spherical_SRs_N
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -81,7 +85,7 @@
 !
 !
       call calypso_sph_from_recv_N                                      &
-     &   (iflag_sph_SRN, ncomp, sph_rlm%nnod_rlm,                       &
+     &   (iflag_recv, ncomp, sph_rlm%nnod_rlm,                          &
      &    comm_rlm, n_WR, WR, WK_spin%sp_rlm_wk(1))
       call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm, WK_spin)
 !
@@ -100,13 +104,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine leg_forward_trans_long(ncomp, nvector, nscalar,        &
+      subroutine leg_forward_trans_long                                 &
+     &         (iflag_recv, ncomp, nvector, nscalar,                    &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_spin)
 !
       use legendre_fwd_trans_lgloop
       use spherical_SRs_N
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -121,7 +127,7 @@
 !
 !
       call calypso_sph_from_recv_N                                      &
-     &   (iflag_sph_SRN, ncomp, sph_rtm%nnod_rtm,                       &
+     &   (iflag_recv, ncomp, sph_rtm%nnod_rtm,                          &
      &    comm_rtm, n_WR, WR, WK_spin%vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_long                                 &

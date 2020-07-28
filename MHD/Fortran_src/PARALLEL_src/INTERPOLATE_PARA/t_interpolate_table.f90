@@ -30,6 +30,9 @@
 !
 !> Structure of interpolation table
       type interpolate_table
+!> Integer flag for copy loop setting from recieve buffer
+        integer(kind = kint), :: iflag_itp_recv = iflag_import_item
+!
 !> Structure of interpolation table for source grid
         type(interpolate_table_org) ::  tbl_org
 !> Structure of interpolation table for target grid

@@ -76,6 +76,7 @@
       use calypso_mpi
 !
       use m_constants
+      use m_solver_SR
       use m_work_4_CG
       use t_comm_table
       use solver_DJDS11_struct
@@ -122,9 +123,11 @@
         NP_f = mat11(i  )%num_diag
         NP_c = mat11(i+1)%num_diag
         ierr = IER
-        call interpolate_mod_1(MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,   &
+        call interpolate_mod_1(MG_itp(i+1)%f2c%iflag_itp_recv,          &
+     &      MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,                      &
      &      MG_itp(i+1)%f2c%tbl_dest, MG_itp(i+1)%f2c%mat,              &
-     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec)
+     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%b_vec,                     &
+     &      SR_sig1, SR_r1, MG_vect(i+1)%b_vec)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
 !
@@ -154,9 +157,11 @@
 !        end do
 !
         write(*,*) 'interpolate_mod_1 restriction', i
-        call interpolate_mod_1(MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,   &
+        call interpolate_mod_1(MG_itp(i+1)%f2c%iflag_itp_recv,          &
+     &      MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,                      &
      &      MG_itp(i+1)%f2c%tbl_dest, MG_itp(i+1)%f2c%mat,              &
-     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec)
+     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%x_vec,                     &
+     &      SR_sig1, SR_r1, MG_vect(i+1)%x_vec)
       end do
 !
 !    at the coarsest level
@@ -182,9 +187,11 @@
         NP_c = mat11(i+1)%num_diag
         ierr = IER
         write(*,*) 'interpolate_mod_1 interpolation', i
-        call interpolate_mod_1(MG_comm(i), MG_itp(i+1)%c2f%tbl_org,     &
+        call interpolate_mod_1(MG_itp(i+1)%c2f%iflag_itp_recv,          &
+     &      MG_comm(i), MG_itp(i+1)%c2f%tbl_org,                        &
      &      MG_itp(i+1)%c2f%tbl_dest, MG_itp(i+1)%c2f%mat,              &
-     &      PEsmpTOT, NP_c, NP_f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec)
+     &      PEsmpTOT, NP_c, NP_f, MG_vect(i+1)%x_vec,                   &
+     &      SR_sig1, SR_r1, MG_vect(i)%x_vec)
 !
 !        write(*,*) 'j, MG_vect(i)%x_vec(j)', i
 !        do j = 1, NP_f

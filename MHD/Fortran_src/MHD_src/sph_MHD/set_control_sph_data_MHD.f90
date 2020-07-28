@@ -11,7 +11,7 @@
 !!     &        (MHD_prop, field_ctl, rj_fld)
 !!      subroutine s_set_control_sph_data_MHD                           &
 !!     &         (plt, mevo_ctl, rj_org_param, rst_org_param,           &
-!!     &          fst_file_IO, bc_IO, WK_sph)
+!!     &          fst_file_IO, bc_IO, trans_p, WK_sph)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(platform_data_control), intent(in) :: plt
@@ -21,6 +21,7 @@
 !!        type(field_IO_params), intent(inout) :: fst_file_IO
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!@endverbatim
 !
@@ -87,7 +88,7 @@
 !
       subroutine s_set_control_sph_data_MHD                             &
      &         (plt, mevo_ctl, rj_org_param, rst_org_param,             &
-     &          fst_file_IO, bc_IO, WK_sph)
+     &          fst_file_IO, bc_IO, trans_p, WK_sph)
 !
       use calypso_mpi
       use m_error_IDs
@@ -105,6 +106,7 @@
       use t_sph_transforms
       use t_control_parameter
       use t_sph_boundary_input_data
+      use t_work_4_sph_trans
 !
       use skip_comment_f
       use add_nodal_fields_4_MHD
@@ -117,6 +119,7 @@
 !
       type(field_IO_params), intent(inout) :: fst_file_IO
       type(boundary_spectra), intent(inout) :: bc_IO
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !   overwrite restart header for magnetic field extension
@@ -139,7 +142,8 @@
         call set_fft_library_ctl(mevo_ctl%FFT_library%charavalue)
       end if
       if(mevo_ctl%import_mode%iflag .gt. 0) then
-        call set_import_table_ctl(mevo_ctl%import_mode%charavalue)
+        call set_import_table_ctl                                       &
+     &     (mevo_ctl%import_mode%charavalue, trans_p)
       end if
 !
       if (plt%bc_data_file_name_ctl%iflag .gt. 0) then

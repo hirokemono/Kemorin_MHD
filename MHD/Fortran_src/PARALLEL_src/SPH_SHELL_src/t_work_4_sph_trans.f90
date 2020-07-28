@@ -54,6 +54,9 @@
 !
 !>        Structures of parameters for spherical transform
       type parameters_4_sph_trans
+!>        Integer flag to select routines to get data from recieve buffer
+        integer(kind = kint), intent(in) :: iflag_SPH_recv
+!
 !>        Structures of Legendre polynomials for spherical transform
         type(legendre_4_sph_trans) :: leg
 !>        Structure of indices for spherical transforms

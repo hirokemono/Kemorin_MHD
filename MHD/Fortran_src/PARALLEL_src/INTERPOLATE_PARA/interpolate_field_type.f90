@@ -36,6 +36,7 @@
       subroutine interpolate_scalar_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
+      use m_solver_SR
       use interpolate_by_module
 !
 !
@@ -62,10 +63,11 @@
 !$omp end parallel do
 !
 !    interpolation
-      call interpolate_mod_1(mesh_dst%nod_comm,                         &
+      call interpolate_mod_1                                            &
+     &   (itp_table%iflag_itp_recv, mesh_dst%nod_comm,                  &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
-     &    x_vec, xvec_2nd)
+     &    x_vec, SR_sig1, SR_r1, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -80,6 +82,7 @@
       subroutine interpolate_vector_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
+      use m_solver_SR
       use interpolate_by_module
 !
 !
@@ -109,10 +112,11 @@
 !
 !    interpolation
 !
-      call interpolate_mod_3(mesh_dst%nod_comm,                         &
+      call interpolate_mod_3                                            &
+     &   (itp_table%iflag_itp_recv, mesh_dst%nod_comm,                  &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
-     &    x_vec, xvec_2nd)
+     &    x_vec, SR_sig1, SR_r1, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod
@@ -129,6 +133,7 @@
       subroutine interpolate_tensor_type(i_origin, i_dest,              &
      &          itp_table, mesh_org, mesh_dst, fld_org, fld_dst)
 !
+      use m_solver_SR
       use interpolate_by_module
 !
 !
@@ -160,10 +165,11 @@
 !$omp end parallel do
 !
 !    interpolation
-      call interpolate_mod_6(mesh_dst%nod_comm,                         &
+      call interpolate_mod_6                                            &
+     &   (itp_table%iflag_itp_recv, mesh_dst%nod_comm,                  &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
      &    np_smp, mesh_org%node%numnod, mesh_dst%node%numnod,           &
-     &    x_vec, xvec_2nd)
+     &    x_vec, SR_sig1, SR_r1, xvec_2nd)
 !
 !$omp parallel do
       do inod = 1, mesh_dst%node%numnod

@@ -4,10 +4,10 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine interpolation_4_mesh_test                            &
-!!     &          (org_mesh, dest_mesh, itp_info)
+!!     &          (org_mesh, dest_mesh, itp_table)
 !!        type(mesh_geometry), intent(inout) :: org_mesh
 !!        type(mesh_geometry), intent(in) :: dest_mesh
-!!        type(interpolate_table), intent(in) :: itp_info
+!!        type(interpolate_table), intent(in) :: itp_table
 !
       module mesh_interpolation
 !
@@ -29,7 +29,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine interpolation_4_mesh_test                              &
-     &          (org_mesh, dest_mesh, itp_info)
+     &          (org_mesh, dest_mesh, itp_table)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -41,7 +41,7 @@
 !
       type(mesh_geometry), intent(inout) :: org_mesh
       type(mesh_geometry), intent(in) :: dest_mesh
-      type(interpolate_table), intent(in) :: itp_info
+      type(interpolate_table), intent(in) :: itp_table
 !
 !
       call allocate_interpolate_geometry(dest_mesh%node%numnod)
@@ -49,23 +49,23 @@
 !     return global node from table
 !
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_global_node'
-      call s_interpolate_global_node                                    &
-     &   (dest_mesh%node%numnod, dest_mesh%nod_comm,                    &
-     &    itp_info%tbl_org, itp_info%tbl_dest, inod_global_itp)
+      call s_interpolate_global_node(itp_table%iflag_itp_recv,          &
+     &    dest_mesh%node%numnod, dest_mesh%nod_comm,                    &
+     &    itp_table%tbl_org, itp_table%tbl_dest, inod_global_itp)
 !
 !     interpolate 2nd mesh from 1st mesh
 !
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
       call s_interpolate_position(org_mesh%node,                        &
-     &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_info,           &
+     &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_table,          &
      &   xx_interpolate)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
 !      call s_interpolate_position_by_N(org_mesh%node,                  &
-!     &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_info,          &
+!     &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_table,         &
 !     &   inod_global_itp)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
 !      call s_interpolate_position_by_s(org_mesh%node,                  &
-!     &   dest_mesh%node%%numnod, dest_mesh%nod_comm, itp_info,         &
+!     &   dest_mesh%node%%numnod, dest_mesh%nod_comm, itp_table,        &
 !     &   inod_global_itp)
 !
 !

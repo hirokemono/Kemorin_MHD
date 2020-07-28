@@ -230,7 +230,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
-      call initialize_legendre_trans(ncomp_max_trans,                   &
+      call initialize_legendre_trans                                    &
+     &   (trans_p%iflag_SPH_recv, ncomp_max_trans,                      &
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_4_MHD(ncomp_max_trans,                &
      &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD, WK%WK_sph)

@@ -14,8 +14,8 @@
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!      subroutine initialize_legendre_trans                            &
-!!     &         (ncomp_trans, sph, comms_sph, leg, idx_trns)
+!!      subroutine initialize_legendre_trans(iflag_recv, ncomp_trans,   &
+!!     &          sph, comms_sph, leg, idx_trns)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(legendre_4_sph_trans), intent(inout) :: leg
@@ -62,8 +62,8 @@
         WK_sph%WK_leg%id_legendre = iflag_leg_sym_dgemm_big
       end if
 !
-      call initialize_legendre_trans                                    &
-     &   (ncomp_trans, sph, comms_sph, trans_p%leg, trans_p%idx_trns)
+      call initialize_legendre_trans(trans_p%iflag_SPH_recv,            &
+     &    ncomp_trans, sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_4_sph(ncomp_trans, sph%sph_rtp,       &
      &    comms_sph%comm_rtp, WK_sph%WK_FFTs)
       call sel_init_legendre_trans                                      &
@@ -76,14 +76,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine initialize_legendre_trans                              &
-     &         (ncomp_trans, sph, comms_sph, leg, idx_trns)
+      subroutine initialize_legendre_trans(iflag_recv, ncomp_trans,     &
+     &          sph, comms_sph, leg, idx_trns)
 !
       use m_FFT_selector
       use schmidt_poly_on_rtm_grid
       use set_legendre_matrices
       use set_params_sph_trans
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: ncomp_trans
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -112,7 +113,7 @@
      &    idx_trns%lstack_rlm, idx_trns%lstack_even_rlm)
 !
       call set_blocks_4_leg_trans                                       &
-     &   (ncomp_trans, sph, comms_sph, idx_trns)
+     &   (iflag_recv, ncomp_trans, sph, comms_sph, idx_trns)
 !
       end subroutine initialize_legendre_trans
 !
@@ -172,7 +173,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_blocks_4_leg_trans                                 &
-     &         (ncomp_trans, sph, comms_sph, idx_trns)
+     &         (iflag_recv, ncomp_trans, sph, comms_sph, idx_trns)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -181,6 +182,7 @@
       use init_spherical_SRs
       use cal_minmax_and_stacks
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: ncomp_trans
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -212,7 +214,8 @@
 !
       call split_rtp_comms(comms_sph%comm_rtp%nneib_domain,             &
      &    comms_sph%comm_rtp%id_domain, comms_sph%comm_rj%nneib_domain)
-      call init_sph_send_recv_N(ncomp_trans, sph, comms_sph)
+      call init_sph_send_recv_N                                         &
+     &   (iflag_recv, ncomp_trans, sph, comms_sph)
 !
       if(my_rank .ne. 0) return
       write(*,*) 'Vector length for Legendre transform:',               &

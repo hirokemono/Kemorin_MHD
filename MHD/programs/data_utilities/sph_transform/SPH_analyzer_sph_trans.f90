@@ -59,7 +59,6 @@
 !
 !  ---- initialize spherical harmonics transform
 !
-      if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'

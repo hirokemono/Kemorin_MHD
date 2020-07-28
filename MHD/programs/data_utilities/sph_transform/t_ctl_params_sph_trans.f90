@@ -5,13 +5,14 @@
 !
 !!      subroutine set_control_4_sph_transform                          &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, WK_sph)
+!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
 !!     &          rj_fld, d_gauss, fem_fld, WK_sph)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !!        type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!      subroutine set_ctl_data_4_zm_trans(fst_file_IO)
 !!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
@@ -84,7 +85,9 @@
 !
       subroutine set_control_4_sph_transform                            &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, WK_sph)
+     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
+!
+      use t_work_4_sph_trans
 !
       use calypso_mpi
       use m_FFT_selector
@@ -102,6 +105,7 @@
       type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(global_gauss_points), intent(inout) :: d_gauss
 !
@@ -134,7 +138,8 @@
         call set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
       end if
       if(spt_ctl%import_mode_ctl%iflag .gt. 0) then
-        call set_import_table_ctl(spt_ctl%import_mode_ctl%charavalue)
+        call set_import_table_ctl                                       &
+     &    (spt_ctl%import_mode_ctl%charavalue, trans_p)
       end if
 !
 !      stepping parameter

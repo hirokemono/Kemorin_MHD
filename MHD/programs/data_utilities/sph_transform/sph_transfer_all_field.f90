@@ -10,9 +10,8 @@
 !!
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
-!!      subroutine sph_f_trans_all_field                                &
-!!     &         (sph, comms_sph, mesh, trans_p, fld_rtp, nod_fld,      &
-!!     &          rj_fld, WK_sph)
+!!      subroutine sph_f_trans_all_field(sph, comms_sph, mesh, trans_p, &
+!!     &          fld_rtp, nod_fld, rj_fld, WK_sph)
 !!      subroutine sph_b_trans_all_field                                &
 !!     &         (sph, comms_sph, mesh, trans_p, fld_rtp, rj_fld,       &
 !!     &          nod_fld, WK_sph)
@@ -95,9 +94,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_all_field                                  &
-     &         (sph, comms_sph, mesh, trans_p, fld_rtp, nod_fld,        &
-     &          rj_fld, WK_sph)
+      subroutine sph_f_trans_all_field(sph, comms_sph, mesh, trans_p,   &
+     &          fld_rtp, nod_fld, rj_fld, WK_sph)
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
@@ -143,21 +141,21 @@
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_scalar_spec_from_sph_t'
-      call set_all_scalar_spec_from_sph_t                               &
-     &   (iflag_sph_SRN, fld_rtp%ncomp_trans, comms_sph%comm_rj,        &
-     &    fld_rtp, SR_r1%n_WR, SR_r1%WR, rj_fld)
+      call set_all_scalar_spec_from_sph_t(trans_p%iflag_SPH_recv,       &
+     &    fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
+     &    SR_r1%n_WR, SR_r1%WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_vec_spec_from_sph_t'
-      call set_all_vec_spec_from_sph_t                                  &
-     &   (iflag_sph_SRN, fld_rtp%ncomp_trans, comms_sph%comm_rj,        &
-     &    fld_rtp, SR_r1%n_WR, SR_r1%WR, rj_fld)
+      call set_all_vec_spec_from_sph_t(trans_p%iflag_SPH_recv,          &
+     &    fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
+     &    SR_r1%n_WR, SR_r1%WR, rj_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_all_tensor_spec_from_sph_t'
-      call set_all_tensor_spec_from_sph_t                               &
-     &   (iflag_sph_SRN, fld_rtp%ncomp_trans, comms_sph%comm_rj,        &
-     &    fld_rtp, SR_r1%n_WR, SR_r1%WR, rj_fld)
+      call set_all_tensor_spec_from_sph_t(trans_p%iflag_SPH_recv,       &
+     &    fld_rtp%ncomp_trans, comms_sph%comm_rj, fld_rtp,              &
+     &    SR_r1%n_WR, SR_r1%WR, rj_fld)
 !
       end subroutine sph_f_trans_all_field
 !

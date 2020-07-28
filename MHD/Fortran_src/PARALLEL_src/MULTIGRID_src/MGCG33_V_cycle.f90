@@ -79,6 +79,7 @@
       use calypso_mpi
 !
       use m_constants
+      use m_solver_SR
       use m_work_4_CG
       use t_comm_table
       use solver_DJDS33_struct
@@ -123,9 +124,11 @@
       DO i = 0, num_MG_level-1
         NP_f = mat33(i  )%num_diag
         NP_c = mat33(i+1)%num_diag
-        call interpolate_mod_3(MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,   &
+        call interpolate_mod_3(MG_itp(i+1)%f2c%iflag_itp_recv,          &
+     &      MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,                      &
      &      MG_itp(i+1)%f2c%tbl_dest, MG_itp(i+1)%f2c%mat,              &
-     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%b_vec, MG_vect(i+1)%b_vec)
+     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%b_vec,                     &
+     &      SR_sig1, SR_r1, MG_vect(i+1)%b_vec)
         MG_vect(i+1)%x_vec(1:NP_c) = zero
       end do
 !
@@ -146,9 +149,11 @@
      &      MG_vect(i)%x_vec, METHOD_MG, PRECOND_MG, ierr,              &
      &      EPS_MG, iter_mid, iter_res)
 !
-        call interpolate_mod_3(MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,   &
+        call interpolate_mod_3(MG_itp(i+1)%f2c%iflag_itp_recv,          &
+     &      MG_comm(i+1), MG_itp(i+1)%f2c%tbl_org,                      &
      &      MG_itp(i+1)%f2c%tbl_dest, MG_itp(i+1)%f2c%mat,              &
-     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%x_vec, MG_vect(i+1)%x_vec)
+     &      PEsmpTOT, NP_f, NP_c, MG_vect(i)%x_vec,                     &
+     &      SR_sig1, SR_r1, MG_vect(i+1)%x_vec)
       end do
 !
 !    at the coarsest level
@@ -164,9 +169,11 @@
       do i = num_MG_level-1, 0, -1
         NP_f = mat33(i  )%num_diag
         NP_c = mat33(i+1)%num_diag
-        call interpolate_mod_3(MG_comm(i), MG_itp(i+1)%c2f%tbl_org,     &
+        call interpolate_mod_3(MG_itp(i+1)%c2f%iflag_itp_recv,          &
+     &      MG_comm(i), MG_itp(i+1)%c2f%tbl_org,                        &
      &      MG_itp(i+1)%c2f%tbl_dest, MG_itp(i+1)%c2f%mat,              &
-     &      PEsmpTOT, NP_c, NP_f, MG_vect(i+1)%x_vec, MG_vect(i)%x_vec)
+     &      PEsmpTOT, NP_c, NP_f, MG_vect(i+1)%x_vec,                   &
+     &      SR_sig1, SR_r1, MG_vect(i)%x_vec)
 !
 !
 !C calculate residual

@@ -4,12 +4,12 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine s_interpolate_position                               &
-!!     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
+!!     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate)
 !!      subroutine s_interpolate_position_by_N                          &
-!!     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
+!!     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate)
 !!      subroutine s_interpolate_position_by_s                          &
-!!     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
-!!      subroutine s_interpolate_global_node                            &
+!!     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate)
+!!      subroutine s_interpolate_global_node(iflag_recv,                &
 !!     &        (NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
 !
       module interpolate_position
@@ -32,8 +32,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position                                 &
-     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
+     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate)
 !
+      use m_solver_SR
       use m_constants
       use m_2nd_pallalel_vector
 !
@@ -44,7 +45,7 @@
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
-      type(interpolate_table), intent(in) :: itp_info
+      type(interpolate_table), intent(in) :: itp_table
 !
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
@@ -62,9 +63,10 @@
         x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call interpolate_mod_3(comm_dest,                                 &
-     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
-     &    np_smp, node%numnod, NP_dest, x_vec(1), xvec_2nd(1))
+      call interpolate_mod_3(itp_table%iflag_itp_recv, comm_dest,       &
+     &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
+     &    np_smp, node%numnod, NP_dest, x_vec(1),                       &
+     &    SR_sig1, SR_r1, xvec_2nd(1))
 !
       do inod = 1, NP_dest
         xx_interpolate(inod,1) = xvec_2nd(3*inod-2)
@@ -77,9 +79,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position_by_N                            &
-     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
+     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate)
 !
       use m_constants
+      use m_solver_SR
       use m_2nd_pallalel_vector
 !
       use m_array_for_send_recv
@@ -89,7 +92,7 @@
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
-      type(interpolate_table), intent(in) :: itp_info
+      type(interpolate_table), intent(in) :: itp_table
 !
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
@@ -107,9 +110,10 @@
         x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call interpolate_mod_N(comm_dest,                                 &
-     &    itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,            &
-     &    np_smp, node%numnod, NP_dest, ithree, x_vec(1), xvec_2nd(1))
+      call interpolate_mod_N(iflag_import_mod, comm_dest,               &
+     &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
+     &    np_smp, node%numnod, NP_dest, ithree, x_vec(1),               &
+     &    SR_sig1, SR_r1, xvec_2nd(1))
 !
       do inod = 1, NP_dest
         xx_interpolate(inod,1) = xvec_2nd(3*inod-2)
@@ -122,9 +126,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position_by_s                            &
-     &         (node, NP_dest, comm_dest, itp_info, xx_interpolate)
+     &         (node, NP_dest, comm_dest, itp_table, xx_interpolate)
 !
       use m_constants
+      use m_solver_SR
       use m_2nd_pallalel_vector
 !
       use m_array_for_send_recv
@@ -135,7 +140,7 @@
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
-      type(interpolate_table), intent(in) :: itp_info
+      type(interpolate_table), intent(in) :: itp_table
 !
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
@@ -152,9 +157,10 @@
           x_vec(inod  ) = node%xx(inod,nd)
         end do
 !
-        call interpolate_mod_1(comm_dest,                               &
-     &      itp_info%tbl_org, itp_info%tbl_dest, itp_info%mat,          &
-     &      np_smp, node%numnod, NP_dest, x_vec(1), xvec_2nd(1))
+        call interpolate_mod_1(itp_table%iflag_itp_recv, comm_dest,     &
+     &      itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,       &
+     &      np_smp, node%numnod, NP_dest, x_vec(1),                     &
+     &      SR_sig1, SR_r1, xvec_2nd(1))
 !
         do inod = 1, NP_dest
           xx_interpolate(inod,nd) = xvec_2nd(inod  )
@@ -165,8 +171,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_global_node                              &
-     &        (NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
+      subroutine s_interpolate_global_node(iflag_recv,                  &
+     &         NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
 !
       use m_solver_SR
       use t_interpolate_tbl_org
@@ -178,6 +184,7 @@
       use solver_SR_type
       use select_copy_from_recv
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table_org), intent(in) :: itp_org
@@ -193,7 +200,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int8'
       call calypso_send_recv_int8                                       &
-     &   (iflag_sph_SRN, itp_org%ntot_table_org, NP_dest,               &
+     &   (iflag_recv, itp_org%ntot_table_org, NP_dest,                  &
      &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &
      &    itp_org%id_dest_domain, itp_org%istack_nod_tbl_org,           &
      &    itp_org%inod_itp_send,                                        &

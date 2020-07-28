@@ -104,7 +104,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_single_refine_itp_tbl(ele, surf, edge, new_node, &
-     &          refine_p, ref_ids, refine_tbl, itp_info)
+     &          refine_p, ref_ids, refine_tbl, itp_table)
 !
       use m_interpolate_table_IO
       use set_refine_interpolate_tbl
@@ -118,31 +118,31 @@
       type(refined_node_id), intent(in) :: ref_ids
       type(element_refine_table), intent(in) :: refine_tbl
 !
-      type(interpolate_table), intent(inout) :: itp_info
+      type(interpolate_table), intent(inout) :: itp_table
 !
 !
       iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin(ele, surf, edge,               &
      &    ref_ids%refine_nod, ref_ids%refine_ele, ref_ids%refine_surf,  &
-     &    ref_ids%refine_edge, itp_info%tbl_org)
+     &    ref_ids%refine_edge, itp_table%tbl_org)
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_dest'
       call set_itp_course_to_fine_dest                                  &
-     &   (new_node%numnod, itp_info%tbl_dest)
+     &   (new_node%numnod, itp_table%tbl_dest)
 !
 !
       table_file_header = refine_p%course_2_fine_head
       ifmt_itp_table_file = id_ascii_file_fmt
-      call output_interpolate_table(0, itp_info)
+      call output_interpolate_table(0, itp_table)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_fine_to_course_origin'
       call set_itp_fine_to_course_origin(ele%nnod_4_ele,                &
-     &    ref_ids%refine_nod, refine_tbl, itp_info%tbl_org)
+     &    ref_ids%refine_nod, refine_tbl, itp_table%tbl_org)
       call set_itp_fine_to_course_dest                                  &
-     &   (ref_ids%refine_nod, itp_info%tbl_dest)
+     &   (ref_ids%refine_nod, itp_table%tbl_dest)
 !
       table_file_header = refine_p%fine_2_course_head
-      call output_interpolate_table(0, itp_info)
+      call output_interpolate_table(0, itp_table)
 !
       end subroutine const_single_refine_itp_tbl
 !
@@ -150,7 +150,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_second_refine_itp_tbl                            &
-     &         (ele, surf, edge, new_node, ref_ids, itp_info, c2f_2nd)
+     &        (ele, surf, edge, new_node, ref_ids, itp_table, c2f_2nd)
 !
       use set_refine_interpolate_tbl
       use copy_interpolate_types
@@ -161,20 +161,20 @@
       type(node_data), intent(in) :: new_node
       type(refined_node_id), intent(in) :: ref_ids
 !
-      type(interpolate_table), intent(inout) :: itp_info
+      type(interpolate_table), intent(inout) :: itp_table
       type(interpolate_table), intent(inout) :: c2f_2nd
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
       call set_itp_course_to_fine_origin(ele, surf, edge,               &
      &    ref_ids%refine_nod, ref_ids%refine_ele, ref_ids%refine_surf,  &
-     &    ref_ids%refine_edge, itp_info%tbl_org)
+     &    ref_ids%refine_edge, itp_table%tbl_org)
       call set_itp_course_to_fine_dest                                  &
-     &   (new_node%numnod, itp_info%tbl_dest)
+     &   (new_node%numnod, itp_table%tbl_dest)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                       'copy_interpolate_types_from_raw c2f_2nd'
-      call copy_interpolate_between_types(0, itp_info, c2f_2nd)
+      call copy_interpolate_between_types(0, itp_table, c2f_2nd)
 !
       end subroutine const_second_refine_itp_tbl
 !

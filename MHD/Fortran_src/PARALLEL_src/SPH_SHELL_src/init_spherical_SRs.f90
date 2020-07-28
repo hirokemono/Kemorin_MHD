@@ -8,7 +8,7 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine init_sph_send_recv_N(NB, sph, comms_sph)
+!!      subroutine init_sph_send_recv_N(iflag_recv, NB, sph, comms_sph)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!@endverbatim
@@ -45,14 +45,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_send_recv_N(NB, sph, comms_sph)
+      subroutine init_sph_send_recv_N(iflag_recv, NB, sph, comms_sph)
 !
       use calypso_mpi
 !
       use m_sph_communicators
       use spherical_SRs_N
 !
-      integer (kind=kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: iflag_recv
+      integer(kind = kint), intent(in) :: NB
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
 !
@@ -71,7 +72,7 @@
      &        comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       call check_calypso_sph_buffer_N(NB, comms_sph)
-      call sel_sph_import_table(NB, comms_sph,                          &
+      call sel_sph_import_table(iflag_recv, NB, comms_sph,              &
      &    sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
      &    sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
      &    X_rtp, WK0_spin%vr_rtm_wk, WK0_spin%sp_rlm_wk, X_rj)
@@ -81,10 +82,10 @@
 !
       if(my_rank .eq. 0) then
         write(*,'(a,i4)', advance='no')                                 &
-     &   'Communication mode for sph. transform: ', iflag_sph_SRN
-        if(iflag_sph_SRN .eq. iflag_import_item) then
+     &   'Communication mode for sph. transform: ', iflag_recv
+        if(iflag_recv .eq. iflag_import_item) then
           write(*,'(3a)') ' (', trim(hd_import_item), ') '
-        else if(iflag_sph_SRN .eq. iflag_import_rev) then
+        else if(iflag_recv .eq. iflag_import_rev) then
           write(*,'(3a)') ' (', trim(hd_import_rev), ') '
         end if
       end if
@@ -93,7 +94,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_import_table(NB, comms_sph,                    &
+      subroutine sel_sph_import_table(iflag_recv, NB, comms_sph,        &
      &          nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                  &
      &          X_rtp, X_rtm, X_rlm, X_rj)
 !
@@ -104,9 +105,10 @@
       use m_sph_communicators
       use m_solver_SR
 !
-      integer (kind=kint), intent(in) :: NB
-      integer (kind=kint), intent(in) :: nnod_rtp, nnod_rtm
-      integer (kind=kint), intent(in) :: nnod_rlm, nnod_rj
+      integer(kind = kint), intent(in) :: iflag_recv
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nnod_rj
       type(sph_comm_tables), intent(in) :: comms_sph
 !
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)
@@ -122,7 +124,7 @@
      &   (NB, comms_sph%comm_rtp, comms_sph%comm_rtm,                   &
      &        comms_sph%comm_rlm, comms_sph%comm_rj)
 !
-      if(iflag_sph_SRN .ne. iflag_import_UNDEFINED) return
+      if(iflag_recv .ne. iflag_import_UNDEFINED) return
 !
       starttime = MPI_WTIME()
       call all_sph_send_recv_N(iflag_import_rev, NB, comms_sph,         &
@@ -149,9 +151,9 @@
       etime_item_import(0:1) = etime_item_import(0:1) / dble(nprocs)
 !
       if(etime_item_import(1) .le. etime_item_import(0)) then
-        iflag_sph_SRN = iflag_import_rev
+        iflag_recv = iflag_import_rev
       else
-        iflag_sph_SRN = iflag_import_item
+        iflag_recv = iflag_import_item
       end if
 !
       if(my_rank .ne. 0) return
@@ -170,9 +172,9 @@
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: iflag_recv
-      integer (kind=kint), intent(in) :: NB
-      integer (kind=kint), intent(in) :: nnod_rtp, nnod_rtm
-      integer (kind=kint), intent(in) :: nnod_rlm, nnod_rj
+      integer(kind = kint), intent(in) :: NB
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rtm
+      integer(kind = kint), intent(in) :: nnod_rlm, nnod_rj
       type(sph_comm_tables), intent(in) :: comms_sph
 !
       real (kind=kreal), intent(inout) :: X_rtp(NB*nnod_rtp)

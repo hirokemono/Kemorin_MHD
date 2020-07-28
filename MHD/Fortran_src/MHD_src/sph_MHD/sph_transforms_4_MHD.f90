@@ -165,8 +165,8 @@
      &    trns_fwd, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),   &
      &    WK_sph)
 !
-      call mhd_spectr_from_recvbuf                                      &
-     &   (trns_fwd, comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
+      call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
+     &    trns_fwd, comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
 !
       end subroutine sph_forward_trans_4_MHD
 !
@@ -252,8 +252,8 @@
      &    fl_prop, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,          &
      &    SR_r1%n_WS, SR_r1%WS(1))
 !
-      call mhd_spectr_from_recvbuf                                      &
-     &   (trns_MHD%forward, comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
+      call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
+     &    trns_MHD%forward, comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)
 !
       end subroutine sph_transform_4_licv
 !
