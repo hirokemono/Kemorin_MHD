@@ -252,8 +252,7 @@
      &                         npe_send, ntot_export, istack_send,      &
      &                         inod_export, X_org, WS)
 !
-      use set_from_recv_buffer
-      use set_from_recv_buf_rev
+      use set_to_send_buffer
 !
       integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: NB
