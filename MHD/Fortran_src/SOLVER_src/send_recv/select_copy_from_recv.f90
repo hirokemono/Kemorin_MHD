@@ -229,13 +229,14 @@
       if(iflag_recv .eq. iflag_import_rev) then
         call set_from_recv_buf_rev_N(NB, nnod_new,                      &
      &      ntot_import, irev_import, WR(1), X_new)
-      else if(iflag_recv .eq. iflag_import_test) then
+      else
+!      else if(iflag_recv .eq. iflag_import_test) then
         call set_from_recv_buf_N_mod(NB, nnod_new,                      &
      &      npe_recv, ntot_import, istack_recv, inod_import,            &
      &      WR(1), X_new)
-      else
-        call set_from_recv_buf_N(NB, nnod_new,                          &
-     &      ntot_import, inod_import, WR(1), X_new)
+!      else
+!        call set_from_recv_buf_N(NB, nnod_new,                          &
+!     &      ntot_import, inod_import, WR(1), X_new)
       end if
 !
       end subroutine sel_cppy_from_recv_buf_N
