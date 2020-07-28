@@ -9,19 +9,19 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(phys_data), intent(in) :: rj_fld
-!!      subroutine set_all_scalar_spec_from_sph_t                       &
-!!     &         (ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
+!!      subroutine set_all_scalar_spec_from_sph_t(iflag_recv,           &
+!!     &          ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine set_all_vec_spec_to_sph_t                            &
 !!     &         (ncomp_send, comm_rj, fld_rtp, rj_fld, n_WS, WS)
-!!      subroutine set_all_vec_spec_from_sph_t                          &
-!!     &         (ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
+!!      subroutine set_all_vec_spec_from_sph_t(iflag_recv,               
+!!     &          ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
 !!
 !!      subroutine set_all_tensor_spec_to_sph_t                         &
 !!     &         (ncomp_send, comm_rj, fld_rtp, rj_fld, n_WS, WS)
-!!      subroutine set_all_tensor_spec_from_sph_t                       &
-!!     &         (ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
+!!      subroutine set_all_tensor_spec_from_sph_t(iflag_recv,           &
+!!     &          ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
 !
       module copy_all_spec_4_sph_trans
 !
@@ -77,11 +77,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_all_scalar_spec_from_sph_t                         &
-     &         (ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
+      subroutine set_all_scalar_spec_from_sph_t(iflag_recv,             &
+     &          ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
 !
       use copy_spectr_4_sph_trans
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(field_name_4_sph_trans), intent(in) :: fld_rtp
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
@@ -97,8 +98,8 @@
         do i = 1, rj_fld%num_phys
           if (fld_rtp%fld_name(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
-            call sel_sph_rj_scalar_from_recv                            &
-     &         (ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
+            call sel_sph_rj_scalar_from_recv(iflag_recv,                &
+     &          ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
             exit
           end if
         end do
@@ -140,11 +141,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_all_vec_spec_from_sph_t                            &
-     &         (ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
+      subroutine set_all_vec_spec_from_sph_t(iflag_recv,                &
+     &          ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
 !
       use copy_spectr_4_sph_trans
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(field_name_4_sph_trans), intent(in) :: fld_rtp
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
@@ -160,8 +162,8 @@
         do i = 1, rj_fld%num_phys
           if (fld_rtp%fld_name(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
-            call sel_sph_rj_vector_from_recv                            &
-     &         (ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
+            call sel_sph_rj_vector_from_recv(iflag_recv,                &
+     &          ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
             exit
           end if
         end do
@@ -204,11 +206,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_all_tensor_spec_from_sph_t                         &
-     &         (ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
+      subroutine set_all_tensor_spec_from_sph_t(iflag_recv,             &
+     &          ncomp_recv, comm_rj, fld_rtp, n_WR, WR, rj_fld)
 !
       use copy_spectr_4_sph_trans
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(field_name_4_sph_trans), intent(in) :: fld_rtp
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
@@ -225,8 +228,8 @@
         do i = 1, rj_fld%num_phys
           if (fld_rtp%fld_name(j0) .eq. rj_fld%phys_name(i) ) then
             i_field = rj_fld%istack_component(i-1) + 1
-            call sel_sph_rj_tensor_from_recv                            &
-     &         (ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
+            call sel_sph_rj_tensor_from_recv(iflag_recv,                &
+     &          ncomp_recv, i_field, itrans, comm_rj, n_WR, WR, rj_fld)
             exit
           end if
         end do

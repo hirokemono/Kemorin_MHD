@@ -174,14 +174,14 @@
 !
 !
       do i = 1, forward%num_vector
-        call sel_sph_rj_vector_from_recv                                &
-     &     (forward%ncomp, forward%ifld_rj(i), forward%ifld_trns(i),    &
+        call sel_sph_rj_vector_from_recv(iflag_sph_SRN,                 &
+     &      forward%ncomp, forward%ifld_rj(i), forward%ifld_trns(i),    &
      &      comm_rj, n_WR, WR, rj_fld)
       end do
       do inum = 1, forward%num_scalar
         i = inum + forward%num_vector
-        call sel_sph_rj_scalar_from_recv                                &
-     &     (forward%ncomp, forward%ifld_rj(i), forward%ifld_trns(i),    &
+        call sel_sph_rj_scalar_from_recv(iflag_sph_SRN,                 &
+     &      forward%ncomp, forward%ifld_rj(i), forward%ifld_trns(i),    &
      &      comm_rj, n_WR, WR, rj_fld)
       end do
 !

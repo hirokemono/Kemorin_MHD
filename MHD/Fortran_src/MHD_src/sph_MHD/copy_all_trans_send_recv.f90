@@ -18,7 +18,7 @@
 !!        type(spherical_transform_data), intent(in) :: backward
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
-!!      subroutine copy_all_spectr_from_trns                            &
+!!      subroutine copy_all_spectr_from_trns(iflag_recv,                &
 !!     &         (ncomp_recv, comm_rj, forward, n_WR, WR, rj_fld)
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(spherical_transform_data), intent(in) :: forward
@@ -121,9 +121,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_all_spectr_from_trns                              &
-     &         (ncomp_recv, comm_rj, forward, n_WR, WR, rj_fld)
+      subroutine copy_all_spectr_from_trns(iflag_recv,                  &
+     &          ncomp_recv, comm_rj, forward, n_WR, WR, rj_fld)
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(spherical_transform_data), intent(in) :: forward
       integer(kind = kint), intent(in) :: ncomp_recv, n_WR
@@ -143,7 +144,7 @@
 !
             if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
      &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_vector_from_recv(ncomp_recv,                &
+            call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,    &
      &          icomp, jcomp, comm_rj, n_WR, WR, rj_fld)
           end if
         end do
@@ -159,7 +160,7 @@
 !
             if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
      &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_scalar_from_recv(ncomp_recv,                &
+            call sel_sph_rj_scalar_from_recv(iflag_recv, ncomp_recv,    &
      &          icomp, jcomp, comm_rj, n_WR, WR, rj_fld)
           end if
         end do
@@ -176,9 +177,9 @@
 !
             if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
      &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_vector_from_recv(ncomp_recv,                &
+            call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,    &
      &          icomp, jcomp, comm_rj, n_WR, WR, rj_fld)
-            call sel_sph_rj_vector_from_recv(ncomp_recv,                &
+            call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,    &
      &          (icomp+3), (jcomp+3), comm_rj, n_WR, WR, rj_fld)
           end if
         end do

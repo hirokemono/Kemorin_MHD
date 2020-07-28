@@ -192,9 +192,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'calypso_send_recv_int8'
-      SR_sig1%iflag_recv = iflag_import_item
       call calypso_send_recv_int8                                       &
-     &   (itp_org%ntot_table_org, NP_dest,                              &
+     &   (iflag_sph_SRN, itp_org%ntot_table_org, NP_dest,               &
      &    itp_org%num_dest_domain, itp_org%iflag_self_itp_send,         &
      &    itp_org%id_dest_domain, itp_org%istack_nod_tbl_org,           &
      &    itp_org%inod_itp_send,                                        &

@@ -80,7 +80,8 @@
       type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
-      call calypso_sph_from_recv_N(ncomp, sph_rlm%nnod_rlm,             &
+      call calypso_sph_from_recv_N                                      &
+     &   (iflag_sph_SRN, ncomp, sph_rlm%nnod_rlm,                       &
      &    comm_rlm, n_WR, WR, WK_spin%sp_rlm_wk(1))
       call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm, WK_spin)
 !
@@ -119,7 +120,8 @@
       type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
-      call calypso_sph_from_recv_N(ncomp, sph_rtm%nnod_rtm,             &
+      call calypso_sph_from_recv_N                                      &
+     &   (iflag_sph_SRN, ncomp, sph_rtm%nnod_rtm,                       &
      &    comm_rtm, n_WR, WR, WK_spin%vr_rtm_wk(1))
 !
       call legendre_f_trans_vector_long                                 &

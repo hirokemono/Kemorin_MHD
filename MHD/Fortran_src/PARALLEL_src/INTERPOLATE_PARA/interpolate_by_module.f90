@@ -113,9 +113,8 @@
       end if
 !
 !   communication
-      SR_sig1%iflag_recv = iflag_import_item
-      call calypso_send_recv                                            &
-     &   (tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
+      call calypso_send_recv(iflag_sph_SRN,                             &
+     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
      &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
      &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
@@ -168,9 +167,8 @@
 !
 !     communication
 !
-      SR_sig1%iflag_recv = iflag_import_item
-      call calypso_send_recv_3                                          &
-     &   (tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
+      call calypso_send_recv_3(iflag_sph_SRN,                           &
+     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
      &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
      &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
@@ -221,9 +219,8 @@
      &      itp_WORK%x_inter_org)
       end if
 !
-      SR_sig1%iflag_recv = iflag_import_item
-      call calypso_send_recv_6                                          &
-     &   (tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
+      call calypso_send_recv_6(iflag_sph_SRN,                           &
+     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
      &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
      &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
@@ -277,8 +274,8 @@
      &      itp_WORK%x_inter_org)
       end if
 !
-      call calypso_send_recv_N                                          &
-     &   (NB, tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain, &
+      call calypso_send_recv_N(iflag_import_mod, NB,                    &
+     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
      &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
      &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
@@ -343,9 +340,8 @@
 !
 !     communication
 !
-      SR_sig1%iflag_recv = iflag_import_item
-      call calypso_send_recv_int                                        &
-     &   (tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
+      call calypso_send_recv_int(iflag_sph_SRN,                         &
+     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
      &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
      &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &

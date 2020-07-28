@@ -124,24 +124,21 @@
 !
       if(iflag_sph_SRN .ne. iflag_import_UNDEFINED) return
 !
-      iflag_sph_SRN = iflag_import_rev
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, comms_sph,                           &
+      call all_sph_send_recv_N(iflag_import_rev, NB, comms_sph,         &
      &    nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                        &
      &    X_rtp, X_rtm, X_rlm, X_rj)
 !
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with reg. import'
-      iflag_sph_SRN = iflag_import_item
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, comms_sph,                           &
+      call all_sph_send_recv_N(iflag_import_item, NB, comms_sph,        &
      &    nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                        &
      &    X_rtp, X_rtm, X_rlm, X_rj)
       endtime(0) = MPI_WTIME() - starttime
 !
       if(my_rank .eq. 0) write(*,*) 'test  send_recv with rev. import'
-      iflag_sph_SRN = iflag_import_rev
       starttime = MPI_WTIME()
-      call all_sph_send_recv_N(NB, comms_sph,                           &
+      call all_sph_send_recv_N(iflag_import_rev, NB, comms_sph,         &
      &    nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                        &
      &    X_rtp, X_rtm, X_rlm, X_rj)
       endtime(1) = MPI_WTIME() - starttime
@@ -166,12 +163,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine all_sph_send_recv_N(NB, comms_sph,                     &
+      subroutine all_sph_send_recv_N(iflag_recv, NB, comms_sph,         &
      &          nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                  &
      &          X_rtp, X_rtm, X_rlm, X_rj)
 !
       use spherical_SRs_N
 !
+      integer(kind = kint), intent(in) :: iflag_recv
       integer (kind=kint), intent(in) :: NB
       integer (kind=kint), intent(in) :: nnod_rtp, nnod_rtm
       integer (kind=kint), intent(in) :: nnod_rlm, nnod_rj
@@ -183,13 +181,13 @@
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
 !
 !
-      call send_recv_sph_trans_N(NB, nnod_rj, nnod_rlm,                 &
+      call send_recv_sph_trans_N(iflag_recv, NB, nnod_rj, nnod_rlm,     &
      &    comms_sph%comm_rj,  comms_sph%comm_rlm, X_rj, X_rlm)
-      call send_recv_sph_trans_N(NB, nnod_rlm, nnod_rj,                 &
+      call send_recv_sph_trans_N(iflag_recv, NB, nnod_rlm, nnod_rj,     &
      &    comms_sph%comm_rlm, comms_sph%comm_rj, X_rlm, X_rj)
-      call send_recv_sph_trans_N(NB, nnod_rtp, nnod_rtm,                &
+      call send_recv_sph_trans_N(iflag_recv, NB, nnod_rtp, nnod_rtm,    &
      &    comms_sph%comm_rtp, comms_sph%comm_rtm, X_rtp, X_rtm)
-      call send_recv_sph_trans_N(NB, nnod_rtm, nnod_rtp,                &
+      call send_recv_sph_trans_N(iflag_recv, NB, nnod_rtm, nnod_rtp,    &
      &    comms_sph%comm_rtm, comms_sph%comm_rtp, X_rtm, X_rtp)
 !
       end subroutine all_sph_send_recv_N

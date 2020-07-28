@@ -8,7 +8,8 @@
 !!@n      using reverse import table
 !!
 !!@verbatim
-!!      subroutine calypso_AllToAllV_N(NB, nnod_org, nnod_new,          &
+!!      subroutine calypso_AllToAllV_N                                  &
+!!     &                          (iflag_recv, NB, nnod_org, nnod_new,  &
 !!     &                           npe_send, istack_send, inod_export,  &
 !!     &                           npe_recv, istack_recv, inod_import,  &
 !!     &                           X_org, X_new, SR_sig, SR_r,          &
@@ -24,7 +25,7 @@
 !!     &                           npe_recv, irev_import,               &
 !!     &                           X_org, X_new, CALYPSO_SUB_COMM, SR_r)
 !!
-!!      subroutine calypso_AllToAllV_int(iflag_SR, nnod_org, nnod_new,  &
+!!      subroutine calypso_AllToAllV_int(iflag_recv, nnod_org, nnod_new,&
 !!     &                       npe_send, istack_send, inod_export,      &
 !!     &                       npe_recv, istack_recv, inod_import,      &
 !!     &                       irev_import, iX_org, iX_new,             &
@@ -68,7 +69,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine calypso_AllToAllV_N(NB, nnod_org, nnod_new,            &
+      subroutine calypso_AllToAllV_N                                    &
+     &                          (iflag_recv, NB, nnod_org, nnod_new,    &
      &                           npe_send, istack_send, inod_export,    &
      &                           npe_recv, istack_recv, inod_import,    &
      &                           X_org, X_new, SR_sig, SR_r,            &
@@ -80,6 +82,7 @@
       use set_from_recv_buffer
 !
       integer, intent(in)  :: CALYPSO_SUB_COMM
+      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: NB
 !
       integer(kind = kint), intent(in) :: nnod_org
@@ -107,7 +110,7 @@
       call resize_work_SR(NB, npe_send, npe_recv,                       &
      &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
 !
-       call sel_cppy_to_send_buf_N(SR_sig%iflag_recv, NB, nnod_org,     &
+       call sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,            &
       &    npe_send, istack_send(npe_send), istack_send, inod_export,   &
       &    X_org, SR_r%WS)
 !C
@@ -115,7 +118,7 @@
      &   (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !
        call sel_cppy_from_recv_buf_N                                    &
-      &   (SR_sig%iflag_recv, NB, nnod_new, npe_recv,                   &
+      &   (iflag_recv, NB, nnod_new, npe_recv,                          &
       &    istack_recv(npe_recv), istack_recv, inod_import,             &
       &    irev_import, SR_r%WR(1), X_new)
 !
@@ -222,7 +225,7 @@
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine calypso_AllToAllV_int(iflag_SR, nnod_org, nnod_new,    &
+      subroutine calypso_AllToAllV_int(iflag_recv, nnod_org, nnod_new,  &
      &                       npe_send, istack_send, inod_export,        &
      &                       npe_recv, istack_recv, inod_import,        &
      &                       irev_import, iX_org, iX_new,               &
@@ -235,7 +238,7 @@
       use select_copy_from_recv
 !
       integer, intent(in)  :: CALYPSO_SUB_COMM
-      integer(kind = kint), intent(in) :: iflag_SR
+      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: nnod_org
       integer(kind = kint), intent(in) :: nnod_new
 !
@@ -269,7 +272,7 @@
      &   (npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM, SR_i)
 !
 !C-- RECV
-      call sel_cppy_from_recv_buf_int(iflag_SR, nnod_new,               &
+      call sel_cppy_from_recv_buf_int(iflag_recv, nnod_new,             &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
      &    SR_i%iWR(1), iX_new)
 !
