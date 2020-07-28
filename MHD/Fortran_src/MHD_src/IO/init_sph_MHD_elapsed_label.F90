@@ -128,7 +128,6 @@
 !
       call calypso_mpi_reduce_int                                       &
      &   (sph_rj%irank_sph_rj, nproc_rj_IO, cast_long(2), MPI_MAX, 0)
-     &    MPI_MAX, 0)
       call calypso_mpi_reduce_int                                       &
      &   (sph_rlm%irank_sph_rlm, nproc_rlm_IO, cast_long(2),            &
      &    MPI_MAX, 0)
