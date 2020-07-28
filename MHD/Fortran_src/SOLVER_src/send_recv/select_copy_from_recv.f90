@@ -26,7 +26,7 @@
 !!
 !!      subroutine sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,     &
 !!     &                         npe_send, ntot_export, istack_send,    &
-!!     &                         inod_export, X_new, WS)
+!!     &                         inod_export, X_org, WS)
 !!
 !!      subroutine sel_cppy_from_recv_buf_3x1(iflag_recv, nnod_new,     &
 !!     &                         ntot_import, inod_import, irev_import, &
@@ -250,7 +250,7 @@
 !
       subroutine sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,       &
      &                         npe_send, ntot_export, istack_send,      &
-     &                         inod_export, X_new, WS)
+     &                         inod_export, X_org, WS)
 !
       use set_from_recv_buffer
       use set_from_recv_buf_rev
@@ -263,7 +263,7 @@
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
       integer(kind = kint), intent(in) :: inod_export(ntot_export)
-      real (kind=kreal), intent(inout):: X_new(NB*nnod_org)
+      real (kind=kreal), intent(inout):: X_org(NB*nnod_org)
 !
       real (kind=kreal), intent(inout):: WS(NB*(ntot_export+1))
 !
