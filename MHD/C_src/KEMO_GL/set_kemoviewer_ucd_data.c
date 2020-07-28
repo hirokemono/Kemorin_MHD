@@ -30,8 +30,8 @@ static int base_viewer_data_format_flag(char *file_ext){
 	}else if((file_ext[0] == 's' && file_ext[1] == 'd' && file_ext[2] == 't')
 			 || (file_ext[0] == 'S' && file_ext[1] == 'D' && file_ext[2] == 'T') ){
 		ifile_type = IFLAG_SURF_SDT;
-	}else if((file_ext[0] == 'p' && file_ext[1] == 's' && file_ext[2] == 'f')
-			 ||	(file_ext[0] == 'P' && file_ext[1] == 'S' && file_ext[2] == 'F') ){
+	}else if((file_ext[0] == 's' && file_ext[1] == 'f' && file_ext[2] == 'm')
+			 ||	(file_ext[0] == 'S' && file_ext[1] == 'F' && file_ext[2] == 'M') ){
 		ifile_type = IFLAG_PSF_BIN;
 	} else {
 		ifile_type = 99;
