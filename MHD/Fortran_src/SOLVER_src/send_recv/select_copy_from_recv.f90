@@ -263,7 +263,7 @@
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
       integer(kind = kint), intent(in) :: inod_export(ntot_export)
-      real (kind=kreal), intent(inout):: X_org(NB*nnod_org)
+      real (kind=kreal), intent(in):: X_org(NB*nnod_org)
 !
       real (kind=kreal), intent(inout):: WS(NB*(ntot_export+1))
 !
