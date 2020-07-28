@@ -12,10 +12,6 @@
 !!     &                           npe_send, istack_send, inod_export,  &
 !!     &                           npe_recv, istack_recv, inod_import,  &
 !!     &                           X_org, X_new, CALYPSO_SUB_COMM)
-!!      subroutine calypso_AllToAllV_rev_N(NB, nnod_org, nnod_new,      &
-!!     &                           npe_send, istack_send, inod_export,  &
-!!     &                           npe_recv, istack_recv, irev_import,  &
-!!     &                           X_org, X_new, CALYPSO_SUB_COMM)
 !!
 !!      subroutine calypso_AllToAll_N(NB, nnod_org, nnod_new, nitem_SR, &
 !!     &                           npe_send, istack_send, inod_export,  &
@@ -100,62 +96,25 @@
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
 !
-      call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
-     &    istack_send(npe_send), istack_send, inod_export,              &
-     &    X_org, SR_r1%WS)
+      call resize_work_SR(NB, npe_send, npe_recv,                       &
+     &    istack_send(npe_send), istack_recv(npe_recv), SR_sig1, SR_r1)
+!
+       itmp = SR_sig1%iflag_recv
+       SR_sig1%iflag_recv = iflag_import_mod
+       call sel_cppy_to_send_buf_N(SR_sig%iflag_recv, NB, nnod_org,      &
+      &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
+      &    X_org, SR_r1%WS)
 !C
       call calypso_AllToAllv_Ncore                                      &
      &   (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !
-      call set_from_recv_buf_N_mod(NB, nnod_new, npe_recv,              &
-     &    istack_recv(npe_recv), istack_recv, inod_import,              &
-     &    SR_r1%WR, X_new)
+       call sel_cppy_from_recv_buf_N                                     &
+      &   (SR_sig%iflag_recv, NB, nnod_new, npe_recv,                    &
+      &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
+      &    SR_r%WR(1), X_new)
+       SR_sig1%iflag_recv = itmp
 !
       end subroutine calypso_AllToAllV_N
-!
-! ----------------------------------------------------------------------
-!
-      subroutine calypso_AllToAllV_rev_N(NB, nnod_org, nnod_new,        &
-     &                           npe_send, istack_send, inod_export,    &
-     &                           npe_recv, istack_recv, irev_import,    &
-     &                           X_org, X_new, CALYPSO_SUB_COMM)
-!
-      use calypso_mpi
-      use m_solver_SR
-      use calypso_AlltoAll_core
-      use set_to_send_buffer
-      use set_from_recv_buf_rev
-!
-      integer, intent(in)  :: CALYPSO_SUB_COMM
-      integer(kind = kint), intent(in) :: NB
-!
-      integer(kind = kint), intent(in) :: nnod_org
-      integer(kind = kint), intent(in) :: nnod_new
-!
-      integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
-      integer(kind = kint), intent(in)                                  &
-     &                      :: inod_export( istack_send(npe_send) )
-!
-      integer(kind = kint), intent(in) :: npe_recv
-      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
-      integer(kind = kint), intent(in) :: irev_import(nnod_new)
-!
-      real (kind=kreal), intent(in)::    X_org(NB*nnod_org)
-!
-      real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
-!
-!
-      call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
-     &    inod_export, X_org, SR_r1%WS)
-!C
-      call calypso_AllToAllv_Ncore                                      &
-     &   (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
-!
-      call set_from_recv_buf_rev_N(NB, nnod_new,                        &
-     &    istack_recv(npe_recv), irev_import, SR_r1%WR, X_new)
-!
-      end subroutine calypso_AllToAllV_rev_N
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------

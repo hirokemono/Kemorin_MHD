@@ -103,13 +103,17 @@
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
+integer(kind = kint) :: itmp
+!
 !
       call resize_work_SR(NB, npe_send, npe_recv,                       &
      &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
 !
 !C-- SEND
-      call set_to_send_buf_N_mod(NB, nnod_org, npe_send,                &
-     &    istack_send(npe_send), istack_send, inod_export,              &
+      itmp = SR_sig%iflag_recv
+      SR_sig%iflag_recv = iflag_import_mod
+      call sel_cppy_to_send_buf_N(SR_sig%iflag_recv, NB, nnod_org,      &
+     &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
      &    X_org, SR_r%WS)
 !C
 !C-- COMM
@@ -123,6 +127,7 @@
      &   (SR_sig%iflag_recv, NB, nnod_new, npe_recv,                    &
      &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
      &    SR_r%WR(1), X_new)
+      SR_sig%iflag_recv = itmp
 !
 !C-- WAIT
       call calypso_send_recv_fin(npe_send, isend_self, SR_sig)
