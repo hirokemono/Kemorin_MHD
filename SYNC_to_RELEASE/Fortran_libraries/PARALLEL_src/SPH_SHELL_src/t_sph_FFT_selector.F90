@@ -10,7 +10,7 @@
 !!      subroutine init_sph_FFT_select                                  &
 !!     &         (id_rank, iflag_FFT, sph_rtp, ncomp, WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
-!!      subroutine finalize_sph_FFT_select(WK_FFTs)
+!!      subroutine finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
 !!     &         (iflag_FFT, sph_rtp, ncomp, WK_FFTs)
@@ -142,7 +142,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select(WK_FFTs)
+      subroutine finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       type(work_for_FFTs), intent(inout) :: WK_FFTs
