@@ -8,7 +8,7 @@
 !!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, WK_sph)
+!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !!        type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -34,6 +34,7 @@
       use t_VIZ_step_parameter
       use t_sph_transforms
       use t_ctl_data_4_sph_trans
+      use t_work_4_sph_trans
 !
       implicit  none
 !
@@ -124,9 +125,10 @@
 !   setting for spherical transform
 !
       if(spt_ctl%legendre_vector_len_ctl%iflag .gt. 0) then
-        nvector_legendre = spt_ctl%legendre_vector_len_ctl%intvalue
+        trans_p%nvector_legendre                                        &
+     &           = spt_ctl%legendre_vector_len_ctl%intvalue
       else
-        nvector_legendre = 0
+        trans_p%nvector_legendre = 0
       end if
 !
       if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
@@ -183,7 +185,7 @@
 !
       subroutine s_set_ctl_data_4_sph_trans                             &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, WK_sph)
+     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -206,6 +208,7 @@
       type(phys_data), intent(inout) :: fem_fld
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(global_gauss_points), intent(inout) :: d_gauss
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
 !
       integer(kind = kint) :: ierr, iflag
 !
@@ -244,9 +247,10 @@
 !   setting for spherical transform
 !
       if(spt_ctl%legendre_vector_len_ctl%iflag .gt. 0) then
-        nvector_legendre = spt_ctl%legendre_vector_len_ctl%intvalue
+        trans_p%nvector_legendre                                        &
+     &          = spt_ctl%legendre_vector_len_ctl%intvalue
       else
-        nvector_legendre = 0
+        trans_p%nvector_legendre = 0
       end if
 !
       if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then

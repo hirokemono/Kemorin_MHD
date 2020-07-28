@@ -128,9 +128,9 @@
      &   fst_file_IO%file_prefix = rst_org_param%file_prefix
 !
       if(mevo_ctl%leg_vector_len%iflag .gt. 0) then
-        nvector_legendre = mevo_ctl%leg_vector_len%intvalue
+        trans_p%nvector_legendre = mevo_ctl%leg_vector_len%intvalue
       else
-        nvector_legendre = 0
+        trans_p%nvector_legendre = 0
       end if
 !      
       if(mevo_ctl%Legendre_trans_type%iflag .gt. 0) then

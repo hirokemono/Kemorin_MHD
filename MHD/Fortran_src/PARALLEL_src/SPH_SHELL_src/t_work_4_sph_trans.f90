@@ -54,9 +54,6 @@
 !>       End point of each block for grid in @f$ \theta @f$-direction
         integer(kind = kint), allocatable :: lstack_block_rtm(:)
 !
-!>       Number of block for grid in hermonics degree
-        integer(kind = kint) :: nblock_j_rlm = 1
-!
 !>       End address of spherical harmonics order for SMP parallelization
         integer(kind = kint), allocatable :: lstack_rlm(:)
 !>       Maximum point of each block for grid in  hermonics degree
@@ -67,6 +64,8 @@
 !
 !>        Structures of parameters for spherical transform
       type parameters_4_sph_trans
+!>      vector length for legendre transform
+        integer(kind = kint) :: nvector_legendre = 0
 !>        Integer flag to select routines to get data from recieve buffer
         integer(kind = kint) :: iflag_SPH_recv = iflag_import_UNDEFINED
 !
