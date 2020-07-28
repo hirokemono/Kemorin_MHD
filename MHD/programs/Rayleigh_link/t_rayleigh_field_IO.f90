@@ -237,8 +237,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_each_rayleigh_component                           &
-     &         (file_name, numnod, d_scalar, rayleigh_rtp)
+      subroutine read_each_rayleigh_component(file_name, nd,            &
+     &          numnod, ntot_comp_IO, d_IO, rayleigh_rtp)
 !
       use calypso_mpi
       use m_calypso_mpi_IO
@@ -247,8 +247,9 @@
       use MPI_binary_data_IO
 !
       character(len = kchara), intent(in) :: file_name
-      integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(inout) :: d_scalar(numnod)
+      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint), intent(in) :: numnod, ntot_comp_IO
+      real(kind = kreal), intent(inout) :: d_IO(numnod, ntot_comp_IO)
 !
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
@@ -267,7 +268,7 @@
       call calypso_close_mpi_file(id_mpi_file)
 !
 !$omp parallel workshare
-      d_scalar(1:numnod)  = rayleigh_rtp%field_rtp(1:numnod)
+      d_IO(1:numnod,nd)  = rayleigh_rtp%field_rtp(1:numnod)
 !$omp end parallel workshare
 !
       end subroutine read_each_rayleigh_component

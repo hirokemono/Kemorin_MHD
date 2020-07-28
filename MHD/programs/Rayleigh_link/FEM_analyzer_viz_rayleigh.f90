@@ -203,9 +203,10 @@
         write(file_name,'(a,a1,i8.8,a1,i4.4)')                          &
      &                     trim(rayleigh_ftbl1%field_dir), '/',         &
      &                     i_step, '_', rayleigh_ftbl1%id_rayleigh(nd)
-        call read_each_rayleigh_component                               &
-     &     (file_name, rayleigh_pmesh(my_rank+1)%node%numnod,           &
-     &      rayleigh_fIO(my_rank+1)%d_IO(1,nd), rayleigh_rtp_V)
+        call read_each_rayleigh_component(file_name, nd,                &
+     &      rayleigh_pmesh(my_rank+1)%node%numnod,                      &
+     &      rayleigh_fIO(my_rank+1)%ntot_comp_IO,                       &
+     &      rayleigh_fIO(my_rank+1)%d_IO, rayleigh_rtp_V)
       end do
       call dealloc_rayleigh_component(rayleigh_rtp_V)
 !

@@ -221,8 +221,9 @@
         call load_local_field_from_rayleigh                             &
      &     (rayleigh_rtp_A, t_IO_m, org_fIO(my_rank+1))
 !
-        call read_each_rayleigh_component(file_name,                    &
-     &      org_fIO(my_rank+1)%nnod_IO, org_fIO(my_rank+1)%d_IO(1,1),   &
+        call read_each_rayleigh_component(file_name, ione,              &
+     &      org_fIO(my_rank+1)%nnod_IO,                                 &
+     &      org_fIO(my_rank+1)%ntot_comp_IO, org_fIO(my_rank+1)%d_IO,   &
      &      rayleigh_rtp_A)
         call dealloc_rayleigh_component(rayleigh_rtp_A)
 !
