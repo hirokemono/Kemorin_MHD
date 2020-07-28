@@ -6,6 +6,7 @@
 !!      subroutine SPH_initialize_back_trans                            &
 !!     &         (files_param, SPH_MHD, ipol_LES, t_IO, fld_IO)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
+!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(SGS_model_addresses), intent(inout) :: ipol_LES
 !!        type(field_IO), intent(inout) :: fld_IO
@@ -34,7 +35,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_back_trans                              &
-     &         (files_param, SPH_MHD, ipol_LES, t_IO, fld_IO)
+     &         (files_param, trans_p, SPH_MHD, ipol_LES, t_IO, fld_IO)
 !
       use m_legendre_transform_list
       use r_interpolate_sph_data
@@ -46,6 +47,7 @@
       use sph_transfer_all_field
 !
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(SGS_model_addresses), intent(inout) :: ipol_LES
       type(field_IO), intent(inout) :: fld_IO
@@ -86,7 +88,7 @@
       call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
       call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
-     &    SPH_MHD%sph, SPH_MHD%comms, trns_param, WK_sph_TRNS)
+     &    SPH_MHD%sph, SPH_MHD%comms, trans_p, WK_sph_TRNS)
 !
       call init_pole_transform(SPH_MHD%sph%sph_rtp)
       call allocate_d_pole_4_all_trans                                  &
@@ -94,7 +96,7 @@
 !
 !      call calypso_MPI_barrier
 !      call check_schmidt_poly_rtm(my_rank+40, SPH_MHD%sph%sph_rtm,     &
-!     &    SPH_MHD%sph%sph_rlm, trns_param%leg)
+!     &    SPH_MHD%sph%sph_rlm, trans_p%leg)
 !
       end subroutine SPH_initialize_back_trans
 !

@@ -4,7 +4,7 @@ analyzer_test_table.o: $(ITP_TEST_DIR)/analyzer_test_table.f90 m_precision.o cal
 	$(F90) -c $(F90OPTFLAGS) $<
 check_ineterppolated_mesh.o: $(ITP_TEST_DIR)/check_ineterppolated_mesh.f90 m_precision.o calypso_mpi.o m_2nd_pallalel_vector.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-interpolate_position.o: $(ITP_TEST_DIR)/interpolate_position.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_interpolate_table.o m_constants.o m_2nd_pallalel_vector.o m_array_for_send_recv.o interpolate_by_module.o matvec_by_djo.o m_solver_SR.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o calypso_SR_int.o solver_SR_type.o select_copy_from_recv.o
+interpolate_position.o: $(ITP_TEST_DIR)/interpolate_position.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_interpolate_table.o m_solver_SR.o m_constants.o m_2nd_pallalel_vector.o m_array_for_send_recv.o interpolate_by_module.o matvec_by_djo.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o calypso_SR_int.o solver_SR_type.o select_copy_from_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_test_itp_ele.o: $(ITP_TEST_DIR)/main_test_itp_ele.f90 m_precision.o calypso_mpi.o analyzer_test_ele_tbl.o
 	$(F90) -c $(F90OPTFLAGS) $<

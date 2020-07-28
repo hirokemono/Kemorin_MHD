@@ -24,6 +24,7 @@
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_solver_ordered_crs
+      use select_copy_from_recv
 !
       implicit none
 !
@@ -31,7 +32,7 @@
 !> Structure of interpolation table
       type interpolate_table
 !> Integer flag for copy loop setting from recieve buffer
-        integer(kind = kint), :: iflag_itp_recv = iflag_import_item
+        integer(kind = kint) :: iflag_itp_recv = iflag_import_item
 !
 !> Structure of interpolation table for source grid
         type(interpolate_table_org) ::  tbl_org

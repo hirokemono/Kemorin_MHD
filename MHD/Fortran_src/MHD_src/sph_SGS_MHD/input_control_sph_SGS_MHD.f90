@@ -9,12 +9,12 @@
 !!@verbatim
 !!      subroutine input_control_SPH_SGS_dynamo                         &
 !!     &         (MHD_files, MHD_ctl, MHD_step, SPH_model,              &
-!!     &          trns_WK, monitor, SPH_SGS, SPH_MHD, FEM_dat)
+!!     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
-!!        type(sph_mhd_monitor_data), intent(inout) :: monitor
+!!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
@@ -37,13 +37,12 @@
       use t_FEM_mesh_field_data
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
-      use t_sph_trans_arrays_MHD
       use t_sph_boundary_input_data
       use t_bc_data_list
       use t_SPH_SGS_structure
       use t_check_and_make_SPH_mesh
       use t_flex_delta_t_data
-      use t_sph_mhd_monitor_data_IO
+      use t_work_SPH_MHD
 !
       implicit none
 !
@@ -58,7 +57,7 @@
 !
       subroutine input_control_SPH_SGS_dynamo                           &
      &         (MHD_files, MHD_ctl, MHD_step, SPH_model,                &
-     &          trns_WK, monitor, SPH_SGS, SPH_MHD, FEM_dat)
+     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
 !
       use m_error_IDs
 !
@@ -73,8 +72,7 @@
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
-      type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
-      type(sph_mhd_monitor_data), intent(inout) :: monitor
+      type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -87,12 +85,12 @@
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
      &    MHD_files, SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, &
      &    MHD_step, SPH_model%MHD_prop, SPH_model%MHD_BC,               &
-     &    trns_WK%WK_sph, sph_maker2)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, sph_maker2)
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &
      &    SPH_SGS%SGS_par, SPH_model%MHD_prop, SPH_MHD%sph,             &
-     &    SPH_MHD%fld, FEM_dat%field, monitor)
+     &    SPH_MHD%fld, FEM_dat%field, SPH_WK%monitor)
 !
 !
 !  Check and construct spherical shell table

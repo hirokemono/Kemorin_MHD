@@ -25,7 +25,7 @@
 !!      subroutine interpolate_mod_N                                    &
 !!     &         (iflag_recv, comm_dest, tbl_org, tbl_dest, itp_mat,    &
 !!     &          PEsmpTOT, NP_org, NP_dest, NB, X_org,                 &
-!!     &          SR_sig, SR_i, X_dest)
+!!     &          SR_sig, SR_r, X_dest)
 !!      subroutine s_interpolate_integer                                &
 !!     &        (iflag_recv, ele_org, comm_dest, tbl_org, tbl_dest,     &
 !!     &         PEsmpTOT, NP_org, NP_dest, i_vector_org,               &
@@ -269,7 +269,7 @@
       subroutine interpolate_mod_N                                      &
      &         (iflag_recv, comm_dest, tbl_org, tbl_dest, itp_mat,      &
      &          PEsmpTOT, NP_org, NP_dest, NB, X_org,                   &
-     &          SR_sig, SR_i, X_dest)
+     &          SR_sig, SR_r, X_dest)
 !
       use solver_SR_N
       use interpolate_fields_1pe
@@ -328,6 +328,7 @@
      &         PEsmpTOT, NP_org, NP_dest, i_vector_org,                 &
      &         SR_sig, SR_i, i_vector_dest)
 !
+      use t_solver_SR_int
       use t_geometry_data
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest

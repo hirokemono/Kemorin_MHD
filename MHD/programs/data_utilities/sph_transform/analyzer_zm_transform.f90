@@ -58,7 +58,7 @@
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_sph_zm_trans'
-      call SPH_initialize_sph_trans(SPH_TRNS)
+      call SPH_initialize_sph_trans(trns_param, SPH_TRNS)
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
@@ -79,8 +79,8 @@
      &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS)
 !
 !   Spherical transform
-        call SPH_analyze_sph_zm_trans                                   &
-     &     (i_step, files_STR%sph_file_IO, SPH_TRNS, sph_trns_IO)
+        call SPH_analyze_sph_zm_trans(i_step, files_STR%sph_file_IO,    &
+     &      trns_param, SPH_TRNS, sph_trns_IO)
       end do
 !
       call FEM_finalize_sph_trans                                       &

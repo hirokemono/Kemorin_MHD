@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_streamfunc                            &
-!!     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
+!!      subroutine SPH_analyze_zm_streamfunc(i_step, files_param,       &
+!!     &          viz_step, trans_p, SPH_MHD, t_IO, fld_IO)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
@@ -34,8 +35,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_streamfunc                              &
-     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
+      subroutine SPH_analyze_zm_streamfunc(i_step, files_param,         &
+     &          viz_step, trans_p, SPH_MHD, t_IO, fld_IO)
 !
       use t_SPH_mesh_field_data
       use t_time_data
@@ -54,6 +55,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(VIZ_step_params), intent(in) :: viz_step
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
@@ -87,7 +89,8 @@
 !
 !  spherical transform for vector
         call sph_b_trans_streamline(SPH_MHD%sph, SPH_MHD%comms,         &
-     &      femmesh_STR%mesh, fld_rtp_TRNS, SPH_MHD%fld, field_STR)
+     &      trans_p, femmesh_STR%mesh, fld_rtp_TRNS, SPH_MHD%fld,       &
+     &      field_STR)
       end if
 !
       end subroutine SPH_analyze_zm_streamfunc
@@ -137,8 +140,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_streamline                                 &
-     &         (sph, comms_sph, mesh, fld_rtp, rj_fld, nod_fld)
+      subroutine sph_b_trans_streamline(sph, comms_sph, trans_p,        &
+     &          mesh, fld_rtp, rj_fld, nod_fld)
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -158,6 +161,7 @@
       type(field_name_4_sph_trans), intent(in) :: fld_rtp
       type(phys_data), intent(in) :: rj_fld
       type(mesh_geometry), intent(in) :: mesh
+      type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -176,9 +180,8 @@
      &      rj_fld, SR_r1%n_WS, SR_r1%WS)
 !
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
-     &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
-     &    sph, comms_sph, trns_param,                                   &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
+     &    fld_rtp%num_vector, fld_rtp%nscalar_trans, sph, comms_sph,    &
+     &    trans_p, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),    &
      &    dall_rtp, dlcl_pole, dall_pole, WK_sph_TRNS)
 !
         if (iflag_debug.gt.0)                                           &

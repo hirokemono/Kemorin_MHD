@@ -60,42 +60,10 @@
 !
       implicit none
 !
-!>      Character flag to use import table
-      character(len = kchara), parameter                                &
-     &                       :: hd_import_item = 'regular_table'
-!>      Character flag to use reverse import table
-      character(len = kchara), parameter                                &
-     &                       :: hd_import_rev =  'reversed_table'
-!
-!
-!>      Data communication mode for arbitrary size data
-      integer(kind = kint) :: iflag_sph_SRN =   iflag_import_UNDEFINED
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine set_import_table_ctl(import_ctl)
-!
-      use m_solver_SR
-      use skip_comment_f
-!
-      character(len = kchara), intent(in) :: import_ctl
-!
-!
-      if(cmp_no_case(import_ctl, hd_import_item)) then
-        iflag_sph_SRN = iflag_import_item
-      else if(cmp_no_case(import_ctl, hd_import_rev)) then
-        iflag_sph_SRN = iflag_import_rev
-      else
-        iflag_sph_SRN = iflag_import_UNDEFINED
-      end if
-!
-      end subroutine set_import_table_ctl
-!
-! ------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine check_calypso_sph_buf_N                                &

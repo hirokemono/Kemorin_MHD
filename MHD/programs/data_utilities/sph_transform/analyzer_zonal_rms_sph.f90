@@ -70,7 +70,7 @@
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
-      call SPH_initialize_sph_trans(SPH_TRNS)
+      call SPH_initialize_sph_trans(trns_param, SPH_TRNS)
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'

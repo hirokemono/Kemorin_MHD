@@ -91,6 +91,7 @@
      &          num_pixel_actual, rgba_real_gl, pvr_stencil)
 !
       use calypso_SR_type
+      use select_copy_from_recv
 !
       type(pvr_ray_start_type), intent(in) :: pvr_start
       integer(kind = kint), intent(in) :: num_pixel_actual
@@ -102,7 +103,8 @@
 !
       call reset_color_data                                             &
      &   (pvr_stencil%npixel_recved, pvr_stencil%rgba_subdomain)
-      call calypso_SR_type_N(0, ifour, pvr_stencil%img_composit_tbl,    &
+      call calypso_SR_type_N                                            &
+     &   (iflag_import_mod, ifour, pvr_stencil%img_composit_tbl,        &
      &    pvr_start%num_pvr_ray, pvr_stencil%npixel_recved,             &
      &    pvr_start%rgba_ray(1,1), pvr_stencil%rgba_subdomain(1,1))
 !
@@ -114,7 +116,8 @@
 !
 !
       call reset_color_data(num_pixel_actual, rgba_real_gl)
-      call calypso_SR_type_N(0, ifour, pvr_stencil%img_output_tbl,      &
+      call calypso_SR_type_N                                            &
+     &   (iflag_import_mod, ifour, pvr_stencil%img_output_tbl,          &
      &    pvr_stencil%npixel_stacked, num_pixel_actual,                 &
      &    pvr_stencil%rgba_composit(1,1), rgba_real_gl(1,1))
 !

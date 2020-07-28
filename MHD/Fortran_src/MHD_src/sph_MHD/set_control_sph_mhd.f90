@@ -237,7 +237,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD(plt, smctl_ctl%mevo_ctl,          &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    MHD_files%fst_file_IO, bc_IO, WK%WK_sph)
+     &    MHD_files%fst_file_IO, bc_IO, trans_p, WK%WK_sph)
 !
 !   set control parameters
 !

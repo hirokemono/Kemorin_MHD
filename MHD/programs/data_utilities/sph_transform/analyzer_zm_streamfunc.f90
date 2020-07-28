@@ -68,7 +68,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(files_STR,                         &
+      call SPH_initialize_back_trans(files_STR, trns_param,             &
      &    SPH_TRNS, ipol_LES_TRNS, time_IO_TRNS, sph_trns_IO)
 !
 !  -------------------------------
@@ -91,7 +91,7 @@
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_zm_streamfunc(i_step, files_STR, viz_step_STR, &
-     &      SPH_TRNS, time_IO_TRNS, sph_trns_IO)
+     &      trns_param, SPH_TRNS, time_IO_TRNS, sph_trns_IO)
 !
         visval = iflag_vizs_w_fix_step(i_step, viz_step_STR)
         call FEM_analyze_back_trans(files_STR%ucd_file_IO,              &

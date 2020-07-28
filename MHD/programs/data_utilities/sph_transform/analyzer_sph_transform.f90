@@ -49,8 +49,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
       call set_control_4_sph_transform                                  &
-     &   (spt_ctl1, t_STR, viz_step_STR, files_STR,                     &
-     &    SPH_TRNS%fld, d_gauss_trans, field_STR, trans_p, WK_sph_TRNS)
+     &   (spt_ctl1, t_STR, viz_step_STR, files_STR, SPH_TRNS%fld,       &
+     &    d_gauss_trans, field_STR, trns_param, WK_sph_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -66,7 +66,7 @@
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
-      call SPH_initialize_sph_trans(SPH_TRNS)
+      call SPH_initialize_sph_trans(trns_param, SPH_TRNS)
 !
 !    Set field IOP array by spectr fields
       call calypso_mpi_barrier
@@ -91,8 +91,8 @@
      &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS)
 !
 !   Spherical transform
-        call SPH_analyze_sph_trans                                      &
-     &     (i_step, files_STR%sph_file_IO, SPH_TRNS, sph_trns_IO)
+        call SPH_analyze_sph_trans(i_step, files_STR%sph_file_IO,       &
+     &                             trns_param, SPH_TRNS, sph_trns_IO)
       end do
 !
       call FEM_finalize_sph_trans                                       &

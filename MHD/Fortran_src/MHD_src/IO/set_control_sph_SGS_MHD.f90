@@ -13,7 +13,7 @@
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,   &
 !!     &          smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,             &
 !!     &          bc_IO, SGS_par, dynamic_SPH, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, WK_sph, sph_maker)
+!!     &          MHD_BC, trans_p, WK, sph_maker)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(in) :: model_ctl
@@ -29,7 +29,8 @@
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
+!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
@@ -133,7 +134,7 @@
       subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,     &
      &          smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,               &
      &          bc_IO, SGS_par, dynamic_SPH, MHD_step, MHD_prop,        &
-     &          MHD_BC, WK_sph, sph_maker)
+     &          MHD_BC, trans_p, WK, sph_maker)
 !
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -144,6 +145,7 @@
       use t_sph_boundary_input_data
       use t_ctl_params_gen_sph_shell
       use t_check_and_make_SPH_mesh
+      use t_sph_trans_arrays_MHD
 !
       use set_control_4_SGS
       use set_control_SGS_commute
@@ -166,7 +168,8 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
 !   set parameters for SGS model
@@ -186,7 +189,7 @@
 !
       call set_control_SGS_SPH_MHD(plt, org_plt,                        &
      &    model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,          &
-     &    bc_IO, MHD_step, MHD_prop, MHD_BC, WK_sph, sph_maker)
+     &    bc_IO, MHD_step, MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !
       end subroutine set_control_4_SPH_SGS_MHD
 !
@@ -262,7 +265,8 @@
 !
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,    &
-     &          bc_IO, MHD_step, MHD_prop, MHD_BC, WK_sph, sph_maker)
+     &          bc_IO, MHD_step, MHD_prop, MHD_BC, trans_p, WK,         &
+     &          sph_maker)
 !
       use t_spheric_parameter
       use t_phys_data
@@ -273,6 +277,7 @@
       use t_ctl_params_gen_sph_shell
       use t_check_and_make_SPH_mesh
       use t_work_4_sph_trans
+      use t_sph_trans_arrays_MHD
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -299,7 +304,7 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
       integer(kind = kint) :: ierr
@@ -341,7 +346,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD(plt, smctl_ctl%mevo_ctl,          &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
-     &    MHD_files%fst_file_IO, bc_IO, WK%WK_sph)
+     &    MHD_files%fst_file_IO, bc_IO, trans_p, WK%WK_sph)
 !
 !   set control parameters
 !

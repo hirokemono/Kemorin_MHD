@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_energies                              &
-!!     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
+!!      subroutine SPH_analyze_zm_energies(i_step, files_param,         &
+!!     &          viz_step, trns_p, SPH_MHD, t_IO, fld_IO)
 !!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
+!!        type(parameters_4_sph_trans), intent(in) :: trns_p
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_address), intent(in) :: ipol
@@ -35,8 +36,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_energies                                &
-     &         (i_step, files_param, viz_step, SPH_MHD, t_IO, fld_IO)
+      subroutine SPH_analyze_zm_energies(i_step, files_param,           &
+     &          viz_step, trns_p, SPH_MHD, t_IO, fld_IO)
 !
       use t_phys_address
       use t_SPH_mesh_field_data
@@ -56,6 +57,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
       type(VIZ_step_params), intent(in) :: viz_step
+      type(parameters_4_sph_trans), intent(in) :: trns_p
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(field_IO), intent(inout) :: fld_IO
@@ -89,8 +91,7 @@
 !  spherical transform for vector
         call sph_b_trans_all_field                                      &
      &     (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh,               &
-     &      trns_param, fld_rtp_TRNS, SPH_MHD%fld,                      &
-     &      field_STR, WK_sph_TRNS)
+     &      trns_p, fld_rtp_TRNS, SPH_MHD%fld, field_STR, WK_sph_TRNS)
         call cal_zm_energy_to_pressure                                  &
      &     (SPH_MHD%sph%sph_rtp%nidx_rtp, field_STR%n_point,            &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &

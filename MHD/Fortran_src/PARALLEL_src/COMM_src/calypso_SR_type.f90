@@ -122,7 +122,7 @@
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
 !
-      call calypso_send_recv_N(iflag_import_mod, NB, nnod_org, nnod_new, &
+      call calypso_send_recv_N(iflag_recv, NB, nnod_org, nnod_new,      &
      &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
      &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
      &    cps_tbl%item_export,                                          &

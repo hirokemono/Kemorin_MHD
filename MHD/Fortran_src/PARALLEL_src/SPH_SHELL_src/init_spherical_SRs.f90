@@ -8,7 +8,7 @@
 !!@n      for spherical harmonics transform
 !!
 !!@verbatim
-!!      subroutine init_sph_send_recv_N(iflag_recv, NB, sph, comms_sph)
+!!      subroutine init_sph_send_recv_N(NB, sph, comms_sph, iflag_recv)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!@endverbatim
@@ -45,17 +45,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_send_recv_N(iflag_recv, NB, sph, comms_sph)
+      subroutine init_sph_send_recv_N(NB, sph, comms_sph, iflag_recv)
 !
       use calypso_mpi
 !
       use m_sph_communicators
       use spherical_SRs_N
 !
-      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: NB
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      integer(kind = kint), intent(inout) :: iflag_recv
 !
       real(kind = kreal), allocatable :: X_rtp(:), X_rj(:)
 !
@@ -72,31 +72,22 @@
      &        comms_sph%comm_rlm, comms_sph%comm_rj)
 !
       call check_calypso_sph_buffer_N(NB, comms_sph)
-      call sel_sph_import_table(iflag_recv, NB, comms_sph,              &
+      call sel_sph_import_table(NB, comms_sph,                          &
      &    sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
      &    sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
-     &    X_rtp, WK0_spin%vr_rtm_wk, WK0_spin%sp_rlm_wk, X_rj)
+     &    X_rtp, WK0_spin%vr_rtm_wk, WK0_spin%sp_rlm_wk, X_rj,          &
+     &    iflag_recv)
 !
       deallocate(X_rj, X_rtp)
       call dealloc_work_sph_trans(WK0_spin)
-!
-      if(my_rank .eq. 0) then
-        write(*,'(a,i4)', advance='no')                                 &
-     &   'Communication mode for sph. transform: ', iflag_recv
-        if(iflag_recv .eq. iflag_import_item) then
-          write(*,'(3a)') ' (', trim(hd_import_item), ') '
-        else if(iflag_recv .eq. iflag_import_rev) then
-          write(*,'(3a)') ' (', trim(hd_import_rev), ') '
-        end if
-      end if
 !
       end subroutine init_sph_send_recv_N
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_sph_import_table(iflag_recv, NB, comms_sph,        &
+      subroutine sel_sph_import_table(NB, comms_sph,                    &
      &          nnod_rtp, nnod_rtm, nnod_rlm, nnod_rj,                  &
-     &          X_rtp, X_rtm, X_rlm, X_rj)
+     &          X_rtp, X_rtm, X_rlm, X_rj, iflag_recv)
 !
       use calypso_mpi
       use calypso_mpi_real
@@ -105,7 +96,6 @@
       use m_sph_communicators
       use m_solver_SR
 !
-      integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: NB
       integer(kind = kint), intent(in) :: nnod_rtp, nnod_rtm
       integer(kind = kint), intent(in) :: nnod_rlm, nnod_rj
@@ -115,6 +105,7 @@
       real (kind=kreal), intent(inout) :: X_rtm(NB*nnod_rtm)
       real (kind=kreal), intent(inout) :: X_rlm(NB*nnod_rlm)
       real (kind=kreal), intent(inout)::  X_rj(NB*nnod_rj)
+      integer(kind = kint), intent(inout) :: iflag_recv
 !
       real(kind = kreal) :: starttime, endtime(0:2)
       real(kind = kreal) :: etime_item_import(0:1) = 0.0d0
