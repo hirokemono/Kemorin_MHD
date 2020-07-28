@@ -24,6 +24,10 @@
 !!     &                         inod_import, irev_import,              &
 !!     &                         WR, X_new)
 !!
+!!      subroutine sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,     &
+!!     &                         npe_send, ntot_export, istack_send,    &
+!!     &                         inod_export, X_new, WS)
+!!
 !!      subroutine sel_cppy_from_recv_buf_3x1(iflag_recv, nnod_new,     &
 !!     &                         ntot_import, inod_import, irev_import, &
 !!     &                         WR, X1_new, X2_new, X3_new)
@@ -245,7 +249,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,       &
-     &                         npe_send, ntot_import, istack_send,      &
+     &                         npe_send, ntot_export, istack_send,      &
      &                         inod_export, X_new, WS)
 !
       use set_from_recv_buffer
@@ -266,11 +270,10 @@
 !C-- SEND
       if(iflag_recv .eq. iflag_import_mod) then
         call set_to_send_buf_N_mod(NB, nnod_org, npe_send,              &
-     &      istack_send(npe_send), istack_send, inod_export,            &
-     &      X_org, WS)
+     &      ntot_export, istack_send, inod_export, X_org, WS)
       else
-        call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),     &
-     &      inod_export, X_org, WS)
+        call set_to_send_buf_N                                          &
+     &     (NB, nnod_org, ntot_export, inod_export, X_org, WS)
       end if
 !
       end subroutine sel_cppy_to_send_buf_N
