@@ -7,8 +7,8 @@
 !!
 !!@verbatim
 !!      subroutine cal_dynamic_SGS_4_sph_MHD                            &
-!!     &         (sph_rtp, sph_d_grp, stab_weight, numdir, ifld_sgs,    &
-!!     &          flux_simi, flux_wide, flux_dble, wk_sgs)
+!!     &         (iflag_FFT, sph_rtp, sph_d_grp, stab_weight, numdir,   &
+!!     &          ifld_sgs, flux_simi, flux_wide, flux_dble, wk_sgs)
 !!@endverbatim
 !
       module zonal_lsq_4_model_coefs
@@ -34,12 +34,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_dynamic_SGS_4_sph_MHD                              &
-     &         (sph_rtp, sph_d_grp, stab_weight, numdir, ifld_sgs,      &
-     &          flux_simi, flux_wide, flux_dble, wk_sgs)
+     &         (iflag_FFT, sph_rtp, sph_d_grp, stab_weight, numdir,     &
+     &          ifld_sgs, flux_simi, flux_wide, flux_dble, wk_sgs)
 !
       use m_FFT_selector
       use cal_sph_model_coefs
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       real(kind = kreal), intent(in) :: stab_weight
@@ -58,7 +59,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_int_zonal_4_model_coefs'
-      call sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,              &
+      call sel_int_zonal_4_model_coefs(iflag_FFT, sph_rtp, sph_d_grp,   &
      &    numdir, flux_simi, flux_wide, flux_dble,                      &
      &    wk_sgs%comp_coef(1,ifld_sgs), wk_sgs%comp_clip(1,ifld_sgs))
 !
@@ -73,13 +74,15 @@
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_int_zonal_4_model_coefs(sph_rtp, sph_d_grp,        &
+      subroutine sel_int_zonal_4_model_coefs                            &
+     &         (iflag_FFT, sph_rtp, sph_d_grp,                          &
      &          numdir, frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
 !
       use m_FFT_selector
       use zonal_int_4_sph_Csim_pin
       use zonal_int_4_sph_Csim_pout
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: numdir
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp

@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/SOLVER_src/send_recv/m_sel_spherical_SRs.f90

@@ -14,6 +14,7 @@
       use t_ucd_data
       use t_mesh_data_4_merge
       use t_ctl_data_plane_fft
+      use m_FFT_selector
 !
       use set_geometry_to_merge
       use set_numnod_4_plane
@@ -104,7 +105,8 @@
 !
 !  -------   Fourier Transform
 !
-       call s_cal_fft_for_horizontal(plane_fft_wk1%kx_max,              &
+       call s_cal_fft_for_horizontal                                    &
+     &    (iflag_ISPACK, plane_fft_wk1%kx_max,                          &
      &     plane_fft_wk1%ky_max, plane_fft_wk1%iz_max,                  &
      &     plane_fft_wk1%num_spectr, plane_fft_wk1%num_io,              &
      &     plane_fft_wk1%num_fft, plane_fft_wk1%icomp_fft,              &

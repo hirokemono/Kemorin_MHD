@@ -58,7 +58,7 @@
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !
-      iflag_FFT = iflag_FFTPACK
+      trans_p%iflag_FFT = iflag_FFTPACK
       if(WK_sph%WK_leg%id_legendre .eq. iflag_leg_undefined) then
         WK_sph%WK_leg%id_legendre = iflag_leg_sym_dgemm_big
       end if
@@ -67,7 +67,7 @@
      &   (trans_p%nvector_legendre, ncomp_trans, sph, comms_sph,        &
      &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
       call init_fourier_transform_4_sph(ncomp_trans, sph%sph_rtp,       &
-     &    comms_sph%comm_rtp, WK_sph%WK_FFTs)
+     &    comms_sph%comm_rtp, WK_sph%WK_FFTs, trans_p%iflag_FFT)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !

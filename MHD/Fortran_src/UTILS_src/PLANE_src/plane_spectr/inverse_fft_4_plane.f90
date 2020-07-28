@@ -35,12 +35,13 @@
 !  --------------------------------------------------------------------
 !
       subroutine s_inverse_fft_4_plane                                  &
-     &         (npl_spec, nx_all, ny_all, nz_all,                       &
+     &         (iflag_FFT, npl_spec, nx_all, ny_all, nz_all,            &
      &          kx_max, ky_max, iz_max, num_spectr,                     &
      &          num_fft, wk_pfft, phys_d)
 !
       use t_FFT_selector
 !
+      integer(kind=kint), intent(in) :: iflag_FFT
       integer(kind=kint), intent(in) :: nx_all, ny_all, nz_all
       integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
       integer(kind = kint), intent(in) :: num_spectr, num_fft
@@ -62,9 +63,10 @@
       n1 = num_fft*iz_max*kx_max
       Nstacksmp(1) = n1
 !
-      call verify_FFT_select(Nsmp, Nstacksmp, ky_max, WK_FFTS)
+      call verify_FFT_select                                            &
+     &   (iflag_FFT, Nsmp, Nstacksmp, ky_max, WK_FFTS)
       call backward_FFT_select                                          &
-     &   (Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
+     &   (iflag_FFT, Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
 !
       call copy_4_inversse_fft_x(kx_max, ky_max, iz_max,                &
      &    num_spectr, num_fft, wk_pfft, phys_d)
@@ -73,9 +75,10 @@
       Nstacksmp(1) = n1
 !
 !      write(*,*) 'start FFT', n1, kx_max
-      call verify_FFT_select(Nsmp, Nstacksmp, kx_max, WK_FFTS)
+      call verify_FFT_select                                            &
+     &   (iflag_FFT, Nsmp, Nstacksmp, kx_max, WK_FFTS)
       call backward_FFT_select                                          &
-     &   (Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
+     &   (iflag_FFT, Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
 !
       end subroutine s_inverse_fft_4_plane
 !

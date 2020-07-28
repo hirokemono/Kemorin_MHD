@@ -253,7 +253,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine magnify_sph_ave_SGS_buoyancy(sph_rtp, iak_sgs_term,    &
+      subroutine magnify_sph_ave_SGS_buoyancy                           &
+     &         (iflag_FFT, sph_rtp, iak_sgs_term,                       &
      &          wk_sgs_buo, fg_trns_LES, trns_f_SGS)
 !
       use t_SGS_model_addresses
@@ -266,6 +267,7 @@
       use prod_buo_model_coefs_sph
       use SGS_buo_coefs_sph_MHD
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(SGS_term_address), intent(in) :: iak_sgs_term
       type(work_4_sph_SGS_buoyancy), intent(in) :: wk_sgs_buo
@@ -276,13 +278,13 @@
 !
       if     (iak_sgs_term%i_SGS_buoyancy                               &
      &         * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call sel_prod_dbl_radial_buo_coefs(sph_rtp,                     &
+        call sel_prod_dbl_radial_buo_coefs(iflag_FFT, sph_rtp,          &
      &     wk_sgs_buo%Cbuo_ave_sph_rtp, fg_trns_LES, trns_f_SGS)
       else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
+        call sel_prod_sgl_radial_buo_coefs(iflag_FFT, sph_rtp,          &
      &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,1), fg_trns_LES, trns_f_SGS)
       else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call sel_prod_sgl_radial_buo_coefs(sph_rtp,                     &
+        call sel_prod_sgl_radial_buo_coefs(iflag_FFT, sph_rtp,          &
      &     wk_sgs_buo%Cbuo_ave_sph_rtp(1,2), fg_trns_LES, trns_f_SGS)
       end if
 !

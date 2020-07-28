@@ -95,7 +95,6 @@
       use m_machine_parameter
       use m_file_format_switch
 !
-      use m_sel_spherical_SRs
       use m_FFT_selector
       use m_legendre_transform_list
 !
@@ -112,6 +111,7 @@
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
+      use sel_spherical_SRs
 !
       type(platform_data_control), intent(in) :: plt
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
@@ -139,7 +139,8 @@
       end if
 !
       if(mevo_ctl%FFT_library%iflag .gt. 0) then
-        call set_fft_library_ctl(mevo_ctl%FFT_library%charavalue)
+        call set_fft_library_ctl                                        &
+     &     (mevo_ctl%FFT_library%charavalue, trans_p%iflag_FFT)
       end if
       if(mevo_ctl%import_mode%iflag .gt. 0) then
         call set_import_table_ctl                                       &

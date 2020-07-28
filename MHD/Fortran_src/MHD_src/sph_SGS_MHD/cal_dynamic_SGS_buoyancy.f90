@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine product_buo_model_coefs_4_sph                        &
-!!     &         (istep_dynamic, SGS_param, sph, ipol_LES,              &
+!!     &         (istep_dynamic, iflag_FFT, SGS_param, sph, ipol_LES,   &
 !!     &          trns_SGS, dynamic_SPH, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
@@ -51,13 +51,14 @@
 !*   ------------------------------------------------------------------
 !
       subroutine product_buo_model_coefs_4_sph                          &
-     &         (istep_dynamic, SGS_param, sph, ipol_LES,                &
+     &         (istep_dynamic, iflag_FFT, SGS_param, sph, ipol_LES,     &
      &          trns_SGS, dynamic_SPH, rj_fld)
 !
       use t_SGS_buoyancy_sph
       use SGS_buo_coefs_sph_MHD
 !
       integer(kind = kint), intent(in) :: istep_dynamic
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(SGS_model_addresses), intent(in) :: ipol_LES
@@ -70,7 +71,7 @@
       if(SGS_param%iflag_SGS_buo_usage .eq. id_use_zonal) then
 !        write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
         call prod_SGS_buoyancy_to_Reynolds                              &
-     &     (sph%sph_rtp, dynamic_SPH%sph_d_grp,                         &
+     &     (iflag_FFT, sph%sph_rtp, dynamic_SPH%sph_d_grp,              &
      &      trns_SGS%f_trns_LES, dynamic_SPH%iak_sgs_term,              &
      &      dynamic_SPH%wk_sgs, trns_SGS%forward)
 !
@@ -84,7 +85,7 @@
 !
 !        if(iflag_debug.eq.1) write(*,*)                                &
 !     &                    'magnify_sph_ave_SGS_buoyancy'
-        call magnify_sph_ave_SGS_buoyancy(sph%sph_rtp,                  &
+        call magnify_sph_ave_SGS_buoyancy(iflag_FFT, sph%sph_rtp,       &
      &      dynamic_SPH%iak_sgs_term, dynamic_SPH%wk_sgs_buo,           &
      &      trns_SGS%f_trns_LES, trns_SGS%forward)
 !

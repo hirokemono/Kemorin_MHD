@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine const_model_coefs_4_sph                              &
-!!     &         (SGS_param, sph_rtp, sph_d_grp,                        &
+!!     &         (iflag_FFT, SGS_param, sph_rtp, sph_d_grp,             &
 !!     &          fg_trns_SGS, bw_trns_wSGS, bd_trns_dSGS, trns_f_SIMI, &
 !!     &          trns_b_wide, trns_b_dble, iak_sgs_term, wk_sgs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -23,8 +23,9 @@
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
-!!      subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,    &
-!!     &          fl_prop, trns_MHD, trns_SGS, trns_Csim, dynamic_SPH)
+!!      subroutine const_dynamic_SGS_4_buo_sph                          &
+!!     &         (iflag_FFT, stab_weight, sph_rtp, fl_prop,             &
+!!     &          trns_MHD, trns_SGS, trns_Csim, dynamic_SPH)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -57,6 +58,8 @@
 !
       implicit none
 !
+      private :: cal_SGS_buo_coefs_sph_MHD
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -64,12 +67,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_model_coefs_4_sph                                &
-     &         (SGS_param, sph_rtp, sph_d_grp,                          &
+     &         (iflag_FFT, SGS_param, sph_rtp, sph_d_grp,               &
      &          fg_trns_SGS, bw_trns_wSGS, bd_trns_dSGS, trns_f_SIMI,   &
      &          trns_b_wide, trns_b_dble, iak_sgs_term, wk_sgs)
 !
       use zonal_lsq_4_model_coefs
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -87,7 +91,7 @@
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD MF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, sph_d_grp, SGS_param%stab_weight,                  &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, SGS_param%stab_weight,       &
      &      n_vector, iak_sgs_term%i_SGS_m_flux,                        &
      &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_inertia),           &
      &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_inertia),          &
@@ -98,7 +102,7 @@
       if(iak_sgs_term%i_SGS_Lorentz .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD LZ'
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, sph_d_grp, SGS_param%stab_weight,                  &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, SGS_param%stab_weight,       &
      &      n_vector, iak_sgs_term%i_SGS_Lorentz,                       &
      &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_Lorentz),           &
      &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_Lorentz),          &
@@ -109,7 +113,7 @@
       if(iak_sgs_term%i_SGS_induction .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD ID'
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, sph_d_grp, SGS_param%stab_weight,                  &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, SGS_param%stab_weight,       &
      &      n_vector, iak_sgs_term%i_SGS_induction,                     &
      &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_vp_induct),         &
      &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_vp_induct),        &
@@ -120,7 +124,7 @@
       if(iak_sgs_term%i_SGS_h_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD HF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, sph_d_grp, SGS_param%stab_weight,                  &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, SGS_param%stab_weight,       &
      &      n_vector, iak_sgs_term%i_SGS_h_flux,                        &
      &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),            &
      &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_h_flux),           &
@@ -131,7 +135,7 @@
       if(iak_sgs_term%i_SGS_c_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'cal_dynamic_SGS_4_sph_MHD CF'
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, sph_d_grp, SGS_param%stab_weight,                  &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, SGS_param%stab_weight,       &
      &      n_vector, iak_sgs_term%i_SGS_c_flux,                        &
      &      trns_f_SIMI%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),            &
      &      trns_b_wide%fld_rtp(1,bw_trns_wSGS%i_SGS_c_flux),           &
@@ -143,11 +147,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_dynamic_SGS_4_buo_sph(stab_weight, sph_rtp,      &
-     &          fl_prop, trns_MHD, trns_SGS, trns_Csim, dynamic_SPH)
+      subroutine const_dynamic_SGS_4_buo_sph                            &
+     &         (iflag_FFT, stab_weight, sph_rtp, fl_prop,               &
+     &          trns_MHD, trns_SGS, trns_Csim, dynamic_SPH)
 !
       use cal_SGS_buo_flux_sph_MHD
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       real(kind = kreal), intent(in) :: stab_weight
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
@@ -159,28 +165,29 @@
 !
 !
       call SGS_fluxes_for_buo_coefs                                     &
-     &   (sph_rtp, fl_prop, trns_MHD%b_trns%base,                       &
+     &   (iflag_FFT, sph_rtp, fl_prop, trns_MHD%b_trns%base,            &
      &    trns_SGS%f_trns_LES%SGS_term,                                 &
      &    trns_Csim%f_trns_LES%SGS_ene_flux,                            &
      &    trns_MHD%backward, trns_SGS%forward, trns_Csim%forward)
 !
       call cal_SGS_buo_coefs_sph_MHD                                    &
-     &  (stab_weight, sph_rtp, dynamic_SPH%sph_d_grp,                   &
-     &   trns_Csim%f_trns_LES%SGS_ene_flux, trns_Csim%forward,          &
-     &   dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,          &
-     &   dynamic_SPH%wk_sgs)
+     &   (iflag_FFT, stab_weight, sph_rtp, dynamic_SPH%sph_d_grp,       &
+     &    trns_Csim%f_trns_LES%SGS_ene_flux, trns_Csim%forward,         &
+     &    dynamic_SPH%iak_sgs_term, dynamic_SPH%icomp_sgs_term,         &
+     &    dynamic_SPH%wk_sgs)
 !
       end subroutine const_dynamic_SGS_4_buo_sph 
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_SGS_buo_coefs_sph_MHD(stab_weight, sph_rtp,        &
-     &          sph_d_grp, f_trns_sef, trns_Csim_fwd,                   &
+      subroutine cal_SGS_buo_coefs_sph_MHD(iflag_FFT, stab_weight,      &
+     &          sph_rtp, sph_d_grp, f_trns_sef, trns_Csim_fwd,          &
      &          iak_sgs_term, icmop_sgs_term, wk_sgs)
 !
       use SGS_buo_coefs_sph_MHD
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       real(kind = kreal), intent(in) :: stab_weight
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -193,7 +200,8 @@
 !
 !
       if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
-        call cal_SGS_buo_coef_sph_MHD(sph_rtp, sph_d_grp, stab_weight,  &
+        call cal_SGS_buo_coef_sph_MHD                                   &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, stab_weight,                 &
      &      trns_Csim_fwd%fld_rtp, trns_Csim_fwd%ncomp,                 &
      &      f_trns_sef%i_reynolds_wk, f_trns_sef%i_SGS_buo_wk,          &
      &      iak_sgs_term%i_SGS_buoyancy, icmop_sgs_term%i_SGS_buoyancy, &
@@ -201,7 +209,8 @@
       end if
 !
       if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
-        call cal_SGS_buo_coef_sph_MHD(sph_rtp, sph_d_grp, stab_weight,  &
+        call cal_SGS_buo_coef_sph_MHD                                   &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, stab_weight,                 &
      &      trns_Csim_fwd%fld_rtp, trns_Csim_fwd%ncomp,                 &
      &      f_trns_sef%i_reynolds_wk, f_trns_sef%i_SGS_comp_buo_wk,     &
      &      iak_sgs_term%i_SGS_comp_buo, icmop_sgs_term%i_SGS_comp_buo, &

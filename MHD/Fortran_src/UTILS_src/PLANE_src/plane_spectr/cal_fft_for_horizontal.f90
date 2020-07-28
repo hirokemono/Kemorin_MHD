@@ -4,7 +4,8 @@
 !      Written by H.Matsui
 !      Modified by H.Matsui on June, 2006
 !
-!!      subroutine s_cal_fft_for_horizontal(kx_max, ky_max, iz_max,     &
+!!      subroutine s_cal_fft_for_horizontal                             &
+!!     &         (iflag_FFT, kx_max, ky_max, iz_max,                    &
 !!     &          num_spectr, num_io, num_fft, icomp_fft,               &
 !!     &          phys_d, wk_pfft, phys_io)
 !
@@ -20,12 +21,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_fft_for_horizontal(kx_max, ky_max, iz_max,       &
+      subroutine s_cal_fft_for_horizontal                               &
+     &         (iflag_FFT, kx_max, ky_max, iz_max,                      &
      &          num_spectr, num_io, num_fft, icomp_fft,                 &
      &          phys_d, wk_pfft, phys_io)
 !
       use t_FFT_selector
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: kx_max, ky_max, iz_max
       integer(kind = kint), intent(in) :: num_spectr, num_io, num_fft
       integer(kind = kint), intent(in) :: icomp_fft(num_fft)
@@ -87,9 +90,10 @@
         Nstacksmp(j) = Nstacksmp(j-1) + iz_max*kx_max
       end do
 !
-      call verify_FFT_select(num_fft, Nstacksmp, kx_max, WK_FFTS)
+      call verify_FFT_select                                            &
+     &   (iflag_FFT, num_fft, Nstacksmp, kx_max, WK_FFTS)
       call forward_FFT_select                                           &
-     &   (Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
+     &   (iflag_FFT, Nsmp, Nstacksmp, n1, kx_max, wk_pfft, WK_FFTS)
 !
 !    swap array
 !
@@ -138,9 +142,10 @@
         Nstacksmp(j) = Nstacksmp(j-1) + iz_max*kx_max
       end do
 !
-      call verify_FFT_select(num_fft, Nstacksmp, ky_max, WK_FFTS)
+      call verify_FFT_select                                            &
+     &   (iflag_FFT, num_fft, Nstacksmp, ky_max, WK_FFTS)
       call forward_FFT_select                                           &
-     &   (Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
+     &   (iflag_FFT, Nsmp, Nstacksmp, n1, ky_max, wk_pfft, WK_FFTS)
 !
 !    swap array
 !

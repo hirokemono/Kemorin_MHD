@@ -147,7 +147,8 @@
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
         if (iflag_debug.eq.1) write(*,*) 'product_model_coefs_4_sph'
-        call product_model_coefs_4_sph(SGS_par%model_p, sph%sph_rtp,    &
+        call product_model_coefs_4_sph                                  &
+     &     (trans_p%iflag_FFT, SGS_par%model_p, sph%sph_rtp,            &
      &      dynamic_SPH%sph_d_grp, dynamic_SPH%iak_sgs_term,            &
      &      WK_LES%trns_SGS%f_trns_LES%SGS_term,                        &
      &      WK_LES%trns_SGS%forward, dynamic_SPH%wk_sgs)
@@ -162,8 +163,10 @@
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON           &
      &  .and. istep_dynamic .eq. 0) then
         if(SGS_par%model_p%iflag_SGS_gravity .ne. id_SGS_none) then
-          if(iflag_debug.ge.1) write(*,*) 'dynamic_buo_SGS_by_pseudo_sph'
-          call const_dynamic_SGS_4_buo_sph(SGS_par%model_p%stab_weight, &
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                          'dynamic_buo_SGS_by_pseudo_sph'
+          call const_dynamic_SGS_4_buo_sph                              &
+     &       (trans_p%iflag_FFT, SGS_par%model_p%stab_weight, &
      &        sph%sph_rtp, MHD_prop%fl_prop, WK%trns_MHD,               &
      &        WK_LES%trns_SGS, WK_LES%trns_Csim, dynamic_SPH)
         end if
@@ -191,8 +194,8 @@
         if(iflag_debug.ge.1) write(*,*) 'product_buo_model_coefs_4_sph'
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+4)
         call product_buo_model_coefs_4_sph                              &
-     &     (istep_dynamic, SGS_par%model_p, sph, ipol_LES,              &
-     &      WK_LES%trns_SGS, dynamic_SPH, rj_fld)
+     &     (istep_dynamic, trans_p%iflag_FFT, SGS_par%model_p,          &
+     &      sph, ipol_LES, WK_LES%trns_SGS, dynamic_SPH, rj_fld)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+4)
       end if
 !
@@ -265,7 +268,8 @@
      &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%backward)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
-      call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
+      call const_model_coefs_4_sph                                      &
+     &   (trans_p%iflag_FFT, SGS_param, sph%sph_rtp,                    &
      &    dynamic_SPH%sph_d_grp, trns_SGS%f_trns_LES%SGS_term,          &
      &    trns_DYNS%b_trns_LES%wide_SGS, trns_DYNS%b_trns_LES%dble_SGS, &
      &    trns_SGS%forward, trns_DYNS%backward, trns_DYNS%backward,     &
@@ -334,7 +338,8 @@
      &    trns_DYNG, trns_Csim)
 !
       if (iflag_debug.eq.1) write(*,*) 'SGS_param%stab_weight'
-      call const_model_coefs_4_sph(SGS_param, sph%sph_rtp,              &
+      call const_model_coefs_4_sph                                      &
+     &   (trans_p%iflag_FFT, SGS_param, sph%sph_rtp,                    &
      &    dynamic_SPH%sph_d_grp, trns_SIMI%f_trns_LES%SGS_term,         &
      &    trns_Csim%b_trns_LES%wide_SGS, trns_DYNG%b_trns_LES%dble_SGS, &
      &    trns_SIMI%forward, trns_Csim%backward, trns_DYNG%backward,    &

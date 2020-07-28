@@ -7,7 +7,8 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine nl_gradient_SGS_terms_rtp(sph, sph_filters, MHD_prop,&
+!!      subroutine nl_gradient_SGS_terms_rtp                            &
+!!     &         (iflag_FFT, sph, sph_filters, MHD_prop,                &
 !!     &          b_trns_base, bn_trns_grd, bn_trns_dv, fg_trns_SGS,    &
 !!     &          trns_b_MHD, trns_b_NLGD, trns_f_SGS)
 !!        type(sph_grids), intent(in) :: sph
@@ -22,7 +23,8 @@
 !!        type(spherical_transform_data), intent(in) :: trns_b_NLGD
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!
-!!      subroutine wider_nl_grad_SGS_rtp(sph, wide_filters, MHD_prop,   &
+!!      subroutine wider_nl_grad_SGS_rtp                                &
+!!     &         (iflag_FFT, sph, wide_filters, MHD_prop,               &
 !!     &          bg_trns_fil, bd_trns_gfs, bd_trns_dfv, bd_trns_wSGS,  &
 !!     &          fd_trns_wSGS, trns_b_SGS, trns_b_DYNG, trns_b_DYNS)
 !!        type(sph_grids), intent(in) :: sph
@@ -73,12 +75,14 @@
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{T}} @f$, and
 !!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{C}}
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{C}} @f$,
-      subroutine nl_gradient_SGS_terms_rtp(sph, sph_filters, MHD_prop,  &
+      subroutine nl_gradient_SGS_terms_rtp                              &
+     &         (iflag_FFT, sph, sph_filters, MHD_prop,                  &
      &          b_trns_base, bn_trns_grd, bn_trns_dv, fg_trns_SGS,      &
      &          trns_b_MHD, trns_b_NLGD, trns_f_SGS)
 !
       use sel_sph_SGS_nl_gradient
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_filters_type), intent(in) :: sph_filters
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -93,8 +97,8 @@
 !
 !
       if(fg_trns_SGS%i_SGS_inertia .gt. 0) then
-        call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_velo,       &
+        call sel_sph_SGS_induct_nl_gradient(iflag_FFT,                  &
+     &      sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_velo,       &
      &      b_trns_base%i_vort, b_trns_base%i_velo,                     &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns_dv%i_grad_wx, bn_trns_dv%i_grad_wy,                 &
@@ -106,8 +110,8 @@
       end if
 !
       if(fg_trns_SGS%i_SGS_Lorentz .gt. 0) then
-        call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_lor,        &
+        call sel_sph_SGS_induct_nl_gradient(iflag_FFT,                  &
+     &      sph%sph_rtp, sph_filters, MHD_prop%fl_prop%coef_lor,        &
      &      b_trns_base%i_current, b_trns_base%i_magne,                 &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns_dv%i_grad_jx, bn_trns_dv%i_grad_jy,                 &
@@ -119,8 +123,8 @@
       end if
 !
       if(fg_trns_SGS%i_SGS_vp_induct .gt. 0) then
-        call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, sph_filters, MHD_prop%cd_prop%coef_induct,     &
+        call sel_sph_SGS_induct_nl_gradient(iflag_FFT,                  &
+     &      sph%sph_rtp, sph_filters, MHD_prop%cd_prop%coef_induct,     &
      &      b_trns_base%i_velo, b_trns_base%i_magne,                    &
      &      trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,                       &
      &      bn_trns_dv%i_grad_vx, bn_trns_dv%i_grad_vy,                 &
@@ -132,8 +136,8 @@
       end if
 !
       if(fg_trns_SGS%i_SGS_h_flux .gt. 0) then
-        call sel_SGS_s_flux_nl_gradient                                 &
-     &     (sph%sph_rtp, sph_filters, MHD_prop%ht_prop%coef_advect,     &
+        call sel_SGS_s_flux_nl_gradient(iflag_FFT,                      &
+     &      sph%sph_rtp, sph_filters, MHD_prop%ht_prop%coef_advect,     &
      &      b_trns_base%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,   &
      &      bn_trns_dv%i_grad_vx, bn_trns_dv%i_grad_vy,                 &
      &      bn_trns_dv%i_grad_vz, bn_trns_grd%i_grad_temp,              &
@@ -143,8 +147,8 @@
       end if
 !
       if(fg_trns_SGS%i_SGS_c_flux .gt. 0) then
-        call sel_SGS_s_flux_nl_gradient                                 &
-     &     (sph%sph_rtp, sph_filters, MHD_prop%cp_prop%coef_advect,     &
+        call sel_SGS_s_flux_nl_gradient(iflag_FFT,                      &
+     &      sph%sph_rtp, sph_filters, MHD_prop%cp_prop%coef_advect,     &
      &      b_trns_base%i_velo, trns_b_MHD%ncomp, trns_b_MHD%fld_rtp,   &
      &      bn_trns_dv%i_grad_vx, bn_trns_dv%i_grad_vy,                 &
      &      bn_trns_dv%i_grad_vz, bn_trns_grd%i_grad_composit,          &
@@ -168,12 +172,14 @@
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{T}} @f$, and
 !!      @f$ e_{ijk}\overline{\tilde{u}_{j} \tilde{C}}
 !!         - e_{ijk}\overline{\tilde{u}}_{j}\overline{\tilde{C}} @f$,
-      subroutine wider_nl_grad_SGS_rtp(sph, wide_filters, MHD_prop,     &
+      subroutine wider_nl_grad_SGS_rtp                                  &
+     &         (iflag_FFT, sph, wide_filters, MHD_prop,                 &
      &          bg_trns_fil, bd_trns_gfs, bd_trns_dfv, bd_trns_wSGS,    &
      &          trns_b_SGS, trns_b_DYNG, trns_b_DYNS)
 !
       use sel_sph_SGS_nl_gradient
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_filters_type), intent(in) :: wide_filters
       type(sph_grids), intent(in) :: sph
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -188,8 +194,8 @@
 !
 !
       if(bd_trns_wSGS%i_SGS_inertia .gt. 0) then
-        call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
+        call sel_sph_SGS_induct_nl_gradient(iflag_FFT,                  &
+     &      sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_velo,      &
      &      bg_trns_fil%i_vort, bg_trns_fil%i_velo,                     &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns_dfv%i_grad_wx, bd_trns_dfv%i_grad_wy,               &
@@ -201,8 +207,8 @@
       end if
 !
       if(bd_trns_wSGS%i_SGS_Lorentz .gt. 0) then
-        call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_lor,       &
+        call sel_sph_SGS_induct_nl_gradient(iflag_FFT,                  &
+     &      sph%sph_rtp, wide_filters, MHD_prop%fl_prop%coef_lor,       &
      &      bg_trns_fil%i_current, bg_trns_fil%i_magne,                 &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns_dfv%i_grad_jx, bd_trns_dfv%i_grad_jy,               &
@@ -214,8 +220,8 @@
       end if
 !
       if(bd_trns_wSGS%i_SGS_vp_induct .gt. 0) then
-        call sel_sph_SGS_induct_nl_gradient                             &
-     &     (sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
+        call sel_sph_SGS_induct_nl_gradient(iflag_FFT,                  &
+     &      sph%sph_rtp, wide_filters, MHD_prop%cd_prop%coef_induct,    &
      &      bg_trns_fil%i_velo, bg_trns_fil%i_magne,                    &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns_dfv%i_grad_vx, bd_trns_dfv%i_grad_vy,               &
@@ -227,7 +233,8 @@
       end if
 !
       if(bd_trns_wSGS%i_SGS_h_flux .gt. 0) then
-        call sel_SGS_s_flux_nl_gradient(sph%sph_rtp, wide_filters,      &
+        call sel_SGS_s_flux_nl_gradient                                 &
+     &     (iflag_FFT, sph%sph_rtp, wide_filters,                       &
      &      MHD_prop%ht_prop%coef_advect, bg_trns_fil%i_velo,           &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns_dfv%i_grad_vx, bd_trns_dfv%i_grad_vy,               &
@@ -238,7 +245,8 @@
       end if
 !
       if(bd_trns_wSGS%i_SGS_c_flux .gt. 0) then
-        call sel_SGS_s_flux_nl_gradient(sph%sph_rtp, wide_filters,      &
+        call sel_SGS_s_flux_nl_gradient                                 &
+     &     (iflag_FFT, sph%sph_rtp, wide_filters,                       &
      &      MHD_prop%cp_prop%coef_advect, bg_trns_fil%i_velo,           &
      &      trns_b_SGS%ncomp, trns_b_SGS%fld_rtp,                       &
      &      bd_trns_dfv%i_grad_vx, bd_trns_dfv%i_grad_vy,               &

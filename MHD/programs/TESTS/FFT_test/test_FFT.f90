@@ -13,6 +13,7 @@
 !
       type(working_FFTs) :: WK_FFTS
       type(fft_test_data) :: ft0
+      integer(kind = kint) :: iflag_FFT_t
 !
 !
       iflag_debug = 1
@@ -24,7 +25,7 @@
       write(*,*) '2: FFTW3 (if avaiable)'
       write(*,*) '3: SINGLE FFTW3 (if avaiable)'
       write(*,*) '4: ISPACK'
-      read(*,*) iflag_FFT
+      read(*,*) iflag_FFT_t
 !
 !
 !$omp parallel workshare
@@ -32,17 +33,17 @@
 !$omp end parallel workshare
 !
       call initialize_FFT_select                                        &
-     &   (0, np_smp, ft0%nstack, ft0%ngrd, WK_FFTS)
+     &   (0, iflag_FFT_t, np_smp, ft0%nstack, ft0%ngrd, WK_FFTS)
 !
-      call forward_FFT_select(np_smp, ft0%nstack, ft0%nfld, ft0%ngrd,   &
-     &                        ft0%x, WK_FFTS)
+      call forward_FFT_select(iflag_FFT_t, np_smp,                      &
+     &    ft0%nstack, ft0%nfld, ft0%ngrd, ft0%x, WK_FFTS)
 !
 !$omp parallel workshare
       ft0%y(1:ft0%nfld,1:ft0%ngrd) = ft0%x(1:ft0%nfld,1:ft0%ngrd)
 !$omp end parallel workshare
 !
-      call backward_FFT_select(np_smp, ft0%nstack, ft0%nfld, ft0%ngrd,  &
-     &                         ft0%x, WK_FFTS)
+      call backward_FFT_select(iflag_FFT_t, np_smp,                     &
+     &    ft0%nstack, ft0%nfld, ft0%ngrd, ft0%x, WK_FFTS)
 !
       call write_fft_test_data('fft_test.dat', ft0)
       call dealloc_fft_test_data(ft0)

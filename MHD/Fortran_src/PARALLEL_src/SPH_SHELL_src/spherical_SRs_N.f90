@@ -73,7 +73,7 @@
      &         (iflag_recv, NB, nnod_send, nnod_recv,                   &
      &          send_comm, recv_comm, X_send, X_recv)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer(kind = kint), intent(in) :: iflag_recv
       integer (kind=kint), intent(in) :: NB, nnod_send, nnod_recv
@@ -102,7 +102,7 @@
      &         (iflag_recv, nnod_send, nnod_recv,                       &
      &          send_comm, recv_comm, X_send, X_recv)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use calypso_SR_6
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -128,7 +128,7 @@
      &         (iflag_recv, nnod_send, nnod_recv,                       &
      &          send_comm, recv_comm, X_send, X_recv)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use calypso_SR_3
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -154,7 +154,7 @@
      &         (iflag_recv, nnod_send, nnod_recv,                       &
      &          send_comm, recv_comm, X_send, X_recv)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use calypso_SR_2
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -180,7 +180,7 @@
      &         (iflag_recv, nnod_send, nnod_recv,                       &
      &          send_comm, recv_comm, X_send, X_recv)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use calypso_SR
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -206,7 +206,7 @@
      &         (iflag_recv, nnod_send, nnod_recv,                       &
      &          send_comm, recv_comm, iX_send, iX_recv)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use calypso_SR_int
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -231,7 +231,7 @@
 !
       subroutine check_calypso_sph_comm_buf_N(NB, send_comm, recv_comm)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
       type(sph_comm_tbl), intent(in) :: send_comm
@@ -247,7 +247,7 @@
 !
       subroutine calypso_sph_comm_N(NB, send_comm, recv_comm)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
       type(sph_comm_tbl), intent(in) :: send_comm
@@ -290,7 +290,7 @@
       subroutine calypso_sph_from_recv_N(iflag_recv, NB, nnod_sph,      &
      &          comm_sph, n_WR, WR, X_sph)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_sph
@@ -310,7 +310,7 @@
 !
       subroutine finish_send_recv_sph(comm_sph)
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       type(sph_comm_tbl), intent(in) :: comm_sph
 !

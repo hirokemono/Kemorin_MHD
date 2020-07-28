@@ -94,7 +94,7 @@
 !
       use calypso_mpi
       use spherical_SRs_N
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use t_sph_trans_comm_tbl
 !
       type(sph_comm_tables), intent(in) :: comms_sph

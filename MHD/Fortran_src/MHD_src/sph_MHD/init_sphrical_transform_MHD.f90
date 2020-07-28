@@ -153,7 +153,7 @@
      &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
       call init_fourier_transform_4_MHD                                 &
      &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
-     &    WK%trns_MHD, WK%WK_sph)
+     &    WK%trns_MHD, WK%WK_sph, trans_p%iflag_FFT)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !

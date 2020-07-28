@@ -21,6 +21,7 @@
 !
       use m_file_format_switch
       use m_phys_labels
+      use m_FFT_selector
       use count_number_with_overlap
       use set_plane_spectr_file_head
       use set_list_4_FFT
@@ -208,8 +209,8 @@
 !
 !      call allocate_spectr_name
 !
-        call s_inverse_fft_4_plane                                      &
-     &     (npl_spec1, c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
+        call s_inverse_fft_4_plane(iflag_FFTPACK,                       &
+     &      npl_spec1, c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
      &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
      &      plane_fft_wk1%num_fft, plane_fft_wk1%wk_pfft,               &

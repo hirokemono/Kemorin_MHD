@@ -7,25 +7,26 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine cal_SGS_buo_coef_sph_MHD                             &
-!!     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
+!!      subroutine cal_SGS_buo_coef_sph_MHD(iflag_FFT,                  &
+!!     &          sph_rtp, sph_d_grp, stablize_weight, frc_rtp,         &
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
-!!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,    &
-!!     &          fg_trns_LES, iak_sgs_term, wk_sgs, trns_f_SGS)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!      subroutine prod_SGS_buoyancy_to_Reynolds                        &
+!!     &         (iflag_FFT, sph_rtp, sph_d_grp, fg_trns_LES,           &
+!!     &          iak_sgs_term, wk_sgs, trns_f_SGS)
+!!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !!        type(SGS_term_address), intent(in) :: iak_sgs_term
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!
 !!      subroutine sel_prod_sgl_radial_buo_coefs                        &
-!!     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
+!!     &         (iflag_FFT, sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !!      subroutine sel_prod_dbl_radial_buo_coefs                        &
-!!     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
+!!     &         (iflag_FFT, sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(SGS_model_addresses), intent(in) :: fg_trns_LES
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
@@ -62,8 +63,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_SGS_buo_coef_sph_MHD                               &
-     &         (sph_rtp, sph_d_grp, stablize_weight, frc_rtp,           &
+      subroutine cal_SGS_buo_coef_sph_MHD(iflag_FFT,                    &
+     &          sph_rtp, sph_d_grp, stablize_weight, frc_rtp,           &
      &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,  &
      &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !
@@ -71,6 +72,7 @@
       use zonal_lsq_4_model_coefs
       use cal_sph_model_coefs
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
@@ -86,7 +88,7 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
 !
-      call sel_int_zonal_4_buo_coef(sph_rtp, sph_d_grp,                 &
+      call sel_int_zonal_4_buo_coef(iflag_FFT, sph_rtp, sph_d_grp,      &
      &    frc_rtp(1,if_trns_reynolds), frc_rtp(1,if_trns_buo_wk),       &
      &    wk_sgs%comp_coef(1,icomp_SGS_buo),                            &
      &    wk_sgs%comp_clip(1,icomp_SGS_buo))
@@ -100,9 +102,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, sph_d_grp,      &
-     &          fg_trns_LES, iak_sgs_term, wk_sgs, trns_f_SGS)
+      subroutine prod_SGS_buoyancy_to_Reynolds                          &
+     &         (iflag_FFT, sph_rtp, sph_d_grp, fg_trns_LES,             &
+     &          iak_sgs_term, wk_sgs, trns_f_SGS)
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
@@ -115,19 +119,19 @@
       if     (iak_sgs_term%i_SGS_buoyancy                               &
      &          * iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_double_buo_coefs                               &
-     &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, wk_sgs%num_kinds,            &
      &      iak_sgs_term%i_SGS_buoyancy, iak_sgs_term%i_SGS_comp_buo,   &
      &      wk_sgs%fld_coef, trns_f_SGS%ncomp,                          &
      &      fg_trns_LES%SGS_term%i_SGS_inertia, trns_f_SGS%fld_rtp)
       else if(iak_sgs_term%i_SGS_buoyancy .gt. 0) then
         call sel_product_single_buo_coefs                               &
-     &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, wk_sgs%num_kinds,            &
      &      iak_sgs_term%i_SGS_buoyancy, wk_sgs%fld_coef,               &
      &      trns_f_SGS%ncomp, fg_trns_LES%SGS_term%i_SGS_inertia,       &
      &      trns_f_SGS%fld_rtp)
       else if(iak_sgs_term%i_SGS_comp_buo .gt. 0) then
         call sel_product_single_buo_coefs                               &
-     &     (sph_rtp, sph_d_grp, wk_sgs%num_kinds,                       &
+     &     (iflag_FFT, sph_rtp, sph_d_grp, wk_sgs%num_kinds,            &
      &      iak_sgs_term%i_SGS_comp_buo, wk_sgs%fld_coef,               &
      &      trns_f_SGS%ncomp, fg_trns_LES%SGS_term%i_SGS_inertia,       &
      &      trns_f_SGS%fld_rtp)
@@ -138,13 +142,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_zonal_4_buo_coef(sph_rtp, sph_d_grp,           &
+      subroutine sel_int_zonal_4_buo_coef                               &
+     &         (iflag_FFT, sph_rtp, sph_d_grp,                          &
      &          frc_simi, frc_wide, sgs_zl, sgs_zt)
 !
       use m_FFT_selector
       use zonal_int_4_sph_Csim_pin
       use zonal_int_4_sph_Csim_pout
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
@@ -170,11 +176,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_sgl_radial_buo_coefs                          &
-     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
+     &         (iflag_FFT, sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_buo_model_coefs_sph
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1))
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
@@ -197,11 +204,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_prod_dbl_radial_buo_coefs                          &
-     &         (sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
+     &         (iflag_FFT, sph_rtp, sgs_c, fg_trns_LES, trns_f_SGS)
 !
       use m_FFT_selector
       use prod_buo_model_coefs_sph
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       real(kind = kreal), intent(in) :: sgs_c(sph_rtp%nidx_rtp(1),2)
       type(SGS_model_addresses), intent(in) :: fg_trns_LES
@@ -224,12 +232,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_product_single_buo_coefs                           &
-     &         (sph_rtp, sph_d_grp, nfld_sgs, isgs_buo,                 &
+     &         (iflag_FFT, sph_rtp, sph_d_grp, nfld_sgs, isgs_buo,      &
      &          fld_coef, nc_SGS_rtp_2_rj, i_SGS_inertia, fSGS_rtp)
 !
       use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !
@@ -255,13 +264,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_product_double_buo_coefs                           &
-     &         (sph_rtp, sph_d_grp, nfld_sgs, isgs_buo1, isgs_buo2,     &
+      subroutine sel_product_double_buo_coefs(iflag_FFT,                &
+     &          sph_rtp, sph_d_grp, nfld_sgs, isgs_buo1, isgs_buo2,     &
      &          fld_coef, nc_SGS_rtp_2_rj, i_SGS_inertia, fSGS_rtp)
 !
       use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !

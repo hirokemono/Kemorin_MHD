@@ -88,7 +88,7 @@
       subroutine sph_transfer_test_1(iflag_recv, sph, comms_sph)
 !
       use calypso_mpi
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::iflag_recv
@@ -127,7 +127,7 @@
       subroutine sph_transfer_test_2(iflag_recv, sph, comms_sph)
 !
       use calypso_mpi
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) ::iflag_recv
@@ -166,7 +166,7 @@
       subroutine sph_transfer_test_3(iflag_recv, sph, comms_sph)
 !
       use calypso_mpi
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -205,7 +205,7 @@
       subroutine sph_transfer_test_6(iflag_recv, sph, comms_sph)
 !
       use calypso_mpi
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -244,7 +244,7 @@
       subroutine sph_transfer_test_N(iflag_recv, NB, sph, comms_sph)
 !
       use calypso_mpi
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: iflag_recv

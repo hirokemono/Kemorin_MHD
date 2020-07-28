@@ -149,8 +149,8 @@
 !
 !* -----  find mid-equator point -----------------
 !
-      call const_circle_point_global                                    &
-     &   (SPH_MHD%sph%sph_params%l_truncation, SPH_MHD%sph%sph_rtp,     &
+      call const_circle_point_global(SPH_WK%trans_p%iflag_FFT,          &
+     &    SPH_MHD%sph%sph_params%l_truncation, SPH_MHD%sph%sph_rtp,     &
      &     SPH_MHD%sph%sph_rj, cdat)
 !
       end subroutine SPH_init_sph_pick_circle
@@ -229,8 +229,8 @@
 !*
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
-      call sph_transfer_on_circle                                       &
-     &   (SPH_MHD%sph%sph_rj, SPH_MHD%fld, cdat)
+      call sph_transfer_on_circle(SPH_WK%trans_p%iflag_FFT,             &
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%fld, cdat)
       call write_field_data_on_circle                                   &
      &   (i_step, MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)

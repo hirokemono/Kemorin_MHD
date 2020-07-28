@@ -25,7 +25,6 @@
 !
       use m_constants
       use m_solver_SR
-      use m_sel_spherical_SRs
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -92,6 +91,7 @@
       use calypso_mpi
       use calypso_mpi_real
       use transfer_to_long_integers
+      use select_copy_from_recv
 !
       use m_sph_communicators
       use m_solver_SR
@@ -255,9 +255,9 @@
       subroutine check_calypso_sph_buffer_N(NB, comms_sph)
 !
       use t_sph_trans_comm_tbl
-      use m_sel_spherical_SRs
       use m_solver_SR
       use spherical_SRs_N
+     use sel_spherical_SRs
 !
       integer (kind=kint), intent(in) :: NB
       type(sph_comm_tables), intent(in) :: comms_sph

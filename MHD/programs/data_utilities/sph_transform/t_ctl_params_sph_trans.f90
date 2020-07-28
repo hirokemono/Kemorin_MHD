@@ -98,7 +98,7 @@
       use set_control_platform_data
       use ucd_IO_select
 !
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
@@ -137,7 +137,8 @@
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
+        call set_fft_library_ctl                                        &
+     &     (spt_ctl%FFT_lib_ctl%charavalue, trans_p%iflag_FFT)
       end if
       if(spt_ctl%import_mode_ctl%iflag .gt. 0) then
         call set_import_table_ctl                                       &
@@ -259,7 +260,8 @@
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
+        call set_fft_library_ctl                                        &
+     &     (spt_ctl%FFT_lib_ctl%charavalue, trans_p%iflag_FFT)
       end if
 !
 !     file header for reduced data

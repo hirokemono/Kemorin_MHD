@@ -24,6 +24,7 @@
 !
       use m_precision
       use t_schmidt_poly_on_rtm
+      use m_FFT_selector
       use select_copy_from_recv
 !
       implicit none
@@ -66,6 +67,8 @@
       type parameters_4_sph_trans
 !>      vector length for legendre transform
         integer(kind = kint) :: nvector_legendre = 0
+!>        Integer flag to select FFT
+        integer(kind = kint) :: iflag_FFT = iflag_UNDEFINED_FFT
 !>        Integer flag to select routines to get data from recieve buffer
         integer(kind = kint) :: iflag_SPH_recv = iflag_import_UNDEFINED
 !

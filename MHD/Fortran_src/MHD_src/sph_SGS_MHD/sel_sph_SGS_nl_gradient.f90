@@ -8,20 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine sel_sph_SGS_induct_nl_gradient                       &
-!!     &        (sph_rtp, sph_filters, coef,                            &
+!!     &        (iflag_FFT, sph_rtp, sph_filters, coef,                 &
 !!     &         ib_mhd_velo, ib_mhd_magne, ncomp_rj_2_rtp, fld_rtp,    &
 !!     &         ib_grad_ux, ib_grad_uy, ib_grad_uz,                    &
 !!     &         ib_grad_bx, ib_grad_by, ib_grad_bz,                    &
 !!     &         ncomp_sgs_rj_2_rtp, fld_sgs_rtp,                       &
 !!     &         if_SGS_idct, ncomp_sgs_rtp_2_rj, frc_sgs_rtp)
 !!      subroutine sel_SGS_s_flux_nl_gradient                           &
-!!     &        (sph_rtp, sph_filters, coef,                            &
+!!     &        (iflag_FFT, sph_rtp, sph_filters, coef,                 &
 !!     &         ib_mhd_velo, ncomp_rj_2_rtp, fld_rtp,                  &
 !!     &         ib_grad_ux, ib_grad_uy, ib_grad_uz, ib_grad_s,         &
 !!     &         ncomp_sgs_rj_2_rtp, fld_sgs_rtp,                       &
 !!     &         if_SGS_sflux, ncomp_sgs_rtp_2_rj, frc_sgs_rtp)
 !!      subroutine sel_sph_SGS_m_flux_nl_gradient                       &
-!!     &        (sph_rtp, sph_filters, coef,                            &
+!!     &        (iflag_FFT, sph_rtp, sph_filters, coef,                 &
 !!     &         ib_mhd_velo, ncomp_rj_2_rtp, fld_rtp,                  &
 !!     &         ib_grad_ux, ib_grad_uy, ib_grad_uz,                    &
 !!     &         ncomp_sgs_rj_2_rtp, fld_sgs_rtp,                       &
@@ -47,7 +47,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_sph_SGS_induct_nl_gradient                         &
-     &        (sph_rtp, sph_filters, coef,                              &
+     &        (iflag_FFT, sph_rtp, sph_filters, coef,                   &
      &         ib_mhd_velo, ib_mhd_magne, ncomp_rj_2_rtp, fld_rtp,      &
      &         ib_grad_ux, ib_grad_uy, ib_grad_uz,                      &
      &         ib_grad_bx, ib_grad_by, ib_grad_bz,                      &
@@ -58,6 +58,7 @@
       use sph_SGS_nl_gradient_pin
       use sph_SGS_nl_gradient_pout
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_filters_type), intent(in) :: sph_filters
       real(kind = kreal), intent(in) :: coef
@@ -111,7 +112,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_SGS_s_flux_nl_gradient                             &
-     &        (sph_rtp, sph_filters, coef,                              &
+     &        (iflag_FFT, sph_rtp, sph_filters, coef,                   &
      &         ib_mhd_velo, ncomp_rj_2_rtp, fld_rtp,                    &
      &         ib_grad_ux, ib_grad_uy, ib_grad_uz, ib_grad_s,           &
      &         ncomp_sgs_rj_2_rtp, fld_sgs_rtp,                         &
@@ -121,6 +122,7 @@
       use sph_SGS_nl_gradient_pin
       use sph_SGS_nl_gradient_pout
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_filters_type), intent(in) :: sph_filters
       real(kind = kreal), intent(in) :: coef
@@ -169,7 +171,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sel_sph_SGS_m_flux_nl_gradient                         &
-     &        (sph_rtp, sph_filters, coef,                              &
+     &        (iflag_FFT, sph_rtp, sph_filters, coef,                   &
      &         ib_mhd_velo, ncomp_rj_2_rtp, fld_rtp,                    &
      &         ib_grad_ux, ib_grad_uy, ib_grad_uz,                      &
      &         ncomp_sgs_rj_2_rtp, fld_sgs_rtp,                         &
@@ -179,6 +181,7 @@
       use sph_SGS_nl_gradient_pin
       use sph_SGS_nl_gradient_pout
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_filters_type), intent(in) :: sph_filters
       real(kind = kreal), intent(in) :: coef

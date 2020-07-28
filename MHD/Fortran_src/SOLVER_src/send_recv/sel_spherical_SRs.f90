@@ -1,5 +1,5 @@
-!>@file   m_sel_spherical_SRs.f90
-!!@brief  module m_sel_spherical_SRs
+!>@file   sel_spherical_SRs.f90
+!!@brief  module sel_spherical_SRs
 !!
 !!@author H. Matsui
 !!@date Programmed in Aug., 2014
@@ -51,7 +51,7 @@
 !!     &                    irev_import, WR, X_new)
 !!@endverbatim
 !
-      module m_sel_spherical_SRs
+      module sel_spherical_SRs
 !
       use m_precision
       use m_work_time
@@ -381,4 +381,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module m_sel_spherical_SRs
+      end module sel_spherical_SRs

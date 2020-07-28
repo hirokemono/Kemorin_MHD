@@ -7,7 +7,7 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,           &
+!!      subroutine SGS_fluxes_for_buo_coefs(iflag_FFT, sph_rtp, fl_prop,&
 !!     &          b_trns_base, fg_trns_SGS, fs_trns_sef,                &
 !!     &          trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !!      subroutine SGS_fluxes_for_snapshot(sph_rtp, fl_prop,            &
@@ -51,12 +51,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,             &
+      subroutine SGS_fluxes_for_buo_coefs(iflag_FFT, sph_rtp, fl_prop,  &
      &          b_trns_base, fg_trns_SGS, fs_trns_sef,                  &
      &          trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !
       use cal_products_smp
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(base_field_address), intent(in) :: b_trns_base
@@ -78,14 +79,14 @@
 !
       if(fl_prop%iflag_4_gravity) then
         call sel_SGS_buoyancy_flux_rtp                                  &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
+     &    (iflag_FFT, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,               &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &
      &     trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),              &
      &     trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_SGS_buo_wk))
       end if
       if(fl_prop%iflag_4_composit_buo) then
         call sel_SGS_buoyancy_flux_rtp                                  &
-     &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                           &
+     &   (iflag_FFT, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                &
      &   sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,                &
      &   trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),                &
      &   trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_SGS_comp_buo_wk))
@@ -160,11 +161,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_SGS_buoyancy_flux_rtp                              &
-     &        (nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
+      subroutine sel_SGS_buoyancy_flux_rtp(iflag_FFT,                   &
+     &          nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
 !
       use m_FFT_selector
 !
+      integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
 !

@@ -58,7 +58,7 @@
      &          sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       use t_spheric_rj_data
 !
@@ -97,7 +97,7 @@
      &          n_WS, WS)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
@@ -120,7 +120,7 @@
      &          n_WS, WS)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
@@ -143,7 +143,7 @@
      &          n_WS, WS)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       type(sph_comm_tbl), intent(in) :: comm_rj
       type(phys_data), intent(in) :: rj_fld
@@ -167,7 +167,7 @@
      &          n_WR, WR, rj_fld)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
@@ -193,7 +193,7 @@
      &          n_WR, WR, rj_fld)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
@@ -219,7 +219,7 @@
      &          n_WR, WR, rj_fld)
 !
       use m_sph_communicators
-      use m_sel_spherical_SRs
+      use sel_spherical_SRs
 !
       integer(kind = kint), intent(in) :: iflag_recv
       type(sph_comm_tbl), intent(in) :: comm_rj
