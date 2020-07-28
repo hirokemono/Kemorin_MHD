@@ -168,7 +168,7 @@ t_sph_transforms.o: $(SPH_COMMDIR)/t_sph_transforms.f90 m_precision.o calypso_mp
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sum_sph_rms_data.o: $(SPH_COMMDIR)/t_sum_sph_rms_data.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_work_4_sph_trans.o: $(SPH_COMMDIR)/t_work_4_sph_trans.f90 m_precision.o t_schmidt_poly_on_rtm.o
+t_work_4_sph_trans.o: $(SPH_COMMDIR)/t_work_4_sph_trans.f90 m_precision.o t_schmidt_poly_on_rtm.o select_copy_from_recv.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_4_sph_trans_spin.o: $(SPH_COMMDIR)/t_work_4_sph_trans_spin.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
