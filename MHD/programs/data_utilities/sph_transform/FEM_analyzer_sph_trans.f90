@@ -79,7 +79,7 @@
       subroutine FEM_analyze_sph_trans(i_step, udt_file_param, t_IO)
 !
       use t_ctl_params_sph_trans
-      use set_ucd_data_to_type
+      use output_parallel_ucd_file
       use nod_phys_send_recv
 !
       integer(kind =kint), intent(in) :: i_step
@@ -96,7 +96,7 @@
 !*  -----------  Output volume data --------------
       istep_ucd = IO_step_exc_zero_inc(i_step, t_STR%ucd_step)
       call set_data_by_read_ucd                                         &
-     &    (my_rank, i_step, udt_file_param, t_IO, input_ucd, field_STR)
+     &   (i_step, udt_file_param, t_IO, input_ucd, field_STR)
       call nod_fields_send_recv(femmesh_STR%mesh, field_STR)
 !
       end subroutine FEM_analyze_sph_trans

@@ -7,14 +7,14 @@
 !> @brief Output merged binary field file using MPI-IO
 !!
 !!@verbatim
-!!      subroutine write_step_field_file_mpi_b                          &
+!!      subroutine write_ucd_field_file_mpi_b                           &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
 !!
-!!      subroutine read_step_field_file_mpi_b                           &
+!!      subroutine read_ucd_field_file_mpi_b                            &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
-!!      subroutine read_alloc_stp_fld_file_mpi_b                        &
+!!      subroutine read_alloc_ucd_fld_file_mpi_b                        &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
@@ -54,7 +54,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_step_field_file_mpi_b                            &
+      subroutine write_ucd_field_file_mpi_b                             &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use MPI_binary_head_IO
@@ -82,11 +82,11 @@
 !
       call close_mpi_file(IO_param)
 !
-      end subroutine write_step_field_file_mpi_b
+      end subroutine write_ucd_field_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_step_field_file_mpi_b                             &
+      subroutine read_ucd_field_file_mpi_b                              &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use MPI_binary_data_IO
@@ -126,11 +126,11 @@
 !
       call close_mpi_file(IO_param)
 !
-      end subroutine read_step_field_file_mpi_b
+      end subroutine read_ucd_field_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_stp_fld_file_mpi_b                          &
+      subroutine read_alloc_ucd_fld_file_mpi_b                          &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use MPI_binary_data_IO
@@ -178,7 +178,7 @@
         call deallocate_ucd_phys_name(ucd)
       end if
 !
-      end subroutine read_alloc_stp_fld_file_mpi_b
+      end subroutine read_alloc_ucd_fld_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !

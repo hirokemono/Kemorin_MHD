@@ -73,7 +73,7 @@
       use m_ctl_params_4_prod_udt
       use set_and_cal_udt_data
 !
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
@@ -126,8 +126,8 @@
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
 !
-      call sel_write_udt_file(my_rank, istep_ucd,                       &
-     &   output_ucd_param, t_IO, ucd)
+      call sel_write_parallel_ucd_file                                  &
+     &   (istep_ucd, output_ucd_param, t_IO, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine const_MHD_length_scales

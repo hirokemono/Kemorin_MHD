@@ -51,6 +51,8 @@
      &         (id_rank, gzip_name, t_IO, ucd)
 !
       use skip_gz_comment
+      use gzip_file_access
+      use gz_field_data_IO_b
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
@@ -81,6 +83,7 @@
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
       use skip_gz_comment
+      use gzip_file_access
       use gz_field_data_IO_b
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -126,6 +129,7 @@
      &         (id_rank, gzip_name, t_IO, ucd, ierr_IO)
 !
       use skip_gz_comment
+      use gzip_file_access
       use gz_field_data_IO_b
 !
       character(len=kchara), intent(in) :: gzip_name

@@ -77,7 +77,7 @@
       subroutine analyze_MHD_lscale
 !
       use m_ctl_params_4_diff_udt
-      use set_ucd_data_to_type
+      use output_parallel_ucd_file
       use FEM_MHD_length_scale
 !
       integer(kind=kint ) :: istep, istep_ucd

@@ -7,14 +7,14 @@
 !> @brief Output ucd data into gzipped field file using MPI-IO
 !!
 !!@verbatim
-!!      subroutine write_gz_step_field_file_mpi                         &
+!!      subroutine gz_write_ucd_field_file_mpi                          &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: ucd
 !!
-!!      subroutine read_step_field_file_gz_mpi                          &
+!!      subroutine gz_read_ucd_field_file_mpi                           &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
-!!      subroutine read_alloc_stp_fld_file_gz_mpi                       &
+!!      subroutine gz_read_alloc_ucd_fld_file_mpi                       &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_gz_step_field_file_mpi                           &
+      subroutine gz_write_ucd_field_file_mpi                            &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use gz_field_block_MPI_IO
@@ -82,11 +82,11 @@
 !
       call calypso_close_mpi_file(id_fld)
 !
-      end subroutine write_gz_step_field_file_mpi
+      end subroutine gz_write_ucd_field_file_mpi
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_step_field_file_gz_mpi                            &
+      subroutine gz_read_ucd_field_file_mpi                             &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use gz_field_data_IO
@@ -123,11 +123,11 @@
 !
       call calypso_close_mpi_file(id_fld)
 !
-      end subroutine read_step_field_file_gz_mpi
+      end subroutine gz_read_ucd_field_file_mpi
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_stp_fld_file_gz_mpi                         &
+      subroutine gz_read_alloc_ucd_fld_file_mpi                         &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use gz_field_data_IO
@@ -174,7 +174,7 @@
         call deallocate_ucd_phys_name(ucd)
       end if
 !
-      end subroutine read_alloc_stp_fld_file_gz_mpi
+      end subroutine gz_read_alloc_ucd_fld_file_mpi
 !
 ! -----------------------------------------------------------------------
 !

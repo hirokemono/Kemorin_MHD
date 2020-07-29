@@ -121,11 +121,14 @@
         fname_tmp = add_sfm_extension(file_name)
       else if(mod(itype_file,icent)/iten .eq. iflag_udt_bin/iten) then
         fname_tmp = add_sdt_extension(file_name)
+      else if(mod(itype_file,icent)/iten .eq. iflag_bin/iten) then
+        fname_tmp = add_flb_extension(file_name)
       else
         fname_tmp = add_fld_extension(file_name)
       end if
 !
-      if (   mod(itype_file,iten) .eq. iflag_gzip) then
+      if (     (mod(itype_file,iten) .eq. iflag_gzip)                   &
+     &    .or. (mod(itype_file,iten) .eq. iflag_bin_gz)) then
         file_name = add_gzip_extension(fname_tmp)
       else
         file_name = fname_tmp

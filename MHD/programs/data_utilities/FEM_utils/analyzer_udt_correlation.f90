@@ -138,6 +138,7 @@
       use m_geometry_constants
       use m_ctl_params_4_diff_udt
       use set_ucd_data_to_type
+      use output_parallel_ucd_file
       use set_ucd_data
       use ucd_IO_select
       use nod_phys_send_recv

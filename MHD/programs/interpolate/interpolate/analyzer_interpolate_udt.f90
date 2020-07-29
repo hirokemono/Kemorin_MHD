@@ -109,8 +109,8 @@
 !
       subroutine analyze_itp_udt
 !
-      use ucd_IO_select
-      use set_ucd_data_to_type
+      use parallel_ucd_IO_select
+      use output_parallel_ucd_file
       use nod_phys_send_recv
       use interpolate_nod_field_2_type
 !
@@ -139,8 +139,8 @@
           call link_field_data_type_2_IO(new_femmesh%mesh%node,         &
      &        new_phys, fem_ucd)
 !
-          call sel_write_udt_file(my_rank, istep,                       &
-     &        gen_itp_p1%itp_ucd_IO, itp_time_IO, fem_ucd)
+          call sel_write_parallel_ucd_file                              &
+     &       (istep, gen_itp_p1%itp_ucd_IO, itp_time_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

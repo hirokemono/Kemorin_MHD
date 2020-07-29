@@ -7,14 +7,14 @@
 !> @brief Output ucd data into gzipped binary field file using MPI-IO
 !!
 !!@verbatim
-!!      subroutine gz_write_step_fld_file_mpi_b                         &
+!!      subroutine gz_write_ucd_field_file_mpi_b                        &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
 !!
-!!      subroutine gz_read_step_field_file_mpi_b                        &
+!!      subroutine gz_read_ucd_field_file_mpi_b                         &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
-!!      subroutine gz_rd_alloc_st_fld_file_mpi_b                        &
+!!      subroutine gz_rd_alloc_ucd_fld_file_mpi_b                       &
 !!     &         (file_name, num_pe, id_rank, t_IO, ucd)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
@@ -42,7 +42,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gz_write_step_fld_file_mpi_b                           &
+      subroutine gz_write_ucd_field_file_mpi_b                          &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use m_error_IDs
@@ -75,11 +75,11 @@
 !
       call close_mpi_file(IO_param)
 !
-      end subroutine gz_write_step_fld_file_mpi_b
+      end subroutine gz_write_ucd_field_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_field_file_mpi_b                          &
+      subroutine gz_read_ucd_field_file_mpi_b                           &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use field_file_MPI_IO
@@ -120,11 +120,11 @@
 !
       call close_mpi_file(IO_param)
 !
-      end subroutine gz_read_step_field_file_mpi_b
+      end subroutine gz_read_ucd_field_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_rd_alloc_st_fld_file_mpi_b                          &
+      subroutine gz_rd_alloc_ucd_fld_file_mpi_b                         &
      &         (file_name, num_pe, id_rank, t_IO, ucd)
 !
       use field_file_MPI_IO
@@ -174,7 +174,7 @@
         call deallocate_ucd_phys_name(ucd)
       end if
 !
-      end subroutine gz_rd_alloc_st_fld_file_mpi_b
+      end subroutine gz_rd_alloc_ucd_fld_file_mpi_b
 !
 ! -----------------------------------------------------------------------
 !

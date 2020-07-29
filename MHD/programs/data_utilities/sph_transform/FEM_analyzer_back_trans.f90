@@ -111,7 +111,7 @@
       use t_ucd_data
       use t_IO_step_parameter
       use field_IO_select
-      use ucd_IO_select
+      use parallel_ucd_IO_select
       use nod_phys_send_recv
 !
       logical, intent(in) :: visval
@@ -128,7 +128,7 @@
 !*  -----------  Output volume data --------------
 !*
       if(output_IO_flag(i_step,t_STR%ucd_step)) then
-        call sel_write_udt_file(my_rank, i_step, ucd_param, t_IO, ucd)
+        call sel_write_parallel_ucd_file(i_step, ucd_param, t_IO, ucd)
       end if
 !
       end subroutine FEM_analyze_back_trans
