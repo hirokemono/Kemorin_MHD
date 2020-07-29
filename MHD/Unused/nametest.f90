@@ -112,8 +112,8 @@
       input_flag = 'field_gz_labels'
       call write_multi_flags(6, input_flag, field_gz_labels)
 !
-      input_flag = 'field_bin_gz_labels'
-      call write_multi_flags(6, input_flag, field_bin_gz_labels)
+      input_flag = 'fbin_gz_labels'
+      call write_multi_flags(6, input_flag, fbin_gz_labels)
 !
       input_flag = 'ucd_gz_flags'
       call write_multi_flags(6, input_flag, ucd_gz_flags)
@@ -136,12 +136,6 @@
       input_flag = 'merged_flags'
       call write_multi_flags(6, input_flag, merged_flags)
 !
-!
-      input_flag = 'field_gz_labels'
-      call write_multi_flags(6, input_flag, field_gz_labels*)
-!
-      input_flag = 'field_bin_gz_labels'
-      call write_multi_flags(6, input_flag, field_bin_gz_labels)
 !
       input_flag = 'mgd_fld_gz_labels'
       call write_multi_flags(6, input_flag, mgd_fld_gz_labels)

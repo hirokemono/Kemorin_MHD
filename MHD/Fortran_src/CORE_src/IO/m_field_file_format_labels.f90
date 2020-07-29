@@ -82,9 +82,6 @@
 !!        'fld_ascii', 'fld_text', 'ascii_field', 'ascii_fld', 
 !!        'text_field', 'text_fld' 
 !
-      type(multi_flag_labels), save :: mgd_fld_ascii_labels
-      type(multi_flag_labels), save :: mgd_fld_bin_labels
-!
 !>     Character lables for UCD
 !!        'UCD' 
       type(multi_flag_labels), save :: ucd_flags
@@ -109,9 +106,7 @@
 !!        'gzip_field', 'gzip_fld', 'gz_field', 'gz_fld' 
       type(multi_flag_labels), save :: field_gz_labels
 !>      flag parts for gzipped field data format
-      type(multi_flag_labels), save :: field_bin_gz_labels
-      type(multi_flag_labels), save :: mgd_fld_gz_labels
-      type(multi_flag_labels), save :: mgd_fbin_gz_labels
+      type(multi_flag_labels), save :: fbin_gz_labels
 !
 !>     Character lables for gzipped UCD
 !!       'UCD_gzip', 'UCD_gz', 'gzip_UCD', 'gz_UCD' 
@@ -160,11 +155,6 @@
      &   (field_labels, binary_flags, field_bin_labels, icou)
       call append_multi_flag_labels(binary_flags, field_bin_labels)
 !
-      call init_from_two_kinds_flags(merged_flags, field_ascii_labels,  &
-     &                               mgd_fld_ascii_labels, icou)
-      call init_from_two_kinds_flags(merged_flags, field_bin_labels,    &
-     &                               mgd_fld_bin_labels, icou)
-!
       call init_multi_flags_by_labels(ione, ucd_name, ucd_flags)
       call init_multi_flags_by_labels(ione, udt_name, udt_flags)
       call init_multi_flags_by_labels(ione, vtk_name, vtk_flags)
@@ -177,13 +167,8 @@
       call append_multi_flag_labels(gzip_flags, field_gz_labels)
 !
       call init_from_two_kinds_flags                                    &
-     &   (field_bin_labels, gzip_flags, field_bin_gz_labels, icou)
-      call append_multi_flag_labels(gzip_bin_flags, field_gz_labels)
-!
-      call init_from_two_kinds_flags(merged_flags, field_gz_labels,     &
-     &                               mgd_fld_gz_labels, icou)
-      call init_from_two_kinds_flags(merged_flags, field_bin_gz_labels, &
-     &                               mgd_fbin_gz_labels, icou)
+     &   (field_bin_labels, gzip_flags, fbin_gz_labels, icou)
+      call append_multi_flag_labels(gzip_bin_flags, fbin_gz_labels)
 !
       call init_from_two_kinds_flags                                    &
      &   (ucd_flags, gzip_flags, ucd_gz_flags, icou)
@@ -210,8 +195,6 @@
 !
       call dealloc_multi_flags(field_ascii_labels)
       call dealloc_multi_flags(field_bin_labels)
-      call dealloc_multi_flags(mgd_fld_ascii_labels)
-      call dealloc_multi_flags(mgd_fld_bin_labels)
 !
       call dealloc_multi_flags(ucd_flags)
       call dealloc_multi_flags(udt_flags)
@@ -221,9 +204,7 @@
       call dealloc_multi_flags(psf_flags)
 !
       call dealloc_multi_flags(field_gz_labels)
-      call dealloc_multi_flags(field_bin_gz_labels)
-      call dealloc_multi_flags(mgd_fld_gz_labels)
-      call dealloc_multi_flags(mgd_fbin_gz_labels)
+      call dealloc_multi_flags(fbin_gz_labels)
 !
       call dealloc_multi_flags(ucd_gz_flags)
       call dealloc_multi_flags(udt_gz_flags)
