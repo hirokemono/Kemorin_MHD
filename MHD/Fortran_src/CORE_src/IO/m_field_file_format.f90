@@ -176,7 +176,16 @@
         return
       end if
 !
-      if     (check_mul_flags(file_fmt_ctl, mgd_udt_labels)) then
+      if     (check_mul_flags(file_fmt_ctl, mgd_fld_ascii_labels)) then
+        choose_para_fld_file_format = iflag_single
+      else if(check_mul_flags(file_fmt_ctl, mgd_fld_bin_labels)) then
+        choose_para_fld_file_format = iflag_sgl_bin
+      else if(check_mul_flags(file_fmt_ctl, mgd_fld_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_gz
+      else if(check_mul_flags(file_fmt_ctl, mgd_fbin_gz_labels)) then
+        choose_para_fld_file_format = iflag_sgl_bin_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, mgd_udt_labels)) then
         choose_para_fld_file_format = iflag_sgl_udt
       else if(check_mul_flags(file_fmt_ctl, mgd_udt_gz_labels)) then
         choose_para_fld_file_format = iflag_sgl_udt_gz
@@ -237,6 +246,11 @@
            choose_ucd_file_format = iflag_fld
       else if(check_mul_flags(file_fmt_ctl, field_gz_labels)) then
            choose_ucd_file_format = iflag_fld + iflag_gzip
+      else if(check_mul_flags(file_fmt_ctl, field_bin_labels)) then
+           choose_ucd_file_format = iflag_bin 
+      else if(check_mul_flags(file_fmt_ctl, field_bin_gz_labels)) then
+           choose_ucd_file_format = iflag_bin_gz
+!
       else if(check_mul_flags(file_fmt_ctl, udt_flags)) then
            choose_ucd_file_format = iflag_udt
       else if(check_mul_flags(file_fmt_ctl, udt_gz_flags)) then
