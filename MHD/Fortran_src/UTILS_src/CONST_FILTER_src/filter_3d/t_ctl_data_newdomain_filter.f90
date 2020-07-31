@@ -134,6 +134,7 @@
 !
       subroutine bcast_ctl_filter_newdomain_data(newd_fil_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
       use bcast_4_platform_ctl
       use bcast_4_filter_files_ctl
@@ -147,8 +148,8 @@
       call bcast_org_filter_fnames_ctl                                  &
      &   (newd_fil_ctl%org_filter_file_ctls)
 !
-      call MPI_BCAST(newd_fil_ctl%i_filter_newdomain_ctl, 1,            &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int                                    &
+     &   (newd_fil_ctl%i_filter_newdomain_ctl, 0)
 !
       end subroutine bcast_ctl_filter_newdomain_data
 !

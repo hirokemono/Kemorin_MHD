@@ -30,6 +30,7 @@
 !
       subroutine bcast_filter_fnames_control(ffile_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(filter_file_control), intent(inout) :: ffile_ctl
@@ -49,8 +50,7 @@
       call bcast_ctl_type_c1(ffile_ctl%model_coef_rst_format)
       call bcast_ctl_type_c1(ffile_ctl%commute_coef_rst_format)
 !
-      call MPI_BCAST(ffile_ctl%i_filter_fnames, 1,                      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ffile_ctl%i_filter_fnames, 0)
 !
       end subroutine bcast_filter_fnames_control
 !
@@ -58,6 +58,7 @@
 !
       subroutine bcast_ele_layers_control(elayer_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(layering_control), intent(inout) :: elayer_ctl
@@ -77,8 +78,7 @@
       call bcast_ctl_type_c1(elayer_ctl%start_layering_grp_name_ctl)
       call bcast_ctl_type_c1(elayer_ctl%start_fl_layer_grp_name_ctl)
 !
-      call MPI_BCAST(elayer_ctl%i_dynamic_layers, 1,                    &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(elayer_ctl%i_dynamic_layers, 0)
 !
       end subroutine bcast_ele_layers_control
 !

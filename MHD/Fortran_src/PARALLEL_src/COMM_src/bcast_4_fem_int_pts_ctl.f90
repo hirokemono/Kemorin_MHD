@@ -25,6 +25,7 @@
 !
       subroutine bcast_control_fem_int_points(fint_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(fem_intergration_control), intent(inout) :: fint_ctl
@@ -34,8 +35,7 @@
       call bcast_ctl_type_i1(fint_ctl%intg_point_poisson_ctl)
       call bcast_ctl_type_i1(fint_ctl%intg_point_t_evo_ctl)
 !
-      call MPI_BCAST(fint_ctl%i_int_points, 1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fint_ctl%i_int_points, 0)
 !
       end subroutine bcast_control_fem_int_points
 !

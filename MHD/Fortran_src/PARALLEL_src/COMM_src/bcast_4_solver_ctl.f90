@@ -29,6 +29,7 @@
 !
       subroutine bcast_CG_solver_param_ctl(CG_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(solver_control), intent(inout) :: CG_ctl
@@ -47,8 +48,7 @@
       call bcast_ctl_type_c1(CG_ctl%method_ctl)
       call bcast_ctl_type_c1(CG_ctl%precond_ctl)
 !
-      call MPI_BCAST(CG_ctl%i_solver_ctl, 1,                            &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(CG_ctl%i_solver_ctl, 0)
 !
       end subroutine bcast_CG_solver_param_ctl
 !
@@ -57,6 +57,7 @@
 !
       subroutine bcast_control_DJDS_solver(DJDS_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(DJDS_control), intent(inout) :: DJDS_ctl
@@ -67,8 +68,7 @@
 !
       call bcast_ctl_type_c1(DJDS_ctl%order_method_ctl)
 !
-      call MPI_BCAST(DJDS_ctl%i_DJDS_params, 1,                         &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(DJDS_ctl%i_DJDS_params, 0)
 !
       end subroutine bcast_control_DJDS_solver
 !
@@ -76,6 +76,7 @@
 !
       subroutine bcast_control_Multigrid(MG_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(MGCG_control), intent(inout) :: MG_ctl
@@ -103,8 +104,7 @@
       call bcast_ctl_array_c1(MG_ctl%MG_mesh_fmt_ctl)
       call bcast_ctl_array_c1(MG_ctl%MG_table_fmt_ctl)
 !
-      call MPI_BCAST(MG_ctl%i_Multigrid_params, 1,                      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(MG_ctl%i_Multigrid_params, 0)
 !
       end subroutine bcast_control_Multigrid
 !

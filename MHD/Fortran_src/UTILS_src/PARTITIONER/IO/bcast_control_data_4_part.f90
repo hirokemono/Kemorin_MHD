@@ -30,6 +30,7 @@
 !
       subroutine bcast_part_control_data(part_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_platform_ctl
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
@@ -42,8 +43,7 @@
       call bcast_ctl_data_4_part_ghost(part_ctl)
       call bcast_ctl_data_4_ele_ordeirng(part_ctl)
 !
-      call MPI_BCAST(part_ctl%i_part_ctl, 1,                            &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(part_ctl%i_part_ctl, 0)
 !
       end subroutine bcast_part_control_data
 !
@@ -52,6 +52,7 @@
 !
       subroutine bcast_ctl_data_4_decomp(part_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
@@ -73,8 +74,7 @@
       call bcast_ctl_type_c1(part_ctl%itp_tbl_head_ctl)
       call bcast_ctl_type_c1(part_ctl%itp_tbl_format_ctl)
 !
-      call MPI_BCAST(part_ctl%i_decomp_ctl, 1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(part_ctl%i_decomp_ctl, 0)
 !
       end subroutine bcast_ctl_data_4_decomp
 !
@@ -82,6 +82,7 @@
 !
       subroutine bcast_ctl_data_4_part_ghost(part_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
@@ -89,8 +90,7 @@
       call bcast_ctl_type_c1(part_ctl%new_part_method_ctl)
       call bcast_ctl_type_c1(part_ctl%selective_ghost_ctl)
 !
-      call MPI_BCAST(part_ctl%i_part_ghost_ctl, 1,                      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(part_ctl%i_part_ghost_ctl, 0)
 !
       end subroutine bcast_ctl_data_4_part_ghost
 !
@@ -98,6 +98,7 @@
 !
       subroutine bcast_ctl_data_4_ele_ordeirng(part_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
@@ -105,8 +106,7 @@
 !
       call bcast_ctl_array_c1(part_ctl%ele_grp_ordering_ctl)
 !
-      call MPI_BCAST(part_ctl%i_ele_ordering_ctl, 1,                    &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(part_ctl%i_ele_ordering_ctl, 0)
 !
       end subroutine bcast_ctl_data_4_ele_ordeirng
 !

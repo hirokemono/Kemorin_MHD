@@ -222,6 +222,7 @@
 !
       subroutine bcast_filter_param_ctl(gen_f_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(ctl_data_gen_filter), intent(inout) :: gen_f_ctl
@@ -255,8 +256,7 @@
 !
       call bcast_ctl_type_c1(gen_f_ctl%f_solver_type_ctl)
 !
-      call MPI_BCAST(gen_f_ctl%i_filter_param_ctl, 1,                   &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(gen_f_ctl%i_filter_param_ctl, 0)
 !
       end subroutine bcast_filter_param_ctl
 !

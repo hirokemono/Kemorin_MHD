@@ -42,6 +42,8 @@
      &          neib_nod, new_comm, new_node)
 !
       use t_next_node_ele_4_node
+!
+      use calypso_mpi_int
       use solver_SR_type
       use extend_comm_table_SR
       use mark_export_nod_ele_extend
@@ -195,9 +197,8 @@
      &    recv_nbuf, iflag_send, iflag_recv)
 !
       do ip = 0, nprocs-1
-        call MPI_Scatter(iflag_recv(0), ione, CALYPSO_INTEGER,          &
-     &                   iflag_send(ip), ione, CALYPSO_INTEGER,         &
-     &                   ip, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_scatter_one_int(iflag_recv(0),                 &
+     &                                   iflag_send(ip), ip)
       end do
 !
       call count_extended_nod_neib_pe                                   &
@@ -270,6 +271,7 @@
 !
       subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
 !
+      use calypso_mpi_int
       use solver_SR_type
 !
       type(communication_table), intent(in) :: new_comm
@@ -312,8 +314,7 @@
         end if
       end do
 !
-      call MPI_ALLREDUCE(icou, nerror, 1, CALYPSO_INTEGER, MPI_SUM,     &
-     &    CALYPSO_COMM,ierr_MPI)
+      call calypso_mpi_allreduce_one_int(icou, nerror, MPI_SUM)
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Number of wrong communication items:', nerror
 !

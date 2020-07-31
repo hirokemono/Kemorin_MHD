@@ -161,6 +161,7 @@
 !
       subroutine bcast_filter_area_ctl(fil3_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
@@ -168,8 +169,7 @@
 !
       call bcast_ctl_array_c1(fil3_ctl%filter_area_ctl)
 !
-      call MPI_BCAST(fil3_ctl%i_filter_area_ctl, 1,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fil3_ctl%i_filter_area_ctl, 0)
 !
       end subroutine bcast_filter_area_ctl
 !
@@ -218,6 +218,7 @@
 !
       subroutine bcast_element_size_ctl(fil3_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
@@ -226,8 +227,7 @@
       call bcast_dx_solver_param_ctl(fil3_ctl)
       call bcast_ctl_type_c1(fil3_ctl%mass_matrix_type_ctl)
 !
-      call MPI_BCAST(fil3_ctl%i_deltax_ctl, 1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fil3_ctl%i_deltax_ctl, 0)
 !
       end subroutine bcast_element_size_ctl
 !
@@ -287,6 +287,7 @@
 !
       subroutine bcast_dx_solver_param_ctl(fil3_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(ctl_data_3d_filter), intent(inout) :: fil3_ctl
@@ -301,8 +302,7 @@
 !
       call bcast_ctl_type_i1(fil3_ctl%itr_esize_ctl)
 !
-      call MPI_BCAST(fil3_ctl%i_esize_solver_ctl, 1,                    &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fil3_ctl%i_esize_solver_ctl, 0)
 !
       end subroutine bcast_dx_solver_param_ctl
 !
@@ -363,6 +363,7 @@
 !
       subroutine bcast_org_filter_fnames_ctl(org_fil_files_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(org_filter_prefix_ctls), intent(inout) :: org_fil_files_ctl
@@ -376,8 +377,8 @@
       call bcast_ctl_type_c1                                            &
      &   (org_fil_files_ctl%org_filter_moms_head_ctl)
 !
-      call MPI_BCAST(org_fil_files_ctl%i_org_filter_fnames, 1,          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int                                    &
+     &   (org_fil_files_ctl%i_org_filter_fnames, 0)
 !
       end subroutine bcast_org_filter_fnames_ctl
 !
