@@ -215,13 +215,13 @@
 !
       subroutine bcast_pvr_colordef_ctl(color)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
-      call MPI_BCAST(color%i_pvr_colordef,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(color%i_pvr_colordef, 0)
 !
       call bcast_ctl_array_r2(color%colortbl_ctl)
       call bcast_ctl_array_r2(color%linear_opacity_ctl)

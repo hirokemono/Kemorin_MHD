@@ -191,13 +191,13 @@
 !
       subroutine bcast_cube_noise_control_data(noise_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(cube_noise_ctl), intent(inout) :: noise_ctl
 !
 !
-      call MPI_BCAST(noise_ctl%i_cube_noise_control,  1,                &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(noise_ctl%i_cube_noise_control, 0)
 !
       call bcast_ctl_type_c1(noise_ctl%noise_type_ctl)
       call bcast_ctl_type_c1(noise_ctl%noise_file_name_ctl)

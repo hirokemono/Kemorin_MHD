@@ -88,6 +88,7 @@
 !
       subroutine share_each_node_data(ip_org, node)
 !
+      use calypso_mpi_int
       use calypso_mpi_int8
       use calypso_mpi_real
       use transfer_to_long_integers
@@ -100,10 +101,8 @@
 !
       irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(node%numnod, 1, CALYPSO_INTEGER,                   &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(node%internal_node,  1, CALYPSO_INTEGER,           &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(node%numnod, irank_org)
+      call calypso_mpi_bcast_one_int(node%internal_node, irank_org)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
         call alloc_node_geometry_base(node)
@@ -254,8 +253,7 @@
 !
       irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call MPI_Bcast(dbl_id%nnod_local, 1, CALYPSO_INTEGER,             &
-     &    irank_org, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(dbl_id%nnod_local, irank_org)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
         num = dbl_id%nnod_local

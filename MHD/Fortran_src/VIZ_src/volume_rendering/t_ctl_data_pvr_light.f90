@@ -117,13 +117,13 @@
 !
       subroutine bcast_lighting_ctl(light)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(pvr_light_ctl), intent(inout) :: light
 !
 !
-      call MPI_BCAST(light%i_pvr_lighting,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(light%i_pvr_lighting, 0)
 !
       call bcast_ctl_array_r3(light%light_position_ctl)
 !

@@ -109,13 +109,13 @@
 !
       subroutine bcast_stereo_view_ctl(streo)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(streo_view_ctl), intent(inout) :: streo
 !
 !
-      call MPI_BCAST(streo%i_stereo_view,  1,                           &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(streo%i_stereo_view, 0)
 !
       call bcast_ctl_type_r1(streo%focalpoint_ctl)
       call bcast_ctl_type_r1(streo%eye_separation_ctl)

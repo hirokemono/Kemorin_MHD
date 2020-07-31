@@ -33,6 +33,7 @@
 !
       subroutine bcast_view_transfer_ctl(mat)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
       use t_ctl_data_4_screen_pixel
       use t_ctl_data_4_projection
@@ -41,8 +42,7 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
-      call MPI_BCAST(mat%i_view_transform,  1,                          &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(mat%i_view_transform, 0)
 !
       call bcast_ctl_array_cr(mat%lookpoint_ctl)
       call bcast_ctl_array_cr(mat%viewpoint_ctl)

@@ -98,6 +98,7 @@
      &          irank_4_composit, num_pvr_ray, id_pixel_start,          &
      &          img_composit_tbl)
 !
+      use calypso_mpi_int
       use comm_tbl_4_img_composit
 !
       integer(kind = kint), intent(in) :: num_pixel_xy
@@ -134,10 +135,8 @@
      &    id_pixel_start, index_pvr_start, num_send_pixel_tmp)
 !
       do i_rank = int(irank_image_file), int(irank_end_composit)
-        call MPI_Gather                                                 &
-     &     (num_send_pixel_tmp(i_rank+1), 1, CALYPSO_INTEGER,           &
-     &      num_recv_pixel_tmp, 1, CALYPSO_INTEGER,                     &
-     &      i_rank, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_gather_one_int                                 &
+     &     (num_send_pixel_tmp(i_rank+1), num_recv_pixel_tmp, i_rank)
       end do
 !
       call count_comm_pe_pvr_composition                                &

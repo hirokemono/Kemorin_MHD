@@ -134,13 +134,13 @@
 !
       subroutine bcast_pvr_colorbar_ctl(cbar_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(pvr_colorbar_ctl), intent(inout) :: cbar_ctl
 !
 !
-      call MPI_BCAST(cbar_ctl%i_pvr_colorbar,  1,                       &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(cbar_ctl%i_pvr_colorbar, 0)
 !
       call bcast_ctl_type_i1(cbar_ctl%font_size_ctl)
       call bcast_ctl_type_i1(cbar_ctl%ngrid_cbar_ctl)

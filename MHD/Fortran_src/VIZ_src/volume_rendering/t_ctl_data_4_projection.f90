@@ -127,13 +127,13 @@
 !
       subroutine bcast_projection_mat_ctl(proj)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(projection_ctl), intent(inout) :: proj
 !
 !
-      call MPI_BCAST(proj%i_project_mat,  1,                            &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(proj%i_project_mat, 0)
 !
       call bcast_ctl_type_r1(proj%perspective_angle_ctl)
       call bcast_ctl_type_r1(proj%perspective_xy_ratio_ctl)

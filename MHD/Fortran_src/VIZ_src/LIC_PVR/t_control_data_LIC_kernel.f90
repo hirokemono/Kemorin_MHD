@@ -203,13 +203,13 @@
 !
       subroutine bcast_kernel_control_data(kernel_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(lic_kernel_ctl), intent(inout) :: kernel_ctl
 !
 !
-      call MPI_BCAST(kernel_ctl%i_kernel_control,  1,                   &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(kernel_ctl%i_kernel_control, 0)
 !
       call bcast_ctl_type_c1(kernel_ctl%kernel_type_ctl)
       call bcast_ctl_type_c1(kernel_ctl%trace_length_mode_ctl)

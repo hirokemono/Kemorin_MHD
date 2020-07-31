@@ -93,6 +93,7 @@
       subroutine check_PVR_update                                       &
      &         (id_control, pvr_ctls, pvr, iflag_redraw)
 !
+      use calypso_mpi_int
       use set_pvr_control
       use skip_comment_f
 !
@@ -122,8 +123,7 @@
         call reset_pvr_update_flags(pvr_ctls%pvr_ctl_type(1))
       end if
 !
-      call mpi_Bcast(iflag_redraw, 1, CALYPSO_INTEGER, 0,               &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(iflag_redraw, 0)
       call calypso_mpi_barrier
 !
       end subroutine check_PVR_update

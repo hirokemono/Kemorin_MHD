@@ -232,13 +232,13 @@
       subroutine bcast_field_line_ctl(fln)
 !
       use calypso_mpi
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(fline_ctl), intent(inout) :: fln
 !
 !
-      call MPI_BCAST(fln%i_vr_fline_ctl,  1,                            &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fln%i_vr_fline_ctl, 0)
 !
       call bcast_ctl_array_c1(fln%fline_area_grp_ctl)
 !

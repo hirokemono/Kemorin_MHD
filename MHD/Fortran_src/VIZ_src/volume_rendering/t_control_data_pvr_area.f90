@@ -138,14 +138,13 @@
 !
       subroutine bcast_pvr_render_area_ctl(render_area_c)
 !
-      use calypso_mpi
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(pvr_render_area_ctl), intent(inout) :: render_area_c
 !
 !
-      call MPI_BCAST(render_area_c%i_plot_area,  1,                     &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(render_area_c%i_plot_area, 0)
 !
       call bcast_ctl_array_c1(render_area_c%pvr_area_ctl)
       call bcast_ctl_array_c2r(render_area_c%surf_enhanse_ctl)

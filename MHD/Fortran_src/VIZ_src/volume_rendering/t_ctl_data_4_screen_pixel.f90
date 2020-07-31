@@ -113,13 +113,13 @@
 !
       subroutine bcast_image_size_ctl(pixel)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(screen_pixel_ctl), intent(inout) :: pixel
 !
 !
-      call MPI_BCAST(pixel%i_image_size,  1,                            &
-     &              CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(pixel%i_image_size, 0)
 !
       call bcast_ctl_type_i1(pixel%num_xpixel_ctl)
       call bcast_ctl_type_i1(pixel%num_ypixel_ctl)

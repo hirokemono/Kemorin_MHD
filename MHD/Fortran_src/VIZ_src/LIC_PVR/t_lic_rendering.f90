@@ -81,6 +81,7 @@
       subroutine check_LIC_update                                       &
      &         (id_control, lic_ctls, lic, iflag_update)
 !
+      use calypso_mpi_int
       use set_pvr_control
       use skip_comment_f
 !
@@ -110,8 +111,7 @@
         end if
         call reset_pvr_update_flags(lic_ctls%pvr_ctl_type(1))
       end if
-      call mpi_Bcast(iflag_update, 1, CALYPSO_INTEGER, 0,               &
-     &    CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(iflag_update, 0)
 !
       end subroutine check_LIC_update
 !

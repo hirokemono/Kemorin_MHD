@@ -151,7 +151,7 @@
 !
       subroutine bcast_pvr_isosurfs_ctl(pvr_isos_c)
 !
-      use calypso_mpi
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(pvr_isosurfs_ctl), intent(inout) :: pvr_isos_c
@@ -159,8 +159,7 @@
       integer(kind = kint) :: i
 !
 !
-      call MPI_BCAST(pvr_isos_c%num_pvr_iso_ctl,  1,                    &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(pvr_isos_c%num_pvr_iso_ctl, 0)
       if(pvr_isos_c%num_pvr_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
         call alloc_pvr_isosurfs_ctl(pvr_isos_c)
       end if

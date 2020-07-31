@@ -274,6 +274,7 @@
 !
       subroutine bcast_lic_control_data(lic_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
@@ -281,8 +282,7 @@
       integer(kind = kint) :: i
 !
 !
-      call MPI_BCAST(lic_ctl%i_lic_control,  1,                         &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(lic_ctl%i_lic_control, 0)
 !
       call bcast_ctl_type_c1(lic_ctl%LIC_field_ctl)
       call bcast_ctl_type_c1(lic_ctl%color_field_ctl)
@@ -296,8 +296,7 @@
       call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
       call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
 !
-      call MPI_BCAST(lic_ctl%num_masking_ctl,  1,                       &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(lic_ctl%num_masking_ctl, 0)
 !
       call bcast_cube_noise_control_data(lic_ctl%noise_ctl)
       call bcast_kernel_control_data(lic_ctl%kernel_ctl)

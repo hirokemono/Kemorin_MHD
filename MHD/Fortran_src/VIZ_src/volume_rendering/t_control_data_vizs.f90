@@ -270,6 +270,7 @@
 !
       subroutine bcast_viz_controls(viz_ctls)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(visualization_controls), intent(inout) :: viz_ctls
@@ -297,8 +298,7 @@
 !
       call bcast_ctl_type_c1(viz_ctls%output_field_file_fmt_ctl)
 !
-      call MPI_BCAST(viz_ctls%i_viz_control, 1,                         &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(viz_ctls%i_viz_control, 0)
 !
       end subroutine bcast_viz_controls
 !
