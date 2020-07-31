@@ -136,6 +136,7 @@
 !
       subroutine bcast_ctl_data_gen_z_filter(z_filter_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(ctl_data_gen_z_filter), intent(inout) :: z_filter_ctl
@@ -147,8 +148,7 @@
       call bcast_ctl_type_c1(z_filter_ctl%z_filter_head_ctl)
       call bcast_ctl_type_i1(z_filter_ctl%ip_smp_z_ctl)
 !
-      call MPI_BCAST(z_filter_ctl%i_filter_control, 1,                  &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(z_filter_ctl%i_filter_control, 0)
 !
       end subroutine bcast_ctl_data_gen_z_filter
 !
@@ -174,6 +174,7 @@
 !
       subroutine bcast_plane_model_param_ctl(cube_c)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(ctl_data_4_plane_model), intent(inout) :: cube_c
@@ -186,8 +187,7 @@
       call bcast_ctl_type_i3(cube_c%ndomain_plane_ctl)
       call bcast_ctl_type_c3(cube_c%unit_len_plane_ctl)
 !
-      call MPI_BCAST(cube_c%i_plane_def, 1,                             &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(cube_c%i_plane_def, 0)
 !
       end subroutine bcast_plane_model_param_ctl
 !

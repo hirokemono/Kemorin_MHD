@@ -162,6 +162,7 @@
 !
       subroutine bcast_control_add_elegrp(addgrp_c)
 !
+      use calypso_mpi_int
       use bcast_4_platform_ctl
 !
       type(control_data_add_ele_grp), intent(inout) :: addgrp_c
@@ -172,8 +173,7 @@
       call bcast_ctl_data_4_platform(addgrp_c%source_plt)
       call bcast_ctl_data_4_platform(addgrp_c%added_plt)
 !
-      call MPI_BCAST(addgrp_c%i_add_ele_grp_ctl, 1,                     &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(addgrp_c%i_add_ele_grp_ctl, 0)
 !
       end subroutine bcast_control_add_elegrp
 !
@@ -229,9 +229,11 @@
 !
       end subroutine read_ctl_data_4_add_2d_egrp
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine bcast_ctl_data_4_add_2d_egrp(addgrp_c)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(control_data_add_ele_grp), intent(inout) :: addgrp_c
@@ -244,8 +246,7 @@
 !
       call bcast_ctl_type_c1(addgrp_c%sph_grp_direction_ctl)
 !
-      call MPI_BCAST(addgrp_c%i_add_ele_grp_para, 1,                    &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(addgrp_c%i_add_ele_grp_para, 0)
 !
       end subroutine bcast_ctl_data_4_add_2d_egrp
 !

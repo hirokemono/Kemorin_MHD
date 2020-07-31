@@ -139,6 +139,7 @@
 !
       subroutine bcast_ctl_data_test(solvertest_c)
 !
+      use calypso_mpi_int
       use bcast_4_solver_ctl
       use bcast_control_arrays
 !
@@ -152,8 +153,7 @@
       call bcast_ctl_type_i1(solvertest_c%ip_smp_p_ctl)
       call bcast_ctl_type_c1(solvertest_c%solver_type_ctl)
 !
-      call MPI_BCAST(solvertest_c%i_solver_test_ctl, 1,                 &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(solvertest_c%i_solver_test_ctl, 0)
 !
       end subroutine bcast_ctl_data_test
 !

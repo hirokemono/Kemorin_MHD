@@ -143,6 +143,7 @@
 !
       subroutine bcast_vizs_control_data(vizs_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_time_step_ctl
 !
@@ -153,8 +154,7 @@
       call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
       call bcast_viz_controls(vizs_ctl%viz_ctl_v)
 !
-      call MPI_BCAST(vizs_ctl%i_viz_only_file, 1,                       &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(vizs_ctl%i_viz_only_file, 0)
 !
       end subroutine bcast_vizs_control_data
 !

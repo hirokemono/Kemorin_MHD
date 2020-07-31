@@ -168,6 +168,7 @@
 !
       subroutine bcast_const_filter_ctl_data(filter3d_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
       use bcast_4_platform_ctl
       use bcast_4_filter_files_ctl
@@ -184,8 +185,7 @@
       call bcast_element_size_ctl(filter3d_ctl%fil3_ctl)
       call bcast_org_filter_fnames_ctl(filter3d_ctl%org_fil_files_ctl)
 !
-      call MPI_BCAST(filter3d_ctl%i_filter_control, 1,                  &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(filter3d_ctl%i_filter_control, 0)
 !
       end subroutine bcast_const_filter_ctl_data
 !

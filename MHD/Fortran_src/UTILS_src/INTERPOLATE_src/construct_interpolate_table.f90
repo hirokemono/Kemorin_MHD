@@ -30,6 +30,7 @@
      &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !
       use calypso_mpi
+      use calypso_mpi_int
       use m_machine_parameter
       use m_2nd_pallalel_vector
 !
@@ -125,8 +126,8 @@
 !
   1     continue
 !
-        call MPI_allREDUCE (ierr_local, ierr_missing, 1,                &
-     &      CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        call calypso_mpi_allreduce_one_int(ierr_local,                  &
+     &                                     ierr_missing, MPI_SUM)
         if (ierr_missing .eq. 0) exit
 !
       end do

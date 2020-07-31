@@ -107,8 +107,7 @@
      &     (i_version, dir, i_step, fld_IO)
       end if
 !
-      call MPI_Bcast(fld_IO%num_field_IO, 1,                            &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fld_IO%num_field_IO, 0)
       if(my_rank .ne. 0) call alloc_phys_name_IO(fld_IO)
 !
       ilength = int(fld_IO%num_field_IO * kchara)

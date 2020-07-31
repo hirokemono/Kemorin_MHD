@@ -178,6 +178,7 @@
 !
       subroutine bcast_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_time_step_ctl
       use bcast_4_field_ctl
@@ -194,8 +195,8 @@
       call bcast_phys_data_ctl(rayleigh_vizs_ctl%field_ctl)
       call bcast_ctl_ndomain_4_shell(rayleigh_vizs_ctl%sdctl)
 !
-      call MPI_BCAST(rayleigh_vizs_ctl%i_viz_only_file, 1,              &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int                                    &
+     &   (rayleigh_vizs_ctl%i_viz_only_file, 0)
 !
       end subroutine bcast_rayleigh_vizs_ctl_data
 !

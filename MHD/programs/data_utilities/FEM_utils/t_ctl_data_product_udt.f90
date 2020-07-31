@@ -176,6 +176,7 @@
 !
       subroutine bcast_prod_control_data(prod_udt_c)
 !
+      use calypso_mpi_int
       use bcast_4_platform_ctl
 !
       type(product_udt_ctl), intent(inout) :: prod_udt_c
@@ -187,8 +188,7 @@
       call bcast_ctl_data_4_platform(prod_udt_c%pu_plt)
       call bcast_ctl_data_4_platform(prod_udt_c%org_pu_plt)
 !
-      call MPI_BCAST(prod_udt_c%i_prod_control, 1,                      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(prod_udt_c%i_prod_control, 0)
 !
       end subroutine bcast_prod_control_data
 !
@@ -242,6 +242,7 @@
 !
       subroutine bcast_prod_files_ctl(prod_ctl)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(product_model_ctl), intent(inout) :: prod_ctl
@@ -250,8 +251,7 @@
       call bcast_ctl_type_c1(prod_ctl%product_udt_1_head_ctl)
       call bcast_ctl_type_c1(prod_ctl%product_udt_2_head_ctl)
 !
-      call MPI_BCAST(prod_ctl%i_prod_files, 1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(prod_ctl%i_prod_files, 0)
 !
       end subroutine bcast_prod_files_ctl
 !
@@ -309,6 +309,7 @@
 !
       subroutine bcast_product_model_ctl(prod_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_time_step_ctl
       use bcast_control_arrays
 !
@@ -322,8 +323,7 @@
       call bcast_ctl_type_c1(prod_ctl%product_field_2_ctl)
       call bcast_ctl_type_c1(prod_ctl%product_type_ctl)
 !
-      call MPI_BCAST(prod_ctl%i_prod_model, 1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(prod_ctl%i_prod_model, 0)
 !
       end subroutine bcast_product_model_ctl
 !

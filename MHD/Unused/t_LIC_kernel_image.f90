@@ -45,6 +45,8 @@
 !
       subroutine load_kernel_data_from_file(file_prefix, k_img)
 !
+      use calypso_mpi_int
+!
       character(len = kchara), intent(in) :: file_prefix
       type(LIC_kernel_image), intent(inout) :: k_img
 !
@@ -67,12 +69,9 @@
 !#endif
       end if
 !
-      call mpi_Bcast(k_img%npixel_x, 1,                                 &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call mpi_Bcast(k_img%npixel_y, 1,                                 &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(k_img%npixel_x, 0)
+      call calypso_mpi_bcast_one_int(k_img%npixel_y, 0)
       n_pixel = k_img%npixel_x * k_img%npixel_y
-!
 !
       if(my_rank .ne. 0) call alloc_lic_kernel_image(k_img)
       call calypso_mpi_bcast_character(k_img%gray, n_pixel, 0)

@@ -186,6 +186,7 @@
 !
       subroutine bcast_spectr_util_control(ctl)
 !
+      use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_time_step_ctl
 !
@@ -198,8 +199,7 @@
       call bcast_ctl_data_4_platform(ctl%plt)
       call bcast_ctl_data_4_time_step(ctl%tctl)
 !
-      call MPI_BCAST(ctl%iflag, 1,                                      &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(ctl%iflag, 0)
 !
       end subroutine bcast_spectr_util_control
 !
@@ -258,6 +258,7 @@
 !
       subroutine bcast_diff_spectr_file_control(file_list)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(diff_spectrum_ctl), intent(inout) :: file_list
@@ -271,8 +272,7 @@
       call bcast_ctl_type_c1(file_list%sub_spec_file_fmt_ctl)
       call bcast_ctl_type_c1(file_list%out_spec_file_fmt_ctl)
 !
-      call MPI_BCAST(file_list%iflag, 1,                                &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(file_list%iflag, 0)
 !
       end subroutine bcast_diff_spectr_file_control
 !
@@ -325,14 +325,14 @@
 !
       subroutine bcast_rename_spectr_control(field_list)
 !
+      use calypso_mpi_int
       use bcast_control_arrays
 !
       type(rename_spectr_ctl), intent(inout) :: field_list
 !
       call bcast_ctl_array_c2(field_list%field_to_rename_ctl)
 !
-      call MPI_BCAST(field_list%iflag, 1,                               &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(field_list%iflag, 0)
 !
       end subroutine bcast_rename_spectr_control
 !

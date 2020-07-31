@@ -121,6 +121,8 @@
 !
       use t_pvr_image_array
       use t_pvr_stencil_buffer
+      use calypso_mpi_int
+      use transfer_to_long_integers
       use composite_pvr_images
       use composite_pvr_images
 !
@@ -163,13 +165,13 @@
         end do
       end if
 !
-      call mpi_bcast(num_fail, 1, CALYPSO_INTEGER,                      &
-     &        int(pvr_rgb%irank_image_file), CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int                                    &
+     &   (num_fail, int(pvr_rgb%irank_image_file))
 !
       if(my_rank .ne. pvr_rgb%irank_image_file)                         &
      &      allocate(ilist_fail(num_fail))
-      call mpi_bcast(ilist_fail, num_fail, CALYPSO_INTEGER,             &
-     &    int(pvr_rgb%irank_image_file), CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int(ilist_fail, cast_long(num_fail),       &
+     &                           int(pvr_rgb%irank_image_file))
 !
       do i = 1, num_fail
         call check_rendering_image                                      &

@@ -54,6 +54,7 @@
       use m_2nd_pallalel_vector
       use t_domain_group_4_partition
       use const_domain_tbl_by_file
+      use calypso_mpi_int
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(inout)  :: nod_d_grp
@@ -64,8 +65,7 @@
       end if
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
-      call MPI_Bcast(nod_d_grp%num_s_domin, 1, CALYPSO_INTEGER,         &
-     &    0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(nod_d_grp%num_s_domin, 0)
       if(iflag_F3D_time) call end_elapsed_time(ist_elapsed_F3D+1)
 !
 !
@@ -88,33 +88,29 @@
 !
       subroutine bcast_num_filter_part_table(nprocs_2nd, itl_nod_part)
 !
+      use calypso_mpi_int
+      use transfer_to_long_integers
       use set_filters_4_new_domains
 !
       integer, intent(in) :: nprocs_2nd
       type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !
 !
-      call MPI_Bcast(itl_nod_part%num_inter_sub(1), nprocs_2nd,         &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%istack_inter_sub(1), nprocs_2nd,      &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%ntot_inter_sub,  1,                   &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmax_inter_sub,  1,                   &
-     &    CALYPSO_INTEGER,  0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmin_inter_sub,  1,                   &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (itl_nod_part%num_inter_sub(1), cast_long(nprocs_2nd), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (itl_nod_part%istack_inter_sub(1), cast_long(nprocs_2nd), 0)
+      call calypso_mpi_bcast_one_int(itl_nod_part%ntot_inter_sub,  0)
+      call calypso_mpi_bcast_one_int(itl_nod_part%nmax_inter_sub,  0)
+      call calypso_mpi_bcast_one_int(itl_nod_part%nmin_inter_sub,  0)
 !
-      call MPI_Bcast(itl_nod_part%num_4_subdomain(1), nprocs_2nd,       &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%istack_4_subdomain(1),  nprocs_2nd,   &
-     &    CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%ntot_sub,  1, CALYPSO_INTEGER,        &
-     &    0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmax_sub,  1, CALYPSO_INTEGER,        &
-     &    0, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(itl_nod_part%nmin_sub,  1, CALYPSO_INTEGER,        &
-     &    0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_int                                        &
+     &   (itl_nod_part%num_4_subdomain(1), cast_long(nprocs_2nd), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (itl_nod_part%istack_4_subdomain(1), cast_long(nprocs_2nd), 0)
+      call calypso_mpi_bcast_one_int(itl_nod_part%ntot_sub, 0)
+      call calypso_mpi_bcast_one_int(itl_nod_part%nmax_sub, 0)
+      call calypso_mpi_bcast_one_int(itl_nod_part%nmin_sub, 0)
 !
       end subroutine bcast_num_filter_part_table
 !
