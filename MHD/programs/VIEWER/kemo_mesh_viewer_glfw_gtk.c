@@ -134,7 +134,6 @@ void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
 	g_signal_connect(G_OBJECT(quitButton), "clicked", G_CALLBACK(gtkWindowclose_CB), NULL);
 	
 	
-	
 	mbot->menuHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     mbot->vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_pack_start(GTK_BOX(mbot->vbox_menu), quitButton, FALSE, FALSE, 0);

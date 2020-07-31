@@ -199,6 +199,7 @@
 !
       subroutine bcast_sph_sgs_mhd_model(model_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_field_ctl
       use bcast_ctl_data_SGS_model
 !
@@ -222,8 +223,7 @@
       call bcast_ref_scalar_ctl(model_ctl%refc_ctl)
       call bcast_sgs_ctl(model_ctl%sgs_ctl)
 !
-      call MPI_BCAST(model_ctl%i_model, 1,                              &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(model_ctl%i_model, 0)
 !
       end subroutine bcast_sph_sgs_mhd_model
 !

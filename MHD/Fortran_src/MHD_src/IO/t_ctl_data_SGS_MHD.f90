@@ -239,6 +239,7 @@
       subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       use t_ctl_data_SPH_MHD_control
+      use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
@@ -258,8 +259,7 @@
       call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
-      call MPI_BCAST(MHD_ctl%i_mhd_ctl, 1,                              &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(MHD_ctl%i_mhd_ctl, 0)
 !
       end subroutine bcast_sph_sgs_mhd_ctl_data
 !

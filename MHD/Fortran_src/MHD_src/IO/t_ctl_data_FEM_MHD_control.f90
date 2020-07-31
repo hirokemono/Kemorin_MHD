@@ -108,6 +108,7 @@
 !
       subroutine bcast_fem_mhd_control(fmctl_ctl)
 !
+      use calypso_mpi_int
       use bcast_4_time_step_ctl
       use bcast_4_solver_ctl
       use bcast_4_fem_int_pts_ctl
@@ -122,8 +123,7 @@
       call bcast_CG_solver_param_ctl(fmctl_ctl%CG_ctl)
       call bcast_control_fem_int_points(fmctl_ctl%fint_ctl)
 !
-      call MPI_BCAST(fmctl_ctl%i_control, 1,                            &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(fmctl_ctl%i_control, 0)
 !
       end subroutine bcast_fem_mhd_control
 !

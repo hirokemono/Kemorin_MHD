@@ -174,6 +174,7 @@
       subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
 !
       use t_ctl_data_FEM_MHD_control
+      use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
@@ -193,8 +194,7 @@
 !
       call bcast_viz_controls(viz_ctls)
 !
-      call MPI_BCAST(FEM_MHD_ctl%i_mhd_ctl, 1,                          &
-     &               CALYPSO_INTEGER, 0, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_bcast_one_int(FEM_MHD_ctl%i_mhd_ctl, 0)
 !
       end subroutine bcast_fem_mhd_ctl_data
 !
