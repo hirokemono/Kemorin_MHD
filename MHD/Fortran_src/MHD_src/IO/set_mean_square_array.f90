@@ -40,7 +40,6 @@
      &         (nod_fld, iphys, iphys_LES, i_msq, msq_list)
 !
       use t_energy_flux_labels
-      use t_diffusion_term_labels
       use t_diff_vector_labels
       use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
@@ -49,13 +48,14 @@
       use m_phys_constants
       use m_base_field_labels
       use m_base_force_labels
+      use m_rot_force_labels
+      use m_div_force_labels
+      use m_diffusion_term_labels
       use m_wide_filter_field_labels
       use m_grad_filter_field_labels
       use m_wide_SGS_term_labels
       use m_force_w_SGS_labels
       use m_volume_average_labels
-      use m_rot_force_labels
-      use m_div_force_labels
       use m_diff_SGS_term_labels
       use m_true_SGS_term_labels
       use m_filtered_field_labels

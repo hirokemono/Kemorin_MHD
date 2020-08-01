@@ -406,7 +406,7 @@
 !
       integer(c_int) function num_base_diffusions_f() bind(c)
 !
-      use t_diffusion_term_labels
+      use m_diffusion_term_labels
 !
       num_base_diffusions_f = num_base_diffusions()
       return
@@ -417,7 +417,7 @@
       subroutine set_base_diffusion_labels_f                            &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_diffusion_term_labels
+      use m_diffusion_term_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
@@ -433,7 +433,7 @@
 !
       integer(c_int) function num_base_diffusivities_f() bind(c)
 !
-      use t_diffusion_term_labels
+      use m_diffusion_term_labels
 !
       num_base_diffusivities_f = num_base_diffusivities()
       return
@@ -444,7 +444,7 @@
       subroutine set_base_diffusivity_labels_f                          &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_diffusion_term_labels
+      use m_diffusion_term_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)

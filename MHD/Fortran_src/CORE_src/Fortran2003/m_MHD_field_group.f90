@@ -164,6 +164,7 @@
 !
       use m_base_field_labels
       use m_base_force_labels
+      use m_diffusion_term_labels
       use t_grad_field_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)

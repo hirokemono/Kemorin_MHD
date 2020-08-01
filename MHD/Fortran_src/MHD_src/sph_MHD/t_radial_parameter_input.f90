@@ -314,8 +314,8 @@
 !
       subroutine set_num_comp_r_params(field_name, ncomp)
 !
-      use t_diffusion_term_labels
       use m_base_field_labels
+      use m_diffusion_term_labels
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: field_name
