@@ -1,5 +1,5 @@
 set_numnod_4_plane.o: $(PLANE_COMMON_DIR)/set_numnod_4_plane.f90 t_merged_geometry_data.o t_size_of_cube.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_setting_4_ini.o: $(PLANE_COMMON_DIR)/t_setting_4_ini.f90 m_precision.o m_phys_labels.o t_phys_data.o
+t_setting_4_ini.o: $(PLANE_COMMON_DIR)/t_setting_4_ini.f90 m_precision.o t_phys_data.o m_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

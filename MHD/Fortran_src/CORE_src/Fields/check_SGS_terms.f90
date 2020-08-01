@@ -223,9 +223,9 @@
 !
       use t_control_array_character3
       use t_SGS_term_labels
-      use t_base_force_labels
 !
       use m_base_field_labels
+      use m_base_force_labels
       use m_force_w_SGS_labels
       use add_nodal_fields_ctl
 !

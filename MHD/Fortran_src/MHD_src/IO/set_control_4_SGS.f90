@@ -61,6 +61,7 @@
       use m_geometry_constants
       use m_phys_labels
       use m_file_format_switch
+      use m_base_force_labels
       use m_force_control_labels
 !
       use t_SGS_control_parameter

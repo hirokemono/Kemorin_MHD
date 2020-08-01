@@ -58,7 +58,6 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_base_field_labels
       use t_SGS_model_addresses
       use t_jacobians
       use t_table_FEM_const
@@ -85,6 +84,7 @@
      &         (node, fl_prop, cd_prop, iphys, nod_fld)
 !
       use m_base_field_labels
+      use m_base_force_labels
 !
       use cal_fluxes
       use products_nodal_fields_smp
@@ -166,6 +166,8 @@
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
      &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,     &
      &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+!
+      use m_base_force_labels
 !
       use cal_terms_for_heat
       use cal_momentum_terms

@@ -10,7 +10,7 @@ drcz_fem.o: $(PSF_UTIL_MAINDIR)/drcz_fem.f90 m_precision.o m_constants.o m_ctl_p
 	$(F90) -c $(F90OPTFLAGS) $<
 drmap_fem.o: $(PSF_UTIL_MAINDIR)/drmap_fem.f90 m_precision.o m_constants.o m_ctl_param_plot_pg.o m_drawpg_fem.o m_isoline_dat_pg.o m_psf_results.o t_ctl_data_plot_pg.o set_control_draw_pg.o set_components_flags.o contour_fem_pg.o drcap_pg.o draw_colorbar_pg.o set_parallel_file_name.o set_map_from_1patch.o draw_mapframe_pg.o map_contour_fem_pg.o set_zplane_posi_pg.o rbcolor_pg.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fix_temperature_4_psf.o: $(PSF_UTIL_MAINDIR)/fix_temperature_4_psf.f90 m_precision.o m_constants.o m_phys_labels.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o
+fix_temperature_4_psf.o: $(PSF_UTIL_MAINDIR)/fix_temperature_4_psf.f90 m_precision.o m_constants.o m_base_field_labels.o m_psf_results.o m_field_file_format.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o set_parallel_file_name.o ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_dynamobench_data_by_psf.o: $(PSF_UTIL_MAINDIR)/m_dynamobench_data_by_psf.f90 m_precision.o m_constants.o m_psf_edge_connect.o quicksort.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

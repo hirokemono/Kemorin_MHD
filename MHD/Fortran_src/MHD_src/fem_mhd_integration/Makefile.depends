@@ -130,7 +130,7 @@ set_buoyancy_at_node.o: $(MHD_RHS_DIR)/set_buoyancy_at_node.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_normalized_div.o: $(MHD_RHS_DIR)/sum_normalized_div.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_MHD_finite_element_mat.o: $(MHD_RHS_DIR)/t_MHD_finite_element_mat.f90 m_precision.o t_finite_element_mat.o m_machine_parameter.o t_SGS_control_parameter.o t_phys_data.o t_base_field_labels.o
+t_MHD_finite_element_mat.o: $(MHD_RHS_DIR)/t_MHD_finite_element_mat.f90 m_precision.o m_machine_parameter.o t_finite_element_mat.o t_SGS_control_parameter.o t_phys_data.o t_base_field_labels.o m_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sorted_node_MHD.o: $(MHD_RHS_DIR)/t_sorted_node_MHD.f90 m_precision.o m_geometry_constants.o t_geometry_data_MHD.o t_geometry_data.o t_table_FEM_const.o
 	$(F90) -c $(F90OPTFLAGS) $<

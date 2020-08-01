@@ -64,6 +64,7 @@
      &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,      &
      &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld)
 !
+      use m_base_field_labels
       use cal_gradient
 !
       real(kind = kreal), intent(in) :: dt
@@ -201,7 +202,10 @@
      &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,    &
      &          mhd_fem_wk, rhs_mat, nod_fld)
 !
+      use m_base_field_labels
+      use m_base_force_labels
       use m_filtered_ene_flux_labels
+!
       use cal_buoyancy_flux
       use products_nodal_fields_smp
       use copy_nodal_fields

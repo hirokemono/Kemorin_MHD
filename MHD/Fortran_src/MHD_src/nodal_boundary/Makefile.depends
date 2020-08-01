@@ -54,11 +54,11 @@ set_nodal_boundary.o: $(MHD_NOD_BC_DIR)/set_nodal_boundary.f90 m_precision.o t_g
 	$(F90) -c $(F90OPTFLAGS) $<
 set_radial_magne_sph.o: $(MHD_NOD_BC_DIR)/set_radial_magne_sph.f90 m_precision.o t_schmidt_polynomial.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_bc_data_list.o spherical_harmonics.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_bc_data_magne.o: $(MHD_NOD_BC_DIR)/t_bc_data_magne.f90 m_precision.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o t_bc_data_list.o t_base_field_labels.o m_boundary_condition_IDs.o count_num_nod_bc_MHD.o set_bc_vectors.o set_ele_nod_bc_vectors.o t_geometry_data_MHD.o set_bc_scalars.o
+t_bc_data_magne.o: $(MHD_NOD_BC_DIR)/t_bc_data_magne.f90 m_precision.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o t_bc_data_list.o t_base_field_labels.o m_boundary_condition_IDs.o count_num_nod_bc_MHD.o set_bc_vectors.o set_ele_nod_bc_vectors.o t_geometry_data_MHD.o m_base_field_labels.o set_bc_scalars.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_bc_data_temp.o: $(MHD_NOD_BC_DIR)/t_bc_data_temp.f90 m_precision.o t_nodal_bc_data.o t_base_field_labels.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o count_num_nod_bc_MHD.o set_bc_scalars.o set_ele_nod_bc_vectors.o set_nodal_boundary.o
+t_bc_data_temp.o: $(MHD_NOD_BC_DIR)/t_bc_data_temp.f90 m_precision.o t_nodal_bc_data.o t_base_field_labels.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o m_base_field_labels.o count_num_nod_bc_MHD.o set_bc_scalars.o set_ele_nod_bc_vectors.o set_nodal_boundary.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_bc_data_velo.o: $(MHD_NOD_BC_DIR)/t_bc_data_velo.f90 m_precision.o t_nodal_bc_data.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o t_base_field_labels.o count_num_nod_bc_MHD.o set_bc_vectors.o set_bc_scalars.o set_ele_nod_bc_vectors.o t_physical_property.o set_nodal_boundary.o
+t_bc_data_velo.o: $(MHD_NOD_BC_DIR)/t_bc_data_velo.f90 m_precision.o t_nodal_bc_data.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_boundary_field_IO.o t_bc_data_list.o t_base_field_labels.o count_num_nod_bc_MHD.o set_bc_vectors.o set_bc_scalars.o set_ele_nod_bc_vectors.o t_physical_property.o m_base_field_labels.o set_nodal_boundary.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_nodal_bc_data.o: $(MHD_NOD_BC_DIR)/t_nodal_bc_data.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

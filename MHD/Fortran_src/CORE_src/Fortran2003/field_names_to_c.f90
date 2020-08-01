@@ -217,7 +217,7 @@
 !
       integer(c_int) function num_base_forces_f() bind(c)
 !
-      use t_base_force_labels
+      use m_base_force_labels
 !
       num_base_forces_f = num_base_forces()
       return
@@ -228,7 +228,7 @@
       subroutine set_base_force_labels_f                                &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_base_force_labels
+      use m_base_force_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
