@@ -149,8 +149,6 @@
       integer(c_int) function count_SGS_MHD_field_groups_f()            &
      &           bind(C, name = 'count_SGS_MHD_field_groups_f')
 !
-      use t_grad_field_labels
-!
 !
       count_SGS_MHD_field_groups_f = ngrp_SGS_MHD_fields
 !
@@ -165,7 +163,7 @@
       use m_base_field_labels
       use m_base_force_labels
       use m_diffusion_term_labels
-      use t_grad_field_labels
+      use m_grad_field_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)

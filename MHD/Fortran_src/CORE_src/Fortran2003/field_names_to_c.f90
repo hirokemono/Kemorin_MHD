@@ -325,7 +325,7 @@
 !
       integer(c_int) function num_divergence_fields_f() bind(c)
 !
-      use t_grad_field_labels
+      use m_grad_field_labels
 !
       num_divergence_fields_f = num_divergence_fields()
       return
@@ -336,7 +336,7 @@
       subroutine set_divergence_field_labels_f                          &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_grad_field_labels
+      use m_grad_field_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
@@ -352,7 +352,7 @@
 !
       integer(c_int) function num_gradient_fields_f() bind(c)
 !
-      use t_grad_field_labels
+      use m_grad_field_labels
 !
       num_gradient_fields_f = num_gradient_fields()
       return
@@ -363,7 +363,7 @@
       subroutine set_gradient_field_labels_f                            &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_grad_field_labels
+      use m_grad_field_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
