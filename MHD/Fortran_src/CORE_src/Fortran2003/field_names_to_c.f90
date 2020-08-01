@@ -298,7 +298,7 @@
 !
       integer(c_int) function num_energy_fluxes_f() bind(c)
 !
-      use t_energy_flux_labels
+      use m_energy_flux_labels
 !
       num_energy_fluxes_f = num_energy_fluxes()
       return
@@ -309,7 +309,7 @@
       subroutine set_energy_flux_names_f                                &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_energy_flux_labels
+      use m_energy_flux_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)

@@ -142,6 +142,7 @@
       subroutine set_scalar_field_name_w_SGS                            &
      &         (phys_name_ctl, flag_viz, flag_monitor, fld, flag)
 !
+      use m_energy_flux_labels
       use set_MHD_field_address
       use set_SGS_MHD_field_address
 !

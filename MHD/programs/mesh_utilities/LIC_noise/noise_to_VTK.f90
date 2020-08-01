@@ -44,7 +44,7 @@
       type(phys_data) :: nod_fld
       type(ucd_data) :: ucd
 !
-      integer(kind = kint) :: inod, ierr
+      integer(kind = kint) :: inod
 !
 !
       iflag_debug = 0
