@@ -125,8 +125,8 @@
       subroutine add_field_ctl_4_SGS_ene_fluxes(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_enegy_flux_labels
 !
+      use m_SGS_enegy_flux_labels
       use m_base_field_labels
       use m_SGS_term_labels
       use m_diff_SGS_term_labels

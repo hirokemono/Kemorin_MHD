@@ -449,6 +449,7 @@
       subroutine cal_SGS_buoyancy_fluxes_FEM                            &
      &         (node, fl_prop, iphys_SGS, iphys_sef, nod_fld)
 !
+      use m_SGS_enegy_flux_labels
       use cal_sgs_buoyancy_flux
 !
       type(node_data), intent(in) :: node

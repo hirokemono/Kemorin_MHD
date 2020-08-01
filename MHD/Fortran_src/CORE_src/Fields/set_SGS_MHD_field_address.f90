@@ -92,11 +92,9 @@
 !
       logical function check_SGS_scalar_fields(phys_name_ctl)
 !
-      use t_base_field_labels
-      use t_diffusion_term_labels
-!
       use m_SGS_term_labels
       use m_diff_SGS_term_labels
+      use m_SGS_enegy_flux_labels
       use m_SGS_model_coef_labels
       use m_true_SGS_term_labels
       use m_filtered_field_labels

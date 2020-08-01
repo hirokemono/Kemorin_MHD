@@ -27,6 +27,7 @@
       use m_precision
 !
       use t_addresses_sph_transform
+      use t_SGS_enegy_flux_labels
 !
       implicit none
 !
@@ -39,7 +40,7 @@
       subroutine add_SGS_eflux_sph_trns_by_pol                          &
      &         (ipol_sef, iphys_sef, f_trns_sef, trns)
 !
-      use t_SGS_enegy_flux_labels
+      use m_SGS_enegy_flux_labels
       use add_field_to_sph_trans_list
 !
       type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef
@@ -67,7 +68,7 @@
       subroutine add_SGS_eflux_sph_trns_snap                           &
      &         (ipol_sef, iphys_sef, f_trns_sef, trns)
 !
-      use t_SGS_enegy_flux_labels
+      use m_SGS_enegy_flux_labels
       use add_field_to_sph_trans_list
 !
       type(SGS_ene_flux_address), intent(in) :: ipol_sef, iphys_sef

@@ -52,13 +52,13 @@
       subroutine add_work_area_4_sgs_model                              &
      &         (SGS_param, fl_prop, field_ctl)
 !
-      use t_SGS_enegy_flux_labels
  !
       use m_phys_labels
       use m_base_field_labels
       use m_diff_vector_labels
 !
       use m_SGS_term_labels
+      use m_SGS_enegy_flux_labels
       use m_diff_SGS_term_labels
       use m_SGS_model_coef_labels
       use m_filtered_field_labels
