@@ -460,7 +460,7 @@
 !
       integer(c_int) function num_work_4_explicit_f() bind(c)
 !
-      use t_explicit_term_labels
+      use m_explicit_term_labels
 !
       num_work_4_explicit_f = num_work_4_explicit()
       return
@@ -471,7 +471,7 @@
       subroutine set_work_4_explicit_labels_f                           &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_explicit_term_labels
+      use m_explicit_term_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
@@ -487,7 +487,7 @@
 !
       integer(c_int) function num_check_fields_f() bind(c)
 !
-      use t_explicit_term_labels
+      use m_explicit_term_labels
 !
       num_check_fields_f = num_check_fields()
       return
@@ -498,7 +498,7 @@
       subroutine set_check_fields_labels_f                              &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_explicit_term_labels
+      use m_explicit_term_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)

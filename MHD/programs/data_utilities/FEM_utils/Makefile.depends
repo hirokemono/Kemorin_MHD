@@ -1,4 +1,4 @@
-FEM_MHD_length_scale.o: $(UCD_UTILS_DIR)/FEM_MHD_length_scale.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_phys_data.o calypso_mpi.o t_time_data.o t_ucd_data.o m_phys_labels.o m_ctl_params_4_prod_udt.o set_and_cal_udt_data.o parallel_ucd_IO_select.o m_base_field_labels.o m_diffusion_term_labels.o mag_of_field_smp.o
+FEM_MHD_length_scale.o: $(UCD_UTILS_DIR)/FEM_MHD_length_scale.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_phys_data.o calypso_mpi.o t_time_data.o t_ucd_data.o m_field_product_labels.o m_ctl_params_4_prod_udt.o set_and_cal_udt_data.o parallel_ucd_IO_select.o m_base_field_labels.o m_diffusion_term_labels.o mag_of_field_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 analyzer_MHD_lengthscale.o: $(UCD_UTILS_DIR)/analyzer_MHD_lengthscale.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_FEM_utils.o t_VIZ_step_parameter.o ucd_IO_select.o FEM_MHD_length_scale.o m_array_for_send_recv.o m_ctl_params_4_prod_udt.o t_ctl_data_product_udt.o t_step_parameter.o product_udt_fields.o m_ctl_params_4_diff_udt.o output_parallel_ucd_file.o
 	$(F90) -c $(F90OPTFLAGS) $<

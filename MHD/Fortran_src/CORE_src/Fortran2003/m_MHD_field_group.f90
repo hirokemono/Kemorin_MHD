@@ -166,6 +166,7 @@
       use m_grad_field_labels
       use m_energy_flux_labels
       use m_field_product_labels
+      use m_explicit_term_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)
