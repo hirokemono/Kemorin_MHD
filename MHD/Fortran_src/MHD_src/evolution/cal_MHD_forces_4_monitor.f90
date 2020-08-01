@@ -84,6 +84,8 @@
       subroutine cal_fluxes_4_monitor                                   &
      &         (node, fl_prop, cd_prop, iphys, nod_fld)
 !
+      use m_base_field_labels
+!
       use cal_fluxes
       use products_nodal_fields_smp
       use int_vol_coriolis_term

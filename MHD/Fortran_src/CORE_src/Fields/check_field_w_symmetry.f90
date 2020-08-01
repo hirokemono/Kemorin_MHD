@@ -31,6 +31,7 @@
       subroutine add_field_w_symmetry_ctl(field_ctl)
 !
       use t_control_array_character3
+      use m_base_field_labels
       use add_nodal_fields_ctl
 !
       type(ctl_array_c3), intent(inout) :: field_ctl

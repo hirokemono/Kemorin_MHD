@@ -107,7 +107,7 @@
 !
       subroutine set_check_delta_t_data(cd_prop, iphys, flex_data)
 !
-      use m_phys_labels
+      use m_base_field_labels
 !
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys

@@ -101,7 +101,7 @@
       subroutine set_ctl_data_4_zm_streamline(field_ctl)
 !
       use t_control_array_character3
-      use m_phys_labels
+      use m_base_field_labels
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
       integer(kind = kint) :: ifld, iflag_velo, iflag_magne

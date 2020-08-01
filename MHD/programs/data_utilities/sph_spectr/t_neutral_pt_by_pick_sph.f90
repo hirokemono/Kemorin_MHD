@@ -24,7 +24,6 @@
 !
       use m_precision
       use m_constants
-      use m_phys_labels
 !
       use t_picked_sph_spectr_data_IO
 !
@@ -114,6 +113,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine find_field_address(pick_IO, ntl)
+!
+      use m_base_field_labels
 !
       type(picked_spectrum_data_IO), intent(in) :: pick_IO
       type(neutral_pt_by_pick_sph), intent(inout) :: ntl

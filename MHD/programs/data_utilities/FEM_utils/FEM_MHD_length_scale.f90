@@ -137,7 +137,7 @@
 !
       subroutine find_field_address_4_lscale(nod_fld, iphys)
 !
-      use m_phys_labels
+      use m_base_field_labels
 !
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(inout) :: iphys

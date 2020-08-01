@@ -36,6 +36,7 @@
 !
       subroutine init_energy_labels_w_filter(ene_labels)
 !
+      use m_base_field_labels
       use m_filtered_field_labels
       use add_direction_labels
 !

@@ -155,7 +155,7 @@
       subroutine each_radial_field_name_by_file                         &
      &         (rfld, d_rad, irad, icou)
 !
-      use m_phys_labels
+      use m_base_field_labels
       use t_diffusion_term_labels
       use t_radial_parameter_input
       use skip_comment_f
@@ -190,7 +190,7 @@
      &         (fl_prop, cd_prop, ref_param_T, ref_param_C,             &
      &          d_rad, irad, icou)
 !
-      use m_phys_labels
+      use m_base_field_labels
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

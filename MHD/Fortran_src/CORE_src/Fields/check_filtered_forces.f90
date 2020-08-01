@@ -181,6 +181,7 @@
 !
       subroutine add_field_ctl_4_fil_ene_flux(field_ctl)
 !
+      use m_base_field_labels
       use m_filtered_ene_flux_labels
       use add_nodal_fields_ctl
 !

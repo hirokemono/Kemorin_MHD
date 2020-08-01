@@ -182,6 +182,8 @@
      &          conduct, insulate, nod_grp, e_potential_nod, Bnod_bcs)
 !
       use t_geometry_data_MHD
+      use m_base_field_labels
+!
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors

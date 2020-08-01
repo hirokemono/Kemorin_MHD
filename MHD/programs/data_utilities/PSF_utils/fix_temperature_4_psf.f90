@@ -11,7 +11,7 @@
       use m_precision
       use m_constants
 !
-      use m_phys_labels
+      use m_base_field_labels
       use m_psf_results
       use m_field_file_format
 !

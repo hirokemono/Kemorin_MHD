@@ -86,6 +86,9 @@
       use t_rayleigh_restart_IO
       use t_picked_rayleigh_parameter
       use t_picked_rayleigh_spectr
+!
+      use m_base_field_labels
+!
       use rayleigh_restart_IO
       use MPI_read_rayleigh_restart
 !

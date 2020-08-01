@@ -9,7 +9,7 @@
       use m_precision
       use m_constants
 !
-      use m_phys_labels
+      use m_base_field_labels
       use m_filtered_field_labels
 !
       use t_size_of_cube

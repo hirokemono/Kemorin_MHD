@@ -106,7 +106,7 @@
       subroutine set_ctl_data_4_zm_energies(field_ctl)
 !
       use t_control_array_character3
-      use m_phys_labels
+      use m_base_field_labels
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
       integer(kind = kint) :: ifld, iflag_velo
@@ -140,7 +140,7 @@
 !
       subroutine set_rj_phys_for_pol_kene(sph_rj, rj_fld)
 !
-      use m_phys_labels
+      use m_base_field_labels
       use t_spheric_rj_data
       use t_phys_data
 !
@@ -172,7 +172,8 @@
 !
       use t_spheric_parameter
       use t_phys_data
-      use m_phys_labels
+!
+      use m_base_field_labels
       use m_phys_constants
       use cal_zonal_mean_sph_spectr
 !
@@ -197,7 +198,7 @@
       subroutine cal_zm_energy_to_pressure(nidx_rtp, numnod,            &
      &          nfield_nod, ncomp_nod, istack_comp, rj_fld, d_nod)
 !
-      use m_phys_labels
+      use m_base_field_labels
       use t_phys_data
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)

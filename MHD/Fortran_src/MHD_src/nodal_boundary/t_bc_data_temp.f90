@@ -44,6 +44,8 @@
       use t_geometry_data_MHD
       use t_boundary_field_IO
       use t_bc_data_list
+      use m_base_field_labels
+!
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors

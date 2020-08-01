@@ -262,7 +262,6 @@
 !
       subroutine write_sgs_coef_head(file_id, wk_sgs)
 !
-      use m_phys_labels
       use write_field_labels
 !
       integer(kind = kint), intent(in) :: file_id
@@ -284,7 +283,6 @@
 !
       use t_SGS_term_labels
       use m_geometry_constants
-      use m_phys_labels
 !
       use add_direction_labels
       use write_field_labels
@@ -354,7 +352,7 @@
 !
       subroutine write_diff_comps_head(file_id, cd_prop, wk_diff)
 !
-      use m_phys_labels
+      use m_base_field_labels
       use t_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: file_id

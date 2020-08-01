@@ -68,7 +68,7 @@ set_neib_nod_z.o: $(CONST_FILTER_Z_DIR)/set_neib_nod_z.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solve_by_mass_z.o: $(CONST_FILTER_Z_DIR)/solve_by_mass_z.f90 m_precision.o m_int_edge_vart_width.o m_consist_mass_crs.o t_geometry_data.o t_comm_table.o t_iccg_parameter.o t_solver_djds.o t_crs_connect.o t_crs_matrix.o calypso_mpi.o solve_precond_DJDS.o copy_matrix_2_djds_array.o m_machine_parameter.o solver_DJDS11_struct.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/t_ctl_data_gen_z_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_gen_filter.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_plane_model.o skip_comment_f.o bcast_control_arrays.o
+t_ctl_data_gen_z_filter.o: $(CONST_FILTER_Z_DIR)/t_ctl_data_gen_z_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_gen_filter.o t_control_array_character.o t_control_array_integer.o t_ctl_data_4_plane_model.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_z_filter_4_nod.o: $(CONST_FILTER_Z_DIR)/write_z_filter_4_nod.f90 m_precision.o t_geometry_data.o t_edge_data.o m_int_commtative_filter.o m_commute_filter_z.o m_z_filter_values.o m_int_edge_vart_width.o
 	$(F90) -c $(F90OPTFLAGS) $<

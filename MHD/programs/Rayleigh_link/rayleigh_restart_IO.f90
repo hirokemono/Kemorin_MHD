@@ -147,6 +147,8 @@
       subroutine set_rayleigh_restart_field                             &
      &         (i_version, dir, i_step, fld_IO)
 !
+      use m_base_field_labels
+!
       integer(kind = kint), intent(in) :: i_version, i_step
       character(len = kchara), intent(in) :: dir
 !
@@ -189,6 +191,8 @@
 !
       subroutine set_rayleigh_rst_file_name(i_version, dir, i_step,     &
      &          field_name, iflag_ncomp, file_name)
+!
+      use m_base_field_labels
 !
       integer(kind = kint), intent(in) :: i_version, i_step
       character(len = kchara), intent(in) :: dir

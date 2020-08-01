@@ -34,6 +34,7 @@
       subroutine add_ene_flux_by_sym_sym_ctl(field_ctl)
 !
       use t_control_array_character3
+      use m_base_field_labels
       use m_force_w_sym_labels
       use add_nodal_fields_ctl
 !
@@ -92,6 +93,7 @@
       subroutine add_ene_flux_by_asym_asym_ctl(field_ctl)
 !
       use t_control_array_character3
+      use m_base_field_labels
       use m_force_w_sym_labels
       use add_nodal_fields_ctl
 !
@@ -155,6 +157,7 @@
       subroutine add_ene_flux_by_sym_asym_ctl(field_ctl)
 !
       use t_control_array_character3
+      use m_base_field_labels
       use m_force_w_sym_labels
       use add_nodal_fields_ctl
 !

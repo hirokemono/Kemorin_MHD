@@ -14,6 +14,6 @@ set_new_2d_element_group.o: $(ELE_GRP_SPH_DIR)/set_new_2d_element_group.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 start_end_4_2d_ele_grping.o: $(ELE_GRP_SPH_DIR)/start_end_4_2d_ele_grping.f90 m_precision.o m_constants.o m_geometry_constants.o m_work_4_add_egrp_sph.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_data_add_ele_grp.o: $(ELE_GRP_SPH_DIR)/t_control_data_add_ele_grp.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_array_character.o t_control_array_charareal2.o skip_comment_f.o bcast_4_platform_ctl.o bcast_control_arrays.o
+t_control_data_add_ele_grp.o: $(ELE_GRP_SPH_DIR)/t_control_data_add_ele_grp.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_control_array_character.o t_control_array_charareal2.o skip_comment_f.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

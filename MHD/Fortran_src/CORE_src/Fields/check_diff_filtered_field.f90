@@ -30,6 +30,7 @@
 !
       subroutine add_field_ctl_4_grad_fil_field(field_ctl)
 !
+      use m_base_field_labels
       use m_grad_filter_field_labels
       use m_filtered_field_labels
       use add_nodal_fields_ctl

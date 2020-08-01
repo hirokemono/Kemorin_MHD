@@ -140,6 +140,8 @@
      &           nod_grp, fl_prop, press_nod, Vnod_bcs)
 !
       use t_physical_property
+      use m_base_field_labels
+!
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors

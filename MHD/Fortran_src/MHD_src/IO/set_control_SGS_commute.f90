@@ -61,7 +61,7 @@
       subroutine s_set_control_SGS_commute                              &
      &         (SGS_param, sgs_ctl, cmt_param, Cdiff_file_IO)
 !
-      use m_phys_labels
+      use m_base_field_labels
       use m_file_format_switch
       use m_force_control_labels
       use t_ctl_data_SGS_model

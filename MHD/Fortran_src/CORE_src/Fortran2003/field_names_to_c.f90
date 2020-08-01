@@ -190,7 +190,7 @@
 !
       integer(c_int) function num_base_fields_f() bind(c)
 !
-      use t_base_field_labels
+      use m_base_field_labels
 !
       num_base_fields_f = num_base_fields()
       return
@@ -201,7 +201,7 @@
       subroutine set_base_field_names_f                                 &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_base_field_labels
+      use m_base_field_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)

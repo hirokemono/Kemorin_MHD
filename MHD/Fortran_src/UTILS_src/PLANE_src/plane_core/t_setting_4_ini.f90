@@ -14,7 +14,6 @@
 !
       use m_precision
 !
-      use m_phys_labels
       use t_phys_data
 !
       implicit none
@@ -37,6 +36,8 @@
 !-----------------------------------------------------------------
 !
       subroutine set_initial_components(merged_fld)
+!
+      use m_base_field_labels
 !
       type(phys_data), intent(inout) :: merged_fld
 !
@@ -111,7 +112,9 @@
 !
 !-----------------------------------------------------------------
 !
-       subroutine add_initial_comp_mhd(merged_fld, pini_p)
+      subroutine add_initial_comp_mhd(merged_fld, pini_p)
+!
+      use m_base_field_labels
 !
       type(phys_data), intent(inout) :: merged_fld
       type(plane_initial_setting), intent(inout) :: pini_p

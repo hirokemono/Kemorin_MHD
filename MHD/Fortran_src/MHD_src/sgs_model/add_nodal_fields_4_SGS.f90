@@ -16,7 +16,6 @@
 !
       use m_precision
 !
-      use m_phys_labels
       use t_SGS_control_parameter
       use t_physical_property
       use t_control_array_character3
@@ -56,6 +55,8 @@
       use t_SGS_term_labels
       use t_SGS_model_coef_labels
       use t_SGS_enegy_flux_labels
+      use m_phys_labels
+      use m_base_field_labels
       use m_diff_SGS_term_labels
       use m_filtered_field_labels
       use m_wide_filter_field_labels

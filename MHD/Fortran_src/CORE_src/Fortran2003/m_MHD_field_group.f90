@@ -162,6 +162,7 @@
       subroutine MHD_field_groups_f(nfld_group_c, field_group_c)        &
      &          bind(C, name = 'MHD_field_groups_f')
 !
+      use m_base_field_labels
       use t_grad_field_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)

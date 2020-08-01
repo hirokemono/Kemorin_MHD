@@ -205,7 +205,7 @@
      &          icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
 !
       use calypso_mpi
-      use m_phys_labels
+      use m_base_field_labels
 !
       use t_base_field_labels
       use t_layering_ele_list

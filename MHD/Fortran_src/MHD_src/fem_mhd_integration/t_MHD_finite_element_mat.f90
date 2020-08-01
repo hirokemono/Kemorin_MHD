@@ -25,6 +25,7 @@
       module t_MHD_finite_element_mat
 !
       use m_precision
+      use m_machine_parameter
       use t_finite_element_mat
 !
       implicit  none
@@ -68,10 +69,11 @@
       subroutine alloc_int_vol_data                                     &
      &         (numele, max_nod_smp, SGS_param, nod_fld, mhd_fem_wk)
 !
-      use m_machine_parameter
       use t_SGS_control_parameter
       use t_phys_data
       use t_base_field_labels
+!
+      use m_base_field_labels
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       integer(kind = kint), intent(in) :: numele, max_nod_smp
@@ -132,7 +134,7 @@
 !
       subroutine dealloc_int_vol_data(nod_fld, mhd_fem_wk)
 !
-      use t_base_field_labels
+      use m_base_field_labels
       use t_phys_data
 !
       type(phys_data), intent(in) :: nod_fld
