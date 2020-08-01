@@ -48,8 +48,7 @@
       use t_base_field_labels
       use t_diffusion_term_labels
 !
-      use t_SGS_term_labels
-!
+      use m_SGS_term_labels
       use m_force_w_SGS_labels
       use m_diff_SGS_term_labels
       use m_true_SGS_term_labels
@@ -96,9 +95,9 @@
       use t_base_field_labels
       use t_diffusion_term_labels
 !
-      use t_SGS_term_labels
       use t_SGS_model_coef_labels
 !
+      use m_SGS_term_labels
       use m_diff_SGS_term_labels
       use m_true_SGS_term_labels
       use m_filtered_field_labels
@@ -135,9 +134,9 @@
 !
       logical function check_SGS_sym_tensor_fields(phys_name_ctl)
 !
-      use t_SGS_term_labels
       use t_SGS_model_coef_labels
 !
+      use m_SGS_term_labels
       use m_force_w_SGS_labels
       use m_filtered_force_labels
       use m_div_filtered_force_labels
@@ -159,7 +158,7 @@
 !
       logical function check_SGS_asym_tensor_fields(phys_name_ctl)
 !
-      use t_SGS_term_labels
+      use m_SGS_term_labels
       use t_SGS_model_coef_labels
 !
       use m_force_w_SGS_labels
@@ -180,7 +179,6 @@
       subroutine set_SGS_MHD_field_addresses                            &
      &          (i_fld, field_name, iphys_LES, flag)
 !
-      use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use t_SGS_model_coef_labels
       use t_SGS_model_addresses
@@ -192,6 +190,7 @@
       use m_div_filtered_force_labels
       use m_diff_filter_vect_labels
       use m_grad_filter_field_labels
+      use m_SGS_term_labels
       use m_diff_SGS_term_labels
       use m_wide_SGS_term_labels
       use m_true_SGS_term_labels

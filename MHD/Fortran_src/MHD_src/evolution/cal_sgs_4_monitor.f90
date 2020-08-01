@@ -106,8 +106,8 @@
      &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,            &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use t_SGS_term_labels
       use m_base_force_labels
+      use m_SGS_term_labels
       use cal_sgs_fluxes
       use int_sgs_induction
 !
@@ -233,6 +233,7 @@
      &          FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD,            &
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
+      use m_SGS_term_labels
       use m_diff_SGS_term_labels
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -347,6 +348,7 @@
      &          fl_prop, cd_prop, iphys, iphys_LES, jacs, rhs_tbl,      &
      &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
+      use m_SGS_term_labels
       use products_nodal_fields_smp
       use int_sgs_induction
       use cal_sgs_buoyancy_flux

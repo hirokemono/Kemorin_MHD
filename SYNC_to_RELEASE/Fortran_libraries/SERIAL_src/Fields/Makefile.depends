@@ -6,6 +6,8 @@ check_energy_fluxes.o: $(FIELDIR)/check_energy_fluxes.f90 m_precision.o m_consta
 	$(F90) -c $(F90OPTFLAGS) $<
 check_workarea_4_explicit.o: $(FIELDIR)/check_workarea_4_explicit.f90 m_precision.o t_control_array_character3.o m_base_field_labels.o m_explicit_term_labels.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_SGS_term_labels.o: $(FIELDIR)/m_SGS_term_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_base_field_labels.o: $(FIELDIR)/m_base_field_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_base_force_labels.o: $(FIELDIR)/m_base_force_labels.f90 m_precision.o m_phys_constants.o t_field_labels.o

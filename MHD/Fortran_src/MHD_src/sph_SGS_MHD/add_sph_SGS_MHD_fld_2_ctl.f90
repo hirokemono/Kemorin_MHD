@@ -36,7 +36,7 @@
 !
       subroutine add_field_name_4_SGS(SGS_param, field_ctl)
 !
-      use t_SGS_term_labels
+      use m_SGS_term_labels
       use m_diff_vector_labels
       use m_diff_SGS_term_labels
       use m_filtered_field_labels

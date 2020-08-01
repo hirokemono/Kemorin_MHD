@@ -205,14 +205,15 @@
      &          icomp_diff_base, icomp_diff_sgs, wk_diff, diff_coefs)
 !
       use calypso_mpi
-      use m_base_field_labels
-!
       use t_base_field_labels
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_material_property
       use t_SGS_term_labels
       use t_SGS_model_coefs
+!
+      use m_base_field_labels
+      use m_SGS_term_labels
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop

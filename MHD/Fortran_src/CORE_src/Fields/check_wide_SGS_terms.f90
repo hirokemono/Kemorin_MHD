@@ -139,7 +139,7 @@
       subroutine add_field_ctl_4_dble_SGS_terms(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_term_labels
+      use m_SGS_term_labels
       use m_wide_SGS_term_labels
       use add_nodal_fields_ctl
 !

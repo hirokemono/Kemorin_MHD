@@ -30,7 +30,7 @@ set_control_newsph.o: $(MERGE_DIR)/set_control_newsph.f90 m_precision.o m_consta
 	$(F90) -c $(F90OPTFLAGS) $<
 set_internal_mesh_data.o: $(MERGE_DIR)/set_internal_mesh_data.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_para_double_numbering.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_merged_restart_data.o: $(MERGE_DIR)/set_merged_restart_data.f90 m_precision.o m_phys_labels.o m_base_field_labels.o t_phys_data.o
+set_merged_restart_data.o: $(MERGE_DIR)/set_merged_restart_data.f90 m_precision.o t_phys_data.o m_base_field_labels.o m_explicit_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 share_field_data.o: $(MERGE_DIR)/share_field_data.f90 m_precision.o m_constants.o calypso_mpi.o calypso_mpi_real.o calypso_mpi_int.o t_time_data.o t_phys_data.o calypso_mpi_logical.o transfer_to_long_integers.o cal_minmax_and_stacks.o t_field_data_IO.o calypso_mpi_char.o
 	$(F90) -c $(F90OPTFLAGS) $<

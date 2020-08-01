@@ -217,7 +217,7 @@
      &           bind(C, name = 'SGS_MHD_field_groups_f')
 !
       use m_diff_vector_labels
-      use t_grad_field_labels
+      use m_SGS_term_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)

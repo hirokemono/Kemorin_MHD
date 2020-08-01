@@ -35,8 +35,9 @@
       subroutine add_field_ctl_4_SGS_terms(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_term_labels
+
 !
+      use m_SGS_term_labels
       use m_base_field_labels
       use add_nodal_fields_ctl
 !
@@ -94,7 +95,7 @@
       subroutine add_field_ctl_4_diff_SGS_terms(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_term_labels
+      use m_SGS_term_labels
       use m_diff_SGS_term_labels
       use add_nodal_fields_ctl
 !
@@ -124,10 +125,10 @@
       subroutine add_field_ctl_4_SGS_ene_fluxes(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
 !
       use m_base_field_labels
+      use m_SGS_term_labels
       use m_diff_SGS_term_labels
       use add_nodal_fields_ctl
 !
@@ -173,9 +174,9 @@
 !
       use t_control_array_character3
       use t_SGS_model_coef_labels
-      use t_SGS_term_labels
 !
       use m_base_field_labels
+      use m_SGS_term_labels
       use m_wide_SGS_term_labels
       use add_nodal_fields_ctl
 !
@@ -222,10 +223,10 @@
       subroutine add_field_ctl_4_force_w_SGS(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_term_labels
 !
       use m_base_field_labels
       use m_base_force_labels
+      use m_SGS_term_labels
       use m_force_w_SGS_labels
       use add_nodal_fields_ctl
 !
@@ -281,9 +282,9 @@
       subroutine add_field_ctl_4_true_SGS(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
       use m_div_force_labels
+      use m_SGS_term_labels
       use m_true_SGS_term_labels
       use m_diff_SGS_term_labels
       use m_filtered_field_labels
