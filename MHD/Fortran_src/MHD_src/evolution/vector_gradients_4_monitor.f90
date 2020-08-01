@@ -206,6 +206,7 @@
       use m_base_force_labels
       use m_diffusion_term_labels
       use m_energy_flux_labels
+      use m_field_product_labels
       use m_filtered_ene_flux_labels
 !
       use cal_buoyancy_flux

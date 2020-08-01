@@ -379,7 +379,7 @@
 !
       integer(c_int) function num_field_products_f() bind(c)
 !
-      use t_field_product_labels
+      use m_field_product_labels
 !
       num_field_products_f = num_field_products()
       return
@@ -390,7 +390,7 @@
       subroutine set_field_product_labels_f                             &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_field_product_labels
+      use m_field_product_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)

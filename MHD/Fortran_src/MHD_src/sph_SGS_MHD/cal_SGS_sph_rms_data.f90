@@ -118,8 +118,6 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
-      integer(kind = kint) :: i
-!
 !
       if(pwr%ntot_comp_sq .eq. 0) return
 !

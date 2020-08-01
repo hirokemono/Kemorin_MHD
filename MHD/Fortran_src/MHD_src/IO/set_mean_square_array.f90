@@ -51,6 +51,8 @@
       use m_diffusion_term_labels
       use m_diff_vector_labels
       use m_energy_flux_labels
+      use m_field_product_labels
+!
       use m_wide_filter_field_labels
       use m_grad_filter_field_labels
       use m_wide_SGS_term_labels

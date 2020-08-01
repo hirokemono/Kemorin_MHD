@@ -69,7 +69,7 @@
       use calypso_mpi
       use t_time_data
       use t_ucd_data
-      use m_phys_labels
+      use m_field_product_labels
       use m_ctl_params_4_prod_udt
       use set_and_cal_udt_data
 !

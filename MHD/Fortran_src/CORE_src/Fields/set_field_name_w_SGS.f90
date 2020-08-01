@@ -111,6 +111,8 @@
       subroutine set_vector_field_name_w_SGS                            &
      &         (phys_name_ctl, flag_viz, flag_monitor, fld, flag)
 !
+      use m_field_product_labels
+!
       use set_MHD_field_address
       use set_SGS_MHD_field_address
 !
