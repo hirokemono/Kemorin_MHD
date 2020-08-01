@@ -982,7 +982,7 @@
 !
       integer(c_int) function num_difference_vector_f() bind(c)
 !
-      use t_diff_vector_labels
+      use m_diff_vector_labels
 !
       num_difference_vector_f = num_difference_vector()
       return
@@ -993,7 +993,7 @@
       subroutine set_differnce_vector_labels_f                          &
      &         (n_comps_c, field_name_c, field_math_c) bind(c)
 !
-      use t_diff_vector_labels
+      use m_diff_vector_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
