@@ -52,7 +52,6 @@
       subroutine add_work_area_4_sgs_model                              &
      &         (SGS_param, fl_prop, field_ctl)
 !
-      use t_SGS_model_coef_labels
       use t_SGS_enegy_flux_labels
  !
       use m_phys_labels
@@ -61,6 +60,7 @@
 !
       use m_SGS_term_labels
       use m_diff_SGS_term_labels
+      use m_SGS_model_coef_labels
       use m_filtered_field_labels
       use m_wide_filter_field_labels
 !
@@ -186,7 +186,7 @@
 !
       subroutine add_work_area_4_dynamic_sgs(SGS_param, field_ctl)
 !
-      use t_SGS_model_coef_labels
+      use m_SGS_model_coef_labels
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(ctl_array_c3), intent(inout) :: field_ctl

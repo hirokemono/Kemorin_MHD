@@ -683,7 +683,7 @@
       integer(c_int) function num_SGS_model_coefs_f()                   &
      &              bind(c, name="num_SGS_model_coefs_f")
 !
-      use t_SGS_model_coef_labels
+      use m_SGS_model_coef_labels
 !
       num_SGS_model_coefs_f = num_SGS_model_coefs()
       return
@@ -695,7 +695,7 @@
      &         (n_comps_c, field_name_c, field_math_c)                  &
      &          bind(c, name="set_SGS_model_coefs_labels_f")
 !
-      use t_SGS_model_coef_labels
+      use m_SGS_model_coef_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)
@@ -712,7 +712,7 @@
       integer(c_int) function num_dynamic_SGS_work_f()                  &
      &              bind(c, name="num_dynamic_SGS_work_f")
 !
-      use t_SGS_model_coef_labels
+      use m_SGS_model_coef_labels
 !
       num_dynamic_SGS_work_f = num_dynamic_SGS_work()
       return
@@ -724,7 +724,7 @@
      &         (n_comps_c, field_name_c, field_math_c)                  &
      &          bind(c, name="set_dynamic_SGS_work_labels_f")
 !
-      use t_SGS_model_coef_labels
+      use m_SGS_model_coef_labels
 !
       integer(c_int), intent(inout) :: n_comps_c(*)
       character(C_CHAR), intent(inout) :: field_name_c(*)

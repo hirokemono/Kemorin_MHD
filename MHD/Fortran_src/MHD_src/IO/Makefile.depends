@@ -30,7 +30,7 @@ node_monitor_IO.o: $(MHD_IO_DIR)/node_monitor_IO.f90 m_precision.o t_time_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 open_boundary_monitor.o: $(MHD_IO_DIR)/open_boundary_monitor.f90 m_precision.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-open_sgs_model_coefs.o: $(MHD_IO_DIR)/open_sgs_model_coefs.f90 m_precision.o t_physical_property.o t_ele_info_4_dynamic.o t_SGS_control_parameter.o write_field_labels.o t_SGS_term_labels.o m_geometry_constants.o add_direction_labels.o sel_comp_labels_by_coord.o m_base_field_labels.o
+open_sgs_model_coefs.o: $(MHD_IO_DIR)/open_sgs_model_coefs.f90 m_precision.o t_physical_property.o t_ele_info_4_dynamic.o t_SGS_control_parameter.o write_field_labels.o m_geometry_constants.o m_SGS_term_labels.o add_direction_labels.o sel_comp_labels_by_coord.o m_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 output_viz_file_control.o: $(MHD_IO_DIR)/output_viz_file_control.f90 m_machine_parameter.o m_precision.o m_constants.o t_IO_step_parameter.o t_MHD_step_parameter.o t_flex_delta_t_parameter.o t_time_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

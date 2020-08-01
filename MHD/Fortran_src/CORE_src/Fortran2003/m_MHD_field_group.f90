@@ -218,6 +218,7 @@
 !
       use m_diff_vector_labels
       use m_SGS_term_labels
+      use m_SGS_model_coef_labels
 !
       integer(c_int), intent(inout) :: nfld_group_c(*)
       character(C_CHAR), intent(inout) :: field_group_c(*)

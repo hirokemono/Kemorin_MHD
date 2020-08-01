@@ -173,8 +173,8 @@
       subroutine add_field_ctl_4_model_coefs(field_ctl)
 !
       use t_control_array_character3
-      use t_SGS_model_coef_labels
 !
+      use m_SGS_model_coef_labels
       use m_base_field_labels
       use m_SGS_term_labels
       use m_wide_SGS_term_labels

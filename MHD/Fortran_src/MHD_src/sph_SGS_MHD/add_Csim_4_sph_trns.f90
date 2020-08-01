@@ -36,6 +36,7 @@
       subroutine add_Csim_4_sph_trns_by_pol                             &
      &         (ipol_Csim, iphys_Csim, f_trns_Csim, trns)
 !
+      use m_SGS_model_coef_labels
       use add_field_to_sph_trans_list
 !
       type(SGS_term_address), intent(in) :: ipol_Csim, iphys_Csim
@@ -80,6 +81,7 @@
       subroutine add_Csim_4_sph_trns_snap                               &
      &         (ipol_Csim, iphys_Csim, f_trns_Csim, trns)
 !
+      use m_SGS_model_coef_labels
       use add_field_to_sph_trans_list
 !
       type(SGS_term_address), intent(in) :: ipol_Csim, iphys_Csim
