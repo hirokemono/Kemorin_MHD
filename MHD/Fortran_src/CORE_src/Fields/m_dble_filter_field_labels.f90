@@ -12,10 +12,6 @@
 !!      logical function check_double_filter_scalar(field_name)
 !!      logical function check_double_filter_grad(field_name)
 !!
-!!      subroutine set_dble_fil_grad_addresses                          &
-!!     &         (i_phys, field_name, dbl_filter_grad, flag)
-!!        type(gradient_field_address), intent(inout) :: dbl_filter_grad
-!!
 !!      integer(kind = kint) function num_double_filter_fields()
 !!      subroutine set_double_filter_field_labels(n_comps, names, maths)
 !!
@@ -51,8 +47,6 @@
       use m_constants
       use m_phys_constants
       use t_field_labels
-      use t_base_field_labels
-      use t_grad_field_labels
 !
       implicit  none
 ! 
@@ -216,29 +210,6 @@
      &   .or. (field_name .eq. double_filter_grad_comp%name)
 !
       end function check_double_filter_grad
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_dble_fil_grad_addresses                            &
-     &         (i_phys, field_name, dbl_filter_grad, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(gradient_field_address), intent(inout) :: dbl_filter_grad
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_double_filter_grad(field_name)
-      if(flag) then
-        if (field_name .eq. double_filter_grad_temp%name) then
-          dbl_filter_grad%i_grad_temp =      i_phys
-        else if (field_name .eq. double_filter_grad_comp%name) then
-          dbl_filter_grad%i_grad_composit =  i_phys
-        end if
-      end if
-!
-      end subroutine set_dble_fil_grad_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

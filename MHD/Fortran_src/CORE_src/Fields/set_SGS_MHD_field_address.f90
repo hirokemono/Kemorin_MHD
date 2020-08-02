@@ -179,18 +179,14 @@
       use t_SGS_enegy_flux_labels
       use t_SGS_model_addresses
 !
-      use m_filtered_field_labels
       use m_filtered_ene_flux_labels
       use m_diff_filter_vect_labels
-      use m_grad_filter_field_labels
       use m_SGS_model_coef_labels
-      use m_diff_SGS_term_labels
-      use m_wide_SGS_term_labels
-      use m_true_SGS_term_labels
-      use m_force_w_SGS_labels
 !
       use set_filtered_field_labels
       use set_filtered_force_labels
+      use set_grad_filter_fld_labels
+      use set_SGS_term_labels
 !
       integer(kind = kint), intent(in) :: i_fld
       character(len = kchara), intent(in) :: field_name

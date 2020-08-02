@@ -11,6 +11,17 @@
 !!      subroutine set_SGS_term_addresses                               &
 !!     &         (i_phys, field_name, SGS_term, flag)
 !!        type(SGS_term_address), intent(inout) :: SGS_term
+!!      subroutine set_rot_SGS_term_addresses                           &
+!!     &         (i_phys, field_name, rot_SGS, flag)
+!!        type(SGS_term_address), intent(inout) :: rot_SGS
+!!      subroutine set_div_SGS_term_addresses                           &
+!!     &         (i_phys, field_name, div_SGS, flag)
+!!        type(SGS_term_address), intent(inout) :: div_SGS
+!!
+!!      subroutine set_SGS_model_coef_addresses                         &
+!!     &         (i_phys, field_name, Csim, flag)
+!!        type(SGS_term_address), intent(inout) :: Csim
+!!
 !! !!!!!  SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !! field names 
@@ -30,14 +41,32 @@
 !!   SGS_vecp_induction   [i_SGS_vp_induct]: SGS induction  u \times 
 !!   SGS_induction        [i_SGS_induction]: SGS magneitic induction
 !!
+!! !!!!! rotation of SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!  field name  [Address]
+!!
+!!   rot_SGS_inertia  [rot_SGS%i_SGS_inertia]: SGS inertia
+!!   rot_SGS_Lorentz  [rot_SGS%i_SGS_Lorentz]:   SGS Lorentz force
+!!
+!!
+!! !!!!! divergence of SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!  field name  [Address]
+!!
+!!   div_SGS_m_flux   [div_SGS%i_SGS_m_flux]:  SGS momentum flux
+!!   div_SGS_h_flux   [div_SGS%i_SGS_h_flux]:   SGS heat flux
+!!   div_SGS_c_flux   [div_SGS%i_SGS_c_flux]:   SGS composition flux
+!!
+!!   div_SGS_inertia  [div_SGS%i_SGS_inertia]: SGS inertia
+!!   div_SGS_Lorentz  [div_SGS%i_SGS_Lorentz]:   SGS Lorentz force
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
       module t_SGS_term_labels
 !
       use m_precision
-      use m_phys_constants
-      use t_field_labels
+      use m_constants
+      use t_SGS_term_labels
 !
       implicit  none
 !!
@@ -137,6 +166,64 @@
       end if
 !
       end subroutine set_SGS_term_addresses
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_rot_SGS_term_addresses                             &
+     &         (i_phys, field_name, rot_SGS, flag)
+!
+      use m_diff_SGS_term_labels
+!
+s      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(SGS_term_address), intent(inout) :: rot_SGS
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_rot_SGS_terms(field_name)
+      if(flag) then
+        if (field_name .eq. rot_SGS_inertia%name) then
+          rot_SGS%i_SGS_inertia =   i_phys
+        else if (field_name .eq. rot_SGS_Lorentz%name) then
+          rot_SGS%i_SGS_Lorentz =   i_phys
+        end if
+      end if
+!
+      end subroutine set_rot_SGS_term_addresses
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_div_SGS_term_addresses                             &
+     &         (i_phys, field_name, div_SGS, flag)
+!
+      use m_diff_SGS_term_labels
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(SGS_term_address), intent(inout) :: div_SGS
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_div_SGS_flux_vector(field_name)                      &
+     &    .or. check_div_SGS_flux_tensor(field_name)
+      if(flag) then
+        if (field_name .eq. div_SGS_m_flux%name ) then
+          div_SGS%i_SGS_m_flux =     i_phys
+        else if (field_name .eq. div_SGS_h_flux%name ) then
+          div_SGS%i_SGS_h_flux =     i_phys
+        else if (field_name .eq. div_SGS_c_flux%name ) then
+          div_SGS%i_SGS_c_flux =     i_phys
+!
+        else if (field_name .eq. div_SGS_inertia%name) then
+          div_SGS%i_SGS_inertia =    i_phys
+        else if (field_name .eq. div_SGS_Lorentz%name) then
+          div_SGS%i_SGS_Lorentz =    i_phys
+        end if
+      end if
+!
+      end subroutine set_div_SGS_term_addresses
 !
 ! ----------------------------------------------------------------------
 !

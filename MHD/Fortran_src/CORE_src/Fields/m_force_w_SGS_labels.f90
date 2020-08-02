@@ -12,10 +12,6 @@
 !!      logical function check_flux_tensor_w_SGS(field_name)
 !!      logical function check_induction_tensor_w_SGS(field_name)
 !!
-!!      subroutine set_force_w_SGS_addresses                            &
-!!     &         (i_phys, field_name, frc_w_SGS, flag)
-!!        type(SGS_term_address), intent(inout) :: frc_w_SGS
-!!
 !!      integer(kind = kint) function num_force_w_SGS()
 !!      subroutine set_force_with_SGS_labels(n_comps, names, maths)
 !!
@@ -44,7 +40,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_SGS_term_labels
 !
       implicit  none
 ! 
@@ -189,49 +184,6 @@
      &   =    (field_name .eq. induction_tensor_w_SGS%name)
 !
       end function check_induction_tensor_w_SGS
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_force_w_SGS_addresses                              &
-     &         (i_phys, field_name, frc_w_SGS, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(SGS_term_address), intent(inout) :: frc_w_SGS
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_force_w_SGS(field_name)                              &
-     &    .or. check_flux_tensor_w_SGS(field_name)                      &
-     &    .or. check_induction_tensor_w_SGS(field_name)
-      if(flag) then
-        if (field_name .eq. momentum_flux_w_SGS%name ) then
-          frc_w_SGS%i_SGS_m_flux =     i_phys
-        else if (field_name .eq. maxwell_tensor_w_SGS%name ) then
-          frc_w_SGS%i_SGS_maxwell =    i_phys
-        else if (field_name .eq. induction_tensor_w_SGS%name ) then
-          frc_w_SGS%i_SGS_induct_t =    i_phys
-!
-        else if (field_name .eq. heat_flux_w_SGS%name) then
-          frc_w_SGS%i_SGS_h_flux =    i_phys
-        else if (field_name .eq. compostion_flux_w_SGS%name) then
-          frc_w_SGS%i_SGS_c_flux =    i_phys
-!
-        else if (field_name .eq. intertia_w_SGS%name) then
-          frc_w_SGS%i_SGS_inertia =   i_phys
-        else if (field_name .eq. Lorentz_w_SGS%name) then
-          frc_w_SGS%i_SGS_Lorentz =    i_phys
-!
-        else if (field_name .eq. vecp_induction_w_SGS%name) then
-          frc_w_SGS%i_SGS_vp_induct = i_phys
-        else if (field_name .eq. induction_w_SGS%name) then
-          frc_w_SGS%i_SGS_induction = i_phys
-        end if
-      end if
-!
-      end subroutine set_force_w_SGS_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

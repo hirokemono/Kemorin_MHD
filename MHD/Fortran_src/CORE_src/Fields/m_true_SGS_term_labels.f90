@@ -9,15 +9,9 @@
 !!
 !!@verbatim
 !!      logical function check_true_SGS_vector_terms(field_name)
-!!      subroutine set_true_SGS_term_addresses                          &
-!!     &         (i_phys, field_name, true_SGS, flag)
-!!        type(SGS_term_address), intent(inout) :: true_SGS
 !!
 !!      logical function check_true_div_SGS_flux_vector(field_name)
 !!      logical function check_true_div_SGS_flux_tensor(field_name)
-!!      subroutine set_true_div_SGS_term_addresses                      &
-!!     &         (i_phys, field_name, true_div_SGS, flag)
-!!        type(SGS_term_address), intent(inout) :: true_div_SGS
 !!
 !!      logical function check_true_SGS_ene_fluxes(field_name)
 !!      subroutine set_true_SGS_ene_flux_addresses                      &
@@ -52,7 +46,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_SGS_term_labels
       use t_SGS_enegy_flux_labels
 !
       implicit  none
@@ -172,29 +165,6 @@
       end function check_true_SGS_vector_terms
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine set_true_SGS_term_addresses                            &
-     &         (i_phys, field_name, true_SGS, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(SGS_term_address), intent(inout) :: true_SGS
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_true_SGS_vector_terms(field_name)
-      if(flag) then
-        if(field_name .eq. SGS_Lorentz_true%name) then
-          true_SGS%i_SGS_Lorentz =   i_phys
-        else if (field_name .eq. SGS_mag_induction_true%name) then
-          true_SGS%i_SGS_induction = i_phys
-        end if
-      end if
-!
-      end subroutine set_true_SGS_term_addresses
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       logical function check_true_div_SGS_flux_vector(field_name)
@@ -219,32 +189,6 @@
      &   =    (field_name .eq. SGS_div_m_flux_true%name)
 !
       end function check_true_div_SGS_flux_tensor
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_true_div_SGS_term_addresses                        &
-     &         (i_phys, field_name, true_div_SGS, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(SGS_term_address), intent(inout) :: true_div_SGS
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_true_div_SGS_flux_vector(field_name)                 &
-     &    .or. check_true_div_SGS_flux_tensor(field_name)
-      if(flag) then
-        if (field_name .eq. SGS_div_m_flux_true%name ) then
-          true_div_SGS%i_SGS_m_flux =     i_phys
-        else if (field_name .eq. SGS_div_h_flux_true%name ) then
-          true_div_SGS%i_SGS_h_flux =     i_phys
-        else if (field_name .eq. SGS_div_c_flux_true%name ) then
-          true_div_SGS%i_SGS_c_flux =     i_phys
-        end if
-      end if
-!
-      end subroutine set_true_div_SGS_term_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

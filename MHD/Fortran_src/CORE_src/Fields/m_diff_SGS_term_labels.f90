@@ -11,11 +11,6 @@
 !!      logical function check_div_SGS_flux_vector(field_name)
 !!      logical function check_div_SGS_flux_tensor(field_name)
 !!      logical function check_rot_SGS_terms(field_name)
-!!      subroutine set_div_SGS_term_addresses                           &
-!!     &         (i_phys, field_name, div_SGS, flag)
-!!        type(SGS_term_address), intent(inout) :: div_SGS
-!!      subroutine set_rot_SGS_term_addresses                           &
-!!     &         (i_phys, field_name, rot_SGS, flag)
 !!
 !!      integer(kind = kint) function num_diff_SGS_terms()
 !!      subroutine set_diff_SGS_term_labels(n_comps, names, maths)
@@ -46,7 +41,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_SGS_term_labels
 !
       implicit  none
 ! 
@@ -160,61 +154,6 @@
      &   .or. (field_name .eq. rot_SGS_Lorentz%name)
 !
       end function check_rot_SGS_terms
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_div_SGS_term_addresses                             &
-     &         (i_phys, field_name, div_SGS, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(SGS_term_address), intent(inout) :: div_SGS
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_div_SGS_flux_vector(field_name)                      &
-     &    .or. check_div_SGS_flux_tensor(field_name)
-      if(flag) then
-        if (field_name .eq. div_SGS_m_flux%name ) then
-          div_SGS%i_SGS_m_flux =     i_phys
-        else if (field_name .eq. div_SGS_h_flux%name ) then
-          div_SGS%i_SGS_h_flux =     i_phys
-        else if (field_name .eq. div_SGS_c_flux%name ) then
-          div_SGS%i_SGS_c_flux =     i_phys
-!
-        else if (field_name .eq. div_SGS_inertia%name) then
-          div_SGS%i_SGS_inertia =    i_phys
-        else if (field_name .eq. div_SGS_Lorentz%name) then
-          div_SGS%i_SGS_Lorentz =    i_phys
-        end if
-      end if
-!
-      end subroutine set_div_SGS_term_addresses
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_rot_SGS_term_addresses                             &
-     &         (i_phys, field_name, rot_SGS, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(SGS_term_address), intent(inout) :: rot_SGS
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_rot_SGS_terms(field_name)
-      if(flag) then
-        if (field_name .eq. rot_SGS_inertia%name) then
-          rot_SGS%i_SGS_inertia =   i_phys
-        else if (field_name .eq. rot_SGS_Lorentz%name) then
-          rot_SGS%i_SGS_Lorentz =   i_phys
-        end if
-      end if
-!
-      end subroutine set_rot_SGS_term_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
