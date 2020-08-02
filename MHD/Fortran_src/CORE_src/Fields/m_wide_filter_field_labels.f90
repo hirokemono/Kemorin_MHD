@@ -12,11 +12,6 @@
 !!      logical function check_wide_filter_scalar(field_name)
 !!      logical function check_wide_filter_grad(field_name)
 !!
-!!      subroutine set_wide_fil_vector_addresses                        &
-!!     &         (i_phys, field_name, wide_filter_fld, flag)
-!!      subroutine set_wide_fil_scaler_addresses                        &
-!!     &         (i_phys, field_name, wide_filter_fld, flag)
-!!        type(base_field_address), intent(inout) :: wide_filter_fld
 !!      subroutine set_wide_fil_grad_addresses                          &
 !!     &         (i_phys, field_name, wide_filter_grad, flag)
 !!        type(gradient_field_address), intent(inout) :: wide_filter_grad
@@ -218,75 +213,6 @@
      &   .or. (field_name .eq. wide_filter_grad_composition%name)
 !
       end function check_wide_filter_grad
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_wide_fil_vector_addresses                          &
-     &         (i_phys, field_name, wide_filter_fld, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_field_address), intent(inout) :: wide_filter_fld
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_wide_filter_vector(field_name)
-      if(flag) then
-        if (field_name .eq. wide_filter_velocity%name) then
-          wide_filter_fld%i_velo =    i_phys
-        else if(field_name .eq. wide_filter_vorticity%name) then
-          wide_filter_fld%i_vort =    i_phys
-!
-        else if(field_name .eq. wide_filter_magne%name) then
-          wide_filter_fld%i_magne =   i_phys
-        else if(field_name .eq. wide_filter_vector_potential%name)    &
-     &   then
-          wide_filter_fld%i_vecp =    i_phys
-        else if(field_name .eq. wide_filter_current%name) then
-          wide_filter_fld%i_current = i_phys
-        end if
-      end if
-!
-      end subroutine set_wide_fil_vector_addresses
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_wide_fil_scaler_addresses                          &
-     &         (i_phys, field_name, wide_filter_fld, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_field_address), intent(inout) :: wide_filter_fld
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_wide_filter_scalar(field_name)
-      if(flag) then
-        if      (field_name .eq. wide_filter_temp%name) then
-          wide_filter_fld%i_temp =           i_phys
-        else if (field_name .eq. wide_filter_pert_temp%name) then
-          wide_filter_fld%i_per_temp =       i_phys
-!
-        else if (field_name .eq. wide_filter_composition%name) then
-          wide_filter_fld%i_light =          i_phys
-        else if (field_name .eq. wide_filter_pert_comp%name) then
-          wide_filter_fld%i_per_light =      i_phys
-!
-        else if (field_name .eq. wide_filter_density%name) then
-          wide_filter_fld%i_density =        i_phys
-        else if (field_name .eq. wide_filter_pert_density%name) then
-          wide_filter_fld%i_per_density =    i_phys
-!
-        else if (field_name .eq. wide_filter_entropy%name) then
-          wide_filter_fld%i_entropy =        i_phys
-        else if (field_name .eq. wide_filter_pert_entropy%name) then
-          wide_filter_fld%i_per_entropy =    i_phys
-        end if
-      end if  
-!
-      end subroutine set_wide_fil_scaler_addresses
 !
 ! ----------------------------------------------------------------------
 !

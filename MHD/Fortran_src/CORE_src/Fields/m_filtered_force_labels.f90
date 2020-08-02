@@ -12,12 +12,8 @@
 !!      logical function check_filtered_flux_tensor(field_name)
 !!      logical function check_filtered_scalar_flux(field_name)
 !!
-!!      subroutine set_filtered_force_addresses                         &
-!!     &         (i_phys, field_name, force_by_filter, flag)
-!!        type(base_force_address), intent(inout) :: force_by_filter
-!!
 !!      integer(kind = kint) function num_filtered_forces()
-!!      subroutine set_filtered_force_labels(n_comps, names, maths)
+!!        subroutine set_filtered_force_labels(n_comps, names, maths)
 !!
 !! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
@@ -56,7 +52,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_base_force_labels
 !
       implicit  none
 !
@@ -244,72 +239,6 @@
      &   .or. (field_name .eq. pert_c_advect_by_filtered%name)
 !
       end function check_filtered_scalar_flux
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_filtered_force_addresses                           &
-     &         (i_phys, field_name, force_by_filter, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_force_address), intent(inout) :: force_by_filter
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_filtered_force(field_name)                           &
-     &      .or. check_filtered_flux_tensor(field_name)                 &
-     &      .or. check_filtered_scalar_flux(field_name)
-      if(flag) then
-        if     (field_name .eq. inertia_by_filtered%name) then
-          force_by_filter%i_m_advect =   i_phys
-        else if(field_name .eq. Lorentz_force_by_filtered%name) then
-          force_by_filter%i_lorentz =    i_phys
-        else if(field_name .eq. magnetic_tension_by_filtered%name) then
-          force_by_filter%i_m_tension =  i_phys
-!
-        else if(field_name .eq. filtered_buoyancy%name) then
-          force_by_filter%i_buoyancy =   i_phys
-        else if(field_name .eq. filtered_comp_buoyancy%name) then
-          force_by_filter%i_comp_buo =   i_phys
-!
-        else if(field_name .eq. vecp_induction_by_filtered%name) then
-          force_by_filter%i_vp_induct =    i_phys
-        else if(field_name .eq. magnetic_induction_by_filtered%name)    &
-     &   then
-          force_by_filter%i_induction =  i_phys
-        else if(field_name .eq. magnetic_stretch_by_filtered%name) then
-          force_by_filter%i_mag_stretch =  i_phys
-!
-        else if (field_name .eq. heat_advect_by_filtered%name) then
-          force_by_filter%i_h_advect =    i_phys
-        else if (field_name .eq. pert_h_advect_by_filtered%name) then
-          force_by_filter%i_ph_advect =   i_phys
-        else if (field_name .eq. comp_advect_by_filtered%name) then
-          force_by_filter%i_c_advect =    i_phys
-        else if (field_name .eq. pert_c_advect_by_filtered%name) then
-          force_by_filter%i_pc_advect =   i_phys
-!
-        else if (field_name .eq. heat_flux_by_filtered%name) then
-          force_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. pert_h_flux_by_filtered%name) then
-          force_by_filter%i_ph_flux =   i_phys
-        else if (field_name .eq. composite_flux_by_filtered%name) then
-          force_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. pert_c_flux_by_filtered%name) then
-          force_by_filter%i_pc_flux =   i_phys
-!
-        else if(field_name .eq. momentum_flux_by_filtered%name) then
-          force_by_filter%i_m_flux =   i_phys
-        else if(field_name .eq. maxwell_tensor_by_filtered%name) then
-          force_by_filter%i_maxwell =  i_phys
-        else if(field_name .eq. induction_tensor_by_filtered%name) then
-          force_by_filter%i_induct_t = i_phys
-        end if
-      end if
-!
-      end subroutine set_filtered_force_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

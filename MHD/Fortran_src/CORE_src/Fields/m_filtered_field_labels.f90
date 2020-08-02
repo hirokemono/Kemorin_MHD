@@ -10,9 +10,6 @@
 !!@verbatim
 !!      logical function check_filter_vector(field_name)
 !!      logical function check_filter_scalar(field_name)
-!!      subroutine set_filter_field_addresses                           &
-!!     &         (i_phys, field_name, filter_fld, flag)
-!!        type(base_field_address), intent(inout) :: filter_fld
 !!
 !!      integer(kind = kint) function num_filter_fields()
 !!      subroutine set_filter_field_labels(n_comps, names, maths)
@@ -183,57 +180,6 @@
      &   .or. (field_name .eq. filter_pert_entropy%name)
 !
       end function check_filter_scalar
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_filter_field_addresses                             &
-     &         (i_phys, field_name, filter_fld, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_field_address), intent(inout) :: filter_fld
-      logical, intent(inout) :: flag
-!
-!
-      flag =    check_filter_vector(field_name)                         &
-     &     .or. check_filter_scalar(field_name)
-      if(flag) then
-        if (field_name .eq. filter_velocity%name) then
-          filter_fld%i_velo = i_phys
-        else if (field_name .eq. filter_vorticity%name) then
-          filter_fld%i_vort = i_phys
-!
-        else if (field_name .eq. filter_magne%name) then
-          filter_fld%i_magne =    i_phys
-        else if (field_name .eq. filter_vector_potential%name) then
-          filter_fld%i_vecp =     i_phys
-        else if (field_name .eq. filter_current%name) then
-          filter_fld%i_current =  i_phys
-!
-        else if (field_name .eq. filter_temperature%name) then
-          filter_fld%i_temp =            i_phys
-        else if (field_name .eq. filter_pert_temperature%name) then
-          filter_fld%i_per_temp =        i_phys
-!
-        else if (field_name .eq. filter_composition%name) then
-          filter_fld%i_light =          i_phys
-        else if (field_name .eq. filter_pert_composition%name) then
-          filter_fld%i_per_light =      i_phys
-!
-        else if (field_name .eq. filter_density%name) then
-          filter_fld%i_density =        i_phys
-        else if (field_name .eq. filter_pert_density%name) then
-          filter_fld%i_per_density =    i_phys
-!
-        else if (field_name .eq. filter_entropy%name) then
-          filter_fld%i_entropy =        i_phys
-        else if (field_name .eq. filter_pert_entropy%name) then
-          filter_fld%i_per_entropy =    i_phys
-        end if
-      end if  
-!
-      end subroutine set_filter_field_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

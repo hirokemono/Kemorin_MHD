@@ -8,14 +8,11 @@
 !!
 !!@verbatim
 !!      logical function check_rot_fil_force(field_name)
-!!      subroutine set_rot_fil_force_addresses                          &
-!!     &         (i_phys, field_name, rot_frc_by_filter, flag)
-!!        type(base_force_address), intent(inout) :: rot_frc_by_filter
 !!
 !!      integer(kind = kint) function num_rot_filtered_forces()
-!!      subroutine set_rot_filtered_force_labels(n_comps, names, maths)
+!!        subroutine set_rot_filtered_force_labels(n_comps, names, maths)
 !!
-!! !!!!!  difference of forces by filtered field !!!!!!!!!!!!!!!!!!
+!! !!!!!  rotation of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
 !!    Field name [Address]
 !!
@@ -89,36 +86,6 @@
      &   .or. (field_name .eq. rot_filtered_comp_buoyancy%name)
 !
       end function check_rot_fil_force
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_rot_fil_force_addresses                            &
-     &         (i_phys, field_name, rot_frc_by_filter, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_force_address), intent(inout) :: rot_frc_by_filter
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_rot_fil_force(field_name)
-      if(flag) then
-        if (field_name .eq. rot_inertia_by_filtered%name) then
-          rot_frc_by_filter%i_m_advect =   i_phys
-        else if (field_name .eq. rot_Lorentz_force_by_filtered%name)    &
-     &   then
-          rot_frc_by_filter%i_lorentz =    i_phys
-!
-        else if (field_name .eq. rot_filtered_buoyancy%name) then
-          rot_frc_by_filter%i_buoyancy =   i_phys
-        else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
-          rot_frc_by_filter%i_comp_buo =   i_phys
-        end if
-      end if
-!
-      end subroutine set_rot_fil_force_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

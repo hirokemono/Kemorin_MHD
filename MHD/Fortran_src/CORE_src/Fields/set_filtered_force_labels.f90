@@ -1,0 +1,253 @@
+!>@file   set_filtered_force_labels.f90
+!!        module set_filtered_force_labels
+!!
+!! @author H. Matsui
+!! @date   Programmed in Jan., 2020
+!!
+!!
+!> @brief Labels and addresses for forces by filtered field
+!!
+!!@verbatim
+!!      subroutine set_filtered_force_addresses                         &
+!!     &         (i_phys, field_name, force_by_filter, flag)
+!!        type(base_force_address), intent(inout) :: force_by_filter
+!!      subroutine set_rot_fil_force_addresses                          &
+!!     &         (i_phys, field_name, rot_frc_by_filter, flag)
+!!        type(base_force_address), intent(inout) :: rot_frc_by_filter
+!!      subroutine set_div_fil_force_addresses                          &
+!!     &         (i_phys, field_name, div_frc_by_filter, flag)
+!!        type(base_force_address), intent(inout) :: div_frc_by_filter
+!!
+!! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
+!!
+!!      Field label  [Address]
+!!
+!!   inertia_by_filtered             [force_by_filter%i_m_advect]
+!!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
+!!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
+!!
+!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
+!!
+!!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
+!!   magnetic_induction_by_filtered  [force_by_filter%i_induction]
+!!   magnetic_stretch_by_filtered    [force_by_filter%i_mag_stretch]
+!!
+!!   heat_advect_by_filtered         [force_by_filter%i_h_advect]
+!!   pert_h_advect_by_filtered       [force_by_filter%i_ph_advect]
+!!   comp_advect_by_filtered         [force_by_filter%i_c_advect]
+!!   pert_c_advect_by_filtered       [force_by_filter%i_pc_advect]
+!!
+!!   momentum_flux_by_filtered       [force_by_filter%i_m_flux]
+!!   maxwell_tensor_by_filtered      [force_by_filter%i_maxwell]
+!!   induction_tensor_by_filtered    [force_by_filter%i_induct_t]
+!!
+!!   heat_flux_by_filtered           [force_by_filter%i_h_flux]
+!!   pert_h_flux_by_filtered         [force_by_filter%i_ph_flux]
+!!   composite_flux_by_filtered      [force_by_filter%i_c_flux]
+!!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  rotation of forces by filtered field !!!!!!!!!!!!!!!!!!
+!!
+!!    Field name [Address]
+!!
+!!   rot_inertia_by_filtered           [rot_frc_by_filter%i_m_advect]
+!!   rot_Lorentz_force_by_filtered     [rot_frc_by_filter%i_lorentz]
+!!   rot_filtered_buoyancy             [rot_frc_by_filter%i_buoyancy]
+!!   rot_filtered_comp_buoyancy        [rot_frc_by_filter%i_comp_buo]
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
+!!
+!!      Field label  [Address]
+!!
+!!   inertia_by_filtered             [force_by_filter%i_m_advect]
+!!   Lorentz_force_by_filtered       [force_by_filter%i_lorentz]
+!!   magnetic_tension_by_filtered    [force_by_filter%i_m_tension]
+!!
+!!   filtered_buoyancy               [force_by_filter%i_buoyancy]
+!!   filtered_comp_buoyancy          [force_by_filter%i_comp_buo]
+!!
+!!   vecp_induction_by_filtered      [force_by_filter%i_vp_induct]
+!!   magnetic_induction_by_filtered  [force_by_filter%i_induction]
+!!   magnetic_stretch_by_filtered    [force_by_filter%i_mag_stretch]
+!!
+!!   heat_advect_by_filtered         [force_by_filter%i_h_advect]
+!!   pert_h_advect_by_filtered       [force_by_filter%i_ph_advect]
+!!   comp_advect_by_filtered         [force_by_filter%i_c_advect]
+!!   pert_c_advect_by_filtered       [force_by_filter%i_pc_advect]
+!!
+!!   momentum_flux_by_filtered       [force_by_filter%i_m_flux]
+!!   maxwell_tensor_by_filtered      [force_by_filter%i_maxwell]
+!!   induction_tensor_by_filtered    [force_by_filter%i_induct_t]
+!!
+!!   heat_flux_by_filtered           [force_by_filter%i_h_flux]
+!!   pert_h_flux_by_filtered         [force_by_filter%i_ph_flux]
+!!   composite_flux_by_filtered      [force_by_filter%i_c_flux]
+!!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!@endverbatim
+!!
+      module set_filtered_force_labels
+!
+      use m_precision
+      use m_phys_constants
+      use t_field_labels
+!
+      implicit  none
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_filtered_force_addresses                           &
+     &         (i_phys, field_name, force_by_filter, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(base_force_address), intent(inout) :: force_by_filter
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_filtered_force(field_name)                           &
+     &      .or. check_filtered_flux_tensor(field_name)                 &
+     &      .or. check_filtered_scalar_flux(field_name)
+      if(flag) then
+        if     (field_name .eq. inertia_by_filtered%name) then
+          force_by_filter%i_m_advect =   i_phys
+        else if(field_name .eq. Lorentz_force_by_filtered%name) then
+          force_by_filter%i_lorentz =    i_phys
+        else if(field_name .eq. magnetic_tension_by_filtered%name) then
+          force_by_filter%i_m_tension =  i_phys
+!
+        else if(field_name .eq. filtered_buoyancy%name) then
+          force_by_filter%i_buoyancy =   i_phys
+        else if(field_name .eq. filtered_comp_buoyancy%name) then
+          force_by_filter%i_comp_buo =   i_phys
+!
+        else if(field_name .eq. vecp_induction_by_filtered%name) then
+          force_by_filter%i_vp_induct =    i_phys
+        else if(field_name .eq. magnetic_induction_by_filtered%name)    &
+     &   then
+          force_by_filter%i_induction =  i_phys
+        else if(field_name .eq. magnetic_stretch_by_filtered%name) then
+          force_by_filter%i_mag_stretch =  i_phys
+!
+        else if (field_name .eq. heat_advect_by_filtered%name) then
+          force_by_filter%i_h_advect =    i_phys
+        else if (field_name .eq. pert_h_advect_by_filtered%name) then
+          force_by_filter%i_ph_advect =   i_phys
+        else if (field_name .eq. comp_advect_by_filtered%name) then
+          force_by_filter%i_c_advect =    i_phys
+        else if (field_name .eq. pert_c_advect_by_filtered%name) then
+          force_by_filter%i_pc_advect =   i_phys
+!
+        else if (field_name .eq. heat_flux_by_filtered%name) then
+          force_by_filter%i_h_flux =    i_phys
+        else if (field_name .eq. pert_h_flux_by_filtered%name) then
+          force_by_filter%i_ph_flux =   i_phys
+        else if (field_name .eq. composite_flux_by_filtered%name) then
+          force_by_filter%i_c_flux =    i_phys
+        else if (field_name .eq. pert_c_flux_by_filtered%name) then
+          force_by_filter%i_pc_flux =   i_phys
+!
+        else if(field_name .eq. momentum_flux_by_filtered%name) then
+          force_by_filter%i_m_flux =   i_phys
+        else if(field_name .eq. maxwell_tensor_by_filtered%name) then
+          force_by_filter%i_maxwell =  i_phys
+        else if(field_name .eq. induction_tensor_by_filtered%name) then
+          force_by_filter%i_induct_t = i_phys
+        end if
+      end if
+!
+      end subroutine set_filtered_force_addresses
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_rot_fil_force_addresses                            &
+     &         (i_phys, field_name, rot_frc_by_filter, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(base_force_address), intent(inout) :: rot_frc_by_filter
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_rot_fil_force(field_name)
+      if(flag) then
+        if (field_name .eq. rot_inertia_by_filtered%name) then
+          rot_frc_by_filter%i_m_advect =   i_phys
+        else if (field_name .eq. rot_Lorentz_force_by_filtered%name)    &
+     &   then
+          rot_frc_by_filter%i_lorentz =    i_phys
+!
+        else if (field_name .eq. rot_filtered_buoyancy%name) then
+          rot_frc_by_filter%i_buoyancy =   i_phys
+        else if (field_name .eq. rot_filtered_comp_buoyancy%name) then
+          rot_frc_by_filter%i_comp_buo =   i_phys
+        end if
+      end if
+!
+      end subroutine set_rot_fil_force_addresses
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_div_fil_force_addresses                            &
+     &         (i_phys, field_name, div_frc_by_filter, flag)
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(base_force_address), intent(inout) :: div_frc_by_filter
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_div_fil_force(field_name)                            &
+     &      .or. check_div_fil_flux_t(field_name)                       &
+     &      .or. check_div_fil_scl_flux(field_name)
+      if(flag) then
+        if (field_name .eq. div_inertia_by_filtered%name) then
+          div_frc_by_filter%i_m_advect =   i_phys
+        else if (field_name .eq. div_Lorentz_force_by_filtered%name)    &
+     &   then
+          div_frc_by_filter%i_lorentz =    i_phys
+!
+        else if (field_name .eq. div_filtered_buoyancy%name) then
+          div_frc_by_filter%i_buoyancy =   i_phys
+        else if (field_name .eq. div_filtered_comp_buoyancy%name) then
+          div_frc_by_filter%i_comp_buo =   i_phys
+!
+        else if (field_name .eq. div_vecp_induction_by_filtered%name)   &
+     &   then
+          div_frc_by_filter%i_vp_induct =  i_phys
+!
+        else if (field_name .eq. div_h_flux_by_filtered%name) then
+          div_frc_by_filter%i_h_flux =    i_phys
+        else if (field_name .eq. div_pert_h_flux_by_filtered%name) then
+          div_frc_by_filter%i_ph_flux =   i_phys
+!
+        else if (field_name .eq. div_c_flux_by_filtered%name) then
+          div_frc_by_filter%i_c_flux =    i_phys
+        else if (field_name .eq. div_pert_c_flux_by_filtered%name) then
+          div_frc_by_filter%i_pc_flux =   i_phys
+!
+        else if (field_name .eq. div_m_flux_by_filtered%name) then
+          div_frc_by_filter%i_m_flux =   i_phys
+        else if (field_name .eq. div_maxwell_t_by_filtered%name) then
+          div_frc_by_filter%i_maxwell =  i_phys
+        else if (field_name .eq. div_induct_t_by_filtered%name) then
+          div_frc_by_filter%i_induct_t = i_phys
+        end if
+      end if
+!
+      end subroutine set_div_fil_force_addresses
+!
+! ----------------------------------------------------------------------
+!
+      end module set_filtered_force_labels

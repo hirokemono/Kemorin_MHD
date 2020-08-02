@@ -11,13 +11,8 @@
 !!      logical function check_div_fil_flux_t(field_name)
 !!      logical function check_div_fil_scl_flux(field_name)
 !!
-!!      subroutine set_div_fil_force_addresses                          &
-!!     &         (i_phys, field_name, div_frc_by_filter, flag)
-!!        type(base_force_address), intent(inout) :: div_frc_by_filter
-!!
 !!      integer(kind = kint) function num_div_filtered_forces()
-!!      subroutine set_div_filtered_force_labels(n_comps, names, maths)
-!!
+!!        subroutine set_div_filtered_force_labels(n_comps, names, maths)
 !! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
 !!    Field name [Address]
@@ -188,59 +183,6 @@
      &   .or. (field_name .eq. div_pert_c_flux_by_filtered%name)
 !
       end function check_div_fil_scl_flux
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_div_fil_force_addresses                            &
-     &         (i_phys, field_name, div_frc_by_filter, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(base_force_address), intent(inout) :: div_frc_by_filter
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_div_fil_force(field_name)                            &
-     &      .or. check_div_fil_flux_t(field_name)                       &
-     &      .or. check_div_fil_scl_flux(field_name)
-      if(flag) then
-        if (field_name .eq. div_inertia_by_filtered%name) then
-          div_frc_by_filter%i_m_advect =   i_phys
-        else if (field_name .eq. div_Lorentz_force_by_filtered%name)    &
-     &   then
-          div_frc_by_filter%i_lorentz =    i_phys
-!
-        else if (field_name .eq. div_filtered_buoyancy%name) then
-          div_frc_by_filter%i_buoyancy =   i_phys
-        else if (field_name .eq. div_filtered_comp_buoyancy%name) then
-          div_frc_by_filter%i_comp_buo =   i_phys
-!
-        else if (field_name .eq. div_vecp_induction_by_filtered%name)   &
-     &   then
-          div_frc_by_filter%i_vp_induct =  i_phys
-!
-        else if (field_name .eq. div_h_flux_by_filtered%name) then
-          div_frc_by_filter%i_h_flux =    i_phys
-        else if (field_name .eq. div_pert_h_flux_by_filtered%name) then
-          div_frc_by_filter%i_ph_flux =   i_phys
-!
-        else if (field_name .eq. div_c_flux_by_filtered%name) then
-          div_frc_by_filter%i_c_flux =    i_phys
-        else if (field_name .eq. div_pert_c_flux_by_filtered%name) then
-          div_frc_by_filter%i_pc_flux =   i_phys
-!
-        else if (field_name .eq. div_m_flux_by_filtered%name) then
-          div_frc_by_filter%i_m_flux =   i_phys
-        else if (field_name .eq. div_maxwell_t_by_filtered%name) then
-          div_frc_by_filter%i_maxwell =  i_phys
-        else if (field_name .eq. div_induct_t_by_filtered%name) then
-          div_frc_by_filter%i_induct_t = i_phys
-        end if
-      end if
-!
-      end subroutine set_div_fil_force_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
