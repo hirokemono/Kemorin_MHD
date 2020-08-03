@@ -8,9 +8,6 @@
 !!
 !!@verbatim
 !!      logical function check_diff_filter_vectors(field_name)
-!!      subroutine set_diff_filter_vect_addresses                       &
-!!     &         (i_phys, field_name, diff_fil_vect, flag)
-!!        type(diff_vector_address), intent(inout) :: diff_fil_vect
 !!
 !!      integer(kind = kint) function num_diff_filter_vector()
 !!      subroutine set_diff_filter_vect_labels(n_comps, names, maths)
@@ -43,7 +40,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_diff_vector_labels
 !
       implicit none
 !
@@ -179,59 +175,6 @@
      &   .or. (field_name .eq. grad_filtered_j_3%name)
 !
       end function check_diff_filter_vectors
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_diff_filter_vect_addresses                         &
-     &         (i_phys, field_name, diff_fil_vect, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(diff_vector_address), intent(inout) :: diff_fil_vect
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_diff_filter_vectors(field_name)
-      if(flag) then
-        if     (field_name .eq. grad_filtered_v_1%name) then
-          diff_fil_vect%i_grad_vx =   i_phys
-        else if(field_name .eq. grad_filtered_v_2%name) then
-          diff_fil_vect%i_grad_vy =   i_phys
-        else if(field_name .eq. grad_filtered_v_3%name) then
-          diff_fil_vect%i_grad_vz =   i_phys
-!
-        else if(field_name .eq. grad_filtered_w_1%name) then
-          diff_fil_vect%i_grad_wx =   i_phys
-        else if(field_name .eq. grad_filtered_w_2%name) then
-          diff_fil_vect%i_grad_wy =   i_phys
-        else if(field_name .eq. grad_filtered_w_3%name) then
-          diff_fil_vect%i_grad_wz =   i_phys
-!
-        else if(field_name .eq. grad_filtered_b_1%name) then
-          diff_fil_vect%i_grad_bx =   i_phys
-        else if(field_name .eq. grad_filtered_b_2%name) then
-          diff_fil_vect%i_grad_by =   i_phys
-        else if(field_name .eq. grad_filtered_b_3%name) then
-          diff_fil_vect%i_grad_bz =   i_phys
-!
-        else if (field_name .eq. grad_filtered_a_1%name) then
-          diff_fil_vect%i_grad_ax =   i_phys
-        else if (field_name .eq. grad_filtered_a_2%name) then
-          diff_fil_vect%i_grad_ay =   i_phys
-        else if (field_name .eq. grad_filtered_a_3%name) then
-          diff_fil_vect%i_grad_az =   i_phys
-!
-        else if (field_name .eq. grad_filtered_j_1%name) then
-          diff_fil_vect%i_grad_jx =   i_phys
-        else if (field_name .eq. grad_filtered_j_2%name) then
-          diff_fil_vect%i_grad_jy =   i_phys
-        else if (field_name .eq. grad_filtered_j_3%name) then
-          diff_fil_vect%i_grad_jz =   i_phys
-        end if
-      end if
-!
-      end subroutine set_diff_filter_vect_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

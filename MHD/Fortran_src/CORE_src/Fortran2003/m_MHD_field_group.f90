@@ -233,7 +233,7 @@
       nfld_group_c( 3) = num_diff_SGS_terms()
       nfld_group_c( 4) = num_SGS_model_coefs()
       nfld_group_c( 5) = num_filter_fields()
-      nfld_group_c( 6) = num_filtered_forces()
+      nfld_group_c( 6) = num_filter_force()
       nfld_group_c( 7) = num_filtered_ene_fluxes()
       nfld_group_c( 8) = num_rot_filtered_forces()
       nfld_group_c( 9) = num_div_filtered_forces()

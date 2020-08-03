@@ -179,10 +179,6 @@
       use t_SGS_enegy_flux_labels
       use t_SGS_model_addresses
 !
-      use m_filtered_ene_flux_labels
-      use m_diff_filter_vect_labels
-      use m_SGS_model_coef_labels
-!
       use set_filtered_field_labels
       use set_filtered_force_labels
       use set_grad_filter_fld_labels

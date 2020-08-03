@@ -17,6 +17,8 @@
 !!      subroutine set_true_div_SGS_term_addresses                      &
 !!     &         (i_phys, field_name, true_div_SGS, flag)
 !!        type(SGS_term_address), intent(inout) :: true_div_SGS
+!!      subroutine set_true_SGS_ene_flux_addresses                      &
+!!     &         (i_phys, field_name, true_SGS_eflux, flag)
 !!
 !!      subroutine set_wide_SGS_term_addresses                          &
 !!     &         (i_phys, field_name, wide_SGS, flag)
@@ -55,6 +57,24 @@
 !!   SGS_div_c_flux_true      [true_div_SGS%i_SGS_c_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  product of fields names  !!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!! field names 
+!!
+!!   SGS_Lorentz_true         [true_SGS%i_SGS_Lorentz]
+!!   SGS_mag_induction_true   [true_SGS%i_SGS_induction]
+!!
+!!   SGS_div_m_flux_true      [true_div_SGS%i_SGS_m_flux]
+!!   SGS_div_h_flux_true      [true_div_SGS%i_SGS_h_flux]
+!!   SGS_div_c_flux_true      [true_div_SGS%i_SGS_c_flux]
+!!
+!!   Reynolds_work_true             [true_SGS_eflux%i_reynolds_wk]
+!!   SGS_Lorentz_work_true          [true_SGS_eflux%i_SGS_Lor_wk]
+!!   SGS_mag_induction_flux_true    [true_SGS_eflux%i_SGS_me_gen]
+!!   SGS_temp_flux_gen_true         [true_SGS_eflux%i_SGS_temp_gen]
+!!   SGS_comp_flux_gen_true         [true_SGS_eflux%i_SGS_comp_gen]
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! !!!!!  SGS terms names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!     SGS terms using wider filter
@@ -83,6 +103,7 @@
       use m_precision
       use m_constants
       use t_SGS_term_labels
+      use t_SGS_enegy_flux_labels
 !
       implicit  none
 !
@@ -109,11 +130,11 @@
      &    .or. check_induction_tensor_w_SGS(field_name)
       if(flag) then
         if (field_name .eq. momentum_flux_w_SGS%name ) then
-          frc_w_SGS%i_SGS_m_flux =     i_phys
+          frc_w_SGS%i_SGS_m_flux =    i_phys
         else if (field_name .eq. maxwell_tensor_w_SGS%name ) then
-          frc_w_SGS%i_SGS_maxwell =    i_phys
+          frc_w_SGS%i_SGS_maxwell =   i_phys
         else if (field_name .eq. induction_tensor_w_SGS%name ) then
-          frc_w_SGS%i_SGS_induct_t =    i_phys
+          frc_w_SGS%i_SGS_induct_t =  i_phys
 !
         else if (field_name .eq. heat_flux_w_SGS%name) then
           frc_w_SGS%i_SGS_h_flux =    i_phys
@@ -123,7 +144,7 @@
         else if (field_name .eq. intertia_w_SGS%name) then
           frc_w_SGS%i_SGS_inertia =   i_phys
         else if (field_name .eq. Lorentz_w_SGS%name) then
-          frc_w_SGS%i_SGS_Lorentz =    i_phys
+          frc_w_SGS%i_SGS_Lorentz =   i_phys
 !
         else if (field_name .eq. vecp_induction_w_SGS%name) then
           frc_w_SGS%i_SGS_vp_induct = i_phys
@@ -187,6 +208,39 @@
       end if
 !
       end subroutine set_true_div_SGS_term_addresses
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_true_SGS_ene_flux_addresses                        &
+     &         (i_phys, field_name, true_SGS_eflux, flag)
+!
+      use m_true_SGS_term_labels
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(SGS_ene_flux_address), intent(inout) :: true_SGS_eflux
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_true_SGS_ene_fluxes(field_name)
+      if(flag) then
+        if (field_name .eq. Reynolds_work_true%name ) then
+          true_SGS_eflux%i_reynolds_wk =     i_phys
+        else if (field_name .eq. SGS_Lorentz_work_true%name ) then
+          true_SGS_eflux%i_SGS_Lor_wk =      i_phys
+!
+        else if (field_name .eq. SGS_mag_induction_flux_true%name) then
+          true_SGS_eflux%i_SGS_me_gen =      i_phys
+!
+        else if (field_name .eq. SGS_temp_flux_gen_true%name) then
+          true_SGS_eflux%i_SGS_temp_gen =    i_phys
+        else if (field_name .eq. SGS_comp_flux_gen_true%name) then
+          true_SGS_eflux%i_SGS_comp_gen =    i_phys
+        end if
+      end if
+!
+      end subroutine set_true_SGS_ene_flux_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

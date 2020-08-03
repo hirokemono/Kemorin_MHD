@@ -9,13 +9,11 @@
 !!
 !!@verbatim
 !!      logical function check_filter_enegy_fluxes(field_name)
-!!      subroutine set_filter_ene_flux_addresses                        &
-!!     &         (i_phys, field_name, eflux_by_filter, flag)
 !!
 !!      integer(kind = kint) function num_filtered_ene_fluxes()
 !!      subroutine set_filtered_ene_flax_labels(n_comps, names, maths)
 !!
-!! !!!!!  Base field names  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!
 !!    Field name [Address]
 !!
@@ -44,10 +42,8 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_energy_flux_labels
 !
       implicit  none
-! 
 !
       integer(kind = kint), parameter, private :: neflux_by_filter = 12
 !
@@ -163,57 +159,6 @@
      &   .or. (field_name .eq. part_comp_gen_by_filtered%name)
 !
       end function check_filter_enegy_fluxes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_filter_ene_flux_addresses                          &
-     &         (i_phys, field_name, eflux_by_filter, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(energy_flux_address), intent(inout) :: eflux_by_filter
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_filter_enegy_fluxes(field_name)
-      if(flag) then
-        if (field_name .eq. inertia_work_by_filtered%name) then
-          eflux_by_filter%i_m_advect_work = i_phys
-        else if (field_name .eq. wk_against_Lorentz_by_filtered%name)   &
-     &   then
-          eflux_by_filter%i_nega_ujb =      i_phys
-        else if (field_name .eq. Lorentz_work_by_filtered%name) then
-          eflux_by_filter%i_ujb =           i_phys
-        else if (field_name .eq. mag_tension_work_by_filtered%name)     &
-     &   then
-          eflux_by_filter%i_m_tension_wk =  i_phys
-!
-        else if (field_name .eq. filtered_buoyancy_flux%name) then
-          eflux_by_filter%i_buo_gen =       i_phys
-        else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
-          eflux_by_filter%i_c_buo_gen =     i_phys
-!
-        else if (field_name .eq. mag_ene_generation_by_filtered%name)   &
-     &   then
-          eflux_by_filter%i_me_gen =           i_phys
-        else if (field_name .eq. mag_stretch_flux_by_filtered%name)     &
-     &   then
-          eflux_by_filter%i_mag_stretch_flux = i_phys
-!
-        else if (field_name .eq. temp_generation_by_filtered%name) then
-          eflux_by_filter%i_temp_gen =  i_phys
-        else if (field_name .eq. part_temp_gen_by_filtered%name) then
-          eflux_by_filter%i_par_t_gen = i_phys
-!
-        else if (field_name .eq. comp_generation_by_filtered%name) then
-          eflux_by_filter%i_comp_gen =  i_phys
-        else if (field_name .eq. part_comp_gen_by_filtered%name) then
-          eflux_by_filter%i_par_c_gen = i_phys
-        end if
-      end if
-!
-      end subroutine set_filter_ene_flux_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

@@ -66,7 +66,6 @@
 !
       use m_precision
       use m_constants
-      use t_SGS_term_labels
 !
       implicit  none
 !!
@@ -174,7 +173,7 @@
 !
       use m_diff_SGS_term_labels
 !
-s      integer(kind = kint), intent(in) :: i_phys
+      integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
       type(SGS_term_address), intent(inout) :: rot_SGS

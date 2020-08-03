@@ -18,6 +18,10 @@
 !!     &         (i_phys, field_name, div_frc_by_filter, flag)
 !!        type(base_force_address), intent(inout) :: div_frc_by_filter
 !!
+!!      subroutine set_filter_ene_flux_addresses                        &
+!!     &         (i_phys, field_name, eflux_by_filter, flag)
+!!        type(energy_flux_address), intent(inout) :: eflux_by_filter
+!!
 !! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
 !!      Field label  [Address]
@@ -88,13 +92,36 @@
 !!   pert_c_flux_by_filtered         [force_by_filter%i_pc_flux]
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! !!!!!  List of energy flux by SGS terms  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!
+!!    Field name [Address]
+!!
+!!   inertia_work_by_filtered          [eflux_by_filter%i_m_advect_work]
+!!   wk_against_Lorentz_by_filtered    [eflux_by_filter%i_nega_ujb]
+!!   Lorentz_work_by_filtered          [eflux_by_filter%i_ujb]
+!!   mag_tension_work_by_filtered      [eflux_by_filter%i_m_tension_wk]
+!!
+!!   filtered_buoyancy_flux            [eflux_by_filter%i_buo_gen]
+!!   filtered_comp_buoyancy_flux       [eflux_by_filter%i_c_buo_gen]
+!!
+!!   mag_ene_generation_by_filtered    [eflux_by_filter%i_me_gen]
+!!   mag_stretch_flux_by_filtered
+!!                              [eflux_by_filter%i_mag_stretch_flux]
+!!
+!!   temp_generation_by_filtered       [eflux_by_filter%i_temp_gen]
+!!   part_temp_gen_by_filtered         [eflux_by_filter%i_par_t_gen]
+!!   comp_generation_by_filtered       [eflux_by_filter%i_comp_gen]
+!!   part_comp_gen_by_filtered         [eflux_by_filter%i_par_c_gen]
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
       module set_filtered_force_labels
 !
       use m_precision
-      use m_phys_constants
-      use t_field_labels
+      use m_constants
+      use t_base_force_labels
+      use t_energy_flux_labels
 !
       implicit  none
 !
@@ -106,6 +133,8 @@
 !
       subroutine set_filtered_force_addresses                           &
      &         (i_phys, field_name, force_by_filter, flag)
+!
+      use m_filtered_force_labels
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
@@ -172,6 +201,8 @@
       subroutine set_rot_fil_force_addresses                            &
      &         (i_phys, field_name, rot_frc_by_filter, flag)
 !
+      use m_rot_filtered_force_labels
+!
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
 !
@@ -200,6 +231,8 @@
 !
       subroutine set_div_fil_force_addresses                            &
      &         (i_phys, field_name, div_frc_by_filter, flag)
+!
+      use m_div_filtered_force_labels
 !
       integer(kind = kint), intent(in) :: i_phys
       character(len = kchara), intent(in) :: field_name
@@ -247,6 +280,60 @@
       end if
 !
       end subroutine set_div_fil_force_addresses
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_filter_ene_flux_addresses                          &
+     &         (i_phys, field_name, eflux_by_filter, flag)
+!
+      use m_filtered_ene_flux_labels
+!
+      integer(kind = kint), intent(in) :: i_phys
+      character(len = kchara), intent(in) :: field_name
+!
+      type(energy_flux_address), intent(inout) :: eflux_by_filter
+      logical, intent(inout) :: flag
+!
+!
+      flag = check_filter_enegy_fluxes(field_name)
+      if(flag) then
+        if (field_name .eq. inertia_work_by_filtered%name) then
+          eflux_by_filter%i_m_advect_work = i_phys
+        else if (field_name .eq. wk_against_Lorentz_by_filtered%name)   &
+     &   then
+          eflux_by_filter%i_nega_ujb =      i_phys
+        else if (field_name .eq. Lorentz_work_by_filtered%name) then
+          eflux_by_filter%i_ujb =           i_phys
+        else if (field_name .eq. mag_tension_work_by_filtered%name)     &
+     &   then
+          eflux_by_filter%i_m_tension_wk =  i_phys
+!
+        else if (field_name .eq. filtered_buoyancy_flux%name) then
+          eflux_by_filter%i_buo_gen =       i_phys
+        else if (field_name .eq. filtered_comp_buoyancy_flux%name) then
+          eflux_by_filter%i_c_buo_gen =     i_phys
+!
+        else if (field_name .eq. mag_ene_generation_by_filtered%name)   &
+     &   then
+          eflux_by_filter%i_me_gen =           i_phys
+        else if (field_name .eq. mag_stretch_flux_by_filtered%name)     &
+     &   then
+          eflux_by_filter%i_mag_stretch_flux = i_phys
+!
+        else if (field_name .eq. temp_generation_by_filtered%name) then
+          eflux_by_filter%i_temp_gen =  i_phys
+        else if (field_name .eq. part_temp_gen_by_filtered%name) then
+          eflux_by_filter%i_par_t_gen = i_phys
+!
+        else if (field_name .eq. comp_generation_by_filtered%name) then
+          eflux_by_filter%i_comp_gen =  i_phys
+        else if (field_name .eq. part_comp_gen_by_filtered%name) then
+          eflux_by_filter%i_par_c_gen = i_phys
+        end if
+      end if
+!
+      end subroutine set_filter_ene_flux_addresses
 !
 ! ----------------------------------------------------------------------
 !

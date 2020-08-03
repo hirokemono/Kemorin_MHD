@@ -43,7 +43,7 @@ void set_dynamic_SGS_work_labels_f(int *ncomp1, char *name1, char *math1);
 void set_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_div_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
 void set_grad_filter_field_labels_f(int *ncomp1, char *name1, char *math1);
-void set_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
+void set_filter_force_labels_f(int *ncomp1, char *name1, char *math1);
 void rot_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void div_filtered_force_labels_f(int *ncomp1, char *name1, char *math1);
 void set_filtered_ene_flax_labels_f(int *ncomp1, char *name1, char *math1);

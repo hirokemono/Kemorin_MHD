@@ -12,8 +12,8 @@
 !!      logical function check_filtered_flux_tensor(field_name)
 !!      logical function check_filtered_scalar_flux(field_name)
 !!
-!!      integer(kind = kint) function num_filtered_forces()
-!!        subroutine set_filtered_force_labels(n_comps, names, maths)
+!!      integer(kind = kint) function num_filter_force()
+!!        subroutine set_filter_force_labels(n_comps, names, maths)
 !!
 !! !!!!!  divergence of forces by filtered field !!!!!!!!!!!!!!!!!!
 !!
@@ -243,14 +243,14 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 ! 
-      integer(kind = kint) function num_filtered_forces()
-      num_filtered_forces = nforce_filter
+      integer(kind = kint) function num_filter_force()
+      num_filter_force = nforce_filter
       return
-      end function num_filtered_forces
+      end function num_filter_force
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_filtered_force_labels(n_comps, names, maths)
+      subroutine set_filter_force_labels(n_comps, names, maths)
 !
       integer(kind = kint_4b), intent(inout) :: n_comps(nforce_filter)
       character(len = kchara), intent(inout) :: names(nforce_filter)
@@ -301,7 +301,7 @@
       call set_field_labels(pert_c_flux_by_filtered,                    &
      &    n_comps(19), names(19), maths(19))
 !
-      end subroutine set_filtered_force_labels
+      end subroutine set_filter_force_labels
 !
 ! ----------------------------------------------------------------------
 !

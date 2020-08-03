@@ -14,8 +14,6 @@
 !!      logical function check_true_div_SGS_flux_tensor(field_name)
 !!
 !!      logical function check_true_SGS_ene_fluxes(field_name)
-!!      subroutine set_true_SGS_ene_flux_addresses                      &
-!!     &         (i_phys, field_name, true_SGS_eflux, flag)
 !!        type(SGS_ene_flux_address), intent(inout) :: true_SGS_eflux
 !!
 !!      integer(kind = kint) function num_true_SGS_terms()
@@ -46,7 +44,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_SGS_enegy_flux_labels
 !
       implicit  none
 ! 
@@ -208,37 +205,6 @@
      &   .or. (field_name .eq. SGS_comp_flux_gen_true%name)
 !
       end function check_true_SGS_ene_fluxes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_true_SGS_ene_flux_addresses                        &
-     &         (i_phys, field_name, true_SGS_eflux, flag)
-!
-      integer(kind = kint), intent(in) :: i_phys
-      character(len = kchara), intent(in) :: field_name
-!
-      type(SGS_ene_flux_address), intent(inout) :: true_SGS_eflux
-      logical, intent(inout) :: flag
-!
-!
-      flag = check_true_SGS_ene_fluxes(field_name)
-      if(flag) then
-        if (field_name .eq. Reynolds_work_true%name ) then
-          true_SGS_eflux%i_reynolds_wk =     i_phys
-        else if (field_name .eq. SGS_Lorentz_work_true%name ) then
-          true_SGS_eflux%i_SGS_Lor_wk =      i_phys
-!
-        else if (field_name .eq. SGS_mag_induction_flux_true%name) then
-          true_SGS_eflux%i_SGS_me_gen =      i_phys
-!
-        else if (field_name .eq. SGS_temp_flux_gen_true%name) then
-          true_SGS_eflux%i_SGS_temp_gen =    i_phys
-        else if (field_name .eq. SGS_comp_flux_gen_true%name) then
-          true_SGS_eflux%i_SGS_comp_gen =    i_phys
-        end if
-      end if
-!
-      end subroutine set_true_SGS_ene_flux_addresses
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
