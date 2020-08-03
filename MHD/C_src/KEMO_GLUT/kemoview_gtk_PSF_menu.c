@@ -13,7 +13,7 @@ static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_dat
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct kv_string *filename = kemoview_save_file_panel(window);
 	
-	if(filename->string[0] != '\0'){kemoview_write_PSF_colormap_file(filename->string);};
+	if(filename->string[0] != '\0'){kemoview_write_PSF_colormap_file(filename);};
 	kemoview_free_kvstring(filename);
 	return;
 };
