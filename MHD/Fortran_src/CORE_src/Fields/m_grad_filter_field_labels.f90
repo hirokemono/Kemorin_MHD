@@ -43,7 +43,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_grad_field_labels
 !
       implicit none
 !

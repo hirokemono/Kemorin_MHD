@@ -29,7 +29,6 @@
       use m_precision
       use m_phys_constants
       use t_field_labels
-      use t_base_force_labels
 !
 !>      Number of field labels
       integer(kind = kint), parameter, private                          &
