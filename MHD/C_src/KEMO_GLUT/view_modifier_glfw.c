@@ -289,7 +289,7 @@ void glfw_callbacks_init(){
 
 
 void draw_fast(){
-	kemoview_quick_view();
+	int iflag_fast = kemoview_quick_view();
 	glfwSwapBuffers(glfw_window);
 	return;
 };

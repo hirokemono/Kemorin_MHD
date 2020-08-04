@@ -40,14 +40,19 @@ typedef struct {
 	NSBitmapImageRep *bmpRep;
 	// string textures
 	
-	NSTimer* timer;
-	
+	NSTimer* timer_anime;
+    NSTimer* timer_quick;
+    NSTimer* timer_msg;
+
     bool fAnimate;
     bool fResizing;
 	bool fDrawCaps;
+    int  iflag_fast;
     int id_window;
 	
-	CFAbsoluteTime time;
+	CFAbsoluteTime time_anime;
+    CFAbsoluteTime time_quick;
+    CFAbsoluteTime time_msg;
 
 	// left (second) bottun handling
 	NSInteger leftBottunFlag;
@@ -72,6 +77,8 @@ typedef struct {
 - (void) swapbuffer_cocoa;
 
 - (void) animationTimer:(NSTimer *)timer;
+- (void) fullDrawTimer:(NSTimer *)timer;
+- (void) messageTimer:(NSTimer *)timer;
 
 - (void) setViewerType:(NSInteger) selected;
 - (void) Resetview;

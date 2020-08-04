@@ -377,7 +377,7 @@ extern "C" {
     void kemoview_get_fliped_img(int npixel_x, int npixel_y,
                                  unsigned char *glimage, unsigned char *fliped_img);
 
-	void kemoview_quick_view(void);
+	int kemoview_quick_view(void);
     void kemoview_modify_view(void);
     void kemoview_rotate(void);
     

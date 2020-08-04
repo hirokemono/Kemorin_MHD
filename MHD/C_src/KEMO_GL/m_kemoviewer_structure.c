@@ -389,8 +389,8 @@ void kemoview_set_PSF_by_rgba_texture(int width, int height, const unsigned char
 							  width, height, bgra_in);
 };
 
-void kemoview_quick_view(void){
-	quick_mono_kemoview(kemo_sgl);
+int kemoview_quick_view(void){
+	return quick_mono_kemoview(kemo_sgl);
 };
 void kemoview_modify_view(void){
 	modify_stereo_kemoview(kemo_sgl);
