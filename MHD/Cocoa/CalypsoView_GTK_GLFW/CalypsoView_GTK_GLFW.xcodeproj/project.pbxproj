@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		184B181524D8B8BB00FD7108 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 184B181424D8B8BB00FD7108 /* libpng.dylib */; };
 		18A91E0924B9250600D30C46 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0824B9250500D30C46 /* CoreVideo.framework */; };
 		18A91E0B24B9251100D30C46 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0A24B9251100D30C46 /* IOKit.framework */; };
 		18A91E0D24B9251D00D30C46 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E0C24B9251D00D30C46 /* Cocoa.framework */; };
@@ -19,7 +20,6 @@
 		18A91E3F24B92C4D00D30C46 /* libglfw.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E3E24B92C4D00D30C46 /* libglfw.dylib */; };
 		18A91E4124B92C5D00D30C46 /* libgtk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E4024B92C5D00D30C46 /* libgtk-3.dylib */; };
 		18A91E4324B92C7200D30C46 /* libgdk-3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E4224B92C7200D30C46 /* libgdk-3.dylib */; };
-		18A91E4524B92C8D00D30C46 /* libpng.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E4424B92C8D00D30C46 /* libpng.dylib */; };
 		18A91E4724B92CB700D30C46 /* libglib-2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E4624B92CB700D30C46 /* libglib-2.0.dylib */; };
 		18A91E7824B9318500D30C46 /* tree_view_4_light_position.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E4924B9318500D30C46 /* tree_view_4_light_position.c */; };
 		18A91E7924B9318500D30C46 /* kemoview_gtk_fieldline_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E4A24B9318500D30C46 /* kemoview_gtk_fieldline_menu.c */; };
@@ -43,7 +43,6 @@
 		18A91E8B24B9318500D30C46 /* kemoview_gtk_fline_selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7324B9318500D30C46 /* kemoview_gtk_fline_selectors.c */; };
 		18A91E8C24B9318500D30C46 /* kemoview_gtk_rotation_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7424B9318500D30C46 /* kemoview_gtk_rotation_menu.c */; };
 		18A91E8D24B9318500D30C46 /* tree_view_4_domain_viewer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */; };
-		18A91E8E24B9318500D30C46 /* Makefile in Sources */ = {isa = PBXBuildFile; fileRef = 18A91E7624B9318500D30C46 /* Makefile */; };
 		18A91E9024B931AA00D30C46 /* libcairo.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E8F24B931AA00D30C46 /* libcairo.2.dylib */; };
 		18A91E9224B931D500D30C46 /* libcairo-gobject.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E9124B931D500D30C46 /* libcairo-gobject.dylib */; };
 		18A91E9424B931FB00D30C46 /* libatk-1.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 18A91E9324B931FB00D30C46 /* libatk-1.0.dylib */; };
@@ -65,6 +64,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		184B181424D8B8BB00FD7108 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = ../../../../../../../opt/local/lib/libpng.dylib; sourceTree = "<group>"; };
 		18A91C8A24B9241B00D30C46 /* CalypsoView_GTK_GLFW */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CalypsoView_GTK_GLFW; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A91E0824B9250500D30C46 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		18A91E0A24B9251100D30C46 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -79,7 +79,6 @@
 		18A91E3E24B92C4D00D30C46 /* libglfw.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.dylib; path = ../../../../../../../opt/local/lib/libglfw.dylib; sourceTree = "<group>"; };
 		18A91E4024B92C5D00D30C46 /* libgtk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgtk-3.dylib"; path = "../../../../../../../opt/local/lib/libgtk-3.dylib"; sourceTree = "<group>"; };
 		18A91E4224B92C7200D30C46 /* libgdk-3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libgdk-3.dylib"; path = "../../../../../../../opt/local/lib/libgdk-3.dylib"; sourceTree = "<group>"; };
-		18A91E4424B92C8D00D30C46 /* libpng.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpng.dylib; path = ../../../../../../../opt/local/lib/libpng.dylib; sourceTree = "<group>"; };
 		18A91E4624B92CB700D30C46 /* libglib-2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libglib-2.0.dylib"; path = "../../../../../../../opt/local/lib/libglib-2.0.dylib"; sourceTree = "<group>"; };
 		18A91E4924B9318500D30C46 /* tree_view_4_light_position.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_light_position.c; path = ../../../C_src/KEMO_GLUT/tree_view_4_light_position.c; sourceTree = "<group>"; };
 		18A91E4A24B9318500D30C46 /* kemoview_gtk_fieldline_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_fieldline_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fieldline_menu.c; sourceTree = "<group>"; };
@@ -88,7 +87,6 @@
 		18A91E4D24B9318500D30C46 /* tree_view_4_ele_group_viewer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_ele_group_viewer.c; path = ../../../C_src/KEMO_GLUT/tree_view_4_ele_group_viewer.c; sourceTree = "<group>"; };
 		18A91E4E24B9318500D30C46 /* view_modifier_glfw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_modifier_glfw.c; path = ../../../C_src/KEMO_GLUT/view_modifier_glfw.c; sourceTree = "<group>"; };
 		18A91E4F24B9318500D30C46 /* kemoview_gtk_axis_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_axis_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_axis_menu.h; sourceTree = "<group>"; };
-		18A91E5024B9318500D30C46 /* Makefile.depends */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.depends; path = ../../../C_src/KEMO_GLUT/Makefile.depends; sourceTree = "<group>"; };
 		18A91E5124B9318500D30C46 /* kemoview_gtk_evolution_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_evolution_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_evolution_menu.h; sourceTree = "<group>"; };
 		18A91E5224B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_viewmatrix_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_viewmatrix_menu.h; sourceTree = "<group>"; };
 		18A91E5324B9318500D30C46 /* kemoview_gtk_main_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_main_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_main_menu.h; sourceTree = "<group>"; };
@@ -126,7 +124,6 @@
 		18A91E7324B9318500D30C46 /* kemoview_gtk_fline_selectors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_fline_selectors.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_fline_selectors.c; sourceTree = "<group>"; };
 		18A91E7424B9318500D30C46 /* kemoview_gtk_rotation_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = kemoview_gtk_rotation_menu.c; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_rotation_menu.c; sourceTree = "<group>"; };
 		18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tree_view_4_domain_viewer.c; path = ../../../C_src/KEMO_GLUT/tree_view_4_domain_viewer.c; sourceTree = "<group>"; };
-		18A91E7624B9318500D30C46 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../../../C_src/KEMO_GLUT/Makefile; sourceTree = "<group>"; };
 		18A91E7724B9318500D30C46 /* kemoview_gtk_PSF_isoline_menu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = kemoview_gtk_PSF_isoline_menu.h; path = ../../../C_src/KEMO_GLUT/kemoview_gtk_PSF_isoline_menu.h; sourceTree = "<group>"; };
 		18A91E8F24B931AA00D30C46 /* libcairo.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcairo.2.dylib; path = ../../../../../../../opt/local/lib/libcairo.2.dylib; sourceTree = "<group>"; };
 		18A91E9124B931D500D30C46 /* libcairo-gobject.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libcairo-gobject.dylib"; path = "../../../../../../../opt/local/lib/libcairo-gobject.dylib"; sourceTree = "<group>"; };
@@ -150,8 +147,8 @@
 				18A91E0D24B9251D00D30C46 /* Cocoa.framework in Frameworks */,
 				18A91E9824B9323000D30C46 /* libgio-2.0.dylib in Frameworks */,
 				18A91E9224B931D500D30C46 /* libcairo-gobject.dylib in Frameworks */,
-				18A91E4524B92C8D00D30C46 /* libpng.dylib in Frameworks */,
 				18A91E9424B931FB00D30C46 /* libatk-1.0.dylib in Frameworks */,
+				184B181524D8B8BB00FD7108 /* libpng.dylib in Frameworks */,
 				18A91E4324B92C7200D30C46 /* libgdk-3.dylib in Frameworks */,
 				18A91E3F24B92C4D00D30C46 /* libglfw.dylib in Frameworks */,
 				18A91E0B24B9251100D30C46 /* IOKit.framework in Frameworks */,
@@ -196,13 +193,13 @@
 			children = (
 				18A91E3724B92A1400D30C46 /* libkemo_c.a */,
 				18A91E1224B9256E00D30C46 /* libz.tbd */,
+				184B181424D8B8BB00FD7108 /* libpng.dylib */,
 				18A91E4024B92C5D00D30C46 /* libgtk-3.dylib */,
 				18A91E3E24B92C4D00D30C46 /* libglfw.dylib */,
 				18A91E4224B92C7200D30C46 /* libgdk-3.dylib */,
 				18A91E4624B92CB700D30C46 /* libglib-2.0.dylib */,
 				18A91E8F24B931AA00D30C46 /* libcairo.2.dylib */,
 				18A91E9324B931FB00D30C46 /* libatk-1.0.dylib */,
-				18A91E4424B92C8D00D30C46 /* libpng.dylib */,
 				18A91E9124B931D500D30C46 /* libcairo-gobject.dylib */,
 				18A91E9524B9322200D30C46 /* libgdk_pixbuf-2.0.dylib */,
 				18A91E9924B9326600D30C46 /* libgobject-2.0.dylib */,
@@ -257,8 +254,6 @@
 				18A91E5524B9318500D30C46 /* kemoview_gtk_rotation_menu.h */,
 				18A91E6824B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.c */,
 				18A91E5224B9318500D30C46 /* kemoview_gtk_viewmatrix_menu.h */,
-				18A91E7624B9318500D30C46 /* Makefile */,
-				18A91E5024B9318500D30C46 /* Makefile.depends */,
 				18A91E6024B9318500D30C46 /* t_ctl_data_4_kemoview_mesh_c.h */,
 				18A91E7524B9318500D30C46 /* tree_view_4_domain_viewer.c */,
 				18A91E6924B9318500D30C46 /* tree_view_4_domain_viewer.h */,
@@ -352,7 +347,6 @@
 				18A91E8224B9318500D30C46 /* kemoview_gtk_mesh_menu.c in Sources */,
 				18A91E7B24B9318500D30C46 /* tree_view_4_ele_group_viewer.c in Sources */,
 				18A91E8524B9318500D30C46 /* tree_view_4_nod_group_viewer.c in Sources */,
-				18A91E8E24B9318500D30C46 /* Makefile in Sources */,
 				18A91E8624B9318500D30C46 /* kemoview_fileselector_gtk.c in Sources */,
 				18A91E7C24B9318500D30C46 /* view_modifier_glfw.c in Sources */,
 				18A91E1924B925DC00D30C46 /* kemo_mesh_viewer_glfw_gtk.c in Sources */,
@@ -416,11 +410,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11/include,
+					"-cxx-isystem/opt/local/include",
 					/usr/local/include,
 					"/opt/local/include/gtk-3.0",
 					"/opt/local/include/gio-unix-2.0",
 					/opt/local/include/cairo,
-					/opt/local/include,
 					"/opt/local/include/pango-1.0",
 					/opt/local/include/harfbuzz,
 					/opt/local/include/fribidi,
@@ -433,11 +427,13 @@
 					"/opt/local/lib/glib-2.0/include",
 					"/opt/local/include/glib-2.0",
 					"/Users/matsui/git/Kemorin_MHD/MHD/C_src/**",
+					/opt/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = /Users/matsui/src_kemo/work;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -488,11 +484,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11/include,
+					"-cxx-isystem/opt/local/include",
 					/usr/local/include,
 					"/opt/local/include/gtk-3.0",
 					"/opt/local/include/gio-unix-2.0",
 					/opt/local/include/cairo,
-					/opt/local/include,
 					"/opt/local/include/pango-1.0",
 					/opt/local/include/harfbuzz,
 					/opt/local/include/fribidi,
@@ -505,10 +501,12 @@
 					"/opt/local/lib/glib-2.0/include",
 					"/opt/local/include/glib-2.0",
 					"/Users/matsui/git/Kemorin_MHD/MHD/C_src/**",
+					/opt/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = /Users/matsui/src_kemo/work;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "";
 				SDKROOT = macosx;
 			};
 			name = Release;

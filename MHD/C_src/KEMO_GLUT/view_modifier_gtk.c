@@ -306,7 +306,7 @@ void gtk_callbacks_init(){
 
 
 void draw_fast(){
-//	kemoview_draw_fast_gl3();
+//	kemoview_quick_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
 	return;
 };

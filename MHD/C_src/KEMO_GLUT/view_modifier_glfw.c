@@ -289,7 +289,7 @@ void glfw_callbacks_init(){
 
 
 void draw_fast(){
-	kemoview_draw_fast_gl3();
+	kemoview_quick_view();
 	glfwSwapBuffers(glfw_window);
 	return;
 };

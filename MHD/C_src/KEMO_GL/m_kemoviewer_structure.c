@@ -104,11 +104,6 @@ int kemoview_get_current_viewer_id(void){return kemo_sgl->window_ID;};
 
 /* Routines for draw by OpenGL */
 
-void kemoview_draw_fast_gl3(void){
-	quick_mono_kemoview(kemo_sgl);
-	return;
-};
-
 void kemoview_orthogonalGL(double left, double right, double bottom, double top,
 						   double near, double far){
 	orthogonalGL(left, right, bottom, top, near, far);
