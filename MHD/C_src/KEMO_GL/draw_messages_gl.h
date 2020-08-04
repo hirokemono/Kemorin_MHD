@@ -19,9 +19,8 @@
 
 /* prototypes */
 
-void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], struct msg_work *msg_wk, 
-			struct VAO_ids *msg_VAO);
+void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win, GLfloat text_color[4],
+                     struct msg_work *msg_wk, struct VAO_ids *msg_VAO);
 void draw_message_VAO(struct msg_work *msg_wk,
 			struct VAO_ids *msg_VAO, struct kemoview_shaders *kemo_shaders);
 

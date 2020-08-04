@@ -13,6 +13,8 @@ int iflag_glfw_focus = 0;
 int iflag_glfw_end = 0;
 int iflag_gtk_focus = 0;
 
+float message_opacity;
+
 GtkWidget *gtk_win;
 
 struct main_buttons *mbot;
@@ -91,12 +93,14 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
     int nx_buf, ny_buf;
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
 	
+    message_opacity = 1.0;
 	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, width, height);
-	kemoview_set_message_opacity(1.0);
+	kemoview_set_message_opacity(message_opacity);
 	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
 	
+    message_opacity = 0.0;
 	update_windowsize_menu(mbot->view_menu, gtk_win);
-	kemoview_set_message_opacity(0.0);
+	kemoview_set_message_opacity(message_opacity);
 /*    printf("retinemode %d\n", kemoview_get_retinamode()); */
 }
 
@@ -105,12 +109,14 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 	glfwGetWindowSize(window, &npix_x, &npix_y);
 /*	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf); */
 	
+    message_opacity = 1.0;
 	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, npix_x, npix_y);
-	kemoview_set_message_opacity(1.0);
+    kemoview_set_message_opacity(message_opacity);
 	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
 	
+    message_opacity = 0.0;
 	update_windowsize_menu(mbot->view_menu, gtk_win);
-	kemoview_set_message_opacity(0.0);
+    kemoview_set_message_opacity(message_opacity);
 }
 
 /* Main GTK window */

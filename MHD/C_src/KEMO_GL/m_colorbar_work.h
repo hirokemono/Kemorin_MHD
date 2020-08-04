@@ -83,9 +83,9 @@ void set_message_opacity(float opacity, struct msg_work *msg_wk);
 
 void set_message_position(int iflag_retina, int nx_win, int ny_win,
 						  struct msg_work *msg_wk);
-void clear_message_text_image(struct msg_work *msg_wk);
+void clear_message_text_image(float bg_color[4], struct msg_work *msg_wk);
 void set_windowsize_image(int npixel_x, int npixel_y, 
-                          float text_color3[3], struct msg_work *msg_wk);
+                          float bg_color[4], struct msg_work *msg_wk);
 
 #endif
 

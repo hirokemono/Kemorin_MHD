@@ -10,8 +10,8 @@ void set_bg_color_kemoview(struct mesh_menu_val *mesh_m){
 	int i;
 	
 	for(i=0;i<3;i++){
-		if(mesh_m->bg_color[i] < 0.5) mesh_m->text_color[i] = 1.0;
-		else mesh_m->text_color[i] = 0.0;
+		if(mesh_m->bg_color[i] < 0.5) mesh_m->text_color[i] = 0.9;
+		else mesh_m->text_color[i] = 0.1;
 	}
 	mesh_m->text_color[3] = ONE;
 	

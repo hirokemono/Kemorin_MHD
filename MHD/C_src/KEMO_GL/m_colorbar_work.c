@@ -184,67 +184,100 @@ void set_message_position(int iflag_retina, int nx_win, int ny_win,
 	return;
 }
 
-void clear_message_text_image(struct msg_work *msg_wk){
+void clear_message_text_image(float bg_color[4], struct msg_work *msg_wk){
 	int i;
+	int icolor_mid[3];
 	
-	for(i=0;i<4*msg_wk->npixel;i++){
-		msg_wk->msgBMP[i] =  63;
+	for(i=0;i<3;i++){
+		if(bg_color[i] > 0.5){
+			icolor_mid[i] = 96;
+		} else {
+			icolor_mid[i] = 191;
+		};
 	};
+	
+	for(i=0;i<msg_wk->npixel;i++){
+		msg_wk->msgBMP[4*i  ] =  icolor_mid[0];
+		msg_wk->msgBMP[4*i+1] =  icolor_mid[1];
+		msg_wk->msgBMP[4*i+2] =  icolor_mid[2];
+		msg_wk->msgBMP[4*i+3] =  msg_wk->message_opacity;
+	};
+	/*
 	for(i=0;i<3*msg_wk->npixel;i++){
 		msg_wk->testBMP[i] =  0;
 	};
+	*/
 	return;
 };
 
 void set_windowsize_image(int npixel_x, int npixel_y, 
-                          float text_color3[3], struct msg_work *msg_wk){
-    int i;
-    
+                          float bg_color[4], struct msg_work *msg_wk){
+	int i, j;
+	int icolor_txt[4];
+	int icolor_mid[4];
+	
+	for(i=0;i<3;i++){
+		if(bg_color[i] > 0.5){
+			icolor_txt[i] =  0;
+			icolor_mid[i] = 96;
+		} else {
+			icolor_txt[i] = 255;
+			icolor_mid[i] = 191;
+		};
+	};
+	icolor_txt[3] = 255;
+	icolor_txt[3] = 255;
+	
     sprintf(msg_wk->minlabel, " Window size:(%4d,%4d)", npixel_x, npixel_y);
 	
-	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 191, 191, 191, 191, 
+	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_mid[0], icolor_mid[1],
+								 icolor_mid[2], icolor_mid[3], 
                                  msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 0, 4, YsFont16x24, 20, 24);
-	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 191, 191, 191, 191, 
+	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_mid[0], icolor_mid[1],
+								 icolor_mid[2], icolor_mid[3], 
                                  msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 0, 6, YsFont16x24, 20, 24);
-	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 191, 191, 191, 191, 
+	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_mid[0], icolor_mid[1], 
+								 icolor_mid[2], icolor_mid[3], 
                                  msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 1, 4, YsFont16x24, 20, 24);
 
-	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, 255, 255, 255, 255, 
+	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_txt[0], icolor_txt[1], 
+								 icolor_txt[2], icolor_txt[3], 
                                  msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 0, 5, YsFont16x24, 20, 24);
 	
+	/* Draw box in the texture */
     for(i=0;i<2*msg_wk->npix_x;i++){
-        msg_wk->msgBMP[4*i  ] = 255;
-        msg_wk->msgBMP[4*i+1] = 255;
-        msg_wk->msgBMP[4*i+2] = 255;
-        msg_wk->msgBMP[4*i+3] = 255;
-        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)  ] = 255;
-        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)+1] = 255;
-        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)+2] = 255;
-        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)+3] = 255;
+        msg_wk->msgBMP[4*i  ] = icolor_txt[0];
+        msg_wk->msgBMP[4*i+1] = icolor_txt[1];
+        msg_wk->msgBMP[4*i+2] = icolor_txt[2];
+        msg_wk->msgBMP[4*i+3] = icolor_txt[3];
+        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)  ] = icolor_mid[0];
+        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)+1] = icolor_mid[1];
+        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)+2] = icolor_mid[2];
+        msg_wk->msgBMP[4*(msg_wk->npixel-i-1)+3] = icolor_mid[3];
     };
     for(i=0;i<msg_wk->npix_y;i++){
-        msg_wk->msgBMP[4*msg_wk->npix_x*i  ] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+1] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+2] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+3] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+4] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+5] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+6] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*i+7] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-4] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-3] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-2] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-1] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-8] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-7] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-6] = 255;
-        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-5] = 255;
+        msg_wk->msgBMP[4*msg_wk->npix_x*i  ] = icolor_txt[0];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+1] = icolor_txt[1];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+2] = icolor_txt[2];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+3] = icolor_txt[3];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+4] = icolor_txt[0];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+5] = icolor_txt[1];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+6] = icolor_txt[2];
+        msg_wk->msgBMP[4*msg_wk->npix_x*i+7] = icolor_txt[3];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-4] = icolor_mid[0];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-3] = icolor_mid[1];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-2] = icolor_mid[2];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-1] = icolor_mid[3];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-8] = icolor_mid[0];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-7] = icolor_mid[1];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-6] = icolor_mid[2];
+        msg_wk->msgBMP[4*msg_wk->npix_x*(i+1)-5] = icolor_mid[3];
     };
-/*
+	/*
     for(i=0;i<msg_wk->npixel;i++){
 		msg_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) msg_wk->msgBMP[4*i  ]));
 		msg_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) msg_wk->msgBMP[4*i+1]));
@@ -252,11 +285,8 @@ void set_windowsize_image(int npixel_x, int npixel_y,
 	};
 	pixout_BMP_c("/Users/matsui/Desktop/aho", msg_wk->npix_x, msg_wk->npix_y, msg_wk->testBMP);
 */
-    
+	
 	for(i=0;i<msg_wk->npixel;i++){
-		msg_wk->msgBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) msg_wk->msgBMP[4*i  ]));
-		msg_wk->msgBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) msg_wk->msgBMP[4*i+1]));
-		msg_wk->msgBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) msg_wk->msgBMP[4*i+2]));
         msg_wk->msgBMP[4*i+3] = (unsigned char) ((float) 255 * msg_wk->message_opacity);
 	};
 };
