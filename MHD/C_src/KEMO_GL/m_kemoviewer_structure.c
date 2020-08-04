@@ -416,8 +416,8 @@ void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwin
 void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y){
 	update_projection_by_windowsize(kemo_sgl->view_s, npixel_x, npixel_y, nwindow_x, nwindow_y);
 };
-void kemoview_set_windowsize_message(int iflag){
-    set_message_switch(iflag, kemo_sgl->kemo_mesh->msg_wk);
+void kemoview_set_message_opacity(float opacity){
+    set_message_opacity(opacity, kemo_sgl->kemo_mesh->msg_wk);
     return;
 }
 

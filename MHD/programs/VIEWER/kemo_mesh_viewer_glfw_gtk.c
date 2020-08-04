@@ -92,11 +92,11 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
 	glfwGetFramebufferSize(glfw_win, &nx_buf, &ny_buf);
 	
 	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, width, height);
-	kemoview_set_windowsize_message(1);
+	kemoview_set_message_opacity(1.0);
 	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
 	
 	update_windowsize_menu(mbot->view_menu, gtk_win);
-	kemoview_set_windowsize_message(0);
+	kemoview_set_message_opacity(0.0);
 /*    printf("retinemode %d\n", kemoview_get_retinamode()); */
 }
 
@@ -106,11 +106,11 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 /*	printf("frameBufferSizeCB %d %d\n", nx_buf, ny_buf); */
 	
 	kemoview_update_projection_by_viewer_size(nx_buf, ny_buf, npix_x, npix_y);
-	kemoview_set_windowsize_message(1);
+	kemoview_set_message_opacity(1.0);
 	glViewport(IZERO, IZERO, (GLint) nx_buf, (GLint) ny_buf);
 	
 	update_windowsize_menu(mbot->view_menu, gtk_win);
-	kemoview_set_windowsize_message(0);
+	kemoview_set_message_opacity(0.0);
 }
 
 /* Main GTK window */

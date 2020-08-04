@@ -12,6 +12,7 @@
 
 #import "ResetViewControll.h"
 
+#include <math.h>
 #include "kemoviewer.h"
 
 #define PAN     2
@@ -45,14 +46,19 @@ typedef struct {
     NSTimer* timer_msg;
 
     bool fAnimate;
-    bool fResizing;
 	bool fDrawCaps;
-    int  iflag_fast;
+    int iflag_resize;
+    int iflag_fast;
     int id_window;
+    float message_opacity;
 	
-	CFAbsoluteTime time_anime;
-    CFAbsoluteTime time_quick;
-    CFAbsoluteTime time_msg;
+    CFTimeInterval reftime_anime;
+    CFTimeInterval reftime_quick;
+    CFTimeInterval reftime_msg;
+
+    CFTimeInterval time_anime;
+    CFTimeInterval time_quick;
+    CFTimeInterval time_msg;
 
 	// left (second) bottun handling
 	NSInteger leftBottunFlag;

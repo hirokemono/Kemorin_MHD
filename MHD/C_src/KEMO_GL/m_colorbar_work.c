@@ -153,7 +153,7 @@ struct msg_work * alloc_message_work(void){
 		exit(0);
 	}
 
-    msg_wk->iflag_message = 0;
+    msg_wk->message_opacity = 0.0;
     msg_wk->npix_x = IWIDTH_MSG;
     msg_wk->npix_y = IHIGHT_MSG;
     msg_wk->npixel = msg_wk->npix_x * msg_wk->npix_y;
@@ -169,8 +169,8 @@ void dealloc_message_work(struct msg_work *msg_wk){
     return;
 };
 
-void set_message_switch(int iflag, struct msg_work *msg_wk){
-    msg_wk->iflag_message = iflag;
+void set_message_opacity(float opacity, struct msg_work *msg_wk){
+    msg_wk->message_opacity = opacity;
     return;
 };
 
@@ -257,5 +257,6 @@ void set_windowsize_image(int npixel_x, int npixel_y,
 		msg_wk->msgBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) msg_wk->msgBMP[4*i  ]));
 		msg_wk->msgBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) msg_wk->msgBMP[4*i+1]));
 		msg_wk->msgBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) msg_wk->msgBMP[4*i+2]));
+        msg_wk->msgBMP[4*i+3] = (unsigned char) ((float) 255 * msg_wk->message_opacity);
 	};
 };

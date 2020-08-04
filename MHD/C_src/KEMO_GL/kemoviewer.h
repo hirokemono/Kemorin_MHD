@@ -388,7 +388,7 @@ extern "C" {
     
     void kemoview_set_windowsize(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
     void kemoview_update_projection_by_viewer_size(int npixel_x, int npixel_y, int nwindow_x, int nwindow_y);
-    void kemoview_set_windowsize_message(int iflag);
+    void kemoview_set_message_opacity(float opacity);
     
     void kemoview_update_distance(void);
     

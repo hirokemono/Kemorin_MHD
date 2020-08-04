@@ -9,8 +9,7 @@ static void count_message_text_VAO(struct VAO_ids *text_VAO){
 	return;
 };
 
-static void set_message_text_VAO(int iflag_retina, 
-								 GLfloat text_color[4], GLfloat bg_color[4], 
+static void set_message_text_VAO(int iflag_retina, GLfloat text_color[4], 
 								 struct msg_work *msg_wk, struct VAO_ids *text_VAO,
 								 struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
@@ -26,7 +25,7 @@ static void set_message_text_VAO(int iflag_retina,
 };
 
 void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
-			GLfloat text_color[4], GLfloat bg_color[4], struct msg_work *msg_wk, 
+			GLfloat text_color[4], struct msg_work *msg_wk, 
 			struct VAO_ids *msg_VAO){
 	struct gl_strided_buffer *cbar_buf 
 		= (struct gl_strided_buffer *) malloc(sizeof(struct gl_strided_buffer));
@@ -38,8 +37,7 @@ void set_message_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 	set_windowsize_image((int) nx_win, (int) ny_win, text_color, msg_wk);
 	
 	count_message_text_VAO(msg_VAO);
-	set_message_text_VAO(iflag_retina, text_color, bg_color, 
-						 msg_wk, msg_VAO, cbar_buf);
+	set_message_text_VAO(iflag_retina, text_color, msg_wk, msg_VAO, cbar_buf);
 	
 	free(cbar_buf->v_buf);
 	free(cbar_buf);
