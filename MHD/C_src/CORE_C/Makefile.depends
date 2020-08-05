@@ -32,7 +32,8 @@ coordinate_converter_c.o: \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-delete_file_c.o: $(C_SRCDIR)/CORE_C/delete_file_c.c \
+delete_file_c.o: \
+  $(C_SRCDIR)/CORE_C/delete_file_c.c \
   $(C_SRCDIR)/CORE_C/delete_file_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
@@ -87,7 +88,8 @@ projection_patch_to_map.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-quicksort_c.o: $(C_SRCDIR)/CORE_C/quicksort_c.c \
+quicksort_c.o: \
+  $(C_SRCDIR)/CORE_C/quicksort_c.c \
   $(C_SRCDIR)/CORE_C/quicksort_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 read_grouping_mesh_c.o: \
@@ -258,7 +260,8 @@ write_image_2_png.o: \
   $(C_SRCDIR)/CORE_C/write_image_2_png.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
-ysglfontdata.o: $(C_SRCDIR)/CORE_C/ysglfontdata.c
+ysglfontdata.o: \
+  $(C_SRCDIR)/CORE_C/ysglfontdata.c
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 ysglmaketextbitmap.o: \
   $(C_SRCDIR)/CORE_C/ysglmaketextbitmap.c \
