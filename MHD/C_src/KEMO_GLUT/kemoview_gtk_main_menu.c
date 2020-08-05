@@ -512,7 +512,8 @@ void gtk_mesh_menu_box(struct main_buttons *mbot, GtkWidget *window){
 	return;
 }
 
-void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){	
+void make_gtk_main_menu_box(int *iflag_fast_draw, struct main_buttons *mbot,
+                            GtkWidget *window_main){	
 	GtkWidget *entry_file = gtk_entry_new();
 	g_object_set_data(G_OBJECT(entry_file), "parent", (gpointer) window_main);
 	g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer) mbot);
@@ -603,7 +604,8 @@ void make_gtk_main_menu_box(struct main_buttons *mbot, GtkWidget *window_main){
 	
     GtkWidget *hbox_axis = make_axis_menu_box();
     GtkWidget *expander_rot = init_rotation_menu_expander(mbot->rot_gmenu, window_main);
-    GtkWidget *expander_view = init_viewmatrix_menu_expander(mbot->view_menu, window_main);
+    GtkWidget *expander_view = init_viewmatrix_menu_expander(iflag_fast_draw, mbot->view_menu,
+                                                             window_main);
     GtkWidget *expander_pref = init_preference_expander(mbot->pref_gmenu, window_main);
 
     

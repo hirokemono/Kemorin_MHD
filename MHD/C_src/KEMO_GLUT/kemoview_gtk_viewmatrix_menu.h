@@ -83,5 +83,6 @@ void update_windowsize_menu(struct view_widgets *view_menu, GtkWidget *window);
 void set_viewmatrix_value(struct view_widgets *view_menu, GtkWidget *window);
 void update_viewmatrix_menu(struct view_widgets *view_menu, GtkWidget *window);
 
-GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window);
+GtkWidget * init_viewmatrix_menu_expander(int *iflag_fast_draw, struct view_widgets *view_menu,
+                                          GtkWidget *window);
 #endif

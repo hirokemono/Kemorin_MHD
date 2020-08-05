@@ -182,7 +182,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
 	
 	// move view
 	kemoview_set_single_viewer_id(id_window);
-    iflag_fast = 1 - kemoview_quick_view();
+    iflag_fast = kemoview_quick_view();
 	[_resetview UpdateParameters];
 	
 	[self swapbuffer_cocoa];
@@ -244,7 +244,7 @@ KemoViewerOpenGLView * gTrackingViewInfo = NULL;
     if(iflag_resize == 0) return;
 
     CFTimeInterval deltaTime = CFAbsoluteTimeGetCurrent() - reftime_msg;
-    if(deltaTime < 5.0){ // skip pauses
+    if(deltaTime < 4.5){ // skip pauses
         message_opacity = log10f(10.0 - 2.0*deltaTime);
         [self UpdateImage];
     } else {

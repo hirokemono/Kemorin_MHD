@@ -89,7 +89,7 @@ int quick_mono_kemoview(struct kemoviewer_type *kemoview){
 	
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	quick_draw_objects_gl3(kemoview);
-	return 0;
+	return 1;
 };
 
 void modify_stereo_kemoview(struct kemoviewer_type *kemoview){

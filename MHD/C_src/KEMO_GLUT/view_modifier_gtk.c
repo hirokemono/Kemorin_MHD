@@ -305,10 +305,10 @@ void gtk_callbacks_init(){
 }
 
 
-void draw_fast(){
+int draw_fast(){
 //	int iflag_fast = kemoview_quick_view();
 /*	gtk_gl_area_swap_buffers(GTK_GL_AREA(gl_area)); */
-	return;
+	return iflag_fast;
 };
 
 void draw_full(){

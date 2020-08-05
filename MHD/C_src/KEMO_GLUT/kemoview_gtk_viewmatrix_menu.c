@@ -80,90 +80,102 @@ static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
 };
 
 static void eye_position_x_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 0, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void eye_position_y_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 1, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = -gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SHIFT, 2, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 
 static void scale_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_SCALE, 0, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 
 static void spin_x_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_ROTATE, 1, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void spin_y_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_ROTATE, 2, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void spin_z_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_ROTATE, 3, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void spin_deg_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_ROTATE, 0, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 
 static void aperture_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_view_parameter(ISET_APERTURE, 0, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 
 static void focus_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double tmpEyeRatio = kemoview_get_view_parameter(ISET_EYESEP, 0);
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_stereo_parameter(gtk_floatvalue, tmpEyeRatio);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 static void eye_sep_CB(GtkWidget *entry, gpointer user_data){
+	int *iflag_fast_draw = (int *) user_data;
 	double tmpFocus = kemoview_get_view_parameter(ISET_FOCUS, 0);
 	double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	kemoview_set_stereo_parameter(tmpFocus, gtk_floatvalue);
 	
-	draw_fast();
+	*iflag_fast_draw = draw_fast();
 	return;
 };
 
-GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWidget *window){
+GtkWidget * init_viewmatrix_menu_expander(int *iflag_fast_draw, struct view_widgets *view_menu,
+                                          GtkWidget *window){
     GtkWidget *expander_view;
 	
     char windowsize_x_text[30];
@@ -210,25 +222,25 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	set_viewmatrix_value(view_menu, window);
 	
 	view_menu->spin_eye_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_x), 0, 3);
-	g_signal_connect(view_menu->spin_eye_x, "value-changed", G_CALLBACK(eye_position_x_CB), NULL);
+	g_signal_connect(view_menu->spin_eye_x, "value-changed", G_CALLBACK(eye_position_x_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_eye_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_y), 0, 3);
-	g_signal_connect(view_menu->spin_eye_y, "value-changed", G_CALLBACK(eye_position_y_CB), NULL);
+	g_signal_connect(view_menu->spin_eye_y, "value-changed", G_CALLBACK(eye_position_y_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_eye_z = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_z), 0, 3);
-	g_signal_connect(view_menu->spin_eye_z, "value-changed", G_CALLBACK(eye_position_z_CB), NULL);
+	g_signal_connect(view_menu->spin_eye_z, "value-changed", G_CALLBACK(eye_position_z_CB), (gpointer) iflag_fast_draw);
 	
 	view_menu->spin_scale = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_scale), 0, 3);
-	g_signal_connect(view_menu->spin_scale, "value-changed", G_CALLBACK(scale_CB), entry);
+	g_signal_connect(view_menu->spin_scale, "value-changed", G_CALLBACK(scale_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_rotation_x = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_x), 0, 3);
-	g_signal_connect(view_menu->spin_rotation_x, "value-changed", G_CALLBACK(spin_x_CB), NULL);
+	g_signal_connect(view_menu->spin_rotation_x, "value-changed", G_CALLBACK(spin_x_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_rotation_y = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_y), 0, 3);
-	g_signal_connect(view_menu->spin_rotation_y, "value-changed", G_CALLBACK(spin_y_CB), NULL);
+	g_signal_connect(view_menu->spin_rotation_y, "value-changed", G_CALLBACK(spin_y_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_rotation_z = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_z), 0, 3);
-	g_signal_connect(view_menu->spin_rotation_z, "value-changed", G_CALLBACK(spin_z_CB), NULL);
+	g_signal_connect(view_menu->spin_rotation_z, "value-changed", G_CALLBACK(spin_z_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_rotation_deg = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_rotation_deg), 0, 3);
-	g_signal_connect(view_menu->spin_rotation_deg, "value-changed", G_CALLBACK(spin_deg_CB), NULL);
+	g_signal_connect(view_menu->spin_rotation_deg, "value-changed", G_CALLBACK(spin_deg_CB), (gpointer) iflag_fast_draw);
 	
 	view_menu->spin_aperture = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_aperture), 0, 3);
-	g_signal_connect(view_menu->spin_aperture, "value-changed", G_CALLBACK(aperture_CB), entry);
+	g_signal_connect(view_menu->spin_aperture, "value-changed", G_CALLBACK(aperture_CB), (gpointer) iflag_fast_draw);
 	
 	
 	view_menu->hbox_win_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -362,9 +374,9 @@ GtkWidget * init_viewmatrix_menu_expander(struct view_widgets *view_menu, GtkWid
 	gtk_box_pack_start(GTK_BOX(box_view), view_menu->Frame_aperture, FALSE, FALSE, 0);
 	
 	view_menu->spin_focus = gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_focus), 0, 3);
-	g_signal_connect(view_menu->spin_focus, "value-changed", G_CALLBACK(focus_CB), entry);
+	g_signal_connect(view_menu->spin_focus, "value-changed", G_CALLBACK(focus_CB), (gpointer) iflag_fast_draw);
 	view_menu->spin_eye_sep =   gtk_spin_button_new(GTK_ADJUSTMENT(view_menu->adj_eye_sep), 0, 3);
-	g_signal_connect(view_menu->spin_eye_sep, "value-changed", G_CALLBACK(eye_sep_CB), entry);
+	g_signal_connect(view_menu->spin_eye_sep, "value-changed", G_CALLBACK(eye_sep_CB), (gpointer) iflag_fast_draw);
 	
 	view_menu->hbox_focus = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 	gtk_box_pack_start(GTK_BOX(view_menu->hbox_focus), gtk_label_new(" Focus: "), TRUE, TRUE, 0);
