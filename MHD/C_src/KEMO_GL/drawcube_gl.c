@@ -22,17 +22,19 @@ static void light_for_initial_cube(struct kemoview_shaders *kemo_shaders){
 	int num_light = 2;
 	GLfloat  lightposition[4] =  { 1.5, 1.5,-10.0,0.0};
 	GLfloat  light2position[4] = {-1.5,-1.5,-10.0,0.0};
-	GLfloat white[4] = {0.6, 0.6, 0.6, 1.0};
-	GLfloat shine = 20.0;
+	GLfloat white1[4] = {0.4, 0.4, 0.4, 1.0};
+    GLfloat white2[4] = {0.4, 0.4, 0.4, 1.0};
+    GLfloat white3[4] = {0.2, 0.2, 0.2, 1.0};
+    GLfloat shine[1] = {30.0};
 	
 	glUniform1i(id_numLight, num_light);
 	glUniform4fv(id_light1Position, 1, lightposition);
 	glUniform4fv(id_light2Position, 1 , light2position);
 	
-	glUniform4fv(id_MaterialAmbient, 1, white);
-	glUniform4fv(id_MaterialDiffuse, 1, white);
-	glUniform4fv(id_MaterialSpecular, 1, white);
-	glUniform1f(id_MaterialShiness, shine);
+	glUniform4fv(id_MaterialAmbient, 1, white1);
+	glUniform4fv(id_MaterialDiffuse, 1, white2);
+	glUniform4fv(id_MaterialSpecular, 1, white3);
+	glUniform1fv(id_MaterialShiness, 1, shine);
 	return;
 };
 

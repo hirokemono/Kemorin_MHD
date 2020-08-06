@@ -388,9 +388,9 @@ void set_phong_light_list(struct shader_ids *phong, struct phong_lights *lights)
 		glUniform4fv(id_lightPosition[i], 1, &lights->light_xyz[4*i]);
 	};
 	
-	glUniform4f(id_MaterialAmbient, lights->ambient, lights->ambient, lights->ambient, 1.0);
-	glUniform4f(id_MaterialDiffuse, lights->diffuse, lights->diffuse, lights->diffuse, 1.0);
-	glUniform4f(id_MaterialSpecular, lights->specular, lights->specular, lights->specular, 1.0);
-	glUniform1f(id_MaterialShiness, lights->shiness);
+	glUniform4fv(id_MaterialAmbient,  1, lights->ambient);
+	glUniform4fv(id_MaterialDiffuse,  1, lights->diffuse);
+	glUniform4fv(id_MaterialSpecular, 1, lights->specular);
+	glUniform1fv(id_MaterialShiness,  1, lights->shiness);
 };
 

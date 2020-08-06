@@ -121,12 +121,19 @@ void add_phong_light_list(struct view_element *view_s, struct phong_lights *ligh
 
 
 void init_phong_light_list(struct view_element *view_s, struct phong_lights *lights){
+    int i;
+    
 	alloc_phong_light_list(lights, 3);
 	
-	lights->ambient =  0.15;
-	lights->diffuse =  0.35;
-	lights->specular = 0.05;
-	lights->shiness =  20.0;
+    for(i=0;i<3;i++){
+		lights->ambient[i] =  0.15;
+		lights->diffuse[i] =  0.35;
+		lights->specular[i] = 0.05;
+    }
+    lights->ambient[3] =   1.0;
+    lights->diffuse[3] =   1.0;
+    lights->specular[3] =  1.0;
+	lights->shiness[0] =  20.0;
 	
 	lights->light_rtp[0] = 10.0;
 	lights->light_rtp[1] = 20.0;
@@ -165,14 +172,15 @@ void send_each_light_rtp(struct phong_lights *lights,
 }
 
 void set_matrial_parameter(int itype, float value, struct phong_lights *lights){
+    int i;
 	if(itype == AMBIENT_FLAG){
-		lights->ambient = value;
+        for(i=0;i<3;i++){lights->ambient[i] = value;};
 	}else if(itype == DIFFUSE_FLAG){
-		lights->diffuse = value;
+        for(i=0;i<3;i++){lights->diffuse[i] = value;};
 	}else if(itype == SPECULAR_FLAG){
-		lights->specular = value;
+        for(i=0;i<3;i++){lights->specular[i] = value;};
 	}else if(itype == SHINENESS_FLAG){
-		lights->shiness = value;
+		lights->shiness[0] = value;
 	};
 	return;
 };
@@ -180,13 +188,13 @@ void set_matrial_parameter(int itype, float value, struct phong_lights *lights){
 float get_matrial_parameter(int itype, struct phong_lights *lights){
 	float value = 0.0;
 	if(itype == AMBIENT_FLAG){
-		value = lights->ambient;
+		value = lights->ambient[0];
 	}else if(itype == DIFFUSE_FLAG){
-		value = lights->diffuse;
+		value = lights->diffuse[0];
 	}else if(itype == SPECULAR_FLAG){
-		value = lights->specular;
+		value = lights->specular[0];
 	}else if(itype == SHINENESS_FLAG){
-		value = lights->shiness;
+		value = lights->shiness[0];
 	};
 	return value;
 };

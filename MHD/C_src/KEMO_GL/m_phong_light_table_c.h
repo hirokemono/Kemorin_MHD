@@ -14,10 +14,10 @@ struct phong_lights{
 	float *light_xyz;
 	float *light_rtp;
 	
-	float ambient;
-	float diffuse;
-	float specular;
-	float shiness;
+	float ambient[4];
+	float diffuse[4];
+	float specular[4];
+	float shiness[1];
 };
 
 /* prototypes */
