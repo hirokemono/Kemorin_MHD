@@ -825,8 +825,8 @@
 		18D7E6FE1562D359009B05FF /* Obj_C */ = {
 			isa = PBXGroup;
 			children = (
-				1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */,
 				1899ACC624B8EEFF004E8F1C /* ElasticMenuWindow.h */,
+				1899ACC424B8EEC3004E8F1C /* ElasticMenuWindow.m */,
 				1824FD35230FD49500990F41 /* KemoviewerLightingControl.h */,
 				1824FD33230FD47300990F41 /* KemoviewerLightingControl.m */,
 				18D7E6FF1562D359009B05FF /* ColorMapController.h */,
@@ -946,6 +946,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0730;
+				TargetAttributes = {
+					8D1107260486CEB800E47090 = {
+						DevelopmentTeam = 3P2U2MN24Q;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "CalypsoView_Cocoa" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1168,8 +1174,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 3P2U2MN24Q;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1178,15 +1187,12 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/matsui/local/lib,
-					/usr/X11/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
 				PRODUCT_NAME = CalypsoView_Cocoa;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -1195,8 +1201,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 3P2U2MN24Q;
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1204,15 +1213,12 @@
 				GCC_VERSION = "";
 				INFOPLIST_FILE = "CalypsoView_Cocoa-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					/Users/matsui/local/lib,
-					/usr/X11/lib,
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.ucdavis.CalypsoView-Cocoa";
 				PRODUCT_NAME = CalypsoView_Cocoa;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
