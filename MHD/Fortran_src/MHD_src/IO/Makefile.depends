@@ -150,7 +150,7 @@ t_ctl_data_termal_norm.o: $(MHD_IO_DIR)/t_ctl_data_termal_norm.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ucd_file.o: $(MHD_IO_DIR)/t_ucd_file.f90 m_precision.o m_constants.o t_time_data.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_ucd_data.o t_phys_data.o t_file_IO_parameter.o t_IO_step_parameter.o calypso_mpi.o parallel_ucd_IO_select.o output_parallel_ucd_file.o
 	$(F90) -c $(F90OPTFLAGS) $<
-time_step_file_IO.o: $(MHD_IO_DIR)/time_step_file_IO.f90 m_precision.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_mean_square_filed_list.o m_phys_constants.o m_filtered_field_labels.o m_volume_average_labels.o write_field_labels.o t_base_field_labels.o t_base_force_labels.o t_SGS_term_labels.o m_base_field_labels.o
+time_step_file_IO.o: $(MHD_IO_DIR)/time_step_file_IO.f90 m_precision.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_mean_square_filed_list.o m_phys_labels.o m_phys_constants.o m_filtered_field_labels.o m_volume_average_labels.o write_field_labels.o t_base_field_labels.o t_base_force_labels.o t_SGS_term_labels.o m_base_field_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 write_djds_mat_MHD.o: $(MHD_IO_DIR)/write_djds_mat_MHD.f90 m_precision.o calypso_mpi.o m_machine_parameter.o set_parallel_file_name.o t_FEM_control_parameter.o t_control_parameter.o t_MHD_matrices_pack.o t_physical_property.o t_solver_djds_MHD.o write_djds_matrix_struct.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

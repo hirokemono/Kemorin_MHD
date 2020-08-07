@@ -17,8 +17,6 @@
 !
       use m_precision
 !
-      use m_phys_labels
-!
       implicit none
 !
 !

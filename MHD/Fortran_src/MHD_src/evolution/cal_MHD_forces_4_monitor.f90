@@ -169,6 +169,7 @@
 !
       use m_base_force_labels
       use m_diffusion_term_labels
+      use m_div_force_labels
 !
       use cal_terms_for_heat
       use cal_momentum_terms

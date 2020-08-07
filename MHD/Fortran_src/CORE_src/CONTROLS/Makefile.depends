@@ -2,7 +2,7 @@ m_component_flags.o: $(CTL_DIR)/m_component_flags.f90 m_precision.o m_phys_const
 	$(F90) -c $(F90OPTFLAGS) $<
 m_more_component_flags.o: $(CTL_DIR)/m_more_component_flags.f90 m_precision.o m_phys_constants.o t_field_labels.o t_multi_flag_labels.o m_component_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_4_pickup_sph.o: $(CTL_DIR)/set_control_4_pickup_sph.f90 m_precision.o t_ctl_data_4_sph_monitor.o t_pickup_sph_spectr_data.o t_rms_4_sph_spectr.o skip_comment_f.o t_ctl_data_sph_vol_spectr.o output_sph_m_square_file.o t_ctl_data_pick_sph_spectr.o m_base_field_labels.o t_no_heat_Nusselt.o t_phys_data.o t_control_array_character.o
+set_control_4_pickup_sph.o: $(CTL_DIR)/set_control_4_pickup_sph.f90 m_precision.o t_ctl_data_4_sph_monitor.o t_pickup_sph_spectr_data.o t_rms_4_sph_spectr.o skip_comment_f.o t_ctl_data_sph_vol_spectr.o output_sph_m_square_file.o t_ctl_data_pick_sph_spectr.o m_base_field_labels.o m_grad_field_labels.o t_no_heat_Nusselt.o t_phys_data.o t_control_array_character.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_control_ele_layering.o: $(CTL_DIR)/set_control_ele_layering.f90 m_precision.o m_machine_parameter.o t_ctl_data_ele_layering.o set_layer_list_by_table.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
