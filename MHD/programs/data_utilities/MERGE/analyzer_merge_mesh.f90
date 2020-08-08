@@ -92,7 +92,6 @@
       subroutine analyze_merge_mesh
 !
       use t_para_double_numbering
-      use m_phys_labels
       use m_file_format_switch
       use set_field_to_restart
       use const_internal_mesh_data

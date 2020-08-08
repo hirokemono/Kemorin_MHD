@@ -107,7 +107,6 @@
      &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
 !
       use calypso_mpi
-      use m_phys_labels
       use m_true_SGS_term_labels
 !
       real(kind = kreal), intent(in) :: dt
@@ -218,7 +217,6 @@
      &          iphys_SGS_wk, filtering, wk_filter, nod_fld)
 !
       use t_SGS_term_labels
-      use m_phys_labels
       use m_true_SGS_term_labels
 !
       type(SGS_filtering_params), intent(in) :: filter_param

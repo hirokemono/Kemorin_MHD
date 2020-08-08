@@ -202,7 +202,6 @@
 !
       subroutine set_rj_phys_for_zm_streamfunc(ipol, sph_rj, rj_fld)
 !
-      use m_phys_labels
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
@@ -261,7 +260,6 @@
      &         (nnod_rtp, nidx_rtp, radius_1d_rtp_r, sin_theta_1d_rtp,  &
      &          fld_rtp, v_rtp)
 !
-      use m_phys_labels
       use t_phys_name_4_sph_trans
 !
       type(field_name_4_sph_trans), intent(in) :: fld_rtp

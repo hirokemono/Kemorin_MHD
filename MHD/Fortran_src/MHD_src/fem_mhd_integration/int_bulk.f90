@@ -61,7 +61,6 @@
 !
       use m_constants
       use calypso_mpi
-      use m_phys_labels
       use int_all_energy
       use int_all_ave_tensors
 !

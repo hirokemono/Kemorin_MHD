@@ -41,7 +41,6 @@
 !
       use m_geometry_constants
       use m_file_format_switch
-      use m_phys_labels
       use m_filter_file_names
       use t_ctl_data_SGS_model
       use t_ctl_data_filter_files

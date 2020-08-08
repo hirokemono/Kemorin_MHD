@@ -53,7 +53,6 @@
      &         (SGS_param, fl_prop, field_ctl)
 !
  !
-      use m_phys_labels
       use m_base_field_labels
       use m_diff_vector_labels
 !

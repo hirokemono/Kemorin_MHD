@@ -124,7 +124,6 @@
 !
       use t_ucd_data
 !
-      use m_phys_labels
       use m_file_format_switch
       use set_field_to_restart
       use nod_phys_send_recv

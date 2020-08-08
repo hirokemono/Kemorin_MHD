@@ -20,7 +20,6 @@
       use t_spectr_4_ispack
 !
       use m_file_format_switch
-      use m_phys_labels
       use m_FFT_selector
       use count_number_with_overlap
       use set_plane_spectr_file_head

@@ -138,7 +138,6 @@
 !
       subroutine open_gauss_coefs_read_monitor(id_pick, gauss_IO)
 !
-      use m_phys_labels
       use skip_comment_f
       use set_parallel_file_name
 !

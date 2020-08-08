@@ -17,7 +17,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_phys_labels
       use t_control_parameter
       use t_physical_property
       use add_nodal_fields_ctl

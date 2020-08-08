@@ -30,7 +30,7 @@ set_bc_element_type.o: $(MHD_NOD_BC_DIR)/set_bc_element_type.f90 m_precision.o m
 	$(F90) -c $(F90OPTFLAGS) $<
 set_bc_scalar_type_id.o: $(MHD_NOD_BC_DIR)/set_bc_scalar_type_id.f90 m_precision.o t_group_data.o t_nodal_bc_data.o set_nodal_bc_type.o t_boundary_field_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_bc_scalars.o: $(MHD_NOD_BC_DIR)/set_bc_scalars.f90 m_precision.o m_constants.o m_phys_labels.o m_boundary_condition_IDs.o t_bc_data_list.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o set_nod_bc_scalar_id.o
+set_bc_scalars.o: $(MHD_NOD_BC_DIR)/set_bc_scalars.f90 m_precision.o m_constants.o m_boundary_condition_IDs.o t_bc_data_list.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o set_nod_bc_scalar_id.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_bc_vectors.o: $(MHD_NOD_BC_DIR)/set_bc_vectors.f90 m_precision.o m_constants.o m_boundary_condition_IDs.o t_geometry_data.o t_group_data.o t_nodal_bc_data.o t_boundary_field_IO.o t_bc_data_list.o set_nod_bc_vector_id.o
 	$(F90) -c $(F90OPTFLAGS) $<

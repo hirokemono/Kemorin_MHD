@@ -43,7 +43,6 @@
      &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
 !
       use m_file_format_switch
-      use m_phys_labels
       use m_filter_file_names
       use t_physical_property
       use t_SGS_control_parameter

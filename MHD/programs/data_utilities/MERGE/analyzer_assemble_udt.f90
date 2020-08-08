@@ -146,7 +146,6 @@
 !
       use t_ucd_data
 !
-      use m_phys_labels
       use set_ucd_data_to_type
       use merged_udt_vtk_file_IO
       use parallel_ucd_IO_select

@@ -129,7 +129,6 @@
 !
       subroutine analyze_update_sph_rst
 !
-      use m_phys_labels
       use r_interpolate_marged_sph
       use set_field_file_names
       use share_field_data

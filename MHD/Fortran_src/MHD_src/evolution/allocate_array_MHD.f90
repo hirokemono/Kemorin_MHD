@@ -115,8 +115,6 @@
 !
       subroutine count_int_vol_data(SGS_param, cd_prop, mhd_fem_wk)
 !
-      use m_phys_labels
-!
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(conductive_property), intent(in)  :: cd_prop
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

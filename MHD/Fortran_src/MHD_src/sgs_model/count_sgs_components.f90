@@ -46,7 +46,6 @@
      &          wk_sgs, Csims_FEM_MHD)
 !
       use calypso_mpi
-      use m_phys_labels
 !
       use t_control_parameter
       use t_SGS_control_parameter
@@ -101,7 +100,6 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !
       use calypso_mpi
-      use m_phys_labels
 !
       use t_SGS_control_parameter
       use t_layering_ele_list
@@ -179,7 +177,6 @@
      &           iak_sgs_term, icomp_sgs_term, wk_sgs, sgs_coefs)
 !
       use calypso_mpi
-      use m_phys_labels
 !
       use t_SGS_control_parameter
       use t_layering_ele_list

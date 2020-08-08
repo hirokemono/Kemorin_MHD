@@ -32,7 +32,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_phys_labels
 !
       use t_FEM_control_parameter
       use t_comm_table

@@ -145,7 +145,6 @@
 !
       subroutine analyze_update_restart
 !
-      use m_phys_labels
       use assemble_nodal_fields
       use nod_phys_send_recv
       use load_mesh_data_4_merge

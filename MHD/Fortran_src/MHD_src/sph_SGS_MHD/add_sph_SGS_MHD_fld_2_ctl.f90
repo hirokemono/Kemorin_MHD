@@ -21,7 +21,6 @@
 !
       use m_precision
 !
-      use m_phys_labels
       use t_SGS_control_parameter
       use t_control_array_character3
       use t_physical_property

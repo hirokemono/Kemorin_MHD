@@ -20,9 +20,9 @@ add_filter_field_4_sph_trns.o: $(SGS_MHD_SPH_DIR)/add_filter_field_4_sph_trns.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 add_filter_force_4_sph_trns.o: $(SGS_MHD_SPH_DIR)/add_filter_force_4_sph_trns.f90 m_precision.o m_constants.o t_base_force_labels.o t_addresses_sph_transform.o t_physical_property.o m_filtered_force_labels.o add_field_to_sph_trans_list.o m_rot_filtered_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_sph_SGS_MHD_fld_2_ctl.o: $(SGS_MHD_SPH_DIR)/add_sph_SGS_MHD_fld_2_ctl.f90 m_precision.o m_phys_labels.o t_SGS_control_parameter.o t_control_array_character3.o t_physical_property.o m_grad_field_labels.o m_SGS_term_labels.o m_diff_vector_labels.o m_diff_SGS_term_labels.o m_filtered_field_labels.o add_nodal_fields_ctl.o m_SGS_enegy_flux_labels.o m_SGS_model_coef_labels.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o
+add_sph_SGS_MHD_fld_2_ctl.o: $(SGS_MHD_SPH_DIR)/add_sph_SGS_MHD_fld_2_ctl.f90 m_precision.o t_SGS_control_parameter.o t_control_array_character3.o t_physical_property.o m_grad_field_labels.o m_SGS_term_labels.o m_diff_vector_labels.o m_diff_SGS_term_labels.o m_filtered_field_labels.o add_nodal_fields_ctl.o m_SGS_enegy_flux_labels.o m_SGS_model_coef_labels.o m_grad_filter_field_labels.o m_diff_filter_vect_labels.o m_wide_filter_field_labels.o m_wide_SGS_term_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
-add_sph_filter_force_2_ctl.o: $(SGS_MHD_SPH_DIR)/add_sph_filter_force_2_ctl.f90 m_precision.o m_phys_labels.o t_control_array_character3.o t_physical_property.o add_nodal_fields_ctl.o m_filtered_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o
+add_sph_filter_force_2_ctl.o: $(SGS_MHD_SPH_DIR)/add_sph_filter_force_2_ctl.f90 m_precision.o t_control_array_character3.o t_physical_property.o add_nodal_fields_ctl.o m_filtered_force_labels.o m_rot_filtered_force_labels.o m_div_filtered_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<
 add_wide_f_fld_to_sph_trans.o: $(SGS_MHD_SPH_DIR)/add_wide_f_fld_to_sph_trans.f90 m_precision.o t_base_field_labels.o t_addresses_sph_transform.o m_wide_filter_field_labels.o add_field_to_sph_trans_list.o
 	$(F90) -c $(F90OPTFLAGS) $<
