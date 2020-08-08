@@ -100,7 +100,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_sk6(n_asym_tensor, ele, fem_wk%sk6)
-      call reset_ff_smp(node%max_nod_smp, f_l)
+      call reset_ff_smp(n_vector, node, f_l)
 !
       call sel_int_vol_sgs_induct_t                                     &
      &   (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt, FEM_prm,    &
@@ -163,7 +163,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_sk6(n_asym_tensor, ele, fem_wk%sk6)
-      call reset_ff_smp(node%max_nod_smp, f_l)
+      call reset_ff_smp(n_vector, node, f_l)
 !
       call sel_int_vol_sgs_induct_t                                     &
      &   (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt, FEM_prm,    &

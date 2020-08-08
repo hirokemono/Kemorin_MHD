@@ -164,7 +164,7 @@
 !
       call cal_ff_smp_2_ff                                              &
      &   (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
-!      call check_ff(my_rank, n_scalar, node%numnod, f_l)
+!      call check_ff(my_rank, n_scalar, node, f_l)
 !
       end subroutine int_vol_sk_mp_bc
 !

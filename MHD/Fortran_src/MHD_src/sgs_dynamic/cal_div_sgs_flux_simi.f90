@@ -86,7 +86,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_div_sgs_mf_simi_upwind                                 &
@@ -149,7 +149,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+       call reset_ff_smps(node, f_l, f_nl)
 !
         if(iflag_supg .gt. id_turn_OFF) then
           call int_div_sgs_sf_simi_upw                                  &
@@ -206,7 +206,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       if(FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_div_sgs_idct_simi_upw                                  &

@@ -158,9 +158,12 @@
      &      MHD_mesh%conduct, MHD_prop%cd_prop, nod_bcs%Bnod_bcs,       &
      &      surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_LES,       &
      &      SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,              &
-     &      SGS_MHD_wk%fem_int, Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base,          &
-     &      Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs, FEM_filters,      &
-     &      SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,    &
+     &      SGS_MHD_wk%fem_int, Csims_FEM_MHD%icomp_sgs_term,           &
+     &      Csims_FEM_MHD%iak_diff_base,                                &
+     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
+     &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
+     &      FEM_filters, SGS_MHD_wk%mk_MHD,                             &
+     &      s_package%Bmatrix, s_package%Fmatrix,                       &
      &      ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,          &
      &      SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_sq, nod_fld)
 
@@ -170,11 +173,13 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
-     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     Csims_FEM_MHD%diff_coefs)
 !
       else if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)  &
      &     then
@@ -188,9 +193,11 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,                          &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_LES,        &
      &     SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,               &
-     &     SGS_MHD_wk%fem_int, Csims_FEM_MHD%icomp_sgs_term,                          &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%iphys_elediff_vec,              &
-     &     Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs, FEM_filters,           &
+     &     SGS_MHD_wk%fem_int, Csims_FEM_MHD%icomp_sgs_term,            &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,     &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,    &
+     &     Csims_FEM_MHD%diff_coefs, FEM_filters,                       &
      &     SGS_MHD_wk%mk_MHD, s_package%Bmatrix, s_package%Fmatrix,     &
      &     ak_MHD%ak_d_magne, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk,           &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, fem_sq, nod_fld)
@@ -200,11 +207,13 @@
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
-     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     Csims_FEM_MHD%diff_coefs)
       end if
 !
 !     ---- temperature update
@@ -219,8 +228,11 @@
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,               &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,   &
+     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
+     &       Csims_FEM_MHD%iak_diff_sgs,                                &
+     &       Csims_FEM_MHD%iphys_elediff_vec,                           &
+     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,  &
+     &       Csims_FEM_MHD%diff_coefs,                                  &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Tmatrix, ak_MHD, MGCG_WK,                        &
      &       SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,              &
@@ -239,8 +251,11 @@
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
-     &        Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,              &
-     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,  &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec,                          &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod, &
+     &        Csims_FEM_MHD%diff_coefs,                                 &
      &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
      &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
@@ -260,9 +275,9 @@
      &     iphys_LES%force_by_filter, iphys_LES%eflux_by_filter,        &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base, SGS_MHD_wk%mk_MHD,           &
-     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     Csims_FEM_MHD%diff_coefs)
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
       end if
 !
 !     ----- composition update
@@ -277,8 +292,11 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,               &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,   &
+     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
+     &       Csims_FEM_MHD%iak_diff_sgs,                                &
+     &       Csims_FEM_MHD%iphys_elediff_vec,                           &
+     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,  &
+     &       Csims_FEM_MHD%diff_coefs,                                  &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
@@ -293,8 +311,11 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,               &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,   &
+     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
+     &       Csims_FEM_MHD%iak_diff_sgs,                                &
+     &       Csims_FEM_MHD%iphys_elediff_vec,                           &
+     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,  &
+     &       Csims_FEM_MHD%diff_coefs,                                  &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
@@ -311,9 +332,9 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base, SGS_MHD_wk%mk_MHD,           &
-     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     Csims_FEM_MHD%diff_coefs)
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
       end if
 !
 !     ---- velocity update
@@ -327,8 +348,10 @@
      &      surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
      &      SGS_MHD_wk%fem_int, FEM_filters,                            &
-     &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
-     &      Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,               &
+     &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,   &
+     &      Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,    &
+     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
+     &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
@@ -338,9 +361,10 @@
      &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                   &
      &     nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)
@@ -383,9 +407,10 @@
      &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                   &
      &     nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)
@@ -399,9 +424,9 @@
      &     iphys_LES%force_by_filter, iphys_LES%eflux_by_filter,        &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base, SGS_MHD_wk%mk_MHD,           &
-     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     Csims_FEM_MHD%diff_coefs)
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
       end if
 !
       if(iphys%base%i_light .ne. 0) then
@@ -411,9 +436,9 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base, SGS_MHD_wk%mk_MHD,           &
-     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     Csims_FEM_MHD%diff_coefs)
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
       end if
 !
       if(iphys%base%i_vecp .ne. 0) then
@@ -423,11 +448,13 @@
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
-     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     Csims_FEM_MHD%diff_coefs)
       else if(iphys%base%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
      &    (time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
@@ -435,11 +462,13 @@
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs,                          &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,                &
-     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)
+     &     SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,             &
+     &     Csims_FEM_MHD%diff_coefs)
       end if
 !
       end subroutine update_fields
@@ -449,9 +478,9 @@
 !
       subroutine fields_evo_for_FEM_SPH(time_d, FEM_prm, SGS_par,       &
      &          geofem, fluid, MHD_prop, nod_bcs, surf_bcs,             &
-     &          iphys, iphys_LES,         &
-     &          ak_MHD, FEM_filters, s_package, MGCG_WK, SGS_MHD_wk,    &
-     &          nod_fld, Csims_FEM_MHD, fem_sq)
+     &          iphys, iphys_LES, ak_MHD, FEM_filters,                  &
+     &          s_package, MGCG_WK, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, &
+     &          fem_sq)
 !
       use cal_temperature
       use cal_velocity
@@ -499,10 +528,12 @@
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
-     &        Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,              &
-     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,                             &
-     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs, FEM_filters%filtering,         &
-     &        SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,    &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,    &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
      &        SGS_MHD_wk%rhs_mat, nod_fld)
 !
@@ -517,10 +548,12 @@
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_LES,     &
      &        SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,            &
      &        SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                &
-     &        Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,              &
-     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,                             &
-     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs, FEM_filters%filtering,         &
-     &        SGS_MHD_wk%mk_MHD, s_package%Tmatrix, ak_MHD, MGCG_WK,    &
+     &        Csims_FEM_MHD%icomp_sgs_term,                             &
+     &        Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,  &
+     &        Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, &
+     &        Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,    &
+     &        FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                 &
+     &        s_package%Tmatrix, ak_MHD, MGCG_WK,                       &
      &        SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,             &
      &        SGS_MHD_wk%rhs_mat, nod_fld)
 !
@@ -537,9 +570,9 @@
      &     iphys_LES%force_by_filter, iphys_LES%eflux_by_filter,        &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base, SGS_MHD_wk%mk_MHD,           &
-     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     Csims_FEM_MHD%diff_coefs)
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
       end if
 !
 !     ----- composition update
@@ -554,8 +587,10 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,               &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,   &
+     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
+     &       Csims_FEM_MHD%iak_diff_sgs,                                &
+     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,  &
+     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,     &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
@@ -570,8 +605,10 @@
      &       nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_LES,      &
      &       SGS_MHD_wk%iphys_ele_base, SGS_MHD_wk%ele_fld,             &
      &       SGS_MHD_wk%fem_int, FEM_filters%FEM_elens,                 &
-     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,               &
-     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,   &
+     &       Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, &
+     &       Csims_FEM_MHD%iak_diff_sgs,                                &
+     &       Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,  &
+     &       Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,     &
      &       FEM_filters%filtering, SGS_MHD_wk%mk_MHD,                  &
      &       s_package%Cmatrix, ak_MHD, MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, &
      &       SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat, nod_fld)
@@ -588,9 +625,9 @@
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
      &     SGS_MHD_wk%ele_fld, SGS_MHD_wk%fem_int, FEM_filters,         &
-     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base, SGS_MHD_wk%mk_MHD,           &
-     &     SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%rhs_mat, nod_fld,          &
-     &     Csims_FEM_MHD%diff_coefs)
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
+     &     SGS_MHD_wk%rhs_mat, nod_fld, Csims_FEM_MHD%diff_coefs)
       end if
 !
 !     ---- velocity update
@@ -602,9 +639,11 @@
      &      MHD_prop%fl_prop, MHD_prop%cd_prop, nod_bcs%Vnod_bcs,       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, surf_bcs%Psf_bcs,       &
      &      iphys, iphys_LES, SGS_MHD_wk%iphys_ele_base, ak_MHD,        &
-     &      SGS_MHD_wk%fem_int, FEM_filters, Csims_FEM_MHD%iak_sgs_term,              &
-     &      Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,                &
-     &      Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,               &
+     &      SGS_MHD_wk%fem_int, FEM_filters,                            &
+     &      Csims_FEM_MHD%iak_sgs_term, Csims_FEM_MHD%icomp_sgs_term,   &
+     &      Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,    &
+     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
+     &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,      &
      &      SGS_MHD_wk%mk_MHD, s_package%Vmatrix, s_package%Pmatrix,    &
      &      MGCG_WK, SGS_MHD_wk%FEM_SGS_wk, SGS_MHD_wk%mhd_fem_wk,      &
      &      SGS_MHD_wk%rhs_mat, nod_fld, SGS_MHD_wk%ele_fld,            &
@@ -614,9 +653,10 @@
      &     surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                          &
      &     iphys%base, iphys_LES%filter_fld, iphys_LES%wide_filter_fld, &
      &     iphys_LES%SGS_wk, SGS_MHD_wk%iphys_ele_base,                 &
-     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int,                &
-     &     FEM_filters, Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,                 &
-     &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%iphys_elediff_fil,                        &
+     &     SGS_MHD_wk%iphys_ele_fil, SGS_MHD_wk%fem_int, FEM_filters,   &
+     &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%icomp_diff_base,  &
+     &     Csims_FEM_MHD%iphys_elediff_vec,                             &
+     &     Csims_FEM_MHD%iphys_elediff_fil,                             &
      &     SGS_MHD_wk%mk_MHD, SGS_MHD_wk%FEM_SGS_wk,                    &
      &     SGS_MHD_wk%mhd_fem_wk, SGS_MHD_wk%rhs_mat,                   &
      &     nod_fld, SGS_MHD_wk%ele_fld, Csims_FEM_MHD%diff_coefs)

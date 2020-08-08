@@ -83,7 +83,7 @@
       integer (kind = kint) :: imulti
 !
 !
-      call reset_ff(node%numnod, f_nl)
+      call reset_ff(n_vector, node, f_nl)
 !
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
@@ -126,7 +126,7 @@
       integer (kind = kint) :: imulti
 !
 !
-      call reset_ff(node%numnod, f_nl)
+      call reset_ff(n_vector, node, f_nl)
 !
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &
@@ -174,7 +174,7 @@
       integer (kind = kint) :: imulti
 !
 !
-      call reset_ff(node%numnod, f_nl)
+      call reset_ff(n_vector, node, f_nl)
 !
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
@@ -223,7 +223,7 @@
       integer (kind = kint) :: imulti
 !
 !
-      call reset_ff(node%numnod, f_nl)
+      call reset_ff(n_vector, node, f_nl)
 !
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &

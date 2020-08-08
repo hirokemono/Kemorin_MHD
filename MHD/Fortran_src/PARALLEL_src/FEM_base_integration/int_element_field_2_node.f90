@@ -194,7 +194,7 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call reset_ff_smp(node%max_nod_smp, rhs_l)
+      call reset_ff_smp(n_vector, node, rhs_l)
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
@@ -241,7 +241,7 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call reset_ff_smp(node%max_nod_smp, rhs_l)
+      call reset_ff_smp(n_vector, node, rhs_l)
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
@@ -291,7 +291,7 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call reset_ff_smp(node%max_nod_smp, rhs_l)
+      call reset_ff_smp(n_vector, node, rhs_l)
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then
@@ -340,7 +340,7 @@
       type(finite_ele_mat_node), intent(inout) :: rhs_l
 !
 !
-      call reset_ff_smp(node%max_nod_smp, rhs_l)
+      call reset_ff_smp(n_vector, node, rhs_l)
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       if (ele%nnod_4_ele .eq. num_t_linear) then

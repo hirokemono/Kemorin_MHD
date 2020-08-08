@@ -249,7 +249,7 @@
 !
 !  ----------  clear the vector and lumped mass matrix
 !
-      call reset_ff_smps(mesh%node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(mesh%node, f_l, f_nl)
 !
 !  ----------  lead diffusion term
 !
@@ -286,8 +286,8 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_l)
-!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_nl)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node, f_l)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node, f_nl)
 !
       call int_sf_scalar_flux                                           &
      &   (mesh%node, mesh%ele, mesh%surf, group%surf_grp, jacs%g_FEM,   &
@@ -310,8 +310,8 @@
 !     &   ((50+my_rank), nod_fld, n_scalar, i_field)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), ele_fld, n_vector, iphys_ele_base%i_velo)
-!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_l)
-!      call check_ff_smp(my_rank, n_scalar, mesh%node%max_nod_smp, f_nl)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node, f_l)
+!      call check_ff_smp(my_rank, n_scalar, mesh%node, f_nl)
 !
       if (ref_param%iflag_reference .eq. id_takepiro_temp) then
         if (FEM_prm%iflag_temp_supg .gt. id_turn_OFF) then

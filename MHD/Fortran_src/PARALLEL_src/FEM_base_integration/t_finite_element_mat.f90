@@ -10,32 +10,32 @@
 !!      subroutine alloc_type_fem_mat_work(ele, fem_wk)
 !!        type(element_data), intent(in) :: ele
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!      subroutine alloc_type_fem_lumped_mass(num, lump)
-!!        integer(kind = kint), intent(in) :: num
+!!      subroutine alloc_type_fem_lumped_mass(node, lump)
+!!        type(node_data), intent(in) :: node
 !!        type(lumped_mass_matrices), intent(inout) :: lump
 !!      subroutine alloc_type_fem_matrices(numdir, node, rhs)
 !!        type(finite_ele_mat_node), intent(inout) :: rhs
 !!
-!!      subroutine reset_ff_smps_type(numdir, max_nod_smp, rhs)
-!!      subroutine reset_ff_type(numdir, numnod, rhs)
-!!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
-!!        integer(kind = kint), intent(in) :: numdir, numnod
-!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!      subroutine reset_ff_smp(numdir, node, rhs)
+!!      subroutine reset_ff(numdir, node, rhs)
+!!        integer(kind = kint), intent(in) :: numdir
+!!        type(node_data), intent(in) :: node
+!!        type(finite_ele_mat_node), intent(inout) :: rhs
 !!
 !!      subroutine dealloc_type_fem_mat_work(fem_wk)
 !!      subroutine dealloc_type_fem_lumped_mass(lump)
 !!      subroutine dealloc_type_fem_matrices(rhs)
 !!
-!!      subroutine reset_ff(numnod, ffs)
-!!      subroutine reset_ff_smp(max_nod_smp, ffs)
+!!      subroutine reset_ff_smps(node, f_l, f_nl)
+!!        type(node_data), intent(in) :: node
 !!        type(finite_ele_mat_node), intent(inout) :: ffs
-!!      subroutine reset_ff_smps(max_nod_smp, f_l, f_nl)
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!
-!!      subroutine check_mass_martix(id_rank, numnod, lump)
+!!      subroutine check_mass_martix(id_rank, node, lump)
 !!        type(lumped_mass_matrices), intent(inout) :: lump
-!!      subroutine check_ff(id_rank, numdir, numnod, ffs)
-!!      subroutine check_ff_smp(id_rank, numdir, max_nod_smp, ffs)
+!!      subroutine check_ff(id_rank, numdir, node, ffs)
+!!      subroutine check_ff_smp(id_rank, numdir, node, ffs)
+!!        type(node_data), intent(in) :: node
 !!        type(finite_ele_mat_node), intent(inout) :: ffs
 !!      subroutine check_sk6(id_rank, ele, fem_wk)
 !!        type(element_data), intent(in) :: ele
@@ -46,6 +46,9 @@
       module t_finite_element_mat
 !
       use m_precision
+      use m_machine_parameter
+      use m_phys_constants
+      use t_geometry_data
 !
       implicit  none
 !
@@ -81,9 +84,6 @@
 !
       subroutine alloc_type_fem_mat_work(ele, fem_wk)
 !
-      use t_geometry_data
-      use m_phys_constants
-!
       type(element_data), intent(in) :: ele
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
@@ -109,16 +109,16 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine alloc_type_fem_lumped_mass(num, lump)
+      subroutine alloc_type_fem_lumped_mass(node, lump)
 !
-      integer(kind = kint), intent(in) :: num
+      type(node_data), intent(in) :: node
       type(lumped_mass_matrices), intent(inout) :: lump
 !
 !
-      allocate( lump%ml(num) )
-      allocate( lump%ml_o(num) )
+      allocate( lump%ml(node%numnod) )
+      allocate( lump%ml_o(node%numnod) )
 !
-      if (num .gt. 0) then
+      if(node%numnod .gt. 0) then
         lump%ml =   0.0d0
         lump%ml_o = 0.0d0
       end if
@@ -129,9 +129,6 @@
 !
       subroutine alloc_type_fem_matrices(numdir, node, rhs)
 !
-      use m_machine_parameter
-      use t_geometry_data
-!
       integer(kind = kint), intent(in) :: numdir
       type(node_data), intent(in) :: node
       type(finite_ele_mat_node), intent(inout) :: rhs
@@ -141,53 +138,51 @@
       allocate( rhs%ff_smp(node%max_nod_smp,numdir,np_smp) )
 !
       if (node%numnod .eq. 0) return
-      call reset_ff_type(numdir, node%numnod, rhs)
-      call reset_ff_smps_type(numdir, node%max_nod_smp, rhs)
+      call reset_ff(numdir, node, rhs)
+      call reset_ff_smp(numdir, node, rhs)
 !
       end subroutine alloc_type_fem_matrices
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine reset_ff_smps_type(numdir, max_nod_smp, rhs)
+      subroutine reset_ff_smp(numdir, node, rhs)
 !
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: max_nod_smp
       integer(kind = kint), intent(in) :: numdir
+      type(node_data), intent(in) :: node
       type(finite_ele_mat_node), intent(inout) :: rhs
+!
       integer(kind = kint) :: ip
 !
 !
 !$omp parallel do
       do ip = 1, np_smp
-        rhs%ff_smp(1:max_nod_smp,1:numdir,ip) =   0.0d0
+        rhs%ff_smp(1:node%max_nod_smp,1:numdir,ip) =   0.0d0
       end do
 !$omp end parallel do
 !
-      end subroutine reset_ff_smps_type
+      end subroutine reset_ff_smp
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine reset_ff_type(numdir, numnod, rhs)
+      subroutine reset_ff(numdir, node, rhs)
 
-      integer(kind = kint), intent(in) :: numdir, numnod
+      integer(kind = kint), intent(in) :: numdir
+      type(node_data), intent(in) :: node
       type(finite_ele_mat_node), intent(inout) :: rhs
 !
-      integer(kind = kint) :: inod, nd
+      integer(kind = kint) :: nd
 !
 !
-!$omp parallel private(inod)
+!$omp parallel
       do nd = 1, numdir
-!$omp do
-        do inod = 1, numnod
-          rhs%ff(inod,nd) = 0.0d0
-        end do
-!$omp end do nowait
+!$omp workshare
+        rhs%ff(1:node%numnod,nd) = 0.0d0
+!$omp end workshare nowait
       end do
 !$omp end parallel
 !
-      end subroutine reset_ff_type
+      end subroutine reset_ff
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
@@ -229,59 +224,30 @@
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine reset_ff(numnod, ffs)
+      subroutine reset_ff_smps(node, f_l, f_nl)
 !
-      use m_phys_constants
-!
-      integer(kind = kint), intent(in) :: numnod
-      type(finite_ele_mat_node), intent(inout) :: ffs
-!
-!
-      call reset_ff_type(n_vector, numnod, ffs)
-!
-      end subroutine reset_ff
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine reset_ff_smp(max_nod_smp, ffs)
-!
-      use m_phys_constants
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: max_nod_smp
-      type(finite_ele_mat_node), intent(inout) :: ffs
-!
-!
-      call reset_ff_smps_type(n_vector, max_nod_smp, ffs)
-!
-      end subroutine reset_ff_smp
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine reset_ff_smps(max_nod_smp, f_l, f_nl)
-!
-      integer(kind = kint), intent(in) :: max_nod_smp
+      type(node_data), intent(in) :: node
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      call reset_ff_smp(max_nod_smp, f_l)
-      call reset_ff_smp(max_nod_smp, f_nl)
+      call reset_ff_smp(n_vector, node, f_l)
+      call reset_ff_smp(n_vector, node, f_nl)
 !
       end subroutine reset_ff_smps
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine check_mass_martix(id_rank, numnod, lump)
+      subroutine check_mass_martix(id_rank, node, lump)
 !
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: numnod
+      type(node_data), intent(in) :: node
       type(lumped_mass_matrices), intent(inout) :: lump
 !
       integer(kind = kint) :: inod
 !
       write(50+id_rank,*) 'inod, ml, ml_o'
-      do inod = 1, numnod
+      do inod = 1, node%numnod
         write(50+id_rank,'(i16,1p2e25.14)')                             &
      &        inod, lump%ml(inod), lump%ml_o(inod)
       end do
@@ -290,16 +256,17 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_ff(id_rank, numdir, numnod, ffs)
+      subroutine check_ff(id_rank, numdir, node, ffs)
 !
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: numdir, numnod
+      integer(kind = kint), intent(in) :: numdir
+      type(node_data), intent(in) :: node
       type(finite_ele_mat_node), intent(inout) :: ffs
 !
       integer(kind = kint) :: inod, nd
 !
       write(50+id_rank,*) 'inod, ff', numdir
-      do inod = 1, numnod
+      do inod = 1, node%numnod
         write(50+id_rank,'(i16,1p10e25.14)')                            &
      &         inod, (ffs%ff(inod,nd),nd=1, numdir)
       end do
@@ -308,19 +275,18 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_ff_smp(id_rank, numdir, max_nod_smp, ffs)
-!
-      use m_machine_parameter
+      subroutine check_ff_smp(id_rank, numdir, node, ffs)
 !
       integer, intent(in) :: id_rank
-      integer(kind = kint), intent(in) :: numdir, max_nod_smp
+      integer(kind = kint), intent(in) :: numdir
+      type(node_data), intent(in) :: node
       type(finite_ele_mat_node), intent(inout) :: ffs
 !
       integer(kind = kint) :: ip, inod, nd
 !
       write(50+id_rank,*) 'ip, inod, ff_smp', numdir
       do ip = 1, np_smp
-        do inod = 1, max_nod_smp
+        do inod = 1, node%max_nod_smp
           write(50+id_rank,'(2i16,1p10e25.14)')                         &
      &         ip, inod, (ffs%ff_smp(inod,nd,ip),nd=1, numdir)
         end do
@@ -331,8 +297,6 @@
 !   ---------------------------------------------------------------------
 !
       subroutine check_sk6(id_rank, ele, fem_wk)
-!
-      use t_geometry_data
 !
       integer, intent(in) :: id_rank
       type(element_data), intent(in) :: ele

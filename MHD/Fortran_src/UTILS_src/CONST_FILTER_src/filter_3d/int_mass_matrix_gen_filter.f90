@@ -68,7 +68,7 @@
 !     &      fem_wk, f_l, m_lump)
 !      end if
 !
-!      call check_mass_martix(my_rank, node%numnod, m_lump)
+!      call check_mass_martix(my_rank, node, m_lump)
 !
       end subroutine int_mass_matrix_4_filter
 !

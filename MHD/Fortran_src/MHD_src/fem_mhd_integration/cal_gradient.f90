@@ -85,7 +85,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call choose_int_vol_grads                                         &
      &   (iflag_4_supg, num_int, dt, iele_fsmp_stack, i_scalar,         &
@@ -136,7 +136,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call choose_int_vol_grads_w_const                                 &
      &   (iflag_4_supg, num_int, iele_fsmp_stack, dt, const, i_scalar,  &

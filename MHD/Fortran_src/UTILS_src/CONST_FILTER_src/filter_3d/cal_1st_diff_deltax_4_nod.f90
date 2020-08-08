@@ -286,8 +286,8 @@
       integer(kind = kint) :: nd
 !
 !
-      call reset_ff(node%numnod, f_nl)
-      call reset_ff_smp(node%max_nod_smp, f_nl)
+      call reset_ff(n_vector, node, f_nl)
+      call reset_ff_smp(n_vector, node, f_nl)
 !
       call int_vol_diff_dxs(gfil_p%num_int_points, node, ele,           &
      &    g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl, org_field)
@@ -324,7 +324,7 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: diff_field(node%numnod,n_vector)
 !
-      call reset_ff_smp(node%max_nod_smp, f_nl)
+      call reset_ff_smp(n_vector, node, f_nl)
 !
       call int_vol_diff_dxs(num_int_points, node, ele, g_FEM, jac_3d,   &
      &    rhs_tbl, fem_wk, f_nl, org_field)

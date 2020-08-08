@@ -127,7 +127,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call sel_int_vol_div_sgs_flux                                     &
      &    (iflag_supg, num_int, ifilter_final, iflag_commute_flux,      &
@@ -160,7 +160,7 @@
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
 !
-!       call check_ff(my_rank, n_scalar, node%numnod, rhs_mat%f_nl)
+!       call check_ff(my_rank, n_scalar, node, rhs_mat%f_nl)
 !
       call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_nl%ff, mlump_fl%ml, nod_fld%ntot_phys,              &

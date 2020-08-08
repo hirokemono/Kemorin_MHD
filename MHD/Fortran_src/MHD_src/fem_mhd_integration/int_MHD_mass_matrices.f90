@@ -104,15 +104,14 @@
       call int_mass_matrix_diag(node, ele, jacs%g_FEM, jacs%jac_3d,     &
      &     rhs_tbl, fluid%istack_ele_fld_smp, n_int, fem_wk, f_l,       &
      &     mk_MHD%mlump_fl)
-!      call check_mass_martix_fluid(my_rank, node%numnod, mk_MHD)
+!      call check_mass_martix_fluid(my_rank, node, mk_MHD)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag conductor'
       call int_mass_matrix_diag(node, ele, jacs%g_FEM, jacs%jac_3d,     &
      &     rhs_tbl,conduct%istack_ele_fld_smp, n_int, fem_wk, f_l,      &
      &    mk_MHD%mlump_cd)
-!      call check_mass_martix_conduct                                   &
-!     &   (my_rank, node%numnod, mk_MHD)
+!      call check_mass_martix_conduct(my_rank, node, mk_MHD)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag insulator'
@@ -148,22 +147,21 @@
       call int_lump_mass_matrix_quad                                    &
      &   (node, ele, jacs%g_FEM, jacs%jac_3d, rhs_tbl,                  &
      &    n_int, fem_wk, f_l, m_lump)
-!      call check_mass_martix(my_rank, node%numnod, m_lump)
+!      call check_mass_martix(my_rank, node, m_lump)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ fluid'
       call int_mass_matrix_HRZ(node, ele, jacs%g_FEM, jacs%jac_3d,      &
      &    rhs_tbl, fluid%istack_ele_fld_smp, n_int, fem_wk, f_l,        &
      &    mk_MHD%mlump_fl)
-!      call check_mass_martix_fluid(my_rank, node%numnod, mk_MHD)
+!      call check_mass_martix_fluid(my_rank, node, mk_MHD)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ conduct'
       call int_mass_matrix_HRZ(node, ele, jacs%g_FEM, jacs%jac_3d,      &
      &    rhs_tbl,  conduct%istack_ele_fld_smp, n_int, fem_wk, f_l,     &
      &    mk_MHD%mlump_cd)
-!      call check_mass_martix_conduct                                   &
-!     &   (my_rank, node%numnod, mk_MHD)
+!      call check_mass_martix_conduct(my_rank, node, mk_MHD)
 !
 !
       if (iflag_debug.eq.1)                                             &

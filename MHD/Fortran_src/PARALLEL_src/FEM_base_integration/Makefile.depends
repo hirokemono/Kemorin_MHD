@@ -174,7 +174,7 @@ t_crs_connect.o: $(FEM_INT_DIR)/t_crs_connect.f90 m_precision.o m_machine_parame
 	$(F90) -c $(F90OPTFLAGS) $<
 t_crs_matrix.o: $(FEM_INT_DIR)/t_crs_matrix.f90 m_precision.o t_crs_connect.o t_iccg_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_finite_element_mat.o: $(FEM_INT_DIR)/t_finite_element_mat.f90 m_precision.o t_geometry_data.o m_phys_constants.o m_machine_parameter.o
+t_finite_element_mat.o: $(FEM_INT_DIR)/t_finite_element_mat.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_finite_surface_mat.o: $(FEM_INT_DIR)/t_finite_surface_mat.f90 m_precision.o t_surface_data.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -205,8 +205,8 @@
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
      &    fem_wk, f_l, f_nl)
-!      call check_ff(my_rank, n_scalar, node%numnod, f_l)
-!      call check_ff(my_rank, n_scalar, node%numnod, f_nl)
+!      call check_ff(my_rank, n_scalar, node, f_l)
+!      call check_ff(my_rank, n_scalar, node, f_nl)
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (dt, node%numnod, node%istack_internal_smp,                    &
      &    mlump_fl%ml, f_l%ff, f_nl%ff, nod_fld%ntot_phys,              &

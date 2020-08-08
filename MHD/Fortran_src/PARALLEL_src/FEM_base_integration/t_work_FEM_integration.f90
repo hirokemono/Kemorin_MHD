@@ -89,7 +89,7 @@
       type(finite_element_integration), intent(inout) :: fem_int
 !
 !
-      call alloc_type_fem_lumped_mass(mesh%node%numnod, fem_int%m_lump)
+      call alloc_type_fem_lumped_mass(mesh%node, fem_int%m_lump)
 !
       end subroutine alloc_fem_int_base_type
 !

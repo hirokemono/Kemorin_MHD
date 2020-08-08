@@ -119,7 +119,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
-      call reset_ff_smp(node%max_nod_smp, f_nl)
+      call reset_ff_smp(n_vector, node, f_nl)
 !
        if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_rotation_upw                                       &

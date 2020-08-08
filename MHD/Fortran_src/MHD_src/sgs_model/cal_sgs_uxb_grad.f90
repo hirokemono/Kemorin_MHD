@@ -150,7 +150,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
-      call reset_ff_smp(node%max_nod_smp, f_l)
+      call reset_ff_smp(n_vector, node, f_l)
 !
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt, FEM_prm,   &
      &    node, ele, conduct, nod_fld, iphys_ele_base, ele_fld,         &

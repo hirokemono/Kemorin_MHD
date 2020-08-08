@@ -166,7 +166,7 @@
       integer (kind = kint) :: k2
 !
 !
-      call reset_ff_smp(node%max_nod_smp, f_nl)
+      call reset_ff_smp(n_vector, node, f_nl)
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do k2 = 1, ele%nnod_4_ele

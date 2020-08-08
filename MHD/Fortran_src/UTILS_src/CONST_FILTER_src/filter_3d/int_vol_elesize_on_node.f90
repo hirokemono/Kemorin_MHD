@@ -123,7 +123,7 @@
         call cal_ff_smp_2_scalar(node, rhs_tbl, f_l%ff_smp,             &
      &      m_lump%ml, n_scalar, ione, elen_nod)
       else
-        call reset_ff(node%numnod, f_l)
+        call reset_ff(n_vector, node, f_l)
         call cal_ff_smp_2_ff                                            &
      &     (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
         call cal_sol_dx_by_consist                                      &

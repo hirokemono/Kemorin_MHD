@@ -85,8 +85,8 @@
       if (iflag_debug.ge.1) write(*,*) 'alloc_finite_elem_mat'
       call alloc_finite_elem_mat(mesh, SGS_MHD_wk%rhs_mat)
       call alloc_fem_int_base_type(mesh, SGS_MHD_wk%fem_int)
-      call alloc_mass_mat_fluid(mesh%node%numnod, SGS_MHD_wk%mk_MHD)
-      call alloc_mass_mat_conduct(mesh%node%numnod, SGS_MHD_wk%mk_MHD)
+      call alloc_mass_mat_fluid(mesh%node, SGS_MHD_wk%mk_MHD)
+      call alloc_mass_mat_conduct(mesh%node, SGS_MHD_wk%mk_MHD)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data(mesh%ele%numele, mesh%node%max_nod_smp,   &

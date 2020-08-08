@@ -95,7 +95,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call int_vol_commute_div_v_flux(iele_fsmp_stack, num_int,         &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
@@ -147,7 +147,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call int_vol_commute_div_m_flux(iele_fsmp_stack, num_int,         &
      &    node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
@@ -200,7 +200,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call int_vol_commute_induct_t                                     &
      &   (iele_fsmp_stack, num_int, node, ele, nod_fld,                 &

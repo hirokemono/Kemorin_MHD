@@ -46,8 +46,8 @@
 !
       call alloc_finite_elem_mat(fem%mesh, rhs_mat)
       call alloc_fem_int_base_type(fem%mesh, fem_int)
-      call alloc_mass_mat_fluid(fem%mesh%node%numnod, mk_MHD)
-      call alloc_mass_mat_conduct(fem%mesh%node%numnod, mk_MHD)
+      call alloc_mass_mat_fluid(fem%mesh%node, mk_MHD)
+      call alloc_mass_mat_conduct(fem%mesh%node, mk_MHD)
 !
       if (iflag_debug.ge.1 ) write(*,*) 'alloc_iccgN_vec_type'
       MG_vector%isize_solver_vect = -1

@@ -134,8 +134,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff(node%numnod, f_l)
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff(n_vector, node, f_l)
+      call reset_ff_smps(node, f_l, f_nl)
 !
 !    take divergence of velocity
 !
@@ -237,8 +237,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff(node%numnod, f_l)
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff(n_vector, node, f_l)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'int_vol_divergence_vect_p'
       call int_vol_fractional_div_ele(SGS_param%ifilter_final,          &
@@ -331,8 +331,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff(node%numnod, f_l)
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff(n_vector, node, f_l)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call int_vol_fractional_div_ele(SGS_param%ifilter_final,          &
      &    ele%istack_ele_smp, FEM_prm%npoint_poisson_int,               &

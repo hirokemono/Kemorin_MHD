@@ -68,7 +68,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smp(node%max_nod_smp, f_nl)
+      call reset_ff_smp(n_vector, node, f_nl)
 !
       call int_vol_rotation                                             &
      &   (node, ele, g_FEM, jac_3d, rhs_tbl, nod_fld,                   &

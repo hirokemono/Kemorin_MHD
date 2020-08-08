@@ -174,7 +174,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
 !   lead diffusion term
 !
@@ -222,8 +222,8 @@
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%base%i_velo)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), ele_fld, n_vector, iphys_ele_base%i_magne)
-!      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_l)
-!      call check_ff_smp(my_rank, n_vector, node%max_nod_smp, f_nl)
+!      call check_ff_smp(my_rank, n_vector, node, f_l)
+!      call check_ff_smp(my_rank, n_vector, node, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'coefs_4_time_evolution_end'
 !
@@ -332,7 +332,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &

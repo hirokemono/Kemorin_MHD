@@ -101,7 +101,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
@@ -170,7 +170,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call int_vol_vector_diffuse_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &

@@ -110,7 +110,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_scalar_inertia_upw(node, ele,                      &
@@ -137,7 +137,7 @@
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
 !
-!       call check_ff(my_rank, n_scalar, node%numnod, rhs_mat%f_nl)
+!       call check_ff(my_rank, n_scalar, node, rhs_mat%f_nl)
 !
       call cal_ff_2_scalar                                              &
      &   (node%numnod, node%istack_nod_smp, rhs_mat%f_nl%ff,            &
@@ -181,7 +181,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_div_w_const(node, ele,                             &
@@ -207,7 +207,7 @@
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
 !
-!       call check_ff(my_rank, n_scalar, node%numnod, rhs_mat%f_nl)
+!       call check_ff(my_rank, n_scalar, node, rhs_mat%f_nl)
 !
       call cal_ff_2_scalar                                              &
      &   (node%numnod, node%istack_nod_smp, rhs_mat%f_nl%ff,            &
@@ -254,7 +254,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, num_int, node, ele, nod_fld,        &

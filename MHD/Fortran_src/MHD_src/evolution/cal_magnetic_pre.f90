@@ -196,7 +196,7 @@
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
 ! lead diffusion term
 !
@@ -329,7 +329,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
@@ -426,7 +426,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node, f_l, f_nl)
 !
       call int_vol_solenoid_co                                          &
      &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &

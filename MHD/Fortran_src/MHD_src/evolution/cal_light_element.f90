@@ -260,7 +260,7 @@
 !      call check_nodal_data                                            &
 !     &     ((50+my_rank), nod_fld, 3, iphys_SGS%i_SGS_c_flux)
 !
-      call reset_ff_smps(mesh%node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(mesh%node, f_l, f_nl)
 !
       if (property%coef_advect .gt. zero                                &
      &     .and. property%coef_exp.gt.zero) then

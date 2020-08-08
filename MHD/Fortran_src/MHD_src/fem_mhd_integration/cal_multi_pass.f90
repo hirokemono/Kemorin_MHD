@@ -308,7 +308,7 @@
      &      ff_m_smp, fem_wk, f_nl)
       end if
 !
-      call reset_ff(node%numnod, f_l)
+      call reset_ff(n_vector, node, f_l)
       call cal_ff_smp_2_ff(node, rhs_tbl, n_vector,                     &
      &    f_nl%ff_smp, f_l%ff)
 !
@@ -346,7 +346,7 @@
      &      ff_m_smp, fem_wk, f_nl)
       end if
 !
-      call reset_ff(node%numnod, f_l)
+      call reset_ff(n_vector, node, f_l)
       call cal_ff_smp_2_ff(node, rhs_tbl, n_scalar,                     &
      &    f_nl%ff_smp, f_l%ff)
 !

@@ -222,7 +222,7 @@
 !
 !   --- reset work array for time evolution
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
 ! --------   loop for direction of velocity ---------------
 !
@@ -390,7 +390,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
