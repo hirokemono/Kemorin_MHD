@@ -9,11 +9,9 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs,     &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
-!!     &          jacs, rhs_tbl, FEM_elens,                             &
-!!     &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,     &
-!!     &          sgs_coefs, diff_coefs, filtering, mlump_cd,           &
-!!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,  &
+!!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,            &
+!!     &          rhs_mat, nod_fld)
 !!      subroutine cal_vector_p_co(iak_diff_base, ak_d_magne, dt,       &
 !!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          mesh, conduct, group, cd_prop,                        &
@@ -40,15 +38,11 @@
 !!        type(base_field_address), intent(in) :: iphys_ele_base
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(base_field_address), intent(in) :: iak_diff_base
-!!        type(SGS_term_address), intent(in) :: icomp_sgs_term
-!!        type(base_field_address), intent(in) :: iphys_elediff_vec
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
-!!        type(gradient_model_data_type), intent(in) :: FEM_elens
-!!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(filtering_data_type), intent(in) :: filtering
+!!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+!!        type(filters_on_FEM), intent(in) :: FEM_filters
 !!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
@@ -94,6 +88,8 @@
       use t_surface_bc_velocity
       use t_physical_property
       use t_work_FEM_integration
+      use t_FEM_SGS_model_coefs
+      use t_FEM_MHD_filter_data
 !
       implicit none
 !
@@ -107,9 +103,7 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs,       &
      &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
-     &          jacs, rhs_tbl, FEM_elens,                               &
-     &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,       &
-     &          sgs_coefs, diff_coefs, filtering, mlump_cd,             &
+     &          jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters, mlump_cd,    &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,              &
      &          rhs_mat, nod_fld)
 !
@@ -141,15 +135,10 @@
       type(SGS_model_addresses), intent(in) :: iphys_LES
       type(base_field_address), intent(in) :: iphys_ele_base
       type(phys_data), intent(in) :: ele_fld
-      type(base_field_address), intent(in) :: iak_diff_base
-      type(SGS_term_address), intent(in) :: icomp_sgs_term
-      type(base_field_address), intent(in) :: iphys_elediff_vec
       type(jacobians_type), intent(in) :: jacs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: sgs_coefs
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(filtering_data_type), intent(in) :: filtering
+      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
+      type(filters_on_FEM), intent(in) :: FEM_filters
       type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
@@ -173,7 +162,8 @@
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      mesh%ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,          &
      &      mesh%node, mesh%ele, nod_fld, jacs%g_FEM, jacs%jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, iak_diff_base%i_magne,      &
+     &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
+     &      Csims_FEM_MHD%iak_diff_base%i_magne,                        &
      &      cd_prop%coef_exp, ak_d_magne, iphys%base%i_vecp,            &
      &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
@@ -184,9 +174,11 @@
         call cal_sgs_uxb_2_evo(dt, FEM_prm, SGS_param, filter_param,    &
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct, cd_prop,       &
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,         &
-     &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
-     &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
-     &      sgs_coefs, wk_filter, mhd_fem_wk,                           &
+     &      iphys_ele_base, ele_fld, jacs, rhs_tbl,                     &
+     &      FEM_filters%FEM_elens, FEM_filters%filtering,               &
+     &      Csims_FEM_MHD%icomp_sgs_term,                               &
+     &      Csims_FEM_MHD%iphys_elediff_vec,                            &
+     &      Csims_FEM_MHD%sgs_coefs_nod, wk_filter, mhd_fem_wk,         &
      &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
       end if
 !
@@ -241,21 +233,23 @@
         call cal_vect_p_pre_lumped_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
-     &      iak_diff_base%i_magne, ak_d_magne, Bnod_bcs%nod_bc_a, dt,   &
-     &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, conduct,       &
+     &      Csims_FEM_MHD%iak_diff_base%i_magne, ak_d_magne,            &
+     &      Bnod_bcs%nod_bc_a, dt, FEM_prm,                             &
+     &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
-     &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
-     &      Bmatrix, MG_vector, mhd_fem_wk,                             &
+     &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
+     &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%base%i_vecp, iphys%exp_work%i_pre_uxb,                &
-     &      iak_diff_base%i_magne, ak_d_magne, Bnod_bcs%nod_bc_a, dt,   &
-     &      FEM_prm, mesh%node, mesh%ele, conduct, cd_prop,             &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                &
-     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk,                 &
+     &      Csims_FEM_MHD%iak_diff_base%i_magne, ak_d_magne,            &
+     &      Bnod_bcs%nod_bc_a, dt, FEM_prm, mesh%node, mesh%ele,        &
+     &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
+     &      FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,            &
+     &      Bmatrix, MG_vector, mhd_fem_wk,                             &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if
 !
@@ -339,13 +333,12 @@
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
                              iphys_exp%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
-     &      (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,   &
-     &       jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,            &
-     &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
-     &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       SGS_param%ifilter_final, diff_coefs%num_field,             &
-     &       iak_diff_base%i_magne, diff_coefs%ak, iphys_exp%i_m_phi,   &
-     &       fem_wk, surf_wk, f_nl)
+     &     (mesh%node, mesh%ele, mesh%surf, group%surf_grp, nod_fld,    &
+     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
+     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int, &
+     &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
+     &      SGS_param%ifilter_final, iak_diff_base%i_magne,             &
+     &      iphys_exp%i_m_phi, fem_wk, surf_wk, f_nl)
       end if
 !
 !

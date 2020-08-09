@@ -344,13 +344,12 @@
         if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co_ele',    &
                              iphys%exp_work%i_m_phi
          call int_surf_sgs_velo_co_ele                                  &
-     &      (node, ele, surf, sf_grp, nod_fld,                          &
-     &       jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,            &
-     &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
-     &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       SGS_param%ifilter_final, diff_coefs%num_field,             &
-     &       iak_diff_base%i_magne, diff_coefs%ak,                      &
-     &       iphys%exp_work%i_m_phi, fem_wk, surf_wk, f_nl)
+     &     (node, ele, surf, sf_grp, nod_fld,                           &
+     &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
+     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int, &
+     &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
+     &      SGS_param%ifilter_final, iak_diff_base%i_magne,             &
+     &      iphys%exp_work%i_m_phi, fem_wk, surf_wk, f_nl)
       end if
 !
 !
@@ -442,12 +441,10 @@
          call int_surf_sgs_velo_co_ele                                  &
      &     (node, ele, surf, sf_grp, nod_fld,                           &
      &      jacs%g_FEM, jacs%jac_sf_grp, jacs%jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
+     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int, &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
-     &      SGS_param%ifilter_final, diff_coefs%num_field,              &
-     &      iak_diff_base%i_magne,                                      &
-     &      diff_coefs%ak, iphys%exp_work%i_m_phi,                      &
-     &      fem_wk, surf_wk, f_nl)
+     &      SGS_param%ifilter_final, iak_diff_base%i_magne,             &
+     &      iphys%exp_work%i_m_phi, fem_wk, surf_wk, f_nl)
       end if
 !
 !
