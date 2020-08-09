@@ -51,6 +51,7 @@
       use t_finite_element_mat
       use t_phys_address
       use t_MHD_finite_element_mat
+      use t_work_FEM_integration
 !
       implicit none
 !
@@ -130,7 +131,7 @@
       use cal_add_smp
       use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
-      use fem_skv_nonlinear_upwind
+      use fem_skv_inertia_upw
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -168,10 +169,13 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,         &
      &      iphys_base%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
-        call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
-     &      num_int, k2, dt, mhd_fem_wk%velo_1, fem_wk%vector_1,        &
-     &      d_ele(1,iphys_ele_base%i_magne), ele, g_FEM, jac_3d,        &
-     &      fem_wk%sk6)
+        call fem_skv_inertia_rot_upw                                    &
+     &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
+     &      np_smp, conduct%istack_ele_fld_smp, g_FEM%max_int_point,    &
+     &      g_FEM%maxtot_int_3d, g_FEM%int_start3, g_FEM%owe3d,         &
+     &      num_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,   &
+     &      jac_3d%dnx, jac_3d%an, mhd_fem_wk%velo_1, fem_wk%vector_1,  &
+     &      d_ele(1,iphys_ele_base%i_magne), fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

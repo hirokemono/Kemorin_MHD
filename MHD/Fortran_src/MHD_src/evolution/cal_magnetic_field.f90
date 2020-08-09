@@ -170,8 +170,7 @@
      &    iak_diff_base, icomp_sgs_term, iphys_elediff_vec,             &
      &    sgs_coefs, diff_coefs, FEM_filters%filtering,                 &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld)
 !
 !     --------------------- 
 !

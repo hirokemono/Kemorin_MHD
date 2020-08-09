@@ -99,6 +99,7 @@
       use t_surface_bc_scalar
       use t_surface_bc_velocity
       use t_physical_property
+      use t_work_FEM_integration
 !
       implicit none
 !
@@ -116,8 +117,8 @@
      &          jacs, rhs_tbl, FEM_elens,                               &
      &          iak_diff_base, icomp_sgs_term, iphys_elediff_vec,       &
      &          sgs_coefs, diff_coefs, filtering, mlump_cd,             &
-     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
-     &          f_l, f_nl, nod_fld)
+     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk,              &
+     &          rhs_mat, nod_fld)
 !
       use calypso_mpi
 !
@@ -169,12 +170,11 @@
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node, f_l, f_nl)
+      call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
 !
 !   lead diffusion term
 !
@@ -185,7 +185,7 @@
      &      node, ele, nod_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,       &
      &      FEM_elens, diff_coefs, iak_diff_base%i_magne,               &
      &      cd_prop%coef_exp, ak_d_magne, iphys%base%i_vecp,            &
-     &      fem_wk, f_l)
+     &      rhs_mat%fem_wk, rhs_mat%f_l)
       end if
 !
 !  lead induction terms
@@ -196,7 +196,8 @@
      &      iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,         &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
-     &      sgs_coefs, wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &      sgs_coefs, wk_filter, mhd_fem_wk,                           &
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
@@ -204,26 +205,26 @@
      &      node, ele, conduct, cd_prop, iphys%base, nod_fld,           &
      &      ele_fld%ntot_phys, iphys_ele_base, ele_fld%d_fld,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,               &
-     &      fem_wk, f_nl)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys%base, nod_fld,           &
      &      ele_fld%ntot_phys, iphys_ele_base, ele_fld%d_fld,           &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk,               &
-     &      fem_wk, f_nl)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
       call int_sf_grad_velocity                                         &
      &   (node, ele, surf, sf_grp, jacs%g_FEM, jacs%jac_sf_grp,         &
      &    rhs_tbl, Asf_bcs%grad, FEM_prm%npoint_t_evo_int, ak_d_magne,  &
-     &    fem_wk, f_l)
+     &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%base%i_velo)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), ele_fld, n_vector, iphys_ele_base%i_magne)
-!      call check_ff_smp(my_rank, n_vector, node, f_l)
-!      call check_ff_smp(my_rank, n_vector, node, f_nl)
+!      call check_ff_smp(my_rank, n_vector, node, rhs_mat%f_l)
+!      call check_ff_smp(my_rank, n_vector, node, rhs_mat%f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'coefs_4_time_evolution_end'
 !
@@ -232,7 +233,7 @@
         call cal_magne_pre_euler(iphys%base%i_vecp, dt, FEM_prm,        &
      &      nod_comm, node, ele, conduct, iphys_ele_base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk,     &
-     &      fem_wk,  f_l, f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
@@ -240,7 +241,8 @@
      &     (iphys%base%i_vecp, iphys%exp_work%i_pre_uxb, dt, FEM_prm,   &
      &      nod_comm, node, ele, conduct, iphys_ele_base, ele_fld,      &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mlump_cd,                 &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
+     &      nod_fld)
 !
 !  -----for Ceank-nicolson
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
@@ -251,7 +253,8 @@
      &      FEM_prm, nod_comm, node, ele, conduct,                      &
      &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
-     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      Bmatrix, MG_vector, mhd_fem_wk,                             &
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &
@@ -260,8 +263,8 @@
      &      iak_diff_base%i_magne, ak_d_magne, Bnod_bcs%nod_bc_a, dt,   &
      &      FEM_prm, node, ele, conduct, cd_prop,                       &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens,                &
-     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk,                 &
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if
 !
       call set_boundary_vect                                            &
