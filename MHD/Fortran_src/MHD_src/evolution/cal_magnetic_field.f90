@@ -163,8 +163,7 @@
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ak_d_magne, dt, FEM_prm,                    &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
-     &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs,                   &
+     &    mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs,             &
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
      &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
      &    iak_diff_base, icomp_sgs_term, iphys_elediff_vec,             &
@@ -207,8 +206,7 @@
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co(iak_diff_base, ak_d_magne, dt,             &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
-     &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs,                 &
+     &      mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,           &
      &      iphys%base, iphys%exp_work,                                 &
      &      iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,      &
      &      FEM_filters%FEM_elens, diff_coefs, fem_int%m_lump, Bmatrix, &
