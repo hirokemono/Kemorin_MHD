@@ -7,21 +7,17 @@
 !
 !!      subroutine cal_magnetic_field_pre(ak_d_magne, dt,               &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
-!!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
-!!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_LES,         &
-!!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
-!!     &          sgs_coefs, sgs_coefs_nod, icomp_sgs_term,             &
-!!     &          iak_diff_base, iak_diff_sgs, iphys_elediff_vec,       &
-!!     &          diff_coefs, filtering, mlump_cd, Bmatrix, MG_vector,  &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          mesh, conduct, group, cd_prop, Bnod_bcs,              &
+!!     &          Asf_bcs, Bsf_bcs, iphys, iphys_LES, iphys_ele_base,   &
+!!     &          ele_fld, jacs, rhs_tbl, Csims_FEM_MHD, FEM_filters,   &
+!!     &          mlump_cd, Bmatrix, MG_vector, wk_filter,              &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_magnetic_co                                      &
 !!     &         (ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,        &
-!!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
-!!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele_base, ele_fld,    &
-!!     &          jacs, rhs_tbl, FEM_elens, iak_diff_base, diff_coefs,  &
-!!     &          m_lump, Bmatrix, MG_vector, mhd_fem_wk,               &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,     &
+!!     &          iphys, iphys_ele_base, ele_fld, jacs, rhs_tbl,        &
+!!     &          FEM_elens, Csims_FEM_MHD, m_lump, Bmatrix, MG_vector, &
+!!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_magnetic_co_outside                              &
 !!     &         (FEM_prm, SGS_param, cmt_param, mesh, insulate, group, &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, jacs, rhs_tbl, FEM_elens,   &
@@ -266,11 +262,10 @@
 !
       subroutine cal_magnetic_co                                        &
      &         (ak_d_magne, dt, FEM_prm, SGS_param, cmt_param,          &
-     &          mesh, conduct, group, cd_prop,    &
-     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele_base, ele_fld,      &
-     &          jacs, rhs_tbl, FEM_elens, Csims_FEM_MHD,    &
-     &          m_lump, Bmatrix, MG_vector, mhd_fem_wk,                 &
-     &          rhs_mat, nod_fld)
+     &          mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,       &
+     &          iphys, iphys_ele_base, ele_fld, jacs, rhs_tbl,          &
+     &          FEM_elens, Csims_FEM_MHD, m_lump, Bmatrix, MG_vector,   &
+     &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use set_boundary_scalars
       use nod_phys_send_recv
