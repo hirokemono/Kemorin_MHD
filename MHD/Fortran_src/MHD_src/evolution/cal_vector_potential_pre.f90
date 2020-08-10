@@ -18,7 +18,7 @@
 !!     &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,             &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,    &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,   &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -49,9 +49,7 @@
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!        type(work_surface_element_mat), intent(inout) :: surf_wk
-!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_vector_potential_pre
@@ -272,7 +270,7 @@
      &          Bnod_bcs, Fsf_bcs, iphys_base, iphys_exp,               &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
      &          diff_coefs, m_lump, Bmatrix, MG_vector, mhd_fem_wk,     &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          rhs_mat, nod_fld)
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -312,13 +310,11 @@
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(mesh%node, f_l, f_nl)
+      call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co(FEM_prm%npoint_poisson_int,              &
@@ -326,7 +322,7 @@
      &    iphys_exp%i_m_phi, iak_diff_base%i_magne,                     &
      &    mesh%node, mesh%ele, nod_fld,                                 &
      &    jacs%g_FEM, jacs%jac_3d, jacs%jac_3d_l,                       &
-     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
+     &    rhs_tbl, FEM_elens, diff_coefs, rhs_mat%fem_wk, rhs_mat%f_nl)
 !
       if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
@@ -338,7 +334,8 @@
      &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_poisson_int, &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_param%ifilter_final, iak_diff_base%i_magne,             &
-     &      iphys_exp%i_m_phi, fem_wk, surf_wk, f_nl)
+     &      iphys_exp%i_m_phi, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
+     &      rhs_mat%f_nl)
       end if
 !
 !
@@ -350,15 +347,15 @@
      &      cmt_param, mesh%nod_comm, mesh%node, mesh%ele,              &
      &      conduct, cd_prop, Bnod_bcs, iphys_ele_base, ele_fld,        &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
-     &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,             &
-     &      f_l, f_nl, nod_fld)
+     &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,     &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         call clear_field_data                                           &
      &     (nod_fld, n_scalar, iphys_exp%i_m_phi)
       else
         call cal_vector_p_co_exp(iphys_base%i_vecp, FEM_prm,            &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
-     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump,                   &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect vect_p'

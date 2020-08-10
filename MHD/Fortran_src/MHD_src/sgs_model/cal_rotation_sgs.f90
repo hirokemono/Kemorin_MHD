@@ -196,9 +196,9 @@
       end if
 !
       call int_surf_rotation_sgs(node, ele, surf, sf_grp, nod_fld,      &
-     &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
-     &    num_int, ifilter_final, diff_coefs%num_field, iak_diff,       &
-     &    diff_coefs%ak, i_vector, fem_wk, surf_wk, f_nl)
+     &    jacs%g_FEM, jacs%jac_sf_grp, rhs_tbl, FEM_elens,              &
+     &    diff_coefs, sgs_sf, num_int, ifilter_final, iak_diff,         &
+     &    i_vector, fem_wk, surf_wk, f_nl)
 !
       end subroutine choose_int_vol_rot_sgs
 !

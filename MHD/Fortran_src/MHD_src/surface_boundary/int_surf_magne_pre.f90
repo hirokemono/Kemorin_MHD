@@ -112,9 +112,8 @@
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,       &
-     &       rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                  &
-     &       SGS_param%ifilter_final, diff_coefs%num_field,             &
-     &       iak_diff_SGS%i_SGS_induction, diff_coefs%ak,               &
+     &       rhs_tbl, FEM_elens, diff_coefs, Bsf_bcs%sgs, num_int,      &
+     &       SGS_param%ifilter_final, iak_diff_SGS%i_SGS_induction,     &
      &       iphys_SGS%i_SGS_induct_t, iphys_base%i_velo,               &
      &       iphys_base%i_magne, fem_wk, surf_wk, f_nl)
       end if
@@ -182,9 +181,8 @@
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld, g_FEM, jac_sf_grp,      &
-     &        rhs_tbl, FEM_elens, Bsf_bcs%sgs, num_int,                 &
-     &        SGS_param%ifilter_final, diff_coefs%num_field,            &
-     &        iak_diff_SGS%i_SGS_induction, diff_coefs%ak,              &
+     &        rhs_tbl, FEM_elens, diff_coefs, Bsf_bcs%sgs, num_int,     &
+     &        SGS_param%ifilter_final, iak_diff_SGS%i_SGS_induction,    &
      &        iphys_SGS%i_SGS_induct_t, iphys_base%i_velo,              &
      &        iphys_base%i_magne, fem_wk, surf_wk, f_nl)
         end if

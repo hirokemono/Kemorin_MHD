@@ -305,12 +305,12 @@
           .and. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(mesh%node, mesh%ele, mesh%surf,  &
      &     group%surf_grp, nod_fld, jacs%g_FEM, jacs%jac_sf_grp,        &
-     &      rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,               &
+     &      rhs_tbl, FEM_elens, diff_coefs, FEM_prm%npoint_t_evo_int,   &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
      &      SGS_param%ifilter_final, iphys_SGS%i_SGS_c_flux,            &
      &      iphys_base%i_velo, iphys_base%i_light,                      &
-     &      diff_coefs%num_field, iak_diff_SGS%i_SGS_c_flux,            &
-     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
+     &      iak_diff_SGS%i_SGS_c_flux, property%coef_advect,            &
+     &      fem_wk, surf_wk, f_nl)
       end if
 !
 !      call check_nodal_data                                            &

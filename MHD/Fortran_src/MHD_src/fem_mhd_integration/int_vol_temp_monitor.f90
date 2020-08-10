@@ -142,12 +142,11 @@
         call int_sf_skv_sgs_div_v_flux                                  &
      &    (node, ele, surf, sf_grp, nod_fld,                            &
      &     fem_int%jcs%g_FEM, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,  &
-     &     FEM_elens, num_int,                                          &
+     &     FEM_elens, diff_coefs, num_int,                              &
      &     Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat,          &
      &     ifilter_final, i_SGS_flux, i_velo, i_field,                  &
-     &     diff_coefs%num_field,iak_diff_flux, diff_coefs%ak,           &
-     &     property%coef_advect, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
-     &     rhs_mat%f_nl)
+     &     iak_diff_flux, property%coef_advect, rhs_mat%fem_wk,         &
+     &     rhs_mat%surf_wk, rhs_mat%f_nl)
       end if
 !
       call cal_t_evo_4_scalar                                           &
