@@ -291,18 +291,11 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre(ak_d_magne, dt, FEM_prm,              &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,       &
-     &    group%surf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,          &
+     &    mesh, conduct, group, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
      &    iphys, iphys_LES, iphys_ele_base, ele_fld,                    &
-     &    fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,          &
-     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,     &
-     &    Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iak_diff_base,    &
-     &    Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%iphys_elediff_vec,  &
-     &    Csims_FEM_MHD%diff_coefs, FEM_filters%filtering,              &
+     &    fem_int%jcs, fem_int%rhs_tbl, Csims_FEM_MHD, FEM_filters,     &
      &    mk_MHD%mlump_cd, Bmatrix, MGCG_WK%MG_vector,                  &
-     &    FEM_SGS_wk%wk_filter, mhd_fem_wk,                             &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
-     &    nod_fld)
+     &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !
@@ -331,14 +324,11 @@
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
         call cal_magnetic_co(ak_d_magne, dt, FEM_prm,                   &
      &      SGS_par%model_p, SGS_par%commute_p,                         &
-     &      mesh%nod_comm, mesh%node, mesh%ele, mesh%surf, conduct,     &
-     &      group%surf_grp, cd_prop, Bnod_bcs, Fsf_bcs,                 &
+     &      mesh, conduct, group, cd_prop, Bnod_bcs, Fsf_bcs,           &
      &      iphys, iphys_ele_base, ele_fld,                             &
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,        &
-     &      Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,      &
-     &      fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector, mhd_fem_wk,     &
-     &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld)
+     &      Csims_FEM_MHD, fem_int%m_lump, Bmatrix, MGCG_WK%MG_vector,  &
+     &      mhd_fem_wk, rhs_mat,nod_fld)
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, mesh%ele%istack_ele_smp, iphys%base%i_mag_p,         &
