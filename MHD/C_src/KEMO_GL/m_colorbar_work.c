@@ -184,17 +184,11 @@ void set_message_position(int iflag_retina, int nx_win, int ny_win,
 	return;
 }
 
-void clear_message_text_image(float bg_color[4], struct msg_work *msg_wk){
+void clear_message_text_image(struct msg_work *msg_wk){
 	int i;
 	int icolor_mid[3];
 	
-	for(i=0;i<3;i++){
-		if(bg_color[i] > 0.5){
-			icolor_mid[i] = 96;
-		} else {
-			icolor_mid[i] = 191;
-		};
-	};
+	for(i=0;i<3;i++){icolor_mid[i] = 0;};
 	
 	for(i=0;i<msg_wk->npixel;i++){
 		msg_wk->msgBMP[4*i  ] =  icolor_mid[0];
@@ -210,20 +204,14 @@ void clear_message_text_image(float bg_color[4], struct msg_work *msg_wk){
 	return;
 };
 
-void set_windowsize_image(int npixel_x, int npixel_y, 
-                          float bg_color[4], struct msg_work *msg_wk){
-	int i, j;
+void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
+	int i;
 	int icolor_txt[4];
 	int icolor_mid[4];
 	
 	for(i=0;i<3;i++){
-		if(bg_color[i] > 0.5){
-			icolor_txt[i] =  0;
-			icolor_mid[i] = 96;
-		} else {
-			icolor_txt[i] = 255;
-			icolor_mid[i] = 191;
-		};
+		icolor_txt[i] = 255;
+		icolor_mid[i] = 191;
 	};
 	icolor_txt[3] = 255;
 	icolor_txt[3] = 255;

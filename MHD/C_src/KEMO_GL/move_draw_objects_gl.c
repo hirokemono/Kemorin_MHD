@@ -292,8 +292,8 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
     /* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
 	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
-                        kemo_mesh->mesh_m->bg_color, kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
- 	   draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
+                        kemo_mesh->msg_wk, kemo_VAOs->msg_VAO);
+        draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
     };
     /* draw example cube for empty data */
 	iflag = kemo_mesh->mesh_m->iflag_draw_mesh + iflag_psf + kemo_fline->fline_m->iflag_draw_fline;
