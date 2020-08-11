@@ -184,7 +184,7 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	int i = psf_a->ipsf_viz_far[IZERO]-1;
-	drawgl_textured_patches_VAO(psf_m[i]->texture_name[0], view_s, 
+	drawgl_textured_patches_VAO(&psf_m[i]->texture_name[0], view_s, 
 							  psf_solid_VAO[1], kemo_shaders);
 	
 /*	printf("drawgl_patch_with_phong psf_solid_VAO[0] \n"); */
@@ -214,7 +214,7 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	int i = psf_a->ipsf_viz_far[IZERO]-1;
-	drawgl_textured_patches_VAO(psf_m[i]->texture_name[0], view_s, 
+	drawgl_textured_patches_VAO(&psf_m[i]->texture_name[0], view_s, 
 							  psf_trans_VAO[1], kemo_shaders);
 	
 /*	printf("drawgl_patch_with_phong psf_trans_VAO[0] %d\n", psf_trans_VAO[0]->npoint_draw); */

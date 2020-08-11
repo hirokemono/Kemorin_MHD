@@ -4,7 +4,7 @@
 
 #include "drawGL_by_VAO.h"
 
-void drawgl_textured_patches_VAO(GLuint texture_name, struct view_element *view_s, 
+void drawgl_textured_patches_VAO(GLuint *texture_name, struct view_element *view_s, 
 							   struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
 	
@@ -14,7 +14,7 @@ void drawgl_textured_patches_VAO(GLuint texture_name, struct view_element *view_
 	
 	glBindVertexArray(VAO->id_VAO);
 	
-	glBindTexture(GL_TEXTURE_2D, texture_name);
+	glBindTexture(GL_TEXTURE_2D, *texture_name);
 	int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
 	glUniform1i(id_textureImage, 0);
 	
