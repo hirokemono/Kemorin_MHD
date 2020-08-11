@@ -175,10 +175,13 @@ void set_matrial_parameter(int itype, float value, struct phong_lights *lights){
     int i;
 	if(itype == AMBIENT_FLAG){
         for(i=0;i<3;i++){lights->ambient[i] = value;};
+        lights->ambient[3] = 1.0;
 	}else if(itype == DIFFUSE_FLAG){
         for(i=0;i<3;i++){lights->diffuse[i] = value;};
+        lights->diffuse[3] = 1.0;
 	}else if(itype == SPECULAR_FLAG){
         for(i=0;i<3;i++){lights->specular[i] = value;};
+        lights->specular[3] = 1.0;
 	}else if(itype == SHINENESS_FLAG){
 		lights->shiness[0] = value;
 	};
