@@ -234,6 +234,7 @@ tree_view_4_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \
@@ -355,6 +356,7 @@ tree_view_4_pvr_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/m_phong_light_table_c.h \
   $(C_SRCDIR)/GLSL/shaders.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h \
+  $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h \

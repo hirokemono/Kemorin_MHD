@@ -43,6 +43,7 @@ kemo_mesh_viewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
   $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
   $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
@@ -156,6 +157,7 @@ kemoviewer_glfw_gtk.o: \
   $(MHDDIR)/C_src/KEMO_GL/m_phong_light_table_c.h \
   $(MHDDIR)/C_src/GLSL/shaders.h \
   $(MHDDIR)/C_src/CORE_C/invert_small_matrix_c.h \
+  $(MHDDIR)/C_src/KEMO_GL/drawGL_by_VAO.h \
   $(MHDDIR)/C_src/CORE_C/set_new_patch_4_map_c.h \
   $(MHDDIR)/C_src/CORE_C/projection_patch_to_map.h \
   $(MHDDIR)/C_src/CORE_C/coordinate_converter_c.h \
