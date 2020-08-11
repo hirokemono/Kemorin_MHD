@@ -2,13 +2,31 @@
 /* drawGL_by_VAO.c */
 
 
-#include  "drawGL_by_VAO.h"
+#include "drawGL_by_VAO.h"
+
+void drawgl_textured_patches_VAO(GLuint texture_name, struct view_element *view_s, 
+							   struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
+	if(VAO->npoint_draw <= 0) return;
+	
+	glUseProgram(kemo_shaders->phong_texure->programId);
+	transfer_matrix_to_shader(kemo_shaders->phong_texure, view_s);
+	set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
+	
+	glBindVertexArray(VAO->id_VAO);
+	
+	glBindTexture(GL_TEXTURE_2D, texture_name);
+	int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
+	glUniform1i(id_textureImage, 0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+	glDrawArrays(GL_TRIANGLES, IZERO, VAO->npoint_draw);
+	return;
+};
 
 void drawgl_patch_with_phong(struct view_element *view_s, struct VAO_ids *VAO, 
 			struct kemoview_shaders *kemo_shaders){
 	if(VAO->npoint_draw <= 0) return;
 	
-	glDisable(GL_CULL_FACE);
 	glUseProgram(kemo_shaders->phong->programId);
 	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
 	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
@@ -117,5 +135,32 @@ void draw_trans_mesh_VAO(struct view_element *view_s,
 	glDepthMask(GL_TRUE);
 	glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glDisable(GL_MULTISAMPLE);
+	return;
+}
+
+void draw_2D_box_patch_VAO(double orthogonal[16], struct VAO_ids *VAO, 
+						   struct kemoview_shaders *kemo_shaders){
+	glUseProgram(kemo_shaders->simple->programId);
+	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
+	
+	glBindVertexArray(VAO->id_VAO);
+	glDrawArrays(GL_TRIANGLES, IZERO, VAO->npoint_draw);
+	return;
+}
+
+void draw_textured_2D_box_VAO(GLuint texture_name, double orthogonal[16],
+							  struct VAO_ids *VAO, struct kemoview_shaders *kemo_shaders){
+	if(VAO->npoint_draw <= 0) return;
+	
+	glUseProgram(kemo_shaders->simple_texure->programId);
+	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);
+	
+	glBindVertexArray(VAO->id_VAO);
+	glBindTexture(GL_TEXTURE_2D, texture_name);
+	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
+	glUniform1i(id_textureImage, 0);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, VAO->id_vertex);
+	glDrawArrays(GL_TRIANGLES, 0, VAO->npoint_draw);
 	return;
 }

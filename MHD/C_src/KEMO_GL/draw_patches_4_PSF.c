@@ -182,46 +182,23 @@ void draw_PSF_solid_objects_VAO(struct psf_data **psf_s, struct psf_menu_val **p
 	
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	if(psf_solid_VAO[1]->npoint_draw >0){
-		glUseProgram(kemo_shaders->phong_texure->programId);
-		transfer_matrix_to_shader(kemo_shaders->phong_texure, view_s);
-		set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
-		
-		glBindVertexArray(psf_solid_VAO[1]->id_VAO);
-		
-		int i = psf_a->ipsf_viz_far[IZERO]-1;
-		glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name[0]);
-		int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
-		glUniform1i(id_textureImage, 0);
-		
-		glBindBuffer(GL_ARRAY_BUFFER, psf_solid_VAO[1]->id_vertex);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_solid_VAO[1]->npoint_draw);
-	};
 	
-	glUseProgram(kemo_shaders->phong->programId);
-	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
-	if(psf_solid_VAO[0]->npoint_draw > 0){
-		glBindVertexArray(psf_solid_VAO[0]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_solid_VAO[0]->npoint_draw);
-	}
+	int i = psf_a->ipsf_viz_far[IZERO]-1;
+	drawgl_textured_patches_VAO(psf_m[i]->texture_name[0], view_s, 
+							  psf_solid_VAO[1], kemo_shaders);
+	
+/*	printf("drawgl_patch_with_phong psf_solid_VAO[0] \n"); */
+	drawgl_patch_with_phong(view_s, psf_solid_VAO[0], kemo_shaders);
 	return;
 };
 
-void draw_PSF_isolines_VAO(struct view_element *view_s, 
-			struct VAO_ids **psf_solid_VAO, struct kemoview_shaders *kemo_shaders){
-	glUseProgram(kemo_shaders->phong->programId);
-	transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-	set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+void draw_PSF_isolines_VAO(struct view_element *view_s,  struct VAO_ids **psf_solid_VAO,
+						   struct kemoview_shaders *kemo_shaders){
 	
-	if(psf_solid_VAO[2]->npoint_draw > 0){
-		glBindVertexArray(psf_solid_VAO[2]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_solid_VAO[2]->npoint_draw);
-	};
-	if(psf_solid_VAO[3]->npoint_draw > 0){
-		glBindVertexArray(psf_solid_VAO[3]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_solid_VAO[3]->npoint_draw);
-	};
+/*	printf("drawgl_patch_with_phong psf_solid_VAO[2] \n"); */
+	drawgl_patch_with_phong(view_s, psf_solid_VAO[2], kemo_shaders);
+/*	printf("drawgl_patch_with_phong psf_solid_VAO[3] \n"); */
+	drawgl_patch_with_phong(view_s, psf_solid_VAO[3], kemo_shaders);
 	return;
 }
 
@@ -235,30 +212,13 @@ void draw_PSF_trans_objects_VAO(struct psf_menu_val **psf_m,
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	if(psf_trans_VAO[1]->npoint_draw >0){
-		glBindVertexArray(psf_trans_VAO[1]->id_VAO);
-		
-		glUseProgram(kemo_shaders->phong_texure->programId);
-		transfer_matrix_to_shader(kemo_shaders->phong_texure, view_s);
-		set_phong_light_list(kemo_shaders->phong_texure, kemo_shaders->lights);
-		
-		int i = psf_a->ipsf_viz_far[IZERO]-1;
-		glBindTexture(GL_TEXTURE_2D, psf_m[i]->texture_name[0]);
-		int id_textureImage = glGetUniformLocation(kemo_shaders->phong_texure->programId, "image");
-		glUniform1i(id_textureImage, 0);
-		
-		glBindBuffer(GL_ARRAY_BUFFER, psf_trans_VAO[1]->id_vertex);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_trans_VAO[1]->npoint_draw);
-	};
 	
-	if(psf_trans_VAO[0]->npoint_draw > 0){
-		glUseProgram(kemo_shaders->phong->programId);
-		transfer_matrix_to_shader(kemo_shaders->phong, view_s);
-		set_phong_light_list(kemo_shaders->phong, kemo_shaders->lights);
+	int i = psf_a->ipsf_viz_far[IZERO]-1;
+	drawgl_textured_patches_VAO(psf_m[i]->texture_name[0], view_s, 
+							  psf_trans_VAO[1], kemo_shaders);
 	
-		glBindVertexArray(psf_trans_VAO[0]->id_VAO);
-		glDrawArrays(GL_TRIANGLES, IZERO, psf_trans_VAO[0]->npoint_draw);
-	}
+/*	printf("drawgl_patch_with_phong psf_trans_VAO[0] %d\n", psf_trans_VAO[0]->npoint_draw); */
+	drawgl_patch_with_phong(view_s, psf_trans_VAO[0], kemo_shaders);
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);

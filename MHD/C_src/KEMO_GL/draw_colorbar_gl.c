@@ -96,24 +96,9 @@ void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_MULTISAMPLE);
 	
-	glUseProgram(kemo_shaders->simple->programId);
-	map_matrix_to_shader(kemo_shaders->simple, orthogonal);
-	
-	glBindVertexArray(cbar_VAO[0]->id_VAO);
-	glDrawArrays(GL_TRIANGLES, IZERO, cbar_VAO[0]->npoint_draw);
-	
-	
-	glUseProgram(kemo_shaders->simple_texure->programId);
-	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);
-	
-	glBindVertexArray(cbar_VAO[1]->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, cbar_VAO[1]->id_vertex);
-	
-	glBindTexture(GL_TEXTURE_2D, cbar_wk->id_texture);
-	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
-	glUniform1i(id_textureImage, 0);
-	
-	glDrawArrays(GL_TRIANGLES, 0, cbar_VAO[1]->npoint_draw);
+	draw_2D_box_patch_VAO(orthogonal, cbar_VAO[0], kemo_shaders);
+	draw_textured_2D_box_VAO(cbar_wk->id_texture, orthogonal,
+							 cbar_VAO[1], kemo_shaders);
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);

@@ -54,17 +54,7 @@ void draw_message_VAO(struct msg_work *msg_wk,
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_MULTISAMPLE);
 	
-	glUseProgram(kemo_shaders->simple_texure->programId);
-	map_matrix_to_shader(kemo_shaders->simple_texure, orthogonal);
-	
-	glBindVertexArray(msg_VAO->id_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, msg_VAO->id_vertex);
-	
-	glBindTexture(GL_TEXTURE_2D, msg_wk->id_texture);
-	int id_textureImage = glGetUniformLocation(kemo_shaders->simple_texure->programId, "image");
-	glUniform1i(id_textureImage, 0);
-	
-	glDrawArrays(GL_TRIANGLES, 0, msg_VAO->npoint_draw);
+	draw_textured_2D_box_VAO(msg_wk->id_texture, orthogonal, msg_VAO, kemo_shaders);
 	
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);

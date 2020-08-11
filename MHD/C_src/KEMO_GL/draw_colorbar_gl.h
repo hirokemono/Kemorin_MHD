@@ -12,6 +12,7 @@
 #include "m_gl_transfer_matrix.h"
 #include "vartex_array_object_gl.h"
 #include "glsl.h"
+#include "drawGL_by_VAO.h"
 #include "coordinate_converter_c.h"
 #include "rainbow_color_code_c.h"
 #include "set_colorbar_to_buffer.h"

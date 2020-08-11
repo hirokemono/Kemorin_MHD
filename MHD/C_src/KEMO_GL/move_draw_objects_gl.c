@@ -164,6 +164,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 		iflag_psf = sort_by_patch_distance_psfs(kemo_psf->psf_d, kemo_psf->psf_m, kemo_psf->psf_a, view_s);
 		draw_map_objects_VAO(view_s, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
+        glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		
 		drawgl_lines(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
@@ -174,6 +175,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 					kemo_psf->psf_a, view_s, kemo_VAOs->psf_solid_VAO, kemo_shaders);
 		
 		drawgl_lines(view_s, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
+        glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_s, kemo_VAOs->mesh_solid_VAO[2], kemo_shaders);
 		draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_s, 
 					kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
@@ -221,10 +223,12 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 		draw_map_objects_VAO(view_s, kemo_VAOs->map_VAO, kemo_shaders);
 	} else {
 		set_axis_VAO(kemo_mesh->mesh_m, view_s, kemo_VAOs->grid_VAO[2]);
+        glDisable(GL_CULL_FACE);
 		drawgl_patch_with_phong(view_s, kemo_VAOs->grid_VAO[2], kemo_shaders);
 		
 		sel_fieldlines_VAO(kemo_fline->fline_d, kemo_fline->fline_m, kemo_VAOs->fline_VAO);
 		if(kemo_fline->fline_m->fieldline_type == IFLAG_PIPE){
+            glDisable(GL_CULL_FACE);
 			drawgl_patch_with_phong(view_s, kemo_VAOs->fline_VAO[0], kemo_shaders);
 		} else {
 			drawgl_lines(view_s, kemo_VAOs->fline_VAO[1], kemo_shaders);
@@ -244,6 +248,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 						view_s, kemo_VAOs->mesh_solid_VAO);
 
 			drawgl_lines(view_s, kemo_VAOs->mesh_solid_VAO[1], kemo_shaders);
+            glDisable(GL_CULL_FACE);
 			drawgl_patch_with_phong(view_s, kemo_VAOs->mesh_solid_VAO[2], kemo_shaders);
 			draw_solid_mesh_VAO(kemo_mesh->mesh_m->polygon_mode, view_s, 
 						kemo_VAOs->mesh_solid_VAO[0], kemo_shaders);
