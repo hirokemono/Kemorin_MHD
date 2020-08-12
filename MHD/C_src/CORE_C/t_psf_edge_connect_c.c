@@ -81,7 +81,7 @@ static void alloc_edge_data_4_sf_c(const int nnod_4_edge, const int nedge_4_surf
 		exit(0);
 	}
 	for(i=0;i<psf_edge->nedge_viewer;i++){
-		psf_edge->ie_edge[i] = (long *)calloc(psf_edge->nnod_p_edge, sizeof(int));
+		psf_edge->ie_edge[i] = (long *)calloc(psf_edge->nnod_p_edge, sizeof(long));
 		if((psf_edge->ie_edge[i]) == NULL){
 			printf("malloc error for psf_edge->ie_edge[%d]\n", i);
 			exit(0);
