@@ -9,6 +9,126 @@
 
 #include "t_psf_edge_connect_c.h"
 
+static void alloc_edge_connect_psf(const int nnod_4_edge, const int nedge_4_surf, const long nele_viz, 
+							struct psf_edge_data_c *psf_edge){
+	int i;
+	
+	psf_edge->nnod_p_edge = nnod_4_edge;
+	psf_edge->nedge_p_surf = nedge_4_surf;
+	
+	psf_edge->ie_edge = (long **) malloc(psf_edge->nedge_viewer*sizeof(long *));
+	if(psf_edge->ie_edge == NULL) {
+		printf("malloc error for psf_edge->ie_edge \n");
+		exit(0);
+	}
+	for(i=0;i<psf_edge->nedge_viewer;i++){
+		psf_edge->ie_edge[i] = (long *)calloc(psf_edge->nnod_p_edge, sizeof(long));
+		if((psf_edge->ie_edge[i]) == NULL){
+			printf("malloc error for psf_edge->ie_edge[%d]\n", i);
+			exit(0);
+		};
+	};
+	
+	psf_edge->iedge_gl_view = (long *)calloc(psf_edge->nedge_viewer, sizeof(long));
+	if((psf_edge->iedge_gl_view) == NULL){
+		printf("malloc error for psf_edge->iedge_gl_view[%d]\n", i);
+		exit(0);
+	};
+	
+	psf_edge->iedge_4_sf = (long **) malloc(nedge_4_surf*sizeof(long *));
+	if(psf_edge->iedge_4_sf == NULL) {
+		printf("malloc error for psf_edge->iedge_4_sf \n");
+		exit(0);
+	}
+	for(i=0;i<nedge_4_surf;i++){
+		psf_edge->iedge_4_sf[i] = (long *)calloc(nele_viz, sizeof(long));
+		if((psf_edge->iedge_4_sf[i]) == NULL){
+			printf("malloc error for psf_edge->iedge_4_sf[%d]\n", i);
+			exit(0);
+		};
+	};
+	
+	return;
+};
+
+static void alloc_edge_position_psf(struct psf_edge_data_c *psf_edge){
+	long i;
+	
+	psf_edge->xx_edge = (double **) malloc(psf_edge->nedge_viewer*sizeof(double *));
+	if(psf_edge->xx_edge == NULL) {
+		printf("malloc error for psf_edge->xx_edge \n");
+		exit(0);
+	}
+	for(i=0;i<psf_edge->nedge_viewer;i++){
+		psf_edge->xx_edge[i] = (double *) calloc(3, sizeof(double));
+		if((psf_edge->xx_edge[i]) == NULL){
+			printf("malloc error for psf_edge->xx_edge[%ld]\n", i);
+			exit(0);
+		};
+	};
+	
+	psf_edge->edge_norm = (double **) malloc(psf_edge->nedge_viewer*sizeof(double *));
+	if(psf_edge->edge_norm == NULL) {
+		printf("malloc error for psf_edge->edge_norm \n");
+		exit(0);
+	}
+	for(i=0;i<psf_edge->nedge_viewer;i++){
+		psf_edge->edge_norm[i] = (double *) calloc(3, sizeof(double));
+		if((psf_edge->edge_norm[i]) == NULL){
+			printf("malloc error for psf_edge->edge_norm[%ld]\n", i);
+			exit(0);
+		};
+	};
+	
+	psf_edge->edge_dir = (double **) malloc(psf_edge->nedge_viewer*sizeof(double *));
+	if(psf_edge->edge_dir == NULL) {
+		printf("malloc error for psf_edge->edge_dir \n");
+		exit(0);
+	}
+	for(i=0;i<psf_edge->nedge_viewer;i++){
+		psf_edge->edge_dir[i] = (double *) calloc(3, sizeof(double));
+		if((psf_edge->edge_dir[i]) == NULL){
+			printf("malloc error for psf_edge->edge_dir[%ld]\n", i);
+			exit(0);
+		};
+	};
+	
+	psf_edge->edge_len = (double *) calloc(psf_edge->nedge_viewer, sizeof(double));
+	if((psf_edge->edge_len) == NULL){
+		printf("malloc error for psf_edge->edge_len\n");
+		exit(0);
+	};
+	
+	return;
+};
+
+static void dealloc_edge_connect_psf(struct psf_edge_data_c *psf_edge){
+	int i;
+	
+	for(i=0;i<psf_edge->nedge_p_surf;i++){free(psf_edge->iedge_4_sf[i]);};
+	free(psf_edge->iedge_4_sf);
+	free(psf_edge->iedge_gl_view);
+	
+	for(i=0;i<psf_edge->nnod_p_edge;i++){free(psf_edge->ie_edge[i]);};
+	free(psf_edge->ie_edge);
+	return;
+};
+
+static void dealloc_edge_position_psf(struct psf_edge_data_c *psf_edge){
+	int i;
+	
+	for(i=0;i<3;i++){free(psf_edge->xx_edge[i]);};
+	free(psf_edge->xx_edge);
+	for(i=0;i<3;i++){free(psf_edge->edge_norm[i]);};
+	free(psf_edge->edge_norm);
+	for(i=0;i<3;i++){free(psf_edge->edge_dir[i]);};
+	free(psf_edge->edge_dir);
+	free(psf_edge->edge_len);
+	
+	return;
+};
+
+
 static long count_num_edges_by_sf_c(struct sum_hash_tbl_c *ed_sf_tbl){
 	long numedge;
 	
@@ -68,45 +188,76 @@ static void set_edges_connect_by_sf_c(const int nnod_4_surf, long **ie_viz,
 	return;
 };
 
-static void alloc_edge_data_4_sf_c(const int nnod_4_edge, const int nedge_4_surf, const long nele_viz, 
-							struct psf_edge_data_c *psf_edge){
-	int i;
+
+static void set_edge_position_4_sf_c(double **xx_viz, struct psf_edge_data_c *psf_edge){
+	long iedge, i0, i1;
 	
-	psf_edge->nnod_p_edge = nnod_4_edge;
-	psf_edge->nedge_p_surf = nedge_4_surf;
+	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
+		i0 = psf_edge->ie_edge[iedge][0] - 1;
+		i1 = psf_edge->ie_edge[iedge][1] - 1;
+		psf_edge->xx_edge[iedge][0] = 0.5 * (xx_viz[i1][0] + xx_viz[i0][0]);
+		psf_edge->xx_edge[iedge][1] = 0.5 * (xx_viz[i1][1] + xx_viz[i0][1]);
+		psf_edge->xx_edge[iedge][2] = 0.5 * (xx_viz[i1][2] + xx_viz[i0][2]);
+	};
+	return;
+};
+
+static void set_edge_direction_4_sf_c(double **xx_viz, struct psf_edge_data_c *psf_edge){
+	long iedge, i0, i1;
 	
-	psf_edge->ie_edge = (long **) malloc(psf_edge->nedge_viewer*sizeof(long *));
-	if(psf_edge->ie_edge == NULL) {
-		printf("malloc error for psf_edge->ie_edge \n");
-		exit(0);
-	}
-	for(i=0;i<psf_edge->nedge_viewer;i++){
-		psf_edge->ie_edge[i] = (long *)calloc(psf_edge->nnod_p_edge, sizeof(long));
-		if((psf_edge->ie_edge[i]) == NULL){
-			printf("malloc error for psf_edge->ie_edge[%d]\n", i);
-			exit(0);
+	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
+		i0 = psf_edge->ie_edge[iedge][0] - 1;
+		i1 = psf_edge->ie_edge[iedge][1] - 1;
+		psf_edge->edge_dir[iedge][0] = xx_viz[i1][0] - xx_viz[i0][0];
+		psf_edge->edge_dir[iedge][1] = xx_viz[i1][1] - xx_viz[i0][1];
+		psf_edge->edge_dir[iedge][2] = xx_viz[i1][2] - xx_viz[i0][2];
+	};
+	
+	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
+        psf_edge->edge_len[iedge] = sqrt(pow(psf_edge->edge_dir[iedge][0],2.0)
+                                       + pow(psf_edge->edge_dir[iedge][1],2.0)
+                		   	           + pow(psf_edge->edge_dir[iedge][2],2.0));
+		
+		if(psf_edge->edge_len[iedge] == 0.0){
+			psf_edge->edge_dir[iedge][0] = 0.0;
+			psf_edge->edge_dir[iedge][1] = 0.0;
+			psf_edge->edge_dir[iedge][2] = 1.0;
+		}else{
+			psf_edge->edge_dir[iedge][0]
+				= psf_edge->edge_dir[iedge][0] / psf_edge->edge_len[iedge];
+			psf_edge->edge_dir[iedge][1]
+				= psf_edge->edge_dir[iedge][1] / psf_edge->edge_len[iedge];
+			psf_edge->edge_dir[iedge][2]
+				= psf_edge->edge_dir[iedge][2] / psf_edge->edge_len[iedge];
 		};
 	};
+	return;
+};
+
+static void set_edge_normal_4_sf_c(double **norm_nod, struct psf_edge_data_c *psf_edge){
+	long iedge, i0, i1;
+	double norm_size;
 	
-	psf_edge->iedge_gl_view = (long *)calloc(psf_edge->nedge_viewer, sizeof(long));
-	if((psf_edge->iedge_gl_view) == NULL){
-		printf("malloc error for psf_edge->iedge_gl_view[%d]\n", i);
-		exit(0);
+	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
+		i0 = psf_edge->ie_edge[iedge][0] - 1;
+		i1 = psf_edge->ie_edge[iedge][1] - 1;
+		psf_edge->edge_norm[iedge][0] = 0.5 * (norm_nod[i1][0] + norm_nod[i0][0]);
+		psf_edge->edge_norm[iedge][1] = 0.5 * (norm_nod[i1][1] + norm_nod[i0][1]);
+		psf_edge->edge_norm[iedge][2] = 0.5 * (norm_nod[i1][2] + norm_nod[i0][2]);
 	};
 	
-	psf_edge->iedge_4_sf = (long **) malloc(nedge_4_surf*sizeof(long *));
-	if(psf_edge->iedge_4_sf == NULL) {
-		printf("malloc error for psf_edge->iedge_4_sf \n");
-		exit(0);
-	}
-	for(i=0;i<nedge_4_surf;i++){
-		psf_edge->iedge_4_sf[i] = (long *)calloc(nele_viz, sizeof(long));
-		if((psf_edge->iedge_4_sf[i]) == NULL){
-			printf("malloc error for psf_edge->iedge_4_sf[%d]\n", i);
-			exit(0);
-		};
+	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
+		norm_size = sqrt(pow(psf_edge->edge_norm[iedge][0],2.0)
+					   + pow(psf_edge->edge_norm[iedge][1],2.0)
+					   + pow(psf_edge->edge_norm[iedge][2],2.0));
+		
+		psf_edge->edge_dir[iedge][0]
+				= psf_edge->edge_dir[iedge][0] / norm_size;
+		psf_edge->edge_dir[iedge][1]
+				= psf_edge->edge_dir[iedge][1] / norm_size;
+		psf_edge->edge_dir[iedge][2]
+				= psf_edge->edge_dir[iedge][2] / norm_size;
 	};
-	
 	return;
 };
 
@@ -120,7 +271,8 @@ struct psf_edge_data_c * init_psf_edge_data_c(){
 };
 
 struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nele_viz,
-											 const int nnod_4_ele_viz, long **ie_viz){
+											 const int nnod_4_ele_viz, long **ie_viz,
+											 double **xx_viz, double **norm_nod){
 	struct psf_edge_data_c *psf_edge;
 	
 	int nnod_4_edge =    2;
@@ -142,8 +294,13 @@ struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nel
 	
 	psf_edge = init_psf_edge_data_c();
 	psf_edge->nedge_viewer = count_num_edges_by_sf_c(ed_sf_tbl);
-	alloc_edge_data_4_sf_c(nnod_4_edge, nedge_triangle, nele_viz, psf_edge);
+	alloc_edge_connect_psf(nnod_4_edge, nedge_triangle, nele_viz, psf_edge);
 	set_edges_connect_by_sf_c(nnod_4_ele_viz, ie_viz, ed_sf_tbl, psf_edge);
+	
+	alloc_edge_position_psf(psf_edge);
+	set_edge_position_4_sf_c(xx_viz, psf_edge);
+	set_edge_direction_4_sf_c(xx_viz, psf_edge);
+	set_edge_normal_4_sf_c(norm_nod, psf_edge);
 	
 	dealloc_sum_hash(ed_sf_tbl);
  /*   
@@ -162,15 +319,8 @@ struct psf_edge_data_c * init_all_edge_4_psf(const long nnod_viz, const long nel
 };
 
 void dealloc_edge_data_4_psf(struct psf_edge_data_c *psf_edge){
-	int i;
-	
-	for(i=0;i<psf_edge->nedge_p_surf;i++){free(psf_edge->iedge_4_sf[i]);};
-	free(psf_edge->iedge_4_sf);
-	free(psf_edge->iedge_gl_view);
-	
-	for(i=0;i<psf_edge->nnod_p_edge;i++){free(psf_edge->ie_edge[i]);};
-	free(psf_edge->ie_edge);
-	
+	dealloc_edge_position_psf(psf_edge);
+	dealloc_edge_connect_psf(psf_edge);
 	free(psf_edge);
 	return;
 };
