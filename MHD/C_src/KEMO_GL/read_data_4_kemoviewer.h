@@ -17,6 +17,7 @@
 #include "m_kemoview_psf_menu.h"
 #include "m_kemoview_fline_menu.h"
 #include "m_kemoview_fline.h"
+#include "t_psf_edge_connect_c.h"
 #include "skip_comment_c.h"
 #include "icosahedron_c.h"
 #include "read_viewer_mesh_c.h"

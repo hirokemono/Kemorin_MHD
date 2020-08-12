@@ -14,6 +14,7 @@
 
 #include "calypso_param_c.h"
 #include "skip_comment_c.h"
+#include "t_psf_edge_connect_c.h"
 
 
 struct psf_data{
@@ -66,6 +67,8 @@ struct psf_data{
 	int nnod_added_4_map;
 	int **inod_org_4_map_itp;
 	double **coef_4_map_itp;
+    
+    struct psf_edge_data_c *psf_edge; 
 };
 
 typedef struct vtk_fields_list vtk_fields_t;
