@@ -55,6 +55,30 @@ void copy_hex_tube_pp(int hex_tube[12][3]){
 	return;
 };
 
+void copy_hex_tube_pn(int hex_tube[12][3]){
+	int i, k;
+	for(i=0;i<12;i++){
+		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_pn[i][k];};
+	};
+	return;
+};
+
+void copy_hex_tube_np(int hex_tube[12][3]){
+	int i, k;
+	for(i=0;i<12;i++){
+		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_np[i][k];};
+	};
+	return;
+};
+
+void copy_hex_tube_nn(int hex_tube[12][3]){
+	int i, k;
+	for(i=0;i<12;i++){
+		for(k=0;k<3;k++){hex_tube[i][k] = hex_tube_nn[i][k];};
+	};
+	return;
+};
+
 void hex_ring(double edge_dir[3], double edge_norm[3], double norm_hex[18]){
 	int nd;
 	double asqrt3 = sqrt(3.0) / 3.0;
@@ -88,20 +112,20 @@ void set_each_tube_data(double xx_tube[18], double norm_tube[18], double color_t
 	int j3 = hex_tube[1][2];
 	
 	for(nd=0;nd<3;nd++){
-		norm_tube[   nd] = radius * norms_hex[3*i1+nd];
-		norm_tube[ 3+nd] = radius * norms_hex[3*i2+nd];
-		norm_tube[ 6+nd] = radius * norms_hex[3*i3+nd];
-		norm_tube[ 9+nd] = radius * norms_hex[3*j1+nd];
-		norm_tube[12+nd] = radius * norms_hex[3*j2+nd];
-		norm_tube[15+nd] = radius * norms_hex[3*j3+nd];
+		norm_tube[   nd] = norms_hex[3*i1+nd];
+		norm_tube[ 3+nd] = norms_hex[3*i2+nd];
+		norm_tube[ 6+nd] = norms_hex[3*i3+nd];
+		norm_tube[ 9+nd] = norms_hex[3*j1+nd];
+		norm_tube[12+nd] = norms_hex[3*j2+nd];
+		norm_tube[15+nd] = norms_hex[3*j3+nd];
 	};
 	for(nd=0;nd<3;nd++){
-		xx_tube[   nd] = xyz_edge[  nd] + norm_tube[   nd];
-		xx_tube[ 3+nd] = xyz_edge[3+nd] + norm_tube[ 3+nd];
-		xx_tube[ 6+nd] = xyz_edge[  nd] + norm_tube[ 6+nd];
-		xx_tube[ 9+nd] = xyz_edge[  nd] + norm_tube[ 9+nd];
-		xx_tube[12+nd] = xyz_edge[3+nd] + norm_tube[12+nd];
-		xx_tube[15+nd] = xyz_edge[3+nd] + norm_tube[15+nd];
+		xx_tube[   nd] = xyz_edge[  nd] + radius * norm_tube[   nd];
+		xx_tube[ 3+nd] = xyz_edge[3+nd] + radius * norm_tube[ 3+nd];
+		xx_tube[ 6+nd] = xyz_edge[  nd] + radius * norm_tube[ 6+nd];
+		xx_tube[ 9+nd] = xyz_edge[  nd] + radius * norm_tube[ 9+nd];
+		xx_tube[12+nd] = xyz_edge[3+nd] + radius * norm_tube[12+nd];
+		xx_tube[15+nd] = xyz_edge[3+nd] + radius * norm_tube[15+nd];
 	};
 	for(nd=0;nd<4;nd++){
 		color_tube[   nd] = color_edge[  nd];
@@ -227,7 +251,6 @@ int append_line_tube_to_buf(int ipatch_in, int hex_tube[12][3], double radius,
 	double norms_hex[36];
 	
 	hex_ring_4_edge(norms_hex, dir_edge, nrm_edge);
-	
 	for(i=0;i<6;i++){
 		set_each_tube_data(xx_tube, norm_tube, color_tube, 
 						   &hex_tube[2*i], norms_hex, radius, xyz_edge, color_edge);

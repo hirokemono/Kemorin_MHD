@@ -16,6 +16,9 @@
 /* prototypes */
 
 void copy_hex_tube_pp(int hex_tube[12][3]);
+void copy_hex_tube_pn(int hex_tube[12][3]);
+void copy_hex_tube_np(int hex_tube[12][3]);
+void copy_hex_tube_nn(int hex_tube[12][3]);
 
 void hex_ring(double edge_dir[3], double edge_norm[3], double norm_hex[18]);
 void hex_ring_4_edge(double norms_hex[36], double dir_edge[6], double nrm_edge[6]);

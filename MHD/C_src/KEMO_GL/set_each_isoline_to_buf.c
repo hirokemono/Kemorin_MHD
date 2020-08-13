@@ -65,11 +65,9 @@ static void copy_each_triangle_map_postion(long ie_viz[3], double **xx_viz,
 
 int add_each_isoline_npatch(int ist_patch, double v_line, int icomp, struct psf_data *psf_s){
 	double d_tri[3], xyz_tri[9];
-	int hex_tube[12][3];
 	int iele, idraw;
 	
 	int inum_patch = ist_patch;
-	copy_hex_tube_pp(hex_tube);
 	for (iele = 0; iele < psf_s->nele_viz; iele++) {
 		copy_each_triangle_postion(&psf_s->ie_viz[iele][0], psf_s->xx_viz, 
 								   psf_s->d_nod, icomp, xyz_tri, d_tri);

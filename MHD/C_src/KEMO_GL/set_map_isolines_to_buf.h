@@ -20,13 +20,14 @@
 #include "rainbow_color_code_c.h"
 #include "coordinate_converter_c.h"
 #include "set_PSF_isolines_to_buf.h"
+#include "set_each_isoline_to_buf.h"
 #include "icosahedron_c.h"
 
 /* prototypes */
 
-int count_map_PSF_isoline(int ncorner, struct psf_data *psf_s, struct psf_menu_val *psf_m);
-int set_map_PSF_isoline_to_buf(int ist_patch, int ncorner, 
-			struct psf_data *psf_s, struct psf_menu_val *psf_m,
-			struct gl_strided_buffer *psf_buf);
+int count_map_PSF_isoline(int ist_patch, struct psf_data *psf_s, struct psf_menu_val *psf_m);
+int set_map_PSF_isoline_to_buf(int ist_patch,
+                               struct psf_data *psf_s, struct psf_menu_val *psf_m,
+                               struct gl_strided_buffer *psf_buf);
 
 #endif

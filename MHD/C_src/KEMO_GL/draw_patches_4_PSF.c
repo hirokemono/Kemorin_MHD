@@ -85,7 +85,6 @@ void set_PSF_isoline_VAO(struct view_element *view_s,
 			struct psf_data **psf_s, struct psf_menu_val **psf_m, struct kemo_array_control *psf_a, 
 			struct VAO_ids *psf_VAO, struct gl_strided_buffer *psf_buf){
 	double ref_width = 1.5;
-	int ncorner = 6;
 	int i, iflag;
 	int inum_patch;
 	
@@ -93,7 +92,7 @@ void set_PSF_isoline_VAO(struct view_element *view_s,
     for(i=0; i<psf_a->nmax_loaded; i++){
 		iflag = psf_a->iflag_loaded[i] * (psf_m[i]->draw_psf_grid+psf_m[i]->draw_psf_zero);
         if(iflag != 0){
-			num_patch = num_patch + count_PSF_all_isolines_to_buf(ncorner, psf_s[i], psf_m[i]);
+			num_patch = num_patch + count_PSF_all_isolines_to_buf(psf_s[i], psf_m[i]);
 		};
 	};
 	psf_VAO->npoint_draw = ITHREE * num_patch;
@@ -109,8 +108,7 @@ void set_PSF_isoline_VAO(struct view_element *view_s,
 			if(psf_m[i]->isoline_width <= 0.0){
 				psf_m[i]->isoline_width = set_tube_radius_by_view(view_s, ref_width);
 			};
-			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, ncorner,
-													 psf_s[i], psf_m[i], psf_buf);
+			inum_patch = set_PSF_all_isolines_to_buf(inum_patch, psf_s[i], psf_m[i], psf_buf);
 		};
 	};
 	
