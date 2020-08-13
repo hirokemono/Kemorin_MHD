@@ -54,44 +54,23 @@ static void alloc_edge_connect_psf(const int nnod_4_edge, const int nedge_4_surf
 static void alloc_edge_position_psf(struct psf_edge_data_c *psf_edge){
 	long i;
 	
-	psf_edge->xx_edge = (double **) malloc(psf_edge->nedge_viewer*sizeof(double *));
+	psf_edge->xx_edge = (double *) malloc(3*psf_edge->nedge_viewer*sizeof(double));
 	if(psf_edge->xx_edge == NULL) {
 		printf("malloc error for psf_edge->xx_edge \n");
 		exit(0);
 	}
-	for(i=0;i<psf_edge->nedge_viewer;i++){
-		psf_edge->xx_edge[i] = (double *) calloc(3, sizeof(double));
-		if((psf_edge->xx_edge[i]) == NULL){
-			printf("malloc error for psf_edge->xx_edge[%ld]\n", i);
-			exit(0);
-		};
-	};
 	
-	psf_edge->edge_norm = (double **) malloc(psf_edge->nedge_viewer*sizeof(double *));
+	psf_edge->edge_norm = (double *) malloc(3*psf_edge->nedge_viewer*sizeof(double));
 	if(psf_edge->edge_norm == NULL) {
 		printf("malloc error for psf_edge->edge_norm \n");
 		exit(0);
 	}
-	for(i=0;i<psf_edge->nedge_viewer;i++){
-		psf_edge->edge_norm[i] = (double *) calloc(3, sizeof(double));
-		if((psf_edge->edge_norm[i]) == NULL){
-			printf("malloc error for psf_edge->edge_norm[%ld]\n", i);
-			exit(0);
-		};
-	};
 	
-	psf_edge->edge_dir = (double **) malloc(psf_edge->nedge_viewer*sizeof(double *));
+	psf_edge->edge_dir = (double *) malloc(3*psf_edge->nedge_viewer*sizeof(double));
 	if(psf_edge->edge_dir == NULL) {
 		printf("malloc error for psf_edge->edge_dir \n");
 		exit(0);
 	}
-	for(i=0;i<psf_edge->nedge_viewer;i++){
-		psf_edge->edge_dir[i] = (double *) calloc(3, sizeof(double));
-		if((psf_edge->edge_dir[i]) == NULL){
-			printf("malloc error for psf_edge->edge_dir[%ld]\n", i);
-			exit(0);
-		};
-	};
 	
 	psf_edge->edge_len = (double *) calloc(psf_edge->nedge_viewer, sizeof(double));
 	if((psf_edge->edge_len) == NULL){
@@ -117,11 +96,8 @@ static void dealloc_edge_connect_psf(const long nele_viz, struct psf_edge_data_c
 static void dealloc_edge_position_psf(struct psf_edge_data_c *psf_edge){
 	int i;
 	
-	for(i=0;i<3;i++){free(psf_edge->xx_edge[i]);};
 	free(psf_edge->xx_edge);
-	for(i=0;i<3;i++){free(psf_edge->edge_norm[i]);};
 	free(psf_edge->edge_norm);
-	for(i=0;i<3;i++){free(psf_edge->edge_dir[i]);};
 	free(psf_edge->edge_dir);
 	free(psf_edge->edge_len);
 	
@@ -195,9 +171,9 @@ static void set_edge_position_4_sf_c(double **xx_viz, struct psf_edge_data_c *ps
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
 		i0 = psf_edge->ie_edge[iedge][0] - 1;
 		i1 = psf_edge->ie_edge[iedge][1] - 1;
-		psf_edge->xx_edge[iedge][0] = 0.5 * (xx_viz[i1][0] + xx_viz[i0][0]);
-		psf_edge->xx_edge[iedge][1] = 0.5 * (xx_viz[i1][1] + xx_viz[i0][1]);
-		psf_edge->xx_edge[iedge][2] = 0.5 * (xx_viz[i1][2] + xx_viz[i0][2]);
+		psf_edge->xx_edge[3*iedge  ] = 0.5 * (xx_viz[i1][0] + xx_viz[i0][0]);
+		psf_edge->xx_edge[3*iedge+1] = 0.5 * (xx_viz[i1][1] + xx_viz[i0][1]);
+		psf_edge->xx_edge[3*iedge+2] = 0.5 * (xx_viz[i1][2] + xx_viz[i0][2]);
 	};
 	return;
 };
@@ -208,27 +184,27 @@ static void set_edge_direction_4_sf_c(double **xx_viz, struct psf_edge_data_c *p
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
 		i0 = psf_edge->ie_edge[iedge][0] - 1;
 		i1 = psf_edge->ie_edge[iedge][1] - 1;
-		psf_edge->edge_dir[iedge][0] = xx_viz[i1][0] - xx_viz[i0][0];
-		psf_edge->edge_dir[iedge][1] = xx_viz[i1][1] - xx_viz[i0][1];
-		psf_edge->edge_dir[iedge][2] = xx_viz[i1][2] - xx_viz[i0][2];
+		psf_edge->edge_dir[3*iedge  ] = xx_viz[i1][0] - xx_viz[i0][0];
+		psf_edge->edge_dir[3*iedge+1] = xx_viz[i1][1] - xx_viz[i0][1];
+		psf_edge->edge_dir[3*iedge+2] = xx_viz[i1][2] - xx_viz[i0][2];
 	};
 	
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
-        psf_edge->edge_len[iedge] = sqrt(pow(psf_edge->edge_dir[iedge][0],2.0)
-                                       + pow(psf_edge->edge_dir[iedge][1],2.0)
-                		   	           + pow(psf_edge->edge_dir[iedge][2],2.0));
+        psf_edge->edge_len[iedge] = sqrt(pow(psf_edge->edge_dir[3*iedge  ],2.0)
+                                       + pow(psf_edge->edge_dir[3*iedge+1],2.0)
+                		   	           + pow(psf_edge->edge_dir[3*iedge+2],2.0));
 		
 		if(psf_edge->edge_len[iedge] == 0.0){
-			psf_edge->edge_dir[iedge][0] = 0.0;
-			psf_edge->edge_dir[iedge][1] = 0.0;
-			psf_edge->edge_dir[iedge][2] = 1.0;
+			psf_edge->edge_dir[3*iedge+0] = 0.0;
+			psf_edge->edge_dir[3*iedge+1] = 0.0;
+			psf_edge->edge_dir[3*iedge+2] = 1.0;
 		}else{
-			psf_edge->edge_dir[iedge][0]
-				= psf_edge->edge_dir[iedge][0] / psf_edge->edge_len[iedge];
-			psf_edge->edge_dir[iedge][1]
-				= psf_edge->edge_dir[iedge][1] / psf_edge->edge_len[iedge];
-			psf_edge->edge_dir[iedge][2]
-				= psf_edge->edge_dir[iedge][2] / psf_edge->edge_len[iedge];
+			psf_edge->edge_dir[3*iedge  ]
+				= psf_edge->edge_dir[3*iedge  ] / psf_edge->edge_len[iedge];
+			psf_edge->edge_dir[3*iedge+1]
+				= psf_edge->edge_dir[3*iedge+1] / psf_edge->edge_len[iedge];
+			psf_edge->edge_dir[3*iedge+2]
+				= psf_edge->edge_dir[3*iedge+2] / psf_edge->edge_len[iedge];
 		};
 	};
 	return;
@@ -241,22 +217,22 @@ static void set_edge_normal_4_sf_c(double **norm_nod, struct psf_edge_data_c *ps
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
 		i0 = psf_edge->ie_edge[iedge][0] - 1;
 		i1 = psf_edge->ie_edge[iedge][1] - 1;
-		psf_edge->edge_norm[iedge][0] = 0.5 * (norm_nod[i1][0] + norm_nod[i0][0]);
-		psf_edge->edge_norm[iedge][1] = 0.5 * (norm_nod[i1][1] + norm_nod[i0][1]);
-		psf_edge->edge_norm[iedge][2] = 0.5 * (norm_nod[i1][2] + norm_nod[i0][2]);
+		psf_edge->edge_norm[3*iedge  ] = 0.5 * (norm_nod[i1][0] + norm_nod[i0][0]);
+		psf_edge->edge_norm[3*iedge+1] = 0.5 * (norm_nod[i1][1] + norm_nod[i0][1]);
+		psf_edge->edge_norm[3*iedge+2] = 0.5 * (norm_nod[i1][2] + norm_nod[i0][2]);
 	};
 	
 	for(iedge=0;iedge<psf_edge->nedge_viewer;iedge++){
-		norm_size = sqrt(pow(psf_edge->edge_norm[iedge][0],2.0)
-					   + pow(psf_edge->edge_norm[iedge][1],2.0)
-					   + pow(psf_edge->edge_norm[iedge][2],2.0));
+		norm_size = sqrt(pow(psf_edge->edge_norm[3*iedge  ],2.0)
+					   + pow(psf_edge->edge_norm[3*iedge+1],2.0)
+					   + pow(psf_edge->edge_norm[3*iedge+2],2.0));
 		
-		psf_edge->edge_dir[iedge][0]
-				= psf_edge->edge_dir[iedge][0] / norm_size;
-		psf_edge->edge_dir[iedge][1]
-				= psf_edge->edge_dir[iedge][1] / norm_size;
-		psf_edge->edge_dir[iedge][2]
-				= psf_edge->edge_dir[iedge][2] / norm_size;
+		psf_edge->edge_norm[3*iedge  ]
+				= psf_edge->edge_norm[3*iedge  ] / norm_size;
+		psf_edge->edge_norm[3*iedge+1]
+				= psf_edge->edge_norm[3*iedge+1] / norm_size;
+		psf_edge->edge_norm[3*iedge+2]
+				= psf_edge->edge_norm[3*iedge+2] / norm_size;
 	};
 	return;
 };

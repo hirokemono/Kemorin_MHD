@@ -74,14 +74,14 @@ int find_isoline_on_patch_c(double x_line[6], double dir_line[6], double norm_li
 	int idraw;
 	double sig[3], ref_dir[3];
 	double dot;
-	int nd, i1, i2, i3;
+	int k1, nd, i1, i2, i3;
 	
 	idraw = 0;
 	
-	for (nd = 0; nd < 3; nd++) {
-		i1 = (nd  )%3;
-		i2 = (nd+1)%3;
-		i3 = (nd+2)%3;
+	for (k1 = 0; k1 < 3; k1++) {
+		i1 = (k1  )%3;
+		i2 = (k1+1)%3;
+		i3 = (k1+2)%3;
 		
 		sig[0] = ( d_tri[i2] - v_line ) * ( d_tri[i3] - v_line );
 		sig[1] = ( d_tri[i3] - v_line ) * ( d_tri[i1] - v_line );

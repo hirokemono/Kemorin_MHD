@@ -27,10 +27,10 @@ struct psf_edge_data_c{
 	
 	long *iedge_gl_view;
 	
-	double **xx_edge;
-	double **edge_norm;
-	double **edge_dir;
-	double  *edge_len;
+	double *xx_edge;
+	double *edge_norm;
+	double *edge_dir;
+	double *edge_len;
 };
 
 /*  prototypes */
