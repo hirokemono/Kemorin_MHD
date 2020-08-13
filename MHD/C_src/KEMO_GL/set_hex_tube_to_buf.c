@@ -125,6 +125,10 @@ void interpolate_on_edge(double xyz_mid[3], double dir_mid[3], double nrm_mid[3]
 		xyz_mid[nd] = coef * xyz1[nd] + (1.0 - coef) * xyz2[nd];
 		nrm_mid[nd] = coef * nrm1[nd] + (1.0 - coef) * nrm2[nd];
 	};
+	coef = sqrt(dir_mid[0]*dir_mid[0] + dir_mid[1]*dir_mid[1] + dir_mid[2]*dir_mid[2]);
+	for(nd=0; nd<3; nd++){
+		dir_mid[nd] = dir_mid[nd] / coef;
+	};
 	return;
 };
 
@@ -190,8 +194,8 @@ int set_isoline_on_triangle(double xyz_line[6], double dir_line[6], double nrm_l
 								&nrm_tri[3*i1], &nrm_tri[3*i2],
 								d_tri[i1], d_tri[i2], v_line);
 			interpolate_on_edge(&xyz_line[3], &dir_line[3], &nrm_line[3], 
-								&xyz_tri[3*i3], &xyz_tri[3*i3], 
-								&nrm_tri[3*i1], &nrm_tri[3*i2],
+								&xyz_tri[3*i3], &xyz_tri[3*i2], 
+								&nrm_tri[3*i3], &nrm_tri[3*i2],
 								d_tri[i3], d_tri[i2], v_line);
 			idraw = 1;
 			break;

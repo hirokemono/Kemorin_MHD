@@ -52,8 +52,6 @@ static void alloc_edge_connect_psf(const int nnod_4_edge, const int nedge_4_surf
 };
 
 static void alloc_edge_position_psf(struct psf_edge_data_c *psf_edge){
-	long i;
-	
 	psf_edge->xx_edge = (double *) malloc(3*psf_edge->nedge_viewer*sizeof(double));
 	if(psf_edge->xx_edge == NULL) {
 		printf("malloc error for psf_edge->xx_edge \n");

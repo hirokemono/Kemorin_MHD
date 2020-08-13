@@ -18,12 +18,12 @@
 /* prototypes */
 
 int add_each_isoline_npatch(int ist_patch, double v_line, int icomp, struct psf_data *psf_s);
-int append_each_isoline_to_buf(int ist_patch, int ncorner, double width, 
-							   double v_line, int icomp, double *f_color,
+int set_each_isoline_to_buf(int ist_patch, double width, 
+                            double v_line, int icomp, double *f_color,
+                            struct psf_data *psf_s, struct gl_strided_buffer *strided_buf);
+int set_each_map_isoline_to_buf(int ist_patch, double width, 
+							   double v_line, int icomp, double *f_color, 
 							   struct psf_data *psf_s, struct gl_strided_buffer *strided_buf);
-int set_map_isoline_to_buf(int ist_patch, int ncorner, double width, 
-						   double v_line, int icomp, double *f_color, 
-						   struct psf_data *psf_s, struct gl_strided_buffer *strided_buf);
 
 
 /* SET_EACH_ISOLINE_TO_BUF_ */

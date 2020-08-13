@@ -82,9 +82,9 @@ int add_each_isoline_npatch(int ist_patch, double v_line, int icomp, struct psf_
 	return inum_patch;
 };
 
-int append_each_isoline_to_buf(int ist_patch, int ncorner, double width, 
-							   double v_line, int icomp, double *f_color,
-							   struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
+int set_each_isoline_to_buf(int ist_patch, double width, 
+                            double v_line, int icomp, double *f_color,
+                            struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
 	double d_tri[3], xyz_tri[9], nrm_tri[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	int hex_tube[12][3];
@@ -112,10 +112,10 @@ int append_each_isoline_to_buf(int ist_patch, int ncorner, double width,
 	return inum_patch;
 };
 
-int set_map_isoline_to_buf(int ist_patch, int ncorner, double width, 
-						   double v_line, int icomp, double *f_color, 
-						   struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
-	double d_tri[3], xyz_tri[9], nrm_tri[9];;
+int set_each_map_isoline_to_buf(int ist_patch, double width, 
+							   double v_line, int icomp, double *f_color, 
+							   struct psf_data *psf_s, struct gl_strided_buffer *strided_buf){
+	double d_tri[3], nrm_tri[9];
 	double xyz_map[9];
 	double x_line[6], dir_line[6], norm_line[6], color_line[8];
 	int hex_tube[12][3];
