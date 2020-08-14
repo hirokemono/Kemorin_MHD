@@ -82,6 +82,10 @@
 		18AA13E22494183C004A444D /* read_psf_bin_data_gz_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13DF2494183C004A444D /* read_psf_bin_data_gz_c.c */; };
 		18AA13E32494183C004A444D /* read_psf_bin_data_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AA13E12494183C004A444D /* read_psf_bin_data_c.c */; };
 		18B5A2721F832A8A005AF658 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 18B5A2711F832A8A005AF658 /* libz.tbd */; };
+		18B885EB24E617BB0077BA16 /* t_psf_edge_connect_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */; };
+		18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */; };
+		18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885ED24E618040077BA16 /* set_each_isoline_to_buf.c */; };
+		18B885F224E618290077BA16 /* set_hex_tube_to_buf.c in Sources */ = {isa = PBXBuildFile; fileRef = 18B885F124E618290077BA16 /* set_hex_tube_to_buf.c */; };
 		18CE99DC23DB7BB7005D8886 /* draw_messages_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CE99DA23DB7BB6005D8886 /* draw_messages_gl.c */; };
 		18CFFEB722FBFDAD005D7739 /* vartex_array_object_gl.c in Sources */ = {isa = PBXBuildFile; fileRef = 18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */; };
 		18D3CA64249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D3CA62249B4C100081B787 /* t_ctl_data_4_view_transfer_c.c */; };
@@ -302,6 +306,14 @@
 		18AA13E02494183C004A444D /* read_psf_bin_data_gz_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = read_psf_bin_data_gz_c.h; sourceTree = "<group>"; };
 		18AA13E12494183C004A444D /* read_psf_bin_data_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = read_psf_bin_data_c.c; sourceTree = "<group>"; };
 		18B5A2711F832A8A005AF658 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_psf_edge_connect_c.c; sourceTree = "<group>"; };
+		18B885E824E617BB0077BA16 /* t_psf_edge_connect_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_psf_edge_connect_c.h; sourceTree = "<group>"; };
+		18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = t_surf_edge_hash_c.c; sourceTree = "<group>"; };
+		18B885EA24E617BB0077BA16 /* t_surf_edge_hash_c.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = t_surf_edge_hash_c.h; sourceTree = "<group>"; };
+		18B885ED24E618040077BA16 /* set_each_isoline_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_each_isoline_to_buf.c; sourceTree = "<group>"; };
+		18B885EE24E618040077BA16 /* set_each_isoline_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_each_isoline_to_buf.h; sourceTree = "<group>"; };
+		18B885F024E618290077BA16 /* set_hex_tube_to_buf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = set_hex_tube_to_buf.h; sourceTree = "<group>"; };
+		18B885F124E618290077BA16 /* set_hex_tube_to_buf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_hex_tube_to_buf.c; sourceTree = "<group>"; };
 		18CE99DA23DB7BB6005D8886 /* draw_messages_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = draw_messages_gl.c; sourceTree = "<group>"; };
 		18CE99DB23DB7BB7005D8886 /* draw_messages_gl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = draw_messages_gl.h; sourceTree = "<group>"; };
 		18CFFEB522FBFDAD005D7739 /* vartex_array_object_gl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = vartex_array_object_gl.c; sourceTree = "<group>"; };
@@ -616,6 +628,10 @@
 		18D7E64E1562D359009B05FF /* CORE_C */ = {
 			isa = PBXGroup;
 			children = (
+				18B885E724E617BA0077BA16 /* t_psf_edge_connect_c.c */,
+				18B885E824E617BB0077BA16 /* t_psf_edge_connect_c.h */,
+				18B885E924E617BB0077BA16 /* t_surf_edge_hash_c.c */,
+				18B885EA24E617BB0077BA16 /* t_surf_edge_hash_c.h */,
 				182174D22492F5630044ECA0 /* calypso_param_c.c */,
 				182174D42492F5630044ECA0 /* calypso_param_c.h */,
 				182174D32492F5630044ECA0 /* calypso_zlib_io_c.c */,
@@ -703,6 +719,10 @@
 		18D7E69C1562D359009B05FF /* KEMO_GL */ = {
 			isa = PBXGroup;
 			children = (
+				18B885F124E618290077BA16 /* set_hex_tube_to_buf.c */,
+				18B885F024E618290077BA16 /* set_hex_tube_to_buf.h */,
+				18B885ED24E618040077BA16 /* set_each_isoline_to_buf.c */,
+				18B885EE24E618040077BA16 /* set_each_isoline_to_buf.h */,
 				18FC007417EE0B7100B5F684 /* select_read_psf_viewer_c.c */,
 				18FC007617EE0E9800B5F684 /* select_read_psf_viewer_c.h */,
 				182D091F16C040EC0073D215 /* glsl.c */,
@@ -1009,6 +1029,7 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* Kemoview_CocoaAppDelegate.m in Sources */,
+				18B885EB24E617BB0077BA16 /* t_psf_edge_connect_c.c in Sources */,
 				188FFD9F2309B02300F5A0DE /* set_fieldline_to_buf.c in Sources */,
 				18D7E72B1562D359009B05FF /* cal_surface_center_normal_c.c in Sources */,
 				18D7E72C1562D359009B05FF /* check_psf_data_viewer_c.c in Sources */,
@@ -1120,6 +1141,7 @@
 				18D7E7891562D359009B05FF /* Kemoview_IO_Controller.m in Sources */,
 				188C941F230DA8C300A4DB14 /* set_each_fline_parameters.c in Sources */,
 				18D7E78A1562D359009B05FF /* KemoviewDragDropWindow.m in Sources */,
+				18B885EF24E618050077BA16 /* set_each_isoline_to_buf.c in Sources */,
 				18D7E78B1562D359009B05FF /* KemoviewerController.m in Sources */,
 				18D7E78C1562D359009B05FF /* KemoviewerMovieMaker.m in Sources */,
 				18D7E78E1562D359009B05FF /* KemoViewerOpenGLView.m in Sources */,
@@ -1128,9 +1150,11 @@
 				18D7E7921562D359009B05FF /* OpacityMapController.m in Sources */,
 				18D7E7931562D359009B05FF /* PSFArrayControler.m in Sources */,
 				18D7E7941562D359009B05FF /* PsfController.m in Sources */,
+				18B885EC24E617BB0077BA16 /* t_surf_edge_hash_c.c in Sources */,
 				185CB9CA212F593D00BB3C0B /* t_control_real3_IO.c in Sources */,
 				18D7E7951562D359009B05FF /* ResetViewControll.m in Sources */,
 				18D7E7961562D359009B05FF /* RGBAMapController.m in Sources */,
+				18B885F224E618290077BA16 /* set_hex_tube_to_buf.c in Sources */,
 				185CB9C7212F593D00BB3C0B /* t_control_int_IO.c in Sources */,
 				18D7E7981562D359009B05FF /* SurfaceGroupTableController.m in Sources */,
 				18F6DAF615D993F7006F4600 /* set_each_psf_parameters.c in Sources */,

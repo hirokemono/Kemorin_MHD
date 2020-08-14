@@ -19,6 +19,8 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -57,6 +59,8 @@ kemoview_gtk_PSF_isoline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -107,6 +111,8 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -145,6 +151,8 @@ kemoview_gtk_PSF_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -202,6 +210,8 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -240,6 +250,8 @@ kemoview_gtk_PSF_surface_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -291,6 +303,8 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -329,6 +343,8 @@ kemoview_gtk_PSF_vector_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -379,6 +395,8 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -417,6 +435,8 @@ kemoview_gtk_axis_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -464,6 +484,8 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -502,6 +524,8 @@ kemoview_gtk_evolution_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -553,6 +577,8 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -591,6 +617,8 @@ kemoview_gtk_fieldline_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -634,6 +662,8 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -672,6 +702,8 @@ kemoview_gtk_fline_selectors.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -718,6 +750,8 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -756,6 +790,8 @@ kemoview_gtk_main_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -830,6 +866,8 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -868,6 +906,8 @@ kemoview_gtk_mesh_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -923,6 +963,8 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -961,6 +1003,8 @@ kemoview_gtk_preference_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -1014,6 +1058,8 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -1052,6 +1098,8 @@ kemoview_gtk_rotation_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -1099,6 +1147,8 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/CORE_C/set_rgb_colors_c.h \
   $(C_SRCDIR)/CONTROLS/t_control_real2_IO.h \
@@ -1137,6 +1187,8 @@ kemoview_gtk_viewmatrix_menu.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \
   $(C_SRCDIR)/CORE_C/read_viewer_mesh_c.h \
@@ -1321,6 +1373,8 @@ tree_view_kemoview_colormap.o: \
   $(C_SRCDIR)/CONTROLS/m_color_table_c.h \
   $(C_SRCDIR)/KEMO_GL/set_each_psf_parameters.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_psf_menu.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_base.h \
@@ -1347,6 +1401,8 @@ tree_view_kemoview_colormap.o: \
   $(C_SRCDIR)/KEMO_GL/set_PSF_isolines_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/find_isoline_on_patch_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
+  $(C_SRCDIR)/KEMO_GL/set_each_isoline_to_buf.h \
+  $(C_SRCDIR)/KEMO_GL/set_hex_tube_to_buf.h \
   $(C_SRCDIR)/KEMO_GL/modify_object_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/m_surface_mesh_4_viewer_c.h \
   $(C_SRCDIR)/KEMO_GL/init_gl_lighting_c.h \

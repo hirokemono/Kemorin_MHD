@@ -22,6 +22,8 @@ OBJ_KEMO_C = \
  m_read_text_to_character.o \
  m_surface_mesh_4_viewer_c.o \
  m_grouping_mesh_4_viewer_c.o \
+ t_surf_edge_hash_c.o \
+ t_psf_edge_connect_c.o \
  m_psf_data_4_viewer_c.o \
  m_map_data_4_viewer_c.o \
  check_viewer_mesh_c.o \

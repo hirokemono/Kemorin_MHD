@@ -19,7 +19,9 @@ check_psf_data_viewer_c.o: \
   $(C_SRCDIR)/CORE_C/check_psf_data_viewer_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 check_viewer_mesh_c.o: \
   $(C_SRCDIR)/CORE_C/check_viewer_mesh_c.c \
@@ -65,7 +67,9 @@ m_psf_data_4_viewer_c.o: \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.c \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 m_read_text_to_character.o: \
   $(C_SRCDIR)/CORE_C/m_read_text_to_character.c \
@@ -118,7 +122,9 @@ read_psf_bin_data_c.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
-  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h
+  $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 read_psf_bin_data_gz_c.o: \
   $(C_SRCDIR)/CORE_C/read_psf_bin_data_gz_c.c \
@@ -128,6 +134,8 @@ read_psf_bin_data_gz_c.o: \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CORE_C/read_psf_bin_data_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 read_psf_data_gz_c.o: \
@@ -136,6 +144,8 @@ read_psf_data_gz_c.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
@@ -144,14 +154,18 @@ read_psf_data_viewer_c.o: \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 read_psf_vtk_data_c.o: \
   $(C_SRCDIR)/CORE_C/read_psf_vtk_data_c.c \
   $(C_SRCDIR)/CORE_C/read_psf_vtk_data_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
-  $(C_SRCDIR)/CORE_C/skip_comment_c.h
+  $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 read_psf_vtk_data_gz_c.o: \
   $(C_SRCDIR)/CORE_C/read_psf_vtk_data_gz_c.c \
@@ -160,6 +174,8 @@ read_psf_vtk_data_gz_c.o: \
   $(C_SRCDIR)/CORE_C/read_psf_data_viewer_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CORE_C/calypso_zlib_io_c.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
@@ -184,6 +200,8 @@ set_map_data_4_viewer_c.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CORE_C/m_map_data_4_viewer_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 set_new_patch_4_map_c.o: \
@@ -205,6 +223,8 @@ set_psf_viewer.o: \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CORE_C/set_new_patch_4_map_c.h \
   $(C_SRCDIR)/CORE_C/projection_patch_to_map.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h
@@ -230,12 +250,23 @@ t_all_field_control_c.o: \
   $(C_SRCDIR)/CORE_C/t_all_field_control_c.c \
   $(C_SRCDIR)/CORE_C/t_all_field_control_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+t_psf_edge_connect_c.o: \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.c \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
+t_surf_edge_hash_c.o: \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.c \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h
+	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
 take_normal_psf_c.o: \
   $(C_SRCDIR)/CORE_C/take_normal_psf_c.c \
   $(C_SRCDIR)/CORE_C/take_normal_psf_c.h \
   $(C_SRCDIR)/CORE_C/m_psf_data_4_viewer_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
+  $(C_SRCDIR)/CORE_C/t_psf_edge_connect_c.h \
+  $(C_SRCDIR)/CORE_C/t_surf_edge_hash_c.h \
   $(C_SRCDIR)/CORE_C/cal_surface_center_normal_c.h \
   $(C_SRCDIR)/CORE_C/coordinate_converter_c.h
 	$(CC) -c $(OPTFLAGS) $(C_INCLUDE) $<
