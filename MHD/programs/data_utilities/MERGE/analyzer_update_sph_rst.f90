@@ -90,7 +90,7 @@
 !     Share number of nodes for new mesh
 !
       call s_count_nnod_4_asseble_sph(sph_asbl_s%np_sph_new,            &
-     &   sph_asbl_s%new_sph_mesh, sph_asbl_s%new_fst_IO)
+     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_fst_IO)
 !
 !     construct radial interpolation table
 !

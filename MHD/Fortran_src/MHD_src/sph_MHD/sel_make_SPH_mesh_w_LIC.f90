@@ -76,7 +76,6 @@
 !
 !
       call load_para_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
-      call copy_sph_radial_groups(sph_grps, gen_sph)
 !
 !  --  load geofem mesh data
       if(check_exist_mesh(mesh_file, my_rank)) then
@@ -85,10 +84,12 @@
         call set_fem_center_mode_4_SPH(geofem%mesh%node%internal_node,  &
      &      sph%sph_rtp, sph%sph_params)
       else
+        call copy_sph_radial_groups(sph_grps, gen_sph)
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
      &      sph%sph_params, sph%sph_rtp, sph%sph_rj, geofem, gen_sph)
+        call dealloc_gen_sph_radial_groups(gen_sph)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC

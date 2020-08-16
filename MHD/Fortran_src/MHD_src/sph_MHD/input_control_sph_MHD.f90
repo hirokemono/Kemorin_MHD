@@ -102,7 +102,6 @@
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
      &    MHD_files%mesh_file_IO, sph_maker1%gen_sph)
-      call dealloc_gen_sph_radial_groups(sph_maker1%gen_sph)
 !
       call dealloc_surfacing_controls(DMHD_ctl%surfacing_ctls)
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
@@ -198,7 +197,6 @@
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
      &    MHD_files%mesh_file_IO, sph_maker1%gen_sph)
-      call dealloc_gen_sph_radial_groups(sph_maker1%gen_sph)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !

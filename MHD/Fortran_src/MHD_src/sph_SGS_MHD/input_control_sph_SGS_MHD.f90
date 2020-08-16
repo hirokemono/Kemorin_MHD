@@ -103,7 +103,6 @@
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
      &    MHD_files%mesh_file_IO, sph_maker2%gen_sph)
-      call dealloc_gen_sph_radial_groups(sph_maker2%gen_sph)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       call sph_boundary_IO_control                                      &

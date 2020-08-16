@@ -118,10 +118,8 @@
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
      &    sph_const, comms_sph, sph_grps,                               &
      &    geofem, sph_files1%mesh_file_IO, gen_sph_G)
-      call calypso_MPI_barrier
-!
-      call dealloc_gen_sph_radial_groups(gen_sph_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
+      call calypso_MPI_barrier
 !
 !  ========= Generate viewer mesh ===========================
 !
