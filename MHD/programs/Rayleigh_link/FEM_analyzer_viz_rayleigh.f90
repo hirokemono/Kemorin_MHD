@@ -104,7 +104,7 @@
      &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
      &    femmesh_VIZ%mesh, femmesh_VIZ%group, gen_sph_R)
 !
-      call dealloc_gen_sph_fem_mesh_param(gen_sph_R)
+      call dealloc_sph_radial_groups(gen_sph_R)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization                                      &

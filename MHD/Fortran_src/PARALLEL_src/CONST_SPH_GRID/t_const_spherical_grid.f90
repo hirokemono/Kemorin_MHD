@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_gen_mesh_params(gen_sph)
-!!      subroutine dealloc_gen_sph_fem_mesh_param(gen_sph)
+!!      subroutine dealloc_sph_radial_groups(gen_sph)
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
 !
@@ -86,7 +86,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_gen_sph_fem_mesh_param(gen_sph)
+      subroutine dealloc_sph_radial_groups(gen_sph)
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
@@ -95,7 +95,7 @@
      call dealloc_group(gen_sph%radial_rtp_grp_lc)
      call dealloc_group(gen_sph%theta_rtp_grp_lc)
 !
-      end subroutine dealloc_gen_sph_fem_mesh_param
+      end subroutine dealloc_sph_radial_groups
 !
 ! -----------------------------------------------------------------------
 !
