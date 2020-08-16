@@ -90,13 +90,7 @@
 !
 !
       call load_para_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
-!
-      call copy_group_data                                              &
-     &   (sph_grps%radial_rtp_grp, gen_sph%radial_rtp_grp_lc)
-      call copy_group_data                                              &
-     &   (sph_grps%theta_rtp_grp, gen_sph%theta_rtp_grp_lc)
-      call copy_group_data                                              &
-     &   (sph_grps%radial_rj_grp, gen_sph%radial_rj_grp_lc)
+      call copy_sph_radial_groups(sph_grps, gen_sph)
 !
 !  --  load FEM mesh data
       if(check_exist_mesh(mesh_file, my_rank)) then

@@ -269,116 +269,185 @@
 !
       sph%sph_params%iflag_shell_mode = iflag_MESH_same
 !
-      sph%sph_rtp%irank_sph_rtp(1) = rayleigh_rtp%irank_r
-      sph%sph_rtp%irank_sph_rtp(2) = rayleigh_rtp%irank_h
-      sph%sph_rtp%irank_sph_rtp(3) = 0
-
-      sph%sph_rj%nidx_global_rj(1) = rayleigh_rtp%nri_gl
-      sph%sph_rj%nidx_global_rj(2) = (rayleigh_rtp%ltr + 1)**2
-      sph%sph_rj%nidx_rj(1) = sph%sph_rj%nidx_global_rj(1)
-      sph%sph_rj%nidx_rj(2) = sph%sph_rj%nidx_global_rj(2) / nprocs
+      call sph_rj_params_from_rayleigh(rayleigh_rtp, sph%sph_rj)
+      call sph_rtp_params_from_rayleigh(rayleigh_rtp, sph%sph_rtp)
 !
-      sph%sph_rtp%nidx_global_rtp(1) = rayleigh_rtp%nri_gl
-      sph%sph_rtp%nidx_global_rtp(2) = rayleigh_rtp%nth_gl
-      sph%sph_rtp%nidx_global_rtp(3) = rayleigh_rtp%nphi_gl
-      sph%sph_rtp%ist_rtp(1) = rayleigh_rtp%kst
-      sph%sph_rtp%ist_rtp(2) = rayleigh_rtp%lst
-      sph%sph_rtp%ist_rtp(3) = 1
-      sph%sph_rtp%ied_rtp(1) = rayleigh_rtp%ked
-      sph%sph_rtp%ied_rtp(2) = rayleigh_rtp%led
-      sph%sph_rtp%ied_rtp(3) = rayleigh_rtp%nphi_gl
-      sph%sph_rtp%nidx_rtp(1) = rayleigh_rtp%ked - rayleigh_rtp%kst + 1
-      sph%sph_rtp%nidx_rtp(2) = rayleigh_rtp%led - rayleigh_rtp%lst + 1
-      sph%sph_rtp%nidx_rtp(3) = rayleigh_rtp%nphi_gl
-!
-      call alloc_type_sph_1d_index_rj(sph%sph_rj)
-      do i = 1, rayleigh_rtp%nri_gl
-        irev = rayleigh_rtp%nri_gl - i + 1
-        sph%sph_rj%radius_1d_rj_r(i) = rayleigh_rtp%radius_gl(irev)
-      end do
-!
-      call alloc_type_sph_1d_index_rtp(sph%sph_rtp)
-!
-      do i = 1, sph%sph_rtp%nidx_rtp(1)
-        sph%sph_rtp%idx_gl_1d_rtp_r(i) = sph%sph_rtp%ist_rtp(1) + i- 1
-      end do
-!
-      gen_sph%theta_rtp_grp_lc%num_grp = 0
-      call alloc_group_num(gen_sph%theta_rtp_grp_lc)
-      call alloc_group_item(gen_sph%theta_rtp_grp_lc)
-!
-      gen_sph%radial_rtp_grp_lc%num_grp = 5
-      call alloc_group_num(gen_sph%radial_rtp_grp_lc)
-!
-      gen_sph%radial_rj_grp_lc%num_grp =  5
-      call alloc_group_num(gen_sph%radial_rj_grp_lc)
-      gen_sph%radial_rj_grp_lc%grp_name(1) = 'ICB'
-      gen_sph%radial_rj_grp_lc%grp_name(2) = 'CMB'
-      gen_sph%radial_rj_grp_lc%grp_name(3) = 'to_Center'
-      gen_sph%radial_rj_grp_lc%grp_name(4) = 'inner_core'
-      gen_sph%radial_rj_grp_lc%grp_name(5) = 'outer_core'
-!
-      gen_sph%radial_rj_grp_lc%nitem_grp(1) = 1
-      gen_sph%radial_rj_grp_lc%nitem_grp(2) = 1
-      gen_sph%radial_rj_grp_lc%nitem_grp(3) = 1
-      gen_sph%radial_rj_grp_lc%nitem_grp(4) = 0
-      gen_sph%radial_rj_grp_lc%nitem_grp(5) = sph%sph_rj%nidx_rj(1)
-!
-      call s_cal_total_and_stacks(gen_sph%radial_rj_grp_lc%num_grp,     &
-     &    gen_sph%radial_rj_grp_lc%nitem_grp, izero,                    &
-     &    gen_sph%radial_rj_grp_lc%istack_grp,                          &
-     &    gen_sph%radial_rj_grp_lc%num_item)
-      call alloc_group_item(gen_sph%radial_rj_grp_lc)
-!
-      gen_sph%radial_rj_grp_lc%item_grp(1) = 1
-      gen_sph%radial_rj_grp_lc%item_grp(2) = sph%sph_rj%nidx_rj(1)
-      gen_sph%radial_rj_grp_lc%item_grp(3) = 1
-      do i = 1, sph%sph_rj%nidx_rj(1)
-        gen_sph%radial_rj_grp_lc%item_grp(i+3) = i
-      end do
-!
-      gen_sph%radial_rtp_grp_lc%grp_name(1) = 'ICB'
-      gen_sph%radial_rtp_grp_lc%grp_name(2) = 'CMB'
-      gen_sph%radial_rtp_grp_lc%grp_name(3) = 'to_Center'
-      gen_sph%radial_rtp_grp_lc%grp_name(4) = 'inner_core'
-      gen_sph%radial_rtp_grp_lc%grp_name(5) = 'outer_core'
-!
-      gen_sph%radial_rtp_grp_lc%nitem_grp(1:5) = 0
-      if(sph%sph_rtp%ist_rtp(1) .eq. 1) then
-        gen_sph%radial_rtp_grp_lc%nitem_grp(1) = 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(3) = 1
-      end if
-      if(sph%sph_rtp%ied_rtp(1) .eq. sph%sph_rj%nidx_rj(1)) then
-        gen_sph%radial_rtp_grp_lc%nitem_grp(2) = 1
-      end if
-      gen_sph%radial_rtp_grp_lc%nitem_grp(4) = 0
-      gen_sph%radial_rtp_grp_lc%nitem_grp(5)                            &
-     &          = sph%sph_rtp%ied_rtp(1) - sph%sph_rtp%ist_rtp(1) + 1
-!
-      call s_cal_total_and_stacks(gen_sph%radial_rtp_grp_lc%num_grp,    &
-     &    gen_sph%radial_rtp_grp_lc%nitem_grp, izero,                   &
-     &    gen_sph%radial_rtp_grp_lc%istack_grp,                         &
-     &    gen_sph%radial_rtp_grp_lc%num_item)
-      call alloc_group_item(gen_sph%radial_rtp_grp_lc)
-!
-      if(sph%sph_rtp%ist_rtp(1) .eq. 1) then
-        i = gen_sph%radial_rtp_grp_lc%istack_grp(0) + 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(i) = 1
-      end if
-      if(sph%sph_rtp%ied_rtp(1) .eq. sph%sph_rj%nidx_rj(1)) then
-        i = gen_sph%radial_rtp_grp_lc%istack_grp(1) + 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(i) = sph%sph_rtp%ied_rtp(1)
-      end if
-      if(sph%sph_rtp%ist_rtp(1) .eq. 1) then
-        i = gen_sph%radial_rtp_grp_lc%istack_grp(2) + 1
-        gen_sph%radial_rtp_grp_lc%nitem_grp(i) = 1
-      end if
-!
-      do i = 1, sph%sph_rtp%nidx_rtp(1)
-        gen_sph%radial_rj_grp_lc%item_grp(i+3) = i
-      end do
+      call radial_rtp_grp_from_rayleigh                                 &
+     &   (sph%sph_rj, sph%sph_rtp, gen_sph%radial_rtp_grp_lc)
+      call empty_theta_rtp_grp(gen_sph%theta_rtp_grp_lc)
+      call radial_rj_grp_from_rayleigh                                  &
+     &   (sph%sph_rj, gen_sph%radial_rj_grp_lc)
 !
       end subroutine shell_params_from_rayleigh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sph_rj_params_from_rayleigh(rayleigh_rtp, sph_rj)
+!
+      use t_spheric_rj_data
+!
+      type(rayleigh_field), intent(in) :: rayleigh_rtp
+!
+      type(sph_rj_grid), intent(inout) :: sph_rj
+!
+      integer(kind = kint) :: i, irev
+!
+!
+      sph_rj%nidx_global_rj(1) = rayleigh_rtp%nri_gl
+      sph_rj%nidx_global_rj(2) = (rayleigh_rtp%ltr + 1)**2
+      sph_rj%nidx_rj(1) = sph_rj%nidx_global_rj(1)
+      sph_rj%nidx_rj(2) = sph_rj%nidx_global_rj(2) / nprocs
+!
+      call alloc_type_sph_1d_index_rj(sph_rj)
+      do i = 1, rayleigh_rtp%nri_gl
+        irev = rayleigh_rtp%nri_gl - i + 1
+        sph_rj%radius_1d_rj_r(i) = rayleigh_rtp%radius_gl(irev)
+      end do
+!
+      end subroutine sph_rj_params_from_rayleigh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sph_rtp_params_from_rayleigh(rayleigh_rtp, sph_rtp)
+!
+      use t_spheric_rtp_data
+!
+      type(rayleigh_field), intent(in) :: rayleigh_rtp
+!
+      type(sph_rtp_grid), intent(inout) :: sph_rtp
+!
+      integer(kind = kint) :: i
+!
+!
+      sph_rtp%irank_sph_rtp(1) = rayleigh_rtp%irank_r
+      sph_rtp%irank_sph_rtp(2) = rayleigh_rtp%irank_h
+      sph_rtp%irank_sph_rtp(3) = 0
+
+      sph_rtp%nidx_global_rtp(1) = rayleigh_rtp%nri_gl
+      sph_rtp%nidx_global_rtp(2) = rayleigh_rtp%nth_gl
+      sph_rtp%nidx_global_rtp(3) = rayleigh_rtp%nphi_gl
+      sph_rtp%ist_rtp(1) = rayleigh_rtp%kst
+      sph_rtp%ist_rtp(2) = rayleigh_rtp%lst
+      sph_rtp%ist_rtp(3) = 1
+      sph_rtp%ied_rtp(1) = rayleigh_rtp%ked
+      sph_rtp%ied_rtp(2) = rayleigh_rtp%led
+      sph_rtp%ied_rtp(3) = rayleigh_rtp%nphi_gl
+      sph_rtp%nidx_rtp(1) = rayleigh_rtp%ked - rayleigh_rtp%kst + 1
+      sph_rtp%nidx_rtp(2) = rayleigh_rtp%led - rayleigh_rtp%lst + 1
+      sph_rtp%nidx_rtp(3) = rayleigh_rtp%nphi_gl
+!
+      call alloc_type_sph_1d_index_rtp(sph_rtp)
+!
+      do i = 1, sph_rtp%nidx_rtp(1)
+        sph_rtp%idx_gl_1d_rtp_r(i) = sph_rtp%ist_rtp(1) + i- 1
+      end do
+!
+      end subroutine sph_rtp_params_from_rayleigh
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine radial_rtp_grp_from_rayleigh                           &
+     &         (sph_rj, sph_rtp, radial_rtp_grp_lc)
+!
+      use t_spheric_rj_data
+      use t_spheric_rtp_data
+      use t_group_data
+      use cal_minmax_and_stacks
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(group_data), intent(inout) :: radial_rtp_grp_lc
+!
+      integer(kind = kint) :: i
+!
+!
+      radial_rtp_grp_lc%num_grp = 5
+      call alloc_group_num(radial_rtp_grp_lc)
+!
+      radial_rtp_grp_lc%grp_name(1) = 'ICB'
+      radial_rtp_grp_lc%grp_name(2) = 'CMB'
+      radial_rtp_grp_lc%grp_name(3) = 'to_Center'
+      radial_rtp_grp_lc%grp_name(4) = 'inner_core'
+      radial_rtp_grp_lc%grp_name(5) = 'outer_core'
+!
+      radial_rtp_grp_lc%nitem_grp(1:5) = 0
+      if(sph_rtp%ist_rtp(1) .eq. 1) then
+        radial_rtp_grp_lc%nitem_grp(1) = 1
+        radial_rtp_grp_lc%nitem_grp(3) = 1
+      end if
+      if(sph_rtp%ied_rtp(1) .eq. sph_rj%nidx_rj(1)) then
+        radial_rtp_grp_lc%nitem_grp(2) = 1
+      end if
+      radial_rtp_grp_lc%nitem_grp(4) = 0
+      radial_rtp_grp_lc%nitem_grp(5) = sph_rtp%ied_rtp(1)               &
+     &                                - sph_rtp%ist_rtp(1) + 1
+!
+      call s_cal_total_and_stacks                                       &
+     &  (radial_rtp_grp_lc%num_grp, radial_rtp_grp_lc%nitem_grp, izero, &
+     &   radial_rtp_grp_lc%istack_grp, radial_rtp_grp_lc%num_item)
+      call alloc_group_item(radial_rtp_grp_lc)
+!
+      if(sph_rtp%ist_rtp(1) .eq. 1) then
+        i = radial_rtp_grp_lc%istack_grp(0) + 1
+        radial_rtp_grp_lc%nitem_grp(i) = 1
+      end if
+      if(sph_rtp%ied_rtp(1) .eq. sph_rj%nidx_rj(1)) then
+        i = radial_rtp_grp_lc%istack_grp(1) + 1
+        radial_rtp_grp_lc%nitem_grp(i) = sph_rtp%ied_rtp(1)
+      end if
+      if(sph_rtp%ist_rtp(1) .eq. 1) then
+        i = radial_rtp_grp_lc%istack_grp(2) + 1
+        radial_rtp_grp_lc%nitem_grp(i) = 1
+      end if
+!
+      do i = 1, sph_rtp%nidx_rtp(1)
+        radial_rtp_grp_lc%item_grp(i+3) = i
+      end do
+!
+      end subroutine radial_rtp_grp_from_rayleigh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine radial_rj_grp_from_rayleigh(sph_rj, radial_rj_grp_lc)
+!
+      use t_spheric_rj_data
+      use t_group_data
+      use cal_minmax_and_stacks
+!
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(group_data), intent(inout) :: radial_rj_grp_lc
+!
+      integer(kind = kint) :: i
+!
+!
+      radial_rj_grp_lc%num_grp =  5
+      call alloc_group_num(radial_rj_grp_lc)
+      radial_rj_grp_lc%grp_name(1) = 'ICB'
+      radial_rj_grp_lc%grp_name(2) = 'CMB'
+      radial_rj_grp_lc%grp_name(3) = 'to_Center'
+      radial_rj_grp_lc%grp_name(4) = 'inner_core'
+      radial_rj_grp_lc%grp_name(5) = 'outer_core'
+!
+      radial_rj_grp_lc%nitem_grp(1) = 1
+      radial_rj_grp_lc%nitem_grp(2) = 1
+      radial_rj_grp_lc%nitem_grp(3) = 1
+      radial_rj_grp_lc%nitem_grp(4) = 0
+      radial_rj_grp_lc%nitem_grp(5) = sph_rj%nidx_rj(1)
+!
+      call s_cal_total_and_stacks                                       &
+     &   (radial_rj_grp_lc%num_grp, radial_rj_grp_lc%nitem_grp, izero,  &
+     &    radial_rj_grp_lc%istack_grp, radial_rj_grp_lc%num_item)
+      call alloc_group_item(radial_rj_grp_lc)
+!
+      radial_rj_grp_lc%item_grp(1) = 1
+      radial_rj_grp_lc%item_grp(2) = sph_rj%nidx_rj(1)
+      radial_rj_grp_lc%item_grp(3) = 1
+      do i = 1, sph_rj%nidx_rj(1)
+        radial_rj_grp_lc%item_grp(i+3) = i
+      end do
+!
+      end subroutine radial_rj_grp_from_rayleigh
 !
 ! -----------------------------------------------------------------------
 !
