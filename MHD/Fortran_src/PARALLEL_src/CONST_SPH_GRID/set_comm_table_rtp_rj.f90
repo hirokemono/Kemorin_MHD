@@ -232,7 +232,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'const_comm_table_4_rtp', id_rank
-      call const_comm_table_4_rtp(id_rank, num_pe, comm_rtm_mul,   &
+      call const_comm_table_4_rtp(id_rank, num_pe, comm_rtm_mul,        &
      &    s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,           &
      &    sph_rtp, sph_rtm, comm_rtp_lc, sph_lcx)
 !

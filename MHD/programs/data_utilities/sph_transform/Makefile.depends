@@ -30,7 +30,7 @@ copy_all_field_4_sph_trans.o: $(SPH_TRANSFORM_DIR)/copy_all_field_4_sph_trans.f9
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_all_spec_4_sph_trans.o: $(SPH_TRANSFORM_DIR)/copy_all_spec_4_sph_trans.f90 m_precision.o t_sph_trans_comm_tbl.o t_phys_data.o t_phys_name_4_sph_trans.o t_spheric_rj_data.o copy_spectr_4_sph_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_SPH_transforms.o: $(SPH_TRANSFORM_DIR)/m_SPH_transforms.f90 m_precision.o m_machine_parameter.o t_ctl_params_sph_trans.o t_step_parameter.o t_time_data.o t_mesh_data.o t_phys_data.o t_ucd_data.o t_next_node_ele_4_node.o t_jacobians.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_global_gauss_coefs.o t_sph_transforms.o t_phys_name_4_sph_trans.o t_const_spherical_grid.o t_visualizer.o calypso_mpi.o m_array_for_send_recv.o load_mesh_data.o nod_phys_send_recv.o set_parallel_file_name.o parallel_FEM_mesh_init.o set_ucd_data_to_type.o
+m_SPH_transforms.o: $(SPH_TRANSFORM_DIR)/m_SPH_transforms.f90 m_precision.o m_machine_parameter.o t_ctl_params_sph_trans.o t_step_parameter.o t_time_data.o t_mesh_data.o t_phys_data.o t_ucd_data.o t_next_node_ele_4_node.o t_jacobians.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_global_gauss_coefs.o t_sph_transforms.o t_phys_name_4_sph_trans.o t_check_and_make_SPH_mesh.o t_visualizer.o calypso_mpi.o m_array_for_send_recv.o load_mesh_data.o nod_phys_send_recv.o set_parallel_file_name.o parallel_FEM_mesh_init.o set_ucd_data_to_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_spheric_data_transform.o: $(SPH_TRANSFORM_DIR)/m_spheric_data_transform.f90 m_precision.o t_ctl_data_4_sph_trans.o t_SPH_mesh_field_data.o t_field_data_IO.o t_SGS_model_addresses.o
 	$(F90) -c $(F90OPTFLAGS) $<

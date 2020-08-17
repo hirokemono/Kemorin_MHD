@@ -95,14 +95,11 @@
       call copy_rayleigh_radial_data                                    &
      &   (ra_rst_s, sph_asbl_s%org_sph_mesh(1))
 !
-!  Check and construct spherical shell grid data
-!
-      call check_and_make_SPH_mesh(mgd_ctl_s%psph_ctl%iflag_sph_shell,  &
-     &    asbl_param_s%new_mesh_file, sph_maker_s)
 !  set new spectr data
-!
-      call set_local_rj_mesh_4_merge(asbl_param_s%new_mesh_file,        &
-     &    sph_asbl_s%np_sph_new, sph_asbl_s%new_sph_mesh)
+      call set_local_rj_mesh_4_merge                                    &
+     &   (mgd_ctl_s%psph_ctl%iflag_sph_shell,                           &
+     &    asbl_param_s%new_mesh_file, sph_asbl_s%np_sph_new,            &
+     &    sph_asbl_s%new_sph_mesh, sph_maker_s)
 !
 !     Share number of nodes for new mesh
 !

@@ -1,10 +1,8 @@
 #
-coastline_c.o: \
-  $(C_SRCDIR)/KEMO_GL/coastline_c.c \
+coastline_c.o: $(C_SRCDIR)/KEMO_GL/coastline_c.c \
   $(C_SRCDIR)/KEMO_GL/coastline_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-drawGL_by_VAO.o: \
-  $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.c \
+drawGL_by_VAO.o: $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.c \
   $(C_SRCDIR)/KEMO_GL/drawGL_by_VAO.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer.h \
   $(C_SRCDIR)/KEMO_GL/m_gl_transfer_matrix.h \
@@ -319,8 +317,7 @@ draw_patches_4_PSF.o: \
   $(C_SRCDIR)/KEMO_GL/m_kemoview_mesh_menu.h \
   $(C_SRCDIR)/CORE_C/numbers_to_bin_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-drawcube_gl.o: \
-  $(C_SRCDIR)/KEMO_GL/drawcube_gl.c \
+drawcube_gl.o: $(C_SRCDIR)/KEMO_GL/drawcube_gl.c \
   $(C_SRCDIR)/KEMO_GL/drawcube_gl.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \
@@ -555,8 +552,7 @@ glsl.o: $(C_SRCDIR)/KEMO_GL/glsl.c \
   $(C_SRCDIR)/CORE_C/skip_comment_c.h \
   $(C_SRCDIR)/CORE_C/invert_small_matrix_c.h
 	$(CC) -c $(OPTFLAGS_GL) $(C_INCLUDE) $<
-icosahedron_c.o: \
-  $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
+icosahedron_c.o: $(C_SRCDIR)/KEMO_GL/icosahedron_c.c \
   $(C_SRCDIR)/KEMO_GL/icosahedron_c.h \
   $(C_SRCDIR)/KEMO_GL/kemoviewer_param_c.h \
   $(C_SRCDIR)/CORE_C/calypso_param_c.h \

@@ -73,15 +73,17 @@
 !
 !  set original spectr data
 !
-      call set_local_rj_mesh_4_merge(asbl_param_s%org_mesh_file,        &
+      call set_local_rj_mesh_4_merge(izero, asbl_param_s%org_mesh_file, &
      &    sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
       call share_org_sph_rj_data                                        &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
 !
 !  set new spectr data
 !
-      call set_local_rj_mesh_4_merge(asbl_param_s%new_mesh_file,        &
-     &    sph_asbl_s%np_sph_new, sph_asbl_s%new_sph_mesh)
+      call set_local_rj_mesh_4_merge                                    &
+     &   (mgd_ctl_s%psph_ctl%iflag_sph_shell,                           &
+     &    asbl_param_s%new_mesh_file, sph_asbl_s%np_sph_new,            &
+     &    sph_asbl_s%new_sph_mesh, sph_maker_s)
       call load_new_spectr_rj_data                                      &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%np_sph_new,                 &
      &    sph_asbl_s%org_sph_mesh, sph_asbl_s%new_sph_mesh,             &
