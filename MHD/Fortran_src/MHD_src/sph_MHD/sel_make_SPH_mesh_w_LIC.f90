@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_w_LIC                          &
 !!     &         (FEM_mesh_flags, sph_file_param,                       &
-!!     &          sph, comms_sph, sph_grps, geofem, mesh_file, gen_sph)
+!!     &          sph, comms_sph, sph_grps, geofem,                     &
+!!     &          mesh_file, sph_maker)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -28,7 +29,6 @@
       use calypso_mpi
 !
       use t_control_parameter
-      use t_const_spherical_grid
       use t_MHD_file_parameter
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -53,7 +53,8 @@
 !
       subroutine load_para_SPH_and_FEM_w_LIC                            &
      &         (FEM_mesh_flags, sph_file_param,                         &
-     &          sph, comms_sph, sph_grps, geofem, mesh_file, gen_sph)
+     &          sph, comms_sph, sph_grps, geofem,                       &
+     &          mesh_file, sph_maker)
 !
       use calypso_mpi
       use t_mesh_data
@@ -72,7 +73,7 @@
       type(mesh_data), intent(inout) :: geofem
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(construct_spherical_grid), intent(inout) :: gen_sph
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
 !
       call load_para_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
@@ -84,12 +85,13 @@
         call set_fem_center_mode_4_SPH(geofem%mesh%node%internal_node,  &
      &      sph%sph_rtp, sph%sph_params)
       else
-        call copy_sph_radial_groups(sph_grps, gen_sph)
+        call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
-     &      sph%sph_params, sph%sph_rtp, sph%sph_rj, geofem, gen_sph)
-        call dealloc_gen_sph_radial_groups(gen_sph)
+     &      sph%sph_params, sph%sph_rtp, sph%sph_rj, geofem,            &
+     &      sph_maker%gen_sph)
+        call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC
