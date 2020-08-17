@@ -172,6 +172,7 @@
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
+      use load_data_for_sph_IO
 !
       type(field_IO_params), intent(in) :: sph_file_param
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(nprocs)
@@ -180,6 +181,9 @@
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(construct_spherical_grid), intent(inout) :: gen_sph
+!
+      type(sph_comm_tbl) :: comm_rj_lc
+      type(sph_group_data) :: sph_grp_lc
 !
 !
       call alloc_rj_1d_local_idx(sph_rj, sph_lcx_m)
@@ -190,7 +194,18 @@
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph_params, sph_rj, sph_rlm, sph_file_m, sph_lcx_m)
+     &    sph_params, sph_rj, sph_rlm, comm_rj_lc, sph_grp_lc,          &
+     &    sph_lcx_m)
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                 'copy_sph_trans_rj_to_IO', my_rank
+      call copy_sph_trans_rj_to_IO(sph_params,                          &
+     &    sph_rj, comm_rj_lc, sph_grp_lc, sph_file_m)
+!
+      call dealloc_type_sph_1d_index_rj(sph_rj)
+      call dealloc_spheric_param_rj(sph_rj)
+      call dealloc_type_sph_comm_item(comm_rj_lc)
+      call dealloc_sph_mode_group(sph_grp_lc)
 !
       call sel_mpi_write_spectr_rj_file                                 &
      &   (nprocs, my_rank, sph_file_param, sph_file_m)
@@ -210,6 +225,7 @@
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
+      use load_data_for_sph_IO
 !
       type(field_IO_params), intent(in) :: sph_file_param
       type(sph_comm_tbl), intent(in) :: comm_rtm_mul(nprocs)
@@ -219,6 +235,8 @@
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
+      type(sph_comm_tbl) :: comm_rtp_lc
+      type(sph_group_data) :: sph_grp_lc
 !
       call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx_m)
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -227,7 +245,18 @@
      &    gen_sph%added_radial_grp, gen_sph%r_layer_grp,                &
      &    gen_sph%med_layer_grp, gen_sph%s3d_ranks, gen_sph%s3d_radius, &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph_params, sph_rtp, sph_rtm, sph_file_m, sph_lcx_m)
+     &    sph_params, sph_rtp, sph_rtm, comm_rtp_lc, sph_grp_lc,        &
+     &    sph_lcx_m)
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                 'copy_sph_trans_rtp_to_IO', my_rank
+      call copy_sph_trans_rtp_to_IO(sph_params,                         &
+     &    sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file_m)
+!
+      call dealloc_type_sph_1d_index_rtp(sph_rtp)
+      call dealloc_type_spheric_param_rtp(sph_rtp)
+      call dealloc_type_sph_comm_item(comm_rtp_lc)
+      call dealloc_sph_grid_group(sph_grp_lc)
 !
       call sel_mpi_write_geom_rtp_file                                  &
      &   (nprocs, my_rank, sph_file_param, sph_file_m)

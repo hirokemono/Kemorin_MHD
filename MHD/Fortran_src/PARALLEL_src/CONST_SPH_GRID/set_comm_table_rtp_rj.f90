@@ -11,7 +11,8 @@
 !!      subroutine const_sph_rj_modes                                   &
 !!     &         (id_rank, num_pe, comm_rlm_mul, added_radial_grp,      &
 !!     &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,   &
-!!     &          sph_params, sph_rj, sph_rlm, sph_file, sph_lcx)
+!!     &          sph_params, sph_rj, sph_rlm, comm_rj_lc, sph_grp_lc,  &
+!!     &          sph_lcx)
 !!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(spheric_global_radius), intent(in) :: s3d_radius
 !!        type(sph_local_parameters), intent(in) :: sph_lcp
@@ -21,12 +22,14 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!        type(sph_file_data_type), intent(inout) :: sph_file
+!!        type(sph_comm_tbl), intent(inout) :: comm_rj_lc
+!!        type(sph_group_data), intent(inout) :: sph_grp_lc
 !!        type(sph_local_1d_index), intent(inout) :: sph_lcx
 !!      subroutine const_sph_rtp_grids(id_rank, num_pe, comm_rtm_mul,   &
 !!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
 !!     &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,   &
-!!     &          sph_params, sph_rtp, sph_rtm, sph_file, sph_lcx)
+!!     &          sph_params, sph_rtp, sph_rtm, comm_rtp_lc, sph_grp_lc,&
+!!     &          sph_lcx)
 !!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(spheric_global_radius), intent(in) :: s3d_radius
 !!        type(sph_local_parameters), intent(in) :: sph_lcp
@@ -36,7 +39,8 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!        type(sph_file_data_type), intent(inout) :: sph_file
+!!        type(sph_comm_tbl), intent(inout) :: comm_rtp_lc
+!!        type(sph_group_data), intent(inout) :: sph_grp_lc
 !!        type(sph_local_1d_index), intent(inout) :: sph_lcx
 !!@endverbatim
 !
@@ -104,9 +108,9 @@
       subroutine const_sph_rj_modes                                     &
      &         (id_rank, num_pe, comm_rlm_mul, added_radial_grp,        &
      &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,     &
-     &          sph_params, sph_rj, sph_rlm, sph_file, sph_lcx)
+     &          sph_params, sph_rj, sph_rlm, comm_rj_lc, sph_grp_lc,    &
+     &          sph_lcx)
 !
-      use load_data_for_sph_IO
       use set_sph_groups
       use copy_sph_1d_global_index
       use set_local_sphere_param
@@ -125,10 +129,9 @@
 !
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_rlm_grid), intent(inout) :: sph_rlm
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_comm_tbl), intent(inout) :: comm_rj_lc
+      type(sph_group_data), intent(inout) :: sph_grp_lc
       type(sph_local_1d_index), intent(inout) :: sph_lcx
-!
-      type(sph_comm_tbl) :: comm_rj_lc
 !
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -164,16 +167,6 @@
       call set_sph_rj_groups(sph_params, sph_rj, added_radial_grp,      &
      &    sph_grp_lc%radial_rj_grp, sph_grp_lc%sphere_rj_grp)
 !
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'copy_sph_trans_rj_to_IO', id_rank
-      call copy_sph_trans_rj_to_IO(sph_params,                          &
-     &    sph_rj, comm_rj_lc, sph_grp_lc, sph_file)
-!
-      call dealloc_type_sph_1d_index_rj(sph_rj)
-      call dealloc_spheric_param_rj(sph_rj)
-      call dealloc_type_sph_comm_item(comm_rj_lc)
-      call dealloc_sph_mode_group(sph_grp_lc)
-!
       end subroutine const_sph_rj_modes
 !
 ! ----------------------------------------------------------------------
@@ -181,9 +174,9 @@
       subroutine const_sph_rtp_grids(id_rank, num_pe, comm_rtm_mul,     &
      &          added_radial_grp, r_layer_grp, med_layer_grp,           &
      &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,     &
-     &          sph_params, sph_rtp, sph_rtm, sph_file, sph_lcx)
+     &          sph_params, sph_rtp, sph_rtm, comm_rtp_lc, sph_grp_lc,  &
+     &          sph_lcx)
 !
-      use load_data_for_sph_IO
       use set_sph_groups
       use copy_sph_1d_global_index
       use set_local_sphere_param
@@ -205,10 +198,9 @@
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_rtm_grid), intent(inout) :: sph_rtm
-      type(sph_file_data_type), intent(inout) :: sph_file
+      type(sph_comm_tbl), intent(inout) :: comm_rtp_lc
+      type(sph_group_data), intent(inout) :: sph_grp_lc
       type(sph_local_1d_index), intent(inout) :: sph_lcx
-!
-      type(sph_comm_tbl) :: comm_rtp_lc
 !
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -241,16 +233,6 @@
      &    added_radial_grp, r_layer_grp, med_layer_grp,                 &
      &    sph_grp_lc%bc_rtp_grp, sph_grp_lc%radial_rtp_grp,             &
      &    sph_grp_lc%theta_rtp_grp, sph_grp_lc%zonal_rtp_grp)
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'copy_sph_trans_rtp_to_IO', id_rank
-      call copy_sph_trans_rtp_to_IO(sph_params,                         &
-     &    sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file)
-!
-      call dealloc_type_sph_1d_index_rtp(sph_rtp)
-      call dealloc_type_spheric_param_rtp(sph_rtp)
-      call dealloc_type_sph_comm_item(comm_rtp_lc)
-      call dealloc_sph_grid_group(sph_grp_lc)
 !
       end subroutine const_sph_rtp_grids
 !
