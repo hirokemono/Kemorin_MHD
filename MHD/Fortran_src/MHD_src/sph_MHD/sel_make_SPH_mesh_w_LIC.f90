@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_w_LIC                          &
-!!     &         (FEM_mesh_flags, sph_file_param,                       &
+!!     &         (iflag_sph_shell, FEM_mesh_flags, sph_file_param,      &
 !!     &          sph, comms_sph, sph_grps, geofem,                     &
 !!     &          mesh_file, sph_maker)
 !!        type(field_IO_params), intent(in) :: sph_file_param
@@ -52,7 +52,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_w_LIC                            &
-     &         (FEM_mesh_flags, sph_file_param,                         &
+     &         (iflag_sph_shell, FEM_mesh_flags, sph_file_param,        &
      &          sph, comms_sph, sph_grps, geofem,                       &
      &          mesh_file, sph_maker)
 !
@@ -64,6 +64,7 @@
       use parallel_load_data_4_sph
       use set_loaded_data_4_sph
 !
+      integer(kind = kint), intent(in) :: iflag_sph_shell
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(field_IO_params), intent(in) ::  sph_file_param
       type(sph_grids), intent(inout) :: sph
@@ -76,6 +77,11 @@
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
 !
+!  Check and construct spherical shell table
+      call check_and_make_SPH_mesh                                      &
+     &   (iflag_sph_shell, sph_file_param, sph_maker)
+!
+!  Load spherical shell table
       call load_para_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
 !
 !  --  load geofem mesh data

@@ -92,14 +92,11 @@
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    SPH_WK%monitor)
 !
-!  Check and construct spherical shell table
-      call check_and_make_SPH_mesh(DMHD_ctl%psph_ctl%iflag_sph_shell,   &
-     &    MHD_files%sph_file_param, sph_maker1)
-!
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
+     &   (DMHD_ctl%psph_ctl%iflag_sph_shell,                            &
+     &    MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
      &    MHD_files%mesh_file_IO, sph_maker1)
 !
@@ -187,14 +184,11 @@
      &    SPH_model%MHD_prop, SPH_MHD%sph, SPH_MHD%fld, FEM_dat%field,  &
      &    SPH_WK%monitor)
 !
-!  Check and construct spherical shell table
-      call check_and_make_SPH_mesh(DMHD_ctl%psph_ctl%iflag_sph_shell,   &
-     &    MHD_files%sph_file_param, sph_maker1)
-!
 !  Load spherical shell table
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
+     &   (DMHD_ctl%psph_ctl%iflag_sph_shell,                            &
+     &    MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
      &    MHD_files%mesh_file_IO, sph_maker1)
 !

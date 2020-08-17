@@ -71,17 +71,17 @@
 !
       call alloc_spectr_data_4_assemble(sph_asbl_s)
 !
-!  Check and construct spherical shell grid data
-!
-      call check_and_make_SPH_mesh(mgd_ctl_s%psph_ctl%iflag_sph_shell,  &
-     &    asbl_param_s%new_mesh_file, sph_maker_s)
-!
 !  set original spectr data
 !
       call set_local_rj_mesh_4_merge(asbl_param_s%org_mesh_file,        &
      &    sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
       call share_org_sph_rj_data                                        &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
+!
+!  Check and construct new spherical shell grid data
+!
+      call check_and_make_SPH_mesh(mgd_ctl_s%psph_ctl%iflag_sph_shell,  &
+     &    asbl_param_s%new_mesh_file, sph_maker_s)
 !
 !  set new spectr data
 !
