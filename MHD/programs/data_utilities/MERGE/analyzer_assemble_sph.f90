@@ -74,7 +74,7 @@
 !  set original spectr data
 !
       call set_local_rj_mesh_4_merge(izero, asbl_param_s%org_mesh_file, &
-     &    sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
+     &    sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh, sph_maker_s)
       call share_org_sph_rj_data                                        &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
 !

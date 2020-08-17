@@ -10,8 +10,8 @@
 !!      subroutine alloc_sph_mesh_parallel_merge
 !!      subroutine dealloc_sph_mesh_4_merge
 !!
-!!      subroutine set_local_rj_mesh_4_merge                            &
-!!     &         (sph_mesh_file, num_pe, sph_mesh)
+!!      subroutine set_local_rj_mesh_4_merge(iflag_make_SPH,            &
+!!     &          sph_mesh_file, num_pe, sph_mesh, sph_maker)
 !!        type(field_IO_params), intent(in) :: sph_mesh_file
 !!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
@@ -56,8 +56,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_local_rj_mesh_4_merge                              &
-     &         (iflag_make_SPH, sph_mesh_file, num_pe, sph_mesh, sph_maker)
+      subroutine set_local_rj_mesh_4_merge(iflag_make_SPH,              &
+     &          sph_mesh_file, num_pe, sph_mesh, sph_maker)
 !
       use t_check_and_make_SPH_mesh
       use sph_file_MPI_IO_select
@@ -76,8 +76,8 @@
       integer(kind = kint) :: iloop, ierr
 !
 !  Check and construct spherical shell grid data
-      call check_and_make_SPH_mesh(mgd_ctl_s%psph_ctl%iflag_sph_shell,  &
-     &    sph_mesh_file, sph_maker)
+      call check_and_make_SPH_mesh                                      &
+     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
 !
 !  Read index data
       call set_sph_mesh_file_fmt_prefix                                 &
