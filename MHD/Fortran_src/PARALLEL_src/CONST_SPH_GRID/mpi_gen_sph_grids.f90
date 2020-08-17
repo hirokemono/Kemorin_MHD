@@ -1,5 +1,5 @@
-!>@file   parallel_gen_sph_grids.f90
-!!@brief  module parallel_gen_sph_grids
+!>@file   mpi_gen_sph_grids.f90
+!!@brief  module mpi_gen_sph_grids
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -7,13 +7,13 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine s_para_gen_sph_grids(sph_file_param, sph, gen_sph)
+!!      subroutine const_sph_grids(sph_file_param, sph, gen_sph)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
 !
-      module parallel_gen_sph_grids
+      module mpi_gen_sph_grids
 !
       use m_precision
       use m_constants
@@ -52,7 +52,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_para_gen_sph_grids(sph_file_param, sph, gen_sph)
+      subroutine const_sph_grids(sph_file_param, sph, gen_sph)
 !
       use m_elapsed_labels_gen_SPH
       use set_global_spherical_param
@@ -92,7 +92,6 @@
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
       call mpi_gen_sph_rlm_grids(sph_file_param,                        &
      &    gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
-      return
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
@@ -126,7 +125,7 @@
       deallocate(comm_rtm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
-      end subroutine s_para_gen_sph_grids
+      end subroutine const_sph_grids
 !
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -264,4 +263,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module parallel_gen_sph_grids
+      end module mpi_gen_sph_grids

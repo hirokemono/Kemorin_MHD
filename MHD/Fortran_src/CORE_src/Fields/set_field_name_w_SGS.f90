@@ -81,6 +81,7 @@
       fld%num_phys = 0
       call alloc_phys_name_type(fld)
 !
+      flag = .FALSE.
       do i = 1, field_ctl%icou
         if(flag) cycle
         call set_vector_field_name_w_SGS(field_ctl%c1_tbl(i),           &

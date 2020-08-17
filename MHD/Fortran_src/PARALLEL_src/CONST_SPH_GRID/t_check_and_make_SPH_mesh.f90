@@ -51,7 +51,7 @@
 !
       use m_error_IDs
       use calypso_mpi_logical
-      use parallel_gen_sph_grids
+      use mpi_gen_sph_grids
       use sph_file_IO_select
 !
       integer(kind = kint), intent(in) :: iflag_make_SPH

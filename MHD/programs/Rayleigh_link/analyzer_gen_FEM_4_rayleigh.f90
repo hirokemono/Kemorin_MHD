@@ -60,7 +60,7 @@
       use m_error_IDs
       use m_file_format_switch
       use m_array_for_send_recv
-      use parallel_gen_sph_grids
+      use mpi_gen_sph_grids
       use mpi_gen_sph_grids_modes
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
