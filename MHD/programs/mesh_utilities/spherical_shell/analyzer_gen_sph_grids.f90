@@ -27,7 +27,7 @@
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
-      use t_const_spherical_grid
+      use t_check_and_make_SPH_mesh
       use t_ctl_params_gen_sph_shell
 !
       use para_const_kemoview_mesh
@@ -46,8 +46,8 @@
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
-!>      Structure to construct grid
-      type(construct_spherical_grid), save :: gen_sph_G
+!>      Structure to check and construct spherical shell mesh
+      type(sph_grid_maker_in_sim), save :: sph_maker_G
 !
       type(sph_comm_tables), save, private :: comms_sph
       type(sph_group_data), save, private ::  sph_grps
@@ -78,13 +78,14 @@
       call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
-     &    sph_const, sph_files1, gen_sph_G, ierr)
+     &    sph_const, sph_files1, sph_maker_G%gen_sph, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
-      if(gen_sph_G%s3d_ranks%ndomain_sph .ne. nprocs) then
+      if(sph_maker_G%gen_sph%s3d_ranks%ndomain_sph .ne. nprocs) then
         if(my_rank .eq. 0) write(*,*) 'The number of MPI processes ',   &
      &      'must be equal to the number of subdomains.', char(10),     &
-     &      'Current subdomains: ', gen_sph_G%s3d_ranks%ndomain_sph
+     &      'Current subdomains: ',                                     &
+     &      sph_maker_G%gen_sph%s3d_ranks%ndomain_sph
         write(e_message,'(a)') 'Parallellization error'
         call calypso_mpi_abort(ierr_P_MPI, e_message)
       end if
@@ -105,8 +106,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
       call para_gen_sph_grids                                           &
-     &   (sph_files1%sph_file_param, sph_const, gen_sph_G)
-      call dealloc_gen_mesh_params(gen_sph_G)
+     &   (sph_files1%sph_file_param, sph_const, sph_maker_G%gen_sph)
+      call dealloc_gen_mesh_params(sph_maker_G%gen_sph)
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
 !
@@ -117,7 +118,7 @@
       call load_para_SPH_and_FEM_mesh                                   &
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
      &    sph_const, comms_sph, sph_grps,                               &
-     &    geofem, sph_files1%mesh_file_IO, gen_sph_G)
+     &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       call calypso_MPI_barrier
 !

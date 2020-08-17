@@ -28,7 +28,7 @@
       use t_global_gauss_coefs
       use t_sph_transforms
       use t_phys_name_4_sph_trans
-      use t_const_spherical_grid
+      use t_check_and_make_SPH_mesh
       use t_visualizer
 !
       implicit none
@@ -42,8 +42,8 @@
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_STR
-!>      Structure to make spherical shell grid
-      type(construct_spherical_grid), save :: gen_sph_TRNS
+!>      Structure to check and construct spherical shell mesh
+      type(sph_grid_maker_in_sim), save :: sph_maker_TRNS
 !
 !>       Structure for nodal field data
       type(phys_data), save :: field_STR

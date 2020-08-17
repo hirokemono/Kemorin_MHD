@@ -32,10 +32,11 @@
 !
       implicit none
 !
+!>      Structure to check and construct spherical shell mesh
       type sph_grid_maker_in_sim
 !>        Structure to construct grid
         type(construct_spherical_grid) :: gen_sph
-!         Structure for temporal spherical grid
+!>        Structure for temporal spherical grid
         type(sph_grids) :: sph_tmp
       end type sph_grid_maker_in_sim
 !

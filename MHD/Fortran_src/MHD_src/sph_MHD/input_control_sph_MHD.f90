@@ -101,7 +101,7 @@
       call load_para_SPH_and_FEM_mesh                                   &
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
-     &    MHD_files%mesh_file_IO, sph_maker1%gen_sph)
+     &    MHD_files%mesh_file_IO, sph_maker1)
 !
       call dealloc_surfacing_controls(DMHD_ctl%surfacing_ctls)
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
@@ -196,7 +196,7 @@
       call load_para_SPH_and_FEM_mesh                                   &
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups, FEM_dat%geofem,   &
-     &    MHD_files%mesh_file_IO, sph_maker1%gen_sph)
+     &    MHD_files%mesh_file_IO, sph_maker1)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !
