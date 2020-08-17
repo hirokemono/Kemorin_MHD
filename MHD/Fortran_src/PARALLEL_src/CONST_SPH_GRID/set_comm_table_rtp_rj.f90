@@ -165,8 +165,8 @@
      &    sph_grp_lc%radial_rj_grp, sph_grp_lc%sphere_rj_grp)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'output_modes_rj_sph_trans', id_rank
-      call output_modes_rj_sph_trans(sph_params,                        &
+     &                 'copy_sph_trans_rj_to_IO', id_rank
+      call copy_sph_trans_rj_to_IO(sph_params,                          &
      &    sph_rj, comm_rj_lc, sph_grp_lc, sph_file)
 !
       call dealloc_type_sph_1d_index_rj(sph_rj)
@@ -243,8 +243,8 @@
      &    sph_grp_lc%theta_rtp_grp, sph_grp_lc%zonal_rtp_grp)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'output_geom_rtp_sph_trans', id_rank
-      call output_geom_rtp_sph_trans(sph_params,                        &
+     &                 'copy_sph_trans_rtp_to_IO', id_rank
+      call copy_sph_trans_rtp_to_IO(sph_params,                         &
      &    sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file)
 !
       call dealloc_type_sph_1d_index_rtp(sph_rtp)

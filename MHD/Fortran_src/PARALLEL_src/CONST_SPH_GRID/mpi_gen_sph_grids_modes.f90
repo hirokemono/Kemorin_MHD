@@ -101,7 +101,7 @@
      &    sph_rlm, comm_rlm_lc)
       call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip))
 !
-      call output_modes_rlm_sph_trans                                   &
+      call copy_sph_trans_rlm_to_IO                                     &
      &   (sph_params, sph_rlm, comm_rlm_lc, sph_file_m)
 !
       call dealloc_type_sph_comm_item(comm_rlm_lc)
@@ -148,7 +148,7 @@
      &    sph_rtm, comm_rtm_lc)
       call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip))
 !
-      call output_geom_rtm_sph_trans                                    &
+      call copy_sph_trans_rtm_to_IO                                     &
      &   (sph_params, sph_rtm, comm_rtm_lc, sph_file_m)
 !
       call dealloc_type_sph_comm_item(comm_rtm_lc)

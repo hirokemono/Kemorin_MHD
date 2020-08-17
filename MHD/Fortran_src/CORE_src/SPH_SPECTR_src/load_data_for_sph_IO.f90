@@ -33,27 +33,27 @@
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
 !!
-!!      subroutine output_geom_rtp_sph_trans                            &
+!!      subroutine copy_sph_trans_rtp_to_IO                             &
 !!     &         (sph_params, sph_rtp, comm_rtp, sph_grps, sph_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(sph_file_data_type), intent(inout) :: sph_file
-!!      subroutine output_modes_rj_sph_trans(sph_params,                &
+!!      subroutine copy_sph_trans_rj_to_IO(sph_params,                  &
 !!     &          sph_rj, comm_rj, sph_grps, sph_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid),  intent(in) :: sph_rj
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(sph_file_data_type), intent(inout) :: sph_file
-!!      subroutine output_geom_rtm_sph_trans                            &
+!!      subroutine copy_sph_trans_rtm_to_IO                             &
 !!     &         (sph_params, sph_rtm, comm_rtm, sph_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm
 !!        type(sph_file_data_type), intent(inout) :: sph_file
-!!      subroutine output_modes_rlm_sph_trans                           &
+!!      subroutine copy_sph_trans_rlm_to_IO                             &
 !!     &         (sph_params, sph_rlm, comm_rlm, sph_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -204,7 +204,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_geom_rtp_sph_trans                              &
+      subroutine copy_sph_trans_rtp_to_IO                               &
      &         (sph_params, sph_rtp, comm_rtp, sph_grps, sph_file)
 !
       use copy_sph_comm_table_4_IO
@@ -232,11 +232,11 @@
       call set_gruop_stracture                                          &
      &   (sph_grps%zonal_rtp_grp, sph_file%sph_grp_IO%zonal_rtp_grp)
 !
-      end subroutine output_geom_rtp_sph_trans
+      end subroutine copy_sph_trans_rtp_to_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_modes_rj_sph_trans(sph_params,                  &
+      subroutine copy_sph_trans_rj_to_IO(sph_params,                    &
      &          sph_rj, comm_rj, sph_grps, sph_file)
 !
       use copy_sph_comm_table_4_IO
@@ -260,11 +260,11 @@
       call set_gruop_stracture                                          &
      &   (sph_grps%sphere_rj_grp, sph_file%sph_grp_IO%sphere_rj_grp)
 !
-      end subroutine output_modes_rj_sph_trans
+      end subroutine copy_sph_trans_rj_to_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_geom_rtm_sph_trans                              &
+      subroutine copy_sph_trans_rtm_to_IO                               &
      &         (sph_params, sph_rtm, comm_rtm, sph_file)
 !
       use copy_sph_comm_table_4_IO
@@ -281,11 +281,11 @@
      &   (sph_params%l_truncation, sph_rtm, sph_file%sph_IO)
       call copy_comm_sph_to_comm_tbl(comm_rtm, sph_file%comm_IO)
 !
-      end subroutine output_geom_rtm_sph_trans
+      end subroutine copy_sph_trans_rtm_to_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_modes_rlm_sph_trans                             &
+      subroutine copy_sph_trans_rlm_to_IO                               &
      &         (sph_params, sph_rlm, comm_rlm, sph_file)
 !
       use copy_sph_comm_table_4_IO
@@ -302,7 +302,7 @@
      &   (sph_params%l_truncation, sph_rlm, sph_file%sph_IO)
       call copy_comm_sph_to_comm_tbl(comm_rlm, sph_file%comm_IO)
 !
-      end subroutine output_modes_rlm_sph_trans
+      end subroutine copy_sph_trans_rlm_to_IO
 !
 ! -----------------------------------------------------------------------
 !
