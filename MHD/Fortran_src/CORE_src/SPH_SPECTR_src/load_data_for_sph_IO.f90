@@ -6,27 +6,27 @@
 !>@brief load spherical harmonics indexing data
 !!
 !!@verbatim
-!!      subroutine input_geom_rtp_sph_trans(sph_grps_IO,                &
+!!      subroutine copy_sph_trans_rtp_from_IO(sph_grps_IO,              &
 !!     &          sph_rtp, comm_rtp, sph_grps, sph_params, ierr)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtp
 !!        type(sph_group_data), intent(inout) :: sph_grps
-!!      subroutine input_modes_rj_sph_trans(sph_grps_IO,                &
+!!      subroutine copy_sph_trans_rj_from_IO(sph_grps_IO,               &
 !!     &          sph_rj, comm_rj, sph_grps, sph_params, ierr)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rj_grid),  intent(inout) :: sph_rj
 !!        type(sph_comm_tbl), intent(inout) :: comm_rj
 !!        type(sph_group_data), intent(inout) :: sph_grps
-!!      subroutine input_geom_rtm_sph_trans                             &
+!!      subroutine copy_sph_trans_rtm_from_IO                           &
 !!     &         (sph_file, sph_rtm, comm_rtm, sph_params, ierr)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm
-!!      subroutine input_modes_rlm_sph_trans                            &
+!!      subroutine copy_sph_trans_rlm_from_IO                           &
 !!     &         (sph_file, sph_rlm, comm_rlm, sph_params, ierr)
 !!        type(sph_file_data_type), intent(in) :: sph_file
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
@@ -81,7 +81,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_geom_rtp_sph_trans(sph_file,                     &
+      subroutine copy_sph_trans_rtp_from_IO(sph_file,                   &
      &          sph_rtp, comm_rtp, sph_grps, sph_params, ierr)
 !
       use copy_sph_comm_table_4_IO
@@ -114,11 +114,11 @@
 !
       call count_num_rtp_smp(sph_rtp, ierr)
 !
-      end subroutine input_geom_rtp_sph_trans
+      end subroutine copy_sph_trans_rtp_from_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_modes_rj_sph_trans(sph_file,                     &
+      subroutine copy_sph_trans_rj_from_IO(sph_file,                    &
      &          sph_rj, comm_rj, sph_grps, sph_params, ierr)
 !
       use copy_sph_comm_table_4_IO
@@ -147,11 +147,11 @@
 !
       call count_num_rj_smp(sph_rj, ierr)
 !
-      end subroutine input_modes_rj_sph_trans
+      end subroutine copy_sph_trans_rj_from_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_geom_rtm_sph_trans                               &
+      subroutine copy_sph_trans_rtm_from_IO                             &
      &         (sph_file, sph_rtm, comm_rtm, sph_params, ierr)
 !
       use copy_sph_comm_table_4_IO
@@ -173,11 +173,11 @@
 !
       call count_num_rtm_smp(sph_rtm, ierr)
 !
-      end subroutine input_geom_rtm_sph_trans
+      end subroutine copy_sph_trans_rtm_from_IO
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_modes_rlm_sph_trans                              &
+      subroutine copy_sph_trans_rlm_from_IO                             &
      &         (sph_file, sph_rlm, comm_rlm, sph_params, ierr)
 !
       use copy_sph_comm_table_4_IO
@@ -199,7 +199,7 @@
 !
       call count_num_rlm_smp(sph_rlm, ierr)
 !
-      end subroutine input_modes_rlm_sph_trans
+      end subroutine copy_sph_trans_rlm_from_IO
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
