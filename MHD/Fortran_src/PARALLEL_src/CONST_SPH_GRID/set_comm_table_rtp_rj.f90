@@ -65,10 +65,8 @@
       integer(kind = kint), allocatable :: id_domain_tmp(:)
       integer(kind = kint), allocatable :: nnod_sr_tmp(:)
 !
-      type(sph_group_data), save :: sph_grp_lc
 !
-!
-      private :: id_domain_tmp, nnod_sr_tmp, sph_grp_lc
+      private :: id_domain_tmp, nnod_sr_tmp
 !
       private :: allocate_domain_sr_tmp,  deallocate_domain_sr_tmp
       private :: const_comm_table_4_rj,  const_comm_table_4_rtp
