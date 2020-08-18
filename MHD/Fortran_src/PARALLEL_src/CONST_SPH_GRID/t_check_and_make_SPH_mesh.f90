@@ -110,6 +110,7 @@
 !
 !  =========  Set global resolutions ===================================
 !
+      write(*,*) 'Tako!'
       call set_global_sph_resolution                                    &
      &   (sph%sph_params%l_truncation, sph%sph_params%m_folding,        &
      &    sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
@@ -127,6 +128,8 @@
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
      &    gen_sph%s3d_ranks, gen_sph%sph_lcp,                           &
      &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
+!
+!  ========= Generate each spherical harmonics table ===================
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))

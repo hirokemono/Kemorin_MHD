@@ -495,7 +495,6 @@
      &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,     &
      &          sph_params, sph_rtp, comm_rtp, sph_lcx, icou)
 !
-      use calypso_mpi
       use gen_sph_grids_modes
       use set_global_spherical_param
 !
@@ -528,7 +527,6 @@
      &    sph_rtp, sph_rtm_lc)
       call set_local_idx_table_rtp(sph_rtp, sph_lcx)
 !
-      call calypso_mpi_barrier
       do ip1 = 1, num_pe
         id_org_rank = int(mod((id_rank+ip1),num_pe))
         ip_org = id_org_rank + 1
@@ -567,7 +565,6 @@
         call dealloc_type_sph_1d_index_rtm(sph_rtm_lc)
         call dealloc_type_spheric_param_rtm(sph_rtm_lc)
       end do
-      call calypso_mpi_barrier
 !
       end subroutine set_comm_table_4_rtp
 !
