@@ -81,15 +81,6 @@
      &    sph_const, sph_files1, sph_maker_G%gen_sph, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
-!      if(sph_maker_G%gen_sph%s3d_ranks%ndomain_sph .ne. nprocs) then
-!        if(my_rank .eq. 0) write(*,*) 'The number of MPI processes ',  &
-!     &      'must be equal to the number of subdomains.', char(10),    &
-!     &      'Current subdomains: ',                                    &
-!     &      sph_maker_G%gen_sph%s3d_ranks%ndomain_sph
-!        write(e_message,'(a)') 'Parallellization error'
-!        call calypso_mpi_abort(ierr_P_MPI, e_message)
-!      end if
-!
       end subroutine init_gen_sph_grid_t
 !
 ! ----------------------------------------------------------------------
@@ -98,7 +89,6 @@
 !
       use m_array_for_send_recv
       use parallel_gen_sph_grids
-      use mpi_gen_sph_grids_modes
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
 !
@@ -106,42 +96,10 @@
 !
       sph_files1%sph_file_param%iflag_format = id_ascii_file_fmt
       if(iflag_debug .gt. 0) write(*,*) 's_para_gen_sph_grids'
-      call s_para_gen_sph_grids                                           &
+      call s_para_gen_sph_grids                                        &
      &   (sph_files1%sph_file_param, sph_const, sph_maker_G%gen_sph)
       call dealloc_gen_mesh_params(sph_maker_G%gen_sph)
 !
-      if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
-!
-!  ========= Generate FEM mesh ===========================
-!
-!      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
-!      if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-!      call load_para_SPH_and_FEM_mesh                                  &
-!     &   (izero, sph_files1%FEM_mesh_flags, sph_files1%sph_file_param, &
-!     &    sph_const, comms_sph, sph_grps,                              &
-!     &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
-!      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
-!      call calypso_MPI_barrier
-!
-!  ========= Generate viewer mesh ===========================
-!
-!      if(sph_files1%FEM_mesh_flags%iflag_output_VMESH .gt. 0) then
-!        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+5)
-!        if(iflag_debug .gt. 0) write(*,*) 'pickup_surface_mesh'
-!        call pickup_surface_mesh(sph_files1%mesh_file_IO, para_v1)
-!        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+5)
-!      end if
-!
-!  ========= Generate FEM surface and edge mesh =======================
-!
-!      if(sph_files1%FEM_mesh_flags%iflag_output_SURF .eq. 0) goto 99
-!
-!      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+4)
-!      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-!      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
-!
-  99  continue
       call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times

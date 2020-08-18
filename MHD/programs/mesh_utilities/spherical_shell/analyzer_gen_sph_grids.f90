@@ -97,7 +97,6 @@
       subroutine analyze_gen_sph_grids
 !
       use m_array_for_send_recv
-      use mpi_gen_sph_grids_modes
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
 !

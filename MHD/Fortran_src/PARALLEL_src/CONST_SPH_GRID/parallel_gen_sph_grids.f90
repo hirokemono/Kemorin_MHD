@@ -60,11 +60,14 @@
       use set_comm_table_rtp_rj
       use const_global_sph_grids_modes
       use const_sph_radial_grid
+      use copy_para_sph_global_params
 !
       type(field_IO_params), intent(in) :: sph_file_param
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
+      integer(kind = kint) :: num_pe
+      type(sph_grids), allocatable :: para_sph(:)
 !
 !  =========  Set global resolutions ===================================
 !
@@ -86,20 +89,25 @@
      &    gen_sph%s3d_ranks, gen_sph%sph_lcp,                           &
      &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
+      num_pe = gen_sph%s3d_ranks%ndomain_sph
+      allocate(para_sph(num_pe))
+      call copy_para_sph_param_from_ctl(sph, num_pe, para_sph)
+      call copy_para_global_sph_resolution(sph, num_pe, para_sph)
+!
+!
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
       call para_gen_sph_rlm_grids(sph_file_param,                       &
-     &    gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
+     &    gen_sph, num_pe, para_sph, comm_rlm_mul)
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call para_gen_sph_rj_modes                                        &
-     &   (sph_file_param, comm_rlm_mul, sph%sph_params, sph%sph_rtp,    &
-     &    gen_sph, sph%sph_rj)
+     &   (sph_file_param, num_pe, comm_rlm_mul, gen_sph, para_sph)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
@@ -108,20 +116,21 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
       allocate(comm_rtm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
-      if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_rtm_grids'
+      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
       call para_gen_sph_rtm_grids(sph_file_param,                       &
-     &    gen_sph, sph%sph_params, sph%sph_rtm, comm_rtm_mul)
+     &    gen_sph, num_pe, para_sph, comm_rtm_mul)
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-      call para_gen_sph_rtp_grids(sph_file_param, comm_rtm_mul,         &
-     &    sph%sph_params, gen_sph, sph%sph_rtp)
+      call para_gen_sph_rtp_grids(sph_file_param, num_pe, comm_rtm_mul, &
+     &    gen_sph, para_sph)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
 !
       deallocate(comm_rtm_mul)
+      deallocate(para_sph)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
       end subroutine s_para_gen_sph_grids
