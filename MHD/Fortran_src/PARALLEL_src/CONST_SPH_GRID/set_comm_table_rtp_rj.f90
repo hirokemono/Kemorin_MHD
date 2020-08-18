@@ -393,6 +393,7 @@
 !
       integer(kind = kint), intent(inout) :: icou
 !
+      type(sph_rlm_grid) :: sph_rlm_lc
       type(sph_comm_tbl) :: comm_rlm_lc
 !
       integer(kind = kint) :: jst, jed, j, jnod, k_tmp, j_tmp
@@ -418,16 +419,16 @@
         if(iflag_jp .eq. 0) cycle
 !
         call const_sph_rlm_modes(id_org_rank,                           &
-     &     s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,          &
-     &      sph_rlm, comm_rlm_lc)
+     &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
+     &      sph_rlm_lc, comm_rlm_lc)
 !
         jst = comm_rlm_lc%istack_sr(iflag_jp-1)+1
         jed = comm_rlm_lc%istack_sr(iflag_jp)
         do j =  jst, jed
           icou = icou + 1
           jnod = comm_rlm_lc%item_sr(j)
-          k_glb = sph_rlm%idx_global_rlm(jnod,1)
-          j_glb = sph_rlm%idx_global_rlm(jnod,2)
+          k_glb = sph_rlm_lc%idx_global_rlm(jnod,1)
+          j_glb = sph_rlm_lc%idx_global_rlm(jnod,2)
           k_tmp = sph_lcx%idx_local_rj_r(k_glb)
           j_tmp = sph_lcx%idx_local_rj_j(j_glb)
           comm_rj%item_sr(icou) =  j_tmp                                &
@@ -435,8 +436,8 @@
         end do
 !
         call dealloc_type_sph_comm_item(comm_rlm_lc)
-        call dealloc_type_sph_1d_index_rlm(sph_rlm)
-        call dealloc_type_spheric_param_rlm(sph_rlm)
+        call dealloc_type_sph_1d_index_rlm(sph_rlm_lc)
+        call dealloc_type_spheric_param_rlm(sph_rlm_lc)
       end do
 !
       end subroutine set_comm_table_4_rj
@@ -488,6 +489,7 @@
      &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,     &
      &          sph_rtp, sph_rtm, comm_rtp, sph_lcx, icou)
 !
+      use calypso_mpi
       use gen_sph_grids_modes
 !
       integer, intent(in) :: id_rank
@@ -505,6 +507,7 @@
       type(sph_comm_tbl), intent(inout) :: comm_rtp
       type(sph_local_1d_index), intent(inout) :: sph_lcx
 !
+      type(sph_rtm_grid) :: sph_rtm_lc
       type(sph_comm_tbl) :: comm_rtm_lc
 !
       integer(kind = kint) :: jst, jed, j, jnod
@@ -515,6 +518,7 @@
 !
       call set_local_idx_table_rtp(sph_rtp, sph_lcx)
 !
+      call calypso_mpi_barrier
       do ip1 = 1, num_pe
         id_org_rank = int(mod((id_rank+ip1),num_pe))
         ip_org = id_org_rank + 1
@@ -530,29 +534,36 @@
 !
         call const_sph_rtm_grids(id_org_rank,                           &
      &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
-     &      sph_rtm, comm_rtm_lc)
+     &      sph_rtm_lc, comm_rtm_lc)
+        write(*,*) id_rank, id_org_rank, 'comm_rtm_lc%istack_sr', &
+     &             size(comm_rtm_lc%istack_sr)
 !
         jst = comm_rtm_lc%istack_sr(iflag_jp-1)+1
         jed = comm_rtm_lc%istack_sr(iflag_jp)
+        write(*,*) id_rank, ip1, iflag_jp, &
+     &    'icou in', icou, size(comm_rtp%item_sr)
         do j =  jst, jed
           icou = icou + 1
           jnod = comm_rtm_lc%item_sr(j)
-          k_glb = sph_rtm%idx_global_rtm(jnod,1)
-          l_glb = sph_rtm%idx_global_rtm(jnod,2)
-          m_glb = sph_rtm%idx_global_rtm(jnod,3)
+          k_glb = sph_rtm_lc%idx_global_rtm(jnod,1)
+          l_glb = sph_rtm_lc%idx_global_rtm(jnod,2)
+          m_glb = sph_rtm_lc%idx_global_rtm(jnod,3)
           k_tmp = sph_lcx%idx_local_rtp_r(k_glb)
           l_tmp = sph_lcx%idx_local_rtp_t(l_glb)
           m_tmp = sph_lcx%idx_local_rtp_p(m_glb)
-          comm_rtp%item_sr(icou) =  k_tmp                               &
-     &                             + (l_tmp-1) * sph_rtp%nidx_rtp(1)    &
-     &                             + (m_tmp-1) * sph_rtp%nidx_rtp(1)    &
-     &                                         * sph_rtp%nidx_rtp(2)
+!          comm_rtp%item_sr(icou) =  k_tmp                               &
+!     &                             + (l_tmp-1) * sph_rtp%nidx_rtp(1)    &
+!     &                             + (m_tmp-1) * sph_rtp%nidx_rtp(1)    &
+!     &                                         * sph_rtp%nidx_rtp(2)
         end do
+        write(*,*) id_rank, 'icou out', icou, size(comm_rtp%item_sr)
 !
         call dealloc_type_sph_comm_item(comm_rtm_lc)
-        call dealloc_type_sph_1d_index_rtm(sph_rtm)
-        call dealloc_type_spheric_param_rtm(sph_rtm)
+        call dealloc_type_sph_1d_index_rtm(sph_rtm_lc)
+        call dealloc_type_spheric_param_rtm(sph_rtm_lc)
       end do
+      write(*,*) id_rank, 'set_comm_table_4_rtp'
+      call calypso_mpi_barrier
 !
       end subroutine set_comm_table_4_rtp
 !
