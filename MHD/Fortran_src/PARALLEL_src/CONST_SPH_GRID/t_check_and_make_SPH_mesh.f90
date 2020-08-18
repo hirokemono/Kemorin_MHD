@@ -115,7 +115,7 @@
 !
       type(sph_file_data_type) :: sph_file_m
       type(sph_comm_tables) :: comms_sph_lc
-      type(sph_group_data) :: sph_grp_lc
+      type(sph_group_data) :: sph_grp
       type(sph_local_1d_index) :: sph_lcx_m
 !
       integer :: ip
@@ -168,7 +168,7 @@
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    comms_sph_lc%comm_rj, sph_grp_lc, sph_lcx_m)
+     &    comms_sph_lc%comm_rj, sph_grp, sph_lcx_m)
       call dealloc_rj_1d_local_idx(sph_lcx_m)
 !
       call dealloc_comm_stacks_sph                                      &
@@ -202,7 +202,7 @@
      &    gen_sph%med_layer_grp, gen_sph%s3d_ranks, gen_sph%s3d_radius, &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph%sph_params, sph%sph_rtp, comms_sph_lc%comm_rtp,           &
-     &    sph_grp_lc, sph_lcx_m)
+     &    sph_grp, sph_lcx_m)
       call dealloc_rtp_1d_local_idx(sph_lcx_m)
 !
       call dealloc_comm_stacks_sph                                      &
@@ -215,69 +215,61 @@
 !
       call copy_sph_trans_rlm_to_IO(sph%sph_params, sph%sph_rlm,        &
      &                              comms_sph_lc%comm_rlm, sph_file_m)
+      call sel_mpi_write_modes_rlm_file                                 &
+     &   (nprocs, my_rank, sph_file_param, sph_file_m)
+      call dealloc_rlm_mode_IO(sph_file_m)
+      write(*,'(a,i6,a)') 'Spherical transform table for domain',       &
+     &          my_rank, ' is done.'
 !
       call dealloc_type_sph_comm_item(comms_sph_lc%comm_rlm)
       call dealloc_type_sph_1d_index_rlm(sph%sph_rlm)
       call dealloc_type_spheric_param_rlm(sph%sph_rlm)
 !
-      call sel_mpi_write_modes_rlm_file                                 &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rlm_mode_IO(sph_file_m)
-!
-      write(*,'(a,i6,a)') 'Spherical transform table for domain',       &
-     &          my_rank, ' is done.'
 !
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'copy_sph_trans_rj_to_IO', my_rank
       call copy_sph_trans_rj_to_IO(sph%sph_params,                      &
-     &    sph%sph_rj, comms_sph_lc%comm_rj, sph_grp_lc, sph_file_m)
+     &    sph%sph_rj, comms_sph_lc%comm_rj, sph_grp, sph_file_m)
+      call sel_mpi_write_spectr_rj_file                                 &
+     &   (nprocs, my_rank, sph_file_param, sph_file_m)
+      call dealloc_rj_mode_IO(sph_file_m)
+      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
+     &          my_rank, ' is done.'
 !
       call dealloc_type_sph_1d_index_rj(sph%sph_rj)
       call dealloc_spheric_param_rj(sph%sph_rj)
       call dealloc_type_sph_comm_item(comms_sph_lc%comm_rj)
 !
-      call sel_mpi_write_spectr_rj_file                                 &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rj_mode_IO(sph_file_m)
-!
-      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
-     &          my_rank, ' is done.'
-!
 !
       call copy_sph_trans_rtm_to_IO(sph%sph_params, sph%sph_rtm,        &
      &    comms_sph_lc%comm_rtm, sph_file_m)
+      call sel_mpi_write_geom_rtm_file                                  &
+     &   (nprocs, my_rank, sph_file_param, sph_file_m)
+      call dealloc_rtm_grid_IO(sph_file_m)
+      write(*,'(a,i6,a)') 'Legendre transform table rtm',               &
+     &          my_rank, ' is done.'
 !
       call dealloc_type_sph_comm_item(comms_sph_lc%comm_rtm)
       call dealloc_type_sph_1d_index_rtm(sph%sph_rtm)
       call dealloc_type_spheric_param_rtm(sph%sph_rtm)
 !
-      call sel_mpi_write_geom_rtm_file                                  &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rtm_grid_IO(sph_file_m)
-!
-      write(*,'(a,i6,a)') 'Legendre transform table rtm',               &
-     &          my_rank, ' is done.'
-!
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'copy_sph_trans_rtp_to_IO', my_rank
       call copy_sph_trans_rtp_to_IO(sph%sph_params,                     &
-     &    sph%sph_rtp, comms_sph_lc%comm_rtp, sph_grp_lc, sph_file_m)
+     &    sph%sph_rtp, comms_sph_lc%comm_rtp, sph_grp, sph_file_m)
+      call sel_mpi_write_geom_rtp_file                                  &
+     &   (nprocs, my_rank, sph_file_param, sph_file_m)
+      call dealloc_rtp_grid_IO(sph_file_m)
+      write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
+     &          my_rank, ' is done.'
 !
       call dealloc_type_sph_1d_index_rtp(sph%sph_rtp)
       call dealloc_type_spheric_param_rtp(sph%sph_rtp)
       call dealloc_type_sph_comm_item(comms_sph_lc%comm_rtp)
-      call dealloc_sph_mode_group(sph_grp_lc)
-      call dealloc_sph_grid_group(sph_grp_lc)
-!
-      call sel_mpi_write_geom_rtp_file                                  &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-!
-      call dealloc_rtp_grid_IO(sph_file_m)
-!
-      write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
-     &          my_rank, ' is done.'
+      call dealloc_sph_mode_group(sph_grp)
+      call dealloc_sph_grid_group(sph_grp)
 !
       end subroutine para_gen_sph_grids
 !
