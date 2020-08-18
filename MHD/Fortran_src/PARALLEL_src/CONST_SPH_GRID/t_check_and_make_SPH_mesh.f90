@@ -27,6 +27,7 @@
       use m_work_time
 !
       use t_spheric_parameter
+      use t_sph_trans_comm_tbl
       use t_const_spherical_grid
       use t_file_IO_parameter
 !
@@ -113,10 +114,7 @@
       type(sph_comm_tbl), allocatable :: comm_rtm_mul(:)
 !
       type(sph_file_data_type) :: sph_file_m
-      type(sph_comm_tbl) :: comm_rlm_lc
-      type(sph_comm_tbl) :: comm_rj_lc
-      type(sph_comm_tbl) :: comm_rtm_lc
-      type(sph_comm_tbl) :: comm_rtp_lc
+      type(sph_comm_tables) :: comms_sph_lc
       type(sph_group_data) :: sph_grp_lc
       type(sph_local_1d_index) :: sph_lcx_m
 !
@@ -153,9 +151,9 @@
       call const_sph_rlm_modes                                          &
      &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_rlm, comm_rlm_lc)
+     &    sph%sph_rlm, comms_sph_lc%comm_rlm)
       ip = my_rank + 1
-      call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip))
+      call copy_sph_comm_neib(comms_sph_lc%comm_rlm, comm_rlm_mul(ip))
 !
       call s_bcast_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
@@ -169,8 +167,8 @@
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_params, sph%sph_rtp, sph%sph_rj, comm_rj_lc, sph_grp_lc,          &
-     &    sph_lcx_m)
+     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
+     &    comms_sph_lc%comm_rj, sph_grp_lc, sph_lcx_m)
       call dealloc_rj_1d_local_idx(sph_lcx_m)
 !
       call dealloc_comm_stacks_sph                                      &
@@ -187,9 +185,9 @@
       call const_sph_rtm_grids                                          &
      &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_rtm, comm_rtm_lc)
+     &    sph%sph_rtm, comms_sph_lc%comm_rtm)
       ip = my_rank + 1
-      call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip))
+      call copy_sph_comm_neib(comms_sph_lc%comm_rtm, comm_rtm_mul(ip))
 !
       call s_bcast_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
@@ -203,7 +201,8 @@
      &    gen_sph%added_radial_grp, gen_sph%r_layer_grp,                &
      &    gen_sph%med_layer_grp, gen_sph%s3d_ranks, gen_sph%s3d_radius, &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_params, sph%sph_rtp, comm_rtp_lc, sph_grp_lc, sph_lcx_m)
+     &    sph%sph_params, sph%sph_rtp, comms_sph_lc%comm_rtp,           &
+     &    sph_grp_lc, sph_lcx_m)
       call dealloc_rtp_1d_local_idx(sph_lcx_m)
 !
       call dealloc_comm_stacks_sph                                      &
@@ -214,10 +213,10 @@
 !
 !
 !
-      call copy_sph_trans_rlm_to_IO                                     &
-     &   (sph%sph_params, sph%sph_rlm, comm_rlm_lc, sph_file_m)
+      call copy_sph_trans_rlm_to_IO(sph%sph_params, sph%sph_rlm,        &
+     &                              comms_sph_lc%comm_rlm, sph_file_m)
 !
-      call dealloc_type_sph_comm_item(comm_rlm_lc)
+      call dealloc_type_sph_comm_item(comms_sph_lc%comm_rlm)
       call dealloc_type_sph_1d_index_rlm(sph%sph_rlm)
       call dealloc_type_spheric_param_rlm(sph%sph_rlm)
 !
@@ -232,12 +231,11 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'copy_sph_trans_rj_to_IO', my_rank
       call copy_sph_trans_rj_to_IO(sph%sph_params,                      &
-     &    sph%sph_rj, comm_rj_lc, sph_grp_lc, sph_file_m)
+     &    sph%sph_rj, comms_sph_lc%comm_rj, sph_grp_lc, sph_file_m)
 !
       call dealloc_type_sph_1d_index_rj(sph%sph_rj)
       call dealloc_spheric_param_rj(sph%sph_rj)
-      call dealloc_type_sph_comm_item(comm_rj_lc)
-      call dealloc_sph_mode_group(sph_grp_lc)
+      call dealloc_type_sph_comm_item(comms_sph_lc%comm_rj)
 !
       call sel_mpi_write_spectr_rj_file                                 &
      &   (nprocs, my_rank, sph_file_param, sph_file_m)
@@ -247,10 +245,10 @@
      &          my_rank, ' is done.'
 !
 !
-      call copy_sph_trans_rtm_to_IO                                     &
-     &   (sph%sph_params, sph%sph_rtm, comm_rtm_lc, sph_file_m)
+      call copy_sph_trans_rtm_to_IO(sph%sph_params, sph%sph_rtm,        &
+     &    comms_sph_lc%comm_rtm, sph_file_m)
 !
-      call dealloc_type_sph_comm_item(comm_rtm_lc)
+      call dealloc_type_sph_comm_item(comms_sph_lc%comm_rtm)
       call dealloc_type_sph_1d_index_rtm(sph%sph_rtm)
       call dealloc_type_spheric_param_rtm(sph%sph_rtm)
 !
@@ -265,11 +263,12 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'copy_sph_trans_rtp_to_IO', my_rank
       call copy_sph_trans_rtp_to_IO(sph%sph_params,                     &
-     &    sph%sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file_m)
+     &    sph%sph_rtp, comms_sph_lc%comm_rtp, sph_grp_lc, sph_file_m)
 !
       call dealloc_type_sph_1d_index_rtp(sph%sph_rtp)
       call dealloc_type_spheric_param_rtp(sph%sph_rtp)
-      call dealloc_type_sph_comm_item(comm_rtp_lc)
+      call dealloc_type_sph_comm_item(comms_sph_lc%comm_rtp)
+      call dealloc_sph_mode_group(sph_grp_lc)
       call dealloc_sph_grid_group(sph_grp_lc)
 !
       call sel_mpi_write_geom_rtp_file                                  &
