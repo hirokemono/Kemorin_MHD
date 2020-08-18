@@ -25,23 +25,22 @@
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(nprocs)
 !!
 !!      subroutine para_gen_sph_rj_modes                                &
-!!     &         (sph_file_param, comm_rlm_mul, sph_params,             &
-!!     &          gen_sph, sph_rlm, sph_rj)
+!!     &         (sph_file_param, comm_rlm_mul, sph_params, sph_rtp,    &
+!!     &          gen_sph, sph_rj)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm_mul(nprocs)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
-!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!      subroutine para_gen_sph_rtp_grids                               &
 !!     &         (sph_file_param, comm_rtm_mul, sph_params,             &
-!!     &          gen_sph, sph_rtp, sph_rtm)
+!!     &          gen_sph, sph_rtp)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm_mul(nprocs)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!@endverbatim
 !
       module para_gen_sph_grids_modes
@@ -178,8 +177,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine para_gen_sph_rj_modes                                  &
-     &         (sph_file_param, comm_rlm_mul, sph_params,               &
-     &          gen_sph, sph_rlm, sph_rj)
+     &         (sph_file_param, comm_rlm_mul, sph_params, sph_rtp,      &
+     &          gen_sph, sph_rj)
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
@@ -187,7 +186,7 @@
 !
       type(field_IO_params), intent(in) :: sph_file_param
       type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
@@ -214,7 +213,7 @@
      &      gen_sph%added_radial_grp, gen_sph%s3d_ranks,                &
      &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph_params, sph_rj, sph_rlm, comm_rj_lc, sph_grp_lc,        &
+     &      sph_params, sph_rtp, sph_rj, comm_rj_lc, sph_grp_lc,        &
      &      sph_lcx_m)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
@@ -243,7 +242,7 @@
 !
       subroutine para_gen_sph_rtp_grids                                 &
      &         (sph_file_param, comm_rtm_mul, sph_params,               &
-     &          gen_sph, sph_rtp, sph_rtm)
+     &          gen_sph, sph_rtp)
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
@@ -254,7 +253,6 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(inout) :: sph_rtp
-      type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       type(sph_comm_tbl) :: comm_rtp_lc
@@ -277,8 +275,7 @@
      &      gen_sph%med_layer_grp, gen_sph%s3d_ranks,                   &
      &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph_params, sph_rtp, sph_rtm, comm_rtp_lc, sph_grp_lc,      &
-     &      sph_lcx_m)
+     &      sph_params, sph_rtp, comm_rtp_lc, sph_grp_lc, sph_lcx_m)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rtp_to_IO', id_rank

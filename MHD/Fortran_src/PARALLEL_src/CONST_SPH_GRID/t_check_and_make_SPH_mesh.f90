@@ -140,8 +140,8 @@
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_rj_modes                                         &
-     &   (sph_file_param, comm_rlm_mul, sph%sph_params,                 &
-     &    gen_sph, sph%sph_rlm, sph%sph_rj)
+     &   (sph_file_param, comm_rlm_mul, sph%sph_params, sph%sph_rtp,    &
+     &    gen_sph, sph%sph_rj)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
@@ -158,9 +158,8 @@
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-      call mpi_gen_sph_rtp_grids                                        &
-     &   (sph_file_param, comm_rtm_mul, sph%sph_params,                 &
-     &    gen_sph, sph%sph_rtp, sph%sph_rtm)
+      call mpi_gen_sph_rtp_grids(sph_file_param, comm_rtm_mul,          &
+     &    sph%sph_params, gen_sph, sph%sph_rtp)
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
 !
