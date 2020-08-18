@@ -73,16 +73,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rlm_grids(sph_file_param, gen_sph,        &
-     &          num_pe, para_sph, comm_rlm_lc, comm_rlm_mul)
+      subroutine para_gen_sph_rlm_grids                                 &
+     &         (gen_sph, num_pe, para_sph, comm_rlm_lc, comm_rlm_mul)
 !
       use set_comm_table_rtp_rj
-      use load_data_for_sph_IO
       use gen_sph_grids_modes
-      use sph_file_MPI_IO_select
 !
       integer(kind = kint), intent(in) :: num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
       type(construct_spherical_grid), intent(in) :: gen_sph
       type(sph_grids), intent(inout) :: para_sph(num_pe)
       type(sph_comm_tbl), intent(inout) :: comm_rlm_lc(num_pe)
@@ -104,6 +101,24 @@
         call copy_sph_comm_neib(comm_rlm_lc(ip), comm_rlm_mul(ip))
       end do
 !
+      end subroutine para_gen_sph_rlm_grids
+!
+! -----------------------------------------------------------------------
+!
+      subroutine para_output_sph_rlm_grids                              &
+     &         (sph_file_param, num_pe, para_sph, comm_rlm_lc)
+!
+      use load_data_for_sph_IO
+      use sph_file_MPI_IO_select
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(field_IO_params), intent(in) :: sph_file_param
+      type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rlm_lc(num_pe)
+!
+      integer :: ip, id_rank
+!
+!
       do ip = 1, num_pe
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
@@ -124,20 +139,17 @@
      &                      id_rank, ' is done.'
       end do
 !
-      end subroutine para_gen_sph_rlm_grids
+      end subroutine para_output_sph_rlm_grids
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rtm_grids(sph_file_param,                 &
-     &          gen_sph, num_pe, para_sph, comm_rtm_lc, comm_rtm_mul)
+      subroutine para_gen_sph_rtm_grids                                 &
+     &         (gen_sph, num_pe, para_sph, comm_rtm_lc, comm_rtm_mul)
 !
       use set_comm_table_rtp_rj
-      use load_data_for_sph_IO
       use gen_sph_grids_modes
-      use sph_file_MPI_IO_select
 !
       integer(kind = kint), intent(in) :: num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
       type(construct_spherical_grid), intent(in) :: gen_sph
 !
       type(sph_grids), intent(inout) :: para_sph(num_pe)
@@ -160,6 +172,25 @@
         call copy_sph_comm_neib(comm_rtm_lc(ip), comm_rtm_mul(ip))
       end do
 !
+      end subroutine para_gen_sph_rtm_grids
+!
+! ----------------------------------------------------------------------
+!
+      subroutine para_output_sph_rtm_grids                              &
+     &         (sph_file_param, num_pe, para_sph, comm_rtm_lc)
+!
+      use load_data_for_sph_IO
+      use sph_file_MPI_IO_select
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(field_IO_params), intent(in) :: sph_file_param
+!
+      type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rtm_lc(num_pe)
+!
+      integer :: ip, id_rank
+!
+!
       do ip = 1, num_pe
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
@@ -180,20 +211,16 @@
      &                      id_rank, ' is done.'
       end do
 !
-      end subroutine para_gen_sph_rtm_grids
+      end subroutine para_output_sph_rtm_grids
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rj_modes                                  &
-     &         (sph_file_param, num_pe, comm_rlm_mul, gen_sph,          &
+      subroutine para_gen_sph_rj_modes(num_pe, comm_rlm_mul, gen_sph,   &
      &          para_sph, comm_rj_lc, sph_grp_lc)
 !
       use set_comm_table_rtp_rj
-      use sph_file_MPI_IO_select
-      use load_data_for_sph_IO
 !
       integer(kind = kint), intent(in) :: num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(num_pe)
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -222,6 +249,26 @@
       end do
       call dealloc_rj_1d_local_idx(sph_lcx_m)
 !
+      end subroutine para_gen_sph_rj_modes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine para_output_sph_rj_modes(sph_file_param, num_pe,       &
+     &          para_sph, comm_rj_lc, sph_grp_lc)
+!
+      use sph_file_MPI_IO_select
+      use load_data_for_sph_IO
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(field_IO_params), intent(in) :: sph_file_param
+!
+      type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rj_lc(num_pe)
+      type(sph_group_data), intent(inout) :: sph_grp_lc(num_pe)
+!
+      integer :: ip, id_rank
+!
+!
       do ip = 1, num_pe
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
@@ -245,20 +292,16 @@
      &          id_rank, ' is done.'
       end do
 !
-      end subroutine para_gen_sph_rj_modes
+      end subroutine para_output_sph_rj_modes
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rtp_grids                                 &
-     &         (sph_file_param, num_pe, comm_rtm_mul, gen_sph,          &
+      subroutine para_gen_sph_rtp_grids(num_pe, comm_rtm_mul, gen_sph,  &
      &          para_sph, comm_rtp_lc, sph_grp_lc)
 !
       use set_comm_table_rtp_rj
-      use sph_file_MPI_IO_select
-      use load_data_for_sph_IO
 !
       integer(kind = kint), intent(in) :: num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
       type(sph_comm_tbl), intent(in) :: comm_rtm_mul(num_pe)
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -287,6 +330,26 @@
       end do
       call dealloc_rtp_1d_local_idx(sph_lcx_m)
 !
+      end subroutine para_gen_sph_rtp_grids
+!
+! ----------------------------------------------------------------------
+!
+      subroutine para_output_sph_rtp_grids(sph_file_param, num_pe,      &
+     &          para_sph, comm_rtp_lc, sph_grp_lc)
+!
+      use sph_file_MPI_IO_select
+      use load_data_for_sph_IO
+!
+      integer(kind = kint), intent(in) :: num_pe
+      type(field_IO_params), intent(in) :: sph_file_param
+!
+      type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rtp_lc(num_pe)
+      type(sph_group_data), intent(inout) :: sph_grp_lc(num_pe)
+!
+      integer :: ip, id_rank
+!
+!
       do ip = 1, num_pe
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
@@ -311,7 +374,7 @@
      &          id_rank, ' is done.'
       end do
 !
-      end subroutine para_gen_sph_rtp_grids
+      end subroutine para_output_sph_rtp_grids
 !
 ! ----------------------------------------------------------------------
 !
