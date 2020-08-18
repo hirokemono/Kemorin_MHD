@@ -102,6 +102,11 @@
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    para_sph(ip)%sph_rlm, comm_rlm_lc(ip))
         call copy_sph_comm_neib(comm_rlm_lc(ip), comm_rlm_mul(ip))
+      end do
+!
+      do ip = 1, num_pe
+        id_rank = ip - 1
+        if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
         call copy_sph_trans_rlm_to_IO                                   &
      &     (para_sph(ip)%sph_params, para_sph(ip)%sph_rlm,              &
@@ -153,6 +158,11 @@
      &      gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
      &      para_sph(ip)%sph_rtm, comm_rtm_lc(ip))
         call copy_sph_comm_neib(comm_rtm_lc(ip), comm_rtm_mul(ip))
+      end do
+!
+      do ip = 1, num_pe
+        id_rank = ip - 1
+        if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
         call copy_sph_trans_rtm_to_IO                                   &
      &     (para_sph(ip)%sph_params, para_sph(ip)%sph_rtm,              &
@@ -191,12 +201,10 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj_lc(num_pe)
       type(sph_group_data), intent(inout) :: sph_grp_lc(num_pe)
 !
-!
       integer :: ip, id_rank
 !
 !
       call alloc_rj_1d_local_idx(para_sph(1)%sph_rj, sph_lcx_m)
-!
       do ip = 1, num_pe
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
@@ -211,6 +219,12 @@
      &      para_sph(ip)%sph_params, para_sph(ip)%sph_rtp,              &
      &      para_sph(ip)%sph_rj, comm_rj_lc(ip), sph_grp_lc(ip),        &
      &      sph_lcx_m)
+      end do
+      call dealloc_rj_1d_local_idx(sph_lcx_m)
+!
+      do ip = 1, num_pe
+        id_rank = ip - 1
+        if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rj_to_IO', id_rank
@@ -230,7 +244,6 @@
         write(*,'(a,i6,a)') 'Spherical modes for domain',               &
      &          id_rank, ' is done.'
       end do
-      call dealloc_rj_1d_local_idx(sph_lcx_m)
 !
       end subroutine para_gen_sph_rj_modes
 !
@@ -257,7 +270,6 @@
 !
 !
       call alloc_rtp_1d_local_idx(para_sph(1)%sph_rtp, sph_lcx_m)
-!
       do ip = 1, num_pe
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
@@ -272,6 +284,12 @@
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
      &      para_sph(ip)%sph_params, para_sph(ip)%sph_rtp,              &
      &      comm_rtp_lc(ip), sph_grp_lc(ip), sph_lcx_m)
+      end do
+      call dealloc_rtp_1d_local_idx(sph_lcx_m)
+!
+      do ip = 1, num_pe
+        id_rank = ip - 1
+        if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rtp_to_IO', id_rank
@@ -292,8 +310,6 @@
         write(*,'(a,i6,a)') 'Spherical grids for domain',               &
      &          id_rank, ' is done.'
       end do
-!
-      call dealloc_rtp_1d_local_idx(sph_lcx_m)
 !
       end subroutine para_gen_sph_rtp_grids
 !
