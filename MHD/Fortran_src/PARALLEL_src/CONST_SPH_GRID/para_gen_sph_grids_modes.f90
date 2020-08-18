@@ -74,7 +74,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine para_gen_sph_rlm_grids(sph_file_param, gen_sph,        &
-     &          num_pe, para_sph, comm_rlm_mul)
+     &          num_pe, para_sph, comm_rlm_lc, comm_rlm_mul)
 !
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
@@ -85,9 +85,9 @@
       type(field_IO_params), intent(in) :: sph_file_param
       type(construct_spherical_grid), intent(in) :: gen_sph
       type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rlm_lc(num_pe)
       type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(num_pe)
 !
-      type(sph_comm_tbl) :: comm_rlm_lc
       integer :: ip, id_rank
 !
 !
@@ -100,14 +100,14 @@
         call const_sph_rlm_modes                                        &
      &   (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    para_sph(ip)%sph_rlm, comm_rlm_lc)
-        call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip))
+     &    para_sph(ip)%sph_rlm, comm_rlm_lc(ip))
+        call copy_sph_comm_neib(comm_rlm_lc(ip), comm_rlm_mul(ip))
 !
         call copy_sph_trans_rlm_to_IO                                   &
      &     (para_sph(ip)%sph_params, para_sph(ip)%sph_rlm,              &
-     &      comm_rlm_lc, sph_file_m)
+     &      comm_rlm_lc(ip), sph_file_m)
 !
-        call dealloc_type_sph_comm_item(comm_rlm_lc)
+        call dealloc_type_sph_comm_item(comm_rlm_lc(ip))
         call dealloc_type_sph_1d_index_rlm(para_sph(ip)%sph_rlm)
         call dealloc_type_spheric_param_rlm(para_sph(ip)%sph_rlm)
 !
@@ -124,7 +124,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine para_gen_sph_rtm_grids(sph_file_param,                 &
-     &          gen_sph, num_pe, para_sph, comm_rtm_mul)
+     &          gen_sph, num_pe, para_sph, comm_rtm_lc, comm_rtm_mul)
 !
       use set_comm_table_rtp_rj
       use load_data_for_sph_IO
@@ -136,9 +136,9 @@
       type(construct_spherical_grid), intent(in) :: gen_sph
 !
       type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rtm_lc(num_pe)
       type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(num_pe)
 !
-      type(sph_comm_tbl) :: comm_rtm_lc
       integer :: ip, id_rank
 !
 !
@@ -151,14 +151,14 @@
         call const_sph_rtm_grids                                        &
      &     (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,             &
      &      gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &      para_sph(ip)%sph_rtm, comm_rtm_lc)
-        call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip))
+     &      para_sph(ip)%sph_rtm, comm_rtm_lc(ip))
+        call copy_sph_comm_neib(comm_rtm_lc(ip), comm_rtm_mul(ip))
 !
         call copy_sph_trans_rtm_to_IO                                   &
      &     (para_sph(ip)%sph_params, para_sph(ip)%sph_rtm,              &
-     &      comm_rtm_lc, sph_file_m)
+     &      comm_rtm_lc(ip), sph_file_m)
 !
-        call dealloc_type_sph_comm_item(comm_rtm_lc)
+        call dealloc_type_sph_comm_item(comm_rtm_lc(ip))
         call dealloc_type_sph_1d_index_rtm(para_sph(ip)%sph_rtm)
         call dealloc_type_spheric_param_rtm(para_sph(ip)%sph_rtm)
 !
@@ -174,8 +174,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rj_modes(sph_file_param, num_pe,          &
-     &          comm_rlm_mul, gen_sph, para_sph)
+      subroutine para_gen_sph_rj_modes                                  &
+     &         (sph_file_param, num_pe, comm_rlm_mul, gen_sph,          &
+     &          para_sph, comm_rj_lc, sph_grp_lc)
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
@@ -187,9 +188,9 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
       type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rj_lc(num_pe)
+      type(sph_group_data), intent(inout) :: sph_grp_lc(num_pe)
 !
-      type(sph_comm_tbl) :: comm_rj_lc
-      type(sph_group_data) :: sph_grp_lc
 !
       integer :: ip, id_rank
 !
@@ -208,17 +209,19 @@
      &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
      &      para_sph(ip)%sph_params, para_sph(ip)%sph_rtp,              &
-     &      para_sph(ip)%sph_rj, comm_rj_lc, sph_grp_lc, sph_lcx_m)
+     &      para_sph(ip)%sph_rj, comm_rj_lc(ip), sph_grp_lc(ip),        &
+     &      sph_lcx_m)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rj_to_IO', id_rank
         call copy_sph_trans_rj_to_IO(para_sph(ip)%sph_params,           &
-     &      para_sph(ip)%sph_rj, comm_rj_lc, sph_grp_lc, sph_file_m)
+     &      para_sph(ip)%sph_rj, comm_rj_lc(ip), sph_grp_lc(ip),        &
+     &      sph_file_m)
 !
         call dealloc_type_sph_1d_index_rj(para_sph(ip)%sph_rj)
         call dealloc_spheric_param_rj(para_sph(ip)%sph_rj)
-        call dealloc_type_sph_comm_item(comm_rj_lc)
-        call dealloc_sph_mode_group(sph_grp_lc)
+        call dealloc_type_sph_comm_item(comm_rj_lc(ip))
+        call dealloc_sph_mode_group(sph_grp_lc(ip))
 !
         call sel_mpi_write_spectr_rj_file                               &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
@@ -233,8 +236,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rtp_grids(sph_file_param, num_pe,         &
-     &          comm_rtm_mul, gen_sph, para_sph)
+      subroutine para_gen_sph_rtp_grids                                 &
+     &         (sph_file_param, num_pe, comm_rtm_mul, gen_sph,          &
+     &          para_sph, comm_rtp_lc, sph_grp_lc)
 !
       use set_comm_table_rtp_rj
       use sph_file_MPI_IO_select
@@ -246,9 +250,9 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
       type(sph_grids), intent(inout) :: para_sph(num_pe)
+      type(sph_comm_tbl), intent(inout) :: comm_rtp_lc(num_pe)
+      type(sph_group_data), intent(inout) :: sph_grp_lc(num_pe)
 !
-      type(sph_comm_tbl) :: comm_rtp_lc
-      type(sph_group_data) :: sph_grp_lc
       integer :: ip, id_rank
 !
 !
@@ -266,17 +270,19 @@
      &      gen_sph%med_layer_grp, gen_sph%s3d_ranks,                   &
      &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      para_sph(ip)%sph_params, para_sph(ip)%sph_rtp, comm_rtp_lc, sph_grp_lc, sph_lcx_m)
+     &      para_sph(ip)%sph_params, para_sph(ip)%sph_rtp,              &
+     &      comm_rtp_lc(ip), sph_grp_lc(ip), sph_lcx_m)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rtp_to_IO', id_rank
-        call copy_sph_trans_rtp_to_IO(para_sph(ip)%sph_params,                       &
-     &      para_sph(ip)%sph_rtp, comm_rtp_lc, sph_grp_lc, sph_file_m)
+        call copy_sph_trans_rtp_to_IO(para_sph(ip)%sph_params,          &
+     &      para_sph(ip)%sph_rtp, comm_rtp_lc(ip), sph_grp_lc(ip),      &
+     &      sph_file_m)
 !
         call dealloc_type_sph_1d_index_rtp(para_sph(ip)%sph_rtp)
         call dealloc_type_spheric_param_rtp(para_sph(ip)%sph_rtp)
-        call dealloc_type_sph_comm_item(comm_rtp_lc)
-        call dealloc_sph_grid_group(sph_grp_lc)
+        call dealloc_type_sph_comm_item(comm_rtp_lc(ip))
+        call dealloc_sph_grid_group(sph_grp_lc(ip))
 !
         call sel_mpi_write_geom_rtp_file                                &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
