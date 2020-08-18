@@ -184,16 +184,17 @@
       type(sph_group_data) :: sph_grp_lc
 !
 !
-      call alloc_rj_1d_local_idx(sph_rj, sph_lcx_m)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
+      call alloc_rj_1d_local_idx(sph_rj, sph_lcx_m)
       call const_sph_rj_modes                                           &
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph_params, sph_rtp, sph_rj, comm_rj_lc, sph_grp_lc,          &
      &    sph_lcx_m)
+      call dealloc_rj_1d_local_idx(sph_lcx_m)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'copy_sph_trans_rj_to_IO', my_rank
@@ -211,7 +212,6 @@
 !
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          my_rank, ' is done.'
-      call dealloc_rj_1d_local_idx(sph_lcx_m)
 !
       end subroutine mpi_gen_sph_rj_modes
 !
@@ -233,6 +233,7 @@
 !
       type(sph_comm_tbl) :: comm_rtp_lc
       type(sph_group_data) :: sph_grp_lc
+!
 !
       call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx_m)
       if(iflag_debug .gt. 0) write(*,*)                                 &
