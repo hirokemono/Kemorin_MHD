@@ -11,10 +11,13 @@
 !!     &         (iflag_make_SPH, sph_file_param, sph_maker)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!      subroutine mpi_gen_sph_grids(sph_file_param, sph, gen_sph)
+!!      subroutine mpi_gen_sph_grids(sph_file_param, gen_sph,           &
+!!     &                             sph, comms_sph, sph_grp)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_group_data), intent(inout) :: sph_grp
 !!@endverbatim
 !
       module t_check_and_make_SPH_mesh
@@ -59,6 +62,8 @@
 !
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
+      type(sph_comm_tables) :: comms_sph_tmp
+      type(sph_group_data) :: sph_grp_tmp
       logical :: iflag_lc
 !
 !
@@ -77,8 +82,8 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call mpi_gen_sph_grids                                          &
-     &     (sph_file_param, sph_maker%sph_tmp, sph_maker%gen_sph)
+        call mpi_gen_sph_grids(sph_file_param, sph_maker%gen_sph,       &
+     &      sph_maker%sph_tmp, comms_sph_tmp, sph_grp_tmp)
         call dealloc_gen_mesh_params(sph_maker%gen_sph)
       end if
       call calypso_mpi_barrier
@@ -125,7 +130,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_sph_grids(sph_file_param, sph, gen_sph)
+      subroutine mpi_gen_sph_grids(sph_file_param, gen_sph,             &
+     &                             sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !
@@ -141,16 +147,20 @@
       use sph_file_MPI_IO_select
 !
       type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_grids), intent(inout) :: sph
+!
       type(construct_spherical_grid), intent(inout) :: gen_sph
+!>       Structure of grid and spectr data for spherical spectr method
+      type(sph_grids), intent(inout) :: sph
+!>       Structure of communication table for spherical spectr method
+      type(sph_comm_tables), intent(inout) :: comms_sph
+!>       Structure of group data for spherical spectr method
+      type(sph_group_data), intent(inout) :: sph_grp
 !
 !>      Structure for parallel spherical mesh table
       type(sph_comm_tbl), allocatable :: comm_rlm_mul(:)
 !>      Structure for parallel spherical mesh table
       type(sph_comm_tbl), allocatable :: comm_rtm_mul(:)
 !
-      type(sph_comm_tables) :: comms_sph
-      type(sph_group_data) :: sph_grp
       type(sph_local_1d_index) :: sph_lcx_m
 !
       integer :: ip

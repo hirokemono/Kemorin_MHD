@@ -43,6 +43,10 @@
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
+!>       Structure of communication table for spherical spectr method
+      type(sph_comm_tables), save :: comms_sph_const
+!>       Structure of group data for spherical spectr method
+      type(sph_group_data), save :: sph_grp_const
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
@@ -104,7 +108,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
       call mpi_gen_sph_grids                                            &
-     &   (sph_files1%sph_file_param, sph_const, sph_maker_G%gen_sph)
+     &   (sph_files1%sph_file_param, sph_maker_G%gen_sph,               &
+     &    sph_const, comms_sph_const, sph_grp_const)
       call dealloc_gen_mesh_params(sph_maker_G%gen_sph)
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
