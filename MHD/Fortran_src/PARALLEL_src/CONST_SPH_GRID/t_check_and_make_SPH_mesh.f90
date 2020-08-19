@@ -82,9 +82,10 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call mpi_gen_sph_grids(sph_file_param, sph_maker%gen_sph,       &
+        call mpi_gen_sph_grids(sph_maker%gen_sph,                       &
      &      sph_maker%sph_tmp, comms_sph_tmp, sph_grp_tmp)
-        call dealloc_gen_mesh_params(sph_maker%gen_sph)
+        call mpi_output_gen_sph_grids(sph_file_param,                   &
+     &      sph_maker%sph_tmp, comms_sph_tmp, sph_grp_tmp)
       end if
       call calypso_mpi_barrier
 !
@@ -104,6 +105,8 @@
 !
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
+      type(sph_comm_tables) :: comms_sph_tmp
+      type(sph_group_data) :: sph_grp_tmp
       logical :: iflag_lc
 !
 !
@@ -119,9 +122,10 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call mpi_gen_sph_rj_mode                                        &
-     &     (sph_file_param, sph_maker%sph_tmp, sph_maker%gen_sph)
-        call dealloc_gen_mesh_params(sph_maker%gen_sph)
+        call mpi_gen_sph_rj_mode(sph_maker%gen_sph,                     &
+     &      sph_maker%sph_tmp, comms_sph_tmp, sph_grp_tmp)
+        call mpi_output_gen_sph_rj_mode(sph_file_param,                 &
+     &      sph_maker%sph_tmp, comms_sph_tmp, sph_grp_tmp)
       end if
       call calypso_mpi_barrier
 !
@@ -130,8 +134,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_sph_grids(sph_file_param, gen_sph,             &
-     &                             sph, comms_sph, sph_grp)
+      subroutine mpi_gen_sph_grids(gen_sph, sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !
@@ -145,8 +148,6 @@
       use load_data_for_sph_IO
       use gen_sph_grids_modes
       use sph_file_MPI_IO_select
-!
-      type(field_IO_params), intent(in) :: sph_file_param
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !>       Structure of grid and spectr data for spherical spectr method
@@ -254,10 +255,8 @@
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
 !
       deallocate(comm_rtm_mul)
+      call dealloc_gen_mesh_params(gen_sph)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
-!
-      call mpi_output_gen_sph_grids                                     &
-     &   (sph_file_param, sph, comms_sph, sph_grp)
 !
       end subroutine mpi_gen_sph_grids
 !
@@ -342,7 +341,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_sph_rj_mode(sph_file_param, sph, gen_sph)
+      subroutine mpi_gen_sph_rj_mode(gen_sph, sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !
@@ -357,15 +356,17 @@
       use gen_sph_grids_modes
       use sph_file_MPI_IO_select
 !
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
+!>       Structure of grid and spectr data for spherical spectr method
+      type(sph_grids), intent(inout) :: sph
+!>       Structure of communication table for spherical spectr method
+      type(sph_comm_tables), intent(inout) :: comms_sph
+!>       Structure of group data for spherical spectr method
+      type(sph_group_data), intent(inout) :: sph_grp
 !
 !>      Structure for parallel spherical mesh table
       type(sph_comm_tbl), allocatable :: comm_rlm_mul(:)
 !
-      type(sph_comm_tables) :: comms_sph
-      type(sph_group_data) :: sph_grp
       type(sph_local_1d_index) :: sph_lcx_m
 !
       integer :: ip
@@ -424,11 +425,8 @@
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
+      call dealloc_gen_mesh_params(gen_sph)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
-!
-!
-      call mpi_output_gen_sph_rj_mode                                   &
-     &   (sph_file_param, sph, comms_sph, sph_grp)
 !
       end subroutine mpi_gen_sph_rj_mode
 !
