@@ -39,7 +39,8 @@
       type(control_data_4_merge), save :: mgd_ctl_s
       type(control_param_assemble), save :: asbl_param_s
       type(spectr_data_4_assemble), save :: sph_asbl_s
-      type(sph_grid_maker_in_sim), save :: sph_maker_s
+      type(sph_grid_maker_in_sim), save :: sph_asbl_maker_s
+      type(sph_grid_maker_in_sim), save :: sph_org_maker_s
       type(time_data), save :: init_t
 !
 ! ----------------------------------------------------------------------
@@ -66,24 +67,24 @@
 !
       if(my_rank .eq. 0) call read_control_assemble_sph(mgd_ctl_s)
       call bcast_merge_control_data(mgd_ctl_s)
-      call set_control_4_newsph                                         &
-     &   (mgd_ctl_s, asbl_param_s, sph_asbl_s, sph_maker_s)
+      call set_control_4_newsph(mgd_ctl_s, asbl_param_s, sph_asbl_s,    &
+     &                          sph_org_maker_s, sph_asbl_maker_s)
 !
       call alloc_spectr_data_4_assemble(sph_asbl_s)
 !
 !  set original spectr data
 !
       call set_local_rj_mesh_4_merge(izero, asbl_param_s%org_mesh_file, &
-     &    sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh, sph_maker_s)
+     &    sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh, sph_asbl_maker_s)
       call share_org_sph_rj_data                                        &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh)
 !
 !  set new spectr data
 !
       call set_new_rj_mesh_4_merge                                      &
-     &   (mgd_ctl_s%psph_ctl%iflag_sph_shell,                           &
+     &   (mgd_ctl_s%asbl_psph_ctl%iflag_sph_shell,                      &
      &    asbl_param_s%new_mesh_file,            &
-     &    sph_asbl_s%new_sph_mesh, sph_maker_s)
+     &    sph_asbl_s%new_sph_mesh, sph_asbl_maker_s)
       call load_new_spectr_rj_data                                      &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%np_sph_new,                 &
      &    sph_asbl_s%org_sph_mesh, sph_asbl_s%new_sph_mesh,             &
