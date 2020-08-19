@@ -86,6 +86,43 @@
       end subroutine check_and_make_SPH_mesh
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine check_and_make_SPH_rj_mode                             &
+     &         (iflag_make_SPH, sph_file_param, sph_maker)
+!
+      use m_error_IDs
+      use calypso_mpi_logical
+      use sph_file_IO_select
+!
+      integer(kind = kint), intent(in) :: iflag_make_SPH
+      type(field_IO_params), intent(in) :: sph_file_param
+!
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!
+      logical :: iflag_lc
+!
+!
+      if(my_rank .eq. izero) then
+        iflag_lc = check_exsist_rj_file(my_rank, sph_file_param)
+      end if
+      call calypso_mpi_bcast_one_logical(iflag_lc, 0)
+!
+      if(iflag_lc) then
+        if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
+      else if(iflag_make_SPH .eq. 0) then
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Set parameters for spherical shell')
+      else
+        if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
+        call mpi_gen_sph_rj_mode                                        &
+     &     (sph_file_param, sph_maker%sph_tmp, sph_maker%gen_sph)
+        call dealloc_gen_mesh_params(sph_maker%gen_sph)
+      end if
+      call calypso_mpi_barrier
+!
+      end subroutine check_and_make_SPH_rj_mode
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine mpi_gen_sph_grids(sph_file_param, sph, gen_sph)

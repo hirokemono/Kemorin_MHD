@@ -76,9 +76,8 @@
       integer(kind = kint) :: iloop, ierr
 !
 !  Check and construct spherical shell grid data
-      call check_and_make_SPH_mesh                                      &
-     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
-      write(*,*) 'Ahooo!'
+!      call check_and_make_SPH_rj_mode                                   &
+!     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
 !
 !  Read index data
       call set_sph_mesh_file_fmt_prefix                                 &
@@ -121,7 +120,7 @@
       integer(kind = kint) :: ierr
 !
 !  Check and construct spherical shell grid data
-      call check_and_make_SPH_mesh                                      &
+      call check_and_make_SPH_rj_mode                                   &
      &    (iflag_make_SPH, sph_mesh_file, sph_maker)
       write(*,*) 'Bakaaaaa!'
 !
