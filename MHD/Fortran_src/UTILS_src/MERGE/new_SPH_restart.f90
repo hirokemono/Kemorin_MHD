@@ -78,6 +78,7 @@
 !  Check and construct spherical shell grid data
       call check_and_make_SPH_mesh                                      &
      &    (iflag_make_SPH, sph_mesh_file, sph_maker)
+      write(*,*) 'Ahooo!'
 !
 !  Read index data
       call set_sph_mesh_file_fmt_prefix                                 &
@@ -98,6 +99,46 @@
       end do
 !
       end subroutine set_local_rj_mesh_4_merge
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_new_rj_mesh_4_merge(iflag_make_SPH,                &
+     &          sph_mesh_file, sph_mesh, sph_maker)
+!
+      use t_check_and_make_SPH_mesh
+      use sph_file_MPI_IO_select
+      use sph_file_IO_select
+      use load_data_for_sph_IO
+!
+      integer(kind = kint), intent(in) :: iflag_make_SPH
+      type(field_IO_params), intent(in) :: sph_mesh_file
+      type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs)
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!
+      type(field_IO_params) :: sph_file_param
+      type(sph_file_data_type) :: sph_file
+      integer :: ip
+      integer(kind = kint) :: ierr
+!
+!  Check and construct spherical shell grid data
+      call check_and_make_SPH_mesh                                      &
+     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
+      write(*,*) 'Bakaaaaa!'
+!
+!  Read index data
+      ip = my_rank + 1
+      call set_sph_mesh_file_fmt_prefix                                 &
+     &   (sph_mesh_file%iflag_format, sph_mesh_file%file_prefix,        &
+     &    sph_file_param)
+      call sel_mpi_read_spectr_rj_file                                  &
+     &   (nprocs, my_rank, sph_file_param, sph_file)
+!
+      call copy_sph_trans_rj_from_IO(sph_file,                          &
+     &    sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,      &
+     &    sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
+      call dealloc_rj_mode_IO(sph_file)
+!
+      end subroutine set_new_rj_mesh_4_merge
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

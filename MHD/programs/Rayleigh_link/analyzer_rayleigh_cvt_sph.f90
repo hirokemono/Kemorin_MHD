@@ -96,9 +96,9 @@
      &   (ra_rst_s, sph_asbl_s%org_sph_mesh(1))
 !
 !  set new spectr data
-      call set_local_rj_mesh_4_merge                                    &
+      call set_new_rj_mesh_4_merge                                      &
      &   (mgd_ctl_s%psph_ctl%iflag_sph_shell,                           &
-     &    asbl_param_s%new_mesh_file, sph_asbl_s%np_sph_new,            &
+     &    asbl_param_s%new_mesh_file,            &
      &    sph_asbl_s%new_sph_mesh, sph_maker_s)
 !
 !     Share number of nodes for new mesh

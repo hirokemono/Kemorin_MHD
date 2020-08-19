@@ -102,8 +102,8 @@
 !
 !  ========= Generate spherical harmonics table ========================
 !
-      if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
-      call para_gen_sph_grids                                           &
+      if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
+      call mpi_gen_sph_grids                                            &
      &   (sph_files1%sph_file_param, sph_const, sph_maker_G%gen_sph)
       call dealloc_gen_mesh_params(sph_maker_G%gen_sph)
 !

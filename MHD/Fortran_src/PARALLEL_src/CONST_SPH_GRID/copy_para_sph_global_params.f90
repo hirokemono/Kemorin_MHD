@@ -7,11 +7,17 @@
 !>@brief  Set control data for domain decomposition for spherical transform
 !!
 !!@verbatim
-!!      subroutine copy_para_sph_param_from_ctl(sph_org, num_pe, sph)
-!!      subroutine copy_para_global_sph_resolution(sph_org, num_pe, sph)
+!!      subroutine copy_para_sph_param_from_ctl                         &
+!!     &         (sph_org, num_pe, sph_params, sph_rtp, sph_rj)
+!!      subroutine copy_para_global_sph_resolution(sph_org, num_pe,     &
+!!     &          sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !!        integer(kind = kint), intent(in) :: num_pe
 !!        type(sph_grids), intent(in) :: sph_org
-!!        type(sph_grids), intent(inout) :: sph(num_pe)
+!!        type(sph_shell_parameters), intent(inout) :: sph_params(num_pe)
+!!        type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
+!!        type(sph_rtm_grid), intent(inout) :: sph_rtm(num_pe)
+!!        type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
+!!        type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
 !!@endverbatim
 !
       module copy_para_sph_global_params
@@ -28,44 +34,48 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_para_sph_param_from_ctl(sph_org, num_pe, sph)
+      subroutine copy_para_sph_param_from_ctl                           &
+     &         (sph_org, num_pe, sph_params, sph_rtp, sph_rj)
 !
       integer(kind = kint), intent(in) :: num_pe
       type(sph_grids), intent(in) :: sph_org
-      type(sph_grids), intent(inout) :: sph(num_pe)
+!
+      type(sph_shell_parameters), intent(inout) :: sph_params(num_pe)
+      type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
+      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
 !
       integer(kind = kint) :: ip
 !
 !
 !$omp parallel do
       do ip = 1, num_pe
-        sph(ip)%sph_params%iflag_shell_mode                             &
+        sph_params(ip)%iflag_shell_mode                                 &
      &           = sph_org%sph_params%iflag_shell_mode
-        sph(ip)%sph_params%iflag_radial_grid                            &
+        sph_params(ip)%iflag_radial_grid                                &
      &           = sph_org%sph_params%iflag_radial_grid
 !
-        sph(ip)%sph_rj%iflag_rj_center = sph_org%sph_rj%iflag_rj_center
+        sph_rj(ip)%iflag_rj_center = sph_org%sph_rj%iflag_rj_center
 !
-        sph(ip)%sph_params%l_truncation                                 &
+        sph_params(ip)%l_truncation                                     &
      &           = sph_org%sph_params%l_truncation
-        sph(ip)%sph_params%m_folding                                    &
+        sph_params(ip)%m_folding                                        &
      &           = sph_org%sph_params%m_folding
 !
-        sph(ip)%sph_params%nlayer_2_center                              &
+        sph_params(ip)%nlayer_2_center                                  &
      &           = sph_org%sph_params%nlayer_2_center
-        sph(ip)%sph_params%nlayer_ICB                                   &
+        sph_params(ip)%nlayer_ICB                                       &
      &           = sph_org%sph_params%nlayer_ICB
-        sph(ip)%sph_params%nlayer_CMB                                   &
+        sph_params(ip)%nlayer_CMB                                       &
      &           = sph_org%sph_params%nlayer_CMB
-        sph(ip)%sph_params%nlayer_mid_OC                                &
+        sph_params(ip)%nlayer_mid_OC                                    &
      &           = sph_org%sph_params%nlayer_mid_OC
 !
-        sph(ip)%sph_params%radius_ICB                                   &
+        sph_params(ip)%radius_ICB                                       &
      &           = sph_org%sph_params%radius_ICB
-        sph(ip)%sph_params%radius_CMB                                   &
+        sph_params(ip)%radius_CMB                                       &
      &           = sph_org%sph_params%radius_CMB
 !
-        sph(ip)%sph_rtp%nidx_global_rtp(1:2)                            &
+        sph_rtp(ip)%nidx_global_rtp(1:2)                                &
      &           = sph_org%sph_rtp%nidx_global_rtp(1:2)
       end do
 !$omp end parallel do
@@ -74,24 +84,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_para_global_sph_resolution(sph_org, num_pe, sph)
+      subroutine copy_para_global_sph_resolution(sph_org, num_pe,       &
+     &          sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !
       integer(kind = kint), intent(in) :: num_pe
       type(sph_grids), intent(in) :: sph_org
-      type(sph_grids), intent(inout) :: sph(num_pe)
+      type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
+      type(sph_rtm_grid), intent(inout) :: sph_rtm(num_pe)
+      type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
+      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
 !
       integer(kind = kint) :: ip
 !
 !
 !$omp parallel do
       do ip = 1, num_pe
-        sph(ip)%sph_rtp%nidx_global_rtp(1:3)                            &
+        sph_rtp(ip)%nidx_global_rtp(1:3)                                &
      &      = sph_org%sph_rtp%nidx_global_rtp(1:3)
-        sph(ip)%sph_rtm%nidx_global_rtm(1:3)                            &
+        sph_rtm(ip)%nidx_global_rtm(1:3)                                &
      &      = sph_org%sph_rtm%nidx_global_rtm(1:3)
-        sph(ip)%sph_rlm%nidx_global_rlm(1:2)                            &
+        sph_rlm(ip)%nidx_global_rlm(1:2)                                &
      &      = sph_org%sph_rlm%nidx_global_rlm(1:2)
-        sph(ip)%sph_rj%nidx_global_rj(1:2)                              &
+        sph_rj(ip)%nidx_global_rj(1:2)                                  &
      &      = sph_org%sph_rj%nidx_global_rj(1:2)
       end do
 !$omp end parallel do
