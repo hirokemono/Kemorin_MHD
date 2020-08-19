@@ -103,6 +103,8 @@
       use m_array_for_send_recv
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
+      use mpi_gen_sph_grids_modes
+      use output_gen_sph_grid_modes
 !
 !  ========= Generate spherical harmonics table ========================
 !

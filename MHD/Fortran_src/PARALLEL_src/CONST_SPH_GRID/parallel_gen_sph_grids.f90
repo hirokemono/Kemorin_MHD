@@ -24,17 +24,12 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_parai_gen_sph_grids_modes
       use t_const_spherical_grid
-      use t_sph_local_parameter
-      use t_sph_mesh_1d_connect
-      use t_file_IO_parameter
-      use t_spheric_data_IO
-      use t_sph_local_index
 !
       implicit none
 !
-      type(sph_local_1d_index), save :: sph_lcx_m
-      private :: sph_lcx_m
+      type(parallel_sph_params), private :: para_sph
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,465 +40,87 @@
       subroutine s_para_gen_sph_grids(sph_file_param, sph, gen_sph)
 !
       use m_elapsed_labels_gen_SPH
-      use set_global_spherical_param
+      use mpi_gen_sph_grids_modes
       use set_comm_table_rtp_rj
       use const_global_sph_grids_modes
       use const_sph_radial_grid
       use copy_para_sph_global_params
+      use output_gen_sph_grid_modes
 !
       type(field_IO_params), intent(in) :: sph_file_param
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-      integer(kind = kint) :: num_pe
-      type(sph_shell_parameters), allocatable :: sph_params(:)
-      type(sph_rtp_grid), allocatable :: sph_rtp(:)
-      type(sph_rtm_grid), allocatable :: sph_rtm(:)
-      type(sph_rlm_grid), allocatable :: sph_rlm(:)
-      type(sph_rj_grid), allocatable :: sph_rj(:)
-      type(sph_comm_tbl), allocatable :: comm_rlm(:)
-      type(sph_comm_tbl), allocatable :: comm_rj(:)
-      type(sph_comm_tbl), allocatable :: comm_rtm(:)
-      type(sph_comm_tbl), allocatable :: comm_rtp(:)
-      type(sph_group_data), allocatable :: sph_grp(:)
-!
 !  =========  Set global resolutions ===================================
+      call const_sph_global_parameters(gen_sph, sph)
 !
-      call set_global_sph_resolution                                    &
-     &   (sph%sph_params%l_truncation, sph%sph_params%m_folding,        &
-     &    sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
-!
-      if(my_rank .eq. 0) then
-        call check_global_spheric_parameter                             &
-     &     (sph%sph_params, sph%sph_rtp)
-        call output_set_radial_grid                                     &
-     &     (sph%sph_params, sph%sph_rtp, gen_sph%s3d_radius)
-      end if
-!
-!  ========= Generate spherical harmonics table ========================
-!
-      call s_const_global_sph_grids_modes                               &
-     &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
-     &    gen_sph%s3d_ranks, gen_sph%sph_lcp,                           &
-     &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
-!
-      num_pe = gen_sph%s3d_ranks%ndomain_sph
-      allocate(sph_grp(num_pe))
-      allocate(sph_params(num_pe))
-      allocate(sph_rlm(num_pe))
-      allocate(sph_rj(num_pe))
-      allocate(sph_rtm(num_pe))
-      allocate(sph_rtp(num_pe))
-      allocate(comm_rlm(num_pe))
-      allocate(comm_rj(num_pe))
-      allocate(comm_rtm(num_pe))
-      allocate(comm_rtp(num_pe))
-!
+      call alloc_parallel_sph_params                                    &
+     &   (gen_sph%s3d_ranks%ndomain_sph, para_sph)
       call copy_para_sph_param_from_ctl                                 &
-     &   (sph, num_pe, sph_params, sph_rtp, sph_rj)
+     &   (sph, para_sph%num_pe, para_sph%sph_params,                    &
+     &    para_sph%sph_rtp, para_sph%sph_rj)
       call copy_para_global_sph_resolution                              &
-     &   (sph, num_pe, sph_rtp, sph_rtm, sph_rlm, sph_rj)
+     &   (sph, para_sph%num_pe, para_sph%sph_rtp, para_sph%sph_rtm,     &
+     &    para_sph%sph_rlm, para_sph%sph_rj)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_rj_modes'
-      call para_gen_sph_rlm_rj_modes                                    &
-     &   (num_pe, sph_params, sph_rtp, gen_sph,                         &
-     &    sph_rlm, sph_rj, comm_rlm, comm_rj, sph_grp)
+      call para_gen_sph_rlm_rj_modes(gen_sph, para_sph)
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_rtp_grids'
-      call para_gen_sph_rtm_rtp_grids(num_pe, gen_sph, sph_params,      &
-     &    sph_rtm, sph_rtp, comm_rtm, comm_rtp, sph_grp)
+      call para_gen_sph_rtm_rtp_grids(gen_sph, para_sph)
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_output_sph_mode_grids'
       call para_output_sph_mode_grids(sph_file_param,                   &
-     &    num_pe, sph_params, sph_rj, sph_rlm, sph_rtm, sph_rtp,        &
-     &    comm_rj, comm_rlm, comm_rtm, comm_rtp, sph_grp)
+     &    para_sph%num_pe, para_sph%sph_params,                         &
+     &    para_sph%sph_rj, para_sph%sph_rlm,                            &
+     &    para_sph%sph_rtm, para_sph%sph_rtp,                           &
+     &    para_sph%comm_rj, para_sph%comm_rlm,                          &
+     &    para_sph%comm_rtm, para_sph%comm_rtp, para_sph%sph_grp)
 !
-      deallocate(comm_rtp, comm_rj)
-      deallocate(comm_rtm, comm_rlm)
-      deallocate(sph_rj, sph_rlm, sph_rtm, sph_rtp)
-      deallocate(sph_params, sph_grp)
+      call dealloc_parallel_sph_params(para_sph)
 !
       end subroutine s_para_gen_sph_grids
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine para_gen_sph_rlm_rj_modes                              &
-     &         (num_pe, sph_params, sph_rtp, gen_sph,                   &
-     &          sph_rlm, sph_rj, comm_rlm, comm_rj, sph_grp)
-!
-      use m_elapsed_labels_gen_SPH
-      use set_comm_table_rtp_rj
-      use gen_sph_grids_modes
-      use bcast_comm_stacks_sph
-!
-      integer(kind = kint), intent(in) :: num_pe
-      type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
-      type(sph_rtp_grid), intent(in) :: sph_rtp(num_pe)
-!
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-      type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
-      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rj(num_pe)
-      type(sph_group_data), intent(inout) :: sph_grp(num_pe)
-!
-!>      Structure for parallel spherical mesh table
-      type(sph_comm_tbl), allocatable :: comm_rlm_mul(:)
-      integer :: ip, id_rank
-!
-!
-      allocate(comm_rlm_mul(num_pe))
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
-      do ip = 1, num_pe
-        id_rank = ip - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-!
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &      'start rlm table generation for', id_rank, ' on ', my_rank
-        call const_sph_rlm_modes                                        &
-     &   (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph_rlm(ip), comm_rlm(ip))
-        call copy_sph_comm_neib(comm_rlm(ip), comm_rlm_mul(ip))
-      end do
-!
-      call s_bcast_comm_stacks_sph(num_pe, comm_rlm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
-!
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-      call alloc_rj_1d_local_idx(sph_rj(1), sph_lcx_m)
-      do ip = 1, num_pe
-        id_rank = ip - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-!
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &     'Construct spherical modes for domain ', id_rank,            &
-     &     ' on ', my_rank
-        call const_sph_rj_modes(id_rank, num_pe, comm_rlm_mul,          &
-     &      gen_sph%added_radial_grp, gen_sph%s3d_ranks,                &
-     &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph_params(ip), sph_rtp(ip), sph_rj(ip),                    &
-     &      comm_rj(ip), sph_grp(ip), sph_lcx_m)
-      end do
-      call dealloc_rj_1d_local_idx(sph_lcx_m)
-      call dealloc_comm_stacks_sph(num_pe, comm_rlm_mul)
-      deallocate(comm_rlm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
-!
-      end subroutine para_gen_sph_rlm_rj_modes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine para_gen_sph_rtm_rtp_grids                             &
-     &         (num_pe, gen_sph, sph_params,                            &
-     &          sph_rtm, sph_rtp, comm_rtm, comm_rtp, sph_grp)
-!
-      use m_elapsed_labels_gen_SPH
-      use gen_sph_grids_modes
-      use set_comm_table_rtp_rj
-      use bcast_comm_stacks_sph
-!
-      integer(kind = kint), intent(in) :: num_pe
-!
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-      type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
-!
-      type(sph_rtm_grid), intent(inout) :: sph_rtm(num_pe)
-      type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rtm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rtp(num_pe)
-      type(sph_group_data), intent(inout) :: sph_grp(num_pe)
-!
-!>      Structure for parallel spherical mesh table
-      type(sph_comm_tbl), allocatable:: comm_rtm_mul(:)
-      integer :: ip, id_rank
-!
-!
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
-      allocate(comm_rtm_mul(num_pe))
-      do ip = 1, num_pe
-        id_rank = ip - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-!
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &      'start rtm table generation for', id_rank, ' on ', my_rank
-        call const_sph_rtm_grids                                        &
-     &     (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,             &
-     &      gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &      sph_rtm(ip), comm_rtm(ip))
-        call copy_sph_comm_neib(comm_rtm(ip), comm_rtm_mul(ip))
-      end do
-      call s_bcast_comm_stacks_sph(num_pe, comm_rtm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
-!
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-      call alloc_rtp_1d_local_idx(sph_rtp(1), sph_lcx_m)
-      do ip = 1, num_pe
-        id_rank = ip - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-!
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &             'Construct spherical grids for domain ',  id_rank,   &
-     &              ' on ',  my_rank
-        call const_sph_rtp_grids(id_rank, num_pe, comm_rtm_mul,         &
-     &      gen_sph%added_radial_grp, gen_sph%r_layer_grp,              &
-     &      gen_sph%med_layer_grp, gen_sph%s3d_ranks,                   &
-     &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph_params(ip), sph_rtp(ip), comm_rtp(ip), sph_grp(ip),     &
-     &      sph_lcx_m)
-      end do
-      call dealloc_rtp_1d_local_idx(sph_lcx_m)
-      call dealloc_comm_stacks_sph(num_pe, comm_rtm_mul)
-      deallocate(comm_rtm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
-!
-      end subroutine para_gen_sph_rtm_rtp_grids
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_comm_stacks_sph(ndomain_sph, comm_rtm)
-!
-      integer(kind = kint), intent(in) :: ndomain_sph
-      type(sph_comm_tbl), intent(inout) :: comm_rtm(ndomain_sph)
-      integer(kind = kint) :: ip, iflag, i, irank_tgt
-!
-!
-      do ip = 1, ndomain_sph
-        iflag = 0
-        do i = 1, comm_rtm(ip)%nneib_domain
-          irank_tgt = comm_rtm(ip)%id_domain(i)
-          if(mod(irank_tgt,nprocs) .eq. my_rank) then
-            iflag = 1
-            exit
-          end if
-        end do
-!
-        if(iflag .gt. 0) then
-!          write(*,*) 'deallocate rtm:', my_rank, ip
-          call dealloc_type_sph_comm_stack(comm_rtm(ip))
-          comm_rtm(ip)%nneib_domain = 0
-        end if
-      end do
-!
-      end subroutine dealloc_comm_stacks_sph
 !
 ! ----------------------------------------------------------------------
 !
       subroutine s_para_gen_sph_rj_mode(sph_file_param, sph, gen_sph)
 !
       use m_elapsed_labels_gen_SPH
-      use set_global_spherical_param
+      use mpi_gen_sph_grids_modes
       use set_comm_table_rtp_rj
       use const_global_sph_grids_modes
       use const_sph_radial_grid
       use copy_para_sph_global_params
+      use output_gen_sph_grid_modes
 !
       type(field_IO_params), intent(in) :: sph_file_param
       type(sph_grids), intent(inout) :: sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-      integer(kind = kint) :: num_pe
-      type(sph_shell_parameters), allocatable :: sph_params(:)
-      type(sph_rtp_grid), allocatable :: sph_rtp(:)
-      type(sph_rtm_grid), allocatable :: sph_rtm(:)
-      type(sph_rlm_grid), allocatable :: sph_rlm(:)
-      type(sph_rj_grid), allocatable :: sph_rj(:)
-      type(sph_comm_tbl), allocatable :: comm_rlm(:)
-      type(sph_comm_tbl), allocatable :: comm_rj(:)
-      type(sph_group_data), allocatable :: sph_grp(:)
-!
 !  =========  Set global resolutions ===================================
+      call const_sph_global_parameters(gen_sph, sph)
 !
-      call set_global_sph_resolution                                    &
-     &   (sph%sph_params%l_truncation, sph%sph_params%m_folding,        &
-     &    sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
-!
-      if(my_rank .eq. 0) then
-        call check_global_spheric_parameter                             &
-     &     (sph%sph_params, sph%sph_rtp)
-        call output_set_radial_grid                                     &
-     &     (sph%sph_params, sph%sph_rtp, gen_sph%s3d_radius)
-      end if
-!
-!  ========= Generate spherical harmonics table ========================
-!
-      call s_const_global_sph_grids_modes                               &
-     &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
-     &    gen_sph%s3d_ranks, gen_sph%sph_lcp,                           &
-     &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
-!
-      num_pe = gen_sph%s3d_ranks%ndomain_sph
-      allocate(sph_grp(num_pe))
-      allocate(sph_params(num_pe))
-      allocate(sph_rlm(num_pe))
-      allocate(sph_rj(num_pe))
-      allocate(sph_rtm(num_pe))
-      allocate(sph_rtp(num_pe))
-      allocate(comm_rlm(num_pe))
-      allocate(comm_rj(num_pe))
-!
+      call alloc_parallel_sph_params                                    &
+     &   (gen_sph%s3d_ranks%ndomain_sph, para_sph)
       call copy_para_sph_param_from_ctl                                 &
-     &   (sph, num_pe, sph_params, sph_rtp, sph_rj)
+     &   (sph, para_sph%num_pe, para_sph%sph_params,                    &
+     &    para_sph%sph_rtp, para_sph%sph_rj)
       call copy_para_global_sph_resolution                              &
-     &   (sph, num_pe, sph_rtp, sph_rtm, sph_rlm, sph_rj)
-!
+     &   (sph, para_sph%num_pe, para_sph%sph_rtp, para_sph%sph_rtm,     &
+     &    para_sph%sph_rlm, para_sph%sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_rj_modes'
-      call para_gen_sph_rlm_rj_modes                                    &
-     &   (num_pe, sph_params, sph_rtp, gen_sph,                         &
-     &    sph_rlm, sph_rj, comm_rlm, comm_rj, sph_grp)
+      call para_gen_sph_rlm_rj_modes(gen_sph, para_sph)
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_output_sph_rj_modes'
-      call para_output_sph_rj_modes(sph_file_param, num_pe,             &
-     &    sph_params, sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grp)
+      call para_output_sph_rj_modes(sph_file_param, para_sph%num_pe,    &
+     &    para_sph%sph_params, para_sph%sph_rj, para_sph%sph_rlm,       &
+     &    para_sph%comm_rj, para_sph%comm_rlm, para_sph%sph_grp)
 !
-      deallocate(comm_rj, comm_rlm)
-      deallocate(sph_rj, sph_rlm, sph_rtm, sph_rtp)
-      deallocate(sph_params, sph_grp)
+      call dealloc_parallel_sph_params(para_sph)
 !
       end subroutine s_para_gen_sph_rj_mode
-!
-! ----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine para_output_sph_rj_modes                               &
-     &         (sph_file_param, num_pe, sph_params,                     &
-     &          sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grp)
-!
-      use sph_file_MPI_IO_select
-      use load_data_for_sph_IO
-!
-      integer(kind = kint), intent(in) :: num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
-!
-      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
-      type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rj(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
-      type(sph_group_data), intent(inout) :: sph_grp(num_pe)
-!
-      type(sph_file_data_type) :: sph_file_m
-      integer :: ip, id_rank
-!
-!
-      do ip = 1, num_pe
-        id_rank = ip - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-!
-        call copy_sph_trans_rj_to_IO(sph_params(ip),                    &
-     &      sph_rj(ip), comm_rj(ip), sph_grp(ip), sph_file_m)
-        call sel_mpi_write_spectr_rj_file                               &
-     &     (num_pe, id_rank, sph_file_param, sph_file_m)
-        call dealloc_rj_mode_IO(sph_file_m)
-        write(*,'(a,i6,a)') 'Spherical modes for domain',               &
-     &          id_rank, ' is done.'
-!
-        call dealloc_sph_mode_group(sph_grp(ip))
-!
-        call dealloc_type_sph_comm_item(comm_rj(ip))
-        call dealloc_type_sph_comm_item(comm_rlm(ip))
-!
-        call dealloc_type_sph_1d_index_rj(sph_rj(ip))
-        call dealloc_type_sph_1d_index_rlm(sph_rlm(ip))
-!
-        call dealloc_spheric_param_rj(sph_rj(ip))
-        call dealloc_type_spheric_param_rlm(sph_rlm(ip))
-      end do
-!
-      end subroutine para_output_sph_rj_modes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine para_output_sph_mode_grids(sph_file_param, num_pe,     &
-     &          sph_params, sph_rj, sph_rlm, sph_rtm, sph_rtp,          &
-     &          comm_rj, comm_rlm, comm_rtm, comm_rtp, sph_grp)
-!
-      use sph_file_MPI_IO_select
-      use load_data_for_sph_IO
-!
-      integer(kind = kint), intent(in) :: num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
-!
-      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
-      type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
-      type(sph_rtm_grid), intent(inout) :: sph_rtm(num_pe)
-      type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rj(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rtm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rtp(num_pe)
-      type(sph_group_data), intent(inout) :: sph_grp(num_pe)
-!
-      type(sph_file_data_type) :: sph_file_m
-      integer :: ip, id_rank
-!
-!
-      do ip = 1, num_pe
-        id_rank = ip - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-!
-        call copy_sph_trans_rj_to_IO(sph_params(ip),                    &
-     &      sph_rj(ip), comm_rj(ip), sph_grp(ip), sph_file_m)
-        call sel_mpi_write_spectr_rj_file                               &
-     &     (num_pe, id_rank, sph_file_param, sph_file_m)
-        call dealloc_rj_mode_IO(sph_file_m)
-        write(*,'(a,i6,a)') 'Spherical modes for domain',               &
-     &          id_rank, ' is done.'
-!
-        call copy_sph_trans_rlm_to_IO                                   &
-     &     (sph_params(ip), sph_rlm(ip), comm_rlm(ip), sph_file_m)
-        call sel_mpi_write_modes_rlm_file                               &
-     &     (num_pe, id_rank, sph_file_param, sph_file_m)
-        call dealloc_rlm_mode_IO(sph_file_m)
-        write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
-     &                      id_rank, ' is done.'
-!
-        call copy_sph_trans_rtm_to_IO                                   &
-     &     (sph_params(ip), sph_rtm(ip), comm_rtm(ip), sph_file_m)
-        call sel_mpi_write_geom_rtm_file                                &
-     &     (num_pe, id_rank, sph_file_param, sph_file_m)
-        call dealloc_rtm_grid_IO(sph_file_m)
-        write(*,'(a,i6,a)') 'Legendre transform table rtm',             &
-     &                      id_rank, ' is done.'
-!
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &                 'copy_sph_trans_rtp_to_IO', id_rank
-        call copy_sph_trans_rtp_to_IO(sph_params(ip),                   &
-     &      sph_rtp(ip), comm_rtp(ip), sph_grp(ip), sph_file_m)
-        call sel_mpi_write_geom_rtp_file                                &
-     &     (num_pe, id_rank, sph_file_param, sph_file_m)
-        call dealloc_rtp_grid_IO(sph_file_m)
-        write(*,'(a,i6,a)') 'Spherical grids for domain',               &
-     &          id_rank, ' is done.'
-!
-!
-        call dealloc_sph_grid_group(sph_grp(ip))
-        call dealloc_sph_mode_group(sph_grp(ip))
-!
-        call dealloc_type_sph_comm_item(comm_rj(ip))
-        call dealloc_type_sph_comm_item(comm_rlm(ip))
-        call dealloc_type_sph_comm_item(comm_rtm(ip))
-        call dealloc_type_sph_comm_item(comm_rtp(ip))
-!
-        call dealloc_type_sph_1d_index_rj(sph_rj(ip))
-        call dealloc_type_sph_1d_index_rlm(sph_rlm(ip))
-        call dealloc_type_sph_1d_index_rtm(sph_rtm(ip))
-        call dealloc_type_sph_1d_index_rtp(sph_rtp(ip))
-!
-        call dealloc_spheric_param_rj(sph_rj(ip))
-        call dealloc_type_spheric_param_rlm(sph_rlm(ip))
-        call dealloc_type_spheric_param_rtm(sph_rtm(ip))
-        call dealloc_type_spheric_param_rtp(sph_rtp(ip))
-      end do
-!
-      end subroutine para_output_sph_mode_grids
 !
 ! ----------------------------------------------------------------------
 !
