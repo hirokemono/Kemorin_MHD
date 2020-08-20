@@ -78,6 +78,13 @@
 !  Check and construct spherical shell grid data
 !      call check_and_make_SPH_rj_mode                                   &
 !     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
+      do iloop = 1, num_pe
+        id_rank = iloop - 1
+        if(mod(id_rank,nprocs) .ne. my_rank) cycle
+        write(*,*) 'make original data for  ', id_rank,                 &
+     &             ' on ', my_rank, 'at loop ', iloop
+      end do
+
 !
 !  Read index data
       call set_sph_mesh_file_fmt_prefix                                 &
@@ -90,6 +97,8 @@
      &     (num_pe, id_rank, sph_file_param, sph_file)
 !
         if(id_rank .lt. num_pe) then
+          write(*,*) 'load original data for  ', id_rank,               &
+     &             ' on ', my_rank, 'at loop ', iloop
           call copy_sph_trans_rj_from_IO(sph_file,                      &
      &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
      &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
