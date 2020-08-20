@@ -45,6 +45,7 @@
 !
       use m_work_time
 !
+      use t_SPH_mesh_field_data
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_spheric_group
@@ -152,26 +153,16 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine para_output_sph_mode_grids(sph_file_param, num_pe,     &
-     &          sph_params, sph_rj, sph_rlm, sph_rtm, sph_rtp,          &
-     &          comm_rj, comm_rlm, comm_rtm, comm_rtp, sph_grp)
+      subroutine para_output_sph_mode_grids                             &
+     &         (sph_file_param, num_pe, sph_mesh)
 !
       use sph_file_MPI_IO_select
       use load_data_for_sph_IO
 !
       integer(kind = kint), intent(in) :: num_pe
       type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
 !
-      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
-      type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
-      type(sph_rtm_grid), intent(inout) :: sph_rtm(num_pe)
-      type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rj(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rtm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rtp(num_pe)
-      type(sph_group_data), intent(inout) :: sph_grp(num_pe)
+      type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !
       integer :: ip, id_rank
 !
@@ -180,24 +171,27 @@
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
-        call copy_sph_trans_rj_to_IO(sph_params(ip),                    &
-     &      sph_rj(ip), comm_rj(ip), sph_grp(ip), sph_file_m)
+        call copy_sph_trans_rj_to_IO(sph_mesh(ip)%sph%sph_params,       &
+     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,    &
+     &      sph_mesh(ip)%sph_grps, sph_file_m)
         call sel_mpi_write_spectr_rj_file                               &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
         call dealloc_rj_mode_IO(sph_file_m)
         write(*,'(a,i6,a)') 'Spherical modes for domain',               &
      &          id_rank, ' is done.'
 !
-        call copy_sph_trans_rlm_to_IO                                   &
-     &     (sph_params(ip), sph_rlm(ip), comm_rlm(ip), sph_file_m)
+        call copy_sph_trans_rlm_to_IO(sph_mesh(ip)%sph%sph_params,      &
+     &      sph_mesh(ip)%sph%sph_rlm, sph_mesh(ip)%sph_comms%comm_rlm,  &
+     &      sph_file_m)
         call sel_mpi_write_modes_rlm_file                               &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
         call dealloc_rlm_mode_IO(sph_file_m)
         write(*,'(a,i6,a)') 'Spherical transform table for domain',     &
      &                      id_rank, ' is done.'
 !
-        call copy_sph_trans_rtm_to_IO                                   &
-     &     (sph_params(ip), sph_rtm(ip), comm_rtm(ip), sph_file_m)
+        call copy_sph_trans_rtm_to_IO(sph_mesh(ip)%sph%sph_params,      &
+     &      sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%sph_comms%comm_rtm,  &
+     &      sph_file_m)
         call sel_mpi_write_geom_rtm_file                                &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
         call dealloc_rtm_grid_IO(sph_file_m)
@@ -206,18 +200,23 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rtp_to_IO', id_rank
-        call copy_sph_trans_rtp_to_IO(sph_params(ip),                   &
-     &      sph_rtp(ip), comm_rtp(ip), sph_grp(ip), sph_file_m)
+        call copy_sph_trans_rtp_to_IO(sph_mesh(ip)%sph%sph_params,      &
+     &      sph_mesh(ip)%sph%sph_rtp, sph_mesh(ip)%sph_comms%comm_rtp,  &
+     &      sph_mesh(ip)%sph_grps, sph_file_m)
         call sel_mpi_write_geom_rtp_file                                &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
         call dealloc_rtp_grid_IO(sph_file_m)
         write(*,'(a,i6,a)') 'Spherical grids for domain',               &
      &          id_rank, ' is done.'
 !
-        call dealloc_sph_modes(sph_rj(ip), sph_rlm(ip),                 &
-     &      comm_rj(ip), comm_rlm(ip), sph_grp(ip))
-        call dealloc_sph_grids(sph_rtm(ip), sph_rtp(ip),                &
-     &      comm_rtm(ip), comm_rtp(ip), sph_grp(ip))
+        call dealloc_sph_modes                                          &
+     &     (sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph%sph_rlm,          &
+     &      sph_mesh(ip)%sph_comms%comm_rj,                             &
+     &      sph_mesh(ip)%sph_comms%comm_rlm, sph_mesh(ip)%sph_grps)
+        call dealloc_sph_grids                                          &
+     &     (sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%sph%sph_rtp,         &
+     &      sph_mesh(ip)%sph_comms%comm_rtm,                            &
+     &      sph_mesh(ip)%sph_comms%comm_rtp, sph_mesh(ip)%sph_grps)
       end do
 !
       end subroutine para_output_sph_mode_grids
@@ -225,21 +224,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine para_output_sph_rj_modes                               &
-     &         (sph_file_param, num_pe, sph_params,                     &
-     &          sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grp)
+     &         (sph_file_param, num_pe, sph_mesh)
 !
       use sph_file_MPI_IO_select
       use load_data_for_sph_IO
 !
       integer(kind = kint), intent(in) :: num_pe
       type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
 !
-      type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
-      type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rj(num_pe)
-      type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
-      type(sph_group_data), intent(inout) :: sph_grp(num_pe)
+      type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !
       integer :: ip, id_rank
 !
@@ -248,16 +241,19 @@
         id_rank = ip - 1
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
-        call copy_sph_trans_rj_to_IO(sph_params(ip),                    &
-     &      sph_rj(ip), comm_rj(ip), sph_grp(ip), sph_file_m)
+        call copy_sph_trans_rj_to_IO(sph_mesh(ip)%sph%sph_params,       &
+     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,    &
+     &      sph_mesh(ip)%sph_grps, sph_file_m)
         call sel_mpi_write_spectr_rj_file                               &
      &     (num_pe, id_rank, sph_file_param, sph_file_m)
         call dealloc_rj_mode_IO(sph_file_m)
         write(*,'(a,i6,a)') 'Spherical modes for domain',               &
      &          id_rank, ' is done.'
 !
-        call dealloc_sph_modes(sph_rj(ip), sph_rlm(ip),                 &
-     &      comm_rj(ip), comm_rlm(ip), sph_grp(ip))
+        call dealloc_sph_modes                                          &
+     &     (sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph%sph_rlm,          &
+     &      sph_mesh(ip)%sph_comms%comm_rj,                             &
+     &      sph_mesh(ip)%sph_comms%comm_rlm, sph_mesh(ip)%sph_grps)
       end do
 !
       end subroutine para_output_sph_rj_modes
