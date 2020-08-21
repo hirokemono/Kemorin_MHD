@@ -25,9 +25,6 @@
 !
       implicit  none
 !
-      private :: copy_each_sph_param_from_ctl
-      private :: copy_each_global_sph_resolution
-!
 !  ---------------------------------------------------------------------
 !
       contains

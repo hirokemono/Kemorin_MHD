@@ -22,9 +22,7 @@
       use m_elapsed_labels_gen_SPH
 !
       use t_mesh_data
-      use t_spheric_parameter
-      use t_spheric_group
-      use t_sph_trans_comm_tbl
+      use t_SPH_mesh_field_data
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
       use t_check_and_make_SPH_mesh
@@ -42,7 +40,7 @@
       type(sph_mesh_generation_ctl), save :: SPH_MAKE_ctl
 !
 !>       Structure of grid and spectr data for spherical spectr method
-      type(sph_grids), save :: sph_const
+      type(sph_mesh_data), allocatable :: sph_mesh_g(:)
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
@@ -56,7 +54,7 @@
 !      type(parallel_make_vierwer_mesh), save, private :: para_v1
 !
       private :: control_file_name
-      private :: sph_const, SPH_MAKE_ctl
+      private :: sph_mesh_g, SPH_MAKE_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,7 +76,7 @@
       call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
-     &    sph_const, sph_files1, sph_maker_G%gen_sph, ierr)
+     &    sph_files1, sph_maker_G, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
       end subroutine init_gen_sph_grid_t
@@ -92,13 +90,17 @@
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
 !
+      integer(kind = kint) :: num_pe
+!
 !  ========= Generate spherical harmonics table ========================
 !
       sph_files1%sph_file_param%iflag_format = id_ascii_file_fmt
+      num_pe = sph_maker_G%gen_sph%s3d_ranks%ndomain_sph
+      allocate(sph_mesh_g(num_pe))
       if(iflag_debug .gt. 0) write(*,*) 's_para_gen_sph_grids'
-      call s_para_gen_sph_grids                                        &
-     &   (sph_files1%sph_file_param, sph_const, sph_maker_G%gen_sph)
-      call dealloc_gen_mesh_params(sph_maker_G%gen_sph)
+      call check_and_make_para_SPH_mesh                                 &
+     &   (sph_files1%sph_file_param, num_pe, sph_mesh_g, sph_maker_G)
+      deallocate(sph_mesh_g)
 !
       call end_elapsed_time(ied_total_elapsed)
 !

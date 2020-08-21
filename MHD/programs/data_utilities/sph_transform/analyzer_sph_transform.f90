@@ -36,7 +36,7 @@
 !
       subroutine initialize_sph_transform
 !
-      use parallel_load_data_4_sph
+      use t_check_and_make_SPH_mesh
 !
 !
       call init_elapse_time_by_TOTAL
@@ -50,12 +50,13 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
       call set_control_4_sph_transform                                  &
      &   (spt_ctl1, t_STR, viz_step_STR, files_STR, SPH_TRNS%fld,       &
-     &    d_gauss_trans, field_STR, trns_param, WK_sph_TRNS)
+     &    d_gauss_trans, field_STR, trns_param,                         &
+     &    WK_sph_TRNS, sph_maker_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (izero, files_STR%FEM_mesh_flags, files_STR%sph_file_param,    &
+     &   (files_STR%FEM_mesh_flags, files_STR%sph_file_param,           &
      &    SPH_TRNS%sph, SPH_TRNS%comms, SPH_TRNS%groups,                &
      &    femmesh_STR, files_STR%mesh_file_IO, sph_maker_TRNS)
 !

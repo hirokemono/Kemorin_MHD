@@ -76,7 +76,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_sph_grids(gen_sph, sph, comms_sph, sph_grp)
+      subroutine mpi_gen_sph_grids                                      &
+     &         (gen_sph, sph_tmp, sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !
@@ -84,8 +85,11 @@
       use bcast_comm_stacks_sph
       use set_comm_table_rtp_rj
       use gen_sph_grids_modes
+      use copy_para_sph_global_params
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
+!>       Structure of grid and spectr data for spherical spectr method
+      type(sph_grids), intent(inout) :: sph_tmp
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), intent(inout) :: sph
 !>       Structure of communication table for spherical spectr method
@@ -105,7 +109,11 @@
 !  =========  Set global resolutions ===================================
 !
       write(*,*) 'Tako!'
-      call const_sph_global_parameters(gen_sph, sph)
+      call const_sph_global_parameters(gen_sph, sph_tmp)
+      call copy_each_sph_param_from_ctl                                 &
+     &   (sph_tmp, sph%sph_params, sph%sph_rtp, sph%sph_rj)
+      call copy_each_global_sph_resolution                              &
+     &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
 !  ========= Generate each spherical harmonics table ===================
 !
@@ -183,7 +191,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_sph_rj_mode(gen_sph, sph, comms_sph, sph_grp)
+      subroutine mpi_gen_sph_rj_mode(gen_sph, sph_tmp,                  &
+     &          sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !
@@ -191,8 +200,11 @@
       use bcast_comm_stacks_sph
       use set_comm_table_rtp_rj
       use gen_sph_grids_modes
+      use copy_para_sph_global_params
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
+!>       Structure of grid and spectr data for spherical spectr method
+      type(sph_grids), intent(inout) :: sph_tmp
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), intent(inout) :: sph
 !>       Structure of communication table for spherical spectr method
@@ -210,7 +222,11 @@
 !  =========  Set global resolutions ===================================
 !
       write(*,*) 'Tako!'
-      call const_sph_global_parameters(gen_sph, sph)
+      call const_sph_global_parameters(gen_sph, sph_tmp)
+      call copy_each_sph_param_from_ctl                                 &
+     &   (sph_tmp, sph%sph_params, sph%sph_rtp, sph%sph_rj)
+      call copy_each_global_sph_resolution                              &
+     &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
 !
 !  ========= Generate each spherical harmonics table ===================
 !

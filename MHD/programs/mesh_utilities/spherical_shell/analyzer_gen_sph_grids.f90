@@ -82,7 +82,7 @@
       call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
-     &    sph_const, sph_files1, sph_maker_G%gen_sph, ierr)
+     &    sph_files1, sph_maker_G, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
       if(sph_maker_G%gen_sph%s3d_ranks%ndomain_sph .ne. nprocs) then
@@ -101,7 +101,7 @@
       subroutine analyze_gen_sph_grids
 !
       use m_array_for_send_recv
-      use parallel_load_data_4_sph
+      use t_check_and_make_SPH_mesh
       use parallel_FEM_mesh_init
       use mpi_gen_sph_grids_modes
       use output_gen_sph_grid_modes
@@ -109,10 +109,16 @@
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
-      call mpi_gen_sph_grids(sph_maker_G%gen_sph,                       &
+      call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp, &
      &    sph_const, comms_sph_const, sph_grp_const)
       call mpi_output_gen_sph_grids(sph_files1%sph_file_param,          &
      &    sph_const, comms_sph_const, sph_grp_const)
+      call dealloc_sph_modes(sph_const%sph_rj, sph_const%sph_rlm,       &
+     &    comms_sph_const%comm_rj, comms_sph_const%comm_rlm,            &
+     &    sph_grp_const)
+      call dealloc_sph_grids(sph_const%sph_rtm, sph_const%sph_rtp,      &
+     &    comms_sph_const%comm_rtm, comms_sph_const%comm_rtp,           &
+     &    sph_grp_const)
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
 !
@@ -121,7 +127,7 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
       if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (izero, sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,  &
+     &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
      &    sph_const, comms_sph, sph_grps,                               &
      &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)

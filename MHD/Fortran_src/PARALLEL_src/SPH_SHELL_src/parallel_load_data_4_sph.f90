@@ -6,14 +6,10 @@
 !>@brief Load spherical harmonics indexing data on multiple processes
 !!
 !!@verbatim
-!!      subroutine load_para_SPH_and_FEM_mesh                           &
-!!     &         (iflag_sph_shell, FEM_mesh_flags, sph_file_param,      &
-!!     &          sph, comms_sph, sph_grps, geofem, mesh_file,          &
-!!     &          sph_maker)
 !!      subroutine load_para_SPH_rj_mesh                                &
 !!     &         (sph_file_param, sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh                                   &
-!!     &         (sph_file_param, sph, bc_rtp_grp, sph_grps)
+!!     &         (sph_file_param, sph, comms_sph, sph_grps)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(field_IO_params), intent(in) ::  sph_file_param
@@ -24,18 +20,6 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!
-!!      subroutine load_para_rj_mesh                                    &
-!!     &         (sph_file_param, sph_params, sph_rj, comm_rj, sph_grps)
-!!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(sph_shell_parameters), intent(inout) :: sph_params
-!!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!        type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!        type(sph_rj_grid), intent(inout) :: sph_rj
-!!        type(sph_comm_tbl), intent(inout) :: comm_rj
-!!        type(sph_group_data), intent(inout) ::  sph_grps
 !!@endverbatim
 !
       module parallel_load_data_4_sph
@@ -56,8 +40,6 @@
 !
       implicit none
 !
-      private :: load_FEM_mesh_4_SPH
-!
       type(sph_file_data_type), save, private :: sph_file_l
 !
       private :: load_para_rj_mesh
@@ -65,59 +47,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine load_para_SPH_and_FEM_mesh                             &
-     &         (iflag_sph_shell, FEM_mesh_flags, sph_file_param,        &
-     &          sph, comms_sph, sph_grps, geofem, mesh_file,            &
-     &          sph_maker)
-!
-      use calypso_mpi
-      use t_mesh_data
-      use t_check_and_make_SPH_mesh
-      use copy_mesh_structures
-      use mesh_file_name_by_param
-      use mpi_load_mesh_data
-!
-      integer(kind = kint), intent(in) :: iflag_sph_shell
-      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
-      type(field_IO_params), intent(in) ::  sph_file_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) ::  sph_grps
-!
-      type(mesh_data), intent(inout) :: geofem
-      type(field_IO_params), intent(inout) ::  mesh_file
-!
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
-!
-!  Check and construct spherical shell table
-      call check_and_make_SPH_mesh                                      &
-     &   (iflag_sph_shell, sph_file_param, sph_maker)
-!
-!  Load spherical shell table
-      call load_para_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
-!
-!  --  load geofem mesh data
-      if(check_exist_mesh(mesh_file, my_rank)) then
-        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-        call mpi_input_mesh(mesh_file, nprocs, geofem)
-        call set_fem_center_mode_4_SPH                                  &
-     &     (geofem%mesh%node%internal_node,                             &
-     &      sph%sph_rtp, sph%sph_params)
-      else
-        call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
-!  --  Construct FEM mesh
-        mesh_file%file_prefix = sph_file_param%file_prefix
-        call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,             &
-     &      sph%sph_params, sph%sph_rtp, sph%sph_rj,                    &
-     &      geofem, sph_maker%gen_sph)
-        call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
-      end if
-!
-      end subroutine load_para_SPH_and_FEM_mesh
 !
 ! -----------------------------------------------------------------------
 !

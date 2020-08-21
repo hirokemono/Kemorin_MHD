@@ -17,6 +17,7 @@
       use t_ctl_data_4_FEM_mesh
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
+      use t_ctl_data_gen_sph_shell
       use t_control_data_vizs
       use t_control_array_integer
       use t_control_array_character
@@ -35,6 +36,8 @@
 !>        Structure of mesh IO controls and sleeve informations
         type(FEM_mesh_control) :: Fmesh_ctl
 !
+!>        structure of parallel spherical shell data
+        type(parallel_sph_shell_control) :: psph_ctl
 !
 !>        Structure for field information control
         type(field_control) :: fld_ctl
@@ -83,6 +86,9 @@
      &                    :: hd_phys_values =  'phys_values_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_time_step = 'time_step_ctl'
+!
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_sph_shell = 'spherical_shell_ctl'
 !
 !   2nd level
 !
@@ -177,6 +183,9 @@
      &     (id_control, hd_org_data, spt_ctl%org_plt, c_buf)
         call read_FEM_mesh_control                                      &
      &     (id_control, hd_FEM_mesh, spt_ctl%Fmesh_ctl, c_buf)
+!
+        call read_parallel_shell_in_MHD_ctl                              &
+     &     (id_control, hd_sph_shell, spt_ctl%psph_ctl, c_buf)
 !
         call read_sph_trans_model_ctl                                   &
      &     (id_control, hd_sph_trans_model, spt_ctl, c_buf)

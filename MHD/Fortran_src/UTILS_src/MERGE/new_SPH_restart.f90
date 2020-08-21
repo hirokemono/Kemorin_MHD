@@ -10,10 +10,6 @@
 !!      subroutine alloc_sph_mesh_parallel_merge
 !!      subroutine dealloc_sph_mesh_4_merge
 !!
-!!      subroutine set_local_rj_mesh_4_merge(iflag_make_SPH,            &
-!!     &          sph_mesh_file, num_pe, sph_mesh, sph_maker)
-!!        type(field_IO_params), intent(in) :: sph_mesh_file
-!!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
 !!     &          org_fst_param, org_phys, new_phys, t_IO)
 !!      subroutine load_org_sph_data(id_rank, istep, np_sph_org,        &
@@ -54,101 +50,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine set_local_rj_mesh_4_merge(iflag_make_SPH,              &
-     &          sph_mesh_file, num_pe, sph_mesh, sph_maker)
-!
-      use t_check_and_make_SPH_mesh
-      use sph_file_MPI_IO_select
-      use sph_file_IO_select
-      use load_data_for_sph_IO
-!
-      integer(kind = kint), intent(in) :: iflag_make_SPH
-      integer, intent(in) ::  num_pe
-      type(field_IO_params), intent(in) :: sph_mesh_file
-      type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
-      type(field_IO_params) :: sph_file_param
-      type(sph_file_data_type) :: sph_file
-      integer :: id_rank, ip
-      integer(kind = kint) :: iloop, ierr
-!
-!  Check and construct spherical shell grid data
-!      call check_and_make_SPH_rj_mode                                   &
-!     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
-      do iloop = 1, num_pe
-        id_rank = iloop - 1
-        if(mod(id_rank,nprocs) .ne. my_rank) cycle
-        write(*,*) 'make original data for  ', id_rank,                 &
-     &             ' on ', my_rank, 'at loop ', iloop
-      end do
-
-!
-!  Read index data
-      call set_sph_mesh_file_fmt_prefix                                 &
-     &   (sph_mesh_file%iflag_format, sph_mesh_file%file_prefix,        &
-     &    sph_file_param)
-      do iloop = 0, (num_pe-1) / nprocs
-        id_rank = my_rank + iloop * nprocs
-        ip = id_rank + 1
-        call sel_mpi_read_spectr_rj_file                                &
-     &     (num_pe, id_rank, sph_file_param, sph_file)
-!
-        if(id_rank .lt. num_pe) then
-          write(*,*) 'load original data for  ', id_rank,               &
-     &             ' on ', my_rank, 'at loop ', iloop
-          call copy_sph_trans_rj_from_IO(sph_file,                      &
-     &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
-     &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
-          call dealloc_rj_mode_IO(sph_file)
-        end if
-      end do
-!
-      end subroutine set_local_rj_mesh_4_merge
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_new_rj_mesh_4_merge(iflag_make_SPH,                &
-     &          sph_mesh_file, sph_mesh, sph_maker)
-!
-      use t_check_and_make_SPH_mesh
-      use sph_file_MPI_IO_select
-      use sph_file_IO_select
-      use load_data_for_sph_IO
-!
-      integer(kind = kint), intent(in) :: iflag_make_SPH
-      type(field_IO_params), intent(in) :: sph_mesh_file
-      type(sph_mesh_data), intent(inout) :: sph_mesh(nprocs)
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
-      type(field_IO_params) :: sph_file_param
-      type(sph_file_data_type) :: sph_file
-      integer :: ip
-      integer(kind = kint) :: ierr
-!
-!  Check and construct spherical shell grid data
-      call check_and_make_SPH_rj_mode                                   &
-     &    (iflag_make_SPH, sph_mesh_file, sph_maker)
-      write(*,*) 'Bakaaaaa!'
-!
-!  Read index data
-      ip = my_rank + 1
-      call set_sph_mesh_file_fmt_prefix                                 &
-     &   (sph_mesh_file%iflag_format, sph_mesh_file%file_prefix,        &
-     &    sph_file_param)
-      call sel_mpi_read_spectr_rj_file                                  &
-     &   (nprocs, my_rank, sph_file_param, sph_file)
-!
-      call copy_sph_trans_rj_from_IO(sph_file,                          &
-     &    sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,      &
-     &    sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
-      call dealloc_rj_mode_IO(sph_file)
-!
-      end subroutine set_new_rj_mesh_4_merge
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine load_field_name_assemble_sph(istep_start, np_sph_org,  &

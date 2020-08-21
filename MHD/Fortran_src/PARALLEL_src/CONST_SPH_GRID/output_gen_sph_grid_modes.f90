@@ -56,8 +56,6 @@
 !
       type(sph_file_data_type), private :: sph_file_m
 !
-      private :: dealloc_sph_grids, dealloc_sph_modes
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -114,11 +112,6 @@
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
      &          my_rank, ' is done.'
 !
-      call dealloc_sph_modes(sph%sph_rj, sph%sph_rlm,                   &
-     &    comms_sph%comm_rj, comms_sph%comm_rlm, sph_grp)
-      call dealloc_sph_grids(sph%sph_rtm, sph%sph_rtp,                  &
-     &    comms_sph%comm_rtm, comms_sph%comm_rtp, sph_grp)
-!
       end subroutine mpi_output_gen_sph_grids
 !
 ! ----------------------------------------------------------------------
@@ -144,9 +137,6 @@
       call dealloc_rj_mode_IO(sph_file_m)
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          my_rank, ' is done.'
-!
-      call dealloc_sph_modes(sph%sph_rj, sph%sph_rlm,                   &
-     &    comms_sph%comm_rj, comms_sph%comm_rlm, sph_grp)
 !
       end subroutine mpi_output_gen_sph_rj_mode
 !
@@ -249,11 +239,6 @@
         call dealloc_rj_mode_IO(sph_file_m)
         write(*,'(a,i6,a)') 'Spherical modes for domain',               &
      &          id_rank, ' is done.'
-!
-        call dealloc_sph_modes                                          &
-     &     (sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph%sph_rlm,          &
-     &      sph_mesh(ip)%sph_comms%comm_rj,                             &
-     &      sph_mesh(ip)%sph_comms%comm_rlm, sph_mesh(ip)%sph_grps)
       end do
 !
       end subroutine para_output_sph_rj_modes

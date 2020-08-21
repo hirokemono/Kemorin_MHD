@@ -5,10 +5,10 @@
 !
 !!      subroutine set_control_4_sph_transform                          &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
+!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
+!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !!        type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -35,6 +35,8 @@
       use t_sph_transforms
       use t_ctl_data_4_sph_trans
       use t_work_4_sph_trans
+      use t_check_and_make_SPH_mesh
+      use t_ctl_params_gen_sph_shell
 !
       implicit  none
 !
@@ -86,7 +88,7 @@
 !
       subroutine set_control_4_sph_transform                            &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
+     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
 !
       use t_work_4_sph_trans
 !
@@ -109,6 +111,7 @@
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(global_gauss_points), intent(inout) :: d_gauss
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
       integer(kind = kint) :: ierr
 !
@@ -178,6 +181,23 @@
         d_gauss%fhead_gauss = spt_ctl%gauss_sph_fhead_ctl%charavalue
       end if
 !
+!   set spherical shell parameters
+      if(spt_ctl%psph_ctl%iflag_sph_shell .gt. 0) then
+        sph_maker%make_SPH_flag = .TRUE.
+        sph_maker%mesh_output_flag = .TRUE.
+!
+        if(files_param%sph_file_param%iflag_format .eq. id_no_file      &
+     &    .or. spt_ctl%plt%sph_file_prefix%iflag .eq. 0) then
+          sph_maker%mesh_output_flag = .FALSE.
+        end if
+!
+        if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
+        call set_control_4_shell_grids                                  &
+     &     (nprocs, spt_ctl%psph_ctl%Fmesh_ctl,                         &
+     &      spt_ctl%psph_ctl%spctl, spt_ctl%psph_ctl%sdctl,             &
+     &      sph_maker%sph_tmp, sph_maker%gen_sph, ierr)
+      end if
+!
       call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine set_control_4_sph_transform
@@ -186,7 +206,7 @@
 !
       subroutine s_set_ctl_data_4_sph_trans                             &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph)
+     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -210,6 +230,7 @@
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(global_gauss_points), intent(inout) :: d_gauss
       type(parameters_4_sph_trans), intent(inout) :: trans_p
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
       integer(kind = kint) :: ierr, iflag
 !
@@ -304,6 +325,23 @@
       end if
       if(spt_ctl%gauss_sph_fhead_ctl%iflag .gt. 0) then
         d_gauss%fhead_gauss = spt_ctl%gauss_sph_fhead_ctl%charavalue
+      end if
+!
+!   set spherical shell parameters
+      if(spt_ctl%psph_ctl%iflag_sph_shell .gt. 0) then
+        sph_maker%make_SPH_flag = .TRUE.
+        sph_maker%mesh_output_flag = .TRUE.
+!
+        if(files_param%sph_file_param%iflag_format .eq. id_no_file      &
+     &    .or. spt_ctl%plt%sph_file_prefix%iflag .eq. 0) then
+          sph_maker%mesh_output_flag = .FALSE.
+        end if
+!
+        if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
+        call set_control_4_shell_grids                                  &
+     &     (nprocs, spt_ctl%psph_ctl%Fmesh_ctl,                         &
+     &      spt_ctl%psph_ctl%spctl, spt_ctl%psph_ctl%sdctl,             &
+     &      sph_maker%sph_tmp, sph_maker%gen_sph, ierr)
       end if
 !
       call dealloc_phys_control(spt_ctl%fld_ctl)
