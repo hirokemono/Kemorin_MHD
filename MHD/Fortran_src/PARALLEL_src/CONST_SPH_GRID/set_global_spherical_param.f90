@@ -1,8 +1,12 @@
+!>@file   set_global_spherical_param.f90
+!!@brief  module set_global_spherical_param
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in July, 2007
 !
-!      module set_global_spherical_param
-!
-!     Written by H. Matsui on July, 2007
-!
+!>@brief  Set global resolution of spherical hermonics
+!!
+!!@verbatim
 !!      subroutine set_global_sph_resolution(l_truncation, m_folding,   &
 !!     &          sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !!
@@ -37,6 +41,7 @@
 !!     &                  (iner_r_flag, ndomain_2d, ip_r, ip_j)
 !!
 !!      subroutine check_spheric_global_numnod(id_rank)
+!!@endverbatim
 !
       module set_global_spherical_param
 !
