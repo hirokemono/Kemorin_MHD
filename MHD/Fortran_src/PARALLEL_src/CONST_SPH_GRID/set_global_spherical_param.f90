@@ -294,6 +294,8 @@
       subroutine check_spheric_global_numnod                            &
      &         (id_rank, sph_rtp, sph_rtm, sph_rlm, sph_rj)
 !
+      use t_spheric_parameter
+!
       integer, intent(in) :: id_rank
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rtm_grid), intent(in) :: sph_rtm

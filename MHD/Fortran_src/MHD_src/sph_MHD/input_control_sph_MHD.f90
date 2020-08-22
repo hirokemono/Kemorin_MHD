@@ -138,9 +138,9 @@
      &   (DMHD_ctl%model_ctl, DMHD_ctl%smonitor_ctl,                    &
      &    SPH_model%MHD_prop, SPH_MHD%fld, SPH_WK%monitor)
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(MHD_files%sph_file_param,                 &
-     &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
+      if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
+      call load_sph_mesh(MHD_files%sph_file_param,                      &
+     &                   SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !

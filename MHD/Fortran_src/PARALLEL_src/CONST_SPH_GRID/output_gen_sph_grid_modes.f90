@@ -7,21 +7,17 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine mpi_output_gen_sph_grids                             &
-!!     &         (sph_file_param, sph, comms_sph, sph_grp)
-!!      subroutine mpi_output_gen_sph_rj_mode                           &
-!!     &         (sph_file_param, sph, comms_sph, sph_grp)
+!!      subroutine load_local_rj_mesh_4_merge                           &
+!!     &         (sph_file_param, num_pe, sph_mesh)
+!!        integer, intent(in) ::  num_pe
 !!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(sph_grids), intent(inout) :: sph
-!!        type(sph_comm_tables), intent(inout) :: comms_sph
-!!        type(sph_group_data), intent(inout) :: sph_grp
-!!
+!!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !!      subroutine para_output_sph_mode_grids(sph_file_param, num_pe,   &
 !!     &          sph_params, sph_rj, sph_rlm, sph_rtm, sph_rtp,        &
-!!     &          comm_rj, comm_rlm, comm_rtm, comm_rtp, sph_grp)
+!!     &          comm_rj, comm_rlm, comm_rtm, comm_rtp, sph_grps)
 !!      subroutine para_output_sph_rj_modes                             &
 !!     &         (sph_file_param, num_pe, sph_params,                   &
-!!     &          sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grp)
+!!     &          sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grps)
 !!        integer(kind = kint), intent(in) :: num_pe
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
@@ -33,7 +29,7 @@
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm(num_pe)
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtp(num_pe)
-!!        type(sph_group_data), intent(inout) :: sph_grp(num_pe)
+!!        type(sph_group_data), intent(inout) :: sph_grps(num_pe)
 !!@endverbatim
 !
       module output_gen_sph_grid_modes
@@ -54,7 +50,7 @@
 !
       implicit none
 !
-      type(sph_file_data_type), private :: sph_file_m
+      type(sph_file_data_type), save, private :: sph_file_m
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,85 +58,43 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_output_gen_sph_grids                               &
-     &         (sph_file_param, sph, comms_sph, sph_grp)
+      subroutine load_local_rj_mesh_4_merge                             &
+     &         (sph_file_param, num_pe, sph_mesh)
 !
-      use load_data_for_sph_IO
       use sph_file_MPI_IO_select
-!
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) :: sph_grp
-!
-!
-      call copy_sph_trans_rlm_to_IO(sph%sph_params, sph%sph_rlm,        &
-     &                              comms_sph%comm_rlm, sph_file_m)
-      call sel_mpi_write_modes_rlm_file                                 &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rlm_mode_IO(sph_file_m)
-      write(*,'(a,i6,a)') 'Spherical transform table for domain',       &
-     &          my_rank, ' is done.'
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'copy_sph_trans_rj_to_IO', my_rank
-      call copy_sph_trans_rj_to_IO(sph%sph_params,                      &
-     &    sph%sph_rj, comms_sph%comm_rj, sph_grp, sph_file_m)
-      call sel_mpi_write_spectr_rj_file                                 &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rj_mode_IO(sph_file_m)
-      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
-     &          my_rank, ' is done.'
-!
-!
-      call copy_sph_trans_rtm_to_IO(sph%sph_params, sph%sph_rtm,        &
-     &    comms_sph%comm_rtm, sph_file_m)
-      call sel_mpi_write_geom_rtm_file                                  &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rtm_grid_IO(sph_file_m)
-      write(*,'(a,i6,a)') 'Legendre transform table rtm',               &
-     &          my_rank, ' is done.'
-!
-!
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'copy_sph_trans_rtp_to_IO', my_rank
-      call copy_sph_trans_rtp_to_IO(sph%sph_params,                     &
-     &    sph%sph_rtp, comms_sph%comm_rtp, sph_grp, sph_file_m)
-      call sel_mpi_write_geom_rtp_file                                  &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rtp_grid_IO(sph_file_m)
-      write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
-     &          my_rank, ' is done.'
-!
-      end subroutine mpi_output_gen_sph_grids
-!
-! ----------------------------------------------------------------------
-!
-      subroutine mpi_output_gen_sph_rj_mode                             &
-     &         (sph_file_param, sph, comms_sph, sph_grp)
-!
+      use sph_file_IO_select
       use load_data_for_sph_IO
-      use sph_file_MPI_IO_select
 !
+      integer, intent(in) ::  num_pe
       type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) :: sph_grp
+      type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !
+      type(field_IO_params) :: file_param
+      integer :: id_rank, ip
+      integer(kind = kint) :: iloop, ierr
 !
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                 'copy_sph_trans_rj_to_IO', my_rank
-      call copy_sph_trans_rj_to_IO(sph%sph_params,                      &
-     &    sph%sph_rj, comms_sph%comm_rj, sph_grp, sph_file_m)
-      call sel_mpi_write_spectr_rj_file                                 &
-     &   (nprocs, my_rank, sph_file_param, sph_file_m)
-      call dealloc_rj_mode_IO(sph_file_m)
-      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
-     &          my_rank, ' is done.'
+!  Read index data
+      call set_sph_mesh_file_fmt_prefix                                 &
+     &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
+     &    file_param)
+      do iloop = 0, (num_pe-1) / nprocs
+        id_rank = my_rank + iloop * nprocs
+        ip = id_rank + 1
+        call sel_mpi_read_spectr_rj_file                                &
+     &     (num_pe, id_rank, file_param, sph_file_m)
 !
-      end subroutine mpi_output_gen_sph_rj_mode
+        if(id_rank .lt. num_pe) then
+          write(*,*) 'load original data for  ', id_rank,               &
+     &             ' on ', my_rank, 'at loop ', iloop
+          call copy_sph_trans_rj_from_IO(sph_file_m,                    &
+     &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
+     &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
+          call dealloc_rj_mode_IO(sph_file_m)
+        end if
+      end do
 !
-! ----------------------------------------------------------------------
+      end subroutine load_local_rj_mesh_4_merge
+!
 ! -----------------------------------------------------------------------
 !
       subroutine para_output_sph_mode_grids                             &
@@ -247,15 +201,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_sph_grids                                      &
-     &         (sph_rtm, sph_rtp,  comm_rtm, comm_rtp, sph_grp)
+     &         (sph_rtm, sph_rtp,  comm_rtm, comm_rtp, sph_grps)
 !
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_comm_tbl), intent(inout) :: comm_rtm, comm_rtp
-      type(sph_group_data), intent(inout) :: sph_grp
+      type(sph_group_data), intent(inout) :: sph_grps
 !
 !
-      call dealloc_sph_grid_group(sph_grp)
+      call dealloc_sph_grid_group(sph_grps)
 !
       call dealloc_type_sph_comm_item(comm_rtm)
       call dealloc_type_sph_comm_item(comm_rtp)
@@ -271,15 +225,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_sph_modes                                      &
-     &         (sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grp)
+     &         (sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grps)
 !
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rj, comm_rlm
-      type(sph_group_data), intent(inout) :: sph_grp
+      type(sph_group_data), intent(inout) :: sph_grps
 !
 !
-      call dealloc_sph_mode_group(sph_grp)
+      call dealloc_sph_mode_group(sph_grps)
 !
       call dealloc_type_sph_comm_item(comm_rj)
       call dealloc_type_sph_comm_item(comm_rlm)

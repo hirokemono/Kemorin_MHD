@@ -105,13 +105,14 @@
       use parallel_FEM_mesh_init
       use mpi_gen_sph_grids_modes
       use output_gen_sph_grid_modes
+      use parallel_load_data_4_sph
 !
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
-      call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp, &
+      call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
      &    sph_const, comms_sph_const, sph_grp_const)
-      call mpi_output_gen_sph_grids(sph_files1%sph_file_param,          &
+      call output_sph_mesh(sph_files1%sph_file_param,                   &
      &    sph_const, comms_sph_const, sph_grp_const)
       call dealloc_sph_modes(sph_const%sph_rj, sph_const%sph_rlm,       &
      &    comms_sph_const%comm_rj, comms_sph_const%comm_rlm,            &

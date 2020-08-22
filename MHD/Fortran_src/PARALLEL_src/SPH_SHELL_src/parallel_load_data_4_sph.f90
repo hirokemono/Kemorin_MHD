@@ -6,21 +6,24 @@
 !>@brief Load spherical harmonics indexing data on multiple processes
 !!
 !!@verbatim
-!!      subroutine load_para_SPH_rj_mesh                                &
+!!      subroutine load_sph_mesh                                        &
 !!     &         (sph_file_param, sph, comms_sph, sph_grps)
-!!      subroutine load_para_sph_mesh                                   &
+!!      subroutine load_sph_rj_mesh                                     &
 !!     &         (sph_file_param, sph, comms_sph, sph_grps)
-!!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(field_IO_params), intent(in) ::  sph_file_param
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
-!!        type(mesh_data), intent(inout) :: geofem
-!!        type(mesh_geometry), intent(inout) :: mesh
-!!        type(mesh_groups), intent(inout) ::   group
-!!        type(field_IO_params), intent(inout) ::  mesh_file
-!!@endverbatim
+!!
+!!      subroutine output_sph_mesh                                      &
+!!     &         (sph_file_param, sph, comms_sph, sph_grps)
+!!      subroutine output_sph_rj_mesh                                   &
+!!     &         (sph_file_param, sph, comms_sph, sph_grps)
+!!        type(field_IO_params), intent(in) :: sph_file_param
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_group_data), intent(inout) :: sph_grps
+!@endverbatim
 !
       module parallel_load_data_4_sph
 !
@@ -50,82 +53,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_SPH_rj_mesh                                  &
-     &         (sph_file_param, sph, comms_sph, sph_grps)
-!
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) ::  sph_grps
-!
-!
-      call load_para_rj_mesh(sph_file_param,                            &
-     &    sph%sph_params, sph%sph_rj, comms_sph%comm_rj, sph_grps)
-!
-      end subroutine load_para_SPH_rj_mesh
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine load_FEM_mesh_4_SPH                                    &
-     &         (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj, &
-     &          geofem, gen_sph)
-!
-      use calypso_mpi
-      use t_mesh_data
-      use t_comm_table
-      use t_geometry_data
-      use t_group_data
-!
-      use m_spheric_constants
-      use copy_mesh_structures
-      use const_FEM_mesh_sph_mhd
-      use gen_sph_grids_modes
-      use mesh_IO_select
-      use set_nnod_4_ele_by_type
-!
-      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
-      type(field_IO_params), intent(in) ::  mesh_file
-      type(sph_shell_parameters), intent(inout) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      type(mesh_data), intent(inout) :: geofem
-!
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-!
-      type(mesh_data) :: femmesh_s
-!
-!
-!  --  Construct FEM mesh
-      if(sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then
-        if(sph_rj%iflag_rj_center .gt. 0) then
-          sph_params%iflag_shell_mode =  iflag_MESH_w_center
-        else
-          sph_params%iflag_shell_mode = iflag_MESH_same
-        end if
-      end if
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
-      call const_FEM_mesh_4_sph_mhd                                     &
-     &   (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj,       &
-     &    femmesh_s%mesh, femmesh_s%group, gen_sph)
-!      call compare_mesh_type                                           &
-!     &   (my_rank, geofem%mesh%nod_comm, mesh%node, mesh%ele,          &
-!     &    femmesh_s%mesh)
-!      call compare_mesh_groups(geofem%group%nod_grp, femmesh_s%group)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
-      femmesh_s%mesh%ele%first_ele_type                                 &
-     &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
-      call set_mesh_data_from_type                                      &
-     &   (femmesh_s%mesh, femmesh_s%group, geofem%mesh, geofem%group)
-!
-      end subroutine load_FEM_mesh_4_SPH
-!
-! -----------------------------------------------------------------------
-!
-      subroutine load_para_sph_mesh                                     &
+      subroutine load_sph_mesh                                          &
      &         (sph_file_param, sph, comms_sph, sph_grps)
 !
       use calypso_mpi
@@ -200,9 +128,107 @@
      &    comms_sph%comm_rtp, comms_sph%comm_rtm,                       &
      &    comms_sph%comm_rlm, comms_sph%comm_rj)
 !
-      end subroutine load_para_sph_mesh
+      end subroutine load_sph_mesh
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine load_sph_rj_mesh                                       &
+     &         (sph_file_param, sph, comms_sph, sph_grps)
+!
+      type(field_IO_params), intent(in) :: sph_file_param
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) ::  sph_grps
+!
+!
+      call load_para_rj_mesh(sph_file_param,                            &
+     &    sph%sph_params, sph%sph_rj, comms_sph%comm_rj, sph_grps)
+!
+      end subroutine load_sph_rj_mesh
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine output_sph_mesh                                        &
+     &         (sph_file_param, sph, comms_sph, sph_grps)
+!
+      use load_data_for_sph_IO
+      use sph_file_MPI_IO_select
+!
+      type(field_IO_params), intent(in) :: sph_file_param
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) :: sph_grps
+!
+!
+      call copy_sph_trans_rlm_to_IO(sph%sph_params, sph%sph_rlm,        &
+     &                              comms_sph%comm_rlm, sph_file_l)
+      call sel_mpi_write_modes_rlm_file                                 &
+     &   (nprocs, my_rank, sph_file_param, sph_file_l)
+      call dealloc_rlm_mode_IO(sph_file_l)
+      write(*,'(a,i6,a)') 'Spherical transform table for domain',       &
+     &          my_rank, ' is done.'
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                 'copy_sph_trans_rj_to_IO', my_rank
+      call copy_sph_trans_rj_to_IO(sph%sph_params,                      &
+     &    sph%sph_rj, comms_sph%comm_rj, sph_grps, sph_file_l)
+      call sel_mpi_write_spectr_rj_file                                 &
+     &   (nprocs, my_rank, sph_file_param, sph_file_l)
+      call dealloc_rj_mode_IO(sph_file_l)
+      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
+     &          my_rank, ' is done.'
+!
+!
+      call copy_sph_trans_rtm_to_IO(sph%sph_params, sph%sph_rtm,        &
+     &    comms_sph%comm_rtm, sph_file_l)
+      call sel_mpi_write_geom_rtm_file                                  &
+     &   (nprocs, my_rank, sph_file_param, sph_file_l)
+      call dealloc_rtm_grid_IO(sph_file_l)
+      write(*,'(a,i6,a)') 'Legendre transform table rtm',               &
+     &          my_rank, ' is done.'
+!
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                 'copy_sph_trans_rtp_to_IO', my_rank
+      call copy_sph_trans_rtp_to_IO(sph%sph_params,                     &
+     &    sph%sph_rtp, comms_sph%comm_rtp, sph_grps, sph_file_l)
+      call sel_mpi_write_geom_rtp_file                                  &
+     &   (nprocs, my_rank, sph_file_param, sph_file_l)
+      call dealloc_rtp_grid_IO(sph_file_l)
+      write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
+     &          my_rank, ' is done.'
+!
+      end subroutine output_sph_mesh
+!
+! ----------------------------------------------------------------------
+!
+      subroutine output_sph_rj_mesh                                     &
+     &         (sph_file_param, sph, comms_sph, sph_grps)
+!
+      use load_data_for_sph_IO
+      use sph_file_MPI_IO_select
+!
+      type(field_IO_params), intent(in) :: sph_file_param
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) :: sph_grps
+!
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &                 'copy_sph_trans_rj_to_IO', my_rank
+      call copy_sph_trans_rj_to_IO(sph%sph_params,                      &
+     &    sph%sph_rj, comms_sph%comm_rj, sph_grps, sph_file_l)
+      call sel_mpi_write_spectr_rj_file                                 &
+     &   (nprocs, my_rank, sph_file_param, sph_file_l)
+      call dealloc_rj_mode_IO(sph_file_l)
+      write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
+     &          my_rank, ' is done.'
+!
+      end subroutine output_sph_rj_mesh
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine load_para_rj_mesh                                      &
      &         (sph_file_param, sph_params, sph_rj, comm_rj, sph_grps)

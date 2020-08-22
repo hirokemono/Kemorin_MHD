@@ -203,44 +203,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_local_rj_mesh_4_merge                             &
-     &         (sph_file_param, num_pe, sph_mesh)
-!
-      use sph_file_MPI_IO_select
-      use sph_file_IO_select
-      use load_data_for_sph_IO
-!
-      integer, intent(in) ::  num_pe
-      type(field_IO_params), intent(in) :: sph_file_param
-      type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
-!
-      type(field_IO_params) :: file_param
-      type(sph_file_data_type) :: sph_file
-      integer :: id_rank, ip
-      integer(kind = kint) :: iloop, ierr
-!
-!  Read index data
-      call set_sph_mesh_file_fmt_prefix                                 &
-     &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
-     &    file_param)
-      do iloop = 0, (num_pe-1) / nprocs
-        id_rank = my_rank + iloop * nprocs
-        ip = id_rank + 1
-        call sel_mpi_read_spectr_rj_file                                &
-     &     (num_pe, id_rank, file_param, sph_file)
-!
-        if(id_rank .lt. num_pe) then
-          write(*,*) 'load original data for  ', id_rank,               &
-     &             ' on ', my_rank, 'at loop ', iloop
-          call copy_sph_trans_rj_from_IO(sph_file,                      &
-     &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
-     &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
-          call dealloc_rj_mode_IO(sph_file)
-        end if
-      end do
-!
-      end subroutine load_local_rj_mesh_4_merge
-!
-! -----------------------------------------------------------------------
-!
       end module parallel_gen_sph_grids
