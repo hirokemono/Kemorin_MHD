@@ -23,6 +23,11 @@
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) :: sph_grps
+!!
+!!      subroutine dealloc_sph_modes(sph, comms_sph, sph_grps)
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_group_data), intent(inout) :: sph_grps
 !@endverbatim
 !
       module parallel_load_data_4_sph
@@ -265,5 +270,24 @@
       end subroutine load_para_rj_mesh
 !
 ! -----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_modes(sph, comms_sph, sph_grps)
+!
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) :: sph_grps
+!
+!
+      call dealloc_sph_grid_group(sph_grps)
+      call dealloc_sph_mode_group(sph_grps)
+!
+      call dealloc_sph_comms_item(comms_sph)
+      call dealloc_spheric_parameter(sph)
+      call dealloc_sph_1d_indices(sph)
+!
+      end subroutine dealloc_sph_modes
+!
+! ----------------------------------------------------------------------
 !
       end module parallel_load_data_4_sph

@@ -298,7 +298,7 @@
       sph_rj%nidx_rj(1) = sph_rj%nidx_global_rj(1)
       sph_rj%nidx_rj(2) = sph_rj%nidx_global_rj(2) / nprocs
 !
-      call alloc_type_sph_1d_index_rj(sph_rj)
+      call alloc_sph_1d_index_rj(sph_rj)
       do i = 1, rayleigh_rtp%nri_gl
         irev = rayleigh_rtp%nri_gl - i + 1
         sph_rj%radius_1d_rj_r(i) = rayleigh_rtp%radius_gl(irev)
@@ -336,7 +336,7 @@
       sph_rtp%nidx_rtp(2) = rayleigh_rtp%led - rayleigh_rtp%lst + 1
       sph_rtp%nidx_rtp(3) = rayleigh_rtp%nphi_gl
 !
-      call alloc_type_sph_1d_index_rtp(sph_rtp)
+      call alloc_sph_1d_index_rtp(sph_rtp)
 !
       do i = 1, sph_rtp%nidx_rtp(1)
         sph_rtp%idx_gl_1d_rtp_r(i) = sph_rtp%ist_rtp(1) + i- 1

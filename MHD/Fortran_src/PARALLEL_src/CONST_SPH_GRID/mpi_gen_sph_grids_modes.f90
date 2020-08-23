@@ -104,11 +104,8 @@
 !
       type(sph_local_1d_index) :: sph_lcx_m
 !
-      integer :: ip
-!
 !  =========  Set global resolutions ===================================
 !
-      write(*,*) 'Tako!'
       call const_sph_global_parameters(gen_sph, sph_tmp)
       call copy_each_sph_param_from_ctl                                 &
      &   (sph_tmp, sph%sph_params, sph%sph_rtp, sph%sph_rj)
@@ -117,7 +114,7 @@
 !
 !  ========= Generate each spherical harmonics table ===================
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -126,14 +123,14 @@
      &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph%sph_rlm, comms_sph%comm_rlm)
-      ip = my_rank + 1
-      call copy_sph_comm_neib(comms_sph%comm_rlm, comm_rlm_mul(ip))
+      call copy_sph_comm_neib                                           &
+     &   (comms_sph%comm_rlm, comm_rlm_mul(my_rank+1))
 !
       call s_bcast_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
       call alloc_rj_1d_local_idx(sph%sph_rj, sph_lcx_m)
@@ -148,10 +145,10 @@
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+7)
 !
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
       allocate(comm_rtm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -160,14 +157,14 @@
      &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph%sph_rtm, comms_sph%comm_rtm)
-      ip = my_rank + 1
-      call copy_sph_comm_neib(comms_sph%comm_rtm, comm_rtm_mul(ip))
+      call copy_sph_comm_neib                                           &
+     &   (comms_sph%comm_rtm, comm_rtm_mul(my_rank+1))
 !
       call s_bcast_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical grids for domain ',  my_rank
       call alloc_rtp_1d_local_idx(sph%sph_rtp, sph_lcx_m)
@@ -184,7 +181,7 @@
 !
       deallocate(comm_rtm_mul)
       call dealloc_gen_mesh_params(gen_sph)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+7)
 !
       end subroutine mpi_gen_sph_grids
 !
@@ -230,7 +227,7 @@
 !
 !  ========= Generate each spherical harmonics table ===================
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -244,9 +241,9 @@
 !
       call s_bcast_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
-      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
       call alloc_rj_1d_local_idx(sph%sph_rj, sph_lcx_m)
@@ -262,7 +259,7 @@
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
       call dealloc_gen_mesh_params(gen_sph)
-      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+7)
 !
       end subroutine mpi_gen_sph_rj_mode
 !

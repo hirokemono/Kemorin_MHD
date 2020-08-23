@@ -164,7 +164,7 @@
 !
       sph_rj%nidx_rj(1) = pick_IO%num_layer
       sph_rj%nidx_rj(2) = 1
-      call alloc_type_sph_1d_index_rj(sph_rj)
+      call alloc_sph_1d_index_rj(sph_rj)
       call alloc_neutral_point(pick_IO%num_layer, ntl)
 !
       do i = 1, pick_IO%ntot_pick_spectr

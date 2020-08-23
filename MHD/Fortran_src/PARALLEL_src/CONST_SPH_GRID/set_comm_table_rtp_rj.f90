@@ -140,8 +140,8 @@
 !      nnod_rj = sph_rj%nnod_rj
 !      nidx_rj(1:2) = sph_rj%nidx_rj(1:2)
 !
-      call alloc_type_spheric_param_rj(sph_rj)
-      call alloc_type_sph_1d_index_rj(sph_rj)
+      call alloc_spheric_param_rj(sph_rj)
+      call alloc_sph_1d_index_rj(sph_rj)
 !
       call copy_sph_1d_gl_idx_rj(s3d_radius, sph_gl1d, sph_rj)
 !
@@ -150,7 +150,7 @@
       call set_global_sph_rj_id(s3d_ranks, stk_lc1d, sph_rj)
 !
       if(iflag_debug .gt. 0) then
-        call check_type_spheric_param_rj(id_rank, sph_rj)
+        call check_spheric_param_rj(id_rank, sph_rj)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -204,8 +204,8 @@
       call copy_gl_2_local_rtp_param                                    &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtp)
 !
-      call alloc_type_spheric_param_rtp(sph_rtp)
-      call alloc_type_sph_1d_index_rtp(sph_rtp)
+      call alloc_spheric_param_rtp(sph_rtp)
+      call alloc_sph_1d_index_rtp(sph_rtp)
 !
       call copy_sph_1d_gl_idx_rtp(s3d_radius, sph_gl1d, sph_rtp)
 !
@@ -215,7 +215,7 @@
 !
       if(iflag_debug .gt. 0) then
         write(*,*) 'check_spheric_param_rtp', id_rank
-        call check_type_spheric_param_rtp(id_rank, sph_rtp)
+        call check_spheric_param_rtp(id_rank, sph_rtp)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -264,14 +264,14 @@
       call count_comm_table_4_rj                                        &
      &   (id_rank, num_pe, comm_rlm_mul, comm_rj)
 !
-      call alloc_type_sph_comm_stack(comm_rj)
+      call alloc_sph_comm_stack(comm_rj)
 !
       call set_comm_stack_rtp_rj                                        &
      &   (comm_rj%nneib_domain, comm_rj%id_domain,                      &
      &    comm_rj%istack_sr, comm_rj%ntot_item_sr)
 !
       call deallocate_domain_sr_tmp
-      call alloc_type_sph_comm_item(sph_rj%nnod_rj,  comm_rj)
+      call alloc_sph_comm_item(sph_rj%nnod_rj,  comm_rj)
 !
       icou = 0
       call set_comm_table_4_rj(id_rank, num_pe, comm_rlm_mul,           &
@@ -309,7 +309,7 @@
       call count_comm_table_4_rtp(id_rank, num_pe, comm_rtm_mul,   &
      &    comm_rtp%nneib_domain)
 !
-      call alloc_type_sph_comm_stack(comm_rtp)
+      call alloc_sph_comm_stack(comm_rtp)
 !
       call set_comm_stack_rtp_rj                                        &
      &   (comm_rtp%nneib_domain, comm_rtp%id_domain,                    &
@@ -320,7 +320,7 @@
 !      write(*,*) 'istack_sr_rtp',    comm_rtp%istack_sr
 !
       call deallocate_domain_sr_tmp
-      call alloc_type_sph_comm_item(sph_rtp%nnod_rtp, comm_rtp)
+      call alloc_sph_comm_item(sph_rtp%nnod_rtp, comm_rtp)
 !
       icou = 0
       call set_comm_table_4_rtp(id_rank, num_pe, comm_rtm_mul,          &
@@ -441,9 +441,9 @@
      &                           + (k_tmp-1) * sph_rj%nidx_rj(2)
         end do
 !
-        call dealloc_type_sph_comm_item(comm_rlm_lc)
-        call dealloc_type_sph_1d_index_rlm(sph_rlm_lc)
-        call dealloc_type_spheric_param_rlm(sph_rlm_lc)
+        call dealloc_sph_comm_item(comm_rlm_lc)
+        call dealloc_sph_1d_index_rlm(sph_rlm_lc)
+        call dealloc_spheric_param_rlm(sph_rlm_lc)
       end do
 !
       end subroutine set_comm_table_4_rj
@@ -561,9 +561,9 @@
      &                                         * sph_rtp%nidx_rtp(2)
         end do
 !
-        call dealloc_type_sph_comm_item(comm_rtm_lc)
-        call dealloc_type_sph_1d_index_rtm(sph_rtm_lc)
-        call dealloc_type_spheric_param_rtm(sph_rtm_lc)
+        call dealloc_sph_comm_item(comm_rtm_lc)
+        call dealloc_sph_1d_index_rtm(sph_rtm_lc)
+        call dealloc_spheric_param_rtm(sph_rtm_lc)
       end do
 !
       end subroutine set_comm_table_4_rtp

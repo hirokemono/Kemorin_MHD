@@ -110,16 +110,14 @@
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
      &    sph_const, comms_sph_const, sph_grp_const)
       call output_sph_mesh(sph_files1%sph_file_param,                   &
      &    sph_const, comms_sph_const, sph_grp_const)
-      call dealloc_sph_modes(sph_const%sph_rj, sph_const%sph_rlm,       &
-     &    comms_sph_const%comm_rj, comms_sph_const%comm_rlm,            &
+      call dealloc_sph_modes(sph_const, comms_sph_const,                &
      &    sph_grp_const)
-      call dealloc_sph_grids(sph_const%sph_rtm, sph_const%sph_rtp,      &
-     &    comms_sph_const%comm_rtm, comms_sph_const%comm_rtp,           &
-     &    sph_grp_const)
+      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
 !

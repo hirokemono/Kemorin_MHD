@@ -7,13 +7,28 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine check_and_make_SPH_mesh(sph_file_param, sph_maker)
+!!      subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,           &
+!!     &          sph_file_param, sph, comms_sph, sph_grps, geofem,     &
+!!     &          mesh_file, sph_maker)
+!!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
+!!        type(field_IO_params), intent(in) ::  sph_file_param
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_group_data), intent(inout) ::  sph_grps
+!!        type(mesh_data), intent(inout) :: geofem
+!!        type(field_IO_params), intent(inout) ::  mesh_file
+!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!!      subroutine check_and_make_SPH_mesh(sph_file_param, sph_maker,   &
+!!     &          sph, comms_sph, sph_grps)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!      subroutine mpi_gen_sph_grids(sph_file_param, gen_sph,           &
-!!     &                             sph, comms_sph, sph_grps)
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(sph_group_data), intent(inout) :: sph_grps
+!!      subroutine check_and_make_SPH_rj_mode(sph_file_param, sph_maker,&
+!!     &          sph, comms_sph, sph_grps)
 !!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(construct_spherical_grid), intent(inout) :: gen_sph
+!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) :: sph_grps
@@ -27,6 +42,7 @@
       use calypso_mpi
 !
       use m_work_time
+      use m_elapsed_labels_gen_SPH
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -135,18 +151,22 @@
 !
       if(iflag_lc) then
         if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
+        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
         call load_sph_mesh(sph_file_param, sph, comms_sph, sph_grps)
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
       else if(sph_maker%make_SPH_flag .eqv. .FALSE.) then
         call calypso_mpi_abort(ierr_file,                               &
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
+        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
         call mpi_gen_sph_grids(sph_maker%gen_sph,                       &
      &      sph_maker%sph_tmp, sph, comms_sph, sph_grps)
         if(sph_maker%mesh_output_flag) then
           call output_sph_mesh(sph_file_param,                          &
      &                         sph, comms_sph, sph_grps)
         end if
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
       end if
       call calypso_mpi_barrier
 !
@@ -184,12 +204,15 @@
 !
       if(iflag_lc) then
         if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
+        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
         call load_sph_rj_mesh(sph_file_param, sph, comms_sph, sph_grps)
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
       else if(sph_maker%make_SPH_flag .eqv. .FALSE.) then
         call calypso_mpi_abort(ierr_file,                               &
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
+        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
         call mpi_gen_sph_grids(sph_maker%gen_sph,                       &
      &      sph_maker%sph_tmp, sph, comms_sph, sph_grps)
 !
@@ -197,6 +220,7 @@
           call output_sph_mesh(sph_file_param,                          &
      &                         sph, comms_sph, sph_grps)
         end if
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
       end if
       call calypso_mpi_barrier
 !

@@ -12,24 +12,13 @@
 !!        integer, intent(in) ::  num_pe
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
-!!      subroutine para_output_sph_mode_grids(sph_file_param, num_pe,   &
-!!     &          sph_params, sph_rj, sph_rlm, sph_rtm, sph_rtp,        &
-!!     &          comm_rj, comm_rlm, comm_rtm, comm_rtp, sph_grps)
+!!      subroutine para_output_sph_mode_grids                           &
+!!     &         (sph_file_param, num_pe, sph_mesh)
 !!      subroutine para_output_sph_rj_modes                             &
-!!     &         (sph_file_param, num_pe, sph_params,                   &
-!!     &          sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grps)
+!!     &         (sph_file_param, num_pe, sph_mesh)
 !!        integer(kind = kint), intent(in) :: num_pe
 !!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(sph_shell_parameters), intent(in) :: sph_params(num_pe)
-!!        type(sph_rj_grid), intent(inout) :: sph_rj(num_pe)
-!!        type(sph_rlm_grid), intent(inout) :: sph_rlm(num_pe)
-!!        type(sph_rtm_grid), intent(inout) :: sph_rtm(num_pe)
-!!        type(sph_rtp_grid), intent(inout) :: sph_rtp(num_pe)
-!!        type(sph_comm_tbl), intent(inout) :: comm_rj(num_pe)
-!!        type(sph_comm_tbl), intent(inout) :: comm_rlm(num_pe)
-!!        type(sph_comm_tbl), intent(inout) :: comm_rtm(num_pe)
-!!        type(sph_comm_tbl), intent(inout) :: comm_rtp(num_pe)
-!!        type(sph_group_data), intent(inout) :: sph_grps(num_pe)
+!!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !!@endverbatim
 !
       module output_gen_sph_grid_modes
@@ -102,6 +91,7 @@
 !
       use sph_file_MPI_IO_select
       use load_data_for_sph_IO
+      use parallel_load_data_4_sph
 !
       integer(kind = kint), intent(in) :: num_pe
       type(field_IO_params), intent(in) :: sph_file_param
@@ -154,13 +144,8 @@
      &          id_rank, ' is done.'
 !
         call dealloc_sph_modes                                          &
-     &     (sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph%sph_rlm,          &
-     &      sph_mesh(ip)%sph_comms%comm_rj,                             &
-     &      sph_mesh(ip)%sph_comms%comm_rlm, sph_mesh(ip)%sph_grps)
-        call dealloc_sph_grids                                          &
-     &     (sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%sph%sph_rtp,         &
-     &      sph_mesh(ip)%sph_comms%comm_rtm,                            &
-     &      sph_mesh(ip)%sph_comms%comm_rtp, sph_mesh(ip)%sph_grps)
+     &     (sph_mesh(ip)%sph, sph_mesh(ip)%sph_comms,                   &
+     &      sph_mesh(ip)%sph_grps)
       end do
 !
       end subroutine para_output_sph_mode_grids
@@ -196,55 +181,6 @@
       end do
 !
       end subroutine para_output_sph_rj_modes
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_sph_grids                                      &
-     &         (sph_rtm, sph_rtp,  comm_rtm, comm_rtp, sph_grps)
-!
-      type(sph_rtm_grid), intent(inout) :: sph_rtm
-      type(sph_rtp_grid), intent(inout) :: sph_rtp
-      type(sph_comm_tbl), intent(inout) :: comm_rtm, comm_rtp
-      type(sph_group_data), intent(inout) :: sph_grps
-!
-!
-      call dealloc_sph_grid_group(sph_grps)
-!
-      call dealloc_type_sph_comm_item(comm_rtm)
-      call dealloc_type_sph_comm_item(comm_rtp)
-!
-      call dealloc_type_sph_1d_index_rtm(sph_rtm)
-      call dealloc_type_sph_1d_index_rtp(sph_rtp)
-!
-      call dealloc_type_spheric_param_rtm(sph_rtm)
-      call dealloc_type_spheric_param_rtp(sph_rtp)
-!
-      end subroutine dealloc_sph_grids
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_sph_modes                                      &
-     &         (sph_rj, sph_rlm, comm_rj, comm_rlm, sph_grps)
-!
-      type(sph_rj_grid), intent(inout) :: sph_rj
-      type(sph_rlm_grid), intent(inout) :: sph_rlm
-      type(sph_comm_tbl), intent(inout) :: comm_rj, comm_rlm
-      type(sph_group_data), intent(inout) :: sph_grps
-!
-!
-      call dealloc_sph_mode_group(sph_grps)
-!
-      call dealloc_type_sph_comm_item(comm_rj)
-      call dealloc_type_sph_comm_item(comm_rlm)
-!
-      call dealloc_type_sph_1d_index_rj(sph_rj)
-      call dealloc_type_sph_1d_index_rlm(sph_rlm)
-!
-      call dealloc_spheric_param_rj(sph_rj)
-      call dealloc_type_spheric_param_rlm(sph_rlm)
-!
-      end subroutine dealloc_sph_modes
 !
 ! ----------------------------------------------------------------------
 !

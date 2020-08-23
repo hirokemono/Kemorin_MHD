@@ -7,10 +7,14 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine s_para_gen_sph_grids(sph_file_param, sph, gen_sph)
+!!      subroutine check_and_make_para_SPH_mesh                         &
+!!     &         (sph_file_param, num_pe, sph_mesh, sph_maker)
+!!      subroutine check_and_make_para_rj_mode                          &
+!!     &         (sph_file_param, num_pe, sph_mesh, sph_maker)
+!!        integer(kind = kint), intent(in) :: num_pe
 !!        type(field_IO_params), intent(in) :: sph_file_param
-!!        type(construct_spherical_grid), intent(inout) :: gen_sph
-!!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!!        type(sph_mesh_data), intent(inout) :: sph_mesh(num_pe)
 !!@endverbatim
 !
       module parallel_gen_sph_grids
@@ -29,6 +33,8 @@
       use t_check_and_make_SPH_mesh
 !
       implicit none
+!
+      private :: para_gen_sph_grids, para_gen_sph_rj_mode
 !
 ! ----------------------------------------------------------------------
 !

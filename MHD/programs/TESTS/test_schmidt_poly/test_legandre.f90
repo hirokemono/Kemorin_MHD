@@ -52,7 +52,7 @@
       sph_rtm_test%nidx_rtm(2) = num_gauss
       sph_rlm_test%nidx_rlm(2) = ltr*(ltr+2) + 1
       sph_param_test%l_truncation = ltr
-      call alloc_type_sph_1d_index_rlm(sph_rlm_test)
+      call alloc_sph_1d_index_rlm(sph_rlm_test)
       nidx_rlm(1:2) = sph_rlm_test%nidx_rlm(1:2)
 !
       do l = 0, ltr
