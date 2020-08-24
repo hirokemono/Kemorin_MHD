@@ -164,6 +164,7 @@
      &      sph_file_param%iflag_format, mesh_file)
       else
         sph_file_param%file_prefix = default_sph_prefix
+        mesh_file%file_prefix = default_sph_prefix
       end if
 !
       sph_file_IO%iflag_IO = plt%spectr_field_file_prefix%iflag
