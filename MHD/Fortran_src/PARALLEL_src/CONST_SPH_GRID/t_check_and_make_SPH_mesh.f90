@@ -140,7 +140,6 @@
       logical :: iflag_lc
 !
 !
-      write(*,*) 'sph_file_param%file_prefix', sph_file_param%file_prefix
       if(my_rank .eq. izero) then
         iflag_lc =    check_exsist_rtp_file(my_rank, sph_file_param)    &
      &          .and. check_exsist_rtm_file(my_rank, sph_file_param)    &
