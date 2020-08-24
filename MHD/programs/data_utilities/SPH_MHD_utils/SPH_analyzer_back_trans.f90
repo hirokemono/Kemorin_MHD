@@ -84,7 +84,6 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(work_SPH_MHD), intent(inout) :: SPH_WK
 !
-!
 !   Allocate spectr field data
 !
       call init_field_data_w_SGS(SPH_MHD%sph%sph_rj%nnod_rj,            &

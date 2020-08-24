@@ -87,7 +87,6 @@
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use set_group_types_4_IO
-      use count_num_sph_smp
 !
       type(sph_file_data_type), intent(in) :: sph_file
 !
@@ -112,8 +111,6 @@
       call set_gruop_stracture                                          &
      &   (sph_file%sph_grp_IO%zonal_rtp_grp, sph_grps%zonal_rtp_grp)
 !
-      call count_num_rtp_smp(sph_rtp, ierr)
-!
       end subroutine copy_sph_trans_rtp_from_IO
 !
 ! -----------------------------------------------------------------------
@@ -124,7 +121,6 @@
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
       use set_group_types_4_IO
-      use count_num_sph_smp
 !
       type(sph_file_data_type), intent(in) :: sph_file
 !
@@ -145,8 +141,6 @@
       call set_gruop_stracture                                          &
      &   (sph_file%sph_grp_IO%sphere_rj_grp, sph_grps%sphere_rj_grp)
 !
-      call count_num_rj_smp(sph_rj, ierr)
-!
       end subroutine copy_sph_trans_rj_from_IO
 !
 ! -----------------------------------------------------------------------
@@ -156,7 +150,6 @@
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
-      use count_num_sph_smp
 !
       type(sph_file_data_type), intent(in) :: sph_file
 !
@@ -171,8 +164,6 @@
       call copy_comm_sph_from_IO                                        &
      &   (sph_rtm%nnod_rtm, sph_file%comm_IO, comm_rtm)
 !
-      call count_num_rtm_smp(sph_rtm, ierr)
-!
       end subroutine copy_sph_trans_rtm_from_IO
 !
 ! -----------------------------------------------------------------------
@@ -182,7 +173,6 @@
 !
       use copy_sph_comm_table_4_IO
       use copy_sph_node_4_IO
-      use count_num_sph_smp
 !
       type(sph_file_data_type), intent(in) :: sph_file
 !
@@ -196,8 +186,6 @@
      &   (sph_file%sph_IO, sph_rlm, sph_params%l_truncation)
       call copy_comm_sph_from_IO                                        &
      &   (sph_rlm%nnod_rlm, sph_file%comm_IO, comm_rlm)
-!
-      call count_num_rlm_smp(sph_rlm, ierr)
 !
       end subroutine copy_sph_trans_rlm_from_IO
 !

@@ -51,7 +51,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'load_sph_rj_mesh'
       call load_sph_rj_mesh(files_SHR%sph_file_param,                   &
-     &    SPH_dat_ss%sph, SPH_dat_ss%comms, SPH_dat_ss%groups)
+     &    SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%comms%comm_rj, SPH_dat_ss%groups)
+      call sph_rj_index_flags_and_params(SPH_dat_ss%groups,             &
+     &    SPH_dat_ss%sph%sph_params, SPH_dat_ss%sph%sph_rj,             &
+     &    SPH_dat_ss%comms%comm_rj)
 !
 !  ------  initialize spectr data
 !

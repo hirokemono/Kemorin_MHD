@@ -66,7 +66,6 @@
       use set_address_sph_trans_snap
       use address_sph_trans_SGS_snap
       use init_sphrical_transform_MHD
-      use pole_sph_transform
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(SPH_MHD_model_data), intent(in) :: SPH_model
@@ -86,8 +85,6 @@
 !>      total number of svalars for spherical harmonics transform
       integer(kind = kint), save :: nscalar_max_trans = 0
 !
-!
-      call init_pole_transform(SPH_MHD%sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'

@@ -67,7 +67,6 @@
       call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
      &    SPH_MHD%sph, SPH_MHD%comms, trns_gauss, WK_sph_TRNS)
-      call init_pole_transform(SPH_MHD%sph%sph_rtp)
       call allocate_d_pole_4_all_trans                                  &
      &   (fld_rtp_TRNS, SPH_MHD%sph%sph_rtp)
 !

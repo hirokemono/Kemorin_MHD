@@ -53,6 +53,7 @@
       use sph_file_MPI_IO_select
       use sph_file_IO_select
       use load_data_for_sph_IO
+      use count_num_sph_smp
 !
       integer, intent(in) ::  num_pe
       type(field_IO_params), intent(in) :: sph_file_param
@@ -78,6 +79,7 @@
           call copy_sph_trans_rj_from_IO(sph_file_m,                    &
      &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
      &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params, ierr)
+          call count_num_rj_smp(sph_mesh(ip)%sph%sph_rj, ierr)
           call dealloc_rj_mode_IO(sph_file_m)
         end if
       end do

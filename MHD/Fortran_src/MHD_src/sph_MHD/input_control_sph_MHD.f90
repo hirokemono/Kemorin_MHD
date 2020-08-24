@@ -48,9 +48,7 @@
       implicit none
 !
 !>      Structure to construct grid
-      type(sph_grid_maker_in_sim), save :: sph_maker1
-!
-      private :: sph_maker1
+      type(sph_grid_maker_in_sim), save, private :: sph_maker1
 !
 ! ----------------------------------------------------------------------
 !
@@ -138,9 +136,9 @@
      &   (DMHD_ctl%model_ctl, DMHD_ctl%smonitor_ctl,                    &
      &    SPH_model%MHD_prop, SPH_MHD%fld, SPH_WK%monitor)
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
-      call load_sph_mesh(MHD_files%sph_file_param,                      &
-     &                   SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
+      if (iflag_debug.eq.1) write(*,*) 'check_and_make_SPH_mesh'
+      call check_and_make_SPH_mesh(MHD_files%sph_file_param,            &
+     &   sph_maker1, SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !

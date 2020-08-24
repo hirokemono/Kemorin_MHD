@@ -88,7 +88,6 @@
       call set_sph_MHD_sprctr_data(SPH_MHD%sph, SPH_model%MHD_prop,     &
      &    SPH_MHD%fld, SPH_MHD%ipol)
 !
-!
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver                                   &
      &   (isix, SPH_MHD%sph%sph_rtp%nnod_rtp)

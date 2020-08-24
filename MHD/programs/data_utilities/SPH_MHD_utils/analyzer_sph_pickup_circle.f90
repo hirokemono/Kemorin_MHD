@@ -98,6 +98,9 @@
       if (iflag_debug.eq.1) write(*,*) 'load_sph_mesh'
       call load_sph_mesh(MHD_files1%sph_file_param,                     &
      &                   SPH_MHD1%sph, SPH_MHD1%comms, SPH_MHD1%groups)
+      if (iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
+      call sph_index_flags_and_params                                   &
+     &   (SPH_MHD1%groups, SPH_MHD1%sph, SPH_MHD1%comms)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

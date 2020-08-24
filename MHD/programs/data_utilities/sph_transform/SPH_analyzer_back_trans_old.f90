@@ -44,7 +44,6 @@
       use field_IO_select
       use set_field_data_w_SGS
       use init_sph_trans
-      use pole_sph_transform
       use sph_transfer_all_field
 !
       type(SPH_TRNS_file_IO_params), intent(in) :: files_param
@@ -91,7 +90,6 @@
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
      &    SPH_MHD%sph, SPH_MHD%comms, trans_p, WK_sph_TRNS)
 !
-      call init_pole_transform(SPH_MHD%sph%sph_rtp)
       call allocate_d_pole_4_all_trans                                  &
      &   (fld_rtp_TRNS, SPH_MHD%sph%sph_rtp)
 !

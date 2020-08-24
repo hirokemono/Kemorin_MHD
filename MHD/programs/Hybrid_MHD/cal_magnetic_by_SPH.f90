@@ -80,8 +80,6 @@
         sph_fld%ntot_phys = 21
       end if
 !
-      call init_pole_transform(sph%sph_rtp)
-!
       call set_addresses_trans_hbd_MHD(evo_magne, SGS_param)
       call allocate_hbd_trans_rtp(sph%sph_rtp)
       call check_add_trans_hbd_MHD(ipol)

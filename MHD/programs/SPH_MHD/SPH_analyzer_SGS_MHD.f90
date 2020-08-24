@@ -91,7 +91,6 @@
       type(work_SPH_MHD), intent(inout) :: SPH_WK
       type(field_IO), intent(inout) :: sph_fst_IO
 !
-!
 !   Allocate spectr field data
 !
       call set_sph_SGS_MHD_spectr_data                                  &

@@ -57,7 +57,6 @@
       use t_sph_multi_FFTW
 !
       use set_address_sph_trans_MHD
-      use pole_sph_transform
       use init_sphrical_transform_MHD
       use set_address_all_sph_trans
 !
@@ -74,8 +73,6 @@
 !>      total number of svalars for spherical harmonics transform
       integer(kind = kint), save :: nscalar_max_trans
 !
-!
-      call init_pole_transform(SPH_MHD%sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_all_spherical_transform'

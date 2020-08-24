@@ -95,7 +95,6 @@
 !
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
-!
 !  Check and construct spherical shell table
       call check_and_make_SPH_mesh(sph_file_param, sph_maker,           &
      &                             sph, comms_sph, sph_grps)
@@ -168,6 +167,15 @@
         end if
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
       end if
+!
+      if (iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
+      call sph_index_flags_and_params(sph_grps, sph, comms_sph)
+!
+      write(*,*) my_rank, 'sph_rtp%nnod_pole', &
+     &                    sph%sph_rtp%nnod_pole
+      write(*,*) my_rank, 'istack_npole_smp', &
+     &                    sph%sph_rtp%istack_npole_smp
+!
       call calypso_mpi_barrier
 !
       end subroutine check_and_make_SPH_mesh
@@ -183,6 +191,7 @@
       use output_gen_sph_grid_modes
       use sph_file_IO_select
       use parallel_load_data_4_sph
+      use set_from_recv_buf_rev
 !
       type(field_IO_params), intent(in) :: sph_file_param
 !
@@ -205,7 +214,9 @@
       if(iflag_lc) then
         if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
-        call load_sph_rj_mesh(sph_file_param, sph, comms_sph, sph_grps)
+        call load_sph_rj_mesh                                           &
+     &     (sph_file_param, sph%sph_params, sph%sph_rj,                 &
+     &      comms_sph%comm_rj, sph_grps)
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
       else if(sph_maker%make_SPH_flag .eqv. .FALSE.) then
         call calypso_mpi_abort(ierr_file,                               &
@@ -222,6 +233,10 @@
         end if
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
       end if
+!
+      call sph_rj_index_flags_and_params                                &
+     &   (sph_grps, sph%sph_params, sph%sph_rj, comms_sph%comm_rj)
+!
       call calypso_mpi_barrier
 !
       end subroutine check_and_make_SPH_rj_mode
