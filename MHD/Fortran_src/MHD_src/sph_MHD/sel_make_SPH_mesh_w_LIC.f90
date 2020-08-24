@@ -73,8 +73,6 @@
 !
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
-      sph_file_param%file_prefix = 'tako'
-!
 !  Check and construct spherical shell table
       call check_and_make_SPH_mesh(sph_file_param, sph_maker,           &
      &                             sph, comms_sph, sph_grps)
