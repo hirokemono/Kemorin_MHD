@@ -43,10 +43,16 @@ RANLIB = @RANLIB@
 # OPENMP_FCFLAGS OprnMP option for fortran compiler
 # COCOA_FLAG is defined to use cocoa Framework
 # XL_FORTRAN   Set "-WF," option for cpp preprocessor
+# SSE_FLAG     X86 instruction flag
 #
 OPENMP_FCFLAGS = @OPENMP_FCFLAGS@
 COCOA_FLAG =     @COCOA_FLAG@
 XL_FORTRAN =     @XL_FORTRAN@
+
+SSE_FLAG = @SSE_FLAG@
+SSE4 =     @SSE4@
+SSE8 =     @SSE8@
+
 #
 #  optimization
 #
@@ -157,7 +163,9 @@ depends: $(MAKE_MOD_DEP)
 		CXX="$(CXX)" \
 		MPIF90="$(MPIF90)" \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
-		XL_FORTRAN="$(XL_FORTRAN)" \
+		SSE_FLAG="$(SSE_FLAG)" \
+		SSE4="$(SSE4)" \
+		SSE8="$(SSE8)" \
 		depends
 
 makemake: $(MAKE_MOD_DEP)
@@ -208,6 +216,9 @@ makemake: $(MAKE_MOD_DEP)
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
+		SSE_FLAG="$(SSE_FLAG)" \
+		SSE4="$(SSE4)" \
+		SSE8="$(SSE8)" \
 		makemake
 
 makemake64: $(MAKE_MOD_DEP)
@@ -256,6 +267,9 @@ makemake64: $(MAKE_MOD_DEP)
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
+		SSE_FLAG="$(SSE_FLAG)" \
+		SSE4="$(SSE4)" \
+		SSE8="$(SSE8)" \
 		64BIT_INT="$(64BIT_INT)" \
 		makemake
 

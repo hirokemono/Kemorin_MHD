@@ -24,6 +24,11 @@ dnl Include BLAS library check
 builtin(include,MHD/confdb/ax_blas.m4)
 builtin(include,MHD/confdb/ax_blas_f77_func.m4)
 
+dnl Include x86 features Check
+builtin(include,MHD/confdb/ax_gcc_x86_cpu_supports.m4)
+builtin(include,MHD/confdb/ax_check_x86_features.m4)
+
+
 #
 dnl Include zlib Check related definitions
 builtin(include,MHD/confdb/ax_check_zlib.m4)
@@ -124,6 +129,45 @@ AC_SUBST(OPENMP_CFLAGS)
 # Check MPI
 AX_MPI
 AC_LANG_RESTORE
+# Check x86 features
+# AC_MSG_RESULT(CFLAGS in:    "${CFLAGS}")
+# AX_CHECK_X86_FEATURES
+# AC_MSG_RESULT(CFLAGS out:    "${CFLAGS}")
+
+AX_GCC_X86_CPU_SUPPORTS(avx512f, have_avx512="yes")
+
+AX_GCC_X86_CPU_SUPPORTS(fma4, have_fma="yes")
+AX_GCC_X86_CPU_SUPPORTS(fma, have_fma="yes")
+
+AX_GCC_X86_CPU_SUPPORTS(avx2, have_avx="yes")
+AX_GCC_X86_CPU_SUPPORTS(avx, have_avx="yes")
+
+AX_GCC_X86_CPU_SUPPORTS(sse3, have_sse3="yes")
+
+SSE_FLAG=
+SSE4="fort"
+SSE8="fort512"
+if test -n "${have_avx}"; then
+#  AC_MSG_RESULT(AVX INSTRUCTIONS)
+  SSE_FLAG="avx"
+  SSE4="avx"
+  SSE8="fort512"
+fi
+if test -n "${have_fma}"; then
+#  AC_MSG_RESULT(FMA INSTRUCTIONS)
+  SSE_FLAG="fma"
+  SSE4="fma"
+  SSE8="fort512"
+fi
+if test -n "${have_avx512}"; then
+  AC_MSG_RESULT(AVX512 INSTRUCTIONS)
+  SSE_FLAG="avx512f"
+  SSE4="fma"
+  SSE8="avx512"
+fi
+AC_SUBST(SSE_FLAG)
+AC_SUBST(SSE4)
+AC_SUBST(SSE8)
 
 # Checks using Fortran Compiler
 AC_LANG_SAVE
@@ -330,8 +374,9 @@ AC_SUBST(PGPLOT_LIBS)
 AC_MSG_RESULT()
 AC_MSG_RESULT(-----   Configuration summary   -------------------------------)
 AC_MSG_RESULT()
-AC_MSG_RESULT(  host:        "${host}")
-AC_MSG_RESULT(XL_FORTRAN:    "${XL_FORTRAN}")
+AC_MSG_RESULT(  host:          "${host}")
+AC_MSG_RESULT(XL_FORTRAN:      "${XL_FORTRAN}")
+AC_MSG_RESULT(x86 instruction: "${SSE_FLAG}")
 AC_MSG_RESULT()
 if test -n "${OPENMP_FCFLAGS}"; then
         AC_MSG_RESULT(    Use OpenMP ...        yes)
