@@ -1,0 +1,301 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4paper]{scrartcl}
+
+\title{Manual of MXPACK}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Outline}
+
+This is a package of miscllaneous subroutines.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{List of subroutines}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{MXTIME} & get the current UNIX-time\\
+\texttt{MXALLC} & allocate a memory space aligned with 64byte boundary\\
+\texttt{MXFREE} & free a memory space\\
+\texttt{MXGCPU} & Inquire the setting of SSE on installation of ISPACK\\
+\texttt{MXSOMP} & Set the number of threads for OpenMP parallelization\\
+\texttt{MXGOMP} & Get the number of threads for OpenMP parallelization
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Usage of each subroutine}
+
+\subsection{MXTIME}
+
+\begin{enumerate}
+
+\item Purpose
+
+Show the UNIX-time, the number of seconds that have elapsed since
+00:00:00 UTC, 1 January 1970.
+
+\item Definition
+
+\item Synopsis
+    
+\texttt{MXTIME(SEC)}
+  
+\item Parameters
+
+\begin{verbatim}
+REAL(8) :: SEC
+\end{verbatim}
+  
+\begin{tabular}{ll}
+\texttt{SEC} & Output. the current UNIX-time (in seconds).
+\end{tabular}
+
+\item Remarks
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{MXALLC}
+
+\begin{enumerate}
+
+\item Purpose
+
+Allocate a 64-byte aligned memory.
+
+\item Definition
+
+If you have made ISPACK with setting SSE=avx,  SSE=fma, or SSE=avx512
+on Intel x86 CPUs, some arrays for FVPACK, LVPACK, and
+SVPACK must be 32-byte aligned, or must be 64-byte aligned
+with setting SSE=avx512.
+However, not all compilers
+do the alignment automatically (Intel ifort can do it 
+with the option ``-align array64byte'', but gfortran does
+not have such an option).
+This subroutine enables such a memory allocation on a 
+general Fortran90 environment.
+
+\item Synopsis
+    
+\texttt{MXALLC(P,N)}
+  
+\item Parameters
+
+\begin{verbatim}
+TYPE(C_PTR) :: P
+INTEGER(8) :: N
+\end{verbatim}
+    
+\begin{tabular}{ll}
+\texttt{P} & Output. 
+A \texttt{C\_PTR}-type structure which contains the pointer \\
+& 
+to the beginning address of the allocated memory.\\
+\texttt{N} & Input. The size of the double-precision array
+to be allocated \\
+&    (namely, \texttt{N*8}-bytes of memory is allocated).
+\end{tabular}
+
+\item Remarks
+
+In an Fortran90 program, you can use 64-byte aligned 
+double-precision arrays by using \texttt{MXALLC} with 
+the \texttt{ISO\_C\_BINDING} module as the following example.
+You must free the allocated memory by calling \texttt{MXFREE}
+before ending the program.
+
+\begin{verbatim}
+      USE ISO_C_BINDING
+      IMPLICIT NONE
+      INTEGER,PARAMETER :: M=20,N=10
+      INTEGER :: I,J
+      REAL(8),DIMENSION(:,:),POINTER:: A
+      TYPE(C_PTR) :: P
+
+      CALL MXALLC(P,M*N) ! memory allocation 
+      CALL C_F_POINTER(P,A,[M,N]) ! associate a pointer with an array
+      ! hereinafter, you can use a double-precision array A(M,N).
+
+      DO J=1,N
+         DO I=1,M
+            A(I,J)=1000*I+J
+            PRINT *,A(I,J)
+         END DO
+      END DO
+
+      CALL MXFREE(P) ! free the memory that is allocated by MXALLC
+        
+      END
+\end{verbatim}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{MXFREE}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Free a memory space.
+
+\item Definition
+
+Free the memory allocated by \texttt{MXALLC}.
+
+\item Synopsis 
+    
+\texttt{MXFREE(P)}
+  
+\item Parameters
+
+\begin{verbatim}
+TYPE(C_PTR) :: P
+\end{verbatim}
+  
+    
+\begin{tabular}{ll}
+\texttt{P} & Input. 
+The \texttt{C\_PTR}-type structure that contains  the pointer\\
+ & when a memmory is allocated by \texttt{MXALLC}.
+\end{tabular}
+
+\item Remark
+
+See also \texttt{MXALLC} for the usage example.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{MXGCPU}
+
+\begin{enumerate}
+
+\item Purpose
+
+Inquire the setting of SSE on installation of ISPACK  
+
+\item Definition
+
+\item Synopsis
+
+\texttt{MXGCPU(ICPU)}  
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: ICPU
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{ICPU} & Output. A value corresponding to the SSE setting (see Remark).
+\end{tabular}
+
+\item Remark
+
+  (a) If SSE=fort, then \texttt{ICPU} = 0; 
+  if SSE=avx, then \texttt{ICPU} = 10;
+  if SSE=fma, then \texttt{ICPU} = 20;
+  if SSE=avx512, then\texttt{ICPU} = 30.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{MXSOMP}
+
+\begin{enumerate}
+
+\item Purpose  
+
+Set the number of threads for OpenMP parallelization.
+
+\item Definition
+  
+Set the maximum number of threads to execute parallelized parts by 
+  OpenMP in ISPACK.
+
+\item Synopsis
+
+\texttt{MXSOMP(NTH)}
+
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: NTH
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NTH} & Input. Maximum number of threads.
+\end{tabular}
+
+\item Remarks
+
+(a) If \texttt{NTH} is larger than \texttt{OMP\_NUM\_THREADS},
+   the maximum number of threads is set to \texttt{OMP\_NUM\_THREADS}.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{MXGOMP}
+
+\begin{enumerate}
+
+\item Purpose  
+
+Get the number of threads for OpenMP parallelization.
+
+\item Definition
+
+Get the number of threads set by \texttt{MXSOMP}.
+
+\item Synopsis
+
+\texttt{MXGOMP(NTH)}
+
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: NTH
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NTH} & Output. Maximum number of threads.
+\end{tabular}
+
+\item Remarks
+  
+  (a) If \texttt{MXSOMP} is not called beforehand,
+  \texttt{NTH} is set to \texttt{OMP\_NUM\_THREADS}.
+
+\end{enumerate}
+
+\end{document}

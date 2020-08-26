@@ -1,0 +1,32 @@
+# macro definitions
+
+DIRS = mxpack fxpack lxpack sxpack sypack
+LIBNAME		= libispack3
+DESTDIR		= .
+STATICLIB	= $(DESTDIR)/$(LIBNAME).a
+SHELL		= /bin/sh
+MAKE		= make
+FC		= gfortran-mp-9
+FFLAGS		= -O3 -march=native -fopenmp -fno-range-check
+#FC		= ifort
+#FC		= ftn # for Kyoto-U supercomputer
+#FFLAGS		= -xHost -qopenmp -align array64byte
+MPIFC		= mpif90
+MPIFFLAGS	= -O3 -march=native -fopenmp
+#MPIFC		= mpiifort
+#MPIFC		= ftn # for Kyoto-U supercomputer
+#MPIFFLAGS	= -xHost -qopenmp -align array64byte
+CC		= gcc-mp-9
+CFLAGS		= -O3 -march=native
+AR		= ar
+ARFLAGS		= vru
+RM		= rm -f
+AS		= as
+#AS		= clang -c -x assembler # for MacOSX 
+MV		= mv -f
+RANLIB		= ranlib
+CAT		= cat
+SSE		= fort
+#SSE		= avx
+#SSE		= fma
+#SSE		= avx512

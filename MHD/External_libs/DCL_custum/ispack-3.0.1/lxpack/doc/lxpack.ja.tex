@@ -1,0 +1,1014 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4j]{jarticle}
+
+\title{LXPACK使用の手引}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, ルジャンドル陪関数変換を行なうサブルーチンパッケージである.
+このパッケージは\texttt{MXPACK}の上位パッケージであり, 
+このパッケージを内部で引用している.
+ルジャンドル陪関数の東西波数を$m$, 全波数を$n$とし, $n$の切断波数を
+$N$とする.
+このとき, この切断波数におけるルジャンドル陪関数逆変換は, 以下の
+ように表せる.
+\begin{equation}
+G^m(\varphi)\equiv\sum^N_{n=|m|}s^m_nP^m_n(\sin\varphi)
+\end{equation}
+ここに, $\varphi$は緯度であり, 
+$P^m_n(\mu)$は2に正規化されたルジャンドル陪関数で, 以下のように
+定義される:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-|m|)!}{(n+|m|)!}}
+\frac1{2^nn!}(1-\mu^2)^{|m|/2}
+\frac{d^{n+|m|}}{d\mu^{n+|m|}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+また, ルジャンドル陪関数正変換は以下のように表せる.
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi
+d\varphi.
+\end{equation}
+
+数値計算においては, 
+ルジャンドル正変換の部分は, ガウス-ルジャンドル積分公式により,
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j)
+\end{equation}
+として近似する. ここに, $\varphi_j$はガウス緯度と呼ば
+れる分点で, ルジャンドル多項式$P_J(\sin\varphi)$ (ルジャンドル陪関数の
+定義式中で$m=0$とし, 正規化係数($\sqrt{\quad}$の部分)を無くしたもの)
+の$J$個の零点(を小さい方から順に並べた
+もの)であり, $w_j$は各分点に対応するガウシアンウェイトと呼ばれる重みで,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}
+\end{equation}
+で与えられる. ここに, $\mu_j\equiv\sin\varphi_j$である.
+ある条件のもとでは, この積分公式は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本サブルーチンパッケージは, 
+スペクトルデータ($s^m_n$) 
+$\to$ 各緯度での波データ($G^m(\varphi_j)$) 
+の逆変換を行うルーチン群,
+各緯度での波データ($G^m(\varphi_j)$) 
+$\to$ スペクトルデータ($s^m_n$) 
+の正変換を行うルーチン群,
+そして, その他の補助ルーチン群よりなっている.
+ここに, 
+緯度$\varphi_j$は上述の$J$個のガウス緯度である.
+以下のサブルーチンの説明において,
+\begin{center}
+\begin{tabular}{ll}
+\texttt{NN}:& $n$の切断波数$N$\\
+\texttt{NM}:& 使いうる$N$の最大値\\
+\texttt{JM}:& ガウス緯度の個数$J$\\
+\texttt{N}:& 全波数$n$\\
+\texttt{M}:& 帯状波数$m$\\
+\texttt{J}:& ガウス緯度の番号$j$\\
+\end{tabular}
+\end{center}
+なる対応関係がある.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{LXINIG} & 配列\texttt{PZ}の初期化.\\
+\texttt{LXINIR} & 配列\texttt{RM}の初期化.\\  
+\texttt{LXINIW} & 配列\texttt{PM, JC}の初期化.\\
+\texttt{LXTSWG} & スペクトルデータから波データへの変換(波成分).\\
+\texttt{LXTGWS} & 波データからスペクトルデータへの変換(波成分).\\
+\texttt{LXTSZG} & スペクトルデータから波データへの変換(帯状成分).\\
+\texttt{LXTGZS} & 波データからスペクトルデータへの変換(帯状成分).\\
+\texttt{LXTSWV} & スペクトルデータから波データへの2個同時変換(波成分).\\
+\texttt{LXTVWS} & 波データからスペクトルデータへの2個同時変換(波成分).\\
+\texttt{LXTSZV} & スペクトルデータから波データへの2個同時変換(帯状成分).\\
+\texttt{LXTVZS} & 波データからスペクトルデータへの2個同時変換(帯状成分).\\
+\texttt{LXINIC} & 配列\texttt{CM}の初期化.\\
+\texttt{LXCSWY} & 緯度微分を作用させた逆変換に対応するスペクトルデータの変換
+(波成分).\\
+\texttt{LXCYWS} & 緯度微分を作用させた正変換に対応するスペクトルデータの変換
+(波成分).\\
+\texttt{LXCSZY} & 緯度微分を作用させた逆変換に対応するスペクトルデータの変換
+(帯状成分).\\
+\texttt{LXCYZS} & 緯度微分を作用させた正変換に対応するスペクトルデータの変換
+(帯状成分).\\
+\texttt{LXTSZP} & 帯状成分スペクトルデータから両極の値への変換
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{LXINIG}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{LXPACK}の初期化ルーチンの一つ.
+\texttt{LXPACK}の他のサブルーチンで使われる配列\texttt{PZ}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{LXINIG(JM,PZ,IG)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: JM, IG
+REAL(8) :: PZ(JM/2,5)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{PZ}  & 出力. \texttt{LXPACK}の他のルーチンで用いられる配列.\\
+\texttt{IG} & 入力. グリッドの種類(備考参照).
+\end{tabular}
+
+\item 備考
+
+(a) 
+\texttt{JM}は 2以上の偶数であること. さらに, ISPACKのインストール時に
+SSE=avx または SSE=fma とした場合は 8の倍数にしておくと高速になる.
+また, SSE=avx512 とした場合は 16の倍数にしておくと高速になる.
+
+(b) \texttt{IG=1}の場合は, 緯度方向分点$(\varphi_j)$や対応する重み$(w_j)$と
+して, 通常のガウス緯度とガウス重みが設定される.
+\texttt{IG=2}とすると, 緯度方向分点は, 
+緯度方向を\texttt{JM+1}等分して両極を除いた\texttt{JM}個の分点
+が設定され, 対応する重みは, Clenshaw-Curtis求積法に用いられる重みが設定される.
+\texttt{IG=3}とすると, 緯度方向分点は, 
+緯度方向を\texttt{JM}等分して両極を除いた\texttt{JM-1}個の緯度
+方向分点が設定される. ただし, 赤道上の分点は変換ルーチンにおいて
+重複して扱われる.
+対応する重みは, Clenshaw-Curtis求積法に用いられる重みが設定される.
+この場合, 変換ルーチンにおいて
+赤道の分点が重複して扱われるので, 対応する重みは
+Clenshaw-Curtis求積法の重みの半分に設定される.
+
+変換ルーチンで用いるスペクトルデータの切断波数が
+\texttt{NM}の場合, スペクトルデータから逆変換した
+後に正変換を行って(丸め誤差を除いて)元に戻るためには,
+\texttt{IG=1}の場合は, \texttt{JM}$\ge$ \texttt{NM+1}が,
+\texttt{IG=2}の場合は, \texttt{JM}$\ge$ \texttt{2*NM+1}が,
+\texttt{IG=3}の場合は, \texttt{JM}$\ge$ \texttt{2*(NM+1)}が,
+それぞれ満されていなければならない.
+
+(c) \texttt{PZ}には
+   \texttt{PZ(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   \texttt{PZ(J,2)}:  $\frac12 w_{J/2+j}$, 
+   \texttt{PZ(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   \texttt{PZ(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+   \texttt{PZ(J,5)}:  $\sin^2(\varphi_{J/2+j})$,
+が格納される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXINIR}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{LXPACK}の初期化ルーチンの一つ.
+\texttt{LXPACK}の他のサブルーチンで使われる配列\texttt{RM}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{LXINIR(NM,M,RM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NM, M
+REAL(8) :: RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NM} & 入力. $n$の切断波数$N$の使いうる最大値.\\
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{RM}  & 出力. \texttt{LXPACK}の他のルーチンで用いられる配列.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXINIW}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{LXPACK}の初期化ルーチンの一つ.
+\texttt{LXPACK}の他のサブルーチンで使われる配列\texttt{PM, JC}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{LXINIW(NM,JM,M,PZ,PM,RM,JC)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NM, JM, M, JC((NM-M)/8+1)
+REAL(8) :: PZ(JM/2,5), PM(JM/2,2)
+REAL(8) :: RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}
+    
+\begin{tabular}{lll}
+\texttt{NM} & 入力. $n$の切断波数$N$の使いうる最大値.\\
+\texttt{JM} & 入力. 南北格子点数.\\  
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{PZ}  & 入力. \texttt{LXINIG}で初期化された配列.\\
+\texttt{PM}  & 出力. \texttt{LXPACK}の他のルーチンで用いられる配列.\\
+\texttt{RM}  & 入力. \texttt{LXINIR}で\texttt{M}を指定して初期化された配列.\\
+\texttt{JC}  & 出力. \texttt{LXPACK}の他のルーチンで用いられる配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{JM}は 2以上の偶数であること. さらに, ISPACKのインストール時に
+SSE=avx または SSE=fma とした場合は 8の倍数にしておくと高速になる.
+また, SSE=avx512 とした場合は 16の倍数にしておくと高速になる.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSWG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータから波データへの変換(波成分).
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s^m_n$)
+から各緯度での波データ($G^m(\varphi_j)$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTSWG(NM,NN,JM,M,S,G,PZ,PM,RM,JC,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NM, NN, JM, M, JC((NM-M)/8+1), IPOW
+REAL(8) ::  S(2,M:NN), G(2,JM), PZ(JM/2,5), PM(JM/2,2), RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}
+  
+\begin{tabular}{ll}
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{G} & 出力. $G^m(\varphi_j)$が格納される配列\\
+\texttt{PZ}  & 入力. \texttt{LXINIG}で初期化された配列.\\
+\texttt{PM}  & 入力. \texttt{LXINIW}で\texttt{M}を指定して初期化された配列.\\
+\texttt{RM} & 入力. \texttt{LXINIR}で\texttt{M}を指定して初期化された配列.\\
+\texttt{JC} & 入力. \texttt{LXINIW}で\texttt{M}を指定して初期化された配列.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{S(1,N)}, \texttt{S(2,N)}には
+  $\mbox{Re}(s^m_n)$, $\mbox{Im}(s^m_n)$を格納すること. また
+\texttt{G(1,J)}, \texttt{G(2,J)}には  $\mbox{Re}(G^m(\varphi_j))$, 
+$\mbox{Im}(G^m(\varphi_j))$が格納される.
+
+(b) \texttt{G}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $G^m(\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}G^m(\varphi_j)$ が出力
+    される($l=0,1,2$).
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{LXTGWS}
+
+\begin{enumerate}
+
+\item 機能 
+
+波データからスペクトルデータへの変換(波成分).
+
+\item 定義
+
+ルジャンドル正変換(概要を参照)により各緯度の
+波データ($G^m(\varphi_j)$)
+からスペクトルデータ($s^m_n$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTGWS(NM,NN,JM,M,S,G,PZ,PM,RM,JC,IPOW)}
+
+\item パラメーターの説明(殆んど \texttt{LXTSWG}の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{ll}
+\texttt{S} & 出力. $s^m_n$が格納される配列.\\
+\texttt{G} & 入力. $G^m(\varphi_j)$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{S(1,N)}, \texttt{S(2,N)}には
+  $\mbox{Re}(s^m_n)$, $\mbox{Im}(s^m_n)$が格納される. また
+\texttt{G(1,J)}, \texttt{G(2,J)}には  $\mbox{Re}(G^m(\varphi_j))$, 
+$\mbox{Im}(G^m(\varphi_j))$を格納すること.
+
+(b) \texttt{IPOW}$=l$とすると, $G^m(\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}G^m(\varphi_j)$ が入力
+    になる($l=0,1,2$).
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSZG}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータから波データへの変換(帯状成分).
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータの帯状
+成分($s^0_n$)から各緯度での波データの帯状成分
+($G^0(\varphi_j)$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTSZG(NM,NN,JM,S,G,PZ,RM,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: NM, NN, JM, IPOW
+REAL(8) ::  S(0:NN), G(JM), PZ(JM/2,5), RM(NM/2*3+NM+1)
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{S} & 入力. $s^0_n$が格納されている配列.\\
+\texttt{G} & 出力. $G^0(\varphi_j)$が格納される配列.\\
+\texttt{PZ}  & 入力. \texttt{LXINIG}で初期化された配列.\\
+\texttt{RM}  & \texttt{LXINIR}で \texttt{M=0}として初期化された配列.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{S(N)}には$s^0_n$を格納すること. また
+\texttt{G(J)}には  $G^0(\varphi_j)$が格納される.
+
+(b) \texttt{G}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $G^0(\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}G^0(\varphi_j)$ が出力
+    される($l=0,1,2$).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTGZS}
+
+\begin{enumerate}
+
+\item 機能 
+
+波データからスペクトルデータへの変換(帯状成分).
+
+
+\item 定義
+
+ルジャンドル正変換(概要を参照)により各緯度の
+波データの帯状成分($G^0(\varphi_j)$)
+からスペクトルデータの帯状成分($s^0_n$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTGZS(NM,NN,JM,S,G,PZ,RM,IPOW)}
+  
+\item パラメーターの説明(殆んど \texttt{LXTSZG}の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{ll}
+\texttt{S} & 出力 $s^0_n$が格納される配列.\\
+\texttt{G} & 入力. $G^0(\varphi_j)$が格納されている配列\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{S(N)}には$s^0_n$が格納される. また
+\texttt{G(J)}には  $G^0(\varphi_j)$を格納すること.
+
+(b) \texttt{IPOW}$=l$とすると, $G^0(\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}G^m(\varphi_j)$ が入力
+    になる($l=0,1,2$). 
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSWV}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータから波データへの2個同時変換(波成分).
+
+\item 定義
+
+スペクトル逆変換(概要を参照)により2個のスペクトルデータの波成分
+($s^m_n$)$_{(1,2)}$
+から各緯度での対応する波データの波成分
+($G^m(\varphi_j)$)$_{(1,2)}$を2個同時に求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTSWV(NM,NN,JM,M,S1,S2,G1,G2,PZ,PM,RM,JC,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: NM, NN, JM, M, JC((NM-M)/8+1), IPOW
+REAL(8) ::  S1(2,M:NN), S2(2,M:NN), G1(2,JM), G2(2,JM)
+REAL(8) ::  PZ(JM/2,5), PM(JM/2,2), RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{S1} & 入力. $(s^m_n)_1$が格納されている配列.\\
+\texttt{S2} & 入力. $(s^m_n)_2$が格納されている配列.\\
+\texttt{G1} & 出力. $(G^m(\varphi_j))_1$が格納される配列.\\
+\texttt{G2} & 出力. $(G^m(\varphi_j))_2$が格納される配列.\\
+\texttt{PZ}  & 入力. \texttt{LXINIG}で初期化された配列.\\
+\texttt{PM}  & 入力. \texttt{LXINIW}で\texttt{M}を指定して初期化された配列.\\
+\texttt{RM}  & \texttt{LXINIR}で \texttt{M}を指定して初期化された配列.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{S1(1,N)}, \texttt{S1(2,N)}には
+  $\mbox{Re}(s^m_n)_1$, $\mbox{Im}(s^m_n)_1$を格納すること.
+  \texttt{S2}についても同様.
+  また
+\texttt{G1(1,J)}, \texttt{G1(2,J)}には  $\mbox{Re}(G^m(\varphi_j))_1$, 
+$\mbox{Im}(G^m(\varphi_j))_1$が格納される. \texttt{G2}についても同様.
+  
+(b) \texttt{G1, G2}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $(G^m(\varphi_j))_{(1,2)}$の
+    かわりに $(\cos\varphi_j)^{-l}G^m(\varphi_j)_{(1,2)}$ が出力
+    される($l=0,1,2$).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTVWS}
+
+\begin{enumerate}
+
+\item 機能 
+
+波データからスペクトルデータへの2個同時変換(波成分).
+
+\item 定義
+
+スペクトル正変換(概要を参照)により2個の波データの波成分
+($G^m(\varphi_j)$)$_{(1,2)}$
+から各緯度での対応するスペクトルデータの波成分
+($s^m_n$)$_{(1,2)}$
+を2個同時に求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTVWS(NM,NN,JM,M,S1,S2,G1,G2,PZ,PM,RM,JC,IPOW)}
+  
+\item パラメーターの説明
+
+\item パラメーターの説明(殆んど \texttt{LXTSWV}の項と同じであるので,
+異なる部分のみについて記述する).
+  
+\begin{tabular}{ll}
+\texttt{S1} & 出力. $(s^m_n)_1$が格納される配列.\\
+\texttt{S2} & 出力. $(s^m_n)_2$が格納される配列.\\
+\texttt{G1} & 入力. $(G^m(\varphi_j))_1$が格納されている配列.\\
+\texttt{G2} & 入力.  $(G^m(\varphi_j))_2$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{S1(1,N)}, \texttt{S1(2,N)}には
+  $\mbox{Re}(s^m_n)_1$, $\mbox{Im}(s^m_n)_1$が格納される.
+  \texttt{S2}についても同様.
+  また
+\texttt{G1(1,J)}, \texttt{G1(2,J)}には  $\mbox{Re}(G^m(\varphi_j))_1$, 
+$\mbox{Im}(G^m(\varphi_j))_1$を格納すること. \texttt{G2}についても同様.
+  
+(b) \texttt{G1, G2}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $(G^m(\varphi_j))_{(1,2)}$の
+    かわりに $(\cos\varphi_j)^{-l}G^m(\varphi_j)_{(1,2)}$ が入力になる
+    ($l=0,1,2$).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSZV}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータから波データへの2個同時変換(帯状成分).
+
+\item 定義
+
+スペクトル逆変換(概要を参照)により2個のスペクトルデータの帯状成分
+($s^0_n$)$_{(1,2)}$
+から各緯度での対応する波データの帯状成分
+($G^0(\varphi_j)$)$_{(1,2)}$を2個同時に求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTSZV(NM,NN,JM,S1,S2,G1,G2,PZ,RM,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: NM, NN, JM, IPOW
+REAL(8) ::  S1(0:NN), S2(0:NN), G1(JM), G2(JM)
+REAL(8) ::  PZ(JM/2,5), RM(NM/2*3+NM+1)
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{S1} & 入力. $(s^0_n)_1$が格納されている配列.\\
+\texttt{S2} & 入力. $(s^0_n)_2$が格納されている配列.\\
+\texttt{G1} & 出力. $(G^0(\varphi_j))_1$が格納される配列.\\
+\texttt{G2} & 出力. $(G^0(\varphi_j))_2$が格納される配列.\\
+\texttt{PZ}  & 入力. \texttt{LXINIG}で初期化された配列.\\
+\texttt{RM}  & \texttt{LXINIR}で \texttt{M=0}として初期化された配列.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{S1(N), S2(N)}には
+  $(s^0_n)_1$, $(s^0_n)_2$をそれぞれ格納すること.
+  また, \texttt{G1(J), G2(J)}には$(G^0(\varphi_j))_1$,
+  $(G^0(\varphi_j))_2$,
+  がそれぞれ格納される.
+
+(b) \texttt{G1, G2}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $(G^0(\varphi_j))_{(1,2)}$の
+    かわりに $(\cos\varphi_j)^{-l}G^0(\varphi_j)_{(1,2)}$ が出力
+    される($l=0,1,2$).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTVZS}
+
+\begin{enumerate}
+
+\item 機能 
+
+波データからスペクトルデータへの2個同時変換(帯状成分).
+
+\item 定義
+
+スペクトル正変換(概要を参照)により2個の波データの帯状成分
+($G^0(\varphi_j)$)$_{(1,2)}$
+から各緯度での対応するスペクトルデータの帯状成分($s^0_n$)$_{(1,2)}$
+を2個同時に求める.
+
+\item 呼び出し方法 
+
+\texttt{LXTVZS(NM,NN,JM,S1,S2,G1,G2,PZ,RM,IPOW)}
+  
+\item パラメーターの説明
+
+\item パラメーターの説明(殆んど \texttt{LXTVZS}の項と同じであるので,
+異なる部分のみについて記述する).
+  
+\begin{tabular}{ll}
+\texttt{S1} & 出力. $(s^0_n)_1$が格納される配列.\\
+\texttt{S2} & 出力. $(s^0_n)_2$が格納される配列.\\
+\texttt{G1} & 入力. $(G^0(\varphi_j))_1$が格納されている配列.\\
+\texttt{G2} & 入力. $(G^0(\varphi_j))_2$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{G1(J), G2(J)}には$(G^0(\varphi_j))_1$,
+  $(G^0(\varphi_j))_2$, をそれぞれ格納すること.
+  また, \texttt{S1(N), S2(N)}には
+  $(s^0_n)_1$, $(s^0_n)_2$
+  がそれぞれ格納される.
+
+(b) \texttt{G1, G2}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $(G^0(\varphi_j))_{(1,2)}$の
+    かわりに $(\cos\varphi_j)^{-l}G^0(\varphi_j)_{(1,2)}$ が入力
+    になる($l=0,1,2$).
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXINIC}
+
+\begin{enumerate}
+
+\item 機能
+  
+\texttt{LXCSZY}, \texttt{LXCSWY}等で使われる
+配列\texttt{CM}の初期化.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{LXINIC(NT,M,CM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NT, M
+REAL(8) :: CM(2*(NT-M)+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & 入力. 切断波数$N_T$(\texttt{LXCSZY}の項を参照).\\
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{CM}  & 出力. \texttt{LXCSZY}, \texttt{LXCSWY}等で使われる配列.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCSWY}
+
+\begin{enumerate}
+
+\item 機能
+
+  緯度微分を作用させた逆変換に対応するスペクトルデータの変換を行う
+  (波成分).
+  
+\item 定義
+
+切断波数$N_T$のスペクトルデータ($s^m_n$)に対するスペクトル逆変換が
+\begin{equation}
+G^m(\varphi)\equiv\sum^{N_T}_{n=|m|}s^m_nP^m_n(\sin\varphi)
+\end{equation}
+と定義されているとき, $G^m$に$\cos\varphi\frac{\partial}{\partial\varphi}$
+を作用させた結果は
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+G^m(\varphi)=\sum^{N_T+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)
+\end{equation}
+のように$n$方向の切断波数$N_T+1$のスペクトル逆変換で表せる. この
+サブルーチンは, $s^m_n$から$(s_y)^m_n$を求めるものである.
+
+\item 呼び出し方法 
+    
+\texttt{LXCSWY(NT,M,S,SY,CM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NT, M
+REAL(8) :: S(2,M:NT), SY(2,M:NT+1), CM(2*(NT-M)+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & 入力. 切断波数$N_T$.\\
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SY} & 出力. $(s_y)^m_n$が格納される配列.\\
+\texttt{CM}  & 入力. \texttt{LXINIC}で \texttt{M}を指定して初期化された配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{LXCSWY(NT,M,S,SY,CM)} と 
+    \texttt{LXTSWG(NM,NT+1,JM,M,SY,G,PZ,PM,RM,JC,1\_8)}
+    とを連続して CALL すれば, \texttt{G}に緯度微分が返されることになる.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCSZY}
+
+\begin{enumerate}
+
+\item 機能
+
+  緯度微分を作用させた逆変換に対応するスペクトルデータの変換を行う
+  (帯状成分).
+  
+\item 定義
+
+\texttt{LXCSWY}の項を参照. ただし, 帯状成分なので $m=0$ である.
+
+\item 呼び出し方法 
+    
+\texttt{LXCSZY(NT,S,SY,CM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NT
+REAL(8) :: S(0:NT), SY(0:NT+1), CM(2*NT+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & 入力. 切断波数$N_T$.\\
+\texttt{S} & 入力. $s^0_n$が格納されている配列.\\
+\texttt{SY} & 出力. $(s_y)^0_n$が格納される配列.\\
+\texttt{CM}  & 入力. \texttt{LXINIC}で \texttt{M=0}と指定して初期化された配列.\\
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{LXCSZY(NT,S,SY,CM)} と 
+    \texttt{LXTSZG(NM,NT+1,JM,SY,G,PZ,RM,1\_8)}
+    とを連続して CALL すれば, \texttt{G}に緯度微分が返されることになる.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCYWS}
+
+\begin{enumerate}
+
+\item 機能
+
+  緯度微分を作用させた正変換に対応するスペクトルデータの変換を行う
+  (波成分).
+  
+\item 定義
+
+以下のような変形されたスペクトル正変換
+\begin{equation}
+s^m_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+G^m(\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+\cos\varphi d\varphi.
+\end{equation}
+を計算したい場合(これは, ベクトル場の発散の計算などで現れる), 
+$G^m$の通常のスペクトル正変換
+\begin{equation}
+(s_y)^m_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+G^m(\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+\end{equation}
+の結果から$s^m_n$を求めることができる. 
+このサブルーチンは, $(s_y)^m_n$から$s^m_n$を求めるものである.
+ただし, $s^m_n$の $n$を $n=N_T$まで求める場合, $(s_y)^m_n$
+は $n=N_T+1$まで求めておく必要がある.
+
+\item 呼び出し方法 
+    
+\texttt{LXCYWS(NT,M,SY,S,CM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NT, M
+REAL(8) :: S(2,M:NT), SY(2,M:NT+1), CM(2*(NT-M)+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & 入力. 切断波数$N_T$.\\
+\texttt{M} & 入力. 帯状波数(\texttt{M}$\ge$ 0 であること).\\
+\texttt{SY} & 入力. $(s_y)^m_n$が格納されている配列.\\
+\texttt{S} & 出力. $s^m_n$が格納される配列.\\
+\texttt{CM}  & 入力. \texttt{LXINIC}で \texttt{M}を指定して初期化された配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{LXTGWS(NM,NT+1,JM,M,SY,G,PZ,PM,RM,JC,1\_8)} と
+    \texttt{LXCYWS(NT,M,SY,S,CM)}
+    とを連続して CALL すれば, 
+    ベクトル場の緯度方向成分の発散の正変換に相当する計算
+\begin{equation}
+s^m_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi G^m(\varphi)\right)
+P^m_n(\sin\varphi)\cos\varphi d\varphi
+\end{equation}
+が行われ, \texttt{S}に$s^m_n$が返されることになる
+(部分積分していることと, \texttt{IPOW=1} としていることに注意).
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCYZS}
+
+\begin{enumerate}
+
+\item 機能
+
+  緯度微分を作用させた正変換に対応するスペクトルデータの変換を行う
+  (帯状成分).
+  
+\item 定義
+
+\texttt{LXCYWS}の項を参照. ただし, 帯状成分なので $m=0$ である.
+
+\item 呼び出し方法 
+    
+\texttt{LXCYZS(NT,SY,S,CM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NT
+REAL(8) :: S(0:NT), SY(0:NT+1), CM(2*NT+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & 入力. 切断波数$N_T$.\\
+\texttt{SY} & 入力. $(s_y)^0_n$が格納されている配列.\\
+\texttt{S} & 出力. $s^0_0$が格納される配列.\\
+\texttt{CM}  & 入力. \texttt{LXINIC}で \texttt{M=0}として初期化された配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{LXTGZS(NM,NT+1,JM,SY,G,PZ,RM,1\_8)} と
+    \texttt{LXCYZS(NT,SY,S,CM)}
+    とを連続して CALL すれば, 
+    ベクトル場の緯度方向成分の発散の正変換に相当する計算
+\begin{equation}
+s^0_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi G^0(\varphi)\right)
+P^0_n(\sin\varphi)\cos\varphi d\varphi
+\end{equation}
+が行われ, \texttt{S}に$s^0_n$が返されることになる
+(部分積分していることと, \texttt{IPOW=1} としていることに注意).
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSZP}
+
+\begin{enumerate}
+
+\item 機能 
+
+帯状成分スペクトルデータから両極の値への変換.
+
+
+\item 定義
+
+スペクトル逆変換(概要を参照)により帯状成分のスペクトルデータ
+($s^0_n$)から北極, 南極上の波データの帯状成分 $G^0(\pi/2)$,
+$G^0(-\pi/2)$ を求める.
+  
+\item 呼び出し方法 
+
+\texttt{LXTSZP(NN,S,GNP,GSP)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NN
+REAL(8) :: S(0:NN), GNP, GSP
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NN} & 入力. $n$の切断波数.\\    
+\texttt{S} & 入力. $s^0_n$が格納されている配列.\\
+\texttt{GNP} & 出力. $G^0(\pi/2)$が格納される変数.\\
+\texttt{GSP} & 出力. $G^0(-\pi/2)$が格納される変数.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+
+\end{document}
+

@@ -1,0 +1,1012 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4j]{jsarticle}
+
+\title{SXPACK使用の手引}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージであ
+り, 球面調和関数展開の係数から格子点値, およびその逆の変換を行なうサブ
+ルーチン, また, その他の補助ルーチンなどからなっている. 
+また, このパッケージは\texttt{MXPACK},
+\texttt{FXPACK}と\texttt{LXPACK}の上位パッケージであり, 
+これらのパッケージを内部で引用している.
+
+球面調和関数の東西波数を$m$, 全波数を$n$とし, 切断波数をそれぞれ
+$M$, $N$とする(ただし, $N\ge M$ とする. $N=M$としたときが三角切断
+である). このとき, この切断波数におけるスペクトル逆変換は, 以下の
+ように表せる.
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^N_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+または, ルジャンドル陪関数逆変換:
+\begin{equation}
+G^m(\varphi)\equiv\sum^N_{n=|m|}s^m_nP^m_n(\sin\varphi)
+\end{equation}
+を導入すると, 
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}G^m(\varphi)e^{im\lambda}
+\end{equation}
+と, ルジャンドル逆変換とフーリエ逆変換の積として表される.
+ここに, $\lambda$: 経度, $\varphi$: 緯度である.
+
+また, $P^m_n(\mu)$は2に正規化されたルジャンドル陪関数で, 以下のように
+定義される:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-|m|)!}{(n+|m|)!}}
+\frac1{2^nn!}(1-\mu^2)^{|m|/2}
+\frac{d^{n+|m|}}{d\mu^{n+|m|}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+$g(\lambda,\varphi)$が実数であるとすると, $s^m_n$および
+$G^m(\varphi)$は以下の関係を満たしている必要がある.
+\begin{equation}
+G^{-m}(\varphi)=\{G^m(\varphi)\}^{*}
+\end{equation}
+\begin{equation}
+s^{-m}_n=\{s^m_n\}^{*}
+\end{equation}
+ここに, $\{ \}^{*}$は複素共役を表す.
+従って, $G^m(\sin\varphi)$および$s^m_n$は$m\ge 0$の範囲だけを求めれば
+良い. さらに, 上の制約から, $G^0(\sin\varphi)$および$s^0_n$は実数である.
+
+また, スペクトル正変換は以下のように表せる.
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+逆変換の場合と同様に, フーリエ正変換を,
+\begin{equation}
+G^m(\varphi)\equiv\frac1{2\pi}\int^{2\pi}_0
+g(\lambda,\varphi)e^{-im\lambda}d\lambda
+\end{equation}
+と導入すると, 
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi
+d\varphi
+\end{equation}
+と, フーリエ正変換とルジャンドル正変換の合成として表される.
+
+数値計算においては, 上記の積分はそれぞれ離散近似される. フーリエ正変
+換の部分は経度方向の等間隔格子点上での値を用いた離散フーリエ正変換
+によって近似し,
+ルジャンドル正変換の部分は, ガウス-ルジャンドル積分公式により,
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j)
+\end{equation}
+として近似する. ここに, $\varphi_j$はガウス緯度と呼ば
+れる分点で, ルジャンドル多項式$P_J(\sin\varphi)$ (ルジャンドル陪関数の
+定義式中で$m=0$とし, 正規化係数($\sqrt{\quad}$の部分)を無くしたもの)
+の$J$個の零点(を小さい方から順に並べた
+もの)であり, $w_j$は各分点に対応するガウシアンウェイトと呼ばれる重みで,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}
+\end{equation}
+で与えられる. ここに, $\mu_j\equiv\sin\varphi_j$である.
+ある条件のもとでは, この積分公式は完全な近似, すなわちもとの積分と同じ
+値を与える.
+
+本ライブラリは, 
+スペクトルデータ($s^m_n$) 
+$\to$ 格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+の逆変換を行うルーチン群,
+等間隔格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$) 
+$\to$ スペクトルデータ($s^m_n$) 
+の正変換を行うルーチン群,
+そして, その他の補助ルーチン群よりなっている.
+
+ここに, 格子点の経度$\lambda_i$は全周を等間隔に$I$-分割した経度で,
+$\lambda_i=2\pi i/I\quad (i=0,1,\ldots,I-1)$で(ここでの $i$は虚数
+単位ではないので注意),
+緯度$\varphi_j$は上述の$J$個のガウス緯度である.
+以下のサブルーチンの説明において,
+\begin{center}
+\begin{tabular}{ll}
+\texttt{MM}:& $m$の切断波数$M$\\
+\texttt{NN}:& $n$の切断波数$N$\\
+\texttt{NM}:& 使いうる$N$の最大値\\
+\texttt{NT}:& スペクトルデータの変換プログラムにおける切断波数\\
+\texttt{JM}:& ガウス緯度の個数$J$\\
+\texttt{IM}:& 東西格子点数$I$\\
+\texttt{N}:& 全波数$n$\\
+\texttt{M}:& 帯状波数$m$\\
+\texttt{J}:& ガウス緯度の番号$j$\\
+\texttt{I}:& 東西格子点の番号$i$
+\end{tabular}
+\end{center}
+なる対応関係がある.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{SXINI1} & 初期化その1\\
+\texttt{SXINI2} & 初期化その2\\  
+\texttt{SXNM2L} & スペクトルデータの格納位置の計算\\
+\texttt{SXL2NM} & \texttt{SXNM2L}の逆演算\\
+\texttt{SXTS2G} & スペクトルデータからグリッドデータへの変換\\
+\texttt{SXTG2S} & グリッドデータからスペクトルデータへの変換\\
+\texttt{SXTS2V} & スペクトルデータからグリッドデータへの2個同時変換\\
+\texttt{SXTV2S} & グリッドデータからスペクトルデータへの2個同時変換\\
+\texttt{SXINIC} & \texttt{SXCS2Y}, \texttt{SXCY2S} 等で用いられる配列の初期化\\
+\texttt{SXCS2Y} & 緯度微分を作用させた逆変換に対応するスペクトルデータの変換\\
+\texttt{SXCY2S} & 緯度微分を作用させた正変換に対応するスペクトルデータの変換\\
+\texttt{SXCS2X} & 経度微分に対応するスペクトルデータの変換\\
+\texttt{SXINID} & \texttt{SXCLAP} で用いられる配列の初期化\\
+\texttt{SXCLAP} & スペクトルデータにラプラシアンを作用, またはその逆演算\\
+\texttt{SXCRPK} & スペクトルデータの詰め替え.
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SXINI1}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{SXPACK}の初期化ルーチンその1.
+\texttt{SXPACK}の他のサブルーチンで使われる配列\texttt{IT, T, R}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{SXINI1(MM,NM,IM,IT,T,R)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, IM, IT(IM/2)
+REAL(8) :: T(IM*3/2)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数$M$.\\
+\texttt{NM} & 入力. $n$の切断波数$N$の使いうる最大値.\\
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{IT} & 出力. \texttt{SXPACK}の他のルーチンで用いられる配列.\\
+\texttt{T}   & 出力. \texttt{SXPACK}の他のルーチンで用いられる配列.\\
+\texttt{R}  & 出力. \texttt{SXPACK}の他のルーチンで用いられる配列.\\
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{MM} は 0以上の整数であること.
+     また, 通常の三角切断の場合で, かつ緯度方向の微分演算(SXCS2Y等を参照)
+     を行う場合, 三角切断の切断波数を \texttt{NT} とすると,
+     \texttt{MM=NT},  \texttt{NM=NT+1} と定めれば良い.
+     
+\texttt{IM} は \texttt{IM > 2*MM}を満し, かつ\texttt{IM/2}が
+2, 3, 5で素因数分解できる整数でなければならない.
+
+\texttt{NM} は \texttt{NM} $\ge$ \texttt{MM}を満していなければならない.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXINI2}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{SXPACK}の初期化ルーチンその2.
+\texttt{SXPACK}の他のサブルーチンで使われる配列\texttt{P, JC}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{SXINI2(MM,NM,JM,IG,P,R,JC)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, JM, IG, JC(MM*(2*NM-MM-1)/16+MM)
+REAL(8) :: P(JM/2,2*MM+5)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数$M$.\\
+\texttt{NM} & 入力. $n$の切断波数$N$の使いうる最大値.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{IG} & 入力. グリッドの種類(備考参照).\\
+\texttt{P}  & 出力. \texttt{SXPACK}の他のルーチンで用いられる配列.\\
+\texttt{R}  & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{JC}  & 出力. \texttt{SXPACK}の他のルーチンで用いられる配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{MM} は 0以上の整数であること.
+     また, 通常の三角切断の場合で, かつ緯度方向の微分演算(SXCS2Y等を参照)
+     を行う場合, 三角切断の切断波数を \texttt{NT} とすると,
+     \texttt{MM=NT},  \texttt{NM=NT+1} と定めれば良い.
+     
+\texttt{JM}は 2以上の偶数であること. さらに, ISPACKのインストール時に
+SSE=avx または SSE=fma とした場合は 8の倍数にしておくと高速になる.
+また, SSE=avx512 とした場合は 16の倍数にしておくと高速になる.
+
+\texttt{NM} は \texttt{NM} $\ge$ \texttt{MM}を満していなければならない.
+
+(b) \texttt{IG=1}の場合は, 緯度方向分点$(\varphi_j)$や対応する重み$(w_j)$と
+して, 通常のガウス緯度とガウス重みが設定される.
+\texttt{IG=2}とすると, 緯度方向分点は, 
+緯度方向を\texttt{JM+1}等分して両極を除いた\texttt{JM}個の分点
+が設定され, 対応する重みは, Clenshaw-Curtis求積法に用いられる重みが設定される.
+\texttt{IG=3}とすると, 緯度方向分点は, 
+緯度方向を\texttt{JM}等分して両極を除いた\texttt{JM-1}個の緯度
+方向分点が設定される. ただし, 赤道上の分点は変換ルーチンにおいて
+重複して扱われる.
+対応する重みは, Clenshaw-Curtis求積法に用いられる重みが設定される.
+この場合, 変換ルーチンにおいて
+赤道の分点が重複して扱われるので, 対応する重みは
+Clenshaw-Curtis求積法の重みの半分に設定される.
+
+変換ルーチンで用いるスペクトルデータの切断波数が
+\texttt{NM}の場合, スペクトルデータから逆変換した
+後に正変換を行って(丸め誤差を除いて)元に戻るためには,
+\texttt{IG=1}の場合は, \texttt{JM}$\ge$ \texttt{NM+1}が,
+\texttt{IG=2}の場合は, \texttt{JM}$\ge$ \texttt{2*NM+1}が,
+\texttt{IG=3}の場合は, \texttt{JM}$\ge$ \texttt{2*(NM+1)}が,
+それぞれ満されていなければならない.
+
+(c) 配列\texttt{P}には
+   \texttt{P(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   \texttt{P(J,2)}:  $\frac12 w_{J/2+j}$, 
+   \texttt{P(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,5)}:  $\sin^2(\varphi_{J/2+j})$,
+が格納される. また, 配列 \texttt{P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXNM2L}
+
+\begin{enumerate}
+
+\item 機能 
+
+全波数と帯状波数からスペクトルデータの格納位置を計算する.
+
+\item 定義
+
+SXPACKにおいて, スペクトルデータ($s^m_n$)
+は概要に述べた制限をもとに, 独立な$(2N+1-M)M+N+1$個
+の成分をその長さの配列に格納して扱う.
+
+格納順は, 切断波数に依存してしまうが, 計算に便利なように
+以下のような順序になっている.
+\begin{eqnarray*}
+&& s^0_0, s^0_1, \ldots, s^0_N,\\
+&& \mbox{Re}(s^1_1), \mbox{Im}(s^1_1),
+\mbox{Re}(s^1_2), \mbox{Im}(s^1_2), \ldots, 
+\mbox{Re}(s^1_N), \mbox{Im}(s^1_N),\\
+&&\ldots,\\
+&& \mbox{Re}(s^M_M), \mbox{Im}(s^M_M), \ldots,
+\ldots \mbox{Re}(s^M_N), \mbox{Im}(s^M_N)\\
+\end{eqnarray*}
+このサブルーチンは, $s^m_n$の全波数$n$, および帯状波数$m$か
+ら$s^m_n$の配列中の格納位置を求めるものである.
+
+\item 呼び出し方法 
+    
+\texttt{SXNM2L(NN,N,M,L)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NN,N,M,L  
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{NN} & 入力. $n$の切断波数$N$.\\
+\texttt{N} & 入力. 全波数.\\
+\texttt{M} & 入力. 帯状波数(備考参照).\\
+\texttt{L} & 出力. スペクトルデータの格納位置.
+\end{tabular}
+
+\item 備考
+
+\texttt{M} $>$ 0 なら $m=$ \texttt{M}, $n=$ \texttt{N}として$\mbox{Re}(s^m_n)$の格納
+位置を, \texttt{M} $<$ 0 なら $m=$ \texttt{-M}, $n=$ \texttt{N}として
+$\mbox{Im}(s^m_n)$の格納位置を返す.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXL2NM}
+
+\begin{enumerate}
+
+\item 機能 
+\texttt{SXNM2L}の逆演算, すなわち, スペクトルデータの格納位置から全波数と
+帯状波数を求める.
+
+\item 定義
+
+\texttt{SXNM2L}の項を参照
+
+\item 呼び出し方法 
+    
+\texttt{SXL2NM(NN,L,N,M)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NN,N,M,L  
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{NN} & 入力. $n$の切断波数$N$.\\
+\texttt{L} & 入力. スペクトルデータの格納位置.\\
+\texttt{N} & 出力. 全波数.\\
+\texttt{M} & 出力. 帯状波数.
+\end{tabular}
+
+\item 備考
+
+ \texttt{M} の正負についての意味づけは\texttt{SXNM2L}と同じである.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTS2G}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)によりスペクトルデータ($s^m_n$)
+から格子点上のグリッドデータ($g(\lambda_i,\varphi_j)$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{SXTS2G(MM,NM,NN,IM,JM,S,G,IT,T,P,R,JC,W,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, M, IT(IM/2), JC(MM*(2*NM-MM-1)/16+MM), IPOW
+REAL(8) :: S((2*NN+1-MM)*MM+NN+1), G(0:IM-1,JM), T(IM*3/2), P(JM/2,2*MM+5)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1), W(JM*IM)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数.\\
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM}であること)\\
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{G} & 出力. $g(\lambda_i,\varphi_j)$が格納される配列.\\
+\texttt{IT} & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{T} & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{P}  & 入力. \texttt{SXINI2}で初期化された配列.\\
+\texttt{R}  & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{JC}  & 入力. \texttt{SXINI2}で初期化された配列.\\
+\texttt{W} & 作業領域.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{G(0:IM-1,JM)}と宣言されている場合, \texttt{G(I,J)}には
+    $g(\lambda_i,\varphi_j)$が格納される.
+
+(b) \texttt{G, W, P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(c) \texttt{IPOW}$=l$とすると, $g(\lambda_i,\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ が出力
+    される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTG2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により格子点上の
+グリッドデータ($g(\lambda_i,\varphi_j)$)
+からスペクトルデータ($s^m_n$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{SXTG2S(MM,NM,NN,IM,JM,S,G,IT,T,P,R,JC,W,IPOW)}
+
+\item パラメーターの説明(殆んど \texttt{SXTS2G}の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{ll}
+\texttt{S} & 出力 $s^m_n$が格納される配列.\\
+\texttt{G} & 入力. $g(\lambda_i,\varphi_j)$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{G(I,J)}には
+    $g(\lambda_i,\varphi_j)$を格納すること.
+
+(b) \texttt{IPOW}$=l$とすると, $g(\lambda_i,\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ が入力
+    になる. 
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTS2V}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの2個同時変換を行う.
+
+\item 定義
+
+スペクトル逆変換(概要を参照)により2個のスペクトルデータ$(s^m_n)_{(1,2)}$
+から対応する2個のグリッドデータ
+$(g(\lambda_i,\varphi_j))_{(1,2)}$を求める.
+
+\item 呼び出し方法 
+
+\texttt{SXTS2V(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, M, IT(IM/2), JC(MM*(2*NM-MM-1)/16+MM), IPOW
+REAL(8) :: S1((2*NN+1-MM)*MM+NN+1), S2((2*NN+1-MM)*MM+NN+1)
+REAL(8) :: G1(0:IM-1,JM), G2(0:IM-1,JM)
+REAL(8) :: T(IM*3/2), P(JM/2,2*MM+5)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1), W(JM*IM*2)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数.\\
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM}であること)\\
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{S1} & 入力. $(s^m_n)_1$が格納されている配列.\\
+\texttt{S2} & 入力. $(s^m_n)_2$が格納されている配列.\\
+\texttt{G1} & 出力. $(g(\lambda_i,\varphi_j))_1$が格納される配列.\\
+\texttt{G2} & 出力. $(g(\lambda_i,\varphi_j))_2$が格納される配列.\\
+\texttt{IT} & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{T} & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{P}  & 入力. \texttt{SXINI2}で初期化された配列.\\
+\texttt{R}  & 入力. \texttt{SXINI1}で初期化された配列.\\
+\texttt{JC}  & 入力. \texttt{SXINI2}で初期化された配列.\\
+\texttt{W} & 作業領域.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) 作業領域\texttt{W}の大きさが \texttt{SXTS2G}の倍必要である
+      ことに注意すること.
+
+(b) \texttt{G1(I,J)}, \texttt{G2(I,J)}には
+    $(g(\lambda_i,\varphi_j))_1$, $(g(\lambda_i,\varphi_j))_2$がそれぞ
+  れ格納される.
+
+(c) \texttt{G, W, P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(d) \texttt{IPOW}$=l$とすると, $(g(\lambda_i,\varphi_j))_{(1,2)}$の
+    かわりに $(\cos\varphi_j)^{-l}(g(\lambda_i,\varphi_j))_{(1,2)}$ が出力
+    される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTV2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの2個同時変換を行う.
+
+\item 定義
+
+スペクトル正変換(概要を参照)により2個のグリッドデータ
+$(g(\lambda_i,\varphi_j))_{(1,2)}$
+から対応する2個のスペクトルデータ$(s^m_n)_{(1,2)}$を求める.
+
+\item 呼び出し方法 
+
+\texttt{SXTV2S(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW)}
+  
+\item パラメーターの説明
+
+\item パラメーターの説明(殆んど \texttt{SXTS2V}の項と同じであるので,
+異なる部分のみについて記述する).
+  
+
+\begin{tabular}{ll}
+\texttt{S1} & 出力. $(s^m_n)_1$が格納される配列.\\
+\texttt{S2} & 出力. $(s^m_n)_2$が格納される配列.\\
+\texttt{G1} & 入力. $(g(\lambda_i,\varphi_j))_1$が格納されている配列.\\
+\texttt{G2} & 入力. $(g(\lambda_i,\varphi_j))_2$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{G1(I,J)}, \texttt{G2(I,J)}には
+    $(g(\lambda_i,\varphi_j))_1$, $(g(\lambda_i,\varphi_j))_2$をそれぞ
+  れ格納しておくこと.
+
+(b) \texttt{IPOW}$=l$とすると, $(g(\lambda_i,\varphi_j))_{(1,2)}$の
+    かわりに $(\cos\varphi_j)^{-l}(g(\lambda_i,\varphi_j))_{(1,2)}$ が
+    入力になる.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXINIC}
+
+\begin{enumerate}
+
+\item 機能 
+
+\texttt{SXCS2Y}, \texttt{SXCY2S}で用いられる配列の\texttt{C}の初期化.
+
+\item 定義
+
+\texttt{SXCS2Y}, \texttt{SXCY2S}の項を参照.
+
+\item 呼び出し方法 
+
+\texttt{SXINIC(MM,NT,C)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: C((2*NT-MM+1)*(MM+1))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\    
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{C} & 出力. \texttt{SXCS2Y}, \texttt{SXCY2S}で用いられる配列.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCS2Y}
+
+\begin{enumerate}
+
+\item 機能 
+
+緯度微分を作用させた逆変換に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+  スペクトル逆変換(ただし, ここでは $n$方向の切断波数を$N_T$とする)が
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と定義されているとき, $g$に$\cos\varphi\frac{\partial}{\partial\varphi}$
+を作用させた結果は
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+のように$n$方向の切断波数$N_T+1$のスペクトル逆変換で表せる. この
+サブルーチンは, $s^m_n$から$(s_y)^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+\texttt{SXCS2Y(MM,NT,S,SY,C)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: S(NT+1+MM*(2*NT-MM+1)), SY(NT+2+MM*(2*NT-MM+3))  
+REAL(8) :: C((2*NT-MM+1)*(MM+1))
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\    
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SY} & 出力. $(s_y)^m_n$が格納される配列.\\
+\texttt{C} & 入力. \texttt{SXINIC}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{SXCS2Y(MM,NT,S,SY,C)} と 
+    \texttt{SXTS2G(MM,NM,NT+1,IM,JM,SY,G,IT,T,P,R,JC,W,1\_8)}
+    とを連続して CALL すれば, \texttt{G}に緯度微分が返されることになる.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCY2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+緯度微分を作用させた正変換に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+以下のような変形されたスペクトル正変換
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\quad 
+\end{equation}
+を計算したい場合(これは, ベクトル場の発散の計算などで現れる), 
+$g$の通常のスペクトル正変換
+\begin{equation}
+(s_y)^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda
+\end{equation}
+の結果から$s^m_n$を求めることができる.
+ただし, $s^m_n$の $n$を $n=N_T$まで求める場合, $(s_y)^m_n$
+は $n=N_T+1$まで求めておく必要がある.
+このサブルーチンは, $(s_y)^m_n$から$s^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+\texttt{SXCY2S(MM,NT,SY,S,C)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: SY(NT+2+MM*(2*NT-MM+3)), S(NT+1+MM*(2*NT-MM+1))
+REAL(8) :: C((2*NT-MM+1)*(MM+1))
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{SY} & 入力. $(s_y)^m_n$が格納されている配列.\\
+\texttt{S} &  出力. $s^m_n$が格納される配列.\\
+\texttt{C} & 入力. \texttt{SXINIC}で初期化された配列.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{SXTG2S(MM,NM,NT+1,IM,JM,SY,G,IT,T,P,R,JC,W,1\_8)} と
+    \texttt{SXCY2S(MM,NT,SY,S,C)} とを連続して CALL すれば,
+    ベクトル場の緯度方向成分の発散の正変換に相当する計算
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi g(\lambda,\varphi)\right)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+が行われ, \texttt{S}に$s^m_n$が返されることになる
+(部分積分していることと, \texttt{IPOW=1} としていることに注意).
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCS2X}
+
+\begin{enumerate}
+
+\item 機能 
+
+経度微分に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(ただし, ここでは $n$方向の切断波数を$N_T$とする)が
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と定義されているとき, $g$に$\frac{\partial}{\partial\lambda}$
+を作用させた結果は
+\begin{equation}
+\frac{\partial}{\partial\lambda}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+(s_x)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+のように表せる. ここに, $(s_x)^m_n=ims^m_n$ である.
+このサブルーチンは, $s^m_n$から$(s_x)^m_n=ims^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+\texttt{SXCS2X(MM,NT,S,SX)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: S(NT+1+MM*(2*NT-MM+1)), SX(NT+1+MM*(2*NT-MM+1))
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SX} & 出力 $(s_x)^m_n$が格納される配列.\\
+\end{tabular}
+
+\item 備考
+
+(a) スペクトルデータ $(s_x)^m_n$ の並び順は $s^m_n$ と同じである.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXINID}
+
+\begin{enumerate}
+
+\item 機能 
+
+\texttt{SXCLAP}で用いられる配列の\texttt{D}の初期化.
+
+\item 定義
+
+\texttt{SXCLAP}の項を参照.
+
+\item 呼び出し方法 
+
+\texttt{SXINID(MM,NT,D)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: D(NT+1+MM*(2*NT-MM+1),2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{D} & 出力. \texttt{SXCLAP}で用いられる配列.
+\end{tabular}
+
+\item 備考
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCLAP}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータにラプラシアンを作用させる, またはその逆演算を行う.
+
+\item 定義
+
+球面調和関数展開(ただし, ここでは $n$方向の切断波数を$N_T$とする)
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して, 水平Laplacian
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+を作用させると, 球面調和関数の性質から, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+(s_l)^m_n\equiv -n(n+1)s^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+また, 逆に
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+であるとき, 
+\begin{equation}
+(s_l)^m_n\equiv -\frac1{n(n+1)}s^m_n
+\end{equation}
+を導入すると, 定数分の任意性を除き,
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=\max(1,|m|)}
+(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$s^m_n$から$(s_l)^m_n = -n(n+1)s^m_n$の計算, 
+またはその逆演算: $s^m_n$から$(s_l)^m_n = -s^m_n/(n(n+1))$, を
+行うものである. 
+
+\item 呼び出し方法 
+    
+\texttt{SXCLAP(MM,NT,S,SL,D,IFLAG)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, IFLAG
+REAL(8) :: S(NT+1+MM*(2*NT-MM+1)), SL(NT+1+MM*(2*NT-MM+1))
+REAL(8) :: D(NT+1+MM*(2*NT-MM+1),2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SL} & 出力. $(s_l)^m_n$が格納される配列.\\
+\texttt{D} & \texttt{SXINID}で初期化された配列.\\
+\texttt{IFLAG} & 入力. \texttt{IFLAG=1}のときラプラシアンの演算を,
+\texttt{IFLAG=2}のとき逆演算を行う.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{IFLAG=2}の場合, $n=0$となる $(s_l)^0_0$ については
+$s^0_0$がそのまま代入される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCRPK}
+
+\begin{enumerate}
+
+\item 機能
+
+全波数の切断波数($N_1$)のスペクトルデータを
+全波数の切断波数($N_2$)のスペクトルデータに詰め替える.
+
+\item 定義
+
+\texttt{SXCS2Y}の出力結果と\texttt{SXCS2X}の出力結果を合成したいことは
+しばしば生じるが, 両者は$n$方向の切断波数$N$が異なるスペクトルデータ
+であるため, そのまま足すことができない . 本サブルーチンは, そのような
+用途に応えるために,
+全波数の切断波数($N_1$)のスペクトルデータ($(s_1)^m_n$)から,から
+全波数の切断波数($N_2$)のスペクトルデータ($(s_2)^m_n$)への詰め替えを行うものである.
+大きな領域への詰め替え($N_1<N_2$)の場合は,
+($(s_2)^m_n$)の$n>N_1$の部分には$0$が代入される.
+また, 小さな領域への詰め替え($N_1>N_2$)の場合は,
+($(s_1)^m_n$)の$n>N_2$の部分の情報は捨てられる.
+なお, ($N_1=N_2$)の場合は, 単なるコピーが行われる.
+
+\item 呼び出し方法 
+    
+\texttt{SXCRPK(MM,NT1,NT2,S1,S2)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT1, NT2
+REAL(8) :: S1((2*NT1+1-MM)*MM+NT1+1), S2((2*NT2+1-MM)*MM+NT2+1)
+\end{verbatim}
+  
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT1} & 入力. 入力の全波数の切断波数($N_1$).\\
+\texttt{NT2} & 入力. 出力の全波数の切断波数($N_2$).\\  
+\texttt{S1} & 入力. $(s_1)^m_n$が格納されている配列.\\
+\texttt{S2} & 出力. $(s_2)^m_n$が格納される配列.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+\end{document}

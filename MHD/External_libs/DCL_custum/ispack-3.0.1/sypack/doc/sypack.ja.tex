@@ -1,0 +1,1443 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4j]{jsarticle}
+
+\title{SYPACK使用の手引}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, スペクトル(球面調和関数)変換を行なうサブルーチンパッケージ
+SXPACKをMPIで並列化したものである.
+従って, 基本的な変換の定義等については
+SXPACK使用の手引を参照すること. また, 内部で SXPACKのサブルーチンを
+利用している.
+
+本サブルーチンパッケージは内部でMPIのサブルーチンをCALLしているので,
+本サブルーチンパッケージに属するサブルーチンをCALLする場合は
+\texttt{MPI\_INIT}と\texttt{MPI\_FINALIZE}で囲まれた枠組の中である必要がある.
+また, もちろんヘッダファイル(mpif.h)の読み込みもされている必要
+がある. これらMPIの一般的な使用法に関しては当該システムにおける
+MPIのマニュアルを参照のこと.
+
+\subsection{計算の並列化について}
+
+SYPACKにおけるMPI並列化は, スタンダードなもので, スペクトルデータは東西波
+数方向に分割, グリッドデータは緯度方向に分割して各プロセスに格納されて
+扱われる. 各プロセスに格納されるスペクトルデータの東西波数および
+グリッドデータの緯度についての情報を取得するためのサブルーチンが提供
+されている. なお, 各プロセス内での OpenMP並列化もなされている.
+
+\textbf{以下のサブルーチンの説明において, MPIのプロセス数を, 整数型変数
+\texttt{NP} として記述する.}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{SYINI1} & 初期化その1\\
+\texttt{SYINI2} & 初期化その2\\  
+\texttt{SYNM2L} & スペクトルデータの格納位置の計算\\
+\texttt{SYL2NM} & \texttt{SYNM2L}の逆演算\\
+\texttt{SYQRNM} & そのプロセスが担当する東西波数の問い合わせ\\
+\texttt{SYQRNJ} & そのプロセスが担当するガウス緯度の問い合わせ\\
+\texttt{SYTS2G} & スペクトルデータからグリッドデータへの変換\\
+\texttt{SYTG2S} & グリッドデータからスペクトルデータへの変換\\
+\texttt{SYTS2V} & スペクトルデータからグリッドデータへの2個同時変換\\
+\texttt{SYTV2S} & グリッドデータからスペクトルデータへの2個同時変換\\
+\texttt{SYGS2S} & 分散配置されたスペクトルデータの集約\\
+\texttt{SYSS2S} & 集約されたスペクトルデータの分散\\
+\texttt{SYGG2G} & 分散配置されたグリッドデータの集約\\
+\texttt{SYSG2G} & 集約されたグリッドデータの分散\\
+\texttt{SYINIC} & \texttt{SYCS2Y}, \texttt{SYCY2S} 等で用いられる配列の初期化\\
+\texttt{SYCS2Y} & 緯度微分を作用させた逆変換に対応する
+スペクトルデータの変換\\
+\texttt{SYCY2S} & 緯度微分を作用させた正変換に対応する
+スペクトルデータの変換\\
+\texttt{SYCS2X} & 経度微分に対応するスペクトルデータの変換\\
+\texttt{SYINID} & \texttt{SYCLAP} で用いられる配列の初期化\\
+\texttt{SYCLAP} & スペクトルデータにラプラシアンを作用, またはその逆演算\\
+\texttt{SYCRPK} & 切断波数の異なるスペクトルデータの詰め替え\\
+\texttt{SYKINI} & 多層用初期化\\
+\texttt{SYKGXX} & 多層用のデータ集約\\
+\texttt{SYKSXX} & 多層用のデータ分散\\
+\texttt{SYQRJV} & \texttt{JV}の値の推奨値の問い合わせ
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{SYINI1}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{SYPACK}の初期化ルーチンその1.
+\texttt{SYPACK}の他のサブルーチンで使われる配列\texttt{IT, T, R}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{SYINI1(MM,NM,IM,IT,T,R,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, IM, IT(IM/2), ICOM
+REAL(8) :: T(IM*3/2)
+REAL(8) :: R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数$M$.\\
+\texttt{NM} & 入力. $n$の切断波数$N$の使いうる最大値.\\
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{IT} & 出力. \texttt{SYPACK}の他のルーチンで用いられる配列.\\
+\texttt{T}  & 出力. \texttt{SYPACK}の他のルーチンで用いられる配列.\\
+\texttt{R}  & 出力. \texttt{SYPACK}の他のルーチンで用いられる配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{MM} は 0以上の整数であること.
+  また, 通常の三角切断の場合で, かつ緯度方向の微分演算
+  (\texttt{SYCS2Y}等を参照)
+     を行う場合, 三角切断の切断波数を \texttt{NT} とすると,
+     \texttt{MM=NT},  \texttt{NM=NT+1} と定めれば良い.
+     
+(b) \texttt{IM} は \texttt{IM > 2*MM}を満し, かつ\texttt{IM/2}が
+2, 3, 5で素因数分解できる整数でなければならない.
+
+(c) \texttt{NM} は \texttt{NM} $\ge$ \texttt{MM}を満していなければなら
+ない.
+
+(d) \texttt{ICOM}は計算に用いる MPIコミュニケーターを指定する.
+MPI の Fortranでの実装では, 通常, MPIコミュニケーターは
+\texttt{INTEGER(4)}型となっているので, 適宜\texttt{INTEGER(8)}に
+キャストして入力とすること.
+
+(e) 配列\texttt{R}の大きさを定めるのに用いられる\texttt{NP}は
+\texttt{ICOM}で指定されるコミュニケーターに含まれるプロセス数(サイズ)
+である. 配列\texttt{R}の領域を動的に確保しておく場合には
+コミュニケーター\texttt{ICOM}のサイズを\texttt{MPI\_COMM\_SIZE}で
+取得してそれを\texttt{NP}とすれば良いが, 静的に確保する場合は,
+設定しうるサイズの最小値を\texttt{NP}としておけばよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYINI2}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{SYPACK}の初期化ルーチンその2.
+\texttt{SYPACK}の他のサブルーチンで使われる配列\texttt{P, JC}
+の値を初期化する.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{SYINI2(MM,NM,JM,IG,P,R,JC,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, JM, IG, JC((MM/NP+1)*(2*NM-MM/NP*NP)/16+MM/NP+1)
+REAL(8) :: P(JM/2,5+2*(MM/NP+1))
+REAL(8) :: R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数$M$.\\
+\texttt{NM} & 入力. $n$の切断波数$N$の使いうる最大値.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{IG} & 入力. グリッドの種類(備考参照).\\
+\texttt{P}  & 出力. \texttt{SYPACK}の他のルーチンで用いられる配列.\\
+\texttt{R}  & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{JC}  & 出力. \texttt{SYPACK}の他のルーチンで用いられる配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{MM} は 0以上の整数であること.
+     また, 通常の三角切断の場合で, かつ緯度方向の微分演算
+     (\texttt{SYCS2Y}等を参照)
+     を行う場合, 三角切断の切断波数を \texttt{NT} とすると,
+     \texttt{MM=NT},  \texttt{NM=NT+1} と定めれば良い.
+     
+\texttt{JM}は 2以上の偶数であること. さらに, ISPACKのインストール時に
+SSE=avx または SSE=fma とした場合は 8の倍数にしておくと高速になる.
+また, SSE=avx512 とした場合は 16の倍数にしておくと高速になる.
+
+\texttt{NM} は \texttt{NM} $\ge$ \texttt{MM}を満していなければならない.
+
+(b) \texttt{IG=1}の場合は, 緯度方向分点$(\varphi_j)$や対応する重み$(w_j)$と
+して, 通常のガウス緯度とガウス重みが設定される.
+\texttt{IG=2}とすると, 緯度方向分点は, 
+緯度方向を\texttt{JM+1}等分して両極を除いた\texttt{JM}個の分点
+が設定され, 対応する重みは, Clenshaw-Curtis求積法に用いられる重みが設定される.
+\texttt{IG=3}とすると, 緯度方向分点は, 
+緯度方向を\texttt{JM}等分して両極を除いた\texttt{JM-1}個の緯度
+方向分点が設定される. ただし, 赤道上の分点は変換ルーチンにおいて
+重複して扱われる.
+対応する重みは, Clenshaw-Curtis求積法に用いられる重みが設定される.
+この場合, 変換ルーチンにおいて
+赤道の分点が重複して扱われるので, 対応する重みは
+Clenshaw-Curtis求積法の重みの半分に設定される.
+
+変換ルーチンで用いるスペクトルデータの切断波数が
+\texttt{NM}の場合, スペクトルデータから逆変換した
+後に正変換を行って(丸め誤差を除いて)元に戻るためには,
+\texttt{IG=1}の場合は, \texttt{JM}$\ge$ \texttt{NM+1}が,
+\texttt{IG=2}の場合は, \texttt{JM}$\ge$ \texttt{2*NM+1}が,
+\texttt{IG=3}の場合は, \texttt{JM}$\ge$ \texttt{2*(NM+1)}が,
+それぞれ満されていなければならない.
+
+(c) 配列\texttt{P}が\texttt{P(JM/2,5+2*(MM/NP+1))}と宣言されている場合, 
+   \texttt{P(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   \texttt{P(J,2)}:  $\frac12 w_{J/2+j}$, 
+   \texttt{P(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,5)}:  $\sin^2(\varphi_{J/2+j})$,
+が格納される(ガウス緯度 $\varphi_j$に関する説明は SXPACKのマニュアル参
+照).
+. また, 配列 \texttt{P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+JMを8の倍数とした場合は, 32バイト境界に
+合っていなければならない.
+また, SSE=avx512 とし, かつ
+JMを 16の倍数とした場合は, 64バイト境界に
+合っていなければならない.
+
+(d) コミュニケーター\texttt{ICOM}および配列\texttt{JC}の
+大きさを定めるのに用いられる\texttt{NP}に関しては\texttt{SYINI1}の
+項を参照.
+
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYNM2L}
+
+\begin{enumerate}
+
+\item 機能 
+
+全波数と帯状波数から担当プロセス番号とスペクトルデータの格納位置を計算する.  
+
+\item 定義
+
+SYPACKにおいて, スペクトルデータは, 各プロセスで分散して扱われる.
+このサブルーチンは, スペクトルデータ$s^m_n$の全波数$n$, 
+および帯状波数$m$か
+ら, 担当するプロセスのID(ランク)と配列中の格納位置を求めるものである.
+
+\item 呼び出し方法 
+    
+\texttt{SYNM2L(NN,N,M,IP,L,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NN, N, M, IP, L, ICOM
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{NN} & 入力. $n$の切断波数$N$.\\
+\texttt{N} & 入力. 全波数.\\
+\texttt{M} & 入力. 帯状波数(備考参照).\\
+\texttt{IP} & 出力. 担当するプロセスのID(ランク).\\
+\texttt{L} & 出力. スペクトルデータの格納位置.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+\texttt{M} $>$ 0 なら $m=$ \texttt{M}, $n=$ \texttt{N}として$\mbox{Re}(s^m_n)$の格納
+位置を, \texttt{M} $<$ 0 なら $m=$ \texttt{-M}, $n=$ \texttt{N}として
+$\mbox{Im}(s^m_n)$の格納位置を返す.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYL2NM}
+
+\begin{enumerate}
+
+\item 機能 
+\texttt{SYNM2L}の逆演算, すなわち, 各プロセスにおける
+スペクトルデータの格納位置から全波数と帯状波数を求める.
+
+\item 定義
+
+\texttt{SYNM2L}の項を参照
+
+\item 呼び出し方法 
+    
+\texttt{SYL2NM(MM,NN,L,N,M,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NN, N, M, L, ICOM
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数$M$.\\  
+\texttt{NN} & 入力. $n$の切断波数$N$.\\
+\texttt{L} & 入力. スペクトルデータの格納位置.\\
+\texttt{N} & 出力. 全波数.\\
+\texttt{M} & 出力. 帯状波数.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a)  \texttt{M} の正負についての意味づけは\texttt{SYNM2L}と同じである.
+
+(b) そのプロセスでスペクトルデータが扱われない場合, または \texttt{L}
+    で指定された位置にスペクトルデータが存在しない場合には, \texttt{N=-1}, 
+    \texttt{M=0} が出力として返される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYQRNM}
+
+\begin{enumerate}
+
+\item 機能 
+
+そのプロセスが担当する東西波数の問い合わせ
+
+\item 定義
+
+スペクトルデータのうち, そのプロセスが担当する東西波数を返す.
+
+\item 呼び出し方法 
+    
+\texttt{SYQRNM(MM,MCM,MC,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, MCM, MC(MM/NP+1), ICOM
+\end{verbatim}    
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. $m$の切断波数$M$.\\
+\texttt{MCM} & 出力. そのプロセスが担当する$m$の個数.\\
+\texttt{MC} & 出力. そのプロセスが担当する$m$が格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) そのプロセスがスペクトルデータを扱わない場合, \texttt{MCM=0}が返され
+  る.
+
+(b) \texttt{MCM(1:MCM)}に, そのプロセスが扱う$m$が格納される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYQRNJ}
+
+\begin{enumerate}
+
+\item 機能 
+
+そのプロセスが担当するガウス緯度の問い合わせ
+
+\item 定義
+
+グリッドデータのうち, そのプロセスが担当するガウス緯度の範囲を返す.
+
+\item 呼び出し方法 
+    
+\texttt{SYQRNJ(JM,JV,J1,J2,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: JM, JV, J1, J2, ICOM
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{JV} & 入力. 変換のベクトル長.\\
+\texttt{J1} & 出力. そのプロセスが担当する$j$の下端.\\
+\texttt{J2} & 出力. そのプロセスが担当する$j$の上端.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) そのプロセスがグリッドデータを扱わない場合, \texttt{J1=0}および
+\texttt{J2=-1}が返される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTS2G}
+
+\begin{enumerate}
+
+\item 機能 
+
+スペクトルデータからグリッドデータへの変換を行う.
+
+\item 定義
+
+スペクトル逆変換により分散配置されたスペクトルデータ($s^m_n$)
+から分散配置されたグリッドデータ($g(\lambda_i,\varphi_j)$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{SYTS2G(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,IPOW,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, JV, IT(IM/2)
+INTEGER(8) :: JC((MM/NP+1)*(2*NM-MM/NP*NP)/16+MM/NP+1), IPOW, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), G(0:IM-1,((JM/JV-1)/NP+1)*JV)
+REAL(8) :: T(IM*3/2), P(JM/2,5+2*(MM/NP+1)), R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+REAL(8) :: W(2*JV*((JM/JV-1)/NP+1)*(MM/NP+1)*NP*2)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数.\\
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM}であること)\\
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{JV} & 入力. 変換のベクトル長.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{G} & 出力. $g(\lambda_i,\varphi_j)$が格納される配列.\\
+\texttt{IT} & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{T} & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{P}  & 入力. \texttt{SYINI2}で初期化された配列.\\
+\texttt{R}  & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{JC}  & 入力. \texttt{SYINI2}で初期化された配列.\\
+\texttt{W} & 作業領域.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{JV}は \texttt{JM/2}の約数でなければならない.
+ISPACKのインストール時に SSE=avx または SSE=fma としている
+場合, \texttt{JV}を 4とすれば高速になる.
+また, SSE=avx512 とした場合は 8とすれば高速になる.
+  
+(b) \texttt{G, W, P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+\texttt{JV}を4とした場合は, 32バイト境界に合っていなければならない.
+また, SSE=avx512 とし, かつ
+\texttt{JV}を8とした場合は, 64バイト境界に合っていなければならない.
+
+(c) \texttt{G(0:IM-1,((JM/JV-1)/NP+1)*JV)}と宣言されている場合, 
+    \texttt{G(I,J-J1+1)}には
+    $g(\lambda_i,\varphi_j)$が格納される(\texttt{J}は\texttt{J1}
+    から\texttt{J2}まで.
+    ここに, \texttt{J1}, \texttt{J2}, は \texttt{SYQRNJ}で与えられる
+    そのプロセスが担当する\texttt{J}の範囲の下端と上端).
+
+(d) \texttt{IPOW}$=l$とすると, $g(\lambda_i,\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ が出力される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTG2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+グリッドデータからスペクトルデータへの変換を行う.
+
+\item 定義
+
+スペクトル正変換により分散配置されたグリッドデータ($g(\lambda_i,\varphi_j)$)
+から分散配置されたスペクトルデータ($s^m_n$)を求める.
+
+\item 呼び出し方法 
+
+\texttt{SYTG2S(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,IPOW,ICOM)}  
+
+\item パラメーターの説明(殆んど \texttt{SYTS2G}の項と同じであるので,
+異なる部分のみについて記述する).
+
+\begin{tabular}{ll}
+\texttt{S} & 出力 $s^m_n$が格納される配列.\\
+\texttt{G} & 入力. $g(\lambda_i,\varphi_j)$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{G(I,J)}には
+    $g(\lambda_i,\varphi_j)$を格納すること.
+
+(b) \texttt{G(0:IM-1,((JM/JV-1)/NP+1)*JV)}と宣言されている場合, 
+    \texttt{G(I,J-J1+1)}には
+    $g(\lambda_i,\varphi_j)$を格納していること(\texttt{J}は\texttt{J1}
+    から\texttt{J2}まで.
+    ここに, \texttt{J1}, \texttt{J2}, は \texttt{SYQRNJ}で与えられる
+    そのプロセスが担当する\texttt{J}の範囲の下端と上端).
+    
+(c) \texttt{IPOW}$=l$とすると, $g(\lambda_i,\varphi_j)$の
+    かわりに $(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ が入力
+    になる.
+
+
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTS2V}
+
+\begin{enumerate}
+
+\item 機能
+
+スペクトルデータからグリッドデータへの2個同時変換を行う.
+
+\item 定義
+
+スペクトル逆変換により分散配置された2個のスペクトルデータ$(s^m_n)_{(1,2)}$
+から対応する2個の分散配置されたグリッドデータ
+$(g(\lambda_i,\varphi_j))_{(1,2)}$を求める.
+
+  
+\item 呼び出し方法 
+
+\texttt{SYTS2V(MM,NM,NN,IM,JM,JV,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, JV, IT(IM/2)
+INTEGER(8) :: JC((MM/NP+1)*(2*NM-MM/NP*NP)/16+MM/NP+1), IPOW, ICOM
+REAL(8) :: S1((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), S2((MM/NP+1)*(2*(NN+1)-MM/NP*NP))
+REAL(8) :: G1(0:IM-1,((JM/JV-1)/NP+1)*JV), G2(0:IM-1,((JM/JV-1)/NP+1)*JV)
+REAL(8) :: T(IM*3/2), P(JM/2,5+2*(MM/NP+1)), R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+REAL(8) :: W(2*JV*((JM/JV-1)/NP+1)*(MM/NP+1)*NP*2*2)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数.\\
+\texttt{NM} & 入力. $n$の切断波数の最大値.\\
+\texttt{NN} & 入力. $n$の切断波数.
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM}であること)\\
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{JV} & 入力. 変換のベクトル長.\\
+\texttt{S1} & 入力. $(s^m_n)_1$が格納されている配列.\\
+\texttt{S2} & 入力. $(s^m_n)_2$が格納されている配列.\\
+\texttt{G1} & 出力. $(g(\lambda_i,\varphi_j))_1$が格納される配列.\\
+\texttt{G2} & 出力. $(g(\lambda_i,\varphi_j))_2$が格納される配列.\\
+\texttt{IT} & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{T} & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{P}  & 入力. \texttt{SYINI2}で初期化された配列.\\
+\texttt{R}  & 入力. \texttt{SYINI1}で初期化された配列.\\
+\texttt{JC}  & 入力. \texttt{SYINI2}で初期化された配列.\\
+\texttt{W} & 作業領域.\\
+\texttt{IPOW} & 入力. 逆変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) 作業領域\texttt{W}の大きさが \texttt{SYTS2G}の倍必要である
+      ことに注意すること.
+
+(b) \texttt{G1, G2, W, P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+\texttt{JV}を4とした場合は, 32バイト境界に合っていなければならない.
+また, SSE=avx512 とし, かつ
+\texttt{JV}を8とした場合は, 64バイト境界に合っていなければならない.
+
+(c) その他の詳細は \texttt{SYTS2G}と共通であるので, そちらの項を
+参照すること.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTV2S}
+
+\begin{enumerate}
+
+\item 機能
+
+グリッドデータからスペクトルデータへの2個同時変換を行う.
+
+\item 定義
+
+スペクトル正変換により分散配置された2個の
+グリッドデータ$(g(\lambda_i,\varphi_j))_{(1,2)}$
+から対応する分散配置された2個のスペクトルデータ$(s^m_n)_{(1,2)}$
+を求める.
+
+\item 呼び出し方法 
+
+\texttt{SYTV2S(MM,NM,NN,IM,JM,JV,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW,ICOM)}
+  
+\item パラメーターの説明
+
+\item パラメーターの説明(殆んど \texttt{SYTS2V}の項と同じであるので,
+異なる部分のみについて記述する).
+  
+\begin{tabular}{ll}
+\texttt{S1} & 出力. $(s^m_n)_1$が格納される配列.\\
+\texttt{S2} & 出力. $(s^m_n)_2$が格納される配列.\\
+\texttt{G1} & 入力. $(g(\lambda_i,\varphi_j))_1$が格納されている配列.\\
+\texttt{G2} & 入力. $(g(\lambda_i,\varphi_j))_2$が格納されている配列.\\
+\texttt{IPOW} & 入力. 正変換と同時に作用させる
+                      $1/\cos\varphi$の次数. 0から2までの整数.
+\end{tabular}
+
+\item 備考
+
+(a) 作業領域\texttt{W}の大きさが \texttt{SYTG2S}の倍必要である
+      ことに注意すること.
+
+(b) \texttt{G1, G2, W, P}の先頭アドレスは, 
+ISPACKのインストール時に SSE=avx または SSE=fma とし, かつ
+\texttt{JV}を4とした場合は, 32バイト境界に合っていなければならない.
+また, SSE=avx512 とし, かつ
+\texttt{JV}を8とした場合は, 64バイト境界に合っていなければならない.
+
+(c) その他の詳細は \texttt{SYTS2V}と共通であるので, そちらの項を
+参照すること.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYGS2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+分散配置されたスペクトルデータの集約.
+
+\item 定義
+
+各プロセスに分散配置されたスペクトルデータをランク0のプロセスに集約する.
+
+\item 呼び出し方法 
+
+\texttt{SYGS2S(MM,NN,S,SALL,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), SALL((2*NN+1-MM)*MM+NN+1)
+\end{verbatim}      
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. $m$の切断波数.\\
+\texttt{NN} & 入力. $n$の切断波数.\\
+\texttt{S} & 入力. 分散配置されたスペクトルデータが格納されている配列.\\
+\texttt{SALL} & 出力. 集約されたスペクトルデータが格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) このサブルーチンはすべてのプロセスで CALLされる必要があるが,
+\texttt{SALL}の領域は, ランク0のプロセスでのみ確保されていれば良い.
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{SYSS2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+集約されたスペクトルデータの分散.
+
+\item 定義
+
+ランク0のプロセスに集約されているスペクトルデータを各プロセスに分散配置する.
+
+\item 呼び出し方法 
+
+\texttt{SYSS2S(MM,NN,SALL,S,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), SALL((2*NN+1-MM)*MM+NN+1)
+\end{verbatim}      
+  
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. $m$の切断波数\\
+\texttt{NN} & 入力. $n$の切断波数\\
+\texttt{SALL} 
+ &  入力. 集約されたスペクトルデータが格納されている配列.\\
+\texttt{S} 
+&  出力. 分散配置されたスペクトルデータが格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) このサブルーチンはすべてのプロセスで CALLされる必要があるが,
+\texttt{SALL}の領域は, ランク0のプロセスでのみ確保されていれば良い.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYGG2G}
+
+\begin{enumerate}
+
+\item 機能 
+
+分散配置されたグリッドデータの集約.
+
+\item 定義
+
+各プロセスに分散配置されたグリッドデータをランク0のプロセスに集約する.
+
+\item 呼び出し方法 
+
+\texttt{SYSG2G(IM,JM,JV,GALL,G,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: IM, JM, JV, ICOM
+REAL(8) :: GALL(IM*JM), G(IM*((JM/JV-1)/NP+1)*JV)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{JV} & 入力. 変換のベクトル長.\\
+\texttt{G} & 入力. 分散配置されたグリッドデータが格納されている配列.\\
+\texttt{GALL} &  出力. 集約されたグリッドデータが格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) このサブルーチンはすべてのプロセスで CALLされる必要があるが,
+\texttt{GALL}の領域は, ランク0のプロセスでのみ確保されていれば良い.
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{SYSG2G}
+
+\begin{enumerate}
+
+\item 機能 
+
+集約されたグリッドデータの分散.
+
+\item 定義
+
+ランク0のプロセスに集約されたグリッドデータを各プロセスに分散配置する.
+
+\item 呼び出し方法 
+
+\texttt{SYSG2G(IM,JM,JV,GALL,G,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: IM, JM, JV, ICOM
+REAL(8) :: GALL(IM*JM), G(IM*((JM/JV-1)/NP+1)*JV)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{IM} & 入力. 東西格子点数.\\
+\texttt{JM} & 入力. 南北格子点数.\\
+\texttt{JV} & 入力. 変換のベクトル長.\\
+\texttt{GALL} 
+ &  入力. 集約されたグリッドデータが格納されている配列.\\
+\texttt{G} 
+& 出力. 分散配置されたグリッドデータが格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) このサブルーチンはすべてのプロセスで CALLされる必要があるが,
+\texttt{GALL}の領域は, ランク0のプロセスでのみ確保されていれば良い.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYINIC}
+
+\begin{enumerate}
+
+\item 機能 
+
+\texttt{SYCS2Y}, \texttt{SYCY2S}で用いられる配列の\texttt{C}の初期化.
+
+\item 定義
+
+\texttt{SYCS2Y}, \texttt{SYCY2S}の項を参照.
+
+\item 呼び出し方法 
+
+\texttt{SYINIC(MM,NT,C,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: C((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\    
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{C} & 出力. \texttt{SYCS2Y}, \texttt{SYCY2S}で用いられる配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCS2Y}
+
+\begin{enumerate}
+
+\item 機能 
+
+緯度微分を作用させた逆変換に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+  スペクトル逆変換(ただし, ここでは $n$方向の切断波数を$N_T$とする)が
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と定義されているとき, $g$に$\cos\varphi\frac{\partial}{\partial\varphi}$
+を作用させた結果は
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+のように$n$方向の切断波数$N_T+1$のスペクトル逆変換で表せる. この
+サブルーチンは, $s^m_n$から$(s_y)^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+\texttt{SYCS2Y(MM,NT,S,SY,C,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SY((MM/NP+1)*(2*(NT+2)-MM/NP*NP))
+REAL(8) :: C((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\    
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SY} & 出力. $(s_y)^m_n$が格納される配列.\\
+\texttt{C} & 入力. \texttt{SYINIC}で初期化された配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{SYCS2Y(MM,NT,S,SY,C,ICOM)} と 
+  \texttt{SYTS2G(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,1\_8,ICOM)}
+    とを連続して CALL すれば, \texttt{G}に緯度微分が返されることになる.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCY2S}
+
+\begin{enumerate}
+
+\item 機能 
+
+緯度微分を作用させた正変換に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+以下のような変形されたスペクトル正変換
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\quad 
+\end{equation}
+を計算したい場合(これは, ベクトル場の発散の計算などで現れる), 
+$g$の通常のスペクトル正変換
+\begin{equation}
+(s_y)^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda
+\end{equation}
+の結果から$s^m_n$を求めることができる.
+ただし, $s^m_n$の $n$を $n=N_T$まで求める場合, $(s_y)^m_n$
+は $n=N_T+1$まで求めておく必要がある.
+このサブルーチンは, $(s_y)^m_n$から$s^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+\texttt{SYCY2S(MM,NT,SY,S,C,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SY((MM/NP+1)*(2*(NT+2)-MM/NP*NP))
+REAL(8) :: C((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{SY} & 入力. $(s_y)^m_n$が格納されている配列.\\
+\texttt{S} &  出力. $s^m_n$が格納される配列.\\
+\texttt{C} & 入力. \texttt{SYINIC}で初期化された配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+  (a) \texttt{SYTG2S(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,1\_8,ICOM)}と
+    \texttt{SYCY2S(MM,NT,SY,S,C,ICOM)} とを連続して CALL すれば,
+    ベクトル場の緯度方向成分の発散の正変換に相当する計算
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi g(\lambda,\varphi)\right)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+が行われ, \texttt{S}に$s^m_n$が返されることになる
+(部分積分していることと, \texttt{IPOW=1} としていることに注意).
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCS2X}
+
+\begin{enumerate}
+
+\item 機能 
+
+経度微分に対応するスペクトルデータの変換を行う.
+
+\item 定義
+
+スペクトル逆変換(ただし, ここでは $n$方向の切断波数を$N_T$とする)が
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と定義されているとき, $g$に$\frac{\partial}{\partial\lambda}$
+を作用させた結果は
+\begin{equation}
+\frac{\partial}{\partial\lambda}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+(s_x)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+のように表せる. ここに, $(s_x)^m_n=ims^m_n$ である.
+このサブルーチンは, $s^m_n$から$(s_x)^m_n=ims^m_n$を求めるものである.
+
+\item 呼び出し方法 
+
+\texttt{SYCS2X(MM,NT,S,SX,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SX((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SX} & 出力 $(s_x)^m_n$が格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) スペクトルデータ $(s_x)^m_n$ の並び順は $s^m_n$ と同じである.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYINID}
+
+\begin{enumerate}
+
+\item 機能 
+
+\texttt{SYCLAP}で用いられる配列の\texttt{D}の初期化.
+
+\item 定義
+
+\texttt{SYCLAP}の項を参照.
+
+\item 呼び出し方法 
+
+\texttt{SYINID(MM,NT,D,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: D((MM/NP+1)*(2*(NT+1)-MM/NP*NP)*2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{D} & 出力. \texttt{SYCLAP}で用いられる配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCLAP}
+
+\begin{enumerate}
+
+\item 機能 
+スペクトルデータにラプラシアンを作用させる, またはその逆演算を行う.
+
+\item 定義
+
+球面調和関数展開(ただし, ここでは $n$方向の切断波数を$N_T$とする)
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+に対して, 水平Laplacian
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+を作用させると, 球面調和関数の性質から, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+となる. そこで,
+\begin{equation}
+(s_l)^m_n\equiv -n(n+1)s^m_n
+\end{equation}
+を導入すると, 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+と表せる. 
+また, 逆に
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+であるとき, 
+\begin{equation}
+(s_l)^m_n\equiv -\frac1{n(n+1)}s^m_n
+\end{equation}
+を導入すると, 定数分の任意性を除き,
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=\max(1,|m|)}
+(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+と表せる. 
+
+本サブルーチンは,
+$s^m_n$から$(s_l)^m_n = -n(n+1)s^m_n$の計算, 
+またはその逆演算: $s^m_n$から$(s_l)^m_n = -s^m_n/(n(n+1))$, を
+行うものである. 
+
+\item 呼び出し方法 
+    
+\texttt{SYCLAP(MM,NT,S,SL,D,IFLAG,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, IFLAG, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SL((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+REAL(8) :: D((MM/NP+1)*(2*(NT+1)-MM/NP*NP)*2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT} & 入力. 全波数の切断波数.\\
+\texttt{S} & 入力. $s^m_n$が格納されている配列.\\
+\texttt{SL} & 出力. $(s_l)^m_n$が格納される配列.\\
+\texttt{D} & \texttt{SYINID}で初期化された配列.\\
+\texttt{IFLAG} & 入力. \texttt{IFLAG=1}のときラプラシアンの演算を,
+\texttt{IFLAG=2}のとき逆演算を行う.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{IFLAG=2}の場合, $n=0$となる $(s_l)^0_0$ については
+$s^0_0$がそのまま代入される.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCRPK}
+
+\begin{enumerate}
+
+\item 機能
+
+全波数の切断波数($N_1$)のスペクトルデータを
+全波数の切断波数($N_2$)のスペクトルデータに詰め替える.
+
+\item 定義
+
+\texttt{SYCS2Y}の出力結果と\texttt{SYCS2X}の出力結果を合成したいことは
+しばしば生じるが, 両者は$n$方向の切断波数$N$が異なるスペクトルデータ
+であるため, そのまま足すことができない . 本サブルーチンは, そのような
+用途に応えるために,
+全波数の切断波数($N_1$)のスペクトルデータ($(s_1)^m_n$)から,から
+全波数の切断波数($N_2$)のスペクトルデータ($(s_2)^m_n$)への詰め替えを行うものである.
+大きな領域への詰め替え($N_1<N_2$)の場合は,
+($(s_2)^m_n$)の$n>N_1$の部分には$0$が代入される.
+また, 小さな領域への詰め替え($N_1>N_2$)の場合は,
+($(s_1)^m_n$)の$n>N_2$の部分の情報は捨てられる.
+なお, ($N_1=N_2$)の場合は, 単なるコピーが行われる.
+
+\item 呼び出し方法 
+    
+\texttt{SYCRPK(MM,NT1,NT2,S1,S2,ICOM)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT1, NT2, ICOM
+REAL(8) :: S1((MM/NP+1)*(2*(NT1+1)-MM/NP*NP)), S2((MM/NP+1)*(2*(NT2+1)-MM/NP*NP))
+\end{verbatim}
+  
+\begin{tabular}{ll}
+\texttt{MM} & 入力. 帯状波数の切断波数.\\  
+\texttt{NT1} & 入力. 入力の全波数の切断波数($N_1$).\\
+\texttt{NT2} & 入力. 出力の全波数の切断波数($N_2$).\\  
+\texttt{S1} & 入力. $(s_1)^m_n$が格納されている配列.\\
+\texttt{S2} & 出力. $(s_2)^m_n$が格納される配列.\\
+\texttt{ICOM} & 入力. 計算に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}  
+%---------------------------------------------------------------------
+
+\subsection{SYKINI}
+
+\begin{enumerate}
+
+\item 機能
+\texttt{SYPACK}の多層用初期化ルーチン.
+
+\item 定義
+
+多層モデル等において, 層の数を \texttt{KM}とするとき, 
+各層(層方向の番号を\texttt{K}とする)に対して
+スペクトルデータとグリッドデータの配列をそれぞれ 
+{\texttt S(:, K)}, {\texttt G(:, K)}のように用意して
+それら相互の変換を行いたい場合を考える. 
+このとき, 全体のコミュニケーターを層方向に分割し,
+分割されたより小さなコミュニケーターで各層の変換を
+計算した方が並列化の効率が良い.
+
+本サブルーチンは, 層の数と層方向の分割数を与えて, 
+全体のコミュニケーター\texttt{ICOML}から
+分割された小さなコミュニケーター(のうちで現在の
+プロセスが属するもの)\texttt{ICOMS}を返すもの
+である. なお, このコミュニケーターで計算される
+層番号の範囲の下限\texttt{K1}と上限\texttt{K2}も同時に返す.
+  
+\item 呼び出し方法 
+    
+\texttt{SYKINI(KM,NDV,K1,K2,ICOML,ICOMS)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}  
+INTEGER(8) :: KM, NDV, K1, K2, ICOML, ICOMS
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{KM} & 入力. 層の数.\\
+\texttt{NDV} & 入力. 層方向の分割数.\\
+\texttt{K1} & 出力. 分割されたコミュニケーターが担当する層番号の下端.\\
+\texttt{K2} & 出力. 分割されたコミュニケーターが担当する層番号の上端.\\
+\texttt{ICOML} & 入力. 多層計算全体に用いる MPIコミュニケーター.\\
+\texttt{ICOMS} & 出力. 分割された MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) 分割前のコミュニケーター\texttt{ICOML}に属するプロセス数(サイズ)
+  を\texttt{NPL}, 層数を\texttt{KM}とするとき, 分割数\texttt{NDV}は
+  \texttt{NDV}$\le \min($\texttt{NPL}, \texttt{KM}$)$ を満して
+  いなければならない.
+
+(b) \texttt{ICOML}は計算に用いる分割前の MPIコミュニケーターを指定する.
+ MPI の Fortranでの実装では, 通常, MPIコミュニケーターは
+ \texttt{INTEGER(4)}型となっているので, 適宜\texttt{INTEGER(8)}に
+キャストして入力とすること.
+
+(c) 多層のスペクトルデータとグリッドデータの間の変換においては,
+ここで与えられた\texttt{ICOMS}を\texttt{SYTS2G}等での入力
+\texttt{ICOM}として用いればよい. ただし, 層方向のループは自前で
+用意すること. すなわち, 以下のような感じになる.
+
+\begin{verbatim}  
+  CALL SYKINI(KM,NDV,K1,K2,ICOML,ICOMS)
+  CALL SYINI1(MM,NM,IM,IT,T,R,ICOMS)
+  CALL SYINI2(MM,NM,JM,1_8,P,R,JC,ICOMS)
+  DO K=1,K2-K1+1
+    CALL SYTS2G(MM,NM,NN,IM,JM,JV,S(1,K),G(1,K),IT,T,P,R,JC,W,IPOW,ICOMS)
+  END DO
+\end{verbatim}  
+ここに, スペクトルデータ\texttt{S}とグリッドデータ\texttt{G}は
+\begin{verbatim}        
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP), (KM-1)/NDV+1)
+REAL(8) :: G(IM*((JM/JV-1)/NP+1)*JV, (KM-1)/NDV+1)
+\end{verbatim}      
+のように用意しておけばよい. この場合, \texttt{NP}は
+分割後のコミュニケーター\texttt{ICOMS}のサイズ(プロセス数)
+となることに注意すること. これは, \texttt{ICOMS}に対して
+\texttt{MPI\_COMM\_SIZE}を用いることで取得できる.
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYKGXX}
+
+\begin{enumerate}
+
+\item 機能 
+
+多層用のデータ集約  
+
+\item 定義
+
+分割されたコミュニケーターのプロセスに分散配置された層方向のデータを
+  データをランク0のプロセスに集約する.
+
+\item 呼び出し方法 
+
+\texttt{SYKGXX(NDIM,KM,NDV,X,XALL,ICOML)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: NDIM, KM, NDV, ICOML
+REAL(8) ::  X(NDIM,(KM-1)/NDV+1), XALL(NDIM,KM)
+\end{verbatim}      
+
+\begin{tabular}{lll}
+\texttt{NDIM} & 入力. \texttt{X}と\texttt{XALL}の第一次元寸法.\\
+\texttt{KM} & 入力. 層の数.\\
+\texttt{NDV} & 入力. 層方向の分割数.\\
+\texttt{X} & 入力. 分散配置されたデータが格納されている配列.\\
+\texttt{XALL} & 出力. 集約されたデータが格納される配列.\\
+\texttt{ICOML} & 入力. 多層計算全体に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{KM}, \texttt{NDV}, \texttt{ICOML}の意味については
+   \texttt{SYKINI}の項を参照.
+
+(b) このサブルーチンはすべてのプロセスで CALLされる必要があるが,
+\texttt{XALL}の領域は, コミュニケーター\texttt{ICOML}の
+ランク0のプロセスでのみ確保されていれば良い.
+
+(c) \texttt{NDIM}は, スペクトルデータの場合は
+\texttt{(MM/NP+1)*(2*(NN+1)-MM/NP*NP)}, グリッドデータの場合は
+\texttt{IM*((JM/JV-1)/NP+1)*JV}とすればよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYKSXX}
+
+\begin{enumerate}
+
+\item 機能 
+
+多層用のデータの分散
+
+\item 定義
+
+ランク0のプロセスに集約された層方向のデータを
+分割されたコミュニケーターのプロセスに分散配置する.
+
+\item 呼び出し方法 
+
+\texttt{SYKSXX(NDIM,KM,NDV,XALL,X,ICOML)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}        
+INTEGER(8) :: NDIM, KM, NDV, ICOML
+REAL(8) ::  X(NDIM,(KM-1)/NDV+1), XALL(NDIM,KM)
+\end{verbatim}      
+
+\begin{tabular}{lll}
+\texttt{NDIM} & 入力. \texttt{X}と\texttt{XALL}の第一次元寸法.\\
+\texttt{KM} & 入力. 層の数.\\
+\texttt{NDV} & 入力. 層方向の分割数.\\
+\texttt{XALL} & 入力. 集約されたデータが格納されている配列.\\
+\texttt{X} & 出力 分散配置されたデータが格納される配列.\\
+\texttt{ICOML} & 入力. 多層計算全体に用いる MPIコミュニケーター.
+\end{tabular}
+
+\item 備考
+
+(a) \texttt{KM}, \texttt{NDV}, \texttt{ICOML}の意味については
+   \texttt{SYKINI}の項を参照.
+
+(b) このサブルーチンはすべてのプロセスで CALLされる必要があるが,
+\texttt{XALL}の領域は, コミュニケーター\texttt{ICOML}の
+ランク0のプロセスでのみ確保されていれば良い.
+
+(c) \texttt{NDIM}は, スペクトルデータの場合は
+\texttt{(MM/NP+1)*(2*(NN+1)-MM/NP*NP)}, グリッドデータの場合は
+\texttt{IM*((JM/JV-1)/NP+1)*JV}とすればよい.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYQRJV}
+
+\begin{enumerate}
+
+\item 機能
+
+\texttt{JV}の値の推奨値の問い合わせ  
+
+\item 定義
+
+グリッドデータの大きさの設定に必要となる\texttt{JV}の値の推奨値を返す.
+
+\item 呼び出し方法 
+    
+\texttt{SYQRJV(JM,JV)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: JM, JV
+\end{verbatim}    
+
+\begin{tabular}{lll}
+\texttt{JM} & 入力. 南北格子点数.\\  
+\texttt{JV} & 出力. 推奨される\texttt{JV}の値.
+\end{tabular}
+
+\item 備考
+
+(a) 返される\texttt{JV}の値は, \texttt{JM}の値および
+ISPACKのインストール時 SSEの設定に依存して計算効率の良い値が設定される.
+
+\end{enumerate}
+
+\end{document}
+

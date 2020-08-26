@@ -1,0 +1,1093 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4paper]{scrartcl}
+
+\title{Manual of SXPACK}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Outline}
+
+This is a package of subroutines to compute the spectral (spherical
+harmonics) transform. It consists of subroutines that compute
+transform from the coefficients of spherical harmonics to the grid 
+values and the reverse transform, and ancillary subroutines.
+This package is an upper-level package based on \texttt{MXPACK},
+\texttt{FXPACK} and \texttt{LXPACK}.
+
+Let $m$ and $n$ be the zonal and the total wavenumbers of
+the spherical harmonics, respectively, and 
+let the truncation wavenumbers for them be $M$ and $N$,
+respectively. Here, $N\ge M$ is assumed (when $N=M$, it corresponds
+to the triangular truncation).
+Using this notation, the spectral transform
+under these truncation wavenumbers is written as follows.
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^N_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+Introducing the associated Legendre function backward transform:
+\begin{equation}
+G^m(\varphi)\equiv\sum^N_{n=|m|}s^m_nP^m_n(\sin\varphi),
+\end{equation}
+it can be written as,
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}G^m(\varphi)e^{im\lambda},
+\end{equation}
+which is a synthesis of 
+the associated Legendre function backward transform
+and the backward Fourier transform.
+Here, $\lambda$ is the longitude, and $\varphi$ is the latitude.
+
+Here, $\varphi$ is the latitude and
+$P^m_n(\mu)$ is the associated Legendre function normalized to 2,
+which is defined as:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-|m|)!}{(n+|m|)!}}
+\frac1{2^nn!}(1-\mu^2)^{|m|/2}
+\frac{d^{n+|m|}}{d\mu^{n+|m|}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+For $g(\lambda,\varphi)$ to be a real function,
+$s^m_n$ and $G^m(\varphi)$ must satisfy the following:
+\begin{equation}
+G^{-m}(\varphi)=\{G^m(\varphi)\}^{*},
+\end{equation}
+\begin{equation}
+s^{-m}_n=\{s^m_n\}^{*}.
+\end{equation}
+Here, $\{ \}^{*}$ denotes the complex conjugate.
+Hence, $G^m(\sin\varphi)$ and $s^m_n$ should be
+treated for only $m\ge 0$.
+Accordingly, $G^0(\sin\varphi)$ and $s^0_n$ take real values.
+
+The forward spectral transform is written as follows.
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)P^m_n(\sin\varphi)e^{-im\lambda}\cos\varphi d\varphi
+d\lambda .
+\end{equation}
+Similarly as the backward transform, introducing the forward
+Fourier transform as,
+\begin{equation}
+G^m(\varphi)\equiv\frac1{2\pi}\int^{2\pi}_0
+g(\lambda,\varphi)e^{-im\lambda}d\lambda,
+\end{equation}
+it can be written by a synthesis of 
+the forward Fourier transform and the forward 
+associated Legendre function transform as,
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi.
+d\varphi
+\end{equation}
+
+In numerical calculation, the integration shown above is approximated
+by discretization. The forward Fourier transform is approximated
+by the discrete forward Fourier transform using the values at
+points at an equal interval in the longitude and the forward 
+associated Legendre function 
+transform is approximated as follows by using the Gauss-Legendre
+integration formula as,
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j).
+\end{equation}
+Here, $\varphi_j$s are called Gaussian latitude, which is defined as
+the $J$ zero points (sorted ascending order) of the Legendre
+polynomial $P_J(\sin\varphi)$ (this corresponds to 
+the associated Legendre function of $m=0$ without the normalization
+factor (the factor in $\sqrt{\quad}$), and $w_j$ is 
+the Gaussian weight corresponding to each Gaussian latitude, 
+which is defined as,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}.
+\end{equation}
+Here, $\mu_j\equiv\sin\varphi_j$.
+In a certain condition, this integration formula gives the 
+perfect approximation or the same value as the original integration.
+
+This subroutine package contains
+subroutines that do backward transform of spectral data ($s^m_n$) 
+to grid data ($g(\lambda_i,\varphi_j)$),
+subroutines that do forward transform of
+grid data ($g(\lambda_i,\varphi_j)$),
+to spectral data ($s^m_n$), and ancillary subroutines.
+
+Here, the longitude of each grid point, $\lambda_i$, 
+is $I$-equally spaced longitudes around a latitude circle,
+which is written as,
+$\lambda_i=2\pi i/I\quad (i=0,1,\ldots,I-1)$
+(note that $i$ is not the imaginary unit here),
+and $\varphi_j$s are $J$ Gaussian latitudes defined above.
+
+In the following explanations for subroutines, the notations below
+are used.
+\begin{center}
+\begin{tabular}{ll}
+\texttt{MM}:& $M$(the truncation number for $m$)\\
+\texttt{NN}:& $N$(the truncation number for $n$)\\
+\texttt{NM}:& maximum value of $N$ to be used\\
+\texttt{NT}:& truncation wavenumber of $n$ for conversion of
+spectral data\\
+\texttt{JM}:& $J$(the number of Gaussian latitudes)\\
+\texttt{IM}:& $I$(the number of grids in longitude)\\
+\texttt{N}:& $n$(the total wavenumber)\\
+\texttt{M}:& $m$(the zonal wavenumber)\\
+\texttt{J}:& $j$(the index for each Gaussian latitude)\\
+\texttt{I}:& $i$(the index for each longitude)
+\end{tabular}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{List of subroutines}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{SXINI1} & Initialization part 1\\
+\texttt{SXINI2} & Initialization part 2\\  
+\texttt{SXNM2L} & Compute the position where spectral data are stored\\
+\texttt{SXL2NM} & Inverse computation of \texttt{SXNM2L}\\
+\texttt{SXTS2G} & Transform from spectral data to grid data\\
+\texttt{SXTG2S} & Transform from grid data to spectral data\\
+\texttt{SXTS2V} & Paired transform from two spectral data to two grid data\\
+\texttt{SXTV2S} & Paired transform from two grid data to two spectral data\\
+\texttt{SXINIC} & Initialize an array used in \texttt{SXCS2Y},
+ \texttt{SXCY2S}, \textit{etc}\\
+\texttt{SXCS2Y} & Conversion of spectral data 
+corresponding to latitudinal derivative\\
+\texttt{SXCY2S} & Conversion of spectral data \\
+& corresponding to forward spectral transform with latitudinal derivative\\
+\texttt{SXCS2X} & Conversion of spectral data 
+corresponding to longitudinal derivative\\
+\texttt{SXINID} & Initialize arrays used in \texttt{SXCLAP}\\
+\texttt{SXCLAP} &  Conversion of spectral data \\
+& corresponding to operating Laplacian or its inverse\\
+\texttt{SXCRPK} & Repacking of spectral data 
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Usage of each subroutine}
+
+\subsection{SXINI1}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialization routine for \texttt{SXPACK} (part 1).
+It initializes the arrays, \texttt{IT, T, R},
+which are used other subroutines in \texttt{SXPACK}
+
+\item Definition
+
+\item Synopsis 
+    
+\texttt{SXINI1(MM,NM,IM,IT,T,R)}
+
+\item Parameters
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, IM, IT(IM/2)
+REAL(8) :: T(IM*3/2)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$(the truncation number for $m$).\\
+\texttt{NM} & Input. Maximum value of $N$(the truncation 
+  number for $n$).\\
+\texttt{IM}  & Input. The number of grids in longitude.\\
+\texttt{IT}  & Output. An array which is used in other routines in \texttt{SXPACK}.\\
+\texttt{T}   & Output. An array which is used in other routines in \texttt{SXPACK}.\\
+\texttt{R}  & Output. An array which is used in other routines in \texttt{SXPACK}.\\
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{MM} must be a nonnegative integer.
+ When the triangular truncation is assumed and
+ the latitudinal derivative is needed (see SXCS2Y),
+ you should set as \texttt{MM=NT} and \texttt{NM=NT+1}.
+ Here, \texttt{NT} is the truncation wavenumber for 
+  the triangular truncation
+  
+\texttt{IM} must satisfy \texttt{IM > 2*MM} and
+\texttt{IM/2} must be factorized by 2, 3, and 5.
+
+\texttt{NM} must satisfy 
+\texttt{NM} $\ge$ \texttt{MM}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{SXINI2}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialization routine for \texttt{SXPACK} (part 2).
+It initializes the arrays, \texttt{P, JC},
+which are used other subroutines in \texttt{SXPACK}
+
+\item Definition
+
+\item Synopsis 
+    
+\texttt{SXINI2(MM,NM,JM,IG,P,R,JC)}
+
+\item Parameters
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, JM, IG, JC(MM*(2*NM-MM-1)/16+MM)
+REAL(8) :: P(JM/2,2*MM+5)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$(the truncation number for $m$).\\
+\texttt{NM} & Input. Maximum value of $N$(the truncation 
+  number for $n$).\\
+\texttt{JM}  & Input. The number of Gaussian latitudes.\\
+\texttt{IG}  & Input. Grid type (see Remark)\\
+\texttt{P}  & Input. An array which is used in other routines in \texttt{SXPACK}.\\
+\texttt{R}  & Output. Array initialized by \texttt{SXINI1}.\\
+\texttt{JC}  & Output. An array which is used in other routines in \texttt{SXPACK}.
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{MM} must be a nonnegative integer.
+ When the triangular truncation is assumed and
+ the latitudinal derivative is needed (see SXCS2Y),
+ you should set as \texttt{MM=NT} and \texttt{NM=NT+1}.
+ Here, \texttt{NT} is the truncation wavenumber for 
+  the triangular truncation
+  
+\texttt{JM} must be an even number ($\ge 2$).
+Maximum efficiency is achieved by setting \texttt{JM} to be 
+a multiple of 8 when you do make ISPACK with setting either
+SSE=avx or SSE=fma.
+When setting SSE=avx512, maximum efficiency is achieved
+by setting \texttt{JM} to be a multiple of 16.
+
+\texttt{NM} must satisfy 
+\texttt{NM} $\ge$ \texttt{MM}.
+
+(b) If \texttt{IG=1}, the latitudinal nodes $(\varphi_j)$
+and the corresponding weights $(w_j)$ are set to be the
+Gaussian latitudes and the Gaussian weights.
+If \texttt{IG=2}, the latitudinal nodes are set to be 
+\texttt{JM} equispaced nodes that divide the total latitudinal
+interval into \texttt{JM+1} subintervals equally. Here, 
+the both poles are not included in the nodes.
+The corresponding weights are set to the weights for
+Clenshaw-Curtis quadrature.
+If \texttt{IG=3}, the latitudinal nodes are set to be the
+\texttt{JM-1} equispaced nodes that divide the total latitudinal
+interval into \texttt{JM} subintervals equally. Here, 
+the both poles are not included in the nodes and
+the node at the equator is used doubly in the transform routines.
+The corresponding weights are set to the weights for
+Clenshaw-Curtis quadrature. Here, the weight for the node
+at the equator is set to a half of the Clenshaw-Curtis quadrature
+weight since
+the node at the equator is used doubly in the transform routines.
+
+Assuming that the truncation wavenumber of spectral data
+used in transform routines is \texttt{NM},
+for the spectral data to be completely restored (within a rounding
+error) after backward and forward transforms,
+\texttt{JM}$\ge$ \texttt{NM+1} must be satisfied when
+\texttt{IG=1}, and
+\texttt{JM}$\ge$ \texttt{2*NM+1} must be satisfied 
+when \texttt{IG=2},
+and
+\texttt{JM}$\ge$ \texttt{2*(NM+1)} must be satisfied 
+when \texttt{IG=3}.
+
+(c) In the array \texttt{P}, 
+   \texttt{P(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   \texttt{P(J,2)}:  $\frac12 w_{J/2+j}$, 
+   \texttt{P(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,5)}:  $\sin^2(\varphi_{J/2+j})$,
+are contained. Furthermore, the array \texttt{P}
+must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXNM2L}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Compute the position where spectral data are stored
+from the total wavenumber and the zonal wavenumber.
+
+\item Definition
+
+As described in Outline, 
+spectral data ($s^m_n$) have $(2N+1-M)M+N+1$ independent
+components. In \texttt{SXPACK}, they are stored in an array the
+size of which is $(2N+1-M)M+N+1$.
+
+The order of storing is as follows, depending the truncation wavenumber:
+\begin{eqnarray*}
+&& s^0_0, s^0_1, \ldots, s^0_N,\\
+&& \mbox{Re}(s^1_1), \mbox{Im}(s^1_1),
+\mbox{Re}(s^1_2), \mbox{Im}(s^1_2), \ldots, 
+\mbox{Re}(s^1_N), \mbox{Im}(s^1_N),\\
+&&\ldots,\\
+&& \mbox{Re}(s^M_M), \mbox{Im}(s^M_M), \ldots,
+\ldots \mbox{Re}(s^M_N), \mbox{Im}(s^M_N).\\
+\end{eqnarray*}
+This subroutine computes 
+the position in the array ($s^m_n$)
+where spectral data are stored
+from the total wavenumber($n$) and the zonal wavenumber($m$).
+
+\item Synopsis 
+    
+\texttt{SXNM2L(NN,N,M,L)}
+  
+\item Parameters
+\begin{verbatim}
+INTEGER(8) :: NN,N,M,L  
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{NN} & Input. $N$(the truncation number for $n$)\\
+\texttt{N} & Input. $n$(the total wavenumber)\\
+\texttt{M} & Input. $m$(the zonal wavenumber. See Remark)\\
+\texttt{L} & Output. the position where the spectral
+data is stored.
+\end{tabular}
+
+\item Remark
+
+If \texttt{M} $>$ 0, it returns the position where
+$\mbox{Re}(s^m_n)$ is stored with setting 
+$m=$ \texttt{M} and $n=$ \texttt{N}.
+If \texttt{M} $<$ 0, it returns the position where
+$\mbox{Im}(s^m_n)$ is stored with setting 
+$m=$ \texttt{-M} and $n=$ \texttt{N}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXL2NM}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Inverse computation of \texttt{SXNM2L}.
+That is, 
+it computes 
+the total wavenumber and the zonal wavenumber from
+the position where spectral data are stored.
+
+\item Definition
+
+See \texttt{SXNM2L}.
+
+\item Synopsis 
+    
+\texttt{SXL2NM(NN,L,N,M)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: NN,N,M,L  
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NN} & Input. $N$(the truncation number for $n$).\\
+\texttt{L} & Input. The position where the spectral
+data are stored.\\
+\texttt{N} & Output. $n$(the total wavenumber).\\
+\texttt{M} & Output. $m$(the zonal wavenumber).
+\end{tabular}
+
+\item Remark
+
+ The meaning of the sign of \texttt{M} is the same as in \texttt{SXNM2L}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTS2G}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from spectral data to grid data.
+
+\item Definition
+
+Transform spectral data ($s^m_n$) 
+to grid data ($g(\lambda_i,\varphi_j)$)
+by the backward spectral transform (see Outline).
+
+\item Synopsis 
+
+\texttt{SXTS2G(MM,NM,NN,IM,JM,S,G,IT,T,P,R,JC,W,IPOW)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, M, IT(IM/2), JC(MM*(2*NM-MM-1)/16+MM), IPOW
+REAL(8) :: S((2*NN+1-MM)*MM+NN+1), G(0:IM-1,JM), T(IM*3/2), P(JM/2,2*MM+5)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1), W(JM*IM)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{NN} & Input. $N$. 
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM} must hold).\\
+\texttt{IM} & Input. The number of grids in longitude.\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{G} & Output. Array to contain $g(\lambda_i,\varphi_j)$.\\
+\texttt{IT} & Input. Array initialized by \texttt{SXINI1}.\\
+\texttt{T} & Input. Array initialized by \texttt{SXINI1}.\\
+\texttt{P}  & Input. Array initialized by \texttt{SXINI2}.\\
+\texttt{R}  & Input. Array initialized by \texttt{SXINI1}.\\
+\texttt{JC}  & Input. Array initialized by \texttt{SXINI2}.\\
+\texttt{W} & Working area.\\
+\texttt{IPOW} & Input. The degree of $1/\cos\varphi$ multiplied 
+simultaneously. \\
+& with the transform. An integer between 0 and 2.
+\end{tabular}
+
+\item Remark
+
+(a) $g(\lambda_i,\varphi_j)$ is to be contained in \texttt{G(I,J)}.
+
+(b) The array \texttt{G, W, P} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{G, W, P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ is returned 
+in the output array \texttt{G} instead of $g(\lambda_i,\varphi_j)$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTG2S}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from grid data to spectral data.
+
+\item Definition
+
+Transform wave data ($g(\lambda_i,\varphi_j)$)
+to spectral data ($s^m_n$)
+by the forward spectral transform (see Outline).
+
+\item Synopsis 
+
+
+\texttt{SXTG2S(MM,NM,NN,IM,JM,S,G,IT,T,P,R,JC,W,IPOW)}
+
+\item Parameters
+
+(Since most of parameters are the same as in \texttt{SXTS2G},
+the following explanation is only for parameters
+different from those in \texttt{SXTS2G})
+
+\begin{tabular}{ll}
+\texttt{S} & Output. Array to contain $s^m_n$.\\
+\texttt{G} & Input. Array that 
+contains $g(\lambda_i,\varphi_j)$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously  \\
+&  with the transform. An integer between 0 and 2.
+\end{tabular}
+
+\item Remark
+
+(a)\texttt{G(I,J)} should contain $g(\lambda_i,\varphi_j)$.
+
+(b) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ is used as the input
+instead of $g(\lambda_i,\varphi_j)$.
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTS2V}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two spectral data to two grid data.
+  
+\item Definition
+
+Transform two spectral data ($s^m_n$)$_{(1,2)}$ 
+to grid data ($g(\lambda_i,\varphi_j)$)$_{(1,2)}$ 
+by the backward spectral transform (see Outline).
+
+\item Synopsis 
+
+\texttt{SXTS2V(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, M, IT(IM/2), JC(MM*(2*NM-MM-1)/16+MM), IPOW
+REAL(8) :: S1((2*NN+1-MM)*MM+NN+1), S2((2*NN+1-MM)*MM+NN+1)
+REAL(8) :: G1(0:IM-1,JM), G2(0:IM-1,JM)
+REAL(8) :: T(IM*3/2), P(JM/2,2*MM+5)
+REAL(8) :: R(((MM+1)*(2*NM-MM-1)+1)/4*3+(2*NM-MM)*(MM+1)/2+MM+1), W(JM*IM*2)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{NN} & Input. $N$. 
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM} must hold).\\
+\texttt{IM} & Input. The number of grids in longitude.\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{S1} & Input. Array that contains $(s^m_n)_1$.\\
+\texttt{S2} & Input. Array that contains $(s^m_n)_2$.\\
+\texttt{G1} & Output. Array to contain $(g(\lambda_i,\varphi_j))_1$.\\
+\texttt{G2} & Output. Array to contain $(g(\lambda_i,\varphi_j))_2$.\\
+\texttt{IT} & Input. Array initialized by \texttt{SXINI1}.\\
+\texttt{T} & Input. Array initialized by \texttt{SXINI1}.\\
+\texttt{P}  & Input. Array initialized by \texttt{SXINI2}.\\
+\texttt{R}  & Input. Array initialized by \texttt{SXINI1}.\\
+\texttt{JC}  & Input. Array initialized by \texttt{SXINI2}.\\
+\texttt{W} & Working area.\\
+\texttt{IPOW} & Input. The degree of $1/\cos\varphi$ multiplied 
+simultaneously. \\
+& with the transform. An integer between 0 and 2.
+\end{tabular}
+
+
+\item Remark
+
+(a) Note that the size of the working area \texttt{W} must
+  be twice as large as that of \texttt{SXTS2G}.
+
+(b) $(g(\lambda_i,\varphi_j))_1$, $(g(\lambda_i,\varphi_j))_2$
+  are contained in \texttt{G1(I,J)}, \texttt{G2(I,J)}, respectively.
+
+(c) The array \texttt{G, W, P} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{G, W, P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+  
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}(g(\lambda_i,\varphi_j))_{(1,2)}$ is returned 
+in the output array \texttt{G} instead of $(g(\lambda_i,\varphi_j))_{(1,2)}$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXTV2S}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two grid data to two spectral data.
+  
+\item Definition
+
+Transform two grid data ($g(\lambda_i,\varphi_j)$)$_{(1,2)}$ 
+to spectral data ($s^m_n$)$_{(1,2)}$ 
+by the forward spectral transform (see Outline).
+
+\item Synopsis 
+
+\texttt{SXTV2S(MM,NM,NN,IM,JM,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW)}
+  
+
+\item Parameters
+
+(Since most of parameters are the same as in \texttt{SXTS2V},
+the following explanation is only for parameters
+different from those in \texttt{SXTS2V})
+
+\begin{tabular}{ll}
+\texttt{S1} & Output. Array to contain $(s^m_n)_1$.\\
+\texttt{S2} & Output. Array to contain $(s^m_n)_2$.\\  
+\texttt{G1} & Input. Array that 
+contains $(g(\lambda_i,\varphi_j))_1$.\\
+\texttt{G2} & Input. Array that 
+contains $(g(\lambda_i,\varphi_j))_2$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously  \\
+&  with the transform. An integer between 0 and 2.
+\end{tabular}
+
+\item Remark
+
+(a)\texttt{G1(I,J)}, \texttt{G2(I,J)}
+  should contain
+$(g(\lambda_i,\varphi_j))_1$, $(g(\lambda_i,\varphi_j))_2$, respectively.
+
+(b) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)_{(1,2)}$ are used as the input
+instead of $(g(\lambda_i,\varphi_j))_{(1,2)}$.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXINIC}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Initialize an array used in \texttt{SXCS2Y} and \texttt{SXCY2S}.
+
+\item Definition
+
+See \texttt{SXCS2Y} and \texttt{SXCY2S}.
+
+\item Synopsis 
+
+\texttt{SXINIC(MM,NT,C)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: C((2*NT-MM+1)*(MM+1))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. The truncation wavenumber for the total wavenumber.\\
+\texttt{C} & Output. Array used in \texttt{SXCS2Y} and\texttt{SXCY2S}.
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCS2Y}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform of spectral data 
+corresponding to latitudinal derivative
+
+\item Definition
+
+If the backward spectral transform, where the truncation
+  wavenumber of $N_T$ is assumed, is defined as,
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+operating $\cos\varphi\frac{\partial}{\partial\varphi}$ to
+$g$ yields
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+That is, it can be represented by a backward spectral transform
+with setting the truncation wavenumber of $n$ as $N_T+1$.
+This subroutine computes $(s_y)^m_n$ from $s^m_n$.
+
+\item Synopsis 
+
+\texttt{SXCS2Y(MM,NT,S,SY,C)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: S(NT+1+MM*(2*NT-MM+1)), SY(NT+2+MM*(2*NT-MM+3))  
+REAL(8) :: C((2*NT-MM+1)*(MM+1))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SY} & Output. Array to contain $(s_y)^m_n$.\\
+\texttt{C} & Input. Array initialized by  \texttt{SXINIC}.
+\end{tabular}
+
+\item Remark
+
+(a) If you call \texttt{SXCS2Y(MM,NT,S,SY,C)} and \\
+  \texttt{SXTS2G(MM,NM,NT+1,IM,JM,SY,G,IT,T,P,R,JC,W,1\_8)}
+    continuously, the latitudinal derivative is returned in \texttt{G}.  
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCY2S}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform of spectral data 
+corresponding to the forward spectral transform with latitudinal derivative
+
+\item Definition
+
+If you want to compute the following form of modified forward
+spectral transform
+(it appers in computing the divergence of a vector field, for example):
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda,
+\quad 
+\end{equation}
+(where, $m$ and $n$ are within the triangular truncation of $M$),
+$s^m_n$ can be obtained from the result of 
+the following normal forward spectral
+transform of $g$:
+\begin{equation}
+(s_y)^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda
+\quad (n\le M+1=N).
+\end{equation}
+This subroutine computes $s^m_n$ from $(s_y)^m_n$.
+Here, if $s^m_n$ is to be computed to $n=N_T$, $(s_y)^m_n$
+must be computed up to  $n=N_T+1$.
+
+\item Synopsis
+
+\texttt{SXCY2S(MM,NT,SY,S,C)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: SY(NT+2+MM*(2*NT-MM+3)), S(NT+1+MM*(2*NT-MM+1))
+REAL(8) :: C((2*NT-MM+1)*(MM+1))
+\end{verbatim}
+
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{SY} & Input. Array that contains $(s_y)^m_n$.\\
+\texttt{S} & Output. Array to contain $s^m_n$.\\
+\texttt{C} & Input. Array initialized by  \texttt{SXINIC}.
+\end{tabular}
+
+\item Remark
+
+  (a)If you call
+  \texttt{SXTG2S(MM,NM,NT+1,IM,JM,SY,G,IT,T,P,R,JC,W,1\_8)} and\\
+  \texttt{SXCY2S(MM,NT,SY,S,C)}
+ continuously, 
+    the following computation that corresponds to
+    the forward transform of the divergence of a vector field,
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi g(\lambda,\varphi)\right)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda
+\end{equation}
+is done and $s^m_n$ is returned in \texttt{S}.
+Note that integration by parts is applied and \texttt{IPOW=1} here.
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCS2X}
+
+\begin{enumerate}
+
+\item Purpose   
+
+Conversion of spectral data 
+corresponding to longitudinal derivative.
+
+\item Definition
+
+If the backward spectral transform, where the truncation
+wavenumber of $N_T$ is assumed, is defined as,
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+operating $\frac{\partial}{\partial\lambda}$ to $g$
+yields
+\begin{equation}
+\frac{\partial}{\partial\lambda}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+(s_x)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+Here, $(s_x)^m_n=ims^m_n$.
+This subroutine computes $(s_x)^m_n=ims^m_n$ from $s^m_n$.
+
+\item Synopsis 
+  
+\texttt{SXCS2X(MM,NT,S,SX)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: S(NT+1+MM*(2*NT-MM+1)), SX(NT+1+MM*(2*NT-MM+1))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SX} & Output. Array to contain $(s_x)^m_n$.
+\end{tabular}
+
+\item Remark
+
+(a) The order of storing $(s_x)^m_n$ is the same as that of $s^m_n$.  
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXINID}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Initialize array \texttt{D} used in \texttt{SXCLAP}. 
+
+\item Definition
+
+see \texttt{SXCLAP}.
+
+\item Synopsis 
+
+\texttt{SXINID(MM,NT,D)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT
+REAL(8) :: D(NT+1+MM*(2*NT-MM+1),2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{D} & Output. Array used in \texttt{SXCLAP}.
+\end{tabular}
+
+\item Remark
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCLAP}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform of spectral data 
+corresponding to Laplacian or its inverse.
+
+\item Definition
+
+For the spherical harmonics expansion (here, the truncation
+wavenumber  $N_T$ is assumed):
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+operating the horizontal Laplacian:
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+yields the following 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+by the nature of spherical harmonics.
+Hence, 
+introducing
+\begin{equation}
+(s_l)^m_n\equiv -n(n+1)s^m_n,
+\end{equation}
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+holds. 
+Inversely, when
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+holds, introducing
+\begin{equation}
+(s_l)^m_n\equiv -\frac1{n(n+1)}s^m_n
+\end{equation}
+yields
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=\max(1,|m|)}
+(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+by ignoring an arbitrary constant.
+This subroutine computes $(s_l)^m_n = -n(n+1)s^m_n$
+from $s^m_n$, or inversely computes $(s_l)^m_n = -s^m_n/(n(n+1))$
+from $s^m_n$.
+
+\item Synopsis
+    
+\texttt{SXCLAP(MM,NT,S,SL,D,IFLAG)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, IFLAG
+REAL(8) :: S(NT+1+MM*(2*NT-MM+1)), SL(NT+1+MM*(2*NT-MM+1))
+REAL(8) :: D(NT+1+MM*(2*NT-MM+1),2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SL} & Output. Array to contain $(s_l)^m_n$.\\
+\texttt{D} & Input. Array initialized by  \texttt{SXINID}.\\
+\texttt{IFLAG} & Input. If \texttt{IFLAG=1}, it operates Laplacian, \\
+&  and if \texttt{IFLAG=2}, it operates the 
+inverse of Laplacian.
+\end{tabular}
+
+
+\item Remark
+
+(a) If \texttt{IFLAG=2}, $s^0_0$ is returned in $(s_l)^0_0$ (where $n=0$).  
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SXCRPK}
+
+\begin{enumerate}
+
+\item Purpose
+
+Repacking spectral data from 
+a truncation ($N_1$) to another truncation ($N_2$)
+
+\item Definition
+
+It is often the case that one wants the addition of the results
+of \texttt{SXCS2Y} and \texttt{SXCS2X}. However, they are different
+types of spectral data because their truncation wavenumbers $N$ for
+$n$ are different and so they can not be added with each other
+directly. This subroutine 
+repacks spectral data from ($(s_1)^m_n$) of
+the truncation ($N_1$) to ($(s_2)^m_n$)
+of another truncation ($N_2$).
+When repacking to a larger area ($N_1<N_2$),
+zeros are filled in ($(s_2)^m_n$) where $n>N_1$.
+When repacking to a smaller area ($N_1> N_2$),
+the data in ($(s_1)^m_n$) where $n>N_2$ are discarded.
+When $N_1=N_2$, a simple copy is done.
+
+\item Synopsis
+
+\texttt{SXCRPK(MM,NT1,NT2,S1,S2)}  
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT1, NT2
+REAL(8) :: S1((2*NT1+1-MM)*MM+NT1+1), S2((2*NT2+1-MM)*MM+NT2+1)
+\end{verbatim}
+
+\item Parameters
+  
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT1} & Input. Truncation wavenumber for input($N_1$).\\
+\texttt{NT2} & Input. Truncation wavenumber for output($N_2$).\\
+\texttt{S1} & Input. Array that contains $(s_1)^m_n$.\\
+\texttt{S2} & Output. Array to contain $(s_2)^m_n$.
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}
+
+\end{document}

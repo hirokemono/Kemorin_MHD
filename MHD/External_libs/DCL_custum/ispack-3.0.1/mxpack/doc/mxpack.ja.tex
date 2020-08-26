@@ -1,0 +1,303 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4j]{jsarticle}
+
+\title{MXPACK使用の手引}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは補助的な雑多(miscllaneous)なサブルーチンを集めたパッケージである.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンのリスト}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{MXTIME} & 現在のUNIX-timeを取得する.\\
+\texttt{MXALLC} & 64バイトメモリ境界にアラインされたメモリ領域を確保する.\\
+\texttt{MXFREE} & メモリ領域の開放.\\
+\texttt{MXGCPU} & ISPACKがインストールされた際の SSEの設定の問い合わせ.\\
+\texttt{MXSOMP} & OpenMP並列化におけるスレッド数の指定.\\
+\texttt{MXGOMP} & OpenMP並列化におけるスレッド数の取得.
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{サブルーチンの説明}
+
+\subsection{MXTIME}
+
+\begin{enumerate}
+
+\item 機能 
+
+UNIX時間(1970年01月01日00時00分00秒(UTC)からの時間)を秒単位で
+返す.
+
+\item 定義
+
+\item 呼び出し方法 
+    
+\texttt{MXTIME(SEC)}
+  
+\item パラメーターの説明
+
+  \vspace{-2ex}
+
+\begin{verbatim}
+REAL(8) :: SEC
+\end{verbatim}
+
+  \vspace{-1ex}
+  
+\begin{tabular}{ll}
+\texttt{SEC} & 出力. 現在のUNIX時間(秒単位)
+\end{tabular}
+
+\item 備考
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+
+\subsection{MXALLC}
+
+\begin{enumerate}
+
+\item 機能 
+
+64バイトメモリ境界にアラインされたメモリ領域を確保する.
+
+\item 定義
+
+Intel x86 CPU上で, SSE=avx,  SSE=fma, または SSE=avx512
+の設定で ISPACKを
+make した場合, FXPACK, LXPACK, および SXPACK を利用するため
+にはいくつかの配列の先頭が
+メモリ上で 32バイト境界に割り当てられていなければならない
+(SSE=avx512 の場合は 64バイト境界)が,
+これをコンパイラが必ずしも自動ではやってくれるとは限らない
+(Intel ifort では, -align array64byte オプションを付ければ
+可能だが, gfortranではそのようなオプションが無い).
+本サブルーチンは, Fortran90環境においてそのようなメモリ領域
+の確保を可能にするためのものである.
+
+\item 呼び出し方法 
+    
+\texttt{MXALLC(P,N)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+TYPE(C_PTR) :: P
+INTEGER(8) :: N
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{P} & 出力. 確保されたメモリ領域の先頭のポインタが格納された
+            \texttt{C\_PTR}型の構造体.\\
+\texttt{N} & 入力. 確保すべき倍精度実数配列の大きさ.
+      すなわち, \texttt{N*8} バイトのメモリ領域が確保される.
+\end{tabular}
+
+\item 備考
+
+Fortran90のプログラムにおいて, 以下のように \texttt{ISO\_C\_BINDING}モジュー
+ルを用いると, \texttt{MXALLC}を使って以下のように64バイト境界にアライン
+された倍精度配列が利用できる. なお, 下記のプログラム例のように,
+確保された領域は, 必要が無くなった段階で \texttt{MXFREE}で開放すること.
+
+\begin{verbatim}
+      USE ISO_C_BINDING
+      IMPLICIT NONE
+      INTEGER(8),PARAMETER :: M=20,N=10
+      INTEGER(8) :: I,J
+      REAL(8),DIMENSION(:,:),POINTER:: A
+      TYPE(C_PTR) :: P
+
+      CALL MXALLC(P,M*N) ! 領域の確保
+      CALL C_F_POINTER(P,A,[M,N]) ! ポインタを配列に関連づけ
+      ! これ以降, 倍精度実数配列 A(M,N)が使える.
+
+      DO J=1,N
+         DO I=1,M
+            A(I,J)=1000*I+J
+            PRINT *,A(I,J)
+         END DO
+      END DO
+
+      CALL MXFREE(P) ! MXALLC で確保された領域の開放.
+        
+      END
+\end{verbatim}
+
+\end{enumerate}
+
+%----------------------------------------------------------------------
+\subsection{MXFREE}
+
+\begin{enumerate}
+
+\item 機能 
+
+メモリ領域の開放.
+
+\item 定義
+
+\texttt{MXALLC}で確保されたメモリ領域を開放する.
+
+\item 呼び出し方法 
+    
+\texttt{MXFREE(P)}
+  
+\item パラメーターの説明
+
+\begin{verbatim}
+TYPE(C_PTR) :: P
+\end{verbatim}
+  
+\begin{tabular}{ll}
+\texttt{P} & 入力. \texttt{MXALLC}でメモリを
+確保した際に返されたポインタを格納した \texttt{C\_PTR}型構造体.
+\end{tabular}
+
+\item 備考
+
+使用例は \texttt{MLALLC}の項を参照.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{MXGCPU}
+
+\begin{enumerate}
+
+\item 機能 
+
+ISPACKがインストールされた際の SSEの設定の問い合わせ
+
+\item 定義
+
+\item 呼び出し方法 
+
+\texttt{MXGCPU(ICPU)}
+
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: ICPU
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{ICPU} & 出力. SSEの設定に対応する値(備考参照).
+\end{tabular}
+
+\item 備考
+
+  (a) SSE=fort のとき \texttt{ICPU} = 0 が, 
+  SSE=avx のとき \texttt{ICPU} = 10 が,
+  SSE=fma のとき \texttt{ICPU} = 20 が,
+  SSE=avx512 のとき \texttt{ICPU} = 30 が, 
+  それぞれ返される.
+  
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{MXSOMP}
+
+\begin{enumerate}
+
+\item 機能 
+
+OpenMP並列化におけるスレッド数の指定.
+
+\item 定義
+
+ISPACK中で OpenMP並列化された部分を実行する際に使う最大のスレッド数を指定
+する.
+
+\item 呼び出し方法 
+
+\texttt{MXSOMP(NTH)}
+
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NTH
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NTH} & 入力. 最大スレッド数.
+\end{tabular}
+
+\item 備考
+
+(a) 環境変数 \texttt{OMP\_NUM\_THREADS} よりも \texttt{NTH}が
+   大きい場合は, \texttt{OMP\_NUM\_THREADS}の値の方が設定される.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{MXSOMP}
+
+\begin{enumerate}
+
+\item 機能 
+
+OpenMP並列化におけるスレッド数の取得.
+
+\item 定義
+
+\texttt{MXSOMP}で設定されたスレッド数の取得する.
+  
+\item 呼び出し方法 
+
+\texttt{MXGOMP(NTH)}
+
+\item パラメーターの説明
+
+\begin{verbatim}
+INTEGER(8) :: NTH
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NTH} & 出力. 最大スレッド数.
+\end{tabular}
+
+\item 備考
+
+(a) 事前に\texttt{MXSOMP}で設定がなされていない場合は
+  環境変数 \texttt{OMP\_NUM\_THREADS}の値が \texttt{NTH}として返される.
+
+\end{enumerate}
+
+
+\end{document}

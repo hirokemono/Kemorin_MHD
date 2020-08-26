@@ -1,0 +1,259 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+%
+% last modified 2018/02/22
+%
+\documentclass[a4paper]{scrartcl}
+
+\typearea{12}
+
+\title{Manual of FXPACK}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Outline}
+
+This is a package of subroutines to compute FFT.
+Since the radix of the transform is 2, 3, and 5,  
+the data-length to be transformed must be factorized by
+these prime numbers.
+
+In each group of subroutines shown below, the initialization
+subroutine, the name of which ends with the letter \texttt{I},
+must be called once before other subroutines in the group are
+called. 
+
+For computational efficiency, the transform subroutines treat
+multiple data streams simultaneously. If a two-dimensional
+array, \texttt{X(I,J), I=1,2,$\ldots$,M, J=1,2,$\ldots$,N}, is
+given, Fourier transform of \texttt{X(I,1),X(I,2),$\ldots$,X(I,N)}
+is computed for each \texttt{I}. That is, Fourier transform
+of length-\texttt{N} data stream is computed \texttt{M} times.
+If only one data stream is given, you should set as \texttt{M=1}.
+
+If you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and using \texttt{M=4}, the array that contains
+the data streams to be transformed must be aligned with 32byte
+boundary.
+If you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and using \texttt{M=8}, the array that contains
+the data streams to be transformed must be aligned with 64byte
+boundary.
+In those cases, you should allocate a memory area with
+\texttt{MXALLC}, for example.
+
+\section{List of subroutines}
+
+Discrete complex Fourier transform
+
+\vspace{1ex}
+
+  \begin{tabular}{ll}
+    \texttt{FXZINI(N,IT,T)} & Initialization\\
+    \texttt{FXZTFA(M,N,X,IT,T)} & Forward transform\\
+    \texttt{FXZTBA(M,N,X,IT,T)} & Backward transform
+  \end{tabular}
+
+  \vspace{1ex}
+  
+\noindent  
+Discrete real Fourier transform
+
+  \vspace{1ex}
+
+  \begin{tabular}{ll}
+    \texttt{FXRINI(N,IT,T)} & Initialization\\
+    \texttt{FXRTFA(M,N,X,IT,T)} & Forward transform\\
+    \texttt{FXRTBA(M,N,X,IT,T)} & Backward transform
+  \end{tabular}
+
+\newpage  
+    
+\section{Usage of each subroutine}
+
+\subsection{FXZINI/FXZTFA/FXZTBA}
+\begin{enumerate}
+\item Purpose
+  
+   Discrete complex (forward/backward) Fourier transforms of $M$ sets of 
+  one-dimensional data streams of length $N$, 
+$\{x_j\}$ or $\{\alpha_k\}$ are computed using FFT algorithm.
+  Note that $N$ must be factorized as
+  $N=2^a3^b5^c$ ($a$, $b$, $c$: 0 or natural number).
+     \texttt{FXZINI} does initialization;
+     \texttt{FXZTFA} computes forward Fourier transform;
+     \texttt{FXZTBA} computes backward Fourier transform.
+
+  \item Definition
+    \begin{itemize}
+    \item Forward Fourier transform
+      
+       The input $\{x_j\}$ is transformed as follows to give 
+       the output $\{\alpha_k\}$.
+       \[
+       \alpha_k=\frac1N\sum^{N-1}_{j=0}x_j\exp\left(-2\pi i\frac{jk}N\right),
+       \quad (k=0,1,\ldots,N-1)
+        \]
+      \item Backward Fourier transform
+        
+       The input $\{\alpha_k\}$ is transformed as follows to give 
+       the output $\{x_j\}$.
+       \[
+      x_j=\sum^{N-1}_{k=0}\alpha_k\exp\left(2\pi i\frac{jk}N\right),
+       \quad (j=0,1,\ldots,N-1)
+      \]
+
+     \end{itemize}    
+  \item Synopsis 
+
+    \texttt{FXZINI(N,IT,T)}\\
+    \texttt{FXZTFA(M,N,X,IT,T)}\\
+    \texttt{FXZTBA(M,N,X,IT,T)}
+  \item Parameters
+
+     \vspace{-2ex}    
+    
+     \begin{verbatim}
+INTEGER(8) :: M,N,IT(N)
+REAL(8) :: T(N*2),X(M*2*N)
+\end{verbatim}
+     
+     \vspace{-1ex}
+     
+    \begin{tabular}{ll}
+      \texttt{M}   & Input. The number of data streams $M$
+       to be transformed simultaneously.\\
+      \texttt{N}   & Input. The length of data stream $N$.\\
+      \texttt{X}   & Input/Output. For input: $\{x_j\}$ or $\{\alpha_k\}$.
+                 For output: $\{\alpha_k\}$ or $\{x_j\}$.\\
+      \texttt{IT}   & Output(\texttt{FXZINI}) or 
+Input(\texttt{FXZTFA}, \texttt{FXZTBA}).\\
+      \texttt{T}   & Outupt(\texttt{FXZINI}) or 
+Input(\texttt{FXZTFA}, \texttt{FXZTBA}).
+    \end{tabular}
+
+  \item Order of data stream
+
+  If the input/output array is declared as \texttt{X(M,2,0:N-1)},
+  the data is contained in it for each $I$ as follows.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \texttt X(I,1,0) & \texttt X(I,2,0) & \texttt X(I,1,1) & \texttt X(I,2,1) & 
+     $\cdots$ & \texttt X(I,1,N-1) & \texttt X(I,2,N-1) \\\hline\hline
+      \mbox{Re}($x_0$) & \mbox{Im}($x_0$) & \mbox{Re}($x_1$) & \mbox{Im}($x_1$) &
+     $\cdots$ & \mbox{Re}($x_{N-1}$) & \mbox{Im}($x_{N-1}$) \\\hline
+      \mbox{Re}($\alpha_0$) & \mbox{Im}($\alpha_0$) & \mbox{Re}($\alpha_1$) & \mbox{Im}($\alpha_1$) &
+     $\cdots$ & \mbox{Re}($\alpha_{N-1}$) & \mbox{Im}($\alpha_{N-1}$) \\\hline
+    \end{tabular}
+
+\end{enumerate}
+
+\newpage
+
+\subsection{FXRINI/FXRTFA/FXRTBA}
+\begin{enumerate}
+  \item Purpose 
+
+   Discrete real (forward/backward) Fourier transforms of $M$ sets of 
+  one-dimensional data streams of length $N$, 
+$\{x_j\}$ are computed using FFT algorithm.
+  Note that $N$ must be an even number and $N/2$ 
+must be factorized as
+$N=2^a3^b5^c$ ($a$, $b$, $c$: 0 or natural number).
+     \texttt{FXRINI} does initialization;
+     \texttt{FXRTFA} computes forward Fourier transform;
+     \texttt{FXRTBA} computes backward Fourier transform.
+
+  \item Definition
+    \begin{itemize}
+     \item Forward Fourier transform
+
+       The input $\{x_j\}$ is transformed as follows to give 
+       the output $\{a_k\},\{b_k\}$.
+       \[
+       a_k= \frac1N\sum^{N-1}_{j=0}x_j\cos\frac{2\pi jk}N,
+       \quad (k=0,1,\ldots,N/2)
+       \]
+       \[
+       b_k=-\frac1N\sum^{N-1}_{j=0}x_j\sin\frac{2\pi jk}N,
+       \quad (k=1,2,\ldots,N/2-1)
+       \]
+
+     \item Backward Fourier transform
+
+       The input $\{a_k\},\{b_k\}$ is transformed as follows to give 
+       the output $\{x_j\}$.
+       \[
+       x_j=a_0+a_{N/2}(-1)^j+2\sum^{N/2-1}_{k=1}
+       \left(a_k\cos\left(\frac{2\pi jk}N\right)
+                          -b_k\sin\left(\frac{2\pi jk}N\right)\right)
+       \quad (j=0,1,\ldots,N-1)
+      \]
+     \end{itemize}    
+  \item Synopsis 
+
+    \texttt{FXRINI(N,IT,T)}\\
+    \texttt{FXRTFA(M,N,X,IT,T)}\\
+    \texttt{FXRTBA(M,N,X,IT,T)}
+
+  \item Parameters
+
+     \vspace{-2ex}    
+    
+     \begin{verbatim}
+INTEGER(8) :: M,N,IT(N/2)
+REAL(8) :: T(N*3/2),X(M*N)
+\end{verbatim}
+     
+     \vspace{-1ex}
+     
+    \begin{tabular}{ll}
+      \texttt{M}&Input. The number of data
+      streams $M$ to be transformed simultaneously.\\
+      \texttt{N} & Input. The length of data stream $N$.\\
+      \texttt{X} & Input/Output. For input: $\{x_j\}$ or
+      $\{a_k\},\{b_k\}$. For output: $\{a_k\},\{b_k\}$ or $\{x_j\}$.\\
+      \texttt{IT} & Output(\texttt{FXRINI}) or 
+               Input(\texttt{FXRTFA}, \texttt{FXRTBA}).\\
+      \texttt{T} & Outupt(\texttt{FXRINI}) or 
+    Input(\texttt{FXRTFA}, \texttt{FXRTBA}).
+    \end{tabular}
+
+  \item Order of data stream
+
+  If the input/output array is declared as \texttt{X(M,0:N-1)},
+  the data is contained in it for each $I$ as follows.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \texttt X(I,0) & \texttt X(I,1) & \texttt X(I,2) & \texttt X(I,3) & 
+     $\cdots$ & \texttt X(I,N-2) & \texttt X(I,N-1) \\\hline\hline
+      $x_0$ & $x_1$ & $x_2$ & $x_3$ &
+     $\cdots$ & $x_{N-2}$ & $x_{N-1}$ \\\hline
+      $a_0$ & $a_{N/2}$ & $a_1$ & $b_1$ &
+     $\cdots$ & $a_{N/2-1}$ & $b_{N/2-1}$ \\\hline
+    \end{tabular}
+
+\end{enumerate}
+
+\end{document}

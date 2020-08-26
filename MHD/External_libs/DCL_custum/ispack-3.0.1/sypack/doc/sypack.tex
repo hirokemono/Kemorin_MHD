@@ -1,0 +1,1556 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4paper]{scrartcl}
+
+\title{Manual of SYPACK}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Outline}
+
+This is an MPI-parallelized version of SXPACK, which is 
+a package of subroutines to compute the spectral (spherical
+harmonics) transform. 
+Hence, for basic definitions of the transform, see the
+manual of SXPACK. 
+This package is an upper-level package based on SXPACK.
+
+Since MPI subroutines are called in this subroutine package
+internally, you must call subroutines belonging to this package
+inside the region between \texttt{MPI\_INIT} and \texttt{MPI\_FINALIZE}.
+The header file (mpif.h) must also be included as a matter of course.
+For these general usages of MPI, refer to MPI manual on your system.
+
+\subsection{About the parallelization}
+
+The MPI-parallelization used in SYPACK is a standard one,
+in which the spectral data is divided in the direction of 
+the zonal wavenumber and the grid data is divided in the
+direction of the latitude. The divided data are stored and 
+treated in each process.
+Subroutines which gives information about what zonal wavenumbers
+and latitudes of spectral data and grid data, respectively are stored
+in each process are provided. 
+The OpenMP-parallelization for each process is also implemented.
+
+\textbf{In the following explanations for subroutines, the number
+of MPI processes is denoted by an integer-type variable, 
+\texttt{NP}.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{List of subroutines}
+
+\begin{tabular}{ll}
+\texttt{SYINI1} & Initialization part 1\\
+\texttt{SYINI2} & Initialization part 2\\
+\texttt{SYNM2L} & Compute the position where spectral data are stored\\
+\texttt{SYL2NM} & Inverse computation of \texttt{SYNM2L}\\
+\texttt{SYQRNM} & Inquire the zonal wavenumber treated by the process\\
+\texttt{SYQRNJ} & Inquire the Gaussian latitude treated by the process\\
+\texttt{SYTS2G} & Transform from spectral data to grid data\\
+\texttt{SYTG2S} & Transform from grid data to spectral data\\
+\texttt{SYTS2V} & Paired transform from two spectral data to two grid data\\
+\texttt{SYTV2S} & Paired transform from two grid data to two spectral data\\
+\texttt{SYGS2S} & Gather scattered spectral data\\
+\texttt{SYSS2S} & Scatter gathered spectral data\\
+\texttt{SYGG2G} & Gather scattered grid data\\
+\texttt{SYSG2G} & Scatter gathered grid data\\
+\texttt{SYINIC} & Initialize an array used in \texttt{SYCS2Y}, 
+   \texttt{SYCY2S}, \textit{etc}\\
+\texttt{SYCS2Y} & Transform of spectral data 
+corresponding to latitudinal derivative\\
+\texttt{SYCY2S} & Transform of spectral data \\
+& corresponding to forward spectral transform with latitudinal derivative\\
+\texttt{SYCS2X} & Transform of spectral data 
+corresponding to longitudinal derivative\\
+\texttt{SYINID} & Initialize arrays used in \texttt{SYCLAP}\\
+\texttt{SYCLAP} & Transform of spectral data \\
+& corresponding to operating Laplacian or its inverse\\
+\texttt{SYCRPK} & Repacking of spectral data\\
+\texttt{SYKINI} & Initialization for multi-layer transform\\
+\texttt{SYKGXX} & Data gather for multi-layer transform\\
+\texttt{SYKSXX} & Data scatter for multi-layer transform\\
+\texttt{SYQRJV} & Inquire the recommended value of \texttt{JV}
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Usage of each subroutine}
+
+\subsection{SYINI1}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialization routine for \texttt{SYPACK} (part 1).
+It initializes the arrays, \texttt{IT, T, R},
+which are used other subroutines in \texttt{SYPACK}
+  
+\item Definition
+
+\item Synopsis 
+    
+\texttt{SYINI1(MM,NM,IM,IT,T,R,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, IM, IT(IM/2), ICOM
+REAL(8) :: T(IM*3/2)
+REAL(8) :: R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$(the truncation number for $m$).\\
+\texttt{NM} & Input. Maximum value of $N$(the truncation 
+  number for $n$).\\
+\texttt{IM}  & Input. The number of grids in longitude.\\
+\texttt{IT}  & Output. An array which is used in other routines in \texttt{SYPACK}.\\
+\texttt{T}   & Output. An array which is used in other routines in \texttt{SYPACK}.\\
+\texttt{R}  & Output. An array which is used in other routines in
+\texttt{SYPACK}.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{MM} must be a nonnegative integer.
+ When the triangular truncation is assumed and
+ the latitudinal derivative is needed (see SYCS2Y),
+ you should set as \texttt{MM=NT} and \texttt{NM=NT+1}.
+ Here, \texttt{NT} is the truncation wavenumber for 
+  the triangular truncation
+  
+(b) \texttt{IM} must satisfy \texttt{IM > 2*MM} and
+\texttt{IM/2} must be factorized by 2, 3, and 5.
+
+(c) \texttt{NM} must satisfy 
+\texttt{NM} $\ge$ \texttt{MM}.
+  
+(d) \texttt{ICOM} specifies the MPI communicator used
+for computations in \texttt{SYPACK}. Since the type
+of MPI communicator is \texttt{INTEGER(4)} in usual
+Fortran MPI implementations, you should cast it to
+the type of \texttt{INTEGER(8)} before setting it as \texttt{ICOM}.
+
+(e) In the defintion of the size of the array \texttt{R}, the
+number of processes (or size), \texttt{NP}, of the MPI communicator specified
+by \texttt{ICOM} should be known. When dynamically allocating
+the array \texttt{R}, the value of \texttt{NP} is obtained
+by calling \texttt{MPI\_COMM\_SIZE} with specifying the communicator
+ID, \texttt{ICOM}. When statically allocating without knowing
+the number of processes in advance, \texttt{NP} should be set
+as the possible minimum of the number of processes.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYINI2}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialization routine for \texttt{SYPACK} (part 2).
+It initializes the arrays, \texttt{P, JC},
+which are used other subroutines in \texttt{SYPACK}
+  
+\item Definition
+
+\item Synopsis 
+    
+\texttt{SYINI2(MM,NM,JM,IG,P,R,JC,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: MM, NM, JM, IG, JC((MM/NP+1)*(2*NM-MM/NP*NP)/16+MM/NP+1)
+REAL(8) :: P(JM/2,5+2*(MM/NP+1))
+REAL(8) :: R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+
+\texttt{MM} & Input. $M$(the truncation number for $m$).\\
+\texttt{NM} & Input. Maximum value of $N$(the truncation 
+  number for $n$).\\
+\texttt{JM}  & Input. The number of Gaussian latitudes.\\
+\texttt{IG}  & Input. Grid type (see Remark)\\  
+\texttt{P}  & Input. An array which is used in other routines in
+\texttt{SYPACK}.\\
+\texttt{R}  & Output. Array initialized by \texttt{SYINI1}.\\
+\texttt{JC}  & Output. An array which is used in other routines in
+\texttt{SYPACK}.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{MM} must be a nonnegative integer.
+ When the triangular truncation is assumed and
+ the latitudinal derivative is needed (see SYCS2Y),
+ you should set as \texttt{MM=NT} and \texttt{NM=NT+1}.
+ Here, \texttt{NT} is the truncation wavenumber for 
+  the triangular truncation
+  
+\texttt{JM} must be an even number ($\ge 2$).
+Maximum efficiency is achieved by setting \texttt{JM} to be 
+a multiple of 8 when you do make ISPACK with setting either
+SSE=avx or SSE=fma.
+When setting SSE=avx512, maximum efficiency is achieved
+by setting \texttt{JM} to be a multiple of 16.
+
+\texttt{NM} must satisfy 
+\texttt{NM} $\ge$ \texttt{MM}.
+
+(b) If \texttt{IG=1}, the latitudinal nodes $(\varphi_j)$
+and the corresponding weights $(w_j)$ are set to be the
+Gaussian latitudes and the Gaussian weights.
+If \texttt{IG=2}, the latitudinal nodes are set to be 
+\texttt{JM} equispaced nodes that divide the total latitudinal
+interval into \texttt{JM+1} subintervals equally. Here, 
+the both poles are not included in the nodes.
+The corresponding weights are set to the weights for
+Clenshaw-Curtis quadrature.
+If \texttt{IG=3}, the latitudinal nodes are set to be the
+\texttt{JM-1} equispaced nodes that divide the total latitudinal
+interval into \texttt{JM} subintervals equally. Here, 
+the both poles are not included in the nodes and
+the node at the equator is used doubly in the transform routines.
+The corresponding weights are set to the weights for
+Clenshaw-Curtis quadrature. Here, the weight for the node
+at the equator is set to a half of the Clenshaw-Curtis quadrature
+weight since
+the node at the equator is used doubly in the transform routines.
+
+Assuming that the truncation wavenumber of spectral data
+used in transform routines is \texttt{NM},
+for the spectral data to be completely restored (within a rounding
+error) after backward and forward transforms,
+\texttt{JM}$\ge$ \texttt{NM+1} must be satisfied when
+\texttt{IG=1}, and
+\texttt{JM}$\ge$ \texttt{2*NM+1} must be satisfied 
+when \texttt{IG=2},
+and
+\texttt{JM}$\ge$ \texttt{2*(NM+1)} must be satisfied 
+when \texttt{IG=3}.
+
+(c) If the array \texttt{P} is defined as 
+\texttt{P(JM/2,5+2*(MM/NP+1))}, then 
+   \texttt{P(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   \texttt{P(J,2)}:  $\frac12 w_{J/2+j}$, 
+   \texttt{P(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+   \texttt{P(J,5)}:  $\sin^2(\varphi_{J/2+j})$,
+are contained. Furthermore, the array \texttt{P}
+must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(d) For the meaning of the communicator \texttt{ICOM} and
+how to set \texttt{NP}, which is used to determine the size of 
+\texttt{JC}, please refer to \texttt{SYINI1}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYNM2L}
+
+\begin{enumerate}
+
+\item Purpose
+
+Compute the position where spectral data are stored
+and the process ID(rank)
+from the total wavenumber and the zonal wavenumber.
+
+\item Definition
+
+In SYPACK, spectral data are divided by multi processes.
+This subroutine computes 
+the position in the array ($s^m_n$)
+where spectral data are stored and the process ID(rank)
+from the total wavenumber($n$) and the zonal wavenumber($m$).
+  
+\item Synopsis 
+    
+\texttt{SYNM2L(NN,N,M,IP,L,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: NN, N, M, IP, L, ICOM
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{NN} & Input. $N$(the truncation number for $n$)\\
+\texttt{N} & Input. $n$(the total wavenumber)\\
+\texttt{M} & Input. $m$(the zonal wavenumber. See Remark)\\
+\texttt{IP} & Output. The process ID(rank) that treats
+the data.\\
+\texttt{L} & Output. the position where the spectral
+data is stored.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+If \texttt{M} $>$ 0, it returns the position where
+$\mbox{Re}(s^m_n)$ is stored with setting 
+$m=$ \texttt{M} and $n=$ \texttt{N}.
+If \texttt{M} $<$ 0, it returns the position where
+$\mbox{Im}(s^m_n)$ is stored with setting 
+$m=$ \texttt{-M} and $n=$ \texttt{N}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYL2NM}
+
+\begin{enumerate}
+
+\item Purpose
+
+Inverse computation of \texttt{SYNM2L}.
+That is, 
+it computes 
+the total wavenumber and the zonal wavenumber from
+the position where spectral data are stored in each process.
+
+\item Definition
+
+See \texttt{SYNM2L}.
+
+\item Synopsis 
+    
+\texttt{SYL2NM(MM,NN,L,N,M,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NN, N, M, L, ICOM
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$(the truncation number for $m$)\\
+\texttt{NN} & Input. $N$(the truncation number for $n$)\\
+\texttt{L} & Input. The position where the spectral
+data are stored.\\
+\texttt{N} & Output. $n$(the total wavenumber)\\
+\texttt{M} & Output. $m$(the zonal wavenumber)\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) The meaning of the sign of \texttt{M} is the same as in \texttt{SYNM2L}.
+
+(b) If the process does not treat spectral data or the 
+  position specified by \texttt{L} does not contain 
+  spectral data, \texttt{N=-1} and \texttt{M=0} are returned 
+  as output.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYQRNM}
+
+\begin{enumerate}
+
+\item Purpose
+
+Inquire the zonal wavenumber treated by the process.  
+
+\item Definition
+
+Return the zonal wavenumber of spectral data treated by the process.  
+
+\item Synopsis 
+    
+\texttt{SYQRNM(MM,MCM,MC,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, MCM, MC(MM/NP+1), ICOM
+\end{verbatim}    
+
+\begin{tabular}{lll}
+\texttt{MM} & Input. $M$(the truncation number for $m$)\\
+\texttt{MCM} & Output. The number of $m$s treated by the process\\
+\texttt{MC} & Output. Array to contain $m$s treated by the process\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) If the process does not treat spectral data, 
+\texttt{MCM=0} is returned as output.
+
+(b) In the array \texttt{MCM(1:MCM)},
+the list of $m$s is returned.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYQRNJ}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Inquire the Gaussian latitude treated by the process  
+
+\item Definition
+
+Return the Gaussian latitude of grid data treated by the process.  
+
+\item Synopsis 
+    
+\texttt{SYQRNJ(JM,JV,J1,J2,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: JM, JV, J1, J2, ICOM
+\end{verbatim}    
+
+\begin{tabular}{ll}
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{JV} & Input. Vector length for computation\\
+\texttt{J1} & Output. Lower end of $j$ treated by the process\\
+\texttt{J2} & Output. Upper end of $j$ treated by the process\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) If the process does not treat grid data, 
+\texttt{J1=0} and \texttt{J2=-1}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTS2G}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from spectral data to grid data.  
+
+\item Definition
+
+Transform scattered spectral data ($s^m_n$) 
+to scattered grid data ($g(\lambda_i,\varphi_j)$)
+by the backward spectral transform.
+
+\item Synopsis 
+
+\texttt{SYTS2G(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,IPOW,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, JV, IT(IM/2)
+INTEGER(8) :: JC((MM/NP+1)*(2*NM-MM/NP*NP)/16+MM/NP+1), IPOW, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), G(0:IM-1,((JM/JV-1)/NP+1)*JV)
+REAL(8) :: T(IM*3/2), P(JM/2,5+2*(MM/NP+1))
+REAL(8) :: R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+REAL(8) :: W(2*JV*((JM/JV-1)/NP+1)*(MM/NP+1)*NP*2)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$\\
+\texttt{NM} & Input. Maximum value of $N$ to be used\\
+\texttt{NN} & Input. $N$
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM} must hold)\\
+\texttt{IM} & Input. The number of grids in longitude\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{JV} & Input. Vector length for computation\\
+\texttt{S} & Input. Array that contains spectral data\\
+\texttt{G} & Output. Array to contain grid data\\
+\texttt{IT} & Input. Array initialized by {\texttt SYINI1}\\
+\texttt{T} & Input. Array initialized by {\texttt SYINI1}\\
+\texttt{P} & Input. Array initialized by {\texttt SYINI2}\\
+\texttt{R} &  Input. Array initialized by {\texttt SYINI1}\\
+\texttt{JC}  & Input. Array initialized by {\texttt SYINI2}\\
+\texttt{W} & Working area\\
+\texttt{IPOW} & Input. The degree of $1/\cos\varphi$ multiplied 
+simultaneously.  An integer between 0 and 2.  \\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{JV} must be a divisor of \texttt{JM/2}.
+If you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs,
+setting \texttt{JV} to be 4 yields computational efficiency.
+If you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs,
+setting \texttt{JV} to be 8 yields computational efficiency.
+
+(b) 
+The array \texttt{G, W, P} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JV} to be 4.
+The array \texttt{G, W, P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JV} to be 8.
+
+(c) If \texttt{G} is declared as 
+\texttt{G(0:IM-1,((JM/JV-1)/NP+1)*JV)},
+    $g(\lambda_i,\varphi_j)$ is to be contained in \texttt{G(I,J-J1+1)}.
+(\texttt{J} is between \texttt{J1} and\texttt{J2}. Here, 
+\texttt{J1} and \texttt{J2} are given by \texttt{SYQRNJ},
+which are the lower end and the upper end of \texttt{J} treated 
+by the process, respectively).
+  
+(d) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ is returned 
+in the output array \texttt{G} instead of $g(\lambda_i,\varphi_j)$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTG2S}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from grid data to spectral data.
+
+\item Definition
+
+Transform scattered grid data ($g(\lambda_i,\varphi_j)$)
+to scattered spectral data ($s^m_n$)
+by the forward spectral transform.
+
+\item Synopsis 
+
+\texttt{SYTG2S(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,IPOW,ICOM)}  
+
+\item Parameters
+
+(Since most of parameters are the same as in \texttt{SYTS2G},
+the following explanation is only for parameters
+different from those in \texttt{SYTS2G})
+
+\begin{tabular}{ll}
+\texttt{S} & Output. Array to contain $s^m_n$.\\
+\texttt{G} & Input. Array that 
+contains $g(\lambda_i,\varphi_j)$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously  \\
+&  with the transform. An integer between 0 and 2.
+\end{tabular}
+
+\item Remark
+
+(a)\texttt{G(I,J)} should contain $g(\lambda_i,\varphi_j)$.
+  
+(b) If \texttt{G} is declared as 
+\texttt{G(0:IM-1,((JM/JV-1)/NP+1)*JV)},
+    $g(\lambda_i,\varphi_j)$ should be contained in \texttt{G(I,J-J1+1)}.
+(\texttt{J} is between \texttt{J1} and\texttt{J2}. Here, 
+\texttt{J1} and \texttt{J2} are given by \texttt{SYQRNJ},
+which are the lower end and the upper end of \texttt{J} treated 
+by the process, respectively).
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}g(\lambda_i,\varphi_j)$ is used as the input
+instead of $g(\lambda_i,\varphi_j)$.
+  
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTS2V}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two spectral data to two grid data.  
+
+\item Definition
+
+Transform two scattered spectral data ($s^m_n$)$_{(1,2)}$ 
+to scattered grid data ($g(\lambda_i,\varphi_j)$)$_{(1,2)}$ 
+by the backward spectral transform.
+
+\item Synopsis 
+
+\texttt{SYTS2V(MM,NM,NN,IM,JM,JV,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, NN, IM, JM, JV, IT(IM/2)
+INTEGER(8) :: JC((MM/NP+1)*(2*NM-MM/NP*NP)/16+MM/NP+1), IPOW, ICOM
+REAL(8) :: S1((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), S2((MM/NP+1)*(2*(NN+1)-MM/NP*NP))
+REAL(8) :: G1(0:IM-1,((JM/JV-1)/NP+1)*JV), G2(0:IM-1,((JM/JV-1)/NP+1)*JV)
+REAL(8) :: T(IM*3/2), P(JM/2,5+2*(MM/NP+1))
+REAL(8) :: R(5*(MM/NP+1)*(2*NM-MM/NP*NP)/4+MM/NP+1)
+REAL(8) :: W(2*JV*((JM/JV-1)/NP+1)*(MM/NP+1)*NP*2*2)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$\\
+\texttt{NM} & Input. Maximum value of $N$ to be used\\
+\texttt{NN} & Input. $N$
+(\texttt{MM}$\le$\texttt{NN}$\le$\texttt{NM} must hold)\\
+\texttt{IM} & Input. The number of grids in longitude\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{JV} & Input. Vector length for computation\\
+\texttt{S1} & Input. Array that contains $(s^m_n)_1$\\
+\texttt{S2} & Input. Array that contains $(s^m_n)_2$\\
+\texttt{G1} & Output. Array to contain $(g(\lambda_i,\varphi_j))_1$\\
+\texttt{G2} & Output. Array to contain $(g(\lambda_i,\varphi_j))_2$\\
+\texttt{IT} & Input. Array initialized by {\texttt SYINI1}\\
+\texttt{T} & Input. Array initialized by {\texttt SYINI1}\\
+\texttt{P} & Input. Array initialized by {\texttt SYINI2}\\
+\texttt{R} &  Input. Array initialized by {\texttt SYINI1}\\
+\texttt{JC}  & Input. Array initialized by {\texttt SYINI2}\\
+\texttt{W} & Working area\\
+\texttt{IPOW} & Input. The degree of $1/\cos\varphi$ multiplied 
+simultaneously.  An integer between 0 and 2.  \\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) Note that the size of the working area \texttt{W} must
+  be twice as large as that of \texttt{SYTS2G}.
+  
+(b) The array \texttt{G1, G2, W, P} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{G, W, P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) Since the other details are common with \texttt{SYTS2G},
+  please refer to \texttt{SYTS2G}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYTV2S}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two grid data to two spectral data.  
+
+\item Definition
+
+Transform two scattered grid data ($g(\lambda_i,\varphi_j)$)$_{(1,2)}$ 
+to spectral data ($s^m_n$)$_{(1,2)}$ 
+by the forward scattered spectral transform.
+
+\item Synopsis 
+
+\texttt{SYTV2S(MM,NM,NN,IM,JM,JV,S1,S2,G1,G2,IT,T,P,R,JC,W,IPOW,ICOM)}
+  
+\item Parameters
+
+(Since most of parameters are the same as in \texttt{SYTS2V},
+the following explanation is only for parameters
+different from those in \texttt{SYTS2V})
+
+\begin{tabular}{ll}
+\texttt{S1} & Output. Array to contain $(s^m_n)_1$.\\
+\texttt{S2} & Output. Array to contain $(s^m_n)_2$.\\  
+\texttt{G1} & Input. Array that 
+contains $(g(\lambda_i,\varphi_j))_1$.\\
+\texttt{G2} & Input. Array that 
+contains $(g(\lambda_i,\varphi_j))_2$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously  \\
+&  with the transform. An integer between 0 and 2.
+\end{tabular}
+  
+\item Remark
+
+(a) Note that the size of the working area \texttt{W} must
+  be twice as large as that of \texttt{SYTG2S}.
+  
+(b) The array \texttt{G1, G2, W, P} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{G, W, P} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) Since the other details are common with \texttt{SYTS2V},
+  please refer to \texttt{SYTS2V}.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYGS2S}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Gather scattered spectral data.  
+
+\item Definition
+
+Gather spectral data scattered in each process to process of rank 0.  
+
+\item Synopsis 
+
+\texttt{SYGS2S(MM,NN,S,SALL,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), SALL((2*NN+1-MM)*MM+NN+1)
+\end{verbatim}      
+
+\begin{tabular}{lll}
+\texttt{MM} & Input. $M$(the truncation number for $m$)\\
+\texttt{NN} & Input. $N$(the truncation number for $n$)\\
+\texttt{S} & Input. Array that contains scattered spectral data\\
+\texttt{SALL} &  Output. Array to contain gathered spectral data\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) This subroutine must be called by all processes, but
+  the memory regions for \texttt{SALL} should be allocated in process
+  of rank 0 only.
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{SYSS2S}
+
+\begin{enumerate}
+
+\item Purpose
+
+Scatter gathered spectral data.  
+
+\item Definition
+
+Scatter spectral data gathered in process of rank 0 to each process.  
+
+\item Synopsis 
+
+\texttt{SYSS2S(MM,NN,SALL,S,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: MM, NM, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP)), SALL((2*NN+1-MM)*MM+NN+1)
+\end{verbatim}      
+  
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$(the truncation number for $m$)\\
+\texttt{NN} & Input. $N$(the truncation number for $n$)\\
+\texttt{SALL} &  Input. Array that contains gathered spectral data\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) This subroutine must be called by all processes, but
+the memory regions for \texttt{SALL} 
+should be allocated in process of rank 0 only.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYGG2G}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Gather scattered grid data.  
+
+\item Definition
+
+Gather grid data scattered in each process to process of rank 0.  
+
+\item Synopsis 
+
+\texttt{SYSG2G(IM,JM,JV,GALL,G,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: IM, JM, JV, ICOM
+REAL(8) :: GALL(IM*JM), G(IM*((JM/JV-1)/NP+1)*JV)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{IM} & Input. The number of grids in longitude\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{JV} & Input. Vector length for computation\\
+\texttt{G} & Input. Array that contains scattered grid data\\
+\texttt{GALL} &  Output. Array to contain gathered grid data\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) This subroutine must be called by all processes, but
+the memory regions for \texttt{GALL} 
+should be allocated in process of rank 0 only.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYSG2G}
+
+\begin{enumerate}
+
+\item Purpose
+
+Scatter gathered grid data.  
+
+\item Definition
+
+Scatter grid data gathered in process of rank 0 to each process.  
+
+\item Synopsis 
+
+\texttt{SYSG2G(IM,JM,JV,GALL,G,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: IM, JM, JV, ICOM
+REAL(8) :: GALL(IM*JM), G(IM*((JM/JV-1)/NP+1)*JV)
+\end{verbatim}      
+
+\begin{tabular}{ll}
+\texttt{IM} & Input. The number of grids in longitude\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{JV} & Input. Vector length for computation\\
+\texttt{GALL} &  Input. Array that contains gathered grid data\\
+\texttt{G} & Output. Array to contain scattered grid data\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) This subroutine must be called by all processes, but
+the memory regions for \texttt{GALL}
+should be allocated in process of rank 0 only.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYINIC}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialize array \texttt{C} used in \texttt{SYCS2Y} and \texttt{SYCY2S}.
+
+\item Definition
+
+See \texttt{SYCS2Y} and \texttt{SYCY2S}.
+
+\item Synopsis 
+
+\texttt{SYINIC(MM,NT,C,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: C((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$(the truncation number for $m$)\\
+\texttt{NT} & Input. The truncation wavenumber for the total wavenumber.\\
+\texttt{C} & Output. Array used in \texttt{SYCS2Y} and \texttt{SYCY2S} \\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCS2Y}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform of spectral data 
+corresponding to latitudinal derivative
+
+\item Definition
+
+If the backward spectral transform, where the truncation
+  wavenumber of $N_T$ is assumed, is defined as,
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+operating $\cos\varphi\frac{\partial}{\partial\varphi}$ to
+$g$ yields
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+That is, it can be represented by a backward spectral transform
+with setting the truncation wavenumber of $n$ as $N_T+1$.
+This subroutine computes $(s_y)^m_n$ from $s^m_n$.
+
+\item Synopsis 
+
+\texttt{SYCS2Y(MM,NT,S,SY,C,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SY((MM/NP+1)*(2*(NT+2)-MM/NP*NP))
+REAL(8) :: C((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SY} & Output. Array to contain $(s_y)^m_n$.\\
+\texttt{C} & Input. Array initialized by  \texttt{SYINIC}.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+    (a) If you call
+  \texttt{SYCS2Y(MM,NT,S,SY,C,ICOM)} and \\
+  \texttt{SYTS2G(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,1\_8,ICOM)}
+    continuously, the latitudinal derivative is returned in \texttt{G}.  
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCY2S}
+
+\begin{enumerate}
+
+\item Purpose
+
+Transform of spectral data 
+corresponding to the forward spectral transform with latitudinal derivative
+
+\item Definition
+
+If you want to compute the following form of modified forward
+spectral transform
+(it appears in computing the divergence of a vector field, for example):
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda,
+\quad 
+\end{equation}
+(where, $m$ and $n$ are within the triangular truncation of $M$),
+$s^m_n$ can be obtained from the result of 
+the following normal forward spectral
+transform of $g$:
+\begin{equation}
+(s_y)^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+g(\lambda,\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda
+\quad (n\le M+1=N).
+\end{equation}
+This subroutine computes $s^m_n$ from $(s_y)^m_n$.
+Here, if $s^m_n$ is to be computed to $n=N_T$, $(s_y)^m_n$
+must be computed up to  $n=N_T+1$.
+
+\item Synopsis 
+
+\texttt{SYCY2S(MM,NT,SY,S,C,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SY((MM/NP+1)*(2*(NT+2)-MM/NP*NP))
+REAL(8) :: C((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{SY} & Input. Array that contains $(s_y)^m_n$.\\
+\texttt{S} & Output. Array to contain $s^m_n$.\\
+\texttt{C} & Input. Array initialized by  \texttt{SYINIC}.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+  (a)If you call
+   \texttt{SYTG2S(MM,NM,NN,IM,JM,JV,S,G,IT,T,P,R,JC,W,1\_8,ICOM)} and
+    \texttt{SYCY2S(MM,NT,SY,S,C,ICOM)} 
+ continuously, 
+    the following computation that corresponds to
+    the forward transform of the divergence of a vector field,
+\begin{equation}
+s^m_n=\frac1{4\pi}\int^{2\pi}_0\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi g(\lambda,\varphi)\right)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi
+d\lambda
+\end{equation}
+is done and $s^m_n$ is returned in \texttt{S}.
+Note that integration by parts is applied and \texttt{IPOW=1} here.
+  
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCS2X}
+
+\begin{enumerate}
+
+\item Purpose
+
+Conversion of spectral data 
+corresponding to longitudinal derivative.
+
+\item Definition
+
+If the backward spectral transform, where the truncation
+wavenumber of $N_T$ is assumed, is defined as,
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+operating $\frac{\partial}{\partial\lambda}$ to $g$
+yields
+\begin{equation}
+\frac{\partial}{\partial\lambda}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+(s_x)^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+Here, $(s_x)^m_n=ims^m_n$.
+This subroutine computes $(s_x)^m_n=ims^m_n$ from $s^m_n$.
+
+\item Synopsis 
+
+\texttt{SYCS2X(MM,NT,S,SX,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SX((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SX} & Output. Array to contain $(s_x)^m_n$.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) The order of storing $(s_x)^m_n$ is the same as that of $s^m_n$.    
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYINID}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialize array \texttt{D} used in \texttt{SYCLAP}.   
+
+\item Definition
+
+see \texttt{SYCLAP}.  
+
+\item Synopsis 
+
+\texttt{SYINID(MM,NT,D,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, ICOM
+REAL(8) :: D((MM/NP+1)*(2*(NT+1)-MM/NP*NP)*2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{D} & Output. Array used in \texttt{SYCLAP}.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+    
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCLAP}
+
+\begin{enumerate}
+
+\item Purpose
+
+Transform of spectral data 
+corresponding to Laplacian or its inverse.
+
+\item Definition
+  
+For the spherical harmonics expansion (here, the truncation
+wavenumber  $N_T$ is assumed):
+\begin{equation}
+g(\lambda,\varphi)=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}
+s^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+operating the horizontal Laplacian:
+\begin{equation}
+\nabla^2\equiv
+\frac{\partial^2}{\cos^2\varphi\partial\lambda^2}
++\frac{\partial}{\cos\varphi\partial\varphi}\left(\cos\varphi\frac{\partial}{\partial\varphi}\right)
+\end{equation}
+yields the following 
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}-n(n+1)a^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+by the nature of spherical harmonics.
+Hence, 
+introducing
+\begin{equation}
+(s_l)^m_n\equiv -n(n+1)s^m_n,
+\end{equation}
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{n=0}\sum^n_{m=-n}(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda}
+\end{equation}
+holds. 
+Inversely, when
+\begin{equation}
+\nabla^2 g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=|m|}s^m_nP^m_n(\sin\varphi)e^{im\lambda}.
+\end{equation}
+holds, introducing
+\begin{equation}
+(s_l)^m_n\equiv -\frac1{n(n+1)}s^m_n
+\end{equation}
+yields
+\begin{equation}
+g(\lambda,\varphi)
+=\sum^M_{m=-M}\sum^{N_T}_{n=\max(1,|m|)}
+(s_l)^m_nP^m_n(\sin\varphi)e^{im\lambda},
+\end{equation}
+by ignoring an arbitrary constant.
+This subroutine computes $(s_l)^m_n = -n(n+1)s^m_n$
+from $s^m_n$, or inversely computes $(s_l)^m_n = -s^m_n/(n(n+1))$
+from $s^m_n$.
+
+\item Synopsis 
+    
+\texttt{SYCLAP(MM,NT,S,SL,D,IFLAG,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT, IFLAG, ICOM
+REAL(8) :: S((MM/NP+1)*(2*(NT+1)-MM/NP*NP)), SL((MM/NP+1)*(2*(NT+1)-MM/NP*NP))
+REAL(8) :: D((MM/NP+1)*(2*(NT+1)-MM/NP*NP)*2)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SL} & Output. Array to contain $(s_l)^m_n$.\\
+\texttt{D} & Input. Array initialized by  \texttt{SYINID}.\\
+\texttt{IFLAG} & Input. If \texttt{IFLAG=1}, it operates Laplacian, \\
+&  and if \texttt{IFLAG=2}, it operates the 
+inverse of Laplacian.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+(a) If \texttt{IFLAG=2}, $s^0_0$ is returned in $(s_l)^0_0$ (where $n=0$).    
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYCRPK}
+
+\begin{enumerate}
+
+\item Purpose
+
+Repacking spectral data from 
+a truncation ($N_1$) to another truncation ($N_2$)
+
+\item Definition
+
+It is often the case that one wants the addition of the results
+of \texttt{SYCS2Y} and \texttt{SYCS2X}. However, they are different
+types of spectral data because their truncation wavenumbers $N$ for
+$n$ are different and so they can not be added with each other
+directly. This subroutine 
+repacks spectral data from ($(s_1)^m_n$) of
+the truncation ($N_1$) to ($(s_2)^m_n$)
+of another truncation ($N_2$).
+When repacking to a larger area ($N_1<N_2$),
+zeros are filled in ($(s_2)^m_n$) where $n>N_1$.
+When repacking to a smaller area ($N_1> N_2$),
+the data in ($(s_1)^m_n$) where $n>N_2$ are discarded.
+When $N_1=N_2$, a simple copy is done.
+
+\item Synopsis 
+    
+\texttt{SYCRPK(MM,NT1,NT2,S1,S2,ICOM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: MM, NT1, NT2, ICOM
+REAL(8) :: S1((MM/NP+1)*(2*(NT1+1)-MM/NP*NP)), S2((MM/NP+1)*(2*(NT2+1)-MM/NP*NP))
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{MM} & Input. $M$.\\  
+\texttt{NT1} & Input. Truncation wavenumber for input($N_1$).\\
+\texttt{NT2} & Input. Truncation wavenumber for output($N_2$).\\
+\texttt{S1} & Input. Array that contains $(s_1)^m_n$.\\
+\texttt{S2} & Output. Array to contain $(s_2)^m_n$.\\
+\texttt{ICOM} & Input. MPI communicator used for computations.
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}  
+%---------------------------------------------------------------------
+
+\subsection{SYKINI}
+
+\begin{enumerate}
+
+\item Purpose
+
+Initialization for multi-layer transform
+
+\item Definition
+
+Let us assume that the number of layers of a multi-layer model
+to be \texttt{KM} and
+the spectral data and the grid data for each layer of index
+\texttt{K} are stored
+in arrays {\texttt S(:, K)} and {\texttt G(:, K)}, respectively.
+When transforming between the spectral data and the grid data,
+more parallelization efficiency is obtained by dividing
+the whole MPI communicator into small communicators and
+computing the transform for each layer within a small
+communicator.
+
+This subroutine returns the small communicator \texttt{ICOMS}
+to which the current process belongs by giving the whole
+communicator \texttt{ICOML}, the number of the layers,
+and the number of divisions.
+Furthermore, the minimum and the maximum of the layer index
+\texttt{K}, are also returned as
+\texttt{K1} and \texttt{K2}, respectively.
+  
+\item Synopsis 
+    
+\texttt{SYKINI(KM,NDV,K1,K2,ICOML,ICOMS)}
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: KM, NDV, K1, K2, ICOML, ICOMS
+\end{verbatim}  
+    
+\begin{tabular}{ll}
+\texttt{KM} & Input. The number of layers.\\
+\texttt{NDV} & Input. The number of divisions in the layer direction.\\
+\texttt{K1} & Output. The minimum of the layer index computed in the
+divided small process.\\
+\texttt{K2} & Output. The maximum of the layer index computed in the
+divided small process.\\
+\texttt{ICOML} & Input. MPI communicator used for the whole
+multi-layer computations.\\
+\texttt{ICOMS} & Output. The divided small MPI communicator.
+\end{tabular}
+
+\item Remark
+
+(a) Assuming that the number of the processes (size) of the
+  communicator \texttt{ICOML} to be \texttt{NPL} and
+  the number of layers to be \texttt{KM}, the number of divisions
+  \texttt{NDV} must satisfy
+  \texttt{NDV}$\le \min($\texttt{NPL}, \texttt{KM}$)$.  
+  
+
+(b) \texttt{ICOML} specifies the MPI communicator before
+  dividing. Since the type
+of MPI communicator is \texttt{INTEGER(4)} in usual
+Fortran MPI implementations, you should cast it to
+the type of \texttt{INTEGER(8)} before setting it as \texttt{ICOML}.
+
+(c) In a multi-layer model, to compute transform between
+the spectral data and the grid data, the communicator
+returned here \texttt{ICOMS} should be used as \texttt{ICOM}
+in \texttt{ICOMS} and \texttt{SYTS2G}.
+Then, the loop for the layer direction should be written as follows.
+
+\begin{verbatim}  
+  CALL SYKINI(KM,NDV,K1,K2,ICOML,ICOMS)
+  CALL SYINI1(MM,NM,IM,IT,T,R,ICOMS)
+  CALL SYINI2(MM,NM,JM,1_8,P,R,JC,ICOMS)
+  DO K=1,K2-K1+1
+    CALL SYTS2G(MM,NM,NN,IM,JM,JV,S(1,K),G(1,K),IT,T,P,R,JC,W,IPOW,ICOMS)
+  END DO
+\end{verbatim}
+Here, the spectral data \texttt{S} and the grid data \texttt{G}
+should be declared as follows.
+\begin{verbatim}        
+REAL(8) :: S((MM/NP+1)*(2*(NN+1)-MM/NP*NP), (KM-1)/NDV+1)
+REAL(8) :: G(IM*((JM/JV-1)/NP+1)*JV, (KM-1)/NDV+1)
+\end{verbatim}
+In this case, the parameter \texttt{NP} should be the size
+(or the number of processes) of the divided small communicator
+\texttt{ICOMS}, which can be obtained by calling
+\texttt{MPI\_COMM\_SIZE} for \texttt{ICOMS}.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYKGXX}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Gather scattered data for a multi-layer model.
+
+\item Definition
+
+  Gather data scattered in each divided communicator in the layer direction
+  to process of rank 0.    
+
+\item Synopsis 
+
+\texttt{SYKGXX(NDIM,KM,NDV,X,XALL,ICOML)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: NDIM, KM, NDV, ICOML
+REAL(8) ::  X(NDIM,(KM-1)/NDV+1), XALL(NDIM,KM)
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{NDIM} & Input. The size of the first dimension of
+\texttt{X}と\texttt{XALL}.\\
+\texttt{KM} & Input. The number of layers.\\
+\texttt{NDV} & Input. The number of divisions in the layer direction.\\  
+\texttt{X} & Input. The array which contains the scattered data.\\
+\texttt{XALL} & Output.
+The array to contain the gathered data.\\
+\texttt{ICOML} & Input. MPI communicator used for the whole
+multi-layer computations.
+\end{tabular}
+
+\item Remark
+
+  (a) For the meanings of
+  \texttt{KM}, \texttt{NDV}, and \texttt{ICOML}, see
+  \texttt{SYKINI}.
+
+(b) This subroutine must be called by all processes, but
+the memory regions for \texttt{XALL}
+should be allocated in process of rank 0 of
+the whole communicator \texttt{ICOML} only.
+
+(c) \texttt{NDIM} should be set as
+\texttt{(MM/NP+1)*(2*(NN+1)-MM/NP*NP)} for the
+spectral data and
+\texttt{IM*((JM/JV-1)/NP+1)*JV} for the grid data.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYKSXX}
+
+\begin{enumerate}
+
+\item Purpose
+
+Scatter gathered data for a multi-layer model.  
+
+\item Definition
+
+Scatter grid data gathered in process of rank 0
+of the whole communicator to divided small communicators.  
+
+\item Synopsis 
+
+\texttt{SYKSXX(NDIM,KM,NDV,XALL,X,ICOML)}
+  
+\item Parameters
+
+\begin{verbatim}        
+INTEGER(8) :: NDIM, KM, NDV, ICOML
+REAL(8) ::  X(NDIM,(KM-1)/NDV+1), XALL(NDIM,KM)
+\end{verbatim}
+
+\begin{tabular}{lll}
+\texttt{NDIM} & Input. The size of the first dimension of
+\texttt{X}と\texttt{XALL}.\\
+\texttt{KM} & Input. The number of layers.\\
+\texttt{NDV} & Input. The number of divisions in the layer direction.\\  
+\texttt{XALL} & Input.
+The array that contains the gathered data.\\
+\texttt{X} & Output. The array to contain the scattered data.\\
+\texttt{ICOML} & Input. MPI communicator used for the whole
+multi-layer computations.
+\end{tabular}
+
+
+\item Remark
+
+(a) For the meanings of
+  \texttt{KM}, \texttt{NDV}, and \texttt{ICOML}, see
+  \texttt{SYKINI}.
+
+(b) This subroutine must be called by all processes, but
+the memory regions for \texttt{XALL}
+should be allocated in process of rank 0 of
+the whole communicator \texttt{ICOML} only.
+
+(c) \texttt{NDIM} should be set as
+\texttt{(MM/NP+1)*(2*(NN+1)-MM/NP*NP)} for the
+spectral data and
+\texttt{IM*((JM/JV-1)/NP+1)*JV} for the grid data.
+
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{SYQRJV}
+
+\begin{enumerate}
+
+\item Purpose  
+
+Inquire the recommended value of \texttt{JV}  
+
+\item Definition
+
+Return the recommended value of \texttt{JV}, which is
+needed to determine the size of grid data.  
+
+\item Synopsis 
+    
+\texttt{SYQRJV(JM,JV)}
+
+\item Parameters  
+  
+\begin{verbatim}
+INTEGER(8) :: JM, JV
+\end{verbatim}    
+
+\begin{tabular}{lll}
+\texttt{JM}  & Input. The number of Gaussian latitudes.\\  
+\texttt{JV} & Output. The recommended value of \texttt{JV}.
+\end{tabular}
+
+\item Remark
+
+  (a) The returned value of \texttt{JV} is set depending on
+\texttt{JM} and  the setting of SSE macro value at installation of ISPACK.
+
+\end{enumerate}
+
+
+\end{document}
+

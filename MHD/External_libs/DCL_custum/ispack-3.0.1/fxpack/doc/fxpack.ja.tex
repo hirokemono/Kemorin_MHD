@@ -1,0 +1,240 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+%
+% 最終更新 2018/02/22
+%
+\documentclass[a4j]{jsarticle}
+
+\title{FXPACK使用の手引}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{概要}
+
+これは, 高速フーリエ変換を行うサブルーチンパッケージである.
+なお, 変換の基底は2, 3, 5であるので, これらの素因数の積で表されるデー
+タ長の変換に限られる.
+
+以下のサブルーチン群の中で初期化を行うサブルーチン
+(サブルーチン名が\texttt{I}で終わる)は, そのサブルーチン群に属する
+変換ルーチンを用いる際, かならず最初に1回呼ばなければならない. 
+
+また, 計算の効率を上げるために, 同じ項数のデータ列を複数個同
+時にフーリエ変換する仕様になっている. つまり, 2次元配列
+\texttt{X(I,J), I=1,2,$\ldots$,M, J=1,2,$\ldots$,N}が与えられた場合, 
+各\texttt{I}について, \texttt{X(I,1),X(I,2),$\ldots$,X(I,N)}に対するフーリエ
+変換を行う. すなわち, この場合\texttt{N}項のフーリエ変換を\texttt{M}
+回繰り返すことになる. データ列が1種類だけの場合は\texttt{M=1}とすれ
+ばよい.
+
+Intel x86 CPU上で, SSE=avx または SSE=fma の設定で ISPACKを
+make した場合で, かつ\texttt{M=4}とする場合, 
+変換するデータを含んだ配列の先頭がメモリ上で 
+32バイト境界に割り当てられていなければならない.
+また, SSE=avx512 として, かつ\texttt{M=8}とする場合, 
+変換するデータを含んだ配列の先頭がメモリ上で 
+64バイト境界に割り当てられていなければならない.
+その際は,
+\texttt{MXALLC}等を用いてメモリの割り当てをする必要があるので
+注意が必要である.
+
+\section{サブルーチンのリスト}
+
+  離散複素フーリエ変換
+
+  \vspace{1ex}
+  \begin{tabular}{ll}
+    \texttt{FXZINI(N,IT,T)} & 初期化を行う.\\
+    \texttt{FXZTFA(M,N,X,IT,T)} & 正変換を行う.\\
+    \texttt{FXZTBA(M,N,X,IT,T)} & 逆変換を行う.
+  \end{tabular}
+
+ \vspace{1ex}
+  離散実フーリエ変換
+
+  \vspace{1ex}
+  
+  \begin{tabular}{ll}
+    \texttt{FXRINI(N,IT,T)} & 初期化を行う.\\
+    \texttt{FXRTFA(M,N,X,IT,T)} & 正変換を行う.\\
+    \texttt{FXRTBA(M,N,X,IT,T)} & 逆変換を行う.
+  \end{tabular}
+
+\newpage  
+  
+\section{サブルーチンの説明}
+
+\subsection{FXZINI/FXZTFA/FXZTBA}
+\begin{enumerate}
+  \item 機能 
+
+    1次元(項数$N$)の複素データ列$\{x_j\}$または$\{\alpha_k\}$が$M$
+    個与えられたとき, 
+    離散型複素フーリエ正変換, またはその逆変換をFFTにより行う. ただし,
+    $N$は$N=2^a3^b5^c(a,b,c: 0または自然数)$であること. 
+     \texttt{FXZINI}は初期化を行う;
+     \texttt{FXZTFA}はフーリエ正変換を行う;
+     \texttt{FXZTBA}はフーリエ逆変換を行う.
+
+  \item 定義
+    \begin{itemize}
+     \item フーリエ正変換
+
+       $\{x_j\}$を入力し, 次の変換を行ない, $\{\alpha_k\}$を求める.
+       \[
+       \alpha_k=\frac1N\sum^{N-1}_{j=0}x_j\exp\left(-2\pi i\frac{jk}N\right),
+       \quad (k=0,1,\ldots,N-1)
+       \]
+
+     \item フーリエ逆変換
+
+       $\{\alpha_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める.
+       \[
+      x_j=\sum^{N-1}_{k=0}\alpha_k\exp\left(2\pi i\frac{jk}N\right),
+       \quad (j=0,1,\ldots,N-1)\]
+
+     \end{itemize}    
+  \item 呼び出し方法 
+
+    \texttt{FXZINI(N,IT,T)}\\
+    \texttt{FXZTFA(M,N,X,IT,T)}\\
+    \texttt{FXZTBA(M,N,X,IT,T)}
+
+\item パラメーターの説明
+
+  \vspace{-2ex}
+
+     \begin{verbatim}
+INTEGER(8) :: M,N,IT(N)
+REAL(8) :: T(N*2),X(M*2*N)
+\end{verbatim}
+
+  \vspace{-1ex}
+     
+    \begin{tabular}{ll}
+      \texttt{M}   & 入力. 同時に変換するデータ列の個数$M$.\\
+      \texttt{N}   & 入力. 変換の項数$N$.\\
+      \texttt{X}   & 入出力. 入力時: $\{x_j\}$または$\{\alpha_k\}$.
+                    出力時: $\{\alpha_k\}$または$\{x_j\}$.\\
+      \texttt{IT}   & 出力(\texttt{FXZINI})または入力
+      (\texttt{FXZTFA}, \texttt{FXZTBA}).\\
+      \texttt{T}   & 出力(\texttt{FXZINI})または
+入力(\texttt{FXZTFA},\texttt{FXZTBA}).
+    \end{tabular}
+
+  \item データの格納方法
+
+  \texttt{X(M,2,0:N-1)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \texttt X(I,1,0) & \texttt X(I,2,0) & \texttt X(I,1,1) & \texttt X(I,2,1) & 
+     $\ldots$ & \texttt X(I,1,N-1) & \texttt X(I,2,N-1) \\\hline\hline
+      \mbox{Re}($x_0$) & \mbox{Im}($x_0$) & \mbox{Re}($x_1$) & \mbox{Im}($x_1$) &
+     $\ldots$ & \mbox{Re}($x_{N-1}$) & \mbox{Im}($x_{N-1}$) \\\hline
+      \mbox{Re}($\alpha_0$) & \mbox{Im}($\alpha_0$) & \mbox{Re}($\alpha_1$) & \mbox{Im}($\alpha_1$) &
+     $\ldots$ & \mbox{Re}($\alpha_{N-1}$) & \mbox{Im}($\alpha_{N-1}$) \\\hline
+    \end{tabular}
+
+\end{enumerate}
+
+\newpage
+
+\subsection{FXRINI/FXRTFA/FXRTBA}
+\begin{enumerate}
+\item 機能
+  
+    1次元(項数$N$)の実データ列$\{x_j\}$が$M$個与えられたとき,
+    離散型実フーリエ正変換, またはその逆変換をFFTにより行う. 
+    ただし, 
+    $N$は偶数で, かつ$N/2=2^a3^b5^c(a,b,c: 0または自然数)$であること.    
+     \texttt{FXRINI}は初期化を行う;
+     \texttt{FXRTFA}はフーリエ正変換を行う;
+     \texttt{FXRTBA}はフーリエ逆変換を行う.
+
+  \item 定義
+    \begin{itemize}
+    \item フーリエ正変換
+      
+       $\{x_j\}$を入力し, 次の変換を行ない, $\{a_k\},\{b_k\}$を求める. 
+       \[a_k= \frac1N\sum^{N-1}_{j=0}x_j\cos\left(\frac{2\pi jk}N\right),
+       \quad (k=0,1,\ldots,N/2)\]
+       \[b_k=-\frac1N\sum^{N-1}_{j=0}x_j\sin\left(\frac{2\pi jk}N\right),
+       \quad (k=1,2,\ldots,N/2-1)\]
+
+     \item フーリエ逆変換
+
+       $\{a_k\},\{b_k\}$を入力し, 次の変換を行ない, $\{x_j\}$を求める. 
+       \[
+       x_j=a_0+a_{N/2}(-1)^j+2\sum^{N/2-1}_{k=1}
+       \left(a_k\cos\left(\frac{2\pi jk}N\right)
+                          -b_k\sin\left(\frac{2\pi jk}N\right)\right),
+       \quad (j=0,1,\ldots,N-1)\]
+     \end{itemize}    
+  \item 呼び出し方法 
+
+    \texttt{FXRINI(N,IT,T)}\\
+    \texttt{FXRTFA(M,N,X,IT,T)}\\
+    \texttt{FXRTBA(M,N,X,IT,T)}
+
+\item パラメーターの説明
+
+  \vspace{-2ex}
+
+     \begin{verbatim}
+INTEGER(8) :: M,N,IT(N/2)
+REAL(8) :: T(N*3/2),X(M*N)
+\end{verbatim}
+
+  \vspace{-1ex}     
+     
+    \begin{tabular}{ll}
+      \texttt{M}  & 入力. 同時に変換するデータ列の個数$M$.\\
+      \texttt{N}  & 入力. 変換の項数$N$.\\
+      \texttt{X}   & 入出力. 入力時: $\{x_j\}$または
+      $\{a_k\},\{b_k\}$. 出力時: $\{a_k\},\{b_k\}$または$\{x_j\}$.\\
+      \texttt{IT}   &  出力(\texttt{FXRINI})または
+                        入力(\texttt{FXRTFA},\texttt{FXRTBA}).\\
+      \texttt{T}   & 出力(\texttt{FXRINI})または
+入力(\texttt{FXRTFA},\texttt{FXRTBA}).\\
+    \end{tabular}
+
+  \item データの格納方法
+
+  \texttt{ X(M,0:N-1)}と宣言されている場合, 各Iについて以下のよ
+   うにデータが格納される.
+
+    \begin{tabular}{|c|c|c|c|c|c|c|}\hline
+     \texttt X(I,0) & \texttt X(I,1) & \texttt X(I,2) & \texttt X(I,3) & 
+     $\cdots$ & \texttt X(I,N-2) & \texttt X(I,N-1) \\\hline\hline
+      $x_0$ & $x_1$ & $x_2$ & $x_3$ &
+     $\cdots$ & $x_{N-2}$ & $x_{N-1}$ \\\hline
+      $a_0$ & $a_{N/2}$ & $a_1$ & $b_1$ &
+     $\cdots$ & $a_{N/2-1}$ & $b_{N/2-1}$ \\\hline
+    \end{tabular}
+
+\end{enumerate}
+
+
+\end{document}

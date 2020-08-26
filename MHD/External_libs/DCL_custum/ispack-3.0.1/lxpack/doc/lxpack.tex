@@ -1,0 +1,1099 @@
+%***********************************************************************
+% ISPACK FORTRAN SUBROUTINE LIBRARY FOR SCIENTIFIC COMPUTING
+% Copyright (C) 1998--2019 Keiichi Ishioka <ishioka@gfd-dennou.org>
+%
+% This library is free software; you can redistribute it and/or
+% modify it under the terms of the GNU Lesser General Public
+% License as published by the Free Software Foundation; either
+% version 2.1 of the License, or (at your option) any later version.
+%
+% This library is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% Lesser General Public License for more details.
+% 
+% You should have received a copy of the GNU Lesser General Public
+% License along with this library; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301 USA.
+%***********************************************************************
+\documentclass[a4paper]{scrartcl}
+
+\title{Manual of LXPACK}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Outline}
+
+This is a package of subroutines to compute the associated
+Legendre function transform.
+This package is an upper-level package based on MXPACK.
+
+Let $m$ and $n$ be the zonal and the total wavenumbers of
+the associated Legendre function, respectively, and 
+let the truncation wavenumbers for them be $M$ and $N$,
+respectively. Here, $N\ge M$ is assumed (when $N=M$, it corresponds
+to the triangular truncation).
+Using this notation, the associated Legendre function transform
+under these truncation wavenumbers is written as follows.
+\begin{equation}
+G^m(\varphi)\equiv\sum^N_{n=|m|}s^m_nP^m_n(\sin\varphi).
+\end{equation}
+Here, $\varphi$ is the latitude and
+$P^m_n(\mu)$ is the associated Legendre function normalized to 2,
+which is defined as:
+\begin{equation}
+P^m_n(\mu)\equiv\sqrt{(2n+1)\frac{(n-|m|)!}{(n+|m|)!}}
+\frac1{2^nn!}(1-\mu^2)^{|m|/2}
+\frac{d^{n+|m|}}{d\mu^{n+|m|}}(\mu^2-1)^n,
+\end{equation}
+\begin{equation}
+\int^1_{-1}\{P^m_n(\mu)\}^2d\mu=2.
+\end{equation}
+
+The forward associated Legendre function transform
+is written as follows.
+\begin{equation}
+s^m_n=\frac12\int^{\pi/2}_{-\pi/2}G^m(\varphi)P^m_n(\sin\varphi)\cos\varphi
+d\varphi.
+\end{equation}
+
+In numerical calculation, the forward associated Legendre function 
+transform is approximated as follows by using the Gauss-Legendre
+integration formula,
+\begin{equation}
+s^m_n=\frac12\sum^J_{j=1}w_jG^m(\varphi_j)P^m_n(\sin\varphi_j).
+\end{equation}
+Here, $\varphi_j$s are called Gaussian latitude, which is defined as
+the $J$ zero points (sorted ascending order) of the Legendre
+polynomial $P_J(\sin\varphi)$ (this corresponds to 
+the associated Legendre function of $m=0$ without the normalization
+factor (the factor in $\sqrt{\quad}$), and $w_j$ is 
+the Gaussian weight corresponding to each Gaussian latitude, 
+which is defined as,
+\begin{equation}
+w_j\equiv\frac{2(1-\mu_j^2)}{\{JP_{J-1}(\mu_j)\}^2}.
+\end{equation}
+Here, $\mu_j\equiv\sin\varphi_j$.
+In a certain condition, this integration formula gives the 
+perfect approximation or the same value as the original integration.
+
+This subroutine package contains
+subroutines that do backward transform of spectral data ($s^m_n$) 
+to wave data for each latitude ($G^m(\varphi_j)$),
+subroutines that do forward transform of
+wave data for each latitude ($G^m(\varphi_j)$)
+to spectral data ($s^m_n$), and ancillary subroutines.
+
+Here, $\varphi_j$s are $J$ Gaussian latutudes defined above.
+In the following explanations for subroutines, the notations below
+are used.
+\begin{center}
+\begin{tabular}{ll}
+\texttt{NN}:& $N$(the truncation wavenumber for $n$)\\
+\texttt{NM}:& maximum value of $N$ to be used\\
+\texttt{JM}:& $J$(the number of Gaussioan latitudes)\\
+\texttt{N}:& $n$(the total wavenumber)\\
+\texttt{M}:& $m$(the zonal wavenumber)\\
+\texttt{J}:& $j$(the index for each Gaussian latitude)
+\end{tabular}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{List of subroutines}
+
+\vspace{1em}
+\begin{tabular}{ll}
+\texttt{LXINIG} & Initialzation of array \texttt{PZ}.\\
+\texttt{LXINIR} & Initialzation of array \texttt{RM}.\\
+\texttt{LXINIW} & Initialzation of arrays \texttt{PM, JC}.\\
+\texttt{LXTSWG} & Transform from spectral data to wave data (wave componet).\\
+\texttt{LXTGWS} & Transform from wave data to spectral data (wave componet).\\
+\texttt{LXTSZG} & Transform from spectral data to wave data (zonal componet).\\
+\texttt{LXTGZS} & Transform from wave data to spectral data (zonal componet).\\
+\texttt{LXTSWV} & Paired transform from two spectral data to two wave data (wave componet).\\
+\texttt{LXTVWS} & Paired transform from two wave data to two spectral data (wave componet).\\
+\texttt{LXTSZV} & Paired transform from two spectral data to two wave data (zonal componet).\\
+\texttt{LXTVZS} & Paired transform from two wave data to two spectral data (zonal componet).\\
+\texttt{LXINIC} & Initialzation of array \texttt{CM}.\\
+\texttt{LXCSWY} & Conversion of spectral data for backward transform corresponding to \\
+& latitudinal derivative (wave component).\\
+\texttt{LXCYWS} & Conversion of spectral data for forward transform corresponding to \\
+& latitudinal derivative (wave component).\\
+\texttt{LXCSZY} & Conversion of spectral data for backward transform corresponding to \\
+& latitudinal derivative (zonal component).\\
+\texttt{LXCYZS} & Conversion of spectral data for forward transform corresponding to \\
+& latitudinal derivative (zonal component).\\
+\texttt{LXTSZP} & Transform from zonal spectral data to the grid
+values at the poles.
+\end{tabular}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Usage of each subroutine}
+
+\subsection{LXINIG}
+
+\begin{enumerate}
+
+\item Purpose
+
+An initialization routine for \texttt{LXPACK}.  
+It initializes the array, \texttt{PZ},
+which is used other subroutines in \texttt{LXPACK}
+
+\item Definition
+
+\item Synopsis 
+    
+\texttt{LXINIG(JM,PZ,IG)}
+  
+\item Parameters 
+
+\begin{verbatim}
+INTEGER(8) :: JM, IG
+REAL(8) :: PZ(JM/2,5)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{PZ}  & Output. An array which is used in other routines in LXPACK.\\
+\texttt{IG} & Input. Specify the kind of grids(See Remark).
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{JM} must be an even number ($\ge 2$).
+Maximum efficiency is achieved by setting \texttt{JM} to be 
+a multiple of 8 when you do make ISPACK with setting either
+SSE=avx or SSE=fma.
+When setting SSE=avx512, maximum efficiency is achieved
+by setting 
+\texttt{JM} to be a multiple of 16.
+
+(b) If \texttt{IG=1}, the latitudinal nodes $(\varphi_j)$
+and the corresponding weights $(w_j)$ are set to be the
+Gaussian latitudes and the Gaussian weights.
+If \texttt{IG=2}, the latitudinal nodes are set to be the
+\texttt{JM} equispaced nodes that divide the total latitudinal
+interval into \texttt{JM+1} subintervals equally. Here, 
+the both poles are not included in the nodes.
+The corresponding weights are set to the weights for
+Clenshaw-Curtis quadrature.
+If \texttt{IG=3}, the latitudinal nodes are set to be the
+\texttt{JM-1} equispaced nodes that divide the total latitudinal
+interval into \texttt{JM} subintervals equally. Here, 
+the both poles are not included in the nodes and
+the node at the equator is used doubly in the transform routines.
+The corresponding weights are set to the weights for
+Clenshaw-Curtis quadrature. Here, the weight for the node
+at the equator is set to a half of the Clenshaw-Curtis quadrature
+weight since
+the node at the equator is used doubly in the transform routines.
+
+Assuming that the truncation wavenumber of spectral data
+used in transform routines is \texttt{NM},
+for the spectral data to be completely restored (within a rounding
+error) after backward and forward transforms,
+\texttt{JM}$\ge$ \texttt{NM+1} must be satisfied when
+\texttt{IG=1}, and
+\texttt{JM}$\ge$ \texttt{2*NM+1} must be satisfied 
+when \texttt{IG=2},
+and
+\texttt{JM}$\ge$ \texttt{2*(NM+1)} must be satisfied 
+when \texttt{IG=3}.
+
+(c) In \texttt{PZ}, 
+   \texttt{PZ(J,1)}:  $\sin(\varphi_{J/2+j})$,
+   \texttt{PZ(J,2)}:  $\frac12 w_{J/2+j}$, 
+   \texttt{PZ(J,3)}:  $\cos(\varphi_{J/2+j})$,
+   \texttt{PZ(J,4)}:  $1/\cos(\varphi_{J/2+j})$,
+   \texttt{PZ(J,5)}:  $\sin^2(\varphi_{J/2+j})$,   
+are contained.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXINIR}
+
+\begin{enumerate}
+
+\item Purpose
+
+An initialization routine for \texttt{LXPACK}.  
+It initializes the array, \texttt{RM},
+which is used other subroutines in \texttt{LXPACK}
+
+\item Definition
+
+\item Synopsis 
+    
+\texttt{LXINIR(NM,M,RM)}
+  
+\item Parameters 
+
+\begin{verbatim}
+INTEGER(8) :: NM, M
+REAL(8) :: RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NM} & Input. Maximum value of $N$ (the truncation 
+  number for $n$).\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{RM}  & Output. An array which is used in other routines in LXPACK.\\
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXINIW}
+
+\begin{enumerate}
+
+\item Purpose  
+
+An initialization routine for \texttt{LXPACK}.  
+It initializes the array, \texttt{PM, JC},
+which is used other subroutines in \texttt{LXPACK}
+  
+\item Definition
+
+\item Synopsis 
+    
+\texttt{LXINIW(NM,JM,M,PZ,PM,RM,JC)}
+
+\item Parameters 
+
+\begin{verbatim}
+INTEGER(8) :: NM, JM, M, JC((NM-M)/8+1)
+REAL(8) :: PZ(JM/2,5), PM(JM/2,2)
+REAL(8) :: RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}
+    
+\begin{tabular}{lll}
+\texttt{NM} & Input. Maximum value of $N$ (the truncation 
+number for $n$).\\
+\texttt{JM} & Input. The number of Gaussian latitudes.\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{PZ}  & Input. The array initialized by \texttt{LXINIG}.\\
+\texttt{PM}  & Output. An array which is used in other routines in LXPACK.\\
+\texttt{RM}  & Input. The array initialized by \texttt{LXINIR} with
+specifying \texttt{M}.\\
+\texttt{JC}  & Output. An array which is used in other routines in LXPACK.
+\end{tabular}
+
+\item Remark
+
+  (a)
+\texttt{JM} must be an even number ($\ge 2$).
+Maximum efficiency is achieved by setting \texttt{JM} to be 
+a multiple of 8 when you do make ISPACK with setting either
+SSE=avx or SSE=fma.
+When setting SSE=avx512, maximum efficiency is achieved
+by setting 
+\texttt{JM} to be a multiple of 16.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSWG}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from spectral data to wave data (wave componet).
+  
+\item Definition
+
+For wave component, transform spectral data ($s^m_n$) 
+to wave data ($G^m(\varphi_j)$) at each latitude
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTSWG(NM,NN,JM,M,S,G,PZ,PM,RM,JC,IPOW)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: NM, NN, JM, M, JC((NM-M)/8+1), IPOW
+REAL(8) ::  S(2,M:NN), G(2,JM), PZ(JM/2,5), PM(JM/2,2), RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}
+  
+\begin{tabular}{ll}
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{NN} & Input. $N$.\\
+\texttt{JM} & Input. $J$.\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{G} & Output. Array to contain $G^m(\varphi_j)$.\\
+\texttt{PZ}  & Input. Array initialized by \texttt{LXINIG}.\\
+\texttt{PM}  & Input. Array initialized by \texttt{LXINIW}
+with specifying \texttt{M}.\\
+\texttt{RM} & Input. Array initialized by \texttt{LXINIR}
+with specifying \texttt{M}.\\
+\texttt{JC} & Input. Array initialized by \texttt{LXINIW}
+with specifying \texttt{M}.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.\\
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{S(1,N)} and \texttt{S(2,N)} should 
+contain $\mbox{Re}(s^m_n)$ and $\mbox{Im}(s^m_n)$, respectively.
+$\mbox{Re}(G^m(\varphi_j))$ and 
+$\mbox{Im}(G^m(\varphi_j))$ 
+are to be contained in \texttt{G(1,J)} and \texttt{G(2,J)}, respectively.
+  
+(b) The array \texttt{G} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{G} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^m(\varphi_j)$ is returned 
+in the output array \texttt{G} instead of $G^m(\varphi_j)$.
+
+\end{enumerate}
+
+
+%---------------------------------------------------------------------
+
+\subsection{LXTGWS}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from wave data to spectral data (wave componet).
+
+\item Definition
+
+For wave component, transform wave data ($G^m(\varphi_j)$) 
+at each latitude
+to spectral data ($s^m_n$) 
+by the forward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTGWS(NM,NN,JM,M,S,G,PZ,PM,RM,JC,IPOW)}
+
+\item Parameters
+
+(Since most of parameters are the same as in LXTSWG,
+the following explanation is only for parameters
+different from those in LXTSWG,)
+
+\begin{tabular}{ll}
+\texttt{S} & Output. Array to contain $s^m_n$.\\
+\texttt{G} & Input. Array that 
+contains $G^m(\varphi_j)$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously with the transform. \\
+&  An integer between 0 and 2.
+\end{tabular}
+
+\item Remark
+
+  (a)
+\texttt{G(1,J)} and \texttt{G(2,J)}should 
+contain $\mbox{Re}(G^m(\varphi_j))$ and 
+$\mbox{Im}(G^m(\varphi_j))$, respectively.
+$\mbox{Re}(s^m_n)$ and $\mbox{Im}(s^m_n)$
+are to be contained in \texttt{S(1,N)} and \texttt{S(2,N)}, respectively.
+
+(b) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^m(\varphi_j)$ is used as the input
+instead of $G^m(\varphi_j)$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSZG}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from spectral data to wave data (zonal componet).
+
+\item Definition
+
+For the zonal component, transform spectral data ($s^0_n$) 
+to wave data ($G^0(\varphi_j)$) at each latitude
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTSZG(NM,NN,JM,S,G,PZ,RM,IPOW)}
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: NM, NN, JM, IPOW
+REAL(8) ::  S(0:NN), G(JM), PZ(JM/2,5), RM(NM/2*3+NM+1)
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{NN} & Input. $N$.\\
+\texttt{JM} & Input. $J$.\\
+\texttt{S} & Input. Array that contains $s^0_n$.\\
+\texttt{G} & Output. Array to contain $G^0(\varphi_j)$.\\
+\texttt{PZ}  & Input. Array initialized by \texttt{LXINIG}.\\
+\texttt{RM} & Input. Array initialized by \texttt{LXINIR}
+with specifying \texttt{M=0}.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{S(N)} should 
+contain $s^0_n$. $G^0(\varphi_j)$
+is to be contained in \texttt{G(J)}.
+
+(b) The array \texttt{G} must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The array \texttt{G} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^0(\varphi_j)$ is returned 
+in the output array \texttt{G} instead of $G^0(\varphi_j)$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTGZS}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Transform from wave data to spectral data (zonal componet).
+
+\item Definition
+
+For the zonal component, transform wave data ($G^0(\varphi_j)$) 
+at each latitude
+to spectral data ($s^0_n$) 
+by the forward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTGZS(NM,NN,JM,S,G,PZ,RM,IPOW)}
+  
+\item Parameters
+
+(Since most of parameters are the same as in LXTSZG,
+the following explanation is only for parameters
+different from those in LVTSZG,)
+
+\begin{tabular}{ll}
+\texttt{S} & Output Array to contain $s^0_n$.\\
+\texttt{G} & Input. Array that contains $G^0(\varphi_j)$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{G(J)} should 
+contain $G^0(\varphi_j)$.
+$s^0_n$ is to 
+be contained in \texttt{S(N)}.
+
+(b) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^0(\varphi_j)$ is used as the input
+instead of $G^0(\varphi_j)$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSWV}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two spectral data to two wave data (wave componet).
+
+\item Definition
+
+For wave component, transform two spectral data ($s^m_n$)$_{(1,2)}$
+to two corresponding wave data ($G^m(\varphi_j)$)$_{(1,2)}$ at each latitude
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTSWV(NM,NN,JM,M,S1,S2,G1,G2,PZ,PM,RM,JC,IPOW)}
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: NM, NN, JM, M, JC((NM-M)/8+1), IPOW
+REAL(8) ::  S1(2,M:NN), S2(2,M:NN), G1(2,JM), G2(2,JM)
+REAL(8) ::  PZ(JM/2,5), PM(JM/2,2), RM((NM-M)/2*3+NM-M+1)
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{NN} & Input. $N$.\\
+\texttt{JM} & Input. $J$.\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{S1} & Input. Array that contains $(s^m_n)_1$.\\
+\texttt{S2} & Input. Array that contains $(s^m_n)_2$.\\
+\texttt{G1} & Output. Array to contain $(G^m(\varphi_j))_1$.\\
+\texttt{G2} & Output. Array to contain $(G^m(\varphi_j))_2$.\\
+\texttt{PM}  & Input. Array initialized by \texttt{LXINIW}
+with specifying \texttt{M}.\\
+\texttt{RM} & Input. Array initialized by \texttt{LXINIR}
+with specifying \texttt{M}.\\
+\texttt{JC} & Input. Array initialized by \texttt{LXINIW}
+with specifying \texttt{M}.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.\\
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{S1(1,N)} and \texttt{S1(2,N)} should 
+contain $\mbox{Re}(s^m_n)_1$ and $\mbox{Im}(s^m_n)_1$, respectively.
+Same as for \texttt{S2}.
+$\mbox{Re}(G^m(\varphi_j))_1$ and 
+$\mbox{Im}(G^m(\varphi_j))_1$ 
+are to be contained in \texttt{G1(1,J)} and \texttt{G1(2,J)}, respectively.
+Same as for \texttt{G2}.
+  
+(b) \texttt{G1, G2}
+must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The arrays \texttt{G1, G2} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^m(\varphi_j)_{(1,2)}$ are returned 
+in the output arrays \texttt{G1, G2} instead of $G^m(\varphi_j)_{(1,2)}$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTVWS}
+
+\begin{enumerate}  
+
+\item Purpose
+
+Paired transform from two spectral data to two wave data (wave componet).
+
+\item Definition
+
+For wave component, transform two wave data ($G^m(\varphi_j)$)$_{(1,2)}$
+to two corresponding spectral data ($s^m_n$)$_{(1,2)}$ at each latitude
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+  
+
+\texttt{LXTVWS(NM,NN,JM,M,S1,S2,G1,G2,PZ,PM,RM,JC,IPOW)}
+  
+\item Parameters
+
+(Since most of parameters are the same as in LXTSWV,
+the following explanation is only for parameters
+different from those in LXTSWV)
+  
+\begin{tabular}{ll}
+\texttt{S1} & Output. Array to contain $(s^m_n)_1$.\\
+\texttt{S2} & Outpot. Array to contain $(s^m_n)_2$.\\
+\texttt{G1} & Input. Array that contains $(G^m(\varphi_j))_1$.\\
+\texttt{G2} & Input. Array that contains $(G^m(\varphi_j))_2$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.\\
+\end{tabular}
+
+\item Remark
+
+  (a) \texttt{S1(1,N)} and \texttt{S1(2,N)}
+are to contain
+$\mbox{Re}(s^m_n)_1$ and $\mbox{Im}(s^m_n)_1$, respectively.
+Same as for \texttt{S2}.
+$\mbox{Re}(G^m(\varphi_j))_1$ and 
+$\mbox{Im}(G^m(\varphi_j))_1$ should 
+contain
+\texttt{G1(1,J)} and \texttt{G1(2,J)}, respectively.
+Same as for \texttt{G2}.
+
+(b) \texttt{G1, G2}
+must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The arrays \texttt{G1, G2} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^m(\varphi_j)_{(1,2)}$ are used as the input
+instead of $G^m(\varphi_j)_{(1,2)}$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSZV}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two spectral data to two wave data (zonal componet).
+
+\item Definition
+
+For the zonal component, transform two spectral data ($s^0_n$)$_{(1,2)}$
+to two corresponding wave data ($G^0(\varphi_j)$)$_{(1,2)}$ at each latitude
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTSZV(NM,NN,JM,S1,S2,G1,G2,PZ,RM,IPOW)}
+
+\item Parameters  
+  
+\begin{verbatim}  
+INTEGER(8) :: NM, NN, JM, IPOW
+REAL(8) ::  S1(0:NN), S2(0:NN), G1(JM), G2(JM)
+REAL(8) ::  PZ(JM/2,5), RM(NM/2*3+NM+1)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{NN} & Input. $N$.\\
+\texttt{JM} & Input. $J$.\\
+\texttt{S1} & Input. Array that contains $(s^0_n)_1$.\\
+\texttt{S2} & Input. Array that contains $(s^0_n)_2$.\\
+\texttt{G1} & Output. Array to contain $(G^0(\varphi_j))_1$.\\
+\texttt{G2} & Output. Array to contain $(G^0(\varphi_j))_2$.\\
+\texttt{PZ}  & Input. Array initialized by \texttt{LXINIG}.\\
+\texttt{RM} & Input. Array initialized by \texttt{LXINIR}
+with specifying \texttt{M=0}.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.\\
+\end{tabular}
+
+\item Remark
+
+(a) \texttt{S1(N)} and \texttt{S2(N)} should 
+contain $(s^0_n)_1$, $(s^0_n)_2$, respectively.
+$(G^0(\varphi_j))_1$ and 
+$(G^0(\varphi_j))_2$ 
+are to be contained in \texttt{G1(J)} and \texttt{G2(J)}, respectively.
+
+(b) \texttt{G1, G2}
+must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The arrays \texttt{G1, G2} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^0(\varphi_j)_{(1,2)}$ are returned 
+in the output arrays \texttt{G1, G2} instead of $G^0(\varphi_j)_{(1,2)}$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTVZS}
+
+\begin{enumerate}
+
+\item Purpose
+
+Paired transform from two wave data to two spectral data (zonal componet).
+
+\item Definition
+
+For the zonal component, transform two wave data ($G^0(\varphi_j)$)$_{(1,2)}$
+to two corresponding spectral data ($s^0_n$)$_{(1,2)}$ at each latitude
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTVZS(NM,NN,JM,S1,S2,G1,G2,PZ,RM,IPOW)}
+
+\item Parameters
+
+(Since most of parameters are the same as in LXTSZV,
+the following explanation is only for parameters
+different from those in LXTSZV)
+  
+\begin{tabular}{ll}
+\texttt{S1} & Output. Array to contain $(s^0_n)_1$.\\
+\texttt{S2} & Outpot. Array to contain $(s^0_n)_2$.\\
+\texttt{G1} & Output. Array that contains $(G^0(\varphi_j))_1$.\\
+\texttt{G2} & Output. Array that contains $(G^0(\varphi_j))_2$.\\
+\texttt{IPOW} & Input. 
+The degree of $1/\cos\varphi$ multiplied 
+simultaneously.\\
+\end{tabular}
+
+\item Pemark
+
+(a) \texttt{S1(N)} and \texttt{S2(N)} are to contained 
+$(s^0_n)_1$, $(s^0_n)_2$, respectively.
+$(G^0(\varphi_j))_1$ and 
+$(G^0(\varphi_j))_2$ 
+should be contained in \texttt{G1(J)} and \texttt{G2(J)}, respectively.
+  
+(b) \texttt{G1, G2}
+must be aligned with 32byte boundary
+if you did make ISPACK with setting either SSE=avx or SSE=fma
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 8.
+The arrays \texttt{G1, G2} must be aligned with 64byte boundary
+if you did make ISPACK with setting SSE=avx512
+on Intel x86 CPUs and setting \texttt{JM} to be a multiple of 16.
+
+(c) If you set \texttt{IPOW}$=l$, 
+$(\cos\varphi_j)^{-l}G^0(\varphi_j)_{(1,2)}$ are used
+as the input instead of $G^0(\varphi_j)_{(1,2)}$.
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXINIC}
+
+\begin{enumerate}
+
+\item Purpose  
+
+An initialization routine for \texttt{LXPACK}.  
+It initializes the array, \texttt{CM},
+which is used in other subroutines such as \texttt{LXCSZY}, \texttt{LXCSWY}.
+  
+\item Definition
+
+\item Synopsis 
+  
+    
+\texttt{LXINIC(NT,M,CM)}
+  
+\item Parameters
+
+\begin{verbatim}
+INTEGER(8) :: NT, M
+REAL(8) :: CM(2*(NT-M)+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & Input. The truncation wavenumber $N_T$
+  (see \texttt{LXCSZY}).\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{CM}  & Output. An array which is used in \texttt{LXCSZY},
+\texttt{LXCSWY} etc.
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCSWY}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Conversion of spectral data for backward transform
+corresponding to latitudinal derivative (wave component).
+
+\item Definition
+
+If the backward spectral transform, where the 
+truncation wavenumber $N_T$ is assumed, is defined as,
+\begin{equation}
+G^m(\varphi)\equiv\sum^{N_T}_{n=|m|}s^m_nP^m_n(\sin\varphi)
+\end{equation}
+operating $\cos\varphi\frac{\partial}{\partial\varphi}$ to
+$G^m$ yields
+\begin{equation}
+\cos\varphi\frac{\partial}{\partial\varphi}
+G^m(\varphi)=\sum^{N_T+1}_{n=|m|}
+(s_y)^m_nP^m_n(\sin\varphi)
+\end{equation}
+That is, it can be represented by a backward spectral transform
+with setting the truncation wavenumber of $n$ as $N_T+1$.
+This subroutine computes $(s_y)^m_n$ from $s^m_n$.
+
+\item Synopsis 
+    
+\texttt{LXCSWY(NT,M,S,SY,CM)}
+  
+\item Parameter
+
+\begin{verbatim}
+INTEGER(8) :: NT, M
+REAL(8) :: S(2,M:NT), SY(2,M:NT+1), CM(2*(NT-M)+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{S} & Input. Array that contains $s^m_n$.\\
+\texttt{SY} & Output. Array to contain $(s_y)^m_n$.\\
+\texttt{CM}  & Input. The array initialized by \texttt{LXINIC}
+with specifying \texttt{M}.
+\end{tabular}
+
+\item Remark
+
+(a) If you call \texttt{LXCSWY(NT,M,S,SY,CM)} and 
+  \texttt{LXTSWG(NM,NT+1,JM,M,SY,G,PZ,PM,RM,JC,1\_8)}
+ continuously, the latitudinal derivative is returned in \texttt{G}.  
+   
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCYWS}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Conversion of spectral data for forward transform
+corresponding to latitudinal derivative (wave component).
+
+\item Definition
+
+If you want to compute the following form of modified forward
+spectral transform
+(it appers in computing the divergence of a vector field, for example):
+\begin{equation}
+s^m_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+G^m(\varphi)
+\left(-\cos\varphi\frac{\partial}{\partial\varphi}P^m_n(\sin\varphi)\right)
+\cos\varphi d\varphi,
+\end{equation}
+$s^m_n$ can be obtained from the result of 
+the following normal forward spectral
+transform of $G^m$
+\begin{equation}
+(s_y)^m_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+G^m(\varphi)
+P^m_n(\sin\varphi)
+e^{-im\lambda}\cos\varphi d\varphi.
+\end{equation}
+This subroutine computes $s^m_n$ from $(s_y)^m_n$.
+Here, if $s^m_n$ is to be computed to $n=N_T$, $(s_y)^m_n$
+must be computed up to  $n=N_T+1$.
+
+\item Synopsis
+    
+\texttt{LXCYWS(NT,M,SY,S,CM)}
+  
+\item Parameter
+
+\begin{verbatim}
+INTEGER(8) :: NT, M
+REAL(8) :: S(2,M:NT), SY(2,M:NT+1), CM(2*(NT-M)+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{M} & Input. zonal wavenumber $m$ 
+(\texttt{M}$\ge$ 0 must hold).\\
+\texttt{SY} & Input. Array that contains $(s_y)^m_n$.\\
+\texttt{S} & Output. Array to contain $s^m_n$.\\
+\texttt{CM}  & Input. The array initialized by \texttt{LXINIC}
+with specifying \texttt{M}.
+\end{tabular}
+
+\item Remark
+
+(a) If you call \texttt{LXTGWS(NM,NT+1,JM,M,SY,G,PZ,PM,RM,JC,1\_8)} and
+  \texttt{LXCYWS(NT,M,SY,S,CM)}  continuously,
+    the following computation that corresponds to
+    the forward transform of the divergence of the latitudinal
+    component of a vector field,  
+\begin{equation}
+s^m_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi G^m(\varphi)\right)
+P^m_n(\sin\varphi)\cos\varphi d\varphi
+\end{equation}
+is done and $s^m_n$ is returned in \texttt{S}.
+Note that integration by parts is applied and \texttt{IPOW=1} here.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCSZY}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Conversion of spectral data for backward transform
+corresponding to latitudinal derivative (zonal component).
+
+\item Definition
+  
+
+See \texttt{LXCSWY} with setting $m=0$.
+
+\item Synopsis
+    
+\texttt{LXCSZY(NT,S,SY,CM)}
+  
+\item Parameter
+
+\begin{verbatim}
+INTEGER(8) :: NT
+REAL(8) :: S(0:NT), SY(0:NT+1), CM(2*NT+1)
+\end{verbatim}
+
+\begin{tabular}{ll}
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{S} & Input. Array that contains $s^0_n$.\\
+\texttt{SY} & Output. Array to contain $(s_y)^0_n$.\\
+\texttt{CM}  & Input. The array initialized by \texttt{LXINIC}
+with specifying \texttt{M=0}.
+\end{tabular}
+
+\item Remark
+
+(a) If you call \texttt{LXCSZY(NT,S,SY,CM)} and 
+  \texttt{LXTSZG(NM,NT+1,JM,SY,G,PZ,RM,1\_8)}
+ continuously, the latitudinal derivative is returned in \texttt{G}.    
+
+\end{enumerate}
+
+%---------------------------------------------------------------------
+\subsection{LXCYZS}
+
+\begin{enumerate}
+
+\item Purpose 
+
+Conversion of spectral data for forward transform
+corresponding to latitudinal derivative (zonal component).
+
+\item Definition
+  
+See \texttt{LXCYWS} with setting $m=0$.
+
+\item Synopsis
+    
+\texttt{LXCYZS(NT,SY,S,CM)}
+  
+\item Parameter
+
+\begin{verbatim}
+INTEGER(8) :: NT
+REAL(8) :: S(0:NT), SY(0:NT+1), CM(2*NT+1)
+\end{verbatim}
+      
+\begin{tabular}{ll}
+\texttt{NT} & Input. Truncation wavenumber $N_T$.\\
+\texttt{SY} & Input. Array that contains $(s_y)^0_n$.\\
+\texttt{S} & Output. Array to contain $s^0_n$.\\
+\texttt{CM}  & Input. The array initialized by \texttt{LXINIC}
+with specifying \texttt{M=0}.
+\end{tabular}
+
+\item Remark
+
+(a) If you call \texttt{LXTGZS(NM,NT+1,JM,SY,G,PZ,RM,1\_8)} and 
+    \texttt{LXCYZS(NT,SY,S,CM)} continuously,
+    the following computation that corresponds to
+    the forward transform of the divergence of the latitudinal
+    component of a vector field,  
+\begin{equation}
+s^0_n=\frac1{2}\int^{\pi/2}_{-\pi/2}
+\frac{\partial}{\cos\varphi\partial\varphi}
+\left(\cos\varphi G^0(\varphi)\right)
+P^0_n(\sin\varphi)\cos\varphi d\varphi
+\end{equation}
+is done and $s^0_n$ is returned in \texttt{S}.
+Note that integration by parts is applied and \texttt{IPOW=1} here.
+  
+\end{enumerate}
+
+%---------------------------------------------------------------------
+
+\subsection{LXTSZP}
+
+\begin{enumerate}
+
+\item Purpose
+
+Transform from zonal spectral data to the grid
+values at the poles.
+  
+\item Definition
+
+For the zonal component, transform spectral data ($s^0_n$) 
+to wave data at the north and the south pole, 
+$(G^0(\pi/2))$ and $(G^0(-\pi/2))$, respectively
+by the backward associated Legendre function transform (see Outline).
+
+\item Synopsis 
+
+\texttt{LXTSZP(NN,S,GNP,GSP)}
+  
+\item Parameters
+
+\begin{verbatim}  
+INTEGER(8) :: NN
+REAL(8) ::  S(0:NN), GNP, GSP
+\end{verbatim}  
+
+\begin{tabular}{ll}
+\texttt{NM} & Input. Maximum value of $N$ to be used.\\
+\texttt{S} & Input. Array that contains $s^0_n$.\\
+\texttt{GNP} & Output. Variable to contain $G^0(\pi/2)$.\\
+\texttt{GSP} & Output. Variable to contain $G^0(-\pi/2)$.
+\end{tabular}
+
+\item Remark
+
+\end{enumerate}
+
+
+\end{document}

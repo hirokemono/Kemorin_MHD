@@ -145,11 +145,13 @@ AX_GCC_X86_CPU_SUPPORTS(avx, have_avx="yes")
 AX_GCC_X86_CPU_SUPPORTS(sse3, have_sse3="yes")
 
 SSE_FLAG=
+SSE_CPU="cpufort"
 SSE4="fort"
 SSE8="fort512"
 if test -n "${have_avx}"; then
 #  AC_MSG_RESULT(AVX INSTRUCTIONS)
   SSE_FLAG="avx"
+  SSE_CPU="avx"
   SSE4="avx"
   SSE8="fort512"
 fi

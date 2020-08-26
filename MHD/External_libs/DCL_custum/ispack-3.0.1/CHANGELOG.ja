@@ -1,0 +1,45 @@
+2019/12/29
+	SYL2NMのバグフィックス (Thanks to Dr. Takehiro)
+	ここまでを ispack-3.0.1 としてリリース	
+
+2019/03/04
+	ここまでを ispack-3.0.0 としてリリース
+
+2019/02/28
+	beta1でエンバクしてしまった SXINIDを修正(スレッド数が未定義だった).
+	ここまでを ispack-3.0.0-beta2 のリリース
+
+2019/02/17
+	ここまでを ispack-3.0.0-beta1 のリリース
+
+2019/02/16
+	MXPACKに MXSOMP と MXGOMPを追加.
+	ここまでを ispack-3.0.0-alpha7 とした.
+
+2019/02/14
+	LXGCPU を MXGCPU に変更.
+
+2019/02/11
+	sypackのドキュメントの整備およびいくつかのサブルーチンの追加
+	ここまでを ispack-3.0.0-alpha6 とした.
+
+2018/11/15
+	sxpackを MPI化したものを sypackとして仮に作成.
+	ここまでを ispack-3.0.0-alpha5 とした.
+
+2018/11/02
+	lxinig を Cray compiler でも暴走しなくなるように書き換えた.
+	ispack-3.0.0-alpha4 のリリース
+
+2018/10/24
+	lxpackに lxtszp を追加.
+
+2018/10/22
+	avx512のコードが KNLで動かなかった(Skylake用の AVX512VLを使って
+	しまっていた(thanks to 松嶋君)ので, KNLでも動くように修正.
+	ispack-3.0.0-alpha3 のリリース
+
+2018/10/17
+	MPI以外のについての実装はほぼ完了.
+	ispack-3.0.0-alpha2 のリリース
+
