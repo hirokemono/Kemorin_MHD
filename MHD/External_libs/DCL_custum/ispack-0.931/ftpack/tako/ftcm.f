@@ -21,21 +21,6 @@
 !*     COSINE TRANSFORM (MID-POINT)                   2000/09/19 K.Ishioka      
 !*************************************************************************
 !************************************************************************
-!
-!      SUBROUTINE FTTCMI(N,IT,T)
-!      SUBROUTINE FTTCMF(M,N,X,Y,IT,T)
-!      SUBROUTINE FTTCMB(M,N,X,Y,IT,T)
-!
-      module ftcm
-!
-      use ftr0
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
       SUBROUTINE FTTCMI(N,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
@@ -57,7 +42,7 @@
         T(I,12)=1/T(I,10)
       END DO
  
-      END SUBROUTINE FTTCMI
+      END
 !************************************************************************
       SUBROUTINE FTTCMF(M,N,X,Y,IT,T)
 
@@ -90,7 +75,7 @@
         END DO
       END DO
 
-      END SUBROUTINE FTTCMF
+      END
 !************************************************************************
       SUBROUTINE FTTCMB(M,N,X,Y,IT,T)
 
@@ -121,8 +106,4 @@
         END DO
       END DO
 
-      END SUBROUTINE FTTCMB
-!
-! -----------------------------------------------------------------------
-!
-      end module ftcm
+      END

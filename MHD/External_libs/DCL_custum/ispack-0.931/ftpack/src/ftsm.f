@@ -21,6 +21,21 @@
 !*     SINE TRANSFORM (MID-POINT)                     2000/09/19 K.Ishioka      
 !*************************************************************************
 !************************************************************************
+!
+!      SUBROUTINE FTTSMI(N,IT,T)
+!      SUBROUTINE FTTSMF(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTSMB(M,N,X,Y,IT,T)
+!
+      module ftsm
+!
+      use ftr0
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
       SUBROUTINE FTTSMI(N,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
@@ -42,7 +57,7 @@
         T(I,12)=1/T(I,10)
       END DO
  
-      END
+      END SUBROUTINE FTTSMI
 !************************************************************************
       SUBROUTINE FTTSMF(M,N,X,Y,IT,T)
 
@@ -75,7 +90,7 @@
         END DO
       END DO
 
-      END
+      END SUBROUTINE FTTSMF
 !************************************************************************
       SUBROUTINE FTTSMB(M,N,X,Y,IT,T)
 
@@ -106,4 +121,8 @@
         END DO
       END DO
       
-      END
+      END SUBROUTINE FTTSMB
+!
+! -----------------------------------------------------------------------
+!
+      end module ftsm

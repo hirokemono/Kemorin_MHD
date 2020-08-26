@@ -15,14 +15,15 @@ LIB_ISPACK3_FILE =   libispack3_fft.a
 
 MOD_ISPACK = \
 ftdmsg.o \
-ftr.o \
-ftz.o \
+ftr0.o \
+ftz0.o \
 ftct.o \
 ftst.o \
 ftcm.o \
 ftsm.o
 
-SRC_FXPACK3_BASE = $(notdir $(shell ls ispack-3.0.1/fxpack/src/??????.f90))
+SRC_FXPACK3_BASE = $(notdir $(shell ls ispack-3.0.1/fxpack/src/??????.f90)) \
+                   ftr.f90 ftz.f90
 SRC_FXPACK3_SSE4 = $(notdir $(shell ls ispack-3.0.1/fxpack/src/*-$(SSE4).*))
 SRC_FXPACK3_SSE8 = $(notdir $(shell ls ispack-3.0.1/fxpack/src/*-$(SSE8).*))
 
@@ -44,8 +45,8 @@ $(addsuffix .o,$(basename $(SRC_MXPACK3_SSE4))) \
 $(addsuffix .o,$(basename $(SRC_MXPACK3_SSE8)))
 
 
-F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) $$<'
-ASMBUILD = '$$(AS) $$< -o $$@'
+F90BUILD = '$$(F90) -c $$(F90OPTFLAGS) -m$(SSE_FLAG) $$<'
+ASMBUILD = '$$(AS) -c -x assembler $$< -o $$@'
 
 ifdef SSE_FLAG
 BUILD = $(ASMBUILD)
@@ -90,17 +91,17 @@ mod_list:
 module:
 	@echo 'ftdmsg.o: $$(ISPACK_DIR)/ftdmsg.f' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftr.o: $$(ISPACK_DIR)/ftr.f' >> $(MAKENAME)
+	@echo 'ftr0.o: $$(ISPACK_DIR)/ftr0.f ftdmsg.o ftz0.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftz.o: $$(ISPACK_DIR)/ftz.f' >> $(MAKENAME)
+	@echo 'ftz0.o: $$(ISPACK_DIR)/ftz0.f ftdmsg.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftct.o: $$(ISPACK_DIR)/ftct.f' >> $(MAKENAME)
+	@echo 'ftct.o: $$(ISPACK_DIR)/ftct.f ftr0.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftst.o: $$(ISPACK_DIR)/ftst.f' >> $(MAKENAME)
+	@echo 'ftst.o: $$(ISPACK_DIR)/ftst.f ftr0.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftcm.o: $$(ISPACK_DIR)/ftcm.f' >> $(MAKENAME)
+	@echo 'ftcm.o: $$(ISPACK_DIR)/ftcm.f ftr0.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'ftsm.o: $$(ISPACK_DIR)/ftsm.f' >> $(MAKENAME)
+	@echo 'ftsm.o: $$(ISPACK_DIR)/ftsm.f ftr0.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 	

@@ -21,21 +21,6 @@
 !*     SINE TRANSFORM (TRAPEZOIDAL)                   2000/09/19 K.Ishioka      
 !*************************************************************************
 !************************************************************************
-!
-!      SUBROUTINE FTTSTI(N,IT,T)
-!      SUBROUTINE FTTSTF(M,N,X,Y,IT,T)
-!      SUBROUTINE FTTSTB(M,N,X,Y,IT,T)
-!
-      module ftst
-!
-      use ftr0
-!
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
       SUBROUTINE FTTSTI(N,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
@@ -50,7 +35,7 @@
         T(I,5)=SIN(2*PI*(2*I+1)/N2)
       END DO
  
-      END SUBROUTINE FTTSTI
+      END
 !************************************************************************
       SUBROUTINE FTTSTF(M,N,X,Y,IT,T)
  
@@ -92,7 +77,7 @@
         END DO
       END DO
  
-      END SUBROUTINE FTTSTF
+      END
 !************************************************************************
       SUBROUTINE FTTSTB(M,N,X,Y,IT,T)
 
@@ -108,8 +93,4 @@
         END DO
       END DO
 
-      END SUBROUTINE FTTSTB
-!
-! -----------------------------------------------------------------------
-!
-      end module ftst
+      END

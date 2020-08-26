@@ -163,6 +163,7 @@ depends: $(MAKE_MOD_DEP)
 		F90_LOCAL="$(F90_LOCAL)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
+		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		SSE_FLAG="$(SSE_FLAG)" \
@@ -214,6 +215,7 @@ makemake: $(MAKE_MOD_DEP)
 		F90_LOCAL="$(F90_LOCAL)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
+		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MPICC="$(MPICC)"   \
 		AR="$(AR)" \
@@ -266,6 +268,7 @@ makemake64: $(MAKE_MOD_DEP)
 		F90_LOCAL="$(F90_LOCAL)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
+		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MPICC="$(MPICC)"   \
 		AR="$(AR)" \

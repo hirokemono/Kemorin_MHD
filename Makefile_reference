@@ -27,6 +27,7 @@ MPILIBS =
 F90 = gfortran-mp-4.4
 CC =  gcc-mp-4.4
 CXX = g++-mp-4.4
+AS =  as
 
 MPIF90 = $(MPICHBINDIR)/openmpif90
 MPICC =  $(MPICHBINDIR)/openmpicc
@@ -159,6 +160,7 @@ depends: $(MAKE_MOD_DEP)
 		F90_LOCAL="$(F90_LOCAL)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
+		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
@@ -209,6 +211,7 @@ makemake: mpif.h
 		F90="$(F90)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
+		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MPICC="$(MPICC)"   \
 		AR="$(AR)" \
@@ -259,6 +262,7 @@ makemake64: $(MAKE_MOD_DEP)
 		F90_LOCAL="$(F90_LOCAL)" \
 		CC="$(CC)" \
 		CXX="$(CXX)" \
+		AS="$(AS)" \
 		MPIF90="$(MPIF90)" \
 		MPICC="$(MPICC)"   \
 		AR="$(AR)" \

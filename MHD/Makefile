@@ -173,6 +173,7 @@ makemake:
 	@echo CC=$(MPICC)            >> $(MAKENAME)
 	@echo F90=$(MPIF90)          >> $(MAKENAME)
 	@echo CXX=$(CXX)             >> $(MAKENAME)
+	@echo AS=$(AS)               >> $(MAKENAME)
 	@echo AR=$(AR)               >> $(MAKENAME)
 	@echo RANLIB=$(RANLIB) >> $(MAKENAME)
 	@echo F90_LOCAL=$(F90_LOCAL) >> $(MAKENAME)
