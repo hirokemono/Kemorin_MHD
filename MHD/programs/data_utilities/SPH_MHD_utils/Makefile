@@ -24,15 +24,16 @@ TARGET_SPH_BACK_TRANS =    sph_backward_transform
 TARGET_SPH_ALL_CORRELATE = sph_all_correlate
 TARGET_SPH_ALL_RMS_RATIO = sph_all_rms_ratio
 
-LIBS_SPH_UTILS = \
-'$$(LIB_MHD)'    \
+LIBS_SPH_UTILS =  \
+'$$(LIB_MHD)'     \
 '$$(LIB_VIZ)'     \
 '$$(LIB_PARA)'    \
 '$$(LIB_SOLVER)'  \
 '$$(LIB_MESH)'    \
 '$$(LIB_MT_STREAM)' \
-'$$(LIB_FFTPACK)' \
-'$$(LIB_ISPACK)'
+'$$(LIB_FFTPACK)'   \
+'$$(LIB_ISPACK)'    \
+'$$(LIB_ISPACK3)'
 
 
 LIB_FILES_SPH_UTILS = \
@@ -42,8 +43,9 @@ LIB_FILES_SPH_UTILS = \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'   \
 '$$(LIB_MT_STREAM_FILE)' \
-'$$(LIB_FFTPACK_FILE)' \
-'$$(LIB_ISPACK_FILE)'
+'$$(LIB_FFTPACK_FILE)'   \
+'$$(LIB_ISPACK_FILE)'    \
+'$$(LIB_ISPACK3_FILE)'
 
 
 ifdef FORTRAN_C_CONNECT

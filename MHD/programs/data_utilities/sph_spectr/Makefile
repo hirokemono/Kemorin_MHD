@@ -30,24 +30,26 @@ TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
 TARGET_SPH_ENE_CHECK =      sph_ene_check
 
 
-LIBS_SPH_UTIL = \
+LIBS_SPH_UTIL =  \
 '$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
-'$$(LIB_MESH)'    \
+'$$(LIB_MESH)'   \
 '$$(LIB_MT_STREAM)' \
 '$$(LIB_FFTPACK)'   \
-'$$(LIB_ISPACK)'
+'$$(LIB_ISPACK)'    \
+'$$(LIB_ISPACK3)'
 
 
-LIB_FILES_SPH_UTIL = \
+LIB_FILES_SPH_UTIL =  \
 '$$(LIB_VIZ_FILE)'    \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'   \
 '$$(LIB_MT_STREAM_FILE)' \
 '$$(LIB_FFTPACK_FILE)'   \
-'$$(LIB_ISPACK_FILE)'
+'$$(LIB_ISPACK_FILE)'    \
+'$$(LIB_ISPACK3_FILE)'
 
 
 ifdef FORTRAN_C_CONNECT
