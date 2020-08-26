@@ -4,6 +4,7 @@
 SUBDIRS =  \
 FFTPACK5.1D \
 DCL_custum  \
+ISPACK3_custum  \
 \
 mt_stream_f90-1.11
 
