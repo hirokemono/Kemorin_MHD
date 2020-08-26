@@ -61,6 +61,7 @@ mod_list:
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		mod_list \
@@ -78,6 +79,7 @@ module:
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		module; \

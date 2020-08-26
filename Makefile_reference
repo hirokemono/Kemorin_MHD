@@ -47,6 +47,7 @@ COCOA_FLAG =     -D__APPLE__
 XL_FORTRAN =     -D__bgq__
 
 SSE_FLAG = fort
+SSE_CPU =  cpufort
 SSE4 =    
 SSE8 =    
 #
@@ -162,6 +163,7 @@ depends: $(MAKE_MOD_DEP)
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		depends
@@ -213,6 +215,7 @@ makemake: mpif.h
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		makemake
@@ -264,6 +267,7 @@ makemake64: $(MAKE_MOD_DEP)
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		64BIT_INT="$(64BIT_INT)" \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		64BIT_INT="$(64BIT_INT)" \

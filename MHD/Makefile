@@ -342,6 +342,8 @@ makemake:
 		MAKENAME='$(MAKENAME)' \
 		64BIT_INT='$(64BIT_INT)'   \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		mod_list; \
@@ -397,6 +399,8 @@ makemake:
 		64BIT_INT='$(64BIT_INT)'   \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		module; \

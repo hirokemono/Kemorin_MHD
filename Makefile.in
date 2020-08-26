@@ -29,6 +29,7 @@ MPILIBS =     @MPILIBS@
 F90 = @FC@
 CC =  @CC@
 CXX = @CXX@
+AS =  @CCAS@
 
 F90_LOCAL = $(F90)
 
@@ -50,6 +51,7 @@ COCOA_FLAG =     @COCOA_FLAG@
 XL_FORTRAN =     @XL_FORTRAN@
 
 SSE_FLAG = @SSE_FLAG@
+SSE_CPU =  @SSE_CPU@
 SSE4 =     @SSE4@
 SSE8 =     @SSE8@
 
@@ -164,6 +166,7 @@ depends: $(MAKE_MOD_DEP)
 		MPIF90="$(MPIF90)" \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		depends
@@ -217,6 +220,7 @@ makemake: $(MAKE_MOD_DEP)
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		makemake
@@ -268,6 +272,7 @@ makemake64: $(MAKE_MOD_DEP)
 		RANLIB="$(RANLIB)" \
 		XL_FORTRAN="$(XL_FORTRAN)" \
 		SSE_FLAG="$(SSE_FLAG)" \
+		SSE_CPU="$(SSE_CPU)" \
 		SSE4="$(SSE4)" \
 		SSE8="$(SSE8)" \
 		64BIT_INT="$(64BIT_INT)" \

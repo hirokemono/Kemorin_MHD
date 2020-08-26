@@ -27,7 +27,7 @@ SRC_FXPACK3_SSE4 = $(notdir $(shell ls ispack-3.0.1/fxpack/src/*-$(SSE4).*))
 SRC_FXPACK3_SSE8 = $(notdir $(shell ls ispack-3.0.1/fxpack/src/*-$(SSE8).*))
 
 SRC_MXPACK3_C =    $(notdir $(shell ls ispack-3.0.1/mxpack/src/??????.c))
-SRC_MXPACK3_F =    $(notdir $(shell ls ispack-3.0.1/mxpack/src/??????.f90))
+SRC_MXPACK3_F =    $(notdir $(shell ls ispack-3.0.1/mxpack/src/??????.f90 ispack-3.0.1/mxpack/src/*-$(SSE_CPU).f90))
 SRC_MXPACK3_SSE4 = $(notdir $(shell ls ispack-3.0.1/mxpack/src/*-$(SSE4).*))
 SRC_MXPACK3_SSE8 = $(notdir $(shell ls ispack-3.0.1/mxpack/src/*-$(SSE8).*))
 

@@ -9,6 +9,7 @@ AM_INIT_AUTOMAKE
 AM_CONDITIONAL([am__fastdepOBJC], false)
 AM_CONDITIONAL([am__fastdepCXX], false)
 AC_CANONICAL_HOST
+AM_PROG_AS
 
 dnl Include OpenMP related definitions
 builtin(include,MHD/confdb/ax_pthread.m4)
@@ -151,23 +152,26 @@ SSE8="fort512"
 if test -n "${have_avx}"; then
 #  AC_MSG_RESULT(AVX INSTRUCTIONS)
   SSE_FLAG="avx"
-  SSE_CPU="avx"
+  SSE_CPU="cpuavx"
   SSE4="avx"
   SSE8="fort512"
 fi
 if test -n "${have_fma}"; then
 #  AC_MSG_RESULT(FMA INSTRUCTIONS)
   SSE_FLAG="fma"
+  SSE_CPU="cpufma"
   SSE4="fma"
   SSE8="fort512"
 fi
 if test -n "${have_avx512}"; then
   AC_MSG_RESULT(AVX512 INSTRUCTIONS)
   SSE_FLAG="avx512f"
+  SSE_CPU="cpuavx512"
   SSE4="fma"
   SSE8="avx512"
 fi
 AC_SUBST(SSE_FLAG)
+AC_SUBST(SSE_CPU)
 AC_SUBST(SSE4)
 AC_SUBST(SSE8)
 
