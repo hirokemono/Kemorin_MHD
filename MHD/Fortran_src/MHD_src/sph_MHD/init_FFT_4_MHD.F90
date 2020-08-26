@@ -77,8 +77,10 @@
           write(*,'(a)') ' (FFTPACK) '
         else if(iflag_FFT .eq. iflag_FFTW) then
           write(*,'(a)') ' (FFTW) '
-        else if(iflag_FFT .eq. iflag_ISPACK) then
+        else if(iflag_FFT .eq. iflag_ISPACK1) then
           write(*,'(a)') ' (ISPACK) '
+        else if(iflag_FFT .eq. iflag_ISPACK3) then
+          write(*,'(a)') ' (ISPACK3) '
         else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
           write(*,'(a)') ' (FFTW_SINGLE) '
         end if
@@ -104,7 +106,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      real(kind = kreal) :: etime_fft(4) = 10000.0
+      real(kind = kreal) :: etime_fft(5) = 10000.0
 !
 !
       call test_fourier_trans_4_MHD(iflag_FFTPACK,                      &
@@ -116,15 +118,17 @@
       call test_fourier_trans_4_MHD(iflag_FFTW,                         &
      &    ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    WK_FFTs, etime_fft(iflag_FFTW))
-!
       call test_fourier_trans_4_MHD(iflag_FFTW_SINGLE,                  &
      &    ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
      &    WK_FFTs, etime_fft(iflag_FFTW_SINGLE))
 #endif
 !
-      call test_fourier_trans_4_MHD(iflag_ISPACK,                       &
+      call test_fourier_trans_4_MHD(iflag_ISPACK1,                      &
      &    ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
-     &    WK_FFTs, etime_fft(iflag_ISPACK))
+     &    WK_FFTs, etime_fft(iflag_ISPACK1))
+      call test_fourier_trans_4_MHD(iflag_ISPACK3,                      &
+     &    ncomp_tot, sph_rtp, comm_rtp, n_WS, n_WR, WS, WR, trns_MHD,   &
+     &    WK_FFTs, etime_fft(iflag_ISPACK3))
 !
       iflag_selected = minloc(etime_fft,1)
       etime_shortest = minval(etime_fft)
@@ -140,9 +144,13 @@
           write(*,*) '3: elapsed by single FFTW3:   ',                  &
      &            etime_fft(iflag_FFTW_SINGLE)
         end if
-        if(etime_fft(iflag_ISPACK) .gt. zero) then
-          write(*,*) '4: elapsed by ISPACK:         ',                  &
-     &            etime_fft(iflag_ISPACK)
+        if(etime_fft(iflag_ISPACK1) .gt. zero) then
+          write(*,*) '4: elapsed by ISPACK V0.93:   ',                  &
+     &            etime_fft(iflag_ISPACK1)
+        end if
+        if(etime_fft(iflag_ISPACK3) .gt. zero) then
+          write(*,*) '5: elapsed by ISPACK V3.03:   ',                  &
+     &            etime_fft(iflag_ISPACK3)
         end if
 !
       end subroutine compare_FFT_4_MHD

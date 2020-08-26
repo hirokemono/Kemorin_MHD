@@ -79,6 +79,7 @@
       use m_machine_parameter
       use t_sph_FFTPACK5
       use t_sph_ISPACK_FFT
+      use t_sph_ISPACK3_FFT
       use t_addresses_sph_transform
       use m_FFT_selector
 !
@@ -188,10 +189,15 @@
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
+      if(iflag_FFT .eq. iflag_ISPACK1) then
         call sph_FTTRUF_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ispack)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        call sph_FXRTFA_to_send                                         &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
+     &     comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call swap_phi_order_to_trans(ncomp_fwd,                         &
@@ -243,11 +249,16 @@
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
+      if(iflag_FFT .eq. iflag_ISPACK1) then
         call sph_FTTRUB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        call sph_FXRTBA_from_recv                                       &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
+     &     comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &

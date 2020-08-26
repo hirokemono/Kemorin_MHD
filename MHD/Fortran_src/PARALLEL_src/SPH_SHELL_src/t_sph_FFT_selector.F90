@@ -80,6 +80,7 @@
       use m_FFT_selector
       use t_sph_FFTPACK5
       use t_sph_ISPACK_FFT
+      use t_sph_ISPACK3_FFT
 !
 #ifdef FFTW3
       use t_sph_single_FFTW
@@ -94,6 +95,8 @@
         type(work_for_fftpack) :: sph_FFTPACK
 !>        Structure to use ISPACK
         type(work_for_ispack) :: sph_ISPACK
+!>        Structure to use ISPACK
+        type(work_for_ispack3) :: sph_ISPACK3
 !
 #ifdef FFTW3
 !>        Structure to use FFTW
@@ -113,6 +116,7 @@
      &         (id_rank, iflag_FFT, sph_rtp, ncomp, WK_FFTs)
 !
       use t_spheric_rtp_data
+      use transfer_to_long_integers
 !
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -121,11 +125,16 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(id_rank .eq. 0) write(*,*) 'Use ISPACK'
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
         call init_sph_ISPACK                                            &
      &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
      &      WK_FFTs%sph_ISPACK)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
+        call init_sph_ISPACK3                                           &
+     &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
+     &      cast_long(ncomp), WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
@@ -154,9 +163,12 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_sph_ISPACK(WK_FFTs%sph_ISPACK)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        if(iflag_debug .eq. 0) write(*,*) 'Finalize ISPACK V3.0.1'
+        call finalize_sph_ISPACK3(WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
@@ -178,6 +190,7 @@
      &         (iflag_FFT, sph_rtp, ncomp, WK_FFTs)
 !
       use t_spheric_rtp_data
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: ncomp
@@ -188,11 +201,16 @@
 !
 !
       Nstacksmp(0:np_smp) = ncomp * sph_rtp%istack_rtp_rt_smp(0:np_smp)
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_sph_ISPACK                                          &
      &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
      &      WK_FFTs%sph_ISPACK)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
+        call verify_sph_ISPACK3                                         &
+     &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
+     &      cast_long(ncomp), WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
@@ -221,6 +239,7 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -232,11 +251,16 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
+      if(iflag_FFT .eq. iflag_ISPACK1) then
         call sph_FTTRUF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
      &      v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        call sph_FXRTFA_to_send                                         &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp), n_WS,           &
+     &     comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call sph_field_fwd_FFTW_to_send                                 &
@@ -265,6 +289,7 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -276,11 +301,16 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
+      if(iflag_FFT .eq. iflag_ISPACK1) then
         call sph_FTTRUB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
      &      WR(1), v_rtp(1,1), WK_FFTs%sph_ISPACK)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        call sph_FXRTBA_from_recv                                       &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp), n_WR,           &
+     &     comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_ispack3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call sph_field_back_FFTW_from_recv                              &

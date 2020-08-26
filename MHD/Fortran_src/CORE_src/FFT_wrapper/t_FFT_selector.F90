@@ -73,6 +73,7 @@
       use m_FFT_selector
       use t_FFTPACK5_wrapper
       use t_ispack_FFT_wrapper
+      use t_ispack3_FFT_wrapper
 !
       use t_FFTW_wrapper
       use t_multi_FFTW_wrapper
@@ -81,7 +82,8 @@
 !
 !>      structure for working data for FFT
       type working_FFTs
-        type(working_ISPACK) ::   WK_ISPACK
+        type(working_ISPACK) ::   WK_ISPACK1
+        type(working_ISPACK3) ::  WK_ISPACK3
         type(working_FFTPACK) ::  WK_FFTPACK
         type(working_FFTW) ::     WK_FFTW
         type(working_mul_FFTW) :: WK_MUL_FFTW
@@ -96,6 +98,8 @@
       subroutine initialize_FFT_select(id_rank, iflag_FFT,              &
      &          Nsmp, Nstacksmp, Nfft, WKS)
 !
+      use transfer_to_long_integers
+!
       integer, intent(in) :: id_rank
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: Nfft
@@ -104,9 +108,13 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(id_rank .eq. 0) write(*,*) 'Use ISPACK'
-        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK)
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
+        call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
+        call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
+     &                         cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
@@ -132,9 +140,12 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
-        call finalize_wk_ispack_t(WKS%WK_ISPACK)
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
+        call finalize_wk_ispack_t(WKS%WK_ISPACK1)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        if(iflag_debug .eq. 0) write(*,*) 'Finalize ISPACK V3.0.1'
+        call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
@@ -155,6 +166,8 @@
       subroutine verify_FFT_select                                      &
      &         (iflag_FFT, Nsmp, Nstacksmp, Nfft, WKS)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nfft
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
@@ -162,9 +175,13 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
-        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK)
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
+        call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
+        call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
+     &                          cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
@@ -187,6 +204,8 @@
       subroutine forward_FFT_select                                     &
      &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -195,8 +214,11 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK)
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
+     &                     cast_long(Nfft), X, WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
@@ -217,6 +239,8 @@
       subroutine backward_FFT_select                                    &
      &         (iflag_FFT, Nsmp, Nstacksmp, M, Nfft, X, WKS)
 !
+      use transfer_to_long_integers
+!
       integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft
@@ -225,8 +249,11 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK)
+      if(iflag_FFT .eq. iflag_ISPACK1) then
+        call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1)
+      else if(iflag_FFT .eq. iflag_ISPACK3) then
+        call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
+     &                     cast_long(Nfft), X, WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &

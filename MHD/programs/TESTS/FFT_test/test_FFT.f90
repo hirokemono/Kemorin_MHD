@@ -24,7 +24,8 @@
       write(*,*) '1: FFTPACK5'
       write(*,*) '2: FFTW3 (if avaiable)'
       write(*,*) '3: SINGLE FFTW3 (if avaiable)'
-      write(*,*) '4: ISPACK'
+      write(*,*) '4: ISPACK-0.93'
+      write(*,*) '5: ISPACK-3.01'
       read(*,*) iflag_FFT_t
 !
 !

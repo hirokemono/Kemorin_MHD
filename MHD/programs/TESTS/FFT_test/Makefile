@@ -10,7 +10,8 @@ TARGET_FFT_TEST =      test_fft
 
 TARGET_FFTPACK_TEST =  test_FFTPACK
 TARGET_ISPACK1_TEST =  test_ISPACK1
-TARGET_FFW3_F_TEST =   test_FFW3_f
+TARGET_ISPACK3_TEST =  test_ISPACK3
+TARGET_FFW3_F_TEST =   test_FFTW3_f
 
 LIBS_FFT_TEST = \
 '$$(LIB_MESH)'      \
@@ -55,6 +56,17 @@ t_ispack_FFT_wrapper.o \
 t_fft_test_data.o \
 test_ISPACK1_FFT.o
 
+MOD_ISPACK3_TEST = \
+m_precision.o \
+m_constants.o \
+m_machine_parameter.o \
+\
+ispack3_FFT_wrapper.o \
+t_ispack3_FFT_wrapper.o \
+\
+t_fft_test_data.o \
+test_ISPACK3_FFT.o
+
 MOD_FFW3_F_TEST = \
 m_precision.o \
 m_constants.o \
@@ -82,13 +94,14 @@ target_list:
 	@echo 'TARGET_FFT_TEST =      $$(BUILDDIR)/$(TARGET_FFT_TEST)'     >> $(MAKENAME)
 	@echo 'TARGET_FFTPACK_TEST =  $$(BUILDDIR)/$(TARGET_FFTPACK_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_ISPACK1_TEST =  $$(BUILDDIR)/$(TARGET_ISPACK1_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_ISPACK3_TEST =  $$(BUILDDIR)/$(TARGET_ISPACK3_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_FFW3_F_TEST =   $$(BUILDDIR)/$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
 
 target_task:
 	@echo fft_test: \
 	'$$(TARGET_FFT_TEST)'      '$$(TARGET_FFTPACK_TEST)' \
-	'$$(TARGET_ISPACK1_TEST)'  '$$(TARGET_FFW3_F_TEST)'\
-	>> $(MAKENAME)
+	'$$(TARGET_ISPACK1_TEST)'  '$$(TARGET_ISPACK3_TEST)' \
+	'$$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFT_TEST)': '$$(MOD_FFT_TEST)' \
@@ -110,6 +123,13 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_ISPACK1_TEST)' \
 	'$$(MOD_ISPACK1_TEST)  -L. $$(LIB_ISPACK)' \
+	>> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_ISPACK3_TEST)': '$$(MOD_ISPACK3_TEST)' \
+	'$$(LIB_ISPACK3_FILE)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_ISPACK3_TEST)' \
+	'$$(MOD_ISPACK3_TEST)  -L. $$(LIB_ISPACK3)' \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFW3_F_TEST)': '$$(MOD_FFW3_F_TEST)' \
@@ -135,6 +155,8 @@ mod_list:
 	@echo  $(MOD_FFTPACK_TEST)        >> $(MAKENAME)
 	@echo  MOD_ISPACK1_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_ISPACK1_TEST)        >> $(MAKENAME)
+	@echo  MOD_ISPACK3_TEST=      \\  >> $(MAKENAME)
+	@echo  $(MOD_ISPACK3_TEST)        >> $(MAKENAME)
 	@echo  MOD_FFW3_F_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FFW3_F_TEST)        >> $(MAKENAME)
 

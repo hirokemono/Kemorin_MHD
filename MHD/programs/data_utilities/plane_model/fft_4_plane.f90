@@ -106,7 +106,7 @@
 !  -------   Fourier Transform
 !
        call s_cal_fft_for_horizontal                                    &
-     &    (iflag_ISPACK, plane_fft_wk1%kx_max,                          &
+     &    (iflag_ISPACK1, plane_fft_wk1%kx_max,                         &
      &     plane_fft_wk1%ky_max, plane_fft_wk1%iz_max,                  &
      &     plane_fft_wk1%num_spectr, plane_fft_wk1%num_io,              &
      &     plane_fft_wk1%num_fft, plane_fft_wk1%icomp_fft,              &

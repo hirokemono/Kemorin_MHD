@@ -1,39 +1,37 @@
-This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=pdflatex 2009.8.28)  26 MAY 2012 09:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  26 AUG 2020 10:23
 entering extended mode
-\write18 enabled.
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
 **ftpack.tex
 (./ftpack.tex
-LaTeX2e <2003/12/01>
-Babel <v3.8d> and hyphenation patterns for american, french, german, ngerman, b
-ahasa, basque, bulgarian, catalan, croatian, czech, danish, dutch, esperanto, e
-stonian, finnish, greek, icelandic, irish, italian, latin, magyar, norsk, polis
-h, portuges, romanian, russian, serbian, slovak, slovene, spanish, swedish, tur
-kish, ukrainian, nohyphenation, welsh, loaded.
+LaTeX2e <2020-02-02> patch level 5
+L3 programming layer <2020-03-06>
+(/usr/local/texlive/2020/texmf-dist/tex/platex/base/jarticle.cls
 
-! LaTeX Error: File `jarticle.cls' not found.
+/usr/local/texlive/2020/texmf-dist/tex/platex/base/jarticle.cls:16: LaTeX Error
+: This file needs format `pLaTeX2e'
+               but this is `LaTeX2e'.
 
-Type X to quit or <RETURN> to proceed,
-or enter new name. (Default extension: cls)
-
-Enter file name: 
-! Emergency stop.
-<read *> 
-         
-l.23 ^^M
-        
-End of file on the terminal!
-
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 \NeedsTeXFormat{pLaTeX2e}
+                              
+? x
  
 Here is how much of TeX's memory you used:
- 10 strings out of 94506
- 179 string characters out of 1171869
- 46238 words of memory out of 1500000
- 3276 multiletter control sequences out of 10000+50000
- 3640 words of font info for 14 fonts, out of 1200000 for 2000
- 566 hyphenation exceptions out of 8191
- 10i,0n,7p,86b,8s stack positions out of 5000i,500n,6000p,200000b,5000s
-PDF statistics:
- 0 PDF objects out of 65536
- 0 named destinations out of 20000
- 1 words of extra memory for PDF output out of 65536
+ 26 strings out of 480608
+ 807 string characters out of 5903631
+ 239610 words of memory out of 5000000
+ 16013 multiletter control sequences out of 15000+600000
+ 532338 words of font info for 24 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 14i,0n,17p,119b,14s stack positions out of 5000i,500n,10000p,200000b,80000s
 No pages of output.
+PDF statistics:
+ 0 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

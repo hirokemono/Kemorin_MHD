@@ -8,4 +8,6 @@ test_FFTW3.o: $(FFT_TEST_DIR)/test_FFTW3.f90 m_precision.o m_constants.o m_machi
 	$(F90) -c $(F90OPTFLAGS) $<
 test_ISPACK1_FFT.o: $(FFT_TEST_DIR)/test_ISPACK1_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o t_ispack_FFT_wrapper.o t_fft_test_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
+test_ISPACK3_FFT.o: $(FFT_TEST_DIR)/test_ISPACK3_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o t_ispack3_FFT_wrapper.o t_fft_test_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
 
