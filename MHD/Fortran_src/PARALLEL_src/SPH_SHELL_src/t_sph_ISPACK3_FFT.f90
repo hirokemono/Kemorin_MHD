@@ -142,7 +142,7 @@
 !
       call alloc_work_4_ispack3(nphi_rtp, ispack3_t)
 !
-      end subroutine init_sph_ISPACK
+      end subroutine init_sph_ISPACK3
 !
 ! ------------------------------------------------------------------
 !
@@ -386,23 +386,23 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine dealloc_work_4_ispack3(ispack_t)
+      subroutine dealloc_work_4_ispack3(ispack3_t)
 !
-      type(work_for_ispack3), intent(inout) :: ispack_t
+      type(work_for_ispack3), intent(inout) :: ispack3_t
 !
 !
-      deallocate(ispack_t%smp)
+      deallocate(ispack3_t%smp)
 !
       end subroutine dealloc_work_4_ispack3
 !
 ! ------------------------------------------------------------------
 !
-      subroutine dealloc_const_4_ispack3(ispack_t)
+      subroutine dealloc_const_4_ispack3(ispack3_t)
 !
-      type(work_for_ispack3), intent(inout) :: ispack_t
+      type(work_for_ispack3), intent(inout) :: ispack3_t
 !
 !
-      deallocate(ispack_t%T, ispack_t%IT)
+      deallocate(ispack3_t%T, ispack3_t%IT)
 !
       end subroutine dealloc_const_4_ispack3
 !
