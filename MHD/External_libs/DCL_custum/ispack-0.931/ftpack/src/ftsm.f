@@ -22,9 +22,9 @@
 !*************************************************************************
 !************************************************************************
 !
-!      SUBROUTINE FTTSMI(N,IT,T)
-!      SUBROUTINE FTTSMF(M,N,X,Y,IT,T)
-!      SUBROUTINE FTTSMB(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTSMI0(N,IT,T)
+!      SUBROUTINE FTTSMF0(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTSMB0(M,N,X,Y,IT,T)
 !
       module ftsm
 !
@@ -36,13 +36,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      SUBROUTINE FTTSMI(N,IT,T)
+      SUBROUTINE FTTSMI0(N,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
       PARAMETER(PI=3.1415926535897932385D0)      
       DIMENSION T(0:N/2-1,12),IT(5)
 
-      CALL FTTRUI(N,IT,T)
+      CALL FTTRUI0(N,IT,T)
  
       N2=N*2
 
@@ -57,9 +57,9 @@
         T(I,12)=1/T(I,10)
       END DO
  
-      END SUBROUTINE FTTSMI
+      END SUBROUTINE FTTSMI0
 !************************************************************************
-      SUBROUTINE FTTSMF(M,N,X,Y,IT,T)
+      SUBROUTINE FTTSMF0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION IT(5),T(0:N/2-1,12)
@@ -76,7 +76,7 @@
         END DO
       END DO
 
-      CALL FTTRUF(M,N,Y,X,IT,T)
+      CALL FTTRUF0(M,N,Y,X,IT,T)
  
       DO I=1,M
         X(I,0)=0.5D0*Y(I,0)
@@ -90,9 +90,9 @@
         END DO
       END DO
 
-      END SUBROUTINE FTTSMF
+      END SUBROUTINE FTTSMF0
 !************************************************************************
-      SUBROUTINE FTTSMB(M,N,X,Y,IT,T)
+      SUBROUTINE FTTSMB0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION IT(5),T(0:N/2-1,12)
@@ -110,7 +110,7 @@
         END DO
       END DO
       
-      CALL FTTRUB(M,N,Y,X,IT,T)
+      CALL FTTRUB0(M,N,Y,X,IT,T)
 
       DO J=0,N/2-1
         DO I=1,M
@@ -121,7 +121,7 @@
         END DO
       END DO
       
-      END SUBROUTINE FTTSMB
+      END SUBROUTINE FTTSMB0
 !
 ! -----------------------------------------------------------------------
 !

@@ -19,8 +19,9 @@
 !************************************************************************
 !************************************************************************
 !
-!      SUBROUTINE FTTZUI(N,IT,T)
-!      SUBROUTINE FTTZUF(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTZUI0(N,IT,T)
+!      SUBROUTINE FTTZUF0(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTZUB0(M,N,X,Y,IT,T)
 !
       module ftz0
 !
@@ -32,16 +33,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      SUBROUTINE FTTZUI(N,IT,T)
+      SUBROUTINE FTTZUI0(N,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION T(0:N-1,2),IT(5)
 
       CALL FTTZLI(N,IT,T)
 
-      END SUBROUTINE FTTZUI
+      END SUBROUTINE FTTZUI0
 !************************************************************************
-      SUBROUTINE FTTZUF(M,N,X,Y,IT,T)
+      SUBROUTINE FTTZUF0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION X(M*N,2),Y(M*N,2)
@@ -58,9 +59,9 @@
         X(I,2)=-X(I,2)*F
       END DO
 
-      END SUBROUTINE FTTZUF
+      END SUBROUTINE FTTZUF0
 !************************************************************************
-      SUBROUTINE FTTZUB(M,N,X,Y,IT,T)
+      SUBROUTINE FTTZUB0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION X(M*N,2),Y(M*N,2)
@@ -68,7 +69,7 @@
 
       CALL FTTZLM(M,N,X,Y,IT,T)
 
-      END SUBROUTINE FTTZUB
+      END SUBROUTINE FTTZUB0
 !************************************************************************
       SUBROUTINE FTTZLI(N,IT,T)
 

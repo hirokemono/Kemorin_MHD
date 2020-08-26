@@ -83,6 +83,8 @@
 !
       subroutine FTTRUI_kemo(Nfft, IT_ispack, T_ispack)
 !
+      use ispack_0931
+!
       integer(kind = kint), intent(in) :: Nfft
       integer(kind = 4), intent(inout) :: IT_ispack(5)
       real(kind = 8), intent(inout) :: T_ispack(itwo*Nfft)
@@ -96,6 +98,8 @@
 !
       subroutine FTTRUF_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
+!
+      use ispack_0931
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp
@@ -154,6 +158,8 @@
 !
       subroutine FTTRUB_kemo_smp(Nsmp, Nstacksmp, M, Nfft, X,           &
      &          X_ispack, Mmax_smp, IT_ispack, T_ispack, WORK_ispack)
+!
+      use ispack_0931
 !
       integer(kind = kint), intent(in) ::  Nsmp, Nstacksmp(0:Nsmp)
       integer(kind = kint), intent(in) :: M, Nfft, Mmax_smp

@@ -20,9 +20,9 @@
 !*************************************************************************
 !*     COSINE TRANSFORM (TRAPEZOIDAL)                 2000/09/19 K.Ishioka      
 !************************************************************************!
-!      SUBROUTINE FTTCTI(N,IT,T)
-!      SUBROUTINE FTTCTF(M,N,X,Y,IT,T)
-!      SUBROUTINE FTTCTB(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTCTI0(N,IT,T)
+!      SUBROUTINE FTTCTF0(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTCTB0(M,N,X,Y,IT,T)
 !
       module ftct
 !
@@ -34,13 +34,13 @@
 !
 ! -----------------------------------------------------------------------
 !*
-      SUBROUTINE FTTCTI(N,IT,T)
+      SUBROUTINE FTTCTI0(N,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
       PARAMETER(PI=3.1415926535897932385D0)      
       DIMENSION T(0:N/2-1,6),IT(5)
 
-      CALL FTTRUI(N,IT,T)
+      CALL FTTRUI0(N,IT,T)
  
       N2=N*2
  
@@ -49,9 +49,9 @@
         T(I,6)=COS(2*PI*(2*I+1)/N2)
       END DO
  
-      END SUBROUTINE FTTCTI
+      END SUBROUTINE FTTCTI0
 !************************************************************************
-      SUBROUTINE FTTCTF(M,N,X,Y,IT,T)
+      SUBROUTINE FTTCTF0(M,N,X,Y,IT,T)
  
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION IT(5),T(0:N/2-1,6)
@@ -80,7 +80,7 @@
         END DO
       END DO
 
-      CALL FTTRUF(M,N,Y,X,IT,T)
+      CALL FTTRUF0(M,N,Y,X,IT,T)
  
       DO I=1,M
         X(I,0)=Y(I,0)
@@ -95,15 +95,15 @@
         END DO
       END DO
 
-      END SUBROUTINE FTTCTF
+      END SUBROUTINE FTTCTF0
 !************************************************************************
-      SUBROUTINE FTTCTB(M,N,X,Y,IT,T)
+      SUBROUTINE FTTCTB0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION IT(5),T(0:N/2-1,6)
       DIMENSION X(M,0:N),Y(M,0:N-1)
 
-      CALL FTTCTF(M,N,X,Y,IT,T)
+      CALL FTTCTF0(M,N,X,Y,IT,T)
 
       DO J=0,N
         DO I=1,M
@@ -111,7 +111,7 @@
         END DO
       END DO
 
-      END SUBROUTINE FTTCTB
+      END SUBROUTINE FTTCTB0
 !
 ! -----------------------------------------------------------------------
 !

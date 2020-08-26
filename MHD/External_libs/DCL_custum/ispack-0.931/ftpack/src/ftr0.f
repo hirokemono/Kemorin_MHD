@@ -19,9 +19,9 @@
 !************************************************************************
 !************************************************************************
 !
-!      SUBROUTINE FTTRUI(N,IT,T)
-!      SUBROUTINE FTTRUF(M,N,X,Y,IT,T)
-!      SUBROUTINE FTTRUB(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTRUI0(N,IT,T)
+!      SUBROUTINE FTTRUF0(M,N,X,Y,IT,T)
+!      SUBROUTINE FTTRUB0(M,N,X,Y,IT,T)
 !
       module ftr0
 !
@@ -34,7 +34,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      SUBROUTINE FTTRUI(N,IT,T)
+      SUBROUTINE FTTRUI0(N,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       PARAMETER(PI=3.1415926535897932385D0)
@@ -53,9 +53,9 @@
         T(I,4)=SIN(2*PI*I/N)
    10 CONTINUE
 
-      END SUBROUTINE FTTRUI
+      END SUBROUTINE FTTRUI0
 !************************************************************************
-      SUBROUTINE FTTRUF(M,N,X,Y,IT,T)
+      SUBROUTINE FTTRUF0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION X(M,2,0:N/2-1),Y(M,0:N/2-1,2)
@@ -91,9 +91,9 @@
    40   CONTINUE
    50 CONTINUE
 
-      END SUBROUTINE FTTRUF
+      END SUBROUTINE FTTRUF0
 !************************************************************************
-      SUBROUTINE FTTRUB(M,N,X,Y,IT,T)
+      SUBROUTINE FTTRUB0(M,N,X,Y,IT,T)
 
       IMPLICIT REAL*8(A-H,O-Z)
       DIMENSION X(M,2,0:N/2-1),Y(M,0:N/2-1,2)
@@ -126,7 +126,7 @@
    40   CONTINUE
    50 CONTINUE
 
-      END SUBROUTINE FTTRUB
+      END SUBROUTINE FTTRUB0
 !
 ! -----------------------------------------------------------------------
 !

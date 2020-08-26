@@ -110,6 +110,8 @@
       subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,       &
      &          ispack_t)
 !
+      use ispack_0931
+!
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: maxirt_rtp_smp
 !
@@ -142,6 +144,8 @@
 !
       subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,     &
      &          ispack_t)
+!
+      use ispack_0931
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: maxirt_rtp_smp
@@ -180,6 +184,8 @@
       subroutine sph_FTTRUF_to_send(nnod_rtp, nidx_rtp,                 &
      &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,            &
      &          X_rtp, WS, ispack_t)
+!
+      use ispack_0931
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -257,6 +263,8 @@
       subroutine sph_FTTRUB_from_recv(nnod_rtp, nidx_rtp,               &
      &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp,            &
      &          WR, X_rtp, ispack_t)
+!
+      use ispack_0931
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)

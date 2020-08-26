@@ -14,6 +14,7 @@ LIB_ISPACK3 =       -lispack3_fft
 LIB_ISPACK3_FILE =   libispack3_fft.a
 
 MOD_ISPACK = \
+ispack_0931.o \
 ftdmsg.o \
 ftr0.o \
 ftz0.o \
@@ -102,6 +103,8 @@ module:
 	@echo 'ftcm.o: $$(ISPACK_DIR)/ftcm.f ftr0.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
 	@echo 'ftsm.o: $$(ISPACK_DIR)/ftsm.f ftr0.o' >> $(MAKENAME)
+	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
+	@echo 'ispack_0931.o: $$(ISPACK_DIR)/ispack_0931.f ftdmsg.o ftz0.o ftr0.o ftct.o ftst.o ftcm.o ftsm.o' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 	
