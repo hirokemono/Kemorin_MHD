@@ -171,11 +171,6 @@
       if (iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
       call sph_index_flags_and_params(sph_grps, sph, comms_sph)
 !
-      write(*,*) my_rank, 'sph_rtp%nnod_pole', &
-     &                    sph%sph_rtp%nnod_pole
-      write(*,*) my_rank, 'istack_npole_smp', &
-     &                    sph%sph_rtp%istack_npole_smp
-!
       call calypso_mpi_barrier
 !
       end subroutine check_and_make_SPH_mesh
