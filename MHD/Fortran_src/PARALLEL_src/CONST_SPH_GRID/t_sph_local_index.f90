@@ -74,7 +74,8 @@
 !
       end subroutine alloc_rtp_1d_local_idx
 !
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine alloc_rj_1d_local_idx(sph_rj, sph_lcx)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
