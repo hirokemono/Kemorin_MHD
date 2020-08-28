@@ -33,10 +33,10 @@
       implicit none
 !
 !
-      type sph_local_1d_index
+      type sph_local_1d_index_rj
         integer(kind = kint), allocatable :: idx_local_rj_r(:)
         integer(kind = kint), allocatable :: idx_local_rj_j(:)
-      end type sph_local_1d_index
+      end type sph_local_1d_index_rj
 !
       type sph_local_1d_index_rtp
         integer(kind = kint), allocatable :: idx_local_rtp_r(:)
