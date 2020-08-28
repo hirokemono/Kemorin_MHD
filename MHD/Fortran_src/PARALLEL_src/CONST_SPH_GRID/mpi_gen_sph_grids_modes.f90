@@ -111,6 +111,7 @@
      &   (sph_tmp, sph%sph_params, sph%sph_rtp, sph%sph_rj)
       call copy_each_global_sph_resolution                              &
      &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
+      call calypso_mpi_barrier
 !
 !  ========= Generate each spherical harmonics table ===================
 !
@@ -134,6 +135,8 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
       call alloc_rj_1d_local_idx(sph%sph_rj, sph_lcx_m)
+      call calypso_mpi_barrier
+      write(*,*) 'const_sph_rj_modes in', my_rank
       call const_sph_rj_modes                                           &
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
@@ -141,11 +144,15 @@
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    comms_sph%comm_rj, sph_grp, sph_lcx_m)
       call dealloc_rj_1d_local_idx(sph_lcx_m)
+      call calypso_mpi_barrier
+      write(*,*) 'const_sph_rj_modes out', my_rank
 !
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+7)
+      call calypso_mpi_barrier
+       write(*,*) 'dealloc_comm_stacks_sph out', my_rank
 !
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
