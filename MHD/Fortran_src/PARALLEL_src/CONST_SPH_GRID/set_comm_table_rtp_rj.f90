@@ -145,8 +145,18 @@
 !
       call copy_sph_1d_gl_idx_rj(s3d_radius, sph_gl1d, sph_rj)
 !
+      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'set_global_sph_rj_id', id_rank
+      write(*,*) my_rank, 'stk_lc1d%istack_idx_local_rj_r',  &
+     &                   size(stk_lc1d%istack_idx_local_rj_r)
+      write(*,*) my_rank, 's3d_ranks%ndomain_rj(1)',  &
+     &                   s3d_ranks%ndomain_rj(1)
+      write(*,*) my_rank, 'sph_rj%inod_rj_center',  &
+     &                   sph_rj%inod_rj_center
+      write(*,*) my_rank, 'sph_rj%nnod_rj',  &
+     &                   sph_rj%nnod_rj
+
       call set_global_sph_rj_id(s3d_ranks, stk_lc1d, sph_rj)
 !
       if(iflag_debug .gt. 0) then
