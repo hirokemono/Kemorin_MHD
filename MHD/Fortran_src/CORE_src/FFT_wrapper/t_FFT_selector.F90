@@ -144,7 +144,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
       else if(iflag_FFT .eq. iflag_ISPACK3) then
-        if(iflag_debug .eq. 0) write(*,*) 'Finalize ISPACK V3.0.1'
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
         call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
