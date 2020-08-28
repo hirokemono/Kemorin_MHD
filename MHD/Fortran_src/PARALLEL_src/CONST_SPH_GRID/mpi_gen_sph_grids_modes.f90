@@ -135,7 +135,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
       call calypso_mpi_barrier
-      write(*,*) my_rank, 'sph_rj%nidx_global_rj', sph_rj%nidx_global_rj
+      write(*,*) my_rank, 'sph_rj%nidx_global_rj', sph%sph_rj%nidx_global_rj
       call alloc_rj_1d_local_idx(sph%sph_rj, sph_lcx_m)
       call calypso_mpi_barrier
       write(*,*) 'const_sph_rj_modes in', my_rank
