@@ -108,6 +108,7 @@
      &          sph_params, sph_rtp, sph_rj, comm_rj_lc,                &
      &          sph_grp_lc, sph_lcx)
 !
+      use calypso_mpi
       use set_sph_groups
       use copy_sph_1d_global_index
       use set_local_sphere_param
