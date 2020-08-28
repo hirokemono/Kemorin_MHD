@@ -102,8 +102,6 @@
 !>      Structure for parallel spherical mesh table
       type(sph_comm_tbl), allocatable :: comm_rtm_mul(:)
 !
-      type(sph_local_1d_index) :: sph_lcx_m
-!
 !  =========  Set global resolutions ===================================
 !
       call const_sph_global_parameters(gen_sph, sph_tmp)
@@ -135,17 +133,13 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
       call calypso_mpi_barrier
-      write(*,*) my_rank, 'sph_rj%nidx_global_rj', sph%sph_rj%nidx_global_rj
-      call alloc_rj_1d_local_idx(sph%sph_rj, sph_lcx_m)
-      call calypso_mpi_barrier
       write(*,*) 'const_sph_rj_modes in', my_rank
       call const_sph_rj_modes                                           &
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    comms_sph%comm_rj, sph_grp, sph_lcx_m)
-      call dealloc_rj_1d_local_idx(sph_lcx_m)
+     &    comms_sph%comm_rj, sph_grp)
       call calypso_mpi_barrier
       write(*,*) 'const_sph_rj_modes out', my_rank
 !
@@ -176,14 +170,11 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical grids for domain ',  my_rank
-      call alloc_rtp_1d_local_idx(sph%sph_rtp, sph_lcx_m)
       call const_sph_rtp_grids(my_rank, nprocs, comm_rtm_mul,           &
      &    gen_sph%added_radial_grp, gen_sph%r_layer_grp,                &
      &    gen_sph%med_layer_grp, gen_sph%s3d_ranks, gen_sph%s3d_radius, &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_params, sph%sph_rtp, comms_sph%comm_rtp,              &
-     &    sph_grp, sph_lcx_m)
-      call dealloc_rtp_1d_local_idx(sph_lcx_m)
+     &    sph%sph_params, sph%sph_rtp, comms_sph%comm_rtp, sph_grp)
 !
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
@@ -221,8 +212,6 @@
 !>      Structure for parallel spherical mesh table
       type(sph_comm_tbl), allocatable :: comm_rlm_mul(:)
 !
-      type(sph_local_1d_index) :: sph_lcx_m
-!
       integer :: ip
 !
 !  =========  Set global resolutions ===================================
@@ -255,14 +244,12 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
-      call alloc_rj_1d_local_idx(sph%sph_rj, sph_lcx_m)
       call const_sph_rj_modes                                           &
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
      &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    comms_sph%comm_rj, sph_grp, sph_lcx_m)
-      call dealloc_rj_1d_local_idx(sph_lcx_m)
+     &    comms_sph%comm_rj, sph_grp)
 !
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
