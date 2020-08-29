@@ -216,7 +216,6 @@
 !
 !  =========  Set global resolutions ===================================
 !
-      write(*,*) 'Tako!'
       call const_sph_global_parameters(gen_sph, sph_tmp)
       call copy_each_sph_param_from_ctl                                 &
      &   (sph_tmp, sph%sph_params, sph%sph_rtp, sph%sph_rj)
