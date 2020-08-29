@@ -65,8 +65,11 @@
         end if
       end do
 !
-      call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
-     &                               cast_long(ndomain_sph), MPI_SUM)
+      call MPI_allREDUCE                                                &
+     &   (nneib_rtm_lc(1), nneib_rtm_gl(1), int(ndomain_sph),           &
+     &    CALYPSO_INTEGER, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!      call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
+!     &                               cast_long(ndomain_sph), MPI_SUM)
       deallocate(nneib_rtm_lc)
 !
       do ip = 1, ndomain_sph
