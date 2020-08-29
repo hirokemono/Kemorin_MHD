@@ -24,14 +24,6 @@
 !
       implicit none
 !
-      integer(kind = kint), allocatable :: nneib_rtm_lc(:)
-      integer(kind = kint), allocatable :: nneib_rtm_gl(:)
-!
-      private :: nneib_rtm_lc, nneib_rtm_gl
-!
-      private :: allocate_nneib_sph_rtm_tmp
-      private :: deallocate_nneib_sph_rtm_tmp
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -51,12 +43,22 @@
       integer(kind = kint) :: iflag, i
       type(sph_comm_tbl) :: comm_tmp
 !
+      integer(kind = kint), allocatable :: nneib_rtm_lc(:)
+      integer(kind = kint), allocatable :: nneib_rtm_gl(:)
+!
 !
 !      if(i_debug .gt. 0) write(*,*) 'barrier', my_rank
       call calypso_mpi_barrier
       if(my_rank .eq. 0) write(*,*) 'barrier finished'
 !
-      call allocate_nneib_sph_rtm_tmp(ndomain_sph)
+      allocate(nneib_rtm_lc(ndomain_sph))
+      allocate(nneib_rtm_gl(ndomain_sph))
+!
+!$omp parallel workshare
+      nneib_rtm_lc(1:ndomain_sph) = 0
+      nneib_rtm_gl(1:ndomain_sph) = 0
+!$omp end parallel workshare
+!
       do ip = 1, ndomain_sph
         if(mod(ip-1,nprocs) .eq. my_rank) then
           nneib_rtm_lc(ip) = comm_sph(ip)%nneib_domain
@@ -65,6 +67,7 @@
 !
       call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
      &                               cast_long(ndomain_sph), MPI_SUM)
+      deallocate(nneib_rtm_lc)
 !
       do ip = 1, ndomain_sph
         iroot = int(mod(ip-1,nprocs))
@@ -105,7 +108,7 @@
 !
         call dealloc_type_sph_comm_stack(comm_tmp)
       end do
-      call deallocate_nneib_sph_rtm_tmp
+      deallocate(nneib_rtm_gl)
 !
 !      do ip = 1, ndomain_sph
 !        write(50+my_rank,*) 'ip', ip
@@ -144,28 +147,5 @@
       end subroutine dealloc_comm_stacks_sph
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_nneib_sph_rtm_tmp(ndomain_sph)
-!
-      integer(kind = kint), intent(in) :: ndomain_sph
-!
-      allocate(nneib_rtm_lc(ndomain_sph))
-      allocate(nneib_rtm_gl(ndomain_sph))
-      nneib_rtm_lc = 0
-      nneib_rtm_gl = 0
-!
-      end subroutine allocate_nneib_sph_rtm_tmp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_nneib_sph_rtm_tmp
-!
-!
-      deallocate(nneib_rtm_lc, nneib_rtm_gl)
-!
-      end subroutine deallocate_nneib_sph_rtm_tmp
-!
-! -----------------------------------------------------------------------
 !
       end module bcast_comm_stacks_sph
