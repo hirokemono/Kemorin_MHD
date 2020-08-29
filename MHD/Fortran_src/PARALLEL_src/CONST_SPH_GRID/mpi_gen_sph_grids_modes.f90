@@ -87,6 +87,8 @@
       use gen_sph_grids_modes
       use copy_para_sph_global_params
 !
+      use copy_sph_1d_global_index
+!
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), intent(inout) :: sph_tmp
@@ -132,6 +134,13 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
+!
+      call copy_gl_2_local_rj_param                                     &
+     &   (my_rank, gen_sph%s3d_ranks, gen_sph%sph_lcp, &
+     &    gen_sph%stk_lc1d, sph%sph_rj)
+      call alloc_sph_1d_index_rj(sph%sph_rj)
+      if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph%sph_rj%nidx_rj(:)
+      call dealloc_sph_1d_index_rj(sph%sph_rj)
 !
       call const_sph_rj_modes                                           &
      &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
