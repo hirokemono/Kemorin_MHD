@@ -135,9 +135,8 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
 !
-      call copy_gl_2_local_rj_param                                     &
-     &   (my_rank, gen_sph%s3d_ranks, gen_sph%sph_lcp, &
-     &    gen_sph%stk_lc1d, sph%sph_rj)
+      sph%sph_rj%nidx_rj(1) = 1793
+      sph%sph_rj%nidx_rj(2) =  147
       call alloc_sph_1d_index_rj(sph%sph_rj)
       if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph%sph_rj%nidx_rj(:)
       call dealloc_sph_1d_index_rj(sph%sph_rj)
