@@ -121,7 +121,7 @@
 !
       call copy_gl_2_local_rlm_param                                    &
      &   (my_rank, gen_sph%s3d_ranks, gen_sph%sph_lcp,                  &
-     &    gen_sph%stk_lc1d, sph_rlm)
+     &    gen_sph%stk_lc1d, sph%sph_rlm)
       call alloc_sph_1d_index_rlm(sph%sph_rlm)
       if(my_rank .eq. 0) write(*,*) 'nidx_rlm', sph%sph_rlm%nidx_rlm(:)
       call dealloc_sph_1d_index_rlm(sph%sph_rlm)
