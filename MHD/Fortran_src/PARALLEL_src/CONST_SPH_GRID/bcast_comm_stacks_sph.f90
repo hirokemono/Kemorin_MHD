@@ -25,6 +25,9 @@
 !
       implicit none
 !
+      integer(kind = kint), allocatable, private :: nneib_rtm_lc(:)
+      integer(kind = kint), allocatable, private :: nneib_rtm_gl(:)
+!
       private :: set_bcast_comm_stacks_sph
 !
 ! ----------------------------------------------------------------------
@@ -45,8 +48,6 @@
 !      integer(kind = kint) :: ip
       integer(kind = kint) :: iflag, i
       type(sph_comm_tbl) :: comm_tmp
-!
-      integer(kind = kint), allocatable :: nneib_rtm_gl(:)
 !
 !
       call calypso_mpi_barrier
@@ -82,15 +83,12 @@
       integer(kind = kint) :: ip
       integer(kind = kint) :: iflag, i
 !
-      integer(kind = kint), allocatable :: nneib_rtm_lc(:)
-      integer(kind = kint), allocatable :: nneib_rtm_gl(:)
-!
 !
       call calypso_mpi_barrier
       if(my_rank .eq. 0) write(*,*) 'barrier finished'
 !
-      allocate(nneib_rtm_lc(ndomain_sph))
       allocate(nneib_rtm_gl(ndomain_sph))
+      call allocate_nneib_rtm_lc(ndomain_sph)
 !
 !$omp parallel workshare
       nneib_rtm_lc(1:ndomain_sph) = 0
@@ -105,7 +103,7 @@
 !
       call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
      &                               cast_long(ndomain_sph), MPI_SUM)
-      deallocate(nneib_rtm_lc)
+      call deallocate_nneib_rtm_lc
 !
       call set_bcast_comm_stacks_sph                                    &
      &   (ndomain_sph, nneib_rtm_gl, comm_sph)
@@ -206,6 +204,19 @@
       end do
 !
       end subroutine set_bcast_comm_stacks_sph
+!
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_nneib_rtm_lc(ndomain_sph)
+      integer(kind = kint), intent(in) :: ndomain_sph
+      allocate(nneib_rtm_lc(ndomain_sph))
+      end subroutine allocate_nneib_rtm_lc
+!
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_nneib_rtm_lc
+      deallocate(nneib_rtm_lc)
+      end subroutine deallocate_nneib_rtm_lc
 !
 ! ----------------------------------------------------------------------
 !
