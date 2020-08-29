@@ -129,7 +129,7 @@
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
       call alloc_sph_1d_index_rj(sph_rj)
-      if(my_rank .eq. 0) write(*,*)  'temporal', size(rj%a_r_1d_rj_r)
+      if(my_rank .eq. 0) write(*,*) 'temporal', size(sph_rj%a_r_1d_rj_r)
       call dealloc_sph_1d_index_rj(sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
