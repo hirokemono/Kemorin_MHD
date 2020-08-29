@@ -113,22 +113,16 @@
      &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
       call calypso_mpi_barrier
 !
-      sph%sph_rj%nidx_rj(1) = 1793
-      sph%sph_rj%nidx_rj(2) =  147
-      call alloc_sph_1d_index_rj(sph%sph_rj)
-      if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph%sph_rj%nidx_rj(:)
-      call dealloc_sph_1d_index_rj(sph%sph_rj)
+!      sph%sph_rj%nidx_rj(1) = 1793
+!      sph%sph_rj%nidx_rj(2) =  147
+!      call alloc_sph_1d_index_rj(sph%sph_rj)
+!      if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph%sph_rj%nidx_rj(:)
+!      call dealloc_sph_1d_index_rj(sph%sph_rj)
 !
 !  ========= Generate each spherical harmonics table ===================
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))
-!
-      sph%sph_rlm%nidx_rlm(1) = 17
-      sph%sph_rlm%nidx_rlm(2) = 16384
-      call alloc_sph_1d_index_rlm(sph%sph_rlm)
-      if(my_rank .eq. 0) write(*,*) 'nidx_rlm', sph%sph_rlm%nidx_rlm(:)
-      call dealloc_sph_1d_index_rlm(sph%sph_rlm)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'start rlm table generation for', my_rank
