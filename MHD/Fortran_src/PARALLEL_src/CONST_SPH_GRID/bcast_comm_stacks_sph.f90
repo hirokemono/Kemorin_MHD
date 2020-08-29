@@ -54,6 +54,7 @@
 !
 !
 !      if(i_debug .gt. 0) write(*,*) 'barrier', my_rank
+      call calypso_mpi_barrier
       if(my_rank .eq. 0) write(*,*) 'barrier finished'
 !
       call allocate_nneib_sph_rtm_tmp(ndomain_sph)
@@ -63,10 +64,8 @@
         end if
       end do
 !
-!
-      num64 = int(ndomain_sph,KIND(num64))
-      call calypso_mpi_allreduce_int                                    &
-     &   (nneib_rtm_lc(1), nneib_rtm_gl(1), num64, MPI_SUM)
+      call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
+     &                               cast_long(ndomain_sph), MPI_SUM)
 !
       do ip = 1, ndomain_sph
         iroot = int(mod(ip-1,nprocs))
