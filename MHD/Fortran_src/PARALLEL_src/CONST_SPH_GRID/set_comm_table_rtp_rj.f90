@@ -418,6 +418,12 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
+        sph_rlm_lc%nidx_rlm(1) = 17
+        sph_rlm_lc%nidx_rlm(2) = 16384
+        call alloc_sph_1d_index_rlm(sph_rlm_lc)
+!      if(id_rank .eq. 0) write(*,*) 'nidx_rlm', sph_rlm_lc%nidx_rlm(:)
+        call dealloc_sph_1d_index_rlm(sph_rlm_lc)
+!
         call const_sph_rlm_modes(id_org_rank,                           &
      &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
      &      sph_rlm_lc, comm_rlm_lc)

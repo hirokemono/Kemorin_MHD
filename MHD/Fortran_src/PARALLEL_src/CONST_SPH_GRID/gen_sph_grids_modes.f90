@@ -70,12 +70,6 @@
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
 !
-      sph_rlm%nidx_rlm(1) = 17
-      sph_rlm%nidx_rlm(2) = 16384
-      call alloc_sph_1d_index_rlm(sph_rlm)
-!      if(id_rank .eq. 0) write(*,*) 'nidx_rlm', sph_rlm%nidx_rlm(:)
-      call dealloc_sph_1d_index_rlm(sph_rlm)
-!
       call copy_gl_2_local_rlm_param                                    &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rlm)
 !
