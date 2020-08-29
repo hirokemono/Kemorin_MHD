@@ -87,7 +87,7 @@
       use gen_sph_grids_modes
       use copy_para_sph_global_params
 !
-      use copy_sph_1d_global_index
+      use set_local_sphere_by_global
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !>       Structure of grid and spectr data for spherical spectr method
