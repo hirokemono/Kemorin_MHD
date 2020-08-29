@@ -139,10 +139,6 @@
       call copy_gl_2_local_rj_param                                     &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rj)
 !
-      call alloc_sph_1d_index_rj(sph_rj)
-      if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph_rj%nidx_rj(:)
-      call dealloc_sph_1d_index_rj(sph_rj)
-!
       call add_center_mode_rj(id_rank, sph_gl1d, sph_rj)
 !      nnod_rj = sph_rj%nnod_rj
 !      nidx_rj(1:2) = sph_rj%nidx_rj(1:2)
