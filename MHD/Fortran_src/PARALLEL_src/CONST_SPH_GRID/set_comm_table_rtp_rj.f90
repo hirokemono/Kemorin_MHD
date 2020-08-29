@@ -128,6 +128,12 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj_lc
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
+      sph_rj%nidx_rj(1) = 1793
+      sph_rj%nidx_rj(2) =  147
+      call alloc_sph_1d_index_rj(sph_rj)
+      if(my_rank .eq. 0) write(*,*) 'nidx_rj_tako', sph_rj%nidx_rj(:)
+      call dealloc_sph_1d_index_rj(sph_rj)
+!
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
