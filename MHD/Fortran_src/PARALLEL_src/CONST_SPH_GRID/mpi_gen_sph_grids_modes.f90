@@ -125,7 +125,7 @@
       call copy_sph_comm_neib                                           &
      &   (comms_sph%comm_rlm, comm_rlm_mul(my_rank+1))
 !
-      call s_bcast_comm_stacks_sph                                      &
+      call mpi_bcast_comm_stacks_sph                                    &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
@@ -163,7 +163,7 @@
       call copy_sph_comm_neib                                           &
      &   (comms_sph%comm_rtm, comm_rtm_mul(my_rank+1))
 !
-      call s_bcast_comm_stacks_sph                                      &
+      call mpi_bcast_comm_stacks_sph                                    &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
@@ -236,7 +236,7 @@
       ip = my_rank + 1
       call copy_sph_comm_neib(comms_sph%comm_rlm, comm_rlm_mul(ip))
 !
-      call s_bcast_comm_stacks_sph                                      &
+      call mpi_bcast_comm_stacks_sph                                    &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !

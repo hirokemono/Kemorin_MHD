@@ -68,7 +68,7 @@
      &     (sph_mesh(ip)%sph_comms%comm_rlm, comm_rlm_mul(ip))
       end do
 !
-      call s_bcast_comm_stacks_sph(num_pe, comm_rlm_mul)
+      call para_bcast_comm_stacks_sph(num_pe, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
@@ -126,7 +126,7 @@
         call copy_sph_comm_neib                                         &
      &     (sph_mesh(ip)%sph_comms%comm_rtm, comm_rtm_mul(ip))
       end do
-      call s_bcast_comm_stacks_sph(num_pe, comm_rtm_mul)
+      call para_bcast_comm_stacks_sph(num_pe, comm_rtm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
