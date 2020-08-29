@@ -132,6 +132,10 @@
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rj)
+      write(*,*) my_rank, 'nidx_rj', sph_rj%nidx_rj(:)
+!
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(200,'tako')
 !
       call alloc_sph_1d_index_rj(sph_rj)
       if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph_rj%nidx_rj(:)
