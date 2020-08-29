@@ -47,7 +47,6 @@
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
       integer :: iroot
-      integer(kind = kint_gl) :: num64
       integer(kind = kint) :: ip
       integer(kind = kint) :: iflag, i
       type(sph_comm_tbl) :: comm_tmp
