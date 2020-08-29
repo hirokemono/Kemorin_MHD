@@ -128,14 +128,14 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj_lc
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
-      call alloc_sph_1d_index_rj(sph_rj)
-      if(my_rank .eq. 0) write(*,*) 'temporal', size(sph_rj%a_r_1d_rj_r)
-      call dealloc_sph_1d_index_rj(sph_rj)
-!
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rj)
+!
+      call alloc_sph_1d_index_rj(sph_rj)
+      if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph_rj%nidx_rj(:)
+      call dealloc_sph_1d_index_rj(sph_rj)
 !
       call add_center_mode_rj(id_rank, sph_gl1d, sph_rj)
 !      nnod_rj = sph_rj%nnod_rj
