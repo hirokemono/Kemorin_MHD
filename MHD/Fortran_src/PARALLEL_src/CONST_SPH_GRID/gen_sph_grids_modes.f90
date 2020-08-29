@@ -73,8 +73,6 @@
       call copy_gl_2_local_rlm_param                                    &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rlm)
 !
-!      nnod_rlm = sph_rlm%nnod_rlm
-!      nidx_rlm(1:2) = sph_rlm%nidx_rlm(1:2)
       call alloc_spheric_param_rlm(sph_rlm)
       call alloc_sph_1d_index_rlm(sph_rlm)
 !

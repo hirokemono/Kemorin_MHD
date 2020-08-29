@@ -119,6 +119,13 @@
       if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph%sph_rj%nidx_rj(:)
       call dealloc_sph_1d_index_rj(sph%sph_rj)
 !
+      call copy_gl_2_local_rlm_param                                    &
+     &   (my_rank, gen_sph%s3d_ranks, gen_sph%sph_lcp,                  &
+     &    gen_sph%stk_lc1d, sph_rlm)
+      call alloc_sph_1d_index_rlm(sph%sph_rlm)
+      if(my_rank .eq. 0) write(*,*) 'nidx_rlm', sph%sph_rlm%nidx_rlm(:)
+      call dealloc_sph_1d_index_rlm(sph%sph_rlm)
+!
 !  ========= Generate each spherical harmonics table ===================
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
