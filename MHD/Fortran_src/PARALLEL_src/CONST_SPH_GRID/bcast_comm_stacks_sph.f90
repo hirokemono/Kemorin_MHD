@@ -107,10 +107,6 @@
       end do
       call deallocate_nneib_rtm_lc
 !
-        if(my_rank .eq. 0) then
-          write(*,*) size(nneib_rtm_gl), 'nneib_rtm_gl', nneib_rtm_gl
-        end if
-!
       call set_bcast_comm_stacks_sph                                    &
      &   (ndomain_sph, nneib_rtm_gl, comm_sph)
       deallocate(nneib_rtm_gl)
@@ -175,11 +171,8 @@
         call alloc_sph_comm_stack(comm_tmp)
 !
         if(iroot .eq. my_rank) then
-          if(comm_sph(ip)%nneib_domain .ne. comm_tmp%nneib_domain)  &
-     &        write(*,*) my_rank, 'Failed:', comm_sph(ip)%nneib_domain,&
-     &         comm_tmp%nneib_domain, nneib_rtm_tmp(ip)
           comm_tmp%istack_sr(0) = comm_sph(ip)%istack_sr(0)
-          do i = 1, comm_sph(ip)%nneib_domain
+          do i = 1, comm_tmp%nneib_domain
             comm_tmp%id_domain(i) = comm_sph(ip)%id_domain(i)
             comm_tmp%istack_sr(i) = comm_sph(ip)%istack_sr(i)
           end do
