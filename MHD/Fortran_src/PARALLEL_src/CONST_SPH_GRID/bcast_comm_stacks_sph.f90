@@ -192,6 +192,7 @@
 !
         if(iflag .eq. 0) then
           comm_sph(ip)%nneib_domain = 0
+          call alloc_sph_comm_stack(comm_sph(ip))
         else if(iroot .ne. my_rank) then
 !          write(*,*) 'allocate rtm:', my_rank, ip
           comm_sph(ip)%nneib_domain = comm_tmp%nneib_domain
