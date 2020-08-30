@@ -175,6 +175,9 @@
      &       = comm_sph(ip)%id_domain(1:comm_sph(ip)%nneib_domain)
           comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain)               &
      &       = comm_sph(ip)%istack_sr(0:comm_sph(ip)%nneib_domain)
+        else
+          comm_tmp%id_domain(1:comm_sph(ip)%nneib_domain) = 0
+          comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain) = 0
         end if
 !
         call calypso_mpi_bcast_int(comm_tmp%id_domain(1),               &
@@ -193,7 +196,7 @@
         if(iflag .eq. 0) then
           comm_sph(ip)%nneib_domain = 0
         else if(iroot .ne. my_rank) then
-          write(*,*) 'allocate rtm:', my_rank, ip
+!          write(*,*) 'allocate rtm:', my_rank, ip
           comm_sph(ip)%nneib_domain = comm_tmp%nneib_domain
           call alloc_sph_comm_stack(comm_sph(ip))
           comm_sph(ip)%id_domain(1:comm_sph(ip)%nneib_domain)           &
