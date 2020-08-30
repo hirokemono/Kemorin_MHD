@@ -165,25 +165,25 @@
       integer(kind = kint) :: i, j
 !
 !
-      write(*,*) my_rank, sph_rj%ist_rj(1), 'Check idx_global_rj_r', &
-     &        size(sph_gl1d%idx_global_rj_r), sph_rj%nidx_rj(1)
-      do i = 1, sph_rj%nidx_rj(1)
-        if(sph_gl1d%idx_global_rj_r(i) .le. 0) write(*,*) &
-     &          'aho!', my_rank, i, sph_gl1d%idx_global_rj_r(i)
-        if(sph_gl1d%idx_global_rj_r(i) .gt. sph_rj%nidx_rj(1)) write(*,*) &
-     &          'Baka!', my_rank, i, sph_gl1d%idx_global_rj_r(i)
-      end do
+!      write(*,*) my_rank, sph_rj%ist_rj(1), 'Check idx_global_rj_r', &
+!     &        size(sph_gl1d%idx_global_rj_r), sph_rj%nidx_rj(1)
+!      do i = 1, sph_rj%nidx_rj(1)
+!        if(sph_gl1d%idx_global_rj_r(i) .le. 0) write(*,*) &
+!     &          'aho!', my_rank, i, sph_gl1d%idx_global_rj_r(i)
+!        if(sph_gl1d%idx_global_rj_r(i) .gt. sph_rj%nidx_rj(1)) write(*,*) &
+!     &          'Baka!', my_rank, i, sph_gl1d%idx_global_rj_r(i)
+!      end do
       do i = 1, sph_rj%nidx_rj(1)
         j = i - 1 + sph_rj%ist_rj(1)
         sph_rj%idx_gl_1d_rj_r(i) = sph_gl1d%idx_global_rj_r(j)
       end do
-!      write(*,*) 'Check idx_gl_1d_rj_r' 
-!      do i = 1, sph_rj%nidx_rj(1)
-!        if(sph_rj%idx_gl_1d_rj_r(i) .le. 0) write(*,*) &
-!     &          'aho!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
-!        if(sph_rj%idx_gl_1d_rj_r(i) .gt. sph_rj%nidx_rj(1)) write(*,*) &
-!     &          'Baka!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
-!      end do
+      write(*,*) 'Check idx_gl_1d_rj_r' 
+      do i = 1, sph_rj%nidx_rj(1)
+        if(sph_rj%idx_gl_1d_rj_r(i) .le. 0) write(*,*) &
+     &          'aho!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
+        if(sph_rj%idx_gl_1d_rj_r(i) .gt. sph_rj%nidx_rj(1)) write(*,*) &
+     &          'Baka!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
+      end do
       do i = 1, sph_rj%nidx_rj(1)
         j = sph_rj%idx_gl_1d_rj_r(i)
         sph_rj%radius_1d_rj_r(i) = s3d_radius%radius_1d_gl(j)
