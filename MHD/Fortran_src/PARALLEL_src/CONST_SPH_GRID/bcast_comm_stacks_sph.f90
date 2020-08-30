@@ -171,6 +171,9 @@
         call alloc_sph_comm_stack(comm_tmp)
 !
         if(iroot .eq. my_rank) then
+          if(comm_sph(ip)%nneib_domain .ne. comm_tmp%nneib_domain)  &
+     &        write(*,*) my_rank, 'Failed:', &
+     &        comm_sph(ip)%nneib_domain, comm_tmp%nneib_domain
           comm_tmp%istack_sr(0) = comm_sph(ip)%istack_sr(0)
           do i = 1, comm_sph(ip)%nneib_domain
             comm_tmp%id_domain(i) = comm_sph(ip)%id_domain(i)
