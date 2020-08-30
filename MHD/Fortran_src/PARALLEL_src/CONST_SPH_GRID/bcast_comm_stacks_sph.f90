@@ -48,7 +48,7 @@
 !
 !
       call calypso_mpi_barrier
-      if(my_rank .eq. 0) write(*,*) 'barrier finished'
+!      if(my_rank .eq. 0) write(*,*) 'barrier finished'
 !
       allocate(nneib_rtm_gl(ndomain_sph))
       call calypso_mpi_allgather_one_int                                &
@@ -80,7 +80,7 @@
 !
 !
       call calypso_mpi_barrier
-      if(my_rank .eq. 0) write(*,*) 'barrier finished'
+!      if(my_rank .eq. 0) write(*,*) 'barrier finished'
 !
       allocate(nneib_rtm_gl(ndomain_sph))
 !
