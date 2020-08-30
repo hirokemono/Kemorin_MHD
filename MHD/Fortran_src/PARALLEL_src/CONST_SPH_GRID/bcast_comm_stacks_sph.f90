@@ -80,7 +80,7 @@
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
       integer :: iroot
-      integer(kind = kint) :: ip
+      integer(kind = kint) :: ip, jp
       integer(kind = kint) :: iflag, i
 !
 !
@@ -88,23 +88,28 @@
       if(my_rank .eq. 0) write(*,*) 'barrier finished'
 !
       allocate(nneib_rtm_gl(ndomain_sph))
-      call allocate_nneib_rtm_lc(ndomain_sph)
 !
 !$omp parallel workshare
-      nneib_rtm_lc(1:ndomain_sph) = 0
       nneib_rtm_gl(1:ndomain_sph) = 0
 !$omp end parallel workshare
 !
-      do ip = 1, ndomain_sph
-        if(mod(ip-1,nprocs) .eq. my_rank) then
-          nneib_rtm_lc(ip) = comm_sph(ip)%nneib_domain
-        end if
-      end do
+      call allocate_nneib_rtm_lc
 !
-      call calypso_mpi_barrier
-      call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
-     &                               cast_long(ndomain_sph), MPI_SUM)
-      call calypso_mpi_barrier
+      do i = 0, (ndomain_sph-1)/nprocs
+        id_rank = my_rank + i * nprocs
+        if(id_rank .lt. ndomain_sph) then
+          num_tmp = comm_sph(id_rank+1)%nneib_domain
+        else
+          num_tmp = 0
+        end if
+!
+        call calypso_mpi_allgather_one_int(num_tmp, nneib_rtm_lc(1))
+!
+        do ip = 1, nprocs
+          jp = ip + i * nprocs
+          if(jp .le. ndomain_sph) nneib_rtm_gl(jp) = nneib_rtm_gl(ip)
+        end do
+      end do
       call deallocate_nneib_rtm_lc
 !
       call set_bcast_comm_stacks_sph                                    &
@@ -209,9 +214,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_nneib_rtm_lc(ndomain_sph)
-      integer(kind = kint), intent(in) :: ndomain_sph
-      allocate(nneib_rtm_lc(ndomain_sph))
+      subroutine allocate_nneib_rtm_lc
+      allocate(nneib_rtm_lc(nprocs))
+      nneib_rtm_gl(1:nprocs) = 0
       end subroutine allocate_nneib_rtm_lc
 !
 ! ----------------------------------------------------------------------
