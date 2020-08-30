@@ -44,10 +44,7 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
-      integer :: iroot
 !      integer(kind = kint) :: ip
-      integer(kind = kint) :: iflag, i
-      type(sph_comm_tbl) :: comm_tmp
 !
 !
       call calypso_mpi_barrier
@@ -79,9 +76,7 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
-      integer :: iroot
-      integer(kind = kint) :: ip, jp
-      integer(kind = kint) :: iflag, i
+      integer(kind = kint) :: i, ip, jp, num_tmp
 !
 !
       call calypso_mpi_barrier
