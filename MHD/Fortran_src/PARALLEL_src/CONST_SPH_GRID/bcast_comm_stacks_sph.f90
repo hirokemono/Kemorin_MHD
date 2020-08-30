@@ -102,7 +102,7 @@
 !
         do ip = 1, nprocs
           jp = ip + i * nprocs
-          if(jp .le. ndomain_sph) nneib_rtm_gl(jp) = nneib_rtm_gl(ip)
+          if(jp .le. ndomain_sph) nneib_rtm_gl(jp) = nneib_rtm_lc(ip)
         end do
       end do
       call deallocate_nneib_rtm_lc
@@ -154,13 +154,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_bcast_comm_stacks_sph                              &
-     &         (ndomain_sph, nneib_rtm_gl, comm_sph)
+     &         (ndomain_sph, nneib_rtm_tmp, comm_sph)
 !
       use calypso_mpi_int
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ndomain_sph
-      integer(kind = kint), intent(in) :: nneib_rtm_gl(ndomain_sph)
+      integer(kind = kint), intent(in) :: nneib_rtm_tmp(ndomain_sph)
       type(sph_comm_tbl), intent(inout) :: comm_sph(ndomain_sph)
 !
       integer :: iroot
@@ -171,13 +171,13 @@
 !
       do ip = 1, ndomain_sph
         iroot = int(mod(ip-1,nprocs))
-        comm_tmp%nneib_domain = nneib_rtm_gl(ip)
+        comm_tmp%nneib_domain = nneib_rtm_tmp(ip)
         call alloc_sph_comm_stack(comm_tmp)
 !
         if(iroot .eq. my_rank) then
           if(comm_sph(ip)%nneib_domain .ne. comm_tmp%nneib_domain)  &
      &        write(*,*) my_rank, 'Failed:', comm_sph(ip)%nneib_domain,&
-     &         comm_tmp%nneib_domain, nneib_rtm_gl(ip)
+     &         comm_tmp%nneib_domain, nneib_rtm_tmp(ip)
           comm_tmp%istack_sr(0) = comm_sph(ip)%istack_sr(0)
           do i = 1, comm_sph(ip)%nneib_domain
             comm_tmp%id_domain(i) = comm_sph(ip)%id_domain(i)
