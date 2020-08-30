@@ -101,8 +101,10 @@
         end if
       end do
 !
+      call calypso_mpi_barrier
       call calypso_mpi_allreduce_int(nneib_rtm_lc(1), nneib_rtm_gl(1),  &
      &                               cast_long(ndomain_sph), MPI_SUM)
+      call calypso_mpi_barrier
       call deallocate_nneib_rtm_lc
 !
       call set_bcast_comm_stacks_sph                                    &
