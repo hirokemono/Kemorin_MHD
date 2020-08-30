@@ -113,11 +113,12 @@
      &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
       call calypso_mpi_barrier
 !
-!      sph%sph_rj%nidx_rj(1) = 1793
-!      sph%sph_rj%nidx_rj(2) =  147
-!      call alloc_sph_1d_index_rj(sph%sph_rj)
-!      if(my_rank .eq. 0) write(*,*) 'nidx_rj', sph%sph_rj%nidx_rj(:)
-!      call dealloc_sph_1d_index_rj(sph%sph_rj)
+      if(my_rank .eq. 0) write(*,*) id_rank, &
+     &    'stk_lc1d%istack_idx_local_rj_r global', &
+     &     stk_lc1d%istack_idx_local_rj_r
+      if(my_rank .eq. 0) write(*,*) id_rank, &
+     &    'stk_lc1d%istack_idx_local_rj_j global', &
+     &     stk_lc1d%istack_idx_local_rj_j
 !
 !  ========= Generate each spherical harmonics table ===================
 !
