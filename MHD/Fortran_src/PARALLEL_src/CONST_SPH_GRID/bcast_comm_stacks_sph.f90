@@ -202,6 +202,7 @@
           comm_sph(ip)%istack_sr(0:comm_sph(ip)%nneib_domain)           &
      &       = comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain)
         end if
+        call calypso_mpi_barrier
 !
         call dealloc_type_sph_comm_stack(comm_tmp)
       end do
