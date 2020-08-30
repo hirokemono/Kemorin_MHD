@@ -170,12 +170,12 @@
         comm_tmp%nneib_domain = nneib_rtm_gl(ip)
         call alloc_sph_comm_stack(comm_tmp)
 !
-!        if(iroot .eq. my_rank) then
-!          comm_tmp%id_domain(1:comm_sph(ip)%nneib_domain)              &
-!     &       = comm_sph(ip)%id_domain(1:comm_sph(ip)%nneib_domain)
-!          comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain)              &
-!     &       = comm_sph(ip)%istack_sr(0:comm_sph(ip)%nneib_domain)
-!        end if
+        if(iroot .eq. my_rank) then
+          comm_tmp%id_domain(1:comm_sph(ip)%nneib_domain)               &
+     &       = comm_sph(ip)%id_domain(1:comm_sph(ip)%nneib_domain)
+          comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain)               &
+     &       = comm_sph(ip)%istack_sr(0:comm_sph(ip)%nneib_domain)
+        end if
 !
 !        call calypso_mpi_bcast_int(comm_tmp%id_domain(1),              &
 !     &      cast_long(comm_tmp%nneib_domain), iroot)
