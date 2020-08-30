@@ -106,7 +106,6 @@
         end do
       end do
       call deallocate_nneib_rtm_lc
-      return
 !
       call set_bcast_comm_stacks_sph                                    &
      &   (ndomain_sph, nneib_rtm_gl, comm_sph)
