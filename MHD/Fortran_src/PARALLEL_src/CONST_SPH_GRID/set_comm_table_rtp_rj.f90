@@ -129,6 +129,9 @@
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
 !
+      if(my_rank .eq. 0) write(*,*) id_rank, &
+     &    's3d_ranks%iglobal_rank_rj(1:2,id_rank)', &
+     &     s3d_ranks%iglobal_rank_rj(1:2,id_rank)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
