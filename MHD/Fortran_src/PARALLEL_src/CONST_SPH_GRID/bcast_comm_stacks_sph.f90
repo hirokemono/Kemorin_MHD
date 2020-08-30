@@ -177,10 +177,10 @@
      &       = comm_sph(ip)%istack_sr(0:comm_sph(ip)%nneib_domain)
         end if
 !
-        call calypso_mpi_bcast_int(comm_tmp%id_domain(1),               &
-     &      cast_long(comm_tmp%nneib_domain), iroot)
-        call calypso_mpi_bcast_int(comm_tmp%istack_sr(1),               &
-     &      cast_long(comm_tmp%nneib_domain), iroot)
+!        call calypso_mpi_bcast_int(comm_tmp%id_domain(1),              &
+!     &      cast_long(comm_tmp%nneib_domain), iroot)
+!        call calypso_mpi_bcast_int(comm_tmp%istack_sr(1),              &
+!     &      cast_long(comm_tmp%nneib_domain), iroot)
 !
         iflag = 0
         do i = 1, comm_tmp%nneib_domain
@@ -192,7 +192,6 @@
 !
         if(iflag .eq. 0) then
           comm_sph(ip)%nneib_domain = 0
-          call alloc_sph_comm_stack(comm_sph(ip))
         else if(iroot .ne. my_rank) then
 !          write(*,*) 'allocate rtm:', my_rank, ip
           comm_sph(ip)%nneib_domain = comm_tmp%nneib_domain
