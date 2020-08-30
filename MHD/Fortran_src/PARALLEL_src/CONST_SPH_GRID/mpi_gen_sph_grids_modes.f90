@@ -114,11 +114,11 @@
       call calypso_mpi_barrier
 !
       if(my_rank .eq. 0) write(*,*) id_rank, &
-     &    'stk_lc1d%istack_idx_local_rj_r global', &
-     &     stk_lc1d%istack_idx_local_rj_r
+     &    'gen_sph%stk_lc1d%istack_idx_local_rj_r global', &
+     &     gen_sph%stk_lc1d%istack_idx_local_rj_r
       if(my_rank .eq. 0) write(*,*) id_rank, &
-     &    'stk_lc1d%istack_idx_local_rj_j global', &
-     &     stk_lc1d%istack_idx_local_rj_j
+     &    'gen_sph%stk_lc1d%istack_idx_local_rj_j global', &
+     &     gen_sph%stk_lc1d%istack_idx_local_rj_j
 !
 !  ========= Generate each spherical harmonics table ===================
 !
