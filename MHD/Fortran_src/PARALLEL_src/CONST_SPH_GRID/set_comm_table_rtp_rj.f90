@@ -132,6 +132,12 @@
       if(my_rank .eq. 0) write(*,*) id_rank, &
      &    's3d_ranks%iglobal_rank_rj(1:2,id_rank)', &
      &     s3d_ranks%iglobal_rank_rj(1:2,id_rank)
+      if(my_rank .eq. 0) write(*,*) id_rank, &
+     &    'stk_lc1d%istack_idx_local_rj_r', &
+     &     stk_lc1d%istack_idx_local_rj_r
+      if(my_rank .eq. 0) write(*,*) id_rank, &
+     &    'stk_lc1d%istack_idx_local_rj_j', &
+     &     stk_lc1d%istack_idx_local_rj_j
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
