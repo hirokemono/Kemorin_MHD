@@ -113,10 +113,10 @@
      &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
       call calypso_mpi_barrier
 !
-      if(my_rank .eq. 0) write(*,*) id_rank, &
+      if(my_rank .eq. 0) write(*,*) my_rank, &
      &    'gen_sph%stk_lc1d%istack_idx_local_rj_r global', &
      &     gen_sph%stk_lc1d%istack_idx_local_rj_r
-      if(my_rank .eq. 0) write(*,*) id_rank, &
+      if(my_rank .eq. 0) write(*,*) my_rank, &
      &    'gen_sph%stk_lc1d%istack_idx_local_rj_j global', &
      &     gen_sph%stk_lc1d%istack_idx_local_rj_j
 !
