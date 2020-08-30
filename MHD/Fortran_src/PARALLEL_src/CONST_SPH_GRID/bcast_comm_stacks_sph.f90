@@ -100,16 +100,16 @@
 !
         call calypso_mpi_allgather_one_int(num_tmp, nneib_rtm_lc(1))
 !
-        if(my_rank .eq. 0) then
-          write(*,*) size(nneib_rtm_lc), 'nneib_rtm_lc', nneib_rtm_lc
-        end if
-!
         do ip = 1, nprocs
           jp = ip + i * nprocs
           if(jp .le. ndomain_sph) nneib_rtm_gl(jp) = nneib_rtm_gl(ip)
         end do
       end do
       call deallocate_nneib_rtm_lc
+!
+        if(my_rank .eq. 0) then
+          write(*,*) size(nneib_rtm_gl), 'nneib_rtm_gl', nneib_rtm_gl
+        end if
 !
       call set_bcast_comm_stacks_sph                                    &
      &   (ndomain_sph, nneib_rtm_gl, comm_sph)
