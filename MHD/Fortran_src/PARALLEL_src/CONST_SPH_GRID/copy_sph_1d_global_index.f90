@@ -156,6 +156,8 @@
       subroutine copy_sph_1d_gl_idx_rj                                  &
      &         (s3d_radius, sph_gl1d, sph_rj)
 !
+      use calypso_mpi
+!
       type(spheric_global_radius), intent(in) :: s3d_radius
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rj_grid), intent(inout) :: sph_rj
