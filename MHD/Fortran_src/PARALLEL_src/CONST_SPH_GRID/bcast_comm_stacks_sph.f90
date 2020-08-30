@@ -96,9 +96,9 @@
       call allocate_nneib_rtm_lc
 !
       do i = 0, (ndomain_sph-1)/nprocs
-        id_rank = my_rank + i * nprocs
-        if(id_rank .lt. ndomain_sph) then
-          num_tmp = comm_sph(id_rank+1)%nneib_domain
+        jp = 1 + my_rank + i * nprocs
+        if(jp .le. ndomain_sph) then
+          num_tmp = comm_sph(jp)%nneib_domain
         else
           num_tmp = 0
         end if
