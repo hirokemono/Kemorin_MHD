@@ -257,6 +257,8 @@
 !
       integer(kind = kint) :: icou
 !
+      call init_local_idx_table_rj(sph_rj, sph_lcx_rj)
+      call dealloc_rj_1d_local_idx(sph_lcx_rj)
 !
       call allocate_domain_sr_tmp(num_pe)
 !
@@ -271,7 +273,7 @@
      &    comm_rj%istack_sr, comm_rj%ntot_item_sr)
 !
       call deallocate_domain_sr_tmp
-      call alloc_sph_comm_item(sph_rj%nnod_rj,  comm_rj)
+      call alloc_sph_comm_item(sph_rj%nnod_rj, comm_rj)
 !
       icou = 0
       call set_comm_table_4_rj(id_rank, num_pe, comm_rlm_mul,           &
