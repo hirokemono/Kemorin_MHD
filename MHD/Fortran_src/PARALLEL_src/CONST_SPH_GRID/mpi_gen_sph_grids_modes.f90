@@ -108,23 +108,16 @@
 !
       call const_sph_global_parameters(gen_sph, sph_tmp)
 !
-      if(my_rank .eq. 0) write(*,*) my_rank, &
-     &    'gen_sph%stk_lc1d%istack_idx_local_rj_r out', &
-     &     gen_sph%stk_lc1d%istack_idx_local_rj_r
-      if(my_rank .eq. 0) write(*,*) my_rank, &
-     &    'gen_sph%stk_lc1d%istack_idx_local_rj_j out', &
-     &     gen_sph%stk_lc1d%istack_idx_local_rj_j
-!
       call copy_each_sph_param_from_ctl                                 &
      &   (sph_tmp, sph%sph_params, sph%sph_rtp, sph%sph_rj)
       call copy_each_global_sph_resolution                              &
      &   (sph_tmp, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj)
       call calypso_mpi_barrier
 !
-      if(my_rank .eq. 0) write(*,*) my_rank, &
+      if(my_rank .le. 1) write(*,*) my_rank, &
      &    'gen_sph%stk_lc1d%istack_idx_local_rj_r global', &
      &     gen_sph%stk_lc1d%istack_idx_local_rj_r
-      if(my_rank .eq. 0) write(*,*) my_rank, &
+      if(my_rank .le. 1) write(*,*) my_rank, &
      &    'gen_sph%stk_lc1d%istack_idx_local_rj_j global', &
      &     gen_sph%stk_lc1d%istack_idx_local_rj_j
 !
@@ -141,6 +134,13 @@
      &    sph%sph_rlm, comms_sph%comm_rlm)
       call copy_sph_comm_neib                                           &
      &   (comms_sph%comm_rlm, comm_rlm_mul(my_rank+1))
+!
+      if(my_rank .le. 1) write(*,*) my_rank, &
+     &    'gen_sph%stk_lc1d%istack_idx_local_rj_r copy_sph_comm_neib', &
+     &     gen_sph%stk_lc1d%istack_idx_local_rj_r
+      if(my_rank .le. 1) write(*,*) my_rank, &
+     &    'gen_sph%stk_lc1d%istack_idx_local_rj_j copy_sph_comm_neib', &
+     &     gen_sph%stk_lc1d%istack_idx_local_rj_j
 !
       call para_bcast_comm_stacks_sph                                   &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
