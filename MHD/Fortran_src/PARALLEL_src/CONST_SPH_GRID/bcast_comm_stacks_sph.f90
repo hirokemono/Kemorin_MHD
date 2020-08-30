@@ -175,9 +175,6 @@
      &       = comm_sph(ip)%id_domain(1:comm_sph(ip)%nneib_domain)
           comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain)               &
      &       = comm_sph(ip)%istack_sr(0:comm_sph(ip)%nneib_domain)
-        else
-          comm_tmp%id_domain(1:comm_sph(ip)%nneib_domain) = 0
-          comm_tmp%istack_sr(0:comm_sph(ip)%nneib_domain) = 0
         end if
 !
         call calypso_mpi_bcast_int(comm_tmp%id_domain(1),               &
