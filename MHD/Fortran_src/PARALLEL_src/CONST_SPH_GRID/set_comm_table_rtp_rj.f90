@@ -128,6 +128,9 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj_lc
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
+      integer :: i
+!
+!
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
@@ -140,10 +143,16 @@
       call alloc_spheric_param_rj(sph_rj)
       call alloc_sph_1d_index_rj(sph_rj)
 !
-      write(*,*) 's3d_radius%radius_1d_gl(j)', size(s3d_radius%radius_1d_gl)
-      write(*,*) 'sph_rj%radius_1d_rj_r(j)', size(sph_rj%radius_1d_rj_r)
-      write(*,*) 'sph_rj%idx_gl_1d_rj_r(j)', size(sph_rj%idx_gl_1d_rj_r)
-      write(*,*) 'sph_rj%nidx_rj(j)', sph_rj%nidx_rj
+!      write(*,*) 's3d_radius%radius_1d_gl(j)', size(s3d_radius%radius_1d_gl)
+!      write(*,*) 'sph_rj%radius_1d_rj_r(j)', size(sph_rj%radius_1d_rj_r)
+!      write(*,*) 'sph_rj%idx_gl_1d_rj_r(j)', size(sph_rj%idx_gl_1d_rj_r)
+!      write(*,*) 'sph_rj%nidx_rj(j)', sph_rj%nidx_rj
+      do i = 1, sph_rj%nidx_rj(1)
+        if(sph_rj%idx_gl_1d_rj_r(i) .le. 0) write(*,*) &
+     &          'aho!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
+        if(sph_rj%idx_gl_1d_rj_r(i) .gt. sph_rj%nidx_rj(1)) write(*,*) &
+     &          'Baka!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
+      end do
       call copy_sph_1d_gl_idx_rj(s3d_radius, sph_gl1d, sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
