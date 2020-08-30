@@ -128,17 +128,9 @@
       call copy_sph_comm_neib                                           &
      &   (comms_sph%comm_rlm, comm_rlm_mul(my_rank+1))
 !
-      if(my_rank .eq. 0) write(*,*) my_rank, &
-     &    'gen_sph%stk_lc1d%istack_idx_local_rj_r copy_sph_comm_neib', &
-     &     gen_sph%stk_lc1d%istack_idx_local_rj_r
-!
       call para_bcast_comm_stacks_sph                                   &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
-!
-      if(my_rank .eq. 0) write(*,*) my_rank, &
-     &    'gen_sph%stk_lc1d%istack_idx_local_rj_r para_bcast',          &
-     &     gen_sph%stk_lc1d%istack_idx_local_rj_r
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
