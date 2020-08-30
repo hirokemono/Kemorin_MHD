@@ -128,12 +128,6 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj_lc
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
-      sph_rj%nidx_rj(1) = 1793
-      sph_rj%nidx_rj(2) =  147
-      call alloc_sph_1d_index_rj(sph_rj)
-      if(my_rank .eq. 0) write(*,*) 'nidx_rj_tako', sph_rj%nidx_rj(:)
-      call dealloc_sph_1d_index_rj(sph_rj)
-!
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
@@ -146,6 +140,8 @@
       call alloc_spheric_param_rj(sph_rj)
       call alloc_sph_1d_index_rj(sph_rj)
 !
+      write(*,*) 's3d_radius%radius_1d_gl(j)', s3d_radius%radius_1d_gl(:)
+      write(*,*) 'sph_rj%idx_global_rj_r(j)', sph_rj%idx_global_rj_r(:)
       call copy_sph_1d_gl_idx_rj(s3d_radius, sph_gl1d, sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -256,9 +252,6 @@
       type(sph_comm_tbl), intent(inout) :: comm_rj
 !
       integer(kind = kint) :: icou
-!
-      call init_local_idx_table_rj(sph_rj, sph_lcx_rj)
-      call dealloc_rj_1d_local_idx(sph_lcx_rj)
 !
       call allocate_domain_sr_tmp(num_pe)
 !
