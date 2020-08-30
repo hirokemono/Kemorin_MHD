@@ -141,6 +141,7 @@
       call alloc_spheric_param_rj(sph_rj)
       call alloc_sph_1d_index_rj(sph_rj)
 !
+      if(my_rank .eq. 0) write(*,*) 'sph_rj%ist_rj in', sph_rj%ist_rj(:)
       call copy_sph_1d_gl_idx_rj(s3d_radius, sph_gl1d, sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
