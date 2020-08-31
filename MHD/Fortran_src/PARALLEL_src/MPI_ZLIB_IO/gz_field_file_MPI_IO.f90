@@ -175,6 +175,7 @@
      &   (id_fld, ioff_gl, fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
       call cal_istack_phys_comp_IO(fld_IO)
+      call calypso_mpi_barrier
       call alloc_phys_data_IO(fld_IO)
 !
       call read_field_data_gz_mpi                                       &
