@@ -16,7 +16,7 @@
 !!        type(sph_rtp_grid), intent(in) :: rtp
 !!        type(sph_IO_data), intent(inout) :: sph_IO
 !!
-!!      integer(kind = kint) function check_sph_rtp_node_with_IO        &
+!!      integer(kind = kint) function compare_sph_rtp_node_with_IO      &
 !!     &                            (l_truncation, rtp, sph_IO)
 !!        type(sph_rtp_grid), intent(in) :: rtp
 !!        type(sph_IO_data), intent(in) :: sph_IO
@@ -158,7 +158,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      integer(kind = kint) function check_sph_rtp_node_with_IO          &
+      integer(kind = kint) function compare_sph_rtp_node_with_IO        &
      &                            (l_truncation, rtp, sph_IO)
 !
       integer(kind = kint), intent(in) :: l_truncation
@@ -168,7 +168,7 @@
       integer(kind = kint) :: i
 !
 !
-      check_sph_rtp_node_with_IO = 1
+      compare_sph_rtp_node_with_IO = 1
       do i = 1, ithree
         if(sph_IO%sph_rank(i) .ne. rtp%irank_sph_rtp(i)) return
       end do
@@ -194,7 +194,10 @@
       end do
 !
       do i = 1, rtp%nidx_rtp(1)
-        if(sph_IO%r_gl_1(i) .ne. rtp%radius_1d_rtp_r(i)) return
+        if(sph_IO%r_gl_1(i) .ne. rtp%radius_1d_rtp_r(i)) then
+          if(abs(sph_IO%r_gl_1(i) - rtp%radius_1d_rtp_r(i))             &
+     &       .gt. 1.0d-10) return
+        end if
         if(sph_IO%idx_gl_1(i) .ne. rtp%idx_gl_1d_rtp_r(i)) return
       end do
 !
@@ -206,9 +209,9 @@
         if(sph_IO%idx_gl_3(i,1) .ne. rtp%idx_gl_1d_rtp_p(i,1)) return
         if(sph_IO%idx_gl_3(i,2) .ne. rtp%idx_gl_1d_rtp_p(i,2)) return
       end do
-      check_sph_rtp_node_with_IO = 0
+      compare_sph_rtp_node_with_IO = 0
 !
-      end function check_sph_rtp_node_with_IO
+      end function compare_sph_rtp_node_with_IO
 !
 ! ----------------------------------------------------------------------
 !
