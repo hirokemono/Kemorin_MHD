@@ -113,7 +113,7 @@
 !
       ioff_gl = 0
       call write_field_head_gz_mpi                                      &
-     &   (id_fld, num_pe, ioff_gl, t_IO, fld_IO(1)%num_field_IO,        &
+     &   (id_fld, ioff_gl, t_IO, fld_IO(1)%num_field_IO,                &
      &    fld_IO(1)%num_comp_IO, fld_IO(1)%istack_numnod_IO)
 !
       icou = 1

@@ -67,8 +67,7 @@
       call calypso_mpi_write_file_open(file_name, nprocs, id_fld)
 !
       ioff_gl = 0
-      call write_field_data_mpi                                         &
-     &   (id_fld, nprocs, my_rank, ioff_gl, t_IO,                       &
+      call write_field_data_mpi(id_fld, ioff_gl, t_IO,                  &
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
      &    ucd%phys_name, ucd%d_ucd, ucd%istack_merged_nod)
 !

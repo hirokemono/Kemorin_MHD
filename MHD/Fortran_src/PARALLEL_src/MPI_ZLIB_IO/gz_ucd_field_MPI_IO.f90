@@ -67,9 +67,8 @@
       call calypso_mpi_write_file_open(file_name, nprocs, id_fld)
 !
       ioff_gl = 0
-      call write_field_head_gz_mpi                                      &
-     &   (id_fld, nprocs, ioff_gl, t_IO, ucd%num_field,                 &
-     &    ucd%num_comp,  ucd%istack_merged_nod)
+      call write_field_head_gz_mpi(id_fld, ioff_gl, t_IO,               &
+     &    ucd%num_field, ucd%num_comp, ucd%istack_merged_nod)
 !
       call write_field_data_gz_mpi(id_fld, ioff_gl,                     &
      &    ucd%nnod, ucd%num_field, ucd%ntot_comp,                       &

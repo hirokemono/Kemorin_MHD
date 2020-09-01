@@ -297,13 +297,11 @@
 !
 !
       if(file_IO%iflag_format .eq. iflag_single) then
-        call write_step_field_file_mpi                                  &
-     &     (file_name, nprocs, my_rank, t_IO, fld_IO)
+        call write_step_field_file_mpi(file_name, t_IO, fld_IO)
 !
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_binary_file_fmt) then
-        call write_step_field_file_mpi_b                                &
-     &     (file_name, nprocs, my_rank, t_IO, fld_IO)
+        call write_step_field_file_mpi_b(file_name, t_IO, fld_IO)
 !
 #ifdef ZLIB_IO
       else if(file_IO%iflag_format .eq. id_binary_file_fmt) then
@@ -311,13 +309,11 @@
      &     (file_name, my_rank, t_IO, fld_IO, ierr)
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call gz_write_step_fld_file_mpi_b                               &
-     &     (file_name, nprocs, my_rank, t_IO, fld_IO)
+        call gz_write_step_fld_file_mpi_b(file_name, t_IO, fld_IO)
       else if(file_IO%iflag_format                                      &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         if(nprocs .eq. nprocs) then
-          call write_gz_step_field_file_mpi                             &
-     &     (file_name, nprocs, my_rank, t_IO, fld_IO)
+          call write_gz_step_field_file_mpi(file_name, t_IO, fld_IO)
         else
           call calypso_mpi_abort                                        &
      &      (ierr_fld, 'gzipped data output does not dort')
