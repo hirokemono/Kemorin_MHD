@@ -129,20 +129,8 @@
       type(sph_group_data), intent(inout) :: sph_grp_lc
 !
 !
-      if(my_rank .eq. 0) write(*,*) id_rank, &
-     &    's3d_ranks%iglobal_rank_rj(1:2,id_rank)', &
-     &     s3d_ranks%iglobal_rank_rj(1:2,id_rank)
-      if(my_rank .eq. 0) write(*,*) id_rank, &
-     &    'stk_lc1d%istack_idx_local_rj_r', &
-     &     stk_lc1d%istack_idx_local_rj_r
-      if(my_rank .eq. 0) write(*,*) id_rank, &
-     &    'stk_lc1d%istack_idx_local_rj_j', &
-     &     stk_lc1d%istack_idx_local_rj_j
-      if(iflag_debug .gt. 0) write(*,*)                                 &
-     &                'copy_gl_2_local_rj_param', id_rank
       call copy_gl_2_local_rj_param                                     &
      &   (id_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rj)
-      if(my_rank .eq. 0) write(*,*) 'sph_rj%ist_rj out', sph_rj%ist_rj(:)
 !
       call add_center_mode_rj(id_rank, sph_gl1d, sph_rj)
 !      nnod_rj = sph_rj%nnod_rj
@@ -151,7 +139,6 @@
       call alloc_spheric_param_rj(sph_rj)
       call alloc_sph_1d_index_rj(sph_rj)
 !
-      if(my_rank .eq. 0) write(*,*) 'sph_rj%ist_rj in', sph_rj%ist_rj(:)
       call copy_sph_1d_gl_idx_rj(s3d_radius, sph_gl1d, sph_rj)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &

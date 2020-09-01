@@ -178,15 +178,15 @@
         sph_rj%idx_gl_1d_rj_r(i) = sph_gl1d%idx_global_rj_r(j)
       end do
 
-      if(my_rank .eq. 0) then
-        write(*,*) 'Check idx_gl_1d_rj_r', sph_rj%ist_rj(:)
-        do i = 1, sph_rj%nidx_rj(1)
-          if(sph_rj%idx_gl_1d_rj_r(i) .le. 0) write(*,*) &
-     &          'aho!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
-          if(sph_rj%idx_gl_1d_rj_r(i) .gt. sph_rj%nidx_rj(1)) write(*,*) &
-     &          'Baka!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
-        end do
-      end if
+!      if(my_rank .eq. 0) then
+!        write(*,*) 'Check idx_gl_1d_rj_r', sph_rj%ist_rj(:)
+!        do i = 1, sph_rj%nidx_rj(1)
+!          if(sph_rj%idx_gl_1d_rj_r(i) .le. 0) write(*,*) &
+!     &          'aho!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
+!          if(sph_rj%idx_gl_1d_rj_r(i) .gt. sph_rj%nidx_rj(1))          &
+!     &       write(*,*) 'Baka!', my_rank, i, sph_rj%idx_gl_1d_rj_r(i)
+!        end do
+!      end if
 
       do i = 1, sph_rj%nidx_rj(1)
         j = sph_rj%idx_gl_1d_rj_r(i)
