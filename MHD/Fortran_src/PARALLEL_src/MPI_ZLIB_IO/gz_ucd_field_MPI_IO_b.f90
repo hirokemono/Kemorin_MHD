@@ -58,8 +58,7 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'write gzipped binary data by MPI-IO: ', trim(file_name)
 !
-      call open_write_gz_mpi_file_b                                     &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_gz_mpi_file_b(file_name, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
      &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &

@@ -146,8 +146,7 @@
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii grid file: ', trim(file_name)
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_geom_rtp_data(IO_param,                         &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
@@ -167,8 +166,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii spectr modes file: ',            &
      &      trim(file_name)
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_spectr_rj_data(IO_param,                        &
      &    sph_file%comm_IO, sph_file%sph_IO, sph_file%sph_grp_IO)
@@ -187,8 +185,7 @@
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii grid file: ', trim(file_name)
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_geom_rtm_data(IO_param,                         &
      &    sph_file%comm_IO, sph_file%sph_IO)
@@ -208,8 +205,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &     'Write gzipped merged ascii spectr modes file: ',            &
      &      trim(file_name)
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_modes_rlm_data(IO_param,                        &
      &    sph_file%comm_IO, sph_file%sph_IO)

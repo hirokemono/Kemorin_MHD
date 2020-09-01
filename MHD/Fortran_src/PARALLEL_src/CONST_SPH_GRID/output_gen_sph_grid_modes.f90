@@ -75,8 +75,6 @@
      &     (num_pe, id_rank, file_param, sph_file_m)
 !
         if(id_rank .lt. num_pe) then
-          write(*,*) 'load original data for  ', id_rank,               &
-     &             ' on ', my_rank, 'at loop ', iloop
           call copy_sph_trans_rj_from_IO(sph_file_m,                    &
      &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
      &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params)

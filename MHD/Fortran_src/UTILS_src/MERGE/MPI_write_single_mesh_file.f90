@@ -65,9 +65,7 @@
       if(id_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write ascii mesh file: ', trim(file_name)
 !
-      call open_write_mpi_file                                          &
-     &   (file_name, num_pe, id_rank, IO_param)
-!
+      call open_write_mpi_file(file_name, IO_param)
       call mpi_write_merged_geometry_data(IO_param, mesh, dbl_nod)
       call mpi_write_merged_mesh_groups                                 &
      &   (mesh%node%istack_internod(my_rank),                           &

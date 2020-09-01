@@ -159,9 +159,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Write ascii mesh file: ', trim(file_name)
 !
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
-!
+      call open_write_mpi_file(file_name, IO_param)
       call mpi_write_geometry_data(IO_param, mesh_IO)
       call mpi_write_mesh_groups(IO_param, group_IO)
 !

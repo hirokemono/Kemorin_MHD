@@ -141,8 +141,7 @@
      &  'Write gzipped merged binary element comm file: ',              &
      &   trim(file_name)
 !
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_ele_comm_table_b(IO_param, ele_mesh_IO%comm)
 !      call gz_mpi_write_ele_geometry_b(IO_param,                       &
@@ -165,8 +164,7 @@
      &  'Write gzipped merged binary surface mesh file: ',              &
      &   trim(file_name)
 !
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_surf_connect_b(IO_param, surf_mesh_IO%comm,     &
      &   surf_mesh_IO%ele, surf_mesh_IO%sfed)
@@ -189,8 +187,7 @@
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &  'Write gzipped merged binary edge mesh file: ', trim(file_name)
 !
-      call open_write_mpi_file                                          &
-     &   (file_name, nprocs, my_rank, IO_param)
+      call open_write_mpi_file(file_name, IO_param)
 !
       call gz_mpi_write_edge_connect_b(IO_param, edge_mesh_IO%comm,     &
      &   edge_mesh_IO%ele, edge_mesh_IO%sfed)
