@@ -10,6 +10,9 @@
 !!      subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,           &
 !!     &          sph_file_param, sph, comms_sph, sph_grps, geofem,     &
 !!     &          mesh_file, sph_maker)
+!!      subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                 &
+!!     &          sph_file_param, sph, comms_sph, sph_grps, geofem,     &
+!!     &          mesh_file, sph_maker)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(field_IO_params), intent(in) ::  sph_file_param
 !!        type(sph_grids), intent(inout) :: sph
@@ -117,6 +120,41 @@
       end if
 !
       end subroutine load_para_SPH_and_FEM_mesh
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                   &
+     &          sph_file_param, sph, comms_sph, sph_grps, geofem,       &
+     &          mesh_file, sph_maker)
+!
+      use calypso_mpi
+      use t_mesh_data
+      use copy_mesh_structures
+      use mesh_file_name_by_param
+      use mpi_load_mesh_data
+      use parallel_load_data_4_sph
+!
+      type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
+      type(field_IO_params), intent(in) ::  sph_file_param
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_group_data), intent(in) ::  sph_grps
+      type(sph_grids), intent(inout) :: sph
+!
+      type(mesh_data), intent(inout) :: geofem
+      type(field_IO_params), intent(inout) ::  mesh_file
+!
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+!
+!
+      call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
+!  --  Construct FEM mesh
+      mesh_file%file_prefix = sph_file_param%file_prefix
+      call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,               &
+     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
+     &    geofem, sph_maker%gen_sph)
+      call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
+!
+      end subroutine const_FEM_mesh_4_SPH
 !
 ! -----------------------------------------------------------------------
 !

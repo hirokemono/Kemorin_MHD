@@ -83,6 +83,7 @@
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
      &    sph_files1, sph_maker_G, ierr)
+      sph_maker_G%mesh_output_flag = .TRUE.
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
       if(sph_maker_G%gen_sph%s3d_ranks%ndomain_sph .ne. nprocs) then
@@ -115,8 +116,9 @@
      &    sph_const, comms_sph_const, sph_grp_const)
       call output_sph_mesh(sph_files1%sph_file_param,                   &
      &    sph_const, comms_sph_const, sph_grp_const)
-      call dealloc_sph_modes(sph_const, comms_sph_const,                &
-     &    sph_grp_const)
+      if(iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
+      call sph_index_flags_and_params                                   &
+     &   (sph_grp_const, sph_const, comms_sph_const)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
@@ -124,8 +126,8 @@
 !  ========= Generate FEM mesh ===========================
 !
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
-      if(iflag_debug .gt. 0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh                                   &
+      if(iflag_debug .gt. 0) write(*,*) 'const_FEM_mesh_4_SPH'
+      call const_FEM_mesh_4_SPH                                         &
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
      &    sph_const, comms_sph, sph_grps,                               &
      &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
@@ -151,6 +153,8 @@
 !      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
 !
   99  continue
+      call dealloc_sph_modes(sph_const, comms_sph_const,                &
+     &    sph_grp_const)
       call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
