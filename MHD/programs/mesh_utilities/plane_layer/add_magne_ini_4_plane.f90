@@ -24,6 +24,7 @@
       use m_constants
 !
       use m_base_field_labels
+      use m_field_file_format
 !
       use t_size_of_cube
       use t_field_data_IO
@@ -40,6 +41,8 @@
 !
       use set_parallel_file_name
       use mesh_IO_select
+      use set_field_file_names
+      use field_file_IO
       use field_IO_select
       use set_field_to_restart
       use copy_mesh_structures
@@ -67,6 +70,8 @@
       type(field_IO_params), save :: plane_fld_file
       type(merged_mesh), save :: mgd_mesh_pl
       type(plane_initial_setting), save :: pini_p1
+!
+      character(len=kchara) :: file_name
 !
 !
       pi = four*atan(one)
@@ -118,7 +123,7 @@
 !
       mgd_mesh_pl%merged%node%numnod = node_plane%numnod
 !      
-      call alloc_merged_field_stack(nprocs, plane_fst_IO)
+      call alloc_merged_field_stack(mgd_mesh_pl%num_pe, plane_fst_IO)
       plane_fst_IO%istack_numnod_IO(0) = 0
       do ip = 1, mgd_mesh_pl%num_pe
         plane_fst_IO%istack_numnod_IO(ip)                               &
@@ -193,7 +198,6 @@
         end do
 !
 !     write data
-!
         call simple_init_fld_name_to_rst                                &
      &     (mgd_mesh_pl%merged%node%numnod, mgd_mesh_pl%merged_fld,     &
      &      plane_fst_IO)
@@ -201,10 +205,10 @@
      &     (mgd_mesh_pl%merged%node, mgd_mesh_pl%merged_fld,            &
      &      plane_fst_IO)
 !
-        plane_fld_file%file_prefix = new_rst_file_header
-        call sel_write_step_FEM_field_file                              &
-     &     (mgd_mesh_pl%num_pe, id_rank, izero,                         &
-     &      plane_fld_file, plane_t_IO, plane_fst_IO)
+        file_name = set_FEM_fld_file_name(new_rst_file_header,          &
+     &             iflag_ascii, id_rank, izero)
+        call write_step_field_file                                      &
+     &     (file_name, id_rank, plane_t_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

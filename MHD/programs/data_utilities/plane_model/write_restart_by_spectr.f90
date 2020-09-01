@@ -20,10 +20,9 @@
 !
 !
       real(kind = kreal), allocatable :: rst_from_sp(:,:)
-      type(field_IO_params), save :: pl_fld_file
       type(field_IO), save :: pl_fld_IO
 !
-      private :: pl_fld_file, pl_fld_IO
+      private :: pl_fld_IO
 !
 !  ---------------------------------------------------------------------
 !
@@ -77,12 +76,14 @@
      &         (ip, num_pe, nnod, merged_fld, t_IO)
 !
       use m_constants
+      use m_field_file_format
       use t_phys_data
       use t_time_data
-      use field_IO_select
       use set_list_4_FFT
       use set_field_to_restart
       use set_restart_data
+      use set_field_file_names
+      use field_file_IO
 !
       integer(kind=kint), intent(in) :: ip, nnod
       integer, intent(in) :: num_pe
@@ -91,6 +92,7 @@
       type(time_data), intent(inout) :: t_IO
 !
       integer :: id_rank
+      character(len=kchara) :: file_name
 !
 !
       id_rank = int(ip - 1)
@@ -100,9 +102,9 @@
      &   (nnod, merged_fld%ntot_phys, rst_from_sp,                      &
      &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)
 !
-      pl_fld_file%file_prefix = rst_head_plane
-      call sel_write_step_FEM_field_file                                &
-     &   (num_pe, id_rank, izero, pl_fld_file, t_IO, pl_fld_IO)
+      file_name = set_FEM_fld_file_name(rst_head_plane,                 &
+     &           iflag_ascii, id_rank, izero)
+      call write_step_field_file(file_name, id_rank, t_IO, pl_fld_IO)
 !
       call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)
