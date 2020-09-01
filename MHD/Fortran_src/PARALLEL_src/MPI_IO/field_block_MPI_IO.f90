@@ -29,7 +29,8 @@
 !
       implicit none
 !
-      private :: write_fld_vecotr_mpi, read_fld_vecotr_mpi
+      private :: write_fld_vecotr_mpi
+      private :: read_fld_vecotr_mpi, skip_fld_vecotr_mpi
 !
 !  ---------------------------------------------------------------------
 !
@@ -229,6 +230,27 @@
       ioff_gl = ioff_gl + ilength * istack_merged(num_pe)
 !
       end subroutine read_fld_vecotr_mpi
+!
+! -----------------------------------------------------------------------
+!
+      subroutine skip_fld_vecotr_mpi(num_pe, id_rank, ioff_gl,          &
+     &          ncomp, istack_merged)
+!
+      use field_data_IO
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer, intent(in) :: num_pe, id_rank
+      integer(kind = kint_gl), intent(in) :: istack_merged(0:num_pe)
+      integer(kind = kint), intent(in) :: ncomp
+!
+!
+      if(id_rank .ge. num_pe) return
+!   Skip buffer size
+      ioff_gl = ioff_gl                                                 &
+     &       + len(buffer_istack_nod_buffer(num_pe, istack_merged))
+      ioff_gl = ioff_gl + (ncomp*25+1) * istack_merged(num_pe)
+!
+      end subroutine skip_fld_vecotr_mpi
 !
 ! -----------------------------------------------------------------------
 !
