@@ -73,7 +73,7 @@
       integer :: ip
 !
 !
-      call sel_read_alloc_step_SPH_file(np_sph_org, 0, istep_start,     &
+      call sel_read_alloc_SPH_fld_head(np_sph_org, 0, istep_start,      &
      &    org_fst_param, t_IO, org_fst_IO)
 !
       if(my_rank .eq. 0) then
@@ -84,10 +84,7 @@
         end do
       end if
 !
-      if(my_rank .lt. np_sph_org) then
-        call dealloc_phys_data_IO(org_fst_IO)
-        call dealloc_phys_name_IO(org_fst_IO)
-      end if
+      if(my_rank .lt. np_sph_org) call dealloc_phys_name_IO(org_fst_IO)
 !
       end subroutine load_field_name_assemble_sph
 !
