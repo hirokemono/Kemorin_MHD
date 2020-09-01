@@ -129,6 +129,7 @@
       use mpi_gen_sph_grids_modes
       use sph_file_IO_select
       use parallel_load_data_4_sph
+      use check_sph_mhd_openmp_size
 !
       type(field_IO_params), intent(in) :: sph_file_param
 !
@@ -168,8 +169,10 @@
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
       end if
 !
-      if (iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
+      if(iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
       call sph_index_flags_and_params(sph_grps, sph, comms_sph)
+!
+      call s_check_sph_mhd_openmp_size(sph)
 !
       call calypso_mpi_barrier
 !
