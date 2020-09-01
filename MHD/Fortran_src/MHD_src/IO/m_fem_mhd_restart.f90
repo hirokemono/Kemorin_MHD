@@ -166,8 +166,8 @@
       call copy_time_step_size_data(time_d, fem_time_IO)
       call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
-      call sel_write_step_FEM_field_file(nprocs, my_rank, index_rst,    &
-     &    fst_file_IO, fem_time_IO, fem_fst_IO)
+      call sel_write_step_FEM_field_file                                &
+     &   (index_rst, fst_file_IO, fem_time_IO, fem_fst_IO)
 !
       end subroutine output_restart_files
 !

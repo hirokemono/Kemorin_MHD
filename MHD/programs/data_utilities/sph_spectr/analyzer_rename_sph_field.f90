@@ -113,8 +113,8 @@
       call count_number_of_node_stack                                   &
      &   (sph_fst_IO%nnod_IO, sph_fst_IO%istack_numnod_IO)
 !
-      call sel_write_step_SPH_field_file(nprocs, my_rank, istep_fld,    &
-     &    files%out_file_param, fst_t_IO, sph_fst_IO)
+      call sel_write_step_SPH_field_file                                &
+     &   (istep_fld, files%out_file_param, fst_t_IO, sph_fst_IO)
 !
       call dealloc_merged_field_stack(sph_fst_IO)
       call dealloc_phys_data_IO(sph_fst_IO)

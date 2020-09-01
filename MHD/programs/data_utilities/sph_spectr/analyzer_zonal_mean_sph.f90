@@ -109,8 +109,8 @@
 !
         if (iflag_debug.gt.0)                                           &
      &    write(*,*) 'sel_write_step_SPH_field_file'
-        call sel_write_step_SPH_field_file(nprocs, my_rank, i_step,     &
-     &      zm_sph_fst_param, spec_time_IO, sph_spec_IO)
+        call sel_write_step_SPH_field_file                              &
+     &     (i_step, zm_sph_fst_param, spec_time_IO, sph_spec_IO)
         call dealloc_merged_field_stack(sph_spec_IO)
       end do
 !

@@ -115,8 +115,8 @@
      &   (SPH_MHD%fld%num_phys, SPH_MHD%fld, fld_IO)
 !
       call reset_time_data(time_IO)
-      call sel_write_step_SPH_field_file(nprocs, my_rank, i_step,       &
-     &    sph_file_IO, time_IO, fld_IO)
+      call sel_write_step_SPH_field_file                                &
+     &   (i_step, sph_file_IO, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_trans
 !
@@ -167,7 +167,7 @@
 !
       call reset_time_data(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, sph_file_IO, time_IO, fld_IO)
+     &   (i_step, sph_file_IO, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_zm_trans
 !

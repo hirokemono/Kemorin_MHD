@@ -106,8 +106,8 @@
      &   (sph_fst_IO%nnod_IO, sph_fst_IO%istack_numnod_IO)
 !
       call calypso_mpi_barrier
-      call sel_write_step_SPH_field_file(nprocs, my_rank, istep_fld,    &
-     &    files%out_file_param, fst_t_IO, sph_fst_IO)
+      call sel_write_step_SPH_field_file                                &
+     &   (istep_fld, files%out_file_param, fst_t_IO, sph_fst_IO)
       call calypso_mpi_barrier
 !
       call dealloc_phys_data_IO(sph_sub_IO)

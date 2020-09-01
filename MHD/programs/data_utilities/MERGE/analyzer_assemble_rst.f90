@@ -176,8 +176,7 @@
         call simple_copy_fld_data_to_rst                                &
      &     (new_mesh%node, new_fld, new_fIO)
         call sel_write_step_FEM_field_file                              &
-     &     (nprocs, my_rank, istep, asbl_param_f%new_fld_file,          &
-     &      t_IO_m, new_fIO)
+     &     (istep, asbl_param_f%new_fld_file, t_IO_m, new_fIO)
       end do
       call dealloc_comm_table_4_assemble(asbl_comm_f)
 !

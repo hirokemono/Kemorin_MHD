@@ -179,8 +179,8 @@
           call count_number_of_node_stack                               &
      &       (itp_fld_IO%nnod_IO, itp_fld_IO%istack_numnod_IO)
 !
-          call sel_write_step_FEM_field_file(nprocs, my_rank, i_step,   &
-     &        gen_itp_p1%itp_fst_IO, itp_time_IO, itp_fld_IO)
+          call sel_write_step_FEM_field_file                            &
+     &       (i_step, gen_itp_p1%itp_fst_IO, itp_time_IO, itp_fld_IO)
 !
           call dealloc_phys_data_IO(itp_fld_IO)
           call dealloc_merged_field_stack(itp_fld_IO)

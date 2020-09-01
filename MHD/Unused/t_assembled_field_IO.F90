@@ -59,6 +59,8 @@
       subroutine sel_write_SPH_assemble_field(num_pe, istep_fld,        &
      &          nloop, fst_IO_param, t_IO, fld_IO)
 !
+      use m_file_format_switch
+      use field_file_IO
       use field_IO_select
       use set_field_file_names
 #ifdef ZLIB_IO
@@ -105,8 +107,10 @@
       do iloop = 1, nloop
         id_rank = int(my_rank + (iloop-1) * nprocs)
 !
-        call sel_write_step_SPH_field_file(num_pe, id_rank,             &
-     &      istep_fld, fst_IO_param, t_IO, fld_IO(iloop))
+        file_name = set_SPH_fld_file_name(fst_IO_param%file_prefix,     &
+     &             iflag_ascii, id_rank, istep_fld)
+        call write_step_field_file                                      &
+     &     (file_name, id_rank, t_IO, fld_IO(iloop))
       end do
 !
       end subroutine sel_write_SPH_assemble_field

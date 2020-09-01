@@ -178,14 +178,14 @@
       call set_FEM_Csim_to_IO(i_step_sgs_coefs, time_d, wk_sgs,         &
      &   Csim_time_F_IO, Csim_F_IO)
 !
-      call sel_write_step_FEM_field_file(nprocs, my_rank,               &
-     &    istep_rst, Csim_file_IO, Csim_time_F_IO, Csim_F_IO)
+      call sel_write_step_FEM_field_file                                &
+     &   (istep_rst, Csim_file_IO, Csim_time_F_IO, Csim_F_IO)
 !
       if (cmt_param%iflag_commute .eq. id_SGS_commute_OFF) return
       call set_FEM_Csim_to_IO(i_step_sgs_coefs, time_d, wk_diff,        &
      &   Csim_time_F_IO, Cdiff_F_IO)
-      call sel_write_step_FEM_field_file(nprocs, my_rank, istep_rst,    &
-     &    Cdiff_file_IO, Csim_time_F_IO, Cdiff_F_IO)
+      call sel_write_step_FEM_field_file                                &
+     &   (istep_rst, Cdiff_file_IO, Csim_time_F_IO, Cdiff_F_IO)
 !
       end subroutine write_FEM_Csim_file
 !

@@ -123,8 +123,8 @@
      &   (i_step_sgs_coefs, time_d, dynamic_SPH%wk_sgs,                 &
      &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
-      call sel_write_step_FEM_field_file(nprocs, my_rank, istep_rst,    &
-     &    Csim_file_IO, Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
+      call sel_write_step_FEM_field_file(istep_rst, Csim_file_IO,       &
+     &    Csim_time_S_IO, dynamic_SPH%Csim_S_IO)
 !
       end subroutine write_SPH_Csim_file
 !
