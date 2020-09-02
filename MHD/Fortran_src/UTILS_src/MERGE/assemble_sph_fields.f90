@@ -15,7 +15,7 @@
 !!      subroutine share_new_spectr_field_names                         &
 !!     &         (np_sph_new, new_sph_mesh, new_sph_phys)
 !!        type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
-!!        type(phys_data), intent(inout) :: new_sph_phys(np_sph_new)
+!!        type(phys_data), intent(inout) :: new_sph_phys
 !!
 !!      subroutine load_new_spectr_rj_data(np_sph_org, np_sph_new,      &
 !!     &          org_sph_mesh, new_sph_mesh, j_table)
@@ -97,24 +97,16 @@
 !
       integer, intent(in) :: np_sph_new
       type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
-      type(phys_data), intent(inout) :: new_sph_phys(np_sph_new)
+      type(phys_data), intent(inout) :: new_sph_phys
 !
       integer(kind = kint) :: jp
 !
 !
 !
-      call share_phys_field_names(new_sph_phys(1))
+      call share_phys_field_names(new_sph_phys)
 !
-      do jp = 2, np_sph_new
-        if(mod(jp-1,nprocs) .ne. my_rank) cycle
-        call copy_field_name_type(new_sph_phys(1), new_sph_phys(jp))
-      end do
-!
-      do jp = 1, np_sph_new
-        if(mod(jp-1,nprocs) .ne. my_rank) cycle
-         call alloc_phys_data_type                                      &
-     &     (new_sph_mesh(jp)%sph%sph_rj%nnod_rj, new_sph_phys(jp))
-      end do
+      call alloc_phys_data_type                                         &
+     &   (new_sph_mesh(my_rank+1)%sph%sph_rj%nnod_rj, new_sph_phys)
 !
       end subroutine share_new_spectr_field_names
 !

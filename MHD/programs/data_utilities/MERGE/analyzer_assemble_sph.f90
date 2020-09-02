@@ -109,7 +109,7 @@
       call load_field_name_assemble_sph                                 &
      &   (asbl_param_s%istep_start, sph_asbl_s%np_sph_org,              &
      &    asbl_param_s%org_fld_file, sph_asbl_s%org_sph_phys(1),        &
-     &    sph_asbl_s%new_sph_phys(1), sph_asbl_s%fst_time_IO)
+     &    sph_asbl_s%new_sph_phys, sph_asbl_s%fst_time_IO)
 !
       call share_org_spectr_field_names                                 &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_phys)
@@ -178,15 +178,14 @@
      &       (sph_asbl_s%org_sph_mesh(ip),                              &
      &        sph_asbl_s%new_sph_mesh(my_rank+1),                       &
      &        sph_asbl_s%j_table(ip,my_rank+1), sph_asbl_s%r_itp,       &
-     &        sph_asbl_s%org_sph_phys(ip),                              &
-     &        sph_asbl_s%new_sph_phys(my_rank+1))
+     &        sph_asbl_s%org_sph_phys(ip), sph_asbl_s%new_sph_phys)
           call dealloc_phys_data_type(sph_asbl_s%org_sph_phys(ip))
         end do
 !
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
-     &      sph_asbl_s%new_sph_phys(my_rank+1),                         &
-     &      sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
+     &      sph_asbl_s%new_sph_phys, sph_asbl_s%new_fst_IO,             &
+     &      sph_asbl_s%fst_time_IO)
 !
         call sel_write_step_SPH_field_file                              &
      &     (istep_out, asbl_param_s%new_fld_file,                       &

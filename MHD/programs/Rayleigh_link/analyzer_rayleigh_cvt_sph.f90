@@ -129,10 +129,10 @@
 !
       if(my_rank .eq. 0) then
         call copy_rj_phys_name_from_IO                                  &
-     &     (fld_IO_r, sph_asbl_s%new_sph_phys(1))
+     &     (fld_IO_r, sph_asbl_s%new_sph_phys)
       end if
       call share_new_spectr_field_names(sph_asbl_s%np_sph_new,          &
-     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys(1))
+     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
 !
 !      call check_nodal_field_name                                      &
 !     &   (50+my_rank, sph_asbl_s%new_sph_phys(1))
@@ -177,13 +177,13 @@
         call convert_fields_from_rayleigh                               &
      &     (istep, asbl_param_s%org_fld_file,                           &
      &      sph_asbl_s%new_sph_mesh(my_rank+1), sph_asbl_s%r_itp,       &
-     &      ra_rst_s, sph_asbl_s%new_sph_phys(my_rank+1))
+     &      ra_rst_s, sph_asbl_s%new_sph_phys)
 !
         call calypso_mpi_barrier
         if(my_rank .eq. 0) write(*,*) 'const_assembled_sph_data'
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
-     &      sph_asbl_s%new_sph_phys(my_rank+1),                         &
+     &      sph_asbl_s%new_sph_phys,                                    &
      &      sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
         call calypso_mpi_barrier
