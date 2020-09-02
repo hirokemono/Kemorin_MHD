@@ -155,15 +155,15 @@
      &   (etrns_tmp%nfield, etrns_tmp, each_trns)
       call dealloc_sph_trns_field_name(etrns_tmp)
 !
-      each_trns%field_name(each_trns%nfield) = field_name
+!      each_trns%field_name(each_trns%nfield) = field_name
       each_trns%ifld_trns(each_trns%nfield) = i_trns
       each_trns%ifld_rj(each_trns%nfield) =   i_pol
       each_trns%ifld_rtp(each_trns%nfield) =  irtp
 !
 !
       if(iflag_debug .eq. 0) return
-      write(*,'(i5,a2,a,a2,4i5)') each_trns%nfield, '. ',               &
-     &    trim(each_trns%field_name(each_trns%nfield)), ': ',           &
+      write(*,'(i5,a2,a,a2,4i5)')                                       &
+     &    each_trns%nfield, '. ', trim(field_name), ': ',               &
      &    each_trns%ifld_trns(each_trns%nfield),                        &
      &    each_trns%ifld_rj(each_trns%nfield),                          &
      &    each_trns%ifld_rtp(each_trns%nfield)

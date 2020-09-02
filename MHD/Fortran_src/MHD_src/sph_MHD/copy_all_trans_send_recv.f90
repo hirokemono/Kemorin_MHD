@@ -61,60 +61,43 @@
       real(kind = kreal), intent(inout)                                 &
      &                :: v_pl_local(nnod_pole,ncomp_send)
 !
-      integer(kind = kint) :: j, j_fld, i_fld
-      integer(kind = kint) :: icomp, jcomp
+      integer(kind = kint) :: j, j_fld
+      integer(kind = kint) :: i_rj, jcomp
 !
 !
       do j_fld = 1, backward%num_vector
-        jcomp = n_vector*j_fld - 2
-        do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld)                                    &
-     &        .eq. backward%field_name(j_fld)) then
-            icomp = rj_fld%istack_component(i_fld-1) + 1
+        jcomp = backward%ifld_trns(j_fld)
+        i_rj = backward%ifld_rj(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'set to send buffer ',    &
-     &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_vector_to_send(ncomp_send,                  &
-     &          icomp, jcomp, comm_rj, rj_fld, n_WS, WS)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'get vector to send ',        &
+     &                                   i_rj, 'to ', jcomp
+        call sel_sph_rj_vector_to_send(ncomp_send,                      &
+     &      i_rj, jcomp, comm_rj, rj_fld, n_WS, WS)
       end do
 !
 !
       do j = 1, backward%num_scalar
         j_fld = j + backward%num_vector
-        jcomp = j + n_vector*backward%num_vector
-        do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld)                                    &
-     &           .eq. backward%field_name(j_fld)) then
-            icomp = rj_fld%istack_component(i_fld-1) + 1
+        jcomp = backward%ifld_trns(j_fld)
+        i_rj = backward%ifld_rj(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'set to send buffer ',    &
-     &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_scalar_2_send_wpole(ncomp_send,             &
-     &          icomp, jcomp, nnod_pole, sph_rj, comm_rj, rj_fld,       &
-     &          n_WS, WS, v_pl_local)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'get scalar to send ',        &
+     &                                   i_rj, 'to ', jcomp
+        call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                 &
+     &      i_rj, jcomp, nnod_pole, sph_rj, comm_rj, rj_fld,            &
+     &      n_WS, WS, v_pl_local)
       end do
 !
       do j = 1, backward%num_tensor
         j_fld = j + backward%num_vector + backward%num_scalar
-        jcomp = n_sym_tensor * j - 5 + backward%num_scalar              &
-     &         + n_vector*backward%num_vector
-        do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld)                                    &
-     &           .eq. backward%field_name(j_fld)) then
-            icomp = rj_fld%istack_component(i_fld-1) + 1
-!
-            if(iflag_debug .gt. 0) write(*,*) 'set to send buffer ',    &
-     &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_vector_to_send(ncomp_send,                  &
-     &          icomp, jcomp, comm_rj, rj_fld, n_WS, WS)
-            call sel_sph_rj_vector_to_send(ncomp_send,                  &
-     &          (icomp+3), (jcomp+3), comm_rj, rj_fld, n_WS, WS)
-          end if
-        end do
+        jcomp = backward%ifld_trns(j_fld)
+        i_rj = backward%ifld_rj(j_fld)
+        if(iflag_debug .gt. 0) write(*,*) 'get tensor to send ',        &
+     &                                   i_rj, 'to ', jcomp
+        call sel_sph_rj_vector_to_send(ncomp_send,                      &
+     &      i_rj, jcomp, comm_rj, rj_fld, n_WS, WS)
+        call sel_sph_rj_vector_to_send(ncomp_send,                      &
+     &      (i_rj+3), (jcomp+3), comm_rj, rj_fld, n_WS, WS)
       end do
 !
       end subroutine copy_all_spectr_to_send
@@ -131,58 +114,42 @@
       real(kind = kreal), intent(inout) :: WR(n_WR)
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: j, j_fld, i_fld
-      integer(kind = kint) :: icomp, jcomp
+      integer(kind = kint) :: j, j_fld
+      integer(kind = kint) :: i_rj, jcomp
 !
 !
       do j_fld = 1, forward%num_vector
-        jcomp = n_vector*j_fld - 2
-        do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld)                                    &
-     &        .eq. forward%field_name(j_fld))  then
-            icomp = rj_fld%istack_component(i_fld-1) + 1
+        jcomp = forward%ifld_trns(j_fld)
+        i_rj = forward%ifld_rj(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
-     &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,    &
-     &          icomp, jcomp, comm_rj, n_WR, WR, rj_fld)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'get vector from recv ',      &
+     &                                   i_rj, 'to ', jcomp
+        call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,        &
+     &      i_rj, jcomp, comm_rj, n_WR, WR, rj_fld)
       end do
 !
       do j = 1, forward%num_scalar
         j_fld = j + forward%num_vector
-        jcomp = j + n_vector*forward%num_vector
-        do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld)                                    &
-     &        .eq. forward%field_name(j_fld)) then
-            icomp = rj_fld%istack_component(i_fld-1) + 1
+        jcomp = forward%ifld_trns(j_fld)
+        i_rj = forward%ifld_rj(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
-     &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_scalar_from_recv(iflag_recv, ncomp_recv,    &
-     &          icomp, jcomp, comm_rj, n_WR, WR, rj_fld)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'get scalar from recv ',      &
+     &                                   i_rj, 'to ', jcomp
+        call sel_sph_rj_scalar_from_recv(iflag_recv, ncomp_recv,        &
+     &      i_rj, jcomp, comm_rj, n_WR, WR, rj_fld)
       end do
 !
       do j = 1, forward%num_tensor
         j_fld = j + forward%num_vector + forward%num_scalar
-        jcomp = n_sym_tensor * j - 5 + forward%num_scalar               &
-     &         + n_vector*forward%num_vector
-        do i_fld = 1, rj_fld%num_phys_viz
-          if(rj_fld%phys_name(i_fld)                                    &
-     &         .eq. forward%field_name(j_fld))then
-            icomp = rj_fld%istack_component(i_fld-1) + 1
+        jcomp = forward%ifld_trns(j_fld)
+        i_rj = forward%ifld_rj(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'get from recv buffer ',  &
-     &               trim(rj_fld%phys_name(i_fld)), icomp, jcomp
-            call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,    &
-     &          icomp, jcomp, comm_rj, n_WR, WR, rj_fld)
-            call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,    &
-     &          (icomp+3), (jcomp+3), comm_rj, n_WR, WR, rj_fld)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'get tensor from recv ',      &
+     &                                   i_rj, 'to ', jcomp
+        call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,        &
+     &      i_rj, jcomp, comm_rj, n_WR, WR, rj_fld)
+        call sel_sph_rj_vector_from_recv(iflag_recv, ncomp_recv,        &
+     &      (i_rj+3), (jcomp+3), comm_rj, n_WR, WR, rj_fld)
       end do
 !
       end subroutine copy_all_spectr_from_trns

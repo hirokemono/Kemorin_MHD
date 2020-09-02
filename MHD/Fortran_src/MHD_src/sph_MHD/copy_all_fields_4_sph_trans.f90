@@ -54,61 +54,44 @@
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
-      integer(kind = kint) :: j, j_fld, i_fld
-      integer(kind = kint) :: icomp, jcomp
+      integer(kind = kint) :: j, j_fld, jcomp, i_rtp
 !
 !
 !      write(*,*) 'fld_rtp', backward%fld_rtp(1:sph_rtp%nnod_rtp,1:3)
 !
       do j_fld = 1, backward%num_vector
-        jcomp = n_vector*j_fld - 2
-        do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld)                                   &
-     &           .eq. backward%field_name(j_fld)) then
-            icomp = nod_fld%istack_component(i_fld-1) + 1
+        jcomp = backward%ifld_trns(j_fld)
+        i_rtp = backward%ifld_rtp(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
-     &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,      &
-     &          backward%ncomp, jcomp, backward%fld_rtp,                &
-     &          backward%fld_pole, icomp, mesh%node, nod_fld)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'copy vector from ',          &
+     &                                   jcomp, 'to ', i_rtp
+        call copy_nod_vec_from_trans_wpole(sph_rtp, m_folding,          &
+     &      backward%ncomp, jcomp, backward%fld_rtp, backward%fld_pole, &
+     &      i_rtp, mesh%node, nod_fld)
       end do
 !
       do j = 1, backward%num_scalar
         j_fld = j + backward%num_vector
-        jcomp = j + n_vector*backward%num_vector
-        do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld)                                   &
-     &          .eq. backward%field_name(j_fld)) then
-            icomp = nod_fld%istack_component(i_fld-1) + 1
+        jcomp = backward%ifld_trns(j_fld)
+        i_rtp = backward%ifld_rtp(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
-     &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,      &
-     &          backward%ncomp, jcomp, backward%fld_rtp,                &
-     &          backward%fld_pole, icomp, mesh%node, nod_fld)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'copy scalar from ',          &
+     &                                   jcomp, 'to ', i_rtp
+        call copy_nod_scl_from_trans_wpole(sph_rtp, m_folding,          &
+     &      backward%ncomp, jcomp, backward%fld_rtp, backward%fld_pole, &
+     &      i_rtp, mesh%node, nod_fld)
       end do
 !
       do j = 1, backward%num_tensor
         j_fld = j + backward%num_vector + backward%num_scalar
-        jcomp = n_sym_tensor * j - 5 + backward%num_scalar              &
-     &         + n_vector*backward%num_vector
-        do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld)                                   &
-     &          .eq. backward%field_name(j_fld)) then
-            icomp = nod_fld%istack_component(i_fld-1) + 1
+        jcomp = backward%ifld_trns(j_fld)
+        i_rtp = backward%ifld_rtp(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
-     &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,      &
-     &          backward%ncomp, jcomp, backward%fld_rtp,                &
-     &          backward%fld_pole, icomp, mesh%node, nod_fld)
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'copy tensor from  ',         &
+     &      jcomp, 'to ', i_rtp
+        call copy_nod_tsr_from_trans_wpole(sph_rtp, m_folding,          &
+     &      backward%ncomp, jcomp, backward%fld_rtp, backward%fld_pole, &
+     &      i_rtp, mesh%node, nod_fld)
       end do
 !
       end subroutine copy_all_field_from_trans
@@ -123,56 +106,37 @@
       type(phys_data), intent(in) :: nod_fld
       type(spherical_transform_data), intent(inout) :: forward
 !
-      integer(kind = kint) :: j, j_fld, i_fld
-      integer(kind = kint) :: icomp, jcomp
+      integer(kind = kint) :: j, j_fld, jcomp, i_rtp
 !
 !
       do j_fld = 1, forward%num_vector
-        jcomp = n_vector*j_fld - 2
-        do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld)                                   &
-     &        .eq. forward%field_name(j_fld)) then
-            icomp = nod_fld%istack_component(i_fld-1) + 1
+        jcomp = forward%ifld_trns(j_fld)
+        i_rtp = forward%ifld_rtp(j_fld)
 !
-            if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
-     &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_vec_to_sph_trans(mesh%node, sph_rtp,          &
-     &          nod_fld, icomp, forward%fld_rtp(1,jcomp))
-          end if
-        end do
+        if(iflag_debug .gt. 0) write(*,*) 'copy vector from  ',         &
+     &                                   jcomp, 'to ', i_rtp
+        call copy_nod_vec_to_sph_trans(mesh%node, sph_rtp,              &
+     &      nod_fld, i_rtp, forward%fld_rtp(1,jcomp))
       end do
 !
       do j = 1, forward%num_scalar
         j_fld = j + forward%num_vector
-        jcomp = j + n_vector*forward%num_vector
-        do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld)                                   &
-     &         .eq. forward%field_name(j_fld)) then
-            icomp = nod_fld%istack_component(i_fld-1) + 1
-!
-            if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
-     &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_scl_to_sph_trans(mesh%node, sph_rtp,          &
-     &          nod_fld, icomp, forward%fld_rtp(1,jcomp))
-          end if
-        end do
+        jcomp = forward%ifld_trns(j_fld)
+        i_rtp = forward%ifld_rtp(j_fld)
+        if(iflag_debug .gt. 0) write(*,*) 'copy scalar from  ',         &
+     &                        jcomp, 'to ', i_rtp
+        call copy_nod_scl_to_sph_trans(mesh%node, sph_rtp,              &
+     &      nod_fld, i_rtp, forward%fld_rtp(1,jcomp))
       end do
 !
       do j = 1, forward%num_tensor
         j_fld = j + forward%num_vector + forward%num_scalar
-        jcomp = n_sym_tensor * j - 5 + forward%num_scalar               &
-     &         + n_vector*forward%num_vector
-        do i_fld = 1, nod_fld%num_phys_viz
-          if(nod_fld%phys_name(i_fld)                                   &
-     &        .eq. forward%field_name(j_fld)) then
-            icomp = nod_fld%istack_component(i_fld-1) + 1
-!
-            if(iflag_debug .gt. 0) write(*,*) 'copy field for  ',       &
-     &               trim(nod_fld%phys_name(i_fld)), jcomp, icomp
-            call copy_nod_tsr_to_sph_trans(mesh%node, sph_rtp,          &
-     &          nod_fld, icomp, forward%fld_rtp(1,jcomp))
-          end if
-        end do
+        jcomp = forward%ifld_trns(j_fld)
+        i_rtp = forward%ifld_rtp(j_fld)
+        if(iflag_debug .gt. 0) write(*,*) 'copy tensor from  ',         &
+     &                        jcomp, 'to ', i_rtp
+        call copy_nod_tsr_to_sph_trans(mesh%node, sph_rtp,              &
+     &      nod_fld, i_rtp, forward%fld_rtp(1,jcomp))
       end do
 !
       end subroutine copy_all_field_to_trans

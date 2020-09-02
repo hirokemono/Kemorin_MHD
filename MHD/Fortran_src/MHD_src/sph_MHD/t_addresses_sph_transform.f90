@@ -49,7 +49,7 @@
         integer(kind = kint) :: num_tensor = 0
 !
 !>        Field name for spherical transform
-        character(len = kchara), allocatable :: field_name(:)
+!        character(len = kchara), allocatable :: field_name(:)
 !>        address of spherical transform array
         integer(kind = kint), allocatable :: ifld_trns(:)
 !>        address of backward transform for sprctr
@@ -77,7 +77,7 @@
       type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
-      allocate(each_trns%field_name(each_trns%nfield))
+!      allocate(each_trns%field_name(each_trns%nfield))
       allocate(each_trns%ifld_trns(each_trns%nfield))
       allocate(each_trns%ifld_rj(each_trns%nfield))
       allocate(each_trns%ifld_rtp(each_trns%nfield))
@@ -127,7 +127,8 @@
       type(spherical_transform_data), intent(inout) :: each_trns
 !
 !
-      deallocate(each_trns%field_name, each_trns%ifld_trns)
+!      deallocate(each_trns%field_name)
+      deallocate(each_trns%ifld_trns)
       deallocate(each_trns%ifld_rj, each_trns%ifld_rtp)
 !
       end subroutine dealloc_sph_trns_field_name
@@ -188,8 +189,8 @@
 !
 !
       if(num_copy .le. 0) return
-      etrns_new%field_name(1:num_copy)                                  &
-     &            = etrns_org%field_name(1:num_copy) 
+!      etrns_new%field_name(1:num_copy)                                 &
+!     &            = etrns_org%field_name(1:num_copy) 
       etrns_new%ifld_trns(1:num_copy) = etrns_org%ifld_trns(1:num_copy)
       etrns_new%ifld_rj(1:num_copy) =   etrns_org%ifld_rj(1:num_copy)
       etrns_new%ifld_rtp(1:num_copy) =  etrns_org%ifld_rtp(1:num_copy)
