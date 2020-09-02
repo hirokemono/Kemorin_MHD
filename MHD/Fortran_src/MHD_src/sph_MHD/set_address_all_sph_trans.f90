@@ -59,9 +59,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_all_transform(rj_fld, each_trns)
+      subroutine set_addresses_all_transform(d_rj, each_trns)
 !
-      type(phys_data), intent(in) :: rj_fld
+      use add_field_to_sph_trans_list
+!
+      type(phys_data), intent(in) :: d_rj
       type(spherical_transform_data), intent(inout) :: each_trns
 !
       integer(kind = kint) :: i, i_fld, i_trns
@@ -70,62 +72,35 @@
       each_trns%nfield = 0
       call alloc_sph_trns_field_name(each_trns)
 !
-      do i = 1, rj_fld%num_phys_viz
-        i_fld = rj_fld%istack_component(i-1) + 1
-        if(rj_fld%num_component(i) .eq. n_vector) then
-          call add_field_4_sph_transform                                &
-     &       (rj_fld%phys_name(i), n_vector, i_fld, i_fld, i_trns,      &
-     &        each_trns)
+      do i = 1, d_rj%num_phys_viz
+        i_fld = d_rj%istack_component(i-1) + 1
+        if(d_rj%num_component(i) .eq. n_vector) then
+          call add_field_name_4_sph_trns_snap                           &
+     &       (d_rj, i_fld, i_fld, i_trns, each_trns)
         end if
       end do
       each_trns%num_vector = each_trns%nfield
 !
-      do i = 1, rj_fld%num_phys_viz
-        i_fld = rj_fld%istack_component(i-1) + 1
-        if(rj_fld%num_component(i) .eq. n_scalar) then
-          call add_field_4_sph_transform                                &
-     &       (rj_fld%phys_name(i), n_scalar, i_fld, i_fld, i_trns,      &
-     &        each_trns)
+      do i = 1, d_rj%num_phys_viz
+        i_fld = d_rj%istack_component(i-1) + 1
+        if(d_rj%num_component(i) .eq. n_scalar) then
+          call add_field_name_4_sph_trns_snap                           &
+     &       (d_rj, i_fld, i_fld, i_trns, each_trns)
         end if
       end do
       each_trns%num_scalar = each_trns%nfield - each_trns%num_vector
 !
-      do i = 1, rj_fld%num_phys_viz
-        i_fld = rj_fld%istack_component(i-1) + 1
-        if(rj_fld%num_component(i) .eq. n_sym_tensor) then
-          call add_field_4_sph_transform                                &
-     &       (rj_fld%phys_name(i), n_sym_tensor, i_fld, i_fld, i_trns,  &
-     &        each_trns)
+      do i = 1, d_rj%num_phys_viz
+        i_fld = d_rj%istack_component(i-1) + 1
+        if(d_rj%num_component(i) .eq. n_sym_tensor) then
+          call add_field_name_4_sph_trns_snap                           &
+     &       (d_rj, i_fld, i_fld, i_trns, each_trns)
         end if
       end do
       each_trns%num_tensor = each_trns%nfield                           &
      &                    - each_trns%num_vector - each_trns%num_scalar
 !
       end subroutine set_addresses_all_transform
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine add_field_4_sph_transform                              &
-     &         (field_name, num_comp, i_pol, irtp, i_trns, each_trns)
-!
-      use add_field_to_sph_trans_list
-!
-      character(len = kchara), intent(in) :: field_name
-      integer(kind = kint), intent(in) :: num_comp
-      integer(kind = kint), intent(in) :: i_pol, irtp
-!
-      integer(kind = kint), intent(inout) :: i_trns
-      type(spherical_transform_data), intent(inout) :: each_trns
-!
-      integer(kind = kint)  :: iflag_snap
-!
-!
-      iflag_snap = i_pol * irtp
-      call add_field_name_4_sph_trns(iflag_snap, field_name,            &
-     &    num_comp, i_pol, irtp, i_trns, each_trns)
-!
-      end subroutine add_field_4_sph_transform
 !
 !-----------------------------------------------------------------------
 !

@@ -9,27 +9,31 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_trns_address_ngrad_pre                       &
-!!     &         (ipol, iphys, trns_ngTMP,                              &
+!!     &         (d_rj, ipol, iphys, trns_ngTMP,                        &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
 !!
 !!      subroutine set_sph_trns_address_ngrad_SGS                       &
-!!     &         (ipol_LES, iphys_LES, trns_SGS,                        &
+!!     &         (d_rj, ipol_LES, iphys_LES, trns_SGS,                  &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!
 !!      subroutine set_sph_trns_address_dyn_ngrad                       &
-!!     &         (ipol_LES, iphys_LES, trns_DYNG,                       &
+!!     &         (d_rj, ipol_LES, iphys_LES, trns_DYNG,                 &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
 !!
 !!      subroutine set_addresses_trans_sph_ngCsim                       &
-!!     &        (SGS_param, ipol_LES, iphys_LES, trns_Csim,             &
+!!     &        (SGS_param, d_rj, ipol_LES, iphys_LES, trns_Csim,       &
 !!     &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_Csim
 !!@endverbatim
@@ -38,6 +42,7 @@
 !
       use m_precision
 !
+      use t_phys_data
       use t_phys_address
       use t_SGS_model_addresses
       use t_sph_trans_arrays_SGS_MHD
@@ -51,12 +56,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_trns_address_ngrad_pre                         &
-     &         (ipol, iphys, trns_ngTMP,                                &
+     &         (d_rj, ipol, iphys, trns_ngTMP,                          &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_addresses_sph_transform
       use address_sph_trans_ngSGS
 !
+      type(phys_data), intent(in) :: d_rj
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(in) :: iphys
       type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
@@ -71,9 +77,9 @@
       end if
 !
       call bwd_trns_address_fld_ngrad_pre                               &
-     &   (ipol, iphys, trns_ngTMP%b_trns, trns_ngTMP%backward)
+     &   (d_rj, ipol, iphys, trns_ngTMP%b_trns, trns_ngTMP%backward)
       call fwd_trns_address_fld_ngrad_pre                               &
-     &   (ipol, iphys, trns_ngTMP%f_trns, trns_ngTMP%forward)
+     &   (d_rj, ipol, iphys, trns_ngTMP%f_trns, trns_ngTMP%forward)
 !
       call count_num_fields_each_trans(trns_ngTMP%backward,             &
      &   ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
@@ -94,13 +100,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_trns_address_ngrad_SGS                         &
-     &         (ipol_LES, iphys_LES, trns_SGS,                          &
+     &         (d_rj, ipol_LES, iphys_LES, trns_SGS,                    &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_addresses_sph_transform
       use address_sph_trans_ngSGS
       use address_sph_trans_dyn_simi
 !
+      type(phys_data), intent(in) :: d_rj
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -114,7 +121,7 @@
       end if
 !
       call empty_trans_address(trns_SGS%backward)
-      call fwd_trns_address_fld_ngrad_SGS(ipol_LES, iphys_LES,          &
+      call fwd_trns_address_fld_ngrad_SGS(d_rj, ipol_LES, iphys_LES,    &
      &    trns_SGS%f_trns_LES, trns_SGS%forward)
 !
       call count_num_fields_each_trans(trns_SGS%backward,               &
@@ -136,12 +143,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_trns_address_dyn_ngrad                         &
-     &         (ipol_LES, iphys_LES, trns_DYNG,                         &
+     &         (d_rj, ipol_LES, iphys_LES, trns_DYNG,                   &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_addresses_sph_transform
       use address_sph_trans_ngSGS
 !
+      type(phys_data), intent(in) :: d_rj
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -154,9 +162,9 @@
      &              'for dynamic nonlinear Gradient SGS (trns_DYNG)'
       end if
 !
-      call bwd_trns_address_fld_dyn_ngrad(ipol_LES, iphys_LES,          &
+      call bwd_trns_address_fld_dyn_ngrad(d_rj, ipol_LES, iphys_LES,    &
      &    trns_DYNG%b_trns_LES, trns_DYNG%backward)
-      call fwd_trns_address_fld_dyn_ngrad(ipol_LES, iphys_LES,          &
+      call fwd_trns_address_fld_dyn_ngrad(d_rj, ipol_LES, iphys_LES,    &
      &    trns_DYNG%f_trns_LES, trns_DYNG%forward)
 !
       call count_num_fields_each_trans(trns_DYNG%backward,              &
@@ -178,7 +186,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_addresses_trans_sph_ngCsim                         &
-     &        (SGS_param, ipol_LES, iphys_LES, trns_Csim,               &
+     &        (SGS_param, d_rj, ipol_LES, iphys_LES, trns_Csim,         &
      &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_SGS_control_parameter
@@ -186,6 +194,7 @@
       use address_sph_trans_ngSGS
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(phys_data), intent(in) :: d_rj
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_Csim
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -198,9 +207,10 @@
      &             'by n. gradient model (trns_Csim)'
       end if
 !
-      call bwd_trans_address_sph_ngCsim(ipol_LES, iphys_LES,            &
+      call bwd_trans_address_sph_ngCsim(d_rj, ipol_LES, iphys_LES,      &
      &    trns_Csim%b_trns_LES, trns_Csim%backward)
-      call fwd_trans_address_sph_ngCsim(SGS_param, ipol_LES, iphys_LES, &
+      call fwd_trans_address_sph_ngCsim                                 &
+     &   (SGS_param, d_rj, ipol_LES, iphys_LES,                         &
      &    trns_Csim%f_trns_LES, trns_Csim%forward)
 !
       call count_num_fields_each_trans(trns_Csim%backward,              &

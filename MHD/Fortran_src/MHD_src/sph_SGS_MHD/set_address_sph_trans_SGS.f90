@@ -9,19 +9,22 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_trns_address_fld_simi                        &
-!!     &         (ipol_LES, iphys_LES, trns_SIMI,                       &
+!!     &         (d_rj, ipol_LES, iphys_LES, trns_SIMI,                 &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
 !!      subroutine set_sph_trns_address_dyn_simi                        &
-!!     &         (ipol_LES, iphys_LES, trns_DYNS,                       &
+!!     &         (d_rj, ipol_LES, iphys_LES, trns_DYNS,                 &
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_DYNS
 !!      subroutine set_sph_trns_address_Csim                            &
-!!     &         (SGS_param, ipol_LES, iphys_LES, trns_Csim,            &
+!!     &         (SGS_param, d_rj, ipol_LES, iphys_LES, trns_Csim,      &
 !!     &         ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
+!!        type(phys_data), intent(in) :: d_rj
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_Csim
 !!@endverbatim
@@ -30,6 +33,7 @@
 !
       use m_precision
 !
+      use t_phys_data
       use t_SGS_model_addresses
       use t_sph_trans_arrays_SGS_MHD
 !
@@ -42,12 +46,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_trns_address_fld_simi                          &
-     &         (ipol_LES, iphys_LES, trns_SIMI,                         &
+     &         (d_rj, ipol_LES, iphys_LES, trns_SIMI,                   &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_addresses_sph_transform
       use address_sph_trans_dyn_simi
 !
+      type(phys_data), intent(in) :: d_rj
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -60,9 +65,9 @@
      &   'Spherical transform field table for dynamnic SGS (trns_SIMI)'
       end if
 !
-      call bwd_sph_trns_fld_similarity(ipol_LES, iphys_LES,             &
+      call bwd_sph_trns_fld_similarity(d_rj, ipol_LES, iphys_LES,       &
      &    trns_SIMI%b_trns_LES, trns_SIMI%backward)
-      call fwd_sph_trns_fld_similarity(ipol_LES, iphys_LES,             &
+      call fwd_sph_trns_fld_similarity(d_rj, ipol_LES, iphys_LES,       &
      &    trns_SIMI%f_trns_LES, trns_SIMI%forward)
 !
       call count_num_fields_each_trans(trns_SIMI%backward,              &
@@ -84,12 +89,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_trns_address_dyn_simi                          &
-     &         (ipol_LES, iphys_LES, trns_DYNS,                         &
+     &         (d_rj, ipol_LES, iphys_LES, trns_DYNS,                   &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_addresses_sph_transform
       use address_sph_trans_dyn_simi
 !
+      type(phys_data), intent(in) :: d_rj
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -102,7 +108,7 @@
      &   'Spherical transform field table for dynamnic SGS (trns_DYNS)'
       end if
 !
-      call bwd_trans_address_dyn_simi(ipol_LES, iphys_LES,              &
+      call bwd_trans_address_dyn_simi(d_rj, ipol_LES, iphys_LES,        &
      &    trns_DYNS%b_trns_LES, trns_DYNS%backward)
       call empty_trans_address(trns_DYNS%forward)
 !
@@ -125,13 +131,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_trns_address_Csim                              &
-     &         (SGS_param, ipol_LES, iphys_LES, trns_Csim,              &
+     &         (SGS_param, d_rj, ipol_LES, iphys_LES, trns_Csim,        &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use t_addresses_sph_transform
       use t_SGS_control_parameter
       use address_sph_trans_dyn_simi
 !
+      type(phys_data), intent(in) :: d_rj
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
       type(SGS_address_sph_trans), intent(inout) :: trns_Csim
@@ -146,7 +153,7 @@
       end if
 !
       call empty_trans_address(trns_Csim%backward)
-      call fwd_trans_address_Csim(SGS_param, ipol_LES, iphys_LES,       &
+      call fwd_trans_address_Csim(SGS_param, d_rj, ipol_LES, iphys_LES, &
      &    trns_Csim%f_trns_LES, trns_Csim%forward)
 !
       call count_num_fields_each_trans(trns_Csim%backward,              &

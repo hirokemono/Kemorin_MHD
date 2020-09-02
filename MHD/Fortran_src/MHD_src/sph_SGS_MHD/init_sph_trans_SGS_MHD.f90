@@ -89,24 +89,24 @@
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
       call set_addresses_trans_sph_MHD                                  &
-     &   (SPH_MHD%ipol, iphys, WK%trns_MHD,                             &
+     &   (SPH_MHD%fld, SPH_MHD%ipol, iphys, WK%trns_MHD,                &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call init_sph_transform_SGS_model(SGS_par%model_p,                &
+      call init_sph_transform_SGS_model(SGS_par%model_p, SPH_MHD%fld,   &
      &    SPH_MHD%ipol, ipol_LES, iphys, iphys_LES, WK_LES,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_snapshot_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_snap,                            &
+     &   (SPH_MHD%fld, SPH_MHD%ipol, iphys, WK%trns_snap,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_ene_flux_trans                                 &
-     &   (SPH_MHD%ipol, iphys, WK%trns_eflux,                           &
+     &   (SPH_MHD%fld, SPH_MHD%ipol, iphys, WK%trns_eflux,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_diff_vect_trans                                &
-     &   (SPH_MHD%ipol, iphys, WK%trns_difv,                            &
+     &   (SPH_MHD%fld, SPH_MHD%ipol, iphys, WK%trns_difv,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call set_addresses_SGS_snap_trans                                 &
-     &   (ipol_LES, iphys_LES, WK_LES%trns_SGS_snap,                    &
+     &   (SPH_MHD%fld, ipol_LES, iphys_LES, WK_LES%trns_SGS_snap,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
@@ -129,8 +129,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_SGS_model                           &
-     &          (SGS_param, ipol, ipol_LES, iphys, iphys_LES, WK_LES,   &
+      subroutine init_sph_transform_SGS_model(SGS_param, d_rj,          &
+     &          ipol, ipol_LES, iphys, iphys_LES, WK_LES,               &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       use set_address_sph_trans_SGS
@@ -140,6 +140,7 @@
       use address_sph_trans_fil_force
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(phys_data), intent(in) :: d_rj
       type(phys_address), intent(in) :: ipol, iphys
       type(SGS_model_addresses), intent(in) :: ipol_LES, iphys_LES
 !
@@ -150,14 +151,14 @@
 !
 !
       call init_sph_trns_filter_MHD                                     &
-     &   (ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,                     &
+     &   (d_rj, ipol_LES, iphys_LES, WK_LES%trns_fil_MHD,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       call init_sph_trns_filter_snap                                    &
-     &   (ipol_LES, iphys_LES, WK_LES%trns_fil_snap,                    &
+     &   (d_rj, ipol_LES, iphys_LES, WK_LES%trns_fil_snap,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call init_sph_trns_filter_diff_vect                               &
-     &   (ipol_LES, iphys_LES, WK_LES%trns_fil_difv,                    &
+     &   (d_rj, ipol_LES, iphys_LES, WK_LES%trns_fil_difv,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
@@ -166,24 +167,24 @@
      &               'for similarity SGS (trns_SGS)'
         end if
         call set_sph_trns_address_fld_simi                              &
-     &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
+     &     (d_rj, ipol_LES, iphys_LES, WK_LES%trns_SGS,                 &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           call set_sph_trns_address_dyn_simi                            &
-     &       (ipol_LES, iphys_LES, WK_LES%trns_DYNS,                    &
+     &       (d_rj, ipol_LES, iphys_LES, WK_LES%trns_DYNS,              &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_sph_trns_address_Csim                                &
-     &      (SGS_param, ipol_LES, iphys_LES, WK_LES%trns_Csim,          &
+     &      (SGS_param, d_rj, ipol_LES, iphys_LES, WK_LES%trns_Csim,    &
      &       ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
 !
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
         call set_sph_trns_address_ngrad_SGS                             &
-     &     (ipol_LES, iphys_LES, WK_LES%trns_SGS,                       &
+     &     (d_rj, ipol_LES, iphys_LES, WK_LES%trns_SGS,                 &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         call set_sph_trns_address_ngrad_pre                             &
-     &     (ipol, iphys, WK_LES%trns_ngTMP,                             &
+     &     (d_rj, ipol, iphys, WK_LES%trns_ngTMP,                       &
      &      ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if(iflag_debug .gt. 0) then
@@ -191,13 +192,13 @@
      &                 'for similarity SGS (trns_SIMI)'
           end if
           call set_sph_trns_address_fld_simi                            &
-     &       (ipol_LES, iphys_LES, WK_LES%trns_SIMI,                    &
+     &       (d_rj, ipol_LES, iphys_LES, WK_LES%trns_SIMI,              &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_sph_trns_address_dyn_ngrad                           &
-     &       (ipol_LES, iphys_LES, WK_LES%trns_DYNG,                    &
+     &       (d_rj, ipol_LES, iphys_LES, WK_LES%trns_DYNG,              &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
           call set_addresses_trans_sph_ngCsim                           &
-     &       (SGS_param, ipol_LES, iphys_LES, WK_LES%trns_Csim,         &
+     &       (SGS_param, d_rj, ipol_LES, iphys_LES, WK_LES%trns_Csim,   &
      &        ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
          end if
       end if
