@@ -8715,8 +8715,15 @@ subroutine mradf2 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1)
          end do
   101 continue
 
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
+!      if (ido-2) 107,105,102
+      if(ido .lt. 2) then
+        return
+      else if(ido .eq. 2) then
+        go to 105
+      end if  
+!  102 continue
+!
+      idp2 = ido+2
       do 104 k=1,l1
          do 103 i=3,ido,2
             ic = idp2-i
@@ -8735,7 +8742,9 @@ subroutine mradf2 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1)
   103    continue
   104 continue
       if (mod(ido,2) == 1) return
-  105 do 106 k=1,l1
+!
+  105 continue
+  do 106 k=1,l1
          m2 = m2s
          do 1006 m1=1,m1d,im1
          m2 = m2+im2
@@ -8743,7 +8752,7 @@ subroutine mradf2 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1)
          ch(m2,ido,1,k) = cc(m1,ido,k,1)
  1006    continue
   106 continue
-  107 continue
+!  107 continue
 
   return
 end
@@ -8949,8 +8958,15 @@ subroutine mradf4 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1,wa2,wa3)
  1001    continue
   101 continue
 
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
+!      if (ido-2) 107,105,102
+      if(ido .lt. 2) then
+        return
+      else if(ido .eq. 2) then
+        go to 105
+      end if
+  
+!  102 continue
+      idp2 = ido+2
       do 104 k=1,l1
          do 103 i=3,ido,2
             ic = idp2-i
@@ -9001,6 +9017,7 @@ subroutine mradf4 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1,wa2,wa3)
   103    continue
   104 continue
       if (mod(ido,2) == 1) return
+!
   105 continue
       do 106 k=1,l1
          m2 = m2s
@@ -9016,7 +9033,7 @@ subroutine mradf4 (m,ido,l1,cc,im1,in1,ch,im2,in2,wa1,wa2,wa3)
              cc(m1,ido,k,3)
  1006    continue
   106 continue
-  107 continue
+!  107 continue
 
   return
 end
@@ -9623,22 +9640,25 @@ subroutine mrftb1 (m,im,n,in,c,ch,wa,fac)
       ch(i,1) = c(m2,1)
       ch(i,n) = c(m2,n)
   117 continue
-      do 118 j=2,nl,2
-      m2 = 1-im
-      do 118 i=1,m
-         m2 = m2+im
-	 ch(i,j) = half*c(m2,j)
-	 ch(i,j+1) = halfm*c(m2,j+1)
-  118 continue
+      do j=2,nl,2
+        m2 = 1-im
+        do i=1,m
+          m2 = m2+im
+          ch(i,j) = half*c(m2,j)
+          ch(i,j+1) = halfm*c(m2,j+1)
+        end do
+      end do
       go to 124
   120 continue
-      do 122 j=2,nl,2
-      m2 = 1-im
-      do 122 i=1,m
-         m2 = m2+im
-	 c(m2,j) = half*c(m2,j)
-	 c(m2,j+1) = halfm*c(m2,j+1)
-  122 continue
+!
+      do j=2,nl,2
+        m2 = 1-im
+        do i=1,m
+          m2 = m2+im
+          c(m2,j) = half*c(m2,j)
+          c(m2,j+1) = halfm*c(m2,j+1)
+        end do
+      end do
   124 l1 = 1
       iw = 1
       do 116 k1=1,nf
@@ -9847,23 +9867,28 @@ subroutine mrftf1 (m,im,n,in,c,ch,wa,fac)
          m2 = m2+im
          c(m2,1) = sn*c(m2,1)
   121 continue
-      do 122 j=2,nl,2
-      m2 = 1-im
-      do 122 i=1,m
-         m2 = m2+im
-	 c(m2,j) = tsn*c(m2,j)
-	 c(m2,j+1) = tsnm*c(m2,j+1)
-  122 continue
+      do j=2,nl,2
+        m2 = 1-im
+        do i=1,m
+          m2 = m2+im
+          c(m2,j) = tsn*c(m2,j)
+          c(m2,j+1) = tsnm*c(m2,j+1)
+        end do
+      end do
+!
       if(modn /= 0) return
       m2 = 1-im
       do i=1,m
          m2 = m2+im
          c(m2,n) = sn*c(m2,n)
       end do
-
-  return
-end
-subroutine mrfti1 (n,wa,fac)
+!
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mrfti1 (n,wa,fac)
 
 !*****************************************************************************80
 !
@@ -9941,19 +9966,29 @@ subroutine mrfti1 (n,wa,fac)
 
   data ntryh / 4, 2, 3, 5 /
 
-  nl = n
-  nf = 0
-  j = 0
-
-  101 j = j+1
-      if (j-4) 102,102,103
-  102 ntry = ntryh(j)
-      go to 104
-  103 ntry = ntry+2
-  104 nq = nl/ntry
-      nr = nl-ntry*nq
-      if (nr) 101,105,101
-  105 nf = nf+1
+      nl = n
+      nf = 0
+      j = 0
+!
+  101 continue
+        j = j+1
+!        if (j-4) 102,102,103
+        if(j .le. 4) then
+!  102     continue
+          ntry = ntryh(j)
+        else
+!  103     continue
+          ntry = ntry+2
+        end if  
+!        go to 104
+  104   continue
+        nq = nl/ntry
+        nr = nl-ntry*nq
+        if(nr .ne. 0) go to 101
+!        if (nr) 101,105,101
+!
+!  105 continue
+      nf = nf+1
       fac(nf+2) = ntry
       nl = nq
       if (ntry /= 2) go to 107
@@ -9962,7 +9997,9 @@ subroutine mrfti1 (n,wa,fac)
          fac(ib+2) = fac(ib+1)
       end do
       fac(3) = 2
-  107 if (nl /= 1) go to 104
+  107 continue
+      if(nl .ne. 1) go to 104
+!
       fac(1) = n
       fac(2) = nf
       tpi = 8.0D+00 * atan ( 1.0D+00 )
@@ -10361,8 +10398,15 @@ subroutine msntb1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
     ch(1,1,k,2) = cc(1,1,1,k)-cc(1,ido,2,k)
   end do
 
-      if (ido-2) 107,105,102
- 102  idp2 = ido+2
+!      if (ido-2) 107,105,102
+      if(ido .lt. 2) then
+        return
+      else if(ido .eq. 2) then
+        go to 105
+      end if  
+!
+ 102  continue
+      idp2 = ido+2
       do 104 k=1,l1
          do 103 i=3,ido,2
             ic = idp2-i
@@ -10378,11 +10422,12 @@ subroutine msntb1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
  103     continue
  104  continue
       if (mod(ido,2) == 1) return
- 105  do 106 k=1,l1
+ 105  continue
+      do 106 k=1,l1
          ch(1,ido,k,1) = cc(1,ido,1,k)+cc(1,ido,1,k)
          ch(1,ido,k,2) = -(cc(1,1,2,k)+cc(1,1,2,k))
  106  continue
- 107  continue
+! 107  continue
 
   return
 end
@@ -10441,8 +10486,15 @@ subroutine r1f2kf (ido,l1,cc,in1,ch,in2,wa1)
     ch(1,ido,2,k) = cc(1,1,k,1)-cc(1,1,k,2)
   end do
 
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
+!      if (ido-2) 107,105,102
+      if(ido .lt. 2) then
+        return
+      else if(ido .eq. 2) then
+        go to 105
+      end if  
+!
+  102 continue
+      idp2 = ido+2
       do 104 k=1,l1
          do i=3,ido,2
             ic = idp2-i
@@ -10457,11 +10509,12 @@ subroutine r1f2kf (ido,l1,cc,in1,ch,in2,wa1)
           end do
   104 continue
       if (mod(ido,2) == 1) return
-  105 do 106 k=1,l1
+  105 continue
+      do 106 k=1,l1
          ch(1,1,2,k) = -cc(1,ido,k,2)
          ch(1,ido,1,k) = cc(1,ido,k,1)
   106 continue
-  107 continue
+!  107 continue
 
   return
 end
@@ -10751,9 +10804,14 @@ subroutine r1f4kb (ido,l1,cc,in1,ch,in2,wa1,wa2,wa3)
       -(cc(1,1,3,k)+cc(1,1,3,k))
   end do
 
-      if (ido-2) 107,105,102
-
-  102 idp2 = ido+2
+!      if (ido-2) 107,105,102
+      if(ido .lt. 2) then
+        return
+      else if(ido .eq. 2) then
+        go to 105
+      end if  
+!  102 continue
+      idp2 = ido+2
       do 104 k=1,l1
          do 103 i=3,ido,2
             ic = idp2-i
@@ -10794,7 +10852,7 @@ subroutine r1f4kb (ido,l1,cc,in1,ch,in2,wa1,wa2,wa3)
          ch(1,ido,k,4) = -sqrt2*((cc(1,ido,1,k)-cc(1,ido,3,k)) &
          +(cc(1,1,2,k)+cc(1,1,4,k)))
   106 continue
-  107 continue
+!  107 continue
 
   return
 end
@@ -10860,8 +10918,15 @@ subroutine r1f4kf (ido,l1,cc,in1,ch,in2,wa1,wa2,wa3)
     ch(1,1,3,k) = cc(1,1,k,4)-cc(1,1,k,2)
   end do
 
-      if (ido-2) 107,105,102
-  102 idp2 = ido+2
+!      if (ido-2) 107,105,102
+      if(ido .lt. 2) then
+        return
+      else if(ido .eq. 2) then
+        go to 105
+      end if  
+!  102 continue
+!
+      idp2 = ido+2
       do 104 k=1,l1
          do 103 i=3,ido,2
             ic = idp2-i
@@ -10907,7 +10972,7 @@ subroutine r1f4kf (ido,l1,cc,in1,ch,in2,wa1,wa2,wa3)
             ch(1,1,2,k) = (-hsqt2*(cc(1,ido,k,2)+cc(1,ido,k,4)))-cc(1,ido,k,3)
             ch(1,1,4,k) = (-hsqt2*(cc(1,ido,k,2)+cc(1,ido,k,4)))+cc(1,ido,k,3)
   106 continue
-  107 continue
+!  107 continue
 
   return
 end
@@ -13506,15 +13571,26 @@ subroutine rffti1 ( n, wa, fac )
       nl = n
       nf = 0
       j = 0
-  101 j = j+1
-      if (j-4) 102,102,103
-  102 ntry = ntryh(j)
-      go to 104
-  103 ntry = ntry+2
-  104 nq = nl/ntry
-      nr = nl-ntry*nq
-      if (nr) 101,105,101
-  105 nf = nf+1
+!
+  101 continue
+        j = j+1
+!        if (j-4) 102,102,103
+        if(j .le. 4) then
+!  102      continue
+          ntry = ntryh(j)
+        else
+!  103     continue
+          ntry = ntry+2
+        end if  
+!        go to 104
+  104   continue
+        nq = nl/ntry
+        nr = nl-ntry*nq
+        if(nr .ne. 0) go to 101
+!        if (nr) 101,105,101
+!
+!  105 continue
+      nf = nf+1
       fac(nf+2) = ntry
       nl = nq
       if (ntry /= 2) go to 107
@@ -13524,7 +13600,9 @@ subroutine rffti1 ( n, wa, fac )
          fac(ib+2) = fac(ib+1)
   106 continue
       fac(3) = 2
-  107 if (nl /= 1) go to 104
+  107 continue
+      if(nl .ne. 1) go to 104
+!
       fac(1) = n
       fac(2) = nf
       tpi = 8.0D+00 * atan ( 1.0D+00 )
