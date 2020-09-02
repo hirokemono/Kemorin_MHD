@@ -32,7 +32,7 @@
         type(phys_data), allocatable ::     org_sph_phys(:)
 !
         integer :: np_sph_new
-        type(sph_mesh_data), allocatable :: new_sph_mesh(:)
+        type(sph_mesh_data) :: new_sph_mesh
         type(phys_data) :: new_sph_phys
 !
         type(rj_assemble_tbl), allocatable :: j_table(:,:)
@@ -56,7 +56,6 @@
 !
       allocate( sph_asbl%org_sph_mesh(sph_asbl%np_sph_org) )
       allocate( sph_asbl%org_sph_phys(sph_asbl%np_sph_org) )
-      allocate( sph_asbl%new_sph_mesh(sph_asbl%np_sph_new) )
       allocate(sph_asbl%j_table(sph_asbl%np_sph_org,                    &
      &                          sph_asbl%np_sph_new))
 !
@@ -82,7 +81,6 @@
       deallocate(sph_asbl%j_table)
 !
       deallocate(sph_asbl%org_sph_mesh, sph_asbl%org_sph_phys)
-      deallocate(sph_asbl%new_sph_mesh)
 !
       end subroutine dealloc_spectr_data_4_assemble
 !

@@ -41,7 +41,7 @@
       use calypso_mpi_int
 !
       integer, intent(in) :: np_sph_new
-      type(sph_mesh_data), intent(in) :: new_sph_mesh(np_sph_new)
+      type(sph_mesh_data), intent(in) :: new_sph_mesh
 !
       type(field_IO), intent(inout) :: new_fst_IO
 !
@@ -55,11 +55,7 @@
       nnod_list_lc(1:np_sph_new) = 0
       nnod_list(1:np_sph_new) = 0
 !
-      do jp = 1, np_sph_new
-        irank_new = jp - 1
-        if(mod(irank_new,nprocs) .ne. my_rank) cycle
-        nnod_list_lc(jp) = new_sph_mesh(jp)%sph%sph_rj%nnod_rj
-      end do
+      nnod_list_lc(my_rank+1) = new_sph_mesh%sph%sph_rj%nnod_rj
 !
       num64 = int(np_sph_new, KIND(num64))
       call calypso_mpi_allreduce_int                                    &

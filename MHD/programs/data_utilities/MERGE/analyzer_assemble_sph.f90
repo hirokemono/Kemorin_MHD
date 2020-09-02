@@ -85,9 +85,9 @@
 !
       call check_and_make_SPH_rj_mode                                   &
      &   (asbl_param_s%new_mesh_file, sph_asbl_maker_s,                 &
-     &    sph_asbl_s%new_sph_mesh(my_rank+1)%sph,                       &
-     &    sph_asbl_s%new_sph_mesh(my_rank+1)%sph_comms,                 &
-     &    sph_asbl_s%new_sph_mesh(my_rank+1)%sph_grps)
+     &    sph_asbl_s%new_sph_mesh%sph,                                  &
+     &    sph_asbl_s%new_sph_mesh%sph_comms,                            &
+     &    sph_asbl_s%new_sph_mesh%sph_grps)
       call load_new_spectr_rj_data                                      &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%np_sph_new,                 &
      &    sph_asbl_s%org_sph_mesh, sph_asbl_s%new_sph_mesh,             &
@@ -101,7 +101,7 @@
 !     construct radial interpolation table
 !
       call const_r_interpolate_table                                    &
-     &   (sph_asbl_s%org_sph_mesh(1), sph_asbl_s%new_sph_mesh(1),       &
+     &   (sph_asbl_s%org_sph_mesh(1), sph_asbl_s%new_sph_mesh,          &
      &    sph_asbl_s%r_itp)
 !
 !      Construct field list from spectr file
@@ -113,8 +113,8 @@
 !
       call share_org_spectr_field_names                                 &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_phys)
-      call share_new_spectr_field_names(sph_asbl_s%np_sph_new,          &
-     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
+      call share_new_spectr_field_names                                 &
+     &   (sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
 !
 !
 !      do ip = 1, sph_asbl_s%np_sph_org
@@ -175,15 +175,14 @@
 !
 !     Copy spectr data to temporal array
           call set_assembled_sph_data                                   &
-     &       (sph_asbl_s%org_sph_mesh(ip),                              &
-     &        sph_asbl_s%new_sph_mesh(my_rank+1),                       &
+     &       (sph_asbl_s%org_sph_mesh(ip), sph_asbl_s%new_sph_mesh,     &
      &        sph_asbl_s%j_table(ip,my_rank+1), sph_asbl_s%r_itp,       &
      &        sph_asbl_s%org_sph_phys(ip), sph_asbl_s%new_sph_phys)
           call dealloc_phys_data_type(sph_asbl_s%org_sph_phys(ip))
         end do
 !
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
-     &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
+     &      sph_asbl_s%new_sph_mesh%sph, sph_asbl_s%r_itp,   &
      &      sph_asbl_s%new_sph_phys, sph_asbl_s%new_fst_IO,             &
      &      sph_asbl_s%fst_time_IO)
 !
