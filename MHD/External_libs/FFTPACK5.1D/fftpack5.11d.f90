@@ -10022,29 +10022,35 @@ subroutine msntb1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
   ier = 0
   lj = (lot-1)*jump+1
 
-      if (n-2) 200,102,103
- 102  srt3s2 = sqrt( 3.0D+00 )/ 2.0D+00 
+!      if (n-2) 200,102,103
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+!  102    continue
+        srt3s2 = sqrt( 3.0D+00 )/ 2.0D+00 
 
-      do m=1,lj,jump
-         xhold = srt3s2*(x(m,1)+x(m,2))
-         x(m,2) = srt3s2*(x(m,1)-x(m,2))
-         x(m,1) = xhold
-      end do
-
-      go to 200
-  103 np1 = n+1
-      ns2 = n/2
-      do 104 k=1,ns2
-         kc = np1-k
-         m1 = 0
-         do 114 m=1,lj,jump
-         m1 = m1+1
-         t1 = x(m,k)-x(m,kc)
-         t2 = wsave(k)*(x(m,k)+x(m,kc))
-         xh(m1,k+1) = t1+t2
-         xh(m1,kc+1) = t2-t1
-  114    continue
-  104 continue
+        do m=1,lj,jump
+           xhold = srt3s2*(x(m,1)+x(m,2))
+           x(m,2) = srt3s2*(x(m,1)-x(m,2))
+           x(m,1) = xhold
+        end do
+        return
+!      else
+      end if
+!  103    continue
+        np1 = n+1
+        ns2 = n/2
+        do k=1,ns2
+          kc = np1-k
+          m1 = 0
+          do m=1,lj,jump
+            m1 = m1+1
+            t1 = x(m,k)-x(m,kc)
+            t2 = wsave(k)*(x(m,k)+x(m,kc))
+            xh(m1,k+1) = t1+t2
+            xh(m1,kc+1) = t2-t1
+          end do  
+        end do  
       modn = mod(n,2)
       if (modn == 0) go to 124
       m1 = 0
@@ -10062,10 +10068,10 @@ subroutine msntb1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
 
       call rfftmf(lot,1,np1,lot,xh,lnxh,wsave(ns2+1),lnsv,work,lnwk,ier1)     
 
-      if (ier1 /= 0) then
+      if(ier1 .ne. 0) then
         ier = 20
         call xerfft ('msntb1',-5)
-        go to 200
+        return
       end if
 
       if(mod(np1,2) /= 0) go to 30
@@ -10088,18 +10094,19 @@ subroutine msntb1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
             x(m,i) = dsum(m1)
   115    continue
   105 continue
-      if (modn /= 0) go to 200
+      if (modn .ne. 0) return
       m1 = 0
-      do 116 m=1,lj,jump
+      do m=1,lj,jump
          m1 = m1+1
          x(m,n) = fnp1s4*xh(m1,n+1)
-  116 continue
+      end do
 
-  200 continue
-
-  return
-end
-subroutine msntf1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine msntf1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
 
 !*****************************************************************************80
 !
@@ -10169,28 +10176,35 @@ subroutine msntf1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
   ier = 0
   lj = (lot-1)*jump+1
 
-      if (n-2) 101,102,103
- 102  ssqrt3 = 1.0D+00 / sqrt ( 3.0D+00 )
+!      if (n-2) 101,102,103
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+! 102    continue
+        ssqrt3 = 1.0D+00 / sqrt ( 3.0D+00 )
 
-      do m=1,lj,jump
-         xhold = ssqrt3*(x(m,1)+x(m,2))
-         x(m,2) = ssqrt3*(x(m,1)-x(m,2))
-         x(m,1) = xhold
-      end do
-
-  101  go to 200
-  103 np1 = n+1
+        do m=1,lj,jump
+          xhold = ssqrt3*(x(m,1)+x(m,2))
+          x(m,2) = ssqrt3*(x(m,1)-x(m,2))
+          x(m,1) = xhold
+        end do
+        return
+!      else
+      end if
+!  101  go to 200
+  103 continue
+      np1 = n+1
       ns2 = n/2
       do 104 k=1,ns2
-         kc = np1-k
-         m1 = 0
-         do 114 m=1,lj,jump
-         m1 = m1 + 1
-         t1 = x(m,k)-x(m,kc)
-         t2 = wsave(k)*(x(m,k)+x(m,kc))
-         xh(m1,k+1) = t1+t2
-         xh(m1,kc+1) = t2-t1
-  114    continue
+        kc = np1-k
+        m1 = 0
+        do 114 m=1,lj,jump
+          m1 = m1 + 1
+          t1 = x(m,k)-x(m,kc)
+          t2 = wsave(k)*(x(m,k)+x(m,kc))
+          xh(m1,k+1) = t1+t2
+          xh(m1,kc+1) = t2-t1
+  114   continue
   104 continue
       modn = mod(n,2)
       if (modn == 0) go to 124
@@ -10243,10 +10257,13 @@ subroutine msntf1(lot,jump,n,inc,x,wsave,dsum,xh,work,ier)
 
   200 continue
 
-  return
-end
-subroutine r1f2kb (ido,l1,cc,in1,ch,in2,wa1)
-
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine r1f2kb (ido,l1,cc,in1,ch,in2,wa1)
+!
 !*****************************************************************************80
 !
 !! R1F2KB is an FFTPACK5.1 auxilliary function.
@@ -14359,7 +14376,7 @@ subroutine sinqmb ( lot, jump, n, inc, x, lenx, wsave, lensav, &
          xhold = x(m,k)
          x(m,k) = x(m,kc+1)
          x(m,kc+1) = xhold
- 203     continue
+  203  continue
   103 continue
   300 continue
 
@@ -15023,14 +15040,20 @@ subroutine sintb1 ( n, inc, x, wsave, xh, work, ier )
   real ( kind = 8 ) xhold
 
       ier = 0
-      if (n-2) 200,102,103
-  102 srt3s2 = sqrt( 3.0D+00 ) / 2.0D+00
-      xhold = srt3s2*(x(1,1)+x(1,2))
-      x(1,2) = srt3s2*(x(1,1)-x(1,2))
-      x(1,1) = xhold
-      return
-
-  103 np1 = n+1
+!      if (n-2) 200,102,103
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+!  102   contirnue
+        srt3s2 = sqrt( 3.0D+00 ) / 2.0D+00
+        xhold = srt3s2*(x(1,1)+x(1,2))
+        x(1,2) = srt3s2*(x(1,1)-x(1,2))
+        x(1,1) = xhold
+        return
+!      else
+      end if
+!  103 continue
+      np1 = n+1
       ns2 = n/2
       do 104 k=1,ns2
          kc = np1-k
@@ -15072,9 +15095,12 @@ subroutine sintb1 ( n, inc, x, wsave, xh, work, ier )
 
   200 continue
 
-  return
-end
-subroutine sintf1 ( n, inc, x, wsave, xh, work, ier )
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sintf1 ( n, inc, x, wsave, xh, work, ier )
 
 !*****************************************************************************80
 !
@@ -15137,13 +15163,21 @@ subroutine sintf1 ( n, inc, x, wsave, xh, work, ier )
   real ( kind = 8 ) xhold
 
       ier = 0
-      if (n-2) 200,102,103
-  102 ssqrt3 = 1.0D+00 / sqrt ( 3.0D+00 )
-      xhold = ssqrt3*(x(1,1)+x(1,2))
-      x(1,2) = ssqrt3*(x(1,1)-x(1,2))
-      x(1,1) = xhold
-      go to 200
-  103 np1 = n+1
+!      if (n-2) 200,102,103
+      if(n .lt. 2) then
+        return
+      else if(n .eq. 2) then
+!  102 continue
+        ssqrt3 = 1.0D+00 / sqrt ( 3.0D+00 )
+        xhold = ssqrt3*(x(1,1)+x(1,2))
+        x(1,2) = ssqrt3*(x(1,1)-x(1,2))
+        x(1,1) = xhold
+        return
+!      else
+!  103 continue
+      end if
+!
+      np1 = n+1
       ns2 = n/2
       do k=1,ns2
          kc = np1-k
@@ -15184,10 +15218,13 @@ subroutine sintf1 ( n, inc, x, wsave, xh, work, ier )
       x(1,n) = 0.5D+00 * xh(n+1)
   200 continue
 
-  return
-end
-subroutine sintmb ( lot, jump, n, inc, x, lenx, wsave, lensav, &
-  work, lenwrk, ier )
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sintmb ( lot, jump, n, inc, x, lenx, wsave, lensav,    &
+     &                    work, lenwrk, ier )
 
 !*****************************************************************************80
 !
@@ -15326,10 +15363,13 @@ subroutine sintmb ( lot, jump, n, inc, x, lenx, wsave, lensav, &
     return
   end if
 
-  return
-end
-subroutine sintmf ( lot, jump, n, inc, x, lenx, wsave, lensav, &
-  work, lenwrk, ier )
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sintmf ( lot, jump, n, inc, x, lenx, wsave, lensav,    &
+     &                   work, lenwrk, ier )
 
 !*****************************************************************************80
 !
@@ -15417,58 +15457,62 @@ subroutine sintmf ( lot, jump, n, inc, x, lenx, wsave, lensav, &
 !    4, input parameters INC,JUMP,N,LOT are not consistent;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) inc
-  integer ( kind = 4 ) lensav
-  integer ( kind = 4 ) lenwrk
+      integer ( kind = 4 ) inc
+      integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lenwrk
 
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) iw1
-  integer ( kind = 4 ) iw2
-  integer ( kind = 4 ) jump
-  integer ( kind = 4 ) lenx
-  integer ( kind = 4 ) lot
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) work(lenwrk)
-  real ( kind = 8 ) wsave(lensav)
-  real ( kind = 8 ) x(inc,*)
-  logical xercon
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) iw1
+      integer ( kind = 4 ) iw2
+      integer ( kind = 4 ) jump
+      integer ( kind = 4 ) lenx
+      integer ( kind = 4 ) lot
+      integer ( kind = 4 ) n
+      real ( kind = 8 ) work(lenwrk)
+      real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) x(inc,*)
+      logical xercon
 
-  ier = 0
+      ier = 0
 
-  if ( lenx < ( lot - 1) * jump + inc * ( n - 1 ) + 1 ) then
-    ier = 1
-    call xerfft ( 'sintmf', 6 )
-    return
-  else if ( lensav < n / 2 + n + int ( log ( real ( n, kind = 8 ) ) &
-    / log ( 2.0D+00 ) ) + 4 ) then
-    ier = 2
-    call xerfft ( 'sintmf', 8 )
-    return
-  else if ( lenwrk < lot * ( 2 * n + 4 ) ) then
-    ier = 3
-    call xerfft ( 'sintmf', 10 )
-    return
-  else if ( .not. xercon ( inc, jump, n, lot ) ) then
-    ier = 4
-    call xerfft ( 'sintmf', -1 )
-    return
-  end if
+      if ( lenx < ( lot - 1) * jump + inc * ( n - 1 ) + 1 ) then
+        ier = 1
+        call xerfft ( 'sintmf', 6 )
+        return
+      else if(lensav < n/2 + n + int ( log(real(n, kind=8))             &
+     &                                / log ( 2.0D+00 ) ) + 4) then
+        ier = 2
+        call xerfft ( 'sintmf', 8 )
+        return
+      else if ( lenwrk < lot * ( 2 * n + 4 ) ) then
+        ier = 3
+        call xerfft ( 'sintmf', 10 )
+        return
+      else if ( .not. xercon ( inc, jump, n, lot ) ) then
+        ier = 4
+        call xerfft ( 'sintmf', -1 )
+        return
+      end if
 
-  iw1 = lot + lot + 1
-  iw2 = iw1 + lot * ( n + 1 )
-  call msntf1 ( lot, jump, n, inc, x, wsave, work, work(iw1), work(iw2), ier1 )
+      iw1 = lot + lot + 1
+      iw2 = iw1 + lot * ( n + 1 )
+      call msntf1 ( lot, jump, n, inc, x, wsave, work,                  &
+     &             work(iw1), work(iw2), ier1 )
 
-  if ( ier1 /= 0 ) then
-    ier = 20
-    call xerfft ( 'sintmf', -5 )
-  end if
+      if ( ier1 /= 0 ) then
+        ier = 20
+        call xerfft ( 'sintmf', -5 )
+      end if
 
-  return
-end
-subroutine sintmi ( n, wsave, lensav, ier )
+      return
+      end
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sintmi ( n, wsave, lensav, ier )
 
 !*****************************************************************************80
 !
@@ -15527,54 +15571,55 @@ subroutine sintmi ( n, wsave, lensav, ier )
 !    2, input parameter LENSAV not big enough;
 !    20, input error returned by lower level routine.
 !
-  implicit none
+      implicit none
 
-  integer ( kind = 4 ) lensav
+      integer ( kind = 4 ) lensav
 
-  real ( kind = 8 ) dt
-  integer ( kind = 4 ) ier
-  integer ( kind = 4 ) ier1
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) lnsv
-  integer ( kind = 4 ) n
-  integer ( kind = 4 ) np1
-  integer ( kind = 4 ) ns2
-  real ( kind = 8 ) pi
-  real ( kind = 8 ) wsave(lensav)
+      real ( kind = 8 ) dt
+      integer ( kind = 4 ) ier
+      integer ( kind = 4 ) ier1
+      integer ( kind = 4 ) k
+      integer ( kind = 4 ) lnsv
+      integer ( kind = 4 ) n
+      integer ( kind = 4 ) np1
+      integer ( kind = 4 ) ns2
+      real ( kind = 8 ) pi
+      real ( kind = 8 ) wsave(lensav)
 
-  ier = 0
+      ier = 0
 
-  if ( lensav < n / 2 + n + int ( log ( real ( n, kind = 8 ) ) &
-    / log ( 2.0D+00 ) ) + 4 ) then
-    ier = 2
-    call xerfft ( 'sintmi', 3 )
-    return
-  end if
+      if ( lensav < n / 2 + n + int ( log ( real ( n, kind = 8 ) )      &
+     &                               / log ( 2.0D+00 ) ) + 4 ) then
+        ier = 2
+        call xerfft ( 'sintmi', 3 )
+        return
+      end if
 
-  pi = 4.0D+00 * atan ( 1.0D+00 )
+      pi = 4.0D+00 * atan ( 1.0D+00 )
 
-  if ( n <= 1 ) then
-    return
-  end if
+      if ( n <= 1 ) then
+        return
+      end if
 
-  ns2 = n / 2
-  np1 = n + 1
-  dt = pi / real ( np1, kind = 8 )
+      ns2 = n / 2
+      np1 = n + 1
+      dt = pi / real ( np1, kind = 8 )
 
-  do k = 1, ns2
-    wsave(k) = 2.0D+00 * sin ( k * dt )
-  end do
+      do k = 1, ns2
+        wsave(k) = 2.0D+00 * sin ( k * dt )
+      end do
 
-  lnsv = np1 + int ( log ( real ( np1, kind = 8 ) ) / log ( 2.0D+00 ) ) + 4
-  call rfftmi ( np1, wsave(ns2+1), lnsv, ier1 )
+      lnsv = np1 + int ( log ( real ( np1, kind = 8 ) )                 &
+     &                  / log ( 2.0D+00 ) ) + 4
+      call rfftmi ( np1, wsave(ns2+1), lnsv, ier1 )
 
-  if ( ier1 /= 0 ) then
-    ier = 20
-    call xerfft ( 'sintmi', -5 )
-  end if
+      if ( ier1 /= 0 ) then
+        ier = 20
+        call xerfft ( 'sintmi', -5 )
+      end if
 
-  return
-end
+      return
+      end
 !
 !  ---------------------------------------------------------------------
 !
