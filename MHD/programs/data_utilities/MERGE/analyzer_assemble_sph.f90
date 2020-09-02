@@ -61,7 +61,7 @@
       type(control_data_4_merge) :: mgd_ctl_s
       type(sph_grid_maker_in_sim) :: sph_asbl_maker_s
       type(sph_grid_maker_in_sim) :: sph_org_maker_s
-!      integer(kind = kint) :: ip, jp
+!      integer(kind = kint) :: ip
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -117,14 +117,11 @@
      &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
 !
 !
-!      do jp = 1, sph_asbl_s%np_sph_new
-!        if(mod(jp-1,nprocs) .ne. my_rank) cycle
-!        do ip = 1, sph_asbl_s%np_sph_org
-!          do j = 1, sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
-!            if(sph_asbl_s%j_table(ip,jp)%j_org_to_new(j).gt. 0)        &
-!     &          write(50+my_rank,*) jp, ip, j,                         &
-!     &                  sph_asbl_s%j_table(ip,jp)%j_org_to_new(j)
-!          end do
+!      do ip = 1, sph_asbl_s%np_sph_org
+!        do j = 1, sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
+!          if(sph_asbl_s%j_table(ip,my_rank+1)%j_org_to_new(j).gt. 0)   &
+!     &          write(50+my_rank,*) my_rank+1, ip, j,                  &
+!     &               sph_asbl_s%j_table(ip,my_rank+1)%j_org_to_new(j)
 !        end do
 !      end do
 !      write(*,*) 'init_assemble_sph end'
@@ -140,7 +137,7 @@
       use share_field_data
 !
       integer(kind = kint) :: istep, icou
-      integer(kind = kint) :: ip, jp
+      integer(kind = kint) :: ip
       integer(kind = kint) :: iloop
       integer(kind = kint) :: istep_out
       integer :: irank_new
@@ -177,22 +174,18 @@
           call share_each_field_data(ip, sph_asbl_s%org_sph_phys(ip))
 !
 !     Copy spectr data to temporal array
-          do jp = 1, sph_asbl_s%np_sph_new
-           if(mod(jp-1,nprocs) .ne. my_rank) cycle
-            call set_assembled_sph_data                                 &
-     &         (sph_asbl_s%org_sph_mesh(ip),                            &
-     &          sph_asbl_s%new_sph_mesh(jp),                            &
-     &          sph_asbl_s%j_table(ip,jp), sph_asbl_s%r_itp,            &
-     &          sph_asbl_s%org_sph_phys(ip),                            &
-     &          sph_asbl_s%new_sph_phys(jp))
-          end do
+          call set_assembled_sph_data                                   &
+     &       (sph_asbl_s%org_sph_mesh(ip),                              &
+     &        sph_asbl_s%new_sph_mesh(my_rank+1),                       &
+     &        sph_asbl_s%j_table(ip,my_rank+1), sph_asbl_s%r_itp,       &
+     &        sph_asbl_s%org_sph_phys(ip),                              &
+     &        sph_asbl_s%new_sph_phys(my_rank+1))
           call dealloc_phys_data_type(sph_asbl_s%org_sph_phys(ip))
         end do
 !
-        jp = my_rank + 1
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
-     &      sph_asbl_s%new_sph_mesh(jp)%sph, sph_asbl_s%r_itp,          &
-     &      sph_asbl_s%new_sph_phys(jp),                                &
+     &      sph_asbl_s%new_sph_mesh(my_rank+1)%sph, sph_asbl_s%r_itp,   &
+     &      sph_asbl_s%new_sph_phys(my_rank+1),                         &
      &      sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
         call sel_write_step_SPH_field_file                              &
