@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_spectr_data_4_assemble(sph_asbl)
-!!      subroutine dealloc_spectr_data_4_assemble                       &
-!!     &         (id_rank, nprocs, sph_asbl)
+!!      subroutine dealloc_spectr_data_4_assemble(sph_asbl)
 !!        type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !!@endverbatim
 !
@@ -35,7 +34,7 @@
         type(sph_mesh_data) :: new_sph_mesh
         type(phys_data) :: new_sph_phys
 !
-        type(rj_assemble_tbl), allocatable :: j_table(:,:)
+        type(rj_assemble_tbl), allocatable :: j_table(:)
 !
         type(field_IO) :: new_fst_IO
         type(time_data) :: fst_time_IO
@@ -54,29 +53,23 @@
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
 !
-      allocate( sph_asbl%org_sph_mesh(sph_asbl%np_sph_org) )
-      allocate( sph_asbl%org_sph_phys(sph_asbl%np_sph_org) )
-      allocate(sph_asbl%j_table(sph_asbl%np_sph_org,                    &
-     &                          sph_asbl%np_sph_new))
+      allocate(sph_asbl%org_sph_mesh(sph_asbl%np_sph_org))
+      allocate(sph_asbl%org_sph_phys(sph_asbl%np_sph_org))
+      allocate(sph_asbl%j_table(sph_asbl%np_sph_org))
 !
       end subroutine alloc_spectr_data_4_assemble
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_spectr_data_4_assemble                         &
-     &         (id_rank, nprocs, sph_asbl)
+      subroutine dealloc_spectr_data_4_assemble(sph_asbl)
 !
-      integer, intent(in) :: id_rank, nprocs
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
-      integer(kind = kint) :: ip, jp
+      integer(kind = kint) :: ip
 !
 !
-      do jp = 1, sph_asbl%np_sph_new
-        if(mod(jp-1,nprocs) .ne. id_rank) cycle
-        do ip = 1, sph_asbl%np_sph_org
-          call dealloc_mode_table_4_assemble(sph_asbl%j_table(ip,jp))
-        end do
+      do ip = 1, sph_asbl%np_sph_org
+        call dealloc_mode_table_4_assemble(sph_asbl%j_table(ip))
       end do
       deallocate(sph_asbl%j_table)
 !

@@ -89,9 +89,8 @@
      &    sph_asbl_s%new_sph_mesh%sph_comms,                            &
      &    sph_asbl_s%new_sph_mesh%sph_grps)
       call load_new_spectr_rj_data                                      &
-     &   (sph_asbl_s%np_sph_org, sph_asbl_s%np_sph_new,                 &
-     &    sph_asbl_s%org_sph_mesh, sph_asbl_s%new_sph_mesh,             &
-     &    sph_asbl_s%j_table)
+     &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh,               &
+     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%j_table)
 !
 !     Share number of nodes for new mesh
 !
@@ -119,9 +118,9 @@
 !
 !      do ip = 1, sph_asbl_s%np_sph_org
 !        do j = 1, sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
-!          if(sph_asbl_s%j_table(ip,my_rank+1)%j_org_to_new(j).gt. 0)   &
+!          if(sph_asbl_s%j_table(ip)%j_org_to_new(j).gt. 0)             &
 !     &        write(50+my_rank,*) my_rank+1, ip, j,                    &
-!     &                sph_asbl_s%j_table(ip,my_rank+1)%j_org_to_new(j)
+!     &                sph_asbl_s%j_table(ip)%j_org_to_new(j)
 !        end do
 !      end do
 !      write(*,*) 'init_update_sph_rst end'
@@ -178,7 +177,7 @@
 !     Copy spectr data to temporal array
           call set_assembled_sph_data                                   &
      &       (sph_asbl_s%org_sph_mesh(ip), sph_asbl_s%new_sph_mesh,     &
-     &        sph_asbl_s%j_table(ip,my_rank+1), sph_asbl_s%r_itp,       &
+     &        sph_asbl_s%j_table(ip), sph_asbl_s%r_itp,                 &
      &        sph_asbl_s%org_sph_phys(ip), sph_asbl_s%new_sph_phys)
           call dealloc_phys_data_type(sph_asbl_s%org_sph_phys(ip))
         end do
@@ -197,8 +196,7 @@
         call calypso_mpi_barrier
       end do
 !
-      call dealloc_spectr_data_4_assemble                               &
-     &   (my_rank, nprocs, sph_asbl_s)
+      call dealloc_spectr_data_4_assemble(sph_asbl_s)
 !
       call calypso_MPI_barrier
 !
