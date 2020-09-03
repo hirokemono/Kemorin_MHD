@@ -4,6 +4,8 @@ add_nodal_fields_ctl.o: $(IO_DIR)/add_nodal_fields_ctl.f90 m_precision.o m_machi
 	$(F90) -c $(F90OPTFLAGS) $<
 comm_table_IO.o: $(IO_DIR)/comm_table_IO.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
+compare_by_assemble_sph.o: $(IO_DIR)/compare_by_assemble_sph.f90 m_precision.o calypso_mpi.o t_time_data.o t_spheric_parameter.o t_phys_data.o t_field_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
 data_IO_to_textline.o: $(IO_DIR)/data_IO_to_textline.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 delete_data_files.o: $(IO_DIR)/delete_data_files.F90 m_precision.o m_file_format_switch.o set_parallel_file_name.o
