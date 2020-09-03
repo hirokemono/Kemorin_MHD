@@ -61,7 +61,7 @@
       type(control_data_4_merge) :: mgd_ctl_s
       type(sph_grid_maker_in_sim) :: sph_asbl_maker_s
       type(sph_grid_maker_in_sim) :: sph_org_maker_s
-!      integer(kind = kint) :: ip
+      integer(kind = kint) :: ip
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -112,9 +112,14 @@
 !
       call share_org_spectr_field_names                                 &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_phys)
+!
       call share_new_spectr_field_names                                 &
      &   (sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
 !
+!      write(*,*) size(sph_asbl_s%new_sph_phys%phys_name),  &
+!     &    'share_new_spectr_field_names', &
+!     &    (trim(sph_asbl_s%new_sph_phys%phys_name(ip)) // ' ', &
+!     &      ip=1,size(sph_asbl_s%new_sph_phys%phys_name))
 !
 !      do ip = 1, sph_asbl_s%np_sph_org
 !        do j = 1, sph_asbl_s%org_sph_mesh(1)%sph%sph_rj%nidx_rj(2)
