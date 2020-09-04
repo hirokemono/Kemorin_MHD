@@ -24,7 +24,7 @@ int main(){
     
     
     pi = 4.0*atan(1.0);
-    ngrid = 512;
+    ngrid = 128;
 	x = (double *)calloc(nfld*ngrid,sizeof(double));
 	y = (double *)calloc(nfld*ngrid,sizeof(double));
 	z = (double *)calloc(nfld*ngrid,sizeof(double));

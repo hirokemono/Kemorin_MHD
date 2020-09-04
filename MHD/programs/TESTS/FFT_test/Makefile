@@ -13,6 +13,8 @@ TARGET_ISPACK1_TEST =  test_ISPACK1
 TARGET_ISPACK3_TEST =  test_ISPACK3
 TARGET_FFW3_F_TEST =   test_FFTW3_f
 
+TARGET_CMPR_FFT_TEST = compare_fft_test
+
 LIBS_FFT_TEST = \
 '$$(LIB_MESH)'      \
 '$$(LIB_FFTPACK)'   \
@@ -84,6 +86,14 @@ t_multi_FFTW_wrapper.o \
 t_fft_test_data.o \
 test_FFTW3.o
 
+MOD_CMPR_FFT_TEST = \
+m_precision.o \
+m_constants.o \
+m_machine_parameter.o \
+\
+compare_FFT_test.o \
+t_fft_test_data.o
+
 
 #
 #  ------------------------------------------------------------------
@@ -98,12 +108,13 @@ target_list:
 	@echo 'TARGET_ISPACK1_TEST =  $$(BUILDDIR)/$(TARGET_ISPACK1_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_ISPACK3_TEST =  $$(BUILDDIR)/$(TARGET_ISPACK3_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_FFW3_F_TEST =   $$(BUILDDIR)/$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_CMPR_FFT_TEST = $$(BUILDDIR)/$(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
 
 target_task:
 	@echo fft_test: \
 	'$$(TARGET_FFT_TEST)'      '$$(TARGET_FFTPACK_TEST)' \
 	'$$(TARGET_ISPACK1_TEST)'  '$$(TARGET_ISPACK3_TEST)' \
-	'$$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
+	'$$(TARGET_CMPR_FFT_TEST)' '$$(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_FFT_TEST)': '$$(MOD_FFT_TEST)' \
@@ -141,6 +152,13 @@ target_task:
 	'$$(MOD_FFW3_F_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_CMPR_FFT_TEST)': '$$(MOD_CMPR_FFT_TEST)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_CMPR_FFT_TEST)' \
+	'$$(MOD_CMPR_FFT_TEST)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -161,6 +179,8 @@ mod_list:
 	@echo  $(MOD_ISPACK3_TEST)        >> $(MAKENAME)
 	@echo  MOD_FFW3_F_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_FFW3_F_TEST)        >> $(MAKENAME)
+	@echo  MOD_CMPR_FFT_TEST=      \\  >> $(MAKENAME)
+	@echo  $(MOD_CMPR_FFT_TEST)        >> $(MAKENAME)
 
 
 module:

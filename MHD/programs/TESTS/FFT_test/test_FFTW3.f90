@@ -20,11 +20,12 @@
       type(fft_test_data) :: ft3
 !
       integer(kind = kint) :: iflag_FFT
+      integer(kind = kint), parameter ::  ngrid = 128
 !
 !
       iflag_debug = 1
       np_smp = 2
-      call init_fft_test_data(512, ft3)
+      call init_fft_test_data(ngrid, ft3)
 !
       write(*,*) 'select FFT library'
       write(*,*) '2: FFTW3'
@@ -32,22 +33,26 @@
       read(*,*) iflag_FFT
 !
 !
-!$omp parallel workshare
-      ft3%z(1:ft3%nfld,1:ft3%ngrd) = ft3%x(1:ft3%nfld,1:ft3%ngrd)
-!$omp end parallel workshare
-!
       if(iflag_FFT .eq. 2) then
         write(*,*) 'Use FFTW'
         file_name = mul_fftw_test
         call init_FFTW_mul_type                                         &
      &     (np_smp, ft3%nstack, ft3%ngrd, WK_MUL_FFTW_t)
-        call FFTW_mul_forward_type(np_smp, ft3%nstack,                  &
-     &      ft3%nfld, ft3%ngrd, ft3%x, WK_MUL_FFTW_t)
       else if(iflag_FFT .eq. 3) then
         write(*,*) 'Use single transform in FFTW'
         file_name = sgl_fftw_test
         call init_FFTW_type                                             &
      &     (ft3%nstack(np_smp), ft3%ngrd, WK_FFTW_t)
+      end if
+!
+!$omp parallel workshare
+      ft3%z(1:ft3%nfld,1:ft3%ngrd) = ft3%x(1:ft3%nfld,1:ft3%ngrd)
+!$omp end parallel workshare
+!
+      if(iflag_FFT .eq. 2) then
+        call FFTW_mul_forward_type(np_smp, ft3%nstack,                  &
+     &      ft3%nfld, ft3%ngrd, ft3%x, WK_MUL_FFTW_t)
+      else if(iflag_FFT .eq. 3) then
         call FFTW_forward_type(np_smp, ft3%nstack,                      &
      &      ft3%nfld, ft3%ngrd, ft3%x, WK_FFTW_t)
       end if

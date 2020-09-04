@@ -1,3 +1,5 @@
+compare_FFT_test.o: $(FFT_TEST_DIR)/compare_FFT_test.f90 m_precision.o m_constants.o m_machine_parameter.o t_fft_test_data.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_fft_test_data.o: $(FFT_TEST_DIR)/t_fft_test_data.f90 m_precision.o m_constants.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 test_FFT.o: $(FFT_TEST_DIR)/test_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o m_FFT_selector.o t_FFT_selector.o t_fft_test_data.o

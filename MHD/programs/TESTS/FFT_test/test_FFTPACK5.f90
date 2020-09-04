@@ -12,10 +12,11 @@
 !
       type(working_FFTPACK) :: WK_FFTPACK_T
       type(fft_test_data) :: ft1
+      integer(kind = kint), parameter ::  ngrid = 128
 !
 !
       np_smp = 2
-      call init_fft_test_data(512, ft1)
+      call init_fft_test_data(ngrid, ft1)
 !
 !$omp parallel workshare
       ft1%z(1:ft1%nfld,1:ft1%ngrd) = ft1%x(1:ft1%nfld,1:ft1%ngrd)

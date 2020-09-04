@@ -15,10 +15,11 @@
       type(fft_test_data) :: ft0
       integer(kind = kint) :: iflag_FFT_t
 !
+      integer(kind = kint), parameter ::  ngrid = 128
 !
       iflag_debug = 1
       np_smp = 2
-      call init_fft_test_data(512, ft0)
+      call init_fft_test_data(ngrid, ft0)
 !
       write(*,*) 'select FFT library'
       write(*,*) '1: FFTPACK5'
