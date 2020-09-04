@@ -93,6 +93,8 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
       call calypso_mpi_barrier
 !
+      dealloc_viz_controls(viz_ctls)
+!
       end subroutine init_visualize
 !
 !  ---------------------------------------------------------------------
