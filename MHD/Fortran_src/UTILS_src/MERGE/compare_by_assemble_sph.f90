@@ -1,7 +1,7 @@
 !>@file   compare_by_assemble_sph.f90
 !!@brief  module compare_by_assemble_sph
 !!
-!!@author H. Matsui
+!!@author H. Matsui 
 !!@date Programmed in Feb., 2011
 !
 !>@brief functions to compare assembled data

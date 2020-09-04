@@ -306,6 +306,8 @@ makemake:
 		) \
 	done
 	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for install' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -326,7 +328,9 @@ makemake:
 #	@echo '	cp *.a  $$(INSTDIR)/lib'           >> $(MAKENAME)
 #	@echo '	cp kemoviewer.h   $$(INSTDIR)/include' >> $(MAKENAME)
 #	@echo '	cp *.mod  $$(INSTDIR)/include'     >> $(MAKENAME)
-	@echo ''       >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo 'clean:' >> $(MAKENAME)
 	@echo '	rm -f *.o ;'       >> $(MAKENAME)
 	@echo '	rm -f *~ ;'        >> $(MAKENAME)
@@ -334,28 +338,6 @@ makemake:
 	@echo '	rm -f *.h'         >> $(MAKENAME)
 	@echo '	rm -f GL'          >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-
-install:
-	if [ ! -d $$(INSTDIR) ]; then \
-		mkdir $$(INSTDIR); \
-	fi
-	if [ ! -d $$(INSTDIR)/lib ]; then \
-		mkdir $$(INSTDIR)/lib ; \
-	fi
-	if [ ! -d $$(INSTDIR)/bin ]; then \
-		mkdir $$(INSTDIR)/bin; \
-	fi
-	if [ ! -d $$(INSTDIR)/include ]; then \
-		mkdir $$(INSTDIR)/include; \
-	fi
-	@for dir in geoutil solver MHD surface marge_fluid; do \
-	 (cd $${dir}; \
-		$(GMAKE) \
-		GMAKE='$(GMAKE)' \
-		INSTDIR=$$(INSTDIR) RANLIB=$(RANLIB) \
-		install; \
-		) \
-	done
 
 clean:
 	rm -f *~
