@@ -96,6 +96,7 @@
 !
       call s_count_nnod_4_asseble_sph(sph_asbl_s%np_sph_new,            &
      &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_fst_IO)
+      call dealloc_merged_field_stack(sph_asbl_s%new_fst_IO)
 !
 !     construct radial interpolation table
 !
@@ -182,9 +183,14 @@
      &            sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
         call calypso_mpi_allreduce_one_int(iflag, iflag_gl, MPI_MAX)
-        if(iflag_gl.gt.0 .and. my_rank.eq.0) then
-          write(e_message,'(a)') 'Data do not have consistentency'
-          call calypso_mpi_abort(1,e_message)
+        if(my_rank.eq.0) then
+          if(iflag_gl.gt.0) then
+            write(e_message,'(a)') 'Data do not have consistentency'
+            call calypso_mpi_abort(1,e_message)
+          else
+            write(*,*) 'Data have a consistecy at step ',               &
+     &                sph_asbl_s%fst_time_IO%i_time_step
+          end if
         end if
 !
         call dealloc_phys_data_IO(sph_asbl_s%new_fst_IO)

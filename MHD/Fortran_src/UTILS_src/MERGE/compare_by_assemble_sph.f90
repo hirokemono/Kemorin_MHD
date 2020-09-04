@@ -1,7 +1,7 @@
 !>@file   compare_by_assemble_sph.f90
 !!@brief  module compare_by_assemble_sph
 !!
-!!@author H. Matsui
+!!@author H. Matsui 
 !!@date Programmed in Feb., 2011
 !
 !>@brief functions to compare assembled data
@@ -19,12 +19,15 @@
       module compare_by_assemble_sph
 !
       use m_precision
+      use m_constants
 !
       use calypso_mpi
       use t_time_data
       use t_spheric_parameter
       use t_phys_data
       use t_field_data_IO
+!
+      implicit none
 !
 ! -----------------------------------------------------------------------
 !
@@ -84,6 +87,7 @@
       type(field_IO), intent(in) :: fld_IO
 !
       integer(kind = kint) :: i_fld
+      integer(kind = kint) :: iflag
 !
 !
       do i_fld = 1, rj_fld%num_phys
@@ -198,6 +202,7 @@
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(in) :: fld_IO
 !
+      integer(kind = kint) :: i
 !
       compare_rj_phys_name_with_IO = 1
       if(fld_IO%nnod_IO .ne. rj_fld%n_point) return
@@ -226,8 +231,8 @@
 !
       compare_time_step_with_IO = 1
       if(time_IO%i_time_step .ne. time_org%i_time_step) return
-      if(abs(time_IO%time - time_org%time) .lt. TINY)   return
-      if(abs(time_IO%dt - time_org%dt) .lt. TINY)       return
+      if(abs(time_IO%time - time_org%time) .gt. TINY)   return
+      if(abs(time_IO%dt - time_org%dt) .gt. TINY)       return
       compare_time_step_with_IO = 0
 !
       end function compare_time_step_with_IO

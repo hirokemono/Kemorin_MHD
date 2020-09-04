@@ -8,6 +8,8 @@ assemble_sph_fields.o: $(MERGE_DIR)/assemble_sph_fields.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 bcast_4_assemble_sph_ctl.o: $(MERGE_DIR)/bcast_4_assemble_sph_ctl.f90 m_precision.o calypso_mpi.o t_control_data_4_merge.o m_machine_parameter.o calypso_mpi_int.o t_ctl_data_gen_sph_shell.o bcast_4_platform_ctl.o bcast_control_arrays.o bcast_4_field_ctl.o bcast_4_time_step_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
+compare_by_assemble_sph.o: $(MERGE_DIR)/compare_by_assemble_sph.f90 m_precision.o m_constants.o calypso_mpi.o t_time_data.o t_spheric_parameter.o t_phys_data.o t_field_data_IO.o
+	$(F90) -c $(F90OPTFLAGS) $<
 const_internal_mesh_data.o: $(MERGE_DIR)/const_internal_mesh_data.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o set_internal_mesh_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 count_nnod_4_asseble_sph.o: $(MERGE_DIR)/count_nnod_4_asseble_sph.f90 m_precision.o m_constants.o calypso_mpi.o t_SPH_mesh_field_data.o t_field_data_IO.o calypso_mpi_int.o
