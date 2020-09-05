@@ -38,7 +38,7 @@
         real(kind = kreal), allocatable :: z(:,:)
       end type fft_test_data
 !
-      private :: dealloc_fft_test_data
+      private :: alloc_fft_test_data
 !
 ! ------------------------------------------------------------------
 !

@@ -30,16 +30,16 @@
 !>      structure of spherical harmonics at single point
       type sph_1point_type
 !>        truncation degree
-        integer ( kind = kint) :: ltr_tri
+        integer(kind = kint) :: ltr_tri
 !>        number of modes
-        integer ( kind = kint) :: jmax_tri
+        integer(kind = kint) :: jmax_tri
 !
 !>        integer list for spherical harmonics
-        integer ( kind = kint), allocatable:: idx(:,:)
+        integer(kind = kint), allocatable:: idx(:,:)
 !>        coefficients list for spherical harmonics
-        real   ( kind = kreal), allocatable:: g(:,:)
+        real(kind = kreal), allocatable:: g(:,:)
 !>        spherical harmonics
-        real   ( kind = kreal), allocatable:: y_lm(:,:)
+        real(kind = kreal), allocatable:: y_lm(:,:)
       end type sph_1point_type
 !
 ! -----------------------------------------------------------------------

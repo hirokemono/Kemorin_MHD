@@ -27,7 +27,7 @@ TARGET_T_AVE_NUSSELT =       t_ave_nusselt
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
 TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
 
-TARGET_SPH_ENE_CHECK =      sph_ene_check
+TARGET_SPH_ENE_CHECK =       tests/sph_ene_check
 
 
 LIBS_SPH_UTIL =  \

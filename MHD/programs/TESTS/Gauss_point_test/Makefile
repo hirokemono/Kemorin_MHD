@@ -2,10 +2,11 @@
 #
 #
 
-GAUSS_TEST_DIR =     $$(TESTS_DIR)/test_gaussian
+GAUSS_TEST_DIR =     $$(TESTS_DIR)/Gauss_point_test
 
-TARGET_DIGIT_TEST =    digit_test
-TARGET_GAUSS_TEST =    gauss_points
+TARGET_DIGIT_TEST =     tests/digit_test
+TARGET_GAUSS_TEST =     tests/gauss_points
+TARGET_CMP_GAUSS_TEST = tests/compare_gauss_points
 
 SOURCES = $(shell ls *.f90)
 
@@ -13,7 +14,13 @@ MOD_DIGIT_TEST = \
 digit_test.o
 
 MOD_GAUSS_TEST = \
-gaussian_points.o
+test_gauss_points.o \
+gauss_points_IO.o 
+
+MOD_CMP_GAUSS_TEST = \
+compare_gauss_points.o \
+gauss_points_IO.o 
+
 
 #
 #  ------------------------------------------------------------------
@@ -27,24 +34,31 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_DIGIT_TEST =    $$(BUILDDIR)/$(TARGET_DIGIT_TEST)'   \
 	>> $(MAKENAME)
+	@echo 'TARGET_CMP_GAUSS_TEST = $$(BUILDDIR)/$(TARGET_CMP_GAUSS_TEST)'   \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo gauss_tests:  \
-	'$$(TARGET_GAUSS_TEST)      $$(TARGET_DIGIT_TEST) '     \
-	>> $(MAKENAME)
+	'$$(TARGET_GAUSS_TEST)       $$(TARGET_DIGIT_TEST) '     \
+	'$$(TARGET_CMP_GAUSS_TEST)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_DIGIT_TEST)': '$$(MOD_DIGIT_TEST)' \
 	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_DIGIT_TEST)' \
-	'$$(MOD_DIGIT_TEST)  -L. $$(LIBS_MESH_TEST)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
+	-o '$$(TARGET_DIGIT_TEST) $$(MOD_DIGIT_TEST) ' \
+	'-L. $$(LIBS_MESH_TEST) $$(F90LIBS)' >> $(MAKENAME)
 	@echo '$$(TARGET_GAUSS_TEST)': '$$(MOD_GAUSS_TEST)' \
 	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_GAUSS_TEST)' \
-	'$$(MOD_GAUSS_TEST) -L. $$(LIBS_MESH_TEST) $$(F90LIBS)'  >> $(MAKENAME)
+	'-o $$(TARGET_GAUSS_TEST)  $$(MOD_GAUSS_TEST)' \
+	'-L. $$(LIBS_MESH_TEST) $$(F90LIBS)'  >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_CMP_GAUSS_TEST)': '$$(MOD_CMP_GAUSS_TEST)' \
+	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	'-o $$(TARGET_CMP_GAUSS_TEST)  $$(MOD_CMP_GAUSS_TEST)' \
+	'-L. $$(LIBS_MESH_TEST) $$(F90LIBS)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
@@ -55,6 +69,8 @@ mod_list:
 	@echo  $(MOD_DIGIT_TEST)      >> $(MAKENAME)
 	@echo  MOD_GAUSS_TEST=    \\  >> $(MAKENAME)
 	@echo  $(MOD_GAUSS_TEST)      >> $(MAKENAME)
+	@echo  MOD_CMP_GAUSS_TEST=    \\  >> $(MAKENAME)
+	@echo  $(MOD_CMP_GAUSS_TEST)      >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

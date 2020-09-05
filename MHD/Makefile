@@ -128,6 +128,9 @@ depends:
 	if [ ! -d $(BUILDDIR) ]; then \
 		mkdir $(BUILDDIR); \
 	fi
+	if [ ! -d $(BUILDDIR)/tests ]; then \
+		mkdir $(BUILDDIR)/tests; \
+	fi
 	@for dir in $(SUBDIRS) ; do \
 		( \
 		cd $${dir};  \
@@ -156,6 +159,9 @@ makemake:
 	fi
 	if [ ! -d $(BUILDDIR) ]; then \
 		mkdir $(BUILDDIR); \
+	fi
+	if [ ! -d $(BUILDDIR)/tests ]; then \
+		mkdir $(BUILDDIR)/tests; \
 	fi
 	@echo # create module list
 	echo '#' > $(MAKENAME)
@@ -353,7 +359,7 @@ makemake:
 	@echo '' >> $(MAKENAME)
 	@echo 'create excecution construct list...'
 	@echo '#' >> $(MAKENAME)
-	@echo 'all: $$(PROGRAMS)' >> $(MAKENAME)
+	@echo 'all: $$(PROGRAMS) tests_with_f' >> $(MAKENAME)
 	@echo 'tests: tests_with_f' >> $(MAKENAME)
 	@echo 'tests_c: tests_with_c' >> $(MAKENAME)
 	@for dir in programs ; do \
@@ -408,6 +414,9 @@ makemake:
 		) \
 	done
 	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo '# Rules for install' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -424,11 +433,13 @@ makemake:
 	@echo '	if [ ! -d $$(INSTDIR)/include ]; then \' >> $(MAKENAME)
 	@echo '		mkdir $$(INSTDIR)/include; \'        >> $(MAKENAME)
 	@echo '	fi'                                     >> $(MAKENAME)
-	@echo '	cp $(BUILDDIR)/*  $$(INSTDIR)/bin' >> $(MAKENAME)
+	@echo '	cp -r $(BUILDDIR)/*  $$(INSTDIR)/bin' >> $(MAKENAME)
 #	@echo '	cp *.a  $$(INSTDIR)/lib'           >> $(MAKENAME)
 #	@echo '	cp kemoviewer.h   $$(INSTDIR)/include' >> $(MAKENAME)
 #	@echo '	cp *.mod  $$(INSTDIR)/include'     >> $(MAKENAME)
-	@echo ''       >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@echo '# -----------------------------------------------------------' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
 	@echo 'clean:' >> $(MAKENAME)
 	@echo '	@rm -f m_*.o ;'     >> $(MAKENAME)
 	@echo '	@rm -f m_*.mod ;'   >> $(MAKENAME)

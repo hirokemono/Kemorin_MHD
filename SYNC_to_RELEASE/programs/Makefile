@@ -8,7 +8,9 @@ SUBDIRS = \
 SPH_MHD \
 \
 mesh_utilities \
-data_utilities
+data_utilities \
+\
+TESTS
 
 
 LIBS_SPH_MHD = \
@@ -64,12 +66,14 @@ target_task:
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo 'utilities: data_utils mesh_utils sph_data_util' >> $(MAKENAME)
+	@echo 'tests: tests_with_f' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		FFTW3_LIBS='$(FFTW3_LIBS)' \
 		target_task \
 		) \
 	done

@@ -1,0 +1,1 @@
+../../../../MHD/programs/TESTS/Legendre_test/test_schmidt_poly_med.f90

@@ -1,0 +1,1 @@
+../../../../MHD/programs/TESTS/Gauss_point_test/compare_gauss_points.f90

@@ -4,18 +4,9 @@
 TESTS_DIR = $$(PROG_DIR)/TESTS
 
 SUBDIRS =      \
-mesh_test      \
-comm_test      \
-node_clustering_test \
 Gauss_point_test  \
-test_solver    \
-\
 Legendre_test \
-zlib_test     \
-graphic_test  \
-FFT_test      \
-\
-BC_file_test
+FFT_test
 
 #
 #  -------------------------------------------------------------------------
@@ -48,11 +39,9 @@ target_list:
 	done
 
 target_task:
-	@echo tests_with_f: fem_mesh_test comm_tests gauss_tests solver_tests \
-	f_graphic_tests fft_test leg_tests getarg_tests node_clustring_test \
+	@echo tests_with_f: gauss_tests \
+	'fft_test leg_tests' \
 	>> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo tests_with_c: zlib_tests c_graphic_tests \
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

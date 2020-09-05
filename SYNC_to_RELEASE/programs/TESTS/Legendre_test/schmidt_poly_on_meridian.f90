@@ -1,0 +1,1 @@
+../../../../MHD/programs/TESTS/Legendre_test/schmidt_poly_on_meridian.f90

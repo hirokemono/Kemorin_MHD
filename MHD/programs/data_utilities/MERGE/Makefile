@@ -13,7 +13,7 @@ TARGET_NEWRST = assemble_restart
 
 TARGET_UPDATE_RST =   update_restart
 TARGET_ADD_TIME_SPH = add_time_4_fld
-TARGET_CMP_SPH_RST =  compare_sph_restart
+TARGET_CMP_SPH_RST =  tests/compare_sph_restart
 
 LIB_FILES_MERGE = \
 '$$(LIB_UTILS_FILE)' \

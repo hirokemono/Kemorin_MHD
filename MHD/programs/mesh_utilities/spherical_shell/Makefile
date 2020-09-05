@@ -5,11 +5,11 @@
 GEN_SPH_GRIDDIR = $$(MESHER_DIR)/spherical_shell
 
 TARGET_GEN_SPH_GRID =       gen_sph_grids
-TARGET_CHECK_SPH_GRID =     check_sph_grids
-TARGET_MAKE_SPH_RADIUS =    make_sph_mesh_radius
-TARGET_TEST_SPH_GRID =      check_sph_comms
 
-TARGET_GEN_SPH_GRID_TEST =  gen_sph_grid_test
+TARGET_CHECK_SPH_GRID =     tests/check_sph_grids
+TARGET_MAKE_SPH_RADIUS =    tests/make_sph_mesh_radius
+TARGET_TEST_SPH_GRID =      tests/check_sph_comms
+TARGET_GEN_SPH_GRID_TEST =  tests/gen_sph_grid_test
 
 SOURCES = $(shell ls *.f90)
 

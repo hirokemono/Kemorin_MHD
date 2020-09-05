@@ -2,13 +2,13 @@
 #
 #
 
-SMDT_POLY_TEST_DIR = $$(TESTS_DIR)/test_schmidt_poly
+SMDT_POLY_TEST_DIR = $$(TESTS_DIR)/Legendre_test
 
-TARGET_SMDT_POLY =    schmidt_poly_test
-TARGET_MAG_SMDT =    mag_schmidt_test
-TARGET_MAG16_SMDT =  mag16_schmidt_test
-TARGET_ACDC_SMDT =   acdc_schmidt_test
-TARGET_SPH_TRIINT =    gaunt_all
+TARGET_SMDT_POLY =    tests/test_schmidt_Legendre
+TARGET_MAG_SMDT =     tests/test_mag_schmidt_legendre
+TARGET_MAG16_SMDT =   tests/test_mag16_schmidt_legendre
+TARGET_ACDC_SMDT =    tests/test_rayleigh_schmidt_legendre
+TARGET_SPH_TRIINT =   gaunt_all
 
 SOURCES = $(shell ls *.f90)
 
@@ -43,7 +43,7 @@ target_list:
 	@echo >> $(MAKENAME)
 
 target_task:
-	@echo lag_tests: \
+	@echo leg_tests: \
 	'$$(TARGET_SMDT_POLY) $$(TARGET_SPH_TRIINT)' \
     '$$(TARGET_MAG_SMDT)  $$(TARGET_MAG16_SMDT)' \
     '$$(TARGET_ACDC_SMDT)' \
