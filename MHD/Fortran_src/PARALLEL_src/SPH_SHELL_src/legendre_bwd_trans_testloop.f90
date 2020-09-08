@@ -92,7 +92,7 @@
       nkrs = (3*nvector + nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
-      call set_each_sym_leg_omp_mat_jt(sph_rtm%nidx_rtm(2),             &
+      call set_sym_leg_omp_mat_jt(sph_rtm%nidx_rtm(2),                  &
      &    sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2),                     &
      &    idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
 !

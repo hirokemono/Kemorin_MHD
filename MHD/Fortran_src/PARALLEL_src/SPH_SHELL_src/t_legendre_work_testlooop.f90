@@ -278,7 +278,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_each_sym_leg_omp_mat_jt                            &
+      subroutine set_sym_leg_omp_mat_jt                                 &
      &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
      &          P_rtm, dPdt_rtm, WK_l_tst)
 !
@@ -303,11 +303,11 @@
         end do
       end do
 !
-      end subroutine set_each_sym_leg_omp_mat_jt
+      end subroutine set_sym_leg_omp_mat_jt
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_each_sym_leg_omp_mat_tj                            &
+      subroutine set_sym_leg_omp_mat_tj                                 &
      &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
      &          P_rtm, dPdt_rtm, WK_l_tst)
 !
@@ -332,7 +332,7 @@
         end do
       end do
 !
-      end subroutine set_each_sym_leg_omp_mat_tj
+      end subroutine set_sym_leg_omp_mat_tj
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
