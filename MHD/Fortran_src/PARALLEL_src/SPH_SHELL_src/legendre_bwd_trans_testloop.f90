@@ -87,11 +87,7 @@
       integer(kind = kint) :: nkrs, nkrt, lst_rtm, l_rtm
       integer(kind = kint) :: ip, jst, jed, jnum
       integer(kind = kint) :: lt, kst_s, kst_t
-      real(kind = kreal), allocatable :: P_rtm(:), dPdt_rtm(:)
 !
-!
-      allocate(P_rtm(sph_rlm%nidx_rlm(2)))
-      allocate(dPdt_rtm(sph_rlm%nidx_rlm(2)))
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
@@ -118,7 +114,7 @@
 !
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t,P_rtm,dPdt_rtm)
+!$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
 !
@@ -129,13 +125,10 @@
 !
 !      Set Legendre polynomials
             l_rtm = lst_rtm + lt
-            call set_lagender_4_rlmm                                    &
-     &         (sph_params%l_truncation, sph_rtm, sph_rlm,              &
-     &          mp_rlm, jst, jed, jnum, l_rtm, leg%g_colat_rtm, P_rtm, dPdt_rtm)
             call set_each_sym_leg_omp_mat_j                             &
-     &         (sph_rlm%nidx_rlm(2), P_rtm, dPdt_rtm,                   &
-     &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
-     &          WK_l_tst%Pmat(mp_rlm,ip))
+     &         (sph_params%l_truncation, sph_rtm, sph_rlm,              &
+     &          mp_rlm, jst, jed, jnum, l_rtm, leg%g_colat_rtm,         &
+     &          n_jk_e, n_jk_o, Pmat)
 !
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrs, ione, WK_l_tst%n_jk_e(mp_rlm),                    &
@@ -174,25 +167,50 @@
           if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
 !
       end do
-      deallocate(P_rtm, dPdt_rtm)
 !
       end subroutine legendre_b_trans_vector_test
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_each_sym_leg_omp_mat_j                            &
-     &         (jmax_rlm, P_rtm, dPdt_rtm,            &
+      subroutine set_each_sym_leg_omp_mat_j(l_truncation, sph_rtm, sph_rlm,    &
+     &          mp_rlm, jst_rlm, jed, jnum, l_rtm, g_colat_rtm,         &
      &          n_jk_e, n_jk_o, Pmat)
 !
-      integer(kind = kint), intent(in) :: jmax_rlm
+      use m_machine_parameter
+      use schmidt_fix_m
 !
-      real(kind= kreal), intent(in) :: P_rtm(jmax_rlm)
-      real(kind= kreal), intent(in) :: dPdt_rtm(jmax_rlm)
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      integer(kind = kint), intent(in) :: jst_rlm, jed, jnum
+      integer(kind = kint), intent(in) :: l_rtm
+!
+      integer(kind = kint), intent(in) :: l_truncation, mp_rlm
+      real(kind= kreal), intent(in) :: g_colat_rtm(sph_rtm%nidx_rtm(2))
 !
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
       type(leg_omp_matrix), intent(inout) :: Pmat
 !
       integer(kind = kint) :: j_rlm, jj
+      integer(kind = kint) :: j, l, mm, jj
+      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
+      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
+      real(kind = kreal) :: df_m(0:l_truncation+2)
+!
+      real(kind= kreal) :: P_rtm(sph_rlm%nidx_rlm(2))
+      real(kind= kreal) :: dPdt_rtm(sph_rlm%nidx_rlm(2))
+!
+!
+      mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
+!
+      call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(l_rtm),    &
+     &          p_m, dp_m, pmn1, pmp1, df_m)
+!
+      do j = 1, jnum
+        jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,1)
+        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,2)
+        P_rtm(j) =    p_m(l)
+        dPdt_rtm(j) = dp_m(l)
+      end do
 !
 !
 !$omp parallel do private(jj,j_rlm)
@@ -212,45 +230,6 @@
 !$omp end parallel do
 !
       end subroutine set_each_sym_leg_omp_mat_j
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_lagender_4_rlmm(l_truncation, sph_rtm, sph_rlm,    &
-     &          mp_rlm, jst_rlm, jed, jnum, l_rtm, g_colat_rtm, P_rtm, dPdt_rtm)
-!
-      use m_machine_parameter
-      use schmidt_fix_m
-!
-      type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      integer(kind = kint), intent(in) :: jst_rlm, jed, jnum
-      integer(kind = kint), intent(in) :: l_rtm
-!
-      integer(kind = kint), intent(in) :: l_truncation, mp_rlm
-      real(kind= kreal), intent(in) :: g_colat_rtm(sph_rtm%nidx_rtm(2))
-!
-      real(kind= kreal), intent(inout) :: P_rtm(sph_rlm%nidx_rlm(2))
-      real(kind= kreal), intent(inout) :: dPdt_rtm(sph_rlm%nidx_rlm(2))
-!
-      integer(kind = kint) :: j, l, mm, jj
-      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
-      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
-      real(kind = kreal) :: df_m(0:l_truncation+2)
-!
-!
-      mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
-!
-      call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(l_rtm),    &
-     &          p_m, dp_m, pmn1, pmp1, df_m)
-!
-      do j = 1, jnum
-        jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,1)
-        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,2)
-        P_rtm(j) =    p_m(l)
-        dPdt_rtm(j) = dp_m(l)
-      end do
-!
-      end subroutine set_lagender_4_rlmm
 !
 ! -----------------------------------------------------------------------
 !
