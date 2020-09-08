@@ -210,8 +210,8 @@
         WK_l_tst%n_jk_o(mp_rlm) = idx_trns%lstack_rlm(mp_rlm)           &
      &                           - idx_trns%lstack_even_rlm(mp_rlm)
       end do
-      WK_l_tst%nmax_jk_e = max(WK_l_tst%n_jk_e)
-      WK_l_tst%nmax_jk_o = max(WK_l_tst%n_jk_o)
+      WK_l_tst%nmax_jk_e = MAXVAL(WK_l_tst%n_jk_e)
+      WK_l_tst%nmax_jk_o = MAXVAL(WK_l_tst%n_jk_o)
 !
       end subroutine count_symmetric_leg_lj_omp
 !
