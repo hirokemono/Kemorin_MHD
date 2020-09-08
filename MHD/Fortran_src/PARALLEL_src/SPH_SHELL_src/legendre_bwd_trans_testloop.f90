@@ -138,7 +138,7 @@
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrs, ione, WK_l_tst%n_jk_o(mp_rlm),                    &
      &          WK_l_tst%Smat(1)%pol_o(1),                              &
-     &          WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt,                        &
+     &          WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                  &
      &          WK_l_tst%Fmat(ip)%asmp_r(kst_s))
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrt, ione, WK_l_tst%n_jk_o(mp_rlm),                    &
