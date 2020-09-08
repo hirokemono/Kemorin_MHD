@@ -233,12 +233,10 @@
       integer(kind = kint) :: mp_rlm, ip
 !
 !
-      do mp_rlm = 1, mphi_rtm
-        do ip = 1, np_smp
-          call alloc_each_sym_leg_omp_mat_jt(ieight,                    &
-     &        WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                   &
-     &        WK_l_tst%Pmat(mp_rlm,ip))
-        end do
+      do ip = 1, np_smp
+        call alloc_each_sym_leg_omp_mat_jt(ieight,                      &
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
+     &      WK_l_tst%Pmat(1,ip))
       end do
 !
       end subroutine init_each_sym_leg_omp_mat_jt
