@@ -206,7 +206,6 @@
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
       do j_rlm = 1, jnum
-        jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,1)
         l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
         P_rtm(j_rlm) =    p_m(l)
         dPdt_rtm(j_rlm) = dp_m(l)
