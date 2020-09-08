@@ -228,7 +228,7 @@
 !
       do mp_rlm = 1, mphi_rtm
         do ip = 1, np_smp
-          call alloc_each_sym_leg_omp_mat_jt(WK_l_tst%nle_rtm(ip),      &
+          call alloc_each_sym_leg_omp_mat_jt(ieight,                    &
      &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
      &        WK_l_tst%Pmat(mp_rlm,ip))
         end do
