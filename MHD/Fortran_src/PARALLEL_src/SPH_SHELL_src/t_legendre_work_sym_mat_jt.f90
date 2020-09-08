@@ -176,6 +176,9 @@
      &   (sph_rtm%nidx_rtm(3), idx_trns, WK_l_tsp)
 !
 !
+      call init_each_sym_leg_omp_mat_jt                                 &
+     &  (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2), &
+     &   idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tsp)
       call init_each_sym_leg_omp_mat_tj                                 &
      &  (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2), &
      &   idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tsp)
