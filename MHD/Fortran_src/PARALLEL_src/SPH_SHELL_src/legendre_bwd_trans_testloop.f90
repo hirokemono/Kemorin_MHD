@@ -87,11 +87,11 @@
       integer(kind = kint) :: nkrs, nkrt, lst_rtm, l_rtm
       integer(kind = kint) :: ip, jst, jed, jnum
       integer(kind = kint) :: lt, kst_s, kst_t
-      real(kind = kreal), allocatable :: P_rtm(:,:), dPdt_rtm(:,:)
+      real(kind = kreal), allocatable :: P_rtm(:), dPdt_rtm(:)
 !
 !
-      allocate(P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2)))
-      allocate(dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2)))
+      allocate(P_rtm(sph_rlm%nidx_rlm(2)))
+      allocate(dPdt_rtm(sph_rlm%nidx_rlm(2)))
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
@@ -133,8 +133,7 @@
      &         (sph_params%l_truncation, sph_rtm, sph_rlm,              &
      &          mp_rlm, jst, jed, jnum, l_rtm, leg%g_colat_rtm, P_rtm, dPdt_rtm)
             call set_each_sym_leg_omp_mat_j                             &
-     &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
-     &          P_rtm, dPdt_rtm, l_rtm,                    &
+     &         (sph_rlm%nidx_rlm(2), P_rtm, dPdt_rtm,                   &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(mp_rlm,ip))
 !
@@ -182,15 +181,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_each_sym_leg_omp_mat_j                            &
-     &         (nth_rtm, jmax_rlm, P_rtm, dPdt_rtm,            &
-     &          l_rtm, n_jk_e, n_jk_o, Pmat)
+     &         (jmax_rlm, P_rtm, dPdt_rtm,            &
+     &          n_jk_e, n_jk_o, Pmat)
 !
-      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
+      integer(kind = kint), intent(in) :: jmax_rlm
 !
-      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
-      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
+      real(kind= kreal), intent(in) :: P_rtm(jmax_rlm)
+      real(kind= kreal), intent(in) :: dPdt_rtm(jmax_rlm)
 !
-      integer(kind = kint), intent(in) :: l_rtm
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
       type(leg_omp_matrix), intent(inout) :: Pmat
 !
@@ -200,16 +198,16 @@
 !$omp parallel do private(jj,j_rlm)
           do jj = 1, n_jk_e
             j_rlm = 2*jj - 1
-            Pmat%Pse_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
-            Pmat%dPsedt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
+            Pmat%Pse_jt(jj,1) =     P_rtm(j_rlm)
+            Pmat%dPsedt_jt(jj,1) =  dPdt_rtm(j_rlm)
           end do
 !$omp end parallel do
 !
 !$omp parallel do private(jj,j_rlm)
           do jj = 1, n_jk_o
             j_rlm = 2*jj
-            Pmat%Pso_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
-            Pmat%dPsodt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
+            Pmat%Pso_jt(jj,1) =     P_rtm(j_rlm)
+            Pmat%dPsodt_jt(jj,1) =  dPdt_rtm(j_rlm)
           end do
 !$omp end parallel do
 !
@@ -231,10 +229,8 @@
       integer(kind = kint), intent(in) :: l_truncation, mp_rlm
       real(kind= kreal), intent(in) :: g_colat_rtm(sph_rtm%nidx_rtm(2))
 !
-      real(kind= kreal), intent(inout)                                  &
-     &           :: P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
-      real(kind= kreal), intent(inout)                                  &
-     &           :: dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+      real(kind= kreal), intent(inout) :: P_rtm(sph_rlm%nidx_rlm(2))
+      real(kind= kreal), intent(inout) :: dPdt_rtm(sph_rlm%nidx_rlm(2))
 !
       integer(kind = kint) :: j, l, mm, jj
       real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
@@ -242,18 +238,17 @@
       real(kind = kreal) :: df_m(0:l_truncation+2)
 !
 !
-!
       mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
 !
       call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(l_rtm),    &
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
-            do j = 1, jnum
-              jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,1)
-              l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,2)
-              P_rtm(l_rtm,j) =    p_m(l)
-              dPdt_rtm(l_rtm,j) = dp_m(l)
-          end do
+      do j = 1, jnum
+        jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,1)
+        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,2)
+        P_rtm(j) =    p_m(l)
+        dPdt_rtm(j) = dp_m(l)
+      end do
 !
       end subroutine set_lagender_4_rlmm
 !
