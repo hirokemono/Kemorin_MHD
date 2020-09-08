@@ -115,12 +115,8 @@
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Smat(1)%tor_o(1) )
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
-      call set_lagender_4_rlmm                                          &
-     &   (sph_params%l_truncation, sph_rtm, sph_rlm,                    &
-     &    idx_trns, mp_rlm, leg%g_colat_rtm, P_rtm, dPdt_rtm)
-!
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t)
+!$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t,P_rtm,dPdt_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
 !
@@ -131,6 +127,9 @@
 !
 !      Set Legendre polynomials
             l_rtm = lst_rtm + lt
+            call set_lagender_4_rlmm                                    &
+     &         (sph_params%l_truncation, sph_rtm, sph_rlm,              &
+     &         idx_trns, mp_rlm, l_rtm, leg%g_colat_rtm, P_rtm, dPdt_rtm)
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
      &          P_rtm, dPdt_rtm, l_rtm,                    &
@@ -217,7 +216,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_lagender_4_rlmm(l_truncation, sph_rtm, sph_rlm,    &
-     &          idx_trns, mp_rlm, g_colat_rtm, P_rtm, dPdt_rtm)
+     &          idx_trns, mp_rlm, l_rtm, g_colat_rtm, P_rtm, dPdt_rtm)
 !
       use m_machine_parameter
       use schmidt_fix_m
@@ -226,7 +225,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(index_4_sph_trans), intent(in) :: idx_trns
 !
-      integer(kind = kint), intent(in) :: l_truncation, mp_rlm
+      integer(kind = kint), intent(in) :: l_truncation, mp_rlm, l_rtm
       real(kind= kreal), intent(in) :: g_colat_rtm(sph_rtm%nidx_rtm(2))
 !
       real(kind= kreal), intent(inout)                                  &
@@ -234,7 +233,7 @@
       real(kind= kreal), intent(inout)                                  &
      &           :: dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
 !
-      integer(kind = kint) :: ip, i, j, l, m, mm, jj
+      integer(kind = kint) :: ip, j, l, mm, jj
       integer(kind = kint) :: jst, jnum
       real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
       real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
@@ -246,16 +245,14 @@
           jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
           jnum = idx_trns%lstack_rlm(mp_rlm) - jst
 !
-          do i = 1, sph_rtm%nidx_rtm(2)
-            call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(i),  &
-     &          p_m, dp_m, pmn1, pmp1, df_m)
+          call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(l_rtm),&
+&             p_m, dp_m, pmn1, pmp1, df_m)
 !
-            do j = 1, jnum
-              jj = sph_rlm%idx_gl_1d_rlm_j(j+jst,1)
-              l =  sph_rlm%idx_gl_1d_rlm_j(j+jst,2)
-              P_rtm(i,j) =    p_m(l)
-              dPdt_rtm(i,j) = dp_m(l)
-            end do
+          do j = 1, jnum
+            jj = sph_rlm%idx_gl_1d_rlm_j(j+jst,1)
+            l =  sph_rlm%idx_gl_1d_rlm_j(j+jst,2)
+            P_rtm(l_rtm,j) =    p_m(l)
+            dPdt_rtm(l_rtm,j) = dp_m(l)
           end do
 !
       end subroutine set_lagender_4_rlmm
