@@ -134,7 +134,7 @@
             l_rtm = lst_rtm + lt
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
-     &          jst, P_rtm, dPdt_rtm, l_rtm,                    &
+     &          P_rtm, dPdt_rtm, l_rtm,                    &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(mp_rlm,ip))
 !
@@ -182,11 +182,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_each_sym_leg_omp_mat_j                            &
-     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
+     &         (nth_rtm, jmax_rlm, P_rtm, dPdt_rtm,            &
      &          l_rtm, n_jk_e, n_jk_o, Pmat)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-      integer(kind = kint), intent(in) :: jst_rlm
 !
       real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
       real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
@@ -200,7 +199,7 @@
 !
 !$omp parallel do private(jj,j_rlm)
           do jj = 1, n_jk_e
-            j_rlm = 2*jj + jst_rlm - 1
+            j_rlm = 2*jj - 1
             Pmat%Pse_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsedt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
           end do
@@ -208,7 +207,7 @@
 !
 !$omp parallel do private(jj,j_rlm)
           do jj = 1, n_jk_o
-            j_rlm = 2*jj + jst_rlm
+            j_rlm = 2*jj
             Pmat%Pso_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsodt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
           end do
@@ -252,8 +251,8 @@
             do j = 1, jnum
               jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,1)
               l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,2)
-              P_rtm(i,jst_rlm+j) =    p_m(l)
-              dPdt_rtm(i,jst_rlm+j) = dp_m(l)
+              P_rtm(i,j) =    p_m(l)
+              dPdt_rtm(i,j) = dp_m(l)
             end do
           end do
 !
