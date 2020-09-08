@@ -98,7 +98,7 @@
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
-        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
 !$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
@@ -111,14 +111,8 @@
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1))
         end do
-!$omp end parallel do
-      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
-!  even l-m
-        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!$omp parallel do private(ip,lst_rtm)
-        do ip = 1, np_smp
-          lst_rtm = WK_l_tst%lst_rtm(ip)
+!          lst_rtm = WK_l_tst%lst_rtm(ip)
           call matmul_fwd_leg_trans(iflag_matmul,                       &
      &        nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                              &
