@@ -64,6 +64,11 @@
 !>         Number of meridional grid points in northern hemisphere
         integer(kind = kint), allocatable :: n_jk_o(:)
 !
+!>         Number of meridional grid points in northern hemisphere
+        integer(kind = kint) :: nmax_jk_e
+!>         Number of meridional grid points in northern hemisphere
+        integer(kind = kint) :: nmax_jk_o
+!
 !
         integer(kind = kint), allocatable :: lst_rtm(:)
         integer(kind = kint), allocatable :: nle_rtm(:)
@@ -205,6 +210,8 @@
         WK_l_tst%n_jk_o(mp_rlm) = idx_trns%lstack_rlm(mp_rlm)           &
      &                           - idx_trns%lstack_even_rlm(mp_rlm)
       end do
+      WK_l_tst%nmax_jk_e = max(WK_l_tst%n_jk_e)
+      WK_l_tst%nmax_jk_o = max(WK_l_tst%n_jk_o)
 !
       end subroutine count_symmetric_leg_lj_omp
 !
@@ -229,7 +236,7 @@
       do mp_rlm = 1, mphi_rtm
         do ip = 1, np_smp
           call alloc_each_sym_leg_omp_mat_jt(ieight,                    &
-     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
+     &        WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                   &
      &        WK_l_tst%Pmat(mp_rlm,ip))
         end do
       end do
