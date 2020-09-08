@@ -108,42 +108,43 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,lst_rtm,lt,kst_s,kst_t)
+!$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
-!
-!      Set Legendre polynomials
-          call set_each_sym_leg_omp_mat_jt                              &
-     &       (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),                 &
-     &        jst, leg%P_rtm, leg%dPdt_rtm,                             &
-     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
-     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
-     &        WK_l_tst%Pmat(mp_rlm,ip))
+          l_rtm = lst_rtm + lt
 !
 !   even l-m
           do lt = 1, WK_l_tst%nle_rtm(ip)
             kst_s = (lt-1) * nkrs + 1
             kst_t = (lt-1) * nkrt + 1
+!
+!      Set Legendre polynomials
+            call set_each_sym_leg_omp_mat_j                             &
+     &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
+     &          jst, leg%P_rtm, leg%dPdt_rtm, l_rtm,                    &
+     &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
+     &          WK_l_tst%Pmat(mp_rlm,ip))
+!
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrs, ione, WK_l_tst%n_jk_e(mp_rlm),                    &
      &          WK_l_tst%Smat(1)%pol_e(1),                              &
-     &          WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,lt),                  &
+     &          WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt(1,1),                   &
      &          WK_l_tst%Fmat(ip)%symp_r(kst_s))
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrt, ione, WK_l_tst%n_jk_e(mp_rlm),                    &
      &          WK_l_tst%Smat(1)%tor_e(1),                              &
-     &          WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,lt),               &
+     &          WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt(1,1),                &
      &          WK_l_tst%Fmat(ip)%asmp_p(kst_t))
 !   odd l-m
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrs, ione, WK_l_tst%n_jk_o(mp_rlm),                    &
      &          WK_l_tst%Smat(1)%pol_o(1),                              &
-     &          WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,lt),                  &
+     &          WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt(1,1),                  &
      &          WK_l_tst%Fmat(ip)%asmp_r(kst_s))
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrt, ione, WK_l_tst%n_jk_o(mp_rlm),                    &
      &          WK_l_tst%Smat(1)%tor_o(1),                              &
-     &          WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,lt),               &
+     &          WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt(1,1),               &
      &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
           end do
 !
@@ -163,6 +164,43 @@
       end do
 !
       end subroutine legendre_b_trans_vector_test
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_each_sym_leg_omp_mat_j                            &
+     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
+     &          l_rtm, n_jk_e, n_jk_o, Pmat)
+!
+      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
+      integer(kind = kint), intent(in) :: jst_rlm
+!
+      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
+      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
+!
+      integer(kind = kint), intent(in) :: l_rtm
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
+      type(leg_omp_matrix), intent(inout) :: Pmat
+!
+      integer(kind = kint) :: j_rlm, jj
+!
+!
+!$omp parallel do private(jj,j_rlm)
+          do jj = 1, n_jk_e
+            j_rlm = 2*jj + jst_rlm - 1
+            Pmat%Pse_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsedt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
+          end do
+!$omp end parallel do
+!
+!$omp parallel do private(jj,j_rlm)
+          do jj = 1, n_jk_o
+            j_rlm = 2*jj + jst_rlm
+            Pmat%Pso_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
+            Pmat%dPsodt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
+          end do
+!$omp end parallel do
+!
+      end subroutine set_each_sym_leg_omp_mat_j
 !
 ! -----------------------------------------------------------------------
 !
