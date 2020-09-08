@@ -111,7 +111,6 @@
 !$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
-          l_rtm = lst_rtm + lt
 !
 !   even l-m
           do lt = 1, WK_l_tst%nle_rtm(ip)
@@ -119,6 +118,7 @@
             kst_t = (lt-1) * nkrt + 1
 !
 !      Set Legendre polynomials
+            l_rtm = lst_rtm + lt
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
      &          jst, leg%P_rtm, leg%dPdt_rtm, l_rtm,                    &
