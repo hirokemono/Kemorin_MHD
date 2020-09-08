@@ -276,6 +276,66 @@
       end subroutine init_each_sym_leg_omp_mat_tj
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_each_sym_leg_omp_mat_jt                            &
+     &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
+     &          P_rtm, dPdt_rtm, WK_l_tst)
+!
+      integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
+      integer(kind = kint), intent(in) :: lstack_rlm(0:mphi_rtm)
+!
+      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
+      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
+!
+      type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
+!
+      integer(kind = kint) :: mp_rlm, ip
+!
+!
+      do mp_rlm = 1, mphi_rtm
+        do ip = 1, np_smp
+          call set_each_sym_leg_omp_mat_jt(nth_rtm, jmax_rlm,           &
+     &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
+     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
+     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
+     &        WK_l_tst%Pmat(mp_rlm,ip))
+        end do
+      end do
+!
+      end subroutine set_each_sym_leg_omp_mat_jt
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_each_sym_leg_omp_mat_tj                            &
+     &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
+     &          P_rtm, dPdt_rtm, WK_l_tst)
+!
+      integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
+      integer(kind = kint), intent(in) :: lstack_rlm(0:mphi_rtm)
+!
+      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
+      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
+!
+      type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
+!
+      integer(kind = kint) :: mp_rlm, ip
+!
+!
+      do mp_rlm = 1, mphi_rtm
+        do ip = 1, np_smp
+          call set_each_sym_leg_omp_mat_tj(nth_rtm, jmax_rlm,           &
+     &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
+     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
+     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
+     &        WK_l_tst%Pmat(mp_rlm,ip))
+        end do
+      end do
+!
+      end subroutine set_each_sym_leg_omp_mat_tj
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine dealloc_sym_leg_omp_mat_jt(WK_l_tst)
 !

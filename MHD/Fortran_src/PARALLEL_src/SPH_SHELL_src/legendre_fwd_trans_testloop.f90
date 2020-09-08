@@ -58,10 +58,10 @@
 !
       subroutine legendre_f_trans_vector_test                           &
      &         (iflag_matmul, ncomp, nvector, nscalar,                  &
-     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,         &
-     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,               &
+     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns, leg,    &
      &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
+      use t_schmidt_poly_on_rtm
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
       use matmul_for_legendre_trans
@@ -70,12 +70,8 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(legendre_4_sph_trans), intent(in) :: leg
       type(index_4_sph_trans), intent(in) :: idx_trns
-      real(kind = kreal), intent(in)                                    &
-     &           :: asin_theta_1d_rtm(sph_rtm%nidx_rtm(2))
-      real(kind = kreal), intent(in)                                    &
-     &           :: g_sph_rlm(sph_rlm%nidx_rlm(2),17)
-      real(kind = kreal), intent(in) :: weight_rtm(sph_rtm%nidx_rtm(2))
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
@@ -95,6 +91,10 @@
       nkrs = (3*nvector+nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
+      call set_each_sym_leg_omp_mat_tj(sph_rtm%nidx_rtm(2),             &
+     &    sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2),                     &
+     &    idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
+!
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
@@ -104,7 +104,7 @@
           lst_rtm = WK_l_tst%lst_rtm(ip)
           call set_vr_rtm_sym_mat_rin                                   &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, asin_theta_1d_rtm, weight_rtm,          &
+     &        sph_rlm%nidx_rlm, leg%%asin_theta_1d_rtm, leg%weight_rtm, &
      &        mp_rlm, WK_l_tst%lst_rtm(ip),                             &
      &        WK_l_tst%nle_rtm(ip), WK_l_tst%nlo_rtm(ip),               &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
@@ -167,7 +167,7 @@
           call cal_sp_rlm_sym_mat_rin                                   &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,                       &
      &        sph_rlm%istep_rlm, sph_rlm%idx_gl_1d_rlm_j,               &
-     &        sph_rlm%radius_1d_rlm_r, g_sph_rlm, jst,                  &
+     &        sph_rlm%radius_1d_rlm_r, leg%g_sph_rlm, jst,              &
      &        WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%n_jk_e(mp_rlm),         &
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%pol_o(1),     &
      &        WK_l_tst%Smat(1)%tor_e(1), WK_l_tst%Smat(1)%tor_o(1),     &

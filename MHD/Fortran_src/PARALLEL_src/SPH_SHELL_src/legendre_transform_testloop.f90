@@ -85,8 +85,7 @@
 !
         call legendre_b_trans_vector_test                               &
      &     (iflag_INTRINSIC, ncomp, nvector, nscalar,                   &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,             &
-     &      leg%asin_t_rtm, leg%g_sph_rlm,                              &
+     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, leg,        &
      &      n_WR, n_WS, WR, WS, WK_l_tst)
 !
       end subroutine leg_backward_trans_test
@@ -116,8 +115,7 @@
 !
         call legendre_f_trans_vector_test                               &
      &     (iflag_INTRINSIC, ncomp, nvector, nscalar,                   &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,             &
-     &      leg%asin_t_rtm, leg%g_sph_rlm, leg%weight_rtm,              &
+     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns, leg,        &
      &      n_WR, n_WS, WR, WS, WK_l_tst)
 !
       end subroutine leg_forward_trans_test
