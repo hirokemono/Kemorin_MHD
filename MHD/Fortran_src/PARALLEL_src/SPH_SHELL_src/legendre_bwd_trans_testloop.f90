@@ -83,7 +83,7 @@
       integer(kind = kint) :: mp_rlm
       integer(kind = kint) :: nkrs, nkrt, lst_rtm
       integer(kind = kint) :: ip, jst
-      integer(kind = ktin) :: lt, kst_s, kst_t
+      integer(kind = kint) :: lt, kst_s, kst_t
 !
 !
 !$omp parallel workshare
