@@ -191,7 +191,7 @@
       type(leg_omp_matrix), intent(inout) :: Pmat
 !
       integer(kind = kint) :: j_rlm, jj
-      integer(kind = kint) :: l, mm, jj
+      integer(kind = kint) :: l, mm
       real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
       real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
       real(kind = kreal) :: df_m(0:l_truncation+2)
