@@ -16,6 +16,7 @@
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -38,6 +39,7 @@
 !
       use m_machine_parameter
 !
+      use t_spheric_parameter
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
@@ -58,7 +60,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_test                           &
-     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
+     &         (iflag_matmul, ncomp, nvector, nscalar, sph_params,      &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,  idx_trns, leg,   &
      &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
@@ -68,6 +70,7 @@
       use matmul_for_legendre_trans
 !
       integer(kind = kint), intent(in) :: iflag_matmul
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -84,7 +87,14 @@
       integer(kind = kint) :: nkrs, nkrt, lst_rtm, l_rtm
       integer(kind = kint) :: ip, jst
       integer(kind = kint) :: lt, kst_s, kst_t
+      real(kind = kreal), allocatable :: P_rtm(:,:), dPdt_rtm(:,:)
 !
+!
+      allocate(P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2)))
+      allocate(dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2)))
+      call set_lagender_4_rlmm                                          &
+     &   (sph_params%l_truncation, sph_rtm, sph_rlm,                    &
+     &    idx_trns, leg%g_colat_rtm, P_rtm, dPdt_rtm)
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
@@ -121,7 +131,7 @@
             l_rtm = lst_rtm + lt
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
-     &          jst, leg%P_rtm, leg%dPdt_rtm, l_rtm,                    &
+     &          jst, P_rtm, dPdt_rtm, l_rtm,                    &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(mp_rlm,ip))
 !
@@ -162,6 +172,7 @@
           if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
 !
       end do
+      deallocate(P_rtm, dPdt_rtm)
 !
       end subroutine legendre_b_trans_vector_test
 !
@@ -201,6 +212,59 @@
 !$omp end parallel do
 !
       end subroutine set_each_sym_leg_omp_mat_j
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_lagender_4_rlmm(l_truncation, sph_rtm, sph_rlm,    &
+     &          idx_trns, g_colat_rtm, P_rtm, dPdt_rtm)
+!
+      use m_machine_parameter
+      use schmidt_fix_m
+!
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(index_4_sph_trans), intent(in) :: idx_trns
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      real(kind= kreal), intent(in) :: g_colat_rtm(sph_rtm%nidx_rtm(2))
+!
+      real(kind= kreal), intent(inout)                                  &
+     &           :: P_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+      real(kind= kreal), intent(inout)                                  &
+     &           :: dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
+!
+      integer(kind = kint) :: ip, i, j, l, m, mm, jj
+      integer(kind = kint) :: jst, jed, lst, led
+      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
+      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
+      real(kind = kreal) :: df_m(0:l_truncation+2)
+!
+!
+      do ip = 1, np_smp
+        lst = sph_rtm%istack_rtm_lt_smp(ip-1) + 1
+        led = sph_rtm%istack_rtm_lt_smp(ip  )
+        do i = lst, led
+!
+          do m = 1, sph_rtm%nidx_rtm(3)
+            mm = abs(sph_rtm%idx_gl_1d_rtm_m(m,2))
+            jst = idx_trns%lstack_rlm(m-1) + 1
+            jed = idx_trns%lstack_rlm(m)
+!
+            call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(i),  &
+     &          p_m, dp_m, pmn1, pmp1, df_m)
+!
+            do j = jst, jed
+              jj = sph_rlm%idx_gl_1d_rlm_j(j,1)
+              l =  sph_rlm%idx_gl_1d_rlm_j(j,2)
+              P_rtm(i,j) =    p_m(l)
+              dPdt_rtm(i,j) = dp_m(l)
+            end do
+          end do
+        end do
+!
+      end do
+!
+      end subroutine set_lagender_4_rlmm
 !
 ! -----------------------------------------------------------------------
 !

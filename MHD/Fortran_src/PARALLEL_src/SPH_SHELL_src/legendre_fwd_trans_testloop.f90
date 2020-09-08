@@ -16,6 +16,7 @@
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -40,6 +41,7 @@
       use matmul_for_legendre_trans
 !
       use t_legendre_work_testlooop
+      use t_spheric_parameter
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
@@ -57,7 +59,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_f_trans_vector_test                           &
-     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
+     &         (iflag_matmul, ncomp, nvector, nscalar, sph_params,      &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns, leg,    &
      &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
@@ -67,6 +69,7 @@
       use matmul_for_legendre_trans
 !
       integer(kind = kint), intent(in) :: iflag_matmul
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm

@@ -14,21 +14,20 @@
 !!      subroutine sel_finalize_legendre_trans(WK_leg)
 !!
 !!    Backward transforms
-!!      subroutine sel_backward_legendre_trans                          &
-!!     &         (ncomp, nvector, nscalar,                              &
-!!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS, WK_leg)
+!!      subroutine sel_backward_legendre_trans(ncomp, nvector, nscalar, &
+!!     &          sph_params, sph_rlm, sph_rtm, comm_rlm, comm_rtm,     &
+!!     &          leg, idx_trns, n_WR, n_WS, WR, WS, WK_leg)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
 !!    Forward transforms
-!!      subroutine sel_forward_legendre_trans                           &
-!!     &         (ncomp, nvector, nscalar,                              &
-!!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS, WK_leg)
+!!      subroutine sel_forward_legendre_trans(ncomp, nvector, nscalar,  &
+!!     &          sph_params, sph_rtm, sph_rlm, comm_rtm, comm_rlm,     &
+!!     &          leg, idx_trns, n_WR, n_WS, WR, WS, WK_leg)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
@@ -47,6 +46,7 @@
       use m_precision
       use m_legendre_transform_list
 !
+      use t_spheric_parameter
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
@@ -125,7 +125,7 @@
         call init_legendre_sym_mat_tj(sph_rtm, sph_rlm, leg,            &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_tsp)
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
-        call init_legendre_sym_mat_both(sph_rtm, sph_rlm, leg,          &
+        call init_legendre_testloop(sph_rtm, sph_rlm, leg,              &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
       else
         call init_legendre_symmetry                                     &
@@ -155,7 +155,7 @@
      &   .or. WK_leg%id_legendre .eq. iflag_leg_sym_dgemm_tj) then
         call dealloc_leg_sym_mat_tj(WK_leg%WK_l_tsp)
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
-        call dealloc_leg_sym_mat_both(WK_leg%WK_l_tst)
+        call dealloc_leg_vec_test(WK_leg%WK_l_tst)
       else
         call finalize_legendre_sym_matmul(WK_leg%WK_l_sml)
       end if
@@ -165,11 +165,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_backward_legendre_trans                            &
-     &         (ncomp, nvector, nscalar,                                &
-     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS, WK_leg)
+      subroutine sel_backward_legendre_trans(ncomp, nvector, nscalar,   &
+     &          sph_params, sph_rlm, sph_rtm, comm_rlm, comm_rtm,       &
+     &          leg, idx_trns, n_WR, n_WS, WR, WS, WK_leg)
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -186,8 +186,8 @@
       if(ncomp .le. 0) return
       if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call leg_backward_trans_test(ncomp, nvector, nscalar,           &
-     &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
-     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_tst)
+     &      sph_params, sph_rlm, sph_rtm, comm_rlm, comm_rtm,           &
+     &      leg, idx_trns, n_WR, n_WS, WR, WS, WK_leg%WK_l_tst)
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_spin_loop) then
         call leg_backward_trans_sym_spin(ncomp, nvector, nscalar,       &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
@@ -242,11 +242,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_forward_legendre_trans                             &
-     &         (ncomp, nvector, nscalar,                                &
-     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS, WK_leg)
+      subroutine sel_forward_legendre_trans(ncomp, nvector, nscalar,    &
+     &          sph_params, sph_rtm, sph_rlm, comm_rtm, comm_rlm,       &
+     &          leg, idx_trns, n_WR, n_WS, WR, WS, WK_leg)
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
@@ -263,8 +263,8 @@
       if(ncomp .le. 0) return
       if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call leg_forward_trans_test(ncomp, nvector, nscalar,            &
-     &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
-     &      n_WR, n_WS, WR, WS, WK_leg%WK_l_tst)
+     &      sph_params, sph_rtm, sph_rlm, comm_rtm, comm_rlm,           &
+     &      leg, idx_trns, n_WR, n_WS, WR, WS, WK_leg%WK_l_tst)
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_spin_loop) then
         call leg_forward_trans_sym_spin(ncomp, nvector, nscalar,        &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
