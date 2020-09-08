@@ -65,6 +65,10 @@ CFLAGS="-O3 -Wall -g" FCFLAGS="-O3 -Wall -g" --with-blas \
 --with-hdf5=/opt/local/bin/h5pcc \
 PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig
 #
+# How to run:
+#  % mpirun -np 6 -bind-to socket -npersocket 3 -x OMP_NUM_THREADS=2  ~/src_kemo/bin/sph_mhd
+#
+#
 # -------------------------------------------------------------------------------
 # Ubuntu 18 (VirtualBox)
 # -------------------------------------------------------------------------------

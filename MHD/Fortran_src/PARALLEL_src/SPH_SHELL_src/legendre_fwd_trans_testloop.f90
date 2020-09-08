@@ -145,7 +145,7 @@
 !$omp end parallel do
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
-      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
 !$omp parallel private(ip)
         do ip = 2, np_smp
 !$omp workshare
