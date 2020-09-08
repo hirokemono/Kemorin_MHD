@@ -110,7 +110,6 @@
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1))
-        end do
 !
 !          lst_rtm = WK_l_tst%lst_rtm(ip)
           call matmul_fwd_leg_trans(iflag_matmul,                       &
