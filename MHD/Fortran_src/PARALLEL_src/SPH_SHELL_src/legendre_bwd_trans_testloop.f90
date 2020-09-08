@@ -128,7 +128,8 @@
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_params%l_truncation, sph_rtm, sph_rlm,              &
      &          mp_rlm, jst, jed, jnum, l_rtm, leg%g_colat_rtm,         &
-     &          n_jk_e, n_jk_o, Pmat)
+     &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
+     &          WK_l_tst%Pmat)
 !
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrs, ione, WK_l_tst%n_jk_e(mp_rlm),                    &
