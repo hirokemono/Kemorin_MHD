@@ -240,9 +240,9 @@
       else if(iflag_matmul .eq. iflag_INTRINSIC) then
         V_k(1:nkr) = matmul(S_kj(1:nkr,1:n_jk),P_j(1:n_jk))
       else
-        do kk = 1, nkr
-          V_k(kk) = 0.0d0
-          do jj = 1, n_jk
+        V_k(1:kk) = 0.0d0
+        do jj = 1, n_jk
+          do kk = 1, nkr
             V_k(kk) = V_k(kk) + S_kj(kk,jj) * P_j(jj)
           end do
         end do
