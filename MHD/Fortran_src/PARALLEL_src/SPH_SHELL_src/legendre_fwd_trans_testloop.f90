@@ -104,7 +104,7 @@
           lst_rtm = WK_l_tst%lst_rtm(ip)
           call set_vr_rtm_sym_mat_rin                                   &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
-     &        sph_rlm%nidx_rlm, leg%%asin_theta_1d_rtm, leg%weight_rtm, &
+     &        sph_rlm%nidx_rlm, leg%asin_t_rtm, leg%weight_rtm,         &
      &        mp_rlm, WK_l_tst%lst_rtm(ip),                             &
      &        WK_l_tst%nle_rtm(ip), WK_l_tst%nlo_rtm(ip),               &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WR, WR,      &
