@@ -191,7 +191,7 @@
       type(leg_omp_matrix), intent(inout) :: Pmat
 !
       integer(kind = kint) :: j_rlm, jj
-      integer(kind = kint) :: j, l, mm, jj
+      integer(kind = kint) :: l, mm, jj
       real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
       real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
       real(kind = kreal) :: df_m(0:l_truncation+2)
@@ -205,11 +205,11 @@
       call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(l_rtm),    &
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
-      do j = 1, jnum
-        jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,1)
-        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j,2)
-        P_rtm(j) =    p_m(l)
-        dPdt_rtm(j) = dp_m(l)
+      do j_rlm = 1, jnum
+        jj = sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,1)
+        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
+        P_rtm(j_rlm) =    p_m(l)
+        dPdt_rtm(j_rlm) = dp_m(l)
       end do
 !
 !
