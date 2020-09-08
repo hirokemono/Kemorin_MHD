@@ -129,7 +129,7 @@
      &         (sph_params%l_truncation, sph_rtm, sph_rlm,              &
      &          mp_rlm, jst, jed, jnum, l_rtm, leg%g_colat_rtm,         &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
-     &          WK_l_tst%Pmat)
+     &          WK_l_tst%Pmat(mp_rlm,ip))
 !
             call matmul_bwd_leg_trans_Pjl(iflag_matmul,                 &
      &          nkrs, ione, WK_l_tst%n_jk_e(mp_rlm),                    &
