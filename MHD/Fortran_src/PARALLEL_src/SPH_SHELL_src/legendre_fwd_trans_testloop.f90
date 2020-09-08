@@ -91,10 +91,6 @@
       nkrs = (3*nvector+nscalar) * sph_rlm%nidx_rlm(1)
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
-      call set_sym_leg_omp_mat_tj(sph_rtm%nidx_rtm(2),                  &
-     &    sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2),                     &
-     &    idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
-!
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
@@ -102,6 +98,15 @@
 !$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tst%lst_rtm(ip)
+!
+!      Set Legendre polynomials
+          call set_each_sym_leg_omp_mat_tj                              &
+     &       (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),                 &
+     &        jst, leg%P_rtm, leg%dPdt_rtm,                             &
+     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
+     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
+     &        WK_l_tst%Pmat(mp_rlm,ip))
+!
           call set_vr_rtm_sym_mat_rin                                   &
      &       (sph_rtm%nnod_rtm, sph_rtm%nidx_rtm, sph_rtm%istep_rtm,    &
      &        sph_rlm%nidx_rlm, leg%asin_t_rtm, leg%weight_rtm,         &
