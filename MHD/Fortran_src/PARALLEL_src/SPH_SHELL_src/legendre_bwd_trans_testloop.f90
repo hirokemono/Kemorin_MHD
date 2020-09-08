@@ -85,7 +85,7 @@
 !
       integer(kind = kint) :: mp_rlm
       integer(kind = kint) :: nkrs, nkrt, lst_rtm, l_rtm
-      integer(kind = kint) :: ip, jst
+      integer(kind = kint) :: ip, jst, jed
       integer(kind = kint) :: lt, kst_s, kst_t
       real(kind = kreal), allocatable :: P_rtm(:,:), dPdt_rtm(:,:)
 !
@@ -102,6 +102,7 @@
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         jst = idx_trns%lstack_rlm(mp_rlm-1)
+        jed = idx_trns%lstack_rlm(mp_rlm)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
           call set_sp_rlm_sym_mat_rin                                   &
@@ -132,7 +133,7 @@
             l_rtm = lst_rtm + lt
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),               &
-     &          jst, P_rtm, dPdt_rtm, l_rtm,                    &
+     &          P_rtm, dPdt_rtm, l_rtm,                    &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(mp_rlm,ip))
 !
@@ -180,11 +181,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_each_sym_leg_omp_mat_j                            &
-     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
+     &         (nth_rtm, jmax_rlm, P_rtm, dPdt_rtm,            &
      &          l_rtm, n_jk_e, n_jk_o, Pmat)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-      integer(kind = kint), intent(in) :: jst_rlm
 !
       real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
       real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
@@ -198,7 +198,7 @@
 !
 !$omp parallel do private(jj,j_rlm)
           do jj = 1, n_jk_e
-            j_rlm = 2*jj + jst_rlm - 1
+            j_rlm = 2*jj - 1
             Pmat%Pse_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsedt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
           end do
@@ -206,7 +206,7 @@
 !
 !$omp parallel do private(jj,j_rlm)
           do jj = 1, n_jk_o
-            j_rlm = 2*jj + jst_rlm
+            j_rlm = 2*jj
             Pmat%Pso_jt(jj,1) =     P_rtm(l_rtm,j_rlm)
             Pmat%dPsodt_jt(jj,1) =  dPdt_rtm(l_rtm,j_rlm)
           end do
@@ -235,7 +235,7 @@
      &           :: dPdt_rtm(sph_rtm%nidx_rtm(2),sph_rlm%nidx_rlm(2))
 !
       integer(kind = kint) :: ip, i, j, l, m, mm, jj
-      integer(kind = kint) :: jst, jed
+      integer(kind = kint) :: jst, jnum
       real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
       real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
       real(kind = kreal) :: df_m(0:l_truncation+2)
@@ -244,15 +244,15 @@
 !
           mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
           jst = idx_trns%lstack_rlm(mp_rlm-1) + 1
-          jed = idx_trns%lstack_rlm(mp_rlm)
+          jnum = idx_trns%lstack_rlm(mp_rlm) - jst
 !
           do i = 1, sph_rtm%nidx_rtm(2)
             call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(i),  &
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
-            do j = jst, jed
-              jj = sph_rlm%idx_gl_1d_rlm_j(j,1)
-              l =  sph_rlm%idx_gl_1d_rlm_j(j,2)
+            do j = 1, jnum
+              jj = sph_rlm%idx_gl_1d_rlm_j(j+jst,1)
+              l =  sph_rlm%idx_gl_1d_rlm_j(j+jst,2)
               P_rtm(i,j) =    p_m(l)
               dPdt_rtm(i,j) = dp_m(l)
             end do
