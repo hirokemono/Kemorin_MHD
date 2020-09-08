@@ -196,36 +196,28 @@
       real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
       real(kind = kreal) :: df_m(0:l_truncation+2)
 !
-      real(kind= kreal) :: P_rtm(sph_rlm%nidx_rlm(2))
-      real(kind= kreal) :: dPdt_rtm(sph_rlm%nidx_rlm(2))
-!
 !
       mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
 !
       call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(l_rtm),    &
      &          p_m, dp_m, pmn1, pmp1, df_m)
 !
-      do j_rlm = 1, jnum
+!$omp parallel do private(jj,j_rlm,l)
+      do jj = 1, n_jk_e
+        j_rlm = 2*jj - 1
         l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-        P_rtm(j_rlm) =    p_m(l)
-        dPdt_rtm(j_rlm) = dp_m(l)
+        Pmat%Pse_jt(jj,1) =     p_m(l)
+        Pmat%dPsedt_jt(jj,1) =  dp_m(l)
       end do
-!
-!
-!$omp parallel do private(jj,j_rlm)
-          do jj = 1, n_jk_e
-            j_rlm = 2*jj - 1
-            Pmat%Pse_jt(jj,1) =     P_rtm(j_rlm)
-            Pmat%dPsedt_jt(jj,1) =  dPdt_rtm(j_rlm)
-          end do
 !$omp end parallel do
 !
-!$omp parallel do private(jj,j_rlm)
-          do jj = 1, n_jk_o
-            j_rlm = 2*jj
-            Pmat%Pso_jt(jj,1) =     P_rtm(j_rlm)
-            Pmat%dPsodt_jt(jj,1) =  dPdt_rtm(j_rlm)
-          end do
+!$omp parallel do private(jj,j_rlm,l)
+      do jj = 1, n_jk_o
+        j_rlm = 2*jj
+        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
+        Pmat%Pso_jt(jj,1) =     p_m(l)
+        Pmat%dPsodt_jt(jj,1) =  dp_m(l)
+      end do
 !$omp end parallel do
 !
       end subroutine set_each_sym_leg_omp_mat_j
