@@ -84,7 +84,7 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm, mn_rlm, mm
-      integer(kind = kint) :: nkrs, nkrt, l_rtm
+      integer(kind = kint) :: nkrs, nkrt, l_rtm, lp_rtm
       integer(kind = kint) :: ip, jst, jed, jnum
       integer(kind = kint) :: lt, kst_s, kst_t
 !
@@ -120,7 +120,7 @@
         tm2 = 0.0d0
         tm3 = 0.0d0
 !        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,l_rtm,lt,kst_s,kst_t,st1) &
+!$omp parallel do private(ip,l_rtm,lt,kst_s,kst_t,st1,lp_rtm) &
 !$omp& reduction(+:tm1,tm2,tm3)
         do ip = 1, np_smp
 !   even l-m

@@ -70,10 +70,7 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: k_rlm, nd, mn_rlm
-      integer(kind = kint) :: lt, lp_rtm, ln_rtm
-      integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
-      integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
+      integer(kind = kint) :: mn_rlm, lt, lp_rtm
 !
 !
       mn_rlm = nidx_rtm(3) - mp_rlm + 1
