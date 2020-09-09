@@ -85,7 +85,7 @@
       integer(kind = kint) :: mm, mp_rlm, mn_rlm, lp_rtm, ln_rtm
       integer(kind = kint) :: nkrs, nkrt, lt, lt2
       integer(kind = kint) :: ip, jst
-      integer(kind = kint) :: lst, j
+      integer(kind = kint) :: lst
 !
 !
 !$omp parallel workshare
@@ -309,8 +309,8 @@
 !
       integer(kind = kint) :: lt, lp_rtm, ln_rtm
 !
-      do lt = lt2*8-7, lt2*8
-        lp_rtm = lst_rtm + lt
+      do lt = 1, 8
+        lp_rtm = lst_rtm + (lt2-1)*8 + lt
         ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
         call legendre_fwd_trans_1lat_test                         &
      &     (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
