@@ -101,39 +101,6 @@
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
 !$omp parallel do private(ip,lt,kst_s,kst_t,lp_rtm,ln_rtm)
         do ip = 1, np_smp
-          do lt = 1, WK_l_tst%nlo_rtm(ip)
-            kst_s = (lt-1) * nkrs + 1
-            kst_t = (lt-1) * nkrt + 1
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
-            ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
-            call set_vr_rtm_lt_sym_mat_rin                              &
-     &         (lp_rtm, ln_rtm, sph_rtm%nnod_rtm,                       &
-     &          sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                    &
-     &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
-     &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
-     &          comm_rtm%irev_sr, n_WR, WR,                             &
-     &          WK_l_tst%Fmat(ip)%symp_r(kst_s),   &
-     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t),      &
-     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s),  &
-     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
-          end do
-!
-!   Equator (if necessary)
-          do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
-            kst_s = (lt-1) * nkrs + 1
-            kst_t = (lt-1) * nkrt + 1
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
-            call set_vr_rtm_eq_sym_mat_rin(lp_rtm, sph_rtm%nnod_rtm,    &
-     &          sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                    &
-     &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
-     &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
-     &          comm_rtm%irev_sr, n_WR, WR,                             &
-     &          WK_l_tst%Fmat(ip)%symp_r(kst_s),            &
-     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t),      &
-     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s), &
-     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
-          end do
-!
 !
 !      Set Legendre polynomials
           call set_each_sym_leg_omp_mat_tj                              &
@@ -151,6 +118,18 @@
           do lt = 1, WK_l_tst%nlo_rtm(ip)
             kst_s = (lt-1) * nkrs + 1
             kst_t = (lt-1) * nkrt + 1
+            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
+            ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
+            call set_vr_rtm_lt_sym_mat_rin                              &
+     &         (lp_rtm, ln_rtm, sph_rtm%nnod_rtm,                       &
+     &          sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                    &
+     &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
+     &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
+     &          comm_rtm%irev_sr, n_WR, WR,                             &
+     &          WK_l_tst%Fmat(ip)%symp_r(kst_s),   &
+     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t),      &
+     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s),  &
+     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
 !
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
@@ -180,6 +159,16 @@
           do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
             kst_s = (lt-1) * nkrs + 1
             kst_t = (lt-1) * nkrt + 1
+            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
+            call set_vr_rtm_eq_sym_mat_rin(lp_rtm, sph_rtm%nnod_rtm,    &
+     &          sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                    &
+     &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
+     &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
+     &          comm_rtm%irev_sr, n_WR, WR,                             &
+     &          WK_l_tst%Fmat(ip)%symp_r(kst_s),            &
+     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t),      &
+     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s), &
+     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
 !
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
