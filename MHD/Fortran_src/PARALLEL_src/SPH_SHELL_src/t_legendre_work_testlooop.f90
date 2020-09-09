@@ -128,15 +128,12 @@
      &    nvector, nscalar, WK_l_tst%lst_rtm, WK_l_tst%nle_rtm,         &
      &    WK_l_tst%nlo_rtm, WK_l_tst%Fmat)
       call count_symmetric_leg_lj_omp                                   &
-     &   (sph_rtm%nidx_rtm(3), idx_trns, WK_l_tst)
+     &   (WK_l_tst%mphi_rtm, idx_trns, WK_l_tst)
 !
 !
-      call init_each_sym_leg_omp_mat_jt                                 &
-     &  (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2), &
-     &   idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
+      call init_each_sym_leg_omp_mat_jt(WK_l_tst)
       call init_each_sym_leg_omp_mat_tj                                 &
-     &  (sph_rtm%nidx_rtm(2), sph_rtm%nidx_rtm(3), sph_rlm%nidx_rlm(2), &
-     &   idx_trns%lstack_rlm, leg%P_rtm, leg%dPdt_rtm, WK_l_tst)
+     &   (WK_l_tst%mphi_rtm, leg%dPdt_rtm, WK_l_tst)
 !
       call count_leg_sym_matmul_mtr                                     &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
@@ -218,15 +215,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine init_each_sym_leg_omp_mat_jt                           &
-     &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
-     &          P_rtm, dPdt_rtm, WK_l_tst)
-!
-      integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
-      integer(kind = kint), intent(in) :: lstack_rlm(0:mphi_rtm)
-!
-      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
-      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
+      subroutine init_each_sym_leg_omp_mat_jt(WK_l_tst)
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
@@ -243,15 +232,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_each_sym_leg_omp_mat_tj                           &
-     &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
-     &          P_rtm, dPdt_rtm, WK_l_tst)
+      subroutine init_each_sym_leg_omp_mat_tj(mphi_rtm, WK_l_tst)
 !
-      integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
-      integer(kind = kint), intent(in) :: lstack_rlm(0:mphi_rtm)
-!
-      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
-      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
+      integer(kind = kint), intent(in) :: mphi_rtm
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !

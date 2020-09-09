@@ -82,13 +82,13 @@
         lp_rtm = lst_rtm + lt
         do nd = 1, nvector
           do k_rlm = 1, nidx_rlm(1)
-            symp_r(3*nd-1,k_rlm,lt) = - symp_r(3*nd-1,k_rlm,lt) &
+            symp_r(3*nd-1,k_rlm,lt) = - symp_r(3*nd-1,k_rlm,lt)         &
      &                                    * asin_theta_1d_rtm(lp_rtm)
-            symp_r(3*nd,  k_rlm,lt) = - symp_r(3*nd,  k_rlm,lt) &
+            symp_r(3*nd,  k_rlm,lt) = - symp_r(3*nd,  k_rlm,lt)         &
      &                                    * asin_theta_1d_rtm(lp_rtm)
-            asmp_r(3*nd-1,k_rlm,lt) = - asmp_r(3*nd-1,k_rlm,lt) &
+            asmp_r(3*nd-1,k_rlm,lt) = - asmp_r(3*nd-1,k_rlm,lt)         &
      &                                    * asin_theta_1d_rtm(lp_rtm)
-            asmp_r(3*nd,  k_rlm,lt) = - asmp_r(3*nd,  k_rlm,lt) &
+            asmp_r(3*nd,  k_rlm,lt) = - asmp_r(3*nd,  k_rlm,lt)         &
      &                                    * asin_theta_1d_rtm(lp_rtm)
           end do
         end do
@@ -118,38 +118,38 @@
             inn_send = 3*nd + (irev_sr_rtm(in_rtnm) - 1) * ncomp_send
 !
             WS(ipp_send-2) = WS(ipp_send-2)                             &
-     &                      + symp_r(3*nd-2,k_rlm,lt)               &
+     &                      + symp_r(3*nd-2,k_rlm,lt)                   &
      &                      + asmp_r(3*nd-2,k_rlm,lt)
             WS(ipp_send-1) = WS(ipp_send-1)                             &
-     &                      + asmp_p(2*nd,  k_rlm,lt)               &
+     &                      + asmp_p(2*nd,  k_rlm,lt)                   &
      &                      + symp_p(2*nd,  k_rlm,lt)
             WS(ipp_send  ) = WS(ipp_send  )                             &
-     &                      - asmp_p(2*nd-1,k_rlm,lt)               &
+     &                      - asmp_p(2*nd-1,k_rlm,lt)                   &
      &                      - symp_p(2*nd-1,k_rlm,lt)
 !
             WS(inp_send-1) = WS(inp_send-1)                             &
-     &                      + symp_r(3*nd-1,k_rlm,lt)               &
+     &                      + symp_r(3*nd-1,k_rlm,lt)                   &
      &                      + asmp_r(3*nd-1,k_rlm,lt)
             WS(inp_send  ) = WS(inp_send  )                             &
-     &                      + symp_r(3*nd,  k_rlm,lt)               &
+     &                      + symp_r(3*nd,  k_rlm,lt)                   &
      &                      + asmp_r(3*nd,  k_rlm,lt)
 !
 !
             WS(ipn_send-2) = WS(ipn_send-2)                             &
-     &                      + symp_r(3*nd-2,k_rlm,lt)               &
+     &                      + symp_r(3*nd-2,k_rlm,lt)                   &
      &                      - asmp_r(3*nd-2,k_rlm,lt)
             WS(ipn_send-1) = WS(ipn_send-1)                             &
-     &                      - asmp_p(2*nd,  k_rlm,lt)               &
+     &                      - asmp_p(2*nd,  k_rlm,lt)                   &
      &                      + symp_p(2*nd,  k_rlm,lt)
             WS(ipn_send  ) = WS(ipn_send  )                             &
-     &                      + asmp_p(2*nd-1,k_rlm,lt)               &
+     &                      + asmp_p(2*nd-1,k_rlm,lt)                   &
      &                      - symp_p(2*nd-1,k_rlm,lt)
 !
             WS(inn_send-1) = WS(inn_send-1)                             &
-     &                      + symp_r(3*nd-1,k_rlm,lt)               &
+     &                      + symp_r(3*nd-1,k_rlm,lt)                   &
      &                      - asmp_r(3*nd-1,k_rlm,lt)
             WS(inn_send  ) = WS(inn_send  )                             &
-     &                      + symp_r(3*nd,  k_rlm,lt)               &
+     &                      + symp_r(3*nd,  k_rlm,lt)                   &
      &                      - asmp_r(3*nd,  k_rlm,lt)
           end do
 !
@@ -160,10 +160,10 @@
      &                    + (irev_sr_rtm(ip_rtnm) - 1) * ncomp_send
 !
             WS(ipp_send) = WS(ipp_send)                                 &
-     &                  + symp_r(nd+3*nvector,k_rlm,lt)             &
+     &                  + symp_r(nd+3*nvector,k_rlm,lt)                 &
      &                  + asmp_r(nd+3*nvector,k_rlm,lt)
             WS(ipn_send) = WS(ipn_send)                                 &
-     &                  + symp_r(nd+3*nvector,k_rlm,lt)             &
+     &                  + symp_r(nd+3*nvector,k_rlm,lt)                 &
      &                  - asmp_r(nd+3*nvector,k_rlm,lt)
           end do
         end do

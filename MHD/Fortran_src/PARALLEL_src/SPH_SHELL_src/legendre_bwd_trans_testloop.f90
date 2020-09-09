@@ -120,7 +120,42 @@
           lst_rtm = WK_l_tst%lst_rtm(ip)
 !
 !   even l-m
-          do lt = 1, WK_l_tst%nle_rtm(ip)
+          do lt = 1, WK_l_tst%nlo_rtm(ip)
+            kst_s = (lt-1) * nkrs + 1
+            kst_t = (lt-1) * nkrt + 1
+!
+!      Set Legendre polynomials
+            l_rtm = lst_rtm + lt
+            call set_each_sym_leg_omp_mat_j                             &
+     &         (sph_params%l_truncation, sph_rlm,                       &
+     &          mm, jst, leg%g_colat_rtm(l_rtm),                        &
+     &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
+     &          WK_l_tst%Pmat(1,ip))
+!
+            call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
+     &          nkrs, WK_l_tst%n_jk_e(mp_rlm),                          &
+     &          WK_l_tst%Smat(1)%pol_e(1),                              &
+     &          WK_l_tst%Pmat(1,ip)%Pse_jt(1,1),                        &
+     &          WK_l_tst%Fmat(ip)%symp_r(kst_s))
+            call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
+     &          nkrt, WK_l_tst%n_jk_e(mp_rlm),                          &
+     &          WK_l_tst%Smat(1)%tor_e(1),                              &
+     &          WK_l_tst%Pmat(1,ip)%dPsedt_jt(1,1),                     &
+     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t))
+!   odd l-m
+            call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
+     &          nkrs, WK_l_tst%n_jk_o(mp_rlm),                          &
+     &          WK_l_tst%Smat(1)%pol_o(1),                              &
+     &          WK_l_tst%Pmat(1,ip)%Pso_jt(1,1),                        &
+     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s))
+            call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
+     &          nkrt, WK_l_tst%n_jk_o(mp_rlm),                          &
+     &          WK_l_tst%Smat(1)%tor_o(1),                              &
+     &          WK_l_tst%Pmat(1,ip)%dPsodt_jt(1,1),                     &
+     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
+          end do
+!
+          do lt = WK_l_tst%nlo_rtm(ip) + 1, WK_l_tst%nle_rtm(ip)
             kst_s = (lt-1) * nkrs + 1
             kst_t = (lt-1) * nkrt + 1
 !
