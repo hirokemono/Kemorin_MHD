@@ -125,8 +125,8 @@
         call init_legendre_sym_mat_tj(sph_rtm, sph_rlm, leg,            &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_tsp)
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
-        call init_legendre_sym_mat_both(sph_rtm, sph_rlm, leg,          &
-     &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
+        call init_legendre_sym_mat_both                                 &
+     &     (sph_rtm, idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
       else
         call init_legendre_symmetry                                     &
      &     (sph_rtm, sph_rlm, leg, idx_trns, WK_leg%WK_l_sml)

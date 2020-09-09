@@ -8,8 +8,8 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine init_legendre_sym_mat_both(sph_rtm, sph_rlm, leg,    &
-!!     &          idx_trns, nvector, nscalar, WK_l_tst)
+!!      subroutine init_legendre_sym_mat_both                          &
+!!     &         (sph_rtm, idx_trns, nvector, nscalar, WK_l_tst)
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -99,12 +99,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_legendre_sym_mat_both(sph_rtm, sph_rlm, leg,      &
-     &          idx_trns, nvector, nscalar, WK_l_tst)
+      subroutine init_legendre_sym_mat_both                             &
+     &         (sph_rtm, idx_trns, nvector, nscalar, WK_l_tst)
 !
       type(sph_rtm_grid), intent(in) :: sph_rtm
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      type(legendre_4_sph_trans), intent(in) :: leg
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
@@ -218,7 +216,7 @@
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-      integer(kind = kint) :: mp_rlm, ip
+      integer(kind = kint) :: ip
 !
 !
       do ip = 1, np_smp
