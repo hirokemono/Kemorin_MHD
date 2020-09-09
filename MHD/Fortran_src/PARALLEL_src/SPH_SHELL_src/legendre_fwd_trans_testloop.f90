@@ -120,24 +120,24 @@
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1))
 !
 !          lst_rtm = WK_l_tst%lst_rtm(ip)
-          call matmul_fwd_leg_trans(iflag_matmul,                       &
+          call matmul_fwd_leg_trans_lj(                       &
      &        nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                              &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_tj,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
-          call matmul_fwd_leg_trans(iflag_matmul,                       &
+          call matmul_fwd_leg_trans_lj(                       &
      &        nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                              &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
-          call matmul_fwd_leg_trans(iflag_matmul,                       &
+          call matmul_fwd_leg_trans_lj(                       &
      &        nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_tj,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
-          call matmul_fwd_leg_trans(iflag_matmul,                       &
+          call matmul_fwd_leg_trans_lj(                       &
      &        nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                              &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
@@ -187,5 +187,52 @@
       end subroutine legendre_f_trans_vector_test
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine matmul_fwd_leg_trans_lj                                &
+     &         (nkr, n_jk, nl_rtm, V_kl, P_lj, S_kj)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
+      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+      integer(kind = kint) :: lt
+!
+!
+      if(n_jk*nkr .eq. 0) return
+
+      S_kj(1:nkr,1:n_jk) = 0.0d0
+      do lt = 1, nl_rtm
+        call matvec_leg_trans(lt, nkr, n_jk, nl_rtm,                    &
+     &      V_kl(1,lt), P_lj, S_kj)
+      end do
+!
+      end subroutine matmul_fwd_leg_trans_lj
+!
+! ----------------------------------------------------------------------
+!
+      subroutine matvec_leg_trans                                       &
+     &         (lt, nkr, n_jk, nl_rtm, V_kl, P_lj, S_kj)
+!
+      integer(kind = kint), intent(in) :: lt
+      integer(kind = kint), intent(in) :: nl_rtm, n_jk, nkr
+      real(kind = kreal), intent(in) :: V_kl(nkr)
+      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+      integer(kind = kint) :: jj, kk
+!
+!
+      do jj = 1, n_jk
+        do kk = 1, nkr
+          S_kj(kk,jj) = S_kj(kk,jj) + V_kl(kk) * P_lj(lt,jj)
+        end do
+      end do
+!
+      end subroutine matvec_leg_trans
+!
+! ----------------------------------------------------------------------
 !
       end module legendre_fwd_trans_testloop
