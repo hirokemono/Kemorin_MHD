@@ -132,8 +132,7 @@
 !
 !
       call init_each_sym_leg_omp_mat_jt(WK_l_tst)
-      call init_each_sym_leg_omp_mat_tj                                 &
-     &   (WK_l_tst%mphi_rtm, leg%dPdt_rtm, WK_l_tst)
+      call init_each_sym_leg_omp_mat_tj(WK_l_tst%mphi_rtm, WK_l_tst)
 !
       call count_leg_sym_matmul_mtr                                     &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
