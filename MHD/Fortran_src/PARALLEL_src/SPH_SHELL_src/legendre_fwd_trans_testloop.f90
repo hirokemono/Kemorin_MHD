@@ -109,17 +109,13 @@
           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
 !
           do lt2 = 1, WK_l_tst%nlo_rtm(ip) / 8
-            do lt = lt2*8-7, lt2*8
-              lp_rtm = WK_l_tst%lst_rtm(ip) + lt
-              ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
-              call legendre_fwd_trans_1lat_test                         &
-     &           (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
-     &            iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
-     &            sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
-     &            WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),     &
-     &            WK_l_tst%Fmat(ip), WK_l_tst%Pmat(ip),                 &
-     &            WK_l_tst%Smat(ip))
-            end do
+            call legendre_fwd_trans_8lat_test                         &
+     &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,             &
+     &          iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
+     &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
+     &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),     &
+     &          WK_l_tst%lst_rtm(ip), WK_l_tst%Fmat(ip),              &
+     &          WK_l_tst%Pmat(ip), WK_l_tst%Smat(ip))
           end do
           lst = 1 + int(WK_l_tst%nlo_rtm(ip)/8) * 8
 !
@@ -281,6 +277,49 @@
       end do
 !
       end subroutine set_each_sym_leg_omp_mat_1j
+!
+! -----------------------------------------------------------------------
+!
+      subroutine legendre_fwd_trans_8lat_test                           &
+     &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,               &
+     &          iflag_matmul, ncomp, nvector, nscalar, sph_params,      &
+     &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
+     &          n_jk_e, n_jk_o, lst_rtm, Fmat, Pmat, Smat)
+!
+      integer(kind = kint), intent(in) :: lt2
+      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
+      integer(kind = kint), intent(in) :: mm, jst
+      integer(kind = kint), intent(in) :: nkrs, nkrt
+!
+      integer(kind = kint), intent(in) :: iflag_matmul
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtm
+      type(legendre_4_sph_trans), intent(in) :: leg
+!
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR
+      real (kind=kreal), intent(inout):: WR(n_WR)
+!
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o, lst_rtm
+      type(field_matrix_omp), intent(inout) :: Fmat
+      type(leg_omp_matrix), intent(inout) :: Pmat
+      type(spectr_matrix_omp), intent(inout) :: Smat
+!
+      integer(kind = kint) :: lt, lp_rtm, ln_rtm
+!
+      do lt = lt2*8-7, lt2*8
+        lp_rtm = lst_rtm + lt
+        ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
+        call legendre_fwd_trans_1lat_test                         &
+     &     (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
+     &      iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
+     &      sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
+     &      n_jk_e, n_jk_o, Fmat, Pmat, Smat)
+      end do
+!
+      end subroutine legendre_fwd_trans_8lat_test
 !
 ! -----------------------------------------------------------------------
 !
