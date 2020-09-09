@@ -109,7 +109,6 @@
           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
 !
           do lt2 = 1, WK_l_tst%nlo_rtm(ip) / 8
-            write(*,*) lt2, (j,j=lt2*8-7,lt2*8)
             do lt = lt2*8-7, lt2*8
               lp_rtm = WK_l_tst%lst_rtm(ip) + lt
               ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
@@ -125,7 +124,6 @@
           lst = 1 + int(WK_l_tst%nlo_rtm(ip)/8) * 8
 !
           do lt2 = 1 + lst/4, WK_l_tst%nlo_rtm(ip) / 4
-            write(*,*) lt2, (j,j=lt2*4-3,lt2*4)
             do lt = lt2*4-3, lt2*4
               lp_rtm = WK_l_tst%lst_rtm(ip) + lt
               ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
