@@ -245,8 +245,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine matvec_leg_trans                                       &
-     &         (nkr, n_jk, nl_rtm, V_kl, P_lj, S_kj)
+      subroutine matvec_leg_trans(nkr, n_jk, V_kl, P_lj, S_kj)
 !
       integer(kind = kint), intent(in) :: n_jk, nkr
       real(kind = kreal), intent(in) :: V_kl(nkr)
