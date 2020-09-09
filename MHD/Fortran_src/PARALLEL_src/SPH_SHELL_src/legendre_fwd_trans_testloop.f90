@@ -237,7 +237,32 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_each_sym_leg_omp_mat_1j                            &
+      subroutine matmat8_leg_trans(nkr, n_jk, V_kl, P_lj, S_kj)
+!
+      integer(kind = kint), intent(in) :: n_jk, nkr
+      real(kind = kreal), intent(in) :: V_kl(nkr,8)
+      real(kind = kreal), intent(in) :: P_lj(n_jk,8)
+!
+      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
+!
+      integer(kind = kint) :: jj, kk
+!
+!
+      do jj = 1, n_jk
+        do kk = 1, nkr
+          S_kj(kk,jj) = S_kj(kk,jj)                                     &
+     &             + V_kl(kk,1) * P_lj(jj,1) + V_kl(kk,2) * P_lj(jj,2)  &
+     &             + V_kl(kk,3) * P_lj(jj,3) + V_kl(kk,4) * P_lj(jj,4)  &
+     &             + V_kl(kk,5) * P_lj(jj,5) + V_kl(kk,6) * P_lj(jj,6)  &
+     &             + V_kl(kk,7) * P_lj(jj,7) + V_kl(kk,8) * P_lj(jj,8)
+        end do
+      end do
+!
+      end subroutine matmat8_leg_trans
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_each_sym_leg_omp_mat_j1                            &
      &         (l_truncation, sph_rlm, mm, jst_rlm,                     &
      &          g_colat_rtm, n_jk_e, n_jk_o, Pmat)
 !
@@ -276,7 +301,52 @@
         Pmat%dPsodt_jt(jj,1) =  dp_m(l)
       end do
 !
-      end subroutine set_each_sym_leg_omp_mat_1j
+      end subroutine set_each_sym_leg_omp_mat_j1
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_each_sym_leg_omp_mat_j8                            &
+     &         (l_truncation, sph_rlm, mm, jst_rlm,                     &
+     &          g_colat_rtm, n_jk_e, n_jk_o, Pmat)
+!
+      use schmidt_fix_m
+!
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      integer(kind = kint), intent(in) :: jst_rlm
+!
+      integer(kind = kint), intent(in) :: l_truncation, mm
+      real(kind= kreal), intent(in) :: g_colat_rtm(8)
+!
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
+      type(leg_omp_matrix), intent(inout) :: Pmat
+!
+      integer(kind = kint) :: j_rlm, jj
+      integer(kind = kint) :: l, lt
+      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
+      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
+      real(kind = kreal) :: df_m(0:l_truncation+2)
+!
+!
+      do lt = 1, 8
+        call schmidt_legendres_m(l_truncation, mm, g_colat_rtm(lt),     &
+     &                           p_m, dp_m, pmn1, pmp1, df_m)
+!
+        do jj = 1, n_jk_e
+          j_rlm = 2*jj - 1
+          l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
+          Pmat%Pse_jt(jj,lt) =     p_m(l)
+          Pmat%dPsedt_jt(jj,lt) =  dp_m(l)
+        end do
+!
+        do jj = 1, n_jk_o
+          j_rlm = 2*jj
+          l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
+          Pmat%Pso_jt(jj,lt) =     p_m(l)
+          Pmat%dPsodt_jt(jj,lt) =  dp_m(l)
+        end do
+      end do
+!
+      end subroutine set_each_sym_leg_omp_mat_j8
 !
 ! -----------------------------------------------------------------------
 !
@@ -330,27 +400,22 @@
      &      Fmat%asmp_p(kst_t), Fmat%asmp_r(kst_s), Fmat%symp_p(kst_t))
       end do
 !
-      do lt = 1, 8
-        lp_rtm = lst_rtm + (lt2-1)*8 + lt
-        kst_s = (lt-1) * nkrs + 1
-        kst_t = (lt-1) * nkrt + 1
+!    Set Legendre polynomials
+      lp_rtm = lst_rtm + (lt2-1)*8 + 1
+      call set_each_sym_leg_omp_mat_j8                                  &
+     &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
+     &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-!      Set Legendre polynomials
-        call set_each_sym_leg_omp_mat_1j                                &
-     &     (sph_params%l_truncation, sph_rlm, mm, jst,                  &
-     &      leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
-!
-        call matvec_leg_trans(nkrs, n_jk_e,                             &
-     &      Fmat%symp_r(kst_s), Pmat%Pse_jt,    Smat%pol_e(1))
-        call matvec_leg_trans(nkrt, n_jk_e,                             &
-     &      Fmat%asmp_p(kst_t), Pmat%dPsedt_jt, Smat%tor_e(1))
+      call matmat8_leg_trans(nkrs, n_jk_e,                              &
+     &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
+      call matmat8_leg_trans(nkrt, n_jk_e,                              &
+     &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
 !
 !  odd l-m
-        call matvec_leg_trans(nkrs, n_jk_o,                             &
-     &      Fmat%asmp_r(kst_s), Pmat%Pso_jt,    Smat%pol_o(1))
-        call matvec_leg_trans(nkrt, n_jk_o,                             &
-     &      Fmat%symp_p(kst_t), Pmat%dPsodt_jt, Smat%tor_o(1))
-      end do
+      call matmat8_leg_trans(nkrs, n_jk_o,                              &
+     &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
+      call matmat8_leg_trans(nkrt, n_jk_o,                              &
+     &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_8lat_test
 !
@@ -398,7 +463,7 @@
      &    Fmat%asmp_p(1), Fmat%asmp_r(1), Fmat%symp_p(1))
 !
 !      Set Legendre polynomials
-      call set_each_sym_leg_omp_mat_1j                                  &
+      call set_each_sym_leg_omp_mat_j1                                  &
      &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
@@ -459,7 +524,7 @@
      &    Fmat%asmp_p(1), Fmat%asmp_r(1), Fmat%symp_p(1))
 !
 !      Set Legendre polynomials
-      call set_each_sym_leg_omp_mat_1j                                  &
+      call set_each_sym_leg_omp_mat_j1                                  &
      &   (sph_params%l_truncation, sph_rlm,                             &
      &    mm, jst, leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
