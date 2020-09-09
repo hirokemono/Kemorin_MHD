@@ -85,6 +85,7 @@
       integer(kind = kint) :: mm, mp_rlm, mn_rlm, lp_rtm, ln_rtm
       integer(kind = kint) :: nkrs, nkrt, lt
       integer(kind = kint) :: ip, jst
+      integer(kind = kint) :: lst, j
 !
 !
 !$omp parallel workshare
@@ -100,12 +101,24 @@
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!$omp parallel do private(ip,lt,lp_rtm,ln_rtm)
+!$omp parallel do private(ip,lt,lp_rtm,ln_rtm,lst)
         do ip = 1, np_smp
           WK_l_tst%Smat(ip)%pol_e(1:WK_l_tst%n_pol_e) = 0.0d0
           WK_l_tst%Smat(ip)%tor_e(1:WK_l_tst%n_tor_e) = 0.0d0
           WK_l_tst%Smat(ip)%pol_o(1:WK_l_tst%n_pol_e) = 0.0d0
           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
+!
+          do lt = 1, WK_l_tst%nlo_rtm(ip) / 8
+            write(*,*) lt, (j,j=lt*8-7,lt*8)
+          end do
+          lst = 1 + int(WK_l_tst%nlo_rtm(ip)/8) * 8
+          do lt = 1 + lst/4, WK_l_tst%nlo_rtm(ip) / 4
+            write(*,*) lt, (j,j=lt*4-3,lt*4)
+          end do
+          lst = 1 + int(WK_l_tst%nlo_rtm(ip)/4) * 4
+          do lt = lst, WK_l_tst%nlo_rtm(ip)
+            write(*,*) lt
+          end do
 !
           do lt = 1, WK_l_tst%nlo_rtm(ip)
             lp_rtm = WK_l_tst%lst_rtm(ip) + lt
