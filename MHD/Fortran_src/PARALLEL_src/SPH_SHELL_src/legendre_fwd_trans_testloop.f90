@@ -126,31 +126,31 @@
 !      Set Legendre polynomials
             call set_each_sym_leg_omp_mat_1j                            &
      &        (sph_params%l_truncation, sph_rlm,                        &
-     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
+     &         mm, jst, leg%g_colat_rtm(lp_rtm),                        &
      &         WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),        &
-     &         WK_l_tst%Pmat(mp_rlm,ip))
+     &         WK_l_tst%Pmat(1,ip))
 !
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt,                          &
+     &        WK_l_tst%Pmat(1,ip)%Pse_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt,                       &
+     &        WK_l_tst%Pmat(1,ip)%dPsedt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt,                          &
+     &        WK_l_tst%Pmat(1,ip)%Pso_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt,                       &
+     &        WK_l_tst%Pmat(1,ip)%dPsodt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
           end do
 !
@@ -174,29 +174,29 @@
      &        (sph_params%l_truncation, sph_rlm,                        &
      &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
      &         WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),        &
-     &         WK_l_tst%Pmat(mp_rlm,ip))
+     &         WK_l_tst%Pmat(1,ip))
 !
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt,                          &
+     &        WK_l_tst%Pmat(1,ip)%Pse_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt,                       &
+     &        WK_l_tst%Pmat(1,ip)%dPsedt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt,                          &
+     &        WK_l_tst%Pmat(1,ip)%Pso_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt,                       &
+     &        WK_l_tst%Pmat(1,ip)%dPsodt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
           end do
         end do
