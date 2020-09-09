@@ -216,11 +216,11 @@
         end do
 !$omp end parallel do
         elps1%elapsed(ist_elapsed_SDT+18)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+19) + tm1
+     &        = elps1%elapsed(ist_elapsed_SDT+19) + tm1 / dble(np_smp)
         elps1%elapsed(ist_elapsed_SDT+13)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+13) + tm2
+     &        = elps1%elapsed(ist_elapsed_SDT+13) + tm2 / dble(np_smp)
         elps1%elapsed(ist_elapsed_SDT+14)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+14) + tm3
+     &        = elps1%elapsed(ist_elapsed_SDT+14) + tm3 / dble(np_smp)
 !          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
       end do
 !
