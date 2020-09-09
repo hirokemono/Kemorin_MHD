@@ -117,7 +117,7 @@
 !
 !
         call legendre_f_trans_vector_test                               &
-     &     (iflag_INTRINSIC, ncomp, nvector, nscalar, sph_params,       &
+     &     (iflag_MATPROD, ncomp, nvector, nscalar, sph_params,         &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns, leg,        &
      &      n_WR, n_WS, WR, WS, WK_l_tst)
 !

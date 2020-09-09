@@ -248,11 +248,19 @@
       real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
       integer(kind = kint) :: jj, kk
+      integer :: n_jk4, nkr4
 !
 !
       if(iflag_matmul .eq. iflag_INTRINSIC) then
         S_kj(1:nkr,1:n_jk) = S_kj(1:nkr,1:n_jk)                         &
      &                    + matmul(V_kl(1:nkr,1:8),P_lj(1:8,1:n_jk))
+#ifdef BLAS
+      else if(iflag_matmul .eq. iflag_DGEMM) then
+        nkr4 =    int(nkr)
+        n_jk4 =   int(n_jk)
+        call DGEMM('N', 'N', nkr4, n_jk4, 8, one,                       &
+     &      V_kl, nkr4, P_lj, 8, one, S_kj, nkr4)
+#endif
       else
         do jj = 1, n_jk
           do kk = 1, nkr
