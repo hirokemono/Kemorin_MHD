@@ -131,24 +131,24 @@
      &         WK_l_tst%Pmat(1,ip))
 !
             call matvec_leg_trans(                       &
-     &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrs, WK_l_tst%n_jk_e(mp_rlm),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
      &        WK_l_tst%Pmat(1,ip)%Pse_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
-     &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrt, WK_l_tst%n_jk_e(mp_rlm),      &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
      &        WK_l_tst%Pmat(1,ip)%dPsedt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
-     &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrs, WK_l_tst%n_jk_o(mp_rlm),       &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
      &        WK_l_tst%Pmat(1,ip)%Pso_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
-     &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrt, WK_l_tst%n_jk_o(mp_rlm),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
      &        WK_l_tst%Pmat(1,ip)%dPsodt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
@@ -177,24 +177,24 @@
      &         WK_l_tst%Pmat(1,ip))
 !
             call matvec_leg_trans(                       &
-     &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrs, WK_l_tst%n_jk_e(mp_rlm),     &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
      &        WK_l_tst%Pmat(1,ip)%Pse_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
-     &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrt, WK_l_tst%n_jk_e(mp_rlm),     &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
      &        WK_l_tst%Pmat(1,ip)%dPsedt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
-     &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrs, WK_l_tst%n_jk_o(mp_rlm),      &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
      &        WK_l_tst%Pmat(1,ip)%Pso_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
-     &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
+     &        nkrt, WK_l_tst%n_jk_o(mp_rlm),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
      &        WK_l_tst%Pmat(1,ip)%dPsodt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
@@ -245,36 +245,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine matmul_fwd_leg_trans_lj                                &
+      subroutine matvec_leg_trans                                       &
      &         (nkr, n_jk, nl_rtm, V_kl, P_lj, S_kj)
 !
-      integer(kind = kint), intent(in) :: n_jk, nkr, nl_rtm
-      real(kind = kreal), intent(in) :: V_kl(nkr,nl_rtm)
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-      integer(kind = kint) :: lt
-!
-!
-      if(n_jk*nkr .eq. 0) return
-
-      do lt = 1, nl_rtm
-        call matvec_leg_trans(lt, nkr, n_jk, nl_rtm,                    &
-     &      V_kl(1,lt), P_lj, S_kj)
-      end do
-!
-      end subroutine matmul_fwd_leg_trans_lj
-!
-! ----------------------------------------------------------------------
-!
-      subroutine matvec_leg_trans                                       &
-     &         (lt, nkr, n_jk, nl_rtm, V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: lt
-      integer(kind = kint), intent(in) :: nl_rtm, n_jk, nkr
+      integer(kind = kint), intent(in) :: n_jk, nkr
       real(kind = kreal), intent(in) :: V_kl(nkr)
-      real(kind = kreal), intent(in) :: P_lj(nl_rtm,n_jk)
+      real(kind = kreal), intent(in) :: P_lj(n_jk)
 !
       real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
@@ -283,7 +259,7 @@
 !
       do jj = 1, n_jk
         do kk = 1, nkr
-          S_kj(kk,jj) = S_kj(kk,jj) + V_kl(kk) * P_lj(lt,jj)
+          S_kj(kk,jj) = S_kj(kk,jj) + V_kl(kk) * P_lj(jj)
         end do
       end do
 !
