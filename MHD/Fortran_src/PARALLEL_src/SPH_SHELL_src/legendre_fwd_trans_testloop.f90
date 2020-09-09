@@ -216,67 +216,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine matvec_leg_trans(nkr, n_jk, V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: n_jk, nkr
-      real(kind = kreal), intent(in) :: V_kl(nkr)
-      real(kind = kreal), intent(in) :: P_lj(n_jk)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-      integer(kind = kint) :: jj, kk
-!
-!
-      do jj = 1, n_jk
-        do kk = 1, nkr
-          S_kj(kk,jj) = S_kj(kk,jj) + V_kl(kk) * P_lj(jj)
-        end do
-      end do
-!
-      end subroutine matvec_leg_trans
-!
-! ----------------------------------------------------------------------
-!
-      subroutine matmat8_leg_trans                                      &
-     &         (iflag_matmul, nkr, n_jk, V_kl, P_lj, S_kj)
-!
-      integer(kind = kint), intent(in) :: iflag_matmul
-      integer(kind = kint), intent(in) :: n_jk, nkr
-      real(kind = kreal), intent(in) :: V_kl(nkr,8)
-      real(kind = kreal), intent(in) :: P_lj(8,n_jk)
-!
-      real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
-!
-      integer(kind = kint) :: jj, kk
-      integer :: n_jk4, nkr4
-!
-!
-      if(iflag_matmul .eq. iflag_INTRINSIC) then
-        S_kj(1:nkr,1:n_jk) = S_kj(1:nkr,1:n_jk)                         &
-     &                    + matmul(V_kl(1:nkr,1:8),P_lj(1:8,1:n_jk))
-#ifdef BLAS
-      else if(iflag_matmul .eq. iflag_DGEMM) then
-        nkr4 =    int(nkr)
-        n_jk4 =   int(n_jk)
-        call DGEMM('N', 'N', nkr4, n_jk4, 8, one,                       &
-     &      V_kl, nkr4, P_lj, 8, one, S_kj, nkr4)
-#endif
-      else
-        do jj = 1, n_jk
-          do kk = 1, nkr
-            S_kj(kk,jj) = S_kj(kk,jj)                                   &
-     &             + V_kl(kk,1) * P_lj(1,jj) + V_kl(kk,2) * P_lj(2,jj)  &
-     &             + V_kl(kk,3) * P_lj(3,jj) + V_kl(kk,4) * P_lj(4,jj)  &
-     &             + V_kl(kk,5) * P_lj(5,jj) + V_kl(kk,6) * P_lj(6,jj)  &
-     &             + V_kl(kk,7) * P_lj(7,jj) + V_kl(kk,8) * P_lj(8,jj)
-          end do
-        end do
-      end if
-!
-      end subroutine matmat8_leg_trans
-!
-! ----------------------------------------------------------------------
-!
       subroutine set_each_sym_leg_omp_mat_j1                            &
      &         (l_truncation, sph_rlm, mm, jst_rlm,                     &
      &          g_colat_rtm, n_jk_e, n_jk_o, Pmat)
@@ -374,7 +313,7 @@
       use t_schmidt_poly_on_rtm
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
-      use matmul_for_legendre_trans
+      use small_matmul_leg_trans_krin
 !
       integer(kind = kint), intent(in) :: lt2
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -421,15 +360,15 @@
      &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-      call matmat8_leg_trans(iflag_matmul, nkrs, n_jk_e,                &
+      call matmul8_fwd_leg_trans(iflag_matmul, nkrs, n_jk_e,            &
      &    Fmat%symp_r(1), Pmat%Pse_tj,    Smat%pol_e(1))
-      call matmat8_leg_trans(iflag_matmul, nkrt, n_jk_e,                &
+      call matmul8_fwd_leg_trans(iflag_matmul, nkrt, n_jk_e,            &
      &    Fmat%asmp_p(1), Pmat%dPsedt_tj, Smat%tor_e(1))
 !
 !  odd l-m
-      call matmat8_leg_trans(iflag_matmul, nkrs, n_jk_o,                &
+      call matmul8_fwd_leg_trans(iflag_matmul, nkrs, n_jk_o,            &
      &    Fmat%asmp_r(1), Pmat%Pso_tj,    Smat%pol_o(1))
-      call matmat8_leg_trans(iflag_matmul, nkrt, n_jk_o,                &
+      call matmul8_fwd_leg_trans(iflag_matmul, nkrt, n_jk_o,            &
      &    Fmat%symp_p(1), Pmat%dPsodt_tj, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_8lat_test
@@ -445,7 +384,7 @@
       use t_schmidt_poly_on_rtm
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
-      use matmul_for_legendre_trans
+      use matvec_fwd_leg_trans
 !
       integer(kind = kint), intent(in) :: lp_rtm, ln_rtm
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -482,15 +421,15 @@
      &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-      call matvec_leg_trans(nkrs, n_jk_e,                               &
+      call matvec_fwd_leg_trans(nkrs, n_jk_e,                           &
      &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
-      call matvec_leg_trans(nkrt, n_jk_e,                               &
+      call matvec_fwd_leg_trans(nkrt, n_jk_e,                           &
      &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
 !
 !  odd l-m
-      call matvec_leg_trans(nkrs, n_jk_o,                               &
+      call matvec_fwd_leg_trans(nkrs, n_jk_o,                           &
      &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
-      call matvec_leg_trans(nkrt, n_jk_o,                               &
+      call matvec_fwd_leg_trans(nkrt, n_jk_o,                           &
      &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_1lat_test
@@ -543,15 +482,15 @@
      &   (sph_params%l_truncation, sph_rlm,                             &
      &    mm, jst, leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-      call matvec_leg_trans(nkrs, n_jk_e,                               &
+      call matvec_fwd_leg_trans(nkrs, n_jk_e,                           &
      &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
-      call matvec_leg_trans(nkrt, n_jk_e,                               &
+      call matvec_fwd_leg_trans(nkrt, n_jk_e,                           &
      &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
 !
 !  odd l-m
-      call matvec_leg_trans(nkrs, n_jk_o,                               &
+      call matvec_fwd_leg_trans(nkrs, n_jk_o,                           &
      &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
-      call matvec_leg_trans(nkrt, n_jk_o,                               &
+      call matvec_fwd_leg_trans(nkrt, n_jk_o,                           &
      &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_eq_test
