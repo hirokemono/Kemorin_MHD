@@ -121,7 +121,7 @@
         tm3 = 0.0d0
 !        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
 !$omp parallel do private(ip,l_rtm,lt,kst_s,kst_t,st1) &
-!$omp& reduction(+:tm1,tm2,tm3)
+!$omp& reduction(MAX:tm1,tm2,tm3)
         do ip = 1, np_smp
 !   even l-m
           do lt = 1, WK_l_tst%nlo_rtm(ip)
