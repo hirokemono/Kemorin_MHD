@@ -83,11 +83,12 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-      integer(kind = kint) :: mp_rlm, mm
-      integer(kind = kint) :: nkrs, nkrt, lst_rtm, l_rtm
+      integer(kind = kint) :: mp_rlm, mn_rlm, mm
+      integer(kind = kint) :: nkrs, nkrt, l_rtm
       integer(kind = kint) :: ip, jst, jed, jnum
       integer(kind = kint) :: lt, kst_s, kst_t
 !
+      real(kind = kreal) :: tm1, tm2, tm3, st1
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
@@ -97,6 +98,7 @@
       nkrt = 2*nvector * sph_rlm%nidx_rlm(1)
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
+        mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
         mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
         jst = idx_trns%lstack_rlm(mp_rlm-1)
         jed = idx_trns%lstack_rlm(mp_rlm)
@@ -114,24 +116,28 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
 !
-        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,lst_rtm,l_rtm,lt,kst_s,kst_t)
+!        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
+!$omp parallel do private(ip,l_rtm,lt,kst_s,kst_t) &
+!$omp& reduction(+:tm1) &
+!$omp& reduction(+:tm2) &
+!$omp& reduction(+:tm3)
         do ip = 1, np_smp
-          lst_rtm = WK_l_tst%lst_rtm(ip)
-!
 !   even l-m
           do lt = 1, WK_l_tst%nlo_rtm(ip)
             kst_s = (lt-1) * nkrs + 1
             kst_t = (lt-1) * nkrt + 1
 !
 !      Set Legendre polynomials
-            l_rtm = lst_rtm + lt
+            l_rtm = WK_l_tst%lst_rtm(ip) + lt
+            st1 = MPI_WTIME()
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_params%l_truncation, sph_rlm,                       &
      &          mm, jst, leg%g_colat_rtm(l_rtm),                        &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(1,ip))
+            tm1 = MPI_WTIME() - st1
 !
+            st1 = MPI_WTIME()
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_e(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%pol_e(1),                              &
@@ -153,14 +159,17 @@
      &          WK_l_tst%Smat(1)%tor_o(1),                              &
      &          WK_l_tst%Pmat(1,ip)%dPsodt_jt(1,1),                     &
      &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
+            tm2 = MPI_WTIME() - st1
 !
-            call cal_vr_rtm_sym_mat_lt_rin                              &
-     &       (lt, sph_rtm%nnod_rtm, sph_rtm%nidx_rtm,                   &
-     &        sph_rtm%istep_rtm, sph_rlm%nidx_rlm, leg%asin_t_rtm,      &
-     &        mp_rlm, WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),       &
+            st1 = MPI_WTIME()
+            call cal_vr_rtm_sym_mat_lt_rin(lt, sph_rtm%nnod_rtm,        &
+     &        sph_rtm%nidx_rtm, sph_rtm%istep_rtm,                      &
+     &        sph_rlm%nidx_rlm, leg%asin_t_rtm, mp_rlm, mn_rlm,         &
+     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+            tm3 = MPI_WTIME() - st1
           end do
 !
           do lt = WK_l_tst%nlo_rtm(ip) + 1, WK_l_tst%nle_rtm(ip)
@@ -168,7 +177,7 @@
             kst_t = (lt-1) * nkrt + 1
 !
 !      Set Legendre polynomials
-            l_rtm = lst_rtm + lt
+            l_rtm = WK_l_tst%lst_rtm(ip) + lt
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_params%l_truncation, sph_rlm,                       &
      &          mm, jst, leg%g_colat_rtm(l_rtm),                        &
@@ -199,14 +208,20 @@
 !
             call cal_vr_rtm_sym_mat_eq_rin(lt, sph_rtm%nnod_rtm,        &
      &        sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,    &
-     &        leg%asin_t_rtm, mp_rlm, WK_l_tst%lst_rtm(ip),             &
+     &        leg%asin_t_rtm, mp_rlm, mn_rlm, WK_l_tst%lst_rtm(ip),     &
      &        WK_l_tst%nle_rtm(ip), WK_l_tst%Fmat(ip)%symp_r(1),        &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
           end do
         end do
 !$omp end parallel do
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
+        elps1%elapsed(ist_elapsed_SDT+18)                               &
+     &        = elps1%elapsed(ist_elapsed_SDT+19) + tm1
+        elps1%elapsed(ist_elapsed_SDT+13)                               &
+     &        = elps1%elapsed(ist_elapsed_SDT+13) + tm2
+        elps1%elapsed(ist_elapsed_SDT+14)                               &
+     &        = elps1%elapsed(ist_elapsed_SDT+14) + tm3
+!          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
       end do
 !
       end subroutine legendre_b_trans_vector_test
@@ -293,7 +308,8 @@
 !
       subroutine cal_vr_rtm_sym_mat_eq_rin(lt, nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
-     &          mp_rlm, lst_rtm, nle_rtm, symp_r, asmp_r, symp_p,       &
+     &          mp_rlm, mn_rlm, lst_rtm, nle_rtm,                       &
+     &          symp_r, asmp_r, symp_p,                                 &
      &          ncomp_send, nvector, nscalar, irev_sr_rtm, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: lt
@@ -304,7 +320,7 @@
       real(kind = kreal), intent(in)                                &
      &           :: asin_theta_1d_rtm(nidx_rtm(2))
 !
-      integer(kind = kint), intent(in) :: mp_rlm
+      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
       integer(kind = kint), intent(in) :: lst_rtm
       integer(kind = kint), intent(in) :: nle_rtm
 !
@@ -321,13 +337,11 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: k_rlm, nd, mn_rlm
+      integer(kind = kint) :: k_rlm, nd
       integer(kind = kint) :: lp_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm
       integer(kind = kint) :: ipp_send, inp_send
 !
-!
-      mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
         lp_rtm = lst_rtm + lt
         do nd = 1, nvector
@@ -378,7 +392,7 @@
 !
       subroutine cal_vr_rtm_sym_mat_lt_rin(lt, nnod_rtm, nidx_rtm,      &
      &          istep_rtm, nidx_rlm, asin_theta_1d_rtm,                 &
-     &          mp_rlm, lst_rtm, nle_rtm, symp_r, asmp_p,               &
+     &          mp_rlm, mn_rlm, lst_rtm, nle_rtm, symp_r, asmp_p,       &
      &          asmp_r, symp_p, ncomp_send, nvector, nscalar,           &
      &          irev_sr_rtm, n_WS, WS)
 !
@@ -390,7 +404,7 @@
       real(kind = kreal), intent(in)                                &
      &           :: asin_theta_1d_rtm(nidx_rtm(2))
 !
-      integer(kind = kint), intent(in) :: mp_rlm
+      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
       integer(kind = kint), intent(in) :: lst_rtm
       integer(kind = kint), intent(in) :: nle_rtm
 !
@@ -409,13 +423,11 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: k_rlm, nd, mn_rlm
+      integer(kind = kint) :: k_rlm, nd
       integer(kind = kint) :: lp_rtm, ln_rtm
       integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
       integer(kind = kint) :: ipp_send, inp_send, ipn_send, inn_send
 !
-!
-      mn_rlm = nidx_rtm(3) - mp_rlm + 1
 !
         lp_rtm = lst_rtm + lt
         do nd = 1, nvector
