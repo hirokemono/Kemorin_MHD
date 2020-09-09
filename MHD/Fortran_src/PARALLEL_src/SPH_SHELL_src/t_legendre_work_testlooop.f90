@@ -54,6 +54,7 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: n_avx512 = ieight
 !
 !>      Work structure for Legendre trasform by large matmul
       type leg_trns_testloop_work
@@ -74,7 +75,7 @@
         integer(kind = kint), allocatable :: nle_rtm(:)
         integer(kind = kint), allocatable :: nlo_rtm(:)
 !
-        type(leg_omp_matrix), allocatable :: Pmat(:,:)
+        type(leg_omp_matrix), allocatable :: Pmat(:)
 !
         type(field_matrix_omp), allocatable :: Fmat(:)
 !
@@ -99,6 +100,43 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine count_size_of_field_mat_test                           &
+     &         (np_smp, nri_rtm, istack_rtm_lt_smp, nvector, nscalar,   &
+     &          lst_rtm, nle_rtm, nlo_rtm, Fmat)
+!
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: nri_rtm
+      integer(kind = kint), intent(in) :: istack_rtm_lt_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: nvector, nscalar
+!
+      integer(kind = kint), intent(inout) :: lst_rtm(np_smp)
+      integer(kind = kint), intent(inout) :: nle_rtm(np_smp)
+      integer(kind = kint), intent(inout) :: nlo_rtm(np_smp)
+      type(field_matrix_omp), intent(inout) :: Fmat(np_smp)
+!
+      integer(kind = kint) :: ip, led
+!
+!
+      led = 0
+      do ip = 1, np_smp
+        lst_rtm(ip) = led
+        led = (istack_rtm_lt_smp(ip) + 1) / 2
+        nle_rtm(ip) = led - lst_rtm(ip)
+        nlo_rtm(ip) = nle_rtm(ip)
+      end do
+      nlo_rtm(np_smp) = istack_rtm_lt_smp(np_smp) / 2 - lst_rtm(np_smp)
+!
+      do ip = 1, np_smp
+        Fmat(ip)%nvec_lk = n_avx512 * nri_rtm * nvector
+        Fmat(ip)%nscl_lk = n_avx512 * nri_rtm * nscalar
+        Fmat(ip)%n_sym_r = n_avx512 * nri_rtm * (3*nvector + nscalar)
+        Fmat(ip)%n_sym_p = n_avx512 * nri_rtm * 2*nvector
+      end do
+!
+      end subroutine count_size_of_field_mat_test
+!
+! -----------------------------------------------------------------------
+!
       subroutine init_legendre_sym_mat_both                             &
      &         (sph_rtm, idx_trns, nvector, nscalar, WK_l_tst)
 !
@@ -112,7 +150,7 @@
       WK_l_tst%mphi_rtm = sph_rtm%nidx_rtm(3)
       allocate(WK_l_tst%n_jk_e(WK_l_tst%mphi_rtm))
       allocate(WK_l_tst%n_jk_o(WK_l_tst%mphi_rtm))
-      allocate(WK_l_tst%Pmat(WK_l_tst%mphi_rtm,np_smp))
+      allocate(WK_l_tst%Pmat(np_smp))
 !
       allocate(WK_l_tst%lst_rtm(np_smp))
       allocate(WK_l_tst%nle_rtm(np_smp))
@@ -121,7 +159,7 @@
       allocate(WK_l_tst%Fmat(np_smp))
       allocate(WK_l_tst%Smat(np_smp))
 !
-      call count_size_of_field_mat_omp                                  &
+      call count_size_of_field_mat_test                                 &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
      &    nvector, nscalar, WK_l_tst%lst_rtm, WK_l_tst%nle_rtm,         &
      &    WK_l_tst%nlo_rtm, WK_l_tst%Fmat)
@@ -130,7 +168,7 @@
 !
 !
       call init_each_sym_leg_omp_mat_jt(WK_l_tst)
-      call init_each_sym_leg_omp_mat_tj(WK_l_tst%mphi_rtm, WK_l_tst)
+      call init_each_sym_leg_omp_mat_tj(WK_l_tst)
 !
       call count_leg_sym_matmul_mtr                                     &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
@@ -220,30 +258,24 @@
 !
 !
       do ip = 1, np_smp
-        call alloc_each_sym_leg_omp_mat_jt(ieight,                      &
-     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
-     &      WK_l_tst%Pmat(1,ip))
+        call alloc_each_sym_leg_omp_mat_jt(n_avx512,                    &
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o, WK_l_tst%Pmat(ip))
       end do
 !
       end subroutine init_each_sym_leg_omp_mat_jt
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_each_sym_leg_omp_mat_tj(mphi_rtm, WK_l_tst)
-!
-      integer(kind = kint), intent(in) :: mphi_rtm
+      subroutine init_each_sym_leg_omp_mat_tj(WK_l_tst)
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-      integer(kind = kint) :: mp_rlm, ip
+      integer(kind = kint) :: ip
 !
 !
-      do mp_rlm = 1, mphi_rtm
-        do ip = 1, np_smp
-          call alloc_each_sym_leg_omp_mat_tj(WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
-     &        WK_l_tst%Pmat(mp_rlm,ip))
-        end do
+      do ip = 1, np_smp
+        call alloc_each_sym_leg_omp_mat_tj(n_avx512,                    &
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o, WK_l_tst%Pmat(ip))
       end do
 !
       end subroutine init_each_sym_leg_omp_mat_tj
@@ -255,13 +287,11 @@
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-      integer(kind = kint) :: ip, mp_rlm
+      integer(kind = kint) :: ip
 !
 !
-      do mp_rlm = 1, WK_l_tst%mphi_rtm
-        do ip = 1, np_smp
-          call dealloc_each_sym_leg_mat_jt(WK_l_tst%Pmat(mp_rlm,ip))
-        end do
+      do ip = 1, np_smp
+        call dealloc_each_sym_leg_mat_jt(WK_l_tst%Pmat(ip))
       end do
 !
       end subroutine dealloc_sym_leg_omp_mat_jt
@@ -272,13 +302,11 @@
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
-      integer(kind = kint) :: ip, mp_rlm
+      integer(kind = kint) :: ip
 !
 !
-      do mp_rlm = 1, WK_l_tst%mphi_rtm
-        do ip = 1, np_smp
-          call dealloc_each_sym_leg_mat_tj(WK_l_tst%Pmat(mp_rlm,ip))
-        end do
+      do ip = 1, np_smp
+        call dealloc_each_sym_leg_mat_tj(WK_l_tst%Pmat(ip))
       end do
 !
       end subroutine dealloc_sym_leg_omp_mat_tj
