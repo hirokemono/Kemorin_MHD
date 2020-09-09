@@ -241,22 +241,22 @@
 !
       integer(kind = kint), intent(in) :: n_jk, nkr
       real(kind = kreal), intent(in) :: V_kl(nkr,8)
-      real(kind = kreal), intent(in) :: P_lj(n_jk,8)
+      real(kind = kreal), intent(in) :: P_lj(8,n_jk)
 !
       real(kind = kreal), intent(inout) :: S_kj(nkr,n_jk)
 !
       integer(kind = kint) :: jj, kk
 !
 !
-      do jj = 1, n_jk
-        do kk = 1, nkr
-          S_kj(kk,jj) = S_kj(kk,jj)                                     &
-     &             + V_kl(kk,1) * P_lj(jj,1) + V_kl(kk,2) * P_lj(jj,2)  &
-     &             + V_kl(kk,3) * P_lj(jj,3) + V_kl(kk,4) * P_lj(jj,4)  &
-     &             + V_kl(kk,5) * P_lj(jj,5) + V_kl(kk,6) * P_lj(jj,6)  &
-     &             + V_kl(kk,7) * P_lj(jj,7) + V_kl(kk,8) * P_lj(jj,8)
+        do jj = 1, n_jk
+          do kk = 1, nkr
+            S_kj(kk,jj) = S_kj(kk,jj)                                   &
+     &             + V_kl(kk,1) * P_lj(1,jj) + V_kl(kk,2) * P_lj(2,jj)  &
+     &             + V_kl(kk,3) * P_lj(3,jj) + V_kl(kk,4) * P_lj(4,jj)  &
+     &             + V_kl(kk,5) * P_lj(5,jj) + V_kl(kk,6) * P_lj(6,jj)  &
+     &             + V_kl(kk,7) * P_lj(7,jj) + V_kl(kk,8) * P_lj(8,jj)
+          end do
         end do
-      end do
 !
       end subroutine matmat8_leg_trans
 !
@@ -334,15 +334,15 @@
         do jj = 1, n_jk_e
           j_rlm = 2*jj - 1
           l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-          Pmat%Pse_jt(jj,lt) =     p_m(l)
-          Pmat%dPsedt_jt(jj,lt) =  dp_m(l)
+          Pmat%Pse_tj(lt,jj) =     p_m(l)
+          Pmat%dPsedt_tj(lt,jj) =  dp_m(l)
         end do
 !
         do jj = 1, n_jk_o
           j_rlm = 2*jj
           l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-          Pmat%Pso_jt(jj,lt) =     p_m(l)
-          Pmat%dPsodt_jt(jj,lt) =  dp_m(l)
+          Pmat%Pso_tj(lt,jj) =     p_m(l)
+          Pmat%dPsodt_tj(lt,jj) =  dp_m(l)
         end do
       end do
 !
@@ -407,15 +407,15 @@
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
       call matmat8_leg_trans(nkrs, n_jk_e,                              &
-     &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
+     &    Fmat%symp_r(1), Pmat%Pse_tj,    Smat%pol_e(1))
       call matmat8_leg_trans(nkrt, n_jk_e,                              &
-     &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
+     &    Fmat%asmp_p(1), Pmat%dPsedt_tj, Smat%tor_e(1))
 !
 !  odd l-m
       call matmat8_leg_trans(nkrs, n_jk_o,                              &
-     &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
+     &    Fmat%asmp_r(1), Pmat%Pso_tj,    Smat%pol_o(1))
       call matmat8_leg_trans(nkrt, n_jk_o,                              &
-     &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
+     &    Fmat%symp_p(1), Pmat%dPsodt_tj, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_8lat_test
 !
