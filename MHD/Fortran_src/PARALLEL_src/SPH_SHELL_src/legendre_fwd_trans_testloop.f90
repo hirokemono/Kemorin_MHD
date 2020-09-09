@@ -286,6 +286,11 @@
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
      &          n_jk_e, n_jk_o, lst_rtm, Fmat, Pmat, Smat)
 !
+      use t_schmidt_poly_on_rtm
+      use set_vr_rtm_sym_mat_tsmp
+      use cal_sp_rlm_sym_mat_tsmp
+      use matmul_for_legendre_trans
+!
       integer(kind = kint), intent(in) :: lt2
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
       integer(kind = kint), intent(in) :: mm, jst
