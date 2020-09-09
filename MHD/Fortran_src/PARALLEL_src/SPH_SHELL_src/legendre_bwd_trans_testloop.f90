@@ -166,7 +166,7 @@
             lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             call cal_vr_rtm_sym_mat_lt_rin(lp_rtm, sph_rtm%nnod_rtm,    &
      &        sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,    &
-     &        leg%asin_t_rtm, mp_rlm, mn_rlm, WK_l_tst%nle_rtm(ip),     &
+     &        leg%asin_t_rtm, mp_rlm, mn_rlm,                           &
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
@@ -211,9 +211,9 @@
             call cal_vr_rtm_sym_mat_eq_rin(lp_rtm, sph_rtm%nnod_rtm,    &
      &        sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,    &
      &        leg%asin_t_rtm, mp_rlm, mn_rlm,                           &
-     &        WK_l_tst%nle_rtm(ip), WK_l_tst%Fmat(ip)%symp_r(1),        &
-     &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
-     &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+     &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_r(1), &
+     &        WK_l_tst%Fmat(ip)%symp_p(1), ncomp, nvector, nscalar,     &
+     &        comm_rtm%irev_sr, n_WS, WS)
           end do
         end do
 !$omp end parallel do
