@@ -312,11 +312,30 @@
       do lt = 1, 8
         lp_rtm = lst_rtm + (lt2-1)*8 + lt
         ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
-        call legendre_fwd_trans_1lat_test                         &
-     &     (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
-     &      iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
-     &      sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
-     &      n_jk_e, n_jk_o, Fmat, Pmat, Smat)
+!
+      call set_vr_rtm_lt_sym_mat_rin                                    &
+     &   (lp_rtm, ln_rtm, sph_rtm%nnod_rtm,                             &
+     &    sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                          &
+     &    leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),               &
+     &    mp_rlm, mn_rlm, ncomp, nvector, nscalar,                      &
+     &    comm_rtm%irev_sr, n_WR, WR, Fmat%symp_r(1),                   &
+     &    Fmat%asmp_p(1), Fmat%asmp_r(1), Fmat%symp_p(1))
+!
+!      Set Legendre polynomials
+      call set_each_sym_leg_omp_mat_1j                                  &
+     &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
+     &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
+!
+      call matvec_leg_trans(nkrs, n_jk_e,                               &
+     &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
+      call matvec_leg_trans(nkrt, n_jk_e,                               &
+     &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
+!
+!  odd l-m
+      call matvec_leg_trans(nkrs, n_jk_o,                               &
+     &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
+      call matvec_leg_trans(nkrt, n_jk_o,                               &
+     &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
       end do
 !
       end subroutine legendre_fwd_trans_8lat_test
