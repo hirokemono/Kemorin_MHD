@@ -116,6 +116,9 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
 !
+        tm1 = 0.0d0
+        tm2 = 0.0d0
+        tm3 = 0.0d0
 !        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
 !$omp parallel do private(ip,l_rtm,lt,kst_s,kst_t) &
 !$omp& reduction(+:tm1) &
@@ -135,7 +138,7 @@
      &          mm, jst, leg%g_colat_rtm(l_rtm),                        &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(1,ip))
-            tm1 = MPI_WTIME() - st1
+            tm1 = tm1 + MPI_WTIME() - st1
 !
             st1 = MPI_WTIME()
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
@@ -159,7 +162,7 @@
      &          WK_l_tst%Smat(1)%tor_o(1),                              &
      &          WK_l_tst%Pmat(1,ip)%dPsodt_jt(1,1),                     &
      &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
-            tm2 = MPI_WTIME() - st1
+            tm2 = tm2 + MPI_WTIME() - st1
 !
             st1 = MPI_WTIME()
             call cal_vr_rtm_sym_mat_lt_rin(lt, sph_rtm%nnod_rtm,        &
@@ -169,7 +172,7 @@
      &        WK_l_tst%Fmat(ip)%symp_r(1), WK_l_tst%Fmat(ip)%asmp_p(1), &
      &        WK_l_tst%Fmat(ip)%asmp_r(1), WK_l_tst%Fmat(ip)%symp_p(1), &
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
-            tm3 = MPI_WTIME() - st1
+            tm3 = tm3 + MPI_WTIME() - st1
           end do
 !
           do lt = WK_l_tst%nlo_rtm(ip) + 1, WK_l_tst%nle_rtm(ip)
