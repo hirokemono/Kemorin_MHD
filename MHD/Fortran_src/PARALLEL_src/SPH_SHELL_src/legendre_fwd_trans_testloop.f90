@@ -155,50 +155,15 @@
           end do
 !
 !   Equator (if necessary)
-          do lt = WK_l_tst%nlo_rtm(ip)+1, WK_l_tst%nle_rtm(ip)
-            kst_s = (lt-1) * nkrs + 1
-            kst_t = (lt-1) * nkrt + 1
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
-            call set_vr_rtm_eq_sym_mat_rin(lp_rtm, sph_rtm%nnod_rtm,    &
-     &          sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                    &
-     &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
-     &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
-     &          comm_rtm%irev_sr, n_WR, WR,                             &
-     &          WK_l_tst%Fmat(ip)%symp_r(1),            &
-     &          WK_l_tst%Fmat(ip)%asmp_p(1),      &
-     &          WK_l_tst%Fmat(ip)%asmp_r(1), &
-     &          WK_l_tst%Fmat(ip)%symp_p(1))
-!
-!      Set Legendre polynomials
-            call set_each_sym_leg_omp_mat_1j                            &
-     &        (sph_params%l_truncation, sph_rlm,                        &
-     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
+          if(WK_l_tst%nle_rtm(ip) .gt. WK_l_tst%nlo_rtm(ip)) then
+            lp_rtm = WK_l_tst%lst_rtm(ip) + WK_l_tst%nle_rtm(ip)
+            call legendre_fwd_trans_eq_test(lp_rtm, jst,                &
+     &         mm, mp_rlm, mn_rlm, nkrs, nkrt, iflag_matmul,            &
+     &         ncomp, nvector, nscalar, sph_params, sph_rtm, sph_rlm,   &
+     &         comm_rtm, comm_rlm, idx_trns, leg, n_WR, WR,             &
      &         WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),        &
-     &         WK_l_tst%Pmat(ip))
-!
-            call matvec_leg_trans(                       &
-     &        nkrs, WK_l_tst%n_jk_e(mp_rlm),     &
-     &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
-     &        WK_l_tst%Pmat(ip)%Pse_jt,                          &
-     &        WK_l_tst%Smat(ip)%pol_e(1))
-            call matvec_leg_trans(                       &
-     &        nkrt, WK_l_tst%n_jk_e(mp_rlm),     &
-     &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
-     &        WK_l_tst%Pmat(ip)%dPsedt_jt,                       &
-     &        WK_l_tst%Smat(ip)%tor_e(1))
-!
-!  odd l-m
-            call matvec_leg_trans(                       &
-     &        nkrs, WK_l_tst%n_jk_o(mp_rlm),      &
-     &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
-     &        WK_l_tst%Pmat(ip)%Pso_jt,                          &
-     &        WK_l_tst%Smat(ip)%pol_o(1))
-            call matvec_leg_trans(                       &
-     &        nkrt, WK_l_tst%n_jk_o(mp_rlm),      &
-     &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
-     &        WK_l_tst%Pmat(ip)%dPsodt_jt,                       &
-     &        WK_l_tst%Smat(ip)%tor_o(1))
-          end do
+     &         WK_l_tst%Fmat(ip), WK_l_tst%Pmat(ip), WK_l_tst%Smat(ip))
+          end if
         end do
 !$omp end parallel do
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
@@ -306,6 +271,67 @@
       end do
 !
       end subroutine set_each_sym_leg_omp_mat_1j
+!
+! -----------------------------------------------------------------------
+!
+      subroutine legendre_fwd_trans_eq_test                             &
+     &         (lp_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,            &
+     &          iflag_matmul, ncomp, nvector, nscalar, sph_params,      &
+     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns, leg,    &
+     &          n_WR, WR, n_jk_e, n_jk_o, Fmat, Pmat, Smat)
+!
+      use t_schmidt_poly_on_rtm
+      use set_vr_rtm_sym_mat_tsmp
+      use cal_sp_rlm_sym_mat_tsmp
+      use matmul_for_legendre_trans
+!
+      integer(kind = kint), intent(in) :: lp_rtm, mm, mp_rlm, mn_rlm
+      integer(kind = kint), intent(in) :: jst
+      integer(kind = kint), intent(in) :: nkrs, nkrt
+!
+      integer(kind = kint), intent(in) :: iflag_matmul
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
+      type(legendre_4_sph_trans), intent(in) :: leg
+      type(index_4_sph_trans), intent(in) :: idx_trns
+!
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
+      type(field_matrix_omp), intent(inout) :: Fmat
+      type(leg_omp_matrix), intent(inout) :: Pmat
+      type(spectr_matrix_omp), intent(inout) :: Smat
+!
+      integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
+      integer(kind = kint), intent(in) :: n_WR
+      real (kind=kreal), intent(inout):: WR(n_WR)
+!
+!
+!   Equator (if necessary)
+      call set_vr_rtm_eq_sym_mat_rin(lp_rtm, sph_rtm%nnod_rtm,          &
+     &    sph_rtm%istep_rtm, sph_rlm%nidx_rlm,                          &
+     &    leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),               &
+     &    mp_rlm, mn_rlm, ncomp, nvector, nscalar,                      &
+     &    comm_rtm%irev_sr, n_WR, WR, Fmat%symp_r(1),                   &
+     &    Fmat%asmp_p(1), Fmat%asmp_r(1), Fmat%symp_p(1))
+!
+!      Set Legendre polynomials
+      call set_each_sym_leg_omp_mat_1j                                  &
+     &   (sph_params%l_truncation, sph_rlm,                             &
+     &    mm, jst, leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
+!
+      call matvec_leg_trans(nkrs, n_jk_e,                               &
+     &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
+      call matvec_leg_trans(nkrt, n_jk_e,                               &
+     &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
+!
+!  odd l-m
+      call matvec_leg_trans(nkrs, n_jk_o,                               &
+     &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
+      call matvec_leg_trans(nkrt, n_jk_o,                               &
+     &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
+!
+      end subroutine legendre_fwd_trans_eq_test
 !
 ! -----------------------------------------------------------------------
 !
