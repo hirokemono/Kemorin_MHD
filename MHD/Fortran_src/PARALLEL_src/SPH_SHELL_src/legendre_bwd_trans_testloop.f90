@@ -153,7 +153,7 @@
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_o(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%pol_o(1),                              &
-     &          WK_l_tst%Pmat(1,ip)%Pso_jt(1,1),                        &
+     &          WK_l_tst%Pmat(ip)%Pso_jt(1,1),                          &
      &          WK_l_tst%Fmat(ip)%asmp_r(1))
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrt, WK_l_tst%n_jk_o(mp_rlm),                          &
