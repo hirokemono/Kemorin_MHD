@@ -66,7 +66,7 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAG_SMDT):' \
-	'$$(MOD_MAG_SMDT) $$($$(LIB_FILES_MESH_TEST))' \
+	'$$(MOD_MAG_SMDT) $$(LIB_FILES_MESH_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_MAG_SMDT)' \
@@ -75,7 +75,7 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAG16_SMDT):' \
-	'$$(MOD_MAG16_SMDT) $$($$(LIB_FILES_MESH_TEST))' \
+	'$$(MOD_MAG16_SMDT) $$(LIB_FILES_MESH_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_MAG16_SMDT)' \

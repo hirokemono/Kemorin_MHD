@@ -60,7 +60,7 @@
 !
       subroutine elpsed_label_4_sph_detail
 !
-      integer(kind = kint), parameter :: num_append = 17
+      integer(kind = kint), parameter :: num_append = 19
 !
 !
       call append_elapsed_times                                         &
@@ -86,6 +86,9 @@
       elps1%labels(ist_elapsed_SDT+15) = 'set_vr_rtm_vec_testloop '
       elps1%labels(ist_elapsed_SDT+16) = 'matmul_fwd_leg_trans    '
       elps1%labels(ist_elapsed_SDT+17) = 'cal_sp_rlm_vec_testloop '
+!
+      elps1%labels(ist_elapsed_SDT+18) = 'Legendrre polynomial for bwd'
+      elps1%labels(ist_elapsed_SDT+19) = 'Legendrre polynomial for fwd'
 !
       iflag_SDT_time = .TRUE.
 !
