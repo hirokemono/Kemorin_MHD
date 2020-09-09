@@ -360,15 +360,15 @@
      &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-      call matmul8_fwd_leg_trans(iflag_matmul, nkrs, n_jk_e,            &
+      call matmul8_fwd_leg_trans_Ptj(iflag_matmul, nkrs, n_jk_e,        &
      &    Fmat%symp_r(1), Pmat%Pse_tj,    Smat%pol_e(1))
-      call matmul8_fwd_leg_trans(iflag_matmul, nkrt, n_jk_e,            &
+      call matmul8_fwd_leg_trans_Ptj(iflag_matmul, nkrt, n_jk_e,        &
      &    Fmat%asmp_p(1), Pmat%dPsedt_tj, Smat%tor_e(1))
 !
 !  odd l-m
-      call matmul8_fwd_leg_trans(iflag_matmul, nkrs, n_jk_o,            &
+      call matmul8_fwd_leg_trans_Ptj(iflag_matmul, nkrs, n_jk_o,        &
      &    Fmat%asmp_r(1), Pmat%Pso_tj,    Smat%pol_o(1))
-      call matmul8_fwd_leg_trans(iflag_matmul, nkrt, n_jk_o,            &
+      call matmul8_fwd_leg_trans_Ptj(iflag_matmul, nkrt, n_jk_o,        &
      &    Fmat%symp_p(1), Pmat%dPsodt_tj, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_8lat_test
@@ -384,7 +384,7 @@
       use t_schmidt_poly_on_rtm
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
-      use matvec_fwd_leg_trans
+      use small_matmul_leg_trans_krin
 !
       integer(kind = kint), intent(in) :: lp_rtm, ln_rtm
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
@@ -421,15 +421,15 @@
      &   (sph_params%l_truncation, sph_rlm, mm, jst,                    &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-      call matvec_fwd_leg_trans(nkrs, n_jk_e,                           &
+      call matvec_fwd_leg_trans_Pj(nkrs, n_jk_e,                        &
      &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
-      call matvec_fwd_leg_trans(nkrt, n_jk_e,                           &
+      call matvec_fwd_leg_trans_Pj(nkrt, n_jk_e,                        &
      &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
 !
 !  odd l-m
-      call matvec_fwd_leg_trans(nkrs, n_jk_o,                           &
+      call matvec_fwd_leg_trans_Pj(nkrs, n_jk_o,                        &
      &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
-      call matvec_fwd_leg_trans(nkrt, n_jk_o,                           &
+      call matvec_fwd_leg_trans_Pj(nkrt, n_jk_o,                        &
      &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_1lat_test
@@ -482,15 +482,15 @@
      &   (sph_params%l_truncation, sph_rlm,                             &
      &    mm, jst, leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o, Pmat)
 !
-      call matvec_fwd_leg_trans(nkrs, n_jk_e,                           &
+      call matvec_fwd_leg_trans_Pj(nkrs, n_jk_e,                        &
      &    Fmat%symp_r(1), Pmat%Pse_jt,    Smat%pol_e(1))
-      call matvec_fwd_leg_trans(nkrt, n_jk_e,                           &
+      call matvec_fwd_leg_trans_Pj(nkrt, n_jk_e,                        &
      &    Fmat%asmp_p(1), Pmat%dPsedt_jt, Smat%tor_e(1))
 !
 !  odd l-m
-      call matvec_fwd_leg_trans(nkrs, n_jk_o,                           &
+      call matvec_fwd_leg_trans_Pj(nkrs, n_jk_o,                        &
      &    Fmat%asmp_r(1), Pmat%Pso_jt,    Smat%pol_o(1))
-      call matvec_fwd_leg_trans(nkrt, n_jk_o,                           &
+      call matvec_fwd_leg_trans_Pj(nkrt, n_jk_o,                        &
      &    Fmat%symp_p(1), Pmat%dPsodt_jt, Smat%tor_o(1))
 !
       end subroutine legendre_fwd_trans_eq_test

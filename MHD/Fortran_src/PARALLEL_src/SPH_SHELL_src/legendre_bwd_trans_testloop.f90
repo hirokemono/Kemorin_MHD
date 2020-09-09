@@ -67,7 +67,7 @@
       use t_schmidt_poly_on_rtm
       use set_sp_rlm_sym_mat_tsmp
       use cal_vr_rtm_sym_mat_tsmp
-      use matmul_for_legendre_trans
+      use small_matmul_leg_trans_krin
 !
       integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -271,35 +271,5 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
-     &          nkr, n_jk, S_kj, P_j, V_k)
-!
-      integer(kind = kint), intent(in) :: iflag_matmul
-      integer(kind = kint), intent(in) :: n_jk, nkr
-      real(kind = kreal), intent(in) :: S_kj(nkr,n_jk)
-      real(kind = kreal), intent(in) :: P_j(n_jk)
-!
-      real(kind = kreal), intent(inout) :: V_k(nkr)
-!
-      integer(kind = kint) :: jj, kk
-!
-!
-      if(nkr .eq. 0) return
-      if(n_jk .eq. 0) then
-        V_k(1:nkr) = 0.0d0
-      else if(iflag_matmul .eq. iflag_INTRINSIC) then
-        V_k(1:nkr) = matmul(S_kj(1:nkr,1:n_jk),P_j(1:n_jk))
-      else
-        V_k(1:nkr) = 0.0d0
-        do jj = 1, n_jk
-          do kk = 1, nkr
-            V_k(kk) = V_k(kk) + S_kj(kk,jj) * P_j(jj)
-          end do
-        end do
-      end if
-!
-      end subroutine matvec_bwd_leg_trans_Pj
-!
-! ----------------------------------------------------------------------
 !
       end module legendre_bwd_trans_testloop
