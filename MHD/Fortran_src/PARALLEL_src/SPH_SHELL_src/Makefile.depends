@@ -58,7 +58,7 @@ legendre_bwd_trans_sym_spin.o: $(SPH_COMMDIR)/legendre_bwd_trans_sym_spin.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 legendre_bwd_trans_symmetry.o: $(SPH_COMMDIR)/legendre_bwd_trans_symmetry.f90 m_precision.o m_constants.o m_machine_parameter.o t_legendre_work_sym_matmul.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o cal_vr_rtm_by_vecprod.o set_sp_rlm_for_leg_vecprod.o
 	$(F90) -c $(F90OPTFLAGS) $<
-legendre_bwd_trans_testloop.o: $(SPH_COMMDIR)/legendre_bwd_trans_testloop.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_testlooop.o m_elapsed_labels_SPH_TRNS.o matmul_for_legendre_trans.o
+legendre_bwd_trans_testloop.o: $(SPH_COMMDIR)/legendre_bwd_trans_testloop.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o t_spheric_parameter.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_testlooop.o m_elapsed_labels_SPH_TRNS.o matmul_for_legendre_trans.o t_schmidt_poly_on_rtm.o set_sp_rlm_sym_mat_tsmp.o cal_vr_rtm_sym_mat_tsmp.o schmidt_fix_m.o
 	$(F90) -c $(F90OPTFLAGS) $<
 legendre_fwd_sym_matmul.o: $(SPH_COMMDIR)/legendre_fwd_sym_matmul.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_legendre_work_sym_matmul.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o matmul_for_legendre_trans.o set_vr_rtm_leg_sym_matmul.o set_sp_rlm_leg_sym_matmul.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -66,7 +66,7 @@ legendre_fwd_trans_sym_spin.o: $(SPH_COMMDIR)/legendre_fwd_trans_sym_spin.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 legendre_fwd_trans_symmetry.o: $(SPH_COMMDIR)/legendre_fwd_trans_symmetry.f90 m_precision.o m_machine_parameter.o t_legendre_work_sym_matmul.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o set_vr_rtm_for_leg_vecprod.o cal_sp_rlm_by_vecprod.o
 	$(F90) -c $(F90OPTFLAGS) $<
-legendre_fwd_trans_testloop.o: $(SPH_COMMDIR)/legendre_fwd_trans_testloop.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_legendre_work_testlooop.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o m_elapsed_labels_SPH_TRNS.o
+legendre_fwd_trans_testloop.o: $(SPH_COMMDIR)/legendre_fwd_trans_testloop.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_legendre_work_testlooop.o t_spheric_parameter.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o m_elapsed_labels_SPH_TRNS.o t_schmidt_poly_on_rtm.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 legendre_trans_matmul_big.o: $(SPH_COMMDIR)/legendre_trans_matmul_big.f90 m_precision.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_leg_trans_sym_matmul_big.o leg_b_trans_sym_matmul_big.o leg_f_trans_sym_matmul_big.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -78,7 +78,7 @@ legendre_transform_spin.o: $(SPH_COMMDIR)/legendre_transform_spin.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 legendre_transform_sym_tomp.o: $(SPH_COMMDIR)/legendre_transform_sym_tomp.f90 m_precision.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_legendre_work_sym_mat_jt.o leg_bwd_trans_sym_mat_jt.o spherical_SRs_N.o leg_fwd_trans_sym_mat_jt.o leg_bwd_trans_sym_mat_tj.o leg_fwd_trans_sym_mat_tj.o
 	$(F90) -c $(F90OPTFLAGS) $<
-legendre_transform_testloop.o: $(SPH_COMMDIR)/legendre_transform_testloop.f90 m_precision.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_legendre_work_testlooop.o legendre_bwd_trans_testloop.o spherical_SRs_N.o legendre_fwd_trans_testloop.o
+legendre_transform_testloop.o: $(SPH_COMMDIR)/legendre_transform_testloop.f90 m_precision.o t_spheric_parameter.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_legendre_work_testlooop.o legendre_bwd_trans_testloop.o spherical_SRs_N.o matmul_for_legendre_trans.o legendre_fwd_trans_testloop.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_elapsed_labels_SPH_TRNS.o: $(SPH_COMMDIR)/m_elapsed_labels_SPH_TRNS.f90 m_precision.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -150,13 +150,13 @@ t_leg_trans_sym_matmul_big.o: $(SPH_COMMDIR)/t_leg_trans_sym_matmul_big.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 t_legendre_matrix_4_trns.o: $(SPH_COMMDIR)/t_legendre_matrix_4_trns.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_field_matrices_4_legendre.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_legendre_trans_select.o: $(SPH_COMMDIR)/t_legendre_trans_select.f90 m_precision.o m_legendre_transform_list.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_work_4_sph_trans_spin.o t_legendre_work_sym_matmul.o t_leg_trans_sym_matmul_big.o t_legendre_work_sym_mat_jt.o t_legendre_work_testlooop.o legendre_transform_org.o legendre_transform_spin.o legendre_trans_sym_matmul.o legendre_trans_matmul_big.o legendre_transform_sym_tomp.o legendre_transform_testloop.o matmul_for_legendre_trans.o
+t_legendre_trans_select.o: $(SPH_COMMDIR)/t_legendre_trans_select.f90 m_precision.o m_legendre_transform_list.o t_spheric_parameter.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_work_4_sph_trans_spin.o t_legendre_work_sym_matmul.o t_leg_trans_sym_matmul_big.o t_legendre_work_sym_mat_jt.o t_legendre_work_testlooop.o legendre_transform_org.o legendre_transform_spin.o legendre_trans_sym_matmul.o legendre_trans_matmul_big.o legendre_transform_sym_tomp.o legendre_transform_testloop.o matmul_for_legendre_trans.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_legendre_work_sym_mat_jt.o: $(SPH_COMMDIR)/t_legendre_work_sym_mat_jt.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_field_matrices_4_legendre.o t_legendre_matrix_4_trns.o matmul_for_legendre_trans.o set_legendre_matrices.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_legendre_work_sym_matmul.o: $(SPH_COMMDIR)/t_legendre_work_sym_matmul.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o matmul_for_legendre_trans.o set_legendre_matrices.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_legendre_work_testlooop.o: $(SPH_COMMDIR)/t_legendre_work_testlooop.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o matmul_for_legendre_trans.o set_legendre_matrices.o
+t_legendre_work_testlooop.o: $(SPH_COMMDIR)/t_legendre_work_testlooop.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_schmidt_poly_on_rtm.o t_work_4_sph_trans.o t_field_matrices_4_legendre.o t_legendre_matrix_4_trns.o matmul_for_legendre_trans.o set_legendre_matrices.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sph_FFTPACK5.o: $(SPH_COMMDIR)/t_sph_FFTPACK5.f90 m_precision.o m_constants.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

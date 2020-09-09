@@ -338,10 +338,55 @@
       end do
 !
 !   Equator (if necessary)
+      mn_rlm = nidx_rtm(3) - mp_rlm + 1
       do lt = nlo_rtm+1, nle_rtm
         lp_rtm = lst_rtm + lt
-        wp_rtm = weight_rtm(lp_rtm)
-        asin_rtm = asin_theta_1d_rtm(lp_rtm)
+        call set_vr_rtm_eq_sym_mat_rin                                  &
+     &     (lp_rtm, nnod_rtm, nidx_rtm, istep_rtm, nidx_rlm,            &
+     &      asin_theta_1d_rtm(lp_rtm), weight_rtm(lp_rtm),              &
+     &      mp_rlm, mn_rlm, ncomp_recv, nvector, nscalar,               &
+     &      irev_sr_rtm, n_WR, WR, symp_r(1,1,lt), asmp_p(1,1,lt),      &
+     &      asmp_r(1,1,lt), symp_p(1,1,lt))
+      end do
+!
+      end subroutine set_vr_rtm_sym_mat_rin
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_vr_rtm_eq_sym_mat_rin(lp_rtm, nnod_rtm, nidx_rtm,  &
+     &          istep_rtm, nidx_rlm, asin_rtm, wp_rtm, mp_rlm, mn_rlm,  &
+     &          ncomp_recv, nvector, nscalar, irev_sr_rtm, n_WR, WR,    &
+     &         symp_r, asmp_p, asmp_r, symp_p)
+!
+      integer(kind = kint), intent(in) :: lp_rtm
+      integer(kind = kint), intent(in) :: nnod_rtm
+      integer(kind = kint), intent(in) :: nidx_rtm(3)
+      integer(kind = kint), intent(in) :: istep_rtm(3)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
+      real(kind = kreal), intent(in) :: asin_rtm, wp_rtm
+!
+      integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
+!
+      integer(kind = kint), intent(in) :: ncomp_recv
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtm(nnod_rtm)
+      real (kind=kreal), intent(in) :: WR(n_WR)
+!
+      integer(kind = kint), intent(in) :: nvector, nscalar
+!
+      real(kind=kreal), intent(inout)                                   &
+     &         :: symp_r(3*nvector+nscalar,nidx_rlm(1))
+      real(kind=kreal), intent(inout) :: asmp_p(2*nvector,nidx_rlm(1))
+      real(kind=kreal), intent(inout)                                   &
+     &         :: asmp_r(3*nvector+nscalar,nidx_rlm(1))
+      real(kind=kreal), intent(inout) :: symp_p(2*nvector,nidx_rlm(1))
+!
+      integer(kind = kint) :: k_rlm, nd
+      integer(kind = kint) :: ip_rtpm, in_rtpm, ip_rtnm, in_rtnm
+      integer(kind = kint) :: ipp_recv, ipn_recv, inp_recv, inn_recv
+!
+!
+!   Equator (if necessary)
         do k_rlm = 1, nidx_rlm(1)
 !
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
@@ -355,26 +400,24 @@
             ipp_recv = 3*nd + (irev_sr_rtm(ip_rtpm) - 1) * ncomp_recv
             inp_recv = 3*nd + (irev_sr_rtm(in_rtpm) - 1) * ncomp_recv
 !
-            symp_r(3*nd-2,k_rlm,lt) = WR(ipp_recv-2) * wp_rtm
-            symp_p(2*nd,  k_rlm,lt) = WR(ipp_recv-1) * wp_rtm
-            symp_p(2*nd-1,k_rlm,lt) = WR(ipp_recv  ) * wp_rtm
+            symp_r(3*nd-2,k_rlm) = WR(ipp_recv-2) * wp_rtm
+            symp_p(2*nd,  k_rlm) = WR(ipp_recv-1) * wp_rtm
+            symp_p(2*nd-1,k_rlm) = WR(ipp_recv  ) * wp_rtm
 !
-            asmp_r(3*nd-2,k_rlm,lt) = 0.0d0
-            asmp_p(2*nd,  k_rlm,lt) = 0.0d0
-            asmp_p(2*nd-1,k_rlm,lt) = 0.0d0
+            asmp_r(3*nd-2,k_rlm) = 0.0d0
+            asmp_p(2*nd,  k_rlm) = 0.0d0
+            asmp_p(2*nd-1,k_rlm) = 0.0d0
 !
-            symp_r(3*nd-1,k_rlm,lt) = WR(inp_recv-1)                    &
+            symp_r(3*nd-1,k_rlm) = WR(inp_recv-1)                    &
      &                                   * wp_rtm * asin_rtm
-            symp_r(3*nd,  k_rlm,lt) = WR(inp_recv  )                    &
+            symp_r(3*nd,  k_rlm) = WR(inp_recv  )                    &
      &                                   * wp_rtm * asin_rtm
 !
-            asmp_r(3*nd-1,k_rlm,lt) = 0.0d0
-            asmp_r(3*nd,  k_rlm,lt) = 0.0d0
+            asmp_r(3*nd-1,k_rlm) = 0.0d0
+            asmp_r(3*nd,  k_rlm) = 0.0d0
           end do
         end do
 !
-        lp_rtm = lst_rtm + lt
-        wp_rtm = weight_rtm(lp_rtm)
         do k_rlm = 1, nidx_rlm(1)
           ip_rtpm = 1 + (lp_rtm-1) * istep_rtm(2)                       &
      &                + (k_rlm-1) *  istep_rtm(1)                       &
@@ -384,13 +427,12 @@
             ipp_recv = nd + 3*nvector                                   &
      &                    + (irev_sr_rtm(ip_rtpm) - 1) * ncomp_recv
 !
-            symp_r(nd+3*nvector,k_rlm,lt) = WR(ipp_recv) * wp_rtm
-            asmp_r(nd+3*nvector,k_rlm,lt) = 0.0d0
+            symp_r(nd+3*nvector,k_rlm) = WR(ipp_recv) * wp_rtm
+            asmp_r(nd+3*nvector,k_rlm) = 0.0d0
           end do
         end do
-      end do
 !
-      end subroutine set_vr_rtm_sym_mat_rin
+      end subroutine set_vr_rtm_eq_sym_mat_rin
 !
 ! -----------------------------------------------------------------------
 !
