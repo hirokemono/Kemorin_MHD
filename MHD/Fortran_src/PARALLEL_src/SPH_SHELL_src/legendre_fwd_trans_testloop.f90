@@ -82,7 +82,7 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: mp_rlm, mn_rlm, lp_rtm, ln_rtm
+      integer(kind = kint) :: mm, mp_rlm, mn_rlm, lp_rtm, ln_rtm
       integer(kind = kint) :: nkrs, nkrt, lt, kst_s, kst_t
       integer(kind = kint) :: ip, jst
 !
@@ -96,20 +96,12 @@
 !
       do mp_rlm = 1, sph_rtm%nidx_rtm(3)
         mn_rlm = sph_rtm%nidx_rtm(3) - mp_rlm + 1
+        mm = abs(sph_rtm%idx_gl_1d_rtm_m(mp_rlm,2))
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
 !$omp parallel do private(ip,lt,kst_s,kst_t,lp_rtm,ln_rtm)
         do ip = 1, np_smp
-!
-!      Set Legendre polynomials
-          call set_each_sym_leg_omp_mat_tj                              &
-     &       (sph_rtm%nidx_rtm(2), sph_rlm%nidx_rlm(2),                 &
-     &        jst, leg%P_rtm, leg%dPdt_rtm,                             &
-     &        WK_l_tst%lst_rtm(ip), WK_l_tst%nle_rtm(ip),               &
-     &        WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),         &
-     &        WK_l_tst%Pmat(mp_rlm,ip))
-!
           WK_l_tst%Smat(ip)%pol_e(1:WK_l_tst%n_pol_e) = 0.0d0
           WK_l_tst%Smat(ip)%tor_e(1:WK_l_tst%n_tor_e) = 0.0d0
           WK_l_tst%Smat(ip)%pol_o(1:WK_l_tst%n_pol_e) = 0.0d0
@@ -131,27 +123,34 @@
      &          WK_l_tst%Fmat(ip)%asmp_r(1),  &
      &          WK_l_tst%Fmat(ip)%symp_p(1))
 !
+!      Set Legendre polynomials
+            call set_each_sym_leg_omp_mat_1j                            &
+     &        (sph_params%l_truncation, sph_rlm,                        &
+     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
+     &         WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),        &
+     &         WK_l_tst%Pmat(mp_rlm,ip))
+!
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_tj,                          &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_tj,                          &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
           end do
 !
@@ -170,27 +169,34 @@
      &          WK_l_tst%Fmat(ip)%asmp_r(1), &
      &          WK_l_tst%Fmat(ip)%symp_p(1))
 !
+!      Set Legendre polynomials
+            call set_each_sym_leg_omp_mat_1j                            &
+     &        (sph_params%l_truncation, sph_rlm,                        &
+     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
+     &         WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),        &
+     &         WK_l_tst%Pmat(mp_rlm,ip))
+!
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_tj,                          &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_tj,                          &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_jt,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
      &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
-     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
+     &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_jt,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
           end do
         end do
@@ -284,5 +290,48 @@
       end subroutine matvec_leg_trans
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine set_each_sym_leg_omp_mat_1j                            &
+     &         (l_truncation, sph_rlm, mm, jst_rlm,                     &
+     &          g_colat_rtm, n_jk_e, n_jk_o, Pmat)
+!
+      use schmidt_fix_m
+!
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      integer(kind = kint), intent(in) :: jst_rlm
+!
+      integer(kind = kint), intent(in) :: l_truncation, mm
+      real(kind= kreal), intent(in) :: g_colat_rtm
+!
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
+      type(leg_omp_matrix), intent(inout) :: Pmat
+!
+      integer(kind = kint) :: j_rlm, jj
+      integer(kind = kint) :: l
+      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
+      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
+      real(kind = kreal) :: df_m(0:l_truncation+2)
+!
+!
+      call schmidt_legendres_m(l_truncation, mm, g_colat_rtm,           &
+     &                         p_m, dp_m, pmn1, pmp1, df_m)
+!
+      do jj = 1, n_jk_e
+        j_rlm = 2*jj - 1
+        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
+        Pmat%Pse_jt(jj,1) =     p_m(l)
+        Pmat%dPsedt_jt(jj,1) =  dp_m(l)
+      end do
+!
+      do jj = 1, n_jk_o
+        j_rlm = 2*jj
+        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
+        Pmat%Pso_jt(jj,1) =     p_m(l)
+        Pmat%dPsodt_jt(jj,1) =  dp_m(l)
+      end do
+!
+      end subroutine set_each_sym_leg_omp_mat_1j
+!
+! -----------------------------------------------------------------------
 !
       end module legendre_fwd_trans_testloop

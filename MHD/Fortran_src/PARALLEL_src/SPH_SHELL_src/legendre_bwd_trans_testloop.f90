@@ -84,7 +84,7 @@
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
       integer(kind = kint) :: mp_rlm, mn_rlm, mm
-      integer(kind = kint) :: nkrs, nkrt, l_rtm, lp_rtm
+      integer(kind = kint) :: nkrs, nkrt, lp_rtm
       integer(kind = kint) :: ip, jst, jed, jnum
       integer(kind = kint) :: lt, kst_s, kst_t
 !
@@ -120,7 +120,7 @@
         tm2 = 0.0d0
         tm3 = 0.0d0
 !        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,l_rtm,lt,kst_s,kst_t,st1,lp_rtm) &
+!$omp parallel do private(ip,lt,kst_s,kst_t,st1,lp_rtm) &
 !$omp& reduction(+:tm1,tm2,tm3)
         do ip = 1, np_smp
 !   even l-m
@@ -129,11 +129,11 @@
             kst_t = (lt-1) * nkrt + 1
 !
 !      Set Legendre polynomials
-            l_rtm = WK_l_tst%lst_rtm(ip) + lt
+            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             st1 = MPI_WTIME()
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_params%l_truncation, sph_rlm,                       &
-     &          mm, jst, leg%g_colat_rtm(l_rtm),                        &
+     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(1,ip))
             tm1 = tm1 + MPI_WTIME() - st1
@@ -163,7 +163,6 @@
             tm2 = tm2 + MPI_WTIME() - st1
 !
             st1 = MPI_WTIME()
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             call cal_vr_rtm_sym_mat_lt_rin(lp_rtm, sph_rtm%nnod_rtm,    &
      &        sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,    &
      &        leg%asin_t_rtm, mp_rlm, mn_rlm,                           &
@@ -178,10 +177,10 @@
             kst_t = (lt-1) * nkrt + 1
 !
 !      Set Legendre polynomials
-            l_rtm = WK_l_tst%lst_rtm(ip) + lt
+            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             call set_each_sym_leg_omp_mat_j                             &
      &         (sph_params%l_truncation, sph_rlm,                       &
-     &          mm, jst, leg%g_colat_rtm(l_rtm),                        &
+     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pmat(1,ip))
 !
@@ -207,7 +206,6 @@
      &          WK_l_tst%Pmat(1,ip)%dPsodt_jt(1,1),                     &
      &          WK_l_tst%Fmat(ip)%symp_p(1))
 !
-            lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             call cal_vr_rtm_sym_mat_eq_rin(lp_rtm, sph_rtm%nnod_rtm,    &
      &        sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,    &
      &        leg%asin_t_rtm, mp_rlm, mn_rlm,                           &
@@ -255,23 +253,19 @@
       call schmidt_legendres_m(l_truncation, mm, g_colat_rtm,           &
      &                         p_m, dp_m, pmn1, pmp1, df_m)
 !
-!$omp parallel do private(jj,j_rlm,l)
       do jj = 1, n_jk_e
         j_rlm = 2*jj - 1
         l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
         Pmat%Pse_jt(jj,1) =     p_m(l)
         Pmat%dPsedt_jt(jj,1) =  dp_m(l)
       end do
-!$omp end parallel do
 !
-!$omp parallel do private(jj,j_rlm,l)
       do jj = 1, n_jk_o
         j_rlm = 2*jj
         l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
         Pmat%Pso_jt(jj,1) =     p_m(l)
         Pmat%dPsodt_jt(jj,1) =  dp_m(l)
       end do
-!$omp end parallel do
 !
       end subroutine set_each_sym_leg_omp_mat_j
 !
