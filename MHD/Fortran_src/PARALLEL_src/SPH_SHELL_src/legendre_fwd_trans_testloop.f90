@@ -83,7 +83,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       integer(kind = kint) :: mm, mp_rlm, mn_rlm, lp_rtm, ln_rtm
-      integer(kind = kint) :: nkrs, nkrt, lt
+      integer(kind = kint) :: nkrs, nkrt, lt, lt2
       integer(kind = kint) :: ip, jst
       integer(kind = kint) :: lst, j
 !
@@ -101,26 +101,61 @@
         jst = idx_trns%lstack_rlm(mp_rlm-1)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!$omp parallel do private(ip,lt,lp_rtm,ln_rtm,lst)
+!$omp parallel do private(ip,lt,lp_rtm,ln_rtm,lt2,lst)
         do ip = 1, np_smp
           WK_l_tst%Smat(ip)%pol_e(1:WK_l_tst%n_pol_e) = 0.0d0
           WK_l_tst%Smat(ip)%tor_e(1:WK_l_tst%n_tor_e) = 0.0d0
           WK_l_tst%Smat(ip)%pol_o(1:WK_l_tst%n_pol_e) = 0.0d0
           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
 !
-          do lt = 1, WK_l_tst%nlo_rtm(ip) / 8
-            write(*,*) lt, (j,j=lt*8-7,lt*8)
+          do lt2 = 1, WK_l_tst%nlo_rtm(ip) / 8
+            write(*,*) lt2, (j,j=lt2*8-7,lt2*8)
+            do lt = lt2*8-7, lt2*8
+              lp_rtm = WK_l_tst%lst_rtm(ip) + lt
+              ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
+              call legendre_fwd_trans_1lat_test                         &
+     &           (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
+     &            iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
+     &            sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
+     &            WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),     &
+     &            WK_l_tst%Fmat(ip), WK_l_tst%Pmat(ip),                 &
+     &            WK_l_tst%Smat(ip))
+            end do
           end do
           lst = 1 + int(WK_l_tst%nlo_rtm(ip)/8) * 8
-          do lt = 1 + lst/4, WK_l_tst%nlo_rtm(ip) / 4
-            write(*,*) lt, (j,j=lt*4-3,lt*4)
-          end do
-          lst = 1 + int(WK_l_tst%nlo_rtm(ip)/4) * 4
-          do lt = lst, WK_l_tst%nlo_rtm(ip)
-            write(*,*) lt
+!
+          do lt2 = 1 + lst/4, WK_l_tst%nlo_rtm(ip) / 4
+            write(*,*) lt2, (j,j=lt2*4-3,lt2*4)
+            do lt = lt2*4-3, lt2*4
+              lp_rtm = WK_l_tst%lst_rtm(ip) + lt
+              ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
+              call legendre_fwd_trans_1lat_test                         &
+     &           (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
+     &            iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
+     &            sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
+     &            WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),     &
+     &            WK_l_tst%Fmat(ip), WK_l_tst%Pmat(ip),                 &
+     &            WK_l_tst%Smat(ip))
+            end do
           end do
 !
-          do lt = 1, WK_l_tst%nlo_rtm(ip)
+          lst = 1 + int(WK_l_tst%nlo_rtm(ip)/4) * 4
+          do lt2 = 1 + lst/2, WK_l_tst%nlo_rtm(ip) / 2
+            do lt = lt2*2-1, lt2*2
+              lp_rtm = WK_l_tst%lst_rtm(ip) + lt
+              ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
+              call legendre_fwd_trans_1lat_test                         &
+     &           (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,  &
+     &            iflag_matmul, ncomp, nvector, nscalar, sph_params,    &
+     &            sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
+     &            WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),     &
+     &            WK_l_tst%Fmat(ip), WK_l_tst%Pmat(ip),                 &
+     &            WK_l_tst%Smat(ip))
+            end do
+          end do
+!
+          lst = 1 + int(WK_l_tst%nlo_rtm(ip)/2) * 2
+          do lt = lst, WK_l_tst%nlo_rtm(ip)
             lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
             call legendre_fwd_trans_1lat_test                           &
