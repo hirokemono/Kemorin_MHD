@@ -126,31 +126,31 @@
      &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
      &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
      &          comm_rtm%irev_sr, n_WR, WR,                             &
-     &          WK_l_tst%Fmat(ip)%symp_r(kst_s),   &
-     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t),      &
-     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s),  &
-     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
+     &          WK_l_tst%Fmat(ip)%symp_r(1),   &
+     &          WK_l_tst%Fmat(ip)%asmp_p(1),      &
+     &          WK_l_tst%Fmat(ip)%asmp_r(1),  &
+     &          WK_l_tst%Fmat(ip)%symp_p(1))
 !
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%symp_r(kst_s),                          &
+     &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_tj,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%asmp_p(kst_t),                          &
+     &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%asmp_r(kst_s),                              &
+     &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_tj,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%symp_p(kst_t),                          &
+     &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
           end do
@@ -165,31 +165,31 @@
      &          leg%asin_t_rtm(lp_rtm), leg%weight_rtm(lp_rtm),         &
      &          mp_rlm, mn_rlm, ncomp, nvector, nscalar,                &
      &          comm_rtm%irev_sr, n_WR, WR,                             &
-     &          WK_l_tst%Fmat(ip)%symp_r(kst_s),            &
-     &          WK_l_tst%Fmat(ip)%asmp_p(kst_t),      &
-     &          WK_l_tst%Fmat(ip)%asmp_r(kst_s), &
-     &          WK_l_tst%Fmat(ip)%symp_p(kst_t))
+     &          WK_l_tst%Fmat(ip)%symp_r(1),            &
+     &          WK_l_tst%Fmat(ip)%asmp_p(1),      &
+     &          WK_l_tst%Fmat(ip)%asmp_r(1), &
+     &          WK_l_tst%Fmat(ip)%symp_p(1))
 !
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%symp_r(kst_s),                          &
+     &        WK_l_tst%Fmat(ip)%symp_r(1),                          &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pse_tj,                          &
      &        WK_l_tst%Smat(ip)%pol_e(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%asmp_p(kst_t),                          &
+     &        WK_l_tst%Fmat(ip)%asmp_p(1),                          &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsedt_tj,                       &
      &        WK_l_tst%Smat(ip)%tor_e(1))
 !
 !  odd l-m
             call matvec_leg_trans(                       &
      &        lt, nkrs, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%asmp_r(kst_s),                              &
+     &        WK_l_tst%Fmat(ip)%asmp_r(1),                              &
      &        WK_l_tst%Pmat(mp_rlm,ip)%Pso_tj,                          &
      &        WK_l_tst%Smat(ip)%pol_o(1))
             call matvec_leg_trans(                       &
      &        lt, nkrt, WK_l_tst%n_jk_o(mp_rlm), WK_l_tst%nle_rtm(ip),      &
-     &        WK_l_tst%Fmat(ip)%symp_p(kst_t),                          &
+     &        WK_l_tst%Fmat(ip)%symp_p(1),                          &
      &        WK_l_tst%Pmat(mp_rlm,ip)%dPsodt_tj,                       &
      &        WK_l_tst%Smat(ip)%tor_o(1))
           end do
