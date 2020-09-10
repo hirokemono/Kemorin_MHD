@@ -282,6 +282,8 @@
      &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
      &          P_rtm, dPdt_rtm, WK_l_tsp)
 !
+      use t_set_legendre_4_sph_trans
+!
       integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
       integer(kind = kint), intent(in) :: lstack_rlm(0:mphi_rtm)
 !
@@ -317,6 +319,8 @@
       subroutine init_each_sym_leg_omp_mat_tj                           &
      &         (nth_rtm, mphi_rtm, jmax_rlm, lstack_rlm,                &
      &          P_rtm, dPdt_rtm, WK_l_tsp)
+!
+      use t_set_legendre_4_sph_trans
 !
       integer(kind = kint), intent(in) :: nth_rtm, mphi_rtm, jmax_rlm
       integer(kind = kint), intent(in) :: lstack_rlm(0:mphi_rtm)
