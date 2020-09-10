@@ -54,6 +54,8 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: n_SSE2 =   itwo
+      integer(kind = kint), parameter :: n_AVX =    ifour
       integer(kind = kint), parameter :: n_avx512 = ieight
 !
 !>      Work structure for Legendre trasform by large matmul
