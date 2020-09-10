@@ -264,6 +264,13 @@
       else if(id_legendre .eq. iflag_leg_sym_dgemm_tj) then
         write(tmpchara,'(a)') trim(leg_dgemm_tj)
 !
+      else if(id_legendre .eq. iflag_on_the_fly_matmul) then
+        write(tmpchara,'(a)') trim(on_the_fly_matmul)
+      else if(id_legendre .eq. iflag_on_the_fly_dgemm) then
+        write(tmpchara,'(a)') trim(on_the_fly_dgemm)
+      else if(id_legendre .eq. iflag_on_the_fly_matprod) then
+        write(tmpchara,'(a)') trim(on_the_fly_matprod)
+!
       else if(id_legendre .eq. iflag_leg_test_loop) then
         write(tmpchara,'(a)') trim(leg_test_loop)
       end if
