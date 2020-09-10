@@ -57,7 +57,7 @@
 !
       integer(kind = kint), parameter :: n_SSE2 =   itwo
       integer(kind = kint), parameter :: n_AVX =    ifour
-      integer(kind = kint), parameter :: n_avx512 = ieight
+      integer(kind = kint), parameter :: n_AVX512 = ieight
 !
 !>      Work structure for Legendre trasform by large matmul
       type leg_trns_testloop_work
@@ -129,10 +129,10 @@
       nlo_rtm(np_smp) = istack_rtm_lt_smp(np_smp) / 2 - lst_rtm(np_smp)
 !
       do ip = 1, np_smp
-        Fmat(ip)%nvec_lk = n_avx512 * nri_rtm * nvector
-        Fmat(ip)%nscl_lk = n_avx512 * nri_rtm * nscalar
-        Fmat(ip)%n_sym_r = n_avx512 * nri_rtm * (3*nvector + nscalar)
-        Fmat(ip)%n_sym_p = n_avx512 * nri_rtm * 2*nvector
+        Fmat(ip)%nvec_lk = n_AVX512 * nri_rtm * nvector
+        Fmat(ip)%nscl_lk = n_AVX512 * nri_rtm * nscalar
+        Fmat(ip)%n_sym_r = n_AVX512 * nri_rtm * (3*nvector + nscalar)
+        Fmat(ip)%n_sym_p = n_AVX512 * nri_rtm * 2*nvector
       end do
 !
       end subroutine count_size_of_field_mat_test
@@ -178,10 +178,10 @@
       do ip = 1, np_smp
         call alloc_cal_legendre_work                                    &
      &     (sph_params%l_truncation, WK_l_tst%wk_plm(ip))
-        call alloc_each_sym_leg_omp_mat_tj(n_avx512,                    &
+        call alloc_each_sym_leg_omp_mat_tj(n_AVX512,                    &
      &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
      &      WK_l_tst%Ptj_mat(ip))
-        call alloc_each_sym_leg_omp_mat_jt(n_avx512,                    &
+        call alloc_each_sym_leg_omp_mat_jt(n_AVX512,                    &
      &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
      &      WK_l_tst%Pjt_mat(ip))
       end do
