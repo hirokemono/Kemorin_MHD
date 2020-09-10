@@ -133,11 +133,11 @@
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_matmul           &
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_dgemm) then
         call init_legendre_sym_mat_otfly(sph_params, sph_rtm,           &
-     &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
+     &      idx_trns, nvector, nscalar, WK_leg%WK_l_otf)
 !
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
         call init_legendre_sym_mat_both(sph_params, sph_rtm,            &
-     &      idx_trns, nvector, nscalar, WK_leg%WK_l_otf)
+     &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
       else
         call init_legendre_symmetry                                     &
      &     (sph_rtm, sph_rlm, leg, idx_trns, WK_leg%WK_l_sml)
