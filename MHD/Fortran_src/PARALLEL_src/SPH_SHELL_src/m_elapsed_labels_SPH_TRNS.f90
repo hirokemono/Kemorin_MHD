@@ -80,7 +80,7 @@
       elps1%labels(ist_elapsed_SDT+11) = 'copy_FFT_complex    '
 !
       elps1%labels(ist_elapsed_SDT+12) = 'set_sp_rlm_vec from recv '
-      elps1%labels(ist_elapsed_SDT+18) = 'on-the-fly Legendre for bwd '
+      elps1%labels(ist_elapsed_SDT+13) = 'on-the-fly Legendre for bwd '
       elps1%labels(ist_elapsed_SDT+14) = 'matmul_bwd_leg_trans    '
       elps1%labels(ist_elapsed_SDT+15) = 'cal_vr_rtm_vec to send '
 !
