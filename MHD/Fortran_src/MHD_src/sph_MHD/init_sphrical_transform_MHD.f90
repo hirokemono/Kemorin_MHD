@@ -48,7 +48,7 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: num_test =  10
+      integer(kind = kint), parameter :: num_test =  13
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_leg_symmetry,                                   &
      &            iflag_leg_sym_spin_loop,                              &
@@ -59,7 +59,10 @@
      &            iflag_leg_sym_mat_jt,                                 &
      &            iflag_leg_sym_dgemm_jt,                               &
      &            iflag_leg_sym_mat_tj,                                 &
-     &            iflag_leg_sym_dgemm_tj/)
+     &            iflag_leg_sym_dgemm_tj,                               &
+     &            iflag_on_the_fly_matmul,                              &
+     &            iflag_on_the_fly_dgemm,                               &
+     &            iflag_on_the_fly_matprod/)
 !
       private :: num_test, list_test
       private :: select_legendre_transform
@@ -365,6 +368,31 @@
           write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
      &            etime_max(iflag_leg_sym_dgemm_tj),                    &
      &            etime_trans(iflag_leg_sym_dgemm_tj)
+        end if
+!
+!
+        if(etime_trans(iflag_on_the_fly_matmul) .gt. zero) then
+          write(*,'(i3,a)') iflag_on_the_fly_matmul,                    &
+     &          ': elapsed by matmul with on-the-fly Plm'
+          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
+     &            etime_max(iflag_on_the_fly_matmul),                   &
+     &            etime_trans(iflag_on_the_fly_matmul)
+        end if
+!
+        if(etime_trans(iflag_on_the_fly_dgemm) .gt. zero) then
+          write(*,'(i3,a)') iflag_on_the_fly_dgemm,                     &
+     &          ': elapsed by BLAS with on-the-fly Plm'
+          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
+     &            etime_max(iflag_on_the_fly_dgemm),                    &
+     &            etime_trans(iflag_on_the_fly_dgemm)
+        end if
+!
+        if(etime_trans(iflag_on_the_fly_matprod) .gt. zero) then
+          write(*,'(i3,a)') iflag_on_the_fly_matprod,                   &
+     &          ': elapsed by simple loop with on-the-fly Plm'
+          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
+     &            etime_max(iflag_on_the_fly_matprod),                  &
+     &            etime_trans(iflag_on_the_fly_matprod)
         end if
 !
       end subroutine select_legendre_transform
