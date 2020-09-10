@@ -135,30 +135,30 @@
      &         (sph_params%l_truncation, sph_rlm,                       &
      &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
-     &          WK_l_tst%Pmat(ip))
+     &          WK_l_tst%Pjt_mat(ip))
             tm1 = tm1 + MPI_WTIME() - st1
 !
             st1 = MPI_WTIME()
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_e(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%pol_e(1),                              &
-     &          WK_l_tst%Pmat(ip)%Pse_jt(1,1),                          &
+     &          WK_l_tst%Pjt_mat(ip)%Pse_jt(1,1),                       &
      &          WK_l_tst%Fmat(ip)%symp_r(1))
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrt, WK_l_tst%n_jk_e(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%tor_e(1),                              &
-     &          WK_l_tst%Pmat(ip)%dPsedt_jt(1,1),                       &
+     &          WK_l_tst%Pjt_mat(ip)%dPsedt_jt(1,1),                    &
      &          WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_o(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%pol_o(1),                              &
-     &          WK_l_tst%Pmat(ip)%Pso_jt(1,1),                          &
+     &          WK_l_tst%Pjt_mat(ip)%Pso_jt(1,1),                       &
      &          WK_l_tst%Fmat(ip)%asmp_r(1))
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrt, WK_l_tst%n_jk_o(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%tor_o(1),                              &
-     &          WK_l_tst%Pmat(ip)%dPsodt_jt(1,1),                       &
+     &          WK_l_tst%Pjt_mat(ip)%dPsodt_jt(1,1),                    &
      &          WK_l_tst%Fmat(ip)%symp_p(1))
             tm2 = tm2 + MPI_WTIME() - st1
 !
@@ -182,28 +182,28 @@
      &         (sph_params%l_truncation, sph_rlm,                       &
      &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
-     &          WK_l_tst%Pmat(ip))
+     &          WK_l_tst%Pjt_mat(ip))
 !
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_e(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%pol_e(1),                              &
-     &          WK_l_tst%Pmat(ip)%Pse_jt(1,1),                          &
+     &          WK_l_tst%Pjt_mat(ip)%Pse_jt(1,1),                       &
      &          WK_l_tst%Fmat(ip)%symp_r(1))
 !            call matvec_bwd_leg_trans_Pj(iflag_matmul,                 &
 !     &          nkrt, WK_l_tst%n_jk_e(mp_rlm),                         &
 !     &          WK_l_tst%Smat(1)%tor_e(1),                             &
-!     &          WK_l_tst%Pmat(ip)%dPsedt_jt(1,1),                      &
+!     &          WK_l_tst%Pjt_mat(ip)%dPsedt_jt(1,1),                   &
 !     &          WK_l_tst%Fmat(ip)%asmp_p(1))
 !   odd l-m
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_o(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%pol_o(1),                              &
-     &          WK_l_tst%Pmat(ip)%Pso_jt(1,1),                          &
+     &          WK_l_tst%Pjt_mat(ip)%Pso_jt(1,1),                       &
      &          WK_l_tst%Fmat(ip)%asmp_r(1))
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrt, WK_l_tst%n_jk_o(mp_rlm),                          &
      &          WK_l_tst%Smat(1)%tor_o(1),                              &
-     &          WK_l_tst%Pmat(ip)%dPsodt_jt(1,1),                       &
+     &          WK_l_tst%Pjt_mat(ip)%dPsodt_jt(1,1),                    &
      &          WK_l_tst%Fmat(ip)%symp_p(1))
 !
             call cal_vr_rtm_sym_mat_eq_rin(lp_rtm, sph_rtm%nnod_rtm,    &
@@ -230,7 +230,7 @@
 !
       subroutine set_each_sym_leg_omp_mat_j                             &
      &         (l_truncation, sph_rlm, mm, jst_rlm,                     &
-     &          g_colat_rtm, n_jk_e, n_jk_o, Pmat)
+     &          g_colat_rtm, n_jk_e, n_jk_o, Pjt_mat)
 !
       use schmidt_fix_m
 !
@@ -241,7 +241,7 @@
       real(kind= kreal), intent(in) :: g_colat_rtm
 !
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
-      type(leg_omp_matrix), intent(inout) :: Pmat
+      type(leg_jt_omp_matrix), intent(inout) :: Pjt_mat
 !
       integer(kind = kint) :: j_rlm, jj
       integer(kind = kint) :: l
@@ -256,15 +256,15 @@
       do jj = 1, n_jk_e
         j_rlm = 2*jj - 1
         l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-        Pmat%Pse_jt(jj,1) =     p_m(l)
-        Pmat%dPsedt_jt(jj,1) =  dp_m(l)
+        Pjt_mat%Pse_jt(jj,1) =     p_m(l)
+        Pjt_mat%dPsedt_jt(jj,1) =  dp_m(l)
       end do
 !
       do jj = 1, n_jk_o
         j_rlm = 2*jj
         l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-        Pmat%Pso_jt(jj,1) =     p_m(l)
-        Pmat%dPsodt_jt(jj,1) =  dp_m(l)
+        Pjt_mat%Pso_jt(jj,1) =     p_m(l)
+        Pjt_mat%dPsodt_jt(jj,1) =  dp_m(l)
       end do
 !
       end subroutine set_each_sym_leg_omp_mat_j

@@ -72,7 +72,8 @@
         integer(kind = kint), allocatable :: nle_rtm(:)
         integer(kind = kint), allocatable :: nlo_rtm(:)
 !
-        type(leg_omp_matrix), allocatable :: Pmat(:,:)
+        type(leg_tj_omp_matrix), allocatable :: Ptj_mat(:,:)
+        type(leg_jt_omp_matrix), allocatable :: Pjt_mat(:,:)
 !
         type(field_matrix_omp), allocatable :: Fmat(:)
 !
@@ -112,7 +113,7 @@
       WK_l_tsp%mphi_rtm = sph_rtm%nidx_rtm(3)
       allocate(WK_l_tsp%n_jk_e(WK_l_tsp%mphi_rtm))
       allocate(WK_l_tsp%n_jk_o(WK_l_tsp%mphi_rtm))
-      allocate(WK_l_tsp%Pmat(WK_l_tsp%mphi_rtm,np_smp))
+      allocate(WK_l_tsp%Pjt_mat(WK_l_tsp%mphi_rtm,np_smp))
 !
       allocate(WK_l_tsp%lst_rtm(np_smp))
       allocate(WK_l_tsp%nle_rtm(np_smp))
@@ -159,7 +160,7 @@
       WK_l_tsp%mphi_rtm = sph_rtm%nidx_rtm(3)
       allocate(WK_l_tsp%n_jk_e(WK_l_tsp%mphi_rtm))
       allocate(WK_l_tsp%n_jk_o(WK_l_tsp%mphi_rtm))
-      allocate(WK_l_tsp%Pmat(WK_l_tsp%mphi_rtm,np_smp))
+      allocate(WK_l_tsp%Ptj_mat(WK_l_tsp%mphi_rtm,np_smp))
 !
       allocate(WK_l_tsp%lst_rtm(np_smp))
       allocate(WK_l_tsp%nle_rtm(np_smp))
@@ -201,7 +202,7 @@
       call dealloc_spectr_mat_omp(np_smp, WK_l_tsp%Smat)
       call dealloc_field_mat_omp(np_smp, WK_l_tsp%Fmat)
 !
-      deallocate(WK_l_tsp%Pmat)
+      deallocate(WK_l_tsp%Pjt_mat)
       deallocate(WK_l_tsp%Smat)
       deallocate(WK_l_tsp%Fmat)
 !
@@ -221,7 +222,7 @@
       call dealloc_spectr_mat_omp(np_smp, WK_l_tsp%Smat)
       call dealloc_field_mat_omp(np_smp, WK_l_tsp%Fmat)
 !
-      deallocate(WK_l_tsp%Pmat)
+      deallocate(WK_l_tsp%Ptj_mat)
       deallocate(WK_l_tsp%Smat)
       deallocate(WK_l_tsp%Fmat)
 !
@@ -296,13 +297,13 @@
         do ip = 1, np_smp
           call alloc_each_sym_leg_omp_mat_jt(WK_l_tsp%nle_rtm(ip),      &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
-     &        WK_l_tsp%Pmat(mp_rlm,ip))
+     &        WK_l_tsp%Pjt_mat(mp_rlm,ip))
 !
           call set_each_sym_leg_omp_mat_jt(nth_rtm, jmax_rlm,           &
      &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
      &        WK_l_tsp%lst_rtm(ip), WK_l_tsp%nle_rtm(ip),               &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
-     &        WK_l_tsp%Pmat(mp_rlm,ip))
+     &        WK_l_tsp%Pjt_mat(mp_rlm,ip))
         end do
       end do
 !
@@ -329,13 +330,13 @@
         do ip = 1, np_smp
           call alloc_each_sym_leg_omp_mat_tj(WK_l_tsp%nle_rtm(ip),      &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
-     &        WK_l_tsp%Pmat(mp_rlm,ip))
+     &        WK_l_tsp%Ptj_mat(mp_rlm,ip))
 !
           call set_each_sym_leg_omp_mat_tj(nth_rtm, jmax_rlm,           &
      &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
      &        WK_l_tsp%lst_rtm(ip), WK_l_tsp%nle_rtm(ip),               &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
-     &        WK_l_tsp%Pmat(mp_rlm,ip))
+     &        WK_l_tsp%Ptj_mat(mp_rlm,ip))
         end do
       end do
 !
@@ -352,7 +353,7 @@
 !
       do mp_rlm = 1, WK_l_tsp%mphi_rtm
         do ip = 1, np_smp
-          call dealloc_each_sym_leg_mat_jt(WK_l_tsp%Pmat(mp_rlm,ip))
+          call dealloc_each_sym_leg_mat_jt(WK_l_tsp%Pjt_mat(mp_rlm,ip))
         end do
       end do
 !
@@ -369,7 +370,7 @@
 !
       do mp_rlm = 1, WK_l_tsp%mphi_rtm
         do ip = 1, np_smp
-          call dealloc_each_sym_leg_mat_tj(WK_l_tsp%Pmat(mp_rlm,ip))
+          call dealloc_each_sym_leg_mat_tj(WK_l_tsp%Ptj_mat(mp_rlm,ip))
         end do
       end do
 !

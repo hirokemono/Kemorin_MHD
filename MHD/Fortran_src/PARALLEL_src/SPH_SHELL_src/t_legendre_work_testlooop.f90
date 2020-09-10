@@ -75,7 +75,8 @@
         integer(kind = kint), allocatable :: nle_rtm(:)
         integer(kind = kint), allocatable :: nlo_rtm(:)
 !
-        type(leg_omp_matrix), allocatable :: Pmat(:)
+        type(leg_tj_omp_matrix), allocatable :: Ptj_mat(:)
+        type(leg_jt_omp_matrix), allocatable :: Pjt_mat(:)
 !
         type(field_matrix_omp), allocatable :: Fmat(:)
 !
@@ -150,7 +151,8 @@
       WK_l_tst%mphi_rtm = sph_rtm%nidx_rtm(3)
       allocate(WK_l_tst%n_jk_e(WK_l_tst%mphi_rtm))
       allocate(WK_l_tst%n_jk_o(WK_l_tst%mphi_rtm))
-      allocate(WK_l_tst%Pmat(np_smp))
+      allocate(WK_l_tst%Ptj_mat(np_smp))
+      allocate(WK_l_tst%Pjt_mat(np_smp))
 !
       allocate(WK_l_tst%lst_rtm(np_smp))
       allocate(WK_l_tst%nle_rtm(np_smp))
@@ -192,7 +194,7 @@
       call dealloc_spectr_mat_omp(np_smp, WK_l_tst%Smat)
       call dealloc_field_mat_omp(np_smp, WK_l_tst%Fmat)
 !
-      deallocate(WK_l_tst%Pmat)
+      deallocate(WK_l_tst%Ptj_mat, WK_l_tst%Pjt_mat)
       deallocate(WK_l_tst%Smat)
       deallocate(WK_l_tst%Fmat)
 !
@@ -259,7 +261,8 @@
 !
       do ip = 1, np_smp
         call alloc_each_sym_leg_omp_mat_jt(n_avx512,                    &
-     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o, WK_l_tst%Pmat(ip))
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
+     &      WK_l_tst%Pjt_mat(ip))
       end do
 !
       end subroutine init_each_sym_leg_omp_mat_jt
@@ -275,7 +278,8 @@
 !
       do ip = 1, np_smp
         call alloc_each_sym_leg_omp_mat_tj(n_avx512,                    &
-     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o, WK_l_tst%Pmat(ip))
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
+     &      WK_l_tst%Ptj_mat(ip))
       end do
 !
       end subroutine init_each_sym_leg_omp_mat_tj
@@ -291,7 +295,7 @@
 !
 !
       do ip = 1, np_smp
-        call dealloc_each_sym_leg_mat_jt(WK_l_tst%Pmat(ip))
+        call dealloc_each_sym_leg_mat_jt(WK_l_tst%Pjt_mat(ip))
       end do
 !
       end subroutine dealloc_sym_leg_omp_mat_jt
@@ -306,7 +310,7 @@
 !
 !
       do ip = 1, np_smp
-        call dealloc_each_sym_leg_mat_tj(WK_l_tst%Pmat(ip))
+        call dealloc_each_sym_leg_mat_tj(WK_l_tst%Ptj_mat(ip))
       end do
 !
       end subroutine dealloc_sym_leg_omp_mat_tj
