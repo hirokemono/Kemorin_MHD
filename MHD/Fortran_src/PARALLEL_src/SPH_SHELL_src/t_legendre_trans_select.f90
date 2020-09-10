@@ -132,11 +132,11 @@
       else if(WK_leg%id_legendre .eq. iflag_on_the_fly_matprod          &
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_matmul           &
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_dgemm) then
-        call init_legendre_sym_mat_both(sph_params, sph_rtm,            &
+        call init_legendre_sym_mat_otfly(sph_params, sph_rtm,           &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_tst)
 !
       else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
-        call init_legendre_sym_mat_otfly(sph_params, sph_rtm,           &
+        call init_legendre_sym_mat_both(sph_params, sph_rtm,            &
      &      idx_trns, nvector, nscalar, WK_leg%WK_l_otf)
       else
         call init_legendre_symmetry                                     &
@@ -165,13 +165,13 @@
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_mat_tj              &
      &   .or. WK_leg%id_legendre .eq. iflag_leg_sym_dgemm_tj) then
         call dealloc_leg_sym_mat_tj(WK_leg%WK_l_tsp)
-      else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
-        call dealloc_leg_sym_mat_both(WK_leg%WK_l_tst)
-!
       else if(WK_leg%id_legendre .eq. iflag_on_the_fly_matprod          &
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_matmul           &
      &   .or. WK_leg%id_legendre .eq. iflag_on_the_fly_dgemm) then
         call dealloc_leg_sym_mat_otfly(WK_leg%WK_l_otf)
+!
+      else if(WK_leg%id_legendre .eq. iflag_leg_test_loop) then
+        call dealloc_leg_sym_mat_both(WK_leg%WK_l_tst)
 !
       else
         call finalize_legendre_sym_matmul(WK_leg%WK_l_sml)
