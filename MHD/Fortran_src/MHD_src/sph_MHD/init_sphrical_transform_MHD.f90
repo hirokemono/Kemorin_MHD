@@ -197,8 +197,8 @@
 !
       call sel_init_legendre_trans                                      &
      &   (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns,      &
-     &    WK_sph%WK_leg)
+     &    sph%sph_params, sph%sph_rtm, sph%sph_rlm,                     &
+     &    trans_p%leg, trans_p%idx_trns, WK_sph%WK_leg)
 !
       if(my_rank .ne. 0) return
       call display_selected_legendre_mode(WK_sph%WK_leg%id_legendre)
@@ -253,8 +253,8 @@
      &            'Test SPH transform for ', WK_sph%WK_leg%id_legendre
         call sel_init_legendre_trans                                    &
      &     (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,      &
-     &      sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns,    &
-     &      WK_sph%WK_leg)
+     &      sph%sph_params, sph%sph_rtm, sph%sph_rlm,                   &
+     &      trans_p%leg, trans_p%idx_trns, WK_sph%WK_leg)
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, sph_bc_U,    &

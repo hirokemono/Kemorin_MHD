@@ -299,7 +299,7 @@
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
      &        WK_l_tsp%Pjt_mat(mp_rlm,ip))
 !
-          call set_each_sym_leg_omp_mat_jt(nth_rtm, jmax_rlm,           &
+          call copy_each_sym_leg_omp_mat_jt(nth_rtm, jmax_rlm,          &
      &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
      &        WK_l_tsp%lst_rtm(ip), WK_l_tsp%nle_rtm(ip),               &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
@@ -335,7 +335,7 @@
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
      &        WK_l_tsp%Ptj_mat(mp_rlm,ip))
 !
-          call set_each_sym_leg_omp_mat_tj(nth_rtm, jmax_rlm,           &
+          call copy_each_sym_leg_omp_mat_tj(nth_rtm, jmax_rlm,          &
      &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
      &        WK_l_tsp%lst_rtm(ip), WK_l_tsp%nle_rtm(ip),               &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &

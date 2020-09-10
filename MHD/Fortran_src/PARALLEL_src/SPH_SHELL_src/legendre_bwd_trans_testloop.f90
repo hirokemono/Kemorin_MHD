@@ -16,7 +16,6 @@
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!
-!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -39,7 +38,6 @@
 !
       use m_machine_parameter
 !
-      use t_spheric_parameter
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
@@ -60,7 +58,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine legendre_b_trans_vector_test                           &
-     &         (iflag_matmul, ncomp, nvector, nscalar, sph_params,      &
+     &         (iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,  idx_trns, leg,   &
      &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
@@ -70,7 +68,6 @@
       use small_matmul_leg_trans_krin
 !
       integer(kind = kint), intent(in) :: iflag_matmul
-      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -131,14 +128,13 @@
 !      Set Legendre polynomials
             lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             st1 = MPI_WTIME()
-            call set_each_sym_leg_omp_mat_j                             &
-     &         (sph_params%l_truncation, sph_rlm,                       &
-     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
+            call set_each_sym_leg_omp_mat_j1                            &
+     &         (sph_rlm, mm, jst, leg%g_colat_rtm(lp_rtm),              &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pjt_mat(ip)%Pse_jt(1),                         &
      &          WK_l_tst%Pjt_mat(ip)%dPsedt_jt(1),                      &
      &          WK_l_tst%Pjt_mat(ip)%Pso_jt(1),                         &
-     &          WK_l_tst%Pjt_mat(ip)%dPsodt_jt(1))
+     &          WK_l_tst%Pjt_mat(ip)%dPsodt_jt(1), WK_l_tst%wk_plm(ip))
             tm1 = tm1 + MPI_WTIME() - st1
 !
             st1 = MPI_WTIME()
@@ -181,14 +177,13 @@
 !
 !      Set Legendre polynomials
             lp_rtm = WK_l_tst%lst_rtm(ip) + lt
-            call set_each_sym_leg_omp_mat_j                             &
-     &         (sph_params%l_truncation, sph_rlm,                       &
-     &          mm, jst, leg%g_colat_rtm(lp_rtm),                       &
+            call set_each_sym_leg_omp_mat_j1                            &
+     &         (sph_rlm, mm, jst, leg%g_colat_rtm(lp_rtm),              &
      &          WK_l_tst%n_jk_e(mp_rlm), WK_l_tst%n_jk_o(mp_rlm),       &
      &          WK_l_tst%Pjt_mat(ip)%Pse_jt(1),                         &
      &          WK_l_tst%Pjt_mat(ip)%dPsedt_jt(1),                      &
      &          WK_l_tst%Pjt_mat(ip)%Pso_jt(1),                         &
-     &          WK_l_tst%Pjt_mat(ip)%dPsodt_jt(1))
+     &          WK_l_tst%Pjt_mat(ip)%dPsodt_jt(1), WK_l_tst%wk_plm(ip))
 !
             call matvec_bwd_leg_trans_Pj(iflag_matmul,                  &
      &          nkrs, WK_l_tst%n_jk_e(mp_rlm),                          &
@@ -233,52 +228,5 @@
       end subroutine legendre_b_trans_vector_test
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine set_each_sym_leg_omp_mat_j                             &
-     &         (l_truncation, sph_rlm, mm, jst_rlm, g_colat_rtm,        &
-     &          n_jk_e, n_jk_o, Pse_jt, dPsedt_jt, Pso_jt, dPsodt_jt)
-!
-      use schmidt_fix_m
-!
-      type(sph_rlm_grid), intent(in) :: sph_rlm
-      integer(kind = kint), intent(in) :: jst_rlm
-!
-      integer(kind = kint), intent(in) :: l_truncation, mm
-      real(kind= kreal), intent(in) :: g_colat_rtm
-!
-      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
-      real(kind = kreal), intent(inout) :: Pse_jt(n_jk_e)
-      real(kind = kreal), intent(inout) :: dPsedt_jt(n_jk_e)
-      real(kind = kreal), intent(inout) :: Pso_jt(n_jk_o)
-      real(kind = kreal), intent(inout) :: dPsodt_jt(n_jk_o)
-!
-      integer(kind = kint) :: j_rlm, jj
-      integer(kind = kint) :: l
-      real(kind = kreal) :: p_m(0:l_truncation), dp_m(0:l_truncation)
-      real(kind = kreal) :: pmp1(0:l_truncation), pmn1(0:l_truncation)
-      real(kind = kreal) :: df_m(0:l_truncation+2)
-!
-!
-      call schmidt_legendres_m(l_truncation, mm, g_colat_rtm,           &
-     &                         p_m, dp_m, pmn1, pmp1, df_m)
-!
-      do jj = 1, n_jk_e
-        j_rlm = 2*jj - 1
-        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-        Pse_jt(jj) =     p_m(l)
-        dPsedt_jt(jj) =  dp_m(l)
-      end do
-!
-      do jj = 1, n_jk_o
-        j_rlm = 2*jj
-        l =  sph_rlm%idx_gl_1d_rlm_j(jst_rlm+j_rlm,2)
-        Pso_jt(jj) =     p_m(l)
-        dPsodt_jt(jj) =  dp_m(l)
-      end do
-!
-      end subroutine set_each_sym_leg_omp_mat_j
-!
-! -----------------------------------------------------------------------
-!
 !
       end module legendre_bwd_trans_testloop

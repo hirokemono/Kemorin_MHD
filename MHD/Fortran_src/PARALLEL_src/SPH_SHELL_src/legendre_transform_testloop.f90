@@ -64,14 +64,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_backward_trans_test(ncomp, nvector, nscalar,       &
-     &          sph_params, sph_rlm, sph_rtm, comm_rlm, comm_rtm,       &
-     &           leg, idx_trns, n_WR, n_WS, WR, WS, WK_l_tst)
+     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
+     &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
       use legendre_bwd_trans_testloop
       use spherical_SRs_N
       use matmul_for_legendre_trans
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -86,7 +85,7 @@
 !
 !
         call legendre_b_trans_vector_test                               &
-     &     (iflag_INTRINSIC, ncomp, nvector, nscalar, sph_params,       &
+     &     (iflag_INTRINSIC, ncomp, nvector, nscalar,                   &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, leg,        &
      &      n_WR, n_WS, WR, WS, WK_l_tst)
 !
@@ -95,14 +94,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine leg_forward_trans_test(ncomp, nvector, nscalar,        &
-     &          sph_params, sph_rtm, sph_rlm, comm_rtm, comm_rlm,       &
-     &          leg, idx_trns, n_WR, n_WS, WR, WS, WK_l_tst)
+     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
+     &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
       use legendre_fwd_trans_testloop
       use spherical_SRs_N
       use matmul_for_legendre_trans
 !
-      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
@@ -117,7 +115,7 @@
 !
 !
         call legendre_f_trans_vector_test                               &
-     &     (iflag_MATPROD, ncomp, nvector, nscalar, sph_params,         &
+     &     (iflag_MATPROD, ncomp, nvector, nscalar,                     &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns, leg,        &
      &      n_WR, n_WS, WR, WS, WK_l_tst)
 !

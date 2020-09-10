@@ -8,10 +8,10 @@
 !>@n      data are strored communication buffer
 !!
 !!@verbatim
-!!      subroutine init_legendre_sym_mat_both                          &
-!!     &         (sph_rtm, idx_trns, nvector, nscalar, WK_l_tst)
+!!      subroutine init_legendre_sym_mat_both(sph_params, sph_rtm,      &
+!!     &          idx_trns, nvector, nscalar, WK_l_tst)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
-!!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!        type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
@@ -43,12 +43,13 @@
 !
       use calypso_mpi
 !
+      use t_spheric_parameter
       use t_spheric_rtm_data
-      use t_spheric_rlm_data
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_field_matrices_4_legendre
       use t_legendre_matrix_4_trns
+      use t_set_legendre_4_sph_trans
 !
       use matmul_for_legendre_trans
 !
@@ -79,6 +80,7 @@
 !
         type(leg_tj_omp_matrix), allocatable :: Ptj_mat(:)
         type(leg_jt_omp_matrix), allocatable :: Pjt_mat(:)
+        type(work_make_legendre), allocatable :: wk_plm(:)
 !
         type(field_matrix_omp), allocatable :: Fmat(:)
 !
@@ -93,9 +95,6 @@
 !
       private :: count_symmetric_leg_lj_omp
       private :: count_leg_sym_matmul_mtr
-!
-      private :: dealloc_sym_leg_omp_mat_jt
-      private :: init_each_sym_leg_omp_mat_jt
 !
 ! -----------------------------------------------------------------------
 !
@@ -140,21 +139,26 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_legendre_sym_mat_both                             &
-     &         (sph_rtm, idx_trns, nvector, nscalar, WK_l_tst)
+      subroutine init_legendre_sym_mat_both(sph_params, sph_rtm,        &
+     &          idx_trns, nvector, nscalar, WK_l_tst)
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: nvector, nscalar
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
+      integer(kind = kint) :: ip
+!
 !
       WK_l_tst%mphi_rtm = sph_rtm%nidx_rtm(3)
       allocate(WK_l_tst%n_jk_e(WK_l_tst%mphi_rtm))
       allocate(WK_l_tst%n_jk_o(WK_l_tst%mphi_rtm))
+!
       allocate(WK_l_tst%Ptj_mat(np_smp))
       allocate(WK_l_tst%Pjt_mat(np_smp))
+      allocate(WK_l_tst%wk_plm(np_smp))
 !
       allocate(WK_l_tst%lst_rtm(np_smp))
       allocate(WK_l_tst%nle_rtm(np_smp))
@@ -171,8 +175,16 @@
      &   (WK_l_tst%mphi_rtm, idx_trns, WK_l_tst)
 !
 !
-      call init_each_sym_leg_omp_mat_jt(WK_l_tst)
-      call init_each_sym_leg_omp_mat_tj(WK_l_tst)
+      do ip = 1, np_smp
+        call alloc_cal_legendre_work                                    &
+     &     (sph_params%l_truncation, WK_l_tst%wk_plm(ip))
+        call alloc_each_sym_leg_omp_mat_tj(n_avx512,                    &
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
+     &      WK_l_tst%Ptj_mat(ip))
+        call alloc_each_sym_leg_omp_mat_jt(n_avx512,                    &
+     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
+     &      WK_l_tst%Pjt_mat(ip))
+      end do
 !
       call count_leg_sym_matmul_mtr                                     &
      &   (sph_rtm%nidx_rtm, nvector, nscalar, idx_trns, WK_l_tst)
@@ -190,13 +202,18 @@
 !
       type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
 !
+      integer(kind = kint) :: ip
 !
-      call dealloc_sym_leg_omp_mat_tj(WK_l_tst)
-      call dealloc_sym_leg_omp_mat_jt(WK_l_tst)
+!
+      do ip = 1, np_smp
+        call dealloc_each_sym_leg_mat_tj(WK_l_tst%Ptj_mat(ip))
+        call dealloc_each_sym_leg_mat_jt(WK_l_tst%Pjt_mat(ip))
+        call dealloc_cal_legendre_work(WK_l_tst%wk_plm(ip))
+      end do
       call dealloc_spectr_mat_omp(np_smp, WK_l_tst%Smat)
       call dealloc_field_mat_omp(np_smp, WK_l_tst%Fmat)
 !
-      deallocate(WK_l_tst%Ptj_mat, WK_l_tst%Pjt_mat)
+      deallocate(WK_l_tst%Ptj_mat, WK_l_tst%Pjt_mat, WK_l_tst%wk_plm)
       deallocate(WK_l_tst%Smat)
       deallocate(WK_l_tst%Fmat)
 !
@@ -250,72 +267,6 @@
       WK_l_tst%nmax_jk_o = MAXVAL(WK_l_tst%n_jk_o)
 !
       end subroutine count_symmetric_leg_lj_omp
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine init_each_sym_leg_omp_mat_jt(WK_l_tst)
-!
-      type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
-!
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, np_smp
-        call alloc_each_sym_leg_omp_mat_jt(n_avx512,                    &
-     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
-     &      WK_l_tst%Pjt_mat(ip))
-      end do
-!
-      end subroutine init_each_sym_leg_omp_mat_jt
-!
-! -----------------------------------------------------------------------
-!
-      subroutine init_each_sym_leg_omp_mat_tj(WK_l_tst)
-!
-      type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
-!
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, np_smp
-        call alloc_each_sym_leg_omp_mat_tj(n_avx512,                    &
-     &      WK_l_tst%nmax_jk_e, WK_l_tst%nmax_jk_o,                     &
-     &      WK_l_tst%Ptj_mat(ip))
-      end do
-!
-      end subroutine init_each_sym_leg_omp_mat_tj
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_sym_leg_omp_mat_jt(WK_l_tst)
-!
-      type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
-!
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, np_smp
-        call dealloc_each_sym_leg_mat_jt(WK_l_tst%Pjt_mat(ip))
-      end do
-!
-      end subroutine dealloc_sym_leg_omp_mat_jt
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_sym_leg_omp_mat_tj(WK_l_tst)
-!
-      type(leg_trns_testloop_work), intent(inout) :: WK_l_tst
-!
-      integer(kind = kint) :: ip
-!
-!
-      do ip = 1, np_smp
-        call dealloc_each_sym_leg_mat_tj(WK_l_tst%Ptj_mat(ip))
-      end do
-!
-      end subroutine dealloc_sym_leg_omp_mat_tj
 !
 ! -----------------------------------------------------------------------
 !

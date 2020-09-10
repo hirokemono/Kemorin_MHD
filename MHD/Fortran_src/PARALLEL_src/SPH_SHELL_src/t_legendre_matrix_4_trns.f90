@@ -19,15 +19,6 @@
 !!        type(leg_jt_omp_matrix), intent(inout) :: Pjt_mat
 !!      subroutine dealloc_each_sym_leg_mat_tj(Ptj_mat)
 !!        type(leg_tj_omp_matrix), intent(inout) :: Ptj_mat
-!!
-!!      subroutine set_each_sym_leg_omp_mat_jt                          &
-!!     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,          &
-!!     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o, Pjt_mat)
-!!        type(leg_jt_omp_matrix), intent(inout) :: Pjt_mat
-!!      subroutine set_each_sym_leg_omp_mat_tj                          &
-!!     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,          &
-!!     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o, Ptj_mat)
-!!        type(leg_tj_omp_matrix), intent(inout) :: Ptj_mat
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -172,91 +163,6 @@
       deallocate(Ptj_mat%Pso_tj, Ptj_mat%dPsodt_tj)
 !
       end subroutine dealloc_each_sym_leg_mat_tj
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_each_sym_leg_omp_mat_jt                            &
-     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
-     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o,                       &
-     &          Pse_jt, dPsedt_jt, Pso_jt, dPsodt_jt)
-!
-      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-      integer(kind = kint), intent(in) :: jst_rlm
-!
-      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
-      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
-!
-      integer(kind = kint), intent(in) :: lst_rtm, nle_rtm
-      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
-      real(kind = kreal), intent(inout) :: Pse_jt(n_jk_e,nle_rtm)
-      real(kind = kreal), intent(inout) :: dPsedt_jt(n_jk_e,nle_rtm)
-      real(kind = kreal), intent(inout) :: Pso_jt(n_jk_o,nle_rtm)
-      real(kind = kreal), intent(inout) :: dPsodt_jt(n_jk_o,nle_rtm)
-!
-      integer(kind = kint) :: lt, l_rtm, j_rlm, jj
-!
-!
-!$omp parallel do private(lt,l_rtm,jj,j_rlm)
-        do lt = 1, nle_rtm
-          l_rtm = lst_rtm + lt
-          do jj = 1, n_jk_e
-            j_rlm = 2*jj + jst_rlm - 1
-            Pse_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
-            dPsedt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
-          end do
-!
-          do jj = 1, n_jk_o
-            j_rlm = 2*jj + jst_rlm
-            Pso_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
-            dPsodt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
-          end do
-        end do
-!$omp end parallel do
-!
-      end subroutine set_each_sym_leg_omp_mat_jt
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_each_sym_leg_omp_mat_tj                            &
-     &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
-     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o,                       &
-     &          Pse_tj, dPsedt_tj, Pso_tj, dPsodt_tj)
-!
-      integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
-      integer(kind = kint), intent(in) :: jst_rlm
-!
-      real(kind= kreal), intent(in) :: P_rtm(nth_rtm,jmax_rlm)
-      real(kind= kreal), intent(in) :: dPdt_rtm(nth_rtm,jmax_rlm)
-!
-      integer(kind = kint), intent(in) :: lst_rtm, nle_rtm
-      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
-      real(kind = kreal), intent(inout) :: Pse_tj(nle_rtm,n_jk_e)
-      real(kind = kreal), intent(inout) :: dPsedt_tj(nle_rtm,n_jk_e)
-      real(kind = kreal), intent(inout) :: Pso_tj(nle_rtm,n_jk_o)
-      real(kind = kreal), intent(inout) :: dPsodt_tj(nle_rtm,n_jk_o)
-!
-      integer(kind = kint) :: lt, l_rtm, j_rlm, jj
-!
-!
-!$omp parallel do private(lt,l_rtm,jj,j_rlm)
-        do lt = 1, nle_rtm
-          l_rtm = lst_rtm + lt
-          do jj = 1, n_jk_e
-            j_rlm = 2*jj + jst_rlm - 1
-            Pse_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
-            dPsedt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
-          end do
-!
-          do jj = 1, n_jk_o
-            j_rlm = 2*jj + jst_rlm
-            Pso_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
-            dPsodt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
-          end do
-        end do
-!$omp end parallel do
-!
-      end subroutine set_each_sym_leg_omp_mat_tj
 !
 ! -----------------------------------------------------------------------
 !
