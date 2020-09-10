@@ -121,7 +121,6 @@
 !
 !$omp parallel do private(ip,lt,kst_s,kst_t,lp_rtm)
         do ip = 1, np_smp
-          WK_l_otf%wk_plm(ip)%time_omp(1:3) = 0
 !   even l-m
           do lt = 1, WK_l_otf%nlo_rtm(ip)
 !            kst_s = (lt-1) * nkrs + 1
