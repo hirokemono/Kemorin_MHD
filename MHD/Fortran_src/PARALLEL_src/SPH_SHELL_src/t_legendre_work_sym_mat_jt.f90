@@ -303,7 +303,10 @@
      &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
      &        WK_l_tsp%lst_rtm(ip), WK_l_tsp%nle_rtm(ip),               &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
-     &        WK_l_tsp%Pjt_mat(mp_rlm,ip))
+     &        WK_l_tsp%Pjt_mat(mp_rlm,ip)%Pse_jt(1),                    &
+     &        WK_l_tsp%Pjt_mat(mp_rlm,ip)%dPsedt_jt(1),                 &
+     &        WK_l_tsp%Pjt_mat(mp_rlm,ip)%Pso_jt(1),                    &
+     &        WK_l_tsp%Pjt_mat(mp_rlm,ip)%dPsodt_jt(1))
         end do
       end do
 !
@@ -336,7 +339,10 @@
      &        lstack_rlm(mp_rlm-1), P_rtm, dPdt_rtm,                    &
      &        WK_l_tsp%lst_rtm(ip), WK_l_tsp%nle_rtm(ip),               &
      &        WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),         &
-     &        WK_l_tsp%Ptj_mat(mp_rlm,ip))
+     &        WK_l_tsp%Ptj_mat(mp_rlm,ip)%Pse_tj(1),                    &
+     &        WK_l_tsp%Ptj_mat(mp_rlm,ip)%dPsedt_tj(1),                 &
+     &        WK_l_tsp%Ptj_mat(mp_rlm,ip)%Pso_tj(1),                    &
+     &        WK_l_tsp%Ptj_mat(mp_rlm,ip)%dPsodt_tj(1))
         end do
       end do
 !

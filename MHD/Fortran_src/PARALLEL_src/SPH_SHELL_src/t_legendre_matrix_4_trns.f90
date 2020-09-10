@@ -56,34 +56,34 @@
       type leg_jt_omp_matrix
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: Pse_jt(:,:)
+        real(kind = kreal), allocatable :: Pse_jt(:)
 !>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: dPsedt_jt(:,:)
+        real(kind = kreal), allocatable :: dPsedt_jt(:)
 !
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: Pso_jt(:,:)
+        real(kind = kreal), allocatable :: Pso_jt(:)
 !>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: dPsodt_jt(:,:)
+        real(kind = kreal), allocatable :: dPsodt_jt(:)
       end type leg_jt_omp_matrix
 !
 !>      Structure of Legendre polynomial P(\theta, l)
       type leg_tj_omp_matrix
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: Pse_tj(:,:)
+        real(kind = kreal), allocatable :: Pse_tj(:)
 !>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: dPsedt_tj(:,:)
+        real(kind = kreal), allocatable :: dPsedt_tj(:)
 !
 !>          @$f P_{l}{m} @$f
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: Pso_tj(:,:)
+        real(kind = kreal), allocatable :: Pso_tj(:)
 !>          @$f dP_{l}{m}/d\theta @$f  with even (l-m) 
 !!          at gouss points in northen hemisphere
-        real(kind = kreal), allocatable :: dPsodt_tj(:,:)
+        real(kind = kreal), allocatable :: dPsodt_tj(:)
       end type leg_tj_omp_matrix
 !
 ! -----------------------------------------------------------------------
@@ -101,20 +101,20 @@
       type(leg_jt_omp_matrix), intent(inout) :: Pjt_mat
 !
 !
-      allocate(Pjt_mat%Pse_jt(n_jk_e,nle_rtm))
-      allocate(Pjt_mat%dPsedt_jt(n_jk_e,nle_rtm))
+      allocate(Pjt_mat%Pse_jt(n_jk_e*nle_rtm))
+      allocate(Pjt_mat%dPsedt_jt(n_jk_e*nle_rtm))
 !
 !$omp parallel workshare
-      Pjt_mat%Pse_jt(1:n_jk_e,1:nle_rtm) =    0.0d0
-      Pjt_mat%dPsedt_jt(1:n_jk_e,1:nle_rtm) = 0.0d0
+      Pjt_mat%Pse_jt(1:n_jk_e*nle_rtm) =    0.0d0
+      Pjt_mat%dPsedt_jt(1:n_jk_e*nle_rtm) = 0.0d0
 !$omp end parallel workshare
 !
-      allocate(Pjt_mat%Pso_jt(n_jk_o,nle_rtm))
-      allocate(Pjt_mat%dPsodt_jt(n_jk_o,nle_rtm))
+      allocate(Pjt_mat%Pso_jt(n_jk_o*nle_rtm))
+      allocate(Pjt_mat%dPsodt_jt(n_jk_o*nle_rtm))
 !
 !$omp parallel workshare
-      Pjt_mat%Pso_jt(1:n_jk_o,1:nle_rtm) =    0.0d0
-      Pjt_mat%dPsodt_jt(1:n_jk_o,1:nle_rtm) = 0.0d0
+      Pjt_mat%Pso_jt(1:n_jk_o*nle_rtm) =    0.0d0
+      Pjt_mat%dPsodt_jt(1:n_jk_o*nle_rtm) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_each_sym_leg_omp_mat_jt
@@ -130,21 +130,20 @@
       type(leg_tj_omp_matrix), intent(inout) :: Ptj_mat
 !
 !
-!
-      allocate(Ptj_mat%Pse_tj(nle_rtm,n_jk_e))
-      allocate(Ptj_mat%dPsedt_tj(nle_rtm,n_jk_e))
+      allocate(Ptj_mat%Pse_tj(nle_rtm*n_jk_e))
+      allocate(Ptj_mat%dPsedt_tj(nle_rtm*n_jk_e))
 !
 !$omp parallel workshare
-      Ptj_mat%Pse_tj(1:nle_rtm,1:n_jk_e) =    0.0d0
-      Ptj_mat%dPsedt_tj(1:nle_rtm,1:n_jk_e) = 0.0d0
+      Ptj_mat%Pse_tj(1:nle_rtm*n_jk_e) =    0.0d0
+      Ptj_mat%dPsedt_tj(1:nle_rtm*n_jk_e) = 0.0d0
 !$omp end parallel workshare
 !
-      allocate(Ptj_mat%Pso_tj(nle_rtm,n_jk_o))
-      allocate(Ptj_mat%dPsodt_tj(nle_rtm,n_jk_o))
+      allocate(Ptj_mat%Pso_tj(nle_rtm*n_jk_o))
+      allocate(Ptj_mat%dPsodt_tj(nle_rtm*n_jk_o))
 !
 !$omp parallel workshare
-      Ptj_mat%Pso_tj(1:nle_rtm,1:n_jk_o) =    0.0d0
-      Ptj_mat%dPsodt_tj(1:nle_rtm,1:n_jk_o) = 0.0d0
+      Ptj_mat%Pso_tj(1:nle_rtm*n_jk_o) =    0.0d0
+      Ptj_mat%dPsodt_tj(1:nle_rtm*n_jk_o) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_each_sym_leg_omp_mat_tj
@@ -179,7 +178,8 @@
 !
       subroutine set_each_sym_leg_omp_mat_jt                            &
      &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
-     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o, Pjt_mat)
+     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o,                       &
+     &          Pse_jt, dPsedt_jt, Pso_jt, dPsodt_jt)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
       integer(kind = kint), intent(in) :: jst_rlm
@@ -189,7 +189,10 @@
 !
       integer(kind = kint), intent(in) :: lst_rtm, nle_rtm
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
-      type(leg_jt_omp_matrix), intent(inout) :: Pjt_mat
+      real(kind = kreal), intent(inout) :: Pse_jt(n_jk_e,nle_rtm)
+      real(kind = kreal), intent(inout) :: dPsedt_jt(n_jk_e,nle_rtm)
+      real(kind = kreal), intent(inout) :: Pso_jt(n_jk_o,nle_rtm)
+      real(kind = kreal), intent(inout) :: dPsodt_jt(n_jk_o,nle_rtm)
 !
       integer(kind = kint) :: lt, l_rtm, j_rlm, jj
 !
@@ -199,14 +202,14 @@
           l_rtm = lst_rtm + lt
           do jj = 1, n_jk_e
             j_rlm = 2*jj + jst_rlm - 1
-            Pjt_mat%Pse_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
-            Pjt_mat%dPsedt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
+            Pse_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
+            dPsedt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
           end do
 !
           do jj = 1, n_jk_o
             j_rlm = 2*jj + jst_rlm
-            Pjt_mat%Pso_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
-            Pjt_mat%dPsodt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
+            Pso_jt(jj,lt) =     P_rtm(l_rtm,j_rlm)
+            dPsodt_jt(jj,lt) =  dPdt_rtm(l_rtm,j_rlm)
           end do
         end do
 !$omp end parallel do
@@ -217,7 +220,8 @@
 !
       subroutine set_each_sym_leg_omp_mat_tj                            &
      &         (nth_rtm, jmax_rlm, jst_rlm, P_rtm, dPdt_rtm,            &
-     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o, Ptj_mat)
+     &          lst_rtm, nle_rtm, n_jk_e, n_jk_o,                       &
+     &          Pse_tj, dPsedt_tj, Pso_tj, dPsodt_tj)
 !
       integer(kind = kint), intent(in) :: nth_rtm, jmax_rlm
       integer(kind = kint), intent(in) :: jst_rlm
@@ -227,7 +231,10 @@
 !
       integer(kind = kint), intent(in) :: lst_rtm, nle_rtm
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
-      type(leg_tj_omp_matrix), intent(inout) :: Ptj_mat
+      real(kind = kreal), intent(inout) :: Pse_tj(nle_rtm,n_jk_e)
+      real(kind = kreal), intent(inout) :: dPsedt_tj(nle_rtm,n_jk_e)
+      real(kind = kreal), intent(inout) :: Pso_tj(nle_rtm,n_jk_o)
+      real(kind = kreal), intent(inout) :: dPsodt_tj(nle_rtm,n_jk_o)
 !
       integer(kind = kint) :: lt, l_rtm, j_rlm, jj
 !
@@ -237,14 +244,14 @@
           l_rtm = lst_rtm + lt
           do jj = 1, n_jk_e
             j_rlm = 2*jj + jst_rlm - 1
-            Ptj_mat%Pse_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
-            Ptj_mat%dPsedt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
+            Pse_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
+            dPsedt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
           end do
 !
           do jj = 1, n_jk_o
             j_rlm = 2*jj + jst_rlm
-            Ptj_mat%Pso_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
-            Ptj_mat%dPsodt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
+            Pso_tj(lt,jj) =     P_rtm(l_rtm,j_rlm)
+            dPsodt_tj(lt,jj) =  dPdt_rtm(l_rtm,j_rlm)
           end do
         end do
 !$omp end parallel do
