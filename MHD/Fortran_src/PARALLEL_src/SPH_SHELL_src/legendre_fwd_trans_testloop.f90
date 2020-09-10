@@ -447,7 +447,7 @@
       use t_schmidt_poly_on_rtm
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
-      use matmul_for_legendre_trans
+      use small_matmul_leg_trans_krin
 !
       integer(kind = kint), intent(in) :: lp_rtm
       integer(kind = kint), intent(in) :: mp_rlm, mn_rlm
