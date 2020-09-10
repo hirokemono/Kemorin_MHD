@@ -7,7 +7,7 @@
 !>@brief  small Matrix products for Legendre transforms
 !!
 !!@verbatim
-!!      subroutine matvec_fwd_leg_trans(nkr, n_jk, V_k, P_j, S_kj)
+!!      subroutine matvec_fwd_leg_trans_Pj(nkr, n_jk, V_k, P_j, S_kj)
 !!        integer(kind = kint), intent(in) :: n_jk, nkr
 !!        real(kind = kreal), intent(in) :: V_k(nkr)
 !!        real(kind = kreal), intent(in) :: P_j(n_jk)
@@ -74,7 +74,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine matvec_fwd_leg_trans(nkr, n_jk, V_k, P_j, S_kj)
+      subroutine matvec_fwd_leg_trans_Pj(nkr, n_jk, V_k, P_j, S_kj)
 !
       integer(kind = kint), intent(in) :: n_jk, nkr
       real(kind = kreal), intent(in) :: V_k(nkr)
@@ -91,7 +91,7 @@
         end do
       end do
 !
-      end subroutine matvec_fwd_leg_trans
+      end subroutine matvec_fwd_leg_trans_Pj
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
