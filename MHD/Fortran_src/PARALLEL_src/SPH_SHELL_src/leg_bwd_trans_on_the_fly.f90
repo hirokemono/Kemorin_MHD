@@ -50,7 +50,6 @@
       implicit none
 !
       integer, external :: omp_get_max_threads
-      real(kind = kreal), private :: tm1, tm2, tm3, st1
 !
       private :: leg_bwd_trans_1latitude, leg_bwd_trans_at_equator
 !
@@ -88,7 +87,11 @@
       integer(kind = kint) :: ip, jst, jed, jnum
       integer(kind = kint) :: lt, kst_s, kst_t
 !
-      real(kind = kreal) :: tm1, tm2, tm3, st1
+!$omp parallel do
+      do ip = 1, np_smp
+        WK_l_otf%wk_plm(ip)%time_omp(1:3) = 0
+      end do
+!$omp end parallel do
 !
 !$omp parallel workshare
       WS(1:ncomp*comm_rtm%ntot_item_sr) = 0.0d0
@@ -116,13 +119,9 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
 !
-        tm1 = 0.0d0
-        tm2 = 0.0d0
-        tm3 = 0.0d0
-!        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
-!$omp parallel do private(ip,lt,kst_s,kst_t,st1,lp_rtm) &
-!$omp& reduction(+:tm1,tm2,tm3)
+!$omp parallel do private(ip,lt,kst_s,kst_t,lp_rtm)
         do ip = 1, np_smp
+          WK_l_otf%wk_plm(ip)%time_omp(1:3) = 0
 !   even l-m
           do lt = 1, WK_l_otf%nlo_rtm(ip)
 !            kst_s = (lt-1) * nkrs + 1
@@ -153,15 +152,22 @@
           end if
         end do
 !$omp end parallel do
-!
-        elps1%elapsed(ist_elapsed_SDT+18)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+19) + tm1 / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+13)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+13) + tm2 / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+14)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+14) + tm3 / dble(np_smp)
-!          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
       end do
+!
+      do ip = 2, np_smp
+        WK_l_otf%wk_plm(1)%time_omp(1:3)                                &
+     &        = WK_l_otf%wk_plm(1)%time_omp(1:3)                        &
+     &         + WK_l_otf%wk_plm(ip)%time_omp(1:3)
+      end do
+      elps1%elapsed(ist_elapsed_SDT+13)                                 &
+     &        = elps1%elapsed(ist_elapsed_SDT+13)                       &
+     &         + WK_l_otf%wk_plm(1)%time_omp(1) / dble(np_smp)
+      elps1%elapsed(ist_elapsed_SDT+14)                                 &
+     &        = elps1%elapsed(ist_elapsed_SDT+14)                       &
+     &         + WK_l_otf%wk_plm(1)%time_omp(2) / dble(np_smp)
+      elps1%elapsed(ist_elapsed_SDT+15)                                 &
+     &        = elps1%elapsed(ist_elapsed_SDT+15)                       &
+     &         + WK_l_otf%wk_plm(1)%time_omp(3) / dble(np_smp)
 !
       end subroutine legendre_b_trans_on_the_fly
 !
@@ -204,14 +210,16 @@
       type(work_make_legendre), intent(inout) :: wk_plm
 !
 !      Set Legendre polynomials
-      st1 = MPI_WTIME()
+      wk_plm%st_time_omp = MPI_WTIME()
       call set_each_sym_leg_omp_mat_j1(sph_rlm, mm, jst,                &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o,                      &
      &    Pjt_mat%Pse_jt(1), Pjt_mat%dPsedt_jt(1),                      &
      &    Pjt_mat%Pso_jt(1), Pjt_mat%dPsodt_jt(1), wk_plm)
-      tm1 = tm1 + MPI_WTIME() - st1
+      wk_plm%time_omp(1) = wk_plm%time_omp(1)                           &
+     &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      st1 = MPI_WTIME()
+!   Matrix products
+      wk_plm%st_time_omp = MPI_WTIME()
       call matvec_bwd_leg_trans_Pj(iflag_matmul, nkrs, n_jk_e,          &
      &    Smat%pol_e(1), Pjt_mat%Pse_jt(1), Fmat%symp_r(1))
       call matvec_bwd_leg_trans_Pj(iflag_matmul, nkrt, n_jk_e,          &
@@ -221,15 +229,18 @@
      &    Smat%pol_o(1), Pjt_mat%Pso_jt(1), Fmat%asmp_r(1))
       call matvec_bwd_leg_trans_Pj(iflag_matmul, nkrt, n_jk_o,          &
      &    Smat%tor_o(1), Pjt_mat%dPsodt_jt(1), Fmat%symp_p(1))
-      tm2 = tm2 + MPI_WTIME() - st1
+      wk_plm%time_omp(2) = wk_plm%time_omp(2)                           &
+     &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      st1 = MPI_WTIME()
+!   Substitute to send buffer
+      wk_plm%st_time_omp = MPI_WTIME()
       call cal_vr_rtm_sym_mat_lt_rin(lp_rtm, sph_rtm%nnod_rtm,          &
      &    sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,        &
      &    leg%asin_t_rtm, mp_rlm, mn_rlm, Fmat%symp_r(1),               &
      &    Fmat%asmp_p(1), Fmat%asmp_r(1), Fmat%symp_p(1),               &
      &    ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
-      tm3 = tm3 + MPI_WTIME() - st1
+      wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
+     &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
       end subroutine leg_bwd_trans_1latitude
 !
@@ -268,11 +279,16 @@
       type(work_make_legendre), intent(inout) :: wk_plm
 !
 !      Set Legendre polynomials
+      wk_plm%st_time_omp = MPI_WTIME()
       call set_each_sym_leg_omp_mat_j1(sph_rlm, mm, jst,                &
      &    leg%g_colat_rtm(lp_rtm), n_jk_e, n_jk_o,                      &
      &    Pjt_mat%Pse_jt(1), Pjt_mat%dPsedt_jt(1),                      &
      &    Pjt_mat%Pso_jt(1), Pjt_mat%dPsodt_jt(1), wk_plm)
+      wk_plm%time_omp(1) = wk_plm%time_omp(1)                           &
+     &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
+!   Matrix products
+      wk_plm%st_time_omp = MPI_WTIME()
       call matvec_bwd_leg_trans_Pj(iflag_matmul, nkrs, n_jk_e,          &
      &    Smat%pol_e(1), Pjt_mat%Pse_jt(1), Fmat%symp_r(1))
 !      call matvec_bwd_leg_trans_Pj(iflag_matmul, nkrt, n_jk_e,         &
@@ -282,12 +298,18 @@
      &    Smat%pol_o(1), Pjt_mat%Pso_jt(1), Fmat%asmp_r(1))
       call matvec_bwd_leg_trans_Pj(iflag_matmul, nkrt, n_jk_o,          &
      &    Smat%tor_o(1), Pjt_mat%dPsodt_jt(1), Fmat%symp_p(1))
+      wk_plm%time_omp(2) = wk_plm%time_omp(2)                           &
+     &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
+!   Substitute to send buffer
+      wk_plm%st_time_omp = MPI_WTIME()
       call cal_vr_rtm_sym_mat_eq_rin(lp_rtm, sph_rtm%nnod_rtm,          &
      &    sph_rtm%nidx_rtm, sph_rtm%istep_rtm, sph_rlm%nidx_rlm,        &
      &    leg%asin_t_rtm, mp_rlm, mn_rlm,                               &
      &    Fmat%symp_r(1), Fmat%asmp_r(1), Fmat%symp_p(1),               &
      &    ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
+      wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
+     &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
       end subroutine leg_bwd_trans_at_equator
 !

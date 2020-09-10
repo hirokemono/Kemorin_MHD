@@ -55,6 +55,9 @@
         real(kind = kreal), allocatable :: pmp1(:)
         real(kind = kreal), allocatable :: pmn1(:)
         real(kind = kreal), allocatable :: df_m(:)
+!
+        real(kind = kreal) :: st_time_omp
+        real(kind = kreal) :: time_omp(3)
       end type work_make_legendre
 !
 ! -----------------------------------------------------------------------

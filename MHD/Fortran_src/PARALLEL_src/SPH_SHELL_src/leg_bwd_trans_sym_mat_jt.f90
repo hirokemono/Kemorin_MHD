@@ -109,7 +109,7 @@
      &        WK_l_tsp%Smat(1)%pol_o(1), WK_l_tsp%Smat(1)%tor_o(1) )
       if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
 !
-          if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+13)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
 !$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tsp%lst_rtm(ip)
@@ -137,9 +137,9 @@
      &        WK_l_tsp%Fmat(ip)%symp_p(1))
         end do
 !$omp end parallel do
-      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+13)
+      if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
 !
-      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
+      if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
 !$omp parallel do private(ip,lst_rtm)
         do ip = 1, np_smp
           lst_rtm = WK_l_tsp%lst_rtm(ip)
@@ -153,7 +153,7 @@
      &        ncomp, nvector, nscalar, comm_rtm%irev_sr, n_WS, WS)
         end do
 !$omp end parallel do
-          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
+          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
       end do
 !

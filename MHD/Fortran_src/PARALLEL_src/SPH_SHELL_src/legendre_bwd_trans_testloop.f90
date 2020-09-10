@@ -117,7 +117,7 @@
         tm1 = 0.0d0
         tm2 = 0.0d0
         tm3 = 0.0d0
-!        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+14)
+!        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+15)
 !$omp parallel do private(ip,lt,kst_s,kst_t,st1,lp_rtm) &
 !$omp& reduction(+:tm1,tm2,tm3)
         do ip = 1, np_smp
@@ -154,11 +154,10 @@
 !
         elps1%elapsed(ist_elapsed_SDT+18)                               &
      &        = elps1%elapsed(ist_elapsed_SDT+19) + tm1 / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+13)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+13) + tm2 / dble(np_smp)
         elps1%elapsed(ist_elapsed_SDT+14)                               &
-     &        = elps1%elapsed(ist_elapsed_SDT+14) + tm3 / dble(np_smp)
-!          if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+14)
+     &        = elps1%elapsed(ist_elapsed_SDT+14) + tm2 / dble(np_smp)
+        elps1%elapsed(ist_elapsed_SDT+15)                               &
+     &        = elps1%elapsed(ist_elapsed_SDT+15) + tm3 / dble(np_smp)
       end do
 !
       end subroutine legendre_b_trans_vector_test

@@ -79,16 +79,16 @@
       elps1%labels(ist_elapsed_SDT+10) = 'dfftw_execute       '
       elps1%labels(ist_elapsed_SDT+11) = 'copy_FFT_complex    '
 !
-      elps1%labels(ist_elapsed_SDT+12) = 'set_sp_rlm_vec_testloop '
-      elps1%labels(ist_elapsed_SDT+13) = 'matmul_bwd_leg_trans    '
-      elps1%labels(ist_elapsed_SDT+14) = 'cal_vr_rtm_vec_testloop '
+      elps1%labels(ist_elapsed_SDT+12) = 'set_sp_rlm_vec from recv '
+      elps1%labels(ist_elapsed_SDT+18) = 'on-the-fly Legendre for bwd '
+      elps1%labels(ist_elapsed_SDT+14) = 'matmul_bwd_leg_trans    '
+      elps1%labels(ist_elapsed_SDT+15) = 'cal_vr_rtm_vec to send '
 !
-      elps1%labels(ist_elapsed_SDT+15) = 'set_vr_rtm_vec_testloop '
-      elps1%labels(ist_elapsed_SDT+16) = 'matmul_fwd_leg_trans    '
-      elps1%labels(ist_elapsed_SDT+17) = 'cal_sp_rlm_vec_testloop '
+      elps1%labels(ist_elapsed_SDT+16) = 'set_vr_rtm_vec from recv '
+      elps1%labels(ist_elapsed_SDT+17) = 'on-the-fly Legendre for fwd '
+      elps1%labels(ist_elapsed_SDT+18) = 'matmul_fwd_leg_trans    '
+      elps1%labels(ist_elapsed_SDT+19) = 'cal_sp_rlm_vec to send '
 !
-      elps1%labels(ist_elapsed_SDT+18) = 'Legendrre polynomial for bwd'
-      elps1%labels(ist_elapsed_SDT+19) = 'Legendrre polynomial for fwd'
 !
       iflag_SDT_time = .TRUE.
 !
