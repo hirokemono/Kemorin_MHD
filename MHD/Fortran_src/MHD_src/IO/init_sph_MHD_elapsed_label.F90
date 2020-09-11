@@ -95,11 +95,6 @@
      &    nproc_rj_IO, nproc_rlm_IO, nproc_rtm_IO, nproc_rtp_IO)
 !
       if(my_rank .ne. 0) return
-write(*,*) 'step_rj',  sph%sph_rj%istep_rj
-write(*,*) 'step_rlm', sph%sph_rlm%istep_rlm
-write(*,*) 'step_rtm', sph%sph_rtm%istep_rtm
-write(*,*) 'step_rtp', sph%sph_rtp%istep_rtp
-!
 !
       call write_resolution_info(nprocs, sph%sph_params,                &
      &    sph%sph_rtp, sph%sph_rtm, sph%sph_rlm, sph%sph_rj,            &
