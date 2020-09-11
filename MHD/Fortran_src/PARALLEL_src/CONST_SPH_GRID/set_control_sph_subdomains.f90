@@ -8,6 +8,9 @@
 !!        for spherical transform
 !!
 !!@verbatim
+!!      subroutine set_inner_loop_4_sph_shell(sdctl, s3d_ranks)
+!!        type(sphere_domain_control), intent(in) :: sdctl
+!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
 !!      subroutine set_subdomains_4_sph_shell                           &
 !!     &         (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
 !!        type(sphere_domain_control), intent(in) :: sdctl
@@ -50,6 +53,48 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_inner_loop_4_sph_shell(sdctl, s3d_ranks)
+!
+      use skip_comment_f
+!
+      type(sphere_domain_control), intent(in) :: sdctl
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
+!
+      character(len = kchara) :: tmpchara
+!
+!
+      s3d_ranks%rj_rin_flag =  .FALSE.
+!
+      s3d_ranks%rlm_rin_flag = .FALSE.
+      if(sdctl%rlm_inner_loop_ctl%iflag .gt. 0) then
+        tmpchara = sdctl%rlm_inner_loop_ctl%charavalue
+        if(     cmp_no_case(tmpchara, radius1)                          &
+     &     .or. cmp_no_case(tmpchara, radius2)                          &
+     &     .or. cmp_no_case(tmpchara, radius3)) then
+          s3d_ranks%rlm_rin_flag = .TRUE.
+        else if(     cmp_no_case(tmpchara, horiz1)) then
+          s3d_ranks%rlm_rin_flag = .FALSE.
+        end if
+      end if
+!
+      s3d_ranks%rtm_rin_flag = .FALSE.
+      if(sdctl%rtm_inner_loop_ctl%iflag .gt. 0) then
+        tmpchara = sdctl%rtm_inner_loop_ctl%charavalue
+        if(     cmp_no_case(tmpchara, radius1)                          &
+     &     .or. cmp_no_case(tmpchara, radius2)                          &
+     &     .or. cmp_no_case(tmpchara, radius3)) then
+          s3d_ranks%rtm_rin_flag = .TRUE.
+        else if(     cmp_no_case(tmpchara, horiz1)) then
+          s3d_ranks%rtm_rin_flag = .FALSE.
+        end if
+      end if
+!
+      s3d_ranks%rtp_rin_flag = .TRUE.
+!
+      end subroutine set_inner_loop_4_sph_shell
+!
+!  ---------------------------------------------------------------------
+!
       subroutine set_subdomains_4_sph_shell                             &
      &         (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
 !
@@ -83,12 +128,12 @@
         return
       end if
 !
-      s3d_ranks%iflag_radial_inner_domain = 0
+      s3d_ranks%radial_inner_domain_flag = .FALSE.
       if(sdctl%inner_decomp_ctl%iflag .gt. 0) then
         if(cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius1)      &
      &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius2)  &
      &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius3)) &
-     &   s3d_ranks%iflag_radial_inner_domain = 1
+     &   s3d_ranks%radial_inner_domain_flag = .TRUE.
       end if
 !
       call check_sph_domains(nprocs_check, s3d_ranks, ierr, e_message)

@@ -68,7 +68,7 @@
 !
 !
 !      write(*,*) 'set_gl_rank_3d', s3d_ranks%ndomain_rtp(1:3)
-      call set_gl_rank_3d(s3d_ranks%iflag_radial_inner_domain,          &
+      call set_gl_rank_3d(s3d_ranks%radial_inner_domain_flag,           &
      &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rtp,                 &
      &    s3d_ranks%iglobal_rank_rtp)
 !
@@ -140,7 +140,7 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      call set_gl_rank_3d(s3d_ranks%iflag_radial_inner_domain,          &
+      call set_gl_rank_3d(s3d_ranks%radial_inner_domain_flag,           &
      &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rtm,                 &
      &    s3d_ranks%iglobal_rank_rtm)
 !
@@ -205,7 +205,7 @@
 !
 !
       call set_gl_rank_2d                                               &
-     &   (s3d_ranks%iflag_radial_inner_domain, s3d_ranks%ndomain_sph,   &
+     &   (s3d_ranks%radial_inner_domain_flag, s3d_ranks%ndomain_sph,    &
      &    s3d_ranks%ndomain_rj, s3d_ranks%iglobal_rank_rj)
 !
       call cal_local_nums                                               &
@@ -245,7 +245,7 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call set_gl_rank_2d(s3d_ranks%iflag_radial_inner_domain,          &
+      call set_gl_rank_2d(s3d_ranks%radial_inner_domain_flag,           &
      &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rlm,                 &
      &    s3d_ranks%iglobal_rank_rlm)
 !
