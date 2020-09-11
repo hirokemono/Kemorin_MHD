@@ -76,8 +76,6 @@
           s3d_ranks%rlm_rin_flag = .FALSE.
         end if
       end if
-      write(*,*) 'rlm_inner_loop_ctl', trim(sdctl%rlm_inner_loop_ctl%charavalue)
-      write(*,*) 's3d_ranks%rlm_rin_flag', s3d_ranks%rlm_rin_flag
 !
       s3d_ranks%rtm_rin_flag = .TRUE.
       if(sdctl%rtm_inner_loop_ctl%iflag .gt. 0) then
@@ -90,8 +88,6 @@
           s3d_ranks%rtm_rin_flag = .FALSE.
         end if
       end if
-      write(*,*) 'rtm_inner_loop_ctl', trim(sdctl%rtm_inner_loop_ctl%charavalue)
-      write(*,*) 's3d_ranks%rtm_rin_flag', s3d_ranks%rtm_rin_flag
 !
       s3d_ranks%rtp_rin_flag = .TRUE.
 !
