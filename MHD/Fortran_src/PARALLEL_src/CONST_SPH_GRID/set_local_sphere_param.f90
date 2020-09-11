@@ -130,8 +130,8 @@
 !
       inod = 0
       do m = 1, sph_rtm%nidx_rtm(3)
-        do k = 1, sph_rtm%nidx_rtm(1)
           do l = 1, sph_rtm%nidx_rtm(2)
+        do k = 1, sph_rtm%nidx_rtm(1)
             inod = inod + 1
             sph_rtm%idx_global_rtm(inod,1) = sph_rtm%idx_gl_1d_rtm_r(k)
             sph_rtm%idx_global_rtm(inod,2) = sph_rtm%idx_gl_1d_rtm_t(l)
