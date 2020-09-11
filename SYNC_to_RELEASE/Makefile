@@ -40,6 +40,10 @@ C_INCLUDE = -I.
 
 CPP_FLAGS =
 
+ifdef PNG_LIBS
+  CPP_FLAGS += -D_OPENMP
+endif
+
 ifdef ZLIB_LIBS
   CPP_FLAGS += -DZLIB_IO
   C_INCLUDE+= $$(ZLIB_CFLAGS) 
