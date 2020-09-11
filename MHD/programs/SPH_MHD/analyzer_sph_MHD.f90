@@ -100,11 +100,6 @@
       call init_zonal_mean_sections                                     &
      &   (FEM_d1%geofem, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
 !
-      write(*,*) 'step_rj',  SPH_MHD1%sph%sph_rj%istep_rj
-      write(*,*) 'step_rlm', SPH_MHD1%sph%sph_rlm%istep_rlm
-      write(*,*) 'step_rtm', SPH_MHD1%sph%sph_rtm%istep_rtm
-      write(*,*) 'step_rtp', SPH_MHD1%sph%sph_rtp%istep_rtp
-!
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call reset_elapse_4_init_sph_mhd
 !
@@ -208,6 +203,11 @@
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
 !      call SPH_finalize_MHD
+!
+write(*,*) 'step_rj',  SPH_MHD1%sph%sph_rj%istep_rj
+write(*,*) 'step_rlm', SPH_MHD1%sph%sph_rlm%istep_rlm
+write(*,*) 'step_rtm', SPH_MHD1%sph%sph_rtm%istep_rtm
+write(*,*) 'step_rtp', SPH_MHD1%sph%sph_rtp%istep_rtp
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
