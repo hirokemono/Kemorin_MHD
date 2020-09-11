@@ -65,7 +65,7 @@
 !
       s3d_ranks%rj_rin_flag =  .FALSE.
 !
-      s3d_ranks%rlm_rin_flag = .FALSE.
+      s3d_ranks%rlm_rin_flag = .TRUE.
       if(sdctl%rlm_inner_loop_ctl%iflag .gt. 0) then
         tmpchara = sdctl%rlm_inner_loop_ctl%charavalue
         if(     cmp_no_case(tmpchara, radius1)                          &
@@ -77,7 +77,7 @@
         end if
       end if
 !
-      s3d_ranks%rtm_rin_flag = .FALSE.
+      s3d_ranks%rtm_rin_flag = .TRUE.
       if(sdctl%rtm_inner_loop_ctl%iflag .gt. 0) then
         tmpchara = sdctl%rtm_inner_loop_ctl%charavalue
         if(     cmp_no_case(tmpchara, radius1)                          &
