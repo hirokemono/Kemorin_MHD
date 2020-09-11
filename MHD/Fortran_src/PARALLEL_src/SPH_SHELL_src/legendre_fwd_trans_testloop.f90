@@ -50,6 +50,10 @@
 !
       integer, external :: omp_get_max_threads
 !
+      private :: leg_fwd_trans_8latitude, leg_fwd_trans_4latitude
+      private :: leg_fwd_trans_2latitude, leg_fwd_trans_1latitude
+      private :: leg_fwd_trans_at_equator
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -111,7 +115,7 @@
           WK_l_tst%Smat(ip)%tor_o(1:WK_l_tst%n_tor_e) = 0.0d0
 !
           do lt2 = 1, WK_l_tst%nlo_rtm(ip) / 8
-            call legendre_fwd_trans_8lat_test                         &
+            call leg_fwd_trans_8latitude                              &
      &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,             &
      &          iflag_matmul, ncomp, nvector, nscalar,                &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
@@ -123,7 +127,7 @@
           lst = 1 + int(WK_l_tst%nlo_rtm(ip)/8) * 8
 !
           do lt2 = 1 + lst/4, WK_l_tst%nlo_rtm(ip) / 4
-            call legendre_fwd_trans_4lat_test                         &
+            call leg_fwd_trans_4latitude                              &
      &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,             &
      &          iflag_matmul, ncomp, nvector, nscalar,                &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
@@ -135,7 +139,7 @@
 !
           lst = 1 + int(WK_l_tst%nlo_rtm(ip)/4) * 4
           do lt2 = 1 + lst/2, WK_l_tst%nlo_rtm(ip) / 2
-            call legendre_fwd_trans_2lat_test                         &
+            call leg_fwd_trans_2latitude                              &
      &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,             &
      &          iflag_matmul, ncomp, nvector, nscalar,                &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,            &
@@ -149,7 +153,7 @@
           do lt = lst, WK_l_tst%nlo_rtm(ip)
             lp_rtm = WK_l_tst%lst_rtm(ip) + lt
             ln_rtm = sph_rtm%nidx_rtm(2) - lp_rtm + 1
-            call legendre_fwd_trans_1lat_test                           &
+            call leg_fwd_trans_1latitude                                &
      &         (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,    &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -161,7 +165,7 @@
 !   Equator (if necessary)
           if(WK_l_tst%nle_rtm(ip) .gt. WK_l_tst%nlo_rtm(ip)) then
             lp_rtm = WK_l_tst%lst_rtm(ip) + WK_l_tst%nle_rtm(ip)
-            call legendre_fwd_trans_eq_test                             &
+            call leg_fwd_trans_at_equator                               &
      &         (lp_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,            &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -230,7 +234,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_fwd_trans_8lat_test                           &
+      subroutine leg_fwd_trans_8latitude                                &
      &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,               &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -310,11 +314,11 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_fwd_trans_8lat_test
+      end subroutine leg_fwd_trans_8latitude
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_fwd_trans_4lat_test                           &
+      subroutine leg_fwd_trans_4latitude                                &
      &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,               &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -394,11 +398,11 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_fwd_trans_4lat_test
+      end subroutine leg_fwd_trans_4latitude
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_fwd_trans_2lat_test                           &
+      subroutine leg_fwd_trans_2latitude                                &
      &         (lt2, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,               &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -478,11 +482,11 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_fwd_trans_2lat_test
+      end subroutine leg_fwd_trans_2latitude
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_fwd_trans_1lat_test                           &
+      subroutine leg_fwd_trans_1latitude                                &
      &         (lp_rtm, ln_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,    &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -552,11 +556,11 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_fwd_trans_1lat_test
+      end subroutine leg_fwd_trans_1latitude
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_fwd_trans_eq_test                             &
+      subroutine leg_fwd_trans_at_equator                               &
      &         (lp_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,            &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rtm, sph_rlm, comm_rtm, leg, n_WR, WR,              &
@@ -627,7 +631,7 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_fwd_trans_eq_test
+      end subroutine leg_fwd_trans_at_equator
 !
 ! -----------------------------------------------------------------------
 !

@@ -170,7 +170,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_bwd_trans_1lat_test                           &
+      subroutine leg_bwd_trans_1latitude                                &
      &         (lp_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,            &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm,                   &
@@ -238,11 +238,11 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_bwd_trans_1lat_test
+      end subroutine leg_bwd_trans_1latitude
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine legendre_bwd_trans_eq_test                             &
+      subroutine leg_bwd_trans_at_equator                               &
      &         (lp_rtm, jst, mm, mp_rlm, mn_rlm, nkrs, nkrt,            &
      &          iflag_matmul, ncomp, nvector, nscalar,                  &
      &          sph_rlm, sph_rtm, comm_rtm, leg, n_WS, WS,              &
@@ -307,7 +307,7 @@
       wk_plm%time_omp(3) = wk_plm%time_omp(3)                           &
      &                    + MPI_WTIME() - wk_plm%st_time_omp
 !
-      end subroutine legendre_bwd_trans_eq_test
+      end subroutine leg_bwd_trans_at_equator
 !
 ! -----------------------------------------------------------------------
 !
