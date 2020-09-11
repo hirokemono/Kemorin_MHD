@@ -77,6 +77,8 @@
 !
         type(field_matrix_omp), allocatable :: Fmat(:)
 !
+!>       Work area to count time
+        real(kind = kreal), allocatable :: time_jt_omp(:,:)
 !
 !>       size for work area of pol_e and pol_o
         integer(kind = kint) :: n_pol_e
@@ -121,6 +123,9 @@
 !
       allocate(WK_l_tsp%Fmat(np_smp))
       allocate(WK_l_tsp%Smat(np_smp))
+!
+      allocate(WK_l_tsp%time_jt_omp(np_smp,3))
+      WK_l_tsp%time_jt_omp(1:np_smp,1:3) = 0.0d0
 !
       call count_size_of_field_mat_omp                                  &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
@@ -169,6 +174,9 @@
       allocate(WK_l_tsp%Fmat(np_smp))
       allocate(WK_l_tsp%Smat(np_smp))
 !
+      allocate(WK_l_tsp%time_jt_omp(np_smp,3))
+      WK_l_tsp%time_jt_omp(1:np_smp,1:3) = 0.0d0
+!
       call count_size_of_field_mat_omp                                  &
      &   (np_smp, sph_rtm%nidx_rtm(1), sph_rtm%istack_rtm_lt_smp,       &
      &    nvector, nscalar, WK_l_tsp%lst_rtm, WK_l_tsp%nle_rtm,         &
@@ -202,6 +210,8 @@
       call dealloc_spectr_mat_omp(np_smp, WK_l_tsp%Smat)
       call dealloc_field_mat_omp(np_smp, WK_l_tsp%Fmat)
 !
+      deallocate(WK_l_tsp%time_jt_omp)
+!
       deallocate(WK_l_tsp%Pjt_mat)
       deallocate(WK_l_tsp%Smat)
       deallocate(WK_l_tsp%Fmat)
@@ -221,6 +231,8 @@
       call dealloc_sym_leg_omp_mat_tj(WK_l_tsp)
       call dealloc_spectr_mat_omp(np_smp, WK_l_tsp%Smat)
       call dealloc_field_mat_omp(np_smp, WK_l_tsp%Fmat)
+!
+      deallocate(WK_l_tsp%time_jt_omp)
 !
       deallocate(WK_l_tsp%Ptj_mat)
       deallocate(WK_l_tsp%Smat)

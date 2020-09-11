@@ -236,7 +236,7 @@
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_tsp)
       else if(WK_leg%id_legendre .eq. iflag_leg_sym_dgemm_jt) then
-      call leg_backward_trans_smat_jt                                   &
+        call leg_backward_trans_smat_jt                                 &
      &     (iflag_DGEMM, ncomp, nvector, nscalar,                       &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
      &      n_WR, n_WS, WR, WS, WK_leg%WK_l_tsp)
