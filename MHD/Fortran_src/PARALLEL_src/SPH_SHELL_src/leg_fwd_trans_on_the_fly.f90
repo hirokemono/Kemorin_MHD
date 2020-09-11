@@ -176,7 +176,7 @@
         end do
 !$omp end parallel do
 !
-        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+19)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
 !$omp parallel private(ip)
         do ip = 2, np_smp
 !$omp workshare
@@ -210,7 +210,7 @@
      &        WK_l_otf%Smat(1)%pol_e(1), WK_l_otf%Smat(1)%pol_o(1),     &
      &        WK_l_otf%Smat(1)%tor_e(1), WK_l_otf%Smat(1)%tor_o(1),     &
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WS, WS)
-        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+19)
+        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
       end do
 !
       if(iflag_SDT_time) then
@@ -219,14 +219,14 @@
      &          = WK_l_otf%wk_plm(1)%time_omp(1:3)                      &
      &           + WK_l_otf%wk_plm(ip)%time_omp(1:3)
         end do
-        elps1%elapsed(ist_elapsed_SDT+16)                               &
-     &          = elps1%elapsed(ist_elapsed_SDT+16)                     &
+        elps1%elapsed(ist_elapsed_SDT+13)                               &
+     &          = elps1%elapsed(ist_elapsed_SDT+13)                     &
      &           + WK_l_otf%wk_plm(1)%time_omp(1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+17)                               &
-     &          = elps1%elapsed(ist_elapsed_SDT+17)                     &
+        elps1%elapsed(ist_elapsed_SDT+14)                               &
+     &          = elps1%elapsed(ist_elapsed_SDT+14)                     &
      &           + WK_l_otf%wk_plm(1)%time_omp(2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_SDT+18)                               &
-     &          = elps1%elapsed(ist_elapsed_SDT+18)                     &
+        elps1%elapsed(ist_elapsed_SDT+15)                               &
+     &          = elps1%elapsed(ist_elapsed_SDT+15)                     &
      &           + WK_l_otf%wk_plm(1)%time_omp(3) / dble(np_smp)
       end if
 !

@@ -105,7 +105,7 @@
         jed = idx_trns%lstack_rlm(mp_rlm)
         jnum = idx_trns%lstack_rlm(mp_rlm) - jst
 !
-        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+12)
+        if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+9)
           call set_sp_rlm_sym_mat_rin                                   &
      &       (sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%istep_rlm,    &
      &        sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,            &
@@ -114,7 +114,7 @@
      &        ncomp, nvector, nscalar, comm_rlm%irev_sr, n_WR, WR,      &
      &        WK_l_tst%Smat(1)%pol_e(1), WK_l_tst%Smat(1)%tor_e(1),     &
      &        WK_l_tst%Smat(1)%pol_o(1), WK_l_tst%Smat(1)%tor_o(1) )
-        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+12)
+        if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+9)
 !
 !
 !$omp parallel do private(ip,lt,kst_s,kst_t,lp_rtm)
@@ -156,14 +156,14 @@
      &        = WK_l_tst%wk_plm(1)%time_omp(1:3)                        &
      &         + WK_l_tst%wk_plm(ip)%time_omp(1:3)
       end do
-      elps1%elapsed(ist_elapsed_SDT+13)                                 &
-     &        = elps1%elapsed(ist_elapsed_SDT+13)                       &
+      elps1%elapsed(ist_elapsed_SDT+10)                                 &
+     &        = elps1%elapsed(ist_elapsed_SDT+10)                       &
      &         + WK_l_tst%wk_plm(1)%time_omp(1) / dble(np_smp)
-      elps1%elapsed(ist_elapsed_SDT+14)                                 &
-     &        = elps1%elapsed(ist_elapsed_SDT+14)                       &
+      elps1%elapsed(ist_elapsed_SDT+11)                                 &
+     &        = elps1%elapsed(ist_elapsed_SDT+11)                       &
      &         + WK_l_tst%wk_plm(1)%time_omp(2) / dble(np_smp)
-      elps1%elapsed(ist_elapsed_SDT+15)                                 &
-     &        = elps1%elapsed(ist_elapsed_SDT+15)                       &
+      elps1%elapsed(ist_elapsed_SDT+12)                                 &
+     &        = elps1%elapsed(ist_elapsed_SDT+12)                       &
      &         + WK_l_tst%wk_plm(1)%time_omp(3) / dble(np_smp)
 !
       end subroutine legendre_b_trans_vector_test
