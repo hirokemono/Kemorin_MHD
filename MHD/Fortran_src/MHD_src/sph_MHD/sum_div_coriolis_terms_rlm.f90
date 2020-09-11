@@ -80,7 +80,7 @@
       type(phys_address), intent(in) :: b_trns
 !
       integer(kind = kint), intent(in) :: nnod_rlm
-      integer(kind = kint), intent(in) :: nidx_rlm(2), istep_rlm(2)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
       real(kind = kreal), intent(in) :: omega_rlm(nidx_rlm(1),0:2)
@@ -177,7 +177,7 @@
       type(phys_address), intent(in) :: b_trns
 !
       integer(kind = kint), intent(in) :: nnod_rlm
-      integer(kind = kint), intent(in) :: nidx_rlm(2), istep_rlm(2)
+      integer(kind = kint), intent(in) :: nidx_rlm(2)
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
       real(kind = kreal), intent(in) :: omega_rlm(nidx_rlm(1),0:2)
