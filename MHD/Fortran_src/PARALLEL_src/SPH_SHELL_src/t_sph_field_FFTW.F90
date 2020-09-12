@@ -204,7 +204,7 @@
 !
 !$omp parallel private(nd)
       do nd = 1, ncomp
-!$omp do private(m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
+!$omp do private(j,ip,ist,ied)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1) + 1
           ied = irt_rtp_smp_stack(ip)
@@ -215,14 +215,26 @@
           end do
           if(iflag_FFT_time) FFTW_t%t_omp(ip,1)= FFTW_t%t_omp(ip,1)     &
      &                     + MPI_WTIME() - FFTW_t%t_omp(ip,0)
+        end do
+!$omp end do
 !
+!$omp do private(ip,ist,ied)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1) + 1
+          ied = irt_rtp_smp_stack(ip)
           if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
           call dfftw_execute_dft_r2c(FFTW_t%plan_fwd(ip),               &
      &        FFTW_t%X(1,ist), FFTW_t%C(1,ist))
           if(iflag_FFT_time) FFTW_t%t_omp(ip,2)= FFTW_t%t_omp(ip,2)     &
      &                     + MPI_WTIME() - FFTW_t%t_omp(ip,0)
+        end do
+!$omp end do
 !
 !   normalization
+!$omp do private(m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1) + 1
+          ied = irt_rtp_smp_stack(ip)
           if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
           do j = ist, ied
             ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp
@@ -323,13 +335,25 @@
           end do
           if(iflag_FFT_time) FFTW_t%t_omp(ip,1)= FFTW_t%t_omp(ip,1)     &
      &                     + MPI_WTIME() - FFTW_t%t_omp(ip,0)
+        end do
+!$omp end do
 !
+!$omp do private(ip,ist,ied)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1) + 1
+          ied = irt_rtp_smp_stack(ip)
           if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
           call dfftw_execute_dft_c2r(FFTW_t%plan_bwd(ip),               &
      &        FFTW_t%C(1,ist), FFTW_t%X(1,ist))
           if(iflag_FFT_time) FFTW_t%t_omp(ip,2)= FFTW_t%t_omp(ip,2)     &
      &                     + MPI_WTIME() - FFTW_t%t_omp(ip,0)
+        end do
+!$omp end do
 !
+!$omp do private(j,ip,ist,ied)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1) + 1
+          ied = irt_rtp_smp_stack(ip)
           if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
           do j = ist, ied
             X_rtp(j,1:nidx_rtp(3),nd) = FFTW_t%X(1:nidx_rtp(3),j)
