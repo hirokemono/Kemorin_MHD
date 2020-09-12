@@ -245,7 +245,23 @@
         end do
       end do
 !$omp end parallel do
-!      elapsed_fftw(1:3) = elapsed_fftw(1:3) + rtmp(1:3) - dummy(1:3)
+!
+      if(iflag_FFT_time) then
+        do ip = 2, np_smp
+          FFTW_t%t_omp(1,1) = FFTW_t%t_omp(1,1) + FFTW_t%t_omp(ip,1)
+          FFTW_t%t_omp(1,2) = FFTW_t%t_omp(1,2) + FFTW_t%t_omp(ip,2)
+          FFTW_t%t_omp(1,3) = FFTW_t%t_omp(1,3) + FFTW_t%t_omp(ip,3)
+        end do
+        elps1%elapsed(ist_elapsed_FFT+4)                                &
+     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
+     &         + FFTW_t%t_omp(1,1) / dble(np_smp)
+        elps1%elapsed(ist_elapsed_FFT+5)                                &
+     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
+     &         + FFTW_t%t_omp(1,2) / dble(np_smp)
+        elps1%elapsed(ist_elapsed_FFT+6)                                &
+     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
+     &         + FFTW_t%t_omp(1,3) / dble(np_smp)
+      end if
 !
       end subroutine sph_field_fwd_FFTW_to_send
 !
@@ -323,7 +339,23 @@
       end do
 !$omp end parallel do
 !
-!      elapsed_fftw(1:3) = elapsed_fftw(1:3) + rtmp(1:3) - dummy(1:3)
+!
+      if(iflag_FFT_time) then
+        do ip = 2, np_smp
+          FFTW_t%t_omp(1,1) = FFTW_t%t_omp(1,1) + FFTW_t%t_omp(ip,1)
+          FFTW_t%t_omp(1,2) = FFTW_t%t_omp(1,2) + FFTW_t%t_omp(ip,2)
+          FFTW_t%t_omp(1,3) = FFTW_t%t_omp(1,3) + FFTW_t%t_omp(ip,3)
+        end do
+        elps1%elapsed(ist_elapsed_FFT+1)                                &
+     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
+     &         + FFTW_t%t_omp(1,1) / dble(np_smp)
+        elps1%elapsed(ist_elapsed_FFT+2)                                &
+     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
+     &         + FFTW_t%t_omp(1,2) / dble(np_smp)
+        elps1%elapsed(ist_elapsed_FFT+3)                                &
+     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
+     &         + FFTW_t%t_omp(1,3) / dble(np_smp)
+      end if
 !
       end subroutine sph_field_back_FFTW_from_recv
 !
