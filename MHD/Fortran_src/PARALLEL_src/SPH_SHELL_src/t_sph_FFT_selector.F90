@@ -78,6 +78,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use t_spheric_rtp_data
       use m_FFT_selector
       use t_sph_FFTPACK5
       use t_sph_ISPACK_FFT
@@ -116,7 +117,6 @@
       subroutine init_sph_FFT_select                                    &
      &         (id_rank, iflag_FFT, sph_rtp, ncomp, WK_FFTs)
 !
-      use t_spheric_rtp_data
       use transfer_to_long_integers
 !
       integer, intent(in) :: id_rank
@@ -192,7 +192,6 @@
       subroutine verify_sph_FFT_select                                  &
      &         (iflag_FFT, sph_rtp, ncomp, WK_FFTs)
 !
-      use t_spheric_rtp_data
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: iflag_FFT
@@ -240,7 +239,6 @@
       subroutine fwd_FFT_select_to_send(iflag_FFT,                      &
      &          sph_rtp, comm_rtp, ncomp, n_WS, v_rtp, WS, WK_FFTs)
 !
-      use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
       use transfer_to_long_integers
 !
@@ -290,7 +288,6 @@
       subroutine back_FFT_select_from_recv(iflag_FFT,                   &
      &          sph_rtp, comm_rtp, ncomp, n_WR, WR, v_rtp, WK_FFTs)
 !
-      use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
       use transfer_to_long_integers
 !
