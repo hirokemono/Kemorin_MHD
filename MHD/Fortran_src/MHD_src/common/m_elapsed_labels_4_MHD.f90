@@ -140,17 +140,18 @@
       call append_elapsed_times                                         &
      &   (num_append, ist_elapsed_LEG, ied_elapsed_LEG)
 !
-      elps1%labels(ist_elapsed_LEG+1) = 'Copy P_lm for bwd. trans.   '
+      elps1%labels(ist_elapsed_LEG+1)                                   &
+     &         = 'cal_sp_rlm_sym_mat_rin_loop1  '
       elps1%labels(ist_elapsed_LEG+2)                                   &
-     &         = 'Copy spectrum for bwd. trans.  '
+     &         = 'cal_sp_rlm_sym_mat_rin_loop2  '
       elps1%labels(ist_elapsed_LEG+3)                                   &
-     &         = 'mat product for bwd. trans.    '
+     &         = 'cal_sp_rlm_sym_mat_rin_loop3  '
       elps1%labels(ist_elapsed_LEG+4)                                   &
-     &         = 'Copy fields to bwd. trans.     '
+     &         = 'cal_sp_rlm_sym_mat_rin_loop4  '
       elps1%labels(ist_elapsed_LEG+5)                                   &
-     &         = 'Equator for bwd. trans.        '
+     &         = 'cal_sp_rlm_sym_mat_rin_loop5  '
       elps1%labels(ist_elapsed_LEG+6)                                   &
-     &         = 'Copy P_lm for fwd. trans.      '
+     &         = 'cal_sp_rlm_sym_mat_rin_loop6  '
       elps1%labels(ist_elapsed_LEG+7)                                   &
      &         = 'Copy field for fwd. trans.     '
       elps1%labels(ist_elapsed_LEG+8)                                   &

@@ -199,10 +199,8 @@
      &    comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'mhd_spectr_to_sendbuf'
-      if(iflag_LEG_time) call start_elapsed_time(ist_elapsed_LEG+10)
       call mhd_spectr_to_sendbuf(trns_bwd, comms_sph%comm_rj, rj_fld,   &
      &                           SR_r1%n_WS, SR_r1%WS(1))
-      if(iflag_LEG_time) call end_elapsed_time(ist_elapsed_LEG+10)
 !
       if(trns_bwd%ncomp .eq. 0) return
       call pole_b_transform                                             &
