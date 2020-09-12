@@ -287,7 +287,7 @@
             WS(is_send) = - two * ispack3_t%smp(ip)%X(inod_s)
           end do
         end do
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,2)= ispack3_t%t_omp(ip,2) &
+        if(iflag_FFT_time) ispack3_t%t_omp(ip,3)= ispack3_t%t_omp(ip,3) &
      &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
 !
       end do
