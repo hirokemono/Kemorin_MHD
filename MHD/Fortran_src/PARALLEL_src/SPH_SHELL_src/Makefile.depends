@@ -8,7 +8,7 @@ cal_rms_fields_by_sph.o: $(SPH_COMMDIR)/cal_rms_fields_by_sph.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sp_rlm_by_vecprod.o: $(SPH_COMMDIR)/cal_sp_rlm_by_vecprod.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_sp_rlm_sym_mat_tsmp.o: $(SPH_COMMDIR)/cal_sp_rlm_sym_mat_tsmp.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_4_MHD.o m_work_time.o
+cal_sp_rlm_sym_mat_tsmp.o: $(SPH_COMMDIR)/cal_sp_rlm_sym_mat_tsmp.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_sph_exp_1st_diff.o: $(SPH_COMMDIR)/cal_sph_exp_1st_diff.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

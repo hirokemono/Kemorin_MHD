@@ -25,7 +25,7 @@
       use m_constants
 !
       use m_machine_parameter
-      use m_elapsed_labels_4_MHD
+      use m_elapsed_labels_SPH_TRNS
       use m_work_time
 !
       implicit none
