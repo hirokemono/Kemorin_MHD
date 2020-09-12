@@ -145,8 +145,6 @@
       end do
 !
       call dealloc_FFTW_plan(FFTW_t)
-!
-      call dealloc_FFTW_plan(FFTW_t)
       deallocate(FFTW_t%t_omp)
 !
       end subroutine finalize_sph_field_FFTW
