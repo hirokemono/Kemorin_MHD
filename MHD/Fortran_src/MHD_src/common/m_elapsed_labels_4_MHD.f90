@@ -11,7 +11,6 @@
 !!      subroutine elapsed_label_4_SPH_MHD
 !!      subroutine elapsed_label_4_FEM_MHD
 !!      subroutine elapsed_label_4_SGS_model
-!!      subroutine elapsed_label_4_Legendre_trans
 !!
 !!      subroutine reset_elapse_after_init_SPH_MHD
 !!      subroutine reset_elapse_after_init_SGS
@@ -41,10 +40,6 @@
       logical, save :: iflag_SGS_time = .FALSE.
       integer(kind = kint), save :: ist_elapsed_SGS =  0
       integer(kind = kint), save :: ied_elapsed_SGS =  0
-!
-      logical, save :: iflag_LEG_time = .FALSE.
-      integer(kind = kint), save :: ist_elapsed_LEG =   0
-      integer(kind = kint), save :: ied_elapsed_LEG =   0
 !
 !-----------------------------------------------------------------------
 !
@@ -132,41 +127,6 @@
       end subroutine elapsed_label_4_SGS_model
 !
 !-----------------------------------------------------------------------
-!
-      subroutine elapsed_label_4_Legendre_trans
-!
-      integer(kind = kint), parameter :: num_append = 10
-!
-      call append_elapsed_times                                         &
-     &   (num_append, ist_elapsed_LEG, ied_elapsed_LEG)
-!
-      elps1%labels(ist_elapsed_LEG+1)                                   &
-     &         = 'cal_sp_rlm_sym_mat_rin_loop1  '
-      elps1%labels(ist_elapsed_LEG+2)                                   &
-     &         = 'cal_sp_rlm_sym_mat_rin_loop2  '
-      elps1%labels(ist_elapsed_LEG+3)                                   &
-     &         = 'cal_sp_rlm_sym_mat_rin_loop3  '
-      elps1%labels(ist_elapsed_LEG+4)                                   &
-     &         = 'cal_sp_rlm_sym_mat_rin_loop4  '
-      elps1%labels(ist_elapsed_LEG+5)                                   &
-     &         = 'cal_sp_rlm_sym_mat_rin_loop5  '
-      elps1%labels(ist_elapsed_LEG+6)                                   &
-     &         = 'cal_sp_rlm_sym_mat_rin_loop6  '
-      elps1%labels(ist_elapsed_LEG+7)                                   &
-     &         = 'Copy field for fwd. trans.     '
-      elps1%labels(ist_elapsed_LEG+8)                                   &
-     &         = 'mat product for fwd. trans.    '
-      elps1%labels(ist_elapsed_LEG+9)                                   &
-     &         = 'Copy spectrum to fwd. trans.   '
-!
-      elps1%labels(ist_elapsed_LEG+10)                                  &
-     &         = 'mhd_spectr_to_sendbuf.   '
-!
-      iflag_LEG_time = .TRUE.
-!
-      end subroutine elapsed_label_4_Legendre_trans
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine reset_elapse_after_init_SPH_MHD
@@ -186,16 +146,6 @@
       call reset_elapsed_times(ist_elapsed_SGS+1, ied_elapsed_SGS)
 !
       end subroutine reset_elapse_after_init_SGS
-!
-!-----------------------------------------------------------------------
-!
-      subroutine reset_elapse_after_init_LEG
-!
-!
-      if(iflag_LEG_time .eqv. .FALSE.) return
-      call reset_elapsed_times(ist_elapsed_LEG+1, ist_elapsed_LEG)
-!
-      end subroutine reset_elapse_after_init_LEG
 !
 !-----------------------------------------------------------------------
 !
