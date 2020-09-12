@@ -74,7 +74,7 @@
 !
       subroutine elpsed_label_4_sph_detail
 !
-      integer(kind = kint), parameter :: num_append = 16
+      integer(kind = kint), parameter :: num_append = 17
 !
 !
       call append_elapsed_times                                         &
@@ -98,6 +98,7 @@
       elps1%labels(ist_elapsed_SDT+14) = 'on-the-fly Legendre for fwd '
       elps1%labels(ist_elapsed_SDT+15) = 'matmul_fwd_leg_trans    '
       elps1%labels(ist_elapsed_SDT+16) = 'cal_sp_rlm_vec to send '
+      elps1%labels(ist_elapsed_SDT+17) = 'Get total from OpenMP area'
 !
       iflag_SDT_time = .TRUE.
 !
@@ -119,7 +120,7 @@
 !
       elps1%labels(ist_elapsed_FFT+ 4) = 'Copy_from_data_fwd_FFT  '
       elps1%labels(ist_elapsed_FFT+ 5) = 'Forward_FFT             '
-      elps1%labels(ist_elapsed_FFT+ 6) = 'Copy_to_recv_fwd_FFT    '
+      elps1%labels(ist_elapsed_FFT+ 6) = 'Copy_to_send_fwd_FFT    '
 !
       iflag_FFT_time = .TRUE.
 !
