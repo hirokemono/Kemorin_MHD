@@ -177,10 +177,36 @@
 !$omp end parallel do
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!        call sum_spectr_over_smp_in(mp_rlm, nkrs, nkrt,                &
-        call sum_spectr_over_smp_krin(mp_rlm, nkrs, nkrt,               &
-     &      WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),           &
-     &      WK_l_otf%Smat)
+!        call sum_spectr_over_smp_out(nkrs, nkrt,                       &
+!        call sum_spectr_over_smp_in(nkrs, nkrt,                        &
+!        call sum_spectr_over_smp_krin(nkrs, nkrt,                      &
+!     &      WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),          &
+!     &      WK_l_otf%Smat)
+!
+!$omp parallel private(ip)
+        do ip = 2, np_smp
+!$omp workshare
+          WK_l_tsp%Smat(1)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))        &
+     &      =  WK_l_tsp%Smat(1)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))   &
+     &       + WK_l_tsp%Smat(ip)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))
+!$omp end workshare nowait
+!$omp workshare
+          WK_l_tsp%Smat(1)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))        &
+     &      =  WK_l_tsp%Smat(1)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))   &
+     &       + WK_l_tsp%Smat(ip)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))
+!$omp end workshare nowait
+!$omp workshare
+          WK_l_tsp%Smat(1)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))        &
+     &      =  WK_l_tsp%Smat(1)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))   &
+     &       + WK_l_tsp%Smat(ip)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))
+!$omp end workshare nowait
+!$omp workshare
+          WK_l_tsp%Smat(1)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))        &
+     &      =  WK_l_tsp%Smat(1)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))   &
+     &       + WK_l_tsp%Smat(ip)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))
+!$omp end workshare nowait
+        end do
+!$omp end parallel
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
@@ -620,9 +646,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_spectr_over_smp_in                                 &
-     &         (mp_rlm, nkrs, nkrt, n_jk_e, n_jk_o, Smat)
+     &         (nkrs, nkrt, n_jk_e, n_jk_o, Smat)
 !
-      integer(kind = kint), intent(in) :: mp_rlm, nkrs, nkrt
+      integer(kind = kint), intent(in) :: nkrs, nkrt
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
       type(spectr_matrix_omp), intent(inout) :: Smat(np_smp)
 !
@@ -665,9 +691,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_spectr_over_smp_krin                               &
-     &         (mp_rlm, nkrs, nkrt, n_jk_e, n_jk_o, Smat)
+     &         (nkrs, nkrt, n_jk_e, n_jk_o, Smat)
 !
-      integer(kind = kint), intent(in) :: mp_rlm, nkrs, nkrt
+      integer(kind = kint), intent(in) :: nkrs, nkrt
       integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
       type(spectr_matrix_omp), intent(inout) :: Smat(np_smp)
 !
@@ -718,6 +744,41 @@
 !$omp end parallel
 !
       end subroutine sum_spectr_over_smp_krin
+!
+! -----------------------------------------------------------------------
+!
+      subroutine sum_spectr_over_smp_out                                &
+     &         (nkrs, nkrt, n_jk_e, n_jk_o, Smat)
+!
+      integer(kind = kint), intent(in) :: nkrs, nkrt
+      integer(kind = kint), intent(in) :: n_jk_e, n_jk_o
+      type(spectr_matrix_omp), intent(inout) :: Smat(np_smp)
+!
+      integer(kind = kint) :: ip
+!
+!
+!$omp parallel private(ip)
+        do ip = 2, np_smp
+!$omp workshare
+          Smat(1)%pol_e(1:nkrs*n_jk_e) =  Smat(1)%pol_e(1:nkrs*n_jk_e)  &
+     &       + Smat(ip)%pol_e(1:nkrs*n_jk_e)
+!$omp end workshare nowait
+!$omp workshare
+          Smat(1)%tor_e(1:nkrt*n_jk_e) =  Smat(1)%tor_e(1:nkrt*n_jk_e)  &
+     &       + Smat(ip)%tor_e(1:nkrt*n_jk_e)
+!$omp end workshare nowait
+!$omp workshare
+          Smat(1)%pol_o(1:nkrs*n_jk_o) = Smat(1)%pol_o(1:nkrs*n_jk_o)   &
+     &       + Smat(ip)%pol_o(1:nkrs*n_jk_o)
+!$omp end workshare nowait
+!$omp workshare
+          Smat(1)%tor_o(1:nkrt*n_jk_o) = Smat(1)%tor_o(1:nkrt*n_jk_o)   &
+     &       + Smat(ip)%tor_o(1:nkrt*n_jk_o)
+!$omp end workshare nowait
+        end do
+!$omp end parallel
+!
+      end subroutine sum_spectr_over_smp_out
 !
 ! -----------------------------------------------------------------------
 !
