@@ -43,6 +43,7 @@
 !
       call elpsed_label_4_sph_trns
       call elpsed_label_4_sph_detail
+      call elpsed_label_4_fft_detail
 !
       call elpsed_label_calypso_send_recv
 !      call elapsed_label_4_Legendre_trans
@@ -68,6 +69,8 @@
 !
       call reset_elapse_after_init_SPH
       call reset_elapse_after_init_SDT
+      call reset_elapse_after_init_FFT
+!
       call reset_elapse_after_init_SR
       call reset_elapse_after_init_SPH_MHD
       call reset_elapse_after_init_SGS

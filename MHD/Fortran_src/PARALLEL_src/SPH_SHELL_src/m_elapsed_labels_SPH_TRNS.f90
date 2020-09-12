@@ -9,9 +9,11 @@
 !!@verbatim
 !!      subroutine elpsed_label_4_sph_trns
 !!      subroutine elpsed_label_4_sph_detail
+!!      subroutine elpsed_label_4_fft_detail
 !!
 !!      subroutine reset_elapse_after_init_SPH
 !!      subroutine reset_elapse_after_init_SDT
+!!      subroutine reset_elapse_after_init_FFT
 !!@endverbatim
 !!
       module m_elapsed_labels_SPH_TRNS
@@ -113,7 +115,7 @@
       elps1%labels(ist_elapsed_FFT+ 5) = 'Forward_FFT             '
       elps1%labels(ist_elapsed_FFT+ 6) = 'Copy_to_recv_fwd_FFT    '
 !
-      iflag_SDT_time = .TRUE.
+      iflag_FFT_time = .TRUE.
 !
       end subroutine elpsed_label_4_fft_detail
 !
@@ -137,6 +139,16 @@
       call reset_elapsed_times(ist_elapsed_SDT+1, ied_elapsed_SDT)
 !
       end subroutine reset_elapse_after_init_SDT
+!
+!-----------------------------------------------------------------------
+!
+      subroutine reset_elapse_after_init_FFT
+!
+!
+      if(iflag_FFT_time .eqv. .FALSE.) return
+      call reset_elapsed_times(ist_elapsed_FFT+1, ied_elapsed_FFT)
+!
+      end subroutine reset_elapse_after_init_FFT
 !
 !-----------------------------------------------------------------------
 !
