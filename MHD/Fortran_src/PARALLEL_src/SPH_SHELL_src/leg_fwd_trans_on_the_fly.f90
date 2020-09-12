@@ -177,7 +177,8 @@
 !$omp end parallel do
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!$omp parallel do private(j,ip)
+!$omp parallel
+!$omp do private(j,ip)
         do j = 1, nkrs*WK_l_otf%n_jk_e(mp_rlm)
           do ip = 2, np_smp
             WK_l_otf%Smat(1)%pol_e(j)          &
@@ -185,7 +186,7 @@
      &          + WK_l_otf%Smat(ip)%pol_e(j)
           end do
         end do
-!$omp end do
+!$omp end do nowait
 !$omp do private(j,ip)
         do j = 1, nkrt*WK_l_otf%n_jk_e(mp_rlm)
           do ip = 2, np_smp
@@ -194,7 +195,7 @@
      &       + WK_l_otf%Smat(ip)%tor_e(j)
           end do
         end do
-!$omp end do
+!$omp end do nowait
 !$omp do private(j,ip)
         do j = 1, nkrs*WK_l_otf%n_jk_o(mp_rlm)
           do ip = 2, np_smp
@@ -203,7 +204,7 @@
      &       + WK_l_otf%Smat(ip)%pol_o(j)
           end do
         end do
-!$omp end do
+!$omp end do nowait
 !$omp do private(j,ip)
         do j = 1, nkrt*WK_l_otf%n_jk_o(mp_rlm)
           do ip = 2, np_smp
@@ -212,7 +213,8 @@
      &       + WK_l_otf%Smat(ip)%tor_o(j)
           end do
         end do
-!$omp end parallel do
+!$omp end do
+!$omp end parallel
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
