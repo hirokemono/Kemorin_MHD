@@ -10,7 +10,7 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine init_sph_single_FFTW(nidx_rtp, FFTW_t)
-!!      subroutine finalize_sph_single_FFTW(FFTW_t)
+!!      subroutine finalize_sph_single_FFTW(nidx_rtp, FFTW_t)
 !!      subroutine verify_sph_single_FFTW(nidx_rtp, FFTW_t)
 !!
 !!      subroutine alloc_tmp_ordering_FFTW(nnod_rtp, FFTW_t)
@@ -112,19 +112,22 @@
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
-      integer(kind = kint) :: j
+      integer(kind = kint) :: j, nrt
       integer(kind = 4) :: Nfft4
 !
 !
-      call alloc_FFTW_plan(np_smp, nidx_rtp(3), FFTW_t)
+      nrt = nidx_rtp(1) * nidx_rtp(2)
+      call alloc_FFTW_plan(nrt, nidx_rtp(3), FFTW_t)
 !
       Nfft4 = int(nidx_rtp(3))
-      do j = 1, np_smp
+!$omp parallel do
+      do j = 1, nrt
         call dfftw_plan_dft_r2c_1d(FFTW_t%plan_fwd(j), Nfft4,           &
      &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
         call dfftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(j), Nfft4,           &
      &      FFTW_t%C(1,j), FFTW_t%X(1,j) , FFTW_ESTIMATE)
       end do
+!$omp end parallel do
       FFTW_t%aNfft = one / dble(nidx_rtp(3))
 !
       allocate(FFTW_t%t_omp(np_smp,0:3))
@@ -134,14 +137,15 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_single_FFTW(FFTW_t)
+      subroutine finalize_sph_single_FFTW(nidx_rtp, FFTW_t)
 !
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
       integer(kind = kint) :: j
 !
 !
-      do j = 1, np_smp
+      do j = 1, nidx_rtp(1) * nidx_rtp(2)
         call dfftw_destroy_plan(FFTW_t%plan_fwd(j))
         call dfftw_destroy_plan(FFTW_t%plan_bwd(j))
         call dfftw_cleanup
@@ -166,7 +170,7 @@
       end if
 !
       if(size(FFTW_t%X) .ne. nidx_rtp(3)*np_smp) then
-        call finalize_sph_single_FFTW(FFTW_t)
+        call finalize_sph_single_FFTW(nidx_rtp, FFTW_t)
         call init_sph_single_FFTW(nidx_rtp, FFTW_t)
       end if
 !
@@ -211,31 +215,31 @@
           ied = irt_rtp_smp_stack(ip) 
           do j = ist, ied
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
-            FFTW_t%X(1:nidx_rtp(3),ip) = X_rtp(j,1:nidx_rtp(3),nd)
+            FFTW_t%X(1:nidx_rtp(3),j) = X_rtp(j,1:nidx_rtp(3),nd)
             if(iflag_FFT_time) FFTW_t%t_omp(ip,1)= FFTW_t%t_omp(ip,1)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
-            call dfftw_execute(FFTW_t%plan_fwd(ip))
+            call dfftw_execute(FFTW_t%plan_fwd(j))
             if(iflag_FFT_time) FFTW_t%t_omp(ip,2)= FFTW_t%t_omp(ip,2)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
 !
 !   normalization
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
             ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp
-            WS(ic_send) = FFTW_t%aNfft * real(FFTW_t%C(1,ip))
+            WS(ic_send) = FFTW_t%aNfft * real(FFTW_t%C(1,j))
             do m = 2, (nidx_rtp(3)+1)/2
               ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
               is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
               ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
               is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-              WS(ic_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,ip))
-              WS(is_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,ip)*iu)
+              WS(ic_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,j))
+              WS(is_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,j)*iu)
             end do 
             m = (nidx_rtp(3)+1)/2 + 1
             ic_rtp = j + irt_rtp_smp_stack(np_smp)
             ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-            WS(ic_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,ip))
+            WS(ic_send) = two*FFTW_t%aNfft * real(FFTW_t%C(m,j))
 !
             if(iflag_FFT_time) FFTW_t%t_omp(ip,3)= FFTW_t%t_omp(ip,3)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
@@ -304,30 +308,30 @@
 !
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
             ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp
-            FFTW_t%C(1,ip) = cmplx(WR(ic_recv), zero, kind(0d0))
+            FFTW_t%C(1,j) = cmplx(WR(ic_recv), zero, kind(0d0))
             do m = 2, (nidx_rtp(3)+1)/2
               ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
               is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
               ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
               is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-              FFTW_t%C(m,ip)                                            &
+              FFTW_t%C(m,j)                                             &
      &            = half * cmplx(WR(ic_recv), -WR(is_recv),kind(0d0))
             end do
             m = (nidx_rtp(3)+1)/2 + 1
             ic_rtp = j + irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-            FFTW_t%C(m,ip)                                              &
+            FFTW_t%C(m,j)                                               &
      &              = half * cmplx(WR(ic_recv), zero, kind(0d0))
             if(iflag_FFT_time) FFTW_t%t_omp(ip,1)= FFTW_t%t_omp(ip,1)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
-            call dfftw_execute(FFTW_t%plan_bwd(ip))
+            call dfftw_execute(FFTW_t%plan_bwd(j))
             if(iflag_FFT_time) FFTW_t%t_omp(ip,2)= FFTW_t%t_omp(ip,2)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
-            X_rtp(j,1:nidx_rtp(3),nd) = FFTW_t%X(1:nidx_rtp(3),ip)
+            X_rtp(j,1:nidx_rtp(3),nd) = FFTW_t%X(1:nidx_rtp(3),j)
             if(iflag_FFT_time) FFTW_t%t_omp(ip,3)= FFTW_t%t_omp(ip,3)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
           end do

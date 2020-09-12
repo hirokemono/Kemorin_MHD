@@ -10,7 +10,8 @@
 !!      subroutine init_sph_FFT_select                                  &
 !!     &         (id_rank, iflag_FFT, sph_rtp, ncomp, WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
-!!      subroutine finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
+!!      subroutine finalize_sph_FFT_select(iflag_FFT, sph_rtp, WK_FFTs)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
 !!     &         (iflag_FFT, sph_rtp, ncomp, WK_FFTs)
@@ -157,9 +158,10 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
+      subroutine finalize_sph_FFT_select(iflag_FFT, sph_rtp, WK_FFTs)
 !
       integer(kind = kint), intent(in) :: iflag_FFT
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
@@ -175,7 +177,8 @@
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW)
+        call finalize_sph_single_FFTW                                   &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
