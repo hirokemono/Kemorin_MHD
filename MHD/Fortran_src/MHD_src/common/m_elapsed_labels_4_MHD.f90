@@ -14,7 +14,6 @@
 !!
 !!      subroutine reset_elapse_after_init_SPH_MHD
 !!      subroutine reset_elapse_after_init_SGS
-!!      subroutine reset_elapse_after_init_LEG
 !!@endverbatim
 !!
       module m_elapsed_labels_4_MHD
