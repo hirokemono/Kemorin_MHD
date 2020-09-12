@@ -120,14 +120,12 @@
       call alloc_FFTW_plan(nrt, nidx_rtp(3), FFTW_t)
 !
       Nfft4 = int(nidx_rtp(3))
-!$omp parallel do
       do j = 1, nrt
         call dfftw_plan_dft_r2c_1d(FFTW_t%plan_fwd(j), Nfft4,           &
      &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
         call dfftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(j), Nfft4,           &
      &      FFTW_t%C(1,j), FFTW_t%X(1,j) , FFTW_ESTIMATE)
       end do
-!$omp end parallel do
       FFTW_t%aNfft = one / dble(nidx_rtp(3))
 !
       allocate(FFTW_t%t_omp(np_smp,0:3))
