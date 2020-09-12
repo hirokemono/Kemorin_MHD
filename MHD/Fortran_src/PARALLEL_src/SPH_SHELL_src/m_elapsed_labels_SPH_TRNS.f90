@@ -97,8 +97,8 @@
       elps1%labels(ist_elapsed_SDT+13) = 'set_vr_rtm_vec from recv '
       elps1%labels(ist_elapsed_SDT+14) = 'on-the-fly Legendre for fwd '
       elps1%labels(ist_elapsed_SDT+15) = 'matmul_fwd_leg_trans    '
-      elps1%labels(ist_elapsed_SDT+16) = 'cal_sp_rlm_vec to send '
-      elps1%labels(ist_elapsed_SDT+17) = 'Get total from OpenMP area'
+      elps1%labels(ist_elapsed_SDT+16) = 'Get total from OpenMP area'
+      elps1%labels(ist_elapsed_SDT+17) = 'cal_sp_rlm_vec to send '
 !
       iflag_SDT_time = .TRUE.
 !
