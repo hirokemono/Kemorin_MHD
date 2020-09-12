@@ -160,7 +160,6 @@
       subroutine finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
 !
       integer(kind = kint), intent(in) :: iflag_FFT
-      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
