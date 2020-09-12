@@ -186,24 +186,24 @@
 !$omp parallel private(ip)
         do ip = 2, np_smp
 !$omp workshare
-          WK_l_tsp%Smat(1)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))
+          WK_l_otf%Smat(1)%pol_e(1:nkrs*WK_l_otf%n_jk_e(mp_rlm))        &
+     &      =  WK_l_otf%Smat(1)%pol_e(1:nkrs*WK_l_otf%n_jk_e(mp_rlm))   &
+     &       + WK_l_otf%Smat(ip)%pol_e(1:nkrs*WK_l_otf%n_jk_e(mp_rlm))
 !$omp end workshare nowait
 !$omp workshare
-          WK_l_tsp%Smat(1)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))
+          WK_l_otf%Smat(1)%tor_e(1:nkrt*WK_l_otf%n_jk_e(mp_rlm))        &
+     &      =  WK_l_otf%Smat(1)%tor_e(1:nkrt*WK_l_otf%n_jk_e(mp_rlm))   &
+     &       + WK_l_otf%Smat(ip)%tor_e(1:nkrt*WK_l_otf%n_jk_e(mp_rlm))
 !$omp end workshare nowait
 !$omp workshare
-          WK_l_tsp%Smat(1)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))
+          WK_l_otf%Smat(1)%pol_o(1:nkrs*WK_l_otf%n_jk_o(mp_rlm))        &
+     &      =  WK_l_otf%Smat(1)%pol_o(1:nkrs*WK_l_otf%n_jk_o(mp_rlm))   &
+     &       + WK_l_otf%Smat(ip)%pol_o(1:nkrs*WK_l_otf%n_jk_o(mp_rlm))
 !$omp end workshare nowait
 !$omp workshare
-          WK_l_tsp%Smat(1)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))
+          WK_l_otf%Smat(1)%tor_o(1:nkrt*WK_l_otf%n_jk_o(mp_rlm))        &
+     &      =  WK_l_otf%Smat(1)%tor_o(1:nkrt*WK_l_otf%n_jk_o(mp_rlm))   &
+     &       + WK_l_otf%Smat(ip)%tor_o(1:nkrt*WK_l_otf%n_jk_o(mp_rlm))
 !$omp end workshare nowait
         end do
 !$omp end parallel
