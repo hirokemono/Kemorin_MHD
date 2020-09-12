@@ -202,13 +202,13 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
-      do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1) + 1
-        ied = irt_rtp_smp_stack(ip) 
-        do nd = 1, ncomp
+!$omp parallel private(nd)
+      do nd = 1, ncomp
 !
+!$omp do private(m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1) + 1
+          ied = irt_rtp_smp_stack(ip) 
           do j = ist, ied
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
             FFTW_t%X(1:nidx_rtp(3),ip) = X_rtp(j,1:nidx_rtp(3),nd)
@@ -241,8 +241,9 @@
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
           end do
         end do
+!$omp end do nowait
       end do
-!$omp end parallel do
+!$omp end parallel
 !
       if(iflag_FFT_time) then
         do ip = 2, np_smp
@@ -292,12 +293,12 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
-      do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1) + 1
-        ied = irt_rtp_smp_stack(ip)
-        do nd = 1, ncomp
+!$omp parallel private(nd)
+      do nd = 1, ncomp
+!$omp do private(m,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1) + 1
+          ied = irt_rtp_smp_stack(ip)
 !
           do j = ist, ied
 !
@@ -331,8 +332,9 @@
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
           end do
         end do
+!$omp end do nowait
       end do
-!$omp end parallel do
+!$omp end parallel
 !
       if(iflag_FFT_time) then
         do ip = 2, np_smp
