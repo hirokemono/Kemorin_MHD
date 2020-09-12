@@ -85,7 +85,7 @@
 !
       integer(kind = kint) :: mm, mp_rlm, mn_rlm, lp_rtm, ln_rtm
       integer(kind = kint) :: nkrs, nkrt, lt, lt2
-      integer(kind = kint) :: ip, jst
+      integer(kind = kint) :: ip, j, jst
       integer(kind = kint) :: lst
 !
 !
@@ -177,30 +177,42 @@
 !$omp end parallel do
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!$omp parallel private(ip)
-        do ip = 2, np_smp
-!$omp workshare
-          WK_l_otf%Smat(1)%pol_e(1:nkrs*WK_l_otf%n_jk_e(mp_rlm))        &
-     &      =  WK_l_otf%Smat(1)%pol_e(1:nkrs*WK_l_otf%n_jk_e(mp_rlm))   &
-     &       + WK_l_otf%Smat(ip)%pol_e(1:nkrs*WK_l_otf%n_jk_e(mp_rlm))
-!$omp end workshare nowait
-!$omp workshare
-          WK_l_otf%Smat(1)%tor_e(1:nkrt*WK_l_otf%n_jk_e(mp_rlm))        &
-     &      =  WK_l_otf%Smat(1)%tor_e(1:nkrt*WK_l_otf%n_jk_e(mp_rlm))   &
-     &       + WK_l_otf%Smat(ip)%tor_e(1:nkrt*WK_l_otf%n_jk_e(mp_rlm))
-!$omp end workshare nowait
-!$omp workshare
-          WK_l_otf%Smat(1)%pol_o(1:nkrs*WK_l_otf%n_jk_o(mp_rlm))        &
-     &      =  WK_l_otf%Smat(1)%pol_o(1:nkrs*WK_l_otf%n_jk_o(mp_rlm))   &
-     &       + WK_l_otf%Smat(ip)%pol_o(1:nkrs*WK_l_otf%n_jk_o(mp_rlm))
-!$omp end workshare nowait
-!$omp workshare
-          WK_l_otf%Smat(1)%tor_o(1:nkrt*WK_l_otf%n_jk_o(mp_rlm))        &
-     &      =  WK_l_otf%Smat(1)%tor_o(1:nkrt*WK_l_otf%n_jk_o(mp_rlm))   &
-     &       + WK_l_otf%Smat(ip)%tor_o(1:nkrt*WK_l_otf%n_jk_o(mp_rlm))
-!$omp end workshare nowait
+!$omp parallel do private(j,ip)
+        do j = 1, nkrs*WK_l_otf%n_jk_e(mp_rlm)
+          do ip = 2, np_smp
+            WK_l_otf%Smat(1)%pol_e(j)          &
+     &        =  WK_l_otf%Smat(1)%pol_e(j)     &
+     &          + WK_l_otf%Smat(ip)%pol_e(j)
+          end do
         end do
-!$omp end parallel
+!$omp end do
+!$omp do private(j,ip)
+        do j = 1, nkrt*WK_l_otf%n_jk_e(mp_rlm)
+          do ip = 2, np_smp
+            WK_l_otf%Smat(1)%tor_e(j)        &
+     &      =  WK_l_otf%Smat(1)%tor_e(j)   &
+     &       + WK_l_otf%Smat(ip)%tor_e(j)
+          end do
+        end do
+!$omp end do
+!$omp do private(j,ip)
+        do j = 1, nkrs*WK_l_otf%n_jk_o(mp_rlm)
+          do ip = 2, np_smp
+            WK_l_otf%Smat(1)%pol_o(j)        &
+     &      =  WK_l_otf%Smat(1)%pol_o(j)   &
+     &       + WK_l_otf%Smat(ip)%pol_o(j)
+          end do
+        end do
+!$omp end do
+!$omp do private(j,ip)
+        do j = 1, nkrt*WK_l_otf%n_jk_o(mp_rlm)
+          do ip = 2, np_smp
+          WK_l_otf%Smat(1)%tor_o(j)        &
+     &      =  WK_l_otf%Smat(1)%tor_o(j)   &
+     &       + WK_l_otf%Smat(ip)%tor_o(j)
+          end do
+        end do
+!$omp end parallel do
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)
