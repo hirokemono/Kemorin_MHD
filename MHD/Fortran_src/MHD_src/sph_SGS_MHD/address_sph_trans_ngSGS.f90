@@ -60,6 +60,7 @@
       module address_sph_trans_ngSGS
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_phys_data
       use t_phys_address

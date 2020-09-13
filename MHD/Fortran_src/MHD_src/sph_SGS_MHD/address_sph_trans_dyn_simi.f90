@@ -42,6 +42,7 @@
       module address_sph_trans_dyn_simi
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_phys_data
       use t_SGS_model_addresses

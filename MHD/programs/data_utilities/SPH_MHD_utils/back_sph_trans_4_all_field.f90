@@ -54,7 +54,6 @@
       use t_poloidal_rotation
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
-      use t_sph_multi_FFTW
 !
       use set_address_sph_trans_MHD
       use init_sphrical_transform_MHD
@@ -104,7 +103,6 @@
 !
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
-      use t_sph_multi_FFTW
 !
       use m_legendre_transform_list
       use copy_all_trans_send_recv

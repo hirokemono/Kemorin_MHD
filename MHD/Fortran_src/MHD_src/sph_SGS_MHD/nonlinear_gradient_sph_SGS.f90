@@ -57,7 +57,6 @@
       use t_sph_trans_arrays_SGS_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
-      use t_sph_multi_FFTW
       use t_sph_transforms
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
