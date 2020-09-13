@@ -121,7 +121,7 @@
 !
       integer, parameter :: IONE_4 = 1
       integer, parameter :: inembed = 0
-      integer, parameter :: istride = 1
+      integer :: istride
 !
 !
 !
@@ -129,8 +129,12 @@
       call alloc_fld_FFTW_plan(nidx_rtp(3), irt_rtp_smp_stack, FFTW_f)
 !
       howmany = int(irt_rtp_smp_stack(np_smp))
-      idist_r = int(FFTW_f%Nfft_r)
-      idist_c = int(FFTW_f%Nfft_c)
+!      idist_r = int(FFTW_f%Nfft_r)
+!      idist_c = int(FFTW_f%Nfft_c)
+!      istride = 1
+      idist_r = 1
+      idist_c = 1
+      istride = howmany
 !
       call dfftw_plan_many_dft_r2c                                      &
      &   (FFTW_f%plan_fwd, IONE_4, int(FFTW_f%Nfft_r), howmany,         &
@@ -321,13 +325,13 @@
       integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
       real(kind = kreal), intent(in)  :: X_rtp(nnod_rt,Nfft_r)
 !
-      real(kind = kreal), intent(inout) :: X_FFT(Nfft_r,nnod_rt)
+      real(kind = kreal), intent(inout) :: X_FFT(nnod_rt,Nfft_r)
 !
       integer(kind = kint) :: j
 !
 !
       do j = 1, nnod_rt
-        X_FFT(1:Nfft_r,j) = X_rtp(j,1:Nfft_r)
+        X_FFT(j,1:Nfft_r) = X_rtp(j,1:Nfft_r)
       end do
 !
       end subroutine copy_rtp_field_to_FFTW
@@ -347,7 +351,7 @@
 !
       integer(kind = kint), intent(in) :: Nfft_c, nnod_rt
       real(kind = kreal), intent(in) :: aNfft
-      complex(kind = fftw_complex), intent(in) :: C_fft(Nfft_c,nnod_rt)
+      complex(kind = fftw_complex), intent(in) :: C_fft(nnod_rt,Nfft_c)
 !
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
@@ -357,19 +361,19 @@
 !
       do j = 1, nnod_rt
         ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp
-        WS(ic_send) = aNfft * real(C_fft(1,j))
+        WS(ic_send) = aNfft * real(C_fft(j,1))
         do m = 2, Nfft_c-1
           ic_rtp = j + (2*m-2) * nnod_rt
           is_rtp = j + (2*m-1) * nnod_rt
           ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
           is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-          WS(ic_send) = two * aNfft * real(C_fft(m,j))
-          WS(is_send) = two * aNfft * real(C_fft(m,j)*iu)
+          WS(ic_send) = two * aNfft * real(C_fft(j,m))
+          WS(is_send) = two * aNfft * real(C_fft(j,m)*iu)
         end do 
         m = Nfft_c
         ic_rtp = j + nnod_rt
         ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-        WS(ic_send) = two * aNfft * real(C_fft(m,j))
+        WS(ic_send) = two * aNfft * real(C_fft(j,m))
       end do
 !
       end subroutine set_back_FFTW_to_send
@@ -390,7 +394,7 @@
       real(kind=kreal), intent(in):: WR(n_WR)
 !
       complex(kind = fftw_complex), intent(inout)                       &
-     &                             :: C_fft(Nfft_c,nnod_rt)
+     &                             :: C_fft(nnod_rt,Nfft_c)
 !
       integer(kind = kint) :: m, j, ic_rtp, is_rtp, ic_recv, is_recv
 !
@@ -398,19 +402,19 @@
 !   normalization
       do j = 1, nnod_rt
         ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp
-        C_fft(1,j) = cmplx(WR(ic_recv), zero, kind(0d0))
+        C_fft(j,1) = cmplx(WR(ic_recv), zero, kind(0d0))
         do m = 2, Nfft_c-1
           ic_rtp = j + (2*m-2) * nnod_rt
           is_rtp = j + (2*m-1) * nnod_rt
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
           is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
-          C_fft(m,j)                                                    &
+          C_fft(j,m)                                                    &
      &            = half * cmplx(WR(ic_recv), -WR(is_recv),kind(0d0))
         end do
         m = Nfft_c
         ic_rtp = j + nnod_rt
         ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-        C_fft(m,j) = half * cmplx(WR(ic_recv), zero, kind(0d0))
+        C_fft(j,m) = half * cmplx(WR(ic_recv), zero, kind(0d0))
       end do
 !
       end subroutine set_back_FFTW_from_recv
@@ -421,7 +425,7 @@
      &         (Nfft_r, nnod_rt, X_rtp, X_FFT)
 !
       integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
-      real(kind = kreal), intent(in) :: X_FFT(Nfft_r,nnod_rt)
+      real(kind = kreal), intent(in) :: X_FFT(nnod_rt,Nfft_r)
 !
       real(kind = kreal), intent(inout) :: X_rtp(nnod_rt,Nfft_r)
 !
@@ -429,7 +433,7 @@
 !
 !
       do j = 1, nnod_rt
-        X_rtp(j,1:Nfft_r) = X_FFT(1:Nfft_r,j)
+        X_rtp(j,1:Nfft_r) = X_FFT(j,1:Nfft_r)
       end do
 !
       end subroutine copy_rtp_field_from_FFTW
