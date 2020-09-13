@@ -218,7 +218,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) ::  ip, ist, num, nd
+      integer(kind = kint) ::  ip, nd
       integer(kind = kint_gl) :: ist_r, ist_c
 !
 !
@@ -272,7 +272,7 @@
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
       integer(kind = kint_gl) :: ist_r, ist_c
-      integer(kind = kint) :: nd, ip, ist, num
+      integer(kind = kint) :: nd, ip
 !
 !
       do nd = 1, ncomp
@@ -280,11 +280,11 @@
           call set_back_FFTW_from_recv                                 &
      &       (nd, irt_rtp_smp_stack(np_smp), irt_rtp_smp_stack,        &
      &        nnod_rtp, ncomp, n_WR, irev_sr_rtp, WR,                  &
-     &        FFTW_f%Nfft_c, FFTW_f%C(FFTW_f%Nfft_c*ist+1))
+     &        FFTW_f%Nfft_c, FFTW_f%C)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(ip,ist_r,ist_c,ist)
+!$omp parallel do private(ip,ist_r,ist_c)
         do ip = 1, np_smp
           ist_r = FFTW_f%Nfft_r * irt_rtp_smp_stack(ip-1)
           ist_c = FFTW_f%Nfft_c * irt_rtp_smp_stack(ip-1)
