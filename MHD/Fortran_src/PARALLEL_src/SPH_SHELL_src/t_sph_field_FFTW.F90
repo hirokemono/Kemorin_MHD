@@ -83,6 +83,10 @@
 !>        plan ID for forward transform
         integer(kind = fftw_plan), allocatable :: plan_fwd(:)
 !
+!>        length of FFT for real
+        integer :: Nfft_r
+!>        length of FFT for complex
+        integer :: Nfft_c
 !>        normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
 !>        real data for multiple Fourier transform
@@ -123,21 +127,21 @@
 !
       Nfft4 = int(nidx_rtp(3))
       call alloc_fld_FFTW_plan                                          &
-     &   (irt_rtp_smp_stack(np_smp), nidx_rtp(3), FFTW_f)
+     &   (nidx_rtp(3), irt_rtp_smp_stack(np_smp), FFTW_f)
 !
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         howmany = int(irt_rtp_smp_stack(ip  )                           &
      &           - irt_rtp_smp_stack(ip-1))
-        idist_r = int(nidx_rtp(3))
-        idist_c = int(nidx_rtp(3)/2+1)
+        idist_r = FFTW_f%Nfft_r
+        idist_c = FFTW_f%Nfft_c
 !
         call dfftw_plan_many_dft_r2c                                    &
-     &     (FFTW_f%plan_fwd(ip), IONE_4, Nfft4, howmany,                &
+     &     (FFTW_f%plan_fwd(ip), IONE_4, FFTW_f%Nfft_r, howmany,        &
      &      FFTW_f%X(1,ist), inembed, istride, idist_r,                 &
      &      FFTW_f%C(1,ist), inembed, istride, idist_c, FFTW_ESTIMATE)
         call dfftw_plan_many_dft_c2r                                    &
-     &     (FFTW_f%plan_bwd(ip), IONE_4, Nfft4, howmany,                &
+     &     (FFTW_f%plan_bwd(ip), IONE_4, FFTW_f%Nfft_r, howmany,        &
      &      FFTW_f%C(1,ist), inembed, istride, idist_c,                 &
      &      FFTW_f%X(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
       end do
@@ -407,17 +411,21 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_fld_FFTW_plan(nnod_rt, Nfft, FFTW_f)
+      subroutine alloc_fld_FFTW_plan(Nfft, nnod_rt, FFTW_f)
 !
-      integer(kind = kint), intent(in) :: nnod_rt, Nfft
+      integer(kind = kint), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: nnod_rt
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
+!
+      FFTW_f%Nfft_r = Nfft
+      FFTW_f%Nfft_c = Nfft/2 + 1
 !
       allocate(FFTW_f%plan_bwd(np_smp))
       allocate(FFTW_f%plan_fwd(np_smp))
 !
-      allocate(FFTW_f%X(Nfft,nnod_rt))
-      allocate(FFTW_f%C(Nfft/2+1,nnod_rt))
+      allocate(FFTW_f%X(FFTW_f%Nfft_r,nnod_rt))
+      allocate(FFTW_f%C(FFTW_f%Nfft_c,nnod_rt))
       FFTW_f%X = 0.0d0
       FFTW_f%C = 0.0d0
 !
