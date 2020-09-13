@@ -96,9 +96,9 @@
         integer(kind = kint), allocatable :: istact_smp_block_c(:)
 !
 !>        real data for multiple Fourier transform
-        real(kind = kreal), allocatable :: X(:,:)
+        real(kind = kreal), allocatable :: X(:)
 !>        spectrum data for multiple Fourier transform
-        complex(kind = fftw_complex), allocatable :: C(:,:)
+        complex(kind = fftw_complex), allocatable :: C(:)
 !
 !>        temporal area for ordering
         real(kind = kreal), allocatable :: v_tmp(:)
@@ -134,7 +134,7 @@
       call alloc_fld_FFTW_plan(nidx_rtp(3), irt_rtp_smp_stack, FFTW_f)
 !
       do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1) + 1
+        ist = irt_rtp_smp_stack(ip-1)
         howmany = int(irt_rtp_smp_stack(ip  )                           &
      &           - irt_rtp_smp_stack(ip-1))
         idist_r = int(FFTW_f%Nfft_r)
@@ -142,12 +142,12 @@
 !
         call dfftw_plan_many_dft_r2c                                    &
      &     (FFTW_f%plan_fwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
-     &      FFTW_f%X(1,ist), inembed, istride, idist_r,                 &
-     &      FFTW_f%C(1,ist), inembed, istride, idist_c, FFTW_ESTIMATE)
+     &      FFTW_f%X(FFTW_f%Nfft_r*ist+1), inembed, istride, idist_r,                 &
+     &      FFTW_f%C(FFTW_f%Nfft_r*ist+1), inembed, istride, idist_c, FFTW_ESTIMATE)
         call dfftw_plan_many_dft_c2r                                    &
      &     (FFTW_f%plan_bwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
-     &      FFTW_f%C(1,ist), inembed, istride, idist_c,                 &
-     &      FFTW_f%X(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
+     &      FFTW_f%C(FFTW_f%Nfft_c*ist+1), inembed, istride, idist_c,                 &
+     &      FFTW_f%X(FFTW_f%Nfft_r*ist+1), inembed, istride, idist_r, FFTW_ESTIMATE)
       end do
       FFTW_f%aNfft = one / dble(nidx_rtp(3))
 !
@@ -231,7 +231,7 @@
 !
           call copy_rtp_field_to_FFTW                                   &
      &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp), ist, num,       &
-     &        X_rtp(1,1,nd), FFTW_f%X(1,ist+1))
+     &        X_rtp(1,1,nd), FFTW_f%X(FFTW_f%Nfft_r*ist+1))
         end do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
@@ -240,7 +240,7 @@
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),               &
-     &        FFTW_f%X(1,ist+1), FFTW_f%C(1,ist+1))
+     &        FFTW_f%X(FFTW_f%Nfft_r*ist+1), FFTW_f%C(FFTW_f%Nfft_c*ist+1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
@@ -255,7 +255,7 @@
           call set_back_FFTW_to_send                                    &
      &       (nd, irt_rtp_smp_stack(np_smp), ist, num,                  &
      &        nnod_rtp, ncomp, n_WS, irev_sr_rtp, WS,                   &
-     &        FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1,ist+1))
+     &        FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(FFTW_f%Nfft_c*ist+1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
@@ -296,7 +296,7 @@
           call set_back_FFTW_from_recv                                 &
      &       (nd, irt_rtp_smp_stack(np_smp), ist, num,                 &
      &        nnod_rtp, ncomp, n_WR, irev_sr_rtp, WR,                  &
-     &        FFTW_f%Nfft_c, FFTW_f%C(1,ist+1))
+     &        FFTW_f%Nfft_c, FFTW_f%C(FFTW_f%Nfft_c*ist+1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
@@ -306,7 +306,7 @@
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),               &
-     &        FFTW_f%C(1,ist+1), FFTW_f%X(1,ist+1))
+     &        FFTW_f%C(FFTW_f%Nfft_c*ist+1), FFTW_f%X(FFTW_f%Nfft_r*ist+1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
@@ -318,7 +318,7 @@
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
           call copy_rtp_field_from_FFTW                                 &
      &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),                 &
-     &        ist, num, X_rtp(1,1,nd), FFTW_f%X(1,ist+1))
+     &        ist, num, X_rtp(1,1,nd), FFTW_f%X(FFTW_f%Nfft_r*ist+1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
@@ -352,8 +352,8 @@
      &      = FFTW_f%Nfft_c * irt_rtp_smp_stack(0:np_smp)
       nnod_rt = irt_rtp_smp_stack(np_smp)
 !
-      allocate(FFTW_f%X(FFTW_f%Nfft_r,nnod_rt))
-      allocate(FFTW_f%C(FFTW_f%Nfft_c,nnod_rt))
+      allocate(FFTW_f%X(FFTW_f%Nfft_r*nnod_rt))
+      allocate(FFTW_f%C(FFTW_f%Nfft_c*nnod_rt))
       FFTW_f%X = 0.0d0
       FFTW_f%C = 0.0d0
 !
