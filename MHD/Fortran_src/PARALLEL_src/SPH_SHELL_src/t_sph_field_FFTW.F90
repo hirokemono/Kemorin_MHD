@@ -70,6 +70,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_fftw_parameters
       use m_elapsed_labels_SPH_TRNS
       use calypso_mpi
 !
