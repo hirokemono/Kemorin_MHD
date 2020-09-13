@@ -121,7 +121,6 @@
 !
       integer, parameter :: IONE_4 = 1
       integer, parameter :: inembed = 0
-      integer :: istride
 !
 !
 !
@@ -129,22 +128,16 @@
       call alloc_fld_FFTW_plan(nidx_rtp(3), irt_rtp_smp_stack, FFTW_f)
 !
       howmany = int(irt_rtp_smp_stack(np_smp))
-!      idist_r = int(FFTW_f%Nfft_r)
-!      idist_c = int(FFTW_f%Nfft_c)
-!      istride = 1
-      idist_r = 1
-      idist_c = 1
-      istride = howmany
 !
       call dfftw_plan_many_dft_r2c                                      &
      &   (FFTW_f%plan_fwd, IONE_4, int(FFTW_f%Nfft_r), howmany,         &
-     &    FFTW_f%X(1), inembed, istride, idist_r,                       &
-     &    FFTW_f%C(1), inembed, istride, idist_c,                       &
+     &    FFTW_f%X(1), inembed, howmany, IONE_4,                        &
+     &    FFTW_f%C(1), inembed, howmany, IONE_4,                        &
      &    FFTW_ESTIMATE)
       call dfftw_plan_many_dft_c2r                                      &
      &   (FFTW_f%plan_bwd, IONE_4, int(FFTW_f%Nfft_r), howmany,         &
-     &    FFTW_f%C(1), inembed, istride, idist_c,                       &
-     &    FFTW_f%X(1), inembed, istride, idist_r,                       &
+     &    FFTW_f%C(1), inembed, howmany, IONE_4,                        &
+     &    FFTW_f%X(1), inembed, howmany, IONE_4,                        &
      &    FFTW_ESTIMATE)
       FFTW_f%aNfft = one / dble(nidx_rtp(3))
 !
@@ -330,9 +323,9 @@
       integer(kind = kint) :: j
 !
 !
-      do j = 1, nnod_rt
-        X_FFT(j,1:Nfft_r) = X_rtp(j,1:Nfft_r)
-      end do
+!$omp parallel workshare
+      X_FFT(1:nnod_rt,1:Nfft_r) = X_rtp(1:nnod_rt,1:Nfft_r)
+!$omp end parallel workshare
 !
       end subroutine copy_rtp_field_to_FFTW
 !
@@ -359,10 +352,16 @@
       integer(kind = kint) ::  m, j, ic_rtp, is_rtp, ic_send, is_send
 !
 !
+!$omp parallel do private(j,ic_send)
       do j = 1, nnod_rt
         ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp
         WS(ic_send) = aNfft * real(C_fft(j,1))
-        do m = 2, Nfft_c-1
+      end do
+!$omp end parallel do
+!
+      do m = 2, Nfft_c-1
+!$omp parallel do private(j,ic_rtp,is_rtp,ic_send,is_send)
+        do j = 1, nnod_rt
           ic_rtp = j + (2*m-2) * nnod_rt
           is_rtp = j + (2*m-1) * nnod_rt
           ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
@@ -370,11 +369,16 @@
           WS(ic_send) = two * aNfft * real(C_fft(j,m))
           WS(is_send) = two * aNfft * real(C_fft(j,m)*iu)
         end do 
-        m = Nfft_c
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(j,ic_rtp,ic_send)
+      do j = 1, nnod_rt
         ic_rtp = j + nnod_rt
         ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-        WS(ic_send) = two * aNfft * real(C_fft(j,m))
+        WS(ic_send) = two * aNfft * real(C_fft(j,Nfft_c))
       end do
+!$omp end parallel do
 !
       end subroutine set_back_FFTW_to_send
 !
@@ -400,10 +404,15 @@
 !
 !
 !   normalization
+!$omp parallel do private(j,ic_recv)
       do j = 1, nnod_rt
         ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp
         C_fft(j,1) = cmplx(WR(ic_recv), zero, kind(0d0))
-        do m = 2, Nfft_c-1
+      end do
+!$omp end parallel do
+      do m = 2, Nfft_c-1
+!$omp parallel do private(j,ic_rtp,is_rtp,ic_recv,is_recv)
+        do j = 1, nnod_rt
           ic_rtp = j + (2*m-2) * nnod_rt
           is_rtp = j + (2*m-1) * nnod_rt
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
@@ -411,11 +420,15 @@
           C_fft(j,m)                                                    &
      &            = half * cmplx(WR(ic_recv), -WR(is_recv),kind(0d0))
         end do
-        m = Nfft_c
+!$omp end parallel do
+      end do
+!$omp parallel do private(j,ic_rtp,ic_recv)
+      do j = 1, nnod_rt
         ic_rtp = j + nnod_rt
         ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-        C_fft(j,m) = half * cmplx(WR(ic_recv), zero, kind(0d0))
+        C_fft(j,Nfft_c) = half * cmplx(WR(ic_recv), zero, kind(0d0))
       end do
+!$omp end parallel do
 !
       end subroutine set_back_FFTW_from_recv
 !
@@ -429,12 +442,10 @@
 !
       real(kind = kreal), intent(inout) :: X_rtp(nnod_rt,Nfft_r)
 !
-      integer(kind = kint) :: j
 !
-!
-      do j = 1, nnod_rt
-        X_rtp(j,1:Nfft_r) = X_FFT(j,1:Nfft_r)
-      end do
+!$omp parallel workshare
+      X_rtp(1:nnod_rt,1:Nfft_r) = X_FFT(1:nnod_rt,1:Nfft_r)
+!$omp end parallel workshare
 !
       end subroutine copy_rtp_field_from_FFTW
 !
