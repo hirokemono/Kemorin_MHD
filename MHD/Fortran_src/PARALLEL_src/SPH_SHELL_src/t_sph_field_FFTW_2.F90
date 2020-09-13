@@ -369,8 +369,8 @@
           WS(ic_send) = two * aNfft * real(C_fft(j,m))
           WS(is_send) = two * aNfft * real(C_fft(j,m)*iu)
         end do 
-      end do
 !$omp end parallel do
+      end do
 !
 !$omp parallel do private(j,ic_rtp,ic_send)
       do j = 1, nnod_rt
@@ -410,6 +410,7 @@
         C_fft(j,1) = cmplx(WR(ic_recv), zero, kind(0d0))
       end do
 !$omp end parallel do
+!
       do m = 2, Nfft_c-1
 !$omp parallel do private(j,ic_rtp,is_rtp,ic_recv,is_recv)
         do j = 1, nnod_rt
@@ -422,6 +423,7 @@
         end do
 !$omp end parallel do
       end do
+!
 !$omp parallel do private(j,ic_rtp,ic_recv)
       do j = 1, nnod_rt
         ic_rtp = j + nnod_rt
