@@ -482,7 +482,7 @@
         do j = 1, num
           ic_rtp = j+ist + nnod_rt
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-          i = j + (m-1)*num + Nfft_c*ist
+          i = j + (Nfft_c-1)*num + Nfft_c*ist
           C_fft(i) = half * cmplx(WR(ic_recv), zero, kind(0d0))
         end do
       end do
