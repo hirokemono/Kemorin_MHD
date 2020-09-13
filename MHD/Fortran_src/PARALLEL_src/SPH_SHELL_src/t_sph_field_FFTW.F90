@@ -268,7 +268,7 @@
      &          :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) :: nd, ip, ist
+      integer(kind = kint) :: nd, ip, ist, num
 !
 !
       do nd = 1, ncomp
@@ -289,8 +289,15 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-        call copy_rtp_field_from_FFTW(FFTW_f%Nfft_r, irt_rtp_smp_stack, &
-     &                               X_rtp(1,1,nd), FFTW_f%X(1,1))
+!$omp parallel do private(ip,ist,num)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1)
+          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+          call copy_rtp_field_from_FFTW                                 &
+     &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),                 &
+     &        ist, num, X_rtp(1,1,nd), FFTW_f%X(1,ist+1))
+        end do
+!$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
@@ -475,28 +482,20 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_rtp_field_from_FFTW                               &
-     &         (Nfft_r, irt_rtp_smp_stack, X_rtp, X_FFT)
+     &         (Nfft_r, nnod_rt, ist, num, X_rtp, X_FFT)
 !
-      integer(kind = kint), intent(in) :: Nfft_r
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in)                                    &
-     &          :: X_FFT(Nfft_r,irt_rtp_smp_stack(np_smp))
+      integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
+      integer(kind = kint), intent(in) :: ist, num
+      real(kind = kreal), intent(in) :: X_FFT(Nfft_r,num)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &          :: X_rtp(irt_rtp_smp_stack(np_smp),Nfft_r)
+      real(kind = kreal), intent(inout) :: X_rtp(nnod_rt,Nfft_r)
 !
-      integer(kind = kint) :: j, ip, ist, ied
+      integer(kind = kint) :: j
 !
 !
-!$omp parallel do private(j,ip,ist,ied)
-        do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1) + 1
-          ied = irt_rtp_smp_stack(ip)
-          do j = ist, ied
-            X_rtp(j,1:Nfft_r) = X_FFT(1:Nfft_r,j)
-          end do
-        end do
-!$omp end parallel do
+      do j = 1, num
+        X_rtp(ist+j,1:Nfft_r) = X_FFT(1:Nfft_r,j)
+      end do
 !
       end subroutine copy_rtp_field_from_FFTW
 !
