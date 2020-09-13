@@ -89,6 +89,11 @@
         integer :: Nfft_c
 !>        normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
+!
+!>        Total real length of FFT for each thread
+        integer, allocatable :: istact_smp_block_r(:)
+!>        Total complec length of FFT for for each thread
+        integer, allocatable :: istact_smp_block_c(:)
 !>        real data for multiple Fourier transform
         real(kind = kreal), allocatable :: X(:,:)
 !>        spectrum data for multiple Fourier transform
@@ -126,8 +131,7 @@
 !
 !
       Nfft4 = int(nidx_rtp(3))
-      call alloc_fld_FFTW_plan                                          &
-     &   (nidx_rtp(3), irt_rtp_smp_stack(np_smp), FFTW_f)
+      call alloc_fld_FFTW_plan(nidx_rtp(3), irt_rtp_smp_stack, FFTW_f)
 !
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
@@ -411,10 +415,10 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_fld_FFTW_plan(Nfft, nnod_rt, FFTW_f)
+      subroutine alloc_fld_FFTW_plan(Nfft, irt_rtp_smp_stack, FFTW_f)
 !
       integer(kind = kint), intent(in) :: Nfft
-      integer(kind = kint), intent(in) :: nnod_rt
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
 !
@@ -423,6 +427,14 @@
 !
       allocate(FFTW_f%plan_bwd(np_smp))
       allocate(FFTW_f%plan_fwd(np_smp))
+!
+      allocate(FFTW_f%istact_smp_block_r(0:np_smp))
+      allocate(FFTW_f%istact_smp_block_c(0:np_smp))
+      FFTW_f%istact_smp_block_r(0:np_smp)                               &
+     &      = FFTW_f%Nfft_r * irt_rtp_smp_stack(0:np_smp)
+      FFTW_f%istact_smp_block_c(0:np_smp)                               &
+     &      = FFTW_f%Nfft_c * irt_rtp_smp_stack(0:np_smp)
+      
 !
       allocate(FFTW_f%X(FFTW_f%Nfft_r,nnod_rt))
       allocate(FFTW_f%C(FFTW_f%Nfft_c,nnod_rt))
@@ -439,6 +451,7 @@
 !
 !
       deallocate(FFTW_f%plan_fwd, FFTW_f%plan_bwd)
+      deallocate(FFTW_f%istact_smp_block_r, FFTW_f%istact_smp_block_c)
       deallocate(FFTW_f%X, FFTW_f%C)
 !
       end subroutine dealloc_fld_FFTW_plan
