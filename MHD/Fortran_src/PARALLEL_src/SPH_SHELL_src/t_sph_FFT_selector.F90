@@ -85,7 +85,8 @@
 !
 #ifdef FFTW3
       use t_sph_single_FFTW
-      use t_sph_field_FFTW
+!      use t_sph_field_FFTW
+      use t_sph_field_FFTW_2
 #endif
 !
       implicit none
@@ -101,7 +102,8 @@
 !
 #ifdef FFTW3
 !>        Structure to use FFTW
-        type(work_for_field_FFTW) :: sph_fld_FFTW
+!        type(work_for_field_FFTW) :: sph_fld_FFTW
+        type(work_for_field_FFTW_2) :: sph_fld_FFTW
 !>        Structure to use FFTW for each component
         type(work_for_sgl_FFTW) :: sph_sgl_FFTW
 #endif
