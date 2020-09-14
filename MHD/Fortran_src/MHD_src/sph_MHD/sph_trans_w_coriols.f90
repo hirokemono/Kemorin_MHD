@@ -123,6 +123,7 @@
       type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !
 !
+      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'calypso_sph_comm_rj_2_rlm_N'
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+1)
       call calypso_sph_comm_N                                           &
@@ -136,6 +137,7 @@
      &    fl_prop, sph_bc_U, omega_sph, b_trns, trans_p%leg,            &
      &    gt_cor, n_WR, WR, cor_rlm)
       call finish_send_recv_sph(comms_sph%comm_rj)
+      call calypso_mpi_barrier
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+5)
@@ -146,6 +148,7 @@
      &    sph%sph_rlm, sph%sph_rtm, comms_sph%comm_rlm,                 &
      &    comms_sph%comm_rtm, trans_p%leg, trans_p%idx_trns,            &
      &    n_WR, n_WS, WR, WS, WK_sph%WK_leg)
+      call calypso_mpi_barrier
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+5)
 !
 !
@@ -154,6 +157,7 @@
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+2)
       call calypso_sph_comm_N                                           &
      &   (trns_bwd%ncomp, comms_sph%comm_rtm, comms_sph%comm_rtp)
+      call calypso_mpi_barrier
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+2)
 !
 !
@@ -195,12 +199,14 @@
       call fwd_FFT_select_to_send                                       &
      &   (trans_p%iflag_FFT, sph%sph_rtp, comms_sph%comm_rtp,           &
      &    trns_fwd%ncomp, n_WS, trns_fwd%fld_rtp, WS, WK_sph%WK_FFTs)
+      call calypso_mpi_barrier
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+7)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+3)
       call calypso_sph_comm_N                                           &
      &   (trns_fwd%ncomp, comms_sph%comm_rtp, comms_sph%comm_rtm)
       call finish_send_recv_sph(comms_sph%comm_rtp)
+      call calypso_mpi_barrier
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+3)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+6)
@@ -218,12 +224,14 @@
       call copy_coriolis_terms_rlm                                      &
      &   (trns_fwd%ncomp, sph%sph_rlm, comms_sph%comm_rlm, fl_prop,     &
      &    f_trns, cor_rlm, n_WS, WS)
+      call calypso_mpi_barrier
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+8)
 !
       if(iflag_SPH_time) call start_elapsed_time(ist_elapsed_SPH+4)
       call calypso_sph_comm_N                                           &
      &   (trns_fwd%ncomp, comms_sph%comm_rlm, comms_sph%comm_rj)
       call finish_send_recv_sph(comms_sph%comm_rlm)
+      call calypso_mpi_barrier
       if(iflag_SPH_time) call end_elapsed_time(ist_elapsed_SPH+4)
 !
       end subroutine sph_f_trans_w_coriolis
