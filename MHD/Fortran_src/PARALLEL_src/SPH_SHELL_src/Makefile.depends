@@ -50,11 +50,11 @@ leg_bwd_trans_sym_mat_tj.o: $(SPH_COMMDIR)/leg_bwd_trans_sym_mat_tj.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 leg_f_trans_sym_matmul_big.o: $(SPH_COMMDIR)/leg_f_trans_sym_matmul_big.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_leg_trans_sym_matmul_big.o matmul_for_legendre_trans.o set_vr_rtm_leg_matmul_big.o set_sp_rlm_leg_matmul_big.o
 	$(F90) -c $(F90OPTFLAGS) $<
-leg_fwd_trans_on_the_fly.o: $(SPH_COMMDIR)/leg_fwd_trans_on_the_fly.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_on_the_fly.o m_elapsed_labels_SPH_TRNS.o t_schmidt_poly_on_rtm.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o t_set_legendre_4_sph_trans.o small_matmul_leg_trans_krin.o
+leg_fwd_trans_on_the_fly.o: $(SPH_COMMDIR)/leg_fwd_trans_on_the_fly.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_on_the_fly.o m_elapsed_labels_SPH_TRNS.o t_schmidt_poly_on_rtm.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o sum_spectr_over_smp_segment.o t_set_legendre_4_sph_trans.o small_matmul_leg_trans_krin.o
 	$(F90) -c $(F90OPTFLAGS) $<
-leg_fwd_trans_sym_mat_jt.o: $(SPH_COMMDIR)/leg_fwd_trans_sym_mat_jt.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_sym_mat_jt.o m_elapsed_labels_SPH_TRNS.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o
+leg_fwd_trans_sym_mat_jt.o: $(SPH_COMMDIR)/leg_fwd_trans_sym_mat_jt.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_sym_mat_jt.o m_elapsed_labels_SPH_TRNS.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o sum_spectr_over_smp_segment.o
 	$(F90) -c $(F90OPTFLAGS) $<
-leg_fwd_trans_sym_mat_tj.o: $(SPH_COMMDIR)/leg_fwd_trans_sym_mat_tj.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_sym_mat_jt.o m_elapsed_labels_SPH_TRNS.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o
+leg_fwd_trans_sym_mat_tj.o: $(SPH_COMMDIR)/leg_fwd_trans_sym_mat_tj.f90 m_precision.o m_constants.o m_work_time.o calypso_mpi.o m_machine_parameter.o matmul_for_legendre_trans.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o t_legendre_work_sym_mat_jt.o m_elapsed_labels_SPH_TRNS.o set_vr_rtm_sym_mat_tsmp.o cal_sp_rlm_sym_mat_tsmp.o sum_spectr_over_smp_segment.o
 	$(F90) -c $(F90OPTFLAGS) $<
 legendre_bwd_sym_matmul.o: $(SPH_COMMDIR)/legendre_bwd_sym_matmul.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_legendre_work_sym_matmul.o t_spheric_rtm_data.o t_spheric_rlm_data.o t_sph_trans_comm_tbl.o t_work_4_sph_trans.o matmul_for_legendre_trans.o set_sp_rlm_leg_sym_matmul.o set_vr_rtm_leg_sym_matmul.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -143,6 +143,8 @@ small_matmul_leg_trans_krin.o: $(SPH_COMMDIR)/small_matmul_leg_trans_krin.F90 m_
 sph_rtp_zonal_rms_data.o: $(SPH_COMMDIR)/sph_rtp_zonal_rms_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_spheric_rtp_data.o t_geometry_data.o t_phys_data.o coordinate_convert_4_sph.o
 	$(F90) -c $(F90OPTFLAGS) $<
 spherical_SRs_N.o: $(SPH_COMMDIR)/spherical_SRs_N.f90 m_precision.o m_constants.o m_work_time.o t_sph_trans_comm_tbl.o t_solver_SR.o m_solver_SR.o sel_spherical_SRs.o calypso_SR_6.o calypso_SR_3.o calypso_SR_2.o calypso_SR.o calypso_SR_int.o m_elapsed_labels_SEND_RECV.o set_to_send_buffer.o
+	$(F90) -c $(F90OPTFLAGS) $<
+sum_spectr_over_smp_segment.o: $(SPH_COMMDIR)/sum_spectr_over_smp_segment.f90 m_precision.o m_constants.o m_machine_parameter.o t_field_matrices_4_legendre.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_sph_rms_data.o: $(SPH_COMMDIR)/sum_sph_rms_data.f90 m_precision.o m_constants.o t_spheric_rj_data.o t_phys_data.o t_sph_volume_mean_square.o t_sum_sph_rms_data.o cal_rms_by_sph_spectr.o cal_ave_4_rms_vector_sph.o radial_int_for_sph_spec.o correlation_by_sph_spectr.o
 	$(F90) -c $(F90OPTFLAGS) $<
