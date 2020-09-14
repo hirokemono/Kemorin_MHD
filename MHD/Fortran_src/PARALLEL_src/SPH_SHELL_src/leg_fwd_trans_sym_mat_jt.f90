@@ -147,8 +147,8 @@
 !        call sum_spectr_over_smp_out(nkrs, nkrt,                       &
 !        call sum_spectr_over_smp_in(nkrs, nkrt,                        &
         call sum_spectr_over_kr_in(nkrs, nkrt,                          &
-     &      WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),           &
-     &      WK_l_otf%Smat)
+     &      WK_l_tsp%n_jk_e(mp_rlm), WK_l_tsp%n_jk_o(mp_rlm),           &
+     &      WK_l_tsp%Smat)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)

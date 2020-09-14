@@ -18,7 +18,7 @@
 !!        type(spectr_matrix_omp), intent(inout) :: Smat(np_smp)
 !!@endverbatim
 !!
-      module leg_fwd_trans_on_the_fly
+      module sum_spectr_over_smp_segment
 !
       use m_precision
       use m_constants
