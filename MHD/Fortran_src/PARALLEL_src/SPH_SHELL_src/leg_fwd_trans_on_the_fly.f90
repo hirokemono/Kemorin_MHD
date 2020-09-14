@@ -69,6 +69,7 @@
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
       use matmul_for_legendre_trans
+      use sum_spectr_over_smp_segment
 !
       integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -179,8 +180,8 @@
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
 !        call sum_spectr_over_smp_out(nkrs, nkrt,                       &
 !        call sum_spectr_over_smp_in(nkrs, nkrt,                        &
-        call sum_spectr_over_smp_krin(nkrs, nkrt,                      &
-     &      WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),          &
+        call sum_spectr_over_kr_in(nkrs, nkrt,                          &
+     &      WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),           &
      &      WK_l_otf%Smat)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !

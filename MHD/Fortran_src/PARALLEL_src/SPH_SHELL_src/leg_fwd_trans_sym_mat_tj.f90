@@ -66,6 +66,7 @@
       use set_vr_rtm_sym_mat_tsmp
       use cal_sp_rlm_sym_mat_tsmp
       use matmul_for_legendre_trans
+      use sum_spectr_over_smp_segment
 !
       integer(kind = kint), intent(in) :: iflag_matmul
       type(sph_rtm_grid), intent(in) :: sph_rtm
@@ -147,30 +148,11 @@
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+15)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+16)
-!$omp parallel private(ip)
-        do ip = 2, np_smp
-!$omp workshare
-          WK_l_tsp%Smat(1)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%pol_e(1:nkrs*WK_l_tsp%n_jk_e(mp_rlm))
-!$omp end workshare nowait
-!$omp workshare
-          WK_l_tsp%Smat(1)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%tor_e(1:nkrt*WK_l_tsp%n_jk_e(mp_rlm))
-!$omp end workshare nowait
-!$omp workshare
-          WK_l_tsp%Smat(1)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%pol_o(1:nkrs*WK_l_tsp%n_jk_o(mp_rlm))
-!$omp end workshare nowait
-!$omp workshare
-          WK_l_tsp%Smat(1)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))        &
-     &      =  WK_l_tsp%Smat(1)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))   &
-     &       + WK_l_tsp%Smat(ip)%tor_o(1:nkrt*WK_l_tsp%n_jk_o(mp_rlm))
-!$omp end workshare nowait
-        end do
-!$omp end parallel
+!        call sum_spectr_over_smp_out(nkrs, nkrt,                       &
+!        call sum_spectr_over_smp_in(nkrs, nkrt,                        &
+        call sum_spectr_over_kr_in(nkrs, nkrt,                          &
+     &      WK_l_otf%n_jk_e(mp_rlm), WK_l_otf%n_jk_o(mp_rlm),           &
+     &      WK_l_otf%Smat)
         if(iflag_SDT_time) call end_elapsed_time(ist_elapsed_SDT+16)
 !
         if(iflag_SDT_time) call start_elapsed_time(ist_elapsed_SDT+17)

@@ -46,7 +46,7 @@
       call elpsed_label_4_fft_detail
 !
       call elpsed_label_calypso_send_recv
-      call elapsed_label_4_Legendre_trans
+!      call elapsed_label_4_Legendre_trans
 !
       call elpsed_label_4_VIZ
       call elapsed_label_4_SGS_model
