@@ -47,7 +47,7 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: num_test =  13
+      integer(kind = kint), parameter :: num_test =  11
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_leg_symmetry,                                   &
      &            iflag_leg_sym_spin_loop,                              &
@@ -59,8 +59,8 @@
      &            iflag_leg_sym_dgemm_jt,                               &
      &            iflag_leg_sym_mat_tj,                                 &
      &            iflag_leg_sym_dgemm_tj,                               &
-     &            iflag_on_the_fly_matmul,                              &
-     &            iflag_on_the_fly_dgemm,                               &
+!     &            iflag_on_the_fly_matmul,                             &
+!     &            iflag_on_the_fly_dgemm,                              &
      &            iflag_on_the_fly_matprod/)
 !
       private :: num_test, list_test
