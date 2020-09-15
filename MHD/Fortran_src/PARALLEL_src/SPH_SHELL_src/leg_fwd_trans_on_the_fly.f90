@@ -86,7 +86,7 @@
 !
       integer(kind = kint) :: mm, mp_rlm, mn_rlm, lp_rtm, ln_rtm
       integer(kind = kint) :: nkrs, nkrt, lt, lt2
-      integer(kind = kint) :: ip, j, jst
+      integer(kind = kint) :: ip, jst
       integer(kind = kint) :: lst
 !
 !

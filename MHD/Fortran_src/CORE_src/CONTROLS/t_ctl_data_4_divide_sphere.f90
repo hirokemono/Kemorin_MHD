@@ -26,6 +26,9 @@
 !!    rtm_inner_loop_direction            radial or horizontal
 !!    rtp_inner_loop_direction            radial or horizontal
 !!
+!!    rlm_order_distribution               cyclic_eq_transform
+!!       (Flags:  cyclic_eq_transform, cyclic_eq_mode, or simple)
+!!
 !!    num_radial_domain_ctl         2
 !!    num_horizontal_domain_ctl     2
 !!
@@ -72,6 +75,9 @@
 !>        Direction of inner loop for f(r,t,p)
         type(read_character_item) :: rtp_inner_loop_ctl
 !
+!>        Distribution of harmonics order for legendre transform
+        type(read_character_item) :: rlm_distibution_ctl
+!
 !>        Number of subdomains in raidal direction for reduced definition
         type(read_integer_item) :: num_radial_domain_ctl
 !
@@ -109,6 +115,9 @@
      &      :: hd_rtm_inner_loop =      'rtm_inner_loop_direction'
       character(len=kchara), parameter                                  &
      &      :: hd_rtp_inner_loop =      'rtp_inner_loop_direction'
+!
+      character(len=kchara), parameter                                  &
+     &      :: hd_rlm_order_dist =      'rlm_order_distribution'
 !
       character(len=kchara), parameter                                  &
      &      :: hd_num_radial_domain =  'num_radial_domain_ctl'
@@ -179,6 +188,9 @@
      &     (c_buf, hd_rtm_inner_loop, sdctl%rtm_inner_loop_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_rtp_inner_loop, sdctl%rtp_inner_loop_ctl)
+!
+        call read_chara_ctl_type                                        &
+     &     (c_buf, hd_rlm_order_dist, sdctl%rlm_distibution_ctl)
 !
         call read_integer_ctl_type                                      &
      &     (c_buf, hd_num_radial_domain, sdctl%num_radial_domain_ctl)

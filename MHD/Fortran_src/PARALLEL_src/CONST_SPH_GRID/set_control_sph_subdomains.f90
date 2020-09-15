@@ -41,8 +41,15 @@
 !
       character(len=kchara), parameter :: horiz1 = 'horizontal'
 !
+      character(len = kchara), parameter :: simple =      'simple'
+      character(len = kchara), parameter                                &
+     &                        :: cyclic_mode = 'cyclic_eq_mode'
+      character(len = kchara), parameter                                &
+     &                        :: cyclic_trns = 'cyclic_eq_transform'
+!
       private :: radius1, theta1, phi1, mode1
       private :: radius2, theta2, phi2, mode2, horiz1
+      private :: simple, cyclic_mode, cyclic_trns
 !
       private :: simple_subdomains_4_sph_shell
       private :: full_subdomains_4_sph_shell
@@ -56,6 +63,7 @@
       subroutine set_inner_loop_4_sph_shell(sdctl, s3d_ranks)
 !
       use skip_comment_f
+      use zonal_wavenumber_4_legendre
 !
       type(sphere_domain_control), intent(in) :: sdctl
       type(spheric_global_rank), intent(inout) :: s3d_ranks
@@ -90,6 +98,18 @@
       end if
 !
       s3d_ranks%rtp_rin_flag = .TRUE.
+!
+      s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_transform
+      if(sdctl%rlm_distibution_ctl%iflag .gt. 0) then
+        tmpchara = sdctl%rlm_distibution_ctl%charavalue
+        if(     cmp_no_case(tmpchara, simple)) then
+          s3d_ranks%iflag_rlm_distribute = id_simple_rlm_distribute
+        else if(cmp_no_case(tmpchara, cyclic_mode)) then
+          s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_mode
+        else if(cmp_no_case(tmpchara, cyclic_trns)) then
+          s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_transform
+        end if
+      end if
 !
       end subroutine set_inner_loop_4_sph_shell
 !

@@ -53,6 +53,9 @@
 !>        flag for radial inner decomposition
         logical :: radial_inner_domain_flag =  .FALSE.
 !
+!>        flag for radial inner decomposition
+        integer(kind = kint) :: iflag_rlm_distribute = 0
+!
 !>        number of subdomains
         integer(kind = kint) :: ndomain_sph
 !

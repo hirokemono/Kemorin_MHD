@@ -205,15 +205,14 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) ::  ip, ist, num, nd
-      integer(kind = kint_gl) :: ist_r, ist_c
+      integer(kind = kint) ::  nd
 !
 !
       do nd = 1, ncomp
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_rtp_field_to_FFTW                                   &
-     &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),  &
-     &        X_rtp(1,1,nd), FFTW_f%X(FFTW_f%Nfft_r*ist+1))
+     &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),               &
+     &        X_rtp(1,1,nd), FFTW_f%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -223,9 +222,9 @@
 !   normalization
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
           call set_back_FFTW_to_send                                    &
-     &       (nd, irt_rtp_smp_stack(np_smp),                &
+     &       (nd, irt_rtp_smp_stack(np_smp),                            &
      &        nnod_rtp, ncomp, n_WS, irev_sr_rtp, WS,                   &
-     &        FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(FFTW_f%Nfft_c*ist+1))
+     &        FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
@@ -251,15 +250,14 @@
      &          :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp)
       type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
 !
-      integer(kind = kint_gl) :: ist_r, ist_c
-      integer(kind = kint) :: nd, ip, ist, num
+      integer(kind = kint) :: nd
 !
 !
       do nd = 1, ncomp
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call set_back_FFTW_from_recv(nd, irt_rtp_smp_stack(np_smp),    &
      &        nnod_rtp, ncomp, n_WR, irev_sr_rtp, WR,                  &
-     &        FFTW_f%Nfft_c, FFTW_f%C(FFTW_f%Nfft_c*ist+1))
+     &        FFTW_f%Nfft_c, FFTW_f%C(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
@@ -269,7 +267,7 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
           call copy_rtp_field_from_FFTW                                 &
      &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),                 &
-     &        X_rtp(1,1,nd), FFTW_f%X(FFTW_f%Nfft_r*ist+1))
+     &        X_rtp(1,1,nd), FFTW_f%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
@@ -319,8 +317,6 @@
       real(kind = kreal), intent(in)  :: X_rtp(nnod_rt,Nfft_r)
 !
       real(kind = kreal), intent(inout) :: X_FFT(nnod_rt,Nfft_r)
-!
-      integer(kind = kint) :: j
 !
 !
 !$omp parallel workshare
