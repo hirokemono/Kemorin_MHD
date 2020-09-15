@@ -139,13 +139,13 @@
 !
         call dfftw_plan_many_dft_r2c                                    &
      &     (FFTW_f%plan_fwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
-     &      FFTW_f%X(ist_r+1), inembed, howmany, IONE_4,               &
-     &      FFTW_f%C(ist_c+1), inembed, howmany, IONE_4,               &
+     &      FFTW_f%X(ist_r+1), inembed, howmany, IONE_4,                &
+     &      FFTW_f%C(ist_c+1), inembed, howmany, IONE_4,                &
      &      FFTW_ESTIMATE)
         call dfftw_plan_many_dft_c2r                                    &
      &     (FFTW_f%plan_bwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
-     &      FFTW_f%C(ist_c+1), inembed, howmany, IONE_4,               &
-     &      FFTW_f%X(ist_r+1), inembed, howmany, IONE_4,               &
+     &      FFTW_f%C(ist_c+1), inembed, howmany, IONE_4,                &
+     &      FFTW_f%X(ist_r+1), inembed, howmany, IONE_4,                &
      &      FFTW_ESTIMATE)
       end do
       FFTW_f%aNfft = one / dble(nidx_rtp(3))
