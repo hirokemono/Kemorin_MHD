@@ -112,6 +112,6 @@ t_sph_mesh_1d_connect.o: $(SPH_GRID_SRCDIR)/t_sph_mesh_1d_connect.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_spheric_global_ranks.o: $(SPH_GRID_SRCDIR)/t_spheric_global_ranks.f90 m_precision.o t_spheric_parameter.o m_error_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
-zonal_wavenumber_4_legendre.o: $(SPH_GRID_SRCDIR)/zonal_wavenumber_4_legendre.f90 m_precision.o
+zonal_wavenumber_4_legendre.o: $(SPH_GRID_SRCDIR)/zonal_wavenumber_4_legendre.f90 m_precision.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
