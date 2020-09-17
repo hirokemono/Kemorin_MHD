@@ -31,7 +31,6 @@
       use t_sph_transforms
       use t_sph_trans_comm_tbl
       use t_sph_trans_arrays_MHD
-      use t_sph_multi_FFTW
       use t_sph_FFT_selector
 !
       implicit none
@@ -191,7 +190,7 @@
       endtime = MPI_WTIME() - starttime
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
-      call finalize_sph_FFT_select(iflag_FFT, sph_rtp, WK_FFTs)
+      call finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
 !
       call MPI_allREDUCE (endtime, etime_fft, 1,                        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

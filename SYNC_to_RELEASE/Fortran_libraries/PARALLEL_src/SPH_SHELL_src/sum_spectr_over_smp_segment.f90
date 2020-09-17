@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/PARALLEL_src/SPH_SHELL_src/sum_spectr_over_smp_segment.f90
