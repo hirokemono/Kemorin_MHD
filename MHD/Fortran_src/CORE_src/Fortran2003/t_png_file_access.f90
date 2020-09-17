@@ -152,7 +152,8 @@
       call link_to_image_data_4_png                                     &
      &   (ifour, npix_x, npix_y, cimage, png_buf)
       call write_png_rgb_c(png_buf%fhead_p,                             &
-     &    png_buf%npix4_x, png_buf%npix4_y, C_LOC(png_buf%cimage_p))
+     &                     png_buf%npix4_x, png_buf%npix4_y,            &
+     &                     C_LOC(png_buf%cimage_p(1,1)))
       nullify(png_buf%cimage_p)
 !
       end subroutine write_png_rgb_f
@@ -173,7 +174,8 @@
       call link_to_image_data_4_png                                     &
      &   (ifour, npix_x, npix_y, cimage, png_buf)
       call write_png_rgba_c(png_buf%fhead_p,                            &
-     &    png_buf%npix4_x, png_buf%npix4_y, C_LOC(png_buf%cimage_p))
+     &                      png_buf%npix4_x, png_buf%npix4_y,           &
+     &                      C_LOC(png_buf%cimage_p(1,1)))
       nullify(png_buf%cimage_p)
 !
       end subroutine write_png_rgba_f
@@ -208,7 +210,7 @@
       call link_to_image_data_4_png                                     &
      &   (ithree, npix_x, npix_y, cimage, png_buf)
       call copy_rgb_from_png_c(png_buf%npix4_x, png_buf%npix4_y,        &
-     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p))
+     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p(1,1)))
       nullify(png_buf%cimage_p)
 !
       end subroutine copy_rgb_from_png_f
@@ -225,7 +227,7 @@
       call link_to_image_data_4_png                                     &
      &   (ifour, npix_x, npix_y, cimage, png_buf)
       call copy_rgba_from_png_c(png_buf%npix4_x, png_buf%npix4_y,       &
-     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p))
+     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p(1,1)))
       nullify(png_buf%cimage_p)
 !
       end subroutine copy_rgba_from_png_f
@@ -243,7 +245,7 @@
       call link_to_image_data_4_png                                     &
      &   (ione, npix_x, npix_y, cimage, png_buf)
       call copy_grayscale_from_png_c(png_buf%npix4_x, png_buf%npix4_y,  &
-     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p))
+     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p(1,1)))
       nullify(png_buf%cimage_p)
 !
       end subroutine copy_grayscale_from_png_f
@@ -261,7 +263,7 @@
       call link_to_image_data_4_png                                     &
      &   (itwo, npix_x, npix_y, cimage, png_buf)
       call copy_grayalpha_from_png_c(png_buf%npix4_x, png_buf%npix4_y,  &
-     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p))
+     &    png_buf%iflag_cmode, C_LOC(png_buf%cimage_p(1,1)))
       nullify(png_buf%cimage_p)
 !
       end subroutine copy_grayalpha_from_png_f
