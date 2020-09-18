@@ -225,8 +225,6 @@
       integer(kind = kint), allocatable :: ip_tmp(:)
 !
 !
-      write(*,*) 'test test'
-!
       allocate( ip_tmp(-ltr:ltr) )
       ip_tmp = 0
 !
@@ -309,6 +307,8 @@
       integer(kind = kint) :: m, ip, mm, imark, ltr_half
       integer(kind = kint), allocatable :: ip_tmp(:)
 !
+!
+      write(*,*) 'test test'
 !
       allocate( ip_tmp(-ltr:ltr) )
       ip_tmp = 0
