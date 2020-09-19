@@ -90,7 +90,7 @@
 !
       mm = -1
       do ip = 1, ndomain_m
-        do m = -ltr/m_folding, ltr/m_folding
+        do m = ltr/m_folding, ltr/m_folding, -1
           if (ip_tmp(m) .eq. ip) then
             mm = mm + 1
             jdx_fsph(m) = mm
@@ -184,7 +184,7 @@
 !
       mm = -1
       do ip = 1, ndomain_m
-        do m = -ltr/m_folding, ltr/m_folding
+        do m = ltr/m_folding, ltr/m_folding, -1
           if (ip_tmp(m) .eq. ip) then
             mm = mm + 1
             jdx_fsph(m) = mm
