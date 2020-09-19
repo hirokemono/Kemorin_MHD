@@ -95,6 +95,11 @@
      &                                                    0,0,0,0,0,    &
      &                                                    0,0,0,0,0 /)
 
+      integer(kind = kint), parameter ::  ift5_q(25) = (/ 0,0,0,0,0,    &
+     &                                                    0,1,1,1,0,    &
+     &                                                    0,0,0,0,0,    &
+     &                                                    0,1,1,1,0,    &
+     &                                                    0,0,0,0,0 /)
 
       integer(kind = kint), parameter ::  ift5_x(25) = (/ 1,0,0,0,1,    &
      &                                                    0,1,0,1,0,    &
@@ -113,6 +118,12 @@
      &                                                    0,0,1,0,0,    &
      &                                                    0,1,0,0,0,    &
      &                                                    1,1,1,1,1 /)
+
+      integer(kind = kint), parameter ::  ift5_t(25) = (/ 1,1,1,1,1,    &
+     &                                                    0,0,1,0,0,    &
+     &                                                    0,0,1,0,0,    &
+     &                                                    0,0,1,0,0,    &
+     &                                                    0,0,1,0,0 /)
 
 !
 
@@ -211,7 +222,7 @@
      &                                                  0,0,0,0,0,0,0,  &
      &                                                  0,0,1,1,0,0,0,  &
      &                                                  0,0,1,1,0,0,0/)
-      
+
       integer(kind = kint), parameter :: ift7_a(49) = (/0,0,0,0,0,0,0,  &
      &                                                  0,0,0,1,0,0,0,  &
      &                                                  0,0,0,1,0,0,0,  &
@@ -219,12 +230,20 @@
      &                                                  0,0,0,1,0,0,0,  &
      &                                                  0,0,0,1,0,0,0,  &
      &                                                  0,0,0,0,0,0,0/)
-      
+
       integer(kind = kint), parameter :: ift7_s(49) = (/0,0,0,0,0,0,0,  &
      &                                                  0,0,0,0,0,0,0,  &
      &                                                  0,0,0,0,0,0,0,  &
      &                                                  0,1,1,1,1,1,0,  &
      &                                                  0,0,0,0,0,0,0,  &
+     &                                                  0,0,0,0,0,0,0,  &
+     &                                                  0,0,0,0,0,0,0/)
+
+      integer(kind = kint), parameter :: ift7_q(49) = (/0,0,0,0,0,0,0,  &
+     &                                                  0,0,0,0,0,0,0,  &
+     &                                                  0,1,1,1,1,1,0,  &
+     &                                                  0,0,0,0,0,0,0,  &
+     &                                                  0,1,1,1,1,1,0,  &
      &                                                  0,0,0,0,0,0,0,  &
      &                                                  0,0,0,0,0,0,0/)
 !
@@ -251,6 +270,14 @@
      &                                                  0,0,0,1,0,0,0,  &
      &                                                  0,0,1,0,0,0,0,  &
      &                                                  0,1,1,1,1,1,0,  &
+     &                                                  0,0,0,0,0,0,0/)
+!
+      integer(kind = kint), parameter :: ift7_t(49) = (/0,0,0,0,0,0,0,  &
+     &                                                  0,1,1,1,1,1,0,  &
+     &                                                  0,0,0,1,0,0,0,  &
+     &                                                  0,0,0,1,0,0,0,  &
+     &                                                  0,0,0,1,0,0,0,  &
+     &                                                  0,0,0,1,0,0,0,  &
      &                                                  0,0,0,0,0,0,0/)
 !
 !
@@ -436,6 +463,19 @@
      &                                                0,0,0,0,0,0,0,0,  &
      &                                                0,0,0,0,0,0,0,0,  &
      &                                                0,0,0,0,0,0,0,0/)
+
+      integer(kind=kint), parameter :: ift8_q(96) = (/0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,1,1,1,1,1,1,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,1,1,1,1,1,1,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0,  &
+     &                                                0,0,0,0,0,0,0,0/)
 !
 !
       integer(kind=kint), parameter :: ift8_x(96) = (/0,0,0,0,0,0,0,0,  &
@@ -477,15 +517,28 @@
      &                                                0,0,0,0,0,0,0,0,  &
      &                                                0,0,0,0,0,0,0,0/)
 !
+       integer(kind=kint), parameter :: ift8_t(96) = (/0,0,0,0,0,0,0,0,  &
+      &                                                0,0,0,0,0,0,0,0,  &
+      &                                                0,0,0,0,0,0,0,0,  &
+      &                                                0,1,1,1,1,1,1,0,  &
+      &                                                0,0,0,1,1,0,0,0,  &
+      &                                                0,0,0,1,1,0,0,0,  &
+      &                                                0,0,0,1,1,0,0,0,  &
+      &                                                0,0,0,1,1,0,0,0,  &
+      &                                                0,0,0,1,1,0,0,0,  &
+      &                                                0,0,0,1,1,0,0,0,  &
+      &                                                0,0,0,0,0,0,0,0,  &
+      &                                                0,0,0,0,0,0,0,0/)
+!
       private :: ift5_0, ift5_1, ift5_2, ift5_3, ift5_4, ift5_5, ift5_6
       private :: ift5_7, ift5_8, ift5_9, ift5_e, ift5_d, ift5_a, ift5_s
-      private :: ift5_x, ift5_y, ift5_z
+      private :: ift5_x, ift5_y, ift5_z, ift5_t, ift5_q
       private :: ift7_0, ift7_1, ift7_2, ift7_3, ift7_4, ift7_5, ift7_6
       private :: ift7_7, ift7_8, ift7_9, ift7_e, ift7_d, ift7_a, ift7_s
-      private :: ift7_x, ift7_y, ift7_z
+      private :: ift7_x, ift7_y, ift7_z, ift7_t, ift7_q
       private :: ift8_0, ift8_1, ift8_2, ift8_3, ift8_4, ift8_5, ift8_6
       private :: ift8_7, ift8_8, ift8_9, ift8_e, ift8_d, ift8_a, ift8_s
-      private :: ift8_x, ift8_y, ift8_z
+      private :: ift8_x, ift8_y, ift8_z, ift8_t, ift8_q
 !
 !      subroutine gen_font5(chara, font_out)
 !      subroutine gen_font7(chara, font_out)
@@ -561,6 +614,10 @@
         do j = 1, 5
           font_out(1:5,j) = ift5_s( (5*j-4):(5*j) )
         end do
+      else if (chara .eq. '=') then
+        do j = 1, 5
+          font_out(1:5,j) = ift5_q( (5*j-4):(5*j) )
+        end do
       else if (chara .eq. 'x') then
         do j = 1, 5
           font_out(1:5,j) = ift5_x( (5*j-4):(5*j) )
@@ -572,6 +629,10 @@
       else if (chara .eq. 'z') then
         do j = 1, 5
           font_out(1:5,j) = ift5_z( (5*j-4):(5*j) )
+        end do
+      else if (chara .eq. 't') then
+        do j = 1, 5
+          font_out(1:5,j) = ift5_t( (5*j-4):(5*j) )
         end do
       else if (chara .eq. ' ') then
         do j = 1, 5
@@ -647,6 +708,10 @@
         do j = 1, 7
           font_out(1:7,j) = ift7_s( (7*j-6):(7*j) )
         end do
+      else if (chara .eq. '=') then
+        do j = 1, 7
+          font_out(1:7,j) = ift7_q( (7*j-6):(7*j) )
+        end do
       else if (chara .eq. 'x') then
         do j = 1, 7
           font_out(1:7,j) = ift7_x( (7*j-6):(7*j) )
@@ -658,6 +723,10 @@
       else if (chara .eq. 'z') then
         do j = 1, 7
           font_out(1:7,j) = ift7_z( (7*j-6):(7*j) )
+        end do
+      else if (chara .eq. 't') then
+        do j = 1, 7
+          font_out(1:7,j) = ift7_t( (7*j-6):(7*j) )
         end do
       else if (chara .eq. ' ') then
         do j = 1, 17
@@ -733,6 +802,10 @@
         do j = 1, 12
           font_out(1:8,j) = ift8_s( (8*j-7):(8*j) )
         end do
+      else if (chara .eq. '=') then
+        do j = 1, 12
+          font_out(1:8,j) = ift8_q( (8*j-7):(8*j) )
+        end do
       else if (chara .eq. 'x') then
         do j = 1, 12
           font_out(1:8,j) = ift8_x( (8*j-7):(8*j) )
@@ -742,6 +815,10 @@
           font_out(1:8,j) = ift8_y( (8*j-7):(8*j) )
         end do
       else if (chara .eq. 'z') then
+        do j = 1, 12
+          font_out(1:8,j) = ift8_z( (8*j-7):(8*j) )
+        end do
+      else if (chara .eq. 't') then
         do j = 1, 12
           font_out(1:8,j) = ift8_z( (8*j-7):(8*j) )
         end do
