@@ -189,3 +189,40 @@
 ! ------------------------------------------------------------------
 !
       end module t_work_4_sph_trans
+!
+!
+!
+      call find_conjugate_sph_order_rtm                                 &
+     &   (sph_rtm%nidx_rtm, sph_rtm%idx_gl_1d_rtm_m(1,2),               &
+     &    mp_rlm, mn_rlm)
+      subroutine find_conjugate_sph_order_rtm                           &
+     &         (nphi_rtm, idx_gl_1d_mphi, mp_rlm, mn_rlm)
+!
+      integer(kind = kint), intent(in) :: nphi_rtm
+      integer(kind = kint), intent(in) :: idx_gl_1d_mphi(nphi_rtm)
+!
+      integer(kind = kint), intent(in) :: mp_rlm(nphi_rtm)
+      integer(kind = kint), intent(in) :: mn_rlm(nphi_rtm)
+!
+      do mp = 1, nphi_rtm
+        mp_rlm(mp) = mp
+!
+        mn1 = nphi_rtm - mp_rlm(mp) + 1
+        mn2 = mp_rlm(mp) + sign(1,idx_gl_1d_mphi(mp))
+        mn0 = mp_rlm(mp) + sign(1,idx_gl_1d_mphi(mp))
+        if(idx_gl_1d_mphi(mn1) .eq. -idx_gl_1d_mphi(mp)) then
+          mn_rlm(mp) = mn1
+        else if(idx_gl_1d_mphi(mn2) .eq. -idx_gl_1d_mphi(mp)) then
+          mn_rlm(mp) = mn2
+        else if(idx_gl_1d_mphi(mn1) .eq. 0) then
+          mn_rlm(mp) = mp_rlm(mp)
+        else
+          do mn = 1, nphi_rtm
+            if(idx_gl_1d_mphi(mn) .eq. -idx_gl_1d_mphi(mp)) then
+            mn_rlm(mp) = mn
+            exit
+          end do
+        end if
+      end do
+!
+      subroutine find_conjugate_sph_order_rtm
