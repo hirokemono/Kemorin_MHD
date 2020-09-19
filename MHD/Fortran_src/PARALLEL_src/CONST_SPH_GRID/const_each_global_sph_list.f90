@@ -272,6 +272,12 @@
      &      sph_params%l_truncation, sph_params%m_folding,              &
      &      sph_rtp%nidx_global_rtp(2), sph_rtp%nidx_global_rtp(3),     &
      &      s2d_tbl%jdx_fsph, s2d_tbl%mdx_4_lgd)
+      else if(s3d_ranks%iflag_rlm_distribute                            &
+     &      .eq. id_test_distribute) then
+        call zonal_wavenum_list_test(s3d_ranks%ndomain_rtm(3),          &
+     &      sph_params%l_truncation, sph_params%m_folding,              &
+     &      sph_rtp%nidx_global_rtp(2), sph_rtp%nidx_global_rtp(3),     &
+     &      s2d_tbl%jdx_fsph, s2d_tbl%mdx_4_lgd)
       else
          call zonal_wavenum_eq_leg_modes(s3d_ranks%ndomain_rtm(3),      &
       &      sph_params%l_truncation, sph_params%m_folding,             &

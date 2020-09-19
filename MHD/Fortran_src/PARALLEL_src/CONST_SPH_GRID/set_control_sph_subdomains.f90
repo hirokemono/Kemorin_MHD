@@ -47,9 +47,12 @@
       character(len = kchara), parameter                                &
      &                        :: cyclic_trns = 'cyclic_eq_transform'
 !
+      character(len = kchara), parameter                                &
+     &                        :: test_ditribution = 'test'
+!
       private :: radius1, theta1, phi1, mode1
       private :: radius2, theta2, phi2, mode2, horiz1
-      private :: simple, cyclic_mode, cyclic_trns
+      private :: simple, cyclic_mode, cyclic_trns, test_ditribution
 !
       private :: simple_subdomains_4_sph_shell
       private :: full_subdomains_4_sph_shell
@@ -108,6 +111,8 @@
           s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_mode
         else if(cmp_no_case(tmpchara, cyclic_trns)) then
           s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_transform
+        else if(cmp_no_case(tmpchara, test_ditribution)) then
+          s3d_ranks%iflag_rlm_distribute = id_test_distribute
         end if
       end if
 !
