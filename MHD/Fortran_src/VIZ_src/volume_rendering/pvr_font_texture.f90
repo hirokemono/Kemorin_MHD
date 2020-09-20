@@ -820,7 +820,7 @@
         end do
       else if (chara .eq. 't') then
         do j = 1, 12
-          font_out(1:8,j) = ift8_z( (8*j-7):(8*j) )
+          font_out(1:8,j) = ift8_t( (8*j-7):(8*j) )
         end do
       else if (chara .eq. ' ') then
         do j = 1, 12

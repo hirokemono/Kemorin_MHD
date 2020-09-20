@@ -109,6 +109,12 @@
      &    sph%sph_rtm%idx_gl_1d_rtm_m, sph%sph_rlm%idx_gl_1d_rlm_j,     &
      &    idx_trns%mdx_p_rlm_rtm, idx_trns%mdx_n_rlm_rtm,               &
      &    idx_trns%maxdegree_rlm, idx_trns%lstack_rlm)
+      call find_conjugate_sph_order                                     &
+     &   (sph%sph_rtm%nidx_rtm, sph%sph_rtm%idx_gl_1d_rtm_m(1,2),       &
+     &    idx_trns%mn_rlm)
+!
+!      call check_mdx_pn_rlm_rtm                                        &
+!     &   ((50+my_rank), sph%nidx_rlm, sph%nidx_rtm, idx_trns)
 !
       call init_legendre_rtm(sph%sph_params%l_truncation,               &
      &    sph%sph_rj, sph%sph_rtm, sph%sph_rlm, idx_trns, leg)
