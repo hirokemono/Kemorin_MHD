@@ -44,11 +44,11 @@
       integer(kind = kint), intent(inout) :: jdx_fsph(-nth:nth)
       integer(kind = kint), intent(inout) :: mdx_4_lgd(0:nph)
 !
-      integer(kind = kint) :: m, ip, mm, imark, ltr_half
+      integer(kind = kint) :: m, ip, ma, mm, imark, ltr_half
       integer(kind = kint), allocatable :: ip_tmp(:)
 !
 !
-      allocate( ip_tmp(-ltr:ltr) )
+      allocate( ip_tmp(0:ltr) )
       ip_tmp = 0
 !
       ip = 1
@@ -79,21 +79,13 @@
         end if
       end do
 !
-      do m = 1, ltr
-        ip_tmp(-m) = ip_tmp(m)
-      end do
-!
-!        write(8,*) 'm, ip_tmp(m)'
-!      do m = -ltr, ltr
-!        write(8,*) m, ip_tmp(m)
-!      end do
-!
-      mm = -1
+      mm = 0
       do ip = 1, ndomain_m
         do m = ltr/m_folding, -ltr/m_folding, -1
-          if (ip_tmp(m) .eq. ip) then
-            mm = mm + 1
+          ma = abs(m)
+          if (ip_tmp(ma) .eq. ip) then
             jdx_fsph(m) = mm
+            mm = mm + 1
           end if
         end do
       end do
@@ -104,16 +96,6 @@
       end do
 !
       deallocate( ip_tmp )
-!
-!        write(*,*) 'm, jdx_fsph(m)'
-!      do m = -ltr, ltr
-!        write(*,*) m, jdx_fsph(m)
-!      end do
-!        write(*,*) 'mm, mdx_4_lgd(mm)'
-!      do mm = 0,nph
-!        write(*,*) mm, mdx_4_lgd(mm)
-!      end do
-!
 !
       end subroutine zonal_wavenum_eq_leg_trns
 !
@@ -127,11 +109,11 @@
       integer(kind = kint), intent(inout) :: jdx_fsph(-nth:nth)
       integer(kind = kint), intent(inout) :: mdx_4_lgd(0:nph)
 !
-      integer(kind = kint) :: m, ip, mm, imark, ltr_half
+      integer(kind = kint) :: m, ip, ma, mm, imark, ltr_half
       integer(kind = kint), allocatable :: ip_tmp(:)
 !
 !
-      allocate( ip_tmp(-ltr:ltr) )
+      allocate( ip_tmp(0:ltr) )
       ip_tmp = 0
 !
       ip = 1
@@ -173,21 +155,13 @@
         end if
       end do
 !
-      do m = 1, ltr
-        ip_tmp(-m) = ip_tmp(m)
-      end do
-!
-!        write(8,*) 'm, ip_tmp(m)'
-!      do m = -ltr, ltr
-!        write(8,*) m, ip_tmp(m)
-!      end do
-!
-      mm = -1
+      mm = 0
       do ip = 1, ndomain_m
         do m = ltr/m_folding, -ltr/m_folding, -1
-          if (ip_tmp(m) .eq. ip) then
-            mm = mm + 1
+          ma = abs(m)
+          if (ip_tmp(ma) .eq. ip) then
             jdx_fsph(m) = mm
+            mm = mm + 1
           end if
         end do
       end do
@@ -198,16 +172,6 @@
       end do
 !
       deallocate( ip_tmp )
-!
-!        write(*,*) 'm, jdx_fsph(m)'
-!      do m = -ltr, ltr
-!        write(*,*) m, jdx_fsph(m)
-!      end do
-!        write(*,*) 'mm, mdx_4_lgd(mm)'
-!      do mm = 0,nph
-!        write(*,*) mm, mdx_4_lgd(mm)
-!      end do
-!
 !
       end subroutine zonal_wavenum_eq_leg_modes
 !
@@ -221,11 +185,11 @@
       integer(kind = kint), intent(inout) :: jdx_fsph(-nth:nth)
       integer(kind = kint), intent(inout) :: mdx_4_lgd(0:nph)
 !
-      integer(kind = kint) :: m, ip, mm, imark, ltr_half
+      integer(kind = kint) :: m, ip, ma, mm, imark, ltr_half
       integer(kind = kint), allocatable :: ip_tmp(:)
 !
 !
-      allocate( ip_tmp(-ltr:ltr) )
+      allocate( ip_tmp(0:ltr) )
       ip_tmp = 0
 !
       ip = 1
@@ -256,21 +220,13 @@
         end if
       end do
 !
-      do m = 1, ltr
-        ip_tmp(-m) = ip_tmp(m)
-      end do
-!
-!        write(8,*) 'm, ip_tmp(m)'
-!      do m = -ltr, ltr
-!        write(8,*) m, ip_tmp(m)
-!      end do
-!
-      mm = -1
+      mm = 0
       do ip = 1, ndomain_m
         do m = -ltr/m_folding, ltr/m_folding
-          if (ip_tmp(m) .eq. ip) then
-            mm = mm + 1
+          ma = abs(m)
+          if (ip_tmp(ma) .eq. ip) then
             jdx_fsph(m) = mm
+            mm = mm + 1
           end if
         end do
       end do
@@ -280,7 +236,10 @@
         mdx_4_lgd(mm) = m
       end do
 !
-      deallocate( ip_tmp )
+!        write(8,*) 'm, ip_tmp(m)'
+!      do m = -ltr, ltr
+!        write(8,*) m, ip_tmp(m)
+!      end do
 !
         write(*,*) 'm, jdx_fsph(m)'
       do m = -ltr, ltr
@@ -291,6 +250,7 @@
         write(*,*) mm, mdx_4_lgd(mm)
       end do
 !
+      deallocate( ip_tmp )
 !
       end subroutine zonal_leg_wavenum_simple_dist
 !
@@ -304,13 +264,13 @@
       integer(kind = kint), intent(inout) :: jdx_fsph(-nth:nth)
       integer(kind = kint), intent(inout) :: mdx_4_lgd(0:nph)
 !
-      integer(kind = kint) :: m, ip, mm, imark, ltr_half
+      integer(kind = kint) :: m, ip, ma, mm, imark, ltr_half
       integer(kind = kint), allocatable :: ip_tmp(:)
 !
 !
       write(*,*) 'test test'
 !
-      allocate( ip_tmp(-ltr:ltr) )
+      allocate( ip_tmp(0:ltr) )
       ip_tmp = 0
 !
       ip = 1
@@ -352,21 +312,18 @@
         end if
       end do
 !
-      do m = 1, ltr
-        ip_tmp(-m) = ip_tmp(m)
-      end do
-!
 !        write(8,*) 'm, ip_tmp(m)'
 !      do m = -ltr, ltr
 !        write(8,*) m, ip_tmp(m)
 !      end do
 !
-      mm = -1
+      mm = 0
       do ip = 1, ndomain_m
         do m = -ltr/m_folding, ltr/m_folding
-          if (ip_tmp(m) .eq. ip) then
-            mm = mm + 1
+          ma = abs(m)
+          if (ip_tmp(ma) .eq. ip) then
             jdx_fsph(m) = mm
+            mm = mm + 1
           end if
         end do
       end do
