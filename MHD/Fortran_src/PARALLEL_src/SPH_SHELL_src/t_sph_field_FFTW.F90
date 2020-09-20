@@ -102,7 +102,7 @@
         real(kind = kreal), allocatable :: t_omp(:,:)
       end type work_for_field_FFTW
 !
-      private :: alloc_fld_FFTW_plan
+      private :: alloc_fld_FFTW_plan, dealloc_fld_FFTW_plan
 !
 ! ------------------------------------------------------------------
 !
@@ -242,7 +242,7 @@
 !
 !   normalization
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-        call set_back_FFTW_to_send                                    &
+        call set_fwd_FFTW_to_send                                     &
      &     (nd, irt_rtp_smp_stack(np_smp), irt_rtp_smp_stack,         &
      &      nnod_rtp, ncomp, n_WS, irev_sr_rtp, WS,                   &
      &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C)
@@ -373,7 +373,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine set_back_FFTW_to_send                                  &
+      subroutine set_fwd_FFTW_to_send                                   &
      &         (nd, nnod_rt, irt_rtp_smp_stack, nnod_rtp, ncomp, n_WS,  &
      &          irev_sr_rtp, WS, Nfft_c, aNfft, C_fft)
 !
@@ -429,7 +429,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_back_FFTW_to_send
+      end subroutine set_fwd_FFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
