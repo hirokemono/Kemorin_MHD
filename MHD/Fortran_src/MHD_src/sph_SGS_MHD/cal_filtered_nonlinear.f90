@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine filter_nonlinear_by_pseudo_sph(sph, comms_sph,       &
-!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_sph,         &
+!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg, WK_FFTs,&
 !!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -20,7 +20,8 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -39,7 +40,8 @@
       use t_fdm_coefs
       use t_boundary_data_sph_MHD
       use t_SGS_model_addresses
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_sph_trans_arrays_SGS_MHD
       use t_sph_filtering
       use t_work_4_sph_trans
@@ -54,7 +56,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine filter_nonlinear_by_pseudo_sph(sph, comms_sph,         &
-     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_sph,           &
+     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg, WK_FFTs,  &
      &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD)
 !
       use sph_transforms_4_SGS
@@ -74,7 +76,8 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
 !
       logical :: flag
@@ -98,7 +101,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_fil_MHD%backward, WK_sph%WK_leg, WK_sph%WK_FFTs)
+     &    rj_fld, trns_fil_MHD%backward, WK_leg, WK_FFTs)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
@@ -112,7 +115,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_fil_MHD%forward, WK_sph%WK_leg, WK_sph%WK_FFTs, rj_fld)
+     &    trns_fil_MHD%forward, WK_leg, WK_FFTs, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)

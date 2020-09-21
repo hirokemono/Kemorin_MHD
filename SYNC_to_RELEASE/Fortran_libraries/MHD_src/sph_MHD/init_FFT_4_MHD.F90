@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine init_fourier_transform_4_MHD(ncomp_max_trns,         &
-!!     &          sph_rtp, comm_rtp, trns_MHD, WK_sph, iflag_FFT)
+!!     &          sph_rtp, comm_rtp, trns_MHD, WK_FFTs, iflag_FFT)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!
 !!       Current problem
 !!      FFTW crashes when both single and multi transforms are 
@@ -28,7 +28,6 @@
       use m_machine_parameter
 !
       use t_spheric_rtp_data
-      use t_sph_transforms
       use t_sph_trans_comm_tbl
       use t_sph_trans_arrays_MHD
       use t_sph_FFT_selector
@@ -48,7 +47,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_fourier_transform_4_MHD(ncomp_max_trns,           &
-     &          sph_rtp, comm_rtp, trns_MHD, WK_sph, iflag_FFT)
+     &          sph_rtp, comm_rtp, trns_MHD, WK_FFTs, iflag_FFT)
 !
       use m_solver_SR
 !
@@ -57,14 +56,14 @@
       integer(kind = kint), intent(in) :: ncomp_max_trns
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       integer(kind = kint), intent(inout) :: iflag_FFT
 !
 !
       if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
         call compare_FFT_4_MHD(ncomp_max_trns, sph_rtp, comm_rtp,       &
      &      SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                 &
-     &      trns_MHD, WK_sph%WK_FFTs)
+     &      trns_MHD, WK_FFTs)
         iflag_FFT = iflag_selected
       end if
 !
@@ -84,7 +83,7 @@
       end if
 !
       call init_sph_FFT_select                                          &
-     &   (my_rank, iflag_FFT, sph_rtp, ncomp_max_trns, WK_sph%WK_FFTs)
+     &   (my_rank, iflag_FFT, sph_rtp, ncomp_max_trns, WK_FFTs)
 !
       end subroutine init_fourier_transform_4_MHD
 !

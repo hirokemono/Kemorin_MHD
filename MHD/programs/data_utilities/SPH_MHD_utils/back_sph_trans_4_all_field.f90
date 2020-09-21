@@ -14,16 +14,17 @@
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!      subroutine sph_all_back_transform(sph, comms_sph, trans_p,      &
-!!     &           rj_fld, trns_MHD, WK_sph)
+!!     &           rj_fld, trns_MHD, WK_leg, WK_FFTs)
 !!      subroutine sph_back_transform_dual(sph, comms_sph, trans_p,     &
-!!     &          ref_rj_fld, rj_fld, trns_MHD, WK_sph,                 &
+!!     &          ref_rj_fld, rj_fld, trns_MHD, WK_leg, WK_FFTs,        &
 !!     &          nnod_rtp, ncomp_rtp, fld1_rtp)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!@endverbatim
 !
       module back_sph_trans_4_all_field
@@ -38,6 +39,8 @@
       use t_work_4_sph_trans
       use t_sph_trans_arrays_MHD
       use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
 !
       implicit none
 !
@@ -88,15 +91,15 @@
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    WK%trns_MHD, WK%WK_sph, trans_p, WK%gt_cor, WK%cor_rlm,       &
-     &    SPH_MHD%fld)
+     &    WK%trns_MHD, WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, trans_p,    &
+     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
 !
       end subroutine init_sph_back_transform
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_all_back_transform(sph, comms_sph, trans_p,        &
-     &           rj_fld, trns_MHD, WK_sph)
+     &           rj_fld, trns_MHD, WK_leg, WK_FFTs)
 !
       use m_solver_SR
       use spherical_SRs_N
@@ -113,7 +116,8 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -137,14 +141,14 @@
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
      &    trns_MHD%backward%fld_rtp, trns_MHD%backward%flc_pole,        &
-     &    trns_MHD%backward%fld_pole, WK_sph%WK_leg, WK_sph%WK_FFTs)
+     &    trns_MHD%backward%fld_pole, WK_leg, WK_FFTs)
 !
       end subroutine sph_all_back_transform
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_transform_dual(sph, comms_sph, trans_p,       &
-     &          ref_rj_fld, rj_fld, trns_MHD, WK_sph,                   &
+     &          ref_rj_fld, rj_fld, trns_MHD, WK_leg, WK_FFTs,          &
      &          nnod_rtp, ncomp_rtp, fld1_rtp)
 !
       type(sph_grids), intent(in) :: sph
@@ -155,7 +159,8 @@
       integer(kind = kint), intent(in) :: nnod_rtp, ncomp_rtp
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       real(kind = kreal), intent(inout) :: fld1_rtp(nnod_rtp,ncomp_rtp)
 !
@@ -164,7 +169,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph, comms_sph, trans_p,              &
-     &    ref_rj_fld, trns_MHD, WK_sph)
+     &    ref_rj_fld, trns_MHD, WK_leg, WK_FFTs)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !$omp parallel workshare
@@ -177,7 +182,7 @@
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+5)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_MHD, WK_sph)
+     &    rj_fld, trns_MHD, WK_leg, WK_FFTs)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
       end subroutine sph_back_transform_dual

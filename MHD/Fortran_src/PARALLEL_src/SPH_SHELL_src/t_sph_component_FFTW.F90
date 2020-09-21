@@ -112,8 +112,10 @@
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
       integer(kind = kint) :: ip
-      integer(kind = 4) :: Nfft4
+      integer(kind = 4) :: Nfft4, howmany
 !
+      integer, parameter :: IONE_4 = 1
+      integer, parameter :: inembed = 0
 !
       call alloc_comp_FFTW_plan(np_smp, nidx_rtp(3), FFTW_c)
 !
@@ -121,14 +123,14 @@
       howmany = int(ncomp)
       do ip = 1, np_smp
         call dfftw_plan_many_dft_r2c                                    &
-     &     (FFTW_f%plan_fwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
-     &      FFTW_f%X(1,1,ip), inembed, howmany, IONE_4,                 &
-     &      FFTW_f%C(1,1,ip), inembed, howmany, IONE_4,                 &
+     &     (FFTW_c%plan_fwd(ip), IONE_4, int(FFTW_c%Nfft_r), howmany,   &
+     &      FFTW_c%X(1,1,ip), inembed, howmany, IONE_4,                 &
+     &      FFTW_c%C(1,1,ip), inembed, howmany, IONE_4,                 &
      &      FFTW_ESTIMATE)
         call dfftw_plan_many_dft_c2r                                    &
-     &     (FFTW_f%plan_bwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
-     &      FFTW_f%C(1,1,ip), inembed, howmany, IONE_4,                 &
-     &      FFTW_f%X(1,1,ip), inembed, howmany, IONE_4,                 &
+     &     (FFTW_c%plan_bwd(ip), IONE_4, int(FFTW_c%Nfft_r), howmany,   &
+     &      FFTW_c%C(1,1,ip), inembed, howmany, IONE_4,                 &
+     &      FFTW_c%X(1,1,ip), inembed, howmany, IONE_4,                 &
      &      FFTW_ESTIMATE)
       end do
       FFTW_c%aNfft = one / dble(nidx_rtp(3))
@@ -196,7 +198,7 @@
 !
       integer(kind = kint), intent(in) :: n_WS1
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WS(ncomop,n_WS1)
+      real (kind=kreal), intent(inout):: WS(ncomp,n_WS1)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
       integer(kind = kint) ::  m, j, ip, ist, ied, nd
@@ -217,14 +219,17 @@
         do j = ist, ied
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           do nd = 1, ncomp
-            FFTW_c%X(nd,1:nidx_rtp(3),ip) = X_rtp(j,1:nidx_rtp(3),nd)
+            do m = 1, nidx_rtp(3)
+              ic_rtp = nd + (m-1) * ncomp
+              FFTW_c%X(nd,m,ip) = X_rtp(j,m,nd)
+            end do
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,1) = FFTW_c%t_omp(ip,1)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),               &
-     &        FFTW_f%X(1,1,ip), FFTW_f%C(1,1,ip))
+          call dfftw_execute_dft_r2c(FFTW_c%plan_fwd(ip),               &
+     &        FFTW_c%X(1,1,ip), FFTW_c%C(1,1,ip))
           if(iflag_FFT_time) FFTW_c%t_omp(ip,2) = FFTW_c%t_omp(ip,2)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
@@ -234,7 +239,7 @@
             ic_send = irev_sr_rtp(j)
             WS(nd,ic_send) = FFTW_c%aNfft * real(FFTW_c%C(nd,1,ip))
           end do
-          do m = 2, FFTW_f%Nfft_c-1
+          do m = 2, FFTW_c%Nfft_c-1
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
             do nd = 1, ncomp
@@ -250,7 +255,7 @@
           do nd = 1, ncomp
             ic_send = irev_sr_rtp(ic_rtp)
             WS(nd,ic_send)                                              &
-     &         = two*FFTW_c%aNfft * real(FFTW_c%C(nd,FFTW_f%Nfft_c,ip))
+     &         = two*FFTW_c%aNfft * real(FFTW_c%C(nd,FFTW_c%Nfft_c,ip))
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3)= FFTW_c%t_omp(ip,3)   &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
@@ -275,7 +280,7 @@
      &         + FFTW_c%t_omp(1,3) / dble(np_smp)
       end if
 !
-      end subroutine sph_single_fwd_FFTW_to_send
+      end subroutine sph_comp_fwd_FFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
@@ -318,7 +323,7 @@
             ic_recv = irev_sr_rtp(j)
             FFTW_c%C(nd,1,ip) = cmplx(WR(nd,ic_recv), zero, kind(0d0))
           end do
-          do m = 2, FFTW_f%Nfft_c-1
+          do m = 2, FFTW_c%Nfft_c-1
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
             do nd = 1, ncomp
@@ -331,21 +336,24 @@
           ic_rtp = j + irt_rtp_smp_stack(np_smp)
           do nd = 1, ncomp
             ic_recv = irev_sr_rtp(ic_rtp)
-            FFTW_c%C(nd,FFTW_f%Nfft_c,ip)                               &
+            FFTW_c%C(nd,FFTW_c%Nfft_c,ip)                               &
      &              = half * cmplx(WR(nd,ic_recv), zero, kind(0d0))
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,1) = FFTW_c%t_omp(ip,1)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),               &
-     &        FFTW_f%C(1,1,ip), FFTW_f%X(1,1,ip))
+          call dfftw_execute_dft_c2r(FFTW_c%plan_bwd(ip),               &
+     &        FFTW_c%C(1,1,ip), FFTW_c%X(1,1,ip))
           if(iflag_FFT_time) FFTW_c%t_omp(ip,2)= FFTW_c%t_omp(ip,2)   &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           do nd = 1, ncomp
-            X_rtp(j,1:nidx_rtp(3),nd) = FFTW_c%X(nd,1:nidx_rtp(3),ip)
+            do m = 1, nidx_rtp(3)
+              ic_rtp = nd + (m-1) * ncomp
+              X_rtp(j,m,nd) = FFTW_c%X(nd,ic_rtp,ip)
+            end do  
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3) = FFTW_c%t_omp(ip,3)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
@@ -381,8 +389,8 @@
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
 !
-      FFTW_f%Nfft_r = Nfft
-      FFTW_f%Nfft_c = Nfft/2 + 1
+      FFTW_c%Nfft_r = Nfft
+      FFTW_c%Nfft_c = Nfft/2 + 1
 !
       allocate(FFTW_c%plan_fwd(np_smp))
       allocate(FFTW_c%plan_bwd(np_smp))

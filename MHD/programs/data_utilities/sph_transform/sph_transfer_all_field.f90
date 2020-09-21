@@ -11,16 +11,18 @@
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
 !!      subroutine sph_f_trans_all_field(sph, comms_sph, mesh, trans_p, &
-!!     &          fld_rtp, nod_fld, rj_fld, WK_sph)
+!!     &          fld_rtp, nod_fld, rj_fld, WK_leg, WK_FFTs)
 !!      subroutine sph_b_trans_all_field                                &
 !!     &         (sph, comms_sph, mesh, trans_p, fld_rtp, rj_fld,       &
-!!     &          nod_fld, WK_sph)
+!!     &          nod_fld, WK_leg, WK_FFTs)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       module sph_transfer_all_field
 !
@@ -95,7 +97,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_all_field(sph, comms_sph, mesh, trans_p,   &
-     &          fld_rtp, nod_fld, rj_fld, WK_sph)
+     &          fld_rtp, nod_fld, rj_fld, WK_leg, WK_FFTs)
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
@@ -109,7 +111,8 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -137,7 +140,7 @@
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
      &    sph, comms_sph, trans_p, dall_rtp(1,1),                       &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    WK_sph%WK_leg, WK_sph%WK_FFTs)
+     &    WK_leg, WK_FFTs)
 !
 !
       if (iflag_debug.gt.0)                                             &
@@ -164,7 +167,7 @@
 !
       subroutine sph_b_trans_all_field                                  &
      &         (sph, comms_sph, mesh, trans_p, fld_rtp, rj_fld,         &
-     &          nod_fld, WK_sph)
+     &          nod_fld, WK_leg, WK_FFTs)
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
@@ -178,7 +181,8 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: rj_fld
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: nod_fld
 !
 !
@@ -209,8 +213,7 @@
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
      &    sph, comms_sph, trans_p,                                      &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    dall_rtp, dlcl_pole, dall_pole,                               &
-     &    WK_sph%WK_leg, WK_sph%WK_FFTs)
+     &    dall_rtp, dlcl_pole, dall_pole, WK_leg, WK_FFTs)
 !
 !
       if (iflag_debug.gt.0)                                             &

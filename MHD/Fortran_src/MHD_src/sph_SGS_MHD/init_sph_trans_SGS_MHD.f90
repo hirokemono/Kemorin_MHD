@@ -120,8 +120,8 @@
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    WK%trns_MHD, WK%WK_sph, trans_p, WK%gt_cor, WK%cor_rlm,       &
-     &    SPH_MHD%fld)
+     &    WK%trns_MHD, WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, trans_p,    &
+     &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
 !
       end subroutine init_sph_transform_SGS_MHD
 !
@@ -231,8 +231,8 @@
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
      &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
       call init_fourier_transform_4_MHD(ncomp_max_trans,                &
-     &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD, WK%WK_sph,      &
-     &    trans_p%iflag_FFT)
+     &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD,                 &
+     &    WK%WK_sph%WK_FFTs, trans_p%iflag_FFT)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !

@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine back_trans_4_correlate                               &
 !!     &         (sph, comms_sph, ref_rj_fld, rj_fld, trans_p,          &
-!!     &          trns_MHD, WK_sph)
+!!     &          trns_MHD, WK_leg, WK_FFTs)
 !!      subroutine back_trans_4_rms_ratio                               &
 !!     &         (sph, comms_sph, ref_rj_fld, rj_fld, trans_p,          &
-!!     &          trns_MHD, WK_sph)
+!!     &          trns_MHD, WK_leg, WK_FFTs)
 !!      subroutine cal_sph_correlations(sph, ipol, ipol_LES,            &
 !!     &          ref_rj_fld, rj_fld, trans_p, pwr, WK_pwr)
 !!      subroutine cal_sph_rms_ratios(sph, ipol, ipol_LES,              &
@@ -25,6 +25,8 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_mean_square_work), intent(inout) :: WK_pwr
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!@endverbatim
 !
       module cal_correlations_by_spectr
@@ -39,7 +41,8 @@
       use t_SGS_model_addresses
       use t_work_4_sph_trans
       use t_sph_trans_arrays_MHD
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
 !
@@ -66,7 +69,7 @@
 !
       subroutine back_trans_4_correlate                                 &
      &         (sph, comms_sph, ref_rj_fld, rj_fld, trans_p,            &
-     &          trns_MHD, WK_sph)
+     &          trns_MHD, WK_leg, WK_FFTs)
 !
       use back_sph_trans_4_all_field
       use zonal_correlation_rtp
@@ -78,7 +81,8 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       integer(kind = kint) :: nnod_rtp, ncomp_rtp
 !
@@ -87,7 +91,7 @@
       allocate(fld1_rtp(nnod_rtp,ncomp_rtp))
 !
       call sph_back_transform_dual(sph, comms_sph, trans_p,             &
-     &    ref_rj_fld, rj_fld, trns_MHD, WK_sph,                         &
+     &    ref_rj_fld, rj_fld, trns_MHD, WK_leg, WK_FFTs,                &
      &    nnod_rtp, ncomp_rtp, fld1_rtp)
 !
 !       Evaluate correlation in zonal
@@ -104,7 +108,7 @@
 !
       subroutine back_trans_4_rms_ratio                                 &
      &         (sph, comms_sph, ref_rj_fld, rj_fld, trans_p,            &
-     &          trns_MHD, WK_sph)
+     &          trns_MHD, WK_leg, WK_FFTs)
 !
       use back_sph_trans_4_all_field
       use zonal_correlation_rtp
@@ -116,7 +120,8 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
       integer(kind = kint) :: nnod_rtp, ncomp_rtp
 !
@@ -127,7 +132,7 @@
       allocate(fld1_rtp(nnod_rtp,ncomp_rtp))
 !
       call sph_back_transform_dual(sph, comms_sph, trans_p,             &
-     &    ref_rj_fld, rj_fld, trns_MHD, WK_sph,                         &
+     &    ref_rj_fld, rj_fld, trns_MHD, WK_leg, WK_FFTs,                &
      &    nnod_rtp, ncomp_rtp, fld1_rtp)
 !
 !       Evaluate correlation in zonal

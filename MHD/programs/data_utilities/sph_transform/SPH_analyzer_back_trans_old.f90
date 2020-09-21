@@ -88,7 +88,8 @@
       call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
       call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
-     &    SPH_MHD%sph, SPH_MHD%comms, trans_p, WK_sph_TRNS)
+     &    SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
+     &    WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
 !
       call allocate_d_pole_4_all_trans                                  &
      &   (fld_rtp_TRNS, SPH_MHD%sph%sph_rtp)

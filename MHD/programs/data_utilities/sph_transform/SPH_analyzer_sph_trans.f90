@@ -69,7 +69,8 @@
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
       call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
-     &    SPH_MHD%sph, SPH_MHD%comms, trans_p, WK_sph_TRNS)
+     &    SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
+     &    WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
 !
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'allocate_d_rtp_4_all_trans'
@@ -103,7 +104,8 @@
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh, trans_p,        &
-     &    fld_rtp_TRNS, field_STR, SPH_MHD%fld, WK_sph_TRNS)
+     &    fld_rtp_TRNS, field_STR, SPH_MHD%fld,                         &
+     &    WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
 !
 !      call check_all_field_data(my_rank, SPH_MHD%fld)
 !
@@ -146,7 +148,8 @@
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
      &   (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh, trans_p,        &
-     &    fld_rtp_TRNS, field_STR, SPH_MHD%fld, WK_sph_TRNS)
+     &    fld_rtp_TRNS, field_STR, SPH_MHD%fld,                         &
+     &    WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
 !
 !      call check_all_field_data(my_rank, SPH_MHD%fld)
 !

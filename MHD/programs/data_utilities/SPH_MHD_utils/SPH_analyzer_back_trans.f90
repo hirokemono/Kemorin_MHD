@@ -151,7 +151,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform                                       &
      &   (SPH_MHD%sph, SPH_MHD%comms, SPH_WK%trans_p,                   &
-     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD, SPH_WK%trns_WK%WK_sph)
+     &    SPH_MHD%fld, SPH_WK%trns_WK%trns_MHD,                         &
+     &    SPH_WK%trns_WK%WK_sph%WK_leg, SPH_WK%trns_WK%WK_sph%WK_FFTs)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+5)
 !
 !*  -----------  lead energy data --------------

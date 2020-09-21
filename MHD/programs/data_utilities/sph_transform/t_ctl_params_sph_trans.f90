@@ -5,15 +5,15 @@
 !
 !!      subroutine set_control_4_sph_transform                          &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
+!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg, sph_maker)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
+!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg, sph_maker)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
 !!        type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
 !!      subroutine set_ctl_data_4_zm_trans(fst_file_IO)
 !!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
 !!        type(field_IO_params), intent(inout) :: fst_file_IO
@@ -32,7 +32,7 @@
       use t_file_IO_parameter
       use t_IO_step_parameter
       use t_VIZ_step_parameter
-      use t_sph_transforms
+      use t_legendre_trans_select
       use t_ctl_data_4_sph_trans
       use t_work_4_sph_trans
       use t_check_and_make_SPH_mesh
@@ -88,7 +88,7 @@
 !
       subroutine set_control_4_sph_transform                            &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
+     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg, sph_maker)
 !
       use t_work_4_sph_trans
 !
@@ -109,7 +109,7 @@
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
       type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
       type(global_gauss_points), intent(inout) :: d_gauss
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
@@ -135,8 +135,8 @@
       end if
 !
       if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
-        WK_sph%WK_leg%id_legendre = set_legendre_trans_mode_ctl         &
-     &                    (spt_ctl%Legendre_trans_loop_ctl%charavalue)
+        WK_leg%id_legendre = set_legendre_trans_mode_ctl                &
+     &                   (spt_ctl%Legendre_trans_loop_ctl%charavalue)
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
@@ -206,7 +206,7 @@
 !
       subroutine s_set_ctl_data_4_sph_trans                             &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, trans_p, WK_sph, sph_maker)
+     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg, sph_maker)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -227,7 +227,7 @@
       type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
       type(global_gauss_points), intent(inout) :: d_gauss
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
@@ -276,8 +276,8 @@
       end if
 !
       if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
-        WK_sph%WK_leg%id_legendre = set_legendre_trans_mode_ctl         &
-     &                    (spt_ctl%Legendre_trans_loop_ctl%charavalue)
+        WK_leg%id_legendre = set_legendre_trans_mode_ctl                &
+     &                   (spt_ctl%Legendre_trans_loop_ctl%charavalue)
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then

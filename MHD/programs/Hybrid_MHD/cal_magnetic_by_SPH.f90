@@ -115,7 +115,7 @@
       nvector_sph_trans = max(nvector_rj_2_xyz, nvector_xyz_2_rj)
       call initialize_sph_trans                                         &
      &   (ncomp_sph_trans, nscalar_sph_trans, nvector_sph_trans,        &
-     &    sph, comms_sph, trans_p, WK1_sph)
+     &    sph, comms_sph, trans_p, WK1_sph%WK_leg, WK1_sph%WK_FFTs)
 !
 !     ---------------------
 !
