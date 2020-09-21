@@ -226,13 +226,6 @@
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
-      call alloc_sphere_ave_coriolis(sph%sph_rj)
-      if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
-      call init_sum_coriolis_rlm                                        &
-     &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &
-     &    sph_MHD_bc%sph_bc_U, trans_p%leg, WK%gt_cor, WK%cor_rlm)
-!
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans                                    &
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
@@ -242,6 +235,13 @@
      &    WK%WK_FFTs, trans_p%iflag_FFT)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
+!
+      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
+      call alloc_sphere_ave_coriolis(sph%sph_rj)
+      if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
+      call init_sum_coriolis_rlm                                        &
+     &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &
+     &    sph_MHD_bc%sph_bc_U, trans_p%leg, WK%gt_cor, WK%cor_rlm)
 !
       end subroutine init_leg_fourier_trans_SGS_MHD
 !
