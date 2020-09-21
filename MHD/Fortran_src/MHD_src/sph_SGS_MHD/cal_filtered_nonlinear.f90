@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine filter_nonlinear_by_pseudo_sph(sph, comms_sph,       &
-!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg, WK_FFTs,&
+!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg,         &
 !!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -21,7 +21,6 @@
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
-!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -56,7 +55,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine filter_nonlinear_by_pseudo_sph(sph, comms_sph,         &
-     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg, WK_FFTs,  &
+     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK_leg,           &
      &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_fil_MHD)
 !
       use sph_transforms_4_SGS
@@ -77,7 +76,6 @@
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_fil_MHD
       type(legendre_trns_works), intent(inout) :: WK_leg
-      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
 !
       logical :: flag
@@ -101,7 +99,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_fil_MHD%backward, WK_leg, WK_FFTs)
+     &    rj_fld, trns_fil_MHD%backward, WK_leg,                        &
+     &    trns_fil_MHD%WK_FFTs_SGS)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
@@ -115,7 +114,8 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+11)
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_fil_MHD%forward, WK_leg, WK_FFTs, rj_fld)
+     &    trns_fil_MHD%forward, WK_leg, trns_fil_MHD%WK_FFTs_SGS,       &
+     &    rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+12)
