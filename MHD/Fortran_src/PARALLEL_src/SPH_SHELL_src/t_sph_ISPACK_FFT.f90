@@ -11,17 +11,17 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,     &
-!!     &          ispack_t)
+!!      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp,            &
+!!     &                           ncomp_bwd, ncomp_fwd, ispack_t)
 !!      subroutine finalize_sph_ISPACK(ispack_t)
-!!      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,   &
-!!     &          ispack_t)
+!!      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp,          &
+!!     &                             ncomp_bwd, ncomp_fwd, ispack_t)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_FTTRUF_to_send(nnod_rtp, nidx_rtp,               &
-!!     &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,          &
+!!     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,      &
 !!     &          X_rtp, WS, ispack_t)
 !! ------------------------------------------------------------------
 !!
@@ -37,7 +37,7 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine sph_FTTRUB_from_recv(nnod_rtp, nidx_rtp,             &
-!!     &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp,          &
+!!     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,      &
 !!     &          WR, X_rtp, ispack_t)
 !! ------------------------------------------------------------------
 !!
@@ -112,20 +112,19 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,       &
-     &          ispack_t)
+      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp,              &
+     &                           ncomp_bwd, ncomp_fwd, ispack_t)
 !
       use ispack_0931
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: maxirt_rtp_smp
-!
-      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
 !
-      ispack_t%Mmax_smp = ncomp*maxirt_rtp_smp
+      ispack_t%Mmax_smp = maxirt_rtp_smp * max(ncomp_bwd, ncomp_fwd)
       call alloc_const_4_ispack(nidx_rtp(3), ispack_t)
       call FTTRUI(nidx_rtp(3), ispack_t%IT, ispack_t%T)
 !
@@ -151,19 +150,19 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,     &
-     &          ispack_t)
+      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp,            &
+     &                             ncomp_bwd, ncomp_fwd, ispack_t)
 !
       use ispack_0931
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
-      integer(kind = kint), intent(in) :: ncomp
       type(work_for_ispack), intent(inout) :: ispack_t
 !
 !
-      ispack_t%Mmax_smp = ncomp*maxirt_rtp_smp
+      ispack_t%Mmax_smp = maxirt_rtp_smp * max(ncomp_bwd, ncomp_fwd)
 !
       if((2*nidx_rtp(3)) .ne. size(ispack_t%T)) then
 !
@@ -191,7 +190,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_FTTRUF_to_send(nnod_rtp, nidx_rtp,                 &
-     &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,            &
+     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
      &          X_rtp, WS, ispack_t)
 !
       use ispack_0931
@@ -200,9 +199,9 @@
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp)
+     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
@@ -225,14 +224,15 @@
 !$omp&         private(ip,m,j,nd,ist,num,inum,inod_s,inod_c,            &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
-        ist = ncomp *  irt_rtp_smp_stack(ip-1)
-        num = ncomp * (irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1))
+        ist = ncomp_fwd *  irt_rtp_smp_stack(ip-1)
+        num = ncomp_fwd * (irt_rtp_smp_stack(ip)                        &
+     &                   - irt_rtp_smp_stack(ip-1))
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)/2
           do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp)
-            j =  1 + (ist+inum-nd) / ncomp
+            nd = 1 + mod(ist+inum-1,ncomp_fwd)
+            j =  1 + (ist+inum-nd) / ncomp_fwd
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
             ispack_t%smp(ip)%X(inod_c) = X_rtp(j,2*m-1,nd)
@@ -250,11 +250,11 @@
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do inum = 1, num
-          nd = 1 + mod(ist+inum-1,ncomp)
-          j =  1 + (ist+inum-nd) / ncomp
+          nd = 1 + mod(ist+inum-1,ncomp_fwd)
+          j =  1 + (ist+inum-nd) / ncomp_fwd
           is_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp
-          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
+          ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
+          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
           inod_c = inum
           inod_s = inum + num
           WS(ic_send) = ispack_t%smp(ip)%X(inod_c)
@@ -262,12 +262,12 @@
         end do
         do m = 2, nidx_rtp(3)/2
           do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp)
-            j =  1 + (ist+inum-nd) / ncomp
+            nd = 1 + mod(ist+inum-1,ncomp_fwd)
+            j =  1 + (ist+inum-nd) / ncomp_fwd
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
-            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
+            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
             WS(ic_send) =   two * ispack_t%smp(ip)%X(inod_c)
@@ -305,7 +305,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine sph_FTTRUB_from_recv(nnod_rtp, nidx_rtp,               &
-     &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp,            &
+     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,        &
      &          WR, X_rtp, ispack_t)
 !
       use ispack_0931
@@ -314,13 +314,13 @@
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp)
+     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
@@ -339,16 +339,17 @@
 !$omp&         private(ip,m,j,ist,num,inum,nd,inod_s,inod_c,            &
 !$omp&                 ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
-        ist = ncomp *  irt_rtp_smp_stack(ip-1)
-        num = ncomp * (irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1))
+        ist = ncomp_bwd *  irt_rtp_smp_stack(ip-1)
+        num = ncomp_bwd * (irt_rtp_smp_stack(ip)                        &
+     &                   - irt_rtp_smp_stack(ip-1))
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do inum = 1, num
-          nd = 1 + mod(ist+inum-1,ncomp)
-          j =  1 + (ist+inum-nd) / ncomp
+          nd = 1 + mod(ist+inum-1,ncomp_bwd)
+          j =  1 + (ist+inum-nd) / ncomp_bwd
           is_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp
-          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
+          ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
+          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
           inod_c = inum
           inod_s = inum + num
           ispack_t%smp(ip)%X(inod_c) = WR(ic_recv)
@@ -356,14 +357,14 @@
         end do
         do m = 2, nidx_rtp(3)/2
           do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp)
-            j =  1 + (ist+inum-nd) / ncomp
+            nd = 1 + mod(ist+inum-1,ncomp_bwd)
+            j =  1 + (ist+inum-nd) / ncomp_bwd
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
-            ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp
-            is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp
+            ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+            is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
             ispack_t%smp(ip)%X(inod_c) =  half * WR(ic_recv)
             ispack_t%smp(ip)%X(inod_s) = -half * WR(is_recv)
           end do
@@ -380,8 +381,8 @@
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)/2
           do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp)
-            j =  1 + (ist+inum-nd) / ncomp
+            nd = 1 + mod(ist+inum-1,ncomp_bwd)
+            j =  1 + (ist+inum-nd) / ncomp_bwd
             inod_c = inum + (2*m-2) * num
             inod_s = inum + (2*m-1) * num
             X_rtp(j,2*m-1,nd) = ispack_t%smp(ip)%X(inod_c)

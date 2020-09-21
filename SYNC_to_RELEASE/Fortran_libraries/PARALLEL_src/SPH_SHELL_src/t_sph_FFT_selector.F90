@@ -119,10 +119,6 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
-      integer(kind = kint) :: ncomp
-!
-!
-      ncomp = max(ncomp_bwd, ncomp_fwd)
 !
 #ifdef FFTW3
       if(iflag_FFT .eq. iflag_FFTW) then
@@ -141,8 +137,8 @@
 !
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_sph_FFTPACK5                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      WK_FFTs%sph_FFTPACK)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
 !
       end subroutine init_sph_FFT_select
 !
@@ -183,10 +179,6 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
-      integer(kind = kint) :: ncomp
-!
-!
-      ncomp = max(ncomp_bwd, ncomp_fwd)
 !
 #ifdef FFTW3
       if(     iflag_FFT .eq. iflag_FFTW) then
@@ -205,8 +197,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
         call verify_sph_FFTPACK5                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      WK_FFTs%sph_FFTPACK)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
 !
       end subroutine verify_sph_FFT_select
 !

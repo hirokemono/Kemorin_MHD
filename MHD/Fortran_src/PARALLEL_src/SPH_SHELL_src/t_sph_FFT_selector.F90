@@ -128,21 +128,18 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
-      integer(kind = kint) :: ncomp
-!
-!
-      ncomp = max(ncomp_bwd, ncomp_fwd)
 !
       if(iflag_FFT .eq. iflag_ISPACK1) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
         call init_sph_ISPACK                                            &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      WK_FFTs%sph_ISPACK)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
       else if(iflag_FFT .eq. iflag_ISPACK3) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_sph_ISPACK3                                           &
      &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
-     &      cast_long(ncomp), WK_FFTs%sph_ISPACK3)
+     &      cast_long(ncomp_bwd), cast_long(ncomp_fwd),                 &
+     &      WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
@@ -157,8 +154,8 @@
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_sph_FFTPACK5                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      WK_FFTs%sph_FFTPACK)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine init_sph_FFT_select
@@ -204,20 +201,18 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
-      integer(kind = kint) :: ncomp
 !
-!
-      ncomp = max(ncomp_bwd, ncomp_fwd)
       if(iflag_FFT .eq. iflag_ISPACK1) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_sph_ISPACK                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      WK_FFTs%sph_ISPACK)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
       else if(iflag_FFT .eq. iflag_ISPACK3) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_sph_ISPACK3                                         &
      &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
-     &      cast_long(ncomp), WK_FFTs%sph_ISPACK3)
+     &      cast_long(ncomp_bwd), cast_long(ncomp_fwd),                 &
+     &      WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
@@ -232,8 +227,8 @@
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
         call verify_sph_FFTPACK5                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      WK_FFTs%sph_FFTPACK)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine verify_sph_FFT_select
