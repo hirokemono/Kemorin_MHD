@@ -42,6 +42,7 @@
       use t_work_4_sph_trans
       use t_legendre_trans_select
       use t_sph_FFT_selector
+      use t_sph_transforms
 !
       use m_legendre_transform_list
 !
