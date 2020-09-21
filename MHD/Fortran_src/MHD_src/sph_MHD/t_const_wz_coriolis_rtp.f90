@@ -48,6 +48,7 @@
 !
       implicit none
 !
+!>       Structure of sphere average of radial coriolis force
       type spher_average_coriolis
 !>       sphere average of radial coriolis force (local)
         real(kind = kreal), allocatable :: save_cor_l(:)

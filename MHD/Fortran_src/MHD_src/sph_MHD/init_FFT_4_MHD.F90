@@ -85,7 +85,8 @@
       end if
 !
       call init_sph_FFT_select                                          &
-     &   (my_rank, iflag_FFT, sph_rtp, ncomp_max_trns, WK_FFTs)
+     &   (my_rank, iflag_FFT, sph_rtp, ncomp_max_trns, ncomp_max_trns,  &
+     &    WK_FFTs)
 !
       end subroutine init_fourier_transform_4_MHD
 !
@@ -178,7 +179,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_FFT_select'
       call init_sph_FFT_select                                          &
-     &   (my_rank, iflag_FFT, sph_rtp, ncomp_max_trns, WK_FFTs)
+     &   (my_rank, iflag_FFT, sph_rtp, ncomp_max_trns, ncomp_max_trns,  &
+     &    WK_FFTs)
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()

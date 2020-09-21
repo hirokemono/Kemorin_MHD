@@ -242,7 +242,7 @@
 !
 !      trans_p%iflag_FFT = trans_p%iflag_FFT_MHD
       call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
-     &    sph%sph_rtp, ncomp_max_trans, WK%WK_FFTs)
+     &    sph%sph_rtp, ncomp_max_trans, ncomp_max_trans, WK%WK_FFTs)
 !
       call init_sph_FFTs_for_SGS_model                                  &
      &   (trans_p%iflag_FFT, SGS_param, sph, WK_LES)
@@ -309,7 +309,8 @@
 !
       trns_SGS%iflag_SGS_FFT = iflag_ref_FFT
       call init_sph_FFT_select(my_rank, trns_SGS%iflag_SGS_FFT,         &
-     &    sph%sph_rtp, trns_SGS%backward%ncomp, trns_SGS%WK_FFTs_SGS)
+     &    sph%sph_rtp, trns_SGS%backward%ncomp, trns_SGS%forward%ncomp, &
+     &    trns_SGS%WK_FFTs_SGS)
 !
       end subroutine init_sph_FFTs_for_each_SGS
 !

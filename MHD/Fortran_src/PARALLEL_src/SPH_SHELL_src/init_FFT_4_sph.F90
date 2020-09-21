@@ -65,7 +65,7 @@
       end if
 !
       call init_sph_FFT_select                                          &
-     &   (my_rank, iflag_FFT, sph_rtp, ncomp, WK_FFTs)
+     &   (my_rank, iflag_FFT, sph_rtp, ncomp, ncomp, WK_FFTs)
 !
       if(my_rank .gt. 0) return
       write(*,'(a,i4)', advance='no') 'Selected Fourier transform: ',   &
@@ -181,7 +181,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_FFT_select'
       call init_sph_FFT_select                                          &
-     &   (my_rank, iflag_FFT, sph_rtp, ncomp, WK_FFTs)
+     &   (my_rank, iflag_FFT, sph_rtp, ncomp, ncomp, WK_FFTs)
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()
