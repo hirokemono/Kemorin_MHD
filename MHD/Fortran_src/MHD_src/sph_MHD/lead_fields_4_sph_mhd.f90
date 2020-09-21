@@ -127,17 +127,16 @@
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
      &    MHD_prop, trans_p, WK%trns_MHD, WK%trns_snap,                 &
-     &    WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
       call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &
-     &    WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
 !
       call enegy_fluxes_4_sph_mhd(monitor%ltr_crust, SPH_MHD%sph,       &
      &    SPH_MHD%comms, r_2nd, MHD_prop, sph_MHD_bc, trans_p,          &
      &    SPH_MHD%ipol, WK%trns_MHD, WK%trns_snap, WK%trns_difv,        &
-     &    WK%trns_eflux, WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs,           &
-     &    SPH_MHD%fld)
+     &    WK%trns_eflux, WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !

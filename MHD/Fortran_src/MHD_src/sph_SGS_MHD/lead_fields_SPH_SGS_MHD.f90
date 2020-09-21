@@ -97,19 +97,19 @@
 !
       call lead_fields_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,         &
      &    MHD_prop, trans_p, WK%trns_MHD, WK%trns_snap,                 &
-     &    WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
       call lead_filter_flds_by_sph_trans(SPH_MHD%sph, SPH_MHD%comms,    &
      &    MHD_prop, trans_p, WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap, &
-     &    WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
 !
       call gradients_of_vectors_sph                                     &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    SPH_MHD%ipol, WK%trns_snap, WK%trns_difv,                     &
-     &    WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
       call grad_of_filter_vectors_sph                                   &
      &   (SPH_MHD%sph, SPH_MHD%comms, r_2nd, sph_MHD_bc, trans_p,       &
      &    ipol_LES, WK_LES%trns_fil_snap, WK_LES%trns_fil_difv,         &
-     &    WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, SPH_MHD%fld)
+     &    WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
 !
       call lead_SGS_terms_4_SPH                                         &
      &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, trans_p,         &
@@ -122,8 +122,7 @@
      &    SPH_MHD%ipol, ipol_LES, WK%trns_MHD, WK_LES%trns_SGS,         &
      &    WK_LES%trns_fil_MHD, WK_LES%trns_fil_snap,                    &
      &    WK%trns_snap, WK%trns_difv, WK%trns_eflux,                    &
-     &    WK_LES%trns_SGS_snap, WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs,    &
-     &    SPH_MHD%fld)
+     &    WK_LES%trns_SGS_snap, WK%WK_leg, WK%WK_FFTs, SPH_MHD%fld)
 !
       end subroutine lead_fields_4_SPH_SGS_MHD
 !

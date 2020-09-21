@@ -23,7 +23,8 @@
       use t_spheric_rtp_data
       use t_phys_address
       use t_addresses_sph_transform
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
 !
@@ -55,8 +56,10 @@
 !>        strucutres for spherical transform for intermediate snapshot
         type(address_4_sph_trans) :: trns_difv
 !
-!>        Work structures for various spherical harmonics trasform
-        type(spherical_trns_works) :: WK_sph
+!>        Work structures for various Legendre trasform
+        type(legendre_trns_works) :: WK_leg
+!>        Structure for work area of FFTs
+        type(work_for_FFTs) :: WK_FFTs
 !
 !>        Gunat integrals of Coriolis term
         type(gaunt_coriolis_rlm) :: gt_cor

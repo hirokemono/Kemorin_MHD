@@ -106,8 +106,7 @@
       if(SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity) then
         if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+2)
         call cal_scale_similarity_sph_SGS                               &
-     &     (sph, comms_sph, MHD_prop, trans_p,                          &
-     &      WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs,                        &
+     &     (sph, comms_sph, MHD_prop, trans_p, WK%WK_leg, WK%WK_FFTs,   &
      &      dynamic_SPH, ipol, ipol_LES, rj_fld, WK_LES%trns_SGS)
         if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+2)
 !
@@ -119,8 +118,7 @@
           if(iflag_SGS_time) call start_elapsed_time(ist_elapsed_SGS+3)
           call sph_dynamic_similarity                                   &
      &       (SGS_par%model_p, sph, comms_sph, MHD_prop, trans_p,       &
-     &        WK_LES%trns_SGS, WK_LES%trns_DYNS,                        &
-     &        WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs,                      &
+     &        WK_LES%trns_SGS, WK_LES%trns_DYNS, WK%WK_leg, WK%WK_FFTs, &
      &        dynamic_SPH, ipol, ipol_LES, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
@@ -129,9 +127,8 @@
      &                'cal_nonlinear_gradient_sph_SGS'
         call cal_nonlinear_gradient_sph_SGS                             &
      &     (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,       &
-     &      dynamic_SPH, ipol, WK%trns_MHD,                             &
-     &      WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, rj_fld,                &
-     &      WK_LES%trns_ngTMP, WK_LES%trns_SGS)
+     &      dynamic_SPH, ipol, WK%trns_MHD, WK%WK_leg, WK%WK_FFTs,      &
+     &      rj_fld, WK_LES%trns_ngTMP, WK_LES%trns_SGS)
 !
         if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_ON         &
      &     .and. istep_dynamic .eq. 0) then
@@ -142,7 +139,7 @@
           call sph_dynamic_nl_gradient(SGS_par%model_p,                 &
      &        sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,     &
      &        WK_LES%trns_SGS, WK_LES%trns_SIMI, WK_LES%trns_DYNG,      &
-     &        WK_LES%trns_Csim, WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs,    &
+     &        WK_LES%trns_Csim, WK%WK_leg, WK%WK_FFTs,                  &
      &        dynamic_SPH, ipol, ipol_LES, rj_fld)
           if(iflag_SGS_time) call end_elapsed_time(ist_elapsed_SGS+3)
         end if
@@ -186,7 +183,7 @@
      &                     'sph_forward_trans_SGS_MHD Csim'
         call sph_forward_trans_SGS_MHD                                  &
      &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
-     &      WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, rj_fld)
+     &      WK%WK_leg, WK%WK_FFTs, rj_fld)
         if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
       end if
 !
@@ -206,8 +203,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &            'sph_forward_trans_SGS_MHD SGS'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    WK_LES%trns_SGS%forward, WK%WK_sph%WK_leg, WK%WK_sph%WK_FFTs, &
-     &    rj_fld)
+     &    WK_LES%trns_SGS%forward, WK%WK_leg, WK%WK_FFTs, rj_fld)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+11)
 !
       if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
