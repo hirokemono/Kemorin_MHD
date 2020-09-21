@@ -125,7 +125,7 @@
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
      &    SPH_MHD%sph, SPH_MHD%comms, SPH_model%omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    WK%trns_MHD, WK%WK_leg, WK%WK_FFTs, trans_p,                  &
+     &    WK%trns_MHD, WK%WK_leg, WK%WK_FFTs_MHD, trans_p,              &
      &    WK%gt_cor, WK%cor_rlm, SPH_MHD%fld)
 !
       end subroutine init_sph_transform_SGS_MHD

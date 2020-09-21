@@ -172,7 +172,7 @@
      &                   'sph_forward_trans_SGS_MHD Csim for initial'
         call sph_forward_trans_SGS_MHD                                  &
      &     (sph, comms_sph, trans_p, WK_LES%trns_Csim%forward,          &
-     &      WK%WK_leg, WK%WK_FFTs, rj_fld)
+     &      WK%WK_leg, WK_LES%trns_Csim%WK_FFTs_SGS, rj_fld)
       else
         SGS_par%model_p%iflag_rst_sgs_coef_code = 0
         call write_SPH_Csim_file(MHD_step%init_d%i_time_step,           &

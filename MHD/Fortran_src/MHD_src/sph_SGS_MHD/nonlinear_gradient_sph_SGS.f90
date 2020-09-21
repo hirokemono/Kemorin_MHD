@@ -20,7 +20,6 @@
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
-!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
@@ -37,7 +36,6 @@
 !!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
-!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
