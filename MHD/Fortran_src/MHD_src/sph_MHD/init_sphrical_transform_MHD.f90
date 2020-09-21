@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine init_sph_transform_MHD                               &
 !!     &         (SPH_model, iphys, trans_p, WK, SPH_MHD)
-!!      subroutine init_leg_fourier_trans_MHD(sph_MHD_bc,               &
-!!     &          sph, comms_sph, ncomp_max_trans, trans_p, WK)
+!!      subroutine init_leg_fourier_trans_MHD                           &
+!!     &         (sph, comms_sph, ncomp_max_trans, trans_p, WK)
 !!      subroutine sel_sph_transform_MHD                                &
 !!     &         (MHD_prop, sph_MHD_bc, sph, comms_sph, omega_sph,      &
 !!     &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,&
@@ -22,6 +22,11 @@
 !!        type(gaunt_coriolis_rlm), intent(inout) :: gt_cor
 !!        type(coriolis_rlm_data), intent(inout) :: cor_rlm
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+!!      subroutine init_work_4_coriolis(sph_MHD_bc, sph, trans_p, WK)
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!!        type(sph_grids), intent(inout) :: sph
+!!        type(parameters_4_sph_trans), intent(in) :: trans_p
+!!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!@endverbatim
 !!
       module init_sphrical_transform_MHD
@@ -42,6 +47,7 @@
       use t_work_4_sph_trans
       use t_legendre_trans_select
       use t_sph_FFT_selector
+      use t_const_wz_coriolis_rtp
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_boundary_data_sph_MHD
@@ -113,8 +119,10 @@
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
       call init_leg_fourier_trans_MHD                                   &
-     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
-     &    ncomp_max_trans, trans_p, WK)
+     &   (SPH_MHD%sph, SPH_MHD%comms, ncomp_max_trans, trans_p, WK)
+!
+      call init_work_4_coriolis                                         &
+     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, trans_p, WK)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
@@ -127,17 +135,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_leg_fourier_trans_MHD(sph_MHD_bc,                 &
-     &          sph, comms_sph, ncomp_max_trans, trans_p, WK)
+      subroutine init_leg_fourier_trans_MHD                             &
+     &         (sph, comms_sph, ncomp_max_trans, trans_p, WK)
 !
       use init_sph_trans
       use init_FFT_4_MHD
-      use const_wz_coriolis_rtp
       use pole_sph_transform
       use skip_comment_f
 !
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!
+
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
 !
@@ -156,16 +162,9 @@
      &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
      &    WK%trns_MHD, WK%WK_FFTs_MHD, trans_p%iflag_FFT)
       call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
-     &    sph%sph_rtp, ncomp_max_trns, WK_FFTs)
+     &    sph%sph_rtp, ncomp_max_trans, WK%WK_FFTs)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
-!
-      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
-      call alloc_sphere_ave_coriolis(sph%sph_rj)
-      if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
-      call init_sum_coriolis_rlm                                        &
-     &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &
-     &    sph_MHD_bc%sph_bc_U, trans_p%leg, WK%gt_cor, WK%cor_rlm)
 !
       end subroutine init_leg_fourier_trans_MHD
 !
@@ -212,6 +211,26 @@
       call display_selected_legendre_mode(WK_leg%id_legendre)
 !
       end subroutine sel_sph_transform_MHD
+!
+!-----------------------------------------------------------------------
+!
+      subroutine init_work_4_coriolis(sph_MHD_bc, sph, trans_p, WK)
+!
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(sph_grids), intent(inout) :: sph
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+!
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+!
+!
+      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
+      call alloc_sphere_ave_coriolis(sph%sph_rj, WK%ave_cor)
+      if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
+      call init_sum_coriolis_rlm                                        &
+     &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &
+     &    sph_MHD_bc%sph_bc_U, trans_p%leg, WK%gt_cor, WK%cor_rlm)
+!
+      end subroutine init_work_4_coriolis
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

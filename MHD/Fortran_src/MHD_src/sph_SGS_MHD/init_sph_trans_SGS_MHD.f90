@@ -38,6 +38,7 @@
       use t_work_4_sph_trans
       use t_legendre_trans_select
       use t_sph_transforms
+      use t_const_wz_coriolis_rtp
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_boundary_data_sph_MHD
@@ -113,8 +114,12 @@
 !
 !
       call init_leg_fourier_trans_SGS_MHD                               &
-     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
-     &    ncomp_max_trans, trans_p, WK)
+     &   (SGS_par%model_p, SPH_MHD%sph, SPH_MHD%comms, ncomp_max_trans, &
+     &    trans_p, WK, WK_LES)
+!
+      if (iflag_debug.eq.1) write(*,*) 'init_work_4_coriolis'
+      call init_work_4_coriolis                                         &
+     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, trans_p, WK)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &
@@ -206,17 +211,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_leg_fourier_trans_SGS_MHD(sph_MHD_bc,             &
-     &          sph, comms_sph, ncomp_max_trans, trans_p, WK)
+      subroutine init_leg_fourier_trans_SGS_MHD                         &
+     &         (SGS_param, sph, comms_sph, ncomp_max_trans,             &
+     &          trans_p, WK, WK_LES)
 !
       use init_sph_trans
       use init_FFT_4_MHD
-      use const_wz_coriolis_rtp
       use pole_sph_transform
       use skip_comment_f
 !
-      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
-!
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
 !
@@ -224,26 +228,90 @@
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans                                    &
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
      &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
-      call init_fourier_transform_4_MHD(ncomp_max_trans,                &
-     &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD,                 &
-     &    WK%WK_FFTs, trans_p%iflag_FFT)
+!
+      call init_fourier_transform_4_MHD                                 &
+     &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
+     &    WK%trns_MHD, WK%WK_FFTs_MHD, trans_p%iflag_FFT)
+!
+!      trans_p%iflag_FFT = trans_p%iflag_FFT_MHD
+      call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
+     &    sph%sph_rtp, ncomp_max_trans, WK%WK_FFTs)
+!
+      call init_sph_FFTs_for_SGS_model                                  &
+     &   (trans_p%iflag_FFT, SGS_param, sph, WK_LES)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_sphere_ave_coriolis'
-      call alloc_sphere_ave_coriolis(sph%sph_rj)
-      if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
-      call init_sum_coriolis_rlm                                        &
-     &   (sph%sph_params%l_truncation, sph%sph_rlm,                     &
-     &    sph_MHD_bc%sph_bc_U, trans_p%leg, WK%gt_cor, WK%cor_rlm)
-!
       end subroutine init_leg_fourier_trans_SGS_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine init_sph_FFTs_for_SGS_model                            &
+     &         (iflag_ref_FFT, SGS_param, sph, WK_LES)
+!
+      integer(kind = kint), intent(in) :: iflag_ref_FFT
+      type(sph_grids), intent(in) :: sph
+      type(SGS_model_control_params), intent(in) :: SGS_param
+!
+      type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
+!
+!
+      call init_sph_FFTs_for_each_SGS                                   &
+     &   (iflag_ref_FFT, sph, WK_LES%trns_fil_MHD)
+!
+      if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+        call init_sph_FFTs_for_each_SGS                                 &
+     &     (iflag_ref_FFT, sph, WK_LES%trns_SGS)
+!
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+          call init_sph_FFTs_for_each_SGS                               &
+     &       (iflag_ref_FFT, sph, WK_LES%trns_DYNS)
+          call init_sph_FFTs_for_each_SGS                               &
+     &       (iflag_ref_FFT, sph, WK_LES%trns_Csim)
+         end if
+!
+      else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
+        call init_sph_FFTs_for_each_SGS                                 &
+     &     (iflag_ref_FFT, sph, WK_LES%trns_SGS)
+        call init_sph_FFTs_for_each_SGS                                 &
+     &     (iflag_ref_FFT, sph, WK_LES%trns_ngTMP)
+!
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+          call init_sph_FFTs_for_each_SGS                               &
+     &       (iflag_ref_FFT, sph, WK_LES%trns_SIMI)
+          call init_sph_FFTs_for_each_SGS                               &
+     &       (iflag_ref_FFT, sph, WK_LES%trns_DYNG)
+          call init_sph_FFTs_for_each_SGS                               &
+     &       (iflag_ref_FFT, sph, WK_LES%trns_Csim)
+         end if
+      end if
+!
+      end subroutine init_sph_FFTs_for_SGS_model
+!
+!-----------------------------------------------------------------------
+!
+      subroutine init_sph_FFTs_for_each_SGS                             &
+     &         (iflag_ref_FFT, sph, trns_SGS)
+!
+      integer(kind = kint), intent(in) :: iflag_ref_FFT
+      type(sph_grids), intent(in) :: sph
+!
+      type(SGS_address_sph_trans), intent(inout) :: trns_SGS
+!
+!
+      trns_SGS%iflag_SGS_FFT = iflag_ref_FFT
+      call init_sph_FFT_select(my_rank, trns_SGS%iflag_SGS_FFT,         &
+     &    sph%sph_rtp, trns_SGS%backward%ncomp, trns_SGS%WK_FFTs_SGS)
+!
+      end subroutine init_sph_FFTs_for_each_SGS
 !
 !-----------------------------------------------------------------------
 !

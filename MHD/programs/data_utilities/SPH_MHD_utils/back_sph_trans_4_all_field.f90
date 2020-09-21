@@ -84,8 +84,10 @@
       call alloc_sph_trans_address(SPH_MHD%sph%sph_rtp, WK)
 !
       call init_leg_fourier_trans_MHD                                   &
-     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, SPH_MHD%comms,             &
-     &    ncomp_max_trans, trans_p, WK)
+     &   (SPH_MHD%sph, SPH_MHD%comms, ncomp_max_trans, trans_p, WK)
+!
+      call init_work_4_coriolis                                         &
+     &   (SPH_model%sph_MHD_bc, SPH_MHD%sph, trans_p, WK)
 !
       call sel_sph_transform_MHD                                        &
      &   (SPH_model%MHD_prop, SPH_model%sph_MHD_bc,                     &

@@ -27,6 +27,7 @@
       use t_phys_address
       use t_SGS_model_addresses
       use t_addresses_sph_transform
+      use t_sph_FFT_selector
 !
       implicit none
 !
@@ -46,6 +47,11 @@
         type(SGS_model_addresses) :: b_trns_LES
 !>        addresses of SGS models for forward transform
         type(SGS_model_addresses) :: f_trns_LES
+!
+!>        Integer flag for FFT
+        integer(kind = kint) :: iflag_SGS_FFT
+!>        Structure of backward FFTs work area for time integration
+        type(work_for_FFTs) :: WK_FFTs_SGS
       end type SGS_address_sph_trans
 !
 !>      strucutres for spherical transform for MHD dynamo with SGS

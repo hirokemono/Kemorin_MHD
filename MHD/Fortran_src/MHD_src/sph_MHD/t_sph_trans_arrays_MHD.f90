@@ -27,6 +27,7 @@
       use t_sph_FFT_selector
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
+      use t_const_wz_coriolis_rtp
 !
 !
       implicit none
@@ -58,13 +59,20 @@
 !
 !>        Work structures for various Legendre trasform
         type(legendre_trns_works) :: WK_leg
-!>        Structure for work area of FFTs
+!>        Structure of FFTs work area
         type(work_for_FFTs) :: WK_FFTs
+!
+!>        Integer flag for FFT
+        integer(kind = kint) :: iflag_MHD_FFT
+!>        Structure of FFT work area for time integration
+        type(work_for_FFTs) :: WK_FFTs_MHD
 !
 !>        Gunat integrals of Coriolis term
         type(gaunt_coriolis_rlm) :: gt_cor
 !>        Structure of Coriolis terms in@f$ f(r,l,m) @f$.
         type(coriolis_rlm_data) :: cor_rlm
+!>       Structure of sphere average of radial coriolis force
+        type(spher_average_coriolis) :: ave_cor
       end type works_4_sph_trans_MHD
 !
       private :: alloc_nonlinear_data, dealloc_nonlinear_data
