@@ -182,8 +182,7 @@
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans, sph, comms_sph,    &
      &    trans_p, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),    &
-     &    dall_rtp, dlcl_pole, dall_pole,                               &
-     &    WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
+     &    dall_rtp, dlcl_pole, dall_pole, WK_leg_TRNS, WK_FFTs_TRNS)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

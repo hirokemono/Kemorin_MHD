@@ -67,7 +67,7 @@
       call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
      &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
      &    SPH_MHD%sph, SPH_MHD%comms, trns_gauss,                       &
-     &    WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
+     &    WK_leg_TRNS, WK_FFTs_TRNS)
       call allocate_d_pole_4_all_trans                                  &
      &   (fld_rtp_TRNS, SPH_MHD%sph%sph_rtp)
 !
@@ -118,7 +118,7 @@
         call sph_b_trans_all_field                                      &
      &     (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh,               &
      &      trns_gauss, fld_rtp_TRNS, SPH_MHD%fld, field_STR,           &
-     &      WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
+     &      WK_leg_TRNS, WK_FFTs_TRNS)
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

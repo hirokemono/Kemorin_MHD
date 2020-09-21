@@ -26,7 +26,8 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_global_gauss_coefs
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_phys_name_4_sph_trans
       use t_check_and_make_SPH_mesh
       use t_visualizer
@@ -69,8 +70,11 @@
 !>        Structures of Gauss points
       type(global_gauss_points), save :: d_gauss_trans
 !
-!>      Work structures for various spherical harmonics trasform
-      type(spherical_trns_works), save :: WK_sph_TRNS
+!>      Work structures for various Legendre trasform
+      type(legendre_trns_works), save :: WK_leg_TRNS
+!>      Structure for work area of FFTs
+      type(work_for_FFTs), save :: WK_FFTs_TRNS
+!
       type(field_name_4_sph_trans), save :: fld_rtp_TRNS
 !
 !>      Structure for visualization

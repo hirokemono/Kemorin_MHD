@@ -106,7 +106,7 @@
       integer(kind = kint), intent(inout) :: mdx_4_lgd(0:nph)
       integer(kind = kint), intent(inout) :: ip_tmp(0:ltr)
 !
-      integer(kind = kint) :: m, ip, ma, mm, imark, ltr_half
+!      integer(kind = kint) :: m, mm
 !
 !
       write(*,*) 'test test'

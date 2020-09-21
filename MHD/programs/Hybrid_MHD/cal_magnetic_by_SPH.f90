@@ -21,7 +21,8 @@
       use t_phys_data
       use t_work_4_sph_trans
       use t_file_IO_parameter
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_jacobians
 !
       use calypso_mpi
@@ -39,8 +40,10 @@
 !    addresses of nodal field on spherical grid
       type(phys_address), save :: iphys_sph
 !
-!>      Work structures for various spherical harmonics trasform
-      type(spherical_trns_works), save :: WK1_sph
+!>      Work structures for various Legendre trasform
+      type(legendre_trns_works), save :: WK_leg_HBD
+!>      Structure for work area of FFTs
+      type(work_for_FFTs), save :: WK_FFTs_HBD
 !
 !-----------------------------------------------------------------------
 !
@@ -115,7 +118,7 @@
       nvector_sph_trans = max(nvector_rj_2_xyz, nvector_xyz_2_rj)
       call initialize_sph_trans                                         &
      &   (ncomp_sph_trans, nscalar_sph_trans, nvector_sph_trans,        &
-     &    sph, comms_sph, trans_p, WK1_sph%WK_leg, WK1_sph%WK_FFTs)
+     &    sph, comms_sph, trans_p, WK_leg_HBD, WK_FFTs_HBD)
 !
 !     ---------------------
 !
@@ -187,7 +190,7 @@
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    WK1_sph%WK_leg, WK1_sph%WK_FFTs)
+     &    WK_leg_HBD, WK_FFTs_HBD)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%forces%i_vp_induct, f_hbd_trns%forces%i_vp_induct,       &
@@ -248,7 +251,7 @@
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    WK1_sph%WK_leg, WK1_sph%WK_FFTs)
+     &    WK_leg_HBD, WK_FFTs_HBD)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%forces%i_vp_induct, f_hbd_trns%i_vp_induct,              &
@@ -329,7 +332,7 @@
      &    sph, comms_sph, trans_p,                                      &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                   &
      &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole,                      &
-     &    WK1_sph%WK_leg, WK1_sph%WK_FFTs))
+     &    WK_leg_HBD, WK_FFTs_HBD))
 !
 !
       call copy_nod_vec_from_trans_wpole                                &

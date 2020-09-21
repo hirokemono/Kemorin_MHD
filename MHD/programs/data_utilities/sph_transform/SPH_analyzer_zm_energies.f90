@@ -92,7 +92,7 @@
         call sph_b_trans_all_field                                      &
      &     (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh,               &
      &      trns_p, fld_rtp_TRNS, SPH_MHD%fld, field_STR,               &
-     &      WK_sph_TRNS%WK_leg, WK_sph_TRNS%WK_FFTs)
+     &      WK_leg_TRNS, WK_FFTs_TRNS)
         call cal_zm_energy_to_pressure                                  &
      &     (SPH_MHD%sph%sph_rtp%nidx_rtp, field_STR%n_point,            &
      &      field_STR%num_phys, field_STR%ntot_phys,                    &
