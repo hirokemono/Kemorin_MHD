@@ -236,16 +236,17 @@
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
      &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
 !
+      WK%iflag_MHD_FFT = trans_p%iflag_FFT
       call init_fourier_transform_4_MHD                                 &
-     &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
-     &    WK%trns_MHD, WK%WK_FFTs_MHD, trans_p%iflag_FFT)
-!
-!      trans_p%iflag_FFT = trans_p%iflag_FFT_MHD
-      call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
-     &    sph%sph_rtp, ncomp_max_trans, ncomp_max_trans, WK%WK_FFTs)
+     &   (sph%sph_rtp, comms_sph%comm_rtp,                              &
+     &    WK%trns_MHD, WK%WK_FFTs_MHD, WK%iflag_MHD_FFT)
 !
       call init_sph_FFTs_for_SGS_model                                  &
-     &   (trans_p%iflag_FFT, SGS_param, sph, WK_LES)
+     &   (WK%iflag_MHD_FFT, SGS_param, sph, WK_LES)
+!
+      trans_p%iflag_FFT = set_FFT_mode_4_snapshot(WK%iflag_MHD_FFT)
+      call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
+     &    sph%sph_rtp, ncomp_max_trans, ncomp_max_trans, WK%WK_FFTs)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !
@@ -307,8 +308,7 @@
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !
 !
-      trns_SGS%iflag_SGS_FFT = iflag_ref_FFT
-      call init_sph_FFT_select(my_rank, trns_SGS%iflag_SGS_FFT,         &
+      call init_sph_FFT_select(my_rank, iflag_ref_FFT,                  &
      &    sph%sph_rtp, trns_SGS%backward%ncomp, trns_SGS%forward%ncomp, &
      &    trns_SGS%WK_FFTs_SGS)
 !
