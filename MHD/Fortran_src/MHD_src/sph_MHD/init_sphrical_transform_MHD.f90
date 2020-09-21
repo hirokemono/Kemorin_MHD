@@ -151,9 +151,12 @@
       call initialize_legendre_trans                                    &
      &   (trans_p%nvector_legendre, ncomp_max_trans, sph, comms_sph,    &
      &    trans_p%leg, trans_p%idx_trns, trans_p%iflag_SPH_recv)
+!
       call init_fourier_transform_4_MHD                                 &
      &   (ncomp_max_trans, sph%sph_rtp, comms_sph%comm_rtp,             &
-     &    WK%trns_MHD, WK%WK_FFTs, trans_p%iflag_FFT)
+     &    WK%trns_MHD, WK%WK_FFTs_MHD, trans_p%iflag_FFT)
+      call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
+     &    sph%sph_rtp, ncomp_max_trns, WK_FFTs)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !
