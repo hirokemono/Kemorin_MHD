@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine cal_nonlinear_gradient_sph_SGS                       &
 !!     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,          &
-!!     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld, &
-!!     &          trns_ngTMP, trns_SGS)
+!!     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_leg, WK_FFTs,&
+!!     &          rj_fld, trns_ngTMP, trns_SGS)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -19,13 +19,14 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !!      subroutine cal_wide_nonlinear_grad_sph_SGS                      &
 !!     &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, &
-!!     &          dynamic_SPH, ipol_LES, trns_SIMI, WK_sph,             &
+!!     &          dynamic_SPH, ipol_LES, trns_SIMI, WK_leg, WK_FFTs,    &
 !!     &          rj_fld, trns_DYNG, trns_Csim)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -35,7 +36,8 @@
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
@@ -57,7 +59,8 @@
       use t_sph_trans_arrays_SGS_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
       use t_boundary_data_sph_MHD
@@ -74,8 +77,8 @@
 !
       subroutine cal_nonlinear_gradient_sph_SGS                         &
      &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
-     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_sph, rj_fld,   &
-     &          trns_ngTMP, trns_SGS)
+     &          trans_p, dynamic_SPH, ipol, trns_MHD, WK_leg, WK_FFTs,  &
+     &          rj_fld, trns_ngTMP, trns_SGS)
 !
       use copy_rtp_vectors_4_grad
       use sph_transforms_4_SGS
@@ -92,7 +95,8 @@
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
       type(SGS_address_sph_trans), intent(inout) :: trns_ngTMP
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
@@ -106,7 +110,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &        'sph_forward_trans_SGS_MHD trns_ngTMP'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_ngTMP%forward, WK_sph, rj_fld)
+     &    trns_ngTMP%forward, WK_leg, WK_FFTs, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph(sph, r_2nd, sph_MHD_bc,          &
@@ -117,7 +121,7 @@
       if (iflag_debug.eq.1) write(*,*)                                  &
      &       'sph_back_trans_SGS_MHD trns_ngTMP'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_ngTMP%backward, WK_sph)
+     &    rj_fld, trns_ngTMP%backward, WK_leg, WK_FFTs)
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
@@ -132,7 +136,7 @@
 !
       subroutine cal_wide_nonlinear_grad_sph_SGS                        &
      &         (sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,   &
-     &          dynamic_SPH, ipol_LES, trns_SIMI, WK_sph,               &
+     &          dynamic_SPH, ipol_LES, trns_SIMI, WK_leg, WK_FFTs,      &
      &          rj_fld, trns_DYNG, trns_Csim)
 !
       use copy_rtp_vectors_4_grad
@@ -150,7 +154,8 @@
       type(SGS_address_sph_trans), intent(in) :: trns_SIMI
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
       type(SGS_address_sph_trans), intent(inout) :: trns_DYNG
       type(SGS_address_sph_trans), intent(inout) :: trns_Csim
@@ -164,7 +169,7 @@
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'sph_forward_trans_SGS_MHD trns_DYNG'
       call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,           &
-     &    trns_DYNG%forward, WK_sph, rj_fld)
+     &    trns_DYNG%forward, WK_leg, WK_FFTs, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'overwrt_grad_of_vectors_sph'
       call overwrt_grad_of_vectors_sph(sph, r_2nd, sph_MHD_bc,          &
@@ -175,7 +180,7 @@
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'sph_back_trans_SGS_MHD trns_DYNG'
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_DYNG%backward, WK_sph)
+     &    rj_fld, trns_DYNG%backward, WK_leg, WK_FFTs)
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &

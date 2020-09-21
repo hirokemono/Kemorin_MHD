@@ -186,7 +186,8 @@
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK1_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
+     &    WK1_sph%WK_leg, WK1_sph%WK_FFTs)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &    ipol%forces%i_vp_induct, f_hbd_trns%forces%i_vp_induct,       &
@@ -246,7 +247,8 @@
       call sph_forward_transforms                                       &
      &   (ncomp_xyz_2_rj, nvector_xyz_2_rj, izero,                      &
      &    sph, comms_sph, trans_p, frc_hbd_rtp(1,1),                    &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK1_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
+     &    WK1_sph%WK_leg, WK1_sph%WK_FFTs)
 !
       call sel_sph_rj_vector_from_recv(ncomp_xyz_2_rj,                  &
      &   (ipol%forces%i_vp_induct, f_hbd_trns%i_vp_induct,              &
@@ -326,7 +328,8 @@
      &   (ncomp_rj_2_xyz, nvector_rj_2_xyz, izero,                      &
      &    sph, comms_sph, trans_p,                                      &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                   &
-     &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole, WK1_sph)
+     &    fld_hbd_rtp, flc_hbd_pole, fld_hbd_pole,                      &
+     &    WK1_sph%WK_leg, WK1_sph%WK_FFTs))
 !
 !
       call copy_nod_vec_from_trans_wpole                                &

@@ -136,7 +136,8 @@
       call sph_forward_transforms(fld_rtp%ncomp_trans,                  &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
      &    sph, comms_sph, trans_p, dall_rtp(1,1),                       &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
+     &    WK_sph%WK_leg, WK_sph%WK_FFTs)
 !
 !
       if (iflag_debug.gt.0)                                             &
@@ -208,7 +209,8 @@
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans,                    &
      &    sph, comms_sph, trans_p,                                      &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    dall_rtp, dlcl_pole, dall_pole, WK_sph)
+     &    dall_rtp, dlcl_pole, dall_pole,                               &
+     &    WK_sph%WK_leg, WK_sph%WK_FFTs)
 !
 !
       if (iflag_debug.gt.0)                                             &

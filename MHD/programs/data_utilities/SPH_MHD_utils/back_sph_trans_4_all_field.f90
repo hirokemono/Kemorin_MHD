@@ -137,7 +137,7 @@
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
      &    trns_MHD%backward%fld_rtp, trns_MHD%backward%flc_pole,        &
-     &    trns_MHD%backward%fld_pole, WK_sph)
+     &    trns_MHD%backward%fld_pole, WK_sph%WK_leg, WK_sph%WK_FFTs)
 !
       end subroutine sph_all_back_transform
 !

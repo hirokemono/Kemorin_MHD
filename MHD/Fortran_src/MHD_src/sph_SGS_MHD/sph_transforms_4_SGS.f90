@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,      &
-!!     &          rj_fld, trns_bwd, WK_sph)
+!!     &          rj_fld, trns_bwd, WK_leg, WK_FFTs)
 !!      subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,   &
-!!     &          trns_fwd, WK_sph, rj_fld)
+!!     &          trns_fwd, WK_leg, WK_FFTs, rj_fld)
 !!      subroutine sph_pole_trans_SGS_MHD                               &
 !!     &         (sph, comms_sph, trans_p, rj_fld, trns_bwd)
 !!        type(sph_grids), intent(in) :: sph
@@ -19,7 +19,8 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_bwd
 !!        type(spherical_transform_data), intent(inout) :: trns_fwd
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!@endverbatim
 !!
       module sph_transforms_4_SGS
@@ -39,7 +40,8 @@
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
 !
       use m_legendre_transform_list
 !
@@ -52,7 +54,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,        &
-     &          rj_fld, trns_bwd, WK_sph)
+     &          rj_fld, trns_bwd, WK_leg, WK_FFTs)
 !
       use m_solver_SR
       use set_address_sph_trans_MHD
@@ -64,7 +66,8 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(spherical_transform_data), intent(inout) :: trns_bwd
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
       if(trns_bwd%ncomp .le. 0) return
@@ -81,7 +84,7 @@
      &   (trns_bwd%ncomp, trns_bwd%num_vector, trns_bwd%num_scalar,     &
      &    sph, comms_sph, trans_p,                                      &
      &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
-     &    trns_bwd%fld_rtp, WK_sph)
+     &    trns_bwd%fld_rtp, WK_leg, WK_FFTs)
 !
 !
       end subroutine sph_back_trans_SGS_MHD
@@ -89,7 +92,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,     &
-     &          trns_fwd, WK_sph, rj_fld)
+     &          trns_fwd, WK_leg, WK_FFTs, rj_fld)
 !
       use m_solver_SR
       use set_address_sph_trans_MHD
@@ -100,7 +103,8 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(spherical_transform_data), intent(inout) :: trns_fwd
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -115,7 +119,8 @@
       call sph_forward_transforms                                       &
      &   (trns_fwd%ncomp, trns_fwd%num_vector, trns_fwd%num_scalar,     &
      &    sph, comms_sph, trans_p, trns_fwd%fld_rtp,                    &
-     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1), WK_sph)
+     &    SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),             &
+     &    WK_leg, WK_FFTs)
 !
       call mhd_spectr_from_recvbuf(trans_p%iflag_SPH_recv,              &
      &    trns_fwd, comms_sph%comm_rj, SR_r1%n_WR, SR_r1%WR(1), rj_fld)

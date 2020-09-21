@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_scale_similarity_sph_SGS                         &
-!!     &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,            &
+!!     &         (sph, comms_sph, MHD_prop, trans_p, WK_leg, WK_FFTs,   &
 !!     &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -17,7 +17,8 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(SGS_model_addresses), intent(in) :: ipol_LES
 !!        type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
-!!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(legendre_trns_works), intent(inout) :: WK_leg
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -42,7 +43,8 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
-      use t_sph_transforms
+      use t_legendre_trans_select
+      use t_sph_FFT_selector
       use t_sph_filtering
       use t_phys_data
       use t_phys_address
@@ -57,7 +59,7 @@
 !*   ------------------------------------------------------------------
 !
       subroutine cal_scale_similarity_sph_SGS                           &
-     &         (sph, comms_sph, MHD_prop, trans_p, WK_sph,              &
+     &         (sph, comms_sph, MHD_prop, trans_p, WK_leg, WK_FFTs,     &
      &          dynamic_SPH, ipol, ipol_LES, rj_fld, trns_SIMI)
 !
       use m_elapsed_labels_4_MHD
@@ -74,7 +76,8 @@
       type(SGS_model_addresses), intent(in) :: ipol_LES
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_SIMI
-      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -95,7 +98,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD SGS'
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+9)
       call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,              &
-     &    rj_fld, trns_SIMI%backward, WK_sph)
+     &    rj_fld, trns_SIMI%backward, WK_leg, WK_FFTs)
       if(iflag_SMHD_time) call end_elapsed_time(ist_elapsed_SMHD+9)
 !
       if(iflag_SMHD_time) call start_elapsed_time(ist_elapsed_SMHD+10)
