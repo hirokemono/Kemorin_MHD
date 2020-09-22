@@ -15,7 +15,7 @@
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!      subroutine product_model_coefs_4_sph                            &
-!!     &         (iflag_FFT, SGS_param, sph_rtp, sph_d_grp,             &
+!!     &         (SGS_param, sph_rtp, sph_d_grp,                        &
 !!     &          iak_sgs_term, fg_trns_SGS, trns_f_SGS, wk_sgs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -102,10 +102,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine product_model_coefs_4_sph                              &
-     &         (iflag_FFT, SGS_param, sph_rtp, sph_d_grp,               &
+     &         (SGS_param, sph_rtp, sph_d_grp,                          &
      &          iak_sgs_term, fg_trns_SGS, trns_f_SGS, wk_sgs)
 !
-      integer(kind = kint), intent(in) :: iflag_FFT
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -119,7 +118,7 @@
       if(iak_sgs_term%i_SGS_m_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs MF'
         call sel_product_model_coefs                                    &
-     &     (iflag_FFT, SGS_param%SGS_mf_factor, sph_rtp, sph_d_grp,     &
+     &     (SGS_param%SGS_mf_factor, sph_rtp, sph_d_grp,                &
      &      n_vector, fg_trns_SGS%i_SGS_inertia,                        &
      &      iak_sgs_term%i_SGS_m_flux, wk_sgs, trns_f_SGS)
       end if
@@ -127,7 +126,7 @@
       if(iak_sgs_term%i_SGS_Lorentz .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs LZ'
         call sel_product_model_coefs                                    &
-     &    (iflag_FFT, SGS_param%SGS_mawell_factor, sph_rtp, sph_d_grp,  &
+     &    (SGS_param%SGS_mawell_factor, sph_rtp, sph_d_grp,             &
      &     n_vector, fg_trns_SGS%i_SGS_Lorentz,                         &
      &     iak_sgs_term%i_SGS_Lorentz, wk_sgs, trns_f_SGS)
       end if
@@ -135,7 +134,7 @@
       if(iak_sgs_term%i_SGS_induction .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs ID'
         call sel_product_model_coefs                                    &
-     &     (iflag_FFT, SGS_param%SGS_uxb_factor, sph_rtp, sph_d_grp,    &
+     &     (SGS_param%SGS_uxb_factor, sph_rtp, sph_d_grp,               &
      &      n_vector, fg_trns_SGS%i_SGS_vp_induct,                      &
      &      iak_sgs_term%i_SGS_induction, wk_sgs, trns_f_SGS)
       end if
@@ -143,7 +142,7 @@
       if(iak_sgs_term%i_SGS_h_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs HF'
         call sel_product_model_coefs                                    &
-     &     (iflag_FFT, SGS_param%SGS_hf_factor, sph_rtp, sph_d_grp,     &
+     &     (SGS_param%SGS_hf_factor, sph_rtp, sph_d_grp,                &
      &      n_vector, fg_trns_SGS%i_SGS_h_flux,                         &
      &      iak_sgs_term%i_SGS_h_flux, wk_sgs, trns_f_SGS)
       end if
@@ -151,7 +150,7 @@
       if(iak_sgs_term%i_SGS_c_flux .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'sel_product_model_coefs CF'
         call sel_product_model_coefs                                    &
-     &     (iflag_FFT, SGS_param%SGS_cf_factor, sph_rtp, sph_d_grp,     &
+     &     (SGS_param%SGS_cf_factor, sph_rtp, sph_d_grp,                &
      &      n_vector, fg_trns_SGS%i_SGS_c_flux,                         &
      &      iak_sgs_term%i_SGS_c_flux, wk_sgs, trns_f_SGS)
       end if
@@ -161,13 +160,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_product_model_coefs                                &
-     &         (iflag_FFT, const_Csim, sph_rtp, sph_d_grp, numdir,      &
+     &         (const_Csim, sph_rtp, sph_d_grp, numdir,                 &
      &          irtp_sgs, ifld_sgs, wk_sgs, trns_f_SGS)
 !
-      use m_FFT_selector
       use prod_SGS_model_coefs_sph
 !
-      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
       integer(kind = kint), intent(in) :: numdir
@@ -180,12 +177,12 @@
       type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !
 !
-      if(iflag_FFT .eq. iflag_FFTW) then
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
         call product_model_coefs_pin(const_Csim, ifld_sgs,              &
      &     sph_rtp, sph_d_grp, wk_sgs%num_kinds, wk_sgs%fld_coef,       &
      &     irtp_sgs, numdir, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       else
-        call product_model_coefs_pout(const_Csim, ifld_sgs,             &
+        call product_model_coefs_rin(const_Csim, ifld_sgs,              &
      &     sph_rtp, sph_d_grp, wk_sgs%num_kinds, wk_sgs%fld_coef,       &
      &     irtp_sgs, numdir, trns_f_SGS%ncomp, trns_f_SGS%fld_rtp)
       end if

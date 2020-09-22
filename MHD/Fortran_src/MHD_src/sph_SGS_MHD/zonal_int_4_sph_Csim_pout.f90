@@ -7,12 +7,12 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine zonal_int_vector_Csim_pout(sph_rtp, sph_d_grp,       &
+!!      subroutine zonal_int_vector_Csim_rin(sph_rtp, sph_d_grp,        &
 !!     &          frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
-!!      subroutine zonal_int_tentor_Csim_pout(sph_rtp, sph_d_grp,       &
+!!      subroutine zonal_int_tentor_Csim_rin(sph_rtp, sph_d_grp,        &
 !!     &          frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
 !!
-!!      subroutine int_zonal_buo_coefs_pout(sph_rtp, sph_d_grp,         &
+!!      subroutine int_zonal_buo_coefs_rin(sph_rtp, sph_d_grp,          &
 !!     &          frc_simi, frc_wide,  sgs_zl, sgs_zt)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -35,7 +35,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine zonal_int_vector_Csim_pout(sph_rtp, sph_d_grp,         &
+      subroutine zonal_int_vector_Csim_rin(sph_rtp, sph_d_grp,          &
      &          frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -78,8 +78,8 @@
               lt = sph_d_grp%lt_dynamic(l)
               do k = kst, ked
                 kr = sph_d_grp%kr_dynamic(k)
-                i1 = kr + (lt-1)*sph_rtp%nidx_rtp(1)                    &
-     &                  + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+                i1 = kr + (lt-1) * sph_rtp%istep_rtp(2)                 &
+     &                  + (m-1) *  sph_rtp%istep_rtp(3)
 !
                 diff                                                    &
      &            = (frc_wide(i1,1) - frc_dble(i1,1)) * frc_simi(i1,1)  &
@@ -104,11 +104,11 @@
         sgs_zt(klgrp) = 1.0d-30
       end do
 !
-      end subroutine zonal_int_vector_Csim_pout
+      end subroutine zonal_int_vector_Csim_rin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine zonal_int_tentor_Csim_pout(sph_rtp, sph_d_grp,         &
+      subroutine zonal_int_tentor_Csim_rin(sph_rtp, sph_d_grp,          &
      &          frc_simi, frc_wide, frc_dble, sgs_zl, sgs_zt)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -151,8 +151,8 @@
               lt = sph_d_grp%lt_dynamic(l)
               do k = kst, ked
                 kr = sph_d_grp%kr_dynamic(k)
-                i1 = kr + (lt-1)*sph_rtp%nidx_rtp(1)                    &
-     &                  + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+                i1 = kr + (lt-1) * sph_rtp%istep_rtp(2)                 &
+     &                  + (m-1) *  sph_rtp%istep_rtp(3)
 !
                 diff                                                    &
      &            = (frc_wide(i1,1) - frc_dble(i1,1)) * frc_simi(i1,1)  &
@@ -186,12 +186,12 @@
         sgs_zt(klgrp) = 1.0d-30
       end do
 !
-      end subroutine zonal_int_tentor_Csim_pout
+      end subroutine zonal_int_tentor_Csim_rin
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_zonal_buo_coefs_pout(sph_rtp, sph_d_grp,           &
+      subroutine int_zonal_buo_coefs_rin(sph_rtp, sph_d_grp,            &
      &          frc_simi, frc_wide,  sgs_zl, sgs_zt)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -228,8 +228,8 @@
               lt = sph_d_grp%lt_dynamic(l)
               do k = kst, ked
                 kr = sph_d_grp%kr_dynamic(k)
-                i1 = kr + (lt-1)*sph_rtp%nidx_rtp(1)                    &
-     &                  + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+                i1 = kr + (lt-1) * sph_rtp%istep_rtp(2)                 &
+     &                  + (m-1) *  sph_rtp%istep_rtp(3)
 !
                 sgs_zl(klgrp) = sgs_zl(klgrp)                           &
      &                         + frc_simi(i1) * frc_simi(i1)
@@ -254,7 +254,7 @@
      &     = sqrt(sgs_zt(1:sph_d_grp%ngrp_dynamic))
 !$omp end parallel workshare
 !
-      end subroutine int_zonal_buo_coefs_pout
+      end subroutine int_zonal_buo_coefs_rin
 !
 !  ---------------------------------------------------------------------
 !

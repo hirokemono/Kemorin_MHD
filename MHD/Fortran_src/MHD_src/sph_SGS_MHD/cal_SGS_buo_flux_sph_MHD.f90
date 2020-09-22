@@ -7,7 +7,7 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine SGS_fluxes_for_buo_coefs(iflag_FFT, sph_rtp, fl_prop,&
+!!      subroutine SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,           &
 !!     &          b_trns_base, fg_trns_SGS, fs_trns_sef,                &
 !!     &          trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !!      subroutine SGS_fluxes_for_snapshot(sph_rtp, fl_prop,            &
@@ -43,7 +43,7 @@
       implicit none
 !
       private :: sel_SGS_buoyancy_flux_rtp
-      private :: cal_buoyancy_flux_rtp_pin,  cal_buoyancy_flux_rtp_pout
+      private :: cal_buoyancy_flux_rtp_pin,  cal_buoyancy_flux_rtp_rin
 !
 !-----------------------------------------------------------------------
 !
@@ -51,13 +51,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine SGS_fluxes_for_buo_coefs(iflag_FFT, sph_rtp, fl_prop,  &
+      subroutine SGS_fluxes_for_buo_coefs(sph_rtp, fl_prop,             &
      &          b_trns_base, fg_trns_SGS, fs_trns_sef,                  &
      &          trns_b_MHD, trns_f_SGS, trns_f_DYNS)
 !
       use cal_products_smp
 !
-      integer(kind = kint), intent(in) :: iflag_FFT
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(base_field_address), intent(in) :: b_trns_base
@@ -79,14 +78,14 @@
 !
       if(fl_prop%iflag_4_gravity) then
         call sel_SGS_buoyancy_flux_rtp                                  &
-     &    (iflag_FFT, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,               &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &
      &     trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),              &
      &     trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_SGS_buo_wk))
       end if
       if(fl_prop%iflag_4_composit_buo) then
         call sel_SGS_buoyancy_flux_rtp                                  &
-     &   (iflag_FFT, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
      &   sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,                &
      &   trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),                &
      &   trns_f_DYNS%fld_rtp(1,fs_trns_sef%i_SGS_comp_buo_wk))
@@ -141,15 +140,15 @@
 !
 !$omp parallel
       if(fs_trns_sef%i_SGS_buo_wk .gt. 0) then
-        call cal_buoyancy_flux_rtp_pout                                 &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
+        call cal_buoyancy_flux_rtp_rin                                  &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
      &     sph_rtp%radius_1d_rtp_r, fl_prop%coef_buo,                   &
      &     trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_h_flux),              &
      &     trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_buo_wk))
       end if
       if(fs_trns_sef%i_SGS_comp_buo_wk .gt. 0) then
-        call cal_buoyancy_flux_rtp_pout                                 &
-     &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                           &
+        call cal_buoyancy_flux_rtp_rin                                  &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istep_rtp,       &
      &   sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,                &
      &   trns_f_SGS%fld_rtp(1,fg_trns_SGS%i_SGS_c_flux),                &
      &   trns_f_snap%fld_rtp(1,fs_trns_sef%i_SGS_comp_buo_wk))
@@ -161,14 +160,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_SGS_buoyancy_flux_rtp(iflag_FFT,                   &
-     &          nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
+      subroutine sel_SGS_buoyancy_flux_rtp                              &
+     &         (nnod_rtp, nidx_rtp, istep_rtp, radius,                  &
+     &          coef, frc_hf, frc_buo)
 !
-      use m_FFT_selector
-!
-      integer(kind = kint), intent(in) :: iflag_FFT
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: istep_rtp(3)
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in) :: radius(nidx_rtp(1))
@@ -177,12 +175,14 @@
 !
 !
 !$omp parallel
-      if(iflag_FFT .eq. iflag_FFTW) then
+      if(istep_rtp(3) .eq. 1) then
         call cal_buoyancy_flux_rtp_pin                                  &
-     &     (nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
+     &     (nnod_rtp, nidx_rtp, istep_rtp, radius,                      &
+     &      coef, frc_hf, frc_buo)
       else
-        call cal_buoyancy_flux_rtp_pout                                 &
-     &     (nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
+        call cal_buoyancy_flux_rtp_rin                                  &
+     &     (nnod_rtp, nidx_rtp, istep_rtp, radius,                      &
+     &      coef, frc_hf, frc_buo)
       end if
 !$omp end parallel
 !
@@ -192,25 +192,28 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_buoyancy_flux_rtp_pin                              &
-     &         (nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
+     &         (nnod_rtp, nidx_rtp, istep_rtp, radius,                  &
+     &          coef, frc_hf, frc_buo)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: istep_rtp(3)
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in) :: radius(nidx_rtp(1))
       real(kind = kreal), intent(in) :: frc_hf(nnod_rtp)
       real(kind = kreal), intent(inout) :: frc_buo(nnod_rtp)
 !
-      integer(kind = kint) :: k, kl, m, i1
+      integer(kind = kint) :: k, l, m, i1
 !
 !
-!$omp do private(k,kl,m,i1)
-      do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-        k = mod((kl-1),nidx_rtp(1)) + 1
-        do m = 1, nidx_rtp(3)
-          i1 = m + (kl-1) * nidx_rtp(3)
-          frc_buo(i1) = coef * frc_hf(i1) * radius(k)
+!$omp do private(k,l,m,i1)
+      do l = 1, nidx_rtp(2)
+        do k = 1, nidx_rtp(1)
+          do m = 1, nidx_rtp(3)
+            i1 = m + (k-1) * istep_rtp(1) + (l-1) * istep_rtp(2)
+            frc_buo(i1) = coef * frc_hf(i1) * radius(k)
+          end do
         end do
       end do
 !$omp end do
@@ -219,31 +222,34 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_buoyancy_flux_rtp_pout                             &
-     &         (nnod_rtp, nidx_rtp, radius, coef, frc_hf, frc_buo)
+      subroutine cal_buoyancy_flux_rtp_rin                              &
+     &         (nnod_rtp, nidx_rtp, istep_rtp, radius,                  &
+     &          coef, frc_hf, frc_buo)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: istep_rtp(3)
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in) :: radius(nidx_rtp(1))
       real(kind = kreal), intent(in) :: frc_hf(nnod_rtp)
       real(kind = kreal), intent(inout) :: frc_buo(nnod_rtp)
 !
-      integer(kind = kint) :: k, kl, m, i1
+      integer(kind = kint) :: k, l, m, i1
 !
 !
       do m = 1, nidx_rtp(3)
-!$omp do private(k,kl,i1)
-        do kl = 1, nidx_rtp(1)*nidx_rtp(2)
-          k = mod((kl-1),nidx_rtp(1)) + 1
-          i1 = kl + (m-1) * nidx_rtp(1) * nidx_rtp(2)
-          frc_buo(i1) = coef * frc_hf(i1) * radius(k)
+!$omp do private(k,l,i1)
+        do l = 1, nidx_rtp(2)
+          do k = 1, nidx_rtp(1)
+            i1 = k + (l-1) * istep_rtp(2) + (m-1) * istep_rtp(3)
+            frc_buo(i1) = coef * frc_hf(i1) * radius(k)
+          end do
         end do
 !$omp end do
       end do
  !
-      end subroutine cal_buoyancy_flux_rtp_pout
+      end subroutine cal_buoyancy_flux_rtp_rin
 !
 !  ---------------------------------------------------------------------
 !

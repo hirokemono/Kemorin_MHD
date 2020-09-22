@@ -78,8 +78,9 @@
             do k = kst, ked
               kr = sph_d_grp%kr_dynamic(k)
               do m = 1, sph_rtp%nidx_rtp(3)
-                i1 = m + (kr-1)*sph_rtp%nidx_rtp(3)                     &
-     &                 + (lt-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(3)
+                i1 = 1 + (kr-1) * sph_rtp%istep_rtp(1)                  &
+     &                 + (lt-1) * sph_rtp%istep_rtp(2)                  &
+     &                 + (m-1) *  sph_rtp%istep_rtp(3)
 !
                 diff                                                    &
      &            = (frc_wide(i1,1) - frc_dble(i1,1)) * frc_simi(i1,1)  &
@@ -149,8 +150,9 @@
             do k = kst, ked
               kr = sph_d_grp%kr_dynamic(k)
               do m = 1, sph_rtp%nidx_rtp(3)
-                i1 = m + (kr-1)*sph_rtp%nidx_rtp(3)                     &
-     &                 + (lt-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(3)
+                i1 = 1 + (kr-1) * sph_rtp%istep_rtp(1)                  &
+     &                 + (lt-1) * sph_rtp%istep_rtp(2)                  &
+     &                 + (m-1) *  sph_rtp%istep_rtp(3)
 !
                 diff                                                    &
      &            = (frc_wide(i1,1) - frc_dble(i1,1)) * frc_simi(i1,1)  &
@@ -225,8 +227,8 @@
             do k = kst, ked
               kr = sph_d_grp%kr_dynamic(k)
               do m = 1, sph_rtp%nidx_rtp(3)
-                i1 = m + (kr-1)*sph_rtp%nidx_rtp(3)                     &
-     &                 + (lt-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(3)
+                i1 = m + (kr-1) * sph_rtp%istep_rtp(1)                  &
+     &                 + (lt-1) * sph_rtp%istep_rtp(2)
 !
                 sgs_zl(klgrp) = sgs_zl(klgrp)                           &
      &                         + frc_simi(i1) * frc_simi(i1)

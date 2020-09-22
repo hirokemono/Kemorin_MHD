@@ -18,12 +18,12 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
 !!
-!!      subroutine product_model_coefs_pout                             &
+!!      subroutine product_model_coefs_rin                              &
 !!     &         (const_Csim, isgs, sph_rtp, sph_d_grp, nfld_sgs, sgs_c,&
 !!     &          ifld, numdir, ncomp, frc_rtp)
-!!      subroutine product_single_buo_coefs_pout                        &
+!!      subroutine product_single_buo_coefs_rin                         &
 !!     &         (sph_rtp, sph_d_grp, sgs_c, frc_rtp)
-!!      subroutine product_double_buo_coefs_pout                        &
+!!      subroutine product_double_buo_coefs_rin                         &
 !!     &         (sph_rtp, sph_d_grp, sgs_c1, sgs_c2, frc_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -102,8 +102,8 @@
      &             + (sph_d_grp%lgrp_dynamic(l) - 1)                    &
      &              * (sph_d_grp%ngrp_rt(1) + 1)
             do m = 1, sph_rtp%nidx_rtp(3)
-              i1 = m + (k-1) * sph_rtp%nidx_rtp(3)                      &
-     &            + (l-1) * sph_rtp%nidx_rtp(3) * sph_rtp%nidx_rtp(1)
+              i1 = m + (k-1) * sph_rtp%istep_rtp(1)                     &
+     &               + (l-1) * sph_rtp%istep_rtp(2)
               frc_rtp(i1,ifld+nd) = const_Csim * sgs_c(klgrp,isgs)      &
      &                             * frc_rtp(i1,ifld+nd)
             end do
@@ -138,8 +138,8 @@
      &           + (sph_d_grp%lgrp_dynamic(l) - 1)                      &
      &            * (sph_d_grp%ngrp_rt(1) + 1)
           do m = 1, sph_rtp%nidx_rtp(3)
-            i1 = m + (k-1) * sph_rtp%nidx_rtp(3)                        &
-     &             + (l-1) * sph_rtp%nidx_rtp(3) * sph_rtp%nidx_rtp(1)
+            i1 = m + (k-1) * sph_rtp%istep_rtp(1)                       &
+     &             + (l-1) * sph_rtp%istep_rtp(2)
 !
             frc_rtp(i1,1) = (one + sgs_c(klgrp)) * frc_rtp(i1,1)
             frc_rtp(i1,2) = (one + sgs_c(klgrp)) * frc_rtp(i1,2)
@@ -175,8 +175,8 @@
      &           + (sph_d_grp%lgrp_dynamic(l) - 1)                      &
      &            * (sph_d_grp%ngrp_rt(1) + 1)
           do m = 1, sph_rtp%nidx_rtp(3)
-            i1 = m + (k-1) * sph_rtp%nidx_rtp(3)                        &
-     &             + (l-1) * sph_rtp%nidx_rtp(3) * sph_rtp%nidx_rtp(1)
+            i1 = m + (k-1) * sph_rtp%istep_rtp(1)                       &
+     &             + (l-1) * sph_rtp%istep_rtp(2)
 !
             frc_rtp(i1,1)                                               &
      &            = (one + sgs_c1(klgrp) + sgs_c2(klgrp))*frc_rtp(i1,1)
@@ -194,7 +194,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine product_model_coefs_pout                               &
+      subroutine product_model_coefs_rin                                &
      &         (const_Csim, isgs, sph_rtp, sph_d_grp, nfld_sgs, sgs_c,  &
      &          ifld, numdir, ncomp, frc_rtp)
 !
@@ -220,8 +220,8 @@
         do m = 1, sph_rtp%nidx_rtp(3)
           do l = 1, sph_rtp%nidx_rtp(2)
             do k = 1, sph_rtp%nidx_rtp(1)
-              i1 = k + (l-1)*sph_rtp%nidx_rtp(1)                        &
-     &               + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+              i1 = k + (l-1) * sph_rtp%istep_rtp(2)                     &
+     &               + (m-1) * sph_rtp%istep_rtp(3)
                klgrp = sph_d_grp%kgrp_dynamic(k)                        &
      &                + (sph_d_grp%lgrp_dynamic(l) - 1)                 &
      &                 * (sph_d_grp%ngrp_rt(1) + 1)
@@ -235,11 +235,11 @@
      end do
 !$omp end parallel
 !
-      end subroutine product_model_coefs_pout
+      end subroutine product_model_coefs_rin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine product_single_buo_coefs_pout                          &
+      subroutine product_single_buo_coefs_rin                           &
      &         (sph_rtp, sph_d_grp, sgs_c, frc_rtp)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -257,8 +257,8 @@
       do m = 1, sph_rtp%nidx_rtp(3)
         do l = 1, sph_rtp%nidx_rtp(2)
           do k = 1, sph_rtp%nidx_rtp(1)
-            i1 = k + (l-1)*sph_rtp%nidx_rtp(1)                          &
-     &             + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+            i1 = k + (l-1) * sph_rtp%istep_rtp(2)                       &
+     &             + (m-1) * sph_rtp%istep_rtp(3)
             klgrp = sph_d_grp%kgrp_dynamic(k)                           &
      &             + (sph_d_grp%lgrp_dynamic(l) - 1)                    &
      &              * (sph_d_grp%ngrp_rt(1) + 1)
@@ -271,11 +271,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine product_single_buo_coefs_pout
+      end subroutine product_single_buo_coefs_rin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine product_double_buo_coefs_pout                          &
+      subroutine product_double_buo_coefs_rin                           &
      &         (sph_rtp, sph_d_grp, sgs_c1, sgs_c2, frc_rtp)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -294,8 +294,8 @@
       do m = 1, sph_rtp%nidx_rtp(3)
         do l = 1, sph_rtp%nidx_rtp(2)
           do k = 1, sph_rtp%nidx_rtp(1)
-            i1 = k + (l-1)*sph_rtp%nidx_rtp(1)                          &
-     &             + (m-1)*sph_rtp%nidx_rtp(1)*sph_rtp%nidx_rtp(2)
+            i1 = k + (l-1) * sph_rtp%istep_rtp(2)                       &
+     &             + (m-1) * sph_rtp%istep_rtp(3)
             klgrp = sph_d_grp%kgrp_dynamic(k)                           &
      &             + (sph_d_grp%lgrp_dynamic(l) - 1)                    &
      &              * (sph_d_grp%ngrp_rt(1) + 1)
@@ -311,7 +311,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine product_double_buo_coefs_pout
+      end subroutine product_double_buo_coefs_rin
 !
 !  ---------------------------------------------------------------------
 !

@@ -190,16 +190,16 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'
       starttime = MPI_WTIME()
-      call back_FFT_select_from_recv(iflag_FFT, sph_rtp, comm_rtp,      &
+      call back_FFT_select_from_recv(sph_rtp, comm_rtp,                 &
      &    trns_MHD%backward%ncomp, n_WR, WR, trns_MHD%backward%fld_rtp, &
      &    WK_FFTs)
-      call fwd_FFT_select_to_send(iflag_FFT, sph_rtp, comm_rtp,         &
+      call fwd_FFT_select_to_send(sph_rtp, comm_rtp,                    &
      &    trns_MHD%forward%ncomp, n_WS, trns_MHD%forward%fld_rtp, WS,   &
      &    WK_FFTs)
       endtime = MPI_WTIME() - starttime
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
-      call finalize_sph_FFT_select(iflag_FFT, WK_FFTs)
+      call finalize_sph_FFT_select(WK_FFTs)
 !
       call calypso_mpi_allreduce_one_real(endtime, etime_fft, MPI_SUM)
       etime_fft = etime_fft / dble(nprocs)
