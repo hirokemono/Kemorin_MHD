@@ -160,6 +160,7 @@
      &                          * frc_rtp(i1,ifld+1)
             frc_rtp(i1,ifld+2) = (one + sgs_c(k,1) + sgs_c(k,2))        &
      &                          * frc_rtp(i1,ifld+2)
+          end do
         end do
       end do
 !$omp end parallel do

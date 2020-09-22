@@ -7,17 +7,17 @@
 !>@brief SGS terms by nonlinear gradient model in spherical coordinate
 !!
 !!@verbatim
-!!      subroutine sph_SGS_induct_nl_gradient_pout(kr_in, kr_out,       &
-!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
+!!      subroutine sph_SGS_induct_nl_gradient_rin(kr_in, kr_out,        &
+!!     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef, &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz,                     &
 !!     &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
-!!      subroutine sph_SGS_s_flux_nl_gradient_pout(kr_in, kr_out,       &
-!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
+!!      subroutine sph_SGS_s_flux_nl_gradient_rin(kr_in, kr_out,        &
+!!     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef, &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
-!!      subroutine sph_SGS_m_flux_nl_gradient_pout(kr_in, kr_out,       &
-!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
+!!      subroutine sph_SGS_m_flux_nl_gradient_rin(kr_in, kr_out,        &
+!!     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef, &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !!@endverbatim
@@ -36,8 +36,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_SGS_induct_nl_gradient_pout(kr_in, kr_out,         &
-     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
+      subroutine sph_SGS_induct_nl_gradient_rin(kr_in, kr_out,          &
+     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef,   &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz,                       &
      &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
@@ -45,6 +45,7 @@
       integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
+      integer(kind = kint), intent(in)  :: istep_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
@@ -88,8 +89,7 @@
       do mp = 1, nidx_rtp(3)
         do lt = 1, nidx_rtp(2)
           do kr = kr_in, kr_out
-            inod = kr + (lt-1)*nidx_rtp(1)                              &
-     &          + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            inod = kr + (lt-1) * istep_rtp(2) + (mp-1) * istep_rtp(3)
 !
             gamma_r = coef * radial_2nd_moment(kr)
             gamma_t = coef * theta_2nd_moment(lt) * (r(kr))**2
@@ -140,18 +140,19 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sph_SGS_induct_nl_gradient_pout
+      end subroutine sph_SGS_induct_nl_gradient_rin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sph_SGS_s_flux_nl_gradient_pout(kr_in, kr_out,         &
-     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
+      subroutine sph_SGS_s_flux_nl_gradient_rin(kr_in, kr_out,          &
+     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef,   &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !
       integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
+      integer(kind = kint), intent(in)  :: istep_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
@@ -190,8 +191,7 @@
       do mp = 1, nidx_rtp(3)
         do lt = 1, nidx_rtp(2)
           do kr = kr_in, kr_out
-            inod = kr + (lt-1)*nidx_rtp(1)                              &
-     &          + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            inod = kr + (lt-1) * istep_rtp(2) + (mp-1) * istep_rtp(3)
 !
             gamma_r = coef * radial_2nd_moment(kr)
             gamma_t = coef * theta_2nd_moment(lt)
@@ -225,18 +225,19 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sph_SGS_s_flux_nl_gradient_pout
+      end subroutine sph_SGS_s_flux_nl_gradient_rin
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sph_SGS_m_flux_nl_gradient_pout(kr_in, kr_out,         &
-     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
+      subroutine sph_SGS_m_flux_nl_gradient_rin(kr_in, kr_out,          &
+     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef,   &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !
       integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
+      integer(kind = kint), intent(in)  :: istep_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
@@ -271,8 +272,7 @@
       do mp = 1, nidx_rtp(3)
         do lt = 1, nidx_rtp(2)
           do kr = kr_in, kr_out
-            inod = kr + (lt-1)*nidx_rtp(1)                              &
-     &        + (mp-1)*nidx_rtp(1)*nidx_rtp(2)
+            inod = kr + (lt-1) * istep_rtp(2) + (mp-1) * istep_rtp(3)
 !
             gamma_r = coef * radial_2nd_moment(kr)
             gamma_t = coef * theta_2nd_moment(lt)
@@ -315,7 +315,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sph_SGS_m_flux_nl_gradient_pout
+      end subroutine sph_SGS_m_flux_nl_gradient_rin
 !
 !  ---------------------------------------------------------------------
 !

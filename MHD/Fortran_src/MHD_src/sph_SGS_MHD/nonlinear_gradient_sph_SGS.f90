@@ -122,7 +122,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nl_gradient_SGS_terms_rtp'
       call nl_gradient_SGS_terms_rtp                                    &
-     &   (trans_p%iflag_FFT, sph, dynamic_SPH%sph_filters(1), MHD_prop, &
+     &   (sph, dynamic_SPH%sph_filters(1), MHD_prop,                    &
      &    trns_MHD%b_trns%base, trns_ngTMP%b_trns%grad_fld,             &
      &    trns_ngTMP%b_trns%diff_vector, trns_SGS%f_trns_LES%SGS_term,  &
      &    trns_MHD%backward, trns_ngTMP%backward, trns_SGS%forward)
@@ -180,7 +180,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'wider_nl_grad_SGS_rtp'
       call wider_nl_grad_SGS_rtp                                        &
-     &   (trans_p%iflag_FFT, sph, dynamic_SPH%sph_filters(2), MHD_prop, &
+     &   (sph, dynamic_SPH%sph_filters(2), MHD_prop,                    &
      &    trns_SIMI%b_trns_LES%filter_fld,                              &
      &    trns_DYNG%b_trns_LES%grad_fil_fld,                            &
      &    trns_DYNG%b_trns_LES%diff_fil_vect,                           &

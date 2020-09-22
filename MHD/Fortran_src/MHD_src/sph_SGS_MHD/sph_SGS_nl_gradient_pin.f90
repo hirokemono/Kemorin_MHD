@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine sph_SGS_induct_nl_gradient_pin(kr_in, kr_out,        &
-!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
+!!     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef, &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz,                     &
 !!     &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
 !!      subroutine sph_SGS_s_flux_nl_gradient_pin(kr_in, kr_out,        &
-!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
+!!     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef, &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !!      subroutine sph_SGS_m_flux_nl_gradient_pin(kr_in, kr_out,        &
-!!     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,            &
+!!     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef, &
 !!     &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,  &
 !!     &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !!@endverbatim
@@ -36,7 +36,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_induct_nl_gradient_pin(kr_in, kr_out,          &
-     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
+     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef,   &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz,                       &
      &          b_rtp, grad_bx, grad_by, grad_bz, d_SGS)
@@ -44,6 +44,7 @@
       integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
+      integer(kind = kint), intent(in)  :: istep_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
@@ -91,8 +92,7 @@
 !$omp&           du3_dx1,du3_dx2,du3_dx3,db3_dx1,db3_dx2,db3_dx3,       &
 !$omp&           mp,inod)
           do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
+            inod = mp + (kr-1)*istep_rtp(1) + (lt-1)*istep_rtp(2)
 !
             du1_dx1 = grad_ux(inod,1)
             du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
@@ -145,13 +145,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_s_flux_nl_gradient_pin(kr_in, kr_out,          &
-     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
+     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef,   &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz, grad_s, d_SGS)
 !
       integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
+      integer(kind = kint), intent(in)  :: istep_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
@@ -191,8 +192,7 @@
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3, mp,inod)
           do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
+            inod = mp + (kr-1)*istep_rtp(1) + (lt-1)*istep_rtp(2)
 !
             du1_dx1 = grad_ux(inod,1)
             du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
@@ -228,13 +228,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine sph_SGS_m_flux_nl_gradient_pin(kr_in, kr_out,          &
-     &          nnod_rtp, nidx_rtp, r, sin_t, cos_t, coef,              &
+     &          nnod_rtp, nidx_rtp, istep_rtp, r, sin_t, cos_t, coef,   &
      &          radial_2nd_moment, theta_2nd_moment, phi_2nd_moment,    &
      &          u_rtp, grad_ux, grad_uy, grad_uz, d_SGS)
 !
       integer(kind = kint), intent(in)  :: kr_in, kr_out
       integer(kind = kint), intent(in)  :: nnod_rtp
       integer(kind = kint), intent(in)  :: nidx_rtp(3)
+      integer(kind = kint), intent(in)  :: istep_rtp(3)
       real(kind = kreal), intent(in) :: r(nidx_rtp(1))
       real(kind = kreal), intent(in) :: sin_t(nidx_rtp(2))
       real(kind = kreal), intent(in) :: cos_t(nidx_rtp(2))
@@ -272,8 +273,7 @@
 !$omp do private(du1_dx1,du1_dx2,du1_dx3,du2_dx1,du2_dx2,du2_dx3,       &
 !$omp&           du3_dx1,du3_dx2,du3_dx3,mp,inod)
           do mp = 1, nidx_rtp(3)
-            inod = mp + (kr-1)*nidx_rtp(3)                              &
-     &                 + (lt-1)*nidx_rtp(1)*nidx_rtp(3)
+            inod = mp + (kr-1)*istep_rtp(1) + (lt-1)*istep_rtp(2)
 !
             du1_dx1 = grad_ux(inod,1)
             du1_dx2 = grad_ux(inod,2) * r(kr) - u_rtp(inod,2)
