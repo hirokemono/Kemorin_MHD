@@ -54,25 +54,6 @@
 !
       implicit  none
 !
-      integer(kind = kint), parameter :: num_test =  11
-      integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_leg_symmetry,                                   &
-     &            iflag_leg_sym_spin_loop,                              &
-     &            iflag_leg_sym_matmul,                                 &
-     &            iflag_leg_sym_dgemm,                                  &
-     &            iflag_leg_sym_matmul_big,                             &
-     &            iflag_leg_sym_dgemm_big,                              &
-     &            iflag_leg_sym_mat_jt,                                 &
-     &            iflag_leg_sym_dgemm_jt,                               &
-     &            iflag_leg_sym_mat_tj,                                 &
-     &            iflag_leg_sym_dgemm_tj,                               &
-!     &            iflag_on_the_fly_matmul,                             &
-!     &            iflag_on_the_fly_dgemm,                              &
-     &            iflag_on_the_fly_matprod/)
-!
-      private :: num_test, list_test
-      private :: select_legendre_transform
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -179,6 +160,8 @@
      &          trns_MHD, WK_leg, WK_FFTs_MHD, trans_p, gt_cor,         &
      &          cor_rlm, rj_fld)
 !
+      use test_legendre_transforms
+!
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
@@ -199,8 +182,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
-      call select_legendre_transform(sph, comms_sph, MHD_prop%fl_prop,  &
+      if (iflag_debug.eq.1) write(*,*) 's_test_legendre_transforms'
+      call s_test_legendre_transforms(sph, comms_sph, MHD_prop%fl_prop, &
      &    sph_MHD_bc%sph_bc_U, omega_sph, trans_p, gt_cor,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    rj_fld, trns_MHD, WK_leg, WK_FFTs_MHD, cor_rlm)
@@ -234,196 +217,6 @@
      &    sph_MHD_bc%sph_bc_U, trans_p%leg, WK%gt_cor, WK%cor_rlm)
 !
       end subroutine init_work_4_coriolis
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine select_legendre_transform(sph, comms_sph,              &
-     &          fl_prop, sph_bc_U, omega_sph, trans_p, gt_cor,          &
-     &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          rj_fld, trns_MHD, WK_leg, WK_FFTs_MHD, cor_rlm)
-!
-      use calypso_mpi_real
-      use sph_transforms_4_MHD
-!
-      type(sph_grids), intent(in) :: sph
-      type(sph_comm_tables), intent(in) :: comms_sph
-      type(fluid_property), intent(in) :: fl_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_rotation), intent(in) :: omega_sph
-      type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(gaunt_coriolis_rlm), intent(in) :: gt_cor
-!
-      integer(kind = kint), intent(in) :: ncomp_max_trans
-      integer(kind = kint), intent(in) :: nvector_max_trans
-      integer(kind = kint), intent(in) :: nscalar_max_trans
-!
-      type(address_4_sph_trans), intent(inout) :: trns_MHD
-      type(legendre_trns_works), intent(inout) :: WK_leg
-      type(work_for_FFTs), intent(inout) :: WK_FFTs_MHD
-      type(coriolis_rlm_data), intent(inout) :: cor_rlm
-      type(phys_data), intent(inout) :: rj_fld
-!
-      real(kind = kreal) :: starttime, etime_shortest
-      real(kind = kreal) :: endtime(maxindex_Leg_trans_loop)
-      real(kind = kreal) :: etime_trans(maxindex_Leg_trans_loop)
-      real(kind = kreal) :: etime_max(maxindex_Leg_trans_loop)
-!
-      integer(kind = kint) :: id, iloop_type
-      integer(kind = kint_gl) :: num64
-!
-!
-      if(WK_leg%id_legendre .ne. iflag_leg_undefined) return
-!
-      endtime(1:maxindex_Leg_trans_loop) =     zero
-      etime_trans(1:maxindex_Leg_trans_loop) = zero
-      etime_max(1:maxindex_Leg_trans_loop) =   zero
-      do iloop_type = 1, num_test
-        WK_leg%id_legendre = list_test(iloop_type)
-        if(my_rank .eq. 0) write(*,*)                                   &
-     &            'Test SPH transform for ', WK_leg%id_legendre
-        call sel_init_legendre_trans                                    &
-     &     (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,      &
-     &      sph%sph_params, sph%sph_rtm, sph%sph_rlm,                   &
-     &      trans_p%leg, trans_p%idx_trns, WK_leg)
-!
-        starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, sph_bc_U,    &
-     &      omega_sph, trans_p, gt_cor, rj_fld, trns_MHD%b_trns,        &
-     &      trns_MHD%backward, WK_leg, WK_FFTs_MHD, cor_rlm)
-        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop,           &
-     &      trans_p, cor_rlm, trns_MHD%f_trns, trns_MHD%forward,        &
-     &      WK_leg, WK_FFTs_MHD, rj_fld)
-        endtime(WK_leg%id_legendre) = MPI_WTIME() - starttime
-!
-        call sel_finalize_legendre_trans(WK_leg)
-      end do
-!
-      num64 = int(maxindex_Leg_trans_loop,KIND(num64))
-      call calypso_mpi_allreduce_real                                   &
-     &   (endtime, etime_trans, num64, MPI_SUM)
-      call calypso_mpi_allreduce_real                                   &
-     &   (endtime, etime_max, num64, MPI_MAX)
-      etime_trans(1:maxindex_Leg_trans_loop)                            &
-     &      = etime_trans(1:maxindex_Leg_trans_loop) / dble(nprocs)
-!
-      etime_shortest =  1.0d30
-      do iloop_type = 1, num_test
-        id = list_test(iloop_type)
-        if(etime_max(id) .lt. etime_shortest) then
-          WK_leg%id_legendre = id
-          etime_shortest =       etime_max(id)
-        end if
-      end do
-!
-      if(my_rank .gt. 0) return
-        write(*,'(a)') 'Loop ID: type, maximum time, average time'
-        if(etime_trans(iflag_leg_symmetry) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_symmetry,                         &
-     &          ': elapsed by original loop with symmetric'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_org_loop),  ':  ',      &
-     &            etime_max(iflag_leg_symmetry),                        &
-     &            etime_trans(iflag_leg_symmetry)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_spin_loop) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_spin_loop,                    &
-     &            ': elapsed by sym. outer radius'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_spin_loop),  ':  ',     &
-     &            etime_max(iflag_leg_sym_spin_loop),                   &
-     &            etime_trans(iflag_leg_sym_spin_loop)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_matmul) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_matmul,                       &
-     &          ': elapsed by using matmul with radial SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_matmul),  ':  ',        &
-     &            etime_max(iflag_leg_sym_matmul),                      &
-     &            etime_trans(iflag_leg_sym_matmul)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_dgemm) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_dgemm,                        &
-     &          ': elapsed by BLAS with radial SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_dgemm),  ':  ',         &
-     &            etime_max(iflag_leg_sym_dgemm),                       &
-     &            etime_trans(iflag_leg_sym_dgemm)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_matmul_big) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_matmul_big,                   &
-     &          ': elapsed by big matmul with radial SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_matmul_big),  ':  ',    &
-     &            etime_max(iflag_leg_sym_matmul_big),                  &
-     &            etime_trans(iflag_leg_sym_matmul_big)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_dgemm_big) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_dgemm_big,                    &
-     &          ': elapsed by big BLAS with radial SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_dgemm_big),  ':  ',     &
-     &            etime_max(iflag_leg_sym_dgemm_big),                   &
-     &            etime_trans(iflag_leg_sym_dgemm_big)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_mat_jt) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_mat_jt,                       &
-     &          ': elapsed by matmul for Pjt with theta SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_mat_jt),  ':  ',        &
-     &            etime_max(iflag_leg_sym_mat_jt),                      &
-     &            etime_trans(iflag_leg_sym_mat_jt)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_dgemm_jt) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_dgemm_jt,                     &
-     &          ': elapsed by BLAS for Pjt with theta SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_dgemm_jt),  ':  ',      &
-     &            etime_max(iflag_leg_sym_dgemm_jt),                    &
-     &            etime_trans(iflag_leg_sym_dgemm_jt)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_mat_tj) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_mat_tj,                       &
-     &          ': elapsed by matmul for Ptj with theta SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_sym_mat_tj),  ':  ',        &
-     &            etime_max(iflag_leg_sym_mat_tj),                      &
-     &            etime_trans(iflag_leg_sym_mat_tj)
-        end if
-!
-        if(etime_trans(iflag_leg_sym_dgemm_tj) .gt. zero) then
-          write(*,'(i3,a)') iflag_leg_sym_dgemm_tj,                     &
-     &          ': elapsed by BLAS for Ptj with theta SMP'
-          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
-     &            etime_max(iflag_leg_sym_dgemm_tj),                    &
-     &            etime_trans(iflag_leg_sym_dgemm_tj)
-        end if
-!
-!
-        if(etime_trans(iflag_on_the_fly_matmul) .gt. zero) then
-          write(*,'(i3,a)') iflag_on_the_fly_matmul,                    &
-     &          ': elapsed by matmul with on-the-fly Plm'
-          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
-     &            etime_max(iflag_on_the_fly_matmul),                   &
-     &            etime_trans(iflag_on_the_fly_matmul)
-        end if
-!
-        if(etime_trans(iflag_on_the_fly_dgemm) .gt. zero) then
-          write(*,'(i3,a)') iflag_on_the_fly_dgemm,                     &
-     &          ': elapsed by BLAS with on-the-fly Plm'
-          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
-     &            etime_max(iflag_on_the_fly_dgemm),                    &
-     &            etime_trans(iflag_on_the_fly_dgemm)
-        end if
-!
-        if(etime_trans(iflag_on_the_fly_matprod) .gt. zero) then
-          write(*,'(i3,a)') iflag_on_the_fly_matprod,                   &
-     &          ': elapsed by simple loop with on-the-fly Plm'
-          write(*,'(2a,1p2e16.6)') trim(leg_dgemm_tj),  ':  ',          &
-     &            etime_max(iflag_on_the_fly_matprod),                  &
-     &            etime_trans(iflag_on_the_fly_matprod)
-        end if
-!
-      end subroutine select_legendre_transform
 !
 !-----------------------------------------------------------------------
 !

@@ -126,34 +126,31 @@
      &   (sph_grp_const, sph_const, comms_sph_const)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 'nidx_rtp', sph_const%sph_rtp%nidx_rtp(1:3)
-        write(*,*) 'istep_rtp', sph_const%sph_rtp%istep_rtp(1:3)
+!      if(my_rank .eq. 0) then
+!        write(*,*) 'nidx_rtp', sph_const%sph_rtp%nidx_rtp(1:3)
+!        write(*,*) 'istep_rtp', sph_const%sph_rtp%istep_rtp(1:3)
 !
-        i2 = comms_sph_const%comm_rtp%item_sr(2)
-        i1 = comms_sph_const%comm_rtp%item_sr(1)
-        write(*,*) 'item_sr(1:2)', i1, i2
-        write(*,*) 'idx_global_rtp_SR1', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
-        write(*,*) 'idx_global_rtp_SR2', sph_const%sph_rtp%idx_global_rtp(i2,1:3)
-        write(*,*) 'diff', sph_const%sph_rtp%idx_global_rtp(i2,1:3) - sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        i2 = comms_sph_const%comm_rtp%item_sr(2)
+!        i1 = comms_sph_const%comm_rtp%item_sr(1)
+!        write(*,*) 'item_sr(1:2)', i1, i2
+!        write(*,*) 'idx_global_rtp_SR1', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        write(*,*) 'idx_global_rtp_SR2', sph_const%sph_rtp%idx_global_rtp(i2,1:3)
+!        write(*,*) 'diff', sph_const%sph_rtp%idx_global_rtp(i2,1:3) - sph_const%sph_rtp%idx_global_rtp(i1,1:3)
 !
-        do i = 1, sph_const%sph_rtp%istep_rtp(2)+1
-          i1 = comms_sph_const%comm_rtp%item_sr(i)
-          write(*,*) i, 'idx_global_rtp', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
-        end do
+!        do i = 1, sph_const%sph_rtp%istep_rtp(2)+1
+!          i1 = comms_sph_const%comm_rtp%item_sr(i)
+!          write(*,*) i, 'idx_global_rtp', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        end do
 !
-        i2 = comms_sph_const%comm_rtp%item_sr(1+sph_const%sph_rtp%istep_rtp(2))
-        i1 = comms_sph_const%comm_rtp%item_sr(1)
+!        i2 = comms_sph_const%comm_rtp%item_sr(1+sph_const%sph_rtp%istep_rtp(2))
+!        i1 = comms_sph_const%comm_rtp%item_sr(1)
 !
-        write(*,*) 'item_sr(1:2)', i1, i2
-        write(*,*) 'idx_global_rtp_SR1', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
-        write(*,*) 'idx_global_rtp_SR2', sph_const%sph_rtp%idx_global_rtp(i2,1:3)
-        write(*,*) 'diff', sph_const%sph_rtp%idx_global_rtp(i2,1:3) - sph_const%sph_rtp%idx_global_rtp(i1,1:3)
-      end if
+!        write(*,*) 'item_sr(1:2)', i1, i2
+!        write(*,*) 'idx_global_rtp_SR1', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        write(*,*) 'idx_global_rtp_SR2', sph_const%sph_rtp%idx_global_rtp(i2,1:3)
+!        write(*,*) 'diff', sph_const%sph_rtp%idx_global_rtp(i2,1:3) - sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!      end if
 !
-
-!
-
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
 !
 !  ========= Generate FEM mesh ===========================
