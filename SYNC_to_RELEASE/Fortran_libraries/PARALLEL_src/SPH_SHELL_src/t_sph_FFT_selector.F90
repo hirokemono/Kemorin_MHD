@@ -83,6 +83,7 @@
 #ifdef FFTW3
       use t_sph_single_FFTW
       use t_sph_field_FFTW
+      use t_sph_component_FFTW
 #endif
 !
       implicit none
@@ -100,6 +101,8 @@
         type(work_for_field_FFTW) :: sph_fld_FFTW
 !>        Structure to use FFTW for each component
         type(work_for_sgl_FFTW) :: sph_sgl_FFTW
+!>        Structure to use FFTW for each component
+        type(work_for_comp_FFTW) :: sph_comp_FFTW
 #endif
       end type work_for_FFTs
 !
@@ -134,6 +137,11 @@
         call init_sph_single_FFTW                                       &
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
         return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
+        if(id_rank .eq. 0) write(*,*) 'Use FFTW for all compontnent'
+        call init_sph_component_FFTW(sph_rtp%nidx_rtp,                  &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
+        return
       end if
 #endif
 !
@@ -159,6 +167,10 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
         call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW)
+        return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
+        call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
         return
       end if
 #endif
@@ -191,6 +203,11 @@
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW'
         call verify_sph_single_FFTW                                     &
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
+        return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp。'
+        call verify_sph_component_FFTW(sph_rtp%nidx_rtp,                &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
         return
       end if
 #endif
@@ -233,6 +250,12 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTW)
         return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
+        call sph_comp_fwd_FFTW_to_send                                  &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
+     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTW)
+        return
       end if
 #endif
 !
@@ -273,6 +296,12 @@
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_sgl_FFTW)
+        return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
+        call sph_comp_back_FFTW_from_recv                               &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
+     &      comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_FFTW)
         return
       end if
 #endif
