@@ -224,7 +224,8 @@
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
         ist = ncomp_fwd *  irt_rtp_smp_stack(ip-1)
-        num = ncomp_fwd * (irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1))
+        num = ncomp_fwd * (irt_rtp_smp_stack(ip)                        &
+     &                    - irt_rtp_smp_stack(ip-1))
         nsize = num*nidx_rtp(3)
 !
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
