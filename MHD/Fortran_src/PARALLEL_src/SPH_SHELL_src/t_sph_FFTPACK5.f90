@@ -208,7 +208,7 @@
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, num, inum, nsize, nd
+      integer(kind = kint) ::  m, j, ip, ist, num, nsize
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
       integer(kind = kint) :: inod_s, inod_c, ierr
 !
@@ -219,8 +219,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&            private(m,j,nd,ist,num,inum,nsize,inod_s,inod_c,      &
+!$omp parallel do private(m,j,ist,num,nsize,inod_s,inod_c,              &
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
         ist = ncomp_fwd *  irt_rtp_smp_stack(ip-1)
@@ -231,11 +230,9 @@
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)
           do j = irt_rtp_smp_stack(ip-1)+1, irt_rtp_smp_stack(ip)
-            do nd = 1, ncomp_fwd
-              inum = nd + (j-1) * ncomp_fwd
-              inod_c = inum + (m-1) * num
-              fftpack_t%smp(ip)%X(inod_c) = X_rtp(j,m,nd)
-            end do
+            inod_c = (j-1) * ncomp_fwd + (m-1) * num
+            fftpack_t%smp(ip)%X(inod_c+1:inod_c+ncomp_fwd)              &
+     &             = X_rtp(j,m,1:ncomp_fwd)
           end do
         end do
         if(iflag_FFT_time) fftpack_t%t_omp(ip,1)= fftpack_t%t_omp(ip,1) &
@@ -250,29 +247,28 @@
 !
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
         do j = irt_rtp_smp_stack(ip-1)+1, irt_rtp_smp_stack(ip)
-          do nd = 1, ncomp_fwd
-            inum = nd + (j-1) * ncomp_fwd
-            inod_s = inum + (nidx_rtp(3)-1) * num
-            is_rtp = j + irt_rtp_smp_stack(np_smp)
-            ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
-            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            WS(ic_send) = fftpack_t%smp(ip)%X(inum)
-            WS(is_send) = fftpack_t%smp(ip)%X(inod_s)
-          end do
+          inod_c = (j-1) * ncomp_fwd
+          inod_s = (j-1) * ncomp_fwd + (nidx_rtp(3)-1) * num
+          is_rtp = j + irt_rtp_smp_stack(np_smp)
+          ic_send = (irev_sr_rtp(j) - 1) * ncomp_fwd
+          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+          WS(ic_send+1:ic_send+ncomp_fwd)                               &
+     &            = fftpack_t%smp(ip)%X(inod_c+1:inod_c+ncomp_fwd)
+          WS(is_send+1:is_send+ncomp_fwd)                               &
+     &            = fftpack_t%smp(ip)%X(inod_s+1:inod_s+ncomp_fwd)
         end do
         do m = 1, (nidx_rtp(3)+1)/2 - 1
           do j = irt_rtp_smp_stack(ip-1)+1, irt_rtp_smp_stack(ip)
-            do nd = 1, ncomp_fwd
-              inum = nd + (j-1) * ncomp_fwd
-              inod_c = inum + (2*m-1) * num
-              inod_s = inum + (2*m  ) * num
-              ic_rtp = j + (2*m  ) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
-              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-              WS(ic_send) = fftpack_t%smp(ip)%X(inod_c)
-              WS(is_send) = fftpack_t%smp(ip)%X(inod_s)
-            end do
+            inod_c = (j-1) * ncomp_fwd + (2*m-1) * num
+            inod_s = (j-1) * ncomp_fwd + (2*m  ) * num
+            ic_rtp = j + (2*m  ) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
+            ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+            is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+            WS(ic_send+1:ic_send+ncomp_fwd)                             &
+     &              = fftpack_t%smp(ip)%X(inod_c+1:inod_c+ncomp_fwd)
+            WS(is_send+1:is_send+ncomp_fwd)                             &
+     &              = fftpack_t%smp(ip)%X(inod_s+1:inod_s+ncomp_fwd)
           end do
         end do
         if(iflag_FFT_time) fftpack_t%t_omp(ip,3)= fftpack_t%t_omp(ip,3) &
@@ -323,7 +319,7 @@
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, inum, num, nsize, nd
+      integer(kind = kint) ::  m, j, ip, num, nsize, nd
       integer(kind = kint) :: inod_s, inod_c, ierr
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
@@ -334,11 +330,9 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&            private(m,j,nd,ist,num,inum,nsize,inod_s,inod_c,      &
+!$omp parallel do private(m,j,nd,num,nsize,inod_s,inod_c,               &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
-        ist = ncomp_bwd *  irt_rtp_smp_stack(ip-1)
         num = ncomp_bwd * (irt_rtp_smp_stack(ip)                        &
      &                   - irt_rtp_smp_stack(ip-1))
         nsize = num*nidx_rtp(3)
@@ -346,29 +340,28 @@
 !   normalization
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
         do j = irt_rtp_smp_stack(ip-1)+1, irt_rtp_smp_stack(ip)
-          do nd = 1, ncomp_bwd
-            inum = nd + (j-1) * ncomp_bwd
-            inod_s = inum + (nidx_rtp(3)-1) * num
-            is_rtp = j + irt_rtp_smp_stack(np_smp)
-            ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
-            is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-            fftpack_t%smp(ip)%X(inum) =   WR(ic_recv)
-            fftpack_t%smp(ip)%X(inod_s) = WR(is_recv)
-          end do
+          inod_c = (j-1) * ncomp_bwd
+          inod_s = (j-1) * ncomp_bwd + (nidx_rtp(3)-1) * num
+          is_rtp = j + irt_rtp_smp_stack(np_smp)
+          ic_recv = (irev_sr_rtp(j) - 1) * ncomp_bwd
+          is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+          fftpack_t%smp(ip)%X(inod_c+1:inod_c+ncomp_bwd)                &
+     &            = WR(ic_recv+1:ic_recv+ncomp_bwd)
+          fftpack_t%smp(ip)%X(inod_s+1:inod_s+ncomp_bwd)                &
+     &            = WR(is_recv+1:is_recv+ncomp_bwd)
         end do
         do m = 1, (nidx_rtp(3)+1)/2 - 1
           do j = irt_rtp_smp_stack(ip-1)+1, irt_rtp_smp_stack(ip)
-            do nd = 1, ncomp_bwd
-              inum = nd + (j-1) * ncomp_bwd
-              inod_c = inum + (2*m-1) * num
-              inod_s = inum + (2*m  ) * num
-              ic_rtp = j + (2*m  ) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
-              ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-              is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-              fftpack_t%smp(ip)%X(inod_c) = WR(ic_recv)
-              fftpack_t%smp(ip)%X(inod_s) = WR(is_recv)
-            end do
+            inod_c = (j-1) * ncomp_bwd + (2*m-1) * num
+            inod_s = (j-1) * ncomp_bwd + (2*m  ) * num
+            ic_rtp = j + (2*m  ) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
+            ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+            is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+            fftpack_t%smp(ip)%X(inod_c+1:inod_c+ncomp_bwd)              &
+     &              = WR(ic_recv+1:ic_recv+ncomp_bwd)
+            fftpack_t%smp(ip)%X(inod_s+1:inod_s+ncomp_bwd)              &
+     &              = WR(is_recv+1:is_recv+ncomp_bwd)
           end do
         end do
         if(iflag_FFT_time) fftpack_t%t_omp(ip,1)= fftpack_t%t_omp(ip,1) &
@@ -384,11 +377,9 @@
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)
           do j = irt_rtp_smp_stack(ip-1)+1, irt_rtp_smp_stack(ip)
-            do nd = 1, ncomp_bwd
-              inum = nd + (j-1) * ncomp_bwd
-              inod_c = inum + (m-1) * num
-              X_rtp(j,m,nd) = fftpack_t%smp(ip)%X(inod_c)
-            end do
+            inod_c = (j-1) * ncomp_bwd + (m-1) * num
+            X_rtp(j,m,1:ncomp_bwd)                                      &
+     &           = fftpack_t%smp(ip)%X(inod_c+1:inod_c+ncomp_bwd)
           end do
         end do
         if(iflag_FFT_time) fftpack_t%t_omp(ip,3)= fftpack_t%t_omp(ip,3) &
