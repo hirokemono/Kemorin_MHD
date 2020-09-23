@@ -407,7 +407,7 @@
       allocate(FFTW_c%plan_bwd(np_smp))
 !
       allocate( FFTW_c%X(Ncomp*Nfft,np_smp) )
-      allocate( FFTW_c%C(Ncomp*Nfft/2+1,np_smp) )
+      allocate( FFTW_c%C(Ncomp*(Nfft/2+1),np_smp) )
       FFTW_c%X = 0.0d0
       FFTW_c%C = 0.0d0
 !
