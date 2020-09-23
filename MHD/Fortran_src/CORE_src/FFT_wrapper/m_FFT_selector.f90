@@ -34,7 +34,7 @@
       character(len = kchara), parameter :: hd_FFTW3_S = 'fftw3_single'
 !>      Character flag to use FFTW3 for all components
       character(len = kchara), parameter                                &
-     &          :: hd_FFTW_C =   'fftw_component'
+     &          :: hd_FFTW_C =   'FFTW_COMPONENT'
 !>      Character flag to use FFTW3 for all components
       character(len = kchara), parameter                                &
      &          :: hd_FFTW3_C =  'fftw3_component'
@@ -43,10 +43,18 @@
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
 !
+!>      Character flag to use test FFT
+      character(len = kchara), parameter :: hd_TEST_FFT =  'TEST'
+!
 !>      integer flag for undefined
       integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   0
 !>      integer flag to use FFTPACK5
       integer(kind = kint), parameter :: iflag_FFTPACK =     1
+!>      integer flag to use FFTPACK5
+      integer(kind = kint), parameter :: iflag_FFTPACK =     1
+!>      integer flag to use FFTPACK5
+      integer(kind = kint), parameter :: iflag_FFTPACK =     1
+!
 !>      integer flag to use FFTW3
       integer(kind = kint), parameter :: iflag_FFTW =        11
 !>      integer flag to use single transforms in FFTW3
@@ -60,8 +68,12 @@
 !>      integer flag to use ISPACK Ver. 3.01
       integer(kind = kint), parameter :: iflag_ISPACK3 =     31
 !
+!>      integer flag to use test FFT
+      integer(kind = kint), parameter :: iflag_test_fft =    99
+!
       private :: hd_FFTPACK, hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
-      private :: hd_ISPACK, hd_FFTW_F, hd_FFTW3_F
+      private :: hd_ISPACK, hd_ISPACK3, hd_FFTW_F, hd_FFTW3_F
+      private :: hd_FFTW_C, hd_FFTW3_C, hd_TEST_FFT
 !
 ! ------------------------------------------------------------------
 !
@@ -95,6 +107,8 @@
 !      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_F)                  &
 !     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_F)) then
 !        iflag_FFT = iflag_FFTW_FIELD
+      else if(cmp_no_case(FFT_library_ctl, hd_TEST_FFT)) then
+        iflag_FFT = iflag_test_fft
       end if
 !
       end subroutine set_fft_library_ctl
@@ -150,6 +164,8 @@
         chosen_fft_name = hd_ISPACK
       else if(i_mode .eq. iflag_ISPACK3) then
         chosen_fft_name = hd_ISPACK3
+      else if(i_mode .eq. iflag_test_fft) then
+        chosen_fft_name = hd_TEST_FFT
       end if
 !
       end function chosen_fft_name

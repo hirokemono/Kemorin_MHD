@@ -79,7 +79,11 @@
       use m_machine_parameter
       use t_spheric_rtp_data
       use m_FFT_selector
+
       use t_sph_FFTPACK5
+      use t_sph_single_FFTPACK5
+      use t_sph_component_FFTPACK5
+!
       use t_sph_ISPACK_FFT
       use t_sph_ISPACK3_FFT
 !
@@ -99,6 +103,11 @@
 !
 !>        Structure to use FFTPACK
         type(work_for_fftpack) :: sph_FFTPACK
+!>        Structure to use single FFTPACK
+        type(work_for_sgl_fftpack) :: sph_sgl_FFTPACK
+!>        Structure to use single FFTPACK
+        type(work_for_comp_fftpack) :: sph_comp_FFTPACK
+!
 !>        Structure to use ISPACK
         type(work_for_ispack) :: sph_ISPACK
 !>        Structure to use ISPACK
@@ -160,6 +169,20 @@
         call init_sph_component_FFTW(sph_rtp%nidx_rtp,                  &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        if(id_rank .eq. 0) write(*,*) 'Use single FFTPACK'
+        call init_sph_single_FFTPACK5                                   &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK for all comp'
+        call init_sph_comp_FFTPACK5                                     &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_comp_FFTPACK)
+!
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        call init_sph_single_FFTPACK5                                   &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
+!
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_sph_FFTPACK5                                          &
@@ -193,6 +216,17 @@
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
         call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
 #endif
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        if(id_rank .eq. 0) write(*,*) 'Finalize single FFTPACK'
+        call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        if(id_rank .eq. 0) write(*,*) 'Finalize FFTPACK for all comp'
+        call finalize_sph_comp_FFTPACK5(WK_FFTs%sph_comp_FFTPACK)
+!
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+        if(id_rank .eq. 0) write(*,*) 'Finalize Test FFT'
+        call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
+!
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
         call finalize_sph_FFTPACK5(WK_FFTs%sph_FFTPACK)
@@ -238,6 +272,20 @@
         call verify_sph_component_FFTW(sph_rtp%nidx_rtp,                &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        call verify_sph_single_FFTPACK5                                 &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        call verify_sph_comp_FFTPACK5(sph_rtp%nidx_rtp,                 &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
+!
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        call verify_sph_single_FFTPACK5                                 &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
+!
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
         call verify_sph_FFTPACK5                                        &
@@ -292,6 +340,25 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTW)
 #endif
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        call sph_single_RFFTMF_to_send                                  &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
+     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
+     &      WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        call sph_comp_RFFTMF_to_send                                    &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
+     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
+     &      WK_FFTs%sph_comp_FFTPACK)
+!
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+        call sph_single_RFFTMF_to_send                                  &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
+     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
+     &      WK_FFTs%sph_sgl_FFTPACK)
       else
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -346,6 +413,22 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_FFTW)
 #endif
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        call sph_single_RFFTMB_from_recv                                &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
+     &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        call sph_comp_RFFTMB_from_recv                                  &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
+     &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_comp_FFTPACK)
+!
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
+        call sph_single_RFFTMB_from_recv                                &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
+     &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_sgl_FFTPACK)
       else
         call sph_RFFTMB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
