@@ -9,9 +9,11 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_component_FFTW(ncomp, nidx_rtp, FFTW_c)
+!!      subroutine init_sph_component_FFTW                              &
+!!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
 !!      subroutine finalize_sph_component_FFTW(FFTW_c)
-!!      subroutine verify_sph_component_FFTW(ncomp, nidx_rtp, FFTW_c)
+!!      subroutine verify_sph_component_FFTW                            &
+!!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
