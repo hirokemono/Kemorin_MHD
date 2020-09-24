@@ -212,8 +212,8 @@
 !
             if(iflag_FFT_time) ispack3_s%t_omp(ip,0) = MPI_WTIME()
             do m = 1, nphi_rtp/2
-              ispack3_s%X(2*m-2,ip) = X_rtp(j+ist,2*m-1,nd)
-              ispack3_s%X(2*m-1,ip) = X_rtp(j+ist,2*m,  nd)
+              ispack3_s%X(2*m-1,ip) = X_rtp(j+ist,2*m-1,nd)
+              ispack3_s%X(2*m,  ip) = X_rtp(j+ist,2*m,  nd)
             end do
             if(iflag_FFT_time) ispack3_s%t_omp(ip,1)                    &
      &                        = ispack3_s%t_omp(ip,1)                   &
