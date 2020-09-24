@@ -246,7 +246,6 @@
      &             = X_rtp(ist+1:ist+num8,2*m-1,nd)
             ispack3_d%smp(ip)%X(inod_s+1:inod_s+num8)                   &
      &             = X_rtp(ist+1:ist+num8,2*m,  nd)
-            end do
           end do
           if(iflag_FFT_time) ispack3_d%t_omp(ip,1)                      &
      &                      = ispack3_d%t_omp(ip,1)                     &
