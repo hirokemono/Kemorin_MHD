@@ -38,20 +38,32 @@
       implicit none
 !
 #ifdef FFTW3
-      integer(kind = kint), parameter :: num_test =   6
+      integer(kind = kint), parameter :: num_test =   12
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
-     &            iflag_FFTW_SINGLE,                                    &
+     &            iflag_FFTPACK_COMPONENT,                              &
+     &            iflag_FFTPACK_DOMAIN,                                 &
+     &            iflag_FFTPACK_SINGLE,                                 &
      &            iflag_FFTW,                                           &
+     &            iflag_FFTW_SINGLE,                                    &
      &            iflag_FFTW_COMPONENT,                                 &
      &            iflag_ISPACK1,                                        &
-     &            iflag_ISPACK3/)
+     &            iflag_ISPACK3,                                        &
+     &            iflag_ISPACK3_COMPONENT,                              &
+     &            iflag_ISPACK3_DOMAIN,                                 &
+     &            iflag_ISPACK3_SINGLE/)
 #else
-      integer(kind = kint), parameter :: num_test =   3
+      integer(kind = kint), parameter :: num_test =   9
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
+     &            iflag_FFTPACK_COMPONENT,                              &
+     &            iflag_FFTPACK_DOMAIN,                                 &
+     &            iflag_FFTPACK_SINGLE,                                 &
      &            iflag_ISPACK1,                                        &
-     &            iflag_ISPACK3/)
+     &            iflag_ISPACK3,                                        &
+     &            iflag_ISPACK3_COMPONENT,                              &
+     &            iflag_ISPACK3_DOMAIN,                                 &
+     &            iflag_ISPACK3_SINGLE/)
 #endif
 !
       real(kind = kreal) :: etime_shortest = -1.0e10
