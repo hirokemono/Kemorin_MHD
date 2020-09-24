@@ -209,7 +209,7 @@
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
-      integer(kind = kint) :: m, j, ip, ist, num, nd
+      integer(kind = kint) :: m, j, ip, ist, num, ntot, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
       integer(kind = kint) :: inum, inod_s, inod_c
 !
@@ -221,20 +221,20 @@
       end if
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,nd,ist,num,inum,inod_s,inod_c,            &
+!$omp&         private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,            &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
-        ist = ncomp_fwd *  irt_rtp_smp_stack(ip-1)
-        num = ncomp_fwd * (irt_rtp_smp_stack(ip)                        &
-     &                   - irt_rtp_smp_stack(ip-1))
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)/2
-          do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp_fwd)
-            j =  1 + (ist+inum-nd) / ncomp_fwd
-            inod_c = inum + (2*m-2) * num
-            inod_s = inum + (2*m-1) * num
+          do inum = 1, ncomp_fwd * num
+            nd = 1 + mod(inum-1,ncomp_fwd)
+            j =  1+ist + (inum-nd) / ncomp_fwd
+            inod_c = inum + (2*m-2) * ncomp_fwd * num
+            inod_s = inum + (2*m-1) * ncomp_fwd * num
             ispack_t%smp(ip)%X(inod_c) = X_rtp(j,2*m-1,nd)
             ispack_t%smp(ip)%X(inod_s) = X_rtp(j,2*m,  nd)
           end do
@@ -243,33 +243,33 @@
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
-        call FTTRUF(num, nidx_rtp(3), ispack_t%smp(ip)%X,               &
+        call FTTRUF(ntot, nidx_rtp(3), ispack_t%smp(ip)%X,              &
      &      ispack_t%smp(ip)%WK, ispack_t%IT, ispack_t%T)
         if(iflag_FFT_time) ispack_t%t_omp(ip,3) = ispack_t%t_omp(ip,3)  &
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
-        do inum = 1, num
-          nd = 1 + mod(ist+inum-1,ncomp_fwd)
-          j =  1 + (ist+inum-nd) / ncomp_fwd
+        do inum = 1, ncomp_fwd * num
+          nd = 1 + mod(inum-1,ncomp_fwd)
+          j =  1+ist + (inum-nd) / ncomp_fwd
           is_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
           is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
           inod_c = inum
-          inod_s = inum + num
+          inod_s = inum + ncomp_fwd * num
           WS(ic_send) = ispack_t%smp(ip)%X(inod_c)
           WS(is_send) = ispack_t%smp(ip)%X(inod_s)
         end do
         do m = 2, nidx_rtp(3)/2
-          do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp_fwd)
-            j =  1 + (ist+inum-nd) / ncomp_fwd
+          do inum = 1, ncomp_fwd * num
+            nd = 1 + mod(inum-1,ncomp_fwd)
+            j =  1+ist + (inum-nd) / ncomp_fwd
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
             ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
             is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            inod_c = inum + (2*m-2) * num
-            inod_s = inum + (2*m-1) * num
+            inod_c = inum + (2*m-2) * ncomp_fwd * num
+            inod_s = inum + (2*m-1) * ncomp_fwd * num
             WS(ic_send) =   two * ispack_t%smp(ip)%X(inod_c)
             WS(is_send) = - two * ispack_t%smp(ip)%X(inod_s)
           end do
@@ -324,7 +324,7 @@
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, num, nd
+      integer(kind = kint) ::  m, j, ip, ist, num, ntot, nd
       integer(kind = kint) :: inum, inod_s, inod_c
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
@@ -336,31 +336,31 @@
       end if
 !
 !$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,ist,num,inum,nd,inod_s,inod_c,            &
+!$omp&         private(ip,m,j,ist,num,ntot,inum,nd,inod_s,inod_c,       &
 !$omp&                 ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
-        ist = ncomp_bwd *  irt_rtp_smp_stack(ip-1)
-        num = ncomp_bwd * (irt_rtp_smp_stack(ip)                        &
-     &                   - irt_rtp_smp_stack(ip-1))
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_bwd * num
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
-        do inum = 1, num
-          nd = 1 + mod(ist+inum-1,ncomp_bwd)
-          j =  1 + (ist+inum-nd) / ncomp_bwd
+        do inum = 1, ncomp_bwd * num
+          nd = 1 + mod(inum-1,ncomp_bwd)
+          j =  1+ist + (inum-nd) / ncomp_bwd
           is_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
           is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
           inod_c = inum
-          inod_s = inum + num
+          inod_s = inum + ncomp_bwd * num
           ispack_t%smp(ip)%X(inod_c) = WR(ic_recv)
           ispack_t%smp(ip)%X(inod_s) = WR(is_recv)
         end do
         do m = 2, nidx_rtp(3)/2
-          do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp_bwd)
-            j =  1 + (ist+inum-nd) / ncomp_bwd
-            inod_c = inum + (2*m-2) * num
-            inod_s = inum + (2*m-1) * num
+          do inum = 1, ncomp_bwd * num
+            nd = 1 + mod(inum-1,ncomp_bwd)
+            j =  1+ist + (inum-nd) / ncomp_bwd
+            inod_c = inum + (2*m-2) * ncomp_bwd * num
+            inod_s = inum + (2*m-1) * ncomp_bwd * num
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
@@ -373,18 +373,18 @@
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
-        call FTTRUB(num, nidx_rtp(3), ispack_t%smp(ip)%X,               &
+        call FTTRUB(ntot, nidx_rtp(3), ispack_t%smp(ip)%X,              &
      &      ispack_t%smp(ip)%WK, ispack_t%IT, ispack_t%T )
         if(iflag_FFT_time) ispack_t%t_omp(ip,2) = ispack_t%t_omp(ip,2)  &
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
 !
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)/2
-          do inum = 1, num
-            nd = 1 + mod(ist+inum-1,ncomp_bwd)
-            j =  1 + (ist+inum-nd) / ncomp_bwd
-            inod_c = inum + (2*m-2) * num
-            inod_s = inum + (2*m-1) * num
+          do inum = 1, ncomp_bwd * num
+            nd = 1 + mod(inum-1,ncomp_bwd)
+            j =  1+ist + (inum-nd) / ncomp_bwd
+            inod_c = inum + (2*m-2) * ncomp_bwd * num
+            inod_s = inum + (2*m-1) * ncomp_bwd * num
             X_rtp(j,2*m-1,nd) = ispack_t%smp(ip)%X(inod_c)
             X_rtp(j,2*m,  nd) = ispack_t%smp(ip)%X(inod_s)
           end do
