@@ -226,7 +226,7 @@
         ist = ncomp_fwd *  irt_rtp_smp_stack(ip-1)
         num =  irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_fwd * num
-        nsize = num*nidx_rtp(3)
+        nsize = ntot*nidx_rtp(3)
 !
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)
@@ -338,7 +338,7 @@
         ist = ncomp_bwd *  irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_bwd*num
-        nsize = num*nidx_rtp(3)
+        nsize = ntot*nidx_rtp(3)
 !
 !   normalization
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
