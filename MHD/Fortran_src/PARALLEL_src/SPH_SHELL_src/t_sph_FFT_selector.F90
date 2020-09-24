@@ -81,15 +81,17 @@
       use m_FFT_selector
 
       use t_sph_FFTPACK5
-      use t_sph_single_FFTPACK5
       use t_sph_component_FFTPACK5
       use t_sph_domain_FFTPACK5
+      use t_sph_single_FFTPACK5
 !
       use t_sph_ISPACK_FFT
       use t_sph_domain_ISPACK_FFT
 !
       use t_sph_ISPACK3_FFT
       use t_sph_domain_ISPACK3_FFT
+      use t_sph_component_ISPACK3_FFT
+      use t_sph_single_ISPACK3_FFT
 !
 #ifdef FFTW3
       use t_sph_single_FFTW
@@ -119,10 +121,14 @@
 !>        Structure to use ISPACK for domain
         type(work_for_domain_ispack) :: sph_domain_ISPACK
 !
-!>        Structure to use ISPACK
+!>        Structure to use ISPACK3
         type(work_for_ispack3) :: sph_ISPACK3
-!>        Structure to use ISPACK for domain
+!>        Structure to use ISPACK3 for domain
         type(work_for_domain_ispack3) :: sph_domain_ispack3
+!>        Structure to use ISPACK3 for component
+        type(work_for_comp_ispack3) :: sph_comp_ispack3
+!>        Structure to use single ISPACK3
+        type(work_for_single_ispack3) :: sph_sgl_ispack3
 !
 #ifdef FFTW3
 !>        Structure to use FFTW
@@ -174,6 +180,16 @@
         call init_sph_domain_ISPACK3                                    &
      &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
      &      WK_FFTs%sph_domain_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
+        if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for component'
+        call init_sph_comp_ISPACK3(cast_long(sph_rtp%nidx_rtp(3)),      &
+     &      cast_long(ncomp_bwd), cast_long(ncomp_fwd),                 &
+     &      WK_FFTs%sph_comp_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        if(id_rank .eq. 0) write(*,*) 'Use single ISPACK V3.0.1'
+        call init_sph_single_ISPACK3(cast_long(sph_rtp%nidx_rtp(3)),    &
+     &      WK_FFTs%sph_sgl_ispack3)
+!
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
@@ -238,6 +254,15 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Finalize ISPACK V3.0.1 for domain'
         call finalize_sph_domain_ISPACK3(WK_FFTs%sph_domain_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                       'Finalize ISPACK V3.0.1 for component'
+        call finalize_sph_comp_ISPACK3(WK_FFTs%sph_comp_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                       'Finalize single ISPACK V3.0.1'
+        call finalize_sph_single_ISPACK3(WK_FFTs%sph_sgl_ispack3)
+!
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
@@ -306,6 +331,17 @@
         call verify_sph_domain_ISPACK3                                  &
      &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
      &      WK_FFTs%sph_domain_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                       'Use ISPACK V3.0.1 for component'
+        call verify_sph_comp_ISPACK3(cast_long(sph_rtp%nidx_rtp(3)),    &
+     &      cast_long(ncomp_bwd), cast_long(ncomp_fwd),                 &
+     &      WK_FFTs%sph_comp_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use single ISPACK V3.0.1'
+        call verify_sph_single_ISPACK3(cast_long(sph_rtp%nidx_rtp(3)),  &
+     &      WK_FFTs%sph_sgl_ispack3)
+!
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
@@ -389,6 +425,19 @@
      &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1),                         &
      &     WK_FFTs%sph_domain_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
+        call sph_comp_FXRTFA_to_send                                    &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
+     &     comm_rtp%irev_sr, v_rtp(1,1), WS(1),                         &
+     &     WK_FFTs%sph_comp_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        call sph_single_FXRTFA_to_send                                  &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
+     &     comm_rtp%irev_sr, v_rtp(1,1), WS(1),                         &
+     &     WK_FFTs%sph_sgl_ispack3)
+!
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         call sph_field_fwd_FFTW_to_send                                 &
@@ -481,6 +530,19 @@
      &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1),                         &
      &     WK_FFTs%sph_domain_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
+        call sph_comp_FXRTBA_from_recv                                  &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
+     &     comm_rtp%irev_sr, WR(1), v_rtp(1,1),                         &
+     &     WK_FFTs%sph_comp_ispack3)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
+        call sph_single_FXRTBA_from_recv                                &
+     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
+     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
+     &     comm_rtp%irev_sr, WR(1), v_rtp(1,1),                         &
+     &     WK_FFTs%sph_sgl_ispack3)
+!
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         call sph_field_back_FFTW_from_recv                              &
