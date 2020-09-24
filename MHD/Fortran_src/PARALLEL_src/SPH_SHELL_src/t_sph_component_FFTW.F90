@@ -213,7 +213,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
-      integer(kind = kint) ::  m, j, ip, ist, ied, ms
+      integer(kind = kint) ::  m, j, ip, ist, ied, ms, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
 !
 !
@@ -224,15 +224,17 @@
       end if
 !
 !$omp parallel do                                                       &
-!$omp& private(m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
+!$omp& private(nd,m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         ied = irt_rtp_smp_stack(ip) 
         do j = ist, ied
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          do m = 1, nidx_rtp(3)
-            ms = (m-1) * ncomp_fwd
-            FFTW_c%X(ms+1:ms+ncomp_fwd,ip) = X_rtp(j,m,1:ncomp_fwd)
+          do nd = 1, ncomp_fwd
+            do m = 1, nidx_rtp(3)
+              ms = nd + (m-1) * ncomp_fwd
+              FFTW_c%X(ms,ip) = X_rtp(j,m,nd)
+            end do
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,1) = FFTW_c%t_omp(ip,1)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
@@ -309,7 +311,7 @@
      &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
-      integer(kind = kint) :: m, ms, j, ip, ist, ied
+      integer(kind = kint) :: m, ms, j, ip, ist, ied, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
@@ -320,7 +322,7 @@
       end if
 !
 !$omp parallel do                                                       &
-!$omp& private(m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp& private(nd,m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         ied = irt_rtp_smp_stack(ip)
@@ -352,13 +354,15 @@
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           call dfftw_execute_dft_c2r(FFTW_c%plan_bwd(ip),               &
      &        FFTW_c%C(1,ip), FFTW_c%X(1,ip))
-          if(iflag_FFT_time) FFTW_c%t_omp(ip,2)= FFTW_c%t_omp(ip,2)   &
+          if(iflag_FFT_time) FFTW_c%t_omp(ip,2)= FFTW_c%t_omp(ip,2)     &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          do m = 1, nidx_rtp(3)
-            ms =     ncomp_bwd * (m-1)
-            X_rtp(j,m,1:ncomp_bwd) = FFTW_c%X(ms+1:ms+ncomp_bwd,ip)
+          do nd = 1, ncomp_bwd
+            do m = 1, nidx_rtp(3)
+              ms = nd + ncomp_bwd * (m-1)
+              X_rtp(j,m,nd) = FFTW_c%X(ms,ip)
+            end do
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3) = FFTW_c%t_omp(ip,3)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
