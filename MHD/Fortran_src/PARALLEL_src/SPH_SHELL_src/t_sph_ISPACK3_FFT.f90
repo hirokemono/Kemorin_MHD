@@ -356,7 +356,7 @@
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
         num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ntot = ncomp_fwd * num8
+        ntot = ncomp_bwd * num8
 !
         if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do j = 1, num8
@@ -367,7 +367,7 @@
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
             is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
             inod_c = inum
-            inod_s = inum + ncomp_fwd * num8
+            inod_s = inum + ncomp_bwd * num8
             ispack3_t%smp(ip)%X(inod_c) = WR(ic_recv)
             ispack3_t%smp(ip)%X(inod_s) = WR(is_recv)
           end do
@@ -376,8 +376,8 @@
           do j = 1, num8
             do nd = 1, ncomp_bwd
               inum = nd + (j-1) * ncomp_bwd
-              inod_c = inum + (2*m-2) * ncomp_fwd * num8
-              inod_s = inum + (2*m-1) * ncomp_fwd * num8
+              inod_c = inum + (2*m-2) * ncomp_bwd * num8
+              inod_s = inum + (2*m-1) * ncomp_bwd * num8
               ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
               is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
               ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
@@ -401,8 +401,8 @@
           do j = 1, num8
             do nd = 1, ncomp_bwd
               inum = nd + (j-1) * ncomp_bwd
-              inod_c = inum + (2*m-2) * ncomp_fwd * num8
-              inod_s = inum + (2*m-1) * ncomp_fwd * num8
+              inod_c = inum + (2*m-2) * ncomp_bwd * num8
+              inod_s = inum + (2*m-1) * ncomp_bwd * num8
               X_rtp(j+ist,2*m-1,nd) = ispack3_t%smp(ip)%X(inod_c)
               X_rtp(j+ist,2*m,  nd) = ispack3_t%smp(ip)%X(inod_s)
             end do
