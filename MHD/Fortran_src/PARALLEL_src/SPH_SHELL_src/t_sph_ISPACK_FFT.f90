@@ -232,11 +232,11 @@
         do m = 1, nidx_rtp(3)/2
           do inum = 1, ncomp_fwd * num
             nd = 1 + mod(inum-1,ncomp_fwd)
-            j =  1+ist + (inum-nd) / ncomp_fwd
+            j =  1 + (inum-nd) / ncomp_fwd
             inod_c = inum + (2*m-2) * ncomp_fwd * num
             inod_s = inum + (2*m-1) * ncomp_fwd * num
-            ispack_t%smp(ip)%X(inod_c) = X_rtp(j,2*m-1,nd)
-            ispack_t%smp(ip)%X(inod_s) = X_rtp(j,2*m,  nd)
+            ispack_t%smp(ip)%X(inod_c) = X_rtp(j+ist,2*m-1,nd)
+            ispack_t%smp(ip)%X(inod_s) = X_rtp(j+ist,2*m,  nd)
           end do
         end do
         if(iflag_FFT_time) ispack_t%t_omp(ip,3) = ispack_t%t_omp(ip,3)  &
@@ -251,9 +251,10 @@
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do inum = 1, ncomp_fwd * num
           nd = 1 + mod(inum-1,ncomp_fwd)
-          j =  1+ist + (inum-nd) / ncomp_fwd
-          is_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
+          j =  1 + (inum-nd) / ncomp_fwd
+          ic_rtp = j+ist
+          is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
+          ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
           is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
           inod_c = inum
           inod_s = inum + ncomp_fwd * num
@@ -263,9 +264,9 @@
         do m = 2, nidx_rtp(3)/2
           do inum = 1, ncomp_fwd * num
             nd = 1 + mod(inum-1,ncomp_fwd)
-            j =  1+ist + (inum-nd) / ncomp_fwd
-            ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
+            j =  1 + (inum-nd) / ncomp_fwd
+            ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
             ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
             is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
             inod_c = inum + (2*m-2) * ncomp_fwd * num
@@ -346,9 +347,10 @@
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do inum = 1, ncomp_bwd * num
           nd = 1 + mod(inum-1,ncomp_bwd)
-          j =  1+ist + (inum-nd) / ncomp_bwd
-          is_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
+          j =  1 + (inum-nd) / ncomp_bwd
+          ic_rtp = j+ist
+          is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
+          ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
           is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
           inod_c = inum
           inod_s = inum + ncomp_bwd * num
@@ -358,11 +360,11 @@
         do m = 2, nidx_rtp(3)/2
           do inum = 1, ncomp_bwd * num
             nd = 1 + mod(inum-1,ncomp_bwd)
-            j =  1+ist + (inum-nd) / ncomp_bwd
+            j =  1 + (inum-nd) / ncomp_bwd
             inod_c = inum + (2*m-2) * ncomp_bwd * num
             inod_s = inum + (2*m-1) * ncomp_bwd * num
-            ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
+            ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
             is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
             ispack_t%smp(ip)%X(inod_c) =  half * WR(ic_recv)
@@ -382,11 +384,11 @@
         do m = 1, nidx_rtp(3)/2
           do inum = 1, ncomp_bwd * num
             nd = 1 + mod(inum-1,ncomp_bwd)
-            j =  1+ist + (inum-nd) / ncomp_bwd
+            j =  1 + (inum-nd) / ncomp_bwd
             inod_c = inum + (2*m-2) * ncomp_bwd * num
             inod_s = inum + (2*m-1) * ncomp_bwd * num
-            X_rtp(j,2*m-1,nd) = ispack_t%smp(ip)%X(inod_c)
-            X_rtp(j,2*m,  nd) = ispack_t%smp(ip)%X(inod_s)
+            X_rtp(j+ist,2*m-1,nd) = ispack_t%smp(ip)%X(inod_c)
+            X_rtp(j+ist,2*m,  nd) = ispack_t%smp(ip)%X(inod_s)
           end do
         end do
         if(iflag_FFT_time) ispack_t%t_omp(ip,3) = ispack_t%t_omp(ip,3)  &
