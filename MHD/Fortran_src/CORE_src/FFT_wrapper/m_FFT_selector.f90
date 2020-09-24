@@ -47,8 +47,12 @@
      &          :: hd_FFTW3_C =  'fftw3_component'
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK =   'ISPACK'
+!
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
+!>      Character flag to use ISPACK for domain
+      character(len = kchara), parameter                                &
+     &          :: hd_ISPACK3_D =  'ISPACK3_DOMAIN'
 !
 !>      Character flag to use test FFT
       character(len = kchara), parameter :: hd_FFT_TEST =  'TEST'
@@ -72,14 +76,18 @@
 !      integer(kind = kint), parameter :: iflag_FFTW_FIELD = 14
 !>      integer flag to use ISPACK Ver.0.93
       integer(kind = kint), parameter :: iflag_ISPACK1 =     21
+!
 !>      integer flag to use ISPACK Ver. 3.01
-      integer(kind = kint), parameter :: iflag_ISPACK3 =     31
+      integer(kind = kint), parameter :: iflag_ISPACK3 =        31
+!>      integer flag to use ISPACK Ver. 3.01 for domain
+      integer(kind = kint), parameter :: iflag_ISPACK3_DOMAIN = 32
 !
 !>      integer flag to use test FFT
       integer(kind = kint), parameter :: iflag_FFT_TEST =    99
 !
       private :: hd_FFTPACK, hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
-      private :: hd_ISPACK, hd_ISPACK3, hd_FFTW_F, hd_FFTW3_F
+      private :: hd_ISPACK, hd_ISPACK3, hd_ISPACK3_D
+      private :: hd_FFTW_F, hd_FFTW3_F
       private :: hd_FFTW_C, hd_FFTW3_C, hd_FFT_TEST
 !
 ! ------------------------------------------------------------------
@@ -107,6 +115,9 @@
         iflag_FFT = iflag_ISPACK1
       else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3)) then
         iflag_FFT = iflag_ISPACK3
+      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_D)) then
+        iflag_FFT = iflag_ISPACK3_DOMAIN
+!
       else if(cmp_no_case(FFT_library_ctl, hd_FFTW)                     &
      &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3)) then
         iflag_FFT = iflag_FFTW
@@ -184,8 +195,12 @@
 !
       else if(i_mode .eq. iflag_ISPACK1) then
         chosen_fft_name = hd_ISPACK
+!
       else if(i_mode .eq. iflag_ISPACK3) then
         chosen_fft_name = hd_ISPACK3
+      else if(i_mode .eq. iflag_ISPACK3_DOMAIN) then
+        chosen_fft_name = hd_ISPACK3_D
+!
       else if(i_mode .eq. iflag_FFT_TEST) then
         chosen_fft_name = hd_FFT_TEST
       end if
