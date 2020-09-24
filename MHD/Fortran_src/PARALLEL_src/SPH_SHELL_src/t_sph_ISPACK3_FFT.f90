@@ -350,9 +350,8 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,      &
-!$omp&                 ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp parallel do private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,   &
+!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
         num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
