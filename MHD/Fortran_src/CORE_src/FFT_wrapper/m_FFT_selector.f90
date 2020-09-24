@@ -26,6 +26,9 @@
 !>      Character flag to use FFTPACK5
       character(len = kchara), parameter                                &
      &          :: hd_FFTPACK_C = 'FFTPACK_COMPONENT'
+!>      Character flag to use FFTPACK5
+      character(len = kchara), parameter                                &
+     &          :: hd_FFTPACK_D = 'FFTPACK_DOMAIN'
 !
 !>      Character flag to use FFTW3
       character(len = kchara), parameter :: hd_FFTW =    'FFTW'
@@ -68,6 +71,8 @@
       integer(kind = kint), parameter :: iflag_FFTPACK_SINGLE =    2
 !>      integer flag to use FFTPACK5
       integer(kind = kint), parameter :: iflag_FFTPACK_COMPONENT = 3
+!>      integer flag to use FFTPACK5
+      integer(kind = kint), parameter :: iflag_FFTPACK_DOMAIN =    4
 !
 !>      integer flag to use FFTW3
       integer(kind = kint), parameter :: iflag_FFTW =        11
@@ -91,7 +96,8 @@
 !>      integer flag to use test FFT
       integer(kind = kint), parameter :: iflag_FFT_TEST =    99
 !
-      private :: hd_FFTPACK, hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
+      private :: hd_FFTPACK, hd_FFTPACK_S, hd_FFTPACK_C, hd_FFTPACK_D
+      private :: hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
       private :: hd_ISPACK, hd_ISPACK_D, hd_ISPACK3, hd_ISPACK3_D
       private :: hd_FFTW_F, hd_FFTW3_F
       private :: hd_FFTW_C, hd_FFTW3_C, hd_FFT_TEST
@@ -116,6 +122,8 @@
         iflag_FFT = iflag_FFTPACK_SINGLE
       else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_C)) then
         iflag_FFT = iflag_FFTPACK_COMPONENT
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTPACK_D)) then
+        iflag_FFT = iflag_FFTPACK_DOMAIN
 !
       else if(cmp_no_case(FFT_library_ctl, hd_ISPACK)) then
         iflag_FFT = iflag_ISPACK1
@@ -155,11 +163,14 @@
       if     (i_mode .eq. iflag_FFTPACK) then
         write(*,*) 'elapsed by FFTPACK (',                              &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_SINGLE) then
+      else if(i_mode .eq. iflag_FFTPACK_SINGLE) then
         write(*,*) 'elapsed by single FFTPACK (',                       &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
-      else if(i_mode .eq. iflag_FFTW_COMPONENT) then
+      else if(i_mode .eq. iflag_FFTPACK_COMPONENT) then
         write(*,*) 'elapsed by FFTPACK for all component (',            &
+     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
+      else if(i_mode .eq. iflag_FFTPACK_DOMAIN) then
+        write(*,*) 'elapsed by FFTPACK for domain (',                   &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
 !
       else if(i_mode .eq. iflag_FFTW) then
@@ -201,6 +212,8 @@
         chosen_fft_name = hd_FFTPACK_S
       else if(i_mode .eq. iflag_FFTPACK_COMPONENT) then
         chosen_fft_name = hd_FFTPACK_C
+      else if(i_mode .eq. iflag_FFTPACK_DOMAIN) then
+        chosen_fft_name = hd_FFTPACK_D
 !
       else if(i_mode .eq. iflag_FFTW) then
         chosen_fft_name = hd_FFTW
