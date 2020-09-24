@@ -175,8 +175,8 @@
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK for all comp'
-        call init_sph_comp_FFTPACK5                                     &
-     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_comp_FFTPACK)
+        call init_sph_comp_FFTPACK5(sph_rtp%nidx_rtp, ncomp_bwd,        &
+     &      ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
@@ -217,14 +217,15 @@
         call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
 #endif
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
-        if(id_rank .eq. 0) write(*,*) 'Finalize single FFTPACK'
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTPACK'
         call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
-        if(id_rank .eq. 0) write(*,*) 'Finalize FFTPACK for all comp'
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                     'Finalize FFTPACK for all comp'
         call finalize_sph_comp_FFTPACK5(WK_FFTs%sph_comp_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
-        if(id_rank .eq. 0) write(*,*) 'Finalize Test FFT'
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize Test FFT'
         call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
 !
       else
@@ -273,16 +274,16 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
-        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
         call verify_sph_single_FFTPACK5                                 &
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
-        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
         call verify_sph_comp_FFTPACK5(sph_rtp%nidx_rtp,                 &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
-        if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
+        if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
         call verify_sph_single_FFTPACK5                                 &
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
 !

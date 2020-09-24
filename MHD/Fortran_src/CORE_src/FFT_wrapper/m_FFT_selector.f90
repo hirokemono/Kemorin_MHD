@@ -51,7 +51,7 @@
       character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
 !
 !>      Character flag to use test FFT
-      character(len = kchara), parameter :: hd_TEST_FFT =  'TEST'
+      character(len = kchara), parameter :: hd_FFT_TEST =  'TEST'
 !
 !>      integer flag for undefined
       integer(kind = kint), parameter :: iflag_UNDEFINED_FFT =   0
@@ -76,11 +76,11 @@
       integer(kind = kint), parameter :: iflag_ISPACK3 =     31
 !
 !>      integer flag to use test FFT
-      integer(kind = kint), parameter :: iflag_test_fft =    99
+      integer(kind = kint), parameter :: iflag_FFT_TEST =    99
 !
       private :: hd_FFTPACK, hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
       private :: hd_ISPACK, hd_ISPACK3, hd_FFTW_F, hd_FFTW3_F
-      private :: hd_FFTW_C, hd_FFTW3_C, hd_TEST_FFT
+      private :: hd_FFTW_C, hd_FFTW3_C, hd_FFT_TEST
 !
 ! ------------------------------------------------------------------
 !
@@ -119,8 +119,8 @@
 !      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_F)                  &
 !     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_F)) then
 !        iflag_FFT = iflag_FFTW_FIELD
-      else if(cmp_no_case(FFT_library_ctl, hd_TEST_FFT)) then
-        iflag_FFT = iflag_test_fft
+      else if(cmp_no_case(FFT_library_ctl, hd_FFT_TEST)) then
+        iflag_FFT = iflag_FFT_TEST
       end if
 !
       end subroutine set_fft_library_ctl
@@ -186,8 +186,8 @@
         chosen_fft_name = hd_ISPACK
       else if(i_mode .eq. iflag_ISPACK3) then
         chosen_fft_name = hd_ISPACK3
-      else if(i_mode .eq. iflag_test_fft) then
-        chosen_fft_name = hd_TEST_FFT
+      else if(i_mode .eq. iflag_FFT_TEST) then
+        chosen_fft_name = hd_FFT_TEST
       end if
 !
       end function chosen_fft_name
