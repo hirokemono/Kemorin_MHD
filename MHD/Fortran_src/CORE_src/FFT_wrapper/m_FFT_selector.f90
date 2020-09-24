@@ -47,6 +47,9 @@
      &          :: hd_FFTW3_C =  'fftw3_component'
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK =   'ISPACK'
+!>      Character flag to use ISPACK for domain
+      character(len = kchara), parameter                                &
+     &          :: hd_ISPACK_D =  'ISPACK_DOMAIN'
 !
 !>      Character flag to use ISPACK
       character(len = kchara), parameter :: hd_ISPACK3 =  'ISPACK3'
@@ -74,8 +77,11 @@
       integer(kind = kint), parameter :: iflag_FFTW_COMPONENT = 13
 !>      integer flag to use FFTW3 for each component
 !      integer(kind = kint), parameter :: iflag_FFTW_FIELD = 14
+!
 !>      integer flag to use ISPACK Ver.0.93
-      integer(kind = kint), parameter :: iflag_ISPACK1 =     21
+      integer(kind = kint), parameter :: iflag_ISPACK1 =        21
+!>      integer flag to use ISPACK Ver.0.93 for domain
+      integer(kind = kint), parameter :: iflag_ISPACK1_DOMAIN = 22
 !
 !>      integer flag to use ISPACK Ver. 3.01
       integer(kind = kint), parameter :: iflag_ISPACK3 =        31
@@ -86,7 +92,7 @@
       integer(kind = kint), parameter :: iflag_FFT_TEST =    99
 !
       private :: hd_FFTPACK, hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
-      private :: hd_ISPACK, hd_ISPACK3, hd_ISPACK3_D
+      private :: hd_ISPACK, hd_ISPACK_D, hd_ISPACK3, hd_ISPACK3_D
       private :: hd_FFTW_F, hd_FFTW3_F
       private :: hd_FFTW_C, hd_FFTW3_C, hd_FFT_TEST
 !
@@ -113,6 +119,9 @@
 !
       else if(cmp_no_case(FFT_library_ctl, hd_ISPACK)) then
         iflag_FFT = iflag_ISPACK1
+      else if(cmp_no_case(FFT_library_ctl, hd_ISPACK_D)) then
+        iflag_FFT = iflag_ISPACK1_DOMAIN
+!
       else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3)) then
         iflag_FFT = iflag_ISPACK3
       else if(cmp_no_case(FFT_library_ctl, hd_ISPACK3_D)) then
@@ -166,8 +175,15 @@
       else if(i_mode .eq. iflag_ISPACK1) then
         write(*,*) 'elapsed by ISPACK V0.93 (',                         &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
+      else if(i_mode .eq. iflag_ISPACK1_DOMAIN) then
+        write(*,*) 'elapsed by ISPACK V0.93 for domain (',              &
+     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
+!
       else if(i_mode .eq. iflag_ISPACK3) then
         write(*,*) 'elapsed by ISPACK V3.0.1 (',                        &
+     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
+      else if(i_mode .eq. iflag_ISPACK3_DOMAIN) then
+        write(*,*) 'elapsed by ISPACK V3.0.1 for domain (',             &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
       end if
 !
@@ -195,6 +211,8 @@
 !
       else if(i_mode .eq. iflag_ISPACK1) then
         chosen_fft_name = hd_ISPACK
+      else if(i_mode .eq. iflag_ISPACK1_DOMAIN) then
+        chosen_fft_name = hd_ISPACK_D
 !
       else if(i_mode .eq. iflag_ISPACK3) then
         chosen_fft_name = hd_ISPACK3
