@@ -107,6 +107,8 @@
         set_FFT_mode_4_snapshot = iflag_FFTW_SINGLE
       else if(iflag_FFT_MHD .eq. iflag_FFTPACK_COMPONENT) then
         set_FFT_mode_4_snapshot = iflag_FFTPACK_SINGLE
+      else if(iflag_FFT_MHD .eq. iflag_ISPACK3_COMPONENT) then
+        set_FFT_mode_4_snapshot = iflag_ISPACK3
       else
         set_FFT_mode_4_snapshot = iflag_FFT_MHD
       end if
