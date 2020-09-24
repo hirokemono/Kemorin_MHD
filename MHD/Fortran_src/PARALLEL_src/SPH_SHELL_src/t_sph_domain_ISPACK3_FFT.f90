@@ -240,11 +240,12 @@
 !
           if(iflag_FFT_time) ispack3_d%t_omp(ip,0) = MPI_WTIME()
           do m = 1, nphi_rtp/2
-            do j = 1, num8
-              inod_c = j + (2*m-2) * num8
-              inod_s = j + (2*m-1) * num8
-              ispack3_d%smp(ip)%X(inod_c) = X_rtp(j+ist,2*m-1,nd)
-              ispack3_d%smp(ip)%X(inod_s) = X_rtp(j+ist,2*m,  nd)
+            inod_c = (2*m-2) * num8
+            inod_s = (2*m-1) * num8
+            ispack3_d%smp(ip)%X(inod_c+1:inod_c+num8)                   &
+     &             = X_rtp(ist+1:ist+num8,2*m-1,nd)
+            ispack3_d%smp(ip)%X(inod_s+1:inod_s+num8)                   &
+     &             = X_rtp(ist+1:ist+num8,2*m,  nd)
             end do
           end do
           if(iflag_FFT_time) ispack3_d%t_omp(ip,1)                      &
@@ -382,12 +383,12 @@
 !
           if(iflag_FFT_time) ispack3_d%t_omp(ip,0) = MPI_WTIME()
           do m = 1, nphi_rtp/2
-            do j = 1, num8
-              inod_c = j + (2*m-2) * num8
-              inod_s = j + (2*m-1) * num8
-              X_rtp(j+ist,2*m-1,nd) = ispack3_d%smp(ip)%X(inod_c)
-              X_rtp(j+ist,2*m,  nd) = ispack3_d%smp(ip)%X(inod_s)
-            end do
+            inod_c = (2*m-2) * num8
+            inod_s = (2*m-1) * num8
+            X_rtp(ist+1:ist+num8,2*m-1,nd)                              &
+     &             = ispack3_d%smp(ip)%X(inod_c+1:inod_c+num8)
+            X_rtp(ist+1:ist+num8,2*m,  nd)                              &
+     &             = ispack3_d%smp(ip)%X(inod_s+1:inod_s+num8)
           end do
           if(iflag_FFT_time) ispack3_d%t_omp(ip,3)                      &
      &                      = ispack3_d%t_omp(ip,3)                     &
