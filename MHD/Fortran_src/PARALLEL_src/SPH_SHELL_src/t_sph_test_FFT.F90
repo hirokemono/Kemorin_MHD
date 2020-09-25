@@ -365,7 +365,7 @@
 !$omp parallel do
             do m = 1, nidx_rtp(3)
               X_rtp(j,m,nd) = FFT_t%X(m,ip)
-            end dogg
+            end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)  &
