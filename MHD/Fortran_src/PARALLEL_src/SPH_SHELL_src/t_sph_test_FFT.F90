@@ -365,7 +365,7 @@
 !$omp parallel do
             do m = 1, nidx_rtp(3)
               X_rtp(j,m,nd) = FFT_t%X(m,ip)
-            end do
+            end dogg
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)  &
@@ -408,16 +408,16 @@
 !
 !
       Ncomp = max(ncomp_bwd, ncomp_fwd)
-      FFTW_c%howmany_bwd = int(ncomp_bwd)
-      FFTW_c%howmany_fwd = int(ncomp_fwd)
-      FFTW_c%Nfft_r = Nfft
-      FFTW_c%Nfft_c = Nfft/2 + 1
+      FFT_t%howmany_bwd = int(ncomp_bwd)
+      FFT_t%howmany_fwd = int(ncomp_fwd)
+      FFT_t%Nfft_r = Nfft
+      FFT_t%Nfft_c = Nfft/2 + 1
 !
       allocate(FFT_t%plan_fwd(Nsmp))
       allocate(FFT_t%plan_bwd(Nsmp))
 !
-      allocate(FFT_t%X(Ncomp*FFTW_c%Nfft_r,Nsmp))
-      allocate(FFT_t%C(Ncomp*FFTW_c%Nfft_c,Nsmp))
+      allocate(FFT_t%X(Ncomp*FFT_t%Nfft_r,Nsmp))
+      allocate(FFT_t%C(Ncomp*FFT_t%Nfft_c,Nsmp))
       FFT_t%X = 0.0d0
       FFT_t%C = 0.0d0
 !

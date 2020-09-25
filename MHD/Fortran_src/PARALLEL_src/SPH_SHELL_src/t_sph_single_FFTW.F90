@@ -366,14 +366,14 @@
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
 !
-      FFTW_c%Nfft_r = Nfft
-      FFTW_c%Nfft_c = Nfft/2 + 1
+      FFTW_t%Nfft_r = Nfft
+      FFTW_t%Nfft_c = Nfft/2 + 1
 !
       allocate(FFTW_t%plan_fwd(Ncomp))
       allocate(FFTW_t%plan_bwd(Ncomp))
 !
-      allocate( FFTW_t%X(FFTW_c%Nfft_r,Ncomp) )
-      allocate( FFTW_t%C(FFTW_c%Nfft_c,Ncomp) )
+      allocate( FFTW_t%X(FFTW_t%Nfft_r,Ncomp) )
+      allocate( FFTW_t%C(FFTW_t%Nfft_c,Ncomp) )
       FFTW_t%X = 0.0d0
       FFTW_t%C = 0.0d0
 !
