@@ -312,6 +312,9 @@
       integer(kind = kint) :: m, ms, j, ip, ist, ied
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
+      real(kind = kreal) ::           XX(ncomp_bwd*FFTW_c%Nfft_r)
+      complex(kind = fftw_complex) :: CC(ncomp_bwd*FFTW_c%Nfft_c)
+!
 !
       if(iflag_FFT_time) then
 !$omp parallel workshare
@@ -319,16 +322,12 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do                                                       &
-!$omp& private(m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
-      do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1) + 1
-        ied = irt_rtp_smp_stack(ip)
-        do j = ist, ied
-!
+!$omp parallel do private(XX,CC,m,ms,j,ip,ied,                      &
+!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+      do j = 1, irt_rtp_smp_stack(np_smp)
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           ic_recv = ncomp_bwd * (irev_sr_rtp(j) - 1)
-          FFTW_c%C(1:ncomp_bwd,ip)                                      &
+          CC(1:ncomp_bwd)                                        &
      &        = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), zero, kind(0d0))
           do m = 2, FFTW_c%Nfft_c-1
             ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
@@ -336,14 +335,14 @@
             ic_recv = ncomp_bwd * (irev_sr_rtp(ic_rtp) - 1)
             is_recv = ncomp_bwd * (irev_sr_rtp(is_rtp) - 1)
             ms =      ncomp_bwd * (m - 1)
-            FFTW_c%C(ms+1:ms+ncomp_bwd,ip)                              &
+            CC(ms+1:ms+ncomp_bwd)                                &
      &        = half*cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd),             &
      &                    -WR(is_recv+1:is_recv+ncomp_bwd),kind(0d0))
           end do
           ic_rtp = j + irt_rtp_smp_stack(np_smp)
           ic_recv = ncomp_bwd * (irev_sr_rtp(ic_rtp) - 1)
           ms =      ncomp_bwd * (FFTW_c%Nfft_c - 1)
-          FFTW_c%C(ms+1:ms+ncomp_bwd,ip)                                &
+          CC(ms+1:ms+ncomp_bwd)                                  &
      &      = half * cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd),             &
      &                     zero, kind(0d0))
           if(iflag_FFT_time) FFTW_c%t_omp(ip,1) = FFTW_c%t_omp(ip,1)    &
@@ -351,18 +350,17 @@
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           call dfftw_execute_dft_c2r(FFTW_c%plan_bwd(ip),               &
-     &        FFTW_c%C(1,ip), FFTW_c%X(1,ip))
+     &        CC, FFTW_c%XX)
           if(iflag_FFT_time) FFTW_c%t_omp(ip,2)= FFTW_c%t_omp(ip,2)     &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           do m = 1, nidx_rtp(3)
             ms =     ncomp_bwd * (m-1)
-            X_rtp(j,m,1:ncomp_bwd) = FFTW_c%X(ms+1:ms+ncomp_bwd,ip)
+            X_rtp(j,m,1:ncomp_bwd) = FFTW_c%XX(ms+1:ms+ncomp_bwd)
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3) = FFTW_c%t_omp(ip,3)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
-        end do
       end do
 !$omp end parallel do
 !
@@ -406,8 +404,8 @@
       allocate(FFTW_c%plan_fwd(np_smp))
       allocate(FFTW_c%plan_bwd(np_smp))
 !
-      allocate( FFTW_c%X(Ncomp*Nfft,np_smp) )
-      allocate( FFTW_c%C(Ncomp*(Nfft/2+1),np_smp) )
+      allocate( FFTW_c%X(Ncomp*FFTW_c%Nfft_r,np_smp) )
+      allocate( FFTW_c%C(Ncomp*FFTW_c%Nfft_c,np_smp) )
       FFTW_c%X = 0.0d0
       FFTW_c%C = 0.0d0
 !
