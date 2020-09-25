@@ -202,26 +202,31 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
+!!$omp parallel do schedule(static)                                      &
+!!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         ied = irt_rtp_smp_stack(ip) 
         do nd = 1, ncomp_fwd
 !
           do j = ist, ied
-            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
             FFT_t%X(1:nidx_rtp(3),ip) = X_rtp(j,1:nidx_rtp(3),nd)
-            if(iflag_FFT_time) FFT_t%t_omp(ip,1)= FFT_t%t_omp(ip,1)   &
-     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,1)= FFT_t%t_omp(ip,1)   &
+!     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
 !
-            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
             call dfftw_execute(FFT_t%plan_fwd(ip))
-            if(iflag_FFT_time) FFT_t%t_omp(ip,2)= FFT_t%t_omp(ip,2)   &
-     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,2)= FFT_t%t_omp(ip,2)   &
+!     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
 !
 !   normalization
-            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
             ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
             WS(ic_send) = FFT_t%aNfft * real(FFT_t%C(1,ip))
             do m = 2, (nidx_rtp(3)+1)/2
@@ -236,30 +241,31 @@
             ic_rtp = j + irt_rtp_smp_stack(np_smp)
             ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
             WS(ic_send) = two*FFT_t%aNfft * real(FFT_t%C(m,ip))
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
-            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)   &
-     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)   &
+!     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
           end do
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          FFT_t%t_omp(1,1) = FFT_t%t_omp(1,1) + FFT_t%t_omp(ip,1)
-          FFT_t%t_omp(1,2) = FFT_t%t_omp(1,2) + FFT_t%t_omp(ip,2)
-          FFT_t%t_omp(1,3) = FFT_t%t_omp(1,3) + FFT_t%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+4)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
-     &         + FFT_t%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+5)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
-     &         + FFT_t%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+6)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
-     &         + FFT_t%t_omp(1,3) / dble(np_smp)
-      end if
+!      if(iflag_FFT_time) then
+!        do ip = 2, np_smp
+!          FFT_t%t_omp(1,1) = FFT_t%t_omp(1,1) + FFT_t%t_omp(ip,1)
+!          FFT_t%t_omp(1,2) = FFT_t%t_omp(1,2) + FFT_t%t_omp(ip,2)
+!          FFT_t%t_omp(1,3) = FFT_t%t_omp(1,3) + FFT_t%t_omp(ip,3)
+!        end do
+!        elps1%elapsed(ist_elapsed_FFT+4)                               &
+!     &        = elps1%elapsed(ist_elapsed_FFT+4)                       &
+!     &         + FFT_t%t_omp(1,1) / dble(np_smp)
+!        elps1%elapsed(ist_elapsed_FFT+5)                               &
+!     &        = elps1%elapsed(ist_elapsed_FFT+5)                       &
+!     &         + FFT_t%t_omp(1,2) / dble(np_smp)
+!        elps1%elapsed(ist_elapsed_FFT+6)                               &
+!     &        = elps1%elapsed(ist_elapsed_FFT+6)                       &
+!     &         + FFT_t%t_omp(1,3) / dble(np_smp)
+!      end if
 !
       end subroutine sph_test_fwd_FFT_to_send
 !
@@ -286,14 +292,14 @@
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-      if(iflag_FFT_time) then
-!$omp parallel workshare
-        FFT_t%t_omp(1:np_smp,0:3) = 0
-!$omp end parallel workshare
-      end if
+!      if(iflag_FFT_time) then
+!!$omp parallel workshare
+!        FFT_t%t_omp(1:np_smp,0:3) = 0
+!!$omp end parallel workshare
+!      end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
+!!$omp parallel do schedule(static)                                      &
+!!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         ied = irt_rtp_smp_stack(ip)
@@ -301,7 +307,8 @@
 !
           do j = ist, ied
 !
-            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
             ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
             FFT_t%C(1,ip) = cmplx(WR(ic_recv), zero, kind(0d0))
             do m = 2, (nidx_rtp(3)+1)/2
@@ -317,39 +324,44 @@
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
             FFT_t%C(m,ip)                                              &
      &              = half * cmplx(WR(ic_recv), zero, kind(0d0))
-            if(iflag_FFT_time) FFT_t%t_omp(ip,1)= FFT_t%t_omp(ip,1)   &
-     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,1)= FFT_t%t_omp(ip,1)   &
+!     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
 !
-            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
             call dfftw_execute(FFT_t%plan_bwd(ip))
-            if(iflag_FFT_time) FFT_t%t_omp(ip,2)= FFT_t%t_omp(ip,2)   &
-     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,2)= FFT_t%t_omp(ip,2)  &
+!     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
 !
-            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
             X_rtp(j,1:nidx_rtp(3),nd) = FFT_t%X(1:nidx_rtp(3),ip)
-            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)   &
-     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
+!            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)  &
+!     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
           end do
         end do
       end do
-!$omp end parallel do
+!!$omp end parallel do
 !
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          FFT_t%t_omp(1,1) = FFT_t%t_omp(1,1) + FFT_t%t_omp(ip,1)
-          FFT_t%t_omp(1,2) = FFT_t%t_omp(1,2) + FFT_t%t_omp(ip,2)
-          FFT_t%t_omp(1,3) = FFT_t%t_omp(1,3) + FFT_t%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+1)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
-     &         + FFT_t%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+2)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
-     &         + FFT_t%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+3)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
-     &         + FFT_t%t_omp(1,3) / dble(np_smp)
-      end if
+!      if(iflag_FFT_time) then
+!        do ip = 2, np_smp
+!          FFT_t%t_omp(1,1) = FFT_t%t_omp(1,1) + FFT_t%t_omp(ip,1)
+!          FFT_t%t_omp(1,2) = FFT_t%t_omp(1,2) + FFT_t%t_omp(ip,2)
+!          FFT_t%t_omp(1,3) = FFT_t%t_omp(1,3) + FFT_t%t_omp(ip,3)
+!        end do
+!        elps1%elapsed(ist_elapsed_FFT+1)                               &
+!     &        = elps1%elapsed(ist_elapsed_FFT+1)                       &
+!     &         + FFT_t%t_omp(1,1) / dble(np_smp)
+!        elps1%elapsed(ist_elapsed_FFT+2)                               &
+!     &        = elps1%elapsed(ist_elapsed_FFT+2)                       &
+!     &         + FFT_t%t_omp(1,2) / dble(np_smp)
+!        elps1%elapsed(ist_elapsed_FFT+3)                               &
+!     &        = elps1%elapsed(ist_elapsed_FFT+3)                       &
+!     &         + FFT_t%t_omp(1,3) / dble(np_smp)
+!      end if
 !
       end subroutine sph_test_back_FFT_from_recv
 !
