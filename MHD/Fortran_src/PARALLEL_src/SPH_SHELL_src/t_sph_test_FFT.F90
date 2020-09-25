@@ -212,9 +212,11 @@
           do j = ist, ied
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-!$omp parallel workshare
-            FFT_t%X(1:nidx_rtp(3),ip) = X_rtp(j,1:nidx_rtp(3),nd)
-!$omp end parallel workshare
+!$omp parallel do
+            do m = 1, nidx_rtp(3)
+              FFT_t%X(m,ip) = X_rtp(j,m,nd)
+            end do
+!$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,1)= FFT_t%t_omp(ip,1)   &
 !     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
@@ -339,9 +341,11 @@
 !
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-!$omp parallel workshare
-            X_rtp(j,1:nidx_rtp(3),nd) = FFT_t%X(1:nidx_rtp(3),ip)
-!$omp end parallel workshare
+!$omp parallel do
+            do m = 1, nidx_rtp(3)
+              X_rtp(j,m,nd) = FFT_t%X(m,ip)
+            end do
+!$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,3)= FFT_t%t_omp(ip,3)  &
 !     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
