@@ -9,11 +9,14 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_test_FFT(nidx_rtp, FFT_t)
+!!      subroutine init_sph_test_FFT                                    &
+!!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
 !!      subroutine finalize_sph_test_FFT(FFT_t)
-!!      subroutine verify_sph_test_FFT(nidx_rtp, FFT_t)
+!!      subroutine verify_sph_test_FFT                                  &
+!!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
 !!
-!!      subroutine alloc_test_ordering_FFT(nnod_rtp, FFT_t)
+!!      subroutine alloc_test_ordering_FFT                              &
+!!     &         (Nfft, ncomp_bwd, ncomp_fwd, FFT_t)
 !!      subroutine dealloc_test_ordering_FFT(FFT_t)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
@@ -107,22 +110,25 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_test_FFT(nidx_rtp, FFT_t)
+      subroutine init_sph_test_FFT                                      &
+     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !
       integer(kind = kint) :: j
       integer(kind = 4) :: Nfft4
 !
 !
-      call alloc_FFTW_plan(np_smp, nidx_rtp(3), FFT_t)
+      call alloc_FFTW_plan(np_smp, nidx_rtp(3),                         &
+     &                     ncomp_bwd, ncomp_fwd, FFT_t)
 !
       Nfft4 = int(nidx_rtp(3))
       do j = 1, np_smp
-        call dfftw_plan_dft_r2c_1d(FFT_t%plan_fwd(j), Nfft4,           &
+        call dfftw_plan_dft_r2c_1d(FFT_t%plan_fwd(j), Nfft4,            &
      &      FFT_t%X(1,j), FFT_t%C(1,j) , FFTW_ESTIMATE)
-        call dfftw_plan_dft_c2r_1d(FFT_t%plan_bwd(j), Nfft4,           &
+        call dfftw_plan_dft_c2r_1d(FFT_t%plan_bwd(j), Nfft4,            &
      &      FFT_t%C(1,j), FFT_t%X(1,j) , FFTW_ESTIMATE)
       end do
       FFT_t%aNfft = one / dble(nidx_rtp(3))
@@ -154,20 +160,22 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_test_FFT(nidx_rtp, FFT_t)
+      subroutine verify_sph_test_FFT                                    &
+     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !
 !
       if(allocated(FFT_t%X) .eqv. .false.) then
-        call init_sph_test_FFT(nidx_rtp, FFT_t)
+        call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
         return
       end if
 !
       if(size(FFT_t%X) .ne. nidx_rtp(3)*np_smp) then
         call finalize_sph_test_FFT(FFT_t)
-        call init_sph_test_FFT(nidx_rtp, FFT_t)
+        call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
       end if
 !
       end subroutine verify_sph_test_FFT
@@ -378,17 +386,19 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_FFTW_plan(Ncomp, Nfft, FFT_t)
+      subroutine alloc_FFTW_plan                                        &
+     &         (Nsmp, Nfft, ncomp_bwd, ncomp_fwd, FFT_t)
 !
-      integer(kind = kint), intent(in) :: Ncomp, Nfft
+      integer(kind = kint), intent(in) :: Nsmp, Nfft
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !
 !
-      allocate(FFT_t%plan_fwd(Ncomp))
-      allocate(FFT_t%plan_bwd(Ncomp))
+      allocate(FFT_t%plan_fwd(Nsmp))
+      allocate(FFT_t%plan_bwd(Nsmp))
 !
-      allocate( FFT_t%X(Nfft,Ncomp) )
-      allocate( FFT_t%C(Nfft/2+1,Ncomp) )
+      allocate( FFT_t%X(Nfft,Nsmp) )
+      allocate( FFT_t%C(Nfft/2+1,Nsmp) )
       FFT_t%X = 0.0d0
       FFT_t%C = 0.0d0
 !
@@ -408,13 +418,15 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_test_ordering_FFT(nnod_rtp, FFT_t)
+      subroutine alloc_test_ordering_FFT                                &
+     &         (Nfft, ncomp_bwd, ncomp_fwd, FFT_t)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+      integer(kind = kint), intent(in) :: Nfft
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !
 !
-      allocate(FFT_t%v_tmp(nnod_rtp))
+      allocate(FFT_t%v_tmp(Nfft))
       FFT_t%v_tmp = 0.0d0
 !
       end subroutine alloc_test_ordering_FFT

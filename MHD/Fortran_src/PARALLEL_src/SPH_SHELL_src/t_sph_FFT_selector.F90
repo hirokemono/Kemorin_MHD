@@ -226,8 +226,8 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
-        call init_sph_test_FFT                                          &
-     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_test_FFT)
+        call init_sph_test_FFT(sph_rtp%nidx_rtp,                        &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_test_FFT)
 !
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
@@ -378,8 +378,8 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
-        call verify_sph_test_FFT                                        &
-     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_test_FFT)
+        call verify_sph_test_FFT(sph_rtp%nidx_rtp,                      &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_test_FFT)
 !
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
