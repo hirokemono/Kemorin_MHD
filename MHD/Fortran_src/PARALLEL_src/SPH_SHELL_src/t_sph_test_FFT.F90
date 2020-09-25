@@ -223,7 +223,8 @@
 !
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-            call dfftw_execute(FFT_t%plan_fwd(ip))
+          call dfftw_execute_dft_r2c(FFT_t%plan_fwd(ip),               &
+     &        FFT_t%X(1,ip), FFT_t%C(1,ip))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,2)= FFT_t%t_omp(ip,2)   &
 !     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
@@ -334,7 +335,8 @@
 !
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,0) = MPI_WTIME()
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-            call dfftw_execute(FFT_t%plan_bwd(ip))
+            call dfftw_execute_dft_c2r(FFT_t%plan_bwd(ip),              &
+     &          FFT_t%C(1,ip), FFT_t%X(1,ip))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !            if(iflag_FFT_time) FFT_t%t_omp(ip,2)= FFT_t%t_omp(ip,2)  &
 !     &                       + MPI_WTIME() - FFT_t%t_omp(ip,0)
