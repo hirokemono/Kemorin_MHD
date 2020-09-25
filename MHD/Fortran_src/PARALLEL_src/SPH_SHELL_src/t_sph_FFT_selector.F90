@@ -93,6 +93,8 @@
       use t_sph_component_ISPACK3_FFT
       use t_sph_single_ISPACK3_FFT
 !
+      use t_sph_test_FFT
+!
 #ifdef FFTW3
       use t_sph_single_FFTW
       use t_sph_field_FFTW
@@ -130,6 +132,9 @@
 !>        Structure to use single ISPACK3
         type(work_for_single_ispack3) :: sph_sgl_ispack3
 !
+!>        Structure to use FFT test
+        type(work_for_test_FFT) :: sph_test_FFT
+!
 #ifdef FFTW3
 !>        Structure to use FFTW
         type(work_for_field_FFTW) :: sph_fld_FFTW
@@ -138,6 +143,7 @@
         type(work_for_sgl_FFTW) :: sph_sgl_FFTW
 !>        Structure to use FFTW for each component
         type(work_for_comp_FFTW) :: sph_comp_FFTW
+!
 #endif
       end type work_for_FFTs
 !
@@ -220,8 +226,8 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
-        call init_sph_single_FFTPACK5                                   &
-     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
+        call init_sph_test_FFT                                          &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_test_FFT)
 !
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
@@ -288,7 +294,7 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize Test FFT'
-        call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
+        call finalize_sph_test_FFT(WK_FFTs%sph_test_FFT)
 !
       else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
@@ -372,8 +378,8 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
-        call verify_sph_single_FFTPACK5                                 &
-     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTPACK)
+        call verify_sph_test_FFT                                        &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_test_FFT)
 !
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
@@ -475,11 +481,10 @@
      &      WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
-        call sph_single_RFFTMF_to_send                                  &
+        call sph_test_fwd_FFT_to_send                                   &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
-     &      WK_FFTs%sph_sgl_FFTPACK)
+     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_test_FFT)
       else
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -578,10 +583,10 @@
      &      WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
-        call sph_single_RFFTMB_from_recv                                &
+        call sph_test_back_FFT_from_recv                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_sgl_FFTPACK)
+     &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_test_FFT)
       else
         call sph_RFFTMB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
