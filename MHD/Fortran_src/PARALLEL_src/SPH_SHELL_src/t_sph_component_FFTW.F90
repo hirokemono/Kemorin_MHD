@@ -350,14 +350,14 @@
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           call dfftw_execute_dft_c2r(FFTW_c%plan_bwd(ip),               &
-     &        CC, FFTW_c%XX)
+     &        CC, XX)
           if(iflag_FFT_time) FFTW_c%t_omp(ip,2)= FFTW_c%t_omp(ip,2)     &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           do m = 1, nidx_rtp(3)
             ms =     ncomp_bwd * (m-1)
-            X_rtp(j,m,1:ncomp_bwd) = FFTW_c%XX(ms+1:ms+ncomp_bwd)
+            X_rtp(j,m,1:ncomp_bwd) = XX(ms+1:ms+ncomp_bwd)
           end do
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3) = FFTW_c%t_omp(ip,3)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
