@@ -88,6 +88,14 @@
 !>        plan ID for forward transform
         integer(kind = fftw_plan), allocatable :: plan_fwd(:)
 !
+!>        number of backward FFT
+        integer(kind = kint_4b) :: howmany_bwd
+!>        number of forward FFT
+        integer(kind = kint_4b) :: howmany_fwd
+!>        length of FFT for real
+        integer(kind = kint) :: Nfft_r
+!>        length of FFT for complex
+        integer(kind = kint) :: Nfft_c
 !>        normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
 !>        real data for multiple Fourier transform
@@ -167,13 +175,16 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !
+      integer(kind = kint) :: Ncomp
+!
 !
       if(allocated(FFT_t%X) .eqv. .false.) then
         call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
         return
       end if
 !
-      if(size(FFT_t%X) .ne. nidx_rtp(3)*np_smp) then
+      Ncomp = max(ncomp_bwd, ncomp_fwd)
+      if(size(FFT_t%X,1) .ne. Ncomp*nidx_rtp(3)) then
         call finalize_sph_test_FFT(FFT_t)
         call init_sph_test_FFT(nidx_rtp, ncomp_bwd, ncomp_fwd, FFT_t)
       end if
@@ -393,12 +404,20 @@
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_test_FFT), intent(inout) :: FFT_t
 !
+      integer(kind = kint) :: Ncomp
+!
+!
+      Ncomp = max(ncomp_bwd, ncomp_fwd)
+      FFTW_c%howmany_bwd = int(ncomp_bwd)
+      FFTW_c%howmany_fwd = int(ncomp_fwd)
+      FFTW_c%Nfft_r = Nfft
+      FFTW_c%Nfft_c = Nfft/2 + 1
 !
       allocate(FFT_t%plan_fwd(Nsmp))
       allocate(FFT_t%plan_bwd(Nsmp))
 !
-      allocate( FFT_t%X(Nfft,Nsmp) )
-      allocate( FFT_t%C(Nfft/2+1,Nsmp) )
+      allocate(FFT_t%X(Ncomp*FFTW_c%Nfft_r,Nsmp))
+      allocate(FFT_t%C(Ncomp*FFTW_c%Nfft_c,Nsmp))
       FFT_t%X = 0.0d0
       FFT_t%C = 0.0d0
 !
