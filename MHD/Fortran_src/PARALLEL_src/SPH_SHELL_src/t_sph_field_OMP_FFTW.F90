@@ -9,18 +9,18 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_field_FFTW(nidx_rtp, irt_rtp_smp_stack,     &
-!!     &          FFTW_f)
-!!      subroutine finalize_sph_field_FFTW(FFTW_f)
-!!      subroutine verify_sph_field_FFTW(nnod_rtp, nidx_rtp,            &
-!!     &          irt_rtp_smp_stack, FFTW_f)
+!!      subroutine init_sph_domain_OMP_FFTW                             &
+!!     &         (nidx_rtp, irt_rtp_smp_stack, OFFTW_d)
+!!      subroutine finalize_sph_domain_OMP_FFTW(OFFTW_d)
+!!      subroutine verify_sph_domain_OMP_FFTW                           &
+!!     &         (nidx_rtp, irt_rtp_smp_stack, OFFTW_d)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_field_fwd_FFTW_to_send                           &
+!!      subroutine sph_domain_fwd_OFFTW_to_send                         &
 !!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,     &
-!!     &          n_WS, irev_sr_rtp, X_rtp, WS, FFTW_f)
+!!     &          n_WS, irev_sr_rtp, X_rtp, WS, OFFTW_d)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -34,9 +34,9 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_field_back_FFTW_from_recv                        &
+!!      subroutine sph_domain_back_OFFTW_from_recv                      &
 !!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_bwd,     &
-!!     &          n_WR, irev_sr_rtp, WR, X_rtp, FFTW_f)
+!!     &          n_WR, irev_sr_rtp, WR, X_rtp, OFFTW_d)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -77,7 +77,7 @@
       implicit none
 !
 !>      Structure to use SNGLE FFTW
-      type work_for_field_FFTW_2
+      type work_for_domain_OMP_FFTW
 !>        plan ID for backward transform
         integer(kind = fftw_plan) :: plan_bwd
 !>        plan ID for forward transform
@@ -100,9 +100,9 @@
 !
 !>        temporal area for time count
         real(kind = kreal), allocatable :: t_omp(:,:)
-      end type work_for_field_FFTW_2
+      end type work_for_domain_OMP_FFTW
 !
-      private :: alloc_fld_FFTW_plan
+      private :: alloc_domain_OMP_FFTW_plan
 !
 ! ------------------------------------------------------------------
 !
@@ -110,14 +110,14 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_field_FFTW(nidx_rtp, irt_rtp_smp_stack,       &
-     &          FFTW_f)
+      subroutine init_sph_domain_OMP_FFTW                               &
+     &         (nidx_rtp, irt_rtp_smp_stack, OFFTW_d)
 !
       use m_OMP_FFTW3_counter
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
 !
       integer(kind = 4) :: howmany
 !
@@ -126,77 +126,80 @@
 !
 !
 !
-      call alloc_fld_FFTW_plan(nidx_rtp(3), irt_rtp_smp_stack, FFTW_f)
+      call alloc_domain_OMP_FFTW_plan                                   &
+     &   (nidx_rtp(3), irt_rtp_smp_stack, OFFTW_d)
 !
       howmany = int(irt_rtp_smp_stack(np_smp))
 !
       call chack_init_OMP_FFTW()
 !
       call dfftw_plan_many_dft_r2c                                      &
-     &   (FFTW_f%plan_fwd, IONE_4, int(FFTW_f%Nfft_r), howmany,         &
-     &    FFTW_f%X(1), inembed, howmany, IONE_4,                        &
-     &    FFTW_f%C(1), inembed, howmany, IONE_4,                        &
+     &   (OFFTW_d%plan_fwd, IONE_4, int(OFFTW_d%Nfft_r), howmany,       &
+     &    OFFTW_d%X(1), inembed, howmany, IONE_4,                       &
+     &    OFFTW_d%C(1), inembed, howmany, IONE_4,                       &
      &    FFTW_ESTIMATE)
       call dfftw_plan_many_dft_c2r                                      &
-     &   (FFTW_f%plan_bwd, IONE_4, int(FFTW_f%Nfft_r), howmany,         &
-     &    FFTW_f%C(1), inembed, howmany, IONE_4,                        &
-     &    FFTW_f%X(1), inembed, howmany, IONE_4,                        &
+     &   (OFFTW_d%plan_bwd, IONE_4, int(OFFTW_d%Nfft_r), howmany,       &
+     &    OFFTW_d%C(1), inembed, howmany, IONE_4,                       &
+     &    OFFTW_d%X(1), inembed, howmany, IONE_4,                       &
      &    FFTW_ESTIMATE)
-      FFTW_f%aNfft = one / dble(nidx_rtp(3))
+      OFFTW_d%aNfft = one / dble(nidx_rtp(3))
 !
-      allocate(FFTW_f%t_omp(np_smp,0:3))
-      FFTW_f%t_omp = 0.0d0
+      allocate(OFFTW_d%t_omp(np_smp,0:3))
+      OFFTW_d%t_omp = 0.0d0
 !
-      end subroutine init_sph_field_FFTW
+      end subroutine init_sph_domain_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_field_FFTW(FFTW_f)
+      subroutine finalize_sph_domain_OMP_FFTW(OFFTW_d)
 !
       use m_OMP_FFTW3_counter
 !
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
 !
 !
-      call dfftw_destroy_plan(FFTW_f%plan_fwd)
-      call dfftw_destroy_plan(FFTW_f%plan_bwd)
+      call dfftw_destroy_plan(OFFTW_d%plan_fwd)
+      call dfftw_destroy_plan(OFFTW_d%plan_bwd)
       call dfftw_cleanup
       call chack_clean_OMP_FFTW()
 !
-      call dealloc_fld_FFTW_plan(FFTW_f)
-      deallocate(FFTW_f%t_omp)
+      call dealloc_domain_OMP_FFTW_plan(OFFTW_d)
+      deallocate(OFFTW_d%t_omp)
 !
-      end subroutine finalize_sph_field_FFTW
+      end subroutine finalize_sph_domain_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_field_FFTW(nnod_rtp, nidx_rtp,              &
-     &          irt_rtp_smp_stack, FFTW_f)
+      subroutine verify_sph_domain_OMP_FFTW                             &
+     &         (nidx_rtp, irt_rtp_smp_stack, OFFTW_d)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
 !
 !
-      if(allocated(FFTW_f%X) .eqv. .false.) then
-        call init_sph_field_FFTW(nidx_rtp, irt_rtp_smp_stack, FFTW_f)
+      if(allocated(OFFTW_d%X) .eqv. .false.) then
+        call init_sph_domain_OMP_FFTW                                   &
+     &     (nidx_rtp, irt_rtp_smp_stack, OFFTW_d)
         return
       end if
 !
-      if(size(FFTW_f%X) .ne. nnod_rtp) then
-        call finalize_sph_field_FFTW(FFTW_f)
-        call init_sph_field_FFTW(nidx_rtp, irt_rtp_smp_stack, FFTW_f)
+      if(size(OFFTW_d%X)                                                &
+     &          .ne. nidx_rtp(3)*irt_rtp_smp_stack(np_smp)) then
+        call finalize_sph_domain_OMP_FFTW(OFFTW_d)
+        call init_sph_domain_OMP_FFTW                                   &
+     &     (nidx_rtp, irt_rtp_smp_stack, OFFTW_d)
       end if
 !
-      end subroutine verify_sph_field_FFTW
+      end subroutine verify_sph_domain_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_field_fwd_FFTW_to_send                             &
+      subroutine sph_domain_fwd_OFFTW_to_send                           &
      &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,       &
-     &          n_WS, irev_sr_rtp, X_rtp, WS, FFTW_f)
+     &          n_WS, irev_sr_rtp, X_rtp, WS, OFFTW_d)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -209,38 +212,39 @@
       integer(kind = kint), intent(in) :: n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
 !
       integer(kind = kint) ::  nd
 !
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-        call copy_rtp_field_to_FFTW                                   &
-     &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),               &
-     &        X_rtp(1,1,nd), FFTW_f%X(1))
+        call copy_rtp_field_to_OMP_FFTW                                 &
+     &       (OFFTW_d%Nfft_r, irt_rtp_smp_stack(np_smp),                &
+     &        X_rtp(1,1,nd), OFFTW_d%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-        call dfftw_execute_dft_r2c(FFTW_f%plan_fwd, FFTW_f%X, FFTW_f%C)
+        call dfftw_execute_dft_r2c(OFFTW_d%plan_fwd,                    &
+      &                            OFFTW_d%X, OFFTW_d%C)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-          call set_fwd_FFTW_to_send                                     &
+          call set_fwd_OMP_FFTW_to_send                                 &
      &       (nd, irt_rtp_smp_stack(np_smp),                            &
      &        nnod_rtp, ncomp_fwd, n_WS, irev_sr_rtp, WS,               &
-     &        FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(1))
+     &        OFFTW_d%Nfft_c, OFFTW_d%aNfft, OFFTW_d%C(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
-      end subroutine sph_field_fwd_FFTW_to_send
+      end subroutine sph_domain_fwd_OFFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_field_back_FFTW_from_recv                          &
+      subroutine sph_domain_back_OFFTW_from_recv                        &
      &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_bwd,       &
-     &          n_WR, irev_sr_rtp, WR, X_rtp, FFTW_f)
+     &          n_WR, irev_sr_rtp, WR, X_rtp, OFFTW_d)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -254,69 +258,71 @@
 !
       real(kind = kreal), intent(inout)                                 &
      &        :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
 !
       integer(kind = kint) :: nd
 !
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-        call set_back_FFTW_from_recv(nd, irt_rtp_smp_stack(np_smp),     &
+        call set_back_OMP_FFTW_from_recv(nd, irt_rtp_smp_stack(np_smp), &
      &        nnod_rtp, ncomp_bwd, n_WR, irev_sr_rtp, WR,               &
-     &        FFTW_f%Nfft_c, FFTW_f%C(1))
+     &        OFFTW_d%Nfft_c, OFFTW_d%C(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-        call dfftw_execute_dft_c2r(FFTW_f%plan_bwd, FFTW_f%C, FFTW_f%X)
+        call dfftw_execute_dft_c2r(OFFTW_d%plan_bwd,                    &
+     &                             OFFTW_d%C, OFFTW_d%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-          call copy_rtp_field_from_FFTW                                 &
-     &       (FFTW_f%Nfft_r, irt_rtp_smp_stack(np_smp),                 &
-     &        X_rtp(1,1,nd), FFTW_f%X(1))
+          call copy_rtp_field_from_OMP_FFTW                             &
+     &       (OFFTW_d%Nfft_r, irt_rtp_smp_stack(np_smp),                &
+     &        X_rtp(1,1,nd), OFFTW_d%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
-      end subroutine sph_field_back_FFTW_from_recv
+      end subroutine sph_domain_back_OFFTW_from_recv
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_fld_FFTW_plan(Nfft, irt_rtp_smp_stack, FFTW_f)
+      subroutine alloc_domain_OMP_FFTW_plan                             &
+     &         (Nfft, irt_rtp_smp_stack, OFFTW_d)
 !
       integer(kind = kint), intent(in) :: Nfft
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
 !
       integer(kind = kint_gl) :: nnod_rt
 !
 !
-      FFTW_f%Nfft_r = Nfft
-      FFTW_f%Nfft_c = Nfft/2 + 1
+      OFFTW_d%Nfft_r = Nfft
+      OFFTW_d%Nfft_c = Nfft/2 + 1
 !
       nnod_rt = irt_rtp_smp_stack(np_smp)
-      allocate(FFTW_f%X(FFTW_f%Nfft_r*nnod_rt))
-      allocate(FFTW_f%C(FFTW_f%Nfft_c*nnod_rt))
-      FFTW_f%X = 0.0d0
-      FFTW_f%C = 0.0d0
+      allocate(OFFTW_d%X(OFFTW_d%Nfft_r*nnod_rt))
+      allocate(OFFTW_d%C(OFFTW_d%Nfft_c*nnod_rt))
+      OFFTW_d%X = 0.0d0
+      OFFTW_d%C = 0.0d0
 !
-      end subroutine alloc_fld_FFTW_plan
-!
-! ------------------------------------------------------------------
-!
-      subroutine dealloc_fld_FFTW_plan(FFTW_f)
-!
-      type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
-!
-!
-      deallocate(FFTW_f%X, FFTW_f%C)
-!
-      end subroutine dealloc_fld_FFTW_plan
+      end subroutine alloc_domain_OMP_FFTW_plan
 !
 ! ------------------------------------------------------------------
+!
+      subroutine dealloc_domain_OMP_FFTW_plan(OFFTW_d)
+!
+      type(work_for_domain_OMP_FFTW), intent(inout) :: OFFTW_d
+!
+!
+      deallocate(OFFTW_d%X, OFFTW_d%C)
+!
+      end subroutine dealloc_domain_OMP_FFTW_plan
+!
+! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_rtp_field_to_FFTW                                 &
+      subroutine copy_rtp_field_to_OMP_FFTW                             &
      &         (Nfft_r, nnod_rt, X_rtp, X_FFT)
 !
       integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
@@ -329,11 +335,11 @@
       X_FFT(1:nnod_rt,1:Nfft_r) = X_rtp(1:nnod_rt,1:Nfft_r)
 !$omp end parallel workshare
 !
-      end subroutine copy_rtp_field_to_FFTW
+      end subroutine copy_rtp_field_to_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine set_fwd_FFTW_to_send                                   &
+      subroutine set_fwd_OMP_FFTW_to_send                               &
      &         (nd, nnod_rt, nnod_rtp, ncomp_fwd, n_WS,                 &
      &          irev_sr_rtp, WS, Nfft_c, aNfft, C_fft)
 !
@@ -382,11 +388,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_fwd_FFTW_to_send
+      end subroutine set_fwd_OMP_FFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine set_back_FFTW_from_recv                                &
+      subroutine set_back_OMP_FFTW_from_recv                            &
      &         (nd, nnod_rt, nnod_rtp, ncomp_bwd,                       &
      &          n_WR, irev_sr_rtp, WR, Nfft_c, C_fft)
 !
@@ -434,11 +440,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_back_FFTW_from_recv
+      end subroutine set_back_OMP_FFTW_from_recv
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_rtp_field_from_FFTW                               &
+      subroutine copy_rtp_field_from_OMP_FFTW                           &
      &         (Nfft_r, nnod_rt, X_rtp, X_FFT)
 !
       integer(kind = kint), intent(in) :: Nfft_r, nnod_rt
@@ -451,7 +457,7 @@
       X_rtp(1:nnod_rt,1:Nfft_r) = X_FFT(1:nnod_rt,1:Nfft_r)
 !$omp end parallel workshare
 !
-      end subroutine copy_rtp_field_from_FFTW
+      end subroutine copy_rtp_field_from_OMP_FFTW
 !
 ! ------------------------------------------------------------------
 !
