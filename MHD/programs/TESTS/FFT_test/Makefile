@@ -13,6 +13,9 @@ TARGET_ISPACK1_TEST =  tests/test_ISPACK1
 TARGET_ISPACK3_TEST =  tests/test_ISPACK3
 TARGET_FFW3_F_TEST =   tests/test_FFTW3_f
 TARGET_SGL_FFW3_TEST = tests/test_single_FFTW3
+TARGET_OMP_FFW3_TEST = tests/test_omp_FFTW3
+
+TARGET_FFW3_F_TEST =   tests/test_FFTW3_f
 
 TARGET_CMPR_FFT_TEST = tests/compare_fft_test
 
@@ -27,6 +30,11 @@ ifdef FFTW3_LIBS
   TARGETS_FFT_TEST+= \
    '$$(TARGET_FFW3_F_TEST)' \
    '$$(TARGET_SGL_FFW3_TEST)'
+endif
+
+ifdef FFTW3_OMP_LIBS
+  TARGETS_FFT_TEST+= \
+   '$$(TARGET_OMP_FFW3_TEST)'
 endif
 
 
@@ -99,6 +107,19 @@ t_multi_FFTW_wrapper.o \
 t_fft_test_data.o \
 test_FFTW3.o
 
+MOD_OMP_FFW3_TEST = \
+m_precision.o \
+m_constants.o \
+m_machine_parameter.o \
+\
+skip_comment_f.o \
+m_fftw_parameters.o \
+OMP_FFTW3_wrapper.o \
+t_OMP_FFTW_wrapper.o \
+\
+t_fft_test_data.o \
+test_OMP_FFTW3.o
+
 MOD_SGL_FFW3_TEST = \
 m_precision.o \
 m_constants.o \
@@ -135,6 +156,7 @@ target_list:
 	@echo 'TARGET_ISPACK3_TEST =  $$(BUILDDIR)/$(TARGET_ISPACK3_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_FFW3_F_TEST =   $$(BUILDDIR)/$(TARGET_FFW3_F_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_SGL_FFW3_TEST = $$(BUILDDIR)/$(TARGET_SGL_FFW3_TEST)' >> $(MAKENAME)
+	@echo 'TARGET_OMP_FFW3_TEST = $$(BUILDDIR)/$(TARGET_OMP_FFW3_TEST)' >> $(MAKENAME)
 	@echo 'TARGET_CMPR_FFT_TEST = $$(BUILDDIR)/$(TARGET_CMPR_FFT_TEST)' >> $(MAKENAME)
 
 target_task:
@@ -182,6 +204,13 @@ target_task:
 	'$$(MOD_SGL_FFW3_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_OMP_FFW3_TEST)': '$$(MOD_OMP_FFW3_TEST)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_OMP_FFW3_TEST)' \
+	'$$(MOD_OMP_FFW3_TEST)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CMPR_FFT_TEST)': '$$(MOD_CMPR_FFT_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
@@ -211,6 +240,8 @@ mod_list:
 	@echo  $(MOD_FFW3_F_TEST)        >> $(MAKENAME)
 	@echo  MOD_SGL_FFW3_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_SGL_FFW3_TEST)        >> $(MAKENAME)
+	@echo  MOD_OMP_FFW3_TEST=      \\  >> $(MAKENAME)
+	@echo  $(MOD_OMP_FFW3_TEST)        >> $(MAKENAME)
 	@echo  MOD_CMPR_FFT_TEST=      \\  >> $(MAKENAME)
 	@echo  $(MOD_CMPR_FFT_TEST)        >> $(MAKENAME)
 

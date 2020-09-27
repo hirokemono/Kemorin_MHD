@@ -376,6 +376,8 @@ makemake:
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
 		OPENGL_LIBS='$(OPENGL_LIBS)'  \
+		FFTW3_LIBS='$(FFTW3_LIBS)' \
+		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)' \
 		target_task \
 		) \
 	done

@@ -73,6 +73,8 @@ target_task:
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
 		FORTRAN_C_CONNECT='$(FORTRAN_C_CONNECT)' \
+		FFTW3_LIBS='$(FFTW3_LIBS)' \
+		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)' \
 		target_task \
 		) \
 	done

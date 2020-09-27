@@ -60,6 +60,8 @@ target_task:
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
 		MAKENAME='$(MAKENAME)' \
+		FFTW3_LIBS='$(FFTW3_LIBS)' \
+		FFTW3_OMP_LIBS='$(FFTW3_OMP_LIBS)' \
 		target_task \
 		) \
 	done
