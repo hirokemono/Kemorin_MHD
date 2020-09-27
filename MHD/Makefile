@@ -60,6 +60,7 @@ endif
 
 ifdef FFTW3_OMP_LIBS
   CPP_FLAGS+= -DOMP_FFTW3
+  F_INCLUDE+= $$(FFTW3_CFLAGS)
   F90LIBS+= $$(FFTW3_OMP_LIBS)
 endif
 
