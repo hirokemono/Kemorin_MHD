@@ -1,5 +1,5 @@
-!>@file   t_sph_field_FFTW_2.F90
-!!@brief  module t_sph_field_FFTW_2
+!>@file   t_sph_field_OMP_FFTW.F90
+!!@brief  module t_sph_field_OMP_FFTW
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2013
@@ -65,7 +65,7 @@
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(Ncomp, Nfft)  Data for Fourier transform
 !
-      module t_sph_field_FFTW_2
+      module t_sph_field_OMP_FFTW
 !
       use m_precision
       use m_constants
@@ -113,21 +113,24 @@
       subroutine init_sph_field_FFTW(nidx_rtp, irt_rtp_smp_stack,       &
      &          FFTW_f)
 !
+      use m_OMP_FFTW3_counter
+!
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
       type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
 !
-      integer(kind = 4) :: howmany, idist_r, idist_c
+      integer(kind = 4) :: howmany
 !
       integer, parameter :: IONE_4 = 1
       integer, parameter :: inembed = 0
 !
 !
 !
-      write(*,*) 'set init_sph_field_FFTW'
       call alloc_fld_FFTW_plan(nidx_rtp(3), irt_rtp_smp_stack, FFTW_f)
 !
       howmany = int(irt_rtp_smp_stack(np_smp))
+!
+      call chack_init_OMP_FFTW()
 !
       call dfftw_plan_many_dft_r2c                                      &
      &   (FFTW_f%plan_fwd, IONE_4, int(FFTW_f%Nfft_r), howmany,         &
@@ -150,12 +153,15 @@
 !
       subroutine finalize_sph_field_FFTW(FFTW_f)
 !
+      use m_OMP_FFTW3_counter
+!
       type(work_for_field_FFTW_2), intent(inout) :: FFTW_f
 !
 !
       call dfftw_destroy_plan(FFTW_f%plan_fwd)
       call dfftw_destroy_plan(FFTW_f%plan_bwd)
       call dfftw_cleanup
+      call chack_clean_OMP_FFTW()
 !
       call dealloc_fld_FFTW_plan(FFTW_f)
       deallocate(FFTW_f%t_omp)
@@ -449,4 +455,4 @@
 !
 ! ------------------------------------------------------------------
 !
-      end module t_sph_field_FFTW_2
+      end module t_sph_field_OMP_FFTW

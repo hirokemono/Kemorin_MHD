@@ -98,8 +98,10 @@
 #ifdef FFTW3
       use t_sph_single_FFTW
       use t_sph_field_FFTW
-!      use t_sph_field_FFTW_2
       use t_sph_component_FFTW
+#endif
+#ifdef OMP_FFTW3
+      use t_sph_field_OMP_FFTW
 #endif
 !
       implicit none
@@ -138,13 +140,17 @@
 #ifdef FFTW3
 !>        Structure to use FFTW
         type(work_for_field_FFTW) :: sph_fld_FFTW
-!        type(work_for_field_FFTW_2) :: sph_fld_FFTW
 !>        Structure to use FFTW for each component and meridinal point
         type(work_for_sgl_FFTW) :: sph_sgl_FFTW
 !>        Structure to use FFTW for each component
         type(work_for_comp_FFTW) :: sph_comp_FFTW
 !
 #endif
+#ifdef OMP_FFTW3
+!>        Structure to use FFTW with OpenMP
+        type(work_for_domain_OMP_FFTW) :: sph_domain_OMP_FFTW
+#endif
+!
       end type work_for_FFTs
 !
 ! ------------------------------------------------------------------
@@ -211,6 +217,14 @@
         call init_sph_component_FFTW(sph_rtp%nidx_rtp,                  &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
+!
+#ifdef OMP_FFTW3
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
+        if(id_rank .eq. 0) write(*,*) 'Use OpenMP FFTW for domain'
+        call init_sph_domain_OMP_FFTW(sph_rtp%nidx_rtp,                 &
+     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_OMP_FFTW)
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single FFTPACK'
         call init_sph_single_FFTPACK5                                   &
@@ -280,6 +294,14 @@
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
         call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
 #endif
+!
+#ifdef OMP_FFTW3
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &        'Finalize OpenMP FFTW for domain'
+        call finalize_sph_domain_OMP_FFTW(WK_FFTs%sph_domain_OMP_FFTW)
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTPACK'
         call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
@@ -359,10 +381,18 @@
         call verify_sph_single_FFTW                                     &
      &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp。'
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp.'
         call verify_sph_component_FFTW(sph_rtp%nidx_rtp,                &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
+!
+#ifdef OMP_FFTW3
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use OpenMP FFTW for domain'
+        call verify_sph_domain_OMP_FFTW(sph_rtp%nidx_rtp,               &
+     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_OMP_FFTW)
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTPACK'
         call verify_sph_single_FFTPACK5                                 &
@@ -461,6 +491,16 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTW)
 #endif
+!
+#ifdef OMP_FFTW3
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
+        call sph_domain_fwd_OFFTW_to_send                               &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
+     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
+     &      WK_FFTs%sph_domain_OMP_FFTW)
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         call sph_single_RFFTMF_to_send                                  &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -565,6 +605,16 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_FFTW)
 #endif
+!
+#ifdef OMP_FFTW3
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
+        call sph_domain_back_OFFTW_from_recv                            &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
+     &      comm_rtp%irev_sr, WR(1), v_rtp(1,1),                        &
+     &      WK_FFTs%sph_domain_OMP_FFTW)
+#endif
+!
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
         call sph_single_RFFTMB_from_recv                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &

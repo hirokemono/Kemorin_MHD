@@ -78,8 +78,6 @@
       use m_constants
       use m_fftw_parameters
 !
-      use ISO_C_binding
-!      
       implicit none
 !
       real(kind = kreal) :: elapsed_fftw(3) = (/0.0,0.0,0.0/)
@@ -98,7 +96,7 @@
       subroutine init_OMP_FFTW(Ncomp, Nfft,                             &
      &          plan_forward, plan_backward, aNfft, X_FFTW, C_FFTW)
 !
-      include "fftw3.f03"
+      use m_OMP_FFTW3_counter
 !
       integer(kind = kint), intent(in) :: Nfft, Ncomp
 !
@@ -109,16 +107,13 @@
       complex(kind = fftw_complex), intent(inout)                       &
      &              :: C_FFTW(Ncomp,Nfft/2+1)
 !
-      integer, external :: omp_get_max_threads
       integer(kind = 4) :: Nfft4, howmany
-      integer(C_int) :: iout
 !
 !
       Nfft4 = int(Nfft,KIND(Nfft4))
       howmany = int(Ncomp, KIND(howmany))
 !
-      iout = fftw_init_threads()
-      call fftw_plan_with_nthreads(omp_get_max_threads());
+      call chack_init_OMP_FFTW()
 !
       call dfftw_plan_many_dft_r2c                                      &
      &   (plan_forward, IONE_4, Nfft4, howmany,                         &
@@ -136,15 +131,16 @@
 !
       subroutine destroy_OMP_FFTW(plan_forward, plan_backward)
 !
-      include "fftw3.f03"
+      use m_OMP_FFTW3_counter
 !
       integer(kind = fftw_plan), intent(in) :: plan_forward
       integer(kind = fftw_plan), intent(in) :: plan_backward
 !
+!
       call dfftw_destroy_plan(plan_forward)
       call dfftw_destroy_plan(plan_backward)
       call dfftw_cleanup
-      call fftw_cleanup_threads()
+      call chack_clean_OMP_FFTW()
 !
       end subroutine destroy_OMP_FFTW
 !

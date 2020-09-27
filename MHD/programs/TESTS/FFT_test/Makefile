@@ -114,6 +114,7 @@ m_machine_parameter.o \
 \
 skip_comment_f.o \
 m_fftw_parameters.o \
+m_OMP_FFTW3_counter.o \
 OMP_FFTW3_wrapper.o \
 t_OMP_FFTW_wrapper.o \
 \
