@@ -7,6 +7,8 @@
 !>@brief  Fourier transform using FFTW Ver.3 woth OpenMP
 !!
 !!@verbatim
+!!      subroutine chack_init_OMP_FFTW()
+!!      subroutine chack_clean_OMP_FFTW()
 !!@endverbatim
 !!
 !!@n @param icount_OMP_FFTW  Reference counter for OpenMP FFTW
@@ -37,7 +39,7 @@
       integer(C_int) :: iout
 !
 !
-      if(icount_OMP_FFTW .lt. 0) then
+      if(icount_OMP_FFTW .le. 0) then
         icount_OMP_FFTW = 0
 !
 #ifdef OMP_FFTW3
