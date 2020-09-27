@@ -653,6 +653,8 @@ PNG_CFLAGS
 PKGFLAGS_ZLIB
 ZLIB_LIBS
 ZLIB_CFLAGS
+FFTW3_OMP_LIBS
+PKGFLAGS_FFTW3
 FFTW3_LIBS
 FFTW3_CFLAGS
 LIBOBJS
@@ -679,6 +681,7 @@ CPP
 H5CC
 GREP
 SED
+MPIRUN
 MPIINCDIR
 MPIDIR
 MPIFC
@@ -6599,10 +6602,13 @@ if ${ax_cv_c_openmp+:} false; then :
 else
   saveCFLAGS=$CFLAGS
 ax_cv_c_openmp=unknown
-# Flags to try:  -fopenmp (gcc), -qopenmp (icc), -openmp (icc), -mp (SGI & PGI),
-#                -xopenmp (Sun), -omp (Tru64), -qsmp=omp (AIX), none
-ax_openmp_flags="-qopenmp -openmp -fopenmp -mp -xopenmp -omp -qsmp=omp none"
-if test "x$OPENMP_CFLAGS" != x; then
+# Flags to try:  -fopenmp (gcc), -mp (SGI & PGI),
+#                -qopenmp (icc>=15), -openmp (icc),
+#                -xopenmp (Sun), -omp (Tru64),
+#                -qsmp=omp (AIX),
+#                none
+ax_openmp_flags="-fopenmp -openmp -qopenmp -mp -xopenmp -omp -qsmp=omp none"
+ if test "x$OPENMP_CFLAGS" != x; then
   ax_openmp_flags="$OPENMP_CFLAGS $ax_openmp_flags"
 fi
 for ax_openmp_flag in $ax_openmp_flags; do
@@ -7325,10 +7331,13 @@ if ${ax_cv_fc_openmp+:} false; then :
 else
   saveFCFLAGS=$FCFLAGS
 ax_cv_fc_openmp=unknown
-# Flags to try:  -fopenmp (gcc), -qopenmp (icc), -openmp (icc), -mp (SGI & PGI),
-#                -xopenmp (Sun), -omp (Tru64), -qsmp=omp (AIX), none
-ax_openmp_flags="-qopenmp -openmp -fopenmp -mp -xopenmp -omp -qsmp=omp none"
-if test "x$OPENMP_FCFLAGS" != x; then
+# Flags to try:  -fopenmp (gcc), -mp (SGI & PGI),
+#                -qopenmp (icc>=15), -openmp (icc),
+#                -xopenmp (Sun), -omp (Tru64),
+#                -qsmp=omp (AIX),
+#                none
+ax_openmp_flags="-fopenmp -openmp -qopenmp -mp -xopenmp -omp -qsmp=omp none"
+ if test "x$OPENMP_FCFLAGS" != x; then
   ax_openmp_flags="$OPENMP_FCFLAGS $ax_openmp_flags"
 fi
 for ax_openmp_flag in $ax_openmp_flags; do
@@ -7600,6 +7609,21 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+if test -n "${MPIRUN}"; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: Defined MPIRUN...\"${MPIRUN}\"" >&5
+$as_echo "Defined MPIRUN...\"${MPIRUN}\"" >&6; }
+else
+	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: MPIRUN is not defined" >&5
+$as_echo "MPIRUN is not defined" >&6; }
+	MPIRUN="mpirun"
+
+fi
+
+# AC_MSG_RESULT(MPIDIR..."${MPIDIR}")
+# AC_MSG_RESULT(MPIINCDIR..."${MPIINCDIR}")
+# AC_MSG_RESULT(MPILIBS..."${MPILIBS}")
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: MPIRUN...\"${MPIRUN}\"" >&5
+$as_echo "MPIRUN...\"${MPIRUN}\"" >&6; }
 
 # hdf5 check
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for a sed that does not truncate output" >&5
@@ -11087,6 +11111,90 @@ else
 $as_echo "yes" >&6; }
 	have_fftw3=yes
 fi
+	echo "have_fftw3=$have_fftw3"
+fi
+if test ${have_fftw3} = "yes"
+then
+    PKGFLAGS_FFTW3="fftw3"
+
+
+
+
+    if test -n "${OPENMP_CFLAGS}"; then
+		CFLAGS_TMP="${CFLAGS}"
+		LDLAGS_TMP="${LDFLAGS}"
+		CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
+		LDFLAGS="${FFTW3_LIBS}"
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: CFLAGS_TMP... \"${CFLAGS_TMP}\"" >&5
+$as_echo "CFLAGS_TMP... \"${CFLAGS_TMP}\"" >&6; }
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: CFLAGS... \"${CFLAGS}\"" >&5
+$as_echo "CFLAGS... \"${CFLAGS}\"" >&6; }
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: LDFLAGS... \"${LDFLAGS}\"" >&5
+$as_echo "LDFLAGS... \"${LDFLAGS}\"" >&6; }
+
+
+
+		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for fftw_init_threads in -lfftw3_omp" >&5
+$as_echo_n "checking for fftw_init_threads in -lfftw3_omp... " >&6; }
+if ${ac_cv_lib_fftw3_omp_fftw_init_threads+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfftw3_omp  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char fftw_init_threads ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+return fftw_init_threads ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_fftw3_omp_fftw_init_threads=yes
+else
+  ac_cv_lib_fftw3_omp_fftw_init_threads=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_fftw3_omp_fftw_init_threads" >&5
+$as_echo "$ac_cv_lib_fftw3_omp_fftw_init_threads" >&6; }
+if test "x$ac_cv_lib_fftw3_omp_fftw_init_threads" = xyes; then :
+  have_fftw3_omp=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: FFTW 3.x does not support OopenMP" >&5
+$as_echo "FFTW 3.x does not support OopenMP" >&6; }
+fi
+
+		LDFLAGS="${LDLAGS_TMP}"
+		CFLAGS_TMP="${CFLAGS_TMP}"
+
+
+    fi
+fi
+if test ${have_fftw3_omp} = "yes"
+then
+	FFTW3_OMP_LIBS="${FFTW3_LIBS}_omp"
+
 fi
 
 # Check zlib
@@ -12825,6 +12933,13 @@ $as_echo "" >&6; }
 if test -n "${FFTW3_LIBS}"; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: Use FFTW3 ...         yes" >&5
 $as_echo "Use FFTW3 ...         yes" >&6; }
+	if test -n "${FFTW3_OMP_LIBS}"; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: Use FFTW3 with OpenMP ... yes" >&5
+$as_echo "Use FFTW3 with OpenMP ... yes" >&6; }
+	else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: Use FFTW3 with OpenMP ... no" >&5
+$as_echo "Use FFTW3 with OpenMP ... no" >&6; }
+	fi
 else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: Use FFTW3 ...          no" >&5
 $as_echo "Use FFTW3 ...          no" >&6; }

@@ -126,7 +126,7 @@ AC_LANG_SAVE
 AC_LANG(C)
 # Check OpenMP
 AX_OPENMP
-AC_SUBST(OPENMP_CFLAGS)
+AC_SUBST([OPENMP_CFLAGS])
 # Check MPI
 AX_MPI
 AC_LANG_RESTORE
@@ -188,6 +188,18 @@ AC_SUBST(MPIDIR)
 AC_SUBST(MPILIBS)
 AC_SUBST(MPIINCDIR)
 
+if test -n "${MPIRUN}"; then
+    AC_MSG_RESULT(Defined MPIRUN..."${MPIRUN}")
+else
+	AC_MSG_RESULT(MPIRUN is not defined)
+	MPIRUN="mpirun"
+    AC_SUBST(MPIRUN)
+fi
+
+# AC_MSG_RESULT(MPIDIR..."${MPIDIR}")
+# AC_MSG_RESULT(MPIINCDIR..."${MPIINCDIR}")
+# AC_MSG_RESULT(MPILIBS..."${MPILIBS}")
+AC_MSG_RESULT(MPIRUN..."${MPIRUN}")
 
 # hdf5 check
 AX_LIB_HDF5(parallel)
@@ -217,6 +229,37 @@ AC_CHECK_FUNCS([floor memset sqrt strrchr strtol])
 if test ${USE_fftw3} = "yes"
 then
 	PKG_CHECK_MODULES([FFTW3], fftw3, have_fftw3=yes, AC_MSG_ERROR(Cannot find FFTW 3.x))
+	echo "have_fftw3=$have_fftw3"
+fi
+if test ${have_fftw3} = "yes"
+then
+    PKGFLAGS_FFTW3="fftw3"
+    AC_SUBST(PKGFLAGS_FFTW3)
+    AC_SUBST(FFTW3_CFLAGS)
+    AC_SUBST(FFTW3_LIBS)
+
+    if test -n "${OPENMP_CFLAGS}"; then
+		CFLAGS_TMP="${CFLAGS}"
+		LDLAGS_TMP="${LDFLAGS}"
+		CFLAGS="${OPENMP_CFLAGS} ${CFLAGS}"
+		LDFLAGS="${FFTW3_LIBS}"
+		AC_MSG_RESULT(CFLAGS_TMP... "${CFLAGS_TMP}")
+		AC_MSG_RESULT(CFLAGS... "${CFLAGS}")
+		AC_MSG_RESULT(LDFLAGS... "${LDFLAGS}")
+		
+		AC_SUBST(CFLAGS)
+		AC_SUBST(LDFLAGS)
+		AC_CHECK_LIB(fftw3_omp, fftw_init_threads, have_fftw3_omp=yes, AC_MSG_RESULT(FFTW 3.x does not support OopenMP))
+		LDFLAGS="${LDLAGS_TMP}"
+		CFLAGS_TMP="${CFLAGS_TMP}"
+		AC_SUBST(CFLAGS)
+		AC_SUBST(LDFLAGS)
+    fi
+fi
+if test ${have_fftw3_omp} = "yes"
+then
+	FFTW3_OMP_LIBS="${FFTW3_LIBS}_omp"
+	AC_SUBST(FFTW3_OMP_LIBS)
 fi
 
 # Check zlib
@@ -408,6 +451,11 @@ fi
 AC_MSG_RESULT()
 if test -n "${FFTW3_LIBS}"; then
         AC_MSG_RESULT(    Use FFTW3 ...         yes)
+	if test -n "${FFTW3_OMP_LIBS}"; then
+        AC_MSG_RESULT(    Use FFTW3 with OpenMP ... yes)
+	else
+        AC_MSG_RESULT(    Use FFTW3 with OpenMP ... no)
+	fi
 else
         AC_MSG_RESULT(    Use FFTW3 ...          no)
 fi

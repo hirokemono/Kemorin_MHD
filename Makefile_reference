@@ -21,6 +21,7 @@ MPICHLIBDIR = $(MPICHDIR)/lib
 MPICHBINDIR = $(MPICHDIR)/bin
 MPICHINCDIR = $(MPICHDIR)/include/openmpi
 MPILIBS =  
+MPIRUN =      mpirun -oversubscribe
 #
 #    compilers
 #
@@ -141,6 +142,7 @@ depends: $(MAKE_MOD_DEP)
 		PNG_LIBS="$(PNG_LIBS)"       \
 		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
 		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		FFTW3_OMP_LIBS="$(FFTW3_OMP_LIBS)" \
 		X_LIBS="$(X_LIBS)" \
 		X_CFLAGS="$(X_CFLAGS)" \
 		OPENGL_INC="$(OPENGL_INC)" \
@@ -192,6 +194,7 @@ makemake: mpif.h
 		PNG_LIBS="$(PNG_LIBS)"         \
 		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
 		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		FFTW3_OMP_LIBS="$(FFTW3_OMP_LIBS)" \
 		X_LIBS="$(X_LIBS)" \
 		X_CFLAGS="$(X_CFLAGS)" \
 		OPENGL_INC="$(OPENGL_INC)" \
@@ -245,6 +248,7 @@ makemake64: $(MAKE_MOD_DEP)
 		PNG_LIBS="$(PNG_LIBS)"       \
 		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \
 		FFTW3_LIBS="$(FFTW3_LIBS)" \
+		FFTW3_OMP_LIBS="$(FFTW3_OMP_LIBS)" \
 		OPENGL_INC="$(OPENGL_INC)" \
 		OPENGL_LIBS="$(OPENGL_LIBS)" \
 		PGPLOT_LIBS="$(PGPLOT_LIBS)" \
