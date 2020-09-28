@@ -82,7 +82,7 @@
         iflag_FFT = iflag_selected
       end if
 !
-      call init_sph_FFT_select(my_rank, iflag_FFT, sph_rtp,             &
+      call init_sph_FFT_select(my_rank, iflag_FFT, sph_rtp, comm_rtp,   &
      &    trns_MHD%backward%ncomp, trns_MHD%forward%ncomp, WK_FFTs)
 !
       if(my_rank .ne. 0) return
@@ -166,7 +166,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_sph_FFT_select'
-      call init_sph_FFT_select(my_rank, iflag_FFT, sph_rtp,             &
+      call init_sph_FFT_select(my_rank, iflag_FFT, sph_rtp, comm_rtp,   &
      &    trns_MHD%backward%ncomp, trns_MHD%forward%ncomp, WK_FFTs)
 !
       if(iflag_debug .gt. 0) write(*,*) 'back_FFT_select_from_recv'

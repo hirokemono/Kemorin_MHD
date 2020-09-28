@@ -49,6 +49,7 @@
 !
       private :: init_leg_fourier_trans_SGS_MHD
       private :: init_sph_transform_SGS_model
+      private :: init_sph_FFTs_for_SGS_model
 !
 !-----------------------------------------------------------------------
 !
@@ -242,11 +243,12 @@
      &    WK%trns_MHD, WK%WK_FFTs_MHD, WK%iflag_MHD_FFT)
 !
       call init_sph_FFTs_for_SGS_model                                  &
-     &   (WK%iflag_MHD_FFT, SGS_param, sph, WK_LES)
+     &   (WK%iflag_MHD_FFT, SGS_param, sph, comms_sph, WK_LES)
 !
       trans_p%iflag_FFT = set_FFT_mode_4_snapshot(WK%iflag_MHD_FFT)
       call init_sph_FFT_select(my_rank, trans_p%iflag_FFT,              &
-     &    sph%sph_rtp, ncomp_max_trans, ncomp_max_trans, WK%WK_FFTs)
+     &    sph%sph_rtp, comms_sph%comm_rtp,                              &
+     &    ncomp_max_trans, ncomp_max_trans, WK%WK_FFTs)
 !
       if(my_rank .eq. 0)  call write_import_table_mode(trans_p)
 !
@@ -256,42 +258,43 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_FFTs_for_SGS_model                            &
-     &         (iflag_ref_FFT, SGS_param, sph, WK_LES)
+     &         (iflag_ref_FFT, SGS_param, sph, comms_sph, WK_LES)
 !
       integer(kind = kint), intent(in) :: iflag_ref_FFT
       type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
       type(works_4_sph_trans_SGS_MHD), intent(inout) :: WK_LES
 !
 !
       call init_sph_FFTs_for_each_SGS                                   &
-     &   (iflag_ref_FFT, sph, WK_LES%trns_fil_MHD)
+     &   (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_fil_MHD)
 !
       if(SGS_param%iflag_SGS .eq. id_SGS_similarity) then
         call init_sph_FFTs_for_each_SGS                                 &
-     &     (iflag_ref_FFT, sph, WK_LES%trns_SGS)
+     &     (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_SGS)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, WK_LES%trns_DYNS)
+     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_DYNS)
           call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, WK_LES%trns_Csim)
+     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_Csim)
          end if
 !
       else if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
         call init_sph_FFTs_for_each_SGS                                 &
-     &     (iflag_ref_FFT, sph, WK_LES%trns_SGS)
+     &     (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_SGS)
         call init_sph_FFTs_for_each_SGS                                 &
-     &     (iflag_ref_FFT, sph, WK_LES%trns_ngTMP)
+     &     (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_ngTMP)
 !
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, WK_LES%trns_SIMI)
+     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_SIMI)
           call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, WK_LES%trns_DYNG)
+     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_DYNG)
           call init_sph_FFTs_for_each_SGS                               &
-     &       (iflag_ref_FFT, sph, WK_LES%trns_Csim)
+     &       (iflag_ref_FFT, sph, comms_sph, WK_LES%trns_Csim)
          end if
       end if
 !
@@ -300,16 +303,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_FFTs_for_each_SGS                             &
-     &         (iflag_ref_FFT, sph, trns_SGS)
+     &         (iflag_ref_FFT, sph, comms_sph, trns_SGS)
 !
       integer(kind = kint), intent(in) :: iflag_ref_FFT
       type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
 !
       type(SGS_address_sph_trans), intent(inout) :: trns_SGS
 !
 !
       call init_sph_FFT_select(my_rank, iflag_ref_FFT,                  &
-     &    sph%sph_rtp, trns_SGS%backward%ncomp, trns_SGS%forward%ncomp, &
+     &    sph%sph_rtp, comms_sph%comm_rtp,                              &
+     &    trns_SGS%backward%ncomp, trns_SGS%forward%ncomp,              &
      &    trns_SGS%WK_FFTs_SGS)
 !
       end subroutine init_sph_FFTs_for_each_SGS

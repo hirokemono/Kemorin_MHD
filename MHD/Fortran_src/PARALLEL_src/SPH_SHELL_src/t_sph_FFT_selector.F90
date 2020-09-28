@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,           &
-!!     &         sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!!     &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine finalize_sph_FFT_select(WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
@@ -160,7 +161,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,             &
-     &         sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+     &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use transfer_to_long_integers
 !
@@ -168,6 +169,7 @@
       integer(kind = kint) :: iflag_FFT_in
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
@@ -245,8 +247,7 @@
 !
       else
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-        call init_sph_FFTPACK5                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+        call init_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
       end if
 !
@@ -328,12 +329,13 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_FFT_select                                  &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
@@ -413,8 +415,7 @@
 !
       else
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-        call verify_sph_FFTPACK5                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+        call verify_sph_FFTPACK5(sph_rtp, comm_rtp,                     &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
       end if
 !
@@ -430,7 +431,7 @@
       use transfer_to_long_integers
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_comm_tbl), intent(in)  :: comm_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd, n_WS
       real (kind=kreal), intent(in):: v_rtp(sph_rtp%nnod_rtp,ncomp_fwd)

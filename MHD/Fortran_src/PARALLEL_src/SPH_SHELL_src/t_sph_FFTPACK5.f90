@@ -9,11 +9,14 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp,          &
-!!     &          ncomp_bwd, ncomp_fwd, fftpack_t)
+!!      subroutine init_sph_FFTPACK5(sph_rtp, comm_rtp,                 &
+!!     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
 !!      subroutine finalize_sph_FFTPACK5(fftpack_t)
-!!      subroutine verify_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp,        &
-!!     &          ncomp_bwd, ncomp_fwd, fftpack_t)
+!!      subroutine verify_sph_FFTPACK5(sph_rtp, comm_rtp,               &
+!!     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
+!!        type(work_for_fftpack), intent(inout) :: fftpack_t
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT
 !! ------------------------------------------------------------------
@@ -75,6 +78,10 @@
       use m_constants
       use m_machine_parameter
       use m_elapsed_labels_SPH_TRNS
+!
+      use t_spheric_rtp_data
+      use t_sph_trans_comm_tbl
+!
       use calypso_mpi
 !
       implicit none
@@ -100,6 +107,13 @@
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
 !
+!         radial-latitude address on FFTPACK data from SEND buffer 
+        integer(kind = kint), allocatable :: kl_fftw(:)
+!         longitudinal address on FFTPACK data from SEND buffer 
+        integer(kind = kint), allocatable :: m_fftw(:)
+!         Normalization on FFTPACK data from SEND buffer 
+        real(kind = kreal), allocatable :: rnorm_sr_rtp(:)
+!
 !>        temporal area for time count
         real(kind = kreal), allocatable :: t_omp(:,:)
       end type work_for_fftpack
@@ -113,23 +127,33 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp,            &
-     &          ncomp_bwd, ncomp_fwd, fftpack_t)
+      subroutine init_sph_FFTPACK5(sph_rtp, comm_rtp,                   &
+     &                             ncomp_bwd, ncomp_fwd, fftpack_t)
 !
-      integer(kind = kint), intent(in) :: nidx_rtp(3), maxirt_rtp_smp
-!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+!
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
       integer(kind = kint) :: ierr
 !
 !
-      fftpack_t%Mmax_smp = maxirt_rtp_smp * max(ncomp_bwd, ncomp_fwd)
+      fftpack_t%Mmax_smp                                                &
+     &    = sph_rtp%maxirt_rtp_smp * max(ncomp_bwd, ncomp_fwd)
 !
-      call alloc_const_4_FFTPACK(nidx_rtp(3), fftpack_t)
-      call RFFTMI(nidx_rtp(3), fftpack_t%WSV, fftpack_t%NSV, ierr)
+      call alloc_const_4_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
+      call RFFTMI(sph_rtp%nidx_rtp(3), fftpack_t%WSV, fftpack_t%NSV,    &
+     &    ierr)
 !
-      call alloc_work_4_FFTPACK(nidx_rtp(3), fftpack_t)
+      call alloc_work_4_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
+!
+      call alloc_comm_table_sph_FFTPACK                                 &
+     &   (comm_rtp%ntot_item_sr, fftpack_t)
+      call set_comm_item_rtp_4_FFTPACK                                  &
+     &   (sph_rtp%nidx_rtp, sph_rtp%istep_rtp,                          &
+     &    comm_rtp%ntot_item_sr, comm_rtp%item_sr,                      &
+     &    fftpack_t%kl_fftw, fftpack_t%m_fftw, fftpack_t%rnorm_sr_rtp)
 !
       allocate(fftpack_t%t_omp(np_smp,0:3))
       fftpack_t%t_omp = 0.0d0
@@ -143,6 +167,7 @@
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
 !
+      call dealloc_comm_table_sph_FFTPACK(fftpack_t)
       call dealloc_const_4_FFTPACK(fftpack_t)
       call dealloc_work_4_FFTPACK(fftpack_t)
       deallocate(fftpack_t%t_omp)
@@ -151,10 +176,11 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_FFTPACK5(nidx_rtp, maxirt_rtp_smp,          &
-     &          ncomp_bwd, ncomp_fwd, fftpack_t)
+      subroutine verify_sph_FFTPACK5(sph_rtp, comm_rtp,                 &
+     &                               ncomp_bwd, ncomp_fwd, fftpack_t)
 !
-      integer(kind = kint), intent(in) :: nidx_rtp(3), maxirt_rtp_smp
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
@@ -162,27 +188,36 @@
       integer(kind = kint) :: ierr
 !
 !
-      fftpack_t%Mmax_smp = maxirt_rtp_smp * max(ncomp_bwd, ncomp_fwd)
+      fftpack_t%Mmax_smp                                                &
+     &    = sph_rtp%maxirt_rtp_smp * max(ncomp_bwd, ncomp_fwd)
 !
-      if(fftpack_t%iflag_fft_len .ne. nidx_rtp(3)) then
+      if(fftpack_t%iflag_fft_len .ne. sph_rtp%nidx_rtp(3)) then
+        call dealloc_comm_table_sph_FFTPACK(fftpack_t)
+        call alloc_comm_table_sph_FFTPACK                               &
+     &    (comm_rtp%ntot_item_sr, fftpack_t)
+        call set_comm_item_rtp_4_FFTPACK                                &
+     &    (sph_rtp%nidx_rtp, sph_rtp%istep_rtp,                         &
+     &     comm_rtp%ntot_item_sr, comm_rtp%item_sr,                     &
+     &     fftpack_t%kl_fftw, fftpack_t%m_fftw, fftpack_t%rnorm_sr_rtp)
 !
         if(fftpack_t%iflag_fft_len .lt. 0) then
-          call alloc_const_4_FFTPACK(nidx_rtp(3), fftpack_t)
-        else if((fftpack_t%Mmax_smp*nidx_rtp(3))                        &
+          call alloc_const_4_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
+        else if((fftpack_t%Mmax_smp*sph_rtp%nidx_rtp(3))                &
      &          .gt. size(fftpack_t%smp(1)%WK) ) then
           call dealloc_const_4_FFTPACK(fftpack_t)
-          call alloc_const_4_FFTPACK(nidx_rtp(3), fftpack_t)
+          call alloc_const_4_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
         end if
 !
-        call RFFTMI(nidx_rtp(3), fftpack_t%WSV, fftpack_t%NSV, ierr)
+        call RFFTMI(sph_rtp%nidx_rtp(3), fftpack_t%WSV, fftpack_t%NSV,  &
+     &              ierr)
       end if
 !
       if(allocated(fftpack_t%smp(1)%WK) .eqv. .false.) then
-        call alloc_work_4_FFTPACK(nidx_rtp(3), fftpack_t)
-      else if( (fftpack_t%Mmax_smp*nidx_rtp(3))                         &
+        call alloc_work_4_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
+      else if( (fftpack_t%Mmax_smp*sph_rtp%nidx_rtp(3))                 &
      &      .gt. size(fftpack_t%smp(1)%WK,1)  ) then
         call dealloc_work_4_FFTPACK(fftpack_t)
-        call alloc_work_4_FFTPACK(nidx_rtp(3), fftpack_t)
+        call alloc_work_4_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
       end if
 !
       end subroutine verify_sph_FFTPACK5
@@ -249,33 +284,8 @@
      &                    + MPI_WTIME() - fftpack_t%t_omp(ip,0)
 !
         if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
-        do j = 1, num
-          do nd = 1, ncomp_fwd
-            inum = nd + (j-1) * ncomp_fwd
-            inod_s = inum + (nidx_rtp(3)-1) * ncomp_fwd*num
-            ic_rtp = j+ist
-            is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            WS(ic_send) = fftpack_t%smp(ip)%X(inum)
-            WS(is_send) = fftpack_t%smp(ip)%X(inod_s)
-          end do
-        end do
-        do m = 1, (nidx_rtp(3)+1)/2 - 1
-          do j = 1, num
-            do nd = 1, ncomp_fwd
-              inum = nd + (j-1) * ncomp_fwd
-              inod_c = inum + (2*m-1) * ncomp_fwd*num
-              inod_s = inum + (2*m  ) * ncomp_fwd*num
-              ic_rtp = j+ist + (2*m  ) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j+ist + (2*m+1) * irt_rtp_smp_stack(np_smp)
-              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-              WS(ic_send) = fftpack_t%smp(ip)%X(inod_c)
-              WS(is_send) = fftpack_t%smp(ip)%X(inod_s)
-            end do
-          end do
-        end do
+        call copy_FFTPACK_to_send_smp_1(nnod_rtp, nidx_rtp, ist, num,   &
+     &      ncomp_fwd, irev_sr_rtp, fftpack_t%smp(ip), n_WS, WS)
         if(iflag_FFT_time) fftpack_t%t_omp(ip,3)= fftpack_t%t_omp(ip,3) &
      &                    + MPI_WTIME() - fftpack_t%t_omp(ip,0)
 !
@@ -486,6 +496,122 @@
       fftpack_t%iflag_fft_len = 0
 !
       end subroutine dealloc_const_4_FFTPACK
+!
+! ------------------------------------------------------------------
+!
+      subroutine set_comm_item_rtp_4_FFTPACK                            &
+     &         (nidx_rtp, istep_rtp, ntot_sr_rtp, item_sr_rtp,          &
+     &          kl_fftw, m_fftw, rnorm_sr_rtp)
+!
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: istep_rtp(3)
+!
+      integer(kind = kint), intent(in) :: ntot_sr_rtp
+      integer(kind = kint), intent(in) :: item_sr_rtp(ntot_sr_rtp)
+!
+      integer(kind = kint), intent(inout) :: kl_fftw(ntot_sr_rtp)
+      integer(kind = kint), intent(inout) :: m_fftw(ntot_sr_rtp)
+      real(kind = kreal), intent(inout) :: rnorm_sr_rtp(ntot_sr_rtp)
+!
+      integer(kind = kint) :: inum, inod
+      integer(kind = kint) :: k_rtp, l_rtp, m_rtp
+!
+!
+!$omp parallel do private(inum,inod,k_rtp,l_rtp,m_rtp)
+      do inum = 1, ntot_sr_rtp
+        inod = item_sr_rtp(inum)
+        k_rtp = 1 + mod(((inod-1)/istep_rtp(1)), nidx_rtp(1))
+        l_rtp = 1 + mod(((inod-1)/istep_rtp(2)), nidx_rtp(2))
+        m_rtp = 1 + mod(((inod-1)/istep_rtp(3)), nidx_rtp(3))
+        kl_fftw(inum) = 1 + (k_rtp-1)*istep_rtp(1)                      &
+     &                    + (l_rtp-1)*istep_rtp(2)
+        rnorm_sr_rtp(inum) = one
+        if(m_rtp .eq. 1) then
+          m_fftw(inum) = 1
+        else if(m_rtp .eq. 2) then
+          m_fftw(inum) = nidx_rtp(3)
+        else
+          m_fftw(inum) = m_rtp-1
+        end if
+      end do
+!$omp end parallel do
+!
+      end subroutine set_comm_item_rtp_4_FFTPACK
+!
+! ------------------------------------------------------------------
+!
+      subroutine copy_FFTPACK_to_send_smp_1(nnod_rtp, nidx_rtp,         &
+     &          ist, num, ncomp_fwd, irev_sr_rtp, WK_smp, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: ist, num
+!
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      type(work_each_fftpack), intent(in) :: WK_smp
+!
+      integer(kind = kint), intent(in) :: n_WS
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+      integer(kind = kint) :: m, j, inum, nd
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
+      integer(kind = kint) :: inod_s, inod_c
+!
+!
+        do j = 1, num
+          do nd = 1, ncomp_fwd
+            inum = nd + (j-1) * ncomp_fwd
+            inod_s = inum + (nidx_rtp(3)-1) * ncomp_fwd*num
+            ic_rtp = j+ist
+            is_rtp = j+ist + nidx_rtp(1)*nidx_rtp(2)
+            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+            WS(ic_send) = WK_smp%X(inum)
+            WS(is_send) = WK_smp%X(inod_s)
+          end do
+        end do
+        do m = 1, (nidx_rtp(3)+1)/2 - 1
+          do j = 1, num
+            do nd = 1, ncomp_fwd
+              inum = nd + (j-1) * ncomp_fwd
+              inod_c = inum + (2*m-1) * ncomp_fwd*num
+              inod_s = inum + (2*m  ) * ncomp_fwd*num
+              ic_rtp = j+ist + (2*m  ) * nidx_rtp(1)*nidx_rtp(2)
+              is_rtp = j+ist + (2*m+1) * nidx_rtp(1)*nidx_rtp(2)
+              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+              WS(ic_send) = WK_smp%X(inod_c)
+              WS(is_send) = WK_smp%X(inod_s)
+            end do
+          end do
+        end do
+!
+      end subroutine copy_FFTPACK_to_send_smp_1
+!
+! ------------------------------------------------------------------
+!
+      subroutine alloc_comm_table_sph_FFTPACK(ntot_sr_rtp, fftpack_t)
+!
+      integer(kind = kint), intent(in) :: ntot_sr_rtp
+      type(work_for_fftpack), intent(inout) :: fftpack_t
+!
+      allocate(fftpack_t%kl_fftw(ntot_sr_rtp))
+      allocate(fftpack_t%m_fftw(ntot_sr_rtp))
+      allocate(fftpack_t%rnorm_sr_rtp(ntot_sr_rtp))
+!
+      end subroutine alloc_comm_table_sph_FFTPACK
+!
+! ------------------------------------------------------------------
+!
+      subroutine dealloc_comm_table_sph_FFTPACK(fftpack_t)
+!
+      type(work_for_fftpack), intent(inout) :: fftpack_t
+!
+      deallocate(fftpack_t%kl_fftw, fftpack_t%m_fftw)
+      deallocate(fftpack_t%rnorm_sr_rtp)
+!
+      end subroutine dealloc_comm_table_sph_FFTPACK
 !
 ! ------------------------------------------------------------------
 !

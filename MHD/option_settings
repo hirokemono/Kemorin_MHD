@@ -1,6 +1,17 @@
 Settings for Makefiles
 
 # -------------------------------------------------------------------------------
+# MacBook Pro with MacPorts and FFTW with OepnMP
+# -------------------------------------------------------------------------------
+#
+./configure --prefix=/Users/matsui/local FC=mpif90 CC=mpicc \
+CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
+--with-blas --enable-fftw3 --enable-cocoa --with-libpng \
+--enable-gl --with-gtk --with-glfw --with-zlib \
+--with-hdf5=/opt/local/bin/h5pcc --without-pgplot --without-aquaterm \
+PKG_CONFIG_PATH=/Users/matsui/local/lib/pkgconfig:/opt/local/lib/pkgconfig
+#
+# -------------------------------------------------------------------------------
 # TACC Frontera
 # -------------------------------------------------------------------------------
 #
