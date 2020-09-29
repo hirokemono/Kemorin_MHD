@@ -7,8 +7,9 @@
 !>@brief  communication table from FFTPACK5
 !!
 !!@verbatim
-!!      subroutine set_comm_item_prt_4_FFTPACK(nnod_rtp, nidx_rtp,      &
-!!     &          irt_rtp_smp_stack, irev_sr_rtp, comm_sph_FFT)
+!!      subroutine set_comm_item_prt_4_FFTPACK                          &
+!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
 !!      subroutine copy_prt_FFTPACK_to_send(nnod_rtp, nidx_rtp,         &
 !!     &          irt_rtp_smp_stack, ncomp_fwd, irev_sr_rtp, X_FFT,     &
 !!     &          n_WS, WS)
@@ -33,12 +34,15 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine set_comm_item_prt_4_FFTPACK(nnod_rtp, nidx_rtp,        &
-     &          irt_rtp_smp_stack, irev_sr_rtp, comm_sph_FFT)
+      subroutine set_comm_item_prt_4_FFTPACK                            &
+     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ntot_sr_rtp
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
 !
       type(comm_tbl_from_FFT), intent(inout) :: comm_sph_FFT
@@ -49,7 +53,7 @@
 !
 !
       do j = 1, irt_rtp_smp_stack(np_smp)
-        inod_c = 1 + (j-1)*nidx_rtp(3)
+!        inod_c = 1 + (j-1)*nidx_rtp(3)
         ic_rtp = j
         ic_send = irev_sr_rtp(ic_rtp)
         if(ic_send .le. ntot_sr_rtp) then
@@ -58,7 +62,7 @@
           comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
         end if
 !
-        inod_s = nidx_rtp(3) + (j-1)*nidx_rtp(3) 
+!        inod_s = nidx_rtp(3) + (j-1)*nidx_rtp(3) 
         is_rtp = j + nidx_rtp(1)*nidx_rtp(2)
         is_send = irev_sr_rtp(is_rtp)
         if(is_send .le. ntot_sr_rtp) then
