@@ -174,7 +174,7 @@
       else if( (irt_rtp_smp_stack(np_smp)*nidx_rtp(3))                  &
      &      .gt. size(fftpack_d%X)  ) then
         call dealloc_work_domain_FFTPACK(fftpack_d)
-        call alloc_work_domain_FFTPACK                                    &
+        call alloc_work_domain_FFTPACK                                  &
      &     (irt_rtp_smp_stack(np_smp), nidx_rtp(3), fftpack_d)
       end if
 !
@@ -362,7 +362,8 @@
      &                       + MPI_WTIME() - fftpack_d%t_omp(ip,0)
 !
           if(iflag_FFT_time) fftpack_d%t_omp(ip,0) = MPI_WTIME()
-          call RFFTMB(num, ione, nidx_rtp(3), num, fftpack_d%X(ist+1),  &
+          call RFFTMB                                                   &
+     &       (num, ione, nidx_rtp(3), num, fftpack_d%X(ist_fft+1),      &
      &        nsize, fftpack_d%WSV, fftpack_d%NSV,                      &
      &        fftpack_d%WK(ist_fft+1), nsize, ierr)
           if(iflag_FFT_time) fftpack_d%t_omp(ip,2)                      &
