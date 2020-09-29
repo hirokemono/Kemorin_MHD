@@ -192,7 +192,7 @@ t_sph_component_FFTW.o: $(SPH_COMMDIR)/t_sph_component_FFTW.F90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 t_sph_component_ISPACK3_FFT.o: $(SPH_COMMDIR)/t_sph_component_ISPACK3_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_sph_domain_FFTPACK5.o: $(SPH_COMMDIR)/t_sph_domain_FFTPACK5.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o
+t_sph_domain_FFTPACK5.o: $(SPH_COMMDIR)/t_sph_domain_FFTPACK5.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o t_spheric_rtp_data.o t_sph_trans_comm_tbl.o t_sph_comm_table_from_FFT.o copy_rtp_data_to_FFTPACK.o set_comm_table_rtp_FFTPACK.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sph_domain_ISPACK3_FFT.o: $(SPH_COMMDIR)/t_sph_domain_ISPACK3_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<

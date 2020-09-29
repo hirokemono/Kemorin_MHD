@@ -237,8 +237,8 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK for domaikn'
-        call init_sph_domain_FFTPACK5(sph_rtp%nidx_rtp,                 &
-     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_FFTPACK)
+        call init_sph_domain_FFTPACK5(sph_rtp, comm_rtp,                &
+     &                                WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
@@ -405,8 +405,8 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK for domain'
-        call verify_sph_domain_FFTPACK5(sph_rtp%nidx_rtp,               &
-     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_FFTPACK)
+        call verify_sph_domain_FFTPACK5(sph_rtp, comm_rtp,              &
+     &                                  WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
@@ -515,11 +515,8 @@
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
      &      WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
-        call sph_domain_RFFTMF_to_send                                  &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
-     &      WK_FFTs%sph_domain_FFTPACK)
+        call sph_domain_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         call sph_test_fwd_FFT_to_send                                   &
@@ -625,11 +622,8 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
-        call sph_domain_RFFTMB_from_recv                                &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR, v_rtp(1,1),                           &
-     &      WK_FFTs%sph_domain_FFTPACK)
+        call sph_domain_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
+     &      n_WR, WR, v_rtp(1,1), WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         call sph_test_back_FFT_from_recv                                &

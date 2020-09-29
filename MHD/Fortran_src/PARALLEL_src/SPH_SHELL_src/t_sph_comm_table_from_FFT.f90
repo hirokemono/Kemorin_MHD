@@ -17,20 +17,17 @@
 !!      subroutine copy_1comp_rtp_FFT_to_send_smp                       &
 !!     &         (nd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd, &
 !!     &          X_FFT, comm_sph_FFT, n_WS, WS)
-!!      subroutine copy_all_rtp_FFT_to_send                             &
-!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,     &
-!!     &          X_FFT, comm_sph_FFT, n_WS, WS)
-!!      subroutine copy_1comp_rtp_FFT_to_send                           &
-!!     &         (nd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack,            &
+!!      subroutine copy_all_rtp_FFT_to_send(nnod_rtp, irt_rtp_smp_stack,&
 !!     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
+!!      subroutine copy_1comp_rtp_FFT_to_send                           &
+!!     &         (nd, nnod_rtp, irt_rtp_smp_stack, ncomp_fwd,           &
+!!     &          X_FFT, comm_sph_FFT, n_WS, WS)
 !!        type(comm_tbl_from_FFT), intent(in) :: comm_sph_FFT
 !!
-!!      subroutine copy_all_prt_FFT_to_send                             &
-!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,     &
-!!     &          X_FFT, comm_sph_FFT, n_WS, WS)
-!!      subroutine copy_1comp_prt_FFT_to_send                           &
-!!     &         (nd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd, &
-!!     &          X_FFT, comm_sph_FFT, n_WS, WS)
+!!      subroutine copy_all_prt_FFT_to_send(nnod_rtp, nidx_rtp,         &
+!!     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
+!!      subroutine copy_1comp_prt_FFT_to_send(nd, nnod_rtp, nidx_rtp,   &
+!!     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
 !!@endverbatim
 !!
       module t_sph_comm_table_from_FFT
@@ -174,12 +171,10 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_all_rtp_FFT_to_send                               &
-     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,       &
-     &          X_FFT, comm_sph_FFT, n_WS, WS)
+      subroutine copy_all_rtp_FFT_to_send(nnod_rtp, irt_rtp_smp_stack,  &
+     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
@@ -211,11 +206,10 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_1comp_rtp_FFT_to_send                             &
-     &         (nd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack,              &
-     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
+     &         (nd, nnod_rtp, irt_rtp_smp_stack, ncomp_fwd,             &
+     &          X_FFT, comm_sph_FFT, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: nd
@@ -245,13 +239,11 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_all_prt_FFT_to_send                               &
-     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,       &
-     &          X_FFT, comm_sph_FFT, n_WS, WS)
+      subroutine copy_all_prt_FFT_to_send(nnod_rtp, nidx_rtp,           &
+     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
@@ -280,13 +272,11 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_1comp_prt_FFT_to_send                             &
-     &         (nd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,   &
-     &          X_FFT, comm_sph_FFT, n_WS, WS)
+      subroutine copy_1comp_prt_FFT_to_send(nd, nnod_rtp, nidx_rtp,     &
+     &          ncomp_fwd, X_FFT, comm_sph_FFT, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: ncomp_fwd

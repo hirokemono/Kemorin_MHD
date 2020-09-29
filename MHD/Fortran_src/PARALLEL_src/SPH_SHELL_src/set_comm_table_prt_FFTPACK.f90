@@ -117,7 +117,7 @@
 !
       integer(kind = kint) :: m, j, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inod_s, inod_c, ist_fft
+      integer(kind = kint) :: inod_s, inod_c
 !
 !
       do j = 1, irt_rtp_smp_stack(np_smp)
@@ -176,7 +176,7 @@
 !
       integer(kind = kint) :: m, j
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inod_s, inod_c, ist_fft
+      integer(kind = kint) :: inod_s, inod_c
 !
 !
       do j = 1, irt_rtp_smp_stack(np_smp)
