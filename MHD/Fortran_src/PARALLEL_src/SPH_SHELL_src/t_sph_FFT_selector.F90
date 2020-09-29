@@ -238,7 +238,7 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK for domaikn'
         call init_sph_domain_FFTPACK5(sph_rtp%nidx_rtp,                 &
-     &      sph_rtp%maxirt_rtp_smp, WK_FFTs%sph_domain_FFTPACK)
+     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
@@ -406,7 +406,7 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK for domain'
         call verify_sph_domain_FFTPACK5(sph_rtp%nidx_rtp,               &
-     &      sph_rtp%maxirt_rtp_smp, WK_FFTs%sph_domain_FFTPACK)
+     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_FFTPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
