@@ -119,6 +119,8 @@
       subroutine init_sph_domain_FFTPACK5                               &
      &         (sph_rtp, comm_rtp, fftpack_d)
 !
+      use set_comm_table_rtp_FFTPACK
+!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
@@ -165,6 +167,8 @@
 !
       subroutine verify_sph_domain_FFTPACK5                             &
      &         (sph_rtp, comm_rtp, fftpack_d)
+!
+      use set_comm_table_rtp_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
