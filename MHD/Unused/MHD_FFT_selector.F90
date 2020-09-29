@@ -221,10 +221,8 @@
      &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
 #endif
       else
-        call sph_RFFTMF_to_send                                         &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_FFTPACK)
+        call sph_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
+     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine fwd_MHD_FFT_sel_to_send
@@ -279,10 +277,8 @@
      &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
 #endif
       else
-        call sph_RFFTMB_from_recv                                       &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR, fld_rtp, WK_FFTs%sph_FFTPACK)
+        call sph_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
+     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine back_MHD_FFT_sel_from_recv

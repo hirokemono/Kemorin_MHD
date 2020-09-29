@@ -341,8 +341,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(m,j,ist,num,nsize,inod_s,inod_c,              &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send,ist_fft)
+!$omp parallel do private(m,j,ist,num,nsize,ist_fft)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num =  irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
@@ -357,8 +356,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-!$omp parallel do private(m,j,ist,num,nsize,inod_s,inod_c,              &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send,ist_fft)
+!$omp parallel do private(m,j,ist,num,nsize,inod_c,ist_fft)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num =  irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)

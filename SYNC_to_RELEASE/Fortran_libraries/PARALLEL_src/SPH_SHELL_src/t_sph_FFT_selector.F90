@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,           &
-!!     &         sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!!     &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine finalize_sph_FFT_select(WK_FFTs)
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
-!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !! ------------------------------------------------------------------
@@ -113,7 +115,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,             &
-     &         sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+     &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use t_spheric_rtp_data
 !
@@ -121,6 +123,7 @@
       integer(kind = kint) :: iflag_FFT_in
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
@@ -146,8 +149,7 @@
 #endif
 !
         if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-        call init_sph_FFTPACK5                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+        call init_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
 !
       end subroutine init_sph_FFT_select
@@ -183,12 +185,13 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_FFT_select                                  &
-     &         (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use t_spheric_rtp_data
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in)  :: comm_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
@@ -212,10 +215,9 @@
       end if
 #endif
 !
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-        call verify_sph_FFTPACK5                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+      if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
+      call verify_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
+     &    ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
 !
       end subroutine verify_sph_FFT_select
 !
@@ -259,10 +261,8 @@
       end if
 #endif
 !
-        call sph_RFFTMF_to_send                                         &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+      call sph_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,       &
+     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
 !
       end subroutine fwd_FFT_select_to_send
 !
@@ -306,10 +306,8 @@
       end if
 #endif
 !
-        call sph_RFFTMB_from_recv                                       &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+      call sph_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,     &
+     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
 !
       end subroutine back_FFT_select_from_recv
 !
