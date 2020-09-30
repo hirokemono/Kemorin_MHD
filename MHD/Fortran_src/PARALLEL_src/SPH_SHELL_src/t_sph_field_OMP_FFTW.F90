@@ -242,7 +242,7 @@
 !     &        OFFTW_d%Nfft_c, OFFTW_d%aNfft, OFFTW_d%C(1))
           call copy_1comp_rtp_FFTW_to_send                             &
      &       (nd, sph_rtp%istack_rtp_rt_smp(np_smp), OFFTW_d%Nfft_c,   &
-     &        ncomp_fwd, OFFTW_d%C, comm_sph_FFT, n_WS, WS)
+     &        ncomp_fwd, OFFTW_d%C, OFFTW_d%comm_FFTW, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
