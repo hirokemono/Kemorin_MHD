@@ -225,7 +225,7 @@
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-        call copy_rtp_field_to_OMP_FFTW                                 &
+        call copy_rtp_comp_to_OMP_FFTW                                  &
      &     (sph_rtp%nnod_rtp, X_rtp(1,nd), OFFTW_d%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
@@ -283,7 +283,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-        call copy_rtp_field_to_OMP_FFTW                                 &
+        call copy_rtp_comp_to_OMP_FFTW                                  &
      &     (sph_rtp%nnod_rtp, OFFTW_d%X(1), X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do

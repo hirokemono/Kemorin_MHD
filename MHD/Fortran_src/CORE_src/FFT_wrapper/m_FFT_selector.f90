@@ -50,6 +50,10 @@
      &          :: hd_FFTW3_C =  'fftw3_component'
 !
 !>      Character flag to use FFTW3 for each component
+      character(len = kchara), parameter :: hd_OMP_FFTW =  'OMP_FFTW'
+!>      Character flag to use FFTW3 for each component
+      character(len = kchara), parameter :: hd_OMP_FFTW3 = 'omp_fftw3'
+!>      Character flag to use FFTW3 for each component
       character(len = kchara), parameter                                &
      &          :: hd_OMP_FFTW_D =  'OMP_FFTW_DOMAIN'
 !>      Character flag to use FFTW3 for each component
@@ -97,6 +101,8 @@
 !>      integer flag to use FFTW3 for each component
 !      integer(kind = kint), parameter :: iflag_FFTW_FIELD = 14
 !
+!>      integer flag to use FFTW3 with OopenMP at once
+      integer(kind = kint), parameter :: iflag_OMP_FFTW =        41
 !>      integer flag to use FFTW3 with OopenMP for domain
       integer(kind = kint), parameter :: iflag_OMP_FFTW_DOMAIN = 42
 !
@@ -123,6 +129,8 @@
       private :: hd_ISPACK3, hd_ISPACK3_D, hd_ISPACK3_C, hd_ISPACK3_S
       private :: hd_FFTW_F, hd_FFTW3_F
       private :: hd_FFTW_C, hd_FFTW3_C, hd_FFT_TEST
+      private :: hd_OMP_FFTW,  hd_OMP_FFTW_D
+      private :: hd_OMP_FFTW3, hd_OMP_FFTW3_D
 !
 ! ------------------------------------------------------------------
 !
@@ -174,6 +182,10 @@
 !     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_F)) then
 !        iflag_FFT = iflag_FFTW_FIELD
 !
+      else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW)                 &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3)) then
+        iflag_FFT = iflag_OMP_FFTW
+!
       else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW_D)               &
      &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3_D)) then
         iflag_FFT = iflag_OMP_FFTW_DOMAIN
@@ -214,6 +226,9 @@
         write(*,*) 'elapsed by FFTW3 for all component (',              &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
 !
+      else if(i_mode .eq. iflag_OMP_FFTW) then
+        write(*,*) 'elapsed by FFTW3 with OpoenMP at once (',           &
+     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
       else if(i_mode .eq. iflag_OMP_FFTW_DOMAIN) then
         write(*,*) 'elapsed by FFTW3 with OpoenMP for domain (',        &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
@@ -263,6 +278,8 @@
       else if(i_mode .eq. iflag_FFTW_COMPONENT) then
         chosen_fft_name = hd_FFTW_C
 !
+      else if(i_mode .eq. iflag_OMP_FFTW) then
+        chosen_fft_name = hd_OMP_FFTW
       else if(i_mode .eq. iflag_OMP_FFTW_DOMAIN) then
         chosen_fft_name = hd_OMP_FFTW_D
 !
