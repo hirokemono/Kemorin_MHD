@@ -223,8 +223,8 @@
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use OpenMP FFTW for domain'
-        call init_sph_domain_OMP_FFTW(sph_rtp%nidx_rtp,                 &
-     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_OMP_FFTW)
+        call init_sph_domain_OMP_FFTW                                   &
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -391,8 +391,8 @@
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Use OpenMP FFTW for domain'
-        call verify_sph_domain_OMP_FFTW(sph_rtp%nidx_rtp,               &
-     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_domain_OMP_FFTW)
+        call verify_sph_domain_OMP_FFTW                                 &
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -496,9 +496,7 @@
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
         call sph_domain_fwd_OFFTW_to_send                               &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
+     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
      &      WK_FFTs%sph_domain_OMP_FFTW)
 #endif
 !
@@ -605,9 +603,7 @@
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
         call sph_domain_back_OFFTW_from_recv                            &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), v_rtp(1,1),                        &
+     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
      &      WK_FFTs%sph_domain_OMP_FFTW)
 #endif
 !
