@@ -284,7 +284,7 @@
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
         call copy_rtp_field_to_OMP_FFTW                                 &
-     &     (sph_rtp%nnod_rtp, X_rtp(1,nd), OFFTW_d%X(1))
+     &     (sph_rtp%nnod_rtp, OFFTW_d%X(1), X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
