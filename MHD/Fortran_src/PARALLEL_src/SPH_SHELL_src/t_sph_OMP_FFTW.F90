@@ -309,13 +309,13 @@
       integer(kind = kint_gl) :: nnod_rt
       integer(kind = kint) :: Ncomp
 !
+      nnod_rt = irt_rtp_smp_stack(np_smp)
       Ncomp = max(ncomp_bwd, ncomp_fwd)
       OFFTW%howmany_bwd = int(ncomp_bwd)*nnod_rt
       OFFTW%howmany_fwd = int(ncomp_fwd)*nnod_rt
       OFFTW%Nfft_r = Nfft
       OFFTW%Nfft_c = Nfft/2 + 1
 !
-      nnod_rt = irt_rtp_smp_stack(np_smp)
       allocate(OFFTW%X(OFFTW%Nfft_r*nnod_rt*Ncomp))
       allocate(OFFTW%C(OFFTW%Nfft_c*nnod_rt*Ncomp))
       OFFTW%X = 0.0d0
