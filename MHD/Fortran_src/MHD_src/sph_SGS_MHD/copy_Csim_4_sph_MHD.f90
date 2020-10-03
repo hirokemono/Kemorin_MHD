@@ -161,7 +161,7 @@
       subroutine set_model_coefs_sph_snap(sph_rtp, sph_d_grp,           &
      &          irtp_sgs, ifld_sgs, wk_sgs, trns_fwd)
 !
-      use prod_SGS_model_coefs_sph
+      use product_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_dynamic_model_group), intent(in) :: sph_d_grp
@@ -177,9 +177,8 @@
       trns_fwd%fld_rtp(1:sph_rtp%nnod_rtp,irtp_sgs) = one
 !$omp end parallel workshare
 !
-      call product_model_coefs_rin(one, ifld_sgs, sph_rtp, sph_d_grp,   &
-     &    wk_sgs%num_kinds, wk_sgs%fld_coef, irtp_sgs, ione,            &
-     &    trns_fwd%ncomp, trns_fwd%fld_rtp)
+      call sel_product_model_coefs(one, sph_rtp, sph_d_grp,             &
+     &    wk_sgs%num_kinds, irtp_sgs, ione, wk_sgs, trns_fwd)
 !
       end subroutine set_model_coefs_sph_snap
 !
