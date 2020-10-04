@@ -105,12 +105,23 @@
      &     .or. cmp_no_case(tmpchara, radius2)                          &
      &     .or. cmp_no_case(tmpchara, radius3)) then
           s3d_ranks%rtm_rin_flag = .TRUE.
-        else if(     cmp_no_case(tmpchara, horiz1)) then
+        else if(cmp_no_case(tmpchara, phi1)                             &
+     &     .or. cmp_no_case(tmpchara, phi2)) then
           s3d_ranks%rtm_rin_flag = .FALSE.
         end if
       end if
 !
       s3d_ranks%rtp_rin_flag = .TRUE.
+      if(sdctl%rtp_inner_loop_ctl%iflag .gt. 0) then
+        tmpchara = sdctl%rtp_inner_loop_ctl%charavalue
+        if(     cmp_no_case(tmpchara, radius1)                          &
+     &     .or. cmp_no_case(tmpchara, radius2)                          &
+     &     .or. cmp_no_case(tmpchara, radius3)) then
+          s3d_ranks%rtp_rin_flag = .TRUE.
+        else if(     cmp_no_case(tmpchara, horiz1)) then
+          s3d_ranks%rtp_rin_flag = .FALSE.
+        end if
+      end if
 !
       s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_transform
       if(sdctl%rlm_distibution_ctl%iflag .gt. 0) then
