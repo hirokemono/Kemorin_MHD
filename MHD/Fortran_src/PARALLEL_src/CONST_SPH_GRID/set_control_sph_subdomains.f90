@@ -105,8 +105,7 @@
      &     .or. cmp_no_case(tmpchara, radius2)                          &
      &     .or. cmp_no_case(tmpchara, radius3)) then
           s3d_ranks%rtm_rin_flag = .TRUE.
-        else if(cmp_no_case(tmpchara, phi1)                             &
-     &     .or. cmp_no_case(tmpchara, phi2)) then
+        else if(     cmp_no_case(tmpchara, horiz1)) then
           s3d_ranks%rtm_rin_flag = .FALSE.
         end if
       end if
@@ -118,7 +117,8 @@
      &     .or. cmp_no_case(tmpchara, radius2)                          &
      &     .or. cmp_no_case(tmpchara, radius3)) then
           s3d_ranks%rtp_rin_flag = .TRUE.
-        else if(     cmp_no_case(tmpchara, horiz1)) then
+        else if(cmp_no_case(tmpchara, phi1)                             &
+     &     .or. cmp_no_case(tmpchara, phi2)) then
           s3d_ranks%rtp_rin_flag = .FALSE.
         end if
       end if
