@@ -198,14 +198,13 @@
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_fwd)
+     &     :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, ied, nd
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
+      integer(kind = kint) :: j, ip, ist, ied, nd
 !
 !
       if(iflag_FFT_time) then
@@ -214,8 +213,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do  private(nd,j,ip,ist,ied)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
         ied = sph_rtp%istack_rtp_rt_smp(ip) 
@@ -223,8 +221,10 @@
 !
           do j = ist, ied
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
-            FFTW_t%X(1:sph_rtp%nidx_rtp(3),ip)  &
-     &         = X_rtp(j,1:sph_rtp%nidx_rtp(3),nd)
+            call sel_copy_single_rtp_to_FFT                             &
+     &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
+     &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
+     &          X_rtp(1,nd), FFTW_t%X(1,ip))
             if(iflag_FFT_time) FFTW_t%t_omp(ip,1)= FFTW_t%t_omp(ip,1)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
 !
@@ -268,11 +268,10 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_bwd)
+     &     :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
-      integer(kind = kint) :: m, j, ip, ist, ied, nd
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: j, ip, ist, ied, nd
 !
 !
       if(iflag_FFT_time) then
@@ -281,8 +280,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(nd,m,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp parallel do private(nd,j,ip,ist,ied)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
         ied = sph_rtp%istack_rtp_rt_smp(ip)
@@ -304,8 +302,10 @@
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) FFTW_t%t_omp(ip,0) = MPI_WTIME()
-            X_rtp(j,1:sph_rtp%nidx_rtp(3),nd) &
-     &         = FFTW_t%X(1:sph_rtp%nidx_rtp(3),ip)
+            call sel_copy_single_FFT_to_rtp                             &
+     &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
+     &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
+     &          FFTW_t%X(1,ip), X_rtp(1,nd))
             if(iflag_FFT_time) FFTW_t%t_omp(ip,3)= FFTW_t%t_omp(ip,3)   &
      &                       + MPI_WTIME() - FFTW_t%t_omp(ip,0)
           end do
