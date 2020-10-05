@@ -122,13 +122,15 @@
 !
       subroutine init_sph_single_ISPACK3(nphi_rtp, ispack3_s)
 !
-      integer(kind = kint_gl), intent(in) :: nphi_rtp
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: nphi_rtp
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
 !
 !
       call alloc_work_single_ispack3(nphi_rtp, ispack3_s)
-      call FXRINI(nphi_rtp, ispack3_s%IT, ispack3_s%T)
+      call FXRINI(cast_long(nphi_rtp), ispack3_s%IT, ispack3_s%T)
 !
       allocate(ispack3_s%t_omp(np_smp,0:3))
       ispack3_s%t_omp = 0.0d0
@@ -151,7 +153,9 @@
 !
       subroutine verify_sph_single_ISPACK3(nphi_rtp, ispack3_s)
 !
-      integer(kind = kint_gl), intent(in) :: nphi_rtp
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: nphi_rtp
 !
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
 !
@@ -165,7 +169,7 @@
           call alloc_work_single_ispack3(nphi_rtp, ispack3_s)
         end if
 !
-        call FXRINI(nphi_rtp, ispack3_s%IT(1), ispack3_s%T(1))
+        call FXRINI(cast_long(nphi_rtp), ispack3_s%IT, ispack3_s%T)
       end if
 !
       end subroutine verify_sph_single_ISPACK3
@@ -180,8 +184,8 @@
       use transfer_to_long_integers
       use copy_single_FFT_and_rtp
 !
-      integer(kind = kint_gl), intent(in) :: ncomp_fwd
-      integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       real(kind = kreal), intent(in)                                    &
@@ -221,8 +225,8 @@
      &                         + MPI_WTIME() - ispack3_s%t_omp(ip,0)
 !
             if(iflag_FFT_time) ispack3_s%t_omp(ip,0) = MPI_WTIME()
-            call FXRTFA(cast_long(1), nphi_rtp, ispack3_s%X(1,ip),      &
-     &                  ispack3_s%IT(1), ispack3_s%T(1))
+            call FXRTFA(cast_long(1), cast_long(nphi_rtp),              &
+     &          ispack3_s%X(1,ip), ispack3_s%IT(1), ispack3_s%T(1))
             if(iflag_FFT_time) ispack3_s%t_omp(ip,2)                    &
      &                        = ispack3_s%t_omp(ip,2)                   &
      &                         + MPI_WTIME() - ispack3_s%t_omp(ip,0)
@@ -267,8 +271,8 @@
       use transfer_to_long_integers
       use copy_single_FFT_and_rtp
 !
-      integer(kind = kint_gl), intent(in) :: ncomp_bwd
-      integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: n_WR
@@ -318,8 +322,8 @@
      &                         + MPI_WTIME() - ispack3_s%t_omp(ip,0)
 !
             if(iflag_FFT_time) ispack3_s%t_omp(ip,0) = MPI_WTIME()
-            call FXRTBA(cast_long(1), nphi_rtp, ispack3_s%X(1,ip),      &
-     &              ispack3_s%IT(1), ispack3_s%T(1))
+            call FXRTBA(cast_long(1), cast_long(nphi_rtp),              &
+     &          ispack3_s%X(1,ip), ispack3_s%IT(1), ispack3_s%T(1))
             if(iflag_FFT_time) ispack3_s%t_omp(ip,2)                    &
      &                        = ispack3_s%t_omp(ip,2)                   &
      &                         + MPI_WTIME() - ispack3_s%t_omp(ip,0)

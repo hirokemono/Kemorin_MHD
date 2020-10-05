@@ -206,7 +206,7 @@
      &      WK_FFTs%sph_comp_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single ISPACK V3.0.1'
-        call init_sph_single_ISPACK3(cast_long(sph_rtp%nidx_rtp(3)),    &
+        call init_sph_single_ISPACK3(sph_rtp%nidx_rtp(3),    &
      &      WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
@@ -380,7 +380,7 @@
      &      WK_FFTs%sph_comp_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single ISPACK V3.0.1'
-        call verify_sph_single_ISPACK3(cast_long(sph_rtp%nidx_rtp(3)),  &
+        call verify_sph_single_ISPACK3(sph_rtp%nidx_rtp(3),             &
      &      WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
@@ -483,8 +483,8 @@
      &     WK_FFTs%sph_comp_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         call sph_single_FXRTFA_to_send                                  &
-     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
-     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3), &
+     &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                  &
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1),                         &
      &     WK_FFTs%sph_sgl_ispack3)
 !
@@ -588,8 +588,8 @@
      &     WK_FFTs%sph_comp_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_SINGLE) then
         call sph_single_FXRTBA_from_recv                                &
-     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
-     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3), &
+     &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                  &
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1),                         &
      &     WK_FFTs%sph_sgl_ispack3)
 !
