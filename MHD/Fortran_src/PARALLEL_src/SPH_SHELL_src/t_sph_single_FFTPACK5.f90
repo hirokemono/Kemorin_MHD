@@ -73,7 +73,11 @@
       use m_constants
       use m_machine_parameter
       use m_elapsed_labels_SPH_TRNS
+!
       use calypso_mpi
+!
+      use t_spheric_rtp_data
+      use t_sph_trans_comm_tbl
 !
       implicit none
 !
@@ -102,6 +106,7 @@
 !
       private :: alloc_work_sgl_FFTPACK, alloc_const_sgl_FFTPACK
       private :: dealloc_work_sgl_FFTPACK, dealloc_const_sgl_FFTPACK
+      private :: copy_single_RFFTMB_from_recv
 !
 ! ------------------------------------------------------------------
 !
@@ -301,19 +306,9 @@
           do nd = 1, ncomp_bwd
 !   normalization
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
-            is_rtp = j + irt_rtp_smp_stack(np_smp)
-            ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
-            is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-            fftpack_t%smp(ip)%X(1) =           WR(ic_recv)
-            fftpack_t%smp(ip)%X(nidx_rtp(3)) = WR(is_recv)
-            do m = 1, nidx_rtp(3)/2 - 1
-              ic_rtp = j + (2*m  ) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j + (2*m+1) * irt_rtp_smp_stack(np_smp)
-              ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-              is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-              fftpack_t%smp(ip)%X(2*m  ) = WR(ic_recv)
-              fftpack_t%smp(ip)%X(2*m+1) = WR(is_recv)
-            end do
+            call copy_single_RFFTMB_from_recv(nd, j,                    &
+     &          nnod_rtp, nidx_rtp(3), irt_rtp_smp_stack(np_smp),       &
+     &          ncomp_bwd, irev_sr_rtp, n_WR, WR, fftpack_t%smp(ip)%X)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,1)                    &
      &                      = fftpack_t%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
@@ -410,6 +405,44 @@
       fftpack_t%iflag_fft_len = 0
 !
       end subroutine dealloc_const_sgl_FFTPACK
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine copy_single_RFFTMB_from_recv                           &
+     &         (nd, j, nnod_rtp, mphi_rtp, nnod_rt, ncomp_bwd,          &
+     &          irev_sr_rtp, n_WR, WR, X_fft)
+!
+      integer(kind = kint), intent(in) :: nd, j
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
+!
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+      real (kind=kreal), intent(inout):: WR(n_WR)
+!
+      real(kind = kreal), intent(inout) :: X_fft(mphi_rtp)
+!
+      integer(kind = kint) :: m, ic_rtp, is_rtp, ic_recv, is_recv
+!
+!
+!   normalization
+      is_rtp = j + nnod_rt
+      ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
+      is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+      X_fft(1) =           WR(ic_recv)
+      X_fft(mphi_rtp) = WR(is_recv)
+      do m = 1, mphi_rtp/2 - 1
+        ic_rtp = j + (2*m  ) * nnod_rt
+        is_rtp = j + (2*m+1) * nnod_rt
+        ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+        is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+        X_fft(2*m  ) = WR(ic_recv)
+        X_fft(2*m+1) = WR(is_recv)
+      end do
+!
+      end subroutine copy_single_RFFTMB_from_recv
 !
 ! ------------------------------------------------------------------
 !

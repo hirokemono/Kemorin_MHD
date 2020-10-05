@@ -79,6 +79,8 @@
       use m_precision
       use m_machine_parameter
       use t_spheric_rtp_data
+      use t_sph_trans_comm_tbl
+!
       use m_FFT_selector
 
       use t_sph_FFTPACK5
@@ -442,7 +444,6 @@
       subroutine fwd_FFT_select_to_send(sph_rtp, comm_rtp, ncomp_fwd,   &
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
-      use t_sph_trans_comm_tbl
       use transfer_to_long_integers
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -552,7 +553,6 @@
       subroutine back_FFT_select_from_recv                              &
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
-      use t_sph_trans_comm_tbl
       use transfer_to_long_integers
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
