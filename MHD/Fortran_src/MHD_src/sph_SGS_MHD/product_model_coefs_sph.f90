@@ -24,6 +24,14 @@
 !!        type(SGS_term_address), intent(in) :: fg_trns_SGS
 !!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!
+!!     subroutine sel_product_model_coefs                               &
+!!    &         (const_Csim, sph_rtp, sph_d_grp, numdir,                &
+!!    &          irtp_sgs, ifld_sgs, wk_sgs, trns_f_SGS)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_dynamic_model_group), intent(in) :: sph_d_grp
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
+!!        type(spherical_transform_data), intent(inout) :: trns_f_SGS
 !!@endverbatim
 !
       module product_model_coefs_sph
@@ -45,8 +53,6 @@
       use t_SGS_model_coefs
 !
       implicit none
-!
-      private :: sel_product_model_coefs
 !
 !-----------------------------------------------------------------------
 !
