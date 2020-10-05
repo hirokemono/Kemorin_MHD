@@ -180,6 +180,8 @@
      &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
      &          X_rtp, WS, fftpack_t)
 !
+      use copy_single_FFT_and_rtp
+!
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
@@ -252,25 +254,8 @@
       end do
 !$omp end parallel do
 !
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          fftpack_t%t_omp(1,1) = fftpack_t%t_omp(1,1)                   &
-     &                          + fftpack_t%t_omp(ip,1)
-          fftpack_t%t_omp(1,2) = fftpack_t%t_omp(1,2)                   &
-     &                          + fftpack_t%t_omp(ip,2)
-          fftpack_t%t_omp(1,3) = fftpack_t%t_omp(1,3)                   &
-     &                          + fftpack_t%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+4)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
-     &         + fftpack_t%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+5)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
-     &         + fftpack_t%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+6)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
-     &         + fftpack_t%t_omp(1,3) / dble(np_smp)
-      end if
+        call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp,             &
+     &      elps1%elapsed(ist_elapsed_FFT+4))
 !
       end subroutine sph_single_RFFTMF_to_send
 !
@@ -279,6 +264,8 @@
       subroutine sph_single_RFFTMB_from_recv(nnod_rtp, nidx_rtp,        &
      &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,        &
      &          WR, X_rtp, fftpack_t)
+!
+      use copy_single_FFT_and_rtp
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -352,23 +339,8 @@
 !$omp end parallel do
 !
       if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          fftpack_t%t_omp(1,1) = fftpack_t%t_omp(1,1)                   &
-     &                          + fftpack_t%t_omp(ip,1)
-          fftpack_t%t_omp(1,2) = fftpack_t%t_omp(1,2)                   &
-     &                          + fftpack_t%t_omp(ip,2)
-          fftpack_t%t_omp(1,3) = fftpack_t%t_omp(1,3)                   &
-     &                          + fftpack_t%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+1)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
-     &         + fftpack_t%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+2)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
-     &         + fftpack_t%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+3)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
-     &         + fftpack_t%t_omp(1,3) / dble(np_smp)
+        call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp,             &
+     &      elps1%elapsed(ist_elapsed_FFT+1))
       end if
 !
       end subroutine sph_single_RFFTMB_from_recv
