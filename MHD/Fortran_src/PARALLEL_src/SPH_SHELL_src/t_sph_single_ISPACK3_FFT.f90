@@ -178,6 +178,7 @@
      &          X_rtp, WS, ispack3_s)
 !
       use transfer_to_long_integers
+      use copy_single_FFT_and_rtp
 !
       integer(kind = kint_gl), intent(in) :: ncomp_fwd
       integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
@@ -251,23 +252,8 @@
 !$omp end parallel do
 !
       if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          ispack3_s%t_omp(1,1) = ispack3_s%t_omp(1,1)                   &
-     &                         + ispack3_s%t_omp(ip,1)
-          ispack3_s%t_omp(1,2) = ispack3_s%t_omp(1,2)                   &
-     &                         + ispack3_s%t_omp(ip,2)
-          ispack3_s%t_omp(1,3) = ispack3_s%t_omp(1,3)                   &
-     &                         + ispack3_s%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+4)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
-     &         + ispack3_s%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+5)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
-     &         + ispack3_s%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+6)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
-     &         + ispack3_s%t_omp(1,3) / dble(np_smp)
+        call sum_omp_elapsed_4_FFT(np_smp, ispack3_s%t_omp(1,1),        &
+     &                             elps1%elapsed(ist_elapsed_FFT+4))
       end if
 !
       end subroutine sph_single_FXRTFA_to_send
@@ -279,6 +265,7 @@
      &          WR, X_rtp, ispack3_s)
 !
       use transfer_to_long_integers
+      use copy_single_FFT_and_rtp
 !
       integer(kind = kint_gl), intent(in) :: ncomp_bwd
       integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
@@ -351,23 +338,8 @@
 !$omp end parallel do
 !
       if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          ispack3_s%t_omp(1,1) = ispack3_s%t_omp(1,1)                   &
-     &                         + ispack3_s%t_omp(ip,1)
-          ispack3_s%t_omp(1,2) = ispack3_s%t_omp(1,2)                   &
-     &                         + ispack3_s%t_omp(ip,2)
-          ispack3_s%t_omp(1,3) = ispack3_s%t_omp(1,3)                   &
-     &                         + ispack3_s%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+1)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
-     &         + ispack3_s%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+2)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
-     &         + ispack3_s%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+3)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
-     &         + ispack3_s%t_omp(1,3) / dble(np_smp)
+        call sum_omp_elapsed_4_FFT(np_smp, ispack3_s%t_omp(1,1),        &
+     &                             elps1%elapsed(ist_elapsed_FFT+1))
       end if
 !
       end subroutine sph_single_FXRTBA_from_recv
