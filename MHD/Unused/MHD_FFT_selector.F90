@@ -215,10 +215,8 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call sph_single_fwd_FFTW_to_send                                &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
+        call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
+     &      ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
@@ -271,10 +269,8 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        call sph_single_back_FFTW_from_recv                             &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
+        call sph_single_back_FFTW_from_recv(sph_rtp, comm_rtp,          &
+     &      ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
