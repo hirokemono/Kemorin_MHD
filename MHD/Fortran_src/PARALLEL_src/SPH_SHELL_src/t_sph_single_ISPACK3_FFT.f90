@@ -353,7 +353,7 @@
 !
       subroutine alloc_work_single_ispack3(Nfft, ispack3_s)
 !
-      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: Nfft
       type(work_for_single_ispack3), intent(inout) :: ispack3_s
 !
 !
