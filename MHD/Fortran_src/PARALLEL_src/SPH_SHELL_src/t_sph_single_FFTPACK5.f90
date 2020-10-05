@@ -200,8 +200,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &              sph_rtp%nidx_rtp(3),ncomp_fwd)
+     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
@@ -228,8 +227,10 @@
           do nd = 1, ncomp_fwd
 !
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
-            fftpack_t%smp(ip)%X(1:sph_rtp%nidx_rtp(3))                          &
-     &                      = X_rtp(j,1:sph_rtp%nidx_rtp(3),nd)
+            call sel_copy_single_rtp_to_FFT                             &
+     &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
+     &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
+     &          X_rtp(1,nd), fftpack_t%smp(ip)%X)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,1)                    &
      &                      = fftpack_t%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
@@ -277,8 +278,7 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &              sph_rtp%nidx_rtp(3),ncomp_bwd)
+     &     :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
 !
@@ -320,8 +320,10 @@
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
-            X_rtp(j,1:sph_rtp%nidx_rtp(3),nd)                                   &
-     &                      = fftpack_t%smp(ip)%X(1:sph_rtp%nidx_rtp(3))
+            call sel_copy_single_FFT_to_rtp                             &
+     &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
+     &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
+     &          fftpack_t%smp(ip)%X, X_rtp(1,nd))
             if(iflag_FFT_time) fftpack_t%t_omp(ip,3)                    &
      &                      = fftpack_t%t_omp(ip,3)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
