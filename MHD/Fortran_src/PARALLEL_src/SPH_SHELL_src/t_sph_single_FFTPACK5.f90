@@ -207,9 +207,7 @@
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, ied, nd
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inod_s, inod_c, ierr
+      integer(kind = kint) :: j, ip, ist, ied, nd, ierr
 !
 !
       if(iflag_FFT_time) then
@@ -218,8 +216,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do private(m,j,nd,ist,ied,inod_s,inod_c,                 &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(ip,j,nd,ist,ied)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
         ied = sph_rtp%istack_rtp_rt_smp(ip)
@@ -245,10 +242,10 @@
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
-            call copy_single_RFFTMF_to_send(nd, j, sph_rtp%nnod_rtp,    &
+            call copy_single_RFFTMF_to_send                             &
+     &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_fwd, comm_rtp%irev_sr, fftpack_t%smp(ip)%X,       &
-     &          n_WS, WS)
+     &          ncomp_fwd, fftpack_t%smp(ip)%X, n_WS, WS)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,3)                    &
      &                      = fftpack_t%t_omp(ip,3)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
@@ -258,7 +255,7 @@
       end do
 !$omp end parallel do
 !
-        call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp,             &
+        call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp(1,1),        &
      &      elps1%elapsed(ist_elapsed_FFT+4))
 !
       end subroutine sph_single_RFFTMF_to_send
@@ -282,9 +279,7 @@
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, ied, nd
-      integer(kind = kint) :: inod_s, inod_c, ierr
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: j, ip, ist, ied, nd, ierr
 !
 !
       if(iflag_FFT_time) then
@@ -293,8 +288,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do private(m,j,nd,ist,ied,inod_s,inod_c,                 &
-!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp parallel do private(ip,j,nd,ist,ied)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
         ied = sph_rtp%istack_rtp_rt_smp(ip)
@@ -302,10 +296,10 @@
           do nd = 1, ncomp_bwd
 !   normalization
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
-            call copy_single_RFFTMB_from_recv(nd, j, sph_rtp%nnod_rtp,  &
+            call copy_single_RFFTMB_from_recv                           &
+     &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_bwd, comm_rtp%irev_sr, n_WR, WR,                  &
-     &          fftpack_t%smp(ip)%X)
+     &          ncomp_bwd, n_WR, WR, fftpack_t%smp(ip)%X)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,1)                    &
      &                      = fftpack_t%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
@@ -334,7 +328,7 @@
 !$omp end parallel do
 !
       if(iflag_FFT_time) then
-        call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp,             &
+        call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp(1,1),        &
      &      elps1%elapsed(ist_elapsed_FFT+1))
       end if
 !
@@ -409,8 +403,9 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_single_RFFTMF_to_send(nd, j, nnod_rtp, mphi_rtp,  &
-     &          nnod_rt, ncomp_fwd, irev_sr_rtp, X_fft, n_WS, WS)
+      subroutine copy_single_RFFTMF_to_send                             &
+     &         (nd, j, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,        &
+     &          ncomp_fwd, X_fft, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nd, j
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -445,8 +440,8 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_single_RFFTMB_from_recv                           &
-     &         (nd, j, nnod_rtp, mphi_rtp, nnod_rt, ncomp_bwd,          &
-     &          irev_sr_rtp, n_WR, WR, X_fft)
+     &         (nd, j, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,        &
+     &          ncomp_bwd, n_WR, WR, X_fft)
 !
       integer(kind = kint), intent(in) :: nd, j
       integer(kind = kint), intent(in) :: nnod_rtp
