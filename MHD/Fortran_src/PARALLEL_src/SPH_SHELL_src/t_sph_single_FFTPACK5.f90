@@ -255,8 +255,10 @@
       end do
 !$omp end parallel do
 !
+      if(iflag_FFT_time) then
         call sum_omp_elapsed_4_FFT(np_smp, fftpack_t%t_omp(1,1),        &
      &      elps1%elapsed(ist_elapsed_FFT+4))
+      end if
 !
       end subroutine sph_single_RFFTMF_to_send
 !
