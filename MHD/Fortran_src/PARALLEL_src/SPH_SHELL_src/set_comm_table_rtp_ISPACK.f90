@@ -332,8 +332,8 @@
         end do
         do m = 2, nphi_rtp/2
           do j = 1, num
-            inod_c = j + (2*m-2) * num
-            inod_s = j + (2*m-1) * num
+            inod_c = j + (2*m-2) * num + ist_fft
+            inod_s = j + (2*m-1) * num + ist_fft
             ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
             is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
             ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
