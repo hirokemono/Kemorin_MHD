@@ -79,6 +79,9 @@
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
 !
+      use t_spheric_rtp_data
+      use t_sph_trans_comm_tbl
+!
       implicit none
 !
 !
@@ -187,6 +190,7 @@
      &          X_rtp, WS, ispack_d)
 !
       use ispack_0931
+      use copy_single_FFT_and_rtp
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -279,6 +283,7 @@
      &          WR, X_rtp, ispack_d)
 !
       use ispack_0931
+      use copy_single_FFT_and_rtp
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)

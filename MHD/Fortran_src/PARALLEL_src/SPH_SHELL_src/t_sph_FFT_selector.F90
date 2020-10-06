@@ -197,7 +197,7 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for domain'
         call init_sph_domain_ISPACK3                                    &
-     &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
+     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
      &      WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for component'
@@ -368,7 +368,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Use ISPACK V3.0.1 for domain'
         call verify_sph_domain_ISPACK3                                  &
-     &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
+     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
      &      WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*)                               &
@@ -468,8 +468,8 @@
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         call sph_domain_FXRTFA_to_send                                  &
-     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
-     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3), &
+     &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,       &
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1),                         &
      &     WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
@@ -562,8 +562,8 @@
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         call sph_domain_FXRTBA_from_recv                                &
-     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
-     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3), &
+     &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,       &
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1),                         &
      &     WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
