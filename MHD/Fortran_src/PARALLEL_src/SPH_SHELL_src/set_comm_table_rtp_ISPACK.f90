@@ -92,7 +92,7 @@
                 comm_sph_FFT%ip_smp_fft(ic_send) = ip
                 comm_sph_FFT%kl_fft(ic_send) = j
                 comm_sph_FFT%m_fft(ic_send) =  2*m-1
-                comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
+                comm_sph_FFT%rnorm_sr_rtp(ic_send) = two
               end if
 !
               is_rtp =  j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
@@ -102,7 +102,7 @@
                 comm_sph_FFT%ip_smp_fft(is_send) = ip
                 comm_sph_FFT%kl_fft(is_send) = j
                 comm_sph_FFT%m_fft(is_send) =  2*m
-                comm_sph_FFT%rnorm_sr_rtp(is_send) = one
+                comm_sph_FFT%rnorm_sr_rtp(is_send) = -two
             end if
             end do
           end do

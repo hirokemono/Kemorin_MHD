@@ -139,9 +139,9 @@
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
         do m = 1, nidx_rtp(3)
+          inod_c = (m-1)*num + ist_fft
           do j = 1, num
-            inod_c = j + (m-1)*num + ist_fft
-            X_rtp(j+ist,m) = X_FFT(inod_c)
+            X_rtp(j+ist,m) = X_FFT(j+inod_c)
           end do
         end do
       end do
