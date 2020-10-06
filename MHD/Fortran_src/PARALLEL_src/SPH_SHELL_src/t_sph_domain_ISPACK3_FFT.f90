@@ -103,10 +103,8 @@
 !
 !>      Structure to use ISPACK
       type work_for_domain_ispack3
-!>        Total size of X for each domain
-        integer(kind = kint) :: ntot_X
 !>        Data for multiple Fourier transform
-        real(kind = 8), allocatable :: X(:,:)
+        real(kind = 8), allocatable :: X(:)
 !>        Work constants for ISPACK
         real(kind = 8), allocatable :: T(:)
 !>        Work area for ISPACK
@@ -141,8 +139,7 @@
       call FXRINI(cast_long(sph_rtp%nidx_rtp(3)),                       &
      &            ispack3_d%IT, ispack3_d%T)
 !
-      call alloc_work_domain_ispack3                                    &
-     &   (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp, ispack3_d)
+      call alloc_work_domain_ispack3(sph_rtp%nnod_rtp, ispack3_d)
 !
       end subroutine init_sph_domain_ISPACK3
 !
@@ -188,13 +185,10 @@
       end if
 !
       if(ALLOCATED(ispack3_d%X) .eqv. .false.) then
-        call alloc_work_domain_ispack3                                  &
-     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp, ispack3_d)
-      else if( (sph_rtp%maxirt_rtp_smp*sph_rtp%nidx_rtp(3))             &
-     &       .gt. size(ispack3_d%X,1) ) then
+        call alloc_work_domain_ispack3(sph_rtp%nnod_rtp, ispack3_d)
+      else if(sph_rtp%nnod_rtp .gt. size(ispack3_d%X,1)) then
         call dealloc_work_domain_ispack3(ispack3_d)
-        call alloc_work_domain_ispack3                                  &
-     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp, ispack3_d)
+        call alloc_work_domain_ispack3(sph_rtp%nnod_rtp, ispack3_d)
       end if
 !
       end subroutine verify_sph_domain_ISPACK3
@@ -221,23 +215,22 @@
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
 !
       integer(kind = kint) :: m, j, ip, ist, nd
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inod_s, inod_c
+      integer(kind = kint) :: inod_s, inod_c, ist_fft
       integer(kind = kint) :: num
 !
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,ist,num,inod_s,inod_c,                   &
-!$omp&                 ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(ip,m,j,ist,num,inod_c,ist_fft)
         do ip = 1, np_smp
           ist = sph_rtp%istack_rtp_rt_smp(ip-1)
           num = sph_rtp%istack_rtp_rt_smp(ip) - sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_fft = sph_rtp%istack_rtp_rt_smp(ip-1)                     &
+     &             * sph_rtp%nidx_rtp(3)
 !
           do m = 1, sph_rtp%nidx_rtp(3)
-            inod_c = (m-1) * num
-            ispack3_d%X(inod_c+1:inod_c+num,ip)                         &
+            inod_c = (m-1) * num + ist_fft
+            ispack3_d%X(inod_c+1:inod_c+num)                            &
      &             = X_rtp(ist+1:ist+num,m,nd)
           end do
         end do
@@ -245,12 +238,14 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-!$omp parallel do private(ip,m,j,num)
+!$omp parallel do private(ip,m,j,num,ist_fft)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
      &         - sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_fft = sph_rtp%istack_rtp_rt_smp(ip-1)                     &
+     &             * sph_rtp%nidx_rtp(3)
           call FXRTFA(cast_long(num), cast_long(sph_rtp%nidx_rtp(3)),   &
-     &        ispack3_d%X(1,ip), ispack3_d%IT(1), ispack3_d%T(1))
+     &        ispack3_d%X(ist_fft+1), ispack3_d%IT(1), ispack3_d%T(1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
@@ -259,7 +254,7 @@
         call copy_rtp_comp_ISPACK_to_send                               &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                  &
      &      sph_rtp%istack_rtp_rt_smp, comm_rtp%irev_sr, ncomp_fwd,     &
-     &      ispack3_d%ntot_X, ispack3_d%X, n_WS, WS)
+     &      ispack3_d%X, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
@@ -285,7 +280,7 @@
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
 !
-      integer(kind = kint) ::  m, ip, ist, nd
+      integer(kind = kint) ::  m, ip, ist, nd, ist_fft
       integer(kind = kint) ::  inod_c
       integer(kind = kint) :: num
 !
@@ -295,29 +290,33 @@
         call copy_ISPACK_comp_from_recv                                 &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                  &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, comm_rtp%irev_sr,     &
-     &      n_WR, WR, ispack3_d%ntot_X, ispack3_d%X)
+     &      n_WR, WR, ispack3_d%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(ip,num)
+!$omp parallel do private(ip,num,ist_fft)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
      &         - sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_fft = sph_rtp%istack_rtp_rt_smp(ip-1)                     &
+     &             * sph_rtp%nidx_rtp(3)
           call FXRTBA(cast_long(num), cast_long(sph_rtp%nidx_rtp(3)),   &
-     &        ispack3_d%X(1,ip), ispack3_d%IT(1), ispack3_d%T(1))
+     &        ispack3_d%X(ist_fft+1), ispack3_d%IT(1), ispack3_d%T(1))
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-!$omp parallel do private(ip,m,ist,num,inod_c)
+!$omp parallel do private(ip,m,ist,num,inod_c,ist_fft)
         do ip = 1, np_smp
           ist = sph_rtp%istack_rtp_rt_smp(ip-1)
           num = sph_rtp%istack_rtp_rt_smp(ip) - sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_fft = sph_rtp%istack_rtp_rt_smp(ip-1)                     &
+     &             * sph_rtp%nidx_rtp(3)
           do m = 1, sph_rtp%nidx_rtp(3)
-            inod_c = (m-1) * num
+            inod_c = (m-1) * num + ist_fft
             X_rtp(ist+1:ist+num,m,nd)                                   &
-     &             = ispack3_d%X(inod_c+1:inod_c+num,ip)
+     &             = ispack3_d%X(inod_c+1:inod_c+num)
           end do
         end do
 !$omp end parallel do
@@ -329,16 +328,13 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_domain_ispack3                              &
-     &         (Nfft, maxirt_rtp_smp, ispack3_d)
+      subroutine alloc_work_domain_ispack3(nnod_rtp, ispack3_d)
 !
-      integer(kind = kint), intent(in) :: Nfft
-      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      integer(kind = kint), intent(in) :: nnod_rtp
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
 !
 !
-      ispack3_d%ntot_X = maxirt_rtp_smp*Nfft
-      allocate( ispack3_d%X(ispack3_d%ntot_X,np_smp) )
+      allocate( ispack3_d%X(nnod_rtp) )
 !
       end subroutine alloc_work_domain_ispack3
 !
