@@ -250,26 +250,10 @@
 !
 !   normalization
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          ic_send = ncomp_fwd * (irev_sr_rtp(j) - 1)
-          WS(ic_send+1:ic_send+ncomp_fwd)                               &
-     &          = FFTW_c%aNfft * real(FFTW_c%C(1:ncomp_fwd,ip))
-          do m = 2, FFTW_c%Nfft_c-1
-            ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
-            ic_send = ncomp_fwd * (irev_sr_rtp(ic_rtp) - 1)
-            is_send = ncomp_fwd * (irev_sr_rtp(is_rtp) - 1)
-            ms =      ncomp_fwd * (m-1)
-            WS(ic_send+1:ic_send+ncomp_fwd) = two*FFTW_c%aNfft          &
-     &                        * real(FFTW_c%C(ms+1:ms+ncomp_fwd,ip))
-            WS(is_send+1:is_send+ncomp_fwd) = two*FFTW_c%aNfft          &
-     &                        * real(FFTW_c%C(ms+1:ms+ncomp_fwd,ip)*iu)
-          end do 
-          ic_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_send = ncomp_fwd * (irev_sr_rtp(ic_rtp)-1)
-          ms =      ncomp_fwd * (FFTW_c%Nfft_c-1)
-          WS(ic_send+1:ic_send+ncomp_fwd)                               &
-     &        = two*FFTW_c%aNfft * real(FFTW_c%C(ms+1:ms+ncomp_fwd,ip))
-!
+          call copy_comp_FFTW_to_send                                   &
+     &       (j, nnod_rtp, irev_sr_rtp,                                 &
+     &        irt_rtp_smp_stack(np_smp), ncomp_fwd,      &
+     &        FFTW_c%Nfft_c, FFTW_c%C(1,ip), FFTW_c%aNfft, n_WS, WS)
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3)= FFTW_c%t_omp(ip,3)     &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
         end do
@@ -407,6 +391,50 @@
       deallocate(FFTW_c%X, FFTW_c%C)
 !
       end subroutine dealloc_comp_FFTW_plan
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine copy_comp_FFTW_to_send(j, nnod_rtp, irev_sr_rtp,       &
+     &          nnod_rt, ncomp_fwd, Nfft_c, C_fft, aNfft, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: j
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt
+!
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      integer(kind = kint), intent(in) :: Nfft_c
+      real(kind = kreal), intent(in) :: aNfft
+      complex(kind = fftw_complex), intent(in)                          &
+     &              :: C_fft(ncomp_fwd*Nfft_c)
+!
+      integer(kind = kint), intent(in) :: n_WS
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+      integer(kind = kint) :: m, ms, ic_rtp, is_rtp, ic_send, is_send
+!
+!
+      ic_send = ncomp_fwd * (irev_sr_rtp(j) - 1)
+      WS(ic_send+1:ic_send+ncomp_fwd)                                   &
+     &          = aNfft * real(C_fft(1:ncomp_fwd))
+      do m = 2, Nfft_c-1
+        ic_rtp = j + (2*m-2) * nnod_rt
+        is_rtp = j + (2*m-1) * nnod_rt
+        ic_send = ncomp_fwd * (irev_sr_rtp(ic_rtp) - 1)
+        is_send = ncomp_fwd * (irev_sr_rtp(is_rtp) - 1)
+        ms =      ncomp_fwd * (m-1)
+        WS(ic_send+1:ic_send+ncomp_fwd) = two*aNfft                     &
+     &                        * real(C_fft(ms+1:ms+ncomp_fwd))
+        WS(is_send+1:is_send+ncomp_fwd) = two*aNfft                     &
+     &                        * real(C_fft(ms+1:ms+ncomp_fwd)*iu)
+      end do 
+      ic_rtp = j + nnod_rt
+      ic_send = ncomp_fwd * (irev_sr_rtp(ic_rtp)-1)
+      ms =      ncomp_fwd * (Nfft_c-1)
+      WS(ic_send+1:ic_send+ncomp_fwd)                                   &
+     &        = two*aNfft * real(C_fft(ms+1:ms+ncomp_fwd))
+!
+      end subroutine copy_comp_FFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
