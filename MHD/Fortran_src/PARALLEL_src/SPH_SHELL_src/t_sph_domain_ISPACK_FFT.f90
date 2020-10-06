@@ -98,9 +98,6 @@
         real(kind = 8), allocatable :: T(:)
 !>        Work area for ISPACK
         integer(kind = 4) :: IT(5)
-!
-!>        temporal area for time count
-        real(kind = kreal), allocatable :: t_omp(:,:)
       end type work_for_domain_ispack
 !
       private :: alloc_work_domain_ispack, alloc_const_domain_ispack
@@ -131,9 +128,6 @@
       call alloc_work_domain_ispack                                     &
      &   (nidx_rtp(3), maxirt_rtp_smp, ispack_d)
 !
-      allocate(ispack_d%t_omp(np_smp,0:3))
-      ispack_d%t_omp = 0.0d0
-!
       end subroutine init_sph_domain_ISPACK
 !
 ! ------------------------------------------------------------------
@@ -145,7 +139,6 @@
 !
       call dealloc_const_domain_ispack(ispack_d)
       call dealloc_work_domain_ispack(ispack_d)
-      deallocate(ispack_d%t_omp)
 !
       end subroutine finalize_sph_domain_ISPACK
 !
@@ -214,20 +207,14 @@
       integer(kind = kint) :: inum, inod_s, inod_c
 !
 !
-      if(iflag_FFT_time) then
-!$omp parallel workshare
-        ispack_d%t_omp(1:np_smp,0:3) = 0
-!$omp end parallel workshare
-      end if
-!
       do nd = 1, ncomp_fwd
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
 !
-          if(iflag_FFT_time) ispack_d%t_omp(ip,0) = MPI_WTIME()
           do m = 1, nidx_rtp(3)/2
             inod_c = (2*m-2) * num
             inod_s = (2*m-1) * num
@@ -236,32 +223,28 @@
             ispack_d%smp(ip)%X(inod_s+1:inod_s+num)                     &
      &             = X_rtp(ist+1:ist+num,2*m,  nd)
           end do
-          if(iflag_FFT_time) ispack_d%t_omp(ip,1)                       &
-     &                      = ispack_d%t_omp(ip,1)                      &
-     &                       + MPI_WTIME() - ispack_d%t_omp(ip,0)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          if(iflag_FFT_time) ispack_d%t_omp(ip,0) = MPI_WTIME()
           call FTTRUF(num, nidx_rtp(3), ispack_d%smp(ip)%X,             &
-     &      ispack_d%smp(ip)%WK, ispack_d%IT, ispack_d%T)
-          if(iflag_FFT_time) ispack_d%t_omp(ip,2)                       &
-     &                      = ispack_d%t_omp(ip,2)                      &
-     &                       + MPI_WTIME() - ispack_d%t_omp(ip,0)
+     &       ispack_d%smp(ip)%WK, ispack_d%IT, ispack_d%T)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          if(iflag_FFT_time) ispack_d%t_omp(ip,0) = MPI_WTIME()
           do j = 1, num
             ic_rtp = j+ist
             is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
@@ -282,33 +265,10 @@
               WS(is_send) = - two * ispack_d%smp(ip)%X(inod_s)
             end do
           end do
-          if(iflag_FFT_time) ispack_d%t_omp(ip,3)                       &
-     &                      = ispack_d%t_omp(ip,3)                      &
-     &                       + MPI_WTIME() - ispack_d%t_omp(ip,0)
-!
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
-!
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          ispack_d%t_omp(1,1) = ispack_d%t_omp(1,1)                     &
-     &                         + ispack_d%t_omp(ip,1)
-          ispack_d%t_omp(1,2) = ispack_d%t_omp(1,2)                     &
-     &                         + ispack_d%t_omp(ip,2)
-          ispack_d%t_omp(1,3) = ispack_d%t_omp(1,3)                     &
-     &                         + ispack_d%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+4)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
-     &         + ispack_d%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+5)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
-     &         + ispack_d%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+6)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
-     &         + ispack_d%t_omp(1,3) / dble(np_smp)
-      end if
 !
       end subroutine sph_domain_FTTRUF_to_send
 !
@@ -339,20 +299,14 @@
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-      if(iflag_FFT_time) then
-!$omp parallel workshare
-        ispack_d%t_omp(1:np_smp,0:3) = 0
-!$omp end parallel workshare
-      end if
-!
       do nd = 1, ncomp_bwd
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
 !
-          if(iflag_FFT_time) ispack_d%t_omp(ip,0) = MPI_WTIME()
           do j = 1, num
             ic_rtp = j+ist
             is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
@@ -373,32 +327,28 @@
               ispack_d%smp(ip)%X(inod_s) = -half * WR(is_recv)
             end do
           end do
-          if(iflag_FFT_time) ispack_d%t_omp(ip,1)                       &
-     &                      = ispack_d%t_omp(ip,1)                      &
-     &                       + MPI_WTIME() - ispack_d%t_omp(ip,0)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          if(iflag_FFT_time) ispack_d%t_omp(ip,0) = MPI_WTIME()
           call FTTRUB(num, nidx_rtp(3), ispack_d%smp(ip)%X,             &
      &      ispack_d%smp(ip)%WK, ispack_d%IT, ispack_d%T)
-          if(iflag_FFT_time) ispack_d%t_omp(ip,2)                       &
-     &                      = ispack_d%t_omp(ip,2)                      &
-     &                       + MPI_WTIME() - ispack_d%t_omp(ip,0)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          if(iflag_FFT_time) ispack_d%t_omp(ip,0) = MPI_WTIME()
           do m = 1, nidx_rtp(3)/2
             inod_c = (2*m-2) * num
             inod_s = (2*m-1) * num
@@ -407,32 +357,10 @@
             X_rtp(ist+1:ist+num,2*m,  nd)                               &
      &             = ispack_d%smp(ip)%X(inod_s+1:inod_s+num)
           end do
-          if(iflag_FFT_time) ispack_d%t_omp(ip,3)                       &
-     &                      = ispack_d%t_omp(ip,3)                      &
-     &                       + MPI_WTIME() - ispack_d%t_omp(ip,0)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
-!
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          ispack_d%t_omp(1,1) = ispack_d%t_omp(1,1)                     &
-     &                         + ispack_d%t_omp(ip,1)
-          ispack_d%t_omp(1,2) = ispack_d%t_omp(1,2)                     &
-     &                         + ispack_d%t_omp(ip,2)
-          ispack_d%t_omp(1,3) = ispack_d%t_omp(1,3)                     &
-     &                         + ispack_d%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+1)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
-     &         + ispack_d%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+2)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
-     &         + ispack_d%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+3)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
-     &         + ispack_d%t_omp(1,3) / dble(np_smp)
-      end if
 !
       end subroutine sph_domain_FTTRUB_from_recv
 !
