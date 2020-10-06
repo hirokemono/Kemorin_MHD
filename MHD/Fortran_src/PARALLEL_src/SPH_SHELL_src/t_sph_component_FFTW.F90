@@ -75,6 +75,9 @@
       use m_elapsed_labels_SPH_TRNS
       use calypso_mpi
 !
+      use t_spheric_rtp_data
+      use t_sph_trans_comm_tbl
+!
       implicit none
 !
 !>      Structure to use SNGLE FFTW
@@ -200,6 +203,8 @@
      &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
      &          X_rtp, WS, FFTW_c)
 !
+      use copy_single_FFT_and_rtp
+!
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
@@ -272,20 +277,8 @@
 !$omp end parallel do
 !
       if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          FFTW_c%t_omp(1,1) = FFTW_c%t_omp(1,1) + FFTW_c%t_omp(ip,1)
-          FFTW_c%t_omp(1,2) = FFTW_c%t_omp(1,2) + FFTW_c%t_omp(ip,2)
-          FFTW_c%t_omp(1,3) = FFTW_c%t_omp(1,3) + FFTW_c%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+4)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
-     &         + FFTW_c%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+5)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
-     &         + FFTW_c%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+6)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
-     &         + FFTW_c%t_omp(1,3) / dble(np_smp)
+        call sum_omp_elapsed_4_FFT(np_smp, FFTW_c%t_omp(1,1),           &
+     &      elps1%elapsed(ist_elapsed_FFT+4))
       end if
 !
       end subroutine sph_comp_fwd_FFTW_to_send
@@ -295,6 +288,8 @@
       subroutine sph_comp_back_FFTW_from_recv(nnod_rtp, nidx_rtp,       &
      &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp, WR,    &
      &          X_rtp, FFTW_c)
+!
+      use copy_single_FFT_and_rtp
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -367,20 +362,8 @@
 !$omp end parallel do
 !
       if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          FFTW_c%t_omp(1,1) = FFTW_c%t_omp(1,1) + FFTW_c%t_omp(ip,1)
-          FFTW_c%t_omp(1,2) = FFTW_c%t_omp(1,2) + FFTW_c%t_omp(ip,2)
-          FFTW_c%t_omp(1,3) = FFTW_c%t_omp(1,3) + FFTW_c%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+1)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
-     &         + FFTW_c%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+2)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
-     &         + FFTW_c%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+3)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
-     &         + FFTW_c%t_omp(1,3) / dble(np_smp)
+        call sum_omp_elapsed_4_FFT(np_smp, FFTW_c%t_omp(1,1),           &
+     &      elps1%elapsed(ist_elapsed_FFT+1))
       end if
 !
       end subroutine sph_comp_back_FFTW_from_recv
