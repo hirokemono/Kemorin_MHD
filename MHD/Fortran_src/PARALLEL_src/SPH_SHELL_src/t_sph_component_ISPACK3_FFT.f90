@@ -119,6 +119,7 @@
 !
       private :: alloc_work_comp_ispack3, alloc_const_comp_ispack3
       private :: dealloc_work_comp_ispack3, dealloc_const_comp_ispack3
+      private :: copy_comp_ISPACK3_to_send, copy_comp_ISPACK3_from_recv
 !
 ! ------------------------------------------------------------------
 !
@@ -223,7 +224,6 @@
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
       integer(kind = kint) :: m, j, ip, ist, ied
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
       integer(kind = kint) :: inod_s, inod_c
 !
 !
@@ -233,8 +233,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do private(ip,m,j,ist,ied,inod_s,inod_c,                &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(ip,m,j,ist,ied,inod_s,inod_c)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         ied = irt_rtp_smp_stack(ip)
@@ -261,26 +260,10 @@
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) ispack3_c%t_omp(ip,0) = MPI_WTIME()
-          ic_rtp = j
-          is_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send+1:ic_send+ncomp_fwd)                               &
-     &        = ispack3_c%X(1:ncomp_fwd,ip)
-          WS(is_send+1:is_send+ncomp_fwd)                               &
-     &        = ispack3_c%X(ncomp_fwd+1:ncomp_fwd+ncomp_fwd,ip)
-          do m = 2, nphi_rtp/2
-            ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
-            ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            inod_c = (2*m-2) * ncomp_fwd
-            inod_s = (2*m-1) * ncomp_fwd
-            WS(ic_send+1:ic_send+ncomp_fwd)                             &
-     &         =   two * ispack3_c%X(inod_c+1:inod_c+ncomp_fwd,ip)
-            WS(is_send+1:is_send+ncomp_fwd)                             &
-     &         = - two * ispack3_c%X(inod_s+1:inod_s+ncomp_fwd,ip)
-          end do
+          call copy_comp_ISPACK3_to_send                                &
+     &       (j, nnod_rtp, irev_sr_rtp,                 &
+     &        nphi_rtp, irt_rtp_smp_stack(np_smp),            &
+     &        ncomp_fwd, ispack3_c%X(1,ip), n_WS, WS)
           if(iflag_FFT_time) ispack3_c%t_omp(ip,3)                      &
      &                      = ispack3_c%t_omp(ip,3)                     &
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
@@ -320,7 +303,6 @@
 !
       integer(kind = kint) ::  m, j, ip, ist, ied
       integer(kind = kint) ::  inod_s, inod_c
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
       if(iflag_FFT_time) then
@@ -329,34 +311,17 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do private(ip,m,j,ist,ied,inod_s,inod_c,                &
-!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp parallel do private(ip,m,j,ist,ied,inod_s,inod_c)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1) + 1
         ied = irt_rtp_smp_stack(ip)
         do j = ist, ied
 !
           if(iflag_FFT_time) ispack3_c%t_omp(ip,0) = MPI_WTIME()
-          ic_rtp = j
-          is_rtp = j + irt_rtp_smp_stack(np_smp)
-          ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-          ispack3_c%X(1:ncomp_bwd,ip)                              &
-       &           = WR(ic_recv+1:ic_recv+ncomp_bwd)
-          ispack3_c%X(ncomp_bwd+1:ncomp_bwd+ncomp_bwd,ip)          &
-       &           = WR(is_recv+1:is_recv+ncomp_bwd)
-          do m = 2, nphi_rtp/2
-            inod_c = (2*m-2) * ncomp_bwd
-            inod_s = (2*m-1) * ncomp_bwd
-            ic_rtp = j + (2*m-2) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j + (2*m-1) * irt_rtp_smp_stack(np_smp)
-            ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-            is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-            ispack3_c%X(inod_c+1:inod_c+ncomp_bwd,ip)              &
-     &                =  half * WR(ic_recv+1:ic_recv+ncomp_bwd)
-            ispack3_c%X(inod_s+1:inod_s+ncomp_bwd,ip)              &
-     &                = -half * WR(is_recv+1:is_recv+ncomp_bwd)
-          end do
+          call copy_comp_ISPACK3_from_recv                              &
+     &       (j, nnod_rtp, irev_sr_rtp,           &
+     &        nphi_rtp, irt_rtp_smp_stack(np_smp),            &
+     &        ncomp_bwd, n_WR, WR, ispack3_c%X(1,ip))
           if(iflag_FFT_time) ispack3_c%t_omp(ip,1)                      &
      &                      = ispack3_c%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
@@ -447,6 +412,94 @@
       deallocate(ispack3_c%T, ispack3_c%IT)
 !
       end subroutine dealloc_const_comp_ispack3
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine copy_comp_ISPACK3_to_send                              &
+     &         (j, nnod_rtp, irev_sr_rtp, nphi_rtp, nnod_rt,            &
+     &          ncomp_fwd, X_fft, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: j
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nphi_rtp, nnod_rt
+!
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      real(kind = kreal), intent(in) :: X_fft(ncomp_fwd*nphi_rtp)
+!
+      integer(kind = kint), intent(in) :: n_WS
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+      integer(kind = kint) :: inod_s, inod_c
+      integer(kind = kint) :: m, ic_rtp, is_rtp, ic_send, is_send
+!
+!
+      ic_rtp = j
+      is_rtp = j + nnod_rt
+      ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+      is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+      WS(ic_send+1:ic_send+ncomp_fwd) = X_fft(1:ncomp_fwd)
+      WS(is_send+1:is_send+ncomp_fwd)                               &
+     &        = X_fft(ncomp_fwd+1:ncomp_fwd+ncomp_fwd)
+      do m = 2, nphi_rtp/2
+        ic_rtp = j + (2*m-2) * nnod_rt
+        is_rtp = j + (2*m-1) * nnod_rt
+        ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+        is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+        inod_c = (2*m-2) * ncomp_fwd
+        inod_s = (2*m-1) * ncomp_fwd
+        WS(ic_send+1:ic_send+ncomp_fwd)                             &
+     &         =   two * X_fft(inod_c+1:inod_c+ncomp_fwd)
+        WS(is_send+1:is_send+ncomp_fwd)                             &
+     &         = - two * X_fft(inod_s+1:inod_s+ncomp_fwd)
+      end do
+!
+      end subroutine copy_comp_ISPACK3_to_send
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine copy_comp_ISPACK3_from_recv                            &
+     &         (j, nnod_rtp, irev_sr_rtp, nphi_rtp, nnod_rt,            &
+     &          ncomp_bwd, n_WR, WR, X_fft)
+!
+      integer(kind = kint), intent(in) :: j
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nphi_rtp, nnod_rt
+!
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      integer(kind = kint), intent(in) :: n_WR
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+      real (kind=kreal), intent(in):: WR(n_WR)
+!
+      real(kind = kreal), intent(inout) :: X_fft(ncomp_bwd*nphi_rtp)
+!
+      integer(kind = kint) :: inod_s, inod_c
+      integer(kind = kint) :: m, ic_rtp, is_rtp, ic_recv, is_recv
+!
+!
+      ic_rtp = j
+      is_rtp = j + nnod_rt
+      ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+      is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+      X_fft(1:ncomp_bwd) = WR(ic_recv+1:ic_recv+ncomp_bwd)
+      X_fft(ncomp_bwd+1:ncomp_bwd+ncomp_bwd)                            &
+     &           = WR(is_recv+1:is_recv+ncomp_bwd)
+      do m = 2, nphi_rtp/2
+        inod_c = (2*m-2) * ncomp_bwd
+        inod_s = (2*m-1) * ncomp_bwd
+        ic_rtp = j + (2*m-2) * nnod_rt
+        is_rtp = j + (2*m-1) * nnod_rt
+        ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+        is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+        X_fft(inod_c+1:inod_c+ncomp_bwd)                                &
+     &                =  half * WR(ic_recv+1:ic_recv+ncomp_bwd)
+        X_fft(inod_s+1:inod_s+ncomp_bwd)                                &
+     &                = -half * WR(is_recv+1:is_recv+ncomp_bwd)
+      end do
+!
+      end subroutine copy_comp_ISPACK3_from_recv
 !
 ! ------------------------------------------------------------------
 !
