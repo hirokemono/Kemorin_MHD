@@ -10,17 +10,19 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine init_sph_component_FFTW                              &
-!!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
 !!      subroutine finalize_sph_component_FFTW(FFTW_c)
 !!      subroutine verify_sph_component_FFTW                            &
-!!     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+!!     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_comp_fwd_FFTW_to_send(nnod_rtp, nidx_rtp,        &
-!!     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,      &
-!!     &          X_rtp, WS, FFTW_c)
+!!      subroutine sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp,         &
+!!     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_c)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by FFTW3
@@ -34,9 +36,10 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_comp_back_FFTW_from_recv(nnod_rtp, nidx_rtp,     &
-!!     &          irt_rtp_smp_stack, ncomp_bwd, ntot_item_sr,           &
-!!     &          irev_sr_rtp, WR, X_rtp, FFTW_c)
+!!      subroutine sph_comp_back_FFTW_from_recv(sph_rtp, comm_rtp,      &
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_c)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in)  :: comm_rtp
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by FFTW3
@@ -115,10 +118,11 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_sph_component_FFTW                                &
-     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
       integer(kind = kint) :: ip
@@ -128,9 +132,9 @@
       integer, parameter :: inembed = 0
 !
       call alloc_comp_FFTW_plan                                         &
-     &   (nidx_rtp(3), ncomp_bwd, ncomp_fwd, FFTW_c)
+     &   (sph_rtp%nidx_rtp(3), ncomp_bwd, ncomp_fwd, FFTW_c)
 !
-      Nfft4 = int(nidx_rtp(3))
+      Nfft4 = int(sph_rtp%nidx_rtp(3))
       do ip = 1, np_smp
         call dfftw_plan_many_dft_r2c(FFTW_c%plan_fwd(ip),               &
      &      IONE_4, int(FFTW_c%Nfft_r), FFTW_c%howmany_fwd,             &
@@ -143,7 +147,7 @@
      &      FFTW_c%X(1,ip), inembed, FFTW_c%howmany_bwd, IONE_4,        &
      &      FFTW_ESTIMATE)
       end do
-      FFTW_c%aNfft = one / dble(nidx_rtp(3))
+      FFTW_c%aNfft = one / dble(sph_rtp%nidx_rtp(3))
 !
       allocate(FFTW_c%t_omp(np_smp,0:3))
       FFTW_c%t_omp = 0.0d0
@@ -173,25 +177,26 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_component_FFTW                              &
-     &         (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+     &         (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
 !
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+!
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
 !
       if(allocated(FFTW_c%X) .eqv. .false.) then
         call init_sph_component_FFTW                                    &
-     &     (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+     &     (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
         return
       end if
 !
       if(     int(ncomp_bwd) .ne. FFTW_c%howmany_bwd                    &
      &   .or. int(ncomp_fwd) .ne. FFTW_c%howmany_fwd                    &
-     &   .or. nidx_rtp(3) .ne. FFTW_c%Nfft_r) then
+     &   .or. sph_rtp%nidx_rtp(3) .ne. FFTW_c%Nfft_r) then
         call finalize_sph_component_FFTW(FFTW_c)
         call init_sph_component_FFTW                                    &
-     &    (nidx_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
+     &    (sph_rtp, ncomp_bwd, ncomp_fwd, FFTW_c)
       end if
 !
       end subroutine verify_sph_component_FFTW
@@ -199,22 +204,19 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_comp_fwd_FFTW_to_send(nnod_rtp, nidx_rtp,          &
-     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
-     &          X_rtp, WS, FFTW_c)
+      subroutine sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp,           &
+     &          ncomp_fwd, n_WS, X_rtp, WS, FFTW_c)
 !
       use copy_single_FFT_and_rtp
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_fwd)
+     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
@@ -231,11 +233,11 @@
 !$omp parallel do                                                       &
 !$omp& private(m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1) + 1
-        ied = irt_rtp_smp_stack(ip) 
+        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
+        ied = sph_rtp%istack_rtp_rt_smp(ip) 
         do j = ist, ied
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          do m = 1, nidx_rtp(3)
+          do m = 1, sph_rtp%nidx_rtp(3)
             ms = (m-1) * ncomp_fwd
             FFTW_c%X(ms+1:ms+ncomp_fwd,ip) = X_rtp(j,m,1:ncomp_fwd)
           end do
@@ -251,8 +253,8 @@
 !   normalization
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           call copy_comp_FFTW_to_send                                   &
-     &       (j, nnod_rtp, irev_sr_rtp,                                 &
-     &        irt_rtp_smp_stack(np_smp), ncomp_fwd,      &
+     &       (j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+     &        sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,             &
      &        FFTW_c%Nfft_c, FFTW_c%C(1,ip), FFTW_c%aNfft, n_WS, WS)
           if(iflag_FFT_time) FFTW_c%t_omp(ip,3)= FFTW_c%t_omp(ip,3)     &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
@@ -269,23 +271,20 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_comp_back_FFTW_from_recv(nnod_rtp, nidx_rtp,       &
-     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp, WR,    &
-     &          X_rtp, FFTW_c)
+      subroutine sph_comp_back_FFTW_from_recv(sph_rtp, comm_rtp,        &
+     &          ncomp_bwd, n_WR, WR, X_rtp, FFTW_c)
 !
       use copy_single_FFT_and_rtp
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
+     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_bwd)
       type(work_for_comp_FFTW), intent(inout) :: FFTW_c
 !
       integer(kind = kint) :: m, ms, j, ip, ist, ied
@@ -301,14 +300,14 @@
 !$omp parallel do                                                       &
 !$omp& private(m,ms,j,ip,ist,ied,ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1) + 1
-        ied = irt_rtp_smp_stack(ip)
+        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
+        ied = sph_rtp%istack_rtp_rt_smp(ip)
         do j = ist, ied
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
           call copy_comp_FFTW_from_recv                                 &
-     &       (j, nnod_rtp, irev_sr_rtp,        &
-     &        irt_rtp_smp_stack(np_smp), ncomp_bwd,   &
+     &       (j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+     &        sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_bwd,             &
      &        n_WR, WR, FFTW_c%Nfft_c, FFTW_c%C(1,ip))
           if(iflag_FFT_time) FFTW_c%t_omp(ip,1) = FFTW_c%t_omp(ip,1)    &
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
@@ -320,7 +319,7 @@
      &                       + MPI_WTIME() - FFTW_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) FFTW_c%t_omp(ip,0) = MPI_WTIME()
-          do m = 1, nidx_rtp(3)
+          do m = 1, sph_rtp%nidx_rtp(3)
             ms =     ncomp_bwd * (m-1)
             X_rtp(j,m,1:ncomp_bwd) = FFTW_c%X(ms+1:ms+ncomp_bwd,ip)
           end do

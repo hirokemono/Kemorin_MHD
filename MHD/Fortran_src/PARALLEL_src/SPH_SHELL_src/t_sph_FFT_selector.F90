@@ -218,8 +218,8 @@
         call init_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW for all compontnent'
-        call init_sph_component_FFTW(sph_rtp%nidx_rtp,                  &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
+        call init_sph_component_FFTW                                    &
+     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
 !
 #ifdef OMP_FFTW3
@@ -391,8 +391,8 @@
         call verify_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp.'
-        call verify_sph_component_FFTW(sph_rtp%nidx_rtp,                &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
+        call verify_sph_component_FFTW                                  &
+     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
 #endif
 !
 #ifdef OMP_FFTW3
@@ -489,10 +489,8 @@
         call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
      &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
-        call sph_comp_fwd_FFTW_to_send                                  &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTW)
+        call sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTW)
 #endif
 !
 #ifdef OMP_FFTW3
@@ -585,10 +583,8 @@
         call sph_single_back_FFTW_from_recv(sph_rtp, comm_rtp,          &
      &      ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_sgl_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
-        call sph_comp_back_FFTW_from_recv                               &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_FFTW)
+        call sph_comp_back_FFTW_from_recv(sph_rtp, comm_rtp, ncomp_bwd, &
+     &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_FFTW)
 #endif
 !
 #ifdef OMP_FFTW3
