@@ -78,9 +78,7 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
-!
-      use t_spheric_rtp_data
-      use t_sph_trans_comm_tbl
+      use t_sph_comm_table_from_FFT
 !
       implicit none
 !
@@ -98,6 +96,9 @@
         real(kind = 8), allocatable :: T(:)
 !>        Work area for ISPACK
         integer(kind = 4) :: IT(5)
+!
+!>      Structure of communication table from FFT to send buffer
+        type(comm_tbl_from_FFT) :: comm_sph_ISPACK
       end type work_for_domain_ispack
 !
       private :: alloc_work_domain_ispack, alloc_const_domain_ispack
@@ -216,13 +217,10 @@
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
 !
-          do m = 1, nidx_rtp(3)/2
-            inod_c = (2*m-2) * num
-            inod_s = (2*m-1) * num
-            ispack_d%X(inod_c+1:inod_c+num,ip)                     &
-     &             = X_rtp(ist+1:ist+num,2*m-1,nd)
-            ispack_d%X(inod_s+1:inod_s+num,ip)                     &
-     &             = X_rtp(ist+1:ist+num,2*m,  nd)
+          do m = 1, nidx_rtp(3)
+            inod_c = (m-1) * num
+            ispack_d%X(inod_c+1:inod_c+num,ip)                         &
+     &             = X_rtp(ist+1:ist+num,m,nd)
           end do
         end do
 !$omp end parallel do
@@ -327,13 +325,10 @@
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          do m = 1, nidx_rtp(3)/2
-            inod_c = (2*m-2) * num
-            inod_s = (2*m-1) * num
-            X_rtp(ist+1:ist+num,2*m-1,nd)                               &
+          do m = 1, nidx_rtp(3)
+            inod_c = (m-1) * num
+            X_rtp(ist+1:ist+num,m,nd)                                   &
      &             = ispack_d%X(inod_c+1:inod_c+num,ip)
-            X_rtp(ist+1:ist+num,2*m,  nd)                               &
-     &             = ispack_d%X(inod_s+1:inod_s+num,ip)
           end do
         end do
 !$omp end parallel do

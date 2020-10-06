@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_comm_item_rtp_4_ISPACK                           &
-!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
+!!     &         (nnod_rtp, nphi_rtp, irt_rtp_smp_stack,                &
 !!     &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
 !!      subroutine copy_ISPACK_field_to_send(nnod_rtp, nidx_rtp,        &
 !!     &          irt_rtp_smp_stack, ncomp_fwd, irev_sr_rtp, X_FFT,     &
@@ -42,11 +42,10 @@
 ! ------------------------------------------------------------------
 !
       subroutine set_comm_item_rtp_4_ISPACK                             &
-     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
+     &         (nnod_rtp, nphi_rtp, irt_rtp_smp_stack,                  &
      &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ntot_sr_rtp
@@ -58,13 +57,14 @@
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
 !
 !
-!$omp parallel do private(m,j,ist,num,ic_rtp,is_rtp,ic_send,is_send)
-      do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1)
-        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        do j = 1, num
+!$omp parallel do private(ip,m,j,ist,num,ic_rtp,is_rtp,ic_send,is_send)
+        do ip = 1, np_smp
+          ist = irt_rtp_smp_stack(ip-1)
+          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+          do j = 1, num
             ic_rtp = j+ist
             ic_send = irev_sr_rtp(ic_rtp)
+!           inod_c = j + (1-1) * num
             if(ic_send .le. ntot_sr_rtp) then
               comm_sph_FFT%ip_smp_fft(ic_send) = ip
               comm_sph_FFT%kl_fft(ic_send) = j
@@ -72,36 +72,38 @@
               comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
             end if
 !
-            is_rtp = j+ist + nidx_rtp(1)*nidx_rtp(2)
+            is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
             is_send = irev_sr_rtp(is_rtp)
+!            inod_s = j + (2-1) * num
             if(is_send .le. ntot_sr_rtp) then
               comm_sph_FFT%ip_smp_fft(is_send) = ip
               comm_sph_FFT%kl_fft(is_send) = j
-              comm_sph_FFT%m_fft(is_send) =  nidx_rtp(3)
+              comm_sph_FFT%m_fft(is_send) =  2
               comm_sph_FFT%rnorm_sr_rtp(is_send) = one
             end if
-        end do
-        do m = 1, (nidx_rtp(3)+1)/2 - 1
-          do j = 1, num
-!              inod_c = j + (2*m-1)*num
-              ic_rtp = j+ist + (2*m  ) * irt_rtp_smp_stack(np_smp)
+          end do
+!
+          do m = 2, nphi_rtp/2
+            do j = 1, num
+              ic_rtp =  j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
               ic_send = irev_sr_rtp(ic_rtp)
+!              inod_c = j + (2*m-2) * num
               if(ic_send .le. ntot_sr_rtp) then
                 comm_sph_FFT%ip_smp_fft(ic_send) = ip
                 comm_sph_FFT%kl_fft(ic_send) = j
-                comm_sph_FFT%m_fft(ic_send) = 2*m
+                comm_sph_FFT%m_fft(ic_send) =  2*m-1
                 comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
               end if
 !
-!              inod_s = j + (2*m  )*num
-              is_rtp = j+ist + (2*m+1) * irt_rtp_smp_stack(np_smp)
+              is_rtp =  j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
               is_send = irev_sr_rtp(is_rtp)
+!              inod_s = j + (2*m-1) * num
               if(is_send .le. ntot_sr_rtp) then
                 comm_sph_FFT%ip_smp_fft(is_send) = ip
                 comm_sph_FFT%kl_fft(is_send) = j
-                comm_sph_FFT%m_fft(is_send) = 2*m+1
+                comm_sph_FFT%m_fft(is_send) =  2*m
                 comm_sph_FFT%rnorm_sr_rtp(is_send) = one
-              end if
+            end if
             end do
           end do
         end do
