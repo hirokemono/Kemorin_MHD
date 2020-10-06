@@ -16,8 +16,8 @@
 !!      subroutine finalize_sph_comp_ISPACK3(ispack3_c)
 !!      subroutine verify_sph_comp_ISPACK3                              &
 !!     &         (nphi_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
-!!        integer(kind = kint_gl), intent(in) :: ncomp_bwd, ncomp_fwd
-!!        integer(kind = kint_gl), intent(in) :: nphi_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+!!        integer(kind = kint), intent(in) :: nphi_rtp
 !!        integer(kind = kint), intent(in) :: maxirt_rtp_smp
 !!        type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !! ------------------------------------------------------------------
@@ -27,8 +27,8 @@
 !!        subroutine sph_comp_FXRTFA_to_send(nnod_rtp, nphi_rtp,        &
 !!       &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,    &
 !!       &          X_rtp, WS, ispack3_c)
-!!        integer(kind = kint_gl), intent(in) :: ncomp_fwd
-!!        integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_fwd
+!!        integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
 !!        integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !!        real(kind = kreal), intent(in)                                &
 !!       &     :: X_rtp(irt_rtp_smp_stack(np_smp),nphi_rtp,ncomp_fwd)
@@ -52,8 +52,8 @@
 !!      subroutine sph_comp_FXRTBA_from_recv(nnod_rtp, nidx_rtp,        &
 !!     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,      &
 !!     &          WR, X_rtp, ispack3_c)
-!!        integer(kind = kint_gl), intent(in) :: ncomp_bwd
-!!        integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
+!!        integer(kind = kint), intent(in) :: ncomp_bwd
+!!        integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
 !!        integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !!        integer(kind = kint), intent(in) :: n_WR
 !!        integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
@@ -98,6 +98,9 @@
       use m_elapsed_labels_SPH_TRNS
       use calypso_mpi
 !
+      use t_spheric_rtp_data
+      use t_sph_trans_comm_tbl
+!
       implicit none
 !
 !
@@ -111,8 +114,6 @@
       type work_for_comp_ispack3
 !>      Structure for each thread
         type(work_each_comp_ispack3), pointer :: smp(:)
-!>        Maximum nuber of components for each SMP process
-        integer(kind = kint) :: Mmax_smp
 !>        Work constants for ISPACK
         real(kind = 8), allocatable :: T(:)
 !>        Work area for ISPACK
@@ -134,17 +135,19 @@
       subroutine init_sph_comp_ISPACK3                                  &
      &         (nphi_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
 !
-      integer(kind = kint_gl), intent(in) :: ncomp_bwd, ncomp_fwd
-      integer(kind = kint_gl), intent(in) :: nphi_rtp
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+      integer(kind = kint), intent(in) :: nphi_rtp
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
 !
-      ispack3_c%Mmax_smp =  max(ncomp_bwd, ncomp_fwd)
       call alloc_const_comp_ispack3(nphi_rtp, ispack3_c)
-      call FXRINI(nphi_rtp, ispack3_c%IT, ispack3_c%T)
+      call FXRINI(cast_long(nphi_rtp), ispack3_c%IT, ispack3_c%T)
 !
-      call alloc_work_comp_ispack3(nphi_rtp, ispack3_c)
+      call alloc_work_comp_ispack3                                      &
+     &   (nphi_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
 !
       allocate(ispack3_c%t_omp(np_smp,0:3))
       ispack3_c%t_omp = 0.0d0
@@ -169,13 +172,13 @@
       subroutine verify_sph_comp_ISPACK3                                &
      &         (nphi_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
 !
-      integer(kind = kint_gl), intent(in) :: ncomp_bwd, ncomp_fwd
-      integer(kind = kint_gl), intent(in) :: nphi_rtp
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+      integer(kind = kint), intent(in) :: nphi_rtp
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
-!
-      ispack3_c%Mmax_smp = max(ncomp_bwd, ncomp_fwd)
 !
       if((2*nphi_rtp) .ne. size(ispack3_c%T)) then
 !
@@ -186,15 +189,18 @@
           call alloc_const_comp_ispack3(nphi_rtp, ispack3_c)
         end if
 !
-        call FXRINI(nphi_rtp, ispack3_c%IT(1), ispack3_c%T(1))
+        call FXRINI(cast_long(nphi_rtp),                                &
+     &              ispack3_c%IT(1), ispack3_c%T(1))
       end if
 !
       if(ASSOCIATED(ispack3_c%smp) .eqv. .false.) then
-        call alloc_work_comp_ispack3(nphi_rtp, ispack3_c)
-      else if( (ispack3_c%Mmax_smp*nphi_rtp)                            &
+        call alloc_work_comp_ispack3                                    &
+     &     (nphi_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
+      else if( (nphi_rtp*max(ncomp_bwd, ncomp_fwd))                     &
      &       .gt. size(ispack3_c%smp(1)%X,1) ) then
         call dealloc_work_comp_ispack3(ispack3_c)
-        call alloc_work_comp_ispack3(nphi_rtp, ispack3_c)
+        call alloc_work_comp_ispack3                                    &
+     &     (nphi_rtp, ncomp_bwd, ncomp_fwd, ispack3_c)
       end if
 !
       end subroutine verify_sph_comp_ISPACK3
@@ -206,8 +212,11 @@
      &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
      &          X_rtp, WS, ispack3_c)
 !
-      integer(kind = kint_gl), intent(in) :: ncomp_fwd
-      integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
+      use transfer_to_long_integers
+      use copy_single_FFT_and_rtp
+!
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       real(kind = kreal), intent(in)                                    &
@@ -219,10 +228,10 @@
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
-      integer(kind = kint_gl) :: m, j, ip, ist
-      integer(kind = kint_gl) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint_gl) :: inod_s, inod_c
-      integer(kind = kint_gl) :: num8
+      integer(kind = kint) :: m, j, ip, ist
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
+      integer(kind = kint) :: inod_s, inod_c
+      integer(kind = kint) :: num8
 !
 !
       if(iflag_FFT_time) then
@@ -252,8 +261,8 @@
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) ispack3_c%t_omp(ip,0) = MPI_WTIME()
-          call FXRTFA(ncomp_fwd, nphi_rtp, ispack3_c%smp(ip)%X(1),      &
-     &                ispack3_c%IT(1), ispack3_c%T(1))
+          call FXRTFA(cast_long(ncomp_fwd), cast_long(nphi_rtp),        &
+     &        ispack3_c%smp(ip)%X(1), ispack3_c%IT(1), ispack3_c%T(1))
           if(iflag_FFT_time) ispack3_c%t_omp(ip,2)                      &
      &                      = ispack3_c%t_omp(ip,2)                     &
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
@@ -315,8 +324,11 @@
      &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,        &
      &          WR, X_rtp, ispack3_c)
 !
-      integer(kind = kint_gl), intent(in) :: ncomp_bwd
-      integer(kind = kint_gl), intent(in) :: nnod_rtp, nphi_rtp
+      use transfer_to_long_integers
+      use copy_single_FFT_and_rtp
+!
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: n_WR
@@ -328,10 +340,10 @@
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
-      integer(kind = kint_gl) ::  m, j, ip, ist
-      integer(kind = kint_gl) ::  inod_s, inod_c
-      integer(kind = kint_gl) :: ic_rtp, is_rtp, ic_recv, is_recv
-      integer(kind = kint_gl) :: num8
+      integer(kind = kint) ::  m, j, ip, ist
+      integer(kind = kint) ::  inod_s, inod_c
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: num8
 !
 !
       if(iflag_FFT_time) then
@@ -373,8 +385,8 @@
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) ispack3_c%t_omp(ip,0) = MPI_WTIME()
-          call FXRTBA(ncomp_bwd, nphi_rtp, ispack3_c%smp(ip)%X(1),      &
-     &                ispack3_c%IT(1), ispack3_c%T(1))
+          call FXRTBA(cast_long(ncomp_bwd), cast_long(nphi_rtp),        &
+     &        ispack3_c%smp(ip)%X(1), ispack3_c%IT(1), ispack3_c%T(1))
           if(iflag_FFT_time) ispack3_c%t_omp(ip,2)                      &
      &                      = ispack3_c%t_omp(ip,2)                     &
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
@@ -421,19 +433,21 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine alloc_work_comp_ispack3(Nfft, ispack3_c)
+      subroutine alloc_work_comp_ispack3                                &
+     &         (Nfft, ncomp_bwd, ncomp_fwd, ispack3_c)
 !
-      integer(kind = kint_gl), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
-      integer(kind = kint_gl) :: iflag_fft_comp, ip
+      integer(kind = kint) :: nsize, ip
 !
 !
       allocate( ispack3_c%smp(np_smp) )
 !
-      iflag_fft_comp = ispack3_c%Mmax_smp*Nfft
+      nsize = Nfft * max(ncomp_bwd, ncomp_fwd)
       do ip = 1, np_smp
-        allocate( ispack3_c%smp(ip)%X(iflag_fft_comp) )
+        allocate( ispack3_c%smp(ip)%X(nsize) )
       end do
 !
       end subroutine alloc_work_comp_ispack3
@@ -442,7 +456,7 @@
 !
       subroutine alloc_const_comp_ispack3(nfft, ispack3_c)
 !
-      integer(kind = kint_gl), intent(in) :: nfft
+      integer(kind = kint), intent(in) :: nfft
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
 !
