@@ -254,7 +254,7 @@
      &          WR, X_rtp, ispack_d)
 !
       use ispack_0931
-      use copy_single_FFT_and_rtp
+      use set_comm_table_rtp_ISPACK
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -271,47 +271,19 @@
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
       integer(kind = kint) ::  m, j, ip, ist, num, nd
-      integer(kind = kint) :: inum, inod_s, inod_c
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: inod_c
 !
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-!$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
-!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
-        do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1)
-          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-!
-          do j = 1, num
-            ic_rtp = j+ist
-            is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-            ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-            is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-            ispack_d%X(j,ip) = WR(ic_recv)
-            ispack_d%X(j+num,ip) = WR(is_recv)
-          end do
-          do m = 2, nidx_rtp(3)/2
-            do j = 1, num
-              inod_c = j + (2*m-2) * num
-              inod_s = j + (2*m-1) * num
-              ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
-              ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-              is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-              ispack_d%X(inod_c,ip) =  half * WR(ic_recv)
-              ispack_d%X(inod_s,ip) = -half * WR(is_recv)
-            end do
-          end do
-        end do
-!$omp end parallel do
+        call copy_ISPACK_comp_from_recv(nd, nnod_rtp, nidx_rtp(3),      &
+     &      irt_rtp_smp_stack, ncomp_bwd, irev_sr_rtp,                  &
+     &      n_WR, WR, ispack_d%ntot_X, ispack_d%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
-!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp parallel do private(ip,m,j,num)
         do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
           call FTTRUB(num, nidx_rtp(3), ispack_d%X(1,ip),             &
      &      ispack_d%WK(1,ip), ispack_d%IT, ispack_d%T)
@@ -320,8 +292,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-!$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
-!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+!$omp parallel do private(ip,m,j,ist,num,inod_c)
         do ip = 1, np_smp
           ist = irt_rtp_smp_stack(ip-1)
           num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)

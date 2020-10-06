@@ -20,9 +20,9 @@
 !!      subroutine copy_ISPACK_field_from_recv(nnod_rtp, nidx_rtp,      &
 !!     &          irt_rtp_smp_stack, ncomp_bwd, irev_sr_rtp,            &
 !!     &          n_WR, WR, X_FFT)
-!!      subroutine copy_ISPACK_comp_from_recv(nd, nnod_rtp, nidx_rtp,   &
+!!      subroutine copy_ISPACK_comp_from_recv(nd, nnod_rtp, nphi_rtp,   &
 !!     &          irt_rtp_smp_stack, ncomp_bwd, irev_sr_rtp,            &
-!!     &          n_WR, WR, X_FFT)
+!!     &          n_WR, WR, ntot_X, X_FFT)
 !!        type(comm_tbl_from_FFT), intent(inout) :: comm_sph_FFT
 !!@endverbatim
 !!
@@ -291,56 +291,51 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_ISPACK_comp_from_recv(nd, nnod_rtp, nidx_rtp,     &
+      subroutine copy_ISPACK_comp_from_recv(nd, nnod_rtp, nphi_rtp,     &
      &          irt_rtp_smp_stack, ncomp_bwd, irev_sr_rtp,              &
-     &          n_WR, WR, X_FFT)
+     &          n_WR, WR, ntot_X, X_FFT)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WR(n_WR)
+      real (kind=kreal), intent(in):: WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: X_FFT(ncomp_bwd*nnod_rtp)
+      integer(kind = kint), intent(in) :: ntot_X
+      real(kind = kreal), intent(inout) :: X_FFT(ntot_X,np_smp)
 !
       integer(kind = kint) :: m, j, ip, ist, num
-      integer(kind = kint) :: inod_s, inod_c, ist_fft
+      integer(kind = kint) :: inod_s, inod_c
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-!$omp parallel do private(m,j,ist,num,inod_s,inod_c,                    &
-!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv,ist_fft)
+!$omp parallel do private(ip,m,j,ist,num,inod_s,inod_c,                 &
+!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
 !
-!   normalization
         do j = 1, num
-          inod_c = j + ist_fft
-          inod_s = j + (nidx_rtp(3)-1)*num + ist_fft
           ic_rtp = j+ist
           is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-          ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-          X_FFT(inod_c) = WR(ic_recv+nd)
-          X_FFT(inod_s) = WR(is_recv+nd)
+          ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+          X_FFT(j,ip) = WR(ic_recv)
+          X_FFT(j+num,ip) = WR(is_recv)
         end do
-        do m = 1, (nidx_rtp(3)+1)/2 - 1
+        do m = 2, nphi_rtp/2
           do j = 1, num
-            inod_c = j + (2*m-1)*num + ist_fft
-            inod_s = j + (2*m  )*num + ist_fft
-            ic_rtp = j+ist + (2*m  ) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j+ist + (2*m+1) * irt_rtp_smp_stack(np_smp)
-            ic_recv = (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-            is_recv = (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-      !
-            X_FFT(inod_c) = WR(ic_recv+nd)
-            X_FFT(inod_s) = WR(is_recv+nd)
+            inod_c = j + (2*m-2) * num
+            inod_s = j + (2*m-1) * num
+            ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
+            ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+            is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+            X_FFT(inod_c,ip) =  half * WR(ic_recv)
+            X_FFT(inod_s,ip) = -half * WR(is_recv)
           end do
         end do
       end do
