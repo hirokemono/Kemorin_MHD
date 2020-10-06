@@ -213,7 +213,7 @@
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_fwd)
+     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
@@ -221,7 +221,6 @@
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
       integer(kind = kint) :: m, j, ip, ist, ied
-      integer(kind = kint) :: inod_s, inod_c
 !
 !
       if(iflag_FFT_time) then
@@ -230,21 +229,17 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do private(ip,m,j,ist,ied,inod_s,inod_c)
+!$omp parallel do private(ip,m,j,ist,ied)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
         ied = sph_rtp%istack_rtp_rt_smp(ip)
         do j = ist, ied
 !
           if(iflag_FFT_time) ispack3_c%t_omp(ip,0) = MPI_WTIME()
-          do m = 1, sph_rtp%nidx_rtp(3)/2
-            inod_c = (2*m-2) * ncomp_fwd
-            inod_s = (2*m-1) * ncomp_fwd
-            ispack3_c%X(inod_c+1:inod_c+ncomp_fwd,ip)              &
-     &             = X_rtp(j,2*m-1,1:ncomp_fwd)
-            ispack3_c%X(inod_s+1:inod_s+ncomp_fwd,ip)              &
-     &             = X_rtp(j,2*m,  1:ncomp_fwd)
-          end do
+          call sel_copy_comp_rtp_to_FFT                                 &
+     &       (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                &
+     &        sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),   &
+     &        ncomp_fwd, X_rtp(1,1), ispack3_c%X(1,ip))
           if(iflag_FFT_time) ispack3_c%t_omp(ip,1)                      &
      &                      = ispack3_c%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
@@ -294,7 +289,7 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_bwd)
+     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_comp_ispack3), intent(inout) :: ispack3_c
 !
@@ -332,14 +327,10 @@
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
 !
           if(iflag_FFT_time) ispack3_c%t_omp(ip,0) = MPI_WTIME()
-          do m = 1, sph_rtp%nidx_rtp(3)/2
-            inod_c = (2*m-2) * ncomp_bwd
-            inod_s = (2*m-1) * ncomp_bwd
-            X_rtp(j,2*m-1,1:ncomp_bwd)                              &
-     &             = ispack3_c%X(inod_c+1:inod_c+ncomp_bwd,ip)
-            X_rtp(j,2*m,  1:ncomp_bwd)                              &
-     &             = ispack3_c%X(inod_s+1:inod_s+ncomp_bwd,ip)
-          end do
+          call sel_copy_comp_FFT_to_rtp                                 &
+     &       (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                &
+     &        sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),   &
+     &        ncomp_bwd, ispack3_c%X(1,ip), X_rtp(1,1))
           if(iflag_FFT_time) ispack3_c%t_omp(ip,3)                      &
      &                      = ispack3_c%t_omp(ip,3)                     &
      &                       + MPI_WTIME() - ispack3_c%t_omp(ip,0)
