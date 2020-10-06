@@ -87,6 +87,8 @@
 !
 !>      Structure to use ISPACK
       type work_for_domain_ispack
+!>        Total size of X for each domain
+        integer(kind = kint) :: ntot_X
 !>        Data for multiple Fourier transform
         real(kind = 8), allocatable :: X(:,:)
 !>        Work area for ISPACK
@@ -185,7 +187,7 @@
      &          X_rtp, WS, ispack_d)
 !
       use ispack_0931
-      use copy_single_FFT_and_rtp
+      use set_comm_table_rtp_ISPACK
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -239,33 +241,9 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
-        do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1)
-          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          do j = 1, num
-            ic_rtp = j+ist
-            is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            WS(ic_send) = ispack_d%X(j,ip)
-            WS(is_send) = ispack_d%X(j+num,ip)
-          end do
-          do m = 2, nidx_rtp(3)/2
-            do j = 1, num
-              ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
-              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-              inod_c = j + (2*m-2) * num
-              inod_s = j + (2*m-1) * num
-              WS(ic_send) =   two * ispack_d%X(inod_c,ip)
-              WS(is_send) = - two * ispack_d%X(inod_s,ip)
-            end do
-          end do
-        end do
-!$omp end parallel do
+        call copy_rtp_comp_ISPACK_to_send(nd, nnod_rtp, nidx_rtp(3),    &
+     &      irt_rtp_smp_stack, irev_sr_rtp, ncomp_fwd,                  &
+     &      ispack_d%ntot_X, ispack_d%X, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
@@ -374,8 +352,9 @@
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
 !
-      allocate( ispack_d%X(maxirt_rtp_smp*Nfft,np_smp) )
-      allocate( ispack_d%WK(maxirt_rtp_smp*Nfft,np_smp) )
+      ispack_d%ntot_X = maxirt_rtp_smp*Nfft
+      allocate( ispack_d%X(ispack_d%ntot_X,np_smp) )
+      allocate( ispack_d%WK(ispack_d%ntot_X,np_smp) )
       ispack_d%WK = 0.0d0
 !
       end subroutine alloc_work_domain_ispack
