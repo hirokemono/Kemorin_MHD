@@ -201,44 +201,32 @@
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
+      use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_fwd)
+     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
 !
-      integer(kind = kint) :: m, j, ip, ist, nd
-      integer(kind = kint) :: inod_s, inod_c, ist_fft
-      integer(kind = kint) :: num
+      integer(kind = kint) :: ip, nd, num, ist_fft
 !
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-!$omp parallel do private(ip,m,j,ist,num,inod_c,ist_fft)
-        do ip = 1, np_smp
-          ist = sph_rtp%istack_rtp_rt_smp(ip-1)
-          num = sph_rtp%istack_rtp_rt_smp(ip) - sph_rtp%istack_rtp_rt_smp(ip-1)
-          ist_fft = sph_rtp%istack_rtp_rt_smp(ip-1)                     &
-     &             * sph_rtp%nidx_rtp(3)
-!
-          do m = 1, sph_rtp%nidx_rtp(3)
-            inod_c = (m-1) * num + ist_fft
-            ispack3_d%X(inod_c+1:inod_c+num)                            &
-     &             = X_rtp(ist+1:ist+num,m,nd)
-          end do
-        end do
-!$omp end parallel do
+        call copy_FFTPACK_from_rtp_comp                                 &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), ispack3_d%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-!$omp parallel do private(ip,m,j,num,ist_fft)
+!$omp parallel do private(ip,num,ist_fft)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
      &         - sph_rtp%istack_rtp_rt_smp(ip-1)
@@ -267,6 +255,7 @@
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
+      use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -276,13 +265,11 @@
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_bwd)
+     &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
 !
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
 !
-      integer(kind = kint) ::  m, ip, ist, nd, ist_fft
-      integer(kind = kint) ::  inod_c
-      integer(kind = kint) :: num
+      integer(kind = kint) :: ip, nd, num, ist_fft
 !
 !
       do nd = 1, ncomp_bwd
@@ -307,19 +294,9 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-!$omp parallel do private(ip,m,ist,num,inod_c,ist_fft)
-        do ip = 1, np_smp
-          ist = sph_rtp%istack_rtp_rt_smp(ip-1)
-          num = sph_rtp%istack_rtp_rt_smp(ip) - sph_rtp%istack_rtp_rt_smp(ip-1)
-          ist_fft = sph_rtp%istack_rtp_rt_smp(ip-1)                     &
-     &             * sph_rtp%nidx_rtp(3)
-          do m = 1, sph_rtp%nidx_rtp(3)
-            inod_c = (m-1) * num + ist_fft
-            X_rtp(ist+1:ist+num,m,nd)                                   &
-     &             = ispack3_d%X(inod_c+1:inod_c+num)
-          end do
-        end do
-!$omp end parallel do
+        call copy_FFTPACK_to_rtp_comp                                   &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ispack3_d%X, X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !

@@ -254,8 +254,7 @@
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
-      integer(kind = kint) ::  m, j, ip, ist, num, nd, ist_fft
-      integer(kind = kint) :: inod_c
+      integer(kind = kint) :: ip, num, nd, ist_fft
 !
 !
       do nd = 1, ncomp_bwd
@@ -267,7 +266,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(ip,m,j,num,ist_fft)
+!$omp parallel do private(ip,num,ist_fft)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
      &         - sph_rtp%istack_rtp_rt_smp(ip-1)
