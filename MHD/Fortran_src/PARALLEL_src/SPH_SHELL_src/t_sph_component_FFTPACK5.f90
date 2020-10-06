@@ -397,8 +397,8 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_comp_RFFTMF_to_send                             &
-     &         (j, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,          &
+      subroutine copy_comp_RFFTMF_to_send                               &
+     &         (j, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,            &
      &          ncomp_fwd, X_fft, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: j
