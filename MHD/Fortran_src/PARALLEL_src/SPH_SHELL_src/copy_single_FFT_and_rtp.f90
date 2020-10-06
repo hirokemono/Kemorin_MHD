@@ -13,6 +13,13 @@
 !!     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r, X_rtp, X_fft)
 !!      subroutine sel_copy_single_FFT_to_rtp                           &
 !!     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r, X_fft, X_rtp)
+!!
+!!      subroutine sel_copy_comp_rtp_to_FFT                             &
+!!     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r,              &
+!!     &          ncomp_fwd, X_rtp, X_fft)
+!!      subroutine sel_copy_comp_FFT_to_rtp                             &
+!!     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r,              &
+!!     &          ncomp_bwd, X_fft, X_rtp)
 !!@endverbatim
 !!
       module copy_single_FFT_and_rtp
@@ -100,6 +107,69 @@
       end if
 !
       end subroutine sel_copy_single_FFT_to_rtp
+!
+! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine sel_copy_comp_rtp_to_FFT                               &
+     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r,                &
+     &          ncomp_fwd, X_rtp, X_fft)
+!
+      integer(kind = kint), intent(in) :: j
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt, Nfft_r
+      integer(kind = kint), intent(in) :: istep_phi
+      integer(kind = kint), intent(in) :: ncomp_fwd
+      real(kind = kreal), intent(in) :: X_rtp(nnod_rtp,ncomp_fwd)
+!
+      real(kind = kreal), intent(inout) :: X_fft(ncomp_fwd,Nfft_r)
+!
+      integer(kind = kint) :: ist, m
+!
+!
+      if(istep_phi .eq. 1) then
+        ist = (j-1) * Nfft_r
+        do m = 1, Nfft_r
+          X_fft(1:ncomp_fwd,m) = X_rtp(ist+m,1:ncomp_fwd)
+        end do
+      else
+        do m = 1, Nfft_r
+          ist = j + (m-1) * nnod_rt
+          X_fft(1:ncomp_fwd,m) = X_rtp(ist,1:ncomp_fwd)
+        end do
+      end if
+!
+      end subroutine sel_copy_comp_rtp_to_FFT
+!
+! ------------------------------------------------------------------
+!
+      subroutine sel_copy_comp_FFT_to_rtp                               &
+     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r,                &
+     &          ncomp_bwd, X_fft, X_rtp)
+!
+      integer(kind = kint), intent(in) :: j
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt, Nfft_r
+      integer(kind = kint), intent(in) :: istep_phi
+      integer(kind = kint), intent(in) :: ncomp_bwd
+      real(kind = kreal), intent(in) :: X_fft(ncomp_bwd,Nfft_r)
+!
+      real(kind = kreal), intent(inout) :: X_rtp(nnod_rtp,ncomp_bwd)
+!
+      integer(kind = kint) :: ist, m, nd
+!
+!
+      if(istep_phi .eq. 1) then
+        ist = (j-1) * Nfft_r
+        do nd = 1, ncomp_bwd
+          X_rtp(ist+1:ist+Nfft_r,nd) = X_fft(nd,1:Nfft_r)
+        end do
+      else
+        do m = 1, Nfft_r
+          ist = j + (m-1) * nnod_rt
+          X_rtp(ist,1:ncomp_bwd) = X_fft(1:ncomp_bwd,m)
+        end do
+      end if
+!
+      end subroutine sel_copy_comp_FFT_to_rtp
 !
 ! ------------------------------------------------------------------
 !
