@@ -185,8 +185,8 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93 for domain'
-        call init_sph_domain_ISPACK(sph_rtp%nidx_rtp,                   &
-     &      sph_rtp%maxirt_rtp_smp, WK_FFTs%sph_domain_ISPACK)
+        call init_sph_domain_ISPACK                                     &
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
@@ -197,8 +197,7 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for domain'
         call init_sph_domain_ISPACK3                                    &
-     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
-     &      WK_FFTs%sph_domain_ispack3)
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for component'
         call init_sph_comp_ISPACK3                                      &
@@ -355,8 +354,8 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93 for domain'
-        call verify_sph_domain_ISPACK(sph_rtp%nidx_rtp,                 &
-     &      sph_rtp%maxirt_rtp_smp, WK_FFTs%sph_domain_ISPACK)
+        call verify_sph_domain_ISPACK                                   &
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
@@ -368,8 +367,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Use ISPACK V3.0.1 for domain'
         call verify_sph_domain_ISPACK3                                  &
-     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
-     &      WK_FFTs%sph_domain_ispack3)
+     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Use ISPACK V3.0.1 for component'
@@ -455,11 +453,8 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
-        call sph_domain_FTTRUF_to_send                                  &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, v_rtp(1,1), WS(1),                        &
-     &      WK_FFTs%sph_domain_ISPACK)
+        call sph_domain_FTTRUF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_ISPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         call sph_FXRTFA_to_send                                         &
@@ -467,11 +462,8 @@
      &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
-        call sph_domain_FXRTFA_to_send                                  &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3), &
-     &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,       &
-     &     comm_rtp%irev_sr, v_rtp(1,1), WS(1),                         &
-     &     WK_FFTs%sph_domain_ispack3)
+        call sph_domain_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         call sph_comp_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,      &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_ispack3)
@@ -549,11 +541,8 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
-        call sph_domain_FTTRUB_from_recv                                &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), v_rtp(1,1),                        &
-     &      WK_FFTs%sph_domain_ISPACK)
+        call sph_domain_FTTRUB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
+     &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_domain_ISPACK)
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         call sph_FXRTBA_from_recv                                       &
@@ -561,11 +550,8 @@
      &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
-        call sph_domain_FXRTBA_from_recv                                &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3), &
-     &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,       &
-     &     comm_rtp%irev_sr, WR(1), v_rtp(1,1),                         &
-     &     WK_FFTs%sph_domain_ispack3)
+        call sph_domain_FXRTBA_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
+     &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_domain_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_COMPONENT) then
         call sph_comp_FXRTBA_from_recv(sph_rtp,comm_rtp, ncomp_bwd,     &
      &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_ispack3)

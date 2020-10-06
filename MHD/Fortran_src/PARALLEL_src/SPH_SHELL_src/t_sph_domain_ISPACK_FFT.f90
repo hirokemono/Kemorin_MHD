@@ -12,17 +12,20 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      subroutine init_sph_domain_ISPACK                               &
-!!     &         (nidx_rtp, maxirt_rtp_smp, ispack_d)
+!!     &         (sph_rtp, comm_rtp, ispack_d)
 !!      subroutine finalize_sph_domain_ISPACK(ispack_d)
 !!      subroutine verify_sph_domain_ISPACK                             &
-!!     &         (nidx_rtp, maxirt_rtp_smp, ispack_d)
+!!     &         (sph_rtp, comm_rtp, ispack_d)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_domain_FTTRUF_to_send(nnod_rtp, nidx_rtp,        &
-!!     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,      &
-!!     &          X_rtp, WS, ispack_d)
+!!       subroutine sph_domain_FTTRUF_to_send(sph_rtp, comm_rtp,        &
+!!     &          ncomp_fwd, n_WS, X_rtp, WS, ispack_d)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -36,9 +39,10 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_domain_FTTRUB_from_recv(nnod_rtp, nidx_rtp,      &
-!!     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,      &
-!!     &          WR, X_rtp, ispack_d)
+!!      subroutine sph_domain_FTTRUB_from_recv(sph_rtp, comm_rtp,       &
+!!     &          ncomp_bwd, n_WR, WR, X_rtp, ispack_d)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -112,22 +116,21 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_domain_ISPACK                                 &
-     &         (nidx_rtp, maxirt_rtp_smp, ispack_d)
+      subroutine init_sph_domain_ISPACK(sph_rtp, comm_rtp, ispack_d)
 !
       use ispack_0931
 !
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
 !
-      call alloc_const_domain_ispack(nidx_rtp(3), ispack_d)
-      call FTTRUI(nidx_rtp(3), ispack_d%IT, ispack_d%T)
+      call alloc_const_domain_ispack(sph_rtp%nidx_rtp(3), ispack_d)
+      call FTTRUI(sph_rtp%nidx_rtp(3), ispack_d%IT, ispack_d%T)
 !
       call alloc_work_domain_ispack                                     &
-     &   (nidx_rtp(3), maxirt_rtp_smp, ispack_d)
+     &   (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp, ispack_d)
 !
       end subroutine init_sph_domain_ISPACK
 !
@@ -146,36 +149,36 @@
 ! ------------------------------------------------------------------
 !
       subroutine verify_sph_domain_ISPACK                               &
-     &         (nidx_rtp, maxirt_rtp_smp, ispack_d)
+     &         (sph_rtp, comm_rtp, ispack_d)
 !
       use ispack_0931
 !
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: maxirt_rtp_smp
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
 !
-      if((2*nidx_rtp(3)) .ne. size(ispack_d%T)) then
+      if((2*sph_rtp%nidx_rtp(3)) .ne. size(ispack_d%T)) then
 !
         if(allocated(ispack_d%T) .eqv. .false.) then
-          call alloc_const_domain_ispack(nidx_rtp(3), ispack_d)
-        else if( (2*nidx_rtp(3)) .gt. size(ispack_d%T) ) then
+          call alloc_const_domain_ispack(sph_rtp%nidx_rtp(3), ispack_d)
+        else if( (2*sph_rtp%nidx_rtp(3)) .gt. size(ispack_d%T) ) then
           call dealloc_const_domain_ispack(ispack_d)
-          call alloc_const_domain_ispack(nidx_rtp(3), ispack_d)
+          call alloc_const_domain_ispack(sph_rtp%nidx_rtp(3), ispack_d)
         end if
 !
-        call FTTRUI( nidx_rtp(3), ispack_d%IT, ispack_d%T )
+        call FTTRUI(sph_rtp%nidx_rtp(3), ispack_d%IT, ispack_d%T)
       end if
 !
       if(ALLOCATED(ispack_d%X) .eqv. .false.) then
         call alloc_work_domain_ispack                                   &
-     &     (nidx_rtp(3), maxirt_rtp_smp, ispack_d)
-      else if( (maxirt_rtp_smp*nidx_rtp(3))                             &
+     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp, ispack_d)
+      else if( (sph_rtp%maxirt_rtp_smp*sph_rtp%nidx_rtp(3))             &
      &       .gt. size(ispack_d%X,1) ) then
         call dealloc_work_domain_ispack(ispack_d)
         call alloc_work_domain_ispack                                   &
-     &    (nidx_rtp(3), maxirt_rtp_smp, ispack_d)
+     &    (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp, ispack_d)
       end if
 !
       end subroutine verify_sph_domain_ISPACK
@@ -183,23 +186,20 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_domain_FTTRUF_to_send(nnod_rtp, nidx_rtp,          &
-     &          irt_rtp_smp_stack, ncomp_fwd, n_WS, irev_sr_rtp,        &
-     &          X_rtp, WS, ispack_d)
+      subroutine sph_domain_FTTRUF_to_send(sph_rtp, comm_rtp,          &
+     &          ncomp_fwd, n_WS, X_rtp, WS, ispack_d)
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_fwd)
+     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
@@ -214,10 +214,10 @@
 !$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
         do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1)
-          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+          ist = sph_rtp%istack_rtp_rt_smp(ip-1)
+          num = sph_rtp%istack_rtp_rt_smp(ip) - sph_rtp%istack_rtp_rt_smp(ip-1)
 !
-          do m = 1, nidx_rtp(3)
+          do m = 1, sph_rtp%nidx_rtp(3)
             inod_c = (m-1) * num
             ispack_d%X(inod_c+1:inod_c+num,ip)                         &
      &             = X_rtp(ist+1:ist+num,m,nd)
@@ -227,20 +227,20 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-!$omp parallel do private(ip,m,j,ist,num,inum,inod_s,inod_c,            &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(ip,m,j,num,inum)
         do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1)
-          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          call FTTRUF(num, nidx_rtp(3), ispack_d%X(1,ip),             &
+          num = sph_rtp%istack_rtp_rt_smp(ip)                           &
+     &         - sph_rtp%istack_rtp_rt_smp(ip-1)
+          call FTTRUF(num, sph_rtp%nidx_rtp(3), ispack_d%X(1,ip),       &
      &        ispack_d%WK(1,ip), ispack_d%IT, ispack_d%T)
         end do
 !$omp end parallel do
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-        call copy_rtp_comp_ISPACK_to_send(nd, nnod_rtp, nidx_rtp(3),    &
-     &      irt_rtp_smp_stack, irev_sr_rtp, ncomp_fwd,                  &
+        call copy_rtp_comp_ISPACK_to_send                               &
+     &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                  &
+     &      sph_rtp%istack_rtp_rt_smp, comm_rtp%irev_sr, ncomp_fwd,     &
      &      ispack_d%ntot_X, ispack_d%X, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
@@ -249,24 +249,21 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_domain_FTTRUB_from_recv(nnod_rtp, nidx_rtp,        &
-     &          irt_rtp_smp_stack, ncomp_bwd, n_WR, irev_sr_rtp,        &
-     &          WR, X_rtp, ispack_d)
+      subroutine sph_domain_FTTRUB_from_recv(sph_rtp, comm_rtp,         &
+     &          ncomp_bwd, n_WR, WR, X_rtp, ispack_d)
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_comm_tbl), intent(in) :: comm_rtp
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: n_WR
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
       real(kind = kreal), intent(inout)                                 &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_bwd)
+     &     :: X_rtp(sph_rtp%istack_rtp_rt_smp(np_smp),sph_rtp%nidx_rtp(3),ncomp_bwd)
 !
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
@@ -276,16 +273,18 @@
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-        call copy_ISPACK_comp_from_recv(nd, nnod_rtp, nidx_rtp(3),      &
-     &      irt_rtp_smp_stack, ncomp_bwd, irev_sr_rtp,                  &
+        call copy_ISPACK_comp_from_recv                                 &
+     &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                  &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, comm_rtp%irev_sr,     &
      &      n_WR, WR, ispack_d%ntot_X, ispack_d%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
 !$omp parallel do private(ip,m,j,num)
         do ip = 1, np_smp
-          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          call FTTRUB(num, nidx_rtp(3), ispack_d%X(1,ip),             &
+          num = sph_rtp%istack_rtp_rt_smp(ip)                           &
+     &         - sph_rtp%istack_rtp_rt_smp(ip-1)
+          call FTTRUB(num, sph_rtp%nidx_rtp(3), ispack_d%X(1,ip),       &
      &      ispack_d%WK(1,ip), ispack_d%IT, ispack_d%T)
         end do
 !$omp end parallel do
@@ -294,9 +293,9 @@
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
 !$omp parallel do private(ip,m,j,ist,num,inod_c)
         do ip = 1, np_smp
-          ist = irt_rtp_smp_stack(ip-1)
-          num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-          do m = 1, nidx_rtp(3)
+          ist = sph_rtp%istack_rtp_rt_smp(ip-1)
+          num = sph_rtp%istack_rtp_rt_smp(ip) - sph_rtp%istack_rtp_rt_smp(ip-1)
+          do m = 1, sph_rtp%nidx_rtp(3)
             inod_c = (m-1) * num
             X_rtp(ist+1:ist+num,m,nd)                                   &
      &             = ispack_d%X(inod_c+1:inod_c+num,ip)
