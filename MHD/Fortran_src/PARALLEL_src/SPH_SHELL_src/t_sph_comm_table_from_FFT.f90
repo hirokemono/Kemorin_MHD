@@ -247,7 +247,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
-      real(kind = kreal), intent(in) :: X_FFT(ncomp_fwd*nnod_rtp)
+      real(kind = kreal), intent(in) :: X_FFT(ncomp_fwd,nnod_rtp)
       type(comm_tbl_from_FFT), intent(in) :: comm_sph_FFT
 !
       integer(kind = kint), intent(in) :: n_WS
@@ -264,7 +264,7 @@
         inod_c = (inod_fft-1) * ncomp_fwd
         WS(ic_send+1:ic_send+ncomp_fwd)                                 &
      &         = comm_sph_FFT%rnorm_sr_rtp(inum)                        &
-     &          * X_FFT(inod_c+1:inod_c+ncomp_fwd)
+     &          * X_FFT(inod_c,1:ncomp_fwd)
       end do
 !$end parallel do
 !
@@ -281,7 +281,7 @@
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
-      real(kind = kreal), intent(in) :: X_FFT(ncomp_fwd*nnod_rtp)
+      real(kind = kreal), intent(in) :: X_FFT(nnod_rtp)
       type(comm_tbl_from_FFT), intent(in) :: comm_sph_FFT
 !
       integer(kind = kint), intent(in) :: n_WS
