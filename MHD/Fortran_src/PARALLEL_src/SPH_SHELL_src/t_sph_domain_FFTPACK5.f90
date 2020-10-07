@@ -356,20 +356,15 @@
 !      write(*,*) 'tako'
 !
       do nd = 1, ncomp_fwd
-!$omp parallel do private(j)
-        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
-          call sel_copy_single_rtp_to_FFT2                            &
-     &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
-     &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
-     &          X_rtp(1,nd), fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ))
-        end do
-!$omp end parallel do
+          call sel_copy_single_FFT_to_rtp2                            &
+     &       (sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                 &
+     &        X_rtp(1,nd), fftpack_d%X(1))
 !
 !$omp parallel do private(j)
         do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call RFFTMF(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ),  sph_rtp%nidx_rtp(3),                &
-     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (j-1)*sph_rtp%nidx_rtp(3) ),       &
+     &          fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ),  sph_rtp%nidx_rtp(3),                &
+     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( 1+(j-1)*sph_rtp%nidx_rtp(3) ),       &
      &          sph_rtp%nidx_rtp(3), ierr)
         end do
 !$omp end parallel do
@@ -379,7 +374,7 @@
           call copy_single_RFFTMF_to_send2                            &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_fwd, fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), n_WS, WS)
+     &          ncomp_fwd, fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ), n_WS, WS)
         end do
 !$omp end parallel do
 !
@@ -418,27 +413,22 @@
           call copy_single_RFFTMB_from_recv2                          &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_bwd, n_WR, WR, fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ))
+     &          ncomp_bwd, n_WR, WR, fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ))
         end do
 !$omp end parallel do
 !
 !$omp parallel do private(j)
         do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call RFFTMB(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), sph_rtp%nidx_rtp(3),                 &
-     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (j-1)*sph_rtp%nidx_rtp(3) ),       &
+     &          fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ), sph_rtp%nidx_rtp(3),                 &
+     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( 1+(j-1)*sph_rtp%nidx_rtp(3) ),       &
      &          sph_rtp%nidx_rtp(3), ierr)
         end do
 !$omp end parallel do
 !
-!$omp parallel do private(j)
-        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call sel_copy_single_FFT_to_rtp2                            &
-     &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
-     &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
-     &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), X_rtp(1,nd))
-        end do
-!$omp end parallel do
+     &       (sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                 &
+     &        fftpack_d%X(1), X_rtp(1,nd))
 !
       end do
 !
@@ -589,41 +579,26 @@
       integer(kind = kint) :: ist, m
 !
 !
-      if(istep_phi .eq. 1) then
         ist = (j-1) * Nfft_r
         X_fft(1:Nfft_r) = X_rtp(ist+1:ist+Nfft_r)
-      else
-        do m = 1, Nfft_r
-          ist = j + (m-1) * nnod_rt
-          X_fft(m) = X_rtp(ist)
-        end do
-      end if
 !
       end subroutine sel_copy_single_rtp_to_FFT2
 !
 ! ------------------------------------------------------------------
 !
       subroutine sel_copy_single_FFT_to_rtp2                            &
-     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r, X_fft, X_rtp)
+     &         (nnod_rtp, istep_phi, X_fft, X_rtp)
 !
-      integer(kind = kint), intent(in) :: j
-      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt, Nfft_r
+      integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: istep_phi
-      real(kind = kreal), intent(in) :: X_fft(Nfft_r)
+      real(kind = kreal), intent(in) :: X_fft(nnod_rtp)
+!
       real(kind = kreal), intent(inout) :: X_rtp(nnod_rtp)
 !
-      integer(kind = kint) :: ist, m
 !
-!
-      if(istep_phi .eq. 1) then
-        ist = (j-1) * Nfft_r
-        X_rtp(ist+1:ist+Nfft_r) = X_fft(1:Nfft_r)
-      else
-        do m = 1, Nfft_r
-          ist = j + (m-1) * nnod_rt
-          X_rtp(ist) = X_fft(m)
-        end do
-      end if
+!$omp parallel workshare
+      X_rtp(1:nnod_rtp) = X_fft(1:nnod_rtp)
+!$omp end parallel workshare
 !
       end subroutine sel_copy_single_FFT_to_rtp2
 !
