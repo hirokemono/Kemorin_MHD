@@ -305,7 +305,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(num,nsize,ist_fft)
+!$omp parallel do private(ip,num,nsize,ist_fft)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
      &         - sph_rtp%istack_rtp_rt_smp(ip-1)
@@ -350,26 +350,27 @@
 !
       type(work_for_domain_fftpack), intent(inout) :: fftpack_d
 !
-      integer(kind = kint) :: num, nsize, j, nd
-      integer(kind = kint) :: ist_fft, ierr
-!
-!      write(*,*) 'tako'
+      integer(kind = kint) :: num, nsize, ip, nd, ist_fft
+      integer(kind = kint) :: ierr
 !
       do nd = 1, ncomp_fwd
         call copy_FFTPACK_to_prt_comp                                   &
      &     (sph_rtp%nnod_rtp, X_rtp(1,nd), fftpack_d%X(1))
 !
-!$omp parallel do private(j)
-        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
-          call RFFTMF(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ),  sph_rtp%nidx_rtp(3),                &
-     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( 1+(j-1)*sph_rtp%nidx_rtp(3) ),       &
-     &          sph_rtp%nidx_rtp(3), ierr)
+!$omp parallel do private(ip,num,ist_fft,nsize)
+        do ip = 1, np_smp
+          num = sph_rtp%istack_rtp_rt_smp(ip)                           &
+     &         - sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_fft = sph_rtp%nidx_rtp(3)*sph_rtp%istack_rtp_rt_smp(ip-1)
+          nsize = sph_rtp%nidx_rtp(3)*num
+          call RFFTMF(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3),    &
+     &        ione, fftpack_d%X(ist_fft+1), nsize, fftpack_d%WSV,       &
+     &        fftpack_d%NSV, fftpack_d%WK(ist_fft+1), nsize, ierr)
         end do
 !$omp end parallel do
 !
-          call copy_single_RFFTMF_to_send2                            &
-     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
+          call copy_single_RFFTMF_to_send2                              &
+     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                 &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
      &          ncomp_fwd, fftpack_d%X(1), n_WS, WS)
       end do
@@ -396,26 +397,26 @@
 !
       type(work_for_domain_fftpack), intent(inout) :: fftpack_d
 !
-      integer(kind = kint) :: num, nsize, nd, j
-      integer(kind = kint) :: ierr, ist_fft
-!
-!      write(*,*) 'aho'
+      integer(kind = kint) :: num, nsize, nd, ip, ist_fft
+      integer(kind = kint) :: ierr
 !
       do nd = 1, ncomp_bwd
-          call copy_single_RFFTMB_from_recv2                          &
-     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
+          call copy_single_RFFTMB_from_recv2                            &
+     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                 &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
      &          ncomp_bwd, n_WR, WR, fftpack_d%X(1))
 !
-!!$omp parallel do private(j)
-!        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
-          num = sph_rtp%istack_rtp_rt_smp(np_smp)
-          call RFFTMB(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_d%X(1), sph_rtp%nnod_rtp,                 &
-     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK(1),       &
-     &          sph_rtp%nnod_rtp, ierr)
-!        end do
-!!$omp end parallel do
+!$omp parallel do private(ip,num,ist_fft,nsize)
+        do ip = 1, np_smp
+          num = sph_rtp%istack_rtp_rt_smp(ip)                           &
+     &         - sph_rtp%istack_rtp_rt_smp(ip-1)
+          ist_fft = sph_rtp%nidx_rtp(3)*sph_rtp%istack_rtp_rt_smp(ip-1)
+          nsize = sph_rtp%nidx_rtp(3)*num
+          call RFFTMB(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3),    &
+     &        ione, fftpack_d%X(ist_fft+1), nsize, fftpack_d%WSV,       &
+     &        fftpack_d%NSV, fftpack_d%WK(ist_fft+1), nsize, ierr)
+        end do
+!$omp end parallel do
 !
         call copy_FFTPACK_to_prt_comp                                   &
      &     (sph_rtp%nnod_rtp, fftpack_d%X(1), X_rtp(1,nd))
