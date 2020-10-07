@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_comm_item_prt_4_FFTPACK                          &
-!!     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                &
-!!     &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
+!!     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp,                   &
+!!     &          mphi_rtp, nnod_rt, comm_sph_FFT)
+!!        type(comm_tbl_from_FFT), intent(inout) :: comm_sph_FFT
 !!      subroutine copy_prt_FFTPACK_to_send(nnod_rtp, nidx_rtp,         &
 !!     &          irt_rtp_smp_stack, ncomp_fwd, irev_sr_rtp, X_FFT,     &
 !!     &          n_WS, WS)
@@ -39,12 +40,11 @@
 ! ------------------------------------------------------------------
 !
       subroutine set_comm_item_prt_4_FFTPACK                            &
-     &         (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                  &
-     &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
+     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp,                     &
+     &          mphi_rtp, nnod_rt, comm_sph_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
 !
       integer(kind = kint), intent(in) :: ntot_sr_rtp
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
@@ -52,12 +52,11 @@
       type(comm_tbl_from_FFT), intent(inout) :: comm_sph_FFT
 !
       integer(kind = kint) :: m, j
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-!      integer(kind = kint) :: inod_s, inod_c
+      integer(kind = kint) :: ic_send, is_send, ic_rtp, is_rtp
 !
 !
-      do j = 1, irt_rtp_smp_stack(np_smp)
-!        inod_c = 1 + (j-1)*nidx_rtp(3)
+!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_send,is_send)
+      do j = 1, nnod_rt
         ic_rtp = j
         ic_send = irev_sr_rtp(ic_rtp)
         if(ic_send .le. ntot_sr_rtp) then
@@ -66,34 +65,28 @@
           comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
         end if
 !
-!        inod_s = nidx_rtp(3) + (j-1)*nidx_rtp(3) 
-        is_rtp = j + nidx_rtp(1)*nidx_rtp(2)
+        is_rtp = j + nnod_rt
         is_send = irev_sr_rtp(is_rtp)
         if(is_send .le. ntot_sr_rtp) then
           comm_sph_FFT%kl_fft(is_send) = j
-          comm_sph_FFT%m_fft(is_send) =  nidx_rtp(3)
+          comm_sph_FFT%m_fft(is_send) =  mphi_rtp
           comm_sph_FFT%rnorm_sr_rtp(is_send) = one
         end if
-      end do
 !
-!$omp parallel do private(m,j,ic_rtp,is_rtp,ic_send,is_send)
-      do m = 1, nidx_rtp(3)/2 - 1
-        do j = 1, irt_rtp_smp_stack(np_smp)
-!          inod_c = (2*m  ) + (j-1)*nidx_rtp(3)
-          ic_rtp = j + (2*m  ) * nidx_rtp(1)*nidx_rtp(2)
+        do m = 1, mphi_rtp/2 - 1
+          ic_rtp = j + (2*m  ) * nnod_rt
           ic_send = irev_sr_rtp(ic_rtp)
-              if(ic_send .le. ntot_sr_rtp) then
-                comm_sph_FFT%kl_fft(ic_send) = j
-                comm_sph_FFT%m_fft(ic_send) = 2*m
-                comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
-              end if
+          if(ic_send .le. ntot_sr_rtp) then
+            comm_sph_FFT%kl_fft(ic_send) = j
+            comm_sph_FFT%m_fft(ic_send) =  2*m
+            comm_sph_FFT%rnorm_sr_rtp(ic_send) = one
+          end if
 !
-!          inod_s = (2*m+1) + (j-1)*nidx_rtp(3)
-          is_rtp = j + (2*m+1) * nidx_rtp(1)*nidx_rtp(2)
+          is_rtp = j + (2*m+1) * nnod_rt
           is_send = irev_sr_rtp(is_rtp)
           if(is_send .le. ntot_sr_rtp) then
             comm_sph_FFT%kl_fft(is_send) = j
-            comm_sph_FFT%m_fft(is_send) = 2*m+1
+            comm_sph_FFT%m_fft(is_send) =  2*m+1
             comm_sph_FFT%rnorm_sr_rtp(is_send) = one
           end if
         end do

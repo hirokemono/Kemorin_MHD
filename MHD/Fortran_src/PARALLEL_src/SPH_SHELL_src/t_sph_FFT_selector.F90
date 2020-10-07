@@ -169,6 +169,8 @@
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use transfer_to_long_integers
+      use sph_rtp_domain_FFTPACK5
+      use sph_prt_domain_FFTPACK5
 !
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
@@ -240,9 +242,15 @@
         call init_sph_comp_FFTPACK5                                     &
      &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
-        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK for domaikn'
-        call init_sph_domain_FFTPACK5(sph_rtp, comm_rtp,                &
-     &                                WK_FFTs%sph_domain_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt FFTPACK for domaikn'
+          call init_prt_domain_FFTPACK5(sph_rtp, comm_rtp,              &
+     &                                  WK_FFTs%sph_domain_FFTPACK)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTPACK for domaikn'
+          call init_rtp_domain_FFTPACK5(sph_rtp, comm_rtp,              &
+     &                                  WK_FFTs%sph_domain_FFTPACK)
+        end if
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(id_rank .eq. 0) write(*,*) 'Use Test FFT routine'
@@ -340,6 +348,8 @@
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use transfer_to_long_integers
+      use sph_rtp_domain_FFTPACK5
+      use sph_prt_domain_FFTPACK5
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -413,9 +423,17 @@
         call verify_sph_comp_FFTPACK5                                   &
      &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK for domain'
-        call verify_sph_domain_FFTPACK5(sph_rtp, comm_rtp,              &
-     &                                  WK_FFTs%sph_domain_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                         'Use prt FFTPACK for domain'
+          call verify_prt_domain_FFTPACK5(sph_rtp, comm_rtp,            &
+     &                                    WK_FFTs%sph_domain_FFTPACK)
+        else
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                         'Use rtp FFTPACK for domain'
+          call verify_rtp_domain_FFTPACK5(sph_rtp, comm_rtp,            &
+     &                                    WK_FFTs%sph_domain_FFTPACK)
+        end if
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         if(iflag_debug .gt. 0) write(*,*) 'Use Test FFT routine'
@@ -437,6 +455,8 @@
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
       use transfer_to_long_integers
+      use sph_rtp_domain_FFTPACK5
+      use sph_prt_domain_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -529,6 +549,8 @@
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
       use transfer_to_long_integers
+      use sph_rtp_domain_FFTPACK5
+      use sph_prt_domain_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
