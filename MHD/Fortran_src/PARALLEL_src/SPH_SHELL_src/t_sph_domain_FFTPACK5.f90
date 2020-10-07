@@ -369,15 +369,10 @@
         end do
 !$omp end parallel do
 !
-!$omp parallel do private(j)
-        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call copy_single_RFFTMF_to_send2                            &
-     &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
+     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_fwd, fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ), n_WS, WS)
-        end do
-!$omp end parallel do
-!
+     &          ncomp_fwd, fftpack_d%X(1), n_WS, WS)
       end do
 !
       end subroutine prt_domain_RFFTMF_to_send
@@ -408,14 +403,10 @@
 !      write(*,*) 'aho'
 !
       do nd = 1, ncomp_bwd
-!$omp parallel do private(j)
-        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call copy_single_RFFTMB_from_recv2                          &
-     &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
+     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_bwd, n_WR, WR, fftpack_d%X( 1+(j-1)*sph_rtp%nidx_rtp(3) ))
-        end do
-!$omp end parallel do
+     &          ncomp_bwd, n_WR, WR, fftpack_d%X(1))
 !
 !$omp parallel do private(j)
         do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
@@ -429,7 +420,6 @@
           call sel_copy_single_FFT_to_rtp2                            &
      &       (sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                 &
      &        fftpack_d%X(1), X_rtp(1,nd))
-!
       end do
 !
       end subroutine prt_domain_RFFTMB_from_recv
@@ -493,46 +483,53 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_single_RFFTMF_to_send2                            &
-     &         (nd, j, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,        &
+     &         (nd, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,           &
      &          ncomp_fwd, X_fft, n_WS, WS)
 !
-      integer(kind = kint), intent(in) :: nd, j
+      integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
-      real(kind = kreal), intent(in) :: X_fft(mphi_rtp)
+      real(kind = kreal), intent(in) :: X_fft(nnod_rtp)
 !
       integer(kind = kint), intent(in) :: n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: m, ic_rtp, is_rtp, ic_send, is_send
+      integer(kind = kint) :: j, m, jst
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
 !
 !
-      is_rtp = j + nnod_rt
-      ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
-      is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-      WS(ic_send) = X_fft(1)
-      WS(is_send) = X_fft(mphi_rtp)
-      do m = 1, mphi_rtp/2 - 1
-        ic_rtp = j + (2*m  ) * nnod_rt
-        is_rtp = j + (2*m+1) * nnod_rt
-        ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_send,is_send,jst)
+      do j = 1, nnod_rt
+        jst = (j-1)*mphi_rtp
+!
+        is_rtp = j + nnod_rt
+        ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
         is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-        WS(ic_send) = X_fft(2*m  )
-        WS(is_send) = X_fft(2*m+1)
+        WS(ic_send) = X_fft(1+jst)
+        WS(is_send) = X_fft(mphi_rtp+jst)
+        do m = 1, mphi_rtp/2 - 1
+          ic_rtp = j + (2*m  ) * nnod_rt
+          is_rtp = j + (2*m+1) * nnod_rt
+          ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+          WS(ic_send) = X_fft(2*m  +jst)
+          WS(is_send) = X_fft(2*m+1+jst)
+        end do
       end do
+!$omp end parallel do
 !
       end subroutine copy_single_RFFTMF_to_send2
 !
 ! ------------------------------------------------------------------
 !
       subroutine copy_single_RFFTMB_from_recv2                          &
-     &         (nd, j, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,        &
+     &         (nd, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,        &
      &          ncomp_bwd, n_WR, WR, X_fft)
 !
-      integer(kind = kint), intent(in) :: nd, j
+      integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
 !
@@ -543,47 +540,33 @@
 !
       real(kind = kreal), intent(inout) :: X_fft(mphi_rtp)
 !
-      integer(kind = kint) :: m, ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: j, m, jst
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-!   normalization
-      is_rtp = j + nnod_rt
-      ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
-      is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-      X_fft(1) =           WR(ic_recv)
-      X_fft(mphi_rtp) = WR(is_recv)
-      do m = 1, mphi_rtp/2 - 1
-        ic_rtp = j + (2*m  ) * nnod_rt
-        is_rtp = j + (2*m+1) * nnod_rt
-        ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_recv,is_recv,jst)
+      do j = 1, nnod_rt
+        jst = (j-1)*mphi_rtp
+!
+        is_rtp = j + nnod_rt
+        ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
         is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-        X_fft(2*m  ) = WR(ic_recv)
-        X_fft(2*m+1) = WR(is_recv)
+        X_fft(1+jst) =           WR(ic_recv)
+        X_fft(mphi_rtp+jst) = WR(is_recv)
+        do m = 1, mphi_rtp/2 - 1
+          ic_rtp = j + (2*m  ) * nnod_rt
+          is_rtp = j + (2*m+1) * nnod_rt
+          ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
+          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
+          X_fft(2*m  +jst) = WR(ic_recv)
+          X_fft(2*m+1+jst) = WR(is_recv)
+        end do
       end do
+!$omp end parallel do
 !
       end subroutine copy_single_RFFTMB_from_recv2
 !
 ! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine sel_copy_single_rtp_to_FFT2                            &
-     &         (j, nnod_rtp, istep_phi, nnod_rt, Nfft_r, X_rtp, X_fft)
-!
-      integer(kind = kint), intent(in) :: j
-      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt, Nfft_r
-      integer(kind = kint), intent(in) :: istep_phi
-      real(kind = kreal), intent(in) :: X_rtp(nnod_rtp)
-!
-      real(kind = kreal), intent(inout) :: X_fft(Nfft_r)
-!
-      integer(kind = kint) :: ist, m
-!
-!
-        ist = (j-1) * Nfft_r
-        X_fft(1:Nfft_r) = X_rtp(ist+1:ist+Nfft_r)
-!
-      end subroutine sel_copy_single_rtp_to_FFT2
-!
 ! ------------------------------------------------------------------
 !
       subroutine sel_copy_single_FFT_to_rtp2                            &
