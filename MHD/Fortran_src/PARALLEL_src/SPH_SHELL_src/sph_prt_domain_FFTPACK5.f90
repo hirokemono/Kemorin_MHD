@@ -182,10 +182,13 @@
         end do
 !$omp end parallel do
 !
-        call copy_prt_comp_FFTPACK_to_send                              &
-     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
-     &      ncomp_fwd, fftpack_d%X(1), n_WS, WS)
+!        call copy_prt_comp_FFTPACK_to_send                             &
+!     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+!     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),    &
+!     &      ncomp_fwd, fftpack_d%X(1), n_WS, WS)
+        call copy_1comp_prt_FFT_to_send                                 &
+     &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,          &
+     &      fftpack_d%X(1), fftpack_d%comm_sph_FFTPACK, n_WS, WS)
       end do
 !
       end subroutine prt_domain_RFFTMF_to_send

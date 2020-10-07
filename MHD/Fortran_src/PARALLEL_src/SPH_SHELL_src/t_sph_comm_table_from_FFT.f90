@@ -292,7 +292,7 @@
 !
 !$omp parallel do private(inum,inod_fft,ic_send)
       do inum = 1, comm_sph_FFT%ntot_item
-        inod_fft = comm_sph_FFT%m_fft(inum)                            &
+        inod_fft = comm_sph_FFT%m_fft(inum)                             &
      &            + (comm_sph_FFT%kl_fft(inum)-1) * nidx_rtp(3)
 !
         ic_send = nd + (inum-1) * ncomp_fwd
