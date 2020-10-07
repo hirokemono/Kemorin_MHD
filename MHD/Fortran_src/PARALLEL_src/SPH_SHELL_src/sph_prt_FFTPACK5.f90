@@ -171,7 +171,7 @@
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) :: num, nsize, ip, nd, ist_fft
+      integer(kind = kint) :: num, nsize, ip, ist_fft
       integer(kind = kint) :: ierr
 !
 !
@@ -196,17 +196,14 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-      do nd = 1, ncomp_fwd
-         ist_fft = (nd-1) * sph_rtp%nnod_rtp
-!        call copy_prt_comp_FFTPACK_to_send                             &
-!     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
-!     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),    &
-!     &      ncomp_fwd, fftpack_t%X(1), n_WS, WS)
-        call copy_1comp_prt_FFT_to_send                                 &
-     &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,          &
-     &      fftpack_t%X(ist_fft+1), fftpack_t%comm_sph_FFTPACK, n_WS, WS)
-      end do
-        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
+!      call copy_prt_FFTPACK_to_send                                    &
+!     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                          &
+!     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),      &
+!     &    ncomp_fwd, fftpack_t%X(1), n_WS, WS)
+      call copy_all_prt_FFT_to_send                                     &
+     &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,                &
+     &    fftpack_t%X(1), fftpack_t%comm_sph_FFTPACK, n_WS, WS)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine prt_RFFTMF_to_send
 !
@@ -230,18 +227,15 @@
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) :: num, nsize, nd, ip, ist_fft
+      integer(kind = kint) :: num, nsize, ip, ist_fft
       integer(kind = kint) :: ierr
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      do nd = 1, ncomp_bwd
-        ist_fft = (nd-1) * sph_rtp%nnod_rtp
-        call copy_prt_comp_FFTPACK_from_recv                            &
-     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
-     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
-     &      ncomp_bwd, n_WR, WR, fftpack_t%X(ist_fft+1))
-      end do
+      call copy_prt_FFTPACK_from_recv                                   &
+     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                           &
+     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),       &
+     &    ncomp_bwd, n_WR, WR, fftpack_t%X(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
