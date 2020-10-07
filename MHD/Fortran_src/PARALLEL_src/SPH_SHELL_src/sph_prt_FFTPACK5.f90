@@ -175,14 +175,9 @@
       integer(kind = kint) :: ierr
 !
 !
-!      write(*,*) 'BakaBaka'
-!
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      do nd = 1, ncomp_fwd
-        ist_fft = (nd-1) * sph_rtp%nnod_rtp
-        call copy_FFTPACK_to_prt_comp                                   &
-     &     (sph_rtp%nnod_rtp, X_rtp(1,nd), fftpack_t%X(ist_fft+1))
-      end do
+      nsize = ncomp_fwd * sph_rtp%nnod_rtp
+      call copy_FFTPACK_to_prt_comp(nsize, X_rtp(1,1), fftpack_t%X(1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -265,11 +260,8 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-      do nd = 1, ncomp_bwd
-        ist_fft = (nd-1) * sph_rtp%nnod_rtp
-        call copy_FFTPACK_to_prt_comp                                   &
-     &     (sph_rtp%nnod_rtp, fftpack_t%X(ist_fft+1), X_rtp(1,nd))
-      end do
+      nsize = ncomp_bwd * sph_rtp%nnod_rtp
+      call copy_FFTPACK_to_prt_comp(nsize, fftpack_t%X(1), X_rtp(1,1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine prt_RFFTMB_from_recv
