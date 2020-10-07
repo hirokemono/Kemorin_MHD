@@ -175,32 +175,43 @@
       integer(kind = kint) :: ierr
 !
 !
-      write(*,*) 'BakaBaka'
+!      write(*,*) 'BakaBaka'
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       do nd = 1, ncomp_fwd
+        ist_fft = (nd-1) * sph_rtp%nnod_rtp
         call copy_FFTPACK_to_prt_comp                                   &
-     &     (sph_rtp%nnod_rtp, X_rtp(1,nd), fftpack_t%X(1))
+     &     (sph_rtp%nnod_rtp, X_rtp(1,nd), fftpack_t%X(ist_fft+1))
+      end do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do private(ip,num,ist_fft,nsize)
-        do ip = 1, np_smp
-          num = sph_rtp%istack_rtp_rt_smp(ip)                           &
-     &         - sph_rtp%istack_rtp_rt_smp(ip-1)
-          ist_fft = sph_rtp%nidx_rtp(3)*sph_rtp%istack_rtp_rt_smp(ip-1)
-          nsize = sph_rtp%nidx_rtp(3)*num
-          call RFFTMF(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3),    &
-     &        ione, fftpack_t%X(ist_fft+1), nsize, fftpack_t%WSV,       &
-     &        fftpack_t%NSV, fftpack_t%WK(ist_fft+1), nsize, ierr)
-        end do
+      do ip = 1, np_smp
+        num = (sph_rtp%istack_rtp_rt_smp(ip)                            &
+     &       - sph_rtp%istack_rtp_rt_smp(ip-1)) * ncomp_fwd
+        ist_fft = ncomp_fwd*sph_rtp%nidx_rtp(3)                         &
+     &           * sph_rtp%istack_rtp_rt_smp(ip-1)
+        nsize = sph_rtp%nidx_rtp(3)*num
+        call RFFTMF(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3),      &
+     &      ione, fftpack_t%X(ist_fft+1), nsize, fftpack_t%WSV,         &
+     &      fftpack_t%NSV, fftpack_t%WK(ist_fft+1), nsize, ierr)
+      end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
+      do nd = 1, ncomp_fwd
+         ist_fft = (nd-1) * sph_rtp%nnod_rtp
 !        call copy_prt_comp_FFTPACK_to_send                             &
 !     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
 !     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),    &
 !     &      ncomp_fwd, fftpack_t%X(1), n_WS, WS)
         call copy_1comp_prt_FFT_to_send                                 &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,          &
-     &      fftpack_t%X(1), fftpack_t%comm_sph_FFTPACK, n_WS, WS)
+     &      fftpack_t%X(ist_fft+1), fftpack_t%comm_sph_FFTPACK, n_WS, WS)
       end do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine prt_RFFTMF_to_send
 !
@@ -228,27 +239,38 @@
       integer(kind = kint) :: ierr
 !
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       do nd = 1, ncomp_bwd
+        ist_fft = (nd-1) * sph_rtp%nnod_rtp
         call copy_prt_comp_FFTPACK_from_recv                            &
      &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
      &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
-     &      ncomp_bwd, n_WR, WR, fftpack_t%X(1))
-!
-!$omp parallel do private(ip,num,ist_fft,nsize)
-        do ip = 1, np_smp
-          num = sph_rtp%istack_rtp_rt_smp(ip)                           &
-     &         - sph_rtp%istack_rtp_rt_smp(ip-1)
-          ist_fft = sph_rtp%nidx_rtp(3)*sph_rtp%istack_rtp_rt_smp(ip-1)
-          nsize = sph_rtp%nidx_rtp(3)*num
-          call RFFTMB(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3),    &
-     &        ione, fftpack_t%X(ist_fft+1), nsize, fftpack_t%WSV,       &
-     &        fftpack_t%NSV, fftpack_t%WK(ist_fft+1), nsize, ierr)
-        end do
-!$omp end parallel do
-!
-        call copy_FFTPACK_to_prt_comp                                   &
-     &     (sph_rtp%nnod_rtp, fftpack_t%X(1), X_rtp(1,nd))
+     &      ncomp_bwd, n_WR, WR, fftpack_t%X(ist_fft+1))
       end do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
+!$omp parallel do private(ip,num,ist_fft,nsize)
+      do ip = 1, np_smp
+        num = (sph_rtp%istack_rtp_rt_smp(ip)                            &
+     &       - sph_rtp%istack_rtp_rt_smp(ip-1)) * ncomp_bwd
+        ist_fft = ncomp_bwd*sph_rtp%nidx_rtp(3)                         &
+     &           * sph_rtp%istack_rtp_rt_smp(ip-1)
+        nsize = sph_rtp%nidx_rtp(3)*num
+        call RFFTMB(num, sph_rtp%nidx_rtp(3), sph_rtp%nidx_rtp(3),      &
+     &      ione, fftpack_t%X(ist_fft+1), nsize, fftpack_t%WSV,         &
+     &      fftpack_t%NSV, fftpack_t%WK(ist_fft+1), nsize, ierr)
+      end do
+!$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
+      do nd = 1, ncomp_bwd
+        ist_fft = (nd-1) * sph_rtp%nnod_rtp
+        call copy_FFTPACK_to_prt_comp                                   &
+     &     (sph_rtp%nnod_rtp, fftpack_t%X(ist_fft+1), X_rtp(1,nd))
+      end do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine prt_RFFTMB_from_recv
 !

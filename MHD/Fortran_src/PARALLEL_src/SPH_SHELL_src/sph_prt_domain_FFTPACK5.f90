@@ -167,9 +167,12 @@
       integer(kind = kint) :: ierr
 !
       do nd = 1, ncomp_fwd
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
         call copy_FFTPACK_to_prt_comp                                   &
      &     (sph_rtp%nnod_rtp, X_rtp(1,nd), fftpack_d%X(1))
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do private(ip,num,ist_fft,nsize)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
@@ -181,7 +184,9 @@
      &        fftpack_d%NSV, fftpack_d%WK(ist_fft+1), nsize, ierr)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
 !        call copy_prt_comp_FFTPACK_to_send                             &
 !     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
 !     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),    &
@@ -189,6 +194,7 @@
         call copy_1comp_prt_FFT_to_send                                 &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, ncomp_fwd,          &
      &      fftpack_d%X(1), fftpack_d%comm_sph_FFTPACK, n_WS, WS)
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
       end subroutine prt_domain_RFFTMF_to_send
@@ -217,11 +223,14 @@
       integer(kind = kint) :: ierr
 !
       do nd = 1, ncomp_bwd
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
         call copy_prt_comp_FFTPACK_from_recv                            &
      &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
      &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
      &      ncomp_bwd, n_WR, WR, fftpack_d%X(1))
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
 !$omp parallel do private(ip,num,ist_fft,nsize)
         do ip = 1, np_smp
           num = sph_rtp%istack_rtp_rt_smp(ip)                           &
@@ -233,9 +242,12 @@
      &        fftpack_d%NSV, fftpack_d%WK(ist_fft+1), nsize, ierr)
         end do
 !$omp end parallel do
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
+        if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
         call copy_FFTPACK_to_prt_comp                                   &
      &     (sph_rtp%nnod_rtp, fftpack_d%X(1), X_rtp(1,nd))
+        if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
       end subroutine prt_domain_RFFTMB_from_recv
