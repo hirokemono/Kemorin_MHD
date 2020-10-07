@@ -171,13 +171,11 @@
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) :: ip, ntot, nsize, ist_fft
-      integer(kind = kint) :: ierr
-!
-      write(*,*) 'BakaBaka'
-!
       integer(kind = kint) :: num, nsize, ip, nd, ist_fft
       integer(kind = kint) :: ierr
+!
+!
+      write(*,*) 'BakaBaka'
 !
       do nd = 1, ncomp_fwd
         call copy_FFTPACK_to_prt_comp                                   &
@@ -226,12 +224,9 @@
 !
       type(work_for_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) :: ip, ntot, nsize, ist_fft
-      integer(kind = kint) :: ierr
-!
-!
       integer(kind = kint) :: num, nsize, nd, ip, ist_fft
       integer(kind = kint) :: ierr
+!
 !
       do nd = 1, ncomp_bwd
         call copy_prt_comp_FFTPACK_from_recv                            &
