@@ -503,8 +503,13 @@
         call sph_comp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,      &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
-        call sph_domain_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
-     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_domain_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,  &
+     &        n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_FFTPACK)
+        else
+          call rtp_domain_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,  &
+     &        n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_FFTPACK)
+        end if
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         call sph_test_fwd_FFT_to_send                                   &
@@ -591,8 +596,15 @@
         call sph_comp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,    &
      &      n_WR, WR, v_rtp(1,1), WK_FFTs%sph_comp_FFTPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
-        call sph_domain_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
-     &      n_WR, WR, v_rtp(1,1), WK_FFTs%sph_domain_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_domain_RFFTMB_from_recv                              &
+     &       (sph_rtp, comm_rtp, ncomp_bwd,                             &
+     &        n_WR, WR, v_rtp(1,1), WK_FFTs%sph_domain_FFTPACK)
+        else
+          call rtp_domain_RFFTMB_from_recv                              &
+     &       (sph_rtp, comm_rtp, ncomp_bwd,                             &
+     &        n_WR, WR, v_rtp(1,1), WK_FFTs%sph_domain_FFTPACK)
+        end if
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFT_TEST) then
         call sph_test_back_FFT_from_recv                                &

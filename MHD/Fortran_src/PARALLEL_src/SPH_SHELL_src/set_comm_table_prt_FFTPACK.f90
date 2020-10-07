@@ -181,7 +181,7 @@
 !
       do j = 1, irt_rtp_smp_stack(np_smp)
         inod_c = 1 + (j-1) * nidx_rtp(3)
-        inod_s = nidx_rtp(3) + (j-1) * nidx_rtp(3) 
+        inod_s = nidx_rtp(3) + (j-1) * nidx_rtp(3)
         ic_rtp = j
         is_rtp = j + nidx_rtp(1)*nidx_rtp(2)
         ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
@@ -190,7 +190,7 @@
         WS(is_send) = X_FFT(inod_s)
       end do
 !
-!$omp parallel do private(m,j,nd,inod_c,inod_s,                         &
+!$omp parallel do private(m,j,inod_c,inod_s,                            &
 !$omp&                    ic_rtp,is_rtp,ic_send,is_send)
       do m = 1, (nidx_rtp(3)+1)/2 - 1
         do j = 1, irt_rtp_smp_stack(np_smp)
