@@ -270,7 +270,7 @@
         call copy_1comp_rtp_FFT_to_send_smp                             &
      &     (nd, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                     &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd,                       &
-     &      ispack3_d%X, ispack3_d%comm_sph_ISPACK, n_WS, WS)
+     &      ispack3_d%X, ispack3_d%comm_sph_ISPACK3, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
