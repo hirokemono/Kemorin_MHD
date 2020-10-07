@@ -253,18 +253,17 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: inod_fft, inum, inod_c, ic_send
+      integer(kind = kint) :: inod_fft, inum, ic_send
 !
 !
-!$omp parallel do private(inum,inod_fft,ic_send,inod_c)
+!$omp parallel do private(inum,inod_fft,ic_send)
       do inum = 1, comm_sph_FFT%ntot_item
         inod_fft = comm_sph_FFT%m_fft(inum)                             &
      &            + (comm_sph_FFT%kl_fft(inum)-1) * nidx_rtp(3)
         ic_send = (inum-1) * ncomp_fwd
-        inod_c = (inod_fft-1) * ncomp_fwd
         WS(ic_send+1:ic_send+ncomp_fwd)                                 &
      &         = comm_sph_FFT%rnorm_sr_rtp(inum)                        &
-     &          * X_FFT(inod_c,1:ncomp_fwd)
+     &          * X_FFT(inod_fft,1:ncomp_fwd)
       end do
 !$end parallel do
 !
