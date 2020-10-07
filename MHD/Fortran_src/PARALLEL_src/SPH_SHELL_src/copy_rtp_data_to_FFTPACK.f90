@@ -14,7 +14,12 @@
 !!
 !!      subroutine copy_FFTPACK_to_rtp_comp(nnod_rtp, nidx_rtp,         &
 !!     &          irt_rtp_smp_stack, X_FFT, X_rtp)
+!!      subroutine copy_ISPACK_to_prt_comp(nnod_rtp, nidx_rtp,          &
+!!     &          irt_rtp_smp_stack, X_FFT, X_rtp)
+!!
 !!      subroutine copy_FFTPACK_from_rtp_comp(nnod_rtp, nidx_rtp,       &
+!!     &          irt_rtp_smp_stack, X_rtp, X_FFT)
+!!      subroutine copy_ISPACK_from_prt_comp(nnod_rtp, nidx_rtp,        &
 !!     &          irt_rtp_smp_stack, X_rtp, X_FFT)
 !!
 !!      subroutine copy_FFTPACK_to_prt_field                            &
@@ -151,6 +156,41 @@
 !
 ! ------------------------------------------------------------------
 !
+      subroutine copy_ISPACK_to_prt_comp(nnod_rtp, nidx_rtp,            &
+     &          irt_rtp_smp_stack, X_FFT, X_rtp)
+!
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+!
+      real(kind = kreal), intent(in) :: X_FFT(nnod_rtp)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &     :: X_rtp(nidx_rtp(3),irt_rtp_smp_stack(np_smp))
+!
+!
+      integer(kind = kint) :: m, j, ip, ist, num
+      integer(kind = kint) :: inod_c, ist_fft
+!
+!
+!$omp parallel do private(ip,m,j,ist,num,inod_c,ist_fft)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
+        do j = 1, num
+          do m = 1, nidx_rtp(3)
+            inod_c = (m-1)*num + ist_fft
+            X_rtp(m,j+ist) = X_FFT(j+inod_c)
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_ISPACK_to_prt_comp
+!
+! ------------------------------------------------------------------
+!
       subroutine copy_FFTPACK_from_rtp_comp(nnod_rtp, nidx_rtp,         &
      &          irt_rtp_smp_stack, X_rtp, X_FFT)
 !
@@ -174,15 +214,50 @@
         ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
 !
         do m = 1, nidx_rtp(3)
+          inod_c = (m-1)*num + ist_fft
           do j = 1, num
-              inod_c = j + (m-1)*num + ist_fft
-              X_FFT(inod_c) = X_rtp(j+ist,m)
+              X_FFT(j+inod_c) = X_rtp(j+ist,m)
           end do
         end do
       end do
 !$omp end parallel do
 !
       end subroutine copy_FFTPACK_from_rtp_comp
+!
+! ------------------------------------------------------------------
+!
+      subroutine copy_ISPACK_from_prt_comp(nnod_rtp, nidx_rtp,          &
+     &          irt_rtp_smp_stack, X_rtp, X_FFT)
+!
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+!
+      real(kind = kreal), intent(in)                                    &
+     &     :: X_rtp(nidx_rtp(3),irt_rtp_smp_stack(np_smp))
+!
+      real(kind = kreal), intent(inout) :: X_FFT(nnod_rtp)
+!
+      integer(kind = kint) :: m, j, ip, ist, num
+      integer(kind = kint) :: inod_c, ist_fft
+!
+!
+!$omp parallel do private(m,j,ist,num,inod_c,ist_fft)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num =  irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
+!
+        do m = 1, nidx_rtp(3)
+          inod_c = (m-1)*num + ist_fft
+          do j = 1, num
+              X_FFT(j+inod_c) = X_rtp(m,j+ist)
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_ISPACK_from_prt_comp
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
