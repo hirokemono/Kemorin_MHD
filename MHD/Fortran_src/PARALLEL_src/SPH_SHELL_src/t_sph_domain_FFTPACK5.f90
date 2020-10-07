@@ -401,10 +401,10 @@
       integer(kind = kint) :: ierr
 !
       do nd = 1, ncomp_bwd
-          call copy_single_RFFTMB_from_recv2                            &
-     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                 &
-     &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_bwd, n_WR, WR, fftpack_d%X(1))
+        call copy_prt_comp_FFTPACK_from_recv                            &
+     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
+     &      ncomp_bwd, n_WR, WR, fftpack_d%X(1))
 !
 !$omp parallel do private(ip,num,ist_fft,nsize)
         do ip = 1, np_smp
@@ -522,49 +522,6 @@
 !$omp end parallel do
 !
       end subroutine copy_single_RFFTMF_to_send2
-!
-! ------------------------------------------------------------------
-!
-      subroutine copy_single_RFFTMB_from_recv2                          &
-     &         (nd, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,        &
-     &          ncomp_bwd, n_WR, WR, X_fft)
-!
-      integer(kind = kint), intent(in) :: nd
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
-!
-      integer(kind = kint), intent(in) :: ncomp_bwd
-      integer(kind = kint), intent(in) :: n_WR
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(in):: WR(n_WR)
-!
-      real(kind = kreal), intent(inout) :: X_fft(mphi_rtp)
-!
-      integer(kind = kint) :: j, m, jst
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
-!
-!
-!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_recv,is_recv,jst)
-      do j = 1, nnod_rt
-        jst = (j-1)*mphi_rtp
-!
-        is_rtp = j + nnod_rt
-        ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
-        is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-        X_fft(1+jst) =           WR(ic_recv)
-        X_fft(mphi_rtp+jst) = WR(is_recv)
-        do m = 1, mphi_rtp/2 - 1
-          ic_rtp = j + (2*m  ) * nnod_rt
-          is_rtp = j + (2*m+1) * nnod_rt
-          ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-          X_fft(2*m  +jst) = WR(ic_recv)
-          X_fft(2*m+1+jst) = WR(is_recv)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_single_RFFTMB_from_recv2
 !
 ! ------------------------------------------------------------------
 !
