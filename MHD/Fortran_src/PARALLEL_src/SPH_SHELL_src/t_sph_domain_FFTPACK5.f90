@@ -369,10 +369,10 @@
         end do
 !$omp end parallel do
 !
-          call copy_single_RFFTMF_to_send2                              &
-     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                 &
-     &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_fwd, fftpack_d%X(1), n_WS, WS)
+        call copy_prt_comp_FFTPACK_to_send                              &
+     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp),     &
+     &      ncomp_fwd, fftpack_d%X(1), n_WS, WS)
       end do
 !
       end subroutine prt_domain_RFFTMF_to_send
@@ -478,50 +478,6 @@
       fftpack_d%iflag_fft_len = 0
 !
       end subroutine dealloc_const_domain_FFTPACK
-!
-! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine copy_single_RFFTMF_to_send2                            &
-     &         (nd, nnod_rtp, irev_sr_rtp, mphi_rtp, nnod_rt,           &
-     &          ncomp_fwd, X_fft, n_WS, WS)
-!
-      integer(kind = kint), intent(in) :: nd
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: mphi_rtp, nnod_rt
-!
-      integer(kind = kint), intent(in) :: ncomp_fwd
-      real(kind = kreal), intent(in) :: X_fft(nnod_rtp)
-!
-      integer(kind = kint), intent(in) :: n_WS
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(inout):: WS(n_WS)
-!
-      integer(kind = kint) :: j, m, jst
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-!
-!
-!$omp parallel do private(j,m,ic_rtp,is_rtp,ic_send,is_send,jst)
-      do j = 1, nnod_rt
-        jst = (j-1)*mphi_rtp
-!
-        is_rtp = j + nnod_rt
-        ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
-        is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-        WS(ic_send) = X_fft(1+jst)
-        WS(is_send) = X_fft(mphi_rtp+jst)
-        do m = 1, mphi_rtp/2 - 1
-          ic_rtp = j + (2*m  ) * nnod_rt
-          is_rtp = j + (2*m+1) * nnod_rt
-          ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send) = X_fft(2*m  +jst)
-          WS(is_send) = X_fft(2*m+1+jst)
-        end do
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_single_RFFTMF_to_send2
 !
 ! ------------------------------------------------------------------
 !
