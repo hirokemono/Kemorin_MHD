@@ -407,7 +407,7 @@
       integer(kind = kint) :: ip, num, nsize, nd, j, ist, ied
       integer(kind = kint) :: ierr, ist_fft
 !
-      write(*,*) 'aho'
+!      write(*,*) 'aho'
 !
 !$omp parallel do private(ip,j,nd,ist,ied)
       do ip = 1, np_smp
