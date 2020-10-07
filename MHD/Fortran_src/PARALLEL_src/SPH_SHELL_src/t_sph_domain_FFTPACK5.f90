@@ -358,17 +358,24 @@
       do nd = 1, ncomp_fwd
 !$omp parallel do private(j)
         do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
-!
           call sel_copy_single_rtp_to_FFT2                            &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
      &          X_rtp(1,nd), fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ))
+        end do
+!$omp end parallel do
 !
+!$omp parallel do private(j)
+        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call RFFTMF(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
      &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ),  sph_rtp%nidx_rtp(3),                &
      &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (j-1)*sph_rtp%nidx_rtp(3) ),       &
      &          sph_rtp%nidx_rtp(3), ierr)
+        end do
+!$omp end parallel do
 !
+!$omp parallel do private(j)
+        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call copy_single_RFFTMF_to_send2                            &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
@@ -412,12 +419,20 @@
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
      &          ncomp_bwd, n_WR, WR, fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ))
+        end do
+!$omp end parallel do
 !
+!$omp parallel do private(j)
+        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call RFFTMB(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
      &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), sph_rtp%nidx_rtp(3),                 &
      &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (j-1)*sph_rtp%nidx_rtp(3) ),       &
      &          sph_rtp%nidx_rtp(3), ierr)
+        end do
+!$omp end parallel do
 !
+!$omp parallel do private(j)
+        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
           call sel_copy_single_FFT_to_rtp2                            &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
