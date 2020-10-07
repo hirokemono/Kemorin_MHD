@@ -305,7 +305,7 @@
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      real(kind = kreal), intent(inout) :: X_FFT(ncomp_bwd*nnod_rtp)
+      real(kind = kreal), intent(inout) :: X_FFT(nnod_rtp)
 !
       integer(kind = kint) :: m, j, ip, ist, num
       integer(kind = kint) :: inod_s, inod_c, ist_fft

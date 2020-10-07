@@ -397,7 +397,7 @@
      &          ncomp_bwd, n_WR, WR, X_rtp, fftpack_d)
 !
       use copy_rtp_data_to_FFTPACK
-      use set_comm_table_rtp_FFTPACK
+      use set_comm_table_prt_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -418,7 +418,7 @@
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-        call copy_FFTPACK_comp_from_recv(nd, sph_rtp%nnod_rtp,          &
+        call copy_prt_comp_FFTPACK_from_recv(nd, sph_rtp%nnod_rtp,      &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_bwd,     &
      &      comm_rtp%irev_sr, n_WR, WR, fftpack_d%X(1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
