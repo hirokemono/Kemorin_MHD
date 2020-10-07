@@ -296,7 +296,7 @@
       integer(kind = kint) :: ip, num, nsize, nd
       integer(kind = kint) :: ist_fft, ierr
 !
-      write(*,*) 'tako'
+!      write(*,*) 'tako'
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
@@ -414,7 +414,7 @@
       integer(kind = kint) :: ip, num, nsize, nd
       integer(kind = kint) :: ierr, ist_fft
 !
-      write(*,*) 'aho'
+!      write(*,*) 'aho'
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
