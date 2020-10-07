@@ -127,6 +127,7 @@
       subroutine init_sph_domain_ISPACK3(sph_rtp, comm_rtp, ispack3_d)
 !
       use transfer_to_long_integers
+      use set_comm_table_rtp_ISPACK
       use copy_single_FFT_and_rtp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -141,6 +142,13 @@
 !
       call alloc_work_domain_ispack3(sph_rtp%nnod_rtp, ispack3_d)
 !
+      call alloc_comm_table_sph_FFT                                     &
+     &   (comm_rtp%ntot_item_sr, ispack3_d%comm_sph_ISPACK3)
+      call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,                 &
+     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
+     &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
+     &    ispack3_d%comm_sph_ISPACK3)
+!
       end subroutine init_sph_domain_ISPACK3
 !
 ! ------------------------------------------------------------------
@@ -150,6 +158,7 @@
       type(work_for_domain_ispack3), intent(inout) :: ispack3_d
 !
 !
+      call dealloc_comm_table_sph_FFT(ispack3_d%comm_sph_ISPACK3)
       call dealloc_const_domain_ispack3(ispack3_d)
       call dealloc_work_domain_ispack3(ispack3_d)
 !
@@ -161,6 +170,7 @@
      &         (sph_rtp, comm_rtp, ispack3_d)
 !
       use transfer_to_long_integers
+      use set_comm_table_rtp_ISPACK
       use copy_single_FFT_and_rtp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -182,6 +192,14 @@
 !
         call FXRINI(cast_long(sph_rtp%nidx_rtp(3)),                     &
      &              ispack3_d%IT(1), ispack3_d%T(1))
+!
+        call dealloc_comm_table_sph_FFT(ispack3_d%comm_sph_ISPACK3)
+        call alloc_comm_table_sph_FFT                                   &
+     &     (comm_rtp%ntot_item_sr, ispack3_d%comm_sph_ISPACK3)
+        call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,               &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,             &
+     &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
+     &      ispack3_d%comm_sph_ISPACK3)
       end if
 !
       if(ALLOCATED(ispack3_d%X) .eqv. .false.) then

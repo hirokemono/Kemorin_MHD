@@ -117,6 +117,7 @@
       subroutine init_sph_domain_ISPACK(sph_rtp, comm_rtp, ispack_d)
 !
       use ispack_0931
+      use set_comm_table_rtp_ISPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -129,6 +130,13 @@
 !
       call alloc_work_domain_ispack(sph_rtp%nnod_rtp, ispack_d)
 !
+      call alloc_comm_table_sph_FFT                                     &
+     &   (comm_rtp%ntot_item_sr, ispack_d%comm_sph_ISPACK)
+      call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,                 &
+     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
+     &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
+     &    ispack_d%comm_sph_ISPACK)
+!
       end subroutine init_sph_domain_ISPACK
 !
 ! ------------------------------------------------------------------
@@ -138,6 +146,7 @@
       type(work_for_domain_ispack), intent(inout) :: ispack_d
 !
 !
+      call dealloc_comm_table_sph_FFT(ispack_d%comm_sph_ISPACK)
       call dealloc_const_domain_ispack(ispack_d)
       call dealloc_work_domain_ispack(ispack_d)
 !
@@ -149,6 +158,7 @@
      &         (sph_rtp, comm_rtp, ispack_d)
 !
       use ispack_0931
+      use set_comm_table_rtp_ISPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -166,6 +176,14 @@
         end if
 !
         call FTTRUI(sph_rtp%nidx_rtp(3), ispack_d%IT, ispack_d%T)
+!
+        call dealloc_comm_table_sph_FFT(ispack_d%comm_sph_ISPACK)
+        call alloc_comm_table_sph_FFT                                   &
+     &     (comm_rtp%ntot_item_sr, ispack_d%comm_sph_ISPACK)
+        call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,               &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,             &
+     &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
+     &      ispack_d%comm_sph_ISPACK)
       end if
 !
       if(ALLOCATED(ispack_d%X) .eqv. .false.) then

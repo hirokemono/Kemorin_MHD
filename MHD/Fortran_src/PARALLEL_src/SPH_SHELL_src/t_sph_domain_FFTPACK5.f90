@@ -101,9 +101,6 @@
         real(kind = 8), allocatable :: X(:)
 !>        Work area for FFTPACK
         real(kind = 8), allocatable :: WK(:)
-!
-!>        temporal area for time count
-        real(kind = kreal), allocatable :: t_omp(:,:)
       end type work_for_domain_fftpack
 !
       private :: alloc_work_domain_FFTPACK, alloc_const_domain_FFTPACK
@@ -144,9 +141,6 @@
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    fftpack_d%comm_sph_FFTPACK)
 !
-      allocate(fftpack_d%t_omp(np_smp,0:3))
-      fftpack_d%t_omp = 0.0d0
-!
       end subroutine init_sph_domain_FFTPACK5
 !
 ! ------------------------------------------------------------------
@@ -159,7 +153,6 @@
       call dealloc_comm_table_sph_FFT(fftpack_d%comm_sph_FFTPACK)
       call dealloc_const_domain_FFTPACK(fftpack_d)
       call dealloc_work_domain_FFTPACK(fftpack_d)
-      deallocate(fftpack_d%t_omp)
 !
       end subroutine finalize_sph_domain_FFTPACK5
 !
