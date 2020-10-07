@@ -118,6 +118,8 @@
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use t_spheric_rtp_data
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
@@ -147,9 +149,15 @@
       end if
 #endif
 !
-        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-        call init_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        if(id_rank .eq. 0) write(*,*) 'Use prt FFTPACK'
+        call init_prt_FFTPACK5(sph_rtp, comm_rtp,                       &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+      else
+        if(id_rank .eq. 0) write(*,*) 'Use rtp FFTPACK'
+        call init_rtp_FFTPACK5(sph_rtp, comm_rtp,                       &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+      end if
 !
       end subroutine init_sph_FFT_select
 !
@@ -187,6 +195,8 @@
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use t_spheric_rtp_data
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -213,9 +223,15 @@
       end if
 #endif
 !
-      if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-      call verify_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
-     &    ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTPACK'
+        call verify_prt_FFTPACK5(sph_rtp, comm_rtp,                     &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+      else
+        if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTPACK'
+        call verify_rtp_FFTPACK5(sph_rtp, comm_rtp,                     &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+      end if
 !
       end subroutine verify_sph_FFT_select
 !
@@ -227,6 +243,8 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -255,8 +273,13 @@
       end if
 #endif
 !
-      call sph_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,       &
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
      &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+      else
+        call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
+     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+      end if
 !
       end subroutine fwd_FFT_select_to_send
 !
@@ -267,6 +290,8 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -296,8 +321,13 @@
       end if
 #endif
 !
-      call sph_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,     &
+      if(sph_rtp%istep_rtp(3) .eq. 1) then
+        call prt_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
      &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+      else
+        call rtp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
+     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+      end if
 !
       end subroutine back_FFT_select_from_recv
 !

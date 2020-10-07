@@ -177,6 +177,8 @@
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
       use swap_phi_4_sph_trans
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -219,8 +221,13 @@
      &      ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
 #endif
       else
-        call sph_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
-     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,   &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        else
+          call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,   &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine fwd_MHD_FFT_sel_to_send
@@ -233,6 +240,8 @@
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
       use swap_phi_4_sph_trans
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -273,8 +282,13 @@
      &      ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
 #endif
       else
-        call sph_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
-     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
+     &         WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        else
+          call rtp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
+     &        WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine back_MHD_FFT_sel_from_recv

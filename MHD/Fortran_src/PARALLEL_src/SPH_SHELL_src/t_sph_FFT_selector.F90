@@ -171,6 +171,8 @@
       use transfer_to_long_integers
       use sph_rtp_domain_FFTPACK5
       use sph_prt_domain_FFTPACK5
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
@@ -258,9 +260,15 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_test_FFT)
 !
       else
-        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK'
-        call init_sph_FFTPACK5(sph_rtp, comm_rtp,                       &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt FFTPACK'
+          call init_prt_FFTPACK5(sph_rtp, comm_rtp,                     &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTPACK'
+          call init_rtp_FFTPACK5(sph_rtp, comm_rtp,                     &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine init_sph_FFT_select
@@ -350,6 +358,8 @@
       use transfer_to_long_integers
       use sph_rtp_domain_FFTPACK5
       use sph_prt_domain_FFTPACK5
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -441,9 +451,15 @@
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_test_FFT)
 !
       else
-        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
-        call verify_sph_FFTPACK5(sph_rtp, comm_rtp,                     &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTPACK'
+          call verify_prt_FFTPACK5(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTPACK'
+          call verify_rtp_FFTPACK5(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine verify_sph_FFT_select
@@ -457,6 +473,8 @@
       use transfer_to_long_integers
       use sph_rtp_domain_FFTPACK5
       use sph_prt_domain_FFTPACK5
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -537,8 +555,13 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_test_FFT)
       else
-        call sph_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
-     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,   &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        else
+          call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,   &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine fwd_FFT_select_to_send
@@ -551,6 +574,8 @@
       use transfer_to_long_integers
       use sph_rtp_domain_FFTPACK5
       use sph_prt_domain_FFTPACK5
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -634,8 +659,13 @@
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR, v_rtp(1,1), WK_FFTs%sph_test_FFT)
       else
-        call sph_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
-     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
+     &         WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        else
+          call rtp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
+     &        WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine back_FFT_select_from_recv
