@@ -350,37 +350,33 @@
 !
       type(work_for_domain_fftpack), intent(inout) :: fftpack_d
 !
-      integer(kind = kint) :: ip, num, nsize, nd, j, ist, ied
+      integer(kind = kint) :: num, nsize, j, nd
       integer(kind = kint) :: ist_fft, ierr
 !
 !      write(*,*) 'tako'
 !
-!$omp parallel do private(ip,j,nd,ist,ied)
-      do ip = 1, np_smp
-        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-        ied = sph_rtp%istack_rtp_rt_smp(ip)
-        do j = ist, ied
-          do nd = 1, ncomp_fwd
+      do nd = 1, ncomp_fwd
+!$omp parallel do private(j)
+        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
 !
-            call sel_copy_single_rtp_to_FFT2                            &
+          call sel_copy_single_rtp_to_FFT2                            &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
-     &          X_rtp(1,nd), fftpack_d%X( (ip-1)*sph_rtp%nidx_rtp(3) ))
+     &          X_rtp(1,nd), fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ))
 !
-            call RFFTMF(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_d%X( (ip-1)*sph_rtp%nidx_rtp(3) ),  sph_rtp%nidx_rtp(3),                &
-     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (ip-1)*sph_rtp%nidx_rtp(3) ),       &
+          call RFFTMF(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
+     &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ),  sph_rtp%nidx_rtp(3),                &
+     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (j-1)*sph_rtp%nidx_rtp(3) ),       &
      &          sph_rtp%nidx_rtp(3), ierr)
 !
-            call copy_single_RFFTMF_to_send2                            &
+          call copy_single_RFFTMF_to_send2                            &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_fwd, fftpack_d%X( (ip-1)*sph_rtp%nidx_rtp(3) ), n_WS, WS)
-          end do
+     &          ncomp_fwd, fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), n_WS, WS)
         end do
+!$omp end parallel do
 !
       end do
-!$omp end parallel do
 !
       end subroutine prt_domain_RFFTMF_to_send
 !
@@ -404,37 +400,32 @@
 !
       type(work_for_domain_fftpack), intent(inout) :: fftpack_d
 !
-      integer(kind = kint) :: ip, num, nsize, nd, j, ist, ied
+      integer(kind = kint) :: num, nsize, nd, j
       integer(kind = kint) :: ierr, ist_fft
 !
 !      write(*,*) 'aho'
 !
-!$omp parallel do private(ip,j,nd,ist,ied)
-      do ip = 1, np_smp
-        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-        ied = sph_rtp%istack_rtp_rt_smp(ip)
-        do j = ist, ied
-          do nd = 1, ncomp_bwd
-!   normalization
-            call copy_single_RFFTMB_from_recv2                          &
+      do nd = 1, ncomp_bwd
+!$omp parallel do private(j)
+        do j = 1, sph_rtp%istack_rtp_rt_smp(np_smp)
+          call copy_single_RFFTMB_from_recv2                          &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_bwd, n_WR, WR, fftpack_d%X( (ip-1)*sph_rtp%nidx_rtp(3) ))
+     &          ncomp_bwd, n_WR, WR, fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ))
 !
-            call RFFTMB(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_d%X( (ip-1)*sph_rtp%nidx_rtp(3) ), sph_rtp%nidx_rtp(3),                 &
-     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (ip-1)*sph_rtp%nidx_rtp(3) ),       &
+          call RFFTMB(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
+     &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), sph_rtp%nidx_rtp(3),                 &
+     &          fftpack_d%WSV, fftpack_d%NSV, fftpack_d%WK( (j-1)*sph_rtp%nidx_rtp(3) ),       &
      &          sph_rtp%nidx_rtp(3), ierr)
 !
-            call sel_copy_single_FFT_to_rtp2                            &
+          call sel_copy_single_FFT_to_rtp2                            &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
-     &          fftpack_d%X( (ip-1)*sph_rtp%nidx_rtp(3) ), X_rtp(1,nd))
-          end do
+     &          fftpack_d%X( (j-1)*sph_rtp%nidx_rtp(3) ), X_rtp(1,nd))
         end do
+!$omp end parallel do
 !
       end do
-!$omp end parallel do
 !
       end subroutine prt_domain_RFFTMB_from_recv
 !
