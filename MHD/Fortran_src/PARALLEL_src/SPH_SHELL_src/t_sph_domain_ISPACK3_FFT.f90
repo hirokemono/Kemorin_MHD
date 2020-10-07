@@ -241,11 +241,11 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call copy_ISPACK_from_prt_comp                                &
      &       (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                       &
-     &        sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), ispack_d%X(1))
+     &        sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), ispack3_d%X(1))
         else
           call copy_FFTPACK_from_rtp_comp                               &
      &       (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                       &
-     &        sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), ispack_d%X(1))
+     &        sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), ispack3_d%X(1))
         end if
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
@@ -321,11 +321,11 @@
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call copy_ISPACK_to_prt_comp                                  &
      &       (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                       &
-     &        sph_rtp%istack_rtp_rt_smp, ispack_d%X, X_rtp(1,nd))
+     &        sph_rtp%istack_rtp_rt_smp, ispack3_d%X, X_rtp(1,nd))
         else
           call copy_FFTPACK_to_rtp_comp                                 &
      &       (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                       &
-     &        sph_rtp%istack_rtp_rt_smp, ispack_d%X, X_rtp(1,nd))
+     &        sph_rtp%istack_rtp_rt_smp, ispack3_d%X, X_rtp(1,nd))
         end if
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
