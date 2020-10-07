@@ -247,7 +247,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
 !
-      real(kind = kreal), intent(in) :: X_FFT(ncomp_fwd,nnod_rtp)
+      real(kind = kreal), intent(in) :: X_FFT(nnod_rtp,ncomp_fwd)
       type(comm_tbl_from_FFT), intent(in) :: comm_sph_FFT
 !
       integer(kind = kint), intent(in) :: n_WS
