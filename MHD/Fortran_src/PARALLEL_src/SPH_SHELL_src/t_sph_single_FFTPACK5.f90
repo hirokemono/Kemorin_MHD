@@ -85,24 +85,19 @@
 !
       implicit none
 !
-!>      Structure for each FFTPACK
-      type work_each_sgl_fftpack
-!>        Data for multiple Fourier transform
-        real(kind = 8), allocatable :: X(:)
-!>        Work area for FFTPACK
-        real(kind = 8), allocatable :: WK(:)
-      end type work_each_sgl_fftpack
-!
 !>      Structure to use ISPACK
       type work_for_sgl_fftpack
-!>      Structure for each thread
-        type(work_each_sgl_fftpack), allocatable :: smp(:)
 !>        Size of work constant for FFTPACK
         integer(kind = kint) :: NSV
 !>        Work constatnts for FFTPACK
         real(kind = 8), allocatable :: WSV(:)
 !>        flag for length of Fourier transform
         integer(kind = kint) :: iflag_fft_len =  -1
+!
+!>        Data for multiple Fourier transform
+        real(kind = 8), allocatable :: X(:,:)
+!>        Work area for FFTPACK
+        real(kind = 8), allocatable :: WK(:,:)
 !
 !>        temporal area for time count
         real(kind = kreal), allocatable :: t_omp(:,:)
@@ -168,7 +163,7 @@
         if(fftpack_t%iflag_fft_len .lt. 0) then
           call alloc_const_sgl_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
         else if(sph_rtp%nidx_rtp(3)                                     &
-     &             .gt. size(fftpack_t%smp(1)%WK) ) then
+     &             .gt. size(fftpack_t%WK,1) ) then
           call dealloc_const_sgl_FFTPACK(fftpack_t)
           call alloc_const_sgl_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
         end if
@@ -177,10 +172,9 @@
      &              ierr)
       end if
 !
-      if(allocated(fftpack_t%smp(1)%WK) .eqv. .false.) then
+      if(allocated(fftpack_t%WK) .eqv. .false.) then
         call alloc_work_sgl_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
-      else if(sph_rtp%nidx_rtp(3)                                       &
-     &            .gt. size(fftpack_t%smp(1)%WK,1)) then
+      else if(sph_rtp%nidx_rtp(3) .gt. size(fftpack_t%WK,1)) then
         call dealloc_work_sgl_FFTPACK(fftpack_t)
         call alloc_work_sgl_FFTPACK(sph_rtp%nidx_rtp(3), fftpack_t)
       end if
@@ -227,15 +221,15 @@
             call sel_copy_single_rtp_to_FFT                             &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
-     &          X_rtp(1,nd), fftpack_t%smp(ip)%X)
+     &          X_rtp(1,nd), fftpack_t%X(1,ip))
             if(iflag_FFT_time) fftpack_t%t_omp(ip,1)                    &
      &                      = fftpack_t%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
             call RFFTMF(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_t%smp(ip)%X,  sph_rtp%nidx_rtp(3),              &
-     &          fftpack_t%WSV, fftpack_t%NSV, fftpack_t%smp(ip)%WK,     &
+     &          fftpack_t%X(1,ip),  sph_rtp%nidx_rtp(3),                &
+     &          fftpack_t%WSV, fftpack_t%NSV, fftpack_t%WK(1,ip),       &
      &          sph_rtp%nidx_rtp(3), ierr)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,2)                    &
      &                      = fftpack_t%t_omp(ip,2)                     &
@@ -245,7 +239,7 @@
             call copy_single_RFFTMF_to_send                             &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_fwd, fftpack_t%smp(ip)%X, n_WS, WS)
+     &          ncomp_fwd, fftpack_t%X(1,ip), n_WS, WS)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,3)                    &
      &                      = fftpack_t%t_omp(ip,3)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
@@ -301,15 +295,15 @@
             call copy_single_RFFTMB_from_recv                           &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
      &          sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp(np_smp), &
-     &          ncomp_bwd, n_WR, WR, fftpack_t%smp(ip)%X)
+     &          ncomp_bwd, n_WR, WR, fftpack_t%X(1,ip))
             if(iflag_FFT_time) fftpack_t%t_omp(ip,1)                    &
      &                      = fftpack_t%t_omp(ip,1)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
 !
             if(iflag_FFT_time) fftpack_t%t_omp(ip,0) = MPI_WTIME()
             call RFFTMB(ione, ione, sph_rtp%nidx_rtp(3), ione,          &
-     &          fftpack_t%smp(ip)%X, sph_rtp%nidx_rtp(3),               &
-     &          fftpack_t%WSV, fftpack_t%NSV, fftpack_t%smp(ip)%WK,     &
+     &          fftpack_t%X(1,ip), sph_rtp%nidx_rtp(3),                 &
+     &          fftpack_t%WSV, fftpack_t%NSV, fftpack_t%WK(1,ip),       &
      &          sph_rtp%nidx_rtp(3), ierr)
             if(iflag_FFT_time) fftpack_t%t_omp(ip,2)                    &
      &                      = fftpack_t%t_omp(ip,2)                     &
@@ -319,7 +313,7 @@
             call sel_copy_single_FFT_to_rtp                             &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
-     &          fftpack_t%smp(ip)%X, X_rtp(1,nd))
+     &          fftpack_t%X(1,ip), X_rtp(1,nd))
             if(iflag_FFT_time) fftpack_t%t_omp(ip,3)                    &
      &                      = fftpack_t%t_omp(ip,3)                     &
      &                       + MPI_WTIME() - fftpack_t%t_omp(ip,0)
@@ -344,16 +338,14 @@
       integer(kind = kint), intent(in) :: Nfft
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
 !
-      integer(kind = kint) :: ip
 !
-!
-      allocate( fftpack_t%smp(np_smp) )
-!
-      do ip = 1, np_smp
-        allocate( fftpack_t%smp(ip)%X(Nfft) )
-        allocate( fftpack_t%smp(ip)%WK(Nfft) )
-        fftpack_t%smp(ip)%WK = 0.0d0
-      end do
+      allocate( fftpack_t%X(Nfft,np_smp) )
+      allocate( fftpack_t%WK(Nfft,np_smp) )
+
+!$omp parallel workshare
+      fftpack_t%X =  0.0d0
+      fftpack_t%WK = 0.0d0
+!$omp end parallel workshare
 !
       end subroutine alloc_work_sgl_FFTPACK
 !
@@ -380,14 +372,9 @@
       subroutine dealloc_work_sgl_FFTPACK(fftpack_t)
 !
       type(work_for_sgl_fftpack), intent(inout) :: fftpack_t
-      integer(kind = kint) :: ip
 !
 !
-      do ip = 1, np_smp
-        deallocate(fftpack_t%smp(ip)%X, fftpack_t%smp(ip)%WK)
-      end do
-!
-      deallocate(fftpack_t%smp)
+      deallocate(fftpack_t%X, fftpack_t%WK)
 !
       end subroutine dealloc_work_sgl_FFTPACK
 !
