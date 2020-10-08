@@ -38,7 +38,7 @@
       implicit none
 !
 #ifdef OMP_FFTW3
-      integer(kind = kint), parameter :: num_test =   14
+      integer(kind = kint), parameter :: num_test =   15
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
      &            iflag_FFTPACK_COMPONENT,                              &
@@ -47,6 +47,7 @@
      &            iflag_FFTW,                                           &
      &            iflag_FFTW_SINGLE,                                    &
      &            iflag_FFTW_COMPONENT,                                 &
+     &            iflag_FFTW_DOMAIN,                                    &
      &            iflag_OMP_FFTW,                                       &
      &            iflag_OMP_FFTW_DOMAIN,                                &
      &            iflag_ISPACK1,                                        &
@@ -55,7 +56,7 @@
      &            iflag_ISPACK3_DOMAIN,                                 &
      &            iflag_ISPACK3_SINGLE/)
 #elif FFTW3
-      integer(kind = kint), parameter :: num_test =   12
+      integer(kind = kint), parameter :: num_test =   13
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
      &            iflag_FFTPACK_COMPONENT,                              &
@@ -64,6 +65,7 @@
      &            iflag_FFTW,                                           &
      &            iflag_FFTW_SINGLE,                                    &
      &            iflag_FFTW_COMPONENT,                                 &
+     &            iflag_FFTW_DOMAIN,                                    &
      &            iflag_ISPACK1,                                        &
      &            iflag_ISPACK3,                                        &
      &            iflag_ISPACK3_COMPONENT,                              &

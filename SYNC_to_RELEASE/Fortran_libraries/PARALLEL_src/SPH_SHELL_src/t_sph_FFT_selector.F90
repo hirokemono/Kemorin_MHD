@@ -144,6 +144,17 @@
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         end if
         return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
+          call init_prt_field_FFTW                                      &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
+          call init_rtp_field_FFTW                                      &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        end if
+        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
@@ -178,6 +189,10 @@
 #ifdef FFTW3
       if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for domain'
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
         return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
@@ -217,6 +232,17 @@
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         else
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW'
+          call verify_rtp_field_FFTW                                    &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        end if
+        return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW for domain'
+          call verify_prt_field_FFTW                                    &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW for domain'
           call verify_rtp_field_FFTW                                    &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         end if
@@ -273,6 +299,15 @@
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         end if
         return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
+     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        else
+          call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
+     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        end if
+        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
      &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTW)
@@ -314,6 +349,15 @@
 !
 #ifdef FFTW3
       if(     WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        else
+          call rtp_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        end if
+        return
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)

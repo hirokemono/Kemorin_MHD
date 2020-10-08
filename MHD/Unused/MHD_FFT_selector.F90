@@ -213,7 +213,7 @@
         call swap_phi_order_from_trans(ncomp_fwd,                       &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
-      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
      &        ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
@@ -275,7 +275,7 @@
         call swap_phi_order_from_trans(ncomp_bwd,                       &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
-      else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+      else if(iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
      &        ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)

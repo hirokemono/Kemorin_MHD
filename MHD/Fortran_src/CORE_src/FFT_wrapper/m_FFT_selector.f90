@@ -35,9 +35,9 @@
 !>      Character flag to use FFTW3
       character(len = kchara), parameter :: hd_FFTW3 =    'fftw3'
 !>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter :: hd_FFTW_F =  'FFTW_FIELD'
+      character(len = kchara), parameter :: hd_FFTW_D =  'FFTW_DOMAIN'
 !>      Character flag to use FFTW3 for each component
-      character(len = kchara), parameter :: hd_FFTW3_F = 'fftw3_field'
+      character(len = kchara), parameter :: hd_FFTW3_D = 'fftw3_domain'
 !>      Character flag to use single transforms in FFTW3
       character(len = kchara), parameter :: hd_FFTW_S =  'FFTW_SINGLE'
 !>      Character flag to use single transforms in FFTW3
@@ -99,7 +99,7 @@
 !>      integer flag to use single transforms in FFTW3
       integer(kind = kint), parameter :: iflag_FFTW_COMPONENT = 13
 !>      integer flag to use FFTW3 for each component
-!      integer(kind = kint), parameter :: iflag_FFTW_FIELD = 14
+      integer(kind = kint), parameter :: iflag_FFTW_DOMAIN = 14
 !
 !>      integer flag to use FFTW3 with OopenMP at once
       integer(kind = kint), parameter :: iflag_OMP_FFTW =        41
@@ -127,7 +127,7 @@
       private :: hd_FFTW, hd_FFTW3, hd_FFTW_S, hd_FFTW3_S
       private :: hd_ISPACK, hd_ISPACK_D
       private :: hd_ISPACK3, hd_ISPACK3_D, hd_ISPACK3_C, hd_ISPACK3_S
-      private :: hd_FFTW_F, hd_FFTW3_F
+      private :: hd_FFTW_D, hd_FFTW3_D
       private :: hd_FFTW_C, hd_FFTW3_C, hd_FFT_TEST
       private :: hd_OMP_FFTW,  hd_OMP_FFTW_D
       private :: hd_OMP_FFTW3, hd_OMP_FFTW3_D
@@ -178,9 +178,9 @@
       else if(cmp_no_case(FFT_library_ctl, hd_FFTW_C)                   &
      &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_C)) then
         iflag_FFT = iflag_FFTW_COMPONENT
-!      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_F)                  &
-!     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_F)) then
-!        iflag_FFT = iflag_FFTW_FIELD
+      else if(cmp_no_case(FFT_library_ctl, hd_FFTW_D)                   &
+     &     .or. cmp_no_case(FFT_library_ctl, hd_FFTW3_D)) then
+        iflag_FFT = iflag_FFTW_DOMAIN
 !
       else if(cmp_no_case(FFT_library_ctl, hd_OMP_FFTW)                 &
      &     .or. cmp_no_case(FFT_library_ctl, hd_OMP_FFTW3)) then
@@ -224,6 +224,9 @@
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
       else if(i_mode .eq. iflag_FFTW_COMPONENT) then
         write(*,*) 'elapsed by FFTW3 for all component (',              &
+     &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
+      else if(i_mode .eq. iflag_FFTW_DOMAIN) then
+        write(*,*) 'elapsed by FFTW3 for domain (',                     &
      &            trim(chosen_fft_name(i_mode)), '): ', etime_fft
 !
       else if(i_mode .eq. iflag_OMP_FFTW) then
@@ -277,6 +280,8 @@
         chosen_fft_name = hd_FFTW_S
       else if(i_mode .eq. iflag_FFTW_COMPONENT) then
         chosen_fft_name = hd_FFTW_C
+      else if(i_mode .eq. iflag_FFTW_DOMAIN) then
+        chosen_fft_name = hd_FFTW_D
 !
       else if(i_mode .eq. iflag_OMP_FFTW) then
         chosen_fft_name = hd_OMP_FFTW
