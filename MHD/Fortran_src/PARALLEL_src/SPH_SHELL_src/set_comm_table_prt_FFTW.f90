@@ -170,12 +170,12 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_prt_FFTW_comp_from_recv                           &
-     &         (nd, nnod_rtp, irev_sr_rtp, nnod_rt, mphi_rtp,           &
+     &         (nd, nnod_rtp, irev_sr_rtp, nnod_rt,                     &
      &          ncomp_bwd, n_WR, WR, Nfft_c, C_fft)
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: Nfft_c
-      integer(kind = kint), intent(in) :: nnod_rt, mphi_rtp
+      integer(kind = kint), intent(in) :: nnod_rt
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: ncomp_bwd
@@ -186,38 +186,30 @@
       complex(kind = fftw_complex), intent(inout)                       &
      &              :: C_fft(nnod_rt*Nfft_c)
 !
-      integer(kind = kint) :: i, m, j, ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: j, m, ist_c
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-!   normalization
+!$omp parallel do  private(j,m,ist_c,ic_rtp,is_rtp,ic_recv,is_recv)
       do j = 1, nnod_rt
-        ic_rtp = 1 + (j-1)*mphi_rtp
-        ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-        i = 1 + (j-1)*Nfft_c
-        C_fft(i) = cmplx(WR(ic_recv), zero, kind(0d0))
-      end do
-!
-!$omp parallel private(j)
-      do j = 1, nnod_rt
-!$omp do private(i,m,ic_rtp,is_rtp,ic_recv,is_recv)
+        ist_c = 1 + Nfft_c * (j-1)
+        ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
+        C_fft(ist_c) = cmplx(WR(ic_recv), zero, kind(0d0))
         do m = 2, Nfft_c-1
-          ic_rtp = 2*m-1 + (j-1)*mphi_rtp
-          is_rtp = 2*m +   (j-1)*mphi_rtp
+          ist_c = m + Nfft_c * (j-1)
+          ic_rtp = j + (2*m-2) * nnod_rt
+          is_rtp = j + (2*m-1) * nnod_rt
           ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
           is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-          i = m + (j-1)*Nfft_c
-          C_fft(i) = half * cmplx(WR(ic_recv), -WR(is_recv),kind(0d0))
+          C_fft(ist_c)                                                  &
+     &            = half * cmplx(WR(ic_recv), -WR(is_recv),kind(0d0))
         end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-      do j = 1, nnod_rt
-        ic_rtp = 2 + (j-1)*mphi_rtp
+        ist_c = Nfft_c + Nfft_c * (j-1)
+        ic_rtp = j + nnod_rt
         ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-        i = Nfft_c + (j-1)*Nfft_c
-        C_fft(i) = half * cmplx(WR(ic_recv), zero, kind(0d0))
+        C_fft(ist_c) = half * cmplx(WR(ic_recv), zero, kind(0d0))
       end do
+!$omp end parallel do
 !
       end subroutine copy_prt_FFTW_comp_from_recv
 !

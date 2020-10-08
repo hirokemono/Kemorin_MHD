@@ -240,8 +240,8 @@
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-            call copy_single_FFTW_from_recv2                            &
-     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
+            call copy_prt_FFTW_comp_from_recv                           &
+     &         (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                 &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_bwd,           &
      &          n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C(ist_c+1))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
@@ -309,47 +309,6 @@
 !$omp end parallel do
 !
       end subroutine copy_single_FFTW_to_send2
-!
-! ------------------------------------------------------------------
-!
-      subroutine copy_single_FFTW_from_recv2                          &
-     &         (nd, nnod_rtp, irev_sr_rtp, nnod_rt, &
-     &          ncomp_bwd, n_WR, WR, Nfft_c, C_fft)
-!
-      integer(kind = kint), intent(in) :: nd
-      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt
-!
-      integer(kind = kint), intent(in) :: ncomp_bwd
-      integer(kind = kint), intent(in) :: n_WR
-      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
-      real (kind=kreal), intent(in):: WR(n_WR)
-!
-      integer(kind = kint), intent(in) :: Nfft_c
-      complex(kind = fftw_complex), intent(inout)                       &
-     &              :: C_fft(nnod_rt*Nfft_c)
-!
-      integer(kind = kint) :: j, m, ist_c, ic_rtp, is_rtp, ic_recv, is_recv
-!
-!
-!$omp parallel do  private(j, m, ist_c,ic_rtp, is_rtp, ic_recv, is_recv)
-      do j = 1, nnod_rt
-        ist_c = Nfft_c * (j-1)
-        ic_recv = nd + (irev_sr_rtp(j) - 1) * ncomp_bwd
-        C_fft(ist_c+1) = cmplx(WR(ic_recv), zero, kind(0d0))
-        do m = 2, Nfft_c-1
-          ic_rtp = j + (2*m-2) * nnod_rt
-          is_rtp = j + (2*m-1) * nnod_rt
-          ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-          is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-          C_fft(ist_c+m) = half * cmplx(WR(ic_recv), -WR(is_recv),kind(0d0))
-        end do
-        ic_rtp = j + nnod_rt
-        ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
-        C_fft(ist_c+Nfft_c) = half * cmplx(WR(ic_recv), zero, kind(0d0))
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_single_FFTW_from_recv2
 !
 ! ------------------------------------------------------------------
 !
