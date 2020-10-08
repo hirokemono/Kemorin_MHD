@@ -126,6 +126,8 @@ set_comm_table_prt_FFTPACK.o: $(SPH_COMMDIR)/set_comm_table_prt_FFTPACK.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 set_comm_table_rtp_FFTPACK.o: $(SPH_COMMDIR)/set_comm_table_rtp_FFTPACK.f90 m_precision.o m_constants.o m_machine_parameter.o t_sph_comm_table_from_FFT.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_comm_table_rtp_FFTW.o: $(SPH_COMMDIR)/set_comm_table_rtp_FFTW.f90 m_precision.o m_constants.o m_machine_parameter.o t_sph_comm_table_from_FFTW.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_comm_table_rtp_ISPACK.o: $(SPH_COMMDIR)/set_comm_table_rtp_ISPACK.f90 m_precision.o m_constants.o m_machine_parameter.o t_sph_comm_table_from_FFT.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_comm_table_rtp_OMP_FFTW.o: $(SPH_COMMDIR)/set_comm_table_rtp_OMP_FFTW.f90 m_precision.o m_constants.o t_sph_comm_table_from_FFTW.o
@@ -218,7 +220,7 @@ t_sph_domain_ISPACK3_FFT.o: $(SPH_COMMDIR)/t_sph_domain_ISPACK3_FFT.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sph_domain_ISPACK_FFT.o: $(SPH_COMMDIR)/t_sph_domain_ISPACK_FFT.f90 m_precision.o m_constants.o m_machine_parameter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o t_spheric_rtp_data.o t_sph_trans_comm_tbl.o t_sph_comm_table_from_FFT.o ispack_0931.o set_comm_table_rtp_ISPACK.o copy_rtp_data_to_FFTPACK.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_sph_field_FFTW.o: $(SPH_COMMDIR)/t_sph_field_FFTW.F90 m_precision.o m_constants.o m_machine_parameter.o m_fftw_parameters.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o
+t_sph_field_FFTW.o: $(SPH_COMMDIR)/t_sph_field_FFTW.F90 m_precision.o m_constants.o m_machine_parameter.o m_fftw_parameters.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o set_comm_table_rtp_FFTW.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 t_sph_field_OMP_FFTW.o: $(SPH_COMMDIR)/t_sph_field_OMP_FFTW.F90 m_precision.o m_constants.o m_machine_parameter.o m_fftw_parameters.o m_OMP_FFTW3_counter.o m_elapsed_labels_SPH_TRNS.o calypso_mpi.o t_spheric_rtp_data.o t_sph_trans_comm_tbl.o t_sph_comm_table_from_FFTW.o set_comm_table_rtp_OMP_FFTW.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<

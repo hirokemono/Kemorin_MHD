@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in Oct., 2012
 !
-!>@brief  communication table from FFTPACK5
+!>@brief  communication table from ISPACK
 !!
 !!@verbatim
 !!      subroutine set_comm_item_rtp_4_ISPACK                           &
