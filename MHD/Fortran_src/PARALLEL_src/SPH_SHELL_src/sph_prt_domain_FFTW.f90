@@ -130,14 +130,6 @@
      &      FFTW_f%X(ist_r+1), inembed, istride, idist_r,               &
      &      FFTW_ESTIMATE)
       end do
-!      do ip = 1, np_smp
-!        ist_r = FFTW_f%Nfft_r * (ip-1)
-!        ist_c = FFTW_f%Nfft_c * (ip-1)
-!        call dfftw_plan_dft_r2c_1d(FFTW_f%plan_fwd(ip), int(FFTW_f%Nfft_r),          &
-!     &      FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1) , FFTW_ESTIMATE)
-!        call dfftw_plan_dft_c2r_1d(FFTW_f%plan_bwd(ip), int(FFTW_f%Nfft_r),          &
-!     &      FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1) , FFTW_ESTIMATE)
-!      end do
       FFTW_f%aNfft = one / dble(sph_rtp%nidx_rtp(3))
 !
       call alloc_comm_table_sph_FFTW                                    &
@@ -212,17 +204,13 @@
         end do
 !$omp end parallel do
 !
-!$omp parallel do  private(j,ip,ist,ied,ist_r, ist_c)
+!$omp parallel do  private(j,ip,ist,ist_r, ist_c)
         do ip = 1, np_smp
           ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-          ied = sph_rtp%istack_rtp_rt_smp(ip) 
-!
-!          do j = ist, ied
-            ist_r = FFTW_f%Nfft_r * (ist-1)
-            ist_c = FFTW_f%Nfft_c * (ist-1)
-            call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),             &
-     &          FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1))
-!          end do
+          ist_r = FFTW_f%Nfft_r * (ist-1)
+          ist_c = FFTW_f%Nfft_c * (ist-1)
+          call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),               &
+     &        FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1))
         end do
 !$omp end parallel do
 !
@@ -286,17 +274,13 @@
         end do
 !$omp end parallel do
 !
-!$omp parallel do private(j,ip,ist,ied,ist_r, ist_c)
+!$omp parallel do private(j,ip,ist,ist_r,ist_c)
         do ip = 1, np_smp
           ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-          ied = sph_rtp%istack_rtp_rt_smp(ip)
-!
-!          do j = ist, ied
-            ist_r = FFTW_f%Nfft_r * (ist-1)
-            ist_c = FFTW_f%Nfft_c * (ist-1)
-            call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),             &
-     &          FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1))
-!          end do
+          ist_r = FFTW_f%Nfft_r * (ist-1)
+          ist_c = FFTW_f%Nfft_c * (ist-1)
+          call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),               &
+     &        FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1))
         end do
 !$omp end parallel do
 !
