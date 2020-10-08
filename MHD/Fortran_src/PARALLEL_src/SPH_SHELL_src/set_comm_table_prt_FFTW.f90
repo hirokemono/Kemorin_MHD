@@ -50,14 +50,15 @@
 !
       type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFTW
 !
-      integer(kind = kint) ::  m, j, ic_rtp, is_rtp, ic_send, is_send
+      integer(kind = kint) ::  m, j, ist_c
+      integer(kind = kint) ::  ic_rtp, is_rtp, ic_send, is_send
 !      integer(kind = kint) ::  i
 !
 !
-!$omp parallel do  private(j,m,ist_c,ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(j,m,ist_c,ic_rtp,is_rtp,ic_send,is_send)
       do j = 1, nnod_rt
         ist_c = 1 + Nfft_c * (j-1)
-        ic_send = nd + (irev_sr_rtp(j) - 1) * ncomp_fwd
+        ic_send = irev_sr_rtp(j)
         if(ic_send .le. ntot_sr_rtp) then
           comm_sph_FFTW%kl_fftw(ic_send) = j
           comm_sph_FFTW%m_fftw(ic_send) =  1
@@ -68,7 +69,7 @@
         do m = 2, Nfft_c-1
 !          ist_c = m + Nfft_c * (j-1)
           ic_rtp = j + (2*m-2) * nnod_rt
-          ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+          ic_send = irev_sr_rtp(ic_rtp)
           if(ic_send .le. ntot_sr_rtp) then
             comm_sph_FFTW%kl_fftw(ic_send) = j
             comm_sph_FFTW%m_fftw(ic_send) =  m
@@ -77,7 +78,7 @@
 !          WS(ic_send) = two*aNfft * real(C_fft(ist_c))
 !
           is_rtp = j + (2*m-1) * nnod_rt
-          is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+          is_send = irev_sr_rtp(is_rtp)
           if(is_send .le. ntot_sr_rtp) then
             comm_sph_FFTW%kl_fftw(is_send) = j
             comm_sph_FFTW%m_fftw(is_send) =  m
@@ -87,7 +88,7 @@
         end do 
 !        ist_c = Nfft_c + Nfft_c * (j-1)
         ic_rtp = j + nnod_rt
-        ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+        ic_send = irev_sr_rtp(ic_rtp)
         if(ic_send .le. ntot_sr_rtp) then
           comm_sph_FFTW%kl_fftw(ic_send) = j
           comm_sph_FFTW%m_fftw(ic_send) =  m
