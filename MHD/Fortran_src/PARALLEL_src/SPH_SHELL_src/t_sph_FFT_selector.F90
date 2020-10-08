@@ -87,6 +87,10 @@
       use t_sph_component_FFTPACK5
       use t_sph_domain_FFTPACK5
       use t_sph_single_FFTPACK5
+      use sph_rtp_domain_FFTPACK5
+      use sph_prt_domain_FFTPACK5
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
 !
       use t_sph_ISPACK_FFT
       use t_sph_domain_ISPACK_FFT
@@ -102,6 +106,8 @@
       use t_sph_single_FFTW
       use t_sph_field_FFTW
       use t_sph_component_FFTW
+      use sph_rtp_domain_FFTW
+      use sph_prt_domain_FFTW
 #endif
 #ifdef OMP_FFTW3
       use t_sph_OMP_FFTW
@@ -169,10 +175,6 @@
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use transfer_to_long_integers
-      use sph_rtp_domain_FFTPACK5
-      use sph_prt_domain_FFTPACK5
-      use sph_rtp_FFTPACK5
-      use sph_prt_FFTPACK5
 !
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
@@ -212,9 +214,15 @@
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
-        if(id_rank .eq. 0) write(*,*) 'Use FFTW'
-        call init_rtp_field_FFTW                                        &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
+          call init_prt_field_FFTW                                      &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
+          call init_rtp_field_FFTW                                      &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
@@ -355,10 +363,6 @@
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
       use transfer_to_long_integers
-      use sph_rtp_domain_FFTPACK5
-      use sph_prt_domain_FFTPACK5
-      use sph_rtp_FFTPACK5
-      use sph_prt_FFTPACK5
 !
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -399,9 +403,15 @@
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
-          if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
+          call verify_prt_field_FFTW                                    &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW'
           call verify_rtp_field_FFTW                                    &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW'
         call verify_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
@@ -469,10 +479,6 @@
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
       use transfer_to_long_integers
-      use sph_rtp_domain_FFTPACK5
-      use sph_prt_domain_FFTPACK5
-      use sph_rtp_FFTPACK5
-      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -509,8 +515,13 @@
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
+     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        else
           call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
      &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTW)
@@ -568,10 +579,6 @@
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
       use transfer_to_long_integers
-      use sph_rtp_domain_FFTPACK5
-      use sph_prt_domain_FFTPACK5
-      use sph_rtp_FFTPACK5
-      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -609,8 +616,13 @@
 !
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        else
           call rtp_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv(sph_rtp, comm_rtp,          &
      &      ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_sgl_FFTW)

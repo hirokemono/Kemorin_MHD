@@ -78,6 +78,8 @@
       use m_precision
       use m_machine_parameter
       use t_sph_FFTPACK5
+      use sph_rtp_FFTPACK5
+      use sph_prt_FFTPACK5
       use t_sph_ISPACK_FFT
       use t_sph_ISPACK3_FFT
       use t_addresses_sph_transform
@@ -87,6 +89,8 @@
       use t_sph_single_FFTW
       use t_sph_field_FFTW
       use t_sph_multi_FFTW
+      use sph_rtp_domain_FFTW
+      use sph_prt_domain_FFTW
 #endif
 !
       use t_sph_single_FFTW
@@ -177,8 +181,6 @@
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
       use swap_phi_4_sph_trans
-      use sph_rtp_FFTPACK5
-      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -212,8 +214,13 @@
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
+     &        ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
+        else
           call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
      &        ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
+        end if
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
      &      ncomp_fwd, n_WS, fld_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
@@ -238,8 +245,6 @@
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
       use swap_phi_4_sph_trans
-      use sph_rtp_FFTPACK5
-      use sph_prt_FFTPACK5
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -271,8 +276,13 @@
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
       else if(iflag_FFT .eq. iflag_FFTW_FIELD) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
+     &        ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)
+        else
           call rtp_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
      &        ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)
+        end if
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv(sph_rtp, comm_rtp,          &
      &      ncomp_bwd, n_WR, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
