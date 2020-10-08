@@ -133,36 +133,36 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_1comp_rtp_FFTW_to_send_smp                        &
-     &         (nd, nnod_rtp, nidx_rtp, irt_rtp_smp_stack, ncomp_fwd,   &
-     &          X_FFT, comm_sph_FFTW, n_WS, WS)
+     &         (nd, irt_rtp_smp_stack, Nfft_c,                          &
+     &          ncomp_fwd, C_fft, comm_sph_FFTW, n_WS, WS)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: ncomp_fwd
+      integer(kind = kint), intent(in) :: Nfft_c
 !
-      real(kind = kreal), intent(in) :: X_FFT(ncomp_fwd*nnod_rtp)
+      complex(kind = fftw_complex), intent(in)                          &
+     &              :: C_fft(irt_rtp_smp_stack(np_smp)*Nfft_c)
       type(comm_tbl_from_FFTW), intent(in) :: comm_sph_FFTW
 !
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: inod_fft, inum, num
-      integer(kind = kint) :: ic_send, ist_fft, ip
+      integer(kind = kint) :: inod_fft, inum, num, ic_send, ip
 !
 !
-!$omp parallel do private(inum,ip,num,ist_fft,inod_fft,ic_send)
+!$omp parallel do private(inum,ip,num,inod_fft,ic_send)
       do inum = 1, comm_sph_FFTW%ntot_item
         ip =  comm_sph_FFTW%ip_smp_fftw(inum)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
         inod_fft = comm_sph_FFTW%kl_fftw(inum)                          &
-     &            + (comm_sph_FFTW%m_fftw(inum)-1)*num + ist_fft
+     &            + (comm_sph_FFTW%m_fftw(inum)-1)*num                  &
+     &            + Nfft_c*irt_rtp_smp_stack(ip-1)
 !
         ic_send = nd + (inum-1) * ncomp_fwd
-        WS(ic_send) = comm_sph_FFTW%cnrm_sr_rtp(inum) * X_FFT(inod_fft)
+        WS(ic_send) = real(comm_sph_FFTW%cnrm_sr_rtp(inum)              &
+     &               * C_fft(inod_fft))
       end do
 !$end parallel do
 !

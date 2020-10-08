@@ -79,6 +79,7 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use t_sph_comm_table_from_FFTW
 !
       implicit none
 !
@@ -101,6 +102,9 @@
 !>        spectrum data for multiple Fourier transform
         complex(kind = fftw_complex), allocatable :: C(:)
 !
+!>        Structure of communication table from FFT to send buffer
+        type(comm_tbl_from_FFTW) :: comm_sph_FFTW
+!
 !>        temporal area for ordering
         real(kind = kreal), allocatable :: v_tmp(:)
       end type work_for_field_FFTW
@@ -114,6 +118,8 @@
 ! ------------------------------------------------------------------
 !
       subroutine init_rtp_field_FFTW(sph_rtp, comm_rtp, FFTW_f)
+!
+      use set_comm_table_rtp_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -154,6 +160,13 @@
       end do
       FFTW_f%aNfft = one / dble(sph_rtp%nidx_rtp(3))
 !
+      call alloc_comm_table_sph_FFTW                                    &
+     &   (comm_rtp%ntot_item_sr, FFTW_f%comm_sph_FFTW)
+      call set_comm_item_rtp_4_FFTW                                     &
+     &   (sph_rtp%nnod_rtp, comm_rtp%ntot_item_sr, comm_rtp%irev_sr,    &
+     &    sph_rtp%istack_rtp_rt_smp, FFTW_f%Nfft_c, FFTW_f%aNfft,       &
+     &    FFTW_f%comm_sph_FFTW)
+!
       end subroutine init_rtp_field_FFTW
 !
 ! ------------------------------------------------------------------
@@ -164,6 +177,8 @@
 !
       integer(kind = kint) :: j
 !
+!
+      call dealloc_comm_table_sph_FFTW(FFTW_f%comm_sph_FFTW)
 !
       do j = 1, np_smp
         call dfftw_destroy_plan(FFTW_f%plan_fwd(j))
@@ -241,11 +256,13 @@
 !
 !   normalization
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-        call copy_rtp_comp_FFTW_to_send                                 &
-     &     (nd, sph_rtp%istack_rtp_rt_smp(np_smp),                      &
-     &      sph_rtp%istack_rtp_rt_smp,                                  &
-     &      sph_rtp%nnod_rtp, ncomp_fwd, n_WS, comm_rtp%irev_sr, WS,    &
-     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C)
+!        call copy_rtp_comp_FFTW_to_send                                &
+!     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+!     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd,                      &
+!     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C, n_WS, WS)
+        call copy_1comp_rtp_FFTW_to_send_smp                            &
+     &     (nd, sph_rtp%istack_rtp_rt_smp, FFTW_f%Nfft_c,               &
+     &      ncomp_fwd, FFTW_f%C, FFTW_f%comm_sph_FFTW, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
@@ -277,10 +294,9 @@
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
           call copy_FFTW_comp_from_recv                                 &
-     &       (nd, sph_rtp%istack_rtp_rt_smp(np_smp),                    &
-     &        sph_rtp%istack_rtp_rt_smp,                                &
-     &        sph_rtp%nnod_rtp, ncomp_bwd, n_WR, comm_rtp%irev_sr, WR,  &
-     &        FFTW_f%Nfft_c, FFTW_f%C)
+     &       (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                   &
+     &        sph_rtp%istack_rtp_rt_smp, ncomp_bwd,                     &
+     &        n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
