@@ -202,8 +202,8 @@
           ied = sph_rtp%istack_rtp_rt_smp(ip) 
 !
           do j = ist, ied
-            ist_r = FFTW_f%Nfft_r * (ip-1)
-            ist_c = FFTW_f%Nfft_c * (ip-1)
+            ist_r = FFTW_f%Nfft_r * (j-1)
+            ist_c = FFTW_f%Nfft_c * (j-1)
             call sel_copy_single_rtp_to_FFT2                            &
      &         (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),              &
      &          sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3), &
@@ -253,8 +253,8 @@
           ied = sph_rtp%istack_rtp_rt_smp(ip)
 !
           do j = ist, ied
-            ist_r = FFTW_f%Nfft_r * (ip-1)
-            ist_c = FFTW_f%Nfft_c * (ip-1)
+            ist_r = FFTW_f%Nfft_r * (j-1)
+            ist_c = FFTW_f%Nfft_c * (j-1)
 !
             call copy_single_FFTW_from_recv2                            &
      &         (nd, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,              &
