@@ -244,7 +244,7 @@
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-          call copy_FFTW_comp_from_recv                                 &
+          call copy_rtp_FFTW_comp_from_recv                             &
      &       (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                   &
      &        sph_rtp%istack_rtp_rt_smp, ncomp_bwd,                     &
      &        n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C)

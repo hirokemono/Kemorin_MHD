@@ -91,7 +91,7 @@
 !
       subroutine init_prt_field_FFTW(sph_rtp, comm_rtp, FFTW_f)
 !
-      use set_comm_table_rtp_FFTW
+      use set_comm_table_prt_FFTW
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -169,7 +169,7 @@
       subroutine prt_field_fwd_FFTW_to_send                             &
      &         (sph_rtp, comm_rtp, ncomp_fwd, n_WS, X_rtp, WS, FFTW_f)
 !
-      use set_comm_table_rtp_FFTW
+      use set_comm_table_prt_FFTW
       use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -189,9 +189,8 @@
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-          call copy_FFTPACK_from_rtp_comp                               &
-     &       (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                       &
-     &        sph_rtp%istack_rtp_rt_smp, X_rtp(1,nd), FFTW_f%X)
+          call copy_FFTPACK_to_prt_comp                                 &
+     &       (sph_rtp%nnod_rtp, X_rtp(1,nd), FFTW_f%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -207,13 +206,13 @@
 !
 !   normalization
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!        call copy_rtp_comp_FFTW_to_send                                &
-!     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
-!     &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd,                      &
-!     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C, n_WS, WS)
-        call copy_1comp_rtp_FFTW_to_send_smp                            &
-     &     (nd, sph_rtp%istack_rtp_rt_smp, FFTW_f%Nfft_c,               &
-     &      ncomp_fwd, FFTW_f%C, FFTW_f%comm_sph_FFTW, n_WS, WS)
+        call copy_prt_comp_FFTW_to_send                                 &
+     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
+     &      sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),     &
+     &      ncomp_fwd, FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C, n_WS, WS)
+!        call copy_1comp_rtp_FFTW_to_send_smp                           &
+!     &     (nd, sph_rtp%istack_rtp_rt_smp, FFTW_f%Nfft_c,              &
+!     &      ncomp_fwd, FFTW_f%C, FFTW_f%comm_sph_FFTW, n_WS, WS)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
       end do
 !
@@ -224,7 +223,7 @@
       subroutine prt_field_back_FFTW_from_recv                          &
      &         (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, X_rtp, FFTW_f)
 !
-      use set_comm_table_rtp_FFTW
+      use set_comm_table_prt_FFTW
       use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -244,10 +243,10 @@
 !
       do nd = 1, ncomp_bwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-          call copy_FFTW_comp_from_recv                                 &
+          call copy_prt_FFTW_comp_from_recv                             &
      &       (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                   &
-     &        sph_rtp%istack_rtp_rt_smp, ncomp_bwd,                     &
-     &        n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C)
+     &        sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),   &
+     &        ncomp_bwd, n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
@@ -262,9 +261,8 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-        call copy_FFTPACK_to_rtp_comp                                   &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, FFTW_f%X, X_rtp(1,nd))
+        call copy_FFTPACK_to_prt_comp                                   &
+     &     (sph_rtp%nnod_rtp, FFTW_f%X, X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !

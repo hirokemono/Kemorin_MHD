@@ -15,7 +15,7 @@
 !!      subroutine copy_rtp_comp_FFTW_to_send                           &
 !!     &         (nd, nnod_rtp, irev_sr_rtp, irt_rtp_smp_stack,         &
 !!     &          ncomp_fwd, Nfft_c, aNfft, C_fft, n_WS, WS)
-!!      subroutine copy_FFTW_comp_from_recv                             &
+!!      subroutine copy_rtp_FFTW_comp_from_recv                         &
 !!     &         (nd, nnod_rtp, irev_sr_rtp, irt_rtp_smp_stack,         &
 !!     &          ncomp_bwd, n_WR, WR, Nfft_c, C_fft)
 !!@endverbatim
@@ -180,7 +180,7 @@
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine copy_FFTW_comp_from_recv                               &
+      subroutine copy_rtp_FFTW_comp_from_recv                           &
      &         (nd, nnod_rtp, irev_sr_rtp, irt_rtp_smp_stack,           &
      &          ncomp_bwd, n_WR, WR, Nfft_c, C_fft)
 !
@@ -235,7 +235,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_FFTW_comp_from_recv
+      end subroutine copy_rtp_FFTW_comp_from_recv
 !
 ! ------------------------------------------------------------------
 !
