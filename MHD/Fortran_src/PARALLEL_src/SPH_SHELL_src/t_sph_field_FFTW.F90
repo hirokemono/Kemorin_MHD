@@ -97,9 +97,6 @@
 !
 !>        temporal area for ordering
         real(kind = kreal), allocatable :: v_tmp(:)
-!
-!>        temporal area for time count
-        real(kind = kreal), allocatable :: t_omp(:,:)
       end type work_for_field_FFTW
 !
       private :: alloc_fld_FFTW_plan, dealloc_fld_FFTW_plan
@@ -150,9 +147,6 @@
       end do
       FFTW_f%aNfft = one / dble(nidx_rtp(3))
 !
-      allocate(FFTW_f%t_omp(np_smp,0:3))
-      FFTW_f%t_omp = 0.0d0
-!
       end subroutine init_sph_field_FFTW
 !
 ! ------------------------------------------------------------------
@@ -171,7 +165,6 @@
       end do
 !
       call dealloc_fld_FFTW_plan(FFTW_f)
-      deallocate(FFTW_f%t_omp)
 !
       end subroutine finalize_sph_field_FFTW
 !
@@ -227,8 +220,9 @@
 !
       do nd = 1, ncomp_fwd
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-          call copy_FFTPACK_from_rtp_comp(nnod_rtp, nidx_rtp,           &
-     &        irt_rtp_smp_stack, X_rtp(1,nd), FFTW_f%X)
+          call copy_FFTPACK_from_rtp_comp                               &
+     &       (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                    &
+     &        X_rtp(1,nd), FFTW_f%X)
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -300,8 +294,9 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-        call copy_FFTPACK_to_rtp_comp(nnod_rtp, nidx_rtp,               &
-     &      irt_rtp_smp_stack, FFTW_f%X, X_rtp(1,nd))
+        call copy_FFTPACK_to_rtp_comp                                   &
+     &     (nnod_rtp, nidx_rtp, irt_rtp_smp_stack,                      &
+     &      FFTW_f%X, X_rtp(1,nd))
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
       end do
 !
