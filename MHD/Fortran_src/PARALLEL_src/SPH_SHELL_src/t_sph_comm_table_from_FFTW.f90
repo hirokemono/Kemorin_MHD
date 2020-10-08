@@ -26,8 +26,8 @@
 !!
 !!      subroutine copy_all_prt_FFTW_to_send(nnod_rtp, nidx_rtp,        &
 !!     &          ncomp_fwd, X_FFT, comm_sph_FFTW, n_WS, WS)
-!!      subroutine copy_1comp_prt_FFTW_to_send(nd, nnod_rtp, nidx_rtp,  &
-!!     &          ncomp_fwd, C_fft, comm_sph_FFTW, n_WS, WS)
+!!      subroutine copy_1comp_prt_FFTW_to_send(nd, nnod_rtp, nnod_rt,   &
+!!     &          ncomp_fwd, Nfft_c, C_fft, comm_sph_FFTW, n_WS, WS)
 !!@endverbatim
 !!
       module t_sph_comm_table_from_FFTW
@@ -269,11 +269,11 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_1comp_prt_FFTW_to_send(nd, nnod_rtp, nidx_rtp,    &
-     &          ncomp_fwd, C_fft, comm_sph_FFTW, n_WS, WS)
+      subroutine copy_1comp_prt_FFTW_to_send(nd, nnod_rtp, nnod_rt,     &
+     &          ncomp_fwd, Nfft_c, C_fft, comm_sph_FFTW, n_WS, WS)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rt, Nfft_c
 !
       integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: ncomp_fwd
