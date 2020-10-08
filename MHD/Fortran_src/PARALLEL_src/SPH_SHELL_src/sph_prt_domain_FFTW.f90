@@ -195,11 +195,11 @@
       integer(kind = kint) :: j, ip, ist, ied, nd
 !
 !
-!$omp parallel do  private(nd,j,ip,ist,ied,ist_r, ist_c)
-      do ip = 1, np_smp
-        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-        ied = sph_rtp%istack_rtp_rt_smp(ip) 
-        do nd = 1, ncomp_fwd
+      do nd = 1, ncomp_fwd
+!$omp parallel do  private(j,ip,ist,ied,ist_r, ist_c)
+        do ip = 1, np_smp
+          ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
+          ied = sph_rtp%istack_rtp_rt_smp(ip) 
 !
           do j = ist, ied
             ist_r = FFTW_f%Nfft_r * (ip-1)
@@ -218,8 +218,8 @@
      &          FFTW_f%Nfft_c, FFTW_f%C(ist_c+1), FFTW_f%aNfft, n_WS, WS)
           end do
         end do
-      end do
 !$omp end parallel do
+      end do
 !
       end subroutine prt_field_fwd_FFTW_to_send
 !
@@ -246,11 +246,11 @@
       integer(kind = kint) :: j, ip, ist, ied, nd
 !
 !
-!$omp parallel do private(nd,j,ip,ist,ied,ist_r, ist_c)
-      do ip = 1, np_smp
-        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-        ied = sph_rtp%istack_rtp_rt_smp(ip)
-        do nd = 1, ncomp_bwd
+      do nd = 1, ncomp_bwd
+!$omp parallel do private(j,ip,ist,ied,ist_r, ist_c)
+        do ip = 1, np_smp
+          ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
+          ied = sph_rtp%istack_rtp_rt_smp(ip)
 !
           do j = ist, ied
             ist_r = FFTW_f%Nfft_r * (ip-1)
@@ -270,8 +270,8 @@
      &          FFTW_f%X(ist_r+1), X_rtp(1,nd))
           end do
         end do
-      end do
 !$omp end parallel do
+      end do
 !
 !
       end subroutine prt_field_back_FFTW_from_recv
