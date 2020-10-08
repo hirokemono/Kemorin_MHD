@@ -157,7 +157,7 @@
       end if
 !
       if(size(FFTW_f%X) .ne. sph_rtp%nnod_rtp) then
-        call finalize_rtp_field_FFTW(FFTW_f)
+        call finalize_sph_field_FFTW(FFTW_f)
         call init_prt_field_FFTW(sph_rtp, comm_rtp, FFTW_f)
       end if
 !
