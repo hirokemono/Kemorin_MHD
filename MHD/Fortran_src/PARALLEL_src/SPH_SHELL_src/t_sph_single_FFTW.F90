@@ -124,18 +124,18 @@
 !
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
-      integer(kind = kint) :: j
+      integer(kind = kint) :: ip
       integer(kind = 4) :: Nfft4
 !
 !
       call alloc_FFTW_plan(np_smp, sph_rtp%nidx_rtp(3), FFTW_t)
 !
       Nfft4 = int(sph_rtp%nidx_rtp(3))
-      do j = 1, np_smp
-        call dfftw_plan_dft_r2c_1d(FFTW_t%plan_fwd(j), Nfft4,           &
-     &      FFTW_t%X(1,j), FFTW_t%C(1,j) , FFTW_ESTIMATE)
-        call dfftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(j), Nfft4,           &
-     &      FFTW_t%C(1,j), FFTW_t%X(1,j) , FFTW_ESTIMATE)
+      do ip = 1, np_smp
+        call dfftw_plan_dft_r2c_1d(FFTW_t%plan_fwd(ip), Nfft4,          &
+     &      FFTW_t%X(1,ip), FFTW_t%C(1,ip) , FFTW_ESTIMATE)
+        call dfftw_plan_dft_c2r_1d(FFTW_t%plan_bwd(ip), Nfft4,          &
+     &      FFTW_t%C(1,ip), FFTW_t%X(1,ip) , FFTW_ESTIMATE)
       end do
       FFTW_t%aNfft = one / dble(sph_rtp%nidx_rtp(3))
 !
