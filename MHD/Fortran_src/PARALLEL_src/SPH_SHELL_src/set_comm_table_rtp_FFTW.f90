@@ -65,10 +65,10 @@
           ic_rtp = j+ist
           ic_send = irev_sr_rtp(j+ist)
           if(ic_send .le. ntot_sr_rtp) then
-            comm_sph_FFTW%ip_smp_fft(ic_send) = ip
-            comm_sph_FFTW%kl_fft(ic_send) = j
-            comm_sph_FFTW%m_fft(ic_send) =  1
-            comm_sph_FFTW%cnorm_sr_rtp(ic_send) = aNfft * ru
+            comm_sph_FFTW%ip_smp_fftw(ic_send) = ip
+            comm_sph_FFTW%kl_fftw(ic_send) = j
+            comm_sph_FFTW%m_fftw(ic_send) =  1
+            comm_sph_FFTW%cnrm_sr_rtp(ic_send) = aNfft * ru
           end if
 !          WS(ic_send) = aNfft * real(C_fft(i))
         end do
@@ -79,20 +79,20 @@
             ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
             ic_send = irev_sr_rtp(ic_rtp)
             if(ic_send .le. ntot_sr_rtp) then
-              comm_sph_FFTW%ip_smp_fft(ic_send) = ip
-              comm_sph_FFTW%kl_fft(ic_send) = j
-              comm_sph_FFTW%m_fft(ic_send) =  m
-              comm_sph_FFTW%cnorm_sr_rtp(ic_send) = two * aNfft * ru
+              comm_sph_FFTW%ip_smp_fftw(ic_send) = ip
+              comm_sph_FFTW%kl_fftw(ic_send) = j
+              comm_sph_FFTW%m_fftw(ic_send) =  m
+              comm_sph_FFTW%cnrm_sr_rtp(ic_send) = two * aNfft * ru
             end if
 !            WS(ic_send) = two * aNfft * real(C_fft(i)*ru)
 !
             is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
             is_send = irev_sr_rtp(is_rtp)
             if(is_send .le. ntot_sr_rtp) then
-              comm_sph_FFTW%ip_smp_fft(is_send) = ip
-              comm_sph_FFTW%kl_fft(is_send) = j
-              comm_sph_FFTW%m_fft(is_send) =  m
-              comm_sph_FFTW%cnorm_sr_rtp(is_send) = two * aNfft *iu
+              comm_sph_FFTW%ip_smp_fftw(is_send) = ip
+              comm_sph_FFTW%kl_fftw(is_send) = j
+              comm_sph_FFTW%m_fftw(is_send) =  m
+              comm_sph_FFTW%cnrm_sr_rtp(is_send) = two * aNfft *iu
             end if
 !            WS(is_send) = two * aNfft * real(C_fft(i)*iu)
           end do 
@@ -103,10 +103,10 @@
           ic_rtp = j+ist + irt_rtp_smp_stack(np_smp)
           ic_send = irev_sr_rtp(ic_rtp)
           if(ic_send .le. ntot_sr_rtp) then
-            comm_sph_FFTW%ip_smp_fft(ic_send) = ip
-            comm_sph_FFTW%kl_fft(ic_send) = j
-            comm_sph_FFTW%m_fft(ic_send) =  Nfft_c
-            comm_sph_FFTW%cnorm_sr_rtp(ic_send) = two * aNfft * ru
+            comm_sph_FFTW%ip_smp_fftw(ic_send) = ip
+            comm_sph_FFTW%kl_fftw(ic_send) = j
+            comm_sph_FFTW%m_fftw(ic_send) =  Nfft_c
+            comm_sph_FFTW%cnrm_sr_rtp(ic_send) = two * aNfft * ru
           end if
 !          WS(ic_send) = two * aNfft * real(C_fft(i)*ru)
         end do
