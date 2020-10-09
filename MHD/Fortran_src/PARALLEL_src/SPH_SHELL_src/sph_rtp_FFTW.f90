@@ -194,8 +194,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) ::  ip, nd
-      integer(kind = kint_gl) :: ist_r, ist_c
+      integer(kind = kint) ::  ip, nd, ist_r, ist_c
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
@@ -205,8 +204,16 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-      call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),                   &
-     &    FFTW_f%X(1), FFTW_f%C(1))
+!$omp parallel do  private(ip,ist_r,ist_c)
+      do ip = 1, np_smp
+        ist_r = ncomp_fwd * FFTW_f%Nfft_r                               &
+     &         * sph_rtp%istack_rtp_rt_smp(ip-1)
+        ist_c = ncomp_fwd * FFTW_f%Nfft_c                               &
+     &         * sph_rtp%istack_rtp_rt_smp(ip-1)
+        call dfftw_execute_dft_r2c(FFTW_f%plan_fwd(ip),                 &
+     &      FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1))
+      end do
+!$omp end parallel do
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization
@@ -244,8 +251,7 @@
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint_gl) :: ist_r, ist_c
-      integer(kind = kint) :: nd, ip
+      integer(kind = kint) :: nd, ip, ist_r, ist_c
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
@@ -256,8 +262,16 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-      call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),                   &
-     &    FFTW_f%C(1), FFTW_f%X(1))
+!$omp parallel do  private(ip,ist_r,ist_c)
+      do ip = 1, np_smp
+        ist_r = ncomp_bwd * FFTW_f%Nfft_r                               &
+     &         * sph_rtp%istack_rtp_rt_smp(ip-1)
+        ist_c = ncomp_bwd * FFTW_f%Nfft_c                               &
+     &         * sph_rtp%istack_rtp_rt_smp(ip-1)
+        call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),                 &
+     &      FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1))
+      end do
+!$omp end parallel do
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)

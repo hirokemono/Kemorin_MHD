@@ -187,7 +187,7 @@
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
       integer(kind = kint) :: ist_r, ist_c
-      integer(kind = kint) :: j, ip, ist, nd
+      integer(kind = kint) :: ip, ist, nd
 !
 !
       do nd = 1, ncomp_fwd
@@ -197,7 +197,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-!$omp parallel do  private(j,ip,ist,ist_r, ist_c)
+!$omp parallel do  private(ip,ist,ist_r,ist_c)
         do ip = 1, np_smp
           ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
           ist_r = FFTW_f%Nfft_r * (ist-1)
@@ -242,7 +242,7 @@
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
       integer(kind = kint) :: ist_r, ist_c
-      integer(kind = kint) :: j, ip, ist, nd
+      integer(kind = kint) :: ip, ist, nd
 !
 !
       do nd = 1, ncomp_bwd
@@ -254,7 +254,7 @@
         if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
         if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do private(j,ip,ist,ist_r,ist_c)
+!$omp parallel do private(ip,ist,ist_r,ist_c)
         do ip = 1, np_smp
           ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
           ist_r = FFTW_f%Nfft_r * (ist-1)
