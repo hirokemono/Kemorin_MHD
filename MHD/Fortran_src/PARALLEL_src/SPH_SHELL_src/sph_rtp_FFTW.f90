@@ -112,8 +112,9 @@
 !
 !
 !
-      call alloc_fld_FFTW_plan                                          &
-     &  (sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp, FFTW_f)
+      call alloc_whole_FFTW_plan                                        &
+     &  (sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,                &
+     &   ncomp_bwd, ncomp_fwd, FFTW_f)
 !
       do ip = 1, np_smp
         howmany = sph_rtp%istack_rtp_rt_smp(ip  )                       &
@@ -194,19 +195,20 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) ::  j, ip, ist, ied
+      integer(kind = kint) ::  j, ip, ist, num
       integer(kind = kint) :: ist_r, ist_c, ntot
 !
 !
-!$omp parallel do private(j,ip,ist,ied,ist_r, ist_c)
+!$omp parallel do private(j,ip,ist,num,ist_r, ist_c)
       do ip = 1, np_smp
         ist_r = (ip-1) * FFTW_f%Nfft_r * ncomp_fwd
         ist_c = (ip-1) * FFTW_f%Nfft_c * ncomp_fwd
-        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-        ied = sph_rtp%istack_rtp_rt_smp(ip) 
-        do j = ist, ied
+        ist = sph_rtp%istack_rtp_rt_smp(ip-1)
+        num = sph_rtp%istack_rtp_rt_smp(ip)   &
+     &       - sph_rtp%istack_rtp_rt_smp(ip-1)
+        do j = 1, num
           call sel_copy_comp_rtp_to_FFT2                                &
-     &       (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                &
+     &       (j+ist, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),            &
      &        sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),   &
      &        ncomp_fwd, X_rtp(1,1), FFTW_f%X(ist_r+1))
 !
@@ -215,7 +217,7 @@
 !
 !   normalization
           call copy_comp_FFTW_to_send2                                  &
-     &       (j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+     &       (j+ist, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                &
      &        sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,             &
      &        FFTW_f%Nfft_c, FFTW_f%C(ist_c+1), FFTW_f%aNfft, n_WS, WS)
         end do
@@ -243,21 +245,22 @@
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) :: j, ip, ist, ied
+      integer(kind = kint) :: j, ip, ist, num
       integer(kind = kint) :: ist_r, ist_c, ntot
 !
 !
 !      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
 !      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
-!$omp parallel do private(j,ip,ist,ied,ist_r, ist_c)
+!$omp parallel do private(j,ip,ist,num,ist_r, ist_c)
       do ip = 1, np_smp
         ist_r = (ip-1) * FFTW_f%Nfft_r * ncomp_bwd
         ist_c = (ip-1) * FFTW_f%Nfft_c * ncomp_bwd
-        ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
-        ied = sph_rtp%istack_rtp_rt_smp(ip)
-        do j = ist, ied
+        ist = sph_rtp%istack_rtp_rt_smp(ip-1)
+        num = sph_rtp%istack_rtp_rt_smp(ip)   &
+     &       - sph_rtp%istack_rtp_rt_smp(ip-1)
+        do j = 1, num
           call copy_comp_FFTW_from_recv2                                &
-     &       (j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+     &       (j+ist, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
      &        sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_bwd,             &
      &        n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C(ist_c+1))
 !
@@ -265,7 +268,7 @@
      &        FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1))
 !
           call sel_copy_comp_FFT_to_rtp2                                &
-     &       (j, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                &
+     &       (j+ist, sph_rtp%nnod_rtp, sph_rtp%istep_rtp(3),                &
      &        sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),   &
      &        ncomp_bwd, FFTW_f%X(ist_r+1), X_rtp(1,1))
         end do
