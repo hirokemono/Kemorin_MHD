@@ -219,14 +219,14 @@
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
       do nd = 1, ncomp_fwd
         ist_c = (nd-1) * FFTW_f%Nfft_c *sph_rtp%istack_rtp_rt_smp(np_smp)
-!        call copy_prt_comp_FFTW_to_send                                &
-!     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
-!     &      sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,              &
-!     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(ist_c+1), n_WS, WS)
-        call copy_1comp_prt_FFTW_to_send                                &
-     &     (nd, sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),    &
-     &      ncomp_fwd, FFTW_f%Nfft_c, FFTW_f%C(ist_c+1),                &
-     &      FFTW_f%comm_sph_FFTW, n_WS, WS)
+        call copy_prt_comp_FFTW_to_send                                &
+     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
+     &      sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,              &
+     &      FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C(ist_c+1), n_WS, WS)
+!        call copy_1comp_prt_FFTW_to_send                               &
+!     &     (nd, sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp(np_smp),   &
+!     &      ncomp_fwd, FFTW_f%Nfft_c, FFTW_f%C(ist_c+1),               &
+!     &      FFTW_f%comm_sph_FFTW, n_WS, WS)
       end do
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
@@ -252,7 +252,7 @@
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
       integer(kind = kint) :: ist_r, ist_c, ntot
-      integer(kind = kint) :: j, ip, nd
+      integer(kind = kint) :: j, ip
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
