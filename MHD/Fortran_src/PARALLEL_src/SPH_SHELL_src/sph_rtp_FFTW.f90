@@ -123,8 +123,8 @@
 !
         idist_r = int(FFTW_f%Nfft_r)
         idist_c = int(FFTW_f%Nfft_c)
-        ist_r = FFTW_f%Nfft_r * sph_rtp%istack_rtp_rt_smp(ip-1)
-        ist_c = FFTW_f%Nfft_c * sph_rtp%istack_rtp_rt_smp(ip-1)
+        ist_r = ncomp_bwd*FFTW_f%Nfft_r * sph_rtp%istack_rtp_rt_smp(ip-1)
+        ist_c = ncomp_fwd*FFTW_f%Nfft_c * sph_rtp%istack_rtp_rt_smp(ip-1)
 !
         call dfftw_plan_many_dft_r2c(FFTW_f%plan_fwd(ip),               &
      &     IONE_4, int(FFTW_f%Nfft_r), int(FFTW_f%howmany_fwd),         &
