@@ -119,13 +119,13 @@
       do ip = 1, np_smp
         howmany = sph_rtp%istack_rtp_rt_smp(ip  )                       &
      &           - sph_rtp%istack_rtp_rt_smp(ip-1)
-        FFTW_f%howmany_bwd = ncomp_bwd
+        FFTW_f%howmany_bwd = howmany*ncomp_bwd
         FFTW_f%howmany_fwd = howmany*ncomp_fwd
 !
         idist_r = int(FFTW_f%Nfft_r)
         idist_c = int(FFTW_f%Nfft_c)
-        ist_r = howmany*ncomp_bwd*FFTW_f%Nfft_r
-        ist_c = howmany*ncomp_fwd*FFTW_f%Nfft_c
+        ist_r = FFTW_f%howmany_bwd*FFTW_f%Nfft_r
+        ist_c = FFTW_f%howmany_fwd*FFTW_f%Nfft_c
 !
         call dfftw_plan_many_dft_r2c(FFTW_f%plan_fwd(ip),               &
      &     IONE_4, int(FFTW_f%Nfft_r), int(FFTW_f%howmany_fwd),         &
@@ -198,10 +198,13 @@
       integer(kind = kint) :: ip, ist, ist_r, ist_c
 !
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
       call copy_FFTPACK_from_rtp_field                                  &
      &   (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                           &
      &    sph_rtp%istack_rtp_rt_smp, ncomp_fwd, X_rtp, FFTW_f%X)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do private(ip,ist,ist_r,ist_c)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1)
@@ -211,12 +214,15 @@
      &      FFTW_f%X(ist_r+1), FFTW_f%C(ist_c+1))
       end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
 !   normalization
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
       call copy_comp_FFTW_to_send2                                  &
      &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                       &
      &    sph_rtp%istack_rtp_rt_smp, ncomp_fwd,                     &
      &    FFTW_f%Nfft_c, FFTW_f%C, FFTW_f%aNfft, n_WS, WS)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine rtp_fwd_FFTW_to_send
 !
@@ -239,64 +245,37 @@
      &                   :: X_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) :: j, ip, ist, num
-      integer(kind = kint) :: ist_r, ist_c
+      integer(kind = kint) :: ip, ist, ist_r, ist_c
 !
 !
-!      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-!      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
-!$omp parallel do private(j,ip,ist,num,ist_r, ist_c)
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
+        call copy_comp_FFTW_from_recv2                                  &
+     &     (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                         &
+     &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd,                       &
+     &      n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C)
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
+!$omp parallel do private(ip,ist,ist_r,ist_c)
       do ip = 1, np_smp
-        num = sph_rtp%istack_rtp_rt_smp(ip)                             &
-     &       - sph_rtp%istack_rtp_rt_smp(ip-1)
         ist = sph_rtp%istack_rtp_rt_smp(ip-1)
         ist_r = ist * FFTW_f%Nfft_r * ncomp_bwd
         ist_c = ist * FFTW_f%Nfft_c * ncomp_bwd
-        do j = 1, num
-          call copy_comp_FFTW_from_recv2                                &
-     &       (ip, j, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                &
-     &        sph_rtp%istack_rtp_rt_smp, ncomp_bwd,             &
-     &        n_WR, WR, FFTW_f%Nfft_c, FFTW_f%C(ist_c+1))
-!
-          call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),               &
-     &        FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1))
-!
-          call sel_copy_comp_FFT_to_rtp2                                &
-     &       (ip, j, sph_rtp%nnod_rtp, sph_rtp%istack_rtp_rt_smp,       &
-     &        sph_rtp%nidx_rtp(3),   &
-     &        ncomp_bwd, FFTW_f%X(ist_r+1), X_rtp(1,1))
-        end do
+        call dfftw_execute_dft_c2r(FFTW_f%plan_bwd(ip),                 &
+     &      FFTW_f%C(ist_c+1), FFTW_f%X(ist_r+1))
       end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
+!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
+      call copy_FFTPACK_to_rtp_field                                    &
+     &  (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, &
+     &   ncomp_bwd, FFTW_f%X, X_rtp(1,1))
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine rtp_back_FFTW_from_recv
 !
 ! ------------------------------------------------------------------
-! ------------------------------------------------------------------
-!
-      subroutine sel_copy_comp_FFT_to_rtp2                              &
-     &         (ip, j, nnod_rtp, irt_rtp_smp_stack, Nfft_r,        &
-     &          ncomp_bwd, X_fft, X_rtp)
-!
-      integer(kind = kint), intent(in) :: ip, j
-      integer(kind = kint), intent(in) :: nnod_rtp, Nfft_r
-      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: ncomp_bwd
-      real(kind = kreal), intent(in) :: X_fft(ncomp_bwd,Nfft_r)
-!
-      real(kind = kreal), intent(inout) :: X_rtp(nnod_rtp,ncomp_bwd)
-!
-      integer(kind = kint) :: ist, inod, m, nd
-!
-!
-      ist = irt_rtp_smp_stack(ip-1)
-      do m = 1, Nfft_r
-        inod = j+ist + (m-1) * irt_rtp_smp_stack(np_smp)
-        X_rtp(inod,1:ncomp_bwd) = X_fft(1:ncomp_bwd,m)
-      end do
-!
-      end subroutine sel_copy_comp_FFT_to_rtp2
-!
 ! ------------------------------------------------------------------
 !
       subroutine copy_comp_FFTW_to_send2(nnod_rtp, irev_sr_rtp,         &
@@ -342,7 +321,6 @@
           end do 
           ic_rtp = j+ist + irt_rtp_smp_stack(np_smp)
           ic_send = ncomp_fwd * (irev_sr_rtp(ic_rtp)-1)
-          ms =      ncomp_fwd * (Nfft_c-1)
           ms = ((j-1) + (Nfft_c-1)*num + ist*Nfft_c) * ncomp_fwd
           WS(ic_send+1:ic_send+ncomp_fwd)                               &
      &        = two*aNfft * real(C_fft(ms+1:ms+ncomp_fwd))
@@ -355,10 +333,9 @@
 ! ------------------------------------------------------------------
 !
       subroutine copy_comp_FFTW_from_recv2                            &
-     &         (ip, j, nnod_rtp, irev_sr_rtp, irt_rtp_smp_stack,        &
+     &         (nnod_rtp, irev_sr_rtp, irt_rtp_smp_stack,             &
      &          ncomp_bwd, n_WR, WR, Nfft_c, C_fft)
 !
-      integer(kind = kint), intent(in) :: ip, j
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
@@ -371,29 +348,39 @@
       complex(kind = fftw_complex), intent(inout)                       &
      &                  :: C_fft(ncomp_bwd*Nfft_c)
 !
-      integer(kind = kint) :: m, ms, ist
+      integer(kind = kint) :: ip, j, m, ms, ist, num
       integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
 !
 !
-      ist = irt_rtp_smp_stack(ip-1)
-      ic_recv = ncomp_bwd * (irev_sr_rtp(j+ist) - 1)
-      C_fft(1:ncomp_bwd)                                                &
+!$omp parallel do                                                       &
+!$omp&  private(j,ip,ist,ms,num,ic_rtp,is_rtp,ic_recv,is_recv)
+      do ip = 1, np_smp
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ist = irt_rtp_smp_stack(ip-1)
+        do j = 1, num
+          ic_recv = ncomp_bwd * (irev_sr_rtp(j+ist) - 1)
+          ms = ((j-1) + ist*Nfft_c) * ncomp_bwd
+          C_fft(ms+1:ms+ncomp_bwd)                                      &
      &        = cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd), zero, kind(0d0))
-      do m = 2, Nfft_c-1
-        ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
-        is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
-        ic_recv = ncomp_bwd * (irev_sr_rtp(ic_rtp) - 1)
-        is_recv = ncomp_bwd * (irev_sr_rtp(is_rtp) - 1)
-        ms =      ncomp_bwd * (m - 1)
-        C_fft(ms+1:ms+ncomp_bwd)                                        &
+          do m = 2, Nfft_c-1
+            ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
+            ic_recv = ncomp_bwd * (irev_sr_rtp(ic_rtp) - 1)
+            is_recv = ncomp_bwd * (irev_sr_rtp(is_rtp) - 1)
+            ms = ((j-1) + (m-1)*num + ist*Nfft_c) * ncomp_bwd
+            C_fft(ms+1:ms+ncomp_bwd)                                    &
      &        = half*cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd),             &
      &                    -WR(is_recv+1:is_recv+ncomp_bwd),kind(0d0))
+          end do
+          ic_rtp = j+ist + irt_rtp_smp_stack(np_smp)
+          ic_recv = ncomp_bwd * (irev_sr_rtp(ic_rtp) - 1)
+          ms = ((j-1) + (Nfft_c-1)*num + ist*Nfft_c) * ncomp_bwd
+          C_fft(ms+1:ms+ncomp_bwd)                                      &
+     &        = half * cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd),           &
+     &                       zero, kind(0d0))
+        end do
       end do
-      ic_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-      ic_recv = ncomp_bwd * (irev_sr_rtp(ic_rtp) - 1)
-      ms =      ncomp_bwd * (Nfft_c - 1)
-      C_fft(ms+1:ms+ncomp_bwd)                                          &
-     &  = half * cmplx(WR(ic_recv+1:ic_recv+ncomp_bwd),zero, kind(0d0))
+!$omp end parallel do
 !
       end subroutine copy_comp_FFTW_from_recv2
 !
