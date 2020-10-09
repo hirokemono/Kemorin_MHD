@@ -112,8 +112,7 @@
       integer, parameter :: istride = 1
 !
 !
-!
-      call alloc_whole_FTW_plan
+      call alloc_whole_FTW_plan                                         &
      &  (sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,                &
      &   ncomp_bwd, ncomp_fwd, FFTW_f)
 !
@@ -219,7 +218,7 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
       do nd = 1, ncomp_fwd
-        ist_c = FFTW_f%Nfft_c * ncomp_bwd                               &
+        ist_c = FFTW_f%Nfft_c * ncomp_fwd                               &
      &         * sph_rtp%istack_rtp_rt_smp(ip-1)
 !        call copy_prt_comp_FFTW_to_send                                &
 !     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
