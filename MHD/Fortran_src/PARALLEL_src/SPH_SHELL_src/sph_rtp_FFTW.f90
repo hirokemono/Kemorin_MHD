@@ -218,10 +218,13 @@
 !
 !   normalization
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-      call copy_rtp_field_FFTW_to_send                                  &
-     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                           &
-     &    sph_rtp%istack_rtp_rt_smp, ncomp_fwd,                         &
-     &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C, n_WS, WS)
+!      call copy_rtp_field_FFTW_to_send                                &
+!     &   (sph_rtp%nnod_rtp, comm_rtp%irev_sr,                         &
+!     &    sph_rtp%istack_rtp_rt_smp, ncomp_fwd,                       &
+!     &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%C, n_WS, WS)
+      call copy_all_rtp_FFTW_to_send_smp                                &
+     &   (sph_rtp%istack_rtp_rt_smp, FFTW_f%Nfft_c, ncomp_fwd,          &
+     &    FFTW_f%C, FFTW_f%comm_sph_FFTW, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine rtp_fwd_FFTW_to_send
