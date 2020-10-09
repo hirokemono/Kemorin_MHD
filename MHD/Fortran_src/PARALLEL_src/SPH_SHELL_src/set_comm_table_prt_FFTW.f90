@@ -12,6 +12,9 @@
 !!     &          Nfft_c, aNfft, comm_sph_FFTW)
 !!        type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFTW
 !!
+!!      subroutine copy_prt_field_FFTW_to_send                          &
+!!     &         (nnod_rtp, irev_sr_rtp, nnod_rt,                       &
+!!     &          ncomp_fwd, Nfft_c, aNfft, C_fft, n_WS, WS)
 !!      subroutine copy_prt_comp_FFTW_to_send                           &
 !!     &         (nd, nnod_rtp, irev_sr_rtp, nnod_rt,                   &
 !!     &          ncomp_fwd, Nfft_c, aNfft, C_fft, n_WS, WS)
@@ -105,6 +108,59 @@
       end subroutine set_comm_item_prt_4_FFTW
 !
 ! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine copy_prt_field_FFTW_to_send                            &
+     &         (nnod_rtp, irev_sr_rtp, nnod_rt,                         &
+     &          ncomp_fwd, Nfft_c, aNfft, C_fft, n_WS, WS)
+!
+      integer(kind = kint), intent(in) :: nd
+      integer(kind = kint), intent(in) :: nnod_rtp
+      integer(kind = kint), intent(in) :: nnod_rt
+!
+      integer(kind = kint), intent(in) :: ncomp_fwd
+!
+      integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
+!
+      integer(kind = kint), intent(in) :: Nfft_c
+      real(kind = kreal), intent(in) :: aNfft
+      complex(kind = fftw_complex), intent(in)                          &
+     &              :: C_fft(nnod_rt*Nfft_c,ncomp_fwd)
+!
+      integer(kind = kint), intent(in) :: n_WS
+      real (kind=kreal), intent(inout):: WS(n_WS)
+!
+      integer(kind = kint) :: j, m, ist_c
+      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
+!
+!
+!$omp parallel do  private(j,m,ist_c,ic_rtp,is_rtp,ic_send,is_send)
+      do j = 1, nnod_rt
+        ist_c = 1 + Nfft_c * (j-1)
+        ic_send = (irev_sr_rtp(j) - 1) * ncomp_fwd
+        WS(ic_send+1:is_send+ncomp_fwd)                                 &
+     &          = aNfft * real(C_fft(ist_c,1:ncomp_fwd))
+        do m = 2, Nfft_c-1
+          ist_c = m + Nfft_c * (j-1)
+          ic_rtp = j + (2*m-2) * nnod_rt
+          is_rtp = j + (2*m-1) * nnod_rt
+          ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+          WS(ic_send+1:is_send+ncomp_fwd)                               &
+     &          = two*aNfft * real(C_fft(ist_c,1:ncomp_fwd))
+          WS(is_send+1:is_send+ncomp_fwd)                               &
+     &          = two*aNfft * real(C_fft(ist_c,1:ncomp_fwd)*iu)
+        end do 
+        ist_c = Nfft_c + Nfft_c * (j-1)
+        ic_rtp = j + nnod_rt
+        ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+        WS(ic_send+1:ic_send+ncomp_fwd)                                 &
+     &          = two*aNfft * real(C_fft(ist_c,1:ncomp_fwd))
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_prt_field_FFTW_to_send
+!
 ! ------------------------------------------------------------------
 !
       subroutine copy_prt_comp_FFTW_to_send                             &
