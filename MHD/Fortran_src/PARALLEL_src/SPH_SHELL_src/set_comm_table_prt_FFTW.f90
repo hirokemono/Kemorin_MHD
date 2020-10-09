@@ -114,7 +114,6 @@
      &         (nnod_rtp, irev_sr_rtp, nnod_rt,                         &
      &          ncomp_fwd, Nfft_c, aNfft, C_fft, n_WS, WS)
 !
-      integer(kind = kint), intent(in) :: nd
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nnod_rt
 !
