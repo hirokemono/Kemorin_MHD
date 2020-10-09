@@ -220,9 +220,8 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,            &
-!$omp&                 ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,    &
+!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
@@ -242,13 +241,29 @@
         end do
         if(iflag_FFT_time) ispack_t%t_omp(ip,3) = ispack_t%t_omp(ip,3)  &
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,    &
+!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         call FTTRUF(ntot, nidx_rtp(3), ispack_t%smp(ip)%X,              &
      &      ispack_t%smp(ip)%WK, ispack_t%IT, ispack_t%T)
         if(iflag_FFT_time) ispack_t%t_omp(ip,3) = ispack_t%t_omp(ip,3)  &
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,    &
+!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do j = 1, num
           do nd = 1, ncomp_fwd
@@ -378,13 +393,31 @@
         end do
         if(iflag_FFT_time) ispack_t%t_omp(ip,1) = ispack_t%t_omp(ip,1)  &
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do schedule(static)                                      &
+!$omp&         private(ip,m,j,ist,num,ntot,inum,nd,inod_s,inod_c,       &
+!$omp&                 ic_rtp,is_rtp,ic_recv,is_recv)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_bwd * num
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         call FTTRUB(ntot, nidx_rtp(3), ispack_t%smp(ip)%X,              &
      &      ispack_t%smp(ip)%WK, ispack_t%IT, ispack_t%T )
         if(iflag_FFT_time) ispack_t%t_omp(ip,2) = ispack_t%t_omp(ip,2)  &
      &                    + MPI_WTIME() - ispack_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do schedule(static)                                      &
+!$omp&         private(ip,m,j,ist,num,ntot,inum,nd,inod_s,inod_c,       &
+!$omp&                 ic_rtp,is_rtp,ic_recv,is_recv)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_bwd * num
         if(iflag_FFT_time) ispack_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nidx_rtp(3)/2
           do j = 1, num

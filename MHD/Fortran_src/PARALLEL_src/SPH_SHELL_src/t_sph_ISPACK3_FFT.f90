@@ -260,13 +260,31 @@
         end do
         if(iflag_FFT_time) ispack3_t%t_omp(ip,1)= ispack3_t%t_omp(ip,1) &
      &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do schedule(static)                                      &
+!$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
+!$omp&                 ic_rtp,is_rtp,ic_send,is_send)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num8
         if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         call FXRTFA(cast_long(ntot), cast_long(nphi_rtp),               &
      &      ispack3_t%smp(ip)%X(1), ispack3_t%IT(1), ispack3_t%T(1))
         if(iflag_FFT_time) ispack3_t%t_omp(ip,2)= ispack3_t%t_omp(ip,2) &
      &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do schedule(static)                                      &
+!$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
+!$omp&                 ic_rtp,is_rtp,ic_send,is_send)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num8
         if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do j = 1, num8
           do nd = 1, ncomp_fwd
@@ -395,13 +413,29 @@
         end do
         if(iflag_FFT_time) ispack3_t%t_omp(ip,1)= ispack3_t%t_omp(ip,1) &
      &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,   &
+!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_bwd * num8
         if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         call FXRTBA(cast_long(ntot), cast_long(nphi_rtp),               &
      &      ispack3_t%smp(ip)%X(1), ispack3_t%IT(1), ispack3_t%T(1))
         if(iflag_FFT_time) ispack3_t%t_omp(ip,2)= ispack3_t%t_omp(ip,2) &
      &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
+      end do
+!$omp end parallel do
 !
+!$omp parallel do private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,   &
+!$omp&                    ic_rtp,is_rtp,ic_recv,is_recv)
+      do ip = 1, np_smp
+        ist = irt_rtp_smp_stack(ip-1)
+        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_bwd * num8
         if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nphi_rtp
           do j = 1, num8
