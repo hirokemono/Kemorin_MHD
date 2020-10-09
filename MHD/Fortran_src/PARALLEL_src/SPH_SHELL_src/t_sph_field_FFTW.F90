@@ -55,6 +55,11 @@
 !>        normalization parameter for FFTW (= 1 / Nfft)
         real(kind = kreal) :: aNfft
 !
+!>        Number of components for forward transform
+        integer(kind = kint) :: howmany_fwd
+!>        Number of components for backward transform
+        integer(kind = kint) :: howmany_bwd
+!
 !>        real data for multiple Fourier transform
         real(kind = kreal), allocatable :: X(:)
 !>        spectrum data for multiple Fourier transform

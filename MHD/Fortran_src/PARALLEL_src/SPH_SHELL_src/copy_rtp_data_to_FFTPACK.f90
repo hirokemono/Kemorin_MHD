@@ -67,9 +67,9 @@
         ist = irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3)
-        do m = 1, nidx_rtp(3)
-          do j = 1, num
-            do nd = 1, ncomp_bwd
+        do nd = 1, ncomp_bwd
+          do m = 1, nidx_rtp(3)
+            do j = 1, num
               inod_c = nd + ((j-1) + (m-1)*num + ist_fft) * ncomp_bwd
               X_rtp(j+ist,m,nd) = X_FFT(inod_c)
             end do
@@ -95,11 +95,11 @@
 !
       real(kind = kreal), intent(inout) :: X_FFT(ncomp_fwd*nnod_rtp)
 !
-      integer(kind = kint) :: m, j, ip, ist, num, nd
+      integer(kind = kint) :: m, j, ip, ist, num
       integer(kind = kint) :: inod_c, ist_fft
 !
 !
-!$omp parallel do private(m,j,nd,ist,num,inod_c,ist_fft)
+!$omp parallel do private(m,j,ist,num,inod_c,ist_fft)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
         num =  irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
@@ -107,10 +107,9 @@
 !
         do m = 1, nidx_rtp(3)
           do j = 1, num
-            do nd = 1, ncomp_fwd
-              inod_c = nd + ((j-1) + (m-1)*num + ist_fft) * ncomp_fwd
-              X_FFT(inod_c) = X_rtp(j+ist,m,nd)
-            end do
+            inod_c = ((j-1) + (m-1)*num + ist_fft) * ncomp_fwd
+            X_FFT(inod_c+1:inod_c+ncomp_fwd)                            &
+     &             = X_rtp(j+ist,m,1:ncomp_fwd)
           end do
         end do
       end do
@@ -216,7 +215,7 @@
         do m = 1, nidx_rtp(3)
           inod_c = (m-1)*num + ist_fft
           do j = 1, num
-              X_FFT(j+inod_c) = X_rtp(j+ist,m)
+            X_FFT(j+inod_c) = X_rtp(j+ist,m)
           end do
         end do
       end do
@@ -298,15 +297,13 @@
 !
       real(kind = kreal), intent(inout) :: X_FFT(ncomp_fwd*nnod_rtp)
 !
-      integer(kind = kint) :: inod, nd, inod_c
+      integer(kind = kint) :: inod, inod_c
 !
 !
-!$omp parallel do private(inod,nd,inod_c)
+!$omp parallel do private(inod,inod_c)
       do inod = 1, nnod_rtp
-        do nd = 1, ncomp_fwd
-          inod_c = nd + (inod-1) * ncomp_fwd
-          X_FFT(inod_c) = X_prt(inod_c,nd)
-        end do
+        inod_c = (inod-1) * ncomp_fwd
+        X_FFT(inod_c+1:inod_c+ncomp_fwd) = X_prt(inod,1:ncomp_fwd)
       end do
 !$omp end parallel do
 !

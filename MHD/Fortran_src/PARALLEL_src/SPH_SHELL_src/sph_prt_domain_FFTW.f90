@@ -98,9 +98,9 @@
 !
       type(work_for_field_FFTW), intent(inout) :: FFTW_f
 !
-      integer(kind = kint) :: ist_r, ist_c
+      integer(kind = kint) :: howmany, ist_r, ist_c
       integer(kind = kint) :: ip
-      integer(kind = 4) :: howmany, idist_r, idist_c
+      integer(kind = 4) :: idist_r, idist_c
 !
       integer, parameter :: IONE_4 = 1
       integer, parameter :: inembed = 0
@@ -112,20 +112,23 @@
      &  (sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp, FFTW_f)
 !
       do ip = 1, np_smp
-        howmany = int(sph_rtp%istack_rtp_rt_smp(ip  )                   &
-     &           - sph_rtp%istack_rtp_rt_smp(ip-1))
+        howmany = sph_rtp%istack_rtp_rt_smp(ip  )                       &
+     &           - sph_rtp%istack_rtp_rt_smp(ip-1)
+        FFTW_f%howmany_bwd = howmany
+        FFTW_f%howmany_fwd = howmany
+!
         idist_r = int(FFTW_f%Nfft_r)
         idist_c = int(FFTW_f%Nfft_c)
         ist_r = FFTW_f%Nfft_r * sph_rtp%istack_rtp_rt_smp(ip-1)
         ist_c = FFTW_f%Nfft_c * sph_rtp%istack_rtp_rt_smp(ip-1)
 !
-        call dfftw_plan_many_dft_r2c                                    &
-     &     (FFTW_f%plan_fwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
+        call dfftw_plan_many_dft_r2c(FFTW_f%plan_fwd(ip),               &
+     &      IONE_4, int(FFTW_f%Nfft_r), int(FFTW_f%howmany_fwd),        &
      &      FFTW_f%X(ist_r+1), inembed, istride, idist_r,               &
      &      FFTW_f%C(ist_c+1), inembed, istride, idist_c,               &
      &      FFTW_ESTIMATE)
-        call dfftw_plan_many_dft_c2r                                    &
-     &     (FFTW_f%plan_bwd(ip), IONE_4, int(FFTW_f%Nfft_r), howmany,   &
+        call dfftw_plan_many_dft_c2r(FFTW_f%plan_bwd(ip),               &
+     &      IONE_4, int(FFTW_f%Nfft_r), int(FFTW_f%howmany_bwd),        &
      &      FFTW_f%C(ist_c+1), inembed, istride, idist_c,               &
      &      FFTW_f%X(ist_r+1), inembed, istride, idist_r,               &
      &      FFTW_ESTIMATE)
