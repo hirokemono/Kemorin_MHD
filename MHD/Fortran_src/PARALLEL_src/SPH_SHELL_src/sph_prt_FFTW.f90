@@ -218,8 +218,7 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
       do nd = 1, ncomp_fwd
-        ist_c = FFTW_f%Nfft_c * ncomp_fwd                               &
-     &         * sph_rtp%istack_rtp_rt_smp(ip-1)
+        ist_c = (nd-1) * FFTW_f%Nfft_c *sph_rtp%istack_rtp_rt_smp(np_smp)
 !        call copy_prt_comp_FFTW_to_send                                &
 !     &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                    &
 !     &      sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_fwd,              &
@@ -258,8 +257,7 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
       do nd = 1, ncomp_bwd
-        ist_c = FFTW_f%Nfft_c * ncomp_bwd                               &
-     &         * sph_rtp%istack_rtp_rt_smp(ip-1)
+        ist_c = (nd-1) * FFTW_f%Nfft_c *sph_rtp%istack_rtp_rt_smp(np_smp)
         call copy_prt_FFTW_comp_from_recv                               &
      &     (nd, sph_rtp%nnod_rtp, comm_rtp%irev_sr,                     &
      &      sph_rtp%istack_rtp_rt_smp(np_smp), ncomp_bwd,               &
