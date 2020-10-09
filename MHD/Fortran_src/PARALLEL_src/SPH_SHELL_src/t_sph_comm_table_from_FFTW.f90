@@ -181,7 +181,7 @@
       integer(kind = kint), intent(in) :: n_WS
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: kl, m, inum, inod_c, ic_send
+      integer(kind = kint) :: kl, m, inum, ic_send
 !
 !
 !$omp parallel do private(inum,kl,m,ic_send)

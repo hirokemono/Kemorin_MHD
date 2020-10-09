@@ -176,8 +176,6 @@
       subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,             &
      &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
-      use transfer_to_long_integers
-!
       integer, intent(in) :: id_rank
       integer(kind = kint) :: iflag_FFT_in
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
@@ -199,9 +197,8 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_sph_ISPACK3                                           &
-     &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
-     &      cast_long(ncomp_bwd), cast_long(ncomp_fwd),                 &
-     &      WK_FFTs%sph_ISPACK3)
+     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for domain'
         call init_sph_domain_ISPACK3                                    &
@@ -377,8 +374,6 @@
       subroutine verify_sph_FFT_select                                  &
      &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
 !
-      use transfer_to_long_integers
-!
       integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -398,9 +393,8 @@
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_sph_ISPACK3                                         &
-     &     (cast_long(sph_rtp%nidx_rtp(3)), sph_rtp%maxirt_rtp_smp,     &
-     &      cast_long(ncomp_bwd), cast_long(ncomp_fwd),                 &
-     &      WK_FFTs%sph_ISPACK3)
+     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
+     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'Use ISPACK V3.0.1 for domain'
@@ -503,8 +497,6 @@
       subroutine fwd_FFT_select_to_send(sph_rtp, comm_rtp, ncomp_fwd,   &
      &                                  n_WS, v_rtp, WS, WK_FFTs)
 !
-      use transfer_to_long_integers
-!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
 !
@@ -525,8 +517,8 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         call sph_FXRTFA_to_send                                         &
-     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
-     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_fwd), n_WS,       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                       &
+     &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                  &
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         call sph_domain_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
@@ -611,8 +603,6 @@
       subroutine back_FFT_select_from_recv                              &
      &        (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR, v_rtp, WK_FFTs)
 !
-      use transfer_to_long_integers
-!
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in)  :: comm_rtp
 !
@@ -634,8 +624,8 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         call sph_FXRTBA_from_recv                                       &
-     &    (cast_long(sph_rtp%nnod_rtp), cast_long(sph_rtp%nidx_rtp(3)), &
-     &     sph_rtp%istack_rtp_rt_smp, cast_long(ncomp_bwd), n_WR,       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                       &
+     &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                  &
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         call sph_domain_FXRTBA_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
