@@ -112,7 +112,7 @@
       integer, parameter :: istride = 1
 !
 !
-      call alloc_whole_FTW_plan                                         &
+      call alloc_whole_FFTW_plan                                        &
      &  (sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,                &
      &   ncomp_bwd, ncomp_fwd, FFTW_f)
 !

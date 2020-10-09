@@ -10,6 +10,8 @@
 !!@verbatim
 !! ------------------------------------------------------------------
 !!      subroutine finalize_sph_field_FFTW(FFTW_f)
+!!      subroutine alloc_whole_FFTW_plan(Nfft, irt_rtp_smp_stack,       &
+!!     &          ncomp_bwd, ncomp_fwd, FFTW_f)
 !!      subroutine alloc_fld_FFTW_plan(Nfft, irt_rtp_smp_stack, FFTW_f)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
@@ -93,6 +95,34 @@
       end subroutine finalize_sph_field_FFTW
 !
 ! ------------------------------------------------------------------
+! ------------------------------------------------------------------
+!
+      subroutine alloc_whole_FFTW_plan(Nfft, irt_rtp_smp_stack,         &
+     &          ncomp_bwd, ncomp_fwd, FFTW_f)
+!
+      integer(kind = kint), intent(in) :: Nfft
+      integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: ncomp_bwd, ncomp_fwd
+      type(work_for_field_FFTW), intent(inout) :: FFTW_f
+!
+      integer(kind = kint_gl) :: nnod_rt, ncomp
+!
+!
+      ncomp = max(ncomp_bwd, ncomp_fwd)
+      FFTW_f%Nfft_r = Nfft
+      FFTW_f%Nfft_c = Nfft/2 + 1
+!
+      allocate(FFTW_f%plan_bwd(np_smp))
+      allocate(FFTW_f%plan_fwd(np_smp))
+!
+      nnod_rt = ncomp * irt_rtp_smp_stack(np_smp)
+      allocate(FFTW_f%X(FFTW_f%Nfft_r*nnod_rt))
+      allocate(FFTW_f%C(FFTW_f%Nfft_c*nnod_rt))
+      FFTW_f%X = 0.0d0
+      FFTW_f%C = 0.0d0
+!
+      end subroutine alloc_whole_FFTW_plan
+!
 ! ------------------------------------------------------------------
 !
       subroutine alloc_fld_FFTW_plan(Nfft, irt_rtp_smp_stack, FFTW_f)
