@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_comm_item_prt_4_FFTW                             &
-!!     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp, nnod_rt, mphi_rtp,&
+!!     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp, nnod_rt,          &
 !!     &          Nfft_c, aNfft, comm_sph_FFTW)
 !!        type(comm_tbl_from_FFTW), intent(inout) :: comm_sph_FFTW
 !!
@@ -43,11 +43,10 @@
 ! ------------------------------------------------------------------
 !
       subroutine set_comm_item_prt_4_FFTW                               &
-     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp, nnod_rt, mphi_rtp,  &
+     &         (nnod_rtp, ntot_sr_rtp, irev_sr_rtp, nnod_rt,            &
      &          Nfft_c, aNfft, comm_sph_FFTW)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nnod_rt, mphi_rtp
+      integer(kind = kint), intent(in) :: nnod_rtp, nnod_rt
 !
       integer(kind = kint), intent(in) :: ntot_sr_rtp
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)

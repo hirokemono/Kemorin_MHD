@@ -108,6 +108,7 @@
       use t_sph_component_FFTW
       use sph_rtp_domain_FFTW
       use sph_prt_domain_FFTW
+      use sph_rtp_FFTW
       use sph_prt_FFTW
 #endif
 #ifdef OMP_FFTW3
@@ -221,8 +222,8 @@
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         else
           if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
-          call init_rtp_field_FFTW                                      &
-     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+          call init_rtp_FFTW(sph_rtp, comm_rtp,                         &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
@@ -423,8 +424,8 @@
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         else
           if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTW'
-          call verify_rtp_field_FFTW                                    &
-     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+          call verify_rtp_FFTW(sph_rtp, comm_rtp,                       &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
@@ -543,7 +544,7 @@
           call prt_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         else
-          call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
+          call rtp_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
@@ -652,7 +653,7 @@
           call prt_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         else
-          call rtp_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
+          call rtp_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then

@@ -143,7 +143,7 @@
      &   (comm_rtp%ntot_item_sr, FFTW_f%comm_sph_FFTW)
       call set_comm_item_prt_4_FFTW                                     &
      &   (sph_rtp%nnod_rtp, comm_rtp%ntot_item_sr, comm_rtp%irev_sr,    &
-     &    sph_rtp%istack_rtp_rt_smp(np_smp), sph_rtp%nidx_rtp(3),       &
+     &    sph_rtp%istack_rtp_rt_smp(np_smp),                            &
      &    FFTW_f%Nfft_c, FFTW_f%aNfft, FFTW_f%comm_sph_FFTW)
 !
       end subroutine init_prt_FFTW
