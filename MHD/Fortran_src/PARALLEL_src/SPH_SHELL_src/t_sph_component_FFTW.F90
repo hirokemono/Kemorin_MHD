@@ -229,8 +229,7 @@
 !$omp end parallel workshare
       end if
 !
-!$omp parallel do                                                       &
-!$omp& private(j,ip,ist,ied)
+!$omp parallel do private(j,ip,ist,ied)
       do ip = 1, np_smp
         ist = sph_rtp%istack_rtp_rt_smp(ip-1) + 1
         ied = sph_rtp%istack_rtp_rt_smp(ip) 
@@ -419,8 +418,8 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_comp_FFTW_from_recv                            &
-     &         (j, nnod_rtp, irev_sr_rtp, nnod_rt,            &
+      subroutine copy_comp_FFTW_from_recv                               &
+     &         (j, nnod_rtp, irev_sr_rtp, nnod_rt,                      &
      &          ncomp_bwd, n_WR, WR, Nfft_c, C_fft)
 !
       integer(kind = kint), intent(in) :: j
