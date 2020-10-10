@@ -202,6 +202,7 @@
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
+      use copy_rtp_data_to_FFTPACK
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -224,7 +225,7 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      call copy_FFTPACK_from_rtp_field(nnod_rtp, nidx_rtp(3),           &
+      call copy_FFTPACK_from_rtp_field(nnod_rtp, nidx_rtp,              &
      &    irt_rtp_smp_stack, ncomp_fwd, X_rtp(1,1), ispack3_t%X)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !

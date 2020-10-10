@@ -185,6 +185,7 @@
 !
       use ispack_0931
       use set_comm_table_rtp_ISPACK
+      use copy_rtp_data_to_FFTPACK
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
