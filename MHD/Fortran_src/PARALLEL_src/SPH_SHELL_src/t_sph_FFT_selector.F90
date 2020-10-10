@@ -187,7 +187,7 @@
       WK_FFTs%iflag_FFT = iflag_FFT_in
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
-        call init_sph_ISPACK(sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,  &
+        call init_sph_ISPACK(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),     &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93 for domain'
@@ -196,8 +196,7 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
-        call init_sph_ISPACK3                                           &
-     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
+        call init_sph_ISPACK3(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),    &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1 for domain'
@@ -383,7 +382,7 @@
       if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_sph_ISPACK                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp,                   &
+     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                      &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93 for domain'
@@ -392,8 +391,7 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
-        call verify_sph_ISPACK3                                         &
-     &     (sph_rtp%nidx_rtp(3), sph_rtp%maxirt_rtp_smp,                &
+        call verify_sph_ISPACK3(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),  &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*)                               &
