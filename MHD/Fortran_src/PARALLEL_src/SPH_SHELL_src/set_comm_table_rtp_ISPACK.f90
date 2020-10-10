@@ -127,40 +127,44 @@
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: ip, m, j, ist, num
+      integer(kind = kint) :: ip, m, j, ist, inum, num, ntot, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inod_s, inod_c
+      integer(kind = kint) :: inod_s, inod_c, ist_fft
 !
 !
-!$omp parallel do private(m,j,ist,num,inod_s,inod_c,                    &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
+!$omp parallel do private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,    &
+!$omp&                    ic_rtp,is_rtp,ic_send,is_send,ist_fft)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num
+        ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
         do j = 1, num
-          inod_c = (j-1 +       ist*nphi_rtp) * ncomp_fwd
-          inod_s = (j-1 + num + ist*nphi_rtp) * ncomp_fwd
-          ic_rtp = j+ist
-          is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-          ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-          WS(ic_send+1:ic_send+ncomp_fwd)                               &
-     &            = X_FFT(inod_c+1:inod_c+ncomp_fwd)
-          WS(is_send+1:is_send+ncomp_fwd)                               &
-     &            = X_FFT(inod_s+1:inod_s+ncomp_fwd)
+          do nd = 1, ncomp_fwd
+            inum = nd + (j-1) * ncomp_fwd
+            ic_rtp = j+ist
+            is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
+            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+            inod_c = inum +                   ist_fft
+            inod_s = inum + ncomp_fwd * num + ist_fft
+            WS(ic_send) = X_FFT(inod_c)
+            WS(is_send) = X_FFT(inod_s)
+          end do
         end do
-        do m = 1, nphi_rtp/2 - 1
+        do m = 2, nphi_rtp/2
           do j = 1, num
-            inod_c = (j-1 + (2*m  )*num + ist*nphi_rtp) * ncomp_fwd
-            inod_s = (j-1 + (2*m+1)*num + ist*nphi_rtp) * ncomp_fwd
-            ic_rtp = j+ist + (2*m  ) * irt_rtp_smp_stack(np_smp)
-            is_rtp = j+ist + (2*m+1) * irt_rtp_smp_stack(np_smp)
-            ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            WS(ic_send+1:ic_send+ncomp_fwd)                             &
-     &              =   two * X_FFT(inod_c+1:inod_c+ncomp_fwd)
-            WS(is_send+1:is_send+ncomp_fwd)                             &
-     &              = - two * X_FFT(inod_s+1:inod_s:ncomp_fwd)
+            do nd = 1, ncomp_fwd
+              inum = nd + (j-1) * ncomp_fwd
+              ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
+              is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
+              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+              inod_c = inum + (2*m-2) * ncomp_fwd * num + ist_fft
+              inod_s = inum + (2*m-1) * ncomp_fwd * num + ist_fft
+              WS(ic_send) =   two * X_FFT(inod_c)
+              WS(is_send) = - two * X_FFT(inod_s)
+            end do
           end do
         end do
       end do
