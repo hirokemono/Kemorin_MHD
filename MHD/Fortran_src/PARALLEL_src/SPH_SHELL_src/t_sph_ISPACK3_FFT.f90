@@ -201,6 +201,7 @@
      &          X_rtp, WS, ispack3_t)
 !
       use transfer_to_long_integers
+      use set_comm_table_rtp_ISPACK
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
@@ -218,24 +219,24 @@
       integer(kind = kint) :: m, j, ip, ist, nd
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
       integer(kind = kint) :: inod_s, inod_c
-      integer(kind = kint) :: num8, inum, ntot, ist_fft
+      integer(kind = kint) :: num, inum, ntot, ist_fft
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
 !$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
+!$omp&         private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,       &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send,ist_fft)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
-        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ntot = ncomp_fwd * num8
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num
         ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
 !
         do m = 1, nphi_rtp
-          do j = 1, num8
+          do j = 1, num
             do nd = 1, ncomp_fwd
               inum = nd + (j-1) * ncomp_fwd
-              inod_c = inum + (m-1) * ncomp_fwd * num8 + ist_fft
+              inod_c = inum + (m-1) * ncomp_fwd * num + ist_fft
               ispack3_t%X(inod_c) = X_rtp(j+ist,m,nd)
             end do
           end do
@@ -246,12 +247,12 @@
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
+!$omp&         private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,      &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send,ist_fft)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
-        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ntot = ncomp_fwd * num8
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
+        ntot = ncomp_fwd * num
         ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
         call FXRTFA(cast_long(ntot), cast_long(nphi_rtp),               &
      &      ispack3_t%X(ist_fft+1), ispack3_t%IT(1), ispack3_t%T(1))
@@ -260,44 +261,9 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
-!$omp&                 ic_rtp,is_rtp,ic_send,is_send,ist_fft)
-      do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1)
-        num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ntot = ncomp_fwd * num8
-        ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
-        do j = 1, num8
-          do nd = 1, ncomp_fwd
-            inum = nd + (j-1) * ncomp_fwd
-            ic_rtp = j+ist
-            is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
-            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            inod_c = inum + ist_fft
-            inod_s = inum + ncomp_fwd * num8 + ist_fft
-            WS(ic_send) = ispack3_t%X(inod_c)
-            WS(is_send) = ispack3_t%X(inod_s)
-          end do
-        end do
-        do m = 2, nphi_rtp/2
-          do j = 1, num8
-            do nd = 1, ncomp_fwd
-              inum = nd + (j-1) * ncomp_fwd
-              ic_rtp = j+ist + (2*m-2) * irt_rtp_smp_stack(np_smp)
-              is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
-              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-              inod_c = inum + (2*m-2) * ncomp_fwd * num8 + ist_fft
-              inod_s = inum + (2*m-1) * ncomp_fwd * num8 + ist_fft
-              WS(ic_send) =   two * ispack3_t%X(inod_c)
-              WS(is_send) = - two * ispack3_t%X(inod_s)
-            end do
-          end do
-        end do
-      end do
-!$omp end parallel do
+      call copy_ISPACK_field_to_send(nnod_rtp, nphi_rtp,                &
+     &    irt_rtp_smp_stack, ncomp_fwd, irev_sr_rtp, ispack3_t%X,       &
+     &    n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine sph_FXRTFA_to_send

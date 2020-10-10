@@ -10,7 +10,7 @@
 !!      subroutine set_comm_item_rtp_4_ISPACK                           &
 !!     &         (nnod_rtp, nphi_rtp, irt_rtp_smp_stack,                &
 !!     &          ntot_sr_rtp, irev_sr_rtp, comm_sph_FFT)
-!!      subroutine copy_ISPACK_field_to_send(nnod_rtp, nidx_rtp,        &
+!!      subroutine copy_ISPACK_field_to_send(nnod_rtp, nphi_rtp,        &
 !!     &          irt_rtp_smp_stack, ncomp_fwd, irev_sr_rtp, X_FFT,     &
 !!     &          n_WS, WS)
 !!      subroutine copy_rtp_comp_ISPACK_to_send(nd, nnod_rtp, nphi_rtp, &
@@ -113,12 +113,11 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_ISPACK_field_to_send(nnod_rtp, nidx_rtp,          &
+      subroutine copy_ISPACK_field_to_send(nnod_rtp, nphi_rtp,          &
      &          irt_rtp_smp_stack, ncomp_fwd, irev_sr_rtp, X_FFT,       &
      &          n_WS, WS)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp
-      integer(kind = kint), intent(in) :: nidx_rtp(3)
+      integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp
       integer(kind = kint), intent(in) :: irt_rtp_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
@@ -128,43 +127,40 @@
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
-      integer(kind = kint) :: ip, m, j, inum, nd, ist, num
+      integer(kind = kint) :: ip, m, j, ist, num
       integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inod_s, inod_c, ist_fft
+      integer(kind = kint) :: inod_s, inod_c
 !
 !
-!$omp parallel do private(m,j,nd,ist,num,inum,inod_s,inod_c,            &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send,ist_fft)
+!$omp parallel do private(m,j,ist,num,inod_s,inod_c,                    &
+!$omp&                    ic_rtp,is_rtp,ic_send,is_send)
       do ip = 1, np_smp
         ist = irt_rtp_smp_stack(ip-1)
-        num =  irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ist_fft = irt_rtp_smp_stack(ip-1) * nidx_rtp(3) * ncomp_fwd
+        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         do j = 1, num
-          do nd = 1, ncomp_fwd
-            inum = nd + (j-1) * ncomp_fwd
-            inod_c = inum + ist_fft
-            inod_s = inum + (nidx_rtp(3)-1) * ncomp_fwd*num + ist_fft
-            ic_rtp = j+ist
-            is_rtp = j+ist + nidx_rtp(1)*nidx_rtp(2)
-            ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-            is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-            WS(ic_send) = X_FFT(inum)
-            WS(is_send) = X_FFT(inod_s)
-          end do
+          inod_c = (j-1 +       ist*nphi_rtp) * ncomp_fwd
+          inod_s = (j-1 + num + ist*nphi_rtp) * ncomp_fwd
+          ic_rtp = j+ist
+          is_rtp = j+ist + irt_rtp_smp_stack(np_smp)
+          ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+          is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+          WS(ic_send+1:ic_send+ncomp_fwd)                               &
+     &            = X_FFT(inod_c+1:inod_c+ncomp_fwd)
+          WS(is_send+1:is_send+ncomp_fwd)                               &
+     &            = X_FFT(inod_s+1:inod_s+ncomp_fwd)
         end do
-        do m = 1, (nidx_rtp(3)+1)/2 - 1
+        do m = 1, nphi_rtp/2 - 1
           do j = 1, num
-            do nd = 1, ncomp_fwd
-              inum = nd + (j-1) * ncomp_fwd
-              inod_c = inum + (2*m-1) * ncomp_fwd*num + ist_fft
-              inod_s = inum + (2*m  ) * ncomp_fwd*num + ist_fft
-              ic_rtp = j+ist + (2*m  ) * nidx_rtp(1)*nidx_rtp(2)
-              is_rtp = j+ist + (2*m+1) * nidx_rtp(1)*nidx_rtp(2)
-              ic_send = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
-              is_send = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
-              WS(ic_send) = X_FFT(inod_c)
-              WS(is_send) = X_FFT(inod_s)
-            end do
+            inod_c = (j-1 + (2*m  )*num + ist*nphi_rtp) * ncomp_fwd
+            inod_s = (j-1 + (2*m+1)*num + ist*nphi_rtp) * ncomp_fwd
+            ic_rtp = j+ist + (2*m  ) * irt_rtp_smp_stack(np_smp)
+            is_rtp = j+ist + (2*m+1) * irt_rtp_smp_stack(np_smp)
+            ic_send = (irev_sr_rtp(ic_rtp) - 1) * ncomp_fwd
+            is_send = (irev_sr_rtp(is_rtp) - 1) * ncomp_fwd
+            WS(ic_send+1:ic_send+ncomp_fwd)                             &
+     &              =   two * X_FFT(inod_c+1:inod_c+ncomp_fwd)
+            WS(is_send+1:is_send+ncomp_fwd)                             &
+     &              = - two * X_FFT(inod_s+1:inod_s:ncomp_fwd)
           end do
         end do
       end do
