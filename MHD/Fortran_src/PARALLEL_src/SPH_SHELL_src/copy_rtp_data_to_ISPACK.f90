@@ -7,9 +7,9 @@
 !>@brief  communication table from FFTPACK5
 !!
 !!@verbatim
-!!      subroutine copy_FFTPACK_to_rtp_field(nnod_rtp, nidx_rtp,        &
+!!      subroutine copy_ISPACK_to_rtp_field(nnod_rtp, nidx_rtp,         &
 !!     &          irt_rtp_smp_stack, ncomp_bwd, X_FFT, X_rtp)
-!!      subroutine copy_FFTPACK_from_rtp_field(nnod_rtp, nidx_rtp,      &
+!!      subroutine copy_ISPACK_from_rtp_field(nnod_rtp, nidx_rtp,       &
 !!     &          irt_rtp_smp_stack, ncomp_fwd, X_rtp, X_FFT)
 !!
 !!      subroutine copy_ISPACK_to_rtp_comp(nnod_rtp, nidx_rtp,          &
@@ -32,7 +32,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_FFTPACK_to_rtp_field(nnod_rtp, nidx_rtp,          &
+      subroutine copy_ISPACK_to_rtp_field(nnod_rtp, nidx_rtp,           &
      &          irt_rtp_smp_stack, ncomp_bwd, X_FFT, X_rtp)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -66,11 +66,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_FFTPACK_to_rtp_field
+      end subroutine copy_ISPACK_to_rtp_field
 !
 ! ------------------------------------------------------------------
 !
-      subroutine copy_FFTPACK_from_rtp_field(nnod_rtp, nidx_rtp,        &
+      subroutine copy_ISPACK_from_rtp_field(nnod_rtp, nidx_rtp,         &
      &          irt_rtp_smp_stack, ncomp_fwd, X_rtp, X_FFT)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -104,7 +104,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_FFTPACK_from_rtp_field
+      end subroutine copy_ISPACK_from_rtp_field
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
