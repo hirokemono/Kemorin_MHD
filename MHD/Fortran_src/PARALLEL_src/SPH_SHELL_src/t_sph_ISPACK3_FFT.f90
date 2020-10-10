@@ -223,6 +223,7 @@
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
+      use copy_rtp_data_to_ISPACK
       use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -284,6 +285,7 @@
 !
       use transfer_to_long_integers
       use set_comm_table_rtp_ISPACK
+      use copy_rtp_data_to_ISPACK
       use copy_rtp_data_to_FFTPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp

@@ -9,8 +9,11 @@
 !!@verbatim
 !!      subroutine init_sph_FFT_select(id_rank, iflag_FFT_in,           &
 !!     &         sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
-!!      subroutine finalize_sph_FFT_select(WK_FFTs)
+!!      subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
@@ -242,13 +245,25 @@
 !
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
-        if(id_rank .eq. 0) write(*,*) 'Use at once OpenMP FFTW'
-        call init_sph_OMP_FFTW(sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, &
-     &      WK_FFTs%sph_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
+          call init_prt_FFTW(sph_rtp, comm_rtp,                         &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use at once OpenMP FFTW'
+          call init_sph_OMP_FFTW(sph_rtp, comm_rtp, ncomp_bwd,          &
+     &        ncomp_fwd, WK_FFTs%sph_OMP_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
-        if(id_rank .eq. 0) write(*,*) 'Use OpenMP FFTW for domain'
-        call init_sph_domain_OMP_FFTW                                   &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
+          call init_prt_field_FFTW                                      &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use OpenMP FFTW for domain'
+          call init_sph_domain_OMP_FFTW                                 &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -290,8 +305,9 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select(WK_FFTs)
+      subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
@@ -336,13 +352,24 @@
 !
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
+          call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*)                             &
      &        'Finalize at once OpenMP FFTW'
-        call finalize_sph_OMP_FFTW(WK_FFTs%sph_OMP_FFTW)
+          call finalize_sph_OMP_FFTW(WK_FFTs%sph_OMP_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
-        if(iflag_debug .gt. 0) write(*,*)                               &
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for domain'
+          call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*)                             &
      &        'Finalize OpenMP FFTW for domain'
-        call finalize_sph_domain_OMP_FFTW(WK_FFTs%sph_domain_OMP_FFTW)
+          call finalize_sph_domain_OMP_FFTW                             &
+     &       (WK_FFTs%sph_domain_OMP_FFTW)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -439,13 +466,26 @@
 !
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use at once OpenMP FFTW'
-        call verify_sph_OMP_FFTW(sph_rtp, comm_rtp,                     &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
+          call verify_prt_FFTW(sph_rtp, comm_rtp,                       &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use at once OpenMP FFTW'
+          call verify_sph_OMP_FFTW(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_OMP_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use OpenMP FFTW for domain'
-        call verify_sph_domain_OMP_FFTW                                 &
-     &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW for domain'
+          call verify_prt_field_FFTW                                    &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
+        else
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                    'Use OpenMP FFTW for domain'
+          call verify_sph_domain_OMP_FFTW                               &
+     &       (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -550,13 +590,23 @@
 !
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
-        call sph_forward_OFFTW_to_send                                  &
-     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
-     &      WK_FFTs%sph_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
+     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        else
+          call sph_forward_OFFTW_to_send                                &
+     &       (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
+     &        WK_FFTs%sph_OMP_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
-        call sph_domain_fwd_OFFTW_to_send                               &
-     &     (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),      &
-     &      WK_FFTs%sph_domain_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
+     &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        else
+          call sph_domain_fwd_OFFTW_to_send                             &
+     &       (sph_rtp, comm_rtp, ncomp_fwd, n_WS, v_rtp(1,1), WS(1),    &
+     &        WK_FFTs%sph_domain_OMP_FFTW)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
@@ -653,13 +703,23 @@
 !
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
-        call sph_backward_OFFTW_from_recv                               &
-     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      WK_FFTs%sph_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        else
+          call sph_backward_OFFTW_from_recv                             &
+     &       (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
+     &        WK_FFTs%sph_OMP_FFTW)
+        end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
-        call sph_domain_back_OFFTW_from_recv                            &
-     &     (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),      &
-     &      WK_FFTs%sph_domain_OMP_FFTW)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
+     &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        else
+          call sph_domain_back_OFFTW_from_recv                          &
+     &       (sph_rtp, comm_rtp, ncomp_bwd, n_WR, WR(1), v_rtp(1,1),    &
+     &        WK_FFTs%sph_domain_OMP_FFTW)
+        end if
 #endif
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
