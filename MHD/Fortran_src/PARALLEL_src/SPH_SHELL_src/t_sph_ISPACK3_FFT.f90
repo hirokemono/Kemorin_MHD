@@ -275,6 +275,7 @@
      &          WR, X_rtp, ispack3_t)
 !
       use transfer_to_long_integers
+      use set_comm_table_rtp_ISPACK
 !
       integer(kind = kint), intent(in) :: ncomp_bwd
       integer(kind = kint), intent(in) :: nnod_rtp, nphi_rtp

@@ -258,6 +258,7 @@
      &          WR, X_rtp, ispack_t)
 !
       use ispack_0931
+      use set_comm_table_rtp_ISPACK
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
