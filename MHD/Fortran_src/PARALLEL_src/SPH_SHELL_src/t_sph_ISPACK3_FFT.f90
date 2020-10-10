@@ -110,9 +110,6 @@
 !
 !>        Data for multiple Fourier transform
         real(kind = 8), allocatable :: X(:)
-!
-!>        temporal area for time count
-        real(kind = kreal), allocatable :: t_omp(:,:)
       end type work_for_ispack3
 !
       private :: alloc_work_4_ispack3, alloc_const_4_ispack3
@@ -143,9 +140,6 @@
 !
       call alloc_work_4_ispack3(nnod_rtp, ncomp, ispack3_t)
 !
-      allocate(ispack3_t%t_omp(np_smp,0:3))
-      ispack3_t%t_omp = 0.0d0
-!
       end subroutine init_sph_ISPACK3
 !
 ! ------------------------------------------------------------------
@@ -157,7 +151,6 @@
 !
       call dealloc_const_4_ispack3(ispack3_t)
       call dealloc_work_4_ispack3(ispack3_t)
-      deallocate(ispack3_t%t_omp)
 !
       end subroutine finalize_sph_ISPACK3
 !
@@ -228,6 +221,7 @@
       integer(kind = kint) :: num8, inum, ntot, ist_fft
 !
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
 !$omp parallel do schedule(static)                                      &
 !$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send,ist_fft)
@@ -237,7 +231,6 @@
         ntot = ncomp_fwd * num8
         ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
 !
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nphi_rtp
           do j = 1, num8
             do nd = 1, ncomp_fwd
@@ -247,11 +240,11 @@
             end do
           end do
         end do
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,1)= ispack3_t%t_omp(ip,1) &
-     &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
       end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
 !$omp parallel do schedule(static)                                      &
 !$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send,ist_fft)
@@ -260,14 +253,13 @@
         num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_fwd * num8
         ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         call FXRTFA(cast_long(ntot), cast_long(nphi_rtp),               &
      &      ispack3_t%X(ist_fft+1), ispack3_t%IT(1), ispack3_t%T(1))
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,2)= ispack3_t%t_omp(ip,2) &
-     &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
       end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
 !$omp parallel do schedule(static)                                      &
 !$omp&         private(ip,m,j,nd,ist,num8,ntot,inum,inod_s,inod_c,      &
 !$omp&                 ic_rtp,is_rtp,ic_send,is_send,ist_fft)
@@ -276,7 +268,6 @@
         num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_fwd * num8
         ist_fft = ncomp_fwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do j = 1, num8
           do nd = 1, ncomp_fwd
             inum = nd + (j-1) * ncomp_fwd
@@ -305,31 +296,9 @@
             end do
           end do
         end do
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,3)= ispack3_t%t_omp(ip,3) &
-     &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
-!
       end do
 !$omp end parallel do
-!
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          ispack3_t%t_omp(1,1) = ispack3_t%t_omp(1,1)                   &
-     &                         + ispack3_t%t_omp(ip,1)
-          ispack3_t%t_omp(1,2) = ispack3_t%t_omp(1,2)                   &
-     &                         + ispack3_t%t_omp(ip,2)
-          ispack3_t%t_omp(1,3) = ispack3_t%t_omp(1,3)                   &
-     &                         + ispack3_t%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+4)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+4)                        &
-     &         + ispack3_t%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+5)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+5)                        &
-     &         + ispack3_t%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+6)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+6)                        &
-     &         + ispack3_t%t_omp(1,3) / dble(np_smp)
-      end if
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine sph_FXRTFA_to_send
 !
@@ -360,12 +329,7 @@
       integer(kind = kint) :: num8, inum, ntot, ist_fft
 !
 !
-      if(iflag_FFT_time) then
-!$omp parallel workshare
-        ispack3_t%t_omp(1:np_smp,0:3) = 0
-!$omp end parallel workshare
-      end if
-!
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
 !$omp parallel do private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,   &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv,ist_fft)
       do ip = 1, np_smp
@@ -374,7 +338,6 @@
         ntot = ncomp_bwd * num8
         ist_fft = ncomp_bwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
 !
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do j = 1, num8
           do nd = 1, ncomp_bwd
             inum = nd + (j-1) * ncomp_bwd
@@ -403,11 +366,11 @@
             end do
           end do
         end do
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,1)= ispack3_t%t_omp(ip,1) &
-     &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
       end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
 !$omp parallel do private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,   &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv,ist_fft)
       do ip = 1, np_smp
@@ -415,14 +378,13 @@
         num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_bwd * num8
         ist_fft = ncomp_bwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         call FXRTBA(cast_long(ntot), cast_long(nphi_rtp),               &
      &      ispack3_t%X(ist_fft+1), ispack3_t%IT(1), ispack3_t%T(1))
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,2)= ispack3_t%t_omp(ip,2) &
-     &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
       end do
 !$omp end parallel do
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
+      if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
 !$omp parallel do private(ip,m,j,ist,num8,ntot,inum,nd,inod_s,inod_c,   &
 !$omp&                    ic_rtp,is_rtp,ic_recv,is_recv,ist_fft)
       do ip = 1, np_smp
@@ -430,7 +392,6 @@
         num8 = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_bwd * num8
         ist_fft = ncomp_bwd*nphi_rtp*irt_rtp_smp_stack(ip-1)
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,0) = MPI_WTIME()
         do m = 1, nphi_rtp
           do j = 1, num8
             do nd = 1, ncomp_bwd
@@ -440,30 +401,9 @@
             end do
           end do
         end do
-        if(iflag_FFT_time) ispack3_t%t_omp(ip,3)= ispack3_t%t_omp(ip,3) &
-     &                    + MPI_WTIME() - ispack3_t%t_omp(ip,0)
       end do
 !$omp end parallel do
-!
-      if(iflag_FFT_time) then
-        do ip = 2, np_smp
-          ispack3_t%t_omp(1,1) = ispack3_t%t_omp(1,1)                   &
-     &                         + ispack3_t%t_omp(ip,1)
-          ispack3_t%t_omp(1,2) = ispack3_t%t_omp(1,2)                   &
-     &                         + ispack3_t%t_omp(ip,2)
-          ispack3_t%t_omp(1,3) = ispack3_t%t_omp(1,3)                   &
-     &                         + ispack3_t%t_omp(ip,3)
-        end do
-        elps1%elapsed(ist_elapsed_FFT+1)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+1)                        &
-     &         + ispack3_t%t_omp(1,1) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+2)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+2)                        &
-     &         + ispack3_t%t_omp(1,2) / dble(np_smp)
-        elps1%elapsed(ist_elapsed_FFT+3)                                &
-     &        = elps1%elapsed(ist_elapsed_FFT+3)                        &
-     &         + ispack3_t%t_omp(1,3) / dble(np_smp)
-      end if
+      if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine sph_FXRTBA_from_recv
 !
