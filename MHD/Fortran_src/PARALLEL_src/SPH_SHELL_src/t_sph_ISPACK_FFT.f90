@@ -192,7 +192,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_fwd
       real(kind = kreal), intent(in)                                    &
-     &     :: X_rtp(irt_rtp_smp_stack(np_smp),nidx_rtp(3),ncomp_fwd)
+     &     :: X_rtp(nnod_rtp,ncomp_fwd)
 !
       integer(kind = kint), intent(in) :: n_WS
       integer(kind = kint), intent(in) :: irev_sr_rtp(nnod_rtp)
@@ -206,27 +206,8 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-!$omp parallel do private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,    &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send,ist_fft)
-      do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1)
-        num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
-        ntot = ncomp_fwd * num
-        ist_fft = ncomp_fwd*nidx_rtp(3)*irt_rtp_smp_stack(ip-1)
-!
-        do m = 1, nidx_rtp(3)/2
-          do j = 1, num
-            do nd = 1, ncomp_fwd
-              inum = nd + (j-1) * ncomp_fwd
-              inod_c = inum + (2*m-2) * ncomp_fwd * num + ist_fft
-              inod_s = inum + (2*m-1) * ncomp_fwd * num + ist_fft
-              ispack_t%X(inod_c) = X_rtp(j+ist,2*m-1,nd)
-              ispack_t%X(inod_s) = X_rtp(j+ist,2*m,  nd)
-            end do
-          end do
-        end do
-      end do
-!$omp end parallel do
+      call copy_FFTPACK_from_rtp_field(nnod_rtp, nidx_rtp,              &
+     &    irt_rtp_smp_stack, ncomp_fwd, X_rtp(1,1), ispack_t%X)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)

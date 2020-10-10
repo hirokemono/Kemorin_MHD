@@ -515,7 +515,7 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         call sph_FXRTFA_to_send                                         &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                  &
      &     comm_rtp%irev_sr, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
@@ -622,7 +622,7 @@
 !
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
         call sph_FXRTBA_from_recv                                       &
-     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(3),                       &
+     &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                  &
      &     comm_rtp%irev_sr, WR(1), v_rtp(1,1), WK_FFTs%sph_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
