@@ -126,7 +126,7 @@
      &                            ncomp_bwd, ncomp_fwd, ispack3_t)
 !
       use transfer_to_long_integers
-      use set_comm_table_rtp_FFTPACK
+      use set_comm_table_rtp_ISPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -146,7 +146,7 @@
 !
       call alloc_comm_table_sph_FFT                                     &
      &   (comm_rtp%ntot_item_sr, ispack3_t%comm_sph_ISPACK3)
-      call set_comm_item_rtp_4_FFTPACK(sph_rtp%nnod_rtp,                &
+      call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,                 &
      &    sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                  &
      &    comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                      &
      &    ispack3_t%comm_sph_ISPACK3)
@@ -172,7 +172,7 @@
      &          ncomp_bwd, ncomp_fwd, ispack3_t)
 !
       use transfer_to_long_integers
-      use set_comm_table_rtp_FFTPACK
+      use set_comm_table_rtp_ISPACK
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtp
@@ -200,7 +200,7 @@
         call dealloc_comm_table_sph_FFT(ispack3_t%comm_sph_ISPACK3)
         call alloc_comm_table_sph_FFT                                   &
      &   (comm_rtp%ntot_item_sr, ispack3_t%comm_sph_ISPACK3)
-        call set_comm_item_rtp_4_FFTPACK(sph_rtp%nnod_rtp,              &
+        call set_comm_item_rtp_4_ISPACK(sph_rtp%nnod_rtp,               &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      comm_rtp%ntot_item_sr, comm_rtp%irev_sr,                    &
      &      ispack3_t%comm_sph_ISPACK3)
@@ -241,9 +241,9 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
-      call copy_FFTPACK_from_rtp_field(sph_rtp%nnod_rtp,                &
-     &    sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                  &
-     &    ncomp_fwd, X_rtp(1,1), ispack3_t%X)
+        call copy_FFTPACK_from_rtp_field(sph_rtp%nnod_rtp,              &
+     &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
+     &      ncomp_fwd, X_rtp(1,1), ispack3_t%X)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
@@ -261,12 +261,12 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-!      call copy_ISPACK_field_to_send(sph_rtp%nnod_rtp,                 &
-!     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,              &
-!     &    ncomp_fwd, comm_rtp%irev_sr, ispack3_t%X, n_WS, WS)
-      call copy_all_rtp_FFT_to_send_smp(sph_rtp%nnod_rtp,               &
-     &    sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                  &
-     &    ncomp_fwd, ispack3_t%X, ispack3_t%comm_sph_ISPACK3, n_WS, WS)
+!        call copy_ISPACK_field_to_send(sph_rtp%nnod_rtp,               &
+!     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,            &
+!     &      ncomp_fwd, comm_rtp%irev_sr, ispack3_t%X, n_WS, WS)
+        call copy_all_rtp_FFT_to_send_smp(sph_rtp%nnod_rtp,             &
+     &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_fwd,     &
+     &      ispack3_t%X, ispack3_t%comm_sph_ISPACK3, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine sph_FXRTFA_to_send
@@ -296,9 +296,9 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      call copy_ISPACK_field_from_recv(sph_rtp%nnod_rtp,                &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
-     &    ncomp_bwd, comm_rtp%irev_sr, n_WR, WR, ispack3_t%X)
+        call copy_ISPACK_field_from_recv(sph_rtp%nnod_rtp,              &
+     &      sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,             &
+     &      ncomp_bwd, comm_rtp%irev_sr, n_WR, WR, ispack3_t%X)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
@@ -316,9 +316,9 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+2)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+3)
-      call copy_FFTPACK_to_rtp_field(sph_rtp%nnod_rtp,                  &
-     &    sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_bwd,       &
-     &    ispack3_t%X, X_rtp(1,1))
+        call copy_FFTPACK_to_rtp_field(sph_rtp%nnod_rtp,                &
+     &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, ncomp_bwd,     &
+     &      ispack3_t%X, X_rtp(1,1))
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+3)
 !
       end subroutine sph_FXRTBA_from_recv
