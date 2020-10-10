@@ -261,9 +261,12 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+5)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+6)
-      call copy_ISPACK_field_to_send(sph_rtp%nnod_rtp,                  &
-     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,               &
-     &    ncomp_fwd, comm_rtp%irev_sr, ispack3_t%X, n_WS, WS)
+!      call copy_ISPACK_field_to_send(sph_rtp%nnod_rtp,                 &
+!     &    sph_rtp%nidx_rtp(3), sph_rtp%istack_rtp_rt_smp,              &
+!     &    ncomp_fwd, comm_rtp%irev_sr, ispack3_t%X, n_WS, WS)
+      call copy_all_rtp_FFT_to_send_smp(sph_rtp%nnod_rtp,               &
+     &    sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                  &
+     &    ncomp_fwd, ispack3_t%X, ispack3_t%comm_sph_ISPACK3, n_WS, WS)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+6)
 !
       end subroutine sph_FXRTFA_to_send
