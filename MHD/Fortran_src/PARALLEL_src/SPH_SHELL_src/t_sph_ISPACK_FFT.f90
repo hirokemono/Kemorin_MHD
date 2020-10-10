@@ -78,6 +78,7 @@
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
+      use t_sph_comm_table_from_FFT
 !
       implicit none
 !
@@ -93,6 +94,9 @@
         real(kind = 8), allocatable :: X(:)
 !>        Work area for ISPACK
         real(kind = 8), allocatable :: WK(:)
+!
+!>      Structure of communication table from FFT to send buffer
+        type(comm_tbl_from_FFT) :: comm_sph_ISPACK3
       end type work_for_ispack
 !
       private :: alloc_work_4_ispack, alloc_const_4_ispack
@@ -201,9 +205,7 @@
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
-      integer(kind = kint) :: m, j, ip, ist, num, ntot, nd, ist_fft
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_send, is_send
-      integer(kind = kint) :: inum, inod_s, inod_c
+      integer(kind = kint) :: ip, num, ntot, ist_fft
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+4)
@@ -212,10 +214,8 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+4)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+5)
-!$omp parallel do private(ip,m,j,nd,ist,num,ntot,inum,inod_s,inod_c,    &
-!$omp&                    ic_rtp,is_rtp,ic_send,is_send,ist_fft)
+!$omp parallel do private(ip,num,ntot,ist_fft)
       do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_fwd * num
         ist_fft = ncomp_fwd*nidx_rtp(3)*irt_rtp_smp_stack(ip-1)
@@ -257,9 +257,7 @@
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
-      integer(kind = kint) ::  m, j, ip, ist, num, ntot, nd, ist_fft
-      integer(kind = kint) :: inum, inod_s, inod_c
-      integer(kind = kint) :: ic_rtp, is_rtp, ic_recv, is_recv
+      integer(kind = kint) :: ip, num, ntot, ist_fft
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
@@ -269,11 +267,8 @@
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+2)
-!$omp parallel do schedule(static)                                      &
-!$omp&         private(ip,m,j,ist,num,ntot,inum,nd,inod_s,inod_c,       &
-!$omp&                 ic_rtp,is_rtp,ic_recv,is_recv,ist_fft)
+!$omp parallel do private(ip,num,ntot,ist_fft)
       do ip = 1, np_smp
-        ist = irt_rtp_smp_stack(ip-1)
         num = irt_rtp_smp_stack(ip) - irt_rtp_smp_stack(ip-1)
         ntot = ncomp_bwd * num
         ist_fft = ncomp_bwd*nidx_rtp(3)*irt_rtp_smp_stack(ip-1)
