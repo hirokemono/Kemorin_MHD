@@ -269,8 +269,8 @@
             is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
             inod_c = inum +                   ist_fft
             inod_s = inum + ncomp_bwd * num + ist_fft
-            ispack_t%X(inod_c) = WR(ic_recv)
-            ispack_t%X(inod_s) = WR(is_recv)
+            X_FFT(inod_c) = WR(ic_recv)
+            X_FFT(inod_s) = WR(is_recv)
           end do
         end do
         do m = 2, nphi_rtp/2
@@ -283,8 +283,8 @@
               is_rtp = j+ist + (2*m-1) * irt_rtp_smp_stack(np_smp)
               ic_recv = nd + (irev_sr_rtp(ic_rtp) - 1) * ncomp_bwd
               is_recv = nd + (irev_sr_rtp(is_rtp) - 1) * ncomp_bwd
-              ispack_t%X(inod_c) =  half * WR(ic_recv)
-              ispack_t%X(inod_s) = -half * WR(is_recv)
+              X_FFT(inod_c) =  half * WR(ic_recv)
+              X_FFT(inod_s) = -half * WR(is_recv)
             end do
           end do
         end do
