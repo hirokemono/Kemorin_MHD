@@ -297,7 +297,7 @@
 !
 !
       if(iflag_FFT_time) call start_elapsed_time(ist_elapsed_FFT+1)
-      call copy_ISPACK_field_from_recv(nnod_rtp, nidx_rtp(3),           &
+      call copy_ISPACK_field_from_recv(nnod_rtp, nphi_rtp,           &
      &    irt_rtp_smp_stack, ncomp_bwd, irev_sr_rtp,                    &
      &    n_WR, WR, ispack3_t%X)
       if(iflag_FFT_time) call end_elapsed_time(ist_elapsed_FFT+1)
