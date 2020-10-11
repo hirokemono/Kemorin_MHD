@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine init_fourier_transform_4_MHD                         &
-!!     &         (sph_rtp, comm_rtp, trns_MHD, WK_FFTs, iflag_FFT)
+!!     &         (sph_rtp, comm_rtp, trns_MHD, WK_FFTs, iflag_FFT_MHD)
 !!      integer(kind = kint) function                                   &
 !!     &                    set_FFT_mode_4_snapshot(iflag_FFT_MHD)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -38,16 +38,23 @@
       implicit none
 !
 #ifdef FFTW3
+      integer(kind = kint), parameter :: num_test =   8
+      integer(kind = kint), parameter :: list_test(num_test)            &
+     &        = (/iflag_FFTPACK,                                        &
+     &            iflag_FFTPACK_COMPONENT,                              &
+     &            iflag_FFTPACK_DOMAIN,                                 &
+     &            iflag_FFTPACK_SINGLE,                                 &
+     &            iflag_FFTW,                                           &
+     &            iflag_FFTW_SINGLE,                                    &
+     &            iflag_FFTW_DOMAIN,                                    &
+     &            iflag_FFTW_COMPONENT/)
+#else
       integer(kind = kint), parameter :: num_test =   4
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
-     &            iflag_FFTW_SINGLE,                                    &
-     &            iflag_FFTW,                                           &
-     &            iflag_FFTW_COMPONENT/)
-#else
-      integer(kind = kint), parameter :: num_test =   1
-      integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK/)
+     &            iflag_FFTPACK_COMPONENT,                              &
+     &            iflag_FFTPACK_DOMAIN,                                 &
+     &            iflag_FFTPACK_SINGLE/)
 #endif
 !
       real(kind = kreal) :: etime_shortest = -1.0e10
@@ -63,7 +70,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_fourier_transform_4_MHD                           &
-     &         (sph_rtp, comm_rtp, trns_MHD, WK_FFTs, iflag_FFT)
+     &         (sph_rtp, comm_rtp, trns_MHD, WK_FFTs, iflag_FFT_MHD)
 !
       use m_solver_SR
 !
@@ -72,17 +79,18 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(work_for_FFTs), intent(inout) :: WK_FFTs
-      integer(kind = kint), intent(inout) :: iflag_FFT
+      integer(kind = kint), intent(inout) :: iflag_FFT_MHD
 !
 !
-      if(iflag_FFT .eq. iflag_UNDEFINED_FFT) then
+      if(iflag_FFT_MHD .eq. iflag_UNDEFINED_FFT) then
         call compare_FFT_4_MHD(sph_rtp, comm_rtp,                       &
      &      SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS, SR_r1%WR,                 &
      &      trns_MHD, WK_FFTs)
-        iflag_FFT = iflag_selected
+        iflag_FFT_MHD = iflag_selected
       end if
 !
-      call init_sph_FFT_select(my_rank, iflag_FFT, sph_rtp, comm_rtp,   &
+      call init_sph_FFT_select                                          &
+     &   (my_rank, iflag_FFT_MHD, sph_rtp, comm_rtp,                    &
      &    trns_MHD%backward%ncomp, trns_MHD%forward%ncomp, WK_FFTs)
 !
       if(my_rank .ne. 0) return
@@ -125,7 +133,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
       real (kind=kreal), intent(inout):: WR(n_WR)
 !
-      real(kind = kreal) :: etime_fft(5) = 10000.0
+      real(kind = kreal) :: etime_fft(num_test) = 10000.0
       integer(kind = kint) :: i
 !
 !
@@ -183,7 +191,7 @@
       endtime = MPI_WTIME() - starttime
 !
       if(iflag_debug .gt. 0) write(*,*) 'finalize_sph_FFT_select'
-      call finalize_sph_FFT_select(WK_FFTs)
+      call finalize_sph_FFT_select(sph_rtp, WK_FFTs)
 !
       call MPI_allREDUCE (endtime, etime_fft, 1,                        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

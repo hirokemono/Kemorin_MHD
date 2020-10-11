@@ -12,7 +12,8 @@
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in) :: comm_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
-!!      subroutine finalize_sph_FFT_select(WK_FFTs)
+!!      subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!      subroutine verify_sph_FFT_select                                &
 !!     &         (sph_rtp, comm_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs)
@@ -81,6 +82,11 @@
       use m_machine_parameter
       use m_FFT_selector
       use t_sph_FFTPACK5
+      use t_sph_component_FFTPACK5
+      use t_sph_domain_FFTPACK5
+      use t_sph_single_FFTPACK5
+      use sph_rtp_domain_FFTPACK5
+      use sph_prt_domain_FFTPACK5
       use sph_rtp_FFTPACK5
       use sph_prt_FFTPACK5
 !
@@ -103,6 +109,12 @@
 !
 !>        Structure to use FFTPACK
         type(work_for_fftpack) :: sph_FFTPACK
+!>        Structure to use single FFTPACK
+        type(work_for_sgl_fftpack) :: sph_sgl_FFTPACK
+!>        Structure to use single FFTPACK
+        type(work_for_comp_fftpack) :: sph_comp_FFTPACK
+!>        Structure to use single FFTPACK
+        type(work_for_domain_fftpack) :: sph_domain_FFTPACK
 !
 #ifdef FFTW3
 !>        Structure to use FFTW
@@ -134,8 +146,26 @@
 !
 !
       WK_FFTs%iflag_FFT = iflag_FFT_in
+      if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        if(id_rank .eq. 0) write(*,*) 'Use single FFTPACK'
+        call init_sph_single_FFTPACK5(sph_rtp, WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        if(id_rank .eq. 0) write(*,*) 'Use FFTPACK for all comp'
+        call init_sph_comp_FFTPACK5                                     &
+     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt FFTPACK for domaikn'
+          call init_prt_domain_FFTPACK5(sph_rtp, comm_rtp,              &
+     &                                  WK_FFTs%sph_domain_FFTPACK)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTPACK for domaikn'
+          call init_rtp_domain_FFTPACK5(sph_rtp, comm_rtp,              &
+     &                                  WK_FFTs%sph_domain_FFTPACK)
+        end if
+!
 #ifdef FFTW3
-      if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt FFTW'
           call init_prt_FFTW(sph_rtp, comm_rtp,                         &
@@ -145,7 +175,6 @@
           call init_rtp_FFTW(sph_rtp, comm_rtp,                         &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
@@ -156,60 +185,67 @@
           call init_rtp_field_FFTW                                      &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(id_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
         call init_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW for all compontnent'
         call init_sph_component_FFTW                                    &
      &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
-        return
-      end if
 #endif
-!
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
-        if(id_rank .eq. 0) write(*,*) 'Use prt FFTPACK'
-        call init_prt_FFTPACK5(sph_rtp, comm_rtp,                       &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
       else
-        if(id_rank .eq. 0) write(*,*) 'Use rtp FFTPACK'
-        call init_rtp_FFTPACK5(sph_rtp, comm_rtp,                       &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(id_rank .eq. 0) write(*,*) 'Use prt FFTPACK'
+          call init_prt_FFTPACK5(sph_rtp, comm_rtp,                     &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        else
+          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTPACK'
+          call init_rtp_FFTPACK5(sph_rtp, comm_rtp,                     &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine init_sph_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select(WK_FFTs)
+      subroutine finalize_sph_FFT_select(sph_rtp, WK_FFTs)
 !
+      type(sph_rtp_grid), intent(in) :: sph_rtp
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
+      if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTPACK'
+        call finalize_sph_single_FFTPACK5(WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                     'Finalize FFTPACK for all comp'
+        call finalize_sph_comp_FFTPACK5(WK_FFTs%sph_comp_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                     'Finalize FFTPACK for domain'
+        call finalize_sph_domain_FFTPACK5(WK_FFTs%sph_domain_FFTPACK)
+!
+!
 #ifdef FFTW3
-      if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for domain'
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
         call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for all comps'
         call finalize_sph_component_FFTW(WK_FFTs%sph_comp_FFTW)
-        return
-      end if
 #endif
-!
+      else
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
         call finalize_sph_FFTPACK5(WK_FFTs%sph_FFTPACK)
+      end if
 !
       end subroutine finalize_sph_FFT_select
 !
@@ -226,8 +262,29 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
+      if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use single FFTPACK'
+        call verify_sph_single_FFTPACK5                                 &
+     &     (sph_rtp, WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK for component'
+        call verify_sph_comp_FFTPACK5                                   &
+     &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                         'Use prt FFTPACK for domain'
+          call verify_prt_domain_FFTPACK5(sph_rtp, comm_rtp,            &
+     &                                    WK_FFTs%sph_domain_FFTPACK)
+        else
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                         'Use rtp FFTPACK for domain'
+          call verify_rtp_domain_FFTPACK5(sph_rtp, comm_rtp,            &
+     &                                    WK_FFTs%sph_domain_FFTPACK)
+        end if
+!
 #ifdef FFTW3
-      if(     WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
           call verify_prt_FFTW(sph_rtp, comm_rtp,                       &
@@ -237,7 +294,6 @@
           call verify_rtp_FFTW(sph_rtp, comm_rtp,                       &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW for domain'
@@ -248,27 +304,24 @@
           call verify_rtp_field_FFTW                                    &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW'
         call verify_sph_single_FFTW(sph_rtp, WK_FFTs%sph_sgl_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW for all comp。'
         call verify_sph_component_FFTW                                  &
      &     (sph_rtp, ncomp_bwd, ncomp_fwd, WK_FFTs%sph_comp_FFTW)
-        return
-      end if
 #endif
-!
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTPACK'
-        call verify_prt_FFTPACK5(sph_rtp, comm_rtp,                     &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
       else
-        if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTPACK'
-        call verify_rtp_FFTPACK5(sph_rtp, comm_rtp,                     &
-     &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTPACK'
+          call verify_prt_FFTPACK5(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        else
+          if(iflag_debug .gt. 0) write(*,*) 'Use rtp FFTPACK'
+          call verify_rtp_FFTPACK5(sph_rtp, comm_rtp,                   &
+     &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine verify_sph_FFT_select
@@ -291,8 +344,23 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
+      if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        call sph_single_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
+     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        call sph_comp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,      &
+     &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_domain_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,  &
+     &        n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_FFTPACK)
+        else
+          call rtp_domain_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd,  &
+     &        n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_FFTPACK)
+        end if
+!
 #ifdef FFTW3
-      if(     WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
@@ -300,7 +368,6 @@
           call rtp_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
@@ -309,24 +376,21 @@
           call rtp_field_fwd_FFTW_to_send(sph_rtp, comm_rtp,            &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send(sph_rtp, comm_rtp,             &
      &      ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         call sph_comp_fwd_FFTW_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_comp_FFTW)
-        return
-      end if
 #endif
-!
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
-        call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
-     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
       else
-        call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,     &
-     &                          v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,   &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        else
+          call rtp_RFFTMF_to_send(sph_rtp, comm_rtp, ncomp_fwd, n_WS,   &
+     &        v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine fwd_FFT_select_to_send
@@ -349,8 +413,25 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
+      if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_SINGLE) then
+        call sph_single_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
+     &      n_WR, WR, v_rtp(1,1), WK_FFTs%sph_sgl_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_COMPONENT) then
+        call sph_comp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,    &
+     &      n_WR, WR, v_rtp(1,1), WK_FFTs%sph_comp_FFTPACK)
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTPACK_DOMAIN) then
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_domain_RFFTMB_from_recv                              &
+     &       (sph_rtp, comm_rtp, ncomp_bwd,                             &
+     &        n_WR, WR, v_rtp(1,1), WK_FFTs%sph_domain_FFTPACK)
+        else
+          call rtp_domain_RFFTMB_from_recv                              &
+     &       (sph_rtp, comm_rtp, ncomp_bwd,                             &
+     &        n_WR, WR, v_rtp(1,1), WK_FFTs%sph_domain_FFTPACK)
+        end if
+!
 #ifdef FFTW3
-      if(     WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
@@ -358,7 +439,6 @@
           call rtp_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
@@ -367,24 +447,21 @@
           call rtp_field_back_FFTW_from_recv(sph_rtp, comm_rtp,         &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
         end if
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv(sph_rtp, comm_rtp,          &
      &      ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_sgl_FFTW)
-        return
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_COMPONENT) then
         call sph_comp_back_FFTW_from_recv(sph_rtp, comm_rtp, ncomp_bwd, &
      &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_comp_FFTW)
-        return
-      end if
 #endif
-!
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
-        call prt_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
-     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
       else
-        call rtp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR,   &
-     &                            WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        if(sph_rtp%istep_rtp(3) .eq. 1) then
+          call prt_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
+     &        WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        else
+          call rtp_RFFTMB_from_recv(sph_rtp, comm_rtp, ncomp_bwd, n_WR, &
+     &        WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
+        end if
       end if
 !
       end subroutine back_FFT_select_from_recv

@@ -159,7 +159,6 @@
         type(work_for_sgl_FFTW) :: sph_sgl_FFTW
 !>        Structure to use FFTW for each component
         type(work_for_comp_FFTW) :: sph_comp_FFTW
-!
 #endif
 #ifdef OMP_FFTW3
 !>        Structure to use FFTW with OpenMP
