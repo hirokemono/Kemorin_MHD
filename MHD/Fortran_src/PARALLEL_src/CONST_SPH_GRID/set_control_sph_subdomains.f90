@@ -110,7 +110,7 @@
         end if
       end if
 !
-      s3d_ranks%rtp_rin_flag = .TRUE.
+      s3d_ranks%rtp_rin_flag = .FALSE.
       if(sdctl%rtp_inner_loop_ctl%iflag .gt. 0) then
         tmpchara = sdctl%rtp_inner_loop_ctl%charavalue
         if(     cmp_no_case(tmpchara, radius1)                          &
