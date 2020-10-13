@@ -215,7 +215,7 @@
 #ifdef FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
+          if(id_rank .eq. 0) write(*,*) 'Use prt FFTW'
           call init_prt_FFTW(sph_rtp, comm_rtp,                         &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         else
@@ -225,7 +225,7 @@
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
+          if(id_rank .eq. 0) write(*,*) 'Use prt FFTW for domain'
           call init_prt_field_FFTW                                      &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         else
@@ -245,21 +245,23 @@
 #ifdef OMP_FFTW3
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW'
+          if(id_rank .eq. 0) write(*,*) 'Use at once prt OpenMP FFTW'
           call init_prt_FFTW(sph_rtp, comm_rtp,                         &
      &        ncomp_bwd, ncomp_fwd, WK_FFTs%sph_fld_FFTW)
         else
-          if(id_rank .eq. 0) write(*,*) 'Use at once OpenMP FFTW'
+          if(id_rank .eq. 0) write(*,*) 'Use at once rtp OpenMP FFTW'
           call init_sph_OMP_FFTW(sph_rtp, comm_rtp, ncomp_bwd,          &
      &        ncomp_fwd, WK_FFTs%sph_OMP_FFTW)
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(id_rank .eq. 0) write(*,*) 'Use rtp FFTW for domain'
+          if(id_rank .eq. 0) write(*,*)                                 &
+     &                     'Use prt OpenMP FFTW for domain'
           call init_prt_field_FFTW                                      &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_fld_FFTW)
         else
-          if(id_rank .eq. 0) write(*,*) 'Use OpenMP FFTW for domain'
+          if(id_rank .eq. 0) write(*,*)                                 &
+     &                     'Use rtp OpenMP FFTW for domain'
           call init_sph_domain_OMP_FFTW                                 &
      &       (sph_rtp, comm_rtp, WK_FFTs%sph_domain_OMP_FFTW)
         end if
@@ -361,11 +363,12 @@
         end if
       else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_DOMAIN) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
-          if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW for domain'
+          if(iflag_debug .eq. 0) write(*,*)                             &
+     &                     'Finalize prt OpenMP FFTW for domain'
           call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
         else
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &        'Finalize OpenMP FFTW for domain'
+          if(iflag_debug .eq. 0) write(*,*)                             &
+     &                     'Finalize rtp OpenMP FFTW for domain'
           call finalize_sph_domain_OMP_FFTW                             &
      &       (WK_FFTs%sph_domain_OMP_FFTW)
         end if

@@ -140,8 +140,8 @@
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl                                        &
-     &     (spt_ctl%FFT_lib_ctl%charavalue, trans_p%iflag_FFT)
+        trans_p%iflag_FFT                                               &
+     &     = set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
       end if
       if(spt_ctl%import_mode_ctl%iflag .gt. 0) then
         call set_import_table_ctl                                       &
@@ -281,8 +281,8 @@
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl                                        &
-     &     (spt_ctl%FFT_lib_ctl%charavalue, trans_p%iflag_FFT)
+        trans_p%iflag_FFT                                               &
+     &     = set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
       end if
 !
 !     file header for reduced data
