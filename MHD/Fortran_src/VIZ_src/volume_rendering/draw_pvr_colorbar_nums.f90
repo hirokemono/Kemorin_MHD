@@ -1,15 +1,23 @@
+!>@file   draw_pvr_colorbar_nums.f90
+!!@brief  module draw_pvr_colorbar_nums
+!!
+!!@author H. Matsui
+!!@date Programmed in 2008
 !
-!      module  draw_pvr_colorbar_nums
 !
-!      subroutine gen_cbar_label(iscale, color_bar_style,               &
-!     &       color_mapping_style, interval_point, interval_mapping_num,&
-!     &       num_of_scale, d_minmax, npix_img, isleeve_bar, ntot_pix,  &
-!     &       dimage)
-!      subroutine gen_zero_label(iscale, color_bar_style,               &
-!     &       color_mapping_style, interval_point, interval_mapping_num,&
-!     &       d_minmax, npix_img, isleeve_bar, ntot_pix, dimage)
+!>@brief  Construct number bitmaps
+!!
+!!@verbatim
+!!      subroutine gen_cbar_label(iscale, color_bar_style,              &
+!!     &      color_mapping_style, interval_point, interval_mapping_num,&
+!!     &      num_of_scale, d_minmax, npix_img, isleeve_bar, ntot_pix,  &
+!!     &      dimage)
+!!      subroutine gen_zero_label(iscale, color_bar_style,              &
+!!     &      color_mapping_style, interval_point, interval_mapping_num,&
+!!     &      d_minmax, npix_img, isleeve_bar, ntot_pix, dimage)
 !!      subroutine set_one_label(char1, iscale, ist_px, ist_py,        &
 !!     &          npix_img, ntot_pix, dimage)
+!!@endverbatim
 !
       module  draw_pvr_colorbar_nums
 !

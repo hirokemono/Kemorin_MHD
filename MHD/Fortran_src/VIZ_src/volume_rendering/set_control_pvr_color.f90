@@ -270,11 +270,11 @@
       end if
 !
 !    set time label setting
-      cbar_param%iflag_pvr_time = 0
+      cbar_param%iflag_draw_time = 0
       if( cbar_ctl%time_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%time_switch_ctl%charavalue
         if   (cmp_no_case(tmpchara, 'on')) then
-          cbar_param%iflag_pvr_time = 1
+          cbar_param%iflag_draw_time = 1
         end if
       end if
 !
