@@ -210,6 +210,8 @@
 !
 !>    Draw flag for axis label
         integer(kind = kint) :: iflag_pvr_axis =  0
+!>    Draw flag for time label
+        integer(kind = kint) :: iflag_pvr_time =  0
       end type pvr_colorbar_parameter
 !
 !  ---------------------------------------------------------------------

@@ -31,6 +31,7 @@
 !!    num_grid_ctl     4
 !!!
 !!    axis_label_switch      ON
+!!    time_label_switch      ON
 !!  end colorbar_ctl
 !!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -61,6 +62,7 @@
         type(read_real2_item) ::     cbar_range_ctl
 !
         type(read_character_item) :: axis_switch_ctl
+        type(read_character_item) :: time_switch_ctl
 !
 !     2nd level for volume rendering
         integer(kind = kint) :: i_pvr_colorbar = 0
@@ -77,13 +79,14 @@
       character(len=kchara) :: hd_cbar_range = 'colorbar_range'
 !
       character(len=kchara) :: hd_axis_switch = 'axis_label_switch'
+      character(len=kchara) :: hd_time_switch = 'time_label_switch'
 !
-      integer(kind = kint), parameter :: n_label_pvr_colorbar = 7
+      integer(kind = kint), parameter :: n_label_pvr_colorbar = 8
 !
       private :: hd_colorbar_switch, hd_colorbar_scale
       private :: hd_pvr_font_size, hd_cbar_range
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
-      private :: hd_axis_switch, n_label_pvr_colorbar
+      private :: hd_axis_switch, hd_time_switch, n_label_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
 !
@@ -122,7 +125,9 @@
 !
         call read_chara_ctl_type(c_buf, hd_axis_switch,                 &
      &      cbar_ctl%axis_switch_ctl)
-!!
+        call read_chara_ctl_type(c_buf, hd_time_switch,                 &
+     &      cbar_ctl%time_switch_ctl)
+!
         call read_real2_ctl_type(c_buf,                                 &
      &      hd_cbar_range, cbar_ctl%cbar_range_ctl)
       end do
@@ -150,7 +155,8 @@
       call bcast_ctl_type_c1(cbar_ctl%zeromarker_flag_ctl)
 !
       call bcast_ctl_type_c1(cbar_ctl%axis_switch_ctl)
-!!
+      call bcast_ctl_type_c1(cbar_ctl%time_switch_ctl)
+!
       call bcast_ctl_type_r2(cbar_ctl%cbar_range_ctl)
 !
       end subroutine bcast_pvr_colorbar_ctl
@@ -198,6 +204,8 @@
 !
       call copy_chara_ctl(org_cbar_c%axis_switch_ctl,                   &
      &                    new_cbar_c%axis_switch_ctl)
+      call copy_chara_ctl(org_cbar_c%time_switch_ctl,                   &
+     &                    new_cbar_c%time_switch_ctl)
 !
       call copy_real2_ctl(org_cbar_c%cbar_range_ctl,                    &
      &                    new_cbar_c%cbar_range_ctl)
@@ -228,6 +236,7 @@
       call set_control_labels(hd_cbar_range,       names( 6))
 !
       call set_control_labels(hd_axis_switch,      names( 7))
+      call set_control_labels(hd_time_switch,      names( 8))
 !
       end subroutine set_label_pvr_colorbar
 !

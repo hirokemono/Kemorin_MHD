@@ -261,7 +261,6 @@
       character(len = kchara) :: tmpchara
 !
 !    set axis label setting
-!
       cbar_param%iflag_pvr_axis = 0
       if( cbar_ctl%axis_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%axis_switch_ctl%charavalue
@@ -270,6 +269,14 @@
         end if
       end if
 !
+!    set time label setting
+      cbar_param%iflag_pvr_time = 0
+      if( cbar_ctl%time_switch_ctl%iflag .gt. 0) then
+        tmpchara = cbar_ctl%time_switch_ctl%charavalue
+        if   (cmp_no_case(tmpchara, 'on')) then
+          cbar_param%iflag_pvr_time = 1
+        end if
+      end if
 !
 !    set colorbar setting
 !

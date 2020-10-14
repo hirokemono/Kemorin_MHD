@@ -295,6 +295,7 @@ struct pvr_colorbar_ctl_c * init_colorbar_ctl_c(void){
 	cbar_c->cbar_range_ctl = init_real2_ctl_item_c();
 	
 	cbar_c->axis_switch_ctl = init_chara_ctl_item_c();
+    cbar_c->time_switch_ctl = init_chara_ctl_item_c();
 	
 	return cbar_c;
 };
@@ -311,7 +312,7 @@ void dealloc_colorbar_ctl_c(struct pvr_colorbar_ctl_c *cbar_c){
 	free(cbar_c->cbar_range_ctl);
 	
 	dealloc_chara_ctl_item_c(cbar_c->axis_switch_ctl);
-	
+    dealloc_chara_ctl_item_c(cbar_c->time_switch_ctl);
     free(cbar_c);
 	return;
 };
@@ -333,6 +334,7 @@ void read_colorbar_ctl_c(FILE *fp, char buf[LENGTHBUF], const char *label,
 		read_real2_ctl_item_c(buf, label_colorbar_ctl[ 5], cbar_c->cbar_range_ctl);
 		
 		read_chara_ctl_item_c(buf, label_colorbar_ctl[ 6], cbar_c->axis_switch_ctl);
+        read_chara_ctl_item_c(buf, label_colorbar_ctl[ 7], cbar_c->time_switch_ctl);
 	};
     cbar_c->iflag_use = 1;
 	return;
@@ -362,6 +364,8 @@ int write_colorbar_ctl_c(FILE *fp, int level, const char *label,
 	
 	write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 6],
 						   cbar_c->axis_switch_ctl);
+    write_chara_ctl_item_c(fp, level, cbar_c->maxlen, label_colorbar_ctl[ 7],
+                           cbar_c->time_switch_ctl);
 	
 	level = write_end_flag_for_ctl_c(fp, level, label);
 	return level;

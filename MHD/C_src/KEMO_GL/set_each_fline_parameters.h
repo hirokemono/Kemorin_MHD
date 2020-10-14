@@ -82,8 +82,8 @@ void get_fline_color_item(struct fline_menu_val *fline_m,
 			int i_point, double *value, double *color);
 void get_fline_opacity_item(struct fline_menu_val *fline_m,
 			int i_point, double *value, double *opacity);
-void write_fline_colormap_file(struct kv_string *filename, 
-                               const int iflag_draw_axis, struct fline_menu_val *fline_m);
+void write_fline_colormap_file(struct kv_string *filename, const int iflag_draw_axis, 
+                               struct fline_menu_val *fline_m);
 void read_fline_colormap_file(struct kv_string *filename, struct fline_menu_val *fline_m);
 
 #endif

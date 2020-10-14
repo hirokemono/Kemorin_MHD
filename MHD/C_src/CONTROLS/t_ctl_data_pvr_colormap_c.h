@@ -72,6 +72,7 @@ struct pvr_colorbar_ctl_c{
 	struct real2_ctl_item *cbar_range_ctl;
 	
 	struct chara_ctl_item *axis_switch_ctl;
+    struct chara_ctl_item *time_switch_ctl;
 };
 
 struct pvr_colormap_bar_ctl_c{

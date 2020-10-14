@@ -18,6 +18,8 @@ struct fline_menu_val{
 	int fline_step;
 	int iformat_fline_file;
 	
+    int iflag_draw_time;
+
 	int iflag_draw_fline;
 	
 	int if_draw_fline;

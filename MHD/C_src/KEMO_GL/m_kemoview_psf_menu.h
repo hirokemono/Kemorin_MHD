@@ -43,7 +43,9 @@ struct psf_menu_val{
 	int psf_step;
 	int iflag_psf_file;
 	
-	int polygon_mode_psf;
+    int iflag_draw_time;
+
+    int polygon_mode_psf;
     int ivect_tangential;
 	
 	int draw_psf_solid;

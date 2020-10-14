@@ -206,11 +206,12 @@ static void copy_color_opacity_to_ctl(struct colormap_params *cmap_s,
 	return;
 }
 
-static void make_colorbar_for_ctl(const int iflag_draw_axis, const int draw_psf_cbar,
-                                  struct colormap_params *cmap_s, 
+static void make_colorbar_for_ctl(const int iflag_draw_time, const int iflag_draw_axis,
+                                  const int draw_psf_cbar, struct colormap_params *cmap_s, 
 			struct pvr_colorbar_ctl_c *cbar_c){
     double d_cmap[2], v_cmap[2];
     
+    set_boolean_by_chara_ctl_item(iflag_draw_time, cbar_c->time_switch_ctl);
     set_boolean_by_chara_ctl_item(iflag_draw_axis, cbar_c->axis_switch_ctl);
 	set_boolean_by_chara_ctl_item(draw_psf_cbar, cbar_c->colorbar_switch_ctl);
 	set_boolean_by_chara_ctl_item(1, cbar_c->colorbar_scale_ctl);
@@ -289,14 +290,15 @@ static void copy_color_opacity_from_ctl(struct colormap_ctl_c *cmap_c,
 }
 
 
-void check_colormap_control_file_s(const int iflag_draw_axis, const int draw_psf_cbar, 
-                                   struct colormap_params *cmap_s){
+void check_colormap_control_file_s(const int iflag_draw_time, const int iflag_draw_axis,
+                                   const int draw_psf_cbar, struct colormap_params *cmap_s){
 	cmap_cbar_c0 = init_colormap_colorbar_ctl_c();
 	
 	cmap_cbar_c0->cmap_c->iflag_use = 1;
 	copy_color_opacity_to_ctl(cmap_s, cmap_cbar_c0->cmap_c);
 	cmap_cbar_c0->cbar_c->iflag_use = 1;
-	make_colorbar_for_ctl(iflag_draw_axis, draw_psf_cbar, cmap_s, cmap_cbar_c0->cbar_c);
+	make_colorbar_for_ctl(iflag_draw_time, iflag_draw_axis, draw_psf_cbar,
+                          cmap_s, cmap_cbar_c0->cbar_c);
 	
 	write_colormap_colorbar_ctl_c(stdout, 0, 
 				"Colormap data", cmap_cbar_c0);
@@ -305,14 +307,16 @@ void check_colormap_control_file_s(const int iflag_draw_axis, const int draw_psf
     return;
 }
 
-void write_colormap_control_file_s(const char *file_name, const int iflag_draw_axis, 
+void write_colormap_control_file_s(const char *file_name, 
+                                   const int iflag_draw_time, const int iflag_draw_axis, 
                                    const int draw_psf_cbar, struct colormap_params *cmap_s){
 	cmap_cbar_c0 = init_colormap_colorbar_ctl_c();
 	
 	cmap_cbar_c0->cmap_c->iflag_use = 1;
 	copy_color_opacity_to_ctl(cmap_s, cmap_cbar_c0->cmap_c);
 	cmap_cbar_c0->cbar_c->iflag_use = 1;
-	make_colorbar_for_ctl(iflag_draw_axis, draw_psf_cbar, cmap_s, cmap_cbar_c0->cbar_c);
+	make_colorbar_for_ctl(iflag_draw_time, iflag_draw_axis, draw_psf_cbar,
+                          cmap_s, cmap_cbar_c0->cbar_c);
 	
 	write_colormap_file_c(file_name, cmap_cbar_c0);
 	dealloc_colormap_colorbar_ctl_c(cmap_cbar_c0);
