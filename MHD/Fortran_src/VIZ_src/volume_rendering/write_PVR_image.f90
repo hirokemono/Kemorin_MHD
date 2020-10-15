@@ -115,7 +115,7 @@
         if(cbar_param%iflag_draw_time) then
           call set_pvr_timelabel                                        &
      &       (time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,           &
-     &        color_param, cbar_param, pvr_rgb%rgba_real_gl)
+     &        cbar_param, pvr_rgb%rgba_real_gl)
         end if
 !
         if(cbar_param%iflag_pvr_axis) then

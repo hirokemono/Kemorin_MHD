@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine lic_rendering_with_fixed_view                        &
-!!     &         (istep_pvr, node, ele, surf, lic_p, pvr_param,         &
-!!     &          pvr_proj, pvr_rgb)
+!!     &         (istep_pvr, time, node, ele, surf,                     &
+!!     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine rendering_lic_at_once                                &
-!!     &         (istep_pvr,  node, ele, surf, group, lic_p, pvr_param, &
-!!     &          pvr_proj, pvr_rgb)
+!!     &         (istep_pvr, time, node, ele, surf, group,              &
+!!     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -75,7 +75,8 @@
      &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &
+      call rendering_image_4_lic                                        &
+     &   (istep_pvr, time, node, ele, surf, lic_p,                      &
      &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
      &    pvr_proj%stencil, pvr_rgb)
@@ -117,7 +118,8 @@
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic(istep_pvr, node, ele, surf, lic_p,     &
+      call rendering_image_4_lic                                        &
+     &   (istep_pvr, time, node, ele, surf, lic_p,                      &
      &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
      &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
      &    pvr_proj%stencil, pvr_rgb)

@@ -240,11 +240,11 @@
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_rendering_w_rotation                            &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
      &        pvr_param, pvr_proj, pvr_rgb(1))
         else
           call rendering_with_rotation                                  &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
      &        pvr_param, pvr_proj(1), pvr_rgb(1))
           call rendering_with_rotation                                  &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &

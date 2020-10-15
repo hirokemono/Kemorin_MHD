@@ -164,19 +164,19 @@
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_lic_rendering_w_rot                             &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
      &        lic_fld%lic_param, pvr_param, pvr_proj, pvr_rgb(1))
         else
           call lic_rendering_with_rotation                              &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
      &        lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
           call lic_rendering_with_rotation                              &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,         &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
      &        lic_fld%lic_param, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
       else
         call lic_rendering_with_rotation                                &
-     &     (istep_pvr, mesh%node, mesh%ele, mesh%surf, group,           &
+     &     (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,     &
      &      lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
       end if
 !
