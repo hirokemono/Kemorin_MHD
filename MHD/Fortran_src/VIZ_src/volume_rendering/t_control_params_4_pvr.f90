@@ -194,7 +194,7 @@
 !>  Structure for PVR colorbar parameters
       type pvr_colorbar_parameter
 !>    Draw flag for color bar
-        integer(kind = kint) :: iflag_pvr_colorbar =  0
+        logical :: iflag_pvr_colorbar =  0
 !>    Draw flag for color bar numbers
         integer(kind = kint) :: iflag_pvr_cbar_nums = 0
 !>    Draw flag for zero line in color bar
@@ -209,9 +209,9 @@
         real(kind = kreal) :: cbar_range(2) = (/zero,one/)
 !
 !>    Draw flag for axis label
-        integer(kind = kint) :: iflag_pvr_axis =   0
+        logical :: iflag_pvr_axis = .FALSE.
 !>    Draw flag for time label
-        integer(kind = kint) :: iflag_draw_time =  0
+        logical :: iflag_draw_time = .FALSE.
       end type pvr_colorbar_parameter
 !
 !  ---------------------------------------------------------------------

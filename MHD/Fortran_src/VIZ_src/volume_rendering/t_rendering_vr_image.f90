@@ -9,12 +9,12 @@
 !!@verbatim
 !!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
 !!     &          pvr_param, pvr_rgb, pvr_proj)
-!!      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,&
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine rendering_with_fixed_view(istep_pvr, time,           &
+!!     &          node, ele, surf, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
-!!      subroutine rendering_at_once(istep_pvr, node, ele, surf, group, &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine rendering_at_once(istep_pvr, time,                   &
+!!     &          node, ele, surf, group, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -125,12 +125,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view(istep_pvr, node, ele, surf,  &
-     &          pvr_param, pvr_proj, pvr_rgb)
+      subroutine rendering_with_fixed_view(istep_pvr, time,             &
+     &          node, ele, surf, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -145,7 +146,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image                                              &
-     &   (istep_pvr, node, ele, surf, pvr_param%color,                  &
+     &   (istep_pvr, time, node, ele, surf, pvr_param%color,            &
      &    pvr_param%colorbar, pvr_param%field, pvr_param%view,          &
      &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
      &    pvr_rgb)
@@ -170,14 +171,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(istep_pvr, node, ele, surf, group,   &
-     &          pvr_param, pvr_proj, pvr_rgb)
+      subroutine rendering_at_once(istep_pvr, time,                     &
+     &          node, ele, surf, group, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
       use t_pvr_stencil_buffer
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -201,7 +203,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image                                              &
-     &   (istep_pvr, node, ele, surf, pvr_param%color,                  &
+     &   (istep_pvr, time, node, ele, surf, pvr_param%color,            &
      &    pvr_param%colorbar, pvr_param%field, pvr_param%view,          &
      &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
      &    pvr_rgb)

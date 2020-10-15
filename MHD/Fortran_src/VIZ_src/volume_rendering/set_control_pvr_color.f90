@@ -261,36 +261,31 @@
       character(len = kchara) :: tmpchara
 !
 !    set axis label setting
-      cbar_param%iflag_pvr_axis = 0
+      cbar_param%iflag_pvr_axis = .FALSE.
       if( cbar_ctl%axis_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%axis_switch_ctl%charavalue
-        if   (cmp_no_case(tmpchara, 'on')) then
-          cbar_param%iflag_pvr_axis = 1
-        end if
+        cbar_param%iflag_pvr_axis = cmp_no_case(tmpchara, 'on')
       end if
 !
 !    set time label setting
-      cbar_param%iflag_draw_time = 0
+      cbar_param%iflag_draw_time = .FALSE.
       if( cbar_ctl%time_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%time_switch_ctl%charavalue
-        if   (cmp_no_case(tmpchara, 'on')) then
-          cbar_param%iflag_draw_time = 1
-        end if
+        cbar_param%iflag_draw_time = cmp_no_case(tmpchara, 'on')
       end if
 !
 !    set colorbar setting
 !
-      cbar_param%iflag_pvr_colorbar = 0
+      cbar_param%iflag_pvr_colorbar = .FALSE.
       if( cbar_ctl%colorbar_switch_ctl%iflag .gt. 0) then
         tmpchara = cbar_ctl%colorbar_switch_ctl%charavalue
-        if   (cmp_no_case(tmpchara, 'on')                               &
+        cbar_param%iflag_pvr_colorbar                                   &
+     &       = cmp_no_case(tmpchara, 'on')                              &
      &   .or. cmp_no_case(tmpchara, 'data')                             &
-     &   .or. cmp_no_case(tmpchara, 'equi_data')) then
-          cbar_param%iflag_pvr_colorbar = 1
-        end if
+     &   .or. cmp_no_case(tmpchara, 'equi_data')
       end if
 !
-      if (cbar_param%iflag_pvr_colorbar .gt. 0) then
+      if(cbar_param%iflag_pvr_colorbar) then
         if( cbar_ctl%colorbar_scale_ctl%iflag .gt. 0) then
           tmpchara = cbar_ctl%colorbar_scale_ctl%charavalue
           if  (cmp_no_case(tmpchara, 'on')) then

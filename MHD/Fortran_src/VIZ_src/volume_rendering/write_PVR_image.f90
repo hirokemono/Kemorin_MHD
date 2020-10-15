@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine rendering_image                                      &
-!!     &         (istep_pvr, node, ele, surf, color_param,              &
+!!     &         (istep_pvr, time, node, ele, surf, color_param,        &
 !!     &          cbar_param, field_pvr, view_param, pvr_screen,        &
 !!     &          pvr_start, rgba_real_gl, pvr_rgb)
 !!        type(node_data), intent(in) :: node
@@ -47,7 +47,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &         (istep_pvr, node, ele, surf, color_param,                &
+     &         (istep_pvr, time, node, ele, surf, color_param,          &
      &          cbar_param, field_pvr, view_param, pvr_screen,          &
      &          pvr_start, pvr_stencil, pvr_rgb)
 !
@@ -66,6 +66,7 @@
 !      use composit_by_segmentad_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -105,11 +106,23 @@
 !
       if(my_rank .eq. pvr_rgb%irank_image_file) then
         if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+3)
-        call set_pvr_colorbar(pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels, &
-     &      color_param, cbar_param, pvr_rgb%rgba_real_gl)
-        call set_pvr_axislabel(cbar_param%iflag_pvr_axis,               &
-     &      pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                   &
-     &      pvr_screen, pvr_rgb%rgba_real_gl)
+        if(cbar_param%iflag_pvr_colorbar) then
+          call set_pvr_colorbar                                         &
+     &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
+     &        color_param, cbar_param, pvr_rgb%rgba_real_gl)
+        end if
+!
+        if(cbar_param%iflag_draw_time) then
+          call set_pvr_timelabel                                        &
+     &       (time, pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,           &
+     &        color_param, cbar_param, pvr_rgb%rgba_real_gl)
+        end if
+!
+        if(cbar_param%iflag_pvr_axis) then
+          call set_pvr_axislabel                                        &
+     &       (pvr_rgb%num_pixel_xy, pvr_rgb%num_pixels,                 &
+     &        pvr_screen, pvr_rgb%rgba_real_gl)
+        end if
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+3)
       end if
 !

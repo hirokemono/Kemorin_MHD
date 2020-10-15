@@ -80,8 +80,8 @@
 !
 !  Rendering
         istep_pvr = istep_file_w_fix_dt(i_step, t_VIZ3%viz_step%PVR_t)
-        call PVR_visualize(istep_pvr, viz3%geofem, viz3%jacobians,      &
-     &      viz3%nod_fld, pvr_v)
+        call PVR_visualize(istep_pvr, t_VIZ3%time_d%time,               &
+     &      viz3%geofem, viz3%jacobians, viz3%nod_fld, pvr_v)
       end do
 !
       end subroutine analyze_pvr

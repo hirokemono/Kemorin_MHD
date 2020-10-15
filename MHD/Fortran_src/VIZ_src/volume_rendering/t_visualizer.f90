@@ -124,13 +124,13 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
-      call PVR_visualize                                                &
-     &   (viz_step%istep_pvr, fem, jacs, nod_fld, vizs%pvr)
+      call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
+     &                   fem, jacs, nod_fld, vizs%pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize                                                &
-     &   (viz_step%istep_lic, fem, jacs, nod_fld, vizs%lic)
+      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
+     &                   fem, jacs, nod_fld, vizs%lic)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)

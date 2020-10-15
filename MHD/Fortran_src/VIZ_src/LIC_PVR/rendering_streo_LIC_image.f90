@@ -11,8 +11,8 @@
 !!     &         (istep_pvr, node, ele, surf, group, lic_p,             &
 !!     &          pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
-!!     &         (istep_pvr, node, ele, surf, group, lic_p,             &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &         (istep_pvr, time, node, ele, surf, group,              &
+!!     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -54,8 +54,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_rotation                            &
-     &         (istep_pvr, node, ele, surf, group, lic_p,               &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &         (istep_pvr, time, node, ele, surf, group,                &
+     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -64,6 +64,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -100,8 +101,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
-     &         (istep_pvr, node, ele, surf, group, lic_p,               &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &         (istep_pvr, time, node, ele, surf, group,                &
+     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -110,6 +111,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

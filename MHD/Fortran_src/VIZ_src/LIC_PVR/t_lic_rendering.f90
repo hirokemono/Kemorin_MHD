@@ -11,7 +11,8 @@
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
 !!      subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
-!!      subroutine LIC_visualize(istep_lic, fem, jacs, nod_fld, lic)
+!!      subroutine LIC_visualize                                        &
+!!     &         (istep_lic, time, fem, jacs, nod_fld, lic)
 !!      subroutine dealloc_LIC_data(lic)
 !!        type(mesh_data), intent(in) :: fem
 !!        type(node_data), intent(in) :: node
@@ -215,7 +216,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine LIC_visualize(istep_lic, fem, jacs, nod_fld, lic)
+      subroutine LIC_visualize                                          &
+     &         (istep_lic, time, fem, jacs, nod_fld, lic)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -223,6 +225,8 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_lic
+      real(kind = kreal), intent(in) :: time
+!
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
@@ -239,7 +243,7 @@
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering                                       &
-     &     (istep_lic, fem%mesh, jacs, nod_fld,                         &
+     &     (istep_lic, time, fem%mesh, jacs, nod_fld,                   &
      &      lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),               &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
@@ -265,7 +269,7 @@
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
           call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, fem%mesh, fem%group, jacs, nod_fld,            &
+     &       (istep_lic, time, fem%mesh, fem%group, jacs, nod_fld,      &
      &        lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),             &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if

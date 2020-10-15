@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine axis_direction_in_screen                             &
 !!     &         (modelview_mat, projection_mat, pvr_screen)
-!!      subroutine set_pvr_axislabel(iflag_axis, num_pixel, n_pvr_pixel,&
-!!     &          pvr_screen, rgba_gl)
+!!      subroutine set_pvr_axislabel                                    &
+!!     &         (num_pixel, n_pvr_pixel, pvr_screen, rgba_gl)
 !!@endverbatim
 !
       module pvr_axis_label
@@ -56,15 +56,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_axislabel(iflag_axis, num_pixel, n_pvr_pixel,  &
-     &          pvr_screen, rgba_gl)
+      subroutine set_pvr_axislabel                                      &
+     &         (num_pixel, n_pvr_pixel, pvr_screen, rgba_gl)
 !
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
       use set_position_pvr_screen
       use draw_pvr_colorbar_nums
 !
-      integer(kind = kint), intent(in) :: iflag_axis
       integer(kind = kint), intent(in) :: num_pixel
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
@@ -76,8 +75,6 @@
       real(kind = kreal) :: rlen, rhgt
       real(kind = kreal) :: r, rmax
 !
-!
-      if(iflag_axis .le. 0) return
 !
       rmax = zero
       do m = 1, 3

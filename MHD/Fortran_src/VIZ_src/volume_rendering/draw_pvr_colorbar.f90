@@ -1,8 +1,20 @@
+!>@file   draw_pvr_colorbar.f90
+!!@brief  module draw_pvr_colorbar
+!!
+!!@author H. Matsui
+!!@date Programmed in 2008
 !
-!      module  draw_pvr_colorbar
 !
+!>@brief  Draw color bar for PVR
+!!
+!!@verbatim
+!!      subroutine set_pvr_timelabel(time, num_pixel, n_pvr_pixel,      &
+!!     &                             cbar_param, rgba_gl)
 !!      subroutine set_pvr_colorbar(num_pixel, n_pvr_pixel,             &
 !!     &         color_param, cbar_param, rgba_gl)
+!!       type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
+!!@endverbatim
 !
       module  draw_pvr_colorbar
 !
@@ -24,6 +36,36 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_pvr_timelabel(time, num_pixel, n_pvr_pixel,        &
+     &                             cbar_param, rgba_gl)
+!
+      use t_control_params_4_pvr
+      use draw_pvr_colorbar_nums
+!
+      integer(kind = kint), intent(in) :: num_pixel
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+      real(kind = kreal), intent(in) :: time
+!
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
+!
+      real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
+!
+!
+      integer(kind = kint):: isleeve_bar
+!
+!
+      isleeve_bar = BAR_WIDTH + 6 + 8 * 9 * cbar_param%iscale_font
+      isleeve_bar = isleeve_bar + ithree                                &
+     &                  - mod((isleeve_bar-ione),ifour) 
+!
+      call gen_time_label(cbar_param%iscale_font, time,                 &
+     &    n_pvr_pixel, isleeve_bar, num_pixel, rgba_gl)
+!
+      end subroutine set_pvr_timelabel
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine set_pvr_colorbar(num_pixel, n_pvr_pixel,               &
      &         color_param, cbar_param, rgba_gl)
 !
@@ -39,34 +81,30 @@
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !
 !
-      if(cbar_param%iflag_pvr_colorbar .eq. 1) then
-!        if(cbar_param%cbar_range(2) .le. cbar_param%cbar_range(1)) then
-!          cbar_param%cbar_range(1:2) = outline%d_minmax_pvr(1:2)
-!        end if
+!      if(cbar_param%cbar_range(2) .le. cbar_param%cbar_range(1)) then
+!        cbar_param%cbar_range(1:2) = outline%d_minmax_pvr(1:2)
+!      end if
 !
-        call s_draw_pvr_colorbar                                        &
-     &     (cbar_param%iflag_opacity, cbar_param%iflag_pvr_colorbar,    &
-     &      cbar_param%iflag_pvr_cbar_nums,                             &
-     &      cbar_param%iflag_pvr_zero_mark,                             &
-     &      cbar_param%iscale_font, cbar_param%ntick_pvr_colorbar,      &
-     &      cbar_param%cbar_range(1), n_pvr_pixel,                      &
-     &      num_pixel, color_param, rgba_gl)
-      end if
+      call s_draw_pvr_colorbar(cbar_param%iflag_opacity,                &
+     &    cbar_param%iflag_pvr_cbar_nums,                               &
+     &    cbar_param%iflag_pvr_zero_mark,                               &
+     &    cbar_param%iscale_font, cbar_param%ntick_pvr_colorbar,        &
+     &    cbar_param%cbar_range(1), n_pvr_pixel,                        &
+     &    num_pixel, color_param, rgba_gl)
 !
       end subroutine set_pvr_colorbar
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_draw_pvr_colorbar(iflag_opacity, color_bar_style,    &
-     &         iflag_cbar_numeric, iflag_zero_mark, iscale,             &
-     &         num_of_scale, c_minmax, npix_img,                        &
+      subroutine s_draw_pvr_colorbar                                    &
+     &         (iflag_opacity, iflag_cbar_numeric, iflag_zero_mark,     &
+     &         iscale, num_of_scale, c_minmax, npix_img,                &
      &         ntot_pix, color_param, dimage)
 !
       use t_control_params_4_pvr
       use draw_pvr_colorbar_nums
 !
       integer(kind = kint), intent(in) :: iflag_opacity
-      integer(kind = kint), intent(in) :: color_bar_style
       integer(kind = kint), intent(in) :: iflag_cbar_numeric
       integer(kind = kint), intent(in) :: iflag_zero_mark
       real(kind = kreal), intent(in) :: c_minmax(2)
@@ -83,22 +121,20 @@
       integer(kind = kint):: isleeve_bar
 !
 !
-        isleeve_bar = BAR_WIDTH + 6 + 8 * 9 * iscale
-        isleeve_bar = isleeve_bar + ithree                              &
+      isleeve_bar = BAR_WIDTH + 6 + 8 * 9 * iscale
+      isleeve_bar = isleeve_bar + ithree                                &
      &                  - mod((isleeve_bar-ione),ifour) 
 !
-      if (color_bar_style .gt. 0) then
-        call gen_colormark(iscale, c_minmax, npix_img,                  &
-     &      isleeve_bar, ntot_pix, iflag_opacity, dimage, color_param)
+      call gen_colormark(iscale, c_minmax, npix_img,                    &
+     &    isleeve_bar, ntot_pix, iflag_opacity, dimage, color_param)
 !
-        if(iflag_cbar_numeric .gt. 0) then
-          call gen_cbar_label(iscale, num_of_scale, c_minmax,           &
-     &       npix_img, isleeve_bar, ntot_pix, dimage)
+      if(iflag_cbar_numeric .gt. 0) then
+        call gen_cbar_label(iscale, num_of_scale, c_minmax,             &
+     &     npix_img, isleeve_bar, ntot_pix, dimage)
 !
-          if(iflag_zero_mark .gt. 0) then
-            call gen_zero_label(iscale, c_minmax, npix_img,             &
-     &          isleeve_bar, ntot_pix, dimage)
-          end if
+        if(iflag_zero_mark .gt. 0) then
+          call gen_zero_label(iscale, c_minmax, npix_img,               &
+     &        isleeve_bar, ntot_pix, dimage)
         end if
       end if
 !

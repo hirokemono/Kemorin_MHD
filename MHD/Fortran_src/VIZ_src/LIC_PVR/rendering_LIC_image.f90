@@ -54,12 +54,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine lic_rendering_with_fixed_view                          &
-     &         (istep_pvr, node, ele, surf, lic_p, pvr_param,           &
-     &          pvr_proj, pvr_rgb)
+     &         (istep_pvr, time, node, ele, surf,                       &
+     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -85,14 +86,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_lic_at_once                                  &
-     &         (istep_pvr, node, ele, surf, group, lic_p, pvr_param,    &
-     &          pvr_proj, pvr_rgb)
+     &         (istep_pvr, time, node, ele, surf, group,                &
+     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_LIC_image
       use t_pvr_stencil_buffer
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf

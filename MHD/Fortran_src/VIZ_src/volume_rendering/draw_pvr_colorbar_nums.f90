@@ -15,7 +15,9 @@
 !!      subroutine gen_zero_label(iscale, color_bar_style,              &
 !!     &      color_mapping_style, interval_point, interval_mapping_num,&
 !!     &      d_minmax, npix_img, isleeve_bar, ntot_pix, dimage)
-!!      subroutine set_one_label(char1, iscale, ist_px, ist_py,        &
+!!      subroutine gen_time_label(iscale, time, npix_img,               &
+!!     &          isleeve_bar, ntot_pix, dimage)
+!!      subroutine set_one_label(char1, iscale, ist_px, ist_py,         &
 !!     &          npix_img, ntot_pix, dimage)
 !!@endverbatim
 !
@@ -118,6 +120,41 @@
       end do
 !
       end subroutine gen_zero_label
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine gen_time_label(iscale, time, npix_img,                 &
+     &          isleeve_bar, ntot_pix, dimage)
+!
+      real(kind = kreal), intent(in) :: time
+      integer(kind = kint), intent(in) :: iscale, isleeve_bar
+      integer(kind = kint), intent(in) :: npix_img(2)
+      integer(kind = kint), intent(in) :: ntot_pix
+      real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
+!
+      integer(kind = kint) :: i, k
+      integer(kind = kint) :: ist, jst, ied, jed
+      integer(kind = kint) :: start_px(2)
+      character(len=9) :: numeric
+!
+      ist = npix_img(1) - isleeve_bar
+      jst = (npix_img(2) - itwo*iten) / iten + iten
+      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
+      ied = ist + BAR_WIDTH
+!
+      start_px(1) = ist + BAR_WIDTH + ithree
+      start_px(2) = jed
+!
+      write(numeric,'(1pe9.2)') time
+      call set_numeric_labels(numeric, iscale, start_px,                &
+     &         npix_img, isleeve_bar, ntot_pix, dimage)
+!
+      do i = ist, ied + 4
+        k = (start_px(2) * npix_img(1)) + i + 1
+        dimage(1:4,k) = one
+      end do
+!
+      end subroutine gen_time_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

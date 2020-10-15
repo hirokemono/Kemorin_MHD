@@ -7,12 +7,12 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine s_each_LIC_rendering(istep_pvr, mesh, jacs, nod_fld, &
+!!      subroutine s_each_LIC_rendering                                 &
+!!     &         (istep_pvr, time, mesh, jacs, nod_fld,                 &
 !!     &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine s_each_LIC_rendering_w_rot                           &
-!!     &         (istep_pvr, mesh, group, jacs, nod_fld,                &
+!!     &         (istep_pvr, time, mesh, group, jacs, nod_fld,          &
 !!     &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
-!
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(node_data), intent(in) :: node
@@ -62,7 +62,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_each_LIC_rendering(istep_pvr, mesh, jacs, nod_fld,   &
+      subroutine s_each_LIC_rendering                                   &
+     &         (istep_pvr, time, mesh, jacs, nod_fld,                   &
      &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -71,6 +72,7 @@
       use rendering_streo_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
@@ -96,30 +98,30 @@
 !
 !   Left eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
      &        lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
           call store_left_eye_image(pvr_rgb(1))
 !
 !   Right eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
      &        lic_fld%lic_param, pvr_param, pvr_proj(2), pvr_rgb(1))
           call add_left_eye_image(pvr_rgb(1))
         else
 !
 !   Left eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
      &        lic_fld%lic_param, pvr_param, pvr_proj(1), pvr_rgb(1))
 !
 !   Right eye
           call lic_rendering_with_fixed_view                            &
-     &       (istep_pvr, mesh%node, mesh%ele, mesh%surf,                &
+     &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
      &        lic_fld%lic_param, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
       else
         call lic_rendering_with_fixed_view                              &
-     &     (istep_pvr, mesh%node, mesh%ele, mesh%surf,                  &
+     &     (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,            &
      &      lic_fld%lic_param, pvr_param,  pvr_proj(1), pvr_rgb(1))
       end if
 !
@@ -128,7 +130,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_each_LIC_rendering_w_rot                             &
-     &         (istep_pvr, mesh, group, jacs, nod_fld,                  &
+     &         (istep_pvr, time, mesh, group, jacs, nod_fld,            &
      &          lic_fld, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -137,6 +139,7 @@
       use rendering_streo_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group

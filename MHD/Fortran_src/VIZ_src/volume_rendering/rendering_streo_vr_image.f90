@@ -11,7 +11,7 @@
 !!     &         (istep_pvr, node, ele, surf, group,                    &
 !!     &          pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine anaglyph_rendering_w_rotation                        &
-!!     &         (istep_pvr,  node, ele, surf, group,                   &
+!!     &         (istep_pvr, time, node, ele, surf, group,              &
 !!     &          pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -52,7 +52,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_with_rotation                                &
-     &         (istep_pvr, node, ele, surf, group,                      &
+     &         (istep_pvr, time, node, ele, surf, group,                &
      &          pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
@@ -60,6 +60,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -94,7 +95,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine anaglyph_rendering_w_rotation                          &
-     &         (istep_pvr, node, ele, surf, group,                      &
+     &         (istep_pvr, time, node, ele, surf, group,                &
      &          pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
@@ -102,6 +103,7 @@
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      real(kind = kreal), intent(in) :: time
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
