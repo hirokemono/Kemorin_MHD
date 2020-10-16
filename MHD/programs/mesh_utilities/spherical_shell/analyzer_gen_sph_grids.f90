@@ -34,12 +34,12 @@
 !
       implicit none
 !
-      character (len = kchara)                                          &
+      character (len = kchara), private, parameter                      &
      &         :: control_file_name = 'control_sph_shell'
 !
 !
 !>      Structure for file settings
-      type(sph_mesh_generation_ctl), save :: SPH_MAKE_ctl
+      type(sph_mesh_generation_ctl), save, private :: SPH_MAKE_ctl
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save, private :: sph_const
@@ -57,9 +57,6 @@
       type(mesh_data), save, private :: geofem
 !
       type(parallel_make_vierwer_mesh), save, private :: para_v1
-!
-      private :: control_file_name
-      private :: sph_const, SPH_MAKE_ctl
 !
 ! ----------------------------------------------------------------------
 !
