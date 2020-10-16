@@ -91,15 +91,9 @@
      &    gen_sph%s3d_ranks, stbl, mesh%nod_comm)
 !
 ! Ordering to connect rtp data
-      if(sph_rtp%istep_rtp(3) .eq. 1) then
-        call s_ordering_sph_mesh_for_rtp(sph_rtp%nidx_rtp, ip_r, ip_t,  &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      stbl, mesh%node, mesh%ele, group%nod_grp, mesh%nod_comm)
-      else
-        call s_ordering_sph_mesh_for_rtp(sph_rtp%nidx_rtp, ip_r, ip_t,  &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      stbl, mesh%node, mesh%ele, group%nod_grp, mesh%nod_comm)
-      end if
+      call ordering_for_sph_mesh(ip_r, ip_t,                            &
+     &    gen_sph%stk_lc1d, gen_sph%sph_gl1d, stbl, sph_rtp,            &
+     &    mesh%node, mesh%ele, group%nod_grp, mesh%nod_comm)
 !
 ! Convert spherical coordinate to certesian
       call position_2_xyz(mesh%node%numnod,                             &
