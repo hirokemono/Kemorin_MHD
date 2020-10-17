@@ -112,7 +112,7 @@
 !
       rhgt = zero_rgb * dble(jed-jst) + dble(jst)
       start_px(1) = ist + BAR_WIDTH + ithree
-      start_px(2) = int(rhgt, KIND(rhgt))
+      start_px(2) = int(rhgt, KIND(ntot_pix))
 !
       write(numeric,'(1pe9.2)') zero
       call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
@@ -174,7 +174,7 @@
       do m = 1, length
         write(char1,'(a1)') numeric(m)
         call set_one_label(char1, iscale, ist_px, ist_py,               &
-     &      npix_img, ntot_pix, one, dimage)
+     &      npix_img, ntot_pix, dimage)
         ist_px = ist_px + 10 * iscale
       end do
 !
