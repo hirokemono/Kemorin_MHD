@@ -34,6 +34,8 @@
       integer(kind = kint), parameter, private :: NUM_LENGTH = inine
       integer(kind = kint), parameter, private :: NUM_TLABEL = 14
 !
+      private :: set_numeric_labels
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -72,8 +74,8 @@
      &                    + int(rhgt, KIND(start_px(1)))
 !
         write(numeric,'(1pe9.2)') value
-        call  set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px, &
-     &        npix_img, isleeve_bar, ntot_pix, dimage)
+        call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,  &
+     &      npix_img, ntot_pix, dimage)
 !
         do i = ist, ied + 4
           j = (start_px(2) * npix_img(1)) + i + 1
@@ -114,7 +116,7 @@
 !
       write(numeric,'(1pe9.2)') zero
       call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
-     &         npix_img, isleeve_bar, ntot_pix, dimage)
+     &                        npix_img, ntot_pix, dimage)
 !
       do i = ist, ied + 4
         k = (start_px(2) * npix_img(1)) + i + 1
@@ -143,7 +145,7 @@
 !
       write(t_label,'(a3,1pe11.4)') 't =', time
       call set_numeric_labels(NUM_TLABEL, t_label, iscale, start_px,    &
-     &         npix_img, isleeve_bar, ntot_pix, dimage)
+     &                        npix_img, ntot_pix, dimage)
 !
       end subroutine gen_time_label
 !
@@ -151,7 +153,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_numeric_labels(length, numeric, iscale, start_px,  &
-     &          npix_img, isleeve_bar, ntot_pix, dimage)
+     &          npix_img, ntot_pix, dimage)
 !
       use pvr_font_texture
 !
@@ -159,28 +161,21 @@
       character(len=1), intent(in) :: numeric(length)
       integer(kind = kint), intent(in) :: iscale
       integer(kind = kint), intent(in) :: start_px(2)
-      integer(kind = kint), intent(in) :: ntot_pix, isleeve_bar
+      integer(kind = kint), intent(in) :: ntot_pix
       integer(kind = kint), intent(in) :: npix_img(2)
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
-      integer(kind = kint) :: i, j, k, m, ic, jc, ist_px, ist_py
-      integer(kind = kint) :: ist, jst, ied, jed
-      integer(kind = kint) :: i_font(8,12)
+      integer(kind = kint) :: m, ist_px, ist_py
       character(len=1) :: char1
-!
-      ist = npix_img(1) - isleeve_bar
-      jst = (npix_img(2) - itwo*iten) / iten + iten
-      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
-      ied = ist + BAR_WIDTH
 !
 !
       ist_px = start_px(1)
       ist_py = start_px(2)
       do m = 1, length
         write(char1,'(a1)') numeric(m)
-        call set_one_label(char1, iscale, ist_px, ist_py,          &
-     &      npix_img, ntot_pix, dimage)
-        ist_px = ist_px + 8 * iscale
+        call set_one_label(char1, iscale, ist_px, ist_py,               &
+     &      npix_img, ntot_pix, one, dimage)
+        ist_px = ist_px + 10 * iscale
       end do
 !
       end subroutine set_numeric_labels
@@ -198,21 +193,50 @@
       integer(kind = kint), intent(in) :: iscale
       integer(kind = kint), intent(in) :: ntot_pix
       integer(kind = kint), intent(in) :: npix_img(2)
+!
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
       integer(kind = kint) :: i, j, k, ic, jc
       integer(kind = kint) :: i_font(8,12)
+      real(kind = kreal) :: r_font(10,14)
 !
 !
       call gen_font8_12(char1, i_font)
       do i = 1, 8*iscale
         do j = 1, 12*iscale
+          r_font(i,  j  ) = 0.2 * real(i_font(i,j))
+          r_font(i+2,j  ) = 0.2 * real(i_font(i,j))
+          r_font(i,  j+2) = 0.2 * real(i_font(i,j))
+!          r_font(i+2,j+2) = 0.2 * real(i_font(i,j))
+        end do
+      end do
+      do i = 1, 8*iscale
+        do j = 1, 12*iscale
+          r_font(i,  j+1) = 0.4 * real(i_font(i,j))
+          r_font(i+2,j+1) = 0.4 * real(i_font(i,j))
+          r_font(i+1,j  ) = 0.4 * real(i_font(i,j))
+          r_font(i+1,j+2) = 0.4 * real(i_font(i,j))
+        end do
+      end do
+      do i = 1, 8*iscale
+        do j = 1, 12*iscale
+          r_font(i+2,j+2) = 0.6 * real(i_font(i,j))
+        end do
+      end do
+      do i = 1, 8*iscale
+        do j = 1, 12*iscale
+          r_font(i+1,j+1) = 1.0 * real(i_font(i,j))
+        end do
+      end do
+!
+      do i = 1, 10*iscale
+        do j = 1, 14*iscale
           k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
           ic =  (i-1) / iscale + 1
           jc = 12 - (j-1) / iscale
-          dimage(1:3,k) = dimage(1:3,k) + i_font(ic,jc)               &
+          dimage(1:3,k) = dimage(1:3,k) + r_font(ic,jc)                 &
      &                     * (one - two*dimage(1:3,k))
-          dimage(4,k) = one
+          dimage(4,k) = r_font(ic,jc)
         end do
       end do
 !
