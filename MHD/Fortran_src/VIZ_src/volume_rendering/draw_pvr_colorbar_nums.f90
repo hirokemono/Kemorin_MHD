@@ -175,7 +175,7 @@
         write(char1,'(a1)') numeric(m)
         call set_one_label(char1, iscale, ist_px, ist_py,               &
      &      npix_img, ntot_pix, dimage)
-        ist_px = ist_px + 10 * iscale
+        ist_px = ist_px + 8 * iscale
       end do
 !
       end subroutine set_numeric_labels
