@@ -31,6 +31,8 @@
       implicit none
 !
       integer(kind = kint), parameter, private :: BAR_WIDTH = iten
+      integer(kind = kint), parameter, private :: NUM_LENGTH = inine
+      integer(kind = kint), parameter, private :: NUM_TLABEL = 14
 !
 !  ---------------------------------------------------------------------
 !
@@ -53,7 +55,7 @@
       integer(kind = kint) :: i, j, k
       integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
-      character(len=9) :: numeric
+      character(len=NUM_LENGTH) :: numeric
 !
       ist = npix_img(1) - isleeve_bar
       jst = (npix_img(2) - itwo*iten) / iten + iten
@@ -61,8 +63,8 @@
       ied = ist + BAR_WIDTH
 !
       do k = 1, num_of_scale
-        value = (c_minmax(2)-c_minmax(1))                             &
-     &           * dble(k-1) / dble(num_of_scale-1) + c_minmax(1)
+        value = (c_minmax(2)-c_minmax(1))                               &
+     &         * dble(k-1) / dble(num_of_scale-1) + c_minmax(1)
 !
         rhgt = dble(jed-jst) * dble(k-1) / dble(num_of_scale-1)
         start_px(1) = ist + BAR_WIDTH + ithree
@@ -70,7 +72,7 @@
      &                    + int(rhgt, KIND(start_px(1)))
 !
         write(numeric,'(1pe9.2)') value
-        call  set_numeric_labels(numeric, iscale, start_px,             &
+        call  set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px, &
      &        npix_img, isleeve_bar, ntot_pix, dimage)
 !
         do i = ist, ied + 4
@@ -97,7 +99,7 @@
       integer(kind = kint) :: i, k
       integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
-      character(len=9) :: numeric
+      character(len=NUM_LENGTH) :: numeric
 !
       ist = npix_img(1) - isleeve_bar
       jst = (npix_img(2) - itwo*iten) / iten + iten
@@ -111,7 +113,7 @@
       start_px(2) = int(rhgt, KIND(rhgt))
 !
       write(numeric,'(1pe9.2)') zero
-      call set_numeric_labels(numeric, iscale, start_px,                &
+      call set_numeric_labels(NUM_LENGTH, numeric, iscale, start_px,    &
      &         npix_img, isleeve_bar, ntot_pix, dimage)
 !
       do i = ist, ied + 4
@@ -132,39 +134,29 @@
       integer(kind = kint), intent(in) :: ntot_pix
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
-      integer(kind = kint) :: i, k
-      integer(kind = kint) :: ist, jst, ied, jed
       integer(kind = kint) :: start_px(2)
-      character(len=9) :: numeric
+      character(len=NUM_TLABEL) :: t_label
 !
-      ist = npix_img(1) - isleeve_bar
-      jst = (npix_img(2) - itwo*iten) / iten + iten
-      jed = (npix_img(2) - itwo*iten) / iten*ifive + jst
-      ied = ist + BAR_WIDTH
 !
-      start_px(1) = ist + BAR_WIDTH + ithree
-      start_px(2) = jed
+      start_px(1) = npix_img(1) - 8 * (NUM_TLABEL+1) * iscale
+      start_px(2) = iten + 12 * iscale
 !
-      write(numeric,'(1pe9.2)') time
-      call set_numeric_labels(numeric, iscale, start_px,                &
+      write(t_label,'(a3,1pe11.4)') 't =', time
+      call set_numeric_labels(NUM_TLABEL, t_label, iscale, start_px,    &
      &         npix_img, isleeve_bar, ntot_pix, dimage)
-!
-      do i = ist, ied + 4
-        k = (start_px(2) * npix_img(1)) + i + 1
-        dimage(1:4,k) = one
-      end do
 !
       end subroutine gen_time_label
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_numeric_labels(numeric, iscale, start_px,          &
+      subroutine set_numeric_labels(length, numeric, iscale, start_px,  &
      &          npix_img, isleeve_bar, ntot_pix, dimage)
 !
       use pvr_font_texture
 !
-      character(len=9), intent(in) :: numeric
+      integer(kind = kint), intent(in) :: length
+      character(len=1), intent(in) :: numeric(length)
       integer(kind = kint), intent(in) :: iscale
       integer(kind = kint), intent(in) :: start_px(2)
       integer(kind = kint), intent(in) :: ntot_pix, isleeve_bar
@@ -184,8 +176,8 @@
 !
       ist_px = start_px(1)
       ist_py = start_px(2)
-      do m = 1, 9
-        write(char1,'(a1)') numeric(m:m)
+      do m = 1, length
+        write(char1,'(a1)') numeric(m)
         call set_one_label(char1, iscale, ist_px, ist_py,          &
      &      npix_img, ntot_pix, dimage)
         ist_px = ist_px + 8 * iscale
