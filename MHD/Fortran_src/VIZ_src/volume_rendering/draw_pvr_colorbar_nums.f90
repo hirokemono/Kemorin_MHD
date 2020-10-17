@@ -232,6 +232,7 @@
       do i = 1, 10*iscale
         do j = 1, 14*iscale
           k = ( (ist_py+j-1)*npix_img(1)+ist_px + i)
+          if(k .gt. ntot_pix) cycle
           ic =  (i-1) / iscale + 1
           jc = 12 - (j-1) / iscale
           dimage(1:3,k) = dimage(1:3,k) + r_font(ic,jc)                 &
