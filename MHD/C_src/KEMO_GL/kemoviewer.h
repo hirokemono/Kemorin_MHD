@@ -38,16 +38,18 @@
 #define VIEW_YZ        5
 #define RESET         10
 
-#define AXIS_TOGGLE          1
-#define SHADING_SWITCH       2
-#define POLYGON_SWITCH       3
-#define SET_NODE_SIZE        4
-#define SET_DISTANCE_DOMAIN  5
-#define OUTPUT_V_MATRIX      6
-#define INPUT_V_MATRIX      16
-#define COASTLINE_SWITCH     7
-#define SPHEREGRID_SWITCH    8
-#define SET_COAST_RADIUS   300
+#define AXIS_TOGGLE             1
+#define SHADING_SWITCH          2
+#define POLYGON_SWITCH          3
+#define SET_NODE_SIZE           4
+#define SET_DISTANCE_DOMAIN     5
+#define OUTPUT_V_MATRIX         6
+#define INPUT_V_MATRIX         16
+#define COASTLINE_SWITCH        7
+#define SPHEREGRID_SWITCH       8
+#define SET_COAST_RADIUS      300
+#define FILE_STEP_LABEL_SWITCH  9
+#define TIME_LABEL_SWITCH      10
 
 #define MESH_OFF          100
 #define SURFNOD_TOGGLE    1

@@ -22,6 +22,10 @@ NSData *SnapshotData;
 @synthesize EvolutionEndStep;
 @synthesize EvolutionIncrement;
 @synthesize CurrentStep;
+@synthesize timeDisplayFlag;
+@synthesize fileStepDisplayFlag;
+@synthesize timeDisplayAccess;
+@synthesize fileStepDisplayAccess;
 -(id) init
 {
 	self.FramePerSecond = 12;
@@ -527,10 +531,17 @@ NSData *SnapshotData;
 	RotationAxisID = [[rotationAxis selectedCell] tag];
 };
 
-- (IBAction)ToggleTimeLabel:(id)sender{
+- (IBAction)TimeLabelSwitchAction:(id)sender{
+    self.timeDisplayFlag = kemoview_toggle_object_properties(TIME_LABEL_SWITCH);
+    if(self.timeDisplayFlag > 0){
+        self.fileStepDisplayFlag = 0;
+        kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
+    };
     [_kemoviewer UpdateImage];
 };
-- (IBAction)ToggleFileStepLabel:(id)sender{
+
+- (IBAction)FileStepLabelSwitchAction:(id)sender{
+    self.fileStepDisplayFlag = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH);
     [_kemoviewer UpdateImage];
 };
 

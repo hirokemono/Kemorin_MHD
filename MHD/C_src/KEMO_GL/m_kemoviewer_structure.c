@@ -190,34 +190,59 @@ void kemoview_set_coastline_radius(double radius){kemo_sgl->kemo_mesh->mesh_m->r
 double kemoview_get_coastline_radius(void){return kemo_sgl->kemo_mesh->mesh_m->radius_coast;};
 
 void kemoview_set_object_property_flags(int selected, int iflag){
-	if (selected == AXIS_TOGGLE) {set_axis_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == COASTLINE_SWITCH) {set_coastline_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == SPHEREGRID_SWITCH) {set_sphere_grid_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == SHADING_SWITCH) {kemo_sgl->view_s->shading_mode = iflag;}
-    else if(selected == POLYGON_SWITCH) {set_polygon_mode(iflag, kemo_sgl->kemo_mesh->mesh_m);};
+	if (selected == AXIS_TOGGLE){
+        set_axis_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == COASTLINE_SWITCH){
+        set_coastline_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == SPHEREGRID_SWITCH){
+        set_sphere_grid_flag(iflag, kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == SHADING_SWITCH){
+        kemo_sgl->view_s->shading_mode = iflag;
+    }else if(selected == POLYGON_SWITCH){
+        set_polygon_mode(iflag, kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == TIME_LABEL_SWITCH){
+		printf("Set time label switch %d \n", iflag);
+    }else if(selected == FILE_STEP_LABEL_SWITCH){
+        printf("Set file step label switch %d \n", iflag);
+    };
 	return;
 }
 
 int kemoview_get_object_property_flags(int selected){
-	if (selected == AXIS_TOGGLE) {return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis;}
-    else if(selected == COASTLINE_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast;}
-    else if(selected == SPHEREGRID_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid;}
-    else if(selected == SHADING_SWITCH) {return kemo_sgl->view_s->shading_mode;}
-    else if(selected == POLYGON_SWITCH) {return kemo_sgl->kemo_mesh->mesh_m->polygon_mode;};
-    
+	if (selected == AXIS_TOGGLE){
+        return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_axis;
+    }else if(selected == COASTLINE_SWITCH){
+        return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_coast;
+    }else if(selected == SPHEREGRID_SWITCH){
+        return kemo_sgl->kemo_mesh->mesh_m->iflag_draw_sph_grid;
+    }else if(selected == SHADING_SWITCH){
+        return kemo_sgl->view_s->shading_mode;
+    }else if(selected == POLYGON_SWITCH){
+        return kemo_sgl->kemo_mesh->mesh_m->polygon_mode;
+    }else if(selected == TIME_LABEL_SWITCH){
+        printf("Get time label switch %d \n", 0);
+    }else if(selected == FILE_STEP_LABEL_SWITCH){
+        printf("Get file step label switch %d \n", 0);
+    };
 	return 0;
 }
 
 int kemoview_toggle_object_properties(int selected){
-	if (selected == AXIS_TOGGLE) {return toggle_draw_axis(kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == COASTLINE_SWITCH) {return toggle_coastline_flag(kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == SPHEREGRID_SWITCH) {return toggle_sphere_grid_flag(kemo_sgl->kemo_mesh->mesh_m);}
-    else if(selected == SHADING_SWITCH){
+	if (selected == AXIS_TOGGLE){
+        return toggle_draw_axis(kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == COASTLINE_SWITCH){
+        return toggle_coastline_flag(kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == SPHEREGRID_SWITCH){
+        return toggle_sphere_grid_flag(kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == SHADING_SWITCH){
 		kemo_sgl->view_s->shading_mode = toggle_value_c(kemo_sgl->view_s->shading_mode);
 		return kemo_sgl->view_s->shading_mode;
-	}
-    else if(selected == POLYGON_SWITCH) {return toggle_polygon_mode(kemo_sgl->kemo_mesh->mesh_m);};
-    
+	}else if(selected == POLYGON_SWITCH) {return toggle_polygon_mode(kemo_sgl->kemo_mesh->mesh_m);
+    }else if(selected == TIME_LABEL_SWITCH){
+        printf("toggle time label switch %d \n", 0);
+    }else if(selected == FILE_STEP_LABEL_SWITCH){    
+        printf("toggle file step label switch %d \n", 0);
+    };
 	return 0;
 }
 
