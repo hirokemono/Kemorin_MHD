@@ -76,5 +76,7 @@
 - (IBAction)SetEvolutionSteps:(id)sender;
 - (IBAction)ChooseRotateAxis:(id)sender;
 
+- (IBAction)ToggleTimeLabel:(id)sender;
+- (IBAction)ToggleFileStepLabel:(id)sender;
 
 @end

@@ -516,16 +516,22 @@ NSData *SnapshotData;
 	NSUserDefaults* defaults = [_movie_defaults_controller defaults];
 	MovieFormatFlag = [[defaults stringForKey:@"MovieFormatID"] intValue];
 	MovieFormatFlag = [[movieFormat_item selectedCell] tag];
-}
+};
 
 - (IBAction)SetEvolutionSteps:(id)sender{
 //    [_kemoviewer swapbuffer_cocoa];
     return;
-}
+};
 
-- (IBAction)ChooseRotateAxis:(id)sender;
-{
+- (IBAction)ChooseRotateAxis:(id)sender{
 	RotationAxisID = [[rotationAxis selectedCell] tag];
-}
+};
+
+- (IBAction)ToggleTimeLabel:(id)sender{
+    [_kemoviewer UpdateImage];
+};
+- (IBAction)ToggleFileStepLabel:(id)sender{
+    [_kemoviewer UpdateImage];
+};
 
 @end
