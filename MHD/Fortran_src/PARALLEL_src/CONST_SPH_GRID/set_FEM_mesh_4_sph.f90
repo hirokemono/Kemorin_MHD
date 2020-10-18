@@ -84,7 +84,7 @@
 !
 !  Construct groups
       call const_FEM_groups_for_sph                                     &
-     &   (ip_r, ip_t,  sph_params, gen_sph, stbl, group)
+     &   (ip_r, ip_t, sph_params, gen_sph, stbl, group)
 !
 ! Set communication table
       call const_nod_comm_table_for_sph(id_rank, ip_r, ip_t,            &
