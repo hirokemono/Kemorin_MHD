@@ -15,6 +15,7 @@
       use m_precision
       use m_field_file_format
 !
+      use t_time_data
       use t_psf_results
       use t_norms_4_psf
       use t_file_IO_parameter
@@ -24,6 +25,7 @@
 !
 !>      structure for section data
       type(psf_results), save :: psf_u
+      type(time_data), save :: t_IO_u
 !
 !>      structure for normals
       type(psf_normals), save :: psf_normal

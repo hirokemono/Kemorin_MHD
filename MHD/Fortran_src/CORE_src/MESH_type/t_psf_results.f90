@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine load_psf_data_to_link_IO                             &
-!!     &         (istep, psf_file_param, psf_dat, psf_ucd)
-!!      subroutine load_psf_data(istep, psf_file_param, psf_dat)
+!!     &         (istep, psf_file_param, t_IO, psf_dat, psf_ucd)
+!!      subroutine load_psf_data(istep, psf_file_param, t_IO, psf_dat)
 !!
 !!      subroutine dealloc_psf_results(psf_nod, psf_ele, psf_phys)
 !!@endverbatim
@@ -21,6 +21,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use t_time_data
       use t_ucd_data
       use t_file_IO_parameter
 !
@@ -46,17 +47,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine load_psf_data_to_link_IO                               &
-     &         (istep, psf_file_param, psf_dat, psf_ucd)
+     &         (istep, psf_file_param, t_IO, psf_dat, psf_ucd)
 !
       use set_ucd_data_to_type
 !
       integer(kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: psf_file_param
+!
+      type(time_data), intent(inout) :: t_IO
       type(psf_results), intent(inout) :: psf_dat
       type(ucd_data), intent(inout) :: psf_ucd
 !
 !
-      call load_psf_data(istep, psf_file_param, psf_dat)
+      call load_psf_data(istep, psf_file_param, t_IO, psf_dat)
 !
       call link_node_data_2_ucd(psf_dat%psf_nod, psf_ucd)
       call link_ele_data_2_ucd(psf_dat%psf_ele, psf_ucd)
@@ -66,18 +69,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_psf_data(istep, psf_file_param, psf_dat)
+      subroutine load_psf_data(istep, psf_file_param, t_IO, psf_dat)
 !
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep
       type(field_IO_params), intent(in) :: psf_file_param
+!
+      type(time_data), intent(inout) :: t_IO
       type(psf_results), intent(inout) :: psf_dat
 !
       type(ucd_data) :: read_psf
 !
 !
-      call sel_read_alloc_ucd_file(-1, istep, psf_file_param, read_psf)
+      call sel_read_alloc_ucd_file                                      &
+     &   (-1, istep, psf_file_param, t_IO, read_psf)
 !
       call set_psf_udt_mesh                                             &
      &   (read_psf, psf_dat%psf_nod, psf_dat%psf_ele, psf_dat%psf_phys)

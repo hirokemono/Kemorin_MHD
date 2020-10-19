@@ -63,7 +63,7 @@
       read(*,*) line_ucd_param%file_prefix
 !
       do istep = istep_start, istep_end, istep_int
-        call load_psf_data(istep, psf_file_param, psf_u)
+        call load_psf_data(istep, psf_file_param, t_IO_u, psf_u)
         call find_psf_edges(psf_u%psf_ele)
         call pick_psf_by_sections                                       &
      &     (nd, xref, psf_u%psf_nod, psf_u%psf_ele,                     &

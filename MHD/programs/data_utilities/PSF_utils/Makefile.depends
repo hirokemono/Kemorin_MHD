@@ -20,7 +20,7 @@ m_merdional_grouping_patch.o: $(PSF_UTIL_MAINDIR)/m_merdional_grouping_patch.f90
 	$(F90) -c $(F90OPTFLAGS) $<
 m_psf_edge_connect.o: $(PSF_UTIL_MAINDIR)/m_psf_edge_connect.f90 t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_psf_results.o: $(PSF_UTIL_MAINDIR)/m_psf_results.f90 m_precision.o m_field_file_format.o t_psf_results.o t_norms_4_psf.o t_file_IO_parameter.o
+m_psf_results.o: $(PSF_UTIL_MAINDIR)/m_psf_results.f90 m_precision.o m_field_file_format.o t_time_data.o t_psf_results.o t_norms_4_psf.o t_file_IO_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 psf_dynamobench.o: $(PSF_UTIL_MAINDIR)/psf_dynamobench.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o set_parallel_file_name.o m_line_from_psf.o m_psf_edge_connect.o m_dynamobench_data_by_psf.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
