@@ -255,7 +255,11 @@
         call read_alloc_udt_params(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_alloc_vtk_phys(id_rank, file_name, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
+        call read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
         call read_alloc_psf_bin_file(file_name, np_tmp, ucd)
 !
 #ifdef ZLIB_IO
@@ -263,8 +267,13 @@
         call read_alloc_gz_vtk_phys(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_params(id_rank, file_name, ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
         call gz_read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if (ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
+        call gz_read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call gz_read_alloc_ucd_2_ld_file                                &
      &     (id_rank, file_name, t_IO, ucd, ierr)
@@ -309,7 +318,11 @@
         call read_alloc_udt_file(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_alloc_vtk_phys(id_rank, file_name, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
+        call read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
         call read_alloc_psf_bin_file(file_name, np_tmp, ucd)
 !
 #ifdef ZLIB_IO
@@ -317,8 +330,13 @@
         call read_alloc_gz_vtk_phys(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_file(id_rank, file_name, ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
         call gz_read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if (ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
+        call gz_read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call gz_read_alloc_ucd_2_ld_file                                &
      &     (id_rank, file_name, t_IO, ucd, ierr)
@@ -358,10 +376,12 @@
       if(     ucd_param%iflag_format .eq. iflag_udt                     &
      &   .or. ucd_param%iflag_format .eq. iflag_vtd                     &
      &   .or. ucd_param%iflag_format .eq. iflag_udt_bin                 &
+     &   .or. ucd_param%iflag_format .eq. iflag_old_udt_bin             &
      &   .or. ucd_param%iflag_format .eq. iflag_udt_gz                  &
      &   .or. ucd_param%iflag_format .eq. iflag_vtd_gz                  &
      &   .or. ucd_param%iflag_format .eq. iflag_udt_gz                  &
-     &   .or. ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
+     &   .or. ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
+     &   .or. ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
         grid_name = set_parallel_grd_file_name(ucd_param%file_prefix,   &
      &             ucd_param%iflag_format, id_rank)
       end if
@@ -373,9 +393,16 @@
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_alloc_vtk_grid(id_rank, grid_name, ucd)
         call read_alloc_vtk_phys(id_rank, file_name, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_ucd_bin) then
         call read_alloc_iso_bin_file(file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
+        call read_alloc_psf_bin_grid(grid_name, np_tmp, ucd)
+        call read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if(ucd_param%iflag_format .eq. iflag_old_ucd_bin) then
+        call read_alloc_iso_bin_file(file_name, ucd)
+      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
         call read_alloc_psf_bin_grid(grid_name, np_tmp, ucd)
         call read_alloc_psf_bin_file(file_name, np_tmp, ucd)
 !
@@ -390,9 +417,16 @@
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_alloc_gz_ucd_grd(id_rank, grid_name, ucd)
         call read_alloc_gz_udt_file(id_rank, file_name, ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_ucd_bin_gz) then
         call gz_read_alloc_iso_bin_file(file_name, ucd)
       else if (ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
+        call gz_read_alloc_psf_bin_grid(grid_name, np_tmp, ucd)
+        call gz_read_alloc_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if (ucd_param%iflag_format .eq. iflag_old_ucd_bin_gz) then
+        call gz_read_alloc_iso_bin_file(file_name, ucd)
+      else if (ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
         call gz_read_alloc_psf_bin_grid(grid_name, np_tmp, ucd)
         call gz_read_alloc_psf_bin_file(file_name, np_tmp, ucd)
 #endif
@@ -429,7 +463,11 @@
         call read_udt_file(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_vtk_phys(id_rank, file_name, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
+        call read_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
         call read_psf_bin_file(file_name, np_tmp, ucd)
 !
 #ifdef ZLIB_IO
@@ -437,8 +475,13 @@
         call read_gz_vtk_phys(id_rank, file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_gz_udt_file(id_rank, file_name, ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
         call gz_read_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if (ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
+        call gz_read_psf_bin_file(file_name, np_tmp, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call gz_read_ucd_2_fld_file                                     &
      &     (id_rank, file_name, t_IO, ucd, ierr)
@@ -476,10 +519,12 @@
       if(     ucd_param%iflag_format .eq. iflag_udt                     &
      &   .or. ucd_param%iflag_format .eq. iflag_vtd                     &
      &   .or. ucd_param%iflag_format .eq. iflag_udt_bin                 &
+     &   .or. ucd_param%iflag_format .eq. iflag_old_udt_bin             &
      &   .or. ucd_param%iflag_format .eq. iflag_udt_gz                  &
      &   .or. ucd_param%iflag_format .eq. iflag_vtd_gz                  &
      &   .or. ucd_param%iflag_format .eq. iflag_udt_gz                  &
-     &   .or. ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
+     &   .or. ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
+     &   .or. ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
         grid_name = set_parallel_grd_file_name(ucd_param%file_prefix,   &
      &             ucd_param%iflag_format, id_rank)
       end if
@@ -491,9 +536,16 @@
       else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_vtk_grid(id_rank, grid_name, ucd)
         call read_vtk_phys(id_rank, file_name, ucd)
+!
       else if(ucd_param%iflag_format .eq. iflag_ucd_bin) then
         call read_iso_bin_file(file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_bin) then
+        call read_psf_bin_grid(grid_name, np_tmp, ucd)
+        call read_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if(ucd_param%iflag_format .eq. iflag_old_ucd_bin) then
+        call read_iso_bin_file(file_name, ucd)
+      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
         call read_psf_bin_grid(grid_name, np_tmp, ucd)
         call read_psf_bin_file(file_name, np_tmp, ucd)
 !
@@ -508,9 +560,16 @@
       else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_gz_ucd_grd(id_rank, grid_name, ucd)
         call read_gz_udt_file(id_rank, file_name, ucd)
+!
       else if (ucd_param%iflag_format .eq. iflag_ucd_bin_gz) then
         call gz_read_iso_bin_file(file_name, ucd)
       else if (ucd_param%iflag_format .eq. iflag_udt_bin_gz) then
+        call gz_read_psf_bin_grid(grid_name, np_tmp, ucd)
+        call gz_read_psf_bin_file(file_name, np_tmp, ucd)
+!
+      else if (ucd_param%iflag_format .eq. iflag_sgl_ucd_bin_gz) then
+        call gz_read_iso_bin_file(file_name, ucd)
+      else if (ucd_param%iflag_format .eq. iflag_sgl_udt_bin_gz) then
         call gz_read_psf_bin_grid(grid_name, np_tmp, ucd)
         call gz_read_psf_bin_file(file_name, np_tmp, ucd)
 #endif

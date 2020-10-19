@@ -383,7 +383,6 @@
      &   .or. check_mul_flags(file_fmt_ctl, mgd_fld_bin_labels)         &
      &   .or. check_mul_flags(file_fmt_ctl, field_bin_labels)) then
         sel_iso_file_format = iflag_sgl_ucd_bin
-!
       else if(check_mul_flags(file_fmt_ctl, mgd_iso_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, mgd_psf_gz_labels)          &
      &   .or. check_mul_flags(file_fmt_ctl, iso_gz_flags)               &
@@ -391,6 +390,14 @@
      &   .or. check_mul_flags(file_fmt_ctl, mgd_fbin_gz_labels)         &
      &   .or. check_mul_flags(file_fmt_ctl, fbin_gz_labels)) then
         sel_iso_file_format = iflag_sgl_ucd_bin_gz
+!
+      else if(check_mul_flags(file_fmt_ctl, old_iso_flags)              &
+     &   .or. check_mul_flags(file_fmt_ctl, old_psf_flags)) then
+        sel_iso_file_format = iflag_old_ucd_bin
+      else if(check_mul_flags(file_fmt_ctl, old_iso_gz_flags)           &
+     &   .or. check_mul_flags(file_fmt_ctl, old_psf_gz_flags)) then
+        sel_iso_file_format = iflag_old_ucd_bin_gz
+!
       else
         sel_iso_file_format = iflag_sgl_vtk
       end if
