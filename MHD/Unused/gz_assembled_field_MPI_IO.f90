@@ -158,10 +158,14 @@
      &     'Write compressed binary data by MPI-IO: ', trim(file_name)
       call open_write_gz_mpi_file_b(file_name, IO_param)
 !
-      call gz_write_field_head_mpi_b(IO_param,                          &
-     &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
-     &    fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO,                &
-     &    fld_IO(1)%istack_numnod_IO)
+      call gz_write_field_time_mpi_b(IO_param,                          &
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt)
+!
+      call gz_mpi_write_merged_stack_b(IO_param,                        &
+     &    IO_param%nprocs_in, fld_IO(1)%istack_numnod_IO)
+      call gz_mpi_write_one_inthead_b(IO_param, fld_IO(1)%num_field_IO)
+      call gz_mpi_write_mul_inthead_b                                   &
+     &   (IO_param, fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO)
 !
       call gz_mpi_write_mul_charahead_b                                 &
      &   (IO_param, fld_IO(1)%num_field_IO, fld_IO(1)%fld_name)

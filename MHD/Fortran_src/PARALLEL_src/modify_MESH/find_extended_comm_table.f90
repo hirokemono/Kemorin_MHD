@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine copy_node_to_extend_buffer(istack_pre,               &
-!!     &          org_node, dbl_id1, iflag_node, send_nbuf)
+!!     &          org_node, dbl_id, iflag_node, send_nbuf)
 !!        type(node_data), intent(in) :: org_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_id1
+!!        type(parallel_double_numbering), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(inout) :: send_nbuf
 !!      subroutine copy_ele_to_extend_buffer(istack_pre,                &
-!!     &          org_ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
+!!     &          org_ele, dbl_ele, dbl_id, iflag_ele, send_ebuf)
 !!        type(element_data), intent(in) :: org_ele
-!!        type(parallel_double_numbering), intent(in) :: dbl_id1
+!!        type(parallel_double_numbering), intent(in) :: dbl_id
 !!        type(parallel_double_numbering), intent(in) :: dbl_ele
 !!        type(ele_buffer_2_extend), intent(inout) :: send_ebuf
 !!
@@ -64,11 +64,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_node_to_extend_buffer(istack_pre,                 &
-     &          org_node, dbl_id1, iflag_node, send_nbuf)
+     &          org_node, dbl_id, iflag_node, send_nbuf)
 !
       integer(kind = kint), intent(in) :: istack_pre
       type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_id
       integer(kind = kint), intent(in) :: iflag_node(org_node%numnod)
 !
       type(node_buffer_2_extend), intent(inout) :: send_nbuf
@@ -79,8 +79,8 @@
       do inod = 1, org_node%numnod
         if(iflag_node(inod) .gt. 0) then
           icou = icou + 1
-          send_nbuf%inod_add(icou) =    dbl_id1%inod_local(inod)
-          send_nbuf%irank_add(icou) =   dbl_id1%irank_home(inod)
+          send_nbuf%inod_add(icou) =    dbl_id%inod_local(inod)
+          send_nbuf%irank_add(icou) =   dbl_id%irank_home(inod)
           send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
           send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
           send_nbuf%xx_add(icou,2) =    org_node%xx(inod,2)
@@ -93,11 +93,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_ele_to_extend_buffer(istack_pre,                  &
-     &          org_ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
+     &          org_ele, dbl_ele, dbl_id, iflag_ele, send_ebuf)
 !
       integer(kind = kint), intent(in) :: istack_pre
       type(element_data), intent(in) :: org_ele
-      type(parallel_double_numbering), intent(in) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_id
       type(parallel_double_numbering), intent(in) :: dbl_ele
       integer(kind = kint), intent(in) :: iflag_ele(org_ele%numele)
 !
@@ -116,8 +116,8 @@
             send_ebuf%iele_gl_add(icou) = org_ele%iele_global(iele)
             do k1 = 1, org_ele%nnod_4_ele
               inod = org_ele%ie(iele,k1)
-              send_ebuf%ie_added(icou,k1) = dbl_id1%inod_local(inod)
-              send_ebuf%ip_added(icou,k1) = dbl_id1%irank_home(inod)
+              send_ebuf%ie_added(icou,k1) = dbl_id%inod_local(inod)
+              send_ebuf%ip_added(icou,k1) = dbl_id%irank_home(inod)
             end do
           end if
         end do

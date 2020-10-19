@@ -105,6 +105,7 @@
       use ucd_IO_select
       use vtk_file_IO
       use merged_udt_vtk_file_IO
+      use write_udt_file_IO_b
       use ucd_field_MPI_IO
       use ucd_field_MPI_IO_b
 !
@@ -112,6 +113,7 @@
       use gz_ucd_field_MPI_IO
       use gz_ucd_field_MPI_IO_b
       use gz_merged_udt_vtk_file_IO
+      use gz_write_udt_file_IO_b
       use gz_vtk_file_IO
 #endif
 #ifdef HDF5_IO
@@ -146,15 +148,15 @@
 !
       else if(ucd_param%iflag_format .eq. iflag_ucd_bin                 &
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_ucd_bin) then
-        call write_ucd_file_mpi_b(file_name, ucd)
+        call write_ucd_file_mpi_b(file_name, t_IO, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_bin                 &
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin) then
-        call write_ucd_phys_mpi_b(file_name, ucd)
+        call write_ucd_phys_mpi_b(file_name, t_IO, ucd)
 !
       else if(ucd_param%iflag_format .eq. iflag_old_ucd_bin) then
-        call write_ucd_file_mpi_b(file_name, ucd)
+        call write_ucd_file_nostep_mpi_b(file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
-        call write_ucd_phys_mpi_b(file_name, ucd)
+        call write_ucd_phys_nostep_mpi_b(file_name, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd_param%iflag_format .eq. iflag_sgl_gz) then
@@ -164,15 +166,15 @@
 !
       else if(ucd_param%iflag_format .eq. iflag_ucd_bin_gz              &
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_ucd_bin_gz) then
-        call gz_write_ucd_file_mpi_b(file_name, ucd)
+        call gz_write_ucd_file_mpi_b(file_name, t_IO, ucd)
       else if(ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin_gz) then
-        call gz_write_ucd_phys_mpi_b(file_name, ucd)
+        call gz_write_ucd_phys_mpi_b(file_name, t_IO, ucd)
 !
       else if(ucd_param%iflag_format .eq. iflag_old_ucd_bin_gz) then
-        call gz_write_ucd_file_mpi_b(file_name, ucd)
+        call gz_write_ucd_file_notime_mpi_b(file_name, ucd)
       else if(ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
-        call gz_write_ucd_phys_mpi_b(file_name, ucd)
+        call gz_write_ucd_phys_notime_mpi_b(file_name, ucd)
 !
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtk_gz) then
         call gz_write_vtk_file_mpi(file_name, ucd)
@@ -226,9 +228,16 @@
 !
       use ucd_IO_select
       use merged_udt_vtk_file_IO
+      use write_udt_file_IO_b
 !
+#ifdef ZLIB_IO
       use gz_merged_udt_vtk_file_IO
+      use gz_write_udt_file_IO_b
+#endif
+!
+#ifdef HDF5_IO
       use hdf5_file_IO
+#endif
 !
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(in) :: ucd

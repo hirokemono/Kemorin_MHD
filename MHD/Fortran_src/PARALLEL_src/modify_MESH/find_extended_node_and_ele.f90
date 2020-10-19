@@ -10,10 +10,10 @@
 !!      subroutine count_nodes_by_extend_sleeve                         &
 !!     &         (added_comm, org_node, new_node)
 !!      subroutine set_nodes_by_extend_sleeve(recv_nbuf, org_node,      &
-!!     &          dbl_id1, added_comm, new_node, dbl_id2)
+!!     &          dbl_id, added_comm, new_node, dbl_id2)
 !!        type(communication_table), intent(in) :: added_comm
 !!        type(node_data), intent(in) :: org_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_id1
+!!        type(parallel_double_numbering), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !!        type(node_data), intent(inout) :: new_node
 !!        type(parallel_double_numbering), intent(inout) :: dbl_id2
@@ -79,10 +79,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_nodes_by_extend_sleeve(recv_nbuf, org_node,        &
-     &          dbl_id1, added_comm, new_node, dbl_id2)
+     &          dbl_id, added_comm, new_node, dbl_id2)
 !
       type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_id
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !
       type(node_data), intent(inout) :: new_node
@@ -98,8 +98,8 @@
         new_node%xx(inod,1) = org_node%xx(inod,1)
         new_node%xx(inod,2) = org_node%xx(inod,2)
         new_node%xx(inod,3) = org_node%xx(inod,3)
-        dbl_id2%inod_local(inod) = dbl_id1%inod_local(inod)
-        dbl_id2%irank_home(inod) = dbl_id1%irank_home(inod)
+        dbl_id2%inod_local(inod) = dbl_id%inod_local(inod)
+        dbl_id2%irank_home(inod) = dbl_id%irank_home(inod)
       end do
 !$omp end parallel do
 !

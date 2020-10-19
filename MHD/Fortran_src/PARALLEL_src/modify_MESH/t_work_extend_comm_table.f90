@@ -24,9 +24,9 @@
 !!      subroutine check_num_of_added_table(id_rank, added_comm)
 !!        type(communication_table), intent(in) :: added_comm
 !!      subroutine check_added_impoert_items                            &
-!!     &         (id_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
+!!     &         (id_rank, nod_comm, added_comm, dbl_id, recv_nbuf)
 !!        type(communication_table), intent(in) :: nod_comm, added_comm
-!!        type(parallel_double_numbering), intent(in) :: dbl_id1
+!!        type(parallel_double_numbering), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !!      subroutine check_delete_from_SR_list                            &
 !!     &         (id_rank, added_comm, send_nbuf, recv_nbuf)
@@ -209,11 +209,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine check_added_impoert_items                              &
-     &         (id_rank, nod_comm, added_comm, dbl_id1, recv_nbuf)
+     &         (id_rank, nod_comm, added_comm, dbl_id, recv_nbuf)
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: nod_comm, added_comm
-      type(parallel_double_numbering), intent(in) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_id
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !
       integer(kind = kint) :: inum, inod, i, ist, ied
@@ -227,7 +227,7 @@
         do inum = ist, ied
           inod = nod_comm%item_import(inum)
           write(120+id_rank,*) inum, inod,                              &
-     &        dbl_id1%irank_home(inod), dbl_id1%inod_local(inod), '  '
+     &        dbl_id%irank_home(inod), dbl_id%inod_local(inod), '  '
         end do
       end do
       do i = 1, nod_comm%num_neib

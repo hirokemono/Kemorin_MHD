@@ -69,9 +69,6 @@
 !
       n_internal(1) = istack_merged_intnod(my_rank+1)                   &
      &               - istack_merged_intnod(my_rank)
-!
-      call mpi_write_process_id_b(IO_param_l)
-!
       call set_istack_4_fixed_num(ione, IO_param_l)
       call mpi_write_int8_vector_b(IO_param_l, ione64, n_internal(1))
 !

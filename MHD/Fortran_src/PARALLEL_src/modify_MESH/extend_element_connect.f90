@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine extend_ele_connectivity                              &
-!!     &         (nod_comm, ele_comm, org_node, ele, dbl_id1, neib_ele, &
+!!     &         (nod_comm, ele_comm, org_node, ele, dbl_id, neib_ele,  &
 !!     &          new_comm, new_node, new_ele)
 !!@endverbatim
 !
@@ -33,7 +33,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine extend_ele_connectivity                                &
-     &         (nod_comm, ele_comm, org_node, ele, dbl_id1, neib_ele,   &
+     &         (nod_comm, ele_comm, org_node, ele, dbl_id, neib_ele,    &
      &          new_comm, new_node, new_ele)
 !
       use t_next_node_ele_4_node
@@ -50,7 +50,7 @@
       type(communication_table), intent(in) :: ele_comm
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: ele
-      type(parallel_double_numbering), intent(in) :: dbl_id1
+      type(parallel_double_numbering), intent(in) :: dbl_id
       type(element_around_node), intent(in) :: neib_ele
 !
       type(communication_table), intent(in) :: new_comm
@@ -119,7 +119,7 @@
      &      iflag_node, iflag_ele)
 !
         call copy_ele_to_extend_buffer(added_comm%istack_export(i-1),   &
-     &      ele, dbl_ele, dbl_id1, iflag_ele, send_ebuf)
+     &      ele, dbl_ele, dbl_id, iflag_ele, send_ebuf)
       end do
       deallocate(iflag_node, iflag_ele)
 !
