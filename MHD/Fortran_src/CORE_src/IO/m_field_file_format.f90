@@ -88,17 +88,22 @@
 !!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_vtd =      40
 !
-!>      Integer flag for UCD data
+!>      Integer flag for binary surface data
       integer(kind = kint), parameter :: iflag_ucd_bin =  70
-!>      Integer flag for UCD data
+!>      Integer flag for binary section data
 !!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_udt_bin =  80
+!>      Integer flag for old binary surface data
+      integer(kind = kint), parameter :: iflag_old_ucd_bin =  970
+!>      Integer flag for old binary section data
+!!         (Separated by FEM mesh part and field part)
+      integer(kind = kint), parameter :: iflag_old_udt_bin =  980
 !
 !>      Integer flag for merged binary data
       integer(kind = kint), parameter :: iflag_sgl_bin =  101
-!>      Integer flag for merged binary data
+!>      Integer flag for merged binary surface data
       integer(kind = kint), parameter :: iflag_sgl_ucd_bin =  170
-!>      Integer flag for merged binary data
+!>      Integer flag for merged binary section data
       integer(kind = kint), parameter :: iflag_sgl_udt_bin =  180
 !
 !>      Integer flag for merged UCD data
@@ -132,15 +137,20 @@
 !!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_vtd_gz =      43
 !
-!>      Integer flag for UCD data
+!>      Integer flag for gzipped binary surface data
       integer(kind = kint), parameter :: iflag_ucd_bin_gz =  73
-!>      Integer flag for UCD data
+!>      Integer flag for gzipped binary section data
 !!         (Separated by FEM mesh part and field part)
       integer(kind = kint), parameter :: iflag_udt_bin_gz =  83
+!>      Integer flag for old gzipped binary surface data
+      integer(kind = kint), parameter :: iflag_old_ucd_bin_gz =  973
+!>      Integer flag for old gzipped binary section data
+!!         (Separated by FEM mesh part and field part)
+      integer(kind = kint), parameter :: iflag_old_udt_bin_gz =  983
 !
-!>      Integer flag for merged binary field and grid data
+!>      Integer flag for gzipped merged binary surface data
       integer(kind = kint), parameter :: iflag_sgl_ucd_bin_gz =  173
-!>      Integer flag for merged binary field data
+!>      Integer flag for gzipped merged binary section data
       integer(kind = kint), parameter :: iflag_sgl_udt_bin_gz =  183
 !
 !>      Integer flag for merged gzipped UCD data
