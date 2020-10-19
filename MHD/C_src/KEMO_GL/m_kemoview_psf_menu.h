@@ -35,6 +35,14 @@ struct kemo_array_control{
     int *ipsf_viz_far;
 	int *iele_viz_far;
 	
+    int iflag_avail_time;
+    int iflag_draw_time;
+    double time_disp;
+    
+    int iflag_avail_file_step;
+    int iflag_draw_file_step;
+    int file_step_disp;
+    
 	struct cbar_work *cbar_wk;
 };
 

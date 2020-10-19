@@ -49,4 +49,15 @@ void get_each_PSF_color_w_exp(int selected, struct kemoview_psf *kemo_psf,
 
 double get_each_PSF_data_range(int selected, int icomp, struct kemoview_psf *kemo_psf);
 double get_each_PSF_colormap_range(int selected, struct kemoview_psf *kemo_psf);
+
+void set_draw_time_flag(int iflag, struct kemoview_psf *kemo_psf);
+int toggle_draw_time_flag(struct kemoview_psf *kemo_psf);
+int get_draw_time_flag(struct kemoview_psf *kemo_psf);
+int get_avail_time_flag(struct kemoview_psf *kemo_psf);
+
+void set_draw_file_step_flag(int iflag, struct kemoview_psf *kemo_psf);
+int toggle_draw_file_step_flag(struct kemoview_psf *kemo_psf);
+int get_draw_file_step_flag(struct kemoview_psf *kemo_psf);
+int get_avail_file_step_flag(struct kemoview_psf *kemo_psf);
+
 #endif
