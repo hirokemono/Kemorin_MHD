@@ -110,9 +110,6 @@
       integer :: nprocs2
 !
 !
-      call read_one_integer_b(bbuf, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-!
       call read_psf_phys_num_bin                                        &
      &   (nprocs, ucd_b%nnod, ucd_b%num_field, itmp1_mp, bbuf)
 !
