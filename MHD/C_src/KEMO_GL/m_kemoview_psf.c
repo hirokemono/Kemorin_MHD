@@ -40,7 +40,7 @@ void dealloc_kemoview_psf(struct kemoview_psf *kemo_psf){
 };
 
 void init_draw_psf(struct kemoview_psf *kemo_psf, struct psf_data *ucd_tmp,
-			int iflag_fileformat, int istep, const char *ucd_header){
+			int iflag_fileformat, int istep, double time, const char *ucd_header){
     int id_load;
     id_load = add_new_kemoview_array(kemo_psf->psf_a);
 

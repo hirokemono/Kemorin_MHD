@@ -25,11 +25,11 @@
 
 /* prototypes */
 
-int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *ucd_header,
-			struct psf_data *viz_s);
+int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, double *time, 
+                                  const char *ucd_header, struct psf_data *viz_s);
 int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
 			struct psf_data *viz_s);
-void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_header,
+void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, double *time, const char *ucd_header,
 			struct psf_data *viz_s);
 
 #endif

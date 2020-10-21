@@ -19,6 +19,7 @@ struct fline_menu_val{
 	int iformat_fline_file;
 	
     int iflag_draw_time;
+    double time;
 
 	int iflag_draw_fline;
 	

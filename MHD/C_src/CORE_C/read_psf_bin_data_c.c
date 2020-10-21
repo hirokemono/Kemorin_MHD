@@ -207,16 +207,16 @@ int read_alloc_psf_mesh_bin(const char *bin_name, struct psf_data *psf_b){
     return iflag_datatype;
 };
 
-int read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b){
+int read_alloc_psf_bin(const char *bin_name, double *time, struct psf_data *psf_b){
 	long time_step;
-	double time, dt;
+	double dt;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
     
     psf_b_WK->ilength = sizeof(long);
     rawread_64bit_psf(psf_b_WK, &psf_b_WK->nprocs);
 	
     rawread_64bit_psf(psf_b_WK, &time_step);
-    rawread_64bit_psf(psf_b_WK, &time);
+    rawread_64bit_psf(psf_b_WK, time);
     rawread_64bit_psf(psf_b_WK, &dt);
 	
 	psf_b_WK->itmp_mp = (long *) calloc(psf_b_WK->nprocs,sizeof(long));
@@ -226,10 +226,10 @@ int read_alloc_psf_bin(const char *bin_name, struct psf_data *psf_b){
     return 0;
 };
 
-int read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b){
+int read_alloc_iso_bin(const char *bin_name, double *time, struct psf_data *psf_b){
     long nprocs2;
 	long time_step;
-	double time, dt;
+	double dt;
     int iflag_datatype;
     struct psf_bin_work *psf_b_WK = open_read_psf_bin_file(bin_name);
     psf_b_WK->ilength = sizeof(long);
@@ -246,7 +246,7 @@ int read_alloc_iso_bin(const char *bin_name, struct psf_data *psf_b){
     };
     
     rawread_64bit_psf(psf_b_WK, &time_step);
-    rawread_64bit_psf(psf_b_WK, &time);
+    rawread_64bit_psf(psf_b_WK, time);
     rawread_64bit_psf(psf_b_WK, &dt);
 	
     read_alloc_psf_data_bin(psf_b, psf_b_WK);

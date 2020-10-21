@@ -180,16 +180,16 @@ int read_alloc_psf_mesh_bin_gz(const char *gzip_name, struct psf_data *psf_z){
     return iflag_datatype;
 };
 
-int read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+int read_alloc_psf_bin_gz(const char *gzip_name, double *time, struct psf_data *psf_z){
 	long time_step;
-	double time, dt;
+	double dt;
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
     
     psf_z_WK->ilength = sizeof(long);
     gzread_64bit_psf(psf_z_WK, (char *) &psf_z_WK->nprocs);
 	
     gzread_64bit_psf(psf_z_WK, (char *) &time_step);
-    gzread_64bit_psf(psf_z_WK, (char *) &time);
+    gzread_64bit_psf(psf_z_WK, (char *) time);
     gzread_64bit_psf(psf_z_WK, (char *) &dt);
 	
 	
@@ -200,9 +200,9 @@ int read_alloc_psf_bin_gz(const char *gzip_name, struct psf_data *psf_z){
     return 0;
 };
 
-int read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z){
+int read_alloc_iso_bin_gz(const char *gzip_name, double *time, struct psf_data *psf_z){
 	long time_step;
-	double time, dt;
+	double dt;
 	int iflag_datatype;
     struct psf_bin_work *psf_z_WK = open_read_psf_bin_gz_file(gzip_name);
     psf_z_WK->ilength = sizeof(long);
@@ -220,7 +220,7 @@ int read_alloc_iso_bin_gz(const char *gzip_name, struct psf_data *psf_z){
     };
 	
     gzread_64bit_psf(psf_z_WK, (char *) &time_step);
-    gzread_64bit_psf(psf_z_WK, (char *) &time);
+    gzread_64bit_psf(psf_z_WK, (char *) time);
     gzread_64bit_psf(psf_z_WK, (char *) &dt);
     
     read_alloc_psf_data_bin_gz(psf_z, psf_z_WK);

@@ -52,6 +52,7 @@ struct psf_menu_val{
 	int iflag_psf_file;
 	
     int iflag_draw_time;
+    double time;
 
     int polygon_mode_psf;
     int ivect_tangential;

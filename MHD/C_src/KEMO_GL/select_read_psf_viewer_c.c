@@ -10,8 +10,8 @@
 
 #include "select_read_psf_viewer_c.h"
 
-int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *ucd_header,
-			struct psf_data *viz_s){
+int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, double *time, 
+                                  const char *ucd_header, struct psf_data *viz_s){
 	int iflag_datatype;
 	struct kv_string *ucd_m = alloc_kvstring();
 	
@@ -22,9 +22,9 @@ int check_gzip_kemoview_ucd_first(int iformat_ucd_file, int istep, const char *u
     } else if(iformat_ucd_file == IFLAG_SURF_VTK_GZ){
         iflag_datatype = read_kemoview_vtk_gz(ucd_m->string, viz_s);
     } else if(iformat_ucd_file == IFLAG_PSF_BIN_GZ){
-        iflag_datatype = read_alloc_iso_bin_gz(ucd_m->string, viz_s);
+        iflag_datatype = read_alloc_iso_bin_gz(ucd_m->string, time, viz_s);
     } else if(iformat_ucd_file == IFLAG_PSF_BIN){
-        iflag_datatype = read_alloc_iso_bin(ucd_m->string, viz_s);
+        iflag_datatype = read_alloc_iso_bin(ucd_m->string, time, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTK){
         iflag_datatype = read_kemoview_vtk(ucd_m->string, viz_s);
     } else {
@@ -62,7 +62,7 @@ int check_gzip_psf_grd_first(int iformat_ucd_file, const char *ucd_header,
 	return iflag_datatype;
 }
 
-void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_header,
+void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, double *time, const char *ucd_header,
 			struct psf_data *viz_s){
 	int ierr;
 	struct kv_string *ucd_m = alloc_kvstring();
@@ -74,9 +74,9 @@ void check_gzip_psf_udt_first(int iformat_ucd_file, int istep, const char *ucd_h
     } else if(iformat_ucd_file == IFLAG_SURF_VTD_GZ){
         ierr = read_psf_vtd_gz(ucd_m->string, viz_s);
 	} else if(iformat_ucd_file == IFLAG_SURF_SDT_GZ){
-		ierr = read_alloc_psf_bin_gz(ucd_m->string, viz_s);
+		ierr = read_alloc_psf_bin_gz(ucd_m->string, time, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_SDT){
-		ierr = read_alloc_psf_bin(ucd_m->string, viz_s);
+		ierr = read_alloc_psf_bin(ucd_m->string, time, viz_s);
     } else if(iformat_ucd_file == IFLAG_SURF_VTD){
         ierr = read_psf_vtd(ucd_m->string, viz_s);
     } else {
