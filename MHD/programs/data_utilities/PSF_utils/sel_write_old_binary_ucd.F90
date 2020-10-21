@@ -5,21 +5,15 @@
 !!@date        programmed by H.Matsui on July, 2006
 !!@n           Modified by H.Matsui on May, 2009
 !
-!> @brief UCD data IO selector
+!> @brief old format of binary UCD data output selector
 !!
 !!@verbatim
-!!      subroutine sel_read_old_udt_param                               &
-!!     &         (id_rank, istep_ucd, ucd_param, ucd)
-!!      subroutine sel_read_alloc_old_udt_file                          &
-!!     &         (id_rank, istep_ucd, ucd_param, ucd)
-!!      subroutine sel_read_alloc_old_ucd_file                          &
-!!     &         (id_rank, istep_ucd, ucd_param, ucd)
-!!      subroutine sel_read_old_udt_file                                &
-!!     &         (id_rank, istep_ucd, ucd_param, ucd)
-!!      subroutine sel_read_old_ucd_file                                &
-!!     &         (id_rank, istep_ucd, ucd_param, ucd)
+!!      subroutine sel_wte_para_old_ucd_bin_file                        &
+!!     &         (istep_ucd, ucd_param, ucd)
+!!      subroutine sel_wte_para_old_ucd_bin_mesh(ucd_param, ucd)
+!!        integer(kind=kint), intent(in) :: istep_ucd
 !!        type(field_IO_params), intent(in) :: ucd_param
-!!        type(ucd_data), intent(inout) :: ucd
+!!        type(ucd_data), intent(in) :: ucd
 !!@endverbatim
 !!
 !!@param id_rank  process ID
@@ -31,19 +25,20 @@
       use m_constants
       use m_file_format_switch
       use m_field_file_format
-!
-      use ucd_field_file_IO_b
-      use set_ucd_file_names
-!
-#ifdef ZLIB_IO
-      use gz_ucd_field_file_IO_b
-#endif
+      use m_error_IDs
 !
       use t_file_IO_parameter
-      use t_time_data
       use t_ucd_data
 !
       implicit none
+!
+      private :: write_ucd_file_nostep_mpi_b
+      private :: write_ucd_phys_nostep_mpi_b
+!
+#ifdef ZLIB_IO
+      private :: gz_write_ucd_file_notime_mpi_b
+      private :: gz_write_ucd_phys_notime_mpi_b
+#endif
 !
 !------------------------------------------------------------------
 !
@@ -54,14 +49,7 @@
       subroutine sel_wte_para_old_ucd_bin_file                          &
      &         (istep_ucd, ucd_param, ucd)
 !
-      use ucd_IO_select
-      use write_udt_file_IO_b
-      use ucd_field_MPI_IO_b
-!
-#ifdef ZLIB_IO
-      use gz_ucd_field_MPI_IO_b
-      use gz_write_udt_file_IO_b
-#endif
+      use set_ucd_file_names
 !
       integer(kind=kint), intent(in) :: istep_ucd
       type(field_IO_params), intent(in) :: ucd_param
@@ -93,12 +81,7 @@
 !
       subroutine sel_wte_para_old_ucd_bin_mesh(ucd_param, ucd)
 !
-      use ucd_IO_select
-      use write_udt_file_IO_b
-!
-#ifdef ZLIB_IO
-      use gz_write_udt_file_IO_b
-#endif
+      use set_ucd_file_names
 !
       type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(in) :: ucd
@@ -177,13 +160,13 @@
       end subroutine write_ucd_phys_nostep_mpi_b
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
+#ifdef ZLIB_IO
       subroutine gz_write_ucd_file_notime_mpi_b(gzip_name, ucd)
 !
-      use t_time_data
-      use m_error_IDs
-      use gz_MPI_binary_datum_IO
       use MPI_ascii_data_IO
+      use gz_MPI_binary_datum_IO
       use gz_ucd_file_MPI_IO
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -214,10 +197,8 @@
 !
       subroutine gz_write_ucd_phys_notime_mpi_b(gzip_name, ucd)
 !
-      use t_time_data
-      use m_error_IDs
-      use gz_MPI_binary_datum_IO
       use MPI_ascii_data_IO
+      use gz_MPI_binary_datum_IO
       use gz_ucd_file_MPI_IO
 !
       character(len=kchara), intent(in) :: gzip_name
@@ -238,6 +219,7 @@
       call close_mpi_file(IO_param)
 !
       end subroutine gz_write_ucd_phys_notime_mpi_b
+#endif
 !
 ! -----------------------------------------------------------------------
 !
