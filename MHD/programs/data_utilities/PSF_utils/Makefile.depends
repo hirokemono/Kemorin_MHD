@@ -34,10 +34,16 @@ psf_rms_aves.o: $(PSF_UTIL_MAINDIR)/psf_rms_aves.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 section_from_psf.o: $(PSF_UTIL_MAINDIR)/section_from_psf.f90 m_precision.o m_constants.o m_psf_results.o m_field_file_format.o m_section_file_extensions.o set_parallel_file_name.o skip_comment_f.o m_line_from_psf.o m_psf_edge_connect.o t_time_data.o t_ucd_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
+sel_read_old_binary_ucd.o: $(PSF_UTIL_MAINDIR)/sel_read_old_binary_ucd.F90 m_precision.o m_constants.o m_file_format_switch.o m_field_file_format.o udt_file_IO.o ucd_field_file_IO.o ucd_field_file_IO_b.o vtk_file_IO.o read_psf_binary_file.o set_ucd_file_names.o gz_udt_file_IO.o gz_vtk_file_IO.o gz_read_psf_binary_file.o gz_ucd_field_file_IO.o gz_ucd_field_file_IO_b.o t_file_IO_parameter.o t_time_data.o t_ucd_data.o binary_IO.o read_udt_from_bindary_data.o gz_binary_IO.o gzip_file_access.o gz_read_udt_from_bin_data.o
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
+sel_write_old_binary_ucd.o: $(PSF_UTIL_MAINDIR)/sel_write_old_binary_ucd.F90 m_precision.o m_constants.o m_file_format_switch.o m_field_file_format.o m_error_IDs.o t_file_IO_parameter.o t_ucd_data.o set_ucd_file_names.o MPI_binary_head_IO.o MPI_ascii_data_IO.o ucd_file_MPI_IO.o gz_MPI_binary_datum_IO.o gz_ucd_file_MPI_IO.o
+	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 t_norms_4_psf.o: $(PSF_UTIL_MAINDIR)/t_norms_4_psf.f90 m_precision.o t_geometry_data.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 take_avarages_4_psf.o: $(PSF_UTIL_MAINDIR)/take_avarages_4_psf.f90 m_precision.o t_geometry_data.o t_phys_data.o t_norms_4_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
 take_normals_4_psf.o: $(PSF_UTIL_MAINDIR)/take_normals_4_psf.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o t_norms_4_psf.o
+	$(F90) -c $(F90OPTFLAGS) $<
+update_old_psf_binary.o: $(PSF_UTIL_MAINDIR)/update_old_psf_binary.f90 m_precision.o m_constants.o m_field_file_format.o m_section_file_extensions.o t_file_IO_parameter.o t_ucd_data.o ucd_IO_select.o sel_read_old_binary_ucd.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

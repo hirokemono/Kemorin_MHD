@@ -11,8 +11,6 @@
 !!      subroutine write_ucd_file_mpi_b(file_name, t_IO, ucd)
 !!      subroutine write_ucd_phys_mpi_b(file_name, t_IO, ucd)
 !!      subroutine write_ucd_grid_mpi_b(file_name, ucd)
-!!      subroutine write_ucd_file_nostep_mpi_b(file_name, ucd)
-!!      subroutine write_ucd_phys_nostep_mpi_b(file_name, ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
 !!@endverbatim
@@ -124,62 +122,6 @@
       call close_mpi_file(IO_param)
 !
       end subroutine write_ucd_grid_mpi_b
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine write_ucd_file_nostep_mpi_b(file_name, ucd)
-!
-      use MPI_binary_head_IO
-      use MPI_ascii_data_IO
-      use ucd_file_MPI_IO
-!
-      character(len=kchara), intent(in) :: file_name
-!
-      type(ucd_data), intent(in) :: ucd
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &    'write binary data by MPI-IO: ', trim(file_name) 
-      call open_write_mpi_file_b(file_name, IO_param)
-      call write_ucd_mesh_data_mpi_b                                    &
-     &   (IO_param, ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie, &
-     &    ucd%istack_merged_intnod)
-
-      call mpi_write_process_id_b(IO_param)
-      call write_ucd_data_mpi_b(IO_param,                               &
-     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
-     &    ucd%phys_name, ucd%d_ucd, ucd%istack_merged_intnod)
-!
-      call close_mpi_file(IO_param)
-!
-      end subroutine write_ucd_file_nostep_mpi_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_ucd_phys_nostep_mpi_b(file_name, ucd)
-!
-      use MPI_binary_head_IO
-      use MPI_ascii_data_IO
-      use ucd_file_MPI_IO
-!
-      character(len=kchara), intent(in) :: file_name
-!
-      type(ucd_data), intent(in) :: ucd
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &    'write binary data by MPI-IO: ', trim(file_name) 
-      call open_write_mpi_file_b(file_name, IO_param)
-!
-      call mpi_write_process_id_b(IO_param)
-      call write_ucd_data_mpi_b(IO_param,                               &
-     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
-     &    ucd%phys_name, ucd%d_ucd, ucd%istack_merged_intnod)
-!
-      call close_mpi_file(IO_param)
-!
-      end subroutine write_ucd_phys_nostep_mpi_b
 !
 ! -----------------------------------------------------------------------
 !

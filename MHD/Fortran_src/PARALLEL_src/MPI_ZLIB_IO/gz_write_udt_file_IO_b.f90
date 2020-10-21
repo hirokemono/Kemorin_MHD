@@ -11,8 +11,6 @@
 !!      subroutine gz_write_ucd_file_mpi_b(gzip_name, t_IO, ucd)
 !!      subroutine gz_write_ucd_phys_mpi_b(gzip_name, t_IO, ucd)
 !!      subroutine gz_write_ucd_grid_mpi_b(gzip_name, ucd)
-!!      subroutine gz_write_ucd_file_notime_mpi_b(gzip_name, ucd)
-!!      subroutine gz_write_ucd_phys_notime_mpi_b(gzip_name, ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
 !!@endverbatim
@@ -134,68 +132,5 @@
       end subroutine gz_write_ucd_grid_mpi_b
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine gz_write_ucd_file_notime_mpi_b(gzip_name, ucd)
-!
-      use t_time_data
-      use m_error_IDs
-      use gz_MPI_binary_datum_IO
-      use MPI_ascii_data_IO
-      use gz_ucd_file_MPI_IO
-!
-      character(len=kchara), intent(in) :: gzip_name
-!
-      type(ucd_data), intent(in) :: ucd
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &   'write gzipped binary mesh and field data by MPI-IO: ',        &
-     &    trim(gzip_name)
-!
-      call open_write_gz_mpi_file_b(gzip_name, IO_param)
-!
-      call gz_mpi_write_ucd_mesh_data_b(IO_param,                       &
-     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie,           &
-     &    ucd%istack_merged_intnod)
-!
-      call gz_mpi_write_process_id_b(IO_param)
-      call gz_write_ucd_data_mpi_b(IO_param,                            &
-     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
-     &    ucd%phys_name, ucd%d_ucd, ucd%istack_merged_intnod)
-!
-      call close_mpi_file(IO_param)
-!
-      end subroutine gz_write_ucd_file_notime_mpi_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_write_ucd_phys_notime_mpi_b(gzip_name, ucd)
-!
-      use t_time_data
-      use m_error_IDs
-      use gz_MPI_binary_datum_IO
-      use MPI_ascii_data_IO
-      use gz_ucd_file_MPI_IO
-!
-      character(len=kchara), intent(in) :: gzip_name
-!
-      type(ucd_data), intent(in) :: ucd
-!
-!
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &   'write gzipped binary field file by MPI-IO: ', trim(gzip_name)
-!
-      call open_write_gz_mpi_file_b(gzip_name, IO_param)
-!
-      call gz_mpi_write_process_id_b(IO_param)
-      call gz_write_ucd_data_mpi_b(IO_param,                            &
-     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
-     &    ucd%phys_name, ucd%d_ucd, ucd%istack_merged_intnod)
-!
-      call close_mpi_file(IO_param)
-!
-      end subroutine gz_write_ucd_phys_notime_mpi_b
-!
-! -----------------------------------------------------------------------
 !
       end module gz_write_udt_file_IO_b

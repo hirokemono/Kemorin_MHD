@@ -19,6 +19,8 @@ TARGET_DBENCH_ON_PSF = psf_dynamobench
 TARGET_FIX_TEMP_PSF =      psf_per_temp_2_temp
 TARGET_FIX_SGS_MF_WK_PSF = psf_fix_reynolds_wk
 
+TARGET_UPDATE_PSF_BIN = update_psf_bin
+
 
 LIBS_PSF_UTIL = \
 '$$(LIB_UTILS)'   \
@@ -47,10 +49,14 @@ ifdef FORTRAN_C_CONNECT
   LIB_FILES_PG_UTIL+=    '$$(LIB_KEMO_C_FILE)'
 endif
 
-SOURCES = $(shell ls *.f90)
+SOURCES = $(shell ls *.f90 *.F90)
 
 MOD_PSF_2_VTK = \
 psf_file_to_VTK.o
+
+MOD_UPDATE_PSF_BIN = \
+update_old_psf_binary.o \
+sel_read_old_binary_ucd.o
 
 MOD_PSF_AVES = \
 psf_rms_aves.o \
@@ -143,13 +149,14 @@ target_list:
 	@echo 'TARGET_DBENCH_ON_PSF = $$(BUILDDIR)/$(TARGET_DBENCH_ON_PSF)'   >> $(MAKENAME)
 	@echo 'TARGET_FIX_TEMP_PSF =  $$(BUILDDIR)/$(TARGET_FIX_TEMP_PSF)'    >> $(MAKENAME)
 	@echo 'TARGET_FIX_SGS_MF_WK_PSF =  $$(BUILDDIR)/$(TARGET_FIX_SGS_MF_WK_PSF)'    >> $(MAKENAME)
+	@echo 'TARGET_UPDATE_PSF_BIN = $$(BUILDDIR)/$(TARGET_UPDATE_PSF_BIN)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo psf_utils: \
 	'$$(TARGET_PSF_2_VTK)      $$(TARGET_PSF_AVES)'     \
 	'$$(TARGET_PSF_RANGE_AVES) $$(TARGET_LINE_ON_PSF)'  \
-	'$$(TARGET_DBENCH_ON_PSF)' >> $(MAKENAME)
+	'$$(TARGET_DBENCH_ON_PSF)  $$(TARGET_UPDATE_PSF_BIN)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
@@ -162,6 +169,14 @@ target_task:
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_PSF_2_VTK)' \
 	'$$(MOD_PSF_2_VTK)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_UPDATE_PSF_BIN)': '$$(MOD_UPDATE_PSF_BIN)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_UPDATE_PSF_BIN)' \
+	'$$(MOD_UPDATE_PSF_BIN)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_PSF_AVES)': '$$(MOD_PSF_AVES)' \
@@ -260,6 +275,8 @@ lib_name:
 mod_list:
 	@echo  MOD_PSF_2_VTK =  \\       >> $(MAKENAME)
 	@echo  $(MOD_PSF_2_VTK)          >> $(MAKENAME)
+	@echo  MOD_UPDATE_PSF_BIN =  \\  >> $(MAKENAME)
+	@echo  $(MOD_UPDATE_PSF_BIN)     >> $(MAKENAME)
 	@echo  MOD_PSF_AVES =  \\        >> $(MAKENAME)
 	@echo  $(MOD_PSF_AVES)           >> $(MAKENAME)
 	@echo  MOD_PSF_RANGE_AVES =  \\  >> $(MAKENAME)

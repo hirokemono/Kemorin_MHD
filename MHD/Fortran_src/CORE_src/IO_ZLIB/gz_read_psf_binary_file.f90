@@ -11,17 +11,12 @@
 !!      subroutine gz_read_alloc_psf_bin_file                           &
 !!     &         (gzip_name, nprocs, t_IO, ucd_z)
 !!      subroutine gz_read_alloc_iso_bin_file(gzip_name, t_IO, ucd_z)
-!!      subroutine gz_rd_alloc_nostep_psf_b_file                        &
-!!     &         (gzip_name, nprocs, ucd_z)
-!!      subroutine gz_rd_alloc_nostep_iso_b_file(gzip_name, ucd_z)
 !!        character(len = kchara), intent(in) :: gzip_name
 !!        type(ucd_data), intent(inout) :: ucd_z
 !!
 !!      subroutine gz_read_psf_bin_grid(gzip_name, nprocs, ucd_z)
 !!      subroutine gz_read_psf_bin_file(gzip_name, nprocs, t_IO, ucd_z)
 !!      subroutine gz_read_iso_bin_file(gzip_name, t_IO, ucd_z)
-!!      subroutine gz_read_nostep_psf_bin_file(gzip_name, nprocs, ucd_z)
-!!      subroutine gz_read_nostep_iso_bin_file(gzip_name, ucd_z)
 !!        character(len = kchara), intent(in) :: gzip_name
 !!        type(ucd_data), intent(inout) :: ucd_z
 !!@endverbatim
@@ -130,67 +125,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gz_rd_alloc_nostep_psf_b_file                          &
-     &         (gzip_name, nprocs, ucd_z)
-!
-      use gz_binary_IO
-      use gzip_file_access
-      use gz_read_udt_from_bin_data
-!
-      character(len = kchara), intent(in) :: gzip_name
-      integer, intent(in) :: nprocs
-      type(ucd_data), intent(inout) :: ucd_z
-!
-      integer :: nprocs2
-!
-!
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      allocate(itmp1_mp(nprocs))
-!
-      call gz_read_one_integer_b(zbuf_ucd, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-!
-      call gz_read_alloc_psf_bin_fld_data                               &
-     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
-      call close_gzfile_b
-      deallocate(itmp1_mp)
-!
-      end subroutine gz_rd_alloc_nostep_psf_b_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine gz_rd_alloc_nostep_iso_b_file(gzip_name, ucd_z)
-!
-      use gz_binary_IO
-      use gzip_file_access
-      use gz_read_udt_from_bin_data
-!
-      character(len = kchara), intent(in) :: gzip_name
-      type(ucd_data), intent(inout) :: ucd_z
-!
-      integer :: nprocs, nprocs2
-!
-!
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      call gz_read_one_integer_b(zbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
-!
-      call gz_read_alloc_psf_bin_grid_data                              &
-     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
-!
-      call gz_read_one_integer_b(zbuf_ucd, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-!
-      call gz_read_alloc_psf_bin_fld_data                               &
-     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
-      call close_gzfile_b
-      deallocate(itmp1_mp)
-!
-      end subroutine gz_rd_alloc_nostep_iso_b_file
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine gz_read_psf_bin_grid(gzip_name, nprocs, ucd_z)
 !
       use gz_binary_IO
@@ -267,64 +201,6 @@
       deallocate(itmp1_mp)
 !
       end subroutine gz_read_iso_bin_file
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine gz_read_nostep_psf_bin_file(gzip_name, nprocs, ucd_z)
-!
-      use gz_binary_IO
-      use gzip_file_access
-      use gz_read_udt_from_bin_data
-!
-      character(len = kchara), intent(in) :: gzip_name
-      integer, intent(in) :: nprocs
-      type(ucd_data), intent(inout) :: ucd_z
-!
-      integer :: nprocs2
-!
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      allocate(itmp1_mp(nprocs))
-!
-      call gz_read_one_integer_b(zbuf_ucd, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-!
-      call gz_read_psf_bin_field_data                                   &
-     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
-      call close_gzfile_b
-      deallocate(itmp1_mp)
-!
-      end subroutine gz_read_nostep_psf_bin_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine gz_read_nostep_iso_bin_file(gzip_name, ucd_z)
-!
-      use gz_binary_IO
-      use gzip_file_access
-      use gz_read_udt_from_bin_data
-!
-      character(len = kchara), intent(in) :: gzip_name
-      type(ucd_data), intent(inout) :: ucd_z
-!
-      integer :: nprocs, nprocs2
-!
-!
-      call open_rd_gzfile_b(gzip_name, izero, zbuf_ucd)
-      call gz_read_one_integer_b(zbuf_ucd, nprocs)
-      allocate(itmp1_mp(nprocs))
-!
-      call gz_read_psf_bin_grid_data(nprocs, ucd_z, zbuf_ucd, itmp1_mp)
-!
-      call gz_read_one_integer_b(zbuf_ucd, nprocs2)
-      if(nprocs2 .ne. nprocs) stop 'Wrong mesh and field data'
-!
-      call gz_read_psf_bin_field_data                                   &
-     &   (nprocs, ucd_z, zbuf_ucd, itmp1_mp)
-      call close_gzfile_b
-      deallocate(itmp1_mp)
-!
-      end subroutine gz_read_nostep_iso_bin_file
 !
 !  ---------------------------------------------------------------------
 !

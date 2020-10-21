@@ -58,9 +58,6 @@
 !>      flag for binary data for Sectioning
       character(len = kchara), parameter :: psf_name(1) = (/'PSF'/)
 !
-!>      flag for binary data for old format
-      character(len = kchara), parameter :: old_name(1) = (/'old'/)
-!
 !>      flag parts for field data
       character(len = kchara), parameter :: field_flg(2)                &
      &                        = (/'field ', 'fld   '/)
@@ -104,10 +101,6 @@
 !!        'PSF' 
       type(multi_flag_labels), save :: psf_flags
 !
-!>     Character lables for old format flag
-!!        'old' 
-      type(multi_flag_labels), save :: old_flags
-!
 !>      flag parts for gzipped field data format
 !!        'gzip', 'gz', 'field_gzip', 'field_gz', 'fld_gzip', 'fld_gz',
 !!        'gzip_field', 'gzip_fld', 'gz_field', 'gz_fld' 
@@ -139,23 +132,6 @@
 !!       'PSF_gzip', 'PSF_gz', 'gzip_PSF', 'gz_PSF' 
       type(multi_flag_labels), save :: psf_gz_flags
 !
-!
-!>     Character lables for gzipped sections binary
-!!       'PSF_old', 'old_PSF' 
-      type(multi_flag_labels), save :: old_psf_flags
-!>     Character lables for gzipped sections binary
-!!       'PSF_old', 'old_PSF' 
-      type(multi_flag_labels), save :: old_iso_flags
-!
-!>     Character lables for gzipped sections binary
-!!       'old_PSF_gzip', 'old_PSF_gz', 'old_gzip_PSF', 'old_gz_PSF' 
-!!       'PSF_gzip_old', 'PSF_gz_old', 'gzip_PSF_old', 'gz_PSF_old' 
-      type(multi_flag_labels), save :: old_psf_gz_flags
-!>     Character lables for gzipped sections binary
-!!       'old_ISO_gzip', 'old_ISO_gz', 'old_gzip_ISO', 'old_gz_ISO' 
-!!       'ISO_gzip_old', 'ISO_gz_old', 'gzip_ISO_old', 'gz_ISO_old' 
-      type(multi_flag_labels), save :: old_iso_gz_flags
-!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -186,8 +162,6 @@
       call init_multi_flags_by_labels(ione, iso_name, iso_flags)
       call init_multi_flags_by_labels(ione, psf_name, psf_flags)
 !
-      call init_multi_flags_by_labels(ione, old_name, old_flags)
-!
       call init_from_two_kinds_flags                                    &
      &   (field_labels, gzip_flags, field_gz_labels, icou)
       call append_multi_flag_labels(gzip_flags, field_gz_labels)
@@ -209,16 +183,6 @@
       call init_from_two_kinds_flags                                    &
      &   (psf_flags, gzip_flags, psf_gz_flags, icou)
 !
-      call init_from_two_kinds_flags                                    &
-     &   (psf_flags, old_flags, old_psf_flags, icou)
-      call init_from_two_kinds_flags                                    &
-     &   (iso_flags, old_flags, old_iso_flags, icou)
-!
-      call init_from_two_kinds_flags                                    &
-     &   (psf_gz_flags, old_flags, old_psf_gz_flags, icou)
-      call init_from_two_kinds_flags                                    &
-     &   (iso_gz_flags, old_flags, old_iso_gz_flags, icou)
-!
       end subroutine init_field_type_flags
 !
 ! -----------------------------------------------------------------------
@@ -238,7 +202,6 @@
       call dealloc_multi_flags(vtd_flags)
       call dealloc_multi_flags(iso_flags)
       call dealloc_multi_flags(psf_flags)
-      call dealloc_multi_flags(old_flags)
 !
       call dealloc_multi_flags(field_gz_labels)
       call dealloc_multi_flags(fbin_gz_labels)
@@ -249,11 +212,6 @@
       call dealloc_multi_flags(vtd_gz_flags)
       call dealloc_multi_flags(iso_gz_flags)
       call dealloc_multi_flags(psf_gz_flags)
-!
-      call dealloc_multi_flags(old_psf_flags)
-      call dealloc_multi_flags(old_iso_flags)
-      call dealloc_multi_flags(old_psf_gz_flags)
-      call dealloc_multi_flags(old_iso_gz_flags)
 !
       end subroutine dealloc_field_type_flags
 !

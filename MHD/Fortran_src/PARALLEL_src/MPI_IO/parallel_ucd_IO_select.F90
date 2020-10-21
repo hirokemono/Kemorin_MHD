@@ -153,11 +153,6 @@
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin) then
         call write_ucd_phys_mpi_b(file_name, t_IO, ucd)
 !
-      else if(ucd_param%iflag_format .eq. iflag_old_ucd_bin) then
-        call write_ucd_file_nostep_mpi_b(file_name, ucd)
-      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
-        call write_ucd_phys_nostep_mpi_b(file_name, ucd)
-!
 #ifdef ZLIB_IO
       else if(ucd_param%iflag_format .eq. iflag_sgl_gz) then
         call gz_write_ucd_field_file_mpi(file_name, t_IO, ucd)
@@ -170,11 +165,6 @@
       else if(ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin_gz) then
         call gz_write_ucd_phys_mpi_b(file_name, t_IO, ucd)
-!
-      else if(ucd_param%iflag_format .eq. iflag_old_ucd_bin_gz) then
-        call gz_write_ucd_file_notime_mpi_b(file_name, ucd)
-      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
-        call gz_write_ucd_phys_notime_mpi_b(file_name, ucd)
 !
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtk_gz) then
         call gz_write_vtk_file_mpi(file_name, ucd)
@@ -263,15 +253,9 @@
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin) then
         call write_ucd_grid_mpi_b(file_name, ucd)
 !
-      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin) then
-        call write_ucd_grid_mpi_b(file_name, ucd)
-!
 #ifdef ZLIB_IO
       else if(ucd_param%iflag_format .eq. iflag_udt_bin_gz              &
      &   .or. ucd_param%iflag_format .eq. iflag_sgl_udt_bin_gz) then
-        call gz_write_ucd_grid_mpi_b(file_name, ucd)
-!
-      else if(ucd_param%iflag_format .eq. iflag_old_udt_bin_gz) then
         call gz_write_ucd_grid_mpi_b(file_name, ucd)
 !
       else if (ucd_param%iflag_format .eq. iflag_sgl_vtd_gz) then
