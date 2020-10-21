@@ -91,10 +91,11 @@ static void set_fline_data_by_UCD(struct psf_data *fline_s, struct psf_data *ucd
      check_psf_min_max_c(fline_s);
      */
 	return;
-}
+};
 
 void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct psf_menu_val *psf_m){
 	int iflag_datatype;
+    double time;
 	
 	if(psf_m->iflag_psf_file == IFLAG_SURF_UDT
 	   || psf_m->iflag_psf_file == IFLAG_SURF_UDT_GZ
@@ -104,7 +105,7 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 	   || psf_m->iflag_psf_file == IFLAG_SURF_SDT_GZ){
 		iflag_datatype = check_gzip_psf_grd_first(psf_m->iflag_psf_file, 
                                                   psf_m->psf_header->string, ucd_tmp);
-		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, &psf_m->time, 
+		check_gzip_psf_udt_first(psf_m->iflag_psf_file, psf_m->psf_step, &time, 
                                  psf_m->psf_header->string, ucd_tmp);
 	} else if(psf_m->iflag_psf_file == IFLAG_SURF_UCD
 			  || psf_m->iflag_psf_file == IFLAG_SURF_UCD_GZ
@@ -112,9 +113,11 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 			  || psf_m->iflag_psf_file == IFLAG_SURF_VTK_GZ
 			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN
 			  || psf_m->iflag_psf_file == IFLAG_PSF_BIN_GZ){
-		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, &psf_m->time, 
+		iflag_datatype = check_gzip_kemoview_ucd_first(psf_m->iflag_psf_file, psf_m->psf_step, &time, 
                                                        psf_m->psf_header->string, ucd_tmp);
 	}
+    
+    set_iflag_draw_time(time, psf_m);
     deallc_all_psf_data(psf_s);
     set_psf_data_by_UCD(psf_s, ucd_tmp);
     return;
@@ -122,8 +125,9 @@ void evolution_PSF_data(struct psf_data *psf_s, struct psf_data *ucd_tmp, struct
 
 int refresh_FLINE_data(struct psf_data *fline_s, struct psf_data *ucd_tmp, struct fline_menu_val *fline_m){
 	int iflag_datatype;
+    double time;
 	
-	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, fline_m->fline_step, fline_m->time, 
+	iflag_datatype = check_gzip_kemoview_ucd_first(fline_m->iformat_fline_file, fline_m->fline_step, &time, 
                                                    fline_m->fline_header->string, ucd_tmp);
 	if (iflag_datatype == IFLAG_SURFACES){
 		dealloc_psf_data_s(ucd_tmp);

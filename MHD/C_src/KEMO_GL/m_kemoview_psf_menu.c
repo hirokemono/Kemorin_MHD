@@ -237,3 +237,16 @@ int get_curent_PSF_filename(struct kemo_array_control *psf_a){return psf_a->id_c
 int get_PSF_draw_switch(struct kemo_array_control *psf_a){
 	return psf_a->iflag_loaded[psf_a->id_current];
 };
+
+void set_iflag_draw_time(double time, struct psf_menu_val *psf_m){
+    if(   psf_m->iflag_psf_file == IFLAG_PSF_BIN
+       || psf_m->iflag_psf_file == IFLAG_PSF_BIN_GZ
+       || psf_m->iflag_psf_file == IFLAG_SURF_SDT
+       || psf_m->iflag_psf_file == IFLAG_SURF_SDT_GZ){
+		psf_m->iflag_draw_time = 1;
+		psf_m->time = time;
+    }else{
+		psf_m->iflag_draw_time = 0;
+    }
+	return;
+}

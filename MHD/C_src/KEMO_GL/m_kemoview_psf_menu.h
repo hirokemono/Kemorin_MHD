@@ -133,4 +133,6 @@ int get_curent_PSF_filename(struct kemo_array_control *psf_a);
 
 int get_PSF_draw_switch(struct kemo_array_control *psf_a);
 
+void set_iflag_draw_time(double time, struct psf_menu_val *psf_m);
+
 #endif
