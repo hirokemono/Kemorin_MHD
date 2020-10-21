@@ -479,6 +479,8 @@
 	}else {
 		self.psfMoreOpenFlag = 0;
 	}
+    [_kemoviewControl TimeLabelAvaiability];
+    [_kemoviewControl FileStepLabelAvaiability];
     
     [self SetCurrentPSFFile];
 };
@@ -561,6 +563,8 @@
         [self ReadPsfFile:PsfOpenFilename];
 	};	
                                  }];
+    [_kemoviewControl TimeLabelAvaiability];
+    [_kemoviewControl FileStepLabelAvaiability];
 }
 
 
@@ -575,6 +579,8 @@
         [self SetCurrentPsfMenu];
     };
     [_kemoviewControl Set3DView];
+    [_kemoviewControl TimeLabelAvaiability];
+    [_kemoviewControl FileStepLabelAvaiability];
 	[_kemoviewer UpdateImage];
 };
 

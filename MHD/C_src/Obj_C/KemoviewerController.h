@@ -50,6 +50,12 @@
 	NSInteger fInfo;
 	NSInteger fAnimate;
 	NSInteger fDrawHelp;
+
+    
+    NSInteger timeDisplayAccess;
+    NSInteger fileStepDisplayAccess;
+    NSInteger timeDisplayFlag;
+    NSInteger fileStepDisplayFlag;
 }
 
 @property CGFloat ColorLoopCount;
@@ -61,6 +67,10 @@
 @property NSInteger StereoFlag;
 @property CGFloat coastlineRadius;
 @property NSInteger psfTexTureEnable;
+@property NSInteger timeDisplayAccess;
+@property NSInteger fileStepDisplayAccess;
+@property NSInteger timeDisplayFlag;
+@property NSInteger fileStepDisplayFlag;
 
 
 - (id)init;
@@ -91,5 +101,11 @@
 -(IBAction) ToggleAnimate: (id) sender;
 -(IBAction) Toggleinfo: (id) sender;
 -(IBAction) ToggleQuickhelp: (id) sender;
+
+- (void) TimeLabelAvaiability;
+- (void) FileStepLabelAvaiability;
+
+- (IBAction)TimeLabelSwitchAction:(id)sender;
+- (IBAction)FileStepLabelSwitchAction:(id)sender;
 
 @end

@@ -201,9 +201,9 @@ void kemoview_set_object_property_flags(int selected, int iflag){
     }else if(selected == POLYGON_SWITCH){
         set_polygon_mode(iflag, kemo_sgl->kemo_mesh->mesh_m);
     }else if(selected == TIME_LABEL_SWITCH){
-		printf("Set time label switch %d \n", iflag);
+        set_draw_time_flag(iflag, kemo_sgl->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_SWITCH){
-        printf("Set file step label switch %d \n", iflag);
+        set_draw_file_step_flag(iflag, kemo_sgl->kemo_psf);
     };
 	return;
 }
@@ -220,9 +220,13 @@ int kemoview_get_object_property_flags(int selected){
     }else if(selected == POLYGON_SWITCH){
         return kemo_sgl->kemo_mesh->mesh_m->polygon_mode;
     }else if(selected == TIME_LABEL_SWITCH){
-        printf("Get time label switch %d \n", 0);
+        return get_draw_time_flag(kemo_sgl->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_SWITCH){
-        printf("Get file step label switch %d \n", 0);
+        return get_draw_file_step_flag(kemo_sgl->kemo_psf);
+    }else if(selected == TIME_LABEL_AVAIL){
+        return get_avail_time_flag(kemo_sgl->kemo_psf);
+    }else if(selected == FILE_STEP_LABEL_AVAIL){
+        return get_avail_file_step_flag(kemo_sgl->kemo_psf);
     };
 	return 0;
 }
@@ -237,11 +241,12 @@ int kemoview_toggle_object_properties(int selected){
     }else if(selected == SHADING_SWITCH){
 		kemo_sgl->view_s->shading_mode = toggle_value_c(kemo_sgl->view_s->shading_mode);
 		return kemo_sgl->view_s->shading_mode;
-	}else if(selected == POLYGON_SWITCH) {return toggle_polygon_mode(kemo_sgl->kemo_mesh->mesh_m);
+	}else if(selected == POLYGON_SWITCH){
+        return toggle_polygon_mode(kemo_sgl->kemo_mesh->mesh_m);
     }else if(selected == TIME_LABEL_SWITCH){
-        printf("toggle time label switch %d \n", 0);
+        return toggle_draw_time_flag(kemo_sgl->kemo_psf);
     }else if(selected == FILE_STEP_LABEL_SWITCH){    
-        printf("toggle file step label switch %d \n", 0);
+        return toggle_draw_file_step_flag(kemo_sgl->kemo_psf);
     };
 	return 0;
 }

@@ -43,11 +43,6 @@
 	NSInteger RotationAxisID;
 	NSInteger RotationIncrement;
 	IBOutlet id rotationAxis;
-    
-    NSInteger timeDisplayAccess;
-    NSInteger fileStepDisplayAccess;
-    NSInteger timeDisplayFlag;
-    NSInteger fileStepDisplayFlag;
 }
 @property NSInteger MovieFormatFlag;
 @property NSInteger FramePerSecond;
@@ -57,10 +52,6 @@
 @property NSInteger EvolutionEndStep;
 @property NSInteger EvolutionIncrement;
 @property NSInteger CurrentStep;
-@property NSInteger timeDisplayAccess;
-@property NSInteger fileStepDisplayAccess;
-@property NSInteger timeDisplayFlag;
-@property NSInteger fileStepDisplayFlag;
 
 -(id) init;
 -(CVPixelBufferRef)pixelBufferFromCGImage:(CGImageRef)image;
@@ -84,8 +75,5 @@
 - (IBAction)getMovieFormatFlag:(id)sender;
 - (IBAction)SetEvolutionSteps:(id)sender;
 - (IBAction)ChooseRotateAxis:(id)sender;
-
-- (IBAction)TimeLabelSwitchAction:(id)sender;
-- (IBAction)FileStepLabelSwitchAction:(id)sender;
 
 @end

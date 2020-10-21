@@ -289,6 +289,13 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 				kemo_VAOs->cbar_VAO);
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
 	
+    if(kemo_psf->psf_a->iflag_draw_time){
+        printf("Draw time %le \n", kemo_psf->psf_a->time_disp);
+    }
+    if(kemo_psf->psf_a->iflag_draw_file_step){
+        printf("Draw file index %d \n", kemo_psf->psf_a->file_step_disp);
+    }
+    
     /* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
 	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,

@@ -50,6 +50,8 @@
 #define SET_COAST_RADIUS      300
 #define FILE_STEP_LABEL_SWITCH  9
 #define TIME_LABEL_SWITCH      10
+#define FILE_STEP_LABEL_AVAIL  11
+#define TIME_LABEL_AVAIL       12
 
 #define MESH_OFF          100
 #define SURFNOD_TOGGLE    1

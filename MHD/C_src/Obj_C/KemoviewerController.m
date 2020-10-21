@@ -18,11 +18,18 @@
 @synthesize StereoFlag;
 @synthesize coastlineRadius;
 @synthesize psfTexTureEnable;
+@synthesize timeDisplayFlag;
+@synthesize fileStepDisplayFlag;
+@synthesize timeDisplayAccess;
+@synthesize fileStepDisplayAccess;
 - (id)init
 {
 	NodeSizeFactor =  1;
 	NodeSizedigits = -2;
 	ColorLoopCount =  6;
+    
+    self.timeDisplayAccess =     0;
+    self.fileStepDisplayAccess = 0;
 	
 	fAnimate = 0;
 	return self;
@@ -202,5 +209,33 @@
 	fDrawHelp = 1 - fDrawHelp;
 	[_kemoviewer setQuickHelp:fDrawHelp];
 }
+
+- (void) TimeLabelAvaiability
+{
+    self.timeDisplayAccess = kemoview_get_object_property_flags(TIME_LABEL_AVAIL);
+}
+- (void) FileStepLabelAvaiability
+{
+    self.fileStepDisplayAccess = kemoview_get_object_property_flags(FILE_STEP_LABEL_AVAIL);
+}
+
+- (IBAction)TimeLabelSwitchAction:(id)sender{
+    self.timeDisplayFlag = kemoview_toggle_object_properties(TIME_LABEL_SWITCH);
+    if(self.timeDisplayFlag > 0){
+        self.fileStepDisplayFlag = 0;
+        kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
+    };
+    [_kemoviewer UpdateImage];
+};
+
+- (IBAction)FileStepLabelSwitchAction:(id)sender{
+    self.fileStepDisplayFlag = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH);
+    if(self.fileStepDisplayFlag > 0){
+        self.timeDisplayFlag = 0;
+        kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
+    };
+    [_kemoviewer UpdateImage];
+};
+
 
 @end
