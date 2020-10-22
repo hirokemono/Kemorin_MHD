@@ -40,8 +40,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 		kemo_VAOs->grid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
-	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
-	for(i=0;i<4;i++){
+	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(3*sizeof(struct VAO_ids *));
+	for(i=0;i<3;i++){
 		kemo_VAOs->cbar_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
@@ -82,7 +82,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	};
 	free(kemo_VAOs->grid_VAO);
 
-	for(i=0;i<4;i++){
+	for(i=0;i<3;i++){
 		free(kemo_VAOs->cbar_VAO[i]);
 	};
 	free(kemo_VAOs->cbar_VAO);
@@ -95,57 +95,29 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 };
 
 void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
-	glGenVertexArrays(1, &kemo_VAOs->grid_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->grid_VAO[1]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->grid_VAO[2]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->fline_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->fline_VAO[1]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[1]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[3]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[2]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[1]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[2]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[1]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[0]->id_VAO);
+    int i;
+    for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->grid_VAO[i]->id_VAO);};
+    for(i=0;i<2;i++){glGenVertexArrays(1, &kemo_VAOs->fline_VAO[i]->id_VAO);};
+    for(i=0;i<4;i++){glGenVertexArrays(1, &kemo_VAOs->psf_solid_VAO[i]->id_VAO);};
+    for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->mesh_solid_VAO[i]->id_VAO);};
+    for(i=0;i<2;i++){glGenVertexArrays(1, &kemo_VAOs->psf_trans_VAO[i]->id_VAO);};
 	glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[1]->id_VAO);
-    glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[2]->id_VAO);
-    glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[3]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->map_VAO[0]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->map_VAO[1]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->map_VAO[2]->id_VAO);
-	glGenVertexArrays(1, &kemo_VAOs->map_VAO[3]->id_VAO);
+    for(i=0;i<3;i++){glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[i]->id_VAO);};
+    for(i=0;i<4;i++){glGenVertexArrays(1, &kemo_VAOs->map_VAO[i]->id_VAO);};
     glGenVertexArrays(1, &kemo_VAOs->cube_VAO->id_VAO);
     glGenVertexArrays(1, &kemo_VAOs->msg_VAO->id_VAO);
 };
 
 void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
-	Destroy_VAO(kemo_VAOs->grid_VAO[0]);
-	Destroy_VAO(kemo_VAOs->grid_VAO[1]);
-	Destroy_VAO(kemo_VAOs->grid_VAO[2]);
-	Destroy_VAO(kemo_VAOs->fline_VAO[0]);
-	Destroy_VAO(kemo_VAOs->fline_VAO[1]);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[1]);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[0]);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[3]);
-	Destroy_VAO(kemo_VAOs->psf_solid_VAO[2]);
-	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[1]);
-	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[2]);
-	Destroy_VAO(kemo_VAOs->mesh_solid_VAO[0]);
-	Destroy_VAO(kemo_VAOs->psf_trans_VAO[1]);
-	Destroy_VAO(kemo_VAOs->psf_trans_VAO[0]);
+    int i;
+    for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->grid_VAO[i]);};
+    for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->fline_VAO[i]);};
+    for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->psf_solid_VAO[i]);};
+    for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->mesh_solid_VAO[i]);};
+    for(i=0;i<2;i++){Destroy_VAO(kemo_VAOs->psf_trans_VAO[i]);};
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
-	Destroy_VAO(kemo_VAOs->cbar_VAO[0]);
-	Destroy_VAO(kemo_VAOs->cbar_VAO[1]);
-    Destroy_VAO(kemo_VAOs->cbar_VAO[2]);
-    Destroy_VAO(kemo_VAOs->cbar_VAO[3]);
-	Destroy_VAO(kemo_VAOs->map_VAO[0]);
-	Destroy_VAO(kemo_VAOs->map_VAO[1]);
-	Destroy_VAO(kemo_VAOs->map_VAO[2]);
-	Destroy_VAO(kemo_VAOs->map_VAO[3]);
+    for(i=0;i<3;i++){Destroy_VAO(kemo_VAOs->cbar_VAO[i]);};
+    for(i=0;i<4;i++){Destroy_VAO(kemo_VAOs->map_VAO[i]);};
     Destroy_VAO(kemo_VAOs->cube_VAO);
     Destroy_VAO(kemo_VAOs->msg_VAO);
 };
@@ -196,8 +168,16 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 	};
 	
     /* Draw Color bar */
-	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
+	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, &kemo_VAOs->cbar_VAO[0], kemo_shaders);
 	
+    /* Draw time label */
+    if(kemo_psf->psf_a->iflag_draw_time){
+        draw_timelabel_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
+    }
+    if(kemo_psf->psf_a->iflag_draw_file_step){
+        draw_timelabel_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
+    }
+
     /* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
 	    draw_message_VAO(kemo_mesh->msg_wk, kemo_VAOs->msg_VAO, kemo_shaders);
@@ -290,14 +270,23 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 	set_colorbar_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
 				kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
 				kemo_psf->psf_m, kemo_psf->psf_a,
-				kemo_VAOs->cbar_VAO);
-	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO, kemo_shaders);
+				&kemo_VAOs->cbar_VAO[0]);
+	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, &kemo_VAOs->cbar_VAO[0], kemo_shaders);
 	
+    /* Draw time label */
     if(kemo_psf->psf_a->iflag_draw_time){
-        printf("Draw time %le \n", kemo_psf->psf_a->time_disp);
+        set_timelabel_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
+                         kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
+                         kemo_psf->psf_m, kemo_psf->psf_a,
+                         kemo_VAOs->cbar_VAO[2]);
+        draw_timelabel_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
     }
     if(kemo_psf->psf_a->iflag_draw_file_step){
-        printf("Draw file index %d \n", kemo_psf->psf_a->file_step_disp);
+        set_timelabel_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
+                         kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
+                         kemo_psf->psf_m, kemo_psf->psf_a,
+                         kemo_VAOs->cbar_VAO[2]);
+        draw_timelabel_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
     }
     
     /* Draw message */
