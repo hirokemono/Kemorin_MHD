@@ -40,8 +40,8 @@ struct kemoview_VAOs * init_kemoview_VAOs(void){
 		kemo_VAOs->grid_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
-	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(2*sizeof(struct VAO_ids *));
-	for(i=0;i<2;i++){
+	kemo_VAOs->cbar_VAO = (struct VAO_ids **) malloc(4*sizeof(struct VAO_ids *));
+	for(i=0;i<4;i++){
 		kemo_VAOs->cbar_VAO[i] = (struct VAO_ids *) malloc(sizeof(struct VAO_ids));
 	};
 	
@@ -82,7 +82,7 @@ void dealloc_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	};
 	free(kemo_VAOs->grid_VAO);
 
-	for(i=0;i<2;i++){
+	for(i=0;i<4;i++){
 		free(kemo_VAOs->cbar_VAO[i]);
 	};
 	free(kemo_VAOs->cbar_VAO);
@@ -112,6 +112,8 @@ void assign_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	glGenVertexArrays(1, &kemo_VAOs->mesh_trans_VAO->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[1]->id_VAO);
+    glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[2]->id_VAO);
+    glGenVertexArrays(1, &kemo_VAOs->cbar_VAO[3]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->map_VAO[0]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->map_VAO[1]->id_VAO);
 	glGenVertexArrays(1, &kemo_VAOs->map_VAO[2]->id_VAO);
@@ -138,6 +140,8 @@ void clear_kemoview_VAOs(struct kemoview_VAOs *kemo_VAOs){
 	Destroy_VAO(kemo_VAOs->mesh_trans_VAO);
 	Destroy_VAO(kemo_VAOs->cbar_VAO[0]);
 	Destroy_VAO(kemo_VAOs->cbar_VAO[1]);
+    Destroy_VAO(kemo_VAOs->cbar_VAO[2]);
+    Destroy_VAO(kemo_VAOs->cbar_VAO[3]);
 	Destroy_VAO(kemo_VAOs->map_VAO[0]);
 	Destroy_VAO(kemo_VAOs->map_VAO[1]);
 	Destroy_VAO(kemo_VAOs->map_VAO[2]);
