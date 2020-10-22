@@ -58,6 +58,8 @@ void alloc_psfs_sorting_list(struct kemo_array_control *psf_a){
     psf_a->iele_viz_far = (int *)calloc(psf_a->ntot_psf_patch,sizeof(int));
     
     psf_a->cbar_wk = alloc_colorbar_position();
+    psf_a->timelabel_wk = alloc_message_work();
+    psf_a->filecount_wk = alloc_message_work();
     return;
 }
 
@@ -66,6 +68,8 @@ void dealloc_psfs_sorting_list(struct kemo_array_control *psf_a){
     free(psf_a->ipsf_viz_far);
     free(psf_a->iele_viz_far);
     dealloc_colorbar_position(psf_a->cbar_wk);
+    dealloc_message_work(psf_a->timelabel_wk);
+    dealloc_message_work(psf_a->filecount_wk);
 
     return;
 }
@@ -156,7 +160,6 @@ void dealloc_kemoview_array(struct kemo_array_control *psf_a){
     dealloc_psfs_sorting_list(psf_a);
     
 	free(psf_a->iflag_loaded);
-	free(psf_a->cbar_wk);
 	return;
 };
 

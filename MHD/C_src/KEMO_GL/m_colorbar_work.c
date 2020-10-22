@@ -204,36 +204,26 @@ void clear_message_text_image(struct msg_work *msg_wk){
 	return;
 };
 
-void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
+static void set_message_image(int icolor_txt[4], int icolor_mid[4], 
+							  struct msg_work *msg_wk){
 	int i;
-	int icolor_txt[4];
-	int icolor_mid[4];
-	
-	for(i=0;i<3;i++){
-		icolor_txt[i] = 255;
-		icolor_mid[i] = 191;
-	};
-	icolor_txt[3] = 255;
-	icolor_txt[3] = 255;
-	
-    sprintf(msg_wk->minlabel, " Window size:(%4d,%4d)", npixel_x, npixel_y);
 	
 	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_mid[0], icolor_mid[1],
 								 icolor_mid[2], icolor_mid[3], 
-                                 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
+								 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 0, 4, YsFont16x24, 20, 24);
 	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_mid[0], icolor_mid[1],
 								 icolor_mid[2], icolor_mid[3], 
-                                 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
+								 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 0, 6, YsFont16x24, 20, 24);
 	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_mid[0], icolor_mid[1], 
 								 icolor_mid[2], icolor_mid[3], 
-                                 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
+								 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 1, 4, YsFont16x24, 20, 24);
 
 	YsGlWriteStringToRGBA8Bitmap(msg_wk->minlabel, icolor_txt[0], icolor_txt[1], 
 								 icolor_txt[2], icolor_txt[3], 
-                                 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
+								 msg_wk->msgBMP, msg_wk->npix_x, msg_wk->npix_y,
 								 0, 5, YsFont16x24, 20, 24);
 	
 	/* Draw box in the texture */
@@ -275,6 +265,59 @@ void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
 */
 	
 	for(i=0;i<msg_wk->npixel;i++){
-        msg_wk->msgBMP[4*i+3] = (unsigned char) ((float) 255 * msg_wk->message_opacity);
+		msg_wk->msgBMP[4*i+3] = (unsigned char) ((float) 255 * msg_wk->message_opacity);
 	};
+};
+
+
+void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
+	int i;
+	int icolor_txt[4];
+	int icolor_mid[4];
+	
+	for(i=0;i<3;i++){
+		icolor_txt[i] = 255;
+		icolor_mid[i] = 191;
+	};
+	icolor_txt[3] = 255;
+	icolor_txt[3] = 255;
+	
+	sprintf(msg_wk->minlabel, " Window size:(%4d,%4d)", npixel_x, npixel_y);
+	
+	set_message_image(icolor_txt, icolor_mid, msg_wk);
+};
+
+
+void set_time_label_image(double time, struct msg_work *msg_wk){
+	int i;
+	int icolor_txt[4];
+	int icolor_mid[4];
+	
+	for(i=0;i<3;i++){
+		icolor_txt[i] = 255;
+		icolor_mid[i] = 191;
+	};
+	icolor_txt[3] = 255;
+	icolor_txt[3] = 255;
+	
+	sprintf(msg_wk->minlabel, " t = %.4e ", (float) time);
+	
+	set_message_image(icolor_txt, icolor_mid, msg_wk);
+};
+
+void set_file_step_label_image(int file_step, struct msg_work *msg_wk){
+	int i;
+	int icolor_txt[4];
+	int icolor_mid[4];
+	
+	for(i=0;i<3;i++){
+		icolor_txt[i] = 255;
+		icolor_mid[i] = 191;
+	};
+	icolor_txt[3] = 255;
+	icolor_txt[3] = 255;
+	
+	sprintf(msg_wk->minlabel, " File index: %4d", file_step);
+	
+	set_message_image(icolor_txt, icolor_mid, msg_wk);
 };

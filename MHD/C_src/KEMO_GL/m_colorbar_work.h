@@ -85,6 +85,8 @@ void set_message_position(int iflag_retina, int nx_win, int ny_win,
 						  struct msg_work *msg_wk);
 void clear_message_text_image(struct msg_work *msg_wk);
 void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk);
+void set_time_label_image(double time, struct msg_work *msg_wk);
+void set_file_step_label_image(int file_step, struct msg_work *msg_wk);
 
 #endif
 
