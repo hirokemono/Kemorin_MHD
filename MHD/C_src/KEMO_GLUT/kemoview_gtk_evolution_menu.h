@@ -34,6 +34,8 @@ struct evolution_gtk_menu{
 	int iend_evo;
 	int inc_evo;
 	
+	GtkWidget *switch_timelabel;
+	GtkWidget *switch_fileindex;
 	GtkWidget *spin_evo_start;
 	GtkWidget *spin_evo_end;
 	GtkWidget *spin_evo_increment;

@@ -17,6 +17,9 @@ struct evolution_gtk_menu * init_evoluaiton_menu_box(void){
 	evo_gmenu->istart_evo = 0;
 	evo_gmenu->iend_evo =   0;
 	evo_gmenu->inc_evo =    1;
+	
+	kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH);
+	kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH);
 	return evo_gmenu;
 };
 
@@ -33,6 +36,37 @@ static void evolution_view_CB(GtkButton *button, gpointer user_data){
 	write_evolution_views(NO_SAVE_FILE, image_prefix, evo_gmenu->istart_evo, evo_gmenu->iend_evo,
 						  evo_gmenu->inc_evo);
 	kemoview_free_kvstring(image_prefix);
+	return;
+};
+
+static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
+	struct evolution_gtk_menu *evo_gmenu 
+			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
+	if(kemoview_get_object_property_flags(TIME_LABEL_AVAIL) == 0){
+		kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH);
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
+	};
+	if(kemoview_toggle_object_properties(TIME_LABEL_SWITCH) > 0){
+		kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH);
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
+	}else{
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
+	};
+	
+	draw_full();
+	return;
+};
+static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
+	struct evolution_gtk_menu *evo_gmenu 
+			= (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(data), "evolution");
+	int toggle = kemoview_toggle_object_properties(FILE_STEP_LABEL_SWITCH);
+	if(toggle > 0){
+		kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH);
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
+	}
+	
+	draw_full();
 	return;
 };
 
@@ -102,6 +136,7 @@ static void set_evo_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_d
 
 
 GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct evolution_gtk_menu *evo_gmenu){
+	GtkWidget *hbox_axis, *hbox_sph_grid;
     GtkWidget *expand_evo;
     
 	GtkWidget *entry_evo_file = gtk_entry_new();
@@ -134,12 +169,31 @@ GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct e
 				(gpointer) entry_evo_file);
 	
 	
+	evo_gmenu->switch_timelabel = gtk_switch_new();
+	if(kemoview_get_object_property_flags(TIME_LABEL_SWITCH) == 0){
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
+	};
+	g_signal_connect(G_OBJECT(evo_gmenu->switch_timelabel), "notify::active",
+				G_CALLBACK(draw_time_switch_CB), (gpointer)entry_evo_file);
+	
+	evo_gmenu->switch_fileindex = gtk_switch_new();
+	if(kemoview_get_object_property_flags(FILE_STEP_LABEL_SWITCH) == 0){
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
+	} else {
+		gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), TRUE);
+	};
+	g_signal_connect(G_OBJECT(evo_gmenu->switch_fileindex), "notify::active",
+				G_CALLBACK(draw_fileindex_switch_CB), (gpointer)entry_evo_file);
+	
 	GtkWidget *evoView_Button = gtk_button_new_with_label("View Evolution");
 	g_signal_connect(G_OBJECT(evoView_Button), "clicked", 
 					 G_CALLBACK(evolution_view_CB), (gpointer)entry_evo_file);
 	GtkWidget *evoSave_Button = gtk_button_new_with_label("Save Evolution");
 	g_signal_connect(G_OBJECT(evoSave_Button), "clicked", 
 					 G_CALLBACK(evolution_save_CB), (gpointer)entry_evo_file);
+	
 	
 	evo_gmenu->istart_evo = istep;
 	evo_gmenu->iend_evo =   istep;
@@ -159,6 +213,14 @@ GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct e
 	g_signal_connect(evo_gmenu->spin_evo_increment, "value-changed", 
 					 G_CALLBACK(evo_increment_CB), (gpointer)entry_evo_file);
 	
+	
+	GtkWidget *hbox_time = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_time), gtk_label_new("Draw time: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_time), evo_gmenu->switch_timelabel, FALSE, FALSE, 0);
+	
+	GtkWidget *hbox_fileindex = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_pack_start(GTK_BOX(hbox_fileindex), gtk_label_new("Draw file step: "), FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox_fileindex), evo_gmenu->switch_fileindex, FALSE, FALSE, 0);
 	
 	GtkWidget *hbox_evo_start = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_pack_start(GTK_BOX(hbox_evo_start), gtk_label_new("Start step: "), TRUE, TRUE, 0);
@@ -185,6 +247,8 @@ GtkWidget * init_evoluaiton_menu_expander(int istep, GtkWidget *window, struct e
 	
 	
     GtkWidget *evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	gtk_box_pack_start(GTK_BOX(evo_box), hbox_time, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(evo_box), hbox_fileindex, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_start, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_end, FALSE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(evo_box), hbox_evo_increment, FALSE, TRUE, 0);
