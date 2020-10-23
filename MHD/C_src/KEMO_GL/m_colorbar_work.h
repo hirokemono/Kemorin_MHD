@@ -48,6 +48,20 @@ struct cbar_work{
 	unsigned char *testBMP;
 };
 
+struct tlabel_work{
+	float xwin;
+	float ywin;
+	
+	char minlabel[20];
+	
+	int id_texture;
+	int npixel;
+	int npix_x;
+	int npix_y;
+	unsigned char *numBMP;
+	unsigned char *testBMP;
+};
+
 struct msg_work{
     float message_opacity;
     float xwin;
