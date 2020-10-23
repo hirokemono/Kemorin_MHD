@@ -11,8 +11,9 @@
 #include "m_color_table_c.h"
 #include "ysglfontdata.h"
 
-#define IHIGHT_TXT 20
-#define IWIDTH_TXT 140
+#define IHIGHT_TXT     20
+#define IWIDTH_TXT    140
+#define IWIDTH_TLABEL 280
 
 #define IHIGHT_MSG 40
 #define IWIDTH_MSG 488

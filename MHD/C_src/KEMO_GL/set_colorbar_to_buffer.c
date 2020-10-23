@@ -332,10 +332,10 @@ void time_mbox_to_buf(int iflag_retina, float *text_color,
 	float t1[2], t2[2], t3[2], t4[2];
 	int nd;
 	
-	x1[0] = tlabel_wk->xwin - 216.0*(iflag_retina + 1);
+	x1[0] = tlabel_wk->xwin - 188.0*(iflag_retina + 1);
 	x2[0] = tlabel_wk->xwin -   8.0*(iflag_retina + 1);
 	x3[0] = tlabel_wk->xwin -   8.0*(iflag_retina + 1);
-	x4[0] = tlabel_wk->xwin - 216.0*(iflag_retina + 1);
+	x4[0] = tlabel_wk->xwin - 188.0*(iflag_retina + 1);
 	x1[2] = 0.001;
 	x2[2] = 0.001;
 	x3[2] = 0.001;

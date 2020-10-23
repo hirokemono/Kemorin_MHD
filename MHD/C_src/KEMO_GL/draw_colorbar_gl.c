@@ -117,7 +117,7 @@ void set_timelabel_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 		
 		clear_time_text_image(psf_a->tlabel_wk);
 		if(psf_a->iflag_draw_time > 0){
-			sprintf(psf_a->tlabel_wk->minlabel,"t = %5.4E", (float) psf_a->time_disp);
+			sprintf(psf_a->tlabel_wk->minlabel,"    t = %5.4E", (float) psf_a->time_disp);
 		}else if(psf_a->iflag_draw_file_step > 0){
 			sprintf(psf_a->tlabel_wk->minlabel,"File index: %6d", psf_a->file_step_disp);
 		};
