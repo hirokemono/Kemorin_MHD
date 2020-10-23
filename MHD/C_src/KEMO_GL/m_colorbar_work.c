@@ -145,40 +145,6 @@ void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 	return;
 };
 
-void set_time_text_image(float text_color3[3], struct cbar_work *cbar_wk){
-	int i;
-	
-	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 0, 0, YsFont12x16, 14, 16);
-	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 0, 2, YsFont12x16, 14, 16);
-	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 191, 191, 191, 191, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 1, 0, YsFont12x16, 14, 16);
-
-	YsGlWriteStringToRGBA8Bitmap(cbar_wk->minlabel, 255, 255, 255, 255, 
-                                 cbar_wk->numBMP, cbar_wk->npix_x, 3*cbar_wk->npix_y,
-								 0, 1, YsFont12x16, 14, 16);
-	
-	/*
-	for(i=0;i<3*cbar_wk->npixel;i++){
-		cbar_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) cbar_wk->numBMP[4*i  ]));
-		cbar_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) cbar_wk->numBMP[4*i+1]));
-		cbar_wk->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) cbar_wk->numBMP[4*i+2]));
-	};
-	pixout_BMP_c("/Users/matsui/Desktop/aho", cbar_wk->npix_x, 3*cbar_wk->npix_y, testBMP);
-	*/
-	
-	for(i=0;i<3*cbar_wk->npixel;i++){
-		cbar_wk->numBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) cbar_wk->numBMP[4*i  ]));
-		cbar_wk->numBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) cbar_wk->numBMP[4*i+1]));
-		cbar_wk->numBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) cbar_wk->numBMP[4*i+2]));
-	};
-	return;
-};
-
 
 struct tlabel_work * alloc_tlabel_work(void){
 	struct tlabel_work *tlabel_wk = (struct tlabel_work *) malloc(sizeof(struct tlabel_work));
@@ -201,6 +167,53 @@ void dealloc_tlabel_work(struct tlabel_work *tlabel_wk){
     free(tlabel_wk);
     return;
 };
+
+void clear_time_text_image(struct tlabel_work *tlabel_wk){
+	int i;
+	
+	for(i=0;i<12*tlabel_wk->npixel;i++){
+		tlabel_wk->numBMP[i] =  0;
+	};
+	for(i=0;i<9*tlabel_wk->npixel;i++){
+		tlabel_wk->testBMP[i] =  0;
+	};
+	return;
+};
+
+void set_time_text_image(float text_color3[3], struct tlabel_work *tlabel_wk){
+	int i;
+	
+	YsGlWriteStringToRGBA8Bitmap(tlabel_wk->minlabel, 191, 191, 191, 191, 
+                                 tlabel_wk->numBMP, tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
+								 0, 0, YsFont12x16, 14, 16);
+	YsGlWriteStringToRGBA8Bitmap(tlabel_wk->minlabel, 191, 191, 191, 191, 
+                                 tlabel_wk->numBMP, tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
+								 0, 2, YsFont12x16, 14, 16);
+	YsGlWriteStringToRGBA8Bitmap(tlabel_wk->minlabel, 191, 191, 191, 191, 
+                                 tlabel_wk->numBMP, tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
+								 1, 0, YsFont12x16, 14, 16);
+
+	YsGlWriteStringToRGBA8Bitmap(tlabel_wk->minlabel, 255, 255, 255, 255, 
+                                 tlabel_wk->numBMP, tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
+								 0, 1, YsFont12x16, 14, 16);
+	
+	/*
+	for(i=0;i<3*tlabel_wk->npixel;i++){
+		tlabel_wk->testBMP[3*i  ] = (unsigned char) (0.8 * (float) ((int) tlabel_wk->numBMP[4*i  ]));
+		tlabel_wk->testBMP[3*i+1] = (unsigned char) (0.2 * (float) ((int) tlabel_wk->numBMP[4*i+1]));
+		tlabel_wk->testBMP[3*i+2] = (unsigned char) (0.4 * (float) ((int) tlabel_wk->numBMP[4*i+2]));
+	};
+	pixout_BMP_c("/Users/matsui/Desktop/aho", tlabel_wk->npix_x, 3*tlabel_wk->npix_y, testBMP);
+	*/
+	
+	for(i=0;i<3*tlabel_wk->npixel;i++){
+		tlabel_wk->numBMP[4*i  ] = (unsigned char) (text_color3[0] * (float) ((int) tlabel_wk->numBMP[4*i  ]));
+		tlabel_wk->numBMP[4*i+1] = (unsigned char) (text_color3[1] * (float) ((int) tlabel_wk->numBMP[4*i+1]));
+		tlabel_wk->numBMP[4*i+2] = (unsigned char) (text_color3[2] * (float) ((int) tlabel_wk->numBMP[4*i+2]));
+	};
+	return;
+};
+
 
 
 struct msg_work * alloc_message_work(void){

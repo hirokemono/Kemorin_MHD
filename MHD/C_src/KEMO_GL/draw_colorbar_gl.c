@@ -53,17 +53,17 @@ static void set_colorbar_text_VAO(int iflag_retina,
 
 static void set_time_text_VAO(int iflag_retina, 
 								  GLfloat text_color[4], GLfloat bg_color[4], 
-								  struct cbar_work *cbar_wk, struct VAO_ids *text_VAO,
+								  struct tlabel_work *tlabel_wk, struct VAO_ids *text_VAO,
 								  struct gl_strided_buffer *cbar_buf){
 	set_buffer_address_4_patch(text_VAO->npoint_draw, cbar_buf);
 	resize_strided_buffer(cbar_buf->num_nod_buf, cbar_buf->ncomp_buf, cbar_buf);
 	
-	time_mbox_to_buf(iflag_retina, text_color, cbar_wk, cbar_buf);
+	time_mbox_to_buf(iflag_retina, text_color, tlabel_wk, cbar_buf);
 	
 	glBindVertexArray(text_VAO->id_VAO);
 	Const_VAO_4_Texture(text_VAO, cbar_buf);
-	cbar_wk->id_texture = set_texture_to_buffer(cbar_wk->npix_x, 3*cbar_wk->npix_y,
-                                                cbar_wk->numBMP);
+	tlabel_wk->id_texture = set_texture_to_buffer(tlabel_wk->npix_x, 3*tlabel_wk->npix_y,
+												  tlabel_wk->numBMP);
 	glBindVertexArray(0);
 	return;
 };
@@ -112,19 +112,19 @@ void set_timelabel_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 		
 	time_VAO->npoint_draw = 0;
 	if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
-		psf_a->cbar_wk->xwin = (float) nx_win;
-		psf_a->cbar_wk->ywin = (float) ny_win;
+		psf_a->tlabel_wk->xwin = (float) nx_win;
+		psf_a->tlabel_wk->ywin = (float) ny_win;
 		
-		clear_colorbar_text_image(psf_a->cbar_wk);
+		clear_time_text_image(psf_a->tlabel_wk);
 		if(psf_a->iflag_draw_time > 0){
-			sprintf(psf_a->cbar_wk->minlabel,"t = %5.4E", (float) psf_a->time_disp);
+			sprintf(psf_a->tlabel_wk->minlabel,"t = %5.4E", (float) psf_a->time_disp);
 		}else if(psf_a->iflag_draw_file_step > 0){
-			sprintf(psf_a->cbar_wk->minlabel,"File index: %6d", psf_a->file_step_disp);
+			sprintf(psf_a->tlabel_wk->minlabel,"File index: %6d", psf_a->file_step_disp);
 		};
-		set_time_text_image(text_color, psf_a->cbar_wk);
+		set_time_text_image(text_color, psf_a->tlabel_wk);
 		time_VAO->npoint_draw = ITHREE*2;
 		set_time_text_VAO(iflag_retina, text_color, bg_color, 
-							  psf_a->cbar_wk, time_VAO, cbar_buf);
+							  psf_a->tlabel_wk, time_VAO, cbar_buf);
 	};
 	free(cbar_buf->v_buf);
 	free(cbar_buf);
@@ -155,19 +155,20 @@ void draw_colorbar_VAO(struct cbar_work *cbar_wk,
 	return;
 }
 
-void draw_timelabel_VAO(struct cbar_work *cbar_wk,
+void draw_timelabel_VAO(struct tlabel_work *tlabel_wk,
 			struct VAO_ids *time_VAO, struct kemoview_shaders *kemo_shaders){
 	double orthogonal[16];
 	if(time_VAO->npoint_draw <= 0) return;
 	
-	orthogonal_glmat_c(0.0, cbar_wk->xwin, 0.0, cbar_wk->ywin, -1.0, 1.0, orthogonal);
+	orthogonal_glmat_c(0.0, tlabel_wk->xwin, 0.0, tlabel_wk->ywin,
+					   -1.0, 1.0, orthogonal);
 	
 	glEnable(GL_BLEND);
 	glEnable(GL_TRUE);
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	glEnable(GL_MULTISAMPLE);
 	
-	draw_textured_2D_box_VAO(cbar_wk->id_texture, orthogonal,
+	draw_textured_2D_box_VAO(tlabel_wk->id_texture, orthogonal,
 							 time_VAO, kemo_shaders);
 	
 	glDisable(GL_BLEND);

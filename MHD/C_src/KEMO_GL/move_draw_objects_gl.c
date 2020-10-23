@@ -171,7 +171,7 @@ static void quick_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_fl
 	draw_colorbar_VAO(kemo_psf->psf_a->cbar_wk, &kemo_VAOs->cbar_VAO[0], kemo_shaders);
 	
 	/* Draw time label */
-	draw_timelabel_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
+	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
 	
     /* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
@@ -273,7 +273,7 @@ static void update_draw_objects(struct kemoview_psf *kemo_psf, struct kemoview_f
 					  kemo_mesh->mesh_m->text_color, kemo_mesh->mesh_m->bg_color, 
 					  kemo_psf->psf_m, kemo_psf->psf_a,
 					  kemo_VAOs->cbar_VAO[2]);
-	draw_timelabel_VAO(kemo_psf->psf_a->cbar_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
+	draw_timelabel_VAO(kemo_psf->psf_a->tlabel_wk, kemo_VAOs->cbar_VAO[2], kemo_shaders);
 	/* Draw message */
     if(kemo_mesh->msg_wk->message_opacity > 0.0){
 	    set_message_VAO(view_s->iflag_retina, view_s->nx_frame, view_s->ny_frame,
