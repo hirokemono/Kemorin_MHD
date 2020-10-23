@@ -28,7 +28,7 @@ void dealloc_colorbar_position(struct cbar_work *cbar_wk){
 };
 
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk){
+						   struct colormap_params *cmap_s, struct cbar_work *cbar_wk){
 	int num;
 	double d1, v1, d2, v2;
 
@@ -61,6 +61,30 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 	cbar_wk->yline_zero = cbar_wk->ybar_min 
 		+ (cbar_wk->ybar_max - cbar_wk->ybar_min) * (-cbar_wk->psf_min) 
 		/ (cbar_wk->psf_max - cbar_wk->psf_min);
+	
+	return;
+}
+
+void set_timelabel_position(int iflag_retina, int nx_win, int ny_win,
+							struct cbar_work *cbar_wk){
+	int num;
+	double d1, v1, d2, v2;
+
+	cbar_wk->num_quad = 64;
+	
+	cbar_wk->xwin = (float)nx_win;
+	cbar_wk->ywin = (float)ny_win;
+	
+    if( cbar_wk->xwin >= 640*(iflag_retina+1) ){
+        cbar_wk->xbar_max = cbar_wk->xwin * 0.875;
+    } else {
+        cbar_wk->xbar_max = cbar_wk->xwin - (iflag_retina+1) * 80;
+    }
+	cbar_wk->xbar_min = cbar_wk->xbar_max - 0.025 * cbar_wk->xwin;
+	cbar_wk->xbar_mid = (cbar_wk->xbar_min + cbar_wk->xbar_max) * 0.5;
+	cbar_wk->ybar_min = 0.05 * cbar_wk->ywin;
+	cbar_wk->ybar_max = 0.25 * cbar_wk->ywin;
+	cbar_wk->ydelta =  (cbar_wk->ybar_max - cbar_wk->ybar_min) / ((float) cbar_wk->num_quad);
 	
 	return;
 }
@@ -317,41 +341,6 @@ void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk){
 	icolor_txt[3] = 255;
 	
 	sprintf(msg_wk->minlabel, " Window size:(%4d,%4d)", npixel_x, npixel_y);
-	
-	set_message_image(icolor_txt, icolor_mid, msg_wk);
-};
-
-
-void set_time_label_image(double time, struct msg_work *msg_wk){
-	int i;
-	int icolor_txt[4];
-	int icolor_mid[4];
-	
-	for(i=0;i<3;i++){
-		icolor_txt[i] = 255;
-		icolor_mid[i] = 191;
-	};
-	icolor_txt[3] = 255;
-	icolor_txt[3] = 255;
-	
-	sprintf(msg_wk->minlabel, " t = %.4e ", (float) time);
-	
-	set_message_image(icolor_txt, icolor_mid, msg_wk);
-};
-
-void set_file_step_label_image(int file_step, struct msg_work *msg_wk){
-	int i;
-	int icolor_txt[4];
-	int icolor_mid[4];
-	
-	for(i=0;i<3;i++){
-		icolor_txt[i] = 255;
-		icolor_mid[i] = 191;
-	};
-	icolor_txt[3] = 255;
-	icolor_txt[3] = 255;
-	
-	sprintf(msg_wk->minlabel, " File index: %4d", file_step);
 	
 	set_message_image(icolor_txt, icolor_mid, msg_wk);
 };

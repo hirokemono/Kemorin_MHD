@@ -72,7 +72,9 @@ struct msg_work{
 struct cbar_work * alloc_colorbar_position(void);
 void dealloc_colorbar_position(struct cbar_work *cbar_wk);
 void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
-			struct colormap_params *cmap_s, struct cbar_work *cbar_wk);
+						   struct colormap_params *cmap_s, struct cbar_work *cbar_wk);
+void set_timelabel_position(int iflag_retina, int nx_win, int ny_win,
+							struct cbar_work *cbar_wk);
 
 void clear_colorbar_text_image(struct cbar_work *cbar_wk);
 void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk);
@@ -86,8 +88,6 @@ void set_message_position(int iflag_retina, int nx_win, int ny_win,
 						  struct msg_work *msg_wk);
 void clear_message_text_image(struct msg_work *msg_wk);
 void set_windowsize_image(int npixel_x, int npixel_y, struct msg_work *msg_wk);
-void set_time_label_image(double time, struct msg_work *msg_wk);
-void set_file_step_label_image(int file_step, struct msg_work *msg_wk);
 
 #endif
 

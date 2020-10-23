@@ -32,10 +32,6 @@
     self.fileStepDisplayAccess = 0;
     self.timeDisplayFlag =     0;
     self.fileStepDisplayFlag = 0;
-    kemoview_set_object_property_flags(TIME_LABEL_AVAIL, (int) self.timeDisplayAccess);
-    kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_AVAIL, (int) self.fileStepDisplayAccess);
-    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
 	
 	fAnimate = 0;
 	return self;
@@ -48,6 +44,10 @@
 	[_streoViewTypeMenu selectItemAtIndex:(1-AnaglyphFlag)];
 
     self.coastlineRadius = kemoview_get_coastline_radius();
+    kemoview_set_object_property_flags(TIME_LABEL_AVAIL, (int) self.timeDisplayAccess);
+    kemoview_set_object_property_flags(TIME_LABEL_SWITCH, (int) self.timeDisplayFlag);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_AVAIL, (int) self.fileStepDisplayAccess);
+    kemoview_set_object_property_flags(FILE_STEP_LABEL_SWITCH, (int) self.fileStepDisplayFlag);
     return;
 }
 
