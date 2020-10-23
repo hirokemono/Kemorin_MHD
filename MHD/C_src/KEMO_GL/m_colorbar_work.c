@@ -179,6 +179,30 @@ void set_time_text_image(float text_color3[3], struct cbar_work *cbar_wk){
 	return;
 };
 
+
+struct tlabel_work * alloc_tlabel_work(void){
+	struct tlabel_work *tlabel_wk = (struct tlabel_work *) malloc(sizeof(struct tlabel_work));
+	if(tlabel_wk == NULL){
+		printf("malloc error for tlabel_work\n");
+		exit(0);
+	}
+    
+    tlabel_wk->npix_x = IWIDTH_TXT;
+    tlabel_wk->npix_y = IHIGHT_TXT;
+    tlabel_wk->npixel = tlabel_wk->npix_x * tlabel_wk->npix_y;
+    tlabel_wk->numBMP =  (unsigned char *) calloc((12 * tlabel_wk->npixel), sizeof(unsigned char));
+    tlabel_wk->testBMP = (unsigned char *) calloc((9 * tlabel_wk->npixel), sizeof(unsigned char));
+	return tlabel_wk;
+};
+
+void dealloc_tlabel_work(struct tlabel_work *tlabel_wk){
+    free(tlabel_wk->numBMP);
+    free(tlabel_wk->testBMP);
+    free(tlabel_wk);
+    return;
+};
+
+
 struct msg_work * alloc_message_work(void){
 	struct msg_work *msg_wk = (struct msg_work *) malloc(sizeof(struct msg_work));
 	if(msg_wk == NULL){

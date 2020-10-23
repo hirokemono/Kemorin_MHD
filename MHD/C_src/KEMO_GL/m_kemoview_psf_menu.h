@@ -44,6 +44,7 @@ struct kemo_array_control{
     int file_step_disp;
     
 	struct cbar_work *cbar_wk;
+	struct tlabel_work *tlabel_wk;
 };
 
 struct psf_menu_val{

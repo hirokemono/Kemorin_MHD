@@ -92,6 +92,9 @@ void clear_colorbar_text_image(struct cbar_work *cbar_wk);
 void set_colorbar_text_image(float text_color3[3], struct cbar_work *cbar_wk);
 void set_time_text_image(float text_color3[3], struct cbar_work *cbar_wk);
 
+struct tlabel_work * alloc_tlabel_work(void);
+void dealloc_tlabel_work(struct tlabel_work *tlabel_wk);
+
 struct msg_work * alloc_message_work(void);
 void dealloc_message_work(struct msg_work *msg_wk);  
 void set_message_opacity(float opacity, struct msg_work *msg_wk);
