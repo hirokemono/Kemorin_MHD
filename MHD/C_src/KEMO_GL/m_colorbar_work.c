@@ -65,31 +65,6 @@ void set_colorbar_position(int iflag_retina, int nx_win, int ny_win,
 	return;
 }
 
-void set_timelabel_position(int iflag_retina, int nx_win, int ny_win,
-							struct cbar_work *cbar_wk){
-	int num;
-	double d1, v1, d2, v2;
-
-	cbar_wk->num_quad = 64;
-	
-	cbar_wk->xwin = (float)nx_win;
-	cbar_wk->ywin = (float)ny_win;
-	
-    if( cbar_wk->xwin >= 640*(iflag_retina+1) ){
-        cbar_wk->xbar_max = cbar_wk->xwin * 0.875;
-    } else {
-        cbar_wk->xbar_max = cbar_wk->xwin - (iflag_retina+1) * 80;
-    }
-	cbar_wk->xbar_min = cbar_wk->xbar_max - 0.025 * cbar_wk->xwin;
-	cbar_wk->xbar_mid = (cbar_wk->xbar_min + cbar_wk->xbar_max) * 0.5;
-	cbar_wk->ybar_min = 0.05 * cbar_wk->ywin;
-	cbar_wk->ybar_max = 0.25 * cbar_wk->ywin;
-	cbar_wk->ydelta =  (cbar_wk->ybar_max - cbar_wk->ybar_min) / ((float) cbar_wk->num_quad);
-	
-	return;
-}
-
-
 void clear_colorbar_text_image(struct cbar_work *cbar_wk){
 	int i;
 	

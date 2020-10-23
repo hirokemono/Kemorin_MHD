@@ -112,8 +112,10 @@ void set_timelabel_VAO(int iflag_retina, GLint nx_win, GLint ny_win,
 		
 	time_VAO->npoint_draw = 0;
 	if((psf_a->iflag_draw_time + psf_a->iflag_draw_file_step) > 0){
+		psf_a->cbar_wk->xwin = (float) nx_win;
+		psf_a->cbar_wk->ywin = (float) ny_win;
+		
 		clear_colorbar_text_image(psf_a->cbar_wk);
-		set_timelabel_position(iflag_retina, (int) nx_win, (int) ny_win, psf_a->cbar_wk);
 		if(psf_a->iflag_draw_time > 0){
 			sprintf(psf_a->cbar_wk->minlabel,"t = %5.4E", (float) psf_a->time_disp);
 		}else if(psf_a->iflag_draw_file_step > 0){
