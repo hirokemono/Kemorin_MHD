@@ -81,7 +81,7 @@
 !>        Number of sleeve level
         type(read_integer_item) :: sleeve_level_ctl
 !
-        integer(kind = kint), private :: i_new_patition_ctl = 0
+        integer(kind = kint) :: i_new_patition_ctl = 0
       end type new_patition_control
 !
       type new_patition_test_control
@@ -96,7 +96,7 @@
 !>        Structure for new partitioning controls
         type(new_patition_control) :: new_part_ctl
 !
-        integer(kind = kint), private :: i_mesh_test_ctl = 0
+        integer(kind = kint) :: i_mesh_test_ctl = 0
       end type new_patition_test_control
 !
 !     Top level

@@ -1,8 +1,12 @@
+!>@file   set_control_data_4_part.f90
+!!@brief  module set_control_data_4_part
+!!
+!!@author H. Matsui
+!!@date Programmed on Oct., 2005
 !
-!      module set_control_data_4_part
-!
-!      Written by Kemorin on Sep. 2007
-!
+!>@brief  Set parameters for partitioning
+!!
+!!@verbatim
 !!      subroutine s_set_control_data_4_part                            &
 !!     &         (part_ctl, comm_part, part_p)
 !!      subroutine set_control_4_extend_sleeve                          &
@@ -10,6 +14,7 @@
 !!        type(control_data_4_partitioner), intent(in) :: part_ctl
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!        type(ctl_param_partitioner), intent(inout) :: part_p
+!!@endverbatim
 !
       module set_control_data_4_part
 !
@@ -22,7 +27,6 @@
 !
       private :: set_FEM_mesh_ctl_4_part, set_partition_method
       private :: set_control_XYZ_RCB, set_control_SPH_RCB
-      private :: set_control_EQ_XYZ, set_control_EQ_SPH
       private :: set_radial_layer_ctl_4_EQ_SPH
 !
 ! -----------------------------------------------------------------------
@@ -41,6 +45,7 @@
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
+      use set_num_domain_each_dir
 !
       type(control_data_4_partitioner), intent(in) :: part_ctl
 !
@@ -102,11 +107,13 @@
 !
       else if (part_p%NTYP_div .eq. iPART_EQ_XYZ                        &
      &    .or. part_p%NTYP_div .eq. iPART_EQV_XYZ) then
-        call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl, part_p)
+        call set_control_EQ_XYZ(part_ctl%ndomain_section_ctl,           &
+     &                          part_p%num_domain, part_p%ndivide_eb)
       else if (part_p%NTYP_div.eq.iPART_CUBED_SPHERE                    &
      &    .or. part_p%NTYP_div.eq.iPART_EQ_SPH                          &
      &    .or. part_p%NTYP_div.eq.iPART_LAYER_SPH) then
-        call set_control_EQ_SPH(part_ctl%ndomain_section_ctl, part_p)
+        call set_control_EQ_SPH(part_ctl%ndomain_section_ctl,           &
+     &                          part_p%num_domain, part_p%ndivide_eb)
         call set_radial_layer_ctl_4_EQ_SPH                              &
      &     (part_ctl%ele_grp_layering_ctl,                              &
      &      part_ctl%sphere_file_name_ctl, part_p)
@@ -490,80 +497,6 @@
         write (*,*) part_p%ndiv_rcb(1:part_p%NPOWER_rcb)
 !
       end subroutine set_control_SPH_RCB
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_control_EQ_XYZ(ndomain_section_ctl, part_p)
-!
-      use t_control_array_charaint
-      use skip_comment_f
-!
-      type(ctl_array_ci), intent(in) :: ndomain_section_ctl
-      type(ctl_param_partitioner), intent(inout) :: part_p
-!
-      integer(kind = kint) :: i
-!
-!
-      if(ndomain_section_ctl%num .ne. 3)                                &
-     &         stop 'number of subdomain should be 3 directions'
-!
-      part_p%ndivide_eb(1:3) = 1
-      do i = 1, ndomain_section_ctl%num
-        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'X')               &
-     &        ) part_p%ndivide_eb(1) = ndomain_section_ctl%ivec(i)
-        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Y')               &
-     &        ) part_p%ndivide_eb(2) = ndomain_section_ctl%ivec(i)
-        if(cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Z')               &
-     &        ) part_p%ndivide_eb(3) = ndomain_section_ctl%ivec(i)
-      end do
-      part_p%num_domain = part_p%ndivide_eb(1) * part_p%ndivide_eb(2)   &
-     &                   * part_p%ndivide_eb(3)
-!
-      end subroutine set_control_EQ_XYZ
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_control_EQ_SPH(ndomain_section_ctl, part_p)
-!
-      use t_control_array_character
-      use t_control_array_charaint
-      use skip_comment_f
-!
-      type(ctl_array_ci), intent(in) :: ndomain_section_ctl
-!
-      type(ctl_param_partitioner), intent(inout) :: part_p
-!
-      integer(kind = kint) :: i
-!
-!
-        if(ndomain_section_ctl%num .ne. 3)                              &
-     &         stop 'number of subdomain should be 3 directions'
-!
-        part_p%ndivide_eb(1:3) = 1
-        do i = 1, ndomain_section_ctl%num
-          if(      cmp_no_case(ndomain_section_ctl%c_tbl(i), 'R')       &
-     &        .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radius')  &
-     &        .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Radial')  &
-     &       ) then
-            part_p%ndivide_eb(1) = ndomain_section_ctl%ivec(i)
-!
-          else if( cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Theta')   &
-     &     .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Meridional') &
-     &     .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Elevation')  &
-     &        ) then
-            part_p%ndivide_eb(2) = ndomain_section_ctl%ivec(i)
-!
-          else if( cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Phi')     &
-     &    .or. cmp_no_case(ndomain_section_ctl%c_tbl(i),'Longitudinal') &
-     &    .or. cmp_no_case(ndomain_section_ctl%c_tbl(i), 'Azimuth')     &
-     &        ) then
-            part_p%ndivide_eb(3) = ndomain_section_ctl%ivec(i)
-          end if
-        end do
-        part_p%num_domain = part_p%ndivide_eb(1) * part_p%ndivide_eb(2) &
-     &                     * part_p%ndivide_eb(3)
-!
-      end subroutine set_control_EQ_SPH
 !
 ! -----------------------------------------------------------------------
 !

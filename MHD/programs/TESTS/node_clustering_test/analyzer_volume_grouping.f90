@@ -61,6 +61,7 @@
       use parallel_FEM_mesh_init
       use output_test_mesh
       use set_table_4_RHS_assemble
+      use solver_SR_type
 !
       use int_volume_of_single_domain
 !
@@ -127,6 +128,13 @@
      &   (fem_T%mesh%node, fem_T%mesh%ele, node_volume)
       deallocate(node_volume)
 !
+      call SOLVER_SEND_RECV_type(fem_T%mesh%node%numnod,                &
+     &                           fem_T%mesh%nod_comm, node_volume)
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'xyz_min_gl', fem_T%mesh%node%xyz_min_gl(1:3)
+        write(*,*) 'xyz_max_gl', fem_T%mesh%node%xyz_max_gl(1:3)
+      end if
 !
       end subroutine initialize_volume_grouping
 !
