@@ -4,6 +4,8 @@
 
 NODE_CLUSTERING_TEST_DIR = $$(TESTS_DIR)/node_clustering_test
 
+TARGET_GROUPING_BY_VOLUME = grouping_by_volume
+
 TARGET_NODE_CLUSTERING_TEST = node_clustering_test
 TARGET_REPARTITION_TEST = repartition_test
 
@@ -23,6 +25,13 @@ ifdef FORTRAN_C_CONNECT
   LIBS_NODE_CLUSTERING_TEST+=        '$$(LIB_KEMO_C)'
   LIB_FILES_NODE_CLUSTERING_TEST+=   '$$(LIB_KEMO_C_FILE)'
 endif
+
+MOD_GROUPING_BY_VOLUME = \
+main_volume_grouping.o \
+analyzer_volume_grouping.o \
+\
+t_control_param_vol_grping.o \
+t_ctl_data_volume_grouping.o
 
 MOD_NODE_CLUSTERING_TEST = \
 main_node_clustering_test.o \
@@ -47,6 +56,8 @@ dir_list:
 	@echo 'NODE_CLUSTERING_TEST_DIR = $(NODE_CLUSTERING_TEST_DIR)' >> $(MAKENAME)
 
 target_list:
+	@echo 'TARGET_GROUPING_BY_VOLUME = $$(BUILDDIR)/$(TARGET_GROUPING_BY_VOLUME)' \
+	>> $(MAKENAME)
 	@echo 'TARGET_NODE_CLUSTERING_TEST = $$(BUILDDIR)/$(TARGET_NODE_CLUSTERING_TEST)' \
 	>> $(MAKENAME)
 	@echo 'TARGET_REPARTITION_TEST = $$(BUILDDIR)/$(TARGET_REPARTITION_TEST)' \
@@ -56,7 +67,15 @@ target_list:
 target_task:
 	@echo node_clustring_test: \
 	'$$(TARGET_NODE_CLUSTERING_TEST) $$(TARGET_REPARTITION_TEST) '\
+	'$$(TARGET_GROUPING_BY_VOLUME)'  >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_GROUPING_BY_VOLUME): $$(MOD_GROUPING_BY_VOLUME) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
 	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_GROUPING_BY_VOLUME)' \
+	'$$(MOD_GROUPING_BY_VOLUME)' \
+	'-L. $$(LIBS_NODE_CLUSTERING_TEST)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_NODE_CLUSTERING_TEST): $$(MOD_NODE_CLUSTERING_TEST) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
 	>> $(MAKENAME)
@@ -85,6 +104,8 @@ lib_name:
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
+	@echo  MOD_GROUPING_BY_VOLUME=  \\ >> $(MAKENAME)
+	@echo  $(MOD_GROUPING_BY_VOLUME) >> $(MAKENAME)
 	@echo  MOD_NODE_CLUSTERING_TEST=  \\ >> $(MAKENAME)
 	@echo  $(MOD_NODE_CLUSTERING_TEST) >> $(MAKENAME)
 	@echo  MOD_REPARTITION_TEST=  \\ >> $(MAKENAME)

@@ -202,6 +202,7 @@
 !
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
+      call reset_FEM_mesh_control(part_ctl%part_Fmesh)
       call dealloc_ctl_data_4_decomp(part_ctl)
       call reset_ctl_data_4_part_ghost(part_ctl)
       call dealloc_ctl_data_4_ele_ordeirng(part_ctl)
@@ -270,7 +271,8 @@
       end subroutine read_part_control_data
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------
+!
       subroutine read_ctl_data_4_decomp                                 &
      &         (id_control, hd_block, part_ctl, c_buf)
 !

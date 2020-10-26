@@ -150,6 +150,7 @@
 !
 !
       call reset_control_platforms(comm_tctl%plt)
+      call reset_FEM_mesh_control(comm_tctl%Fmesh_ctl)
       comm_tctl%i_mesh_test_ctl = 0
 !
       end subroutine reset_test_comm_ctl_data

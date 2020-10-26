@@ -204,6 +204,7 @@
 !
       call reset_control_platforms(spu_ctl%plt)
       call reset_control_platforms(spu_ctl%org_plt)
+      call reset_FEM_mesh_control(spu_ctl%Fmesh_ctl)
 !
       call dealloc_sph_monitoring_ctl(spu_ctl%smonitor_ctl)
 !

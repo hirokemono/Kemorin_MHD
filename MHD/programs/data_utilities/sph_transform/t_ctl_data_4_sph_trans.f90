@@ -236,6 +236,7 @@
       call reset_control_platforms(spt_ctl%plt)
       call reset_control_platforms(spt_ctl%org_plt)
       call dealloc_viz_controls(spt_ctl%viz_ctls)
+      call reset_FEM_mesh_control(spt_ctl%Fmesh_ctl)
 !
       spt_ctl%i_sph_trans_ctl = 0
 !
