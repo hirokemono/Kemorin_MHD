@@ -23,6 +23,7 @@
       private :: set_FEM_mesh_ctl_4_part, set_partition_method
       private :: set_control_XYZ_RCB, set_control_SPH_RCB
       private :: set_control_EQ_XYZ, set_control_EQ_SPH
+      private :: set_radial_layer_ctl_4_EQ_SPH
 !
 ! -----------------------------------------------------------------------
 !
@@ -105,9 +106,10 @@
       else if (part_p%NTYP_div.eq.iPART_CUBED_SPHERE                    &
      &    .or. part_p%NTYP_div.eq.iPART_EQ_SPH                          &
      &    .or. part_p%NTYP_div.eq.iPART_LAYER_SPH) then
-        call set_control_EQ_SPH(part_ctl%ndomain_section_ctl,           &
-     &    part_ctl%ele_grp_layering_ctl, part_ctl%sphere_file_name_ctl, &
-     &    part_p)
+        call set_control_EQ_SPH(part_ctl%ndomain_section_ctl, part_p)
+        call set_radial_layer_ctl_4_EQ_SPH                              &
+     &     (part_ctl%ele_grp_layering_ctl,                              &
+     &      part_ctl%sphere_file_name_ctl, part_p)
 !
       else if (part_p%NTYP_div .eq. iPART_DECMP_MESH_TBL                &
      &    .or. part_p%NTYP_div .eq. iPART_FINE_MESH_TBL) then
@@ -521,16 +523,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_EQ_SPH(ndomain_section_ctl,                &
-     &          ele_grp_layering_ctl, sphere_file_name_ctl, part_p)
+      subroutine set_control_EQ_SPH(ndomain_section_ctl, part_p)
 !
       use t_control_array_character
       use t_control_array_charaint
       use skip_comment_f
 !
       type(ctl_array_ci), intent(in) :: ndomain_section_ctl
-      type(ctl_array_chara), intent(in) :: ele_grp_layering_ctl
-      type(read_character_item), intent(in) :: sphere_file_name_ctl
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
 !
@@ -564,27 +563,45 @@
         part_p%num_domain = part_p%ndivide_eb(1) * part_p%ndivide_eb(2) &
      &                     * part_p%ndivide_eb(3)
 !
-        if(part_p%NTYP_div .eq. iPART_LAYER_SPH) then
-          part_p%num_egrp_layer = ele_grp_layering_ctl%num
-          call alloc_ele_grp_layer_name(part_p)
-!
-          do i = 1, part_p%num_egrp_layer
-            part_p%grp_layer_name(i) = ele_grp_layering_ctl%c_tbl(i)
-          end do
-!
-        else if(part_p%NTYP_div .eq. iPART_CUBED_SPHERE) then
-          part_p%iflag_sphere_data = sphere_file_name_ctl%iflag
-          if(part_p%iflag_sphere_data .eq. 1) then
-            part_p%sphere_data_file_name                                &
-     &                = sphere_file_name_ctl%charavalue
-            write(*,*) 'Sphere surface correction file: ',              &
-     &              trim(part_p%sphere_data_file_name)
-          else
-            write(*,*) 'No Sphere surface correction file '
-          end if
-        end if
-!
       end subroutine set_control_EQ_SPH
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_radial_layer_ctl_4_EQ_SPH                          &
+     &         (ele_grp_layering_ctl, sphere_file_name_ctl, part_p)
+!
+      use t_control_array_character
+      use skip_comment_f
+!
+      type(ctl_array_chara), intent(in) :: ele_grp_layering_ctl
+      type(read_character_item), intent(in) :: sphere_file_name_ctl
+!
+      type(ctl_param_partitioner), intent(inout) :: part_p
+!
+      integer(kind = kint) :: i
+!
+!
+      if(part_p%NTYP_div .eq. iPART_LAYER_SPH) then
+        part_p%num_egrp_layer = ele_grp_layering_ctl%num
+        call alloc_ele_grp_layer_name(part_p)
+!
+        do i = 1, part_p%num_egrp_layer
+          part_p%grp_layer_name(i) = ele_grp_layering_ctl%c_tbl(i)
+        end do
+!
+      else if(part_p%NTYP_div .eq. iPART_CUBED_SPHERE) then
+        part_p%iflag_sphere_data = sphere_file_name_ctl%iflag
+        if(part_p%iflag_sphere_data .eq. 1) then
+          part_p%sphere_data_file_name                                  &
+     &                = sphere_file_name_ctl%charavalue
+          write(*,*) 'Sphere surface correction file: ',                &
+     &              trim(part_p%sphere_data_file_name)
+        else
+          write(*,*) 'No Sphere surface correction file '
+        end if
+      end if
+!
+      end subroutine set_radial_layer_ctl_4_EQ_SPH
 !
 ! -----------------------------------------------------------------------
 !
