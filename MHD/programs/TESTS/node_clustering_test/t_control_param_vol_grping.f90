@@ -74,7 +74,7 @@
      &   'mesh_file_head:  ', trim(T_files%mesh_file_IO%file_prefix)
 !
 !
-      call set_control_EQ_SPH                                           &
+      call set_control_EQ_XYZ                                           &
      &   (part_tctl%new_part_ctl%ndomain_section_ctl,                   &
      &    T_files%new_nprocs, T_files%ndomain_eb)
       if(T_files%new_nprocs                                             &

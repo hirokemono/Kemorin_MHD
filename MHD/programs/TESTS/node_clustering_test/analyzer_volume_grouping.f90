@@ -61,6 +61,7 @@
       use parallel_FEM_mesh_init
       use output_test_mesh
       use set_table_4_RHS_assemble
+      use nod_phys_send_recv
       use solver_SR_type
 !
       use int_volume_of_single_domain
@@ -128,6 +129,7 @@
      &   (fem_T%mesh%node, fem_T%mesh%ele, node_volume)
       deallocate(node_volume)
 !
+      call init_send_recv(fem_T%mesh%nod_comm)
       call SOLVER_SEND_RECV_type(fem_T%mesh%node%numnod,                &
      &                           fem_T%mesh%nod_comm, node_volume)
 !
