@@ -157,6 +157,7 @@
           if(part_tctl%i_mesh_test_ctl .gt. 0) exit
         end do
         close(part_ctl_file_code)
+      end if
 !
       call bcast_control_new_partition(part_tctl)
 !
