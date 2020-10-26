@@ -127,11 +127,11 @@
       allocate(node_volume(fem_T%mesh%node%numnod))
       call cal_node_volue                                               &
      &   (fem_T%mesh%node, fem_T%mesh%ele, node_volume)
-      deallocate(node_volume)
 !
       call init_send_recv(fem_T%mesh%nod_comm)
       call SOLVER_SEND_RECV_type(fem_T%mesh%node%numnod,                &
      &                           fem_T%mesh%nod_comm, node_volume)
+      deallocate(node_volume)
 !
       if(my_rank .eq. 0) then
         write(*,*) 'xyz_min_gl', fem_T%mesh%node%xyz_min_gl(1:3)
