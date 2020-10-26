@@ -147,15 +147,16 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      open(part_ctl_file_code, file = fname_new_part_ctl,status='old')
+      if(my_rank .eq. 0) then
+        open(part_ctl_file_code, file=fname_new_part_ctl,status='old')
 !
-      do
-        call load_one_line_from_control(part_ctl_file_code, c_buf1)
-        call read_new_parition_data_ctl                                 &
+        do
+          call load_one_line_from_control(part_ctl_file_code, c_buf1)
+          call read_new_parition_data_ctl                               &
      &     (part_ctl_file_code, hd_mesh_test_ctl, part_tctl, c_buf1)
-        if(part_tctl%i_mesh_test_ctl .gt. 0) exit
-      end do
-      close(part_ctl_file_code)
+          if(part_tctl%i_mesh_test_ctl .gt. 0) exit
+        end do
+        close(part_ctl_file_code)
 !
       call bcast_control_new_partition(part_tctl)
 !

@@ -74,15 +74,17 @@
       type(buffer_for_control) :: c_buf1
 !
 !
-      open(mest_ctl_file_code, file = fname_test_mesh_ctl,status='old')
+      if(my_rank .eq. 0) then
+        open(mest_ctl_file_code,file=fname_test_mesh_ctl,status='old')
 !
-      do
-        call load_one_line_from_control(mest_ctl_file_code, c_buf1)
-        call read_test_mesh_ctl_data                                    &
-     &     (mest_ctl_file_code, hd_mesh_test_ctl, mesh_tctl, c_buf1)
-        if(mesh_tctl%i_mesh_test_ctl .gt. 0) exit
-      end do
-      close(mest_ctl_file_code)
+        do
+          call load_one_line_from_control(mest_ctl_file_code, c_buf1)
+          call read_test_mesh_ctl_data                                  &
+     &       (mest_ctl_file_code, hd_mesh_test_ctl, mesh_tctl, c_buf1)
+          if(mesh_tctl%i_mesh_test_ctl .gt. 0) exit
+        end do
+        close(mest_ctl_file_code)
+      end if
 !
       call bcast_ctl_data_4_platform(mesh_tctl%plt)
       call bcast_FEM_mesh_control(mesh_tctl%Fmesh_ctl)
