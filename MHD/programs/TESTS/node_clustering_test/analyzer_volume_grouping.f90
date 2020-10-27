@@ -100,6 +100,8 @@
       real(kind = kreal), allocatable :: vol_grp_z(:)
 !
       integer(kind = kint), allocatable :: istack_block_y(:,:)
+      integer(kind = kint), allocatable :: istack_nod_grp_y(:,:)
+!
       integer(kind = kint), allocatable :: istack_block_z(:)
       integer(kind = kint), allocatable :: istack_nod_grp_z(:)
 !
@@ -231,7 +233,8 @@
         jz = id_block(jnod,3)
         if(iz .ne. jz) istack_block_z(iz:jz) = inum
       end do
-      inod = inod_sort(fem_T%mesh%node%internal_node)
+      inum = fem_T%mesh%node%internal_node
+      inod = inod_sort(inum)
       iz = id_block(inod,3)
       istack_block_z(iz:T_meshes%ndivide_eb(3)) = inum
 !
@@ -358,9 +361,9 @@
           jy = id_block(jnod,2)
           if(iy .ne. jy) istack_block_y(iy:jy,iz) = inum
         end do
-        inod = ied
+        inod = inod_sort(ied)
         iy = id_block(inod,2)
-        istack_block_y(iy:T_meshes%ndivide_eb(2),iz) = inum
+        istack_block_y(iy:T_meshes%ndivide_eb(2),iz) = ied
       end do
 !
 !      go to 20
@@ -443,6 +446,38 @@
           end do
         end do
       end if
+!
+      allocate(istack_nod_grp_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
+!
+!$omp parallel do private(inod,inum,ist,ied,jst,jed,j,iz)
+      do iz = 1, T_meshes%ndomain_eb(3)
+        istack_nod_grp_y(0:T_meshes%ndomain_eb(2),iz)    &
+     &          = istack_nod_grp_z(iz-1)
+        do j = 1, T_meshes%ndomain_eb(2)
+          jst = istack_vol_y(j-1,iz) + 1
+          jed = istack_vol_y(j,iz)
+          ist = istack_block_y(jst-1,iz) + 1
+          ied = istack_block_y(jed,iz)
+          istack_nod_grp_y(j,iz) = ied
+          do inum = ist, ied
+            inod = inod_sort(inum)
+            id_block(inod,2) = j
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      go to 120
+      do iz = 1, T_meshes%ndomain_eb(3)
+        write(100+my_rank,*) 'istack_nod_grp_y0', iz,           &
+     &       istack_nod_grp_y(0,iz), istack_nod_grp_z(iz)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          write(100+my_rank,*) 'istack_nod_grp_y', iy, iz,  &
+     &                        istack_nod_grp_y(iy,iz)
+        end do
+      end do
+      write(100+my_rank,*) fem_T%mesh%node%internal_node
+  120 continue
 !
 !
 !
