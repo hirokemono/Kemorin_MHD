@@ -91,6 +91,7 @@
       real(kind = kreal), allocatable :: vol_block_gl(:)
 !
       integer(kind = kint), allocatable :: id_vol_z(:)
+      integer(kind = kint), allocatable :: istack_vol_z(:)
       real(kind = kreal), allocatable :: vol_grp_z(:)
 !
       integer(kind = kint), allocatable :: istack_nod_grp_z(:)
@@ -222,27 +223,30 @@
      &    MPI_SUM, 0)
 !
       allocate(id_vol_z(T_meshes%ndivide_eb(3)))
+      allocate(istack_vol_z(0:T_meshes%ndomain_eb(3)))
       allocate(vol_grp_z(T_meshes%ndomain_eb(3)))
       if(my_rank .eq. 0) then
         sub_volume = nod_vol_tot / dble(T_meshes%ndomain_eb(3))
 !
         vol_ref = 0.0d0
         vol_grp_z(1:T_meshes%ndomain_eb(3)) = 0.0d0
+        istack_vol_z(0) = 0
         do i = 1, T_meshes%ndivide_eb(3)
           vol_ref = vol_ref + vol_block_gl(i)
           j = min(1+int(vol_ref / sub_volume),T_meshes%ndomain_eb(3))
           id_vol_z(i) = j
+          istack_vol_z(j) = i
           vol_grp_z(j) = vol_ref
 !          write(*,*) i,j, vol_grp_z(j), sub_volume
         end do
 !
-        do j = T_meshes%ndomain_eb(3),2, - 1
+        do j = T_meshes%ndomain_eb(3), 2, - 1
           vol_grp_z(j) = vol_grp_z(j) - vol_grp_z(j-1)
         end do
 !
         write(*,*) 'vol_grp_z'
         do j = 1, T_meshes%ndomain_eb(3)
-          write(*,*) j, vol_grp_z(j)
+          write(*,*) j, istack_vol_z(j), vol_grp_z(j)
         end do
       end if
       call calypso_mpi_barrier
@@ -251,6 +255,8 @@
 !
       call calypso_mpi_bcast_int                                        &
      &   (id_vol_z, cast_long(T_meshes%ndivide_eb(3)), 0)
+      call calypso_mpi_bcast_int                                        &
+     &   (istack_vol_z, cast_long(T_meshes%ndomain_eb(3)+1), 0)
       call calypso_mpi_bcast_real                                       &
      &   (vol_grp_z, cast_long(T_meshes%ndomain_eb(3)), 0)
 !
