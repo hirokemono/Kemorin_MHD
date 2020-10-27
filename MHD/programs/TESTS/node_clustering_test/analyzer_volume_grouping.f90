@@ -91,6 +91,10 @@
       real(kind = kreal), allocatable :: vol_block_lc(:)
       real(kind = kreal), allocatable :: vol_block_gl(:)
 !
+      integer(kind = kint), allocatable :: id_vol_y(:,:)
+      integer(kind = kint), allocatable :: istack_vol_y(:,:)
+      real(kind = kreal), allocatable :: vol_grp_y(:,:)
+!
       integer(kind = kint), allocatable :: id_vol_z(:)
       integer(kind = kint), allocatable :: istack_vol_z(:)
       real(kind = kreal), allocatable :: vol_grp_z(:)
@@ -393,37 +397,55 @@
      &      cast_long(T_meshes%ndivide_eb(2)), MPI_SUM, int(j-1))
       end do
 !
-      allocate(id_vol_z(T_meshes%ndivide_eb(2)))
-      allocate(vol_grp_z(T_meshes%ndomain_eb(2)))
+      allocate(id_vol_y(T_meshes%ndivide_eb(2),T_meshes%ndomain_eb(3)))
+      allocate(istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
+      allocate(vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
 
 !      do ip = 1, T_meshes%ndomain_eb(3)
 !      if(ip-1 .eq. my_rank) then
       if(my_rank .lt. T_meshes%ndomain_eb(3)) then
+        iz = my_rank + 1
         sub_volume = nod_vol_tot                                        &
      &            / dble(T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3))
 !
         vol_ref = 0.0d0
-        vol_grp_z(1:T_meshes%ndomain_eb(2)) = 0.0d0
+        vol_grp_y(1:T_meshes%ndomain_eb(2),iz) = 0.0d0
+        istack_vol_y(0,iz) = 0
         do i = 1, T_meshes%ndivide_eb(2)
           vol_ref = vol_ref + vol_block_gl(i)
           j = min(1+int(vol_ref / sub_volume),T_meshes%ndomain_eb(2))
-          id_vol_z(i) = j
-          vol_grp_z(j) = vol_ref
-!          write(*,*) i,j, vol_grp_z(j), sub_volume
+          id_vol_y(i,iz) = j
+          istack_vol_y(j,iz) = i
+          vol_grp_y(j,iz) = vol_ref
+!          write(*,*) i,j, vol_grp_y(j,iz), sub_volume
         end do
 !
         do j = T_meshes%ndomain_eb(2),2, - 1
-          vol_grp_z(j) = vol_grp_z(j) - vol_grp_z(j-1)
-        end do
-!
-        write(*,*) 'vol_grp_z'
-        do j = 1, T_meshes%ndomain_eb(2)
-          write(*,*) my_rank, j, vol_grp_z(j)
+          vol_grp_y(j,iz) = vol_grp_y(j,iz) - vol_grp_y(j-1,iz)
         end do
       end if
 !      end if
-      call calypso_mpi_barrier
 !      end do
+!
+      call calypso_mpi_barrier
+      do iz = 1, T_meshes%ndomain_eb(3)
+        call calypso_mpi_bcast_int(istack_vol_y(0,iz),                  &
+     &      cast_long(T_meshes%ndomain_eb(2)+1), int(iz-1))
+        call calypso_mpi_bcast_real(vol_grp_y(1,iz),                    &
+     &      cast_long(T_meshes%ndomain_eb(2)), int(iz-1))
+      end do
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'vol_grp_y'
+        do iz = 1, T_meshes%ndomain_eb(3)
+          do j = 1, T_meshes%ndomain_eb(2)
+            write(*,*) j, iz, istack_vol_y(j,iz), vol_grp_y(j,iz)
+          end do
+        end do
+      end if
+!
+!
+!
 !
       call set_mesh_data_from_type(fem_T%mesh, fem_T%group,             &
      &                             fem_N%mesh, fem_N%group)
@@ -445,7 +467,7 @@
 !      fem_N%group%num_item = org_grp%num_item + 
 !
       deallocate(vol_block_lc, vol_block_gl)
-      deallocate(vol_grp_z, id_vol_z)
+      deallocate(vol_grp_y, id_vol_y, istack_vol_y)
       deallocate(istack_nod_grp_z)
       deallocate(node_volume, id_block)
       deallocate(data_sort, inod_sort)
