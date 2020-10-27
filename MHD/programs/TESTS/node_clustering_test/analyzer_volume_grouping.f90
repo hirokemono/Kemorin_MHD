@@ -15,6 +15,7 @@
 !
       use m_precision
 !
+      use m_constants
       use m_machine_parameter
       use calypso_mpi
 !
@@ -57,6 +58,7 @@
       use nod_phys_send_recv
       use set_parallel_file_name
 !
+      use calypso_mpi_int
       use calypso_mpi_real
       use const_jacobians_3d
       use parallel_FEM_mesh_init
@@ -65,6 +67,7 @@
       use nod_phys_send_recv
       use solver_SR_type
       use transfer_to_long_integers
+      use quicksort
 !
       use int_volume_of_single_domain
 !
@@ -90,9 +93,11 @@
       integer(kind = kint), allocatable :: id_vol_z(:)
       real(kind = kreal), allocatable :: vol_grp_z(:)
 !
+      integer(kind = kint), allocatable :: istack_nod_grp_z(:)
+!
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, inum, ist, ied
       integer(kind = kint) :: i, j, nd
 !
 !
@@ -171,18 +176,24 @@
         write(*,*) 'xyz_max_gl', fem_T%mesh%node%xyz_max_gl(1:3)
       end if
 !
-!      allocate(data_sort(fem_T%mesh%node%numnod))
-!      allocate(inod_sort(fem_T%mesh%node%numnod))
+      allocate(data_sort(fem_T%mesh%node%numnod))
+      allocate(inod_sort(fem_T%mesh%node%numnod))
 !
-!!$omp parallel do private(inod)
-!      do inod = 1, fem_T%mesh%node%numnod
-!        data_sort(inod) = fem_T%mesh%node%xx(inod,1)
-!        inod_sort(inod) = inod
-!      end do
-!!$omp end parallel do
+!$omp parallel do private(inod)
+      do inod = 1, fem_T%mesh%node%internal_node
+        data_sort(inod) = fem_T%mesh%node%xx(inod,3)
+        inod_sort(inod) = inod
+      end do
+!$omp end parallel do
+!$omp parallel do private(inod)
+      do inod = fem_T%mesh%node%internal_node+1, fem_T%mesh%node%numnod
+        data_sort(inod) = fem_T%mesh%node%xx(inod,3)
+        inod_sort(inod) = inod
+      end do
+!$omp end parallel do
 !
-!      call quicksort_real_w_index(fem_T%mesh%node%numnod, data_sort,    &
-!     &    inoe, fem_T%mesh%node%numnod, inod_sort)
+      call quicksort_real_w_index(fem_T%mesh%node%numnod, data_sort,    &
+     &    ione, fem_T%mesh%node%internal_node, inod_sort)
 !
       size_gl(1:3) =  fem_T%mesh%node%xyz_max_gl(1:3)                   &
      &              - fem_T%mesh%node%xyz_min_gl(1:3)
@@ -235,10 +246,57 @@
         end do
       end if
       call calypso_mpi_barrier
+!
+      call calypso_mpi_bcast_int                                        &
+     &   (id_vol_z, cast_long(T_meshes%ndivide_eb(3)), 0)
+      call calypso_mpi_bcast_real                                       &
+     &   (vol_grp_z, cast_long(T_meshes%ndomain_eb(3)), 0)
+!
+!$omp parallel do private(inod)
+      do inod = 1,fem_T%mesh%node%numnod
+        i = id_block(inod,3)
+        id_block(inod,3) = id_vol_z(i)
+      end do
+!$omp end parallel do
+!
+!
+      allocate(istack_nod_grp_z(0:T_meshes%ndomain_eb(3)))
+!$omp parallel workshare
+      istack_nod_grp_z(0:T_meshes%ndomain_eb(3)) = 0
+!$omp end parallel workshare
+      do inum = 1, fem_T%mesh%node%internal_node
+        inod = inod_sort(inum)
+        i = id_block(inod,3)
+        istack_nod_grp_z(i) = inum
+      end do
+!
+!$omp parallel do private(inod)
+      do inum = 1, fem_T%mesh%node%internal_node
+        inod = inod_sort(inum)
+        data_sort(inum) = fem_T%mesh%node%xx(inod,2)
+      end do
+!$omp end parallel do
+!$omp parallel do private(inod)
+      do inod = fem_T%mesh%node%internal_node+1, fem_T%mesh%node%numnod
+        data_sort(inod) = fem_T%mesh%node%xx(inod,2)
+      end do
+!$omp end parallel do
+!
+      do i = 1, T_meshes%ndomain_eb(3)
+        ist = istack_nod_grp_z(i-1) + 1
+        ied = istack_nod_grp_z(i)
+        if(ied .gt. ist) then
+          call quicksort_real_w_index                                   &
+     &       (fem_T%mesh%node%numnod, data_sort, ist, ied, inod_sort)
+        end if
+      end do
+!
+!
+      deallocate(istack_nod_grp_z)
       deallocate(vol_grp_z, id_vol_z)
       deallocate(vol_block_lc, vol_block_gl)
       deallocate(node_volume, id_block)
-!      deallocate(data_sort, inod_sort)
+      deallocate(data_sort, inod_sort)
 !
       end subroutine initialize_volume_grouping
 !
