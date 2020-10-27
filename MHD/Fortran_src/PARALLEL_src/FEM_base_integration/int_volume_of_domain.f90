@@ -199,16 +199,16 @@
      &    ele%istack_ele_smp, ele%volume_ele, vol_local)
 !
 !      write(*,*) 'MPI_allREDUCE'
-       call calypso_mpi_allreduce_one_real                              &
-      &   (vol_local, ele%volume, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                              &
+     &   (vol_local, ele%volume, MPI_SUM)
 !
-       if (ele%volume .eq. 0.0d0) then
-         ele%a_vol = 1.0d30
-       else
-         ele%a_vol = 1.0d0 / ele%volume
-       end if
+      if (ele%volume .eq. 0.0d0) then
+        ele%a_vol = 1.0d30
+      else
+        ele%a_vol = 1.0d0 / ele%volume
+      end if
 !
-       end subroutine s_int_volume_of_domain
+      end subroutine s_int_volume_of_domain
 !
 !-----------------------------------------------------------------------
 !
