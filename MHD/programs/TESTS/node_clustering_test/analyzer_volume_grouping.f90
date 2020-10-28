@@ -30,7 +30,6 @@
       implicit none
 !
       type(mesh_data), save :: fem_T
-      type(mesh_data), save :: fem_N
 !
 ! ----------------------------------------------------------------------
 !
@@ -71,6 +70,7 @@
       use quicksort
 !
       use int_volume_of_single_domain
+      use set_parallel_file_name
 !
 !>     Stracture for Jacobians
 !
@@ -111,9 +111,11 @@
 !
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
-      integer(kind = kint) :: inod, inum, ist, ied, jnod, jst, jed
+      integer(kind = kint) :: inod, inum, ist, ied, num, jnod, jst, jed
       integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, jx, jy, jz
+      character(len = kchara) :: chara_tmp
 !
+      type(group_data) :: part_grp
       type(group_data) :: grp_tmp
 !
 !
@@ -495,7 +497,7 @@
 !$omp end parallel do
 !$omp parallel do private(inod)
       do inod = fem_T%mesh%node%internal_node+1, fem_T%mesh%node%numnod
-        data_sort(inod) = fem_T%mesh%node%xx(inod,2)
+        data_sort(inod) = fem_T%mesh%node%xx(inod,1)
       end do
 !$omp end parallel do
 !
@@ -521,12 +523,12 @@
             if(ix .ne. jx) istack_block_x(ix:jx,iy,iz) = inum
           end do
           inod = inod_sort(ied)
-          ix = id_block(inod,2)
-          istack_block_x(ix:T_meshes%ndivide_eb(2),iy,iz) = ied
+          ix = id_block(inod,1)
+          istack_block_x(ix:T_meshes%ndivide_eb(1),iy,iz) = ied
         end do
       end do
 !
-!      go to 30
+      go to 30
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
           write(100+my_rank,*) 'istack_block_x0', istack_block_y(iy,iz), istack_block_x(0,ix,iz)
@@ -551,7 +553,7 @@
 !
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
-          j = iz + (iy-1) * T_meshes%ndomain_eb(3)
+          j = iy + (iz-1) * T_meshes%ndomain_eb(2)
           vol_block_lc(1:T_meshes%ndivide_eb(1)) = 0.0d0
           ist = istack_nod_grp_y(iy-1,iz) + 1
           ied = istack_nod_grp_y(iy,  iz)
@@ -593,6 +595,8 @@
 !      end if
 !      end do
 !
+      deallocate(vol_block_lc, vol_block_gl)
+!
       call calypso_mpi_barrier
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
@@ -605,7 +609,7 @@
       end do
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'vol_grp_x'
+        write(*,*) 'vol_grp_x', nod_vol_tot, sub_volume
         do iz = 1, T_meshes%ndomain_eb(3)
           do iy = 1, T_meshes%ndomain_eb(2)
             do j = 1, T_meshes%ndomain_eb(1)
@@ -615,9 +619,9 @@
         end do
       end if
 !
-      allocate(istack_nod_grp_x(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
+      allocate(istack_nod_grp_x(0:T_meshes%ndomain_eb(1),T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
 !
-!$omp parallel do private(inod,inum,ist,ied,jst,jed,j,iz)
+!$omp parallel do private(inod,inum,ist,ied,jst,jed,j,iz,iy)
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
           istack_nod_grp_x(0:T_meshes%ndomain_eb(1),iy,iz)    &
@@ -644,43 +648,98 @@
         do iy = 1, T_meshes%ndomain_eb(2)
           write(100+my_rank,*) 'istack_nod_grp_x0', iy, iz,             &
      &       istack_nod_grp_x(0,iy,iz), istack_nod_grp_y(iy,iz)
-          do ix = 1, T_meshes%ndomain_eb(1)
-            write(100+my_rank,*) 'istack_nod_grp_x', ix, iy, iz,        &
-     &                          istack_nod_grp_x(ix,iy,iz)
-            ist = istack_nod_grp_x(ix-1,iy,iz) + 1
-            ied = istack_nod_grp_x(ix,  iy,iz)
-            do inum = ist, ied
-              inod = inod_sort(inum)
-              write(100+my_rank,*) 'inod', inum, inod, id_block(inod,1:3), &
-     &                            fem_T%mesh%node%xx(inod,1:3)
-            end do
-          end do
+            write(100+my_rank,*) 'istack_nod_grp_x', iy, iz,        &
+     &                          istack_nod_grp_x(1:T_meshes%ndomain_eb(1),iy,iz)
+!          do ix = 1, T_meshes%ndomain_eb(1)
+!            write(100+my_rank,*) 'istack_nod_grp_x', ix, iy, iz,        &
+!     &                          istack_nod_grp_x(ix,iy,iz)
+!            ist = istack_nod_grp_x(ix-1,iy,iz) + 1
+!            ied = istack_nod_grp_x(ix,  iy,iz)
+!            do inum = ist, ied
+!              inod = inod_sort(inum)
+!              write(100+my_rank,*) 'inod', inum, inod, id_block(inod,1:3), &
+!     &                            fem_T%mesh%node%xx(inod,1:3)
+!            end do
+!          end do
         end do
       end do
       write(100+my_rank,*) fem_T%mesh%node%internal_node
   130 continue
 !
-      deallocate(vol_block_lc, vol_block_gl)
 !
+      part_grp%num_grp = T_meshes%new_nprocs
+      call alloc_group_num(part_grp)
 !
-      call set_mesh_data_from_type(fem_T%mesh, fem_T%group,             &
-     &                             fem_N%mesh, fem_N%group)
+      part_grp%istack_grp(0) = 0
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          do ix = 1, T_meshes%ndomain_eb(1)
+            j = ix + (iy-1) * T_meshes%ndomain_eb(1)                    &
+     &             + (iz-1) * T_meshes%ndomain_eb(1) * T_meshes%ndomain_eb(2)
+            part_grp%istack_grp(j) = istack_nod_grp_x(ix,iy,iz)
 !
-      call copy_group_data(fem_N%group%nod_grp, grp_tmp)
-      call dealloc_group(fem_N%group%nod_grp)
+            part_grp%grp_name(j) = 'new_domain'
+            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(j)), '_'
+            call add_index_after_name(ix, chara_tmp, part_grp%grp_name(j))
+            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(j)), '_'
+            call add_index_after_name(iy, chara_tmp, part_grp%grp_name(j))
+            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(j)), '_'
+            call add_index_after_name(iz, chara_tmp, part_grp%grp_name(j))
+          end do
+        end do
+      end do
 !
-      fem_N%group%nod_grp%num_grp = grp_tmp%num_grp                     &
-     &                     + T_meshes%ndomain_eb(3)
-      call alloc_group_num(fem_N%group%nod_grp)
+      part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)
+      call alloc_group_item(part_grp)
 !
-      if (grp_tmp%num_grp .gt. 0) then
-        fem_N%group%nod_grp%grp_name(1:grp_tmp%num_grp)                 &
-     &          =  grp_tmp%grp_name(1:grp_tmp%num_grp)
-        fem_N%group%nod_grp%istack_grp(0:grp_tmp%num_grp)               &
-     &          =  grp_tmp%istack_grp(0:grp_tmp%num_grp)
-      end if
+!$omp parallel do private(inum,inod)
+      do inum = 1, part_grp%num_item
+        inod = inod_sort(inum)
+        part_grp%item_grp(inum) = inod
+      end do
+!$omp end parallel do
 !
-!      fem_N%group%num_item = org_grp%num_item + 
+      do i = 1, part_grp%num_grp
+        ist = part_grp%istack_grp(i-1)
+        num = part_grp%istack_grp(i  ) - ist
+        if(num .gt. 1) then
+          call quicksort_int(num, part_grp%item_grp(ist+1), ione, num)
+        end if
+      end do
+!
+!       Append group data
+      call copy_group_data(fem_T%group%nod_grp, grp_tmp)
+      call dealloc_group(fem_T%group%nod_grp)
+!
+      fem_T%group%nod_grp%num_grp = grp_tmp%num_grp + part_grp%num_grp
+      call alloc_group_num(fem_T%group%nod_grp)
+!
+      fem_T%group%nod_grp%istack_grp(0) =  grp_tmp%istack_grp(0)
+      do i = 1, grp_tmp%num_grp
+        fem_T%group%nod_grp%grp_name(i) =   grp_tmp%grp_name(i)
+        fem_T%group%nod_grp%istack_grp(i) = grp_tmp%istack_grp(i)
+      end do
+      do i = 1, part_grp%num_grp
+        fem_T%group%nod_grp%grp_name(i+grp_tmp%num_grp)                 &
+     &      = part_grp%grp_name(i)
+        fem_T%group%nod_grp%istack_grp(i+grp_tmp%num_grp)               &
+     &      = part_grp%istack_grp(i) + grp_tmp%num_item
+      end do
+!
+      fem_T%group%nod_grp%num_item                                      &
+     &   = fem_T%group%nod_grp%istack_grp(fem_T%group%nod_grp%num_grp)
+      call alloc_group_item(fem_T%group%nod_grp)
+!
+      do i = 1, grp_tmp%num_item
+        fem_T%group%nod_grp%item_grp(i) =   grp_tmp%item_grp(i)
+      end do
+      do i = 1, part_grp%num_item
+        fem_T%group%nod_grp%item_grp(i+grp_tmp%num_item)                &
+     &     =   part_grp%item_grp(i)
+      end do
+!
+      call mpi_output_mesh(T_meshes%new_mesh_file_IO,                   &
+     &    fem_T%mesh, fem_T%group)
 !
       deallocate(vol_grp_y, istack_vol_y)
       deallocate(istack_nod_grp_z)
