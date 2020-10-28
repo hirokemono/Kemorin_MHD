@@ -101,7 +101,7 @@
       real(kind = kreal), allocatable :: vol_grp_z(:)
 !
       integer(kind = kint), allocatable :: istack_block_x(:,:,:)
-      integer(kind = kint), allocatable :: istack_nod_grp_x(:,:,:)
+      integer(kind = kint), allocatable :: istack_nod_grp_x(:,:)
 !
       integer(kind = kint), allocatable :: istack_block_y(:,:)
       integer(kind = kint), allocatable :: istack_nod_grp_y(:,:)
@@ -112,7 +112,7 @@
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
       integer(kind = kint) :: inod, inum, ist, ied, num, jnod, jst, jed
-      integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, jx, jy, jz
+      integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, ij, jx, jy, jz
       character(len = kchara) :: chara_tmp
 !
       type(group_data) :: part_grp
@@ -501,7 +501,7 @@
       end do
 !$omp end parallel do
 !
-      allocate(istack_block_x(0:T_meshes%ndivide_eb(1),T_meshes%ndivide_eb(2),T_meshes%ndomain_eb(3)))
+      allocate(istack_block_x(0:T_meshes%ndivide_eb(1),T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
           ist = istack_nod_grp_y(iy-1,iz) + 1
@@ -531,7 +531,7 @@
       go to 30
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
-          write(100+my_rank,*) 'istack_block_x0', istack_block_y(iy,iz), istack_block_x(0,ix,iz)
+          write(100+my_rank,*) 'istack_block_x0', istack_block_y(iy,iz), istack_block_x(0,iy,iz)
           do ix = 1, T_meshes%ndivide_eb(2)
             write(100+my_rank,*) 'istack_block_x', ix, istack_block_x(ix,iy,iz)
             ist = istack_block_x(ix-1,iy,iz) + 1
@@ -619,19 +619,20 @@
         end do
       end if
 !
-      allocate(istack_nod_grp_x(0:T_meshes%ndomain_eb(1),T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
+      allocate(istack_nod_grp_x(0:T_meshes%ndomain_eb(1),T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)))
 !
-!$omp parallel do private(inod,inum,ist,ied,jst,jed,j,iz,iy)
+!$omp parallel do private(inod,inum,ist,ied,jst,jed,j,ij,iz,iy)
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
-          istack_nod_grp_x(0:T_meshes%ndomain_eb(1),iy,iz)    &
+          ij = iy + (iz-1) * T_meshes%ndomain_eb(2)
+          istack_nod_grp_x(0:T_meshes%ndomain_eb(1),ij)                 &
      &          = istack_nod_grp_y(iy-1,iz)
           do j = 1, T_meshes%ndomain_eb(1)
             jst = istack_vol_x(j-1,iy,iz) + 1
             jed = istack_vol_x(j,  iy,iz)
             ist = istack_block_x(jst-1,iy,iz) + 1
             ied = istack_block_x(jed,  iy,iz)
-            istack_nod_grp_x(j,iy,iz) = ied
+            istack_nod_grp_x(j,ij) = ied
             do inum = ist, ied
               inod = inod_sort(inum)
               id_block(inod,1) = j
@@ -646,21 +647,22 @@
         write(100+my_rank,*) 'istack_nod_grp_y0', iz,                   &
      &     istack_nod_grp_y(0,iz), istack_nod_grp_z(iz)
         do iy = 1, T_meshes%ndomain_eb(2)
+          ij = iy + (iz-1) * T_meshes%ndomain_eb(2)
           write(100+my_rank,*) 'istack_nod_grp_x0', iy, iz,             &
-     &       istack_nod_grp_x(0,iy,iz), istack_nod_grp_y(iy,iz)
-            write(100+my_rank,*) 'istack_nod_grp_x', iy, iz,        &
-     &                          istack_nod_grp_x(1:T_meshes%ndomain_eb(1),iy,iz)
-!          do ix = 1, T_meshes%ndomain_eb(1)
-!            write(100+my_rank,*) 'istack_nod_grp_x', ix, iy, iz,        &
-!     &                          istack_nod_grp_x(ix,iy,iz)
-!            ist = istack_nod_grp_x(ix-1,iy,iz) + 1
-!            ied = istack_nod_grp_x(ix,  iy,iz)
-!            do inum = ist, ied
-!              inod = inod_sort(inum)
-!              write(100+my_rank,*) 'inod', inum, inod, id_block(inod,1:3), &
-!     &                            fem_T%mesh%node%xx(inod,1:3)
-!            end do
-!          end do
+     &       istack_nod_grp_x(0,ij), istack_nod_grp_y(iy,iz)
+            write(100+my_rank,*) 'istack_nod_grp_x', iy, iz,            &
+     &                    istack_nod_grp_x(1:T_meshes%ndomain_eb(1),ij)
+          do ix = 1, T_meshes%ndomain_eb(1)
+            write(100+my_rank,*) 'istack_nod_grp_x', ix, iy, iz,        &
+     &                          istack_nod_grp_x(ix,ij)
+            ist = istack_nod_grp_x(ix-1,ij) + 1
+            ied = istack_nod_grp_x(ix,  ij)
+            do inum = ist, ied
+              inod = inod_sort(inum)
+              write(100+my_rank,*) 'inod', inum, inod, id_block(inod,1:3), &
+     &                            fem_T%mesh%node%xx(inod,1:3)
+            end do
+          end do
         end do
       end do
       write(100+my_rank,*) fem_T%mesh%node%internal_node
@@ -673,21 +675,23 @@
       part_grp%istack_grp(0) = 0
       do iz = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
+          ij = iy + (iz-1) * T_meshes%ndomain_eb(2)
           do ix = 1, T_meshes%ndomain_eb(1)
-            j = ix + (iy-1) * T_meshes%ndomain_eb(1)                    &
-     &             + (iz-1) * T_meshes%ndomain_eb(1) * T_meshes%ndomain_eb(2)
-            part_grp%istack_grp(j) = istack_nod_grp_x(ix,iy,iz)
+            i = ix + (ij-1) * T_meshes%ndomain_eb(1)
+            part_grp%istack_grp(i) = istack_nod_grp_x(ix,ij)
 !
-            part_grp%grp_name(j) = 'new_domain'
-            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(j)), '_'
-            call add_index_after_name(ix, chara_tmp, part_grp%grp_name(j))
-            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(j)), '_'
-            call add_index_after_name(iy, chara_tmp, part_grp%grp_name(j))
-            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(j)), '_'
-            call add_index_after_name(iz, chara_tmp, part_grp%grp_name(j))
+            part_grp%grp_name(i) = 'new_domain'
+            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(i)), '_'
+            call add_index_after_name(ix, chara_tmp, part_grp%grp_name(i))
+            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(i)), '_'
+            call add_index_after_name(iy, chara_tmp, part_grp%grp_name(i))
+            write(chara_tmp,'(a,a1)') trim(part_grp%grp_name(i)), '_'
+            call add_index_after_name(iz, chara_tmp, part_grp%grp_name(i))
           end do
         end do
       end do
+!
+      deallocate(istack_nod_grp_x)
 !
       part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)
       call alloc_group_item(part_grp)
