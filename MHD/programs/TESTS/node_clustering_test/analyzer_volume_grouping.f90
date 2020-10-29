@@ -490,6 +490,44 @@
 !
       deallocate(vol_block_lc, vol_block_gl)
 !
+!
+      num_nod_grp_yz = 0
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          num = istack_nod_grp_y(iy,iz) - istack_nod_grp_y(iy-1,iz)
+          if(num .gt. 0) num_nod_grp_yz = num_nod_grp_yz + 1
+        end do
+      end do
+!
+!
+      allocate(idomain_nod_grp_yz(3,num_nod_grp_yz+1))
+!
+!$omp parallel do private(icou)
+      do icou = 1, num_nod_grp_yz
+        idomain_nod_grp_yz(1,icou) = 0
+        idomain_nod_grp_yz(2,icou) = 0
+        idomain_nod_grp_yz(3,icou) = 0
+      end do
+!$omp end parallel do
+!
+      icou = 0
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          num = istack_nod_grp_y(iy,iz) - istack_nod_grp_y(iy-1,iz)
+          if(num .gt. 0) then
+            icou = icou + 1
+            idomain_nod_grp_yz(1,icou)                                  &
+     &           = iy + (iz-1) * T_meshes%ndomain_eb(2)
+            idomain_nod_grp_yz(2,icou) = iy
+            idomain_nod_grp_yz(3,icou) = iz
+          end if
+        end do
+      end do
+      idomain_nod_grp_yz(1,num_nod_grp_yz+1)                            &
+     &                = T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)+1
+      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
+      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
+!
 !   For x direction
 !
 !$omp parallel do private(inod)
@@ -504,10 +542,17 @@
       end do
 !$omp end parallel do
 !
-      allocate(istack_block_x(0:T_meshes%ndivide_eb(1),T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)))
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+      allocate(istack_block_x(0:T_meshes%ndivide_eb(1),num_nod_grp_yz))
+      do icou = 1, num_nod_grp_yz
+        jk = idomain_nod_grp_yz(1,icou)
+        iy = idomain_nod_grp_yz(2,icou)
+        iz = idomain_nod_grp_yz(3,icou)
+        jk2 = idomain_nod_grp_yz(1,icou+1) - 1
+!        iy2 = idomain_nod_grp_yz(2,icou+1) - 1
+!        iz2 = idomain_nod_grp_yz(3,icou+1)
+!      do iz = 1, T_meshes%ndomain_eb(3)
+!        do iy = 1, T_meshes%ndomain_eb(2)
+!          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
           ist = istack_nod_grp_y(iy-1,iz) + 1
           ied = istack_nod_grp_y(iy,iz)
           if(ied .gt. ist) then
@@ -516,7 +561,7 @@
           end if
 !
 !$omp parallel workshare
-          istack_block_x(0:T_meshes%ndivide_eb(1),jk)                  &
+          istack_block_x(0:T_meshes%ndivide_eb(1),icou)                 &
      &                            = istack_nod_grp_y(iy-1,iz)
 !$omp end parallel workshare
           do inum = ist, ied-1
@@ -524,28 +569,29 @@
             jnod = inod_sort(inum+1)
             ix = id_block(inod,1)
             jx = id_block(jnod,1)
-            if(ix .ne. jx) istack_block_x(ix:jx,jk) = inum
+            if(ix .ne. jx) istack_block_x(ix:jx,icou) = inum
           end do
           inod = inod_sort(ied)
           ix = id_block(inod,1)
-          istack_block_x(ix:T_meshes%ndivide_eb(1),jk) = ied
-        end do
+          istack_block_x(ix:T_meshes%ndivide_eb(1),icou) = ied
       end do
 !
       go to 30
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          write(100+my_rank,*) 'istack_block_x0', istack_block_y(iy,iz), istack_block_x(0,jk)
-          do ix = 1, T_meshes%ndivide_eb(2)
-            write(100+my_rank,*) 'istack_block_x', ix, istack_block_x(ix,jk)
-            ist = istack_block_x(ix-1,jk) + 1
-            ied = istack_block_x(ix,  jk)
-            do inum = ist, ied
-              inod = inod_sort(inum)
-              write(100+my_rank,*) 'inod', inum, inod, id_block(inod,1:3),&
-     &                        fem_T%mesh%node%xx(inod,1:3)
-            end do
+      do icou = 1, num_nod_grp_yz
+        jk = idomain_nod_grp_yz(1,icou)
+        iy = idomain_nod_grp_yz(2,icou)
+        iz = idomain_nod_grp_yz(3,icou)
+        write(100+my_rank,*) 'istack_block_x0',                         &
+     &               istack_block_y(iy,iz), istack_block_x(0,icou)
+        do ix = 1, T_meshes%ndivide_eb(2)
+          write(100+my_rank,*) 'istack_block_x',                        &
+     &                        ix, istack_block_x(ix,icou)
+          ist = istack_block_x(ix-1,icou) + 1
+          ied = istack_block_x(ix,  icou)
+          do inum = ist, ied
+            inod = inod_sort(inum)
+            write(100+my_rank,*) 'inod', inum, inod,                    &
+     &                 id_block(inod,1:3), fem_T%mesh%node%xx(inod,1:3)
           end do
         end do
       end do
@@ -624,41 +670,6 @@
         end do
       end if
 !
-      num_nod_grp_yz = 0
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          num = istack_nod_grp_y(iy,iz) - istack_nod_grp_y(iy-1,iz)
-          if(num .gt. 0) num_nod_grp_yz = num_nod_grp_yz + 1
-        end do
-      end do
-!
-      allocate(idomain_nod_grp_yz(3,num_nod_grp_yz+1))
-!
-!$omp parallel do private(icou)
-      do icou = 1, num_nod_grp_yz
-        idomain_nod_grp_yz(1,icou) = 0
-        idomain_nod_grp_yz(2,icou) = 0
-        idomain_nod_grp_yz(3,icou) = 0
-      end do
-!$omp end parallel do
-!
-      icou = 0
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          num = istack_nod_grp_y(iy,iz) - istack_nod_grp_y(iy-1,iz)
-          if(num .gt. 0) then
-            icou = icou + 1
-            idomain_nod_grp_yz(1,icou)                                  &
-     &           = iy + (iz-1) * T_meshes%ndomain_eb(2)
-            idomain_nod_grp_yz(2,icou) = iy
-            idomain_nod_grp_yz(3,icou) = iz
-          end if
-        end do
-      end do
-      idomain_nod_grp_yz(1,num_nod_grp_yz+1)                            &
-     &                = T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)+1
-      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
-      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
 !
       allocate(istack_nod_grp_x(0:T_meshes%new_nprocs))
 !$omp parallel workshare
@@ -673,8 +684,8 @@
           i = ix + (jk1-1) * T_meshes%ndomain_eb(1)
           jst = istack_vol_x(ix-1,jk1) + 1
           jed = istack_vol_x(ix,  jk1)
-          ist = istack_block_x(jst-1,jk1) + 1
-          ied = istack_block_x(jed,  jk1)
+          ist = istack_block_x(jst-1,icou) + 1
+          ied = istack_block_x(jed,  icou)
           istack_nod_grp_x(i) = ied
         end do
 !
