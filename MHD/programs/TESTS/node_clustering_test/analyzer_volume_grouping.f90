@@ -324,10 +324,6 @@
         ist = istack_block_z(jst-1) + 1
         ied = istack_block_z(jed)
         istack_nod_grp_z(j) = ied
-        do inum = ist, ied
-          inod = inod_sort(inum)
-          id_block(inod,3) = j
-        end do
       end do
 !$omp end parallel do
 !
@@ -357,7 +353,8 @@
 !
 !
       go to 110
-      do iz = 1, T_meshes%ndomain_eb(3)
+      do icou = 1, num_nod_grp_z
+        iz = idomain_nod_grp_z(icou)
         write(100+my_rank,*) 'istack_nod_grp_z', iz, istack_nod_grp_z(iz)
       end do
       write(100+my_rank,*) fem_T%mesh%node%internal_node
@@ -421,8 +418,8 @@
           ied = istack_block_y(iy,icou)
           do inum = ist, ied
             inod = inod_sort(inum)
-            write(100+my_rank,*) 'inod', inum, inod, id_block(inod,2:3), &
-     &                        fem_T%mesh%node%xx(inod,2:3)
+            write(100+my_rank,*) 'inod', inum, inod,                    &
+     &                  id_block(inod,2:3), fem_T%mesh%node%xx(inod,2:3)
           end do
         end do
       end do
@@ -507,10 +504,6 @@
           ist = istack_block_y(jst-1,icou) + 1
           ied = istack_block_y(jed,icou)
           istack_nod_grp_y(jk) = ied
-          do inum = ist, ied
-            inod = inod_sort(inum)
-            id_block(inod,2) = iy
-          end do
         end do
 !
         do iz = iz1+1, iz2-1
@@ -685,6 +678,7 @@
 !      end do
 !
       deallocate(vol_block_lc, vol_block_gl)
+      deallocate(id_block)
 !
       call calypso_mpi_barrier
       do iz = 1, T_meshes%ndomain_eb(3)
@@ -760,15 +754,14 @@
             ied = istack_nod_grp_x(i  )
             do inum = ist, ied
               inod = inod_sort(inum)
-              write(100+my_rank,*) 'inod', inum, inod, ix,              &
-     &                id_block(inod,2:3), fem_T%mesh%node%xx(inod,1:3)
+              write(100+my_rank,*) 'inod', inum, inod, ix, iy, iz,      &
+     &                            fem_T%mesh%node%xx(inod,1:3)
             end do
           end do
         end do
       end do
       write(100+my_rank,*) fem_T%mesh%node%internal_node
   130 continue
-      deallocate(id_block)
 !
 !
       part_grp%num_grp = T_meshes%new_nprocs
