@@ -379,10 +379,16 @@
       end do
 !$omp end parallel do
 !
-      allocate(istack_block_y(0:T_meshes%ndivide_eb(2),T_meshes%ndomain_eb(3)))
-      do iz = 1, T_meshes%ndomain_eb(3)
-        ist = istack_nod_grp_z(iz-1) + 1
-        ied = istack_nod_grp_z(iz)
+      allocate(istack_block_y(0:T_meshes%ndivide_eb(2),num_nod_grp_z))
+!$omp parallel workshare
+        istack_block_y(0:T_meshes%ndivide_eb(2),1:num_nod_grp_z) = 0
+!$omp end parallel workshare
+!
+      do icou = 1, num_nod_grp_z
+        iz1 = idomain_nod_grp_z(icou)
+!      do iz = 1, T_meshes%ndomain_eb(3)
+        ist = istack_nod_grp_z(iz1-1) + 1
+        ied = istack_nod_grp_z(iz1)
         if(ied .gt. ist) then
           call quicksort_real_w_index                                   &
      &       (fem_T%mesh%node%numnod, data_sort, ist, ied, inod_sort)
@@ -390,28 +396,29 @@
         end if
 !
 !$omp parallel workshare
-        istack_block_y(0:T_meshes%ndivide_eb(2),iz)                     &
-     &                            = istack_nod_grp_z(iz-1)
+        istack_block_y(0:T_meshes%ndivide_eb(2),icou)                   &
+     &                            = istack_nod_grp_z(iz1-1)
 !$omp end parallel workshare
         do inum = ist, ied-1
           inod = inod_sort(inum)
           jnod = inod_sort(inum+1)
           iy = id_block(inod,2)
           jy = id_block(jnod,2)
-          if(iy .ne. jy) istack_block_y(iy:jy,iz) = inum
+          if(iy .ne. jy) istack_block_y(iy:jy,icou) = inum
         end do
         inod = inod_sort(ied)
         iy = id_block(inod,2)
-        istack_block_y(iy:T_meshes%ndivide_eb(2),iz) = ied
+        istack_block_y(iy:T_meshes%ndivide_eb(2),icou) = ied
       end do
 !
       go to 20
-      do iz = 1, T_meshes%ndomain_eb(3)
-        write(100+my_rank,*) 'istack_block_y0', istack_block_z(iz), istack_block_y(0,iz)
+      do icou = 1, num_nod_grp_z
+        iz = idomain_nod_grp_z(icou)
+        write(100+my_rank,*) 'istack_block_y0', istack_block_z(iz), istack_block_y(0,icou)
         do iy = 1, T_meshes%ndivide_eb(2)
-          write(100+my_rank,*) 'istack_block_y', iy, istack_block_y(iy,iz)
-          ist = istack_block_y(iy-1,iz) + 1
-          ied = istack_block_y(iy,iz)
+          write(100+my_rank,*) 'istack_block_y', iy, istack_block_y(iy,icou)
+          ist = istack_block_y(iy-1,icou) + 1
+          ied = istack_block_y(iy,icou)
           do inum = ist, ied
             inod = inod_sort(inum)
             write(100+my_rank,*) 'inod', inum, inod, id_block(inod,2:3), &
@@ -493,13 +500,12 @@
       do icou = 1, num_nod_grp_z
         iz1 = idomain_nod_grp_z(icou)
         iz2 = idomain_nod_grp_z(icou+1)
-!      do iz1 = 1, T_meshes%ndomain_eb(3)
         do iy = 1, T_meshes%ndomain_eb(2)
           jk = iy + (iz1-1) * T_meshes%ndomain_eb(2)
           jst = istack_vol_y(iy-1,iz1) + 1
           jed = istack_vol_y(iy,iz1)
-          ist = istack_block_y(jst-1,iz1) + 1
-          ied = istack_block_y(jed,iz1)
+          ist = istack_block_y(jst-1,icou) + 1
+          ied = istack_block_y(jed,icou)
           istack_nod_grp_y(jk) = ied
           do inum = ist, ied
             inod = inod_sort(inum)
@@ -515,7 +521,7 @@
       end do
 !$omp end parallel do
 !
-!      go to 120
+      go to 120
       do icou = 1, num_nod_grp_z
         iz = idomain_nod_grp_z(icou)
         jk = (iz-1) * T_meshes%ndomain_eb(2)
@@ -590,8 +596,6 @@
       allocate(istack_block_x(0:T_meshes%ndivide_eb(1),num_nod_grp_yz))
       do icou = 1, num_nod_grp_yz
         jk = idomain_nod_grp_yz(1,icou)
-        iy = idomain_nod_grp_yz(2,icou)
-        iz = idomain_nod_grp_yz(3,icou)
         ist = istack_nod_grp_y(jk-1) + 1
         ied = istack_nod_grp_y(jk)
         if(ied .gt. ist) then
@@ -618,10 +622,6 @@
       go to 30
       do icou = 1, num_nod_grp_yz
         jk = idomain_nod_grp_yz(1,icou)
-        iy = idomain_nod_grp_yz(2,icou)
-        iz = idomain_nod_grp_yz(3,icou)
-        write(100+my_rank,*) 'istack_block_x0',                         &
-     &               istack_block_y(iy,iz), istack_block_x(0,icou)
         do ix = 1, T_meshes%ndivide_eb(2)
           write(100+my_rank,*) 'istack_block_x',                        &
      &                        ix, istack_block_x(ix,icou)
