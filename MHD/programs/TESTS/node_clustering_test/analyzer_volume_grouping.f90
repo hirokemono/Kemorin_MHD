@@ -289,14 +289,13 @@
         do j = T_meshes%ndomain_eb(3), 2, - 1
           vol_grp_z(j) = vol_grp_z(j) - vol_grp_z(j-1)
         end do
-!
-        write(*,*) 'vol_grp_z'
-        do j = 1, T_meshes%ndomain_eb(3)
-          write(*,*) j, istack_vol_z(j), vol_grp_z(j)
-        end do
       end if
       call calypso_mpi_barrier
 !
+      if(my_rank .eq. 0) then
+        call check_z_divided_volumes                                    &
+     &     (T_meshes, nod_vol_tot, sub_volume, istack_vol_z, vol_grp_z)
+      end if
       deallocate(vol_block_lc, vol_block_gl)
 !
 !
@@ -424,13 +423,13 @@
 !
       allocate(istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       allocate(vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
-
+      num_group_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
+!
 !      do ip = 1, T_meshes%ndomain_eb(3)
 !      if(ip-1 .eq. my_rank) then
       if(my_rank .lt. T_meshes%ndomain_eb(3)) then
         iz = my_rank + 1
-        sub_volume = nod_vol_tot                                        &
-     &            / dble(T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3))
+        sub_volume = nod_vol_tot / dble(num_group_yz)
 !
         vol_ref = 0.0d0
         vol_grp_y(1:T_meshes%ndomain_eb(2),iz) = 0.0d0
@@ -459,17 +458,13 @@
       end do
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'vol_grp_y'
-        do iz = 1, T_meshes%ndomain_eb(3)
-          do j = 1, T_meshes%ndomain_eb(2)
-            write(*,*) j, iz, istack_vol_y(j,iz), vol_grp_y(j,iz)
-          end do
-        end do
+        call check_yz_divided_volumes                                   &
+     &     (T_meshes, nod_vol_tot, sub_volume, istack_vol_y, vol_grp_y)
       end if
 !
-      allocate(istack_nod_grp_y(0:T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)))
+      allocate(istack_nod_grp_y(0:num_group_yz))
 !$omp parallel workshare
-      istack_nod_grp_y(0:T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)) = 0
+      istack_nod_grp_y(0:num_group_yz) = 0
 !$omp end parallel workshare
 !
 !$omp parallel do private(inod,inum,icou,ist,ied,jst,jed,iy,iz,iz1,iz2,jk)
@@ -494,7 +489,6 @@
 !$omp end parallel do
 !
       go to 120
-      num_group_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
       call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,           &
      &    T_meshes, inod_sort, num_nod_grp_z, idomain_nod_grp_z,        &
      &    num_group_yz, istack_nod_grp_y)
@@ -536,8 +530,7 @@
           end if
         end do
       end do
-      idomain_nod_grp_yz(num_nod_grp_yz+1)                              &
-     &                = T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)+1
+      idomain_nod_grp_yz(num_nod_grp_yz+1) = num_group_yz+1
 !      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
 !      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
 !
@@ -608,12 +601,12 @@
         end do
       end do
 !
-      allocate(istack_vol_x(0:T_meshes%ndomain_eb(1),T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)))
-      allocate(vol_grp_x(T_meshes%ndomain_eb(1),T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)))
+      allocate(istack_vol_x(0:T_meshes%ndomain_eb(1),num_group_yz))
+      allocate(vol_grp_x(T_meshes%ndomain_eb(1),num_group_yz))
 !
-!      do ip = 1, T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)
+!      do ip = 1, num_group_yz
 !      if(ip-1 .eq. my_rank) then
-      if(my_rank .lt. T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)) then
+      if(my_rank .lt. num_group_yz) then
         jk = 1 + my_rank
         sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
 !
@@ -649,15 +642,9 @@
       end do
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'vol_grp_x', nod_vol_tot, sub_volume
-        do iz = 1, T_meshes%ndomain_eb(3)
-          do iy = 1, T_meshes%ndomain_eb(2)
-            jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-            do ix = 1, T_meshes%ndomain_eb(1)
-              write(*,*) ix, iy, iz, istack_vol_x(ix,jk), vol_grp_x(ix,jk)
-            end do
-          end do
-        end do
+        call check_xyz_divided_volumes                                  &
+     &     (T_meshes, nod_vol_tot, sub_volume,                          &
+     &      num_group_yz, istack_vol_x, vol_grp_x)
       end if
 !
 !
@@ -796,6 +783,91 @@
 ! ----------------------------------------------------------------------
 !
       end module analyzer_volume_grouping
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_z_divided_volumes(T_meshes,                      &
+     &          nod_vol_tot, sub_volume, istack_vol_z, vol_grp_z)
+!
+      use t_control_param_vol_grping
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+!
+      integer(kind = kint), intent(in)                                  &
+     &   :: istack_vol_z(0:T_meshes%ndomain_eb(3))
+      real(kind = kreal), intent(in)                                    &
+     &   :: vol_grp_z(T_meshes%ndomain_eb(3))
+      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
+!
+      integer(kind = kint) :: iz
+!
+!
+      write(*,*) 'vol_grp_z', nod_vol_tot, sub_volume
+      do iz = 1, T_meshes%ndomain_eb(3)
+        write(*,*) iz, istack_vol_z(iz), vol_grp_z(iz)
+      end do
+!
+      end subroutine check_z_divided_volumes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_yz_divided_volumes(T_meshes,                     &
+     &          nod_vol_tot, sub_volume, istack_vol_y, vol_grp_y)
+!
+      use t_control_param_vol_grping
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+!
+      integer(kind = kint), intent(in)                                  &
+     & :: istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3))
+      real(kind = kreal), intent(in)                                    &
+     & :: vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3))
+      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
+!
+      integer(kind = kint) :: iy, iz
+!
+!
+      write(*,*) 'vol_grp_y', nod_vol_tot, sub_volume
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          write(*,*) iy, iz, istack_vol_y(iy,iz), vol_grp_y(iy,iz)
+        end do
+      end do
+!
+      end subroutine check_yz_divided_volumes
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_xyz_divided_volumes                              &
+     &         (T_meshes, nod_vol_tot, sub_volume,                      &
+     &         num_group_yz, istack_vol_x, vol_grp_x)
+!
+      use t_control_param_vol_grping
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+!
+      integer(kind = kint), intent(in) :: num_group_yz
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_vol_x(0:T_meshes%ndomain_eb(1),num_group_yz)
+      real(kind = kreal), intent(in)                                    &
+     &      :: vol_grp_x(T_meshes%ndomain_eb(1),num_group_yz)
+      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
+!
+      integer(kind = kint) :: ix, iy, iz, jk
+!
+!
+      write(*,*) 'vol_grp_x', nod_vol_tot, sub_volume
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+          do ix = 1, T_meshes%ndomain_eb(1)
+            write(*,*) ix,iy,iz, istack_vol_x(ix,jk), vol_grp_x(ix,jk)
+          end do
+        end do
+      end do
+!
+      end subroutine check_xyz_divided_volumes
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
