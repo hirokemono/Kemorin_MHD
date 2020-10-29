@@ -101,10 +101,11 @@
       real(kind = kreal), allocatable :: vol_grp_z(:)
 !
       integer(kind = kint) :: num_nod_grp_yz
-      integer(kind = kint), allocatable :: idomain_nod_grp_yz(:,:)
+      integer(kind = kint), allocatable :: idomain_nod_grp_yz(:)
       integer(kind = kint), allocatable :: istack_block_x(:,:)
       integer(kind = kint), allocatable :: istack_nod_grp_x(:)
 !
+      integer(kind = kint) :: num_group_yz
       integer(kind = kint) :: num_nod_grp_z
       integer(kind = kint), allocatable :: idomain_nod_grp_z(:)
       integer(kind = kint), allocatable :: istack_block_y(:,:)
@@ -251,17 +252,9 @@
       istack_block_z(iz:T_meshes%ndivide_eb(3)) = inum
 !
       go to 10
-      do iz = 1, T_meshes%ndivide_eb(3)
-        write(100+my_rank,*) 'istack_block_z', iz, istack_block_z(iz)
-        ist = istack_block_z(iz-1) + 1
-        ied = istack_block_z(iz)
-        do inum = ist, ied
-          inod = inod_sort(inum)
-          write(100+my_rank,*) 'inod', inum, inod, id_block(inod,3), &
-     &                        fem_T%mesh%node%xx(inod,3)
-        end do
-      end do
-      write(100+my_rank,*) fem_T%mesh%node%internal_node
+      call check_blocks_4_z_domain                                      &
+     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,      &
+     &    istack_block_z)
   10  continue
 !
 !
@@ -353,11 +346,9 @@
 !
 !
       go to 110
-      do icou = 1, num_nod_grp_z
-        iz = idomain_nod_grp_z(icou)
-        write(100+my_rank,*) 'istack_nod_grp_z', iz, istack_nod_grp_z(iz)
-      end do
-      write(100+my_rank,*) fem_T%mesh%node%internal_node
+      call check_stacks_4_z_domain                                      &
+     &   (my_rank, fem_T%mesh%node, T_meshes,                           &
+     &    inod_sort, T_meshes%ndomain_eb(3), idomain_nod_grp_z)
   110 continue
 !
       deallocate(vol_grp_z, istack_vol_z)
@@ -409,21 +400,9 @@
       end do
 !
       go to 20
-      do icou = 1, num_nod_grp_z
-        iz = idomain_nod_grp_z(icou)
-        write(100+my_rank,*) 'istack_block_y0', istack_block_z(iz), istack_block_y(0,icou)
-        do iy = 1, T_meshes%ndivide_eb(2)
-          write(100+my_rank,*) 'istack_block_y', iy, istack_block_y(iy,icou)
-          ist = istack_block_y(iy-1,icou) + 1
-          ied = istack_block_y(iy,icou)
-          do inum = ist, ied
-            inod = inod_sort(inum)
-            write(100+my_rank,*) 'inod', inum, inod,                    &
-     &                  id_block(inod,2:3), fem_T%mesh%node%xx(inod,2:3)
-          end do
-        end do
-      end do
-      write(100+my_rank,*) fem_T%mesh%node%internal_node
+      call check_blocks_4_yz_domain                                     &
+     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,      &
+     &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y)
   20  continue
 !
       allocate(vol_block_gl(T_meshes%ndivide_eb(2)))
@@ -515,18 +494,10 @@
 !$omp end parallel do
 !
       go to 120
-      do icou = 1, num_nod_grp_z
-        iz = idomain_nod_grp_z(icou)
-        jk = (iz-1) * T_meshes%ndomain_eb(2)
-        write(100+my_rank,*) 'istack_nod_grp_y0', iz,           &
-     &       istack_nod_grp_y(jk), istack_nod_grp_z(iz)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          write(100+my_rank,*) 'istack_nod_grp_y', iy, iz,      &
-     &                        istack_nod_grp_y(jk)
-        end do
-      end do
-      write(100+my_rank,*) fem_T%mesh%node%internal_node
+      num_group_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
+      call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,           &
+     &    T_meshes, inod_sort, num_nod_grp_z, idomain_nod_grp_z,        &
+     &    num_group_yz, istack_nod_grp_y)
   120 continue
 !
       deallocate(vol_block_lc, vol_block_gl)
@@ -542,13 +513,11 @@
         end do
       end do
 !
-      allocate(idomain_nod_grp_yz(3,num_nod_grp_yz+1))
+      allocate(idomain_nod_grp_yz(num_nod_grp_yz+1))
 !
 !$omp parallel do private(icou)
       do icou = 1, num_nod_grp_yz+1
-        idomain_nod_grp_yz(1,icou) = 0
-        idomain_nod_grp_yz(2,icou) = 0
-        idomain_nod_grp_yz(3,icou) = 0
+        idomain_nod_grp_yz(icou) = 0
       end do
 !$omp end parallel do
 !
@@ -560,17 +529,17 @@
           num = istack_nod_grp_y(jk) - istack_nod_grp_y(jk-1)
           if(num .gt. 0) then
             icou = icou + 1
-            idomain_nod_grp_yz(1,icou)                                  &
+            idomain_nod_grp_yz(icou)                                    &
      &           = iy + (iz-1) * T_meshes%ndomain_eb(2)
-            idomain_nod_grp_yz(2,icou) = iy
-            idomain_nod_grp_yz(3,icou) = iz
+!            idomain_nod_grp_yz(2,icou) = iy
+!            idomain_nod_grp_yz(3,icou) = iz
           end if
         end do
       end do
-      idomain_nod_grp_yz(1,num_nod_grp_yz+1)                            &
+      idomain_nod_grp_yz(num_nod_grp_yz+1)                              &
      &                = T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3)+1
-      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
-      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
+!      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
+!      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
 !
 !   For x direction
 !
@@ -588,7 +557,7 @@
 !
       allocate(istack_block_x(0:T_meshes%ndivide_eb(1),num_nod_grp_yz))
       do icou = 1, num_nod_grp_yz
-        jk = idomain_nod_grp_yz(1,icou)
+        jk = idomain_nod_grp_yz(icou)
         ist = istack_nod_grp_y(jk-1) + 1
         ied = istack_nod_grp_y(jk)
         if(ied .gt. ist) then
@@ -613,21 +582,9 @@
       end do
 !
       go to 30
-      do icou = 1, num_nod_grp_yz
-        jk = idomain_nod_grp_yz(1,icou)
-        do ix = 1, T_meshes%ndivide_eb(2)
-          write(100+my_rank,*) 'istack_block_x',                        &
-     &                        ix, istack_block_x(ix,icou)
-          ist = istack_block_x(ix-1,icou) + 1
-          ied = istack_block_x(ix,  icou)
-          do inum = ist, ied
-            inod = inod_sort(inum)
-            write(100+my_rank,*) 'inod', inum, inod,                    &
-     &                 id_block(inod,1:3), fem_T%mesh%node%xx(inod,1:3)
-          end do
-        end do
-      end do
-      write(100+my_rank,*) fem_T%mesh%node%internal_node
+      call check_blocks_4_xyz_domain                                    &
+     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,      &
+     &    num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x)
   30  continue
 !
 !
@@ -704,6 +661,8 @@
       end if
 !
 !
+      part_grp%num_grp = T_meshes%new_nprocs
+      call alloc_group_num(part_grp)
       allocate(istack_nod_grp_x(0:T_meshes%new_nprocs))
 !$omp parallel workshare
       istack_nod_grp_x(0:T_meshes%new_nprocs) = 0
@@ -711,8 +670,8 @@
 !
 !$omp parallel do private(icou,inod,inum,ist,ied,jst,jed,i,ix,jk,jk1,jk2)
       do icou = 1, num_nod_grp_yz
-        jk1 = idomain_nod_grp_yz(1,icou)
-        jk2 = idomain_nod_grp_yz(1,icou+1)
+        jk1 = idomain_nod_grp_yz(icou)
+        jk2 = idomain_nod_grp_yz(icou+1)
         do ix = 1, T_meshes%ndomain_eb(1)
           i = ix + (jk1-1) * T_meshes%ndomain_eb(1)
           jst = istack_vol_x(ix-1,jk1) + 1
@@ -734,38 +693,11 @@
       deallocate(istack_block_x)
 !
       go to 130
-      do iz = 1, T_meshes%ndomain_eb(3)
-        jk = (iz-1) * T_meshes%ndomain_eb(2)
-        write(100+my_rank,*) 'istack_nod_grp_y0', iz,                   &
-     &     istack_nod_grp_y(jk), istack_nod_grp_z(iz)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          i = (jk-1) * T_meshes%ndomain_eb(1)
-          if(istack_nod_grp_x(i+T_meshes%ndomain_eb(1))                 &
-     &       .eq. istack_nod_grp_x(i)) cycle
-!
-          write(100+my_rank,*) 'istack_nod_grp_x0', iy, iz,             &
-     &       istack_nod_grp_x(i), istack_nod_grp_y(jk)
-          do ix = 1, T_meshes%ndomain_eb(1)
-            i = ix + (jk-1) * T_meshes%ndomain_eb(1)
-            write(100+my_rank,*) 'istack_nod_grp_x', ix, iy, iz,        &
-     &                          istack_nod_grp_x(i)
-            ist = istack_nod_grp_x(i-1) + 1
-            ied = istack_nod_grp_x(i  )
-            do inum = ist, ied
-              inod = inod_sort(inum)
-              write(100+my_rank,*) 'inod', inum, inod, ix, iy, iz,      &
-     &                            fem_T%mesh%node%xx(inod,1:3)
-            end do
-          end do
-        end do
-      end do
-      write(100+my_rank,*) fem_T%mesh%node%internal_node
+      call check_stacks_4_new_domain(my_rank,                           &
+     &    fem_T%mesh%node, T_meshes, inod_sort, num_nod_grp_yz,         &
+     &    idomain_nod_grp_yz, T_meshes%new_nprocs, istack_nod_grp_x)
   130 continue
 !
-!
-      part_grp%num_grp = T_meshes%new_nprocs
-      call alloc_group_num(part_grp)
 !
       part_grp%istack_grp(0) = 0
       do iz = 1, T_meshes%ndomain_eb(3)
@@ -864,3 +796,252 @@
 ! ----------------------------------------------------------------------
 !
       end module analyzer_volume_grouping
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_blocks_4_z_domain(my_rank, node, T_meshes,       &
+     &          inod_sort, id_block, istack_block_z)
+!
+      use t_geometry_data
+      use t_control_param_vol_grping
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+      integer(kind = kint), intent(in) :: id_block(node%numnod,3)
+!
+      integer(kind = kint), intent(in)                                  &
+     &     :: istack_block_z(0:T_meshes%ndivide_eb(3))
+!
+      integer(kind = kint) :: iz, ist, ied, inum, inod
+!
+      do iz = 1, T_meshes%ndivide_eb(3)
+        write(100+my_rank,*) 'istack_block_z', iz, istack_block_z(iz)
+        ist = istack_block_z(iz-1) + 1
+        ied = istack_block_z(iz)
+        do inum = ist, ied
+          inod = inod_sort(inum)
+          write(100+my_rank,*) 'inod', inum, inod, id_block(inod,3),    &
+     &                        node%xx(inod,3)
+        end do
+      end do
+      write(100+my_rank,*) node%internal_node
+!
+      end subroutine check_blocks_4_z_domain
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_blocks_4_yz_domain                               &
+     &         (my_rank, node, T_meshes, inod_sort, id_block,           &
+     &          num_nod_grp_z, idomain_nod_grp_z, istack_block_yz)
+!
+      use t_geometry_data
+      use t_control_param_vol_grping
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+      integer(kind = kint), intent(in) :: id_block(node%numnod,3)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_z
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_z(num_nod_grp_z)
+      integer(kind = kint), intent(in)                                  &
+     &     :: istack_block_yz(0:T_meshes%ndivide_eb(2),num_nod_grp_z)
+!
+      integer(kind = kint) :: iy, iz, ist, ied, inum, inod
+!
+      do icou = 1, num_nod_grp_z
+        iz = idomain_nod_grp_z(icou)
+        write(100+my_rank,*) 'istack_block_y0', istack_block_yz(0,icou)
+        do iy = 1, T_meshes%ndivide_eb(2)
+          write(100+my_rank,*) 'istack_block_yz',                       &
+     &                        iy, istack_block_yz(iy,icou)
+          ist = istack_block_yz(iy-1,icou) + 1
+          ied = istack_block_yz(iy,icou)
+          do inum = ist, ied
+            inod = inod_sort(inum)
+            write(100+my_rank,*) 'inod', inum, inod,                    &
+     &                  id_block(inod,2:3), node%xx(inod,2:3)
+          end do
+        end do
+      end do
+      write(100+my_rank,*) node%internal_node
+!
+      end subroutine check_blocks_4_yz_domain
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_blocks_4_xyz_domain                              &
+     &         (my_rank, node, T_meshes, inod_sort, id_block,           &
+     &          num_nod_grp_yz, idomain_nod_grp_yz, istack_block_xyz)
+!
+      use t_geometry_data
+      use t_control_param_vol_grping
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+      integer(kind = kint), intent(in) :: id_block(node%numnod,3)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_yz
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_yz(num_nod_grp_yz)
+      integer(kind = kint), intent(in)                                  &
+     &     :: istack_block_xyz(0:T_meshes%ndivide_eb(1),num_nod_grp_yz)
+!
+      integer(kind = kint) :: ix, iy, iz, jk, ist, ied, inum, inod
+!
+      do icou = 1, num_nod_grp_yz
+        jk = idomain_nod_grp_yz(icou)
+        iy = 1 + mod(jk-1,T_meshes%ndomain_eb(2))
+        iz = 1 + (jk-1) / T_meshes%ndomain_eb(2)
+        do ix = 1, T_meshes%ndivide_eb(2)
+          write(100+my_rank,*) 'istack_block_xyz',                      &
+     &                        ix, iy, iz, istack_block_xyz(ix,icou)
+          ist = istack_block_xyz(ix-1,icou) + 1
+          ied = istack_block_xyz(ix,  icou)
+          do inum = ist, ied
+            inod = inod_sort(inum)
+            write(100+my_rank,*) 'inod', inum, inod,                    &
+     &                 id_block(inod,1:3), node%xx(inod,1:3)
+          end do
+        end do
+      end do
+!
+      end subroutine check_blocks_4_xyz_domain
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine check_stacks_4_z_domain(my_rank, node, T_meshes,      &
+     &          inod_sort, num_nod_group_z, istack_nod_grp_z)
+!
+      use t_geometry_data
+      use t_control_param_vol_grping
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+!
+      integer(kind = kint), intent(in) :: num_nod_group_z
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_nod_grp_z(0:num_nod_group_z)
+!
+      integer(kind = kint) :: iz, ist, ied, inum, inod
+!
+      do iz = 1, T_meshes%ndomain_eb(3)
+        if(istack_nod_grp_z(iz) .eq. istack_nod_grp_z(iz-1)) cycle
+!
+        write(100+my_rank,*) 'istack_nod_grp_z', iz, istack_nod_grp_z(iz)
+        ist = istack_nod_grp_z(iz-1) + 1
+        ied = istack_nod_grp_z(iz  )
+        do inum = ist, ied
+          inod = inod_sort(inum)
+          write(100+my_rank,*) 'inod', inum, inod, iz, node%xx(inod,3)
+        end do
+      end do
+      write(100+my_rank,*) node%internal_node
+!
+      end subroutine check_stacks_4_z_domain
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_stacks_4_yz_domain(my_rank, node, T_meshes,      &
+     &          inod_sort, num_nod_grp_z, idomain_nod_grp_z,            &
+     &          num_nod_group_yz, istack_nod_grp_y)
+!
+      use t_geometry_data
+      use t_control_param_vol_grping
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_z
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_z(num_nod_grp_z)
+      integer(kind = kint), intent(in) :: num_nod_group_yz
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_nod_grp_y(0:num_nod_group_yz)
+!
+      integer(kind = kint) :: iy, iz, jk, ist, ied, inum, inod, icou
+!
+      do icou = 1, num_nod_grp_z
+        iz = idomain_nod_grp_z(icou)
+        jk = (iz-1) * T_meshes%ndomain_eb(2)
+        write(100+my_rank,*) 'istack_nod_grp_y0', iz,                   &
+     &                      istack_nod_grp_y(jk)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+          write(100+my_rank,*) 'istack_nod_grp_y', iy, iz,              &
+     &                        istack_nod_grp_y(jk)
+          ist = istack_nod_grp_y(jk-1) + 1
+          ied = istack_nod_grp_y(jk  )
+          do inum = ist, ied
+            inod = inod_sort(inum)
+            write(100+my_rank,*) 'inod', inum, inod,                    &
+     &                           iy, iz, node%xx(inod,2:3)
+          end do
+        end do
+      end do
+      write(100+my_rank,*) node%internal_node
+!
+      end subroutine check_stacks_4_yz_domain
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_stacks_4_new_domain(my_rank, node, T_meshes,     &
+     &          inod_sort, num_nod_grp_yz, idomain_nod_grp_yz,          &
+     &          num_nod_grp_xyz, istack_nod_grp_xyz)
+!
+      use t_geometry_data
+      use t_control_param_vol_grping
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_yz
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_yz(num_nod_grp_yz)
+      integer(kind = kint), intent(in) :: num_nod_grp_xyz
+      integer(kind = kint), intent(in)                                  &
+     &                     :: istack_nod_grp_xyz(0:num_nod_grp_xyz)
+!
+      integer(kind = kint) :: ix, iy, iz, jk, ist, ied
+      integer(kind = kint) :: inum, inod, icou
+!
+      do icou = 1, num_nod_grp_yz
+        jk = idomain_nod_grp_yz(icou)
+        iy = 1 + mod(jk-1,T_meshes%ndomain_eb(2))
+        iz = 1 + (jk-1) / T_meshes%ndomain_eb(2)
+        i = (jk-1) * T_meshes%ndomain_eb(1)
+        write(100+my_rank,*) 'istack_nod_grp_x0',                       &
+     &                        iy, iz, istack_nod_grp_xyz(i)
+        do ix = 1, T_meshes%ndomain_eb(1)
+          i = ix + (jk-1) * T_meshes%ndomain_eb(1)
+          write(100+my_rank,*) 'istack_nod_grp_xyz', ix, iy, iz,        &
+     &                          istack_nod_grp_xyz(i)
+          ist = istack_nod_grp_xyz(i-1) + 1
+          ied = istack_nod_grp_xyz(i  )
+          do inum = ist, ied
+            inod = inod_sort(inum)
+            write(100+my_rank,*) 'inod', inum, inod,                    &
+     &                            ix, iy, iz, node%xx(inod,1:3)
+          end do
+        end do
+      end do
+      write(100+my_rank,*) node%internal_node
+!
+      end subroutine check_stacks_4_new_domain
+!
+! ----------------------------------------------------------------------
+!
