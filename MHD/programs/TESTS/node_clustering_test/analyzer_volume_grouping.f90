@@ -116,7 +116,6 @@
       integer(kind = kint) :: inod, inum, icou
       integer(kind = kint) :: ist, ied, num, jnod
       integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, iz1, jk, jx, jy, jz
-      character(len = kchara) :: chara_tmp
 !
       type(group_data) :: z_part_grp
       type(group_data) :: yz_part_grp
@@ -646,6 +645,7 @@
       end do
 !$omp end parallel do
 !
+!$omp parallel do private(i,ist,num)
       do i = 1, part_grp%num_grp
         ist = part_grp%istack_grp(i-1)
         num = part_grp%istack_grp(i  ) - ist
@@ -653,6 +653,7 @@
           call quicksort_int(num, part_grp%item_grp(ist+1), ione, num)
         end if
       end do
+!$omp end parallel do
 !
       deallocate(idomain_nod_grp_yz)
       call dealloc_group_num(z_part_grp)
@@ -718,16 +719,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_z_domain_grp_name                                  &
-     &         (T_meshes, num_doain_grp, domain_grp_name)
+     &         (T_meshes, num_domain_grp, domain_grp_name)
 !
       use t_control_param_vol_grping
       use set_parallel_file_name
 !
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
-      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(in) :: num_domain_grp
       character(len = kchara), intent(inout)                            &
-     &                        :: domain_grp_name(num_doain_grp)
+     &                        :: domain_grp_name(num_domain_grp)
 !
       character(len = kchara), parameter :: base_name = 'new_domain'
       character(len = kchara) :: chara_tmp
@@ -746,16 +747,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_yz_domain_grp_name                                 &
-     &         (T_meshes, num_doain_grp, domain_grp_name)
+     &         (T_meshes, num_domain_grp, domain_grp_name)
 !
       use t_control_param_vol_grping
       use set_parallel_file_name
 !
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
-      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(in) :: num_domain_grp
       character(len = kchara), intent(inout)                            &
-     &                        :: domain_grp_name(num_doain_grp)
+     &                        :: domain_grp_name(num_domain_grp)
 !
       character(len = kchara), parameter :: base_name = 'new_domain'
       character(len = kchara) :: chara_tmp
@@ -780,16 +781,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_xyz_domain_grp_name                                &
-     &         (T_meshes, num_doain_grp, domain_grp_name)
+     &         (T_meshes, num_domain_grp, domain_grp_name)
 !
       use t_control_param_vol_grping
       use set_parallel_file_name
 !
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
-      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(in) :: num_domain_grp
       character(len = kchara), intent(inout)                            &
-     &                        :: domain_grp_name(num_doain_grp)
+     &                        :: domain_grp_name(num_domain_grp)
 !
       character(len = kchara), parameter :: base_name = 'new_domain'
       character(len = kchara) :: chara_tmp
@@ -824,7 +825,7 @@
 !
       subroutine set_z_domain_grp_stack                                 &
      &         (nblock_z, ndomain_z, istack_block_z, istack_vol_z,      &
-     &          num_doain_grp, istack_doain_grp)
+     &          num_domain_grp, istack_domain_grp)
 !
       use m_precision
 !
@@ -833,15 +834,15 @@
       integer(kind = kint), intent(in) :: istack_block_z(0:nblock_z)
       integer(kind = kint), intent(in) :: istack_vol_z(0:ndomain_z)
 !
-      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(in) :: num_domain_grp
       integer(kind = kint), intent(inout)                               &
-     &       :: istack_doain_grp(0:num_doain_grp)
+     &       :: istack_domain_grp(0:num_domain_grp)
 !
       integer(kind = kint) :: j, ist, ied, jst, jed
 !
 !
 !$omp parallel workshare
-      istack_doain_grp(0:num_doain_grp) = 0
+      istack_domain_grp(0:num_domain_grp) = 0
 !$omp end parallel workshare
 !
 !$omp parallel do private(ist,ied,jst,jed,j)
@@ -850,7 +851,7 @@
         jed = istack_vol_z(j)
         ist = istack_block_z(jst-1) + 1
         ied = istack_block_z(jed)
-        istack_doain_grp(j) = ied
+        istack_domain_grp(j) = ied
       end do
 !$omp end parallel do
 !
@@ -861,7 +862,7 @@
       subroutine set_newdomain_grp_stack                                &
      &         (nblock, ndomain_x, ndomain_yz,                          &
      &          num_nod_grp, idomain_nod_grp, istack_block,             &
-     &          istack_volume, num_doain_grp, istack_doain_grp)
+     &          istack_volume, num_domain_grp, istack_domain_grp)
 !
       use m_precision
 !
@@ -875,16 +876,16 @@
       integer(kind = kint), intent(in)                                  &
      &       :: istack_volume(0:ndomain_x,ndomain_yz)
 !
-      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(in) :: num_domain_grp
       integer(kind = kint), intent(inout)                               &
-     &       :: istack_doain_grp(0:num_doain_grp)
+     &       :: istack_domain_grp(0:num_domain_grp)
 !
       integer(kind = kint) :: ist, ied, jst, jed
       integer(kind = kint) :: icou, i, ix, jk, jk1, jk2
 !
 !
 !$omp parallel workshare
-      istack_doain_grp(0:num_doain_grp) = 0
+      istack_domain_grp(0:num_domain_grp) = 0
 !$omp end parallel workshare
 !
 !$omp parallel do private(icou,ist,ied,jst,jed,i,ix,jk,jk1,jk2)
@@ -897,13 +898,13 @@
           jed = istack_volume(ix,  jk1)
           ist = istack_block(jst-1,icou) + 1
           ied = istack_block(jed,  icou)
-          istack_doain_grp(i) = ied
+          istack_domain_grp(i) = ied
         end do
 !
         do jk = jk1+1, jk2-1
           ist = (jk-1) * ndomain_x
-          istack_doain_grp(ist+1:ist+ndomain_x)                         &
-     &        = istack_doain_grp(jk1*ndomain_x)
+          istack_domain_grp(ist+1:ist+ndomain_x)                        &
+     &        = istack_domain_grp(jk1*ndomain_x)
         end do
       end do
 !$omp end parallel do
