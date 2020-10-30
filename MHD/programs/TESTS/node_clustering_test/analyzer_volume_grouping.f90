@@ -114,9 +114,8 @@
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
       integer(kind = kint) :: inod, inum, icou
-      integer(kind = kint) :: ist, ied, num, jnod, jst, jed
-      integer(kind = kint) :: iz1, iz2, jk1, jk2
-      integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, jk, jx, jy, jz
+      integer(kind = kint) :: ist, ied, num, jnod
+      integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, iz1, jk, jx, jy, jz
       character(len = kchara) :: chara_tmp
 !
       type(group_data) :: z_part_grp
@@ -306,29 +305,15 @@
 !
       z_part_grp%num_grp = T_meshes%ndomain_eb(3)
       call alloc_group_num(z_part_grp)
-!
-!$omp parallel do private(iz)
-      do iz = 1, T_meshes%ndomain_eb(3)
-        z_part_grp%grp_name(iz) = 'new_domain'
-        write(chara_tmp,'(a,a2)') trim(z_part_grp%grp_name(iz)), '_z'
-        call add_index_after_name                                       &
-     &     (iz, chara_tmp, z_part_grp%grp_name(iz))
-      end do
-!$omp end parallel do
-!
-!$omp parallel workshare
-      z_part_grp%istack_grp(0:T_meshes%ndomain_eb(3)) = 0
-!$omp end parallel workshare
-!
-!$omp parallel do private(inod,inum,ist,ied,jst,jed,j)
-      do j = 1, T_meshes%ndomain_eb(3)
-        jst = istack_vol_z(j-1) + 1
-        jed = istack_vol_z(j)
-        ist = istack_block_z(jst-1) + 1
-        ied = istack_block_z(jed)
-        z_part_grp%istack_grp(j) = ied
-      end do
-!$omp end parallel do
+      call set_z_domain_grp_name                                        &
+     &   (T_meshes, z_part_grp%num_grp, z_part_grp%grp_name)
+      call set_z_domain_grp_stack                                       &
+     &   (T_meshes%ndivide_eb(3), T_meshes%ndomain_eb(3),               &
+     &    istack_block_z, istack_vol_z, z_part_grp%num_grp,             &
+     &    z_part_grp%istack_grp)
+!      call check_stacks_4_z_domain                                     &
+!     &   (my_rank, fem_T%mesh%node, T_meshes,                          &
+!     &    inod_sort, z_part_grp%num_grp, z_part_grp%istack_grp)
 !
       num_nod_grp_z = 0
       do iz = 1, T_meshes%ndomain_eb(3)
@@ -353,13 +338,6 @@
         end if
       end do
       idomain_nod_grp_z(num_nod_grp_z+1) = T_meshes%ndomain_eb(3) + 1
-!
-!
-      go to 110
-      call check_stacks_4_z_domain                                      &
-     &   (my_rank, fem_T%mesh%node, T_meshes,                           &
-     &    inod_sort, T_meshes%ndomain_eb(3), idomain_nod_grp_z)
-  110 continue
 !
       deallocate(vol_grp_z, istack_vol_z)
 !
@@ -475,33 +453,15 @@
 !
       yz_part_grp%num_grp = num_group_yz
       call alloc_group_num(yz_part_grp)
-!
-!$omp parallel do private(iy,iz,jk)
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-!
-          yz_part_grp%grp_name(jk) = 'new_domain'
-          write(chara_tmp,'(a,a2)') trim(yz_part_grp%grp_name(jk)),'_y'
-          call add_index_after_name                                     &
-     &       (iy, chara_tmp, yz_part_grp%grp_name(jk))
-          write(chara_tmp,'(a,a2)') trim(yz_part_grp%grp_name(jk)),'_z'
-          call add_index_after_name                                     &
-     &       (iz, chara_tmp, yz_part_grp%grp_name(jk))
-        end do
-      end do
-!$omp end parallel do
-!
+      call set_yz_domain_grp_name                                       &
+     &   (T_meshes, yz_part_grp%num_grp, yz_part_grp%grp_name)
       call set_newdomain_grp_stack(T_meshes%ndivide_eb(2),              &
      &    T_meshes%ndomain_eb(2), T_meshes%ndomain_eb(3),               &
      &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y,             &
      &    istack_vol_y, part_grp%num_grp, yz_part_grp%istack_grp)
-!
-      go to 120
-      call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,           &
-     &    T_meshes, inod_sort, num_nod_grp_z, idomain_nod_grp_z,        &
-     &    num_group_yz, yz_part_grp%istack_grp)
-  120 continue
+!      call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,          &
+!     &    T_meshes, inod_sort, num_nod_grp_z, idomain_nod_grp_z,       &
+!     &    num_group_yz, yz_part_grp%istack_grp)
 !
       deallocate(vol_block_lc, vol_block_gl)
 !
@@ -661,42 +621,19 @@
 !
       part_grp%num_grp = T_meshes%new_nprocs
       call alloc_group_num(part_grp)
-!
-!$omp parallel do private(i,ix,iy,iz,jk)
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          do ix = 1, T_meshes%ndomain_eb(1)
-            i = ix + (jk-1) * T_meshes%ndomain_eb(1)
-!
-            part_grp%grp_name(i) = 'new_domain'
-            write(chara_tmp,'(a,a2)') trim(part_grp%grp_name(i)), '_x'
-            call add_index_after_name                                   &
-     &         (ix, chara_tmp, part_grp%grp_name(i))
-            write(chara_tmp,'(a,a2)') trim(part_grp%grp_name(i)), '_y'
-            call add_index_after_name                                   &
-     &         (iy, chara_tmp, part_grp%grp_name(i))
-            write(chara_tmp,'(a,a2)') trim(part_grp%grp_name(i)), '_z'
-            call add_index_after_name                                   &
-     &         (iz, chara_tmp, part_grp%grp_name(i))
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
+      call set_xyz_domain_grp_name                                      &
+     &   (T_meshes, part_grp%num_grp, part_grp%grp_name)
       call set_newdomain_grp_stack                                      &
      &   (T_meshes%ndivide_eb(1), T_meshes%ndomain_eb(1), num_group_yz, &
      &    num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x,           &
      &    istack_vol_x, part_grp%num_grp, part_grp%istack_grp)
+!      call check_stacks_4_new_domain(my_rank,                          &
+!     &    fem_T%mesh%node, T_meshes, inod_sort, num_nod_grp_yz,        &
+!     &    idomain_nod_grp_yz, T_meshes%new_nprocs, part_grp%istack_grp)
 !
       deallocate(istack_vol_x, vol_grp_x)
       deallocate(istack_block_x)
 !
-      go to 130
-      call check_stacks_4_new_domain(my_rank,                           &
-     &    fem_T%mesh%node, T_meshes, inod_sort, num_nod_grp_yz,         &
-     &    idomain_nod_grp_yz, T_meshes%new_nprocs, part_grp%istack_grp)
-  130 continue
 !
 !
       part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)
@@ -778,6 +715,147 @@
       end module analyzer_volume_grouping
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_z_domain_grp_name                                  &
+     &         (T_meshes, num_doain_grp, domain_grp_name)
+!
+      use t_control_param_vol_grping
+      use set_parallel_file_name
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+!
+      integer(kind = kint), intent(in) :: num_doain_grp
+      character(len = kchara), intent(inout)                            &
+     &                        :: domain_grp_name(num_doain_grp)
+!
+      character(len = kchara), parameter :: base_name = 'new_domain'
+      character(len = kchara) :: chara_tmp
+!
+      integer(kind = kint) :: iz
+!
+!$omp parallel do private(iz)
+      do iz = 1, T_meshes%ndomain_eb(3)
+        write(chara_tmp,'(a,a2)') trim(base_name), '_z'
+        call add_index_after_name(iz, chara_tmp, domain_grp_name(iz))
+      end do
+!$omp end parallel do
+!
+      end subroutine set_z_domain_grp_name
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_yz_domain_grp_name                                 &
+     &         (T_meshes, num_doain_grp, domain_grp_name)
+!
+      use t_control_param_vol_grping
+      use set_parallel_file_name
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+!
+      integer(kind = kint), intent(in) :: num_doain_grp
+      character(len = kchara), intent(inout)                            &
+     &                        :: domain_grp_name(num_doain_grp)
+!
+      character(len = kchara), parameter :: base_name = 'new_domain'
+      character(len = kchara) :: chara_tmp
+!
+      integer(kind = kint) :: iz, iy, jk
+!
+!$omp parallel do private(iy,iz,jk)
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+!
+          write(chara_tmp,'(a,a2)') trim(base_name),'_y'
+          call add_index_after_name(iy, chara_tmp, domain_grp_name(jk))
+          write(chara_tmp,'(a,a2)') trim(domain_grp_name(jk)),'_z'
+          call add_index_after_name(iz, chara_tmp, domain_grp_name(jk))
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_yz_domain_grp_name
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_xyz_domain_grp_name                                &
+     &         (T_meshes, num_doain_grp, domain_grp_name)
+!
+      use t_control_param_vol_grping
+      use set_parallel_file_name
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+!
+      integer(kind = kint), intent(in) :: num_doain_grp
+      character(len = kchara), intent(inout)                            &
+     &                        :: domain_grp_name(num_doain_grp)
+!
+      character(len = kchara), parameter :: base_name = 'new_domain'
+      character(len = kchara) :: chara_tmp
+!
+      integer(kind = kint) :: iz, iy, ix, jk, i
+!
+!$omp parallel do private(i,ix,iy,iz,jk)
+      do iz = 1, T_meshes%ndomain_eb(3)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+          do ix = 1, T_meshes%ndomain_eb(1)
+            i = ix + (jk-1) * T_meshes%ndomain_eb(1)
+!
+            write(chara_tmp,'(a,a2)') trim(base_name), '_x'
+            call add_index_after_name                                   &
+     &         (ix, chara_tmp, domain_grp_name(i))
+            write(chara_tmp,'(a,a2)') trim(domain_grp_name(i)), '_y'
+            call add_index_after_name                                   &
+     &         (iy, chara_tmp, domain_grp_name(i))
+            write(chara_tmp,'(a,a2)') trim(domain_grp_name(i)), '_z'
+            call add_index_after_name                                   &
+     &         (iz, chara_tmp, domain_grp_name(i))
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_xyz_domain_grp_name
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_z_domain_grp_stack                                 &
+     &         (nblock_z, ndomain_z, istack_block_z, istack_vol_z,      &
+     &          num_doain_grp, istack_doain_grp)
+!
+      use m_precision
+!
+      integer(kind = kint), intent(in) :: nblock_z
+      integer(kind = kint), intent(in) :: ndomain_z
+      integer(kind = kint), intent(in) :: istack_block_z(0:nblock_z)
+      integer(kind = kint), intent(in) :: istack_vol_z(0:ndomain_z)
+!
+      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(inout)                               &
+     &       :: istack_doain_grp(0:num_doain_grp)
+!
+      integer(kind = kint) :: j, ist, ied, jst, jed
+!
+!
+!$omp parallel workshare
+      istack_doain_grp(0:num_doain_grp) = 0
+!$omp end parallel workshare
+!
+!$omp parallel do private(ist,ied,jst,jed,j)
+      do j = 1, ndomain_z
+        jst = istack_vol_z(j-1) + 1
+        jed = istack_vol_z(j)
+        ist = istack_block_z(jst-1) + 1
+        ied = istack_block_z(jed)
+        istack_doain_grp(j) = ied
+      end do
+!$omp end parallel do
+!
+      end subroutine set_z_domain_grp_stack
+!
 ! ----------------------------------------------------------------------
 !
       subroutine set_newdomain_grp_stack                                &
