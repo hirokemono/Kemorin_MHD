@@ -704,30 +704,10 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel workshare
-      part_grp%istack_grp(0:T_meshes%new_nprocs) = 0
-!$omp end parallel workshare
-!
-!$omp parallel do private(icou,inod,inum,ist,ied,jst,jed,i,ix,jk,jk1,jk2)
-      do icou = 1, num_nod_grp_yz
-        jk1 = idomain_nod_grp_yz(icou)
-        jk2 = idomain_nod_grp_yz(icou+1)
-        do ix = 1, T_meshes%ndomain_eb(1)
-          i = ix + (jk1-1) * T_meshes%ndomain_eb(1)
-          jst = istack_vol_x(ix-1,jk1) + 1
-          jed = istack_vol_x(ix,  jk1)
-          ist = istack_block_x(jst-1,icou) + 1
-          ied = istack_block_x(jed,  icou)
-          part_grp%istack_grp(i) = ied
-        end do
-!
-        do jk = jk1+1, jk2-1
-          ist = (jk-1) * T_meshes%ndomain_eb(1)
-          part_grp%istack_grp(ist+1:ist+T_meshes%ndomain_eb(1))         &
-     &        = part_grp%istack_grp(jk1*T_meshes%ndomain_eb(1))
-        end do
-      end do
-!$omp end parallel do
+      call set_xyz_newdomain_grp_stack                                  &
+     &   (T_meshes%ndivide_eb(1), T_meshes%ndomain_eb(1), num_group_yz, &
+     &    num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x,           &
+     &    istack_vol_x, T_meshes%new_nprocs, part_grp%istack_grp)
 !
       deallocate(istack_vol_x, vol_grp_x)
       deallocate(istack_block_x)
@@ -816,6 +796,61 @@
 ! ----------------------------------------------------------------------
 !
       end module analyzer_volume_grouping
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_xyz_newdomain_grp_stack                            &
+     &         (nblock_x, ndomain_x, ndomain_yz,                        &
+     &          num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x,     &
+     &          istack_vol_x, num_doain_grp, istack_doain_grp)
+!
+      use m_precision
+!
+      integer(kind = kint), intent(in) :: nblock_x
+      integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
+      integer(kind = kint), intent(in) :: num_nod_grp_yz
+      integer(kind = kint), intent(in)                                  &
+     &       :: idomain_nod_grp_yz(num_nod_grp_yz+1)
+      integer(kind = kint), intent(in)                                  &
+     &       :: istack_block_x(0:nblock_x,num_nod_grp_yz)
+      integer(kind = kint), intent(in)                                  &
+     &       :: istack_vol_x(0:ndomain_x,ndomain_yz)
+!
+      integer(kind = kint), intent(in) :: num_doain_grp
+      integer(kind = kint), intent(inout)                               &
+     &       :: istack_doain_grp(0:num_doain_grp)
+!
+      integer(kind = kint) :: ist, ied, jst, jed
+      integer(kind = kint) :: icou, i, ix, jk, jk1, jk2
+!
+!
+!$omp parallel workshare
+      istack_doain_grp(0:num_doain_grp) = 0
+!$omp end parallel workshare
+!
+!$omp parallel do private(icou,ist,ied,jst,jed,i,ix,jk,jk1,jk2)
+      do icou = 1, num_nod_grp_yz
+        jk1 = idomain_nod_grp_yz(icou)
+        jk2 = idomain_nod_grp_yz(icou+1)
+        do ix = 1, ndomain_x
+          i = ix + (jk1-1) * ndomain_x
+          jst = istack_vol_x(ix-1,jk1) + 1
+          jed = istack_vol_x(ix,  jk1)
+          ist = istack_block_x(jst-1,icou) + 1
+          ied = istack_block_x(jed,  icou)
+          istack_doain_grp(i) = ied
+        end do
+!
+        do jk = jk1+1, jk2-1
+          ist = (jk-1) * ndomain_x
+          istack_doain_grp(ist+1:ist+ndomain_x)                         &
+     &        = istack_doain_grp(jk1*ndomain_x)
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine set_xyz_newdomain_grp_stack
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
