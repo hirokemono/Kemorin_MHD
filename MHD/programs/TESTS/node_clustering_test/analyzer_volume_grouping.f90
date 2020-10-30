@@ -314,6 +314,12 @@
 !     &   (my_rank, fem_T%mesh%node, T_meshes,                          &
 !     &    inod_sort, z_part_grp%num_grp, z_part_grp%istack_grp)
 !
+!      z_part_grp%num_item = z_part_grp%istack_grp(z_part_grp%num_grp)
+!      call alloc_group_item(z_part_grp)
+!      call set_domain_grp_item(fem_T%mesh%node, inod_sort,             &
+!     &    z_part_grp%num_grp, z_part_grp%num_item,                     &
+!     &    z_part_grp%istack_grp, z_part_grp%item_grp)
+!
       num_nod_grp_z = 0
       do iz = 1, T_meshes%ndomain_eb(3)
         num = z_part_grp%istack_grp(iz) - z_part_grp%istack_grp(iz-1)
@@ -457,10 +463,16 @@
       call set_newdomain_grp_stack(T_meshes%ndivide_eb(2),              &
      &    T_meshes%ndomain_eb(2), T_meshes%ndomain_eb(3),               &
      &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y,             &
-     &    istack_vol_y, part_grp%num_grp, yz_part_grp%istack_grp)
+     &    istack_vol_y, yz_part_grp%num_grp, yz_part_grp%istack_grp)
 !      call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,          &
 !     &    T_meshes, inod_sort, num_nod_grp_z, idomain_nod_grp_z,       &
 !     &    num_group_yz, yz_part_grp%istack_grp)
+!
+!      yz_part_grp%num_item = yz_part_grp%istack_grp(yz_part_grp%num_grp)
+!      call alloc_group_item(yz_part_grp)
+!      call set_domain_grp_item(fem_T%mesh%node, inod_sort,             &
+!     &    yz_part_grp%num_grp, yz_part_grp%num_item,                   &
+!     &    yz_part_grp%istack_grp, yz_part_grp%item_grp)
 !
       deallocate(vol_block_lc, vol_block_gl)
 !
@@ -630,30 +642,14 @@
 !     &    fem_T%mesh%node, T_meshes, inod_sort, num_nod_grp_yz,        &
 !     &    idomain_nod_grp_yz, T_meshes%new_nprocs, part_grp%istack_grp)
 !
-      deallocate(istack_vol_x, vol_grp_x)
-      deallocate(istack_block_x)
-!
-!
-!
       part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)
       call alloc_group_item(part_grp)
+      call set_domain_grp_item(fem_T%mesh%node, inod_sort,              &
+     &                         part_grp%num_grp, part_grp%num_item,     &
+     &                         part_grp%istack_grp, part_grp%item_grp)
 !
-!$omp parallel do private(inum,inod)
-      do inum = 1, part_grp%num_item
-        inod = inod_sort(inum)
-        part_grp%item_grp(inum) = inod
-      end do
-!$omp end parallel do
-!
-!$omp parallel do private(i,ist,num)
-      do i = 1, part_grp%num_grp
-        ist = part_grp%istack_grp(i-1)
-        num = part_grp%istack_grp(i  ) - ist
-        if(num .gt. 1) then
-          call quicksort_int(num, part_grp%item_grp(ist+1), ione, num)
-        end if
-      end do
-!$omp end parallel do
+      deallocate(istack_vol_x, vol_grp_x)
+      deallocate(istack_block_x)
 !
       deallocate(idomain_nod_grp_yz)
       call dealloc_group_num(z_part_grp)
@@ -910,6 +906,50 @@
 !$omp end parallel do
 !
       end subroutine set_newdomain_grp_stack
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_domain_grp_item(node, inod_sort,                   &
+     &          num_domain_grp, num_domain_item,                        &
+     &          istack_domain_grp, item_domain_grp)
+!
+      use m_constants
+      use t_geometry_data
+      use quicksort
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+!
+      integer(kind = kint), intent(in) :: num_domain_grp
+      integer(kind = kint), intent(in) :: num_domain_item
+      integer(kind = kint), intent(in)                                  &
+     &       :: istack_domain_grp(0:num_domain_grp)
+!
+      integer(kind = kint), intent(inout)                               &
+     &                     :: item_domain_grp(num_domain_item)
+!
+      integer(kind = kint) :: inum, inod, i, ist, num
+!
+!
+!$omp parallel do private(inum,inod)
+      do inum = 1, num_domain_item
+        inod = inod_sort(inum)
+        item_domain_grp(inum) = inod
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(i,ist,num)
+      do i = 1, num_domain_grp
+        ist = istack_domain_grp(i-1)
+        num = istack_domain_grp(i  ) - ist
+        if(num .gt. 1) then
+          call quicksort_int(num, item_domain_grp(ist+1), ione, num)
+        end if
+      end do
+!$omp end parallel do
+!
+      end subroutine set_domain_grp_item
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
