@@ -56,7 +56,6 @@
       use mesh_file_IO
       use copy_mesh_structures
       use nod_phys_send_recv
-      use set_parallel_file_name
 !
       use calypso_mpi_int
       use calypso_mpi_real
@@ -270,37 +269,17 @@
 !
       allocate(istack_vol_z(0:T_meshes%ndomain_eb(3)))
       allocate(vol_grp_z(T_meshes%ndomain_eb(3)))
-      if(my_rank .eq. 0) then
-        sub_volume = nod_vol_tot / dble(T_meshes%ndomain_eb(3))
-!
-        vol_ref = 0.0d0
-        vol_grp_z(1:T_meshes%ndomain_eb(3)) = 0.0d0
-        istack_vol_z(0) = 0
-        do i = 1, T_meshes%ndivide_eb(3)
-          vol_ref = vol_ref + vol_block_gl(i)
-          j = min(1+int(vol_ref / sub_volume),T_meshes%ndomain_eb(3))
-          istack_vol_z(j) = i
-          vol_grp_z(j) = vol_ref
-!          write(*,*) i,j, vol_grp_z(j), sub_volume
-        end do
-!
-        do j = T_meshes%ndomain_eb(3), 2, - 1
-          vol_grp_z(j) = vol_grp_z(j) - vol_grp_z(j-1)
-        end do
-      end if
-      call calypso_mpi_barrier
+      sub_volume = nod_vol_tot / dble(T_meshes%ndomain_eb(3))
+      call set_istack_xyz_domain_block(T_meshes%ndivide_eb(3),          &
+     &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(3),             &
+     &    ione, istack_vol_z(0), vol_grp_z(1))
+      deallocate(vol_block_lc, vol_block_gl)
 !
       if(my_rank .eq. 0) then
         call check_z_divided_volumes                                    &
      &     (T_meshes, nod_vol_tot, sub_volume, istack_vol_z, vol_grp_z)
       end if
-      deallocate(vol_block_lc, vol_block_gl)
 !
-!
-      call calypso_mpi_bcast_int                                        &
-     &   (istack_vol_z, cast_long(T_meshes%ndomain_eb(3)+1), 0)
-      call calypso_mpi_bcast_real                                       &
-     &   (vol_grp_z, cast_long(T_meshes%ndomain_eb(3)), 0)
 !
       z_part_grp%num_grp = T_meshes%ndomain_eb(3)
       call alloc_group_num(z_part_grp)
@@ -419,37 +398,11 @@
       allocate(vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       num_group_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
 !
-!      do ip = 1, T_meshes%ndomain_eb(3)
-!      if(ip-1 .eq. my_rank) then
-      if(my_rank .lt. T_meshes%ndomain_eb(3)) then
-        iz = my_rank + 1
-        sub_volume = nod_vol_tot / dble(num_group_yz)
-!
-        vol_ref = 0.0d0
-        vol_grp_y(1:T_meshes%ndomain_eb(2),iz) = 0.0d0
-        istack_vol_y(0,iz) = 0
-        do i = 1, T_meshes%ndivide_eb(2)
-          vol_ref = vol_ref + vol_block_gl(i)
-          j = min(1+int(vol_ref / sub_volume),T_meshes%ndomain_eb(2))
-          istack_vol_y(j,iz) = i
-          vol_grp_y(j,iz) = vol_ref
-!          write(*,*) i,j, vol_grp_y(j,iz), sub_volume
-        end do
-!
-        do j = T_meshes%ndomain_eb(2),2, - 1
-          vol_grp_y(j,iz) = vol_grp_y(j,iz) - vol_grp_y(j-1,iz)
-        end do
-      end if
-!      end if
-!      end do
-!
-      call calypso_mpi_barrier
-      do iz = 1, T_meshes%ndomain_eb(3)
-        call calypso_mpi_bcast_int(istack_vol_y(0,iz),                  &
-     &      cast_long(T_meshes%ndomain_eb(2)+1), int(iz-1))
-        call calypso_mpi_bcast_real(vol_grp_y(1,iz),                    &
-     &      cast_long(T_meshes%ndomain_eb(2)), int(iz-1))
-      end do
+      sub_volume = nod_vol_tot / dble(num_group_yz)
+      call set_istack_xyz_domain_block(T_meshes%ndivide_eb(2),          &
+     &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(2),             &
+     &    T_meshes%ndomain_eb(3), istack_vol_y, vol_grp_y)
+      deallocate(vol_block_lc, vol_block_gl)
 !
       if(my_rank .eq. 0) then
         call check_yz_divided_volumes                                   &
@@ -473,8 +426,6 @@
 !      call set_domain_grp_item(fem_T%mesh%node, inod_sort,             &
 !     &    yz_part_grp%num_grp, yz_part_grp%num_item,                   &
 !     &    yz_part_grp%istack_grp, yz_part_grp%item_grp)
-!
-      deallocate(vol_block_lc, vol_block_gl)
 !
 !
       num_nod_grp_yz = 0
@@ -583,45 +534,16 @@
         end do
       end do
 !
+!
+      sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
       allocate(istack_vol_x(0:T_meshes%ndomain_eb(1),num_group_yz))
       allocate(vol_grp_x(T_meshes%ndomain_eb(1),num_group_yz))
-!
-!      do ip = 1, num_group_yz
-!      if(ip-1 .eq. my_rank) then
-      if(my_rank .lt. num_group_yz) then
-        jk = 1 + my_rank
-        sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
-!
-        vol_ref = 0.0d0
-        vol_grp_x(1:T_meshes%ndomain_eb(1),jk) = 0.0d0
-        istack_vol_x(0,jk) = 0
-        do i = 1, T_meshes%ndivide_eb(1)
-          vol_ref = vol_ref + vol_block_gl(i)
-          j = min(1+int(vol_ref / sub_volume),T_meshes%ndomain_eb(1))
-          istack_vol_x(j,jk) = i
-          vol_grp_x(j,jk) = vol_ref
-        end do
-!
-        do j = T_meshes%ndomain_eb(1), 2, - 1
-          vol_grp_x(j,jk) = vol_grp_x(j,jk) - vol_grp_x(j-1,jk)
-        end do
-      end if
-!      end if
-!      end do
+      call set_istack_xyz_domain_block(T_meshes%ndivide_eb(1),          &
+     &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(1),             &
+     &    num_group_yz, istack_vol_x, vol_grp_x)
 !
       deallocate(vol_block_lc, vol_block_gl)
       deallocate(id_block)
-!
-      call calypso_mpi_barrier
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          call calypso_mpi_bcast_int(istack_vol_x(0,jk),                &
-     &        cast_long(T_meshes%ndomain_eb(1)+1), int(jk-1))
-          call calypso_mpi_bcast_real(vol_grp_x(1,jk),                  &
-     &        cast_long(T_meshes%ndomain_eb(1)), int(jk-1))
-        end do
-      end do
 !
       if(my_rank .eq. 0) then
         call check_xyz_divided_volumes                                  &
@@ -710,6 +632,64 @@
 ! ----------------------------------------------------------------------
 !
       end module analyzer_volume_grouping
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_istack_xyz_domain_block                            &
+     &         (nblock_x, vol_block_gl, sub_volume,                     &
+     &          ndomain_x, ndomain_yz, istack_vol, vol_grp)
+!
+      use calypso_mpi
+      use calypso_mpi_int
+      use calypso_mpi_real
+      use transfer_to_long_integers
+!
+      integer(kind = kint), intent(in) :: nblock_x
+      integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
+      real(kind = kreal), intent(in) :: vol_block_gl(nblock_x)
+      real(kind = kreal), intent(in) :: sub_volume
+!
+      integer(kind = kint), intent(inout)                               &
+     &                      :: istack_vol(0:ndomain_x,ndomain_yz)
+      real(kind = kreal), intent(inout)                                 &
+     &                      :: vol_grp(ndomain_x,ndomain_yz)
+!
+!      integer(kind = kint) :: ip
+      integer(kind = kint) :: jk, i, j
+      real(kind = kreal) :: vol_ref
+!
+!      do ip = 1, ndomain_yz
+!      if(ip-1 .eq. my_rank) then
+      if(my_rank .lt. ndomain_yz) then
+        jk = 1 + my_rank
+!
+        vol_ref = 0.0d0
+        vol_grp(1:ndomain_x,jk) = 0.0d0
+        istack_vol(0,jk) = 0
+        do i = 1, nblock_x
+          vol_ref = vol_ref + vol_block_gl(i)
+          j = min(1+int(vol_ref / sub_volume),ndomain_x)
+          istack_vol(j,jk) = i
+          vol_grp(j,jk) = vol_ref
+        end do
+!
+        do j = ndomain_x, 2, - 1
+          vol_grp(j,jk) = vol_grp(j,jk) - vol_grp(j-1,jk)
+        end do
+      end if
+!      end if
+!      end do
+!
+      call calypso_mpi_barrier
+      do jk = 1, ndomain_yz
+        call calypso_mpi_bcast_int(istack_vol(0,jk),                    &
+     &                             cast_long(ndomain_x+1), int(jk-1))
+        call calypso_mpi_bcast_real(vol_grp(1,jk),                      &
+     &                              cast_long(ndomain_x), int(jk-1))
+      end do
+!
+      end subroutine set_istack_xyz_domain_block
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
