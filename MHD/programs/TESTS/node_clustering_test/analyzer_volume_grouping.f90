@@ -492,30 +492,10 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel workshare
-      yz_part_grp%istack_grp(0:num_group_yz) = 0
-!$omp end parallel workshare
-!
-!$omp parallel do private(inod,inum,icou,ist,ied,jst,jed,iy,iz,iz1,iz2,jk)
-      do icou = 1, num_nod_grp_z
-        iz1 = idomain_nod_grp_z(icou)
-        iz2 = idomain_nod_grp_z(icou+1)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz1-1) * T_meshes%ndomain_eb(2)
-          jst = istack_vol_y(iy-1,iz1) + 1
-          jed = istack_vol_y(iy,iz1)
-          ist = istack_block_y(jst-1,icou) + 1
-          ied = istack_block_y(jed,icou)
-          yz_part_grp%istack_grp(jk) = ied
-        end do
-!
-        do iz = iz1+1, iz2-1
-          jk = (iz-1) * T_meshes%ndomain_eb(2)
-          yz_part_grp%istack_grp(jk+1:jk+T_meshes%ndomain_eb(2))        &
-     &       = yz_part_grp%istack_grp(jk)
-        end do
-      end do
-!$omp end parallel do
+      call set_newdomain_grp_stack(T_meshes%ndivide_eb(2),              &
+     &    T_meshes%ndomain_eb(2), T_meshes%ndomain_eb(3),               &
+     &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y,             &
+     &    istack_vol_y, part_grp%num_grp, yz_part_grp%istack_grp)
 !
       go to 120
       call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,           &
@@ -704,10 +684,10 @@
       end do
 !$omp end parallel do
 !
-      call set_xyz_newdomain_grp_stack                                  &
+      call set_newdomain_grp_stack                                      &
      &   (T_meshes%ndivide_eb(1), T_meshes%ndomain_eb(1), num_group_yz, &
      &    num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x,           &
-     &    istack_vol_x, T_meshes%new_nprocs, part_grp%istack_grp)
+     &    istack_vol_x, part_grp%num_grp, part_grp%istack_grp)
 !
       deallocate(istack_vol_x, vol_grp_x)
       deallocate(istack_block_x)
@@ -800,22 +780,22 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_xyz_newdomain_grp_stack                            &
-     &         (nblock_x, ndomain_x, ndomain_yz,                        &
-     &          num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x,     &
-     &          istack_vol_x, num_doain_grp, istack_doain_grp)
+      subroutine set_newdomain_grp_stack                                &
+     &         (nblock, ndomain_x, ndomain_yz,                          &
+     &          num_nod_grp, idomain_nod_grp, istack_block,             &
+     &          istack_volume, num_doain_grp, istack_doain_grp)
 !
       use m_precision
 !
-      integer(kind = kint), intent(in) :: nblock_x
+      integer(kind = kint), intent(in) :: nblock
       integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
-      integer(kind = kint), intent(in) :: num_nod_grp_yz
+      integer(kind = kint), intent(in) :: num_nod_grp
       integer(kind = kint), intent(in)                                  &
-     &       :: idomain_nod_grp_yz(num_nod_grp_yz+1)
+     &       :: idomain_nod_grp(num_nod_grp+1)
       integer(kind = kint), intent(in)                                  &
-     &       :: istack_block_x(0:nblock_x,num_nod_grp_yz)
+     &       :: istack_block(0:nblock,num_nod_grp)
       integer(kind = kint), intent(in)                                  &
-     &       :: istack_vol_x(0:ndomain_x,ndomain_yz)
+     &       :: istack_volume(0:ndomain_x,ndomain_yz)
 !
       integer(kind = kint), intent(in) :: num_doain_grp
       integer(kind = kint), intent(inout)                               &
@@ -830,15 +810,15 @@
 !$omp end parallel workshare
 !
 !$omp parallel do private(icou,ist,ied,jst,jed,i,ix,jk,jk1,jk2)
-      do icou = 1, num_nod_grp_yz
-        jk1 = idomain_nod_grp_yz(icou)
-        jk2 = idomain_nod_grp_yz(icou+1)
+      do icou = 1, num_nod_grp
+        jk1 = idomain_nod_grp(icou)
+        jk2 = idomain_nod_grp(icou+1)
         do ix = 1, ndomain_x
           i = ix + (jk1-1) * ndomain_x
-          jst = istack_vol_x(ix-1,jk1) + 1
-          jed = istack_vol_x(ix,  jk1)
-          ist = istack_block_x(jst-1,icou) + 1
-          ied = istack_block_x(jed,  icou)
+          jst = istack_volume(ix-1,jk1) + 1
+          jed = istack_volume(ix,  jk1)
+          ist = istack_block(jst-1,icou) + 1
+          ied = istack_block(jed,  icou)
           istack_doain_grp(i) = ied
         end do
 !
@@ -850,7 +830,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_xyz_newdomain_grp_stack
+      end subroutine set_newdomain_grp_stack
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
