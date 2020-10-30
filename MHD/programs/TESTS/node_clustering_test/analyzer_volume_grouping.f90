@@ -87,7 +87,6 @@
       integer(kind = kint), allocatable :: inod_sort(:)
       real(kind = kreal), allocatable :: data_sort(:)
 !
-      real(kind = kreal), allocatable :: vol_block_lc(:)
       real(kind = kreal), allocatable :: vol_block_gl(:)
 !
       integer(kind = kint), allocatable :: istack_vol_x(:,:)
@@ -109,6 +108,7 @@
       integer(kind = kint), allocatable :: istack_block_y(:,:)
 !
       integer(kind = kint), allocatable :: istack_block_z(:)
+      integer(kind = kint) :: istack_intnod(0:1)
 !
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
@@ -255,17 +255,12 @@
   10  continue
 !
 !
+      istack_intnod(0) = 0
+      istack_intnod(1) = fem_T%mesh%node%internal_node
       allocate(vol_block_gl(T_meshes%ndivide_eb(3)))
-      allocate(vol_block_lc(T_meshes%ndivide_eb(3)))
-      vol_block_lc(1:T_meshes%ndivide_eb(3)) = 0.0d0
-      do inod = 1, fem_T%mesh%node%internal_node
-        i = id_block(inod,3)
-        vol_block_lc(i) = vol_block_lc(i) + node_volume(inod)
-      end do
-!
-      call calypso_mpi_reduce_real                                      &
-     &  (vol_block_lc, vol_block_gl, cast_long(T_meshes%ndivide_eb(3)), &
-     &    MPI_SUM, 0)
+      call cal_volume_on_each_xyz_block                                 &
+     &   (fem_T%mesh%node, inod_sort, id_block(1,3), node_volume,       &
+     &    T_meshes%ndivide_eb(3), ione, istack_intnod, vol_block_gl)
 !
       allocate(istack_vol_z(0:T_meshes%ndomain_eb(3)))
       allocate(vol_grp_z(T_meshes%ndomain_eb(3)))
@@ -273,7 +268,7 @@
       call set_istack_xyz_domain_block(T_meshes%ndivide_eb(3),          &
      &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(3),             &
      &    ione, istack_vol_z(0), vol_grp_z(1))
-      deallocate(vol_block_lc, vol_block_gl)
+      deallocate(vol_block_gl)
 !
       if(my_rank .eq. 0) then
         call check_z_divided_volumes                                    &
@@ -378,31 +373,19 @@
   20  continue
 !
       allocate(vol_block_gl(T_meshes%ndivide_eb(2)))
-      allocate(vol_block_lc(T_meshes%ndivide_eb(2)))
-!
-      do iz = 1, T_meshes%ndomain_eb(3)
-        vol_block_lc(1:T_meshes%ndivide_eb(2)) = 0.0d0
-        ist = z_part_grp%istack_grp(iz-1) + 1
-        ied = z_part_grp%istack_grp(iz)
-        do inum = ist, ied
-          inod = inod_sort(inum)
-          i = id_block(inod,2)
-          vol_block_lc(i) = vol_block_lc(i) + node_volume(inod)
-        end do
-!
-        call calypso_mpi_reduce_real(vol_block_lc, vol_block_gl,        &
-     &      cast_long(T_meshes%ndivide_eb(2)), MPI_SUM, int(iz-1))
-      end do
-!
       allocate(istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       allocate(vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       num_group_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
 !
       sub_volume = nod_vol_tot / dble(num_group_yz)
+      call cal_volume_on_each_xyz_block                                 &
+     &   (fem_T%mesh%node, inod_sort, id_block(1,2), node_volume,       &
+     &    T_meshes%ndivide_eb(2), T_meshes%ndomain_eb(3),               &
+     &    z_part_grp%istack_grp, vol_block_gl)
       call set_istack_xyz_domain_block(T_meshes%ndivide_eb(2),          &
      &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(2),             &
      &    T_meshes%ndomain_eb(3), istack_vol_y, vol_grp_y)
-      deallocate(vol_block_lc, vol_block_gl)
+      deallocate(vol_block_gl)
 !
       if(my_rank .eq. 0) then
         call check_yz_divided_volumes                                   &
@@ -514,35 +497,21 @@
   30  continue
 !
 !
-      allocate(vol_block_gl(T_meshes%ndivide_eb(1)))
-      allocate(vol_block_lc(T_meshes%ndivide_eb(1)))
-!
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          vol_block_lc(1:T_meshes%ndivide_eb(1)) = 0.0d0
-          ist = yz_part_grp%istack_grp(jk-1) + 1
-          ied = yz_part_grp%istack_grp(jk  )
-          do inum = ist, ied
-            inod = inod_sort(inum)
-            i = id_block(inod,1)
-            vol_block_lc(i) = vol_block_lc(i) + node_volume(inod)
-          end do
-!
-          call calypso_mpi_reduce_real(vol_block_lc, vol_block_gl,      &
-     &        cast_long(T_meshes%ndivide_eb(1)), MPI_SUM, int(jk-1))
-        end do
-      end do
-!
-!
-      sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
       allocate(istack_vol_x(0:T_meshes%ndomain_eb(1),num_group_yz))
       allocate(vol_grp_x(T_meshes%ndomain_eb(1),num_group_yz))
+      allocate(vol_block_gl(T_meshes%ndivide_eb(1)))
+!
+      sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
+      call cal_volume_on_each_xyz_block                                 &
+     &   (fem_T%mesh%node, inod_sort, id_block(1,1), node_volume,       &
+     &    T_meshes%ndivide_eb(1), num_group_yz,                         &
+     &    yz_part_grp%istack_grp, vol_block_gl)
+!
       call set_istack_xyz_domain_block(T_meshes%ndivide_eb(1),          &
      &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(1),             &
      &    num_group_yz, istack_vol_x, vol_grp_x)
 !
-      deallocate(vol_block_lc, vol_block_gl)
+      deallocate(vol_block_gl)
       deallocate(id_block)
 !
       if(my_rank .eq. 0) then
@@ -634,6 +603,51 @@
       end module analyzer_volume_grouping
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine cal_volume_on_each_xyz_block                           &
+     &         (node, inod_sort, id_block, node_volume,                 &
+     &          nblock_x, ndomain_yz, istack_yz_grp, vol_block_gl)
+!
+      use t_geometry_data
+      use calypso_mpi
+      use calypso_mpi_real
+      use transfer_to_long_integers
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
+      integer(kind = kint), intent(in) :: id_block(node%numnod)
+      real(kind = kreal), intent(in) :: node_volume(node%numnod)
+!
+      integer(kind = kint), intent(in) :: nblock_x
+      integer(kind = kint), intent(in) :: ndomain_yz
+      integer(kind = kint), intent(in) :: istack_yz_grp(0:ndomain_yz)
+!
+      real(kind = kreal), intent(inout) :: vol_block_gl(nblock_x)
+!
+      integer(kind = kint) :: jk, ist, ied, i, inod
+      real(kind = kreal), allocatable :: vol_block_lc(:)
+!
+!
+      allocate(vol_block_lc(nblock_x))
+!
+      do jk = 1, ndomain_yz
+        vol_block_lc(1:nblock_x) = 0.0d0
+        ist = istack_yz_grp(jk-1) + 1
+        ied = istack_yz_grp(jk  )
+        do inum = ist, ied
+          inod = inod_sort(inum)
+          i = id_block(inod)
+          vol_block_lc(i) = vol_block_lc(i) + node_volume(inod)
+        end do
+!
+        call calypso_mpi_reduce_real(vol_block_lc, vol_block_gl,        &
+     &      cast_long(nblock_x), MPI_SUM, int(jk-1))
+      end do
+      deallocate(vol_block_lc)
+!
+      end subroutine cal_volume_on_each_xyz_block
+!
 ! ----------------------------------------------------------------------
 !
       subroutine set_istack_xyz_domain_block                            &
