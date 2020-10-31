@@ -111,9 +111,8 @@
 !
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
-      integer(kind = kint) :: inod, inum, icou
-      integer(kind = kint) :: ist, ied, num, jnod
-      integer(kind = kint) :: i, j, nd, ip, ix, iy, iz, iz1, jk, jx, jy, jz
+      integer(kind = kint) :: inod
+      integer(kind = kint) :: i, nd
 !
       type(group_data) :: z_part_grp
       type(group_data) :: yz_part_grp
@@ -261,29 +260,13 @@
 !     &    z_part_grp%num_grp, z_part_grp%num_item,                     &
 !     &    z_part_grp%istack_grp, z_part_grp%item_grp)
 !
-      num_nod_grp_z = 0
-      do iz = 1, T_meshes%ndomain_eb(3)
-        num = z_part_grp%istack_grp(iz) - z_part_grp%istack_grp(iz-1)
-        if(num .gt. 0) num_nod_grp_z = num_nod_grp_z + 1
-      end do
-!
+      num_nod_grp_z = count_z_subdomain_num(T_meshes,                   &
+     &                       z_part_grp%num_grp, z_part_grp%istack_grp)
       allocate(idomain_nod_grp_z(num_nod_grp_z+1))
 !
-!$omp parallel do private(icou)
-      do icou = 1, num_nod_grp_z+1
-        idomain_nod_grp_z(icou) = 0
-      end do
-!$omp end parallel do
-!
-      icou = 0
-      do iz = 1, T_meshes%ndomain_eb(3)
-        num = z_part_grp%istack_grp(iz) - z_part_grp%istack_grp(iz-1)
-        if(num .gt. 0) then
-          icou = icou + 1
-          idomain_nod_grp_z(icou) = iz
-        end if
-      end do
-      idomain_nod_grp_z(num_nod_grp_z+1) = T_meshes%ndomain_eb(3) + 1
+      call set_z_subdomain_list                                         &
+     &   (T_meshes, z_part_grp%num_grp, z_part_grp%istack_grp,          &
+     &    num_nod_grp_z, idomain_nod_grp_z)
 !
       deallocate(vol_grp_z, istack_vol_z)
 !
@@ -342,44 +325,15 @@
 !     &    yz_part_grp%istack_grp, yz_part_grp%item_grp)
 !
 !
-      num_nod_grp_yz = 0
-      do icou = 1, num_nod_grp_z
-        iz = idomain_nod_grp_z(icou)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          num = yz_part_grp%istack_grp(jk)                              &
-     &         - yz_part_grp%istack_grp(jk-1)
-          if(num .gt. 0) num_nod_grp_yz = num_nod_grp_yz + 1
-        end do
-      end do
-!
+      num_nod_grp_yz = count_yz_subdomain_num(T_meshes,                 &
+     &                     num_nod_grp_z, idomain_nod_grp_z,            &
+     &                     yz_part_grp%num_grp, yz_part_grp%istack_grp)
       allocate(idomain_nod_grp_yz(num_nod_grp_yz+1))
 !
-!$omp parallel do private(icou)
-      do icou = 1, num_nod_grp_yz+1
-        idomain_nod_grp_yz(icou) = 0
-      end do
-!$omp end parallel do
-!
-      icou = 0
-      do i = 1, num_nod_grp_z
-        iz = idomain_nod_grp_z(i)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          num = yz_part_grp%istack_grp(jk)                              &
-     &        - yz_part_grp%istack_grp(jk-1)
-          if(num .gt. 0) then
-            icou = icou + 1
-            idomain_nod_grp_yz(icou)                                    &
-     &           = iy + (iz-1) * T_meshes%ndomain_eb(2)
-!            idomain_nod_grp_yz(2,icou) = iy
-!            idomain_nod_grp_yz(3,icou) = iz
-          end if
-        end do
-      end do
-      idomain_nod_grp_yz(num_nod_grp_yz+1) = num_group_yz+1
-!      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
-!      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
+      call set_yz_subdomain_list                                        &
+     &   (T_meshes, num_nod_grp_z, idomain_nod_grp_z,                   &
+     &    yz_part_grp%num_grp, yz_part_grp%istack_grp, num_nod_grp_yz,  &
+     &    idomain_nod_grp_yz)
 !
       deallocate(vol_grp_y, istack_vol_y)
 !
@@ -394,12 +348,9 @@
      &    num_nod_grp_yz, idomain_nod_grp_yz, T_meshes%ndivide_eb(1),   &
      &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
      &    istack_block_x, inod_sort)
-!
-      go to 30
-      call check_blocks_4_xyz_domain                                    &
-     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,      &
-     &    num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x)
-  30  continue
+!      call check_blocks_4_xyz_domain                                   &
+!     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
+!     &    num_nod_grp_yz, idomain_nod_grp_yz, istack_block_x)
 !
 !
       allocate(istack_vol_x(0:T_meshes%ndomain_eb(1),num_group_yz))
@@ -449,7 +400,7 @@
       deallocate(istack_block_x)
       deallocate(inod_sort)
 !
-      deallocate(idomain_nod_grp_yz)
+      deallocate(idomain_nod_grp_z, idomain_nod_grp_yz)
       call dealloc_group_num(z_part_grp)
       call dealloc_group_num(yz_part_grp)
 !
@@ -503,7 +454,157 @@
 !
 ! ----------------------------------------------------------------------
 !
+      integer(kind = kint) function count_z_subdomain_num               &
+     &                            (T_meshes, ndomain_z, istack_z_grp)
+!
+      use t_control_param_vol_grping
+!
+      implicit none
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: ndomain_z
+      integer(kind = kint), intent(in) :: istack_z_grp(0:ndomain_z)
+!
+      integer(kind = kint) :: icou, iz, num
+!
+      icou = 0
+      do iz = 1, T_meshes%ndomain_eb(3)
+        num = istack_z_grp(iz) - istack_z_grp(iz-1)
+        if(num .gt. 0) icou = icou + 1
+      end do
+      count_z_subdomain_num = icou
+!
+      end function count_z_subdomain_num
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function count_yz_subdomain_num              &
+     &         (T_meshes, num_nod_grp_z, idomain_nod_grp_z,             &
+     &          ndomain_yz, istack_yz_grp)
+!
+      use t_control_param_vol_grping
+!
+      implicit none
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: num_nod_grp_z
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_z(num_nod_grp_z+1)
+      integer(kind = kint), intent(in) :: ndomain_yz
+      integer(kind = kint), intent(in) :: istack_yz_grp(0:ndomain_yz)
+!
+      integer(kind = kint) :: i, icou, iy, iz, jk, num
+!
+!
+      icou = 0
+      do i = 1, num_nod_grp_z
+        iz = idomain_nod_grp_z(i)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+          num = istack_yz_grp(jk) - istack_yz_grp(jk-1)
+          if(num .gt. 0) icou = icou + 1
+        end do
+      end do
+      count_yz_subdomain_num = icou
+!
+      end function count_yz_subdomain_num
+!
+! ----------------------------------------------------------------------
+!
       end module analyzer_volume_grouping
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_z_subdomain_list                                   &
+     &         (T_meshes, ndomain_z, istack_z_grp, num_nod_grp_z,       &
+     &          idomain_nod_grp_z)
+!
+      use t_control_param_vol_grping
+!
+      implicit none
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: ndomain_z
+      integer(kind = kint), intent(in) :: istack_z_grp(0:ndomain_z)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_z
+      integer(kind = kint), intent(inout)                               &
+     &     :: idomain_nod_grp_z(num_nod_grp_z+1)
+!
+      integer(kind = kint) :: icou, iz, num
+!
+!
+!$omp parallel do private(icou)
+      do icou = 1, num_nod_grp_z+1
+        idomain_nod_grp_z(icou) = 0
+      end do
+!$omp end parallel do
+!
+      icou = 0
+      do iz = 1, T_meshes%ndomain_eb(3)
+        num = istack_z_grp(iz) - istack_z_grp(iz-1)
+        if(num .gt. 0) then
+          icou = icou + 1
+          idomain_nod_grp_z(icou) = iz
+        end if
+      end do
+      idomain_nod_grp_z(num_nod_grp_z+1) = T_meshes%ndomain_eb(3) + 1
+!
+      end subroutine set_z_subdomain_list
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_yz_subdomain_list                                  &
+     &         (T_meshes, num_nod_grp_z, idomain_nod_grp_z,             &
+     &          ndomain_yz, istack_yz_grp, num_nod_grp_yz,              &
+     &          idomain_nod_grp_yz)
+!
+      use t_control_param_vol_grping
+!
+      implicit none
+!
+      type(mesh_test_files_param), intent(in) :: T_meshes
+      integer(kind = kint), intent(in) :: num_nod_grp_z
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_z(num_nod_grp_z+1)
+      integer(kind = kint), intent(in) :: ndomain_yz
+      integer(kind = kint), intent(in) :: istack_yz_grp(0:ndomain_yz)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_yz
+      integer(kind = kint), intent(inout)                               &
+     &     :: idomain_nod_grp_yz(num_nod_grp_yz+1)
+!
+      integer(kind = kint) :: i, icou, iy, iz, jk, num
+!
+!
+!$omp parallel do private(icou)
+      do icou = 1, num_nod_grp_yz+1
+        idomain_nod_grp_yz(icou) = 0
+      end do
+!$omp end parallel do
+!
+      icou = 0
+      do i = 1, num_nod_grp_z
+        iz = idomain_nod_grp_z(i)
+        do iy = 1, T_meshes%ndomain_eb(2)
+          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
+          num = istack_yz_grp(jk) - istack_yz_grp(jk-1)
+          if(num .gt. 0) then
+            icou = icou + 1
+            idomain_nod_grp_yz(icou)                                    &
+     &           = iy + (iz-1) * T_meshes%ndomain_eb(2)
+!            idomain_nod_grp_yz(2,icou) = iy
+!            idomain_nod_grp_yz(3,icou) = iz
+          end if
+        end do
+      end do
+      idomain_nod_grp_yz(num_nod_grp_yz+1)                              &
+     &              = T_meshes%ndomain_eb(2)*T_meshes%ndomain_eb(3) + 1
+!      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
+!      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
+!
+      end subroutine set_yz_subdomain_list
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
