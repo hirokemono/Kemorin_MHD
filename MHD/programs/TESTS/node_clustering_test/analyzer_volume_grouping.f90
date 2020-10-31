@@ -215,44 +215,13 @@
 !
       allocate(data_sort(fem_T%mesh%node%numnod))
       allocate(inod_sort(fem_T%mesh%node%numnod))
-!
-!$omp parallel do private(inod)
-      do inod = 1, fem_T%mesh%node%internal_node
-        data_sort(inod) = fem_T%mesh%node%xx(inod,3)
-        inod_sort(inod) = inod
-      end do
-!$omp end parallel do
-!$omp parallel do private(inod)
-      do inod = fem_T%mesh%node%internal_node+1, fem_T%mesh%node%numnod
-        data_sort(inod) = fem_T%mesh%node%xx(inod,3)
-        inod_sort(inod) = inod
-      end do
-!$omp end parallel do
-!
-      call quicksort_real_w_index(fem_T%mesh%node%numnod, data_sort,    &
-     &    ione, fem_T%mesh%node%internal_node, inod_sort)
-!
       allocate(istack_block_z(0:T_meshes%ndivide_eb(3)))
-!$omp parallel workshare
-      istack_block_z(0:T_meshes%ndivide_eb(3)) = 0
-!$omp end parallel workshare
-      do inum = 1, fem_T%mesh%node%internal_node-1
-        inod = inod_sort(inum)
-        jnod = inod_sort(inum+1)
-        iz = id_block(inod,3)
-        jz = id_block(jnod,3)
-        if(iz .ne. jz) istack_block_z(iz:jz) = inum
-      end do
-      inum = fem_T%mesh%node%internal_node
-      inod = inod_sort(inum)
-      iz = id_block(inod,3)
-      istack_block_z(iz:T_meshes%ndivide_eb(3)) = inum
 !
-      go to 10
-      call check_blocks_4_z_domain                                      &
-     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,      &
-     &    istack_block_z)
-  10  continue
+      call set_z_sorted_node_and_stack(fem_T%mesh%node, id_block(1,3),  &
+     &    T_meshes%ndivide_eb(3), istack_block_z, inod_sort)
+!      call check_blocks_4_z_domain                                     &
+!     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
+!     &    istack_block_z)
 !
 !
       istack_intnod(0) = 0
@@ -322,55 +291,19 @@
 !
 !   For y direction
 !
-!$omp parallel do private(inod)
-      do inum = 1, fem_T%mesh%node%internal_node
-        inod = inod_sort(inum)
-        data_sort(inum) = fem_T%mesh%node%xx(inod,2)
-      end do
-!$omp end parallel do
-!$omp parallel do private(inod)
-      do inod = fem_T%mesh%node%internal_node+1, fem_T%mesh%node%numnod
-        data_sort(inod) = fem_T%mesh%node%xx(inod,2)
-      end do
-!$omp end parallel do
-!
       allocate(istack_block_y(0:T_meshes%ndivide_eb(2),num_nod_grp_z))
 !$omp parallel workshare
         istack_block_y(0:T_meshes%ndivide_eb(2),1:num_nod_grp_z) = 0
 !$omp end parallel workshare
 !
-      do icou = 1, num_nod_grp_z
-        iz1 = idomain_nod_grp_z(icou)
-!      do iz = 1, T_meshes%ndomain_eb(3)
-        ist = z_part_grp%istack_grp(iz1-1) + 1
-        ied = z_part_grp%istack_grp(iz1)
-        if(ied .gt. ist) then
-          call quicksort_real_w_index                                   &
-     &       (fem_T%mesh%node%numnod, data_sort, ist, ied, inod_sort)
+      call set_sorted_node_and_stack(2, fem_T%mesh%node, id_block(1,2), &
+     &    num_nod_grp_z, idomain_nod_grp_z, T_meshes%ndivide_eb(2),     &
+     &    z_part_grp%num_grp, z_part_grp%istack_grp,                    &
+     &    istack_block_y, inod_sort)
 !
-        end if
-!
-!$omp parallel workshare
-        istack_block_y(0:T_meshes%ndivide_eb(2),icou)                   &
-     &                            = z_part_grp%istack_grp(iz1-1)
-!$omp end parallel workshare
-        do inum = ist, ied-1
-          inod = inod_sort(inum)
-          jnod = inod_sort(inum+1)
-          iy = id_block(inod,2)
-          jy = id_block(jnod,2)
-          if(iy .ne. jy) istack_block_y(iy:jy,icou) = inum
-        end do
-        inod = inod_sort(ied)
-        iy = id_block(inod,2)
-        istack_block_y(iy:T_meshes%ndivide_eb(2),icou) = ied
-      end do
-!
-      go to 20
-      call check_blocks_4_yz_domain                                     &
-     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,      &
-     &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y)
-  20  continue
+!      call check_blocks_4_yz_domain                                    &
+!     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
+!     &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y)
 !
       allocate(vol_block_gl(T_meshes%ndivide_eb(2)))
       allocate(istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
@@ -452,43 +385,15 @@
 !
 !   For x direction
 !
-!$omp parallel do private(inod)
-      do inum = 1, fem_T%mesh%node%internal_node
-        inod = inod_sort(inum)
-        data_sort(inum) = fem_T%mesh%node%xx(inod,1)
-      end do
-!$omp end parallel do
-!$omp parallel do private(inod)
-      do inod = fem_T%mesh%node%internal_node+1, fem_T%mesh%node%numnod
-        data_sort(inod) = fem_T%mesh%node%xx(inod,1)
-      end do
-!$omp end parallel do
-!
       allocate(istack_block_x(0:T_meshes%ndivide_eb(1),num_nod_grp_yz))
-      do icou = 1, num_nod_grp_yz
-        jk = idomain_nod_grp_yz(icou)
-        ist = yz_part_grp%istack_grp(jk-1) + 1
-        ied = yz_part_grp%istack_grp(jk)
-        if(ied .gt. ist) then
-          call quicksort_real_w_index                                   &
-     &       (fem_T%mesh%node%numnod, data_sort, ist, ied, inod_sort)
-        end if
-!
 !$omp parallel workshare
-        istack_block_x(0:T_meshes%ndivide_eb(1),icou)                   &
-     &                            = yz_part_grp%istack_grp(jk-1)
+        istack_block_x(0:T_meshes%ndivide_eb(1),1:num_nod_grp_yz) = 0
 !$omp end parallel workshare
-        do inum = ist, ied-1
-          inod = inod_sort(inum)
-          jnod = inod_sort(inum+1)
-          ix = id_block(inod,1)
-          jx = id_block(jnod,1)
-          if(ix .ne. jx) istack_block_x(ix:jx,icou) = inum
-        end do
-        inod = inod_sort(ied)
-        ix = id_block(inod,1)
-        istack_block_x(ix:T_meshes%ndivide_eb(1),icou) = ied
-      end do
+!
+      call set_sorted_node_and_stack(1, fem_T%mesh%node, id_block(1,1), &
+     &    num_nod_grp_yz, idomain_nod_grp_yz, T_meshes%ndivide_eb(1),   &
+     &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
+     &    istack_block_x, inod_sort)
 !
       go to 30
       call check_blocks_4_xyz_domain                                    &
@@ -605,6 +510,139 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+      subroutine set_z_sorted_node_and_stack(node, id_block,            &
+     &          nblock_z, istack_block_z, inod_sort)
+!
+      use m_constants
+      use t_geometry_data
+      use quicksort
+!
+      implicit none
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: id_block(node%numnod)
+      integer(kind = kint), intent(in) :: nblock_z
+!
+      integer(kind = kint), intent(inout) :: istack_block_z(0:nblock_z)
+      integer(kind = kint), intent(inout) :: inod_sort(node%numnod)
+!
+      integer(kind = kint) :: inum, inod, jnod, iz, jz
+      real(kind = kreal), allocatable :: data_sort(:)
+!
+!
+      allocate(data_sort(node%numnod))
+!
+!$omp parallel do private(inod)
+      do inod = 1, node%internal_node
+        data_sort(inod) = node%xx(inod,3)
+        inod_sort(inod) = inod
+      end do
+!$omp end parallel do
+!$omp parallel do private(inod)
+      do inod = node%internal_node+1, node%numnod
+        data_sort(inod) = node%xx(inod,3)
+        inod_sort(inod) = inod
+      end do
+!$omp end parallel do
+!
+      call quicksort_real_w_index(node%numnod, data_sort,               &
+     &    ione, node%internal_node, inod_sort)
+!
+!$omp parallel workshare
+      istack_block_z(0:nblock_z) = 0
+!$omp end parallel workshare
+      do inum = 1, node%internal_node-1
+        inod = inod_sort(inum)
+        jnod = inod_sort(inum+1)
+        iz = id_block(inod)
+        jz = id_block(jnod)
+        if(iz .ne. jz) istack_block_z(iz:jz) = inum
+      end do
+      inum = node%internal_node
+      inod = inod_sort(inum)
+      iz = id_block(inod)
+      istack_block_z(iz:nblock_z) = inum
+!
+      deallocate(data_sort)
+!
+      end subroutine set_z_sorted_node_and_stack
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_sorted_node_and_stack(nd, node, id_block,          &
+     &          num_nod_grp_yz, idomain_nod_grp_yz, nblock_x,           &
+     &          ndomain_yz, istack_yz_grp, istack_block_x, inod_sort)
+!
+      use t_geometry_data
+      use quicksort
+!
+      implicit none
+!
+      integer(kind = kint), intent(in) :: nd
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: id_block(node%numnod)
+!
+      integer(kind = kint), intent(in) :: num_nod_grp_yz
+      integer(kind = kint), intent(in)                                  &
+     &     :: idomain_nod_grp_yz(num_nod_grp_yz)
+!
+      integer(kind = kint), intent(in) :: nblock_x
+      integer(kind = kint), intent(in) :: ndomain_yz
+      integer(kind = kint), intent(in) :: istack_yz_grp(0:ndomain_yz)
+!
+      integer(kind = kint), intent(inout)                               &
+     &                     :: istack_block_x(0:nblock_x,num_nod_grp_yz)
+      integer(kind = kint), intent(inout) :: inod_sort(node%numnod)
+!
+      integer(kind = kint) :: jk, ist, ied, icou, inum
+      integer(kind = kint) :: inod, jnod, ix, jx
+      real(kind = kreal), allocatable :: data_sort(:)
+!
+!
+      allocate(data_sort(node%numnod))
+!
+!$omp parallel do private(inod)
+      do inum = 1, node%internal_node
+        inod = inod_sort(inum)
+        data_sort(inum) = node%xx(inod,nd)
+      end do
+!$omp end parallel do
+!$omp parallel do private(inod)
+      do inod = node%internal_node+1, node%numnod
+        data_sort(inod) = node%xx(inod,nd)
+      end do
+!$omp end parallel do
+!
+      do icou = 1, num_nod_grp_yz
+        jk = idomain_nod_grp_yz(icou)
+        ist = istack_yz_grp(jk-1) + 1
+        ied = istack_yz_grp(jk)
+        if(ied .gt. ist) then
+          call quicksort_real_w_index                                   &
+     &       (node%numnod, data_sort, ist, ied, inod_sort)
+        end if
+!
+!$omp parallel workshare
+        istack_block_x(0:nblock_x,icou) = istack_yz_grp(jk-1)
+!$omp end parallel workshare
+        do inum = ist, ied-1
+          inod = inod_sort(inum)
+          jnod = inod_sort(inum+1)
+          ix = id_block(inod)
+          jx = id_block(jnod)
+          if(ix .ne. jx) istack_block_x(ix:jx,icou) = inum
+        end do
+        inod = inod_sort(ied)
+        ix = id_block(inod)
+        istack_block_x(ix:nblock_x,icou) = ied
+      end do
+!
+      deallocate(data_sort)
+!
+      end subroutine set_sorted_node_and_stack
+!
+! ----------------------------------------------------------------------
+!
       subroutine cal_volume_on_each_xyz_block                           &
      &         (node, inod_sort, id_block, node_volume,                 &
      &          nblock_x, ndomain_yz, istack_yz_grp, vol_block_gl)
@@ -613,6 +651,8 @@
       use calypso_mpi
       use calypso_mpi_real
       use transfer_to_long_integers
+!
+      implicit none
 !
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
@@ -625,7 +665,7 @@
 !
       real(kind = kreal), intent(inout) :: vol_block_gl(nblock_x)
 !
-      integer(kind = kint) :: jk, ist, ied, i, inod
+      integer(kind = kint) :: jk, ist, ied, i, inod, inum
       real(kind = kreal), allocatable :: vol_block_lc(:)
 !
 !
@@ -658,6 +698,8 @@
       use calypso_mpi_int
       use calypso_mpi_real
       use transfer_to_long_integers
+!
+      implicit none
 !
       integer(kind = kint), intent(in) :: nblock_x
       integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
@@ -742,6 +784,8 @@
       use t_control_param_vol_grping
       use set_parallel_file_name
 !
+      implicit none
+!
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
       integer(kind = kint), intent(in) :: num_domain_grp
@@ -775,6 +819,8 @@
 !
       use t_control_param_vol_grping
       use set_parallel_file_name
+!
+      implicit none
 !
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
@@ -819,6 +865,8 @@
 !
       use m_precision
 !
+      implicit none
+!
       integer(kind = kint), intent(in) :: nblock_z
       integer(kind = kint), intent(in) :: ndomain_z
       integer(kind = kint), intent(in) :: istack_block_z(0:nblock_z)
@@ -855,6 +903,8 @@
      &          istack_volume, num_domain_grp, istack_domain_grp)
 !
       use m_precision
+!
+      implicit none
 !
       integer(kind = kint), intent(in) :: nblock
       integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
@@ -912,6 +962,8 @@
       use t_geometry_data
       use quicksort
 !
+      implicit none
+!
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
 !
@@ -953,6 +1005,8 @@
 !
       use t_control_param_vol_grping
 !
+      implicit none
+!
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
       integer(kind = kint), intent(in)                                  &
@@ -977,6 +1031,8 @@
      &          nod_vol_tot, sub_volume, istack_vol_y, vol_grp_y)
 !
       use t_control_param_vol_grping
+!
+      implicit none
 !
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
@@ -1005,6 +1061,8 @@
      &         num_group_yz, istack_vol_x, vol_grp_x)
 !
       use t_control_param_vol_grping
+!
+      implicit none
 !
       type(mesh_test_files_param), intent(in) :: T_meshes
 !
@@ -1038,6 +1096,8 @@
 !
       use t_geometry_data
       use t_control_param_vol_grping
+!
+      implicit none
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
@@ -1073,6 +1133,8 @@
       use t_geometry_data
       use t_control_param_vol_grping
 !
+      implicit none
+!
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
       type(mesh_test_files_param), intent(in) :: T_meshes
@@ -1085,7 +1147,7 @@
       integer(kind = kint), intent(in)                                  &
      &     :: istack_block_yz(0:T_meshes%ndivide_eb(2),num_nod_grp_z)
 !
-      integer(kind = kint) :: iy, iz, ist, ied, inum, inod
+      integer(kind = kint) :: iy, iz, ist, ied, inum, inod, icou
 !
       do icou = 1, num_nod_grp_z
         iz = idomain_nod_grp_z(icou)
@@ -1115,6 +1177,8 @@
       use t_geometry_data
       use t_control_param_vol_grping
 !
+      implicit none
+!
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
       type(mesh_test_files_param), intent(in) :: T_meshes
@@ -1127,7 +1191,8 @@
       integer(kind = kint), intent(in)                                  &
      &     :: istack_block_xyz(0:T_meshes%ndivide_eb(1),num_nod_grp_yz)
 !
-      integer(kind = kint) :: ix, iy, iz, jk, ist, ied, inum, inod
+      integer(kind = kint) :: ix, iy, iz, jk, ist, ied
+      integer(kind = kint) :: inum, inod, icou
 !
       do icou = 1, num_nod_grp_yz
         jk = idomain_nod_grp_yz(icou)
@@ -1156,6 +1221,8 @@
 !
       use t_geometry_data
       use t_control_param_vol_grping
+!
+      implicit none
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
@@ -1191,6 +1258,8 @@
 !
       use t_geometry_data
       use t_control_param_vol_grping
+!
+      implicit none
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
@@ -1237,6 +1306,8 @@
       use t_geometry_data
       use t_control_param_vol_grping
 !
+      implicit none
+!
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
       type(mesh_test_files_param), intent(in) :: T_meshes
@@ -1250,7 +1321,7 @@
      &                     :: istack_nod_grp_xyz(0:num_nod_grp_xyz)
 !
       integer(kind = kint) :: ix, iy, iz, jk, ist, ied
-      integer(kind = kint) :: inum, inod, icou
+      integer(kind = kint) :: inum, inod, icou, i
 !
       do icou = 1, num_nod_grp_yz
         jk = idomain_nod_grp_yz(icou)
