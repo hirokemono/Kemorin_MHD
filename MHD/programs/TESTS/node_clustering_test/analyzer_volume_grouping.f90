@@ -85,7 +85,6 @@
       real(kind = kreal), allocatable :: node_volume(:)
 !
       integer(kind = kint), allocatable :: inod_sort(:)
-      real(kind = kreal), allocatable :: data_sort(:)
 !
       real(kind = kreal), allocatable :: vol_block_gl(:)
 !
@@ -213,7 +212,6 @@
       end do
 !
 !
-      allocate(data_sort(fem_T%mesh%node%numnod))
       allocate(inod_sort(fem_T%mesh%node%numnod))
       allocate(istack_block_z(0:T_meshes%ndivide_eb(3)))
 !
@@ -383,6 +381,8 @@
 !      idomain_nod_grp_yz(2,num_nod_grp_yz+1) = T_meshes%ndomain_eb(2)+1
 !      idomain_nod_grp_yz(3,num_nod_grp_yz+1) = T_meshes%ndomain_eb(3)
 !
+      deallocate(vol_grp_y, istack_vol_y)
+!
 !   For x direction
 !
       allocate(istack_block_x(0:T_meshes%ndivide_eb(1),num_nod_grp_yz))
@@ -417,6 +417,7 @@
      &    num_group_yz, istack_vol_x, vol_grp_x)
 !
       deallocate(vol_block_gl)
+      deallocate(node_volume)
       deallocate(id_block)
 !
       if(my_rank .eq. 0) then
@@ -446,6 +447,7 @@
 !
       deallocate(istack_vol_x, vol_grp_x)
       deallocate(istack_block_x)
+      deallocate(inod_sort)
 !
       deallocate(idomain_nod_grp_yz)
       call dealloc_group_num(z_part_grp)
@@ -484,10 +486,6 @@
 !
       call mpi_output_mesh(T_meshes%new_mesh_file_IO,                   &
      &    fem_T%mesh, fem_T%group)
-!
-      deallocate(vol_grp_y, istack_vol_y)
-      deallocate(node_volume)
-      deallocate(data_sort, inod_sort)
 !
       end subroutine initialize_volume_grouping
 !
