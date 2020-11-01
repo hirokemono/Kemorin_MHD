@@ -24,7 +24,7 @@ increase_overlap.o: $(PART_COMMONDIR)/increase_overlap.f90 m_precision.o m_const
 	$(F90) -c $(F90OPTFLAGS) $<
 init_partitioner.o: $(PART_COMMONDIR)/init_partitioner.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_domain_group_4_partition.o m_error_IDs.o set_domain_and_org_id.o quick_mesh_check_for_part.o error_exit_4_part.o
 	$(F90) -c $(F90OPTFLAGS) $<
-int_volume_of_single_domain.o: $(PART_COMMONDIR)/int_volume_of_single_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o sum_volume_of_domain.o const_jacobians_3d.o fem_element_volume.o
+int_volume_of_single_domain.o: $(PART_COMMONDIR)/int_volume_of_single_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o sum_volume_of_domain.o const_jacobians_3d.o m_machine_parameter.o fem_element_volume.o
 	$(F90) -c $(F90OPTFLAGS) $<
 local_mesh_by_part.o: $(PART_COMMONDIR)/local_mesh_by_part.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_domain_group_4_partition.o t_internal_4_partitioner.o t_partitioner_comm_table.o t_ctl_param_partitioner.o set_parallel_file_name.o const_local_mesh_id.o set_local_connectivities.o const_local_groups.o sel_part_nod_comm_input.o delete_data_files.o load_mesh_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -81,6 +81,7 @@
 !
       subroutine int_single_volume_of_domain(ele, g_FEM, jac_3d)
 !
+      use m_machine_parameter
       use fem_element_volume
       use sum_volume_of_domain
 !
@@ -105,7 +106,9 @@
         ele%a_vol = 1.0d0 / ele%volume
       end if
 !
-      write(*,*)  'size of single domain: ', ele%volume
+      if(iflag_debug .gt. 0) then
+        write(*,*)  'size of single domain: ', ele%volume
+      end if
 !
       end subroutine int_single_volume_of_domain
 !
