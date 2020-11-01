@@ -223,13 +223,13 @@
 !
       istack_intnod(0) = 0
       istack_intnod(1) = fem_T%mesh%node%internal_node
+      allocate(istack_vol_z(0:T_meshes%ndomain_eb(3)))
+      allocate(vol_grp_z(T_meshes%ndomain_eb(3)))
       allocate(vol_block_gl(T_meshes%ndivide_eb(3)))
       call cal_volume_on_each_xyz_block                                 &
      &   (fem_T%mesh%node, inod_sort, id_block(1,3), node_volume,       &
      &    T_meshes%ndivide_eb(3), ione, istack_intnod, vol_block_gl)
 !
-      allocate(istack_vol_z(0:T_meshes%ndomain_eb(3)))
-      allocate(vol_grp_z(T_meshes%ndomain_eb(3)))
       sub_volume = nod_vol_tot / dble(T_meshes%ndomain_eb(3))
       call set_istack_xyz_domain_block(T_meshes%ndivide_eb(3),          &
      &    vol_block_gl, sub_volume, T_meshes%ndomain_eb(3),             &
@@ -286,12 +286,12 @@
 !     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
 !     &    num_nod_grp_z, idomain_nod_grp_z, istack_block_y)
 !
-      allocate(vol_block_gl(T_meshes%ndivide_eb(2)))
       allocate(istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       allocate(vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3)))
       num_group_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
-!
       sub_volume = nod_vol_tot / dble(num_group_yz)
+!
+      allocate(vol_block_gl(T_meshes%ndivide_eb(2)))
       call cal_volume_on_each_xyz_block                                 &
      &   (fem_T%mesh%node, inod_sort, id_block(1,2), node_volume,       &
      &    T_meshes%ndivide_eb(2), T_meshes%ndomain_eb(3),               &
