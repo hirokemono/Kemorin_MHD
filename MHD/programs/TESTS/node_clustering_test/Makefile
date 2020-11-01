@@ -6,8 +6,6 @@ NODE_CLUSTERING_TEST_DIR = $$(TESTS_DIR)/node_clustering_test
 
 TARGET_GROUPING_BY_VOLUME = grouping_by_volume
 
-TARGET_NODE_CLUSTERING_TEST = node_clustering_test
-TARGET_REPARTITION_TEST = repartition_test
 
 LIBS_NODE_CLUSTERING_TEST = \
 '$$(LIB_UTILS)'   \
@@ -33,19 +31,6 @@ analyzer_volume_grouping.o \
 t_control_param_vol_grping.o \
 t_ctl_data_volume_grouping.o
 
-MOD_NODE_CLUSTERING_TEST = \
-main_node_clustering_test.o \
-analyzer_node_cluster_test.o \
-\
-t_multi_node_clustering.o \
-t_node_clustering_list.o
-
-MOD_REPARTITION_TEST = \
-main_repartition_test.o \
-analyzer_repartition_test.o \
-\
-t_repartition_test.o
-
 SOURCES = $(shell ls *.f90)
 
 #
@@ -58,38 +43,18 @@ dir_list:
 target_list:
 	@echo 'TARGET_GROUPING_BY_VOLUME = $$(BUILDDIR)/$(TARGET_GROUPING_BY_VOLUME)' \
 	>> $(MAKENAME)
-	@echo 'TARGET_NODE_CLUSTERING_TEST = $$(BUILDDIR)/$(TARGET_NODE_CLUSTERING_TEST)' \
-	>> $(MAKENAME)
-	@echo 'TARGET_REPARTITION_TEST = $$(BUILDDIR)/$(TARGET_REPARTITION_TEST)' \
-	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo node_clustring_test: \
-	'$$(TARGET_NODE_CLUSTERING_TEST) $$(TARGET_REPARTITION_TEST) '\
-	'$$(TARGET_GROUPING_BY_VOLUME)'  >> $(MAKENAME)
+	'$$(TARGET_GROUPING_BY_VOLUME) '\
+	''  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_GROUPING_BY_VOLUME): $$(MOD_GROUPING_BY_VOLUME) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_GROUPING_BY_VOLUME)' \
 	'$$(MOD_GROUPING_BY_VOLUME)' \
-	'-L. $$(LIBS_NODE_CLUSTERING_TEST)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_NODE_CLUSTERING_TEST): $$(MOD_NODE_CLUSTERING_TEST) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_NODE_CLUSTERING_TEST)' \
-	'$$(MOD_NODE_CLUSTERING_TEST)' \
-	'-L. $$(LIBS_NODE_CLUSTERING_TEST)' \
-	'$$(F90LIBS)' >> $(MAKENAME)
-	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_REPARTITION_TEST): $$(MOD_REPARTITION_TEST) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
-	>> $(MAKENAME)
-	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_REPARTITION_TEST)' \
-	'$$(MOD_REPARTITION_TEST)' \
 	'-L. $$(LIBS_NODE_CLUSTERING_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
@@ -106,10 +71,6 @@ lib_name:
 mod_list:
 	@echo  MOD_GROUPING_BY_VOLUME=  \\ >> $(MAKENAME)
 	@echo  $(MOD_GROUPING_BY_VOLUME) >> $(MAKENAME)
-	@echo  MOD_NODE_CLUSTERING_TEST=  \\ >> $(MAKENAME)
-	@echo  $(MOD_NODE_CLUSTERING_TEST) >> $(MAKENAME)
-	@echo  MOD_REPARTITION_TEST=  \\ >> $(MAKENAME)
-	@echo  $(MOD_REPARTITION_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 
