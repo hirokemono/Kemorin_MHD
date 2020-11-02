@@ -34,6 +34,8 @@
       use m_precision
       use t_control_param_vol_grping
 !
+      implicit none
+!
 !>      Work area for re-partitioning in one direction
       type grouping_1d_work
 !>        Number of already divided domain in each process
@@ -52,7 +54,6 @@
 !>        Volumes for each subdoamin
         real(kind = kreal), allocatable :: vol_grp(:,:)
       end type grouping_1d_work
-!
 !
 ! ----------------------------------------------------------------------
 !

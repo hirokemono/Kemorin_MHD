@@ -30,7 +30,9 @@ analyzer_volume_grouping.o \
 \
 t_1d_repartitioning_work.o \
 t_control_param_vol_grping.o \
-t_ctl_data_volume_grouping.o
+t_ctl_data_volume_grouping.o \
+\
+set_istack_4_domain_block.o
 
 SOURCES = $(shell ls *.f90)
 
