@@ -207,9 +207,8 @@
 !
       call set_z_sorted_node_and_stack(fem_T%mesh%node, id_block(1,3),  &
      &    sub_z%n_block, sub_z%istack_block(0,1), inod_sort)
-!      call check_blocks_4_z_domain                                     &
-!     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
-!     &    sub_z%istack_block(0,1))
+!      call check_blocks_4_z_domain(my_rank, fem_T%mesh%node,           &
+!          T_meshes, inod_sort, id_block, sub_z)
 !
 !
       istack_intnod(0) = 0
@@ -222,6 +221,7 @@
      &    ione, istack_intnod, sub_z%istack_vol, sub_z%vol_grp)
 !
       if(my_rank .eq. 0) then
+        write(*,*) 'vol_grp_z', nod_vol_tot, sub_volume
         call check_z_divided_volumes(T_meshes, nod_vol_tot, sub_volume, &
      &      sub_z%istack_vol, sub_z%vol_grp)
       end if
@@ -262,9 +262,8 @@
      &    z_part_grp%num_grp, z_part_grp%istack_grp,                    &
      &    sub_y%istack_block, inod_sort)
 !
-!      call check_blocks_4_yz_domain                                    &
-!     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
-!     &    sub_y%ndomain_done, sub_y%idomain_done, sub_y%istack_block)
+!      call check_blocks_4_yz_domain(my_rank, fem_T%mesh%node,          &
+!     &    T_meshes, inod_sort, id_block, sub_y)
 !
       ndomain_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
       sub_volume = nod_vol_tot / dble(ndomain_yz)
@@ -276,8 +275,8 @@
      &    sub_y%istack_vol, sub_y%vol_grp)
 !
       if(my_rank .eq. 0) then
-        call check_yz_divided_volumes(T_meshes, nod_vol_tot,            &
-     &      sub_volume, sub_y%istack_vol, sub_y%vol_grp)
+        write(*,*) 'vol_grp_y', nod_vol_tot, sub_volume
+        call check_yz_divided_volumes(T_meshes, sub_y)
       end if
 !
       yz_part_grp%num_grp = ndomain_yz
@@ -319,9 +318,8 @@
      &    sub_x%ndomain_done, sub_x%idomain_done, sub_x%n_block,        &
      &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
      &    sub_x%istack_block, inod_sort)
-!      call check_blocks_4_xyz_domain                                   &
-!     &   (my_rank, fem_T%mesh%node, T_meshes, inod_sort, id_block,     &
-!     &    sub_x%ndomain_done, sub_x%idomain_done, sub_x%istack_block)
+!      call check_blocks_4_xyz_domain(my_rank, fem_T%mesh%node,         &
+!     &    T_meshes, inod_sort, id_block, sub_x)
 !
       sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
       call set_istack_xyz_domain_block                                  &
@@ -334,9 +332,8 @@
       deallocate(id_block)
 !
       if(my_rank .eq. 0) then
-        call check_xyz_divided_volumes                                  &
-     &     (T_meshes, nod_vol_tot, sub_volume,                          &
-     &      yz_part_grp%num_grp, sub_x%istack_vol, sub_x%vol_grp)
+        write(*,*) 'sub_x%vol_grp', nod_vol_tot, sub_volume
+        call check_xyz_divided_volumes(T_meshes, sub_x)
       end if
 !
 !
@@ -1036,222 +1033,6 @@
 !$omp end parallel do
 !
       end subroutine set_domain_grp_item
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine check_z_divided_volumes(T_meshes,                      &
-     &          nod_vol_tot, sub_volume, istack_vol_z, vol_grp_z)
-!
-      use t_control_param_vol_grping
-!
-      implicit none
-!
-      type(mesh_test_files_param), intent(in) :: T_meshes
-!
-      integer(kind = kint), intent(in)                                  &
-     &   :: istack_vol_z(0:T_meshes%ndomain_eb(3))
-      real(kind = kreal), intent(in)                                    &
-     &   :: vol_grp_z(T_meshes%ndomain_eb(3),1)
-      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
-!
-      integer(kind = kint) :: iz
-!
-!
-      write(*,*) 'vol_grp_z', nod_vol_tot, sub_volume
-      do iz = 1, T_meshes%ndomain_eb(3)
-        write(*,*) iz, istack_vol_z(iz), vol_grp_z(iz,1)
-      end do
-!
-      end subroutine check_z_divided_volumes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_yz_divided_volumes(T_meshes,                     &
-     &          nod_vol_tot, sub_volume, istack_vol_y, vol_grp_y)
-!
-      use t_control_param_vol_grping
-!
-      implicit none
-!
-      type(mesh_test_files_param), intent(in) :: T_meshes
-!
-      integer(kind = kint), intent(in)                                  &
-     & :: istack_vol_y(0:T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3))
-      real(kind = kreal), intent(in)                                    &
-     & :: vol_grp_y(T_meshes%ndomain_eb(2),T_meshes%ndomain_eb(3))
-      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
-!
-      integer(kind = kint) :: iy, iz
-!
-!
-      write(*,*) 'vol_grp_y', nod_vol_tot, sub_volume
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          write(*,*) iy, iz, istack_vol_y(iy,iz), vol_grp_y(iy,iz)
-        end do
-      end do
-!
-      end subroutine check_yz_divided_volumes
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_xyz_divided_volumes                              &
-     &         (T_meshes, nod_vol_tot, sub_volume,                      &
-     &         ndomain_yz, istack_vol_x, vol_grp_x)
-!
-      use t_control_param_vol_grping
-!
-      implicit none
-!
-      type(mesh_test_files_param), intent(in) :: T_meshes
-!
-      integer(kind = kint), intent(in) :: ndomain_yz
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_vol_x(0:T_meshes%ndomain_eb(1),ndomain_yz)
-      real(kind = kreal), intent(in)                                    &
-     &      :: vol_grp_x(T_meshes%ndomain_eb(1),ndomain_yz)
-      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
-!
-      integer(kind = kint) :: ix, iy, iz, jk
-!
-!
-      write(*,*) 'vol_grp_x', nod_vol_tot, sub_volume
-      do iz = 1, T_meshes%ndomain_eb(3)
-        do iy = 1, T_meshes%ndomain_eb(2)
-          jk = iy + (iz-1) * T_meshes%ndomain_eb(2)
-          do ix = 1, T_meshes%ndomain_eb(1)
-            write(*,*) ix,iy,iz, istack_vol_x(ix,jk), vol_grp_x(ix,jk)
-          end do
-        end do
-      end do
-!
-      end subroutine check_xyz_divided_volumes
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine check_blocks_4_z_domain(my_rank, node, T_meshes,       &
-     &          inod_sort, id_block, istack_block_z)
-!
-      use t_geometry_data
-      use t_control_param_vol_grping
-!
-      implicit none
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: T_meshes
-      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
-      integer(kind = kint), intent(in) :: id_block(node%numnod,3)
-!
-      integer(kind = kint), intent(in)                                  &
-     &     :: istack_block_z(0:T_meshes%ndivide_eb(3))
-!
-      integer(kind = kint) :: iz, ist, ied, inum, inod
-!
-      do iz = 1, T_meshes%ndivide_eb(3)
-        write(100+my_rank,*) 'istack_block_z', iz, istack_block_z(iz)
-        ist = istack_block_z(iz-1) + 1
-        ied = istack_block_z(iz)
-        do inum = ist, ied
-          inod = inod_sort(inum)
-          write(100+my_rank,*) 'inod', inum, inod, id_block(inod,3),    &
-     &                        node%xx(inod,3)
-        end do
-      end do
-      write(100+my_rank,*) node%internal_node
-!
-      end subroutine check_blocks_4_z_domain
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_blocks_4_yz_domain                               &
-     &         (my_rank, node, T_meshes, inod_sort, id_block,           &
-     &          num_nod_grp_z, idomain_nod_grp_z, istack_block_yz)
-!
-      use t_geometry_data
-      use t_control_param_vol_grping
-!
-      implicit none
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: T_meshes
-      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
-      integer(kind = kint), intent(in) :: id_block(node%numnod,3)
-!
-      integer(kind = kint), intent(in) :: num_nod_grp_z
-      integer(kind = kint), intent(in)                                  &
-     &     :: idomain_nod_grp_z(num_nod_grp_z)
-      integer(kind = kint), intent(in)                                  &
-     &     :: istack_block_yz(0:T_meshes%ndivide_eb(2),num_nod_grp_z)
-!
-      integer(kind = kint) :: iy, iz, ist, ied, inum, inod, icou
-!
-      do icou = 1, num_nod_grp_z
-        iz = idomain_nod_grp_z(icou)
-        write(100+my_rank,*) 'istack_block_y0', istack_block_yz(0,icou)
-        do iy = 1, T_meshes%ndivide_eb(2)
-          write(100+my_rank,*) 'istack_block_yz',                       &
-     &                        iy, istack_block_yz(iy,icou)
-          ist = istack_block_yz(iy-1,icou) + 1
-          ied = istack_block_yz(iy,icou)
-          do inum = ist, ied
-            inod = inod_sort(inum)
-            write(100+my_rank,*) 'inod', inum, inod,                    &
-     &                  id_block(inod,2:3), node%xx(inod,2:3)
-          end do
-        end do
-      end do
-      write(100+my_rank,*) node%internal_node
-!
-      end subroutine check_blocks_4_yz_domain
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_blocks_4_xyz_domain                              &
-     &         (my_rank, node, T_meshes, inod_sort, id_block,           &
-     &          num_nod_grp_yz, idomain_nod_grp_yz, istack_block_xyz)
-!
-      use t_geometry_data
-      use t_control_param_vol_grping
-!
-      implicit none
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: T_meshes
-      integer(kind = kint), intent(in) :: inod_sort(node%numnod)
-      integer(kind = kint), intent(in) :: id_block(node%numnod,3)
-!
-      integer(kind = kint), intent(in) :: num_nod_grp_yz
-      integer(kind = kint), intent(in)                                  &
-     &     :: idomain_nod_grp_yz(num_nod_grp_yz)
-      integer(kind = kint), intent(in)                                  &
-     &     :: istack_block_xyz(0:T_meshes%ndivide_eb(1),num_nod_grp_yz)
-!
-      integer(kind = kint) :: ix, iy, iz, jk, ist, ied
-      integer(kind = kint) :: inum, inod, icou
-!
-      do icou = 1, num_nod_grp_yz
-        jk = idomain_nod_grp_yz(icou)
-        iy = 1 + mod(jk-1,T_meshes%ndomain_eb(2))
-        iz = 1 + (jk-1) / T_meshes%ndomain_eb(2)
-        do ix = 1, T_meshes%ndivide_eb(2)
-          write(100+my_rank,*) 'istack_block_xyz',                      &
-     &                        ix, iy, iz, istack_block_xyz(ix,icou)
-          ist = istack_block_xyz(ix-1,icou) + 1
-          ied = istack_block_xyz(ix,  icou)
-          do inum = ist, ied
-            inod = inod_sort(inum)
-            write(100+my_rank,*) 'inod', inum, inod,                    &
-     &                 id_block(inod,1:3), node%xx(inod,1:3)
-          end do
-        end do
-      end do
-!
-      end subroutine check_blocks_4_xyz_domain
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

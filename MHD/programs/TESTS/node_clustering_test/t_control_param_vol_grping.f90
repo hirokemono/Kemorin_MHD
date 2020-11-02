@@ -7,9 +7,9 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine s_set_ctl_params_4_test_mesh(part_tctl, T_files)
+!!      subroutine s_set_ctl_params_4_test_mesh(part_tctl, part_param)
 !!        type(mesh_test_control), intent(in) :: part_tctl
-!!        type(mesh_test_files_param), intent(inout) :: T_files
+!!        type(mesh_test_files_param), intent(inout) :: part_param
 !!@endverbatim
 !
       module t_control_param_vol_grping
@@ -42,7 +42,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_set_ctl_params_4_test_mesh(part_tctl, T_files)
+      subroutine s_set_ctl_params_4_test_mesh(part_tctl, part_param)
 !
       use calypso_mpi
       use m_error_IDs
@@ -56,28 +56,28 @@
       use set_num_domain_each_dir
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
-      type(mesh_test_files_param), intent(inout) :: T_files
+      type(mesh_test_files_param), intent(inout) :: part_param
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_tctl%plt)
       call check_control_num_domains(part_tctl%plt)
-      call set_control_mesh_def(part_tctl%plt, T_files%mesh_file_IO)
+      call set_control_mesh_def(part_tctl%plt, part_param%mesh_file_IO)
       call set_control_smp_def(my_rank, part_tctl%plt)
 !
       call check_control_num_domains(part_tctl%new_plt)
       call set_control_mesh_def(part_tctl%new_plt,                      &
-     &                          T_files%new_mesh_file_IO)
+     &                          part_param%new_mesh_file_IO)
 !
       call set_FEM_surface_output_flag                                  &
-     &   (part_tctl%Fmesh_ctl, T_files%iflag_output_SURF)
+     &   (part_tctl%Fmesh_ctl, part_param%iflag_output_SURF)
       if(iflag_debug.gt.0) write(*,*)                                   &
-     &   'mesh_file_head:  ', trim(T_files%mesh_file_IO%file_prefix)
+     &   'mesh_file_head:  ', trim(part_param%mesh_file_IO%file_prefix)
 !
 !
       call set_control_EQ_XYZ                                           &
      &   (part_tctl%new_part_ctl%ndomain_section_ctl,                   &
-     &    T_files%new_nprocs, T_files%ndomain_eb)
-      if(T_files%new_nprocs                                             &
+     &    part_param%new_nprocs, part_param%ndomain_eb)
+      if(part_param%new_nprocs                                          &
      &      .ne. part_tctl%new_plt%ndomain_ctl%intvalue) then
         write(e_message,'(a)')                                          &
      &      'Number of subdomains should be num. of original mesh'
@@ -85,15 +85,15 @@
       end if
 !
       if(part_tctl%new_part_ctl%ratio_of_grouping_ctl%iflag .eq. 0) then
-        T_files%ndivide_eb(1:3) = 100 * T_files%ndomain_eb(1:3)
+        part_param%ndivide_eb(1:3) = 100 * part_param%ndomain_eb(1:3)
       else
-        T_files%ndivide_eb(1:3) = T_files%ndomain_eb(1:3)               &
+        part_param%ndivide_eb(1:3) = part_param%ndomain_eb(1:3)         &
      &       * part_tctl%new_part_ctl%ratio_of_grouping_ctl%intvalue
       end if
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'ndomain_eb', T_files%ndomain_eb(1:3)
-        write(*,*) 'ndivide_eb', T_files%ndivide_eb(1:3)
+        write(*,*) 'ndomain_eb', part_param%ndomain_eb(1:3)
+        write(*,*) 'ndivide_eb', part_param%ndivide_eb(1:3)
       end if
 !
       end subroutine s_set_ctl_params_4_test_mesh
