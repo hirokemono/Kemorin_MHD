@@ -28,6 +28,7 @@ MOD_GROUPING_BY_VOLUME = \
 main_volume_grouping.o \
 analyzer_volume_grouping.o \
 \
+t_1d_repartitioning_work.o \
 t_control_param_vol_grping.o \
 t_ctl_data_volume_grouping.o
 
