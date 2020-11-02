@@ -93,7 +93,7 @@
         integer(kind = kint) :: n_block
         integer(kind = kint) :: n_domain
         integer(kind = kint), allocatable :: istack_block(:,:)
-        integer(kind = kint), allocatable :: istack_volume(:,:)
+        integer(kind = kint), allocatable :: istack_vol(:,:)
         real(kind = kreal), allocatable :: vol_grp(:,:)
       end type grouping_1d_work
 !
@@ -101,8 +101,8 @@
       type(grouping_1d_work) :: sub_y
       type(grouping_1d_work) :: sub_x
 !
-      integer(kind = kint), allocatable :: istack_vol_x(:,:)
-      real(kind = kreal), allocatable :: vol_grp_x(:,:)
+!      integer(kind = kint), allocatable :: istack_vol_x(:,:)
+!      real(kind = kreal), allocatable :: vol_grp_x(:,:)
       integer(kind = kint), allocatable :: istack_vol_y(:,:)
       real(kind = kreal), allocatable :: vol_grp_y(:,:)
 !
@@ -131,7 +131,6 @@
 !
       type(group_data) :: part_grp
       type(group_data) :: grp_tmp
-!
 !
       call init_elapse_time_by_TOTAL
 !      call elapsed_label_4_ele_comm_tbl
@@ -342,21 +341,31 @@
 !
 !   For x direction
 !
-      allocate(istack_block_x(0:T_meshes%ndivide_eb(1),num_nod_grp_yz))
-      allocate(istack_vol_x(0:T_meshes%ndomain_eb(1),yz_part_grp%num_grp))
-      allocate(vol_grp_x(T_meshes%ndomain_eb(1),yz_part_grp%num_grp))
-!$omp parallel workshare
-      istack_block_x(0:T_meshes%ndivide_eb(1),1:num_nod_grp_yz) = 0
-!$omp end parallel workshare
-!$omp parallel workshare
-      istack_vol_x(0:T_meshes%ndomain_eb(1),1:yz_part_grp%num_grp) = 0
-!$omp end parallel workshare
-!$omp parallel workshare
-      vol_grp_x(1:T_meshes%ndomain_eb(1),1:yz_part_grp%num_grp) =    0
-!$omp end parallel workshare
+      sub_x%n_block =  T_meshes%ndivide_eb(1)
+      sub_x%n_domain = T_meshes%ndomain_eb(1)
+      allocate(istack_block_x(0:sub_x%n_block,num_nod_grp_yz))
+      allocate(sub_x%istack_vol(0:sub_x%n_domain,yz_part_grp%num_grp))
+      allocate(sub_x%vol_grp(sub_x%n_domain,yz_part_grp%num_grp))
+!
+!$omp parallel
+      do i = 1, num_nod_grp_yz
+!$omp workshare
+        istack_block_x(0:sub_x%n_block,i) = 0
+!$omp end workshare
+      end do
+!$omp end parallel
+!
+!$omp parallel
+      do i = 1, yz_part_grp%num_grp
+!$omp workshare
+        sub_x%istack_vol(0:sub_x%n_domain,i) = 0
+        sub_x%vol_grp(1:sub_x%n_domain,i) =  0.0d0
+!$omp end workshare
+      end do
+!$omp end parallel
 !
       call set_sorted_node_and_stack(1, fem_T%mesh%node, id_block(1,1), &
-     &    num_nod_grp_yz, idomain_nod_grp_yz, T_meshes%ndivide_eb(1),   &
+     &    num_nod_grp_yz, idomain_nod_grp_yz, sub_x%n_block,            &
      &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
      &    istack_block_x, inod_sort)
 !      call check_blocks_4_xyz_domain                                   &
@@ -366,9 +375,9 @@
       sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
       call set_istack_xyz_domain_block                                  &
      &   (fem_T%mesh%node, inod_sort, id_block(1,1), node_volume,       &
-     &    T_meshes%ndivide_eb(1), sub_volume, T_meshes%ndomain_eb(1),   &
+     &    sub_x%n_block, sub_volume, sub_x%n_domain,                    &
      &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
-     &    istack_vol_x, vol_grp_x)
+     &    sub_x%istack_vol, sub_x%vol_grp)
 !
       deallocate(node_volume)
       deallocate(id_block)
@@ -376,7 +385,7 @@
       if(my_rank .eq. 0) then
         call check_xyz_divided_volumes                                  &
      &     (T_meshes, nod_vol_tot, sub_volume,                          &
-     &      yz_part_grp%num_grp, istack_vol_x, vol_grp_x)
+     &      yz_part_grp%num_grp, sub_x%istack_vol, sub_x%vol_grp)
       end if
 !
 !
@@ -384,10 +393,9 @@
       call alloc_group_num(part_grp)
       call set_xyz_domain_grp_name                                      &
      &   (T_meshes, part_grp%num_grp, part_grp%grp_name)
-      call set_newdomain_grp_stack                                      &
-     &   (T_meshes%ndivide_eb(1), T_meshes%ndomain_eb(1),               &
+      call set_newdomain_grp_stack(sub_x%n_block, sub_x%n_domain,       &
      &    yz_part_grp%num_grp, num_nod_grp_yz, idomain_nod_grp_yz,      &
-     &    istack_block_x, istack_vol_x, part_grp%num_grp,               &
+     &    istack_block_x, sub_x%istack_vol, part_grp%num_grp,           &
      &    part_grp%istack_grp)
 !      call check_stacks_4_new_domain(my_rank,                          &
 !     &    fem_T%mesh%node, T_meshes, inod_sort, num_nod_grp_yz,        &
@@ -399,7 +407,7 @@
      &                         part_grp%num_grp, part_grp%num_item,     &
      &                         part_grp%istack_grp, part_grp%item_grp)
 !
-      deallocate(istack_vol_x, vol_grp_x)
+      deallocate(sub_x%istack_vol, sub_x%vol_grp)
       deallocate(istack_block_x)
       deallocate(inod_sort)
 !
