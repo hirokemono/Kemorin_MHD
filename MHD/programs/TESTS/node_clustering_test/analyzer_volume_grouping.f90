@@ -85,20 +85,11 @@
       type(jacobians_type) :: jacobians_T
       type(shape_finctions_at_points) :: spfs_T
 !
-      type(node_volume_and_sorting) :: vol_sort
-      type(grouping_1d_work) :: sub_z
-      type(grouping_1d_work) :: sub_y
-      type(grouping_1d_work) :: sub_x
-!
-      integer(kind = kint) :: ndomain_yz
-!
       real(kind = kreal) :: vol_ref
 !
-      type(group_data) :: z_part_grp
-      type(group_data) :: yz_part_grp
-!
       type(group_data) :: part_grp
-      type(group_data) :: grp_tmp
+!
+!     --------------------- 
 !
       call init_elapse_time_by_TOTAL
 !      call elapsed_label_4_ele_comm_tbl
@@ -117,7 +108,6 @@
       call s_set_ctl_params_4_test_mesh(part_tctl1, T_meshes)
 !
 !  --  read geometry
-!
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, fem_T)
 !
@@ -155,54 +145,8 @@
       call set_belonged_ele_and_next_nod                                &
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
-      call alloc_node_volume_and_sort(fem_T%mesh%node, vol_sort)
-!
-      call set_xyz_block_by_nod_volume                                  &
-     &   (fem_T%mesh, T_meshes, vol_sort%node_volume, vol_sort%nod_vol_tot, vol_sort%id_block)
-!
-      call const_single_domain_list(sub_z)
-!
-!    For z direction
-!
-      vol_sort%sub_volume                                               &
-     &          = vol_sort%nod_vol_tot / dble(T_meshes%ndomain_eb(3))
-      call const_istack_z_domain_block(fem_T%mesh, T_meshes,            &
-     &    vol_sort%id_block, vol_sort%node_volume, vol_sort%nod_vol_tot, vol_sort%sub_volume, vol_sort%inod_sort, sub_z)
-      call const_z_div_domain_group_data                                &
-     &   (fem_T%mesh, T_meshes, sub_z, vol_sort%inod_sort, z_part_grp)
-!
-      call const_z_subdomain_list(T_meshes, z_part_grp, sub_y)
-      call dealloc_grouping_1d_work(sub_z)
-!
-!   For y direction
-!
-      ndomain_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
-      vol_sort%sub_volume = vol_sort%nod_vol_tot / dble(ndomain_yz)
-      call const_istack_xyz_domain_block                                &
-     &   (itwo, fem_T%mesh, T_meshes, z_part_grp,                       &
-     &    vol_sort%id_block, vol_sort%node_volume, vol_sort%nod_vol_tot, vol_sort%sub_volume, vol_sort%inod_sort,    &
-     &    sub_y)
-!
-      call const_newdomain_group_data(itwo, ndomain_yz, fem_T%mesh,     &
-     &    T_meshes, z_part_grp, sub_y, vol_sort%inod_sort, yz_part_grp)
-!
-      call const_yz_subdomain_list(T_meshes, sub_y, yz_part_grp, sub_x)
-      call dealloc_grouping_1d_work(sub_y)
-      call dealloc_group(z_part_grp)
-!
-!   For x direction
-!
-      vol_sort%sub_volume = vol_sort%nod_vol_tot / dble(T_meshes%new_nprocs)
-      call const_istack_xyz_domain_block                                &
-     &   (ione, fem_T%mesh, T_meshes, yz_part_grp,                      &
-     &    vol_sort%id_block, vol_sort%node_volume, vol_sort%nod_vol_tot, vol_sort%sub_volume, vol_sort%inod_sort,    &
-     &    sub_x)
-!
-      call const_newdomain_group_data(ione, T_meshes%new_nprocs,        &
-     &    fem_T%mesh, T_meshes, yz_part_grp, sub_x, vol_sort%inod_sort, part_grp)
-      call dealloc_grouping_1d_work(sub_x)
-      call dealloc_group(yz_part_grp)
-      call dealloc_node_volume_and_sort(vol_sort)
+!       Re-partitioning
+      call s_repartition_by_volume(part_grp)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
