@@ -14,6 +14,7 @@
       module t_repartition_by_volume
 !
       use m_precision
+      use m_constants
 !
       use t_mesh_data
       use t_group_data
