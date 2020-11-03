@@ -15,14 +15,18 @@
 !
       use m_precision
 !
+      use t_mesh_data
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
 !
       implicit none
 !
       type node_volume_and_sorting
         integer(kind = kint) :: numnod
         integer(kind = kint), allocatable :: id_block(:,:)
-        real(kind = kreal), allocatable :: node_volume(:)
-        real(kind = kreal) :: nod_vol_tot
+        real(kind = kreal), allocatable :: volume_nod(:)
+        real(kind = kreal) :: volume_nod_tot
         real(kind = kreal) :: sub_volume
 !
         integer(kind = kint), allocatable :: inod_sort(:)
@@ -34,8 +38,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_repartition_by_volume(part_grp)
+      subroutine s_repartition_by_volume(mesh, part_param, part_grp)
 !
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_test_files_param), intent(in) :: part_param
       type(group_data), intent(inout) :: part_grp
 !
       type(group_data) :: z_part_grp
@@ -49,47 +55,50 @@
       integer(kind = kint) :: ndomain_yz
 !
 !
-      call alloc_node_volume_and_sort(fem_T%mesh%node, vol_sort)
+      call alloc_node_volume_and_sort(mesh%node, vol_sort)
 !
-      call set_xyz_block_by_nod_volume                                  &
-     &   (fem_T%mesh, T_meshes, vol_sort%node_volume, vol_sort%nod_vol_tot, vol_sort%id_block)
+      call set_xyz_block_by_nod_volume(mesh, part_param,                &
+     &    vol_sort%volume_nod, vol_sort%volume_nod_tot,                 &
+     &    vol_sort%id_block)
 !
       call const_single_domain_list(sub_z)
 !
 !    For z direction
 !
       vol_sort%sub_volume                                               &
-     &          = vol_sort%nod_vol_tot / dble(T_meshes%ndomain_eb(3))
-      call const_istack_z_domain_block(fem_T%mesh, T_meshes,            &
-     &    vol_sort%id_block, vol_sort%node_volume, vol_sort%nod_vol_tot, vol_sort%sub_volume, vol_sort%inod_sort, sub_z)
+     &     = vol_sort%volume_nod_tot / dble(part_param%ndomain_eb(3))
+      call const_istack_z_domain_block                                  &
+     &   (mesh, part_param, vol_sort, sub_z)
       call const_z_div_domain_group_data                                &
-     &   (fem_T%mesh, T_meshes, sub_z, vol_sort%inod_sort, z_part_grp)
+     &   (mesh, part_param, sub_z, vol_sort, z_part_grp)
 !
-      call const_z_subdomain_list(T_meshes, z_part_grp, sub_y)
+      call const_z_subdomain_list(part_param, z_part_grp, sub_y)
       call dealloc_grouping_1d_work(sub_z)
 !
 !   For y direction
 !
-      ndomain_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
-      vol_sort%sub_volume = vol_sort%nod_vol_tot / dble(ndomain_yz)
-      call const_istack_xyz_domain_block(itwo, fem_T%mesh, T_meshes,    &
+      ndomain_yz = part_param%ndomain_eb(2) * part_param%ndomain_eb(3)
+      vol_sort%sub_volume = vol_sort%volume_nod_tot / dble(ndomain_yz)
+      call const_istack_xyz_domain_block(itwo, mesh, part_param,        &
      &    z_part_grp, vol_sort, sub_y)
 !
-      call const_newdomain_group_data(itwo, ndomain_yz, fem_T%mesh,     &
-     &    T_meshes, z_part_grp, sub_y, vol_sort, yz_part_grp)
+      call const_newdomain_group_data(itwo, ndomain_yz, mesh,           &
+     &    part_param, z_part_grp, sub_y, vol_sort, yz_part_grp)
 !
-      call const_yz_subdomain_list(T_meshes, sub_y, yz_part_grp, sub_x)
+      call const_yz_subdomain_list                                      &
+     &   (part_param, sub_y, yz_part_grp, sub_x)
       call dealloc_grouping_1d_work(sub_y)
       call dealloc_group(z_part_grp)
 !
 !   For x direction
 !
-      vol_sort%sub_volume = vol_sort%nod_vol_tot / dble(T_meshes%new_nprocs)
-      call const_istack_xyz_domain_block(ione, fem_T%mesh, T_meshes,    &
+      vol_sort%sub_volume = vol_sort%volume_nod_tot                     &
+     &                     / dble(part_param%new_nprocs)
+      call const_istack_xyz_domain_block(ione, mesh, part_param,        &
      &    yz_part_grp, vol_sort, sub_x)
 !
-      call const_newdomain_group_data(ione, T_meshes%new_nprocs,        &
-     &    fem_T%mesh, T_meshes, yz_part_grp, sub_x, vol_sort, part_grp)
+      call const_newdomain_group_data(ione, part_param%new_nprocs,      &
+     &    mesh, part_param, yz_part_grp, sub_x, vol_sort, part_grp)
       call dealloc_grouping_1d_work(sub_x)
       call dealloc_group(yz_part_grp)
       call dealloc_node_volume_and_sort(vol_sort)
@@ -107,12 +116,12 @@
       type(node_volume_and_sorting), intent(inout) :: vol_sort
 !
 !
-      allocate(vol_sort%node_volume(node%numnod))
+      allocate(vol_sort%volume_nod(node%numnod))
       allocate(vol_sort%id_block(node%numnod,3))
       allocate(vol_sort%inod_sort(node%numnod))
 !
 !$omp parallel workshare
-      vol_sort%node_volume(node%numnod) = 0.0d0
+      vol_sort%volume_nod(node%numnod) = 0.0d0
       vol_sort%id_block(node%numnod,3) = 0
       vol_sort%id_block(node%numnod,3) = 0
       vol_sort%id_block(node%numnod,3) = 0
@@ -128,7 +137,7 @@
       type(node_volume_and_sorting), intent(inout) :: vol_sort
 !
 !
-      deallocate(vol_sort%node_volume)
+      deallocate(vol_sort%volume_nod)
       deallocate(vol_sort%id_block)
       deallocate(vol_sort%inod_sort)
 !
@@ -137,7 +146,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_xyz_block_by_nod_volume                            &
-     &         (mesh, part_param, node_volume, nod_vol_tot, id_block)
+     &         (mesh, part_param, volume_nod, volume_nod_tot, id_block)
 !
       use calypso_mpi
       use t_mesh_data
@@ -150,8 +159,8 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_test_files_param), intent(in) :: part_param
       real(kind = kreal), intent(inout)                                 &
-     &                   :: node_volume(mesh%node%numnod)
-      real(kind = kreal), intent(inout) :: nod_vol_tot
+     &                   :: volume_nod(mesh%node%numnod)
+      real(kind = kreal), intent(inout) :: volume_nod_tot
       integer(kind = kint), intent(inout)                               &
      &                    :: id_block(mesh%node%numnod,3)
 !
@@ -160,22 +169,23 @@
       integer(kind = kint) :: inod, nd
 !
 !
-      call cal_node_volue(mesh%node, mesh%ele, node_volume)
+      call cal_node_volue(mesh%node, mesh%ele, volume_nod)
       call SOLVER_SEND_RECV_type                                        &
-     &   (mesh%node%numnod, mesh%nod_comm, node_volume)
+     &   (mesh%node%numnod, mesh%nod_comm, volume_nod)
 !
       vol_lc = 0.0d0
       do inod = 1, mesh%node%internal_node
-        vol_lc = vol_lc + node_volume(inod)
+        vol_lc = vol_lc + volume_nod(inod)
       end do
-      call calypso_mpi_allreduce_one_real(vol_lc, nod_vol_tot, MPI_SUM)
+      call calypso_mpi_allreduce_one_real                               &
+     &   (vol_lc, volume_nod_tot, MPI_SUM)
 !
       if(my_rank .eq. 0) then
         write(*,*) 'xyz_min_gl', mesh%node%xyz_min_gl(1:3)
         write(*,*) 'xyz_max_gl', mesh%node%xyz_max_gl(1:3)
       end if
 !
-      size_gl(1:3) = mesh%node%xyz_max_gl(1:3)                         &
+      size_gl(1:3) = mesh%node%xyz_max_gl(1:3)                          &
      &              - mesh%node%xyz_min_gl(1:3)
       size_blk(1:3) = size_gl(1:3) / dble(part_param%ndivide_eb(1:3))
       do nd = 1, 3
@@ -263,8 +273,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_istack_z_domain_block(mesh, part_param,          &
-     &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
+      subroutine const_istack_z_domain_block                            &
+     &         (mesh, part_param, vol_sort, sub_z)
 !
       use calypso_mpi
       use t_mesh_data
@@ -279,11 +289,8 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_test_files_param), intent(in) :: part_param
-      integer(kind = kint), intent(in) :: id_block(mesh%node%numnod,3)
-      real(kind = kreal), intent(in) :: node_volume(mesh%node%numnod)
-      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
 !
-      integer(kind = kint), intent(inout) :: inod_sort(mesh%node%numnod)
+      type(node_volume_and_sorting), intent(inout) :: vol_sort
       type(grouping_1d_work), intent(inout) :: sub_z
 !
       integer(kind = kint) :: istack_intnod(0:1)
@@ -291,21 +298,23 @@
 !
       call alloc_grouping_1d_work(ione,                                 &
      &    part_param%ndivide_eb(3), part_param%ndomain_eb(3), sub_z)
-      call set_z_sorted_node_and_stack(mesh%node, id_block(1,3),        &
-     &    sub_z%n_block, sub_z%istack_block(0,1), inod_sort)
+      call set_z_sorted_node_and_stack                                  &
+     &   (mesh%node, vol_sort%id_block(1,3),                            &
+     &    sub_z%n_block, sub_z%istack_block(0,1), vol_sort%inod_sort)
 !
       istack_intnod(0) = 0
       istack_intnod(1) = mesh%node%internal_node
 !
-      call set_istack_xyz_domain_block                                  &
-     &   (mesh%node, inod_sort, id_block(1,3), node_volume,             &
-     &    sub_z%n_block, sub_volume, sub_z%n_domain,                    &
+      call set_istack_xyz_domain_block(mesh%node, vol_sort%inod_sort,   &
+     &    vol_sort%id_block(1,3), vol_sort%volume_nod,                  &
+     &    sub_z%n_block, vol_sort%sub_volume, sub_z%n_domain,           &
      &    ione, istack_intnod, sub_z%istack_vol, sub_z%vol_grp)
 !
 !      call check_blocks_4_z_domain(my_rank, mesh%node,                 &
-!          part_param, inod_sort, id_block, sub_z)
+!          part_param, vol_sort%inod_sort, vol_sort%id_block, sub_z)
       if(my_rank .eq. 0) then
-        write(*,*) 'vol_grp_z', nod_vol_tot, sub_volume
+        write(*,*) 'vol_grp_z',                                         &
+     &            vol_sort%volume_nod_tot, vol_sort%sub_volume
         call check_z_divided_volumes(part_param, sub_z)
       end if
 !
@@ -345,7 +354,7 @@
      &    part_1d%istack_block, vol_sort%inod_sort)
 !
       call set_istack_xyz_domain_block(mesh%node, vol_sort%inod_sort,   &
-     &    vol_sort%id_block(1,nd), vol_sort%node_volume,                &
+     &    vol_sort%id_block(1,nd), vol_sort%volume_nod,                 &
      &    part_1d%n_block, vol_sort%sub_volume, part_1d%n_domain,       &
      &    prev_part_grp%num_grp, prev_part_grp%istack_grp,              &
      &    part_1d%istack_vol, part_1d%vol_grp)
@@ -355,7 +364,7 @@
 !     &      part_param, vol_sort%inod_sort, vol_sort%id_block, part_1d)
         if(my_rank .eq. 0) then
           write(*,*) 'vol_grp_x',                                       &
-     &              vol_sort%nod_vol_tot, vol_sort%sub_volume
+     &              vol_sort%volume_nod_tot, vol_sort%sub_volume
           call check_xyz_divided_volumes(part_param, part_1d)
         end if
       else if(nd .eq. 2) then
@@ -363,7 +372,7 @@
 !     &      part_param, vol_sort%inod_sort, vol_sort%id_block, part_1d)
         if(my_rank .eq. 0) then
           write(*,*) 'vol_grp_y',                                       &
-     &               vol_sort%nod_vol_tot, vol_sort%sub_volume
+     &               vol_sort%volume_nod_tot, vol_sort%sub_volume
           call check_yz_divided_volumes(part_param, part_1d)
         end if
       end if
@@ -372,7 +381,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_z_div_domain_group_data(mesh, part_param, sub_z, inod_sort, z_part_grp)
+      subroutine const_z_div_domain_group_data                          &
+     &         (mesh, part_param, sub_z, vol_sort, z_part_grp)
 !
       use calypso_mpi
       use t_mesh_data
@@ -385,7 +395,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_test_files_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_z
-      integer(kind = kint), intent(in) :: inod_sort(mesh%node%numnod)
+      type(node_volume_and_sorting), intent(in) :: vol_sort
 !
       type(group_data), intent(inout) :: z_part_grp
 !
@@ -398,12 +408,12 @@
      &    sub_z%istack_block(0,1), sub_z%istack_vol,                    &
      &    z_part_grp%num_grp, z_part_grp%istack_grp)
 !      call check_stacks_4_z_domain                                     &
-!     &   (my_rank, mesh%node, part_param,                              &
-!     &    inod_sort, z_part_grp%num_grp, z_part_grp%istack_grp)
+!     &   (my_rank, mesh%node, part_param, vol_sort%inod_sort,          &
+!     &    z_part_grp%num_grp, z_part_grp%istack_grp)
 !
       z_part_grp%num_item = z_part_grp%istack_grp(z_part_grp%num_grp)
       call alloc_group_item(z_part_grp)
-      call set_domain_grp_item(mesh%node, inod_sort,                    &
+      call set_domain_grp_item(mesh%node, vol_sort%inod_sort,           &
      &    z_part_grp%num_grp, z_part_grp%num_item,                      &
      &    z_part_grp%istack_grp, z_part_grp%item_grp)
 !

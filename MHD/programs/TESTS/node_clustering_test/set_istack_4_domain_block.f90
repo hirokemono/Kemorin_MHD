@@ -24,7 +24,7 @@
 !!        type(mesh_test_files_param), intent(in) :: part_param
 !!
 !!      subroutine set_istack_xyz_domain_block                          &
-!!     &         (node, inod_sort, id_block, node_volume,               &
+!!     &         (node, inod_sort, id_block, volume_nod,                &
 !!     &          nblock_x, sub_volume, ndomain_x, ndomain_yz,          &
 !!     &          istack_yz_grp, istack_vol, vol_grp)
 !!        type(node_data), intent(in) :: node
@@ -180,7 +180,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_istack_xyz_domain_block                            &
-     &         (node, inod_sort, id_block, node_volume,                 &
+     &         (node, inod_sort, id_block, volume_nod,                  &
      &          nblock_x, sub_volume, ndomain_x, ndomain_yz,            &
      &          istack_yz_grp, istack_vol, vol_grp)
 !
@@ -195,7 +195,7 @@
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
       integer(kind = kint), intent(in) :: id_block(node%numnod)
-      real(kind = kreal), intent(in) :: node_volume(node%numnod)
+      real(kind = kreal), intent(in) :: volume_nod(node%numnod)
 !
       integer(kind = kint), intent(in) :: nblock_x
       integer(kind = kint), intent(in) :: ndomain_x, ndomain_yz
@@ -224,7 +224,7 @@
         do inum = ist, ied
           inod = inod_sort(inum)
           i = id_block(inod)
-          vol_block_lc(i) = vol_block_lc(i) + node_volume(inod)
+          vol_block_lc(i) = vol_block_lc(i) + volume_nod(inod)
         end do
 !
         call calypso_mpi_reduce_real(vol_block_lc, vol_block_gl,        &

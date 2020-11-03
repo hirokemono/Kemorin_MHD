@@ -146,7 +146,7 @@
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
 !       Re-partitioning
-      call s_repartition_by_volume(part_grp)
+      call s_repartition_by_volume(fem_T%mesh, T_meshes, part_grp)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
