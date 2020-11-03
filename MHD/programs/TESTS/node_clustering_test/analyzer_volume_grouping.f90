@@ -199,24 +199,17 @@
 !
       allocate(inod_sort(fem_T%mesh%node%numnod))
 !
-      sub_z%ndomain_done = 1
-      call alloc_new_domain_list(sub_z)
-      sub_z%idomain_done = 1
+      call const_single_domain_list(sub_z)
+!
+!    For z direction
 !
       sub_volume = nod_vol_tot / dble(T_meshes%ndomain_eb(3))
       call const_istack_z_domain_block(fem_T%mesh, T_meshes,            &
-     &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
-!
+     &    id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
       call const_z_div_domain_group_data(fem_T%mesh, T_meshes, sub_z,   &
      &                                   inod_sort, z_part_grp)
 !
-      sub_y%ndomain_done = count_z_subdomain_num(T_meshes,              &
-     &                       z_part_grp%num_grp, z_part_grp%istack_grp)
-      call alloc_new_domain_list(sub_y)
-!
-      call set_z_subdomain_list                                         &
-     &   (T_meshes, z_part_grp%num_grp, z_part_grp%istack_grp,          &
-     &    sub_y%ndomain_done, sub_y%idomain_done)
+      call const_z_subdomain_list(T_meshes, z_part_grp, sub_y)
       call dealloc_grouping_1d_work(sub_z)
 !
 !   For y direction
@@ -231,15 +224,7 @@
       call const_newdomain_group_data(itwo, ndomain_yz, fem_T%mesh,     &
      &    T_meshes, z_part_grp, sub_y, inod_sort, yz_part_grp)
 !
-      sub_x%ndomain_done = count_yz_subdomain_num(T_meshes,             &
-     &                    sub_y%ndomain_done, sub_y%idomain_done,       &
-     &                    yz_part_grp%num_grp, yz_part_grp%istack_grp)
-      call alloc_new_domain_list(sub_x)
-!
-      call set_yz_subdomain_list                                        &
-     &   (T_meshes, sub_y%ndomain_done, sub_y%idomain_done,             &
-     &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
-     &    sub_x%ndomain_done, sub_x%idomain_done)
+      call const_yz_subdomain_list(T_meshes, sub_y, yz_part_grp, sub_x)
       call dealloc_grouping_1d_work(sub_y)
       call dealloc_group(z_part_grp)
 !
@@ -309,6 +294,76 @@
       end subroutine analyze_volume_grouping
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_single_domain_list(sub_z)
+!
+      use t_1d_repartitioning_work
+!
+      type(grouping_1d_work), intent(inout) :: sub_z
+!
+!
+      sub_z%ndomain_done = 1
+      call alloc_new_domain_list(sub_z)
+      sub_z%idomain_done = 1
+!
+      end subroutine const_single_domain_list
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_z_subdomain_list(part_param, z_part_grp, sub_y)
+!
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
+      use set_istack_4_domain_block
+!
+      type(mesh_test_files_param), intent(in) :: part_param
+      type(group_data), intent(in) :: z_part_grp
+!
+      type(grouping_1d_work), intent(inout) :: sub_y
+!
+!
+      sub_y%ndomain_done = count_z_subdomain_num(part_param,            &
+     &                       z_part_grp%num_grp, z_part_grp%istack_grp)
+      call alloc_new_domain_list(sub_y)
+!
+      call set_z_subdomain_list                                         &
+     &   (part_param, z_part_grp%num_grp, z_part_grp%istack_grp,        &
+     &    sub_y%ndomain_done, sub_y%idomain_done)
+!
+      end subroutine const_z_subdomain_list
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_yz_subdomain_list                                &
+     &         (part_param, sub_y, yz_part_grp, sub_x)
+!
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
+      use set_istack_4_domain_block
+!
+      type(mesh_test_files_param), intent(in) :: part_param
+      type(grouping_1d_work), intent(in) :: sub_y
+      type(group_data), intent(in) :: yz_part_grp
+!
+      type(grouping_1d_work), intent(inout) :: sub_x
+!
+!
+      sub_x%ndomain_done = count_yz_subdomain_num(part_param,           &
+     &                    sub_y%ndomain_done, sub_y%idomain_done,       &
+     &                    yz_part_grp%num_grp, yz_part_grp%istack_grp)
+      call alloc_new_domain_list(sub_x)
+!
+      call set_yz_subdomain_list                                        &
+     &   (part_param, sub_y%ndomain_done, sub_y%idomain_done,           &
+     &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
+     &    sub_x%ndomain_done, sub_x%idomain_done)
+!
+      end subroutine const_yz_subdomain_list
+!
 ! ----------------------------------------------------------------------
 !
       subroutine const_istack_z_domain_block(mesh, part_param,          &
