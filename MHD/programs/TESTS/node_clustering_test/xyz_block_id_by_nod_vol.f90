@@ -50,6 +50,7 @@
 !
       subroutine set_volume_at_node(mesh, volume_nod, volume_nod_tot)
 !
+      use calypso_mpi_real
       use int_volume_of_single_domain
       use solver_SR_type
 !
