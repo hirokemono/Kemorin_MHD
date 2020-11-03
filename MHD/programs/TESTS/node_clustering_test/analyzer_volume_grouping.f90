@@ -85,8 +85,6 @@
       type(jacobians_type) :: jacobians_T
       type(shape_finctions_at_points) :: spfs_T
 !
-      real(kind = kreal) :: vol_ref
-!
       type(group_data) :: part_grp
 !
 !     --------------------- 
@@ -126,15 +124,6 @@
      &   (fem_T%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_and_single_vol                                &
      &   (fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
-!
-      vol_ref = fem_T%mesh%ele%volume
-      call calypso_mpi_allreduce_one_real                               &
-     &   (vol_ref, fem_T%mesh%ele%volume, MPI_SUM)
-      if (fem_T%mesh%ele%volume .eq. 0.0d0) then
-        fem_T%mesh%ele%a_vol = 1.0d30
-      else
-        fem_T%mesh%ele%a_vol = 1.0d0 / fem_T%mesh%ele%volume
-      end if
 !
       call init_send_recv(fem_T%mesh%nod_comm)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
