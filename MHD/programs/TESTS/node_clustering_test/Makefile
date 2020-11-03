@@ -35,7 +35,8 @@ t_repartition_by_volume.o \
 \
 set_istack_4_domain_block.o \
 repart_in_xyz_by_volume.o \
-set_repartition_group_name.o
+set_repartition_group_name.o \
+xyz_block_id_by_nod_vol.o
 
 SOURCES = $(shell ls *.f90)
 

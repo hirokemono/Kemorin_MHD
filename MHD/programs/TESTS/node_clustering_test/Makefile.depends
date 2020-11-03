@@ -14,6 +14,8 @@ t_control_param_vol_grping.o: $(NODE_CLUSTERING_TEST_DIR)/t_control_param_vol_gr
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_volume_grouping.o: $(NODE_CLUSTERING_TEST_DIR)/t_ctl_data_volume_grouping.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_read_control_elements.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o skip_comment_f.o calypso_mpi.o bcast_4_platform_ctl.o calypso_mpi_int.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_repartition_by_volume.o: $(NODE_CLUSTERING_TEST_DIR)/t_repartition_by_volume.f90 m_precision.o t_geometry_data.o calypso_mpi.o t_mesh_data.o t_control_param_vol_grping.o calypso_mpi_real.o int_volume_of_single_domain.o solver_SR_type.o t_1d_repartitioning_work.o t_group_data.o set_istack_4_domain_block.o repart_in_xyz_by_volume.o set_repartition_group_name.o
+t_repartition_by_volume.o: $(NODE_CLUSTERING_TEST_DIR)/t_repartition_by_volume.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o xyz_block_id_by_nod_vol.o t_geometry_data.o repart_in_xyz_by_volume.o set_istack_4_domain_block.o set_repartition_group_name.o
+	$(F90) -c $(F90OPTFLAGS) $<
+xyz_block_id_by_nod_vol.o: $(NODE_CLUSTERING_TEST_DIR)/xyz_block_id_by_nod_vol.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o int_volume_of_single_domain.o solver_SR_type.o set_istack_4_domain_block.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
