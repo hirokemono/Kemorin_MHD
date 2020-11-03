@@ -96,8 +96,6 @@
 !
       integer(kind = kint) :: ndomain_yz
 !
-      integer(kind = kint) :: istack_intnod(0:1)
-!
       real(kind = kreal) :: size_gl(3), size_blk(3)
       real(kind = kreal) :: nod_vol_tot, vol_ref, sub_volume
       integer(kind = kint) :: inod
@@ -205,29 +203,9 @@
       call alloc_new_domain_list(sub_z)
       sub_z%idomain_done = 1
 !
-      call alloc_grouping_1d_work(ione,                                 &
-     &    T_meshes%ndivide_eb(3), T_meshes%ndomain_eb(3), sub_z)
-!
-      call set_z_sorted_node_and_stack(fem_T%mesh%node, id_block(1,3),  &
-     &    sub_z%n_block, sub_z%istack_block(0,1), inod_sort)
-!      call check_blocks_4_z_domain(my_rank, fem_T%mesh%node,           &
-!          T_meshes, inod_sort, id_block, sub_z)
-!
-!
-      istack_intnod(0) = 0
-      istack_intnod(1) = fem_T%mesh%node%internal_node
       sub_volume = nod_vol_tot / dble(T_meshes%ndomain_eb(3))
-!
-      call set_istack_xyz_domain_block                                  &
-     &   (fem_T%mesh%node, inod_sort, id_block(1,3), node_volume,       &
-     &    sub_z%n_block, sub_volume, sub_z%n_domain,                    &
-     &    ione, istack_intnod, sub_z%istack_vol, sub_z%vol_grp)
-!
-      if(my_rank .eq. 0) then
-        write(*,*) 'vol_grp_z', nod_vol_tot, sub_volume
-        call check_z_divided_volumes(T_meshes, sub_z)
-      end if
-!
+      call const_istack_z_domain_block(fem_T%mesh, T_meshes,            &
+     &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
 !
       z_part_grp%num_grp = sub_z%n_domain
       call alloc_group_num(z_part_grp)
@@ -257,29 +235,12 @@
 !
 !   For y direction
 !
-      call alloc_grouping_1d_work(z_part_grp%num_grp,                   &
-     &    T_meshes%ndivide_eb(2), T_meshes%ndomain_eb(2), sub_y)
-      call set_sorted_node_and_stack(2, fem_T%mesh%node, id_block(1,2), &
-     &    sub_y%ndomain_done, sub_y%idomain_done, sub_y%n_block,        &
-     &    z_part_grp%num_grp, z_part_grp%istack_grp,                    &
-     &    sub_y%istack_block, inod_sort)
-!
-!      call check_blocks_4_yz_domain(my_rank, fem_T%mesh%node,          &
-!     &    T_meshes, inod_sort, id_block, sub_y)
-!
       ndomain_yz = T_meshes%ndomain_eb(2) * T_meshes%ndomain_eb(3)
       sub_volume = nod_vol_tot / dble(ndomain_yz)
-!
-      call set_istack_xyz_domain_block                                  &
-     &   (fem_T%mesh%node, inod_sort, id_block(1,2), node_volume,       &
-     &    sub_y%n_block, sub_volume, T_meshes%ndomain_eb(2),            &
-     &    z_part_grp%num_grp, z_part_grp%istack_grp,                    &
-     &    sub_y%istack_vol, sub_y%vol_grp)
-!
-      if(my_rank .eq. 0) then
-        write(*,*) 'vol_grp_y', nod_vol_tot, sub_volume
-        call check_yz_divided_volumes(T_meshes, sub_y)
-      end if
+      call const_istack_xyz_domain_block                                &
+     &   (itwo, fem_T%mesh, T_meshes, z_part_grp,                       &
+     &    id_block, node_volume, nod_vol_tot, sub_volume, inod_sort,    &
+     &    sub_y)
 !
       yz_part_grp%num_grp = ndomain_yz
       call alloc_group_num(yz_part_grp)
@@ -314,29 +275,14 @@
 !
 !   For x direction
 !
-      call alloc_grouping_1d_work(yz_part_grp%num_grp,                  &
-     &    T_meshes%ndivide_eb(1), T_meshes%ndomain_eb(1), sub_x)
-      call set_sorted_node_and_stack(1, fem_T%mesh%node, id_block(1,1), &
-     &    sub_x%ndomain_done, sub_x%idomain_done, sub_x%n_block,        &
-     &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
-     &    sub_x%istack_block, inod_sort)
-!      call check_blocks_4_xyz_domain(my_rank, fem_T%mesh%node,         &
-!     &    T_meshes, inod_sort, id_block, sub_x)
-!
       sub_volume = nod_vol_tot / dble(T_meshes%new_nprocs)
-      call set_istack_xyz_domain_block                                  &
-     &   (fem_T%mesh%node, inod_sort, id_block(1,1), node_volume,       &
-     &    sub_x%n_block, sub_volume, sub_x%n_domain,                    &
-     &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
-     &    sub_x%istack_vol, sub_x%vol_grp)
+      call const_istack_xyz_domain_block                                &
+     &   (ione, fem_T%mesh, T_meshes, yz_part_grp,                      &
+     &    id_block, node_volume, nod_vol_tot, sub_volume, inod_sort,    &
+     &    sub_x)
 !
       deallocate(node_volume)
       deallocate(id_block)
-!
-      if(my_rank .eq. 0) then
-        write(*,*) 'sub_x%vol_grp', nod_vol_tot, sub_volume
-        call check_xyz_divided_volumes(T_meshes, sub_x)
-      end if
 !
 !
       part_grp%num_grp = T_meshes%new_nprocs
@@ -409,6 +355,114 @@
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
       end subroutine analyze_volume_grouping
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+      subroutine const_istack_z_domain_block(mesh, part_param,          &
+     &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
+!
+      use t_mesh_data
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
+!
+      use repart_in_xyz_by_volume
+      use set_istack_4_domain_block
+!
+      implicit none
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_test_files_param), intent(in) :: part_param
+      integer(kind = kint), intent(in) :: id_block(mesh%node%numnod,3)
+      real(kind = kreal), intent(in) :: node_volume(mesh%node%numnod)
+      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
+!
+      integer(kind = kint), intent(inout) :: inod_sort(mesh%node%numnod)
+      type(grouping_1d_work), intent(inout) :: sub_z
+!
+      integer(kind = kint) :: istack_intnod(0:1)
+!
+!
+      call alloc_grouping_1d_work(ione,                                 &
+     &    part_param%ndivide_eb(3), part_param%ndomain_eb(3), sub_z)
+      call set_z_sorted_node_and_stack(mesh%node, id_block(1,3),        &
+     &    sub_z%n_block, sub_z%istack_block(0,1), inod_sort)
+!
+      istack_intnod(0) = 0
+      istack_intnod(1) = mesh%node%internal_node
+!
+      call set_istack_xyz_domain_block                                  &
+     &   (mesh%node, inod_sort, id_block(1,3), node_volume,             &
+     &    sub_z%n_block, sub_volume, sub_z%n_domain,                    &
+     &    ione, istack_intnod, sub_z%istack_vol, sub_z%vol_grp)
+!
+!      call check_blocks_4_z_domain(my_rank, mesh%node,                 &
+!          part_param, inod_sort, id_block, sub_z)
+      if(my_rank .eq. 0) then
+        write(*,*) 'vol_grp_z', nod_vol_tot, sub_volume
+        call check_z_divided_volumes(part_param, sub_z)
+      end if
+!
+      end subroutine const_istack_z_domain_block
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_istack_xyz_domain_block                          &
+     &         (nd, mesh, part_param, prev_part_grp,                    &
+     &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, part_1d)
+!
+      use t_mesh_data
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
+!
+      use repart_in_xyz_by_volume
+      use set_istack_4_domain_block
+!
+      implicit none
+!
+      integer(kind = kint), intent(in) :: nd
+      type(mesh_geometry), intent(in) :: mesh
+      type(group_data), intent(in) :: prev_part_grp
+      type(mesh_test_files_param), intent(in) :: part_param
+      integer(kind = kint), intent(in) :: id_block(mesh%node%numnod,3)
+      real(kind = kreal), intent(in) :: node_volume(mesh%node%numnod)
+      real(kind = kreal), intent(in) :: nod_vol_tot, sub_volume
+!
+      integer(kind = kint), intent(inout) :: inod_sort(mesh%node%numnod)
+      type(grouping_1d_work), intent(inout) :: part_1d
+!
+!
+      call alloc_grouping_1d_work(prev_part_grp%num_grp,                &
+     &   part_param%ndivide_eb(nd), part_param%ndomain_eb(nd), part_1d)
+      call set_sorted_node_and_stack(nd, mesh%node, id_block(1,nd),     &
+     &   part_1d%ndomain_done, part_1d%idomain_done, part_1d%n_block,   &
+     &   prev_part_grp%num_grp, prev_part_grp%istack_grp,               &
+     &   part_1d%istack_block, inod_sort)
+!
+      call set_istack_xyz_domain_block                                  &
+     &   (mesh%node, inod_sort, id_block(1,nd), node_volume,            &
+     &    part_1d%n_block, sub_volume, part_1d%n_domain,                &
+     &    prev_part_grp%num_grp, prev_part_grp%istack_grp,              &
+     &    part_1d%istack_vol, part_1d%vol_grp)
+!
+      if(nd .eq. 1) then
+!        call check_blocks_4_xyz_domain(my_rank, mesh%node,             &
+!     &      part_param, inod_sort, id_block, part_1d)
+        if(my_rank .eq. 0) then
+          write(*,*) 'vol_grp_x', nod_vol_tot, sub_volume
+          call check_xyz_divided_volumes(part_param, part_1d)
+        end if
+      else if(nd .eq. 2) then
+!        call check_blocks_4_yz_domain(my_rank, mesh%node,              &
+!     &      part_param, inod_sort, id_block, part_1d)
+        if(my_rank .eq. 0) then
+          write(*,*) 'vol_grp_y', nod_vol_tot, sub_volume
+          call check_yz_divided_volumes(part_param, part_1d)
+        end if
+      end if
+!
+      end subroutine const_istack_xyz_domain_block
 !
 ! ----------------------------------------------------------------------
 !
