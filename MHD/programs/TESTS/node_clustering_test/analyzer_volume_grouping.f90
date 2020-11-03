@@ -207,22 +207,8 @@
       call const_istack_z_domain_block(fem_T%mesh, T_meshes,            &
      &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
 !
-      z_part_grp%num_grp = sub_z%n_domain
-      call alloc_group_num(z_part_grp)
-      call set_z_domain_grp_name                                        &
-     &   (T_meshes, z_part_grp%num_grp, z_part_grp%grp_name)
-      call set_z_domain_grp_stack(sub_z%n_block, sub_z%n_domain,        &
-     &    sub_z%istack_block(0,1), sub_z%istack_vol,                    &
-     &    z_part_grp%num_grp, z_part_grp%istack_grp)
-!      call check_stacks_4_z_domain                                     &
-!     &   (my_rank, fem_T%mesh%node, T_meshes,                          &
-!     &    inod_sort, z_part_grp%num_grp, z_part_grp%istack_grp)
-!
-!      z_part_grp%num_item = z_part_grp%istack_grp(z_part_grp%num_grp)
-!      call alloc_group_item(z_part_grp)
-!      call set_domain_grp_item(fem_T%mesh%node, inod_sort,             &
-!     &    z_part_grp%num_grp, z_part_grp%num_item,                     &
-!     &    z_part_grp%istack_grp, z_part_grp%item_grp)
+      call const_z_div_domain_group_data(fem_T%mesh, T_meshes, sub_z,   &
+     &                                   inod_sort, z_part_grp)
 !
       sub_y%ndomain_done = count_z_subdomain_num(T_meshes,              &
      &                       z_part_grp%num_grp, z_part_grp%istack_grp)
@@ -242,24 +228,8 @@
      &    id_block, node_volume, nod_vol_tot, sub_volume, inod_sort,    &
      &    sub_y)
 !
-      yz_part_grp%num_grp = ndomain_yz
-      call alloc_group_num(yz_part_grp)
-      call set_yz_domain_grp_name                                       &
-     &   (T_meshes, yz_part_grp%num_grp, yz_part_grp%grp_name)
-      call set_newdomain_grp_stack(sub_y%n_block, sub_y%n_domain,       &
-     &    z_part_grp%num_grp,                                       &
-     &    sub_y%ndomain_done, sub_y%idomain_done, sub_y%istack_block,   &
-     &    sub_y%istack_vol, yz_part_grp%num_grp, yz_part_grp%istack_grp)
-!      call check_stacks_4_yz_domain(my_rank, fem_T%mesh%node,          &
-!     &    T_meshes, inod_sort, sub_y%ndomain_done, sub_y%idomain_done, &
-!     &    yz_part_grp%num_grp, yz_part_grp%istack_grp)
-!
-!      yz_part_grp%num_item = yz_part_grp%istack_grp(yz_part_grp%num_grp)
-!      call alloc_group_item(yz_part_grp)
-!      call set_domain_grp_item(fem_T%mesh%node, inod_sort,             &
-!     &    yz_part_grp%num_grp, yz_part_grp%num_item,                   &
-!     &    yz_part_grp%istack_grp, yz_part_grp%item_grp)
-!
+      call const_newdomain_group_data(itwo, ndomain_yz, fem_T%mesh,     &
+     &    T_meshes, z_part_grp, sub_y, inod_sort, yz_part_grp)
 !
       sub_x%ndomain_done = count_yz_subdomain_num(T_meshes,             &
      &                    sub_y%ndomain_done, sub_y%idomain_done,       &
@@ -270,8 +240,8 @@
      &   (T_meshes, sub_y%ndomain_done, sub_y%idomain_done,             &
      &    yz_part_grp%num_grp, yz_part_grp%istack_grp,                  &
      &    sub_x%ndomain_done, sub_x%idomain_done)
-!
       call dealloc_grouping_1d_work(sub_y)
+      call dealloc_group(z_part_grp)
 !
 !   For x direction
 !
@@ -281,32 +251,14 @@
      &    id_block, node_volume, nod_vol_tot, sub_volume, inod_sort,    &
      &    sub_x)
 !
+      call const_newdomain_group_data(ione, T_meshes%new_nprocs,        &
+     &    fem_T%mesh, T_meshes, yz_part_grp, sub_x, inod_sort, part_grp)
+      call dealloc_grouping_1d_work(sub_x)
+      call dealloc_group(yz_part_grp)
+!
       deallocate(node_volume)
       deallocate(id_block)
-!
-!
-      part_grp%num_grp = T_meshes%new_nprocs
-      call alloc_group_num(part_grp)
-      call set_xyz_domain_grp_name                                      &
-     &   (T_meshes, part_grp%num_grp, part_grp%grp_name)
-      call set_newdomain_grp_stack(sub_x%n_block, sub_x%n_domain,       &
-     &    yz_part_grp%num_grp, sub_x%ndomain_done, sub_x%idomain_done,  &
-     &    sub_x%istack_block, sub_x%istack_vol, part_grp%num_grp,       &
-     &    part_grp%istack_grp)
-!      call check_stacks_4_new_domain(my_rank,                          &
-!     &    fem_T%mesh%node, T_meshes, inod_sort, sub_x%ndomain_done,    &
-!     &    sub_x%idomain_done, T_meshes%new_nprocs, part_grp%istack_grp)
-!
-      part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)
-      call alloc_group_item(part_grp)
-      call set_domain_grp_item(fem_T%mesh%node, inod_sort,              &
-     &                         part_grp%num_grp, part_grp%num_item,     &
-     &                         part_grp%istack_grp, part_grp%item_grp)
-      call dealloc_grouping_1d_work(sub_x)
       deallocate(inod_sort)
-!
-      call dealloc_group_num(z_part_grp)
-      call dealloc_group_num(yz_part_grp)
 !
 !       Append group data
       call copy_group_data(fem_T%group%nod_grp, grp_tmp)
@@ -358,6 +310,7 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
+!
       subroutine const_istack_z_domain_block(mesh, part_param,          &
      &          id_block, node_volume, nod_vol_tot, sub_volume, inod_sort, sub_z)
 !
@@ -463,6 +416,95 @@
       end if
 !
       end subroutine const_istack_xyz_domain_block
+!
+! ----------------------------------------------------------------------
+      subroutine const_z_div_domain_group_data(mesh, part_param, sub_z, inod_sort, z_part_grp)
+!
+      use calypso_mpi
+      use t_mesh_data
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
+      use repart_in_xyz_by_volume
+      use set_repartition_group_name
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_test_files_param), intent(in) :: part_param
+      type(grouping_1d_work), intent(in) :: sub_z
+      integer(kind = kint), intent(in) :: inod_sort(mesh%node%numnod)
+!
+      type(group_data), intent(inout) :: z_part_grp
+!
+!
+      z_part_grp%num_grp = sub_z%n_domain
+      call alloc_group_num(z_part_grp)
+      call set_z_domain_grp_name                                        &
+     &   (part_param, z_part_grp%num_grp, z_part_grp%grp_name)
+      call set_z_domain_grp_stack(sub_z%n_block, sub_z%n_domain,        &
+     &    sub_z%istack_block(0,1), sub_z%istack_vol,                    &
+     &    z_part_grp%num_grp, z_part_grp%istack_grp)
+!      call check_stacks_4_z_domain                                     &
+!     &   (my_rank, mesh%node, part_param,                              &
+!     &    inod_sort, z_part_grp%num_grp, z_part_grp%istack_grp)
+!
+      z_part_grp%num_item = z_part_grp%istack_grp(z_part_grp%num_grp)
+      call alloc_group_item(z_part_grp)
+      call set_domain_grp_item(mesh%node, inod_sort,                    &
+     &    z_part_grp%num_grp, z_part_grp%num_item,                      &
+     &    z_part_grp%istack_grp, z_part_grp%item_grp)
+!
+      end subroutine const_z_div_domain_group_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_newdomain_group_data                             &
+     &         (nd, num_group, mesh, part_param,                        &
+     &          prev_part_grp, part_1d, inod_sort, part_grp)
+!
+      use calypso_mpi
+      use t_mesh_data
+      use t_group_data
+      use t_1d_repartitioning_work
+      use t_control_param_vol_grping
+      use repart_in_xyz_by_volume
+      use set_repartition_group_name
+!
+      integer(kind = kint), intent(in) :: nd, num_group
+      type(mesh_geometry), intent(in) :: mesh
+      type(group_data), intent(in) :: prev_part_grp
+      type(mesh_test_files_param), intent(in) :: part_param
+      type(grouping_1d_work), intent(in) :: part_1d
+      integer(kind = kint), intent(in) :: inod_sort(mesh%node%numnod)
+!
+      type(group_data), intent(inout) :: part_grp
+!
+      part_grp%num_grp = num_group
+      call alloc_group_num(part_grp)
+!
+      call set_newdomain_grp_stack                                      &
+     &   (part_1d%n_block, part_1d%n_domain, prev_part_grp%num_grp,     &
+     &    part_1d%ndomain_done, part_1d%idomain_done,                   &
+     &    part_1d%istack_block, part_1d%istack_vol, part_grp%num_grp,   &
+     &    part_grp%istack_grp)
+!      call check_stacks_4_new_domain(my_rank, mesh%node, part_param,   &
+!     &    inod_sort, part_1d%ndomain_done, part_1d%idomain_done,       &
+!     &    part_param%new_nprocs, part_grp%istack_grp)
+!
+      if(nd .eq. 1) then
+        call set_xyz_domain_grp_name                                    &
+     &     (part_param, part_grp%num_grp, part_grp%grp_name)
+      else if(nd .eq. 2) then
+        call set_yz_domain_grp_name                                     &
+     &     (part_param, part_grp%num_grp, part_grp%grp_name)
+      end if
+!
+      part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)
+      call alloc_group_item(part_grp)
+      call set_domain_grp_item(mesh%node, inod_sort,                    &
+     &                         part_grp%num_grp, part_grp%num_item,     &
+     &                         part_grp%istack_grp, part_grp%item_grp)
+!
+      end subroutine const_newdomain_group_data
 !
 ! ----------------------------------------------------------------------
 !
