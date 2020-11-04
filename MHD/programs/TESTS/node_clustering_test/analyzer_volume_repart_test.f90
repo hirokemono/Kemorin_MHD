@@ -220,8 +220,8 @@
 !
       do iloop = 1, nloop
         new_node(iloop)%internal_node =    part_tbl(iloop)%ntot_import
-        new_node(iloop)%numnod 
-            = ext_tbl(iloop)%ntot_import + part_tbl(iloop)%ntot_import
+        new_node(iloop)%numnod                                          &
+     &       = ext_tbl(iloop)%ntot_import + part_tbl(iloop)%ntot_import
       end do
 !
 !
