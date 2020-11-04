@@ -7,12 +7,12 @@
 !>@brief  Set group names for re-partitiong groups
 !!
 !!@verbatim
-!!      subroutine set_z_domain_grp_name                                &
-!!     &         (part_param, num_domain_grp, domain_grp_name)
-!!      subroutine set_yz_domain_grp_name                               &
-!!     &         (part_param, num_domain_grp, domain_grp_name)
-!!      subroutine set_xyz_domain_grp_name                              &
-!!     &         (part_param, num_domain_grp, domain_grp_name)
+!!      subroutine set_z_domain_grp_name(part_param, base_name,         &
+!!     &          num_domain_grp, domain_grp_name)
+!!      subroutine set_yz_domain_grp_name(part_param, base_name,        &
+!!     &          num_domain_grp, domain_grp_name)
+!!      subroutine set_xyz_domain_grp_name(part_param, base_name,       &
+!!     &          num_domain_grp, domain_grp_name)
 !!        type(mesh_test_files_param), intent(in) :: part_param
 !!
 !!      subroutine check_stacks_4_z_domain(my_rank, node, part_param,   &
@@ -42,18 +42,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_z_domain_grp_name                                  &
-     &         (part_param, num_domain_grp, domain_grp_name)
+      subroutine set_z_domain_grp_name(part_param, base_name,           &
+     &          num_domain_grp, domain_grp_name)
 !
       use set_parallel_file_name
 !
       type(mesh_test_files_param), intent(in) :: part_param
-!
+      character(len = kchara), intent(in) :: base_name
       integer(kind = kint), intent(in) :: num_domain_grp
+!
       character(len = kchara), intent(inout)                            &
      &                        :: domain_grp_name(num_domain_grp)
 !
-      character(len = kchara), parameter :: base_name = 'new_domain'
       character(len = kchara) :: chara_tmp
 !
       integer(kind = kint) :: iz
@@ -69,18 +69,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_yz_domain_grp_name                                 &
-     &         (part_param, num_domain_grp, domain_grp_name)
+      subroutine set_yz_domain_grp_name(part_param, base_name,          &
+     &          num_domain_grp, domain_grp_name)
 !
       use set_parallel_file_name
 !
       type(mesh_test_files_param), intent(in) :: part_param
-!
+      character(len = kchara), intent(in) :: base_name
       integer(kind = kint), intent(in) :: num_domain_grp
+!
       character(len = kchara), intent(inout)                            &
      &                        :: domain_grp_name(num_domain_grp)
 !
-      character(len = kchara), parameter :: base_name = 'new_domain'
       character(len = kchara) :: chara_tmp
 !
       integer(kind = kint) :: iz, iy, jk
@@ -102,18 +102,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_xyz_domain_grp_name                                &
-     &         (part_param, num_domain_grp, domain_grp_name)
+      subroutine set_xyz_domain_grp_name(part_param, base_name,         &
+     &          num_domain_grp, domain_grp_name)
 !
       use set_parallel_file_name
 !
       type(mesh_test_files_param), intent(in) :: part_param
-!
+      character(len = kchara), intent(in) :: base_name
       integer(kind = kint), intent(in) :: num_domain_grp
+!
       character(len = kchara), intent(inout)                            &
      &                        :: domain_grp_name(num_domain_grp)
 !
-      character(len = kchara), parameter :: base_name = 'new_domain'
       character(len = kchara) :: chara_tmp
 !
       integer(kind = kint) :: iz, iy, ix, jk, i

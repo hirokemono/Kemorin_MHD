@@ -36,6 +36,9 @@
         integer(kind = kint), allocatable :: inod_sort(:)
       end type node_volume_and_sorting
 !
+      character(len = kchara), parameter, private                       &
+     &                        :: base_name = 'new_domain'
+!
       private :: alloc_node_volume_and_sort
       private :: dealloc_node_volume_and_sort
       private :: const_istack_z_domain_block
@@ -268,8 +271,8 @@
 !
       z_part_grp%num_grp = sub_z%n_domain
       call alloc_group_num(z_part_grp)
-      call set_z_domain_grp_name                                        &
-     &   (part_param, z_part_grp%num_grp, z_part_grp%grp_name)
+      call set_z_domain_grp_name(part_param, base_name,                 &
+     &    z_part_grp%num_grp, z_part_grp%grp_name)
       call set_z_domain_grp_stack(sub_z%n_block, sub_z%n_domain,        &
      &    sub_z%istack_block(0,1), sub_z%istack_vol,                    &
      &    z_part_grp%num_grp, z_part_grp%istack_grp)
@@ -317,11 +320,11 @@
 !     &    part_param%new_nprocs, part_grp%istack_grp)
 !
       if(nd .eq. 1) then
-        call set_xyz_domain_grp_name                                    &
-     &     (part_param, part_grp%num_grp, part_grp%grp_name)
+        call set_xyz_domain_grp_name(part_param, base_name,             &
+     &      part_grp%num_grp, part_grp%grp_name)
       else if(nd .eq. 2) then
-        call set_yz_domain_grp_name                                     &
-     &     (part_param, part_grp%num_grp, part_grp%grp_name)
+        call set_yz_domain_grp_name(part_param, base_name,              &
+     &      part_grp%num_grp, part_grp%grp_name)
       end if
 !
       part_grp%num_item = part_grp%istack_grp(part_grp%num_grp)

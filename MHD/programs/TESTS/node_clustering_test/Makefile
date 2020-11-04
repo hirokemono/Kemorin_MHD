@@ -35,6 +35,7 @@ t_repartition_by_volume.o \
 \
 set_istack_4_domain_block.o \
 repart_in_xyz_by_volume.o \
+external_group_4_new_part.o \
 set_repartition_group_name.o \
 xyz_block_id_by_nod_vol.o
 
@@ -49,6 +50,7 @@ t_repartition_by_volume.o \
 \
 set_istack_4_domain_block.o \
 repart_in_xyz_by_volume.o \
+external_group_4_new_part.o \
 set_repartition_group_name.o \
 xyz_block_id_by_nod_vol.o
 

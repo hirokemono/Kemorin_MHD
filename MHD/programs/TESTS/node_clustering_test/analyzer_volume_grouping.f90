@@ -47,7 +47,7 @@
       use t_repartition_by_volume
       use set_istack_4_domain_block
       use repart_in_xyz_by_volume
-      use set_repartition_group_name
+      use external_group_4_new_part
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -86,6 +86,7 @@
       type(shape_finctions_at_points) :: spfs_T
 !
       type(group_data) :: part_grp
+      type(group_data) :: ext_grp
 !
 !     --------------------- 
 !
@@ -137,8 +138,14 @@
 !       Re-partitioning
       call s_repartition_by_volume(fem_T%mesh, T_meshes, part_grp)
 !
+!       Re-partitioning for external node
+      call const_external_grp_4_new_part                                &
+     &  (fem_T%mesh%nod_comm, fem_T%mesh%node, next_tbl_T%neib_nod,     &
+     &   T_meshes, part_grp, ext_grp)
+!
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
+      call s_append_group_data(ext_grp, fem_T%group%nod_grp)
 !
 !       Output appended mesh
       call mpi_output_mesh(T_meshes%new_mesh_file_IO,                   &
