@@ -163,6 +163,7 @@
       end subroutine analyze_volume_repartition
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine const_comm_tbl_to_new_part(part_grp)
 !
@@ -188,39 +189,56 @@
       call gather_num_trans_for_repart                                  &
      &         (nloop, part_grp, num_send_tmp, num_recv_tmp)
 !
+      do iloop = 1, nloop
+        part_tbl(iloop)%iflag_self_copy = 0
+      end do
       call count_num_export_for_repart                                  &
-     &   (my_rank, nloop, part_grp%num_grp, num_send_tmp, part_tbl)
+     &   (my_rank, part_grp%num_grp, num_send_tmp,                      &
+     &    part_tbl(1)%iflag_self_copy, part_tbl(1)%nrank_export)
 !
       do iloop = 1, nloop
         call alloc_calypso_export_num(part_tbl(iloop))
       end do
       call set_istack_export_for_repart                                 &
-     &   (my_rank, nloop, part_grp%num_grp, num_send_tmp, part_tbl)
+     &   (my_rank, part_grp%num_grp, num_send_tmp,                      &
+     &    part_tbl(1)%nrank_export, part_tbl(1)%ntot_export,            &
+     &    part_tbl(1)%irank_export, part_tbl(1)%num_export,             &
+     &    part_tbl(1)%istack_export)
 !
       do iloop = 1, nloop
         call alloc_calypso_export_item(part_tbl(iloop))
       end do
 !
-      call set_export_item_for_repart                                   &
-     &   (my_rank, nloop, part_grp, num_send_tmp, part_tbl)
+      call set_export_item_for_repart(my_rank, part_grp, num_send_tmp,  &
+     &    part_tbl(1)%nrank_export, part_tbl(1)%ntot_export,            &
+     &    part_tbl(1)%istack_export, part_tbl(1)%item_export)
 !
-!
-      call count_num_import_for_repart                                  &
-     &   (nprocs, nloop, part_grp%num_grp, num_recv_tmp, part_tbl)
 !
       do iloop = 1, nloop
+        call count_num_import_for_repart                                &
+     &     (iloop, nprocs, part_grp%num_grp, num_recv_tmp(1,iloop),     &
+     &      part_tbl(iloop)%nrank_import)
         call alloc_calypso_import_num(part_tbl(iloop))
-      end do
 !
-      call set_istack_import_for_repart(my_rank, nprocs,                &
-     &    nloop, part_grp%num_grp, num_recv_tmp, part_tbl)
+        call set_istack_import_for_repart(iloop,                        &
+     &      my_rank, nprocs, part_grp%num_grp, num_recv_tmp(1,iloop),   &
+     &      part_tbl(iloop)%nrank_import, part_tbl(iloop)%ntot_import,  &
+     &      part_tbl(iloop)%irank_import, part_tbl(iloop)%num_import,   &
+     &      part_tbl(iloop)%istack_import)
 !
-      do iloop = 1, nloop
         call alloc_calypso_import_item                                  &
      &     (part_tbl(iloop)%ntot_import, part_tbl(iloop))
+        call set_import_item_for_repart                                 &
+     &     (part_tbl(iloop)%ntot_import, part_tbl(iloop)%ntot_import,   &
+     &      part_tbl(iloop)%item_import, part_tbl(iloop)%irev_import)
       end do
 !
-      call set_import_item_for_repart(nloop, part_tbl)
+!
+!
+      call send_back_istack_import_repart(part_grp, part_tbl,           &
+     &    nloop, num_recv_tmp, num_send_tmp)
+!
+!
 !
       deallocate(num_send_tmp, num_recv_tmp)
       deallocate(part_tbl)
@@ -243,10 +261,10 @@
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: num_send_tmp(part_grp%num_grp)
-      integer(kind = kint), intent(inout)                               &
-     &                     :: num_recv_tmp(nprocs,nloop)
+      integer(kind = kint), intent(inout) :: num_recv_tmp(nprocs,nloop)
 !
-      integer(kind = kint) :: i, iloop, irank_recv
+      integer(kind = kint) :: i, iloop
+      integer :: irank_recv
 !
       do i = 1, part_grp%num_grp
         iloop = 1 + (i-1) / nprocs
@@ -261,31 +279,72 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_num_export_for_repart                            &
-     &         (my_rank, nloop, num_grp, num_send_tmp, part_tbl)
+      subroutine send_back_istack_import_repart(part_grp, part_tbl,     &
+     &          nloop, num_recv_tmp, num_send_tmp)
 !
+      use calypso_mpi
+      use calypso_mpi_int
       use t_calypso_comm_table
 !
+      type(group_data), intent(in) :: part_grp
+      type(calypso_comm_table), intent(in) :: part_tbl(nloop)
+!
+      integer(kind = kint), intent(in) :: nloop
+!
+      integer(kind = kint), intent(inout) :: num_recv_tmp(nprocs,nloop)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: num_send_tmp(part_grp%num_grp)
+!
+      integer(kind = kint) :: i, iloop, ip
+      integer :: irank_recv
+!
+!
+!$omp parallel
+      do iloop = 1, nloop
+!$omp do private(ip)
+        do ip = 1, nprocs
+          num_recv_tmp(ip,iloop) = -1
+        end do
+!$omp end do
+!$omp do private(i,ip)
+        do i = 1, part_tbl(iloop)%nrank_import
+          ip = part_tbl(iloop)%irank_import(i)
+          num_recv_tmp(ip,iloop)                                        &
+     &      = part_tbl(iloop)%istack_import(ip-1)
+        end do
+!$omp end do
+      end do
+!$omp end parallel
+!
+      do i = 1, part_grp%num_grp
+        iloop = 1 + (i-1) / nprocs
+        irank_recv = mod(i-1,nprocs)
+        call calypso_mpi_scatter_one_int                                &
+     &     (num_recv_tmp(1,iloop), num_send_tmp(i), irank_recv)
+      end do
+!
+      end subroutine send_back_istack_import_repart
+!
+! ----------------------------------------------------------------------
+!
+      subroutine count_num_export_for_repart                            &
+     &         (my_rank, num_grp, num_send_tmp,                         &
+     &          iflag_self_copy, nrank_export)
+!
       integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: num_grp, nloop
+      integer(kind = kint), intent(in) :: num_grp
       integer(kind = kint), intent(in) :: num_send_tmp(num_grp)
 !
-      type(calypso_comm_table), intent(inout) :: part_tbl(nloop)
+      integer(kind = kint), intent(inout) :: iflag_self_copy
+      integer(kind = kint), intent(inout) :: nrank_export
 !
-      integer(kind = kint) :: i, iloop
+      integer(kind = kint) :: i
 !
-      do iloop = 1, nloop
-        part_tbl(iloop)%iflag_self_copy = 0
-      end do
-      if(num_send_tmp(my_rank+1) .gt. 0) then
-        part_tbl(1)%iflag_self_copy = 1
-      end if
+      if(num_send_tmp(my_rank+1) .gt. 0) iflag_self_copy = 1
 !
-      part_tbl(1)%nrank_export = 0
+      nrank_export = 0
       do i = 1, num_grp
-        if(num_send_tmp(i) .gt. 0) then
-          part_tbl(1)%nrank_export = part_tbl(1)%nrank_export + 1
-        end if
+        if(num_send_tmp(i) .gt. 0) nrank_export = nrank_export + 1
       end do
 !
       end subroutine count_num_export_for_repart
@@ -293,122 +352,124 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_num_import_for_repart                            &
-     &         (nprocs, nloop, num_grp, num_recv_tmp, part_tbl)
-!
-      use t_calypso_comm_table
+     &         (iloop, nprocs, num_grp, num_recv_tmp, nrank_import)
 !
       integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: num_grp, nloop
-      integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs,nloop)
+      integer(kind = kint), intent(in) :: iloop
+      integer(kind = kint), intent(in) :: num_grp
+      integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs)
 !
-      type(calypso_comm_table), intent(inout) :: part_tbl(nloop)
+      integer(kind = kint), intent(inout) :: nrank_import
 !
-      integer(kind = kint) :: i, iloop, inum
+      integer(kind = kint) :: i, inum
 !
 !
-      do iloop = 1, nloop
-        part_tbl(iloop)%nrank_import = 0
+        nrank_import = 0
         do inum = 1, nprocs
           i = inum + (iloop-1) * nprocs
           if(i .gt. num_grp) cycle
-          if(num_recv_tmp(i,iloop) .gt. 0) then
-            part_tbl(iloop)%nrank_import                                &
-     &          = part_tbl(iloop)%nrank_import + 1
-          end if
+          if(num_recv_tmp(i) .gt. 0)  nrank_import = nrank_import + 1
         end do
-      end do
 !
       end subroutine count_num_import_for_repart
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_istack_export_for_repart                           &
-     &         (my_rank, nloop, num_grp, num_send_tmp, part_tbl)
-!
-      use t_calypso_comm_table
+      subroutine set_istack_export_for_repart(my_rank, num_grp,         &
+     &          num_send_tmp, nrank_export, ntot_export, irank_export,  &
+     &          num_export, istack_export)
 !
       integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: num_grp, nloop
+      integer(kind = kint), intent(in) :: num_grp
       integer(kind = kint), intent(in) :: num_send_tmp(num_grp)
+      integer(kind = kint), intent(in) :: nrank_export
 !
-      type(calypso_comm_table), intent(inout) :: part_tbl(nloop)
+      integer(kind = kint), intent(inout) :: ntot_export
+      integer(kind = kint), intent(inout) :: irank_export(nrank_export)
+      integer(kind = kint), intent(inout) :: num_export(nrank_export)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: istack_export(0:nrank_export)
 !
       integer(kind = kint) :: i, ip, icou
 !
       icou = 0
+      istack_export(0) = 0
       do i = 1, num_grp
         ip = 1 + mod(i+my_rank,num_grp)
         if(num_send_tmp(ip) .gt. 0) then
           icou = icou + 1
-          part_tbl(1)%irank_export(icou) =  ip
-          part_tbl(1)%num_export(icou) =    num_send_tmp(ip)
-          part_tbl(1)%istack_export(icou)                               &
-     &       = part_tbl(1)%istack_export(icou-1) + num_send_tmp(ip)
+          irank_export(icou) =  ip
+          num_export(icou) =    num_send_tmp(ip)
+          istack_export(icou) = istack_export(icou-1)                   &
+     &                          + num_send_tmp(ip)
         end if
       end do
-      icou = part_tbl(1)%nrank_export
-      part_tbl(1)%ntot_export = part_tbl(1)%istack_export(icou)
+      ntot_export = istack_export(nrank_export)
 !
       end subroutine set_istack_export_for_repart
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_istack_import_for_repart(my_rank, nprocs,          &
-     &          nloop, num_grp, num_recv_tmp, part_tbl)
-!
-      use t_calypso_comm_table
+      subroutine set_istack_import_for_repart(iloop,                    &
+     &          my_rank, nprocs, num_grp, num_recv_tmp, nrank_import,   &
+     &          ntot_import, irank_import, num_import, istack_import)
 !
       integer, intent(in) :: my_rank, nprocs
-      integer(kind = kint), intent(in) :: num_grp, nloop
-      integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs,nloop)
+      integer(kind = kint), intent(in) :: iloop
+      integer(kind = kint), intent(in) :: num_grp
+      integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs)
 !
-      type(calypso_comm_table), intent(inout) :: part_tbl(nloop)
+      integer(kind = kint), intent(in) :: nrank_import
 !
-      integer(kind = kint) :: i, iloop, inum, icou, id_rank, ip
+      integer(kind = kint), intent(inout) :: ntot_import
+      integer(kind = kint), intent(inout) :: irank_import(nrank_import)
+      integer(kind = kint), intent(inout) :: num_import(nrank_import)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: istack_import(0:nrank_import)
+!
+      integer(kind = kint) :: i, inum, icou, id_rank, ip
 !
 !
-      do iloop = 1, nloop
-        icou = 0
-        id_rank = my_rank + (iloop-1) * nprocs
-        do inum = 1, nprocs
-          i = inum + (iloop-1) * nprocs
-          ip = 1 + mod(i+id_rank,nprocs)
-          if(i .gt. num_grp) cycle
-          if(num_recv_tmp(ip,iloop) .gt. 0) then
-            icou = icou + 1
-            part_tbl(iloop)%irank_import(icou) =  ip
-            part_tbl(iloop)%num_import(icou) = num_recv_tmp(ip,iloop)
-            part_tbl(iloop)%istack_import(icou)                         &
-     &       = part_tbl(iloop)%istack_import(icou-1)                    &
-     &        + num_recv_tmp(ip,iloop)
-          end if
-        end do
-        icou = part_tbl(iloop)%nrank_import
-        part_tbl(iloop)%ntot_import                                     &
-     &       = part_tbl(iloop)%istack_import(icou)
+      icou = 0
+      istack_import(0) = 0
+      id_rank = my_rank + (iloop-1) * nprocs
+      do inum = 1, nprocs
+        i = inum + (iloop-1) * nprocs
+        ip = 1 + mod(i+id_rank,nprocs)
+        if(i .gt. num_grp) cycle
+        if(num_recv_tmp(ip) .gt. 0) then
+          icou = icou + 1
+          irank_import(icou) =  ip
+          num_import(icou) = num_recv_tmp(ip)
+          istack_import(icou) = istack_import(icou-1)                   &
+     &                         + num_import(icou)
+        end if
       end do
+      ntot_import = istack_import(nrank_import)
 !
       end subroutine set_istack_import_for_repart
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_export_item_for_repart                           &
-     &         (my_rank, nloop, part_grp, num_send_tmp, part_tbl)
+      subroutine set_export_item_for_repart                             &
+     &         (my_rank, part_grp, num_send_tmp,                        &
+     &          nrank_export, ntot_export, istack_export, item_export)
 !
       use t_group_data
-      use t_calypso_comm_table
 !
       type(group_data), intent(in) :: part_grp
       integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: nloop
       integer(kind = kint), intent(in)                                  &
      &                     :: num_send_tmp(part_grp%num_grp)
 !
-      type(calypso_comm_table), intent(inout) :: part_tbl(nloop)
+      integer(kind = kint), intent(in) :: nrank_export, ntot_export
+      integer(kind = kint), intent(in) :: istack_export(0:nrank_export)
 !
-      integer(kind = kint) :: i, ip, inum, icou, ist, jst
+      integer(kind = kint), intent(inout) :: item_export(ntot_export)
+!
+      integer(kind = kint) :: i, ip, inum, icou, ist, num, jst
 !
       icou = 0
       do i = 1, part_grp%num_grp
@@ -416,11 +477,13 @@
         if(num_send_tmp(ip) .gt. 0) then
           icou = icou + 1
           ist = part_grp%istack_grp(ip-1)
-          jst = part_tbl(1)%istack_export(icou-1)
-          do inum = 1, part_tbl(1)%num_export(icou)
-            part_tbl(1)%item_export(jst+inum)                           &
-     &            = part_grp%item_grp(ist+inum)
+          jst = istack_export(icou-1)
+          num = istack_export(icou) - istack_export(icou-1)
+!$omp parallel do
+          do inum = 1, num
+            item_export(jst+inum) = part_grp%item_grp(ist+inum)
           end do
+!$omp end parallel do
         end if
       end do
 !
@@ -428,30 +491,30 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_item_for_repart(nloop, part_tbl)
+      subroutine set_import_item_for_repart                             &
+     &         (NP, ntot_import, item_import, irev_import)
 !
-      use t_calypso_comm_table
+      integer(kind = kint), intent(in) :: NP, ntot_import
 !
-      integer(kind = kint), intent(in) :: nloop
+      integer(kind = kint), intent(inout) :: item_import(ntot_import)
+      integer(kind = kint), intent(inout) :: irev_import(NP)
 !
-      type(calypso_comm_table), intent(inout) :: part_tbl(nloop)
-!
-      integer(kind = kint) :: iloop, inum
+      integer(kind = kint) :: inum
 !
 !
-      do iloop = 1, nloop
-        do inum = 1, part_tbl(iloop)%ntot_import
-          part_tbl(iloop)%item_import(inum) = inum
-          part_tbl(iloop)%irev_import(inum) = inum
-        end do
+!$omp parallel do
+      do inum = 1, ntot_import
+        item_import(inum) = inum
+        irev_import(inum) = inum
       end do
+!$omp end parallel do
 !
       end subroutine set_import_item_for_repart
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_new_subdomain_id                                   &
-     &         (nod_comm, node, part_grp)
+     &         (nod_comm, node, part_grp, num_send_tmp)
 !
       use t_comm_table
       use t_geometry_data
@@ -462,10 +525,13 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: part_grp
+      integer(kind = kint), intent(in)                                  &
+     &                     :: num_send_tmp(part_grp%num_grp)
 !
       integer(kind = kint), allocatable :: idomain_new(:)
+      integer(kind = kint), allocatable :: inod_new(:)
 !
-      integer(kind = kint) :: inum, inod, ist, ied
+      integer(kind = kint) :: inum, inod, ist, num, jst
       integer(kind = kint) :: igrp
 !
 !
@@ -475,19 +541,26 @@
 !$omp end parallel workshare
 !
       do igrp = 1, part_grp%num_grp
-        ist = part_grp%istack_grp(igrp-1) + 1
-        ied = part_grp%istack_grp(igrp)
+        jst = num_send_tmp(igrp)
+        ist = part_grp%istack_grp(igrp-1)
+        num = part_grp%istack_grp(igrp  ) - ist
 !$omp parallel do private(inum,inod)
-        do inum = ist, ied
-          inod = part_grp%num_item
+        do inum = 1, num
+          if(jst .lt. 0) write(*,*)                                     &
+     &            'Wring in recieved stack', igrp, jst
+          inod = part_grp%item_grp(ist+inum)
           idomain_new(inod) = igrp
+          inod_new(inod) =    jst + inum
         end do
 !$omp end parallel do
       end do
 !
       call SOLVER_SEND_RECV_int_type                                    &
      &   (node%numnod, nod_comm, idomain_new)
-      deallocate(idomain_new)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, inod_new)
+      deallocate(idomain_new, inod_new)
+!
 !
       end subroutine set_new_subdomain_id
 !
