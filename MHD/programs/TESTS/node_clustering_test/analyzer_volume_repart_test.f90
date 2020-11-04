@@ -451,7 +451,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_new_subdomain_id                                   &
-     &         (nod_comm, node, part_grp, ext_grp)
+     &         (nod_comm, node, part_grp)
 !
       use t_comm_table
       use t_geometry_data
