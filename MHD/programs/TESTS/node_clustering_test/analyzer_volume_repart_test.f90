@@ -144,6 +144,26 @@
       call mpi_output_mesh(T_meshes%new_mesh_file_IO,                   &
      &    fem_T%mesh, fem_T%group)
 !
+!
+!
+      allocate(num_send_tmp(part_grp%num_grp))
+      allocate(num_recv_tmp(nprocs))
+      do i = 1, part_grp%num_grp
+        irank_recv = mod(i-1,nprocs)
+        num_send_tmp(i)                                                 &
+     &      = part_grp%istack_grp(i) - part_grp%istack_grp(i-1)
+        call calypso_mpi_gather_one_int                                 &
+     &     (num_send_tmp(i), num_recv_tmp(1), irank_recv)
+      end do
+!
+      do i = 1, part_grp%num_grp
+        ip = (i+my_rank,nprocs)
+        num_send_tmp(i)                                                 &
+     &      = part_grp%istack_grp(i) - part_grp%istack_grp(i-1)
+        if(num_send_tmp(i) .gt. 0) 
+      end do
+
+!
       end subroutine initialize_volume_repartition
 !
 ! ----------------------------------------------------------------------

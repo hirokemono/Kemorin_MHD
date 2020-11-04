@@ -7,8 +7,10 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine initialize_volume_grouping
-!!      subroutine analyze_volume_grouping
+!!      subroutine s_repartition_by_volume(mesh, part_param, part_grp)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(group_data), intent(inout) :: part_grp
 !!@endverbatim
 !
       module t_repartition_by_volume
@@ -33,6 +35,13 @@
 !
         integer(kind = kint), allocatable :: inod_sort(:)
       end type node_volume_and_sorting
+!
+      private :: alloc_node_volume_and_sort
+      private :: dealloc_node_volume_and_sort
+      private :: const_istack_z_domain_block
+      private :: const_istack_xyz_domain_block
+      private :: const_z_div_domain_group_data
+      private :: const_newdomain_group_data
 !
 ! ----------------------------------------------------------------------
 !
