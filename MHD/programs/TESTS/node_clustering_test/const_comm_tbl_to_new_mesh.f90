@@ -183,7 +183,7 @@
 !$omp end do
 !$omp do private(i,ip)
         do i = 1, part_tbl(iloop)%nrank_import
-          ip = part_tbl(iloop)%irank_import(i)
+          ip = part_tbl(iloop)%irank_import(i) + 1
           num_recv_tmp(ip,iloop) = part_tbl(iloop)%istack_import(ip-1) 
         end do
 !$omp end do
@@ -218,7 +218,7 @@
 !$omp end do
 !$omp do private(i,ip)
         do i = 1, ext_tbl(iloop)%nrank_import
-          ip = ext_tbl(iloop)%irank_import(i)
+          ip = ext_tbl(iloop)%irank_import(i) + 1
           num_recv_tmp(ip,iloop) = ext_tbl(iloop)%istack_import(ip-1)   &
      &                            + part_tbl(iloop)%ntot_import
         end do
