@@ -146,7 +146,8 @@
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
 !
-      call const_comm_tbls_for_new_part(part_grp, ext_grp)
+      call const_comm_tbls_for_new_part                                 &
+     &   (fem_T%mesh%nod_comm, fem_T%mesh%node, part_grp, ext_grp)
 !
       end subroutine initialize_volume_repartition
 !
@@ -165,13 +166,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_comm_tbls_for_new_part(part_grp, ext_grp)
+      subroutine const_comm_tbls_for_new_part                           &
+     &         (nod_comm, node, part_grp, ext_grp)
 !
+      use t_comm_table
       use t_geometry_data
       use t_calypso_comm_table
       use set_comm_tbl_to_new_part
       use const_comm_tbl_to_new_mesh
 !
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
       type(group_data), intent(in) :: part_grp, ext_grp
 !
       integer(kind = kint) :: nloop
