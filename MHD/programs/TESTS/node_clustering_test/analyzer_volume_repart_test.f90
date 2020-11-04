@@ -167,6 +167,7 @@
 !
       subroutine const_comm_tbls_for_new_part(part_grp, ext_grp)
 !
+      use t_geometry_data
       use t_calypso_comm_table
       use set_comm_tbl_to_new_part
       use const_comm_tbl_to_new_mesh
@@ -177,6 +178,8 @@
       type(calypso_comm_table), allocatable :: part_tbl(:)
       type(calypso_comm_table), allocatable :: ext_tbl(:)
 !
+      type(node_data), allocatable :: new_node(:)
+!
       integer(kind = kint), allocatable :: num_send_tmp(:)
       integer(kind = kint), allocatable :: num_recv_tmp(:,:)
 !
@@ -186,6 +189,7 @@
       nloop = (part_grp%num_grp-1) / nprocs + 1
       allocate(part_tbl(nloop))
       allocate(ext_tbl(nloop))
+      allocate(new_node(nloop))
 !
       allocate(num_send_tmp(part_grp%num_grp))
       allocate(num_recv_tmp(nprocs,nloop))
@@ -222,7 +226,7 @@
 !
 !
       deallocate(num_send_tmp, num_recv_tmp)
-      deallocate(part_tbl, ext_tbl)
+      deallocate(part_tbl, ext_tbl, new_node)
 !
       end subroutine const_comm_tbls_for_new_part
 !

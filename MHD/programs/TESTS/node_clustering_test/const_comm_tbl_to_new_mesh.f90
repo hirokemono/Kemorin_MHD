@@ -172,7 +172,6 @@
      &                     :: num_recv_tmp(nprocs,nloop)
 !
       integer(kind = kint) :: i, iloop, ip
-      integer :: irank_recv
 !
 !
 !$omp parallel
@@ -208,7 +207,6 @@
      &                     :: num_recv_tmp(nprocs,nloop)
 !
       integer(kind = kint) :: i, iloop, ip
-      integer :: irank_recv
 !
 !
 !$omp parallel
