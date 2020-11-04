@@ -43,6 +43,7 @@
 !
       use t_control_param_vol_grping
 !
+      use quicksort
       use set_repartition_group_name
 !
       type(node_data), intent(in) :: node
@@ -53,6 +54,7 @@
       type(group_data), intent(inout) :: ext_grp
 !
       integer(kind = kint), allocatable :: iflag_nod(:)
+      integer(kind = kint) :: i, ist, num
 !
 !
       allocate(iflag_nod(node%numnod))
@@ -75,6 +77,16 @@
       call set_external_grp_4_new_part(node, neib_nod, part_grp,        &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    ext_grp%item_grp, iflag_nod)
+!
+!$omp parallel do private(i,ist,num)
+      do i = 1, ext_grp%num_grp
+        ist = ext_grp%istack_grp(i-1)
+        num = ext_grp%istack_grp(i  ) - ist
+        if(num .gt. 1) then
+          call quicksort_int(num, ext_grp%item_grp(ist+1), ione, num)
+        end if
+      end do
+!$omp end parallel do
 !
       deallocate(iflag_nod)
 !
