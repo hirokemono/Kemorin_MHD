@@ -22,7 +22,7 @@
 !!        type(calypso_comm_table), intent(in) :: part_tbl(nloop)
 !!@endverbatim
 !
-      module set_comm_tbl_to_new_part
+      module const_comm_tbl_to_new_mesh
 !
       use m_precision
       use m_constants
