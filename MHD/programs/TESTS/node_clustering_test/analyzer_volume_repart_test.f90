@@ -86,6 +86,7 @@
       type(shape_finctions_at_points) :: spfs_T
 !
       type(group_data) :: part_grp
+      type(group_data) :: ext_grp
 !
 !     --------------------- 
 !
@@ -141,6 +142,10 @@
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
 !
       call const_comm_tbl_to_new_part(part_grp)
+!
+      call const_external_grp_4_new_part                                &
+     &  (fem_T%mesh%nod_comm, fem_T%mesh%node, next_tbl_T%neib_nod,     &
+     &   part_grp, ext_grp)
 !
       end subroutine initialize_volume_repartition
 !
@@ -221,6 +226,145 @@
 !
       end subroutine const_comm_tbl_to_new_part
 !
+! ----------------------------------------------------------------------
+!
+      subroutine const_external_grp_4_new_part                          &
+     &         (nod_comm, node, neib_nod, part_grp, ext_grp)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_next_node_ele_4_node
+      use t_calypso_comm_table
+!
+      use solver_SR_type
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      type(group_data), intent(in) :: part_grp
+!
+      type(group_data), intent(inout) :: ext_grp
+!
+      integer(kind = kint), allocatable :: idomain_new(:)
+      integer(kind = kint), allocatable :: iflag_nod(:)
+!
+      integer(kind = kint) :: inum, inod, ist, ied
+      integer(kind = kint) :: jnum, jnod, jst, jed
+      integer(kind = kint) :: igrp, icou
+!
+!
+      allocate(idomain_new(node%numnod))
+      allocate(iflag_nod(node%numnod))
+!$omp parallel workshare
+      idomain_new(1:node%numnod) = 0
+      iflag_nod(1:node%numnod) = 1
+!$omp end parallel workshare
+!
+      do igrp = 1, part_grp%num_grp
+        ist = part_grp%istack_grp(igrp-1) + 1
+        ied = part_grp%istack_grp(igrp)
+!$omp parallel do private(inum,inod)
+        do inum = ist, ied
+          inod = part_grp%num_item
+          idomain_new(inod) = igrp
+        end do
+!$omp end parallel do
+      end do
+!
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, idomain_new)
+!
+      ext_grp%num_grp = part_grp%num_grp
+      call alloc_group_num(ext_grp)
+!
+!$omp parallel workshare
+      ext_grp%grp_name(1:ext_grp%num_grp)                               &
+     &     = part_grp%grp_name(1:ext_grp%num_grp)
+!$omp end parallel workshare
+!
+!
+      do igrp = 1, part_grp%num_grp
+!$omp parallel workshare
+        iflag_nod(1:node%internal_node) = 1
+!$omp end parallel workshare
+        if(node%numnod .gt. node%internal_node) then
+!$omp parallel workshare
+          iflag_nod(node%internal_node+1:node%numnod) = 0
+!$omp end parallel workshare
+        end if
+!
+        ist = part_grp%istack_grp(igrp-1) + 1
+        ied = part_grp%istack_grp(igrp)
+!$omp parallel do private(inum,inod)
+        do inum = ist, ied
+          inod = part_grp%item_grp(inum)
+          iflag_nod(inod) = 0
+        end do
+!$omp end parallel do
+!
+        do inum = ist, ied
+          inod = part_grp%item_grp(inum)
+          jst = neib_nod%istack_next(inod-1) + 1
+          jed = neib_nod%istack_next(inod)
+          do jnum = jst, jed
+            jnod = neib_nod%inod_next(jnum)
+            if(jnod .le. node%internal_node                             &
+     &          .and. iflag_nod(jnod) .gt. 0) then
+              ext_grp%nitem_grp(igrp) = ext_grp%nitem_grp(igrp) + 1
+              iflag_nod(jnod) = 0
+            end if
+          end do
+        end do
+        ext_grp%istack_grp(igrp) = ext_grp%istack_grp(igrp-1)           &
+     &                            + ext_grp%nitem_grp(igrp)
+      end do
+!
+      ext_grp%num_item = ext_grp%istack_grp(part_grp%num_grp)
+      call alloc_group_item(ext_grp)
+!
+      do igrp = 1, part_grp%num_grp
+!$omp parallel workshare
+        iflag_nod(1:node%internal_node) = 1
+!$omp end parallel workshare
+        if(node%numnod .gt. node%internal_node) then
+!$omp parallel workshare
+          iflag_nod(node%internal_node+1:node%numnod) = 0
+!$omp end parallel workshare
+        end if
+!
+        ist = part_grp%istack_grp(igrp-1) + 1
+        ied = part_grp%istack_grp(igrp)
+!$omp parallel do private(inum,inod)
+        do inum = ist, ied
+          inod = part_grp%item_grp(inum)
+          iflag_nod(inod) = 0
+        end do
+!$omp end parallel do
+!
+        icou = ext_grp%istack_grp(igrp-1)
+        ist = part_grp%istack_grp(igrp-1) + 1
+        ied = part_grp%istack_grp(igrp)
+        do inum = ist, ied
+          inod = part_grp%item_grp(inum)
+          jst = neib_nod%istack_next(inod-1) + 1
+          jed = neib_nod%istack_next(inod)
+          do jnum = jst, jed
+            jnod = neib_nod%inod_next(jnum)
+            if(jnod .le. node%internal_node                             &
+     &          .and. iflag_nod(jnod) .gt. 0) then
+              icou = icou + 1
+              ext_grp%item_grp(icou) = jnod
+              iflag_nod(jnod) = 0
+            end if
+          end do
+        end do
+      end do
+!
+      deallocate(idomain_new, iflag_nod)
+!
+      end subroutine const_external_grp_4_new_part
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine gather_num_trans_for_repart                            &
