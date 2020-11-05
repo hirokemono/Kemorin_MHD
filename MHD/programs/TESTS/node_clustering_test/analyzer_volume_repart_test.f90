@@ -226,7 +226,7 @@
       integer(kind = kint), allocatable :: idomain_new(:)
       integer(kind = kint), allocatable :: inod_new(:)
 !
-      integer(kind = kint) :: i, ist
+      integer(kind = kint) :: i, ist, inum, j
 !
 !
       allocate(num_send_tmp(part_grp%num_grp))
@@ -288,10 +288,27 @@
      &    node%numnod, new_node%internal_node,                          &
      &    inod_new(1), inod_recv(1))
 !
+      do inum = 1, ext_tbl%ntot_import
+        i = new_node%internal_node + ext_tbl%item_import(inum)
+        if(i .le. new_node%internal_node) then
+          write(*,*) my_rank, 'Too small item_import',    &
+     &               inum, ext_tbl%item_import(inum)
+        end if
+        if(i .gt. new_node%numnod) then
+          write(*,*) my_rank, 'Too large item_import',    &
+     &               inum, i, ext_tbl%item_import(inum)
+        end if
+      end do
+!
       ist = new_node%internal_node
       call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%inod_global(1), new_node%inod_global(ist+1))
+      if(my_rank .eq. 0) then
+        do i = 1, new_node%numnod
+          write(100,*) i, new_node%inod_global(i)
+        end do
+      end if
       return
 !
       call calypso_SR_type_1(iflag_import_item, part_tbl,               &
