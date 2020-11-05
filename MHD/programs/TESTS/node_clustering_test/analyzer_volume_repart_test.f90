@@ -198,8 +198,6 @@
 !
       call send_back_istack_import_repart                               &
      &   (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
-      write(*,*) my_rank, 'num_recv_tmp', num_recv_tmp
-      return
       call set_new_subdomain_id                                         &
      &   (nod_comm, node, part_grp, num_send_tmp)
 !
@@ -214,9 +212,11 @@
      &   (part_grp, part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
 !
 !
-      new_node%internal_node = part_tbl%ntot_import
+      new_node%internal_node =                part_tbl%ntot_import
       new_node%numnod = ext_tbl%ntot_import + part_tbl%ntot_import
 !
+      write(*,*) my_rank, 'new_nomond', new_node%internal_node,   &
+     &           new_node%numnod
 !
       deallocate(num_send_tmp, num_recv_tmp)
 !
@@ -248,8 +248,10 @@
 !
 !
       allocate(idomain_new(node%numnod))
+      allocate(inod_new(node%numnod))
 !$omp parallel workshare
-      idomain_new(1:node%numnod) = 0
+      idomain_new(1:node%numnod) = -1
+      inod_new(1:node%numnod) =     0
 !$omp end parallel workshare
 !
       do igrp = 1, part_grp%num_grp
@@ -261,7 +263,7 @@
           if(jst .lt. 0) write(*,*)                                     &
      &            'Wring in recieved stack', igrp, jst
           inod = part_grp%item_grp(ist+inum)
-          idomain_new(inod) = igrp
+          idomain_new(inod) = igrp - 1
           inod_new(inod) =    jst + inum
         end do
 !$omp end parallel do
