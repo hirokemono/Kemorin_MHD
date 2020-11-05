@@ -179,7 +179,7 @@
      &           T_meshes%new_mesh_file_IO%iflag_format, my_rank)
 !      call write_mesh_file                                             &
 !     &   (my_rank, file_name, new_fem%mesh, new_fem%group)
-      call dealloc_node_geometry_base(new_fem%mesh%node)
+!      call dealloc_node_geometry_base(new_fem%mesh%node)
 !
       end subroutine initialize_volume_repartition
 !
@@ -208,6 +208,7 @@
       use const_comm_tbl_to_new_mesh
       use calypso_SR_type
       use select_copy_from_recv
+      use nod_phys_send_recv
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -263,7 +264,7 @@
       new_node%numnod = ext_tbl%ntot_import + part_tbl%ntot_import
 !
       write(*,*) my_rank, 'new_nomond', new_node%internal_node,         &
-     &           new_node%numnod
+     &           new_node%numnod, ext_tbl%ntot_import
       call alloc_node_geometry_base(new_node)
       allocate(inod_recv(new_node%numnod))
       allocate(idomain_recv(new_node%numnod))
@@ -288,52 +289,31 @@
      &    node%numnod, new_node%internal_node,                          &
      &    inod_new(1), inod_recv(1))
 !
-      do inum = 1, ext_tbl%ntot_import
-        i = new_node%internal_node + ext_tbl%item_import(inum)
-        if(i .le. new_node%internal_node) then
-          write(*,*) my_rank, 'Too small item_import',    &
-     &               inum, ext_tbl%item_import(inum)
-        end if
-        if(i .gt. new_node%numnod) then
-          write(*,*) my_rank, 'Too large item_import',    &
-     &               inum, i, ext_tbl%item_import(inum)
-        end if
-      end do
 !
       ist = new_node%internal_node
-      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
+      call calypso_SR_type_int8(iflag_import_item, ext_tbl,             &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%inod_global(1), new_node%inod_global(ist+1))
-      if(my_rank .eq. 0) then
-        do i = 1, new_node%numnod
-          write(100,*) i, new_node%inod_global(i)
-        end do
-      end if
-      return
 !
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+      call calypso_SR_type_int8(iflag_import_item, ext_tbl,             &
+     &    node%numnod, ext_tbl%ntot_import,                             &
+     &    node%inod_global(1), new_node%inod_global(ist+1))
+      call calypso_SR_type_1(iflag_import_item, ext_tbl,                &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%xx(1,1), new_node%xx(ist+1,1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+      call calypso_SR_type_1(iflag_import_item, ext_tbl,                &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%xx(1,2), new_node%xx(ist+1,2))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+      call calypso_SR_type_1(iflag_import_item, ext_tbl,                &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%xx(1,3), new_node%xx(ist+1,3))
 !
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
+      call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    idomain_new(1), idomain_recv(ist+1))
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
+      call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(ist+1))
-!
-      if(my_rank .eq. 0) then
-        do i = 1, new_node%numnod
-          write(*,*) i, new_node%inod_global(i), new_node%xx(i,1:3), &
-     &             inod_recv(i), idomain_recv(i)
-        end do
-      end if
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
