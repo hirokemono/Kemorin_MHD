@@ -315,6 +315,35 @@
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(ist+1))
 !
+      deallocate(num_send_tmp, num_recv_tmp)
+!
+      allocate(num_send_tmp(nprocs))
+      allocate(num_recv_tmp(nprocs))
+
+!$omp parallel workshare
+      num_send_tmp(1:nprocs) = 0
+      num_recv_tmp(1:nprocs) = 0
+!$omp end parallel workshare
+!
+      ist = new_node%internal_node
+      do i = 1, ext_tbl%ntot_import
+        ip = idomain_recv(ist+i) + 1
+        num_recv_tmp(ip) = num_recv_tmp(ip) + 1
+      end do
+!
+
+!      allocate(index_sort(ext_tbl%ntot_import))
+!!$omp parallel do
+!      do i = 1, ext_tbl%ntot_import
+!        index_sort(i) = i + xt_tbl%ntot_import
+!      end do
+!!$omp end parallel do
+!      call quicksort_int_w_index                                       &
+!     &   (ext_tbl%ntot_import, idomain_recv(ist+1),                    &
+!     &    ione, ext_tbl%ntot_import, index_sort)
+!
+
+!
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
       deallocate(num_send_tmp, num_recv_tmp)

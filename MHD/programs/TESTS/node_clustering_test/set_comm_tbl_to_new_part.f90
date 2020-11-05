@@ -7,17 +7,16 @@
 !>@brief  Subroutines to set commnunication table to new partitionning
 !!
 !!@verbatim
-!!      subroutine count_num_export_for_repart                          &
-!!     &         (my_rank, num_grp, num_send_tmp,                       &
-!!     &          iflag_self_copy, nrank_export)
+!!      subroutine count_num_export_for_repart(my_rank, nprocs,         &
+!!     &          num_send_tmp, iflag_self, nrank_export)
 !!      subroutine count_num_import_for_repart                          &
-!!     &         (nprocs, num_grp, num_recv_tmp, nrank_import)
+!!     &         (nprocs, num_recv_tmp, nrank_import)
 !!
-!!      subroutine set_istack_export_for_repart(my_rank, num_grp,       &
+!!      subroutine set_istack_export_for_repart(my_rank, nprocs,        &
 !!     &          num_send_tmp, nrank_export, ntot_export, irank_export,&
 !!     &          num_export, istack_export)
 !!      subroutine set_istack_import_for_repart                         &
-!!     &         (my_rank, nprocs, num_grp, num_recv_tmp, nrank_import, &
+!!     &         (my_rank, nprocs, num_recv_tmp, nrank_import,          &
 !!     &          ntot_import, irank_import, num_import, istack_import)
 !!
 !!      subroutine set_export_item_for_repart                           &
@@ -40,23 +39,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_num_export_for_repart                            &
-     &         (my_rank, num_grp, num_send_tmp,                         &
-     &          iflag_self_copy, nrank_export)
+      subroutine count_num_export_for_repart(my_rank, nprocs,           &
+     &          num_send_tmp, iflag_self, nrank_export)
 !
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: num_grp
-      integer(kind = kint), intent(in) :: num_send_tmp(num_grp)
+      integer, intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: num_send_tmp(nprocs)
 !
-      integer(kind = kint), intent(inout) :: iflag_self_copy
+      integer(kind = kint), intent(inout) :: iflag_self
       integer(kind = kint), intent(inout) :: nrank_export
 !
       integer(kind = kint) :: i
 !
-      if(num_send_tmp(my_rank+1) .gt. 0) iflag_self_copy = 1
+      if(num_send_tmp(my_rank+1) .gt. 0) iflag_self = 1
 !
       nrank_export = 0
-      do i = 1, num_grp
+      do i = 1, nprocs
         if(num_send_tmp(i) .gt. 0) nrank_export = nrank_export + 1
       end do
 !
@@ -65,10 +62,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_num_import_for_repart                            &
-     &         (nprocs, num_grp, num_recv_tmp, nrank_import)
+     &         (nprocs, num_recv_tmp, nrank_import)
 !
       integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: num_grp
       integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs)
 !
       integer(kind = kint), intent(inout) :: nrank_import
@@ -78,7 +74,6 @@
 !
       nrank_import = 0
       do i = 1, nprocs
-        if(i .gt. num_grp) cycle
         if(num_recv_tmp(i) .gt. 0)  nrank_import = nrank_import + 1
       end do
 !
@@ -87,13 +82,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_istack_export_for_repart(my_rank, num_grp,         &
+      subroutine set_istack_export_for_repart(my_rank, nprocs,          &
      &          num_send_tmp, nrank_export, ntot_export, irank_export,  &
      &          num_export, istack_export)
 !
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: num_grp
-      integer(kind = kint), intent(in) :: num_send_tmp(num_grp)
+      integer, intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: num_send_tmp(nprocs)
       integer(kind = kint), intent(in) :: nrank_export
 !
       integer(kind = kint), intent(inout) :: ntot_export
@@ -106,8 +100,8 @@
 !
       icou = 0
       istack_export(0) = 0
-      do i = 1, num_grp
-        ip = 1 + mod(i+my_rank,num_grp)
+      do i = 1, nprocs
+        ip = 1 + mod(i+my_rank,nprocs)
         if(num_send_tmp(ip) .gt. 0) then
           icou = icou + 1
           irank_export(icou) =  ip-1
@@ -123,11 +117,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_istack_import_for_repart                           &
-     &         (my_rank, nprocs, num_grp, num_recv_tmp, nrank_import,   &
+     &         (my_rank, nprocs, num_recv_tmp, nrank_import,            &
      &          ntot_import, irank_import, num_import, istack_import)
 !
       integer, intent(in) :: my_rank, nprocs
-      integer(kind = kint), intent(in) :: num_grp
       integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs)
 !
       integer(kind = kint), intent(in) :: nrank_import
@@ -145,7 +138,6 @@
       istack_import(0) = 0
       do i = 1, nprocs
         ip = 1 + mod(i+my_rank,nprocs)
-        if(i .gt. num_grp) cycle
         if(num_recv_tmp(ip) .gt. 0) then
           icou = icou + 1
           irank_import(icou) =  ip-1
@@ -168,7 +160,7 @@
       use t_group_data
 !
       type(group_data), intent(in) :: part_grp
-      integer, intent(in) :: my_rank
+      integer, intent(in) :: my_rank, nprocs
       integer(kind = kint), intent(in)                                  &
      &                     :: num_send_tmp(part_grp%num_grp)
 !
