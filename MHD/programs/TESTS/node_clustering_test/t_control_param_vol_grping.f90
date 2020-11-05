@@ -28,6 +28,8 @@
         type(field_IO_params) :: new_mesh_file_IO
 !
 !
+!>        number of subdomains for original partition
+        integer(kind = kint) :: org_nprocs
 !>        number of subdomains for new partition
         integer(kind = kint) :: new_nprocs
 !>        number of subdomains in each direction for new partition
@@ -74,6 +76,7 @@
      &   'mesh_file_head:  ', trim(part_param%mesh_file_IO%file_prefix)
 !
 !
+      part_param%new_nprocs = nprocs
       call set_control_EQ_XYZ                                           &
      &   (part_tctl%new_part_ctl%ndomain_section_ctl,                   &
      &    part_param%new_nprocs, part_param%ndomain_eb)

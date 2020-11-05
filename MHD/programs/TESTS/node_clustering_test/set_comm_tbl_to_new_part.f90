@@ -11,13 +11,13 @@
 !!     &         (my_rank, num_grp, num_send_tmp,                       &
 !!     &          iflag_self_copy, nrank_export)
 !!      subroutine count_num_import_for_repart                          &
-!!     &         (iloop, nprocs, num_grp, num_recv_tmp, nrank_import)
+!!     &         (nprocs, num_grp, num_recv_tmp, nrank_import)
 !!
 !!      subroutine set_istack_export_for_repart(my_rank, num_grp,       &
 !!     &          num_send_tmp, nrank_export, ntot_export, irank_export,&
 !!     &          num_export, istack_export)
-!!      subroutine set_istack_import_for_repart(iloop,                  &
-!!     &          my_rank, nprocs, num_grp, num_recv_tmp, nrank_import, &
+!!      subroutine set_istack_import_for_repart                         &
+!!     &         (my_rank, nprocs, num_grp, num_recv_tmp, nrank_import, &
 !!     &          ntot_import, irank_import, num_import, istack_import)
 !!
 !!      subroutine set_export_item_for_repart                           &
@@ -65,24 +65,22 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_num_import_for_repart                            &
-     &         (iloop, nprocs, num_grp, num_recv_tmp, nrank_import)
+     &         (nprocs, num_grp, num_recv_tmp, nrank_import)
 !
       integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: iloop
       integer(kind = kint), intent(in) :: num_grp
       integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs)
 !
       integer(kind = kint), intent(inout) :: nrank_import
 !
-      integer(kind = kint) :: i, inum
+      integer(kind = kint) :: i
 !
 !
-        nrank_import = 0
-        do inum = 1, nprocs
-          i = inum + (iloop-1) * nprocs
-          if(i .gt. num_grp) cycle
-          if(num_recv_tmp(i) .gt. 0)  nrank_import = nrank_import + 1
-        end do
+      nrank_import = 0
+      do i = 1, nprocs
+        if(i .gt. num_grp) cycle
+        if(num_recv_tmp(i) .gt. 0)  nrank_import = nrank_import + 1
+      end do
 !
       end subroutine count_num_import_for_repart
 !
@@ -112,7 +110,7 @@
         ip = 1 + mod(i+my_rank,num_grp)
         if(num_send_tmp(ip) .gt. 0) then
           icou = icou + 1
-          irank_export(icou) =  ip
+          irank_export(icou) =  ip-1
           num_export(icou) =    num_send_tmp(ip)
           istack_export(icou) = istack_export(icou-1)                   &
      &                          + num_send_tmp(ip)
@@ -124,12 +122,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_istack_import_for_repart(iloop,                    &
-     &          my_rank, nprocs, num_grp, num_recv_tmp, nrank_import,   &
+      subroutine set_istack_import_for_repart                           &
+     &         (my_rank, nprocs, num_grp, num_recv_tmp, nrank_import,   &
      &          ntot_import, irank_import, num_import, istack_import)
 !
       integer, intent(in) :: my_rank, nprocs
-      integer(kind = kint), intent(in) :: iloop
       integer(kind = kint), intent(in) :: num_grp
       integer(kind = kint), intent(in)  :: num_recv_tmp(nprocs)
 !
@@ -141,19 +138,17 @@
       integer(kind = kint), intent(inout)                               &
      &                     :: istack_import(0:nrank_import)
 !
-      integer(kind = kint) :: i, inum, icou, id_rank, ip
+      integer(kind = kint) :: i, inum, icou, ip
 !
 !
       icou = 0
       istack_import(0) = 0
-      id_rank = my_rank + (iloop-1) * nprocs
-      do inum = 1, nprocs
-        i = inum + (iloop-1) * nprocs
-        ip = 1 + mod(i+id_rank,nprocs)
+      do i = 1, nprocs
+        ip = 1 + mod(i+my_rank,nprocs)
         if(i .gt. num_grp) cycle
         if(num_recv_tmp(ip) .gt. 0) then
           icou = icou + 1
-          irank_import(icou) =  ip
+          irank_import(icou) =  ip-1
           num_import(icou) = num_recv_tmp(ip)
           istack_import(icou) = istack_import(icou-1)                   &
      &                         + num_import(icou)

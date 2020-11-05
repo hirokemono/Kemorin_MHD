@@ -179,59 +179,47 @@
       type(communication_table), intent(in) :: nod_comm
       type(group_data), intent(in) :: part_grp, ext_grp
 !
-      integer(kind = kint) :: nloop
-      type(calypso_comm_table), allocatable :: part_tbl(:)
-      type(calypso_comm_table), allocatable :: ext_tbl(:)
+      type(calypso_comm_table) :: part_tbl
+      type(calypso_comm_table) :: ext_tbl
 !
-      type(node_data), allocatable :: new_node(:)
+      type(node_data) :: new_node
 !
       integer(kind = kint), allocatable :: num_send_tmp(:)
-      integer(kind = kint), allocatable :: num_recv_tmp(:,:)
+      integer(kind = kint), allocatable :: num_recv_tmp(:)
 !
-      integer(kind = kint) :: iloop
-!
-!
-      nloop = (part_grp%num_grp-1) / nprocs + 1
-      allocate(part_tbl(nloop))
-      allocate(ext_tbl(nloop))
-      allocate(new_node(nloop))
 !
       allocate(num_send_tmp(part_grp%num_grp))
-      allocate(num_recv_tmp(nprocs,nloop))
+      allocate(num_recv_tmp(part_grp%num_grp))
 !
       call gather_num_trans_for_repart                                  &
-     &         (nloop, part_grp, num_send_tmp, num_recv_tmp)
+     &   (part_grp, num_send_tmp, num_recv_tmp)
       call const_comm_tbl_to_new_part                                   &
-     &   (part_grp, nloop, num_send_tmp, num_recv_tmp, part_tbl)
+     &   (part_grp, num_send_tmp, num_recv_tmp, part_tbl)
 !
-      call set_istack_import_repart(part_tbl, nloop, num_recv_tmp)
+      call set_istack_import_repart(part_grp, part_tbl, num_recv_tmp)
       call send_back_istack_import_repart                               &
-     &   (part_grp, nloop, num_recv_tmp, num_send_tmp)
+     &   (part_grp, num_recv_tmp, num_send_tmp)
       call set_new_subdomain_id                                         &
      &   (nod_comm, node, part_grp, num_send_tmp)
 !
 !
       call gather_num_trans_for_repart                                  &
-     &         (nloop, ext_grp, num_send_tmp, num_recv_tmp)
+     &   (ext_grp, num_send_tmp, num_recv_tmp)
       call const_comm_tbl_to_new_part                                   &
-     &   (ext_grp, nloop, num_send_tmp, num_recv_tmp, ext_tbl)
+     &   (ext_grp, num_send_tmp, num_recv_tmp, ext_tbl)
 !
 !
       call set_ext_istack_import_repart                                 &
-     &   (part_tbl, ext_tbl, nloop, num_recv_tmp)
+     &   (part_grp, part_tbl, ext_tbl, num_recv_tmp)
       call send_back_istack_import_repart                               &
-     &   (ext_grp, nloop, num_recv_tmp, num_send_tmp)
+     &   (ext_grp, num_recv_tmp, num_send_tmp)
 !
 !
-      do iloop = 1, nloop
-        new_node(iloop)%internal_node =    part_tbl(iloop)%ntot_import
-        new_node(iloop)%numnod                                          &
-     &       = ext_tbl(iloop)%ntot_import + part_tbl(iloop)%ntot_import
-      end do
+      new_node%internal_node = part_tbl%ntot_import
+      new_node%numnod = ext_tbl%ntot_import + part_tbl%ntot_import
 !
 !
       deallocate(num_send_tmp, num_recv_tmp)
-      deallocate(part_tbl, ext_tbl, new_node)
 !
       end subroutine const_comm_tbls_for_new_part
 !
