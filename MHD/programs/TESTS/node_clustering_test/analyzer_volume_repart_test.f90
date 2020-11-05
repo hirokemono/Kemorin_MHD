@@ -196,9 +196,10 @@
       call const_comm_tbl_to_new_part                                   &
      &   (part_grp, num_send_tmp, num_recv_tmp, part_tbl)
 !
-      call set_istack_import_repart(part_grp, part_tbl, num_recv_tmp)
       call send_back_istack_import_repart                               &
-     &   (part_grp, num_recv_tmp, num_send_tmp)
+     &   (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
+      write(*,*) my_rank, 'num_recv_tmp', num_recv_tmp
+      return
       call set_new_subdomain_id                                         &
      &   (nod_comm, node, part_grp, num_send_tmp)
 !
@@ -209,10 +210,8 @@
      &   (ext_grp, num_send_tmp, num_recv_tmp, ext_tbl)
 !
 !
-      call set_ext_istack_import_repart                                 &
-     &   (part_grp, part_tbl, ext_tbl, num_recv_tmp)
-      call send_back_istack_import_repart                               &
-     &   (ext_grp, num_recv_tmp, num_send_tmp)
+      call send_back_ext_istack_import                                  &
+     &   (part_grp, part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
 !
 !
       new_node%internal_node = part_tbl%ntot_import

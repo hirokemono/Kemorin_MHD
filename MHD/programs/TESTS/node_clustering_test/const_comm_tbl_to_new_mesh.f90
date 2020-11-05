@@ -19,10 +19,18 @@
 !!     &                     :: num_send_tmp(part_grp%num_grp)
 !!        integer(kind = kint), intent(inout)                           &
 !!     &                     :: num_recv_tmp(part_grp%num_grp)
-!!      subroutine send_back_istack_import_repart(part_grp, part_tbl,   &
-!!     &          nloop, num_recv_tmp, num_send_tmp)
+!!
+!!      subroutine send_back_istack_import_repart                       &
+!!     &         (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
+!!      subroutine send_back_ext_istack_import(part_grp,                &
+!!     &          part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
 !!        type(group_data), intent(in) :: part_grp
 !!        type(calypso_comm_table), intent(in) :: part_tbl(nloop)
+!!        type(calypso_comm_table), intent(in) :: ext_tbl
+!!        integer(kind = kint), intent(inout)                           &
+!!       &                     :: num_recv_tmp(part_grp%num_grp)
+!!        integer(kind = kint), intent(inout)                           &
+!!       &                     :: num_send_tmp(part_grp%num_grp)
 !!@endverbatim
 !
       module const_comm_tbl_to_new_mesh
@@ -108,50 +116,32 @@
 !
       integer(kind = kint) :: i
 !
+!$omp parallel do private(i)
       do i = 1, nprocs
         num_send_tmp(i)                                                 &
      &      = part_grp%istack_grp(i) - part_grp%istack_grp(i-1)
-        call calypso_mpi_gather_one_int                                 &
-     &     (num_send_tmp(i), num_recv_tmp(1), int(i-1))
       end do
+!$omp end parallel do
+!
+      call calypso_mpi_alltoall_one_int                                 &
+     &   (num_send_tmp(1), num_recv_tmp(1))
 !
       end subroutine gather_num_trans_for_repart
 !
 ! ----------------------------------------------------------------------
 !
       subroutine send_back_istack_import_repart                         &
-     &         (part_grp, num_recv_tmp, num_send_tmp)
+     &         (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
 !
       use calypso_mpi_int
-!
-      type(group_data), intent(in) :: part_grp
-!
-      integer(kind = kint), intent(in)                                  &
-     &                     :: num_recv_tmp(part_grp%num_grp)
-!
-      integer(kind = kint), intent(inout)                               &
-     &                     :: num_send_tmp(part_grp%num_grp)
-!
-      integer(kind = kint) :: i
-!
-!
-      do i = 1, part_grp%num_grp
-        call calypso_mpi_scatter_one_int                                &
-     &     (num_recv_tmp(1), num_send_tmp(i), int(i-1))
-      end do
-!
-      end subroutine send_back_istack_import_repart
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_istack_import_repart                               &
-     &         (part_grp, part_tbl, num_recv_tmp)
 !
       type(group_data), intent(in) :: part_grp
       type(calypso_comm_table), intent(in) :: part_tbl
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: num_recv_tmp(part_grp%num_grp)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: num_send_tmp(part_grp%num_grp)
 !
       integer(kind = kint) :: i, ip
 !
@@ -168,12 +158,17 @@
       end do
 !$omp end parallel do
 !
-      end subroutine set_istack_import_repart
+      call calypso_mpi_alltoall_one_int                                 &
+     &   (num_recv_tmp(1), num_send_tmp(1))
+!
+      end subroutine send_back_istack_import_repart
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ext_istack_import_repart                         &
-     &         (part_grp, part_tbl, ext_tbl, num_recv_tmp)
+      subroutine send_back_ext_istack_import(part_grp,                  &
+     &          part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
+!
+      use calypso_mpi_int
 !
       type(group_data), intent(in) :: part_grp
       type(calypso_comm_table), intent(in) :: part_tbl
@@ -181,6 +176,8 @@
 !
       integer(kind = kint), intent(inout)                               &
      &                     :: num_recv_tmp(part_grp%num_grp)
+      integer(kind = kint), intent(inout)                               &
+     &                     :: num_send_tmp(part_grp%num_grp)
 !
       integer(kind = kint) :: i, ip
 !
@@ -198,7 +195,10 @@
         end do
 !$omp end do
 !
-      end subroutine set_ext_istack_import_repart
+      call calypso_mpi_alltoall_one_int                                 &
+     &   (num_recv_tmp(1), num_send_tmp(1))
+!
+      end subroutine send_back_ext_istack_import
 !
 ! ----------------------------------------------------------------------
 !
