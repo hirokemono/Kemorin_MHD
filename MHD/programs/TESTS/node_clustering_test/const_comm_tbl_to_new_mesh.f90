@@ -164,7 +164,7 @@
 !$omp parallel do private(i,ip)
       do i = 1, part_tbl%nrank_import
         ip = part_tbl%irank_import(i) + 1
-        num_recv_tmp(ip) = part_tbl%istack_import(ip-1) 
+        num_recv_tmp(ip) = part_tbl%istack_import(i-1) 
       end do
 !$omp end parallel do
 !
@@ -193,7 +193,7 @@
 !$omp do private(i,ip)
         do i = 1, ext_tbl%nrank_import
           ip = ext_tbl%irank_import(i) + 1
-          num_recv_tmp(ip) = ext_tbl%istack_import(ip-1)                &
+          num_recv_tmp(ip) = ext_tbl%istack_import(i-1)                 &
      &                            + part_tbl%ntot_import
         end do
 !$omp end do
