@@ -20,7 +20,7 @@
 !!     &          ntot_import, irank_import, num_import, istack_import)
 !!
 !!      subroutine set_export_item_for_repart                           &
-!!     &         (my_rank, part_grp, num_send_tmp,                      &
+!!     &         (my_rank, nprocs, part_grp, num_send_tmp,              &
 !!     &          nrank_export, ntot_export, istack_export, item_export)
 !!      subroutine set_import_item_for_repart                           &
 !!     &         (NP, ntot_import, item_import, irev_import)
@@ -154,7 +154,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_export_item_for_repart                             &
-     &         (my_rank, part_grp, num_send_tmp,                        &
+     &         (my_rank, nprocs, part_grp, num_send_tmp,                &
      &          nrank_export, ntot_export, istack_export, item_export)
 !
       use t_group_data
@@ -162,7 +162,7 @@
       type(group_data), intent(in) :: part_grp
       integer, intent(in) :: my_rank, nprocs
       integer(kind = kint), intent(in)                                  &
-     &                     :: num_send_tmp(part_grp%num_grp)
+     &                     :: num_send_tmp(nprocs)
 !
       integer(kind = kint), intent(in) :: nrank_export, ntot_export
       integer(kind = kint), intent(in) :: istack_export(0:nrank_export)
@@ -172,8 +172,8 @@
       integer(kind = kint) :: i, ip, inum, icou, ist, num, jst
 !
       icou = 0
-      do i = 1, part_grp%num_grp
-        ip = 1 + mod(i+my_rank,part_grp%num_grp)
+      do i = 1, nprocs
+        ip = 1 + mod(i+my_rank,nprocs)
         if(num_send_tmp(ip) .gt. 0) then
           icou = icou + 1
           ist = part_grp%istack_grp(ip-1)

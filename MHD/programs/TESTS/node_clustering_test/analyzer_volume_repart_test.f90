@@ -227,7 +227,9 @@
       integer(kind = kint), allocatable :: idomain_new(:)
       integer(kind = kint), allocatable :: inod_new(:)
 !
-      integer(kind = kint) :: i, ist, inum, j
+      integer(kind = kint) :: i, ist, inum, j, ip
+      integer(kind = kint) :: iflag_self, nrank_export
+      integer(kind = kint) :: nrank_import
 !
 !
       allocate(num_send_tmp(part_grp%num_grp))
@@ -315,6 +317,7 @@
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(ist+1))
 !
+!
       deallocate(num_send_tmp, num_recv_tmp)
 !
       allocate(num_send_tmp(nprocs))
@@ -331,18 +334,15 @@
         num_recv_tmp(ip) = num_recv_tmp(ip) + 1
       end do
 !
-
-!      allocate(index_sort(ext_tbl%ntot_import))
-!!$omp parallel do
-!      do i = 1, ext_tbl%ntot_import
-!        index_sort(i) = i + xt_tbl%ntot_import
-!      end do
-!!$omp end parallel do
-!      call quicksort_int_w_index                                       &
-!     &   (ext_tbl%ntot_import, idomain_recv(ist+1),                    &
-!     &    ione, ext_tbl%ntot_import, index_sort)
+      call calypso_mpi_alltoall_one_int                                 &
+     &   (num_recv_tmp(1), num_send_tmp(1))
 !
-
+      call count_num_export_for_repart(my_rank, nprocs, num_send_tmp,   &
+     &                                 iflag_self, nrank_export)
+      call count_num_import_for_repart(nprocs, num_recv_tmp,            &
+     &                                 nrank_import)
+!
+      write(*,*) my_rank, 'num_copmm', iflag_self, nrank_export, nrank_import
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
