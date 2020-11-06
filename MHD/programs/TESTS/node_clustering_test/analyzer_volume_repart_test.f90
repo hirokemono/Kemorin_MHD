@@ -209,6 +209,7 @@
       use calypso_SR_type
       use select_copy_from_recv
       use nod_phys_send_recv
+      use reverse_SR_int
       use quicksort
 !
       type(node_data), intent(in) :: node
@@ -234,6 +235,8 @@
       integer(kind = kint), allocatable :: idx_sort(:)
       integer(kind = kint), allocatable :: inod_sort(:)
       integer(kind = kint), allocatable :: irank_sort(:)
+!
+      integer(kind = kint), allocatable :: inod_import(:)
 !
       integer(kind = kint) :: i, ist, inum, j, jst, ip
       integer(kind = kint) :: iflag_self, nrank_export
@@ -460,21 +463,19 @@
       new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
       new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
 !
+      allocate(inod_import(new_comm%ntot_import))
       call alloc_comm_table_item(new_comm)
 !
+!$omp parallel do
       do i = 1, new_comm%ntot_import
         new_comm%item_import(i) = i + new_node%internal_node
+        inod_import(i) = inod_recv(i+new_node%internal_node)
       end do
+!$omp end parallel do
 !
-      write(*,*) 'Check domain'
-      do ip = 1, new_comm%num_neib
-        do i = new_comm%istack_import(ip-1)+1, new_comm%istack_import(ip)
-          j = new_comm%item_import(i)
-          if(idomain_recv(j) .ne. new_comm%id_neib(ip)) then
-            write(*,*) my_rank, 'Failed at ', i,j,idomain_recv(j), new_comm%id_neib(ip)
-          end if
-        end do
-      end do
+      call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
+     &    new_comm%istack_import, new_comm%istack_export,               &
+     &    inod_import, SR_sig1, new_comm%item_export)
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
