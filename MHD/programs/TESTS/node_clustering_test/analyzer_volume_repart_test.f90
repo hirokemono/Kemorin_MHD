@@ -154,9 +154,8 @@
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
 !
       call const_comm_tbls_for_new_part(fem_T%mesh%nod_comm,            &
-     &    fem_T%mesh%node, part_grp, ext_grp, new_fem%mesh%node)
-!
-      call empty_comm_table(new_fem%mesh%nod_comm)
+     &    fem_T%mesh%node, part_grp, ext_grp,                           &
+     &    new_fem%mesh%nod_comm, new_fem%mesh%node)
 !
       new_fem%mesh%ele%numele =         fem_T%mesh%ele%numele
       new_fem%mesh%ele%first_ele_type = fem_T%mesh%ele%first_ele_type
@@ -177,8 +176,8 @@
       file_name = set_mesh_file_name                                    &
      &          (T_meshes%new_mesh_file_IO%file_prefix,                 &
      &           T_meshes%new_mesh_file_IO%iflag_format, my_rank)
-!      call write_mesh_file                                             &
-!     &   (my_rank, file_name, new_fem%mesh, new_fem%group)
+      call write_mesh_file                                             &
+     &   (my_rank, file_name, new_fem%mesh, new_fem%group)
 !      call dealloc_node_geometry_base(new_fem%mesh%node)
 !
       end subroutine initialize_volume_repartition
@@ -199,7 +198,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_comm_tbls_for_new_part                           &
-     &         (nod_comm, node, part_grp, ext_grp, new_node)
+     &         (nod_comm, node, part_grp, ext_grp, new_comm, new_node)
 !
       use t_comm_table
       use t_geometry_data
@@ -216,6 +215,7 @@
       type(group_data), intent(in) :: part_grp, ext_grp
 !
       type(calypso_comm_table) :: tmp_tbl
+      type(communication_table), intent(inout) :: new_comm
       type(node_data), intent(inout) :: new_node
 !
       type(calypso_comm_table) :: part_tbl
@@ -365,7 +365,7 @@
 !
       do i = 1, tmp_tbl%nrank_export
         if(tmp_tbl%irank_export(i) .ne. tmp_tbl%irank_import(i)) then
-          write(*,*) my_rank, 'processes to communication is wrong at'  &
+          write(*,*) my_rank, 'processes to communication is wrong at', &
      &            i, tmp_tbl%irank_export(i), tmp_tbl%irank_import(i)
         end if
       end do
@@ -386,6 +386,7 @@
 !%omp end parallel do
       new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
       new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+!
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
