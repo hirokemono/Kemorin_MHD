@@ -395,12 +395,6 @@
      &    inod_new(1), inod_recv(ist+1))
 !
 !
-      write(100+my_rank,*) new_node%numnod, new_node%internal_node
-      do i = 1, new_node%numnod
-        write(100+my_rank,*) i, new_node%inod_global(i), new_node%xx(i,1:3), &
-     &                      idomain_recv(i), inod_recv(i)
-      end do
-!
       allocate(num_send_tmp(nprocs))
       allocate(num_recv_tmp(nprocs))
 
@@ -466,6 +460,21 @@
       new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
       new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
 !
+      call alloc_comm_table_item(new_comm)
+!
+      do i = 1, new_comm%ntot_import
+        new_comm%item_import(i) = i + new_node%internal_node
+      end do
+!
+      write(*,*) 'Check domain'
+      do ip = 1, new_comm%num_neib
+        do i = new_comm%istack_import(ip-1)+1, new_comm%istack_import(ip)
+          j = new_comm%item_import(i)
+          if(idomain_recv(j) .ne. new_comm%id_neib(ip)) then
+            write(*,*) my_rank, 'Failed at ', i,j,idomain_recv(j), new_comm%id_neib(ip)
+          end if
+        end do
+      end do
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
