@@ -233,6 +233,7 @@
       integer(kind = kint) :: numnod, internal_node
       integer(kind = kint), allocatable :: idx_sort(:)
       integer(kind = kint), allocatable :: inod_sort(:)
+      integer(kind = kint), allocatable :: irank_sort(:)
 !
       integer(kind = kint) :: i, ist, inum, j, jst, ip
       integer(kind = kint) :: iflag_self, nrank_export
@@ -290,31 +291,33 @@
       allocate(num_recv_tmp(nprocs))
       allocate(idx_sort(ext_tbl%ntot_import))
       allocate(inod_sort(ext_tbl%ntot_import))
+      allocate(irank_sort(ext_tbl%ntot_import))
 !$omp parallel workshare
       num_send_tmp(1:nprocs) = 0
       num_recv_tmp(1:nprocs) = 0
 !$omp end parallel workshare
 !
       do i = 1, ext_tbl%ntot_import
-        ip = idomain_recv(i+internal_node) + 1
-        num_recv_tmp(ip) = num_recv_tmp(ip) + 1
+        ip = mod(idomain_recv(i+internal_node)+nprocs-my_rank,nprocs)
+        irank_sort(i) =    ip
+        num_recv_tmp(ip) = num_recv_tmp(ip+1) + 1
       end do
 !
 !$omp parallel do
       do i = 1, ext_tbl%ntot_import
         inod_sort(i) = inod_recv(i+internal_node)
-        idx_sort(i) = ext_tbl%item_import(i)
+        idx_sort(i) =  ext_tbl%item_import(i)
       end do
 !$omp end parallel do
 !
       call quicksort_w_index                                            &
-     &   (ext_tbl%ntot_import, idomain_recv(internal_node+1),           &
+     &   (ext_tbl%ntot_import, irank_sort(1),                           &
      &    ione, ext_tbl%ntot_import, idx_sort(1))
 !
 !$omp parallel do private(i,j)
       do i = 1, ext_tbl%ntot_import
         j = idx_sort(i)
-        inod_recv(i+internal_node) = inod_sort(j)
+        inod_recv(i+internal_node) =    inod_sort(j)
       end do
 !$omp end parallel do
 !
@@ -322,7 +325,7 @@
       do ip = 1, nprocs
         if(num_recv_tmp(ip) .gt. 0) then
           call quicksort_w_index                                        &
-     &       (num_recv_tmp(ip), inod_recv(ist+jst+1),                   &
+     &       (num_recv_tmp(ip), inod_recv(internal_node+jst+1),         &
      &        ione, num_recv_tmp(ip), idx_sort(jst+1))
           jst = jst + num_recv_tmp(ip)
         end if
