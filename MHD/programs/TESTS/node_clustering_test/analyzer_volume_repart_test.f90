@@ -206,6 +206,7 @@
       use t_calypso_comm_table
       use set_comm_tbl_to_new_part
       use const_comm_tbl_to_new_mesh
+      use calypso_mpi_int
       use calypso_SR_type
       use select_copy_from_recv
       use nod_phys_send_recv
