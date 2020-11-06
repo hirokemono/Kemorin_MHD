@@ -342,7 +342,10 @@
       call count_num_import_for_repart(nprocs, num_recv_tmp,            &
      &                                 nrank_import)
 !
-      write(*,*) my_rank, 'num_copmm', iflag_self, nrank_export, nrank_import
+      write(*,*) my_rank, 'num_comm', iflag_self, nrank_export, nrank_import
+!
+!      new_comm%num_neib = nrank_export
+!      call alloc_comm_table_num(new_comm)
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)
