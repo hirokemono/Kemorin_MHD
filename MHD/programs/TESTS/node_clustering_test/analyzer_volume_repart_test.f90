@@ -215,6 +215,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(group_data), intent(in) :: part_grp, ext_grp
 !
+      type(calypso_comm_table) :: tmp_tbl
       type(node_data), intent(inout) :: new_node
 !
       type(calypso_comm_table) :: part_tbl
@@ -338,15 +339,53 @@
       call calypso_mpi_alltoall_one_int                                 &
      &   (num_recv_tmp(1), num_send_tmp(1))
 !
+      tmp_tbl%iflag_self_copy = 0
       call count_num_export_for_repart(my_rank, nprocs, num_send_tmp,   &
-     &                                 iflag_self, nrank_export)
-      call count_num_import_for_repart(nprocs, num_recv_tmp,            &
-     &                                 nrank_import)
+     &    tmp_tbl%iflag_self_copy, tmp_tbl%nrank_export)
+      call count_num_import_for_repart                                  &
+     &   (nprocs, num_recv_tmp, tmp_tbl%nrank_import)
 !
-      write(*,*) my_rank, 'num_comm', iflag_self, nrank_export, nrank_import
+      if(tmp_tbl%nrank_export .ne. tmp_tbl%nrank_import) then
+        write(*,*) my_rank, 'num. of communication processes is wrong', &
+     &            tmp_tbl%nrank_export, tmp_tbl%nrank_import
+      end if
 !
-!      new_comm%num_neib = nrank_export
-!      call alloc_comm_table_num(new_comm)
+      call alloc_calypso_export_num(tmp_tbl)
+      call alloc_calypso_import_num(tmp_tbl)
+!
+      call set_istack_export_for_repart                                 &
+     &   (my_rank, int(part_grp%num_grp), num_send_tmp,                 &
+     &    tmp_tbl%nrank_export, tmp_tbl%ntot_export,                    &
+     &    tmp_tbl%irank_export, tmp_tbl%num_export,                     &
+     &    tmp_tbl%istack_export)
+      call set_istack_import_for_repart(my_rank, nprocs, num_recv_tmp,  &
+     &    tmp_tbl%nrank_import, tmp_tbl%ntot_import,                    &
+     &    tmp_tbl%irank_import, tmp_tbl%num_import,                     &
+     &    tmp_tbl%istack_import)
+!
+      do i = 1, tmp_tbl%nrank_export
+        if(tmp_tbl%irank_export(i) .ne. tmp_tbl%irank_import(i)) then
+          write(*,*) my_rank, 'processes to communication is wrong at'  &
+     &            i, tmp_tbl%irank_export(i), tmp_tbl%irank_import(i)
+        end if
+      end do
+!
+      new_comm%num_neib = tmp_tbl%nrank_export
+      call alloc_comm_table_num(new_comm)
+!
+      new_comm%istack_export(0) = 0
+      new_comm%istack_import(0) = 0
+!%omp parallel do
+      do i = 1, new_comm%num_neib
+        new_comm%id_neib(i) =       tmp_tbl%irank_export(i)
+        new_comm%num_export(i) =    tmp_tbl%num_export(i)
+        new_comm%istack_export(i) = tmp_tbl%istack_export(i)
+        new_comm%num_import(i) =    tmp_tbl%num_import(i)
+        new_comm%istack_import(i) = tmp_tbl%istack_import(i)
+      end do
+!%omp end parallel do
+      new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
+      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
 !
       deallocate(idomain_new,  inod_new)
       deallocate(idomain_recv, inod_recv)

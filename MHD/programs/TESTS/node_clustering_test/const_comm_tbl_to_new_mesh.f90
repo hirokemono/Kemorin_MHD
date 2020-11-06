@@ -84,8 +84,8 @@
 !
       call count_num_import_for_repart(int(part_grp%num_grp),           &
      &    num_recv_tmp, part_tbl%nrank_import)
-      call alloc_calypso_import_num(part_tbl)
 !
+      call alloc_calypso_import_num(part_tbl)
       call set_istack_import_for_repart(my_rank, nprocs, num_recv_tmp,  &
      &    part_tbl%nrank_import, part_tbl%ntot_import,                  &
      &    part_tbl%irank_import, part_tbl%num_import,                   &
