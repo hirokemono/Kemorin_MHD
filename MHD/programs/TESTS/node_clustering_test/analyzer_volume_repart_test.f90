@@ -341,31 +341,6 @@
       call SOLVER_SEND_RECV_int_type                                    &
      &   (node%numnod, nod_comm, inod_new)
 !
-      write(100+my_rank,*) 'inod_new', node%numnod, node%internal_node
-      do i = 1, node%numnod
-        ip = idomain_new(i)
-        write(100+my_rank,*) i, ip, inod_new(i), internal_list_new(ip+1)
-      end do
-      return
-!
-      write(100+my_rank,*) my_rank, 'inod_new idomain_new'
-      do i = 1, ext_tbl%nrank_export
-        ip = ext_tbl%irank_export(i)
-        do j = ext_tbl%istack_export(i-1)+1, ext_tbl%istack_export(i)
-          inod = ext_tbl%item_export(j)
-          jp = idomain_new(inod)
-          write(100+my_rank,*) i, inod_new(inod), idomain_new(inod), &
-     &        ip, internal_list_new(jp+1)
-      end do
-      end do
-      return
-      deallocate(num_send_tmp, num_recv_tmp)
-!
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
-     &    node%numnod, internal_node, idomain_new(1), idomain_recv(1))
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
-     &    node%numnod, internal_node, inod_new(1), inod_recv(1))
-!
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    idomain_new(1), idomain_recv(internal_node+1))
@@ -373,13 +348,16 @@
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(internal_node+1))
 !
+      deallocate(num_send_tmp, num_recv_tmp)
+!
       write(100+my_rank,*) my_rank, 'inod_new idomain_new'
-      do i = 1, ext_tbl%nrank_export
-        ip = ext_tbl%irank_export(i)
-        do j = ext_tbl%istack_export(i-1)+1, ext_tbl%istack_export(i)
-          inod = ext_tbl%item_export(j)
+      do i = 1, ext_tbl%nrank_import
+        ip = ext_tbl%irank_import(i)
+        do j = ext_tbl%istack_import(i-1)+1, ext_tbl%istack_import(i)
+          inod = ext_tbl%item_import(j)
           jp = idomain_new(inod)
-          write(100+my_rank,*) i, inod_new(inod), idomain_new(inod), &
+          write(100+my_rank,*) i, inod_recv(inod+internal_node),   &
+     &        idomain_recv(inod+internal_node), &
      &        ip, internal_list_new(jp+1)
       end do
       end do
