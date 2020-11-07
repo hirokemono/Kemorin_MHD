@@ -57,6 +57,7 @@
       use t_jacobians
       use t_fem_gauss_int_coefs
       use t_next_node_ele_4_node
+      use t_calypso_comm_table
 !
       use mpi_load_mesh_data
       use mesh_file_IO
@@ -80,6 +81,10 @@
       use set_mesh_file_names
       use mesh_file_IO
 !
+      use calypso_SR_type
+      use select_copy_from_recv
+      use nod_phys_send_recv
+!
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
@@ -92,6 +97,15 @@
 !
       type(group_data) :: part_grp
       type(group_data) :: ext_grp
+!
+      type(calypso_comm_table) :: part_tbl
+      type(calypso_comm_table) :: ele_tbl
+!
+      integer(kind = kint), allocatable :: idomain_new(:)
+      integer(kind = kint), allocatable :: inod_new(:)
+!
+      integer(kind = kint_gl), allocatable :: inod_gl_test(:)
+      integer(kind = kint) :: inod
 !
       character(len=kchara) :: file_name
 !
@@ -153,14 +167,47 @@
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
 !
-      call const_comm_tbls_for_new_part(fem_T%mesh%nod_comm,            &
-     &    fem_T%mesh%node, part_grp, ext_grp,                           &
-     &    new_fem%mesh%nod_comm, new_fem%mesh%node)
 !
-      new_fem%mesh%ele%numele =         fem_T%mesh%ele%numele
-      new_fem%mesh%ele%first_ele_type = fem_T%mesh%ele%first_ele_type
-      new_fem%mesh%ele%nnod_4_ele                                       &
-     &     = set_nnod_4_ele_by_eletype(new_fem%mesh%ele%first_ele_type)
+      allocate(idomain_new(fem_T%mesh%node%numnod))
+      allocate(inod_new(fem_T%mesh%node%numnod))
+!$omp parallel workshare
+      idomain_new(1:fem_T%mesh%node%numnod) = -1
+      inod_new(1:fem_T%mesh%node%numnod) =     0
+!$omp end parallel workshare
+!
+      call const_comm_tbls_for_new_part(fem_T%mesh%nod_comm,            &
+     &    fem_T%mesh%node, part_grp, ext_grp, idomain_new, inod_new,    &
+     &    new_fem%mesh%nod_comm, new_fem%mesh%node, part_tbl)
+      return
+!
+      call const_new_element_connect(fem_T%mesh, next_tbl_T%neib_ele,   &
+     &    part_tbl, idomain_new, inod_new, ele_tbl, new_fem%mesh)
+!
+      allocate(inod_gl_test(new_fem%mesh%node%numnod))
+      inod_gl_test(1:new_fem%mesh%node%numnod) = 0
+!
+      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
+     &    fem_T%mesh%node%numnod, new_fem%mesh%node%internal_node,      &
+     &    fem_T%mesh%node%inod_global(1), inod_gl_test(1))
+      call SOLVER_SEND_RECV_int8_type                                   &
+     &  (new_fem%mesh%node%numnod, new_fem%mesh%nod_comm, inod_gl_test)
+!
+      write(100+my_rank,*) my_rank, 'new_fem%mesh%nod_comm%item_export'
+      do inod = 1, new_fem%mesh%nod_comm%ntot_export
+        write(100+my_rank,*) inod, new_fem%mesh%nod_comm%item_export(inod), new_fem%mesh%node%internal_node
+      end do
+      write(100+my_rank,*) my_rank, 'new_fem%mesh%nod_comm%item_import'
+      do inod = 1, new_fem%mesh%nod_comm%ntot_import
+        write(100+my_rank,*) inod, new_fem%mesh%nod_comm%item_import(inod), new_fem%mesh%node%internal_node
+      end do
+      write(100+my_rank,*) my_rank, 'Check node transfer'
+      do inod = new_fem%mesh%node%internal_node+1, new_fem%mesh%node%numnod
+        if(inod_gl_test(inod)                                           &
+     &       .ne. new_fem%mesh%node%inod_global(inod)) then
+          write(100+my_rank,*) my_rank, 'Wrong transfer at', inod,    &
+     &        new_fem%mesh%node%inod_global(inod), inod_gl_test(inod)
+        end if
+      end do
 !
       new_fem%group%nod_grp%num_grp = 0
       call alloc_group_num(new_fem%group%nod_grp)
@@ -198,7 +245,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_comm_tbls_for_new_part                           &
-     &         (nod_comm, node, part_grp, ext_grp, new_comm, new_node)
+     &         (nod_comm, node, part_grp, ext_grp,                      &
+     &          idomain_new, inod_new, new_comm, new_node, part_tbl)
 !
       use t_comm_table
       use t_geometry_data
@@ -210,26 +258,28 @@
       use select_copy_from_recv
       use nod_phys_send_recv
       use reverse_SR_int
+      use solver_SR_type
       use quicksort
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(group_data), intent(in) :: part_grp, ext_grp
 !
-      type(calypso_comm_table) :: tmp_tbl
       type(communication_table), intent(inout) :: new_comm
       type(node_data), intent(inout) :: new_node
+      type(calypso_comm_table), intent(inout) :: part_tbl
 !
-      type(calypso_comm_table) :: part_tbl
+      integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(inout) :: inod_new(node%numnod)
+!
+      type(calypso_comm_table) :: tmp_tbl
       type(calypso_comm_table) :: ext_tbl
 !
       integer(kind = kint), allocatable :: num_send_tmp(:)
       integer(kind = kint), allocatable :: num_recv_tmp(:)
 !
-      integer(kind = kint), allocatable :: inod_recv(:)
       integer(kind = kint), allocatable :: idomain_recv(:)
-      integer(kind = kint), allocatable :: idomain_new(:)
-      integer(kind = kint), allocatable :: inod_new(:)
+      integer(kind = kint), allocatable :: inod_recv(:)
 !
       integer(kind = kint) :: numnod, internal_node
       integer(kind = kint), allocatable :: idx_sort(:)
@@ -237,8 +287,10 @@
       integer(kind = kint), allocatable :: irank_sort(:)
 !
       integer(kind = kint), allocatable :: inod_import(:)
+      integer(kind = kint), allocatable :: internal_list_new(:)
+      integer(kind = kint), allocatable :: internal_list_org(:)
 !
-      integer(kind = kint) :: i, ist, inum, j, jst, ip
+      integer(kind = kint) :: i, ist, inum, j, jst, ip, inod, jp
       integer(kind = kint) :: iflag_self, nrank_export
       integer(kind = kint) :: nrank_import
 !
@@ -261,22 +313,53 @@
       call send_back_ext_istack_import                                  &
      &   (part_grp, part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
 !
-!
-      allocate(idomain_new(node%numnod))
-      allocate(inod_new(node%numnod))
-!$omp parallel workshare
-      idomain_new(1:node%numnod) = -1
-      inod_new(1:node%numnod) =     0
-!$omp end parallel workshare
-!
-      call set_new_subdomain_id(nod_comm, node, part_grp,               &
-     &    num_send_tmp, inod_new, idomain_new)
-      deallocate(num_send_tmp, num_recv_tmp)
-!
       internal_node =                part_tbl%ntot_import
       numnod = ext_tbl%ntot_import + part_tbl%ntot_import
+      allocate(internal_list_org(nprocs))
+      allocate(internal_list_new(nprocs))
       allocate(inod_recv(numnod))
       allocate(idomain_recv(numnod))
+      call calypso_mpi_allgather_one_int                   &
+     &   (node%internal_node, internal_list_org)
+      call calypso_mpi_allgather_one_int                   &
+     &   (internal_node, internal_list_new)
+!
+!$omp parallel do
+      do inod = 1, internal_node
+        inod_recv(inod) =    inod
+        idomain_recv(inod) = my_rank
+      end do
+!$omp end parallel do
+!
+      call calypso_rev_SR_type_int(part_tbl,                            &
+     &    internal_node, node%numnod, inod_recv(1), inod_new(1))
+      call calypso_rev_SR_type_int(part_tbl,                            &
+     &    internal_node, node%numnod, idomain_recv(1), idomain_new(1))
+!
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, idomain_new)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, inod_new)
+!
+      write(100+my_rank,*) 'inod_new', node%numnod, node%internal_node
+      do i = 1, node%numnod
+        ip = idomain_new(i)
+        write(100+my_rank,*) i, ip, inod_new(i), internal_list_new(ip+1)
+      end do
+      return
+!
+      write(100+my_rank,*) my_rank, 'inod_new idomain_new'
+      do i = 1, ext_tbl%nrank_export
+        ip = ext_tbl%irank_export(i)
+        do j = ext_tbl%istack_export(i-1)+1, ext_tbl%istack_export(i)
+          inod = ext_tbl%item_export(j)
+          jp = idomain_new(inod)
+          write(100+my_rank,*) i, inod_new(inod), idomain_new(inod), &
+     &        ip, internal_list_new(jp+1)
+      end do
+      end do
+      return
+      deallocate(num_send_tmp, num_recv_tmp)
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, internal_node, idomain_new(1), idomain_recv(1))
@@ -289,6 +372,18 @@
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(internal_node+1))
+!
+      write(100+my_rank,*) my_rank, 'inod_new idomain_new'
+      do i = 1, ext_tbl%nrank_export
+        ip = ext_tbl%irank_export(i)
+        do j = ext_tbl%istack_export(i-1)+1, ext_tbl%istack_export(i)
+          inod = ext_tbl%item_export(j)
+          jp = idomain_new(inod)
+          write(100+my_rank,*) i, inod_new(inod), idomain_new(inod), &
+     &        ip, internal_list_new(jp+1)
+      end do
+      end do
+      return
 !
       allocate(num_send_tmp(nprocs))
       allocate(num_recv_tmp(nprocs))
@@ -376,10 +471,6 @@
       call calypso_SR_type_int8(iflag_import_item, ext_tbl,             &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%inod_global(1), new_node%inod_global(ist+1))
-!
-      call calypso_SR_type_int8(iflag_import_item, ext_tbl,             &
-     &    node%numnod, ext_tbl%ntot_import,                             &
-     &    node%inod_global(1), new_node%inod_global(ist+1))
       call calypso_SR_type_1(iflag_import_item, ext_tbl,                &
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    node%xx(1,1), new_node%xx(ist+1,1))
@@ -397,6 +488,25 @@
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(ist+1))
 !
+!
+      allocate(internal_list_org(nprocs))
+      allocate(internal_list_new(nprocs))
+      call calypso_mpi_allgather_one_int                   &
+     &   (node%internal_node, internal_list_org)
+      call calypso_mpi_allgather_one_int                   &
+     &   (new_node%internal_node, internal_list_new)
+!
+      write(100+my_rank,*) my_rank, 'inod_import'
+      write(100+my_rank,*) 'new_comm%id_neib(inum)', new_comm%id_neib(1: new_comm%num_neib)
+      write(100+my_rank,*) 'new_comm%istack_import(inum)', new_comm%istack_import(1: new_comm%num_neib)
+      do i = 1, new_comm%num_neib
+        do inum = new_comm%istack_import(i-1)+1, new_comm%istack_import(i)
+          write(100+my_rank,*) i, new_comm%id_neib(i), &
+     &        internal_list_new(new_comm%id_neib(i)+1), &
+     &        inod_recv(inum+new_node%internal_node), &
+     &        idomain_recv(inum+new_node%internal_node)
+        end do
+      end do
 !
       allocate(num_send_tmp(nprocs))
       allocate(num_recv_tmp(nprocs))
@@ -477,7 +587,12 @@
      &    new_comm%istack_import, new_comm%istack_export,               &
      &    inod_import, SR_sig1, new_comm%item_export)
 !
-      deallocate(idomain_new,  inod_new)
+!
+      write(100+my_rank,*) my_rank, 'new_comm%item_export'
+      do i = 1, new_comm%ntot_export
+        write(100+my_rank,*) i, new_comm%item_export(i), new_node%internal_node
+      end do
+!
       deallocate(idomain_recv, inod_recv)
       deallocate(num_send_tmp, num_recv_tmp)
 !
@@ -486,54 +601,236 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_new_subdomain_id(nod_comm, node, part_grp,         &
-     &          num_send_tmp, inod_new, idomain_new)
+      subroutine const_new_element_connect(mesh, neib_ele, part_tbl, &
+     &          idomain_new, inod_new, ele_tbl, new_mesh)
 !
-      use t_comm_table
-      use t_geometry_data
+      use t_mesh_data
+      use t_next_node_ele_4_node
       use t_calypso_comm_table
 !
-      use solver_SR_type
+      use calypso_mpi_int
+      use calypso_SR_type
+      use select_copy_from_recv
+      use set_comm_tbl_to_new_part
 !
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(group_data), intent(in) :: part_grp
-      integer(kind = kint), intent(in)                                  &
-     &                     :: num_send_tmp(part_grp%num_grp)
+      type(mesh_geometry), intent(in) :: mesh
+      type(element_around_node), intent(in) :: neib_ele
+      type(calypso_comm_table), intent(in) :: part_tbl
+      integer(kind = kint), intent(in) :: idomain_new(mesh%node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(mesh%node%numnod)
 !
-      integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(inout) :: inod_new(node%numnod)
+      type(calypso_comm_table), intent(inout) :: ele_tbl
+      type(mesh_geometry), intent(inout) :: new_mesh
 !
-      integer(kind = kint) :: inum, inod, ist, num, jst
-      integer(kind = kint) :: igrp
+      integer(kind = kint), allocatable :: num_send_tmp(:)
+      integer(kind = kint), allocatable :: num_recv_tmp(:)
 !
+      integer(kind = kint), allocatable :: iflag_ele(:)
+      integer(kind = kint), allocatable :: ie_to_new(:,:)
+!
+      integer(kind = kint), allocatable :: ie_newnod(:,:)
+      integer(kind = kint), allocatable :: ie_newdomain(:,:)
+!
+      integer(kind = kint), allocatable :: ie_domain_recv(:,:)
+!
+      integer(kind = kint) :: icou, inum, i, ist, ied, ntot
+      integer(kind = kint) :: ip, inod, iele, k1, ipart
+      integer(kind = kint) :: jnum, j, jst, jed, jele
+!
+!
+!
+!      allocate(ie_to_new(mesh%ele%numele,mesh%ele%nnod_4_ele))
+!
+      allocate(num_send_tmp(nprocs))
+      allocate(num_recv_tmp(nprocs))
 !
 !$omp parallel workshare
-      idomain_new(1:node%numnod) = -1
-      inod_new(1:node%numnod) =     0
+        num_send_tmp(1:nprocs) = 0
+        num_recv_tmp(1:nprocs) = 0
 !$omp end parallel workshare
 !
-      do igrp = 1, part_grp%num_grp
-        jst = num_send_tmp(igrp)
-        ist = part_grp%istack_grp(igrp-1)
-        num = part_grp%istack_grp(igrp  ) - ist
-!$omp parallel do private(inum,inod)
-        do inum = 1, num
-          if(jst .lt. 0) write(*,*)                                     &
-     &            'Wring in recieved stack', igrp, jst
-          inod = part_grp%item_grp(ist+inum)
-          idomain_new(inod) = igrp - 1
-          inod_new(inod) =    jst + inum
+      allocate(iflag_ele(mesh%ele%numele))
+      do i = 1, part_tbl%nrank_export
+!$omp parallel workshare
+        iflag_ele(1:mesh%ele%numele) = 0
+!$omp end parallel workshare
+!
+        ip =  part_tbl%irank_export(i) + 1
+        ist = part_tbl%istack_export(i-1) + 1
+        ied = part_tbl%istack_export(i)
+        do inum = ist, ied
+          inod = part_tbl%item_export(inum)
+          jst = neib_ele%istack_4_node(inod-1) + 1
+          jed = neib_ele%istack_4_node(inod)
+          do jnum = jst, jed
+            jele = neib_ele%iele_4_node(jnum)
+            if(mesh%ele%ie(jele,1) .le. mesh%node%internal_node) then
+              iflag_ele(jele) = 1
+            end if
+          end do
         end do
-!$omp end parallel do
+!
+        ntot = 0
+!!$omp parallel do private(iele) reduction(+:ntot)
+        do iele = 1, mesh%ele%numele
+          ntot = ntot + iflag_ele(iele)
+        end do
+!!$omp end parallel do
+        num_send_tmp(ip) = ntot
       end do
 !
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, idomain_new)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_new)
+      call calypso_mpi_alltoall_one_int                                 &
+     &   (num_send_tmp(1), num_recv_tmp(1))
+      write(*,*) my_rank, 'internal_ele',  &
+     &                    mesh%ele%internal_ele, sum(num_send_tmp)
+      write(*,*) my_rank, 'num_recv_tmp',         &
+     &                    mesh%node%numnod, sum(num_recv_tmp)
+      write(100+my_rank,*) my_rank, 'num_send_tmp', num_send_tmp
+      write(100+my_rank,*) my_rank, 'num_recv_tmp', num_recv_tmp
+      return
 !
-      end subroutine set_new_subdomain_id
+      ele_tbl%iflag_self_copy = 0
+      call count_num_export_for_repart(my_rank, nprocs, num_send_tmp,   &
+     &    ele_tbl%iflag_self_copy, ele_tbl%nrank_export)
+      call count_num_import_for_repart(nprocs, num_recv_tmp,            &
+     &                                 ele_tbl%nrank_import)
+!
+      call alloc_calypso_export_num(ele_tbl)
+      call alloc_calypso_import_num(ele_tbl)
+!
+      call set_istack_export_for_repart(my_rank, nprocs, num_send_tmp,  &
+     &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
+     &    ele_tbl%irank_export, ele_tbl%num_export,                     &
+     &    ele_tbl%istack_export)
+      call set_istack_import_for_repart(my_rank, nprocs, num_recv_tmp,  &
+     &    ele_tbl%nrank_import, ele_tbl%ntot_import,                    &
+     &    ele_tbl%irank_import, ele_tbl%num_import,                     &
+     &    ele_tbl%istack_import)
+!
+      call alloc_calypso_export_item(ele_tbl)
+      call alloc_calypso_import_item(ele_tbl%ntot_import, ele_tbl)
+      call set_import_item_for_repart                                   &
+     &     (part_tbl%ntot_import, part_tbl%ntot_import,                 &
+     &      part_tbl%item_import, part_tbl%irev_import)
+!
+!
+      do i = 1, ele_tbl%nrank_export
+        ipart = 0
+        do j = i, part_tbl%nrank_export
+          if(ele_tbl%irank_export(i)                                    &
+     &         .eq. part_tbl%irank_export(i)) then
+            ipart = j
+            exit
+          end if
+        end do
+!
+!$omp parallel workshare
+        iflag_ele(1:mesh%ele%numele) = 0
+!$omp end parallel workshare
+!
+        ip =  ele_tbl%irank_export(i) + 1
+        ist = part_tbl%istack_export(ipart-1) + 1
+        ied = part_tbl%istack_export(ipart)
+        do inum = ist, ied
+          inod = part_tbl%item_export(inum)
+          jst = neib_ele%istack_4_node(inod-1) + 1
+          jed = neib_ele%istack_4_node(inod)
+          do jnum = jst, jed
+            jele = neib_ele%iele_4_node(jnum)
+            if(mesh%ele%ie(jele,1) .le. mesh%node%internal_node) then
+              iflag_ele(jele) = 1
+            end if
+          end do
+        end do
+!
+        icou = ele_tbl%istack_export(i-1)
+        do iele = 1, mesh%ele%numele
+          if(iflag_ele(iele) .gt. 0) then
+            icou = icou + 1
+            ele_tbl%item_export(icou) = iele
+          end if
+        end do
+      end do
+!
+!
+      allocate(ie_newnod(mesh%ele%numele,mesh%ele%nnod_4_ele))
+      allocate(ie_newdomain(mesh%ele%numele,mesh%ele%nnod_4_ele))
+!
+!$omp parallel
+      do k1 = 1, mesh%ele%nnod_4_ele
+!$omp do private(iele,inod)
+        do iele = 1, mesh%ele%numele
+          inod = mesh%ele%ie(iele,k1)
+          ie_newnod(iele,k1) =    inod_new(inod)
+          ie_newdomain(iele,k1) = idomain_new(inod)
+        end do
+!$omp end do
+      end do
+!$omp end parallel
+!
+!
+      new_mesh%ele%numele =     ele_tbl%ntot_import
+      new_mesh%ele%nnod_4_ele = mesh%ele%nnod_4_ele
+      call allocate_ele_connect_type(new_mesh%ele)
+      allocate(ie_domain_recv(new_mesh%ele%numele,                 &
+     &                        new_mesh%ele%nnod_4_ele))
+!
+!$omp parallel workshare
+      new_mesh%ele%elmtyp(1:new_mesh%ele%numele) = mesh%ele%elmtyp(1)
+      new_mesh%ele%nodelm(1:new_mesh%ele%numele) = mesh%ele%nodelm(1)
+!$omp end parallel workshare
+!
+      call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
+     &    mesh%ele%numele, new_mesh%ele%numele,                         &
+     &    mesh%ele%iele_global(1), new_mesh%ele%iele_global(1))
+!
+      do k1 = 1, mesh%ele%nnod_4_ele
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      mesh%ele%numele, new_mesh%ele%numele,                       &
+     &      ie_newnod(1,k1), new_mesh%ele%ie(1,k1))
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      mesh%ele%numele, new_mesh%ele%numele,                       &
+     &      ie_newdomain(1,k1), ie_domain_recv(1,k1))
+      end do
+!
+
+      end subroutine const_new_element_connect
+!
+! ----------------------------------------------------------------------
+!
+      subroutine calypso_rev_SR_type_int                                &
+     &         (cps_tbl, nnod_new, nnod_org, iX_new, iX_org)
+!
+      use m_solver_SR
+      use t_calypso_comm_table
+      use calypso_SR_int
+      use select_copy_from_recv
+!
+      type(calypso_comm_table), intent(in) :: cps_tbl
+      integer(kind = kint), intent(in) :: nnod_org, nnod_new
+      integer(kind = kint), intent(in) :: iX_new(nnod_new)
+!
+      integer(kind = kint), intent(inout) :: iX_org(nnod_org)
+!
+      integer(kind = kint), allocatable :: irev_tmp(:)
+!
+      allocate(irev_tmp(nnod_org))
+!$omp parallel workshare
+      irev_tmp(1:nnod_org) = 0
+!$omp end parallel workshare
+!
+      call calypso_send_recv_int(iflag_import_item, nnod_new, nnod_org, &
+     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
+     &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
+     &    cps_tbl%item_import,                                          &
+     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
+     &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
+     &    cps_tbl%item_export, irev_tmp,                                &
+     &    SR_sig1, SR_i1, iX_new, iX_org)
+!
+      deallocate(irev_tmp)
+!
+      end subroutine calypso_rev_SR_type_int
 !
 ! ----------------------------------------------------------------------
 !
