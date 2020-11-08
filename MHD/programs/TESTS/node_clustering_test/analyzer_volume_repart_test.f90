@@ -49,6 +49,7 @@
       use set_istack_4_domain_block
       use repart_in_xyz_by_volume
       use external_group_4_new_part
+      use ext_of_ext_grp_4_new_part
 !
       use t_file_IO_parameter
       use t_mesh_data
