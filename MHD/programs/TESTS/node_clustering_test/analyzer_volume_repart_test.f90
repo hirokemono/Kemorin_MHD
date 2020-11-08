@@ -319,7 +319,7 @@
 !     &   (part_grp, part_tbl, ext_ext_tbl, num_recv_tmp, num_send_tmp)
       deallocate(num_send_tmp, num_recv_tmp)
 !
-      write(*,*) my_rank, 'num_import', part_tbl%ntot_import, 
+      write(*,*) my_rank, 'num_import', part_tbl%ntot_import,   &
 &               ext_int_tbl%ntot_import, ext_ext_tbl%ntot_import
 !
 !
