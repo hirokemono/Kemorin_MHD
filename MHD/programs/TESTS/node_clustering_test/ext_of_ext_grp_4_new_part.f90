@@ -117,8 +117,13 @@
       istack_ext_grp(0) = 0
       do igrp = 1, part_grp%num_grp
 !$omp parallel workshare
-        iflag_nod(1:node%internal_node) = 1
+        iflag_nod(1:node%internal_node) = 0
 !$omp end parallel workshare
+        if(node%numnod .gt. node%internal_node) then
+!$omp parallel workshare
+          iflag_nod(node%internal_node+1:node%numnod) = 1
+!$omp end parallel workshare
+        end if
 !
         icou = istack_ext_grp(igrp-1)
         ist = part_grp%istack_grp(igrp-1) + 1
@@ -174,8 +179,13 @@
 !
       do igrp = 1, part_grp%num_grp
 !$omp parallel workshare
-        iflag_nod(1:node%internal_node) = 1
+        iflag_nod(1:node%internal_node) = 0
 !$omp end parallel workshare
+        if(node%numnod .gt. node%internal_node) then
+!$omp parallel workshare
+          iflag_nod(node%internal_node+1:node%numnod) = 1
+!$omp end parallel workshare
+        end if
 !
         icou = istack_ext_grp(igrp-1)
         ist = part_grp%istack_grp(igrp-1) + 1
