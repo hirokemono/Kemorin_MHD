@@ -106,8 +106,13 @@
       integer(kind = kint), allocatable :: idomain_new(:)
       integer(kind = kint), allocatable :: inod_new(:)
 !
+      integer(kind = kint) :: ntot_ele_nod
+      integer(kind = kint_gl), allocatable :: neib_ele_nod(:)
+      integer(kind = kint_gl), allocatable :: istack_ele_nod(:)
+      integer(kind = kint_gl), allocatable :: iele_on_nod(:)
+!
       integer(kind = kint_gl), allocatable :: inod_gl_test(:)
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, iele, k1
 !
       character(len=kchara) :: file_name
 !
@@ -179,6 +184,50 @@
       idomain_new(1:fem_T%mesh%node%numnod) = -1
       inod_new(1:fem_T%mesh%node%numnod) =     0
 !$omp end parallel workshare
+!
+      allocate(neib_ele_nod(fem_T%mesh%node%numnod))
+      allocate(istack_ele_nod(0:fem_T%mesh%node%numnod))
+      
+      neib_ele_nod(1:fem_T%mesh%node%numnod) = 0
+      do k1 = 1, fem_T%mesh%ele%nnod_4_ele
+        do iele = 1, fem_T%mesh%ele%numele
+          inod = fem_T%mesh%ele%ie(iele,k1)
+          neib_ele_nod(inod) = neib_ele_nod(inod) + 1
+        end do
+      end do
+!
+      istack_ele_nod(0) = 0
+      do inod = 1, fem_T%mesh%node%numnod
+        istack_ele_nod(inod) = istack_ele_nod(inod-1) + neib_ele_nod(inod)
+      end do
+      ntot_ele_nod = istack_ele_nod(fem_T%mesh%node%numnod)
+!
+      allocate(iele_on_nod(ntot_ele_nod))
+      neib_ele_nod(1:fem_T%mesh%node%numnod) = 0
+      do k1 = 1, fem_T%mesh%ele%nnod_4_ele
+        do iele = 1, fem_T%mesh%ele%numele
+          inod = fem_T%mesh%ele%ie(iele,k1)
+          neib_ele_nod(inod) = neib_ele_nod(inod) + 1
+          iele_on_nod(istack_ele_nod(inod-1)+neib_ele_nod(inod)) = iele
+        end do
+      end do
+!
+      write(*,*) my_rank, 'ntot_ele_nod', &
+     &                   ntot_ele_nod - next_tbl_T%neib_ele%ntot
+      do inod = 1, fem_T%mesh%node%numnod
+        if(istack_ele_nod(inod) - next_tbl_T%neib_ele%istack_4_node(inod) .ne. 0) then
+          write(*,*) 'TAko!', inod, istack_ele_nod(inod) - next_tbl_T%neib_ele%istack_4_node(inod)
+        end if
+      end do
+      return
+!
+      do inod = 1, fem_T%mesh%node%numnod
+        do k1 = istack_ele_nod(inod-1)+1, istack_ele_nod(inod)
+          if(iele_on_nod(k1) - next_tbl_T%neib_ele%iele_4_node(k1) .ne. 0) then
+            write(*,*) 'Ika!', inod, iele_on_nod(k1) - next_tbl_T%neib_ele%iele_4_node(k1)
+         end if
+        end do
+      end do
 !
       call const_comm_tbls_for_new_part(fem_T%mesh%nod_comm,            &
      &    fem_T%mesh%node, part_grp, ext_int_grp, ext_ext_grp,          &
@@ -786,8 +835,6 @@
         end if
       end do
 !
-      return
-!
 !      allocate(ie_to_new(mesh%ele%numele,mesh%ele%nnod_4_ele))
 !
       allocate(num_send_tmp(nprocs))
@@ -804,17 +851,14 @@
         iflag_ele(1:mesh%ele%numele) = 0
 !$omp end parallel workshare
 !
-        ip =  part_tbl%irank_export(i) + 1
-        ist = part_tbl%istack_export(i-1) + 1
-        ied = part_tbl%istack_export(i)
-        do inum = ist, ied
-          inod = part_tbl%item_export(inum)
-          jst = neib_ele%istack_4_node(inod-1) + 1
-          jed = neib_ele%istack_4_node(inod)
-          do jnum = jst, jed
-            jele = neib_ele%iele_4_node(jnum)
-            if(mesh%ele%ie(jele,1) .le. mesh%node%internal_node) then
-              iflag_ele(jele) = 1
+        ip =  part_tbl%irank_export(i)
+        do iele = 1, mesh%ele%numele
+          if(mesh%ele%ie(iele,1) .gt. mesh%node%internal_node) cycle
+          do k1 = 1, mesh%ele%nnod_4_ele
+            inod = mesh%ele%ie(iele,k1)
+            if(idomain_new(inod) .eq. ip) then
+              iflag_ele(iele) = 1
+              exit
             end if
           end do
         end do
@@ -825,7 +869,7 @@
           ntot = ntot + iflag_ele(iele)
         end do
 !!$omp end parallel do
-        num_send_tmp(ip) = ntot
+        num_send_tmp(ip+1) = ntot
       end do
 !
       call calypso_mpi_alltoall_one_int                                 &
@@ -876,17 +920,14 @@
         iflag_ele(1:mesh%ele%numele) = 0
 !$omp end parallel workshare
 !
-        ip =  ele_tbl%irank_export(i) + 1
-        ist = part_tbl%istack_export(ipart-1) + 1
-        ied = part_tbl%istack_export(ipart)
-        do inum = ist, ied
-          inod = part_tbl%item_export(inum)
-          jst = neib_ele%istack_4_node(inod-1) + 1
-          jed = neib_ele%istack_4_node(inod)
-          do jnum = jst, jed
-            jele = neib_ele%iele_4_node(jnum)
-            if(mesh%ele%ie(jele,1) .le. mesh%node%internal_node) then
-              iflag_ele(jele) = 1
+        ip =  ele_tbl%irank_export(i)
+        do iele = 1, mesh%ele%numele
+          if(mesh%ele%ie(iele,1) .gt. mesh%node%internal_node) cycle
+          do k1 = 1, mesh%ele%nnod_4_ele
+            inod = mesh%ele%ie(iele,k1)
+            if(idomain_new(inod) .eq. ip) then
+              iflag_ele(iele) = 1
+              exit
             end if
           end do
         end do
