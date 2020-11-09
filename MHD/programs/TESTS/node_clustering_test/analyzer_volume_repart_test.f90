@@ -48,8 +48,6 @@
       use t_repartition_by_volume
       use set_istack_4_domain_block
       use repart_in_xyz_by_volume
-      use external_group_4_new_part
-      use ext_of_ext_grp_4_new_part
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -162,18 +160,6 @@
 !       Re-partitioning
       call s_repartition_by_volume(fem_T%mesh, T_meshes, part_grp)
 !
-!       Re-partitioning for external node
-      call const_external_grp_4_new_part                                &
-     &   (fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes,               &
-     &    part_grp, ext_int_grp)
-      call const_ext_of_ext_grp_new_part                                &
-     &   (fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes,               &
-     &    part_grp, ext_ext_grp)
-!
-!       Append group data
-      call s_append_group_data(part_grp, fem_T%group%nod_grp)
-!
-!
       allocate(idomain_new(fem_T%mesh%node%numnod))
       allocate(inod_new(fem_T%mesh%node%numnod))
 !$omp parallel workshare
@@ -184,7 +170,7 @@
 !
 !
       call const_comm_tbls_for_new_part(fem_T%mesh%nod_comm,            &
-     &    fem_T%mesh%node, part_grp, ext_int_grp, ext_ext_grp,          &
+     &    fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes, part_grp, ext_int_grp, ext_ext_grp,          &
      &    idomain_new, inod_new, new_fem%mesh%nod_comm,                 &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
 !
@@ -246,7 +232,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_comm_tbls_for_new_part                           &
-     &         (nod_comm, node, part_grp, ext_int_grp, ext_ext_grp,     &
+     &         (nod_comm, node, neib_nod, part_param, part_grp, ext_int_grp, ext_ext_grp,     &
      &          idomain_new, inod_new, new_comm, new_node,              &
      &          part_tbl, ext_int_tbl)
 !
@@ -262,11 +248,15 @@
       use reverse_SR_int
       use solver_SR_type
       use quicksort
+      use external_group_4_new_part
+      use ext_of_ext_grp_4_new_part
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      type(mesh_test_files_param), intent(in) :: part_param
       type(group_data), intent(in) :: part_grp
-      type(group_data), intent(in) :: ext_int_grp, ext_ext_grp
+      type(group_data), intent(inout) :: ext_int_grp, ext_ext_grp
 !
       type(communication_table), intent(inout) :: new_comm
       type(node_data), intent(inout) :: new_node
@@ -304,6 +294,12 @@
       integer(kind = kint) :: iflag_self, nrank_export
       integer(kind = kint) :: nrank_import
 !
+!
+!       Re-partitioning for external node
+      call const_external_grp_4_new_part                                &
+     &   (node, neib_nod, part_param, part_grp, ext_int_grp)
+      call const_ext_of_ext_grp_new_part                                &
+     &   (node, neib_nod, part_param, part_grp, ext_ext_grp)
 !
       allocate(num_send_tmp(part_grp%num_grp))
       allocate(num_recv_tmp(part_grp%num_grp))
