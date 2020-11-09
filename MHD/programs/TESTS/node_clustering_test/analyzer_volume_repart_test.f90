@@ -291,6 +291,7 @@
       integer(kind = kint), allocatable :: internal_list_org(:)
 !
       integer(kind = kint) :: i, ist, inum, j, jst, ip, inod, jp
+      integer(kind = kint) :: icou, iflag, ied, jed, jnum, ntot
       integer(kind = kint) :: iflag_self, nrank_export
       integer(kind = kint) :: nrank_import
 !
@@ -321,8 +322,53 @@
       deallocate(num_send_tmp, num_recv_tmp)
 !
       write(*,*) my_rank, 'num_import', part_tbl%ntot_import,   &
-&               ext_int_tbl%ntot_import, ext_ext_tbl%ntot_import
+     &               ext_int_tbl%ntot_import, ext_ext_tbl%ntot_import
 !
+      icou = 0
+      do i = 1, ext_ext_tbl%nrank_import
+        ip = ext_ext_tbl%irank_import(i)
+        iflag = 1
+        do j = 1, ext_int_tbl%nrank_import
+          if(ip .eq. ext_int_tbl%irank_import(j)) then
+            iflag = 0
+            exit
+          end if
+        end do
+        icou = icou + iflag
+      end do
+      call calypso_mpi_allreduce_one_int(icou, ntot, MPI_SUM)
+      if(my_rank .eq. 0) write(*,*) 'Missing neighbour', ntot
+!
+      icou = 0
+      jp = 0
+      do i = 1, ext_ext_tbl%nrank_import
+        ip = ext_ext_tbl%irank_import(i)
+        jp = -1
+        do j = 1, ext_int_tbl%nrank_import
+          if(ip .eq. ext_int_tbl%irank_import(j)) then
+            jp = j
+            exit
+          end if
+        end do
+!
+        ist = ext_ext_tbl%istack_import(i-1) + 1
+        ied = ext_ext_tbl%istack_import(i  )
+        jst = ext_int_tbl%istack_import(i-1) + 1
+        jed = ext_int_tbl%istack_import(i  )
+        iflag = 1
+        do inum = ist, ied
+          do jnum = jst, jed
+            if(ext_ext_tbl%item_import(inum)  &
+     &          .eq. ext_int_tbl%item_import(jnum)) then
+              iflag = 0
+              exit
+            end if
+          end do
+          icou = icou + iflag
+        end do
+      end do
+      call calypso_mpi_allreduce_one_int(icou, ntot, MPI_SUM)
+      if(my_rank .eq. 0) write(*,*) 'Missing node', ntot
 !
       internal_node =                    part_tbl%ntot_import
       numnod = ext_int_tbl%ntot_import + part_tbl%ntot_import
