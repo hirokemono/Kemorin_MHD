@@ -38,8 +38,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_ext_of_ext_grp_new_part                          &
-     &         (node, neib_nod, part_param, part_grp, ext_grp)
+      subroutine const_ext_of_ext_grp_new_part(idomain_new, inod_new, &
+     &          node, neib_nod, part_param, part_grp, ext_grp)
 !
       use t_control_param_vol_grping
 !
@@ -50,6 +50,9 @@
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(mesh_test_files_param), intent(in) :: part_param
       type(group_data), intent(in) :: part_grp
+!
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       type(group_data), intent(inout) :: ext_grp
 !
@@ -69,12 +72,12 @@
      &    ext_grp%num_grp, ext_grp%grp_name)
 !
 !
-      call cnt_ext_of_ext_grp_4_new_part(node, neib_nod, part_grp,      &
+      call cnt_ext_of_ext_grp_4_new_part(idomain_new, inod_new, node, neib_nod, part_grp,      &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    iflag_nod)
       call alloc_group_item(ext_grp)
 !
-      call set_ext_of_ext_grp_4_new_part(node, neib_nod, part_grp,      &
+      call set_ext_of_ext_grp_4_new_part(idomain_new, inod_new, node, neib_nod, part_grp,      &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    ext_grp%item_grp, iflag_nod)
 !
@@ -103,6 +106,9 @@
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(group_data), intent(in) :: part_grp
       integer(kind = kint), intent(in) :: num_ext_grp
+!
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       integer(kind = kint), intent(inout) :: ntot_ext_grp
       integer(kind = kint), intent(inout)                               &
@@ -141,7 +147,7 @@
           jed = neib_nod%istack_next(inod)
           do jnum = jst, jed
             jnod = neib_nod%inod_next(jnum)
-            if(jnod .gt. node%internal_node                             &
+            if(idomain_new(jnod)+1 .gt. igrp                            &
      &          .and. iflag_nod(jnod) .gt. 0) then
               icou = icou + 1
               iflag_nod(jnod) = 0
@@ -167,6 +173,9 @@
       integer(kind = kint), intent(in) :: num_ext_grp
       integer(kind = kint), intent(in) :: ntot_ext_grp
       integer(kind = kint), intent(in) :: istack_ext_grp(0:num_ext_grp)
+!
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       integer(kind = kint), intent(inout) :: item_ext_grp(ntot_ext_grp)
       integer(kind = kint), intent(inout) :: iflag_nod(node%numnod)
@@ -203,7 +212,7 @@
           jed = neib_nod%istack_next(inod)
           do jnum = jst, jed
             jnod = neib_nod%inod_next(jnum)
-            if(jnod .gt. node%internal_node                             &
+            if(idomain_new(jnod)+1 .gt. igrp                            &
      &          .and. iflag_nod(jnod) .gt. 0) then
               icou = icou + 1
               item_ext_grp(icou) = jnod

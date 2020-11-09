@@ -38,8 +38,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_external_grp_4_new_part                          &
-     &         (node, neib_nod, part_param, part_grp, ext_grp)
+      subroutine const_external_grp_4_new_part(idomain_new, inod_new,   &
+     &          node, neib_nod, part_param, part_grp, ext_grp)
 !
       use t_control_param_vol_grping
 !
@@ -50,6 +50,9 @@
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(mesh_test_files_param), intent(in) :: part_param
       type(group_data), intent(in) :: part_grp
+!
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       type(group_data), intent(inout) :: ext_grp
 !
@@ -69,12 +72,12 @@
      &    ext_grp%num_grp, ext_grp%grp_name)
 !
 !
-      call count_external_grp_4_new_part(node, neib_nod, part_grp,      &
+      call count_external_grp_4_new_part(idomain_new, inod_new, node, neib_nod, part_grp,      &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    iflag_nod)
       call alloc_group_item(ext_grp)
 !
-      call set_external_grp_4_new_part(node, neib_nod, part_grp,        &
+      call set_external_grp_4_new_part(idomain_new, inod_new, node, neib_nod, part_grp,        &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    ext_grp%item_grp, iflag_nod)
 !
@@ -96,13 +99,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_external_grp_4_new_part                          &
-     &         (node, neib_nod, part_grp, num_ext_grp,                  &
+     &         (idomain_new, inod_new, node, neib_nod, part_grp, num_ext_grp,                  &
      &          ntot_ext_grp, istack_ext_grp, iflag_nod)
 !
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(group_data), intent(in) :: part_grp
       integer(kind = kint), intent(in) :: num_ext_grp
+!
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       integer(kind = kint), intent(inout) :: ntot_ext_grp
       integer(kind = kint), intent(inout)                               &
@@ -157,7 +163,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_external_grp_4_new_part(node, neib_nod, part_grp,  &
+      subroutine set_external_grp_4_new_part(idomain_new, inod_new, node, neib_nod, part_grp,  &
      &          num_ext_grp, ntot_ext_grp, istack_ext_grp,              &
      &          item_ext_grp, iflag_nod)
 !
@@ -167,6 +173,9 @@
       integer(kind = kint), intent(in) :: num_ext_grp
       integer(kind = kint), intent(in) :: ntot_ext_grp
       integer(kind = kint), intent(in) :: istack_ext_grp(0:num_ext_grp)
+!
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       integer(kind = kint), intent(inout) :: item_ext_grp(ntot_ext_grp)
       integer(kind = kint), intent(inout) :: iflag_nod(node%numnod)
