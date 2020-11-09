@@ -77,7 +77,8 @@
      &    iflag_nod)
       call alloc_group_item(ext_grp)
 !
-      call set_ext_of_ext_grp_4_new_part(idomain_new, inod_new, node, neib_nod, part_grp,      &
+      call set_ext_of_ext_grp_4_new_part                 &
+     &   (idomain_new, inod_new, node, neib_nod, part_grp,      &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    ext_grp%item_grp, iflag_nod)
 !
@@ -99,7 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cnt_ext_of_ext_grp_4_new_part                          &
-     &         (node, neib_nod, part_grp, num_ext_grp,                  &
+     &         (idomain_new, inod_new, node, neib_nod, part_grp, num_ext_grp,                  &
      &          ntot_ext_grp, istack_ext_grp, iflag_nod)
 !
       type(node_data), intent(in) :: node
@@ -163,7 +164,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ext_of_ext_grp_4_new_part(node, neib_nod,          &
+      subroutine set_ext_of_ext_grp_4_new_part     &
+     &         (idomain_new, inod_new, node, neib_nod,          &
      &          part_grp, num_ext_grp, ntot_ext_grp, istack_ext_grp,    &
      &          item_ext_grp, iflag_nod)
 !
