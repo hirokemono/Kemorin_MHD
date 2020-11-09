@@ -739,48 +739,55 @@
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    inod_old_lc(1), inod_trns1(1))
+     &    inod_new(1), inod_trns1(1))
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    irank_old_lc(1), irank_trns1(1))
+     &    idomain_new(1), irank_trns1(1))
 !
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    mesh%node%numnod, ext_tbl%ntot_import,                        &
-     &    inod_old_lc(1), inod_trns1(1+new_mesh%node%internal_node))
+     &    inod_new(1), inod_trns1(1+new_mesh%node%internal_node))
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
      &    mesh%node%numnod, ext_tbl%ntot_import,                        &
-     &    irank_old_lc(1), irank_trns1(1+new_mesh%node%internal_node))
+     &    idomain_new(1), irank_trns1(1+new_mesh%node%internal_node))
 !
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    inod_old_lc(1), inod_trns2(1))
+     &    inod_new(1), inod_trns2(1))
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    irank_old_lc(1), irank_trns2(1))
+     &    idomain_new(1), irank_trns2(1))
       call SOLVER_SEND_RECV_int_type                                    &
      &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_trns2)
       call SOLVER_SEND_RECV_int_type                                    &
      &   (new_mesh%node%numnod, new_mesh%nod_comm, irank_trns2)
 !
       write(*,*) 'Check irank_trns2, inod_trns2'
+      do inod = 1, new_mesh%node%internal_node
+        if(inod_trns1(inod) .ne. inod_new_lc(inod)    &
+     &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong inod_trns1!' , inod
+        end if
+        if(inod_trns2(inod) .ne. inod_new_lc(inod)    &
+     &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong inod_trns2!' , inod
+        end if
+      end do
+!
       do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
-        if(inod_trns1(inod) .ne. inod_trns2(inod)    &
-     &      .or. irank_trns1(inod) .ne. irank_trns2(inod)) then
-           write(*,*) my_rank, 'Wrong!' , inod
+        if(inod_trns1(inod) .ne. inod_new_lc(inod)    &
+     &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong inod_trns1!' , inod
+        end if
+        if(inod_trns2(inod) .ne. inod_new_lc(inod)    &
+     &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong inod_trns2!' , inod
         end if
       end do
 !
       return
 !
-      write(200+my_rank,*) 'new_mesh%node%numnod', new_mesh%node%numnod, new_mesh%node%internal_node
-      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%num_neib
-      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%istack_import
-      do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
-        write(200+my_rank,*) inod, irank_new_lc(inod), inod_new_lc(inod)
-      end do
-
-
 !      allocate(ie_to_new(mesh%ele%numele,mesh%ele%nnod_4_ele))
 !
       allocate(num_send_tmp(nprocs))
