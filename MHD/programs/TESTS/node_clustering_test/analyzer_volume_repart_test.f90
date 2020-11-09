@@ -85,6 +85,7 @@
       use calypso_SR_type
       use select_copy_from_recv
       use nod_phys_send_recv
+      use quicksort
 !
 !>     Stracture for Jacobians
 !
@@ -107,12 +108,18 @@
       integer(kind = kint), allocatable :: inod_new(:)
 !
       integer(kind = kint) :: ntot_ele_nod
-      integer(kind = kint_gl), allocatable :: neib_ele_nod(:)
-      integer(kind = kint_gl), allocatable :: istack_ele_nod(:)
-      integer(kind = kint_gl), allocatable :: iele_on_nod(:)
+      integer(kind = kint), allocatable :: neib_ele_nod(:)
+      integer(kind = kint), allocatable :: istack_ele_nod(:)
+      integer(kind = kint), allocatable :: iele_on_nod(:)
+!
+      integer(kind = kint) :: ntot_nod_nod
+      integer(kind = kint), allocatable :: neib_nod_nod(:)
+      integer(kind = kint), allocatable :: istack_nod_nod(:)
+      integer(kind = kint), allocatable :: inod_on_nod(:)
+      integer(kind = kint), allocatable :: iflag_nod(:)
 !
       integer(kind = kint_gl), allocatable :: inod_gl_test(:)
-      integer(kind = kint) :: inod, iele, k1
+      integer(kind = kint) :: inod, iele, k1, inum, jnod
 !
       character(len=kchara) :: file_name
 !
@@ -212,6 +219,11 @@
         end do
       end do
 !
+      do inod = 1, fem_T%mesh%node%numnod
+        call quicksort_int(ntot_ele_nod, iele_on_nod,   &
+            istack_ele_nod(inod-1)+1, istack_ele_nod(inod))
+      end do
+!
       write(*,*) my_rank, 'ntot_ele_nod', &
      &                   ntot_ele_nod - next_tbl_T%neib_ele%ntot
       do inod = 1, fem_T%mesh%node%numnod
@@ -219,15 +231,75 @@
           write(*,*) 'TAko!', inod, istack_ele_nod(inod) - next_tbl_T%neib_ele%istack_4_node(inod)
         end if
       end do
-      return
 !
       do inod = 1, fem_T%mesh%node%numnod
         do k1 = istack_ele_nod(inod-1)+1, istack_ele_nod(inod)
           if(iele_on_nod(k1) - next_tbl_T%neib_ele%iele_4_node(k1) .ne. 0) then
-            write(*,*) 'Ika!', inod, iele_on_nod(k1) - next_tbl_T%neib_ele%iele_4_node(k1)
+            write(*,*) 'Ika!', inod, iele_on_nod(k1), next_tbl_T%neib_ele%iele_4_node(k1)
          end if
         end do
       end do
+!
+      allocate(neib_nod_nod(fem_T%mesh%node%numnod))
+      allocate(istack_nod_nod(0:fem_T%mesh%node%numnod))
+      allocate(iflag_nod(fem_T%mesh%node%numnod))
+
+      neib_nod_nod(1:fem_T%mesh%node%numnod) = 0
+      do inod = 1, fem_T%mesh%node%numnod
+        iflag_nod(1:fem_T%mesh%node%numnod) = 0
+        do inum = istack_ele_nod(inod-1)+1, istack_ele_nod(inod)
+          iele = iele_on_nod(inum)
+          do k1 = 1, fem_T%mesh%ele%nnod_4_ele
+            jnod = fem_T%mesh%ele%ie(iele,k1)
+            iflag_nod(jnod) = 1
+          end do
+        end do
+        neib_nod_nod(inod) = sum(iflag_nod)
+      end do
+!
+      istack_nod_nod(0) = 0
+      do inod = 1, fem_T%mesh%node%numnod
+        istack_nod_nod(inod) = istack_nod_nod(inod-1) + neib_nod_nod(inod)
+      end do
+      ntot_nod_nod = istack_nod_nod(fem_T%mesh%node%numnod)
+!
+      allocate(inod_on_nod(ntot_nod_nod))
+      neib_nod_nod(1:fem_T%mesh%node%numnod) = 0
+      do inod = 1, fem_T%mesh%node%numnod
+        iflag_nod(1:fem_T%mesh%node%numnod) = 0
+        do inum = istack_ele_nod(inod-1)+1, istack_ele_nod(inod)
+          iele = iele_on_nod(inum)
+          do k1 = 1, fem_T%mesh%ele%nnod_4_ele
+            jnod = fem_T%mesh%ele%ie(iele,k1)
+            iflag_nod(jnod) = 1
+          end do
+        end do
+!
+        do jnod = 1, fem_T%mesh%node%numnod
+          if(iflag_nod(jnod) .gt. 0) then
+            neib_nod_nod(inod) = neib_nod_nod(inod) + 1
+            inod_on_nod(neib_nod_nod(inod)+istack_nod_nod(inod-1)) = jnod
+          end if
+        end do
+      end do
+!
+      write(*,*) my_rank, 'ntot_nod_nod', &
+     &                   ntot_nod_nod - next_tbl_T%neib_nod%ntot
+      do inod = 1, fem_T%mesh%node%numnod
+        if(istack_nod_nod(inod) - next_tbl_T%neib_nod%istack_next(inod) .ne. 0) then
+          write(*,*) 'TAkoTako!', inod, istack_nod_nod(inod), next_tbl_T%neib_nod%istack_next(inod)
+        end if
+      end do
+!
+      do inod = 1, fem_T%mesh%node%numnod
+        do k1 = istack_ele_nod(inod-1)+1, istack_ele_nod(inod)
+          if(iele_on_nod(k1) - next_tbl_T%neib_ele%iele_4_node(k1) .ne. 0) then
+            write(*,*) 'Manuke!', inod, iele_on_nod(k1) - next_tbl_T%neib_ele%iele_4_node(k1)
+         end if
+        end do
+      end do
+      return
+!
 !
       call const_comm_tbls_for_new_part(fem_T%mesh%nod_comm,            &
      &    fem_T%mesh%node, part_grp, ext_int_grp, ext_ext_grp,          &
