@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine const_ext_of_ext_grp_new_part                        &
-!!     &         (nod_comm, node, neib_nod, part_param, part_grp, ext_grp)
-!!        type(communication_table), intent(in) :: nod_comm
+!!     &         (node, neib_nod, part_param, part_grp, ext_grp)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(mesh_test_files_param), intent(in) :: part_param
@@ -21,7 +20,6 @@
 !
       use m_precision
       use m_constants
-      use t_comm_table
       use t_geometry_data
       use t_group_data
       use t_next_node_ele_4_node
@@ -41,14 +39,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_ext_of_ext_grp_new_part                          &
-     &         (nod_comm, node, neib_nod, part_param, part_grp, ext_grp)
+     &         (node, neib_nod, part_param, part_grp, ext_grp)
 !
       use t_control_param_vol_grping
 !
       use quicksort
       use set_repartition_group_name
 !
-      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(mesh_test_files_param), intent(in) :: part_param
@@ -72,12 +69,12 @@
      &    ext_grp%num_grp, ext_grp%grp_name)
 !
 !
-      call cnt_ext_of_ext_grp_4_new_part(nod_comm, node, neib_nod, part_grp,      &
+      call cnt_ext_of_ext_grp_4_new_part(node, neib_nod, part_grp,      &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    iflag_nod)
       call alloc_group_item(ext_grp)
 !
-      call set_ext_of_ext_grp_4_new_part(nod_comm, node, neib_nod, part_grp,      &
+      call set_ext_of_ext_grp_4_new_part(node, neib_nod, part_grp,      &
      &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp,        &
      &    ext_grp%item_grp, iflag_nod)
 !
@@ -99,12 +96,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cnt_ext_of_ext_grp_4_new_part                          &
-     &         (nod_comm, node, neib_nod, part_grp, num_ext_grp,                  &
+     &         (node, neib_nod, part_grp, num_ext_grp,                  &
      &          ntot_ext_grp, istack_ext_grp, iflag_nod)
 !
-      use solver_SR_type
-!
-      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(group_data), intent(in) :: part_grp
@@ -141,9 +135,6 @@
         end do
 !$omp end parallel do
 !
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (node%numnod, nod_comm, iflag_nod)
-!
         do inum = ist, ied
           inod = part_grp%item_grp(inum)
           jst = neib_nod%istack_next(inod-1) + 1
@@ -166,13 +157,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ext_of_ext_grp_4_new_part(nod_comm, node, neib_nod,          &
+      subroutine set_ext_of_ext_grp_4_new_part(node, neib_nod,          &
      &          part_grp, num_ext_grp, ntot_ext_grp, istack_ext_grp,    &
      &          item_ext_grp, iflag_nod)
 !
-      use solver_SR_type
-!
-      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(group_data), intent(in) :: part_grp
@@ -208,9 +196,6 @@
           iflag_nod(inod) = 0
         end do
 !$omp end parallel do
-!
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (node%numnod, nod_comm, iflag_nod)
 !
         do inum = ist, ied
           inod = part_grp%item_grp(inum)
