@@ -167,7 +167,7 @@
      &   (fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes,               &
      &    part_grp, ext_int_grp)
       call const_ext_of_ext_grp_new_part                                &
-     &   (fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes,               &
+     &   (fem_T%mesh%nod_comm, fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes,               &
      &    part_grp, ext_ext_grp)
 !
 !       Append group data
