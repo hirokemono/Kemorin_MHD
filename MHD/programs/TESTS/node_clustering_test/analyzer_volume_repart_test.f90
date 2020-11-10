@@ -239,6 +239,8 @@
       use t_comm_table
       use t_geometry_data
       use t_calypso_comm_table
+      use t_control_param_vol_grping
+!
       use set_comm_tbl_to_new_part
       use const_comm_tbl_to_new_mesh
       use calypso_mpi_int

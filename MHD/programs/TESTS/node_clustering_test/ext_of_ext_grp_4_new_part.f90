@@ -218,6 +218,7 @@
      &          .and. iflag_nod(jnod) .gt. 0) then
               icou = icou + 1
               item_ext_grp(icou) = jnod
+              item_ext_grp(icou) = jnod
               iflag_nod(jnod) =    0
             end if
           end do
