@@ -234,7 +234,7 @@
 !
       subroutine const_comm_tbls_for_new_part                           &
      &         (nod_comm, node, neib_nod, part_param, part_grp, ext_int_grp, ext_ext_grp,     &
-     &          idomain_new, inod_new, new_comm, new_node,              &
+     &          idomain_new, inod_new, new_comm0, new_node,             &
      &          part_tbl, ext_int_tbl)
 !
       use t_comm_table
@@ -261,7 +261,7 @@
       type(group_data), intent(in) :: part_grp
       type(group_data), intent(inout) :: ext_int_grp, ext_ext_grp
 !
-      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_comm0
       type(node_data), intent(inout) :: new_node
       type(calypso_comm_table), intent(inout) :: part_tbl
       type(calypso_comm_table), intent(inout) :: ext_int_tbl
@@ -271,6 +271,7 @@
 !
       type(calypso_comm_table) :: tmp_tbl
       type(calypso_comm_table) :: ext_ext_tbl
+      type(communication_table) :: new_comm, new_comm_tmp
 !
       integer(kind = kint), allocatable :: num_send_tmp(:)
       integer(kind = kint), allocatable :: num_recv_tmp(:)
@@ -309,6 +310,9 @@
       integer(kind = kint), allocatable :: inod_import(:)
       integer(kind = kint), allocatable :: internal_list_new(:)
       integer(kind = kint), allocatable :: internal_list_org(:)
+!
+      integer(kind = kint), allocatable :: inod_external(:)
+      integer(kind = kint), allocatable :: irank_external(:)
 !
       integer(kind = kint) :: i, ist, inum, j, jst, ip, inod, jp, num
       integer(kind = kint) :: icou, iflag, ied, jed, jnum, ntot
@@ -631,30 +635,30 @@
         end do
       end do
 !
-      write(my_rank+100,*) 'i, irank_ext_ext(i), inod_ext_ext(i)', &
-     &      ext_ext_tbl%ntot_import, sum(iflag_ext_ext)
-      do icou = 1, num_neib_ext_ext
-        ist = istack_neib_ext_ext(icou-1)+1
-        ied = istack_neib_ext_ext(icou)
-        write(my_rank+100,*) 'i, istack_neib_ext_ext(icou)', &
-     &      icou, id_neib_ext_ext(icou), istack_neib_ext_ext(icou), &
-     &      ipe_missing_ext_ext(icou)
-        do i = ist, ied
-          if(iflag_ext_ext(i) .gt. 0) then
-            write(my_rank+100,*) iflag_ext_ext(i),                 &
-     &       i, irank_ext_ext(i), inod_ext_ext(i), isort_ext_ext(i)
-          end if
-        end do
-      end do
+!      write(my_rank+100,*) 'i, irank_ext_ext(i), inod_ext_ext(i)', &
+!     &      ext_ext_tbl%ntot_import, sum(iflag_ext_ext)
+!      do icou = 1, num_neib_ext_ext
+!        ist = istack_neib_ext_ext(icou-1)+1
+!        ied = istack_neib_ext_ext(icou)
+!        write(my_rank+100,*) 'i, istack_neib_ext_ext(icou)', &
+!     &      icou, id_neib_ext_ext(icou), istack_neib_ext_ext(icou), &
+!     &      ipe_missing_ext_ext(icou)
+!        do i = ist, ied
+!          if(iflag_ext_ext(i) .gt. 0) then
+!            write(my_rank+100,*) iflag_ext_ext(i),                 &
+!     &       i, irank_ext_ext(i), inod_ext_ext(i), isort_ext_ext(i)
+!          end if
+!        end do
+!      end do
 !
-      allocate(inod_ext_ext2(ext_ext_tbl%ntot_import))
-      allocate(irank_ext_ext2(ext_ext_tbl%ntot_import))
-      call calypso_SR_type_int(iflag_import_item, ext_ext_tbl,          &
-     &    node%numnod, ext_ext_tbl%ntot_import,                         &
-     &    idomain_new, irank_ext_ext2)
-      call calypso_SR_type_int(iflag_import_item, ext_ext_tbl,          &
-     &    node%numnod, ext_ext_tbl%ntot_import,                         &
-     &    inod_new, inod_ext_ext2)
+!      allocate(inod_ext_ext2(ext_ext_tbl%ntot_import))
+!      allocate(irank_ext_ext2(ext_ext_tbl%ntot_import))
+!      call calypso_SR_type_int(iflag_import_item, ext_ext_tbl,         &
+!     &    node%numnod, ext_ext_tbl%ntot_import,                        &
+!     &    idomain_new, irank_ext_ext2)
+!      call calypso_SR_type_int(iflag_import_item, ext_ext_tbl,         &
+!     &    node%numnod, ext_ext_tbl%ntot_import,                        &
+!     &    inod_new, inod_ext_ext2)
 !
 !      write(*,*) 'test'
 !      do i = 1, ext_ext_tbl%ntot_import
@@ -664,19 +668,127 @@
 !        end if
 !      end do
 !
-      write(my_rank+100,*) 'i, ext_int_tbl', internal_node, numnod
-      do icou = 1, num_neib_int_ext
-        ist = istack_neib_int_ext(icou-1)+1
-        ied = istack_neib_int_ext(icou)
-        write(my_rank+100,*) 'i, istack_neib_int_ext(icou)', &
-     &      icou, id_neib_int_ext(icou), istack_neib_int_ext(icou)
+!      write(my_rank+100,*) 'i, ext_int_tbl', internal_node, numnod
+!      do icou = 1, num_neib_int_ext
+!        ist = istack_neib_int_ext(icou-1)+1
+!        ied = istack_neib_int_ext(icou)
+!        write(my_rank+100,*) 'i, istack_neib_int_ext(icou)', &
+!     &      icou, id_neib_int_ext(icou), istack_neib_int_ext(icou)
+!        do i = ist, ied
+!            write(my_rank+100,*) i, idomain_recv(i+internal_node), inod_recv(i+internal_node)
+!        end do
+!      end do
+!      write(*,*) my_rank, 'sum ipe_missing_ext_ext', sum(ipe_missing_ext_ext)
+!
+      new_comm_tmp%num_neib = num_neib_int_ext + sum(ipe_missing_ext_ext)
+      call alloc_comm_table_num(new_comm_tmp)
+!
+!      write(*,*) my_rank, 'new_comm_tmp%num_neib',   &
+!     &          new_comm_tmp%num_neib, num_neib_int_ext
+!
+      do i = 1, num_neib_int_ext
+        new_comm_tmp%id_neib(i) = id_neib_int_ext(i)
+        new_comm_tmp%num_import(i)                                      &
+     &      = istack_neib_int_ext(i) - istack_neib_int_ext(i-1)
+      end do
+!
+      icou = num_neib_int_ext
+      do i = 1, num_neib_ext_ext
+        if(ipe_missing_ext_ext(i) .gt. 0) then
+          icou = icou + 1
+          new_comm_tmp%id_neib(icou) = id_neib_ext_ext(i)
+        end if
+      end do
+!
+      do icou = 1, num_neib_ext_ext
+        do j = 1, new_comm_tmp%num_neib
+          if(new_comm_tmp%id_neib(j) .eq. id_neib_ext_ext(icou)) then
+            jp = j
+            exit
+          end if
+        end do
+!
+        ist = istack_neib_ext_ext(icou-1)
+        num = istack_neib_ext_ext(icou) - istack_neib_ext_ext(icou-1)
+        if(ipe_missing_ext_ext(icou) .eq. 0) then
+          do i = 1, num
+            new_comm_tmp%num_import(jp)                                 &
+     &         = new_comm_tmp%num_import(jp) + iflag_ext_ext(i+ist)
+          end do
+!
+        else if(ipe_missing_ext_ext(icou) .gt. 0) then
+          new_comm_tmp%num_import(jp) = num
+        end if
+      end do
+!
+      new_comm_tmp%istack_import(0) = 0
+      do icou = 1, new_comm_tmp%num_neib
+        new_comm_tmp%istack_import(icou) &
+     &     = new_comm_tmp%istack_import(icou-1)  &
+     &      + new_comm_tmp%num_import(icou)  
+      end do
+      new_comm_tmp%ntot_import                                          &
+     &      = new_comm_tmp%istack_import(new_comm_tmp%num_neib)
+!
+      allocate(inod_external(new_comm_tmp%ntot_import))
+      allocate(irank_external(new_comm_tmp%ntot_import))
+      do jp = 1, num_neib_int_ext
+        jst = new_comm_tmp%istack_import(jp-1)
+        ist = istack_neib_int_ext(jp-1)
+        num = istack_neib_int_ext(jp) - istack_neib_int_ext(jp-1)
+        inod_external(jst+1:jst+num)       &
+     &      = inod_recv(internal_node+ist+1:internal_node+ist+num)
+        irank_external(jst+1:jst+num)       &
+     &      = idomain_recv(internal_node+ist+1:internal_node+ist+num)
+        new_comm_tmp%num_import(jp) = num
+      end do
+!
+      do icou = 1, num_neib_ext_ext
+        do j = 1, new_comm_tmp%num_neib
+          if(new_comm_tmp%id_neib(j) .eq. id_neib_ext_ext(icou)) then
+            jp = j
+            exit
+          end if
+        end do
+!
+        ist = istack_neib_ext_ext(icou-1)
+        num = istack_neib_ext_ext(icou) - istack_neib_ext_ext(icou-1)
+        if(ipe_missing_ext_ext(icou) .eq. 0) then
+          jst = new_comm_tmp%istack_import(jp-1)   &
+     &         + new_comm_tmp%num_import(jp)
+          do i = 1, num
+            if(iflag_ext_ext(i+ist) .gt. 0) then
+              jst = jst + 1
+              inod_external(jst) =  inod_ext_ext(i+ist)
+              irank_external(jst) = irank_ext_ext(i+ist)
+              new_comm_tmp%num_import(jp)                     &
+     &              = new_comm_tmp%num_import(jp) + 1
+            end if
+          end do
+        else if(ipe_missing_ext_ext(icou) .gt. 0) then
+          jst = new_comm_tmp%istack_import(jp-1)
+          do i = 1, num
+            jst = jst + 1
+            inod_external(jst) =  inod_ext_ext(i+ist)
+            irank_external(jst) = irank_ext_ext(i+ist)
+          end do
+        end if
+      end do
+!
+      write(my_rank+100,*) 'i, new_comm_tmp',   &
+     &    new_comm_tmp%num_neib, new_comm_tmp%ntot_import
+      do icou = 1, new_comm_tmp%num_neib
+        ist = new_comm_tmp%istack_import(icou-1) + 1
+        ied = new_comm_tmp%istack_import(icou)
+        write(my_rank+100,*) 'i, new_comm_tmp%istack_import(icou)', &
+     &      new_comm_tmp%id_neib(icou), new_comm_tmp%istack_import(icou)
         do i = ist, ied
-            write(my_rank+100,*) i, idomain_recv(i+internal_node), inod_recv(i+internal_node)
+            write(my_rank+100,*) i, irank_external(i), inod_external(i)
         end do
       end do
       return
 !
-      write(*,*) my_rank, 'sum ipe_missing_ext_ext', sum(ipe_missing_ext_ext)
+!
       allocate(iflag_pe(nprocs))
       iflag_pe(1:nprocs) = 0
       do i = 1, ext_int_tbl%nrank_import
@@ -824,36 +936,37 @@
         end if
       end do
 !
-      new_comm%num_neib = tmp_tbl%nrank_export
-      call alloc_comm_table_num(new_comm)
+      new_comm0%num_neib = tmp_tbl%nrank_export
+      call alloc_comm_table_num(new_comm0)
 !
-      new_comm%istack_export(0) = 0
-      new_comm%istack_import(0) = 0
+      
+!
+      new_comm0%istack_export(0) = 0
+      new_comm0%istack_import(0) = 0
 !%omp parallel do
-      do i = 1, new_comm%num_neib
-        new_comm%id_neib(i) =       tmp_tbl%irank_export(i)
-        new_comm%num_export(i) =    tmp_tbl%num_export(i)
-        new_comm%istack_export(i) = tmp_tbl%istack_export(i)
-        new_comm%num_import(i) =    tmp_tbl%num_import(i)
-        new_comm%istack_import(i) = tmp_tbl%istack_import(i)
+      do i = 1, new_comm0%num_neib
+        new_comm0%id_neib(i) =       tmp_tbl%irank_export(i)
+        new_comm0%num_export(i) =    tmp_tbl%num_export(i)
+        new_comm0%istack_export(i) = tmp_tbl%istack_export(i)
+        new_comm0%num_import(i) =    tmp_tbl%num_import(i)
+        new_comm0%istack_import(i) = tmp_tbl%istack_import(i)
       end do
 !%omp end parallel do
-      new_comm%ntot_export = new_comm%istack_export(new_comm%num_neib)
-      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+      new_comm0%ntot_export = new_comm0%istack_export(new_comm0%num_neib)
+      new_comm0%ntot_import = new_comm0%istack_import(new_comm0%num_neib)
 !
-      allocate(inod_import(new_comm%ntot_import))
-      call alloc_comm_table_item(new_comm)
+      call alloc_comm_table_item(new_comm0)
 !
 !$omp parallel do
-      do i = 1, new_comm%ntot_import
-        new_comm%item_import(i) = i + new_node%internal_node
+      do i = 1, new_comm0%ntot_import
+        new_comm0%item_import(i) = i + new_node%internal_node
         inod_import(i) = inod_recv(i+new_node%internal_node)
       end do
 !$omp end parallel do
 !
-      call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
-     &    new_comm%istack_import, new_comm%istack_export,               &
-     &    inod_import, SR_sig1, new_comm%item_export)
+      call reverse_send_recv_int(new_comm0%num_neib, new_comm0%id_neib,   &
+     &    new_comm0%istack_import, new_comm0%istack_export,               &
+     &    inod_import, SR_sig1, new_comm0%item_export)
 !
 !
 !
@@ -879,9 +992,9 @@
      &    node%numnod, new_node%internal_node,                          &
      &    inod_new(1), inod_recv(1))
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, idomain_recv)
+     &   (new_node%numnod, new_comm0, idomain_recv)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, inod_recv)
+     &   (new_node%numnod, new_comm0, inod_recv)
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
