@@ -298,10 +298,10 @@
 !
 !
 !       Re-partitioning for external node
-      call const_external_grp_4_new_part                                &
-     &   (node, neib_nod, part_param, part_grp, ext_int_grp)
-      call const_ext_of_ext_grp_new_part                                &
-     &   (node, neib_nod, part_param, part_grp, ext_ext_grp)
+      call const_external_grp_4_new_part(idomain_new, inod_new,         &
+     &    node, neib_nod, part_param, part_grp, ext_int_grp)
+      call const_ext_of_ext_grp_new_part(idomain_new, inod_new,         &
+     &    node, neib_nod, part_param, part_grp, ext_ext_grp)
 !
       allocate(num_send_tmp(part_grp%num_grp))
       allocate(num_recv_tmp(part_grp%num_grp))
