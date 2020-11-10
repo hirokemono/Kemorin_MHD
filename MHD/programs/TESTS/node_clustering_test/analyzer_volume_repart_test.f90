@@ -283,11 +283,19 @@
       integer(kind = kint), allocatable :: idomain_recv2(:)
       integer(kind = kint), allocatable :: inod_recv2(:)
 !
+      integer(kind = kint), allocatable :: iflag_pe(:)
+      integer(kind = kint) :: num_neib_int_ext
+      integer(kind = kint), allocatable :: id_neib_int_ext(:)
+      integer(kind = kint), allocatable :: istack_neib_int_ext(:)
+!
       integer(kind = kint) :: num_neib_ext_ext
       integer(kind = kint), allocatable :: id_neib_ext_ext(:)
       integer(kind = kint), allocatable :: istack_neib_ext_ext(:)
+      integer(kind = kint), allocatable :: ipe_missing_ext_ext(:)
+!
       integer(kind = kint), allocatable :: inod_ext_ext(:)
       integer(kind = kint), allocatable :: irank_ext_ext(:)
+      integer(kind = kint), allocatable :: jrank_ext_ext(:)
       integer(kind = kint), allocatable :: isort_ext_ext(:)
       integer(kind = kint), allocatable :: iflag_ext_ext(:)
       integer(kind = kint), allocatable :: inod_ext_ext2(:)
@@ -437,6 +445,44 @@
 !$omp end parallel do
       deallocate(num_recv_tmp)
 !
+!    Set local (idomain_recv, inod_recv) in external node again
+      call calypso_SR_type_int(iflag_import_item, ext_int_tbl,          &
+     &    node%numnod, ext_int_tbl%ntot_import,                         &
+     &    idomain_new(1), idomain_recv(internal_node+1))
+      call calypso_SR_type_int(iflag_import_item, ext_int_tbl,          &
+     &    node%numnod, ext_int_tbl%ntot_import,                         &
+     &    inod_new(1), inod_recv(internal_node+1))
+!
+!
+      if(ext_int_tbl%ntot_import .eq. 0) then
+        num_neib_int_ext = 0
+      else
+        num_neib_int_ext = 1
+        do i = 2, ext_int_tbl%ntot_import
+          if(idomain_recv(i+internal_node)       &
+     &      .ne. idomain_recv(i+internal_node-1))                    &
+     &          num_neib_int_ext = num_neib_int_ext + 1
+        end do
+      end if
+!
+      allocate(id_neib_int_ext(num_neib_int_ext))
+      allocate(istack_neib_int_ext(0:num_neib_int_ext))
+!
+      istack_neib_int_ext(0) = 0
+      if(ext_int_tbl%ntot_import .gt. 0) then
+        icou = 0
+        do i = 2, ext_int_tbl%ntot_import
+          if(idomain_recv(i+internal_node)   &
+     &        .ne. idomain_recv(i+internal_node-1)) then
+            icou = icou + 1
+            id_neib_int_ext(icou) =     idomain_recv(i+internal_node-1)
+            istack_neib_int_ext(icou) = i-1
+          end if
+        end do
+        id_neib_int_ext(num_neib_int_ext)                               &
+     &       = idomain_recv(ext_int_tbl%ntot_import+internal_node)
+        istack_neib_int_ext(num_neib_int_ext) = ext_int_tbl%ntot_import
+      end if
 !
 !
       allocate(num_send_tmp(part_grp%num_grp))
@@ -455,6 +501,7 @@
 !
       allocate(inod_ext_ext(ext_ext_tbl%ntot_import))
       allocate(irank_ext_ext(ext_ext_tbl%ntot_import))
+      allocate(jrank_ext_ext(ext_ext_tbl%ntot_import))
       allocate(isort_ext_ext(ext_ext_tbl%ntot_import))
       allocate(iflag_ext_ext(ext_ext_tbl%ntot_import))
 !
@@ -468,19 +515,36 @@
 !$omp parallel do private(i)
       do i = 1, ext_ext_tbl%ntot_import
         isort_ext_ext(i) = i
-        iflag_ext_ext(i) = inod_ext_ext(i)
+        jrank_ext_ext(i) = mod(irank_ext_ext(i)+nprocs-my_rank,nprocs)
       end do
 !$omp end parallel do
 !
 !
       call quicksort_w_index                                            &
-     &   (ext_ext_tbl%ntot_import, irank_ext_ext,                       &
+     &   (ext_ext_tbl%ntot_import, jrank_ext_ext,                       &
      &    ione, ext_ext_tbl%ntot_import, isort_ext_ext)
 !
+!$omp parallel do private(i)
+      do i = 1, ext_ext_tbl%ntot_import
+        iflag_ext_ext(i) = inod_ext_ext(i)
+      end do
+!$omp end parallel do
 !$omp parallel do private(i,j)
       do i = 1, ext_ext_tbl%ntot_import
         j = isort_ext_ext(i)
         inod_ext_ext(i) = iflag_ext_ext(j)
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(i)
+      do i = 1, ext_ext_tbl%ntot_import
+        iflag_ext_ext(i) = irank_ext_ext(i)
+      end do
+!$omp end parallel do
+!$omp parallel do private(i,j)
+      do i = 1, ext_ext_tbl%ntot_import
+        j = isort_ext_ext(i)
+        irank_ext_ext(i) = iflag_ext_ext(j)
       end do
 !$omp end parallel do
 !
@@ -496,6 +560,9 @@
 !
       allocate(id_neib_ext_ext(num_neib_ext_ext))
       allocate(istack_neib_ext_ext(0:num_neib_ext_ext))
+      allocate(ipe_missing_ext_ext(num_neib_ext_ext))
+      ipe_missing_ext_ext(1:num_neib_ext_ext) = 0
+!
       istack_neib_ext_ext(0) = 0
       if(ext_ext_tbl%ntot_import .gt. 0) then
         icou = 0
@@ -535,37 +602,49 @@
         end if
       end do
 !
-      do i = 1, ext_ext_tbl%ntot_import
-        if(iflag_ext_ext(i) .gt. 0) then
-          ist =  0
-          ied = -1
-          do j = 1, ext_int_tbl%nrank_import
-            if(ext_int_tbl%irank_import(j) .eq. irank_ext_ext(i)) then
-              ist = ext_int_tbl%istack_import(j-1) + 1
-              ied = ext_int_tbl%istack_import(j)
-              exit
-            end if
-          end do
+      do icou = 1, num_neib_ext_ext
+        ipe_missing_ext_ext(icou) = 1
+        ip = id_neib_ext_ext(icou)
+        do j = 1, num_neib_int_ext
+          if(id_neib_int_ext(j) .eq. id_neib_ext_ext(icou)) then
+            jp = j
+            jst = istack_neib_int_ext(jp-1) + 1
+            jed = istack_neib_int_ext(jp)
+            ipe_missing_ext_ext(icou) = 0
+            exit
+          end if
+        end do
 !
-          do j = ist, ied
-            jnum = ext_int_tbl%item_import(j) + part_tbl%ntot_import
-            if(inod_recv(jnum) .eq. ext_ext_tbl%item_import(i)) then
-              iflag_ext_ext(i) = 1
-              exit
-            end if
-          end do
+        ist = istack_neib_ext_ext(icou-1)+1
+        ied = istack_neib_ext_ext(icou)
+        do i = ist, ied
+          if(iflag_ext_ext(i) .gt. 0) then
+            do j = jst, jed
+              jnum = j + part_tbl%ntot_import
+              if(inod_recv(jnum) .eq. ext_ext_tbl%item_import(i)) then
+                iflag_ext_ext(i) = 1
+                exit
+              end if
+            end do
 !
-        end if
+          end if
+        end do
       end do
 !
       write(my_rank+100,*) 'i, irank_ext_ext(i), inod_ext_ext(i)', &
      &      ext_ext_tbl%ntot_import, sum(iflag_ext_ext)
-      do i = 1, ext_ext_tbl%ntot_import
-        if(iflag_ext_ext(i) .gt. 0) then
-          write(my_rank+100,*) iflag_ext_ext(i),  &
-     &          i, irank_ext_ext(i), inod_ext_ext(i), ist, ied, &
-     &          isort_ext_ext(i)
-        end if
+      do icou = 1, num_neib_ext_ext
+        ist = istack_neib_ext_ext(icou-1)+1
+        ied = istack_neib_ext_ext(icou)
+        write(my_rank+100,*) 'i, istack_neib_ext_ext(icou)', &
+     &      icou, id_neib_ext_ext(icou), istack_neib_ext_ext(icou), &
+     &      ipe_missing_ext_ext(icou)
+        do i = ist, ied
+          if(iflag_ext_ext(i) .gt. 0) then
+            write(my_rank+100,*) iflag_ext_ext(i),                 &
+     &       i, irank_ext_ext(i), inod_ext_ext(i), isort_ext_ext(i)
+          end if
+        end do
       end do
 !
       allocate(inod_ext_ext2(ext_ext_tbl%ntot_import))
@@ -577,15 +656,34 @@
      &    node%numnod, ext_ext_tbl%ntot_import,                         &
      &    inod_new, inod_ext_ext2)
 !
-      write(*,*) 'test'
-      do i = 1, ext_ext_tbl%ntot_import
-        if(irank_ext_ext2(i) .ne. irank_ext_ext(i)  &
-     &     .or. inod_ext_ext2(i) .ne. inod_ext_ext(i) ) then
-          write(*,*) 'Failed', my_rank, i
-        end if
+!      write(*,*) 'test'
+!      do i = 1, ext_ext_tbl%ntot_import
+!        if(irank_ext_ext2(i) .ne. irank_ext_ext(i)  &
+!     &     .or. inod_ext_ext2(i) .ne. inod_ext_ext(i) ) then
+!          write(*,*) 'Failed', my_rank, i
+!        end if
+!      end do
+!
+      write(my_rank+100,*) 'i, ext_int_tbl', internal_node, numnod
+      do icou = 1, num_neib_int_ext
+        ist = istack_neib_int_ext(icou-1)+1
+        ied = istack_neib_int_ext(icou)
+        write(my_rank+100,*) 'i, istack_neib_int_ext(icou)', &
+     &      icou, id_neib_int_ext(icou), istack_neib_int_ext(icou)
+        do i = ist, ied
+            write(my_rank+100,*) i, idomain_recv(i+internal_node), inod_recv(i+internal_node)
+        end do
+      end do
+      return
+!
+      write(*,*) my_rank, 'sum ipe_missing_ext_ext', sum(ipe_missing_ext_ext)
+      allocate(iflag_pe(nprocs))
+      iflag_pe(1:nprocs) = 0
+      do i = 1, ext_int_tbl%nrank_import
+      end do
+      do i = 1, ext_ext_tbl%nrank_import
       end do
 !
-      return
 !
 !
       write(*,*) my_rank, 'num_import', part_tbl%ntot_import,   &
