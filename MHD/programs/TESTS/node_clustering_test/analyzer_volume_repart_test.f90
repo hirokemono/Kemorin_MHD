@@ -842,31 +842,31 @@
         new_comm%item_import(icou) = icou + internal_node
       end do
 !
-      write(my_rank+100,*) 'i, new_comm',   &
-     &    new_comm%num_neib, new_comm%ntot_import
-      do icou = 1, new_comm%num_neib
-        ist = new_comm%istack_import(icou-1) + 1
-        ied = new_comm%istack_import(icou)
-        write(my_rank+100,*) 'i, new_comm%istack_import(icou)', &
-     &      new_comm%id_neib(icou), new_comm%istack_import(icou)
-        do i = ist, ied
-            write(my_rank+100,*) i, irank_external(i), inod_external(i)
-        end do
-      end do
+!      write(my_rank+100,*) 'i, new_comm',   &
+!     &    new_comm%num_neib, new_comm%ntot_import
+!      do icou = 1, new_comm%num_neib
+!        ist = new_comm%istack_import(icou-1) + 1
+!        ied = new_comm%istack_import(icou)
+!        write(my_rank+100,*) 'i, new_comm%istack_import(icou)', &
+!     &      new_comm%id_neib(icou), new_comm%istack_import(icou)
+!        do i = ist, ied
+!            write(my_rank+100,*) i, irank_external(i), inod_external(i)
+!        end do
+!      end do
 !
-      allocate(num_send_tmp(nprocs))
-      allocate(num_recv_tmp(nprocs))
-      num_recv_tmp(1:nprocs) = 0
+!      allocate(num_send_tmp(nprocs))
+!      allocate(num_recv_tmp(nprocs))
+!      num_recv_tmp(1:nprocs) = 0
 !
-      do icou = 1, new_comm%num_neib
-        ip = new_comm%id_neib(icou)
-        num_recv_tmp(ip+1) = new_comm%num_import(icou)
-      end do
-      call calypso_mpi_alltoall_one_int(num_recv_tmp, num_send_tmp)
-      do ip = 1, nprocs
-        write(200+my_rank,*) 'num_recv_tmp, num_send_tmp', ip-1, &
-     &            num_recv_tmp(ip), num_send_tmp(ip)
-      end do
+!      do icou = 1, new_comm%num_neib
+!        ip = new_comm%id_neib(icou)
+!        num_recv_tmp(ip+1) = new_comm%num_import(icou)
+!      end do
+!      call calypso_mpi_alltoall_one_int(num_recv_tmp, num_send_tmp)
+!      do ip = 1, nprocs
+!        write(200+my_rank,*) 'num_recv_tmp, num_send_tmp', ip-1, &
+!     &            num_recv_tmp(ip), num_send_tmp(ip)
+!      end do
 !
       call element_num_reverse_SR                                       &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
