@@ -1164,6 +1164,11 @@
 !
       integer(kind = kint), allocatable :: ie_domain_recv(:,:)
 !
+      integer(kind = kint), allocatable :: iele_org_local(:)
+      integer(kind = kint), allocatable :: iele_org_domain(:)
+      integer(kind = kint), allocatable :: iele_local(:)
+      integer(kind = kint), allocatable :: iele_domain(:)
+!
       integer(kind = kint) :: icou, inum, i, ist, ied, ntot
       integer(kind = kint) :: ip, inod, iele, k1, ipart, iflag
       integer(kind = kint) :: jnum, j, jst, jed, jnod, jele
@@ -1221,12 +1226,10 @@
      &    mesh%node%numnod, new_mesh%node%internal_node,                &
      &    idomain_new(1), irank_trns1(1))
 !
-      call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
-     &    mesh%node%numnod, ext_tbl%ntot_import,                        &
-     &    inod_new(1), inod_trns1(1+new_mesh%node%internal_node))
-      call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
-     &    mesh%node%numnod, ext_tbl%ntot_import,                        &
-     &    idomain_new(1), irank_trns1(1+new_mesh%node%internal_node))
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_trns1)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_mesh%node%numnod, new_mesh%nod_comm, irank_trns1)
 !
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
@@ -1281,7 +1284,7 @@
 !
         ip =  part_tbl%irank_export(i)
         do iele = 1, mesh%ele%numele
-          if(mesh%ele%ie(iele,1) .gt. mesh%node%internal_node) cycle
+!          if(mesh%ele%ie(iele,1) .gt. mesh%node%internal_node) cycle
           do k1 = 1, mesh%ele%nnod_4_ele
             inod = mesh%ele%ie(iele,k1)
             if(idomain_new(inod) .eq. ip) then
@@ -1350,7 +1353,7 @@
 !
         ip =  ele_tbl%irank_export(i)
         do iele = 1, mesh%ele%numele
-          if(mesh%ele%ie(iele,1) .gt. mesh%node%internal_node) cycle
+!          if(mesh%ele%ie(iele,1) .gt. mesh%node%internal_node) cycle
           do k1 = 1, mesh%ele%nnod_4_ele
             inod = mesh%ele%ie(iele,k1)
             if(idomain_new(inod) .eq. ip) then
@@ -1433,6 +1436,22 @@
      &      ie_newdomain(1,k1), ie_domain_recv(1,k1))
       end do
 !
+      allocate(iele_org_local(new_mesh%ele%numele))
+      allocate(iele_org_domain(new_mesh%ele%numele))
+      allocate(iele_local(mesh%ele%numele))
+      allocate(iele_domain(mesh%ele%numele))
+!
+      do iele = 1, mesh%ele%numele
+        iele_local(iele) = iele
+        iele_domain(iele) = my_rank
+      end do
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,             &
+     &    mesh%ele%numele, new_mesh%ele%numele,                         &
+     &    iele_local(1), iele_org_local(1))
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,             &
+     &    mesh%ele%numele, new_mesh%ele%numele,                         &
+     &    iele_domain(1), iele_org_domain(1))
 !
       allocate(inod_recv(new_mesh%node%numnod))
       allocate(icount_node(new_mesh%node%numnod))
@@ -1469,6 +1488,8 @@
                 jnod = new_mesh%nod_comm%item_import(jnum)
                 if(inod .eq. inod_recv(jnod)) then
                   iflag = inod_recv(jnod)
+                  new_mesh%ele%ie(iele,k1) = jnod
+                  icount_node(jnod) = icount_node(jnod) + 1
                   exit
                 end if
               end do
@@ -1476,7 +1497,8 @@
 !
             if(iflag .le. 0) then
               write(100+my_rank,*) 'Node cannot be found for ',        &
-     &                iele, k1, ip, inod, ist
+     &           new_mesh%ele%iele_global(iele), iele, k1, ip, inod, &
+     &           iele_org_local(iele), iele_org_domain(iele)
               icou = icou + 1
             end if
           end if
@@ -1496,15 +1518,15 @@
       call SOLVER_SEND_RECV_int_type                                    &
      &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_new_lc)
 !
-      write(200+my_rank,*) 'new_mesh%node%numnod', new_mesh%node%numnod, new_mesh%node%internal_node
-      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%num_neib
-      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%istack_import
-      do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
-        write(200+my_rank,*) inod, irank_new_lc(inod), inod_new_lc(inod)
-      end do
+!      write(200+my_rank,*) 'new_mesh%node%numnod', new_mesh%node%numnod, new_mesh%node%internal_node
+!      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%num_neib
+!      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%istack_import
+!      do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
+!        write(200+my_rank,*) inod, irank_new_lc(inod), inod_new_lc(inod)
+!      end do
 !
       icou = 0
-      do inod = 1, new_mesh%node%internal_node
+      do inod = 1, new_mesh%node%numnod
         if(icount_node(inod) .eq. 0) icou = icou + 1
       end do
 !
