@@ -251,6 +251,7 @@
       use solver_SR_type
       use quicksort
       use external_group_4_new_part
+      use ext_of_int_grp_4_new_part
       use ext_of_ext_grp_4_new_part
 !
       type(node_data), intent(in) :: node
@@ -268,6 +269,7 @@
       integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
       integer(kind = kint), intent(inout) :: inod_new(node%numnod)
 !
+      type(group_data), intent(inout) :: ext_grp
       type(calypso_comm_table) :: tmp_tbl
       type(calypso_comm_table) :: ext_ext_tbl
       type(communication_table) :: new_comm0, new_comm_tmp
@@ -359,10 +361,22 @@
       deallocate(inod_recv, idomain_recv)
 !
 !
+      call const_external_grp_4_new_part(idomain_new, node,             &
+     &    part_param, part_grp, ext_grp)
 !
 !       Re-partitioning for external node
-      call const_external_grp_4_new_part(idomain_new, inod_new,         &
+      call const_ext_of_int_grp_new_part(idomain_new, inod_new,         &
      &    node, neib_nod, part_param, part_grp, ext_int_grp)
+!
+      if(my_rank .eq. 11) then
+        ip = 1
+        ist = ext_int_grp%istack_grp(ip)
+        ied = ext_int_grp%istack_grp(ip+1)
+        write(*,*) 'search 47543 in ext_int'
+        do i = ist, ied
+          if(ext_int_grp%item_grp(i) .eq. 47543) write(*,*) 'Found!!'
+        end do
+      end if
 !
       call gather_num_trans_for_repart                                  &
      &   (ext_int_grp, num_send_tmp, num_recv_tmp)
@@ -498,6 +512,25 @@
 !
       call const_ext_of_ext_grp_new_part(idomain_new, inod_new,         &
      &    node, neib_nod, part_param, part_grp, ext_ext_grp)
+!
+      if(my_rank .eq. 11) then
+          jst = neib_nod%istack_next(41091-1) + 1
+          jed = neib_nod%istack_next(41091)
+          do j = jst, jed
+            write(*,*) 11, 41091, 'neib_nod', neib_nod%inod_next(j)
+!     &                idomain_new(j), inod_new(j)
+          end do
+      end if
+
+      if(my_rank .eq. 11) then
+        ip = 1
+        ist = ext_ext_grp%istack_grp(ip)
+        ied = ext_ext_grp%istack_grp(ip+1)
+        write(*,*) 'search 47543 in ext_ext'
+        do i = ist, ied
+          if(ext_ext_grp%item_grp(i) .eq. 47543) write(*,*) 'Found!!'
+        end do
+      end if
 !
       call gather_num_trans_for_repart                                  &
      &   (ext_ext_grp, num_send_tmp, num_recv_tmp)
@@ -1504,6 +1537,18 @@
           end if
         end do
       end do
+!
+      if(my_rank .eq. 11) then
+        write(*,*) '11, 32784, ie_org', mesh%ele%iele_global(32784), &
+     &             mesh%ele%ie(32784,1:8)
+        do k1 = 1, 8
+          icou = mesh%ele%ie(32784,k1)
+          write(*,*) k1, 'node', mesh%node%inod_global(icou), &
+     &             mesh%node%xx(icou,1:3),    &
+     &             irank_old_lc(icou), inod_old_lc(icou),   &
+     &             idomain_new(icou), inod_new(icou)
+        end do
+      end if
 !
       write(*,*) my_rank, 'Missing connectivity: ', icou, &
      &          ' of ', new_mesh%ele%nnod_4_ele*new_mesh%ele%numele
