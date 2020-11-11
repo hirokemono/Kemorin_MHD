@@ -51,6 +51,7 @@ t_repartition_by_volume.o \
 set_istack_4_domain_block.o \
 repart_in_xyz_by_volume.o \
 external_group_4_new_part.o \
+ext_of_int_grp_4_new_part.o \
 ext_of_ext_grp_4_new_part.o \
 set_comm_tbl_to_new_part.o \
 const_comm_tbl_to_new_mesh.o \
