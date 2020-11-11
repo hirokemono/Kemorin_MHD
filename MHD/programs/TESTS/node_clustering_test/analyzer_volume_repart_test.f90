@@ -174,7 +174,6 @@
      &    idomain_new, inod_new, new_fem%mesh%nod_comm,                 &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
 !
-      return
       call const_new_element_connect(fem_T%mesh, next_tbl_T%neib_ele,   &
      &    part_tbl, ext_tbl, idomain_new, inod_new, ele_tbl, new_fem%mesh)
 !
@@ -878,6 +877,34 @@
       call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
      &    new_comm%istack_import, new_comm%istack_export,               &
      &    inod_external(1), SR_sig1, new_comm%item_export)
+!
+!
+      new_node%internal_node =                 part_tbl%ntot_import
+      new_node%numnod = new_comm%ntot_import + part_tbl%ntot_import
+!
+!
+      write(*,*) my_rank, 'new_nomond', new_node%internal_node,         &
+     &           new_node%numnod, ext_int_tbl%ntot_import
+      call alloc_node_geometry_base(new_node)
+!
+      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%inod_global(1), new_node%inod_global(1))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,1), new_node%xx(1,1))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,2), new_node%xx(1,2))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,3), new_node%xx(1,3))
+!
+      call SOLVER_SEND_RECV_int8_type                                   &
+     &   (new_node%numnod, new_comm, new_node%inod_global)
+      call SOLVER_SEND_RECV_3_type                                      &
+     &   (new_node%numnod, new_comm, new_node%xx(1,1))
+!
       return
 !
 !
@@ -942,28 +969,6 @@
       call calypso_mpi_allreduce_one_int(icou, ntot, MPI_SUM)
       if(my_rank .eq. 0) write(*,*) 'Missing node', ntot
   10  continue
-!
-!
-      new_node%internal_node =                    part_tbl%ntot_import
-      new_node%numnod = ext_int_tbl%ntot_import + part_tbl%ntot_import
-!
-!
-      write(*,*) my_rank, 'new_nomond', new_node%internal_node,         &
-     &           new_node%numnod, ext_int_tbl%ntot_import
-      call alloc_node_geometry_base(new_node)
-!
-      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%inod_global(1), new_node%inod_global(1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,1), new_node%xx(1,1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,2), new_node%xx(1,2))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,3), new_node%xx(1,3))
 !
 !
 !
