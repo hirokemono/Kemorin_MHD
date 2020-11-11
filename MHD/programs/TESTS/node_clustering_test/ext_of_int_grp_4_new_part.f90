@@ -226,7 +226,7 @@
         end do
       end do
 !
-      end subroutine set_external_grp_4_new_part
+      end subroutine set_ext_of_int_grp_4_new_part
 !
 ! ----------------------------------------------------------------------
 !
