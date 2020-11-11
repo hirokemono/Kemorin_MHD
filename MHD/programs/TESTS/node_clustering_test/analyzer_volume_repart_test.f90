@@ -173,6 +173,7 @@
      &    fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes, part_grp, ext_int_grp, ext_ext_grp,          &
      &    idomain_new, inod_new, new_fem%mesh%nod_comm,                 &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
+      return
 !
       call const_new_element_connect(fem_T%mesh, next_tbl_T%neib_ele,   &
      &    part_tbl, ext_tbl, idomain_new, inod_new, ele_tbl, new_fem%mesh)
@@ -269,7 +270,7 @@
       integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
       integer(kind = kint), intent(inout) :: inod_new(node%numnod)
 !
-      type(group_data), intent(inout) :: ext_grp
+      type(group_data) :: ext_grp
       type(calypso_comm_table) :: tmp_tbl
       type(calypso_comm_table) :: ext_ext_tbl
       type(communication_table) :: new_comm0, new_comm_tmp
@@ -365,18 +366,10 @@
      &    part_param, part_grp, ext_grp)
 !
 !       Re-partitioning for external node
-      call const_ext_of_int_grp_new_part(idomain_new, inod_new,         &
-     &    node, neib_nod, part_param, part_grp, ext_int_grp)
+      call const_ext_of_int_grp_new_part                                &
+     &   (node, neib_nod, part_param, part_grp, ext_grp, ext_int_grp)
 !
-      if(my_rank .eq. 11) then
-        ip = 1
-        ist = ext_int_grp%istack_grp(ip)
-        ied = ext_int_grp%istack_grp(ip+1)
-        write(*,*) 'search 47543 in ext_int'
-        do i = ist, ied
-          if(ext_int_grp%item_grp(i) .eq. 47543) write(*,*) 'Found!!'
-        end do
-      end if
+      return
 !
       call gather_num_trans_for_repart                                  &
      &   (ext_int_grp, num_send_tmp, num_recv_tmp)

@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine const_external_grp_4_new_part(idomain_new, node,     &
-!!     &          part_param, part_grp, ext_int_grp)
+!!     &          part_param, part_grp, ext_grp)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(mesh_test_files_param), intent(in) :: part_param
 !!        type(group_data), intent(in) :: part_grp
-!!        type(group_data), intent(inout) :: ext_int_grp
+!!        type(group_data), intent(inout) :: ext_grp
 !!@endverbatim
 !
       module external_group_4_new_part
@@ -38,7 +38,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_external_grp_4_new_part(idomain_new, node,       &
-     &          part_param, part_grp, ext_int_grp)
+     &          part_param, part_grp, ext_grp)
 !
       use t_control_param_vol_grping
 !
@@ -51,36 +51,33 @@
 !
       integer(kind = kint), intent(in) :: idomain_new(node%numnod)
 !
-      type(group_data), intent(inout) :: ext_int_grp
+      type(group_data), intent(inout) :: ext_grp
 !
 !
-      ext_int_grp%num_grp = part_grp%num_grp
-      call alloc_group_num(ext_int_grp)
+      ext_grp%num_grp = part_grp%num_grp
+      call alloc_group_num(ext_grp)
 !
       call set_xyz_domain_grp_name(part_param, external_name,           &
-     &    ext_int_grp%num_grp, ext_int_grp%grp_name)
+     &    ext_grp%num_grp, ext_grp%grp_name)
 !
 !
-      call count_external_grp_4_new_part(idomain_new, node, part_grp,   &
-     &    ext_int_grp%num_grp, ext_int_grp%num_item,                    &
-     &    ext_int_grp%istack_grp)
-      call alloc_group_item(ext_int_grp)
+      call count_external_grp_4_new_part(idomain_new, node,             &
+     &    ext_grp%num_grp, ext_grp%num_item, ext_grp%istack_grp)
+      call alloc_group_item(ext_grp)
 !
       call set_external_grp_4_new_part(idomain_new, node,               &
-     &    ext_int_grp%num_grp, ext_int_grp%num_item,                    &
-     &    ext_int_grp%istack_grp, ext_int_grp%item_grp)
+     &    ext_grp%num_grp, ext_grp%num_item,                            &
+     &    ext_grp%istack_grp, ext_grp%item_grp)
 !
       end subroutine const_external_grp_4_new_part
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_external_grp_4_new_part                          &
-     &         (idomain_new, node, part_grp, num_ext_grp,               &
-     &          ntot_ext_grp, istack_ext_grp)
+      subroutine count_external_grp_4_new_part(idomain_new, node,       &
+     &          num_ext_grp, ntot_ext_grp, istack_ext_grp)
 !
       type(node_data), intent(in) :: node
-      type(group_data), intent(in) :: part_grp
       integer(kind = kint), intent(in) :: num_ext_grp
 !
       integer(kind = kint), intent(in) :: idomain_new(node%numnod)
@@ -100,11 +97,11 @@
         inum = idomain_new(inod) + 1
         istack_ext_grp(inum) = istack_ext_grp(inum) + 1
       end do
-      do inum = 1, ntot_ext_grp
+      do inum = 1, num_ext_grp
         istack_ext_grp(inum) = istack_ext_grp(inum)                     &
      &                        + istack_ext_grp(inum-1)
       end do
-      ntot_ext_grp = istack_ext_grp(part_grp%num_grp)
+      ntot_ext_grp = istack_ext_grp(num_ext_grp)
 !
       end subroutine count_external_grp_4_new_part
 !
