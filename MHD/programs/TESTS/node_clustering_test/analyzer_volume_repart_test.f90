@@ -184,6 +184,16 @@
      &   (fem_T%mesh, ele_comm, next_tbl_T%neib_ele,   &
      &    part_tbl, ext_tbl, idomain_new, inod_new, ele_tbl, new_fem%mesh)
 !
+      call repartition_node_group(fem_T%mesh%node, fem_T%group%nod_grp, &
+     &    part_tbl, new_fem%mesh%node, new_fem%mesh%nod_comm,           &
+     &    new_fem%group%nod_grp)
+      call repartition_element_group                                    &
+     &   (fem_T%mesh%ele, ele_comm, fem_T%group%ele_grp, ele_tbl,       &
+     &    new_fem%mesh%ele, new_fem%group%ele_grp)
+      call repartition_surface_group                                    &
+     &   (fem_T%mesh%ele, ele_comm, fem_T%group%surf_grp, ele_tbl,      &
+     &    new_fem%mesh%ele, new_fem%group%surf_grp)
+!
       allocate(inod_gl_test(new_fem%mesh%node%numnod))
       inod_gl_test(1:new_fem%mesh%node%numnod) = 0
 !
@@ -202,16 +212,6 @@
 !     &        new_fem%mesh%node%inod_global(inod), inod_gl_test(inod)
 !        end if
 !      end do
-!
-      new_fem%group%nod_grp%num_grp = 0
-      call alloc_group_num(new_fem%group%nod_grp)
-      call alloc_group_item(new_fem%group%nod_grp)
-      new_fem%group%ele_grp%num_grp = 0
-      call alloc_group_num(new_fem%group%ele_grp)
-      call alloc_group_item(new_fem%group%ele_grp)
-      new_fem%group%surf_grp%num_grp = 0
-      call alloc_sf_group_num(new_fem%group%surf_grp)
-      call alloc_sf_group_item(new_fem%group%surf_grp)
 !
 !       Output appended mesh
       file_name = set_mesh_file_name                                    &
@@ -1254,6 +1254,337 @@
       deallocate(irev_tmp)
 !
       end subroutine calypso_rev_SR_type_int
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine repartition_node_group(node, nod_grp, part_tbl,        &
+     &          new_node, new_comm, new_nod_grp)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_group_data
+!
+      use calypso_SR_type
+      use solver_SR_type
+      use select_copy_from_recv
+!
+      type(node_data), intent(in) :: node
+      type(group_data), intent(in) :: nod_grp
+      type(calypso_comm_table), intent(in) :: part_tbl
+!
+      type(node_data), intent(in) :: new_node
+      type(communication_table), intent(in) :: new_comm
+!
+      type(group_data), intent(inout) :: new_nod_grp
+!
+      integer(kind = kint), allocatable :: iflag_org(:)
+      integer(kind = kint), allocatable :: iflag_new(:)
+      integer(kind = kint), allocatable :: item_tmp(:)
+!
+      integer(kind = kint) :: igrp, inum, inod, ist, ied, ntot_prev
+!
+!
+      allocate(iflag_org(node%numnod))
+!$omp parallel workshare
+        iflag_org(1:node%numnod) = 0
+!$omp end parallel workshare
+!
+      allocate(iflag_new(new_node%numnod))
+!$omp parallel workshare
+        iflag_new(1:new_node%numnod) = 0
+!$omp end parallel workshare
+!
+      new_nod_grp%num_grp = nod_grp%num_grp
+      call alloc_group_num(new_nod_grp)
+!
+      if (new_nod_grp%num_grp .gt. 0) then
+        new_nod_grp%grp_name(1:new_nod_grp%num_grp)                     &
+     &          = nod_grp%grp_name(1:new_nod_grp%num_grp)
+      end if
+!
+      new_nod_grp%istack_grp(0:new_nod_grp%num_grp) = 0
+      call alloc_group_item(new_nod_grp)
+      do igrp = 1, nod_grp%num_grp
+!$omp parallel workshare
+        iflag_org(1:node%numnod) = 0
+!$omp end parallel workshare
+!
+        ist = nod_grp%istack_grp(igrp-1) + 1
+        ied = nod_grp%istack_grp(igrp)
+!$omp parallel do private(inum,inod)
+        do inum = ist, ied
+          inod = nod_grp%item_grp(inum)
+          iflag_org(inod) = 1
+        end do
+!$omp end parallel do
+!
+        call calypso_SR_type_int(iflag_import_item, part_tbl,           &
+     &      node%numnod, new_node%internal_node,                        &
+     &      iflag_org(1), iflag_new(1))
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (new_node%numnod, new_comm, iflag_new)
+!
+        new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
+        new_nod_grp%istack_grp(igrp) = new_nod_grp%istack_grp(igrp-1)   &
+     &                              + new_nod_grp%nitem_grp(igrp)
+        do inum = igrp+1, new_nod_grp%num_grp
+          new_nod_grp%istack_grp(inum) = new_nod_grp%istack_grp(inum-1)
+        end do
+!
+        ntot_prev = new_nod_grp%istack_grp(igrp-1)
+        allocate(item_tmp(ntot_prev))
+!$omp parallel do private(inum)
+        do inum = 1, ntot_prev
+          item_tmp(inum) = new_nod_grp%item_grp(inum)
+        end do
+!$omp end parallel do
+!
+        call dealloc_group_item(new_nod_grp)
+        call alloc_group_item(new_nod_grp)
+!$omp parallel do private(inum)
+        do inum = 1, ntot_prev
+          new_nod_grp%item_grp(inum) = item_tmp(inum)
+        end do
+!$omp end parallel do
+        deallocate(item_tmp)
+!
+        inum = ntot_prev
+        do inod = 1, new_node%numnod
+          if(iflag_new(inod) .gt. 0) then
+            inum = inum + 1
+            new_nod_grp%item_grp(inum) = inod
+          end if
+        end do
+      end do
+!
+      end subroutine repartition_node_group
+!
+! ----------------------------------------------------------------------
+!
+      subroutine repartition_element_group(ele, ele_comm, ele_grp,      &
+     &          ele_tbl, new_ele, new_ele_grp)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_group_data
+!
+      use calypso_SR_type
+      use solver_SR_type
+      use select_copy_from_recv
+!
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
+      type(calypso_comm_table), intent(in) :: ele_tbl
+!
+      type(element_data), intent(in) :: new_ele
+      type(communication_table), intent(in) :: ele_comm
+!
+      type(group_data), intent(inout) :: new_ele_grp
+!
+      integer(kind = kint), allocatable :: iflag_org(:)
+      integer(kind = kint), allocatable :: iflag_new(:)
+      integer(kind = kint), allocatable :: item_tmp(:)
+!
+      integer(kind = kint) :: igrp, inum, iele, ist, ied, ntot_prev
+!
+!
+      allocate(iflag_org(ele%numele))
+!$omp parallel workshare
+        iflag_org(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+      allocate(iflag_new(ele_tbl%ntot_import))
+!$omp parallel workshare
+        iflag_new(1:ele_tbl%ntot_import) = 0
+!$omp end parallel workshare
+!
+      new_ele_grp%num_grp = ele_grp%num_grp
+      call alloc_group_num(new_ele_grp)
+!
+      if (new_ele_grp%num_grp .gt. 0) then
+        new_ele_grp%grp_name(1:new_ele_grp%num_grp)                     &
+     &          = ele_grp%grp_name(1:new_ele_grp%num_grp)
+      end if
+!
+      new_ele_grp%istack_grp(0:new_ele_grp%num_grp) = 0
+      call alloc_group_item(new_ele_grp)
+      do igrp = 1, ele_grp%num_grp
+!$omp parallel workshare
+        iflag_org(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+        ist = ele_grp%istack_grp(igrp-1) + 1
+        ied = ele_grp%istack_grp(igrp)
+!$omp parallel do private(inum,iele)
+        do inum = ist, ied
+          iele = ele_grp%item_grp(inum)
+          iflag_org(iele) = 1
+        end do
+!$omp end parallel do
+!
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (ele%numele, ele_comm, iflag_org)
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      ele%numele, ele_tbl%ntot_import,                            &
+     &      iflag_org(1), iflag_new(1))
+!
+        new_ele_grp%nitem_grp(igrp) = 0
+        do iele = 1, new_ele%numele
+          new_ele_grp%nitem_grp(igrp)                                   &
+     &          = new_ele_grp%nitem_grp(igrp) + iflag_new(iele)
+        end do
+        new_ele_grp%istack_grp(igrp) = new_ele_grp%istack_grp(igrp-1)   &
+     &                              + new_ele_grp%nitem_grp(igrp)
+        do inum = igrp+1, new_ele_grp%num_grp
+          new_ele_grp%istack_grp(inum) = new_ele_grp%istack_grp(inum-1)
+        end do
+!
+        ntot_prev = new_ele_grp%istack_grp(igrp-1)
+        allocate(item_tmp(ntot_prev))
+!$omp parallel do private(inum)
+        do inum = 1, ntot_prev
+          item_tmp(inum) = new_ele_grp%item_grp(inum)
+        end do
+!$omp end parallel do
+!
+        call dealloc_group_item(new_ele_grp)
+        call alloc_group_item(new_ele_grp)
+!$omp parallel do private(inum)
+        do inum = 1, ntot_prev
+          new_ele_grp%item_grp(inum) = item_tmp(inum)
+        end do
+!$omp end parallel do
+        deallocate(item_tmp)
+!
+        inum = ntot_prev
+        do iele = 1, new_ele%numele
+          if(iflag_new(iele) .gt. 0) then
+            inum = inum + 1
+            new_ele_grp%item_grp(inum) = iele
+          end if
+        end do
+      end do
+!
+      end subroutine repartition_element_group
+!
+! ----------------------------------------------------------------------
+!
+      subroutine repartition_surface_group(ele, ele_comm, surf_grp,     &
+     &          ele_tbl, new_ele, new_surf_grp)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_group_data
+!
+      use calypso_SR_type
+      use solver_SR_type
+      use select_copy_from_recv
+!
+      type(element_data), intent(in) :: ele
+      type(surface_group_data), intent(in) :: surf_grp
+      type(calypso_comm_table), intent(in) :: ele_tbl
+!
+      type(element_data), intent(in) :: new_ele
+      type(communication_table), intent(in) :: ele_comm
+!
+      type(surface_group_data), intent(inout) :: new_surf_grp
+!
+      integer(kind = kint), allocatable :: iflag_org(:)
+      integer(kind = kint), allocatable :: iflag_new(:)
+      integer(kind = kint), allocatable :: item_tmp(:,:)
+!
+      integer(kind = kint) :: igrp, inum, iele, ist, ied, ntot_prev
+!
+!
+      allocate(iflag_org(ele%numele))
+!$omp parallel workshare
+        iflag_org(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+      allocate(iflag_new(ele_tbl%ntot_import))
+!$omp parallel workshare
+        iflag_new(1:ele_tbl%ntot_import) = 0
+!$omp end parallel workshare
+!
+      new_surf_grp%num_grp = surf_grp%num_grp
+      call alloc_sf_group_num(new_surf_grp)
+!
+      if (new_surf_grp%num_grp .gt. 0) then
+        new_surf_grp%grp_name(1:new_surf_grp%num_grp)                   &
+     &          = surf_grp%grp_name(1:new_surf_grp%num_grp)
+      end if
+!
+      new_surf_grp%istack_grp(0:new_surf_grp%num_grp) = 0
+      call alloc_sf_group_item(new_surf_grp)
+      do igrp = 1, surf_grp%num_grp
+!$omp parallel workshare
+        iflag_org(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+        ist = surf_grp%istack_grp(igrp-1) + 1
+        ied = surf_grp%istack_grp(igrp)
+!$omp parallel do private(inum,iele)
+        do inum = ist, ied
+          iele = surf_grp%item_sf_grp(1,inum)
+          iflag_org(iele) = surf_grp%item_sf_grp(2,inum)
+        end do
+!$omp end parallel do
+!
+!
+        call SOLVER_SEND_RECV_int_type                                  &
+     &     (ele%numele, ele_comm, iflag_org)
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      ele%numele, ele_tbl%ntot_import,                            &
+     &      iflag_org(1), iflag_new(1))
+!
+        write(100+my_rank,*) igrp, ele%numele, 'iflag',  &
+     &        sum(iflag_org), sum(iflag_new)
+
+        new_surf_grp%nitem_grp(igrp) = 0
+        do iele = 1, new_ele%numele
+          if(iflag_new(iele) .gt. 0) then
+            new_surf_grp%nitem_grp(igrp)                                &
+     &          = new_surf_grp%nitem_grp(igrp) + 1
+          end if
+        end do
+        new_surf_grp%istack_grp(igrp) = new_surf_grp%istack_grp(igrp-1) &
+     &                              + new_surf_grp%nitem_grp(igrp)
+        do inum = igrp+1, new_surf_grp%num_grp
+          new_surf_grp%istack_grp(inum)                                 &
+     &          = new_surf_grp%istack_grp(inum-1)
+        end do
+!
+        ntot_prev = new_surf_grp%istack_grp(igrp-1)
+        allocate(item_tmp(2,ntot_prev))
+!$omp parallel do private(inum)
+        do inum = 1, ntot_prev
+          item_tmp(1,inum) = new_surf_grp%item_sf_grp(1,inum)
+          item_tmp(2,inum) = new_surf_grp%item_sf_grp(2,inum)
+        end do
+!$omp end parallel do
+!
+        call dealloc_sf_group_item(new_surf_grp)
+        call alloc_sf_group_item(new_surf_grp)
+!$omp parallel do private(inum)
+        do inum = 1, ntot_prev
+          new_surf_grp%item_sf_grp(1,inum) = item_tmp(1,inum)
+          new_surf_grp%item_sf_grp(2,inum) = item_tmp(2,inum)
+        end do
+!$omp end parallel do
+        deallocate(item_tmp)
+!
+        inum = ntot_prev
+        do iele = 1, new_ele%numele
+          if(iflag_new(iele) .gt. 0) then
+            inum = inum + 1
+            new_surf_grp%item_sf_grp(1,inum) = iele
+            new_surf_grp%item_sf_grp(2,inum) = iflag_new(iele)
+          end if
+        end do
+      end do
+!
+      end subroutine repartition_surface_group
 !
 ! ----------------------------------------------------------------------
 !
