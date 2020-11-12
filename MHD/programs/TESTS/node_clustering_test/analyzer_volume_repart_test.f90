@@ -639,6 +639,7 @@
       use solver_SR_type
       use select_copy_from_recv
       use set_comm_tbl_to_new_part
+      use quicksort
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
@@ -670,6 +671,10 @@
       integer(kind = kint), allocatable :: iele_org_domain(:)
       integer(kind = kint), allocatable :: iele_local(:)
       integer(kind = kint), allocatable :: iele_domain(:)
+      integer(kind = kint), allocatable :: iele_recv(:)
+      integer(kind = kint), allocatable :: idomain_recv(:)
+      integer(kind = kint), allocatable :: iele_recv2(:)
+      integer(kind = kint), allocatable :: idomain_recv2(:)
 !
       integer(kind = kint), allocatable :: nele_send_tmp(:)
       integer(kind = kint), allocatable :: nele_recv_tmp(:)
@@ -681,7 +686,8 @@
       integer(kind = kint), allocatable :: irank_sort(:)
       integer(kind = kint), allocatable :: iflag_dup(:)
 !
-      integer(kind = kint) :: ntot_0, ntot_1, ntot_2
+      integer(kind = kint) :: numele
+      integer(kind = kint), allocatable :: idx_sort2(:)
 !
       integer(kind = kint) :: icou, inum, i, ist, ied
       integer(kind = kint) :: ip, inod, iele, k1, ipart, iflag
@@ -698,6 +704,9 @@
 !
       integer(kind = kint), allocatable :: inod_trns2(:)
       integer(kind = kint), allocatable :: irank_trns2(:)
+!
+      integer(kind = kint), allocatable :: i4_recv(:)
+      integer(kind = kint_gl), allocatable :: i8_recv(:)
 !
 !
       
@@ -900,26 +909,36 @@
         end do
       end do
 !
-      write(100+my_rank,*) 'ele_tbl%nrank_export', ele_tbl%nrank_export
-      do i = 1, ele_tbl%nrank_export
-        write(100+my_rank,*) i, 'ele_tbl%istack_export', &
-     &   ele_tbl%irank_export(i), ele_tbl%istack_export(i-1:i)
+!      write(100+my_rank,*) 'ele_tbl%nrank_export', ele_tbl%nrank_export
+!      do i = 1, ele_tbl%nrank_export
+!        write(100+my_rank,*) i, 'ele_tbl%istack_export', &
+!     &   ele_tbl%irank_export(i), ele_tbl%istack_export(i-1:i)
 !        do icou = ele_tbl%istack_export(i-1)+1, ele_tbl%istack_export(i)
 !          write(100+my_rank,*) icou, 'ele_tbl%item_export',   &
 !     &          ele_tbl%item_export(icou), mesh%ele%numele
 !        end do
-      end do
+!      end do
 !
-      write(100+my_rank,*) 'ele_tbl%nrank_import', ele_tbl%nrank_import
-      do i = 1, ele_tbl%nrank_import
-        write(100+my_rank,*) i, 'ele_tbl%istack_import', &
-     &  ele_tbl%irank_import(i), ele_tbl%istack_import(i-1:i)
+!      write(100+my_rank,*) 'ele_tbl%nrank_import', ele_tbl%nrank_import
+!      do i = 1, ele_tbl%nrank_import
+!        write(100+my_rank,*) i, 'ele_tbl%istack_import', &
+!     &  ele_tbl%irank_import(i), ele_tbl%istack_import(i-1:i)
 !        do icou = ele_tbl%istack_import(i-1)+1, ele_tbl%istack_import(i)
 !          write(100+my_rank,*) icou, 'ele_tbl%item_import',   &
 !     &          ele_tbl%item_import(icou), ele_tbl%ntot_import
 !        end do
-      end do
+!      end do
 ! 
+      allocate(iele_recv(ele_tbl%ntot_import))
+      allocate(idomain_recv(ele_tbl%ntot_import))
+!
+!    Set local (idomain_recv, inod_recv) in external node
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    iele_domain, idomain_recv)
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    iele_local, iele_recv)
 !
       allocate(nele_send_tmp(nprocs))
       allocate(nele_recv_tmp(nprocs))
@@ -933,14 +952,123 @@
       nele_recv_tmp2(1:nprocs) = 0
 !$omp end parallel workshare
 !
+!$omp parallel do
+      do iele = 1, ele_tbl%ntot_import
+        idx_sort(iele) =   iele
+        irank_sort(iele) = idomain_recv(iele)
+        iele_sort(iele) =  iele_recv(iele)
+      end do
+!$omp end parallel do
+!
+      call quicksort_w_index(ele_tbl%ntot_import, irank_sort,           &
+     &                       ione, ele_tbl%ntot_import, idx_sort)
+!
+      do icou = 1, ele_tbl%ntot_import
+        ip = irank_sort(icou)
+        nele_recv_tmp(ip+1) = nele_recv_tmp(ip+1) + 1
+      end do
+!$omp parallel do private(iele,icou)
+      do icou = 1, ele_tbl%ntot_import
+        iele = idx_sort(icou)
+        iele_sort(icou) = iele_recv(iele)
+      end do
+!$omp end parallel do
+!
+      ist = 0
+      do ip = 1, nprocs
+        if(nele_recv_tmp(ip) .gt. 1) then
+          call quicksort_w_index                                        &
+     &       (nele_recv_tmp(ip), iele_sort(ist+1),                      &
+     &        ione, nele_recv_tmp(ip), idx_sort(ist+1))
+        end if
+        ist = ist + nele_recv_tmp(ip)
+      end do
+!
+      allocate(iflag_dup(ele_tbl%ntot_import))
+!$omp parallel workshare
+      iflag_dup(1:ele_tbl%ntot_import) = 1
+!$omp end parallel workshare
+!
+      ist = 0
+      do ip = 1, nprocs
+        if(nele_recv_tmp(ip) .gt. 1) then
+          do icou = 2, nele_recv_tmp(ip)
+            if(iele_sort(ist+icou) .eq. iele_sort(ist+icou-1)) then
+              iflag_dup(ist+icou) = 0
+            end if
+          end do
+        end if
+        ist = ist + nele_recv_tmp(ip)
+      end do
 !
 !
+      allocate(idx_sort2(ele_tbl%ntot_import))
+      numele = sum(iflag_dup)
+      ist = 0
+      iele = 0
+      jele = numele
+      do ip = 1, nprocs
+        if(nele_recv_tmp(ip) .le. 0) cycle
+!
+        do icou = 1, nele_recv_tmp(ip)
+          if(iflag_dup(ist+icou) .eq. 0) then
+            jele = jele + 1
+            idx_sort2(jele) = idx_sort(ist+icou)
+          else if(iflag_dup(ist+icou) .gt. 0) then
+            iele = iele + 1
+            idx_sort2(iele) = idx_sort(ist+icou)
+          end if
+        end do
+        ist = ist + nele_recv_tmp(ip)
+      end do
+
+!      write(100+my_rank,*) 'ele_tbl%nrank_import', numele, ele_tbl%ntot_import
+!      do icou = 1, ele_tbl%ntot_import
+!          iele = idx_sort2(icou)
+!          write(100+my_rank,*) icou,    &
+!     &      'ele_tbl%item_import', iele,   &
+!     &       idomain_recv(iele), iele_recv(iele)
+!        end do
+!      do icou = numele+1, ele_tbl%ntot_import
+!          iele = idx_sort2(icou)
+!          write(100+my_rank,*) icou,    &
+!     &      'ele_tbl%item_import', iele,   &
+!     &       idomain_recv(iele), iele_recv(iele)
+!      end do
+!
+      do i = 1, ele_tbl%ntot_import
+        j = idx_sort2(i)
+        ele_tbl%item_import(j) = i
+        ele_tbl%irev_import(i) = j
+      end do
+!
+      allocate(iele_recv2(ele_tbl%ntot_import))
+      allocate(idomain_recv2(ele_tbl%ntot_import))
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    iele_domain, idomain_recv2)
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    iele_local, iele_recv2)
+!
+      write(100+my_rank,*) 'check'
+      do icou = 1, ele_tbl%ntot_import
+        iele = idx_sort2(icou)
+        if(idomain_recv2(icou) .eq. idomain_recv(iele))  cycle
+        if(iele_recv2(icou) .eq. iele_recv(iele))  cycle
+!
+        write(100+my_rank,*) my_rank, icou, idx_sort2(icou), &
+     &             idomain_recv2(icou)-idomain_recv(iele), &
+     &             iele_recv2(icou)-iele_recv(iele)
+      end do
 !
       deallocate(nele_send_tmp, nele_recv_tmp, nele_recv_tmp2)
       deallocate(idx_sort, iele_sort, irank_sort)
 !
 !
-!
+      allocate(i4_recv(ele_tbl%ntot_import))
+      allocate(i8_recv(ele_tbl%ntot_import))
       allocate(ie_newnod(mesh%ele%numele,mesh%ele%nnod_4_ele))
       allocate(ie_newdomain(mesh%ele%numele,mesh%ele%nnod_4_ele))
 !
@@ -957,7 +1085,7 @@
 !$omp end parallel
 !
 !
-      new_mesh%ele%numele =     ele_tbl%ntot_import
+      new_mesh%ele%numele =     numele
       new_mesh%ele%nnod_4_ele = mesh%ele%nnod_4_ele
       call allocate_ele_connect_type(new_mesh%ele)
       allocate(ie_domain_recv(new_mesh%ele%numele,                 &
@@ -969,27 +1097,45 @@
 !$omp end parallel workshare
 !
       call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    mesh%ele%iele_global(1), new_mesh%ele%iele_global(1))
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    mesh%ele%iele_global(1), i8_recv)
+!$omp parallel workshare
+      new_mesh%ele%iele_global(1:new_mesh%ele%numele)                   &
+     &                   = i8_recv(1:new_mesh%ele%numele)
+!$omp end parallel workshare
 !
       do k1 = 1, mesh%ele%nnod_4_ele
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      mesh%ele%numele, new_mesh%ele%numele,                       &
-     &      ie_newnod(1,k1), new_mesh%ele%ie(1,k1))
+     &      mesh%ele%numele, ele_tbl%ntot_import,                       &
+     &      ie_newnod(1,k1), i4_recv)
+!$omp parallel workshare
+        new_mesh%ele%ie(1:new_mesh%ele%numele,k1)                       &
+     &                   = i4_recv(1:new_mesh%ele%numele)
+!$omp end parallel workshare
+!
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      mesh%ele%numele, new_mesh%ele%numele,                       &
-     &      ie_newdomain(1,k1), ie_domain_recv(1,k1))
+     &      mesh%ele%numele, ele_tbl%ntot_import,                       &
+     &      ie_newdomain(1,k1), i4_recv)
+!$omp parallel workshare
+        ie_domain_recv(1:new_mesh%ele%numele,k1)                        &
+     &                   = i4_recv(1:new_mesh%ele%numele)
+!$omp end parallel workshare
       end do
 !
       allocate(iele_org_local(new_mesh%ele%numele))
       allocate(iele_org_domain(new_mesh%ele%numele))
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    iele_local(1), iele_org_local(1))
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    iele_local(1), i4_recv(1))
+      iele_org_local(1:new_mesh%ele%numele)                             &
+     &                   = i4_recv(1:new_mesh%ele%numele)
+!
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, new_mesh%ele%numele,                         &
-     &    iele_domain(1), iele_org_domain(1))
+     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
+     &    iele_domain(1), i4_recv(1))
+      iele_org_domain(1:new_mesh%ele%numele)                            &
+     &                   = i4_recv(1:new_mesh%ele%numele)
 !
       allocate(inod_recv(new_mesh%node%numnod))
       allocate(icount_node(new_mesh%node%numnod))
