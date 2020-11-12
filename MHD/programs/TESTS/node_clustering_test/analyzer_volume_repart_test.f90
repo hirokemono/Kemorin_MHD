@@ -51,6 +51,7 @@
 !
       use t_file_IO_parameter
       use t_mesh_data
+      use t_comm_table
       use t_read_mesh_data
       use t_shape_functions
       use t_jacobians
@@ -66,6 +67,7 @@
       use calypso_mpi_int
       use calypso_mpi_real
       use const_jacobians_3d
+      use const_element_comm_tables
       use parallel_FEM_mesh_init
       use output_test_mesh
       use set_table_4_RHS_assemble
@@ -90,6 +92,7 @@
       type(new_patition_test_control) :: part_tctl1
       type(mesh_test_files_param) ::  T_meshes
 !
+      type(communication_table) :: ele_comm
       type(next_nod_ele_table) :: next_tbl_T
 !
       type(jacobians_type) :: jacobians_T
@@ -139,6 +142,9 @@
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
+      call const_element_comm_tbl_only(fem_T%mesh, ele_comm)
+!
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
@@ -174,7 +180,8 @@
      &    idomain_new, inod_new, new_fem%mesh%nod_comm,                 &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
 !
-      call const_new_element_connect(fem_T%mesh, next_tbl_T%neib_ele,   &
+      call const_new_element_connect                                    &
+     &   (fem_T%mesh, ele_comm, next_tbl_T%neib_ele,   &
      &    part_tbl, ext_tbl, idomain_new, inod_new, ele_tbl, new_fem%mesh)
 !
       allocate(inod_gl_test(new_fem%mesh%node%numnod))
@@ -616,7 +623,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_new_element_connect(mesh, neib_ele, part_tbl, &
+      subroutine const_new_element_connect                              &
+     &         (mesh, ele_comm, neib_ele, part_tbl,                     &
      &          ext_tbl, idomain_new, inod_new, ele_tbl, new_mesh)
 !
       use t_mesh_data
@@ -630,6 +638,7 @@
       use set_comm_tbl_to_new_part
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(communication_table), intent(in) :: ele_comm
       type(element_around_node), intent(in) :: neib_ele
       type(calypso_comm_table), intent(in) :: part_tbl
       type(calypso_comm_table), intent(in) :: ext_tbl
@@ -754,6 +763,21 @@
            write(*,*) my_rank, 'Wrong inod_trns2!' , inod
         end if
       end do
+!
+!
+!
+      allocate(iele_local(mesh%ele%numele))
+      allocate(iele_domain(mesh%ele%numele))
+!
+      do iele = 1, mesh%ele%numele
+        iele_local(iele) = iele
+        iele_domain(iele) = my_rank
+      end do
+!
+      call SOLVER_SEND_RECV_int_type                                   &
+     &   (mesh%ele%numele, ele_comm, iele_local)
+      call SOLVER_SEND_RECV_int_type                                   &
+     &   (mesh%ele%numele, ele_comm, iele_domain)
 !
 !      allocate(ie_to_new(mesh%ele%numele,mesh%ele%nnod_4_ele))
 !
@@ -927,18 +951,11 @@
 !
       allocate(iele_org_local(new_mesh%ele%numele))
       allocate(iele_org_domain(new_mesh%ele%numele))
-      allocate(iele_local(mesh%ele%numele))
-      allocate(iele_domain(mesh%ele%numele))
 !
-      do iele = 1, mesh%ele%numele
-        iele_local(iele) = iele
-        iele_domain(iele) = my_rank
-      end do
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,             &
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, new_mesh%ele%numele,                         &
      &    iele_local(1), iele_org_local(1))
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,             &
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, new_mesh%ele%numele,                         &
      &    iele_domain(1), iele_org_domain(1))
 !
