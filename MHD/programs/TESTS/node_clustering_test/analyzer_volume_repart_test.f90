@@ -553,14 +553,23 @@
         do icou = 1, num_recv_tmp(ip+1)
           if(iflag_dup(ist+icou) .gt. 0) then
             j = j + 1
-            irank_external(j) = inod_recv(internal_node+ist+icou)
-            inod_external(j) =  irank_sort(ist+icou)
+            irank_external(j) = irank_sort(ist+icou)
+            inod_external(j) =  inod_recv(internal_node+ist+icou)
             new_comm%item_import(j) = ist + icou + internal_node
           end if
         end do
         ist = ist + num_recv_tmp(ip+1)
       end do
 !
+      call element_num_reverse_SR                                       &
+     &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
+     &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
+     &    new_comm%ntot_export)
+      return
+      call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
+     &    new_comm%istack_import, new_comm%istack_export,               &
+     &    inod_external, SR_sig1, new_comm%item_export)
+!!
       deallocate(num_recv_tmp)
 !
       return
