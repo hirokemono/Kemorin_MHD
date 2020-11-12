@@ -277,6 +277,11 @@
 !
       integer(kind = kint), allocatable :: num_send_tmp(:)
       integer(kind = kint), allocatable :: num_recv_tmp(:)
+      integer(kind = kint), allocatable :: num_send_tmp2(:)
+      integer(kind = kint), allocatable :: num_recv_tmp2(:)
+!
+      integer(kind = kint), allocatable :: num_send_3(:)
+      integer(kind = kint), allocatable :: num_recv_3(:)
 !
       integer(kind = kint), allocatable :: idomain_recv(:)
       integer(kind = kint), allocatable :: inod_recv(:)
@@ -308,6 +313,7 @@
       integer(kind = kint), allocatable :: idx_sort(:)
       integer(kind = kint), allocatable :: inod_sort(:)
       integer(kind = kint), allocatable :: irank_sort(:)
+      integer(kind = kint), allocatable :: iflag_dup(:)
 !
       integer(kind = kint), allocatable :: inod_import(:)
       integer(kind = kint), allocatable :: internal_list_new(:)
@@ -369,7 +375,7 @@
       call const_ext_of_int_grp_new_part                                &
      &   (node, neib_nod, part_param, part_grp, ext_grp, ext_int_grp)
 !
-      return
+!
 !
       call gather_num_trans_for_repart                                  &
      &   (ext_int_grp, num_send_tmp, num_recv_tmp)
@@ -379,18 +385,25 @@
 !     &   (part_grp, part_tbl, ext_int_tbl, num_recv_tmp, num_send_tmp)
       deallocate(num_send_tmp, num_recv_tmp)
 !
+      allocate(num_send_3(nprocs))
+      allocate(num_recv_3(nprocs))
+      num_recv_3(1:nprocs) = 0
+      do i = 1, ext_int_tbl%nrank_import
+        ip = ext_int_tbl%irank_import(i)
+        num_recv_3(ip+1) = ext_int_tbl%istack_import(i) - ext_int_tbl%istack_import(i-1)
+      end do
+      call calypso_mpi_alltoall_one_int(num_recv_3, num_send_3)
 !
-      internal_node =                    part_tbl%ntot_import
-      numnod = ext_int_tbl%ntot_import + part_tbl%ntot_import
-      allocate(internal_list_org(nprocs))
-      allocate(internal_list_new(nprocs))
-      call calypso_mpi_allgather_one_int                   &
-     &   (node%internal_node, internal_list_org)
-      call calypso_mpi_allgather_one_int                   &
-     &   (internal_node, internal_list_new)
-!
+      write(100+my_rank,*) 'ext_int_tbl i, num_recv_3(i), num_send_3(i)'
+      do i = 1, nprocs
+        write(100+my_rank,*) i, num_recv_3(i), num_send_3(i)
+      end do
+      return
 !
 !    Set local (idomain_recv, inod_recv) in internal node
+      internal_node =                    part_tbl%ntot_import
+      numnod = ext_int_tbl%ntot_import + part_tbl%ntot_import
+!
       allocate(inod_recv(numnod))
       allocate(idomain_recv(numnod))
 !$omp parallel do
@@ -408,19 +421,23 @@
      &    node%numnod, ext_int_tbl%ntot_import,                         &
      &    inod_new(1), inod_recv(internal_node+1))
 !
-!
       allocate(num_recv_tmp(nprocs))
+      allocate(num_recv_tmp2(nprocs))
       allocate(idx_sort(ext_int_tbl%ntot_import))
       allocate(inod_sort(ext_int_tbl%ntot_import))
       allocate(irank_sort(ext_int_tbl%ntot_import))
 !$omp parallel workshare
-      num_recv_tmp(1:nprocs) = 0
+      num_recv_tmp(1:nprocs) =  0
+      num_recv_tmp2(1:nprocs) = 0
 !$omp end parallel workshare
 !
+!
+!
       do i = 1, ext_int_tbl%ntot_import
-        ip = mod(idomain_recv(i+internal_node)+nprocs-my_rank,nprocs)
+        ip = mod(idomain_recv(i+internal_node)+nprocs-my_rank-1,nprocs)
         irank_sort(i) =    ip
-        num_recv_tmp(ip) = num_recv_tmp(ip+1) + 1
+        num_recv_tmp(ip+1) = num_recv_tmp(ip+1) + 1
+        num_recv_tmp2(idomain_recv(i+internal_node)+1) = num_recv_tmp2(idomain_recv(i+internal_node)+1) + 1
       end do
 !
 !$omp parallel do
@@ -437,7 +454,15 @@
 !$omp parallel do private(i,j)
       do i = 1, ext_int_tbl%ntot_import
         j = idx_sort(i)
-        inod_recv(i+internal_node) =    inod_sort(j)
+        inod_recv(i+internal_node) = inod_sort(j)
+        irank_sort(i) = idomain_recv(j+internal_node)
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(i)
+      do i = 1, ext_int_tbl%ntot_import
+        idomain_recv(i+internal_node)                                   &
+     &       = mod(irank_sort(i)+my_rank,nprocs)
       end do
 !$omp end parallel do
 !
@@ -458,7 +483,80 @@
         ext_int_tbl%irev_import(i) = j
       end do
 !$omp end parallel do
+!
+! 
+!      write(100+my_rank,*) 'num_recv_tmp', num_recv_tmp
+!      write(100+my_rank,*) 'inod_recv', ext_int_tbl%ntot_import
+!      do i = 1, ext_int_tbl%ntot_import
+!        write(100+my_rank,*) i+internal_node,   &
+!     &        irank_sort(i), inod_recv(internal_node+i)
+!      end do
+!      write(100+my_rank,*) 'num_recv_tmp2',   &
+!     &    num_recv_tmp2(my_rank+1), num_recv_tmp(nprocs)
+!
+      allocate(iflag_dup(ext_int_tbl%ntot_import))
+!$omp parallel workshare
+      iflag_dup(1:ext_int_tbl%ntot_import) = 1
+!$omp end parallel workshare
+!
+      ist = 0
+      do i = 1, nprocs-1
+        do icou = 2, num_recv_tmp(i)
+          inod = internal_node + ist + icou
+          if(inod_recv(inod) .eq. inod_recv(inod-1)) then
+            iflag_dup(ist+icou) = 0
+          end if
+        end do
+        do icou = 1, num_recv_tmp(i)
+          num_recv_tmp2(i) = num_recv_tmp2(i) + iflag_dup(ist+icou)
+        end do
+        ist = ist + num_recv_tmp(i)
+      end do
+!
+      new_comm%num_neib = 0
+      do i = 1, nprocs-1
+        if(num_recv_tmp2(i) .gt. 0) then
+          new_comm%num_neib = new_comm%num_neib + 1
+        end if
+      end do
+      call alloc_comm_table_num(new_comm)
+!
+      icou = 0
+      new_comm%istack_import(icou) = 0
+      do i = 1, nprocs-1
+        if(num_recv_tmp2(i) .gt. 0) then
+          icou = icou + 1
+          ip = mod(i+my_rank,nprocs)
+          new_comm%id_neib(icou) = mod(i+my_rank,nprocs)
+          new_comm%num_import(icou) = num_recv_tmp2(i)
+          new_comm%istack_import(icou)                                  &
+     &         = new_comm%istack_import(icou-1) + num_recv_tmp2(i)
+        end if
+      end do
+      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+!
+!
+      call alloc_import_item(new_comm)
+      allocate(inod_external(new_comm%ntot_import))
+      allocate(irank_external(new_comm%ntot_import))
+!
+      ist = 0
+      j = 0
+      do i = 1, nprocs-1
+        do icou = 1, num_recv_tmp(i)
+          if(iflag_dup(ist+icou) .gt. 0) then
+            j = j + 1
+            irank_external(j) = inod_recv(internal_node+ist+icou)
+            inod_external(j) =  irank_sort(ist+icou)
+            new_comm%item_import(j) = ist + icou + internal_node
+          end if
+        end do
+        ist = ist + num_recv_tmp(i)
+      end do
+!
       deallocate(num_recv_tmp)
+!
+      return
 !
 !    Set local (idomain_recv, inod_recv) in external node again
       call calypso_SR_type_int(iflag_import_item, ext_int_tbl,          &
@@ -498,6 +596,10 @@
      &       = idomain_recv(ext_int_tbl%ntot_import+internal_node)
         istack_neib_int_ext(num_neib_int_ext) = ext_int_tbl%ntot_import
       end if
+!
+      return
+!
+!
 !
 !
       allocate(num_send_tmp(part_grp%num_grp))
@@ -893,16 +995,6 @@
 !        write(200+my_rank,*) 'num_recv_tmp, num_send_tmp', ip-1, &
 !     &            num_recv_tmp(ip), num_send_tmp(ip)
 !      end do
-!
-      call element_num_reverse_SR                                       &
-     &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
-     &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
-     &    new_comm%ntot_export)
-!
-      call alloc_export_item(new_comm)
-      call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
-     &    new_comm%istack_import, new_comm%istack_export,               &
-     &    inod_external(1), SR_sig1, new_comm%item_export)
 !
 !
       new_node%internal_node =                 part_tbl%ntot_import
