@@ -555,7 +555,7 @@
             j = j + 1
             irank_external(j) = irank_sort(ist+icou)
             inod_external(j) =  inod_recv(internal_node+ist+icou)
-            new_comm%item_import(j) = ist + icou + internal_node
+            new_comm%item_import(j) = j + internal_node
           end if
         end do
         ist = ist + num_recv_tmp(ip+1)
@@ -565,12 +565,52 @@
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
      &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
      &    new_comm%ntot_export)
-      return
+!
+      call alloc_export_item(new_comm)
       call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
      &    new_comm%istack_import, new_comm%istack_export,               &
      &    inod_external, SR_sig1, new_comm%item_export)
-!!
+!
       deallocate(num_recv_tmp)
+!
+!      write(my_rank+100,*) 'i, new_comm',   &
+!     &    new_comm%num_neib, new_comm%ntot_import
+!      do icou = 1, new_comm%num_neib
+!        ist = new_comm%istack_export(icou-1) + 1
+!        ied = new_comm%istack_export(icou)
+!        write(my_rank+100,*) 'i, new_comm%istack_export(icou)', &
+!     &      new_comm%id_neib(icou), new_comm%istack_export(icou)
+!        do i = ist, ied
+!            write(my_rank+100,*) i, new_comm%item_export(i)
+!        end do
+!      end do
+!
+      new_node%internal_node =                 part_tbl%ntot_import
+      new_node%numnod = new_comm%ntot_import + part_tbl%ntot_import
+!
+!
+      write(*,*) my_rank, 'new_nomond', new_node%internal_node,         &
+     &           new_node%numnod, new_comm%ntot_import
+      call alloc_node_geometry_base(new_node)
+!
+      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%inod_global(1), new_node%inod_global(1))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,1), new_node%xx(1,1))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,2), new_node%xx(1,2))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,3), new_node%xx(1,3))
+      return
+!
+      call SOLVER_SEND_RECV_int8_type                                   &
+     &   (new_node%numnod, new_comm, new_node%inod_global)
+      call SOLVER_SEND_RECV_3_type                                      &
+     &   (new_node%numnod, new_comm, new_node%xx(1,1))
 !
       return
 !
@@ -1012,32 +1052,6 @@
 !     &            num_recv_tmp(ip), num_send_tmp(ip)
 !      end do
 !
-!
-      new_node%internal_node =                 part_tbl%ntot_import
-      new_node%numnod = new_comm%ntot_import + part_tbl%ntot_import
-!
-!
-      write(*,*) my_rank, 'new_nomond', new_node%internal_node,         &
-     &           new_node%numnod, ext_int_tbl%ntot_import
-      call alloc_node_geometry_base(new_node)
-!
-      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%inod_global(1), new_node%inod_global(1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,1), new_node%xx(1,1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,2), new_node%xx(1,2))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,3), new_node%xx(1,3))
-!
-      call SOLVER_SEND_RECV_int8_type                                   &
-     &   (new_node%numnod, new_comm, new_node%inod_global)
-      call SOLVER_SEND_RECV_3_type                                      &
-     &   (new_node%numnod, new_comm, new_node%xx(1,1))
 !
       return
 !
