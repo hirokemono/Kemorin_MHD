@@ -516,8 +516,9 @@
 !
 !
       write(100+my_rank,*) my_rank, 'num_recv_tmp(i), num_recv_tmp2(i)'
-      do i = 1, nprocs
-        write(100+my_rank,*) i-1, num_recv_tmp(i), num_recv_tmp2(i)
+      do i = 1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        write(100+my_rank,*) i, new_comm%num_import(i), num_recv_tmp2(ip+1)
       end do
 !
       allocate(num_send_3(nprocs))
@@ -539,7 +540,6 @@
           write(*,*) 'something wrong', my_rank, i-1
         end if
       end do
-      return
 !
 !
       call alloc_import_item(new_comm)
@@ -550,7 +550,7 @@
       j = 0
       do i = 1, nprocs-1
         ip = mod(i+my_rank,nprocs)
-        do icou = 1, num_recv_tmp(ip)
+        do icou = 1, num_recv_tmp(ip+1)
           if(iflag_dup(ist+icou) .gt. 0) then
             j = j + 1
             irank_external(j) = inod_recv(internal_node+ist+icou)
@@ -558,7 +558,7 @@
             new_comm%item_import(j) = ist + icou + internal_node
           end if
         end do
-        ist = ist + num_recv_tmp(ip)
+        ist = ist + num_recv_tmp(ip+1)
       end do
 !
       deallocate(num_recv_tmp)
