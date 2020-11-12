@@ -385,21 +385,6 @@
 !     &   (part_grp, part_tbl, ext_int_tbl, num_recv_tmp, num_send_tmp)
       deallocate(num_send_tmp, num_recv_tmp)
 !
-      allocate(num_send_3(nprocs))
-      allocate(num_recv_3(nprocs))
-      num_recv_3(1:nprocs) = 0
-      do i = 1, ext_int_tbl%nrank_import
-        ip = ext_int_tbl%irank_import(i)
-        num_recv_3(ip+1) = ext_int_tbl%istack_import(i) - ext_int_tbl%istack_import(i-1)
-      end do
-      call calypso_mpi_alltoall_one_int(num_recv_3, num_send_3)
-!
-      write(100+my_rank,*) 'ext_int_tbl i, num_recv_3(i), num_send_3(i)'
-      do i = 1, nprocs
-        write(100+my_rank,*) i, num_recv_3(i), num_send_3(i)
-      end do
-      return
-!
 !    Set local (idomain_recv, inod_recv) in internal node
       internal_node =                    part_tbl%ntot_import
       numnod = ext_int_tbl%ntot_import + part_tbl%ntot_import
@@ -434,10 +419,9 @@
 !
 !
       do i = 1, ext_int_tbl%ntot_import
-        ip = mod(idomain_recv(i+internal_node)+nprocs-my_rank-1,nprocs)
-        irank_sort(i) =    ip
+        ip = idomain_recv(i+internal_node)
+        irank_sort(i) = mod(ip+nprocs-my_rank-1,nprocs)
         num_recv_tmp(ip+1) = num_recv_tmp(ip+1) + 1
-        num_recv_tmp2(idomain_recv(i+internal_node)+1) = num_recv_tmp2(idomain_recv(i+internal_node)+1) + 1
       end do
 !
 !$omp parallel do
@@ -467,12 +451,13 @@
 !$omp end parallel do
 !
       jst = 0
-      do ip = 1, nprocs
-        if(num_recv_tmp(ip) .gt. 0) then
+      do i = 1, nprocs
+        ip = mod(i+my_rank,nprocs)
+        if(num_recv_tmp(ip+1) .gt. 0) then
           call quicksort_w_index                                        &
-     &       (num_recv_tmp(ip), inod_recv(internal_node+jst+1),         &
-     &        ione, num_recv_tmp(ip), idx_sort(jst+1))
-          jst = jst + num_recv_tmp(ip)
+     &       (num_recv_tmp(ip+1), inod_recv(internal_node+jst+1),       &
+     &        ione, num_recv_tmp(ip+1), idx_sort(jst+1))
+          jst = jst + num_recv_tmp(ip+1)
         end if
       end do
 !
@@ -484,15 +469,6 @@
       end do
 !$omp end parallel do
 !
-! 
-!      write(100+my_rank,*) 'num_recv_tmp', num_recv_tmp
-!      write(100+my_rank,*) 'inod_recv', ext_int_tbl%ntot_import
-!      do i = 1, ext_int_tbl%ntot_import
-!        write(100+my_rank,*) i+internal_node,   &
-!     &        irank_sort(i), inod_recv(internal_node+i)
-!      end do
-!      write(100+my_rank,*) 'num_recv_tmp2',   &
-!     &    num_recv_tmp2(my_rank+1), num_recv_tmp(nprocs)
 !
       allocate(iflag_dup(ext_int_tbl%ntot_import))
 !$omp parallel workshare
@@ -501,21 +477,23 @@
 !
       ist = 0
       do i = 1, nprocs-1
-        do icou = 2, num_recv_tmp(i)
+        ip = mod(i+my_rank,nprocs)
+        do icou = 2, num_recv_tmp(ip+1)
           inod = internal_node + ist + icou
           if(inod_recv(inod) .eq. inod_recv(inod-1)) then
             iflag_dup(ist+icou) = 0
           end if
         end do
-        do icou = 1, num_recv_tmp(i)
-          num_recv_tmp2(i) = num_recv_tmp2(i) + iflag_dup(ist+icou)
+        do icou = 1, num_recv_tmp(ip+1)
+          num_recv_tmp2(ip+1) = num_recv_tmp2(ip+1) + iflag_dup(ist+icou)
         end do
-        ist = ist + num_recv_tmp(i)
+        ist = ist + num_recv_tmp(ip+1)
       end do
 !
       new_comm%num_neib = 0
       do i = 1, nprocs-1
-        if(num_recv_tmp2(i) .gt. 0) then
+        ip = mod(i+my_rank,nprocs)
+        if(num_recv_tmp2(ip+1) .gt. 0) then
           new_comm%num_neib = new_comm%num_neib + 1
         end if
       end do
@@ -524,16 +502,44 @@
       icou = 0
       new_comm%istack_import(icou) = 0
       do i = 1, nprocs-1
-        if(num_recv_tmp2(i) .gt. 0) then
+        ip = mod(i+my_rank,nprocs)
+        if(num_recv_tmp2(ip+1) .gt. 0) then
           icou = icou + 1
           ip = mod(i+my_rank,nprocs)
           new_comm%id_neib(icou) = mod(i+my_rank,nprocs)
-          new_comm%num_import(icou) = num_recv_tmp2(i)
+          new_comm%num_import(icou) = num_recv_tmp2(ip+1)
           new_comm%istack_import(icou)                                  &
-     &         = new_comm%istack_import(icou-1) + num_recv_tmp2(i)
+     &         = new_comm%istack_import(icou-1) + num_recv_tmp2(ip+1)
         end if
       end do
       new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
+!
+!
+      write(100+my_rank,*) my_rank, 'num_recv_tmp(i), num_recv_tmp2(i)'
+      do i = 1, nprocs
+        write(100+my_rank,*) i-1, num_recv_tmp(i), num_recv_tmp2(i)
+      end do
+!
+      allocate(num_send_3(nprocs))
+      allocate(num_recv_3(nprocs))
+!      num_recv_3(1:nprocs) = 0
+!      do i = 1, ext_int_tbl%nrank_import
+!        ip = ext_int_tbl%irank_import(i)
+!        num_recv_3(ip+1) = ext_int_tbl%istack_import(i) - ext_int_tbl%istack_import(i-1)
+!      end do
+      call calypso_mpi_alltoall_one_int(num_recv_tmp2, num_send_3)
+!
+      write(100+my_rank,*) my_rank, 'num_recv_tmp2(i), num_send_3(i)'
+      do i = 1, nprocs
+        write(100+my_rank,*) i-1, num_recv_tmp2(i), num_send_3(i)
+        if(num_recv_tmp2(i) .gt. 0 .and. num_send_3(i) .eq. 0) then
+          write(*,*) 'something wrong', my_rank, i-1
+        end if
+        if(num_recv_tmp2(i) .eq. 0 .and. num_send_3(i) .gt. 0) then
+          write(*,*) 'something wrong', my_rank, i-1
+        end if
+      end do
+      return
 !
 !
       call alloc_import_item(new_comm)
@@ -543,7 +549,8 @@
       ist = 0
       j = 0
       do i = 1, nprocs-1
-        do icou = 1, num_recv_tmp(i)
+        ip = mod(i+my_rank,nprocs)
+        do icou = 1, num_recv_tmp(ip)
           if(iflag_dup(ist+icou) .gt. 0) then
             j = j + 1
             irank_external(j) = inod_recv(internal_node+ist+icou)
@@ -551,7 +558,7 @@
             new_comm%item_import(j) = ist + icou + internal_node
           end if
         end do
-        ist = ist + num_recv_tmp(i)
+        ist = ist + num_recv_tmp(ip)
       end do
 !
       deallocate(num_recv_tmp)
