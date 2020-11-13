@@ -584,35 +584,8 @@
 !        end do
 !      end do
 !
-      new_node%internal_node =                 part_tbl%ntot_import
-      new_node%numnod = new_comm%ntot_import + part_tbl%ntot_import
-!
-!
-      write(*,*) my_rank, 'new_nomond', new_node%internal_node,         &
-     &           new_node%numnod, new_comm%ntot_import
-      call alloc_node_geometry_base(new_node)
-!
-      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%inod_global(1), new_node%inod_global(1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,1), new_node%xx(1,1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,2), new_node%xx(1,2))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,3), new_node%xx(1,3))
-!
-      call SOLVER_SEND_RECV_int8_type                                   &
-     &   (new_node%numnod, new_comm, new_node%inod_global)
-      call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,1))
-      call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,2))
-      call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,3))
+      call set_repart_node_position                                     &
+     &   (node, new_comm, new_node, part_tbl)
 !
       end subroutine const_comm_tbls_for_new_part
 !
@@ -660,16 +633,12 @@
       integer(kind = kint), allocatable :: ie_newnod(:,:)
       integer(kind = kint), allocatable :: ie_newdomain(:,:)
 !
-      integer(kind = kint), allocatable :: ie_domain_recv(:,:)
-!
       integer(kind = kint), allocatable :: iele_org_local(:)
       integer(kind = kint), allocatable :: iele_org_domain(:)
       integer(kind = kint), allocatable :: iele_local(:)
       integer(kind = kint), allocatable :: iele_domain(:)
       integer(kind = kint), allocatable :: iele_recv(:)
       integer(kind = kint), allocatable :: idomain_recv(:)
-      integer(kind = kint), allocatable :: iele_recv2(:)
-      integer(kind = kint), allocatable :: idomain_recv2(:)
 !
       integer(kind = kint), allocatable :: nele_send_tmp(:)
       integer(kind = kint), allocatable :: nele_recv_tmp(:)
@@ -699,9 +668,6 @@
 !
       integer(kind = kint), allocatable :: inod_trns2(:)
       integer(kind = kint), allocatable :: irank_trns2(:)
-!
-      integer(kind = kint), allocatable :: i4_recv(:)
-      integer(kind = kint_gl), allocatable :: i8_recv(:)
 !
 !
       
@@ -763,22 +729,22 @@
 !
       write(*,*) 'Check irank_trns2, inod_trns2'
       do inod = 1, new_mesh%node%internal_node
-        if(inod_trns1(inod) .ne. inod_new_lc(inod)    &
+        if(inod_trns1(inod) .ne. inod_new_lc(inod)                      &
      &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
            write(*,*) my_rank, 'Wrong inod_trns1!' , inod
         end if
-        if(inod_trns2(inod) .ne. inod_new_lc(inod)    &
+        if(inod_trns2(inod) .ne. inod_new_lc(inod)                      &
      &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
            write(*,*) my_rank, 'Wrong inod_trns2!' , inod
         end if
       end do
 !
       do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
-        if(inod_trns1(inod) .ne. inod_new_lc(inod)    &
+        if(inod_trns1(inod) .ne. inod_new_lc(inod)                      &
      &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
            write(*,*) my_rank, 'Wrong inod_trns1!' , inod
         end if
-        if(inod_trns2(inod) .ne. inod_new_lc(inod)    &
+        if(inod_trns2(inod) .ne. inod_new_lc(inod)                      &
      &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
            write(*,*) my_rank, 'Wrong inod_trns2!' , inod
         end if
@@ -998,115 +964,31 @@
 !
 !
       allocate(idx_sort2(ele_tbl%ntot_import))
-      numele = sum(iflag_dup)
-      ist = 0
-      iele = 0
-      jele = numele
-      do ip = 1, nprocs
-        if(nele_recv_tmp(ip) .le. 0) cycle
+!$omp parallel workshare
+      idx_sort2(1:ele_tbl%ntot_import) = 0
+!$omp end parallel workshare
 !
-        do icou = 1, nele_recv_tmp(ip)
-          if(iflag_dup(ist+icou) .eq. 0) then
-            jele = jele + 1
-            idx_sort2(jele) = idx_sort(ist+icou)
-          else if(iflag_dup(ist+icou) .gt. 0) then
-            iele = iele + 1
-            idx_sort2(iele) = idx_sort(ist+icou)
-          end if
-        end do
-        ist = ist + nele_recv_tmp(ip)
-      end do
-
-!      write(100+my_rank,*) 'ele_tbl%nrank_import', numele, ele_tbl%ntot_import
-!      do icou = 1, ele_tbl%ntot_import
-!          iele = idx_sort2(icou)
-!          write(100+my_rank,*) icou,    &
-!     &      'ele_tbl%item_import', iele,   &
-!     &       idomain_recv(iele), iele_recv(iele)
-!        end do
-!      do icou = numele+1, ele_tbl%ntot_import
-!          iele = idx_sort2(icou)
-!          write(100+my_rank,*) icou,    &
-!     &      'ele_tbl%item_import', iele,   &
-!     &       idomain_recv(iele), iele_recv(iele)
-!      end do
-!
-      do i = 1, ele_tbl%ntot_import
-        j = idx_sort2(i)
-        ele_tbl%item_import(j) = i
-        ele_tbl%irev_import(i) = j
-      end do
-!
-      allocate(iele_recv2(ele_tbl%ntot_import))
-      allocate(idomain_recv2(ele_tbl%ntot_import))
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_domain, idomain_recv2)
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_local, iele_recv2)
-!
-      write(100+my_rank,*) 'check'
-      do icou = 1, ele_tbl%ntot_import
-        iele = idx_sort2(icou)
-        if(idomain_recv2(icou) .eq. idomain_recv(iele))  cycle
-        if(iele_recv2(icou) .eq. iele_recv(iele))  cycle
-!
-        write(100+my_rank,*) my_rank, icou, idx_sort2(icou), &
-     &             idomain_recv2(icou)-idomain_recv(iele), &
-     &             iele_recv2(icou)-iele_recv(iele)
-      end do
+      call push_off_redundant_element(nprocs, nele_recv_tmp,            &
+     &    ele_tbl%ntot_import, idx_sort, iflag_dup,                     &
+     &    ele_tbl%item_import, ele_tbl%irev_import, idx_sort2, numele)
+!      call check_push_off_redundant_ele(mesh%ele, ele_tbl, idx_sort2,  &
+!     &   iele_local, iele_domain, iele_recv, idomain_recv)
+      deallocate(idx_sort2)
 !
       deallocate(nele_send_tmp, nele_recv_tmp, nele_recv_tmp2)
       deallocate(idx_sort, iele_sort, irank_sort)
 !
 !
-      allocate(i4_recv(ele_tbl%ntot_import))
-      allocate(i8_recv(ele_tbl%ntot_import))
       allocate(ie_newnod(mesh%ele%numele,mesh%ele%nnod_4_ele))
       allocate(ie_newdomain(mesh%ele%numele,mesh%ele%nnod_4_ele))
-!
-!$omp parallel
-      do k1 = 1, mesh%ele%nnod_4_ele
-!$omp do private(iele,inod)
-        do iele = 1, mesh%ele%numele
-          inod = mesh%ele%ie(iele,k1)
-          ie_newnod(iele,k1) =    inod_new(inod)
-          ie_newdomain(iele,k1) = idomain_new(inod)
-        end do
-!$omp end do
-      end do
-!$omp end parallel
-!
-!
-      new_mesh%ele%numele =     numele
-      new_mesh%ele%nnod_4_ele = mesh%ele%nnod_4_ele
-      call allocate_ele_connect_type(new_mesh%ele)
-      allocate(ie_domain_recv(numele,new_mesh%ele%nnod_4_ele))
-!
 !$omp parallel workshare
-      new_mesh%ele%elmtyp(1:new_mesh%ele%numele) = mesh%ele%elmtyp(1)
-      new_mesh%ele%nodelm(1:new_mesh%ele%numele) = mesh%ele%nodelm(1)
+      ie_newnod(1:mesh%ele%numele,1:mesh%ele%nnod_4_ele) =    0
+      ie_newdomain(1:mesh%ele%numele,1:mesh%ele%nnod_4_ele) = 0
 !$omp end parallel workshare
 !
-      call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    mesh%ele%iele_global(1), i8_recv)
-!$omp parallel workshare
-      new_mesh%ele%iele_global(1:new_mesh%ele%numele)                   &
-     &                   = i8_recv(1:new_mesh%ele%numele)
-!$omp end parallel workshare
-!
-      do k1 = 1, mesh%ele%nnod_4_ele
-        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      mesh%ele%numele, ele_tbl%ntot_import,                       &
-     &      ie_newnod(1,k1), i4_recv)
-!$omp parallel workshare
-        new_mesh%ele%ie(1:new_mesh%ele%numele,k1)                       &
-     &                   = i4_recv(1:new_mesh%ele%numele)
-!$omp end parallel workshare
-      end do
+      call set_repart_element_connect(numele, mesh%node, mesh%ele,      &
+     &    ele_tbl, idomain_new, inod_new, ie_newdomain, ie_newnod,      &
+     &    new_mesh%ele)
 !
       call s_search_ext_node_repartition(mesh%ele, ele_tbl,             &
      &    iele_local, iele_domain, ie_newdomain,                        &
@@ -1154,6 +1036,242 @@
       end subroutine calypso_rev_SR_type_int
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_repart_node_position                               &
+     &         (node, new_comm, new_node, part_tbl)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_calypso_comm_table
+!
+      use calypso_mpi_int
+      use calypso_SR_type
+      use select_copy_from_recv
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(calypso_comm_table), intent(in) :: part_tbl
+      type(communication_table), intent(in) :: new_comm
+!
+      type(node_data), intent(inout) :: new_node
+!
+!
+      new_node%internal_node =                 part_tbl%ntot_import
+      new_node%numnod = new_comm%ntot_import + part_tbl%ntot_import
+!
+!
+!      write(*,*) my_rank, 'new_nomond', new_node%internal_node,        &
+!     &           new_node%numnod, new_comm%ntot_import
+      call alloc_node_geometry_base(new_node)
+!
+      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%inod_global(1), new_node%inod_global(1))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,1), new_node%xx(1,1))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,2), new_node%xx(1,2))
+      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
+     &    node%numnod, new_node%internal_node,                          &
+     &    node%xx(1,3), new_node%xx(1,3))
+!
+      call SOLVER_SEND_RECV_int8_type                                   &
+     &   (new_node%numnod, new_comm, new_node%inod_global)
+      call SOLVER_SEND_RECV_type                                        &
+     &   (new_node%numnod, new_comm, new_node%xx(1,1))
+      call SOLVER_SEND_RECV_type                                        &
+     &   (new_node%numnod, new_comm, new_node%xx(1,2))
+      call SOLVER_SEND_RECV_type                                        &
+     &   (new_node%numnod, new_comm, new_node%xx(1,3))
+!
+      end subroutine set_repart_node_position
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_repart_element_connect                             &
+     &         (new_numele, node, ele, ele_tbl, idomain_new, inod_new,  &
+     &          ie_newdomain, ie_newnod, new_ele)
+!
+      use t_geometry_data
+      use t_calypso_comm_table
+!
+      use calypso_SR_type
+      use select_copy_from_recv
+!
+      integer(kind = kint), intent(in) :: new_numele
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
+!
+      type(element_data), intent(inout) :: new_ele
+      integer(kind = kint), intent(inout)                               &
+     &            :: ie_newnod(ele%numele,ele%nnod_4_ele)
+      integer(kind = kint), intent(inout)                               &
+     &            :: ie_newdomain(ele%numele,ele%nnod_4_ele)
+!
+      integer(kind = kint), allocatable :: i4_recv(:)
+      integer(kind = kint_gl), allocatable :: i8_recv(:)
+!
+      integer(kind = kint) :: k1, iele, inod
+!
+!
+!$omp parallel
+      do k1 = 1, ele%nnod_4_ele
+!$omp do private(iele,inod)
+        do iele = 1, ele%numele
+          inod = ele%ie(iele,k1)
+          ie_newnod(iele,k1) =    inod_new(inod)
+          ie_newdomain(iele,k1) = idomain_new(inod)
+        end do
+!$omp end do
+      end do
+!$omp end parallel
+!
+      allocate(i4_recv(ele_tbl%ntot_import))
+      allocate(i8_recv(ele_tbl%ntot_import))
+!$omp parallel workshare
+      i4_recv(1:ele_tbl%ntot_import) = 0
+      i8_recv(1:ele_tbl%ntot_import) = 0
+!$omp end parallel workshare
+!
+      new_ele%numele =     new_numele
+      new_ele%nnod_4_ele = ele%nnod_4_ele
+      call allocate_ele_connect_type(new_ele)
+!
+!$omp parallel workshare
+      new_ele%elmtyp(1:new_ele%numele) = ele%elmtyp(1)
+      new_ele%nodelm(1:new_ele%numele) = ele%nodelm(1)
+!$omp end parallel workshare
+!
+      call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
+     &    ele%numele, ele_tbl%ntot_import, ele%iele_global(1), i8_recv)
+!$omp parallel workshare
+      new_ele%iele_global(1:new_ele%numele) = i8_recv(1:new_ele%numele)
+!$omp end parallel workshare
+!
+      do k1 = 1, ele%nnod_4_ele
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv)
+!$omp parallel workshare
+        new_ele%ie(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
+!$omp end parallel workshare
+      end do
+!
+      deallocate(i4_recv, i8_recv)
+!
+      end subroutine set_repart_element_connect
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine push_off_redundant_element(nprocs, nele_recv_tmp,      &
+     &          ntot_import, idx_sort, iflag_dup,                       &
+     &          item_import, irev_import, idx_sort2, new_numele)
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: nele_recv_tmp(nprocs)
+      integer(kind = kint), intent(in) :: ntot_import
+      integer(kind = kint), intent(in) :: idx_sort(ntot_import)
+      integer(kind = kint), intent(in) :: iflag_dup(ntot_import)
+!
+      integer(kind = kint), intent(inout) :: new_numele
+      integer(kind = kint), intent(inout) :: item_import(ntot_import)
+      integer(kind = kint), intent(inout) :: irev_import(ntot_import)
+      integer(kind = kint), intent(inout) :: idx_sort2(ntot_import)
+!
+      integer(kind = kint) :: icou, i, ist, ip, iele, j, jele
+!
+!
+      new_numele = sum(iflag_dup)
+      ist = 0
+      iele = 0
+      jele = new_numele
+      do ip = 1, nprocs
+        if(nele_recv_tmp(ip) .le. 0) cycle
+!
+        do icou = 1, nele_recv_tmp(ip)
+          if(iflag_dup(ist+icou) .eq. 0) then
+            jele = jele + 1
+            idx_sort2(jele) = idx_sort(ist+icou)
+          else if(iflag_dup(ist+icou) .gt. 0) then
+            iele = iele + 1
+            idx_sort2(iele) = idx_sort(ist+icou)
+          end if
+        end do
+        ist = ist + nele_recv_tmp(ip)
+      end do
+!
+      do i = 1, ntot_import
+        j = idx_sort2(i)
+        item_import(j) = i
+        irev_import(i) = j
+      end do
+!
+      end subroutine push_off_redundant_element
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_push_off_redundant_ele(ele, ele_tbl, idx_sort2,  &
+     &         iele_local, iele_domain, iele_recv_org, irank_recv_org)
+!
+      use t_geometry_data
+      use t_calypso_comm_table
+!
+      use calypso_SR_type
+      use select_copy_from_recv
+!
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      integer(kind = kint), intent(in) :: idx_sort2(ele_tbl%ntot_import)
+!
+      integer(kind = kint), intent(in) :: iele_local(ele%numele)
+      integer(kind = kint), intent(in) :: iele_domain(ele%numele)
+      integer(kind = kint), intent(in)                                  &
+     &            :: iele_recv_org(ele_tbl%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &            :: irank_recv_org(ele_tbl%ntot_import)
+!
+      integer(kind = kint), allocatable :: iele_recv2(:)
+      integer(kind = kint), allocatable :: idomain_recv2(:)
+!
+      integer(kind = kint) :: iele, icou
+!
+!
+      allocate(iele_recv2(ele_tbl%ntot_import))
+      allocate(idomain_recv2(ele_tbl%ntot_import))
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    ele%numele, ele_tbl%ntot_import, iele_domain, idomain_recv2)
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    ele%numele, ele_tbl%ntot_import, iele_local, iele_recv2)
+!
+      write(100+my_rank,*) 'irank_recv_org, iele_recv_org',             &
+     &                    ele_tbl%ntot_import
+      do icou = 1, ele_tbl%ntot_import
+          iele = idx_sort2(icou)
+          write(100+my_rank,*) icou, 'ele_tbl%item_import', iele,       &
+     &       irank_recv_org(iele), iele_recv_org(iele)
+        end do
+!
+      write(100+my_rank,*) 'check pushing off redundant element'
+      do icou = 1, ele_tbl%ntot_import
+        iele = idx_sort2(icou)
+        if(idomain_recv2(icou) .eq. irank_recv_org(iele))  cycle
+        if(iele_recv2(icou) .eq. iele_recv_org(iele))  cycle
+!
+        write(100+my_rank,*) my_rank, icou, idx_sort2(icou),            &
+     &             idomain_recv2(icou)-irank_recv_org(iele),            &
+     &             iele_recv2(icou)-iele_recv_org(iele)
+      end do
+      deallocate(idomain_recv2, iele_recv2)
+!
+      end subroutine check_push_off_redundant_ele
+!
 ! ----------------------------------------------------------------------
 !
       subroutine check_orogin_node_and_domain(nod_comm, node)
