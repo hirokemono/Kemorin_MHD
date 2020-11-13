@@ -399,23 +399,9 @@
 !
 !
       allocate(iflag_dup(ext_int_tbl%ntot_import))
-!$omp parallel workshare
-      iflag_dup(1:ext_int_tbl%ntot_import) = 1
-!$omp end parallel workshare
-!
-      ist = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        do icou = 2, num_recv_tmp(ip+1)
-          if(inod_sort(ist+icou) .eq. inod_sort(ist+icou-1)) then
-            iflag_dup(ist+icou) = 0
-          end if
-        end do
-        do icou = 1, num_recv_tmp(ip+1)
-          num_recv_tmp2(ip+1) = num_recv_tmp2(ip+1) + iflag_dup(ist+icou)
-        end do
-        ist = ist + num_recv_tmp(ip+1)
-      end do
+      call mark_overlapped_import_node                                  &
+     &   (nprocs, ext_int_tbl%ntot_import, num_recv_tmp, inod_sort,     &
+     &    num_recv_tmp2, iflag_dup)
 !
       new_comm%num_neib = 0
       do i = 1, nprocs-1
@@ -1106,6 +1092,43 @@
       end subroutine sort_by_domain_and_index_list
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine mark_overlapped_import_node                            &
+     &         (nprocs, ntot_import, num_recv_tmp, inod_sort,           &
+     &          num_recv_tmp2, iflag_dup)
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: ntot_import
+      integer(kind = kint), intent(in) :: num_recv_tmp(nprocs)
+      integer(kind = kint), intent(inout) :: num_recv_tmp2(nprocs)
+!
+      integer(kind = kint), intent(in) :: inod_sort(ntot_import)
+      integer(kind = kint), intent(inout) :: iflag_dup(ntot_import)
+!
+      integer(kind = kint) :: i, ist, icou, ip
+!
+!
+!$omp parallel workshare
+      iflag_dup(1:ntot_import) = 1
+!$omp end parallel workshare
+!
+      ist = 0
+      do i = 1, nprocs-1
+        ip = mod(i+my_rank,nprocs)
+        do icou = 2, num_recv_tmp(ip+1)
+          if(inod_sort(ist+icou) .eq. inod_sort(ist+icou-1)) then
+            iflag_dup(ist+icou) = 0
+          end if
+        end do
+        do icou = 1, num_recv_tmp(ip+1)
+          num_recv_tmp2(ip+1) = num_recv_tmp2(ip+1) + iflag_dup(ist+icou)
+        end do
+        ist = ist + num_recv_tmp(ip+1)
+      end do
+!
+      end subroutine mark_overlapped_import_node
+!
 ! ----------------------------------------------------------------------
 !
       subroutine push_off_redundant_element(nprocs, nele_recv_tmp,      &
