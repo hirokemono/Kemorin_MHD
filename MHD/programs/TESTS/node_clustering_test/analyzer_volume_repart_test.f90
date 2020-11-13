@@ -1083,8 +1083,7 @@
       new_mesh%ele%numele =     numele
       new_mesh%ele%nnod_4_ele = mesh%ele%nnod_4_ele
       call allocate_ele_connect_type(new_mesh%ele)
-      allocate(ie_domain_recv(new_mesh%ele%numele,                 &
-     &                        new_mesh%ele%nnod_4_ele))
+      allocate(ie_domain_recv(numele,new_mesh%ele%nnod_4_ele))
 !
 !$omp parallel workshare
       new_mesh%ele%elmtyp(1:new_mesh%ele%numele) = mesh%ele%elmtyp(1)
@@ -1107,110 +1106,14 @@
         new_mesh%ele%ie(1:new_mesh%ele%numele,k1)                       &
      &                   = i4_recv(1:new_mesh%ele%numele)
 !$omp end parallel workshare
-!
-        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      mesh%ele%numele, ele_tbl%ntot_import,                       &
-     &      ie_newdomain(1,k1), i4_recv)
-!$omp parallel workshare
-        ie_domain_recv(1:new_mesh%ele%numele,k1)                        &
-     &                   = i4_recv(1:new_mesh%ele%numele)
-!$omp end parallel workshare
       end do
 !
-      allocate(iele_org_local(new_mesh%ele%numele))
-      allocate(iele_org_domain(new_mesh%ele%numele))
+      call search_repart_external_node(mesh%ele, ele_tbl,               &
+     &    iele_local, iele_domain, ie_newdomain,                        &
+     &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele)
 !
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_local(1), i4_recv(1))
-      iele_org_local(1:new_mesh%ele%numele)                             &
-     &                   = i4_recv(1:new_mesh%ele%numele)
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_domain(1), i4_recv(1))
-      iele_org_domain(1:new_mesh%ele%numele)                            &
-     &                   = i4_recv(1:new_mesh%ele%numele)
-!
-      allocate(inod_recv(new_mesh%node%numnod))
-      allocate(icount_node(new_mesh%node%numnod))
-!$omp parallel do
-      do inod = 1, new_mesh%node%numnod
-        inod_recv(inod) =   inod
-        icount_node(inod) = 0
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_mesh%node%numnod, new_mesh%nod_comm, inod_recv)
-!
-      icou = 0
-        do iele = 1, new_mesh%ele%numele
-      do k1 = 1, new_mesh%ele%nnod_4_ele
-          ip =   ie_domain_recv(iele,k1)
-          inod = new_mesh%ele%ie(iele,k1)
-          iflag = 0
-          if(ip .eq. my_rank) then
-            icount_node(inod) = icount_node(inod) + 1
-          else
-            ist = 0
-            ied = 0
-            do inum = 1, new_mesh%nod_comm%num_neib
-              if(ip .eq. new_mesh%nod_comm%id_neib(inum)) then
-                ist = new_mesh%nod_comm%istack_import(inum-1) + 1
-                ied = new_mesh%nod_comm%istack_import(inum)
-                exit
-              end if
-            end do
-!
-            if(ist .gt. 0) then
-              do jnum = ist, ied
-                jnod = new_mesh%nod_comm%item_import(jnum)
-                if(inod .eq. inod_recv(jnod)) then
-                  iflag = inod_recv(jnod)
-                  new_mesh%ele%ie(iele,k1) = jnod
-                  icount_node(jnod) = icount_node(jnod) + 1
-                  exit
-                end if
-              end do
-            end if
-!
-            if(iflag .le. 0) then
-              write(100+my_rank,*) 'Node cannot be found for ',        &
-     &           new_mesh%ele%iele_global(iele), iele, k1, ip, inod, &
-     &           iele_org_local(iele), iele_org_domain(iele)
-              icou = icou + 1
-            end if
-          end if
-        end do
-      end do
-!
-      write(*,*) my_rank, 'Missing connectivity: ', icou, &
-     &          ' of ', new_mesh%ele%nnod_4_ele*new_mesh%ele%numele
-!
-      do inod = 1, new_mesh%node%internal_node
-        inod_new_lc(inod) =  inod
-        irank_new_lc(inod) = my_rank
-      end do
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, irank_new_lc)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_new_lc)
-!
-!      write(200+my_rank,*) 'new_mesh%node%numnod', new_mesh%node%numnod, new_mesh%node%internal_node
-!      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%num_neib
-!      write(200+my_rank,*) 'new_mesh%nod_comm%num_neib', new_mesh%nod_comm%istack_import
-!      do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
-!        write(200+my_rank,*) inod, irank_new_lc(inod), inod_new_lc(inod)
-!      end do
-!
-      icou = 0
-      do inod = 1, new_mesh%node%numnod
-        if(icount_node(inod) .eq. 0) icou = icou + 1
-      end do
-!
-      write(*,*) my_rank, 'Missing connenction: ', icou, &
-     &          ' of ', new_mesh%node%numnod
+!      call check_orogin_node_and_domain                                &
+!     &    (new_mesh%nod_comm, new_mesh%node)
 !
       end subroutine const_new_element_connect
 !
@@ -1249,6 +1152,240 @@
       deallocate(irev_tmp)
 !
       end subroutine calypso_rev_SR_type_int
+!
+! ----------------------------------------------------------------------
+!
+      subroutine search_repart_external_node                            &
+     &         (ele, ele_tbl, iele_local, iele_domain, ie_newdomain,    &
+     &          new_comm, new_node, new_ele)
+!
+      use t_geometry_data
+      use t_comm_table
+      use t_calypso_comm_table
+!
+      use calypso_SR_type
+      use solver_SR_type
+      use select_copy_from_recv
+!
+      type(element_data), intent(in) :: ele
+!
+      integer(kind = kint), intent(in) :: iele_local(ele%numele)
+      integer(kind = kint), intent(in) :: iele_domain(ele%numele)
+!
+      integer(kind = kint), intent(in)                                  &
+     &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)
+!
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+      type(element_data), intent(inout) :: new_ele
+!
+      integer(kind = kint), allocatable :: inod_recv(:)
+      integer(kind = kint), allocatable :: icount_node(:)
+      integer(kind = kint), allocatable :: item_import_recv(:)
+!
+      integer(kind = kint), allocatable :: iele_org_local(:)
+      integer(kind = kint), allocatable :: iele_org_domain(:)
+      integer(kind = kint), allocatable :: ie_domain_recv(:,:)
+!
+      integer(kind = kint), allocatable :: i4_recv(:)
+!
+      integer(kind = kint) :: ip, inod, icou, inum, ist, ied
+      integer(kind = kint) :: iele, k1, jnum, jnod, iflag
+!
+!
+      allocate(i4_recv(ele_tbl%ntot_import))
+      allocate(ie_domain_recv(new_ele%numele,new_ele%nnod_4_ele))
+!
+      do k1 = 1, ele%nnod_4_ele
+        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
+     &      ele%numele, ele_tbl%ntot_import, ie_newdomain(1,k1),        &
+     &      i4_recv(1))
+!$omp parallel workshare
+        ie_domain_recv(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
+!$omp end parallel workshare
+      end do
+!
+      allocate(iele_org_local(new_ele%numele))
+      allocate(iele_org_domain(new_ele%numele))
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    ele%numele, ele_tbl%ntot_import, iele_local(1),               &
+     &    i4_recv(1))
+!$omp parallel workshare
+      iele_org_local(1:new_ele%numele) = i4_recv(1:new_ele%numele)
+!$omp end parallel workshare
+!
+      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
+     &    ele%numele, ele_tbl%ntot_import, iele_domain(1),              &
+     &    i4_recv(1))
+!$omp parallel workshare
+      iele_org_domain(1:new_ele%numele) = i4_recv(1:new_ele%numele)
+!$omp end parallel workshare
+!
+      allocate(inod_recv(new_node%numnod))
+      allocate(icount_node(new_node%numnod))
+!$omp parallel do
+      do inod = 1, new_node%numnod
+        inod_recv(inod) =   inod
+        icount_node(inod) = 0
+      end do
+!$omp end parallel do
+      call SOLVER_SEND_RECV_int_type                                    &
+     &  (new_node%numnod, new_comm, inod_recv)
+!
+      allocate(item_import_recv(new_comm%ntot_import))
+!$omp parallel do private(jnum,jnod)
+      do jnum = 1, new_comm%ntot_import
+        jnod = new_comm%item_import(jnum)
+        item_import_recv(jnum) = inod_recv(jnod)
+      end do
+!$omp end parallel do
+!
+      icou = 0
+      do iele = 1, new_ele%numele
+        do k1 = 1, new_ele%nnod_4_ele
+          ip =   ie_domain_recv(iele,k1)
+          inod = new_ele%ie(iele,k1)
+          iflag = 0
+          if(ip .eq. my_rank) then
+            icount_node(inod) = icount_node(inod) + 1
+          else
+            ist = 0
+            ied = 0
+            do inum = 1, new_comm%num_neib
+              if(ip .eq. new_comm%id_neib(inum)) then
+                ist = new_comm%istack_import(inum-1) + 1
+                ied = new_comm%istack_import(inum)
+                exit
+              end if
+            end do
+!
+            if(ist .gt. 0) then
+              jnum = search_from_sorted_data(inod, ist, ied,            &
+     &                          new_comm%ntot_import, item_import_recv)
+              if(jnum.ge.ist .and. jnum.le.ied) then
+                jnod = new_comm%item_import(jnum)
+                iflag = item_import_recv(jnum)
+                new_ele%ie(iele,k1) = jnod
+                icount_node(jnod) = icount_node(jnod) + 1
+              end if
+            end if
+!
+            if(iflag .le. 0) then
+              new_ele%ie(iele,k1) = 0
+              write(*,*) my_rank, 'Node cannot be found for ',         &
+     &           new_ele%iele_global(iele), iele, k1, ip, inod,        &
+     &           iele_org_local(iele), iele_org_domain(iele)
+              icou = icou + 1
+            end if
+          end if
+        end do
+      end do
+      deallocate(i4_recv, ie_domain_recv, item_import_recv)
+      deallocate(iele_org_local, iele_org_domain, inod_recv)
+!
+      if(i_debug .gt. 0) then
+        write(*,*) my_rank, 'Missing connectivity: ', icou,             &
+     &          ' of ', new_ele%nnod_4_ele*new_ele%numele
+!
+        icou = 0
+        do inod = 1, new_node%numnod
+          if(icount_node(inod) .eq. 0) icou = icou + 1
+        end do
+        write(*,*) my_rank, 'Missing connenction: ', icou,              &
+     &          ' of ', new_node%numnod
+      end if
+!
+      deallocate(icount_node)
+!
+      end subroutine search_repart_external_node
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_orogin_node_and_domain(nod_comm, node)
+!
+      use calypso_mpi
+      use t_geometry_data
+      use t_comm_table
+!
+      use solver_SR_type
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+!
+      integer(kind = kint), allocatable :: inod_new_lc(:)
+      integer(kind = kint), allocatable :: irank_new_lc(:)
+!
+      integer(kind = kint) :: inod
+!
+!
+      allocate(inod_new_lc(node%numnod))
+      allocate(irank_new_lc(node%numnod))
+!
+      do inod = 1, node%internal_node
+        inod_new_lc(inod) =  inod
+        irank_new_lc(inod) = my_rank
+      end do
+!
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, irank_new_lc)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, inod_new_lc)
+!
+      write(200+my_rank,*) 'node%numnod',                               &
+     &              node%numnod, node%internal_node
+      write(200+my_rank,*) 'nod_comm%num_neib', nod_comm%num_neib
+      write(200+my_rank,*) 'nod_comm%istack_import',                    &
+     &                    nod_comm%istack_import
+      do inod = node%internal_node+1, node%numnod
+        write(200+my_rank,*) inod,                                      &
+     &                      irank_new_lc(inod), inod_new_lc(inod)
+      end do
+!
+      deallocate(irank_new_lc, inod_new_lc)
+!
+      end subroutine check_orogin_node_and_domain
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function search_from_sorted_data             &
+     &                   (i_target, ist, ied, num, input_list)
+!
+      integer(kind = kint), intent(in) :: i_target
+      integer(kind = kint), intent(in) :: ist, ied
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(in) :: input_list(num)
+!
+      integer(kind = kint) :: jst, jed, jnum, iflag
+!
+!
+      jst = ist
+      jed = ied
+      jnum = (jst+jed) / 2
+      do 
+        if(i_target .eq. input_list(jnum)) then
+          iflag = jnum
+          exit
+        else if(jst .eq. jed) then
+          iflag = ist - 1
+          exit
+        else if((jed-jst) .eq. 1) then
+          iflag = ist - 1
+          if(i_target .eq. input_list(jst)) iflag = jst
+          if(i_target .eq. input_list(jed)) iflag = jed
+          exit
+        else if(i_target .lt. input_list(jnum)) then
+          jed = jnum
+          jnum = (jst+jed) / 2
+        else
+          jst = jnum
+          jnum = (jst+jed) / 2
+        end if
+      end do
+      search_from_sorted_data = iflag
+!
+      end  function search_from_sorted_data
 !
 ! ----------------------------------------------------------------------
 !
