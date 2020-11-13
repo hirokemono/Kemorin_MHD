@@ -52,14 +52,15 @@ set_istack_4_domain_block.o \
 repart_in_xyz_by_volume.o \
 external_group_4_new_part.o \
 ext_of_int_grp_4_new_part.o \
-ext_of_ext_grp_4_new_part.o \
 set_comm_tbl_to_new_part.o \
 const_comm_tbl_to_new_mesh.o \
 set_repartition_group_name.o \
 xyz_block_id_by_nod_vol.o \
 \
 redistribute_groups.o \
-redistribute_group_data.o
+redistribute_group_data.o \
+\
+search_from_list.o
 
 SOURCES = $(shell ls *.f90)
 

@@ -254,7 +254,6 @@
       use quicksort
       use external_group_4_new_part
       use ext_of_int_grp_4_new_part
-      use ext_of_ext_grp_4_new_part
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -1165,6 +1164,7 @@
 !
       use calypso_SR_type
       use solver_SR_type
+      use search_from_list
       use select_copy_from_recv
 !
       type(element_data), intent(in) :: ele
@@ -1346,70 +1346,6 @@
       deallocate(irank_new_lc, inod_new_lc)
 !
       end subroutine check_orogin_node_and_domain
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function search_from_list_data               &
-     &                   (i_target, ist, ied, num, input_list)
-!
-      integer(kind = kint), intent(in) :: i_target
-      integer(kind = kint), intent(in) :: ist, ied
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: input_list(num)
-!
-      integer(kind = kint) :: jnum, iflag
-!
-!
-      iflag = ist - 1
-      do jnum = ist, ied
-        if(i_target .eq. input_list(jnum)) then
-          iflag = jnum
-          exit
-        end if
-      end do
-      search_from_list_data = iflag
-!
-      end function search_from_list_data
-!
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function search_from_sorted_data             &
-     &                   (i_target, ist, ied, num, input_list)
-!
-      integer(kind = kint), intent(in) :: i_target
-      integer(kind = kint), intent(in) :: ist, ied
-      integer(kind = kint), intent(in) :: num
-      integer(kind = kint), intent(in) :: input_list(num)
-!
-      integer(kind = kint) :: jst, jed, jnum, iflag
-!
-!
-      jst = ist
-      jed = ied
-      jnum = (jst+jed) / 2
-      do 
-        if(i_target .eq. input_list(jnum)) then
-          iflag = jnum
-          exit
-        else if(jst .eq. jed) then
-          iflag = ist - 1
-          exit
-        else if((jed-jst) .eq. 1) then
-          iflag = ist - 1
-          if(i_target .eq. input_list(jst)) iflag = jst
-          if(i_target .eq. input_list(jed)) iflag = jed
-          exit
-        else if(i_target .lt. input_list(jnum)) then
-          jed = jnum
-          jnum = (jst+jed) / 2
-        else
-          jst = jnum
-          jnum = (jst+jed) / 2
-        end if
-      end do
-      search_from_sorted_data = iflag
-!
-      end function search_from_sorted_data
 !
 ! ----------------------------------------------------------------------
 !
