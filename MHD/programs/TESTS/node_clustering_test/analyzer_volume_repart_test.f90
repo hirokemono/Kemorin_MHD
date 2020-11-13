@@ -415,7 +415,6 @@
 !
 !$omp parallel do private(i,ip)
       do i = 1, ext_int_tbl%ntot_import
-        inod_sort(i) = inod_recv(i+internal_node)
         idx_sort(i) =  ext_int_tbl%item_import(i)
       end do
 !$omp end parallel do
@@ -879,7 +878,6 @@
 !
 !$omp parallel do
       do iele = 1, ele_tbl%ntot_import
-        iele_sort(iele) =  iele_recv(iele)
         idx_sort(iele) =   iele
       end do
 !$omp end parallel do
@@ -1134,6 +1132,7 @@
 !$omp parallel do private(i)
       do i = 1, ntot
         irank_ref(i) = mod(irank_org(i)+nprocs-id_start_rank,nprocs)
+        idx_ref(i) = idx_org(i)
       end do
 !$omp end parallel do
 !
