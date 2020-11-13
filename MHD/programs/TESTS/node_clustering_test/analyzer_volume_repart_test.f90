@@ -1251,15 +1251,15 @@
           if(ip .eq. my_rank) then
             icount_node(inod) = icount_node(inod) + 1
           else
-            ist = 0
-            ied = 0
-            do inum = 1, new_comm%num_neib
-              if(ip .eq. new_comm%id_neib(inum)) then
-                ist = new_comm%istack_import(inum-1) + 1
-                ied = new_comm%istack_import(inum)
-                exit
-              end if
-            end do
+            inum = search_from_list_data(ip, ione, new_comm%num_neib,   &
+     &                             new_comm%num_neib, new_comm%id_neib)
+            if(inum.ge.ione .and. inum.le.new_comm%num_neib) then
+              ist = new_comm%istack_import(inum-1) + 1
+              ied = new_comm%istack_import(inum)
+            else
+              ist = 0
+              ied = 0
+            end if
 !
             if(ist .gt. 0) then
               jnum = search_from_sorted_data(inod, ist, ied,            &
@@ -1349,6 +1349,30 @@
 !
 ! ----------------------------------------------------------------------
 !
+      integer(kind = kint) function search_from_list_data               &
+     &                   (i_target, ist, ied, num, input_list)
+!
+      integer(kind = kint), intent(in) :: i_target
+      integer(kind = kint), intent(in) :: ist, ied
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint), intent(in) :: input_list(num)
+!
+      integer(kind = kint) :: jnum, iflag
+!
+!
+      iflag = ist - 1
+      do jnum = ist, ied
+        if(i_target .eq. input_list(jnum)) then
+          iflag = jnum
+          exit
+        end if
+      end do
+      search_from_list_data = iflag
+!
+      end function search_from_list_data
+!
+! ----------------------------------------------------------------------
+!
       integer(kind = kint) function search_from_sorted_data             &
      &                   (i_target, ist, ied, num, input_list)
 !
@@ -1385,7 +1409,7 @@
       end do
       search_from_sorted_data = iflag
 !
-      end  function search_from_sorted_data
+      end function search_from_sorted_data
 !
 ! ----------------------------------------------------------------------
 !
