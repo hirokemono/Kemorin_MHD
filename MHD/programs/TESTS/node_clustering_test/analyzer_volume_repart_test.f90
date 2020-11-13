@@ -85,7 +85,6 @@
       use calypso_SR_type
       use select_copy_from_recv
       use nod_phys_send_recv
-      use quicksort
 !
       use redistribute_groups
 !
@@ -251,7 +250,6 @@
       use nod_phys_send_recv
       use reverse_SR_int
       use solver_SR_type
-      use quicksort
       use external_group_4_new_part
       use ext_of_int_grp_4_new_part
 !
@@ -415,50 +413,17 @@
       num_recv_tmp2(1:nprocs) = 0
 !$omp end parallel workshare
 !
-!
-!
-      do i = 1, ext_int_tbl%ntot_import
-        ip = idomain_recv(i+internal_node)
-        irank_sort(i) = mod(ip+nprocs-my_rank-1,nprocs)
-        num_recv_tmp(ip+1) = num_recv_tmp(ip+1) + 1
-      end do
-!
-!$omp parallel do
+!$omp parallel do private(i,ip)
       do i = 1, ext_int_tbl%ntot_import
         inod_sort(i) = inod_recv(i+internal_node)
         idx_sort(i) =  ext_int_tbl%item_import(i)
       end do
 !$omp end parallel do
 !
-      call quicksort_w_index                                            &
-     &   (ext_int_tbl%ntot_import, irank_sort(1),                       &
-     &    ione, ext_int_tbl%ntot_import, idx_sort(1))
-!
-!$omp parallel do private(i,j)
-      do i = 1, ext_int_tbl%ntot_import
-        j = idx_sort(i)
-        inod_recv(i+internal_node) = inod_sort(j)
-        irank_sort(i) = idomain_recv(j+internal_node)
-      end do
-!$omp end parallel do
-!
-!$omp parallel do private(i)
-      do i = 1, ext_int_tbl%ntot_import
-        idomain_recv(i+internal_node)                                   &
-     &       = mod(irank_sort(i)+my_rank,nprocs)
-      end do
-!$omp end parallel do
-!
-      jst = 0
-      do i = 1, nprocs
-        ip = mod(i+my_rank,nprocs)
-        if(num_recv_tmp(ip+1) .gt. 0) then
-          call quicksort_w_index                                        &
-     &       (num_recv_tmp(ip+1), inod_recv(internal_node+jst+1),       &
-     &        ione, num_recv_tmp(ip+1), idx_sort(jst+1))
-          jst = jst + num_recv_tmp(ip+1)
-        end if
-      end do
+      call sort_by_domain_and_index_list                                &
+     &   (nprocs, (my_rank+1), num_recv_tmp, ext_int_tbl%ntot_import,   &
+     &    idomain_recv(internal_node+1), inod_recv(internal_node+1),    &
+     &    irank_sort, inod_sort, idx_sort)
 !
 !$omp parallel do private(i,j)
       do i = 1, ext_int_tbl%ntot_import
@@ -478,8 +443,7 @@
       do i = 1, nprocs-1
         ip = mod(i+my_rank,nprocs)
         do icou = 2, num_recv_tmp(ip+1)
-          inod = internal_node + ist + icou
-          if(inod_recv(inod) .eq. inod_recv(inod-1)) then
+          if(inod_sort(ist+icou) .eq. inod_sort(ist+icou-1)) then
             iflag_dup(ist+icou) = 0
           end if
         end do
@@ -553,7 +517,7 @@
           if(iflag_dup(ist+icou) .gt. 0) then
             j = j + 1
             irank_external(j) = irank_sort(ist+icou)
-            inod_external(j) =  inod_recv(internal_node+ist+icou)
+            inod_external(j) =  inod_sort(ist+icou)
             new_comm%item_import(j) = j + internal_node
           end if
         end do
@@ -607,7 +571,6 @@
       use select_copy_from_recv
       use set_comm_tbl_to_new_part
       use search_ext_node_repartition
-      use quicksort
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
@@ -653,7 +616,7 @@
       integer(kind = kint) :: numele
       integer(kind = kint), allocatable :: idx_sort2(:)
 !
-      integer(kind = kint) :: icou, inum, i, ist, ied
+      integer(kind = kint) :: icou, inum, i, ist, ied, num
       integer(kind = kint) :: ip, inod, iele, k1, ipart, iflag
       integer(kind = kint) :: jnum, j, jst, jed, jnod, jele
 !
@@ -668,6 +631,7 @@
 !
       integer(kind = kint), allocatable :: inod_trns2(:)
       integer(kind = kint), allocatable :: irank_trns2(:)
+      integer(kind = kint), allocatable :: istack_tmp(:)
 !
 !
       
@@ -915,35 +879,14 @@
 !
 !$omp parallel do
       do iele = 1, ele_tbl%ntot_import
-        idx_sort(iele) =   iele
-        irank_sort(iele) = idomain_recv(iele)
         iele_sort(iele) =  iele_recv(iele)
+        idx_sort(iele) =   iele
       end do
 !$omp end parallel do
 !
-      call quicksort_w_index(ele_tbl%ntot_import, irank_sort,           &
-     &                       ione, ele_tbl%ntot_import, idx_sort)
-!
-      do icou = 1, ele_tbl%ntot_import
-        ip = irank_sort(icou)
-        nele_recv_tmp(ip+1) = nele_recv_tmp(ip+1) + 1
-      end do
-!$omp parallel do private(iele,icou)
-      do icou = 1, ele_tbl%ntot_import
-        iele = idx_sort(icou)
-        iele_sort(icou) = iele_recv(iele)
-      end do
-!$omp end parallel do
-!
-      ist = 0
-      do ip = 1, nprocs
-        if(nele_recv_tmp(ip) .gt. 1) then
-          call quicksort_w_index                                        &
-     &       (nele_recv_tmp(ip), iele_sort(ist+1),                      &
-     &        ione, nele_recv_tmp(ip), idx_sort(ist+1))
-        end if
-        ist = ist + nele_recv_tmp(ip)
-      end do
+      call sort_by_domain_and_index_list                                &
+     &   (nprocs, izero, nele_recv_tmp, ele_tbl%ntot_import,            &
+     &    idomain_recv, iele_recv, irank_sort, iele_sort, idx_sort)
 !
       allocate(iflag_dup(ele_tbl%ntot_import))
 !$omp parallel workshare
@@ -1165,6 +1108,73 @@
       deallocate(i4_recv, i8_recv)
 !
       end subroutine set_repart_element_connect
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine sort_by_domain_and_index_list(nprocs, id_start_rank,   &
+     &          num_each_pe, ntot, irank_org, idx_org, irank_ref, idx_ref, idx_sort)
+!
+      use quicksort
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: id_start_rank
+      integer(kind = kint), intent(inout) :: num_each_pe(nprocs)
+      integer(kind = kint), intent(in) :: ntot
+      integer(kind = kint), intent(in) :: irank_org(ntot)
+      integer(kind = kint), intent(inout) :: idx_org(ntot)
+      integer(kind = kint), intent(inout) :: irank_ref(ntot)
+      integer(kind = kint), intent(inout) :: idx_ref(ntot)
+      integer(kind = kint), intent(inout) :: idx_sort(ntot)
+!
+      integer(kind = kint), allocatable :: istack_tmp(:)
+      integer(kind = kint) :: i, j, ip, ist, num
+!
+!
+!$omp parallel do private(i)
+      do i = 1, ntot
+        irank_ref(i) = mod(irank_org(i)+nprocs-id_start_rank,nprocs)
+      end do
+!$omp end parallel do
+!
+      call quicksort_w_index(ntot, irank_ref, ione, ntot, idx_sort)
+!
+!$omp parallel do private(i,j)
+      do i = 1, ntot
+        j = idx_sort(i)
+        idx_ref(i) = idx_org(j)
+      end do
+!$omp end parallel do
+!
+!$omp parallel workshare
+      num_each_pe(1:nprocs) = 0
+!$omp end parallel workshare
+      do i = 1, ntot
+        ip = mod(irank_ref(i)+id_start_rank,nprocs)
+        num_each_pe(ip+1) = num_each_pe(ip+1) + 1
+      end do
+!
+      allocate(istack_tmp(0:nprocs))
+      istack_tmp(0) = 0
+      do i = 1, nprocs
+        ip = mod(i+id_start_rank-1,nprocs)
+        istack_tmp(i) = istack_tmp(i-1) + num_each_pe(ip+1)
+      end do
+!
+!$omp parallel do private(i,ist,num)
+      do i = 1, nprocs
+        ist = istack_tmp(i-1)
+        num = istack_tmp(i  ) - istack_tmp(i-1)
+        if(num .gt. 1) then
+          call quicksort_w_index(num, idx_ref(ist+1),                   &
+     &        ione, num, idx_sort(ist+1))
+        end if
+      end do
+!$omp end parallel do
+!
+      deallocate(istack_tmp)
+!
+      end subroutine sort_by_domain_and_index_list
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
