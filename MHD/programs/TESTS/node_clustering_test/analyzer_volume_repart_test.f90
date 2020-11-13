@@ -277,34 +277,8 @@
       integer(kind = kint), allocatable :: num_recv_tmp(:)
       integer(kind = kint), allocatable :: num_recv_tmp2(:)
 !
-      integer(kind = kint), allocatable :: num_send_3(:)
-      integer(kind = kint), allocatable :: num_recv_3(:)
-!
       integer(kind = kint), allocatable :: idomain_recv(:)
       integer(kind = kint), allocatable :: inod_recv(:)
-!
-      integer(kind = kint), allocatable :: idomain_new2(:)
-      integer(kind = kint), allocatable :: inod_new2(:)
-      integer(kind = kint), allocatable :: idomain_recv2(:)
-      integer(kind = kint), allocatable :: inod_recv2(:)
-!
-      integer(kind = kint), allocatable :: iflag_pe(:)
-      integer(kind = kint) :: num_neib_int_ext
-      integer(kind = kint), allocatable :: id_neib_int_ext(:)
-      integer(kind = kint), allocatable :: istack_neib_int_ext(:)
-!
-      integer(kind = kint) :: num_neib_ext_ext
-      integer(kind = kint), allocatable :: id_neib_ext_ext(:)
-      integer(kind = kint), allocatable :: istack_neib_ext_ext(:)
-      integer(kind = kint), allocatable :: ipe_missing_ext_ext(:)
-!
-      integer(kind = kint), allocatable :: inod_ext_ext(:)
-      integer(kind = kint), allocatable :: irank_ext_ext(:)
-      integer(kind = kint), allocatable :: jrank_ext_ext(:)
-      integer(kind = kint), allocatable :: isort_ext_ext(:)
-      integer(kind = kint), allocatable :: iflag_ext_ext(:)
-      integer(kind = kint), allocatable :: inod_ext_ext2(:)
-      integer(kind = kint), allocatable :: irank_ext_ext2(:)
 !
       integer(kind = kint) :: numnod, internal_node
       integer(kind = kint), allocatable :: idx_sort(:)
@@ -312,17 +286,8 @@
       integer(kind = kint), allocatable :: irank_sort(:)
       integer(kind = kint), allocatable :: iflag_dup(:)
 !
-      integer(kind = kint), allocatable :: inod_import(:)
-      integer(kind = kint), allocatable :: internal_list_new(:)
-      integer(kind = kint), allocatable :: internal_list_org(:)
-!
       integer(kind = kint), allocatable :: inod_external(:)
       integer(kind = kint), allocatable :: irank_external(:)
-      integer(kind = kint), allocatable :: inod_ext_tmp(:)
-      integer(kind = kint), allocatable :: irank_ext_tmp(:)
-!
-      integer(kind = kint), allocatable :: ip_new_comm(:)
-      integer(kind = kint), allocatable :: isort_new_comm(:)
 !
       integer(kind = kint) :: i, ist, inum, j, jst, ip, inod, jp, num
       integer(kind = kint) :: icou, iflag, ied, jed, jnum, ntot
@@ -477,32 +442,8 @@
       new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
 !
 !
-!      write(100+my_rank,*) my_rank, 'num_recv_tmp(i), num_recv_tmp2(i)'
-!      do i = 1, new_comm%num_neib
-!        ip = new_comm%id_neib(i)
-!        write(100+my_rank,*) i, new_comm%num_import(i), num_recv_tmp2(ip+1)
-!      end do
-!
-!      allocate(num_send_3(nprocs))
-!      allocate(num_recv_3(nprocs))
-!      num_recv_3(1:nprocs) = 0
-!      do i = 1, ext_int_tbl%nrank_import
-!        ip = ext_int_tbl%irank_import(i)
-!        num_recv_3(ip+1) = ext_int_tbl%istack_import(i) - ext_int_tbl%istack_import(i-1)
-!      end do
-!      call calypso_mpi_alltoall_one_int(num_recv_tmp2, num_send_3)
-!
-!      write(100+my_rank,*) my_rank, 'num_recv_tmp2(i), num_send_3(i)'
-!      do i = 1, nprocs
-!        write(100+my_rank,*) i-1, num_recv_tmp2(i), num_send_3(i)
-!        if(num_recv_tmp2(i) .gt. 0 .and. num_send_3(i) .eq. 0) then
-!          write(*,*) 'something wrong', my_rank, i-1
-!        end if
-!        if(num_recv_tmp2(i) .eq. 0 .and. num_send_3(i) .gt. 0) then
-!          write(*,*) 'something wrong', my_rank, i-1
-!        end if
-!      end do
-!
+!      call check_num_of_neighbourings                                  &
+!     &   (new_comm, ext_int_tbl, num_recv_tmp2)
 !
       call alloc_import_item(new_comm)
       allocate(inod_external(new_comm%ntot_import))
@@ -522,6 +463,7 @@
         end do
         ist = ist + num_recv_tmp(ip+1)
       end do
+      deallocate(num_recv_tmp, irank_sort, inod_sort)
 !
       call element_num_reverse_SR                                       &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
@@ -533,19 +475,7 @@
      &    new_comm%istack_import, new_comm%istack_export,               &
      &    inod_external, SR_sig1, new_comm%item_export)
 !
-      deallocate(num_recv_tmp)
-!
-!      write(my_rank+100,*) 'i, new_comm',   &
-!     &    new_comm%num_neib, new_comm%ntot_import
-!      do icou = 1, new_comm%num_neib
-!        ist = new_comm%istack_export(icou-1) + 1
-!        ied = new_comm%istack_export(icou)
-!        write(my_rank+100,*) 'i, new_comm%istack_export(icou)', &
-!     &      new_comm%id_neib(icou), new_comm%istack_export(icou)
-!        do i = ist, ied
-!            write(my_rank+100,*) i, new_comm%item_export(i)
-!        end do
-!      end do
+!      call check_new_node_comm_table(my_rank, new_comm)
 !
       call set_repart_node_position                                     &
      &   (node, new_comm, new_node, part_tbl)
@@ -1326,6 +1256,83 @@
       deallocate(irank_new_lc, inod_new_lc)
 !
       end subroutine check_orogin_node_and_domain
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_num_of_neighbourings                           &
+     &         (new_comm, ext_int_tbl, num_recv_tmp2)
+!
+      use t_comm_table
+      use t_calypso_comm_table
+      use calypso_mpi_int
+!
+      type(communication_table), intent(in) :: new_comm
+      type(calypso_comm_table), intent(in) :: ext_int_tbl
+!
+      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
+!
+      integer(kind = kint), allocatable :: num_send_3(:)
+      integer(kind = kint), allocatable :: num_recv_3(:)
+!
+      integer(kind = kint) :: i, ip
+!
+!
+      write(100+my_rank,*) my_rank, 'num_recv_tmp2(i)'
+      do i = 1, new_comm%num_neib
+        ip = new_comm%id_neib(i)
+        write(100+my_rank,*) i, new_comm%num_import(i),                 &
+     &                      num_recv_tmp2(ip+1)
+      end do
+!
+      allocate(num_send_3(nprocs))
+      allocate(num_recv_3(nprocs))
+      num_recv_3(1:nprocs) = 0
+      do i = 1, ext_int_tbl%nrank_import
+        ip = ext_int_tbl%irank_import(i)
+        num_recv_3(ip+1) = ext_int_tbl%istack_import(i)                 &
+     &                    - ext_int_tbl%istack_import(i-1)
+      end do
+      call calypso_mpi_alltoall_one_int(num_recv_3, num_send_3)
+!
+      write(100+my_rank,*) my_rank, 'num_recv_3(i), num_send_3(i)'
+      do i = 1, nprocs
+        write(100+my_rank,*) i-1, num_recv_3(i), num_send_3(i)
+        if(num_recv_3(i) .gt. 0 .and. num_send_3(i) .eq. 0) then
+          write(*,*) 'something wrong', my_rank, i-1
+        end if
+        if(num_recv_3(i) .eq. 0 .and. num_send_3(i) .gt. 0) then
+          write(*,*) 'something wrong', my_rank, i-1
+        end if
+      end do
+      deallocate(num_recv_3, num_send_3)
+!
+      end subroutine check_num_of_neighbourings
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_new_node_comm_table(my_rank, new_comm)
+!
+      use t_comm_table
+!
+      integer, intent(in) :: my_rank
+      type(communication_table), intent(in) :: new_comm
+!
+      integer(kind = kint) :: i, icou, ist, ied
+!
+!
+      write(my_rank+100,*) 'i, new_comm',                               &
+     &    new_comm%num_neib, new_comm%ntot_import
+      do icou = 1, new_comm%num_neib
+        ist = new_comm%istack_export(icou-1) + 1
+        ied = new_comm%istack_export(icou)
+        write(my_rank+100,*) 'i, new_comm%istack_export(icou)', &
+     &      new_comm%id_neib(icou), new_comm%istack_export(icou)
+        do i = ist, ied
+          write(my_rank+100,*) i, new_comm%item_export(i)
+        end do
+      end do
+!
+      end subroutine check_new_node_comm_table
 !
 ! ----------------------------------------------------------------------
 !
