@@ -442,6 +442,8 @@
       use search_ext_node_repartition
       use const_repart_mesh_data
 !
+      use ele_trans_tbl_4_repart
+!
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
       type(element_around_node), intent(in) :: neib_ele
@@ -613,43 +615,14 @@
 !
       call calypso_mpi_alltoall_one_int(num_send_ele, num_recv_ele)
 !
-      write(*,*) my_rank, 'num_send_ele',  mesh%ele%internal_ele,       &
-     &  sum(num_send_ele)
+!      write(*,*) my_rank, 'num_send_ele',  mesh%ele%internal_ele,      &
+!     &  sum(num_send_ele)
 !      write(100+my_rank,*) my_rank, 'num_send_ele', num_send_ele
 !      write(100+my_rank,*) my_rank, 'num_recv_ele', num_recv_ele
 !
-      ele_tbl%iflag_self_copy = 0
-      call count_num_export_for_repart(my_rank, nprocs, num_send_ele,   &
-     &    ele_tbl%iflag_self_copy, ele_tbl%nrank_export)
-      call count_num_import_for_repart                                  &
-     &   (nprocs, num_recv_ele, ele_tbl%nrank_import)
-!
-      call alloc_calypso_export_num(ele_tbl)
-      call alloc_calypso_import_num(ele_tbl)
-!
-      call set_istack_export_for_repart(my_rank, nprocs, num_send_ele,  &
-     &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
-     &    ele_tbl%irank_export, ele_tbl%num_export,                     &
-     &    ele_tbl%istack_export)
-      call set_istack_import_for_repart(my_rank, nprocs, num_recv_ele,  &
-     &    ele_tbl%nrank_import, ele_tbl%ntot_import,                    &
-     &    ele_tbl%irank_import, ele_tbl%num_import,                     &
-     &    ele_tbl%istack_import)
-!
-      call alloc_calypso_export_item(ele_tbl)
-      call alloc_calypso_import_item                                    &
-     &   (ele_tbl%ntot_import, ele_tbl)
-      call set_import_item_for_repart                                   &
-     &   (ele_tbl%ntot_import, ele_tbl%ntot_import,                     &
-     &    ele_tbl%item_import, ele_tbl%irev_import)
-!
-      call set_import_ele_for_repart                                    &
-     &   (mesh%node, mesh%ele, part_tbl, idomain_new,                   &
-     &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
-     &    ele_tbl%irank_export, ele_tbl%istack_export,                  &
-     &    ele_tbl%item_export)
-!
-!      call check_element_transfer_tbl(mesh%ele, ele_tbl)
+      call const_ele_trans_tbl_for_repart(my_rank, nprocs, mesh%node, mesh%ele,  &
+     &    part_tbl, idomain_new, num_send_ele, num_recv_ele, ele_tbl)
+!      call check_element_transfer_tbl(my_rank, mesh%ele, ele_tbl)
 ! 
       allocate(iele_recv(ele_tbl%ntot_import))
       allocate(idomain_recv(ele_tbl%ntot_import))
@@ -883,69 +856,6 @@
       deallocate(iflag_ele)
 !
       end subroutine count_num_send_ele_repart
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_import_ele_for_repart                              &
-     &         (node, ele, part_tbl, idomain_new,                       &
-     &          nrank_export, ntot_export, irank_export,                &
-     &          istack_export, item_export)
-!
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(calypso_comm_table), intent(in) :: part_tbl
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-!
-      integer(kind = kint), intent(in) :: nrank_export, ntot_export
-      integer(kind = kint), intent(in) :: irank_export(nrank_export)
-      integer(kind = kint), intent(in) :: istack_export(0:nrank_export)
-!
-      integer(kind = kint), intent(inout) :: item_export(ntot_export)
-!
-      integer(kind = kint), allocatable :: iflag_ele(:)
-      integer(kind = kint) :: i, j, icou, ip, inod, iele, k1, ipart
-!
-!
-      allocate(iflag_ele(ele%numele))
-!
-      do i = 1, nrank_export
-        ipart = 0
-        do j = i, part_tbl%nrank_export
-          if(irank_export(i) .eq. part_tbl%irank_export(i)) then
-            ipart = j
-            exit
-          end if
-        end do
-!
-!$omp parallel workshare
-        iflag_ele(1:ele%numele) = 0
-!$omp end parallel workshare
-!
-        ip =  irank_export(i)
-        do iele = 1, ele%numele
-          do k1 = 1, ele%nnod_4_ele
-            inod = ele%ie(iele,k1)
-            if(idomain_new(inod) .eq. ip) then
-              iflag_ele(iele) = 1
-              exit
-            end if
-          end do
-        end do
-!
-        icou = istack_export(i-1)
-        do iele = 1, ele%numele
-          if(iflag_ele(iele) .gt. 0) then
-            icou = icou + 1
-            item_export(icou) = iele
-          end if
-        end do
-      end do
-      deallocate(iflag_ele)
-!
-      end subroutine set_import_ele_for_repart
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -1245,45 +1155,6 @@
       end do
 !
       end subroutine check_new_node_comm_table
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_element_transfer_tbl(ele, ele_tbl)
-!
-      use t_mesh_data
-      use t_calypso_comm_table
-!
-      type(element_data), intent(in) :: ele
-      type(calypso_comm_table), intent(in) :: ele_tbl
-!
-      integer(kind = kint) :: icou, i, ist, ied
-!
-!
-      write(100+my_rank,*) 'ele_tbl%nrank_export', ele_tbl%nrank_export
-      do i = 1, ele_tbl%nrank_export
-        write(100+my_rank,*) i, 'ele_tbl%istack_export',                &
-     &   ele_tbl%irank_export(i), ele_tbl%istack_export(i-1:i)
-        ist = ele_tbl%istack_export(i-1)+1
-        ied = ele_tbl%istack_export(i)
-        do icou = ist, ied
-          write(100+my_rank,*) icou, 'ele_tbl%item_export',             &
-     &          ele_tbl%item_export(icou), ele%numele
-        end do
-      end do
-!
-      write(100+my_rank,*) 'ele_tbl%nrank_import', ele_tbl%nrank_import
-      do i = 1, ele_tbl%nrank_import
-        write(100+my_rank,*) i, 'ele_tbl%istack_import',                &
-     &  ele_tbl%irank_import(i), ele_tbl%istack_import(i-1:i)
-        ist = ele_tbl%istack_import(i-1)+1
-        ied = ele_tbl%istack_import(i)
-        do icou = ist, ied
-          write(100+my_rank,*) icou, 'ele_tbl%item_import',             &
-     &          ele_tbl%item_import(icou), ele_tbl%ntot_import
-        end do
-      end do
-!
-      end subroutine check_element_transfer_tbl
 !
 ! ----------------------------------------------------------------------
 !

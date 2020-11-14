@@ -57,6 +57,8 @@ const_comm_tbl_to_new_mesh.o \
 set_repartition_group_name.o \
 xyz_block_id_by_nod_vol.o \
 \
+ele_trans_tbl_4_repart.o \
+\
 redistribute_groups.o \
 redistribute_group_data.o \
 \
