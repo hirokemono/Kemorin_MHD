@@ -1256,14 +1256,16 @@
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
 !
-      integer(kind = kint) :: icou, i
+      integer(kind = kint) :: icou, i, ist, ied
 !
 !
       write(100+my_rank,*) 'ele_tbl%nrank_export', ele_tbl%nrank_export
       do i = 1, ele_tbl%nrank_export
         write(100+my_rank,*) i, 'ele_tbl%istack_export',                &
      &   ele_tbl%irank_export(i), ele_tbl%istack_export(i-1:i)
-        do icou = ele_tbl%istack_export(i-1)+1, ele_tbl%istack_export(i)
+        ist = ele_tbl%istack_export(i-1)+1
+        ied = ele_tbl%istack_export(i)
+        do icou = ist, ied
           write(100+my_rank,*) icou, 'ele_tbl%item_export',             &
      &          ele_tbl%item_export(icou), ele%numele
         end do
@@ -1273,7 +1275,9 @@
       do i = 1, ele_tbl%nrank_import
         write(100+my_rank,*) i, 'ele_tbl%istack_import',                &
      &  ele_tbl%irank_import(i), ele_tbl%istack_import(i-1:i)
-        do icou = ele_tbl%istack_import(i-1)+1, ele_tbl%istack_import(i)
+        ist = ele_tbl%istack_import(i-1)+1
+        ied = ele_tbl%istack_import(i)
+        do icou = ist, ied
           write(100+my_rank,*) icou, 'ele_tbl%item_import',             &
      &          ele_tbl%item_import(icou), ele_tbl%ntot_import
         end do
