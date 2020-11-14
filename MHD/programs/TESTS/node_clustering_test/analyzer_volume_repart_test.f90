@@ -242,6 +242,7 @@
       use t_geometry_data
       use t_calypso_comm_table
       use t_control_param_vol_grping
+      use t_sorting_for_repartition
 !
       use set_comm_tbl_to_new_part
       use const_comm_tbl_to_new_mesh
@@ -254,7 +255,6 @@
       use external_group_4_new_part
       use ext_of_int_grp_4_new_part
 !
-      use sort_for_repartition
       use const_repart_mesh_data
       use const_repart_comm_tbl
 !
@@ -274,6 +274,7 @@
 !
       type(group_data) :: ext_int_grp
       type(group_data) :: ext_grp
+      type(sorting_data_for_repartition) :: sort_nod
 !
       integer(kind = kint), allocatable :: num_send_nod(:)
       integer(kind = kint), allocatable :: num_recv_nod(:)
@@ -283,18 +284,8 @@
       integer(kind = kint), allocatable :: inod_recv(:)
 !
       integer(kind = kint) :: numnod, internal_node
-      integer(kind = kint), allocatable :: idx_sort(:)
-      integer(kind = kint), allocatable :: inod_sort(:)
-      integer(kind = kint), allocatable :: irank_sort(:)
-      integer(kind = kint), allocatable :: iflag_dup(:)
 !
-      integer(kind = kint), allocatable :: inod_external(:)
-      integer(kind = kint), allocatable :: irank_external(:)
-!
-      integer(kind = kint) :: i, ist, inum, j, jst, ip, inod, jp, num
-      integer(kind = kint) :: icou, iflag, ied, jed, jnum, ntot
-      integer(kind = kint) :: iflag_self, nrank_export
-      integer(kind = kint) :: nrank_import
+      integer(kind = kint) :: inod, i, j
 !
 !
       allocate(num_send_nod(part_grp%num_grp))
@@ -340,7 +331,6 @@
      &   (node, neib_nod, part_param, part_grp, ext_grp, ext_int_grp)
 !
 !
-!
       call gather_num_trans_for_repart                                  &
      &   (ext_int_grp, num_send_nod, num_recv_nod)
       call const_comm_tbl_to_new_part                                   &
@@ -370,46 +360,24 @@
      &    node%numnod, ext_tbl%ntot_import,                             &
      &    inod_new(1), inod_recv(internal_node+1))
 !
-      allocate(num_recv_nod(nprocs))
+      call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
       allocate(num_recv_trim(nprocs))
-      allocate(idx_sort(ext_tbl%ntot_import))
-      allocate(inod_sort(ext_tbl%ntot_import))
-      allocate(irank_sort(ext_tbl%ntot_import))
 !$omp parallel workshare
-      num_recv_nod(1:nprocs) =  0
       num_recv_trim(1:nprocs) = 0
 !$omp end parallel workshare
 !
-!$omp parallel do private(i,ip)
-      do i = 1, ext_tbl%ntot_import
-        idx_sort(i) =  ext_tbl%item_import(i)
-      end do
-!$omp end parallel do
+      call sort_node_by_domain_and_index(numnod, internal_node,         &
+     &    idomain_recv, inod_recv, ext_tbl, sort_nod)
 !
-      call sort_by_domain_and_index_list                                &
-     &   (nprocs, (my_rank+1), ext_tbl%ntot_import,                     &
-     &    idomain_recv(internal_node+1), inod_recv(internal_node+1),    &
-     &    irank_sort, inod_sort, idx_sort, num_recv_nod)
-!
-!$omp parallel do private(i,j)
-      do i = 1, ext_tbl%ntot_import
-        j = idx_sort(i)
-        ext_tbl%item_import(j) = i
-        ext_tbl%irev_import(i) = j
-      end do
-!$omp end parallel do
-!
-!
-      allocate(iflag_dup(ext_tbl%ntot_import))
       call mark_overlapped_import_node                                  &
-     &   (nprocs, my_rank, ext_tbl%ntot_import, num_recv_nod,           &
-     &    inod_sort, num_recv_trim, iflag_dup)
+     &   (nprocs, my_rank, ext_tbl%ntot_import, sort_nod%num_recv,      &
+     &    sort_nod%id_sorted, num_recv_trim, sort_nod%iflag_dup)
 !
       call const_repartitioned_comm_tbl                                 &
-     &   (internal_node, num_recv_nod, num_recv_trim,                   &
-     &    ext_tbl%ntot_import, irank_sort, inod_sort, iflag_dup,        &
-     &    new_comm)
-      deallocate(num_recv_nod, irank_sort, inod_sort)
+     &   (internal_node, sort_nod%num_recv, num_recv_trim,              &
+     &    ext_tbl%ntot_import, sort_nod%irank_sorted,                   &
+     &    sort_nod%id_sorted, sort_nod%iflag_dup, new_comm)
+      call dealloc_sorting_data(sort_nod)
 !
 !      call check_num_of_neighbourings                                  &
 !     &   (new_comm, ext_tbl, num_recv_trim)
@@ -432,6 +400,7 @@
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_calypso_comm_table
+      use t_sorting_for_repartition
 !
       use calypso_mpi_int
       use calypso_SR_type
@@ -441,7 +410,6 @@
       use search_ext_node_repartition
       use const_repart_mesh_data
 !
-      use sort_for_repartition
       use ele_trans_tbl_4_repart
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -460,20 +428,8 @@
 !
       integer(kind = kint), allocatable :: iele_local(:)
       integer(kind = kint), allocatable :: iele_domain(:)
-      integer(kind = kint), allocatable :: iele_recv(:)
-      integer(kind = kint), allocatable :: idomain_recv(:)
-!
-      integer(kind = kint), allocatable :: nele_recv_tmp(:)
-      integer(kind = kint), allocatable :: iele_lc_recv(:)
-      integer(kind = kint), allocatable :: irank_lc_recv(:)
-      integer(kind = kint), allocatable :: idx_sort(:)
-      integer(kind = kint), allocatable :: iele_sort(:)
-      integer(kind = kint), allocatable :: irank_sort(:)
-      integer(kind = kint), allocatable :: iflag_dup(:)
 !
       integer(kind = kint) :: new_numele
-      integer(kind = kint), allocatable :: idx_sort2(:)
-      integer(kind = kint), allocatable :: istack_tmp(:)
 !
       integer(kind = kint) :: iele
 !
@@ -486,64 +442,17 @@
         iele_domain(iele) = my_rank
       end do
 !
-      call SOLVER_SEND_RECV_int_type                                   &
+      call SOLVER_SEND_RECV_int_type                                    &
      &   (mesh%ele%numele, ele_comm, iele_local)
-      call SOLVER_SEND_RECV_int_type                                   &
+      call SOLVER_SEND_RECV_int_type                                    &
      &   (mesh%ele%numele, ele_comm, iele_domain)
 !
-      call const_ele_trans_tbl_for_repart                              &
+      call const_ele_trans_tbl_for_repart                               &
      &   (mesh%node, mesh%ele, part_tbl, idomain_new, ele_tbl)
 !      call check_element_transfer_tbl(mesh%ele, ele_tbl)
 ! 
-      allocate(iele_recv(ele_tbl%ntot_import))
-      allocate(idomain_recv(ele_tbl%ntot_import))
-!
-!    Set local in external node
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_domain, idomain_recv)
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_local, iele_recv)
-!
-      allocate(nele_recv_tmp(nprocs))
-      allocate(idx_sort(ele_tbl%ntot_import))
-      allocate(iele_sort(ele_tbl%ntot_import))
-      allocate(irank_sort(ele_tbl%ntot_import))
-!$omp parallel workshare
-      nele_recv_tmp(1:nprocs) =  0
-!$omp end parallel workshare
-!
-!$omp parallel do
-      do iele = 1, ele_tbl%ntot_import
-        idx_sort(iele) =   iele
-      end do
-!$omp end parallel do
-!
-      call sort_by_domain_and_index_list                                &
-     &   (nprocs, izero, ele_tbl%ntot_import, idomain_recv, iele_recv,  &
-     &    irank_sort, iele_sort, idx_sort, nele_recv_tmp)
-!
-      allocate(iflag_dup(ele_tbl%ntot_import))
-      call mark_overlapped_import_ele(nprocs, ele_tbl%ntot_import,      &
-     &    nele_recv_tmp, iele_sort, iflag_dup)
-      deallocate(iele_sort, irank_sort)
-!
-!
-      allocate(idx_sort2(ele_tbl%ntot_import))
-!$omp parallel workshare
-      idx_sort2(1:ele_tbl%ntot_import) = 0
-!$omp end parallel workshare
-!
-      call push_off_redundant_element(nprocs, nele_recv_tmp,            &
-     &    ele_tbl%ntot_import, idx_sort, iflag_dup,                     &
-     &    ele_tbl%item_import, ele_tbl%irev_import,                     &
-     &    idx_sort2, new_numele)
-!      call check_push_off_redundant_ele(mesh%ele, ele_tbl, idx_sort2,  &
-!     &   iele_local, iele_domain, iele_recv, idomain_recv)
-      deallocate(idx_sort, idx_sort2)
-      deallocate(nele_recv_tmp)
-!
+      call trim_overlapped_ele_by_repart(mesh, idomain_new, inod_new,   &
+     &    iele_domain, iele_local, ele_tbl, new_numele)
 !
       allocate(ie_newnod(mesh%ele%numele,mesh%ele%nnod_4_ele))
       allocate(ie_newdomain(mesh%ele%numele,mesh%ele%nnod_4_ele))
@@ -602,64 +511,6 @@
       end subroutine calypso_rev_SR_type_int
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine check_push_off_redundant_ele(ele, ele_tbl, idx_sort2,  &
-     &         iele_local, iele_domain, iele_recv_org, irank_recv_org)
-!
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      use calypso_SR_type
-      use select_copy_from_recv
-!
-      type(element_data), intent(in) :: ele
-      type(calypso_comm_table), intent(in) :: ele_tbl
-      integer(kind = kint), intent(in) :: idx_sort2(ele_tbl%ntot_import)
-!
-      integer(kind = kint), intent(in) :: iele_local(ele%numele)
-      integer(kind = kint), intent(in) :: iele_domain(ele%numele)
-      integer(kind = kint), intent(in)                                  &
-     &            :: iele_recv_org(ele_tbl%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &            :: irank_recv_org(ele_tbl%ntot_import)
-!
-      integer(kind = kint), allocatable :: iele_recv2(:)
-      integer(kind = kint), allocatable :: idomain_recv2(:)
-!
-      integer(kind = kint) :: iele, icou
-!
-!
-      allocate(iele_recv2(ele_tbl%ntot_import))
-      allocate(idomain_recv2(ele_tbl%ntot_import))
-!
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, iele_domain, idomain_recv2)
-      call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, iele_local, iele_recv2)
-!
-      write(100+my_rank,*) 'irank_recv_org, iele_recv_org',             &
-     &                    ele_tbl%ntot_import
-      do icou = 1, ele_tbl%ntot_import
-          iele = idx_sort2(icou)
-          write(100+my_rank,*) icou, 'ele_tbl%item_import', iele,       &
-     &       irank_recv_org(iele), iele_recv_org(iele)
-        end do
-!
-      write(100+my_rank,*) 'check pushing off redundant element'
-      do icou = 1, ele_tbl%ntot_import
-        iele = idx_sort2(icou)
-        if(idomain_recv2(icou) .eq. irank_recv_org(iele))  cycle
-        if(iele_recv2(icou) .eq. iele_recv_org(iele))  cycle
-!
-        write(100+my_rank,*) my_rank, icou, idx_sort2(icou),            &
-     &             idomain_recv2(icou)-irank_recv_org(iele),            &
-     &             iele_recv2(icou)-iele_recv_org(iele)
-      end do
-      deallocate(idomain_recv2, iele_recv2)
-!
-      end subroutine check_push_off_redundant_ele
-!
 ! ----------------------------------------------------------------------
 !
       subroutine check_orogin_node_and_domain(nod_comm, node)
