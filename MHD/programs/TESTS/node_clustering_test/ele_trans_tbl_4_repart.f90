@@ -7,9 +7,8 @@
 !>@brief  Construct commnunication table to new partitionning
 !!
 !!@verbatim
-!!      subroutine const_ele_trans_tbl_for_repart(nprocs, node, ele,    &
-!!     &          part_tbl, idomain_new, num_send_ele,                  &
-!!     &          num_recv_ele, ele_tbl)
+!!      subroutine const_ele_trans_tbl_for_repart(node, ele, part_tbl,  &
+!!     &                                          idomain_new, ele_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: part_tbl
@@ -23,14 +22,14 @@
 !
       use m_precision
       use m_constants
+      use calypso_mpi
 !
       use t_geometry_data
-      use t_calypso_comm_table
       use t_calypso_comm_table
 !
       implicit none
 !
-      private :: set_import_ele_for_repart
+      private :: count_num_send_ele_repart, set_import_ele_for_repart
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,22 +37,39 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_ele_trans_tbl_for_repart(my_rank, nprocs, node, ele,      &
-     &          part_tbl, idomain_new, num_send_ele,                    &
-     &          num_recv_ele, ele_tbl)
+      subroutine const_ele_trans_tbl_for_repart(node, ele, part_tbl,    &
+     &                                          idomain_new, ele_tbl)
 !
+      use calypso_mpi_int
       use set_comm_tbl_to_new_part
 !
-      integer, intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: part_tbl
       integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: num_send_ele(nprocs)
-      integer(kind = kint), intent(in) :: num_recv_ele(nprocs)
 !
       type(calypso_comm_table), intent(inout) :: ele_tbl
 !
+      integer(kind = kint), allocatable :: num_send_ele(:)
+      integer(kind = kint), allocatable :: num_recv_ele(:)
+!
+!
+      allocate(num_send_ele(nprocs))
+      allocate(num_recv_ele(nprocs))
+!$omp parallel workshare
+      num_send_ele(1:nprocs) = 0
+      num_recv_ele(1:nprocs) = 0
+!$omp end parallel workshare
+!
+      call count_num_send_ele_repart(nprocs, node, ele,                 &
+     &    part_tbl, idomain_new, num_send_ele)
+!
+      call calypso_mpi_alltoall_one_int(num_send_ele, num_recv_ele)
+!
+!      write(*,*) my_rank, 'num_send_ele',  mesh%ele%internal_ele,      &
+!     &  sum(num_send_ele)
+!      write(100+my_rank,*) my_rank, 'num_send_ele', num_send_ele
+!      write(100+my_rank,*) my_rank, 'num_recv_ele', num_recv_ele
 !
       ele_tbl%iflag_self_copy = 0
       call count_num_export_for_repart(my_rank, nprocs, num_send_ele,   &
@@ -84,8 +100,64 @@
      &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
      &    ele_tbl%irank_export, ele_tbl%istack_export,                  &
      &    ele_tbl%item_export)
+      deallocate(num_send_ele, num_recv_ele)
 !
       end subroutine const_ele_trans_tbl_for_repart
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine count_num_send_ele_repart(nprocs, node, ele,           &
+     &          part_tbl, idomain_new, num_send_ele)
+!
+      integer, intent(in) :: nprocs
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: part_tbl
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+!
+      integer(kind = kint), intent(inout) :: num_send_ele(nprocs)
+!
+      integer(kind = kint), allocatable :: iflag_ele(:)
+      integer(kind = kint) :: ntot_internal
+      integer(kind = kint) :: i, ip, inod, iele, k1
+!
+!
+!$omp parallel workshare
+        num_send_ele(1:nprocs) = 0
+!$omp end parallel workshare
+!
+      allocate(iflag_ele(ele%numele))
+      do i = 1, part_tbl%nrank_export
+!$omp parallel workshare
+        iflag_ele(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+        ip =  part_tbl%irank_export(i)
+        do iele = 1, ele%numele
+!          if(ele%ie(iele,1) .gt. node%internal_node) cycle
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            if(idomain_new(inod) .eq. ip) then
+              iflag_ele(iele) = 1
+              exit
+            end if
+          end do
+        end do
+!
+        ntot_internal = 0
+!$omp parallel do private(iele) reduction(+:ntot_internal)
+        do iele = 1, ele%numele
+          if(iflag_ele(iele) .gt. 0) then
+            ntot_internal = ntot_internal + 1
+          end if
+        end do
+!$omp end parallel do
+        num_send_ele(ip+1) = ntot_internal
+      end do
+      deallocate(iflag_ele)
+!
+      end subroutine count_num_send_ele_repart
 !
 ! ----------------------------------------------------------------------
 !

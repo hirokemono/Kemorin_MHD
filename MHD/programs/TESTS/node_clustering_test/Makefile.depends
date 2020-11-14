@@ -8,7 +8,7 @@ const_repart_comm_tbl.o: $(NODE_CLUSTERING_TEST_DIR)/const_repart_comm_tbl.f90 m
 	$(F90) -c $(F90OPTFLAGS) $<
 const_repart_mesh_data.o: $(NODE_CLUSTERING_TEST_DIR)/const_repart_mesh_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_calypso_comm_table.o calypso_mpi_int.o calypso_SR_type.o select_copy_from_recv.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-ele_trans_tbl_4_repart.o: $(NODE_CLUSTERING_TEST_DIR)/ele_trans_tbl_4_repart.f90 m_precision.o m_constants.o t_geometry_data.o t_calypso_comm_table.o set_comm_tbl_to_new_part.o
+ele_trans_tbl_4_repart.o: $(NODE_CLUSTERING_TEST_DIR)/ele_trans_tbl_4_repart.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_calypso_comm_table.o calypso_mpi_int.o set_comm_tbl_to_new_part.o
 	$(F90) -c $(F90OPTFLAGS) $<
 ext_of_int_grp_4_new_part.o: $(NODE_CLUSTERING_TEST_DIR)/ext_of_int_grp_4_new_part.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_next_node_ele_4_node.o calypso_mpi.o t_control_param_vol_grping.o quicksort.o set_repartition_group_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
