@@ -275,7 +275,7 @@
 !
       integer(kind = kint), allocatable :: num_send_tmp(:)
       integer(kind = kint), allocatable :: num_recv_tmp(:)
-      integer(kind = kint), allocatable :: num_recv_tmp2(:)
+      integer(kind = kint), allocatable :: num_recv_trimed(:)
 !
       integer(kind = kint), allocatable :: idomain_recv(:)
       integer(kind = kint), allocatable :: inod_recv(:)
@@ -369,13 +369,13 @@
      &    inod_new(1), inod_recv(internal_node+1))
 !
       allocate(num_recv_tmp(nprocs))
-      allocate(num_recv_tmp2(nprocs))
+      allocate(num_recv_trimed(nprocs))
       allocate(idx_sort(ext_int_tbl%ntot_import))
       allocate(inod_sort(ext_int_tbl%ntot_import))
       allocate(irank_sort(ext_int_tbl%ntot_import))
 !$omp parallel workshare
       num_recv_tmp(1:nprocs) =  0
-      num_recv_tmp2(1:nprocs) = 0
+      num_recv_trimed(1:nprocs) = 0
 !$omp end parallel workshare
 !
 !$omp parallel do private(i,ip)
@@ -401,55 +401,76 @@
       allocate(iflag_dup(ext_int_tbl%ntot_import))
       call mark_overlapped_import_node                                  &
      &   (nprocs, ext_int_tbl%ntot_import, num_recv_tmp, inod_sort,     &
-     &    num_recv_tmp2, iflag_dup)
+     &    num_recv_trimed, iflag_dup)
 !
-      new_comm%num_neib = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        if(num_recv_tmp2(ip+1) .gt. 0) then
-          new_comm%num_neib = new_comm%num_neib + 1
-        end if
-      end do
-      call alloc_comm_table_num(new_comm)
-!
-      icou = 0
-      new_comm%istack_import(icou) = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        if(num_recv_tmp2(ip+1) .gt. 0) then
-          icou = icou + 1
-          ip = mod(i+my_rank,nprocs)
-          new_comm%id_neib(icou) = mod(i+my_rank,nprocs)
-          new_comm%num_import(icou) = num_recv_tmp2(ip+1)
-          new_comm%istack_import(icou)                                  &
-     &         = new_comm%istack_import(icou-1) + num_recv_tmp2(ip+1)
-        end if
-      end do
-      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
-!
+      call const_repartitioned_comm_tbl                                 &
+     &   (internal_node, num_recv_tmp, num_recv_trimed,                 &
+     &    ext_int_tbl%ntot_import, irank_sort, inod_sort, iflag_dup,    &
+     &    new_comm)
+      deallocate(num_recv_tmp, irank_sort, inod_sort)
 !
 !      call check_num_of_neighbourings                                  &
-!     &   (new_comm, ext_int_tbl, num_recv_tmp2)
+!     &   (new_comm, ext_int_tbl, num_recv_trimed)
+!      call check_new_node_comm_table(my_rank, new_comm)
+      deallocate(num_recv_trimed)
 !
+      call set_repart_node_position                                     &
+     &   (node, new_comm, new_node, part_tbl)
+!
+      end subroutine const_comm_tbls_for_new_part
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_repartitioned_comm_tbl                           &
+     &         (internal_node, num_recv_tmp, num_recv_tmp2,             &
+     &          ntot_import, irank_sort, inod_sort, iflag_dup,          &
+     &          new_comm)
+!
+      use calypso_mpi
+      use m_solver_SR
+      use t_calypso_comm_table
+!
+      use reverse_SR_int
+!
+      integer(kind = kint), intent(in) :: internal_node
+      integer(kind = kint), intent(in) :: num_recv_tmp(nprocs)
+      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
+!
+      integer(kind = kint), intent(in) :: ntot_import
+      integer(kind = kint), intent(in) :: irank_sort(ntot_import)
+      integer(kind = kint), intent(in) :: inod_sort(ntot_import)
+      integer(kind = kint), intent(in) :: iflag_dup(ntot_import)
+!
+      type(communication_table), intent(inout) :: new_comm
+!
+      integer(kind = kint), allocatable :: inod_external(:)
+      integer(kind = kint), allocatable :: irank_external(:)
+!
+!
+      call cnt_repartitioned_num_neib                                   &
+     &   (my_rank, nprocs, num_recv_tmp2, new_comm%num_neib)
+      call alloc_comm_table_num(new_comm)
+!
+      call cnt_repartitioned_import_num(my_rank, nprocs,                &
+     &    num_recv_tmp2, new_comm%num_neib, new_comm%id_neib,           &
+     &    new_comm%num_import, new_comm%istack_import,                  &
+     &    new_comm%ntot_import)
+!
+      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
       call alloc_import_item(new_comm)
+!
       allocate(inod_external(new_comm%ntot_import))
       allocate(irank_external(new_comm%ntot_import))
+!$omp parallel workshare
+      inod_external(1:new_comm%ntot_import) =  0
+      irank_external(1:new_comm%ntot_import) = 0
+!$omp end parallel workshare
 !
-      ist = 0
-      j = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        do icou = 1, num_recv_tmp(ip+1)
-          if(iflag_dup(ist+icou) .gt. 0) then
-            j = j + 1
-            irank_external(j) = irank_sort(ist+icou)
-            inod_external(j) =  inod_sort(ist+icou)
-            new_comm%item_import(j) = j + internal_node
-          end if
-        end do
-        ist = ist + num_recv_tmp(ip+1)
-      end do
-      deallocate(num_recv_tmp, irank_sort, inod_sort)
+      call set_repartitioned_import_item                                &
+     &   (my_rank, nprocs, internal_node, num_recv_tmp,                 &
+     &    ntot_import, irank_sort, inod_sort, iflag_dup,                &
+     &    new_comm%ntot_import, new_comm%item_import,                   &
+     &    irank_external, inod_external)
 !
       call element_num_reverse_SR                                       &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
@@ -460,13 +481,111 @@
       call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
      &    new_comm%istack_import, new_comm%istack_export,               &
      &    inod_external, SR_sig1, new_comm%item_export)
+      deallocate(inod_external, irank_external)
 !
-!      call check_new_node_comm_table(my_rank, new_comm)
+      end subroutine const_repartitioned_comm_tbl
 !
-      call set_repart_node_position                                     &
-     &   (node, new_comm, new_node, part_tbl)
+! ----------------------------------------------------------------------
 !
-      end subroutine const_comm_tbls_for_new_part
+      subroutine cnt_repartitioned_num_neib                             &
+     &         (my_rank, nprocs, num_recv_tmp2, num_neib)
+!
+      integer, intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
+      integer(kind = kint), intent(inout) :: num_neib
+!
+      integer(kind = kint) :: i, ip
+!
+!
+      num_neib = 0
+      do i = 1, nprocs-1
+        ip = mod(i+my_rank,nprocs)
+        if(num_recv_tmp2(ip+1) .gt. 0) then
+          num_neib = num_neib + 1
+        end if
+      end do
+!
+      end subroutine cnt_repartitioned_num_neib
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cnt_repartitioned_import_num                           &
+     &         (my_rank, nprocs, num_recv_tmp2, num_neib, id_neib,      &
+     &          num_import, istack_import, ntot_import)
+!
+      integer, intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
+      integer(kind = kint), intent(in) :: num_neib
+!
+      integer(kind = kint), intent(inout) :: id_neib(num_neib)
+      integer(kind = kint), intent(inout) :: num_import(num_neib)
+      integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
+      integer(kind = kint), intent(inout) :: ntot_import
+!
+      integer(kind = kint) :: i, ip, icou
+!
+!
+      icou = 0
+      istack_import(icou) = 0
+      do i = 1, nprocs-1
+        ip = mod(i+my_rank,nprocs)
+        if(num_recv_tmp2(ip+1) .gt. 0) then
+          icou = icou + 1
+          ip = mod(i+my_rank,nprocs)
+          id_neib(icou) = mod(i+my_rank,nprocs)
+          num_import(icou) = num_recv_tmp2(ip+1)
+          istack_import(icou)                                           &
+     &         = istack_import(icou-1) + num_recv_tmp2(ip+1)
+        end if
+      end do
+      ntot_import = istack_import(num_neib)
+!
+      end subroutine cnt_repartitioned_import_num
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_repartitioned_import_item                          &
+     &         (my_rank, nprocs, internal_node, num_recv_tmp,           &
+     &          ntot_import, irank_sort, inod_sort, iflag_dup,          &
+     &          ntot_comm_import, item_import,                          &
+     &          irank_external, inod_external)
+!
+      integer, intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in) :: internal_node
+      integer(kind = kint), intent(in) :: num_recv_tmp(nprocs)
+!
+      integer(kind = kint), intent(in) :: ntot_import
+      integer(kind = kint), intent(in) :: irank_sort(ntot_import)
+      integer(kind = kint), intent(in) :: inod_sort(ntot_import)
+      integer(kind = kint), intent(in) :: iflag_dup(ntot_import)
+!
+      integer(kind = kint), intent(in) :: ntot_comm_import
+      integer(kind = kint), intent(inout)                               &
+     &              :: item_import(ntot_comm_import)
+      integer(kind = kint), intent(inout)                               &
+     &              :: irank_external(ntot_comm_import)
+      integer(kind = kint), intent(inout)                               &
+     &              :: inod_external(ntot_comm_import)
+!
+      integer(kind = kint) :: i, j, ip, icou, ist
+!
+!
+      ist = 0
+      j = 0
+      do i = 1, nprocs-1
+        ip = mod(i+my_rank,nprocs)
+        do icou = 1, num_recv_tmp(ip+1)
+          if(iflag_dup(ist+icou) .gt. 0) then
+            j = j + 1
+            irank_external(j) = irank_sort(ist+icou)
+            inod_external(j) =  inod_sort(ist+icou)
+            item_import(j) = j + internal_node
+          end if
+        end do
+        ist = ist + num_recv_tmp(ip+1)
+      end do
+!
+      end subroutine set_repartitioned_import_item
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -520,7 +639,6 @@
 !
       integer(kind = kint), allocatable :: nele_send_tmp(:)
       integer(kind = kint), allocatable :: nele_recv_tmp(:)
-      integer(kind = kint), allocatable :: nele_recv_tmp2(:)
       integer(kind = kint), allocatable :: iele_lc_recv(:)
       integer(kind = kint), allocatable :: irank_lc_recv(:)
       integer(kind = kint), allocatable :: idx_sort(:)
@@ -782,14 +900,12 @@
 !
       allocate(nele_send_tmp(nprocs))
       allocate(nele_recv_tmp(nprocs))
-      allocate(nele_recv_tmp2(nprocs))
       allocate(idx_sort(ele_tbl%ntot_import))
       allocate(iele_sort(ele_tbl%ntot_import))
       allocate(irank_sort(ele_tbl%ntot_import))
 !$omp parallel workshare
       nele_send_tmp(1:nprocs) =  0
       nele_recv_tmp(1:nprocs) =  0
-      nele_recv_tmp2(1:nprocs) = 0
 !$omp end parallel workshare
 !
 !$omp parallel do
@@ -803,21 +919,8 @@
      &    idomain_recv, iele_recv, irank_sort, iele_sort, idx_sort)
 !
       allocate(iflag_dup(ele_tbl%ntot_import))
-!$omp parallel workshare
-      iflag_dup(1:ele_tbl%ntot_import) = 1
-!$omp end parallel workshare
-!
-      ist = 0
-      do ip = 1, nprocs
-        if(nele_recv_tmp(ip) .gt. 1) then
-          do icou = 2, nele_recv_tmp(ip)
-            if(iele_sort(ist+icou) .eq. iele_sort(ist+icou-1)) then
-              iflag_dup(ist+icou) = 0
-            end if
-          end do
-        end if
-        ist = ist + nele_recv_tmp(ip)
-      end do
+      call mark_overlapped_import_ele(nprocs, ele_tbl%ntot_import,      &
+     &    nele_recv_tmp, iele_sort, iflag_dup)
 !
 !
       allocate(idx_sort2(ele_tbl%ntot_import))
@@ -832,7 +935,7 @@
 !     &   iele_local, iele_domain, iele_recv, idomain_recv)
       deallocate(idx_sort2)
 !
-      deallocate(nele_send_tmp, nele_recv_tmp, nele_recv_tmp2)
+      deallocate(nele_send_tmp, nele_recv_tmp)
       deallocate(idx_sort, iele_sort, irank_sort)
 !
 !
@@ -1101,9 +1204,9 @@
       integer, intent(in) :: nprocs
       integer(kind = kint), intent(in) :: ntot_import
       integer(kind = kint), intent(in) :: num_recv_tmp(nprocs)
-      integer(kind = kint), intent(inout) :: num_recv_tmp2(nprocs)
-!
       integer(kind = kint), intent(in) :: inod_sort(ntot_import)
+!
+      integer(kind = kint), intent(inout) :: num_recv_tmp2(nprocs)
       integer(kind = kint), intent(inout) :: iflag_dup(ntot_import)
 !
       integer(kind = kint) :: i, ist, icou, ip
@@ -1128,6 +1231,39 @@
       end do
 !
       end subroutine mark_overlapped_import_node
+!
+! ----------------------------------------------------------------------
+!
+      subroutine mark_overlapped_import_ele(nprocs, ntot_import,        &
+     &          nele_recv_tmp, iele_sort, iflag_dup)
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in) :: ntot_import
+      integer(kind = kint), intent(in) :: nele_recv_tmp(nprocs)
+      integer(kind = kint), intent(in) :: iele_sort(ntot_import)
+!
+      integer(kind = kint), intent(inout) :: iflag_dup(ntot_import)
+!
+      integer(kind = kint) :: icou, ist, ip
+!
+!
+!$omp parallel workshare
+      iflag_dup(1:ntot_import) = 1
+!$omp end parallel workshare
+!
+      ist = 0
+      do ip = 1, nprocs
+        if(nele_recv_tmp(ip) .gt. 1) then
+          do icou = 2, nele_recv_tmp(ip)
+            if(iele_sort(ist+icou) .eq. iele_sort(ist+icou-1)) then
+              iflag_dup(ist+icou) = 0
+            end if
+          end do
+        end if
+        ist = ist + nele_recv_tmp(ip)
+      end do
+!
+      end subroutine mark_overlapped_import_ele
 !
 ! ----------------------------------------------------------------------
 !
