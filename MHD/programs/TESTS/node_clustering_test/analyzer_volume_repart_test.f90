@@ -253,6 +253,9 @@
       use external_group_4_new_part
       use ext_of_int_grp_4_new_part
 !
+      use const_repart_mesh_data
+      use const_repart_comm_tbl
+!
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(next_nod_id_4_nod), intent(in) :: neib_nod
@@ -273,9 +276,9 @@
       type(calypso_comm_table) :: ext_ext_tbl
       type(communication_table) :: new_comm0, new_comm_tmp
 !
-      integer(kind = kint), allocatable :: num_send_tmp(:)
-      integer(kind = kint), allocatable :: num_recv_tmp(:)
-      integer(kind = kint), allocatable :: num_recv_trimed(:)
+      integer(kind = kint), allocatable :: num_send_nod(:)
+      integer(kind = kint), allocatable :: num_recv_nod(:)
+      integer(kind = kint), allocatable :: num_recv_trim(:)
 !
       integer(kind = kint), allocatable :: idomain_recv(:)
       integer(kind = kint), allocatable :: inod_recv(:)
@@ -295,15 +298,15 @@
       integer(kind = kint) :: nrank_import
 !
 !
-      allocate(num_send_tmp(part_grp%num_grp))
-      allocate(num_recv_tmp(part_grp%num_grp))
+      allocate(num_send_nod(part_grp%num_grp))
+      allocate(num_recv_nod(part_grp%num_grp))
 !
       call gather_num_trans_for_repart                                  &
-     &   (part_grp, num_send_tmp, num_recv_tmp)
+     &   (part_grp, num_send_nod, num_recv_nod)
       call const_comm_tbl_to_new_part                                   &
-     &   (part_grp, num_send_tmp, num_recv_tmp, part_tbl)
+     &   (part_grp, num_send_nod, num_recv_nod, part_tbl)
 !      call send_back_istack_import_repart                              &
-!     &   (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
+!     &   (part_grp, part_tbl, num_recv_nod, num_send_nod)
 !
 !    Set local (idomain_recv, inod_recv) in internal node
       allocate(inod_recv(part_tbl%ntot_import))
@@ -340,12 +343,12 @@
 !
 !
       call gather_num_trans_for_repart                                  &
-     &   (ext_int_grp, num_send_tmp, num_recv_tmp)
+     &   (ext_int_grp, num_send_nod, num_recv_nod)
       call const_comm_tbl_to_new_part                                   &
-     &   (ext_int_grp, num_send_tmp, num_recv_tmp, ext_int_tbl)
+     &   (ext_int_grp, num_send_nod, num_recv_nod, ext_int_tbl)
 !      call send_back_ext_istack_import                                 &
-!     &   (part_grp, part_tbl, ext_int_tbl, num_recv_tmp, num_send_tmp)
-      deallocate(num_send_tmp, num_recv_tmp)
+!     &   (part_grp, part_tbl, ext_int_tbl, num_recv_nod, num_send_nod)
+      deallocate(num_send_nod, num_recv_nod)
 !
 !    Set local (idomain_recv, inod_recv) in internal node
       internal_node =                    part_tbl%ntot_import
@@ -368,14 +371,14 @@
      &    node%numnod, ext_int_tbl%ntot_import,                         &
      &    inod_new(1), inod_recv(internal_node+1))
 !
-      allocate(num_recv_tmp(nprocs))
-      allocate(num_recv_trimed(nprocs))
+      allocate(num_recv_nod(nprocs))
+      allocate(num_recv_trim(nprocs))
       allocate(idx_sort(ext_int_tbl%ntot_import))
       allocate(inod_sort(ext_int_tbl%ntot_import))
       allocate(irank_sort(ext_int_tbl%ntot_import))
 !$omp parallel workshare
-      num_recv_tmp(1:nprocs) =  0
-      num_recv_trimed(1:nprocs) = 0
+      num_recv_nod(1:nprocs) =  0
+      num_recv_trim(1:nprocs) = 0
 !$omp end parallel workshare
 !
 !$omp parallel do private(i,ip)
@@ -385,7 +388,7 @@
 !$omp end parallel do
 !
       call sort_by_domain_and_index_list                                &
-     &   (nprocs, (my_rank+1), num_recv_tmp, ext_int_tbl%ntot_import,   &
+     &   (nprocs, (my_rank+1), num_recv_nod, ext_int_tbl%ntot_import,   &
      &    idomain_recv(internal_node+1), inod_recv(internal_node+1),    &
      &    irank_sort, inod_sort, idx_sort)
 !
@@ -400,192 +403,24 @@
 !
       allocate(iflag_dup(ext_int_tbl%ntot_import))
       call mark_overlapped_import_node                                  &
-     &   (nprocs, ext_int_tbl%ntot_import, num_recv_tmp, inod_sort,     &
-     &    num_recv_trimed, iflag_dup)
+     &   (nprocs, ext_int_tbl%ntot_import, num_recv_nod, inod_sort,     &
+     &    num_recv_trim, iflag_dup)
 !
       call const_repartitioned_comm_tbl                                 &
-     &   (internal_node, num_recv_tmp, num_recv_trimed,                 &
+     &   (internal_node, num_recv_nod, num_recv_trim,                   &
      &    ext_int_tbl%ntot_import, irank_sort, inod_sort, iflag_dup,    &
      &    new_comm)
-      deallocate(num_recv_tmp, irank_sort, inod_sort)
+      deallocate(num_recv_nod, irank_sort, inod_sort)
 !
 !      call check_num_of_neighbourings                                  &
-!     &   (new_comm, ext_int_tbl, num_recv_trimed)
+!     &   (new_comm, ext_int_tbl, num_recv_trim)
 !      call check_new_node_comm_table(my_rank, new_comm)
-      deallocate(num_recv_trimed)
+      deallocate(num_recv_trim)
 !
       call set_repart_node_position                                     &
      &   (node, new_comm, new_node, part_tbl)
 !
       end subroutine const_comm_tbls_for_new_part
-!
-! ----------------------------------------------------------------------
-!
-      subroutine const_repartitioned_comm_tbl                           &
-     &         (internal_node, num_recv_tmp, num_recv_tmp2,             &
-     &          ntot_import, irank_sort, inod_sort, iflag_dup,          &
-     &          new_comm)
-!
-      use calypso_mpi
-      use m_solver_SR
-      use t_calypso_comm_table
-!
-      use reverse_SR_int
-!
-      integer(kind = kint), intent(in) :: internal_node
-      integer(kind = kint), intent(in) :: num_recv_tmp(nprocs)
-      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
-!
-      integer(kind = kint), intent(in) :: ntot_import
-      integer(kind = kint), intent(in) :: irank_sort(ntot_import)
-      integer(kind = kint), intent(in) :: inod_sort(ntot_import)
-      integer(kind = kint), intent(in) :: iflag_dup(ntot_import)
-!
-      type(communication_table), intent(inout) :: new_comm
-!
-      integer(kind = kint), allocatable :: inod_external(:)
-      integer(kind = kint), allocatable :: irank_external(:)
-!
-!
-      call cnt_repartitioned_num_neib                                   &
-     &   (my_rank, nprocs, num_recv_tmp2, new_comm%num_neib)
-      call alloc_comm_table_num(new_comm)
-!
-      call cnt_repartitioned_import_num(my_rank, nprocs,                &
-     &    num_recv_tmp2, new_comm%num_neib, new_comm%id_neib,           &
-     &    new_comm%num_import, new_comm%istack_import,                  &
-     &    new_comm%ntot_import)
-!
-      new_comm%ntot_import = new_comm%istack_import(new_comm%num_neib)
-      call alloc_import_item(new_comm)
-!
-      allocate(inod_external(new_comm%ntot_import))
-      allocate(irank_external(new_comm%ntot_import))
-!$omp parallel workshare
-      inod_external(1:new_comm%ntot_import) =  0
-      irank_external(1:new_comm%ntot_import) = 0
-!$omp end parallel workshare
-!
-      call set_repartitioned_import_item                                &
-     &   (my_rank, nprocs, internal_node, num_recv_tmp,                 &
-     &    ntot_import, irank_sort, inod_sort, iflag_dup,                &
-     &    new_comm%ntot_import, new_comm%item_import,                   &
-     &    irank_external, inod_external)
-!
-      call element_num_reverse_SR                                       &
-     &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
-     &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
-     &    new_comm%ntot_export)
-!
-      call alloc_export_item(new_comm)
-      call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
-     &    new_comm%istack_import, new_comm%istack_export,               &
-     &    inod_external, SR_sig1, new_comm%item_export)
-      deallocate(inod_external, irank_external)
-!
-      end subroutine const_repartitioned_comm_tbl
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cnt_repartitioned_num_neib                             &
-     &         (my_rank, nprocs, num_recv_tmp2, num_neib)
-!
-      integer, intent(in) :: my_rank, nprocs
-      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
-      integer(kind = kint), intent(inout) :: num_neib
-!
-      integer(kind = kint) :: i, ip
-!
-!
-      num_neib = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        if(num_recv_tmp2(ip+1) .gt. 0) then
-          num_neib = num_neib + 1
-        end if
-      end do
-!
-      end subroutine cnt_repartitioned_num_neib
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cnt_repartitioned_import_num                           &
-     &         (my_rank, nprocs, num_recv_tmp2, num_neib, id_neib,      &
-     &          num_import, istack_import, ntot_import)
-!
-      integer, intent(in) :: my_rank, nprocs
-      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
-      integer(kind = kint), intent(in) :: num_neib
-!
-      integer(kind = kint), intent(inout) :: id_neib(num_neib)
-      integer(kind = kint), intent(inout) :: num_import(num_neib)
-      integer(kind = kint), intent(inout) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(inout) :: ntot_import
-!
-      integer(kind = kint) :: i, ip, icou
-!
-!
-      icou = 0
-      istack_import(icou) = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        if(num_recv_tmp2(ip+1) .gt. 0) then
-          icou = icou + 1
-          ip = mod(i+my_rank,nprocs)
-          id_neib(icou) = mod(i+my_rank,nprocs)
-          num_import(icou) = num_recv_tmp2(ip+1)
-          istack_import(icou)                                           &
-     &         = istack_import(icou-1) + num_recv_tmp2(ip+1)
-        end if
-      end do
-      ntot_import = istack_import(num_neib)
-!
-      end subroutine cnt_repartitioned_import_num
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_repartitioned_import_item                          &
-     &         (my_rank, nprocs, internal_node, num_recv_tmp,           &
-     &          ntot_import, irank_sort, inod_sort, iflag_dup,          &
-     &          ntot_comm_import, item_import,                          &
-     &          irank_external, inod_external)
-!
-      integer, intent(in) :: my_rank, nprocs
-      integer(kind = kint), intent(in) :: internal_node
-      integer(kind = kint), intent(in) :: num_recv_tmp(nprocs)
-!
-      integer(kind = kint), intent(in) :: ntot_import
-      integer(kind = kint), intent(in) :: irank_sort(ntot_import)
-      integer(kind = kint), intent(in) :: inod_sort(ntot_import)
-      integer(kind = kint), intent(in) :: iflag_dup(ntot_import)
-!
-      integer(kind = kint), intent(in) :: ntot_comm_import
-      integer(kind = kint), intent(inout)                               &
-     &              :: item_import(ntot_comm_import)
-      integer(kind = kint), intent(inout)                               &
-     &              :: irank_external(ntot_comm_import)
-      integer(kind = kint), intent(inout)                               &
-     &              :: inod_external(ntot_comm_import)
-!
-      integer(kind = kint) :: i, j, ip, icou, ist
-!
-!
-      ist = 0
-      j = 0
-      do i = 1, nprocs-1
-        ip = mod(i+my_rank,nprocs)
-        do icou = 1, num_recv_tmp(ip+1)
-          if(iflag_dup(ist+icou) .gt. 0) then
-            j = j + 1
-            irank_external(j) = irank_sort(ist+icou)
-            inod_external(j) =  inod_sort(ist+icou)
-            item_import(j) = j + internal_node
-          end if
-        end do
-        ist = ist + num_recv_tmp(ip+1)
-      end do
-!
-      end subroutine set_repartitioned_import_item
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -605,6 +440,7 @@
       use select_copy_from_recv
       use set_comm_tbl_to_new_part
       use search_ext_node_repartition
+      use const_repart_mesh_data
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
@@ -994,137 +830,6 @@
       deallocate(irev_tmp)
 !
       end subroutine calypso_rev_SR_type_int
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_repart_node_position                               &
-     &         (node, new_comm, new_node, part_tbl)
-!
-      use t_comm_table
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      use calypso_mpi_int
-      use calypso_SR_type
-      use select_copy_from_recv
-      use solver_SR_type
-!
-      type(node_data), intent(in) :: node
-      type(calypso_comm_table), intent(in) :: part_tbl
-      type(communication_table), intent(in) :: new_comm
-!
-      type(node_data), intent(inout) :: new_node
-!
-!
-      new_node%internal_node =                 part_tbl%ntot_import
-      new_node%numnod = new_comm%ntot_import + part_tbl%ntot_import
-!
-!
-!      write(*,*) my_rank, 'new_nomond', new_node%internal_node,        &
-!     &           new_node%numnod, new_comm%ntot_import
-      call alloc_node_geometry_base(new_node)
-!
-      call calypso_SR_type_int8(iflag_import_item, part_tbl,            &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%inod_global(1), new_node%inod_global(1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,1), new_node%xx(1,1))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,2), new_node%xx(1,2))
-      call calypso_SR_type_1(iflag_import_item, part_tbl,               &
-     &    node%numnod, new_node%internal_node,                          &
-     &    node%xx(1,3), new_node%xx(1,3))
-!
-      call SOLVER_SEND_RECV_int8_type                                   &
-     &   (new_node%numnod, new_comm, new_node%inod_global)
-      call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,1))
-      call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,2))
-      call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,3))
-!
-      end subroutine set_repart_node_position
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_repart_element_connect                             &
-     &         (new_numele, node, ele, ele_tbl, idomain_new, inod_new,  &
-     &          ie_newdomain, ie_newnod, new_ele)
-!
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      use calypso_SR_type
-      use select_copy_from_recv
-!
-      integer(kind = kint), intent(in) :: new_numele
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(calypso_comm_table), intent(in) :: ele_tbl
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(node%numnod)
-!
-      type(element_data), intent(inout) :: new_ele
-      integer(kind = kint), intent(inout)                               &
-     &            :: ie_newnod(ele%numele,ele%nnod_4_ele)
-      integer(kind = kint), intent(inout)                               &
-     &            :: ie_newdomain(ele%numele,ele%nnod_4_ele)
-!
-      integer(kind = kint), allocatable :: i4_recv(:)
-      integer(kind = kint_gl), allocatable :: i8_recv(:)
-!
-      integer(kind = kint) :: k1, iele, inod
-!
-!
-!$omp parallel
-      do k1 = 1, ele%nnod_4_ele
-!$omp do private(iele,inod)
-        do iele = 1, ele%numele
-          inod = ele%ie(iele,k1)
-          ie_newnod(iele,k1) =    inod_new(inod)
-          ie_newdomain(iele,k1) = idomain_new(inod)
-        end do
-!$omp end do
-      end do
-!$omp end parallel
-!
-      allocate(i4_recv(ele_tbl%ntot_import))
-      allocate(i8_recv(ele_tbl%ntot_import))
-!$omp parallel workshare
-      i4_recv(1:ele_tbl%ntot_import) = 0
-      i8_recv(1:ele_tbl%ntot_import) = 0
-!$omp end parallel workshare
-!
-      new_ele%numele =     new_numele
-      new_ele%nnod_4_ele = ele%nnod_4_ele
-      call allocate_ele_connect_type(new_ele)
-!
-!$omp parallel workshare
-      new_ele%elmtyp(1:new_ele%numele) = ele%elmtyp(1)
-      new_ele%nodelm(1:new_ele%numele) = ele%nodelm(1)
-!$omp end parallel workshare
-!
-      call calypso_SR_type_int8(iflag_import_item, ele_tbl,             &
-     &    ele%numele, ele_tbl%ntot_import, ele%iele_global(1), i8_recv)
-!$omp parallel workshare
-      new_ele%iele_global(1:new_ele%numele) = i8_recv(1:new_ele%numele)
-!$omp end parallel workshare
-!
-      do k1 = 1, ele%nnod_4_ele
-        call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
-     &      ele%numele, ele_tbl%ntot_import, ie_newnod(1,k1), i4_recv)
-!$omp parallel workshare
-        new_ele%ie(1:new_ele%numele,k1) = i4_recv(1:new_ele%numele)
-!$omp end parallel workshare
-      end do
-!
-      deallocate(i4_recv, i8_recv)
-!
-      end subroutine set_repart_element_connect
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
