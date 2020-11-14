@@ -65,6 +65,7 @@ redistribute_group_data.o \
 const_repart_mesh_data.o \
 const_repart_comm_tbl.o \
 \
+sort_for_repartition.o \
 search_ext_node_repartition.o \
 search_from_list.o
 
