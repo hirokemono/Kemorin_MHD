@@ -34,7 +34,7 @@
       private :: num_send_tmp, num_recv_tmp
       private :: const_comm_tbl_to_new_part
       private :: gather_num_trans_for_repart
-      private :: const_int_comm_tbl_to_new_part
+      private :: send_back_istack_import_repart
       private :: send_back_ext_istack_import
 !
 ! ----------------------------------------------------------------------
