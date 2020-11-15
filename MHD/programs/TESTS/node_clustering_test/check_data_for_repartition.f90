@@ -124,7 +124,7 @@
       call SOLVER_SEND_RECV_int_type                                    &
      &   (new_node%numnod, new_comm, new_recved_id2%irank)
 !
-      write(*,*) 'Check new_recved_id2%irank, new_recved_id2%index'
+!      write(*,*) 'Check new_recved_id2%irank, new_recved_id2%index'
       do inod = 1, new_node%internal_node
         if(new_recved_id1%index(inod) .ne. inod_new_lc(inod)            &
      &    .or. new_recved_id1%irank(inod) .ne. irank_new_lc(inod)) then

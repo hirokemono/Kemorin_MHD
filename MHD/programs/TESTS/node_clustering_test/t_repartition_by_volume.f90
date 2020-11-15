@@ -17,6 +17,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
       use calypso_mpi
 !
       use t_mesh_data
@@ -192,6 +193,7 @@
      &    sub_z%n_block, vol_sort%sub_volume, sub_z%n_domain,           &
      &    ione, istack_intnod, sub_z%istack_vol, sub_z%vol_grp)
 !
+      if(iflag_debug .eq. 0) return
 !      call check_blocks_4_z_domain(my_rank, mesh%node,                 &
 !          part_param, vol_sort%inod_sort, vol_sort%id_block, sub_z)
       if(my_rank .eq. 0) then
@@ -232,6 +234,8 @@
      &    part_1d%n_block, vol_sort%sub_volume, part_1d%n_domain,       &
      &    prev_part_grp%num_grp, prev_part_grp%istack_grp,              &
      &    part_1d%istack_vol, part_1d%vol_grp)
+!
+      if(iflag_debug .eq. 0) return
 !
       if(nd .eq. 1) then
 !        call check_blocks_4_xyz_domain(my_rank, mesh%node,             &
