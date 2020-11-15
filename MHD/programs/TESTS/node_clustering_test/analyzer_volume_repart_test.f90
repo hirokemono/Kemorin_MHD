@@ -58,6 +58,7 @@
       use t_fem_gauss_int_coefs
       use t_next_node_ele_4_node
       use t_calypso_comm_table
+      use t_repart_double_numberings
 !
       use mpi_load_mesh_data
       use mesh_file_IO
@@ -104,11 +105,10 @@
       type(calypso_comm_table) :: part_tbl, ext_tbl
       type(calypso_comm_table) :: ele_tbl
 !
-      integer(kind = kint), allocatable :: idomain_new(:)
-      integer(kind = kint), allocatable :: inod_new(:)
+      type(double_numbering_data) :: new_ids_on_org
 !
-      integer(kind = kint_gl), allocatable :: inod_gl_test(:)
-      integer(kind = kint) :: inod, iele, k1, inum, jnod
+!      integer(kind = kint_gl), allocatable :: inod_gl_test(:)
+!      integer(kind = kint) :: inod, iele, k1, inum, jnod
 !
       character(len=kchara) :: file_name
 !
@@ -165,23 +165,18 @@
 !       Re-partitioning
       call s_repartition_by_volume(fem_T%mesh, T_meshes, part_grp)
 !
-      allocate(idomain_new(fem_T%mesh%node%numnod))
-      allocate(inod_new(fem_T%mesh%node%numnod))
-!$omp parallel workshare
-      idomain_new(1:fem_T%mesh%node%numnod) = -1
-      inod_new(1:fem_T%mesh%node%numnod) =     0
-!$omp end parallel workshare
 !
-!
-!
+      call alloc_double_numbering_data                                  &
+     &   (fem_T%mesh%node%numnod, new_ids_on_org)
       call const_comm_tbls_for_new_part                                 &
      &   (fem_T%mesh, next_tbl_T%neib_nod, T_meshes, part_grp,          &
-     &    idomain_new, inod_new, new_fem%mesh%nod_comm,                 &
+     &    new_ids_on_org, new_fem%mesh%nod_comm,                        &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
 !
 !
       call const_new_element_connect(fem_T%mesh, ele_comm, part_tbl,    &
-     &    idomain_new, inod_new, ele_tbl, new_fem%mesh)
+     &    new_ids_on_org, ele_tbl, new_fem%mesh)
+      call dealloc_double_numbering_data(new_ids_on_org)
 !
       call s_redistribute_groups(fem_T%mesh, fem_T%group, ele_comm,     &
      &    new_fem%mesh, part_tbl, ele_tbl, new_fem%group)
@@ -231,9 +226,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_comm_tbls_for_new_part                           &
-     &         (mesh, neib_nod, part_param, part_grp,     &
-     &          idomain_new, inod_new, new_comm, new_node,              &
-     &          part_tbl, ext_tbl)
+     &         (mesh, neib_nod, part_param, part_grp,                   &
+     &          new_ids_on_org, new_comm, new_node, part_tbl, ext_tbl)
 !
       use t_mesh_data
       use t_calypso_comm_table
@@ -265,26 +259,23 @@
       type(calypso_comm_table), intent(inout) :: part_tbl
       type(calypso_comm_table), intent(inout) :: ext_tbl
 !
-      integer(kind = kint), intent(inout) :: idomain_new(mesh%node%numnod)
-      integer(kind = kint), intent(inout) :: inod_new(mesh%node%numnod)
+      type(double_numbering_data), intent(inout) :: new_ids_on_org
 !
       type(group_data) :: ext_int_grp
       type(group_data) :: ext_grp
       type(sorting_data_for_repartition) :: sort_nod
 !
-      integer(kind = kint), allocatable :: idomain_recv(:)
-      integer(kind = kint), allocatable :: inod_recv(:)
-!
       integer(kind = kint) :: numnod, internal_node
+      type(double_numbering_data) :: recieved_new_nod_ids
 !
 !
       call const_int_comm_tbl_to_new_part(part_grp, part_tbl)
-!    Set local (idomain_recv, inod_recv) in internal node
+!    Set new_ids_on_org in internal node
       call node_dbl_numbering_to_repart                                 &
-     &   (mesh%nod_comm, mesh%node, part_tbl, idomain_new, inod_new)
+     &   (mesh%nod_comm, mesh%node, part_tbl, new_ids_on_org)
 !
-      call const_external_grp_4_new_part(idomain_new, mesh%node,        &
-     &    part_param, part_grp, ext_grp)
+      call const_external_grp_4_new_part(new_ids_on_org%irank,          &
+     &    mesh%node, part_param, part_grp, ext_grp)
 !       Re-partitioning for external node
       call const_ext_of_int_grp_new_part(mesh%node, neib_nod,           &
      &    part_param, part_grp, ext_grp, ext_int_grp)
@@ -293,25 +284,18 @@
       call dealloc_group(ext_int_grp)
       call dealloc_group(ext_grp)
 !
-!      Set local (idomain_recv, inod_recv) in internal node
+!      Set local recieved_new_nod_ids in internal node
       internal_node =                part_tbl%ntot_import
       numnod = ext_tbl%ntot_import + part_tbl%ntot_import
 !
-      allocate(idomain_recv(numnod))
-      allocate(inod_recv(numnod))
-!$omp parallel workshare
-      idomain_recv(1:numnod) =  0
-      inod_recv(1:numnod) =     0
-!$omp end parallel workshare
-!
-      call ext_node_dbl_numbering_by_SR                                &
-     &   (mesh%node, ext_tbl, idomain_new, inod_new,                   &
-     &    numnod, internal_node, idomain_recv, inod_recv)
+      call alloc_double_numbering_data(numnod, recieved_new_nod_ids)
+      call ext_node_dbl_numbering_by_SR(mesh%node, ext_tbl,             &
+     &    new_ids_on_org, internal_node, recieved_new_nod_ids)
 !
       call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
       call sort_node_by_domain_and_index(numnod, internal_node,         &
-     &    idomain_recv, inod_recv, ext_tbl, sort_nod)
-      deallocate(idomain_recv, inod_recv)
+     &    recieved_new_nod_ids%irank, recieved_new_nod_ids%index, ext_tbl, sort_nod)
+      call dealloc_double_numbering_data(recieved_new_nod_ids)
 !
       call const_repartitioned_comm_tbl                                 &
      &   (internal_node, sort_nod%num_recv, sort_nod%nrecv_trim,        &
@@ -327,7 +311,7 @@
      &   (mesh%node, new_comm, new_node, part_tbl)
       call check_repart_node_transfer                                   &
      &   (mesh%nod_comm, mesh%node, new_comm, new_node,                 &
-     &    part_tbl, idomain_new, inod_new)
+     &    part_tbl, new_ids_on_org)
 !
       end subroutine const_comm_tbls_for_new_part
 !
@@ -335,7 +319,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_new_element_connect(mesh, ele_comm, part_tbl,    &
-     &          idomain_new, inod_new, ele_tbl, new_mesh)
+     &          new_ids_on_org, ele_tbl, new_mesh)
 !
       use t_mesh_data
       use t_next_node_ele_4_node
@@ -348,50 +332,43 @@
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
       type(calypso_comm_table), intent(in) :: part_tbl
-      integer(kind = kint), intent(in) :: idomain_new(mesh%node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(mesh%node%numnod)
+      type(double_numbering_data), intent(in) :: new_ids_on_org
 !
       type(calypso_comm_table), intent(inout) :: ele_tbl
       type(mesh_geometry), intent(inout) :: new_mesh
 !
-      integer(kind = kint), allocatable :: iele_local(:)
-      integer(kind = kint), allocatable :: iele_domain(:)
+      type(double_numbering_data) :: element_ids
 !
       integer(kind = kint) :: new_numele
 !
 !
-      allocate(iele_local(mesh%ele%numele))
-      allocate(iele_domain(mesh%ele%numele))
-!$omp parallel workshare
-      iele_local(1:mesh%ele%numele) =  0
-      iele_domain(1:mesh%ele%numele) = 0
-!$omp end parallel workshare
-!
-      call double_numbering_4_element(mesh%ele, ele_comm,               &
-     &                                iele_local, iele_domain)
+      call alloc_double_numbering_data(mesh%ele%numele, element_ids)
+      call double_numbering_4_element(mesh%ele, ele_comm, element_ids)
 !
       call const_ele_trans_tbl_for_repart                               &
-     &   (mesh%node, mesh%ele, part_tbl, idomain_new, ele_tbl)
+     &   (mesh%node, mesh%ele, part_tbl, new_ids_on_org%irank, ele_tbl)
 !      call check_element_transfer_tbl(mesh%ele, ele_tbl)
 ! 
-      call trim_overlapped_ele_by_repart(mesh, idomain_new, inod_new,   &
-     &    iele_domain, iele_local, ele_tbl, new_numele)
+      call trim_overlapped_ele_by_repart                                &
+     &   (mesh, new_ids_on_org%irank, new_ids_on_org%index,             &
+     &    element_ids%irank, element_ids%index, ele_tbl, new_numele)
 !
       call const_reparition_ele_connect                                 &
-     &   (mesh%node, mesh%ele, ele_tbl, idomain_new, inod_new,          &
-     &    iele_local, iele_domain, new_numele, new_mesh)
-      deallocate(iele_domain, iele_local)
+     &   (mesh%node, mesh%ele, ele_tbl, new_ids_on_org,                 &
+     &    element_ids, new_numele, new_mesh)
+      call dealloc_double_numbering_data(element_ids)
 !
       end subroutine const_new_element_connect
 !
 ! ----------------------------------------------------------------------
 !
       subroutine const_reparition_ele_connect                           &
-     &         (node, ele, ele_tbl, idomain_new, inod_new,              &
-     &          iele_local, iele_domain, new_numele, new_mesh)
+     &         (node, ele, ele_tbl, new_ids_on_org,                     &
+     &          element_ids, new_numele, new_mesh)
 !
       use t_geometry_data
       use t_calypso_comm_table
+      use t_repart_double_numberings
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
@@ -399,11 +376,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(node%numnod)
-!
-      integer(kind = kint), intent(in) :: iele_local(ele%numele)
-      integer(kind = kint), intent(in) :: iele_domain(ele%numele)
+      type(double_numbering_data), intent(in) :: new_ids_on_org
+      type(double_numbering_data), intent(in) :: element_ids
 !
       integer(kind = kint), intent(in) :: new_numele
 !
@@ -421,11 +395,11 @@
 !$omp end parallel workshare
 !
       call set_repart_element_connect(new_numele, node, ele,            &
-     &    ele_tbl, idomain_new, inod_new, ie_newdomain, ie_newnod,      &
-     &    new_mesh%ele)
+     &    ele_tbl, new_ids_on_org%irank, new_ids_on_org%index,          &
+     &    ie_newdomain, ie_newnod, new_mesh%ele)
 !
       call s_search_ext_node_repartition(ele, ele_tbl,                  &
-     &    iele_local, iele_domain, ie_newdomain,                        &
+     &    element_ids%index, element_ids%irank, ie_newdomain,           &
      &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele)
       deallocate(ie_newnod, ie_newdomain)
 !

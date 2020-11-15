@@ -7,33 +7,39 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
+!!      subroutine alloc_double_numbering_data(n_point, local_ids)
+!!      subroutine dealloc_double_numbering_data(local_ids)
+!!        integer(kind = kint), intent(in) :: n_point
+!!        type(calypso_comm_table), intent(inout) :: local_ids
 !!      subroutine node_dbl_numbering_to_repart                         &
-!!     &         (nod_comm, node, part_tbl, idomain_new, inod_new)
+!!     &         (nod_comm, node, part_tbl, new_ids_on_org)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
-!!      subroutine ext_node_dbl_numbering_by_SR                         &
-!!     &         (node, ext_tbl, idomain_new, inod_new,                 &
-!!     &          numnod, internal_node, idomain_recv, inod_recv)
+!!        type(double_numbering_data), intent(inout) :: new_ids_on_org
+!!      subroutine ext_node_dbl_numbering_by_SR(node, ext_tbl,          &
+!!     &          new_ids_on_org, internal_node, recieved_nod_ids)
 !!        type(node_data), intent(in) :: node
-!!        type(calypso_comm_table), intent(inout) :: ext_tbl
-!!      subroutine double_numbering_4_element(ele, ele_comm,            &
-!!     &                                      iele_local, iele_domain)
+!!        type(calypso_comm_table), intent(in) :: ext_tbl
+!!        type(double_numbering_data), intent(in) :: new_ids_on_org
+!!        type(double_numbering_data), intent(inout) :: recieved_nod_ids
+!!      subroutine double_numbering_4_element(ele, ele_comm, ele_ids)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: ele_comm
+!!        type(double_numbering_data), intent(inout) :: ele_ids
 !!
 !!      subroutine calypso_rev_SR_type_int                              &
 !!     &         (cps_tbl, nnod_new, nnod_org, iX_new, iX_org)
 !!        type(calypso_comm_table), intent(in) :: cps_tbl
 !!
-!!      subroutine check_repart_node_transfer                           &
-!!     &         (nod_comm, node, new_comm, new_node, part_tbl,         &
-!!     &         idomain_new, inod_new)
+!!      subroutine check_repart_node_transfer(nod_comm, node,           &
+!!     &          new_comm, new_node, part_tbl, new_ids_on_org)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
 !!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(double_numbering_data), intent(in) :: new_ids_on_org
 !!@endverbatim
 !
       module t_repart_double_numberings
@@ -50,14 +56,49 @@
 !
       implicit none
 !
+      type double_numbering_data
+        integer(kind = kint) :: n_point
+        integer(kind = kint), allocatable :: index(:)
+        integer(kind = kint), allocatable :: irank(:)
+      end type double_numbering_data
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine alloc_double_numbering_data(n_point, local_ids)
+!
+      integer(kind = kint), intent(in) :: n_point
+      type(double_numbering_data), intent(inout) :: local_ids
+!
+      local_ids%n_point = n_point
+      allocate(local_ids%irank(local_ids%n_point))
+      allocate(local_ids%index(local_ids%n_point))
+!
+!$omp parallel workshare
+      local_ids%irank(1:local_ids%n_point) = -1
+      local_ids%index(1:local_ids%n_point) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_double_numbering_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_double_numbering_data(local_ids)
+!
+      type(double_numbering_data), intent(inout) :: local_ids
+!
+      deallocate(local_ids%irank, local_ids%index)
+!
+      end subroutine dealloc_double_numbering_data
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine node_dbl_numbering_to_repart                           &
-     &         (nod_comm, node, part_tbl, idomain_new, inod_new)
+     &         (nod_comm, node, part_tbl, new_ids_on_org)
 !
       use nod_phys_send_recv
       use reverse_SR_int
@@ -68,105 +109,97 @@
 !
       type(calypso_comm_table), intent(in) :: part_tbl
 !
-      integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(inout) :: inod_new(node%numnod)
+      type(double_numbering_data), intent(inout) :: new_ids_on_org
 !
-      integer(kind = kint), allocatable :: idomain_recv(:)
-      integer(kind = kint), allocatable :: inod_recv(:)
-!
+      type(double_numbering_data) :: recieved_ids
       integer(kind = kint) :: inod
 !
 !
-!    Set local (idomain_recv, inod_recv) in internal node
-      allocate(inod_recv(part_tbl%ntot_import))
-      allocate(idomain_recv(part_tbl%ntot_import))
+!    Set local recieved_ids in internal node
+      call alloc_double_numbering_data                                  &
+     &   (part_tbl%ntot_import, recieved_ids)
 !$omp parallel do
       do inod = 1, part_tbl%ntot_import
-        inod_recv(inod) =    inod
-        idomain_recv(inod) = my_rank
+        recieved_ids%index(inod) =    inod
+        recieved_ids%irank(inod) = my_rank
       end do
 !$omp end parallel do
 !
-!
-!    Send local (idomain_recv, inod_recv) into original domain
-!       (inod_new, idomain_new)
-      call calypso_rev_SR_type_int(part_tbl,                            &
-     &    part_tbl%ntot_import, node%numnod, inod_recv, inod_new)
-      call calypso_rev_SR_type_int(part_tbl,                            &
-     &    part_tbl%ntot_import, node%numnod, idomain_recv, idomain_new)
+!    Send localrecieved_ids into original domain new_ids_on_org
+      call calypso_rev_SR_type_int                                      &
+     &   (part_tbl, part_tbl%ntot_import, node%numnod,                  &
+     &    recieved_ids%index, new_ids_on_org%index)
+      call calypso_rev_SR_type_int                                      &
+     &   (part_tbl, part_tbl%ntot_import, node%numnod,                  &
+     &    recieved_ids%irank, new_ids_on_org%irank)
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, idomain_new)
+     &   (node%numnod, nod_comm, new_ids_on_org%irank)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_new)
-      deallocate(inod_recv, idomain_recv)
+     &   (node%numnod, nod_comm, new_ids_on_org%index)
+      call dealloc_double_numbering_data(recieved_ids)
 !
       end subroutine node_dbl_numbering_to_repart
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine ext_node_dbl_numbering_by_SR                           &
-     &         (node, ext_tbl, idomain_new, inod_new,                   &
-     &          numnod, internal_node, idomain_recv, inod_recv)
+      subroutine ext_node_dbl_numbering_by_SR(node, ext_tbl,            &
+     &          new_ids_on_org, internal_node, recieved_nod_ids)
 !
       use calypso_SR_type
       use select_copy_from_recv
 !
       type(node_data), intent(in) :: node
-      type(calypso_comm_table), intent(inout) :: ext_tbl
+      type(calypso_comm_table), intent(in) :: ext_tbl
+      type(double_numbering_data), intent(in) :: new_ids_on_org
 !
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(node%numnod)
-!
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      integer(kind = kint), intent(inout) :: idomain_recv(numnod)
-      integer(kind = kint), intent(inout) :: inod_recv(numnod)
+      integer(kind = kint), intent(in) :: internal_node
+      type(double_numbering_data), intent(inout) :: recieved_nod_ids
 !
       integer(kind = kint) :: inod
 !
 !
 !$omp parallel do
       do inod = 1, internal_node
-        inod_recv(inod) =    inod
-        idomain_recv(inod) = my_rank
+        recieved_nod_ids%index(inod) =    inod
+        recieved_nod_ids%irank(inod) = my_rank
       end do
 !$omp end parallel do
 !
-!    Set local (idomain_recv, inod_recv) in external node
+!    Set local recieved_nod_ids in external node
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
-     &    node%numnod, ext_tbl%ntot_import,                             &
-     &    idomain_new(1), idomain_recv(internal_node+1))
+     &    node%numnod, ext_tbl%ntot_import, new_ids_on_org%irank,       &
+     &    recieved_nod_ids%irank(internal_node+1))
       call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
-     &    node%numnod, ext_tbl%ntot_import,                             &
-     &    inod_new(1), inod_recv(internal_node+1))
+     &    node%numnod, ext_tbl%ntot_import, new_ids_on_org%index,       &
+     &    recieved_nod_ids%index(internal_node+1))
 !
       end subroutine ext_node_dbl_numbering_by_SR
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine double_numbering_4_element(ele, ele_comm,              &
-     &                                      iele_local, iele_domain)
+      subroutine double_numbering_4_element(ele, ele_comm, ele_ids)
 !
       use solver_SR_type
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: ele_comm
-!
-      integer(kind = kint), intent(inout) :: iele_local(ele%numele)
-      integer(kind = kint), intent(inout) :: iele_domain(ele%numele)
+      type(double_numbering_data), intent(inout) :: ele_ids
 !
       integer(kind = kint) :: iele
 !
 !
 !$omp parallel do
       do iele = 1, ele%numele
-        iele_local(iele) = iele
-        iele_domain(iele) = my_rank
+        ele_ids%index(iele) = iele
+        ele_ids%irank(iele) = my_rank
       end do
 !$omp end parallel do
 !
-      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_local)
-      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_domain)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (ele%numele, ele_comm, ele_ids%index)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (ele%numele, ele_comm, ele_ids%irank)
 !
       end subroutine double_numbering_4_element
 !
@@ -208,9 +241,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_repart_node_transfer                             &
-     &         (nod_comm, node, new_comm, new_node, part_tbl,           &
-     &         idomain_new, inod_new)
+      subroutine check_repart_node_transfer(nod_comm, node,             &
+     &          new_comm, new_node, part_tbl, new_ids_on_org)
 !
       use calypso_SR_type
       use solver_SR_type
@@ -221,18 +253,15 @@
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
       type(calypso_comm_table), intent(in) :: part_tbl
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(node%numnod)
+      type(double_numbering_data), intent(in) :: new_ids_on_org
 !
       integer(kind = kint), allocatable :: inod_old_lc(:)
       integer(kind = kint), allocatable :: irank_old_lc(:)
       integer(kind = kint), allocatable :: inod_new_lc(:)
       integer(kind = kint), allocatable :: irank_new_lc(:)
 !
-      integer(kind = kint), allocatable :: inod_trns1(:)
-      integer(kind = kint), allocatable :: irank_trns1(:)
-      integer(kind = kint), allocatable :: inod_trns2(:)
-      integer(kind = kint), allocatable :: irank_trns2(:)
+      type(double_numbering_data) :: new_recved_id1
+      type(double_numbering_data) :: new_recved_id2
 !
       integer(kind = kint) :: icou, inum, i, ist, ied, num
       integer(kind = kint) :: ip, inod, iele, k1, ipart, iflag
@@ -254,10 +283,8 @@
 
       allocate(inod_new_lc(new_node%numnod))
       allocate(irank_new_lc(new_node%numnod))
-      allocate(inod_trns1(new_node%numnod))
-      allocate(irank_trns1(new_node%numnod))
-      allocate(inod_trns2(new_node%numnod))
-      allocate(irank_trns2(new_node%numnod))
+      call alloc_double_numbering_data(new_node%numnod, new_recved_id1)
+      call alloc_double_numbering_data(new_node%numnod, new_recved_id2)
 !
       do inod = 1, new_node%internal_node
         inod_new_lc(inod) =  inod
@@ -272,54 +299,54 @@
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    inod_new(1), inod_trns1(1))
+     &    new_ids_on_org%index(1), new_recved_id1%index(1))
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    idomain_new(1), irank_trns1(1))
+     &    new_ids_on_org%irank(1), new_recved_id1%irank(1))
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, inod_trns1)
+     &   (new_node%numnod, new_comm, new_recved_id1%index)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, irank_trns1)
+     &   (new_node%numnod, new_comm, new_recved_id1%irank)
 !
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    inod_new(1), inod_trns2(1))
+     &    new_ids_on_org%index(1), new_recved_id2%index(1))
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
-     &    idomain_new(1), irank_trns2(1))
+     &    new_ids_on_org%irank(1), new_recved_id2%irank(1))
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, inod_trns2)
+     &   (new_node%numnod, new_comm, new_recved_id2%index)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, irank_trns2)
+     &   (new_node%numnod, new_comm, new_recved_id2%irank)
 !
-      write(*,*) 'Check irank_trns2, inod_trns2'
+      write(*,*) 'Check new_recved_id2%irank, new_recved_id2%index'
       do inod = 1, new_node%internal_node
-        if(inod_trns1(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns1!' , inod
+        if(new_recved_id1%index(inod) .ne. inod_new_lc(inod)            &
+     &    .or. new_recved_id1%irank(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong new_recved_id1%index!' , inod
         end if
-        if(inod_trns2(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns2!' , inod
+        if(new_recved_id2%index(inod) .ne. inod_new_lc(inod)            &
+     &    .or. new_recved_id2%irank(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong new_recved_id2!' , inod
         end if
       end do
 !
       do inod = new_node%internal_node+1, new_node%numnod
-        if(inod_trns1(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns1!' , inod
+        if(new_recved_id1%index(inod) .ne. inod_new_lc(inod)            &
+     &    .or. new_recved_id1%irank(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong new_recved_id1%index!' , inod
         end if
-        if(inod_trns2(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns2!' , inod
+        if(new_recved_id2%index(inod) .ne. inod_new_lc(inod)            &
+     &    .or. new_recved_id2%irank(inod) .ne. irank_new_lc(inod)) then
+           write(*,*) my_rank, 'Wrong new_recved_id2!' , inod
         end if
       end do
       deallocate(irank_old_lc, inod_old_lc)
       deallocate(irank_new_lc, inod_new_lc)
-      deallocate(irank_trns1, inod_trns1)
-      deallocate(irank_trns2, inod_trns2)
+      call dealloc_double_numbering_data(new_recved_id1)
+      call dealloc_double_numbering_data(new_recved_id2)
 !
       end subroutine check_repart_node_transfer
 !
