@@ -7,30 +7,14 @@
 !>@brief  Construct commnunication table to new partitionning
 !!
 !!@verbatim
-!!      subroutine const_comm_tbl_to_new_part                           &
-!!     &         (part_grp, num_send_tmp, num_recv_tmp, part_tbl)
+!!      subroutine const_int_comm_tbl_to_new_part(part_grp, part_tbl)
 !!        type(group_data), intent(in) :: part_grp
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
-!!
-!!      subroutine gather_num_trans_for_repart                          &
-!!     &         (part_grp, num_send_tmp, num_recv_tmp)
-!!        type(group_data), intent(in) :: part_grp
-!!        integer(kind = kint), intent(inout)                           &
-!!     &                     :: num_send_tmp(part_grp%num_grp)
-!!        integer(kind = kint), intent(inout)                           &
-!!     &                     :: num_recv_tmp(part_grp%num_grp)
-!!
-!!      subroutine send_back_istack_import_repart                       &
-!!     &         (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
-!!      subroutine send_back_ext_istack_import(part_grp,                &
-!!     &          part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
-!!        type(group_data), intent(in) :: part_grp
-!!        type(calypso_comm_table), intent(in) :: part_tbl(nloop)
-!!        type(calypso_comm_table), intent(in) :: ext_tbl
-!!        integer(kind = kint), intent(inout)                           &
-!!       &                     :: num_recv_tmp(part_grp%num_grp)
-!!        integer(kind = kint), intent(inout)                           &
-!!       &                     :: num_send_tmp(part_grp%num_grp)
+!!      subroutine const_ext_comm_tbl_to_new_part                       &
+!!     &         (ext_int_grp, part_tbl, ext_tbl)
+!!        type(group_data), intent(in) :: ext_int_grp
+!!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(calypso_comm_table), intent(inout) :: ext_tbl
 !!@endverbatim
 !
       module const_comm_tbl_to_new_mesh
@@ -44,10 +28,65 @@
 !
       implicit none
 !
+      integer(kind = kint), allocatable :: num_send_tmp(:)
+      integer(kind = kint), allocatable :: num_recv_tmp(:)
+!
+      private :: num_send_tmp, num_recv_tmp
+      private :: const_comm_tbl_to_new_part
+      private :: gather_num_trans_for_repart
+      private :: const_int_comm_tbl_to_new_part
+      private :: send_back_ext_istack_import
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine const_int_comm_tbl_to_new_part(part_grp, part_tbl)
+!
+      type(group_data), intent(in) :: part_grp
+      type(calypso_comm_table), intent(inout) :: part_tbl
+!
+!
+      allocate(num_send_tmp(part_grp%num_grp))
+      allocate(num_recv_tmp(part_grp%num_grp))
+!
+      call gather_num_trans_for_repart                                  &
+     &   (part_grp, num_send_tmp, num_recv_tmp)
+      call const_comm_tbl_to_new_part                                   &
+     &   (part_grp, num_send_tmp, num_recv_tmp, part_tbl)
+!      call send_back_istack_import_repart                              &
+!     &   (part_grp, part_tbl, num_recv_tmp, num_send_tmp)
+      deallocate(num_send_tmp, num_recv_tmp)
+!
+      end subroutine const_int_comm_tbl_to_new_part
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_ext_comm_tbl_to_new_part                         &
+     &         (ext_int_grp, part_tbl, ext_tbl)
+!
+      type(group_data), intent(in) :: ext_int_grp
+      type(calypso_comm_table), intent(in) :: part_tbl
+!
+      type(calypso_comm_table), intent(inout) :: ext_tbl
+!
+!
+      allocate(num_send_tmp(ext_int_grp%num_grp))
+      allocate(num_recv_tmp(ext_int_grp%num_grp))
+!
+      call gather_num_trans_for_repart                                  &
+     &   (ext_int_grp, num_send_tmp, num_recv_tmp)
+      call const_comm_tbl_to_new_part                                   &
+     &   (ext_int_grp, num_send_tmp, num_recv_tmp, ext_tbl)
+!      call send_back_ext_istack_import                                 &
+!     &   (ext_int_grp, part_tbl, ext_tbl, num_recv_tmp, num_send_tmp)
+      deallocate(num_send_tmp, num_recv_tmp)
+!
+      end subroutine const_ext_comm_tbl_to_new_part
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine const_comm_tbl_to_new_part                             &
