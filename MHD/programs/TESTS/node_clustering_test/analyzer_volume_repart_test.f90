@@ -367,11 +367,7 @@
 !$omp end parallel workshare
 !
       call sort_node_by_domain_and_index(numnod, internal_node,         &
-     &    idomain_recv, inod_recv, ext_tbl, sort_nod)
-!
-      call mark_overlapped_import_node                                  &
-     &   (nprocs, my_rank, ext_tbl%ntot_import, sort_nod%num_recv,      &
-     &    sort_nod%id_sorted, num_recv_trim, sort_nod%iflag_dup)
+     &    idomain_recv, inod_recv, ext_tbl, sort_nod, num_recv_trim)
 !
       call const_repartitioned_comm_tbl                                 &
      &   (internal_node, sort_nod%num_recv, num_recv_trim,              &
