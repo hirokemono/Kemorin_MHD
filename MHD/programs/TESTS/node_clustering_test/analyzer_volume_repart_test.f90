@@ -170,7 +170,7 @@
 !
       call alloc_double_numbering_data                                  &
      &   (fem_T%mesh%node%numnod, new_ids_on_org)
-      call s_const_nod_and_comm_repart                                  &
+      call s_const_repart_nod_and_comm                                  &
      &   (fem_T%mesh, next_tbl_T%neib_nod, T_meshes, part_grp,          &
      &    new_ids_on_org, new_fem%mesh%nod_comm,                        &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
