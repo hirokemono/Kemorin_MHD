@@ -14,11 +14,12 @@
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(inout) :: new_node
 !!      subroutine set_repart_element_connect                           &
-!!     &         (new_numele, node, ele, ele_tbl, idomain_new, inod_new,&
+!!     &         (new_numele, node, ele, ele_tbl, new_ids_on_org,       &
 !!     &          ie_newdomain, ie_newnod, new_ele)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
+!!        type(double_numbering_data), intent(in) :: new_ids_on_org
 !!        type(element_data), intent(inout) :: new_ele
 !!@endverbatim
 !
@@ -31,6 +32,7 @@
       use t_comm_table
       use t_geometry_data
       use t_calypso_comm_table
+      use t_repart_double_numberings
 !
       implicit none
 !
@@ -89,7 +91,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_repart_element_connect                             &
-     &         (new_numele, node, ele, ele_tbl, idomain_new, inod_new,  &
+     &         (new_numele, node, ele, ele_tbl, new_ids_on_org,         &
      &          ie_newdomain, ie_newnod, new_ele)
 !
       use calypso_SR_type
@@ -98,9 +100,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
+      type(double_numbering_data), intent(in) :: new_ids_on_org
       integer(kind = kint), intent(in) :: new_numele
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(node%numnod)
 !
       type(element_data), intent(inout) :: new_ele
       integer(kind = kint), intent(inout)                               &
@@ -119,8 +120,8 @@
 !$omp do private(iele,inod)
         do iele = 1, ele%numele
           inod = ele%ie(iele,k1)
-          ie_newnod(iele,k1) =    inod_new(inod)
-          ie_newdomain(iele,k1) = idomain_new(inod)
+          ie_newnod(iele,k1) =    new_ids_on_org%index(inod)
+          ie_newdomain(iele,k1) = new_ids_on_org%irank(inod)
         end do
 !$omp end do
       end do

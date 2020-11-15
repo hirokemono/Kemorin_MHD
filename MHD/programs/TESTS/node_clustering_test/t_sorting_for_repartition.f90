@@ -11,21 +11,23 @@
 !!      subroutine dealloc_sorting_data(sort_data)
 !!        type(sorting_data_for_repartition), intent(inout) :: sort_data
 !!
-!!      subroutine sort_node_by_domain_and_index                        &
-!!     &         (numnod, internal_node, idomain_recv, inod_recv,       &
-!!     &          ext_tbl, sort_nod)
+!!      subroutine sort_node_by_domain_and_index(internal_node,         &
+!!     &          recieved_new_nod_ids, ext_tbl, sort_nod)
+!!        type(double_numbering_data), intent(in) :: recieved_new_nod_ids
 !!        type(calypso_comm_table), intent(inout) :: ext_tbl
 !!        type(sorting_data_for_repartition), intent(inout) :: sort_nod
 !!      subroutine trim_overlapped_ele_by_repart                        &
-!!     &         (mesh, idomain_new, inod_new, iele_domain, iele_local, &
-!!     &          ele_tbl, new_numele)
+!!     &         (mesh, element_ids, ele_tbl, new_numele)
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(double_numbering_data), intent(in) :: element_ids
 !!        type(calypso_comm_table), intent(inout) :: ele_tbl
 !!
-!!      subroutine check_push_off_redundant_ele(ele, ele_tbl, idx_sort2,&
-!!     &         iele_local, iele_domain, iele_recv_org, irank_recv_org)
+!!      subroutine check_push_off_redundant_ele                         &
+!!     &         (ele, ele_tbl, idx_sort2, element_ids, recv_ele_ids)
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
+!!        type(double_numbering_data), intent(in) :: element_ids
+!!        type(double_numbering_data), intent(in) :: recv_ele_ids
 !!@endverbatim
 !
       module t_sorting_for_repartition
@@ -38,6 +40,7 @@
       use t_mesh_data
       use t_geometry_data
       use t_calypso_comm_table
+      use t_repart_double_numberings
 !
       implicit none
 !
@@ -106,15 +109,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sort_node_by_domain_and_index                          &
-     &         (numnod, internal_node, idomain_recv, inod_recv,         &
-     &          ext_tbl, sort_nod)
+      subroutine sort_node_by_domain_and_index(internal_node,           &
+     &          recieved_new_nod_ids, ext_tbl, sort_nod)
 !
       use sort_for_repartition
 !
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      integer(kind = kint), intent(in) :: idomain_recv(numnod)
-      integer(kind = kint), intent(in) :: inod_recv(numnod)
+      integer(kind = kint), intent(in) :: internal_node
+      type(double_numbering_data), intent(in) :: recieved_new_nod_ids
 !
       type(calypso_comm_table), intent(inout) :: ext_tbl
       type(sorting_data_for_repartition), intent(inout) :: sort_nod
@@ -130,7 +131,8 @@
 !
       call sort_by_domain_and_index_list                                &
      &   (nprocs, (my_rank+1), ext_tbl%ntot_import,                     &
-     &    idomain_recv(internal_node+1), inod_recv(internal_node+1),    &
+     &    recieved_new_nod_ids%irank(internal_node+1),                  &
+     &    recieved_new_nod_ids%index(internal_node+1),                  &
      &    sort_nod%irank_sorted, sort_nod%id_sorted,                    &
      &    sort_nod%idx_sort, sort_nod%num_recv)
 !
@@ -151,43 +153,36 @@
 ! ----------------------------------------------------------------------
 !
       subroutine trim_overlapped_ele_by_repart                          &
-     &         (mesh, idomain_new, inod_new, iele_domain, iele_local,   &
-     &          ele_tbl, new_numele)
+     &         (mesh, element_ids, ele_tbl, new_numele)
 !
       use calypso_SR_type
       use select_copy_from_recv
       use sort_for_repartition
 !
       type(mesh_geometry), intent(in) :: mesh
-      integer(kind = kint), intent(in) :: idomain_new(mesh%node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(mesh%node%numnod)
-!
-      integer(kind = kint), intent(in) :: iele_domain(mesh%ele%numele)
-      integer(kind = kint), intent(in) :: iele_local(mesh%ele%numele)
+      type(double_numbering_data), intent(in) :: element_ids
 !
       integer(kind = kint), intent(inout) :: new_numele
       type(calypso_comm_table), intent(inout) :: ele_tbl
 !
       type(sorting_data_for_repartition) :: sort_ele
-!
-      integer(kind = kint), allocatable :: iele_recv(:)
-      integer(kind = kint), allocatable :: idomain_recv(:)
+      type(double_numbering_data) :: recv_ele_ids
 !
       integer(kind = kint), allocatable :: idx_sort2(:)
 !
       integer(kind = kint) :: iele
 !
 !
-      allocate(iele_recv(ele_tbl%ntot_import))
-      allocate(idomain_recv(ele_tbl%ntot_import))
+      call alloc_double_numbering_data                                  &
+     &   (ele_tbl%ntot_import, recv_ele_ids)
 !
 !    Set local in external node
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_domain, idomain_recv)
+     &    element_ids%irank, recv_ele_ids%irank)
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
      &    mesh%ele%numele, ele_tbl%ntot_import,                         &
-     &    iele_local, iele_recv)
+     &    element_ids%index, recv_ele_ids%index)
 !
       call alloc_sorting_data(ele_tbl%ntot_import, sort_ele)
 !
@@ -198,7 +193,8 @@
 !$omp end parallel do
 !
       call sort_by_domain_and_index_list                                &
-     &   (nprocs, izero, ele_tbl%ntot_import, idomain_recv, iele_recv,  &
+     &   (nprocs, izero, ele_tbl%ntot_import,                           &
+     &    recv_ele_ids%irank, recv_ele_ids%index,                       &
      &    sort_ele%irank_sorted, sort_ele%id_sorted,                    &
      &    sort_ele%idx_sort, sort_ele%num_recv)
 !
@@ -216,66 +212,63 @@
      &    ele_tbl%item_import, ele_tbl%irev_import,                     &
      &    idx_sort2, new_numele)
 !      call check_push_off_redundant_ele(mesh%ele, ele_tbl, idx_sort2,  &
-!     &   iele_local, iele_domain, iele_recv, idomain_recv)
+!     &    element_ids, recv_ele_ids)
       call dealloc_sorting_data(sort_ele)
+      call dealloc_double_numbering_data(recv_ele_ids)
       deallocate(idx_sort2)
-      deallocate(idomain_recv, iele_recv)
 !
       end subroutine trim_overlapped_ele_by_repart
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_push_off_redundant_ele(ele, ele_tbl, idx_sort2,  &
-     &         iele_local, iele_domain, iele_recv_org, irank_recv_org)
+      subroutine check_push_off_redundant_ele                           &
+     &         (ele, ele_tbl, idx_sort2, element_ids, recv_ele_ids)
 !
       use calypso_SR_type
       use select_copy_from_recv
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
+      type(double_numbering_data), intent(in) :: element_ids
+      type(double_numbering_data), intent(in) :: recv_ele_ids
       integer(kind = kint), intent(in) :: idx_sort2(ele_tbl%ntot_import)
 !
-      integer(kind = kint), intent(in) :: iele_local(ele%numele)
-      integer(kind = kint), intent(in) :: iele_domain(ele%numele)
-      integer(kind = kint), intent(in)                                  &
-     &            :: iele_recv_org(ele_tbl%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &            :: irank_recv_org(ele_tbl%ntot_import)
-!
-      integer(kind = kint), allocatable :: iele_recv2(:)
-      integer(kind = kint), allocatable :: idomain_recv2(:)
+      type(double_numbering_data) :: recv_ele_id_2
 !
       integer(kind = kint) :: iele, icou
 !
 !
-      allocate(iele_recv2(ele_tbl%ntot_import))
-      allocate(idomain_recv2(ele_tbl%ntot_import))
+      call alloc_double_numbering_data                                  &
+     &   (ele_tbl%ntot_import, recv_ele_id_2)
 !
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, iele_domain, idomain_recv2)
+     &    ele%numele, ele_tbl%ntot_import,                              &
+     &    element_ids%irank, recv_ele_id_2%irank)
       call calypso_SR_type_int(iflag_import_item, ele_tbl,              &
-     &    ele%numele, ele_tbl%ntot_import, iele_local, iele_recv2)
+     &    ele%numele, ele_tbl%ntot_import,                              &
+     &    element_ids%index, recv_ele_id_2%index)
 !
-      write(100+my_rank,*) 'irank_recv_org, iele_recv_org',             &
-     &                    ele_tbl%ntot_import
+      write(100+my_rank,*) 'recv_ele_ids', ele_tbl%ntot_import
       do icou = 1, ele_tbl%ntot_import
           iele = idx_sort2(icou)
           write(100+my_rank,*) icou, 'ele_tbl%item_import', iele,       &
-     &       irank_recv_org(iele), iele_recv_org(iele)
+     &       recv_ele_ids%irank(iele), recv_ele_ids%index(iele)
         end do
 !
       write(100+my_rank,*) 'check pushing off redundant element'
       do icou = 1, ele_tbl%ntot_import
         iele = idx_sort2(icou)
-        if(idomain_recv2(icou) .eq. irank_recv_org(iele))  cycle
-        if(iele_recv2(icou) .eq. iele_recv_org(iele))  cycle
+        if(recv_ele_id_2%irank(icou)                                    &
+     &      .eq. recv_ele_ids%irank(iele))  cycle
+        if(recv_ele_id_2%index(icou)                                    &
+     &      .eq. recv_ele_ids%index(iele))  cycle
 !
         write(100+my_rank,*) my_rank, icou, idx_sort2(icou),            &
-     &             idomain_recv2(icou)-irank_recv_org(iele),            &
-     &             iele_recv2(icou)-iele_recv_org(iele)
+     &             recv_ele_id_2%irank(icou)-recv_ele_ids%irank(iele),  &
+     &             recv_ele_id_2%index(icou)-recv_ele_ids%index(iele)
       end do
-      deallocate(idomain_recv2, iele_recv2)
+      call dealloc_double_numbering_data(recv_ele_id_2)
 !
       end subroutine check_push_off_redundant_ele
 !

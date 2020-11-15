@@ -87,6 +87,8 @@
       use select_copy_from_recv
       use nod_phys_send_recv
 !
+      use const_repart_nod_and_comm
+      use const_repart_ele_connect
       use redistribute_groups
 !
 !>     Stracture for Jacobians
@@ -168,13 +170,13 @@
 !
       call alloc_double_numbering_data                                  &
      &   (fem_T%mesh%node%numnod, new_ids_on_org)
-      call const_comm_tbls_for_new_part                                 &
+      call s_const_nod_and_comm_repart                                  &
      &   (fem_T%mesh, next_tbl_T%neib_nod, T_meshes, part_grp,          &
      &    new_ids_on_org, new_fem%mesh%nod_comm,                        &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
 !
 !
-      call const_new_element_connect(fem_T%mesh, ele_comm, part_tbl,    &
+      call s_const_repart_ele_connect(fem_T%mesh, ele_comm, part_tbl,   &
      &    new_ids_on_org, ele_tbl, new_fem%mesh)
       call dealloc_double_numbering_data(new_ids_on_org)
 !
@@ -221,267 +223,6 @@
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_volume_repartition'
 !
       end subroutine analyze_volume_repartition
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_comm_tbls_for_new_part                           &
-     &         (mesh, neib_nod, part_param, part_grp,                   &
-     &          new_ids_on_org, new_comm, new_node, part_tbl, ext_tbl)
-!
-      use t_mesh_data
-      use t_calypso_comm_table
-      use t_control_param_vol_grping
-      use t_sorting_for_repartition
-      use t_repart_double_numberings
-!
-      use set_comm_tbl_to_new_part
-      use const_comm_tbl_to_new_mesh
-      use calypso_mpi_int
-      use calypso_SR_type
-      use select_copy_from_recv
-      use nod_phys_send_recv
-      use reverse_SR_int
-      use solver_SR_type
-      use external_group_4_new_part
-      use ext_of_int_grp_4_new_part
-!
-      use const_repart_mesh_data
-      use const_repart_comm_tbl
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(next_nod_id_4_nod), intent(in) :: neib_nod
-      type(mesh_test_files_param), intent(in) :: part_param
-      type(group_data), intent(in) :: part_grp
-!
-      type(communication_table), intent(inout) :: new_comm
-      type(node_data), intent(inout) :: new_node
-      type(calypso_comm_table), intent(inout) :: part_tbl
-      type(calypso_comm_table), intent(inout) :: ext_tbl
-!
-      type(double_numbering_data), intent(inout) :: new_ids_on_org
-!
-      type(group_data) :: ext_int_grp
-      type(group_data) :: ext_grp
-      type(sorting_data_for_repartition) :: sort_nod
-!
-      integer(kind = kint) :: numnod, internal_node
-      type(double_numbering_data) :: recieved_new_nod_ids
-!
-!
-      call const_int_comm_tbl_to_new_part(part_grp, part_tbl)
-!    Set new_ids_on_org in internal node
-      call node_dbl_numbering_to_repart                                 &
-     &   (mesh%nod_comm, mesh%node, part_tbl, new_ids_on_org)
-!
-      call const_external_grp_4_new_part(new_ids_on_org%irank,          &
-     &    mesh%node, part_param, part_grp, ext_grp)
-!       Re-partitioning for external node
-      call const_ext_of_int_grp_new_part(mesh%node, neib_nod,           &
-     &    part_param, part_grp, ext_grp, ext_int_grp)
-      call const_ext_comm_tbl_to_new_part                               &
-     &   (ext_int_grp, part_tbl, ext_tbl)
-      call dealloc_group(ext_int_grp)
-      call dealloc_group(ext_grp)
-!
-!      Set local recieved_new_nod_ids in internal node
-      internal_node =                part_tbl%ntot_import
-      numnod = ext_tbl%ntot_import + part_tbl%ntot_import
-!
-      call alloc_double_numbering_data(numnod, recieved_new_nod_ids)
-      call ext_node_dbl_numbering_by_SR(mesh%node, ext_tbl,             &
-     &    new_ids_on_org, internal_node, recieved_new_nod_ids)
-!
-      call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
-      call sort_node_by_domain_and_index(numnod, internal_node,         &
-     &    recieved_new_nod_ids%irank, recieved_new_nod_ids%index, ext_tbl, sort_nod)
-      call dealloc_double_numbering_data(recieved_new_nod_ids)
-!
-      call const_repartitioned_comm_tbl                                 &
-     &   (internal_node, sort_nod%num_recv, sort_nod%nrecv_trim,        &
-     &    ext_tbl%ntot_import, sort_nod%irank_sorted,                   &
-     &    sort_nod%id_sorted, sort_nod%iflag_dup, new_comm)
-!
-!      call check_num_of_neighbourings                                  &
-!     &   (new_comm, ext_tbl, sort_nod%nrecv_trim)
-!      call check_new_node_comm_table(my_rank, new_comm)
-      call dealloc_sorting_data(sort_nod)
-!
-      call set_repart_node_position                                     &
-     &   (mesh%node, new_comm, new_node, part_tbl)
-      call check_repart_node_transfer                                   &
-     &   (mesh%nod_comm, mesh%node, new_comm, new_node,                 &
-     &    part_tbl, new_ids_on_org)
-!
-      end subroutine const_comm_tbls_for_new_part
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine const_new_element_connect(mesh, ele_comm, part_tbl,    &
-     &          new_ids_on_org, ele_tbl, new_mesh)
-!
-      use t_mesh_data
-      use t_next_node_ele_4_node
-      use t_calypso_comm_table
-      use t_sorting_for_repartition
-      use t_repart_double_numberings
-!
-      use ele_trans_tbl_4_repart
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(communication_table), intent(in) :: ele_comm
-      type(calypso_comm_table), intent(in) :: part_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
-!
-      type(calypso_comm_table), intent(inout) :: ele_tbl
-      type(mesh_geometry), intent(inout) :: new_mesh
-!
-      type(double_numbering_data) :: element_ids
-!
-      integer(kind = kint) :: new_numele
-!
-!
-      call alloc_double_numbering_data(mesh%ele%numele, element_ids)
-      call double_numbering_4_element(mesh%ele, ele_comm, element_ids)
-!
-      call const_ele_trans_tbl_for_repart                               &
-     &   (mesh%node, mesh%ele, part_tbl, new_ids_on_org%irank, ele_tbl)
-!      call check_element_transfer_tbl(mesh%ele, ele_tbl)
-! 
-      call trim_overlapped_ele_by_repart                                &
-     &   (mesh, new_ids_on_org%irank, new_ids_on_org%index,             &
-     &    element_ids%irank, element_ids%index, ele_tbl, new_numele)
-!
-      call const_reparition_ele_connect                                 &
-     &   (mesh%node, mesh%ele, ele_tbl, new_ids_on_org,                 &
-     &    element_ids, new_numele, new_mesh)
-      call dealloc_double_numbering_data(element_ids)
-!
-      end subroutine const_new_element_connect
-!
-! ----------------------------------------------------------------------
-!
-      subroutine const_reparition_ele_connect                           &
-     &         (node, ele, ele_tbl, new_ids_on_org,                     &
-     &          element_ids, new_numele, new_mesh)
-!
-      use t_geometry_data
-      use t_calypso_comm_table
-      use t_repart_double_numberings
-!
-      use search_ext_node_repartition
-      use const_repart_mesh_data
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(calypso_comm_table), intent(in) :: ele_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
-      type(double_numbering_data), intent(in) :: element_ids
-!
-      integer(kind = kint), intent(in) :: new_numele
-!
-      type(mesh_geometry), intent(inout) :: new_mesh
-!
-      integer(kind = kint), allocatable :: ie_newnod(:,:)
-      integer(kind = kint), allocatable :: ie_newdomain(:,:)
-!
-!
-      allocate(ie_newnod(ele%numele,ele%nnod_4_ele))
-      allocate(ie_newdomain(ele%numele,ele%nnod_4_ele))
-!$omp parallel workshare
-      ie_newnod(1:ele%numele,1:ele%nnod_4_ele) =    0
-      ie_newdomain(1:ele%numele,1:ele%nnod_4_ele) = 0
-!$omp end parallel workshare
-!
-      call set_repart_element_connect(new_numele, node, ele,            &
-     &    ele_tbl, new_ids_on_org%irank, new_ids_on_org%index,          &
-     &    ie_newdomain, ie_newnod, new_mesh%ele)
-!
-      call s_search_ext_node_repartition(ele, ele_tbl,                  &
-     &    element_ids%index, element_ids%irank, ie_newdomain,           &
-     &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele)
-      deallocate(ie_newnod, ie_newdomain)
-!
-      end subroutine const_reparition_ele_connect
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine check_num_of_neighbourings                           &
-     &         (new_comm, ext_tbl, num_recv_tmp2)
-!
-      use t_comm_table
-      use t_calypso_comm_table
-      use calypso_mpi_int
-!
-      type(communication_table), intent(in) :: new_comm
-      type(calypso_comm_table), intent(in) :: ext_tbl
-!
-      integer(kind = kint), intent(in) :: num_recv_tmp2(nprocs)
-!
-      integer(kind = kint), allocatable :: num_send_3(:)
-      integer(kind = kint), allocatable :: num_recv_3(:)
-!
-      integer(kind = kint) :: i, ip
-!
-!
-      write(100+my_rank,*) my_rank, 'num_recv_tmp2(i)'
-      do i = 1, new_comm%num_neib
-        ip = new_comm%id_neib(i)
-        write(100+my_rank,*) i, new_comm%num_import(i),                 &
-     &                      num_recv_tmp2(ip+1)
-      end do
-!
-      allocate(num_send_3(nprocs))
-      allocate(num_recv_3(nprocs))
-      num_recv_3(1:nprocs) = 0
-      do i = 1, ext_tbl%nrank_import
-        ip = ext_tbl%irank_import(i)
-        num_recv_3(ip+1) = ext_tbl%istack_import(i)                     &
-     &                    - ext_tbl%istack_import(i-1)
-      end do
-      call calypso_mpi_alltoall_one_int(num_recv_3, num_send_3)
-!
-      write(100+my_rank,*) my_rank, 'num_recv_3(i), num_send_3(i)'
-      do i = 1, nprocs
-        write(100+my_rank,*) i-1, num_recv_3(i), num_send_3(i)
-        if(num_recv_3(i) .gt. 0 .and. num_send_3(i) .eq. 0) then
-          write(*,*) 'something wrong', my_rank, i-1
-        end if
-        if(num_recv_3(i) .eq. 0 .and. num_send_3(i) .gt. 0) then
-          write(*,*) 'something wrong', my_rank, i-1
-        end if
-      end do
-      deallocate(num_recv_3, num_send_3)
-!
-      end subroutine check_num_of_neighbourings
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_new_node_comm_table(my_rank, new_comm)
-!
-      use t_comm_table
-!
-      integer, intent(in) :: my_rank
-      type(communication_table), intent(in) :: new_comm
-!
-      integer(kind = kint) :: i, icou, ist, ied
-!
-!
-      write(my_rank+100,*) 'i, new_comm',                               &
-     &    new_comm%num_neib, new_comm%ntot_import
-      do icou = 1, new_comm%num_neib
-        ist = new_comm%istack_export(icou-1) + 1
-        ied = new_comm%istack_export(icou)
-        write(my_rank+100,*) 'i, new_comm%istack_export(icou)', &
-     &      new_comm%id_neib(icou), new_comm%istack_export(icou)
-        do i = ist, ied
-          write(my_rank+100,*) i, new_comm%item_export(i)
-        end do
-      end do
-!
-      end subroutine check_new_node_comm_table
 !
 ! ----------------------------------------------------------------------
 !

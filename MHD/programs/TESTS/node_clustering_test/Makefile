@@ -64,8 +64,11 @@ ele_trans_tbl_4_repart.o \
 redistribute_groups.o \
 redistribute_group_data.o \
 \
+const_repart_nod_and_comm.o \
+const_repart_ele_connect.o \
 const_repart_mesh_data.o \
 const_repart_comm_tbl.o \
+check_data_for_repartition.o \
 \
 sort_for_repartition.o \
 search_ext_node_repartition.o \
