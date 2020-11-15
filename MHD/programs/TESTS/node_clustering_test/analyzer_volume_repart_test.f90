@@ -178,14 +178,10 @@
      &   (fem_T%mesh, next_tbl_T%neib_nod, T_meshes, part_grp,          &
      &    idomain_new, inod_new, new_fem%mesh%nod_comm,                 &
      &    new_fem%mesh%node, part_tbl, ext_tbl)
-      call check_repart_node_transfer                                   &
-     &   (fem_T%mesh, new_fem%mesh, part_tbl, idomain_new, inod_new)
 !
 !
       call const_new_element_connect(fem_T%mesh, ele_comm, part_tbl,    &
      &    idomain_new, inod_new, ele_tbl, new_fem%mesh)
-!      call check_orogin_node_and_domain                                &
-!     &    (new_fem%mesh%nod_comm, new_fem%mesh%node)
 !
       call s_redistribute_groups(fem_T%mesh, fem_T%group, ele_comm,     &
      &    new_fem%mesh, part_tbl, ele_tbl, new_fem%group)
@@ -243,6 +239,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_sorting_for_repartition
+      use t_repart_double_numberings
 !
       use set_comm_tbl_to_new_part
       use const_comm_tbl_to_new_mesh
@@ -328,104 +325,11 @@
 !
       call set_repart_node_position                                     &
      &   (mesh%node, new_comm, new_node, part_tbl)
+      call check_repart_node_transfer                                   &
+     &   (mesh%nod_comm, mesh%node, new_comm, new_node,                 &
+     &    part_tbl, idomain_new, inod_new)
 !
       end subroutine const_comm_tbls_for_new_part
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine node_dbl_numbering_to_repart                           &
-     &         (nod_comm, node, part_tbl, idomain_new, inod_new)
-!
-      use t_comm_table
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      use nod_phys_send_recv
-      use reverse_SR_int
-      use solver_SR_type
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
-!
-      type(calypso_comm_table), intent(in) :: part_tbl
-!
-      integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(inout) :: inod_new(node%numnod)
-!
-      integer(kind = kint), allocatable :: idomain_recv(:)
-      integer(kind = kint), allocatable :: inod_recv(:)
-!
-      integer(kind = kint) :: inod
-!
-!
-!    Set local (idomain_recv, inod_recv) in internal node
-      allocate(inod_recv(part_tbl%ntot_import))
-      allocate(idomain_recv(part_tbl%ntot_import))
-!$omp parallel do
-      do inod = 1, part_tbl%ntot_import
-        inod_recv(inod) =    inod
-        idomain_recv(inod) = my_rank
-      end do
-!$omp end parallel do
-!
-!
-!    Send local (idomain_recv, inod_recv) into original domain
-!       (inod_new, idomain_new)
-      call calypso_rev_SR_type_int(part_tbl,                            &
-     &    part_tbl%ntot_import, node%numnod, inod_recv, inod_new)
-      call calypso_rev_SR_type_int(part_tbl,                            &
-     &    part_tbl%ntot_import, node%numnod, idomain_recv, idomain_new)
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, idomain_new)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_new)
-      deallocate(inod_recv, idomain_recv)
-!
-      end subroutine node_dbl_numbering_to_repart
-!
-! ----------------------------------------------------------------------
-!
-      subroutine ext_node_dbl_numbering_by_SR                           &
-     &         (node, ext_tbl, idomain_new, inod_new,                   &
-     &          numnod, internal_node, idomain_recv, inod_recv)
-!
-      use t_geometry_data
-      use t_calypso_comm_table
-!
-      use calypso_SR_type
-      use select_copy_from_recv
-!
-      type(node_data), intent(in) :: node
-      type(calypso_comm_table), intent(inout) :: ext_tbl
-!
-      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(node%numnod)
-!
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      integer(kind = kint), intent(inout) :: idomain_recv(numnod)
-      integer(kind = kint), intent(inout) :: inod_recv(numnod)
-!
-      integer(kind = kint) :: inod
-!
-!
-!$omp parallel do
-      do inod = 1, internal_node
-        inod_recv(inod) =    inod
-        idomain_recv(inod) = my_rank
-      end do
-!$omp end parallel do
-!
-!    Set local (idomain_recv, inod_recv) in external node
-      call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
-     &    node%numnod, ext_tbl%ntot_import,                             &
-     &    idomain_new(1), idomain_recv(internal_node+1))
-      call calypso_SR_type_int(iflag_import_item, ext_tbl,              &
-     &    node%numnod, ext_tbl%ntot_import,                             &
-     &    inod_new(1), inod_recv(internal_node+1))
-!
-      end subroutine ext_node_dbl_numbering_by_SR
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -437,6 +341,7 @@
       use t_next_node_ele_4_node
       use t_calypso_comm_table
       use t_sorting_for_repartition
+      use t_repart_double_numberings
 !
       use ele_trans_tbl_4_repart
 !
@@ -462,8 +367,8 @@
       iele_domain(1:mesh%ele%numele) = 0
 !$omp end parallel workshare
 !
-      call double_numbering_4_eleement(mesh%ele, ele_comm,              &
-     &                                 iele_local, iele_domain)
+      call double_numbering_4_element(mesh%ele, ele_comm,               &
+     &                                iele_local, iele_domain)
 !
       call const_ele_trans_tbl_for_repart                               &
      &   (mesh%node, mesh%ele, part_tbl, idomain_new, ele_tbl)
@@ -478,37 +383,6 @@
       deallocate(iele_domain, iele_local)
 !
       end subroutine const_new_element_connect
-!
-! ----------------------------------------------------------------------
-!
-      subroutine double_numbering_4_eleement(ele, ele_comm,             &
-     &                                       iele_local, iele_domain)
-!
-      use t_geometry_data
-      use t_comm_table
-!
-      use solver_SR_type
-!
-      type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: ele_comm
-!
-      integer(kind = kint), intent(inout) :: iele_local(ele%numele)
-      integer(kind = kint), intent(inout) :: iele_domain(ele%numele)
-!
-      integer(kind = kint) :: iele
-!
-!
-!$omp parallel do
-      do iele = 1, ele%numele
-        iele_local(iele) = iele
-        iele_domain(iele) = my_rank
-      end do
-!$omp end parallel do
-!
-      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_local)
-      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_domain)
-!
-      end subroutine double_numbering_4_eleement
 !
 ! ----------------------------------------------------------------------
 !
@@ -558,88 +432,6 @@
       end subroutine const_reparition_ele_connect
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine calypso_rev_SR_type_int                                &
-     &         (cps_tbl, nnod_new, nnod_org, iX_new, iX_org)
-!
-      use m_solver_SR
-      use t_calypso_comm_table
-      use calypso_SR_int
-      use select_copy_from_recv
-!
-      type(calypso_comm_table), intent(in) :: cps_tbl
-      integer(kind = kint), intent(in) :: nnod_org, nnod_new
-      integer(kind = kint), intent(in) :: iX_new(nnod_new)
-!
-      integer(kind = kint), intent(inout) :: iX_org(nnod_org)
-!
-      integer(kind = kint), allocatable :: irev_tmp(:)
-!
-      allocate(irev_tmp(nnod_org))
-!$omp parallel workshare
-      irev_tmp(1:nnod_org) = 0
-!$omp end parallel workshare
-!
-      call calypso_send_recv_int(iflag_import_item, nnod_new, nnod_org, &
-     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
-     &    cps_tbl%item_import,                                          &
-     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
-     &    cps_tbl%item_export, irev_tmp,                                &
-     &    SR_sig1, SR_i1, iX_new, iX_org)
-!
-      deallocate(irev_tmp)
-!
-      end subroutine calypso_rev_SR_type_int
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine check_orogin_node_and_domain(nod_comm, node)
-!
-      use calypso_mpi
-      use t_geometry_data
-      use t_comm_table
-!
-      use solver_SR_type
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-!
-      integer(kind = kint), allocatable :: inod_new_lc(:)
-      integer(kind = kint), allocatable :: irank_new_lc(:)
-!
-      integer(kind = kint) :: inod
-!
-!
-      allocate(inod_new_lc(node%numnod))
-      allocate(irank_new_lc(node%numnod))
-!
-      do inod = 1, node%internal_node
-        inod_new_lc(inod) =  inod
-        irank_new_lc(inod) = my_rank
-      end do
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, irank_new_lc)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_new_lc)
-!
-      write(200+my_rank,*) 'node%numnod',                               &
-     &              node%numnod, node%internal_node
-      write(200+my_rank,*) 'nod_comm%num_neib', nod_comm%num_neib
-      write(200+my_rank,*) 'nod_comm%istack_import',                    &
-     &                    nod_comm%istack_import
-      do inod = node%internal_node+1, node%numnod
-        write(200+my_rank,*) inod,                                      &
-     &                      irank_new_lc(inod), inod_new_lc(inod)
-      end do
-!
-      deallocate(irank_new_lc, inod_new_lc)
-!
-      end subroutine check_orogin_node_and_domain
-!
 ! ----------------------------------------------------------------------
 !
       subroutine check_num_of_neighbourings                           &
@@ -716,123 +508,6 @@
       end do
 !
       end subroutine check_new_node_comm_table
-!
-! ----------------------------------------------------------------------
-!
-      subroutine check_repart_node_transfer                             &
-     &         (mesh, new_mesh, part_tbl, idomain_new, inod_new)
-!
-      use t_mesh_data
-      use t_calypso_comm_table
-!
-      use calypso_SR_type
-      use solver_SR_type
-      use select_copy_from_recv
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_geometry), intent(in) :: new_mesh
-      type(calypso_comm_table), intent(in) :: part_tbl
-      integer(kind = kint), intent(in) :: idomain_new(mesh%node%numnod)
-      integer(kind = kint), intent(in) :: inod_new(mesh%node%numnod)
-!
-      integer(kind = kint), allocatable :: inod_old_lc(:)
-      integer(kind = kint), allocatable :: irank_old_lc(:)
-      integer(kind = kint), allocatable :: inod_new_lc(:)
-      integer(kind = kint), allocatable :: irank_new_lc(:)
-!
-      integer(kind = kint), allocatable :: inod_trns1(:)
-      integer(kind = kint), allocatable :: irank_trns1(:)
-      integer(kind = kint), allocatable :: inod_trns2(:)
-      integer(kind = kint), allocatable :: irank_trns2(:)
-!
-      integer(kind = kint) :: icou, inum, i, ist, ied, num
-      integer(kind = kint) :: ip, inod, iele, k1, ipart, iflag
-!
-!
-      allocate(inod_old_lc(mesh%node%numnod))
-      allocate(irank_old_lc(mesh%node%numnod))
-!
-      do inod = 1, mesh%node%internal_node
-        inod_old_lc(inod) =  inod
-        irank_old_lc(inod) = my_rank
-      end do
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (mesh%node%numnod, mesh%nod_comm, irank_old_lc)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (mesh%node%numnod, mesh%nod_comm, inod_old_lc)
-!
-
-      allocate(inod_new_lc(new_mesh%node%numnod))
-      allocate(irank_new_lc(new_mesh%node%numnod))
-      allocate(inod_trns1(new_mesh%node%numnod))
-      allocate(irank_trns1(new_mesh%node%numnod))
-      allocate(inod_trns2(new_mesh%node%numnod))
-      allocate(irank_trns2(new_mesh%node%numnod))
-!
-      do inod = 1, new_mesh%node%internal_node
-        inod_new_lc(inod) =  inod
-        irank_new_lc(inod) = my_rank
-      end do
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, irank_new_lc)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_new_lc)
-!
-!
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
-     &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    inod_new(1), inod_trns1(1))
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
-     &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    idomain_new(1), irank_trns1(1))
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_trns1)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, irank_trns1)
-!
-!
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
-     &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    inod_new(1), inod_trns2(1))
-      call calypso_SR_type_int(iflag_import_item, part_tbl,             &
-     &    mesh%node%numnod, new_mesh%node%internal_node,                &
-     &    idomain_new(1), irank_trns2(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, inod_trns2)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_mesh%node%numnod, new_mesh%nod_comm, irank_trns2)
-!
-      write(*,*) 'Check irank_trns2, inod_trns2'
-      do inod = 1, new_mesh%node%internal_node
-        if(inod_trns1(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns1!' , inod
-        end if
-        if(inod_trns2(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns2!' , inod
-        end if
-      end do
-!
-      do inod = new_mesh%node%internal_node+1, new_mesh%node%numnod
-        if(inod_trns1(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns1(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns1!' , inod
-        end if
-        if(inod_trns2(inod) .ne. inod_new_lc(inod)                      &
-     &      .or. irank_trns2(inod) .ne. irank_new_lc(inod)) then
-           write(*,*) my_rank, 'Wrong inod_trns2!' , inod
-        end if
-      end do
-      deallocate(irank_old_lc, inod_old_lc)
-      deallocate(irank_new_lc, inod_new_lc)
-      deallocate(irank_trns1, inod_trns1)
-      deallocate(irank_trns2, inod_trns2)
-!
-      end subroutine check_repart_node_transfer
 !
 ! ----------------------------------------------------------------------
 !
