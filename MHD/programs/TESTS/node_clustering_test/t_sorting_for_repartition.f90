@@ -13,7 +13,7 @@
 !!
 !!      subroutine sort_node_by_domain_and_index                        &
 !!     &         (numnod, internal_node, idomain_recv, inod_recv,       &
-!!     &          ext_tbl, sort_nod, num_recv_trim)
+!!     &          ext_tbl, sort_nod)
 !!        type(calypso_comm_table), intent(inout) :: ext_tbl
 !!        type(sorting_data_for_repartition), intent(inout) :: sort_nod
 !!      subroutine trim_overlapped_ele_by_repart                        &
@@ -45,6 +45,7 @@
         integer(kind = kint) :: nprocs_in
         integer(kind = kint), allocatable :: num_send(:)
         integer(kind = kint), allocatable :: num_recv(:)
+        integer(kind = kint), allocatable :: nrecv_trim(:)
 !
         integer(kind = kint) :: ntot
         integer(kind = kint), allocatable :: irank_sorted(:)
@@ -67,9 +68,11 @@
       sort_data%nprocs_in = nprocs
       allocate(sort_data%num_send(sort_data%nprocs_in))
       allocate(sort_data%num_recv(sort_data%nprocs_in))
+      allocate(sort_data%nrecv_trim(sort_data%nprocs_in))
 !$omp parallel workshare
-      sort_data%num_send(1:sort_data%nprocs_in) = 0
-      sort_data%num_recv(1:sort_data%nprocs_in) = 0
+      sort_data%num_send(1:sort_data%nprocs_in) =   0
+      sort_data%num_recv(1:sort_data%nprocs_in) =   0
+      sort_data%nrecv_trim(1:sort_data%nprocs_in) = 0
 !$omp end parallel workshare
 !
       sort_data%ntot = ntot_import
@@ -95,7 +98,8 @@
 !
       deallocate(sort_data%irank_sorted, sort_data%id_sorted)
       deallocate(sort_data%idx_sort,     sort_data%iflag_dup)
-      deallocate(sort_data%num_send,     sort_data%num_recv)
+      deallocate(sort_data%num_send, sort_data%num_recv)
+      deallocate(sort_data%nrecv_trim)
 !
       end subroutine dealloc_sorting_data
 !
@@ -104,7 +108,7 @@
 !
       subroutine sort_node_by_domain_and_index                          &
      &         (numnod, internal_node, idomain_recv, inod_recv,         &
-     &          ext_tbl, sort_nod, num_recv_trim)
+     &          ext_tbl, sort_nod)
 !
       use sort_for_repartition
 !
@@ -114,7 +118,6 @@
 !
       type(calypso_comm_table), intent(inout) :: ext_tbl
       type(sorting_data_for_repartition), intent(inout) :: sort_nod
-      integer(kind = kint), intent(inout) :: num_recv_trim(nprocs)
 !
       integer(kind = kint) :: i, j
 !
@@ -141,7 +144,7 @@
 !
       call mark_overlapped_import_node                                  &
      &   (nprocs, my_rank, ext_tbl%ntot_import, sort_nod%num_recv,      &
-     &    sort_nod%id_sorted, num_recv_trim, sort_nod%iflag_dup)
+     &    sort_nod%id_sorted, sort_nod%nrecv_trim, sort_nod%iflag_dup)
 !
       end subroutine sort_node_by_domain_and_index
 !

@@ -182,9 +182,10 @@
      &   (fem_T%mesh, new_fem%mesh, part_tbl, idomain_new, inod_new)
 !
 !
-      call const_new_element_connect                                    &
-     &   (fem_T%mesh, ele_comm, next_tbl_T%neib_ele,   &
-     &    part_tbl, ext_tbl, idomain_new, inod_new, ele_tbl, new_fem%mesh)
+      call const_new_element_connect(fem_T%mesh, ele_comm, part_tbl,    &
+     &    idomain_new, inod_new, ele_tbl, new_fem%mesh)
+!      call check_orogin_node_and_domain                                &
+!     &    (new_fem%mesh%nod_comm, new_fem%mesh%node)
 !
       call s_redistribute_groups(fem_T%mesh, fem_T%group, ele_comm,     &
      &    new_fem%mesh, part_tbl, ele_tbl, new_fem%group)
@@ -278,14 +279,13 @@
 !
       integer(kind = kint), allocatable :: num_send_nod(:)
       integer(kind = kint), allocatable :: num_recv_nod(:)
-      integer(kind = kint), allocatable :: num_recv_trim(:)
 !
       integer(kind = kint), allocatable :: idomain_recv(:)
       integer(kind = kint), allocatable :: inod_recv(:)
 !
       integer(kind = kint) :: numnod, internal_node
 !
-      integer(kind = kint) :: inod, i, j
+      integer(kind = kint) :: inod
 !
 !
       allocate(num_send_nod(part_grp%num_grp))
@@ -299,28 +299,8 @@
 !     &   (part_grp, part_tbl, num_recv_nod, num_send_nod)
 !
 !    Set local (idomain_recv, inod_recv) in internal node
-      allocate(inod_recv(part_tbl%ntot_import))
-      allocate(idomain_recv(part_tbl%ntot_import))
-!$omp parallel do
-      do inod = 1, part_tbl%ntot_import
-        inod_recv(inod) =    inod
-        idomain_recv(inod) = my_rank
-      end do
-!$omp end parallel do
-!
-!
-!    Send local (idomain_recv, inod_recv) into original domain
-!       (inod_new, idomain_new)
-      call calypso_rev_SR_type_int(part_tbl,                            &
-     &    part_tbl%ntot_import, node%numnod, inod_recv, inod_new)
-      call calypso_rev_SR_type_int(part_tbl,                            &
-     &    part_tbl%ntot_import, node%numnod, idomain_recv, idomain_new)
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, idomain_new)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_new)
-      deallocate(inod_recv, idomain_recv)
+      call node_dbl_numbering_to_repart                                 &
+     &   (nod_comm, node, part_tbl, idomain_new, inod_new)
 !
 !
       call const_external_grp_4_new_part(idomain_new, node,             &
@@ -361,24 +341,19 @@
      &    inod_new(1), inod_recv(internal_node+1))
 !
       call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
-      allocate(num_recv_trim(nprocs))
-!$omp parallel workshare
-      num_recv_trim(1:nprocs) = 0
-!$omp end parallel workshare
-!
       call sort_node_by_domain_and_index(numnod, internal_node,         &
-     &    idomain_recv, inod_recv, ext_tbl, sort_nod, num_recv_trim)
+     &    idomain_recv, inod_recv, ext_tbl, sort_nod)
+      deallocate(idomain_recv, inod_recv)
 !
       call const_repartitioned_comm_tbl                                 &
-     &   (internal_node, sort_nod%num_recv, num_recv_trim,              &
+     &   (internal_node, sort_nod%num_recv, sort_nod%nrecv_trim,        &
      &    ext_tbl%ntot_import, sort_nod%irank_sorted,                   &
      &    sort_nod%id_sorted, sort_nod%iflag_dup, new_comm)
-      call dealloc_sorting_data(sort_nod)
 !
 !      call check_num_of_neighbourings                                  &
-!     &   (new_comm, ext_tbl, num_recv_trim)
+!     &   (new_comm, ext_tbl, sort_nod%nrecv_trim)
 !      call check_new_node_comm_table(my_rank, new_comm)
-      deallocate(num_recv_trim)
+      call dealloc_sorting_data(sort_nod)
 !
       call set_repart_node_position                                     &
      &   (node, new_comm, new_node, part_tbl)
@@ -388,60 +363,94 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_new_element_connect                              &
-     &         (mesh, ele_comm, neib_ele, part_tbl,                     &
-     &          ext_tbl, idomain_new, inod_new,                         &
-     &          ele_tbl, new_mesh)
+      subroutine node_dbl_numbering_to_repart                           &
+     &         (nod_comm, node, part_tbl, idomain_new, inod_new)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_calypso_comm_table
+!
+      use nod_phys_send_recv
+      use reverse_SR_int
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+!
+      type(calypso_comm_table), intent(in) :: part_tbl
+!
+      integer(kind = kint), intent(inout) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(inout) :: inod_new(node%numnod)
+!
+      integer(kind = kint), allocatable :: idomain_recv(:)
+      integer(kind = kint), allocatable :: inod_recv(:)
+!
+      integer(kind = kint) :: inod
+!
+!
+!    Set local (idomain_recv, inod_recv) in internal node
+      allocate(inod_recv(part_tbl%ntot_import))
+      allocate(idomain_recv(part_tbl%ntot_import))
+!$omp parallel do
+      do inod = 1, part_tbl%ntot_import
+        inod_recv(inod) =    inod
+        idomain_recv(inod) = my_rank
+      end do
+!$omp end parallel do
+!
+!
+!    Send local (idomain_recv, inod_recv) into original domain
+!       (inod_new, idomain_new)
+      call calypso_rev_SR_type_int(part_tbl,                            &
+     &    part_tbl%ntot_import, node%numnod, inod_recv, inod_new)
+      call calypso_rev_SR_type_int(part_tbl,                            &
+     &    part_tbl%ntot_import, node%numnod, idomain_recv, idomain_new)
+!
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, idomain_new)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, inod_new)
+      deallocate(inod_recv, idomain_recv)
+!
+      end subroutine node_dbl_numbering_to_repart
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_new_element_connect(mesh, ele_comm, part_tbl,    &
+     &          idomain_new, inod_new, ele_tbl, new_mesh)
 !
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_calypso_comm_table
       use t_sorting_for_repartition
 !
-      use calypso_mpi_int
-      use calypso_SR_type
-      use solver_SR_type
-      use select_copy_from_recv
-      use set_comm_tbl_to_new_part
-      use search_ext_node_repartition
-      use const_repart_mesh_data
-!
       use ele_trans_tbl_4_repart
 !
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
-      type(element_around_node), intent(in) :: neib_ele
       type(calypso_comm_table), intent(in) :: part_tbl
-      type(calypso_comm_table), intent(in) :: ext_tbl
       integer(kind = kint), intent(in) :: idomain_new(mesh%node%numnod)
       integer(kind = kint), intent(in) :: inod_new(mesh%node%numnod)
 !
       type(calypso_comm_table), intent(inout) :: ele_tbl
       type(mesh_geometry), intent(inout) :: new_mesh
 !
-      integer(kind = kint), allocatable :: ie_newnod(:,:)
-      integer(kind = kint), allocatable :: ie_newdomain(:,:)
-!
       integer(kind = kint), allocatable :: iele_local(:)
       integer(kind = kint), allocatable :: iele_domain(:)
 !
       integer(kind = kint) :: new_numele
 !
-      integer(kind = kint) :: iele
-!
 !
       allocate(iele_local(mesh%ele%numele))
       allocate(iele_domain(mesh%ele%numele))
+!$omp parallel workshare
+      iele_local(1:mesh%ele%numele) =  0
+      iele_domain(1:mesh%ele%numele) = 0
+!$omp end parallel workshare
 !
-      do iele = 1, mesh%ele%numele
-        iele_local(iele) = iele
-        iele_domain(iele) = my_rank
-      end do
-!
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (mesh%ele%numele, ele_comm, iele_local)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (mesh%ele%numele, ele_comm, iele_domain)
+      call double_numbering_4_eleement(mesh%ele, ele_comm,    &
+     &          iele_local, iele_domain)
 !
       call const_ele_trans_tbl_for_repart                               &
      &   (mesh%node, mesh%ele, part_tbl, idomain_new, ele_tbl)
@@ -450,25 +459,90 @@
       call trim_overlapped_ele_by_repart(mesh, idomain_new, inod_new,   &
      &    iele_domain, iele_local, ele_tbl, new_numele)
 !
-      allocate(ie_newnod(mesh%ele%numele,mesh%ele%nnod_4_ele))
-      allocate(ie_newdomain(mesh%ele%numele,mesh%ele%nnod_4_ele))
+      call const_reparition_ele_connect                                 &
+     &   (mesh%node, mesh%ele, ele_tbl, idomain_new, inod_new,          &
+     &    iele_local, iele_domain, new_numele, new_mesh)
+      deallocate(iele_domain, iele_local)
+!
+      end subroutine const_new_element_connect
+!
+! ----------------------------------------------------------------------
+!
+      subroutine double_numbering_4_eleement(ele, ele_comm,             &
+     &                                       iele_local, iele_domain)
+!
+      use t_geometry_data
+      use t_comm_table
+!
+      use solver_SR_type
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: ele_comm
+!
+      integer(kind = kint), intent(inout) :: iele_local(ele%numele)
+      integer(kind = kint), intent(inout) :: iele_domain(ele%numele)
+!
+      integer(kind = kint) :: iele
+!
+!
+!$omp parallel do
+      do iele = 1, ele%numele
+        iele_local(iele) = iele
+        iele_domain(iele) = my_rank
+      end do
+!$omp end parallel do
+!
+      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_local)
+      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_domain)
+!
+      end subroutine double_numbering_4_eleement
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_reparition_ele_connect                           &
+     &         (node, ele, ele_tbl, idomain_new, inod_new,              &
+     &          iele_local, iele_domain, new_numele, new_mesh)
+!
+      use t_geometry_data
+      use t_calypso_comm_table
+!
+      use search_ext_node_repartition
+      use const_repart_mesh_data
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(calypso_comm_table), intent(in) :: ele_tbl
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+      integer(kind = kint), intent(in) :: inod_new(node%numnod)
+!
+      integer(kind = kint), intent(in) :: iele_local(ele%numele)
+      integer(kind = kint), intent(in) :: iele_domain(ele%numele)
+!
+      integer(kind = kint), intent(in) :: new_numele
+!
+      type(mesh_geometry), intent(inout) :: new_mesh
+!
+      integer(kind = kint), allocatable :: ie_newnod(:,:)
+      integer(kind = kint), allocatable :: ie_newdomain(:,:)
+!
+!
+      allocate(ie_newnod(ele%numele,ele%nnod_4_ele))
+      allocate(ie_newdomain(ele%numele,ele%nnod_4_ele))
 !$omp parallel workshare
-      ie_newnod(1:mesh%ele%numele,1:mesh%ele%nnod_4_ele) =    0
-      ie_newdomain(1:mesh%ele%numele,1:mesh%ele%nnod_4_ele) = 0
+      ie_newnod(1:ele%numele,1:ele%nnod_4_ele) =    0
+      ie_newdomain(1:ele%numele,1:ele%nnod_4_ele) = 0
 !$omp end parallel workshare
 !
-      call set_repart_element_connect(new_numele, mesh%node, mesh%ele,  &
+      call set_repart_element_connect(new_numele, node, ele,            &
      &    ele_tbl, idomain_new, inod_new, ie_newdomain, ie_newnod,      &
      &    new_mesh%ele)
 !
-      call s_search_ext_node_repartition(mesh%ele, ele_tbl,             &
+      call s_search_ext_node_repartition(ele, ele_tbl,                  &
      &    iele_local, iele_domain, ie_newdomain,                        &
      &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele)
-!      call check_orogin_node_and_domain                                &
-!     &    (new_mesh%nod_comm, new_mesh%node)
       deallocate(ie_newnod, ie_newdomain)
 !
-      end subroutine const_new_element_connect
+      end subroutine const_reparition_ele_connect
 !
 ! ----------------------------------------------------------------------
 !
