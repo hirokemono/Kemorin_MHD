@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_mesh_repartition_by_volume(org_fem, ele_comm,      &
 !!     &          neib_nod, part_param, new_fem, org_to_new_tbl)
-!!        type(mesh_test_files_param), intent(in) ::  part_param
+!!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: org_fem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
@@ -42,6 +42,7 @@
       subroutine s_mesh_repartition_by_volume(org_fem, ele_comm,        &
      &          neib_nod, part_param, new_fem, org_to_new_tbl)
 !
+      use t_control_param_vol_grping
       use t_repart_double_numberings
       use t_repartition_by_volume
       use const_repart_nod_and_comm
@@ -49,7 +50,7 @@
       use redistribute_groups
       use parallel_sleeve_extension
 !
-      type(mesh_test_files_param), intent(in) ::  part_param
+      type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: org_fem
       type(communication_table), intent(in) :: ele_comm
       type(next_nod_id_4_nod), intent(in) :: neib_nod

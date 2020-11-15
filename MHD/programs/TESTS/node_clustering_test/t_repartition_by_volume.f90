@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine grouping_by_volume(mesh, part_param, part_grp)
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(group_data), intent(inout) :: part_grp
 !!@endverbatim
 !
@@ -58,7 +58,7 @@
       use xyz_block_id_by_nod_vol
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(group_data), intent(inout) :: part_grp
 !
       type(group_data) :: z_part_grp
@@ -171,7 +171,7 @@
       use set_istack_4_domain_block
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
 !
       type(node_volume_and_sorting), intent(inout) :: vol_sort
       type(grouping_1d_work), intent(inout) :: sub_z
@@ -215,7 +215,7 @@
       integer(kind = kint), intent(in) :: nd
       type(mesh_geometry), intent(in) :: mesh
       type(group_data), intent(in) :: prev_part_grp
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
 !
       type(node_volume_and_sorting), intent(inout) :: vol_sort
       type(grouping_1d_work), intent(inout) :: part_1d
@@ -266,7 +266,7 @@
       use set_repartition_group_name
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_z
       type(node_volume_and_sorting), intent(in) :: vol_sort
 !
@@ -304,7 +304,7 @@
       integer(kind = kint), intent(in) :: nd, num_group
       type(mesh_geometry), intent(in) :: mesh
       type(group_data), intent(in) :: prev_part_grp
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: part_1d
       type(node_volume_and_sorting), intent(in) :: vol_sort
 !

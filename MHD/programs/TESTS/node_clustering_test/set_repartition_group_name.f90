@@ -13,7 +13,7 @@
 !!     &          num_domain_grp, domain_grp_name)
 !!      subroutine set_xyz_domain_grp_name(part_param, base_name,       &
 !!     &          num_domain_grp, domain_grp_name)
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!
 !!      subroutine check_stacks_4_z_domain(my_rank, node, part_param,   &
 !!     &          inod_sort, num_nod_group_z, istack_nod_grp_z)
@@ -24,7 +24,7 @@
 !!     &          inod_sort, num_nod_grp_yz, idomain_nod_grp_yz,        &
 !!     &          num_nod_grp_xyz, istack_nod_grp_xyz)
 !!        type(node_data), intent(in) :: node
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!@endverbatim
 !
       module set_repartition_group_name
@@ -47,7 +47,7 @@
 !
       use set_parallel_file_name
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       character(len = kchara), intent(in) :: base_name
       integer(kind = kint), intent(in) :: num_domain_grp
 !
@@ -74,7 +74,7 @@
 !
       use set_parallel_file_name
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       character(len = kchara), intent(in) :: base_name
       integer(kind = kint), intent(in) :: num_domain_grp
 !
@@ -107,7 +107,7 @@
 !
       use set_parallel_file_name
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       character(len = kchara), intent(in) :: base_name
       integer(kind = kint), intent(in) :: num_domain_grp
 !
@@ -149,7 +149,7 @@
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
 !
       integer(kind = kint), intent(in) :: num_nod_group_z
@@ -181,7 +181,7 @@
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
 !
       integer(kind = kint), intent(in) :: num_nod_grp_z
@@ -223,7 +223,7 @@
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
 !
       integer(kind = kint), intent(in) :: num_nod_grp_yz

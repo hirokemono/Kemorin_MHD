@@ -1,5 +1,5 @@
 !>@file   t_control_param_vol_grping.f90
-!!@brief  module t_ctl_data_volume_grouping
+!!@brief  module t_control_param_vol_grping
 !!
 !!@author H. Matsui
 !!@date Programmed on Oct., 2020
@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_set_ctl_params_4_test_mesh(part_tctl, part_param)
 !!        type(mesh_test_control), intent(in) :: part_tctl
-!!        type(mesh_test_files_param), intent(inout) :: part_param
+!!        type(volume_partioning_param), intent(inout) :: part_param
 !!@endverbatim
 !
       module t_control_param_vol_grping
@@ -19,7 +19,7 @@
 !
       implicit none
 !
-      type mesh_test_files_param
+      type volume_partioning_param
 !>        Integer flag to output surface data
         integer(kind = kint) :: iflag_output_SURF = 0
 !>        Structure of mesh file IO paramters
@@ -39,7 +39,7 @@
 !
 !>        Sleeve size level
         integer(kind = kint) :: num_FEM_sleeve = 1
-      end type mesh_test_files_param
+      end type volume_partioning_param
 !
 !   --------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@
       use set_num_domain_each_dir
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
-      type(mesh_test_files_param), intent(inout) :: part_param
+      type(volume_partioning_param), intent(inout) :: part_param
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_tctl%plt)

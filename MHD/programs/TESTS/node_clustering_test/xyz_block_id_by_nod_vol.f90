@@ -12,17 +12,17 @@
 !!      subroutine set_xyz_block_id_by_nod_vol                          &
 !!     &         (node, part_param, id_block)
 !!        type(node_data), intent(in) :: node
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!
 !!      subroutine const_single_domain_list(sub_z)
 !!        type(grouping_1d_work), intent(inout) :: sub_z
 !!      subroutine const_z_subdomain_list(part_param, z_part_grp, sub_y)
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(group_data), intent(in) :: z_part_grp
 !!        type(grouping_1d_work), intent(inout) :: sub_y
 !!      subroutine const_yz_subdomain_list                              &
 !!     &         (part_param, sub_y, yz_part_grp, sub_x)
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(grouping_1d_work), intent(in) :: sub_y
 !!        type(group_data), intent(in) :: yz_part_grp
 !!        type(grouping_1d_work), intent(inout) :: sub_x
@@ -81,7 +81,7 @@
      &         (node, part_param, id_block)
 !
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(inout)                               &
      &                    :: id_block(node%numnod,3)
 !
@@ -129,7 +129,7 @@
 !
       use set_istack_4_domain_block
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(group_data), intent(in) :: z_part_grp
 !
       type(grouping_1d_work), intent(inout) :: sub_y
@@ -152,7 +152,7 @@
 !
       use set_istack_4_domain_block
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_y
       type(group_data), intent(in) :: yz_part_grp
 !

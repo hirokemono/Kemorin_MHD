@@ -23,7 +23,7 @@
 !!      subroutine check_blocks_4_xyz_domain                            &
 !!     &         (my_rank, node, part_param, inod_sort, id_block, sub_x)
 !!        type(node_data), intent(in) :: node
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(grouping_1d_work), intent(in) :: sub_z
 !!        type(grouping_1d_work), intent(in) :: sub_y
 !!        type(grouping_1d_work), intent(in) :: sub_x
@@ -127,7 +127,7 @@
 !
       subroutine check_z_divided_volumes(part_param, sub_z)
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_z
 !
       integer(kind = kint) :: iz
@@ -142,7 +142,7 @@
 !
       subroutine check_yz_divided_volumes(part_param, sub_y)
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_y
 !
       integer(kind = kint) :: iy, iz
@@ -161,7 +161,7 @@
       subroutine check_xyz_divided_volumes(part_param, sub_x)
 !
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_x
 !
       integer(kind = kint) :: ix, iy, iz, jk
@@ -188,7 +188,7 @@
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_z
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
       integer(kind = kint), intent(in) :: id_block(node%numnod,3)
@@ -219,7 +219,7 @@
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_y
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
       integer(kind = kint), intent(in) :: id_block(node%numnod,3)
@@ -255,7 +255,7 @@
 !
       integer, intent(in) :: my_rank
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(grouping_1d_work), intent(in) :: sub_x
       integer(kind = kint), intent(in) :: inod_sort(node%numnod)
       integer(kind = kint), intent(in) :: id_block(node%numnod,3)

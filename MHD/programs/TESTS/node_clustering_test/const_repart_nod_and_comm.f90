@@ -12,7 +12,7 @@
 !!     &          new_comm, new_node, part_tbl, ext_tbl)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(group_data), intent(in) :: part_grp
 !!        type(communication_table), intent(inout) :: new_comm
 !!        type(node_data), intent(inout) :: new_node
@@ -56,7 +56,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(next_nod_id_4_nod), intent(in) :: neib_nod
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(group_data), intent(in) :: part_grp
 !
       type(communication_table), intent(inout) :: new_comm

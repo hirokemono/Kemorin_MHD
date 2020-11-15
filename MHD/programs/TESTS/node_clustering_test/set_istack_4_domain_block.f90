@@ -12,7 +12,7 @@
 !!      integer(kind = kint) function count_yz_subdomain_num            &
 !!     &         (part_param, num_nod_grp_z, idomain_nod_grp_z,         &
 !!     &          ndomain_yz, istack_yz_grp)
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!
 !!      subroutine set_z_subdomain_list                                 &
 !!     &         (part_param, ndomain_z, istack_z_grp, num_nod_grp_z,   &
@@ -21,7 +21,7 @@
 !!     &         (part_param, num_nod_grp_z, idomain_nod_grp_z,         &
 !!     &          ndomain_yz, istack_yz_grp, num_nod_grp_yz,            &
 !!     &          idomain_nod_grp_yz)
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!
 !!      subroutine set_istack_xyz_domain_block                          &
 !!     &         (node, inod_sort, id_block, volume_nod,                &
@@ -46,7 +46,7 @@
       integer(kind = kint) function count_z_subdomain_num               &
      &                   (part_param, ndomain_z, istack_z_grp)
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: ndomain_z
       integer(kind = kint), intent(in) :: istack_z_grp(0:ndomain_z)
 !
@@ -67,7 +67,7 @@
      &         (part_param, num_nod_grp_z, idomain_nod_grp_z,           &
      &          ndomain_yz, istack_yz_grp)
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: num_nod_grp_z
       integer(kind = kint), intent(in)                                  &
      &     :: idomain_nod_grp_z(num_nod_grp_z+1)
@@ -97,7 +97,7 @@
      &         (part_param, ndomain_z, istack_z_grp, num_nod_grp_z,     &
      &          idomain_nod_grp_z)
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: ndomain_z
       integer(kind = kint), intent(in) :: istack_z_grp(0:ndomain_z)
 !
@@ -133,7 +133,7 @@
      &          ndomain_yz, istack_yz_grp, num_nod_grp_yz,              &
      &          idomain_nod_grp_yz)
 !
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       integer(kind = kint), intent(in) :: num_nod_grp_z
       integer(kind = kint), intent(in)                                  &
      &     :: idomain_nod_grp_z(num_nod_grp_z+1)

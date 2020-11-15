@@ -78,7 +78,7 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-      type(mesh_test_files_param) ::  T_meshes
+      type(volume_partioning_param) ::  T_meshes
 !
       type(next_nod_ele_table) :: next_tbl_T
 !

@@ -11,7 +11,7 @@
 !!     &          part_param, part_grp, ext_grp)
 !!        type(node_data), intent(in) :: node
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
-!!        type(mesh_test_files_param), intent(in) :: part_param
+!!        type(volume_partioning_param), intent(in) :: part_param
 !!        type(group_data), intent(in) :: part_grp
 !!        type(group_data), intent(inout) :: ext_grp
 !!@endverbatim
@@ -46,7 +46,7 @@
       use set_repartition_group_name
 !
       type(node_data), intent(in) :: node
-      type(mesh_test_files_param), intent(in) :: part_param
+      type(volume_partioning_param), intent(in) :: part_param
       type(group_data), intent(in) :: part_grp
 !
       integer(kind = kint), intent(in) :: idomain_new(node%numnod)
