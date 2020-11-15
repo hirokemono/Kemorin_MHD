@@ -136,7 +136,7 @@
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
 !       Re-partitioning
-      call s_repartition_by_volume(fem_T%mesh, T_meshes, part_grp)
+      call grouping_by_volume(fem_T%mesh, T_meshes, part_grp)
 !
 !       Re-partitioning for external node
 !      call const_external_grp_4_new_part                               &

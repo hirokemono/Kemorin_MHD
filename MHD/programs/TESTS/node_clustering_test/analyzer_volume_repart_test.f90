@@ -87,9 +87,7 @@
       use select_copy_from_recv
       use nod_phys_send_recv
 !
-      use const_repart_nod_and_comm
-      use const_repart_ele_connect
-      use redistribute_groups
+      use mesh_repartition_by_volume
 !
 !>     Stracture for Jacobians
 !
@@ -102,15 +100,7 @@
       type(jacobians_type) :: jacobians_T
       type(shape_finctions_at_points) :: spfs_T
 !
-      type(group_data) :: part_grp
-!
-      type(calypso_comm_table) :: part_tbl, ext_tbl
-      type(calypso_comm_table) :: ele_tbl
-!
-      type(double_numbering_data) :: new_ids_on_org
-!
-!      integer(kind = kint_gl), allocatable :: inod_gl_test(:)
-!      integer(kind = kint) :: inod, iele, k1, inum, jnod
+      type(calypso_comm_table) :: org_to_new_tbl
 !
       character(len=kchara) :: file_name
 !
@@ -164,50 +154,15 @@
       call set_belonged_ele_and_next_nod                                &
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
-!       Re-partitioning
-      call s_repartition_by_volume(fem_T%mesh, T_meshes, part_grp)
-!
-!
-      call alloc_double_numbering_data                                  &
-     &   (fem_T%mesh%node%numnod, new_ids_on_org)
-      call s_const_repart_nod_and_comm                                  &
-     &   (fem_T%mesh, next_tbl_T%neib_nod, T_meshes, part_grp,          &
-     &    new_ids_on_org, new_fem%mesh%nod_comm,                        &
-     &    new_fem%mesh%node, part_tbl, ext_tbl)
-!
-!
-      call s_const_repart_ele_connect(fem_T%mesh, ele_comm, part_tbl,   &
-     &    new_ids_on_org, ele_tbl, new_fem%mesh)
-      call dealloc_double_numbering_data(new_ids_on_org)
-!
-      call s_redistribute_groups(fem_T%mesh, fem_T%group, ele_comm,     &
-     &    new_fem%mesh, part_tbl, ele_tbl, new_fem%group)
-!
-!      allocate(inod_gl_test(new_fem%mesh%node%numnod))
-!      inod_gl_test(1:new_fem%mesh%node%numnod) = 0
-!
-!      call calypso_SR_type_int8(iflag_import_item, part_tbl,           &
-!     &    fem_T%mesh%node%numnod, new_fem%mesh%node%internal_node,     &
-!     &    fem_T%mesh%node%inod_global(1), inod_gl_test(1))
-!      call SOLVER_SEND_RECV_int8_type                                  &
-!     &  (new_fem%mesh%node%numnod, new_fem%mesh%nod_comm, inod_gl_test)
-!
-!      write(*,*) my_rank, 'Check node transfer'
-!      do inod = new_fem%mesh%node%internal_node+1,                     &
-!     &         new_fem%mesh%node%numnod
-!        if(inod_gl_test(inod)                                          &
-!     &       .ne. new_fem%mesh%node%inod_global(inod)) then
-!          write(*,*) my_rank, 'Wrong transfer at', inod,    &
-!     &        new_fem%mesh%node%inod_global(inod), inod_gl_test(inod)
-!        end if
-!      end do
+      call s_mesh_repartition_by_volume(fem_T, ele_comm,                &
+     &    next_tbl_T%neib_nod, T_meshes, new_fem, org_to_new_tbl)
 !
 !       Output appended mesh
       file_name = set_mesh_file_name                                    &
      &          (T_meshes%new_mesh_file_IO%file_prefix,                 &
      &           T_meshes%new_mesh_file_IO%iflag_format, my_rank)
-      call write_mesh_file                                             &
-     &   (my_rank, file_name, new_fem%mesh, new_fem%group)
+      call write_mesh_file                                              &
+     &   (my_rank, file_name, new_fem%mesh, new_fem%group) 
 !      call dealloc_node_geometry_base(new_fem%mesh%node)
 !
       end subroutine initialize_volume_repartition

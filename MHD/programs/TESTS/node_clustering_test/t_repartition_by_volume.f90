@@ -7,7 +7,7 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine s_repartition_by_volume(mesh, part_param, part_grp)
+!!      subroutine grouping_by_volume(mesh, part_param, part_grp)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_test_files_param), intent(in) :: part_param
 !!        type(group_data), intent(inout) :: part_grp
@@ -52,7 +52,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_repartition_by_volume(mesh, part_param, part_grp)
+      subroutine grouping_by_volume(mesh, part_param, part_grp)
 !
       use xyz_block_id_by_nod_vol
 !
@@ -120,7 +120,7 @@
       call dealloc_group(yz_part_grp)
       call dealloc_node_volume_and_sort(vol_sort)
 !
-      end subroutine s_repartition_by_volume 
+      end subroutine grouping_by_volume 
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

@@ -64,6 +64,7 @@ ele_trans_tbl_4_repart.o \
 redistribute_groups.o \
 redistribute_group_data.o \
 \
+mesh_repartition_by_volume.o \
 const_repart_nod_and_comm.o \
 const_repart_ele_connect.o \
 const_repart_mesh_data.o \

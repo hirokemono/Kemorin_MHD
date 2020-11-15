@@ -36,6 +36,9 @@
         integer(kind = kint) :: ndomain_eb(3)
 !>        number of blocks in each direction for new partition
         integer(kind = kint) :: ndivide_eb(3)
+!
+!>        Sleeve size level
+        integer(kind = kint) :: num_FEM_sleeve = 1
       end type mesh_test_files_param
 !
 !   --------------------------------------------------------------------
