@@ -88,6 +88,8 @@
       use nod_phys_send_recv
 !
       use mesh_repartition_by_volume
+      use copy_repart_and_itp_table
+      use itp_table_IO_select_4_zlib
 !
 !>     Stracture for Jacobians
 !
@@ -164,6 +166,15 @@
       call write_mesh_file                                              &
      &   (my_rank, file_name, new_fem%mesh, new_fem%group) 
 !      call dealloc_node_geometry_base(new_fem%mesh%node)
+!
+!
+      call copy_repart_tbl_to_itp_table                                 &
+     &   (fem_T%mesh, next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
+!
+      table_file_header =   T_meshes%new_mesh_file_IO%file_prefix
+      ifmt_itp_table_file = iflag_ascii
+      call sel_write_interpolate_table                                  &
+     &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
 !
       end subroutine initialize_volume_repartition
 !

@@ -1,14 +1,19 @@
-!copy_local_position_2_ele.f90
-!     module copy_local_position_2_ele
+!>@file   copy_local_position_2_ele.f90
+!!@brief  module copy_local_position_2_ele
+!!
+!!@author H. Matsui
+!!@date  Programmed by H. Matsui in May, 2010
 !
-!     Written by H. Matsui on May, 2010
-!
-!      subroutine copy_surf_local_posi_2_element(isf_ele, irot_sf,      &
-!     &          xi_surf, xi_ele)
-!      subroutine copy_edge_local_posi_2_element(iedge_ele, iflag_dir,  &
-!     &          xi_edge, xi_ele)
-!
-!      subroutine set_interpolate_flag_by_xi(xi_ele, iflag_itp)
+!> @brief Set local coordinate for node, edge, surface, and element
+!!
+!!@verbatim
+!!      subroutine copy_surf_local_posi_2_element(isf_ele, irot_sf,     &
+!!     &          xi_surf, xi_ele)
+!!      subroutine copy_edge_local_posi_2_element(iedge_ele, iflag_dir, &
+!!     &          xi_edge, xi_ele)
+!!      subroutine copy_node_local_posi_2_element(k1, xi_ele)
+!!      subroutine set_interpolate_flag_by_xi(xi_ele, iflag_itp)
+!!@endverbatim
 !
       module copy_local_position_2_ele
 !

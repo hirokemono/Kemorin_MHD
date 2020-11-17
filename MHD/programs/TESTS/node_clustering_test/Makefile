@@ -73,7 +73,9 @@ check_data_for_repartition.o \
 \
 sort_for_repartition.o \
 search_ext_node_repartition.o \
-search_from_list.o
+search_from_list.o \
+\
+copy_repart_and_itp_table.o
 
 SOURCES = $(shell ls *.f90)
 
