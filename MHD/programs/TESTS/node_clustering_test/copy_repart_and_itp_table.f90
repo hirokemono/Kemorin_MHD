@@ -14,7 +14,7 @@
 !!        type(calypso_comm_table), intent(in) :: part_tbl
 !!        type(interpolate_table), intent(inout) :: itp_info
 !!      subroutine copy_itp_table_to_repart_tbl                         &
-!!     &         (org_mesh, dest_mesh, itp_info, part_tbl)
+!!     &         (irank_read, org_mesh, dest_mesh, itp_info, part_tbl)
 !!        type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_info
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
@@ -66,15 +66,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_itp_table_to_repart_tbl                           &
-     &         (org_mesh, dest_mesh, itp_info, part_tbl)
+     &         (irank_read, org_mesh, dest_mesh, itp_info, part_tbl)
 !
+      integer(kind= kint), intent(in) :: irank_read
       type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
       type(interpolate_table), intent(in) :: itp_info
       type(calypso_comm_table), intent(inout) :: part_tbl
 !
 !
       call copy_itp_org_to_repart_export                                &
-     &   (itp_info%tbl_org, org_mesh%ele, part_tbl)
+     &   (irank_read, itp_info%tbl_org, org_mesh%ele, part_tbl)
       call copy_itp_dest_to_repart_import                               &
      &   (itp_info%tbl_dest, dest_mesh%node, part_tbl)
 !
@@ -169,10 +170,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_itp_org_to_repart_export                          &
-     &         (itp_org, org_ele, part_tbl)
+     &         (irank_read, itp_org, org_ele, part_tbl)
 !
       use copy_local_position_2_ele
 !
+      integer(kind= kint), intent(in) :: irank_read
       type(element_data), intent(in) :: org_ele
       type(interpolate_table_org), intent(in) :: itp_org
       type(calypso_comm_table), intent(inout) :: part_tbl
@@ -185,12 +187,21 @@
       call alloc_calypso_export_num(part_tbl)
 !
       part_tbl%istack_export(0) = itp_org%istack_nod_tbl_org(0)
+      if(part_tbl%nrank_export .gt. 0) then
 !$omp parallel workshare
-      part_tbl%irank_export(1:part_tbl%nrank_export)                    &
+        part_tbl%irank_export(1:part_tbl%nrank_export)                  &
      &          = itp_org%id_dest_domain(1:part_tbl%nrank_export)
-      part_tbl%istack_export(1:part_tbl%nrank_export)                   &
+        part_tbl%istack_export(1:part_tbl%nrank_export)                 &
      &          = itp_org%istack_nod_tbl_org(1:part_tbl%nrank_export)
 !$omp end parallel workshare
+!
+        if(part_tbl%irank_export(part_tbl%nrank_export)                 &
+     &     .eq. irank_read) then
+          part_tbl%iflag_self_copy = 1
+        else  
+          part_tbl%iflag_self_copy = 0
+        end if
+      end if
 !
       if(itp_org%istack_itp_type_org(4)                                 &
      &   .ne. itp_org%istack_itp_type_org(1)) write(*,*) 'Wrong table!'

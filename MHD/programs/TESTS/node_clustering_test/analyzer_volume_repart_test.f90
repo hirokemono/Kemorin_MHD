@@ -111,6 +111,7 @@
       type(interpolate_table) :: itp_tbl_IO2
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: irank_read
       integer :: i
 !
 !     --------------------- 
@@ -181,16 +182,17 @@
 !      table_file_header =   T_meshes%new_mesh_file_IO%file_prefix
       table_file_header =   'part_table'
       ifmt_itp_table_file = id_ascii_file_fmt
+      irank_read = my_rank
       call sel_write_interpolate_table                                  &
-     &   (my_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+     &   (irank_read, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       call calypso_MPI_barrier
 !
 !
-      call sel_write_interpolate_table                                  &
-     &   (my_rank, itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest)
+      call sel_read_interpolate_table                                   &
+     &   (irank_read, itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest, i)
 !
-      call copy_itp_table_to_repart_tbl                                 &
-     &   (fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
+      call copy_itp_table_to_repart_tbl(irank_read,                     &
+     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
       call calypso_MPI_barrier
 !
 !
@@ -215,10 +217,12 @@
         if(part_tbl_2%item_import(i)                                    &
      &        .ne. org_to_new_tbl%item_import(i))                       &
      &     write(*,*) 'item_import is wrong', my_rank, i
-        if(part_tbl_2%irev_import(i)                                    &
-     &        .ne. org_to_new_tbl%irev_import(i))                       &
-     &     write(*,*) 'irev_import is wrong', my_rank, i
       end do
+!      do i = 0, part_tbl_2%ntot_import
+!        if(part_tbl_2%irev_import(i)                                    &
+!     &        .ne. org_to_new_tbl%irev_import(i))                       &
+!     &     write(*,*) 'irev_import is wrong', my_rank, i
+!      end do
 !
       if(part_tbl_2%nrank_export .ne. org_to_new_tbl%nrank_export)      &
      &     write(*,*) 'nrank_export is wrong', my_rank
