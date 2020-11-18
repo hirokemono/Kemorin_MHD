@@ -107,10 +107,11 @@
       type(calypso_comm_table) :: org_to_new_tbl
       type(interpolate_table) :: itp_tbl_IO
 !
-      type(calypso_comm_table) :: org_to_new_tbl2
+      type(calypso_comm_table) :: part_tbl_2
       type(interpolate_table) :: itp_tbl_IO2
 !
       character(len=kchara) :: file_name
+      integer :: i
 !
 !     --------------------- 
 !
@@ -189,8 +190,55 @@
      &   (my_rank, itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest)
 !
       call copy_itp_table_to_repart_tbl                                 &
-     &   (fem_T%mesh, new_fem%mesh, itp_tbl_IO_2, part_tbl_2)
+     &   (fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
       call calypso_MPI_barrier
+!
+!
+      if(my_rank .eq. 0) write(*,*) 'check table reading...'
+      if(part_tbl_2%iflag_self_copy.ne.org_to_new_tbl%iflag_self_copy)  &
+     &     write(*,*) 'iflag_self_copy is wrong', my_rank
+      if(part_tbl_2%nrank_import .ne. org_to_new_tbl%nrank_import)      &
+     &     write(*,*) 'nrank_import is wrong', my_rank
+      if(part_tbl_2%ntot_import .ne. org_to_new_tbl%ntot_import)        &
+     &     write(*,*) 'ntot_import is wrong', my_rank
+      do i = 1, part_tbl_2%nrank_import
+        if(part_tbl_2%irank_import(i)                                   &
+     &        .ne.org_to_new_tbl%irank_import(i))                       &
+     &     write(*,*) 'irank_import is wrong', my_rank, i
+      end do
+      do i = 0, part_tbl_2%nrank_import
+        if(part_tbl_2%istack_import(i)                                  &
+     &        .ne.org_to_new_tbl%istack_import(i))                      &
+     &     write(*,*) 'istack_import is wrong', my_rank, i
+      end do
+      do i = 0, part_tbl_2%ntot_import
+        if(part_tbl_2%item_import(i)                                    &
+     &        .ne. org_to_new_tbl%item_import(i))                       &
+     &     write(*,*) 'item_import is wrong', my_rank, i
+        if(part_tbl_2%irev_import(i)                                    &
+     &        .ne. org_to_new_tbl%irev_import(i))                       &
+     &     write(*,*) 'irev_import is wrong', my_rank, i
+      end do
+!
+      if(part_tbl_2%nrank_export .ne. org_to_new_tbl%nrank_export)      &
+     &     write(*,*) 'nrank_export is wrong', my_rank
+      if(part_tbl_2%ntot_export .ne. org_to_new_tbl%ntot_export)        &
+     &     write(*,*) 'ntot_export is wrong', my_rank
+      do i = 1, part_tbl_2%nrank_export
+        if(part_tbl_2%irank_export(i)                                   &
+     &        .ne. org_to_new_tbl%irank_export(i))                      &
+     &     write(*,*) 'irank_export is wrong', my_rank, i
+      end do
+      do i = 0, part_tbl_2%nrank_export
+        if(part_tbl_2%istack_export(i)                                  &
+     &        .ne. org_to_new_tbl%istack_export(i))                     &
+     &     write(*,*) 'istack_export is wrong', my_rank, i
+      end do
+      do i = 0, part_tbl_2%ntot_export
+        if(part_tbl_2%item_export(i)                                    &
+     &        .ne. org_to_new_tbl%item_export(i))                       &
+     &     write(*,*) 'item_export is wrong', my_rank, i
+      end do
 !
       end subroutine initialize_volume_repartition
 !
