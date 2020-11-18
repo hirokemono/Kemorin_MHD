@@ -107,8 +107,10 @@
       type(calypso_comm_table) :: org_to_new_tbl
       type(interpolate_table) :: itp_tbl_IO
 !
+      type(calypso_comm_table) :: org_to_new_tbl2
+      type(interpolate_table) :: itp_tbl_IO2
+!
       character(len=kchara) :: file_name
-      integer(kind = kint) :: id_rank = 22
 !
 !     --------------------- 
 !
@@ -180,6 +182,14 @@
       ifmt_itp_table_file = id_ascii_file_fmt
       call sel_write_interpolate_table                                  &
      &   (my_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+      call calypso_MPI_barrier
+!
+!
+      call sel_write_interpolate_table                                  &
+     &   (my_rank, itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest)
+!
+      call copy_itp_table_to_repart_tbl                                 &
+     &   (fem_T%mesh, new_fem%mesh, itp_tbl_IO_2, part_tbl_2)
       call calypso_MPI_barrier
 !
       end subroutine initialize_volume_repartition

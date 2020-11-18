@@ -14,7 +14,7 @@
 !!        type(calypso_comm_table), intent(in) :: part_tbl
 !!        type(interpolate_table), intent(inout) :: itp_info
 !!      subroutine copy_itp_table_to_repart_tbl                         &
-!!     &         (org_mesh, dest_mesh, part_tbl, itp_info)
+!!     &         (org_mesh, dest_mesh, itp_info, part_tbl)
 !!        type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_info
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
@@ -66,7 +66,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_itp_table_to_repart_tbl                           &
-     &         (org_mesh, dest_mesh, part_tbl, itp_info)
+     &         (org_mesh, dest_mesh, itp_info, part_tbl)
 !
       type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
       type(interpolate_table), intent(in) :: itp_info
