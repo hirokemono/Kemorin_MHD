@@ -179,7 +179,7 @@
       table_file_header =   'part_table'
       ifmt_itp_table_file = id_ascii_file_fmt
       call sel_write_interpolate_table                                  &
-     &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+     &   (my_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       call calypso_MPI_barrier
 !
       end subroutine initialize_volume_repartition
