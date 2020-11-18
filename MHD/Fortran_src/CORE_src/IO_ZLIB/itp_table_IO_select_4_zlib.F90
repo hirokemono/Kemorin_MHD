@@ -55,16 +55,25 @@
       subroutine sel_write_interpolate_table                            &
      &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
 !
+      use set_mesh_extensions
+!
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      character(len=kchara) :: file_name
+      character(len=kchara) :: fname_tmp, file_name
       integer(kind = kint) :: ierr = 0
 !
 !
-      file_name = add_process_id(id_rank, table_file_IO%file_prefix)
+      fname_tmp = add_process_id(id_rank, table_file_IO%file_prefix)
+      if(     (table_file_IO%iflag_format .eq. id_binary_file_fmt)      &
+     &   .or. (table_file_IO%iflag_format .eq. id_gzip_bin_file_fmt)    &
+     &  ) then
+        file_name =  add_itb_extension(fname_tmp)
+      else
+        file_name =  add_itb_extension(fname_tmp)
+      end if
 !
 #ifdef ZLIB_IO
       if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -89,6 +98,8 @@
       subroutine sel_read_interpolate_table                             &
      &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
 !
+      use set_mesh_extensions
+!
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
 !
@@ -96,10 +107,17 @@
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      character(len=kchara) :: file_name
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
-      file_name = add_process_id(id_rank, table_file_IO%file_prefix)
+      fname_tmp = add_process_id(id_rank, table_file_IO%file_prefix)
+      if(     (table_file_IO%iflag_format .eq. id_binary_file_fmt)      &
+     &   .or. (table_file_IO%iflag_format .eq. id_gzip_bin_file_fmt)    &
+     &  ) then
+        file_name =  add_itb_extension(fname_tmp)
+      else
+        file_name =  add_itb_extension(fname_tmp)
+      end if
 !
 #ifdef ZLIB_IO
       if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -125,15 +143,24 @@
       subroutine sel_write_itp_coefs_dest                               &
      &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !
+      use set_mesh_extensions
+!
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      character(len=kchara) :: file_name
+      character(len=kchara) :: fname_tmp, file_name
       integer(kind = kint) :: ierr = 0
 !
-      file_name = add_process_id(id_rank, work_header)
+      fname_tmp = add_process_id(id_rank, work_header)
+      if(     (table_file_IO%iflag_format .eq. id_binary_file_fmt)      &
+     &   .or. (table_file_IO%iflag_format .eq. id_gzip_bin_file_fmt)    &
+     &  ) then
+        file_name =  add_itb_extension(fname_tmp)
+      else
+        file_name =  add_itb_extension(fname_tmp)
+      end if
 !
 #ifdef ZLIB_IO
       if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -158,6 +185,8 @@
       subroutine sel_read_itp_coefs_dest(id_rank, table_file_IO,        &
      &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
+      use set_mesh_extensions
+!
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
 !
@@ -165,10 +194,17 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      character(len=kchara) :: file_name
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
-      file_name = add_process_id(id_rank, work_header)
+      fname_tmp = add_process_id(id_rank, work_header)
+      if(     (table_file_IO%iflag_format .eq. id_binary_file_fmt)      &
+     &   .or. (table_file_IO%iflag_format .eq. id_gzip_bin_file_fmt)    &
+     &  ) then
+        file_name =  add_itb_extension(fname_tmp)
+      else
+        file_name =  add_itb_extension(fname_tmp)
+      end if
 !
 #ifdef ZLIB_IO
       if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -193,16 +229,25 @@
       subroutine sel_read_itp_table_dest                                &
      &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !
+      use set_mesh_extensions
+!
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      character(len=kchara) :: file_name
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
-      file_name = add_process_id(id_rank, work_header)
+      fname_tmp = add_process_id(id_rank, work_header)
+      if(     (table_file_IO%iflag_format .eq. id_binary_file_fmt)      &
+     &   .or. (table_file_IO%iflag_format .eq. id_gzip_bin_file_fmt)    &
+     &  ) then
+        file_name =  add_itb_extension(fname_tmp)
+      else
+        file_name =  add_itb_extension(fname_tmp)
+      end if
 !
 #ifdef ZLIB_IO
       if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
@@ -227,16 +272,25 @@
       subroutine sel_read_itp_domain_dest                               &
      &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !
+      use set_mesh_extensions
+!
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      character(len=kchara) :: file_name
+      character(len=kchara) :: fname_tmp, file_name
 !
 !
-      file_name =  add_process_id(id_rank, work_header)
+      fname_tmp =  add_process_id(id_rank, work_header)
+      if(     (table_file_IO%iflag_format .eq. id_binary_file_fmt)      &
+     &   .or. (table_file_IO%iflag_format .eq. id_gzip_bin_file_fmt)    &
+     &  ) then
+        file_name =  add_itb_extension(fname_tmp)
+      else
+        file_name =  add_itb_extension(fname_tmp)
+      end if
 !
 #ifdef ZLIB_IO
       if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
