@@ -168,17 +168,19 @@
      &          (T_meshes%new_mesh_file_IO%file_prefix,                 &
      &           T_meshes%new_mesh_file_IO%iflag_format, my_rank)
       call write_mesh_file                                              &
-     &   (my_rank, file_name, new_fem%mesh, new_fem%group) 
-!      call dealloc_node_geometry_base(new_fem%mesh%node)
+     &   (my_rank, file_name, new_fem%mesh, new_fem%group)
+      call calypso_MPI_barrier
 !
 !
       call copy_repart_tbl_to_itp_table                                 &
      &   (fem_T%mesh, next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
 !
-      table_file_header =   T_meshes%new_mesh_file_IO%file_prefix
+!      table_file_header =   T_meshes%new_mesh_file_IO%file_prefix
+      table_file_header =   'part_table'
       ifmt_itp_table_file = iflag_ascii
       call sel_write_interpolate_table                                  &
      &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+      call calypso_MPI_barrier
 !
       end subroutine initialize_volume_repartition
 !
