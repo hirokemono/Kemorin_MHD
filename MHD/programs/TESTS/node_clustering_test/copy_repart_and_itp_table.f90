@@ -95,7 +95,7 @@
       type(interpolate_table_org), intent(inout) :: itp_org
 !
       integer(kind = kint) :: inum, inod, k1, ist
-      real(kind = kint) :: xi_ele(3)
+      real(kind = kreal) :: xi_ele(3)
 !
 !
       itp_org%iflag_self_itp_send = part_tbl%iflag_self_copy
@@ -182,7 +182,7 @@
 !
       part_tbl%iflag_self_copy = itp_org%iflag_self_itp_send
       part_tbl%nrank_export =    itp_org%num_dest_domain
-      call alloc_calypso_export_num(itp_org)
+      call alloc_calypso_export_num(part_tbl)
 !
       part_tbl%istack_export(0) = itp_org%istack_nod_tbl_org(0)
 !$omp parallel workshare
@@ -199,10 +199,8 @@
       if(itp_org%istack_itp_type_org(2)                                 &
      &   .ne. itp_org%istack_itp_type_org(1)) write(*,*) 'Wrong table!'
 !
-      call set_stack_tbl_wtype_org_smp(itp_org)
-!
       part_tbl%ntot_export = itp_org%ntot_table_org
-      call alloc_calypso_export_item(itp_org)
+      call alloc_calypso_export_item(part_tbl)
 !
 !$omp parallel do private(inum,iele,k1)
       do inum = 1, part_tbl%ntot_export

@@ -42,6 +42,7 @@
 !
       use m_array_for_send_recv
       use m_default_file_prefix
+      use m_field_file_format
       use t_ctl_data_volume_grouping
       use t_control_param_vol_grping
       use t_1d_repartitioning_work
@@ -59,6 +60,7 @@
       use t_next_node_ele_4_node
       use t_calypso_comm_table
       use t_repart_double_numberings
+      use t_interpolate_table
 !
       use mpi_load_mesh_data
       use mesh_file_IO
@@ -103,8 +105,10 @@
       type(shape_finctions_at_points) :: spfs_T
 !
       type(calypso_comm_table) :: org_to_new_tbl
+      type(interpolate_table) :: itp_tbl_IO
 !
       character(len=kchara) :: file_name
+      integer(kind = kint) :: id_rank = 22
 !
 !     --------------------- 
 !
