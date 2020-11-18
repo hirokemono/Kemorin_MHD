@@ -42,7 +42,7 @@
 !
       use m_array_for_send_recv
       use m_default_file_prefix
-      use m_field_file_format
+      use m_file_format_switch
       use t_ctl_data_volume_grouping
       use t_control_param_vol_grping
       use t_1d_repartitioning_work
@@ -177,7 +177,7 @@
 !
 !      table_file_header =   T_meshes%new_mesh_file_IO%file_prefix
       table_file_header =   'part_table'
-      ifmt_itp_table_file = iflag_ascii
+      ifmt_itp_table_file = id_ascii_file_fmt
       call sel_write_interpolate_table                                  &
      &   (id_rank, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       call calypso_MPI_barrier
