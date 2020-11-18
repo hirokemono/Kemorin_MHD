@@ -218,11 +218,11 @@
      &        .ne. org_to_new_tbl%item_import(i))                       &
      &     write(*,*) 'item_import is wrong', my_rank, i
       end do
-!      do i = 0, part_tbl_2%ntot_import
-!        if(part_tbl_2%irev_import(i)                                    &
-!     &        .ne. org_to_new_tbl%irev_import(i))                       &
-!     &     write(*,*) 'irev_import is wrong', my_rank, i
-!      end do
+      do i = 0, part_tbl_2%ntot_import
+        if(part_tbl_2%irev_import(i)                                    &
+     &        .ne. org_to_new_tbl%irev_import(i))                       &
+     &     write(*,*) 'irev_import is wrong', my_rank, i
+      end do
 !
       if(part_tbl_2%nrank_export .ne. org_to_new_tbl%nrank_export)      &
      &     write(*,*) 'nrank_export is wrong', my_rank

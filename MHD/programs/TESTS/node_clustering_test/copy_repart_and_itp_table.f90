@@ -103,12 +103,15 @@
       itp_org%num_dest_domain = part_tbl%nrank_export
       call alloc_itp_num_org(np_smp, itp_org)
 !
+      if(part_tbl%nrank_export .gt. 0) then
 !$omp parallel workshare
-      itp_org%id_dest_domain(1:part_tbl%nrank_export)                   &
+        itp_org%id_dest_domain(1:part_tbl%nrank_export)                 &
      &          = part_tbl%irank_export(1:part_tbl%nrank_export)
-      itp_org%istack_nod_tbl_org(1:part_tbl%nrank_export)               &
+        itp_org%istack_nod_tbl_org(1:part_tbl%nrank_export)             &
      &          = part_tbl%istack_export(1:part_tbl%nrank_export)
 !$omp end parallel workshare
+      end if
+!
       itp_org%istack_itp_type_org(0) =   0
       itp_org%istack_itp_type_org(1:4) = part_tbl%ntot_import
       call set_stack_tbl_wtype_org_smp(itp_org)
@@ -148,21 +151,27 @@
       itp_dest%num_org_domain =      part_tbl%nrank_import
       call alloc_itp_num_dest(itp_dest)
       itp_dest%istack_nod_tbl_dest(0) = part_tbl%istack_import(0)
+!
+      if(part_tbl%nrank_import .gt. 0) then
 !$omp parallel workshare
-      itp_dest%id_org_domain(1:part_tbl%nrank_import)                   &
+        itp_dest%id_org_domain(1:part_tbl%nrank_import)                 &
      &          = part_tbl%irank_import(1:part_tbl%nrank_import)
-      itp_dest%istack_nod_tbl_dest(1:part_tbl%nrank_import)             &
+        itp_dest%istack_nod_tbl_dest(1:part_tbl%nrank_import)           &
      &          = part_tbl%istack_import(1:part_tbl%nrank_import)
 !$omp end parallel workshare
+      end if
 !
       itp_dest%ntot_table_dest = part_tbl%ntot_import
       call alloc_itp_table_dest(itp_dest)
+!
+      if(part_tbl%ntot_import .gt. 0) then
 !$omp parallel workshare
-      itp_dest%inod_dest_4_dest(1:part_tbl%ntot_import)                 &
+        itp_dest%inod_dest_4_dest(1:part_tbl%ntot_import)               &
      &      = part_tbl%item_import(1:part_tbl%ntot_import)
-      itp_dest%irev_dest_4_dest(1:part_tbl%ntot_import)                 &
+        itp_dest%irev_dest_4_dest(1:part_tbl%ntot_import)               &
      &      = part_tbl%irev_import(1:part_tbl%ntot_import)
 !$omp end parallel workshare
+      end if
 !
       end subroutine copy_repart_import_to_itp_dest
 !
@@ -232,25 +241,37 @@
       type(interpolate_table_dest), intent(in) :: itp_dest
       type(calypso_comm_table), intent(inout) :: part_tbl
 !
+      integer(kind = kint) :: inum, inod
+!
 !
       part_tbl%nrank_import = itp_dest%num_org_domain
       call alloc_calypso_import_num(part_tbl)
       part_tbl%istack_import(0) = itp_dest%istack_nod_tbl_dest(0)
+!
+      if(part_tbl%nrank_import .gt. 0) then
 !$omp parallel workshare
-      part_tbl%irank_import(1:part_tbl%nrank_import)                    &
+        part_tbl%irank_import(1:part_tbl%nrank_import)                  &
      &          = itp_dest%id_org_domain(1:part_tbl%nrank_import)
-      part_tbl%istack_import(1:part_tbl%nrank_import)                   &
+        part_tbl%istack_import(1:part_tbl%nrank_import)                 &
      &          = itp_dest%istack_nod_tbl_dest(1:part_tbl%nrank_import)
 !$omp end parallel workshare
+      end if
 !
       part_tbl%ntot_import = itp_dest%ntot_table_dest
       call alloc_calypso_import_item(dest_node%numnod, part_tbl)
-!$omp parallel workshare
-      part_tbl%item_import(1:part_tbl%ntot_import)                      &
-     &      = itp_dest%inod_dest_4_dest(1:part_tbl%ntot_import)
-      part_tbl%irev_import(1:part_tbl%ntot_import)                      &
-     &      = itp_dest%irev_dest_4_dest(1:part_tbl%ntot_import)
-!$omp end parallel workshare
+!
+!$omp parallel do private(inum,inod)
+      do inum = 1, part_tbl%ntot_import
+        inod = itp_dest%inod_dest_4_dest(inum)
+        part_tbl%item_import(inum) =     inod
+        part_tbl%irev_import(inod) =     inum
+      end do
+!$omp end parallel do
+!$omp parallel do private(inum,inod)
+      do inum = part_tbl%ntot_import+1, dest_node%numnod
+        part_tbl%irev_import(inod) = part_tbl%ntot_import + 1
+      end do
+!$omp end parallel do
 !
       end subroutine copy_itp_dest_to_repart_import
 !
