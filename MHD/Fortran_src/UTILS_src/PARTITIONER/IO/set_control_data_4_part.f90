@@ -130,7 +130,7 @@
 !
       if(part_p%NTYP_div .eq. iPART_FINE_MESH_TBL) then
         if (part_ctl%itp_tbl_head_ctl%iflag .eq. 1) then
-          part_p%finer_inter_file_head                                  &
+          part_p%itp_file_IO%file_prefix                                &
      &          = part_ctl%itp_tbl_head_ctl%charavalue
         else
           write(*,*) 'set interpolate file name'
@@ -141,7 +141,7 @@
      &      part_ctl%finer_mesh_head_ctl, part_ctl%finer_mesh_fmt_ctl,  &
      &      part_p%finer_mesh_file)
 !
-        ifmt_itp_table_file                                             &
+        part_p%itp_file_IO%iflag_format                                 &
      &       = choose_file_format(part_ctl%itp_tbl_format_ctl)
       end if
 !

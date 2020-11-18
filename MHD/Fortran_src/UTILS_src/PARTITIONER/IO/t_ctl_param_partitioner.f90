@@ -80,7 +80,8 @@
         character(len=kchara) :: metis_file_name = 'graph.in'
         character(len=kchara) :: metis_sdom_name ='metis_part.dat'
 !
-        character(len=kchara) :: finer_inter_file_head
+         type(field_IO_params) :: itp_file_IO
+!
         character(len=kchara) :: sphere_data_file_name
       end type ctl_param_partitioner
 !

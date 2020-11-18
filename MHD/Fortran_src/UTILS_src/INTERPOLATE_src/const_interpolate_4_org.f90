@@ -25,6 +25,7 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use t_work_const_itp_table
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -39,6 +40,8 @@
 !
 !> Structure of interpolation coefficients for target grid
       type(interpolate_coefs_dest), save, private :: IO_itp_c_dest
+!
+      type(field_IO_params), save, private ::  tmp_tbl_IO
 !
 !-----------------------------------------------------------------------
 !
@@ -98,11 +101,11 @@
           if (my_rank_2nd .ge. nprocs) then
             IO_itp_dest%num_org_domain = 0
           else
-            table_file_header = work_header
+            tmp_tbl_IO%file_prefix = work_header
 !
             write(*,*) 'sel_read_itp_table_dest', my_rank_2nd
             call sel_read_itp_table_dest                                &
-     &         (my_rank_2nd, IO_itp_dest, ierr)
+     &         (my_rank_2nd, tmp_tbl_IO, IO_itp_dest, ierr)
 !
             if (ierr.ne.0) then
               call calypso_MPI_abort(ierr,'Check work file')
@@ -110,27 +113,28 @@
 !
           end if
 !
-          table_file_header = gen_itp_p%table_file_head
-          write(*,*) 'sel_write_interpolate_table', table_file_header
+          write(*,*) 'sel_write_interpolate_table',                     &
+     &              tmp_tbl_IO%file_prefix
           call sel_write_interpolate_table                              &
-     &       (my_rank_2nd, IO_itp_org, IO_itp_dest)
+     &       (my_rank_2nd, gen_itp_p%itp_file_IO,                       &
+     &        IO_itp_org, IO_itp_dest)
 !
         end if
       end do
 !
 !
       if(my_rank .ge. nprocs_2nd) then
-        table_file_header = work_header
+        tmp_tbl_IO%file_prefix = work_header
 !
-        call sel_read_itp_table_dest(my_rank, IO_itp_dest, ierr)
+        call sel_read_itp_table_dest                                    &
+     &     (my_rank, tmp_tbl_IO, IO_itp_dest, ierr)
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         IO_itp_org%num_dest_domain = 0
 !
-        table_file_header = gen_itp_p%table_file_head
         call sel_write_interpolate_table                                &
-     &     (my_rank, IO_itp_org, IO_itp_dest)
+     &     (my_rank, gen_itp_p%itp_file_IO, IO_itp_org, IO_itp_dest)
 !
       end if
 !
@@ -158,9 +162,10 @@
       do ip = 1, nprocs_dest
 !
         n_dest_rank = int(mod(id_org_rank+ip,nprocs_dest))
-        table_file_header = work_header
+        tmp_tbl_IO%file_prefix = work_header
 !
-        call sel_read_itp_table_dest(n_dest_rank, IO_itp_dest, ierr)
+        call sel_read_itp_table_dest                                    &
+     &     (n_dest_rank, tmp_tbl_IO, IO_itp_dest, ierr)
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
@@ -196,9 +201,9 @@
       itp_org%num_dest_domain = 0
       do ip = 1, nprocs_dest
         n_dest_rank = int(mod(id_org_rank+ip,nprocs_dest))
-        table_file_header = work_header
+        tmp_tbl_IO%file_prefix = work_header
         call sel_read_itp_coefs_dest                                    &
-     &     (n_dest_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (n_dest_rank, tmp_tbl_IO, IO_itp_dest, IO_itp_c_dest, ierr)
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin                                  &

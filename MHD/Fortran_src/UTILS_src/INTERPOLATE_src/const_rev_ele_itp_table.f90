@@ -4,7 +4,7 @@
 !
 !!      subroutine const_rev_ele_interpolate_table                      &
 !!     &         (gen_itp_p, cst_itp_wk)
-!!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
+!!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       module const_rev_ele_itp_table
@@ -42,7 +42,7 @@
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
 !
-      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
+      type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
       type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
       integer :: jp, my_rank_2nd
@@ -85,40 +85,43 @@
           if (my_rank_2nd .ge. nprocs) then
             IO_itp_dest%num_org_domain = 0
           else
-            table_file_header = work_header
+            gen_itp_p%itp_file_IO%file_prefix = work_header
 !
             call sel_read_itp_table_dest                                &
-     &         (my_rank_2nd, IO_itp_dest, ierr)
+     &         (my_rank_2nd, gen_itp_p%itp_file_IO, IO_itp_dest, ierr)
             if (ierr .ne. 0) then
               call calypso_MPI_abort(ierr,'Check work file')
             end if
           end if
 !
-          call load_interpolate_table(my_rank_2nd, itp_ele_c2f)
+          call load_interpolate_table                                   &
+     &       (my_rank_2nd, gen_itp_p%itp_file_IO, itp_ele_c2f)
 !
           call reverse_ele_itp_table_type                               &
      &       (itp_ele_c2f, itp_ele_f2c, cst_itp_wk)
 !
-          table_file_header = gen_itp_p%table_file_head
-          call output_interpolate_table(my_rank, itp_ele_f2c)
+          call output_interpolate_table                                 &
+     &       (my_rank, gen_itp_p%itp_file_IO, itp_ele_f2c)
         end if
       end do
 !
       if (my_rank .ge. nprocs_2nd) then
-        table_file_header = work_header
-        call sel_read_itp_table_dest(my_rank, IO_itp_dest, ierr)
+        gen_itp_p%itp_file_IO%file_prefix = work_header
+        call sel_read_itp_table_dest                                    &
+     &     (my_rank, gen_itp_p%itp_file_IO, IO_itp_dest, ierr)
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         IO_itp_org%num_dest_domain = 0
         IO_itp_org%ntot_table_org =  0
-        call load_interpolate_table(my_rank, itp_ele_c2f)
+        call load_interpolate_table                                     &
+     &     (my_rank, gen_itp_p%itp_file_IO, itp_ele_c2f)
 !
         call reverse_ele_itp_table_type                                 &
      &     (itp_ele_c2f, itp_ele_f2c, cst_itp_wk)
 !
-        table_file_header = gen_itp_p%table_file_head
-        call output_interpolate_table(my_rank, itp_ele_f2c)
+        call output_interpolate_table                                   &
+     &     (my_rank, gen_itp_p%itp_file_IO, itp_ele_f2c)
       end if
 !
       end subroutine const_rev_ele_interpolate_table

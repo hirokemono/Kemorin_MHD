@@ -1,11 +1,20 @@
-!m_interpolate_table_IO.f90
-!      module m_interpolate_table_IO
+!>@file   m_interpolate_table_IO
+!!@brief  module m_interpolate_table_IO
+!!
+!!@author H. Matsui
+!!@date Programmed on Dec., 2008
 !
-!     Written by H. Matsui on Dec., 2008
-!
-!!      subroutine load_interpolate_table(id_rank, itp_table)
+!>@brief  Load and output interpolation table
+!!
+!!@verbatim
+!!      subroutine load_interpolate_table                               &
+!!     &         (id_rank, table_file_IO, itp_table)
 !!      subroutine load_zero_interpolate_table(itp_table)
-!!      subroutine output_interpolate_table(id_rank, itp_table)
+!!      subroutine output_interpolate_table                             &
+!!     &         (id_rank, table_file_IO, itp_table)
+!!        type(field_IO_params), intent(in) ::  table_file_IO
+!!        type(interpolate_table), intent(inout) :: itp_table
+!!@endverbatim
 !
       module m_interpolate_table_IO
 !
@@ -15,6 +24,7 @@
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -33,19 +43,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_interpolate_table(id_rank, itp_table)
+      subroutine load_interpolate_table                                 &
+     &         (id_rank, table_file_IO, itp_table)
 !
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table), intent(inout) :: itp_table
 !
       integer(kind = kint) :: ierr
 !
 !
       call sel_read_interpolate_table                                   &
-     &   (id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &   (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
 !
       call copy_itp_tbl_types_dst                                       &
      &   (id_rank, IO_itp_dest, itp_table%tbl_dest)
@@ -74,12 +86,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_interpolate_table(id_rank, itp_table)
+      subroutine output_interpolate_table                               &
+     &         (id_rank, table_file_IO, itp_table)
 !
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table), intent(inout) :: itp_table
 !
 !
@@ -92,7 +106,7 @@
       call dealloc_itp_num_org(itp_table%tbl_org)
 !
       call sel_write_interpolate_table                                  &
-     &   (id_rank, IO_itp_org, IO_itp_dest)
+     &   (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
 !
       end subroutine output_interpolate_table
 !

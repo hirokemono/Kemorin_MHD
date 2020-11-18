@@ -3,7 +3,7 @@
 !!
 !!@author H. Matsui
 !!@date Programmed on Oct., 2020
-!
+!!
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
@@ -107,6 +107,7 @@
       type(calypso_comm_table) :: org_to_new_tbl
       type(interpolate_table) :: itp_tbl_IO
 !
+      type(field_IO_params) ::  table_file_IO
       type(calypso_comm_table) :: part_tbl_2
       type(interpolate_table) :: itp_tbl_IO2
 !
@@ -179,17 +180,17 @@
       call copy_repart_tbl_to_itp_table                                 &
      &   (fem_T%mesh, next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
 !
-!      table_file_header =   T_meshes%new_mesh_file_IO%file_prefix
-      table_file_header =   'part_table'
-      ifmt_itp_table_file = id_ascii_file_fmt
+!      table_file_IO%file_prefix = T_meshes%new_mesh_file_IO%file_prefix
+      table_file_IO%file_prefix =  'part_table'
+      table_file_IO%iflag_format = id_ascii_file_fmt
       irank_read = my_rank
-      call sel_write_interpolate_table                                  &
-     &   (irank_read, itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+      call sel_write_interpolate_table(irank_read, table_file_IO,       &
+     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
       call calypso_MPI_barrier
 !
 !
-      call sel_read_interpolate_table                                   &
-     &   (irank_read, itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest, i)
+      call sel_read_interpolate_table(irank_read, table_file_IO,        &
+     &     itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest, i)
 !
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)

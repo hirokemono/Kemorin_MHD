@@ -67,6 +67,8 @@
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(phys_data), intent(inout) :: rj_fld
 !
+      type(field_IO_params) ::  itp_file_IO
+!
 !
       iphys_sph%i_magne =      1
       iphys_sph%base%i_current =    4
@@ -101,12 +103,12 @@
 !
 !     ---------------------
 !
-      ifmt_itp_table_file = ifile_type
-      table_file_header = FEM_2_SPH_tbl_head
-      call load_interpolate_table(my_rank, itp_FEM_2_SPH)
+      itp_file_IO%iflag_format = ifile_type
+      itp_file_IO%file_prefix = FEM_2_SPH_tbl_head
+      call load_interpolate_table(my_rank, IO_itp_org, itp_FEM_2_SPH)
 !
-      table_file_header = SPH_2_FEM_tbl_head
-      call load_interpolate_table(my_rank, itp_SPH_2_FEM)
+      itp_file_IO%file_prefix = SPH_2_FEM_tbl_head
+      call load_interpolate_table(my_rank, itp_file_IO, itp_SPH_2_FEM)
 !
 !
       call init_interpolate_mat_type(mesh_fem%ele,                      &

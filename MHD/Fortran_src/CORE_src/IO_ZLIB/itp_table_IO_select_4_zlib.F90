@@ -1,20 +1,30 @@
-!itp_table_IO_select_4_zlib.F90
-!      module itp_table_IO_select_4_zlib
-!
-!        programmed by H.Matsui on Sep. 2006 (ver 1.2)
-!
+!>@file   itp_table_IO_select_4_zlib.f90
+!!@brief  module itp_table_IO_select_4_zlib
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006 (ver 1.2)
+!!
+!>@brief  Make grouping with respect to volume
+!!
+!!@verbatim
 !!      subroutine sel_write_interpolate_table                          &
-!!     &         (id_rank, IO_itp_org, IO_itp_dest)
+!!     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
 !!      subroutine sel_read_interpolate_table                           &
-!!     &         (id_rank, IO_itp_org, IO_itp_dest, ierr)
+!!     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
+!!        type(field_IO_params), intent(in) ::  table_file_IO
 !!
 !!      subroutine sel_write_itp_coefs_dest                             &
-!!     &         (id_rank, IO_itp_dest, IO_itp_c_dest)
-!!      subroutine sel_read_itp_coefs_dest                              &
-!!     &         (id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-!!      subroutine sel_read_itp_table_dest(id_rank, IO_itp_dest, ierr)
-!!      subroutine sel_read_itp_domain_dest(id_rank, IO_itp_dest, ierr)
+!!     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
+!!      subroutine sel_read_itp_coefs_dest(id_rank, table_file_IO,      &
+!!     &          IO_itp_dest, IO_itp_c_dest, ierr)
+!!        type(field_IO_params), intent(in) ::  table_file_IO
+!!      subroutine sel_read_itp_table_dest                              &
+!!     &         (id_rank, table_file_IO, IO_itp_dest, ierr)
+!!      subroutine sel_read_itp_domain_dest                             &
+!!     &         (id_rank, table_file_IO, IO_itp_dest, ierr)
+!!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+!!@endverbatim
 !
       module itp_table_IO_select_4_zlib
 !
@@ -24,6 +34,7 @@
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
+      use t_file_IO_parameter
 !
       use itp_table_file_IO
       use itp_table_file_IO_b
@@ -34,11 +45,6 @@
       implicit none
 !
       character(len=kchara), parameter :: work_header = 'work'
-      character(len=kchara) :: table_file_header
-      character(len=kchara) :: tbl_file_name
-      integer(kind = kint) :: ifmt_itp_table_file
-!
-      private :: tbl_file_name
 !
 !-----------------------------------------------------------------------
 !
@@ -47,31 +53,33 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_write_interpolate_table                            &
-     &         (id_rank, IO_itp_org, IO_itp_dest)
+     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      character(len=kchara) :: file_name
       integer(kind = kint) :: ierr = 0
 !
 !
-      tbl_file_name = add_process_id(id_rank, table_file_header)
+      file_name = add_process_id(id_rank, table_file_IO%file_prefix)
 !
 #ifdef ZLIB_IO
-      if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
+      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_write_itp_table_file                                    &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest)
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
         return
       end if
 #endif
 !
-      if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call write_itp_table_file_b                                     &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
-      else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call write_itp_table_file_a                                     &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest)
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
       end if
 !
       end subroutine sel_write_interpolate_table
@@ -79,30 +87,34 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_read_interpolate_table                             &
-     &         (id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
+!
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_org), intent(inout) :: IO_itp_org
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      character(len=kchara) :: file_name
 !
-      tbl_file_name = add_process_id(id_rank, table_file_header)
+!
+      file_name = add_process_id(id_rank, table_file_IO%file_prefix)
 !
 #ifdef ZLIB_IO
-      if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
+      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_itp_table_file                                     &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
         return
       end if
 #endif
 !
-      if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_table_file_b                                      &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
-      else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_table_file_a                                      &
-     &     (tbl_file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
       end if
 !
       end subroutine sel_read_interpolate_table
@@ -111,119 +123,135 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_write_itp_coefs_dest                               &
-     &         (id_rank, IO_itp_dest, IO_itp_c_dest)
+     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
+      character(len=kchara) :: file_name
       integer(kind = kint) :: ierr = 0
 !
-      tbl_file_name = add_process_id(id_rank, work_header)
+      file_name = add_process_id(id_rank, work_header)
 !
 #ifdef ZLIB_IO
-      if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
+      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call  gz_write_itp_coefs_dest_file                              &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
         return
       end if
 #endif
 !
-      if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call  write_itp_coefs_dest_file_b                               &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-      else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call  write_itp_coefs_dest_file_a                               &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
       end if
 !
       end subroutine sel_write_itp_coefs_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_itp_coefs_dest                                &
-     &         (id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+      subroutine sel_read_itp_coefs_dest(id_rank, table_file_IO,        &
+     &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
+!
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
+      character(len=kchara) :: file_name
 !
-      tbl_file_name = add_process_id(id_rank, work_header)
+!
+      file_name = add_process_id(id_rank, work_header)
 !
 #ifdef ZLIB_IO
-      if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
+      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_itp_coefs_dest_file                                &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
         return
       end if
 #endif
 !
-      if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_coefs_dest_file_b                                 &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-      else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_coefs_dest_file_a                                 &
-     &     (tbl_file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
       end if
 !
       end subroutine sel_read_itp_coefs_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_itp_table_dest(id_rank, IO_itp_dest, ierr)
+      subroutine sel_read_itp_table_dest                                &
+     &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
+!
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      character(len=kchara) :: file_name
 !
-      tbl_file_name = add_process_id(id_rank, work_header)
+!
+      file_name = add_process_id(id_rank, work_header)
 !
 #ifdef ZLIB_IO
-      if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
+      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_itp_table_dest_file                                &
-     &     (tbl_file_name, id_rank, IO_itp_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, ierr)
         return
       end if
 #endif
 !
-      if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_table_dest_file_b                                 &
-     &     (tbl_file_name, id_rank, IO_itp_dest, ierr)
-      else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
+     &     (file_name, id_rank, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_table_dest_file_a                                 &
-     &     (tbl_file_name, id_rank, IO_itp_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, ierr)
       end if
 !
       end subroutine sel_read_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_itp_domain_dest(id_rank, IO_itp_dest, ierr)
+      subroutine sel_read_itp_domain_dest                               &
+     &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !
       integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
+!
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      character(len=kchara) :: file_name
 !
-      tbl_file_name =  add_process_id(id_rank, work_header)
+!
+      file_name =  add_process_id(id_rank, work_header)
 !
 #ifdef ZLIB_IO
-      if(ifmt_itp_table_file .eq. id_gzip_txt_file_fmt) then
+      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
         call gz_read_itp_domain_dest_file                               &
-     &     (tbl_file_name, id_rank, IO_itp_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, ierr)
         return
       end if
 #endif
 !
-      if (ifmt_itp_table_file .eq. id_binary_file_fmt) then
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_domain_dest_file_b                                &
-     &     (tbl_file_name, id_rank, IO_itp_dest, ierr)
-      else if(ifmt_itp_table_file .eq. id_ascii_file_fmt) then
+     &     (file_name, id_rank, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_domain_dest_file_a                                &
-     &     (tbl_file_name, id_rank, IO_itp_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, ierr)
       end if
 !
       end subroutine sel_read_itp_domain_dest

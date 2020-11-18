@@ -54,8 +54,7 @@
 !
 !     read interpolate table
 !
-      table_file_header = part_p%finer_inter_file_head
-      call load_interpolate_table(0, itp_table)
+      call load_interpolate_table(0, part_p%itp_file_IO, itp_table)
 !
 !     read interpolate table
 !

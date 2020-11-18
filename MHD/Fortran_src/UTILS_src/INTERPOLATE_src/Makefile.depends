@@ -2,7 +2,7 @@ cal_interpolate_coefs.o: $(ITP_SRCDIR)/cal_interpolate_coefs.f90 m_precision.o c
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_position_and_grad.o: $(ITP_SRCDIR)/cal_position_and_grad.f90 m_precision.o m_constants.o m_geometry_constants.o cal_shape_function_3d.o interporate_position_in_ele.o cal_shape_function_2d.o cal_shape_function_1d.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_interpolate_4_org.o: $(ITP_SRCDIR)/const_interpolate_4_org.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o t_ctl_params_4_gen_table.o m_2nd_pallalel_vector.o m_interpolate_table_IO.o itp_table_IO_select_4_zlib.o copy_interpolate_types.o set_itp_destIO_2_org.o ordering_itp_org_tbl.o
+const_interpolate_4_org.o: $(ITP_SRCDIR)/const_interpolate_4_org.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_work_const_itp_table.o t_file_IO_parameter.o t_ctl_params_4_gen_table.o m_2nd_pallalel_vector.o m_interpolate_table_IO.o itp_table_IO_select_4_zlib.o copy_interpolate_types.o set_itp_destIO_2_org.o ordering_itp_org_tbl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_rev_ele_itp_table.o: $(ITP_SRCDIR)/const_rev_ele_itp_table.f90 m_precision.o m_machine_parameter.o t_interpolate_table.o t_work_const_itp_table.o calypso_mpi.o t_interpolate_tbl_org.o t_ctl_params_4_gen_table.o m_2nd_pallalel_vector.o m_interpolate_table_IO.o copy_interpolate_types.o itp_table_IO_select_4_zlib.o const_interpolate_4_org.o
 	$(F90) -c $(F90OPTFLAGS) $<

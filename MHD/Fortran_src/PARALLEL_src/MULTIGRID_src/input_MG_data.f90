@@ -23,6 +23,7 @@
       use calypso_mpi
       use t_MGCG_parameter
       use t_MGCG_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -34,7 +35,6 @@
 !
       subroutine input_MG_mesh(MG_file, MGCG_WK, MGCG_FEM, mesh_file)
 !
-      use t_file_IO_parameter
       use mpi_load_mesh_data
       use load_mesh_data
       use element_file_IO
@@ -71,15 +71,17 @@
      &     :: MG_itp(MGCG_WK%num_MG_level)
 !
       integer(kind = kint) :: i_level
+      type(field_IO_params) :: itp_file_IO
 !
 !
       do i_level = 1, MG_file%nlevel_f
         if(my_rank.lt.MGCG_WK%MG_mpi(i_level-1)%nprocs                  &
      &      .or. i_level .eq. 1) then
-          write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
-          table_file_header = MG_file%MG_f2c_tbl_head(i_level)
-          ifmt_itp_table_file = MG_file%ifmt_MG_table_file(i_level)
-          call load_interpolate_table(my_rank, MG_itp(i_level)%f2c)
+          write(*,*) 'MG_f2c_tbl_head format', itp_file_IO%iflag_format
+          itp_file_IO%file_prefix = MG_file%MG_f2c_tbl_head(i_level)
+          itp_file_IO%iflag_format= MG_file%ifmt_MG_table_file(i_level)
+          call load_interpolate_table                                   &
+     &       (my_rank, itp_file_IO, MG_itp(i_level)%f2c)
         else
           call load_zero_interpolate_table(MG_itp(i_level)%f2c)
         end if
@@ -91,10 +93,11 @@
       do i_level = 1, MG_file%nlevel_f
         if(my_rank .lt. MGCG_WK%MG_mpi(i_level-1)%nprocs                &
      &      .or. i_level .eq. 1) then
-          write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
-          table_file_header = MG_file%MG_c2f_tbl_head(i_level)
-          ifmt_itp_table_file = MG_file%ifmt_MG_table_file(i_level)
-          call load_interpolate_table(my_rank, MG_itp(i_level)%c2f)
+          write(*,*) 'MG_c2f_tbl_head format', itp_file_IO%iflag_format
+          itp_file_IO%file_prefix = MG_file%MG_c2f_tbl_head(i_level)
+          itp_file_IO%iflag_format= MG_file%ifmt_MG_table_file(i_level)
+          call load_interpolate_table                                   &
+     &       (my_rank, itp_file_IO, MG_itp(i_level)%c2f)
         else
           call load_zero_interpolate_table(MG_itp(i_level)%c2f)
         end if
@@ -107,9 +110,10 @@
         do i_level = 1, MG_file%nlevel_f
           if(my_rank.lt.MGCG_WK%MG_mpi(i_level-1)%nprocs                &
      &      .or. i_level .eq. 1) then
-            table_file_header = MG_file%MG_f2c_eletbl_head(i_level)
+            itp_file_IO%file_prefix                                     &
+     &          = MG_file%MG_f2c_eletbl_head(i_level)
             call load_interpolate_table                                 &
-     &         (my_rank, MGCG_FEM%MG_c2f_ele_tbl(i_level) )
+     &         (my_rank, itp_file_IO, MGCG_FEM%MG_c2f_ele_tbl(i_level))
           else
             call load_zero_interpolate_table                            &
      &         (MGCG_FEM%MG_c2f_ele_tbl(i_level))

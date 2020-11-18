@@ -25,6 +25,7 @@
       use t_refined_node_id
       use t_refined_element_data
       use t_work_merge_refine_itp
+      use t_file_IO_parameter
 !
       use itp_table_IO_select_4_zlib
       use set_parallel_file_name
@@ -69,7 +70,8 @@
         call const_single_refine_itp_tbl                                &
      &     (org_mesh%ele, org_mesh%surf, org_mesh%edge,                 &
      &      newmesh%node, refine_p, ref_ids, refine_tbl, itp_refine)
-        call write_refinement_table(ione, refine_p%refine_info_head,    &
+        call write_refinement_table                                     &
+     &     (ione, refine_p%refine_tbl_IO%file_prefix,                   &
      &      org_mesh%ele, refine_tbl)
       else if(refine_tbl%iflag_tmp_tri_refine .gt. 0                    &
      &             .or. iflag_merge .eq. 0) then
@@ -95,7 +97,8 @@
      &      refine_p, ref_ids, refine_tbl, ref_itp_wk)
 !
         write(*,*) 'write_merged_refinement_tbl'
-        call write_merged_refinement_tbl(refine_p%refine_info_head,     &
+        call write_merged_refinement_tbl                                &
+     &     (refine_p%refine_tbl_IO%file_prefix,                         &
      &      org_mesh%ele, ref_itp_wk, refine_tbl)
       end if
 !
@@ -120,6 +123,8 @@
 !
       type(interpolate_table), intent(inout) :: itp_table
 !
+      type(field_IO_params) :: itp_file_IO
+!
 !
       iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
@@ -131,9 +136,8 @@
      &   (new_node%numnod, itp_table%tbl_dest)
 !
 !
-      table_file_header = refine_p%course_2_fine_head
-      ifmt_itp_table_file = id_ascii_file_fmt
-      call output_interpolate_table(0, itp_table)
+      call output_interpolate_table                                     &
+     &   (0, refine_p%c2f_table_IO, itp_table)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_fine_to_course_origin'
       call set_itp_fine_to_course_origin(ele%nnod_4_ele,                &
@@ -141,8 +145,7 @@
       call set_itp_fine_to_course_dest                                  &
      &   (ref_ids%refine_nod, itp_table%tbl_dest)
 !
-      table_file_header = refine_p%fine_2_course_head
-      call output_interpolate_table(0, itp_table)
+      call output_interpolate_table(0, refine_p%f2c_tbl_IO, itp_table)
 !
       end subroutine const_single_refine_itp_tbl
 !
@@ -196,6 +199,7 @@
 !
       type(work_merge_refine_itp), intent(inout) :: ref_itp_wk
 !
+      type(field_IO_params) :: itp_file_IO
       type(interpolate_table) :: itp_r
 !
 !
@@ -207,9 +211,7 @@
      &    ref_itp_wk, itp_r%tbl_org, itp_r%tbl_dest)
 !
 !
-      ifmt_itp_table_file = id_ascii_file_fmt
-      table_file_header =   refine_p%course_2_fine_head
-      call output_interpolate_table(0, itp_r)
+      call output_interpolate_table(0, refine_p%c2f_table_IO, itp_r)
 !
 !
       write(*,*) 'set_merged_itp_fine_to_course'
@@ -219,8 +221,7 @@
       call set_itp_fine_to_course_dest                                  &
      &   (ref_ids%refine_nod, itp_r%tbl_dest)
 !
-      table_file_header = refine_p%fine_2_course_head
-      call output_interpolate_table(0, itp_r)
+      call output_interpolate_table(0, refine_p%f2c_tbl_IO, itp_r)
 !
       end subroutine const_merged_refine_itp_tbl
 !

@@ -13,6 +13,7 @@
 !
       use m_precision
       use t_file_IO_parameter
+      use m_file_format_switch
 !
       implicit    none
 !
@@ -29,6 +30,14 @@
       integer(kind = kint), parameter :: iflag_div_rtp =  1
       integer(kind = kint), parameter :: iflag_proj_sph = 2
 !
+      character(len=kchara), parameter, private                         &
+     &              :: course_2_fine_head = 'course_2_fine'
+      character(len=kchara), parameter, private                         &
+     &              :: fine_2_course_head = 'fine_2_course'
+!
+      character(len=kchara), parameter, private                         &
+     &              :: refine_info_head = 'refine_info'
+!
       type ctl_param_4_refiner
         integer (kind = kint) :: iflag_interpolate_type
 !
@@ -44,10 +53,11 @@
         type(field_IO_params) ::  original_mesh_file
         type(field_IO_params) ::  refined_mesh_file
 !
-        character(len=kchara) :: course_2_fine_head = 'course_2_fine'
-        character(len=kchara) :: fine_2_course_head = 'fine_2_course'
+        type(field_IO_params) :: c2f_table_IO
 !
-        character(len = kchara) :: refine_info_head = 'refine_info'
+        type(field_IO_params) :: f2c_tbl_IO
+!
+        type(field_IO_params) :: refine_tbl_IO
         character(len = kchara) :: old_refine_info_head = 'refine_info.0'
         integer(kind = kint) :: iflag_read_old_refine_file = 0
       end type ctl_param_4_refiner
@@ -124,19 +134,28 @@
 !
 !
       if (refine_ctl%coarse_2_fine_head_ctl%iflag .gt. 0) then
-        refine_p%course_2_fine_head                                     &
+        refine_p%c2f_table_IO%file_prefix                               &
      &      = refine_ctl%coarse_2_fine_head_ctl%charavalue
+      else
+        refine_p%c2f_table_IO%file_prefix = course_2_fine_head
       end if
+      refine_p%c2f_table_IO%iflag_format  = id_ascii_file_fmt         
 !
       if (refine_ctl%fine_2_course_head_ctl%iflag .gt. 0) then
-        refine_p%fine_2_course_head                                     &
+        refine_p%f2c_tbl_IO%file_prefix                                 &
      &      = refine_ctl%fine_2_course_head_ctl%charavalue
+      else
+        refine_p%f2c_tbl_IO%file_prefix = fine_2_course_head
       end if
+      refine_p%f2c_tbl_IO%iflag_format  = id_ascii_file_fmt         
 !
       if (refine_ctl%refine_info_head_ctl%iflag .gt. 0) then
-        refine_p%refine_info_head                                       &
+        refine_p%refine_tbl_IO%file_prefix                              &
      &      = refine_ctl%refine_info_head_ctl%charavalue
+      else
+        refine_p%refine_tbl_IO%file_prefix = refine_info_head
       end if
+      refine_p%refine_tbl_IO%iflag_format  = id_ascii_file_fmt         
 !
       refine_p%iflag_read_old_refine_file                               &
      &        = refine_ctl%old_refine_info_head_ctl%iflag

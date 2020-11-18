@@ -28,6 +28,7 @@
       integer(kind = kint) :: nprocs_org
       type(mesh_data), allocatable, save :: femmesh_org(:)
 !
+      type(field_IO_params) ::  itp_file_IO
       type(interpolate_table), save :: single_tbl
 !
       integer(kind = kint) :: nprocs_table
@@ -51,8 +52,8 @@
      &   (org_mesh_file, int(nprocs_org), femmesh_org)
 !
 !
-      table_file_header = sgl_table_file_head
-      call load_interpolate_table(0, single_tbl)
+      itp_file_IO%file_prefix = sgl_table_file_head
+      call load_interpolate_table(0, itp_file_IO, single_tbl)
       write(*,*) 'interplation table is loaded'
 !
 !
@@ -69,11 +70,12 @@
 !
       call dealloc_work_ditribute_itp(wk_dist_itp1)
 !
-      table_file_header = table_file_head
-      write(*,*) 'table field header: ', trim(table_file_header)
+      itp_file_IO%file_prefix = table_file_head
+      write(*,*) 'table field header: ',trim(itp_file_IO%file_prefix)
       do ip = 1, nprocs_table
         id_rank = ip - 1
-        call output_interpolate_table(id_rank, para_tbl(ip))
+        call output_interpolate_table                                   &
+     &     (id_rank, itp_file_IO, para_tbl(ip))
       end do
 !
       stop 'Distibution finished'
@@ -118,7 +120,7 @@
      &     = gtbl_ctl%single_itp_tbl_head_ctl%charavalue
       end if
 !
-      ifmt_itp_table_file                                               &
+      itp_file_IO%iflag_format                                          &
      &   = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
 !
       if (iflag_debug.eq.1) then

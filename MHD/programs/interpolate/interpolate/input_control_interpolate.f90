@@ -107,8 +107,8 @@
 !  --  read interpolate table
 !
       if (iflag_debug.eq.1) write(*,*) 'load_interpolate_table'
-      table_file_header = gen_itp_p%table_file_head
-      call load_interpolate_table(my_rank, itp_info)
+      call load_interpolate_table                                       &
+     &   (my_rank, gen_itp_p%itp_file_IO, itp_info)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &

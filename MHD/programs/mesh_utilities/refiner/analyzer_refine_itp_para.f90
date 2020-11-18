@@ -26,7 +26,7 @@
       integer(kind = kint), parameter, private :: ifile_type = 0
 !
       type(control_data_refine_para), save, private :: para_refine_c1
-      type(ctl_param_paraa_refiner), save, private :: p_refine_p1
+      type(ctl_param_para_refiner), save, private :: p_refine_p1
 !
       type(merged_mesh), save, private :: mgd_mesh_rf
       type(second_mesh), save, private :: sec_mesh_rf
@@ -67,15 +67,14 @@
      &    para_ref_itp%nprocs_course, para_ref_itp%course_mesh)
 !
 !
+      call load_interpolate_table                                       &
+     &    (0, p_refine_p1%c2f_table_IO, para_ref_itp%c2f_single)
 !
-      table_file_header = p_refine_p1%course_2_fine_head
-      call load_interpolate_table(0, para_ref_itp%c2f_single)
+      call load_interpolate_table                                       &
+     &   (0, p_refine_p1%f2c_tbl_IO, para_ref_itp%f2c_single)
 !
-      table_file_header = p_refine_p1%fine_2_course_head
-      call load_interpolate_table(0, para_ref_itp%f2c_single)
-!
-      table_file_header = p_refine_p1%refine_info_head
-      call load_interpolate_table(0, para_ref_itp%f2c_ele_single)
+      call load_interpolate_table                                       &
+     &   (0, p_refine_p1%refine_tbl_IO, para_ref_itp%f2c_ele_single)
 !
 !
 !
@@ -206,17 +205,17 @@
       do ip = 1, para_ref_itp%nprocs_larger
         id_rank = ip - 1
 !
-        table_file_header = p_refine_p1%c2f_para_head
         call output_interpolate_table                                   &
-     &     (id_rank, para_ref_itp%c2f_para(ip))
+     &     (id_rank, p_refine_p1%c2f_para_tbl_IO,                       &
+     &      para_ref_itp%c2f_para(ip))
 !
-        table_file_header = p_refine_p1%f2c_para_head
         call output_interpolate_table                                   &
-     &     (id_rank, para_ref_itp%f2c_para(ip))
+     &     (id_rank, p_refine_p1%f2c_para_tbl_IO,                       &
+     &      para_ref_itp%f2c_para(ip))
 !
-        table_file_header = p_refine_p1%f2c_ele_para_head
         call output_interpolate_table                                   &
-     &     (id_rank, para_ref_itp%f2c_ele_para(ip))
+     &     (id_rank, p_refine_p1%f2c_ele_para_tbl_IO,                   &
+     &      para_ref_itp%f2c_ele_para(ip))
       end do
 !
       end subroutine refine_interpolation_table

@@ -1,14 +1,19 @@
-!
-!      module t_ctl_params_4_gen_table
-!
-!     Written by H. Matsui on July, 2006
-!
+!>@file   t_ctl_params_4_gen_table.f90
+!!@brief  module t_ctl_params_4_gen_table
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006 (ver 1.2)
+!!
+!>@brief  Control paramteres for interpolation table construction
+!!
+!!@verbatim
 !!      subroutine alloc_search_param(gen_itp_p)
 !!      subroutine dealloc_search_param(gen_itp_p)
 !!      subroutine set_ctl_params_4_gen_table                           &
 !!     &         (gtbl_ctl, gen_itp_p, itp_blks)
 !!      subroutine set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
+!!@endverbatim
 !
       module t_ctl_params_4_gen_table
 !
@@ -28,6 +33,9 @@
       character(len = kchara), parameter                                &
      &             :: itp_udt_file_head = "field_new/out"
 !
+      character(len = kchara), parameter                                &
+     &             :: table_file_head = "mesh/table"
+!
       type ctl_params_4_gen_table
         type(field_IO_params) :: itp_org_mesh_file
         type(field_IO_params) :: itp_dest_mesh_file
@@ -38,7 +46,8 @@
         type(field_IO_params) :: org_ucd_IO
         type(field_IO_params) :: itp_ucd_IO
 !
-        character(len = kchara) :: table_file_head = "mesh/table"
+        type(field_IO_params) :: itp_file_IO
+!
         character(len = kchara)                                         &
      &             :: sgl_table_file_head = "single_itp_table"
 !
@@ -121,12 +130,15 @@
      &   (gtbl_ctl%src_plt, gen_itp_p%itp_org_mesh_file)
 !
       if (gtbl_ctl%table_head_ctl%iflag .ne. 0) then
-        gen_itp_p%table_file_head = gtbl_ctl%table_head_ctl%charavalue
+        gen_itp_p%itp_file_IO%file_prefix                               &
+     &       = gtbl_ctl%table_head_ctl%charavalue
+      else
+        gen_itp_p%itp_file_IO%file_prefix = table_file_head
       end if
 !
       call set_control_mesh_file_def(def_new_mesh_head,                 &
      &    gtbl_ctl%dst_plt, gen_itp_p%itp_dest_mesh_file)
-      ifmt_itp_table_file                                               &
+      gen_itp_p%itp_file_IO%iflag_format                                &
      &    = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
 !
       if (iflag_debug.eq.1)  then
@@ -135,7 +147,8 @@
      &            trim(gen_itp_p%itp_org_mesh_file%file_prefix)
         write(*,*) 'dest_mesh_head: ',                                  &
      &            trim(gen_itp_p%itp_dest_mesh_file%file_prefix)
-        write(*,*) 'table_file_head: ', trim(gen_itp_p%table_file_head)
+        write(*,*) 'table_file_head: ',                                 &
+     &            trim(gen_itp_p%itp_file_IO%file_prefix)
       end if
 !
 !

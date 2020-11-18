@@ -1,11 +1,16 @@
-!
-!      module set_ctl_interpolation
-!
-!     Written by H. Matsui on July, 2006
-!
-!!      subroutine set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
+!>@file   set_ctl_interpolation.f90
+!!@brief  module set_ctl_interpolation
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006 (ver 1.2)
+!!
+!>@brief  SEt control paramteres for interpolation
+!!
+!!@verbatim
+!!     subroutine set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
+!!@endverbatim
 !
       module set_ctl_interpolation
 !
@@ -18,6 +23,9 @@
       use t_IO_step_parameter
 !
       implicit none
+!
+      character(len = kchara), parameter, private                       &
+     &             :: table_file_head = "mesh/table"
 !
 !   --------------------------------------------------------------------
 !
@@ -54,7 +62,10 @@
       end if
 !
       if (gtbl_ctl%table_head_ctl%iflag .ne. 0) then
-        gen_itp_p%table_file_head = gtbl_ctl%table_head_ctl%charavalue
+        gen_itp_p%itp_file_IO%file_prefix                               &
+     &         = gtbl_ctl%table_head_ctl%charavalue
+      else
+        gen_itp_p%itp_file_IO%file_prefix = table_file_head
       end if
 !
       if (gtbl_ctl%single_itp_tbl_head_ctl%iflag .ne. 0) then
@@ -68,7 +79,8 @@
      &            trim(gen_itp_p%itp_org_mesh_file%file_prefix)
         write(*,*) 'dest_mesh_head: ',                                  &
      &            trim(gen_itp_p%itp_dest_mesh_file%file_prefix)
-        write(*,*) 'table_file_head: ', trim(gen_itp_p%table_file_head)
+        write(*,*) 'table_file_head: ',                                 &
+     &            trim(gen_itp_p%itp_file_IO%file_prefix)
       end if
 !
       if (gtbl_ctl%itp_node_head_ctl%iflag .ne. 0) then
@@ -96,7 +108,7 @@
       gen_itp_p%itp_dest_mesh_file%iflag_format                         &
      &   = choose_file_format(gtbl_ctl%dst_plt%mesh_file_fmt_ctl)
 !
-      ifmt_itp_table_file                                               &
+      gen_itp_p%itp_file_IO%iflag_format                                &
      &   = choose_file_format(gtbl_ctl%fmt_itp_table_file_ctl)
 !
       nmax = max(gen_itp_p%ndomain_org,gen_itp_p%ndomain_dest)
