@@ -269,7 +269,7 @@
 !$omp end parallel do
 !$omp parallel do private(inum,inod)
       do inum = part_tbl%ntot_import+1, dest_node%numnod
-        part_tbl%irev_import(inod) = part_tbl%ntot_import + 1
+        part_tbl%irev_import(inum) = part_tbl%ntot_import + 1
       end do
 !$omp end parallel do
 !
