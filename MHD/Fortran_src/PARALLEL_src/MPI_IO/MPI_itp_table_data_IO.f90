@@ -303,8 +303,8 @@
      &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
 !
       call alloc_itp_table_dest(IO_itp_dest)
-      call mpi_read_comm_table(IO_param, ieight,                        &
-     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+!      call mpi_read_comm_table(IO_param, ieight,                        &
+!     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_read_itp_table_dest
 !
