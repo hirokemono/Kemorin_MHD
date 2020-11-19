@@ -38,6 +38,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use m_interpolation_data_labels
       use t_buffer_4_gzip
 !
       implicit none
@@ -60,18 +61,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  domain ID ',                  &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  number of domain to export',  &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  domain IDs to export',        &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
+      zbuf%fixbuf(1) = hd_itp_export_pe() // char(0)
       call gz_write_textbuf_no_lf(zbuf)
 !
       write(zbuf%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
@@ -89,16 +79,7 @@
       end if
 !
 !
-!
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  stack of node to export',     &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  exported node ID',            &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
+      zbuf%fixbuf(1) = hd_itp_export_item() // char(0)
       call gz_write_textbuf_no_lf(zbuf)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
@@ -128,24 +109,7 @@
       integer(kind = kint) :: inod
 !
 !
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  stack by interpolation type', &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  destinate global node ID, ',  &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)')                                   &
-     &       '!  local element ID for interpolation', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  interpolation type ID ',      &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  generalized position ',       &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
+      zbuf%fixbuf(1) = hd_itp_export_coef() // char(0)
       call gz_write_textbuf_no_lf(zbuf)
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
@@ -263,18 +227,7 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  domain ID ',                  &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '! number of domain to import',   &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  domain IDs to import',        &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
+      zbuf%fixbuf(1) = hd_itp_import_pe() // char(0)
       call gz_write_textbuf_no_lf(zbuf)
 !
       write(zbuf%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
@@ -292,15 +245,7 @@
       end if
 !
 !
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  stack of node to import',     &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  imported node ID',            &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
+      zbuf%fixbuf(1) = hd_itp_import_item() // char(0)
       call gz_write_textbuf_no_lf(zbuf)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
@@ -335,24 +280,7 @@
       integer(kind = kint) :: i, inod
 !
 !
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)')                                   &
-     &              '!  stack by interpolation type', char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  target global node ID, ',     &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  belonged local element ID ',  &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  interpolation type ID ',      &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!  generalized position ',       &
-     &                                char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(a,2a1)') '!', char(10), char(0)
+      zbuf%fixbuf(1) = hd_itp_dest_coef() // char(0)
       call gz_write_textbuf_no_lf(zbuf)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then

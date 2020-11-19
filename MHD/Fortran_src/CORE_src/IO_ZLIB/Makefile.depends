@@ -48,7 +48,7 @@ gz_group_data_IO.o: $(ZLIB_IO_DIR)/gz_group_data_IO.f90 m_precision.o m_constant
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_groups_IO_b.o: $(ZLIB_IO_DIR)/gz_groups_IO_b.f90 m_precision.o m_machine_parameter.o t_group_data.o t_buffer_4_gzip.o binary_IO.o gz_binary_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_itp_table_data_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_buffer_4_gzip.o t_interpolate_tbl_org.o gzip_file_access.o gz_data_IO.o skip_gz_comment.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
+gz_itp_table_data_IO.o: $(ZLIB_IO_DIR)/gz_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_buffer_4_gzip.o t_interpolate_tbl_org.o gzip_file_access.o gz_data_IO.o skip_gz_comment.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_itp_table_data_IO_b.o: $(ZLIB_IO_DIR)/gz_itp_table_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_tbl_org.o t_buffer_4_gzip.o gz_binary_IO.o transfer_to_long_integers.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<

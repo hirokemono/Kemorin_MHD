@@ -39,6 +39,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_interpolation_data_labels
 !
       implicit none
 !
@@ -61,12 +62,7 @@
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  domain ID '
-      write(id_file,'(a)') '!  number of domain to export'
-      write(id_file,'(a)') '!  domain IDs to export'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)',ADVANCE='NO') hd_itp_export_pe()
       write(id_file,'(i16)') id_rank
       write(id_file,'(i16)') IO_itp_org%num_dest_domain
 !
@@ -78,11 +74,7 @@
       end if
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  stack of node to export'
-      write(id_file,'(a)') '!  exported node ID'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)',ADVANCE='NO') hd_itp_export_item()
       if (IO_itp_org%num_dest_domain .gt. 0) then
         write(id_file,'(8i16)')                                         &
             IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain)
@@ -108,14 +100,7 @@
       integer(kind = kint) :: inod
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  stack by interpolation type'
-      write(id_file,'(a)') '!  destinate global node ID, '
-      write(id_file,'(a)') '!  local element ID for interpolation'
-      write(id_file,'(a)') '!  interpolation type ID '
-      write(id_file,'(a)') '!  generalized position '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)',ADVANCE='NO') hd_itp_export_coef()
       if (IO_itp_org%num_dest_domain .gt. 0) then
         write(id_file,'(4i16)') IO_itp_org%istack_itp_type_org(1:4)
 !
@@ -224,12 +209,7 @@
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  domain ID '
-      write(id_file,'(a)') '!  number of domain to import'
-      write(id_file,'(a)') '!  domain IDs to import'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)',ADVANCE='NO') hd_itp_import_pe()
       write(id_file,'(i16)') id_rank
       write(id_file,'(i16)') IO_itp_dest%num_org_domain
 !
@@ -241,11 +221,7 @@
       end if
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  stack of node to import'
-      write(id_file,'(a)') '!  imported node ID'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)',ADVANCE='NO') hd_itp_import_item()
       if (IO_itp_dest%num_org_domain .gt. 0) then
         write(id_file,'(8i16)')                                         &
           IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain)
@@ -272,14 +248,7 @@
 !
       integer(kind = kint) :: i, inod
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '!  stack by interpolation type'
-      write(id_file,'(a)') '!  target global node ID, '
-      write(id_file,'(a)') '!  belonged local element ID '
-      write(id_file,'(a)') '!  interpolation type ID '
-      write(id_file,'(a)') '!  generalized position '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)',ADVANCE='NO') hd_itp_dest_coef()
       if (IO_itp_dest%num_org_domain .gt. 0) then
         do i = 1, IO_itp_dest%num_org_domain
           write(id_file,'(8i16)')                                       &
