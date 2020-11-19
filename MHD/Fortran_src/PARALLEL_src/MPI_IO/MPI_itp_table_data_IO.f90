@@ -281,8 +281,8 @@
      &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
       call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
      &                         IO_itp_dest%istack_nod_tbl_dest)
-      call mpi_write_comm_table(IO_param, ieight,                       &
-     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+!      call mpi_write_comm_table(IO_param, ieight,                       &
+!     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_write_itp_table_dest
 !
