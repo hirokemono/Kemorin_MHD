@@ -74,7 +74,7 @@
       if(zbuf_itp%ierr_zlib .gt. 0) go to 99
 !
   99  continue
-      call close_gzfile_a(zbuf_itp)
+      call close_gzfile_b(zbuf_itp)
       ierr = zbuf_itp%ierr_zlib
 !
       if (IO_itp_org%num_dest_domain .gt. 0) then
@@ -126,7 +126,7 @@
       call read_gz_itp_coefs_org_b(zbuf_itp, IO_itp_org)
 !
   99  continue
-      call close_gzfile_a(zbuf_itp)
+      call close_gzfile_b(zbuf_itp)
       ierr = zbuf_itp%ierr_zlib
 !
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -160,7 +160,7 @@
      &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
 !
   99  continue
-      call close_gzfile_a(zbuf_itp)
+      call close_gzfile_b(zbuf_itp)
       ierr = zbuf_itp%ierr_zlib
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
@@ -204,7 +204,7 @@
      &   (zbuf_itp, IO_itp_dest, IO_itp_c_dest)
 !
   99  continue
-      call close_gzfile_a(zbuf_itp)
+      call close_gzfile_b(zbuf_itp)
       ierr = zbuf_itp%ierr_zlib
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -238,7 +238,7 @@
       call read_gz_itp_table_dest_b(zbuf_itp, IO_itp_dest)
 !
   99  continue
-      call close_gzfile_a(zbuf_itp)
+      call close_gzfile_b(zbuf_itp)
       ierr = zbuf_itp%ierr_zlib
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -269,7 +269,7 @@
      &   (zbuf_itp, n_rank_file, IO_itp_dest)
 !
   99  continue
-      call close_gzfile_a(zbuf_itp)
+      call close_gzfile_b(zbuf_itp)
       ierr = zbuf_itp%ierr_zlib
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
