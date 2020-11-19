@@ -108,7 +108,6 @@
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
 !        write(*,*) 'mpi_read_itp_domain_dest', trim(file_name)
       call mpi_read_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
-!        write(*,*) 'mpi_read_itp_table_dest'
       call mpi_read_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
 !        write(*,*) 'mpi_read_itp_domain_org'
