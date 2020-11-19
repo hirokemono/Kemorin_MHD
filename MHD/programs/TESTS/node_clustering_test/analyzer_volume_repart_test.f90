@@ -91,7 +91,7 @@
 !
       use mesh_repartition_by_volume
       use copy_repart_and_itp_table
-      use itp_table_IO_select_4_zlib
+      use parallel_itp_tbl_IO_select
 !
 !>     Stracture for Jacobians
 !
@@ -184,13 +184,13 @@
       table_file_IO%file_prefix =  'part_table'
       table_file_IO%iflag_format = id_ascii_file_fmt
       irank_read = my_rank
-      call sel_write_interpolate_table                                  &
-     &    (irank_read, table_file_IO, itp_tbl_IO)
+      call sel_mpi_write_interpolate_table                              &
+     &    (my_rank, nprocs, table_file_IO, itp_tbl_IO)
       call calypso_MPI_barrier
 !
 !
-      call sel_read_interpolate_table(irank_read, table_file_IO,        &
-     &                                itp_tbl_IO2, i)
+      call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
+     &    table_file_IO, itp_tbl_IO2, i)
 !
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
