@@ -254,7 +254,7 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      call mpi_skip_read(IO_param, len(hd_itp_import_pe()))
+      call mpi_skip_read(IO_param, ilen_itp_import_pe)
       call mpi_check_num_of_domains(IO_param)
 !
       call mpi_read_num_of_data(IO_param, IO_itp_dest%num_org_domain)
@@ -299,7 +299,7 @@
 !
 !
       write(*,*) 'IO_itp_dest%istack_nod_tbl_dest', size(IO_itp_dest%istack_nod_tbl_dest), IO_itp_dest%num_org_domain
-      call mpi_skip_read(IO_param, len(hd_itp_import_item()))
+      call mpi_skip_read(IO_param, ilen_itp_import_item)
 !      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
 !     &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
       call mpi_read_int_stack(IO_param, 1,     &
