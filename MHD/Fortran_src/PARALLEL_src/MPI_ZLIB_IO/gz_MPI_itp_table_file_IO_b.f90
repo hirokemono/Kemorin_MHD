@@ -8,14 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine write_gz_mpi_itp_table_file_b                        &
-!!     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+!!     &         (file_name, id_rank, itp_tbl_IO, ierr)
 !!      subroutine read_gz_mpi_itp_table_file_b                         &
 !!     &          (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine wrt_gz_mpi_itp_coef_dest_file_b                      &
-!!     &         (file_name, id_rank, num_pe,                           &
-!!     &          IO_itp_dest, IO_itp_c_dest, ierr)
+!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine read_gz_mpi_itp_coef_dst_file_b                      &
 !!     &         (file_name, id_rank, num_pe,                           &
 !!     &          IO_itp_dest, IO_itp_c_dest, ierr)
@@ -55,14 +54,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_gz_itp_table_file_b                              &
-     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &         (file_name, id_rank, itp_tbl_IO, ierr)
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank, num_pe
+      integer, intent(in) :: id_rank
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -151,15 +150,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine wrt_gz_mpi_itp_coef_dest_file_b                        &
-     &         (file_name, id_rank, num_pe,                             &
-     &          IO_itp_dest, IO_itp_c_dest, ierr)
+     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank, num_pe
+      integer, intent(in) :: id_rank
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest

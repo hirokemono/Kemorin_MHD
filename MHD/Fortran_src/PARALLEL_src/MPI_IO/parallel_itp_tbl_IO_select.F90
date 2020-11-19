@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine sel_mpi_write_interpolate_table                      &
-!!     &         (id_rank, num_pe, table_file_IO, itp_tbl_IO)
+!!     &         (id_rank, table_file_IO, itp_tbl_IO)
 !!      subroutine sel_mpi_read_interpolate_table                       &
 !!     &         (id_rank, num_pe, table_file_IO, itp_tbl_IO, ierr)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
-!!      subroutine sel_mpi_write_itp_coefs_dest(id_rank, num_pe,        &
-!!     &          table_file_IO, IO_itp_dest, IO_itp_c_dest)
+!!      subroutine sel_mpi_write_itp_coefs_dest                         &
+!!     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine sel_mpi_read_itp_coefs_dest(id_rank, num_pe,         &
 !!     &          table_file_IO, IO_itp_dest, IO_itp_c_dest, ierr)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
@@ -55,11 +55,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_mpi_write_interpolate_table                        &
-     &         (id_rank, num_pe, table_file_IO, itp_tbl_IO)
+     &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_mesh_extensions
 !
-      integer, intent(in) :: id_rank, num_pe
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
@@ -92,7 +92,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call write_gz_mpi_itp_table_file_b                              &
-     &     (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -166,12 +166,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_mpi_write_itp_coefs_dest(id_rank, num_pe,          &
-     &          table_file_IO, IO_itp_dest, IO_itp_c_dest)
+      subroutine sel_mpi_write_itp_coefs_dest                           &
+     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !
       use set_mesh_extensions
 !
-      integer, intent(in) :: id_rank, num_pe
+      integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
@@ -205,8 +205,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call  wrt_gz_mpi_itp_coef_dest_file_b                           &
-     &     (file_name, id_rank, num_pe,                                 &
-     &      IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 #endif
 !
       else if(table_file_IO%iflag_format                                &

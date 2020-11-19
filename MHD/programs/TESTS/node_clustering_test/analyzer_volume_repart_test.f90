@@ -185,7 +185,7 @@
       table_file_IO%iflag_format = id_ascii_file_fmt
       irank_read = my_rank
       call sel_mpi_write_interpolate_table                              &
-     &    (my_rank, nprocs, table_file_IO, itp_tbl_IO)
+     &    (my_rank, table_file_IO, itp_tbl_IO)
       call calypso_MPI_barrier
 !
 !
