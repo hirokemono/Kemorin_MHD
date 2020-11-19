@@ -76,7 +76,7 @@
      &            .eq. iflag_single+id_ascii_file_fmt)                  &
      &   .or. (table_file_IO%iflag_format                               &
      &            .eq. iflag_single+id_gzip_txt_file_fmt)) then
-        file_name =  add_itb_extension(table_file_IO%file_prefix)
+        file_name =  add_itp_extension(table_file_IO%file_prefix)
       end if
 !
       if (table_file_IO%iflag_format                                    &
@@ -132,7 +132,7 @@
      &            .eq. iflag_single+id_ascii_file_fmt)                  &
      &   .or. (table_file_IO%iflag_format                               &
      &            .eq. iflag_single+id_gzip_txt_file_fmt)) then
-        file_name =  add_itb_extension(table_file_IO%file_prefix)
+        file_name =  add_itp_extension(table_file_IO%file_prefix)
       end if
 !
       if (table_file_IO%iflag_format                                    &
@@ -189,7 +189,7 @@
      &            .eq. iflag_single+id_ascii_file_fmt)                  &
      &   .or. (table_file_IO%iflag_format                               &
      &            .eq. iflag_single+id_gzip_txt_file_fmt)) then
-        file_name =  add_itb_extension(table_file_IO%file_prefix)
+        file_name =  add_itp_extension(table_file_IO%file_prefix)
       end if
 !
       if (table_file_IO%iflag_format                                    &
@@ -246,7 +246,7 @@
      &            .eq. iflag_single+id_ascii_file_fmt)                  &
      &   .or. (table_file_IO%iflag_format                               &
      &            .eq. iflag_single+id_gzip_txt_file_fmt)) then
-        file_name =  add_itb_extension(table_file_IO%file_prefix)
+        file_name =  add_itp_extension(table_file_IO%file_prefix)
       end if
 !
       if (table_file_IO%iflag_format                                    &
@@ -306,7 +306,7 @@
      &            .eq. iflag_single+id_ascii_file_fmt)                  &
      &   .or. (table_file_IO%iflag_format                               &
      &            .eq. iflag_single+id_gzip_txt_file_fmt)) then
-        file_name =  add_itb_extension(table_file_IO%file_prefix)
+        file_name =  add_itp_extension(table_file_IO%file_prefix)
       end if
 !
       if (table_file_IO%iflag_format                                    &
@@ -358,7 +358,7 @@
      &            .eq. iflag_single+id_ascii_file_fmt)                  &
      &   .or. (table_file_IO%iflag_format                               &
      &            .eq. iflag_single+id_gzip_txt_file_fmt)) then
-        file_name =  add_itb_extension(table_file_IO%file_prefix)
+        file_name =  add_itp_extension(table_file_IO%file_prefix)
       end if
 !
       if (table_file_IO%iflag_format                                    &
