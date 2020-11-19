@@ -10,17 +10,18 @@
 !!      subroutine mpi_write_itp_table_file_a                           &
 !!     &         (file_name, my_rankt, itp_tbl_IO)
 !!      subroutine mpi_read_itp_table_file_a                            &
-!!     &         (file_name, id_rank, itp_tbl_IO, ierr)
+!!     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine mpi_wrt_itp_coefs_dest_file_a                        &
 !!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine mpi_read_itp_coefs_dest_file_a                       &
-!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!!     &         (file_name, id_rank, num_pe,                           &
+!!     &          IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine mpi_read_itp_table_dest_file_a                       &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !!      subroutine mpi_read_itp_domain_dest_file_a                      &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
@@ -53,12 +54,17 @@
       subroutine write_itp_table_file_a                                 &
      &         (file_name, id_rank, itp_tbl_IO)
 !
+      use MPI_ascii_data_IO
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
 !
-      open (id_tbl_file, file = file_name, form = 'formatted')
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write ascii interpolation file: ', trim(file_name)
+!
+      call open_write_mpi_file(file_name, IO_param)
 !      call write_interpolate_table_dest                                &
 !     &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_dest)
 !
@@ -66,7 +72,7 @@
 !     &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_org)
 !      call write_interpolate_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
 !
-      close(id_tbl_file)
+      call close_mpi_file(IO_param)
 !
       if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
@@ -83,10 +89,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_table_file_a                              &
-     &         (file_name, id_rank, itp_tbl_IO, ierr)
+     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+!
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -94,7 +102,10 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      open (id_tbl_file, file = file_name, form = 'formatted')
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read ascii interpolation file: ', trim(file_name)
+!
+      call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
 !        write(*,*) 'read_interpolate_domain_dest', trim(file_name)
 !      call read_interpolate_domain_dest                                &
 !     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest)
@@ -110,7 +121,7 @@
 !        write(*,*) 'read_interpolate_coefs_org'
 !      call read_interpolate_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
 !
-      close(id_tbl_file)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -123,6 +134,8 @@
       subroutine mpi_wrt_itp_coefs_dest_file_a                          &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
+      use MPI_ascii_data_IO
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -130,12 +143,15 @@
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
 !
-      open (id_tbl_file, file = file_name, form = 'formatted')
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write ascii export coefs file: ', trim(file_name)
+!
+      call open_write_mpi_file(file_name, IO_param)
 !      call write_interpolate_table_dest                                &
 !     &   (id_tbl_file, id_rank, IO_itp_dest)
 !      call write_interpolate_coefs_dest                                &
 !     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
-      close(id_tbl_file)
+      call close_mpi_file(IO_param)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -149,10 +165,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_coefs_dest_file_a                         &
-     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &         (file_name, id_rank, num_pe,                             &
+     &          IO_itp_dest, IO_itp_c_dest, ierr)
+!
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -161,13 +180,16 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      open (id_tbl_file, file = file_name, form = 'formatted')
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read ascii export coefs file: ', trim(file_name)
+!
+      call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
 !      call read_interpolate_domain_dest                                &
 !     &   (id_tbl_file, n_rank_file, IO_itp_dest)
 !      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
 !      call read_interpolate_coefs_dest                                 &
 !     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
-      close(id_tbl_file)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -177,10 +199,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_table_dest_file_a                         &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+!
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -188,11 +212,14 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      open (id_tbl_file, file = file_name, form = 'formatted')
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read ascii interapolate export file: ', trim(file_name)
+!
+      call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
 !      call read_interpolate_domain_dest                                &
 !     &   (id_tbl_file, n_rank_file, IO_itp_dest)
 !      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
-      close(id_tbl_file)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -202,10 +229,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_domain_dest_file_a                        &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+!
+      use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -213,10 +242,14 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read ascii export domain file: ', trim(file_name)
+!
+      call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
       open (id_tbl_file, file = file_name, form = 'formatted')
 !      call read_interpolate_domain_dest                                &
 !     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-      close(id_tbl_file)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file

@@ -10,18 +10,19 @@
 !!      subroutine mpi_write_itp_table_file_b                           &
 !!     &         (file_name, id_rank, itp_tbl_IO, ierr)
 !!      subroutine mpi_read_itp_table_file_b                            &
-!!     &          (file_name, id_rank, itp_tbl_IO, ierr)
+!!     &          (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!
 !!      subroutine mpi_wrt_itp_coefs_dest_file_b                        &
 !!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine mpi_read_itp_coefs_dest_file_b                       &
-!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!!     &         (file_name, id_rank, num_pe,                           &
+!!     &          IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine mpi_read_itp_table_dest_file_b                       &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !!      subroutine mpi_read_itp_domain_dest_file_b                      &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
@@ -58,6 +59,9 @@
       subroutine mpi_write_itp_table_file_b                             &
      &         (file_name, id_rank, itp_tbl_IO, ierr)
 !
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -65,8 +69,11 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write binary interpolation file: ', trim(file_name)
+!
       bbuf_tbl%id_binary = id_write_tbl
-      call open_write_binary_file(file_name, bbuf_tbl)
+      call open_write_mpi_file_b(file_name, IO_param)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !      call write_interpolate_table_dest_b                              &
 !     &   (id_rank, itp_tbl_IO%tbl_dest, bbuf_tbl)
@@ -79,7 +86,7 @@
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
   99  continue
-      call close_binary_file(bbuf_tbl)
+      call close_mpi_file(IO_param)
       ierr = bbuf_tbl%ierr_bin
 !
       if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
@@ -97,10 +104,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_table_file_b                              &
-     &          (file_name, id_rank, itp_tbl_IO, ierr)
+     &          (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+!
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -108,8 +118,11 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read binary interpolation file: ', trim(file_name)
+!
       bbuf_tbl%id_binary = id_read_tbl
-      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !      call read_interpolate_domain_dest_b                              &
 !     &   (bbuf_tbl, n_rank_file, itp_tbl_IO%tbl_dest)
@@ -128,7 +141,7 @@
 !      call read_interpolate_coefs_org_b(bbuf_tbl, itp_tbl_IO%tbl_org)
 !
   99  continue
-      call close_binary_file(bbuf_tbl)
+      call close_mpi_file(IO_param)
       ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -141,6 +154,9 @@
       subroutine mpi_wrt_itp_coefs_dest_file_b                          &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
+!
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
 !
@@ -149,8 +165,11 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write binary export coefs file: ', trim(file_name)
+!
       bbuf_tbl%id_binary = id_write_tbl
-      call open_write_binary_file(file_name, bbuf_tbl)
+      call open_write_mpi_file_b(file_name, IO_param)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !      call write_interpolate_table_dest_b                              &
 !     &   (id_rank, IO_itp_dest, bbuf_tbl)
@@ -160,7 +179,7 @@
 !     &   (IO_itp_dest, IO_itp_c_dest, bbuf_tbl)
 !
   99  continue
-      call close_binary_file(bbuf_tbl)
+      call close_mpi_file(IO_param)
       ierr = bbuf_tbl%ierr_bin
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
@@ -175,10 +194,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_coefs_dest_file_b                         &
-     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &         (file_name, id_rank, num_pe,                             &
+     &          IO_itp_dest, IO_itp_c_dest, ierr)
+!
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -187,8 +210,11 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read binary export coefs file: ', trim(file_name)
+!
       bbuf_tbl%id_binary = id_read_tbl
-      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !      call read_interpolate_domain_dest_b                              &
 !     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
@@ -201,7 +227,7 @@
 !     &   (bbuf_tbl, IO_itp_dest, IO_itp_c_dest)
 !
   99  continue
-      call close_binary_file(bbuf_tbl)
+      call close_mpi_file(IO_param)
       ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -211,10 +237,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_table_dest_file_b                         &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+!
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -222,8 +251,11 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read binary interapolate export file: ', trim(file_name)
+!
       bbuf_tbl%id_binary = id_read_tbl
-      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !      call read_interpolate_domain_dest_b                              &
 !     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
@@ -232,7 +264,7 @@
 !      call read_interpolate_table_dest_b(bbuf_tbl, IO_itp_dest)
 !
   99  continue
-      call close_binary_file(bbuf_tbl)
+      call close_mpi_file(IO_param)
       ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -242,10 +274,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_domain_dest_file_b                        &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+!
+      use MPI_ascii_data_IO
+      use MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -253,14 +288,17 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read binary export domain file: ', trim(file_name)
+!
       bbuf_tbl%id_binary = id_read_tbl
-      call open_read_binary_file(file_name, id_rank, bbuf_tbl)
+      call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !      call read_interpolate_domain_dest_b                              &
 !     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
 !
   99  continue
-      call close_binary_file(bbuf_tbl)
+      call close_mpi_file(IO_param)
       ierr = bbuf_tbl%ierr_bin
 !
       if (n_rank_file .ne. id_rank) ierr = ierr_file

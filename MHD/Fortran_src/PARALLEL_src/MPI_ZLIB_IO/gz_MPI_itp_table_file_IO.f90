@@ -10,17 +10,18 @@
 !!      subroutine gz_mpi_write_itp_table_file                          &
 !!     &         (file_name, id_rank, itp_tbl_IO)
 !!      subroutine gz_mpi_read_itp_table_file                           &
-!!     &         (file_name, id_rank, itp_tbl_IO, ierr)
+!!     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine gz_mpi_wrt_itp_coefs_dest_file                       &
 !!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine gz_mpi_read_itp_coefs_dest_file                      &
-!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!!     &         (file_name, id_rank, num_pe,                           &
+!!     &          IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine gz_mpi_read_itp_tbl_dest_file                        &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !!      subroutine gz_mpi_read_itp_dmn_dest_file                        &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
@@ -56,6 +57,7 @@
      &         (file_name, id_rank, itp_tbl_IO)
 !
       use skip_gz_comment
+      use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -64,7 +66,10 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_wt_gzfile_a(gzip_name, zbuf_itp)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write gzipped interpolation file: ', trim(gzip_name)
+!
+      call open_write_mpi_file(gzip_name, IO_param)
 !
 !      call write_gz_itp_table_dest                                     &
 !     &   (id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
@@ -73,7 +78,7 @@
 !     &   (id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
 !      call write_gz_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
 !
-      call close_gzfile_a(zbuf_itp)
+      call close_mpi_file(IO_param)
 !
       if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
         call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
@@ -90,12 +95,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_table_file                             &
-     &         (file_name, id_rank, itp_tbl_IO, ierr)
+     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !
       use skip_gz_comment
+      use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
       integer(kind = kint), intent(inout) :: ierr
@@ -104,7 +110,11 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped interpolation file: ', trim(gzip_name)
+!
+      call open_read_mpi_file                                           &
+     &   (gzip_name, num_pe, id_rank, IO_param)
 !
 !        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
 !      call read_gz_itp_domain_dest                                     &
@@ -119,7 +129,7 @@
 !      call read_gz_itp_table_org(itp_tbl_IO%tbl_org, zbuf_itp)
 !      call read_gz_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
 !
-      call close_gzfile_a(zbuf_itp)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = n_rank_file
@@ -133,6 +143,7 @@
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
       use skip_gz_comment
+      use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -142,12 +153,15 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_wt_gzfile_a(gzip_name, zbuf_itp)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Write binary export coefs file: ', trim(gzip_name)
+!
+      call open_write_mpi_file(gzip_name, IO_param)
 !
 !      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
 !      call write_gz_itp_coefs_dest                                     &
 !     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call close_mpi_file(IO_param)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
@@ -161,12 +175,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_coefs_dest_file                        &
-     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &         (file_name, id_rank, num_pe,                             &
+     &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
       use skip_gz_comment
+      use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -176,12 +192,16 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped export coefs file: ', trim(gzip_name)
+!
+      call open_read_mpi_file                                           &
+     &   (gzip_name, num_pe, id_rank, IO_param)
 !
 !      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
 !      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
 !      call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -191,12 +211,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_tbl_dest_file                          &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
       use skip_gz_comment
+      use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -205,11 +226,15 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped interapolate export file: ', trim(gzip_name)
+!
+      call open_read_mpi_file                                           &
+     &   (gzip_name, num_pe, id_rank, IO_param)
 !
 !      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
 !      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
@@ -219,12 +244,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_dmn_dest_file                          &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
       use skip_gz_comment
+      use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
+      integer, intent(in) :: id_rank, num_pe
 !
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -233,10 +259,14 @@
 !
 !
       gzip_name = add_gzip_extension(file_name)
-      call open_rd_gzfile_a(gzip_name, zbuf_itp)
+      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
+     &   'Read gzipped export domain file: ', trim(gzip_name)
+!
+      call open_read_mpi_file                                           &
+     &   (gzip_name, num_pe, id_rank, IO_param)
 !
 !      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
-      call close_gzfile_a(zbuf_itp)
+      call close_mpi_file(IO_param)
 !
       ierr = 0
       if (n_rank_file .ne. id_rank) ierr = ierr_file
