@@ -1,5 +1,5 @@
-!>@file   itp_table_data_IO.f90
-!!@brief  module itp_table_data_IO
+!>@file   MPI_itp_table_data_IO.f90
+!!@brief  module MPI_itp_table_data_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in Sep. 2006
@@ -7,34 +7,32 @@
 !>@brief Routines for ASCII group data IO
 !!
 !!@verbatim
-!!      subroutine write_interpolate_table_org                          &
-!!     &         (id_file, id_rank, IO_itp_org)
-!!      subroutine write_interpolate_coefs_org(id_file, IO_itp_org)
+!!      subroutine mpi_write_itp_table_org(id_file, id_rank, IO_itp_org)
+!!      subroutine mpi_write_itp_coefs_org(id_file, IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
-!!      subroutine read_interpolate_domain_org                          &
-!!     &         (id_file, n_rank, IO_itp_org)
-!!      subroutine read_interpolate_table_org(id_file, IO_itp_org)
-!!      subroutine read_interpolate_coefs_org(id_file, IO_itp_org)
+!!      subroutine mpi_read_itp_domain_org(id_file, n_rank, IO_itp_org)
+!!      subroutine mpi_read_itp_table_org(id_file, IO_itp_org)
+!!      subroutine mpi_read_itp_coefs_org(id_file, IO_itp_org)
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine write_interpolate_table_dest                         &
+!!      subroutine mpi_write_itp_table_dest                             &
 !!     &         (id_file, id_rank, IO_itp_dest)
-!!      subroutine write_interpolate_coefs_dest                         &
+!!      subroutine mpi_write_itp_coefs_dest                             &
 !!     &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !!
-!!      subroutine read_interpolate_domain_dest                         &
+!!      subroutine mpi_read_itp_domain_dest                             &
 !!     &         (id_file, n_rank, IO_itp_dest)
-!!      subroutine read_interpolate_table_dest(id_file, IO_itp_dest)
-!!      subroutine read_interpolate_coefs_dest                          &
+!!      subroutine mpi_read_itp_table_dest(id_file, IO_itp_dest)
+!!      subroutine mpi_read_itp_coefs_dest                              &
 !!     &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
 !
-      module itp_table_data_IO
+      module MPI_itp_table_data_IO
 !
       use m_precision
       use m_constants
@@ -52,8 +50,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_org                            &
-     &         (id_file, id_rank, IO_itp_org)
+      subroutine mpi_write_itp_table_org(id_file, id_rank, IO_itp_org)
 !
       use t_interpolate_tbl_org
 !
@@ -86,11 +83,11 @@
       end if
 !
 !
-      end subroutine write_interpolate_table_org
+      end subroutine mpi_write_itp_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_coefs_org(id_file, IO_itp_org)
+      subroutine mpi_write_itp_coefs_org(id_file, IO_itp_org)
 !
       use t_interpolate_tbl_org
 !
@@ -116,13 +113,12 @@
         write(id_file,*)
       end if
 !
-      end subroutine write_interpolate_coefs_org
+      end subroutine mpi_write_itp_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_domain_org                            &
-     &         (id_file, n_rank, IO_itp_org)
+      subroutine mpi_read_itp_domain_org(id_file, n_rank, IO_itp_org)
 !
       use t_interpolate_tbl_org
       use skip_comment_f
@@ -143,11 +139,11 @@
      &        IO_itp_org%id_dest_domain(1:IO_itp_org%num_dest_domain)
       end if
 !
-      end subroutine read_interpolate_domain_org
+      end subroutine mpi_read_itp_domain_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_table_org(id_file, IO_itp_org)
+      subroutine mpi_read_itp_table_org(id_file, IO_itp_org)
 !
       use t_interpolate_tbl_org
       use skip_comment_f
@@ -168,11 +164,11 @@
       read(id_file,*)                                                   &
      &      IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
 !
-      end subroutine read_interpolate_table_org
+      end subroutine mpi_read_itp_table_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_coefs_org(id_file, IO_itp_org)
+      subroutine mpi_read_itp_coefs_org(id_file, IO_itp_org)
 !
       use t_interpolate_tbl_org
       use skip_comment_f
@@ -194,12 +190,12 @@
      &        IO_itp_org%coef_inter_org(i,1:3)
       end do
 !
-      end subroutine read_interpolate_coefs_org
+      end subroutine mpi_read_itp_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_table_dest                           &
+      subroutine mpi_write_itp_table_dest                               &
      &         (id_file, id_rank, IO_itp_dest)
 !
       use t_interpolate_tbl_dest
@@ -232,11 +228,11 @@
         write(id_file,*)
       end if
 !
-      end subroutine write_interpolate_table_dest
+      end subroutine mpi_write_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_interpolate_coefs_dest                           &
+      subroutine mpi_write_itp_coefs_dest                               &
      &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !
       use t_interpolate_tbl_dest
@@ -267,11 +263,11 @@
         write(id_file,*)
       end if
 !
-      end subroutine write_interpolate_coefs_dest
+      end subroutine mpi_write_itp_coefs_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_domain_dest                           &
+      subroutine mpi_read_itp_domain_dest                               &
      &         (id_file, n_rank, IO_itp_dest)
 !
       use t_interpolate_tbl_dest
@@ -294,11 +290,11 @@
      &        IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
       end if
 !
-      end subroutine read_interpolate_domain_dest
+      end subroutine mpi_read_itp_domain_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_table_dest(id_file, IO_itp_dest)
+      subroutine mpi_read_itp_table_dest(id_file, IO_itp_dest)
 !
       use t_interpolate_tbl_dest
 !
@@ -320,11 +316,11 @@
       read(id_file,*)                                                   &
      &     IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
 !
-      end subroutine read_interpolate_table_dest
+      end subroutine mpi_read_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_interpolate_coefs_dest                            &
+      subroutine mpi_read_itp_coefs_dest                                &
      &         (id_file, IO_itp_dest, IO_itp_c_dest)
 !
       use t_interpolate_tbl_dest
@@ -362,8 +358,8 @@
      &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
         end do
 !
-      end subroutine read_interpolate_coefs_dest
+      end subroutine mpi_read_itp_coefs_dest
 !
 !-----------------------------------------------------------------------
 !
-      end module itp_table_data_IO
+      end module MPI_itp_table_data_IO

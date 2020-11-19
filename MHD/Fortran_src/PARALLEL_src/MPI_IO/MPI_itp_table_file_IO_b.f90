@@ -39,7 +39,6 @@
       use t_binary_IO_buffer
       use t_calypso_mpi_IO_param
 !
-      use itp_table_data_IO_b
       use binary_IO
 !
       implicit none
@@ -59,6 +58,7 @@
       subroutine mpi_write_itp_table_file_b                             &
      &         (file_name, id_rank, itp_tbl_IO, ierr)
 !
+      use MPI_itp_table_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -79,10 +79,10 @@
 !     &   (id_rank, itp_tbl_IO%tbl_dest, bbuf_tbl)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
-!      call write_interpolate_table_org_b                               &
+!      call mpi_write_itp_table_org_b                                   &
 !     &   (id_rank, itp_tbl_IO%tbl_org, bbuf_tbl)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
-!      call write_interpolate_coefs_org_b(itp_tbl_IO%tbl_org, bbuf_tbl)
+!      call mpi_write_itp_coefs_org_b(itp_tbl_IO%tbl_org, bbuf_tbl)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
   99  continue
@@ -106,6 +106,7 @@
       subroutine mpi_read_itp_table_file_b                              &
      &          (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !
+      use MPI_itp_table_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -124,21 +125,21 @@
       bbuf_tbl%id_binary = id_read_tbl
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
-!      call read_interpolate_domain_dest_b                              &
+!      call mpi_read_itp_domain_dest_b                                  &
 !     &   (bbuf_tbl, n_rank_file, itp_tbl_IO%tbl_dest)
 !      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-!      call read_interpolate_table_dest_b(bbuf_tbl, itp_tbl_IO%tbl_dest)
+!      call mpi_read_itp_table_dest_b(bbuf_tbl, itp_tbl_IO%tbl_dest)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !
-!      call read_interpolate_domain_org_b                               &
+!      call mpi_read_itp_domain_org_b                                   &
 !     &   (bbuf_tbl, n_rank_file, itp_tbl_IO%tbl_org)
 !      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-!      call read_interpolate_table_org_b(bbuf_tbl, itp_tbl_IO%tbl_org)
+!      call mpi_read_itp_table_org_b(bbuf_tbl, itp_tbl_IO%tbl_org)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !
-!      call read_interpolate_coefs_org_b(bbuf_tbl, itp_tbl_IO%tbl_org)
+!      call mpi_read_itp_coefs_org_b(bbuf_tbl, itp_tbl_IO%tbl_org)
 !
   99  continue
       call close_mpi_file(IO_param)
@@ -154,6 +155,7 @@
       subroutine mpi_wrt_itp_coefs_dest_file_b                          &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
+      use MPI_itp_table_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -171,11 +173,11 @@
       bbuf_tbl%id_binary = id_write_tbl
       call open_write_mpi_file_b(file_name, IO_param)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
-!      call write_interpolate_table_dest_b                              &
+!      call mpi_write_itp_table_dest_b                                  &
 !     &   (id_rank, IO_itp_dest, bbuf_tbl)
 !      if(bbuf_tbl%ierr_bin .gt. 0) go to 99
 !
-!      call write_interpolate_coefs_dest_b                              &
+!      call mpi_write_itp_coefs_dest_b                                  &
 !     &   (IO_itp_dest, IO_itp_c_dest, bbuf_tbl)
 !
   99  continue
@@ -197,6 +199,7 @@
      &         (file_name, id_rank, num_pe,                             &
      &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
+      use MPI_itp_table_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -216,14 +219,14 @@
       bbuf_tbl%id_binary = id_read_tbl
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
-!      call read_interpolate_domain_dest_b                              &
+!      call mpi_read_itp_domain_dest_b                                   &
 !     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
 !      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-!      call read_interpolate_table_dest_b(bbuf_tbl, IO_itp_dest)
+!      call mpi_read_itp_table_dest_b(bbuf_tbl, IO_itp_dest)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
 !
-!      call read_interpolate_coefs_dest_b                               &
+!      call mpi_read_itp_coefs_dest_b                               &
 !     &   (bbuf_tbl, IO_itp_dest, IO_itp_c_dest)
 !
   99  continue
@@ -239,6 +242,7 @@
       subroutine mpi_read_itp_table_dest_file_b                         &
      &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
+      use MPI_itp_table_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -257,11 +261,11 @@
       bbuf_tbl%id_binary = id_read_tbl
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
-!      call read_interpolate_domain_dest_b                              &
+!      call mpi_read_itp_domain_dest_b                                  &
 !     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
 !      if(bbuf_tbl%ierr_bin .gt. 0) goto 99
 !
-!      call read_interpolate_table_dest_b(bbuf_tbl, IO_itp_dest)
+!      call mpi_read_itp_table_dest_b(bbuf_tbl, IO_itp_dest)
 !
   99  continue
       call close_mpi_file(IO_param)
@@ -276,6 +280,7 @@
       subroutine mpi_read_itp_domain_dest_file_b                        &
      &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
+      use MPI_itp_table_data_IO_b
       use MPI_ascii_data_IO
       use MPI_binary_head_IO
 !
@@ -294,7 +299,7 @@
       bbuf_tbl%id_binary = id_read_tbl
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
 !      if(bbuf_tbl%ierr_bin .ne. 0) goto 99
-!      call read_interpolate_domain_dest_b                              &
+!      call mpi_read_itp_domain_dest_b                                  &
 !     &   (bbuf_tbl, n_rank_file, IO_itp_dest)
 !
   99  continue

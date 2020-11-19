@@ -38,13 +38,10 @@
       use t_calypso_mpi_IO_param
 !
       use set_parallel_file_name
-      use gz_itp_table_data_IO
-      use gz_binary_IO
 !
       implicit none
 !
       character(len=kchara), private  :: gzip_name
-      type(buffer_4_gzip), private :: zbuf_itp
       type(calypso_MPI_IO_params), save, private :: IO_param
 !
 !-----------------------------------------------------------------------
@@ -56,7 +53,7 @@
       subroutine gz_mpi_write_itp_table_file                            &
      &         (file_name, id_rank, itp_tbl_IO)
 !
-      use skip_gz_comment
+      use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -71,12 +68,12 @@
 !
       call open_write_mpi_file(gzip_name, IO_param)
 !
-!      call write_gz_itp_table_dest                                     &
+!      call write_gz_mpi_itp_table_dest                                 &
 !     &   (id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
 !
-!      call write_gz_itp_table_org                                      &
+!      call write_gz_mpi_itp_table_org                                  &
 !     &   (id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
-!      call write_gz_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
+!      call write_gz_mpi_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
 !
       call close_mpi_file(IO_param)
 !
@@ -97,7 +94,7 @@
       subroutine gz_mpi_read_itp_table_file                             &
      &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !
-      use skip_gz_comment
+      use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -119,15 +116,14 @@
 !        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
 !      call read_gz_itp_domain_dest                                     &
 !     &   (n_rank_file, itp_tbl_IO%tbl_dest, zbuf_itp)
-!        write(*,*) 'read_gz_itp_table_dest'
-!      call read_gz_itp_table_dest(itp_tbl_IO%tbl_dest, zbuf_itp)
+!        write(*,*) 'read_gz_mpi_itp_table_dest'
+!      call read_gz_mpi_itp_table_dest(itp_tbl_IO%tbl_dest, zbuf_itp)
 !
-!        write(*,*) 'read_gz_itp_domain_org'
-!      call read_gz_itp_domain_org                                      &
+!        write(*,*) 'read_gz_mpi_itp_domain_org'
+!      call read_gz_mpi_itp_domain_org                                  &
 !     &   (n_rank_file, itp_tbl_IO%tbl_org, zbuf_itp)
-!        write(*,*) 'read_gz_itp_coefs_org'
-!      call read_gz_itp_table_org(itp_tbl_IO%tbl_org, zbuf_itp)
-!      call read_gz_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
+!      call read_gz_mpi_itp_table_org(itp_tbl_IO%tbl_org, zbuf_itp)
+!      call read_gz_mpi_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
 !
       call close_mpi_file(IO_param)
 !
@@ -142,7 +138,7 @@
       subroutine gz_mpi_wrt_itp_coefs_dest_file                         &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
-      use skip_gz_comment
+      use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -158,8 +154,8 @@
 !
       call open_write_mpi_file(gzip_name, IO_param)
 !
-!      call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
-!      call write_gz_itp_coefs_dest                                     &
+!      call write_gz_mpi_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
+!      call write_gz_mpi_itp_coefs_dest                                 &
 !     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
       call close_mpi_file(IO_param)
 !
@@ -178,7 +174,7 @@
      &         (file_name, id_rank, num_pe,                             &
      &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
-      use skip_gz_comment
+      use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -198,9 +194,11 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-!      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
-!      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
-!      call read_gz_itp_coefs_dest(IO_itp_dest, IO_itp_c_dest, zbuf_itp)
+!      call read_gz_mpi_itp_domain_dest                                 &
+!     &   (n_rank_file, IO_itp_dest, zbuf_itp)
+!      call read_gz_mpi_itp_table_dest(IO_itp_dest, zbuf_itp)
+!      call read_gz_mpi_itp_coefs_dest                                  &
+!     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
       call close_mpi_file(IO_param)
 !
       ierr = 0
@@ -213,7 +211,7 @@
       subroutine gz_mpi_read_itp_tbl_dest_file                          &
      &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
-      use skip_gz_comment
+      use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -232,8 +230,9 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-!      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
-!      call read_gz_itp_table_dest(IO_itp_dest, zbuf_itp)
+!      call read_gz_mpi_itp_domain_dest                                 &
+!     &   (n_rank_file, IO_itp_dest, zbuf_itp)
+!      call read_gz_mpi_itp_table_dest(IO_itp_dest, zbuf_itp)
       call close_mpi_file(IO_param)
 !
       ierr = 0
@@ -246,7 +245,7 @@
       subroutine gz_mpi_read_itp_dmn_dest_file                          &
      &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
-      use skip_gz_comment
+      use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name

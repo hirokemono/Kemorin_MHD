@@ -37,8 +37,6 @@
       use t_interpolate_coefs_dest
       use t_calypso_mpi_IO_param
 !
-      use itp_table_data_IO
-!
       implicit none
 !
       type(calypso_MPI_IO_params), save, private :: IO_param
@@ -54,6 +52,7 @@
       subroutine write_itp_table_file_a                                 &
      &         (file_name, id_rank, itp_tbl_IO)
 !
+      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -65,12 +64,12 @@
      &   'Write ascii interpolation file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
-!      call write_interpolate_table_dest                                &
+!      call mpi_write_itp_table_dest                                    &
 !     &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_dest)
 !
-!      call write_interpolate_table_org                                 &
+!      call mpi_write_itp_table_org                                     &
 !     &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_org)
-!      call write_interpolate_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
+!      call mpi_write_itp_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
 !
@@ -91,6 +90,7 @@
       subroutine mpi_read_itp_table_file_a                              &
      &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
 !
+      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -106,20 +106,19 @@
      &   'Read ascii interpolation file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
-!        write(*,*) 'read_interpolate_domain_dest', trim(file_name)
-!      call read_interpolate_domain_dest                                &
+!        write(*,*) 'mpi_read_itp_domain_dest', trim(file_name)
+!      call mpi_read_itp_domain_dest                                    &
 !     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest)
-!        write(*,*) 'read_interpolate_table_dest'
-!      call read_interpolate_table_dest                                 &
-!     &    (id_tbl_file, itp_tbl_IO%tbl_dest)
+!        write(*,*) 'mpi_read_itp_table_dest'
+!      call mpi_read_itp_table_dest(id_tbl_file, itp_tbl_IO%tbl_dest)
 !
-!        write(*,*) 'read_interpolate_domain_org'
-!      call read_interpolate_domain_org                                 &
+!        write(*,*) 'mpi_read_itp_domain_org'
+!      call mpi_read_itp_domain_org                                     &
 !     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_org)
-!        write(*,*) 'read_interpolate_table_org'
-!      call read_interpolate_table_org(id_tbl_file, itp_tbl_IO%tbl_org)
-!        write(*,*) 'read_interpolate_coefs_org'
-!      call read_interpolate_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
+!        write(*,*) 'mpi_read_itp_table_org'
+!      call mpi_read_itp_table_org(id_tbl_file, itp_tbl_IO%tbl_org)
+!        write(*,*) 'mpi_read_itp_coefs_org'
+!      call mpi_read_itp_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
 !
@@ -134,6 +133,7 @@
       subroutine mpi_wrt_itp_coefs_dest_file_a                          &
      &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
+      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -147,9 +147,9 @@
      &   'Write ascii export coefs file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
-!      call write_interpolate_table_dest                                &
+!      call mpi_write_itp_table_dest                                    &
 !     &   (id_tbl_file, id_rank, IO_itp_dest)
-!      call write_interpolate_coefs_dest                                &
+!      call mpi_write_itp_coefs_dest                                    &
 !     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
@@ -168,6 +168,7 @@
      &         (file_name, id_rank, num_pe,                             &
      &          IO_itp_dest, IO_itp_c_dest, ierr)
 !
+      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -184,10 +185,10 @@
      &   'Read ascii export coefs file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
-!      call read_interpolate_domain_dest                                &
+!      call mpi_read_itp_domain_dest                                    &
 !     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-!      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
-!      call read_interpolate_coefs_dest                                 &
+!      call mpi_read_itp_table_dest(id_tbl_file, IO_itp_dest)
+!      call mpi_read_itp_coefs_dest                                     &
 !     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
@@ -201,6 +202,7 @@
       subroutine mpi_read_itp_table_dest_file_a                         &
      &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
+      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -216,9 +218,9 @@
      &   'Read ascii interapolate export file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
-!      call read_interpolate_domain_dest                                &
+!      call mpi_read_itp_domain_dest                                    &
 !     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-!      call read_interpolate_table_dest(id_tbl_file, IO_itp_dest)
+!      call mpi_read_itp_table_dest(id_tbl_file, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0
@@ -231,6 +233,7 @@
       subroutine mpi_read_itp_domain_dest_file_a                        &
      &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
 !
+      use MPI_itp_table_data_IO
       use MPI_ascii_data_IO
 !
       character(len=kchara), intent(in) :: file_name
@@ -247,7 +250,7 @@
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
       open (id_tbl_file, file = file_name, form = 'formatted')
-!      call read_interpolate_domain_dest                                &
+!      call mpi_read_itp_domain_dest                                    &
 !     &   (id_tbl_file, n_rank_file, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
