@@ -54,6 +54,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -96,6 +97,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -141,6 +143,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -179,6 +182,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -188,7 +192,7 @@
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
       integer(kind = kint) :: n_rank_file
-!
+! 
 !
       gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp)
@@ -218,6 +222,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
@@ -252,6 +257,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO_b
+      use gzip_file_access
 !
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank
