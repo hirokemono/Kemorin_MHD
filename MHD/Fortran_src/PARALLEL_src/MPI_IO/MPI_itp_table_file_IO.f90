@@ -49,7 +49,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_itp_table_file_a                                 &
+      subroutine mpi_write_itp_table_file_a                             &
      &         (file_name, id_rank, itp_tbl_IO)
 !
       use MPI_itp_table_data_IO
@@ -83,7 +83,7 @@
       end if
       call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
-      end subroutine write_itp_table_file_a
+      end subroutine mpi_write_itp_table_file_a
 !
 !-----------------------------------------------------------------------
 !

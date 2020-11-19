@@ -25,6 +25,11 @@
 !!      subroutine mpi_write_int_stack(IO_param, num, istack)
 !!      subroutine mpi_write_comm_table(IO_param, ncolumn, num, int_dat)
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!
+!!      subroutine mpi_write_int_vector(IO_param, num, int_dat)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
+!!      subroutine mpi_read_int_vector(IO_param, num, int_dat)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!@endverbatim
 !
       module MPI_domain_data_IO
@@ -40,8 +45,6 @@
       use data_IO_to_textline
 !
       implicit none
-!
-      private :: mpi_write_int_vector, mpi_read_int_vector
 !
 !------------------------------------------------------------------
 !
