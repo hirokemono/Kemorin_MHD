@@ -96,8 +96,8 @@
 !
       if (itp_tbl_IO%tbl_dest%num_org_domain .gt. 0) then
         call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-        call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
       end if
+      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
       end subroutine mpi_write_itp_table_file_b
 !
@@ -187,9 +187,9 @@
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
         call dealloc_itp_table_dest(IO_itp_dest)
-        call dealloc_itp_num_dest(IO_itp_dest)
         call dealloc_itp_coef_stack(IO_itp_c_dest)
       end if
+      call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine mpi_wrt_itp_coefs_dest_file_b
 !

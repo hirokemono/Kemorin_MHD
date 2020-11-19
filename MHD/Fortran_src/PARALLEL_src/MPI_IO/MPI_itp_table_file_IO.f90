@@ -64,12 +64,12 @@
      &   'Write ascii interpolation file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
-!      call mpi_write_itp_table_dest                                    &
-!     &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_dest)
+      call mpi_write_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
+!      call mpi_write_itp_table_dest(id_tbl_file, itp_tbl_IO%tbl_dest)
 !
-!      call mpi_write_itp_table_org                                     &
-!     &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_org)
-!      call mpi_write_itp_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
+!      call mpi_write_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
+!      call mpi_write_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
+!      call mpi_write_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
 !
@@ -80,8 +80,8 @@
 !
       if (itp_tbl_IO%tbl_dest%num_org_domain .gt. 0) then
         call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-        call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
       end if
+      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
       end subroutine write_itp_table_file_a
 !
@@ -107,23 +107,21 @@
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
 !        write(*,*) 'mpi_read_itp_domain_dest', trim(file_name)
-!      call mpi_read_itp_domain_dest                                    &
-!     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_dest)
+      call mpi_read_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
 !        write(*,*) 'mpi_read_itp_table_dest'
-!      call mpi_read_itp_table_dest(id_tbl_file, itp_tbl_IO%tbl_dest)
+!      call mpi_read_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
 !        write(*,*) 'mpi_read_itp_domain_org'
 !      call mpi_read_itp_domain_org                                     &
-!     &   (id_tbl_file, n_rank_file, itp_tbl_IO%tbl_org)
+!     &   (IO_param, n_rank_file, itp_tbl_IO%tbl_org)
 !        write(*,*) 'mpi_read_itp_table_org'
-!      call mpi_read_itp_table_org(id_tbl_file, itp_tbl_IO%tbl_org)
+!      call mpi_read_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
 !        write(*,*) 'mpi_read_itp_coefs_org'
-!      call mpi_read_itp_coefs_org(id_tbl_file, itp_tbl_IO%tbl_org)
+!      call mpi_read_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
 !
       ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = n_rank_file
 !
       end subroutine mpi_read_itp_table_file_a
 !
@@ -147,18 +145,18 @@
      &   'Write ascii export coefs file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
-!      call mpi_write_itp_table_dest                                    &
-!     &   (id_tbl_file, id_rank, IO_itp_dest)
+      call mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
+!      call mpi_write_itp_table_dest(IO_param, id_rank, IO_itp_dest)
 !      call mpi_write_itp_coefs_dest                                    &
-!     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
+!     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
         call dealloc_itp_coef_dest(IO_itp_c_dest)
         call dealloc_itp_coef_stack(IO_itp_c_dest)
         call dealloc_itp_table_dest(IO_itp_dest)
-        call dealloc_itp_num_dest(IO_itp_dest)
       end if
+      call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine mpi_wrt_itp_coefs_dest_file_a
 !
@@ -178,22 +176,18 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer(kind = kint) :: n_rank_file
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read ascii export coefs file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
-!      call mpi_read_itp_domain_dest                                    &
-!     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-!      call mpi_read_itp_table_dest(id_tbl_file, IO_itp_dest)
+      call mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
+!      call mpi_read_itp_table_dest(IO_param, IO_itp_dest)
 !      call mpi_read_itp_coefs_dest                                     &
-!     &   (id_tbl_file, IO_itp_dest, IO_itp_c_dest)
+!     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
       end subroutine mpi_read_itp_coefs_dest_file_a
 !
@@ -211,20 +205,16 @@
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      integer(kind = kint) :: n_rank_file
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read ascii interapolate export file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
-!      call mpi_read_itp_domain_dest                                    &
-!     &   (id_tbl_file, n_rank_file, IO_itp_dest)
-!      call mpi_read_itp_table_dest(id_tbl_file, IO_itp_dest)
+      call mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
+!      call mpi_read_itp_table_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
       end subroutine mpi_read_itp_table_dest_file_a
 !
@@ -242,20 +232,15 @@
       integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      integer(kind = kint) :: n_rank_file
-!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
      &   'Read ascii export domain file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
-      open (id_tbl_file, file = file_name, form = 'formatted')
-!      call mpi_read_itp_domain_dest                                    &
-!     &   (id_tbl_file, n_rank_file, IO_itp_dest)
+      call mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
       end subroutine mpi_read_itp_domain_dest_file_a
 !

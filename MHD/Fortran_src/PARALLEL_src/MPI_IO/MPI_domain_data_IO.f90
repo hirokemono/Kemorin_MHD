@@ -7,6 +7,7 @@
 !>@brief  Routine for gzipped binary doimain data IO
 !!
 !!@verbatim
+!!      subroutine mpi_check_num_of_domains(IO_param)
 !!      subroutine mpi_read_domain_info(IO_param, comm_IO)
 !!      subroutine mpi_read_import_data(IO_param, comm_IO)
 !!      subroutine mpi_read_export_data(IO_param, comm_IO)
@@ -48,12 +49,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine mpi_read_domain_info(IO_param, comm_IO)
+      subroutine mpi_check_num_of_domains(IO_param)
 !
       use m_error_IDs
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(communication_table), intent(inout) :: comm_IO
 !
       integer(kind = kint) :: nprocs_read
 !
@@ -64,8 +64,21 @@
         call calypso_mpi_abort(ierr_file, '#. of subdmain is wrong')
       end if
 !
-      call mpi_read_num_of_data(IO_param, comm_IO%num_neib)
+      end subroutine mpi_check_num_of_domains
 !
+! -----------------------------------------------------------------------
+!
+      subroutine mpi_read_domain_info(IO_param, comm_IO)
+!
+      use m_error_IDs
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(communication_table), intent(inout) :: comm_IO
+!
+!
+      call mpi_check_num_of_domains(IO_param)
+!
+      call mpi_read_num_of_data(IO_param, comm_IO%num_neib)
       call alloc_neighbouring_id(comm_IO)
 !
       call mpi_read_int_vector                                          &

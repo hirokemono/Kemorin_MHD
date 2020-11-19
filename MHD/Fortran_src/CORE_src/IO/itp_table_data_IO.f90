@@ -288,8 +288,8 @@
       call skip_comment(character_4_read, id_file)
       read(character_4_read,*) IO_itp_dest%num_org_domain
 !
+      call alloc_itp_num_dest(IO_itp_dest)
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call alloc_itp_num_dest(IO_itp_dest)
         read(id_file,*)                                                 &
      &        IO_itp_dest%id_org_domain(1:IO_itp_dest%num_org_domain)
       end if

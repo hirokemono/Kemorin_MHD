@@ -306,8 +306,9 @@
       call read_one_integer_b(bbuf, IO_itp_dest%num_org_domain)
       if(bbuf%ierr_bin .gt. 0) return
 !
-      if (IO_itp_dest%num_org_domain .le. 0) return
       call alloc_itp_num_dest(IO_itp_dest)
+!
+      if (IO_itp_dest%num_org_domain .le. 0) return
       call read_mul_integer_b                                           &
      &   (bbuf, cast_long(IO_itp_dest%num_org_domain),                  &
      &    IO_itp_dest%id_org_domain)

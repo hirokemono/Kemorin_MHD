@@ -113,6 +113,7 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
+      if(allocated(tbl_dest%id_org_domain) .eqv. .FALSE.) return
       deallocate( tbl_dest%id_org_domain )
       deallocate( tbl_dest%istack_nod_tbl_dest)
 !

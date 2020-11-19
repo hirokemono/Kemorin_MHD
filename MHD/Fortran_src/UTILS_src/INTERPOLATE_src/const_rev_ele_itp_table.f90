@@ -147,8 +147,8 @@
       call alloc_istack_org_ptype                                       &
      &   (itp_rev%tbl_org%num_dest_domain, cst_itp_wk)
 !
+      call alloc_itp_num_org(np_smp, itp_rev%tbl_org)
       if(itp_rev%tbl_org%num_dest_domain .gt. 0) then
-        call alloc_itp_num_org(np_smp, itp_rev%tbl_org)
         call alloc_itp_table_org(itp_rev%tbl_org)
 !
         num = itp_rev%tbl_org%num_dest_domain
@@ -179,9 +179,9 @@
           itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
         end do
 !
-        call dealloc_itp_num_dest(itp_tbl%tbl_dest)
         call dealloc_itp_table_dest(itp_tbl%tbl_dest)
       end if
+      call dealloc_itp_num_dest(itp_tbl%tbl_dest)
 !
 !
 !
@@ -189,8 +189,8 @@
       call set_num_org_domain                                           &
      &   (itp_tbl%tbl_org%num_dest_domain, itp_rev%tbl_dest)
 !
+      call alloc_itp_num_dest(itp_rev%tbl_dest)
       if(itp_rev%tbl_dest%num_org_domain .gt. 0) then
-        call alloc_itp_num_dest(itp_rev%tbl_dest)
         call alloc_itp_table_dest(itp_rev%tbl_dest)
 !
         num = itp_rev%tbl_dest%num_org_domain

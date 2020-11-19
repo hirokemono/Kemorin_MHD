@@ -323,8 +323,9 @@
       call skip_gz_comment_int(n_rank, zbuf)
       call skip_gz_comment_int(IO_itp_dest%num_org_domain, zbuf)
 !
+      call alloc_itp_num_dest(IO_itp_dest)
+!
       if (IO_itp_dest%num_org_domain .gt. 0) then
-        call alloc_itp_num_dest(IO_itp_dest)
         call read_gz_multi_int(IO_itp_dest%num_org_domain,              &
      &      IO_itp_dest%id_org_domain, zbuf)
       end if
