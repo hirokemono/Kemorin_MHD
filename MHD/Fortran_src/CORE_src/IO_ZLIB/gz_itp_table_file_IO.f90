@@ -42,6 +42,7 @@
 !
       use set_parallel_file_name
       use gz_itp_table_data_IO
+      use gz_binary_IO
 !
       implicit none
 !
