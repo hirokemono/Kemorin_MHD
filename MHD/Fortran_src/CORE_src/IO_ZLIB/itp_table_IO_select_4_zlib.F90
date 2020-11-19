@@ -163,7 +163,7 @@
      &  ) then
         file_name =  add_itb_extension(fname_tmp)
       else
-        file_name =  add_itb_extension(fname_tmp)
+        file_name =  add_itp_extension(fname_tmp)
       end if
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
