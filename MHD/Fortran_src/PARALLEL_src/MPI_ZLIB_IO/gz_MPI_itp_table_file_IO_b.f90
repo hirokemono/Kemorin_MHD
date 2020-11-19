@@ -53,7 +53,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_itp_table_file_b                              &
+      subroutine write_gz_mpi_itp_table_file_b                          &
      &         (file_name, id_rank, itp_tbl_IO, ierr)
 !
       use set_parallel_file_name
@@ -96,7 +96,7 @@
       end if
       call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
-      end subroutine write_gz_itp_table_file_b
+      end subroutine write_gz_mpi_itp_table_file_b
 !
 !-----------------------------------------------------------------------
 !
