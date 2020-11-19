@@ -42,6 +42,7 @@
 !
       use t_interpolate_tbl_org
       use t_buffer_4_gzip
+      use gz_write_one_integer_b
       use transfer_to_long_integers
 !
       implicit none
