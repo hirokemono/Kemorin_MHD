@@ -21,6 +21,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use t_interpolate_table
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
@@ -32,11 +33,8 @@
 !> Structure of interpolation table for source grid
       type(interpolate_table_org), save, private :: itp_org_c
 !
-!> Structure of interpolation table for source grid
-      type(interpolate_table_org), save, private :: IO_itp_org
-!
-!> Structure of interpolation table for target grid
-      type(interpolate_table_dest), save, private :: IO_itp_dest
+!> Structure of interpolation table for IO
+      type(interpolate_table), save, private :: itp_tbl_IO_c
 !
 !> Structure of interpolation coefficients for target grid
       type(interpolate_coefs_dest), save, private :: IO_itp_c_dest
@@ -94,18 +92,19 @@
 !
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'copy_itp_tbl_types_org', my_rank_2nd, nprocs
-          call copy_itp_tbl_types_org(my_rank, itp_org_c, IO_itp_org)
+          call copy_itp_tbl_types_org                                   &
+     &       (my_rank, itp_org_c, itp_tbl_IO_c%tbl_org)
           call dealloc_itp_table_org(itp_org_c)
           call dealloc_itp_num_org(itp_org_c)
 !
           if (my_rank_2nd .ge. nprocs) then
-            IO_itp_dest%num_org_domain = 0
+            itp_tbl_IO_c%tbl_dest%num_org_domain = 0
           else
             tmp_tbl_IO%file_prefix = work_header
 !
             write(*,*) 'sel_read_itp_table_dest', my_rank_2nd
             call sel_read_itp_table_dest                                &
-     &         (my_rank_2nd, tmp_tbl_IO, IO_itp_dest, ierr)
+     &         (my_rank_2nd, tmp_tbl_IO, itp_tbl_IO_c%tbl_dest, ierr)
 !
             if (ierr.ne.0) then
               call calypso_MPI_abort(ierr,'Check work file')
@@ -116,8 +115,7 @@
           write(*,*) 'sel_write_interpolate_table',                     &
      &              tmp_tbl_IO%file_prefix
           call sel_write_interpolate_table                              &
-     &       (my_rank_2nd, gen_itp_p%itp_file_IO,                       &
-     &        IO_itp_org, IO_itp_dest)
+     &       (my_rank_2nd, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
 !
         end if
       end do
@@ -127,14 +125,14 @@
         tmp_tbl_IO%file_prefix = work_header
 !
         call sel_read_itp_table_dest                                    &
-     &     (my_rank, tmp_tbl_IO, IO_itp_dest, ierr)
+     &     (my_rank, tmp_tbl_IO, itp_tbl_IO_c%tbl_dest, ierr)
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
-        IO_itp_org%num_dest_domain = 0
+        itp_tbl_IO_c%tbl_org%num_dest_domain = 0
 !
         call sel_write_interpolate_table                                &
-     &     (my_rank, gen_itp_p%itp_file_IO, IO_itp_org, IO_itp_dest)
+     &     (my_rank, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
 !
       end if
 !
@@ -165,12 +163,12 @@
         tmp_tbl_IO%file_prefix = work_header
 !
         call sel_read_itp_table_dest                                    &
-     &     (n_dest_rank, tmp_tbl_IO, IO_itp_dest, ierr)
+     &     (n_dest_rank, tmp_tbl_IO, itp_tbl_IO_c%tbl_dest, ierr)
 !
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call count_num_interpolation_4_orgin                            &
-     &     (id_org_rank, n_dest_rank, IO_itp_dest, itp_org)
+     &     (id_org_rank, n_dest_rank, itp_tbl_IO_c%tbl_dest, itp_org)
 !
       end do
       itp_org%ntot_table_org                                            &
@@ -202,12 +200,12 @@
       do ip = 1, nprocs_dest
         n_dest_rank = int(mod(id_org_rank+ip,nprocs_dest))
         tmp_tbl_IO%file_prefix = work_header
-        call sel_read_itp_coefs_dest                                    &
-     &     (n_dest_rank, tmp_tbl_IO, IO_itp_dest, IO_itp_c_dest, ierr)
+        call sel_read_itp_coefs_dest(n_dest_rank, tmp_tbl_IO,           &
+     &      itp_tbl_IO_c%tbl_dest, IO_itp_c_dest, ierr)
         if (ierr.ne.0) call calypso_MPI_abort(ierr,'Check work file')
 !
         call set_interpolation_4_orgin                                  &
-     &     (id_org_rank, IO_itp_dest, IO_itp_c_dest, itp_org,           &
+     &     (id_org_rank, itp_tbl_IO_c%tbl_dest, IO_itp_c_dest, itp_org, &
      &      cst_itp_wk%istack_org_para_type)
       end do
 !

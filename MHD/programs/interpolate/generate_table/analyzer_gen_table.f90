@@ -138,6 +138,8 @@
       integer(kind = kint) :: ierr_missing, num_pe
       type(field_IO_params) :: tmp_tbl_IO
 !
+      type(interpolate_table_dest) :: IO_itp_dest1
+!
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
       call s_construct_interpolate_table                                &
@@ -163,11 +165,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_coefs_dest'
       call copy_itp_coefs_dest(my_rank,                                 &
-     &    itp_nod%tbl_dest, itp_n_coef, IO_itp_dest, IO_itp_c_dest)
+     &    itp_nod%tbl_dest, itp_n_coef, IO_itp_dest1, IO_itp_c_dest)
 !
       tmp_tbl_IO%file_prefix = work_header
       call sel_write_itp_coefs_dest                                     &
-     &   (my_rank, tmp_tbl_IO, IO_itp_dest, IO_itp_c_dest)
+     &   (my_rank, tmp_tbl_IO, IO_itp_dest1, IO_itp_c_dest)
 !
 !   construct table for originate domain
 !

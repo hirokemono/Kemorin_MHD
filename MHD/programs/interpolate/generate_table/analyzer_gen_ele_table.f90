@@ -143,6 +143,7 @@
 !
       integer(kind = kint) :: ierr_missing, num_pe
       type(field_IO_params) :: tmp_tbl_IO
+      type(interpolate_table_dest) :: IO_itp_dest
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'

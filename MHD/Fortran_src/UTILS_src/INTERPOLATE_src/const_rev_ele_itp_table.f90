@@ -48,6 +48,8 @@
       integer :: jp, my_rank_2nd
       integer(kind = kint) :: np, ierr
       type(interpolate_table_org) :: itp_org_e
+      type(interpolate_table_org) :: IO_itp_org
+      type(interpolate_table_dest) :: IO_itp_dest
 !
 !
 !    set domain ID to be searched

@@ -29,10 +29,7 @@
       implicit none
 !
 !> Structure of interpolation table for source grid
-      type(interpolate_table_org), save :: IO_itp_org
-!
-!> Structure of interpolation table for target grid
-      type(interpolate_table_dest), save :: IO_itp_dest
+      type(interpolate_table), save :: itp_tbl_IO
 !
 !> Structure of interpolation coefficients for target grid
       type(interpolate_coefs_dest), save :: IO_itp_c_dest
@@ -57,16 +54,16 @@
 !
 !
       call sel_read_interpolate_table                                   &
-     &   (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
+     &   (id_rank, table_file_IO, itp_tbl_IO, ierr)
 !
       call copy_itp_tbl_types_dst                                       &
-     &   (id_rank, IO_itp_dest, itp_table%tbl_dest)
+     &   (id_rank, itp_tbl_IO%tbl_dest, itp_table%tbl_dest)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org                                       &
-     &   (id_rank, IO_itp_org, itp_table%tbl_org)
-      call dealloc_itp_table_org(IO_itp_org)
-      call dealloc_itp_num_org(IO_itp_org)
+     &   (id_rank, itp_tbl_IO%tbl_org, itp_table%tbl_org)
+      call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
+      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
 !
       call set_stack_tbl_wtype_org_smp(itp_table%tbl_org)
 !
@@ -98,15 +95,15 @@
 !
 !
       call copy_itp_tbl_types_dst                                       &
-     &   (id_rank, itp_table%tbl_dest, IO_itp_dest)
+     &   (id_rank, itp_table%tbl_dest, itp_tbl_IO%tbl_dest)
       if (iflag_debug.eq.1) write(*,*) 'copy_itp_tbl_types_org'
       call copy_itp_tbl_types_org                                       &
-     &   (id_rank, itp_table%tbl_org, IO_itp_org)
+     &   (id_rank, itp_table%tbl_org, itp_tbl_IO%tbl_org)
       call dealloc_itp_table_org(itp_table%tbl_org)
       call dealloc_itp_num_org(itp_table%tbl_org)
 !
       call sel_write_interpolate_table                                  &
-     &   (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
+     &   (id_rank, table_file_IO, itp_tbl_IO)
 !
       end subroutine output_interpolate_table
 !

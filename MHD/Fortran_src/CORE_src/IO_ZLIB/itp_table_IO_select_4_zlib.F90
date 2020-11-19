@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine sel_write_interpolate_table                          &
-!!     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
+!!     &         (id_rank, table_file_IO, itp_tbl_IO)
 !!      subroutine sel_read_interpolate_table                           &
-!!     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
+!!     &         (id_rank, table_file_IO, itp_tbl_IO, ierr)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
+!!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine sel_write_itp_coefs_dest                             &
 !!     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
@@ -31,6 +32,7 @@
       use m_precision
 !
       use m_file_format_switch
+      use t_interpolate_table
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
@@ -54,14 +56,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_write_interpolate_table                            &
-     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest)
+     &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_mesh_extensions
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
-      type(interpolate_table_org), intent(inout) :: IO_itp_org
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
       character(len=kchara) :: fname_tmp, file_name
       integer(kind = kint) :: ierr = 0
@@ -78,20 +79,19 @@
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call write_itp_table_file_b                                     &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_write_itp_table_file                                    &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
+        call gz_write_itp_table_file(file_name, id_rank, itp_tbl_IO)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call write_gz_itp_table_file_b                                  &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call write_itp_table_file_a                                     &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
+     &     (file_name, id_rank, itp_tbl_IO)
       end if
 !
       end subroutine sel_write_interpolate_table
@@ -99,7 +99,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_read_interpolate_table                             &
-     &         (id_rank, table_file_IO, IO_itp_org, IO_itp_dest, ierr)
+     &         (id_rank, table_file_IO, itp_tbl_IO, ierr)
 !
       use set_mesh_extensions
 !
@@ -107,8 +107,7 @@
       type(field_IO_params), intent(in) ::  table_file_IO
 !
       integer(kind = kint), intent(inout) :: ierr
-      type(interpolate_table_org), intent(inout) :: IO_itp_org
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
       character(len=kchara) :: fname_tmp, file_name
 !
@@ -124,20 +123,20 @@
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_table_file_b                                      &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
         call gz_read_itp_table_file                                     &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
         call read_gz_itp_table_file_b                                   &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_table_file_a                                      &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
       end if
 !
       end subroutine sel_read_interpolate_table

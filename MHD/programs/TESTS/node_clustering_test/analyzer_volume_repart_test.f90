@@ -184,13 +184,13 @@
       table_file_IO%file_prefix =  'part_table'
       table_file_IO%iflag_format = id_ascii_file_fmt
       irank_read = my_rank
-      call sel_write_interpolate_table(irank_read, table_file_IO,       &
-     &    itp_tbl_IO%tbl_org, itp_tbl_IO%tbl_dest)
+      call sel_write_interpolate_table                                  &
+     &    (irank_read, table_file_IO, itp_tbl_IO)
       call calypso_MPI_barrier
 !
 !
       call sel_read_interpolate_table(irank_read, table_file_IO,        &
-     &     itp_tbl_IO2%tbl_org, itp_tbl_IO2%tbl_dest, i)
+     &                                itp_tbl_IO2, i)
 !
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
