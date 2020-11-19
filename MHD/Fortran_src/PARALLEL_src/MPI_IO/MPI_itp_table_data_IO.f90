@@ -43,6 +43,9 @@
       use m_machine_parameter
       use m_interpolation_data_labels
 !
+      use t_interpolate_tbl_org
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
       use t_calypso_mpi_IO_param
 !
       implicit none
@@ -58,7 +61,7 @@
 !
       subroutine mpi_write_itp_domain_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
+      use MPI_ascii_data_IO
       use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -83,8 +86,7 @@
 !
       subroutine mpi_read_itp_domain_org(IO_param, n_rank, IO_itp_org)
 !
-      use t_interpolate_tbl_org
-      use skip_comment_f
+      use MPI_ascii_data_IO
 !
       integer(kind = kint), intent(inout) :: n_rank
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -109,7 +111,7 @@
 !
       subroutine mpi_write_itp_table_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
+      use MPI_ascii_data_IO
       use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -135,7 +137,7 @@
 !
       subroutine mpi_read_itp_table_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
+      use MPI_ascii_data_IO
       use skip_comment_f
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -162,7 +164,7 @@
 !
       subroutine mpi_write_itp_coefs_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
+      use MPI_ascii_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
@@ -193,8 +195,7 @@
 !
       subroutine mpi_read_itp_coefs_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
-      use skip_comment_f
+      use MPI_ascii_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
@@ -221,7 +222,8 @@
 !
       subroutine mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
+      use MPI_ascii_data_IO
+      use MPI_domain_data_IO
       use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -245,9 +247,8 @@
 !
       subroutine mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
-!
-      use skip_comment_f
+      use MPI_domain_data_IO
+      use MPI_ascii_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -268,7 +269,7 @@
 !
       subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
+      use MPI_ascii_data_IO
       use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -293,9 +294,7 @@
 !
       subroutine mpi_read_itp_table_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
-!
-      use skip_comment_f
+      use MPI_ascii_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
@@ -321,8 +320,7 @@
       subroutine mpi_write_itp_coefs_dest                               &
      &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
-      use t_interpolate_tbl_dest
-      use t_interpolate_coefs_dest
+      use MPI_ascii_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
@@ -357,10 +355,7 @@
       subroutine mpi_read_itp_coefs_dest                                &
      &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
-      use t_interpolate_tbl_dest
-      use t_interpolate_coefs_dest
-!
-      use skip_comment_f
+      use MPI_ascii_data_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
