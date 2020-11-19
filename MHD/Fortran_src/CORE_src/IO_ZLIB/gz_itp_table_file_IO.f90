@@ -3,6 +3,15 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
+!>@file  gz_itp_table_file_IO.f90
+!!       module gz_itp_table_file_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed in Sep. 2012
+!!
+!> @brief gzipped file IO for interpolation
+!!
+!!@verbatim
 !!      subroutine gz_write_itp_table_file                              &
 !!     &         (file_name, id_rank, IO_itp_org, IO_itp_dest)
 !!      subroutine gz_read_itp_table_file                               &
@@ -20,6 +29,7 @@
 !!     &         (file_name, id_rank, IO_itp_dest, ierr)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+!!@endverbatim
 !
       module gz_itp_table_file_IO
 !

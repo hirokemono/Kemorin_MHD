@@ -1,8 +1,12 @@
-!gz_itp_table_data_IO.f90
-!      module gz_itp_table_data_IO
-!
-!        programmed by H.Matsui on Sep. 2012
-!
+!>@file  gz_itp_table_data_IO.f90
+!!       module gz_itp_table_data_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed in Sep. 2012
+!!
+!> @brief gzipped data IO for interpolation
+!!
+!!@verbatim
 !!      subroutine write_gz_itp_table_org(id_rank, IO_itp_org, zbuf)
 !!      subroutine write_gz_itp_coefs_org(IO_itp_org, zbuf)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
@@ -26,6 +30,7 @@
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
+!!@endverbatim
 !
       module gz_itp_table_data_IO
 !

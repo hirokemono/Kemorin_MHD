@@ -39,6 +39,7 @@
       use itp_table_file_IO
       use itp_table_file_IO_b
       use gz_itp_table_file_IO
+      use gz_itp_table_file_IO_b
 !
       use set_parallel_file_name
 !
@@ -75,17 +76,19 @@
         file_name =  add_itb_extension(fname_tmp)
       end if
 !
-#ifdef ZLIB_IO
-      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call gz_write_itp_table_file                                    &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
-        return
-      end if
-#endif
-!
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call write_itp_table_file_b                                     &
      &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call gz_write_itp_table_file                                    &
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
+      else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
+        call write_gz_itp_table_file_b                                  &
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+#endif
+!
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call write_itp_table_file_a                                     &
      &     (file_name, id_rank, IO_itp_org, IO_itp_dest)
@@ -119,17 +122,19 @@
         file_name =  add_itb_extension(fname_tmp)
       end if
 !
-#ifdef ZLIB_IO
-      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call gz_read_itp_table_file                                     &
-     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
-        return
-      end if
-#endif
-!
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_table_file_b                                      &
      &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call gz_read_itp_table_file                                     &
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
+        call read_gz_itp_table_file_b                                   &
+     &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
+#endif
+!
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_table_file_a                                      &
      &     (file_name, id_rank, IO_itp_org, IO_itp_dest, ierr)
@@ -162,17 +167,19 @@
         file_name =  add_itb_extension(fname_tmp)
       end if
 !
-#ifdef ZLIB_IO
-      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call  gz_write_itp_coefs_dest_file                              &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
-        return
-      end if
-#endif
-!
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call  write_itp_coefs_dest_file_b                               &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call  gz_write_itp_coefs_dest_file                              &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call  write_gz_itp_coefs_dest_file_b                            &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+#endif
+!
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call  write_itp_coefs_dest_file_a                               &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
@@ -206,17 +213,19 @@
         file_name =  add_itb_extension(fname_tmp)
       end if
 !
-#ifdef ZLIB_IO
-      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call gz_read_itp_coefs_dest_file                                &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-        return
-      end if
-#endif
-!
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_coefs_dest_file_b                                 &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call gz_read_itp_coefs_dest_file                                &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+      else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
+        call read_gz_itp_coefs_dest_file_b                              &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+#endif
+!
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_coefs_dest_file_a                                 &
      &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
@@ -249,17 +258,19 @@
         file_name =  add_itb_extension(fname_tmp)
       end if
 !
-#ifdef ZLIB_IO
-      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call gz_read_itp_table_dest_file                                &
-     &     (file_name, id_rank, IO_itp_dest, ierr)
-        return
-      end if
-#endif
-!
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_table_dest_file_b                                 &
      &     (file_name, id_rank, IO_itp_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call gz_read_itp_table_dest_file                                &
+     &     (file_name, id_rank, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
+        call read_gz_itp_table_dest_file_b                              &
+     &     (file_name, id_rank, IO_itp_dest, ierr)
+#endif
+!
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_table_dest_file_a                                 &
      &     (file_name, id_rank, IO_itp_dest, ierr)
@@ -292,17 +303,19 @@
         file_name =  add_itb_extension(fname_tmp)
       end if
 !
-#ifdef ZLIB_IO
-      if(table_file_IO%iflag_format .eq. id_gzip_txt_file_fmt) then
-        call gz_read_itp_domain_dest_file                               &
-     &     (file_name, id_rank, IO_itp_dest, ierr)
-        return
-      end if
-#endif
-!
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_domain_dest_file_b                                &
      &     (file_name, id_rank, IO_itp_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call gz_read_itp_domain_dest_file                               &
+     &     (file_name, id_rank, IO_itp_dest, ierr)
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call read_gz_itp_domain_dest_file_b                             &
+     &     (file_name, id_rank, IO_itp_dest, ierr)
+#endif
+!
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
         call read_itp_domain_dest_file_a                                &
      &     (file_name, id_rank, IO_itp_dest, ierr)
