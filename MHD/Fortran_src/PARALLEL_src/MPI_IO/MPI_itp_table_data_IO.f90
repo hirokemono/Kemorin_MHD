@@ -278,15 +278,11 @@
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
-!      if (IO_itp_dest%num_org_domain .gt. 0) then
-!        write(id_file,'(8i16)')                                         &
-!          IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain)
-!        write(id_file,'(8i16)')                                         &
-!     &    IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
-!
-!      else
-!        write(id_file,*)
-!      end if
+      call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
+     &                         IO_itp_dest%istack_nod_tbl_dest)
+      call mpi_write_num_of_data(IO_param, IO_itp_dest%ntot_table_dest)
+      call mpi_write_comm_table(IO_param, ieight,                       &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_write_itp_table_dest
 !
@@ -301,17 +297,13 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_import_item()))
-!      if (IO_itp_dest%num_org_domain .eq. 0) return
+      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
+     &                        IO_itp_dest%istack_nod_tbl_dest)
 !
-!      call read_stack_array(character_4_read, id_file,                  &
-!     &    IO_itp_dest%num_org_domain, IO_itp_dest%istack_nod_tbl_dest)
-!      IO_itp_dest%ntot_table_dest                                       &
-!     &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
-!
-!      call alloc_itp_table_dest(IO_itp_dest)
-!
-!      read(id_file,*)                                                   &
-!     &     IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
+      call mpi_read_num_of_data(IO_param, IO_itp_dest%ntot_table_dest)
+      call alloc_itp_table_dest(IO_itp_dest)
+      call mpi_read_comm_table(IO_param, ieight,                        &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_read_itp_table_dest
 !
