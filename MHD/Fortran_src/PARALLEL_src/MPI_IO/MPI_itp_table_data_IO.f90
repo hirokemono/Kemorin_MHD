@@ -299,7 +299,9 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_import_item()))
-      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
+!      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
+!     &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
+      call mpi_read_int_stack(IO_param, 1,     &
      &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
 !
       call alloc_itp_table_dest(IO_itp_dest)
@@ -314,6 +316,7 @@
      &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
       use MPI_ascii_data_IO
+      use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
@@ -349,6 +352,7 @@
      &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
       use MPI_ascii_data_IO
+      use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
