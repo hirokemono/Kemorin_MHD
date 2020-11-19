@@ -30,7 +30,7 @@ MPI_groups_IO_b.o: $(MPI_IO_DIR)/MPI_groups_IO_b.f90 m_precision.o m_machine_par
 	$(F90) -c $(F90OPTFLAGS) $<
 MPI_integer_list_IO.o: $(MPI_IO_DIR)/MPI_integer_list_IO.f90 m_precision.o t_calypso_mpi_IO_param.o MPI_ascii_data_IO.o data_IO_to_textline.o
 	$(F90) -c $(F90OPTFLAGS) $<
-MPI_itp_table_data_IO.o: $(MPI_IO_DIR)/MPI_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_interpolate_tbl_org.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
+MPI_itp_table_data_IO.o: $(MPI_IO_DIR)/MPI_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_calypso_mpi_IO_param.o t_interpolate_tbl_org.o data_IO_to_textline.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
 MPI_itp_table_data_IO_b.o: $(MPI_IO_DIR)/MPI_itp_table_data_IO_b.f90 m_precision.o m_machine_parameter.o t_binary_IO_buffer.o binary_IO.o transfer_to_long_integers.o t_interpolate_tbl_org.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
