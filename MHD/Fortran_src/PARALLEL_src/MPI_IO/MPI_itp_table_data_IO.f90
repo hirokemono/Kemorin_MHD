@@ -132,6 +132,8 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
+      integer(kind = kint) :: num_tmp
+!
 !
       call mpi_skip_read(IO_param, len(hd_itp_export_item()))
       call mpi_read_num_of_data(IO_param, num_tmp)
