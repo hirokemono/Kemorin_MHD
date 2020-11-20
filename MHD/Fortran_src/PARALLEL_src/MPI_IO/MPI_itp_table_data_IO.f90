@@ -104,6 +104,7 @@
 !
       subroutine mpi_write_itp_table_org(IO_param, IO_itp_org)
 !
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
       use data_IO_to_textline
 !
@@ -124,8 +125,9 @@
 !
       subroutine mpi_read_itp_table_org(IO_param, IO_itp_org)
 !
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
-      use skip_comment_f
+      use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
