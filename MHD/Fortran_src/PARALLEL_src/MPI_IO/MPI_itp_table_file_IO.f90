@@ -64,9 +64,10 @@
      &   'Write ascii interpolation file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
+      call mpi_write_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
       call mpi_write_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
-!      call mpi_write_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
+      call mpi_write_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
 !      call mpi_write_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
 !      call mpi_write_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
@@ -108,9 +109,7 @@
       call mpi_read_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
       call mpi_read_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
-!        write(*,*) 'mpi_read_itp_domain_org'
-!      call mpi_read_itp_domain_org                                     &
-!     &   (IO_param, n_rank_file, itp_tbl_IO%tbl_org)
+      call mpi_read_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
 !        write(*,*) 'mpi_read_itp_table_org'
 !      call mpi_read_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
 !        write(*,*) 'mpi_read_itp_coefs_org'
@@ -142,6 +141,7 @@
      &   'Write ascii export coefs file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
+      call mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
       call mpi_write_itp_table_dest(IO_param, IO_itp_dest)
 !      call mpi_write_itp_coefs_dest                                    &
 !     &   (IO_param, IO_itp_dest, IO_itp_c_dest)

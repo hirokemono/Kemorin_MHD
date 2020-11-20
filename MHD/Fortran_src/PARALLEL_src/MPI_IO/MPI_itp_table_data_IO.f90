@@ -19,6 +19,7 @@
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
+!!      subroutine mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
 !!      subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
 !!      subroutine mpi_write_itp_coefs_dest                             &
 !!     &         (IO_param, IO_itp_dest, IO_itp_c_dest)
@@ -60,52 +61,45 @@
 !
       subroutine mpi_write_itp_domain_org(IO_param, IO_itp_org)
 !
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
       use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
+      integer(kind = kint) :: nlength
+!
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_export_pe()), hd_itp_export_pe())
-!
-!      write(id_file,'(i16)') IO_itp_org%num_dest_domain
-!
-!      if (IO_itp_org%num_dest_domain .gt. 0) then
-!        write(id_file,'(10i16)')                                       &
-!     &          IO_itp_org%id_dest_domain(1:IO_itp_org%num_dest_domain)
-!      else
-!        write(id_file,*)
-!      end if
+      call mpi_write_int_vector(IO_param, IO_itp_org%num_dest_domain,   &
+     &                                    IO_itp_org%id_dest_domain)
 !
       end subroutine mpi_write_itp_domain_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine mpi_read_itp_domain_org(IO_param, n_rank, IO_itp_org)
+      subroutine mpi_read_itp_domain_org(IO_param, IO_itp_org)
 !
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
+      use data_IO_to_textline
 !
-      integer(kind = kint), intent(inout) :: n_rank
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_export_pe()))
-!      call skip_comment(character_4_read, id_file)
-!      read(character_4_read,*) n_rank
-!      call skip_comment(character_4_read, id_file)
-!      read(character_4_read,*) IO_itp_org%num_dest_domain
+      call mpi_read_num_of_data(IO_param, IO_itp_org%num_dest_domain)
+      call alloc_itp_num_org(np_smp, IO_itp_org)
 !
-!      if (IO_itp_org%num_dest_domain .gt. 0) then
-!        call alloc_itp_num_org(np_smp, IO_itp_org)
-!        read(id_file,*)                                                 &
-!     &        IO_itp_org%id_dest_domain(1:IO_itp_org%num_dest_domain)
-!      end if
+      call mpi_read_int_vector(IO_param, IO_itp_org%num_dest_domain,    &
+     &                         IO_itp_org%id_dest_domain)
 !
       end subroutine mpi_read_itp_domain_org
 !
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine mpi_write_itp_table_org(IO_param, IO_itp_org)
@@ -219,7 +213,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+      subroutine mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
 !
       use MPI_domain_data_IO
       use MPI_ascii_data_IO
@@ -240,15 +234,7 @@
       call mpi_write_int_vector(IO_param, IO_itp_dest%num_org_domain,   &
      &                                    IO_itp_dest%id_org_domain)
 !
-      call mpi_write_charahead                                          &
-     &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
-      call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
-     &                         IO_itp_dest%istack_nod_tbl_dest)
-      return
-!      call mpi_write_comm_table(IO_param, ieight,                       &
-!     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
-!
-      end subroutine mpi_write_itp_table_dest
+      end subroutine mpi_write_itp_domain_dest
 !
 !-----------------------------------------------------------------------
 !
@@ -273,6 +259,28 @@
       end subroutine mpi_read_itp_domain_dest
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+!
+      use MPI_domain_data_IO
+      use MPI_ascii_data_IO
+      use data_IO_to_textline
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!
+!
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
+      call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
+     &                         IO_itp_dest%istack_nod_tbl_dest)
+      call mpi_write_comm_table(IO_param, ieight,                       &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+!
+      end subroutine mpi_write_itp_table_dest
+!
+!-----------------------------------------------------------------------
 !
       subroutine mpi_read_itp_table_dest(IO_param, IO_itp_dest)
 !
@@ -288,13 +296,13 @@
 !
       call mpi_skip_read(IO_param, ilen_itp_import_item)
       call mpi_read_num_of_data(IO_param, num_temp)
-      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
+      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
      &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
-      return
 !
+      call mpi_read_num_of_data(IO_param, num_temp)
       call alloc_itp_table_dest(IO_itp_dest)
-!      call mpi_read_comm_table(IO_param, ieight,                        &
-!     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+      call mpi_read_comm_table(IO_param, ieight,                        &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_read_itp_table_dest
 !
