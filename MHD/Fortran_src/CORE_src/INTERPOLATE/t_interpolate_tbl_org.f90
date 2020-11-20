@@ -143,7 +143,7 @@
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
 !
-      if(allocated(tbl_org%id_dest_domain .eqv. .FALSE.)) return
+      if(allocated(tbl_org%id_dest_domain) .eqv. .FALSE.) return
 !
       deallocate( tbl_org%id_dest_domain )
       deallocate( tbl_org%istack_nod_tbl_org )
@@ -159,7 +159,7 @@
       type(interpolate_table_org), intent(inout) :: tbl_org
 !
 !
-      if(allocated(tbl_org%inod_itp_send .eqv. .FALSE.)) return
+      if(allocated(tbl_org%inod_itp_send) .eqv. .FALSE.) return
 !
       deallocate( tbl_org%inod_itp_send )
       deallocate( tbl_org%inod_gl_dest_4_org )
