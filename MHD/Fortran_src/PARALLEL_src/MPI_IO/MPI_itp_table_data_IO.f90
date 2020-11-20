@@ -131,6 +131,8 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_export_item()))
+!
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_int_stack(IO_param, IO_itp_org%num_dest_domain,     &
      &    IO_itp_org%istack_nod_tbl_org, IO_itp_org%ntot_table_org)
 !
@@ -155,6 +157,8 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
+      real(kind = kreal) :: x_tmp(3)
+!
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_export_coef()), hd_itp_export_coef())
@@ -165,6 +169,8 @@
      &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
       call mpi_write_comm_table(IO_param, iten,                         &
      &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
+!
+      call mpi_write_num_of_data(IO_param, IO_itp_org%ntot_table_org)
       call mpi_write_node_position                                      &
      &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
      &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
@@ -188,15 +194,20 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_export_coef()))
+!
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_int_stack(IO_param, ifour,                          &
      &                        IO_itp_org%istack_itp_type_org, num_tmp)
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_comm_table(IO_param, iten,                          &
      &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
+!
       call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_comm_table(IO_param, iten,                          &
      &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
+!
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_node_position                                       &
      &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
      &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
@@ -288,6 +299,7 @@
 !
 !
       call mpi_skip_read(IO_param, ilen_itp_import_item)
+!
       call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
      &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
@@ -327,6 +339,8 @@
      &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
       call mpi_write_comm_table(IO_param, iten,                         &
      &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
+!
+      call mpi_write_num_of_data(IO_param, IO_itp_dest%ntot_table_dest)
       call mpi_write_node_position                                      &
      &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
      &    IO_itp_c_dest%inod_gl_dest, IO_itp_c_dest%coef_inter_dest)
@@ -356,17 +370,22 @@
      &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
 !
       num_tmp = 4*IO_itp_dest%num_org_domain
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_int_stack(IO_param, num_tmp,                        &
      &    IO_itp_c_dest%istack_nod_tbl_wtype_dest,                      &
      &    IO_itp_dest%ntot_table_dest)
 !
       call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
+
       call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_comm_table(IO_param, iten,                          &
      &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
+
       call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_comm_table(IO_param, iten,                          &
      &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
+
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_node_position                                       &
      &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
      &    IO_itp_c_dest%inod_gl_dest, IO_itp_c_dest%coef_inter_dest)

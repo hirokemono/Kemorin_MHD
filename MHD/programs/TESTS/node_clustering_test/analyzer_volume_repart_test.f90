@@ -182,7 +182,7 @@
 !
 !      table_file_IO%file_prefix = T_meshes%new_mesh_file_IO%file_prefix
       table_file_IO%file_prefix =  'part_table'
-      table_file_IO%iflag_format = id_ascii_file_fmt
+      table_file_IO%iflag_format = id_ascii_file_fmt + iflag_single
       irank_read = my_rank
       call sel_mpi_write_interpolate_table                              &
      &    (my_rank, table_file_IO, itp_tbl_IO)
@@ -214,12 +214,12 @@
      &        .ne.org_to_new_tbl%istack_import(i))                      &
      &     write(*,*) 'istack_import is wrong', my_rank, i
       end do
-      do i = 0, part_tbl_2%ntot_import
+      do i = 1, part_tbl_2%ntot_import
         if(part_tbl_2%item_import(i)                                    &
      &        .ne. org_to_new_tbl%item_import(i))                       &
      &     write(*,*) 'item_import is wrong', my_rank, i
       end do
-      do i = 0, part_tbl_2%ntot_import
+      do i = 1, part_tbl_2%ntot_import
         if(part_tbl_2%irev_import(i)                                    &
      &        .ne. org_to_new_tbl%irev_import(i))                       &
      &     write(*,*) 'irev_import is wrong', my_rank, i
@@ -232,18 +232,24 @@
       do i = 1, part_tbl_2%nrank_export
         if(part_tbl_2%irank_export(i)                                   &
      &        .ne. org_to_new_tbl%irank_export(i))                      &
-     &     write(*,*) 'irank_export is wrong', my_rank, i
+     &     write(*,*) 'irank_export is wrong', my_rank
       end do
       do i = 0, part_tbl_2%nrank_export
         if(part_tbl_2%istack_export(i)                                  &
      &        .ne. org_to_new_tbl%istack_export(i))                     &
-     &     write(*,*) 'istack_export is wrong', my_rank, i
+     &     write(*,*) 'istack_export is wrong', my_rank, i,  &
+     &       part_tbl_2%istack_export(i), org_to_new_tbl%istack_export(i)
       end do
-      do i = 0, part_tbl_2%ntot_export
+!
+      do i = 1, part_tbl_2%ntot_export
         if(part_tbl_2%item_export(i)                                    &
      &        .ne. org_to_new_tbl%item_export(i))                       &
      &     write(*,*) 'item_export is wrong', my_rank, i
       end do
+!
+ 101  continue
+      call calypso_MPI_barrier
+      if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !
       end subroutine initialize_volume_repartition
 !
