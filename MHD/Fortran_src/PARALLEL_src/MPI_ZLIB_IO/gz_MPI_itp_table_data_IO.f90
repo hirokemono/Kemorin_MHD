@@ -244,7 +244,7 @@
 !
 !
       call gz_mpi_skip_header(IO_param, ilen_itp_import_pe)
-      call gz_mpi_read_domain_info(IO_param)
+      call gz_mpi_check_num_of_domains(IO_param)
 !
       call gz_mpi_read_num_of_data                                      &
      &   (IO_param, IO_itp_dest%num_org_domain)
