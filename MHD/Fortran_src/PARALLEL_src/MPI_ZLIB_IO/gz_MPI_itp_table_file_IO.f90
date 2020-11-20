@@ -68,12 +68,12 @@
 !
       call open_write_mpi_file(gzip_name, IO_param)
 !
-!      call write_gz_mpi_itp_table_dest                                 &
-!     &   (id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
+      call gz_mpi_write_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
+      call gz_mpi_write_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
-!      call write_gz_mpi_itp_table_org                                  &
-!     &   (id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
-!      call write_gz_mpi_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
+      call gz_mpi_write_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
+      call gz_mpi_write_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
+      call gz_mpi_write_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
 !
@@ -113,17 +113,12 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-!        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
-!      call read_gz_itp_domain_dest                                     &
-!     &   (n_rank_file, itp_tbl_IO%tbl_dest, zbuf_itp)
-!        write(*,*) 'read_gz_mpi_itp_table_dest'
-!      call read_gz_mpi_itp_table_dest(itp_tbl_IO%tbl_dest, zbuf_itp)
+      call gz_mpi_write_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
+      call gz_mpi_read_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
-!        write(*,*) 'read_gz_mpi_itp_domain_org'
-!      call read_gz_mpi_itp_domain_org                                  &
-!     &   (n_rank_file, itp_tbl_IO%tbl_org, zbuf_itp)
-!      call read_gz_mpi_itp_table_org(itp_tbl_IO%tbl_org, zbuf_itp)
-!      call read_gz_mpi_itp_coefs_org(itp_tbl_IO%tbl_org, zbuf_itp)
+      call gz_mpi_read_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
+      call gz_mpi_read_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
+      call gz_mpi_read_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
 !
@@ -154,9 +149,10 @@
 !
       call open_write_mpi_file(gzip_name, IO_param)
 !
-!      call write_gz_mpi_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
-!      call write_gz_mpi_itp_coefs_dest                                 &
-!     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
+      call gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
+      call gz_mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+      call gz_mpi_write_itp_coefs_dest                                  &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
       if (IO_itp_dest%num_org_domain .gt. 0) then
@@ -194,11 +190,10 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-!      call read_gz_mpi_itp_domain_dest                                 &
-!     &   (n_rank_file, IO_itp_dest, zbuf_itp)
-!      call read_gz_mpi_itp_table_dest(IO_itp_dest, zbuf_itp)
-!      call read_gz_mpi_itp_coefs_dest                                  &
-!     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
+      call gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_coefs_dest                                   &
+     &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0
@@ -230,9 +225,8 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-!      call read_gz_mpi_itp_domain_dest                                 &
-!     &   (n_rank_file, IO_itp_dest, zbuf_itp)
-!      call read_gz_mpi_itp_table_dest(IO_itp_dest, zbuf_itp)
+      call gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0
@@ -264,7 +258,7 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-!      call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
+      call gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0

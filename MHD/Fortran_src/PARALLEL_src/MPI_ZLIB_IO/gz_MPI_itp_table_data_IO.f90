@@ -7,28 +7,31 @@
 !> @brief gzipped data IO for interpolation
 !!
 !!@verbatim
-!!      subroutine write_gz_mpi_itp_table_org(id_rank, IO_itp_org, zbuf)
-!!      subroutine write_gz_mpi_itp_coefs_org(IO_itp_org, zbuf)
+!!      subroutine gz_mpi_write_itp_domain_org(IO_param, IO_itp_org)
+!!      subroutine gz_mpi_write_itp_table_org(IO_param, IO_itp_org)
+!!      subroutine gz_mpi_write_itp_coefs_org(IO_param, IO_itp_org)
 !!        type(interpolate_table_org), intent(in) :: IO_itp_org
 !!
-!!      subroutine read_gz_mpi_itp_domain_org(n_rank, IO_itp_org, zbuf)
-!!      subroutine read_gz_mpi_itp_table_org(IO_itp_org, zbuf)
-!!      subroutine read_gz_mpi_itp_coefs_org(IO_itp_org, zbuf)
+!!      subroutine gz_mpi_read_itp_domain_org(IO_param, IO_itp_org)
+!!      subroutine gz_mpi_read_itp_table_org(IO_param, IO_itp_org)
+!!      subroutine gz_mpi_read_itp_coefs_org(IO_param, IO_itp_org)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine write_gz_mpi_itp_table_dest                          &
-!!     &         (id_rank, IO_itp_dest, zbuf)
-!!      subroutine write_gz_mpi_itp_coefs_dest                          &
-!!     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+!!      subroutine gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
+!!      subroutine gz_mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+!!      subroutine gz_mpi_write_itp_coefs_dest                          &
+!!     &         (IO_param, IO_itp_dest, IO_itp_c_dest)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
 !!
-!!      subroutine read_gz_mpi_itp_domain_dest                          &
-!!     &         (n_rank, IO_itp_dest, zbuf)
-!!      subroutine read_gz_mpi_itp_table_dest(IO_itp_dest, zbuf)
-!!      subroutine read_gz_mpi_itp_coefs_dest                           &
-!!     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+!!      subroutine gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
+!!      subroutine gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
+!!      subroutine gz_mpi_read_itp_coefs_dest                           &
+!!     &         (IO_param, IO_itp_dest, IO_itp_c_dest)
+!!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!        type(buffer_4_gzip), intent(inout) :: zbuf
@@ -40,8 +43,12 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_interpolate_table
+      use t_interpolate_tbl_org
+      use t_interpolate_tbl_dest
+      use t_interpolate_coefs_dest
+      use t_calypso_mpi_IO_param
       use m_interpolation_data_labels
-      use t_buffer_4_gzip
 !
       implicit none
 !
@@ -51,358 +58,325 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_mpi_itp_table_org(id_rank, IO_itp_org, zbuf)
+      subroutine gz_mpi_write_itp_domain_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
-      use gzip_file_access
-      use gz_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
 !
-      integer, intent(in) :: id_rank
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
 !
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_itp_export_pe()), hd_itp_export_pe())
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_org%num_dest_domain, IO_itp_org%id_dest_domain)
 !
-      zbuf%fixbuf(1) = hd_itp_export_pe() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-!
-      write(zbuf%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(i16,2a1)') IO_itp_org%num_dest_domain,     &
-     &                                  char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-!
-      if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_10i8(IO_itp_org%num_dest_domain,        &
-     &      IO_itp_org%id_dest_domain, zbuf)
-      else
-        write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
-      end if
-!
-!
-      zbuf%fixbuf(1) = hd_itp_export_item() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-!
-      if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_8i16(IO_itp_org%num_dest_domain,        &
-     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain), &
-     &     zbuf)
-        call write_gz_multi_int_8i16                                    &
-     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf)
-      else
-        write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
-      end if
-!
-      end subroutine write_gz_mpi_itp_table_org
+      end subroutine gz_mpi_write_itp_domain_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_mpi_itp_coefs_org(IO_itp_org, zbuf)
+      subroutine gz_mpi_read_itp_domain_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
-      use gzip_file_access
-      use gz_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
 !
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_table_org), intent(inout) :: IO_itp_org
+!
+!
+      call gz_mpi_skip_header(IO_param, len(hd_itp_export_pe()))
+      call gz_mpi_read_num_of_data                                      &
+     &   (IO_param, IO_itp_org%num_dest_domain)
+      call alloc_itp_num_org(np_smp, IO_itp_org)
+!
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_org%num_dest_domain, IO_itp_org%id_dest_domain)
+!
+      end subroutine gz_mpi_read_itp_domain_org
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_itp_table_org(IO_param, IO_itp_org)
+!
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      integer(kind = kint) :: inod
 !
 !
-      zbuf%fixbuf(1) = hd_itp_export_coef() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_itp_export_item()), hd_itp_export_item())
+      call gz_mpi_write_int_stack(IO_param, IO_itp_org%num_dest_domain, &
+     &                         IO_itp_org%istack_nod_tbl_org)
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
-      if (IO_itp_org%num_dest_domain .gt. 0) then
-        call write_gz_multi_int_8i16                                    &
-     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
-!
-        do inod = 1, IO_itp_org%ntot_table_org
-          write(zbuf%fixbuf(1),'(3i16,1p3E25.15e3,2a1)')                &
-     &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
-     &        IO_itp_org%iele_org_4_org(inod),                          &
-     &        IO_itp_org%itype_inter_org(inod),                         &
-     &        IO_itp_org%coef_inter_org(inod,1:3), char(10), char(0)
-          call gz_write_textbuf_no_lf(zbuf)
-        end do
-!
-      else
-        write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
-      end if
-!
-      end subroutine write_gz_mpi_itp_coefs_org
+      end subroutine gz_mpi_write_itp_table_org
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
-      subroutine read_gz_mpi_itp_domain_org(n_rank, IO_itp_org, zbuf)
+      subroutine gz_mpi_read_itp_table_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
-      use gz_data_IO
-      use skip_gz_comment
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
 !
-      integer(kind = kint), intent(inout) :: n_rank
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
-      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      integer(kind = kint) :: num_tmp
 !
 !
-      call skip_gz_comment_int(n_rank, zbuf)
-      call skip_gz_comment_int(IO_itp_org%num_dest_domain, zbuf)
+      call gz_mpi_skip_header(IO_param, len(hd_itp_export_item()))
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
+      call gz_mpi_read_int_stack(IO_param, IO_itp_org%num_dest_domain,  &
+     &    IO_itp_org%istack_nod_tbl_org, IO_itp_org%ntot_table_org)
 !
-      if (IO_itp_org%num_dest_domain .gt. 0) then
-        call alloc_itp_num_org(np_smp, IO_itp_org)
-        call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
-     &      IO_itp_org%id_dest_domain, zbuf)
-      end if
+      call alloc_itp_table_org(IO_itp_org)
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
-      end subroutine read_gz_mpi_itp_domain_org
+      end subroutine gz_mpi_read_itp_table_org
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_itp_coefs_org(IO_param, IO_itp_org)
+!
+      use gz_MPI_position_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_table_org), intent(in) :: IO_itp_org
+!
+!
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_itp_export_coef()), hd_itp_export_coef())
+      call gz_mpi_write_int_stack(IO_param, ifour,                      &
+     &                            IO_itp_org%istack_itp_type_org)
+!
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
+      call gz_mpi_write_node_position                                   &
+     &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
+     &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
+!
+      end subroutine gz_mpi_write_itp_coefs_org
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_mpi_itp_table_org(IO_itp_org, zbuf)
+      subroutine gz_mpi_read_itp_coefs_org(IO_param, IO_itp_org)
 !
-      use t_interpolate_tbl_org
-      use gz_data_IO
+      use gz_MPI_position_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
 !
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
-      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      integer(kind = kint) :: num_tmp
 !
 !
-      if (IO_itp_org%num_dest_domain .eq. 0) return
-        IO_itp_org%istack_nod_tbl_org(0) = 0
-        call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
-     &     IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain), &
-     &     zbuf)
-        IO_itp_org%ntot_table_org                                       &
-     &      = IO_itp_org%istack_nod_tbl_org(IO_itp_org%num_dest_domain)
+      call gz_mpi_skip_header(IO_param, len(hd_itp_export_coef()))
+      call gz_mpi_read_int_stack(IO_param, ifour,                       &
+     &    IO_itp_org%istack_itp_type_org, num_tmp)
 !
-        call alloc_itp_table_org(IO_itp_org)
-        call read_gz_multi_int                                          &
-     &     (IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send, zbuf)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
+      call gz_mpi_read_node_position                                    &
+     &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
+     &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
 !
-      end subroutine read_gz_mpi_itp_table_org
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_gz_mpi_itp_coefs_org(IO_itp_org, zbuf)
-!
-      use t_interpolate_tbl_org
-      use gzip_file_access
-      use gz_data_IO
-!
-      type(interpolate_table_org), intent(inout) :: IO_itp_org
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      integer(kind = kint) :: inod
-!
-!
-      if (IO_itp_org%num_dest_domain .eq. 0) return
-!
-        IO_itp_org%istack_itp_type_org(0) = 0
-        call read_gz_multi_int                                          &
-     &     (ifour, IO_itp_org%istack_itp_type_org(1:ifour), zbuf)
-!
-        do inod = 1, IO_itp_org%ntot_table_org
-          call get_one_line_text_from_gz(zbuf)
-          read(zbuf%fixbuf(1),*) IO_itp_org%inod_gl_dest_4_org(inod),   &
-     &        IO_itp_org%iele_org_4_org(inod),                          &
-     &        IO_itp_org%itype_inter_org(inod),                         &
-     &        IO_itp_org%coef_inter_org(inod,1:3)
-        end do
-!
-      end subroutine read_gz_mpi_itp_coefs_org
+      end subroutine gz_mpi_read_itp_coefs_org
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_mpi_itp_table_dest                            &
-     &         (id_rank, IO_itp_dest, zbuf)
+      subroutine gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
-      use gzip_file_access
-      use gz_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
 !
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
-      integer, intent(in) :: id_rank
 !
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-!
-      zbuf%fixbuf(1) = hd_itp_import_pe() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-!
-      write(zbuf%fixbuf(1),'(i16,2a1)') id_rank, char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-      write(zbuf%fixbuf(1),'(i16,2a1)') IO_itp_dest%num_org_domain,     &
-     &                                  char(10), char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-!
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        call write_gz_multi_int_10i8(IO_itp_dest%num_org_domain,        &
-     &     IO_itp_dest%id_org_domain, zbuf)
-      else
-        write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
-      end if
+      integer(kind = kint) :: nlength
 !
 !
-      zbuf%fixbuf(1) = hd_itp_import_item() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_itp_import_pe()), hd_itp_import_pe())
+      nlength = int(IO_param%nprocs_in,KIND(nlength))
+      call gz_mpi_write_charahead(IO_param, len_int_txt,                &
+     &    integer_textline(nlength))
 !
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        call write_gz_multi_int_8i16(IO_itp_dest%num_org_domain,        &
-     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
-     &   zbuf)
-        call write_gz_multi_int_8i16                                    &
-     &     (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,  &
-     &      zbuf)
-      else
-        write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
-      end if
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_dest%num_org_domain, IO_itp_dest%id_org_domain)
 !
-      end subroutine write_gz_mpi_itp_table_dest
+      end subroutine gz_mpi_write_itp_domain_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_gz_mpi_itp_coefs_dest                            &
-     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+      subroutine gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
-      use t_interpolate_coefs_dest
-      use gzip_file_access
-      use gz_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
 !
-      type(interpolate_table_dest), intent(in) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
-!
-      type(buffer_4_gzip), intent(inout) :: zbuf
-!
-      integer(kind = kint) :: i, inod
-!
-!
-      zbuf%fixbuf(1) = hd_itp_dest_coef() // char(0)
-      call gz_write_textbuf_no_lf(zbuf)
-!
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        do i = 1, IO_itp_dest%num_org_domain
-          call write_gz_multi_int_8i16(ifour,                           &
-     &       IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i), zbuf)
-        end do
-!
-        do inod = 1, IO_itp_dest%ntot_table_dest
-          write(zbuf%fixbuf(1),'(3i16,1p3E25.15e3,2a1)')                &
-     &        IO_itp_c_dest%inod_gl_dest(inod),                         &
-     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
-     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
-     &        IO_itp_c_dest%coef_inter_dest(inod,1:3),                  &
-     &        char(10), char(0)
-          call gz_write_textbuf_no_lf(zbuf)
-        end do
-!
-      else
-        write(zbuf%fixbuf(1),'(2a1)') char(10), char(0)
-        call gz_write_textbuf_no_lf(zbuf)
-      end if
-!
-      end subroutine write_gz_mpi_itp_coefs_dest
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine read_gz_mpi_itp_domain_dest                            &
-     &         (n_rank, IO_itp_dest, zbuf)
-!
-      use t_interpolate_tbl_dest
-      use gz_data_IO
-      use skip_gz_comment
-!
-      integer(kind = kint), intent(inout) :: n_rank
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      call skip_gz_comment_int(n_rank, zbuf)
-      call skip_gz_comment_int(IO_itp_dest%num_org_domain, zbuf)
+      call gz_mpi_skip_header(IO_param, ilen_itp_import_pe)
+      call mpi_check_num_of_domains(IO_param)
 !
+      call gz_mpi_read_num_of_data                                      &
+     &   (IO_param, IO_itp_dest%num_org_domain)
       call alloc_itp_num_dest(IO_itp_dest)
 !
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        call read_gz_multi_int(IO_itp_dest%num_org_domain,              &
-     &      IO_itp_dest%id_org_domain, zbuf)
-      end if
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_dest%num_org_domain, IO_itp_dest%id_org_domain)
 !
-      end subroutine read_gz_mpi_itp_domain_dest
+      end subroutine gz_mpi_read_itp_domain_dest
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_itp_table_dest(IO_param, IO_itp_dest)
+!
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!
+!
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
+      call gz_mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain, &
+     &                            IO_itp_dest%istack_nod_tbl_dest)
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+!
+      end subroutine gz_mpi_write_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_mpi_itp_table_dest(IO_itp_dest, zbuf)
+      subroutine gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
 !
-      use t_interpolate_tbl_dest
-      use gz_data_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
 !
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(buffer_4_gzip), intent(inout) :: zbuf
+!
+      integer(kind = kint) :: num_tmp
 !
 !
-      if (IO_itp_dest%num_org_domain .eq. 0) return
-      IO_itp_dest%istack_nod_tbl_dest(0) = 0
-      call read_gz_multi_int(IO_itp_dest%num_org_domain,                &
-     &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
-     &   zbuf)
-      IO_itp_dest%ntot_table_dest                                       &
-     &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
+      call gz_mpi_skip_header(IO_param, ilen_itp_import_item)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
+      call gz_mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,  &
+     &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
 !
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_itp_table_dest(IO_itp_dest)
-      call read_gz_multi_int                                            &
-     &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,    &
-     &    zbuf)
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
-      end subroutine read_gz_mpi_itp_table_dest
+      end subroutine gz_mpi_read_itp_table_dest
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine gz_mpi_write_itp_coefs_dest                            &
+     &         (IO_param, IO_itp_dest, IO_itp_c_dest)
+!
+      use gz_MPI_position_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
+!
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!
+      integer(kind = kint) :: num
+!
+      call gz_mpi_write_charahead                                       &
+     &   (IO_param, len(hd_itp_dest_coef()), hd_itp_dest_coef())
+!
+      num = 4*IO_itp_dest%num_org_domain
+      call gz_mpi_write_int_stack(IO_param, num,                        &
+     &    IO_itp_c_dest%istack_nod_tbl_wtype_dest)
+!
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
+      call gz_mpi_write_comm_table(IO_param, iten,                      &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
+      call gz_mpi_write_node_position                                   &
+     &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
+     &    IO_itp_c_dest%inod_gl_dest, IO_itp_c_dest%coef_inter_dest)
+!
+      end subroutine gz_mpi_write_itp_coefs_dest
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_gz_mpi_itp_coefs_dest                             &
-     &         (IO_itp_dest, IO_itp_c_dest, zbuf)
+      subroutine gz_mpi_read_itp_coefs_dest                             &
+     &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
-      use t_interpolate_tbl_dest
-      use t_interpolate_coefs_dest
-      use gzip_file_access
-      use gz_data_IO
+      use gz_MPI_position_IO
+      use gz_MPI_domain_data_IO
+      use gz_MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
 !
+      type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
-      type(buffer_4_gzip), intent(inout) :: zbuf
 !
-      integer(kind = kint) :: i, inod, num
+      integer(kind = kint) :: num
 !
 !
-      if (IO_itp_dest%num_org_domain .eq. 0) return
-        call alloc_itp_coef_stack                                       &
+      call gz_mpi_skip_header(IO_param, len(hd_itp_dest_coef()))
+      call alloc_itp_coef_stack                                         &
      &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
-        IO_itp_c_dest%istack_nod_tbl_wtype_dest(0) = 0
 !
-        do i = 1, IO_itp_dest%num_org_domain
-          call read_gz_multi_int(ifour,                                 &
-     &       IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i), zbuf)
-        end do
-        num = 4*IO_itp_dest%num_org_domain
-        IO_itp_dest%ntot_table_dest                                     &
-     &     = IO_itp_c_dest%istack_nod_tbl_wtype_dest(num)
+      num = 4*IO_itp_dest%num_org_domain
+      call gz_mpi_read_int_stack(IO_param, num,                         &
+     &    IO_itp_c_dest%istack_nod_tbl_wtype_dest,                      &
+     &    IO_itp_dest%ntot_table_dest)
 !
-        call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
+      call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
+      call gz_mpi_read_num_of_data(IO_param, num)
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
+      call gz_mpi_read_num_of_data(IO_param, num)
+      call gz_mpi_read_comm_table(IO_param, iten,                       &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
+      call gz_mpi_read_node_position                                    &
+     &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
+     &    IO_itp_c_dest%inod_gl_dest, IO_itp_c_dest%coef_inter_dest)
 !
-        do inod = 1, IO_itp_dest%ntot_table_dest
-          call get_one_line_text_from_gz(zbuf)
-          read(zbuf%fixbuf(1),*) IO_itp_c_dest%inod_gl_dest(inod),      &
-     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
-     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
-     &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
-        end do
-!
-      end subroutine read_gz_mpi_itp_coefs_dest
+      end subroutine gz_mpi_read_itp_coefs_dest
 !
 !-----------------------------------------------------------------------
 !

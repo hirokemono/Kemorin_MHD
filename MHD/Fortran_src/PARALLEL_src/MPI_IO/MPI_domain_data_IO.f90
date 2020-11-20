@@ -46,6 +46,8 @@
 !
       implicit none
 !
+      private :: mpi_read_int_vector, mpi_write_int_vector
+!
 !------------------------------------------------------------------
 !
        contains

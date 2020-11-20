@@ -34,6 +34,7 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use t_calypso_mpi_IO_param
+      use m_interpolation_data_labels
 !
       implicit none
 !
