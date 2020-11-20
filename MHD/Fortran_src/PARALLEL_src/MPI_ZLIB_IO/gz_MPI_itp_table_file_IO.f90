@@ -77,14 +77,10 @@
 !
       call close_mpi_file(IO_param)
 !
-      if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
-        call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
-        call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
-      end if
+      call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
+      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
 !
-      if (itp_tbl_IO%tbl_dest%num_org_domain .gt. 0) then
-        call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-      end if
+      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
       call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
       end subroutine gz_mpi_write_itp_table_file
@@ -113,7 +109,7 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-      call gz_mpi_write_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
+      call gz_mpi_read_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
       call gz_mpi_read_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
       call gz_mpi_read_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
@@ -155,11 +151,9 @@
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        call dealloc_itp_coef_dest(IO_itp_c_dest)
-        call dealloc_itp_coef_stack(IO_itp_c_dest)
-        call dealloc_itp_table_dest(IO_itp_dest)
-      end if
+      call dealloc_itp_coef_dest(IO_itp_c_dest)
+      call dealloc_itp_coef_stack(IO_itp_c_dest)
+      call dealloc_itp_table_dest(IO_itp_dest)
       call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine gz_mpi_wrt_itp_coefs_dest_file
@@ -258,7 +252,7 @@
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)
 !
-      call gz_mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
+      call gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
       ierr = 0

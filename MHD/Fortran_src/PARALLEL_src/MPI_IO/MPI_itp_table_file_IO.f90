@@ -129,11 +129,9 @@
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        call dealloc_itp_coef_dest(IO_itp_c_dest)
-        call dealloc_itp_coef_stack(IO_itp_c_dest)
-        call dealloc_itp_table_dest(IO_itp_dest)
-      end if
+      call dealloc_itp_coef_dest(IO_itp_c_dest)
+      call dealloc_itp_coef_stack(IO_itp_c_dest)
+      call dealloc_itp_table_dest(IO_itp_dest)
       call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine mpi_wrt_itp_coefs_dest_file_a
