@@ -97,8 +97,7 @@
 !
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
-        call mpi_write_itp_table_file_a                                 &
-     &     (file_name, id_rank, itp_tbl_IO)
+        call mpi_write_itp_table_file_a(file_name, itp_tbl_IO)
 !
       else
         call sel_write_interpolate_table                                &
@@ -154,7 +153,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
         call mpi_read_itp_table_file_a                                  &
-     &     (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
       else
         call sel_read_interpolate_table                                 &
@@ -211,7 +210,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
         call  mpi_wrt_itp_coefs_dest_file_a                             &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &     (file_name, IO_itp_dest, IO_itp_c_dest)
 !
       else
         call sel_write_itp_coefs_dest                                   &
@@ -271,8 +270,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
         call mpi_read_itp_coefs_dest_file_a                             &
-     &     (file_name, id_rank, num_pe,                                 &
-     &      IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !
       else
         call sel_read_itp_coefs_dest(id_rank, table_file_IO,            &
@@ -328,7 +326,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
         call mpi_read_itp_table_dest_file_a                             &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
       end if
 !
       end subroutine sel_mpi_read_itp_table_dest
@@ -380,7 +378,7 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_ascii_file_fmt) then
         call mpi_read_itp_domain_dest_file_a                            &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
       else
         call sel_read_itp_domain_dest                                   &
      &         (id_rank, table_file_IO, IO_itp_dest, ierr)

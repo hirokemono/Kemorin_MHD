@@ -50,9 +50,6 @@
 !
       implicit none
 !
-      character(len=255) :: character_4_read
-      private :: character_4_read
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -67,8 +64,6 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
-!
-      integer(kind = kint) :: nlength
 !
 !
       call mpi_write_charahead                                          &
@@ -116,7 +111,7 @@
      &   (IO_param, len(hd_itp_export_item()), hd_itp_export_item())
       call mpi_write_int_stack(IO_param, IO_itp_org%num_dest_domain,    &
      &                         IO_itp_org%istack_nod_tbl_org)
-      call mpi_write_comm_table(IO_param, ieight,                       &
+      call mpi_write_comm_table(IO_param, iten,                         &
      &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine mpi_write_itp_table_org
@@ -141,7 +136,7 @@
      &    IO_itp_org%istack_nod_tbl_org, IO_itp_org%ntot_table_org)
 !
       call alloc_itp_table_org(IO_itp_org)
-      call mpi_read_comm_table(IO_param, ieight,                        &
+      call mpi_read_comm_table(IO_param, iten,                          &
      &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine mpi_read_itp_table_org
@@ -151,30 +146,28 @@
 !
       subroutine mpi_write_itp_coefs_org(IO_param, IO_itp_org)
 !
+      use MPI_position_IO
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(in) :: IO_itp_org
 !
-      integer(kind = kint) :: inod
-!
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_export_coef()), hd_itp_export_coef())
-!      if (IO_itp_org%num_dest_domain .gt. 0) then
-!        write(id_file,'(4i16)') IO_itp_org%istack_itp_type_org(1:4)
+      call mpi_write_int_stack(IO_param, ifour,                         &
+     &                         IO_itp_org%istack_itp_type_org)
 !
-!        do inod = 1, IO_itp_org%ntot_table_org
-!          write(id_file,'(3i16,1p3E25.15e3)')                           &
-!     &        IO_itp_org%inod_gl_dest_4_org(inod),                      &
-!     &        IO_itp_org%iele_org_4_org(inod),                          &
-!     &        IO_itp_org%itype_inter_org(inod),                         &
-!     &        IO_itp_org%coef_inter_org(inod,1:3)
-!        end do
-!
-!      else
-!        write(id_file,*)
-!      end if
+      call mpi_write_comm_table(IO_param, iten,                         &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
+      call mpi_write_comm_table(IO_param, iten,                         &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
+      call mpi_write_node_position                                      &
+     &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
+     &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
 !
       end subroutine mpi_write_itp_coefs_org
 !
@@ -182,25 +175,30 @@
 !
       subroutine mpi_read_itp_coefs_org(IO_param, IO_itp_org)
 !
+      use MPI_position_IO
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
+      use data_IO_to_textline
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_org), intent(inout) :: IO_itp_org
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: num_tmp
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_export_coef()))
-!      if (IO_itp_org%num_dest_domain .eq. 0) return
-!      call read_stack_array(character_4_read, id_file,                  &
-!     &      ifour, IO_itp_org%istack_itp_type_org(0:4))
+      call mpi_read_num_of_data(IO_param, num_tmp)
+      call mpi_read_int_stack(IO_param, ifour,                          &
+     &                        IO_itp_org%istack_itp_type_org, num_tmp)
 !
-!      do i = 1, IO_itp_org%ntot_table_org
-!        read(id_file,*) IO_itp_org%inod_gl_dest_4_org(i),               &
-!     &        IO_itp_org%iele_org_4_org(i),                             &
-!     &        IO_itp_org%itype_inter_org(i),                            &
-!     &        IO_itp_org%coef_inter_org(i,1:3)
-!      end do
+      call mpi_read_comm_table(IO_param, iten,                          &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%iele_org_4_org)
+      call mpi_read_comm_table(IO_param, iten,                          &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%itype_inter_org)
+      call mpi_read_node_position                                       &
+     &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
+     &    IO_itp_org%inod_gl_dest_4_org, IO_itp_org%coef_inter_org)
 !
       end subroutine mpi_read_itp_coefs_org
 !
@@ -269,7 +267,7 @@
      &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
       call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
      &                         IO_itp_dest%istack_nod_tbl_dest)
-      call mpi_write_comm_table(IO_param, ieight,                       &
+      call mpi_write_comm_table(IO_param, iten,                         &
      &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_write_itp_table_dest
@@ -295,7 +293,7 @@
 !
       call mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_itp_table_dest(IO_itp_dest)
-      call mpi_read_comm_table(IO_param, ieight,                        &
+      call mpi_read_comm_table(IO_param, iten,                          &
      &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
 !
       end subroutine mpi_read_itp_table_dest
@@ -305,34 +303,32 @@
       subroutine mpi_write_itp_coefs_dest                               &
      &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
+      use MPI_position_IO
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
       use data_IO_to_textline
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
-      integer(kind = kint) :: i, inod
+      integer(kind = kint) :: num
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_dest_coef()), hd_itp_dest_coef())
-!      if (IO_itp_dest%num_org_domain .gt. 0) then
-!        do i = 1, IO_itp_dest%num_org_domain
-!          write(id_file,'(8i16)')                                       &
-!     &             IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i)
-!        end do
 !
-!        do inod = 1, IO_itp_dest%ntot_table_dest
-!          write(id_file,'(3i16,1p3E25.15e3)')                           &
-!     &        IO_itp_c_dest%inod_gl_dest(inod),                         &
-!     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
-!     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
-!     &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
-!        end do
+      num = 4*IO_itp_dest%num_org_domain
+      call mpi_write_int_stack(IO_param, num,                           &
+     &    IO_itp_c_dest%istack_nod_tbl_wtype_dest)
 !
-!      else
-!        write(id_file,*)
-!      end if
+      call mpi_write_comm_table(IO_param, iten,                         &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
+      call mpi_write_comm_table(IO_param, iten,                         &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
+      call mpi_write_node_position                                      &
+     &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
+     &    IO_itp_c_dest%inod_gl_dest, IO_itp_c_dest%coef_inter_dest)
 !
       end subroutine mpi_write_itp_coefs_dest
 !
@@ -341,39 +337,36 @@
       subroutine mpi_read_itp_coefs_dest                                &
      &         (IO_param, IO_itp_dest, IO_itp_c_dest)
 !
+      use MPI_position_IO
+      use MPI_domain_data_IO
       use MPI_ascii_data_IO
       use data_IO_to_textline
+      use transfer_to_long_integers
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer(kind = kint) :: i, inod, num
+      integer(kind = kint) :: num
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_dest_coef()))
-!      if (IO_itp_dest%num_org_domain .eq. 0) return
-!        call alloc_itp_coef_stack                                       &
-!     &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
+      call alloc_itp_coef_stack                                         &
+     &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
 !
-!        call read_stack_array(character_4_read, id_file,                &
-!     &      ifour, IO_itp_c_dest%istack_nod_tbl_wtype_dest(0:ifour))
-!        do i = 2, IO_itp_dest%num_org_domain
-!          read(id_file,*)                                               &
-!     &             IO_itp_c_dest%istack_nod_tbl_wtype_dest(4*i-3:4*i)
-!        end do
-!        num = 4*IO_itp_dest%num_org_domain
-!        IO_itp_dest%ntot_table_dest                                     &
-!     &    = IO_itp_c_dest%istack_nod_tbl_wtype_dest(num)
+      num = 4*IO_itp_dest%num_org_domain
+      call mpi_read_int_stack(IO_param, num,                            &
+     &    IO_itp_c_dest%istack_nod_tbl_wtype_dest,                      &
+     &    IO_itp_dest%ntot_table_dest)
 !
-!        call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
-!
-!        do inod = 1, IO_itp_dest%ntot_table_dest
-!          read(id_file,*) IO_itp_c_dest%inod_gl_dest(inod),             &
-!     &        IO_itp_c_dest%iele_org_4_dest(inod),                      &
-!     &        IO_itp_c_dest%itype_inter_dest(inod),                     &
-!     &        IO_itp_c_dest%coef_inter_dest(inod,1:3)
-!        end do
+      call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
+      call mpi_read_comm_table(IO_param, iten,                          &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
+      call mpi_read_comm_table(IO_param, iten,                          &
+     &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
+      call mpi_read_node_position                                       &
+     &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
+     &    IO_itp_c_dest%inod_gl_dest, IO_itp_c_dest%coef_inter_dest)
 !
       end subroutine mpi_read_itp_coefs_dest
 !
