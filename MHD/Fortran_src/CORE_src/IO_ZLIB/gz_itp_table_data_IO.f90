@@ -149,8 +149,9 @@
       call skip_gz_comment_int(n_rank, zbuf)
       call skip_gz_comment_int(IO_itp_org%num_dest_domain, zbuf)
 !
+      call alloc_itp_num_org(np_smp, IO_itp_org)
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call alloc_itp_num_org(np_smp, IO_itp_org)
+!
         call read_gz_multi_int(IO_itp_org%num_dest_domain,              &
      &      IO_itp_org%id_dest_domain, zbuf)
       end if
@@ -343,15 +344,18 @@
       type(buffer_4_gzip), intent(inout) :: zbuf
 !
 !
-      if (IO_itp_dest%num_org_domain .eq. 0) return
-      IO_itp_dest%istack_nod_tbl_dest(0) = 0
-      call read_gz_multi_int(IO_itp_dest%num_org_domain,                &
+      if (IO_itp_dest%num_org_domain .gt. 0) then
+        IO_itp_dest%istack_nod_tbl_dest(0) = 0
+        call read_gz_multi_int(IO_itp_dest%num_org_domain,              &
      &   IO_itp_dest%istack_nod_tbl_dest(1:IO_itp_dest%num_org_domain), &
      &   zbuf)
+      end if
+!
       IO_itp_dest%ntot_table_dest                                       &
      &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
-!
       call alloc_itp_table_dest(IO_itp_dest)
+      if(IO_itp_dest%ntot_table_dest .le. 0) return
+!
       call read_gz_multi_int                                            &
      &   (IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest,    &
      &    zbuf)

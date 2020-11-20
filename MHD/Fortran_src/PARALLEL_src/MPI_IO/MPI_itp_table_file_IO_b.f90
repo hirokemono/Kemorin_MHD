@@ -94,9 +94,7 @@
         call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
       end if
 !
-      if (itp_tbl_IO%tbl_dest%num_org_domain .gt. 0) then
-        call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-      end if
+      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
       call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
       end subroutine mpi_write_itp_table_file_b

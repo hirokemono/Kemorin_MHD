@@ -146,8 +146,9 @@
       call read_one_integer_b(bbuf, IO_itp_org%num_dest_domain)
       if(bbuf%ierr_bin .gt. 0) return
 !
-      if (IO_itp_org%num_dest_domain .le. 0) return
       call alloc_itp_num_org(np_smp, IO_itp_org)
+      if (IO_itp_org%num_dest_domain .le. 0) return
+!
       call read_mul_integer_b                                           &
      &   (bbuf, cast_long(IO_itp_org%num_dest_domain),                  &
      &    IO_itp_org%id_dest_domain)
@@ -329,14 +330,19 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      if (IO_itp_dest%num_org_domain .eq. 0) return
-!
-      call read_integer_stack_b                                         &
-     &   (bbuf, cast_long(IO_itp_dest%num_org_domain),                  &
-     &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
-      if(bbuf%ierr_bin .gt. 0) return
+      if(IO_itp_dest%num_org_domain .gt. 0) then
+        call read_integer_stack_b                                       &
+     &     (bbuf, cast_long(IO_itp_dest%num_org_domain),                &
+     &      IO_itp_dest%istack_nod_tbl_dest,                            &
+     &      IO_itp_dest%ntot_table_dest)
+        if(bbuf%ierr_bin .gt. 0) return
+      else
+        IO_itp_dest%ntot_table_dest = 0
+      end if
 !
       call alloc_itp_table_dest(IO_itp_dest)
+!
+      if(IO_itp_dest%ntot_table_dest .le. 0) return
       call read_mul_integer_b                                           &
      &   (bbuf, cast_long(IO_itp_dest%ntot_table_dest),                 &
      &    IO_itp_dest%inod_dest_4_dest)

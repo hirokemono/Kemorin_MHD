@@ -82,8 +82,8 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
-      allocate( tbl_dest%inod_dest_4_dest(tbl_dest%ntot_table_dest)  )
-      allocate( tbl_dest%irev_dest_4_dest(tbl_dest%ntot_table_dest) )
+      allocate(tbl_dest%inod_dest_4_dest(tbl_dest%ntot_table_dest))
+      allocate(tbl_dest%irev_dest_4_dest(tbl_dest%ntot_table_dest))
       if (tbl_dest%ntot_table_dest .gt. 0) then
         tbl_dest%inod_dest_4_dest = 0
         tbl_dest%irev_dest_4_dest = 0
@@ -126,6 +126,7 @@
       type(interpolate_table_dest), intent(inout) :: tbl_dest
 !
 !
+      if(allocated(tbl_dest%inod_dest_4_dest) .eqv. .FALSE.) return
       deallocate(tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest)
 !
       end subroutine dealloc_itp_table_dest

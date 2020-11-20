@@ -137,8 +137,8 @@
       call skip_comment(character_4_read, id_file)
       read(character_4_read,*) IO_itp_org%num_dest_domain
 !
+      call alloc_itp_num_org(np_smp, IO_itp_org)
       if (IO_itp_org%num_dest_domain .gt. 0) then
-        call alloc_itp_num_org(np_smp, IO_itp_org)
         read(id_file,*)                                                 &
      &        IO_itp_org%id_dest_domain(1:IO_itp_org%num_dest_domain)
       end if
@@ -308,15 +308,17 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
 !
-      if (IO_itp_dest%num_org_domain .eq. 0) return
+      if(IO_itp_dest%num_org_domain .gt. 0) then
+        call read_stack_array                                           &
+     &     (character_4_read, id_file, IO_itp_dest%num_org_domain,      &
+     &      IO_itp_dest%istack_nod_tbl_dest)
+      end if
 !
-      call read_stack_array(character_4_read, id_file,                  &
-     &    IO_itp_dest%num_org_domain, IO_itp_dest%istack_nod_tbl_dest)
       IO_itp_dest%ntot_table_dest                                       &
      &   = IO_itp_dest%istack_nod_tbl_dest(IO_itp_dest%num_org_domain)
-!
       call alloc_itp_table_dest(IO_itp_dest)
 !
+      if(IO_itp_dest%ntot_table_dest .le. 0) return
       read(id_file,*)                                                   &
      &     IO_itp_dest%inod_dest_4_dest(1:IO_itp_dest%ntot_table_dest)
 !

@@ -178,9 +178,8 @@
           itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
           itp_rev%tbl_org%coef_inter_org(i,1:3) =     0.0d0
         end do
-!
-        call dealloc_itp_table_dest(itp_tbl%tbl_dest)
       end if
+      call dealloc_itp_table_dest(itp_tbl%tbl_dest)
       call dealloc_itp_num_dest(itp_tbl%tbl_dest)
 !
 !
@@ -190,9 +189,8 @@
      &   (itp_tbl%tbl_org%num_dest_domain, itp_rev%tbl_dest)
 !
       call alloc_itp_num_dest(itp_rev%tbl_dest)
+      call alloc_itp_table_dest(itp_rev%tbl_dest)
       if(itp_rev%tbl_dest%num_org_domain .gt. 0) then
-        call alloc_itp_table_dest(itp_rev%tbl_dest)
-!
         num = itp_rev%tbl_dest%num_org_domain
         itp_rev%tbl_dest%id_org_domain(1:num)                           &
      &    = itp_tbl%tbl_org%id_dest_domain(1:num)
@@ -202,10 +200,9 @@
         num = itp_rev%tbl_dest%ntot_table_dest
         itp_rev%tbl_dest%inod_dest_4_dest(1:num)                        &
      &    = itp_tbl%tbl_org%iele_org_4_org(1:num)
-!
-        call dealloc_itp_num_org(itp_tbl%tbl_org)
-        call dealloc_itp_table_org(itp_tbl%tbl_org)
       end if
+      call dealloc_itp_num_org(itp_tbl%tbl_org)
+      call dealloc_itp_table_org(itp_tbl%tbl_org)
 !
       call dealloc_istack_org_ptype(cst_itp_wk)
 !

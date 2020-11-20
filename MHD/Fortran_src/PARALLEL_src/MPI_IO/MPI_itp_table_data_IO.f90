@@ -113,16 +113,10 @@
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_export_item()), hd_itp_export_item())
-!      if (IO_itp_org%num_dest_domain .gt. 0) then
-!        write(id_file,'(8i16)')                                        &
-!            IO_itp_org%istack_nod_tbl_org(1:IO_itp_org%num_dest_domain)
-!        write(id_file,'(8i16)')                                         &
-!     &      IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
-!
-!      else
-!        write(id_file,*)
-!      end if
-!
+      call mpi_write_int_stack(IO_param, IO_itp_org%num_dest_domain,    &
+     &                         IO_itp_org%istack_nod_tbl_org)
+      call mpi_write_comm_table(IO_param, ieight,                       &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine mpi_write_itp_table_org
 !
@@ -138,17 +132,13 @@
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_export_item()))
-!      if (IO_itp_org%num_dest_domain .eq. 0) return
+      call mpi_read_num_of_data(IO_param, num_tmp)
+      call mpi_read_int_stack(IO_param, IO_itp_org%num_dest_domain,     &
+     &    IO_itp_org%istack_nod_tbl_org, IO_itp_org%ntot_table_org)
 !
-!      call read_stack_array(character_4_read, id_file,                  &
-!     &      IO_itp_org%num_dest_domain, IO_itp_org%istack_nod_tbl_org)
-!      IO_itp_org%ntot_table_org                                         &
-!     &     = IO_itp_org%istack_nod_tbl_org(IO_itp_org%num_dest_domain)
-!
-!      call alloc_itp_table_org(IO_itp_org)
-!
-!      read(id_file,*)                                                   &
-!     &      IO_itp_org%inod_itp_send(1:IO_itp_org%ntot_table_org)
+      call alloc_itp_table_org(IO_itp_org)
+      call mpi_read_comm_table(IO_param, ieight,                        &
+     &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
 !
       end subroutine mpi_read_itp_table_org
 !
@@ -291,15 +281,15 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
-      integer(kind = kint) :: num_temp
+      integer(kind = kint) :: num_tmp
 !
 !
       call mpi_skip_read(IO_param, ilen_itp_import_item)
-      call mpi_read_num_of_data(IO_param, num_temp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
      &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
 !
-      call mpi_read_num_of_data(IO_param, num_temp)
+      call mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_itp_table_dest(IO_itp_dest)
       call mpi_read_comm_table(IO_param, ieight,                        &
      &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)

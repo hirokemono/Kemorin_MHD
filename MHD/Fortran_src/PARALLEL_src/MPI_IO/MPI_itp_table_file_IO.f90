@@ -68,7 +68,7 @@
       call mpi_write_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
       call mpi_write_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
-!      call mpi_write_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
+      call mpi_write_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
 !      call mpi_write_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
@@ -110,9 +110,7 @@
       call mpi_read_itp_table_dest(IO_param, itp_tbl_IO%tbl_dest)
 !
       call mpi_read_itp_domain_org(IO_param, itp_tbl_IO%tbl_org)
-!        write(*,*) 'mpi_read_itp_table_org'
-!      call mpi_read_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
-!        write(*,*) 'mpi_read_itp_coefs_org'
+      call mpi_read_itp_table_org(IO_param, itp_tbl_IO%tbl_org)
 !      call mpi_read_itp_coefs_org(IO_param, itp_tbl_IO%tbl_org)
 !
       call close_mpi_file(IO_param)
