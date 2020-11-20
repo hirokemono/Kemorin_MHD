@@ -19,7 +19,6 @@
 !!        type(calypso_MPI_IO_params), intent(inout) :: IO_param
 !!        type(interpolate_table_org), intent(inout) :: IO_itp_org
 !!
-!!      subroutine mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
 !!      subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
 !!      subroutine mpi_write_itp_coefs_dest                             &
 !!     &         (IO_param, IO_itp_dest, IO_itp_c_dest)
@@ -220,10 +219,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine mpi_write_itp_domain_dest(IO_param, IO_itp_dest)
+      subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
 !
-      use MPI_ascii_data_IO
       use MPI_domain_data_IO
+      use MPI_ascii_data_IO
       use data_IO_to_textline
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
@@ -241,7 +240,15 @@
       call mpi_write_int_vector(IO_param, IO_itp_dest%num_org_domain,   &
      &                                    IO_itp_dest%id_org_domain)
 !
-      end subroutine mpi_write_itp_domain_dest
+      call mpi_write_charahead                                          &
+     &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
+      call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
+     &                         IO_itp_dest%istack_nod_tbl_dest)
+      return
+!      call mpi_write_comm_table(IO_param, ieight,                       &
+!     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
+!
+      end subroutine mpi_write_itp_table_dest
 !
 !-----------------------------------------------------------------------
 !
@@ -267,28 +274,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine mpi_write_itp_table_dest(IO_param, IO_itp_dest)
-!
-      use MPI_domain_data_IO
-      use MPI_ascii_data_IO
-      use data_IO_to_textline
-!
-      type(calypso_MPI_IO_params), intent(inout) :: IO_param
-      type(interpolate_table_dest), intent(in) :: IO_itp_dest
-!
-!
-      call mpi_write_charahead                                          &
-     &   (IO_param, len(hd_itp_import_item()), hd_itp_import_item())
-      write(*,*) 'IO_param%ioff_gl for mpi_write_int_stack', IO_param%ioff_gl
-      call mpi_write_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
-     &                         IO_itp_dest%istack_nod_tbl_dest)
-!      call mpi_write_comm_table(IO_param, ieight,                       &
-!     &    IO_itp_dest%ntot_table_dest, IO_itp_dest%inod_dest_4_dest)
-!
-      end subroutine mpi_write_itp_table_dest
-!
-!-----------------------------------------------------------------------
-!
       subroutine mpi_read_itp_table_dest(IO_param, IO_itp_dest)
 !
       use MPI_domain_data_IO
@@ -298,11 +283,14 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !
+      integer(kind = kint) :: num_temp
+!
 !
       call mpi_skip_read(IO_param, ilen_itp_import_item)
-      write(*,*) 'IO_param%ioff_gl for mpi_read_int_stack', IO_param%ioff_gl
-      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,     &
+      call mpi_read_num_of_data(IO_param, num_temp)
+      call mpi_read_int_stack(IO_param, IO_itp_dest%num_org_domain,    &
      &    IO_itp_dest%istack_nod_tbl_dest, IO_itp_dest%ntot_table_dest)
+      return
 !
       call alloc_itp_table_dest(IO_itp_dest)
 !      call mpi_read_comm_table(IO_param, ieight,                        &
