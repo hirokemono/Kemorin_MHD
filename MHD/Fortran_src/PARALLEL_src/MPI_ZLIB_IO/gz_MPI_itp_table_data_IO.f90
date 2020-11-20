@@ -134,10 +134,10 @@
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_itp_export_item()))
-      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call gz_mpi_read_int_stack(IO_param, IO_itp_org%num_dest_domain,  &
      &    IO_itp_org%istack_nod_tbl_org, IO_itp_org%ntot_table_org)
 !
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call alloc_itp_table_org(IO_itp_org)
       call gz_mpi_read_comm_table(IO_param, iten,                       &
      &    IO_itp_org%ntot_table_org, IO_itp_org%inod_itp_send)
