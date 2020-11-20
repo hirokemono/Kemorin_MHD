@@ -32,7 +32,7 @@ gz_MPI_groups_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_groups_IO_b.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_MPI_integer_list_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_integer_list_IO.f90 m_precision.o t_calypso_mpi_IO_param.o t_buffer_4_gzip.o gz_MPI_ascii_data_IO.o gz_MPI_domain_data_IO.o data_IO_to_textline.o zlib_cvt_ascii_ele_connect.o zlib_cvt_ascii_comm_tbl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_MPI_itp_table_data_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o m_interpolation_data_labels.o t_buffer_4_gzip.o t_interpolate_tbl_org.o gzip_file_access.o gz_data_IO.o skip_gz_comment.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
+gz_MPI_itp_table_data_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o m_interpolation_data_labels.o gz_MPI_domain_data_IO.o gz_MPI_ascii_data_IO.o data_IO_to_textline.o gz_MPI_position_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_MPI_itp_table_data_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_tbl_org.o t_buffer_4_gzip.o gz_binary_IO.o transfer_to_long_integers.o skip_comment_f.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o
 	$(F90) -c $(F90OPTFLAGS) $<
