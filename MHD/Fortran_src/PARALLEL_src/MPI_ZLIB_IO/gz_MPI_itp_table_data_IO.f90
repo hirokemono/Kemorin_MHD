@@ -319,13 +319,13 @@
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num_tmp
 !
       call gz_mpi_write_charahead                                       &
      &   (IO_param, len(hd_itp_dest_coef()), hd_itp_dest_coef())
 !
-      num = 4*IO_itp_dest%num_org_domain
-      call gz_mpi_write_int_stack(IO_param, num,                        &
+      num_tmp = 4*IO_itp_dest%num_org_domain
+      call gz_mpi_write_int_stack(IO_param, num_tmp,                    &
      &    IO_itp_c_dest%istack_nod_tbl_wtype_dest)
 !
       call gz_mpi_write_comm_table(IO_param, iten,                      &
@@ -353,23 +353,23 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num_tmp
 !
 !
       call gz_mpi_skip_header(IO_param, len(hd_itp_dest_coef()))
       call alloc_itp_coef_stack                                         &
      &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
 !
-      num = 4*IO_itp_dest%num_org_domain
-      call gz_mpi_read_int_stack(IO_param, num,                         &
+      num_tmp = 4*IO_itp_dest%num_org_domain
+      call gz_mpi_read_int_stack(IO_param, num_tmp,                     &
      &    IO_itp_c_dest%istack_nod_tbl_wtype_dest,                      &
      &    IO_itp_dest%ntot_table_dest)
 !
       call alloc_itp_coef_dest(IO_itp_dest, IO_itp_c_dest)
-      call gz_mpi_read_num_of_data(IO_param, num)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call gz_mpi_read_comm_table(IO_param, iten,                       &
      &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%iele_org_4_dest)
-      call gz_mpi_read_num_of_data(IO_param, num)
+      call gz_mpi_read_num_of_data(IO_param, num_tmp)
       call gz_mpi_read_comm_table(IO_param, iten,                       &
      &    IO_itp_dest%ntot_table_dest, IO_itp_c_dest%itype_inter_dest)
       call gz_mpi_read_node_position                                    &

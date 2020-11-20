@@ -314,13 +314,13 @@
       type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
       type(interpolate_table_dest), intent(in) :: IO_itp_dest
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num_tmp
 !
       call mpi_write_charahead                                          &
      &   (IO_param, len(hd_itp_dest_coef()), hd_itp_dest_coef())
 !
-      num = 4*IO_itp_dest%num_org_domain
-      call mpi_write_int_stack(IO_param, num,                           &
+      num_tmp = 4*IO_itp_dest%num_org_domain
+      call mpi_write_int_stack(IO_param, num_tmp,                       &
      &    IO_itp_c_dest%istack_nod_tbl_wtype_dest)
 !
       call mpi_write_comm_table(IO_param, iten,                         &
@@ -348,15 +348,15 @@
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
-      integer(kind = kint) :: num
+      integer(kind = kint) :: num_tmp
 !
 !
       call mpi_skip_read(IO_param, len(hd_itp_dest_coef()))
       call alloc_itp_coef_stack                                         &
      &     (IO_itp_dest%num_org_domain, IO_itp_c_dest)
 !
-      num = 4*IO_itp_dest%num_org_domain
-      call mpi_read_int_stack(IO_param, num,                            &
+      num_tmp = 4*IO_itp_dest%num_org_domain
+      call mpi_read_int_stack(IO_param, num_tmp,                        &
      &    IO_itp_c_dest%istack_nod_tbl_wtype_dest,                      &
      &    IO_itp_dest%ntot_table_dest)
 !
