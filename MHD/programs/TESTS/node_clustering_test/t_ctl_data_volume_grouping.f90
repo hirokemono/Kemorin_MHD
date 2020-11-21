@@ -67,7 +67,7 @@
 !
       integer(kind = kint), parameter :: part_ctl_file_code = 11
       character(len = kchara), parameter                                &
-     &                        :: fname_new_part_ctl = "ctl_new_part"
+     &                        :: fname_new_part_ctl = "ctl_repartition"
 !
       type new_patition_control
 !>        Data transfer table file prefix
@@ -111,7 +111,7 @@
 !     Top level
 !
       character(len=kchara), parameter, private                         &
-     &         :: hd_mesh_test_ctl = 'mesh_test'
+     &         :: hd_repartition_test_ctl = 'repartition_test'
 !
       character(len=kchara), parameter, private                         &
      &                    :: hd_platform =      'data_files_def'
@@ -168,7 +168,8 @@
         do
           call load_one_line_from_control(part_ctl_file_code, c_buf1)
           call read_new_parition_data_ctl                               &
-     &     (part_ctl_file_code, hd_mesh_test_ctl, part_tctl, c_buf1)
+     &       (part_ctl_file_code, hd_repartition_test_ctl,              &
+     &        part_tctl, c_buf1)
           if(part_tctl%i_mesh_test_ctl .gt. 0) exit
         end do
         close(part_ctl_file_code)

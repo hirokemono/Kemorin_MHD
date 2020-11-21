@@ -1,0 +1,33 @@
+begin repartition_test
+  begin data_files_def
+    num_subdomain_ctl    96
+    mesh_file_prefix         'mesh_96/in'
+    mesh_file_fmt_ctl  	 'merged_bin_gz'
+  end data_files_def
+!
+  begin new_data_files_def
+    num_subdomain_ctl    96
+    mesh_file_prefix         'mesh_new/in'
+  end new_data_files_def
+!
+  begin FEM_mesh_ctl
+    FEM_surface_output_switch      'NO'
+    FEM_viewer_mesh_output_switch  'NO'
+  end FEM_mesh_ctl
+!
+  begin new_partitioning_ctl
+    repartition_table_prefix   'repartition_table'
+    repartition_table_format   'merged_gz'
+!
+    partitioning_method_ctl  VOLUME_BASED
+    array dir_domain_ctl
+      dir_domain_ctl  x     3
+      dir_domain_ctl  y     4
+      dir_domain_ctl  z     8
+    end array dir_domain_ctl
+    group_ratio_to_domain_ctl    200
+!
+    sleeve_level_ctl         2
+    element_overlap_ctl      Off
+  end new_partitioning_ctl
+end  repartition_test
