@@ -76,6 +76,8 @@
      &   (org_fem%mesh, neib_nod, part_param, part_grp,                 &
      &    new_ids_on_org, new_fem%mesh%nod_comm,                        &
      &    new_fem%mesh%node, org_to_new_tbl, ext_tbl)
+      call alloc_sph_node_geometry(new_fem%mesh%node)
+!
       call dealloc_group(part_grp)
       call dealloc_calypso_comm_table(ext_tbl)
 !

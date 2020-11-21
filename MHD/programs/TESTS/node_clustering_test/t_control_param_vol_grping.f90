@@ -19,13 +19,19 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &             :: default_newmesh_head = 'repartition_mesh'
+!
       type volume_partioning_param
 !>        Integer flag to output surface data
         integer(kind = kint) :: iflag_output_SURF = 0
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
+!
 !>        Structure of mesh file IO paramters
         type(field_IO_params) :: new_mesh_file_IO
+!>        Data transfer table file parameters
+        type(field_IO_params) :: transfer_iable_IO
 !
 !
 !>        number of subdomains for original partition
@@ -70,14 +76,27 @@
       call set_control_smp_def(my_rank, part_tctl%plt)
 !
       call check_control_num_domains(part_tctl%new_plt)
-      call set_control_mesh_def(part_tctl%new_plt,                      &
-     &                          part_param%new_mesh_file_IO)
+      call set_parallel_file_ctl_params(default_newmesh_head,           &
+     &    part_tctl%new_plt%mesh_file_prefix,                           &
+     &    part_tctl%new_plt%mesh_file_fmt_ctl,                          &
+     &    part_param%new_mesh_file_IO)
+!
+      call set_parallel_file_ctl_params(default_newmesh_head,           &
+     &    part_tctl%new_part_ctl%repart_table_head_ctl,                 &
+     &    part_tctl%new_part_ctl%repart_table_fmt_ctl,                  &
+     &    part_param%transfer_iable_IO)
 !
       call set_FEM_surface_output_flag                                  &
      &   (part_tctl%Fmesh_ctl, part_param%iflag_output_SURF)
       if(iflag_debug.gt.0) write(*,*)                                   &
      &   'mesh_file_head:  ', trim(part_param%mesh_file_IO%file_prefix)
 !
+!
+      part_param%num_FEM_sleeve = 1
+      if(part_tctl%new_part_ctl%sleeve_level_ctl%iflag .gt. 0) then
+        part_param%num_FEM_sleeve                                       &
+     &      = max(part_tctl%new_part_ctl%sleeve_level_ctl%intvalue, 1)
+      end if
 !
       part_param%new_nprocs = nprocs
       call set_control_EQ_XYZ                                           &

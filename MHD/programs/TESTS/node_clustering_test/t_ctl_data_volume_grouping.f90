@@ -18,11 +18,13 @@
 !!    begin data_files_def
 !!      num_subdomain_ctl    96
 !!      mesh_file_prefix         'mesh/in'
+!!      mesh_file_fmt_ctl    'merged_bin'
 !!    end data_files_def
 !!
 !!    begin new_data_files_def
 !!      num_subdomain_ctl    96
-!!      mesh_file_prefix         'mesh/in'
+!!      mesh_file_prefix         'mesh_new/in'
+!!      mesh_file_fmt_ctl    'merged_bin_gz'
 !!    end new_data_files_def
 !!
 !!    begin FEM_mesh_ctl
@@ -31,6 +33,9 @@
 !!    end FEM_mesh_ctl
 !!
 !!    begin new_partitioning_ctl
+!!      repartition_table_prefix      'mesh_new/transfer_table'
+!!      repartition_table_format      'merged_bin_gz'
+!!
 !!      partitioning_method_ctl
 !!      array dir_domain_ctl
 !!        dir_domain_ctl  x     3
@@ -39,13 +44,12 @@
 !!      end array dir_domain_ctl
 !!      group_ratio_to_domain_ctl    100
 !!
-!!      sleeve_level_ctl
-!!      element_overlap_ctl
+!!      sleeve_level_ctl             2
+!!      element_overlap_ctl          Off
 !!    end new_partitioning_ctl
 !!  end  mesh_test
 !!    -------------------------------------------------------------------
 !!@endverbatim
-!
       module t_ctl_data_volume_grouping
 !
       use m_precision
@@ -66,6 +70,11 @@
      &                        :: fname_new_part_ctl = "ctl_new_part"
 !
       type new_patition_control
+!>        Data transfer table file prefix
+        type(read_character_item) :: repart_table_head_ctl
+!>        Data transfer table file format
+        type(read_character_item) :: repart_table_fmt_ctl
+!
 !>        Flag for new patitioning method
         type(read_character_item) :: new_part_method_ctl
 !
@@ -112,6 +121,12 @@
      &                    :: hd_FEM_mesh =      'FEM_mesh_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_new_partition = 'new_partitioning_ctl'
+!
+!
+      character(len=kchara), parameter, private                         &
+     &       :: hd_repart_table_head = 'repartition_table_prefix'
+      character(len=kchara), parameter, private                         &
+     &       :: hd_repart_table_fmt =  'repartition_table_format'
 !
       character(len=kchara), parameter, private                         &
      &                 :: hd_part_method =  'partitioning_method_ctl'
@@ -262,6 +277,11 @@
         call read_integer_ctl_type                                      &
      &     (c_buf, hd_ratio_divide, new_part_ctl%ratio_of_grouping_ctl)
 !
+        call read_chara_ctl_type(c_buf, hd_repart_table_head,           &
+     &                           new_part_ctl%repart_table_head_ctl)
+        call read_chara_ctl_type(c_buf, hd_repart_table_fmt,            &
+     &                           new_part_ctl%repart_table_fmt_ctl)
+!
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_part_method, new_part_ctl%new_part_method_ctl)
         call read_chara_ctl_type                                        &
@@ -279,6 +299,9 @@
 !
 !
       call dealloc_control_array_c_i(new_part_ctl%ndomain_section_ctl)
+!
+      new_part_ctl%repart_table_head_ctl%iflag = 0
+      new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
       new_part_ctl%new_part_method_ctl%iflag = 0
       new_part_ctl%element_overlap_ctl%iflag = 0
@@ -299,6 +322,9 @@
 !
       type(new_patition_control), intent(inout) :: new_part_ctl
 !
+!
+      call bcast_ctl_type_c1(new_part_ctl%repart_table_head_ctl)
+      call bcast_ctl_type_c1(new_part_ctl%repart_table_fmt_ctl)
 !
       call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
       call bcast_ctl_type_c1(new_part_ctl%new_part_method_ctl)

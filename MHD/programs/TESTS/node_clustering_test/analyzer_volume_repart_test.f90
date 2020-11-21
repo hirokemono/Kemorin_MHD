@@ -96,7 +96,7 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-      type(volume_partioning_param) ::  T_meshes
+      type(volume_partioning_param) ::  part_param
 !
       type(communication_table) :: ele_comm
       type(next_nod_ele_table) :: next_tbl_T
@@ -107,7 +107,6 @@
       type(calypso_comm_table) :: org_to_new_tbl
       type(interpolate_table) :: itp_tbl_IO
 !
-      type(field_IO_params) ::  table_file_IO
       type(calypso_comm_table) :: part_tbl_2
       type(interpolate_table) :: itp_tbl_IO2
 !
@@ -131,11 +130,11 @@
 !
       call read_control_new_partition(part_tctl1)
 !
-      call s_set_ctl_params_4_test_mesh(part_tctl1, T_meshes)
+      call s_set_ctl_params_4_test_mesh(part_tctl1, part_param)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, fem_T)
+      call mpi_input_mesh(part_param%mesh_file_IO, nprocs, fem_T)
 !
 !  -------------------------------
 !
@@ -166,12 +165,12 @@
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
       call s_mesh_repartition_by_volume(fem_T, ele_comm,                &
-     &    next_tbl_T%neib_nod, T_meshes, new_fem, org_to_new_tbl)
+     &    next_tbl_T%neib_nod, part_param, new_fem, org_to_new_tbl)
 !
 !       Output appended mesh
       file_name = set_mesh_file_name                                    &
-     &          (T_meshes%new_mesh_file_IO%file_prefix,                 &
-     &           T_meshes%new_mesh_file_IO%iflag_format, my_rank)
+     &          (part_param%new_mesh_file_IO%file_prefix,               &
+     &           part_param%new_mesh_file_IO%iflag_format, my_rank)
       call write_mesh_file                                              &
      &   (my_rank, file_name, new_fem%mesh, new_fem%group)
       call calypso_MPI_barrier
@@ -180,18 +179,15 @@
       call copy_repart_tbl_to_itp_table                                 &
      &   (fem_T%mesh, next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
 !
-!      table_file_IO%file_prefix = T_meshes%new_mesh_file_IO%file_prefix
-      table_file_IO%file_prefix =  'part_table'
-      table_file_IO%iflag_format = id_binary_file_fmt + iflag_single
-      irank_read = my_rank
       call sel_mpi_write_interpolate_table                              &
-     &    (my_rank, table_file_IO, itp_tbl_IO)
+     &    (my_rank, part_param%transfer_iable_IO, itp_tbl_IO)
       call calypso_MPI_barrier
 !
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    table_file_IO, itp_tbl_IO2, i)
+     &    part_param%transfer_iable_IO, itp_tbl_IO2, i)
 !
+      irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
       call calypso_MPI_barrier
@@ -208,8 +204,7 @@
       do i = 1, part_tbl_2%nrank_import
         if(part_tbl_2%irank_import(i)                                   &
      &        .ne.org_to_new_tbl%irank_import(i))                       &
-     &     write(*,*) 'irank_import is wrong', my_rank, i, &
-     &      part_tbl_2%irank_import(i), org_to_new_tbl%irank_import(i)
+     &     write(*,*) 'irank_import is wrong', my_rank, i
       end do
       go to 101
       do i = 0, part_tbl_2%nrank_import
@@ -240,8 +235,7 @@
       do i = 0, part_tbl_2%nrank_export
         if(part_tbl_2%istack_export(i)                                  &
      &        .ne. org_to_new_tbl%istack_export(i))                     &
-     &     write(*,*) 'istack_export is wrong', my_rank, i,  &
-     &       part_tbl_2%istack_export(i), org_to_new_tbl%istack_export(i)
+     &     write(*,*) 'istack_export is wrong', my_rank, i
       end do
 !
       do i = 1, part_tbl_2%ntot_export
