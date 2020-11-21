@@ -7,21 +7,19 @@
 !> @brief gzipped file IO for interpolation
 !!
 !!@verbatim
-!!      subroutine gz_mpi_write_itp_table_file                          &
-!!     &         (file_name, id_rank, itp_tbl_IO)
+!!      subroutine gz_mpi_write_itp_table_file(file_name, itp_tbl_IO)
 !!      subroutine gz_mpi_read_itp_table_file                           &
-!!     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+!!     &         (file_name, id_rank, num_pe, itp_tbl_IO)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine gz_mpi_wrt_itp_coefs_dest_file                       &
-!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+!!     &         (file_name, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine gz_mpi_read_itp_coefs_dest_file                      &
-!!     &         (file_name, id_rank, num_pe,                           &
-!!     &          IO_itp_dest, IO_itp_c_dest, ierr)
+!!     &        (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine gz_mpi_read_itp_tbl_dest_file                        &
-!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest)
 !!      subroutine gz_mpi_read_itp_dmn_dest_file                        &
-!!     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+!!     &         (file_name, id_rank, num_pe, IO_itp_dest)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
@@ -50,14 +48,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine gz_mpi_write_itp_table_file                            &
-     &         (file_name, id_rank, itp_tbl_IO)
+      subroutine gz_mpi_write_itp_table_file(file_name, itp_tbl_IO)
 !
       use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
@@ -88,7 +84,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_table_file                             &
-     &         (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &         (file_name, id_rank, num_pe, itp_tbl_IO)
 !
       use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
@@ -97,9 +93,6 @@
       integer, intent(in) :: id_rank, num_pe
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
-      integer(kind = kint), intent(inout) :: ierr
-!
-      integer(kind = kint) :: n_rank_file
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -118,22 +111,18 @@
 !
       call close_mpi_file(IO_param)
 !
-      ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = n_rank_file
-!
       end subroutine gz_mpi_read_itp_table_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_wrt_itp_coefs_dest_file                         &
-     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &         (file_name, IO_itp_dest, IO_itp_c_dest)
 !
       use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
 !
       character(len=kchara), intent(in) :: file_name
-      integer, intent(in) :: id_rank
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
@@ -161,8 +150,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_coefs_dest_file                        &
-     &         (file_name, id_rank, num_pe,                             &
-     &          IO_itp_dest, IO_itp_c_dest, ierr)
+     &        (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !
       use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
@@ -170,11 +158,8 @@
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank, num_pe
 !
-      integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
-!
-      integer(kind = kint) :: n_rank_file
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -190,15 +175,12 @@
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
 !
-      ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
-!
       end subroutine gz_mpi_read_itp_coefs_dest_file
 !
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_tbl_dest_file                          &
-     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest)
 !
       use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
@@ -206,10 +188,7 @@
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank, num_pe
 !
-      integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-!
-      integer(kind = kint) :: n_rank_file
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -223,15 +202,12 @@
       call gz_mpi_read_itp_table_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
 !
-      ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
-!
       end subroutine gz_mpi_read_itp_tbl_dest_file
 !
 !-----------------------------------------------------------------------
 !
       subroutine gz_mpi_read_itp_dmn_dest_file                          &
-     &         (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &         (file_name, id_rank, num_pe, IO_itp_dest)
 !
       use gz_MPI_itp_table_data_IO
       use gz_MPI_binary_datum_IO
@@ -239,10 +215,7 @@
       character(len=kchara), intent(in) :: file_name
       integer, intent(in) :: id_rank, num_pe
 !
-      integer(kind = kint), intent(inout) :: ierr
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-!
-      integer(kind = kint) :: n_rank_file
 !
 !
       gzip_name = add_gzip_extension(file_name)
@@ -254,9 +227,6 @@
 !
       call gz_mpi_read_itp_domain_dest(IO_param, IO_itp_dest)
       call close_mpi_file(IO_param)
-!
-      ierr = 0
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
 !
       end subroutine gz_mpi_read_itp_dmn_dest_file
 !

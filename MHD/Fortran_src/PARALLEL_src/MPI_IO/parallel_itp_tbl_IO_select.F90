@@ -87,12 +87,10 @@
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
-        call gz_mpi_write_itp_table_file                                &
-     &     (file_name, id_rank, itp_tbl_IO)
+        call gz_mpi_write_itp_table_file(file_name, itp_tbl_IO)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
-        call write_gz_mpi_itp_table_file_b                              &
-     &     (file_name, id_rank, itp_tbl_IO, ierr)
+        call write_gz_mpi_itp_table_file_b(file_name, itp_tbl_IO)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -143,11 +141,11 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_itp_table_file                                 &
-     &     (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &     (file_name, id_rank, num_pe, itp_tbl_IO)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call read_gz_mpi_itp_table_file_b                               &
-     &     (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &     (file_name, id_rank, num_pe, itp_tbl_IO)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -200,11 +198,11 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
         call  gz_mpi_wrt_itp_coefs_dest_file                            &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &     (file_name, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call  wrt_gz_mpi_itp_coef_dest_file_b                           &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -258,13 +256,11 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_itp_coefs_dest_file                            &
-     &     (file_name, id_rank, num_pe,                                 &
-     &      IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call read_gz_mpi_itp_coef_dst_file_b                            &
-     &     (file_name, id_rank, num_pe,                                 &
-     &      IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -316,11 +312,11 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_itp_tbl_dest_file                              &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call read_gz_mpi_itp_tbl_dest_file_b                            &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
@@ -368,11 +364,11 @@
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_txt_file_fmt) then
         call gz_mpi_read_itp_dmn_dest_file                              &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
       else if(table_file_IO%iflag_format                                &
      &         .eq. iflag_single+id_gzip_bin_file_fmt) then
         call read_gz_mpi_itp_dmn_dest_file_b                            &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
 #endif
 !
       else if(table_file_IO%iflag_format                                &
