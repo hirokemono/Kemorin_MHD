@@ -179,7 +179,6 @@
      &   (IO_param, cast_long(IO_itp_org%ntot_table_org),               &
      &    IO_itp_org%inod_gl_dest_4_org)
 !
-      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_2d_vector_b                                        &
      &   (IO_param, cast_long(IO_itp_org%ntot_table_org), ithree,       &
      &    IO_itp_org%coef_inter_org)
@@ -352,7 +351,6 @@
      &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest),             &
      &    IO_itp_c_dest%inod_gl_dest)
 !
-      call istack64_4_parallel_data(num64, IO_param)
       call mpi_write_2d_vector_b                                        &
      &   (IO_param, cast_long(IO_itp_dest%ntot_table_dest), ithree,     &
      &    IO_itp_c_dest%coef_inter_dest)
