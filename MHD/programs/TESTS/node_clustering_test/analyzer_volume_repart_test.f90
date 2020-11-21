@@ -182,7 +182,7 @@
 !
 !      table_file_IO%file_prefix = T_meshes%new_mesh_file_IO%file_prefix
       table_file_IO%file_prefix =  'part_table'
-      table_file_IO%iflag_format = id_gzip_bin_file_fmt + iflag_single
+      table_file_IO%iflag_format = id_binary_file_fmt + iflag_single
       irank_read = my_rank
       call sel_mpi_write_interpolate_table                              &
      &    (my_rank, table_file_IO, itp_tbl_IO)
@@ -208,8 +208,10 @@
       do i = 1, part_tbl_2%nrank_import
         if(part_tbl_2%irank_import(i)                                   &
      &        .ne.org_to_new_tbl%irank_import(i))                       &
-     &     write(*,*) 'irank_import is wrong', my_rank, i
+     &     write(*,*) 'irank_import is wrong', my_rank, i, &
+     &      part_tbl_2%irank_import(i), org_to_new_tbl%irank_import(i)
       end do
+      go to 101
       do i = 0, part_tbl_2%nrank_import
         if(part_tbl_2%istack_import(i)                                  &
      &        .ne.org_to_new_tbl%istack_import(i))                      &

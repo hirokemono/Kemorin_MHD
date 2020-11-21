@@ -81,8 +81,7 @@
 !
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
-        call mpi_write_itp_table_file_b                                 &
-     &     (file_name, id_rank, itp_tbl_IO, ierr)
+        call mpi_write_itp_table_file_b(file_name, itp_tbl_IO)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -135,7 +134,7 @@
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_itp_table_file_b                                  &
-     &     (file_name, id_rank, num_pe, itp_tbl_IO, ierr)
+     &     (file_name, id_rank, num_pe, itp_tbl_IO)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -192,7 +191,7 @@
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
         call  mpi_wrt_itp_coefs_dest_file_b                             &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, IO_itp_dest, IO_itp_c_dest)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -249,8 +248,7 @@
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_itp_coefs_dest_file_b                             &
-     &     (file_name, id_rank, num_pe,                                 &
-     &      IO_itp_dest, IO_itp_c_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest, IO_itp_c_dest)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -306,7 +304,7 @@
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_itp_table_dest_file_b                             &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &
@@ -358,7 +356,7 @@
       if (table_file_IO%iflag_format                                    &
      &         .eq. iflag_single+id_binary_file_fmt) then
         call mpi_read_itp_domain_dest_file_b                            &
-     &     (file_name, id_rank, num_pe, IO_itp_dest, ierr)
+     &     (file_name, id_rank, num_pe, IO_itp_dest)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format                                &

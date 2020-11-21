@@ -34,7 +34,7 @@ gz_MPI_integer_list_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_integer_list_IO.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_MPI_itp_table_data_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o m_interpolation_data_labels.o gz_MPI_domain_data_IO.o gz_MPI_ascii_data_IO.o data_IO_to_textline.o gz_MPI_position_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_MPI_itp_table_data_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o gz_MPI_binary_data_IO.o transfer_to_long_integers.o
+gz_MPI_itp_table_data_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o gz_MPI_binary_datum_IO.o gz_MPI_binary_data_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_MPI_itp_table_file_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o set_parallel_file_name.o gz_MPI_itp_table_data_IO.o gz_MPI_binary_datum_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
