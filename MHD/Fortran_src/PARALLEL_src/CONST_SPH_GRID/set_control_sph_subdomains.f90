@@ -42,6 +42,7 @@
       character(len=kchara), parameter :: horiz1 = 'horizontal'
 !
 !
+      character(len = kchara), parameter :: original =    'original'
       character(len = kchara), parameter :: simple =      'simple'
 !
       character(len = kchara), parameter                                &
@@ -61,7 +62,7 @@
       private :: radius1, theta1, phi1, mode1
       private :: radius2, theta2, phi2, mode2, horiz1
 !
-      private :: simple, cyclic_mode, cyclic_trns
+      private :: simple, cyclic_mode, cyclic_trns, original
       private :: cyclic_neib_mode, cyclic_neib_trns, test_ditribution
 !
       private :: simple_subdomains_4_sph_shell
@@ -141,6 +142,9 @@
 !
         else if(cmp_no_case(tmpchara, test_ditribution)) then
           s3d_ranks%iflag_rlm_distribute = id_test_distribute
+        !
+        else if(cmp_no_case(tmpchara, original)) then
+          s3d_ranks%iflag_rlm_distribute = id_old_distribute
         end if
       end if
 !
