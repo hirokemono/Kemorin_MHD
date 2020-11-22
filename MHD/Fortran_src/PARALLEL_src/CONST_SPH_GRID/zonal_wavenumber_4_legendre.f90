@@ -154,7 +154,7 @@
         end do
       end do
 !
-      do m = -ltr/m_folding, ltr/m_folding
+      do m = ltr/m_folding, ltr/m_folding, -1
         mm = jdx_fsph(m)
         mdx_4_lgd(mm) = m
       end do
