@@ -58,12 +58,17 @@
       character(len = kchara), parameter                                &
      &                        :: test_ditribution = 'test'
 !
+      character(len = kchara), parameter                                &
+     &                        :: hd_ver_1 = 'Ver_1'
+      character(len = kchara), parameter                                &
+     &                        :: hd_ver_2 = 'Ver_2'
 !
       private :: radius1, theta1, phi1, mode1
       private :: radius2, theta2, phi2, mode2, horiz1
 !
       private :: simple, cyclic_mode, cyclic_trns, original
       private :: cyclic_neib_mode, cyclic_neib_trns, test_ditribution
+      private :: hd_ver_1, hd_ver_2
 !
       private :: simple_subdomains_4_sph_shell
       private :: full_subdomains_4_sph_shell
@@ -144,7 +149,26 @@
           s3d_ranks%iflag_rlm_distribute = id_test_distribute
         !
         else if(cmp_no_case(tmpchara, original)) then
-          s3d_ranks%iflag_rlm_distribute = id_old_distribute
+          s3d_ranks%iflag_rlm_distribute = id_V1_rlm_distribute
+        end if
+      end if
+!
+      if(sdctl%indices_ordering_set%iflag .gt. 0) then
+        tmpchara = sdctl%indices_ordering_set%charavalue
+        if(     cmp_no_case(tmpchara, hd_ver_1)) then
+          s3d_ranks%radial_inner_domain_flag = .FALSE.
+!
+          s3d_ranks%rlm_rin_flag = .FALSE.
+          s3d_ranks%rtm_rin_flag = .FALSE.
+          s3d_ranks%rtp_rin_flag = .TRUE.
+          s3d_ranks%iflag_rlm_distribute = id_V1_rlm_distribute
+        else if(cmp_no_case(tmpchara, hd_ver_2)) then
+          s3d_ranks%radial_inner_domain_flag = .FALSE.
+!
+          s3d_ranks%rlm_rin_flag = .TRUE.
+          s3d_ranks%rtm_rin_flag = .TRUE.
+          s3d_ranks%rtp_rin_flag = .FALSE.
+          s3d_ranks%iflag_rlm_distribute = id_cyclic_eq_transform
         end if
       end if
 !
