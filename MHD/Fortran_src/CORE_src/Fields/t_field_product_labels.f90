@@ -39,7 +39,7 @@
 !!   temperature_scale        [i_temp_scale]:
 !!   composition_scale        [i_comp_scale]:
 !!
-!!   stream_pol_velocity      [i_stream_pol_u]
+!!   stream_pol_velocity      [i_stream_pol_u]:
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
