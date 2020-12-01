@@ -135,9 +135,9 @@
       Nfft4 = int(nidx_rtp(3))
       do j = 1, np_smp
         call dfftw_plan_dft_r2c_1d(FFT_t%plan_fwd(j), Nfft4,            &
-     &      FFT_t%X(1,j), FFT_t%C(1,j) , FFTW_ESTIMATE)
+     &      FFT_t%X(1,j), FFT_t%C(1,j) , FFTW_KEMO_EST)
         call dfftw_plan_dft_c2r_1d(FFT_t%plan_bwd(j), Nfft4,            &
-     &      FFT_t%C(1,j), FFT_t%X(1,j) , FFTW_ESTIMATE)
+     &      FFT_t%C(1,j), FFT_t%X(1,j) , FFTW_KEMO_EST)
       end do
       FFT_t%aNfft = one / dble(nidx_rtp(3))
 !

@@ -116,7 +116,7 @@
         call dfftw_plan_many_dft_r2c                                    &
      &     (FFTW_t%plan_fwd(ip), IONE_4, Nfft4, howmany,                &
      &      FFTW_t%X(1,ist), inembed, istride, idist_r,                 &
-     &      FFTW_t%C(1,ist), inembed, istride, idist_c, FFTW_ESTIMATE)
+     &      FFTW_t%C(1,ist), inembed, istride, idist_c, FFTW_KEMO_EST)
       end do
 !
       do ip = 1, np_smp
@@ -127,7 +127,7 @@
         call dfftw_plan_many_dft_c2r                                    &
      &     (FFTW_t%plan_bwd(ip), IONE_4, Nfft4, howmany,                &
      &      FFTW_t%C(1,ist), inembed, istride, idist_c,                 &
-     &      FFTW_t%X(1,ist), inembed, istride, idist_r, FFTW_ESTIMATE)
+     &      FFTW_t%X(1,ist), inembed, istride, idist_r, FFTW_KEMO_EST)
       end do
       FFTW_t%aNfft = one / dble(nidx_rtp(3))
 !

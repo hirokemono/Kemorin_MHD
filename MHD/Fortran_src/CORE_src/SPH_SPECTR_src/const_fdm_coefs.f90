@@ -24,8 +24,9 @@
 !!
 !!       r_2nd%fdm(1)%dmat = d1nod_mat_fdm_2
 !!       r_2nd%fdm(2)%dmat = d2nod_mat_fdm_2
-!
-!! ----------------------------------------------------------------------!!      Work array to obtain 1d FDM
+!!
+!! ----------------------------------------------------------------------
+!!      Work array to obtain 1d FDM
 !!
 !!    derivatives on node by nodal field
 !!      dfdr =    r_2nd%wk_mat(2,1,k) * d_nod(k  )
