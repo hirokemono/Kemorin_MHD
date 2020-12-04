@@ -121,7 +121,7 @@
      &     (FFTW_t%plan_fwd(ip), IONE_4, Nfft4, howmany,                &
      &      X_rtp(1,j_st,nd_st), inembed, istride, idist_r,             &
      &      FFTW_t%C(1,ist), inembed, istride, idist_c,                 &
-     &      FFTW_ESTIMATE)
+     &      FFTW_KEMO_EST)
       end do
 !
       do ip = 1, np_smp
@@ -137,7 +137,7 @@
      &     (FFTW_t%plan_bwd(ip), IONE_4, Nfft4, howmany,                &
      &      FFTW_t%C(1,ist), inembed, istride, idist_c,                 &
      &      X_rtp(1,j_st,nd_st), inembed, istride, idist_r,             &
-     &      FFTW_ESTIMATE)
+     &      FFTW_KEMO_EST)
       end do
 !
       end subroutine init_MHD_multi_FFTW_t
