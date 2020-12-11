@@ -10,6 +10,7 @@ cubed_sphere \
 spherical_shell \
 periodic_cube \
 \
+parallel_repartition \
 partitioner \
 pickup_surface \
 refiner \
@@ -87,7 +88,7 @@ target_list:
 target_task:
 	@echo mesh_utils: \
 	'noise_utils cubed_sph_utils sph_utils plane_mesh ' \
-	'partitioners refineres pickup_sf' \
+	'partitioners repartition refineres pickup_sf' \
 	'$$(TARGET_PERI_CUBE)' \
 	>> $(MAKENAME)
 	@for dir in $(SUBDIRS); do \

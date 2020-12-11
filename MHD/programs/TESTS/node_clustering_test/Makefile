@@ -5,77 +5,16 @@
 NODE_CLUSTERING_TEST_DIR = $$(TESTS_DIR)/node_clustering_test
 
 TARGET_GROUPING_BY_VOLUME = grouping_by_volume
-TARGET_VOLUME_REPARTITION = repartition_by_volume
-
-LIBS_NODE_CLUSTERING_TEST = \
-'$$(LIB_UTILS)'   \
-'$$(LIB_PARA)'   \
-'$$(LIB_SOLVER)' \
-'$$(LIB_MESH)'
-
-LIB_FILES_NODE_CLUSTERING_TEST = \
-'$$(LIB_UTILS_FILE)'   \
-'$$(LIB_PARA_FILE)'   \
-'$$(LIB_SOLVER_FILE)' \
-'$$(LIB_MESH_FILE)'
-
-ifdef FORTRAN_C_CONNECT
-  LIBS_NODE_CLUSTERING_TEST+=        '$$(LIB_KEMO_C)'
-  LIB_FILES_NODE_CLUSTERING_TEST+=   '$$(LIB_KEMO_C_FILE)'
-endif
+TARGET_VOLUME_REPART_TEST = repart_by_vol_test
 
 MOD_GROUPING_BY_VOLUME = \
 main_volume_grouping.o \
-analyzer_volume_grouping.o \
-\
-t_1d_repartitioning_work.o \
-t_control_param_vol_grping.o \
-t_ctl_data_volume_grouping.o \
-t_repartition_by_volume.o \
-\
-set_istack_4_domain_block.o \
-repart_in_xyz_by_volume.o \
-external_group_4_new_part.o \
-set_repartition_group_name.o \
-xyz_block_id_by_nod_vol.o
+analyzer_volume_grouping.o
 
-MOD_VOLUME_REPARTITION = \
+MOD_VOLUME_REPART_TEST = \
 main_volume_repart_test.o \
-analyzer_volume_repart_test.o \
-\
-t_1d_repartitioning_work.o \
-t_control_param_vol_grping.o \
-t_ctl_data_volume_grouping.o \
-t_repartition_by_volume.o \
-t_sorting_for_repartition.o \
-t_repart_double_numberings.o \
-\
-set_istack_4_domain_block.o \
-repart_in_xyz_by_volume.o \
-external_group_4_new_part.o \
-ext_of_int_grp_4_new_part.o \
-set_comm_tbl_to_new_part.o \
-const_comm_tbl_to_new_mesh.o \
-set_repartition_group_name.o \
-xyz_block_id_by_nod_vol.o \
-\
-ele_trans_tbl_4_repart.o \
-\
-redistribute_groups.o \
-redistribute_group_data.o \
-\
-mesh_repartition_by_volume.o \
-const_repart_nod_and_comm.o \
-const_repart_ele_connect.o \
-const_repart_mesh_data.o \
-const_repart_comm_tbl.o \
-check_data_for_repartition.o \
-\
-sort_for_repartition.o \
-search_ext_node_repartition.o \
-search_from_list.o \
-\
-copy_repart_and_itp_table.o
+analyzer_volume_repart_test.o
+
 
 SOURCES = $(shell ls *.f90)
 
@@ -88,45 +27,39 @@ dir_list:
 
 target_list:
 	@echo 'TARGET_GROUPING_BY_VOLUME = $$(BUILDDIR)/$(TARGET_GROUPING_BY_VOLUME)' >> $(MAKENAME)
-	@echo 'TARGET_VOLUME_REPARTITION = $$(BUILDDIR)/$(TARGET_VOLUME_REPARTITION)' >> $(MAKENAME)
+	@echo 'TARGET_VOLUME_REPART_TEST = $$(BUILDDIR)/$(TARGET_VOLUME_REPART_TEST)' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
 	@echo node_clustring_test: \
-	'$$(TARGET_GROUPING_BY_VOLUME) ' \
-	'$$(TARGET_VOLUME_REPARTITION) '  >> $(MAKENAME)
+	'$$(TARGET_GROUPING_BY_VOLUME) '  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_GROUPING_BY_VOLUME): $$(MOD_GROUPING_BY_VOLUME) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
+	@echo '$$(TARGET_GROUPING_BY_VOLUME): $$(MOD_GROUPING_BY_VOLUME) $$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
 	-o '$$(TARGET_GROUPING_BY_VOLUME)' \
 	'$$(MOD_GROUPING_BY_VOLUME)' \
-	'-L. $$(LIBS_NODE_CLUSTERING_TEST)' \
+	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
-	@echo '$$(TARGET_VOLUME_REPARTITION): $$(MOD_VOLUME_REPARTITION) $$(LIB_FILES_NODE_CLUSTERING_TEST)' \
+	@echo '$$(TARGET_VOLUME_REPART_TEST): $$(MOD_VOLUME_REPART_TEST) $$(LIB_FILES_MESH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
-	-o '$$(TARGET_VOLUME_REPARTITION)' \
-	'$$(MOD_VOLUME_REPARTITION)' \
-	'-L. $$(LIBS_NODE_CLUSTERING_TEST)' \
+	-o '$$(TARGET_VOLUME_REPART_TEST)' \
+	'$$(MOD_VOLUME_REPART_TEST)' \
+	'-L. $$(LIBS_MESH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 
 
 
 lib_name:
-	@echo  LIBS_NODE_CLUSTERING_TEST=  \\          >> $(MAKENAME)
-	@echo  $(LIBS_NODE_CLUSTERING_TEST)            >> $(MAKENAME)
-	@echo  LIB_FILES_NODE_CLUSTERING_TEST=  \\     >> $(MAKENAME)
-	@echo  $(LIB_FILES_NODE_CLUSTERING_TEST)       >> $(MAKENAME)
-	@echo  '#' >> $(MAKENAME)
 
 mod_list:
 	@echo  MOD_GROUPING_BY_VOLUME=  \\ >> $(MAKENAME)
 	@echo  $(MOD_GROUPING_BY_VOLUME) >> $(MAKENAME)
-	@echo  MOD_VOLUME_REPARTITION=  \\ >> $(MAKENAME)
-	@echo  $(MOD_VOLUME_REPARTITION) >> $(MAKENAME)
+	@echo  MOD_VOLUME_REPART_TEST=  \\ >> $(MAKENAME)
+	@echo  $(MOD_VOLUME_REPART_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 
