@@ -1,13 +1,21 @@
 begin repartition_test
   begin data_files_def
     num_subdomain_ctl    96
+    num_smp_ctl                 4
+!
     mesh_file_prefix         'mesh_96/in'
-    mesh_file_fmt_ctl  	 'merged_bin_gz'
+    mesh_file_fmt_ctl  	     'merged_bin_gz'
+!
+    field_file_prefix        'field_96/out'
+    field_file_fmt_ctl       'merged_bin_gz'
   end data_files_def
 !
   begin new_data_files_def
     num_subdomain_ctl    96
     mesh_file_prefix         'mesh_new/in'
+!
+    field_file_prefix        'field_new/out'
+    field_file_fmt_ctl       'merged_bin_gz'
   end new_data_files_def
 !
   begin FEM_mesh_ctl
@@ -30,4 +38,10 @@ begin repartition_test
     sleeve_level_ctl         2
     element_overlap_ctl      Off
   end new_partitioning_ctl
+!
+  begin time_step_ctl
+    i_step_init_ctl           0
+    i_step_number_ctl      2000
+!
+  end time_step_ctl
 end  repartition_test

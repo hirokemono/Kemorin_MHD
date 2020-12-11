@@ -112,6 +112,7 @@
 !
       character(len=kchara) :: file_name
       integer(kind = kint) :: irank_read
+      integer(kind = kint) :: ierr
       integer :: i
 !
 !     --------------------- 
@@ -185,7 +186,7 @@
 !
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_param%transfer_iable_IO, itp_tbl_IO2, i)
+     &    part_param%transfer_iable_IO, itp_tbl_IO2, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
