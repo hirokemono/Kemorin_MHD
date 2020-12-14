@@ -110,7 +110,6 @@
       type(calypso_comm_table) :: part_tbl_2
       type(interpolate_table) :: itp_tbl_IO2
 !
-      character(len=kchara) :: file_name
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
       integer :: i

@@ -63,7 +63,6 @@
       use t_interpolate_table
 !
       use mpi_load_mesh_data
-      use mesh_file_IO
       use copy_mesh_structures
       use append_group_data
 !
@@ -83,7 +82,7 @@
       use set_nnod_4_ele_by_type
 !
       use set_mesh_file_names
-      use mesh_file_IO
+      use mesh_IO_select
 !
       use calypso_SR_type
       use select_copy_from_recv
@@ -110,7 +109,6 @@
       type(calypso_comm_table) :: part_tbl_2
       type(interpolate_table) :: itp_tbl_IO2
 !
-      character(len=kchara) :: file_name
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
       integer :: i
@@ -169,11 +167,8 @@
      &    next_tbl_T%neib_nod, part_param, new_fem, org_to_new_tbl)
 !
 !       Output appended mesh
-      file_name = set_mesh_file_name                                    &
-     &          (part_param%new_mesh_file_IO%file_prefix,               &
-     &           part_param%new_mesh_file_IO%iflag_format, my_rank)
-      call write_mesh_file                                              &
-     &   (my_rank, file_name, new_fem%mesh, new_fem%group)
+      call sel_write_mesh_file(part_param%new_mesh_file_IO,             &
+     &    my_rank, new_fem%mesh, new_fem%group)
       call calypso_MPI_barrier
 !
 !
