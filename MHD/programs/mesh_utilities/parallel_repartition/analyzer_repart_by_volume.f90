@@ -82,7 +82,7 @@
       use set_nnod_4_ele_by_type
 !
       use set_mesh_file_names
-      use mesh_IO_select
+      use mesh_MPI_IO_select
 !
       use calypso_SR_type
       use select_copy_from_recv
@@ -166,9 +166,9 @@
       call s_mesh_repartition_by_volume(fem_T, ele_comm,                &
      &    next_tbl_T%neib_nod, part_param, new_fem, org_to_new_tbl)
 !
-!       Output appended mesh
-      call sel_write_mesh_file(part_param%new_mesh_file_IO,             &
-     &    my_rank, new_fem%mesh, new_fem%group)
+!       Output new mesh file
+      call sel_mpi_write_mesh_file(part_param%new_mesh_file_IO,         &
+     &                             new_fem%mesh, new_fem%group)
       call calypso_MPI_barrier
 !
 !
