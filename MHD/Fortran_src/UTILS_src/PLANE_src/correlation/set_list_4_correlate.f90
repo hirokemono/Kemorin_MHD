@@ -34,7 +34,7 @@
       use t_control_array_character
       use t_ctl_data_plane_correlate
       use t_file_IO_parameter
-      use set_control_platform_data
+      use set_control_platform_item
 !
       type(ctl_data_plane_correlate), intent(in) :: pcor_c
       character(len=kchara), intent(in) :: cor_udt_header

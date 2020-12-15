@@ -57,9 +57,10 @@
       subroutine set_ctl_params_4_comm_test(plt, Fmesh_ctl, T_files)
 !
       use calypso_mpi
-      use set_control_platform_data
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
+      use set_control_platform_item
+      use set_control_platform_data
 !
       type(platform_data_control), intent(in) :: plt
       type(FEM_mesh_control), intent(in) :: Fmesh_ctl

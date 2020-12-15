@@ -24,6 +24,8 @@
       use t_geometry_data
       use t_group_data
       use t_control_param_vol_grping
+      use t_time_data
+      use t_VIZ_only_step_parameter
       use m_work_time
 !
       implicit none
@@ -31,7 +33,10 @@
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
 !
-      type(volume_partioning_param) ::  part_param
+      type(volume_partioning_param), save ::  part_param
+!
+!>        Structure for new time stepping
+      type(time_step_param_w_viz), save :: t_viz_param1
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,6 +46,7 @@
 !
       subroutine initialize_field_to_repart
 !
+      use m_error_IDs
       use m_array_for_send_recv
       use m_default_file_prefix
       use m_file_format_switch
@@ -117,6 +123,10 @@
       call read_control_new_partition(part_tctl1)
 !
       call s_set_ctl_params_4_test_mesh(part_tctl1, part_param)
+      call set_fixed_t_step_params_w_viz                                &
+     &   (part_tctl1%t_viz_ctl, t_viz_param1, ierr, e_message)
+      call copy_delta_t(t_viz_param1%init_d, t_viz_param1%time_d)
+!
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
@@ -161,23 +171,23 @@
         write(*,*) 'new_ucd_file_IO',                                   &
      &            part_param%new_ucd_file_IO%iflag_format,              &
      &            trim(part_param%new_ucd_file_IO%file_prefix)
-        write(*,*) 'part_param%t_viz_param%init_d%i_time_step',         &
-     &            part_param%t_viz_param%init_d%i_time_step
-        write(*,*) 'part_param%t_viz_param%finish_d%i_end_step',        &
-     &            part_param%t_viz_param%finish_d%i_end_step
-        write(*,*) 'part_param%t_viz_param%ucd_step%increment',         &
-     &            part_param%t_viz_param%ucd_step%increment
+        write(*,*) 't_viz_param1%init_d%i_time_step',         &
+     &            t_viz_param1%init_d%i_time_step
+        write(*,*) 't_viz_param1%finish_d%i_end_step',        &
+     &            t_viz_param1%finish_d%i_end_step
+        write(*,*) 't_viz_param1%ucd_step%increment',         &
+     &            t_viz_param1%ucd_step%increment
 !
-        write(*,*) 'part_param%t_viz_param%viz_step%PSF_t',             &
-     &            part_param%t_viz_param%viz_step%PSF_t
-        write(*,*) 'part_param%t_viz_param%viz_step%ISO_t',             &
-     &            part_param%t_viz_param%viz_step%ISO_t
-        write(*,*) 'part_param%t_viz_param%viz_step%PVR_t',             &
-     &            part_param%t_viz_param%viz_step%PVR_t
-        write(*,*) 'part_param%t_viz_param%viz_step%FLINE_t',           &
-     &            part_param%t_viz_param%viz_step%FLINE_t
-        write(*,*) 'part_param%t_viz_param%viz_step%LIC_t',             &
-     &            part_param%t_viz_param%viz_step%LIC_t
+        write(*,*) 't_viz_param1%viz_step%PSF_t',             &
+     &            t_viz_param1%viz_step%PSF_t
+        write(*,*) 't_viz_param1%viz_step%ISO_t',             &
+     &            t_viz_param1%viz_step%ISO_t
+        write(*,*) 't_viz_param1%viz_step%PVR_t',             &
+     &            t_viz_param1%viz_step%PVR_t
+        write(*,*) 't_viz_param1%viz_step%FLINE_t',           &
+     &            t_viz_param1%viz_step%FLINE_t
+        write(*,*) 't_viz_param1%viz_step%LIC_t',             &
+     &            t_viz_param1%viz_step%LIC_t
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'

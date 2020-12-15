@@ -39,7 +39,6 @@
       use m_array_for_send_recv
       use m_default_file_prefix
       use t_ctl_data_mesh_test
-      use t_control_param_mesh_test
 !
       use copy_mesh_structures
       use mesh_file_IO
@@ -51,6 +50,7 @@
       use parallel_FEM_mesh_init
       use output_test_mesh
       use set_table_4_RHS_assemble
+      use set_control_platform_data
 !
       use t_file_IO_parameter
       use t_mesh_data
@@ -66,7 +66,8 @@
 !>     Stracture for Jacobians
 !
       type(mesh_test_control), save :: mesh_tctl1
-      type(mesh_test_files_param) ::  T_meshes
+      type(field_IO_params) :: mesh_file_name
+      integer(kind = kint) :: iflag_output_SURF = 0
 !
       type(next_nod_ele_table), save :: next_tbl_T
       type(mul_node_clusterings) :: clusters_T
@@ -92,12 +93,14 @@
 !
       call read_control_4_mesh_test(mesh_tctl1)
 !
-      call set_ctl_params_4_test_mesh(mesh_tctl1, T_meshes)
+      call set_minimum_fem_platform_def                                 &
+     &   (my_rank, mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                &
+     &    mesh_file_name, iflag_output_SURF)
 !
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, fem_T)
+      call mpi_input_mesh(mesh_file_name, nprocs, fem_T)
 !
 !  -------------------------------
 !

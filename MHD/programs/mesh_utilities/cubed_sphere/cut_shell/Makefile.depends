@@ -6,7 +6,7 @@ cutshell.o: $(CUTSHELL_DIR)/cutshell.f90 analyzer_cutshell.o m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_cutshell_nod_ele_flag.o: $(CUTSHELL_DIR)/m_cutshell_nod_ele_flag.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_cut_shell.o: $(CUTSHELL_DIR)/set_control_cut_shell.f90 m_precision.o m_default_file_prefix.o t_control_data_4_cutshell.o const_cutshell_mesh.o set_control_platform_data.o skip_comment_f.o
+set_control_cut_shell.o: $(CUTSHELL_DIR)/set_control_cut_shell.f90 m_precision.o m_default_file_prefix.o t_control_data_4_cutshell.o const_cutshell_mesh.o set_control_platform_item.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_cutshell_ele_grp.o: $(CUTSHELL_DIR)/set_cutshell_ele_grp.f90 m_precision.o m_cutshell_nod_ele_flag.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -114,6 +114,7 @@
       use t_ctl_data_gen_table
       use t_search_block_4_itp
       use itp_table_IO_select_4_zlib
+      use set_control_platform_item
       use set_control_platform_data
       use skip_comment_f
 !

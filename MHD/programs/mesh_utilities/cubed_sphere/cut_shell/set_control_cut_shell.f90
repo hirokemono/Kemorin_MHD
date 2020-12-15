@@ -23,7 +23,7 @@
       use m_default_file_prefix
       use t_control_data_4_cutshell
       use const_cutshell_mesh
-      use set_control_platform_data
+      use set_control_platform_item
       use skip_comment_f
 !
       type(ctl_data_cutshell), intent(in)  :: cutshell_ctl

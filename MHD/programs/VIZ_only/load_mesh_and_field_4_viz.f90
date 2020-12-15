@@ -65,6 +65,7 @@
 !
       use m_file_format_switch
       use m_default_file_prefix
+      use set_control_platform_item
       use set_control_platform_data
       use ucd_IO_select
 !

@@ -37,7 +37,6 @@
       np_smp = ione
       if(plt%num_smp_ctl%iflag .eq. 1) np_smp = num_smp_ctl%intvalue
 !
-!
       call s_set_solver_MG_control
 !
       end subroutine set_ctl_test_MG

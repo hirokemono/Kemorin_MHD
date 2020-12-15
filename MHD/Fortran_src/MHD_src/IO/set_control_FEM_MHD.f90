@@ -66,6 +66,7 @@
       use t_MGCG_data
       use t_MGCG_data_4_MHD
 !
+      use set_control_platform_item
       use set_control_platform_data
       use set_control_nodal_data_MHD
       use set_ctl_parallel_platform

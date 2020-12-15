@@ -36,7 +36,6 @@
       subroutine sort_3dfilter_init
 !
       use set_ctl_gen_filter
-      use set_control_platform_data
 !
 !
       if (my_rank.eq.0) then

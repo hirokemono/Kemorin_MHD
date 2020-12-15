@@ -26,7 +26,7 @@ cal_tave_sph_ene_spectr.o: $(SPH_UTILS_DIR)/cal_tave_sph_ene_spectr.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 compare_sph_mean_square.o: $(SPH_UTILS_DIR)/compare_sph_mean_square.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_ctl_params_sph_utils.o: $(SPH_UTILS_DIR)/m_ctl_params_sph_utils.f90 m_precision.o t_step_parameter.o t_phys_data.o t_rms_4_sph_spectr.o t_pickup_sph_spectr_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_VIZ_step_parameter.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o set_field_data_w_SGS.o set_control_platform_data.o set_control_4_pickup_sph.o t_ctl_data_4_sph_utils.o m_default_file_prefix.o
+m_ctl_params_sph_utils.o: $(SPH_UTILS_DIR)/m_ctl_params_sph_utils.f90 m_precision.o t_step_parameter.o t_phys_data.o t_rms_4_sph_spectr.o t_pickup_sph_spectr_data.o t_file_IO_parameter.o t_IO_step_parameter.o t_VIZ_step_parameter.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o set_field_data_w_SGS.o set_control_platform_item.o set_control_platform_data.o set_control_4_pickup_sph.o t_ctl_data_4_sph_utils.o m_default_file_prefix.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_maxmode_sph_ene_spectr.o: $(SPH_UTILS_DIR)/m_maxmode_sph_ene_spectr.f90 m_precision.o m_constants.o t_read_sph_spectra.o sph_mean_square_IO_select.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -82,7 +82,7 @@ t_ctl_data_4_sph_utils.o: $(SPH_UTILS_DIR)/t_ctl_data_4_sph_utils.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_sph_data_utils.o: $(SPH_UTILS_DIR)/t_ctl_data_sph_data_utils.f90 m_precision.o calypso_mpi.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o t_control_array_character.o t_control_array_character2.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_time_step_ctl.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_param_sph_data_utils.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_data_utils.f90 m_precision.o calypso_mpi.o t_file_IO_parameter.o t_field_data_IO.o t_ctl_data_sph_data_utils.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o m_file_format_switch.o set_ctl_parallel_platform.o set_control_platform_data.o
+t_ctl_param_sph_data_utils.o: $(SPH_UTILS_DIR)/t_ctl_param_sph_data_utils.f90 m_precision.o calypso_mpi.o t_file_IO_parameter.o t_field_data_IO.o t_ctl_data_sph_data_utils.o t_ctl_data_4_platforms.o t_ctl_data_4_time_steps.o m_file_format_switch.o set_ctl_parallel_platform.o set_control_platform_item.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_gauss_coefs_monitor_IO.o: $(SPH_UTILS_DIR)/t_gauss_coefs_monitor_IO.f90 m_precision.o m_constants.o t_pickup_sph_spectr_data.o m_monitor_file_labels.o set_parallel_file_name.o write_field_labels.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

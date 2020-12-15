@@ -22,9 +22,17 @@
       use t_group_data
       use t_surface_data
       use t_edge_data
+      use t_file_IO_parameter
       use m_work_time
 !
       implicit none
+!
+      type mesh_test_files_param
+!>        Integer flag to output surface data
+        integer(kind = kint) :: iflag_output_SURF = 0
+!>        Structure of mesh file IO paramters
+        type(field_IO_params) :: mesh_file_name
+      end type mesh_test_files_param
 !
       type(mesh_data), save :: fem_T
 !
@@ -39,8 +47,8 @@
       use m_array_for_send_recv
       use m_default_file_prefix
       use t_ctl_data_mesh_test
-      use t_control_param_mesh_test
 !
+      use set_control_platform_data
       use copy_mesh_structures
       use set_element_data_4_IO
       use set_surface_data_4_IO
@@ -64,7 +72,6 @@
       use output_test_mesh
       use const_element_comm_table
 !
-      use t_file_IO_parameter
       use t_mesh_data
       use t_read_mesh_data
       use t_shape_functions
@@ -94,12 +101,14 @@
 !
       call read_control_4_mesh_test(mesh_tctl1)
 !
-      call set_ctl_params_4_test_mesh(mesh_tctl1, T_meshes)
+      call set_minimum_fem_platform_def                                 &
+     &   (my_rank, mesh_tctl1%plt, mesh_tctl1%Fmesh_ctl,                &
+     &    T_meshes%mesh_file_name, T_meshes%iflag_output_SURF)
 !
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, fem_T)
+      call mpi_input_mesh(T_meshes%mesh_file_name, nprocs, fem_T)
 !
 !  -------------------------------
 !

@@ -97,6 +97,7 @@
       use m_legendre_transform_list
 !
       use set_field_data_w_SGS
+      use set_control_platform_item
       use set_control_platform_data
       use ucd_IO_select
 !
@@ -215,6 +216,7 @@
       use m_legendre_transform_list
 !
       use set_field_data_w_SGS
+      use set_control_platform_item
       use set_control_platform_data
 !
       use m_default_file_prefix

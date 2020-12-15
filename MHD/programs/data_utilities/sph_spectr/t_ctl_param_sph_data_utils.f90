@@ -78,7 +78,7 @@
       use t_ctl_data_4_time_steps
       use m_file_format_switch
       use set_ctl_parallel_platform
-      use set_control_platform_data
+      use set_control_platform_item
 !
       type(platform_data_control), intent(in) :: plt
       type(time_data_control), intent(in) :: tctl
@@ -135,7 +135,6 @@
       use t_ctl_data_sph_data_utils
       use m_file_format_switch
       use set_ctl_parallel_platform
-      use set_control_platform_data
 !
       type(rename_spectr_ctl), intent(in) :: field_list
       type(rename_list), intent(inout) :: rename

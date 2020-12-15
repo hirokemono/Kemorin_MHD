@@ -68,7 +68,7 @@
       use t_para_refine_itp_tables
       use t_control_data_refine_para
       use t_control_data_4_refine
-      use set_control_platform_data
+      use set_control_platform_item
 !
       type(control_data_4_refine), intent(in) :: refine_ctl
       type(file_ctls_refine_para), intent(in) :: p_refine_ctl

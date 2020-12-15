@@ -96,6 +96,7 @@
       use m_file_format_switch
 !
       use set_field_data_w_SGS
+      use set_control_platform_item
       use set_control_platform_data
       use set_control_4_pickup_sph
 !

@@ -87,7 +87,7 @@
       use t_rayleigh_field_IO
 !
       use m_file_format_switch
-      use set_control_platform_data
+      use set_control_platform_item
 !
       type(time_data_control), intent(in) :: tctl
       type(platform_data_control), intent(in) :: plt

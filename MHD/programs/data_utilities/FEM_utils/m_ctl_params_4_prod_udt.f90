@@ -56,6 +56,7 @@
       use m_file_format_switch
       use m_default_file_prefix
       use t_ctl_data_product_udt
+      use set_control_platform_item
       use set_control_platform_data
       use ucd_IO_select
 !
