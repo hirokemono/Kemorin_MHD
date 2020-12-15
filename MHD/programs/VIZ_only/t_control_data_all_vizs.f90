@@ -42,10 +42,11 @@
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
       character(len = kchara), parameter :: fname_viz_ctl = "ctl_viz"
 !
+!>      Structure for visulization program
       type control_data_vizs
-!>      Structure for file settings
+!>        Structure for file settings
         type(platform_data_control) :: viz_plt
-!>      Structure for time stepping control
+!>        Structure for time stepping control
         type(time_data_control) :: t_viz_ctl
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctl_v
@@ -167,7 +168,8 @@
       call reset_control_platforms(vizs_ctl%viz_plt)
       call dealloc_viz_controls(vizs_ctl%viz_ctl_v)
 !
-      vizs_ctl%i_viz_only_file = 0
+      vizs_ctl%t_viz_ctl%i_tstep = 0
+      vizs_ctl%i_viz_only_file =   0
 !
       end subroutine dealloc_vizs_control_data
 !

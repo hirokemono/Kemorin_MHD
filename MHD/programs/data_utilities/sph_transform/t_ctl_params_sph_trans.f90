@@ -61,7 +61,7 @@
         type(field_IO_params) :: org_rj_file_IO
 !>        Structure for original restart file  paramters
         type(field_IO_params) :: org_rst_file_IO
-!>        Structure for original restart file  paramters
+!>        Structure for original field file  paramters
         type(field_IO_params) :: org_ucd_file_IO
 !
         type(field_IO_params) :: zm_source_file_param

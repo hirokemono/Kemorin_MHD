@@ -23,14 +23,15 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
-      use t_surface_data
-      use t_edge_data
+      use t_control_param_vol_grping
       use m_work_time
 !
       implicit none
 !
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
+!
+      type(volume_partioning_param) ::  part_param
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,7 +45,6 @@
       use m_default_file_prefix
       use m_file_format_switch
       use t_ctl_data_volume_grouping
-      use t_control_param_vol_grping
       use t_1d_repartitioning_work
       use t_repartition_by_volume
       use set_istack_4_domain_block
@@ -54,10 +54,6 @@
       use t_mesh_data
       use t_comm_table
       use t_read_mesh_data
-      use t_shape_functions
-      use t_jacobians
-      use t_fem_gauss_int_coefs
-      use t_next_node_ele_4_node
       use t_calypso_comm_table
       use t_repart_double_numberings
       use t_interpolate_table
@@ -96,19 +92,9 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-      type(volume_partioning_param) ::  part_param
-!
-      type(communication_table) :: ele_comm
-      type(next_nod_ele_table) :: next_tbl_T
-!
-      type(jacobians_type) :: jacobians_T
-      type(shape_finctions_at_points) :: spfs_T
 !
       type(calypso_comm_table) :: org_to_new_tbl
       type(interpolate_table) :: itp_tbl_IO
-!
-      type(calypso_comm_table) :: part_tbl_2
-      type(interpolate_table) :: itp_tbl_IO2
 !
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
@@ -144,18 +130,18 @@
 !  -------------------------------
 !
 !       Output appended mesh
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new'
       call mpi_input_mesh(part_param%new_mesh_file_IO, nprocs, new_fem)
 !
 !
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_param%transfer_iable_IO, itp_tbl_IO2, ierr)
+     &    part_param%transfer_iable_IO, itp_tbl_IO, ierr)
       call calypso_MPI_barrier
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
+     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO, org_to_new_tbl)
       call calypso_MPI_barrier
 !
       end subroutine initialize_field_to_repart
@@ -167,6 +153,32 @@
 !
 !      call output_elapsed_times
       call calypso_MPI_barrier
+!
+      if(my_rank .eq. 0) then
+        write(*,*) 'org_ucd_file_IO',                                   &
+     &            part_param%org_ucd_file_IO%iflag_format,              &
+     &            trim(part_param%org_ucd_file_IO%file_prefix)
+        write(*,*) 'new_ucd_file_IO',                                   &
+     &            part_param%new_ucd_file_IO%iflag_format,              &
+     &            trim(part_param%new_ucd_file_IO%file_prefix)
+        write(*,*) 'part_param%t_viz_param%init_d%i_time_step',         &
+     &            part_param%t_viz_param%init_d%i_time_step
+        write(*,*) 'part_param%t_viz_param%finish_d%i_end_step',        &
+     &            part_param%t_viz_param%finish_d%i_end_step
+        write(*,*) 'part_param%t_viz_param%ucd_step%increment',         &
+     &            part_param%t_viz_param%ucd_step%increment
+!
+        write(*,*) 'part_param%t_viz_param%viz_step%PSF_t',             &
+     &            part_param%t_viz_param%viz_step%PSF_t
+        write(*,*) 'part_param%t_viz_param%viz_step%ISO_t',             &
+     &            part_param%t_viz_param%viz_step%ISO_t
+        write(*,*) 'part_param%t_viz_param%viz_step%PVR_t',             &
+     &            part_param%t_viz_param%viz_step%PVR_t
+        write(*,*) 'part_param%t_viz_param%viz_step%FLINE_t',           &
+     &            part_param%t_viz_param%viz_step%FLINE_t
+        write(*,*) 'part_param%t_viz_param%viz_step%LIC_t',             &
+     &            part_param%t_viz_param%viz_step%LIC_t
+      end if
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'
 !

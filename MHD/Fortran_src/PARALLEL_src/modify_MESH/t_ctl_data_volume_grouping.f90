@@ -47,6 +47,10 @@
 !!      sleeve_level_ctl             2
 !!      element_overlap_ctl          Off
 !!    end new_partitioning_ctl
+!!
+!!    begin time_step_ctl
+!!      ...
+!!    end time_step_ctl
 !!  end  mesh_test
 !!    -------------------------------------------------------------------
 !!@endverbatim
@@ -61,6 +65,7 @@
       use t_control_array_integer
       use t_control_array_character
       use t_control_array_charaint
+      use t_ctl_data_4_time_steps
       use skip_comment_f
 !
       implicit  none
@@ -105,6 +110,9 @@
 !>        Structure for new partitioning controls
         type(new_patition_control) :: new_part_ctl
 !
+!>        Structure for time stepping control
+        type(time_data_control) :: t_viz_ctl
+!
         integer(kind = kint) :: i_mesh_test_ctl = 0
       end type new_patition_test_control
 !
@@ -121,6 +129,8 @@
      &                    :: hd_FEM_mesh =      'FEM_mesh_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_new_partition = 'new_partitioning_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_time_step = 'time_step_ctl'
 !
 !
       character(len=kchara), parameter, private                         &
@@ -191,7 +201,8 @@
       call reset_FEM_mesh_control(part_tctl%Fmesh_ctl)
       call dealloc_ctl_data_new_decomp(part_tctl%new_part_ctl)
 !
-      part_tctl%i_mesh_test_ctl = 0
+      part_tctl%t_viz_ctl%i_tstep = 0
+      part_tctl%i_mesh_test_ctl =   0
 !
       end subroutine dealloc_control_new_partition
 !
@@ -221,6 +232,10 @@
      &     (id_control, hd_platform, part_tctl%plt, c_buf)
         call read_control_platforms                                     &
      &     (id_control, hd_new_platform, part_tctl%new_plt, c_buf)
+!
+        call read_control_time_step_data                                &
+     &     (id_control, hd_time_step, part_tctl%t_viz_ctl, c_buf)
+!
         call read_FEM_mesh_control                                      &
      &     (id_control, hd_FEM_mesh, part_tctl%Fmesh_ctl, c_buf)
         call read_ctl_data_new_partition(id_control, hd_new_partition,  &
@@ -238,16 +253,19 @@
       use calypso_mpi
       use calypso_mpi_int
       use bcast_4_platform_ctl
+      use bcast_4_time_step_ctl
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
 !
 !
       call bcast_ctl_data_4_platform(part_tctl%plt)
       call bcast_ctl_data_4_platform(part_tctl%new_plt)
+      call bcast_ctl_data_4_time_step(part_tctl%t_viz_ctl)
+!
       call bcast_FEM_mesh_control(part_tctl%Fmesh_ctl)
       call bcast_ctl_data_new_decomp(part_tctl%new_part_ctl)
 !
-      part_tctl%i_mesh_test_ctl = 0
+      call calypso_mpi_bcast_one_int(part_tctl%i_mesh_test_ctl, 0)
 !
       end subroutine bcast_control_new_partition
 !

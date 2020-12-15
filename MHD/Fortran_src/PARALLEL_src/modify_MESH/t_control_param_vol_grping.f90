@@ -16,6 +16,9 @@
 !
       use m_precision
       use t_file_IO_parameter
+      use t_time_data
+      use t_VIZ_only_step_parameter
+!
 !
       implicit none
 !
@@ -33,6 +36,13 @@
 !>        Data transfer table file parameters
         type(field_IO_params) :: transfer_iable_IO
 !
+!>        Structure for original field file  paramters
+        type(field_IO_params) :: org_ucd_file_IO
+!>        Structure for new field file  paramters
+        type(field_IO_params) :: new_ucd_file_IO
+!
+!>        Structure for new time stepping
+        type(time_step_param_w_viz) :: t_viz_param
 !
 !>        number of subdomains for original partition
         integer(kind = kint) :: org_nprocs
@@ -65,9 +75,12 @@
       use set_control_platform_data
       use set_ctl_parallel_platform
       use set_num_domain_each_dir
+      use ucd_IO_select
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(volume_partioning_param), intent(inout) :: part_param
+!
+      integer(kind = kint) :: ierr
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, part_tctl%plt)
@@ -91,6 +104,10 @@
       if(iflag_debug.gt.0) write(*,*)                                   &
      &   'mesh_file_head:  ', trim(part_param%mesh_file_IO%file_prefix)
 !
+      call set_ucd_file_define(part_tctl%plt,                           &
+     &                         part_param%org_ucd_file_IO)
+      call set_ucd_file_define(part_tctl%new_plt,                       &
+     &                         part_param%new_ucd_file_IO)
 !
       part_param%num_FEM_sleeve = 1
       if(part_tctl%new_part_ctl%sleeve_level_ctl%iflag .gt. 0) then
@@ -120,6 +137,11 @@
         write(*,*) 'ndomain_eb', part_param%ndomain_eb(1:3)
         write(*,*) 'ndivide_eb', part_param%ndivide_eb(1:3)
       end if
+!
+      call set_fixed_t_step_params_w_viz                                &
+     &   (part_tctl%t_viz_ctl, part_param%t_viz_param, ierr, e_message)
+      call copy_delta_t(part_param%t_viz_param%init_d,                  &
+     &                  part_param%t_viz_param%time_d)
 !
       end subroutine s_set_ctl_params_4_test_mesh
 !
