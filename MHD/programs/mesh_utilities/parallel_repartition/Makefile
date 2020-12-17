@@ -11,13 +11,15 @@ MOD_VOLUME_REPARTITION = \
 main_repart_by_volume.o \
 analyzer_repart_by_volume.o \
 \
-t_ctl_file_volume_grouping.o
+t_ctl_file_volume_grouping.o \
+t_control_param_repartition.o
 
 MOD_FIELD_TO_NEWPART = \
 main_field_to_repartition.o \
 analyzer_field_to_repart.o \
 \
-t_ctl_file_volume_grouping.o
+t_ctl_file_volume_grouping.o \
+t_control_param_repartition.o
 
 SOURCES = $(shell ls *.f90)
 

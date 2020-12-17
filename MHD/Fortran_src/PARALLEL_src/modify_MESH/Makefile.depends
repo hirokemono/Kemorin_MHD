@@ -58,11 +58,11 @@ sort_for_repartition.o: $(MODIFY_PARA_MESHDIR)/sort_for_repartition.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_1d_repartitioning_work.o: $(MODIFY_PARA_MESHDIR)/t_1d_repartitioning_work.f90 m_precision.o t_control_param_vol_grping.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o t_ctl_data_volume_grouping.o m_file_format_switch.o set_control_platform_item.o set_control_platform_data.o set_ctl_parallel_platform.o set_num_domain_each_dir.o parallel_ucd_IO_select.o
+t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.f90 m_precision.o calypso_mpi.o t_file_IO_parameter.o t_ctl_data_volume_grouping.o set_control_platform_item.o set_control_platform_data.o set_num_domain_each_dir.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_mesh_test.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_mesh_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_ctl_data_volume_grouping.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_volume_grouping.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_read_control_elements.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o t_ctl_data_4_time_steps.o skip_comment_f.o calypso_mpi.o bcast_4_platform_ctl.o calypso_mpi_int.o bcast_4_time_step_ctl.o bcast_control_arrays.o
+t_ctl_data_volume_grouping.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_volume_grouping.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_repart_double_numberings.o: $(MODIFY_PARA_MESHDIR)/t_repart_double_numberings.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_calypso_comm_table.o nod_phys_send_recv.o reverse_SR_int.o solver_SR_type.o calypso_SR_type.o select_copy_from_recv.o m_solver_SR.o calypso_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<

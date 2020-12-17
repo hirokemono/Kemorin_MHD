@@ -21,6 +21,9 @@
 !!        type(calypso_comm_table), intent(in) :: ext_tbl
 !!      subroutine check_new_node_comm_table(my_rank, new_comm)
 !!        type(communication_table), intent(in) :: new_comm
+!!
+!!      subroutine compare_calypso_comm_tbls(ref_tbl, cmp_tbl)
+!!        type(calypso_comm_table), intent(in) :: ref_tbl, cmp_tbl
 !!@endverbatim
 !
       module check_data_for_repartition
@@ -66,8 +69,7 @@
       type(double_numbering_data) :: new_recved_id1
       type(double_numbering_data) :: new_recved_id2
 !
-      integer(kind = kint) :: icou, inum, i, ist, ied, num
-      integer(kind = kint) :: ip, inod, iele, k1, ipart, iflag
+      integer(kind = kint) :: inod
 !
 !
       allocate(inod_old_lc(node%numnod))
@@ -227,6 +229,59 @@
 !
       end subroutine check_new_node_comm_table
 !
-! ----------------------------------------------------------------------
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine compare_calypso_comm_tbls(ref_tbl, cmp_tbl)
+!
+      type(calypso_comm_table), intent(in) :: ref_tbl, cmp_tbl
+!
+      integer(kind =kint) :: i
+!
+      if(cmp_tbl%iflag_self_copy .ne. ref_tbl%iflag_self_copy)        &
+     &     write(*,*) 'iflag_self_copy is wrong', my_rank
+      if(cmp_tbl%nrank_import .ne. ref_tbl%nrank_import)              &
+     &     write(*,*) 'nrank_import is wrong', my_rank
+      if(cmp_tbl%ntot_import .ne. ref_tbl%ntot_import)                &
+     &     write(*,*) 'ntot_import is wrong', my_rank
+!
+      do i = 1, cmp_tbl%nrank_import
+        if(cmp_tbl%irank_import(i) .ne.ref_tbl%irank_import(i))       &
+     &     write(*,*) 'irank_import is wrong', my_rank, i
+      end do
+      do i = 0, cmp_tbl%nrank_import
+        if(cmp_tbl%istack_import(i) .ne.ref_tbl%istack_import(i))     &
+     &     write(*,*) 'istack_import is wrong', my_rank, i
+      end do
+      do i = 1, cmp_tbl%ntot_import
+        if(cmp_tbl%item_import(i) .ne. ref_tbl%item_import(i))        &
+     &     write(*,*) 'item_import is wrong', my_rank, i
+      end do
+      do i = 1, cmp_tbl%ntot_import
+        if(cmp_tbl%irev_import(i) .ne. ref_tbl%irev_import(i))        &
+     &     write(*,*) 'irev_import is wrong', my_rank, i
+      end do
+!
+      if(cmp_tbl%nrank_export .ne. ref_tbl%nrank_export)              &
+     &     write(*,*) 'nrank_export is wrong', my_rank
+      if(cmp_tbl%ntot_export .ne. ref_tbl%ntot_export)                &
+     &     write(*,*) 'ntot_export is wrong', my_rank
+      do i = 1, cmp_tbl%nrank_export
+        if(cmp_tbl%irank_export(i) .ne. ref_tbl%irank_export(i))      &
+     &     write(*,*) 'irank_export is wrong', my_rank
+      end do
+      do i = 0, cmp_tbl%nrank_export
+        if(cmp_tbl%istack_export(i) .ne. ref_tbl%istack_export(i))    &
+     &     write(*,*) 'istack_export is wrong', my_rank, i
+      end do
+!
+      do i = 1, cmp_tbl%ntot_export
+        if(cmp_tbl%item_export(i) .ne. ref_tbl%item_export(i))       &
+     &     write(*,*) 'item_export is wrong', my_rank, i
+      end do
+!
+      end subroutine compare_calypso_comm_tbls
+!
+!------------------------------------------------------------------
 !
       end module check_data_for_repartition

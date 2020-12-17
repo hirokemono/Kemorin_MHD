@@ -26,13 +26,13 @@
 !
       use t_calypso_comm_table
       use t_interpolate_table
-      use t_control_param_vol_grping
+      use t_control_param_repartition
 !
       use m_work_time
 !
       implicit none
 !
-      type(volume_partioning_param), save ::  part_param1
+      type(vol_partion_prog_param), save ::  part_prog_p1
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
 !
@@ -121,11 +121,11 @@
 !
       call read_control_new_partition(part_tctl1)
 !
-      call s_set_ctl_params_4_test_mesh(part_tctl1, part_param1)
+      call set_control_param_repartition(part_tctl1, part_prog_p1)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(part_param1%mesh_file_IO, nprocs, fem_T)
+      call mpi_input_mesh(part_prog_p1%mesh_file, nprocs, fem_T)
 !
 !  -------------------------------
 !
@@ -155,11 +155,12 @@
       call set_belonged_ele_and_next_nod                                &
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
-      call s_mesh_repartition_by_volume(fem_T, ele_comm,                &
-     &    next_tbl_T%neib_nod, part_param1, new_fem, org_to_new_tbl)
+      call s_mesh_repartition_by_volume                                 &
+     &   (fem_T, ele_comm, next_tbl_T%neib_nod,                         &
+     &    part_prog_p1%part_param, new_fem, org_to_new_tbl)
 !
 !       Output new mesh file
-      call sel_mpi_write_mesh_file(part_param1%new_mesh_file_IO,        &
+      call sel_mpi_write_mesh_file(part_prog_p1%new_mesh_file,          &
      &                             new_fem%mesh, new_fem%group)
       call calypso_MPI_barrier
 !
@@ -167,8 +168,8 @@
       call copy_repart_tbl_to_itp_table                                 &
      &   (fem_T%mesh, next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
 !
-      call sel_mpi_write_interpolate_table                              &
-     &    (my_rank, part_param1%transfer_iable_IO, itp_tbl_IO)
+      call sel_mpi_write_interpolate_table(my_rank,                     &
+     &    part_prog_p1%part_param%trans_tbl_file, itp_tbl_IO)
       call calypso_MPI_barrier
 !
 !
@@ -180,6 +181,7 @@
 !
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
+      use check_data_for_repartition
 !
       type(calypso_comm_table) :: part_tbl_2
       type(interpolate_table) :: itp_tbl_IO2
@@ -189,66 +191,15 @@
 !
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_param1%transfer_iable_IO, itp_tbl_IO2, ierr)
+     &    part_prog_p1%part_param%trans_tbl_file, itp_tbl_IO2, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
       call calypso_MPI_barrier
 !
-!
       if(my_rank .eq. 0) write(*,*) 'check table reading...'
-      if(part_tbl_2%iflag_self_copy.ne.org_to_new_tbl%iflag_self_copy)  &
-     &     write(*,*) 'iflag_self_copy is wrong', my_rank
-      if(part_tbl_2%nrank_import .ne. org_to_new_tbl%nrank_import)      &
-     &     write(*,*) 'nrank_import is wrong', my_rank
-      if(part_tbl_2%ntot_import .ne. org_to_new_tbl%ntot_import)        &
-     &     write(*,*) 'ntot_import is wrong', my_rank
-!
-      do i = 1, part_tbl_2%nrank_import
-        if(part_tbl_2%irank_import(i)                                   &
-     &        .ne.org_to_new_tbl%irank_import(i))                       &
-     &     write(*,*) 'irank_import is wrong', my_rank, i
-      end do
-      go to 101
-      do i = 0, part_tbl_2%nrank_import
-        if(part_tbl_2%istack_import(i)                                  &
-     &        .ne.org_to_new_tbl%istack_import(i))                      &
-     &     write(*,*) 'istack_import is wrong', my_rank, i
-      end do
-      do i = 1, part_tbl_2%ntot_import
-        if(part_tbl_2%item_import(i)                                    &
-     &        .ne. org_to_new_tbl%item_import(i))                       &
-     &     write(*,*) 'item_import is wrong', my_rank, i
-      end do
-      do i = 1, part_tbl_2%ntot_import
-        if(part_tbl_2%irev_import(i)                                    &
-     &        .ne. org_to_new_tbl%irev_import(i))                       &
-     &     write(*,*) 'irev_import is wrong', my_rank, i
-      end do
-!
-      if(part_tbl_2%nrank_export .ne. org_to_new_tbl%nrank_export)      &
-     &     write(*,*) 'nrank_export is wrong', my_rank
-      if(part_tbl_2%ntot_export .ne. org_to_new_tbl%ntot_export)        &
-     &     write(*,*) 'ntot_export is wrong', my_rank
-      do i = 1, part_tbl_2%nrank_export
-        if(part_tbl_2%irank_export(i)                                   &
-     &        .ne. org_to_new_tbl%irank_export(i))                      &
-     &     write(*,*) 'irank_export is wrong', my_rank
-      end do
-      do i = 0, part_tbl_2%nrank_export
-        if(part_tbl_2%istack_export(i)                                  &
-     &        .ne. org_to_new_tbl%istack_export(i))                     &
-     &     write(*,*) 'istack_export is wrong', my_rank, i
-      end do
-!
-      do i = 1, part_tbl_2%ntot_export
-        if(part_tbl_2%item_export(i)                                    &
-     &        .ne. org_to_new_tbl%item_export(i))                       &
-     &     write(*,*) 'item_export is wrong', my_rank, i
-      end do
-!
- 101  continue
+      call compare_calypso_comm_tbls(org_to_new_tbl, part_tbl_2)
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !

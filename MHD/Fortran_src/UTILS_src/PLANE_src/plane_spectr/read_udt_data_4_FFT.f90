@@ -105,7 +105,7 @@
       type(ctl_array_c3), intent(in) :: field_ctl
       type(plane_spectr_by_ispack), intent(inout) :: plane_fft_wk
 !
-      integer (kind = kint) :: i, j, ii, jj, icomp
+      integer (kind = kint) :: ii
 !
 !
       call count_fields_4_FFT(field_ctl, plane_fft_wk%num_fft)
@@ -135,7 +135,7 @@
       type(ctl_array_c3), intent(in) :: field_ctl
       integer(kind = kint), intent(inout) :: num_fft
 !
-      integer (kind = kint) :: i, j, ii, jj, icomp
+      integer (kind = kint) :: i, j, ii
 !
 !
       num_fft = 0

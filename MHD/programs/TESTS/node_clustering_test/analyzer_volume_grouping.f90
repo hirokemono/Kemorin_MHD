@@ -42,7 +42,7 @@
       use m_array_for_send_recv
       use m_default_file_prefix
       use t_ctl_file_volume_grouping
-      use t_control_param_vol_grping
+      use t_control_param_repartition
       use t_1d_repartitioning_work
       use t_repartition_by_volume
       use set_istack_4_domain_block
@@ -78,7 +78,7 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-      type(volume_partioning_param) ::  T_meshes
+      type(vol_partion_prog_param) ::  part_prog_p1
 !
       type(next_nod_ele_table) :: next_tbl_T
 !
@@ -104,11 +104,11 @@
 !
       call read_control_new_partition(part_tctl1)
 !
-      call s_set_ctl_params_4_test_mesh(part_tctl1, T_meshes)
+      call set_control_param_repartition(part_tctl1, part_prog_p1)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(T_meshes%mesh_file_IO, nprocs, fem_T)
+      call mpi_input_mesh(part_prog_p1%mesh_file, nprocs, fem_T)
 !
 !  -------------------------------
 !
@@ -136,20 +136,16 @@
      &   (fem_T%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
 !       Re-partitioning
-      call grouping_by_volume(fem_T%mesh, T_meshes, part_grp)
-!
-!       Re-partitioning for external node
-!      call const_external_grp_4_new_part                               &
-!     &   (fem_T%mesh%node, next_tbl_T%neib_nod, T_meshes,              &
-!     &    part_grp, ext_grp)
+      call grouping_by_volume                                           &
+     &   (fem_T%mesh, part_prog_p1%part_param, part_grp)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
 !      call s_append_group_data(ext_grp, fem_T%group%nod_grp)
 !
 !       Output appended mesh
-      call mpi_output_mesh(T_meshes%new_mesh_file_IO,                   &
-     &    fem_T%mesh, fem_T%group)
+      call mpi_output_mesh(part_prog_p1%new_mesh_file,                  &
+     &                     fem_T%mesh, fem_T%group)
 !
       end subroutine initialize_volume_grouping
 !
