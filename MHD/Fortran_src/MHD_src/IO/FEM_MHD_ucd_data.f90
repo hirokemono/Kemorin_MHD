@@ -65,7 +65,6 @@
       if(ucd_param%iflag_format .lt. 0) return
       if(ucd_step%increment .eq. 0) return
 !
-      call link_num_field_2_ucd(nod_fld, ucd)
       call link_local_org_mesh_4_ucd                                    &
      &   (mesh%node, mesh%ele, MHD_mesh, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)
@@ -123,6 +122,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
+      ucd%nnod = node%numnod
       call const_udt_local_nodes(node%numnod, node%xx, ucd)
       call const_udt_local_connect                                      &
      &   (node%internal_node, ele%numele, ele%nnod_4_ele,               &

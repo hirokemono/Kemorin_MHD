@@ -71,7 +71,7 @@
       use set_control_platform_data
       use set_ctl_parallel_platform
       use set_num_domain_each_dir
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       type(new_patition_test_control), intent(inout) :: part_tctl
       type(volume_partioning_param), intent(inout) :: part_param
@@ -98,10 +98,10 @@
       if(iflag_debug.gt.0) write(*,*)                                   &
      &   'mesh_file_head:  ', trim(part_param%mesh_file_IO%file_prefix)
 !
-      call set_ucd_file_define(part_tctl%plt,                           &
-     &                         part_param%org_ucd_file_IO)
-      call set_ucd_file_define(part_tctl%new_plt,                       &
-     &                         part_param%new_ucd_file_IO)
+      call set_merged_ucd_file_define(part_tctl%plt,                    &
+     &                                part_param%org_ucd_file_IO)
+      call set_merged_ucd_file_define(part_tctl%new_plt,                &
+     &                                part_param%new_ucd_file_IO)
 !
       part_param%num_FEM_sleeve = 1
       if(part_tctl%new_part_ctl%sleeve_level_ctl%iflag .gt. 0) then

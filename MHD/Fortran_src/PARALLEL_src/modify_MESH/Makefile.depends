@@ -24,6 +24,8 @@ extend_group_table.o: $(MODIFY_PARA_MESHDIR)/extend_group_table.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 external_group_4_new_part.o: $(MODIFY_PARA_MESHDIR)/external_group_4_new_part.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_control_param_vol_grping.o quicksort.o set_repartition_group_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
+field_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/field_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_phys_data.o transfer_to_new_partition.o
+	$(F90) -c $(F90OPTFLAGS) $<
 find_extended_comm_table.o: $(MODIFY_PARA_MESHDIR)/find_extended_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 find_extended_node_and_ele.o: $(MODIFY_PARA_MESHDIR)/find_extended_node_and_ele.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o
@@ -56,7 +58,7 @@ sort_for_repartition.o: $(MODIFY_PARA_MESHDIR)/sort_for_repartition.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_1d_repartitioning_work.o: $(MODIFY_PARA_MESHDIR)/t_1d_repartitioning_work.f90 m_precision.o t_control_param_vol_grping.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o t_ctl_data_volume_grouping.o m_file_format_switch.o set_control_platform_item.o set_control_platform_data.o set_ctl_parallel_platform.o set_num_domain_each_dir.o ucd_IO_select.o
+t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_error_IDs.o m_machine_parameter.o t_ctl_data_volume_grouping.o m_file_format_switch.o set_control_platform_item.o set_control_platform_data.o set_ctl_parallel_platform.o set_num_domain_each_dir.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_mesh_test.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_mesh_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -69,6 +71,10 @@ t_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/t_repartition_by_volume.f90 m_
 t_sorting_for_repartition.o: $(MODIFY_PARA_MESHDIR)/t_sorting_for_repartition.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_repart_double_numberings.o sort_for_repartition.o calypso_SR_type.o select_copy_from_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o
+	$(F90) -c $(F90OPTFLAGS) $<
+transfer_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/transfer_to_new_partition.f90 m_precision.o m_phys_constants.o calypso_mpi.o t_comm_table.o t_calypso_comm_table.o m_array_for_send_recv.o calypso_SR_type.o solver_SR_type.o
+	$(F90) -c $(F90OPTFLAGS) $<
+udt_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/udt_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o transfer_to_new_partition.o set_ucd_data_to_type.o parallel_ucd_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 xyz_block_id_by_nod_vol.o: $(MODIFY_PARA_MESHDIR)/xyz_block_id_by_nod_vol.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o calypso_mpi_real.o int_volume_of_single_domain.o solver_SR_type.o set_istack_4_domain_block.o
 	$(F90) -c $(F90OPTFLAGS) $<

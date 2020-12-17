@@ -161,7 +161,6 @@
       type(ucd_data), save :: ucd_m
 !
 !
-      call link_num_field_2_ucd(new_fld, ucd_m)
       call link_local_mesh_2_ucd(new_mesh%node, new_mesh%ele, ucd_m)
       call link_field_data_to_ucd(new_fld, ucd_m)
 !

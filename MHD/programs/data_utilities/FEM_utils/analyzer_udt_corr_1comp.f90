@@ -145,9 +145,6 @@
 !
       integer(kind = kint) :: istep, istep_ucd
 !
-!
-      call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
-!
 !     ---------------------
 !
       ntot_correlate =  field_FUTIL%ntot_phys

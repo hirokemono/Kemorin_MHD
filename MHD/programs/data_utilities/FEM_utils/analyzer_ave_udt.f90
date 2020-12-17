@@ -71,8 +71,6 @@
       integer(kind = kint) :: istep, icou, istep_ucd
 !
 !
-      call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
-!
       istep_ucd = IO_step_exc_zero_inc(time_U%init_d%i_time_step,       &
      &                                 time_U%ucd_step)
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &

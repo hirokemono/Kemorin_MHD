@@ -118,7 +118,6 @@
       call init_nod_send_recv(mesh)
       call fields_send_recv(mesh%nod_comm, nod_fld)
 !
-      call link_num_field_2_ucd(nod_fld, ucd)
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)
 !

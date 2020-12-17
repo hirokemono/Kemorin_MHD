@@ -23,6 +23,7 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
+      use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_time_data
       use t_VIZ_only_step_parameter
@@ -32,11 +33,11 @@
 !
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
+      type(calypso_comm_table), save :: org_to_new_tbl
 !
-      type(volume_partioning_param), save ::  part_param
-!
+      type(volume_partioning_param), save ::  part_param1
 !>        Structure for new time stepping
-      type(time_step_param_w_viz), save :: t_viz_param1
+      type(time_step_param_w_viz), save :: t_VIZ1
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,10 +58,7 @@
       use repart_in_xyz_by_volume
 !
       use t_file_IO_parameter
-      use t_mesh_data
-      use t_comm_table
       use t_read_mesh_data
-      use t_calypso_comm_table
       use t_repart_double_numberings
       use t_interpolate_table
 !
@@ -99,7 +97,6 @@
 !
       type(new_patition_test_control) :: part_tctl1
 !
-      type(calypso_comm_table) :: org_to_new_tbl
       type(interpolate_table) :: itp_tbl_IO
 !
       integer(kind = kint) :: irank_read
@@ -122,15 +119,16 @@
 !
       call read_control_new_partition(part_tctl1)
 !
-      call s_set_ctl_params_4_test_mesh(part_tctl1, part_param)
+      call s_set_ctl_params_4_test_mesh(part_tctl1, part_param1)
+      
       call set_fixed_t_step_params_w_viz                                &
-     &   (part_tctl1%t_viz_ctl, t_viz_param1, ierr, e_message)
-      call copy_delta_t(t_viz_param1%init_d, t_viz_param1%time_d)
+     &   (part_tctl1%t_viz_ctl, t_VIZ1, ierr, e_message)
+      call copy_delta_t(t_VIZ1%init_d, t_VIZ1%time_d)
 !
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(part_param%mesh_file_IO, nprocs, fem_T)
+      call mpi_input_mesh(part_param1%mesh_file_IO, nprocs, fem_T)
 !
 !  -------------------------------
 !
@@ -139,14 +137,14 @@
 !
 !  -------------------------------
 !
-!       Output appended mesh
+!       Read target mesh
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new'
-      call mpi_input_mesh(part_param%new_mesh_file_IO, nprocs, new_fem)
-!
-!
+      call mpi_input_mesh                                               &
+     &   (part_param1%new_mesh_file_IO, nprocs, new_fem)
+      call const_global_mesh_infos(new_fem%mesh)
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_param%transfer_iable_IO, itp_tbl_IO, ierr)
+     &    part_param1%transfer_iable_IO, itp_tbl_IO, ierr)
       call calypso_MPI_barrier
 !
       irank_read = my_rank
@@ -160,34 +158,76 @@
 !
       subroutine analyze_field_to_repart
 !
+      use t_IO_step_parameter
+      use t_VIZ_step_parameter
+      use t_time_data
+      use t_ucd_data
 !
-!      call output_elapsed_times
-      call calypso_MPI_barrier
+      use parallel_ucd_IO_select
+      use set_ucd_data
+!
+      use select_copy_from_recv
+      use udt_to_new_partition
+!
+!
+      type(time_data) :: t_IO
+      type(ucd_data) ::  org_ucd, new_ucd
+!
+      integer(kind = kint) :: i_step, ist, ied, inod, nd
+      integer(kind = kint) :: istep_ucd = 0
+!
+      real(kind = kreal), allocatable :: X_org(:,:)
+      real(kind = kreal), allocatable :: X_new(:,:)
+!
+!
+      call init_udt_to_new_partition(part_param1%new_ucd_file_IO,       &
+     &                               new_fem%mesh, new_ucd)
+!
+      ist = t_VIZ1%init_d%i_time_step
+      ied = t_VIZ1%finish_d%i_end_step
+      do i_step = ist, ied
+        if(output_IO_flag(i_step,t_VIZ1%ucd_step) .eqv. .FALSE.) cycle
+!        if(iflag_vizs_w_fix_step(i_step, t_VIZ1%viz_step)
+!     &        .eqv. .FALSE.) cycle
+!
+        istep_ucd = IO_step_exc_zero_inc(i_step, t_VIZ1%ucd_step)
+        call alloc_merged_ucd_nod_stack(nprocs, org_ucd)
+        call sel_read_alloc_para_udt_file                               &
+     &     (istep_ucd, part_param1%org_ucd_file_IO, t_IO, org_ucd)
+!
+        call udt_field_to_new_partition                                 &
+     &     (iflag_import_item, istep_ucd, part_param1%new_ucd_file_IO,  &
+     &      t_IO, new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd)
+!
+        call deallocate_ucd_phys_data(org_ucd)
+        call deallocate_ucd_phys_name(org_ucd)
+      end do
+      call finalize_udt_to_new_partition(new_ucd)
 !
       if(my_rank .eq. 0) then
         write(*,*) 'org_ucd_file_IO',                                   &
-     &            part_param%org_ucd_file_IO%iflag_format,              &
-     &            trim(part_param%org_ucd_file_IO%file_prefix)
+     &            part_param1%org_ucd_file_IO%iflag_format,             &
+     &            trim(part_param1%org_ucd_file_IO%file_prefix)
         write(*,*) 'new_ucd_file_IO',                                   &
-     &            part_param%new_ucd_file_IO%iflag_format,              &
-     &            trim(part_param%new_ucd_file_IO%file_prefix)
-        write(*,*) 't_viz_param1%init_d%i_time_step',         &
-     &            t_viz_param1%init_d%i_time_step
-        write(*,*) 't_viz_param1%finish_d%i_end_step',        &
-     &            t_viz_param1%finish_d%i_end_step
-        write(*,*) 't_viz_param1%ucd_step%increment',         &
-     &            t_viz_param1%ucd_step%increment
+     &            part_param1%new_ucd_file_IO%iflag_format,             &
+     &            trim(part_param1%new_ucd_file_IO%file_prefix)
+        write(*,*) 't_VIZ1%init_d%i_time_step',         &
+     &            t_VIZ1%init_d%i_time_step
+        write(*,*) 't_VIZ1%finish_d%i_end_step',        &
+     &            t_VIZ1%finish_d%i_end_step
+        write(*,*) 't_VIZ1%ucd_step%increment',         &
+     &            t_VIZ1%ucd_step%increment
 !
-        write(*,*) 't_viz_param1%viz_step%PSF_t',             &
-     &            t_viz_param1%viz_step%PSF_t
-        write(*,*) 't_viz_param1%viz_step%ISO_t',             &
-     &            t_viz_param1%viz_step%ISO_t
-        write(*,*) 't_viz_param1%viz_step%PVR_t',             &
-     &            t_viz_param1%viz_step%PVR_t
-        write(*,*) 't_viz_param1%viz_step%FLINE_t',           &
-     &            t_viz_param1%viz_step%FLINE_t
-        write(*,*) 't_viz_param1%viz_step%LIC_t',             &
-     &            t_viz_param1%viz_step%LIC_t
+        write(*,*) 't_VIZ1%viz_step%PSF_t',             &
+     &            t_VIZ1%viz_step%PSF_t
+        write(*,*) 't_VIZ1%viz_step%ISO_t',             &
+     &            t_VIZ1%viz_step%ISO_t
+        write(*,*) 't_VIZ1%viz_step%PVR_t',             &
+     &            t_VIZ1%viz_step%PVR_t
+        write(*,*) 't_VIZ1%viz_step%FLINE_t',           &
+     &            t_VIZ1%viz_step%FLINE_t
+        write(*,*) 't_VIZ1%viz_step%LIC_t',             &
+     &            t_VIZ1%viz_step%LIC_t
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'

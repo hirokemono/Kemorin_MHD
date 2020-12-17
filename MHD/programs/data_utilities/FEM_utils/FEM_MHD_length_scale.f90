@@ -11,7 +11,7 @@
 !!      subroutine deallocate_work_4_lscale
 !!
 !!      subroutine const_MHD_length_scales                              &
-!!     &         (node, iphys, nod_fld, istep_ucd, t_IO, ucd)
+!!     &         (node, iphys, nod_fld, istep_ucd, t_IO)
 !!      subroutine find_field_address_4_lscale(nod_fld, iphys)
 !!@endverbatim
 !!
@@ -64,7 +64,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_MHD_length_scales                                &
-     &         (node, iphys, nod_fld, istep_ucd, t_IO, ucd)
+     &         (node, iphys, nod_fld, istep_ucd, t_IO)
 !
       use calypso_mpi
       use t_time_data
@@ -78,9 +78,10 @@
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(time_data), intent(inout) :: t_IO
-      type(ucd_data), intent(inout) :: ucd
+      type(time_data), intent(in) :: t_IO
       integer(kind = kint), intent(in) :: istep_ucd
+!
+      type(ucd_data) :: ucd
       integer(kind = kint) :: icou
 !
 !

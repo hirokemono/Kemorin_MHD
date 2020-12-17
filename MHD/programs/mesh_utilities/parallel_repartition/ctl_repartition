@@ -43,5 +43,6 @@ begin repartition_test
     i_step_init_ctl           0
     i_step_number_ctl      2000
 !
+    i_step_field_ctl            1
   end time_step_ctl
 end  repartition_test

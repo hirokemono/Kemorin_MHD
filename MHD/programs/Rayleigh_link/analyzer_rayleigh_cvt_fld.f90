@@ -195,7 +195,6 @@
       new_fld_file%iflag_format = iflag_fld
       new_fld_file%file_prefix =  'field_12/tako'
 !
-      call link_num_field_2_ucd(new_fld, ucd_m)
       call link_local_mesh_2_ucd                                        &
      &   (geofem%mesh%node, geofem%mesh%ele, ucd_m)
       call link_field_data_to_ucd(new_fld, ucd_m)

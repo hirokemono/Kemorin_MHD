@@ -92,7 +92,7 @@
 !
         call const_MHD_length_scales                                    &
      &     (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,          &
-     &      istep_ucd, time_IO_FUTIL, ucd_FUTIL)
+     &      istep_ucd, time_IO_FUTIL)
       end do
 !
       call deallocate_work_4_lscale
