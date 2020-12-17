@@ -51,7 +51,7 @@
       use m_array_for_send_recv
       use m_default_file_prefix
       use m_file_format_switch
-      use t_ctl_data_volume_grouping
+      use t_ctl_file_volume_grouping
       use t_1d_repartitioning_work
       use t_repartition_by_volume
       use set_istack_4_domain_block

@@ -41,7 +41,7 @@
 !
       use m_array_for_send_recv
       use m_default_file_prefix
-      use t_ctl_data_volume_grouping
+      use t_ctl_file_volume_grouping
       use t_control_param_vol_grping
       use t_1d_repartitioning_work
       use t_repartition_by_volume

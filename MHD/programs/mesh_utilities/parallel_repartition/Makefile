@@ -9,11 +9,15 @@ TARGET_FIELD_TO_NEWPART =   field_to_new_partition
 
 MOD_VOLUME_REPARTITION = \
 main_repart_by_volume.o \
-analyzer_repart_by_volume.o
+analyzer_repart_by_volume.o \
+\
+t_ctl_file_volume_grouping.o
 
 MOD_FIELD_TO_NEWPART = \
 main_field_to_repartition.o \
-analyzer_field_to_repart.o
+analyzer_field_to_repart.o \
+\
+t_ctl_file_volume_grouping.o
 
 SOURCES = $(shell ls *.f90)
 
