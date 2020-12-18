@@ -71,10 +71,15 @@
       call set_control_smp_def(my_rank, part_tctl%plt)
 !
       call check_control_num_domains(part_tctl%new_plt)
-      call set_parallel_file_ctl_params(default_newmesh_head,           &
-     &    part_tctl%new_plt%mesh_file_prefix,                           &
-     &    part_tctl%new_plt%mesh_file_fmt_ctl,                          &
-     &    part_prog_p%new_mesh_file)
+!
+      if(part_tctl%new_plt%mesh_file_prefix%iflag .le. 0) then
+        file_params%iflag_format = id_no_file
+      else
+        call set_parallel_file_ctl_params(default_newmesh_head,         &
+     &      part_tctl%new_plt%mesh_file_prefix,                         &
+     &      part_tctl%new_plt%mesh_file_fmt_ctl,                        &
+     &      part_prog_p%new_mesh_file)
+      end if
 !
       call set_FEM_surface_output_flag                                  &
      &   (part_tctl%Fmesh_ctl, part_prog_p%iflag_output_SURF)

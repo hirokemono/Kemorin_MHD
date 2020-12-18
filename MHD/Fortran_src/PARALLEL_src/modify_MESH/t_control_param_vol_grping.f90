@@ -51,6 +51,7 @@
       subroutine set_ctl_param_vol_grping                               &
      &         (default_newmesh_head, new_part_ctl, part_param)
 !
+      use m_file_format_labels
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
@@ -60,9 +61,14 @@
       type(volume_partioning_param), intent(inout) :: part_param
 !
 !
-      call set_parallel_file_ctl_params(default_newmesh_head,           &
-     &    new_part_ctl%repart_table_head_ctl,                           &
-     &    new_part_ctl%repart_table_fmt_ctl, part_param%trans_tbl_file)
+      if(new_part_ctl%repart_table_head_ctl%iflag .le. 0) then
+        file_params%iflag_format = id_no_file
+      else
+        call set_parallel_file_ctl_params(default_newmesh_head,         &
+     &      new_part_ctl%repart_table_head_ctl,                         &
+     &      new_part_ctl%repart_table_fmt_ctl,                          &
+     &      part_param%trans_tbl_file)
+      end if
 !
       part_param%num_FEM_sleeve = 1
       if(new_part_ctl%sleeve_level_ctl%iflag .gt. 0) then
