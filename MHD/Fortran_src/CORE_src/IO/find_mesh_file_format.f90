@@ -44,16 +44,16 @@
 !
 !  Detect file format
       mesh_file%iflag_format = id_gzip_txt_file_fmt + iflag_single
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = id_ascii_file_fmt + iflag_single
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = id_binary_file_fmt + iflag_single
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = id_gzip_bin_file_fmt + iflag_single
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = -1
 !
@@ -72,16 +72,16 @@
 !
 !  Detect file format
       mesh_file%iflag_format = id_gzip_txt_file_fmt
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = id_ascii_file_fmt
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = id_binary_file_fmt
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = id_gzip_bin_file_fmt
-      if(check_exist_mesh(mesh_file, 0)) return
+      if(check_exist_mesh(0, mesh_file)) return
 !
       mesh_file%iflag_format = -1
 !

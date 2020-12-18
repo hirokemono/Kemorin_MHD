@@ -46,7 +46,7 @@
 !
       integer :: id_rank
       integer(kind=kint) :: ip, ierr, inod
-      integer(kind=kint) :: np, jst, jed
+      integer(kind=kint) :: jst, jed
 
       type(ctl_data_4_cub_kemo), save :: cubmesh_c1
       type(ctl_param_plane_mesh), save :: cube_p1

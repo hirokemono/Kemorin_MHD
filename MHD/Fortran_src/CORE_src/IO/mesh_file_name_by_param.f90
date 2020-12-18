@@ -7,16 +7,16 @@
 !>@brief  Choose mesh file to read
 !!
 !!@verbatim
-!!      logical function check_exist_mesh(mesh_file, id_rank)
-!!      logical function check_exist_ele_mesh(mesh_file, id_rank)
-!!      logical function check_exist_surf_mesh(mesh_file, id_rank)
-!!      logical function check_exist_edge_mesh(mesh_file, id_rank)
+!!      logical function check_exist_mesh(id_rank, mesh_file)
+!!      logical function check_exist_ele_mesh(id_rank, mesh_file)
+!!      logical function check_exist_surf_mesh(id_rank, mesh_file)
+!!      logical function check_exist_edge_mesh(id_rank, mesh_file)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!
-!!      logical function check_writable_mesh(mesh_file, id_rank)
-!!      logical function check_writable_ele_mesh(mesh_file, id_rank)
-!!      logical function check_writable_surf_mesh(mesh_file, id_rank)
-!!      logical function check_writable_edge_mesh(mesh_file, id_rank)
+!!      logical function check_writable_mesh(id_rank, mesh_file)
+!!      logical function check_writable_ele_mesh(id_rank, mesh_file)
+!!      logical function check_writable_surf_mesh(id_rank, mesh_file)
+!!      logical function check_writable_edge_mesh(id_rank, mesh_file)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!@endverbatim
 !
@@ -35,7 +35,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_exist_mesh(mesh_file, id_rank)
+      logical function check_exist_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -56,7 +56,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_exist_ele_mesh(mesh_file, id_rank)
+      logical function check_exist_ele_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -77,7 +77,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_exist_surf_mesh(mesh_file, id_rank)
+      logical function check_exist_surf_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -98,7 +98,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_exist_edge_mesh(mesh_file, id_rank)
+      logical function check_exist_edge_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -120,7 +120,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      logical function check_writable_mesh(mesh_file, id_rank)
+      logical function check_writable_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -141,7 +141,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_writable_ele_mesh(mesh_file, id_rank)
+      logical function check_writable_ele_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -163,7 +163,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_writable_surf_mesh(mesh_file, id_rank)
+      logical function check_writable_surf_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files
@@ -185,7 +185,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      logical function check_writable_edge_mesh(mesh_file, id_rank)
+      logical function check_writable_edge_mesh(id_rank, mesh_file)
 !
       use set_mesh_file_names
       use delete_data_files

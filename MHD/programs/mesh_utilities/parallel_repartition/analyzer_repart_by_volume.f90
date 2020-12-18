@@ -151,7 +151,7 @@
      &   (fem_T, ele_comm, next_tbl_T%neib_nod,                         &
      &    part_p1%part_param, new_fem, org_to_new_tbl)
 !
-      if(part_p1%part_param%new_mesh_file%iflag_format                  &
+      if(part_p1%new_mesh_file%iflag_format                             &
      &     .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*) 'Set repartition mesh output'
         return

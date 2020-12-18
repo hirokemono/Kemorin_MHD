@@ -123,8 +123,6 @@
 !
       type(interpolate_table), intent(inout) :: itp_table
 !
-      type(field_IO_params) :: itp_file_IO
-!
 !
       iflag_debug = 1
       if(iflag_debug .gt. 0) write(*,*) 'set_itp_course_to_fine_origin'
@@ -199,7 +197,6 @@
 !
       type(work_merge_refine_itp), intent(inout) :: ref_itp_wk
 !
-      type(field_IO_params) :: itp_file_IO
       type(interpolate_table) :: itp_r
 !
 !

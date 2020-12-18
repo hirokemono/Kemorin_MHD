@@ -103,7 +103,7 @@
      &                             sph, comms_sph, sph_grps)
 !
 !  --  load geofem mesh data
-      if(check_exist_mesh(mesh_file, my_rank)) then
+      if(check_exist_mesh(my_rank, mesh_file)) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
         call mpi_input_mesh(mesh_file, nprocs, geofem)
         call set_fem_center_mode_4_SPH                                  &
