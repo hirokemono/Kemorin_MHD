@@ -143,7 +143,7 @@
 !
       mesh%ele%numele = 0
       mesh%ele%nnod_4_ele = num_t_linear
-      call allocate_ele_connect_type(mesh%ele)
+      call alloc_ele_connect(mesh%ele)
 !
 !      write(*,*) 'empty_comm_table'
       call empty_comm_table(mesh%nod_comm)

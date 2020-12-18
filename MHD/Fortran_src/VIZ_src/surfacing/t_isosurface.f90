@@ -113,8 +113,8 @@
      &    iso%iso_param, iso%iso_search)
 !
       do i_iso = 1, iso%num_iso
-        call allocate_node_param_smp_type(iso%iso_mesh(i_iso)%node)
-        call allocate_ele_param_smp_type(iso%iso_mesh(i_iso)%patch)
+        call alloc_node_param_smp(iso%iso_mesh(i_iso)%node)
+        call alloc_ele_param_smp(iso%iso_mesh(i_iso)%patch)
 !
         call alloc_ref_field_4_psf                                      &
      &     (fem%mesh%node, iso%iso_list(i_iso))

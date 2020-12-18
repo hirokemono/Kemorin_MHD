@@ -260,9 +260,9 @@
       geom%ele%numele = 0
       call alloc_ele_geometry(geom%ele)
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_node_param_smp_type'
-      call allocate_node_param_smp_type(geom%node)
-      call allocate_ele_param_smp_type(geom%ele)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_node_param_smp'
+      call alloc_node_param_smp(geom%node)
+      call alloc_ele_param_smp(geom%ele)
 !
       end subroutine empty_nod_and_ele_type_infos
 !

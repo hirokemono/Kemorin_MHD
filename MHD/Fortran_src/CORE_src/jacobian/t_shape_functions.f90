@@ -5,7 +5,11 @@
 !!      subroutine alloc_2d_gauss_point_id(g_FEM, spf_2d)
 !!      subroutine alloc_1d_gauss_point_id(g_FEM, spf_1d)
 !!      subroutine alloc_integrate_parameters
+!!
 !!      subroutine dealloc_gauss_point_id
+!!      subroutine dealloc_3d_gauss_point_id(spf_3d)
+!!      subroutine dealloc_2d_gauss_point_id(spf_2d)
+!!      subroutine dealloc_1d_gauss_point_id(spf_1d)
 !!
 !!      subroutine alloc_vol_shape_func(nnod_4_ele, g_FEM, spf_3d)
 !!      subroutine alloc_shape_func_infty                               &

@@ -104,12 +104,12 @@
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
       call set_mesh_data_from_type(newmesh, newgroup, mesh, group)
 !
-      call deallocate_sph_node_geometry(newmesh%node)
+      call dealloc_sph_node_geometry(newmesh%node)
       call dealloc_comm_table(new_ele_comm)
       call dealloc_numele_stack(newmesh%ele)
-      call deallocate_ele_geometry_type(newmesh%ele)
-      call deallocate_ele_param_smp_type(newmesh%ele)
-      call deallocate_node_param_smp_type(newmesh%node)
+      call dealloc_ele_geometry(newmesh%ele)
+      call dealloc_ele_param_smp(newmesh%ele)
+      call dealloc_node_param_smp(newmesh%node)
 !
       end subroutine para_sleeve_extension
 !

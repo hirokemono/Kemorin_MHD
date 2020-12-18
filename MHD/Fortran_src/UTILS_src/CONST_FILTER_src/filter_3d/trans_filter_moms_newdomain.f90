@@ -284,7 +284,7 @@
       end if
 !
       call dealloc_ref_1d_mom_type(FEM_elen_t%filter_conf)
-      call deallocate_ele_connect_type(newmesh%ele)
+      call dealloc_ele_connect(newmesh%ele)
 !
       end subroutine trans_filter_moms_each_domain
 !
@@ -369,7 +369,7 @@
           end if
         end if
 !
-        call deallocate_ele_connect_type(org_ele)
+        call dealloc_ele_connect(org_ele)
       end do
 !
       end subroutine const_filter_moms_newdomain

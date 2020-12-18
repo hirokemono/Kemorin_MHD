@@ -136,7 +136,7 @@
 !
       new_ele%numele =     new_numele
       new_ele%nnod_4_ele = ele%nnod_4_ele
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
 !$omp parallel workshare
       new_ele%elmtyp(1:new_ele%numele) = ele%elmtyp(1)

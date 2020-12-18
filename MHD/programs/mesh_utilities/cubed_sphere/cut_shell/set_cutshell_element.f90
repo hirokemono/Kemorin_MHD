@@ -31,7 +31,7 @@
 !
       call count_new_connect(org_ele, new_ele)
 !
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
       call set_new_connect(org_ele, new_ele)
 !

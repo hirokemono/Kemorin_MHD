@@ -89,7 +89,7 @@
      &    group_l%tbls_ele_grp, group_l%tbls_surf_grp)
 !
       call count_ele_4_smp_mesh_type(mesh_l%ele)
-      call count_surf_size_smp_type(mesh_l%surf)
+      call count_surf_size_smp(mesh_l%surf)
       call count_edge_size_smp_type(mesh_l%edge)
 !
       call set_internal_list_lin_20                                     &
@@ -147,7 +147,7 @@
      &    group_l%tbls_ele_grp, group_l%tbls_surf_grp)
 !
       call count_size_4_smp_mesh_type(mesh_l%node, mesh_l%ele)
-      call count_surf_size_smp_type(mesh_l%surf)
+      call count_surf_size_smp(mesh_l%surf)
       call count_edge_size_smp_type(mesh_l%edge)
 !
       call set_internal_list_lin_27                                     &

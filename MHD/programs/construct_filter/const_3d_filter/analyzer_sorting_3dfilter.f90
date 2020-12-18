@@ -120,7 +120,7 @@
         call dealloc_3d_filter_func(fil_gen1%fil_sorted)
         call dealloc_3d_filter_weight(fil_gen1%fil_sorted)
         call dealloc_inod_filter_weights(fil_gen1%fil_sorted)
-        call deallocate_ele_connect_type(mesh_filter%ele)
+        call dealloc_ele_connect(mesh_filter%ele)
 !
 !  ---------------------------------------------------
 !       output filter moment

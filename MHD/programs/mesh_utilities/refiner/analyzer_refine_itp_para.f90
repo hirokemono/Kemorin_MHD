@@ -143,13 +143,13 @@
 !
 !
       do ip = 1, num_pe
-        call deallocate_ele_geometry_type(para_mesh(ip)%mesh%ele)
-        call deallocate_ele_param_smp_type(para_mesh(ip)%mesh%ele)
-        call deallocate_node_param_smp_type(para_mesh(ip)%mesh%node)
+        call dealloc_ele_geometry(para_mesh(ip)%mesh%ele)
+        call dealloc_ele_param_smp(para_mesh(ip)%mesh%ele)
+        call dealloc_node_param_smp(para_mesh(ip)%mesh%node)
 !
         call dealloc_groups_data(para_mesh(ip)%group)
 !
-        call deallocate_ele_connect_type(para_mesh(ip)%mesh%ele)
+        call dealloc_ele_connect(para_mesh(ip)%mesh%ele)
         call dealloc_node_geometry_w_sph(para_mesh(ip)%mesh%node)
         call dealloc_comm_table(para_mesh(ip)%mesh%nod_comm)
       end do

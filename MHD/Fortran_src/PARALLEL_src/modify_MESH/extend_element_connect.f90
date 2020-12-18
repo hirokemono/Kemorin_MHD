@@ -187,7 +187,7 @@
 !
       call count_ele_by_extend_sleeve(added_comm, ele, new_ele)
 !
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
       call set_ele_by_extend_sleeve(added_comm, recv_ebuf, ele,         &
      &    new_node, dbl_id2, new_ele)

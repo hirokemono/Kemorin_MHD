@@ -148,7 +148,7 @@
 !
       new_ele%numele =     itl_ele_part%num_4_subdomain(ip)
       new_ele%nnod_4_ele = org_ele%nnod_4_ele
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
       call set_local_element                                            &
      &   (ip, org_ele, itl_ele_part, new_ele, ele_d_grp)

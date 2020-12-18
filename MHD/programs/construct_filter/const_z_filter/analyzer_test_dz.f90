@@ -62,8 +62,8 @@
 !C===
 !
       n_int = i_int_z_filter
-      if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
-      call s_cal_jacobian_linear_1d                                     &
+      if (my_rank.eq.0) write(*,*) 'const_jacobian_linear_1d'
+      call const_jacobian_linear_1d                                     &
      &   (n_int, z_filter_mesh%node,                                    &
      &    surf_z_filter, edge_z_filter, spf_1d_z, jacs_z)
 !

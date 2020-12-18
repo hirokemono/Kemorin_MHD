@@ -119,7 +119,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'count_overlap_surf_type'
-      call count_surf_size_smp_type(surf)
+      call count_surf_size_smp(surf)
       call count_overlap_surf(node, surf)
 !
       end subroutine set_surf_connectivity

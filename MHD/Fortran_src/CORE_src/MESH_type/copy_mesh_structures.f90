@@ -193,7 +193,7 @@
       new_ele%nnod_4_ele                                                &
      &      = set_nnod_4_ele_by_eletype(new_ele%first_ele_type)
 !
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
 !$omp parallel private(k1)
       do k1 = 1, new_ele%nnod_4_ele

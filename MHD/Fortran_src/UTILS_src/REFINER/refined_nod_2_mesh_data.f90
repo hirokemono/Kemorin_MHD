@@ -114,7 +114,7 @@
         elmtyp_2 = 331
       end if
 !
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
       do iele = 1, new_ele%numele
         new_ele%iele_global(iele) = iele

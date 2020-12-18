@@ -77,7 +77,7 @@
       call dealloc_itp_table_dest(itp_table%tbl_dest)
       call dealloc_itp_num_dest(itp_table%tbl_dest)
 !
-      call deallocate_ele_connect_type(finermesh%ele)
+      call dealloc_ele_connect(finermesh%ele)
       call dealloc_node_geometry_w_sph(finermesh%node)
       call dealloc_comm_table(finermesh%nod_comm)
 !

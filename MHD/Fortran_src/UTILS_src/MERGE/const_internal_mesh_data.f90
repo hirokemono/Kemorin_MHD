@@ -107,7 +107,7 @@
       new_node%istack_internod = node%istack_internod
 !
       new_ele%nnod_4_ele = ele%nnod_4_ele
-      call allocate_ele_connect_type(new_ele)
+      call alloc_ele_connect(new_ele)
 !
       call set_internal_element_connent                                 &
      &   (ele, iele_to_org, new_ele)

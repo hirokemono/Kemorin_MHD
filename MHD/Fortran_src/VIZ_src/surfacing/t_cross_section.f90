@@ -126,8 +126,8 @@
 !
 !
       do i_psf = 1, psf%num_psf
-        call allocate_node_param_smp_type(psf%psf_mesh(i_psf)%node)
-        call allocate_ele_param_smp_type(psf%psf_mesh(i_psf)%patch)
+        call alloc_node_param_smp(psf%psf_mesh(i_psf)%node)
+        call alloc_ele_param_smp(psf%psf_mesh(i_psf)%patch)
 !
         call alloc_ref_field_4_psf(fem%mesh%node, psf%psf_list(i_psf))
       end do

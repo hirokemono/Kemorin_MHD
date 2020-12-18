@@ -1,10 +1,12 @@
-!t_jacobians.f90
-!     module t_jacobians
-!
-!      Written by H. Matsui on Dec., 2008
-!
-!>   Structure of Jacobian and difference of shape functions
-!
+!>@file   set_interpolate_file_name.f90
+!!@brief  module set_interpolate_file_name
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006 (ver 1.2)
+!!
+!>@brief  Structure of Jacobian and difference of shape functions
+!!
+!!@verbatim
 !!      subroutine dealloc_3d_linear_jac_type(jacs)
 !!      subroutine unlink_3d_linear_jac_type(jacs)
 !!        type(jacobians_type), intent(inout) :: jacs
@@ -20,6 +22,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in)  :: surf
+!!        type(edge_data), intent(in)  :: edge
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(surface_shape_function), intent(inout) :: spf_2d
@@ -29,6 +32,11 @@
 !!      subroutine dealloc_jacobians_element(ele, jacs)
 !!      subroutine dealloc_jacobians_surface(surf, jacs)
 !!      subroutine dealloc_jacobians_edge(edge, jacs)
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in)  :: surf
+!!        type(edge_data), intent(in)  :: edge
+!!        type(jacobians_type), intent(inout) :: jacs
+!!@endverbatim
 !
       module t_jacobians
 !
