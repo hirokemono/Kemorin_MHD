@@ -73,7 +73,7 @@
       call check_control_num_domains(part_tctl%new_plt)
 !
       if(part_tctl%new_plt%mesh_file_prefix%iflag .le. 0) then
-        file_params%iflag_format = id_no_file
+        part_prog_p%new_mesh_file%iflag_format = id_no_file
       else
         call set_parallel_file_ctl_params(default_newmesh_head,         &
      &      part_tctl%new_plt%mesh_file_prefix,                         &

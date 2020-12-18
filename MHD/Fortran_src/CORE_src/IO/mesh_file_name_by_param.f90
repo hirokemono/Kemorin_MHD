@@ -134,7 +134,7 @@
       file_name =  set_mesh_file_name                                   &
      &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
-      check_exist_mesh = check_file_writable(id_rank, file_name)
+      check_writable_mesh = check_file_writable(id_rank, file_name)
 !
       return
       end function check_writable_mesh
@@ -155,10 +155,11 @@
       file_name = set_ele_comm_file_name                                &
      &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
-      check_exist_ele_mesh = check_file_writable(id_rank, file_name)
+      check_writable_ele_mesh                                           &
+     &      = check_file_writable(id_rank, file_name)
 !
       return
-      end function check_exist_ele_mesh
+      end function check_writable_ele_mesh
 !
 !  ---------------------------------------------------------------------
 !
@@ -176,7 +177,8 @@
       file_name = set_surf_mesh_file_name                               &
      &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
-      check_exist_surf_mesh = check_file_writable(id_rank, file_name)
+      check_writable_surf_mesh                                          &
+     &      = check_file_writable(id_rank, file_name)
 !
       return
       end function check_writable_surf_mesh
@@ -197,7 +199,8 @@
       file_name = set_edge_mesh_file_name                               &
      &   (mesh_file%file_prefix, mesh_file%iflag_format, id_rank)
 !
-      check_exist_edge_mesh = check_file_writable(id_rank, file_name)
+      check_writable_edge_mesh                                          &
+     &      = check_file_writable(id_rank, file_name)
 !
       return
       end function check_writable_edge_mesh

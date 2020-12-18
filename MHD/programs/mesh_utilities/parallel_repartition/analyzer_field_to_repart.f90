@@ -35,7 +35,7 @@
       type(mesh_data), save :: new_fem
       type(calypso_comm_table), save :: org_to_new_tbl
 !
-      type(vol_partion_prog_param), save ::  part_prog_p1
+      type(vol_partion_prog_param), save ::  part_p1
 !>        Structure for new time stepping
       type(time_step_param_w_viz), save :: t_VIZ1
 !
@@ -69,6 +69,8 @@
 !
       use calypso_mpi_int
       use calypso_mpi_real
+      use calypso_mpi_logical
+!
       use const_jacobians_3d
       use const_element_comm_tables
       use parallel_FEM_mesh_init
@@ -77,6 +79,8 @@
       use nod_phys_send_recv
       use solver_SR_type
       use transfer_to_long_integers
+      use mesh_file_name_by_param
+      use set_interpolate_file_name
 !
       use set_parallel_file_name
       use int_volume_of_single_domain
@@ -101,24 +105,17 @@
 !
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
+      logical :: flag
 !
 !     --------------------- 
 !
       call init_elapse_time_by_TOTAL
-!      call elapsed_label_4_ele_comm_tbl
-!
-!     --------------------- 
-!
-      if (my_rank.eq.0) then
-        write(*,*) 'Test mesh commnucations'
-        write(*,*) 'Input file: mesh data'
-      end if
 !
 !     ----- read control data
 !
       call read_control_new_partition(part_tctl1)
 !
-      call set_control_param_repartition(part_tctl1, part_prog_p1)
+      call set_control_param_repartition(part_tctl1, part_p1)
       
       call set_fixed_t_step_params_w_viz                                &
      &   (part_tctl1%t_viz_ctl, t_VIZ1, ierr, e_message)
@@ -127,7 +124,7 @@
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(part_prog_p1%mesh_file, nprocs, fem_T)
+      call mpi_input_mesh(part_p1%mesh_file, nprocs, fem_T)
 !
 !  -------------------------------
 !
@@ -136,19 +133,32 @@
 !
 !  -------------------------------
 !
+      if(my_rank .eq. 0) then
+        flag =  check_exist_mesh(mesh_file, my_rank)                    &
+     &    .and. check_exist_interpolate_file(mesh_file, my_rank)
+      end if
+      call calypso_mpi_bcast_one_logical(flag, 0)
+!
+      if(flag) then
 !       Read target mesh
-      if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new'
-      call mpi_input_mesh(part_prog_p1%new_mesh_file, nprocs, new_fem)
-      call const_global_mesh_infos(new_fem%mesh)
+        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new'
+        call mpi_input_mesh(part_p1%new_mesh_file, nprocs, new_fem)
+        call const_global_mesh_infos(new_fem%mesh)
 !
-      call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_prog_p1%part_param%trans_tbl_file, itp_tbl_IO, ierr)
-      call calypso_MPI_barrier
+        call sel_mpi_read_interpolate_table(my_rank, nprocs,            &
+     &      part_p1%part_param%trans_tbl_file, itp_tbl_IO, ierr)
+        call calypso_MPI_barrier
 !
-      irank_read = my_rank
-      call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO, org_to_new_tbl)
-      call calypso_MPI_barrier
+        irank_read = my_rank
+        call copy_itp_table_to_repart_tbl(irank_read,                   &
+     &      fem_T%mesh, new_fem%mesh, itp_tbl_IO, org_to_new_tbl)
+        call calypso_MPI_barrier
+      else
+        write(e_message,*)                                              &
+     &        'Missing repartitioned mesh and transfer table'
+        call calypso_mpi_abort(1,e_message)
+      end if
+!
 !
       end subroutine initialize_field_to_repart
 !
@@ -175,7 +185,7 @@
       integer(kind = kint) :: istep_ucd = 0
 !
 !
-      call init_udt_to_new_partition(part_prog_p1%new_ucd_file,         &
+      call init_udt_to_new_partition(part_p1%new_ucd_file,              &
      &                               new_fem%mesh, new_ucd)
 !
       ist = t_VIZ1%init_d%i_time_step
@@ -188,10 +198,10 @@
         istep_ucd = IO_step_exc_zero_inc(i_step, t_VIZ1%ucd_step)
         call alloc_merged_ucd_nod_stack(nprocs, org_ucd)
         call sel_read_alloc_para_udt_file                               &
-     &     (istep_ucd, part_prog_p1%org_ucd_file, t_IO, org_ucd)
+     &     (istep_ucd, part_p1%org_ucd_file, t_IO, org_ucd)
 !
         call udt_field_to_new_partition                                 &
-     &     (iflag_import_item, istep_ucd, part_prog_p1%new_ucd_file,    &
+     &     (iflag_import_item, istep_ucd, part_p1%new_ucd_file,         &
      &      t_IO, new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd)
 !
         call deallocate_ucd_phys_data(org_ucd)

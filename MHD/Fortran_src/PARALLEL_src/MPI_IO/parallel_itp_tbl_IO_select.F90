@@ -55,7 +55,6 @@
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
       character(len=kchara) :: file_name
-      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_mpi_interpolate_file_name(id_rank, table_file_IO)
@@ -144,7 +143,6 @@
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
       character(len=kchara) :: file_name
-      integer(kind = kint) :: ierr = 0
 !
 !
       file_name = set_mpi_interpolate_work_name(id_rank, table_file_IO)

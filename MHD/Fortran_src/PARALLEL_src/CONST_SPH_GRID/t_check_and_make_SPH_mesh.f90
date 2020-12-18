@@ -166,6 +166,7 @@
       use output_gen_sph_grid_modes
       use mpi_gen_sph_grids_modes
       use sph_file_IO_select
+      use check_sph_file_access
       use parallel_load_data_4_sph
       use check_sph_mhd_openmp_size
 !
@@ -226,6 +227,7 @@
       use mpi_gen_sph_grids_modes
       use output_gen_sph_grid_modes
       use sph_file_IO_select
+      use check_sph_file_access
       use parallel_load_data_4_sph
       use set_from_recv_buf_rev
 !

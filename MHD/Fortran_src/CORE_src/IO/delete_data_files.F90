@@ -121,7 +121,7 @@
       integer(kind = kint), parameter :: id_file = 255
 !
 !
-      check_file_exist = .TRUE.
+      check_file_writable = .TRUE.
       if(my_rank .gt. 0) return
 !
       open(id_file, file=file_name, err=99)
@@ -135,7 +135,7 @@
 !
       write(*,*) 'File ', trim(file_name),                              &
      &         ' can not be written. Check directory or permittion'
-      check_file_exist = .FALSE.
+      check_file_writable = .FALSE.
 !
       return
 !

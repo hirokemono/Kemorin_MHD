@@ -57,7 +57,7 @@
       integer(kind = kint) :: ierr = 0
 !
 !
-      file_name = set_interpolate_file_name(id_rank, table_file_IO)
+      file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call write_itp_table_file_b                                     &
@@ -94,7 +94,7 @@
       character(len=kchara) :: file_name
 !
 !
-      file_name = set_interpolate_file_name(id_rank, table_file_IO)
+      file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
         call read_itp_table_file_b                                      &

@@ -58,7 +58,7 @@ sort_for_repartition.o: $(MODIFY_PARA_MESHDIR)/sort_for_repartition.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 t_1d_repartitioning_work.o: $(MODIFY_PARA_MESHDIR)/t_1d_repartitioning_work.f90 m_precision.o t_control_param_vol_grping.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.f90 m_precision.o calypso_mpi.o t_file_IO_parameter.o t_ctl_data_volume_grouping.o set_control_platform_item.o set_control_platform_data.o set_num_domain_each_dir.o
+t_control_param_vol_grping.o: $(MODIFY_PARA_MESHDIR)/t_control_param_vol_grping.f90 m_precision.o calypso_mpi.o t_file_IO_parameter.o t_ctl_data_volume_grouping.o m_file_format_switch.o set_control_platform_item.o set_control_platform_data.o set_num_domain_each_dir.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_mesh_test.o: $(MODIFY_PARA_MESHDIR)/t_ctl_data_mesh_test.f90 m_precision.o m_machine_parameter.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o calypso_mpi.o skip_comment_f.o bcast_4_platform_ctl.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<

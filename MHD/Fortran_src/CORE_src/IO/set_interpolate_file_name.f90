@@ -32,7 +32,7 @@
 !
       implicit none
 !
-      character(len=kchara), parameter :: work_header = 'work'
+      character(len=kchara), parameter, private :: work_header = 'work'
 !
 !-----------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@
 !
 !
       file_name = set_mpi_interpolate_file_name(id_rank, table_file_IO)
-      check_writable_itp_file = check_file_exist(file_name)
+      check_writable_itp_file = check_file_writable(id_rank, file_name)
 !
       end function check_writable_itp_file
 !

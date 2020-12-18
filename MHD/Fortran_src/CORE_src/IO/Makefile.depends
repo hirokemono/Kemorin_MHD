@@ -2,6 +2,8 @@ add_direction_labels.o: $(IO_DIR)/add_direction_labels.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 add_nodal_fields_ctl.o: $(IO_DIR)/add_nodal_fields_ctl.f90 m_precision.o m_machine_parameter.o t_field_labels.o t_control_array_character3.o
 	$(F90) -c $(F90OPTFLAGS) $<
+check_sph_file_access.o: $(IO_DIR)/check_sph_file_access.f90 m_precision.o m_file_format_switch.o t_file_IO_parameter.o set_parallel_file_name.o set_mesh_file_names.o delete_data_files.o
+	$(F90) -c $(F90OPTFLAGS) $<
 comm_table_IO.o: $(IO_DIR)/comm_table_IO.f90 m_precision.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 data_IO_to_textline.o: $(IO_DIR)/data_IO_to_textline.f90 m_precision.o m_constants.o
@@ -106,6 +108,8 @@ set_components_flags.o: $(IO_DIR)/set_components_flags.f90 m_precision.o t_field
 	$(F90) -c $(F90OPTFLAGS) $<
 set_field_file_names.o: $(IO_DIR)/set_field_file_names.f90 m_precision.o m_constants.o m_field_file_format.o t_file_IO_parameter.o delete_data_files.o set_parallel_file_name.o set_mesh_extensions.o m_file_format_switch.o set_sph_extensions.o
 	$(F90) -c $(F90OPTFLAGS) $<
+set_interpolate_file_name.o: $(IO_DIR)/set_interpolate_file_name.f90 m_precision.o m_file_format_switch.o t_file_IO_parameter.o delete_data_files.o set_parallel_file_name.o set_mesh_extensions.o
+	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_extensions.o: $(IO_DIR)/set_mesh_extensions.f90 m_precision.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_mesh_file_names.o: $(IO_DIR)/set_mesh_file_names.f90 m_precision.o m_constants.o set_parallel_file_name.o m_file_format_switch.o set_mesh_extensions.o set_sph_extensions.o
@@ -126,7 +130,7 @@ set_ucd_file_names.o: $(IO_DIR)/set_ucd_file_names.f90 m_precision.o m_constants
 	$(F90) -c $(F90OPTFLAGS) $<
 skip_comment_f.o: $(IO_DIR)/skip_comment_f.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sph_file_IO_select.o: $(IO_DIR)/sph_file_IO_select.F90 m_precision.o m_file_format_switch.o t_spheric_data_IO.o t_file_IO_parameter.o set_parallel_file_name.o set_mesh_file_names.o sph_modes_grids_file_IO.o sph_modes_grids_file_IO_b.o gz_sph_modes_grids_file_IO.o gz_sph_modes_file_IO_b.o delete_data_files.o
+sph_file_IO_select.o: $(IO_DIR)/sph_file_IO_select.F90 m_precision.o m_file_format_switch.o t_spheric_data_IO.o t_file_IO_parameter.o set_parallel_file_name.o set_mesh_file_names.o sph_modes_grids_file_IO.o sph_modes_grids_file_IO_b.o gz_sph_modes_grids_file_IO.o gz_sph_modes_file_IO_b.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 sph_global_1d_idx_IO.o: $(IO_DIR)/sph_global_1d_idx_IO.f90 m_precision.o t_node_id_spherical_IO.o skip_comment_f.o m_sph_modes_grid_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

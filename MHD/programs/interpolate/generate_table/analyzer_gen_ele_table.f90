@@ -41,6 +41,8 @@
       type(para_block_4_interpolate) :: itp_blks1
       type(work_const_itp_table), save :: cst_itp_wke
 !
+      character(len=kchara), parameter, private :: work_header = 'work'
+!
 ! ----------------------------------------------------------------------
 !
       contains

@@ -32,7 +32,7 @@
 !
       implicit none
 !
-      type(vol_partion_prog_param), save ::  part_prog_p1
+      type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
 !
@@ -108,24 +108,16 @@
 !     --------------------- 
 !
       call init_elapse_time_by_TOTAL
-!      call elapsed_label_4_ele_comm_tbl
-!
-!     --------------------- 
-!
-      if (my_rank.eq.0) then
-        write(*,*) 'Test mesh commnucations'
-        write(*,*) 'Input file: mesh data'
-      end if
 !
 !     ----- read control data
 !
       call read_control_new_partition(part_tctl1)
 !
-      call set_control_param_repartition(part_tctl1, part_prog_p1)
+      call set_control_param_repartition(part_tctl1, part_p1)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(part_prog_p1%mesh_file, nprocs, fem_T)
+      call mpi_input_mesh(part_p1%mesh_file, nprocs, fem_T)
 !
 !  -------------------------------
 !
@@ -146,8 +138,8 @@
       call const_jacobian_and_single_vol                                &
      &   (fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
 !
+      if (iflag_debug.gt.0) write(*,*) 'init_send_recv'
       call init_send_recv(fem_T%mesh%nod_comm)
-      if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------
 !
@@ -157,10 +149,16 @@
 !
       call s_mesh_repartition_by_volume                                 &
      &   (fem_T, ele_comm, next_tbl_T%neib_nod,                         &
-     &    part_prog_p1%part_param, new_fem, org_to_new_tbl)
+     &    part_p1%part_param, new_fem, org_to_new_tbl)
+!
+      if(part_p1%part_param%new_mesh_file%iflag_format                  &
+     &     .eq. id_no_file) then
+        if(my_rank .eq. 0) write(*,*) 'Set repartition mesh output'
+        return
+      end if
 !
 !       Output new mesh file
-      call sel_mpi_write_mesh_file(part_prog_p1%new_mesh_file,          &
+      call sel_mpi_write_mesh_file(part_p1%new_mesh_file,               &
      &                             new_fem%mesh, new_fem%group)
       call calypso_MPI_barrier
 !
@@ -168,8 +166,14 @@
       call copy_repart_tbl_to_itp_table                                 &
      &   (fem_T%mesh, next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
 !
+      if(part_p1%part_param%trans_tbl_file%iflag_format                 &
+     &     .eq. id_no_file) then
+        if(my_rank .eq. 0) write(*,*) 'Set data transfer file output'
+        return
+      end if
+!
       call sel_mpi_write_interpolate_table(my_rank,                     &
-     &    part_prog_p1%part_param%trans_tbl_file, itp_tbl_IO)
+     &    part_p1%part_param%trans_tbl_file, itp_tbl_IO)
       call calypso_MPI_barrier
 !
 !
@@ -179,6 +183,7 @@
 !
       subroutine analyze_reapart_by_vol
 !
+      use m_file_format_switch
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
       use check_data_for_repartition
@@ -190,8 +195,15 @@
       integer(kind = kint) :: i, ierr
 !
 !
+      if(part_p1%part_param%trans_tbl_file%iflag_format                 &
+     &     .eq. id_no_file) then
+        if(my_rank .eq. 0) write(*,*) 'No file to check data transfer'
+        return
+      end if
+!
+!
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_prog_p1%part_param%trans_tbl_file, itp_tbl_IO2, ierr)
+     &    part_p1%part_param%trans_tbl_file, itp_tbl_IO2, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &

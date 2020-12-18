@@ -41,6 +41,8 @@
 !
       type(field_IO_params), save, private ::  tmp_tbl_IO
 !
+      character(len=kchara), parameter, private :: work_header = 'work'
+!
 !-----------------------------------------------------------------------
 !
       contains

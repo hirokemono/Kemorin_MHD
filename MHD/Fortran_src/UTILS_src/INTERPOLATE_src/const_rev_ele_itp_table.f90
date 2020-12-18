@@ -18,6 +18,7 @@
       implicit none
 !
       type(interpolate_table) :: itp_ele_c2f, itp_ele_f2c
+      character(len=kchara), parameter, private :: work_header = 'work'
 !
       private :: reverse_ele_itp_table_type
 !
