@@ -1,11 +1,16 @@
-!
-!      module const_jacobians_3d
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H. Matsui on June. 2006
-!
+!>@file   const_jacobians_3d.f90
+!!@brief  module const_jacobians_3d
+!!
+!!@author H. Matsui and H. Okuda
+!!@date   programmed in July 2000 (ver 1.1)
+!>        Modified in June, 2006 (ver 1.2)
+!!
+!>@brief  Initialize parameters for FEM integration
+!!
+!!@verbatim
 !!      subroutine initialize_FEM_integration                           &
+!!     &         (g_FEM, spf_3d, spf_2d, spf_1d)
+!!      subroutine finalize_FEM_integration                             &
 !!     &         (g_FEM, spf_3d, spf_2d, spf_1d)
 !!
 !!      subroutine sel_jacobian_type(node, ele, g_FEM, spf_3d, jac_3d)
@@ -19,6 +24,7 @@
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(inout) :: jac_3d
+!!@endverbatim
 !
       module const_jacobians_3d
 !
@@ -98,6 +104,22 @@
      &    spf_3d%l_int, spf_3d%xi, spf_3d%ei, spf_3d%zi, g_FEM%owe3d)
 !
       end subroutine initialize_FEM_integration
+!
+!-----------------------------------------------------------------------
+!
+      subroutine finalize_FEM_integration                               &
+     &         (g_FEM, spf_3d, spf_2d, spf_1d)
+!
+      type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
+      type(volume_shape_function), intent(inout) :: spf_3d
+      type(surface_shape_function), intent(inout) :: spf_2d
+      type(edge_shape_function), intent(inout) :: spf_1d
+!
+!
+      call dealloc_gauss_coef_4_fem(g_FEM)
+      call dealloc_gauss_point_id(spf_3d, spf_2d, spf_1d)
+!
+      end subroutine finalize_FEM_integration
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

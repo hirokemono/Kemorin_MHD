@@ -113,6 +113,7 @@
      &    org_femmesh%group%surf_grp, org_femmesh%group%infty_grp,      &
      &    spfs_I%spf_3d, jacobians_I)
       call dealloc_vol_shape_func(spfs_I%spf_3d)
+      call dealloc_jacobians_element(org_femmesh%mesh%ele, jacobians_I)
 !
 !  -------------------------------
 !

@@ -1,14 +1,18 @@
-!
-!------- module cal_volume_node_MHD ---------------
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        Modified by H. Matsui on Aug., 2006
-!        Modified by H. Matsui on Aug., 2007
-!
+!>@file   cal_volume_node_MHD.f90
+!!@brief  module cal_volume_node_MHD
+!!
+!!@author H. Matsui and H. Okuda
+!!@date   programmed in July 2000 (ver 1.1)
+!>        Modified in Aug., 2006 (ver 1.2)
+!>        Modified in Aug., 2007 (ver 1.2)
+!!
+!>@brief  Initialize Jacobians and volumes for FEM MHD
+!!
+!!@verbatim
 !!      subroutine const_MHD_jacobian_and_volumes                       &
 !!     &         (SGS_param, group, ifld_msq, mesh, layer_tbl,          &
 !!     &          spfs, jacs, MHD_mesh, fem_msq)
+!!      subroutine finalize_MHD_jac_and_volumes(spfs, jacs)
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -17,6 +21,7 @@
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(mean_square_values), intent(inout) :: fem_msq
+!!@endverbatim
 !
       module cal_volume_node_MHD
 !
@@ -137,6 +142,25 @@
       end if
 !
       end subroutine const_MHD_jacobian_and_volumes
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine finalize_MHD_jac_and_volumes(spfs, jacs)
+!
+      use t_jacobians
+      use t_shape_functions
+!
+      use const_jacobians_3d
+!
+      type(shape_finctions_at_points), intent(inout) :: spfs
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      call finalize_FEM_integration                                     &
+     &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+      deallocate(jacs%g_FEM)
+!
+      end subroutine finalize_MHD_jac_and_volumes
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
