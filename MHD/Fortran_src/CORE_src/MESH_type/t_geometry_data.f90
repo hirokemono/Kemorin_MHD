@@ -451,16 +451,13 @@
 !
       call dealloc_overlaped_ele(ele)
 !
-      deallocate( ele%x_ele)
-      deallocate( ele%r_ele)
-      deallocate( ele%ar_ele)
-      deallocate( ele%phi_ele)
-      deallocate( ele%theta_ele)
-      deallocate( ele%s_ele)
-      deallocate( ele%as_ele)
+      deallocate(ele%x_ele)
+      deallocate(ele%r_ele, ele%ar_ele)
+      deallocate(ele%phi_ele, ele%theta_ele)
+      deallocate(ele%s_ele, ele%as_ele)
 !
-      deallocate( ele%volume_ele )
-      deallocate( ele%a_vol_ele )
+      deallocate(ele%volume_ele)
+      deallocate(ele%a_vol_ele)
 !
       end subroutine dealloc_ele_geometry
 !
@@ -482,7 +479,7 @@
 !
       type(element_data), intent(inout) :: ele
 !
-      deallocate( ele%istack_ele_smp)
+      deallocate(ele%istack_ele_smp)
 !
       end subroutine dealloc_ele_param_smp
 !

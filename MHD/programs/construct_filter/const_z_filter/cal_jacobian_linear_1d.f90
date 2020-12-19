@@ -80,7 +80,7 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call dealloc_jacobians_edge(jacs)
+      call dealloc_jacobians_edge(edge, jacs)
       call dealloc_gauss_coef_4_fem(jacs%g_FEM)
       allocate(jacs%g_FEM)
       call init_jacobian_linear_1d(num_int,                             &
@@ -125,7 +125,7 @@
 !  data allocation
 !
       call count_surf_size_smp(surf)
-      call count_edge_size_smp_type(edge)
+      call count_edge_size_smp(edge)
 !
       call set_max_integration_points(num_int, g_FEM)
       call num_of_int_points(g_FEM)

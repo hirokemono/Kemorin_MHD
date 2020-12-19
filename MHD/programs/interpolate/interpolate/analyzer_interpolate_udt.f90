@@ -84,7 +84,7 @@
 !     --------------------- 
 !
       if (my_rank .lt. gen_itp_p1%ndomain_dest) then
-        call count_size_4_smp_mesh_type                                 &
+        call count_size_4_smp_mesh                                      &
      &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
         if (i_debug.eq.iflag_full_msg) then
           call check_mesh_smp_size(my_rank, new_femmesh%mesh)

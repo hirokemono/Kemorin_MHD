@@ -152,7 +152,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
-      call count_edge_size_smp_type(edge)
+      call count_edge_size_smp(edge)
       call count_overlap_edge(node, edge)
 !
       end subroutine set_edge_connectivity

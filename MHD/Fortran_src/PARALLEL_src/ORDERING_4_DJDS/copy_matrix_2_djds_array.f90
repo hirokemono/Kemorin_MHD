@@ -83,7 +83,7 @@
       call copy_communicator_4_solver(solver_C)
       call copy_paramters_4_djds(tbl_crs, mat_crs, CG_param, djds_tbl)
 !
-      call count_node_4_smp_mesh_type(node)
+      call count_node_4_smp_mesh(node)
 !
 !C +-----------------+
 !C | DJDS reordering |
