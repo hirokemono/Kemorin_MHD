@@ -83,10 +83,13 @@
       call dealloc_jacobians_edge(edge, jacs)
       call dealloc_gauss_coef_4_fem(jacs%g_FEM)
       allocate(jacs%g_FEM)
-      call init_jacobian_linear_1d(num_int,                             &
-     &    node, surf, edge, jacs%g_FEM, spf_1d)
 !
-      call alloc_edge_shape_func(edge%nnod_4_edge, jacs%g_FEM, spf_1d)
+      call finalize_edge_size_smp(edge)
+      call finalize_surf_size_smp(surf)
+!      call init_jacobian_linear_1d(num_int,                             &
+!     &    node, surf, edge, jacs%g_FEM, spf_1d)
+!
+!      call alloc_edge_shape_func(edge%nnod_4_edge, jacs%g_FEM, spf_1d)
 !
       end subroutine finalize_jacobian_linear_1d
 !

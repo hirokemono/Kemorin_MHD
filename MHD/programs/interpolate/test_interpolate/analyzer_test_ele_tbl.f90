@@ -83,11 +83,17 @@
       subroutine analyze
 !
       use mesh_interpolation
+      use set_size_4_smp_types
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
       call interpolation_4_mesh_test                                    &
      &   (org_femmesh%mesh, new_femmesh%mesh, itp_ele_t)
+!
+      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
+        call finalize_size_4_smp_mesh                                   &
+     &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
+      end if
 !
       end subroutine analyze
 !

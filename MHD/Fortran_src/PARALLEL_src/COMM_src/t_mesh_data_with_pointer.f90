@@ -314,8 +314,8 @@
       if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
       call set_local_element_info(mesh_p%surf, mesh_p%edge)
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_surface_and_edge'
-      call set_surface_and_edge                                         &
+      if (iflag_debug.gt.0) write(*,*) 'const_surface_and_edge'
+      call const_surface_and_edge                                       &
      &   (mesh_p%node, mesh_p%ele, mesh_p%surf, mesh_p%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'

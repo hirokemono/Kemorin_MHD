@@ -113,6 +113,7 @@
       use output_parallel_ucd_file
       use nod_phys_send_recv
       use interpolate_nod_field_2_type
+      use set_size_4_smp_types
 !
       integer(kind = kint) :: istep
 !
@@ -145,6 +146,14 @@
           call disconnect_ucd_node(fem_ucd)
         end if
       end do
+!
+      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
+        call count_size_4_smp_mesh                                      &
+     &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
+        if (i_debug.eq.iflag_full_msg) then
+          call check_mesh_smp_size(my_rank, new_femmesh%mesh)
+        end if
+      end if
 !
       end subroutine analyze_itp_udt
 !

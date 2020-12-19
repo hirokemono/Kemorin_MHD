@@ -1,12 +1,16 @@
-!const_linear_mesh_by_quad.f90
-!      module const_linear_mesh_by_quad
-!
-!      Written by H. Matsui on Apr., 2006
-!
+!>@file   const_linear_mesh_by_quad.f90
+!!@brief  module const_linear_mesh_by_quad
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2006
+!!
+!> @brief set numbers for SMP parallelization
+!!
+!!@verbatim
 !!      subroutine set_linear_data_by_quad_data                         &
 !!     &         (mesh_q, group_q, nod_fld_q,                           &
 !!     &          mesh_l, group_l, nod_fld_l)
-!!      subroutine set_linear_data_by_lag_data                          &
+!!      subroutine const_linear_data_by_lag_data                        &
 !!     &         (mesh_q, group_q, mesh_l, group_l)
 !!        type(mesh_geometry), intent(in), target :: mesh_q
 !!        type(mesh_groups), intent(in), target :: group_q
@@ -15,6 +19,10 @@
 !!        type(mesh_geometry_p), intent(inout) :: mesh_l
 !!        type(mesh_groups_p), intent(inout) :: group_l
 !!        type(phys_data), intent(inout) :: nod_fld_l
+!!
+!!      subroutine dealloc_linear_data_by_quad                          &
+!!     &         (mesh_l, group_l, nod_fld_l)
+!!@endverbatim
 !
       module const_linear_mesh_by_quad
 !
@@ -102,7 +110,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_linear_data_by_lag_data                            &
+      subroutine const_linear_data_by_lag_data                          &
      &         (mesh_q, group_q, mesh_l, group_l)
 !
       use const_surface_data
@@ -154,7 +162,26 @@
      &   (mesh_q%node, mesh_l%node, mesh_l%ele,                         &
      &    mesh_l%surf, mesh_l%edge)
 !
-      end subroutine set_linear_data_by_lag_data
+      end subroutine const_linear_data_by_lag_data
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_linear_data_by_quad                            &
+     &         (mesh_l, group_l, nod_fld_l)
+!
+      use set_size_4_smp_types
+!
+      type(mesh_geometry_p), intent(inout) :: mesh_l
+      type(mesh_groups_p), intent(inout) :: group_l
+      type(phys_data), intent(inout) :: nod_fld_l
+!
+!
+      call finalize_ele_4_smp_mesh(mesh_l%ele)
+      call finalize_surf_size_smp(mesh_l%surf)
+      call finalize_edge_size_smp(mesh_l%edge)
+!
+      subroutine dealloc_linear_data_by_quad                            &
 !
 ! ----------------------------------------------------------------------
 !

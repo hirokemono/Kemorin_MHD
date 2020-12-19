@@ -1,15 +1,23 @@
+!>@file   copy_matrix_2_djds_array.f90
+!!@brief  module copy_matrix_2_djds_array
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!      module copy_matrix_2_djds_array
-!
-!      Written by H. Matsui
-!
+!> @brief set numbers for SMP parallelization
+!!
+!!@verbatim
 !!      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,  &
 !!     &          mat_crs, CG_param, DJDS_param, djds_tbl, djds_mat)
+!!      subroutine dealloc_crs_2_djds_matrix                            &
+!!     &         (node, tbl_crs, CG_param, djds_tbl, djds_mat)
+!!
 !!      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,    &
 !!     &          NP, N, NB, num_mat_comp, aiccg)
 !!
 !!      subroutine copy_RH_vect_2_crs_nn(mat_crs, NP, NB, B, X)
 !!      subroutine copy_solution_2_crs_nn(NP, NB, X, mat_crs)
+!!@endverbatim
 !
       module copy_matrix_2_djds_array
 !
@@ -118,6 +126,24 @@
       call dealloc_crs_connect(tbl_crs)
 !
       end subroutine transfer_crs_2_djds_matrix
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_crs_2_djds_matrix                              &
+     &         (node, tbl_crs, CG_param, djds_tbl, djds_mat)
+!
+      use set_size_4_smp_types
+!
+      type(node_data), intent(inout) :: node
+!
+      type(CG_poarameter), intent(inout) :: CG_param
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+      type(DJDS_MATRIX), intent(inout) :: djds_mat
+!
+      call finalize_node_4_smp_mesh(node)
+!
+      end subroutine dealloc_crs_2_djds_matrix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -13,6 +13,7 @@
 !!      subroutine alloc_node_geometry_w_sph(node)
 !!      subroutine alloc_node_geometry_base(node)
 !!      subroutine alloc_sph_node_geometry(node)
+!!        type(node_data), intent(inout) :: node
 !!
 !!      subroutine alloc_ele_connect(ele)
 !!      subroutine alloc_element_types(ele)
@@ -28,6 +29,7 @@
 !!      subroutine dealloc_node_geometry_w_sph(node)
 !!      subroutine dealloc_node_geometry_base(node)
 !!      subroutine dealloc_sph_node_geometry(node)
+!!        type(node_data), intent(inout) :: node
 !!
 !!      subroutine dealloc_ele_connect(ele)
 !!      subroutine dealloc_overlaped_ele(ele)

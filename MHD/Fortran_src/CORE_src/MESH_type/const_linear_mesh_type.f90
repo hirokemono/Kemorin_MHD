@@ -117,7 +117,7 @@
         call set_linear_data_by_quad_data                               &
      &     (mesh_q, group_q, nod_fld_q, mesh_l, group_l, nod_fld_l)
       else if (mesh_q%ele%nnod_4_ele .eq. num_t_lag) then
-        call set_linear_data_by_lag_data                                &
+        call const_linear_data_by_lag_data                              &
      &     (mesh_q, group_q, mesh_l, group_l)
         nod_fld_l => nod_fld_q
       end if 

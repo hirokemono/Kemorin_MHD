@@ -143,8 +143,8 @@
       call set_local_element_info(mesh%surf, mesh%edge)
 !
 !     set connectivity and geometry for surface and edge
-      if (iflag_debug.gt.0) write(*,*) 'set_surface_and_edge'
-      call set_surface_and_edge                                         &
+      if (iflag_debug.gt.0) write(*,*) 'const_surface_and_edge'
+      call const_surface_and_edge                                       &
      &   (mesh%node, mesh%ele, mesh%surf, mesh%edge)
 !
 !     set connection relation of element and surface
