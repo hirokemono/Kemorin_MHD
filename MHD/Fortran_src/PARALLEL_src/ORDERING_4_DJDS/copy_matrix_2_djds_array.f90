@@ -91,6 +91,7 @@
       call copy_communicator_4_solver(solver_C)
       call copy_paramters_4_djds(tbl_crs, mat_crs, CG_param, djds_tbl)
 !
+      call alloc_node_param_smp(nod)
       call count_node_4_smp_mesh(node)
 !
 !C +-----------------+
@@ -141,7 +142,7 @@
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
 !
-      call finalize_node_4_smp_mesh(node)
+      call dealloc_node_param_smp(node)
 !
       end subroutine dealloc_crs_2_djds_matrix
 !

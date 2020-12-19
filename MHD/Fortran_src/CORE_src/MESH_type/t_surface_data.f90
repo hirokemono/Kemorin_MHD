@@ -14,7 +14,7 @@
 !!      subroutine allocate_iso_surface_type(surf)
 !!      subroutine allocate_surface_geom_type(surf)
 !!      subroutine allocate_normal_vect_type(surf)
-!!      subroutine allocate_surf_param_smp_type(surf)
+!!      subroutine alloc_surf_param_smp(surf)
 !!      subroutine alloc_ele_4_surf_type(surf)
 !!
 !!      subroutine dealloc_numsurf_stack(surf)
@@ -24,7 +24,7 @@
 !!      subroutine deallocate_iso_surface_type(surf)
 !!      subroutine deallocate_surface_geom_type(surf)
 !!      subroutine deallocate_normal_vect_type(surf)
-!!      subroutine deallocate_surf_param_smp_type(surf)
+!!      subroutine dealloc_surf_param_smp(surf)
 !!      subroutine dealloc_ele_4_surf_type(surf)
 !!        integer(kind = kint), intent(in) :: nele
 !!        type(surface_data), intent(inout) :: surf
@@ -228,9 +228,9 @@
 !
       end subroutine allocate_normal_vect_type
 !
-! ------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine allocate_surf_param_smp_type(surf)
+      subroutine alloc_surf_param_smp(surf)
 !
       use m_machine_parameter
 !
@@ -239,7 +239,7 @@
       allocate( surf%istack_surf_smp(0:np_smp))
       surf%istack_surf_smp = 0
 !
-      end subroutine allocate_surf_param_smp_type
+      end subroutine alloc_surf_param_smp
 !
 !-----------------------------------------------------------------------
 !
@@ -334,13 +334,13 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine deallocate_surf_param_smp_type(surf)
+      subroutine dealloc_surf_param_smp(surf)
 !
       type(surface_data), intent(inout) :: surf
 !
       deallocate( surf%istack_surf_smp )
 !
-      end subroutine deallocate_surf_param_smp_type
+      end subroutine dealloc_surf_param_smp
 !
 !-----------------------------------------------------------------------
 !

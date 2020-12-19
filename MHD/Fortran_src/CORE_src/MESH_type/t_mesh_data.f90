@@ -133,7 +133,7 @@
       call deallocate_ext_surface_type(mesh%surf)
 !
       call dealloc_edge_param_smp(mesh%edge)
-      call deallocate_surf_param_smp_type(mesh%surf)
+      call dealloc_surf_param_smp(mesh%surf)
 !
       call dealloc_edge_4_ele(mesh%edge)
       call dealloc_edge_connect(mesh%edge)

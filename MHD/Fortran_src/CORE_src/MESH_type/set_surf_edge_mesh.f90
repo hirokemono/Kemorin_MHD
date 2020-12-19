@@ -135,6 +135,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'count_overlap_surf_type'
+      call alloc_surf_param_smp(surf)
       call count_surf_size_smp(surf)
       call count_overlap_surf(node, surf)
 !
@@ -168,6 +169,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
+      call alloc_edge_param_smp(edge)
       call count_edge_size_smp(edge)
       call count_overlap_edge(node, edge)
 !
@@ -213,7 +215,7 @@
 !
       type(surface_data), intent(inout) :: surf
 !
-      call finalize_surf_size_smp(edge)
+      call dealloc_surf_param_smp(edge)
 !
       end subroutine dealloc_surf_connectivity
 !
@@ -225,7 +227,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      call finalize_edge_size_smp(edge)
+      call dealloc_edge_param_smp(edge)
 !
       end subroutine dealloc_edge_connectivity
 !

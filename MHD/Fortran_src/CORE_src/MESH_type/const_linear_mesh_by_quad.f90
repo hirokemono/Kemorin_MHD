@@ -96,9 +96,8 @@
      &    group_l%ele_grp, group_l%surf_grp,                            &
      &    group_l%tbls_ele_grp, group_l%tbls_surf_grp)
 !
-      call count_ele_4_smp_mesh(mesh_l%ele)
-      call count_surf_size_smp(mesh_l%surf)
-      call count_edge_size_smp(mesh_l%edge)
+      call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
+      call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
       call set_internal_list_lin_20                                     &
      &   (mesh_q%node, mesh_q%ele, mesh_q%surf,                         &
@@ -155,8 +154,7 @@
      &    group_l%tbls_ele_grp, group_l%tbls_surf_grp)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
-      call count_surf_size_smp(mesh_l%surf)
-      call count_edge_size_smp(mesh_l%edge)
+      call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
       call set_internal_list_lin_27                                     &
      &   (mesh_q%node, mesh_l%node, mesh_l%ele,                         &
@@ -177,9 +175,8 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call finalize_ele_4_smp_mesh(mesh_l%ele)
-      call finalize_surf_size_smp(mesh_l%surf)
-      call finalize_edge_size_smp(mesh_l%edge)
+      call finalize_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
+      call finalize_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
       subroutine dealloc_linear_data_by_quad                            &
 !

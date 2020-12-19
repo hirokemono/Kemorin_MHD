@@ -11,17 +11,16 @@
 !!      subroutine finalize_size_4_smp_mesh(nod, ele)
 !!        type(node_data),    intent(inout) :: nod
 !!        type(element_data), intent(inout) :: ele
+!!      subroutine count_size_4_smp_surf_edge(surf, edge)
+!!      subroutine finalize_size_4_smp_surf_edge(surf, edge)
+!!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data),    intent(inout) :: edge
+!!
 !!      subroutine count_node_4_smp_mesh(nod)
-!!      subroutine finalize_node_4_smp_mesh(nod)
 !!        type(node_data),    intent(inout) :: nod
-!!      subroutine count_ele_4_smp_mesh(ele)
-!!      subroutine finalize_ele_4_smp_mesh(ele)
-!!        type(element_data), intent(inout) :: ele
 !!      subroutine count_surf_size_smp(surf)
-!!      subroutine finalize_surf_size_smp(surf)
 !!        type(surface_data), intent(inout) :: surf
 !!      subroutine count_edge_size_smp(edge)
-!!      subroutine finalize_edge_size_smp(edge)
 !!        type(edge_data),    intent(inout) :: edge
 !!
 !!      subroutine count_overlap_ele(nod, ele)
@@ -42,11 +41,14 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data
 !
       implicit  none
+!
+      private :: count_ele_4_smp_mesh
 !
 !-----------------------------------------------------------------------
 !
@@ -56,11 +58,12 @@
 !
       subroutine count_size_4_smp_mesh(nod, ele)
 !
-      use cal_minmax_and_stacks
-!
       type(node_data),    intent(inout) :: nod
       type(element_data), intent(inout) :: ele
 !
+!
+      call alloc_node_param_smp(nod)
+      call alloc_ele_param_smp(ele)
 !
       call count_node_4_smp_mesh(nod)
       call count_ele_4_smp_mesh(ele)
@@ -69,14 +72,29 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine count_size_4_smp_surf_edge(surf, edge)
+!
+      type(surface_data), intent(inout) :: surf
+      type(edge_data),    intent(inout) :: edge
+!
+!
+      call alloc_surf_param_smp(surf)
+      call alloc_edge_param_smp(edge)
+!
+      call count_surf_size_smp(surf)
+      call count_edge_size_smp(edge)
+!
+      end subroutine count_size_4_smp_surf_edge
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine count_node_4_smp_mesh(nod)
 !
       use cal_minmax_and_stacks
 !
       type(node_data),    intent(inout) :: nod
 !
-!
-      call alloc_node_param_smp(nod)
 !
       call count_number_4_smp( np_smp, ione, nod%numnod,                &
      &    nod%istack_nod_smp, nod%max_nod_smp )
@@ -95,8 +113,6 @@
       type(element_data), intent(inout) :: ele
 !
 !
-      call alloc_ele_param_smp(ele)
-!
       call count_number_4_smp( np_smp, ione, ele%numele,                &
      &    ele%istack_ele_smp, ele%max_ele_smp )
 !
@@ -111,10 +127,8 @@
       type(surface_data), intent(inout) :: surf
 !
 !
-      call allocate_surf_param_smp_type(surf)
-!
-      call count_number_4_smp( np_smp, ione, surf%numsurf,              &
-     &    surf%istack_surf_smp, surf%max_surf_smp )
+      call count_number_4_smp(np_smp, ione, surf%numsurf,               &
+     &    surf%istack_surf_smp, surf%max_surf_smp)
 !
       end subroutine count_surf_size_smp
 !
@@ -126,11 +140,8 @@
 !
       type(edge_data),    intent(inout) :: edge
 !
-!
-      call alloc_edge_param_smp(edge)
-!
-      call count_number_4_smp( np_smp, ione, edge%numedge,              &
-     &    edge%istack_edge_smp, edge%max_edge_smp )
+      call count_number_4_smp(np_smp, ione, edge%numedge,               &
+     &    edge%istack_edge_smp, edge%max_edge_smp)
 !
       end subroutine count_edge_size_smp
 !
@@ -142,55 +153,23 @@
       type(node_data),    intent(inout) :: nod
       type(element_data), intent(inout) :: ele
 !
-!
-      call finalize_node_4_smp_mesh(nod)
-      call finalize_ele_4_smp_mesh(ele)
+      call dealloc_node_param_smp(nod)
+      call dealloc_ele_param_smp(ele)
 !
       end subroutine finalize_size_4_smp_mesh
 !
 !-----------------------------------------------------------------------
 !
-      subroutine finalize_node_4_smp_mesh(nod)
-!
-      type(node_data),    intent(inout) :: nod
-!
-!
-      call dealloc_node_param_smp(nod)
-!
-      end subroutine finalize_node_4_smp_mesh
-!
-!-----------------------------------------------------------------------
-!
-      subroutine finalize_ele_4_smp_mesh(ele)
-!
-      type(element_data), intent(inout) :: ele
-!
-!
-      call dealloc_ele_param_smp(ele)
-!
-      end subroutine finalize_ele_4_smp_mesh
-!
-!-----------------------------------------------------------------------
-!
-      subroutine finalize_surf_size_smp(surf)
+      subroutine finalize_size_4_smp_surf_edge(surf, edge)
 !
       type(surface_data), intent(inout) :: surf
-!
-!
-      call deallocate_surf_param_smp_type(surf)
-!
-      end subroutine finalize_surf_size_smp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine finalize_edge_size_smp(edge)
-!
       type(edge_data),    intent(inout) :: edge
 !
 !
+      call dealloc_surf_param_smp(surf)
       call dealloc_edge_param_smp(edge)
 !
-      end subroutine finalize_edge_size_smp
+      end subroutine finalize_size_4_smp_surf_edge
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

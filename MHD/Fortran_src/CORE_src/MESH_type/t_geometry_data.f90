@@ -311,16 +311,16 @@
 !
       call alloc_overlaped_ele(ele)
 !
-      allocate( ele%x_ele(ele%numele,3))
-      allocate( ele%r_ele(ele%numele))
-      allocate( ele%ar_ele(ele%numele))
-      allocate( ele%phi_ele(ele%numele))
-      allocate( ele%theta_ele(ele%numele))
-      allocate( ele%s_ele(ele%numele))
-      allocate( ele%as_ele(ele%numele))
+      allocate(ele%x_ele(ele%numele,3))
+      allocate(ele%r_ele(ele%numele))
+      allocate(ele%ar_ele(ele%numele))
+      allocate(ele%phi_ele(ele%numele))
+      allocate(ele%theta_ele(ele%numele))
+      allocate(ele%s_ele(ele%numele))
+      allocate(ele%as_ele(ele%numele))
 !
-      allocate( ele%volume_ele(ele%numele) )
-      allocate( ele%a_vol_ele(ele%numele) )
+      allocate(ele%volume_ele(ele%numele))
+      allocate(ele%a_vol_ele(ele%numele))
 !
       if (ele%numele .gt. 0) then
         ele%x_ele = 0.0d0
@@ -375,6 +375,7 @@
       type(node_data), intent(inout) :: node
 !
 !
+      if(allocated(node%istack_numnod) .eqv. .FALSE.) return
       deallocate(node%istack_numnod, node%istack_internod)
 !
       end subroutine dealloc_numnod_stack
@@ -386,6 +387,7 @@
       type(element_data), intent(inout) :: ele
 !
 !
+      if(allocated(ele%istack_numele) .eqv. .FALSE.) return
       deallocate(ele%istack_numele, ele%istack_interele)
 !
       end subroutine dealloc_numele_stack
@@ -407,6 +409,7 @@
 !
       type(node_data), intent(inout) :: node
 !
+      if(allocated(node%inod_global) .eqv. .FALSE.) return
       deallocate(node%inod_global, node%xx)
 !
       end subroutine dealloc_node_geometry_base
@@ -417,6 +420,7 @@
 !
       type(node_data), intent(inout) :: node
 !
+      if(allocated(node%rr) .eqv. .FALSE.) return
       deallocate(node%rr, node%a_r, node%ss)
       deallocate(node%a_s, node%phi, node%theta)
 !
@@ -428,6 +432,7 @@
 !
       type(element_data), intent(inout) :: ele
 !
+      if(allocated(ele%iele_global) .eqv. .FALSE.) return
       deallocate(ele%iele_global)
       deallocate(ele%elmtyp, ele%nodelm)
       deallocate(ele%ie)
@@ -441,6 +446,7 @@
       type(element_data), intent(inout) :: ele
 !
 !
+      if(allocated(ele%interior_ele) .eqv. .FALSE.) return
       deallocate(ele%interior_ele)
 !
       end subroutine dealloc_overlaped_ele
@@ -453,6 +459,7 @@
 !
       call dealloc_overlaped_ele(ele)
 !
+      if(allocated(ele%x_ele) .eqv. .FALSE.) return
       deallocate(ele%x_ele)
       deallocate(ele%r_ele, ele%ar_ele)
       deallocate(ele%phi_ele, ele%theta_ele)
@@ -470,6 +477,7 @@
 !
       type(node_data), intent(inout) :: node
 !
+      if(allocated(node%istack_nod_smp) .eqv. .FALSE.) return
       deallocate(node%istack_nod_smp)
       deallocate(node%istack_internal_smp)
 !
@@ -481,6 +489,7 @@
 !
       type(element_data), intent(inout) :: ele
 !
+      if(allocated(ele%istack_ele_smp) .eqv. .FALSE.) return
       deallocate(ele%istack_ele_smp)
 !
       end subroutine dealloc_ele_param_smp
