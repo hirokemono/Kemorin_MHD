@@ -12,7 +12,7 @@ DJDS_total_nondiag.o: $(DJDS_ORDER_DIR)/DJDS_total_nondiag.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 MC_Cuthill_McKee.o: $(DJDS_ORDER_DIR)/MC_Cuthill_McKee.f90 m_precision.o Cuthill_McKee.o
 	$(F90) -c $(F90OPTFLAGS) $<
-copy_matrix_2_djds_array.o: $(DJDS_ORDER_DIR)/copy_matrix_2_djds_array.f90 m_precision.o m_machine_parameter.o t_iccg_parameter.o t_crs_matrix.o t_solver_djds.o calypso_mpi.o t_geometry_data.o t_vector_for_solver.o set_size_4_smp_types.o reordering_djds_smp_type.o DJDS_new_comm_table.o set_idx_4_mat_type.o
+copy_matrix_2_djds_array.o: $(DJDS_ORDER_DIR)/copy_matrix_2_djds_array.f90 m_precision.o m_machine_parameter.o t_iccg_parameter.o t_solver_djds.o t_crs_matrix.o calypso_mpi.o t_geometry_data.o t_vector_for_solver.o set_size_4_smp_types.o reordering_djds_smp_type.o DJDS_new_comm_table.o set_idx_4_mat_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mat_conect_SORT.o: $(DJDS_ORDER_DIR)/mat_conect_SORT.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

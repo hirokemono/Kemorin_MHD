@@ -143,6 +143,7 @@
 !
 !
       do ip = 1, num_pe
+        call dealloc_overlapped_ele(para_mesh(ip)%mesh%ele)
         call dealloc_ele_geometry(para_mesh(ip)%mesh%ele)
         call dealloc_ele_param_smp(para_mesh(ip)%mesh%ele)
         call dealloc_node_param_smp(para_mesh(ip)%mesh%node)

@@ -107,6 +107,7 @@
       call dealloc_sph_node_geometry(newmesh%node)
       call dealloc_comm_table(new_ele_comm)
       call dealloc_numele_stack(newmesh%ele)
+      call dealloc_overlapped_ele(newmesh%ele)
       call dealloc_ele_geometry(newmesh%ele)
       call dealloc_ele_param_smp(newmesh%ele)
       call dealloc_node_param_smp(newmesh%node)

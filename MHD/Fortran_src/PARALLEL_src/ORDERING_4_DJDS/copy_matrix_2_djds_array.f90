@@ -25,6 +25,7 @@
 !
       use m_machine_parameter
       use t_iccg_parameter
+      use t_solver_djds
       use t_crs_matrix
 !
       implicit none
@@ -41,9 +42,6 @@
 !
       subroutine copy_paramters_4_djds                                  &
      &         (tbl_crs, mat_crs, CG_param, djds_tbl)
-!
-       use t_solver_djds
-       use t_crs_matrix
 !
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(in) :: mat_crs
@@ -68,7 +66,6 @@
       use calypso_mpi
       use t_geometry_data
       use t_iccg_parameter
-      use t_solver_djds
       use t_vector_for_solver
 !
       use set_size_4_smp_types
@@ -91,7 +88,7 @@
       call copy_communicator_4_solver(solver_C)
       call copy_paramters_4_djds(tbl_crs, mat_crs, CG_param, djds_tbl)
 !
-      call alloc_node_param_smp(nod)
+      call alloc_node_param_smp(node)
       call count_node_4_smp_mesh(node)
 !
 !C +-----------------+
@@ -152,7 +149,6 @@
       subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,      &
      &          NP, N, NB, num_mat_comp, aiccg)
 !
-      use t_solver_djds
       use set_idx_4_mat_type
 !
       integer(kind = kint), intent(in) :: N, NP, NB

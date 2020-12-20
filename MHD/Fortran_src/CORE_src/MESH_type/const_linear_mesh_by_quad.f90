@@ -178,7 +178,7 @@
       call finalize_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call finalize_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
-      subroutine dealloc_linear_data_by_quad                            &
+      end subroutine dealloc_linear_data_by_quad
 !
 ! ----------------------------------------------------------------------
 !

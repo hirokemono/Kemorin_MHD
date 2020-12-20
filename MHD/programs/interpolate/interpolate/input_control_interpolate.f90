@@ -97,7 +97,7 @@
           call calypso_mpi_abort(ierr, 'Target mesh data is wrong!!')
         end if
 !
-        call alloc_overlaped_ele(new_femmesh%mesh%ele)
+        call alloc_overlapped_ele(new_femmesh%mesh%ele)
       end if
 !
       if(ierr .gt. 0) then

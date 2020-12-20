@@ -215,7 +215,7 @@
 !
       type(surface_data), intent(inout) :: surf
 !
-      call dealloc_surf_param_smp(edge)
+      call dealloc_surf_param_smp(surf)
 !
       end subroutine dealloc_surf_connectivity
 !

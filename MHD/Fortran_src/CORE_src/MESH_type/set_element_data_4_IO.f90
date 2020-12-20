@@ -218,6 +218,7 @@
 !
 !
       ele%internal_ele = nod_IO%internal_node
+      call alloc_overlapped_ele(ele)
       call alloc_ele_geometry(ele)
 !
 !$omp parallel do

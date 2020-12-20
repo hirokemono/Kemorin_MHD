@@ -161,6 +161,7 @@
       call dealloc_ele_param_smp(mesh%ele)
       call dealloc_node_param_smp(mesh%node)
 !
+      call dealloc_overlapped_ele(mesh%ele)
       call dealloc_ele_geometry(mesh%ele)
 !
       call dealloc_mesh_infos(mesh, group)

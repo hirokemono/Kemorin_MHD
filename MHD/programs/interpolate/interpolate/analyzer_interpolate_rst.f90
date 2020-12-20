@@ -132,6 +132,7 @@
       use set_field_to_restart
       use interpolate_nod_field_2_type
       use const_global_element_ids
+      use set_size_4_smp_types
 !
       integer(kind = kint) :: i_step, i_rst_start, i_rst_end
 !

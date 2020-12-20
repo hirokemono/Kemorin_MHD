@@ -243,6 +243,7 @@
       read_element = allocated(ele%x_ele)
 !
       if(read_element .eqv. .false.) then
+        call alloc_overlapped_ele(ele)
         call alloc_ele_geometry(ele)
         if (iflag_debug.eq.1) write(*,*) 'set_center_of_element'
         call set_center_of_element(node, ele)
@@ -270,6 +271,7 @@
 !
 !
       geom%ele%numele = 0
+      call alloc_overlapped_ele(geom%ele)
       call alloc_ele_geometry(geom%ele)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_node_param_smp'
@@ -285,6 +287,7 @@
       type(mesh_geometry), intent(inout) :: geom
 !
 !
+      call dealloc_overlapped_ele(geom%ele)
       call dealloc_ele_geometry(geom%ele)
       call dealloc_node_param_smp(geom%node)
       call dealloc_ele_param_smp(geom%ele)

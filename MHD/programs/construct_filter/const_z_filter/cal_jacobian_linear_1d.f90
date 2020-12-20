@@ -70,6 +70,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use set_size_4_smp_types
 !
       integer(kind = kint), intent(in) :: num_int
       type(node_data), intent(in) :: node
