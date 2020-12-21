@@ -106,6 +106,7 @@
       type(FEM_gauss_int_coefs), intent(inout) :: g_FEM
 !
 !
+      if(allocated(g_FEM%owe) .eqv. .FALSE.) return
       deallocate(g_FEM%owe, g_FEM%owe2d, g_FEM%owe3d)
       deallocate(g_FEM%int_start1, g_FEM%int_start2, g_FEM%int_start3)
 !

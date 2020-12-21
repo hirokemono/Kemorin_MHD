@@ -12,7 +12,7 @@
 !!      subroutine const_MHD_jacobian_and_volumes                       &
 !!     &         (SGS_param, group, ifld_msq, mesh, layer_tbl,          &
 !!     &          spfs, jacs, MHD_mesh, fem_msq)
-!!      subroutine finalize_MHD_jac_and_volumes(spfs, jacs)
+!!      subroutine finalize_MHD_jac_and_volumes(mesh, spfs, jacs)
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -145,17 +145,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine finalize_MHD_jac_and_volumes(spfs, jacs)
+      subroutine finalize_MHD_jac_and_volumes(mesh, spfs, jacs)
 !
       use t_jacobians
-      use t_shape_functions
 !
       use const_jacobians_3d
 !
+      type(mesh_geometry), intent(in) :: mesh
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacs
 !
 !
+      call dealloc_jacobians_surface(mesh%surf, jacs)
+      call dealloc_jacobians_element(mesh%ele, jacs)
       call finalize_FEM_integration                                     &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
       deallocate(jacs%g_FEM)

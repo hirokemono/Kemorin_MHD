@@ -83,6 +83,7 @@
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
+      if(allocated(jac_1d%an_edge) .eqv. .FALSE.) return
       deallocate(jac_1d%an_edge)
       deallocate(jac_1d%xeg_edge)
 !

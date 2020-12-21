@@ -132,14 +132,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
-      allocate(jacobians_T%g_FEM)
-      call sel_max_int_point_by_etype                                   &
-     &   (fem_T%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_and_single_vol                                &
      &   (fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
-!
-      if (iflag_debug.gt.0) write(*,*) 'init_send_recv'
-      call init_send_recv(fem_T%mesh%nod_comm)
 !
 !  -------------------------------
 !
@@ -150,6 +144,12 @@
       call s_mesh_repartition_by_volume                                 &
      &   (fem_T, ele_comm, next_tbl_T%neib_nod,                         &
      &    part_p1%part_param, new_fem, org_to_new_tbl)
+!
+      call finalize_jac_and_single_vol(mesh, spfs, jacs)
+!
+      call dealloc_next_nod_ele_table(next_tbl_T)
+      call dealloc_comm_table(ele_comm)
+      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
 !
       if(part_p1%new_mesh_file%iflag_format                             &
      &     .eq. id_no_file) then

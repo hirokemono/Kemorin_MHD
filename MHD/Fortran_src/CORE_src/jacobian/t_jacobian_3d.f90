@@ -192,6 +192,7 @@
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
+      if(allocated(jac_3d%an) .eqv. .FALSE.) return
       deallocate(jac_3d%an, jac_3d%an_infty)
       deallocate(jac_3d%dnx)
 !
@@ -206,6 +207,7 @@
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
+      if(allocated(jac_3d%axjac) .eqv. .FALSE.) return
       deallocate(jac_3d%axjac)
 !
       end subroutine dealloc_inv_jac_type
@@ -216,7 +218,8 @@
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
-      deallocate( jac_3d%dxidx_3d )
+      if(allocated(jac_3d%dxidx_3d) .eqv. .FALSE.) return
+      deallocate(jac_3d%dxidx_3d)
 !
       end subroutine dealloc_dxi_dx_type
 !

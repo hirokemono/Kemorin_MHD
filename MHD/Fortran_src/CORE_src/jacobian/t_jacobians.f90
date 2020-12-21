@@ -98,6 +98,7 @@
 !
       type(jacobians_type), intent(inout) :: jacs
 !
+      if(associated(jacs%jac_3d_l) .eqv. .FALSE.) return
       deallocate(jacs%jac_3d_l)
       deallocate(jacs%jac_2d_l)
       deallocate(jacs%jac_1d_l)
@@ -111,6 +112,7 @@
 !
       type(jacobians_type), intent(inout) :: jacs
 !
+      if(associated(jacs%jac_3d_l) .eqv. .FALSE.) return
       nullify(jacs%jac_3d_l)
       nullify(jacs%jac_2d_l)
       nullify(jacs%jac_1d_l)

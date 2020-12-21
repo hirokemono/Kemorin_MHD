@@ -153,6 +153,7 @@
       type(volume_shape_function), intent(inout) :: spf_3d
 !
 !
+      if(allocated(spf_3d%l_int) .eqv. .FALSE.) return
       deallocate(spf_3d%l_int)
       deallocate(spf_3d%xi, spf_3d%ei, spf_3d%zi)
 !
@@ -165,6 +166,7 @@
       type(surface_shape_function), intent(inout) :: spf_2d
 !
 !
+      if(allocated(spf_2d%l_int) .eqv. .FALSE.) return
       deallocate(spf_2d%l_int)
       deallocate(spf_2d%xi, spf_2d%ei)
 !
@@ -177,6 +179,7 @@
       type(edge_shape_function), intent(inout) :: spf_1d
 !
 !
+      if(allocated(spf_1d%l_int) .eqv. .FALSE.) return
       deallocate(spf_1d%l_int)
       deallocate(spf_1d%xi)
 !
@@ -265,6 +268,7 @@
       type(volume_shape_function), intent(inout) :: spf_3d
 !
 !
+      if(allocated(spf_3d%dnxi) .eqv. .FALSE.) return
       deallocate(spf_3d%dnxi)
       deallocate(spf_3d%dnei)
       deallocate(spf_3d%dnzi)
@@ -278,6 +282,7 @@
       type(infty_shape_function), intent(inout) :: spf_inf
 !
 !
+      if(allocated(spf_inf%dnxi_inf) .eqv. .FALSE.) return
       deallocate(spf_inf%dnxi_inf)
       deallocate(spf_inf%dnei_inf)
       deallocate(spf_inf%dnzi_inf)
@@ -291,6 +296,7 @@
       type(surface_shape_function), intent(inout) :: spf_2d
 !
 !
+      if(allocated(spf_2d%dnxi_sf) .eqv. .FALSE.) return
       deallocate(spf_2d%dnxi_sf)
       deallocate(spf_2d%dnei_sf)
 ! 
@@ -303,6 +309,7 @@
       type(edge_shape_function), intent(inout) :: spf_1d
 !
 !
+      if(allocated(spf_1d%dnxi_ed) .eqv. .FALSE.) return
       deallocate(spf_1d%dnxi_ed)
 ! 
       end subroutine dealloc_edge_shape_func

@@ -109,6 +109,7 @@
       type(radial_jacobian), intent(inout) :: jac_r
 !
 !
+      if(allocated(jac_r%owe_r) .eqv. .FALSE.) return
       deallocate(jac_r%int_start_r, jac_r%owe_r, jac_r%xi_r)
       deallocate(jac_r%an_r,   jac_r%dnxi_r)
       deallocate(jac_r%drdxi, jac_r%dxidr)

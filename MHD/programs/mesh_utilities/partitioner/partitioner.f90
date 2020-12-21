@@ -188,9 +188,6 @@
 !  ========= compute element volume ===============
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
-      allocate(jacobians_T%g_FEM)
-      call sel_max_int_point_by_etype                                   &
-     &   (org_fem%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_and_single_vol                                &
      &   (org_fem%mesh, org_fem%group, spfs_T, jacobians_T)
 !

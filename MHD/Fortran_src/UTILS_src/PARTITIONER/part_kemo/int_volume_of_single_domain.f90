@@ -14,6 +14,7 @@
 !!@verbatim
 !!      subroutine const_jacobian_and_single_vol                        &
 !!     &         (mesh, group, spfs, jacs)
+!!      subroutine finalize_jac_and_single_vol(mesh, spfs, jacs)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
 !!        type(shape_finctions_at_points), intent(inout) :: spfs
@@ -54,11 +55,13 @@
       use const_jacobians_3d
 !
       type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) :: group
+      type(mesh_groups), intent(in) :: group
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacs
 !
 !
+      allocate(jacs%g_FEM)
+      call sel_max_int_point_by_etype(mesh%ele%nnod_4_ele, jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
 !
@@ -75,6 +78,25 @@
       call dealloc_dxi_dx_element(mesh%ele, jacs)
 !
       end subroutine const_jacobian_and_single_vol
+!
+!-----------------------------------------------------------------------
+!
+      subroutine finalize_jac_and_single_vol(mesh, spfs, jacs)
+!
+      use t_shape_functions
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(shape_finctions_at_points), intent(inout) :: spfs
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      call dealloc_jacobians_element(mesh%ele, jacs)
+      call dealloc_vol_shape_func(spfs%spf_3d)
+      call finalize_FEM_integration                                     &
+     &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)
+      deallocate(jacs%g_FEM)
+!
+      end subroutine finalize_jac_and_single_vol
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

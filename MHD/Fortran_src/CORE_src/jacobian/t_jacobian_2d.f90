@@ -83,6 +83,7 @@
       type(jacobians_2d), intent(inout) :: jac_2d
 !
 !
+      if(allocated(jac_2d%an_sf) .eqv. .FALSE.) return
       deallocate(jac_2d%an_sf)
       deallocate(jac_2d%xsf_sf)
 !
