@@ -145,14 +145,9 @@
      &   (fem_T, ele_comm, next_tbl_T%neib_nod,                         &
      &    part_p1%part_param, new_fem, org_to_new_tbl)
 !
-      call finalize_jac_and_single_vol(mesh, spfs, jacs)
+      call finalize_jac_and_single_vol(fem_T%mesh, spfs_T, jacobians_T)
 !
-      call dealloc_next_nod_ele_table(next_tbl_T)
-      call dealloc_comm_table(ele_comm)
-      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
-!
-      if(part_p1%new_mesh_file%iflag_format                             &
-     &     .eq. id_no_file) then
+      if(part_p1%new_mesh_file%iflag_format .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*) 'Set repartition mesh output'
         return
       end if
@@ -175,6 +170,10 @@
       call sel_mpi_write_interpolate_table(my_rank,                     &
      &    part_p1%part_param%trans_tbl_file, itp_tbl_IO)
       call calypso_MPI_barrier
+!
+      call dealloc_next_nod_ele_table(next_tbl_T)
+      call dealloc_comm_table(ele_comm)
+      call dealloc_mesh_infomations(fem_T%mesh, fem_T%group)
 !
 !
       end subroutine initialize_reapart_by_vol
