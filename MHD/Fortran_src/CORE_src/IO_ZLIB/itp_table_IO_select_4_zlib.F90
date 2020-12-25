@@ -7,6 +7,13 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
+!!      subroutine sel_write_interpolate_table                          &
+!!     &         (id_rank, table_file_IO, itp_tbl_IO)
+!!      subroutine sel_read_interpolate_table                           &
+!!     &         (id_rank, table_file_IO, itp_tbl_IO, ierr)
+!!        type(field_IO_params), intent(in) ::  table_file_IO
+!!        type(interpolate_table), intent(inout) :: itp_tbl_IO
+!!
 !!      subroutine sel_write_itp_coefs_dest                             &
 !!     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine sel_read_itp_coefs_dest(id_rank, table_file_IO,      &

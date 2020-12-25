@@ -8,19 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_itp_table_file                              &
-!!     &         (file_name, id_rank, itp_tbl_IO)
+!!     &         (gzip_name, id_rank, itp_tbl_IO)
 !!      subroutine gz_read_itp_table_file                               &
-!!     &         (file_name, id_rank, itp_tbl_IO, ierr)
+!!     &         (gzip_name, id_rank, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine gz_write_itp_coefs_dest_file                         &
-!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+!!     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine gz_read_itp_coefs_dest_file                          &
-!!     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!!     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine gz_read_itp_table_dest_file                          &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (gzip_name, id_rank, IO_itp_dest, ierr)
 !!      subroutine gz_read_itp_domain_dest_file                         &
-!!     &         (file_name, id_rank, IO_itp_dest, ierr)
+!!     &         (gzip_name, id_rank, IO_itp_dest, ierr)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
@@ -35,13 +35,11 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
 !
-      use set_parallel_file_name
       use gz_itp_table_data_IO
       use gz_binary_IO
 !
       implicit none
 !
-      character(len=kchara), private  :: gzip_name
       type(buffer_4_gzip), private :: zbuf_itp
 !
 !-----------------------------------------------------------------------
@@ -51,17 +49,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_write_itp_table_file                                &
-     &         (file_name, id_rank, itp_tbl_IO)
+     &         (gzip_name, id_rank, itp_tbl_IO)
 !
       use skip_gz_comment
 !
-      character(len=kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
 !
-      gzip_name = add_gzip_extension(file_name)
       call open_wt_gzfile_a(gzip_name, zbuf_itp)
 !
       call write_gz_itp_table_dest                                      &
@@ -86,11 +83,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_read_itp_table_file                                 &
-     &         (file_name, id_rank, itp_tbl_IO, ierr)
+     &         (gzip_name, id_rank, itp_tbl_IO, ierr)
 !
       use skip_gz_comment
 !
-      character(len=kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
       type(interpolate_table), intent(inout) :: itp_tbl_IO
@@ -99,10 +96,9 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
-!        write(*,*) 'read_gz_itp_domain_dest', trim(file_name)
+!        write(*,*) 'read_gz_itp_domain_dest', trim(gzip_name)
       call read_gz_itp_domain_dest                                      &
      &   (n_rank_file, itp_tbl_IO%tbl_dest, zbuf_itp)
 !        write(*,*) 'read_gz_itp_table_dest'
@@ -126,18 +122,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_write_itp_coefs_dest_file                           &
-     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest)
 !
       use skip_gz_comment
 !
-      character(len=kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
       type(interpolate_table_dest), intent(inout) :: IO_itp_dest
       type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !
 !
-      gzip_name = add_gzip_extension(file_name)
       call open_wt_gzfile_a(gzip_name, zbuf_itp)
 !
       call write_gz_itp_table_dest(id_rank, IO_itp_dest, zbuf_itp)
@@ -157,11 +152,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_read_itp_coefs_dest_file                            &
-     &         (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !
       use skip_gz_comment
 !
-      character(len=kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
       integer(kind = kint), intent(inout) :: ierr
@@ -171,7 +166,6 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
@@ -187,11 +181,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_read_itp_table_dest_file                            &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (gzip_name, id_rank, IO_itp_dest, ierr)
 !
       use skip_gz_comment
 !
-      character(len=kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
       integer(kind = kint), intent(inout) :: ierr
@@ -200,7 +194,6 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)
@@ -215,11 +208,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine gz_read_itp_domain_dest_file                           &
-     &         (file_name, id_rank, IO_itp_dest, ierr)
+     &         (gzip_name, id_rank, IO_itp_dest, ierr)
 !
       use skip_gz_comment
 !
-      character(len=kchara), intent(in) :: file_name
+      character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
       integer(kind = kint), intent(inout) :: ierr
@@ -228,7 +221,6 @@
       integer(kind = kint) :: n_rank_file
 !
 !
-      gzip_name = add_gzip_extension(file_name)
       call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
       call read_gz_itp_domain_dest(n_rank_file, IO_itp_dest, zbuf_itp)

@@ -125,6 +125,7 @@
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(part_p1%mesh_file, nprocs, fem_T)
+      call calypso_MPI_barrier
 !
 !  -------------------------------
 !
@@ -134,15 +135,11 @@
 !  -------------------------------
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'check_exist_mesh(my_rank, part_p1%new_mesh_file)', &
-     &      check_exist_mesh(my_rank, part_p1%new_mesh_file)
-        write(*,*) 'check_exist_interpolate_file(my_rank, part_p1%trans_tbl_file)', &
-     &      check_exist_interpolate_file(my_rank,                  &
-     &                              part_p1%part_param%trans_tbl_file)
         flag =  check_exist_mesh(my_rank, part_p1%new_mesh_file)        &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
      &                              part_p1%part_param%trans_tbl_file))
       end if
+      call calypso_MPI_barrier
       call calypso_mpi_bcast_one_logical(flag, 0)
 !
       if(flag) then
