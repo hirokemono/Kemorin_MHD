@@ -52,6 +52,7 @@
 !
 !
       file_name = set_mpi_interpolate_file_name(id_rank, table_file_IO)
+      write(*,*) 'file_name', trim(file_name)
       check_exist_interpolate_file = check_file_exist(file_name)
 !
       end function check_exist_interpolate_file

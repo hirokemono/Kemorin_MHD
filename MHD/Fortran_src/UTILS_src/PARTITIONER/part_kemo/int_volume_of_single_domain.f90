@@ -84,6 +84,7 @@
       subroutine finalize_jac_and_single_vol(mesh, spfs, jacs)
 !
       use t_shape_functions
+      use const_jacobians_3d
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(shape_finctions_at_points), intent(inout) :: spfs

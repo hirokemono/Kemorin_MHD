@@ -134,6 +134,11 @@
 !  -------------------------------
 !
       if(my_rank .eq. 0) then
+        write(*,*) 'check_exist_mesh(my_rank, part_p1%new_mesh_file)', &
+     &      check_exist_mesh(my_rank, part_p1%new_mesh_file)
+        write(*,*) 'check_exist_interpolate_file(my_rank, part_p1%trans_tbl_file)', &
+     &      check_exist_interpolate_file(my_rank,                  &
+     &                              part_p1%part_param%trans_tbl_file)
         flag =  check_exist_mesh(my_rank, part_p1%new_mesh_file)        &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
      &                              part_p1%part_param%trans_tbl_file))

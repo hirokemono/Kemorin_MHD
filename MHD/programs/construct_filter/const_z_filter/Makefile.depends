@@ -4,7 +4,7 @@ analyzer_test_dz.o: $(CONST_FILTER_Z_DIR)/analyzer_test_dz.f90 m_precision.o m_m
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_delta_z_4_z_filter.o: $(CONST_FILTER_Z_DIR)/cal_delta_z_4_z_filter.f90 m_precision.o t_comm_table.o t_geometry_data.o t_edge_data.o t_iccg_parameter.o t_crs_connect.o t_crs_matrix.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobian_1d.o m_int_edge_vart_width.o m_int_edge_data.o m_commute_filter_z.o calcs_by_LUsolver.o solve_by_mass_z.o int_edge_mass_mat_z_filter.o set_matrices_4_z_filter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_jacobian_linear_1d.o: $(CONST_FILTER_Z_DIR)/cal_jacobian_linear_1d.f90 m_precision.o calypso_mpi.o t_shape_functions.o t_jacobians.o t_geometry_data.o t_surface_data.o t_edge_data.o m_gauss_int_parameters.o t_fem_gauss_int_coefs.o set_size_4_smp_types.o set_integration_indices.o set_gauss_int_parameters.o const_jacobians_1d.o
+cal_jacobian_linear_1d.o: $(CONST_FILTER_Z_DIR)/cal_jacobian_linear_1d.f90 m_precision.o calypso_mpi.o t_shape_functions.o t_jacobians.o t_geometry_data.o t_surface_data.o t_edge_data.o set_size_4_smp_types.o m_gauss_int_parameters.o t_fem_gauss_int_coefs.o set_integration_indices.o set_gauss_int_parameters.o const_jacobians_1d.o
 	$(F90) -c $(F90OPTFLAGS) $<
 calcs_by_LUsolver.o: $(CONST_FILTER_Z_DIR)/calcs_by_LUsolver.f90 m_precision.o m_matrix_4_LU.o m_ludcmp.o m_commute_filter_z.o t_crs_matrix.o m_int_edge_vart_width.o m_int_edge_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
