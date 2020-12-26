@@ -29,7 +29,6 @@
       use t_comm_table
       use t_calypso_comm_table
       use t_next_node_ele_4_node
-      use m_work_time
 !
       implicit none
 !
@@ -45,6 +44,10 @@
       use t_control_param_vol_grping
       use t_repart_double_numberings
       use t_repartition_by_volume
+!
+      use m_elapsed_labels_4_REPART
+      use m_work_time
+!
       use const_repart_nod_and_comm
       use const_repart_ele_connect
       use redistribute_groups
@@ -68,6 +71,7 @@
 !
 !
 !       Re-partitioning
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call grouping_by_volume(org_fem%mesh, part_param, part_grp)
 !
       call alloc_double_numbering_data                                  &
@@ -89,12 +93,16 @@
       call s_redistribute_groups(org_fem%mesh, org_fem%group, ele_comm, &
      &    new_fem%mesh, org_to_new_tbl, ele_tbl, new_fem%group)
       call dealloc_calypso_comm_table(ele_tbl)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
+      if(i_level .le. 1) return
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
       do i_level = 2, part_param%num_FEM_sleeve
         if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
         call para_sleeve_extension(new_fem%mesh, new_fem%group)
       end do
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
       end subroutine s_mesh_repartition_by_volume
 !

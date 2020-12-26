@@ -24,6 +24,9 @@
       use t_control_param_repartition
       use t_time_data
       use t_VIZ_only_step_parameter
+!
+      use m_elapsed_labels_SEND_RECV
+      use m_elapsed_labels_4_REPART
       use m_work_time
 !
       implicit none
@@ -68,6 +71,8 @@
 !     --------------------- 
 !
       call init_elapse_time_by_TOTAL
+      call elpsed_label_4_repartition
+      call elpsed_label_field_send_recv
 !
 !     ----- read control data
 !
@@ -100,13 +105,17 @@
       call calypso_mpi_bcast_one_logical(flag, 0)
 !
       if(flag) then
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
         call load_repartitoned_file(part_p1, fem_T, new_fem,            &
      &                              org_to_new_tbl)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
         write(e_message,*)                                              &
      &        'Construct repartitioned mesh and transfer table'
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         call s_repartiton_by_volume(part_p1, fem_T, new_fem,            &
      &                              org_to_new_tbl)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !
       end subroutine initialize_field_to_repart
@@ -148,9 +157,11 @@
         call sel_read_alloc_para_udt_file                               &
      &     (istep_ucd, part_p1%org_ucd_file, t_IO, org_ucd)
 !
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call udt_field_to_new_partition                                 &
      &     (iflag_import_item, istep_ucd, part_p1%new_ucd_file,         &
      &      t_IO, new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
         call deallocate_ucd_phys_data(org_ucd)
         call deallocate_ucd_phys_name(org_ucd)
@@ -164,6 +175,8 @@
 !        write(*,*) 't_VIZ1%viz_step%FLINE_t', t_VIZ1%viz_step%FLINE_t
 !        write(*,*) 't_VIZ1%viz_step%LIC_t', t_VIZ1%viz_step%LIC_t
 !      end if
+!
+      call output_elapsed_times
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'
 !

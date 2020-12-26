@@ -18,6 +18,7 @@
       use m_constants
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_REPART
       use calypso_mpi
 !
       use t_mesh_data
@@ -53,6 +54,7 @@
 !     --------------------- 
 !
       call init_elapse_time_by_TOTAL
+      call elpsed_label_4_repartition
 !
 !     ----- read control data
 !
@@ -69,8 +71,11 @@
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------
+!
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
       call s_repartiton_by_volume(part_p1, fem_T, new_fem,              &
      &                            org_to_new_tbl)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
 !
       end subroutine initialize_reapart_by_vol
 !
@@ -111,6 +116,8 @@
       call compare_calypso_comm_tbls(org_to_new_tbl, part_tbl_2)
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
+!
+      call output_elapsed_times
 !
       end subroutine analyze_reapart_by_vol
 !

@@ -28,6 +28,7 @@
       use m_constants
       use m_machine_parameter
       use m_work_time
+      use m_elapsed_labels_4_REPART
       use calypso_mpi
 !
       use t_mesh_data
@@ -75,10 +76,10 @@
 !
 !  -------------------------------
 !
-      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
-      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
       call const_element_comm_tbl_only(geofem%mesh, ele_comm)
@@ -96,6 +97,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
      &   (geofem%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm, next_tbl_T%neib_nod,                        &
@@ -103,6 +105,7 @@
       call dealloc_comm_table(ele_comm)
 !
 !       Output new mesh file
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
       if(part_p%new_mesh_file%iflag_format .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No repartitioned mesh data output'
@@ -125,6 +128,7 @@
         call dealloc_interpolate_table(itp_tbl_IO)
       end if
       call calypso_MPI_barrier
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
 !
       call dealloc_next_nod_ele_table(next_tbl_T)
       call dealloc_mesh_infomations(geofem%mesh, geofem%group)
