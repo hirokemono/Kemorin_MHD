@@ -100,17 +100,18 @@
       call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_mesh_infomations(mesh, group)
+      call dealloc_mesh_data(mesh, group)
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
-      call set_mesh_data_from_type(newmesh, newgroup, mesh, group)
+      if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
+      call copy_mesh_and_group(newmesh, newgroup, mesh, group)
 !
-      call dealloc_sph_node_geometry(newmesh%node)
       call dealloc_comm_table(new_ele_comm)
       call dealloc_numele_stack(newmesh%ele)
       call dealloc_overlapped_ele(newmesh%ele)
       call dealloc_ele_geometry(newmesh%ele)
       call dealloc_ele_param_smp(newmesh%ele)
       call dealloc_node_param_smp(newmesh%node)
+      call dealloc_mesh_data(newmesh, newgroup)
 !
       end subroutine para_sleeve_extension
 !

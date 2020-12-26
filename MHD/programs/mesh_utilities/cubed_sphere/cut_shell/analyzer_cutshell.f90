@@ -71,7 +71,7 @@
 !
       call output_mesh(modified_mesh_file, my_rank,                     &
      &                 cutted_fem%mesh, cutted_fem%group)
-      call dealloc_mesh_infos(cutted_fem%mesh, cutted_fem%group)
+      call dealloc_mesh_data(cutted_fem%mesh, cutted_fem%group)
 !
       end subroutine analyze_cutshell
 !

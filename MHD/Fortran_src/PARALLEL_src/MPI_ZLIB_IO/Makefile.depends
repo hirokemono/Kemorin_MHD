@@ -36,9 +36,9 @@ gz_MPI_itp_table_data_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_MPI_itp_table_data_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_data_IO_b.f90 m_precision.o m_constants.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o gz_MPI_binary_datum_IO.o gz_MPI_binary_data_IO.o transfer_to_long_integers.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_MPI_itp_table_file_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o set_parallel_file_name.o gz_MPI_itp_table_data_IO.o gz_MPI_binary_datum_IO.o
+gz_MPI_itp_table_file_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_file_IO.f90 m_precision.o m_error_IDs.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_calypso_mpi_IO_param.o gz_MPI_itp_table_data_IO.o gz_MPI_binary_datum_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
-gz_MPI_itp_table_file_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_file_IO_b.f90 m_precision.o m_error_IDs.o calypso_mpi.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_binary_IO_buffer.o t_calypso_mpi_IO_param.o t_buffer_4_gzip.o set_parallel_file_name.o gz_MPI_itp_table_data_IO_b.o gz_MPI_binary_datum_IO.o
+gz_MPI_itp_table_file_IO_b.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_itp_table_file_IO_b.f90 m_precision.o m_error_IDs.o calypso_mpi.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_binary_IO_buffer.o t_calypso_mpi_IO_param.o t_buffer_4_gzip.o gz_MPI_itp_table_data_IO_b.o gz_MPI_binary_datum_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 gz_MPI_mesh_data_IO.o: $(MPI_ZLIB_IO_DIR)/gz_MPI_mesh_data_IO.f90 m_precision.o m_constants.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_calypso_mpi_IO_param.o m_fem_mesh_labels.o gz_MPI_ascii_data_IO.o gz_MPI_domain_data_IO.o gz_MPI_node_geometry_IO.o gz_MPI_element_connect_IO.o gz_MPI_groups_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<

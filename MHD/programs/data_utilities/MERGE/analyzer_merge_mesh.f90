@@ -116,7 +116,7 @@
       call dealloc_groups_data(new_group)
 !
       call dealloc_double_numbering(dbl_nod)
-      call dealloc_mesh_infos(fem_m%mesh, fem_m%group)
+      call dealloc_mesh_data(fem_m%mesh, fem_m%group)
 !
       call calypso_MPI_barrier
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'

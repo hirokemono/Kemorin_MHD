@@ -18,7 +18,7 @@
 !!      subroutine alloc_ele_4_surf_type(surf)
 !!
 !!      subroutine dealloc_numsurf_stack(surf)
-!!      subroutine deallocate_inod_in_surf_type(surf)
+!!      subroutine dealloc_inod_in_surf(surf)
 !!      subroutine deallocate_surface_connect_type(surf)
 !!      subroutine deallocate_ext_surface_type(surf)
 !!      subroutine deallocate_iso_surface_type(surf)
@@ -268,15 +268,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine deallocate_inod_in_surf_type(surf)
+      subroutine dealloc_inod_in_surf(surf)
 !
       type(surface_data), intent(inout) :: surf
 !
 !
       if(allocated(surf%node_on_sf) .eqv. .FALSE.) return
-       deallocate (surf%node_on_sf, surf%node_on_sf_n)
+      deallocate (surf%node_on_sf, surf%node_on_sf_n)
 !
-       end subroutine deallocate_inod_in_surf_type
+      end subroutine dealloc_inod_in_surf
 !
 !  ---------------------------------------------------------------------
 !

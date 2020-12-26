@@ -71,7 +71,7 @@
        if (iflag_debug.eq.1) write(*,*) 'mpi_output_mesh'
       call mpi_output_mesh                                              &
      &   (modified_mesh_file, fem_add%mesh, fem_add%group)
-      call dealloc_mesh_infos(fem_add%mesh, fem_add%group)
+      call dealloc_mesh_data(fem_add%mesh, fem_add%group)
 !
       call dealloc_r_ele_cubed_sph
 !

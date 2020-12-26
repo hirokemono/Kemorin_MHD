@@ -145,12 +145,13 @@
 !     &    femmesh_s%mesh)
 !      call compare_mesh_groups(geofem%group%nod_grp, femmesh_s%group)
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type'
+      if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
       femmesh_s%mesh%ele%first_ele_type                                 &
      &   = set_cube_eletype_from_num(femmesh_s%mesh%ele%nnod_4_ele)
-      call set_mesh_data_from_type(femmesh_s%mesh, femmesh_s%group,     &
+      call copy_mesh_and_group(femmesh_s%mesh, femmesh_s%group,         &
      &    geofem%mesh, geofem%group)
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_from_type end'
+      call dealloc_groups_data(femmesh_s%group)
+      call dealloc_mesh_geometry_base(femmesh_s%mesh)
 !
       end subroutine load_FEM_mesh_4_SPH_w_LIC
 !

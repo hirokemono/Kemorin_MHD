@@ -20,9 +20,6 @@
       use calypso_mpi
 !
       use t_mesh_data
-      use t_comm_table
-      use t_geometry_data
-      use t_group_data
       use t_calypso_comm_table
       use t_control_param_repartition
       use t_time_data
@@ -47,61 +44,22 @@
 !
       subroutine initialize_field_to_repart
 !
-      use m_error_IDs
-      use m_array_for_send_recv
-      use m_default_file_prefix
-      use m_file_format_switch
       use t_ctl_file_volume_grouping
-      use t_1d_repartitioning_work
-      use t_repartition_by_volume
-      use set_istack_4_domain_block
-      use repart_in_xyz_by_volume
 !
-      use t_file_IO_parameter
-      use t_read_mesh_data
-      use t_repart_double_numberings
-      use t_interpolate_table
+      use m_error_IDs
+      use m_file_format_switch
 !
-      use mpi_load_mesh_data
-      use mesh_file_IO
-      use copy_mesh_structures
-      use append_group_data
-!
-      use calypso_mpi_int
-      use calypso_mpi_real
       use calypso_mpi_logical
-!
-      use const_jacobians_3d
-      use const_element_comm_tables
-      use parallel_FEM_mesh_init
-      use output_test_mesh
-      use set_table_4_RHS_assemble
+      use mpi_load_mesh_data
       use nod_phys_send_recv
-      use solver_SR_type
-      use transfer_to_long_integers
       use mesh_file_name_by_param
       use set_interpolate_file_name
+      use repartiton_by_volume
 !
-      use set_parallel_file_name
-      use int_volume_of_single_domain
-      use set_nnod_4_ele_by_type
-!
-      use set_mesh_file_names
-      use mesh_file_IO
-!
-      use calypso_SR_type
-      use select_copy_from_recv
-      use nod_phys_send_recv
-!
-      use mesh_repartition_by_volume
-      use copy_repart_and_itp_table
-      use parallel_itp_tbl_IO_select
 !
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-!
-      type(interpolate_table) :: itp_tbl_IO
 !
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: ierr
@@ -121,7 +79,6 @@
      &   (part_tctl1%t_viz_ctl, t_VIZ1, ierr, e_message)
       call copy_delta_t(t_VIZ1%init_d, t_VIZ1%time_d)
 !
-!
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(part_p1%mesh_file, nprocs, fem_T)
@@ -135,7 +92,7 @@
 !  -------------------------------
 !
       if(my_rank .eq. 0) then
-        flag =  check_exist_mesh(my_rank, part_p1%new_mesh_file)        &
+        flag =  (check_exist_mesh(my_rank, part_p1%new_mesh_file))      &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
      &                              part_p1%part_param%trans_tbl_file))
       end if
@@ -143,25 +100,14 @@
       call calypso_mpi_bcast_one_logical(flag, 0)
 !
       if(flag) then
-!       Read target mesh
-        if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new'
-        call mpi_input_mesh(part_p1%new_mesh_file, nprocs, new_fem)
-        call const_global_mesh_infos(new_fem%mesh)
-!
-        call sel_mpi_read_interpolate_table(my_rank, nprocs,            &
-     &      part_p1%part_param%trans_tbl_file, itp_tbl_IO, ierr)
-        call calypso_MPI_barrier
-!
-        irank_read = my_rank
-        call copy_itp_table_to_repart_tbl(irank_read,                   &
-     &      fem_T%mesh, new_fem%mesh, itp_tbl_IO, org_to_new_tbl)
-        call calypso_MPI_barrier
+        call load_repartitoned_file(part_p1, fem_T, new_fem,            &
+     &                              org_to_new_tbl)
       else
         write(e_message,*)                                              &
-     &        'Missing repartitioned mesh and transfer table'
-        call calypso_mpi_abort(1,e_message)
+     &        'Construct repartitioned mesh and transfer table'
+        call s_repartiton_by_volume(part_p1, fem_T, new_fem,            &
+     &                              org_to_new_tbl)
       end if
-!
 !
       end subroutine initialize_field_to_repart
 !
@@ -171,7 +117,6 @@
 !
       use t_IO_step_parameter
       use t_VIZ_step_parameter
-      use t_time_data
       use t_ucd_data
 !
       use parallel_ucd_IO_select
@@ -212,25 +157,13 @@
       end do
       call finalize_udt_to_new_partition(new_ucd)
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 't_VIZ1%init_d%i_time_step',         &
-     &            t_VIZ1%init_d%i_time_step
-        write(*,*) 't_VIZ1%finish_d%i_end_step',        &
-     &            t_VIZ1%finish_d%i_end_step
-        write(*,*) 't_VIZ1%ucd_step%increment',         &
-     &            t_VIZ1%ucd_step%increment
-!
-        write(*,*) 't_VIZ1%viz_step%PSF_t',             &
-     &            t_VIZ1%viz_step%PSF_t
-        write(*,*) 't_VIZ1%viz_step%ISO_t',             &
-     &            t_VIZ1%viz_step%ISO_t
-        write(*,*) 't_VIZ1%viz_step%PVR_t',             &
-     &            t_VIZ1%viz_step%PVR_t
-        write(*,*) 't_VIZ1%viz_step%FLINE_t',           &
-     &            t_VIZ1%viz_step%FLINE_t
-        write(*,*) 't_VIZ1%viz_step%LIC_t',             &
-     &            t_VIZ1%viz_step%LIC_t
-      end if
+!      if(my_rank .eq. 0) then
+!        write(*,*) 't_VIZ1%viz_step%PSF_t', t_VIZ1%viz_step%PSF_t
+!        write(*,*) 't_VIZ1%viz_step%ISO_t', t_VIZ1%viz_step%ISO_t
+!        write(*,*) 't_VIZ1%viz_step%PVR_t', t_VIZ1%viz_step%PVR_t
+!        write(*,*) 't_VIZ1%viz_step%FLINE_t', t_VIZ1%viz_step%FLINE_t
+!        write(*,*) 't_VIZ1%viz_step%LIC_t', t_VIZ1%viz_step%LIC_t
+!      end if
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'
 !

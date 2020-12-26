@@ -1,8 +1,12 @@
-!set_table_4_RHS_assemble.f90
-!      module set_table_4_RHS_assemble
-!
-!       Written by H. Matsui on Dec., 2008
-!
+!>@file   set_table_4_RHS_assemble.f90
+!!@brief  module set_table_4_RHS_assemble
+!!
+!!@author H. Matsui
+!!@date Programmed on Dec., 2008
+!!
+!>@brief Find surrounded node and element
+!!
+!!@verbatim
 !!      subroutine s_set_RHS_assemble_table(mesh, neib_tbl, rhs_tbl)
 !!      subroutine set_belonged_ele_and_next_nod                        &
 !!     &         (mesh, neib_ele, neib_nod)
@@ -15,6 +19,7 @@
 !!        type(node_data),           intent(in) :: node
 !!        type(next_nod_ele_table),     intent(inout) :: next_tbl
 !!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!@endverbatim
 !
       module set_table_4_RHS_assemble
 !

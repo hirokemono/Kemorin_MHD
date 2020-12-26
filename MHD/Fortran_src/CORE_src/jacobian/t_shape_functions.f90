@@ -1,6 +1,12 @@
-!t_shape_functions.f90
-!   module   t_shape_functions
-!
+!>@file   t_shape_functions.f90
+!!@brief  module t_shape_functions
+!!
+!!@author H. Matsui
+!!@date Programmed on 2001
+!!
+!>@brief  arrays for shape functions in element coordinate
+!!
+!!@verbatim
 !!      subroutine alloc_3d_gauss_point_id(g_FEM, spf_3d)
 !!      subroutine alloc_2d_gauss_point_id(g_FEM, spf_2d)
 !!      subroutine alloc_1d_gauss_point_id(g_FEM, spf_1d)
@@ -21,8 +27,8 @@
 !!        type(infty_shape_function), intent(inout) :: spf_inf
 !!        type(surface_shape_function), intent(inout) :: spf_2d
 !!        type(edge_shape_function), intent(inout) :: spf_1d
+!!@endverbatim
 !
-!>  arrays for shape functions in element coordinate
       module t_shape_functions
 !
       use m_precision

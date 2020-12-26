@@ -105,7 +105,7 @@
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
-      call dealloc_mesh_infos(fem_EXT%mesh, fem_EXT%group)
+      call dealloc_mesh_data(fem_EXT%mesh, fem_EXT%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh'
       call pickup_surface_mesh                                          &

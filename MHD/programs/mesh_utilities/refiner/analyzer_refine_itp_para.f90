@@ -117,8 +117,8 @@
       call dealloc_2nd_merge_table(sec_mesh_rf)
       call dealloc_array_4_merge(mgd_mesh_rf)
 !
-      call dealloc_interpolate_tbl_type(para_ref_itp%f2c_single)
-      call dealloc_interpolate_tbl_type(para_ref_itp%c2f_single)
+      call dealloc_interpolate_table(para_ref_itp%f2c_single)
+      call dealloc_interpolate_table(para_ref_itp%c2f_single)
 !
       call dealloc_parallel_mesh_in_1pe                                 &
      &   (para_ref_itp%nprocs_fine, para_ref_itp%fine_mesh)

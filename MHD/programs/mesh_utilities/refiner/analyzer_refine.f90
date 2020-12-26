@@ -234,10 +234,12 @@
         write(*,*) 'dealloc_mesh_infos_w_normal'
         call dealloc_mesh_infos_w_normal(org_fem%mesh, org_fem%group)
 !
-        write(*,*) 'set_mesh_data_from_type'
-        call set_mesh_data_from_type                                    &
+        write(*,*) 'copy_mesh_and_group'
+        call copy_mesh_and_group                                        &
      &     (refined_fem%mesh, refined_fem%group,                        &
      &      org_fem%mesh, org_fem%group)
+        call dealloc_groups_data(refined_fem%group)
+        call dealloc_mesh_geometry_base(refined_fem%mesh)
 !
         org_fem%mesh%surf%nnod_4_surf                                   &
      &      = refined_fem%mesh%surf%nnod_4_surf
@@ -247,7 +249,7 @@
 !
       call output_mesh(refine_p1%refined_mesh_file, 0,                  &
      &                 refined_fem%mesh, refined_fem%group)
-      call dealloc_mesh_infos(refined_fem%mesh, refined_fem%group)
+      call dealloc_mesh_data(refined_fem%mesh, refined_fem%group)
 !
       end subroutine analyze_refine
 !
