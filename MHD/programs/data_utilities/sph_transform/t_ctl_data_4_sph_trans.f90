@@ -153,6 +153,8 @@
 !
         call s_viz_step_ctls_to_time_ctl                                &
      &     (spt_ctl%viz_ctls, spt_ctl%t_ctl)
+        call add_fields_4_vizs_to_fld_ctl(spt_ctl%viz_ctls,             &
+     &      spt_ctl%fld_ctl%field_ctl)
       end if
 !
       call bcast_sph_trans_control_data(spt_ctl)
@@ -163,6 +165,8 @@
 !
       subroutine read_sph_trans_control_data                            &
      &         (id_control, hd_block, spt_ctl, c_buf)
+!
+      use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -192,7 +196,7 @@
         call read_sph_trans_params_ctl                                  &
      &     (id_control, hd_sph_trans_params, spt_ctl, c_buf)
 !
-        call read_viz_controls                                          &
+        call s_read_viz_controls                                        &
      &     (id_control, hd_viz_control, spt_ctl%viz_ctls, c_buf)
       end do
       spt_ctl%i_sph_trans_ctl = 1

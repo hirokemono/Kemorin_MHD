@@ -31,6 +31,7 @@
       use t_shape_functions
       use t_jacobians
       use t_file_IO_parameter
+      use t_field_list_for_vizs
 !
       implicit none
 !
@@ -59,6 +60,9 @@
         type(shape_finctions_at_points) :: spfs
 !>        Stracture for Jacobians
         type(jacobians_type) :: jacobians
+!
+!>      structure of field list for visualization
+        type(visulize_field_list) :: viz_fld_list
       end type FEM_mesh_field_4_viz
 !
 ! ----------------------------------------------------------------------

@@ -134,6 +134,8 @@
 !
         call s_viz_step_ctls_to_time_ctl                                &
      &     (MHD_ctl%viz_ctls, MHD_ctl%smctl_ctl%tctl)
+        call add_fields_4_vizs_to_fld_ctl(MHD_ctl%viz_ctls,             &
+     &      MHD_ctl%model_ctl%fld_ctl%field_ctl)
       end if
 !
       call bcast_sph_mhd_control_data(MHD_ctl)
@@ -169,6 +171,7 @@
      &         (id_control, hd_block, MHD_ctl, c_buf)
 !
       use t_ctl_data_SPH_MHD_control
+      use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -204,7 +207,7 @@
         call read_sph_monitoring_ctl                                    &
      &     (id_control, hd_pick_sph, MHD_ctl%smonitor_ctl, c_buf)
 !
-        call read_viz_controls                                          &
+        call s_read_viz_controls                                        &
      &     (id_control, hd_viz_control, MHD_ctl%viz_ctls, c_buf)
 !
         call read_dynamo_viz_control                                    &

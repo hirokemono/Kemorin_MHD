@@ -7,15 +7,14 @@
 !> @brief Control data structure for visualization controls
 !!
 !!@verbatim
-!!      subroutine read_viz_controls(id_control, viz_ctls, c_buf)
 !!      subroutine bcast_viz_controls(viz_ctls)
 !!      subroutine dealloc_viz_controls(viz_ctls)
 !!       type(visualization_controls), intent(inout) :: viz_ctls
 !!       type(buffer_for_control), intent(inout)  :: c_buf
 !!
-!!      integer(kind = kint) function num_label_vizs()
-!!      integer(kind = kint) function num_label_vizs_w_dep()
-!!      subroutine set_label_vizs(names)
+!!      subroutine add_fields_4_vizs_to_fld_ctl(viz_ctls, field_ctl)
+!!        type(visualization_controls), intent(in) :: viz_ctls
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin visual_control
 !!    array  cross_section_ctl
@@ -118,155 +117,11 @@
         integer (kind=kint) :: i_viz_control = 0
       end type visualization_controls
 !
-!     Top level
-      character(len=kchara), parameter, private                         &
-     &             :: hd_section_ctl = 'cross_section_ctl'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_isosurf_ctl = 'isosurface_ctl'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_pvr_ctl = 'volume_rendering'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_lic_ctl = 'LIC_rendering'
-      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
-!
-!
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_section =   'i_step_sectioning_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_isosurf =   'i_step_isosurface_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_pvr =       'i_step_pvr_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_lic =       'i_step_LIC_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_fline =     'i_step_fline_ctl'
-!
-      character(len=kchara), parameter, private                         &
-     &       :: hd_i_step_ucd =       'i_step_field_ctl'
-!
-      character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_section =   'delta_t_sectioning_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_isosurf =   'delta_t_isosurface_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_pvr =       'delta_t_pvr_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_lic =       'delta_t_LIC_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_fline =     'delta_t_fline_ctl'
-!
-      character(len=kchara), parameter, private                         &
-     &       :: hd_delta_t_ucd =       'delta_t_field_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_output_fld_file_fmt = 'output_field_file_fmt_ctl'
-!
-!
-!      Deprecated labels
-      character(len=kchara), parameter, private                         &
-     &             :: hd_psf_ctl = 'surface_rendering'
-      character(len=kchara), parameter, private                         &
-     &             :: hd_iso_ctl = 'isosurf_rendering'
-!
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs = 18
-      integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs_w_dep = 20
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine read_viz_controls                                      &
-     &         (id_control, hd_block, viz_ctls, c_buf)
-!
-      use t_read_control_elements
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: id_control 
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(visualization_controls), intent(inout) :: viz_ctls
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-      if(viz_ctls%i_viz_control .gt. 0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-!
-        if(check_array_flag(c_buf, hd_psf_ctl)) then
-          call read_files_4_psf_ctl(id_control, hd_psf_ctl,             &
-     &        viz_ctls%psf_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_section_ctl)) then
-          call read_files_4_psf_ctl(id_control, hd_section_ctl,         &
-     &        viz_ctls%psf_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_iso_ctl)) then
-          call read_files_4_iso_ctl(id_control, hd_iso_ctl,             &
-     &        viz_ctls%iso_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_isosurf_ctl)) then
-          call read_files_4_iso_ctl(id_control, hd_isosurf_ctl,         &
-     &        viz_ctls%iso_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_pvr_ctl)) then
-          call read_files_4_pvr_ctl(id_control, hd_pvr_ctl,             &
-     &        viz_ctls%pvr_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_fline_ctl)) then
-          call read_files_4_fline_ctl(id_control, hd_fline_ctl,         &
-     &        viz_ctls%fline_ctls, c_buf)
-        end if
-!
-        if(check_array_flag(c_buf, hd_lic_ctl)) then
-          call read_files_4_lic_ctl(id_control, hd_lic_ctl,             &
-     &        viz_ctls%lic_ctls, c_buf)
-        end if
-!
-        call read_integer_ctl_type(c_buf, hd_i_step_section,            &
-     &      viz_ctls%i_step_psf_v_ctl)
-        call read_integer_ctl_type(c_buf, hd_i_step_isosurf,            &
-     &      viz_ctls%i_step_iso_v_ctl)
-        call read_integer_ctl_type(c_buf, hd_i_step_pvr,                &
-     &      viz_ctls%i_step_pvr_v_ctl)
-        call read_integer_ctl_type(c_buf, hd_i_step_lic,                &
-     &      viz_ctls%i_step_lic_v_ctl)
-        call read_integer_ctl_type(c_buf, hd_i_step_fline,              &
-     &      viz_ctls%i_step_fline_v_ctl)
-        call read_integer_ctl_type(c_buf, hd_i_step_ucd,                &
-     &      viz_ctls%i_step_ucd_v_ctl)
-!
-        call read_real_ctl_type(c_buf, hd_delta_t_section,              &
-     &      viz_ctls%delta_t_psf_v_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_isosurf,              &
-     &      viz_ctls%delta_t_iso_v_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_pvr,                  &
-     &      viz_ctls%delta_t_pvr_v_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_fline,                &
-     &      viz_ctls%delta_t_fline_v_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_lic,                  &
-     &      viz_ctls%delta_t_lic_v_ctl)
-        call read_real_ctl_type(c_buf, hd_delta_t_ucd,                  &
-     &      viz_ctls%delta_t_ucd_v_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_output_fld_file_fmt,         &
-     &      viz_ctls%output_field_file_fmt_ctl)
-      end do
-      viz_ctls%i_viz_control = 1
-!
-      end subroutine read_viz_controls
-!
-!   --------------------------------------------------------------------
 !
       subroutine bcast_viz_controls(viz_ctls)
 !
@@ -333,57 +188,40 @@
 !
       end subroutine dealloc_viz_controls
 !
-!   --------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function num_label_vizs()
-      num_label_vizs = n_label_vizs
-      return
-      end function num_label_vizs
+      subroutine add_fields_4_vizs_to_fld_ctl(viz_ctls, field_ctl)
 !
-! ----------------------------------------------------------------------
+      use t_control_array_character3
 !
-      integer(kind = kint) function num_label_vizs_w_dep()
-      num_label_vizs_w_dep = n_label_vizs_w_dep
-      return
-      end function num_label_vizs_w_dep
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_label_vizs(names)
-!
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_vizs_w_dep)
+      type(visualization_controls), intent(in) :: viz_ctls
+      type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      call set_control_labels(hd_i_step_section,  names( 1))
-      call set_control_labels(hd_delta_t_section, names( 2))
-      call set_control_labels(hd_section_ctl,     names( 3))
+      if(viz_ctls%psf_ctls%num_psf_ctl .gt. 0) then
+        call add_fields_4_psfs_to_fld_ctl(viz_ctls%psf_ctls, field_ctl)
+      end if
 !
-      call set_control_labels(hd_i_step_isosurf,  names( 4))
-      call set_control_labels(hd_delta_t_isosurf, names( 5))
-      call set_control_labels(hd_isosurf_ctl,     names( 6))
+      if(viz_ctls%iso_ctls%num_iso_ctl .gt. 0) then
+        call add_fields_4_isos_to_fld_ctl(viz_ctls%iso_ctls, field_ctl)
+      end if
 !
-      call set_control_labels(hd_i_step_pvr,          names( 7))
-      call set_control_labels(hd_delta_t_pvr,         names( 8))
-      call set_control_labels(hd_output_fld_file_fmt, names( 9))
 !
-      call set_control_labels(hd_i_step_lic,          names(10))
-      call set_control_labels(hd_delta_t_lic,         names(11))
-      call set_control_labels(hd_output_fld_file_fmt, names(12))
+      if(viz_ctls%pvr_ctls%num_pvr_ctl .gt. 0) then
+        call add_fields_4_pvrs_to_fld_ctl(viz_ctls%pvr_ctls, field_ctl)
+      end if
 !
-      call set_control_labels(hd_i_step_fline,        names(13))
-      call set_control_labels(hd_delta_t_fline,       names(14))
-      call set_control_labels(hd_output_fld_file_fmt, names(15))
+      if(viz_ctls%lic_ctls%num_lic_ctl .gt. 0) then
+        call add_fields_4_lics_to_fld_ctl(viz_ctls%lic_ctls, field_ctl)
+      end if
 !
-      call set_control_labels(hd_i_step_ucd,          names(16))
-      call set_control_labels(hd_delta_t_ucd,         names(17))
-      call set_control_labels(hd_output_fld_file_fmt, names(18))
+      if(viz_ctls%fline_ctls%num_fline_ctl .gt. 0) then
+        call add_fields_4_flines_to_fld_ctl(viz_ctls%fline_ctls,        &
+     &                                      field_ctl)
+      end if
 !
-      call set_control_labels(hd_psf_ctl,         names(19))
-      call set_control_labels(hd_iso_ctl,         names(20))
-!
-      end subroutine set_label_vizs
+      end subroutine add_fields_4_vizs_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
 !

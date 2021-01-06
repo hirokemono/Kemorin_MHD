@@ -8,7 +8,6 @@
 !!@verbatim
 !!      subroutine deallocate_cont_dat_fline(fln)
 !!
-!!      subroutine read_field_line_ctl(hd_block, fln)
 !!      subroutine bcast_field_line_ctl(fln)
 !!      subroutine reset_fline_control_flags(fln)
 !!        type(fline_ctl), intent(inout) :: fln
@@ -17,8 +16,10 @@
 !!        type(fline_ctl), intent(in) :: org_fln
 !!        type(fline_ctl), intent(inout) :: new_fln
 !!
-!!      integer(kind = kint) function num_label_fline_ctl()
-!!      subroutine set_label_fline_ctl(names)
+!!      subroutine add_field_4_fline_to_fld_ctl                         &
+!!     &         (fline_ctl_struct, field_ctl)
+!!        type(fline_ctl), intent(in) :: fline_ctl_struct
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!  ---------------------------------------------------------------------
 !!     example of control for Kemo's field line
 !!
@@ -117,39 +118,6 @@
         integer (kind=kint) :: i_vr_fline_ctl = 0
       end type fline_ctl
 !
-!     2nd level for field line
-!
-      character(len=kchara) :: hd_fline_file_head = 'fline_file_head'
-      character(len=kchara) :: hd_fline_output_type                     &
-     &                             = 'fline_output_type'
-!
-      character(len=kchara) :: hd_fline_grp = 'chosen_ele_grp_ctl'
-!
-      character(len=kchara) :: hd_field_line_field                      &
-     &                        =  'field_line_field_ctl'
-      character(len=kchara) :: hd_coloring_field = 'coloring_field_ctl'
-      character(len=kchara) :: hd_coloring_comp =  'coloring_comp_ctl'
-!
-      character(len=kchara) :: hd_starting_type =  'starting_type_ctl'
-      character(len=kchara) :: hd_start_surf_grp = 'start_surf_grp_ctl'
-      character(len=kchara) :: hd_xx_start_point = 'starting_point_ctl'
-      character(len=kchara) :: hd_selection_type = 'selection_type_ctl'
-      character(len=kchara) :: hd_start_global_surf                     &
-     &                        = 'starting_gl_surface_id'
-      character(len=kchara) :: hd_num_fieldline = 'num_fieldline_ctl'
-      character(len=kchara) :: hd_max_line_stepping                     &
-     &                        = 'max_line_stepping_ctl'
-      character(len=kchara) :: hd_line_direction = 'line_direction_ctl'
-!
-      integer(kind = kint), parameter :: n_label_fline_ctl = 14
-!
-      private :: hd_fline_file_head, hd_fline_output_type
-      private :: hd_fline_grp, hd_line_direction
-      private :: hd_max_line_stepping, hd_num_fieldline
-      private :: hd_starting_type, hd_start_surf_grp
-      private :: hd_xx_start_point, hd_selection_type
-      private :: hd_start_global_surf
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -168,64 +136,6 @@
       call reset_fline_control_flags(fln)
 !
       end subroutine deallocate_cont_dat_fline
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_field_line_ctl(id_control, hd_block, fln, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len=kchara), intent(in) :: hd_block
-!
-      type(fline_ctl), intent(inout) :: fln
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_block) .eqv. .FALSE.) return
-!
-      if (fln%i_vr_fline_ctl.gt.0) return
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_block)) exit
-!
-!
-        call read_control_array_c1(id_control,                          &
-     &      hd_fline_grp, fln%fline_area_grp_ctl, c_buf)
-!
-        call read_control_array_r3(id_control,                          &
-     &      hd_xx_start_point, fln%seed_point_ctl, c_buf)
-        call read_control_array_i2(id_control,                          &
-     &      hd_start_global_surf, fln%seed_surface_ctl, c_buf)
-!
-!
-        call read_chara_ctl_type(c_buf, hd_fline_file_head,             &
-     &      fln%fline_file_head_ctl)
-        call read_chara_ctl_type(c_buf, hd_fline_output_type,           &
-     &      fln%fline_output_type_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_field_line_field,            &
-     &      fln%fline_field_ctl )
-        call read_chara_ctl_type(c_buf, hd_coloring_field,              &
-     &      fln%fline_color_field_ctl )
-        call read_chara_ctl_type(c_buf, hd_coloring_comp,               &
-     &      fln%fline_color_comp_ctl )
-        call read_chara_ctl_type(c_buf, hd_starting_type,               &
-     &      fln%starting_type_ctl )
-        call read_chara_ctl_type(c_buf, hd_start_surf_grp,              &
-     &      fln%start_surf_grp_ctl )
-        call read_chara_ctl_type(c_buf, hd_selection_type,              &
-     &      fln%selection_type_ctl )
-        call read_chara_ctl_type(c_buf, hd_line_direction,              &
-     &      fln%line_direction_ctl )
-!
-        call read_integer_ctl_type(c_buf, hd_num_fieldline,             &
-     &      fln%num_fieldline_ctl )
-        call read_integer_ctl_type(c_buf, hd_max_line_stepping,         &
-     &      fln%max_line_stepping_ctl)
-      end do
-      fln%i_vr_fline_ctl = 1 
-!
-      end subroutine read_field_line_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -345,39 +255,31 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function num_label_fline_ctl()
-      num_label_fline_ctl = n_label_fline_ctl
-      return
-      end function num_label_fline_ctl
+      subroutine add_field_4_fline_to_fld_ctl                           &
+     &         (fline_ctl_struct, field_ctl)
 !
-! ----------------------------------------------------------------------
+      use t_control_array_character3
 !
-      subroutine set_label_fline_ctl(names)
+      use add_nodal_fields_ctl
 !
-      character(len = kchara), intent(inout)                            &
-     &                         :: names(n_label_fline_ctl)
+      type(fline_ctl), intent(in) :: fline_ctl_struct
+      type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      call set_control_labels(hd_fline_file_head,   names( 1))
-      call set_control_labels(hd_fline_output_type, names( 2))
+      if(fline_ctl_struct%fline_field_ctl%iflag .gt. 0) then
+        call add_viz_name_ctl                                           &
+     &     (my_rank, fline_ctl_struct%fline_field_ctl%charavalue,       &
+     &      field_ctl)
+      end if
 !
-      call set_control_labels(hd_fline_grp,        names( 3))
-      call set_control_labels(hd_field_line_field, names( 4))
-      call set_control_labels(hd_coloring_field,   names( 5))
-      call set_control_labels(hd_coloring_comp,    names( 6))
+      if(fline_ctl_struct%fline_color_field_ctl%iflag .gt. 0) then
+        call add_viz_name_ctl                                           &
+     &     (my_rank, fline_ctl_struct%fline_color_field_ctl%charavalue, &
+     &      field_ctl)
+      end if
 !
-      call set_control_labels(hd_num_fieldline,     names( 7))
-      call set_control_labels(hd_line_direction,    names( 8))
-      call set_control_labels(hd_max_line_stepping, names( 9))
+      end subroutine add_field_4_fline_to_fld_ctl
 !
-      call set_control_labels(hd_starting_type,     names(10))
-      call set_control_labels(hd_selection_type,    names(11))
-      call set_control_labels(hd_start_surf_grp,    names(12))
-      call set_control_labels(hd_xx_start_point,    names(13))
-      call set_control_labels(hd_start_global_surf, names(14))
-!
-      end subroutine set_label_fline_ctl
-!
-! ----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       end module t_control_data_4_fline

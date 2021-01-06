@@ -10,7 +10,10 @@
 !!      subroutine read_files_4_lic_ctl                                 &
 !!     &         (id_control, hd_lic_ctl, lic_ctls, c_buf)
 !!      subroutine bcast_files_4_lic_ctl(lic_ctls)
-!
+!!
+!!      subroutine add_fields_4_lics_to_fld_ctl(lic_ctls, field_ctl)
+!!        type(lic_rendering_controls), intent(in) :: lic_ctls
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  LIC_rendering  1
 !!      file  LIC_rendering  'ctl_pvr_temp'
@@ -181,6 +184,7 @@
       subroutine dup_lic_ctl_struct(num_lic, org_lics_c, new_lics_c)
 !
       use bcast_control_data_4_pvr
+      use bcast_control_data_4_lic
 !
       integer(kind = kint), intent(in) :: num_lic
       type(lic_rendering_controls), intent(in) :: org_lics_c
@@ -197,6 +201,26 @@
       end do
 !
       end subroutine dup_lic_ctl_struct
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine add_fields_4_lics_to_fld_ctl(lic_ctls, field_ctl)
+!
+      use t_control_array_character3
+!
+      type(lic_rendering_controls), intent(in) :: lic_ctls
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+      integer(kind = kint) :: i_lic
+!
+!
+      do i_lic = 1, lic_ctls%num_lic_ctl
+        call add_fields_4_lic_to_fld_ctl                                &
+     &     (lic_ctls%lic_ctl_type(i_lic), field_ctl)
+      end do
+!
+      end subroutine add_fields_4_lics_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
 !

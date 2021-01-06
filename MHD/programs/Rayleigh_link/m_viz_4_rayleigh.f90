@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz                          &
-!!     &         (tctl, plt, sdctl, field_ctl, t_viz_param,             &
+!!     &         (tctl, plt, sdctl, fld_ctl, t_viz_param,               &
 !!     &          rayleigh_ftbl, rayleigh_rtp, ierr)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_domain_control), intent(in) :: sdctl
-!!        type(field_control), intent(in) :: field_ctl
+!!        type(field_control), intent(in) :: fld_ctl
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
@@ -74,7 +74,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ctl_params_rayleigh_viz                            &
-     &         (tctl, plt, sdctl, field_ctl, t_viz_param,               &
+     &         (tctl, plt, sdctl, fld_ctl, t_viz_param,                 &
      &          rayleigh_ftbl, rayleigh_rtp, ierr)
 !
       use m_error_IDs
@@ -92,7 +92,7 @@
       type(time_data_control), intent(in) :: tctl
       type(platform_data_control), intent(in) :: plt
       type(sphere_domain_control), intent(in) :: sdctl
-      type(field_control), intent(in) :: field_ctl
+      type(field_control), intent(in) :: fld_ctl
 !
       integer(kind = kint), intent(inout) :: ierr
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
@@ -110,7 +110,7 @@
       if(ierr .gt. 0) return
 !
       call set_ctl_rayleigh_field_address                               &
-     &   (plt, field_ctl, rayleigh_ftbl, e_message, ierr)
+     &   (plt, fld_ctl, rayleigh_ftbl, e_message, ierr)
 !
       call set_ctl_params_rayleigh_domains                              &
      &   (sdctl, rayleigh_rtp, e_message, ierr)

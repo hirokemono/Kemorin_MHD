@@ -35,6 +35,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_control_data_vizs
+      use t_control_array_character3
 !
       implicit  none
 !
@@ -50,6 +51,9 @@
         type(time_data_control) :: t_viz_ctl
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctl_v
+!
+!>        Structures of field used in visualization
+        type(ctl_array_c3) :: viz_field_ctl
 !
         integer(kind=kint) :: i_viz_only_file = 0
       end type control_data_vizs
@@ -101,6 +105,11 @@
 !
         call s_viz_step_ctls_to_time_ctl                                &
      &     (vizs_ctl%viz_ctl_v, vizs_ctl%t_viz_ctl)
+!
+        vizs_ctl%viz_field_ctl%num =  0
+        call alloc_control_array_c3(vizs_ctl%viz_field_ctl)
+        call add_fields_4_vizs_to_fld_ctl(vizs_ctl%viz_ctl_v,           &
+     &                                    vizs_ctl%viz_field_ctl)
       end if
 !
       call bcast_vizs_control_data(vizs_ctl)
@@ -114,6 +123,7 @@
      &         (id_control, hd_block, vizs_ctl, c_buf)
 !
       use skip_comment_f
+      use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -133,7 +143,7 @@
         call read_control_time_step_data                                &
      &     (id_control, hd_time_step, vizs_ctl%t_viz_ctl, c_buf)
 !
-        call read_viz_controls                                          &
+        call s_read_viz_controls                                        &
      &     (id_control, hd_viz_control, vizs_ctl%viz_ctl_v, c_buf)
       end do
       vizs_ctl%i_viz_only_file = 1
@@ -147,10 +157,12 @@
       use calypso_mpi_int
       use bcast_4_platform_ctl
       use bcast_4_time_step_ctl
+      use bcast_control_arrays
 !
       type(control_data_vizs), intent(inout) :: vizs_ctl
 !
 !
+      call bcast_ctl_array_c3(vizs_ctl%viz_field_ctl)
       call bcast_ctl_data_4_platform(vizs_ctl%viz_plt)
       call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
       call bcast_viz_controls(vizs_ctl%viz_ctl_v)
@@ -163,10 +175,14 @@
 !
       subroutine dealloc_vizs_control_data(vizs_ctl)
 !
+      use bcast_4_time_step_ctl
+!
       type(control_data_vizs), intent(inout) :: vizs_ctl
 !
+      call dealloc_control_array_c3(vizs_ctl%viz_field_ctl)
       call reset_control_platforms(vizs_ctl%viz_plt)
       call dealloc_viz_controls(vizs_ctl%viz_ctl_v)
+      call reset_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
 !
       vizs_ctl%t_viz_ctl%i_tstep = 0
       vizs_ctl%i_viz_only_file =   0

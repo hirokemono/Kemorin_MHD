@@ -67,7 +67,7 @@
 !
       integer(c_int) function num_label_pvr_ctl_f() bind(c)
 !
-      use t_control_data_4_pvr
+      use read_pvr_control
 !
       num_label_pvr_ctl_f = num_label_pvr_ctl()
       return
@@ -77,7 +77,7 @@
 !
       integer(c_int) function num_label_pvr_ctl_w_dup_f() bind(c)
 !
-      use t_control_data_4_pvr
+      use read_pvr_control
 !
       num_label_pvr_ctl_w_dup_f = num_label_pvr_ctl_w_dup()
       return
@@ -87,7 +87,7 @@
 !
       subroutine set_label_pvr_ctl_w_dup_f(names)  bind(c)
 !
-      use t_control_data_4_pvr
+      use read_pvr_control
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

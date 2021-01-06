@@ -22,14 +22,6 @@
       use calypso_mpi
 !
       use t_control_data_4_pvr
-      use t_ctl_data_pvr_colormap_bar
-      use t_ctl_data_pvr_light
-      use t_ctl_data_pvr_colorbar
-      use t_control_data_pvr_sections
-      use t_control_data_pvr_isosurfs
-      use t_control_data_pvr_movie
-      use t_control_data_pvr_area
-      use t_ctl_data_4_view_transfer
 !
       implicit  none
 !
@@ -104,6 +96,7 @@
 !
       subroutine dup_pvr_ctl(org_pvr, new_pvr)
 !
+      use bcast_control_arrays
       use bcast_dup_view_transfer_ctl
 !
       type(pvr_parameter_ctl), intent(in) :: org_pvr

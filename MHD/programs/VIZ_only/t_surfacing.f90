@@ -7,13 +7,6 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_control_params_4_viz                             &
-!!     &         (tctl, plt, mesh_file, ucd_param, ierr)
-!!        type(time_data_control), intent(in) :: tctl
-!!        type(platform_data_control), intent(in) :: plt
-!!        type(field_IO_params), intent(inout) :: mesh_file
-!!        type(field_IO_params), intent(inout) :: ucd_param
-!!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!@endverbatim
 !
       module t_surfacing
@@ -27,6 +20,7 @@
       use t_phys_data
       use t_ucd_data
       use t_file_IO_parameter
+      use t_field_list_for_vizs
 !
       implicit none
 !
@@ -50,6 +44,9 @@
         type(time_data) :: ucd_time
 !>          FEM field data IO
         type(ucd_data) :: ucd_in
+!
+!>      structure of field list for visualization
+        type(visulize_field_list) :: viz_fld_list
       end type FEM_mesh_field_4_surfacing
 !
       end module t_surfacing

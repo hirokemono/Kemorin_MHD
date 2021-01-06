@@ -119,6 +119,8 @@
 !
         call s_viz_step_ctls_to_time_ctl                                &
      &     (viz_ctls, FEM_MHD_ctl%fmctl_ctl%tctl)
+        call add_fields_4_vizs_to_fld_ctl(viz_ctls,                     &
+     &      FEM_MHD_ctl%model_ctl%fld_ctl%field_ctl)
       end if
 !
       call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
@@ -133,6 +135,7 @@
 !
       use calypso_mpi
       use t_ctl_data_FEM_MHD_control
+      use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -161,7 +164,7 @@
 !
         call read_monitor_data_ctl(id_control, hd_monitor_data,         &
      &      FEM_MHD_ctl%nmtr_ctl, c_buf)
-        call read_viz_controls                                          &
+        call s_read_viz_controls                                        &
      &     (id_control, hd_viz_control, viz_ctls, c_buf)
       end do
       FEM_MHD_ctl%i_mhd_ctl = 1

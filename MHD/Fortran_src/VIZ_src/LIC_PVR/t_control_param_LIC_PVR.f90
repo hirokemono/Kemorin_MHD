@@ -57,6 +57,7 @@
      &         (num_lic_ctl, pvr_ctl_type, lic_ctl_type, cflag_update)
 !
       use bcast_control_data_4_pvr
+      use bcast_control_data_4_lic
       use set_pvr_control
 !
       integer(kind = kint), intent(in) :: num_lic_ctl

@@ -64,7 +64,7 @@
 !>      Structure for file settings
         type(platform_data_control) :: viz_plt
 !>        Structure for field information control
-        type(field_control) :: field_ctl
+        type(field_control) :: fld_ctl
 !>        Structure for time stepping control
         type(time_data_control) :: t_viz_ctl
 !>        Structures of visualization controls
@@ -128,6 +128,8 @@
 !
         call s_viz_step_ctls_to_time_ctl                                &
      &     (rayleigh_vizs_ctl%viz_ctl_v, rayleigh_vizs_ctl%t_viz_ctl)
+        call add_fields_4_vizs_to_fld_ctl(rayleigh_vizs_ctl%viz_ctl_v,  &
+     &      rayleigh_vizs_ctl%fld_ctl%field_ctl)
       end if
 !
       call bcast_rayleigh_vizs_ctl_data(rayleigh_vizs_ctl)
@@ -141,6 +143,7 @@
      &         (id_control, hd_block, rayleigh_vizs_ctl, c_buf)
 !
       use skip_comment_f
+      use read_viz_controls
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -162,12 +165,12 @@
      &      rayleigh_vizs_ctl%t_viz_ctl, c_buf)
 !
       call read_phys_data_control(id_control, hd_phys_values,           &
-     &    rayleigh_vizs_ctl%field_ctl, c_buf)
+     &    rayleigh_vizs_ctl%fld_ctl, c_buf)
 !
         call read_control_shell_domain                                  &
      &     (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, c_buf)
 !
-        call read_viz_controls(id_control, hd_viz_control,              &
+        call s_read_viz_controls(id_control, hd_viz_control,            &
      &      rayleigh_vizs_ctl%viz_ctl_v, c_buf)
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
@@ -192,7 +195,7 @@
       call bcast_ctl_data_4_time_step(rayleigh_vizs_ctl%t_viz_ctl)
       call bcast_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
 !
-      call bcast_phys_data_ctl(rayleigh_vizs_ctl%field_ctl)
+      call bcast_phys_data_ctl(rayleigh_vizs_ctl%fld_ctl)
       call bcast_ctl_ndomain_4_shell(rayleigh_vizs_ctl%sdctl)
 !
       call calypso_mpi_bcast_one_int                                    &
@@ -210,7 +213,7 @@
       call reset_control_platforms(rayleigh_vizs_ctl%viz_plt)
       call dealloc_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
 !
-      call dealloc_phys_control(rayleigh_vizs_ctl%field_ctl)
+      call dealloc_phys_control(rayleigh_vizs_ctl%fld_ctl)
       call dealloc_ndomain_rtp_ctl(rayleigh_vizs_ctl%sdctl)
 !
       rayleigh_vizs_ctl%i_viz_only_file = 0

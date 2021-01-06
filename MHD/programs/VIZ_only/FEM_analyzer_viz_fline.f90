@@ -44,9 +44,9 @@
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ                                             &
-     &   (init_d, ucd_step, viz%ucd_file_IO, viz%mesh_file_IO,          &
-     &    viz%geofem, viz%ucd_time, viz%ucd, viz%nod_fld)
+      call mesh_setup_4_VIZ(init_d, ucd_step, viz%viz_fld_list,         &
+     &    viz%ucd_file_IO, viz%mesh_file_IO, viz%geofem,                &
+     &    viz%ucd_time, viz%ucd, viz%nod_fld)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR

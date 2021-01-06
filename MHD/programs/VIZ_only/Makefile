@@ -37,6 +37,7 @@ analyzer_viz.o \
 FEM_analyzer_viz.o \
 t_visualization.o \
 t_control_data_all_vizs.o \
+t_field_list_for_vizs.o \
 load_mesh_and_field_4_viz.o
 
 MOD_PSF_PLUG = \
@@ -45,6 +46,7 @@ analyzer_psf.o \
 FEM_analyzer_viz_surf.o \
 t_surfacing.o \
 t_control_data_section_only.o \
+t_field_list_for_vizs.o \
 load_mesh_and_field_4_viz.o
 
 MOD_PVR_PLUG =  \
@@ -53,6 +55,7 @@ analyzer_pvr.o \
 FEM_analyzer_viz_pvr.o \
 t_visualization.o \
 t_control_data_all_vizs.o \
+t_field_list_for_vizs.o \
 load_mesh_and_field_4_viz.o
 
 MOD_FLINE_PLUG = \
@@ -61,6 +64,7 @@ analyzer_fline.o \
 FEM_analyzer_viz_fline.o \
 t_visualization.o \
 t_control_data_all_vizs.o \
+t_field_list_for_vizs.o \
 load_mesh_and_field_4_viz.o
 
 MOD_VTK_CONVERT_PLUG = \
@@ -69,6 +73,7 @@ analyzer_VTK_convert.o \
 FEM_analyzer_VTK_convert.o \
 t_viz_VTK_convert.o \
 t_control_data_section_only.o \
+t_field_list_for_vizs.o \
 load_mesh_and_field_4_viz.o
 
 #

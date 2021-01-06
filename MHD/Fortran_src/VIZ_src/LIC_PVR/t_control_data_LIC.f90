@@ -8,19 +8,19 @@
 !!
 !!@verbatim
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!      subroutine read_lic_control_data                                &
-!!     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
-!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
-!!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine dealloc_lic_control_flags(lic_ctl)
-!!      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
-!!        type(lic_parameter_ctl), intent(in) :: org_lic_c
-!!        type(lic_parameter_ctl), intent(inout) :: new_lic_c
-!!      subroutine bcast_lic_control_data(lic_ctl)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!
-!!      integer(kind = kint) function num_ctl_label_LIC()
-!!      subroutine set_ctl_label_LIC(names)
+!!      subroutine read_lic_masking_ctl_array                           &
+!!     &         (id_control, hd_block, lic_ctl, c_buf)
+!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!
+!!      subroutine add_fields_4_lic_to_fld_ctl(lic_ctl, field_ctl)
+!!        type(lic_parameter_ctl), intent(in) :: lic_ctl
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!      subroutine alloc_lic_masking_ctl(lic_ctl)
+!!        type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      List of flags
 !!
@@ -112,130 +112,13 @@
         integer (kind=kint) :: i_lic_control = 0
       end type lic_parameter_ctl
 !
-!
-!     3rd level for LIC_ctl
-!
-      character(len=kchara) :: hd_LIC_field =   'LIC_field'
-!
-      character(len=kchara) :: hd_color_field =     'color_field'
-      character(len=kchara) :: hd_color_component = 'color_component'
-      character(len=kchara) :: hd_opacity_field =   'opacity_field'
-      character(len=kchara) :: hd_opacity_component                     &
-     &                        = 'opacity_component'
-!
-      character(len=kchara) :: hd_masking_ctl = 'masking_control'
-      character(len=kchara) :: hd_cube_noise =  'cube_noise_ctl'
-      character(len=kchara) :: hd_kernel =      'kernel_ctl'
-!
-      character(len=kchara) :: hd_vr_sample_mode                        &
-     &                        = 'vr_sample_mode'
-      character(len=kchara) :: hd_step_size = 'step_size'
-!
-      character(len=kchara) :: hd_normalization_type                    &
-     &                        = 'normalization_type'
-      character(len=kchara) :: hd_normalization_value                   &
-     &                        = 'normalization_value'
-!
-      integer(kind = kint), parameter :: n_label_LIC = 12
-!
-      private :: hd_LIC_field, hd_color_field, hd_color_component
-      private :: hd_opacity_field, hd_opacity_component
-      private :: hd_masking_ctl, hd_cube_noise, hd_kernel
-      private :: hd_vr_sample_mode, hd_step_size, n_label_LIC
-      private :: hd_normalization_type, hd_normalization_value
-!
-      private :: read_lic_masking_ctl_array
-      private :: alloc_lic_masking_ctl, dealloc_lic_masking_ctl
+      private :: dealloc_lic_masking_ctl
+      private :: append_new_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
 !
       contains
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine read_lic_control_data                                  &
-     &         (id_control, hd_lic_ctl, lic_ctl, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_lic_ctl
-!
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(check_begin_flag(c_buf, hd_lic_ctl) .eqv. .FALSE.) return
-      if(lic_ctl%i_lic_control .gt. 0) return
-!
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if(check_end_flag(c_buf, hd_lic_ctl)) exit
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_LIC_field, lic_ctl%LIC_field_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_color_field, lic_ctl%color_field_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_color_component, lic_ctl%color_component_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_opacity_field, lic_ctl%opacity_field_ctl)
-        call read_chara_ctl_type(c_buf, hd_opacity_component,           &
-     &      lic_ctl%opacity_component_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_vr_sample_mode, lic_ctl%vr_sample_mode_ctl)
-        call read_real_ctl_type                                         &
-     &     (c_buf, hd_step_size, lic_ctl%step_size_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_normalization_type,          &
-     &      lic_ctl%normalization_type_ctl)
-        call read_real_ctl_type(c_buf, hd_normalization_value,          &
-     &      lic_ctl%normalization_value_ctl)
-!
-        call read_cube_noise_control_data                               &
-     &     (id_control, hd_cube_noise, lic_ctl%noise_ctl, c_buf)
-        call read_kernel_control_data                                   &
-     &     (id_control, hd_kernel, lic_ctl%kernel_ctl, c_buf)
-!
-        if(check_array_flag(c_buf, hd_masking_ctl)) then
-          call read_lic_masking_ctl_array                               &
-     &       (id_control, hd_masking_ctl, lic_ctl, c_buf)
-        end if
-      end do
-      lic_ctl%i_lic_control = 1
-!
-      end subroutine read_lic_control_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_lic_masking_ctl_array                             &
-     &         (id_control, hd_block, lic_ctl, c_buf)
-!
-      integer(kind = kint), intent(in) :: id_control
-      character(len = kchara), intent(in) :: hd_block
-!
-      type(lic_parameter_ctl), intent(inout) :: lic_ctl
-      type(buffer_for_control), intent(inout)  :: c_buf
-!
-!
-      if(allocated(lic_ctl%mask_ctl)) return
-      lic_ctl%num_masking_ctl = 0
-      call alloc_lic_masking_ctl(lic_ctl)
-!
-      do
-        call load_one_line_from_control(id_control, c_buf)
-        if (check_end_array_flag(c_buf, hd_block)) exit
-!
-        if(check_begin_flag(c_buf, hd_block)) then
-          call append_new_lic_masking_ctl(lic_ctl)
-          call read_lic_masking_ctl_data(id_control, hd_block,          &
-     &        lic_ctl%mask_ctl(lic_ctl%num_masking_ctl), c_buf)
-        end if
-      end do
-!
-      end subroutine read_lic_masking_ctl_array
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_lic_control_flags(lic_ctl)
@@ -270,88 +153,69 @@
       end subroutine dealloc_lic_control_flags
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      subroutine bcast_lic_control_data(lic_ctl)
+      subroutine read_lic_masking_ctl_array                             &
+     &         (id_control, hd_block, lic_ctl, c_buf)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
+      integer(kind = kint), intent(in) :: id_control
+      character(len = kchara), intent(in) :: hd_block
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
+      type(buffer_for_control), intent(inout)  :: c_buf
 !
-      integer(kind = kint) :: i
 !
+      if(allocated(lic_ctl%mask_ctl)) return
+      lic_ctl%num_masking_ctl = 0
+      call alloc_lic_masking_ctl(lic_ctl)
 !
-      call calypso_mpi_bcast_one_int(lic_ctl%i_lic_control, 0)
+      do
+        call load_one_line_from_control(id_control, c_buf)
+        if (check_end_array_flag(c_buf, hd_block)) exit
 !
-      call bcast_ctl_type_c1(lic_ctl%LIC_field_ctl)
-      call bcast_ctl_type_c1(lic_ctl%color_field_ctl)
-      call bcast_ctl_type_c1(lic_ctl%color_component_ctl)
-      call bcast_ctl_type_c1(lic_ctl%opacity_field_ctl)
-      call bcast_ctl_type_c1(lic_ctl%opacity_component_ctl)
-!
-      call bcast_ctl_type_c1(lic_ctl%vr_sample_mode_ctl)
-      call bcast_ctl_type_r1(lic_ctl%step_size_ctl)
-!
-      call bcast_ctl_type_c1(lic_ctl%normalization_type_ctl)
-      call bcast_ctl_type_r1(lic_ctl%normalization_value_ctl)
-!
-      call calypso_mpi_bcast_one_int(lic_ctl%num_masking_ctl, 0)
-!
-      call bcast_cube_noise_control_data(lic_ctl%noise_ctl)
-      call bcast_kernel_control_data(lic_ctl%kernel_ctl)
-!
-      if(my_rank .ne. 0) call alloc_lic_masking_ctl(lic_ctl)
-      do i = 1, lic_ctl%num_masking_ctl
-        call bcast_lic_masking_ctl_data(lic_ctl%mask_ctl(i))
+        if(check_begin_flag(c_buf, hd_block)) then
+          call append_new_lic_masking_ctl(lic_ctl)
+          call read_lic_masking_ctl_data(id_control, hd_block,          &
+     &        lic_ctl%mask_ctl(lic_ctl%num_masking_ctl), c_buf)
+        end if
       end do
 !
-      end subroutine bcast_lic_control_data
+      end subroutine read_lic_masking_ctl_array
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine dup_lic_control_data(org_lic_c, new_lic_c)
+      subroutine add_fields_4_lic_to_fld_ctl(lic_ctl, field_ctl)
 !
-      type(lic_parameter_ctl), intent(in) :: org_lic_c
-      type(lic_parameter_ctl), intent(inout) :: new_lic_c
+      use t_control_array_character3
+      use add_nodal_fields_ctl
+!
+      type(lic_parameter_ctl), intent(in) :: lic_ctl
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+      integer(kind = kint) :: i_fld
 !
 !
-      new_lic_c%i_lic_control = org_lic_c%i_lic_control
-!
-      call copy_chara_ctl(org_lic_c%LIC_field_ctl,                      &
-     &                    new_lic_c%LIC_field_ctl)
-      call copy_chara_ctl(org_lic_c%color_field_ctl,                    &
-     &                    new_lic_c%color_field_ctl)
-      call copy_chara_ctl(org_lic_c%color_component_ctl,                &
-     &                    new_lic_c%color_component_ctl)
-      call copy_chara_ctl(org_lic_c%opacity_field_ctl,                  &
-     &                    new_lic_c%opacity_field_ctl)
-      call copy_chara_ctl(org_lic_c%opacity_component_ctl,              &
-     &                    new_lic_c%opacity_component_ctl)
-!
-      call copy_chara_ctl(org_lic_c%vr_sample_mode_ctl,                 &
-     &                    new_lic_c%vr_sample_mode_ctl)
-      call copy_real_ctl(org_lic_c%step_size_ctl,                       &
-     &                   new_lic_c%step_size_ctl)
-!
-      call copy_chara_ctl(org_lic_c%normalization_type_ctl,             &
-     &                    new_lic_c%normalization_type_ctl)
-      call copy_real_ctl(org_lic_c%normalization_value_ctl,             &
-     &                    new_lic_c%normalization_value_ctl)
-!
-      call copy_cube_noise_control_data(org_lic_c%noise_ctl,            &
-     &    new_lic_c%noise_ctl)
-      call copy_kernel_control_data(org_lic_c%kernel_ctl,               &
-     &    new_lic_c%kernel_ctl)
-!
-      new_lic_c%num_masking_ctl = org_lic_c%num_masking_ctl
-      if(new_lic_c%num_masking_ctl .gt. 0) then
-        allocate(new_lic_c%mask_ctl(new_lic_c%num_masking_ctl))
-        call dup_lic_masking_ctls(org_lic_c%num_masking_ctl,            &
-     &      org_lic_c%mask_ctl, new_lic_c%mask_ctl)
+      if(lic_ctl%LIC_field_ctl%iflag .gt. 0) then
+        call add_viz_name_ctl                                           &
+     &     (my_rank, lic_ctl%LIC_field_ctl%charavalue, field_ctl)
       end if
 !
-      end subroutine dup_lic_control_data
+      if(lic_ctl%color_field_ctl%iflag .gt. 0) then
+        call add_viz_name_ctl                                           &
+     &     (my_rank, lic_ctl%color_field_ctl%charavalue, field_ctl)
+      end if
+!
+      if(lic_ctl%opacity_field_ctl%iflag .gt. 0) then
+        call add_viz_name_ctl                                           &
+     &     (my_rank, lic_ctl%opacity_field_ctl%charavalue, field_ctl)
+      end if
+!
+      do i_fld = 1, lic_ctl%num_masking_ctl
+        call add_lic_mask_field_to_fld_ctl                            &
+     &     (lic_ctl%mask_ctl(i_fld), field_ctl)
+      end do
+!
+      end subroutine add_fields_4_lic_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -410,39 +274,5 @@
       end subroutine dealloc_lic_masking_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function num_ctl_label_LIC()
-      num_ctl_label_LIC = n_label_LIC
-      return
-      end function num_ctl_label_LIC
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ctl_label_LIC(names)
-!
-      character(len = kchara), intent(inout) :: names(n_label_LIC)
-!
-!
-      call set_control_labels(hd_LIC_field,       names( 1))
-!
-      call set_control_labels(hd_color_field,     names( 2))
-      call set_control_labels(hd_color_component, names( 3))
-!
-      call set_control_labels(hd_opacity_field,     names( 4))
-      call set_control_labels(hd_opacity_component, names( 5))
-!
-      call set_control_labels(hd_masking_ctl, names( 6))
-      call set_control_labels(hd_cube_noise,  names( 7))
-      call set_control_labels(hd_kernel,      names( 8))
-!
-      call set_control_labels(hd_vr_sample_mode,      names( 9))
-      call set_control_labels(hd_step_size,           names(10))
-      call set_control_labels(hd_normalization_type,  names(11))
-      call set_control_labels(hd_normalization_value, names(12))
-!
-      end subroutine set_ctl_label_LIC
-!
-! ----------------------------------------------------------------------
 !
       end module t_control_data_LIC

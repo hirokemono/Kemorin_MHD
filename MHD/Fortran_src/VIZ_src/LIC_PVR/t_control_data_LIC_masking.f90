@@ -25,6 +25,10 @@
 !!        type(lic_masking_ctl), intent(in) :: org_mask_c
 !!        type(lic_masking_ctl), intent(inout) :: new_mask_c
 !!
+!!      subroutine add_lic_mask_field_to_fld_ctl(mask_ctl, field_ctl)
+!!        type(lic_masking_ctl), intent(in) :: mask_ctl
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!
 !!      integer(kind = kint) function num_ctl_label_LIC_masking()
 !!      subroutine set_ctl_label_LIC_masking(names)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -195,6 +199,24 @@
      &                    new_mask_c%mask_range_ctl)
 !
       end subroutine dup_lic_masking_ctl_data
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine add_lic_mask_field_to_fld_ctl(mask_ctl, field_ctl)
+!
+      use t_control_array_character3
+      use add_nodal_fields_ctl
+!
+      type(lic_masking_ctl), intent(in) :: mask_ctl
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+!
+      if(mask_ctl%field_name_ctl%iflag .eq. 0) return
+      call add_viz_name_ctl                                             &
+     &   (my_rank, mask_ctl%field_name_ctl%charavalue, field_ctl)
+!
+      end subroutine add_lic_mask_field_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

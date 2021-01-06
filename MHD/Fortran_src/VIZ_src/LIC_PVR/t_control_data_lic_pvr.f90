@@ -179,6 +179,7 @@
       use t_control_data_pvr_isosurfs
       use t_control_data_pvr_movie
       use t_control_data_pvr_area
+      use read_lic_control_data
       use read_control_pvr_modelview
 !
       integer(kind = kint), intent(in) :: id_control
@@ -247,7 +248,7 @@
         call read_pvr_rotation_ctl(id_control, hd_pvr_movie,            &
      &      pvr%movie, c_buf)
 !
-        call read_lic_control_data                                      &
+        call s_read_lic_control_data                                    &
      &     (id_control, hd_lic_control, lic_ctl, c_buf)
 !
         call read_chara_ctl_type                                        &

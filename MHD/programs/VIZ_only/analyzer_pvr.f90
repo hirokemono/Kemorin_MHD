@@ -45,13 +45,15 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
       call read_control_file_vizs(vizs_ctl3)
-      call set_control_params_4_viz                                     &
-     &   (vizs_ctl3%t_viz_ctl, vizs_ctl3%viz_plt,                       &
-     &    viz3%mesh_file_IO, viz3%ucd_file_IO, t_VIZ3, ierr)
+      call set_control_params_4_viz(vizs_ctl3%t_viz_ctl,                &
+     &    vizs_ctl3%viz_plt, vizs_ctl3%viz_field_ctl,                   &
+     &    viz3%mesh_file_IO, viz3%ucd_file_IO, viz3%viz_fld_list,       &
+     &    t_VIZ3, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
       call FEM_initialize_pvr(t_VIZ3%ucd_step, t_VIZ3%init_d, viz3)
+      call dealloc_field_lists_for_vizs(viz3%viz_fld_list)
 !
 !  VIZ Initialization
       call PVR_initialize(viz3%geofem, viz3%nod_fld,                    &

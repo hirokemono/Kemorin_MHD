@@ -48,7 +48,7 @@
 !
       integer(c_int) function num_label_iso_ctl_f() bind(c)
 !
-      use t_control_data_4_iso
+      use read_iso_control_data
 !
       num_label_iso_ctl_f = num_label_iso_ctl()
       return
@@ -58,7 +58,7 @@
 !
       integer(c_int) function num_label_iso_ctl_w_dpl_f() bind(c)
 !
-      use t_control_data_4_iso
+      use read_iso_control_data
 !
       num_label_iso_ctl_w_dpl_f = num_label_iso_ctl_w_dpl()
       return
@@ -89,7 +89,7 @@
 !
       subroutine set_label_iso_ctl_w_dpl_f(names)  bind(c)
 !
-      use t_control_data_4_iso
+      use read_iso_control_data
 !
       character(C_CHAR), intent(inout) :: names(*)
 !

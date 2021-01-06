@@ -11,6 +11,9 @@
 !!      subroutine bcast_files_4_fline_ctl(fline_ctls)
 !!      subroutine dealloc_fline_fhead_ctl(fline_ctls)
 !!
+!!      subroutine add_fields_4_flines_to_fld_ctl(fline_ctls, field_ctl)
+!!        type(fieldline_controls), intent(in) :: fline_ctls
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  fieldline  1
 !!      file  fieldline  'ctl_fline_magne'
@@ -50,6 +53,7 @@
      &          hd_block, fline_ctl_struct)
 !
       use t_control_data_4_fline
+      use read_field_line_ctl
 !
       integer(kind = kint), intent(in) :: id_control
       character(len = kchara), intent(in) :: fname_fline_ctl
@@ -65,7 +69,7 @@
 !
       do
         call load_one_line_from_control(id_control, c_buf1)
-        call read_field_line_ctl(id_control, hd_block,                  &
+        call s_read_field_line_ctl(id_control, hd_block,                &
      &      fline_ctl_struct, c_buf1)
         if(fline_ctl_struct%i_vr_fline_ctl .gt. 0) exit
       end do
@@ -81,6 +85,7 @@
 !
       use t_read_control_elements
       use skip_comment_f
+      use read_field_line_ctl
 !
       integer(kind = kint), intent(in) :: id_control
       character(len=kchara), intent(in) :: hd_block
@@ -117,7 +122,7 @@
 !
           write(*,*) 'Control for', trim(hd_block), ' No. ',            &
      &              fline_ctls%num_fline_ctl, ' is included'
-          call read_field_line_ctl(id_control, hd_block,                &
+          call s_read_field_line_ctl(id_control, hd_block,              &
      &        fline_ctls%fline_ctl_struct(fline_ctls%num_fline_ctl),    &
      &        c_buf)
         end if
@@ -244,6 +249,25 @@
       end do
 !
       end subroutine dealloc_cont_dat_4_flines
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine add_fields_4_flines_to_fld_ctl(fline_ctls, field_ctl)
+!
+      use t_control_array_character3
+!
+      type(fieldline_controls), intent(in) :: fline_ctls
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+      integer(kind = kint) :: i_fline
+!
+!
+      do i_fline = 1, fline_ctls%num_fline_ctl
+        call add_field_4_fline_to_fld_ctl                               &
+     &     (fline_ctls%fline_ctl_struct(i_fline), field_ctl)
+      end do
+!
+      end subroutine add_fields_4_flines_to_fld_ctl
 !
 !  ---------------------------------------------------------------------
 !

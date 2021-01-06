@@ -48,10 +48,10 @@
         real(kind = kreal), allocatable :: range_max(:)
       end type lic_masking_parameter
 !
-      private :: alloc_lic_masking_range
-!
       character(len=kchara) :: hd_masking_geometry = 'geometry'
       character(len=kchara) :: hd_masking_field = 'field'
+!
+      private :: alloc_lic_masking_range
 !
 !  ---------------------------------------------------------------------
 !
@@ -114,9 +114,9 @@
       if(masking%mask_type .eq. iflag_fieldmask) then
         tmpfield(1) = mask_ctl%field_name_ctl%charavalue
         tmpcomp(1) =  mask_ctl%component_ctl%charavalue
-        call set_components_4_viz(num_nod_phys, phys_nod_name,            &
-       &    ione, tmpfield, tmpcomp, ione, ifld_tmp, icomp_tmp,           &
-       &    icheck_ncomp, ncomp_tmp, fldname_tmp)
+        call set_components_4_viz(num_nod_phys, phys_nod_name,          &
+     &      ione, tmpfield, tmpcomp, ione, ifld_tmp, icomp_tmp,         &
+     &      icheck_ncomp, ncomp_tmp, fldname_tmp)
         masking%field_info%id_field = ifld_tmp(1)
         masking%field_info%id_component = icomp_tmp(1)
         masking%field_info%num_original_comp = ncomp_tmp(1)

@@ -10,6 +10,9 @@
 !!      subroutine read_files_4_pvr_ctl                                 &
 !!     &         (id_control, hd_pvr_ctl, pvr_ctls, c_buf)
 !!      subroutine bcast_files_4_pvr_ctl(pvr_ctls)
+!!      subroutine add_fields_4_pvrs_to_fld_ctl(pvr_ctl, field_ctl)
+!!        type(volume_rendering_controls), intent(in) :: pvr_ctls
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  volume_rendering  1
@@ -35,6 +38,7 @@
       end type volume_rendering_controls
 !
       private :: alloc_pvr_ctl_struct
+      private :: append_new_pvr_ctl_struct, dup_pvr_ctl_struct
 !
 !   --------------------------------------------------------------------
 !
@@ -81,6 +85,7 @@
 !
       use t_read_control_elements
       use skip_comment_f
+      use read_pvr_control
       use set_pvr_control
 !
       integer(kind = kint), intent(in) :: id_control
@@ -146,6 +151,25 @@
       end subroutine bcast_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
+!
+      subroutine add_fields_4_pvrs_to_fld_ctl(pvr_ctls, field_ctl)
+!
+      use t_control_array_character3
+!
+      type(volume_rendering_controls), intent(in) :: pvr_ctls
+      type(ctl_array_c3), intent(inout) :: field_ctl
+!
+      integer(kind = kint) :: i_pvr
+!
+!
+      do i_pvr = 1, pvr_ctls%num_pvr_ctl
+        call add_field_4_pvr_to_fld_ctl                                 &
+     &     (pvr_ctls%pvr_ctl_type(i_pvr), field_ctl)
+      end do
+!
+      end subroutine add_fields_4_pvrs_to_fld_ctl
+!
+!  ---------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine append_new_pvr_ctl_struct(pvr_ctls)

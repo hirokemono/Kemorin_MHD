@@ -52,15 +52,17 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
-      call read_control_data_section_only(sec_viz_ctl5)
-      call set_control_params_4_viz                                     &
-     &   (sec_viz_ctl5%t_sect_ctl, sec_viz_ctl5%sect_plt,               &
-     &    sfcing5%mesh_file_IO, sfcing5%ucd_file_IO, t_VIZ5, ierr)
+      call read_control_file_section_only(sec_viz_ctl5)
+      call set_control_params_4_viz(sec_viz_ctl5%t_sect_ctl,            &
+     &    sec_viz_ctl5%sect_plt, sec_viz_ctl5%viz_field_ctl,            &
+     &    sfcing5%mesh_file_IO, sfcing5%ucd_file_IO,                    &
+     &    sfcing5%viz_fld_list, t_VIZ5, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
       call FEM_initialize_VTK_convert                                   &
      &   (t_VIZ5%ucd_step, t_VIZ5%init_d, sfcing5)
+      call dealloc_field_lists_for_vizs(sfcing5%viz_fld_list)
 !
 !  VIZ Initialization
       call init_visualize_convert_vtk                                   &
