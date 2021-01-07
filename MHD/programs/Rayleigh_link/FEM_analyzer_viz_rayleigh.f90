@@ -140,7 +140,7 @@
       iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
      &       + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
-        call element_normals_4_VIZ                                      &
+        call element_normals_viz_rayleigh                               &
      &     (femmesh_VIZ, ele_4_nod_VIZ, spfs_VIZ, jacobians_VIZ)
       end if
 !

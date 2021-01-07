@@ -11,7 +11,6 @@
       use m_precision
       use m_work_time
 !
-      use t_surfacing
       use t_viz_sections
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
@@ -40,7 +39,6 @@
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
-      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -50,13 +48,11 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
+      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_sections'
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       call read_control_file_section_only(sec_viz_ctl2)
-      call set_control_params_4_viz(sec_viz_ctl2%t_sect_ctl,            &
-     &    sec_viz_ctl2%sect_plt, sec_viz_ctl2%viz_field_ctl,            &
-     &    sfcing2%mesh_file_IO, sfcing2%ucd_file_IO,                    &
-     &    sfcing2%viz_fld_list, t_VIZ2, ierr)
+      call set_control_params_4_sections(sec_viz_ctl2,                  &
+     &                                   sfcing2, t_VIZ2, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization

@@ -13,11 +13,10 @@
       use m_work_time
       use calypso_mpi
 !
-      use FEM_analyzer_viz
       use t_control_data_all_vizs
       use t_visualizer
       use t_VIZ_only_step_parameter
-      use t_visualization
+      use FEM_analyzer_viz
 !
       implicit none
 !
@@ -42,7 +41,6 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
-      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -56,17 +54,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
       call read_control_file_vizs(vizs_ctl1)
-      call set_control_params_4_viz(vizs_ctl1%t_viz_ctl,                &
-     &    vizs_ctl1%viz_plt, vizs_ctl1%viz_field_ctl,                   &
-     &    viz1%mesh_file_IO, viz1%ucd_file_IO, viz1%viz_fld_list,       &
-     &    t_VIZ1, ierr)
+      call set_control_params_4_viz(vizs_ctl1, viz1, t_VIZ1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs                                          &
-     &   (t_VIZ1%ucd_step, t_VIZ1%init_d, t_VIZ1%viz_step, viz1)
+      if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
+      call FEM_initialize_viz                                          &
+     &   (t_VIZ1%init_d, t_VIZ1%ucd_step, t_VIZ1%viz_step, viz1)
       call dealloc_field_lists_for_vizs(viz1%viz_fld_list)
 !
 !  VIZ Initialization
@@ -80,8 +75,6 @@
 !
       subroutine analyze_vizs
 !
-      use load_mesh_and_field_4_viz
-!
       integer(kind=kint ) :: i_step
 !
 !
@@ -91,8 +84,8 @@
      &        .eqv. .FALSE.) cycle
 !
 !  Load field data
-        if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs                                           &
+        if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
+        call FEM_analyze_viz                                           &
      &     (i_step, t_VIZ1%ucd_step, t_VIZ1%time_d, viz1)
 !
 !  Rendering

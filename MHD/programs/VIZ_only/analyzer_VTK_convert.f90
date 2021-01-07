@@ -11,11 +11,10 @@
       use m_precision
       use m_work_time
 !
-      use t_surfacing
       use t_viz_VTK_convert
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
-      use FEM_analyzer_VTK_convert
+      use FEM_analyzer_viz_surf
 !
       implicit none
 !
@@ -40,7 +39,6 @@
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
-      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -50,13 +48,11 @@
 !
 !     read controls
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
+      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_sections'
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       call read_control_file_section_only(sec_viz_ctl5)
-      call set_control_params_4_viz(sec_viz_ctl5%t_sect_ctl,            &
-     &    sec_viz_ctl5%sect_plt, sec_viz_ctl5%viz_field_ctl,            &
-     &    sfcing5%mesh_file_IO, sfcing5%ucd_file_IO,                    &
-     &    sfcing5%viz_fld_list, t_VIZ5, ierr)
+      call set_control_params_4_sections(sec_viz_ctl5,                  &
+     &                                   sfcing5, t_VIZ5, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
@@ -83,7 +79,7 @@
         if(output_IO_flag(i_step,t_VIZ5%ucd_step) .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call FEM_analyze_VTK_convert                                    &
+        call FEM_analyze_surface                                        &
      &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, sfcing5)
 !
 !  Generate field lines

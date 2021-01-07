@@ -17,7 +17,8 @@
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
-!!      subroutine element_normals_4_VIZ
+!!      subroutine element_normals_viz_rayleigh                         &
+!!     &         (fem, ele_4_nod, spfs, jacobians)
 !!@endverbatim
 !
       module m_viz_4_rayleigh
@@ -119,7 +120,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine element_normals_4_VIZ(fem, ele_4_nod, spfs, jacobians)
+      subroutine element_normals_viz_rayleigh                           &
+     &         (fem, ele_4_nod, spfs, jacobians)
 !
       use int_volume_of_domain
       use set_table_4_RHS_assemble
@@ -145,7 +147,7 @@
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    fem%mesh, fem%group, spfs, jacobians)
 !
-      end subroutine element_normals_4_VIZ
+      end subroutine element_normals_viz_rayleigh
 !
 ! ----------------------------------------------------------------------
 !

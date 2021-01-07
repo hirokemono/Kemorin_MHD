@@ -12,11 +12,10 @@
 !
       use calypso_mpi
 !
-      use FEM_analyzer_viz_fline
       use t_fieldline
       use t_control_data_all_vizs
       use t_VIZ_only_step_parameter
-      use t_visualization
+      use FEM_analyzer_viz
 !
       implicit none
 !
@@ -39,7 +38,6 @@
       subroutine initialize_fline
 !
       use t_control_data_vizs
-      use load_mesh_and_field_4_viz
 !
       integer(kind = kint) :: ierr
 !
@@ -48,15 +46,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_file_vizs(vizs_ctl4)
-      call set_control_params_4_viz(vizs_ctl4%t_viz_ctl,                &
-     &    vizs_ctl4%viz_plt, vizs_ctl4%viz_field_ctl,                   &
-     &    viz4%mesh_file_IO, viz4%ucd_file_IO, viz4%viz_fld_list,       &
-     &    t_VIZ4, ierr)
+      call set_control_params_4_viz(vizs_ctl4, viz4, t_VIZ4, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline(t_VIZ4%ucd_step, t_VIZ4%init_d, viz4)
+      call FEM_initialize_viz                                           &
+     &   (t_VIZ4%init_d, t_VIZ4%ucd_step, t_VIZ4%viz_step, viz4)
       call dealloc_field_lists_for_vizs(viz4%viz_fld_list)
 !
 !  VIZ Initialization
@@ -78,7 +74,7 @@
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call FEM_analyze_fline                                          &
+        call FEM_analyze_viz                                            &
      &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, viz4)
 !
 !  Generate field lines

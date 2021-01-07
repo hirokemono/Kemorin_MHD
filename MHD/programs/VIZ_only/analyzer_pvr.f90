@@ -11,11 +11,10 @@
       use m_precision
       use calypso_mpi
 !
-      use FEM_analyzer_viz_pvr
       use t_control_data_all_vizs
       use t_volume_rendering
       use t_VIZ_only_step_parameter
-      use t_visualization
+      use FEM_analyzer_viz
 !
       implicit none
 !
@@ -37,22 +36,18 @@
 !
       subroutine initialize_pvr
 !
-      use load_mesh_and_field_4_viz
-!
       integer(kind = kint) :: ierr
 !
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
       call read_control_file_vizs(vizs_ctl3)
-      call set_control_params_4_viz(vizs_ctl3%t_viz_ctl,                &
-     &    vizs_ctl3%viz_plt, vizs_ctl3%viz_field_ctl,                   &
-     &    viz3%mesh_file_IO, viz3%ucd_file_IO, viz3%viz_fld_list,       &
-     &    t_VIZ3, ierr)
+      call set_control_params_4_viz(vizs_ctl3, viz3, t_VIZ3, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_pvr(t_VIZ3%ucd_step, t_VIZ3%init_d, viz3)
+      call FEM_initialize_viz                                           &
+     &   (t_VIZ3%init_d, t_VIZ3%ucd_step, t_VIZ3%viz_step, viz3)
       call dealloc_field_lists_for_vizs(viz3%viz_fld_list)
 !
 !  VIZ Initialization
@@ -77,7 +72,7 @@
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call FEM_analyze_pvr                                            &
+        call FEM_analyze_viz                                            &
      &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, viz3)
 !
 !  Rendering
