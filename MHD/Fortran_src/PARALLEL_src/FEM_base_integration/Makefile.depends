@@ -118,6 +118,8 @@ int_vol_vect_differences.o: $(FEM_INT_DIR)/int_vol_vect_differences.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 int_volume_of_domain.o: $(FEM_INT_DIR)/int_volume_of_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o set_normal_vectors.o set_surf_grp_vectors.o sum_normal_4_surf_group.o set_connects_4_surf_group.o const_jacobians_3d.o sum_volume_of_domain.o t_layering_ele_list.o cal_layered_volumes.o calypso_mpi_real.o fem_element_volume.o
 	$(F90) -c $(F90OPTFLAGS) $<
+int_volume_of_single_domain.o: $(FEM_INT_DIR)/int_volume_of_single_domain.f90 m_precision.o m_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_surface_boundary.o t_shape_functions.o t_fem_gauss_int_coefs.o t_jacobians.o sum_volume_of_domain.o const_jacobians_3d.o m_machine_parameter.o fem_element_volume.o
+	$(F90) -c $(F90OPTFLAGS) $<
 matrix_initialization.o: $(FEM_INT_DIR)/matrix_initialization.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o t_table_FEM_const.o
 	$(F90) -c $(F90OPTFLAGS) $<
 nodal_cst_fld_each_element.o: $(FEM_INT_DIR)/nodal_cst_fld_each_element.f90 m_precision.o m_constants.o m_phys_constants.o
