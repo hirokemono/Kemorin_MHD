@@ -213,7 +213,7 @@ static void set_field_names_from_f(struct field_names_f *fld_list){
 	set_filter_field_labels_f(&fld_list->num_comp[ist], 
 		&packed_name[fld_list->len_f * ist], &packed_math[fld_list->len_f * ist]);
 	ist = fld_list->istack_fields[20];
-	set_filtered_force_labels_f(&fld_list->num_comp[ist], 
+	set_filter_force_labels_f(&fld_list->num_comp[ist], 
 		&packed_name[fld_list->len_f * ist], &packed_math[fld_list->len_f * ist]);
 	ist = fld_list->istack_fields[21];
 	set_filtered_ene_flax_labels_f(&fld_list->num_comp[ist], 
