@@ -118,11 +118,11 @@
       call dfftw_plan_many_dft_r2c                                      &
      &   (plan_forward, IONE_4, Nfft4, howmany,                         &
      &    X_FFTW(1,1), inembed, howmany, IONE_4,                        &
-     &    C_FFTW(1,1), inembed, howmany, IONE_4, FFTW_ESTIMATE)
+     &    C_FFTW(1,1), inembed, howmany, IONE_4, FFTW_KEMO_EST)
       call dfftw_plan_many_dft_c2r                                      &
      &   (plan_backward, IONE_4, Nfft4, howmany,                        &
      &    C_FFTW(1,1), inembed, howmany, IONE_4,                        &
-     &    X_FFTW(1,1), inembed, howmany, IONE_4, FFTW_ESTIMATE)
+     &    X_FFTW(1,1), inembed, howmany, IONE_4, FFTW_KEMO_EST)
       aNfft = one / dble(Nfft)
 !
       end subroutine init_OMP_FFTW

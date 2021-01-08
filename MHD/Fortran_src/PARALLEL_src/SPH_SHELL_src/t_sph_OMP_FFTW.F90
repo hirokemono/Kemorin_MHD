@@ -148,12 +148,12 @@
      &    int(OFFTW%Nfft_r), OFFTW%howmany_fwd,                         &
      &    OFFTW%X(1), inembed, OFFTW%howmany_fwd, IONE_4,               &
      &    OFFTW%C(1), inembed, OFFTW%howmany_fwd, IONE_4,               &
-     &    FFTW_ESTIMATE)
+     &    FFTW_KEMO_EST)
       call dfftw_plan_many_dft_c2r(OFFTW%plan_bwd, IONE_4,              &
      &    int(OFFTW%Nfft_r), OFFTW%howmany_bwd,                         &
      &    OFFTW%C(1), inembed, OFFTW%howmany_bwd, IONE_4,               &
      &    OFFTW%X(1), inembed, OFFTW%howmany_bwd, IONE_4,               &
-     &    FFTW_ESTIMATE)
+     &    FFTW_KEMO_EST)
       OFFTW%aNfft = one / dble(sph_rtp%nidx_rtp(3))
 !
       call alloc_comm_table_sph_FFTW                                    &
