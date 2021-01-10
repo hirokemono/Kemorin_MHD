@@ -11,6 +11,16 @@
 !!     &                    set_fft_library_ctl(FFT_library_ctl)
 !!      subroutine write_elapsed_4_FFT(i_mode, etime_fft)
 !!      character(len = kchara) function chosen_fft_name(i_mode)
+!|
+!!       Current broken mode:
+!!     FFT_library_ctl    'FFTW_COMPONENT'
+!!     FFT_library_ctl    'FFTW_SINGLE'
+!!     FFT_library_ctl    'FFTW_DOMAIN'
+!!     FFT_library_ctl    'FFTPACK_COMPONENT'
+!!     FFT_library_ctl    'FFTPACK_SINGLE'
+!!     FFT_library_ctl    'ISPACK3_SINGLE'
+!!     FFT_library_ctl    'ISPACK3_COMPONENT'
+!!
 !!@endverbatim
 !!
       module m_FFT_selector

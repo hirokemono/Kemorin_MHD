@@ -38,23 +38,23 @@
       implicit none
 !
 #ifdef FFTW3
-      integer(kind = kint), parameter :: num_test =   8
+      integer(kind = kint), parameter :: num_test =   3
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
-     &            iflag_FFTPACK_COMPONENT,                              &
+!     &            iflag_FFTPACK_COMPONENT,                             &
      &            iflag_FFTPACK_DOMAIN,                                 &
-     &            iflag_FFTPACK_SINGLE,                                 &
-     &            iflag_FFTW,                                           &
-     &            iflag_FFTW_SINGLE,                                    &
-     &            iflag_FFTW_DOMAIN,                                    &
-     &            iflag_FFTW_COMPONENT/)
+!     &            iflag_FFTPACK_SINGLE,                                &
+!     &            iflag_FFTW_COMPONENT,                                &
+!     &            iflag_FFTW_SINGLE,                                   &
+!     &            iflag_FFTW_DOMAIN,                                   &
+     &            iflag_FFTW/)
 #else
       integer(kind = kint), parameter :: num_test =   4
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK,                                        &
-     &            iflag_FFTPACK_COMPONENT,                              &
-     &            iflag_FFTPACK_DOMAIN,                                 &
-     &            iflag_FFTPACK_SINGLE/)
+!     &            iflag_FFTPACK_COMPONENT,                             &
+!     &            iflag_FFTPACK_SINGLE,                                &
+     &            iflag_FFTPACK_DOMAIN/)
 #endif
 !
       real(kind = kreal) :: etime_shortest = -1.0e10
