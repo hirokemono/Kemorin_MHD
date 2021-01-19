@@ -118,7 +118,7 @@
 !
 !
 #ifdef FFTW3
-      if(iflag_FFT .eq. iflag_FFTW) then
+      if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
         call init_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd,           &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -137,7 +137,7 @@
 !
 !
 #ifdef FFTW3
-      if(iflag_FFT .eq. iflag_FFTW) then
+      if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_MHD_multi_FFTW(MHD_mul_FFTW)
       end if
@@ -161,7 +161,7 @@
 !
 !
 #ifdef FFTW3
-      if(iflag_FFT .eq. iflag_FFTW) then
+      if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW with prefixed recipi'
         call verify_MHD_multi_FFTW(ncomp, ncomp_fwd, ncomp_bwd,         &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
@@ -193,17 +193,17 @@
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUF_to_send(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,     &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
      &      comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ispack)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call sph_FXRTFA_to_send                                         &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                  &
      &     comm_rtp%irev_sr, fld_rtp, WS(1), WK_FFTs%sph_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call swap_phi_order_to_trans(ncomp_fwd,                         &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      MHD_mul_FFTW%v_tmp, fld_rtp)
@@ -257,18 +257,18 @@
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
      &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call sph_FXRTBA_from_recv                                       &
      &    (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                          &
      &     sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                  &
      &     comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &
      &      sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
      &      n_WR, comm_rtp%irev_sr, WR(1), fld_rtp, MHD_mul_FFTW)

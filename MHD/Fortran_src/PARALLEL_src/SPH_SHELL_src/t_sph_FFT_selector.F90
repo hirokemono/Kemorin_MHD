@@ -187,7 +187,7 @@
 !
 !
       WK_FFTs%iflag_FFT = iflag_FFT_in
-      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
+      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
         call init_sph_ISPACK(sph_rtp, comm_rtp,                         &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
@@ -196,7 +196,7 @@
         call init_sph_domain_ISPACK                                     &
      &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK)
 !
-      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_sph_ISPACK3(sph_rtp, comm_rtp,                        &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
@@ -213,7 +213,7 @@
         call init_sph_single_ISPACK3(sph_rtp, WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use prt FFTW'
           call init_prt_FFTW(sph_rtp, comm_rtp,                         &
@@ -243,7 +243,7 @@
 #endif
 !
 #ifdef OMP_FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(id_rank .eq. 0) write(*,*) 'Use at once prt OpenMP FFTW'
           call init_prt_FFTW(sph_rtp, comm_rtp,                         &
@@ -312,7 +312,7 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
+      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_sph_ISPACK(WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
@@ -320,7 +320,7 @@
      &                'Finalize ISPACK V0.93 for domain'
         call finalize_sph_domain_ISPACK(WK_FFTs%sph_domain_ISPACK)
 !
-      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
         call finalize_sph_ISPACK3(WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
@@ -337,7 +337,7 @@
         call finalize_sph_single_ISPACK3(WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
       else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_DOMAIN) then
@@ -352,7 +352,7 @@
 #endif
 !
 #ifdef OMP_FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
           call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
@@ -408,7 +408,7 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
+      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_sph_ISPACK(sph_rtp, comm_rtp,                       &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK)
@@ -417,7 +417,7 @@
         call verify_sph_domain_ISPACK                                   &
      &     (sph_rtp, comm_rtp, WK_FFTs%sph_domain_ISPACK)
 !
-      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V3.0.1'
         call verify_sph_ISPACK3(sph_rtp, comm_rtp,                      &
      &      ncomp_bwd, ncomp_fwd, WK_FFTs%sph_ISPACK3)
@@ -437,7 +437,7 @@
      &     (sph_rtp, WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
           call verify_prt_FFTW(sph_rtp, comm_rtp,                       &
@@ -467,7 +467,7 @@
 #endif
 !
 #ifdef OMP_FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           if(iflag_debug .gt. 0) write(*,*) 'Use prt FFTW'
           call verify_prt_FFTW(sph_rtp, comm_rtp,                       &
@@ -545,14 +545,14 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
+      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUF_to_send(sph_rtp, comm_rtp, ncomp_fwd,           &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         call sph_domain_FTTRUF_to_send(sph_rtp, comm_rtp, ncomp_fwd,    &
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_domain_ISPACK)
 !
-      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call sph_FXRTFA_to_send(sph_rtp, comm_rtp, ncomp_fwd,           &
      &     n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_ISPACK3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
@@ -566,7 +566,7 @@
      &      n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
@@ -591,7 +591,7 @@
 #endif
 !
 #ifdef OMP_FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_fwd_FFTW_to_send(sph_rtp, comm_rtp,                  &
      &        ncomp_fwd, n_WS, v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
@@ -658,14 +658,14 @@
       type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1) then
+      if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call sph_FTTRUB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,         &
      &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_ISPACK)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK1_DOMAIN) then
         call sph_domain_FTTRUB_from_recv(sph_rtp, comm_rtp, ncomp_bwd,  &
      &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_domain_ISPACK)
 !
-      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call sph_FXRTBA_from_recv(sph_rtp, comm_rtp, ncomp_bwd,         &
      &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_ispack3)
       else if(WK_FFTs%iflag_FFT .eq. iflag_ISPACK3_DOMAIN) then
@@ -679,7 +679,7 @@
      &      n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_sgl_ispack3)
 !
 #ifdef FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
@@ -704,7 +704,7 @@
 #endif
 !
 #ifdef OMP_FFTW3
-      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW) then
+      else if(WK_FFTs%iflag_FFT .eq. iflag_OMP_FFTW_ONCE) then
         if(sph_rtp%istep_rtp(3) .eq. 1) then
           call prt_back_FFTW_from_recv(sph_rtp, comm_rtp,               &
      &        ncomp_bwd, n_WR, WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)

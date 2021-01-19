@@ -40,34 +40,34 @@
 #ifdef OMP_FFTW3
       integer(kind = kint), parameter :: num_test =   7
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK,                                        &
+     &        = (/iflag_FFTPACK_ONCE,                                   &
 !     &            iflag_FFTPACK_COMPONENT,                             &
      &            iflag_FFTPACK_DOMAIN,                                 &
 !     &            iflag_FFTPACK_SINGLE,                                &
-     &            iflag_FFTW,                                           &
+     &            iflag_FFTW_ONCE,                                      &
 !     &            iflag_FFTW_SINGLE,                                   &
 !     &            iflag_FFTW_COMPONENT,                                &
 !     &            iflag_FFTW_DOMAIN,                                   &
      &            iflag_OMP_FFTW,                                       &
 !     &            iflag_OMP_FFTW_DOMAIN,                               &
-     &            iflag_ISPACK1,                                        &
-     &            iflag_ISPACK3,                                        &
+     &            iflag_ISPACK1_ONCE,                                   &
+     &            iflag_ISPACK3_ONCE,                                   &
 !     &            iflag_ISPACK3_COMPONENT,                             &
 !     &            iflag_ISPACK3_SINGLE,                                &
      &            iflag_ISPACK3_DOMAIN/)
 #elif FFTW3
       integer(kind = kint), parameter :: num_test =   6
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK,                                        &
+     &        = (/iflag_FFTPACK_ONCE,                                   &
 !     &            iflag_FFTPACK_COMPONENT,                             &
      &            iflag_FFTPACK_DOMAIN,                                 &
 !     &            iflag_FFTPACK_SINGLE,                                &
-     &            iflag_FFTW,                                           &
+     &            iflag_FFTW_ONCE,                                      &
 !     &            iflag_FFTW_SINGLE,                                   &
 !     &            iflag_FFTW_COMPONENT,                                &
 !     &            iflag_FFTW_DOMAIN,                                   &
-     &            iflag_ISPACK1,                                        &
-     &            iflag_ISPACK3,                                        &
+     &            iflag_ISPACK1_ONCE,                                   &
+     &            iflag_ISPACK3_ONCE,                                   &
 !     &            iflag_ISPACK3_COMPONENT,                             &
 !     &            iflag_ISPACK3_SINGLE,                                &
 
@@ -75,12 +75,12 @@
 #else
       integer(kind = kint), parameter :: num_test =   5
       integer(kind = kint), parameter :: list_test(num_test)            &
-     &        = (/iflag_FFTPACK,                                        &
+     &        = (/iflag_FFTPACK_ONCE,                                   &
 !     &            iflag_FFTPACK_COMPONENT,                             &
      &            iflag_FFTPACK_DOMAIN,                                 &
 !     &            iflag_FFTPACK_SINGLE,                                &
-     &            iflag_ISPACK1,                                        &
-     &            iflag_ISPACK3,                                        &
+     &            iflag_ISPACK1_ONCE,                                   &
+     &            iflag_ISPACK3_ONCE,                                   &
 !     &            iflag_ISPACK3_COMPONENT,                             &
 !     &            iflag_ISPACK3_SINGLE,                                &
      &            iflag_ISPACK3_DOMAIN/)
@@ -141,9 +141,9 @@
       else if(iflag_FFT_MHD .eq. iflag_FFTPACK_COMPONENT) then
         set_FFT_mode_4_snapshot = iflag_FFTPACK_SINGLE
       else if(iflag_FFT_MHD .eq. iflag_ISPACK3_COMPONENT) then
-        set_FFT_mode_4_snapshot = iflag_ISPACK3
+        set_FFT_mode_4_snapshot = iflag_ISPACK3_ONCE
 !
-      else if(iflag_FFT_MHD .eq. iflag_FFTW) then
+      else if(iflag_FFT_MHD .eq. iflag_FFTW_ONCE) then
         set_FFT_mode_4_snapshot = iflag_FFTW_DOMAIN
 !
       else

@@ -108,15 +108,15 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V0.93'
         call init_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use ISPACK V3.0.1'
         call init_wk_ispack3_t(Nsmp, Nstacksmp,                         &
      &                         cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(id_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_FFTW_mul_type(Nsmp, Nstacksmp, Nfft, WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
@@ -140,14 +140,14 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V0.93'
         call finalize_wk_ispack_t(WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK V3.0.1'
         call finalize_wk_ispack3_t(WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
         call finalize_FFTW_mul_type(Nsmp, WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
@@ -175,15 +175,15 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_wk_ispack_t(Nsmp, Nstacksmp, Nfft, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK V0.93'
         call verify_wk_ispack3_t(Nsmp, Nstacksmp,                       &
      &                          cast_long(Nfft), WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
         call verify_wk_FFTW_mul_type(Nsmp, Nstacksmp,                   &
      &      Nfft, WKS%WK_MUL_FFTW)
@@ -214,13 +214,13 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call FTTRUF_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call FXRTFA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call FFTW_mul_forward_type(Nsmp, Nstacksmp, M, Nfft, X,         &
      &      WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
@@ -249,13 +249,13 @@
       type(working_FFTs), intent(inout) :: WKS
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK1) then
+      if(iflag_FFT .eq. iflag_ISPACK1_ONCE) then
         call FTTRUB_kemo_t(Nsmp, Nstacksmp, M, Nfft, X, WKS%WK_ISPACK1)
-      else if(iflag_FFT .eq. iflag_ISPACK3) then
+      else if(iflag_FFT .eq. iflag_ISPACK3_ONCE) then
         call FXRTBA_kemo_t(Nsmp, Nstacksmp, cast_long(M),               &
      &                     cast_long(Nfft), X, WKS%WK_ISPACK3)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW) then
+      else if(iflag_FFT .eq. iflag_FFTW_ONCE) then
         call FFTW_mul_backward_type(Nsmp, Nstacksmp, M, Nfft, X,        &
      &      WKS%WK_MUL_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then

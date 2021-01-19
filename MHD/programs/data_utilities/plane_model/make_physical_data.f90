@@ -193,7 +193,7 @@
 !
 !   reset spectr data
 !
-        call s_inverse_fft_4_plane(iflag_FFTPACK,                       &
+        call s_inverse_fft_4_plane(iflag_FFTPACK_ONCE,                  &
      &      npl_spec1, c_size1%nx_all, c_size1%ny_all, c_size1%nz_all,  &
      &      plane_fft_wk1%kx_max, plane_fft_wk1%ky_max,                 &
      &      plane_fft_wk1%iz_max, plane_fft_wk1%num_spectr,             &
