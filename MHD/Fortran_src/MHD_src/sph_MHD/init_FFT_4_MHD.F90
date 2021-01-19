@@ -38,51 +38,50 @@
       implicit none
 !
 #ifdef OMP_FFTW3
-      integer(kind = kint), parameter :: num_test =   7
+      integer(kind = kint), parameter :: num_test =   15
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK_ONCE,                                   &
-!     &            iflag_FFTPACK_COMPONENT,                             &
+     &            iflag_FFTPACK_COMPONENT,                              &
      &            iflag_FFTPACK_DOMAIN,                                 &
-!     &            iflag_FFTPACK_SINGLE,                                &
+     &            iflag_FFTPACK_SINGLE,                                 &
      &            iflag_FFTW_ONCE,                                      &
-!     &            iflag_FFTW_SINGLE,                                   &
-!     &            iflag_FFTW_COMPONENT,                                &
-!     &            iflag_FFTW_DOMAIN,                                   &
-     &            iflag_OMP_FFTW,                                       &
-!     &            iflag_OMP_FFTW_DOMAIN,                               &
+     &            iflag_FFTW_SINGLE,                                    &
+     &            iflag_FFTW_COMPONENT,                                 &
+     &            iflag_FFTW_DOMAIN,                                    &
+     &            iflag_OMP_FFTW_ONCE,                                  &
+     &            iflag_OMP_FFTW_DOMAIN,                                &
      &            iflag_ISPACK1_ONCE,                                   &
      &            iflag_ISPACK3_ONCE,                                   &
-!     &            iflag_ISPACK3_COMPONENT,                             &
-!     &            iflag_ISPACK3_SINGLE,                                &
+     &            iflag_ISPACK3_COMPONENT,                              &
+     &            iflag_ISPACK3_SINGLE,                                 &
      &            iflag_ISPACK3_DOMAIN/)
 #elif FFTW3
-      integer(kind = kint), parameter :: num_test =   6
+      integer(kind = kint), parameter :: num_test =   13
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK_ONCE,                                   &
-!     &            iflag_FFTPACK_COMPONENT,                             &
+     &            iflag_FFTPACK_COMPONENT,                              &
      &            iflag_FFTPACK_DOMAIN,                                 &
-!     &            iflag_FFTPACK_SINGLE,                                &
+     &            iflag_FFTPACK_SINGLE,                                 &
      &            iflag_FFTW_ONCE,                                      &
-!     &            iflag_FFTW_SINGLE,                                   &
-!     &            iflag_FFTW_COMPONENT,                                &
-!     &            iflag_FFTW_DOMAIN,                                   &
+     &            iflag_FFTW_SINGLE,                                    &
+     &            iflag_FFTW_COMPONENT,                                 &
+     &            iflag_FFTW_DOMAIN,                                    &
      &            iflag_ISPACK1_ONCE,                                   &
      &            iflag_ISPACK3_ONCE,                                   &
-!     &            iflag_ISPACK3_COMPONENT,                             &
-!     &            iflag_ISPACK3_SINGLE,                                &
-
+     &            iflag_ISPACK3_COMPONENT,                              &
+     &            iflag_ISPACK3_SINGLE,                                 &
      &            iflag_ISPACK3_DOMAIN/)
 #else
-      integer(kind = kint), parameter :: num_test =   5
+      integer(kind = kint), parameter :: num_test =   9
       integer(kind = kint), parameter :: list_test(num_test)            &
      &        = (/iflag_FFTPACK_ONCE,                                   &
-!     &            iflag_FFTPACK_COMPONENT,                             &
+     &            iflag_FFTPACK_COMPONENT,                              &
      &            iflag_FFTPACK_DOMAIN,                                 &
-!     &            iflag_FFTPACK_SINGLE,                                &
+     &            iflag_FFTPACK_SINGLE,                                 &
      &            iflag_ISPACK1_ONCE,                                   &
      &            iflag_ISPACK3_ONCE,                                   &
-!     &            iflag_ISPACK3_COMPONENT,                             &
-!     &            iflag_ISPACK3_SINGLE,                                &
+     &            iflag_ISPACK3_COMPONENT,                              &
+     &            iflag_ISPACK3_SINGLE,                                 &
      &            iflag_ISPACK3_DOMAIN/)
 #endif
 !
