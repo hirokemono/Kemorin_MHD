@@ -99,21 +99,21 @@
       if(my_rank .eq. 0) then
         flag =  (check_exist_mesh(my_rank, part_p1%new_mesh_file))      &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
-     &                              part_p1%part_param%trans_tbl_file))
+     &           part_p1%repart_p%part_param%trans_tbl_file))
       end if
       call calypso_MPI_barrier
       call calypso_mpi_bcast_one_logical(flag, 0)
 !
       if(flag) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
-        call load_repartitoned_file(part_p1, fem_T, new_fem,            &
+        call load_repartitoned_file(part_p1%repart_p, fem_T, new_fem,   &
      &                              org_to_new_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
         write(e_message,*)                                              &
      &        'Construct repartitioned mesh and transfer table'
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
-        call s_repartiton_by_volume(part_p1, fem_T, new_fem,            &
+        call s_repartiton_by_volume(part_p1%repart_p, fem_T, new_fem,   &
      &                              org_to_new_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
@@ -142,7 +142,7 @@
       integer(kind = kint) :: istep_ucd = 0
 !
 !
-      call init_udt_to_new_partition(part_p1%new_ucd_file,              &
+      call init_udt_to_new_partition(part_p1%repart_p%viz_ucd_file,     &
      &                               new_fem%mesh, new_ucd)
 !
       ist = t_VIZ1%init_d%i_time_step
@@ -158,8 +158,8 @@
      &     (istep_ucd, part_p1%org_ucd_file, t_IO, org_ucd)
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
-        call udt_field_to_new_partition                                 &
-     &     (iflag_import_item, istep_ucd, part_p1%new_ucd_file,         &
+        call udt_field_to_new_partition(iflag_import_item,              &
+     &      istep_ucd, part_p1%repart_p%viz_ucd_file,                   &
      &      t_IO, new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !

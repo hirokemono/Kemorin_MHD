@@ -7,15 +7,15 @@
 !>@brief Repartitioning based on volume
 !!
 !!@verbatim
-!!      subroutine s_repartiton_by_volume(part_p, geofem, new_fem,      &
+!!      subroutine s_repartiton_by_volume(repart_p, geofem, new_fem,    &
 !!     &                                  org_to_new_tbl)
-!!        type(vol_partion_prog_param), intent(in) ::  part_p
+!!        type(vol_partion_prog_param), intent(in) ::  repart_p
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
-!!      subroutine load_repartitoned_file(part_p, geofem, new_fem,      &
+!!      subroutine load_repartitoned_file(repart_p, geofem, new_fem,    &
 !!     &                                  org_to_new_tbl)
-!!        type(vol_partion_prog_param), intent(in) ::  part_p
+!!        type(vol_partion_prog_param), intent(in) ::  repart_p
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
@@ -33,7 +33,7 @@
 !
       use t_mesh_data
       use t_calypso_comm_table
-      use t_control_param_repartition
+      use t_ctl_param_volume_repart
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_repartiton_by_volume(part_p, geofem, new_fem,        &
+      subroutine s_repartiton_by_volume(repart_p, geofem, new_fem,      &
      &                                  org_to_new_tbl)
 !
       use t_next_node_ele_4_node
@@ -60,7 +60,7 @@
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
 !
-      type(vol_partion_prog_param), intent(in) ::  part_p
+      type(volume_repart_params), intent(in) ::  repart_p
       type(mesh_data), intent(inout) :: geofem
 !
       type(mesh_data), intent(inout) :: new_fem
@@ -101,22 +101,22 @@
 !
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm, next_tbl_T%neib_nod,                        &
-     &    part_p%part_param, new_fem, org_to_new_tbl)
+     &    repart_p%part_param, new_fem, org_to_new_tbl)
       call dealloc_comm_table(ele_comm)
 !
 !       Output new mesh file
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
-      if(part_p%new_mesh_file%iflag_format .eq. id_no_file) then
+      if(repart_p%new_mesh_file%iflag_format .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No repartitioned mesh data output'
       else
-        call sel_mpi_write_mesh_file(part_p%new_mesh_file,              &
+        call sel_mpi_write_mesh_file(repart_p%new_mesh_file,            &
      &                               new_fem%mesh, new_fem%group)
       end if
       call calypso_MPI_barrier
 !
 !       Output data transfer table
-      if(part_p%part_param%trans_tbl_file%iflag_format                  &
+      if(repart_p%part_param%trans_tbl_file%iflag_format                &
      &     .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No transfer table output for repartition'
@@ -124,7 +124,7 @@
         call copy_repart_tbl_to_itp_table(geofem%mesh,                  &
      &      next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
-     &      part_p%part_param%trans_tbl_file, itp_tbl_IO)
+     &      repart_p%part_param%trans_tbl_file, itp_tbl_IO)
         call dealloc_interpolate_table(itp_tbl_IO)
       end if
       call calypso_MPI_barrier
@@ -137,7 +137,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_repartitoned_file(part_p, geofem, new_fem,        &
+      subroutine load_repartitoned_file(repart_p, geofem, new_fem,      &
      &                                  org_to_new_tbl)
 !
       use t_interpolate_table
@@ -149,7 +149,7 @@
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
 !
-      type(vol_partion_prog_param), intent(in) ::  part_p
+      type(volume_repart_params), intent(in) ::  repart_p
       type(mesh_data), intent(in) :: geofem
 !
       type(mesh_data), intent(inout) :: new_fem
@@ -161,11 +161,11 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new mesh'
-      call mpi_input_mesh(part_p%new_mesh_file, nprocs, new_fem)
+      call mpi_input_mesh(repart_p%new_mesh_file, nprocs, new_fem)
       call const_global_mesh_infos(new_fem%mesh)
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_p%part_param%trans_tbl_file, itp_tbl_IO, ierr)
+     &    repart_p%part_param%trans_tbl_file, itp_tbl_IO, ierr)
       call calypso_MPI_barrier
 !
       irank_read = my_rank

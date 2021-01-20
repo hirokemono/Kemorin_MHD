@@ -27,6 +27,10 @@ begin visualizer
       begin viz_mesh_files_def
         num_subdomain_ctl    96
         mesh_file_prefix         'mesh_new/in'
+        mesh_file_fmt_ctl        'merged_bin_gz'
+!
+        field_file_prefix        'field_new/out'
+        field_file_fmt_ctl       'merged_bin_gz'
       end viz_mesh_files_def
 !
       begin FEM_mesh_ctl
