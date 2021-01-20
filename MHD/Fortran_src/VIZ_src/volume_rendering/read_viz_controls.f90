@@ -81,7 +81,8 @@
      &             :: hd_pvr_ctl = 'volume_rendering'
       character(len=kchara), parameter, private                         &
      &             :: hd_lic_ctl = 'LIC_rendering'
-      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
+      character(len=kchara), parameter, private                         &
+     &             :: hd_fline_ctl =  'fieldline'
 !
 !
       character(len=kchara), parameter, private                         &
@@ -150,7 +151,6 @@
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
-!
 !
         if(check_array_flag(c_buf, hd_psf_ctl)) then
           call read_files_4_psf_ctl(id_control, hd_psf_ctl,             &
@@ -251,24 +251,24 @@
       call set_control_labels(hd_delta_t_isosurf, names( 5))
       call set_control_labels(hd_isosurf_ctl,     names( 6))
 !
-      call set_control_labels(hd_i_step_pvr,          names( 7))
-      call set_control_labels(hd_delta_t_pvr,         names( 8))
-      call set_control_labels(hd_output_fld_file_fmt, names( 9))
+      call set_control_labels(hd_i_step_pvr,     names( 7))
+      call set_control_labels(hd_delta_t_pvr,    names( 8))
+      call set_control_labels(hd_pvr_ctl,        names( 9))
 !
-      call set_control_labels(hd_i_step_lic,          names(10))
-      call set_control_labels(hd_delta_t_lic,         names(11))
-      call set_control_labels(hd_output_fld_file_fmt, names(12))
+      call set_control_labels(hd_i_step_lic,     names(10))
+      call set_control_labels(hd_delta_t_lic,    names(11))
+      call set_control_labels(hd_lic_ctl,        names(12))
 !
-      call set_control_labels(hd_i_step_fline,        names(13))
-      call set_control_labels(hd_delta_t_fline,       names(14))
-      call set_control_labels(hd_output_fld_file_fmt, names(15))
+      call set_control_labels(hd_i_step_fline,   names(13))
+      call set_control_labels(hd_delta_t_fline,  names(14))
+      call set_control_labels(hd_fline_ctl,      names(15))
 !
       call set_control_labels(hd_i_step_ucd,          names(16))
       call set_control_labels(hd_delta_t_ucd,         names(17))
       call set_control_labels(hd_output_fld_file_fmt, names(18))
 !
-      call set_control_labels(hd_psf_ctl,         names(19))
-      call set_control_labels(hd_iso_ctl,         names(20))
+      call set_control_labels(hd_psf_ctl,             names(19))
+      call set_control_labels(hd_iso_ctl,             names(20))
 !
       end subroutine set_label_vizs
 !

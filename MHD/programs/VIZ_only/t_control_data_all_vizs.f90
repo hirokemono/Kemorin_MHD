@@ -19,6 +19,10 @@
 !!      ...
 !!    end time_step_ctl
 !!
+!!    begin visual_domain_control
+!!      ....
+!!    end visual_domain_control
+!!
 !!    begin visual_control
 !!      ...
 !!    end  visual_control
@@ -36,6 +40,7 @@
       use t_ctl_data_4_time_steps
       use t_control_data_vizs
       use t_control_array_character3
+      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -49,8 +54,11 @@
         type(platform_data_control) :: viz_plt
 !>        Structure for time stepping control
         type(time_data_control) :: t_viz_ctl
+!
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctl_v
+!>        Structure for new partitioning controls
+        type(viz_repartition_ctl) :: repart_ctl
 !
 !>        Structures of field used in visualization
         type(ctl_array_c3) :: viz_field_ctl
@@ -60,22 +68,20 @@
 !
 !     Top level
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_viz_only_file = 'visualizer'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                    :: hd_platform = 'data_files_def'
-      character(len=kchara), parameter                                  &
-     &      :: hd_time_step = 'time_step_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_time_step = 'time_step_ctl'
 !
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_viz_partition = 'viz_repartition_ctl'
+      character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
-      private :: hd_viz_only_file, hd_platform, hd_time_step
-      private :: hd_viz_control
-!
       private :: viz_ctl_file_code, fname_viz_ctl
-!
       private :: read_vizs_control_data, bcast_vizs_control_data
 !
 !   --------------------------------------------------------------------
@@ -143,8 +149,10 @@
         call read_control_time_step_data                                &
      &     (id_control, hd_time_step, vizs_ctl%t_viz_ctl, c_buf)
 !
-        call s_read_viz_controls                                        &
-     &     (id_control, hd_viz_control, vizs_ctl%viz_ctl_v, c_buf)
+        call s_read_viz_controls(id_control, hd_viz_control,            &
+     &                           vizs_ctl%viz_ctl_v, c_buf)
+        call read_control_vol_repart(id_control, hd_viz_partition,      &
+     &                               vizs_ctl%repart_ctl, c_buf)
       end do
       vizs_ctl%i_viz_only_file = 1
 !
@@ -166,6 +174,7 @@
       call bcast_ctl_data_4_platform(vizs_ctl%viz_plt)
       call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
       call bcast_viz_controls(vizs_ctl%viz_ctl_v)
+      call bcast_control_vol_repart(vizs_ctl%repart_ctl)
 !
       call calypso_mpi_bcast_one_int(vizs_ctl%i_viz_only_file, 0)
 !
@@ -182,6 +191,7 @@
       call dealloc_control_array_c3(vizs_ctl%viz_field_ctl)
       call reset_control_platforms(vizs_ctl%viz_plt)
       call dealloc_viz_controls(vizs_ctl%viz_ctl_v)
+      call dealloc_control_vol_repart(vizs_ctl%repart_ctl)
       call reset_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
 !
       vizs_ctl%t_viz_ctl%i_tstep = 0
@@ -189,6 +199,7 @@
 !
       end subroutine dealloc_vizs_control_data
 !
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       end module t_control_data_all_vizs

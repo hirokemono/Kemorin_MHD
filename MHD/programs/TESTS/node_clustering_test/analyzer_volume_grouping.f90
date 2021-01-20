@@ -134,14 +134,14 @@
 !
 !       Re-partitioning
       call grouping_by_volume                                           &
-     &   (fem_T%mesh, part_prog_p1%part_param, part_grp)
+     &   (fem_T%mesh, part_prog_p1%repart_p%part_param, part_grp)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
 !      call s_append_group_data(ext_grp, fem_T%group%nod_grp)
 !
 !       Output appended mesh
-      call mpi_output_mesh(part_prog_p1%new_mesh_file,                  &
+      call mpi_output_mesh(part_prog_p1%repart_p%viz_mesh_file,         &
      &                     fem_T%mesh, fem_T%group)
 !
       end subroutine initialize_volume_grouping

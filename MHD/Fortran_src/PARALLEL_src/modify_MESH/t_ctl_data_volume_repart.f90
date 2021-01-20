@@ -49,6 +49,7 @@
 !
       implicit  none
 !
+!>      Structure for new partitioning controls
       type viz_repartition_ctl
 !>        Structure for new file controls
         type(platform_data_control) :: viz_plt

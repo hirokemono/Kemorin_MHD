@@ -148,7 +148,6 @@
 !
 !
       call reset_control_platforms(part_tctl%plt)
-      call dealloc_ctl_data_new_decomp(part_tctl%new_part_ctl)
       call dealloc_control_vol_repart(part_tctl%viz_repart_c)
 !
       part_tctl%t_viz_ctl%i_tstep = 0

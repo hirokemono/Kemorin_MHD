@@ -97,7 +97,8 @@
 !  -------------------------------
 !
       if(my_rank .eq. 0) then
-        flag =  (check_exist_mesh(my_rank, part_p1%new_mesh_file))      &
+        flag =  (check_exist_mesh(my_rank,                              &
+     &           part_p1%repart_p%viz_mesh_file))                       &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
      &           part_p1%repart_p%part_param%trans_tbl_file))
       end if

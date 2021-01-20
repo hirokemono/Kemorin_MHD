@@ -80,9 +80,12 @@
       call set_merged_ucd_file_define(viz_repart_c%viz_plt,             &
      &                                repart_p%viz_ucd_file)
 !
-      if(i_viz_repartition_ctl .gt. 0) flag_repartition = .TRUE.
-      call set_ctl_param_vol_grping(default_newmesh_head,               &
-     &    viz_repart_c%new_part_ctl, repart_p%part_param)
+      if(viz_repart_c%i_viz_repartition_ctl .gt. 0) then
+        repart_p%flag_repartition = .TRUE.
+!
+        call set_ctl_param_vol_grping(default_newmesh_head,             &
+     &      viz_repart_c%new_part_ctl, repart_p%part_param)
+      end if
 !
       if(repart_p%part_param%new_nprocs                                 &
      &      .ne. viz_repart_c%viz_plt%ndomain_ctl%intvalue) then

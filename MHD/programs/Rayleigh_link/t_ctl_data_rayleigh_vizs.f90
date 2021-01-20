@@ -52,6 +52,7 @@
       use t_ctl_data_4_fields
       use t_ctl_data_4_divide_sphere
       use t_control_data_vizs
+      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -67,8 +68,12 @@
         type(field_control) :: fld_ctl
 !>        Structure for time stepping control
         type(time_data_control) :: t_viz_ctl
+!
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctl_v
+!>        Structure for new partitioning controls
+        type(viz_repartition_ctl) :: repart_ctl
+!
 !>        Structure of spherical shell domain decomposition
         type(sphere_domain_control) :: sdctl
 !
@@ -89,6 +94,8 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_domains_sph = 'num_domain_ctl'
 !
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_viz_partition = 'viz_repartition_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_viz_control = 'visual_control'
 !
@@ -171,7 +178,9 @@
      &     (id_control, hd_domains_sph, rayleigh_vizs_ctl%sdctl, c_buf)
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
-     &      rayleigh_vizs_ctl%viz_ctl_v, c_buf)
+     &                           rayleigh_vizs_ctl%viz_ctl_v, c_buf)
+        call read_control_vol_repart(id_control, hd_viz_partition,      &
+     &                           rayleigh_vizs_ctl%repart_ctl, c_buf)
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
 !

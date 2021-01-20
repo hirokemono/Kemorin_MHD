@@ -106,11 +106,11 @@
 !
 !       Output new mesh file
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
-      if(repart_p%new_mesh_file%iflag_format .eq. id_no_file) then
+      if(repart_p%viz_mesh_file%iflag_format .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*)                                   &
      &          'No repartitioned mesh data output'
       else
-        call sel_mpi_write_mesh_file(repart_p%new_mesh_file,            &
+        call sel_mpi_write_mesh_file(repart_p%viz_mesh_file,            &
      &                               new_fem%mesh, new_fem%group)
       end if
       call calypso_MPI_barrier
@@ -161,7 +161,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new mesh'
-      call mpi_input_mesh(repart_p%new_mesh_file, nprocs, new_fem)
+      call mpi_input_mesh(repart_p%viz_mesh_file, nprocs, new_fem)
       call const_global_mesh_infos(new_fem%mesh)
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
