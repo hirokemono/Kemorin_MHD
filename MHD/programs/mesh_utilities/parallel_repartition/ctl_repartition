@@ -10,13 +10,13 @@ begin repartition_test
     field_file_fmt_ctl       'merged_bin_gz'
   end data_files_def
 !
-  begin new_data_files_def
+  begin viz_data_files_def
     num_subdomain_ctl    96
     mesh_file_prefix         'mesh_new/in'
 !
     field_file_prefix        'field_new/out'
     field_file_fmt_ctl       'merged_bin_gz'
-  end new_data_files_def
+  end viz_data_files_def
 !
   begin FEM_mesh_ctl
     FEM_surface_output_switch      'NO'

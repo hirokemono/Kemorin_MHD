@@ -23,6 +23,34 @@ begin visualizer
   end time_step_ctl
 !
   begin visual_control
+    begin visual_domain_control
+      begin viz_mesh_files_def
+        num_subdomain_ctl    96
+        mesh_file_prefix         'mesh_new/in'
+      end viz_mesh_files_def
+!
+      begin FEM_mesh_ctl
+        FEM_surface_output_switch      'NO'
+        FEM_viewer_mesh_output_switch  'NO'
+      end FEM_mesh_ctl
+!
+      begin new_partitioning_ctl
+        repartition_table_prefix   'repartition_table'
+        repartition_table_format   'merged_gz'
+!
+        partitioning_method_ctl  VOLUME_BASED
+        array dir_domain_ctl
+          dir_domain_ctl  x     3
+          dir_domain_ctl  y     4
+          dir_domain_ctl  z     8
+        end array dir_domain_ctl
+        group_ratio_to_domain_ctl    200
+!
+        sleeve_level_ctl         2
+        element_overlap_ctl      Off
+      end new_partitioning_ctl
+    end visual_domain_control
+!
     array cross_section_ctl
       file   cross_section_ctl   'ctl_psf_eq'
     end array cross_section_ctl

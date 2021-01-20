@@ -114,6 +114,7 @@
 !>   File format for field data output
         type(read_character_item) :: output_field_file_fmt_ctl
 !
+!
         integer (kind=kint) :: i_viz_control = 0
       end type visualization_controls
 !
