@@ -33,7 +33,7 @@
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!        type(volume_partioning_param), intent(inout) :: part_param
+!!        type(volume_repart_params), intent(inout) :: part_param
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine set_ctl_params_pick_circle                           &
@@ -177,7 +177,7 @@
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(volume_partioning_param), intent(inout) :: part_param
+      type(volume_repart_params), intent(inout) :: part_param
 !
 !   set parameters for SGS model
 !

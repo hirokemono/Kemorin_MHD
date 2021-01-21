@@ -1,5 +1,5 @@
-!>@file   FEM_analyzer_viz.f90
-!!@brief  module FEM_analyzer_viz
+!>@file   FEM_analyzer_viz_pvr.f90
+!!@brief  module FEM_analyzer_viz_pvr
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -7,23 +7,23 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_control_params_4_viz                             &
-!!     &         (vizs_ctl, viz, t_viz_param, ierr)
-!!        type(control_data_vizs), intent(in) :: vizs_ctl
-!!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
+!!      subroutine set_control_params_4_pvr                             &
+!!     &         (pvr_vizs_c, pvr, t_viz_param, ierr)
+!!        type(control_data_pvr_vizs), intent(in) :: pvr_vizs_c
+!!        type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_viz(init_d, ucd_step, viz_step, viz)
+!!      subroutine FEM_initialize_pvr(init_d, ucd_step, viz_step, pvr)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
-!!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
-!!      subroutine FEM_analyze_viz(istep, ucd_step, time_d, viz)
+!!        type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
+!!      subroutine FEM_analyze_pvr(istep, ucd_step, time_d, pvr)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
-!!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
+!!        type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
 !!@endverbatim
 !
-      module FEM_analyzer_viz
+      module FEM_analyzer_viz_pvr
 !
       use m_precision
       use m_machine_parameter
@@ -40,13 +40,12 @@
       use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
-      use t_ctl_param_volume_repart
 !
       implicit none
 !
 !
 !>      Structure of mesh and field for visualization only
-      type FEM_mesh_field_4_viz
+      type FEM_mesh_field_4_pvr
 !>        Structure for mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure for field file IO paramters
@@ -72,12 +71,9 @@
 !
 !>      structure of field list for visualization
         type(visulize_field_list) :: viz_fld_list
+      end type FEM_mesh_field_4_pvr
 !
-!>        Structure for repartitioning parameters
-        type(volume_repart_params) :: part_param
-      end type FEM_mesh_field_4_viz
-!
-      private :: add_field_in_viz_ctls_w_SGS, element_normals_4_VIZ
+      private :: add_field_in_viz_ctls_w_SGS, element_normals_4_pvr
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,10 +81,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_params_4_viz                               &
-     &         (vizs_ctl, viz, t_viz_param, ierr)
+      subroutine set_control_params_4_pvr                               &
+     &         (pvr_vizs_c, pvr, t_viz_param, ierr)
 !
-      use t_control_data_all_vizs
+      use t_control_data_vizs_pvr
       use t_VIZ_only_step_parameter
 !
       use m_file_format_switch
@@ -97,33 +93,30 @@
       use set_control_platform_data
       use ucd_IO_select
 !
-      type(control_data_vizs), intent(in) :: vizs_ctl
+      type(control_data_pvr_vizs), intent(in) :: pvr_vizs_c
 !
-      type(FEM_mesh_field_4_viz), intent(inout) :: viz
+      type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, vizs_ctl%viz_plt)
-      call set_control_smp_def(my_rank, vizs_ctl%viz_plt)
-      call set_control_mesh_def(vizs_ctl%viz_plt, viz%mesh_file_IO)
-      call set_ucd_file_define(vizs_ctl%viz_plt, viz%ucd_file_IO)
+      call turn_off_debug_flag_by_ctl(my_rank, pvr_vizs_c%viz_plt)
+      call set_control_smp_def(my_rank, pvr_vizs_c%viz_plt)
+      call set_control_mesh_def(pvr_vizs_c%viz_plt, pvr%mesh_file_IO)
+      call set_ucd_file_define(pvr_vizs_c%viz_plt, pvr%ucd_file_IO)
 !
-      call set_viz_field_list_control(vizs_ctl%viz_field_ctl,           &
-     &                                viz%viz_fld_list)
+      call set_viz_field_list_control(pvr_vizs_c%viz_field_ctl,         &
+     &                                pvr%viz_fld_list)
 !
       call set_fixed_t_step_params_w_viz                                &
-     &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
+     &   (pvr_vizs_c%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
 !
-      call set_ctl_param_vol_repart(vizs_ctl%repart_ctl,                &
-     &                              viz%part_param)
-!
-      end subroutine set_control_params_4_viz
+      end subroutine set_control_params_4_pvr
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz(init_d, ucd_step, viz_step, viz)
+      subroutine FEM_initialize_pvr(init_d, ucd_step, viz_step, pvr)
 !
       use m_array_for_send_recv
       use mpi_load_mesh_data
@@ -137,7 +130,7 @@
       type(time_data), intent(in) :: init_d
 !
       type(VIZ_step_params), intent(inout) :: viz_step
-      type(FEM_mesh_field_4_viz), intent(inout) :: viz
+      type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
 !
       integer(kind = kint) :: istep_ucd, iflag
 !
@@ -145,42 +138,41 @@
 !       setup mesh information
 !   --------------------------------
 !
-      call mpi_input_mesh(viz%mesh_file_IO, nprocs, viz%geofem)
+      call mpi_input_mesh(pvr%mesh_file_IO, nprocs, pvr%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(viz%geofem%mesh, viz%geofem%group)
+      call FEM_mesh_initialization(pvr%geofem%mesh, pvr%geofem%group)
 !
 !     ---------------------
 !
-      viz%ucd%nnod = viz%geofem%mesh%node%numnod
+      pvr%ucd%nnod = pvr%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
-      call sel_read_udt_param(my_rank, istep_ucd, viz%ucd_file_IO,      &
-     &                        viz%ucd_time, viz%ucd)
-      call alloc_phys_name_type_by_output(viz%ucd, viz%nod_fld)
-      call add_field_in_viz_ctls_w_SGS(viz%viz_fld_list, viz%nod_fld)
-      call alloc_phys_data_type(viz%geofem%mesh%node%numnod,            &
-     &                          viz%nod_fld)
+      call sel_read_udt_param(my_rank, istep_ucd, pvr%ucd_file_IO,      &
+     &                        pvr%ucd_time, pvr%ucd)
+      call alloc_phys_name_type_by_output(pvr%ucd, pvr%nod_fld)
+      call add_field_in_viz_ctls_w_SGS(pvr%viz_fld_list, pvr%nod_fld)
+      call alloc_phys_data_type(pvr%geofem%mesh%node%numnod,            &
+     &                          pvr%nod_fld)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
-     &       + viz_step%LIC_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment
       if(iflag .gt. 0) then
-        call element_normals_4_VIZ                                      &
-     &     (viz%geofem, viz%ele_4_nod, viz%spfs, viz%jacobians)
+        call element_normals_4_pvr                                      &
+     &     (pvr%geofem, pvr%ele_4_nod, pvr%spfs, pvr%jacobians)
       end if
 !
 !     ---------------------
 !
       call calypso_mpi_barrier
 !
-      end subroutine FEM_initialize_viz
+      end subroutine FEM_initialize_pvr
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_viz(istep, ucd_step, time_d, viz)
+      subroutine FEM_analyze_pvr(istep, ucd_step, time_d, pvr)
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
@@ -189,25 +181,25 @@
       type(IO_step_param), intent(in) :: ucd_step
 !
       type(time_data), intent(inout) :: time_d
-      type(FEM_mesh_field_4_viz), intent(inout) :: viz
+      type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
 !
       integer(kind = kint) :: istep_ucd
 !
 !
       istep_ucd = IO_step_exc_zero_inc(istep, ucd_step)
-      call set_data_by_read_ucd(istep_ucd, viz%ucd_file_IO,             &
-     &    viz%ucd_time, viz%ucd, viz%nod_fld)
-      call copy_time_step_size_data(viz%ucd_time, time_d)
+      call set_data_by_read_ucd(istep_ucd, pvr%ucd_file_IO,             &
+     &    pvr%ucd_time, pvr%ucd, pvr%nod_fld)
+      call copy_time_step_size_data(pvr%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld)
+      call nod_fields_send_recv(pvr%geofem%mesh, pvr%nod_fld)
 !
-      end subroutine FEM_analyze_viz
+      end subroutine FEM_analyze_pvr
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine element_normals_4_VIZ                                  &
+      subroutine element_normals_4_pvr                                  &
      &         (geofem, ele_4_nod, spfs, jacobians)
 !
       use int_volume_of_domain
@@ -234,7 +226,7 @@
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    geofem%mesh, geofem%group, spfs, jacobians)
 !
-      end subroutine element_normals_4_VIZ
+      end subroutine element_normals_4_pvr
 !
 ! ----------------------------------------------------------------------
 !
@@ -278,4 +270,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module FEM_analyzer_viz
+      end module FEM_analyzer_viz_pvr

@@ -47,7 +47,7 @@
 !>      Structure to check and construct spherical shell mesh
       type(sph_grid_maker_in_sim), save :: sph_maker_TRNS
 !>        Structure for repartitioning parameters
-      type(volume_partioning_param), save :: part_param_TRNS
+      type(volume_repart_params), save :: part_param_TRNS
 !
 !>       Structure for nodal field data
       type(phys_data), save :: field_STR

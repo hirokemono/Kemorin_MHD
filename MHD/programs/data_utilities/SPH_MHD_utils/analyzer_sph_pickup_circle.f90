@@ -23,7 +23,6 @@
       use m_elapsed_labels_SEND_RECV
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
-      use t_ctl_param_volume_repart
       use t_ctl_data_SGS_MHD
       use t_field_on_circle
       use t_spheric_parameter
@@ -42,7 +41,6 @@
       private :: snap_ctl_name, MHD_ctl1
 !
       type(sph_grid_maker_in_sim), save, private :: sph_maker1
-      type(volume_partioning_param), save, private :: part_param1
       type(circle_fld_maker), save, private :: cdat1
 !
 ! ----------------------------------------------------------------------

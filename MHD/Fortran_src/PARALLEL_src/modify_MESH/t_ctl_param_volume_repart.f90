@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_param_vol_repart(viz_repart_c, repart_p)
-!!        type(viz_repartition_ctl), intent(inout) :: viz_repart_c
+!!        type(viz_repartition_ctl), intent(in) :: viz_repart_c
 !!        type(volume_repart_params), intent(inout) :: repart_p
 !!@endverbatim
 !
@@ -59,7 +59,7 @@
       use set_ctl_parallel_platform
       use parallel_ucd_IO_select
 !
-      type(viz_repartition_ctl), intent(inout) :: viz_repart_c
+      type(viz_repartition_ctl), intent(in) :: viz_repart_c
       type(volume_repart_params), intent(inout) :: repart_p
 !
 !
