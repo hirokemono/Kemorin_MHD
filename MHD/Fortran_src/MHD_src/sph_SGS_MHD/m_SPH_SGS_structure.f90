@@ -17,6 +17,7 @@
       use t_SPH_mesh_field_data
       use t_control_data_vizs
       use t_visualizer
+      use t_control_param_vol_grping
 !
       implicit none
 !
@@ -28,7 +29,9 @@
 !
 !>        Structures of visualization controls
       type(visualization_controls), save :: viz_ctls1
-!>      Structures of visualizations
+!>        Structures of visualizations
       type(visualize_modules), save :: vizs1
+!>        Structure for repartitioning parameters
+      type(volume_partioning_param), save :: part_param1
 !
       end module m_SPH_SGS_structure

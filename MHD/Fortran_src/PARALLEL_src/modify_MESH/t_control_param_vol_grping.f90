@@ -25,6 +25,7 @@
 !
       implicit none
 !
+!>        Structure for repartitioning parameters
       type volume_partioning_param
 !>        Data transfer table file parameters
         type(field_IO_params) :: trans_tbl_file

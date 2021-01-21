@@ -40,6 +40,7 @@
       use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
+      use t_ctl_param_volume_repart
 !
       implicit none
 !
@@ -71,6 +72,9 @@
 !
 !>      structure of field list for visualization
         type(visulize_field_list) :: viz_fld_list
+!
+!>        Structure for repartitioning parameters
+        type(volume_partioning_param) :: part_param
       end type FEM_mesh_field_4_viz
 !
       private :: add_field_in_viz_ctls_w_SGS, element_normals_4_VIZ
@@ -111,6 +115,9 @@
       call set_fixed_t_step_params_w_viz                                &
      &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
+!
+      call set_ctl_param_vol_repart(vizs_ctl%repart_ctl,                &
+     &                              viz%part_param)
 !
       end subroutine set_control_params_4_viz
 !

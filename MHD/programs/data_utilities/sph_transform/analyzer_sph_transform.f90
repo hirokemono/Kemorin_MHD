@@ -51,7 +51,7 @@
       call set_control_4_sph_transform                                  &
      &   (spt_ctl1, t_STR, viz_step_STR, files_STR, SPH_TRNS%fld,       &
      &    d_gauss_trans, field_STR, trns_param,                         &
-     &    WK_leg_TRNS, sph_maker_TRNS)
+     &    WK_leg_TRNS, sph_maker_TRNS, part_param_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'

@@ -7,13 +7,9 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_ctl_params_rayleigh_viz                          &
-!!     &         (tctl, plt, sdctl, fld_ctl, t_viz_param,               &
-!!     &          rayleigh_ftbl, rayleigh_rtp, ierr)
-!!        type(time_data_control), intent(in) :: tctl
-!!        type(platform_data_control), intent(in) :: plt
-!!        type(sphere_domain_control), intent(in) :: sdctl
-!!        type(field_control), intent(in) :: fld_ctl
+!!      subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,           &
+!!     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, ierr)
+!!        type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vctl
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
@@ -38,6 +34,7 @@
       use t_file_IO_parameter
       use t_time_data
       use t_VIZ_only_step_parameter
+      use t_ctl_param_volume_repart
 !
       implicit none
 !
@@ -50,6 +47,8 @@
 !>      Structure for field file IO paramters
       type(field_IO_params), save :: ucd_file_VIZ
 !
+!>        Structure for repartitioning parameters
+      type(volume_partioning_param), save :: part_param_VIZ
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
@@ -74,26 +73,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_rayleigh_viz                            &
-     &         (tctl, plt, sdctl, fld_ctl, t_viz_param,                 &
-     &          rayleigh_ftbl, rayleigh_rtp, ierr)
+      subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,             &
+     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
-      use t_ctl_data_4_platforms
-      use t_ctl_data_4_time_steps
-      use t_ctl_data_4_fields
-      use t_ctl_data_4_divide_sphere
+      use t_ctl_data_rayleigh_vizs
       use t_rayleigh_field_address
       use t_rayleigh_field_IO
 !
       use m_file_format_switch
       use set_control_platform_item
 !
-      type(time_data_control), intent(in) :: tctl
-      type(platform_data_control), intent(in) :: plt
-      type(sphere_domain_control), intent(in) :: sdctl
-      type(field_control), intent(in) :: fld_ctl
+      type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vctl
 !
       integer(kind = kint), intent(inout) :: ierr
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
@@ -102,19 +94,24 @@
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt)
-      call set_control_smp_def(my_rank, plt)
+      call turn_off_debug_flag_by_ctl                                   &
+     &   (my_rank, rayleigh_vctl%viz_plt)
+      call set_control_smp_def(my_rank, rayleigh_vctl%viz_plt)
 !
       call set_fixed_t_step_params_w_viz                                &
-     &   (tctl, t_viz_param, ierr, e_message)
+     &   (rayleigh_vctl%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
       if(ierr .gt. 0) return
 !
       call set_ctl_rayleigh_field_address                               &
-     &   (plt, fld_ctl, rayleigh_ftbl, e_message, ierr)
+     &   (rayleigh_vctl%viz_plt, rayleigh_vctl%fld_ctl,                 &
+     &    rayleigh_ftbl, e_message, ierr)
 !
       call set_ctl_params_rayleigh_domains                              &
-     &   (sdctl, rayleigh_rtp, e_message, ierr)
+     &   (rayleigh_vctl%sdctl, rayleigh_rtp, e_message, ierr)
+!
+      call set_ctl_param_vol_repart(rayleigh_vctl%repart_ctl,           &
+     &                              part_param_VIZ)
 !
       end subroutine set_ctl_params_rayleigh_viz
 !

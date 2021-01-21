@@ -53,9 +53,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_ctl_file_rayleigh_viz'
       call read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl1)
-      call set_ctl_params_rayleigh_viz                                  &
-     &   (rayleigh_vizs_ctl1%t_viz_ctl, rayleigh_vizs_ctl1%viz_plt,     &
-     &    rayleigh_vizs_ctl1%sdctl, rayleigh_vizs_ctl1%fld_ctl,         &
+      call set_ctl_params_rayleigh_viz(rayleigh_vizs_ctl1,              &
      &    t_VIZ, rayleigh_ftbl1, rayleigh_rtp_V, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !

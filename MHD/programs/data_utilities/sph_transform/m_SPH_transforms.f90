@@ -30,6 +30,7 @@
       use t_sph_FFT_selector
       use t_phys_name_4_sph_trans
       use t_check_and_make_SPH_mesh
+      use t_ctl_param_volume_repart
       use t_visualizer
 !
       implicit none
@@ -45,6 +46,8 @@
       type(mesh_data), save :: femmesh_STR
 !>      Structure to check and construct spherical shell mesh
       type(sph_grid_maker_in_sim), save :: sph_maker_TRNS
+!>        Structure for repartitioning parameters
+      type(volume_partioning_param), save :: part_param_TRNS
 !
 !>       Structure for nodal field data
       type(phys_data), save :: field_STR

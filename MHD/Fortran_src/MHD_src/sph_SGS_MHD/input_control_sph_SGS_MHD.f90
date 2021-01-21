@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine input_control_SPH_SGS_dynamo                         &
 !!     &         (MHD_files, MHD_ctl, MHD_step, SPH_model,              &
-!!     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
+!!     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat, part_param)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -18,6 +18,7 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
+!!        type(volume_partioning_param), intent(inout) :: part_param
 !!@endverbatim
 !
 !
@@ -58,7 +59,7 @@
 !
       subroutine input_control_SPH_SGS_dynamo                           &
      &         (MHD_files, MHD_ctl, MHD_step, SPH_model,                &
-     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat)
+     &          SPH_WK, SPH_SGS, SPH_MHD, FEM_dat, part_param)
 !
       use m_error_IDs
 !

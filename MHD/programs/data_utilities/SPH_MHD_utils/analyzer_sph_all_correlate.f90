@@ -70,7 +70,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
-     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1)
+     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, part_param1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
