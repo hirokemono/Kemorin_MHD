@@ -78,7 +78,7 @@
 !>     Stracture for Jacobians
 !
       type(new_patition_test_control) :: part_tctl1
-      type(vol_partion_prog_param) ::  part_prog_p1
+      type(vol_partion_prog_param) :: part_prog_p1
 !
       type(next_nod_ele_table) :: next_tbl_T
 !

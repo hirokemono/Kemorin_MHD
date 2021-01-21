@@ -32,6 +32,7 @@
       use t_physical_property
       use t_iccg_parameter
       use t_MGCG_parameter
+      use t_ctl_param_volume_repart
 !
       implicit  none
 !
@@ -105,6 +106,9 @@
         type(MGCG_parameter) :: MG_param
 !>        File list for Multigrid solver
         type(MGCG_file_list) :: MG_file
+!
+!>        Structure for volume repartitiong paramteres
+        type(volume_repart_params) :: repart_p
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group

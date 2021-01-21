@@ -165,6 +165,9 @@
       call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
+      call dealloc_viz_controls(MHD_ctl%viz_ctls)
+      call dealloc_control_vol_repart(MHD_ctl%repart_ctl)
+!
       MHD_ctl%i_mhd_ctl = 0
 !
       end subroutine dealloc_sph_sgs_mhd_ctl_data
@@ -241,6 +244,7 @@
 !
       call bcast_viz_controls(MHD_ctl%viz_ctls)
       call bcast_dynamo_viz_control(MHD_ctl%zm_ctls)
+      call bcast_control_vol_repart(MHD_ctl%repart_ctl)
 !
       end subroutine bcast_sph_mhd_control_data
 !

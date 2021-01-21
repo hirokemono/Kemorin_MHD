@@ -173,6 +173,7 @@
       call bcast_ctl_array_c3(vizs_ctl%viz_field_ctl)
       call bcast_ctl_data_4_platform(vizs_ctl%viz_plt)
       call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
+!
       call bcast_viz_controls(vizs_ctl%viz_ctl_v)
       call bcast_control_vol_repart(vizs_ctl%repart_ctl)
 !

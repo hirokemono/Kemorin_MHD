@@ -129,7 +129,7 @@
      &      FEM_MHD_ctl%model_ctl%fld_ctl%field_ctl)
       end if
 !
-      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls, repart_ctl)
 !
       end subroutine read_control_4_fem_MHD
 !
@@ -183,7 +183,8 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl, viz_ctls)
+      subroutine bcast_fem_mhd_ctl_data                                 &
+     &         (FEM_MHD_ctl, viz_ctls, repart_ctl)
 !
       use t_ctl_data_FEM_MHD_control
       use calypso_mpi_int
@@ -194,6 +195,7 @@
 !
       type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
       type(visualization_controls), intent(inout) :: viz_ctls
+      type(viz_repartition_ctl), intent(inout) :: repart_ctl
 !
 !
       call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
@@ -205,6 +207,7 @@
       call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
       call bcast_viz_controls(viz_ctls)
+      call bcast_control_vol_repart(repart_ctl)
 !
       call calypso_mpi_bcast_one_int(FEM_MHD_ctl%i_mhd_ctl, 0)
 !

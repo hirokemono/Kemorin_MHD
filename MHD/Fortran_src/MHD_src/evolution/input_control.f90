@@ -120,12 +120,13 @@
      &                            viz_ctls, repart_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD                                        &
-     &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
-     &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
+      call set_control_4_FEM_MHD(FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt,  &
+     &    repart_ctl, FEM_MHD_ctl%model_ctl,                            &
+     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl,                  &
+     &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
      &    nod_fld, ele_fld)
+      call dealloc_control_vol_repart(repart_ctl)
       call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data
@@ -180,12 +181,13 @@
      &                            viz_ctls, repart_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD                                        &
-     &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
-     &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
+      call set_control_4_FEM_MHD(FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt,  &
+     &    repart_ctl, FEM_MHD_ctl%model_ctl,                            &
+     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl,                  &
+     &    MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,      &
      &    MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM,         &
      &    nod_fld, ele_fld)
+      call dealloc_control_vol_repart(repart_ctl)
       call dealloc_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
 !
 !  --  load FEM mesh data

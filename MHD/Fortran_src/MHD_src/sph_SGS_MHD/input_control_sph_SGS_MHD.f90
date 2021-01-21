@@ -35,6 +35,7 @@
       use t_SPH_MHD_model_data
       use t_SPH_mesh_field_data
       use t_FEM_mesh_field_data
+      use t_ctl_param_volume_repart
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
       use t_sph_boundary_input_data
@@ -77,15 +78,16 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
+      type(volume_partioning_param), intent(inout) :: part_param
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD                                    &
-     &   (MHD_ctl%plt, MHD_ctl%org_plt, MHD_ctl%model_ctl,              &
+      call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
+     &    MHD_ctl%repart_ctl, MHD_ctl%model_ctl,                        &
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
      &    MHD_files, SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, &
      &    MHD_step, SPH_model%MHD_prop, SPH_model%MHD_BC,               &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, sph_maker2)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, sph_maker2, part_param)
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &

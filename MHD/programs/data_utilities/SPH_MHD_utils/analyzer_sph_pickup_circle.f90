@@ -23,6 +23,7 @@
       use m_elapsed_labels_SEND_RECV
       use m_SPH_MHD_model_data
       use m_SPH_SGS_structure
+      use t_ctl_param_volume_repart
       use t_ctl_data_SGS_MHD
       use t_field_on_circle
       use t_spheric_parameter
@@ -41,6 +42,7 @@
       private :: snap_ctl_name, MHD_ctl1
 !
       type(sph_grid_maker_in_sim), save, private :: sph_maker1
+      type(volume_partioning_param), save, private :: part_param1
       type(circle_fld_maker), save, private :: cdat1
 !
 ! ----------------------------------------------------------------------
@@ -73,13 +75,13 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD                                    &
-     &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
+      call set_control_4_SPH_SGS_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,    &
+     &    MHD_ctl1%repart_ctl, MHD_ctl1%model_ctl,                      &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,     &
      &    MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,               &
      &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
      &    SPH_model1%MHD_BC, SPH_WK1%trans_p, SPH_WK1%trns_WK,          &
-     &    sph_maker1)
+     &    sph_maker1, part_param1)
       call set_control_SGS_SPH_MHD_field(MHD_ctl1%model_ctl,            &
      &    MHD_ctl1%psph_ctl, MHD_ctl1%smonitor_ctl, MHD_ctl1%zm_ctls,   &
      &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_MHD1%sph,          &

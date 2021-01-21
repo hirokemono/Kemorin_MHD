@@ -230,6 +230,7 @@
       call bcast_ctl_data_4_platform(spt_ctl%org_plt)
       call bcast_FEM_mesh_control(spt_ctl%Fmesh_ctl)
       call bcast_viz_controls(spt_ctl%viz_ctls)
+      call bcast_control_vol_repart(spt_ctl%repart_ctl)
 !
       call calypso_mpi_bcast_one_int(spt_ctl%i_sph_trans_ctl, 0)
 !
@@ -248,6 +249,8 @@
       call reset_control_platforms(spt_ctl%plt)
       call reset_control_platforms(spt_ctl%org_plt)
       call dealloc_viz_controls(spt_ctl%viz_ctls)
+      call bcast_control_vol_repart(spt_ctl%repart_ctl)
+      call dealloc_control_vol_repart(spt_ctl%repart_ctl)
       call reset_FEM_mesh_control(spt_ctl%Fmesh_ctl)
 !
       spt_ctl%i_sph_trans_ctl = 0

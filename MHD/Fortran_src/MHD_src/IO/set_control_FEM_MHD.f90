@@ -7,12 +7,13 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,       &
-!!     &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,     &
-!!     &          MHD_step, MHD_prop, MHD_BC, MGCG_WK,                  &
+!!      subroutine set_control_4_FEM_MHD(plt, org_plt, repart_ctl,      &
+!!     &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,            &
+!!     &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,&
 !!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
+!!        type(viz_repartition_ctl), intent(in) :: repart_ctl
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -41,6 +42,7 @@
       use t_ctl_data_node_monitor
       use t_bc_data_list
       use t_flex_delta_t_data
+      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -53,9 +55,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,         &
-     &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,       &
-     &          MHD_step, MHD_prop, MHD_BC, MGCG_WK,                    &
+      subroutine set_control_4_FEM_MHD(plt, org_plt, repart_ctl,        &
+     &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,              &
+     &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,  &
      &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
 !
       use calypso_mpi
@@ -88,6 +90,8 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
+      type(viz_repartition_ctl), intent(in) :: repart_ctl
+!
       type(mhd_model_control), intent(inout) :: model_ctl
       type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -113,6 +117,8 @@
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_plt, MHD_files%org_ucd_file_IO)
+!
+      call set_ctl_param_vol_repart(repart_ctl, FEM_prm%repart_p)
 !
 !   set parameters for general information
 !

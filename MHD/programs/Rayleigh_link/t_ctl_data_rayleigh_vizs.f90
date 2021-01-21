@@ -203,6 +203,7 @@
       call bcast_ctl_data_4_platform(rayleigh_vizs_ctl%viz_plt)
       call bcast_ctl_data_4_time_step(rayleigh_vizs_ctl%t_viz_ctl)
       call bcast_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
+      call bcast_control_vol_repart(rayleigh_vizs_ctl%repart_ctl)
 !
       call bcast_phys_data_ctl(rayleigh_vizs_ctl%fld_ctl)
       call bcast_ctl_ndomain_4_shell(rayleigh_vizs_ctl%sdctl)
@@ -221,6 +222,7 @@
 !
       call reset_control_platforms(rayleigh_vizs_ctl%viz_plt)
       call dealloc_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
+      call dealloc_control_vol_repart(rayleigh_vizs_ctl%repart_ctl)
 !
       call dealloc_phys_control(rayleigh_vizs_ctl%fld_ctl)
       call dealloc_ndomain_rtp_ctl(rayleigh_vizs_ctl%sdctl)
