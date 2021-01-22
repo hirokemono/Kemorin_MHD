@@ -18,7 +18,7 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(FEM_mesh_field_data), intent(inout) :: FEM_dat
-!!        type(volume_partioning_param), intent(inout) :: part_param
+!!        type(volume_repart_params), intent(inout) :: part_param
 !!@endverbatim
 !
 !
@@ -79,7 +79,7 @@
       type(SPH_SGS_structure), intent(inout) :: SPH_SGS
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(FEM_mesh_field_data), intent(inout) :: FEM_dat
-      type(volume_partioning_param), intent(inout) :: part_param
+      type(volume_repart_params), intent(inout) :: part_param
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'

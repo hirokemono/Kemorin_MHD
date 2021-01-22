@@ -48,7 +48,7 @@
       type(field_IO_params), save :: ucd_file_VIZ
 !
 !>        Structure for repartitioning parameters
-      type(volume_partioning_param), save :: part_param_VIZ
+      type(volume_repart_params), save :: part_param_VIZ
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
