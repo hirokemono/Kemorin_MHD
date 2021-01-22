@@ -1,8 +1,12 @@
-!t_control_data_vizs_pvr.f90
-!      module t_control_data_vizs_pvr
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@file   t_control_data_vizs_pvr.f90
+!!@brief  module t_control_data_vizs_pvr
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
+!!
+!>@brief Control data for visualization without repartitioning
+!!
+!!@verbatim
 !!      subroutine read_control_file_pvr_vizs(pvr_vizs_c)
 !!      subroutine dealloc_pvr_vizs_control_data(pvr_vizs_c)
 !!        type(control_data_pvr_vizs), intent(inout) :: pvr_vizs_c
@@ -23,8 +27,8 @@
 !!      ...
 !!    end  visual_control
 !!  end  visualizer
-!!
 !!    -------------------------------------------------------------------
+!!@endverbatim
 !
 !
       module t_control_data_vizs_pvr
