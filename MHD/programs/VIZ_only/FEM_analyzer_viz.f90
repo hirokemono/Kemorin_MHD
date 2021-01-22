@@ -57,9 +57,9 @@
 !
 !>       Structure for mesh data
 !>        (position, connectivity, group, and communication)
-        type(mesh_data) :: geofem
+        type(mesh_data), pointer :: geofem
 !>         Structure for nodal field data
-        type(phys_data) :: nod_fld
+        type(phys_data), pointer :: nod_fld
 !
 !>          Instance of time data from data input
         type(time_data) :: ucd_time
@@ -144,6 +144,8 @@
       use ucd_IO_select
       use repartiton_by_volume
       use field_to_new_partition
+      use mesh_file_name_by_param
+      use set_interpolate_file_name
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -152,11 +154,13 @@
       type(FEM_mesh_field_4_viz), intent(inout) :: viz
 !
       integer(kind = kint) :: istep_ucd, iflag
+      logical :: flag
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
+      allocate(viz%geofem)
       call mpi_input_mesh(viz%mesh_file_IO, nprocs, viz%geofem)
 !
       call init_send_recv(viz%geofem%mesh%nod_comm)
@@ -169,6 +173,8 @@
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
       call sel_read_udt_param(my_rank, istep_ucd, viz%ucd_file_IO,      &
      &                        viz%ucd_time, viz%ucd)
+!
+      allocate(viz%nod_fld)
       call alloc_phys_name_type_by_output(viz%ucd, viz%nod_fld)
       call add_field_in_viz_ctls_w_SGS(viz%viz_fld_list, viz%nod_fld)
       call alloc_phys_data_type(viz%geofem%mesh%node%numnod,            &
@@ -176,12 +182,12 @@
 !
 !     ---------------------
 !
-      if(viz%repart_p%part_param%flag_repartition) then
+      if(viz%repart_p%flag_repartition) then
         allocate(viz%viz_fem)
 !
         if(my_rank .eq. 0) then
           flag =  (check_exist_mesh(my_rank,                            &
-     &           viz%repart_p%part_param%repart_p%viz_mesh_file))       &
+     &             viz%repart_p%viz_mesh_file))                         &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
      &           viz%repart_p%part_param%trans_tbl_file))
         end if
@@ -191,7 +197,7 @@
         if(flag) then
           if(iflag_RPRT_time)                                           &
      &        call start_elapsed_time(ist_elapsed_RPRT+6)
-          call load_repartitoned_file(viz%repart_p%part_param,          &
+          call load_repartitoned_file(viz%repart_p,                     &
      &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
           if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
         else
@@ -199,7 +205,7 @@
      &        'Construct repartitioned mesh and transfer table'
           if(iflag_RPRT_time)                                           &
      &        call start_elapsed_time(ist_elapsed_RPRT+1)
-          call s_repartiton_by_volume(viz%repart_p%part_param%,         &
+          call s_repartiton_by_volume(viz%repart_p,                     &
      &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
           if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
         end if
@@ -208,8 +214,8 @@
         call init_fld_to_new_partition(viz%viz_fem%mesh,                &
      &                                 viz%nod_fld, viz%viz_fld)
       else
-        viz%viz_fem -> viz%geofem
-        viz%viz_fld -> viz%nod_fld
+        viz%viz_fem => viz%geofem
+        viz%viz_fld => viz%nod_fld
       end if
 !
 !     ---------------------
@@ -241,6 +247,7 @@
       use output_parallel_ucd_file
       use nod_phys_send_recv
       use field_to_new_partition
+      use select_copy_from_recv
 !
       integer(kind = kint), intent(in) :: istep
       type(IO_step_param), intent(in) :: ucd_step
@@ -256,13 +263,12 @@
      &    viz%ucd_time, viz%ucd, viz%nod_fld)
       call copy_time_step_size_data(viz%ucd_time, time_d)
 !
-      if(viz%repart_p%part_param%flag_repartition) then
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld)
 !
-      if(viz%repart_p%part_param%flag_repartition) then
+      if(viz%repart_p%flag_repartition) then
         call nod_field_to_new_partition                                 &
-     &     (iflag_recv, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,          &
+     &     (iflag_import_rev, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,    &
      &      viz%nod_fld, viz%viz_fld)
       end if
 !
