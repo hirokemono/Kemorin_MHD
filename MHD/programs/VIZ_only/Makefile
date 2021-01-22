@@ -48,14 +48,14 @@ t_field_list_for_vizs.o
 MOD_PVR_PLUG =  \
 main_pvr.o  \
 analyzer_pvr.o \
-fem_analyzer_viz_pvr.o \
+FEM_analyzer_viz_pvr.o \
 t_control_data_vizs_pvr.o \
 t_field_list_for_vizs.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \
 analyzer_fline.o \
-fem_analyzer_viz_pvr.o \
+FEM_analyzer_viz_pvr.o \
 t_control_data_vizs_pvr.o \
 t_field_list_for_vizs.o
 

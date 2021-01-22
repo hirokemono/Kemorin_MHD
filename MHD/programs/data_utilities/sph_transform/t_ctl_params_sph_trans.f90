@@ -6,7 +6,7 @@
 !!      subroutine set_control_4_sph_transform                          &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
 !!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,            &
-!!     &          sph_maker, part_param)
+!!     &          sph_maker, repart_p)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
 !!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
 !!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg, sph_maker)
@@ -16,7 +16,7 @@
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(legendre_trns_works), intent(inout) :: WK_leg
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!        type(volume_repart_params), intent(inout) :: part_param
+!!        type(volume_repart_params), intent(inout) :: repart_p
 !!      subroutine set_ctl_data_4_zm_trans(fst_file_IO)
 !!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
 !!        type(field_IO_params), intent(inout) :: fst_file_IO
@@ -93,7 +93,7 @@
       subroutine set_control_4_sph_transform                            &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
      &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,              &
-     &          sph_maker, part_param)
+     &          sph_maker, repart_p)
 !
       use t_work_4_sph_trans
 !
@@ -118,7 +118,7 @@
       type(legendre_trns_works), intent(inout) :: WK_leg
       type(global_gauss_points), intent(inout) :: d_gauss
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(volume_repart_params), intent(inout) :: part_param
+      type(volume_repart_params), intent(inout) :: repart_p
 !
       integer(kind = kint) :: ierr
 !
@@ -132,7 +132,7 @@
      &   (spt_ctl%plt, files_param%fst_file_IO)
       call set_ucd_file_define(spt_ctl%plt, files_param%ucd_file_IO)
 !
-      call set_ctl_param_vol_repart(spt_ctl%repart_ctl, part_param)
+      call set_ctl_param_vol_repart(spt_ctl%repart_ctl, repart_p)
 !
 !   setting for spherical transform
 !
@@ -216,7 +216,7 @@
       subroutine s_set_ctl_data_4_sph_trans                             &
      &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
      &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,              &
-     &          sph_maker, part_param)
+     &          sph_maker, repart_p)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -242,7 +242,7 @@
       type(global_gauss_points), intent(inout) :: d_gauss
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(volume_repart_params), intent(inout) :: part_param
+      type(volume_repart_params), intent(inout) :: repart_p
 !
       integer(kind = kint) :: ierr, iflag
 !
@@ -263,7 +263,7 @@
       call set_control_mesh_file_def(def_org_ucd_header,                &
      &    spt_ctl%org_plt, files_param%org_ucd_file_IO)
 !
-      call set_ctl_param_vol_repart(spt_ctl%repart_ctl, part_param)
+      call set_ctl_param_vol_repart(spt_ctl%repart_ctl, repart_p)
 !
 !    file header for field data
 !

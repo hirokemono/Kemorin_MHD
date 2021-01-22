@@ -32,6 +32,6 @@
 !>        Structures of visualizations
       type(visualize_modules), save :: vizs1
 !>        Structure for repartitioning parameters
-      type(volume_repart_params), save :: part_param1
+      type(volume_repart_params), save :: repart_p1
 !
       end module m_SPH_SGS_structure

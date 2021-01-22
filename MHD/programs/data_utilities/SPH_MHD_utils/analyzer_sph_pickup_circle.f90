@@ -79,7 +79,7 @@
      &    MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,               &
      &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &
      &    SPH_model1%MHD_BC, SPH_WK1%trans_p, SPH_WK1%trns_WK,          &
-     &    sph_maker1, part_param1)
+     &    sph_maker1, repart_p1)
       call set_control_SGS_SPH_MHD_field(MHD_ctl1%model_ctl,            &
      &    MHD_ctl1%psph_ctl, MHD_ctl1%smonitor_ctl, MHD_ctl1%zm_ctls,   &
      &    SPH_SGS1%SGS_par, SPH_model1%MHD_prop, SPH_MHD1%sph,          &

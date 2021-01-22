@@ -77,7 +77,7 @@
         type(visulize_field_list) :: viz_fld_list
 !
 !>        Structure for repartitioning parameters
-        type(volume_repart_params) :: part_param
+        type(volume_repart_params) :: repart_p
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
 !>         Structure for mesh data for visualization
@@ -126,7 +126,7 @@
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
 !
       call set_ctl_param_vol_repart(vizs_ctl%repart_ctl,                &
-     &                              viz%part_param)
+     &                              viz%repart_p)
 !
       end subroutine set_control_params_4_viz
 !
@@ -176,14 +176,14 @@
 !
 !     ---------------------
 !
-      if(viz%part_param%flag_repartition) then
+      if(viz%repart_p%part_param%flag_repartition) then
         allocate(viz%viz_fem)
 !
         if(my_rank .eq. 0) then
           flag =  (check_exist_mesh(my_rank,                            &
-     &           viz%part_param%repart_p%viz_mesh_file))                &
+     &           viz%repart_p%part_param%repart_p%viz_mesh_file))       &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
-     &           viz%part_param%repart_p%part_param%trans_tbl_file))
+     &           viz%repart_p%part_param%trans_tbl_file))
         end if
         call calypso_MPI_barrier
         call calypso_mpi_bcast_one_logical(flag, 0)
@@ -191,7 +191,7 @@
         if(flag) then
           if(iflag_RPRT_time)                                           &
      &        call start_elapsed_time(ist_elapsed_RPRT+6)
-          call load_repartitoned_file(viz%part_param%repart_p,          &
+          call load_repartitoned_file(viz%repart_p%part_param,          &
      &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
           if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
         else
@@ -199,7 +199,7 @@
      &        'Construct repartitioned mesh and transfer table'
           if(iflag_RPRT_time)                                           &
      &        call start_elapsed_time(ist_elapsed_RPRT+1)
-          call s_repartiton_by_volume(viz%part_param%repart_p,          &
+          call s_repartiton_by_volume(viz%repart_p%part_param%,         &
      &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
           if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
         end if
@@ -256,11 +256,11 @@
      &    viz%ucd_time, viz%ucd, viz%nod_fld)
       call copy_time_step_size_data(viz%ucd_time, time_d)
 !
-      if(viz%part_param%flag_repartition) then
+      if(viz%repart_p%part_param%flag_repartition) then
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld)
 !
-      if(viz%part_param%flag_repartition) then
+      if(viz%repart_p%part_param%flag_repartition) then
         call nod_field_to_new_partition                                 &
      &     (iflag_recv, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,          &
      &      viz%nod_fld, viz%viz_fld)
