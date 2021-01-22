@@ -27,6 +27,8 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_elapsed_labels_4_REPART
+      use m_work_time
       use calypso_mpi
 !
       use t_step_parameter
@@ -41,6 +43,7 @@
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
       use t_ctl_param_volume_repart
+      use t_calypso_comm_table
 !
       implicit none
 !
@@ -75,6 +78,12 @@
 !
 !>        Structure for repartitioning parameters
         type(volume_partioning_param) :: part_param
+!>        Transfer table to visualization mesh
+        type(calypso_comm_table) :: mesh_to_viz_tbl
+!>         Structure for mesh data for visualization
+        type(mesh_data), pointer :: viz_fem
+!>         Structure for nodal field data
+        type(phys_data), pointer :: viz_fld
       end type FEM_mesh_field_4_viz
 !
       private :: add_field_in_viz_ctls_w_SGS, element_normals_4_VIZ
@@ -126,12 +135,15 @@
       subroutine FEM_initialize_viz(init_d, ucd_step, viz_step, viz)
 !
       use m_array_for_send_recv
+      use calypso_mpi_logical
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
       use set_parallel_file_name
       use set_ucd_data_to_type
       use ucd_IO_select
+      use repartiton_by_volume
+      use field_to_new_partition
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -147,10 +159,11 @@
 !
       call mpi_input_mesh(viz%mesh_file_IO, nprocs, viz%geofem)
 !
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(viz%geofem%mesh, viz%geofem%group)
+      call init_send_recv(viz%geofem%mesh%nod_comm)
 !
-!     ---------------------
+!   --------------------------------
+!       setup field information
+!   --------------------------------
 !
       viz%ucd%nnod = viz%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
@@ -161,6 +174,49 @@
       call alloc_phys_data_type(viz%geofem%mesh%node%numnod,            &
      &                          viz%nod_fld)
 !
+!     ---------------------
+!
+      if(viz%part_param%flag_repartition) then
+        allocate(viz%viz_fem)
+!
+        if(my_rank .eq. 0) then
+          flag =  (check_exist_mesh(my_rank,                            &
+     &           viz%part_param%repart_p%viz_mesh_file))                &
+     &    .and. (check_exist_interpolate_file(my_rank,                  &
+     &           viz%part_param%repart_p%part_param%trans_tbl_file))
+        end if
+        call calypso_MPI_barrier
+        call calypso_mpi_bcast_one_logical(flag, 0)
+!
+        if(flag) then
+          if(iflag_RPRT_time)                                           &
+     &        call start_elapsed_time(ist_elapsed_RPRT+6)
+          call load_repartitoned_file(viz%part_param%repart_p,          &
+     &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
+          if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
+        else
+          write(e_message,*)                                            &
+     &        'Construct repartitioned mesh and transfer table'
+          if(iflag_RPRT_time)                                           &
+     &        call start_elapsed_time(ist_elapsed_RPRT+1)
+          call s_repartiton_by_volume(viz%part_param%repart_p,          &
+     &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
+          if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
+        end if
+!
+        allocate(viz%viz_fld)
+        call init_fld_to_new_partition(viz%viz_fem%mesh,                &
+     &                                 viz%nod_fld, viz%viz_fld)
+      else
+        viz%viz_fem -> viz%geofem
+        viz%viz_fld -> viz%nod_fld
+      end if
+!
+!     ---------------------
+!
+      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(viz%viz_fem%mesh, viz%viz_fem%group)
+!
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
@@ -168,7 +224,7 @@
      &       + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
         call element_normals_4_VIZ                                      &
-     &     (viz%geofem, viz%ele_4_nod, viz%spfs, viz%jacobians)
+     &     (viz%viz_fem, viz%ele_4_nod, viz%spfs, viz%jacobians)
       end if
 !
 !     ---------------------
@@ -184,6 +240,7 @@
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
+      use field_to_new_partition
 !
       integer(kind = kint), intent(in) :: istep
       type(IO_step_param), intent(in) :: ucd_step
@@ -199,8 +256,15 @@
      &    viz%ucd_time, viz%ucd, viz%nod_fld)
       call copy_time_step_size_data(viz%ucd_time, time_d)
 !
+      if(viz%part_param%flag_repartition) then
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld)
+!
+      if(viz%part_param%flag_repartition) then
+        call nod_field_to_new_partition                                 &
+     &     (iflag_recv, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,          &
+     &      viz%nod_fld, viz%viz_fld)
+      end if
 !
       end subroutine FEM_analyze_viz
 !

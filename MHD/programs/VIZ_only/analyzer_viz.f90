@@ -67,7 +67,7 @@
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (viz1%geofem, viz1%nod_fld, vizs_ctl1%viz_ctl_v, vizs_v)
+     &   (viz1%viz_fem, viz1%viz_fld, vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine initialize_vizs
 !
@@ -92,7 +92,7 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
-     &     viz1%geofem, viz1%nod_fld, viz1%ele_4_nod, viz1%jacobians,   &
+     &     viz1%viz_fem, viz1%viz_fld, viz1%ele_4_nod, viz1%jacobians,  &
      &     vizs_v)
       end do
 !
