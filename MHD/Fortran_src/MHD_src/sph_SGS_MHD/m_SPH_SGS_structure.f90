@@ -17,7 +17,7 @@
       use t_SPH_mesh_field_data
       use t_control_data_vizs
       use t_visualizer
-      use t_ctl_param_volume_repart
+      use t_control_param_vol_grping
 !
       implicit none
 !
@@ -32,6 +32,6 @@
 !>        Structures of visualizations
       type(visualize_modules), save :: vizs1
 !>        Structure for repartitioning parameters
-      type(volume_repart_params), save :: repart_p1
+      type(volume_partioning_param), save :: repart_p1
 !
       end module m_SPH_SGS_structure

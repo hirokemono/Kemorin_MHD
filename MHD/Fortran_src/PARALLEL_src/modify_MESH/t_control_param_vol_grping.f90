@@ -7,11 +7,8 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!
-!!     subroutine set_ctl_param_vol_grping                              &
-!!    &         (default_newmesh_head, new_part_ctl, part_param)
-!!        character(len = kchara),intent(in) :: default_newmesh_head
-!!        type(new_patition_control), intent(in) :: new_part_ctl
+!!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
+!!        type(viz_repartition_ctl), intent(in) :: viz_repart_c
 !!        type(volume_partioning_param), intent(inout) :: part_param
 !!@endverbatim
 !
@@ -25,8 +22,21 @@
 !
       implicit none
 !
+      character(len = kchara), parameter, private                       &
+     &             :: default_newmesh_head = 'repartition_mesh'
+!
 !>        Structure for repartitioning parameters
       type volume_partioning_param
+!>        Logical flag for repartitiong
+        logical :: flag_repartition = .FALSE.
+!
+!>        Integer flag to output surface data
+        integer(kind = kint) :: iflag_output_SURF = 0
+!>        Structure of mesh file IO paramters
+        type(field_IO_params) :: viz_mesh_file
+!>        Structure for new field file  paramters
+        type(field_IO_params) :: viz_ucd_file
+
 !>        Data transfer table file parameters
         type(field_IO_params) :: trans_tbl_file
 !
@@ -43,21 +53,74 @@
         integer(kind = kint) :: num_FEM_sleeve = 1
       end type volume_partioning_param
 !
+      private :: set_ctl_param_vol_grping
+!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_param_vol_grping                               &
-     &         (default_newmesh_head, new_part_ctl, part_param)
+      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
+!
+      use calypso_mpi
+      use m_error_IDs
+      use m_machine_parameter
+!
+      use t_ctl_data_volume_repart
+      use m_machine_parameter
+      use m_file_format_switch
+      use set_control_platform_item
+      use set_control_platform_data
+      use set_ctl_parallel_platform
+      use parallel_ucd_IO_select
+!
+      type(viz_repartition_ctl), intent(in) :: viz_repart_c
+      type(volume_partioning_param), intent(inout) :: part_param
+!
+!
+      call check_control_num_domains(viz_repart_c%viz_plt)
+!
+      if(viz_repart_c%viz_plt%mesh_file_prefix%iflag .le. 0) then
+        part_param%viz_mesh_file%iflag_format = id_no_file
+      else
+        call set_parallel_file_ctl_params(default_newmesh_head,         &
+     &      viz_repart_c%viz_plt%mesh_file_prefix,                      &
+     &      viz_repart_c%viz_plt%mesh_file_fmt_ctl,                     &
+     &      part_param%viz_mesh_file)
+      end if
+!
+      call set_FEM_surface_output_flag                                  &
+     &   (viz_repart_c%Fmesh_ctl, part_param%iflag_output_SURF)
+!
+      call set_merged_ucd_file_define(viz_repart_c%viz_plt,             &
+     &                                part_param%viz_ucd_file)
+!
+      if(viz_repart_c%i_viz_repartition_ctl .gt. 0) then
+        part_param%flag_repartition = .TRUE.
+!
+        call set_ctl_param_vol_grping                                   &
+     &     (viz_repart_c%new_part_ctl, part_param)
+      end if
+!
+      if(part_param%new_nprocs                                          &
+     &      .ne. viz_repart_c%viz_plt%ndomain_ctl%intvalue) then
+        write(e_message,'(a)')                                          &
+     &      'Number of subdomains should be num. of original mesh'
+        call calypso_MPI_abort(ierr_P_MPI, e_message)
+      end if
+!
+      end subroutine set_ctl_param_vol_repart
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_ctl_param_vol_grping(new_part_ctl, part_param)
 !
       use m_file_format_switch
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
 !
-      character(len = kchara),intent(in) :: default_newmesh_head
       type(new_patition_control), intent(in) :: new_part_ctl
       type(volume_partioning_param), intent(inout) :: part_param
 !

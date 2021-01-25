@@ -32,7 +32,7 @@
       use t_physical_property
       use t_iccg_parameter
       use t_MGCG_parameter
-      use t_ctl_param_volume_repart
+      use t_control_param_vol_grping
 !
       implicit  none
 !
@@ -108,7 +108,7 @@
         type(MGCG_file_list) :: MG_file
 !
 !>        Structure for volume repartitiong paramteres
-        type(volume_repart_params) :: repart_p
+        type(volume_partioning_param) :: repart_p
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group

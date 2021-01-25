@@ -16,7 +16,7 @@
 !
       use m_precision
       use t_file_IO_parameter
-      use t_ctl_param_volume_repart
+      use t_control_param_vol_grping
 !
       implicit none
 !
@@ -27,7 +27,7 @@
         type(field_IO_params) :: org_ucd_file
 !
 !>        Structure for volume repartitiong paramteres
-        type(volume_repart_params) :: repart_p
+        type(volume_partioning_param) :: repart_p
       end type vol_partion_prog_param
 !
 !   --------------------------------------------------------------------

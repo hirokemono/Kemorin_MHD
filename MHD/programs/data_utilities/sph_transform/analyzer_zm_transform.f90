@@ -42,7 +42,7 @@
       call s_set_ctl_data_4_sph_trans                                   &
      &   (spt_ctl1, t_STR, viz_step_STR, files_STR, SPH_TRNS%fld,       &
      &    d_gauss_trans, field_STR, trns_param,                         &
-     &    WK_leg_TRNS, sph_maker_TRNS, part_param_TRNS)
+     &    WK_leg_TRNS, sph_maker_TRNS, repart_TRNS)
       call set_ctl_data_4_zm_trans(spt_ctl1, files_STR%fst_file_IO)
 !
 !  ------    set spectr grids

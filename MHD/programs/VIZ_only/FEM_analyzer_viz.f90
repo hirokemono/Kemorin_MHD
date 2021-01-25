@@ -42,7 +42,7 @@
       use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
-      use t_ctl_param_volume_repart
+      use t_control_param_vol_grping
       use t_calypso_comm_table
 !
       implicit none
@@ -77,7 +77,7 @@
         type(visulize_field_list) :: viz_fld_list
 !
 !>        Structure for repartitioning parameters
-        type(volume_repart_params) :: repart_p
+        type(volume_partioning_param) :: repart_p
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
 !>         Structure for mesh data for visualization
@@ -189,7 +189,7 @@
           flag =  (check_exist_mesh(my_rank,                            &
      &             viz%repart_p%viz_mesh_file))                         &
      &    .and. (check_exist_interpolate_file(my_rank,                  &
-     &           viz%repart_p%part_param%trans_tbl_file))
+     &           viz%repart_p%trans_tbl_file))
         end if
         call calypso_MPI_barrier
         call calypso_mpi_bcast_one_logical(flag, 0)

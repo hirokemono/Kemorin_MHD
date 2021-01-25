@@ -97,7 +97,7 @@
       integer(kind = kint) :: i, ierr
 !
 !
-      if(part_p1%repart_p%part_param%trans_tbl_file%iflag_format        &
+      if(part_p1%repart_p%trans_tbl_file%iflag_format                   &
      &     .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*) 'No file to check data transfer'
         return
@@ -105,8 +105,7 @@
 !
 !
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_p1%repart_p%part_param%trans_tbl_file,                   &
-     &    itp_tbl_IO2, ierr)
+     &    part_p1%repart_p%trans_tbl_file, itp_tbl_IO2, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &

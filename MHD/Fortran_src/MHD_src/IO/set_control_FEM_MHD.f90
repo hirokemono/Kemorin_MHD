@@ -40,9 +40,10 @@
       use t_ctl_data_SGS_MHD_model
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_node_monitor
+      use t_ctl_data_volume_repart
       use t_bc_data_list
       use t_flex_delta_t_data
-      use t_ctl_data_volume_repart
+      use t_control_param_vol_grping
 !
       implicit  none
 !

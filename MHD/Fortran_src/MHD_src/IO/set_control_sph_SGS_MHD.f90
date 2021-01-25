@@ -13,7 +13,7 @@
 !!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, repart_ctl,  &
 !!     &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,  &
 !!     &          bc_IO, SGS_par, dynamic_SPH, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, trans_p, WK, sph_maker, repart_p)
+!!     &          MHD_BC, trans_p, WK, sph_maker, part_param)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(viz_repartition_ctl), intent(in) :: repart_ctl
@@ -33,7 +33,7 @@
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!        type(volume_repart_params), intent(inout) :: part_param
+!!        type(volume_partioning_param), intent(inout) :: part_param
 !!        type(sph_mhd_monitor_data), intent(inout) :: monitor
 !!
 !!      subroutine set_ctl_params_pick_circle                           &
@@ -54,7 +54,7 @@
       use t_control_parameter
       use t_MHD_step_parameter
       use t_MHD_file_parameter
-      use t_ctl_param_volume_repart
+      use t_control_param_vol_grping
       use t_field_data_IO
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
@@ -138,7 +138,7 @@
       subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, repart_ctl,    &
      &          model_ctl, smctl_ctl, nmtr_ctl, psph_ctl, MHD_files,    &
      &          bc_IO, SGS_par, dynamic_SPH, MHD_step, MHD_prop,        &
-     &          MHD_BC, trans_p, WK, sph_maker, repart_p)
+     &          MHD_BC, trans_p, WK, sph_maker, part_param)
 !
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -177,7 +177,7 @@
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(volume_repart_params), intent(inout) :: repart_p
+      type(volume_partioning_param), intent(inout) :: part_param
 !
 !   set parameters for SGS model
 !
@@ -199,7 +199,7 @@
      &    bc_IO, MHD_step, MHD_prop, MHD_BC, trans_p, WK, sph_maker)
 !
       if(iflag_debug.gt.0) write(*,*) 'set_ctl_param_vol_repart'
-      call set_ctl_param_vol_repart(repart_ctl, repart_p)
+      call set_ctl_param_vol_repart(repart_ctl, part_param)
 !
       end subroutine set_control_4_SPH_SGS_MHD
 !

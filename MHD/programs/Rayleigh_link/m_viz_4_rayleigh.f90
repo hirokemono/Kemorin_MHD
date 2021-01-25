@@ -34,7 +34,7 @@
       use t_file_IO_parameter
       use t_time_data
       use t_VIZ_only_step_parameter
-      use t_ctl_param_volume_repart
+      use t_control_param_vol_grping
 !
       implicit none
 !
@@ -48,7 +48,7 @@
       type(field_IO_params), save :: ucd_file_VIZ
 !
 !>        Structure for repartitioning parameters
-      type(volume_repart_params), save :: part_param_VIZ
+      type(volume_partioning_param), save :: repart_VIZ
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
@@ -111,7 +111,7 @@
      &   (rayleigh_vctl%sdctl, rayleigh_rtp, e_message, ierr)
 !
       call set_ctl_param_vol_repart(rayleigh_vctl%repart_ctl,           &
-     &                              part_param_VIZ)
+     &                              repart_VIZ)
 !
       end subroutine set_ctl_params_rayleigh_viz
 !

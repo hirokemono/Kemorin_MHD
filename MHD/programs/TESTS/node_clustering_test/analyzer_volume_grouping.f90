@@ -134,7 +134,7 @@
 !
 !       Re-partitioning
       call grouping_by_volume                                           &
-     &   (fem_T%mesh, part_prog_p1%repart_p%part_param, part_grp)
+     &   (fem_T%mesh, part_prog_p1%repart_p, part_grp)
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
