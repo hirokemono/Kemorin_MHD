@@ -61,8 +61,8 @@
       use copy_repart_and_itp_table
 !
       type(volume_partioning_param), intent(in) ::  part_param
-      type(mesh_data), intent(inout) :: geofem
 !
+      type(mesh_data), intent(inout) :: geofem
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !
