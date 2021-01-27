@@ -81,11 +81,11 @@
       if(s3d_ranks%rlm_rin_flag) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'set_global_sph_4_rlm', id_rank
-        call set_global_sph_4_rlm(s3d_ranks, stk_lc1d, sph_rlm)
+        call set_global_sph_4_rlm(sph_rlm)
       else
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'set_global_sph_4_lmr', id_rank
-        call set_global_sph_4_lmr(s3d_ranks, stk_lc1d, sph_rlm)
+        call set_global_sph_4_lmr(sph_rlm)
       end if
 !
       if(iflag_debug .gt. 0) then
@@ -137,11 +137,11 @@
       if(s3d_ranks%rtm_rin_flag) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'set_global_sph_4_rtm', id_rank
-        call set_global_sph_4_rtm(s3d_ranks, stk_lc1d, sph_rtm)
+        call set_global_sph_4_rtm(sph_rtm)
       else
         if(iflag_debug .gt. 0) write(*,*)                               &
      &          'set_global_sph_4_trm', id_rank
-        call set_global_sph_4_trm(s3d_ranks, stk_lc1d, sph_rtm)
+        call set_global_sph_4_trm(sph_rtm)
       end if
 !
       if(iflag_debug .gt. 0) then
