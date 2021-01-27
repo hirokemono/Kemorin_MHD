@@ -52,12 +52,9 @@
       use m_error_IDs
       use m_file_format_switch
 !
-      use calypso_mpi_logical
       use mpi_load_mesh_data
       use nod_phys_send_recv
-      use mesh_file_name_by_param
-      use set_interpolate_file_name
-      use repartiton_by_volume
+      use field_to_new_partition
 !
 !
 !>     Stracture for Jacobians
@@ -96,28 +93,8 @@
 !
 !  -------------------------------
 !
-      if(my_rank .eq. 0) then
-        flag =  (check_exist_mesh(my_rank,                              &
-     &           part_p1%repart_p%viz_mesh_file))                       &
-     &    .and. (check_exist_interpolate_file(my_rank,                  &
-     &           part_p1%repart_p%trans_tbl_file))
-      end if
-      call calypso_MPI_barrier
-      call calypso_mpi_bcast_one_logical(flag, 0)
-!
-      if(flag) then
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
-        call load_repartitoned_file(part_p1%repart_p, fem_T, new_fem,   &
+      call const_new_partition_mesh(part_p1%repart_p, fem_T, new_fem,   &
      &                              org_to_new_tbl)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
-      else
-        write(e_message,*)                                              &
-     &        'Construct repartitioned mesh and transfer table'
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
-        call s_repartiton_by_volume(part_p1%repart_p, fem_T, new_fem,   &
-     &                              org_to_new_tbl)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
-      end if
 !
       end subroutine initialize_field_to_repart
 !

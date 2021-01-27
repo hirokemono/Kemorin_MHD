@@ -24,7 +24,7 @@ extend_group_table.o: $(MODIFY_PARA_MESHDIR)/extend_group_table.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 external_group_4_new_part.o: $(MODIFY_PARA_MESHDIR)/external_group_4_new_part.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_control_param_vol_grping.o quicksort.o set_repartition_group_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/field_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_phys_data.o transfer_to_new_partition.o
+field_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/field_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_phys_data.o t_control_param_vol_grping.o m_work_time.o m_elapsed_labels_4_REPART.o calypso_mpi_logical.o repartiton_by_volume.o mesh_file_name_by_param.o set_interpolate_file_name.o transfer_to_new_partition.o
 	$(F90) -c $(F90OPTFLAGS) $<
 find_extended_comm_table.o: $(MODIFY_PARA_MESHDIR)/find_extended_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -142,10 +142,7 @@
       use set_parallel_file_name
       use set_ucd_data_to_type
       use ucd_IO_select
-      use repartiton_by_volume
       use field_to_new_partition
-      use mesh_file_name_by_param
-      use set_interpolate_file_name
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -184,31 +181,8 @@
 !
       if(viz%repart_p%flag_repartition) then
         allocate(viz%viz_fem)
-!
-        if(my_rank .eq. 0) then
-          flag =  (check_exist_mesh(my_rank,                            &
-     &             viz%repart_p%viz_mesh_file))                         &
-     &    .and. (check_exist_interpolate_file(my_rank,                  &
-     &           viz%repart_p%trans_tbl_file))
-        end if
-        call calypso_MPI_barrier
-        call calypso_mpi_bcast_one_logical(flag, 0)
-!
-        if(flag) then
-          if(iflag_RPRT_time)                                           &
-     &        call start_elapsed_time(ist_elapsed_RPRT+6)
-          call load_repartitoned_file(viz%repart_p,                     &
-     &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
-          if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
-        else
-          write(e_message,*)                                            &
-     &        'Construct repartitioned mesh and transfer table'
-          if(iflag_RPRT_time)                                           &
-     &        call start_elapsed_time(ist_elapsed_RPRT+1)
-          call s_repartiton_by_volume(viz%repart_p,                     &
-     &        viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
-          if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
-        end if
+        call const_new_partition_mesh(viz%repart_p,                     &
+     &      viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
 !
         allocate(viz%viz_fld)
         call init_fld_to_new_partition(viz%viz_fem%mesh,                &
@@ -267,9 +241,11 @@
       call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld)
 !
       if(viz%repart_p%flag_repartition) then
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call nod_field_to_new_partition                                 &
      &     (iflag_import_rev, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,    &
      &      viz%nod_fld, viz%viz_fld)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
       end if
 !
       end subroutine FEM_analyze_viz
