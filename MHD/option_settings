@@ -1,5 +1,37 @@
 Settings for Makefiles
 
+
+# -------------------------------------------------------------------------------
+# Personal XEON cluster with Intel oneAPI
+# -------------------------------------------------------------------------------
+#
+./configure --prefix=/home/matsui/local/gcc \
+CC=mpiicc FC=mpiifort MPICC=mpiicc MPIFC=mpiifort \
+AR=xiar  PKG_CONFIG=/usr/bin/pkg-config \
+CFLAGS='-Ofast -Wall -g' FCFLAGS='-Ofast -g' \
+--enable-fftw3 --with-libpng --with-hdf5=/home/matsui/local/intel/bin --with-zlib \
+--with-pgplot=/home/matsui/local/pgplot_intel --without-aquaterm --with-blas --enable-gl \
+--with-gtk --with-glfw \
+PKG_CONFIG_PATH=/home/matsui/local/intel/lib/pkgconfig:/$PKG_CONFIG_PATH
+
+
+# -------------------------------------------------------------------------------
+# Personal XEON cluster with gfortran-gcc
+# -------------------------------------------------------------------------------
+#
+./configure --prefix=/home/matsui/local/gcc \
+CC=/usr/mpi/gcc/openmpi-4.0.3rc4/bin/mpicc \
+FC=/usr/mpi/gcc/openmpi-4.0.3rc4/bin/mpif90 \
+MPICC=/usr/mpi/gcc/openmpi-4.0.3rc4/bin/mpicc \
+MPIFC=/usr/mpi/gcc/openmpi-4.0.3rc4/bin/mpif90 \
+AR=ar  PKG_CONFIG=/usr/bin/pkg-config \
+CFLAGS='-O3 -Wall -g' FCFLAGS='-O3 -Wall -g' \
+--enable-fftw3 --with-libpng --with-hdf5=/usr --with-zlib \
+--without-pgplot --without-aquaterm --with-blas --enable-gl \
+--with-gtk --with-glfw \
+PKG_CONFIG_PATH=/home/matsui/local/gcc/lib/pkgconfig:/$PKG_CONFIG_PATH
+
+
 # -------------------------------------------------------------------------------
 # MacBook Pro with MacPorts and FFTW with OepnMP
 # -------------------------------------------------------------------------------
