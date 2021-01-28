@@ -93,7 +93,7 @@
       call allocate_ucd_ele(ucd)
 !
       call set_internal_element_4_IO                                    &
-     &   (nprocs, node%istack_internod, node%numnod,                    &
+     &   (nprocs, ucd%istack_merged_intnod, node%numnod,                &
      &    node%internal_node,  ele%numele, ele%nnod_4_ele, ele%ie,      &
      &    dbl_id1%inod_local, dbl_id1%irank_home,                       &
      &    ucd%nele, ucd%nnod_4_ele, ucd%ie)
