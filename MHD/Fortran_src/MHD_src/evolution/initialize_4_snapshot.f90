@@ -154,7 +154,6 @@
       &    (FEM_filters%layer_tbl, SGS_MHD_wk%FEM_SGS_wk)
       end if
 !
-!
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'

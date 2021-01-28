@@ -198,15 +198,14 @@
       call FEM_mesh_initialization                                      &
      &   (viz%viz_fem%mesh, viz%viz_fem%group)
 !
+      call deallocate_surface_geom_type(viz%viz_fem%mesh%surf)
+      call dealloc_edge_geometory(viz%viz_fem%mesh%edge)
+!
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
-     &       + viz_step%LIC_t%increment
-      if(iflag .gt. 0) then
-        call element_normals_4_VIZ                                      &
-     &     (viz%viz_fem, viz%ele_4_nod, viz%spfs, viz%jacobians)
-      end if
+      call element_normals_4_VIZ(viz_step, viz%viz_fem,                 &
+     &    viz%ele_4_nod, viz%spfs, viz%jacobians)
 !
 !     ---------------------
 !
@@ -255,7 +254,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine element_normals_4_VIZ                                  &
-     &         (geofem, ele_4_nod, spfs, jacobians)
+     &         (viz_step, geofem, ele_4_nod, spfs, jacobians)
 !
       use int_volume_of_domain
       use set_table_4_RHS_assemble
@@ -263,23 +262,31 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
 !
+      type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(element_around_node), intent(inout) :: ele_4_nod
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacobians
 !
-!     --------------------- Connection information for PVR and fieldline
+      integer(kind = kint) :: iflag
+!
 !     --------------------- init for fieldline and PVR
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-      call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
+      if(viz_step%FLINE_t%increment .gt. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
+        call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
+      end if
 !
-      if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      allocate(jacobians%g_FEM)
-      call sel_max_int_point_by_etype                                   &
-     &   (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    geofem%mesh, geofem%group, spfs, jacobians)
+      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
+        allocate(jacobians%g_FEM)
+!        call sel_max_int_point_by_etype                                &
+!     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
+        call set_max_integration_points(ione, jacobians%g_FEM)
+        call const_jacobian_volume_normals(my_rank, nprocs,             &
+     &      geofem%mesh, geofem%group, spfs, jacobians)
+      end if
 !
       end subroutine element_normals_4_VIZ
 !

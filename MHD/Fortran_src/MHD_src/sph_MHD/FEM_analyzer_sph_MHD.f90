@@ -91,16 +91,6 @@
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
       call set_local_nod_4_monitor(geofem%mesh, geofem%group)
 !
-!  -------------------------------
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
-!  -------------------------------
-!
       if (iflag_debug.gt.0) write(*,*) 'init_field_data'
       call init_field_data(geofem%mesh%node%numnod, nod_fld, iphys)
 !
@@ -116,6 +106,15 @@
      &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%ucd)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+5)
 !
+!  -------------------------------
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+!
+      call deallocate_surface_geom_type(geofem%mesh%surf)
+      call dealloc_edge_geometory(geofem%mesh%edge)
+!
+!  -------------------------------
       end subroutine FEM_initialize_sph_MHD
 !
 !-----------------------------------------------------------------------
