@@ -129,13 +129,13 @@
      &     (geofem%mesh, next_tbl%neib_ele)
       end if
 !
+!  -----  If there is no volume rendering... return
+!
+      if (iflag_debug.eq.1) write(*,*)  'set_max_integration_points'
       iflag = MHD_step%viz_step%PVR_t%increment                         &
      &       + MHD_step%viz_step%LIC_t%increment
       if(iflag .le. 0) Return
 !
-!  -----  If there is no volume rendering... return
-!
-      if (iflag_debug.eq.1) write(*,*)  'set_max_integration_points'
       allocate(jacobians%g_FEM)
       call set_max_integration_points(ione, jacobians%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &
