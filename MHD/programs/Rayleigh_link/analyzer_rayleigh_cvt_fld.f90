@@ -200,8 +200,8 @@
       call link_field_data_to_ucd(new_fld, ucd_m)
 !
       if(new_fld_file%iflag_format/icent .eq. iflag_single/icent) then
-!        write(*,*) 'init_merged_ucd'
-        call init_merged_ucd(new_fld_file%iflag_format,                 &
+!        write(*,*) 'init_merged_ucd_element'
+        call init_merged_ucd_element(new_fld_file%iflag_format,         &
      &      geofem%mesh%node, geofem%mesh%ele, geofem%mesh%nod_comm,    &
      &      ucd_m)
       end if

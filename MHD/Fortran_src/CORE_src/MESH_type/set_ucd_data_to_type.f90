@@ -15,6 +15,8 @@
 !!      subroutine link_field_data_to_ucd(node, phys_nod, ucd)
 !!      subroutine link_nnod_stacks_2_ucd(num_pe, node, ucd)
 !!      subroutine link_nele_stacks_2_ucd(num_pe, ele, ucd)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(ucd_data), intent(inout) :: ucd
 !!
 !!      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)

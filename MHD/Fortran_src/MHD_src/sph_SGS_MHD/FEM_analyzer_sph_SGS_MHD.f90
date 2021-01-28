@@ -101,16 +101,10 @@
       if (iflag_debug.gt.0) write(*,*) 'init_field_data_w_SGS'
       call init_field_data_w_SGS                                        &
      &   (geofem%mesh%node%numnod, nod_fld, iphys, iphys_LES)
+!
 !  -------------------------------
-!  -------------------------------
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
 !  connect grid data to volume output
+!  -------------------------------
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
         call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
@@ -121,7 +115,17 @@
      &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%ucd)
 !
 !  -------------------------------
+!  -------------------------------
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+!
+      call deallocate_surface_geom_type(geofem%mesh%surf)
+      call dealloc_edge_geometory(geofem%mesh%edge)
+!
+!  -------------------------------
 !  ----   Mesh setting for visualization -----
+!  -------------------------------
 !
       if(MHD_step%viz_step%FLINE_t%increment .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'

@@ -70,7 +70,7 @@
       call link_field_data_to_ucd(nod_fld, ucd)
 !
       if (ucd_param%iflag_format/icent .eq. iflag_single/icent) then
-        call init_merged_ucd(ucd_param%iflag_format,                    &
+        call init_merged_ucd_element(ucd_param%iflag_format,            &
      &      mesh%node, mesh%ele, mesh%nod_comm, ucd)
       end if
 !

@@ -168,7 +168,8 @@
 !
       if(asbl_param_u%new_fld_file%iflag_format/icent                   &
      &       .eq. iflag_single/icent) then
-        call init_merged_ucd(asbl_param_u%new_fld_file%iflag_format,    &
+        call init_merged_ucd_element                                    &
+     &     (asbl_param_u%new_fld_file%iflag_format,                     &
      &      new_mesh%node, new_mesh%ele, new_mesh%nod_comm, ucd_m)
       end if
 !

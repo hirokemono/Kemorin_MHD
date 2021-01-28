@@ -195,7 +195,8 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(viz%viz_fem%mesh, viz%viz_fem%group)
+      call FEM_mesh_initialization                                      &
+     &   (viz%viz_fem%mesh, viz%viz_fem%group)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
