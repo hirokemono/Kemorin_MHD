@@ -84,7 +84,6 @@
 !
 !  -------------------------------------------
 !
-      call allocate_iccg_int8_matrix(test_fem%mesh%node%numnod)
       call resize_SR_flag(nprocs, 1, SR_sig_t)
 !
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
@@ -110,6 +109,8 @@
 !
       subroutine analyze_communication_test
 !
+      use t_vector_for_solver
+!
       use calypso_mpi
       use collect_SR_N
       use collect_SR_int
@@ -123,24 +124,39 @@
       use set_ele_id_4_node_type
       use const_element_comm_tables
 !
+      integer(kind = kint), parameter :: N12 = 12
+      type(vectors_4_solver) :: vect1
+!
 !
       call calypso_mpi_barrier
+!
+      call alloc_iccgN_vec_type(12, test_fem%mesh%node%numnod,      &
+     &                          vect1)
+      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, vect1)
+!
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
       call node_send_recv4_test                                         &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm)
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, vect1)
+!
+      call dealloc_iccgN_vec_type(vect1)
+      call dealloc_iccg_int8_vector(vect1)
+!
+      call alloc_iccgN_vec_type(ithree, test_fem%mesh%node%numnod,      &
+     &                          vect1)
+      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, vect1)
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
       call node_send_recv_test                                          &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm)
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, vect1)
       if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
-      call count_diff_node_comm_test(test_fem%mesh%node)
+      call count_diff_node_comm_test(test_fem%mesh%node, vect1)
 !
       call allocate_diff_nod_comm_test
       if (iflag_debug.gt.0) write(*,*) 'set_diff_node_comm_test'
-      call set_diff_node_comm_test(test_fem%mesh%node)
+      call set_diff_node_comm_test(test_fem%mesh%node, vect1)
 !
-      call deallocate_iccg_int8_matrix
-      call deallocate_vector_for_solver
+      call dealloc_iccgN_vec_type(vect1)
+      call dealloc_iccg_int8_vector(vect1)
 !
       call allocate_nod_stack_ctest_IO
       if (iflag_debug.gt.0) write(*,*) 'count_diff_nod_comm_test'

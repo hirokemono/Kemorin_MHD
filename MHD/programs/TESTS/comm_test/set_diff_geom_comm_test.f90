@@ -3,18 +3,19 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine s_count_diff_geom_comm_test                           &
-!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
-!      subroutine s_set_diff_geom_comm_test                             &
-!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
-!
-!      subroutine count_diff_node_comm_test(node)
-!      subroutine set_diff_node_comm_test(node)
-!
-!      subroutine count_node_comm_test(num_d, inter_d, x_org,           &
-!     &          x_comm, num_diff_l)
-!      subroutine compare_nod_comm_test(num_d, inter_d,                 &
-!     &          x_org, x_comm, num_diff_l, id_diff, x_diff)
+!!      subroutine s_count_diff_geom_comm_test                          &
+!!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
+!!      subroutine s_set_diff_geom_comm_test                            &
+!!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
+!!
+!!      subroutine count_diff_node_comm_test(node, vect)
+!!      subroutine set_diff_node_comm_test(node, vect)
+!!        type(vectors_4_solver), intent(in) :: vect
+!!
+!!      subroutine count_node_comm_test(num_d, inter_d, x_org,          &
+!!     &          x_comm, num_diff_l)
+!!      subroutine compare_nod_comm_test(num_d, inter_d,                &
+!!     &          x_org, x_comm, num_diff_l, id_diff, x_diff)
 !
       module set_diff_geom_comm_test
 !
@@ -25,6 +26,7 @@
       use t_surface_data
       use t_edge_data
       use t_comm_table
+      use t_vector_for_solver
       use m_geometry_4_comm_test
 !
       implicit  none
@@ -89,32 +91,32 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_diff_node_comm_test(node)
+      subroutine count_diff_node_comm_test(node, vect)
 !
       use calypso_mpi
-      use m_array_for_send_recv
 !
       type(node_data), intent(in) :: node
+      type(vectors_4_solver), intent(in) :: vect
 !
 !
       call count_node_comm_test(node%numnod, node%internal_node,        &
-     &    node%xx, x_vec, nnod_diff_local)
+     &    node%xx, vect%x_vec, nnod_diff_local)
 !
       end subroutine count_diff_node_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_diff_node_comm_test(node)
+      subroutine set_diff_node_comm_test(node, vect)
 !
       use calypso_mpi
-      use m_array_for_send_recv
 !
       type(node_data), intent(in) :: node
+      type(vectors_4_solver), intent(in) :: vect
 !
 !
       call compare_nod_comm_test(node%numnod, node%internal_node,       &
-     &    node%xx, x_vec, nnod_diff_local, inod_diff, xx_diff)
+     &    node%xx, vect%x_vec, nnod_diff_local, inod_diff, xx_diff)
 !
       end subroutine set_diff_node_comm_test
 !

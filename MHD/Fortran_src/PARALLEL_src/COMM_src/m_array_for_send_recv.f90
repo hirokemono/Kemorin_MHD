@@ -13,9 +13,6 @@
 !!      subroutine verify_vector_for_solver(NB, NP)
 !!      subroutine allocate_vector_for_solver(NB, NP)
 !!      subroutine deallocate_vector_for_solver
-!!
-!!      subroutine allocate_iccg_int8_matrix(NP)
-!!      subroutine deallocate_iccg_int8_matrix
 !!@endverbatim
 !!
 !!@param  N    length of vector
@@ -29,14 +26,6 @@
       implicit  none
 !
 !
-      type vector_for_solvers
-!>        Vector for solution vector
-        real(kind=kreal), allocatable :: x_vec(:)
-!>        Vector for right hand side vector
-        real(kind=kreal), allocatable :: b_vec(:)
-!>        Size of allocated vectors
-      end type vector_for_solvers
-!
 !>      Vector for solution vector
       real(kind=kreal), allocatable :: x_vec(:)
 !>      Vector for right hand side vector
@@ -44,8 +33,6 @@
 !>      Size of allocated vectors
       integer(kind = kint) :: isize_solver_vect = -1
 !
-!>      Work area for 8-byte integer data
-      integer(kind=kint_gl), allocatable :: i8x_vec(:)
 !
       private :: isize_solver_vect
 !
@@ -102,28 +89,6 @@
        isize_solver_vect = 0
 !
        end subroutine deallocate_vector_for_solver
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-       subroutine allocate_iccg_int8_matrix(NP)
-!
-       integer(kind = kint), intent(in) :: NP
-!
-!
-       if(allocated(i8x_vec)) return
-       allocate(i8x_vec(NP))
-       i8x_vec  = 0
-!
-       end subroutine allocate_iccg_int8_matrix
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_iccg_int8_matrix
-!
-       deallocate(i8x_vec)
-!
-       end subroutine deallocate_iccg_int8_matrix
 !
 !  ---------------------------------------------------------------------
 !

@@ -360,7 +360,7 @@
 !
 !     initialize
 !
-      call alloc_iccg_int_vec_type(NP_org, vect)
+      call alloc_iccg_int_vector(NP_org, vect)
       call verify_2nd_iccg_int_mat(NP_dest)
 !
       call verifty_work_4_itp_int                                       &
@@ -400,7 +400,7 @@
 !$omp parallel workshare
       i_vector_dest(1:NP_dest) = ivec_2nd(1:NP_dest)
 !$omp end parallel workshare
-      call dealloc_iccg_int_vec_type(vect)
+      call dealloc_iccg_int_vector(vect)
 !
       end subroutine s_interpolate_integer
 !
