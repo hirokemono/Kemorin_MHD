@@ -46,6 +46,7 @@
       use t_spheric_parameter
       use t_sph_trans_arrays_MHD
       use t_cross_section
+      use m_array_for_send_recv
 !
       implicit  none
 !
@@ -139,7 +140,7 @@
      &   (sph%sph_rtp, geofem%mesh%node, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(geofem%mesh, nod_fld)
+      call nod_fields_send_recv(geofem%mesh, nod_fld, vect1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize zmean'
@@ -178,7 +179,7 @@
      &   (sph%sph_rtp, geofem%mesh%node, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(geofem%mesh, nod_fld)
+      call nod_fields_send_recv(geofem%mesh, nod_fld, vect1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if (iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'

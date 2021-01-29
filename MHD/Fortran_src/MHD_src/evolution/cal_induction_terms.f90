@@ -57,6 +57,7 @@
       use t_bc_data_magne
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use m_array_for_send_recv
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -122,7 +123,7 @@
      &    mlump_cd, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &    rhs_mat%f_l, rhs_mat%f_nl, vect1)
       call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a,             &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -130,7 +131,7 @@
      &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
      &    iphys%forces%i_vp_induct, nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys%forces%i_vp_induct, nod_comm, nod_fld)
+     &   (iphys%forces%i_vp_induct, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_vecp_induction
 !
@@ -196,7 +197,7 @@
      &    iphys%diffusion%i_vp_diffuse, nod_fld%d_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%diffusion%i_vp_diffuse, nod_comm, nod_fld)
+     &   (iphys%diffusion%i_vp_diffuse, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_vecp_diffusion
 !

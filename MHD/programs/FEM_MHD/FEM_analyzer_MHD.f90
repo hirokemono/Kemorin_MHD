@@ -60,6 +60,7 @@
       use t_FEM_MHD_mean_square
       use t_MHD_IO_data
       use t_work_FEM_SGS_MHD
+      use m_array_for_send_recv
 !
       use calypso_mpi
 !
@@ -119,7 +120,7 @@
      &    iphys, FEM_SGS%iphys_LES, nod_fld, MHD_CG,                    &
      &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
 !
-      call nod_fields_send_recv(geofem%mesh, nod_fld)
+      call nod_fields_send_recv(geofem%mesh, nod_fld, vect1)
 !
 !   obtain elemental averages
 !

@@ -104,9 +104,9 @@
         end do
         write(*,*) 'copy data end'
 !
-      call allocate_vector_for_solver(isix, mesh%node%numnod)
+      call alloc_iccgN_vec_type(isix, mesh%node%numnod, vect1)
       call init_nod_send_recv(mesh)
-      call fields_send_recv(mesh%nod_comm, nod_fld)
+      call fields_send_recv(mesh%nod_comm, nod_fld, vect1)
 !
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)

@@ -62,6 +62,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_array_for_send_recv
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -237,7 +238,7 @@
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,           &
      &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,   &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_pre_consist_crank                                &
@@ -248,13 +249,14 @@
      &     mesh%node, mesh%ele, conduct, cd_prop,                       &
      &     jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_filters%FEM_elens,     &
      &     Csims_FEM_MHD%diff_coefs, Bmatrix, MG_vector, mhd_fem_wk,    &
-     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
       call set_boundary_vect                                            &
      &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
+     &                      nod_fld, vect1)
 !
       end subroutine cal_magnetic_field_pre
 !
@@ -343,12 +345,12 @@
      &      Bnod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, &
      &      rhs_tbl, FEM_elens, Csims_FEM_MHD%diff_coefs,               &
      &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,     &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       else
         call cal_magnetic_co_exp(iphys%base%i_magne, FEM_prm,           &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
 !
@@ -356,8 +358,10 @@
       call set_boundary_vect                                            &
      &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm, nod_fld)
-      call scalar_send_recv(iphys%base%i_mag_p, mesh%nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
+     &                      nod_fld, vect1)
+      call scalar_send_recv(iphys%base%i_mag_p, mesh%nod_comm,          &
+     &                      nod_fld, vect1)
 !
       end subroutine cal_magnetic_co
 !
@@ -429,7 +433,7 @@
      &   (insulate%istack_ele_fld_smp, FEM_prm, mlump_ins,              &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,        &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, vect1)
 !
       call cal_sol_magne_insulate                                       &
      &   (nod_fld%n_point, insulate%istack_inter_fld_smp,               &
@@ -439,7 +443,8 @@
       call set_boundary_vect                                            &
      &   (Bnod_bcs%nod_bc_b, iphys%base%i_magne, nod_fld)
 !
-      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_magne, mesh%nod_comm,          &
+     &                      nod_fld, vect1)
 !
       end subroutine cal_magnetic_co_outside
 !

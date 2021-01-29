@@ -35,6 +35,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -78,7 +79,7 @@
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &
 !     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
-!     &    fem_wk, f_l, f_nl)
+!     &    fem_wk, f_l, f_nl, vect1)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
 !     &   f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,                       &
 !     &   iphys%base%i_magne, nod_fld%d_fld)
@@ -88,7 +89,7 @@
 !    communication
 !
       call vector_send_recv                                             &
-     &   (iphys%forces%i_induction, nod_comm, nod_fld)
+     &   (iphys%forces%i_induction, nod_comm, nod_fld, vect1)
 !
       end subroutine s_int_magne_induction
 !

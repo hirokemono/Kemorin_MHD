@@ -37,6 +37,7 @@
       use t_SPH_SGS_structure
       use t_cross_section
       use t_SPH_MHD_zonal_mean_viz
+      use m_array_for_send_recv
 !
       implicit  none
 !
@@ -107,7 +108,7 @@
       call zonal_rms_all_rtp_field(sph%sph_rtp, fem%mesh%node, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(fem%mesh, nod_fld)
+      call nod_fields_send_recv(fem%mesh, nod_fld, vect1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
       if(iflag_debug.gt.0) write(*,*) 'SECTIONING_visualize RMS'

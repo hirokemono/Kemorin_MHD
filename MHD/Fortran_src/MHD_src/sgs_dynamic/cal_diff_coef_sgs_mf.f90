@@ -61,6 +61,7 @@
       use t_SGS_model_coefs
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -199,7 +200,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &      'vector_send_recv', iphys_SGS_wk%i_wd_nlg
       call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld, vect1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
@@ -217,7 +218,7 @@
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld, vect1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

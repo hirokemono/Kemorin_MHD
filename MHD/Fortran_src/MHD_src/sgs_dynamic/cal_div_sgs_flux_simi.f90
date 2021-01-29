@@ -46,6 +46,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -112,7 +113,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_div_sgs_mf_simi
 !
@@ -169,7 +170,7 @@
 !
 ! ----------   communications
 !
-      call scalar_send_recv(i_sgs, nod_comm, nod_fld)
+      call scalar_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_div_sgs_sf_simi
 !
@@ -227,7 +228,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_div_sgs_idct_simi
 !

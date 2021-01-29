@@ -39,6 +39,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_array_for_send_recv
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -156,9 +157,9 @@
      &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call elength_nod_send_recv                                        &
-     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod)
+     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod, vect1)
       call dxidx_nod_send_recv                                          &
-     &   (mesh%node%numnod, mesh%nod_comm, dxidxs%dx_nod)
+     &   (mesh%node%numnod, mesh%nod_comm, dxidxs%dx_nod, vect1)
 !
 !  ---------------------------------------------------
 !        cal products of element size for each node
@@ -180,7 +181,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
       call diff_elen_nod_send_recv                                      &
-     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod)
+     &   (mesh%node%numnod, mesh%nod_comm, FEM_elen%elen_nod, vect1)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
@@ -254,7 +255,8 @@
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call filter_mom_nod_send_recv(node%numnod, nod_comm, mom_nod)
+      call filter_mom_nod_send_recv                                     &
+     &   (node%numnod, nod_comm, mom_nod, vect1)
 !
       if(gfil_p%itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist                               &
@@ -267,7 +269,7 @@
       end if
 !
       call diff_filter_mom_nod_send_recv                                &
-     &   (node%numnod, nod_comm, mom_nod)
+     &   (node%numnod, nod_comm, mom_nod, vect1)
 !
       call cal_filter_moms_ele_by_nod(gfil_p%num_int_points,            &
      &    node, ele, g_FEM, jac_3d_q, mom_nod, mom_ele)

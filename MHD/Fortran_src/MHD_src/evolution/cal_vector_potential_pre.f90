@@ -58,6 +58,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_array_for_send_recv
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -237,7 +238,7 @@
      &      cd_prop, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,   &
      &      mlump_cd, Bmatrix, MG_vector, mhd_fem_wk,                   &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_vect_p_pre_consist_crank                               &
@@ -248,13 +249,14 @@
      &      conduct, cd_prop, jacs%g_FEM, jacs%jac_3d, rhs_tbl,         &
      &      FEM_filters%FEM_elens, Csims_FEM_MHD%diff_coefs,            &
      &      Bmatrix, MG_vector, mhd_fem_wk,                             &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
       call set_boundary_vect                                            &
      &   (Bnod_bcs%nod_bc_a, iphys%base%i_vecp, nod_fld)
 !
-      call vector_send_recv(iphys%base%i_vecp, mesh%nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_vecp, mesh%nod_comm,           &
+     &                      nod_fld, vect1)
       call clear_field_data(nod_fld, n_scalar, iphys%exp_work%i_m_phi)
 !
 !      call check_nodal_data                                            &
@@ -348,14 +350,14 @@
      &      conduct, cd_prop, Bnod_bcs, iphys_ele_base, ele_fld,        &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs,    &
      &      m_lump, Bmatrix, MG_vector, mhd_fem_wk, rhs_mat%fem_wk,     &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
         call clear_field_data                                           &
      &     (nod_fld, n_scalar, iphys_exp%i_m_phi)
       else
         call cal_vector_p_co_exp(iphys_base%i_vecp, FEM_prm,            &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, m_lump, mhd_fem_wk,       &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect vect_p'
@@ -363,9 +365,11 @@
      &   (Bnod_bcs%nod_bc_a, iphys_base%i_vecp, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
-      call vector_send_recv(iphys_base%i_vecp, mesh%nod_comm, nod_fld)
+      call vector_send_recv(iphys_base%i_vecp, mesh%nod_comm,           &
+     &                      nod_fld, vect1)
       if (iflag_debug.eq.1) write(*,*) 'scalar_send_recv for potential'
-      call scalar_send_recv(iphys_base%i_mag_p, mesh%nod_comm, nod_fld)
+      call scalar_send_recv(iphys_base%i_mag_p, mesh%nod_comm,          &
+     &                      nod_fld, vect1)
 !
       end subroutine cal_vector_p_co
 !

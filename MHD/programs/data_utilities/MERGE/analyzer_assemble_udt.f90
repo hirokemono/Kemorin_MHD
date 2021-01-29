@@ -26,6 +26,7 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_comm_table_4_assemble
+      use m_array_for_send_recv
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -102,9 +103,9 @@
 !
 !  Initialize communicator
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (n_sym_tensor, new_mesh%node%numnod)
+      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type                                         &
+     &   (n_sym_tensor, new_mesh%node%numnod, vect1)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(new_mesh)
@@ -186,7 +187,7 @@
         call assemble_field_data                                        &
      &     (ndomain_org, asbl_comm_u, new_fld, org_fIO)
 !
-        call nod_fields_send_recv(new_mesh, new_fld)
+        call nod_fields_send_recv(new_mesh, new_fld, vect1)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)

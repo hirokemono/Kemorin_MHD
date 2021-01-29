@@ -68,6 +68,7 @@
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -154,7 +155,7 @@
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &    rhs_mat%f_l, rhs_mat%f_nl, vect1)
 !
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
@@ -167,7 +168,7 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_SGS_div_flux, nod_comm, nod_fld)
+      call scalar_send_recv(i_SGS_div_flux, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_terms_4_heat
 !

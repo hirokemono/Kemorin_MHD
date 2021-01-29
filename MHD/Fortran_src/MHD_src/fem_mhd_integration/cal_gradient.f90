@@ -43,6 +43,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
+      use m_array_for_send_recv
 !
 !
       implicit none
@@ -99,7 +100,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_grad, nod_comm, nod_fld)
+      call vector_send_recv(i_grad, nod_comm, nod_fld, vect1)
 !
       end subroutine choose_cal_gradient
 !
@@ -150,7 +151,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_grad, nod_comm, nod_fld)
+      call vector_send_recv(i_grad, nod_comm, nod_fld, vect1)
 !
       end subroutine choose_cal_gradient_w_const
 !

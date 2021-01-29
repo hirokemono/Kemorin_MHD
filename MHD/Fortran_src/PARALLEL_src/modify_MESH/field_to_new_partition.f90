@@ -31,6 +31,7 @@
       use t_calypso_comm_table
       use t_phys_data
       use t_control_param_vol_grping
+      use m_array_for_send_recv
 !
       implicit  none
 !
@@ -141,16 +142,16 @@
         if     (new_fld%num_component(i_fld) .eq. n_scalar) then
           call scalar_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &
-     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp))
+     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), vect1)
         else if(new_fld%num_component(i_fld) .eq. n_vector) then
           call vector_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &
-     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp))
+     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), vect1)
         else
           call tensor_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, new_fld%num_component(i_fld),          &
      &        org_fld%n_point, new_fld%n_point,                         &
-     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp))
+     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), vect1)
         end if
       end do
 !

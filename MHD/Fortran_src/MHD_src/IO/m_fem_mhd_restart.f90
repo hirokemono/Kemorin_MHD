@@ -59,6 +59,7 @@
       use t_field_data_IO
       use t_flex_delta_t_parameter
       use t_IO_step_parameter
+      use m_array_for_send_recv
 !
       implicit  none
 !
@@ -148,19 +149,19 @@
 !
       if(iphys%exp_work%i_pre_mom .gt. 0) then
         call vector_send_recv                                           &
-     &     (iphys%exp_work%i_pre_mom, nod_comm, nod_fld)
+     &     (iphys%exp_work%i_pre_mom, nod_comm, nod_fld, vect1)
       end if
       if(iphys%exp_work%i_pre_uxb .gt. 0) then
         call vector_send_recv                                           &
-     &     (iphys%exp_work%i_pre_uxb, nod_comm, nod_fld)
+     &     (iphys%exp_work%i_pre_uxb, nod_comm, nod_fld, vect1)
       end if
       if(iphys%exp_work%i_pre_heat .gt. 0) then
         call scalar_send_recv                                           &
-     &     (iphys%exp_work%i_pre_heat, nod_comm, nod_fld)
+     &     (iphys%exp_work%i_pre_heat, nod_comm, nod_fld, vect1)
       end if
       if(iphys%exp_work%i_pre_composit .gt. 0) then
         call scalar_send_recv                                           &
-     &     (iphys%exp_work%i_pre_composit, nod_comm, nod_fld)
+     &     (iphys%exp_work%i_pre_composit, nod_comm, nod_fld, vect1)
       end if
 !
       call copy_time_step_size_data(time_d, fem_time_IO)

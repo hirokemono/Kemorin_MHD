@@ -187,7 +187,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(femmesh%mesh, nod_fld)
+      call nod_fields_send_recv(femmesh%mesh, nod_fld, vect1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d,                           &

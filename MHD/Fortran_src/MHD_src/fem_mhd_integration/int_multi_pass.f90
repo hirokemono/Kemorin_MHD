@@ -7,19 +7,19 @@
 !
 !!      subroutine int_multi_pass_vector                                &
 !!     &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,&
-!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl, vect)
 !!      subroutine int_multi_pass_scalar                                &
 !!     &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,&
-!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl, vect)
 !!
 !!      subroutine int_multi_pass_vector_upw                            &
 !!     &         (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,      &
 !!     &          nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl, &
-!!     &          ff_m_smp, fem_wk, f_nl)
+!!     &          ff_m_smp, fem_wk, f_nl, vect)
 !!      subroutine int_multi_pass_scalar_upw                            &
 !!     &         (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,      &
 !!     &          nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl, &
-!!     &          ff_m_smp, fem_wk, f_nl)
+!!     &          ff_m_smp, fem_wk, f_nl, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -31,6 +31,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module int_multi_pass
 !
@@ -47,6 +48,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -58,7 +60,7 @@
 !
       subroutine int_multi_pass_vector                                  &
      &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,  &
-     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl, vect)
 !
       use int_vol_multi_pass
       use cal_ff_smp_to_ffs
@@ -79,6 +81,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer (kind = kint) :: imulti
 !
@@ -88,7 +91,8 @@
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
-        call nod_vector_send_recv(node%numnod, nod_comm, f_nl%ff)
+        call nod_vector_send_recv(node%numnod, nod_comm,                &
+     &                            f_nl%ff, vect)
 !
         call int_vol_multi_pass_vector                                  &
      &     (FEM_prm%npoint_t_evo_int, iele_fsmp_stack,                  &
@@ -101,7 +105,7 @@
 !
       subroutine int_multi_pass_scalar                                  &
      &         (iele_fsmp_stack, FEM_prm, m_lump, nod_comm, node, ele,  &
-     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl, vect)
 !
       use int_vol_multi_pass
       use cal_ff_smp_to_ffs
@@ -122,6 +126,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer (kind = kint) :: imulti
 !
@@ -131,7 +136,8 @@
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
-        call nod_scalar_send_recv(node%numnod, nod_comm, f_nl%ff(1,1))
+        call nod_scalar_send_recv(node%numnod, nod_comm,                &
+     &                            f_nl%ff(1,1), vect)
 !
         call int_vol_multi_pass_scalar                                  &
      &     (FEM_prm%npoint_t_evo_int, iele_fsmp_stack,                  &
@@ -146,7 +152,7 @@
       subroutine int_multi_pass_vector_upw                              &
      &          (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,       &
      &           nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,  &
-     &           ff_m_smp, fem_wk, f_nl)
+     &           ff_m_smp, fem_wk, f_nl, vect)
 !
       use int_vol_multi_pass
       use cal_ff_smp_to_ffs
@@ -170,6 +176,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer (kind = kint) :: imulti
 !
@@ -179,7 +186,8 @@
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
-        call nod_vector_send_recv(node%numnod, nod_comm, f_nl%ff)
+        call nod_vector_send_recv(node%numnod, nod_comm,                &
+     &                            f_nl%ff, vect)
 !
         call int_vol_multi_pass_vector_upw                              &
      &     (FEM_prm%npoint_t_evo_int, dt, iele_fsmp_stack,              &
@@ -195,7 +203,7 @@
       subroutine int_multi_pass_scalar_upw                              &
      &         (iele_fsmp_stack, iphys_upw, dt, FEM_prm, m_lump,        &
      &          nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,   &
-     &          ff_m_smp, fem_wk, f_nl)
+     &          ff_m_smp, fem_wk, f_nl, vect)
 !
       use int_vol_multi_pass
       use cal_ff_smp_to_ffs
@@ -219,6 +227,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer (kind = kint) :: imulti
 !
@@ -228,7 +237,8 @@
       do imulti = 2, FEM_prm%num_multi_pass
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
-        call nod_scalar_send_recv(node%numnod, nod_comm, f_nl%ff(1,1))
+        call nod_scalar_send_recv(node%numnod, nod_comm,                &
+     &                            f_nl%ff(1,1), vect)
 !
         call int_vol_multi_pass_scalar_upw                              &
      &     (FEM_prm%npoint_t_evo_int, dt, iele_fsmp_stack,              &

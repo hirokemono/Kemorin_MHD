@@ -67,6 +67,7 @@
       use t_filtering_data
       use t_material_property
       use t_SGS_model_coefs
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -112,7 +113,7 @@
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
 !     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
-!     &    fem_wk, f_l, f_nl)
+!     &    fem_wk, f_l, f_nl, vect1)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_l%ff,   &
 !     &    mlump_cd%ml, nod_fld%ntot_phys, iphys%base%i_magne,          &
 !     &    nod_fld%d_fld)
@@ -121,8 +122,8 @@
      &     nod_fld%ntot_phys, iphys_LES%SGS_term%i_SGS_induction,       &
      &     nod_fld%d_fld)
 !
-       call vector_send_recv                                            &
-     &    (iphys_LES%SGS_term%i_SGS_induction, nod_comm, nod_fld)
+       call vector_send_recv(iphys_LES%SGS_term%i_SGS_induction,        &
+     &                       nod_comm, nod_fld, vect1)
 !
       end subroutine int_vol_sgs_induction
 !
@@ -184,8 +185,8 @@
      &   (node%numnod, node%istack_nod_smp, f_nl%ff, mlump_cd%ml,       &
      &    nod_fld%ntot_phys, iphys_LES%SGS_term%i_SGS_vp_induct,        &
      &    nod_fld%d_fld)
-      call vector_send_recv                                             &
-     &   (iphys_LES%SGS_term%i_SGS_vp_induct, nod_comm, nod_fld)
+      call vector_send_recv(iphys_LES%SGS_term%i_SGS_vp_induct,         &
+     &                      nod_comm, nod_fld, vect1)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

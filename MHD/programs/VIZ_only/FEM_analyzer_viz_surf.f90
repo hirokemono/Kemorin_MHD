@@ -43,6 +43,7 @@
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
       use t_IO_step_parameter
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -178,7 +179,8 @@
       call copy_time_step_size_data(sfcing%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(sfcing%geofem%mesh, sfcing%nod_fld)
+      call nod_fields_send_recv(sfcing%geofem%mesh,                     &
+     &                          sfcing%nod_fld, vect1)
 !
       end subroutine FEM_analyze_surface
 !

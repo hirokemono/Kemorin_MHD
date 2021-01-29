@@ -17,7 +17,10 @@
 !!      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
 !!      subroutine cal_rev_of_2nd_field(numnod)
 !!      subroutine cal_products_of_fields                               &
-!!     &         (nod_comm, node, ncomp_nod, d_nod)
+!!     &         (nod_comm, node, ncomp_nod, d_nod, vect)
+!!        type(node_data), intent(in) :: node
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module product_udt_fields
 !
@@ -172,12 +175,10 @@
       type(time_data), intent(inout) :: t_IO
 !
 !
-      call set_one_field_by_read_ucd_once                               &
-     &   (my_rank, istep_ucd, prod1_ucd_param,                          &
+      call set_one_field_by_read_ucd_once(istep_ucd, prod1_ucd_param,   &
      &    i_field_product1, ncomp_4_product1, numnod, d_prod1, t_IO)
 !
-      call set_one_field_by_read_ucd_once                               &
-     &   (my_rank, istep_ucd, prod2_ucd_param,                          &
+      call set_one_field_by_read_ucd_once(istep_ucd, prod2_ucd_param,   &
      &    i_field_product2, ncomp_4_product2, numnod, d_prod2, t_IO)
 !
       end subroutine set_data_for_product
@@ -208,8 +209,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_products_of_fields                                 &
-     &         (nod_comm, node, ncomp_nod, d_nod)
+     &         (nod_comm, node, ncomp_nod, d_nod, vect)
 !
+      use t_vector_for_solver
       use m_ctl_params_4_prod_udt
       use cal_products_smp
       use nod_phys_send_recv
@@ -217,7 +219,9 @@
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: ncomp_nod
+!
       real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       if(ncomp_4_product1.eq.1) then
@@ -312,11 +316,11 @@
 !
 !
       if(ncomp_4_result .eq. ione) then
-        call nod_scalar_send_recv(node%numnod, nod_comm, d_nod)
+        call nod_scalar_send_recv(node%numnod, nod_comm, d_nod, vect)
       else if(ncomp_4_result .eq. ithree) then
-        call nod_vector_send_recv(node%numnod, nod_comm, d_nod)
+        call nod_vector_send_recv(node%numnod, nod_comm, d_nod, vect)
       else if(ncomp_4_result .eq. isix) then
-        call nod_tensor_send_recv(node%numnod, nod_comm, d_nod)
+        call nod_tensor_send_recv(node%numnod, nod_comm, d_nod, vect)
       end if
 !
       end subroutine cal_products_of_fields
@@ -353,14 +357,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_one_field_by_read_ucd_once(id_rank, istep_ucd,     &
-     &          ucd_param, i_field, ncomp_field, numnod, d_fld, t_IO)
+      subroutine set_one_field_by_read_ucd_once(istep_ucd, ucd_param,  &
+     &          i_field, ncomp_field, numnod, d_fld, t_IO)
 !
       use set_and_cal_udt_data
       use parallel_ucd_IO_select
 !
       type(field_IO_params), intent(in) :: ucd_param
-      integer, intent(in) :: id_rank
       integer(kind = kint),  intent(in) :: istep_ucd
       integer(kind = kint),  intent(in) :: numnod, i_field, ncomp_field
 !

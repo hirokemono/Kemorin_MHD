@@ -43,6 +43,7 @@
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
       use t_MHD_IO_data
+      use m_array_for_send_recv
 !
       use calypso_mpi
 !
@@ -142,7 +143,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(femmesh%mesh, nod_fld)
+      call nod_fields_send_recv(femmesh%mesh, nod_fld, vect1)
 !
 !     -----Output monitor date
 !

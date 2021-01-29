@@ -21,6 +21,7 @@
       use t_layering_ele_list
       use t_work_layer_correlate
       use t_shape_functions
+      use m_array_for_send_recv
       use m_FEM_utils
 !
       use transfer_correlate_field
@@ -85,9 +86,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (isix, femmesh_p_FUT%mesh%node%numnod)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type                                         &
+     &   (isix, femmesh_p_FUT%mesh%node%numnod, vect1)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
@@ -170,8 +171,10 @@
         call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
      &      second_ucd_param, phys_ref, time_IO_FUTIL)
 !
-        call fields_send_recv(femmesh_p_FUT%mesh%nod_comm, field_FUTIL)
-        call fields_send_recv(femmesh_p_REF%mesh%nod_comm, phys_ref)
+        call fields_send_recv(femmesh_p_FUT%mesh%nod_comm,              &
+     &                        field_FUTIL, vect1)
+        call fields_send_recv(femmesh_p_REF%mesh%nod_comm,              &
+     &                        phys_ref, vect1)
 !
 !    output udt data
 !

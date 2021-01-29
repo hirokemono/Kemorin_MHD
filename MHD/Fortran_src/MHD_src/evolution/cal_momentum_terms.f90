@@ -83,6 +83,7 @@
       use t_surface_bc_velocity
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use m_array_for_send_recv
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -200,14 +201,14 @@
      &    iphys_ele_base, ele_fld,                                      &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &    rhs_mat%f_l, rhs_mat%f_nl, vect1)
 !       call set_boundary_velo_4_rhs                                    &
 !     &    (node, Vnod_bcs, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector                                              &
      &   (node%numnod, node%istack_nod_smp, rhs_mat%f_nl%ff,            &
      &    mlump_fl%ml, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
-      call vector_send_recv(i_field, nod_comm, nod_fld)
+      call vector_send_recv(i_field, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_terms_4_momentum
 !
@@ -285,7 +286,7 @@
      &    iphys_dif%i_v_diffuse, nod_fld%d_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys_dif%i_v_diffuse, nod_comm, nod_fld)
+     &   (iphys_dif%i_v_diffuse, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_viscous_diffusion
 !

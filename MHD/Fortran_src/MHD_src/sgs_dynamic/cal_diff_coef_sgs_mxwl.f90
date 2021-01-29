@@ -62,6 +62,7 @@
       use t_SGS_model_coefs
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -191,7 +192,7 @@
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld, vect1)
       call delete_field_by_fixed_v_bc                                   &
      &   (Vnod_bcs, iphys_SGS_wk%i_wd_nlg, nod_fld)
 !
@@ -210,7 +211,7 @@
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld, vect1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

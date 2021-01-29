@@ -40,6 +40,7 @@
       use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -192,7 +193,7 @@
       call copy_time_step_size_data(pvr%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(pvr%geofem%mesh, pvr%nod_fld)
+      call nod_fields_send_recv(pvr%geofem%mesh, pvr%nod_fld, vect1)
 !
       end subroutine FEM_analyze_pvr
 !

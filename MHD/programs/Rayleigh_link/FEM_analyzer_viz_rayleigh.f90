@@ -33,6 +33,7 @@
       use t_rayleigh_field_address
       use t_comm_table_4_assemble
       use m_viz_4_rayleigh
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -216,7 +217,7 @@
       call overwrite_nodal_sph_2_xyz(fem%mesh%node, field)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(fem%mesh, field)
+      call nod_fields_send_recv(fem%mesh, field, vect1)
 !
       end subroutine set_field_data_4_VIZ2
 !

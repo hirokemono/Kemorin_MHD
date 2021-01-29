@@ -39,6 +39,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_ctl_params_4_gen_filter
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -295,7 +296,7 @@
      &    f_nl%ff_smp, f_nl%ff)
       do nd = 1, n_vector
         call cal_sol_dx_by_consist(nd, node, nod_comm,                  &
-     &      tbl_crs, f_nl, gfil_p, mass, diff_field(1,nd))
+     &      tbl_crs, f_nl, gfil_p, mass, diff_field(1,nd), vect1)
       end do
 !
       end subroutine take_1st_diffs_nod_by_consist

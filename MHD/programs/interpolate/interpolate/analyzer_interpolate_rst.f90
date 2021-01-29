@@ -25,6 +25,7 @@
       use t_IO_step_parameter
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -157,7 +158,8 @@
           call dealloc_phys_data_IO(itp_fld_IO)
 !
           call copy_time_step_data(itp_time_IO, t_ITP%init_d)
-          call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
+          call nod_fields_send_recv(org_femmesh%mesh,                   &
+     &                              nod_fld_ITP, vect1)
         end if
 !
         call calypso_mpi_bcast_one_real(t_ITP%init_d%time, 0)
@@ -166,7 +168,7 @@
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
      &      new_femmesh%mesh%nod_comm, itp_rst,                         &
-     &      new_femmesh%mesh%node, new_phys)
+     &      new_femmesh%mesh%node, new_phys, vect1)
 !
         if (my_rank .lt. gen_itp_p1%ndomain_dest) then
           call copy_time_step_size_data(t_ITP%init_d, itp_time_IO)

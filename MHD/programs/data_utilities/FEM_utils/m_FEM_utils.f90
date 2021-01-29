@@ -76,9 +76,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (isix, femmesh_FUTIL%mesh%node%numnod)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type                                         &
+     &   (isix, femmesh_FUTIL%mesh%node%numnod, vect1)
       call init_nod_send_recv(femmesh_FUTIL%mesh)
 !
 !     --------------------- 

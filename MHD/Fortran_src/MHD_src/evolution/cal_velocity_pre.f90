@@ -68,6 +68,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_array_for_send_recv
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -316,7 +317,7 @@
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,        &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
-     &      nod_fld)
+     &      nod_fld, vect1)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(SGS_par%commute_p%iflag_c_velo, &
@@ -326,7 +327,7 @@
      &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
       call set_boundary_velo                                            &
@@ -334,7 +335,8 @@
       call set_normal_velocity(sf_grp, sf_grp_nod, fl_prop,             &
      &    Vsf_bcs%normal, iphys%base%i_velo, nod_fld)
 !
-      call vector_send_recv(iphys%base%i_velo, nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_velo, nod_comm,                &
+     &                      nod_fld, vect1)
 !
       end subroutine s_cal_velocity_pre
 !
@@ -427,13 +429,13 @@
      &      Vnod_bcs, iphys_ele_base, ele_fld, fem_int%jcs%g_FEM,       &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,                   &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       else
         call cal_velocity_co_exp                                        &
      &     (iphys%base%i_velo, iphys%exp_work%i_p_phi,                  &
      &      FEM_prm, nod_comm, node, ele, fluid, fem_int%jcs%g_FEM,     &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mlump_fl, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
 !
@@ -446,10 +448,12 @@
 !
       if(iflag_debug.eq.1) write(*,*)                                   &
      &                   'vector_send_recv(iphys%base%i_velo)'
-      call vector_send_recv(iphys%base%i_velo, nod_comm, nod_fld)
+      call vector_send_recv(iphys%base%i_velo, nod_comm,                &
+     &                      nod_fld, vect1)
       if(iflag_debug.eq.1) write(*,*)                                   &
      &                   'scalar_send_recv(iphys%base%i_press)'
-      call scalar_send_recv(iphys%base%i_press, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%base%i_press, nod_comm,               &
+     &                      nod_fld, vect1)
 !
       end subroutine cal_velocity_co
 !

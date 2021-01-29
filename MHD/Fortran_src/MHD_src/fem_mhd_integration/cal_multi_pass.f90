@@ -6,27 +6,31 @@
 !!      subroutine cal_t_evo_4_vector                                   &
 !!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
-!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,             &
+!!     &          f_l, f_nl, vect)
 !!      subroutine cal_t_evo_4_scalar                                   &
 !!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
-!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,             &
+!!     &          f_l, f_nl, vect)
 !!
 !!      subroutine cal_t_evo_4_vector_cd                                &
 !!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
-!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,             &
+!!     &          f_l, f_nl, vect)
 !!      subroutine cal_t_evo_4_scalar_cd                                &
 !!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
-!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+!!     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,             &
+!!     &          f_l, f_nl, vect)
 !!
 !!      subroutine cal_multi_pass_4_vector_ff(iele_fsmp_stack,          &
 !!     &          FEM_prm, m_lump, nod_comm, node, ele, g_FEM, jac_3d,  &
-!!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+!!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl, vect)
 !!      subroutine cal_multi_pass_4_scalar_ff(iele_fsmp_stack,          &
 !!     &          FEM_prm, m_lump, nod_comm, node, ele, g_FEM, jac_3d,  &
-!!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+!!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -39,6 +43,7 @@
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_multi_pass
 !
@@ -54,6 +59,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_vector_for_solver
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -70,7 +76,8 @@
       subroutine cal_t_evo_4_vector                                     &
      &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
-     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,               &
+     &          f_l, f_nl, vect)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -88,6 +95,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -102,16 +110,16 @@
           call int_multi_pass_vector_upw(iele_fsmp_stack,               &
      &        iphys_ele_base%i_velo, dt, FEM_prm, m_lump,               &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_vector_upw(iele_fsmp_stack,               &
      &        iphys_ele_base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         else
           call int_multi_pass_vector(iele_fsmp_stack, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,              &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         end if
       end if
 !
@@ -124,7 +132,8 @@
       subroutine cal_t_evo_4_scalar                                     &
      &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
-     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,               &
+     &          f_l, f_nl, vect)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -142,6 +151,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -156,16 +166,16 @@
           call int_multi_pass_scalar_upw(iele_fsmp_stack,               &
      &        iphys_ele_base%i_velo, dt, FEM_prm, m_lump,               &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_scalar_upw(iele_fsmp_stack,               &
      &        iphys_ele_base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         else
           call int_multi_pass_scalar(iele_fsmp_stack, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,              &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         end if
 !
       end if
@@ -180,7 +190,8 @@
       subroutine cal_t_evo_4_vector_cd                                  &
      &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
-     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,               &
+     &          f_l, f_nl, vect)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -198,6 +209,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -212,11 +224,11 @@
           call int_multi_pass_vector_upw(iele_fsmp_stack,               &
      &        iphys_ele_base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         else
           call int_multi_pass_vector(iele_fsmp_stack, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,              &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         end if
 !
       end if
@@ -230,7 +242,8 @@
       subroutine cal_t_evo_4_scalar_cd                                  &
      &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
-     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+     &          g_FEM, jac_3d, rhs_tbl, ff_m_smp, fem_wk,               &
+     &          f_l, f_nl, vect)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -248,6 +261,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -262,11 +276,11 @@
           call int_multi_pass_scalar_upw(iele_fsmp_stack,               &
      &        iphys_ele_base%i_magne, dt, FEM_prm, m_lump,              &
      &        nod_comm, node, ele, ele_fld, g_FEM, jac_3d, rhs_tbl,     &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         else
           call int_multi_pass_scalar(iele_fsmp_stack, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,              &
-     &        ff_m_smp, fem_wk, f_nl)
+     &        ff_m_smp, fem_wk, f_nl, vect)
         end if
 !
       end if
@@ -280,7 +294,7 @@
 !
       subroutine cal_multi_pass_4_vector_ff(iele_fsmp_stack,            &
      &          FEM_prm, m_lump, nod_comm, node, ele, g_FEM, jac_3d,    &
-     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl, vect)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -294,6 +308,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -305,7 +320,7 @@
      &      n_vector, f_nl%ff_smp, ff_m_smp)
         call int_multi_pass_vector(iele_fsmp_stack, FEM_prm, m_lump,    &
      &      nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,                &
-     &      ff_m_smp, fem_wk, f_nl)
+     &      ff_m_smp, fem_wk, f_nl, vect)
       end if
 !
       call reset_ff(n_vector, node, f_l)
@@ -318,7 +333,7 @@
 !
       subroutine cal_multi_pass_4_scalar_ff(iele_fsmp_stack,            &
      &          FEM_prm, m_lump, nod_comm, node, ele, g_FEM, jac_3d,    &
-     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
+     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl, vect)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -332,6 +347,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: vect
 !
       real(kind = kreal), intent(inout)                                 &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -343,7 +359,7 @@
      &      n_scalar, f_nl%ff_smp, ff_m_smp)
         call int_multi_pass_scalar(iele_fsmp_stack, FEM_prm, m_lump,    &
      &      nod_comm, node, ele, g_FEM, jac_3d, rhs_tbl,                &
-     &      ff_m_smp, fem_wk, f_nl)
+     &      ff_m_smp, fem_wk, f_nl, vect)
       end if
 !
       call reset_ff(n_vector, node, f_l)

@@ -28,6 +28,7 @@
       use t_time_data
       use t_ucd_data
       use t_file_IO_parameter
+      use m_array_for_send_recv
 !
       implicit  none
 !
@@ -88,7 +89,7 @@
       call tensor_to_new_partition(iflag_recv,                          &
      &    org_to_new_tbl, new_mesh%nod_comm, new_ucd%ntot_comp,         &
      &    int(org_ucd%nnod), int(new_ucd%nnod),                         &
-     &    org_ucd%d_ucd, new_ucd%d_ucd)
+     &    org_ucd%d_ucd, new_ucd%d_ucd, vect1)
 !
       call sel_write_parallel_ucd_file                                  &
          (istep_ucd, new_ucd_file, t_IO, new_ucd)

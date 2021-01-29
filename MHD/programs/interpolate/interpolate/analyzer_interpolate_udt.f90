@@ -24,6 +24,7 @@
       use t_IO_step_parameter
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -124,7 +125,8 @@
           call set_data_by_read_ucd_once(my_rank, istep,                &
      &        gen_itp_p1%org_ucd_IO, nod_fld_ITP, itp_time_IO)
 !
-          call nod_fields_send_recv(org_femmesh%mesh, nod_fld_ITP)
+          call nod_fields_send_recv(org_femmesh%mesh,                   &
+     &                              nod_fld_ITP, vect1)
         end if
 !
 !    interpolation
@@ -132,7 +134,7 @@
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'
         call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
      &      new_femmesh%mesh%nod_comm, itp_udt,                         &
-     &      new_femmesh%mesh%node, new_phys)
+     &      new_femmesh%mesh%node, new_phys, vect1)
 !
 !    output udt data
 !

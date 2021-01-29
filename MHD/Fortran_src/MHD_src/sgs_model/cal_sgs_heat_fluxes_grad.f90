@@ -48,6 +48,7 @@
       use t_filter_elength
       use t_material_property
       use t_SGS_model_coefs
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -115,7 +116,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_sgs_s_flux_grad_w_coef
 !
@@ -170,7 +171,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_sgs_s_flux_grad_no_coef
 !

@@ -42,6 +42,7 @@
       use t_reference_moments
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -368,7 +369,7 @@
      &        mass, seed_moments_ele(1,n), seed_moments_nod(1,n),       &
      &        fem_wk, f_l)
           call nod_scalar_send_recv                                     &
-     &       (node%numnod, nod_comm, seed_moments_nod(1,n) )
+     &       (node%numnod, nod_comm, seed_moments_nod(1,n), vect1)
         end if
 !
       end do

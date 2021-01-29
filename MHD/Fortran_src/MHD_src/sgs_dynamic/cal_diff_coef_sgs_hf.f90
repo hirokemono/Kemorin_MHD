@@ -53,6 +53,7 @@
       use t_surface_bc_scalar
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -183,8 +184,8 @@
       call delete_field_by_fixed_s_bc                                   &
      &   (Snod_bcs%nod_bc_s, iphys_SGS_wk%i_wd_nlg, nod_fld)
 !
-      call scalar_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, mesh%nod_comm, nod_fld)
+      call scalar_send_recv(iphys_SGS_wk%i_wd_nlg, mesh%nod_comm,       &
+     &                      nod_fld, vect1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys_SGS_wk%i_wd_nlg)
@@ -199,7 +200,8 @@
      &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
      &    nod_fld)
 !
-      call scalar_send_recv(iphys_SGS_wk%i_nlg, mesh%nod_comm, nod_fld)
+      call scalar_send_recv(iphys_SGS_wk%i_nlg, mesh%nod_comm,          &
+     &                      nod_fld, vect1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

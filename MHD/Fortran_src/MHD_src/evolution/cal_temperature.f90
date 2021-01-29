@@ -52,6 +52,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_phys_constants
+      use m_array_for_send_recv
 !
       use t_reference_scalar_param
       use t_FEM_control_parameter
@@ -351,7 +352,8 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid, property,        &
      &      nod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens, diff_coefs, mlump_fl, Smatrix,          &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
+     &      nod_fld, vect1)
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
@@ -359,13 +361,14 @@
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt, FEM_prm,          &
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
+     &      nod_fld, vect1)
       end if
 !
       call set_boundary_scalar                                          &
      &   (nod_bcs%nod_bc_s, i_field, nod_fld)
 !
-      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld)
+      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld, vect1)
 !
       end subroutine cal_temperature_pre
 !

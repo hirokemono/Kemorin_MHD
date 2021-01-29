@@ -39,6 +39,7 @@
       use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -126,8 +127,8 @@
         call reset_ff(n_vector, node, f_l)
         call cal_ff_smp_2_ff                                            &
      &     (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
-        call cal_sol_dx_by_consist                                      &
-     &     (ione, node, nod_comm, tbl_crs, f_l, gfil_p, mass, elen_nod)
+        call cal_sol_dx_by_consist(ione, node, nod_comm, tbl_crs,       &
+     &                             f_l, gfil_p, mass, elen_nod, vect1)
       end if
 !
       end subroutine int_dx_ele2_node

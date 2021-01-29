@@ -12,15 +12,16 @@
 !!
 !!      subroutine scalar_to_new_partition                              &
 !!     &         (iflag_recv, transfer_tbl, new_nod_comm,               &
-!!     &          nnod_org, nnod_new, vec_org, vec_new)
+!!     &          nnod_org, nnod_new, vec_org, vec_new, vect)
 !!      subroutine vector_to_new_partition                              &
 !!     &         (iflag_recv, transfer_tbl, new_nod_comm,               &
-!!     &          nnod_org, nnod_new, vec_org, vec_new)
+!!     &          nnod_org, nnod_new, vec_org, vec_new, vect)
 !!      subroutine tensor_to_new_partition                              &
 !!     &         (iflag_recv, transfer_tbl, new_nod_comm,               &
-!!     &          NB, nnod_org, nnod_new, vec_org, vec_new)
+!!     &          NB, nnod_org, nnod_new, vec_org, vec_new, vect)
 !!        type(calypso_comm_table), intent(in) :: transfer_tbl
 !!        type(communication_table), intent(in) :: new_nod_comm
+!!        type(vectors_4_solver), intent(inout) :: vect
 !!@endverbatim
 !
       module transfer_to_new_partition
@@ -30,6 +31,7 @@
       use calypso_mpi
       use t_comm_table
       use t_calypso_comm_table
+      use t_vector_for_solver
 !
       implicit  none
 !
@@ -70,9 +72,8 @@
 !
       subroutine scalar_to_new_partition                                &
      &         (iflag_recv, transfer_tbl, new_nod_comm,                 &
-     &          nnod_org, nnod_new, vec_org, vec_new)
+     &          nnod_org, nnod_new, vec_org, vec_new, vect)
 !
-      use m_array_for_send_recv
       use calypso_SR_type
       use solver_SR_type
 !
@@ -80,12 +81,13 @@
       type(calypso_comm_table), intent(in) :: transfer_tbl
       type(communication_table), intent(in) :: new_nod_comm
       integer(kind = kint), intent(in) :: nnod_org, nnod_new
-!
       real(kind = kreal), intent(in) :: vec_org(nnod_org)
+!
+      type(vectors_4_solver), intent(inout) :: vect
       real(kind = kreal), intent(inout) :: vec_new(nnod_new)
 !
 !
-      call verify_vector_for_solver(n_scalar, nnod_org)
+      call verify_iccgN_vec_type(n_scalar, nnod_org, vect)
 !
       call calypso_SR_type_3(iflag_recv, transfer_tbl,                  &
      &    nnod_org, nnod_new, vec_org(1), vec_new(1))
@@ -97,9 +99,8 @@
 !
       subroutine vector_to_new_partition                                &
      &         (iflag_recv, transfer_tbl, new_nod_comm,                 &
-     &          nnod_org, nnod_new, vec_org, vec_new)
+     &          nnod_org, nnod_new, vec_org, vec_new, vect)
 !
-      use m_array_for_send_recv
       use calypso_SR_type
       use solver_SR_type
 !
@@ -107,26 +108,27 @@
       type(calypso_comm_table), intent(in) :: transfer_tbl
       type(communication_table), intent(in) :: new_nod_comm
       integer(kind = kint), intent(in) :: nnod_org, nnod_new
-!
       real(kind = kreal), intent(in) :: vec_org(nnod_org,3)
+!
       real(kind = kreal), intent(inout) :: vec_new(nnod_new,3)
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint) :: inod
 !
 !
-      call verify_vector_for_solver(n_vector, nnod_org)
+      call verify_iccgN_vec_type(n_vector, nnod_org, vect)
       call verify_vector_for_repart(n_vector, nnod_new)
 !
 !$omp parallel do private(inod)
       do inod = 1, nnod_org
-        x_vec(3*inod-2) = vec_org(inod,1)
-        x_vec(3*inod-1) = vec_org(inod,2)
-        x_vec(3*inod  ) = vec_org(inod,3)
+        vect%x_vec(3*inod-2) = vec_org(inod,1)
+        vect%x_vec(3*inod-1) = vec_org(inod,2)
+        vect%x_vec(3*inod  ) = vec_org(inod,3)
       end do
 !$omp end parallel do
 !
       call calypso_SR_type_3(iflag_recv, transfer_tbl,                  &
-     &    nnod_org, nnod_new, x_vec(1), x_new(1))
+     &    nnod_org, nnod_new, vect%x_vec(1), x_new(1))
       call SOLVER_SEND_RECV_3_type(nnod_new, new_nod_comm, x_new(1))
 !
 !$omp parallel do private(inod)
@@ -143,9 +145,8 @@
 !
       subroutine tensor_to_new_partition                                &
      &         (iflag_recv, transfer_tbl, new_nod_comm,                 &
-     &          NB, nnod_org, nnod_new, vec_org, vec_new)
+     &          NB, nnod_org, nnod_new, vec_org, vec_new, vect)
 !
-      use m_array_for_send_recv
       use calypso_SR_type
       use solver_SR_type
 !
@@ -153,26 +154,27 @@
       type(calypso_comm_table), intent(in) :: transfer_tbl
       type(communication_table), intent(in) :: new_nod_comm
       integer(kind = kint), intent(in) :: NB, nnod_org, nnod_new
-!
       real(kind = kreal), intent(in) :: vec_org(nnod_org,NB)
+!
       real(kind = kreal), intent(inout) :: vec_new(nnod_new,NB)
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint) :: inod, nd
 !
 !
-      call verify_vector_for_solver(NB, nnod_org)
+      call verify_iccgN_vec_type(NB, nnod_org, vect)
       call verify_vector_for_repart(NB, nnod_new)
 !
 !$omp parallel do private(inod,nd)
       do inod = 1, nnod_org
         do nd = 1, NB
-          x_vec(NB*inod-NB+nd) = vec_org(inod,nd)
+          vect%x_vec(NB*inod-NB+nd) = vec_org(inod,nd)
         end do
       end do
 !$omp end parallel do
 !
       call calypso_SR_type_3(iflag_recv, transfer_tbl,                  &
-     &    nnod_org, nnod_new, x_vec(1), x_new(1))
+     &    nnod_org, nnod_new, vect%x_vec(1), x_new(1))
       call SOLVER_SEND_RECV_3_type(nnod_new, new_nod_comm, x_new(1))
 !
 !$omp parallel private(nd)

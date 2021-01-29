@@ -31,6 +31,7 @@
       use t_geometry_data
       use t_phys_data
       use t_filtering_data
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -59,7 +60,7 @@
       call cal_filtered_scalar                                          &
      &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_scalar,                &
-     &    wk_filter, nod_fld)
+     &    wk_filter, nod_fld, vect1)
 !
       end subroutine cal_filtered_scalar_whole
 !
@@ -84,7 +85,7 @@
       call cal_filtered_vector                                          &
      &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_vect,                  &
-     &    wk_filter, nod_fld)
+     &    wk_filter, nod_fld, vect1)
 !
       end subroutine cal_filtered_vector_whole
 !
@@ -109,7 +110,7 @@
       call cal_filtered_sym_tensor                                      &
      &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_vect,                  &
-     &    wk_filter, nod_fld)
+     &    wk_filter, nod_fld, vect1)
 !
       end subroutine cal_filtered_sym_tensor_whole
 !

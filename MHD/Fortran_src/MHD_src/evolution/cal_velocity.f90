@@ -194,7 +194,7 @@
      &      iphys, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &      iak_diff_base, diff_coefs, Pmatrix, MGCG_WK%MG_vector,      &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
-     &      nod_fld)
+     &      nod_fld, vect1)
 !
         call cal_sol_pressure                                           &
      &     (dt, mesh%node%numnod, mesh%node%istack_internal_smp,        &

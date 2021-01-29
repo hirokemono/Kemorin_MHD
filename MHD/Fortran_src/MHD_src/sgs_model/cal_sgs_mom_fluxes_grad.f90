@@ -51,6 +51,7 @@
       use t_material_property
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -118,7 +119,7 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld)
+      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_sgs_m_flux_grad_w_coef
 !
@@ -173,7 +174,7 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld)
+      call sym_tensor_send_recv(i_sgs, nod_comm, nod_fld, vect1)
 !
       end subroutine cal_sgs_m_flux_grad_no_coef
 !

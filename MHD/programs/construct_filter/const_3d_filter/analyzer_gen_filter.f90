@@ -208,8 +208,8 @@
 !       set element size for each node
 !  ---------------------------------------------------
 !
-      if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(ithree, fem_f%mesh%node%numnod)
+      if(iflag_debug.eq.1)  write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type(ithree, fem_f%mesh%node%numnod, vect1)
 !
       call init_nod_send_recv(fem_f%mesh)
 !

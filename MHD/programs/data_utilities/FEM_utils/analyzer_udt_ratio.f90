@@ -19,6 +19,7 @@
       use m_FEM_utils
       use t_step_parameter
       use t_VIZ_step_parameter
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -94,7 +95,7 @@
         call cal_rev_of_2nd_field(femmesh_FUTIL%mesh%node%numnod)
         call cal_products_of_fields                                     &
      &     (femmesh_FUTIL%mesh%nod_comm, femmesh_FUTIL%mesh%node,       &
-     &      field_FUTIL%ntot_phys, field_FUTIL%d_fld)
+     &      field_FUTIL%ntot_phys, field_FUTIL%d_fld, vect1)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &

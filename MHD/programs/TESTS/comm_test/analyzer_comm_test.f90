@@ -21,6 +21,7 @@
       use t_belonged_element_4_node
       use t_file_IO_parameter
       use t_control_param_comm_test
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -43,7 +44,6 @@
 !
       subroutine initialize_communication_test
 !
-      use m_array_for_send_recv
       use parallel_FEM_mesh_init
       use mesh_send_recv_test
       use nod_phys_send_recv
@@ -114,7 +114,6 @@
       use calypso_mpi
       use collect_SR_N
       use collect_SR_int
-      use m_array_for_send_recv
       use m_geometry_4_comm_test
       use mesh_send_recv_test
       use set_diff_geom_comm_test
@@ -125,7 +124,6 @@
       use const_element_comm_tables
 !
       integer(kind = kint), parameter :: N12 = 12
-      type(vectors_4_solver) :: vect1
 !
 !
       call calypso_mpi_barrier

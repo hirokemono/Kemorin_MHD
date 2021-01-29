@@ -101,9 +101,9 @@
      &   (SPH_SGS%SGS_par, SPH_model%MHD_prop,                          &
      &    SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol, SPH_SGS%ipol_LES)
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (isix, SPH_MHD%sph%sph_rtp%nnod_rtp)
+      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type                                         &
+     &   (isix, SPH_MHD%sph%sph_rtp%nnod_rtp, vect1)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(femmesh%mesh)

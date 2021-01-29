@@ -66,6 +66,7 @@
       use t_surface_bc_scalar
       use t_material_property
       use t_SGS_model_coefs
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -181,7 +182,7 @@
      &    f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld, vect1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys_SGS_wk%i_wd_nlg)
@@ -197,7 +198,7 @@
      &    ifield, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld, vect1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

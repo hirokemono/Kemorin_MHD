@@ -11,27 +11,28 @@
 !!     &          FEM_prm, node, ele, fluid, fl_prop, Vnod_bcs,         &
 !!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          Vmatrix, MG_vector, mhd_fem_wk, fem_wk,               &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, nod_fld, vect)
 !!      subroutine cal_vect_p_pre_consist_crank                         &
 !!     &         (iflag_commute_magne, ifilter_final, i_vecp, i_pre_uxb,&
 !!     &          iak_diff_b, ak_d_magne, nod_bc_a, dt,                 &
 !!     &          FEM_prm, node, ele, conduct, cd_prop, g_FEM, jac_3d,  &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,   &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect)
 !!       subroutine cal_magne_pre_consist_crank                         &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
 !!     &          dt, FEM_prm, node, ele, conduct, cd_prop,             &
 !!     &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
 !!     &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk,               &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, nod_fld, vect)
 !!
 !!      subroutine cal_temp_pre_consist_crank                           &
 !!     &         (iflag_commute_field, ifilter_final, i_field,          &
 !!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank, dt, &
 !!     &          FEM_prm, node, ele, fluid, property, Snod_bcs,        &
 !!     &          g_FEM, jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix, &
-!!     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,             &
+!!     &          nod_fld, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -59,6 +60,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module evolve_by_consist_crank
 !
@@ -82,10 +84,10 @@
       use t_filter_elength
       use t_material_property
       use t_nodal_bc_data
+      use t_vector_for_solver
       use t_solver_djds
       use t_solver_djds_MHD
       use t_interpolate_table
-      use t_vector_for_solver
 !
       implicit none
 !
@@ -101,9 +103,7 @@
      &          FEM_prm, node, ele, fluid, fl_prop, Vnod_bcs,           &
      &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          Vmatrix, MG_vector, mhd_fem_wk, fem_wk,                 &
-     &          f_l, f_nl, nod_fld)
-!
-      use m_array_for_send_recv
+     &          f_l, f_nl, nod_fld, vect)
 !
       use t_bc_data_velo
 !
@@ -141,6 +141,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       if (fl_prop%coef_imp .gt. zero) then
@@ -171,7 +172,7 @@
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_velo_crank, FEM_prm%CG11_param%MAXIT,           &
-     &    i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    i_velo, MG_vector, f_l, vect%b_vec, vect%x_vec, nod_fld)
 !
       end subroutine cal_velo_pre_consist_crank
 !
@@ -182,9 +183,7 @@
      &          iak_diff_b, ak_d_magne, nod_bc_a, dt,                   &
      &          FEM_prm, node, ele, conduct, cd_prop, g_FEM, jac_3d,    &
      &          rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,     &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!
-      use m_array_for_send_recv
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect)
 !
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -221,6 +220,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       if (cd_prop%coef_imp .gt. 0.0d0) then
@@ -252,7 +252,7 @@
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
-     &    i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    i_vecp, MG_vector, f_l, vect%b_vec, vect%x_vec, nod_fld)
 !
       end subroutine cal_vect_p_pre_consist_crank
 !
@@ -264,9 +264,7 @@
      &          dt, FEM_prm, node, ele, conduct, cd_prop,               &
      &          g_FEM, jac_3d, rhs_tbl, FEM_elens, diff_coefs,          &
      &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk,                 &
-     &          f_l, f_nl, nod_fld)
-!
-      use m_array_for_send_recv
+     &          f_l, f_nl, nod_fld, vect)
 !
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -302,6 +300,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       if (cd_prop%coef_imp .gt. 0.0d0) then
@@ -334,7 +333,7 @@
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
-     &    i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    i_magne, MG_vector, f_l, vect%b_vec, vect%x_vec, nod_fld)
 !
        end subroutine cal_magne_pre_consist_crank
 !
@@ -345,10 +344,9 @@
      &         (iflag_commute_field, ifilter_final, i_field,            &
      &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank, dt,   &
      &          FEM_prm, node, ele, fluid, property, Snod_bcs,          &
-     &          g_FEM, jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix,  &
-     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!
-      use m_array_for_send_recv
+     &          g_FEM, jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix,   &
+     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,               &
+     &          nod_fld, vect)
 !
       use t_bc_data_temp
 !
@@ -387,6 +385,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       if (property%coef_imp .gt. zero) then
@@ -420,7 +419,7 @@
      &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    eps_4_crank, FEM_prm%CG11_param%MAXIT,                        &
-     &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    i_field, MG_vector, f_l, vect%b_vec, vect%x_vec, nod_fld)
 !
       end subroutine cal_temp_pre_consist_crank
 !

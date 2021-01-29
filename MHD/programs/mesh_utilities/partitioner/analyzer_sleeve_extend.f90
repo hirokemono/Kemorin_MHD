@@ -78,9 +78,9 @@
 !
 !  ------  Initialize data communication for FEM data
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver                                   &
-     &   (n_sym_tensor, fem_EXT%mesh%node%numnod)
+      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type                                         &
+     &   (n_sym_tensor, fem_EXT%mesh%node%numnod, vect1)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(fem_EXT%mesh)

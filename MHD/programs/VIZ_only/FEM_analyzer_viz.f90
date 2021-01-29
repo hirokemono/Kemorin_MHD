@@ -238,7 +238,7 @@
       call copy_time_step_size_data(viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld)
+      call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld, vect1)
 !
       if(viz%repart_p%flag_repartition) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)

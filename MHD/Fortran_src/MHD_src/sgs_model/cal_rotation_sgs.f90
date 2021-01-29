@@ -59,6 +59,7 @@
       use cal_ff_smp_to_ffs
       use cal_for_ffs
       use nod_phys_send_recv
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -130,7 +131,7 @@
       call set_boundary_vect(nod_bc, i_rot, nod_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld)
+      call vector_send_recv(i_rot, nod_comm, nod_fld, vect1)
       nod_fld%iflag_update(i_rot:i_rot+2) = 1
 !
       end subroutine choose_cal_rotation_sgs

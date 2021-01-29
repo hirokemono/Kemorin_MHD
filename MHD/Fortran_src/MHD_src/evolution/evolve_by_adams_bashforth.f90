@@ -60,6 +60,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -106,7 +107,7 @@
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
@@ -157,7 +158,7 @@
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect1)
       call cal_sol_vect_pre_conduct_adams                               &
      &   (dt, node%numnod, conduct%istack_inter_fld_smp,                &
      &    conduct%numnod_fld, conduct%inod_fld, mlump_cd%ml,            &
@@ -204,7 +205,7 @@
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
-     &    fem_wk, f_l, f_nl)
+     &    fem_wk, f_l, f_nl, vect1)
 !      call check_ff(my_rank, n_scalar, node, f_l)
 !      call check_ff(my_rank, n_scalar, node, f_nl)
       call cal_sol_vect_pre_fluid_adams                                 &

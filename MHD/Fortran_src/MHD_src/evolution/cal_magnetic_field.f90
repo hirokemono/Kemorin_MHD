@@ -50,6 +50,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_array_for_send_recv
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -180,7 +181,7 @@
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,       &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -313,7 +314,7 @@
      &     fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens,         &
      &     Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%diff_coefs,       &
      &     Fmatrix, MGCG_WK%MG_vector, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 !
         call cal_sol_m_potential                                        &
      &     (mesh%node%numnod, mesh%node%istack_internal_smp,            &

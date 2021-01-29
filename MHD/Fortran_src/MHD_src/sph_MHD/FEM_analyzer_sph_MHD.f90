@@ -58,6 +58,7 @@
       use t_MHD_file_parameter
       use t_MHD_IO_data
       use t_ucd_file
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -72,7 +73,6 @@
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
-      use m_array_for_send_recv
       use t_cal_max_indices
 !
       use set_control_field_data
@@ -144,7 +144,7 @@
 !*  ----------- Data communication  --------------
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(geofem%mesh, nod_fld)
+      call nod_fields_send_recv(geofem%mesh, nod_fld, vect1)
 !
 !*  -----------  Output volume data --------------
 !*

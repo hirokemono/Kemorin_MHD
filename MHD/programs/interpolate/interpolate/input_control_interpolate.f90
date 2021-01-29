@@ -40,6 +40,7 @@
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
 !
+      use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use m_interpolate_table_IO
 !
@@ -113,7 +114,7 @@
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    new_femmesh%mesh%node, itp_info)
+     &    new_femmesh%mesh%node, itp_info, vect1)
 !
       end subroutine s_input_control_interpolate
 !

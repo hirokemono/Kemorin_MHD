@@ -66,6 +66,7 @@
       use t_work_FEM_dynamic_SGS
       use t_surface_bc_scalar
       use t_surface_bc_velocity
+      use m_array_for_send_recv
 !
       implicit none
 !

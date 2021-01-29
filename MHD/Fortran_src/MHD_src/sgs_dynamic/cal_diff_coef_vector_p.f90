@@ -68,6 +68,7 @@
       use t_surface_bc_velocity
       use t_material_property
       use t_SGS_model_coefs
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -228,7 +229,7 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld, vect1)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_wd_nlg)
@@ -251,7 +252,7 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld)
+     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld, vect1)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !

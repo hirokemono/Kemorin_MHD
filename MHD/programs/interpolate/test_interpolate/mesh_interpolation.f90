@@ -36,6 +36,7 @@
       use interpolate_position
       use t_interpolate_table
       use t_mesh_data
+      use m_array_for_send_recv
 !
       use check_ineterppolated_mesh
 !
@@ -58,15 +59,15 @@
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
       call s_interpolate_position(org_mesh%node,                        &
      &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_table,          &
-     &   xx_interpolate)
+     &   xx_interpolate, vect1)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
 !      call s_interpolate_position_by_N(org_mesh%node,                  &
 !     &   dest_mesh%node%numnod, dest_mesh%nod_comm, itp_table,         &
-!     &   inod_global_itp)
+!     &   inod_global_itp, vect1)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
-!      call s_interpolate_position_by_s(org_mesh%node,                  &
+!      call s_interpolate_position_by_S(org_mesh%node,                  &
 !     &   dest_mesh%node%%numnod, dest_mesh%nod_comm, itp_table,        &
-!     &   inod_global_itp)
+!     &   inod_global_itp, vect1)
 !
 !
       if (iflag_debug.gt.0)  write(*,*) 's_check_ineterppolated_mesh'

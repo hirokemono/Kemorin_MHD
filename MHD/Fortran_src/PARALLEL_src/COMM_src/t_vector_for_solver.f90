@@ -46,9 +46,12 @@
 !
 !>      Structure for vectors for solver
       type vectors_4_solver
+!>        Vector for solution vector
         real(kind=kreal), allocatable :: x_vec(:)
+!>        Vector for right hand side vector
         real(kind=kreal), allocatable :: b_vec(:)
-        integer(kind = kint) :: isize_solver_vect
+!>        Size of allocated vectors
+        integer(kind = kint) :: isize_solver_vect = -1
 ! 
         integer(kind=kint), allocatable :: ix_vec(:)
 ! 
@@ -105,6 +108,8 @@
        type(vectors_4_solver), intent(inout) :: vect
 !
 !
+       if(allocated(vect%x_vec)) return
+!
        allocate(vect%x_vec(NB*nnod))
        allocate(vect%b_vec(NB*nnod))
 !
@@ -126,6 +131,7 @@
        type(vectors_4_solver), intent(inout) :: vect
 !
 !
+       if(allocated(vect%x_vec) .eqv. .FALSE.) return
        deallocate(vect%x_vec, vect%b_vec)
        vect%isize_solver_vect = 0
 !
@@ -140,6 +146,7 @@
        type(vectors_4_solver), intent(inout) :: vect
 !
 !
+       if(allocated(vect%ix_vec)) return
        allocate(vect%ix_vec(nnod))
        if(nnod .gt. 0) then
 !$omp parallel workshare
@@ -155,6 +162,7 @@
 !
        type(vectors_4_solver), intent(inout) :: vect
 !
+       if(allocated(vect%ix_vec) .eqv. .FALSE.) return
        deallocate(vect%ix_vec)
 !
        end subroutine dealloc_iccg_int_vector
@@ -168,6 +176,7 @@
        type(vectors_4_solver), intent(inout) :: vect
 !
 !
+       if(allocated(vect%i8x_vec)) return
        allocate(vect%i8x_vec(nnod))
        if(nnod .gt. 0) then
 !$omp parallel workshare
@@ -183,6 +192,7 @@
 !
        type(vectors_4_solver), intent(inout) :: vect
 !
+       if(allocated(vect%i8x_vec) .eqv. .FALSE.) return
        deallocate(vect%i8x_vec)
 !
        end subroutine dealloc_iccg_int8_vector

@@ -68,6 +68,7 @@
       use t_MHD_finite_element_mat
       use t_surface_bc_vector
       use t_surface_bc_velocity
+      use m_array_for_send_recv
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -130,14 +131,15 @@
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,     &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,        &
-     &    fem_wk, f_l, f_nl)
+     &    fem_wk, f_l, f_nl, vect1)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, m_lump%ml, nod_fld%ntot_phys,                         &
      &    iphys_base%i_current, nod_fld%d_fld)
 !
 !    communication
 !
-      call vector_send_recv(iphys_base%i_current, nod_comm, nod_fld)
+      call vector_send_recv(iphys_base%i_current, nod_comm,             &
+     &                      nod_fld, vect1)
 !
       end subroutine int_current_diffuse
 !
