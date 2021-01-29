@@ -10,7 +10,7 @@
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,&
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
 !!     &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,   &
-!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -40,6 +40,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_MHD_forces_4_monitor
 !
@@ -70,6 +71,7 @@
       use t_bc_data_MHD
       use t_surface_bc_data_MHD
       use t_physical_property
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -164,7 +166,7 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,  &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
      &          FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,     &
-     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld, v_sol)
 !
       use m_base_force_labels
       use m_diffusion_term_labels
@@ -205,6 +207,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: i, i_fld
 !
@@ -217,7 +220,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       if(iphys%forces%i_ph_advect .gt. izero) then
@@ -228,7 +231,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       if(iphys%div_forces%i_h_flux .gt. izero) then
@@ -239,7 +242,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       if(iphys%div_forces%i_ph_flux .gt. izero) then
@@ -250,7 +253,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
 !
@@ -262,7 +265,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       if(iphys%forces%i_pc_advect .gt. izero) then
@@ -273,7 +276,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       if(iphys%div_forces%i_c_flux .gt. izero) then
@@ -284,7 +287,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       if(iphys%div_forces%i_pc_flux .gt. izero) then
@@ -295,7 +298,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,         &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
 !
@@ -323,7 +326,7 @@
      &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
-     &        nod_fld, ele_fld, vect1)
+     &        nod_fld, ele_fld, v_sol)
         end if
       end do
 !
@@ -343,7 +346,7 @@
      &        iphys%diffusion, iphys_LES%SGS_term,                      &
      &        iphys_ele_base, ele_fld, fem_int, FEM_elens,              &
      &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_cd,                &
-     &        mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &        mhd_fem_wk, rhs_mat, nod_fld, v_sol)
         end if
       end do
 !
@@ -354,7 +357,7 @@
         call cal_vecp_induction                                         &
      &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &      nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,  &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
 !
@@ -366,7 +369,7 @@
      &      ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                 &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,     &
-     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld, vect1)
+     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol)
       end if
 !
       if (iphys%diffusion%i_c_diffuse .gt. izero) then
@@ -377,7 +380,7 @@
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &
-     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld, vect1)
+     &      diff_coefs, mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol)
       end if
 !
       if (iphys%diffusion%i_v_diffuse .gt. izero) then
@@ -390,7 +393,7 @@
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
      &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens,              &
      &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
-     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, vect1)
+     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, v_sol)
       end if
 !
       if (iphys%diffusion%i_vp_diffuse .gt. izero) then
@@ -400,7 +403,7 @@
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
      &      FEM_elens, iak_diff_base, diff_coefs, mk_MHD%mlump_cd,      &
-     &      rhs_mat, nod_fld, vect1)
+     &      rhs_mat, nod_fld, v_sol)
       end if
 !
       if (iphys%diffusion%i_b_diffuse .gt. izero                        &
@@ -413,7 +416,7 @@
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term, fem_int,   &
      &      FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,         &
-     &      rhs_mat, nod_fld, vect1)
+     &      rhs_mat, nod_fld, v_sol)
       end if
 !
       end subroutine cal_forces_4_monitor

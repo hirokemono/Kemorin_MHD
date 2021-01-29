@@ -155,7 +155,7 @@
      &        iphys_LES%filter_fld%i_temp, iphys_LES%filter_fld%i_velo, &
      &        FEM_prm, nod_comm, node, ele, fluid, ht_prop,             &
      &        nod_bcs%Tnod_bcs, iphys_ele_base, ele_fld, fem_int,       &
-     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
+     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -166,7 +166,7 @@
      &       iphys_LES%filter_fld%i_light, iphys_LES%filter_fld%i_velo, &
      &       FEM_prm, nod_comm, node, ele, fluid, cp_prop,              &
      &       nod_bcs%Cnod_bcs, iphys_ele_base, ele_fld, fem_int,        &
-     &       mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
+     &       mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -295,7 +295,7 @@
      &        i_div_flux_true, i_flux, i_div_flux, i_field_f, i_velo_f, &
      &        FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,  &
      &        iphys_ele_base, ele_fld, fem_int, mlump_fl,               &
-     &        mhd_fem_wk, rhs_mat, nod_fld)
+     &        mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !
       use t_bc_data_temp
       use t_surface_bc_data
@@ -323,6 +323,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
 !$omp parallel
@@ -333,7 +334,7 @@
      &   (i_div_flux, i_flux, iflag_supg, num_int, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,      &
      &    iphys_ele_base, ele_fld, fem_int, mlump_fl,                   &
-     &    mhd_fem_wk, rhs_mat, nod_fld, vect1)
+     &    mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       call copy_scalar_component(nod_fld,                               &
      &    i_div_flux, i_div_flux_true)
 !

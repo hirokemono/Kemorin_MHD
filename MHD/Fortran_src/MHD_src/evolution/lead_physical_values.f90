@@ -211,7 +211,7 @@
      &    iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int, FEM_elens, &
      &    Csims_FEM_MHD%iak_diff_base, Csims_FEM_MHD%iak_diff_sgs,      &
      &    Csims_FEM_MHD%diff_coefs, mk_MHD, mhd_fem_wk, rhs_mat,        &
-     &    nod_fld, ele_fld)
+     &    nod_fld, ele_fld, v_sol)
       call cal_diff_of_sgs_terms                                        &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    mesh%nod_comm, mesh%node, mesh%ele, mesh%surf,                &

@@ -498,7 +498,7 @@
         call cal_magne_co_consist_crank                                 &
      &     (i_magne, cd_prop%coef_magne, dt, FEM_prm,                   &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, g_FEM,      &
-     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
+     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'

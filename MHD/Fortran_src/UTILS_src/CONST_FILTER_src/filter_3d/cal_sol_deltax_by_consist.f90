@@ -24,6 +24,7 @@
       use t_geometry_data
       use t_finite_element_mat
       use t_crs_matrix
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -42,7 +43,6 @@
 !
       use calypso_mpi
       use t_ctl_params_4_gen_filter
-      use t_vector_for_solver
 !
       use m_solver_SR
       use solver
