@@ -12,7 +12,8 @@
 !!     &         FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,&
 !!     &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,           &
 !!     &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,        &
-!!     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
+!!     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,              &
+!!     &         nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -44,6 +45,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_light_element
 !
@@ -52,7 +54,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_phys_constants
-      use m_array_for_send_recv
 !
       use t_reference_scalar_param
       use t_FEM_control_parameter
@@ -82,6 +83,7 @@
       use t_MGCG_data
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -100,7 +102,8 @@
      &         FEM_elens, icomp_sgs_term, iak_diff_base, iak_diff_sgs,  &
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
      &         diff_coefs, filtering, mk_MHD, Smatrix, ak_MHD,          &
-     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld)
+     &         MGCG_WK, FEM_SGS_wk, mhd_fem_wk, rhs_mat,                &
+     &         nod_fld, v_sol)
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -151,6 +154,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call s_cal_light_element_pre(i_field, dt, FEM_prm,                &
@@ -163,7 +167,7 @@
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
      &    mk_MHD%mlump_fl, Smatrix, ak_MHD%ak_d_composit, MGCG_WK,      &
      &    FEM_SGS_wk%wk_filter, mhd_fem_wk, rhs_mat%fem_wk,             &
-     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
 !
       end subroutine s_cal_light_element
 !
@@ -179,7 +183,7 @@
      &         iphys_elediff_vec, sgs_coefs, sgs_coefs_nod,             &
      &         diff_coefs, filtering, mlump_fl, Smatrix, ak_diffuse,    &
      &         MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
-     &         f_l, f_nl, nod_fld)
+     &         f_l, f_nl, nod_fld, v_sol)
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -241,6 +245,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
 !
@@ -255,7 +260,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, fluid,                  &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,   &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect1)
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
       end if
 !
 !      call check_nodal_data                                            &
@@ -341,14 +346,14 @@
         call cal_scalar_pre_euler(FEM_prm%iflag_comp_supg, i_field, dt, &
      &      FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,         &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect1)
+     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
 !
       else if(property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_comp_supg, i_field, iphys_exp%i_pre_composit, &
      &      dt, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fluid,     &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
-     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect1)
+     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
 !
       else if(property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_comp_supg,         &
@@ -359,7 +364,7 @@
      &      nod_bcs, iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d,  &
      &      rhs_tbl, FEM_elens,  diff_coefs, mlump_fl, Smatrix,         &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, vect1)
+     &      nod_fld, v_sol)
 !
       else if(property%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_temp_pre_consist_crank                                 &
@@ -369,13 +374,13 @@
      &      mesh%node, mesh%ele, fluid, property, nod_bcs, jacs%g_FEM,  &
      &      jacs%jac_3d, rhs_tbl, FEM_elens, diff_coefs, Smatrix,       &
      &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl,           &
-     &      nod_fld, vect1)
+     &      nod_fld, v_sol)
       end if
 !
       call set_boundary_scalar                                          &
      &   (nod_bcs%nod_bc_s, i_field, nod_fld)
 !
-      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld, vect1)
+      call scalar_send_recv(i_field, mesh%nod_comm, nod_fld, v_sol)
 !
       end subroutine s_cal_light_element_pre
 !

@@ -155,7 +155,8 @@
 !     &          mesh%surf, group%surf_grp, surf_bcs%Asf_bcs,           &
 !     &          iphys_base, fem_int%jcs, fem_int%rhs_tbl,              &
 !     &          fem_int%m_lump, mhd_fem_wk, rhs_mat%fem_wk,            &
-!     &          rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+!     &          rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,            &
+!     &          nod_fld, v_sol)
           else
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'

@@ -174,7 +174,7 @@
      &    FEM_filters%filtering, FEM_filters%layer_tbl,                 &
      &    mk_MHD%mlump_fl, Vmatrix, MGCG_WK%MG_vector,                  &
      &    FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_sgs, FEM_SGS_wk%wk_filter,   &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
+     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs, vect1)
 !
 !     --------------------- 
 !
@@ -207,7 +207,8 @@
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele_base, &
      &      ele_fld, ak_MHD, fem_int, FEM_filters%FEM_elens,            &
      &      iak_diff_base, diff_coefs, mk_MHD%mlump_fl,                 &
-     &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld)
+     &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk,                     &
+     &      rhs_mat, nod_fld, vect1)
 !
 !
         call cal_rms_scalar_potential                                   &

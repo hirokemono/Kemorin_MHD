@@ -13,13 +13,13 @@
 !!     &          iphys_fil_frc, iphys_fefx, iphys_SGS_wk,              &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
 !!     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,   &
-!!     &          rhs_mat, nod_fld, diff_coefs)
+!!     &          rhs_mat, nod_fld, diff_coefs, v_sol)
 !!      subroutine update_with_dummy_scalar(i_step, dt,                 &
 !!     &          FEM_prm, SGS_par, mesh, group, fluid, sf_bcs,         &
 !!     &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,       &
 !!     &          iphys_ele_base, ele_fld, fem_int, FEM_filters,        &
 !!     &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,   &
-!!     &          rhs_mat, nod_fld, diff_coefs)
+!!     &          rhs_mat, nod_fld, diff_coefs, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -43,6 +43,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module update_with_scalars
@@ -70,7 +71,7 @@
       use t_surface_bc_scalar
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -86,7 +87,7 @@
      &          iphys_fil_frc, iphys_fefx, iphys_SGS_wk,                &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
-     &          rhs_mat, nod_fld, diff_coefs)
+     &          rhs_mat, nod_fld, diff_coefs, v_sol)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -124,6 +125,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer (kind = kint) :: iflag2
       logical :: iflag_dmc
@@ -167,7 +169,7 @@
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
      &          iphys_fil%i_temp, iphys_SGS_wk%i_sgs_temp,              &
-     &          FEM_SGS_wk%wk_filter, nod_fld, vect1)
+     &          FEM_SGS_wk%wk_filter, nod_fld, v_sol)
             nod_fld%iflag_update(iphys_fil%i_temp) = 1
           end if
 !
@@ -177,7 +179,7 @@
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
      &          iphys_wfl%i_temp, iphys_fil%i_temp,                     &
-     &          FEM_SGS_wk%wk_filter, nod_fld, vect1)
+     &          FEM_SGS_wk%wk_filter, nod_fld, v_sol)
           end if
         end if
 !
@@ -186,7 +188,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_temp, iphys_base%i_temp,                      &
-     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
           nod_fld%iflag_update(iphys_fil%i_temp) = 1
         end if
 !
@@ -196,7 +198,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_light, iphys_base%i_light,                    &
-     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
       end if
@@ -223,7 +225,7 @@
      &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
      &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                   &
-     &            diff_coefs, vect1)
+     &            diff_coefs, v_sol)
              end if
            end if
 !
@@ -239,7 +241,7 @@
      &          iphys_base, iphys_fil, iphys_wfl, iphys_SGS_wk,         &
      &          iphys_ele_base, ele_fld, fem_int, FEM_filters,          &
      &          iak_diff_base, icomp_diff_base, mk_MHD, FEM_SGS_wk,     &
-     &          rhs_mat, nod_fld, diff_coefs)
+     &          rhs_mat, nod_fld, diff_coefs, v_sol)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -275,6 +277,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer (kind = kint) :: iflag2
       logical :: iflag_dmc
@@ -302,7 +305,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_light, iphys_SGS_wk%i_sgs_composit,           &
-     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
 !
@@ -312,7 +315,7 @@
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
      &        iphys_wfl%i_light, iphys_fil%i_light,                     &
-     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
+     &        FEM_SGS_wk%wk_filter, nod_fld, v_sol)
         end if
       end if
 !
@@ -340,7 +343,7 @@
      &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &             FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk, &
      &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                  &
-     &             diff_coefs, vect1)
+     &             diff_coefs, v_sol)
              end if
 
            end if

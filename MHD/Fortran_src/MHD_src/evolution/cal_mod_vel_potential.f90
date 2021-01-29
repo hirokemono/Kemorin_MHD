@@ -56,8 +56,6 @@
       use m_machine_parameter
       use m_phys_constants
 !
-      use m_array_for_send_recv
-!
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data

@@ -333,7 +333,7 @@
      &   (i_div_flux, i_flux, iflag_supg, num_int, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,      &
      &    iphys_ele_base, ele_fld, fem_int, mlump_fl,                   &
-     &    mhd_fem_wk, rhs_mat, nod_fld)
+     &    mhd_fem_wk, rhs_mat, nod_fld, vect1)
       call copy_scalar_component(nod_fld,                               &
      &    i_div_flux, i_div_flux_true)
 !

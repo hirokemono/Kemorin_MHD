@@ -15,7 +15,7 @@
 !!     &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,    &
 !!     &          property, Snod_bcs, Ssf_bcs, iphys_ele_base, ele_fld, &
 !!     &          fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk, &
-!!     &          rhs_mat, nod_fld)
+!!     &          rhs_mat, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -41,6 +41,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module int_vol_temp_monitor
 !
@@ -68,7 +69,7 @@
       use t_SGS_model_coefs
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -87,7 +88,7 @@
      &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,      &
      &          property, Snod_bcs, Ssf_bcs, iphys_ele_base, ele_fld,   &
      &          fem_int, FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,   &
-     &          rhs_mat, nod_fld)
+     &          rhs_mat, nod_fld, v_sol)
 !
       use int_surf_div_fluxes_sgs
       use cal_multi_pass
@@ -126,6 +127,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -155,7 +157,7 @@
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl, vect1)
+     &    rhs_mat%f_l, rhs_mat%f_nl, v_sol)
 !
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
@@ -168,7 +170,7 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_SGS_div_flux, nod_comm, nod_fld, vect1)
+      call scalar_send_recv(i_SGS_div_flux, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_terms_4_heat
 !

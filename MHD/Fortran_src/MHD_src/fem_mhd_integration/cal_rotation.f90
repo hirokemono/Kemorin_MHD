@@ -6,7 +6,7 @@
 !!      subroutine choose_cal_rotation(iflag_4_supg, num_int, dt,       &
 !!     &         i_vector, i_rot, iele_fsmp_stack, m_lump,              &
 !!     &         nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,   &
-!!     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
+!!     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld, v_sol)
 !!      subroutine choose_int_vol_rotations                             &
 !!     &         (iflag_4_supg, num_int, dt, iele_fsmp_stack, i_vector, &
 !!     &          node, ele, nod_fld, iphys_ele_base, ele_fld,          &
@@ -23,6 +23,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_rotation
 !
@@ -40,7 +41,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -53,7 +54,7 @@
       subroutine choose_cal_rotation(iflag_4_supg, num_int, dt,         &
      &         i_vector, i_rot, iele_fsmp_stack, m_lump,                &
      &         nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,     &
-     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
+     &         jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -77,6 +78,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call choose_int_vol_rotations                                     &
@@ -88,7 +90,7 @@
      &    m_lump%ml, nod_fld%ntot_phys, i_rot, nod_fld%d_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld, vect1)
+      call vector_send_recv(i_rot, nod_comm, nod_fld, v_sol)
 !
       end subroutine choose_cal_rotation
 !

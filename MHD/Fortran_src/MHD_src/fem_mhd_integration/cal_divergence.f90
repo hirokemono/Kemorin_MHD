@@ -5,8 +5,8 @@
 !
 !!      subroutine choose_cal_divergence(iflag_4_supg, num_int, dt,     &
 !!     &          i_vector, i_div, iele_fsmp_stack, m_lump,             &
-!!     &          nod_comm, node, ele, iphys_ele_base, ele_fld,         &
-!!     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+!!     &          nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,  &
+!!     &          jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,6 +19,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_divergence
 !
@@ -38,7 +39,7 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -52,8 +53,8 @@
 !
       subroutine choose_cal_divergence(iflag_4_supg, num_int, dt,       &
      &          i_vector, i_div, iele_fsmp_stack, m_lump,               &
-     &          nod_comm, node, ele, iphys_ele_base, ele_fld,           &
-     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &          nod_comm, node, ele, iphys_ele_base, ele_fld, g_FEM,    &
+     &          jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -77,6 +78,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
        call reset_ff_smps(node, f_l, f_nl)
@@ -93,7 +95,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_div, nod_comm, nod_fld, vect1)
+      call vector_send_recv(i_div, nod_comm, nod_fld, v_sol)
 !
       end subroutine choose_cal_divergence
 !

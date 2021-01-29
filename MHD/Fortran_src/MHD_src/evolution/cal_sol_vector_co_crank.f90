@@ -7,11 +7,11 @@
 !!     &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,         &
 !!     &          Vnod_bcs, nod_fld, iphys_ele_base, fld_ele, g_FEM,    &
 !!     &          jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,        &
-!!     &          f_l, f_nl)
+!!     &          f_l, f_nl, v_sol)
 !!      subroutine cal_magne_co_lumped_crank(i_magne, dt,               &
 !!     &          FEM_prm, nod_comm, node, ele, nod_fld,                &
 !!     &          iphys_ele_base, fld_ele, nod_bc_b, g_FEM, jac_3d,     &
-!!     &          rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo, dt,     &
 !!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld,         &
@@ -35,6 +35,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_sol_vector_co_crank
 !
@@ -54,7 +55,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_bc_data_velo
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -68,7 +69,7 @@
      &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,           &
      &          Vnod_bcs, nod_fld, iphys_ele_base, fld_ele, g_FEM,      &
      &          jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,          &
-     &          f_l, f_nl)
+     &          f_l, f_nl, v_sol)
 !
       use int_vol_coriolis_term
       use cal_multi_pass
@@ -96,6 +97,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
@@ -103,7 +105,7 @@
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
      &    iphys_ele_base, fld_ele, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect1)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, v_sol)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp                                         &
@@ -124,7 +126,7 @@
       subroutine cal_magne_co_lumped_crank(i_magne, dt,                 &
      &          FEM_prm, nod_comm, node, ele, nod_fld,                  &
      &          iphys_ele_base, fld_ele, nod_bc_b, g_FEM, jac_3d,       &
-     &          rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -149,6 +151,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
@@ -156,7 +159,7 @@
      &    ele%istack_ele_smp, dt, FEM_prm, m_lump,                      &
      &    nod_comm, node, ele, iphys_ele_base, fld_ele,                 &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
-     &    fem_wk, f_l, f_nl, vect1)
+     &    fem_wk, f_l, f_nl, v_sol)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)

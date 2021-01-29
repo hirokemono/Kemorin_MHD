@@ -11,7 +11,7 @@
 !!      subroutine int_current_diffuse                                  &
 !!     &         (FEM_prm, nod_comm, node, ele, surf, sf_grp, Asf_bcs,  &
 !!     &          iphys_base, jacs, rhs_tbl, m_lump, mhd_fem_wk,        &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, v_sol)
 !!
 !!      subroutine int_surf_temp_diffuse(FEM_prm, node, ele, surf,      &
 !!     &          sf_grp, Tsf_bcs, iphys_base, nod_fld, jacs, rhs_tbl,  &
@@ -48,6 +48,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data),    intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module cal_current_by_vecp
@@ -68,7 +69,7 @@
       use t_MHD_finite_element_mat
       use t_surface_bc_vector
       use t_surface_bc_velocity
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -87,7 +88,7 @@
       subroutine int_current_diffuse                                    &
      &         (FEM_prm, nod_comm, node, ele, surf, sf_grp, Asf_bcs,    &
      &          iphys_base, jacs, rhs_tbl, m_lump, mhd_fem_wk,          &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          fem_wk, surf_wk, f_l, f_nl, nod_fld, v_sol)
 !
       use cal_multi_pass
       use cal_for_ffs
@@ -112,7 +113,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data),    intent(inout) :: nod_fld
-!
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !  Volume integration
 !
@@ -131,7 +132,7 @@
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,     &
      &    jacs%g_FEM, jacs%jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,        &
-     &    fem_wk, f_l, f_nl, vect1)
+     &    fem_wk, f_l, f_nl, v_sol)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, m_lump%ml, nod_fld%ntot_phys,                         &
      &    iphys_base%i_current, nod_fld%d_fld)
@@ -139,7 +140,7 @@
 !    communication
 !
       call vector_send_recv(iphys_base%i_current, nod_comm,             &
-     &                      nod_fld, vect1)
+     &                      nod_fld, v_sol)
 !
       end subroutine int_current_diffuse
 !

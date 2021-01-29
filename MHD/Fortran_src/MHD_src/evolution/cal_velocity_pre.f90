@@ -14,13 +14,14 @@
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
 !!     &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,         &
 !!     &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,     &
-!!     &          sgs_coefs)
+!!     &          sgs_coefs, v_sol)
 !!      subroutine cal_velocity_co(time, dt, FEM_prm, SGS_par,          &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
 !!     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,            &
 !!     &         iphys_ele_base, ele_fld, ak_MHD, fem_int, FEM_elens,   &
 !!     &         iak_diff_base, diff_coefs, mlump_fl,                   &
-!!     &         Vmatrix, MG_vector, mhd_fem_wk, rhs_mat, nod_fld)
+!!     &         Vmatrix, MG_vector, mhd_fem_wk, rhs_mat,               &
+!!     &         nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -63,12 +64,12 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_velocity_pre
 !
       use m_precision
       use m_machine_parameter
-      use m_array_for_send_recv
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -105,6 +106,7 @@
       use t_physical_property
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -123,7 +125,7 @@
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
      &          mlump_fl, Vmatrix, MG_vector, wk_lsq, wk_sgs,           &
      &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,       &
-     &          sgs_coefs)
+     &          sgs_coefs, v_sol)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -183,7 +185,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
-!
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !   ----  set SGS fluxes
 !
@@ -196,7 +198,7 @@
      &      iak_sgs_term, icomp_sgs_term, iak_diff_sgs,                 &
      &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
      &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &
-     &      nod_fld, ele_fld, sgs_coefs, vect1)
+     &      nod_fld, ele_fld, sgs_coefs, v_sol)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
@@ -207,7 +209,7 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
@@ -218,7 +220,7 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
       end if
 !
 !   --- reset work array for time evolution
@@ -299,14 +301,14 @@
      &      fluid, fl_prop, iphys, iphys_LES, iphys_ele_base, ele_fld,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
 !
       else if(fl_prop%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,       &
      &      fluid, fl_prop, iphys, iphys_LES, iphys_ele_base, ele_fld,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
@@ -317,7 +319,7 @@
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, mlump_fl, Vmatrix, MG_vector,        &
      &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
-     &      nod_fld, vect1)
+     &      nod_fld, v_sol)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(SGS_par%commute_p%iflag_c_velo, &
@@ -327,7 +329,7 @@
      &      node, ele, fluid, fl_prop, Vnod_bcs,                        &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
       end if
 !
       call set_boundary_velo                                            &
@@ -336,7 +338,7 @@
      &    Vsf_bcs%normal, iphys%base%i_velo, nod_fld)
 !
       call vector_send_recv(iphys%base%i_velo, nod_comm,                &
-     &                      nod_fld, vect1)
+     &                      nod_fld, v_sol)
 !
       end subroutine s_cal_velocity_pre
 !
@@ -347,7 +349,8 @@
      &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,              &
      &         iphys_ele_base, ele_fld, ak_MHD, fem_int, FEM_elens,     &
      &         iak_diff_base, diff_coefs, mlump_fl,                     &
-     &         Vmatrix, MG_vector, mhd_fem_wk, rhs_mat, nod_fld)
+     &         Vmatrix, MG_vector, mhd_fem_wk, rhs_mat,                 &
+     &         nod_fld, v_sol)
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -390,6 +393,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -429,13 +433,13 @@
      &      Vnod_bcs, iphys_ele_base, ele_fld, fem_int%jcs%g_FEM,       &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
      &      mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,                   &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
       else
         call cal_velocity_co_exp                                        &
      &     (iphys%base%i_velo, iphys%exp_work%i_p_phi,                  &
      &      FEM_prm, nod_comm, node, ele, fluid, fem_int%jcs%g_FEM,     &
      &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mlump_fl, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, v_sol)
       end if
 !
 !
@@ -449,11 +453,11 @@
       if(iflag_debug.eq.1) write(*,*)                                   &
      &                   'vector_send_recv(iphys%base%i_velo)'
       call vector_send_recv(iphys%base%i_velo, nod_comm,                &
-     &                      nod_fld, vect1)
+     &                      nod_fld, v_sol)
       if(iflag_debug.eq.1) write(*,*)                                   &
      &                   'scalar_send_recv(iphys%base%i_press)'
       call scalar_send_recv(iphys%base%i_press, nod_comm,               &
-     &                      nod_fld, vect1)
+     &                      nod_fld, v_sol)
 !
       end subroutine cal_velocity_co
 !

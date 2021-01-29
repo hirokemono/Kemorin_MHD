@@ -8,7 +8,7 @@
 !!     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, v_sol)
 !!      subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,      &
 !!     &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,  &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -207,7 +207,7 @@
 !
       subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,        &
      &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,    &
-     &          mhd_fem_wk, rhs_mat, nod_fld)
+     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !
       use m_base_field_labels
       use m_base_force_labels
@@ -237,6 +237,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if (iphys%forces%i_induction .gt. izero                           &
@@ -247,7 +248,7 @@
      &     (FEM_prm%npoint_poisson_int, nod_comm, node, ele, iphys,     &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,  &
-     &     nod_fld)
+     &      nod_fld, v_sol)
       end if
 !
       if (iphys%diffusion%i_b_diffuse .gt. izero                        &
@@ -258,7 +259,7 @@
      &     (FEM_prm%npoint_poisson_int, nod_comm, node, ele, iphys,     &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,                      &
      &      fem_int%rhs_tbl, mk_MHD%mlump_cd, mhd_fem_wk,               &
-     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, v_sol)
       end if
 !
 !$omp parallel

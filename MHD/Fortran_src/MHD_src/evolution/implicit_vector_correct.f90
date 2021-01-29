@@ -308,7 +308,7 @@
         call cal_velo_co_lumped_crank                                   &
      &     (i_velo, dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
      &      Vnod_bcs, nod_fld, iphys_ele_base, ele_fld, g_FEM, jac_3d,  &
-     &      rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo, dt,   &
@@ -401,7 +401,7 @@
         call cal_magne_co_lumped_crank                                  &
      &     (i_vecp, dt, FEM_prm, nod_comm, node, ele, nod_fld,          &
      &      iphys_ele_base, ele_fld, Bnod_bcs%nod_bc_a, g_FEM, jac_3d,  &
-     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne, dt, &
@@ -492,13 +492,13 @@
         call cal_magne_co_lumped_crank                                  &
      &     (i_magne, dt, FEM_prm, nod_comm, node, ele, nod_fld,         &
      &      iphys_ele_base, ele_fld, Bnod_bcs%nod_bc_b, g_FEM, jac_3d,  &
-     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      rhs_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_co_consist_crank                                 &
-     &     (i_magne, cd_prop%coef_magne, dt,                            &
-     &      FEM_prm, node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b,    &
-     &      g_FEM, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &     (i_magne, cd_prop%coef_magne, dt, FEM_prm,                   &
+     &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, g_FEM,      &
+     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, v_sol)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'

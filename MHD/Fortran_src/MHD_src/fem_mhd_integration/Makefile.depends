@@ -14,7 +14,7 @@ cal_fluxes.o: $(MHD_RHS_DIR)/cal_fluxes.f90 m_precision.o m_machine_parameter.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_for_ffs.o: $(MHD_RHS_DIR)/cal_for_ffs.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_gradient.o: $(MHD_RHS_DIR)/cal_gradient.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_FEM_control_parameter.o t_geometry_data.o t_phys_data.o t_comm_table.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o m_array_for_send_recv.o cal_ff_smp_to_ffs.o cal_for_ffs.o nod_phys_send_recv.o int_vol_vect_differences.o int_vol_vect_diff_upw.o int_vol_vect_cst_difference.o int_vol_vect_cst_diff_upw.o
+cal_gradient.o: $(MHD_RHS_DIR)/cal_gradient.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_FEM_control_parameter.o t_geometry_data.o t_phys_data.o t_comm_table.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_table_FEM_const.o t_finite_element_mat.o t_vector_for_solver.o cal_ff_smp_to_ffs.o cal_for_ffs.o nod_phys_send_recv.o int_vol_vect_differences.o int_vol_vect_diff_upw.o int_vol_vect_cst_difference.o int_vol_vect_cst_diff_upw.o
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_multi_pass.o: $(MHD_RHS_DIR)/cal_multi_pass.f90 m_precision.o m_phys_constants.o t_FEM_control_parameter.o t_comm_table.o t_geometry_data.o t_phys_data.o t_base_field_labels.o t_fem_gauss_int_coefs.o t_jacobians.o t_table_FEM_const.o t_finite_element_mat.o t_vector_for_solver.o cal_ff_smp_to_ffs.o cal_for_ffs.o int_multi_pass.o
 	$(F90) -c $(F90OPTFLAGS) $<

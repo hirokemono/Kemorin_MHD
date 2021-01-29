@@ -166,7 +166,7 @@
      &    geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,               &
      &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,      &
-     &    FEM_SGS%Csims)
+     &    FEM_SGS%Csims, vect1)
 !
 !     ---------------------
 !
@@ -276,7 +276,7 @@
      &      geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,             &
      &      FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,            &
      &      MHD_CG%ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,    &
-     &      FEM_SGS%Csims)
+     &      FEM_SGS%Csims, vect1)
 !
 !     -----Output monitor date
 !

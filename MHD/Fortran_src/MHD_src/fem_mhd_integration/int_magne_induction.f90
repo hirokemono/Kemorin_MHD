@@ -7,7 +7,8 @@
 !
 !!      subroutine s_int_magne_induction                                &
 !!     &         (num_int, nod_comm, node, ele, iphys, g_FEM, jac_3d,   &
-!!     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,                &
+!!     &          f_nl, nod_fld, v_sol)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -20,6 +21,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module int_magne_induction
 !
@@ -35,7 +37,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -47,7 +49,8 @@
 !
       subroutine s_int_magne_induction                                  &
      &         (num_int, nod_comm, node, ele, iphys, g_FEM, jac_3d,     &
-     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &          rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,                  &
+     &          f_nl, nod_fld, v_sol)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -67,6 +70,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smp(n_vector, node, f_nl)
@@ -79,7 +83,7 @@
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &
 !     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
-!     &    fem_wk, f_l, f_nl, vect1)
+!     &    fem_wk, f_l, f_nl, v_sol)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
 !     &   f_l%ff, mlump_cd%ml, nod_fld%ntot_phys,                       &
 !     &   iphys%base%i_magne, nod_fld%d_fld)
@@ -89,7 +93,7 @@
 !    communication
 !
       call vector_send_recv                                             &
-     &   (iphys%forces%i_induction, nod_comm, nod_fld, vect1)
+     &   (iphys%forces%i_induction, nod_comm, nod_fld, v_sol)
 !
       end subroutine s_int_magne_induction
 !
