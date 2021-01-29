@@ -20,6 +20,7 @@
       use t_mesh_data_with_pointer
       use t_layering_ele_list
       use t_work_layer_correlate
+      use t_vector_for_solver
       use m_array_for_send_recv
       use m_FEM_utils
 !
@@ -34,6 +35,8 @@
 !
       type(layering_tbl), save :: layer_tbl_corr
       type(dynamic_correlation_data), save :: wk_correlate
+!
+      type(vectors_4_solver), save :: v_sol2
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,8 +118,8 @@
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !
       call set_component_add_4_correlate(field_FUTIL)
-      call allocate_2nd_iccg_matrix                                     &
-     &   (isix, femmesh_p_REF%mesh%node%numnod)
+      call verify_iccgN_vec_type                                       &
+     &   (isix, femmesh_p_REF%mesh%node%numnod, v_sol2)
 !
 !     --------------------- 
 !

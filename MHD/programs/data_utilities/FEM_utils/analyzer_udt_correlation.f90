@@ -23,6 +23,7 @@
       use t_shape_functions
       use m_array_for_send_recv
       use m_FEM_utils
+      use t_vector_for_solver
 !
       use transfer_correlate_field
 !
@@ -35,6 +36,8 @@
 !
       type(layering_tbl), save :: layer_tbl_corr
       type(dynamic_correlation_data), save :: wk_correlate
+!
+      type(vectors_4_solver), save :: v_sol2
 !
 ! ----------------------------------------------------------------------
 !
@@ -117,8 +120,8 @@
      &   (femmesh_p_REF%mesh%node%numnod, phys_ref)
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !
-      call allocate_2nd_iccg_matrix                                     &
-     &   (isix, femmesh_p_REF%mesh%node%numnod)
+      call verify_iccgN_vec_type                                        &
+     &   (isix, femmesh_p_REF%mesh%node%numnod, v_sol2)
 !
 !     --------------------- 
 !

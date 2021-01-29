@@ -29,7 +29,7 @@
 !!      subroutine s_interpolate_integer                                &
 !!     &        (iflag_recv, ele_org, comm_dest, tbl_org, tbl_dest,     &
 !!     &         PEsmpTOT, NP_org, NP_dest, i_vector_org,               &
-!!     &         SR_sig, SR_i, v_sol, i_vector_dest)
+!!     &         SR_sig, SR_i, i_vector_dest)
 !!        type(element_data), intent(in) :: ele_org
 !!        type(communication_table), intent(in) :: comm_dest
 !!        type(interpolate_table_org), intent(in) ::  tbl_org
@@ -37,7 +37,6 @@
 !!        type(CRS_SMP_CONNECT_MATRIX), intent(in) :: itp_mat
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module interpolate_by_module
@@ -328,7 +327,7 @@
       subroutine s_interpolate_integer                                  &
      &        (iflag_recv, ele_org, comm_dest, tbl_org, tbl_dest,       &
      &         PEsmpTOT, NP_org, NP_dest, i_vector_org,                 &
-     &         SR_sig, SR_i, v_sol, i_vector_dest)
+     &         SR_sig, SR_i, i_vector_dest)
 !
       use t_solver_SR_int
       use t_geometry_data
@@ -355,20 +354,21 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 4-byte integer
       type(send_recv_int_buffer), intent(inout) :: SR_i
+!
 !>      Structure for vectors for solver
-      type(vectors_4_solver), intent(inout) :: v_sol
+      type(vectors_4_solver) :: v_1st_sol, v_2nd_sol
 !
 !     initialize
 !
-      call alloc_iccg_int_vector(NP_org, v_sol)
-      call verify_2nd_iccg_int_mat(NP_dest)
+      call alloc_iccg_int_vector(NP_org,  v_1st_sol)
+      call alloc_iccg_int_vector(NP_dest, v_2nd_sol)
 !
       call verifty_work_4_itp_int                                       &
      &   (tbl_org%ntot_table_org, tbl_org, itp_WORK)
 !
 !
 !$omp parallel workshare
-      v_sol%ix_vec(1:NP_org) = i_vector_org(1:NP_org)
+      v_1st_sol%ix_vec(1:NP_org) = i_vector_org(1:NP_org)
 !$omp end parallel workshare
 !
 !    interpolation
@@ -376,7 +376,7 @@
       if (tbl_org%num_dest_domain.gt.0) then
         call s_interporate_imark_para(PEsmpTOT, NP_org,                 &
      &      ele_org%numele, ele_org%nnod_4_ele, ele_org%ie,             &
-     &      v_sol%ix_vec(1), tbl_org%istack_tbl_type_org_smp,            &
+     &      v_1st_sol%ix_vec(1), tbl_org%istack_tbl_type_org_smp,       &
      &      tbl_org%ntot_table_org, tbl_org%iele_org_4_org,             &
      &      tbl_org%itype_inter_org, itp_WORK%i_inter_org)
       end if
@@ -390,17 +390,20 @@
      &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
      &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
      &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
-     &    SR_sig, SR_i, itp_WORK%i_inter_org, ivec_2nd(1) )
+     &    SR_sig, SR_i, itp_WORK%i_inter_org, v_2nd_sol%ix_vec(1))
 !
 !
       if (comm_dest%num_neib.gt.0) then
-        call SOLVER_SEND_RECV_int_type(NP_dest, comm_dest, ivec_2nd(1))
+        call SOLVER_SEND_RECV_int_type(NP_dest, comm_dest,              &
+     &                                 v_2nd_sol%ix_vec(1))
       end if
 !
 !$omp parallel workshare
-      i_vector_dest(1:NP_dest) = ivec_2nd(1:NP_dest)
+      i_vector_dest(1:NP_dest) = v_2nd_sol%ix_vec(1:NP_dest)
 !$omp end parallel workshare
-      call dealloc_iccg_int_vector(v_sol)
+!
+      call dealloc_iccg_int_vector(v_1st_sol)
+      call dealloc_iccg_int_vector(v_2nd_sol)
 !
       end subroutine s_interpolate_integer
 !

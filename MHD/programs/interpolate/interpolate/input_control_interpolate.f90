@@ -4,16 +4,18 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,     &
-!!     &          org_femmesh, new_femmesh, itp_info, t_param, ierr)
+!!     &          org_femmesh, new_femmesh, itp_info, t_param,          &
+!!     &          v_1st_sol, v_2nd_sol, ierr)
 !!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !!        type(mesh_data), intent(inout) :: org_femmesh
 !!        type(mesh_data), intent(inout) :: new_femmesh
 !!        type(interpolate_table), intent(inout) :: itp_info
 !!        type(time_step_param), intent(inout) :: t_param
-!      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
-!        type(field_control), intent(in) :: fld_ctl
-!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
+!!      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
+!!        type(field_control), intent(in) :: fld_ctl
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module input_control_interpolate
 !
@@ -31,7 +33,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,       &
-     &          org_femmesh, new_femmesh, itp_info, t_param, ierr)
+     &          org_femmesh, new_femmesh, itp_info, t_param,            &
+     &          v_1st_sol, v_2nd_sol, ierr)
 !
       use t_mesh_data
       use t_interpolate_table
@@ -39,8 +42,8 @@
       use t_IO_step_parameter
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
+      use t_vector_for_solver
 !
-      use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use m_interpolate_table_IO
 !
@@ -60,8 +63,9 @@
       type(mesh_data), intent(inout) :: new_femmesh
       type(interpolate_table), intent(inout) :: itp_info
       type(time_step_param), intent(inout) :: t_param
-      integer(kind = kint), intent(inout) :: ierr
+      type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
 !
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_interpolate'
@@ -114,7 +118,7 @@
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    new_femmesh%mesh%node, itp_info, vect1)
+     &    new_femmesh%mesh%node, itp_info, v_1st_sol, v_2nd_sol)
 !
       end subroutine s_input_control_interpolate
 !

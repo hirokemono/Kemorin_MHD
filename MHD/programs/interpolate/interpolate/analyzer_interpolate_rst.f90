@@ -44,6 +44,7 @@
       type(SGS_model_addresses), save :: iphys_LES_ITP
 !
       type(phys_data), save :: new_phys
+      type(vectors_4_solver), save :: v_sol2
 !
       type(time_data), save :: itp_time_IO
       type(field_IO), save :: itp_fld_IO
@@ -77,7 +78,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
-     &    org_femmesh, new_femmesh, itp_rst, t_ITP, ierr)
+     &    org_femmesh, new_femmesh, itp_rst, t_ITP,                     &
+     &    vect1, v_sol2, ierr)
 !
 !     --------------------- 
 !
@@ -168,7 +170,7 @@
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
         call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
      &      new_femmesh%mesh%nod_comm, itp_rst,                         &
-     &      new_femmesh%mesh%node, new_phys, vect1)
+     &      new_femmesh%mesh%node, new_phys, vect1, v_sol2)
 !
         if (my_rank .lt. gen_itp_p1%ndomain_dest) then
           call copy_time_step_size_data(t_ITP%init_d, itp_time_IO)

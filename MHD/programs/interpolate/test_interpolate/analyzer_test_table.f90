@@ -22,6 +22,7 @@
       use t_IO_step_parameter
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -34,6 +35,7 @@
       type(interpolate_table), save :: itp_test
 !
       type(time_step_param), save :: t_ITP
+      type(vectors_4_solver), save :: v_sol2
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,7 +62,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
-     &    org_femmesh, new_femmesh, itp_test, t_ITP, ierr)
+     &    org_femmesh, new_femmesh, itp_test, t_ITP,                    &
+     &    vect1, v_sol2, ierr)
 !
 !     --------------------- 
 !
@@ -84,7 +87,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
       call interpolation_4_mesh_test                                    &
-     &   (org_femmesh%mesh, new_femmesh%mesh, itp_test)
+     &   (org_femmesh%mesh, new_femmesh%mesh, itp_test, vect1, v_sol2)
 !
       if (my_rank .lt. gen_itp_p1%ndomain_dest) then
         call finalize_size_4_smp_mesh                                   &
