@@ -5,7 +5,7 @@
 !
 !!      subroutine vect_gradients_4_monitor(dt, FEM_prm,                &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,    &
-!!     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld)
+!!     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, vect)
 !!      subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,      &
 !!     &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,  &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
@@ -25,6 +25,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module vector_gradients_4_monitor
 !
@@ -50,6 +51,7 @@
       use t_MHD_mass_matrices
       use t_surface_bc_data_MHD
       use t_work_FEM_integration
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -61,7 +63,7 @@
 !
       subroutine vect_gradients_4_monitor(dt, FEM_prm,                  &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,      &
-     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld)
+     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, vect)
 !
       use m_base_field_labels
       use cal_gradient
@@ -80,6 +82,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint) :: i, i_fld, i_src
 !
@@ -104,7 +107,8 @@
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
+     &        nod_fld, vect)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_wx                  &
@@ -125,7 +129,8 @@
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
+     &        nod_fld, vect)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_ax                  &
@@ -146,7 +151,8 @@
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
+     &        nod_fld, vect)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_bx                  &
@@ -167,7 +173,8 @@
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
+     &        nod_fld, vect)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_jx                  &
@@ -188,7 +195,8 @@
      &        i_src, i_fld, fluid%istack_ele_fld_smp, mk_MHD%mlump_fl,  &
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
-     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
+     &        nod_fld, vect)
         end if
 !
       end do

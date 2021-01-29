@@ -10,7 +10,7 @@
 !!     &          iphys_ele_base, ele_fld, fluid, layer_tbl,            &
 !!     &          jacs, rhs_tbl, FEM_elens, filtering, m_lump,          &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,  &
-!!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!     &          f_l, f_nl, nod_fld, diff_coefs, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -41,6 +41,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_diff_coef_magne
 !
@@ -70,7 +71,7 @@
       use t_surface_bc_vector
       use t_material_property
       use t_SGS_model_coefs
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -87,7 +88,7 @@
      &          iphys_ele_base, ele_fld, fluid, layer_tbl,              &
      &          jacs, rhs_tbl, FEM_elens, filtering, m_lump,            &
      &          wk_filter, wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,    &
-     &          f_l, f_nl, nod_fld, diff_coefs)
+     &          f_l, f_nl, nod_fld, diff_coefs, vect)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -136,6 +137,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p
 !
@@ -156,7 +158,7 @@
      &    iphys_fil%i_magne, iphys_SGS_wk%i_wd_nlg)
       call cal_filtered_scalar_whole(SGS_par%filter_p, nod_comm, node,  &
      &    filtering, i_sgs_grad_fp, iphys_base%i_mag_p,                 &
-     &    wk_filter, nod_fld)
+     &    wk_filter, nod_fld, vect)
 !
 !   take rotation and gradient of filtered B (to iphys_SGS_wk%i_simi)
 !
@@ -174,7 +176,7 @@
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, vect)
 !
 !   take rotation and gradient of B (to iphys_SGS_wk%i_nlg)
 !
@@ -191,13 +193,14 @@
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys_base%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump, &
      &    nod_comm, node, ele, iphys_ele_base, ele_fld, jacs%g_FEM,     &
-     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &    jacs%jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld, vect)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
+     &    nod_fld, vect)
 !
 !    take difference (to iphys_SGS_wk%i_simi)
 !
@@ -225,7 +228,7 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld, vect1)
+     &   (iphys_SGS_wk%i_wd_nlg, nod_comm, nod_fld, vect)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_wd_nlg)
@@ -248,13 +251,14 @@
      &    f_l, f_nl, nod_fld)
 !
       call sym_tensor_send_recv                                         &
-     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld, vect1)
+     &   (iphys_SGS_wk%i_nlg, nod_comm, nod_fld, vect)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_sym_tensor_whole                                &
      &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
-     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, wk_filter,            &
+     &    nod_fld, vect)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys_SGS_wk%i_nlg)

@@ -10,7 +10,8 @@
 !!     &          SGS_par, mesh, group, Snod_bcs, sf_bcs,               &
 !!     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,&
 !!     &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,    &
-!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
+!!     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,             &
+!!     &          diff_coefs, vect)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -31,6 +32,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_diff_coef_sgs_hf
 !
@@ -53,7 +55,7 @@
       use t_surface_bc_scalar
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -70,7 +72,8 @@
      &          SGS_par, mesh, group, Snod_bcs, sf_bcs,                 &
      &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,  &
      &          FEM_filters, iphys_elediff_fil, sgs_coefs, mk_MHD,      &
-     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld, diff_coefs)
+     &          FEM_SGS_wk, mhd_fem_wk, rhs_mat, nod_fld,               &
+     &          diff_coefs, vect)
 !
       use m_machine_parameter
       use m_phys_constants
@@ -115,6 +118,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !    reset model coefficients
 !
@@ -133,7 +137,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid,                    &
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_filters%FEM_elens, sgs_coefs, mk_MHD%mlump_fl,            &
-     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld)
+     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, nod_fld, vect)
 !
 !   take divergence of filtered heat flux (to iphys_SGS_wk%i_simi)
 !
@@ -143,7 +147,7 @@
      &    ivelo_f, ifield_f, iflag_supg, num_int, dt,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, rhs_mat%fem_wk,        &
-     &    mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect)
 !
 !   take divergence of heat flux (to iphys_SGS_wk%i_nlg)
 !
@@ -152,7 +156,7 @@
      &    i_sgs, ivelo, ifield, iflag_supg, num_int, dt,                &
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, rhs_mat%fem_wk,        &
-     &    mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    mk_MHD%mlump_fl, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect)
 !
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
@@ -160,7 +164,7 @@
       call cal_filtered_scalar_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
-     &    nod_fld)
+     &    nod_fld, vect)
 !
 !    take difference (to iphys_SGS_wk%i_simi)
 !
@@ -185,7 +189,7 @@
      &   (Snod_bcs%nod_bc_s, iphys_SGS_wk%i_wd_nlg, nod_fld)
 !
       call scalar_send_recv(iphys_SGS_wk%i_wd_nlg, mesh%nod_comm,       &
-     &                      nod_fld, vect1)
+     &                      nod_fld, vect)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys_SGS_wk%i_wd_nlg)
@@ -201,14 +205,14 @@
      &    nod_fld)
 !
       call scalar_send_recv(iphys_SGS_wk%i_nlg, mesh%nod_comm,          &
-     &                      nod_fld, vect1)
+     &                      nod_fld, vect)
 !
 !    filtering (to iphys_SGS_wk%i_nlg)
 !
       call cal_filtered_scalar_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
      &    iphys_SGS_wk%i_nlg, iphys_SGS_wk%i_nlg, FEM_SGS_wk%wk_filter, &
-     &    nod_fld)
+     &    nod_fld, vect)
       call delete_field_by_fixed_s_bc                                   &
      &   (Snod_bcs%nod_bc_s, iphys_SGS_wk%i_nlg, nod_fld)
 !

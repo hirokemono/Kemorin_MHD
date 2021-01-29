@@ -178,7 +178,7 @@
      &      Csims_FEM_MHD%icomp_sgs_term,                               &
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, wk_filter, mhd_fem_wk,         &
-     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
@@ -216,7 +216,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
@@ -225,7 +225,7 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 !
 !  -----for Ceank-nicolson
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then

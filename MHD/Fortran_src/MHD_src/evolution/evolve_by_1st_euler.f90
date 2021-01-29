@@ -9,15 +9,17 @@
 !!     &         (dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,     &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          g_FEM, jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, nod_fld, vect)
 !!      subroutine cal_magne_pre_euler(i_field, dt,                     &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
-!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, f_nl,              &
+!!     &          nod_fld, vect)
 !!      subroutine cal_scalar_pre_euler(iflag_supg, i_field, dt,        &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
 !!     &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,      &
-!!     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl,              &
+!!     &          nod_fld, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -36,6 +38,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module evolve_by_1st_euler
 !
@@ -59,7 +62,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -73,7 +76,7 @@
      &         (dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,       &
      &          iphys, iphys_LES, iphys_ele_base, ele_fld,              &
      &          g_FEM, jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,   &
-     &          f_l, f_nl, nod_fld)
+     &          f_l, f_nl, nod_fld, vect)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
@@ -100,13 +103,14 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mlump_fl, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect1)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
@@ -127,7 +131,8 @@
       subroutine cal_magne_pre_euler(i_field, dt,                       &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
-     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, f_nl,                &
+     &          nod_fld, vect)
 !
       use cal_sol_field_explicit
       use cal_multi_pass
@@ -151,13 +156,14 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call cal_t_evo_4_vector_cd                                        &
      &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mlump_cd, nod_comm, node, ele,                       &
      &    iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,              &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect1)
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl, vect)
       call cal_sol_vect_pre_conduct_euler                               &
      &   (dt, node%numnod, conduct%istack_inter_fld_smp,                &
      &    conduct%numnod_fld, conduct%inod_fld, mlump_cd%ml,            &
@@ -172,7 +178,8 @@
       subroutine cal_scalar_pre_euler(iflag_supg, i_field, dt,          &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele_base, ele_fld, g_FEM, jac_3d, rhs_tbl,        &
-     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl,                &
+     &          nod_fld, vect)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
@@ -196,13 +203,14 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
      &    mlump_fl, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                  &
-     &    fem_wk, f_l, f_nl, vect1)
+     &    fem_wk, f_l, f_nl, vect)
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (dt, node%numnod, node%istack_internal_smp, mlump_fl%ml,       &
      &    f_l%ff, f_nl%ff, nod_fld%ntot_phys, n_scalar, i_field,        &

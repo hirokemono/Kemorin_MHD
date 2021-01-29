@@ -167,7 +167,8 @@
      &   Csims_FEM_MHD%icomp_sgs_term, Csims_FEM_MHD%iphys_elediff_vec, &
      &   Csims_FEM_MHD%sgs_coefs, mhd1_fem_wk%mlump_cd,                 &
      &   SGS_MHD_wk1%FEM_SGS_wk%wk_filter, mhd_fem1_wk,                 &
-     &   rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, FEM_MHD1%field)
+     &   rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
+     &   FEM_MHD1%field, vect1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%forces%i_vp_induct,  iphys_sph%i_vp_induct,             &
@@ -235,7 +236,7 @@
       call cal_vecp_induction
      &   (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
      &    nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,    &
-     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%forces%i_vp_induct, iphys_sph%forces%i_vp_induct,       &

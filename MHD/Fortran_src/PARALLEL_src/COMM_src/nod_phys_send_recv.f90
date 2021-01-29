@@ -195,7 +195,6 @@
 !
       subroutine nod_scalar_send_recv(numnod, nod_comm, scl_nod, vect)
 !
-      use m_array_for_send_recv
       use m_work_time
       use solver_SR_type
 !
@@ -228,7 +227,6 @@
 !
       subroutine nod_vector_send_recv(numnod, nod_comm, vec_nod, vect)
 !
-      use m_array_for_send_recv
       use m_work_time
       use solver_SR_type
 !
@@ -264,7 +262,6 @@
 !
       subroutine nod_tensor_send_recv(numnod, nod_comm, tsr_nod, vect)
 !
-      use m_array_for_send_recv
       use m_work_time
       use solver_SR_type
 !

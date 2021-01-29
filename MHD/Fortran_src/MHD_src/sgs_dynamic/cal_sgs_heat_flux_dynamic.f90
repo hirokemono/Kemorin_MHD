@@ -11,7 +11,7 @@
 !!     &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,&
 !!     &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,    &
 !!     &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,        &
-!!     &          rhs_mat, nod_fld, sgs_coefs)
+!!     &          rhs_mat, nod_fld, sgs_coefs, vect)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(dynamic_SGS_work_address), intent(in) :: iphys_SGS_wk
@@ -29,6 +29,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_sgs_heat_flux_dynamic
 !
@@ -52,6 +53,7 @@
       use t_SGS_model_coefs
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -68,7 +70,7 @@
      &          iphys_SGS_wk, iphys_ele_base, ele_fld, fluid, fem_int,  &
      &          FEM_filters, iphys_elediff_vec, iphys_elediff_fil,      &
      &          sgs_coefs_nod, mk_MHD, FEM_SGS_wk, mhd_fem_wk,          &
-     &          rhs_mat, nod_fld, sgs_coefs)
+     &          rhs_mat, nod_fld, sgs_coefs, vect)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -107,6 +109,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !    reset model coefficients
 !
@@ -121,7 +124,7 @@
      &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,      &
      &    SGS_par%filter_p, mesh%nod_comm, mesh%node,                   &
      &    FEM_filters%filtering, sgs_coefs_nod, FEM_SGS_wk%wk_filter,   &
-     &    nod_fld)
+     &    nod_fld, vect)
 !
 !    copy to work array
 !
@@ -136,7 +139,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &
-     &    nod_fld)
+     &    nod_fld, vect)
 !
 !   gradient model by original field
 !
@@ -146,13 +149,14 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele_base,    &
      &    ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_filters%FEM_elens, &
      &    mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,     &
-     &    nod_fld)
+     &    nod_fld, vect)
 !
 !      filtering
 !
       call cal_filtered_vector_whole(SGS_par%filter_p,                  &
      &    mesh%nod_comm, mesh%node, FEM_filters%filtering,              &
-     &    iphys_SGS_wk%i_nlg, i_sgs, FEM_SGS_wk%wk_filter, nod_fld)
+     &    iphys_SGS_wk%i_nlg, i_sgs, FEM_SGS_wk%wk_filter,              &
+     &    nod_fld, vect)
 !
 !   Change coordinate
 !

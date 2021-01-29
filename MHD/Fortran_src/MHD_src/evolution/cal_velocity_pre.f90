@@ -196,7 +196,7 @@
      &      iak_sgs_term, icomp_sgs_term, iak_diff_sgs,                 &
      &      iphys_elediff_vec, sgs_coefs_nod, diff_coefs,               &
      &      mlump_fl, wk_filter,  wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,  &
-     &      nod_fld, ele_fld, sgs_coefs)
+     &      nod_fld, ele_fld, sgs_coefs, vect1)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
@@ -207,7 +207,7 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
@@ -218,7 +218,7 @@
      &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens, filtering,         &
      &      icomp_sgs_term, iphys_elediff_vec,                          &
      &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,  &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       end if
 !
 !   --- reset work array for time evolution
@@ -299,14 +299,14 @@
      &      fluid, fl_prop, iphys, iphys_LES, iphys_ele_base, ele_fld,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 !
       else if(fl_prop%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,       &
      &      fluid, fl_prop, iphys, iphys_LES, iphys_ele_base, ele_fld,  &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mlump_fl, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &

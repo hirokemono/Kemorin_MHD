@@ -158,7 +158,8 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,               &
      &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,                     &
+     &    FEM_SGS%Csims, vect1)
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par,                           &
@@ -257,7 +258,8 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,               &
      &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,                     &
+     &    FEM_SGS%Csims, vect1)
 !
 !     ---------------------
 !

@@ -10,7 +10,7 @@
 !!     &          iak_sgs_term, icomp_sgs_term, iak_diff_sgs,           &
 !!     &          iphys_elediff_vec, sgs_coefs_nod, diff_coefs,         &
 !!     &          mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk,      &
-!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs)
+!!     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -44,6 +44,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_sgs_m_flux_sgs_buo
 !
@@ -81,6 +82,7 @@
       use t_physical_property
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -99,7 +101,7 @@
      &          iak_sgs_term, icomp_sgs_term, iak_diff_sgs,             &
      &          iphys_elediff_vec, sgs_coefs_nod, diff_coefs,           &
      &          mlump_fl, wk_filter, wk_lsq, wk_sgs, mhd_fem_wk,        &
-     &          rhs_mat, nod_fld, ele_fld, sgs_coefs)
+     &          rhs_mat, nod_fld, ele_fld, sgs_coefs, vect)
 !
       use m_phys_constants
 !
@@ -152,6 +154,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint), parameter :: ncomp_sgs_buo= 6
 !      integer(kind = kint) :: i, k
@@ -176,7 +179,7 @@
      &    iphys_ele_base, ele_fld, fem_int%jcs, fem_int%rhs_tbl,        &
      &    FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,      &
      &    sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,    &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect)
 !
 !   lead work of Reynolds stress
 !
@@ -188,7 +191,7 @@
      &    iphys_LES%force_by_filter, iphys_LES%SGS_term,                &
      &    iphys_LES%div_SGS, iphys_ele_base,                            &
      &    ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,         &
-     &    mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
 !
 !$omp parallel
       call cal_phys_dot_product                                         &

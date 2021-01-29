@@ -10,13 +10,13 @@
 !!     &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,      &
 !!     &          iphys_SGS, iphys_ele_base, ele_fld, fem_int,          &
 !!     &          FEM_elens, iak_diff_SGS, diff_coefs, mlump_cd,        &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, vect)
 !!      subroutine cal_magnetic_diffusion(ak_d_magne,                   &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,    &
 !!     &          iphys_base, iphys_dif, iphys_SGS, fem_int,            &
 !!     &          FEM_elens, iak_diff_base, iak_diff_SGS, diff_coefs,   &
-!!     &          rhs_mat, nod_fld)
+!!     &          rhs_mat, nod_fld, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -46,6 +46,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_magnetic_terms
 !
@@ -77,7 +78,7 @@
       use t_material_property
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -100,7 +101,7 @@
      &          iphys_base, iphys_frc, iphys_div_frc, iphys_dif,        &
      &          iphys_SGS, iphys_ele_base, ele_fld, fem_int,            &
      &          FEM_elens, iak_diff_SGS, diff_coefs, mlump_cd,          &
-     &          mhd_fem_wk, rhs_mat, nod_fld)
+     &          mhd_fem_wk, rhs_mat, nod_fld, vect)
 !
       use int_vol_magne_monitor
       use set_boundary_scalars
@@ -140,6 +141,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -178,14 +180,14 @@
      &    iphys_ele_base, ele_fld,                                      &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl, vect1)
+     &    rhs_mat%f_l, rhs_mat%f_nl, vect)
       call delete_vector_ffs_on_bc                                      &
      &   (node, Bnod_bcs%nod_bc_b, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
      &    i_field, nod_fld%d_fld)
-      call vector_send_recv(i_field, nod_comm, nod_fld, vect1)
+      call vector_send_recv(i_field, nod_comm, nod_fld, vect)
 !
       end subroutine cal_terms_4_magnetic
 !
@@ -196,7 +198,7 @@
      &          surf, conduct, sf_grp, Bnod_bcs, Asf_bcs, Bsf_bcs,      &
      &          iphys_base, iphys_dif, iphys_SGS, fem_int,              &
      &          FEM_elens, iak_diff_base, iak_diff_SGS, diff_coefs,     &
-     &          rhs_mat, nod_fld)
+     &          rhs_mat, nod_fld, vect)
 !
       use int_vol_diffusion_ele
       use set_boundary_scalars
@@ -228,6 +230,7 @@
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -258,7 +261,7 @@
      &    rhs_mat%f_l%ff, fem_int%m_lump%ml, nod_fld%ntot_phys,         &
      &    iphys_dif%i_b_diffuse, nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys_dif%i_b_diffuse, nod_comm, nod_fld, vect1)
+     &   (iphys_dif%i_b_diffuse, nod_comm, nod_fld, vect)
 !
       end subroutine cal_magnetic_diffusion
 !

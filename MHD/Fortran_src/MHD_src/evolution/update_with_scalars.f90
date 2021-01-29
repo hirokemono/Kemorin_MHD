@@ -70,6 +70,7 @@
       use t_surface_bc_scalar
       use t_work_FEM_integration
       use t_work_FEM_dynamic_SGS
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -166,7 +167,7 @@
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &         mesh%nod_comm, mesh%node, FEM_filters%filtering,         &
      &          iphys_fil%i_temp, iphys_SGS_wk%i_sgs_temp,              &
-     &          FEM_SGS_wk%wk_filter, nod_fld)
+     &          FEM_SGS_wk%wk_filter, nod_fld, vect1)
             nod_fld%iflag_update(iphys_fil%i_temp) = 1
           end if
 !
@@ -176,7 +177,7 @@
             call cal_filtered_scalar_whole(SGS_par%filter_p,            &
      &          mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,   &
      &          iphys_wfl%i_temp, iphys_fil%i_temp,                     &
-     &          FEM_SGS_wk%wk_filter, nod_fld)
+     &          FEM_SGS_wk%wk_filter, nod_fld, vect1)
           end if
         end if
 !
@@ -185,7 +186,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_temp, iphys_base%i_temp,                      &
-     &        FEM_SGS_wk%wk_filter, nod_fld)
+     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
           nod_fld%iflag_update(iphys_fil%i_temp) = 1
         end if
 !
@@ -195,7 +196,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_light, iphys_base%i_light,                    &
-     &        FEM_SGS_wk%wk_filter, nod_fld)
+     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
       end if
@@ -221,7 +222,8 @@
      &            mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,                &
      &            FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                 &
      &            FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
-     &           rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
+     &            rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                   &
+     &            diff_coefs, vect1)
              end if
            end if
 !
@@ -300,7 +302,7 @@
           call cal_filtered_scalar_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_light, iphys_SGS_wk%i_sgs_composit,           &
-     &        FEM_SGS_wk%wk_filter, nod_fld)
+     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
           nod_fld%iflag_update(iphys_fil%i_light) = 1
         end if
 !
@@ -310,7 +312,7 @@
           call cal_filtered_scalar_whole (SGS_par%filter_p,             &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
      &        iphys_wfl%i_light, iphys_fil%i_light,                     &
-     &        FEM_SGS_wk%wk_filter, nod_fld)
+     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
         end if
       end if
 !
@@ -337,7 +339,8 @@
      &             mk_MHD%mlump_fl, FEM_SGS_wk%wk_filter,               &
      &             FEM_SGS_wk%wk_cor, FEM_SGS_wk%wk_lsq,                &
      &             FEM_SGS_wk%wk_diff, rhs_mat%fem_wk, rhs_mat%surf_wk, &
-     &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
+     &             rhs_mat%f_l, rhs_mat%f_nl, nod_fld,                  &
+     &             diff_coefs, vect1)
              end if
 
            end if

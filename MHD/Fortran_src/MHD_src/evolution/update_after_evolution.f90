@@ -19,7 +19,7 @@
 !!      subroutine cal_FEM_model_coefficients                           &
 !!     &         (time_d, FEM_prm, SGS_par, geofem,                     &
 !!     &          MHD_mesh, MHD_prop, FEM_MHD_BCs, iphys, iphys_LES,    &
-!!     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+!!     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, vect)
 !!
 !!      subroutine fields_evolution_4_FEM_SPH                           &
 !!     &         (time_d, FEM_prm, SGS_par, geofem, fluid, MHD_prop,    &
@@ -46,6 +46,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
+!!        type(vectors_4_solver), intent(inout) :: vect
 !!@endverbatim
 !
       module update_after_evolution
@@ -83,6 +84,7 @@
       use t_work_FEM_SGS_MHD
       use t_FEM_MHD_solvers
       use t_FEM_SGS_structure
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -158,7 +160,7 @@
       subroutine cal_FEM_model_coefficients                             &
      &         (time_d, FEM_prm, SGS_par, geofem,                       &
      &          MHD_mesh, MHD_prop, FEM_MHD_BCs, iphys, iphys_LES,      &
-     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD)
+     &          FEM_filters, SGS_MHD_wk, nod_fld, Csims_FEM_MHD, vect)
 !
       use cal_model_coefficients
 !
@@ -176,6 +178,7 @@
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
@@ -189,7 +192,7 @@
      &    Csims_FEM_MHD%iphys_elediff_fil,                              &
      &    SGS_MHD_wk%fem_int, FEM_filters,                              &
      &    SGS_MHD_wk, nod_fld, Csims_FEM_MHD%sgs_coefs,                 &
-     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs)
+     &    Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs, vect)
 !
       end subroutine cal_FEM_model_coefficients
 !

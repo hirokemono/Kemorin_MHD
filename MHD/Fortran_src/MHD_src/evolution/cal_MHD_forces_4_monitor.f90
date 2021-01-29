@@ -322,7 +322,8 @@
      &        iphys_LES%force_by_filter, iphys_LES%SGS_term,            &
      &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
-     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
+     &        nod_fld, ele_fld, vect1)
         end if
       end do
 !
@@ -342,7 +343,7 @@
      &        iphys%diffusion, iphys_LES%SGS_term,                      &
      &        iphys_ele_base, ele_fld, fem_int, FEM_elens,              &
      &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_cd,                &
-     &        mhd_fem_wk, rhs_mat, nod_fld)
+     &        mhd_fem_wk, rhs_mat, nod_fld, vect1)
         end if
       end do
 !
@@ -353,7 +354,7 @@
         call cal_vecp_induction                                         &
      &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &      nod_bcs%Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,  &
-     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect1)
       end if
 !
 !
@@ -389,7 +390,7 @@
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term,            &
      &      iphys_LES%div_SGS, ak_MHD, fem_int, FEM_elens,              &
      &      iak_diff_base, iak_diff_sgs, diff_coefs,                    &
-     &      mk_MHD%mlump_fl, rhs_mat, nod_fld)
+     &      mk_MHD%mlump_fl, rhs_mat, nod_fld, vect1)
       end if
 !
       if (iphys%diffusion%i_vp_diffuse .gt. izero) then
@@ -399,7 +400,7 @@
      &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
      &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys, fem_int, &
      &      FEM_elens, iak_diff_base, diff_coefs, mk_MHD%mlump_cd,      &
-     &      rhs_mat, nod_fld)
+     &      rhs_mat, nod_fld, vect1)
       end if
 !
       if (iphys%diffusion%i_b_diffuse .gt. izero                        &
@@ -412,7 +413,7 @@
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys%base, iphys%diffusion, iphys_LES%SGS_term, fem_int,   &
      &      FEM_elens, iak_diff_base, iak_diff_sgs, diff_coefs,         &
-     &      rhs_mat, nod_fld)
+     &      rhs_mat, nod_fld, vect1)
       end if
 !
       end subroutine cal_forces_4_monitor

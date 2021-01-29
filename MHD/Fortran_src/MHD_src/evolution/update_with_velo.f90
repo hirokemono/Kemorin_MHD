@@ -164,7 +164,7 @@
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%filtering,          &
      &        iphys_fil%i_velo, iphys_base%i_velo,                      &
-     &        FEM_SGS_wk%wk_filter, nod_fld)
+     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
           nod_fld%iflag_update(iphys_fil%i_velo  ) = 1
           nod_fld%iflag_update(iphys_fil%i_velo+1) = 1
           nod_fld%iflag_update(iphys_fil%i_velo+2) = 1
@@ -178,7 +178,7 @@
           call cal_filtered_vector_whole(SGS_par%filter_p,              &
      &        mesh%nod_comm, mesh%node, FEM_filters%wide_filtering,     &
      &        iphys_wfl%i_velo, iphys_fil%i_velo,                       &
-     &        FEM_SGS_wk%wk_filter, nod_fld)
+     &        FEM_SGS_wk%wk_filter, nod_fld, vect1)
           nod_fld%iflag_update(iphys_wfl%i_velo  ) = 1
           nod_fld%iflag_update(iphys_wfl%i_velo+1) = 1
           nod_fld%iflag_update(iphys_wfl%i_velo+2) = 1
@@ -215,7 +215,7 @@
      &        FEM_SGS_wk%wk_filter, FEM_SGS_wk%wk_cor,                  &
      &        FEM_SGS_wk%wk_lsq, FEM_SGS_wk%wk_diff, mk_MHD%mlump_fl,   &
      &        rhs_mat%fem_wk, rhs_mat%surf_wk,                          &
-     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
+     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs, vect1)
         end if
 !
       end if

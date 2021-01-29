@@ -24,6 +24,7 @@
       use t_control_param_repartition
       use t_time_data
       use t_VIZ_only_step_parameter
+      use m_array_for_send_recv
 !
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
@@ -137,8 +138,8 @@
 !
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call udt_field_to_new_partition(iflag_import_item,              &
-     &      istep_ucd, part_p1%repart_p%viz_ucd_file,                   &
-     &      t_IO, new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd)
+     &      istep_ucd, part_p1%repart_p%viz_ucd_file, t_IO,             &
+     &      new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd, vect1)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
         call deallocate_ucd_phys_data(org_ucd)

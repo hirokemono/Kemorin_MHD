@@ -44,6 +44,7 @@
       use t_VIZ_step_parameter
       use t_control_param_vol_grping
       use t_calypso_comm_table
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -244,7 +245,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call nod_field_to_new_partition                                 &
      &     (iflag_import_rev, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,    &
-     &      viz%nod_fld, viz%viz_fld)
+     &      viz%nod_fld, viz%viz_fld, vect1)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
       end if
 !

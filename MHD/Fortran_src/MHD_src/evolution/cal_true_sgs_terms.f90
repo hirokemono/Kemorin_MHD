@@ -8,10 +8,10 @@
 !!     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele_base,  &
 !!     &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs, &
-!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+!!     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
 !!      subroutine cal_true_sgs_terms_post(filter_param, nod_comm, node,&
 !!     &          iphys_div_frc, iphys_trSGS, iphys_div_trSGS,          &
-!!     &          iphys_SGS_wk, filtering, wk_filter, nod_fld)
+!!     &          iphys_SGS_wk, filtering, wk_filter, nod_fld, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -44,6 +44,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_true_sgs_terms
 !
@@ -78,6 +79,7 @@
       use t_MHD_finite_element_mat
       use t_MHD_mass_matrices
       use t_work_FEM_integration
+      use t_vector_for_solver
 !
       use cal_fluxes
       use copy_nodal_fields
@@ -104,7 +106,7 @@
      &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,     &
      &          nod_bcs, surf_bcs, iphys, iphys_LES, iphys_ele_base,    &
      &          ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,   &
-     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &          mk_MHD, mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
 !
       use calypso_mpi
       use m_true_SGS_term_labels
@@ -138,6 +140,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint) :: i
 !
@@ -177,7 +180,7 @@
      &        iphys_LES%div_SGS, iphys_LES%true_div_SGS,                &
      &        iphys_ele_base, ak_MHD, fem_int, FEM_elens,               &
      &        iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl,                &
-     &        mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &        mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -191,7 +194,7 @@
      &         iphys_LES%div_SGS, iphys_LES%true_SGS,                   &
      &         iphys_ele_base, ak_MHD, fem_int, FEM_elens,              &
      &         iak_diff_sgs, diff_coefs, mk_MHD%mlump_fl,               &
-     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
          else if(nod_fld%phys_name(i) .eq. SGS_mag_induction_true%name) &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -204,7 +207,7 @@
      &        iphys_LES%SGS_term, iphys_LES%true_SGS,                   &
      &        iphys_ele_base, ele_fld, ak_MHD,                          &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
-     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &        mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect)
          end if
        end do
 !
@@ -214,7 +217,7 @@
 !
       subroutine cal_true_sgs_terms_post(filter_param, nod_comm, node,  &
      &          iphys_div_frc, iphys_trSGS, iphys_div_trSGS,            &
-     &          iphys_SGS_wk, filtering, wk_filter, nod_fld)
+     &          iphys_SGS_wk, filtering, wk_filter, nod_fld, vect)
 !
       use t_SGS_term_labels
       use m_true_SGS_term_labels
@@ -232,6 +235,7 @@
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint) :: i
 !
@@ -244,7 +248,7 @@
      &        (iphys_div_trSGS%i_SGS_h_flux,                            &
      &         iphys_div_frc%i_h_flux, iphys_SGS_wk%i_simi,             &
      &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld)
+     &         nod_fld, vect)
          else if(nod_fld%phys_name(i).eq.SGS_div_c_flux_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -252,7 +256,7 @@
      &        (iphys_div_trSGS%i_SGS_c_flux,                            &
      &         iphys_div_frc%i_c_flux, iphys_SGS_wk%i_simi,             &
      &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld)
+     &         nod_fld, vect)
          else if ( nod_fld%phys_name(i).eq.SGS_div_m_flux_true%name)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -261,7 +265,7 @@
      &        (iphys_div_trSGS%i_SGS_m_flux,                            &
      &         iphys_div_frc%i_m_flux, iphys_SGS_wk%i_simi,             &
      &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld)
+     &         nod_fld, vect)
          else if(nod_fld%phys_name(i) .eq. SGS_Lorentz_true%name) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
@@ -269,7 +273,7 @@
      &        (iphys_trSGS%i_SGS_Lorentz,                               &
      &         iphys_div_frc%i_maxwell, iphys_SGS_wk%i_simi,            &
      &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld)
+     &         nod_fld, vect)
          else if(nod_fld%phys_name(i) .eq. SGS_mag_induction_true%name) &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -278,7 +282,7 @@
      &        (iphys_trSGS%i_SGS_induction,                             &
      &         iphys_div_frc%i_induct_t, iphys_SGS_wk%i_simi,           &
      &         filter_param, nod_comm, node, filtering, wk_filter,      &
-     &         nod_fld)
+     &         nod_fld, vect)
          end if
        end do
 !
@@ -344,7 +348,7 @@
      &          iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,     &
      &          iphys_tr_div_SGS, iphys_ele_base, ak_MHD, fem_int,      &
      &          FEM_elens, iak_diff_sgs, diff_coefs, mlump_fl,          &
-     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
 !
       use cal_momentum_terms
 !
@@ -385,6 +389,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call cal_flux_tensor(iphys_fil%i_velo, iphys_fil%i_velo,          &
@@ -396,7 +401,7 @@
      &    iphys_dif, iphys_fil, iphys_fil_frc,                          &
      &    iphys_SGS, iphys_div_SGS, iphys_ele_base, ak_MHD,             &
      &    fem_int, FEM_elens, iak_diff_sgs, diff_coefs, mlump_fl,       &
-     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
       call copy_vector_component(nod_fld,                               &
      &    iphys_div_frc%i_m_flux, iphys_tr_div_SGS%i_SGS_m_flux)
 !
@@ -411,7 +416,7 @@
      &         iphys_fil, iphys_fil_frc, iphys_SGS, iphys_div_SGS,      &
      &         iphys_trSGS, iphys_ele_base, ak_MHD, fem_int,            &
      &         FEM_elens, iak_diff_sgs, diff_coefs, mlump_fl,           &
-     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
 !
       use cal_momentum_terms
 !
@@ -452,6 +457,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call cal_maxwell_tensor(cd_prop%ex_magne,                         &
@@ -463,7 +469,7 @@
      &    iphys_dif, iphys_fil, iphys_fil_frc, iphys_SGS,               &
      &    iphys_div_SGS, iphys_ele_base, ak_MHD, fem_int, FEM_elens,    &
      &    iak_diff_sgs, diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,      &
-     &    nod_fld, ele_fld)
+     &    nod_fld, ele_fld, vect)
       call copy_vector_component(nod_fld,                               &
      &   iphys_div_frc%i_maxwell, iphys_trSGS%i_SGS_Lorentz)
 !
@@ -477,7 +483,7 @@
      &         iphys_frc, iphys_div_frc, iphys_dif, iphys_fil,          &
      &         iphys_SGS, iphys_trSGS, iphys_ele_base, ele_fld,         &
      &         ak_MHD, fem_int, FEM_elens, iak_diff_sgs, diff_coefs,    &
-     &         mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &         mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect)
 !
       use t_bc_data_magne
       use t_surface_bc_data
@@ -518,6 +524,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call cal_induction_tensor(iphys_fil%i_magne, iphys_fil%i_velo,    &
@@ -529,7 +536,7 @@
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys_base, iphys_frc,            &
      &    iphys_div_frc, iphys_dif, iphys_SGS,                          &
      &    iphys_ele_base, ele_fld, fem_int, FEM_elens, iak_diff_sgs,    &
-     &    diff_coefs, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld)
+     &    diff_coefs, mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect)
       call copy_vector_component(nod_fld, iphys_div_frc%i_induct_t,     &
      &    iphys_trSGS%i_SGS_induction)
 !
@@ -541,7 +548,7 @@
       subroutine cal_div_sgs_s_flux_true_post                           &
      &          (i_div_flux_true, i_div_flux, i_sgs_simi,               &
      &           filter_param, nod_comm, node, filtering,               &
-     &           wk_filter, nod_fld)
+     &           wk_filter, nod_fld, vect)
 !
       integer(kind = kint), intent(in) :: i_div_flux_true
       integer(kind = kint), intent(in) :: i_div_flux, i_sgs_simi
@@ -553,13 +560,14 @@
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call copy_scalar_component(nod_fld,                               &
      &    i_div_flux_true, i_sgs_simi)
       call cal_filtered_scalar_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_div_flux_true, i_div_flux, wk_filter, nod_fld)
+     &    i_div_flux_true, i_div_flux, wk_filter, nod_fld, vect)
       call subtract_2_nod_scalars(nod_fld,                              &
      &    i_div_flux_true, i_sgs_simi, i_div_flux_true)
 !
@@ -570,7 +578,7 @@
       subroutine cal_div_sgs_tensor_true_post                           &
      &         (i_sgs_true, i_sgs_div, i_sgs_simi,                      &
      &          filter_param, nod_comm, node, filtering,                &
-     &          wk_filter, nod_fld)
+     &          wk_filter, nod_fld, vect)
 !
       integer(kind = kint), intent(in) :: i_sgs_true, i_sgs_div
       integer(kind = kint), intent(in) :: i_sgs_simi
@@ -582,12 +590,13 @@
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call copy_vector_component(nod_fld, i_sgs_true, i_sgs_simi)
       call cal_filtered_vector_whole                                    &
      &   (filter_param, nod_comm, node, filtering,                      &
-     &    i_sgs_true, i_sgs_div, wk_filter, nod_fld)
+     &    i_sgs_true, i_sgs_div, wk_filter, nod_fld, vect)
       call subtract_2_nod_vectors(nod_fld,                              &
      &    i_sgs_true, i_sgs_simi, i_sgs_true)
 !

@@ -4,12 +4,13 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      subroutine filtering_all_fields(filter_param, nod_comm, node,   &
-!!     &          filtering, wk_filter, nod_fld)
+!!     &          filtering, wk_filter, nod_fld, vect)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module filter_all_fields
 !
@@ -20,6 +21,7 @@
       use t_geometry_data
       use t_phys_data
       use t_filtering_data
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -30,7 +32,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine filtering_all_fields(filter_param, nod_comm, node,     &
-     &          filtering, wk_filter, nod_fld)
+     &          filtering, wk_filter, nod_fld, vect)
 !
       use calypso_mpi
       use m_phys_constants
@@ -43,6 +45,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(filtering_work_type), intent(inout) :: wk_filter
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
       integer(kind = kint) :: i, j
 !
@@ -53,17 +56,17 @@
           if (my_rank.eq.0) write(*,*)'filtering scalar field: ',       &
      &      trim(nod_fld%phys_name(i))
          call cal_filtered_scalar_whole(filter_param, nod_comm,         &
-     &       node, filtering, j, j, wk_filter, nod_fld)
+     &       node, filtering, j, j, wk_filter, nod_fld, vect)
         else if ( nod_fld%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*)'filtering vector field: ',       &
      &      trim(nod_fld%phys_name(i))
          call cal_filtered_vector_whole(filter_param, nod_comm,         &
-     &       node, filtering, j, j, wk_filter, nod_fld)
+     &       node, filtering, j, j, wk_filter, nod_fld, vect)
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*)'filtering tensor field: ',       &
      &      trim(nod_fld%phys_name(i))
          call cal_filtered_sym_tensor_whole(filter_param, nod_comm,     &
-     &       node, filtering, j, j, wk_filter, nod_fld)
+     &       node, filtering, j, j, wk_filter, nod_fld, vect)
         end if
         j = j + nod_fld%num_component(i)
       end do

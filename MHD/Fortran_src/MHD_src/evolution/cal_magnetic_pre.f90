@@ -167,7 +167,7 @@
      &      Csims_FEM_MHD%iphys_elediff_vec,                            &
      &      Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%sgs_coefs_nod,   &
      &      mlump_cd, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,            &
-     &      rhs_mat%f_l, nod_fld)
+     &      rhs_mat%f_l, nod_fld, vect1)
       end if
 !
       call reset_ff_smps(mesh%node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -220,14 +220,14 @@
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
      &     (iphys%base%i_magne, iphys%exp_work%i_pre_uxb, dt, FEM_prm,  &
      &      mesh%nod_comm, mesh%node, mesh%ele, conduct,                &
      &      iphys_ele_base, ele_fld, jacs%g_FEM, jacs%jac_3d, rhs_tbl,  &
      &      mlump_cd, mhd_fem_wk, rhs_mat%fem_wk,                       &
-     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &

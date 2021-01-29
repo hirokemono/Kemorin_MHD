@@ -45,6 +45,7 @@
       use t_FEM_MHD_mean_square
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
+      use m_array_for_send_recv
 !
       use calypso_mpi
 !
@@ -194,7 +195,8 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    femmesh, FEM_model%MHD_mesh, FEM_model%MHD_prop,              &
      &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,                     &
+     &    FEM_SGS%Csims, vect1)
 !
 !     ========  Data output
 !
@@ -338,7 +340,8 @@
      &      iphys_LES%div_SGS, iphys_ele_base,                          &
      &      ak_MHD, fem_int, FEM_elens,                                 &
      &      Csims_FEM_MHD%iak_diff_sgs, Csims_FEM_MHD%diff_coefs,       &
-     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &      mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                       &
+     &      nod_fld, ele_fld, vect1)
       end if
 !
 !$omp parallel
@@ -372,7 +375,7 @@
      &     FEM_elens, filtering, Csims_FEM_MHD%icomp_sgs_term,          &
      &     Csims_FEM_MHD%iphys_elediff_vec, Csims_FEM_MHD%sgs_coefs,    &
      &     mk_MHD%mlump_cd, FEM_SGS_wk%wk_filter, mhd_fem_wk,           &
-     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, vect1)
 
       end if
 !
@@ -383,7 +386,7 @@
      &      mesh%node, mesh%ele, MHD_mesh%conduct, iphys, iphys_LES,    &
      &      fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,     &
      &      mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl,  &
-     &      nod_fld)
+     &      nod_fld, vect1)
       end if
 !
 !$omp parallel

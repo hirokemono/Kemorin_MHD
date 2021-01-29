@@ -6,15 +6,15 @@
 !!      subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect, dt,       &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,       &
-!!     &          mlump_fl, f_l, f_nl, nod_fld)
+!!     &          mlump_fl, f_l, f_nl, nod_fld, vect)
 !!      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar, &
-!!     &          iflag_supg, num_int, dt,                              &
-!!     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,  &
-!!     &          jacs, rhs_tbl, fem_wk, mlump_fl, f_l, f_nl, nod_fld)
+!!     &          iflag_supg, num_int, dt, nod_comm, node, ele, fluid,  &
+!!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,       &
+!!     &          mlump_fl, f_l, f_nl, nod_fld, vect)
 !!      subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,   &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,       &
-!!     &          mlump_cd, f_l, f_nl, nod_fld)
+!!     &          mlump_cd, f_l, f_nl, nod_fld, vect)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -30,6 +30,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(vectors_4_solver), intent(inout) :: vect
 !
       module cal_div_sgs_flux_simi
 !
@@ -46,7 +47,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -59,7 +60,7 @@
       subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect, dt,         &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,         &
-     &          mlump_fl, f_l, f_nl, nod_fld)
+     &          mlump_fl, f_l, f_nl, nod_fld, vect)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -85,6 +86,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call reset_ff_smps(node, f_l, f_nl)
@@ -113,16 +115,16 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect1)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
 !
       end subroutine cal_div_sgs_mf_simi
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar,   &
-     &          iflag_supg, num_int, dt,                                &
-     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,    &
-     &          jacs, rhs_tbl, fem_wk, mlump_fl, f_l, f_nl, nod_fld)
+     &          iflag_supg, num_int, dt, nod_comm, node, ele, fluid,    &
+     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,         &
+     &          mlump_fl, f_l, f_nl, nod_fld, vect)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -148,6 +150,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
        call reset_ff_smps(node, f_l, f_nl)
@@ -170,7 +173,7 @@
 !
 ! ----------   communications
 !
-      call scalar_send_recv(i_sgs, nod_comm, nod_fld, vect1)
+      call scalar_send_recv(i_sgs, nod_comm, nod_fld, vect)
 !
       end subroutine cal_div_sgs_sf_simi
 !
@@ -179,7 +182,7 @@
       subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,     &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,         &
-     &          mlump_cd, f_l, f_nl, nod_fld)
+     &          mlump_cd, f_l, f_nl, nod_fld, vect)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -205,6 +208,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(vectors_4_solver), intent(inout) :: vect
 !
 !
       call reset_ff_smps(node, f_l, f_nl)
@@ -228,7 +232,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect1)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
 !
       end subroutine cal_div_sgs_idct_simi
 !

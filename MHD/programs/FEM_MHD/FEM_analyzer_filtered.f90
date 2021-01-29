@@ -137,7 +137,8 @@
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
      &    fem, FEM_model%MHD_mesh, FEM_model%MHD_prop,                  &
      &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,                     &
+     &    FEM_SGS%Csims, vect1)
 !
 !     ========  Data output
 !
@@ -152,7 +153,7 @@
       call filtering_all_fields(FEM_SGS%SGS_par%filter_p,               &
      &    fem%mesh%nod_comm, fem%mesh%node,                             &
      &    FEM_SGS%FEM_filters%filtering,                                &
-     &    SGS_MHD_wk%FEM_SGS_wk%wk_filter, nod_fld)
+     &    SGS_MHD_wk%FEM_SGS_wk%wk_filter, nod_fld, vect1)
 !
 !     -----Output monitor date
 !
