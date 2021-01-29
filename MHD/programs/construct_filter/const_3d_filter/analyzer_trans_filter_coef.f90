@@ -17,6 +17,7 @@
 !
       implicit none
 !
+      integer, save :: nprocs_2nd
       type(ctl_param_newdom_filter), save :: newfil_p1
 !
 ! ----------------------------------------------------------------------
@@ -27,7 +28,6 @@
 !
       subroutine init_trans_filter_coef
 !
-      use m_2nd_pallalel_vector
       use t_ctl_data_newdomain_filter
       use t_domain_group_4_partition
       use t_ctl_param_newdom_filter
@@ -41,7 +41,7 @@
       call init_elapse_time_by_TOTAL
       call elpsed_label_3dfilter
 !
-      call copy_num_processes_to_2nd
+      nprocs_2nd = nprocs
 !
       if (my_rank.eq.0)   write(*,*) 'Transfer filter coefficiens'
 !

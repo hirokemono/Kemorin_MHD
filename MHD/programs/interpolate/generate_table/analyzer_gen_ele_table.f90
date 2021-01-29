@@ -24,10 +24,10 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
-      use m_2nd_pallalel_vector
 !
       implicit none
 !
+      integer, save :: nprocs_2nd
       type(ctl_data_gen_table), save :: gtbl_ctl1
       type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
@@ -39,6 +39,7 @@
 !
       type(interpolate_table), save :: itp_ele
       type(interpolate_coefs_dest), save :: itp_e_coef
+!
       type(para_block_4_interpolate) :: itp_blks1
       type(work_const_itp_table), save :: cst_itp_wke
 !

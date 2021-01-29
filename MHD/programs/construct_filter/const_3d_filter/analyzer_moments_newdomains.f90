@@ -12,12 +12,12 @@
       use m_precision
       use m_machine_parameter
       use calypso_mpi
-      use m_2nd_pallalel_vector
       use t_mesh_data
       use t_ctl_param_newdom_filter
 !
       implicit none
 !
+      integer, save :: nprocs_2nd
       type(ctl_param_newdom_filter), save :: newfil_p1
 !
       type(mesh_geometry), save ::    orgmesh
@@ -51,7 +51,7 @@
 !
 !     --------------------- 
 !
-      call copy_num_processes_to_2nd
+      nprocs_2nd = nprocs
 !
 !     --------------------- 
 !

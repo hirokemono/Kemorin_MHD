@@ -13,7 +13,6 @@
       use m_machine_parameter
       use m_work_time
       use calypso_mpi
-      use m_2nd_pallalel_vector
       use filters_for_newdomains
       use t_mesh_data
       use t_filtering_data
@@ -26,6 +25,7 @@
 !
       implicit none
 !
+      integer, save :: nprocs_2nd
       type(mesh_geometry), save ::    orgmesh
       type(mesh_geometry), save ::    newmesh
 !
@@ -70,7 +70,7 @@
 !
 !     --------------------- 
 !
-      call copy_num_processes_to_2nd
+      nprocs_2nd = nprocs
 !
 !     --------------------- 
 !

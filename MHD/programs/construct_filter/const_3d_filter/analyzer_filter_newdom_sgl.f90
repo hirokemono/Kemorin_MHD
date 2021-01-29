@@ -19,10 +19,10 @@
       use t_filter_coefs
       use t_filter_func_4_sorting
       use t_ctl_param_newdom_filter
-      use m_2nd_pallalel_vector
 !
       implicit none
 !
+      integer, save :: nprocs_2nd
       type(mesh_geometry), save ::    orgmesh
       type(mesh_geometry), save ::    newmesh
 !

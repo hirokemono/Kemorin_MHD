@@ -24,10 +24,10 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
-      use m_2nd_pallalel_vector
 !
       implicit none
 !
+      integer, save :: nprocs_2nd
       type(ctl_data_gen_table), save :: gtbl_ctl1
       type(ctl_params_4_gen_table), save :: gen_itp_p1
 !
@@ -53,7 +53,6 @@
 !
       subroutine init_make_interpolate_table
 !
-      use m_2nd_pallalel_vector
       use t_shape_functions
 !
       use const_mesh_information
