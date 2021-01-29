@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine s_order_dest_table_by_domain                         &
-!!     &         (node, iflag_org_domain, ierr_missing,                 &
+!!     &         (node, nprocs_2nd, iflag_org_domain, ierr_missing,     &
 !!     &          itp_dest, itp_coef_dest, orderd)
 !!        type(node_data), intent(inout) :: node
 !!        type(interpolate_table_dest), intent(inout) :: itp_dest
@@ -28,7 +28,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_order_dest_table_by_domain                           &
-     &         (node, iflag_org_domain, ierr_missing,                   &
+     &         (node, nprocs_2nd, iflag_org_domain, ierr_missing,       &
      &          itp_dest, itp_coef_dest, orderd)
 !
       use calypso_mpi
@@ -36,11 +36,11 @@
       use t_interpolate_tbl_dest
       use t_interpolate_coefs_dest
       use t_work_const_itp_table
-      use m_2nd_pallalel_vector
 !
       type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: iflag_org_domain(node%numnod)
       integer(kind = kint), intent(in) :: ierr_missing
+      integer, intent(in) :: nprocs_2nd
 !
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: itp_coef_dest

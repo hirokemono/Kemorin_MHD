@@ -59,7 +59,8 @@
       call read_control_filter_newdomain(newd_fil_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
+      call set_control_filter_newdomain                                 &
+     &   (nprocs_2nd, newd_fil_ctl1%org_filter_plt,                     &
      &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
      &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
 !

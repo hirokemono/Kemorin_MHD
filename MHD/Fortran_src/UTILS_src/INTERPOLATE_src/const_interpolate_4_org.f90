@@ -4,7 +4,7 @@
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
 !!      subroutine const_interpolate_table_4_orgin                      &
-!!     &         (gen_itp_p, cst_itp_wk)
+!!     &         (nprocs_2nd, gen_itp_p, cst_itp_wk)
 !!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !!
@@ -50,21 +50,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_interpolate_table_4_orgin                        &
-     &         (gen_itp_p, cst_itp_wk)
+     &         (nprocs_2nd, gen_itp_p, cst_itp_wk)
 !
       use t_ctl_params_4_gen_table
-      use m_2nd_pallalel_vector
       use m_interpolate_table_IO
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_types
 !
+      integer, intent(in) :: nprocs_2nd
+      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
+      type(work_const_itp_table), intent(inout) :: cst_itp_wk
+!
       integer :: jp, my_rank_2nd
       integer(kind = kint) :: ierr
       integer(kind = kint) :: np
-!
-      type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
-      type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
 !    set domain ID to be searched
 !

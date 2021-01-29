@@ -8,8 +8,8 @@
 !!      subroutine link_2nd_geometry_4_itp_tbl(id_rank,                 &
 !!     &          newmesh, newgroup)
 !!      subroutine unlink_2nd_geometry_4_table(newmesh, newgroup)
-!!      subroutine s_set_serach_data_4_dest                             &
-!!     &         (dest_node, itp_dest, itp_coef, cst_itp_wk, itp_blks)
+!       subroutine s_set_serach_data_4_dest(nprocs_2nd, dest_node,      &
+!!     &          itp_dest, itp_coef, cst_itp_wk, itp_blks)
 !!        type(node_data), intent(in) :: dest_node
 !!        type(interpolate_table_dest), intent(in) :: itp_dest
 !!        type(interpolate_coefs_dest), intent(inout) :: itp_coef
@@ -23,8 +23,6 @@
       use m_machine_parameter
       use t_mesh_data
       use t_mesh_data_with_pointer
-      use m_2nd_pallalel_vector
-      use m_connect_hexa_2_tetra
 !
       implicit none
 !
@@ -81,6 +79,7 @@
      &          newmesh, newgroup)
 !
       use m_geometry_constants
+      use m_connect_hexa_2_tetra
 !
       integer, intent(in) :: id_rank
       type(mesh_geometry_p), intent(inout) :: newmesh
@@ -105,8 +104,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_serach_data_4_dest                               &
-     &         (dest_node, itp_dest, itp_coef, cst_itp_wk, itp_blks)
+      subroutine s_set_serach_data_4_dest(nprocs_2nd, dest_node,       &
+     &          itp_dest, itp_coef, cst_itp_wk, itp_blks)
 !
       use t_geometry_data
       use t_interpolate_tbl_dest
@@ -114,11 +113,10 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
 !
-      use m_2nd_pallalel_vector
-!
       use order_dest_table_by_type
       use transfer_to_long_integers
 !
+      integer, intent(in) :: nprocs_2nd
       type(node_data), intent(in) :: dest_node
       type(interpolate_table_dest), intent(inout) :: itp_dest
       type(interpolate_coefs_dest), intent(inout) :: itp_coef

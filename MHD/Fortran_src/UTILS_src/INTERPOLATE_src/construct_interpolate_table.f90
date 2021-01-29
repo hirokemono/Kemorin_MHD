@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2006
 !
 !!      subroutine s_construct_interpolate_table                        &
-!!     &         (gen_itp_p, node, neib_nod, org_blocks,                &
+!!     &         (nprocs_2nd, gen_itp_p, node, neib_nod, org_blocks,    &
 !!     &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !!        type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
 !!        type(node_data), intent(in) :: node
@@ -26,13 +26,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_construct_interpolate_table                          &
-     &         (gen_itp_p, node, neib_nod, org_blocks,                  &
+     &         (nprocs_2nd, gen_itp_p, node, neib_nod, org_blocks,      &
      &          itp_coef_dest, iflag_org_domain, ierr_missing)
 !
       use calypso_mpi
       use calypso_mpi_int
       use m_machine_parameter
-      use m_2nd_pallalel_vector
+      use m_connect_hexa_2_tetra
 !
       use t_ctl_params_4_gen_table
       use t_mesh_data
@@ -44,6 +44,7 @@
       use search_node_in_element
       use subroutines_4_search_table
 !
+      integer, intent(in) :: nprocs_2nd
       type(ctl_params_4_gen_table), intent(in) :: gen_itp_p
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in)  :: neib_nod

@@ -7,7 +7,8 @@
 !>@brief  SEt control paramteres for interpolation
 !!
 !!@verbatim
-!!     subroutine set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
+!!      subroutine set_ctl_params_interpolation                         &
+!!     &         (gtbl_ctl, gen_itp_p, nprocs_2nd)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!@endverbatim
@@ -33,10 +34,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
+      subroutine set_ctl_params_interpolation                           &
+     &         (gtbl_ctl, gen_itp_p, nprocs_2nd)
 !
       use m_machine_parameter
-      use m_2nd_pallalel_vector
       use m_file_format_switch
       use m_field_file_format
       use t_ctl_params_4_gen_table
@@ -48,6 +49,7 @@
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
+      integer, intent(inout) :: nprocs_2nd
 !
       integer(kind = kint) :: nmax
 !
@@ -104,7 +106,8 @@
      &    gtbl_ctl%dst_plt%field_file_prefix,                           &
      &    gtbl_ctl%dst_plt%field_file_fmt_ctl, gen_itp_p%itp_ucd_IO)
 !
-      call set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p)
+      call set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p,             &
+     &                                 nprocs_2nd)
 !
       gen_itp_p%itp_dest_mesh_file%iflag_format                         &
      &   = choose_file_format(gtbl_ctl%dst_plt%mesh_file_fmt_ctl)

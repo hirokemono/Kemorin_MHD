@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on May., 2008
 !
-!!      subroutine set_inod_4_newdomain_filter(newfil_p, nod_d_grp,     &
-!!     &          org_node, org_ele, new_node, itl_nod_part, fil_coef,  &
+!!      subroutine set_inod_4_newdomain_filter                          &
+!!     &         (nprocs_2nd, newfil_p, nod_d_grp, org_node, org_ele,   &
+!!     &          new_node, itl_nod_part, fil_coef,                     &
 !!     &          whole_fil_sort, fluid_fil_sort, ierr)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(in)  :: nod_d_grp
@@ -20,7 +21,6 @@
 !
       use m_precision
 !
-      use m_2nd_pallalel_vector
       use set_parallel_file_name
       use mesh_IO_select
       use const_newdomain_filter
@@ -35,8 +35,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_inod_4_newdomain_filter(newfil_p, nod_d_grp,       &
-     &          org_node, org_ele, new_node, itl_nod_part, fil_coef,    &
+      subroutine set_inod_4_newdomain_filter                            &
+     &         (nprocs_2nd, newfil_p, nod_d_grp, org_node, org_ele,     &
+     &          new_node, itl_nod_part, fil_coef,                       &
      &          whole_fil_sort, fluid_fil_sort, ierr)
 !
       use t_mesh_data
@@ -49,6 +50,7 @@
       use m_field_file_format
       use copy_mesh_structures
 !
+      integer, intent(in) :: nprocs_2nd
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
       type(node_data),    intent(inout) :: org_node

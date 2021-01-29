@@ -2,7 +2,7 @@ add_export_item_4_part.o: $(PART_COMMONDIR)/add_export_item_4_part.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 check_domain_prop_4_part.o: $(PART_COMMONDIR)/check_domain_prop_4_part.f90 m_precision.o t_domain_group_4_partition.o t_internal_4_partitioner.o t_comm_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_domain_tbl_by_file.o: $(PART_COMMONDIR)/const_domain_tbl_by_file.f90 m_precision.o m_2nd_pallalel_vector.o t_mesh_data.o t_file_IO_parameter.o t_domain_group_4_partition.o set_parallel_file_name.o mesh_IO_select.o
+const_domain_tbl_by_file.o: $(PART_COMMONDIR)/const_domain_tbl_by_file.f90 m_precision.o t_mesh_data.o t_file_IO_parameter.o t_domain_group_4_partition.o set_parallel_file_name.o mesh_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_local_groups.o: $(PART_COMMONDIR)/const_local_groups.f90 m_precision.o t_domain_group_4_partition.o set_group_4_subdomain.o t_group_data.o t_mesh_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

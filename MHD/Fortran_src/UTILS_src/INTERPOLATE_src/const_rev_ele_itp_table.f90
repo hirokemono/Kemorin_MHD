@@ -3,7 +3,7 @@
 !
 !
 !!      subroutine const_rev_ele_interpolate_table                      &
-!!     &         (gen_itp_p, cst_itp_wk)
+!!     &         (nprocs_2nd, gen_itp_p, cst_itp_wk)
 !!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!        type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !
@@ -29,20 +29,20 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_rev_ele_interpolate_table                        &
-     &         (gen_itp_p, cst_itp_wk)
+     &         (nprocs_2nd, gen_itp_p, cst_itp_wk)
 !
       use calypso_mpi
 !
       use t_interpolate_tbl_org
       use t_ctl_params_4_gen_table
 !
-      use m_2nd_pallalel_vector
       use m_interpolate_table_IO
 !
       use copy_interpolate_types
       use itp_table_IO_select_4_zlib
       use const_interpolate_4_org
 !
+      integer, intent(in) :: nprocs_2nd
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
       type(work_const_itp_table), intent(inout) :: cst_itp_wk
 !

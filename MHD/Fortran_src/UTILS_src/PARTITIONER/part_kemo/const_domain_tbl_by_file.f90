@@ -3,10 +3,13 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine s_const_domain_tbl_by_file(mesh_head, nod_d_grp)
-!!      subroutine count_nnod_whole_domain(mesh_file, nod_d_grp)
+!!      subroutine s_const_domain_tbl_by_file                           &
+!!     &         (nprocs_2nd, mesh_file, nod_d_grp)
+!!      subroutine count_nnod_whole_domain                              &
+!!     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
-!!      subroutine set_domain_grp_whole_domain(mesh_file, nod_d_grp)
+!!      subroutine set_domain_grp_whole_domain                          &
+!!     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!      subroutine set_domain_grp_each_domain                           &
@@ -18,7 +21,6 @@
 !
       use m_precision
 !
-      use m_2nd_pallalel_vector
       use t_mesh_data
       use t_file_IO_parameter
       use t_domain_group_4_partition
@@ -33,27 +35,32 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_domain_tbl_by_file(mesh_file, nod_d_grp)
+      subroutine s_const_domain_tbl_by_file                             &
+     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !
+      integer, intent(in) :: nprocs_2nd
       type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
 !
-      call count_nnod_whole_domain(mesh_file, nod_d_grp)
+      call count_nnod_whole_domain(nprocs_2nd, mesh_file, nod_d_grp)
 !
       call alloc_domain_group(nod_d_grp)
       call alloc_local_id_tbl(nod_d_grp)
       call alloc_org_gl_id(nod_d_grp)
 !
-      call set_domain_grp_whole_domain(mesh_file, nod_d_grp)
+      call set_domain_grp_whole_domain                                  &
+     &   (nprocs_2nd, mesh_file, nod_d_grp)
 !
       end subroutine s_const_domain_tbl_by_file
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_nnod_whole_domain(mesh_file, nod_d_grp)
+      subroutine count_nnod_whole_domain                                &
+     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !
+      integer, intent(in) :: nprocs_2nd
       type(field_IO_params), intent(in) :: mesh_file
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
@@ -81,8 +88,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_domain_grp_whole_domain(mesh_file, nod_d_grp)
+      subroutine set_domain_grp_whole_domain                            &
+     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !
+      integer, intent(in) :: nprocs_2nd
       type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !

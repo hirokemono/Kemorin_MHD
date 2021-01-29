@@ -19,6 +19,7 @@
       use t_filter_coefs
       use t_filter_func_4_sorting
       use t_ctl_param_newdom_filter
+      use m_2nd_pallalel_vector
 !
       implicit none
 !
@@ -65,7 +66,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
+      call set_control_filter_newdomain                                 &
+     &   (nprocs_2nd, newd_fil_ctl1%org_filter_plt,                     &
      &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
      &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
       if(ierr .gt. 0) stop
@@ -73,7 +75,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
       call s_const_domain_tbl_by_file                                   &
-     &   (newfil_p1%tgt_mesh_file, domain_grp1%nod_d_grp)
+     &   (nprocs_2nd, newfil_p1%tgt_mesh_file, domain_grp1%nod_d_grp)
 !
       domain_grp1%ele_d_grp%num_s_domin = 0
       call alloc_domain_group(domain_grp1%ele_d_grp)
@@ -92,20 +94,21 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
       call local_newdomain_filter_sngl                                  &
-     &   (newfil_p1, itl_nod_part1, domain_grp1%nod_d_grp,              &
+     &   (nprocs_2nd, newfil_p1, itl_nod_part1, domain_grp1%nod_d_grp,  &
      &    comm_part1, orgmesh%node, orgmesh%ele, newmesh, fil_coef1,    &
      &    fils_sort1%whole_fil_sort, fils_sort1%fluid_fil_sort)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (newfil_p1%iflag_set_filter_elen .gt. 0                        &
      &  .or. newfil_p1%iflag_set_filter_moms.gt.0) then
-        call trans_filter_moms_newmesh_sgl(newfil_p1, orgmesh, newmesh)
+        call trans_filter_moms_newmesh_sgl                              &
+     &     (nprocs_2nd, newfil_p1, orgmesh, newmesh)
       end if
 !
       if (newfil_p1%iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
-        call filters_4_newdomains_single                                &
-     &     (newfil_p1, filtering_nd, orgmesh%node, orgmesh%ele,         &
+        call filters_4_newdomains_single(nprocs_2nd,                    &
+     &      newfil_p1, filtering_nd, orgmesh%node, orgmesh%ele,         &
      &      domain_grp1%nod_d_grp, newmesh, fil_coef1, fils_sort1)
 !
         call dealloc_local_ne_id_tbl(domain_grp1)

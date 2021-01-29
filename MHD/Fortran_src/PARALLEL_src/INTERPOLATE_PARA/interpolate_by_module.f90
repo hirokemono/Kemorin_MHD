@@ -333,7 +333,6 @@
       use t_geometry_data
       use t_interpolate_tbl_org
       use t_interpolate_tbl_dest
-      use m_2nd_pallalel_vector
 !
       use interpolate_imark_1pe
       use calypso_SR_int

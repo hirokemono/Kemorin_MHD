@@ -24,6 +24,7 @@
       use t_work_const_itp_table
       use t_search_block_4_itp
       use t_ctl_params_4_gen_table
+      use m_2nd_pallalel_vector
 !
       implicit none
 !
@@ -71,7 +72,8 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
       call read_control_4_gen_itp_table(gtbl_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
-      call set_ctl_params_4_gen_table(gtbl_ctl1, gen_itp_p1, itp_blks1)
+      call set_ctl_params_4_gen_table                                   &
+     &   (gtbl_ctl1, gen_itp_p1, itp_blks1, nprocs_2nd)
       
       call dealloc_ctl_data_gen_table(gtbl_ctl1)
 !
@@ -123,7 +125,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest(org_femmesh%mesh%node,              &
+      call s_set_serach_data_4_dest(nprocs_2nd, org_femmesh%mesh%node, &
      &    itp_ele%tbl_dest, itp_e_coef, cst_itp_wke, itp_blks1)
 !
       end subroutine init_analyzer
@@ -150,8 +152,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table                                &
-     &   (gen_itp_p1, org_femmesh%mesh%node, next_tbl_i%neib_nod,       &
+      call s_construct_interpolate_table(nprocs_2nd,                    &
+     &    gen_itp_p1, org_femmesh%mesh%node, next_tbl_i%neib_nod,       &
      &    itp_blks1%org_blocks, itp_e_coef,                             &
      &    cst_itp_wke%iflag_org_domain, ierr_missing)
 !
@@ -159,7 +161,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
       call s_order_dest_table_by_domain(org_femmesh%mesh%node,          &
-     &    cst_itp_wke%iflag_org_domain, ierr_missing,                   &
+     &    nprocs_2nd, cst_itp_wke%iflag_org_domain, ierr_missing,       &
      &    itp_ele%tbl_dest, itp_e_coef, cst_itp_wke%orderd)
 !
 !      call check_table_in_org_2(13, itp_ele%tbl_dest, itp_e_coef)
@@ -183,11 +185,13 @@
       if(gen_itp_p1%iflag_reverse_itp_tbl .eq. 1) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'const_rev_ele_interpolate_table'
-        call const_rev_ele_interpolate_table(gen_itp_p1, cst_itp_wke)
+        call const_rev_ele_interpolate_table                            &
+     &     (nprocs_2nd, gen_itp_p1, cst_itp_wke)
       else
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'const_interpolate_table_4_orgin'
-        call const_interpolate_table_4_orgin(gen_itp_p1, cst_itp_wke)
+        call const_interpolate_table_4_orgin                            &
+     &     (nprocs_2nd, gen_itp_p1, cst_itp_wke)
       end if
 !
 !

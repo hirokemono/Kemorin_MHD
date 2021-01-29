@@ -5,7 +5,7 @@
 !
 !!      subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,     &
 !!     &          org_femmesh, new_femmesh, itp_info, t_param,          &
-!!     &          v_1st_sol, v_2nd_sol, ierr)
+!!     &          v_1st_sol, v_2nd_sol, nprocs_2nd, ierr)
 !!        type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
 !!        type(ctl_data_gen_table), intent(inout) :: gtbl_ctl
 !!        type(mesh_data), intent(inout) :: org_femmesh
@@ -34,7 +34,7 @@
 !
       subroutine s_input_control_interpolate(gen_itp_p, gtbl_ctl,       &
      &          org_femmesh, new_femmesh, itp_info, t_param,            &
-     &          v_1st_sol, v_2nd_sol, ierr)
+     &          v_1st_sol, v_2nd_sol, nprocs_2nd, ierr)
 !
       use t_mesh_data
       use t_interpolate_table
@@ -44,7 +44,6 @@
       use t_ctl_params_4_gen_table
       use t_vector_for_solver
 !
-      use m_2nd_pallalel_vector
       use m_interpolate_table_IO
 !
       use set_ctl_interpolation
@@ -65,6 +64,7 @@
       type(time_step_param), intent(inout) :: t_param
       type(vectors_4_solver), intent(inout) :: v_1st_sol, v_2nd_sol
 !
+      integer, intent(inout) :: nprocs_2nd
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -72,7 +72,8 @@
       call read_control_4_interpolate(gtbl_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
-      call set_ctl_params_interpolation(gtbl_ctl, gen_itp_p)
+      call set_ctl_params_interpolation                                 &
+     &   (gtbl_ctl, gen_itp_p, nprocs_2nd)
 !
       call set_fixed_time_step_params                                   &
      &   (gtbl_ctl%t_gt_ctl, t_param, ierr, e_message)

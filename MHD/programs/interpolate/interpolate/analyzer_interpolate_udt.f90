@@ -25,6 +25,7 @@
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
       use m_array_for_send_recv
+      use m_2nd_pallalel_vector
 !
       implicit none
 !
@@ -74,7 +75,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
      &    org_femmesh, new_femmesh, itp_udt, t_ITP,                     &
-     &    vect1, v_sol2, ierr)
+     &    vect1, v_sol2, nprocs_2nd, ierr)
 !
       call set_ctl_interpolate_udt(gtbl_ctl1%fld_gt_ctl, nod_fld_ITP)
       call dealloc_phys_control(gtbl_ctl1%fld_gt_ctl)

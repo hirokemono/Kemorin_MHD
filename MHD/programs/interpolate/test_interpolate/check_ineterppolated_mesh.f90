@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!!      subroutine s_check_ineterppolated_mesh                          &
+!!      subroutine s_check_ineterppolated_mesh(nprocs_2nd,              &
 !!     &         (dest_node, inod_global_itp, xx_interpolate)
 !
       module check_ineterppolated_mesh
@@ -18,14 +18,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_check_ineterppolated_mesh                            &
-     &         (dest_node, inod_global_itp, xx_interpolate)
+      subroutine s_check_ineterppolated_mesh(nprocs_2nd,                &
+     &          dest_node, inod_global_itp, xx_interpolate)
 !
       use calypso_mpi
-      use m_2nd_pallalel_vector
-!
       use t_geometry_data
 !
+      integer, intent(in) :: nprocs_2nd
       type(node_data), intent(in) :: dest_node
 !
       integer(kind = kint_gl), intent(in)                               &

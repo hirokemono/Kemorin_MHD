@@ -4,7 +4,7 @@
 !     Written by H. Matsui on May., 2008
 !
 !!      subroutine const_mesh_newdomain_filter(new_filter_coef_head,    &
-!!     &          itl_nod_part, new_comm, comm_part)
+!!     &          nprocs_2nd, itl_nod_part, new_comm, comm_part)
 !!      subroutine const_mesh_each_filter_domain                        &
 !!     &         (my_rank2, itl_nod_part, new_comm, comm_part)
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
@@ -25,13 +25,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_mesh_newdomain_filter(new_filter_coef_head,      &
-     &          itl_nod_part, new_comm, comm_part)
+     &          nprocs_2nd, itl_nod_part, new_comm, comm_part)
 !
-      use m_2nd_pallalel_vector
       use t_comm_table
       use t_partitioner_comm_table
 !
       character(len=kchara), intent(in) :: new_filter_coef_head
+      integer, intent(in) :: nprocs_2nd
       type(internal_4_partitioner), intent(in) :: itl_nod_part
 !
       type(communication_table), intent(inout) :: new_comm

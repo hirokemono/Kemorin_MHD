@@ -3,8 +3,9 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine set_control_filter_newdomain(org_plt, new_plt,       &
-!!     &          ffile_ctl, org_fil_files_ctl, newfil_p, ierr)
+!!      subroutine set_control_filter_newdomain                        &
+!!     &         (nprocs_2nd, org_plt, new_plt, ffile_ctl,             &
+!!     &          org_fil_files_ctl, newfil_p, ierr)
 !!        type(platform_data_control), intent(in) :: org_plt, new_plt
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !!        type(ctl_param_newdom_filter), intent(inout) :: newfil_p
@@ -39,13 +40,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_filter_newdomain(org_plt, new_plt,         &
-     &          ffile_ctl, org_fil_files_ctl, newfil_p, ierr)
+      subroutine set_control_filter_newdomain                          &
+     &         (nprocs_2nd, org_plt, new_plt, ffile_ctl,               &
+     &          org_fil_files_ctl, newfil_p, ierr)
 !
       use calypso_mpi
       use m_machine_parameter
       use calypso_mpi
-      use m_2nd_pallalel_vector
       use m_file_format_switch
 !
       use m_default_file_prefix
@@ -54,6 +55,7 @@
       use t_ctl_data_filter_files
       use set_control_platform_data
 !
+      integer, intent(inout) :: nprocs_2nd
       type(platform_data_control), intent(in) :: org_plt, new_plt
       type(filter_file_control), intent(in) :: ffile_ctl
       type(org_filter_prefix_ctls), intent(in) :: org_fil_files_ctl

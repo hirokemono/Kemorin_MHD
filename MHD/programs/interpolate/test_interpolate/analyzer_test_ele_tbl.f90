@@ -22,6 +22,7 @@
       use t_ctl_data_gen_table
       use t_ctl_params_4_gen_table
       use m_array_for_send_recv
+      use m_2nd_pallalel_vector
 !
       implicit none
 !
@@ -63,7 +64,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
      &    org_femmesh, new_femmesh, itp_ele_t, t_ITP,                   &
-     &    vect1, v_sol2, ierr)
+     &    vect1, v_sol2, nprocs_2nd, ierr)
 !
 !     --------------------- 
 !
@@ -90,8 +91,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
-      call interpolation_4_mesh_test                                    &
-     &   (org_femmesh%mesh, new_femmesh%mesh, itp_ele_t, vect1, v_sol2)
+      call interpolation_4_mesh_test(nprocs_2nd,                        &
+     &    org_femmesh%mesh, new_femmesh%mesh, itp_ele_t, vect1, v_sol2)
 !
       if (my_rank .lt. gen_itp_p1%ndomain_dest) then
         call finalize_size_4_smp_mesh                                   &

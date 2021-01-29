@@ -6,7 +6,7 @@
 !!      subroutine trans_filter_moms_newmesh_para                       &
 !!     &         (newfil_p, orgmesh, newmesh)
 !!      subroutine trans_filter_moms_newmesh_sgl                        &
-!!     &         (newfil_p, orgmesh, newmesh)
+!!     &         (nprocs_2nd, newfil_p, orgmesh, newmesh)
 !!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(mesh_geometry), intent(inout) :: orgmesh
 !!        type(mesh_geometry), intent(inout) :: newmesh
@@ -74,12 +74,12 @@
 !   --------------------------------------------------------------------
 !
       subroutine trans_filter_moms_newmesh_sgl                          &
-     &         (newfil_p, orgmesh, newmesh)
+     &         (nprocs_2nd, newfil_p, orgmesh, newmesh)
 !
       use calypso_mpi
-      use m_2nd_pallalel_vector
       use set_filter_moms_2_new_mesh
 !
+      integer, intent(in) :: nprocs_2nd
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !
       type(mesh_geometry), intent(inout) :: orgmesh
@@ -89,7 +89,7 @@
       integer(kind = kint) :: ierr
 !
 !
-      call count_nele_newdomain_single(newfil_p)
+      call count_nele_newdomain_single(nprocs_2nd, newfil_p)
 !
       call allocate_iele_local_newfilter
 !
@@ -138,11 +138,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine count_nele_newdomain_single(newfil_p)
+      subroutine count_nele_newdomain_single(nprocs_2nd, newfil_p)
 !
-      use m_2nd_pallalel_vector
       use set_filter_moms_2_new_mesh
 !
+      integer, intent(in) :: nprocs_2nd
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !
       type(mesh_geometry) :: mesh_IO_f

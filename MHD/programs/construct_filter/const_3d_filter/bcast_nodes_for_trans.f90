@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!!      subroutine bcast_parallel_domain_tbl(mesh_file, nod_d_grp)
+!!      subroutine bcast_parallel_domain_tbl                            &
+!!     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !!
@@ -48,20 +49,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_parallel_domain_tbl(mesh_file, nod_d_grp)
+      subroutine bcast_parallel_domain_tbl                              &
+     &         (nprocs_2nd, mesh_file, nod_d_grp)
 !
       use t_file_IO_parameter
-      use m_2nd_pallalel_vector
       use t_domain_group_4_partition
       use const_domain_tbl_by_file
       use calypso_mpi_int
 !
+      integer, intent(in) :: nprocs_2nd
       type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !
 !
       if(my_rank .eq. 0) then
-        call count_nnod_whole_domain(mesh_file, nod_d_grp)
+        call count_nnod_whole_domain(nprocs_2nd, mesh_file, nod_d_grp)
       end if
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+1)
@@ -75,7 +77,8 @@
 !
       if(iflag_F3D_time) call start_elapsed_time(ist_elapsed_F3D+2)
       if(my_rank .eq. 0) then
-        call set_domain_grp_whole_domain(mesh_file, nod_d_grp)
+        call set_domain_grp_whole_domain                                &
+     &     (nprocs_2nd, mesh_file, nod_d_grp)
       else
         call set_domain_grp_each_domain(mesh_file, my_rank, nod_d_grp)
       end if

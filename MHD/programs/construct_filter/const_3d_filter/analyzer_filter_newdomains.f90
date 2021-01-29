@@ -78,14 +78,15 @@
       call read_control_filter_newdomain(newd_fil_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(newd_fil_ctl1%org_filter_plt,   &
+      call set_control_filter_newdomain                                 &
+     &   (nprocs_2nd, newd_fil_ctl1%org_filter_plt,                     &
      &    newd_fil_ctl1%new_filter_plt, newd_fil_ctl1%ffile_ndom_ctl,   &
      &    newd_fil_ctl1%org_filter_file_ctls, newfil_p1, ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
       call bcast_parallel_domain_tbl                                    &
-     &   (newfil_p1%tgt_mesh_file, domain_grp1%nod_d_grp)
+     &   (nprocs_2nd, newfil_p1%tgt_mesh_file, domain_grp1%nod_d_grp)
 !
       domain_grp1%ele_d_grp%num_s_domin = 0
       call alloc_domain_group(domain_grp1%ele_d_grp)
@@ -103,7 +104,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_para'
       call local_newdomain_filter_para                                  &
-     &   (newfil_p1, itl_nod_part1, domain_grp1%nod_d_grp,              &
+     &   (nprocs_2nd, newfil_p1, itl_nod_part1, domain_grp1%nod_d_grp,  &
      &    comm_part1, orgmesh%node, orgmesh%ele, newmesh, fil_coef1,    &
      &    fils_sort1%whole_fil_sort, fils_sort1%fluid_fil_sort)
 !

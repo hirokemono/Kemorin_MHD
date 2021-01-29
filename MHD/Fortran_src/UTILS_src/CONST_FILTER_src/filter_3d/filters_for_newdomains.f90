@@ -7,7 +7,7 @@
 !!     &         (newfil_p, filtering, org_node, org_ele,               &
 !!     &          nod_d_grp, newmesh, fil_coef, fils_sort)
 !!      subroutine filters_4_newdomains_single                          &
-!!     &         (newfil_p, filtering, org_node, org_ele,               &
+!!     &         (nprocs_2nd, newfil_p, filtering, org_node, org_ele,   &
 !!     &          nod_d_grp, newmesh, fil_coef, fils_sort)
 !!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(filtering_data_type), intent(inout) :: filtering
@@ -73,12 +73,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine filters_4_newdomains_single                            &
-     &         (newfil_p, filtering, org_node, org_ele,                 &
+     &         (nprocs_2nd, newfil_p, filtering, org_node, org_ele,     &
      &          nod_d_grp, newmesh, fil_coef, fils_sort)
 !
-      use m_2nd_pallalel_vector
       use t_domain_group_4_partition
 !
+      integer, intent(in) :: nprocs_2nd
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
       type(filtering_data_type), intent(inout) :: filtering
       type(node_data), intent(inout) :: org_node
@@ -111,7 +111,6 @@
 !
       use t_filter_func_4_sorting
 !
-      use m_2nd_pallalel_vector
       use m_nod_filter_comm_table
       use m_filter_file_names
       use m_field_file_format

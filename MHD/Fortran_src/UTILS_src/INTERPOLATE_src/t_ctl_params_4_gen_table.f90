@@ -10,8 +10,9 @@
 !!      subroutine alloc_search_param(gen_itp_p)
 !!      subroutine dealloc_search_param(gen_itp_p)
 !!      subroutine set_ctl_params_4_gen_table                           &
-!!     &         (gtbl_ctl, gen_itp_p, itp_blks)
-!!      subroutine set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p)
+!!     &         (gtbl_ctl, gen_itp_p, itp_blks, nprocs_2nd)
+!!      subroutine set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p,     &
+!!     &                                       nprocs_2nd)
 !!        type(ctl_data_gen_table), intent(in) :: gtbl_ctl
 !!@endverbatim
 !
@@ -103,12 +104,11 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_4_gen_table                             &
-     &         (gtbl_ctl, gen_itp_p, itp_blks)
+     &         (gtbl_ctl, gen_itp_p, itp_blks, nprocs_2nd)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use m_2nd_pallalel_vector
       use m_file_format_switch
       use m_default_file_prefix
       use t_ctl_data_gen_table
@@ -122,6 +122,7 @@
 !
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
       type(para_block_4_interpolate), intent(inout) :: itp_blks
+      integer, intent(inout) :: nprocs_2nd
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, gtbl_ctl%src_plt)
@@ -153,7 +154,8 @@
       end if
 !
 !
-      call set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p)
+      call set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p,             &
+     &                                 nprocs_2nd)
 !
       if (nprocs .ne. gen_itp_p%ndomain_dest) then
         write(e_message,*) 'Number of destination domains  ',           &
@@ -243,13 +245,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p)
+      subroutine set_interpolate_domains_ctl(gtbl_ctl, gen_itp_p,       &
+     &                                       nprocs_2nd)
 !
       use t_ctl_data_gen_table
-      use m_2nd_pallalel_vector
 !
       type(ctl_data_gen_table), intent(in) :: gtbl_ctl
       type(ctl_params_4_gen_table), intent(inout) :: gen_itp_p
+      integer, intent(inout) :: nprocs_2nd
 !
 !
       gen_itp_p%ndomain_org = 1

@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!!      subroutine interpolation_4_mesh_test                            &
-!!     &          (org_mesh, dest_mesh, itp_table, v_1st_sol, v_2nd_sol)
+!!      subroutine interpolation_4_mesh_test(nprocs_2nd, org_mesh,      &
+!!     &           dest_mesh, itp_table, v_1st_sol, v_2nd_sol)
 !!        type(mesh_geometry), intent(inout) :: org_mesh
 !!        type(mesh_geometry), intent(in) :: dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_table
@@ -29,8 +29,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine interpolation_4_mesh_test                              &
-     &          (org_mesh, dest_mesh, itp_table, v_1st_sol, v_2nd_sol)
+      subroutine interpolation_4_mesh_test(nprocs_2nd, org_mesh,        &
+     &           dest_mesh, itp_table, v_1st_sol, v_2nd_sol)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -41,6 +41,7 @@
 !
       use check_ineterppolated_mesh
 !
+      integer, intent(in) :: nprocs_2nd
       type(mesh_geometry), intent(inout) :: org_mesh
       type(mesh_geometry), intent(in) :: dest_mesh
       type(interpolate_table), intent(in) :: itp_table
@@ -73,7 +74,7 @@
 !
 !
       if (iflag_debug.gt.0)  write(*,*) 's_check_ineterppolated_mesh'
-      call s_check_ineterppolated_mesh(dest_mesh%node,                  &
+      call s_check_ineterppolated_mesh(nprocs_2nd, dest_mesh%node,      &
      &    inod_global_itp, xx_interpolate)
       call deallocate_interpolate_geometry
 !
