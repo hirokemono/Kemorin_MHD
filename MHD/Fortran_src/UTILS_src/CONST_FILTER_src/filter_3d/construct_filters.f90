@@ -5,7 +5,7 @@
 !
 !!      subroutine select_const_filter(file_name, newfil_p, mesh,       &
 !!     &         fem_int, tbl_crs, rhs_mat, FEM_elen, fil_elist, gfil_p,&
-!!     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices)
+!!     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices, v_sol)
 !!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(finite_element_integration), intent(in) :: fem_int
@@ -17,6 +17,7 @@
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !!        type(const_filter_coefs), intent(inout) :: fil_gen
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module construct_filters
 !
@@ -41,6 +42,7 @@
       use t_ctl_params_4_gen_filter
       use t_ctl_param_newdom_filter
       use t_binary_IO_buffer
+      use t_vector_for_solver
 !
       use cal_element_size
       use cal_filter_moms_ele_by_elen
@@ -60,7 +62,7 @@
      &                                :: id_new_filter_coef = 33
 !
       private :: id_read_org, id_read_new, id_write_new
-private :: bbuf_org, bbuf_new
+      private :: bbuf_org, bbuf_new
 !
       private :: const_commutative_filter, const_simple_filter
       private :: correct_commutative_filter, correct_by_simple_filter
@@ -73,7 +75,7 @@ private :: bbuf_org, bbuf_new
 !
       subroutine select_const_filter(file_name, newfil_p, mesh,         &
      &         fem_int, tbl_crs, rhs_mat, FEM_elen, fil_elist, gfil_p,  &
-     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices)
+     &         ref_m, dxidxs, FEM_moments, fil_gen, f_matrices, v_sol)
 !
       character(len=kchara), intent(in) :: file_name
       type(ctl_param_newdom_filter), intent(in) :: newfil_p
@@ -90,7 +92,7 @@ private :: bbuf_org, bbuf_new
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
       type(const_filter_coefs), intent(inout) :: fil_gen
       type(matrices_4_filter), intent(inout) :: f_matrices
-!
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_failed_filter_flag(fil_gen%whole_area)
@@ -124,7 +126,7 @@ private :: bbuf_org, bbuf_new
      &     (mesh, newfil_p, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,      &
      &      fem_int%rhs_tbl, fem_int%m_lump, tbl_crs, rhs_mat,          &
      &      FEM_elen, ref_m, fil_elist, gfil_p, dxidxs, FEM_moments,    &
-     &      fil_gen, f_matrices)
+     &      fil_gen, f_matrices, v_sol)
         call finalize_4_cal_fileters(gfil_p%iflag_ordering_list,        &
      &     fil_gen%fil_coef, f_matrices%fil_tbl_crs,                    &
      &      f_matrices%fil_mat_crs, f_matrices%fil_mat, ref_m)
@@ -136,7 +138,7 @@ private :: bbuf_org, bbuf_new
      &     (file_name, mesh, fem_int%jcs%g_FEM, fem_int%jcs%jac_3d,     &
      &      fem_int%rhs_tbl, fem_int%m_lump, tbl_crs, rhs_mat,          &
      &      FEM_elen, ref_m, fil_elist, gfil_p, dxidxs, FEM_moments,    &
-     &      fil_gen%fil_coef, fil_gen%tmp_coef, f_matrices)
+     &      fil_gen%fil_coef, fil_gen%tmp_coef, f_matrices, v_sol)
       end if
 !
       end subroutine select_const_filter
@@ -203,7 +205,8 @@ private :: bbuf_org, bbuf_new
       subroutine const_simple_filter                                    &
      &         (file_name, mesh, g_FEM, jac_3d_q, rhs_tbl, m_lump,      &
      &          tbl_crs, rhs_mat, FEM_elen, ref_m, fil_elist, gfil_p,   &
-     &          dxidxs, FEM_moments, fil_coef, tmp_coef, f_matrices)
+     &          dxidxs, FEM_moments, fil_coef, tmp_coef,                &
+     &          f_matrices, v_sol)
 !
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
@@ -228,6 +231,7 @@ private :: bbuf_org, bbuf_new
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
       type(each_filter_coef), intent(inout) :: fil_coef, tmp_coef
       type(matrices_4_filter), intent(inout) :: f_matrices
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
@@ -248,8 +252,8 @@ private :: bbuf_org, bbuf_new
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele(mesh%nod_comm, mesh%node, mesh%ele,   &
-     &    g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat,           &
-     &    gfil_p, FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
+     &    g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat, gfil_p,   &
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1), v_sol)
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'cal_fmoms_ele_by_elen 2'
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
@@ -421,7 +425,7 @@ private :: bbuf_org, bbuf_new
       subroutine correct_by_simple_filter(mesh, newfil_p,               &
      &          g_FEM, jac_3d_q, rhs_tbl, m_lump, tbl_crs,              &
      &          rhs_mat, FEM_elen, ref_m, fil_elist, gfil_p, dxidxs,    &
-     &          FEM_moments, fil_gen, f_matrices)
+     &          FEM_moments, fil_gen, f_matrices, v_sol)
 !
       use m_filter_file_names
       use m_field_file_format
@@ -451,6 +455,7 @@ private :: bbuf_org, bbuf_new
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
       type(const_filter_coefs), intent(inout) :: fil_gen
       type(matrices_4_filter), intent(inout) :: f_matrices
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       type(communication_table) :: comm_IO
       type(node_data) ::           nod_IO
@@ -543,8 +548,8 @@ private :: bbuf_org, bbuf_new
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele(mesh%nod_comm, mesh%node, mesh%ele,   &
-     &    g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat,           &
-     &    gfil_p, FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
+     &    g_FEM, jac_3d_q, rhs_tbl, tbl_crs, m_lump, rhs_mat, gfil_p,   &
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1), v_sol)
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'correct_fmoms_ele_by_elen 1'
       call correct_fmoms_ele_by_elen                                    &

@@ -161,7 +161,7 @@
       allocate(viz%geofem)
       call mpi_input_mesh(viz%mesh_file_IO, nprocs, viz%geofem)
 !
-      call init_send_recv(viz%geofem%mesh%nod_comm)
+      call init_nod_send_recv(viz%geofem%mesh)
 !
 !   --------------------------------
 !       setup field information

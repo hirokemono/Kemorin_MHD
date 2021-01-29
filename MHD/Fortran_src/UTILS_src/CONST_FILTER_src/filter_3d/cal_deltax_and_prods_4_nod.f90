@@ -5,10 +5,10 @@
 !
 !!      subroutine cal_dx2_on_node(nod_comm, node, ele, g_FEM, jac_3d,  &
 !!     &          rhs_tbl, tbl_crs, m_lump, fil_elist,                  &
-!!     &          gfil_p, mass, FEM_elen, fem_wk, f_l)
+!!     &          gfil_p, mass, FEM_elen, fem_wk, f_l, v_sol)
 !!      subroutine cal_dxi_dxes_node(nod_comm, node, ele, g_FEM, jac_3d,&
 !!     &          rhs_tbl, tbl_crs, m_lump, fil_elist,                  &
-!!     &          gfil_p, mass, dxidxs, fem_wk, f_l)
+!!     &          gfil_p, mass, dxidxs, fem_wk, f_l, v_sol)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data),    intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -22,6 +22,7 @@
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_deltax_and_prods_4_nod
 !
@@ -38,6 +39,7 @@
       use t_crs_matrix
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
+      use t_vector_for_solver
 !
       use int_vol_elesize_on_node
 !
@@ -51,7 +53,7 @@
 !
       subroutine cal_dx2_on_node(nod_comm, node, ele, g_FEM, jac_3d,    &
      &          rhs_tbl, tbl_crs, m_lump, fil_elist,                    &
-     &          gfil_p, mass, FEM_elen, fem_wk, f_l)
+     &          gfil_p, mass, FEM_elen, fem_wk, f_l, v_sol)
 !
       use t_filter_elength
 !
@@ -70,33 +72,34 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    FEM_elen%elen_ele%moms%f_x2, FEM_elen%elen_nod%moms%f_x2,     &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    FEM_elen%elen_ele%moms%f_y2, FEM_elen%elen_nod%moms%f_y2,     &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    FEM_elen%elen_ele%moms%f_z2, FEM_elen%elen_nod%moms%f_z2,     &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
 !
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    FEM_elen%elen_ele%moms%f_xy, FEM_elen%elen_nod%moms%f_xy,     &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    FEM_elen%elen_ele%moms%f_yz, FEM_elen%elen_nod%moms%f_yz,     &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    FEM_elen%elen_ele%moms%f_zx, FEM_elen%elen_nod%moms%f_zx,     &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
 !
       end subroutine cal_dx2_on_node
 !
@@ -104,7 +107,7 @@
 !
       subroutine cal_dxi_dxes_node(nod_comm, node, ele, g_FEM, jac_3d,  &
      &          rhs_tbl, tbl_crs, m_lump, fil_elist,                    &
-     &          gfil_p, mass, dxidxs, fem_wk, f_l)
+     &          gfil_p, mass, dxidxs, fem_wk, f_l, v_sol)
 !
       use t_filter_dxdxi
 !
@@ -123,46 +126,47 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_ele%dxi%df_dx, dxidxs%dx_nod%dxi%df_dx,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_nod%dxi%df_dy, dxidxs%dx_nod%dxi%df_dy,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_nod%dxi%df_dz, dxidxs%dx_nod%dxi%df_dz,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
 !
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_ele%dei%df_dx, dxidxs%dx_nod%dei%df_dx,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_nod%dei%df_dy, dxidxs%dx_nod%dei%df_dy,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_nod%dei%df_dz, dxidxs%dx_nod%dei%df_dz,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
 !
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_ele%dzi%df_dx, dxidxs%dx_nod%dzi%df_dx,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_nod%dzi%df_dy, dxidxs%dx_nod%dzi%df_dy,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
       call int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,         &
      &    rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,            &
      &    dxidxs%dx_nod%dzi%df_dz, dxidxs%dx_nod%dzi%df_dz,             &
-     &    fem_wk, f_l)
+     &    fem_wk, f_l, v_sol)
 !
       end subroutine cal_dxi_dxes_node
 !

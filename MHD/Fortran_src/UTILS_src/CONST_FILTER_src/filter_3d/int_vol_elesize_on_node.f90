@@ -13,7 +13,7 @@
 !!
 !!      subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d, &
 !!     &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,    &
-!!     &          elen_ele, elen_nod, fem_wk, f_l)
+!!     &          elen_ele, elen_nod, fem_wk, f_l, v_sol)
 !!      subroutine int_vol_diff_dxs(num_int_points, node, ele,          &
 !!     &          g_FEM, jac_3d, rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -29,6 +29,7 @@
 !!        type(CRS_matrix), intent(inout) :: mass
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module int_vol_elesize_on_node
@@ -39,7 +40,6 @@
       use m_machine_parameter
       use m_geometry_constants
       use m_phys_constants
-      use m_array_for_send_recv
 !
       implicit none
 !
@@ -74,7 +74,7 @@
 !
       subroutine int_dx_ele2_node(nod_comm, node, ele, g_FEM, jac_3d,   &
      &          rhs_tbl, tbl_crs, m_lump, fil_elist, gfil_p, mass,      &
-     &          elen_ele, elen_nod, fem_wk, f_l)
+     &          elen_ele, elen_nod, fem_wk, f_l, v_sol)
 !
       use t_comm_table
       use t_geometry_data
@@ -84,6 +84,7 @@
       use t_crs_matrix
       use t_element_list_4_filter
       use t_ctl_params_4_gen_filter
+      use t_vector_for_solver
 !
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -106,6 +107,7 @@
       real(kind = kreal), intent(inout) :: elen_nod(node%numnod)
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if(gfil_p%id_filter_area_grp(1) .eq. -1) then
@@ -128,7 +130,7 @@
         call cal_ff_smp_2_ff                                            &
      &     (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
         call cal_sol_dx_by_consist(ione, node, nod_comm, tbl_crs,       &
-     &                             f_l, gfil_p, mass, elen_nod, vect1)
+     &                             f_l, gfil_p, mass, elen_nod, v_sol)
       end if
 !
       end subroutine int_dx_ele2_node

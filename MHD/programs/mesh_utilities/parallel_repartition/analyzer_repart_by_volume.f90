@@ -67,7 +67,7 @@
 !
 !  -------------------------------
 !
-      call init_send_recv(fem_T%mesh%nod_comm)
+      call init_nod_send_recv(fem_T%mesh)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------

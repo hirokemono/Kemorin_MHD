@@ -164,7 +164,8 @@
           if(MHD_step1%viz_step%istep_psf .ge. 0) then
             call SGS_MHD_zmean_sections(MHD_step1%viz_step%istep_psf,   &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
-     &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field, zmeans1)
+     &          SPH_WK1%trns_WK, SPH_SGS1, FEM_d1%field,                &
+     &          zmeans1, vect1)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

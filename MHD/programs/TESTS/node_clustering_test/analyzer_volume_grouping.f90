@@ -123,7 +123,7 @@
       call const_jacobian_and_single_vol                                &
      &   (fem_T%mesh, fem_T%group, spfs_T, jacobians_T)
 !
-      call init_send_recv(fem_T%mesh%nod_comm)
+      call init_nod_send_recv(fem_T%mesh)
       if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
 !
 !  -------------------------------
