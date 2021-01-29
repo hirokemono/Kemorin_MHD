@@ -29,7 +29,6 @@
       subroutine initialize_med_grp_patch
 !
       use m_phys_constants
-      use m_array_for_send_recv
       use m_FEM_utils
       use input_control_udt_diff
       use nod_phys_send_recv
@@ -52,7 +51,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(femmesh_FUTIL%mesh, vect1)
+      call FEM_comm_initialization(femmesh_FUTIL%mesh, v_sol_FUTIL)
       call FEM_mesh_initialization                                      &
      &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group)
 !

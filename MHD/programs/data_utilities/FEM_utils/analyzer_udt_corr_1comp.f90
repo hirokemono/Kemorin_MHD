@@ -20,8 +20,6 @@
       use t_mesh_data_with_pointer
       use t_layering_ele_list
       use t_work_layer_correlate
-      use t_vector_for_solver
-      use m_array_for_send_recv
       use m_FEM_utils
 !
       use transfer_correlate_field
@@ -36,8 +34,6 @@
       type(layering_tbl), save :: layer_tbl_corr
       type(dynamic_correlation_data), save :: wk_correlate
 !
-      type(vectors_4_solver), save :: v_sol2
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -45,8 +41,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine initialize_udt_corre_1comp
-!
-      use m_2nd_pallalel_vector
 !
       use copy_mesh_structures
       use input_control_udt_diff
@@ -87,7 +81,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
       call alloc_iccgN_vec_type                                         &
-     &   (isix, femmesh_p_FUT%mesh%node%numnod, vect1)
+     &   (isix, femmesh_p_FUT%mesh%node%numnod, v_sol_FUTIL)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
@@ -103,7 +97,6 @@
 !
 !     --------------------- 
 !
-      call copy_num_processes_to_2nd
       femmesh_p_REF%mesh%nod_comm => femmesh_p_FUT%mesh%nod_comm
       femmesh_p_REF%mesh%node =>     femmesh_p_FUT%mesh%node
       femmesh_p_REF%mesh%ele =>      femmesh_p_FUT%mesh%ele
@@ -118,8 +111,6 @@
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !
       call set_component_add_4_correlate(field_FUTIL)
-      call verify_iccgN_vec_type                                       &
-     &   (isix, femmesh_p_REF%mesh%node%numnod, v_sol2)
 !
 !     --------------------- 
 !
@@ -169,7 +160,7 @@
      &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
         call fields_send_recv(femmesh_p_FUT%mesh%nod_comm,              &
-     &                        field_FUTIL, vect1)
+     &                        field_FUTIL, v_sol_FUTIL)
 !
 !    output udt data
 !

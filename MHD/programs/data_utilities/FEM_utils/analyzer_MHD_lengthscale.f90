@@ -33,7 +33,6 @@
 !
       subroutine initialize_MHD_lscale
 !
-      use m_array_for_send_recv
       use m_ctl_params_4_prod_udt
       use t_ctl_data_product_udt
       use t_step_parameter

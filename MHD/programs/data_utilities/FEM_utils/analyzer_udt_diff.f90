@@ -17,7 +17,6 @@
       use calypso_mpi
 !
       use m_FEM_utils
-      use m_array_for_send_recv
 !
       implicit none
 !
@@ -86,7 +85,7 @@
         call s_divide_phys_by_delta_t(time_U%time_d%dt, field_FUTIL)
 !
         call nod_fields_send_recv(femmesh_FUTIL%mesh,                   &
-     &                            field_FUTIL, vect1)
+     &                            field_FUTIL, v_sol_FUTIL)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &

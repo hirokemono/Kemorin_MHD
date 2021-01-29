@@ -27,6 +27,7 @@
       use t_jacobians
       use t_IO_step_parameter
       use t_VIZ_step_parameter
+      use t_vector_for_solver
       use calypso_mpi
 !
       implicit none
@@ -55,6 +56,8 @@
 !>      Stracture for Jacobians
       type(jacobians_type), save :: jacobians_FUTIL
 !
+      type(vectors_4_solver), save :: v_sol_FUTIL
+!
 !   ---------------------------------------------------------------------
 !
       contains
@@ -63,7 +66,6 @@
 !
       subroutine mesh_setup_4_FEM_UTIL(mesh_file)
 !
-      use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
@@ -78,7 +80,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
       call alloc_iccgN_vec_type                                         &
-     &   (isix, femmesh_FUTIL%mesh%node%numnod, vect1)
+     &   (isix, femmesh_FUTIL%mesh%node%numnod, v_sol_FUTIL)
       call init_nod_send_recv(femmesh_FUTIL%mesh)
 !
 !     --------------------- 

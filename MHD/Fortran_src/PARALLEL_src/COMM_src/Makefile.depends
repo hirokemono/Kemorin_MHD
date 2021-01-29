@@ -30,8 +30,6 @@ extend_comm_table_SR.o: $(COMMDIR)/extend_comm_table_SR.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 find_element_comm_table.o: $(COMMDIR)/find_element_comm_table.f90 m_precision.o m_constants.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_2nd_pallalel_vector.o: $(COMMDIR)/m_2nd_pallalel_vector.f90 m_precision.o calypso_mpi.o
-	$(F90) -c $(F90OPTFLAGS) $<
 m_array_for_send_recv.o: $(COMMDIR)/m_array_for_send_recv.f90 m_precision.o t_vector_for_solver.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_sph_communicators.o: $(COMMDIR)/m_sph_communicators.f90 m_precision.o calypso_mpi.o m_machine_parameter.o
