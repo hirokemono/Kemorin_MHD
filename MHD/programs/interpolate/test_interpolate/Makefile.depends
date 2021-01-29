@@ -10,6 +10,6 @@ main_test_itp_ele.o: $(ITP_TEST_DIR)/main_test_itp_ele.f90 m_precision.o calypso
 	$(F90) -c $(F90OPTFLAGS) $<
 main_test_itp_tbl.o: $(ITP_TEST_DIR)/main_test_itp_tbl.f90 m_precision.o calypso_mpi.o analyzer_test_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mesh_interpolation.o: $(ITP_TEST_DIR)/mesh_interpolation.f90 m_precision.o calypso_mpi.o m_machine_parameter.o interpolate_position.o t_interpolate_table.o t_mesh_data.o check_ineterppolated_mesh.o
+mesh_interpolation.o: $(ITP_TEST_DIR)/mesh_interpolation.f90 m_precision.o calypso_mpi.o m_machine_parameter.o interpolate_position.o t_interpolate_table.o t_mesh_data.o m_array_for_send_recv.o check_ineterppolated_mesh.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
