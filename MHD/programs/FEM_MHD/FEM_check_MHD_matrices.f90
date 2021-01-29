@@ -37,6 +37,7 @@
       use t_FEM_SGS_structure
       use t_FEM_MHD_mean_square
       use t_MHD_IO_data
+      use m_array_for_send_recv
 !
       implicit none
 !
@@ -83,7 +84,7 @@
      &    FEM_model%MHD_mesh, FEM_SGS%FEM_filters,                      &
      &    FEM_model%MHD_prop, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,  &
      &    FEM_SGS%Csims, iphys, FEM_SGS%iphys_LES, nod_fld, MHD_CG,     &
-     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim, vect1)
 !
 !   construct matrix for Poisson and diffusion terms
 !

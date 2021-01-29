@@ -53,7 +53,6 @@
       subroutine init_merge_udt
 !
       use m_error_IDs
-      use m_array_for_send_recv
 !
       use mpi_load_mesh_data
       use load_mesh_data_4_merge

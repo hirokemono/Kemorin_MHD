@@ -43,7 +43,6 @@
 !
       subroutine initialize_udt_corre_1comp
 !
-      use m_array_for_send_recv
       use m_2nd_pallalel_vector
 !
       use copy_mesh_structures

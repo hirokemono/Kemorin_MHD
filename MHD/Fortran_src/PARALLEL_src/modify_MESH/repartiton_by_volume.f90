@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_repartiton_by_volume(part_param, geofem, new_fem,  &
-!!     &                                  org_to_new_tbl)
+!!     &                                  org_to_new_tbl, v_sol)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!      subroutine load_repartitoned_file(part_param, geofem, new_fem,  &
 !!     &                                  org_to_new_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
@@ -42,13 +43,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_repartiton_by_volume(part_param, geofem, new_fem,    &
-     &                                  org_to_new_tbl)
+     &                                  org_to_new_tbl, v_sol)
 !
       use t_next_node_ele_4_node
       use t_jacobians
       use t_shape_functions
       use t_interpolate_table
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use m_file_format_switch
 !
@@ -67,6 +68,7 @@
       type(mesh_data), intent(inout) :: geofem
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       type(communication_table) :: ele_comm
       type(next_nod_ele_table) :: next_tbl_T
@@ -80,7 +82,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      call FEM_comm_initialization(geofem%mesh, vect1)
+      call FEM_comm_initialization(geofem%mesh, v_sol)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !

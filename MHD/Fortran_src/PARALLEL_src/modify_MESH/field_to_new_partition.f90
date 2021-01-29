@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine const_new_partition_mesh(part_param, geofem, new_fem,&
-!!     &                                    org_to_new_tbl)
+!!     &                                    org_to_new_tbl, v_sol)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!      subroutine init_fld_to_new_partition(new_mesh, org_fld, new_fld)
 !!      subroutine nod_field_to_new_partition(iflag_recv,               &
 !!     &          new_mesh, org_to_new_tbl, org_fld, new_fld, v_sol)
@@ -43,7 +44,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_new_partition_mesh(part_param, geofem, new_fem,  &
-     &                                    org_to_new_tbl)
+     &                                    org_to_new_tbl, v_sol)
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
@@ -57,6 +58,7 @@
       type(mesh_data), intent(inout) :: geofem
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       logical :: flag
 !
@@ -79,7 +81,7 @@
      &      'Construct repartitioned mesh and transfer table'
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         call s_repartiton_by_volume(part_param, geofem, new_fem,        &
-     &                              org_to_new_tbl)
+     &                              org_to_new_tbl, v_sol)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !

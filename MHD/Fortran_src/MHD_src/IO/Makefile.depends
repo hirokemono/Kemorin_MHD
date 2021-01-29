@@ -14,7 +14,7 @@ bcast_ctl_data_SGS_model.o: $(MHD_IO_DIR)/bcast_ctl_data_SGS_model.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 check_read_bc_file.o: $(MHD_IO_DIR)/check_read_bc_file.f90 m_precision.o t_bc_data_list.o t_control_parameter.o calypso_mpi.o t_physical_property.o
 	$(F90) -c $(F90OPTFLAGS) $<
-fem_mhd_rst_IO_control.o: $(MHD_IO_DIR)/fem_mhd_rst_IO_control.f90 m_precision.o calypso_mpi.o t_SGS_control_parameter.o t_time_data.o t_mesh_data.o t_phys_data.o t_field_data_IO.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_flex_delta_t_parameter.o t_work_FEM_dynamic_SGS.o t_MHD_file_parameter.o t_IO_step_parameter.o m_fem_mhd_restart.o FEM_sgs_ini_model_coefs_IO.o t_geometry_data_MHD.o t_SGS_model_coefs.o
+fem_mhd_rst_IO_control.o: $(MHD_IO_DIR)/fem_mhd_rst_IO_control.f90 m_precision.o calypso_mpi.o t_SGS_control_parameter.o t_time_data.o t_mesh_data.o t_phys_data.o t_field_data_IO.o t_layering_ele_list.o t_ele_info_4_dynamic.o t_flex_delta_t_parameter.o t_work_FEM_dynamic_SGS.o t_MHD_file_parameter.o t_IO_step_parameter.o t_vector_for_solver.o m_fem_mhd_restart.o FEM_sgs_ini_model_coefs_IO.o t_geometry_data_MHD.o t_SGS_model_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 init_sph_MHD_elapsed_label.o: $(MHD_IO_DIR)/init_sph_MHD_elapsed_label.F90 m_precision.o m_work_time.o m_elapsed_labels_SEND_RECV.o m_elapsed_labels_SPH_TRNS.o m_elapsed_labels_4_MHD.o m_elapsed_labels_4_VIZ.o m_elapsed_labels_gen_SPH.o const_element_comm_table.o calypso_mpi.o t_spheric_parameter.o calypso_mpi_int.o transfer_to_long_integers.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
@@ -22,7 +22,7 @@ m_boundary_condition_IDs.o: $(MHD_IO_DIR)/m_boundary_condition_IDs.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 m_ctl_data_sph_MHD.o: $(MHD_IO_DIR)/m_ctl_data_sph_MHD.f90 m_precision.o t_ctl_data_MHD.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_fem_mhd_restart.o: $(MHD_IO_DIR)/m_fem_mhd_restart.f90 m_precision.o calypso_mpi.o t_time_data.o t_comm_table.o t_geometry_data.o t_phys_data.o t_file_IO_parameter.o t_field_data_IO.o t_flex_delta_t_parameter.o t_IO_step_parameter.o m_array_for_send_recv.o set_field_to_restart.o const_global_element_ids.o field_IO_select.o nod_phys_send_recv.o m_file_format_switch.o cal_num_digits.o
+m_fem_mhd_restart.o: $(MHD_IO_DIR)/m_fem_mhd_restart.f90 m_precision.o calypso_mpi.o t_time_data.o t_comm_table.o t_geometry_data.o t_phys_data.o t_file_IO_parameter.o t_field_data_IO.o t_flex_delta_t_parameter.o t_IO_step_parameter.o t_vector_for_solver.o set_field_to_restart.o const_global_element_ids.o field_IO_select.o nod_phys_send_recv.o m_file_format_switch.o cal_num_digits.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_force_control_labels.o: $(MHD_IO_DIR)/m_force_control_labels.f90 m_precision.o t_base_force_labels.o m_base_force_labels.o
 	$(F90) -c $(F90OPTFLAGS) $<

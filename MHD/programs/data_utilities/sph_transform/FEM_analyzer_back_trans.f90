@@ -43,8 +43,6 @@
       use t_ctl_params_sph_trans
       use t_jacobians
 !
-      use m_array_for_send_recv
-!
       use nod_phys_send_recv
       use set_table_4_RHS_assemble
       use int_volume_of_domain

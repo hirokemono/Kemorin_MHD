@@ -41,8 +41,6 @@
 !
       subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
 !
-      use m_array_for_send_recv
-!
       use nod_phys_send_recv
       use int_volume_of_domain
       use set_normal_vectors

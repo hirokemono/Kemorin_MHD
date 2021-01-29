@@ -56,7 +56,6 @@
       subroutine init_rayleigh_cvt_fld
 !
       use m_error_IDs
-      use m_array_for_send_recv
 !
       use t_ctl_data_const_sph_mesh
       use t_const_spherical_grid

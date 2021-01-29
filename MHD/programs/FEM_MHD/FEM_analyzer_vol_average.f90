@@ -92,7 +92,7 @@
      &   FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,        &
      &   iphys, FEM_SGS%iphys_LES, nod_fld, SNAP_time_IO,               &
      &   MHD_step%rst_step, SGS_MHD_wk, fem_sq, MHD_IO%rst_IO,          &
-     &   label_sim)
+     &   label_sim, vect1)
 !
       end subroutine FEM_initialize_vol_average
 !

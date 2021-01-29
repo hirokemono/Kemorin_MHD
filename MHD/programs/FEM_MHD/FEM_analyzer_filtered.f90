@@ -35,6 +35,7 @@
       use t_FEM_SGS_structure
       use t_MHD_IO_data
       use t_work_FEM_SGS_MHD
+      use m_array_for_send_recv
 !
       use calypso_mpi
 !
@@ -129,7 +130,8 @@
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
      &    FEM_SGS%SGS_par, fem, FEM_model%MHD_mesh,                     &
      &    FEM_model%FEM_MHD_BCs, iphys, FEM_SGS%iphys_LES,              &
-     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld, FEM_SGS%Csims)
+     &    FEM_SGS%FEM_filters, SGS_MHD_wk, nod_fld,                     &
+     &    FEM_SGS%Csims, vect1)
 !
 !     ----- Evaluate model coefficients
 !

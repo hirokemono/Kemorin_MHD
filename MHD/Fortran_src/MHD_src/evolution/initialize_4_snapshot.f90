@@ -8,7 +8,7 @@
 !!     &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,   &
 !!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld,             &
 !!     &          t_IO, rst_step, SGS_MHD_wk, fem_sq, fem_fst_IO,       &
-!!     &          label_sim)
+!!     &          label_sim, v_sol)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -30,6 +30,7 @@
 !!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module initialize_4_snapshot
 !
@@ -64,6 +65,7 @@
       use t_FEM_MHD_filter_data
       use t_work_4_MHD_layering
       use t_field_data_IO
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -78,10 +80,9 @@
      &          FEM_filters, MHD_prop, ak_MHD, MHD_BC, FEM_MHD_BCs,     &
      &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld,               &
      &          t_IO, rst_step, SGS_MHD_wk, fem_sq, fem_fst_IO,         &
-     &          label_sim)
+     &          label_sim, v_sol)
 !
       use m_boundary_condition_IDs
-      use m_array_for_send_recv
       use m_fem_mhd_restart
 !
       use cal_volume_node_MHD
@@ -132,6 +133,7 @@
       type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(field_IO), intent(inout) :: fem_fst_IO
+      type(vectors_4_solver), intent(inout) :: v_sol
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -157,7 +159,7 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(mesh, vect1)
+      call FEM_comm_initialization(mesh, v_sol)
       call FEM_mesh_initialization(mesh, group)
 !
 !     ---------------------

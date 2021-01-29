@@ -95,7 +95,7 @@
 !  -------------------------------
 !
       call const_new_partition_mesh(part_p1%repart_p, fem_T, new_fem,   &
-     &                              org_to_new_tbl)
+     &                              org_to_new_tbl, vect1)
 !
       end subroutine initialize_field_to_repart
 !

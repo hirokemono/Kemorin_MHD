@@ -54,7 +54,6 @@
       subroutine init_update_retstart
 !
       use m_error_IDs
-      use m_array_for_send_recv
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv

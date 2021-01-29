@@ -56,6 +56,7 @@
       use t_FEM_MHD_mean_square
       use t_MHD_IO_data
       use t_work_FEM_SGS_MHD
+      use m_array_for_send_recv
 !
       use calypso_mpi
 !
@@ -103,7 +104,7 @@
      &   ak_MHD, FEM_model%MHD_BC, FEM_model%FEM_MHD_BCs,               &
      &   FEM_SGS%Csims, iphys, FEM_SGS%iphys_LES, nod_fld,              &
      &   SNAP_time_IO, MHD_step%rst_step, SGS_MHD_wk, fem_sq,           &
-     &   MHD_IO%rst_IO, label_sim)
+     &   MHD_IO%rst_IO, label_sim, vect1)
 !
       call output_grd_file_w_org_connect                                &
      &   (MHD_step%ucd_step, femmesh%mesh, FEM_model%MHD_mesh, nod_fld, &
@@ -194,7 +195,7 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, femmesh,                  &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
      &    iphys, FEM_SGS%iphys_LES, FEM_SGS%FEM_filters, SGS_MHD_wk,    &
-     &    nod_fld, FEM_SGS%Csims)
+     &    nod_fld, FEM_SGS%Csims, vect1)
 !
 !     ----- Evaluate model coefficients
 !

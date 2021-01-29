@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl                                     &
-!!     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD, MHD_step,&
-!!     &         mesh, group, MHD_mesh, FEM_filters, MHD_prop, MHD_BC,  &
-!!     &         FEM_MHD_BCs, Csims_FEM_MHD, iphys, iphys_LES, nod_fld, &
-!!     &         MHD_CG, SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
+!!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
+!!     &          flex_MHD, MHD_step, mesh, group, MHD_mesh,            &
+!!     &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,           &
+!!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,     &
+!!     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -29,6 +29,7 @@
 !!        type(FEM_MHD_solvers), intent(inout) :: MHD_CG
 !!        type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
 !!        type(field_IO), intent(inout) :: fem_fst_IO
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module initialization_4_MHD
 !
@@ -61,6 +62,7 @@
       use t_work_4_MHD_layering
       use t_bc_data_list
       use t_field_data_IO
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -70,15 +72,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl                                       &
-     &        (MHD_files, IO_bc, FEM_prm, SGS_par, flex_MHD, MHD_step,  &
-     &         mesh, group, MHD_mesh, FEM_filters, MHD_prop, MHD_BC,    &
-     &         FEM_MHD_BCs, Csims_FEM_MHD, iphys, iphys_LES, nod_fld,   &
-     &         MHD_CG, SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim)
+      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
+     &          flex_MHD, MHD_step, mesh, group, MHD_mesh,              &
+     &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,             &
+     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,       &
+     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
 !
       use m_boundary_condition_IDs
       use m_flags_4_solvers
-      use m_array_for_send_recv
 !
       use init_iccg_matrices
       use copy_nodal_fields
@@ -136,6 +137,7 @@
       type(FEM_MHD_solvers), intent(inout) :: MHD_CG
       type(work_FEM_SGS_MHD), intent(inout) :: SGS_MHD_wk
       type(field_IO), intent(inout) :: fem_fst_IO
+      type(vectors_4_solver), intent(inout) :: v_sol
       character(len=kchara), intent(inout)   :: label_sim
 !
       type(shape_finctions_at_points), save :: spfs_1
@@ -163,7 +165,7 @@
 !
 !     ---------------------
 !
-      call FEM_comm_initialization(mesh, vect1)
+      call FEM_comm_initialization(mesh, v_sol)
       call FEM_mesh_initialization(mesh, group)
 !
       call deallocate_surface_geom_type(mesh%surf)

@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine FEM_initialize_sph_SGS_MHD                           &
 !!     &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,&
-!!     &         next_tbl, jacobians, MHD_IO)
+!!     &         next_tbl, jacobians, MHD_IO, v_sol)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
@@ -20,6 +20,7 @@
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
 !!     &        (SGS_par, sph, WK, WK_LES, geofem, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -49,6 +50,7 @@
       use t_file_IO_parameter
 !
       use t_shape_functions
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -62,7 +64,7 @@
 !
       subroutine FEM_initialize_sph_SGS_MHD                             &
      &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,  &
-     &         next_tbl, jacobians, MHD_IO)
+     &         next_tbl, jacobians, MHD_IO, v_sol)
 !
       use t_phys_address
       use t_SGS_model_addresses
@@ -92,6 +94,7 @@
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
       type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: iflag
 !
@@ -119,7 +122,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(geofem%mesh, vect1)
+      call FEM_comm_initialization(geofem%mesh, v_sol)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
       call deallocate_surface_geom_type(geofem%mesh%surf)

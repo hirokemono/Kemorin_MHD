@@ -118,7 +118,7 @@
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, FEM_model%MHD_BC,    &
      &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,                         &
      &    iphys, FEM_SGS%iphys_LES, nod_fld, MHD_CG,                    &
-     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim)
+     &    SGS_MHD_wk, fem_sq, MHD_IO%rst_IO, label_sim, vect1)
 !
       call nod_fields_send_recv(geofem%mesh, nod_fld, vect1)
 !
@@ -131,7 +131,7 @@
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, geofem,                   &
      &    FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,                    &
      &    iphys, FEM_SGS%iphys_LES, FEM_SGS%FEM_filters, SGS_MHD_wk,    &
-     &    nod_fld, FEM_SGS%Csims)
+     &    nod_fld, FEM_SGS%Csims, vect1)
 !
       call copy_model_coef_2_previous                                   &
      &   (FEM_SGS%SGS_par%model_p, FEM_SGS%SGS_par%commute_p,           &
@@ -250,7 +250,7 @@
       call FEM_fields_evolution(MHD_step%time_d,                        &
      &    FEM_model%FEM_prm, geofem, FEM_model%MHD_mesh,                &
      &    FEM_model%MHD_prop, FEM_model%FEM_MHD_BCs, iphys,             &
-     &    MHD_CG, SGS_MHD_wk, nod_fld, FEM_SGS, fem_sq)
+     &    MHD_CG, SGS_MHD_wk, nod_fld, FEM_SGS, fem_sq, vect1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -332,7 +332,7 @@
       call output_MHD_restart_file_ctl                                  &
      &   (retval, FEM_SGS%SGS_par, MHD_files, MHD_step%time_d,          &
      &    MHD_step%flex_p, geofem%mesh, iphys, SGS_MHD_wk%FEM_SGS_wk,   &
-     &    MHD_step%rst_step, nod_fld, MHD_IO%rst_IO)
+     &    MHD_step%rst_step, nod_fld, MHD_IO%rst_IO, vect1)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !   Finish by specific step

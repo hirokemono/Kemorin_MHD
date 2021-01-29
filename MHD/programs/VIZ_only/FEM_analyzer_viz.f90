@@ -135,7 +135,6 @@
 !
       subroutine FEM_initialize_viz(init_d, ucd_step, viz_step, viz)
 !
-      use m_array_for_send_recv
       use calypso_mpi_logical
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -183,7 +182,7 @@
       if(viz%repart_p%flag_repartition) then
         allocate(viz%viz_fem)
         call const_new_partition_mesh(viz%repart_p,                     &
-     &      viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
+     &      viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl, vect1)
 !
         allocate(viz%viz_fld)
         call init_fld_to_new_partition(viz%viz_fem%mesh,                &

@@ -28,6 +28,7 @@
       use t_ctl_data_SGS_MHD
       use t_SPH_mesh_field_data
       use t_step_parameter
+      use m_array_for_send_recv
 !
       use FEM_analyzer_sph_SGS_MHD
       use SPH_analyzer_snap
@@ -76,7 +77,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
      &   FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SPH_SGS1%iphys_LES, &
-     &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1)
+     &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1, vect1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'

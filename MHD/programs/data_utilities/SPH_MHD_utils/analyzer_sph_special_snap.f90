@@ -85,7 +85,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1)
+     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1, vect1)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

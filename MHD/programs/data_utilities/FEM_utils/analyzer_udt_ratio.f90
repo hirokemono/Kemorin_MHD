@@ -32,7 +32,6 @@
       subroutine initialize_udt_ratio
 !
       use m_ctl_params_4_prod_udt
-      use m_array_for_send_recv
       use t_ctl_data_product_udt
       use nod_phys_send_recv
       use product_udt_fields

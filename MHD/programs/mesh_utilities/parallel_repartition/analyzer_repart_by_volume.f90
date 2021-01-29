@@ -42,6 +42,7 @@
       subroutine initialize_reapart_by_vol
 !
       use t_ctl_file_volume_grouping
+      use m_array_for_send_recv
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -74,7 +75,7 @@
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
       call s_repartiton_by_volume(part_p1%repart_p, fem_T, new_fem,     &
-     &                            org_to_new_tbl)
+     &                            org_to_new_tbl, vect1)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
 !
       end subroutine initialize_reapart_by_vol

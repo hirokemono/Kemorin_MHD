@@ -118,7 +118,6 @@
       subroutine FEM_initialize_surface(ucd_step, init_d, sfcing)
 !
       use t_field_list_for_vizs
-      use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
@@ -190,7 +189,6 @@
 !
       subroutine FEM_initialize_VTK_convert(ucd_step, init_d, sfcing)
 !
-      use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use parallel_FEM_mesh_init

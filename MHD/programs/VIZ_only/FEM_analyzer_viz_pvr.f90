@@ -119,7 +119,6 @@
 !
       subroutine FEM_initialize_pvr(init_d, ucd_step, viz_step, pvr)
 !
-      use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use parallel_FEM_mesh_init

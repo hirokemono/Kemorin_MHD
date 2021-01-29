@@ -29,7 +29,6 @@
 !
       subroutine initialize_udt_diff
 !
-      use m_array_for_send_recv
       use m_phys_constants
       use set_field_data_w_SGS
       use input_control_udt_diff
