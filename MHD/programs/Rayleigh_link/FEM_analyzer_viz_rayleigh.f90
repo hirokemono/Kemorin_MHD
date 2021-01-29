@@ -71,6 +71,7 @@
       use const_element_comm_tables
       use copy_mesh_structures
       use mpi_load_mesh_data
+      use nod_phys_send_recv
 !
       type(time_data), intent(in) :: init_d
       type(VIZ_step_params), intent(inout) :: viz_step
@@ -108,6 +109,7 @@
       call dealloc_gen_sph_radial_groups(gen_sph_R)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(femmesh_VIZ%mesh, vect1)
       call FEM_mesh_initialization                                      &
      &   (femmesh_VIZ%mesh, femmesh_VIZ%group)
       call const_global_numele_list(femmesh_VIZ%mesh%ele)

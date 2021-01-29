@@ -163,6 +163,7 @@
 !
 !     ---------------------
 !
+      call FEM_comm_initialization(mesh, vect1)
       call FEM_mesh_initialization(mesh, group)
 !
       call deallocate_surface_geom_type(mesh%surf)

@@ -139,6 +139,7 @@
       call mpi_input_mesh(sfcing%mesh_file_IO, nprocs, sfcing%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(sfcing%geofem%mesh, vect1)
       call FEM_mesh_initialization(sfcing%geofem%mesh,                  &
      &                             sfcing%geofem%group)
 !
@@ -209,6 +210,7 @@
       call mpi_input_mesh(sfcing%mesh_file_IO, nprocs, sfcing%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(sfcing%geofem%mesh, vect1)
       call FEM_mesh_initialization(sfcing%geofem%mesh,                  &
      &                             sfcing%geofem%group)
 !

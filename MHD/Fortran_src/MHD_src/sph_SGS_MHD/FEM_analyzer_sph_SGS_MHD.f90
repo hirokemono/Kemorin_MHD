@@ -81,6 +81,7 @@
       use parallel_FEM_mesh_init
       use set_field_data_w_SGS
       use node_monitor_IO
+      use nod_phys_send_recv
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
@@ -118,6 +119,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(geofem%mesh, vect1)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
       call deallocate_surface_geom_type(geofem%mesh%surf)

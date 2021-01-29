@@ -90,6 +90,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(fem_T%mesh, vect1)
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       call end_elapsed_time(ied_total_elapsed)
 !

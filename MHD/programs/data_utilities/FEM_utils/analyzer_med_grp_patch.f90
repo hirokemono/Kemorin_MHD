@@ -52,6 +52,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(femmesh_FUTIL%mesh, vect1)
       call FEM_mesh_initialization                                      &
      &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group)
 !

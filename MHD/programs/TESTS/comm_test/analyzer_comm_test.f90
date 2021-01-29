@@ -86,6 +86,7 @@
 !
       call resize_SR_flag(nprocs, 1, SR_sig_t)
 !
+      call FEM_comm_initialization(test_fem%mesh, vect1)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'

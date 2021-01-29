@@ -196,6 +196,7 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(viz%viz_fem%mesh, vect1)
       call FEM_mesh_initialization                                      &
      &   (viz%viz_fem%mesh, viz%viz_fem%group)
 !

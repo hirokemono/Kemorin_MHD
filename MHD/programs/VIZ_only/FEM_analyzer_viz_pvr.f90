@@ -142,6 +142,7 @@
       call mpi_input_mesh(pvr%mesh_file_IO, nprocs, pvr%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(pvr%geofem%mesh, vect1)
       call FEM_mesh_initialization(pvr%geofem%mesh, pvr%geofem%group)
 !
 !     ---------------------

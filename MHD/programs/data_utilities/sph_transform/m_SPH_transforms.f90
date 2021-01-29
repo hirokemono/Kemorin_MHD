@@ -102,6 +102,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(femmesh_STR%mesh, vect1)
       call FEM_mesh_initialization                                      &
      &   (femmesh_STR%mesh, femmesh_STR%group)
 !

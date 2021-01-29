@@ -109,6 +109,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(geofem%mesh, vect1)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
       call deallocate_surface_geom_type(geofem%mesh%surf)

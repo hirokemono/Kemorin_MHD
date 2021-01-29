@@ -60,6 +60,7 @@
       use interpolate_by_module
       use parallel_FEM_mesh_init
       use mpi_load_mesh_data
+      use nod_phys_send_recv
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_address), intent(in) :: ipol
@@ -96,6 +97,7 @@
       call mpi_input_mesh(mesh_file_H, nprocs, mesh_sph)
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      call FEM_comm_initialization(mesh_sph%mesh, vect1)
       call FEM_mesh_initialization                                      &
      &   (mesh_sph%mesh, mesh_sph%group)
 !

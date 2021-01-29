@@ -8,6 +8,10 @@
 !>@brief  Data communication for nodal field
 !!
 !!@verbatim
+!!      subroutine FEM_comm_initialization(mesh, v_sol)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(vectors_4_solver), intent(inout) :: v_sol
+!!
 !!      subroutine init_nod_send_recv(mesh)
 !!      subroutine nod_fields_send_recv(mesh, nod_fld, v_sol)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -43,6 +47,8 @@
       module nod_phys_send_recv
 !
       use m_precision
+      use m_machine_parameter
+      use m_phys_constants
 !
       use calypso_mpi
       use t_mesh_data
@@ -55,6 +61,23 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine FEM_comm_initialization(mesh, v_sol)
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(vectors_4_solver), intent(inout) :: v_sol
+!
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type(n_sym_tensor, mesh%node%numnod, v_sol)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
+      call init_nod_send_recv(mesh)
+!
+      end subroutine FEM_comm_initialization
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine init_nod_send_recv(mesh)
@@ -70,8 +93,6 @@
 !
       subroutine nod_fields_send_recv(mesh, nod_fld, v_sol)
 !
-      use m_machine_parameter
-      use m_phys_constants
       use t_phys_data
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -88,7 +109,6 @@
 !
       subroutine init_send_recv(nod_comm)
 !
-      use m_phys_constants
       use t_solver_SR
       use m_solver_SR
 !
@@ -109,8 +129,6 @@
 !
       subroutine fields_send_recv(nod_comm, nod_fld, v_sol)
 !
-      use m_machine_parameter
-      use m_phys_constants
       use t_phys_data
 !
       type(communication_table), intent(in) :: nod_comm

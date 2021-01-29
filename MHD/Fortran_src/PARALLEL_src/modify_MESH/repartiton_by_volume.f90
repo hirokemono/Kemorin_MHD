@@ -48,6 +48,7 @@
       use t_jacobians
       use t_shape_functions
       use t_interpolate_table
+      use m_array_for_send_recv
 !
       use m_file_format_switch
 !
@@ -59,6 +60,7 @@
       use mesh_MPI_IO_select
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
+      use nod_phys_send_recv
 !
       type(volume_partioning_param), intent(in) ::  part_param
 !
@@ -78,6 +80,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      call FEM_comm_initialization(geofem%mesh, vect1)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
