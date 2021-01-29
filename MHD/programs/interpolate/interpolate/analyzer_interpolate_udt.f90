@@ -13,38 +13,15 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use t_mesh_data
-      use t_geometry_data
-      use t_phys_data
-      use t_phys_address
-      use t_SGS_model_addresses
-      use t_step_parameter
+      use t_structure_4_interolation
       use t_ucd_data
-      use t_interpolate_table
       use t_IO_step_parameter
-      use t_ctl_data_gen_table
-      use t_ctl_params_4_gen_table
-      use m_array_for_send_recv
-      use m_2nd_pallalel_vector
 !
       implicit none
 !
-      type(ctl_data_gen_table), save :: gtbl_ctl1
-      type(ctl_params_4_gen_table), save :: gen_itp_p1
+      type(structure_4_interolation), save :: itp_udt
 !
-      type(time_step_param), save :: t_ITP
-!
-      type(mesh_data), save :: org_femmesh
-      type(mesh_data), save :: new_femmesh
-!
-      type(interpolate_table), save :: itp_udt
-!
-      type(phys_address), save :: iphys_ITP
-      type(SGS_model_addresses), save :: iphys_LES_ITP
-      type(phys_data), save :: nod_fld_ITP
-!
-      type(phys_data), save :: new_phys
-      type(vectors_4_solver), save :: v_sol2
+      type(ctl_data_gen_table), save :: gtbl_ctl
 !
       type(time_data), save :: itp_time_IO
       type(ucd_data), save :: fem_ucd
@@ -60,7 +37,6 @@
       subroutine initialize_itp_udt
 !
       use set_field_data_w_SGS
-      use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types
       use nod_phys_send_recv
@@ -73,39 +49,40 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(gen_itp_p1, gtbl_ctl1,           &
-     &    org_femmesh, new_femmesh, itp_udt, t_ITP,                     &
-     &    vect1, v_sol2, nprocs_2nd, ierr)
+      call s_input_control_interpolate(itp_udt, ierr)
 !
-      call set_ctl_interpolate_udt(gtbl_ctl1%fld_gt_ctl, nod_fld_ITP)
-      call dealloc_phys_control(gtbl_ctl1%fld_gt_ctl)
+      call set_ctl_interpolate_udt(itp_udt%gtbl_ctl%fld_gt_ctl,         &
+     &    itp_udt%org_fld)
+      call dealloc_phys_control(itp_udt%gtbl_ctl%fld_gt_ctl)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'init_nod_send_recv'
-      call init_nod_send_recv(org_femmesh%mesh)
+      call init_nod_send_recv(itp_udt%org_fem%mesh)
 !
 !     --------------------- 
 !
-      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
+      if (my_rank .lt. itp_udt%gen_itp_p%ndomain_dest) then
         call count_size_4_smp_mesh                                      &
-     &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
+     &     (itp_udt%new_fem%mesh%node, itp_udt%new_fem%mesh%ele)
         if (i_debug.eq.iflag_full_msg) then
-          call check_mesh_smp_size(my_rank, new_femmesh%mesh)
+          call check_mesh_smp_size(my_rank, itp_udt%new_fem%mesh)
         end if
       end if
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'init_field_data_w_SGS'
-      call init_field_data_w_SGS(org_femmesh%mesh%node%numnod,          &
-     &                     nod_fld_ITP, iphys_ITP, iphys_LES_ITP)
+      call init_field_data_w_SGS(itp_udt%org_fem%mesh%node%numnod,      &
+     &                           itp_udt%org_fld, itp_udt%iphys,        &
+     &                           itp_udt%iphys_LES)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
-      call copy_field_name_type(nod_fld_ITP, new_phys)
+      call copy_field_name_type(itp_udt%org_fld, itp_udt%new_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
+      call alloc_phys_data_type(itp_udt%new_fem%mesh%node%numnod,       &
+     &                          itp_udt%new_fld)
 !
       end subroutine initialize_itp_udt
 !
@@ -119,44 +96,49 @@
       use interpolate_nod_field_2_type
       use set_size_4_smp_types
 !
-      integer(kind = kint) :: istep
+      integer(kind = kint) :: i_step
 !
 !
-      do istep = t_ITP%init_d%i_time_step, t_ITP%finish_d%i_end_step,   &
-     &          t_ITP%ucd_step%increment
-        if (my_rank .lt. gen_itp_p1%ndomain_org) then
-          call set_data_by_read_ucd_once(my_rank, istep,                &
-     &        gen_itp_p1%org_ucd_IO, nod_fld_ITP, itp_time_IO)
+      do i_step = itp_udt%t_ITP%init_d%i_time_step,                     &
+     &            itp_udt%t_ITP%finish_d%i_end_step,                    &
+     &            itp_udt%t_ITP%ucd_step%increment
+        if (my_rank .lt. itp_udt%gen_itp_p%ndomain_org) then
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, i_step, itp_udt%gen_itp_p%org_ucd_IO,            &
+     &        itp_udt%org_fld, itp_time_IO)
 !
-          call nod_fields_send_recv(org_femmesh%mesh,                   &
-     &                              nod_fld_ITP, vect1)
+          call nod_fields_send_recv(itp_udt%org_fem%mesh,               &
+     &                              itp_udt%org_fld, itp_udt%v_1st_sol)
         end if
 !
 !    interpolation
 !
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'
-        call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
-     &      new_femmesh%mesh%nod_comm, itp_udt,                         &
-     &      new_femmesh%mesh%node, new_phys, vect1, v_sol2)
+        call interpolate_nodal_data                                     &
+     &     (itp_udt%org_fem%mesh%node, itp_udt%org_fld,                 &
+     &      itp_udt%new_fem%mesh%nod_comm, itp_udt%itp_tbl,             &
+     &      itp_udt%new_fem%mesh%node, itp_udt%new_fld,                 &
+     &      itp_udt%v_1st_sol, itp_udt%v_2nd_sol)
 !
 !    output udt data
 !
-        if (my_rank .lt. gen_itp_p1%ndomain_dest) then
-          call link_field_data_type_2_IO(new_femmesh%mesh%node,         &
-     &        new_phys, fem_ucd)
+        if (my_rank .lt. itp_udt%gen_itp_p%ndomain_dest) then
+          call link_field_data_type_2_IO(itp_udt%new_fem%mesh%node,     &
+     &        itp_udt%new_fld, fem_ucd)
 !
           call sel_write_parallel_ucd_file                              &
-     &       (istep, gen_itp_p1%itp_ucd_IO, itp_time_IO, fem_ucd)
+     &       (i_step, itp_udt%gen_itp_p%itp_ucd_IO,                     &
+     &        itp_time_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if
       end do
 !
-      if (my_rank .lt. gen_itp_p1%ndomain_dest) then
+      if (my_rank .lt. itp_udt%gen_itp_p%ndomain_dest) then
         call count_size_4_smp_mesh                                      &
-     &     (new_femmesh%mesh%node, new_femmesh%mesh%ele)
+     &     (itp_udt%new_fem%mesh%node, itp_udt%new_fem%mesh%ele)
         if (i_debug.eq.iflag_full_msg) then
-          call check_mesh_smp_size(my_rank, new_femmesh%mesh)
+          call check_mesh_smp_size(my_rank, itp_udt%new_fem%mesh)
         end if
       end if
 !

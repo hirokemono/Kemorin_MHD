@@ -1,6 +1,6 @@
-analyzer_test_ele_tbl.o: $(ITP_TEST_DIR)/analyzer_test_ele_tbl.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_step_parameter.o t_mesh_data.o t_interpolate_table.o t_IO_step_parameter.o t_ctl_data_gen_table.o t_ctl_params_4_gen_table.o m_array_for_send_recv.o input_control_interpolate.o const_mesh_information.o set_size_4_smp_types.o element_posi_2_nodal_array.o mesh_interpolation.o
+analyzer_test_ele_tbl.o: $(ITP_TEST_DIR)/analyzer_test_ele_tbl.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_step_parameter.o t_mesh_data.o t_interpolate_table.o t_IO_step_parameter.o t_ctl_data_gen_table.o t_ctl_params_4_gen_table.o m_array_for_send_recv.o m_2nd_pallalel_vector.o input_control_interpolate.o const_mesh_information.o set_size_4_smp_types.o element_posi_2_nodal_array.o mesh_interpolation.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_test_table.o: $(ITP_TEST_DIR)/analyzer_test_table.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_step_parameter.o t_mesh_data.o t_interpolate_table.o t_IO_step_parameter.o t_ctl_data_gen_table.o t_ctl_params_4_gen_table.o m_array_for_send_recv.o input_control_interpolate.o const_mesh_information.o set_size_4_smp_types.o mesh_interpolation.o
+analyzer_test_table.o: $(ITP_TEST_DIR)/analyzer_test_table.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_step_parameter.o t_mesh_data.o t_interpolate_table.o t_IO_step_parameter.o t_ctl_data_gen_table.o t_ctl_params_4_gen_table.o m_array_for_send_recv.o m_2nd_pallalel_vector.o input_control_interpolate.o const_mesh_information.o set_size_4_smp_types.o mesh_interpolation.o
 	$(F90) -c $(F90OPTFLAGS) $<
 check_ineterppolated_mesh.o: $(ITP_TEST_DIR)/check_ineterppolated_mesh.f90 m_precision.o calypso_mpi.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

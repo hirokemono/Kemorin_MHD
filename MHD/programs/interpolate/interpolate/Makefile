@@ -10,12 +10,12 @@ TARGET_ITP_RST = interpolate_rst
 SOURCES = $(shell ls *.f90)
 
 MOD_ITP_FIELDS = \
-input_control_interpolate.o \
+t_structure_4_interolation.o \
 analyzer_interpolate_udt.o \
 main_interpolate_udt.o
 
 MOD_ITP_RESTART = \
-input_control_interpolate.o \
+t_structure_4_interolation.o \
 analyzer_interpolate_rst.o \
 main_interpolate_rst.o
 
