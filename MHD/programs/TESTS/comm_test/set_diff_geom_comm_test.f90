@@ -8,9 +8,9 @@
 !!      subroutine s_set_diff_geom_comm_test                            &
 !!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
 !!
-!!      subroutine count_diff_node_comm_test(node, vect)
-!!      subroutine set_diff_node_comm_test(node, vect)
-!!        type(vectors_4_solver), intent(in) :: vect
+!!      subroutine count_diff_node_comm_test(node, v_sol)
+!!      subroutine set_diff_node_comm_test(node, v_sol)
+!!        type(vectors_4_solver), intent(in) :: v_sol
 !!
 !!      subroutine count_node_comm_test(num_d, inter_d, x_org,          &
 !!     &          x_comm, num_diff_l)
@@ -91,32 +91,32 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_diff_node_comm_test(node, vect)
+      subroutine count_diff_node_comm_test(node, v_sol)
 !
       use calypso_mpi
 !
       type(node_data), intent(in) :: node
-      type(vectors_4_solver), intent(in) :: vect
+      type(vectors_4_solver), intent(in) :: v_sol
 !
 !
       call count_node_comm_test(node%numnod, node%internal_node,        &
-     &    node%xx, vect%x_vec, nnod_diff_local)
+     &    node%xx, v_sol%x_vec(1), nnod_diff_local)
 !
       end subroutine count_diff_node_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_diff_node_comm_test(node, vect)
+      subroutine set_diff_node_comm_test(node, v_sol)
 !
       use calypso_mpi
 !
       type(node_data), intent(in) :: node
-      type(vectors_4_solver), intent(in) :: vect
+      type(vectors_4_solver), intent(in) :: v_sol
 !
 !
       call compare_nod_comm_test(node%numnod, node%internal_node,       &
-     &    node%xx, vect%x_vec, nnod_diff_local, inod_diff, xx_diff)
+     &    node%xx, v_sol%x_vec(1), nnod_diff_local, inod_diff, xx_diff)
 !
       end subroutine set_diff_node_comm_test
 !

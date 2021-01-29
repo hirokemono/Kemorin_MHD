@@ -12,7 +12,7 @@
 !!     &         (i_filter,  i_sgs, i_field, id_dx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
 !!     &          iphys_ele_base, ele_fld, jacs rhs_tbl, FEM_elens,     &
-!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld, vect)
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -30,7 +30,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_sgs_uxb_grad
 !
@@ -118,7 +118,7 @@
      &         (i_filter,  i_sgs, i_field, id_dx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,      &
-     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld, vect)
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -148,7 +148,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -166,7 +166,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_sgs_vp_induct_grad_no_coef
 !

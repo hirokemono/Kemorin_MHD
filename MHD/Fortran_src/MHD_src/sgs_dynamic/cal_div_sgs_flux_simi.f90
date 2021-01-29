@@ -6,15 +6,15 @@
 !!      subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect, dt,       &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,       &
-!!     &          mlump_fl, f_l, f_nl, nod_fld, vect)
+!!     &          mlump_fl, f_l, f_nl, nod_fld, v_sol)
 !!      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar, &
 !!     &          iflag_supg, num_int, dt, nod_comm, node, ele, fluid,  &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,       &
-!!     &          mlump_fl, f_l, f_nl, nod_fld, vect)
+!!     &          mlump_fl, f_l, f_nl, nod_fld, v_sol)
 !!      subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,   &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,       &
-!!     &          mlump_cd, f_l, f_nl, nod_fld, vect)
+!!     &          mlump_cd, f_l, f_nl, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -30,7 +30,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_div_sgs_flux_simi
 !
@@ -60,7 +60,7 @@
       subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect, dt,         &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,         &
-     &          mlump_fl, f_l, f_nl, nod_fld, vect)
+     &          mlump_fl, f_l, f_nl, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -86,7 +86,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, f_l, f_nl)
@@ -115,7 +115,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_div_sgs_mf_simi
 !
@@ -124,7 +124,7 @@
       subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar,   &
      &          iflag_supg, num_int, dt, nod_comm, node, ele, fluid,    &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,         &
-     &          mlump_fl, f_l, f_nl, nod_fld, vect)
+     &          mlump_fl, f_l, f_nl, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -150,7 +150,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
        call reset_ff_smps(node, f_l, f_nl)
@@ -173,7 +173,7 @@
 !
 ! ----------   communications
 !
-      call scalar_send_recv(i_sgs, nod_comm, nod_fld, vect)
+      call scalar_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_div_sgs_sf_simi
 !
@@ -182,7 +182,7 @@
       subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,     &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          iphys_ele_base, ele_fld, jacs, rhs_tbl, fem_wk,         &
-     &          mlump_cd, f_l, f_nl, nod_fld, vect)
+     &          mlump_cd, f_l, f_nl, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -208,7 +208,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, f_l, f_nl)
@@ -232,7 +232,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_div_sgs_idct_simi
 !

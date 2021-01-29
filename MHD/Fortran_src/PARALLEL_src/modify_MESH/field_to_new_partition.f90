@@ -15,13 +15,13 @@
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !!      subroutine init_fld_to_new_partition(new_mesh, org_fld, new_fld)
 !!      subroutine nod_field_to_new_partition(iflag_recv,               &
-!!     &          new_mesh, org_to_new_tbl, org_fld, new_fld, vect1)
+!!     &          new_mesh, org_to_new_tbl, org_fld, new_fld, v_sol)
 !!      subroutine finalize_fld_to_new_partition(new_fld)
 !!        type(mesh_geometry), intent(in) :: new_mesh
 !!        type(calypso_comm_table), intent(in) :: org_to_new_tbl
 !!        type(phys_data), intent(in) :: org_fld
 !!        type(phys_data), intent(inout) :: new_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module field_to_new_partition
@@ -124,7 +124,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine nod_field_to_new_partition(iflag_recv,                 &
-     &          new_mesh, org_to_new_tbl, org_fld, new_fld, vect)
+     &          new_mesh, org_to_new_tbl, org_fld, new_fld, v_sol)
 !
       use transfer_to_new_partition
 !
@@ -134,7 +134,7 @@
       type(phys_data), intent(in) :: org_fld
 !
       type(phys_data), intent(inout) :: new_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: i_fld, i_comp
 !
@@ -144,16 +144,16 @@
         if     (new_fld%num_component(i_fld) .eq. n_scalar) then
           call scalar_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &
-     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), vect)
+     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), v_sol)
         else if(new_fld%num_component(i_fld) .eq. n_vector) then
           call vector_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &
-     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), vect)
+     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), v_sol)
         else
           call tensor_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, new_fld%num_component(i_fld),          &
      &        org_fld%n_point, new_fld%n_point,                         &
-     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), vect)
+     &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), v_sol)
         end if
       end do
 !

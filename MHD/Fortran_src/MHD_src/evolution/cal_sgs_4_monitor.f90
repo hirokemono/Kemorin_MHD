@@ -10,18 +10,18 @@
 !!     &          rhs_tbl, FEM_elens, icomp_sgs_term, iphys_elediff_vec,&
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,          &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,             &
-!!     &          nod_fld, vect)
+!!     &          nod_fld, v_sol)
 !!      subroutine cal_diff_of_sgs_terms                                &
 !!     &         (dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,&
 !!     &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,    &
 !!     &          FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD,          &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, v_sol)
 !!      subroutine cal_work_4_sgs_terms                                 &
 !!     &         (FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          fl_prop, cd_prop, iphys, iphys_LES, jacs, rhs_tbl,    &
-!!     &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld, vect)
+!!     &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -56,7 +56,7 @@
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!
 !
       module cal_sgs_4_monitor
@@ -106,7 +106,7 @@
      &          rhs_tbl, FEM_elens, icomp_sgs_term, iphys_elediff_vec,  &
      &          sgs_coefs, sgs_coefs_nod, filtering, mk_MHD,            &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,               &
-     &          nod_fld, vect)
+     &          nod_fld, v_sol)
 !
       use m_base_force_labels
       use m_SGS_term_labels
@@ -142,7 +142,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if(iphys_LES%SGS_term%i_SGS_h_flux .gt. 0) then
@@ -158,7 +158,7 @@
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,       &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_c_flux .gt. 0) then
@@ -174,7 +174,7 @@
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,       &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_m_flux .gt. 0) then
@@ -186,7 +186,7 @@
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl,                  &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_maxwell .gt. 0) then
@@ -198,7 +198,7 @@
      &      iphys_LES%SGS_wk, iphys_ele_base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_fl, wk_filter,       &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, vect)
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld, v_sol)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_induct_t .gt. 0) then
@@ -210,7 +210,7 @@
      &      iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elens,          &
      &      filtering, icomp_sgs_term, iphys_elediff_vec,               &
      &      sgs_coefs, sgs_coefs_nod, mk_MHD%mlump_cd,                  &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld, vect)
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
       end if
 !
       if(iphys_LES%SGS_term%i_SGS_vp_induct .gt. 0) then
@@ -221,7 +221,7 @@
      &      iphys, iphys_LES, iphys_ele_base, ele_fld, jacs, rhs_tbl,   &
      &      FEM_elens, filtering, icomp_sgs_term, iphys_elediff_vec,    &
      &      sgs_coefs, mk_MHD%mlump_cd, wk_filter, mhd_fem_wk, fem_wk,  &
-     &      f_l, f_nl, nod_fld, vect)
+     &      f_l, f_nl, nod_fld, v_sol)
       end if
 !
       end subroutine cal_sgs_terms_4_monitor
@@ -234,7 +234,7 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, nod_bcs, surf_bcs,  &
      &          iphys, iphys_LES, iphys_ele_base, ak_MHD, fem_int,      &
      &          FEM_elens, iak_diff_sgs, diff_coefs, mk_MHD,            &
-     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, vect)
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, v_sol)
 !
       use m_SGS_term_labels
       use m_diff_SGS_term_labels
@@ -273,7 +273,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: i, i_fld
 !
@@ -324,7 +324,7 @@
      &        iphys_LES%div_SGS, iphys_ele_base, ak_MHD,                &
      &        fem_int, FEM_elens, iak_diff_sgs, diff_coefs,             &
      &        mk_MHD%mlump_fl, mhd_fem_wk, rhs_mat,                     &
-     &        nod_fld, ele_fld, vect)
+     &        nod_fld, ele_fld, v_sol)
         end if
       end do
 !
@@ -340,7 +340,7 @@
      &     iphys%base, iphys%forces, iphys%div_forces, iphys%diffusion, &
      &     iphys_LES%SGS_term, iphys_ele_base, ele_fld,                 &
      &     fem_int, FEM_elens, iak_diff_sgs, diff_coefs,                &
-     &     mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect)
+     &     mk_MHD%mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
       end if
 !
       end subroutine cal_diff_of_sgs_terms
@@ -350,7 +350,7 @@
       subroutine cal_work_4_sgs_terms                                   &
      &         (FEM_prm, nod_comm, node, ele, conduct,                  &
      &          fl_prop, cd_prop, iphys, iphys_LES, jacs, rhs_tbl,      &
-     &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld, vect)
+     &          mk_MHD, mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol)
 !
       use m_SGS_term_labels
       use products_nodal_fields_smp
@@ -374,7 +374,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if (     iphys_LES%SGS_term%i_SGS_induction .gt. 0                &
@@ -384,7 +384,7 @@
         call int_vol_sgs_induction                                      &
      &     (FEM_prm, nod_comm, node, ele, conduct, iphys, iphys_LES,    &
      &      jacs%g_FEM, jacs%jac_3d, rhs_tbl, mk_MHD%mlump_cd,          &
-     &      mhd_fem_wk, fem_wk, f_nl, nod_fld, vect)
+     &      mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol)
       end if
 !
 !

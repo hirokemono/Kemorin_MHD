@@ -5,7 +5,7 @@
 !
 !!      subroutine vect_gradients_4_monitor(dt, FEM_prm,                &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,    &
-!!     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, vect)
+!!     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, v_sol)
 !!      subroutine cal_work_4_forces(FEM_prm, nod_comm, node, ele,      &
 !!     &          fl_prop, cd_prop, iphys, iphys_LES, fem_int, mk_MHD,  &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
@@ -25,7 +25,7 @@
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module vector_gradients_4_monitor
 !
@@ -63,7 +63,7 @@
 !
       subroutine vect_gradients_4_monitor(dt, FEM_prm,                  &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele_base,      &
-     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, vect)
+     &          fem_int, mk_MHD, rhs_mat, nod_fld, ele_fld, v_sol)
 !
       use m_base_field_labels
       use cal_gradient
@@ -82,7 +82,7 @@
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: i, i_fld, i_src
 !
@@ -108,7 +108,7 @@
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
-     &        nod_fld, vect)
+     &        nod_fld, v_sol)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_wx                  &
@@ -130,7 +130,7 @@
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
-     &        nod_fld, vect)
+     &        nod_fld, v_sol)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_ax                  &
@@ -152,7 +152,7 @@
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
-     &        nod_fld, vect)
+     &        nod_fld, v_sol)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_bx                  &
@@ -174,7 +174,7 @@
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
-     &        nod_fld, vect)
+     &        nod_fld, v_sol)
         end if
 !
         if(     i_fld .eq. iphys%diff_vector%i_grad_jx                  &
@@ -196,7 +196,7 @@
      &        nod_comm, node, ele, iphys_ele_base, ele_fld,             &
      &        fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,   &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,                &
-     &        nod_fld, vect)
+     &        nod_fld, v_sol)
         end if
 !
       end do

@@ -10,17 +10,17 @@
 !!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                    &
 !!     &          jacs, rhs_tbl, FEM_elens, iak_diff_base, diff_coefs,  &
 !!     &          Pmatrix, MG_vector, fem_wk, surf_wk,                  &
-!!     &          f_l, f_nl, nod_fld, vect)
+!!     &          f_l, f_nl, nod_fld, v_sol)
 !!      subroutine cal_electric_potential(FEM_prm, SGS_param, cmt_param,&
 !!     &          node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,  &
 !!     &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,       &
 !!     &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,      &
-!!     &          f_l, f_nl, nod_fld, vect)
+!!     &          f_l, f_nl, nod_fld, v_sol)
 !!      subroutine cal_mag_potential(FEM_prm, SGS_param, cmt_param,     &
 !!     &          node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,  &
 !!     &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,       &
 !!     &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,      &
-!!     &          f_l, f_nl, nod_fld, vect)
+!!     &          f_l, f_nl, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -48,7 +48,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_mod_vel_potential
 !
@@ -94,7 +94,7 @@
      &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                      &
      &          jacs, rhs_tbl, FEM_elens, iak_diff_base, diff_coefs,    &
      &          Pmatrix, MG_vector, fem_wk, surf_wk,                    &
-     &          f_l, f_nl, nod_fld, vect)
+     &          f_l, f_nl, nod_fld, v_sol)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -131,7 +131,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff(n_vector, node, f_l)
@@ -188,8 +188,8 @@
      &    Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
-     &    iphys%exp_work%i_p_phi, MG_vector, f_l, vect%b_vec,           &
-     &    vect%x_vec, nod_fld)
+     &    iphys%exp_work%i_p_phi, MG_vector, f_l, v_sol%b_vec,          &
+     &    v_sol%x_vec, nod_fld)
 !
       call set_boundary_scalar                                          &
      &   (Vnod_bcs%nod_bc_p, iphys%exp_work%i_p_phi, nod_fld)
@@ -202,7 +202,7 @@
      &          mesh, group, Bnod_bcs, Asf_bcs, Fsf_bcs,                &
      &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,         &
      &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,        &
-     &          f_l, f_nl, nod_fld, vect)
+     &          f_l, f_nl, nod_fld, v_sol)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -233,7 +233,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff(n_vector, mesh%node, f_l)
@@ -281,8 +281,8 @@
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
-     &    iphys%exp_work%i_m_phi, MG_vector, f_l, vect%b_vec,           &
-     &    vect%x_vec, nod_fld)
+     &    iphys%exp_work%i_m_phi, MG_vector, f_l, v_sol%b_vec,          &
+     &    v_sol%x_vec, nod_fld)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
       call set_boundary_scalar                                          &
@@ -297,7 +297,7 @@
      &          node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,    &
      &          iphys, jacs, rhs_tbl, FEM_elens, iak_diff_base,         &
      &          diff_coefs, Fmatrix, MG_vector, fem_wk, surf_wk,        &
-     &          f_l, f_nl, nod_fld, vect)
+     &          f_l, f_nl, nod_fld, v_sol)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -331,7 +331,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff(n_vector, node, f_l)
@@ -376,8 +376,8 @@
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
-     &    iphys%exp_work%i_m_phi, MG_vector, f_l, vect%b_vec,           &
-     &    vect%x_vec, nod_fld)
+     &    iphys%exp_work%i_m_phi, MG_vector, f_l, v_sol%b_vec,          &
+     &    v_sol%x_vec, nod_fld)
 !
       call set_boundary_scalar                                          &
      &   (Bnod_bcs%nod_bc_f, iphys%exp_work%i_m_phi, nod_fld)

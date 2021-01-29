@@ -8,12 +8,12 @@
 !!     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
 !!     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,  &
 !!     &          jacs, rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,        &
-!!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, vect)
+!!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
 !!      subroutine cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt, &
 !!     &          i_filter, i_sgs, i_field, ie_dvx,                     &
 !!     &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,  &
 !!     &          jacs, rhs_tbl, FEM_elens, mlump_fl, mhd_fem_wk,       &
-!!     &          fem_wk,f_l, nod_fld, vect)
+!!     &          fem_wk,f_l, nod_fld, v_sol)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -29,7 +29,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!           i_filter: filter ID for heat flux
 !
       module cal_sgs_heat_fluxes_grad
@@ -64,7 +64,7 @@
      &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
      &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,    &
      &          jacs, rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,          &
-     &          mhd_fem_wk, fem_wk, f_l, nod_fld, vect)
+     &          mhd_fem_wk, fem_wk, f_l, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -95,7 +95,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
@@ -118,7 +118,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_sgs_s_flux_grad_w_coef
 !
@@ -128,7 +128,7 @@
      &          i_filter, i_sgs, i_field, ie_dvx,                       &
      &          nod_comm, node, ele, fluid, iphys_ele_base, ele_fld,    &
      &          jacs, rhs_tbl, FEM_elens, mlump_fl, mhd_fem_wk,         &
-     &          fem_wk, f_l, nod_fld, vect)
+     &          fem_wk, f_l, nod_fld, v_sol)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -156,7 +156,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
@@ -174,7 +174,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs, nod_comm, nod_fld, vect)
+      call vector_send_recv(i_sgs, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_sgs_s_flux_grad_no_coef
 !

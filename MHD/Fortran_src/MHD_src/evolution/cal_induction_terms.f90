@@ -6,12 +6,12 @@
 !!      subroutine cal_vecp_induction                                   &
 !!     &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,    &
-!!     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect)
+!!     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !!      subroutine cal_vecp_diffusion(ak_d_magne,                       &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,&
 !!     &          Bnod_bcs, Asf_bcs,iphys, fem_int, FEM_elens,          &
 !!     &          iak_diff_base, diff_coefs, mlump_cd, rhs_mat,         &
-!!     &          nod_fld, vect)
+!!     &          nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -33,7 +33,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_induction_terms
 !
@@ -78,7 +78,7 @@
       subroutine cal_vecp_induction                                     &
      &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          Bnod_bcs, iphys, iphys_ele_base, ele_fld, fem_int,      &
-     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, vect)
+     &          mlump_cd, mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !
 !
       use int_vol_vect_p_pre
@@ -102,7 +102,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -126,7 +126,7 @@
      &    mlump_cd, nod_comm, node, ele, iphys_ele_base, ele_fld,       &
      &    fem_int%jcs%g_FEM, fem_int%jcs%jac_3d, fem_int%rhs_tbl,       &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl, vect)
+     &    rhs_mat%f_l, rhs_mat%f_nl, v_sol)
       call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a,             &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -134,7 +134,7 @@
      &    rhs_mat%f_nl%ff, mlump_cd%ml, nod_fld%ntot_phys,              &
      &    iphys%forces%i_vp_induct, nod_fld%d_fld)
       call vector_send_recv                                             &
-     &   (iphys%forces%i_vp_induct, nod_comm, nod_fld, vect)
+     &   (iphys%forces%i_vp_induct, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_vecp_induction
 !
@@ -144,7 +144,7 @@
      &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,  &
      &          Bnod_bcs, Asf_bcs,iphys, fem_int, FEM_elens,            &
      &          iak_diff_base, diff_coefs, mlump_cd, rhs_mat,           &
-     &          nod_fld, vect)
+     &          nod_fld, v_sol)
 !
       use t_SGS_control_parameter
       use t_surface_bc_velocity
@@ -173,7 +173,7 @@
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, rhs_mat%f_l, rhs_mat%f_nl)
@@ -202,7 +202,7 @@
      &    iphys%diffusion%i_vp_diffuse, nod_fld%d_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%diffusion%i_vp_diffuse, nod_comm, nod_fld, vect)
+     &   (iphys%diffusion%i_vp_diffuse, nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_vecp_diffusion
 !

@@ -12,7 +12,7 @@
 !!     &          fluid, conduct, cd_prop, nod_bcs, surf_bcs,           &
 !!     &          iphys_base, iphys_ele_base, ele_fld, fem_int,         &
 !!     &          FEM_elens, iak_diff_base, diff_coefs, mk_MHD,         &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, vect)
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -33,7 +33,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module MHD_field_by_rotation
@@ -75,7 +75,7 @@
      &          fluid, conduct, cd_prop, nod_bcs, surf_bcs,             &
      &          iphys_base, iphys_ele_base, ele_fld, fem_int,           &
      &          FEM_elens, iak_diff_base, diff_coefs, mk_MHD,           &
-     &          mhd_fem_wk, rhs_mat, nod_fld, vect)
+     &          mhd_fem_wk, rhs_mat, nod_fld, v_sol)
 !
       use cal_rotation_sgs
 !
@@ -102,7 +102,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if(iphys_base%i_vort .gt. izero)then
@@ -119,7 +119,7 @@
      &        fem_int%jcs, FEM_elens, diff_coefs,                       &
      &        nod_bcs%Vnod_bcs%nod_bc_w, surf_bcs%Vsf_bcs%sgs,          &
      &        fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%surf_wk,         &
-     &        rhs_mat%f_nl, nod_fld, vect)
+     &        rhs_mat%f_nl, nod_fld, v_sol)
         end if
       end if
 !
@@ -137,7 +137,7 @@
      &           group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,  &
      &           FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
      &           surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk, &
-     &           rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld, vect)
+     &           rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld, v_sol)
 !
 !             call choose_cal_rotation_sgs                              &
 !     &         (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,     &
@@ -149,7 +149,7 @@
 !     &          FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,      &
 !     &          surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                 &
 !     &          rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl,         &
-!     &          nod_fld, vect)
+!     &          nod_fld, v_sol)
 !             call int_current_diffuse                                  &
 !     &         (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,           &
 !     &          mesh%surf, group%surf_grp, surf_bcs%Asf_bcs,           &
@@ -168,7 +168,7 @@
      &         group%surf_grp, iphys_ele_base, ele_fld, fem_int%jcs,    &
      &         FEM_elens, diff_coefs,  nod_bcs%Bnod_bcs%nod_bc_j,       &
      &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl, rhs_mat%fem_wk,   &
-     &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld, vect)
+     &         rhs_mat%surf_wk, rhs_mat%f_nl, nod_fld, v_sol)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
 !     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,     &
 !     &         dt, iak_diff_base%i_magne,                              &
@@ -179,7 +179,7 @@
 !     &         FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,       &
 !     &         surf_bcs%Bsf_bcs%sgs, fem_int%rhs_tbl,                  &
 !     &         rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_nl,          &
-!     &         nod_fld, vect)
+!     &         nod_fld, v_sol)
           end if
         end if
       end if

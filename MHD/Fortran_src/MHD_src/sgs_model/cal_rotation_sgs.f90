@@ -9,7 +9,7 @@
 !!     &          SGS_param, nod_comm, node, ele, surf, sf_grp,         &
 !!     &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs, &
 !!     &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk,             &
-!!     &          f_nl, nod_fld, vect)
+!!     &          f_nl, nod_fld, v_sol)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -29,7 +29,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module cal_rotation_sgs
 !
@@ -78,7 +78,7 @@
      &          SGS_param, nod_comm, node, ele, surf, sf_grp,           &
      &          iphys_ele_base, ele_fld, jacs, FEM_elens, diff_coefs,   &
      &          nod_bc, sgs_sf, rhs_tbl, fem_wk, surf_wk,               &
-     &          f_nl, nod_fld, vect)
+     &          f_nl, nod_fld, v_sol)
 !
       use cal_rotation
       use set_boundary_scalars
@@ -109,7 +109,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if(SGS_param%iflag_SGS .ne. id_SGS_none                           &
@@ -133,7 +133,7 @@
       call set_boundary_vect(nod_bc, i_rot, nod_fld)
 !
 ! ----------   communications
-      call vector_send_recv(i_rot, nod_comm, nod_fld, vect)
+      call vector_send_recv(i_rot, nod_comm, nod_fld, v_sol)
       nod_fld%iflag_update(i_rot:i_rot+2) = 1
 !
       end subroutine choose_cal_rotation_sgs

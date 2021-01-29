@@ -7,20 +7,20 @@
 !
 !!      subroutine copy_communicator_4_solver(S_COMM)
 !!        type(mpi_4_solver), intent(inout) :: S_COMM
-!!      subroutine verify_iccgN_vec_type(NB, nnod, vect)
+!!      subroutine verify_iccgN_vec_type(NB, nnod, v_sol)
 !!         integer(kind = kint), intent(in) :: NB, nnod
-!!         type(vectors_4_solver), intent(inout) :: vect
-!!      subroutine alloc_iccgN_vec_type(NB, nnod, vect)
-!!      subroutine dealloc_iccgN_vec_type(vect)
-!!         type(vectors_4_solver), intent(inout) :: vect
+!!         type(vectors_4_solver), intent(inout) :: v_sol
+!!      subroutine alloc_iccgN_vec_type(NB, nnod, v_sol)
+!!      subroutine dealloc_iccgN_vec_type(v_sol)
+!!         type(vectors_4_solver), intent(inout) :: v_sol
 !!
-!!      subroutine alloc_iccg_int_vector(nnod, vect)
-!!      subroutine dealloc_iccg_int_vector(vect)
-!!         type(vectors_4_solver), intent(inout) :: vect
+!!      subroutine alloc_iccg_int_vector(nnod, v_sol)
+!!      subroutine dealloc_iccg_int_vector(v_sol)
+!!         type(vectors_4_solver), intent(inout) :: v_sol
 !!
-!!       subroutine alloc_iccg_int8_vector(nnod, vect)
-!!       subroutine dealloc_iccg_int8_vector(vect)
-!!         type(vectors_4_solver), intent(inout) :: vect
+!!       subroutine alloc_iccg_int8_vector(nnod, v_sol)
+!!       subroutine dealloc_iccg_int8_vector(v_sol)
+!!         type(vectors_4_solver), intent(inout) :: v_sol
 !
 ! --------------------------------------------------------
 !
@@ -81,20 +81,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine verify_iccgN_vec_type(NB, nnod, vect)
+       subroutine verify_iccgN_vec_type(NB, nnod, v_sol)
 !
        integer(kind = kint), intent(in) :: NB, nnod
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
        integer(kind = kint) :: ncomp
 !
 !
        ncomp = NB*nnod
-       if (vect%isize_solver_vect .lt. 0) then
-         call alloc_iccgN_vec_type(NB, nnod, vect)
+       if (v_sol%isize_solver_vect .lt. 0) then
+         call alloc_iccgN_vec_type(NB, nnod, v_sol)
        else
-         if (vect%isize_solver_vect .lt. ncomp) then
-           call dealloc_iccgN_vec_type(vect)
-           call alloc_iccgN_vec_type(NB,nnod, vect)
+         if (v_sol%isize_solver_vect .lt. ncomp) then
+           call dealloc_iccgN_vec_type(v_sol)
+           call alloc_iccgN_vec_type(NB,nnod, v_sol)
          end if
        end if
 !
@@ -102,55 +102,55 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine alloc_iccgN_vec_type(NB, nnod, vect)
+       subroutine alloc_iccgN_vec_type(NB, nnod, v_sol)
 !
        integer(kind = kint), intent(in) :: NB, nnod
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-       if(allocated(vect%x_vec)) return
+       if(allocated(v_sol%x_vec)) return
 !
-       allocate(vect%x_vec(NB*nnod))
-       allocate(vect%b_vec(NB*nnod))
+       allocate(v_sol%x_vec(NB*nnod))
+       allocate(v_sol%b_vec(NB*nnod))
 !
        if(nnod .gt. 0) then
 !$omp parallel workshare
-         vect%x_vec(1:NB*nnod) = 0.0d00
-         vect%b_vec(1:NB*nnod) = 0.0d00
+         v_sol%x_vec(1:NB*nnod) = 0.0d00
+         v_sol%b_vec(1:NB*nnod) = 0.0d00
 !$omp end parallel workshare
        end if
 !
-       vect%isize_solver_vect = NB*nnod
+       v_sol%isize_solver_vect = NB*nnod
 !
        end subroutine alloc_iccgN_vec_type
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine dealloc_iccgN_vec_type(vect)
+       subroutine dealloc_iccgN_vec_type(v_sol)
 !
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-       if(allocated(vect%x_vec) .eqv. .FALSE.) return
-       deallocate(vect%x_vec, vect%b_vec)
-       vect%isize_solver_vect = 0
+       if(allocated(v_sol%x_vec) .eqv. .FALSE.) return
+       deallocate(v_sol%x_vec, v_sol%b_vec)
+       v_sol%isize_solver_vect = 0
 !
        end subroutine dealloc_iccgN_vec_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine alloc_iccg_int_vector(nnod, vect)
+       subroutine alloc_iccg_int_vector(nnod, v_sol)
 !
        integer(kind = kint), intent(in) :: nnod
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-       if(allocated(vect%ix_vec)) return
-       allocate(vect%ix_vec(nnod))
+       if(allocated(v_sol%ix_vec)) return
+       allocate(v_sol%ix_vec(nnod))
        if(nnod .gt. 0) then
 !$omp parallel workshare
-         vect%ix_vec(1:nnod) = 0
+         v_sol%ix_vec(1:nnod) = 0
 !$omp end parallel workshare
        end if
 !
@@ -158,29 +158,29 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine dealloc_iccg_int_vector(vect)
+       subroutine dealloc_iccg_int_vector(v_sol)
 !
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
 !
-       if(allocated(vect%ix_vec) .eqv. .FALSE.) return
-       deallocate(vect%ix_vec)
+       if(allocated(v_sol%ix_vec) .eqv. .FALSE.) return
+       deallocate(v_sol%ix_vec)
 !
        end subroutine dealloc_iccg_int_vector
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine alloc_iccg_int8_vector(nnod, vect)
+       subroutine alloc_iccg_int8_vector(nnod, v_sol)
 !
        integer(kind = kint), intent(in) :: nnod
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
-       if(allocated(vect%i8x_vec)) return
-       allocate(vect%i8x_vec(nnod))
+       if(allocated(v_sol%i8x_vec)) return
+       allocate(v_sol%i8x_vec(nnod))
        if(nnod .gt. 0) then
 !$omp parallel workshare
-         vect%i8x_vec(1:nnod)  = 0
+         v_sol%i8x_vec(1:nnod)  = 0
 !$omp end parallel workshare
        end if
 !
@@ -188,12 +188,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine dealloc_iccg_int8_vector(vect)
+       subroutine dealloc_iccg_int8_vector(v_sol)
 !
-       type(vectors_4_solver), intent(inout) :: vect
+       type(vectors_4_solver), intent(inout) :: v_sol
 !
-       if(allocated(vect%i8x_vec) .eqv. .FALSE.) return
-       deallocate(vect%i8x_vec)
+       if(allocated(v_sol%i8x_vec) .eqv. .FALSE.) return
+       deallocate(v_sol%i8x_vec)
 !
        end subroutine dealloc_iccg_int8_vector
 !

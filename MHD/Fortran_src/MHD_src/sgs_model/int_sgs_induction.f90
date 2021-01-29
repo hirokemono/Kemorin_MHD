@@ -6,14 +6,14 @@
 !
 !!      subroutine int_vol_sgs_induction(FEM_prm, nod_comm, node, ele,
 !!     &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,    &
-!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld, vect)
+!!     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol)
 !!      subroutine cal_sgs_uxb_2_monitor(dt, FEM_prm, SGS_param,        &
 !!     &          filter_param, nod_comm, node, ele, conduct, cd_prop,  &
 !!     &          iphys, iphys_LES, iphys_ele_base, ele_fld,            &
 !!     &          jacs, rhs_tbl, FEM_elen, filtering,                   &
 !!     &          icomp_sgs_term, iphys_elediff_vec, sgs_coefs,         &
 !!     &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,   &
-!!     &          nod_fld, vect)
+!!     &          nod_fld, v_sol)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -41,7 +41,7 @@
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module int_sgs_induction
 !
@@ -80,7 +80,7 @@
 !
       subroutine int_vol_sgs_induction(FEM_prm, nod_comm, node, ele,    &
      &          conduct, iphys, iphys_LES, g_FEM, jac_3d, rhs_tbl,      &
-     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld, vect)
+     &          mlump_cd, mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
@@ -102,7 +102,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smp(n_vector, node, f_nl)
@@ -115,7 +115,7 @@
 !      call cal_multi_pass_4_vector_ff                                  &
 !     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
 !     &    g_FEM, jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp,                 &
-!     &    fem_wk, f_l, f_nl, vect)
+!     &    fem_wk, f_l, f_nl, v_sol)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_l%ff,   &
 !     &    mlump_cd%ml, nod_fld%ntot_phys, iphys%base%i_magne,          &
 !     &    nod_fld%d_fld)
@@ -125,7 +125,7 @@
      &     nod_fld%d_fld)
 !
        call vector_send_recv(iphys_LES%SGS_term%i_SGS_induction,        &
-     &                       nod_comm, nod_fld, vect)
+     &                       nod_comm, nod_fld, v_sol)
 !
       end subroutine int_vol_sgs_induction
 !
@@ -137,7 +137,7 @@
      &          jacs, rhs_tbl, FEM_elen, filtering,                     &
      &          icomp_sgs_term, iphys_elediff_vec, sgs_coefs,           &
      &          mlump_cd, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl,     &
-     &          nod_fld, vect)
+     &          nod_fld, v_sol)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
@@ -172,7 +172,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       call reset_ff_smps(node, f_l, f_nl)
@@ -181,7 +181,7 @@
      &    iphys%base, iphys_LES%filter_fld, iphys_LES%SGS_wk,           &
      &    iphys_ele_base, ele_fld, jacs, rhs_tbl, FEM_elen, filtering,  &
      &    icomp_sgs_term, iphys_elediff_vec, sgs_coefs, wk_filter,      &
-     &    mhd_fem_wk, fem_wk, f_nl, nod_fld, vect)
+     &    mhd_fem_wk, fem_wk, f_nl, nod_fld, v_sol)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector                                              &
@@ -189,7 +189,7 @@
      &    nod_fld%ntot_phys, iphys_LES%SGS_term%i_SGS_vp_induct,        &
      &    nod_fld%d_fld)
       call vector_send_recv(iphys_LES%SGS_term%i_SGS_vp_induct,         &
-     &                      nod_comm, nod_fld, vect)
+     &                      nod_comm, nod_fld, v_sol)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

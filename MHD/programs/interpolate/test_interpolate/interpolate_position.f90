@@ -4,17 +4,17 @@
 !     Written by H. Matsui on Sep., 2006
 !
 !!      subroutine s_interpolate_position(node, NP_dest, comm_dest,     &
-!!     &          itp_table, xx_interpolate, vect)
+!!     &          itp_table, xx_interpolate, v_sol)
 !!      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest,&
-!!     &          itp_table, xx_interpolate, vect)
+!!     &          itp_table, xx_interpolate, v_sol)
 !!      subroutine s_interpolate_position_by_S(node, NP_dest, comm_dest,&
-!!     &          itp_table, xx_interpolate, vect)
+!!     &          itp_table, xx_interpolate, v_sol)
 !!      subroutine s_interpolate_global_node(iflag_recv,                &
 !!     &        (NP_dest, comm_dest, itp_org, itp_dest, inod_global_itp)
 !!        type(node_data), intent(inout) :: node
 !!        type(communication_table), intent(in) :: comm_dest
 !!        type(interpolate_table), intent(in) :: itp_table
-!!        type(vectors_4_solver), intent(inout) :: vect
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !
       module interpolate_position
 !
@@ -37,7 +37,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position(node, NP_dest, comm_dest,       &
-     &          itp_table, xx_interpolate, vect)
+     &          itp_table, xx_interpolate, v_sol)
 !
       use m_solver_SR
       use m_constants
@@ -50,26 +50,26 @@
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table), intent(in) :: itp_table
 !
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod
 !
 !     initialize
 !
-      call verify_iccgN_vec_type(ithree, node%numnod, vect)
+      call verify_iccgN_vec_type(ithree, node%numnod, v_sol)
       call verify_2nd_iccg_matrix(ithree, NP_dest)
 !
 !
       do inod = 1, node%numnod
-        vect%x_vec(3*inod-2) = node%xx(inod,1)
-        vect%x_vec(3*inod-1) = node%xx(inod,2)
-        vect%x_vec(3*inod  ) = node%xx(inod,3)
+        v_sol%x_vec(3*inod-2) = node%xx(inod,1)
+        v_sol%x_vec(3*inod-1) = node%xx(inod,2)
+        v_sol%x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
       call interpolate_mod_3(itp_table%iflag_itp_recv, comm_dest,       &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
-     &    np_smp, node%numnod, NP_dest, vect%x_vec(1),                  &
+     &    np_smp, node%numnod, NP_dest, v_sol%x_vec(1),                 &
      &    SR_sig1, SR_r1, xvec_2nd(1))
 !
       do inod = 1, NP_dest
@@ -83,7 +83,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest,  &
-     &          itp_table, xx_interpolate, vect)
+     &          itp_table, xx_interpolate, v_sol)
 !
       use m_constants
       use m_solver_SR
@@ -96,26 +96,26 @@
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table), intent(in) :: itp_table
 !
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod
 !
 !     initialize
 !
-      call verify_iccgN_vec_type(ithree, node%numnod, vect)
+      call verify_iccgN_vec_type(ithree, node%numnod, v_sol)
       call verify_2nd_iccg_matrix(ithree, NP_dest)
 !
 !
       do inod = 1, node%numnod
-        vect%x_vec(3*inod-2) = node%xx(inod,1)
-        vect%x_vec(3*inod-1) = node%xx(inod,2)
-        vect%x_vec(3*inod  ) = node%xx(inod,3)
+        v_sol%x_vec(3*inod-2) = node%xx(inod,1)
+        v_sol%x_vec(3*inod-1) = node%xx(inod,2)
+        v_sol%x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
       call interpolate_mod_N(iflag_import_mod, comm_dest,               &
      &    itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,         &
-     &    np_smp, node%numnod, NP_dest, ithree, vect%x_vec(1),          &
+     &    np_smp, node%numnod, NP_dest, ithree, v_sol%x_vec(1),         &
      &    SR_sig1, SR_r1, xvec_2nd(1))
 !
       do inod = 1, NP_dest
@@ -129,7 +129,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_position_by_S(node, NP_dest, comm_dest,  &
-     &          itp_table, xx_interpolate, vect)
+     &          itp_table, xx_interpolate, v_sol)
 !
       use m_constants
       use m_solver_SR
@@ -143,25 +143,25 @@
       type(communication_table), intent(in) :: comm_dest
       type(interpolate_table), intent(in) :: itp_table
 !
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
       real(kind = kreal), intent(inout) :: xx_interpolate(NP_dest,3)
 !
       integer(kind = kint) :: inod, nd
 !
 !     initialize
 !
-      call verify_iccgN_vec_type(ione, node%numnod, vect)
+      call verify_iccgN_vec_type(ione, node%numnod, v_sol)
       call verify_2nd_iccg_matrix(ione, NP_dest)
 !
 !
       do nd = 1, 3
         do inod = 1, node%numnod
-          vect%x_vec(inod  ) = node%xx(inod,nd)
+          v_sol%x_vec(inod  ) = node%xx(inod,nd)
         end do
 !
         call interpolate_mod_1(itp_table%iflag_itp_recv, comm_dest,     &
      &      itp_table%tbl_org, itp_table%tbl_dest, itp_table%mat,       &
-     &      np_smp, node%numnod, NP_dest, vect%x_vec(1),                &
+     &      np_smp, node%numnod, NP_dest, v_sol%x_vec(1),               &
      &      SR_sig1, SR_r1, xvec_2nd(1))
 !
         do inod = 1, NP_dest

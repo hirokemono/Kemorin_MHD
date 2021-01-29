@@ -10,7 +10,7 @@
 !!      subroutine elpsed_label_4_comm_test
 !!
 !!      subroutine s_mesh_send_recv_test
-!!      subroutine node_send_recv4_test(node, nod_comm, N12, vect)
+!!      subroutine node_send_recv4_test(node, nod_comm, N12, v_sol)
 !!
 !!      subroutine node_send_recv_test(node, nod_comm)
 !!@endverbatim
@@ -96,36 +96,37 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine node_send_recv_test(node, nod_comm, vect)
+      subroutine node_send_recv_test(node, nod_comm, v_sol)
 !
       use solver_SR_type
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: inod
 !
 !
 !$omp parallel do
       do inod = 1, node%internal_node
-        vect%i8x_vec(inod) =   node%inod_global(inod)
-        vect%x_vec(3*inod-2) = node%xx(inod,1)
-        vect%x_vec(3*inod-1) = node%xx(inod,2)
-        vect%x_vec(3*inod  ) = node%xx(inod,3)
+        v_sol%i8x_vec(inod) =   node%inod_global(inod)
+        v_sol%x_vec(3*inod-2) = node%xx(inod,1)
+        v_sol%x_vec(3*inod-1) = node%xx(inod,2)
+        v_sol%x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int8_type                                   &
-     &   (node%numnod, nod_comm, vect%i8x_vec)
+     &   (node%numnod, nod_comm, v_sol%i8x_vec(1))
 !
-      call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm, vect%x_vec)
+      call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,               &
+     &                             v_sol%x_vec(1))
 !
       end subroutine node_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine node_send_recv4_test(node, nod_comm, N12, vect)
+      subroutine node_send_recv4_test(node, nod_comm, N12, v_sol)
 !
       use m_solver_SR
       use solver_SR_type
@@ -135,7 +136,7 @@
       type(communication_table), intent(in) :: nod_comm
 !
       integer(kind = kint), intent(in) :: N12
-      type(vectors_4_solver), intent(inout) :: vect
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint), allocatable :: irev_import(:)
 !
@@ -145,27 +146,27 @@
 !
 !$omp parallel do
       do inod = 1, node%internal_node
-        vect%i8x_vec(inod) = node%inod_global(inod)
-        vect%x_vec(12*inod-11) = node%xx(inod,1)
-        vect%x_vec(12*inod-10) = node%xx(inod,2)
-        vect%x_vec(12*inod- 9) = node%xx(inod,3)
-        vect%x_vec(12*inod- 8) = node%xx(inod,1) + 100.0
-        vect%x_vec(12*inod- 7) = node%xx(inod,2) + 100.0
-        vect%x_vec(12*inod- 6) = node%xx(inod,3) + 100.0
-        vect%x_vec(12*inod- 5) = node%xx(inod,1) + 200.0
-        vect%x_vec(12*inod- 4) = node%xx(inod,2) + 200.0
-        vect%x_vec(12*inod- 3) = node%xx(inod,3) + 200.0
-        vect%x_vec(12*inod- 2) = node%xx(inod,1) + 300.0
-        vect%x_vec(12*inod- 1) = node%xx(inod,2) + 300.0
-        vect%x_vec(12*inod   ) = node%xx(inod,3) + 300.0
+        v_sol%i8x_vec(inod) = node%inod_global(inod)
+        v_sol%x_vec(12*inod-11) = node%xx(inod,1)
+        v_sol%x_vec(12*inod-10) = node%xx(inod,2)
+        v_sol%x_vec(12*inod- 9) = node%xx(inod,3)
+        v_sol%x_vec(12*inod- 8) = node%xx(inod,1) + 100.0
+        v_sol%x_vec(12*inod- 7) = node%xx(inod,2) + 100.0
+        v_sol%x_vec(12*inod- 6) = node%xx(inod,3) + 100.0
+        v_sol%x_vec(12*inod- 5) = node%xx(inod,1) + 200.0
+        v_sol%x_vec(12*inod- 4) = node%xx(inod,2) + 200.0
+        v_sol%x_vec(12*inod- 3) = node%xx(inod,3) + 200.0
+        v_sol%x_vec(12*inod- 2) = node%xx(inod,1) + 300.0
+        v_sol%x_vec(12*inod- 1) = node%xx(inod,2) + 300.0
+        v_sol%x_vec(12*inod   ) = node%xx(inod,3) + 300.0
       end do
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int8_type                                   &
-     &   (node%numnod, nod_comm, vect%i8x_vec)
+     &   (node%numnod, nod_comm, v_sol%i8x_vec(1))
 !
       call SOLVER_SEND_RECV_N_type                                      &
-     &   (node%numnod, N12, nod_comm, vect%x_vec)
+     &   (node%numnod, N12, nod_comm, v_sol%x_vec(1))
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
         k = nod_comm%item_import(ii) - node%internal_node
@@ -174,62 +175,64 @@
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+1)
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+2)
-      call copy_to_send_by_comm_table1(node, nod_comm, N12, vect%x_vec)
+      call copy_to_send_by_comm_table1(node, nod_comm,                  &
+     &                                 N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+2)
 
       call copy_from_recv_by_comm_table1                                &
-     &   (node, nod_comm, N12, vect%x_vec)
+     &   (node, nod_comm, N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+1)
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+2)
       call copy_from_recv_by_rev_table1                                 &
-     &   (node, nod_comm, N12, irev_import, vect%x_vec)
+     &   (node, nod_comm, N12, irev_import, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+2)
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+3)
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+4)
       call copy_to_send_by_comm_lgloop1                                 &
-     &   (node, nod_comm, N12, vect%x_vec)
+     &   (node, nod_comm, N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+4)
 
       call copy_from_recv_by_comm_lgloop1                               &
-     &   (node, nod_comm, N12, vect%x_vec)
+     &   (node, nod_comm, N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+3)
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+4)
       call copy_from_recv_by_rev_lgloop1                                &
-     &   (node, nod_comm, N12, irev_import, vect%x_vec)
+     &   (node, nod_comm, N12, irev_import, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+4)
 !
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+5)
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+6)
-      call copy_to_send_by_comm_table2(node, nod_comm, N12, vect%x_vec)
+      call copy_to_send_by_comm_table2(node, nod_comm,                  &
+     &                                 N12, v_sol%x_vec)
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+6)
 
       call copy_from_recv_by_comm_table2                                &
-     &   (node, nod_comm, N12, vect%x_vec)
+     &   (node, nod_comm, N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+5)
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+6)
       call copy_from_recv_by_rev_table2                                 &
-     &   (node, nod_comm, N12, irev_import, vect%x_vec)
+     &   (node, nod_comm, N12, irev_import, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+6)
 !
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+7)
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+8)
       call copy_to_send_by_comm_lgloop2                                 &
-     &   (node, nod_comm, N12, vect%x_vec)
+     &   (node, nod_comm, N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+8)
 
       call copy_from_recv_by_comm_lgloop2                               &
-     &   (node, nod_comm, N12, vect%x_vec)
+     &   (node, nod_comm, N12, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+7)
 !
       if(iflag_elapsd) call start_elapsed_time(ist_elapsed+8)
       call copy_from_recv_by_rev_lgloop2                                &
-     &   (node, nod_comm, N12, irev_import, vect%x_vec)
+     &   (node, nod_comm, N12, irev_import, v_sol%x_vec(1))
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+8)
 !
       end subroutine node_send_recv4_test
