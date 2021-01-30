@@ -96,7 +96,6 @@
 !
       use calypso_mpi_int
       use m_error_IDs
-      use m_array_for_send_recv
       use t_check_and_make_SPH_mesh
       use mpi_gen_sph_grids_modes
       use compare_sph_with_IO

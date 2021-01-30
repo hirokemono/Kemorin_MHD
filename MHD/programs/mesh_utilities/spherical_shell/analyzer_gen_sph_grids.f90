@@ -97,7 +97,6 @@
 !
       subroutine analyze_gen_sph_grids
 !
-      use m_array_for_send_recv
       use t_check_and_make_SPH_mesh
       use parallel_FEM_mesh_init
       use mpi_gen_sph_grids_modes
@@ -175,7 +174,6 @@
 !
 !      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+4)
 !      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
-!      call FEM_comm_initialization(geofem%mesh, vect1)
 !      call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
 !
