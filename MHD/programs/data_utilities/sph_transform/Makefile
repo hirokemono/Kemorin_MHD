@@ -16,12 +16,14 @@ TARGET_ZMEAN_KENE =        sph_zm_kinetic_energies
 SOURCES = $(shell ls *.f90)
 
 MOD_SPH_TRANSFORM = \
-m_spheric_data_transform.o \
 m_SPH_transforms.o \
 \
 t_ctl_data_4_sph_trans.o \
 t_ctl_params_sph_trans.o  \
 t_phys_name_4_sph_trans.o \
+t_FEM_data_4_SPH_trans.o \
+t_SPH_data_4_SPH_trans.o \
+t_global_gauss_coefs.o \
 copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
 sph_transfer_all_field.o

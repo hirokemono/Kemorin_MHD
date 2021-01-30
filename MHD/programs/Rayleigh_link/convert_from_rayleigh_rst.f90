@@ -24,6 +24,7 @@
 !
       use m_machine_parameter
 !
+      use t_SPH_mesh_data
       use r_interpolate_marged_sph
       use t_rayleigh_restart_IO
       use t_convert_from_rayleigh

@@ -15,7 +15,6 @@
       use m_SPH_transforms
       use m_work_time
       use m_elapsed_labels_SEND_RECV
-      use m_spheric_data_transform
 !
       use SPH_analyzer_sph_trans
       use SPH_analyzer_back_trans_old
@@ -49,38 +48,33 @@
       call read_control_data_sph_trans(spt_ctl1)
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans                                   &
-     &   (spt_ctl1, t_STR, viz_step_STR, files_STR, SPH_TRNS%fld,       &
-     &    d_gauss_trans, field_STR, trns_param,                         &
-     &    WK_leg_TRNS, sph_maker_TRNS, repart_TRNS)
-      call set_ctl_data_4_pick_zm                                       &
-     &   (spt_ctl1, files_STR%zm_source_file_param)
+      call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS%fld,    &
+     &                                FEM_STR1, SPH_STR1)
+      call set_ctl_data_4_pick_zm(spt_ctl1, FEM_STR1)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (files_STR%FEM_mesh_flags, files_STR%sph_file_param,           &
+     &   (SPH_STR1%FEM_mesh_flags, SPH_STR1%sph_file_param,             &
      &    SPH_TRNS%sph, SPH_TRNS%comms, SPH_TRNS%groups,                &
-     &    femmesh_STR, files_STR%mesh_file_IO, sph_maker_TRNS)
+     &    FEM_STR1%geofem, FEM_STR1%mesh_file_IO, SPH_STR1%sph_maker)
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans                                    &
-     &   (files_STR%ucd_file_IO, viz_step_STR, ele_4_nod_SPH_TRANS,     &
-     &    jacobians_STR, ucd_SPH_TRNS)
+      call FEM_initialize_back_trans(t_STR%ucd_step, FEM_STR1)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
-      call SPH_initialize_sph_trans(trns_param, SPH_TRNS)
+      call SPH_initialize_sph_trans(SPH_TRNS, SPH_STR1)
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans(SPH_TRNS%fld, sph_trns_IO)
+      call SPH_to_FEM_bridge_sph_trans(SPH_TRNS%fld, SPH_STR1%fld_IO)
 !
 !  -------------------------------
 !
-      call init_visualize                                               &
-     &   (femmesh_STR, field_STR, spt_ctl1%viz_ctls, vizs_TRNS)
+      call init_visualize(FEM_STR1%geofem, FEM_STR1%field,              &
+     &                    spt_ctl1%viz_ctls, FEM_STR1%vizs)
 !
       end subroutine init_analyzer
 !
@@ -99,31 +93,28 @@
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
-        call FEM_analyze_sph_trans                                      &
-     &     (i_step, files_STR%org_ucd_file_IO, time_IO_TRNS)
+        call FEM_analyze_sph_trans(i_step, t_STR%ucd_step, FEM_STR1)
 !
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
         call overwrite_nodal_xyz_2_sph                                  &
-     &    (femmesh_STR%mesh%node, field_STR)
+     &    (FEM_STR1%geofem%mesh%node, FEM_STR1%field)
         call zonal_rms_all_rtp_field (SPH_TRNS%sph%sph_rtp,             &
-     &      femmesh_STR%mesh%node, field_STR)
+     &      FEM_STR1%geofem%mesh%node, FEM_STR1%field)
 !
-        visval = iflag_vizs_w_fix_step(i_step, viz_step_STR)
-        call FEM_analyze_back_trans(files_STR%zonal_ucd_param,          &
-     &      time_IO_TRNS, ucd_SPH_TRNS, i_step, visval)
+        visval = iflag_vizs_w_fix_step(i_step, FEM_STR1%viz_step)
+        call FEM_analyze_back_trans                                     &
+     &     (i_step, t_STR%ucd_step, visval, FEM_STR1)
 !
         if(visval) then
-          call istep_viz_w_fix_dt(i_step, viz_step_STR)
-          call visualize_all(viz_step_STR, t_STR%time_d,                &
-     &        femmesh_STR, field_STR, ele_4_nod_SPH_TRANS,              &
-     &        jacobians_STR, vizs_TRNS)
+          call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
+          call visualize_all(FEM_STR1%viz_step, t_STR%time_d,           &
+     &        FEM_STR1%geofem, FEM_STR1%field, FEM_STR1%ele_4_nod,      &
+     &        FEM_STR1%jacobians, FEM_STR1%vizs)
         end if
       end do
 !
-      call FEM_finalize_sph_trans                                       &
-     &   (files_STR%org_ucd_file_IO, ucd_SPH_TRNS)
-!
+      call FEM_finalize_sph_trans(t_STR%ucd_step, FEM_STR1)
       call output_elapsed_times
 !
       end subroutine analyze

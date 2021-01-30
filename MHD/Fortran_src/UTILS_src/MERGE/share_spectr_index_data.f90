@@ -18,7 +18,7 @@
       use m_constants
       use calypso_mpi
 !
-      use t_SPH_mesh_field_data
+      use t_SPH_mesh_data
 !
       implicit none
 !

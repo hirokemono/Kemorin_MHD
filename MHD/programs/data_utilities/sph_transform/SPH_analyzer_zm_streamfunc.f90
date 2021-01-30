@@ -3,9 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_streamfunc(i_step, files_param,       &
-!!     &          viz_step, trans_p, SPH_MHD, t_IO, fld_IO)
-!!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
+!!      subroutine SPH_analyze_zm_streamfunc                            &
+!!     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -20,7 +19,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_SPH_transforms
+      use t_SPH_data_4_SPH_trans
       use calypso_mpi
 !
       implicit none
@@ -35,14 +34,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_streamfunc(i_step, files_param,         &
-     &          viz_step, trans_p, SPH_MHD, t_IO, fld_IO)
+      subroutine SPH_analyze_zm_streamfunc                              &
+     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
 !
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
-      use t_ctl_params_sph_trans
-      use t_VIZ_step_parameter
 !
       use field_IO_select
       use r_interpolate_sph_data
@@ -53,45 +50,41 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
-      type(SPH_TRNS_file_IO_params), intent(in) :: files_param
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(mesh_data), intent(in) :: geofem
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
       type(time_data), intent(inout) :: t_IO
-      type(field_IO), intent(inout) :: fld_IO
+      type(phys_data), intent(inout) :: nod_fld
 !
-!
-      if(      iflag_vizs_w_fix_step(i_step, viz_step)                  &
-     &    .or. output_IO_flag(i_step, t_STR%ucd_step)) then
 !
 !   Input spectr data
-        if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
-     &      files_param%fst_file_IO, t_IO, fld_IO)
+      if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
+      call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,        &
+     &    SPH_STR%fst_file_IO, t_IO, SPH_STR%fld_IO)
 !
 !    copy and extend magnetic field to outside
 !
-        if(files_param%org_rj_file_IO%iflag_IO .eq. 0) then
-          if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO, SPH_MHD%fld)
-        else
-          if (iflag_debug.gt.0) write(*,*)                              &
+      if(SPH_STR%org_rj_file_IO%iflag_IO .eq. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
+        call set_rj_phys_data_from_IO(SPH_STR%fld_IO, SPH_MHD%fld)
+      else
+        if (iflag_debug.gt.0) write(*,*)                                &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
-        end if
+        call r_interpolate_sph_fld_from_IO                              &
+     &     (SPH_STR%fld_IO, SPH_MHD%sph%sph_rj,                         &
+     &      SPH_MHD%ipol, SPH_MHD%fld)
+      end if
 !
-        call set_rj_phys_for_zm_streamfunc                              &
-     &     (SPH_MHD%ipol, SPH_MHD%sph%sph_rj, SPH_MHD%fld)
-        call zonal_mean_all_sph_spectr(SPH_MHD%sph%sph_rj, SPH_MHD%fld)
+      call set_rj_phys_for_zm_streamfunc                                &
+     &   (SPH_MHD%ipol, SPH_MHD%sph%sph_rj, SPH_MHD%fld)
+      call zonal_mean_all_sph_spectr(SPH_MHD%sph%sph_rj, SPH_MHD%fld)
 !
 !  spherical transform for vector
-        call sph_b_trans_streamline(SPH_MHD%sph, SPH_MHD%comms,         &
-     &      trans_p, femmesh_STR%mesh, fld_rtp_TRNS, SPH_MHD%fld,       &
-     &      field_STR)
-      end if
+      call sph_b_trans_streamline(SPH_MHD%sph, SPH_MHD%comms,           &
+     &    SPH_STR%trans_p, geofem%mesh, SPH_STR%fld_rtp,                &
+     &    SPH_MHD%fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs, nod_fld)
 !
       end subroutine SPH_analyze_zm_streamfunc
 !
@@ -141,7 +134,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sph_b_trans_streamline(sph, comms_sph, trans_p,        &
-     &          mesh, fld_rtp, rj_fld, nod_fld)
+     &          mesh, fld_rtp, rj_fld, WK_leg, WK_FFTs, nod_fld)
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -164,6 +157,8 @@
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       type(phys_data), intent(inout) :: nod_fld
+      type(legendre_trns_works), intent(inout) :: WK_leg
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
       if (fld_rtp%num_vector .gt. 0) then
@@ -182,7 +177,7 @@
       call sph_b_trans_w_poles(fld_rtp%ncomp_trans,                     &
      &    fld_rtp%num_vector, fld_rtp%nscalar_trans, sph, comms_sph,    &
      &    trans_p, SR_r1%n_WS, SR_r1%n_WR, SR_r1%WS(1), SR_r1%WR(1),    &
-     &    dall_rtp, dlcl_pole, dall_pole, WK_leg_TRNS, WK_FFTs_TRNS)
+     &    dall_rtp, dlcl_pole, dall_pole, WK_leg, WK_FFTs)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

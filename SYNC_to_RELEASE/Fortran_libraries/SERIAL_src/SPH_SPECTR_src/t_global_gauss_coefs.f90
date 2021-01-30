@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/CORE_src/SPH_SPECTR_src/t_global_gauss_coefs.f90

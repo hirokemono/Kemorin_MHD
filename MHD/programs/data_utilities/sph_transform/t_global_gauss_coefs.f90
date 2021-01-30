@@ -9,9 +9,22 @@
 !!@verbatim
 !!      subroutine alloc_gauss_global_coefs(d_gauss)
 !!      subroutine dealloc_gauss_global_coefs(d_gauss)
+!!        type(global_gauss_points), intent(inout) :: d_gauss
 !!
 !!      subroutine read_gauss_global_coefs(d_gauss)
 !!      subroutine write_gauss_global_coefs(d_gauss)
+!!        type(global_gauss_points), intent(inout) :: d_gauss
+!!
+!!      subroutine set_ctl_4_global_gauss_coefs(fhead_ctl, d_gauss)
+!!        type(read_character_item), intent(in) :: gauss_sph_fhead_ctl
+!!        type(global_gauss_points), intent(inout) :: d_gauss
+!!
+!!      subroutine set_poloidal_b_by_gauss_coefs                        &
+!!     &         (sph_params, sph_rj, ipol, d_gauss, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_address), intent(in) :: ipol
+!!        type(global_gauss_points), intent(in) :: d_gauss
+!!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
 !
@@ -31,7 +44,6 @@
         real(kind = kreal) :: r_gauss
 !
         character(len = kchara) :: fhead_gauss
-        character(len = kchara) :: fname_gauss
       end type global_gauss_points
 !
       private :: id_gauss
@@ -80,18 +92,23 @@
 !  -------------------------------------------------------------------
 !  -------------------------------------------------------------------
 !
-      subroutine read_gauss_global_coefs(d_gauss)
+      subroutine read_gauss_global_coefs(i_step, d_gauss)
 !
       use skip_comment_f
+      use set_parallel_file_name
 !
+      integer(kind = kint), intent(in) :: i_step
       type(global_gauss_points), intent(inout) :: d_gauss
 !
+      character(len=kchara) :: fname_gauss, fname_tmp
       character(len=255) :: character_4_read
       integer(kind = kint) :: l, m, j
       real(kind = kreal) :: rtmp
 !
 !
-      open(id_gauss,file = d_gauss%fname_gauss)
+      fname_tmp = add_int_suffix(i_step, d_gauss%fhead_gauss)
+      fname_gauss = add_dat_extension(fname_tmp)
+      open(id_gauss,file = fname_gauss)
 !
       call skip_comment(character_4_read,id_gauss)
       read(character_4_read,*) d_gauss%ltr_w, d_gauss%r_gauss
@@ -121,12 +138,20 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine write_gauss_global_coefs(d_gauss)
+      subroutine write_gauss_global_coefs(i_step, d_gauss)
 !
+      use skip_comment_f
+      use set_parallel_file_name
+!
+      integer(kind = kint), intent(in) :: i_step
       type(global_gauss_points), intent(in) :: d_gauss
 !
+      character(len=kchara) :: fname_gauss, fname_tmp
 !
-      open(id_gauss,file = d_gauss%fname_gauss)
+!
+      fname_tmp = add_int_suffix(i_step, d_gauss%fhead_gauss)
+      fname_gauss = add_dat_extension(fname_tmp)
+      open(id_gauss,file = fname_gauss)
 !
       write(id_gauss,'(a)') '#'
       write(id_gauss,'(a)') '# truncation, radius for potential'
@@ -144,5 +169,58 @@
       end subroutine write_gauss_global_coefs
 !
 !  -------------------------------------------------------------------
+!  -------------------------------------------------------------------
+!
+      subroutine set_ctl_4_global_gauss_coefs(fhead_ctl, d_gauss)
+!
+      use t_control_array_character
+!
+      type(read_character_item), intent(in) :: fhead_ctl
+      type(global_gauss_points), intent(inout) :: d_gauss
+!
+!
+      if(fhead_ctl%iflag .gt. 0) then
+        d_gauss%fhead_gauss = fhead_ctl%charavalue
+      end if
+!
+      end subroutine set_ctl_4_global_gauss_coefs
+!
+!  -------------------------------------------------------------------
+!  -------------------------------------------------------------------
+!
+      subroutine set_poloidal_b_by_gauss_coefs                          &
+     &         (sph_params, sph_rj, ipol, d_gauss, rj_fld)
+!
+      use t_spheric_parameter
+      use t_spheric_rj_data
+      use t_phys_address
+      use t_phys_data
+!
+      use extend_potential_field
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+      type(global_gauss_points), intent(in) :: d_gauss
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      write(*,*) ' ipol%base%i_magne', ipol%base%i_magne,               &
+     &          sph_params%nlayer_ICB, sph_params%nlayer_CMB
+      if (ipol%base%i_magne .gt. 0) then
+        call gauss_to_poloidal_out                                      &
+     &     (sph_params%nlayer_CMB, d_gauss%ltr_w, d_gauss%r_gauss,      &
+     &      d_gauss%w_gauss, d_gauss%index_w, ipol%base%i_magne,        &
+     &      sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call gauss_to_poloidal_in                                       &
+     &     (sph_params%nlayer_ICB, d_gauss%ltr_w, d_gauss%r_gauss,      &
+     &      d_gauss%w_gauss, d_gauss%index_w, ipol%base%i_magne,        &
+     &      sph_rj, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!
+      end subroutine set_poloidal_b_by_gauss_coefs
+!
+! -----------------------------------------------------------------------
 !
       end module t_global_gauss_coefs

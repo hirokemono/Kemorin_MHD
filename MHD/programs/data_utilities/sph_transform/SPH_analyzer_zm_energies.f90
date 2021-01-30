@@ -3,16 +3,13 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_energies(i_step, files_param,         &
-!!     &          viz_step, trns_p, SPH_MHD, t_IO, fld_IO)
-!!        type(SPH_TRNS_file_IO_params), intent(in) :: files_param
-!!        type(parameters_4_sph_trans), intent(in) :: trns_p
+!!      subroutine SPH_analyze_zm_energies                              &
+!!     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!!        type(sph_grids), intent(in) :: sph_mesh
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_data), intent(inout) :: rj_fld
-!!        type(field_IO), intent(inout) :: fld_IO
+!!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !!        type(time_data), intent(inout) :: t_IO
+!!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine set_ctl_data_4_zm_energies(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !
@@ -23,7 +20,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_SPH_transforms
+      use t_SPH_data_4_SPH_trans
 !
       implicit none
 !
@@ -36,15 +33,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_energies(i_step, files_param,           &
-     &          viz_step, trns_p, SPH_MHD, t_IO, fld_IO)
+      subroutine SPH_analyze_zm_energies                                &
+     &         (i_step, geofem, SPH_MHD, SPH_STR, t_IO, nod_fld)
 !
       use t_phys_address
       use t_SPH_mesh_field_data
       use t_time_data
       use t_field_data_IO
-      use t_ctl_params_sph_trans
-      use t_VIZ_step_parameter
 !
       use field_IO_select
       use r_interpolate_sph_data
@@ -55,49 +50,45 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
-      type(SPH_TRNS_file_IO_params), intent(in) :: files_param
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(parameters_4_sph_trans), intent(in) :: trns_p
+      type(mesh_data), intent(in) :: geofem
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(field_IO), intent(inout) :: fld_IO
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
       type(time_data), intent(inout) :: t_IO
+      type(phys_data), intent(inout) :: nod_fld
 !
-!
-      if(      iflag_vizs_w_fix_step(i_step, viz_step)                  &
-    &     .or. output_IO_flag(i_step, t_STR%ucd_step)) then
 !
 !   Input spectr data
-        if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
+      if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
       call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,        &
-     &    files_param%fst_file_IO, t_IO, fld_IO)
+     &    SPH_STR%fst_file_IO, t_IO, SPH_STR%fld_IO)
 !
 !    copy and extend magnetic field to outside
 !
-        if(files_param%org_rj_file_IO%iflag_IO .eq. 0) then
-          if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO, SPH_MHD%fld)
-        else
-          if (iflag_debug.gt.0) write(*,*)                              &
-     &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld)
-        end if
+      if(SPH_STR%org_rj_file_IO%iflag_IO .eq. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
+        call set_rj_phys_data_from_IO(SPH_STR%fld_IO, SPH_MHD%fld)
+      else
+        if (iflag_debug.gt.0) write(*,*)                                &
+     &                      'r_interpolate_sph_fld_from_IO'
+        call r_interpolate_sph_fld_from_IO                              &
+     &     (SPH_STR%fld_IO, SPH_MHD%sph%sph_rj,                         &
+     &      SPH_MHD%ipol, SPH_MHD%fld)
+      end if
 !
 !        call set_rj_phys_for_pol_kene(SPH_MHD%sph%sph_rj, SPH_MHD%fld)
 !
-        call set_rj_phys_for_convective_kene(SPH_MHD%sph, SPH_MHD%fld)
+      call set_rj_phys_for_convective_kene(SPH_MHD%sph, SPH_MHD%fld)
 !
 !  spherical transform for vector
-        call sph_b_trans_all_field                                      &
-     &     (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh,               &
-     &      trns_p, fld_rtp_TRNS, SPH_MHD%fld, field_STR,               &
-     &      WK_leg_TRNS, WK_FFTs_TRNS)
-        call cal_zm_energy_to_pressure                                  &
-     &     (SPH_MHD%sph%sph_rtp%nidx_rtp, field_STR%n_point,            &
-     &      field_STR%num_phys, field_STR%ntot_phys,                    &
-     &      field_STR%istack_component, SPH_MHD%fld, field_STR%d_fld)
-      end if
+      call sph_b_trans_all_field                                        &
+     &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh,                      &
+     &    SPH_STR%trans_p, SPH_STR%fld_rtp, SPH_MHD%fld,                &
+     &    nod_fld, SPH_STR%WK_leg, SPH_STR%WK_FFTs)
+      call cal_zm_energy_to_pressure                                    &
+     &   (SPH_MHD%sph%sph_rtp%nidx_rtp, nod_fld%n_point,                &
+     &    nod_fld%num_phys, nod_fld%ntot_phys,                          &
+     &    nod_fld%istack_component, SPH_MHD%fld, nod_fld%d_fld)
 !
       end subroutine SPH_analyze_zm_energies
 !

@@ -49,7 +49,7 @@
       use m_file_format_switch
 !
       use r_interpolate_marged_sph
-      use t_SPH_mesh_field_data
+      use t_SPH_mesh_data
       use t_time_data
       use t_field_data_IO
       use t_control_data_4_merge

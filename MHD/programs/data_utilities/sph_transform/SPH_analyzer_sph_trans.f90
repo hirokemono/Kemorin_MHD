@@ -5,26 +5,25 @@
 !
 !      subroutine SPH_initialize_sph_trans
 !
-!!      subroutine SPH_initialize_sph_trans(trans_p, SPH_MHD)
-!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
-!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!!      subroutine SPH_analyze_sph_trans                                &
-!!     &         (i_step, sph_file_IO, trans_p, SPH_MHD, fld_IO)
-!!      subroutine SPH_analyze_sph_zm_trans                             &
-!!     &         (i_step, sph_file_IO, trans_p, SPH_MHD, fld_IO)
-!!        type(field_IO_params), intent(in) :: sph_file_IO
+!!      subroutine SPH_initialize_sph_trans(SPH_MHD, SPH_STR)
+!!      subroutine SPH_analyze_sph_trans(i_step, geofem, nod_fld,       &
+!!     &                                 SPH_MHD, SPH_STR)
+!!      subroutine SPH_analyze_sph_zm_trans(i_step, geofem, nod_fld,    &
+!!     &                                    SPH_MHD, SPH_STR)
+!!        type(mesh_data), intent(in) :: geofem
+!!        type(phys_data), intent(in) :: nod_fld
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-!!        type(field_IO), intent(inout) :: fld_IO
+!!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
       module SPH_analyzer_sph_trans
 !
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_SPH_transforms
       use calypso_mpi
 !
+      use t_SPH_data_4_SPH_trans
       use t_time_data
 !
       implicit none
@@ -37,7 +36,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_sph_trans(trans_p, SPH_MHD)
+      subroutine SPH_initialize_sph_trans(SPH_MHD, SPH_STR)
 !
       use m_legendre_transform_list
 !
@@ -49,13 +48,13 @@
       use init_sph_trans
       use sph_transfer_all_field
 !
-      type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
 !  ---- allocate spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(SPH_MHD%fld, fld_rtp_TRNS)
+      call copy_sph_name_rj_to_rtp(SPH_MHD%fld, SPH_STR%fld_rtp)
       call calypso_mpi_barrier
 !
       call alloc_phys_data_type                                         &
@@ -64,25 +63,25 @@
 !
 !  ---- initialize spherical harmonics transform
 !
-      call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
+      call copy_sph_trans_nums_from_rtp(SPH_STR%fld_rtp)
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
-     &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
-     &    SPH_MHD%sph, SPH_MHD%comms, trans_p,                          &
-     &    WK_leg_TRNS, WK_FFTs_TRNS)
+      call initialize_sph_trans(SPH_STR%fld_rtp%ncomp_trans,            &
+     &    SPH_STR%fld_rtp%num_vector, SPH_STR%fld_rtp%nscalar_trans,    &
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_STR%trans_p,                  &
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
 !
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'allocate_d_rtp_4_all_trans'
       call allocate_d_rtp_4_all_trans                                   &
-     &   (fld_rtp_TRNS, SPH_MHD%sph%sph_rtp)
+     &   (SPH_STR%fld_rtp, SPH_MHD%sph%sph_rtp)
 !
       end subroutine SPH_initialize_sph_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_sph_trans                                  &
-     &         (i_step, sph_file_IO, trans_p, SPH_MHD, fld_IO)
+      subroutine SPH_analyze_sph_trans(i_step, geofem, nod_fld,         &
+     &                                 SPH_MHD, SPH_STR)
 !
       use t_file_IO_parameter
       use t_SPH_mesh_field_data
@@ -95,17 +94,18 @@
 !
 !
       integer(kind = kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: sph_file_IO
-      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+!
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(field_IO), intent(inout) :: fld_IO
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh, trans_p,        &
-     &    fld_rtp_TRNS, field_STR, SPH_MHD%fld,                         &
-     &    WK_leg_TRNS, WK_FFTs_TRNS)
+     &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh, SPH_STR%trans_p,     &
+     &    SPH_STR%fld_rtp, nod_fld, SPH_MHD%fld,                        &
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
 !
 !      call check_all_field_data(my_rank, SPH_MHD%fld)
 !
@@ -114,18 +114,18 @@
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_phys_data_to_IO'
       call copy_rj_phys_data_to_IO                                      &
-     &   (SPH_MHD%fld%num_phys, SPH_MHD%fld, fld_IO)
+     &   (SPH_MHD%fld%num_phys, SPH_MHD%fld, SPH_STR%fld_IO)
 !
       call reset_time_data(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (i_step, sph_file_IO, time_IO, fld_IO)
+     &   (i_step, SPH_STR%sph_file_IO, time_IO, SPH_STR%fld_IO)
 !
       end subroutine SPH_analyze_sph_trans
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_sph_zm_trans                               &
-     &         (i_step, sph_file_IO, trans_p, SPH_MHD, fld_IO)
+      subroutine SPH_analyze_sph_zm_trans(i_step, geofem, nod_fld,      &
+     &                                    SPH_MHD, SPH_STR)
 !
       use t_file_IO_parameter
       use t_SPH_mesh_field_data
@@ -139,17 +139,18 @@
       use const_global_element_ids
 !
       integer(kind = kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: sph_file_IO
-      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(mesh_data), intent(in) :: geofem
+      type(phys_data), intent(in) :: nod_fld
+!
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
-      type(field_IO), intent(inout) :: fld_IO
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (SPH_MHD%sph, SPH_MHD%comms, femmesh_STR%mesh, trans_p,        &
-     &    fld_rtp_TRNS, field_STR, SPH_MHD%fld,                         &
-     &    WK_leg_TRNS, WK_FFTs_TRNS)
+     &   (SPH_MHD%sph, SPH_MHD%comms, geofem%mesh, SPH_STR%trans_p,     &
+     &    SPH_STR%fld_rtp, nod_fld, SPH_MHD%fld,                        &
+     &    SPH_STR%WK_leg, SPH_STR%WK_FFTs)
 !
 !      call check_all_field_data(my_rank, SPH_MHD%fld)
 !
@@ -164,13 +165,13 @@
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'copy_rj_phys_data_to_IO'
       call copy_rj_phys_data_to_IO                                      &
-     &   (SPH_MHD%fld%num_phys, SPH_MHD%fld, fld_IO)
+     &   (SPH_MHD%fld%num_phys, SPH_MHD%fld, SPH_STR%fld_IO)
       call count_number_of_node_stack                                   &
-     &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
+     &   (SPH_STR%fld_IO%nnod_IO, SPH_STR%fld_IO%istack_numnod_IO)
 !
       call reset_time_data(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (i_step, sph_file_IO, time_IO, fld_IO)
+     &   (i_step, SPH_STR%sph_file_IO, time_IO, SPH_STR%fld_IO)
 !
       end subroutine SPH_analyze_sph_zm_trans
 !

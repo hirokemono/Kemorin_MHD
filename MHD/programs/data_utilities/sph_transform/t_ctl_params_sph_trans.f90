@@ -4,33 +4,22 @@
 !        programmed by H.Matsui on Oct., 2007
 !
 !!      subroutine set_control_4_sph_transform                          &
-!!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,            &
-!!     &          sph_maker, part_param)
+!!     &         (spt_ctl, time_STR,           &
+!!     &          rj_fld, FEM_STR, SPH_STR)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
-!!     &         (spt_ctl, time_STR, viz_step_STR, files_param,         &
-!!     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,            &
-!!     &          sph_maker, part_param)
-!!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!!        type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
-!!        type(phys_data), intent(inout) :: rj_fld
-!!        type(parameters_4_sph_trans), intent(inout) :: trans_p
-!!        type(legendre_trns_works), intent(inout) :: WK_leg
-!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!!        type(volume_partioning_param), intent(inout) :: part_param
-!!      subroutine set_ctl_data_4_zm_trans(fst_file_IO)
-!!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
-!!        type(field_IO_params), intent(inout) :: fst_file_IO
+!!     &         (spt_ctl, time_STR,           &
+!!     &          rj_fld, FEM_STR, SPH_STR)
+!!      subroutine set_ctl_data_4_zm_trans(spt_ctl, SPH_STR)
 !!      subroutine set_ctl_data_4_pick_zm(spt_ctl, zm_source_file_param)
-!!        type(spherical_transform_util_ctl), intent(in) :: spt_ctl
-!!        type(field_IO_params), intent(inout) :: zm_source_file_param
+!!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
+!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
       module t_ctl_params_sph_trans
 !
       use m_precision
 !
       use t_step_parameter
-      use t_phys_data
       use t_global_gauss_coefs
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
@@ -39,42 +28,12 @@
       use t_legendre_trans_select
       use t_ctl_data_4_sph_trans
       use t_work_4_sph_trans
-      use t_check_and_make_SPH_mesh
+      use t_FEM_data_4_SPH_trans
+      use t_SPH_data_4_SPH_trans
       use t_ctl_params_gen_sph_shell
-      use t_control_param_vol_grping
 !
       implicit  none
 !
-!
-!>      Structure of file name and format for spherical transaform
-      type SPH_TRNS_file_IO_params
-!>        FEM mesh IO flags
-        type(FEM_file_IO_flags) :: FEM_mesh_flags
-!>        Structure of mesh file IO paramters
-        type(field_IO_params) :: sph_file_param
-!>        Structure of mesh file IO paramters
-        type(field_IO_params) :: mesh_file_IO
-!>        Structure of file name and format for restart file
-        type(field_IO_params) :: fst_file_IO
-!
-!>        Structure for field data IO paramters
-        type(field_IO_params) :: ucd_file_IO
-!>        Structure of file name and format for spectr data file
-        type(field_IO_params) :: sph_file_IO
-!
-!>        Structure of old spherical shell mesh file
-        type(field_IO_params) :: org_rj_file_IO
-!>        Structure for original restart file  paramters
-        type(field_IO_params) :: org_rst_file_IO
-!>        Structure for original field file  paramters
-        type(field_IO_params) :: org_ucd_file_IO
-!
-        type(field_IO_params) :: zm_source_file_param
-        type(field_IO_params) :: zonal_ucd_param
-!
-        character(len = kchara) :: cmb_radial_grp =     'CMB'
-        character(len = kchara) :: icb_radial_grp =     'ICB'
-      end type SPH_TRNS_file_IO_params
 !
 !>      Increment for mean square data
       type(IO_step_param), save, private  :: rms_step_STR
@@ -91,10 +50,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform                            &
-     &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,              &
-     &          sph_maker, part_param)
+      subroutine set_control_4_sph_transform(spt_ctl, time_STR,         &
+     &          rj_fld, FEM_STR, SPH_STR)
 !
       use t_work_4_sph_trans
 !
@@ -111,15 +68,9 @@
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
-      type(VIZ_step_params), intent(inout) :: viz_step_STR
-      type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
       type(phys_data), intent(inout) :: rj_fld
-      type(phys_data), intent(inout) :: fem_fld
-      type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(legendre_trns_works), intent(inout) :: WK_leg
-      type(global_gauss_points), intent(inout) :: d_gauss
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(volume_partioning_param), intent(inout) :: part_param
+      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
       integer(kind = kint) :: ierr
 !
@@ -127,35 +78,37 @@
       call turn_off_debug_flag_by_ctl(my_rank, spt_ctl%plt)
       call set_control_smp_def(my_rank, spt_ctl%plt)
       call set_control_sph_mesh(spt_ctl%plt, spt_ctl%Fmesh_ctl,         &
-     &    files_param%sph_file_param, files_param%mesh_file_IO,         &
-     &    files_param%sph_file_IO, files_param%FEM_mesh_flags)
+     &    SPH_STR%sph_file_param, FEM_STR%mesh_file_IO,                 &
+     &    SPH_STR%sph_file_IO, SPH_STR%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
-     &   (spt_ctl%plt, files_param%fst_file_IO)
-      call set_ucd_file_define(spt_ctl%plt, files_param%ucd_file_IO)
+     &   (spt_ctl%plt, SPH_STR%fst_file_IO)
+      call set_ucd_file_define(spt_ctl%plt, FEM_STR%ucd_file_IO)
 !
-      call set_ctl_param_vol_repart(spt_ctl%repart_ctl, part_param)
+      call set_ctl_param_vol_repart                                     &
+     &   (spt_ctl%repart_ctl, FEM_STR%repart)
 !
 !   setting for spherical transform
 !
       if(spt_ctl%legendre_vector_len_ctl%iflag .gt. 0) then
-        trans_p%nvector_legendre                                        &
+        SPH_STR%trans_p%nvector_legendre                                &
      &           = spt_ctl%legendre_vector_len_ctl%intvalue
       else
-        trans_p%nvector_legendre = 0
+        SPH_STR%trans_p%nvector_legendre = 0
       end if
 !
       if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
-        WK_leg%id_legendre = set_legendre_trans_mode_ctl                &
-     &                   (spt_ctl%Legendre_trans_loop_ctl%charavalue)
+        SPH_STR%WK_leg%id_legendre                                      &
+     &    = set_legendre_trans_mode_ctl                                 &
+     &    (spt_ctl%Legendre_trans_loop_ctl%charavalue)
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
-        trans_p%iflag_FFT                                               &
+        SPH_STR%trans_p%iflag_FFT                                       &
      &     = set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
       end if
       if(spt_ctl%import_mode_ctl%iflag .gt. 0) then
         call set_import_table_ctl                                       &
-     &    (spt_ctl%import_mode_ctl%charavalue, trans_p)
+     &    (spt_ctl%import_mode_ctl%charavalue, SPH_STR%trans_p)
       end if
 !
 !      stepping parameter
@@ -163,7 +116,7 @@
       call set_fixed_time_step_params                                   &
      &   (spt_ctl%t_ctl, time_STR, ierr, e_message)
       call viz_fixed_time_step_params                                   &
-     &   (time_STR%init_d%dt, spt_ctl%t_ctl, viz_step_STR)
+     &   (time_STR%init_d%dt, spt_ctl%t_ctl, FEM_STR%viz_step)
       call copy_delta_t(time_STR%init_d, time_STR%time_d)
 !
       call output_step_4_fixed_step_ctl(ione, time_STR%time_d%dt,       &
@@ -175,37 +128,38 @@
       call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
+     &   (spt_ctl%fld_ctl%field_ctl, FEM_STR%field, ierr)
 !
-      files_param%cmb_radial_grp =  'CMB'
+      SPH_STR%cmb_radial_grp =  'CMB'
       if(spt_ctl%cmb_radial_grp_ctl%iflag .gt. 0) then
-        files_param%cmb_radial_grp                                      &
-     &        = spt_ctl%cmb_radial_grp_ctl%charavalue
+        SPH_STR%cmb_radial_grp                                          &
+     &     = spt_ctl%cmb_radial_grp_ctl%charavalue
       end if
-      files_param%icb_radial_grp = 'ICB'
+      SPH_STR%icb_radial_grp = 'ICB'
       if(spt_ctl%icb_radial_grp_ctl%iflag .gt. 0) then
-        files_param%icb_radial_grp                                      &
-     &         = spt_ctl%icb_radial_grp_ctl%charavalue
+        SPH_STR%icb_radial_grp                                          &
+     &     = spt_ctl%icb_radial_grp_ctl%charavalue
       end if
-      if(spt_ctl%gauss_sph_fhead_ctl%iflag .gt. 0) then
-        d_gauss%fhead_gauss = spt_ctl%gauss_sph_fhead_ctl%charavalue
-      end if
+!
+      call set_ctl_4_global_gauss_coefs(spt_ctl%gauss_sph_fhead_ctl,    &
+     &                                  SPH_STR%d_gauss)
 !
 !   set spherical shell parameters
       if(spt_ctl%psph_ctl%iflag_sph_shell .gt. 0) then
-        sph_maker%make_SPH_flag = .TRUE.
-        sph_maker%mesh_output_flag = .TRUE.
+        SPH_STR%sph_maker%make_SPH_flag = .TRUE.
+        SPH_STR%sph_maker%mesh_output_flag = .TRUE.
 !
-        if(files_param%sph_file_param%iflag_format .eq. id_no_file      &
+        if(SPH_STR%sph_file_param%iflag_format .eq. id_no_file          &
      &    .or. spt_ctl%plt%sph_file_prefix%iflag .eq. 0) then
-          sph_maker%mesh_output_flag = .FALSE.
+          SPH_STR%sph_maker%mesh_output_flag = .FALSE.
         end if
 !
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
      &     (nprocs, spt_ctl%psph_ctl%Fmesh_ctl,                         &
      &      spt_ctl%psph_ctl%spctl, spt_ctl%psph_ctl%sdctl,             &
-     &      sph_maker%sph_tmp, sph_maker%gen_sph, ierr)
+     &      SPH_STR%sph_maker%sph_tmp, SPH_STR%sph_maker%gen_sph,       &
+     &      ierr)
       end if
 !
       call dealloc_phys_control(spt_ctl%fld_ctl)
@@ -214,10 +168,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_4_sph_trans                             &
-     &         (spt_ctl, time_STR, viz_step_STR, files_param,           &
-     &          rj_fld, d_gauss, fem_fld, trans_p, WK_leg,              &
-     &          sph_maker, part_param)
+      subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,          &
+     &          rj_fld, FEM_STR, SPH_STR)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -235,15 +187,9 @@
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
-      type(VIZ_step_params), intent(inout) :: viz_step_STR
-      type(SPH_TRNS_file_IO_params), intent(inout) :: files_param
       type(phys_data), intent(inout) :: rj_fld
-      type(phys_data), intent(inout) :: fem_fld
-      type(legendre_trns_works), intent(inout) :: WK_leg
-      type(global_gauss_points), intent(inout) :: d_gauss
-      type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(volume_partioning_param), intent(inout) :: part_param
+      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
       integer(kind = kint) :: ierr, iflag
 !
@@ -251,20 +197,20 @@
       call turn_off_debug_flag_by_ctl(my_rank, spt_ctl%plt)
       call set_control_smp_def(my_rank, spt_ctl%plt)
       call set_control_sph_mesh(spt_ctl%plt, spt_ctl%Fmesh_ctl,         &
-     &    files_param%sph_file_param, files_param%mesh_file_IO,         &
-     &    files_param%sph_file_IO, files_param%FEM_mesh_flags)
+     &    SPH_STR%sph_file_param, FEM_STR%mesh_file_IO,                 &
+     &    SPH_STR%sph_file_IO, SPH_STR%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
-     &   (spt_ctl%plt, files_param%fst_file_IO)
-      call set_merged_ucd_file_define                                   &
-     &   (spt_ctl%plt, files_param%ucd_file_IO)
+     &   (spt_ctl%plt, SPH_STR%fst_file_IO)
+      call set_merged_ucd_file_define(spt_ctl%plt, FEM_STR%ucd_file_IO)
       call set_control_mesh_file_def(def_org_sph_rj_head,               &
-     &    spt_ctl%org_plt, files_param%org_rj_file_IO)
+     &    spt_ctl%org_plt, SPH_STR%org_rj_file_IO)
       call set_control_mesh_file_def(def_org_rst_header,                &
-     &    spt_ctl%org_plt, files_param%org_rst_file_IO)
+     &    spt_ctl%org_plt, SPH_STR%org_rst_file_IO)
       call set_control_mesh_file_def(def_org_ucd_header,                &
-     &    spt_ctl%org_plt, files_param%org_ucd_file_IO)
+     &    spt_ctl%org_plt, FEM_STR%org_ucd_file_IO)
 !
-      call set_ctl_param_vol_repart(spt_ctl%repart_ctl, part_param)
+      call set_ctl_param_vol_repart                                     &
+     &   (spt_ctl%repart_ctl, FEM_STR%repart)
 !
 !    file header for field data
 !
@@ -274,47 +220,48 @@
 !
 !   using rstart data for spherical dynamo
 !
-      iflag = files_param%org_rj_file_IO%iflag_IO                       &
-     &       * files_param%org_rst_file_IO%iflag_IO
+      iflag = SPH_STR%org_rj_file_IO%iflag_IO                           &
+     &       * SPH_STR%org_rst_file_IO%iflag_IO
       if(iflag .gt. 0) then
-        files_param%fst_file_IO%file_prefix                             &
-     &       = files_param%org_rst_file_IO%file_prefix
+        SPH_STR%fst_file_IO%file_prefix                                 &
+     &       = SPH_STR%org_rst_file_IO%file_prefix
       end if
 !
 !   setting for spherical transform
 !
       if(spt_ctl%legendre_vector_len_ctl%iflag .gt. 0) then
-        trans_p%nvector_legendre                                        &
+        SPH_STR%trans_p%nvector_legendre                                &
      &          = spt_ctl%legendre_vector_len_ctl%intvalue
       else
-        trans_p%nvector_legendre = 0
+        SPH_STR%trans_p%nvector_legendre = 0
       end if
 !
       if(spt_ctl%Legendre_trans_loop_ctl%iflag .gt. 0) then
-        WK_leg%id_legendre = set_legendre_trans_mode_ctl                &
-     &                   (spt_ctl%Legendre_trans_loop_ctl%charavalue)
+        SPH_STR%WK_leg%id_legendre                                      &
+     &        = set_legendre_trans_mode_ctl                             &
+     &        (spt_ctl%Legendre_trans_loop_ctl%charavalue)
       end if
 !
       if(spt_ctl%FFT_lib_ctl%iflag .gt. 0) then
-        trans_p%iflag_FFT                                               &
+        SPH_STR%trans_p%iflag_FFT                                       &
      &     = set_fft_library_ctl(spt_ctl%FFT_lib_ctl%charavalue)
       end if
 !
 !     file header for reduced data
 !
       if(spt_ctl%zonal_udt_head_ctl%iflag .gt. 0) then
-        files_param%zonal_ucd_param%file_prefix                         &
+        FEM_STR%zonal_ucd_param%file_prefix                             &
      &       = spt_ctl%zonal_udt_head_ctl%charavalue
       end if
-      files_param%zonal_ucd_param%iflag_format                          &
-     &       = files_param%ucd_file_IO%iflag_format
+      FEM_STR%zonal_ucd_param%iflag_format                              &
+     &       = FEM_STR%ucd_file_IO%iflag_format
 !
 !      stepping parameter
 !
       call set_fixed_time_step_params                                   &
      &   (spt_ctl%t_ctl, time_STR, ierr, e_message)
       call viz_fixed_time_step_params                                   &
-     &   (time_STR%init_d%dt, spt_ctl%t_ctl, viz_step_STR)
+     &   (time_STR%init_d%dt, spt_ctl%t_ctl, FEM_STR%viz_step)
       call copy_delta_t(time_STR%init_d, time_STR%time_d)
 !
       call output_step_4_fixed_step_ctl(ione, time_STR%time_d%dt,       &
@@ -326,37 +273,38 @@
       call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
       call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, fem_fld, ierr)
+     &   (spt_ctl%fld_ctl%field_ctl, FEM_STR%field, ierr)
 !
-      files_param%cmb_radial_grp =  'CMB'
+      SPH_STR%cmb_radial_grp =  'CMB'
       if(spt_ctl%cmb_radial_grp_ctl%iflag .gt. 0) then
-        files_param%cmb_radial_grp                                      &
+        SPH_STR%cmb_radial_grp                                          &
      &        = spt_ctl%cmb_radial_grp_ctl%charavalue
       end if
-      files_param%icb_radial_grp = 'ICB'
+      SPH_STR%icb_radial_grp = 'ICB'
       if(spt_ctl%icb_radial_grp_ctl%iflag .gt. 0) then
-        files_param%icb_radial_grp                                      &
+        SPH_STR%icb_radial_grp                                          &
      &         = spt_ctl%icb_radial_grp_ctl%charavalue
       end if
-      if(spt_ctl%gauss_sph_fhead_ctl%iflag .gt. 0) then
-        d_gauss%fhead_gauss = spt_ctl%gauss_sph_fhead_ctl%charavalue
-      end if
+!
+      call set_ctl_4_global_gauss_coefs(spt_ctl%gauss_sph_fhead_ctl,    &
+     &                                  SPH_STR%d_gauss)
 !
 !   set spherical shell parameters
       if(spt_ctl%psph_ctl%iflag_sph_shell .gt. 0) then
-        sph_maker%make_SPH_flag = .TRUE.
-        sph_maker%mesh_output_flag = .TRUE.
+        SPH_STR%sph_maker%make_SPH_flag = .TRUE.
+        SPH_STR%sph_maker%mesh_output_flag = .TRUE.
 !
-        if(files_param%sph_file_param%iflag_format .eq. id_no_file      &
+        if(SPH_STR%sph_file_param%iflag_format .eq. id_no_file          &
      &    .or. spt_ctl%plt%sph_file_prefix%iflag .eq. 0) then
-          sph_maker%mesh_output_flag = .FALSE.
+          SPH_STR%sph_maker%mesh_output_flag = .FALSE.
         end if
 !
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
      &     (nprocs, spt_ctl%psph_ctl%Fmesh_ctl,                         &
      &      spt_ctl%psph_ctl%spctl, spt_ctl%psph_ctl%sdctl,             &
-     &      sph_maker%sph_tmp, sph_maker%gen_sph, ierr)
+     &      SPH_STR%sph_maker%sph_tmp, SPH_STR%sph_maker%gen_sph,       &
+     &      ierr)
       end if
 !
       call dealloc_phys_control(spt_ctl%fld_ctl)
@@ -365,29 +313,29 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_zm_trans(spt_ctl, fst_file_IO)
+      subroutine set_ctl_data_4_zm_trans(spt_ctl, SPH_STR)
 !
 !
       type(spherical_transform_util_ctl), intent(in) :: spt_ctl
-      type(field_IO_params), intent(inout) :: fst_file_IO
+      type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !
 !
       if(spt_ctl%zm_spec_file_head_ctl%iflag .gt. 0) then
-        fst_file_IO%file_prefix = zm_spec_file_head
+        SPH_STR%fst_file_IO%file_prefix = zm_spec_file_head
       end if
 !
       end subroutine set_ctl_data_4_zm_trans
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_pick_zm(spt_ctl, zm_source_file_param)
+      subroutine set_ctl_data_4_pick_zm(spt_ctl, FEM_STR)
 !
       type(spherical_transform_util_ctl), intent(in) :: spt_ctl
-      type(field_IO_params), intent(inout) :: zm_source_file_param
+      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !
 !
       if(spt_ctl%plt%field_file_prefix%iflag .eq. 0) return
-      zm_source_file_param%file_prefix                                  &
+      FEM_STR%zm_ucd_input_file%file_prefix                             &
      &              = spt_ctl%plt%field_file_prefix%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm

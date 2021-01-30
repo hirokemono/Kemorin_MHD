@@ -175,7 +175,7 @@
      &         (org_sph_mesh, new_sph_mesh, j_table, r_itp,             &
      &          org_phys, new_phys)
 !
-      use t_SPH_mesh_field_data
+      use t_SPH_mesh_data
       use t_spheric_parameter
       use r_interpolate_marged_sph
 !

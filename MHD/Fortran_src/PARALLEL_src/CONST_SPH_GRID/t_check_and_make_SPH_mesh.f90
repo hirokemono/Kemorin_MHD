@@ -114,8 +114,7 @@
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,             &
-     &      sph%sph_params, sph%sph_rtp, sph%sph_rj,                    &
-     &      geofem, sph_maker%gen_sph)
+     &                           sph, geofem, sph_maker%gen_sph)
         call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
       end if
 !
@@ -150,8 +149,7 @@
 !  --  Construct FEM mesh
       mesh_file%file_prefix = sph_file_param%file_prefix
       call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,               &
-     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    geofem, sph_maker%gen_sph)
+     &                         sph, geofem, sph_maker%gen_sph)
       call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
 !
       end subroutine const_FEM_mesh_4_SPH
@@ -281,9 +279,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH                                    &
-     &         (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj, &
-     &          geofem, gen_sph)
+      subroutine load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,         &
+     &                               sph, geofem, gen_sph)
 !
       use calypso_mpi
       use t_mesh_data
@@ -300,10 +297,8 @@
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(field_IO_params), intent(in) ::  mesh_file
-      type(sph_shell_parameters), intent(inout) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rj_grid), intent(in) :: sph_rj
 !
+      type(sph_grids), intent(inout) :: sph
       type(mesh_data), intent(inout) :: geofem
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -312,17 +307,17 @@
 !
 !
 !  --  Construct FEM mesh
-      if(sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then
-        if(sph_rj%iflag_rj_center .gt. 0) then
-          sph_params%iflag_shell_mode =  iflag_MESH_w_center
+      if(sph%sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then
+        if(sph%sph_rj%iflag_rj_center .gt. 0) then
+          sph%sph_params%iflag_shell_mode =  iflag_MESH_w_center
         else
-          sph_params%iflag_shell_mode = iflag_MESH_same
+          sph%sph_params%iflag_shell_mode = iflag_MESH_same
         end if
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
-      call const_FEM_mesh_4_sph_mhd                                     &
-     &   (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj,       &
+      call const_FEM_mesh_4_sph_mhd(FEM_mesh_flags, mesh_file,          &
+     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    femmesh_s%mesh, femmesh_s%group, gen_sph)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, geofem%mesh%nod_comm, mesh%node, mesh%ele,          &

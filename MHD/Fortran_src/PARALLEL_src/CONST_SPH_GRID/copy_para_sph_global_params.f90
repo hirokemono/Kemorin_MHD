@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed on July, 2007
 !
-!>@brief  Set control data for domain decomposition for spherical transform
+!>@brief  Copy spherical hermonics indexing data
 !!
 !!@verbatim
 !!      subroutine copy_para_sph_param_from_ctl                         &
@@ -20,7 +20,7 @@
 !
       use m_precision
 !
-      use t_SPH_mesh_field_data
+      use t_SPH_mesh_data
       use t_spheric_parameter
 !
       implicit  none

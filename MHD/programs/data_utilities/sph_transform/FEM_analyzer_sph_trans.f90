@@ -1,19 +1,16 @@
 !FEM_analyzer_sph_trans.f90
 !
-!!      subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
-!!        type(field_IO_params), intent(in) :: udt_file_param
-!!
-!!      subroutine FEM_analyze_sph_trans(i_step, udt_file_param, t_IO)
-!!
+!!      subroutine FEM_initialize_sph_trans(init_d, ucd_step, FEM_STR)
+!!      subroutine FEM_analyze_sph_trans(i_step, ucd_step, FEM_STR)
 !!      subroutine SPH_to_FEM_bridge_sph_trans                          &
 !!     &         (udt_file_param, rj_fld, fld_IO)
-!!        type(field_IO_params), intent(in) :: udt_file_param
+!!      subroutine FEM_finalize_sph_trans(ucd_step, FEM_STR)
+!!        type(time_data), intent(in) :: init_d
+!!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
-!!      subroutine FEM_finalize_sph_trans(udt_file_param, m_ucd)
-!!        type(field_IO_params), intent(in) :: udt_file_param
-!!        type(ucd_data), intent(inout) :: ucd
+!!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !
       module FEM_analyzer_sph_trans
 !
@@ -22,7 +19,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_SPH_transforms
+      use t_FEM_data_4_SPH_trans
       use t_ucd_data
       use t_file_IO_parameter
       use t_time_data
@@ -38,7 +35,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
+      subroutine FEM_initialize_sph_trans(init_d, ucd_step, FEM_STR)
 !
       use nod_phys_send_recv
       use int_volume_of_domain
@@ -50,53 +47,53 @@
       use const_mesh_information
       use const_element_comm_tables
 !
-      type(field_IO_params), intent(in) :: udt_file_param
-      type(time_data), intent(inout) :: t_IO
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(in) :: ucd_step
+      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !
       integer(kind = kint) :: istep_ucd
 !
 !  -----    construct geometry informations
 !
-      call mesh_setup_4_SPH_TRANS
+      call mesh_setup_4_SPH_TRANS(FEM_STR)
 !
-      call dealloc_edge_geometory(femmesh_STR%mesh%edge)
+      call dealloc_edge_geometory(FEM_STR%geofem%mesh%edge)
 !
 !  -------------------------------
 !
       input_ucd%nnod = ione
-      istep_ucd = IO_step_exc_zero_inc(t_STR%init_d%i_time_step,        &
-     &                                 t_STR%ucd_step)
-      call sel_read_udt_param                                           &
-     &   (my_rank, istep_ucd, udt_file_param, t_IO, input_ucd)
+      istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
+      call sel_read_udt_param(my_rank, istep_ucd, FEM_STR%ucd_file_IO,  &
+     &    FEM_STR%time_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_trans(i_step, udt_file_param, t_IO)
+      subroutine FEM_analyze_sph_trans(i_step, ucd_step, FEM_STR)
 !
       use t_ctl_params_sph_trans
       use output_parallel_ucd_file
       use nod_phys_send_recv
 !
       integer(kind =kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: udt_file_param
-      type(time_data), intent(inout) :: t_IO
+      type(IO_step_param), intent(in) :: ucd_step
+      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !
       integer(kind = kint) :: visval
       integer(kind = kint) :: istep_ucd
 !
 !*  ----------   Count steps for visualization
-      visval = mod(i_step,t_STR%ucd_step%increment)
+      visval = mod(i_step,ucd_step%increment)
       if(visval .ne. 0) return 
 !
 !*  -----------  Output volume data --------------
-      istep_ucd = IO_step_exc_zero_inc(i_step, t_STR%ucd_step)
-      call set_data_by_read_ucd                                         &
-     &   (i_step, udt_file_param, t_IO, input_ucd, field_STR)
+      istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
+      call set_data_by_read_ucd(i_step, FEM_STR%org_ucd_file_IO,        &
+     &    FEM_STR%time_IO, input_ucd, FEM_STR%field)
       call nod_fields_send_recv                                         &
-     &   (femmesh_STR%mesh, field_STR, STR1%v_sol)
+     &   (FEM_STR%geofem%mesh, FEM_STR%field, FEM_STR%v_sol)
 !
       end subroutine FEM_analyze_sph_trans
 !
@@ -123,18 +120,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_sph_trans(udt_file_param, ucd)
+      subroutine FEM_finalize_sph_trans(ucd_step, FEM_STR)
 !
-      use t_ctl_params_sph_trans
-      use t_ucd_data
       use output_parallel_ucd_file
 !
-      type(field_IO_params), intent(in) :: udt_file_param
-      type(ucd_data), intent(inout) :: ucd
+      type(IO_step_param), intent(in) :: ucd_step
+      type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !
 !
-      if(t_STR%ucd_step%increment .gt. 0) then
-        call finalize_ucd_file_output(udt_file_param, ucd)
+      if(ucd_step%increment .gt. 0) then
+        call finalize_ucd_file_output                                   &
+     &     (FEM_STR%org_ucd_file_IO, FEM_STR%ucd)
       end if
 !
       end subroutine FEM_finalize_sph_trans
