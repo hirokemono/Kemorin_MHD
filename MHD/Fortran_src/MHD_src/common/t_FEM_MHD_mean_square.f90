@@ -12,11 +12,11 @@
 !!      subroutine init_FEM_MHD_mean_square                             &
 !!     &         (nod_fld, iphys, iphys_LES, fem_sq)
 !!      subroutine output_time_step_control(istep, rms_step,            &
-!!     &          FEM_prm, time_d, mesh, MHD_mesh, fMHD_prop,           &
+!!     &          FEM_prm, time_d, geofem, MHD_mesh, fMHD_prop,         &
 !!     &          iphys, iphys_LES, nod_fld, iphys_ele_base, ele_fld,   &
 !!     &          jacs, rhs_mat, mhd_fem_wk, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: iphys
@@ -109,7 +109,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_time_step_control(istep, rms_step,              &
-     &          FEM_prm, time_d, mesh, MHD_mesh, MHD_prop,              &
+     &          FEM_prm, time_d, geofem, MHD_mesh, MHD_prop,            &
      &          iphys, iphys_LES, nod_fld, iphys_ele_base, ele_fld,     &
      &          jacs, rhs_mat, mhd_fem_wk, fem_sq)
 !
@@ -125,7 +125,7 @@
       type(IO_step_param), intent(in) :: rms_step
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(time_data), intent(in) :: time_d
-      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data), intent(in) :: geofem
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
@@ -146,12 +146,12 @@
       if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')                 &
      &            'i_step=', time_d%i_time_step,'time=', time_d%time
 !
-      call s_int_mean_squares(FEM_prm%npoint_t_evo_int, mesh,           &
+      call s_int_mean_squares(FEM_prm%npoint_t_evo_int, geofem%mesh,    &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_LES, nod_fld,  &
      &    jacs, fem_sq%i_msq, fem_sq%msq_list, rhs_mat%fem_wk,          &
      &    mhd_fem_wk, fem_sq%msq)
       call int_no_evo_mean_squares(time_d%i_time_step, time_d%dt,       &
-     &    mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
+     &    geofem%mesh, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
      &    iphys, iphys_LES, nod_fld, iphys_ele_base, ele_fld,           &
      &    MHD_mesh%fluid, jacs, fem_sq%i_msq, rhs_mat%fem_wk,           &
      &    fem_sq%msq)

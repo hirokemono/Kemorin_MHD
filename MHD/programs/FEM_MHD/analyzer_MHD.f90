@@ -59,10 +59,9 @@
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
-      call FEM_initialize_MHD(MHD_files1, flex_MHD1, MHD_step1,         &
-     &    FEM_MHD1%geofem, FEM_MHD1%iphys, FEM_MHD1%field, FEM_model1,  &
-     &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1,             &
-     &    FEM_MHD1%label_sim)
+      call FEM_initialize_MHD                                           &
+     &   (MHD_files1, flex_MHD1, MHD_step1, FEM_model1, FEM_MHD1,       &
+     &    MHD_CG1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1)
 !
       call init_visualize(FEM_MHD1%geofem, FEM_MHD1%field,              &
      &                    vizs_rprt_c_F%vizs_ctl, vizs_F)
@@ -76,7 +75,7 @@
 !
       use output_viz_file_control
 !
-      integer(kind=kint ) :: retval
+      integer(kind = kint) :: retval
       logical :: visval
 !
 !
@@ -85,10 +84,9 @@
 !
       do
 !  Time evolution
-        call FEM_analyze_MHD                                            &
-     &     (MHD_files1, FEM_MHD1%geofem, FEM_MHD1%iphys,                &
-     &      FEM_model1, flex_MHD1, MHD_step1, retval, MHD_CG1,          &
-     &      FEM_SGS1, SGS_MHD_wk1, FEM_MHD1%field, MHD_IO1, fem_sq1)
+        call FEM_analyze_MHD(MHD_files1, FEM_model1, flex_MHD1,        &
+     &      MHD_step1, retval, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,         &
+     &      FEM_MHD1, MHD_IO1, fem_sq1)
 !
 !     ---------------------
 !

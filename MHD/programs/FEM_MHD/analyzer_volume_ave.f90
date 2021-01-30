@@ -42,10 +42,9 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'FEM_initialize_vol_average'
-      call FEM_initialize_vol_average(MHD_files1, MHD_step1,            &
-     &    FEM_MHD1%geofem, FEM_MHD1%iphys, FEM_MHD1%field, FEM_model1,  &
-     &    MHD_CG1%ak_MHD, FEM_SGS1, SGS_MHD_wk1, MHD_IO1,               &
-     &    fem_sq1, FEM_MHD1%label_sim)
+      call FEM_initialize_vol_average                                   &
+     &   (MHD_files1, MHD_step1, FEM_model1, MHD_CG1%ak_MHD,            &
+     &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1)
 !
       end subroutine init_analyzer
 !
@@ -60,9 +59,8 @@
      &           MHD_step1%finish_d%i_end_step
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
         call FEM_analyze_vol_average                                    &
-     &     (i_step, MHD_files1, FEM_MHD1%geofem,                        &
-     &      FEM_MHD1%iphys, FEM_SGS1%iphys_LES, FEM_model1,             &
-     &      MHD_step1, SGS_MHD_wk1, FEM_MHD1%field, fem_sq1)
+     &     (i_step, MHD_files1, FEM_SGS1%iphys_LES, FEM_model1,         &
+     &      MHD_step1, SGS_MHD_wk1, FEM_MHD1, fem_sq1)
       end do
 !
 !      call FEM_finalize_vol_average

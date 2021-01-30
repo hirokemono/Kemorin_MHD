@@ -26,11 +26,11 @@
       use t_field_data_IO
       use t_control_data_4_merge
       use t_control_param_assemble
+      use t_vector_for_solver
 !
       use field_IO_select
       use assemble_nodal_fields
       use set_control_assemble
-      use t_vector_for_solver
 !
       implicit none
 !

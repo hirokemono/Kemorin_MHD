@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
-!!     &          flex_MHD, MHD_step, mesh, group, MHD_mesh,            &
+!!     &          flex_MHD, MHD_step, geofem, MHD_mesh,                 &
 !!     &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,           &
 !!     &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,     &
 !!     &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
@@ -14,8 +14,7 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(mesh_geometry), intent(inout) :: mesh
-!!        type(mesh_groups), intent(inout) ::   group
+!!        type(mesh_data), intent(inout) :: geofem
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(filters_on_FEM), intent(inout) :: FEM_filters
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -73,7 +72,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
-     &          flex_MHD, MHD_step, mesh, group, MHD_mesh,              &
+     &          flex_MHD, MHD_step, geofem, MHD_mesh,                   &
      &          FEM_filters, MHD_prop, MHD_BC, FEM_MHD_BCs,             &
      &          Csims_FEM_MHD, iphys, iphys_LES, nod_fld, MHD_CG,       &
      &         SGS_MHD_wk, fem_sq, fem_fst_IO, label_sim, v_sol)
@@ -122,8 +121,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(FEM_MHD_time_stepping), intent(inout) :: flex_MHD
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) ::   group
+      type(mesh_data), intent(inout) :: geofem
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(filters_on_FEM), intent(inout) :: FEM_filters
       type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -150,37 +148,37 @@
 !
       call reordering_by_layers_MHD(SGS_par, MHD_CG%MGCG_WK,            &
      &    MHD_CG%MGCG_FEM, MHD_CG%MGCG_MHD_FEM, FEM_prm,                &
-     &    mesh%ele, group, MHD_mesh, MHD_CG%MHD_mat%MG_interpolate,     &
-     &    FEM_filters%FEM_elens)
+     &    geofem%mesh%ele, geofem%group, MHD_mesh,                      &
+     &    MHD_CG%MHD_mat%MG_interpolate, FEM_filters%FEM_elens)
 !
-      call set_layers                                                   &
-     &   (FEM_prm, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
+      call set_layers(FEM_prm, geofem%mesh%node, geofem%mesh%ele,       &
+     &                geofem%group%ele_grp, MHD_mesh)
 !
       if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call const_layers_4_dynamic                                     &
-     &     (group%ele_grp, FEM_filters%layer_tbl)
+     &     (geofem%group%ele_grp, FEM_filters%layer_tbl)
         call alloc_work_FEM_dynamic                                     &
      &     (FEM_filters%layer_tbl, SGS_MHD_wk%FEM_SGS_wk)
       end if
 !
 !     ---------------------
 !
-      call FEM_comm_initialization(mesh, v_sol)
-      call FEM_mesh_initialization(mesh, group)
+      call FEM_comm_initialization(geofem%mesh, v_sol)
+      call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
-      call deallocate_surface_geom_type(mesh%surf)
-      call dealloc_edge_geometory(mesh%edge)
+      call deallocate_surface_geom_type(geofem%mesh%surf)
+      call dealloc_edge_geometory(geofem%mesh%edge)
 !
 !     ---------------------
 !
-      call const_FEM_3d_filtering_tables(SGS_par, mesh,                 &
+      call const_FEM_3d_filtering_tables(SGS_par, geofem%mesh,          &
      &    FEM_filters%filtering, FEM_filters%wide_filtering)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array_FEM_MHD'
       call allocate_array_FEM_MHD                                       &
-     &   (SGS_par, mesh, MHD_prop, iphys, iphys_LES, nod_fld,           &
+     &   (SGS_par, geofem%mesh, MHD_prop, iphys, iphys_LES, nod_fld,    &
      &    Csims_FEM_MHD, SGS_MHD_wk, fem_sq, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
@@ -190,11 +188,11 @@
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_T, MHD_prop%takepito_T,                    &
-     &    mesh%node, MHD_mesh%fluid,                                    &
+     &    geofem%mesh%node, MHD_mesh%fluid,                             &
      &    iphys%base%i_ref_t, iphys%grad_fld%i_grad_ref_t, nod_fld)
       call set_reference_temp                                           &
      &   (MHD_prop%ref_param_C, MHD_prop%takepito_C,                    &
-     &    mesh%node, MHD_mesh%fluid,                                    &
+     &    geofem%mesh%node, MHD_mesh%fluid,                             &
      &    iphys%base%i_ref_c, iphys%grad_fld%i_grad_ref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
@@ -202,10 +200,10 @@
      &   (MHD_prop%ref_param_T%depth_top,                               &
      &    MHD_prop%ref_param_T%depth_bottom, iphys, MHD_prop)
       call s_init_ele_material_property                                 &
-     &   (mesh%ele%numele, MHD_prop, MHD_CG%ak_MHD)
+     &   (geofem%mesh%ele%numele, MHD_prop, MHD_CG%ak_MHD)
 !
       call def_sgs_commute_component                                    &
-     &   (SGS_par, mesh, FEM_filters%layer_tbl, MHD_prop,               &
+     &   (SGS_par, geofem%mesh, FEM_filters%layer_tbl, MHD_prop,        &
      &    Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
 !
 !  -------------------------------
@@ -214,21 +212,20 @@
       call copy_communicator_4_solver(MHD_CG%solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
-      call set_const_comm_table_fluid                                   &
-     &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
-     &    mesh%node, mesh%ele, mesh%nod_comm, MHD_CG%DJDS_comm_fl)
+      call s_const_comm_table_fluid(nprocs, geofem%mesh,                &
+     &    MHD_mesh%fluid, MHD_CG%DJDS_comm_fl)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD                                                &
-     &   (FEM_prm, mesh%node, MHD_prop%fl_prop, MHD_prop%cd_prop)
+      call init_MGCG_MHD(FEM_prm, geofem%mesh%node,                     &
+     &                   MHD_prop%fl_prop, MHD_prop%cd_prop)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control(MHD_files, MHD_step%rst_step,           &
-     &    MHD_prop%ref_param_T, mesh%node, mesh%ele,                    &
+     &    MHD_prop%ref_param_T, geofem%mesh%node, geofem%mesh%ele,      &
      &    MHD_mesh%fluid, MHD_prop%cd_prop, iphys,                      &
      &    FEM_filters%layer_tbl, SGS_par, SGS_MHD_wk%FEM_SGS_wk,        &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
@@ -243,46 +240,49 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_bc_infinity_surf_grp'
-      call const_bc_infinity_surf_grp                                   &
-     &   (iflag_surf_infty, group%surf_grp, group%infty_grp)
+      call const_bc_infinity_surf_grp(iflag_surf_infty,                 &
+     &    geofem%group%surf_grp, geofem%group%infty_grp)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
-     &    group, fem_sq%i_msq, mesh, FEM_filters%layer_tbl,             &
-     &    spfs_1, SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
+      call const_MHD_jacobian_and_volumes                               &
+     &   (SGS_par%model_p, geofem%group, fem_sq%i_msq, geofem%mesh,     &
+     &    FEM_filters%layer_tbl, spfs_1, SGS_MHD_wk%fem_int%jcs,        &
+     &    MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_connectivities                                       &
-     &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid, MHD_CG%solver_C,    &
-     &    SGS_MHD_wk%fem_int, MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
+     &   (FEM_prm%DJDS_param, geofem%mesh, MHD_mesh%fluid,              &
+     &    MHD_CG%solver_C, SGS_MHD_wk%fem_int,                          &
+     &    MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(my_rank, nprocs, mesh%node, mesh%surf,   &
+      call const_normal_vector                                          &
+     &   (my_rank, nprocs, geofem%mesh%node, geofem%mesh%surf,          &
      &    spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters                                       &
-     &   (mesh, group, SGS_MHD_wk%rhs_mat%surf_wk)
+     &   (geofem%mesh, geofem%group, SGS_MHD_wk%rhs_mat%surf_wk)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data                                            &
-     &   (MHD_step%time_d, IO_bc, mesh, MHD_mesh, group,                &
+     &   (MHD_step%time_d, IO_bc, geofem%mesh, MHD_mesh, geofem%group,  &
      &    MHD_prop, MHD_BC, iphys, nod_fld, FEM_MHD_BCs)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'int_RHS_mass_matrices'
       call int_RHS_mass_matrices                                        &
-     &   (FEM_prm%npoint_t_evo_int, mesh, MHD_mesh,                     &
+     &   (FEM_prm%npoint_t_evo_int, geofem%mesh, MHD_mesh,              &
      &    SGS_MHD_wk%rhs_mat%fem_wk, SGS_MHD_wk%rhs_mat%f_l,            &
      &    SGS_MHD_wk%fem_int, SGS_MHD_wk%mk_MHD)
 !
@@ -293,11 +293,13 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop, FEM_prm)
       if (iflag_debug.eq.1 ) write(*,*) 'alloc_MHD_MGCG_matrices'
       call alloc_MHD_MGCG_matrices                                      &
-     &   (izero, mesh%node, MHD_prop, MHD_CG%MHD_mat)
-!      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
+     &   (izero, geofem%mesh%node, MHD_prop, MHD_CG%MHD_mat)
+!      call reset_aiccg_matrices                                        &
+!     &   (geofem%mesh%node, geofem%mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG(MHD_step%time_d%dt, FEM_prm, mesh,  &
+        call s_initialize_4_MHD_AMG                                     &
+     &     (MHD_step%time_d%dt, FEM_prm, geofem%mesh,                   &
      &      SGS_MHD_wk%fem_int%jcs, Csims_FEM_MHD%diff_coefs,           &
      &      MHD_prop, MHD_BC, FEM_prm%DJDS_param, spfs_1,               &
      &      MHD_CG%MGCG_WK, MHD_CG%MGCG_FEM,                            &
@@ -308,7 +310,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (MHD_step%time_d%dt, mesh%ele, MHD_prop)
+     &   (MHD_step%time_d%dt, geofem%mesh%ele, MHD_prop)
       call deallocate_surf_bc_lists(MHD_prop, MHD_BC)
 !
       end subroutine init_analyzer_fl
