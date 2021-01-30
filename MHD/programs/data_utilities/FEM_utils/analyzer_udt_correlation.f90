@@ -21,7 +21,6 @@
       use t_layering_ele_list
       use t_work_layer_correlate
       use t_shape_functions
-      use m_array_for_send_recv
       use t_FEM_utils
       use t_vector_for_solver
 !
