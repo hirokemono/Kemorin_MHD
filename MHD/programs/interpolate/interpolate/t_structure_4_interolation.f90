@@ -59,7 +59,6 @@
 !
 !-----------------------------------------------------------------------
 !
-!
       subroutine s_input_control_interpolate(itp_d, ierr)
 !
       use t_IO_step_parameter

@@ -14,10 +14,9 @@
 !!       Initialzation and evolution loop to pick up data on circle
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_pick_circle(MHD_files, femmesh, iphys,  &
+!!      subroutine SPH_init_sph_pick_circle(MHD_files, iphys,           &
 !!     &          SPH_model, SPH_SGS, SPH_MHD, SPH_WK, cdat)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
-!!        type(mesh_data), intent(in) :: femmesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SPH_MHD_model_data), intent(inout) :: SPH_model
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
@@ -56,11 +55,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_pick_circle(MHD_files, femmesh, iphys,    &
+      subroutine SPH_init_sph_pick_circle(MHD_files, iphys,             &
      &          SPH_model, SPH_SGS, SPH_MHD, SPH_WK, cdat)
 !
       use m_constants
-      use m_array_for_send_recv
       use calypso_mpi
       use m_machine_parameter
 !
@@ -86,7 +84,6 @@
       use input_control_sph_MHD
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
-      type(mesh_data), intent(in) :: femmesh
       type(phys_address), intent(in) :: iphys
 !
       type(SPH_MHD_model_data), intent(inout) :: SPH_model
@@ -100,13 +97,6 @@
       call set_sph_SGS_MHD_spectr_data                                  &
      &   (SPH_SGS%SGS_par, SPH_model%MHD_prop,                          &
      &    SPH_MHD%sph, SPH_MHD%fld, SPH_MHD%ipol, SPH_SGS%ipol_LES)
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
-     &   (isix, SPH_MHD%sph%sph_rtp%nnod_rtp, vect1)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
-      call init_nod_send_recv(femmesh%mesh)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr_4_mhd'
       call init_rms_4_sph_spectr_4_mhd                                  &

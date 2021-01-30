@@ -84,6 +84,9 @@
 !    precondition elaps start
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
+      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
+      call alloc_iccgN_vec_type                                         &
+     &   (isix, SPH_MHD1%sph%sph_rtp%nnod_rtp, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
 !

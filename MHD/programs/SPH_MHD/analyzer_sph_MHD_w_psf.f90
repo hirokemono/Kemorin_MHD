@@ -27,7 +27,6 @@
       use t_viz_sections
       use t_SPH_MHD_zonal_mean_viz
       use t_sph_trans_arrays_MHD
-      use m_array_for_send_recv
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
@@ -83,7 +82,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
-     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, MHD_IO1, vect1)
+     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, MHD_IO1, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
 !
@@ -153,7 +152,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1, vect1)
+     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1, FEM_d1%v_sol)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -174,7 +173,7 @@
           if(MHD_step1%viz_step%istep_psf .ge. 0) then
             call SPH_MHD_zmean_sections(MHD_step1%viz_step%istep_psf,   &
      &          MHD_step1%time_d, SPH_MHD1%sph, FEM_d1%geofem,          &
-     &          SPH_WK1%trns_WK, FEM_d1%field, zmeans1, vect1)
+     &          SPH_WK1%trns_WK, FEM_d1%field, zmeans1, FEM_d1%v_sol)
           end if
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

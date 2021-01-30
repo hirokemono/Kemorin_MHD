@@ -51,7 +51,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_array_for_send_recv
       use m_machine_parameter
 !
       use t_sph_boundary_input_data
@@ -87,10 +86,6 @@
 !
       call set_sph_MHD_sprctr_data(SPH_MHD%sph, SPH_model%MHD_prop,     &
      &    SPH_MHD%fld, SPH_MHD%ipol)
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
-     &   (isix, SPH_MHD%sph%sph_rtp%nnod_rtp, vect1)
 !
 ! ---------------------------------
 !

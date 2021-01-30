@@ -54,7 +54,6 @@
      &          SPH_model, SPH_MHD, SPH_WK, cdat)
 !
       use m_constants
-      use m_array_for_send_recv
       use m_machine_parameter
       use calypso_mpi
 !
@@ -89,11 +88,6 @@
 !
       call set_sph_MHD_sprctr_data(SPH_MHD%sph, SPH_model%MHD_prop,     &
      &    SPH_MHD%fld, SPH_MHD%ipol)
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
-     &   (isix, SPH_MHD%sph%sph_rtp%nnod_rtp, vect1)
-!
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(SPH_WK%r_2nd, SPH_model%bc_IO,      &

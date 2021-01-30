@@ -4,8 +4,7 @@
 
 SUBDIRS = \
 generate_table \
-interpolate \
-test_interpolate
+interpolate
 
 LIBS_INTERPOLATE = \
 '$$(LIB_UTILS)'    \
