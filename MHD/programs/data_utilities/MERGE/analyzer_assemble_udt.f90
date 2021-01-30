@@ -26,7 +26,7 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_comm_table_4_assemble
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -42,6 +42,7 @@
       type(control_param_assemble), save :: asbl_param_u
       type(comm_table_4_assemble), save :: asbl_comm_u
       type(assemble_field_list), save :: asbl_tbl_u
+      type(vectors_4_solver), save :: v_sol_u
 !
       type(time_data), save :: t_IO_m
 !
@@ -104,7 +105,7 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
       call alloc_iccgN_vec_type                                         &
-     &   (n_sym_tensor, new_mesh%node%numnod, vect1)
+     &   (n_sym_tensor, new_mesh%node%numnod, v_sol_u)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(new_mesh)
@@ -186,7 +187,7 @@
         call assemble_field_data                                        &
      &     (ndomain_org, asbl_comm_u, new_fld, org_fIO)
 !
-        call nod_fields_send_recv(new_mesh, new_fld, vect1)
+        call nod_fields_send_recv(new_mesh, new_fld, v_sol_u)
 !
         call sel_write_parallel_ucd_file                                &
      &     (istep, asbl_param_u%new_fld_file, t_IO_m, ucd_m)

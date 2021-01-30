@@ -6,10 +6,10 @@
 !!      subroutine set_new_time_and_step                                &
 !!     &         (MHD_prop, iphys, nod_fld, time_d)
 !!      subroutine s_check_flexible_time_step                           &
-!!     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacs,        &
+!!     &         (geofem, MHD_mesh, cd_prop, iphys, nod_fld, jacs,      &
 !!     &          rhs_mat, flex_data, flex_p, time_d)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
@@ -53,7 +53,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_check_flexible_time_step                             &
-     &         (mesh, MHD_mesh, MHD_prop, iphys, nod_fld, fem_int,      &
+     &         (geofem, MHD_mesh, MHD_prop, iphys, nod_fld, fem_int,    &
      &          rhs_mat, flex_MHD, MHD_step)
 !
       use t_mesh_data
@@ -69,7 +69,7 @@
 !
       use check_deltat_by_prev_rms
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data), intent(in) :: geofem
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: iphys
@@ -85,7 +85,7 @@
      &    return
 !
       if (iflag_debug.eq.1) write(*,*) 'check_flex_time_step_by_sq'
-      call check_flex_time_step_by_sq(mesh, MHD_mesh,                   &
+      call check_flex_time_step_by_sq(geofem%mesh, MHD_mesh,            &
      &    MHD_prop%cd_prop, iphys, nod_fld, fem_int%jcs, rhs_mat,       &
      &    flex_MHD%flex_data, MHD_step%flex_p, MHD_step%time_d)
 !

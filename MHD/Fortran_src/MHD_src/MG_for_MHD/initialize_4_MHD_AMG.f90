@@ -171,9 +171,10 @@
       do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_const_comm_table_fluid', i_level
-        call s_const_comm_table_fluid(MGCG_WK%MG_mpi(i_level),          &
+        call s_const_comm_table_fluid(MGCG_WK%MG_mpi(i_level)%nprocs,   &
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
-     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level) )
+     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid,                    &
+     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm)
       end do
 !
 !     ---------------------

@@ -43,7 +43,6 @@
       subroutine init_merge_mesh
 !
       use m_error_IDs
-      use m_array_for_send_recv
       use m_default_file_prefix
 !
       use load_mesh_data_4_merge
@@ -77,10 +76,6 @@
       call const_global_numele_list(fem_m%mesh%ele)
 !
 !  Initialize communicator
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
-     &   (n_sym_tensor, fem_m%mesh%node%numnod, vect1)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(fem_m%mesh)

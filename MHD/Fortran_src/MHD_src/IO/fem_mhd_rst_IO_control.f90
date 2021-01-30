@@ -11,12 +11,12 @@
 !!
 !!@verbatim
 !!      subroutine output_MHD_restart_file_ctl(retval, SGS_par,         &
-!!     &          MHD_files, time_d, flex_p, mesh, iphys, FEM_SGS_wk,   &
+!!     &          MHD_files, time_d, flex_p, geofem, iphys, FEM_SGS_wk, &
 !!     &          rst_step, nod_fld, fem_fst_IO, v_sol)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_geometry), intent(in) :: geofem
 !!        type(phys_address), intent(in) :: iphys
 !!        type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
 !!        type(IO_step_param), intent(in) :: rst_step
@@ -73,7 +73,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_MHD_restart_file_ctl(retval, SGS_par,           &
-     &          MHD_files, time_d, flex_p, mesh, iphys, FEM_SGS_wk,     &
+     &          MHD_files, time_d, flex_p, geofem, iphys, FEM_SGS_wk,   &
      &          rst_step, nod_fld, fem_fst_IO, v_sol)
 !
       use m_fem_mhd_restart
@@ -84,7 +84,7 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(time_data), intent(in) :: time_d
       type(flexible_stepping_parameter), intent(in)  :: flex_p
-      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data), intent(in) :: geofem
       type(phys_address), intent(in) :: iphys
       type(work_FEM_dynamic_SGS), intent(in) :: FEM_SGS_wk
       type(IO_step_param), intent(in) :: rst_step
@@ -100,7 +100,7 @@
      &     .eqv. .FALSE.) then
         istep_rst = IO_step_exc_zero_inc(flex_p%istep_max_dt, rst_step)
         call output_MHD_restart_file                                    &
-     &     (istep_rst, time_d, SGS_par, MHD_files, mesh, iphys,         &
+     &     (istep_rst, time_d, SGS_par, MHD_files, geofem%mesh, iphys,  &
      &      FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol)
       end if
 !
@@ -108,7 +108,7 @@
       if(retval .eq. 0) then
         istep_rst = -1
         call output_MHD_restart_file                                    &
-     &     (istep_rst, time_d, SGS_par, MHD_files, mesh, iphys,         &
+     &     (istep_rst, time_d, SGS_par, MHD_files, geofem%mesh, iphys,  &
      &      FEM_SGS_wk, nod_fld, fem_fst_IO, v_sol)
       end if
 !

@@ -11,10 +11,11 @@
 !>     Construct communication table for fluid region
 !!
 !!@verbatim
-!!      subroutine s_const_comm_table_fluid(solver_C, mesh, MHD_mesh)
-!!        type(mpi_4_solver), intent(in) :: solver_C
+!!      subroutine s_const_comm_table_fluid                             &
+!!     &         (num_pe, mesh, fluid_mesh, fluid_comm)
 !!        type(mesh_geometry),    intent(in) :: mesh
-!!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!!        type(field_geometry_data), intent(in) :: fluid_mesh
+!!        type(communication_table), intent(inout) :: fluid_comm
 !!@endverbatim
 !
       module const_comm_table_fluid
@@ -24,30 +25,33 @@
 !
       implicit  none
 !
+      private :: set_const_comm_table_fluid
+!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_comm_table_fluid(solver_C, mesh, MHD_mesh)
+      subroutine s_const_comm_table_fluid                               &
+     &         (num_pe, mesh, fluid_mesh, fluid_comm)
 !
-      use t_vector_for_solver
       use t_mesh_data
       use t_geometry_data_MHD
 !
-      type(mpi_4_solver), intent(in) :: solver_C
-      type(mesh_geometry),    intent(in) :: mesh
+      integer, intent(in) :: num_pe
+      type(mesh_geometry), intent(in) :: mesh
+      type(field_geometry_data), intent(in) :: fluid_mesh
 !
-      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+      type(communication_table), intent(inout) :: fluid_comm
 !
 !
       if (mesh%node%numnod .eq. 0) then
-        call empty_comm_table(MHD_mesh%nod_fl_comm)
+        call empty_comm_table(fluid_comm)
       else
         call set_const_comm_table_fluid                                 &
-     &   (solver_C%nprocs, MHD_mesh%fluid%istack_ele_fld_smp,           &
-     &    mesh%node, mesh%ele, mesh%nod_comm, MHD_mesh%nod_fl_comm)
+     &     (num_pe, fluid_mesh%istack_ele_fld_smp,                      &
+     &      mesh%node, mesh%ele, mesh%nod_comm, fluid_comm)
       end if
 !
       end subroutine s_const_comm_table_fluid

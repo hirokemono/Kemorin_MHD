@@ -26,7 +26,7 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_comm_table_4_assemble
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use field_IO_select
       use set_field_to_restart
@@ -41,6 +41,7 @@
       type(control_data_4_merge), save :: mgd_ctl_f
       type(control_param_assemble), save :: asbl_param_f
       type(comm_table_4_assemble), save :: asbl_comm_f
+      type(vectors_4_solver), save :: v_sol_f
 !
       type(time_data), save :: t_IO_m
       type(field_IO), save :: new_fIO
@@ -105,7 +106,7 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
       call alloc_iccgN_vec_type                                         &
-     &   (n_sym_tensor, new_mesh%node%numnod, vect1)
+     &   (n_sym_tensor, new_mesh%node%numnod, v_sol_f)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(new_mesh)
@@ -171,7 +172,7 @@
 !   re-scaling for magnetic field
         call rescale_4_magne(asbl_param_f%b_ratio, new_fld)
 !
-        call nod_fields_send_recv(new_mesh, new_fld, vect1)
+        call nod_fields_send_recv(new_mesh, new_fld, v_sol_f)
 !
         call simple_copy_fld_data_to_rst                                &
      &     (new_mesh%node, new_fld, new_fIO)
