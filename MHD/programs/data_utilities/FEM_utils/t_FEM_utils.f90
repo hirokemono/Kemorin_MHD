@@ -1,5 +1,5 @@
-!>@file   m_FEM_utils.f90
-!!@brief  module m_FEM_utils
+!>@file   t_FEM_utils.f90
+!!@brief  module t_FEM_utils
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -11,7 +11,7 @@
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!@endverbatim
 !
-      module m_FEM_utils
+      module t_FEM_utils
 !
       use m_precision
 !
@@ -32,31 +32,31 @@
 !
       implicit none
 !
+!
 !       Structure for time stepping parameters
-      type(time_step_param), save :: time_U
+      type FEM_utils
+!>        Structure for mesh file IO paramters
+        type(field_IO_params) :: mesh_file
+!>        Structure for field data IO paramters
+        type(field_IO_params) :: udt_file
 !
-!>      Structure for mesh file IO paramters
-      type(field_IO_params), save :: mesh_file_FUTIL
-!>     Structure for mesh data
+!>        Structure for mesh data
 !>        (position, connectivity, group, and communication)
-      type(mesh_data), save :: femmesh_FUTIL
-!>       Structure for nodal field data
-      type(phys_data), save :: field_FUTIL
-!>       address of nodal fields
-      type(phys_address), save :: iphys_FUTIL
+        type(mesh_data) :: geofem
+!>        Structure for nodal field data
+        type(phys_data) :: nod_fld
+!>        address of nodal fields
+        type(phys_address) :: iphys
 !>       address of nodal fields for SGS model
-      type(SGS_model_addresses), save :: iphys_LES_FUTIL
+        type(SGS_model_addresses) :: iphys_LES
 !
+!>       Work area for solver communication
+        type(vectors_4_solver) :: v_sol
 !
-!>      Structure for field data IO paramters
-      type(field_IO_params), save :: udt_param_FUTIL
-      type(time_data), save :: time_IO_FUTIL
-!
-      type(shape_finctions_at_points), save :: spfs_FUTIL
-!>      Stracture for Jacobians
-      type(jacobians_type), save :: jacobians_FUTIL
-!
-      type(vectors_4_solver), save :: v_sol_FUTIL
+        type(shape_finctions_at_points) :: spfs
+!>        Stracture for Jacobians
+        type(jacobians_type) :: jacobians
+      end type FEM_utils
 !
 !   ---------------------------------------------------------------------
 !
@@ -64,33 +64,35 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_FEM_UTIL(mesh_file)
+      subroutine mesh_setup_4_FEM_UTIL(mesh_file, geofem, v_sol)
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
 !
       type(field_IO_params), intent(in) ::  mesh_file
+      type(mesh_data), intent(inout) :: geofem
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file, nprocs, femmesh_FUTIL)
+      call mpi_input_mesh(mesh_file, nprocs, geofem)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
       call alloc_iccgN_vec_type                                         &
-     &   (isix, femmesh_FUTIL%mesh%node%numnod, v_sol_FUTIL)
-      call init_nod_send_recv(femmesh_FUTIL%mesh)
+     &   (isix, geofem%mesh%node%numnod, v_sol)
+      call init_nod_send_recv(geofem%mesh)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
       call set_nod_and_ele_infos                                        &
-     &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele)
+     &   (geofem%mesh%node, geofem%mesh%ele)
 !
       end subroutine mesh_setup_4_FEM_UTIL
 !
 !   ---------------------------------------------------------------------
 !
-      end module m_FEM_utils
+      end module t_FEM_utils

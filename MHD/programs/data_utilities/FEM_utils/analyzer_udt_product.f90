@@ -16,11 +16,17 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_FEM_utils
+      use t_FEM_utils
       use t_step_parameter
       use t_VIZ_step_parameter
 !
       implicit none
+!
+!       Structure for time stepping parameters
+      type(FEM_utils), save :: FUTIL1
+!       Structure for time stepping parameters
+      type(time_step_param), save :: time_U
+      type(time_data), save :: time_IO_FUTIL
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,22 +60,23 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt(prod_udt_c1%pu_plt,                  &
      &    prod_udt_c1%org_pu_plt, prod_udt_c1%prod_ctl,                 &
-     &    mesh_file_FUTIL, udt_param_FUTIL)
+     &    FUTIL1%mesh_file, FUTIL1%udt_file)
       call set_fixed_time_step_params                                   &
      &   (prod_udt_c1%prod_ctl%t_pu_ctl, time_U, ierr, e_message)
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(mesh_file_FUTIL)
+      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
+     &                           FUTIL1%geofem, FUTIL1%v_sol)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
       call set_field_id_4_product                                       &
-     &   (time_U%init_d, femmesh_FUTIL%mesh%node%numnod,                &
+     &   (time_U%init_d, FUTIL1%geofem%mesh%node%numnod,                &
      &    time_IO_FUTIL, time_U%ucd_step)
-      call allocate_product_data(femmesh_FUTIL%mesh%node%numnod)
-      call allocate_product_result(field_FUTIL)
+      call allocate_product_data(FUTIL1%geofem%mesh%node%numnod)
+      call allocate_product_result(FUTIL1%nod_fld)
 !
       end subroutine initialize_udt_product
 !
@@ -91,15 +98,16 @@
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
         call set_data_for_product                                       &
-     &     (femmesh_FUTIL%mesh%node%numnod, istep_ucd, time_IO_FUTIL)
+     &     (FUTIL1%geofem%mesh%node%numnod, istep_ucd, time_IO_FUTIL)
 !
         call cal_products_of_fields                                     &
-     &     (femmesh_FUTIL%mesh%nod_comm, femmesh_FUTIL%mesh%node,       &
-     &      field_FUTIL%ntot_phys, field_FUTIL%d_fld, v_sol_FUTIL)
+     &     (FUTIL1%geofem%mesh%nod_comm, FUTIL1%geofem%mesh%node,       &
+     &      FUTIL1%nod_fld%ntot_phys, FUTIL1%nod_fld%d_fld,             &
+     &      FUTIL1%v_sol)
 !
 !    output udt data
         call link_output_ucd_file_once                                  &
-     &     (istep_ucd, field_FUTIL, output_ucd_param, time_IO_FUTIL)
+     &     (istep_ucd, FUTIL1%nod_fld, output_ucd_param, time_IO_FUTIL)
       end do
 !
       end subroutine analyze_udt_product

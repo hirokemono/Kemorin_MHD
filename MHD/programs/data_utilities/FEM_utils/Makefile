@@ -40,7 +40,7 @@ endif
 SOURCES = $(shell ls *.f90)
 
 MOD_UDT_UTILS = \
-m_FEM_utils.o \
+t_FEM_utils.o \
 t_ctl_data_diff_udt.o \
 m_ctl_params_4_diff_udt.o \
 \
@@ -58,7 +58,7 @@ main_ave_udt.o \
 analyzer_ave_udt.o
 
 MOD_PROD_FIELDS = \
-m_FEM_utils.o \
+t_FEM_utils.o \
 t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
 product_udt_fields.o \
@@ -66,7 +66,7 @@ analyzer_udt_product.o \
 main_prod_udt.o
 
 MOD_RATIO_FIELDS = \
-m_FEM_utils.o \
+t_FEM_utils.o \
 t_ctl_data_product_udt.o \
 m_ctl_params_4_prod_udt.o \
 product_udt_fields.o \

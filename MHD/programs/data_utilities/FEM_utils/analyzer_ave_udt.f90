@@ -16,9 +16,15 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_FEM_utils
+      use t_FEM_utils
 !
       implicit none
+!
+!       Structure for time stepping parameters
+      type(FEM_utils), save :: FUTIL1
+!       Structure for time stepping parameters
+      type(time_step_param), save :: time_U
+      type(time_data), save :: time_IO_FUTIL
 !
 ! ----------------------------------------------------------------------
 !
@@ -40,18 +46,19 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_ave_udt'
-      call s_input_control_ave_udt(mesh_file_FUTIL, udt_param_FUTIL,    &
-     &    field_FUTIL, time_U)
+      call s_input_control_ave_udt(FUTIL1%mesh_file, FUTIL1%udt_file,   &
+     &    FUTIL1%nod_fld, time_U)
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL(mesh_file_FUTIL)
+      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
+     &                           FUTIL1%geofem, FUTIL1%v_sol)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'init_field_data_w_SGS'
-      call init_field_data_w_SGS(femmesh_FUTIL%mesh%node%numnod,        &
-     &    field_FUTIL, iphys_FUTIL, iphys_LES_FUTIL)
+      call init_field_data_w_SGS(FUTIL1%geofem%mesh%node%numnod,        &
+     &    FUTIL1%nod_fld, FUTIL1%iphys, FUTIL1%iphys_LES)
 !
       end subroutine initialize_ave_udt
 !
@@ -73,7 +80,7 @@
       istep_ucd = IO_step_exc_zero_inc(time_U%init_d%i_time_step,       &
      &                                 time_U%ucd_step)
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
-     &    udt_param_FUTIL, field_FUTIL, time_IO_FUTIL)
+     &    FUTIL1%udt_file, FUTIL1%nod_fld, time_IO_FUTIL)
 !
       icou = 1
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
@@ -82,19 +89,19 @@
 !
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
         call add_ucd_to_data                                            &
-     &     (my_rank, istep_ucd, udt_param_FUTIL, field_FUTIL)
+     &     (my_rank, istep_ucd, FUTIL1%udt_file, FUTIL1%nod_fld)
       end do
 !
-      call s_divide_phys_by_num_udt(icou, field_FUTIL)
-      call nod_fields_send_recv(femmesh_FUTIL%mesh,                     &
-     &                          field_FUTIL, v_sol_FUTIL)
+      call s_divide_phys_by_num_udt(icou, FUTIL1%nod_fld)
+      call nod_fields_send_recv(FUTIL1%geofem%mesh,                     &
+     &                          FUTIL1%nod_fld, FUTIL1%v_sol)
 !
 !    output udt data
 !
       call output_udt_one_snapshot                                      &
      &   (time_U%finish_d%i_end_step, ave_ucd_param, time_U%time_d,     &
-     &    femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
-     &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
+     &    FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%ele,              &
+     &    FUTIL1%geofem%mesh%nod_comm, FUTIL1%nod_fld)
 !
       end subroutine analyze_ave_udt
 !

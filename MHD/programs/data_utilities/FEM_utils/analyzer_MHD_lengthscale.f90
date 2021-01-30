@@ -17,13 +17,18 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_FEM_utils
+      use t_FEM_utils
       use t_VIZ_step_parameter
       use ucd_IO_select
       use FEM_MHD_length_scale
 !
 !
       implicit none
+!
+!       Structure for time stepping parameters
+      type(FEM_utils), save :: FUTIL1
+!       Structure for time stepping parameters
+      type(time_step_param), save :: time_U
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,19 +60,20 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt(prod_udt_c1%pu_plt,                  &
      &    prod_udt_c1%org_pu_plt, prod_udt_c1%prod_ctl,                 &
-     &    mesh_file_FUTIL, udt_param_FUTIL)
+     &    FUTIL1%mesh_file, FUTIL1%udt_file)
       call set_fixed_time_step_params                                   &
      &   (prod_udt_c1%prod_ctl%t_pu_ctl, time_U, ierr, e_message)
 !
 !     ---------------------
 !
-      call mesh_setup_4_FEM_UTIL(mesh_file_FUTIL)
+      call mesh_setup_4_FEM_UTIL(FUTIL1%mesh_file,                      &
+     &                           FUTIL1%geofem, FUTIL1%v_sol)
 !
 !     --------------------- 
 !
-      call allocate_work_4_lscale(femmesh_FUTIL%mesh%node%numnod)
+      call allocate_work_4_lscale(FUTIL1%geofem%mesh%node%numnod)
       write(*,*) 'find_field_address_4_lscale'
-      call find_field_address_4_lscale(field_FUTIL, iphys_FUTIL)
+      call find_field_address_4_lscale(FUTIL1%nod_fld, FUTIL1%iphys)
 !
       end subroutine initialize_MHD_lscale
 !
@@ -80,6 +86,7 @@
       use FEM_MHD_length_scale
 !
       integer(kind=kint ) :: istep, istep_ucd
+      type(time_data) :: time_IO
 !
 !
       do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
@@ -87,11 +94,11 @@
         istep_ucd = IO_step_exc_zero_inc(istep, time_U%ucd_step)
 !
         call set_data_by_read_ucd_once(my_rank, istep_ucd,              &
-     &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
+     &      first_ucd_param, FUTIL1%nod_fld, time_IO)
 !
         call const_MHD_length_scales                                    &
-     &     (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,          &
-     &      istep_ucd, time_IO_FUTIL)
+     &     (FUTIL1%geofem%mesh%node, FUTIL1%iphys, FUTIL1%nod_fld,      &
+     &      istep_ucd, time_IO)
       end do
 !
       call deallocate_work_4_lscale

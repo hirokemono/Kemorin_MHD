@@ -13,9 +13,12 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
-      use m_FEM_utils
+      use t_FEM_utils
 !
       implicit none
+!
+!       Structure for time stepping parameters
+      type(FEM_utils), save :: FUTIL1
 !
       private :: set_med_grp_patch_ctl
       private :: set_med_grp_patch_psf_def_ctl
@@ -29,7 +32,6 @@
       subroutine initialize_med_grp_patch
 !
       use m_phys_constants
-      use m_FEM_utils
       use input_control_udt_diff
       use nod_phys_send_recv
       use mpi_load_mesh_data
@@ -44,22 +46,23 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
-      call s_input_control_grp_patch(mesh_file_FUTIL, udt_param_FUTIL)
+      call s_input_control_grp_patch                                    &
+     &   (FUTIL1%mesh_file, FUTIL1%udt_file)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file_FUTIL, nprocs, femmesh_FUTIL)
+      call mpi_input_mesh(FUTIL1%mesh_file, nprocs, FUTIL1%geofem)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(femmesh_FUTIL%mesh, v_sol_FUTIL)
+      call FEM_comm_initialization(FUTIL1%geofem%mesh, FUTIL1%v_sol)
       call FEM_mesh_initialization                                      &
-     &   (femmesh_FUTIL%mesh, femmesh_FUTIL%group)
+     &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
 !
-      field_FUTIL%num_phys = 1
-      call alloc_phys_name_type(field_FUTIL)
-      field_FUTIL%num_component(1) = 1
-      field_FUTIL%istack_component(1) = 1
-      field_FUTIL%phys_name(1) = 'temperature'
+      FUTIL1%nod_fld%num_phys = 1
+      call alloc_phys_name_type(FUTIL1%nod_fld)
+      FUTIL1%nod_fld%num_component(1) = 1
+      FUTIL1%nod_fld%istack_component(1) = 1
+      FUTIL1%nod_fld%phys_name(1) = 'temperature'
 !
       end subroutine initialize_med_grp_patch
 !
@@ -82,16 +85,16 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_med_patch_ele_grp',         &
      &             trim(grouping_mesh_head)
-      psf_ctls_md%num_psf_ctl = femmesh_FUTIL%group%ele_grp%num_grp
+      psf_ctls_md%num_psf_ctl = FUTIL1%geofem%group%ele_grp%num_grp
       call alloc_psf_ctl_stract(psf_ctls_md)
 !
       if(my_rank .eq. 0) then
         grouping_mesh_list = add_dat_extension(grouping_mesh_head)
         open(id_gname,file=grouping_mesh_list)
-        write(id_gname,'(i16)') femmesh_FUTIL%group%ele_grp%num_grp
-        do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
+        write(id_gname,'(i16)') FUTIL1%geofem%group%ele_grp%num_grp
+        do igrp = 1, FUTIL1%geofem%group%ele_grp%num_grp
           write(id_gname,'(i16,a3,a)') igrp, '   ',                     &
-     &              trim(femmesh_FUTIL%group%ele_grp%grp_name(igrp))
+     &              trim(FUTIL1%geofem%group%ele_grp%grp_name(igrp))
         end do
         close(id_gname)
       end if
@@ -100,7 +103,7 @@
      &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
       call SECTIONING_initialize                                        &
-     &   (femmesh_FUTIL, field_FUTIL, psf_ctls_md, psf_md)
+     &   (FUTIL1%geofem, FUTIL1%nod_fld, psf_ctls_md, psf_md)
 !
       end subroutine analyze_med_grp_patch
 !
@@ -124,7 +127,7 @@
       integer(kind = kint) :: igrp
 !
 !
-      do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
+      do igrp = 1, FUTIL1%geofem%group%ele_grp%num_grp
         fname_psf_ctl(igrp) = 'NO_FILE'
         psf_ctl_struct(igrp)%psf_file_head_ctl%iflag = 1
         psf_ctl_struct(igrp)%psf_file_head_ctl%charavalue               &
@@ -134,14 +137,14 @@
         psf_ctl_struct(igrp)%psf_output_type_ctl%charavalue = 'VTD'
 !
         call set_med_grp_patch_psf_def_ctl                              &
-     &     (femmesh_FUTIL%group%ele_grp%grp_name(igrp),                 &
+     &     (FUTIL1%geofem%group%ele_grp%grp_name(igrp),                 &
      &      psf_ctl_struct(igrp)%psf_def_c)
 !
         psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl%num = 1
         call alloc_control_array_c2                                     &
      &     (psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl)
         psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl%c1_tbl(1)    &
-     &      = field_FUTIL%phys_name(1)
+     &      = FUTIL1%nod_fld%phys_name(1)
         psf_ctl_struct(igrp)%fld_on_psf_c%field_output_ctl%c2_tbl(1)    &
      &      = 'scalar'
       end do
