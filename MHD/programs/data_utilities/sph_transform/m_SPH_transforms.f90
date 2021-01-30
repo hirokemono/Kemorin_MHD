@@ -35,6 +35,36 @@
 !
       implicit none
 !
+!>      Structure of FEM mesh and field structures
+      type SPH_transforms
+!>        Structure for mesh data
+!>        (position, connectivity, group, and communication)
+        type(mesh_data) :: geofem
+!>        Structure for nodal field data
+        type(phys_data) :: field
+!
+!>        Structure for vectors for solver
+        type(vectors_4_solver) :: v_sol
+!
+!>        Structure of included element list for each node
+        type(element_around_node) :: ele_4_nod
+!>        Stracture for Jacobians
+        type(jacobians_type) :: jacobians
+!
+!>        Structure for visualization
+        type(visualize_modules) :: vizs
+!
+!>        Structure for spectr data
+        type(field_name_4_sph_trans) :: fld_rtp
+!>        Work structures for various Legendre trasform
+        type(legendre_trns_works) :: WK_leg
+!>        Structure for work area of FFTs
+        type(work_for_FFTs) :: WK_FFTs
+      end type SPH_transforms
+!
+      type(SPH_transforms) :: STR1
+!
+!
 !       Structure for time stepping parameters
       type(time_step_param), save :: t_STR
 !
