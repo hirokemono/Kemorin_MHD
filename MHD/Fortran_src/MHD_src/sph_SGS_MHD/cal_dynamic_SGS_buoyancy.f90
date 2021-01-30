@@ -37,7 +37,6 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
-      use t_sph_transforms
       use t_sph_filtering
       use t_phys_data
       use t_SGS_model_addresses

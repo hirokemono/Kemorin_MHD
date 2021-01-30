@@ -147,11 +147,11 @@
       use t_sph_trans_comm_tbl
       use t_mesh_data
       use t_phys_data
-      use t_sph_transforms
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
+      use spherical_transforms
       use spherical_SRs_N
       use sph_transfer_all_field
 !

@@ -26,7 +26,6 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_time_data
-      use m_array_for_send_recv
 !
       implicit none
 !
@@ -96,7 +95,8 @@
       istep_ucd = IO_step_exc_zero_inc(i_step, t_STR%ucd_step)
       call set_data_by_read_ucd                                         &
      &   (i_step, udt_file_param, t_IO, input_ucd, field_STR)
-      call nod_fields_send_recv(femmesh_STR%mesh, field_STR, vect1)
+      call nod_fields_send_recv                                         &
+     &   (femmesh_STR%mesh, field_STR, STR1%v_sol)
 !
       end subroutine FEM_analyze_sph_trans
 !

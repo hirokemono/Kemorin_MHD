@@ -65,7 +65,6 @@
       use t_ctl_data_gen_sph_shell
       use t_ctl_data_volume_repart
       use t_control_data_dynamo_vizs
-      use t_sph_transforms
       use t_bc_data_list
       use t_flex_delta_t_data
 !

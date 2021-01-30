@@ -49,7 +49,6 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
-      use t_sph_transforms
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_sph_filtering

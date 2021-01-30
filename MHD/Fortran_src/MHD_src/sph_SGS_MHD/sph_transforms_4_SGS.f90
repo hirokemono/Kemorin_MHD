@@ -42,7 +42,6 @@
       use t_work_4_sph_trans
       use t_legendre_trans_select
       use t_sph_FFT_selector
-      use t_sph_transforms
 !
       use m_legendre_transform_list
 !
@@ -59,6 +58,7 @@
 !
       use m_solver_SR
       use set_address_sph_trans_MHD
+      use spherical_transforms
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
@@ -97,6 +97,7 @@
 !
       use m_solver_SR
       use set_address_sph_trans_MHD
+      use spherical_transforms
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
@@ -134,7 +135,6 @@
      &         (sph, comms_sph, trans_p, rj_fld, trns_bwd)
 !
       use m_solver_SR
-      use t_sph_transforms
       use sph_transforms_4_MHD
 !
       type(sph_grids), intent(in) :: sph

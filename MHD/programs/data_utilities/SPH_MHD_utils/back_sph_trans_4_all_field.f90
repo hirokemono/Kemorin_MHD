@@ -38,7 +38,6 @@
       use t_SPH_mesh_field_data
       use t_work_4_sph_trans
       use t_sph_trans_arrays_MHD
-      use t_sph_transforms
       use t_legendre_trans_select
       use t_sph_FFT_selector
 !
@@ -103,11 +102,12 @@
       subroutine sph_all_back_transform(sph, comms_sph, trans_p,        &
      &           rj_fld, trns_MHD, WK_leg, WK_FFTs)
 !
-      use m_solver_SR
-      use spherical_SRs_N
-!
       use t_sph_trans_arrays_MHD
       use t_schmidt_poly_on_rtm
+!
+      use m_solver_SR
+      use spherical_transforms
+      use spherical_SRs_N
 !
       use m_legendre_transform_list
       use copy_all_trans_send_recv

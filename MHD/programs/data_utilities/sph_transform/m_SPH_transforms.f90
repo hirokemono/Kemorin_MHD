@@ -31,6 +31,7 @@
       use t_phys_name_4_sph_trans
       use t_check_and_make_SPH_mesh
       use t_control_param_vol_grping
+      use t_vector_for_solver
       use t_visualizer
 !
       implicit none
@@ -122,7 +123,6 @@
       subroutine mesh_setup_4_SPH_TRANS
 !
       use calypso_mpi
-      use m_array_for_send_recv
       use load_mesh_data
       use nod_phys_send_recv
       use set_parallel_file_name
@@ -132,7 +132,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(femmesh_STR%mesh, vect1)
+      call FEM_comm_initialization(femmesh_STR%mesh, STR1%v_sol)
       call FEM_mesh_initialization                                      &
      &   (femmesh_STR%mesh, femmesh_STR%group)
 !

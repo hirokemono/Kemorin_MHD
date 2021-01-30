@@ -145,6 +145,7 @@
       use t_geometry_data_MHD
       use t_FEM_SGS_model_coefs
 !
+      use spherical_transforms
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
@@ -227,6 +228,7 @@
      &          ipol, rj_fld, v_1st_sol, v_2nd_sol)
 !
       use m_solver_SR
+      use spherical_transforms
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
@@ -285,6 +287,7 @@
       use m_solver_SR
       use m_schmidt_poly_on_rtm
       use t_physical_property
+      use spherical_transforms
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans

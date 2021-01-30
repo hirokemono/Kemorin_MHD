@@ -23,7 +23,6 @@
       use t_VIZ_step_parameter
       use t_file_IO_parameter
       use t_shape_functions
-      use m_array_for_send_recv
 !
       implicit none
 !
@@ -123,7 +122,7 @@
 !*  ----------   Count steps for visualization
 !*
       if(visval) call nod_fields_send_recv(femmesh_STR%mesh,            &
-     &                                     field_STR, vect1)
+     &                                     field_STR, STR1%v_sol)
 !
 !*  -----------  Output volume data --------------
 !*

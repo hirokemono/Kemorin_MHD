@@ -34,7 +34,6 @@
       use t_spheric_rtp_data
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
-      use t_sph_transforms
       use t_phys_name_4_sph_trans
 !
       implicit none
@@ -102,6 +101,7 @@
       use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
+      use spherical_transforms
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph
@@ -172,6 +172,7 @@
       use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
+      use spherical_transforms
       use spherical_SRs_N
 !
       type(sph_grids), intent(in) :: sph

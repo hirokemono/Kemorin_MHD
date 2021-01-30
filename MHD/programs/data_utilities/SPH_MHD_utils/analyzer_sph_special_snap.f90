@@ -277,7 +277,6 @@
       use t_phys_address
       use t_phys_data
       use t_fdm_coefs
-      use t_sph_transforms
       use t_radial_matrices_sph_MHD
 !
       use cal_zonal_mean_sph_spectr
