@@ -40,7 +40,7 @@
       use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -57,6 +57,9 @@
         type(mesh_data) :: geofem
 !>         Structure for nodal field data
         type(phys_data) :: nod_fld
+!
+!>        Structure for communicatiors for solver
+        type(vectors_4_solver) :: v_sol
 !
 !>          Instance of time data from data input
         type(time_data) :: ucd_time
@@ -141,7 +144,7 @@
       call mpi_input_mesh(pvr%mesh_file_IO, nprocs, pvr%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(pvr%geofem%mesh, vect1)
+      call FEM_comm_initialization(pvr%geofem%mesh, pvr%v_sol)
       call FEM_mesh_initialization(pvr%geofem%mesh, pvr%geofem%group)
 !
 !     ---------------------
@@ -193,7 +196,8 @@
       call copy_time_step_size_data(pvr%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(pvr%geofem%mesh, pvr%nod_fld, vect1)
+      call nod_fields_send_recv                                         &
+     &   (pvr%geofem%mesh, pvr%nod_fld, pvr%v_sol)
 !
       end subroutine FEM_analyze_pvr
 !

@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine const_new_partition_mesh(part_param, geofem, new_fem,&
-!!     &                                    org_to_new_tbl, v_sol)
+!!     &                                    org_to_new_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
-!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!      subroutine init_fld_to_new_partition(new_mesh, org_fld, new_fld)
 !!      subroutine nod_field_to_new_partition(iflag_recv,               &
 !!     &          new_mesh, org_to_new_tbl, org_fld, new_fld, v_sol)
@@ -44,7 +43,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_new_partition_mesh(part_param, geofem, new_fem,  &
-     &                                    org_to_new_tbl, v_sol)
+     &                                    org_to_new_tbl)
 !
       use m_work_time
       use m_elapsed_labels_4_REPART
@@ -52,13 +51,13 @@
       use repartiton_by_volume
       use mesh_file_name_by_param
       use set_interpolate_file_name
+      use parallel_FEM_mesh_init
 !
       type(volume_partioning_param), intent(in) ::  part_param
 !
       type(mesh_data), intent(inout) :: geofem
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
-      type(vectors_4_solver), intent(inout) :: v_sol
 !
       logical :: flag
 !
@@ -77,11 +76,16 @@
      &                              org_to_new_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
       else
+        if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+        call FEM_mesh_initialization(geofem%mesh, geofem%group)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
         write(e_message,*)                                              &
      &      'Construct repartitioned mesh and transfer table'
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
         call s_repartiton_by_volume(part_param, geofem, new_fem,        &
-     &                              org_to_new_tbl, v_sol)
+     &                              org_to_new_tbl)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
 !

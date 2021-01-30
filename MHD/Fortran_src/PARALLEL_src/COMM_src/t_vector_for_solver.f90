@@ -81,24 +81,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine verify_iccgN_vec_type(NB, nnod, v_sol)
+      subroutine verify_iccgN_vec_type(NB, nnod, v_sol)
 !
-       integer(kind = kint), intent(in) :: NB, nnod
-       type(vectors_4_solver), intent(inout) :: v_sol
-       integer(kind = kint) :: ncomp
+      integer(kind = kint), intent(in) :: NB, nnod
+      type(vectors_4_solver), intent(inout) :: v_sol
+      integer(kind = kint) :: ncomp
 !
 !
-       ncomp = NB*nnod
-       if (v_sol%isize_solver_vect .lt. 0) then
-         call alloc_iccgN_vec_type(NB, nnod, v_sol)
-       else
-         if (v_sol%isize_solver_vect .lt. ncomp) then
-           call dealloc_iccgN_vec_type(v_sol)
-           call alloc_iccgN_vec_type(NB,nnod, v_sol)
-         end if
-       end if
+      ncomp = NB*nnod
+      if (v_sol%isize_solver_vect .lt. 0) then
+        call alloc_iccgN_vec_type(NB, nnod, v_sol)
+      else
+        if (v_sol%isize_solver_vect .lt. ncomp) then
+          call dealloc_iccgN_vec_type(v_sol)
+          call alloc_iccgN_vec_type(NB,nnod, v_sol)
+        end if
+      end if
 !
-       end subroutine verify_iccgN_vec_type
+      end subroutine verify_iccgN_vec_type
 !
 !  ---------------------------------------------------------------------
 !

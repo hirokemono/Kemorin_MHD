@@ -44,7 +44,7 @@
       use t_VIZ_step_parameter
       use t_control_param_vol_grping
       use t_calypso_comm_table
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -61,6 +61,9 @@
         type(mesh_data), pointer :: geofem
 !>         Structure for nodal field data
         type(phys_data), pointer :: nod_fld
+!
+!>        Structure for communicatiors for solver
+        type(vectors_4_solver) :: v_sol
 !
 !>          Instance of time data from data input
         type(time_data) :: ucd_time
@@ -160,7 +163,7 @@
       allocate(viz%geofem)
       call mpi_input_mesh(viz%mesh_file_IO, nprocs, viz%geofem)
 !
-      call init_nod_send_recv(viz%geofem%mesh)
+      call FEM_comm_initialization(viz%geofem%mesh, viz%v_sol)
 !
 !   --------------------------------
 !       setup field information
@@ -182,7 +185,7 @@
       if(viz%repart_p%flag_repartition) then
         allocate(viz%viz_fem)
         call const_new_partition_mesh(viz%repart_p,                     &
-     &      viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl, vect1)
+     &      viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
 !
         allocate(viz%viz_fld)
         call init_fld_to_new_partition(viz%viz_fem%mesh,                &
@@ -195,7 +198,6 @@
 !     ---------------------
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(viz%viz_fem%mesh, vect1)
       call FEM_mesh_initialization                                      &
      &   (viz%viz_fem%mesh, viz%viz_fem%group)
 !
@@ -239,13 +241,14 @@
       call copy_time_step_size_data(viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(viz%geofem%mesh, viz%nod_fld, vect1)
+      call nod_fields_send_recv                                         &
+     &   (viz%geofem%mesh, viz%nod_fld, viz%v_sol)
 !
       if(viz%repart_p%flag_repartition) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call nod_field_to_new_partition                                 &
      &     (iflag_import_rev, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,    &
-     &      viz%nod_fld, viz%viz_fld, vect1)
+     &      viz%nod_fld, viz%viz_fld, viz%v_sol)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
       end if
 !

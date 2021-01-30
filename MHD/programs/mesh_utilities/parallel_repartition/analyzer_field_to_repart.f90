@@ -85,17 +85,15 @@
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh(part_p1%mesh_file, nprocs, fem_T)
-      call calypso_MPI_barrier
 !
 !  -------------------------------
 !
-      call init_nod_send_recv(fem_T%mesh)
-      if(iflag_debug .gt. 0) write(*,*) 'estimate node volume'
+      call FEM_comm_initialization(fem_T%mesh, vect1)
 !
 !  -------------------------------
 !
       call const_new_partition_mesh(part_p1%repart_p, fem_T, new_fem,   &
-     &                              org_to_new_tbl, vect1)
+     &                              org_to_new_tbl)
 !
       end subroutine initialize_field_to_repart
 !

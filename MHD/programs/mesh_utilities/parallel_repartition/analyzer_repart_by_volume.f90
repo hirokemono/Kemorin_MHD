@@ -45,6 +45,7 @@
       use m_array_for_send_recv
 !
       use mpi_load_mesh_data
+      use parallel_FEM_mesh_init
       use nod_phys_send_recv
       use repartiton_by_volume
 !
@@ -73,9 +74,15 @@
 !
 !  -------------------------------
 !
+      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      call FEM_comm_initialization(fem_T%mesh, vect1)
+      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
+!
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
       call s_repartiton_by_volume(part_p1%repart_p, fem_T, new_fem,     &
-     &                            org_to_new_tbl, vect1)
+     &                            org_to_new_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
 !
       end subroutine initialize_reapart_by_vol
