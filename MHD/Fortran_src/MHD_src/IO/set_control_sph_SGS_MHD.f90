@@ -65,6 +65,7 @@
       use t_ctl_data_gen_sph_shell
       use t_ctl_data_volume_repart
       use t_control_data_dynamo_vizs
+      use t_sph_grid_maker_in_sim
       use t_bc_data_list
       use t_flex_delta_t_data
 !
@@ -297,6 +298,7 @@
       use set_control_4_force
       use set_control_4_normalize
       use set_control_sph_mhd
+      use set_ctl_4_shell_grids
 !
       use set_control_4_pickup_sph
       use parallel_ucd_IO_select
@@ -338,20 +340,9 @@
 !
 !   set spherical shell parameters
 !
-      if(psph_ctl%iflag_sph_shell .gt. 0) then
-        sph_maker%make_SPH_flag = .TRUE.
-        sph_maker%mesh_output_flag = .TRUE.
-!
-        if(MHD_files%sph_file_param%iflag_format .eq. id_no_file        &
-     &    .or. plt%sph_file_prefix%iflag .eq. 0) then
-          sph_maker%mesh_output_flag = .FALSE.
-        end if
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
-        call set_control_4_shell_grids                                  &
-     &     (nprocs, psph_ctl%Fmesh_ctl, psph_ctl%spctl, psph_ctl%sdctl, &
-     &      sph_maker%sph_tmp, sph_maker%gen_sph, ierr)
-      end if
+      call set_ctl_4_sph_grid_maker(nprocs, psph_ctl,                   &
+     &    plt%sph_file_prefix, MHD_files%sph_file_param,                &
+     &    sph_maker, ierr)
 !
 !   set forces
 !

@@ -31,6 +31,7 @@
       use t_FEM_data_4_SPH_trans
       use t_SPH_data_4_SPH_trans
       use t_ctl_params_gen_sph_shell
+      use t_sph_grid_maker_in_sim
 !
       implicit  none
 !
@@ -62,6 +63,7 @@
       use set_field_data_w_SGS
       use set_control_platform_item
       use set_control_platform_data
+      use set_ctl_4_shell_grids
       use ucd_IO_select
 !
       use sel_spherical_SRs
@@ -145,23 +147,9 @@
      &                                  SPH_STR%d_gauss)
 !
 !   set spherical shell parameters
-      if(spt_ctl%psph_ctl%iflag_sph_shell .gt. 0) then
-        SPH_STR%sph_maker%make_SPH_flag = .TRUE.
-        SPH_STR%sph_maker%mesh_output_flag = .TRUE.
-!
-        if(SPH_STR%sph_file_param%iflag_format .eq. id_no_file          &
-     &    .or. spt_ctl%plt%sph_file_prefix%iflag .eq. 0) then
-          SPH_STR%sph_maker%mesh_output_flag = .FALSE.
-        end if
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
-        call set_control_4_shell_grids                                  &
-     &     (nprocs, spt_ctl%psph_ctl%Fmesh_ctl,                         &
-     &      spt_ctl%psph_ctl%spctl, spt_ctl%psph_ctl%sdctl,             &
-     &      SPH_STR%sph_maker%sph_tmp, SPH_STR%sph_maker%gen_sph,       &
-     &      ierr)
-      end if
-!
+      call set_ctl_4_sph_grid_maker(nprocs, spt_ctl%psph_ctl,           &
+     &    spt_ctl%plt%sph_file_prefix, SPH_STR%sph_file_param,          &
+     &    SPH_STR%sph_maker, ierr)
       call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine set_control_4_sph_transform
@@ -290,23 +278,9 @@
      &                                  SPH_STR%d_gauss)
 !
 !   set spherical shell parameters
-      if(spt_ctl%psph_ctl%iflag_sph_shell .gt. 0) then
-        SPH_STR%sph_maker%make_SPH_flag = .TRUE.
-        SPH_STR%sph_maker%mesh_output_flag = .TRUE.
-!
-        if(SPH_STR%sph_file_param%iflag_format .eq. id_no_file          &
-     &    .or. spt_ctl%plt%sph_file_prefix%iflag .eq. 0) then
-          SPH_STR%sph_maker%mesh_output_flag = .FALSE.
-        end if
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
-        call set_control_4_shell_grids                                  &
-     &     (nprocs, spt_ctl%psph_ctl%Fmesh_ctl,                         &
-     &      spt_ctl%psph_ctl%spctl, spt_ctl%psph_ctl%sdctl,             &
-     &      SPH_STR%sph_maker%sph_tmp, SPH_STR%sph_maker%gen_sph,       &
-     &      ierr)
-      end if
-!
+      call set_ctl_4_sph_grid_maker(nprocs, spt_ctl%psph_ctl,           &
+     &    spt_ctl%plt%sph_file_prefix, SPH_STR%sph_file_param,          &
+     &    SPH_STR%sph_maker, ierr)
       call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine s_set_ctl_data_4_sph_trans

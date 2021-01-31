@@ -84,6 +84,7 @@
       use t_ctl_params_gen_sph_shell
       use m_file_format_switch
       use set_control_platform_item
+      use set_ctl_4_shell_grids
       use new_SPH_restart
       use skip_comment_f
 !
@@ -164,6 +165,10 @@
         if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
       end if
 !
+      call set_ctl_4_sph_grid_maker(nprocs, mgd_ctl%asbl_psph_ctl,      &
+     &    mgd_ctl%assemble_plt%sph_file_prefix,                         &
+     &    asbl_param%new_mesh_file, asbl_sph_maker, ierr)
+      if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
       if(mgd_ctl%asbl_psph_ctl%iflag_sph_shell .gt. 0) then
         asbl_sph_maker%make_SPH_flag = .TRUE.
         asbl_sph_maker%mesh_output_flag = .TRUE.
