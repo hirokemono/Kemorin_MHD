@@ -23,6 +23,8 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_spheric_group
+      use t_phys_address
+      use t_phys_data
 !
       use t_sph_grid_maker_in_sim
 !
@@ -49,6 +51,11 @@
 !>         grouping data for harmonics indices
         type(sph_group_data), allocatable ::  sph_grps(:)
 !
+!>        address for spectr data (poloidal component for vector)
+        type(phys_address) :: ipol
+!>        Structure for field data
+        type(phys_data), allocatable :: fld(:)
+!
 !>        Structure to check and construct spherical shell mesh
 !        type(sph_grid_maker_in_sim) :: sph_maker
       end type sph_mesh_array
@@ -68,6 +75,7 @@
       allocate(sph_array%sph(sph_array%num_pe))
       allocate(sph_array%comms(sph_array%num_pe))
       allocate(sph_array%sph_grps(sph_array%num_pe))
+      allocate(sph_array%fld(sph_array%num_pe))
 !
       end subroutine alloc_sph_mesh_array
 !
@@ -81,6 +89,7 @@
       deallocate(sph_array%sph)
       deallocate(sph_array%comms)
       deallocate(sph_array%sph_grps)
+      deallocate(sph_array%fld)
 !
       end subroutine dealloc_sph_mesh_array
 !

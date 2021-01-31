@@ -24,8 +24,8 @@
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!      subroutine check_and_make_SPH_rj_mode                           &
-!!     &         (sph_file_param, sph_maker, SPH_MESH)
-!!        type(sph_mesh_data), intent(inout) :: SPH_MESH
+!!     &         (sph_file_param, sph_maker, SPH_MHD)
+!!        type(sph_mesh_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
       module t_check_and_make_SPH_mesh
@@ -188,9 +188,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine check_and_make_SPH_rj_mode                             &
-     &         (sph_file_param, sph_maker, SPH_MESH)
+     &         (sph_file_param, sph_maker, SPH_MHD)
 !
-      use t_SPH_mesh_data
       use m_error_IDs
       use calypso_mpi_logical
       use mpi_gen_sph_grids_modes
@@ -203,7 +202,7 @@
       type(field_IO_params), intent(in) :: sph_file_param
 !
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-      type(sph_mesh_data), intent(inout) :: SPH_MESH
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       logical :: iflag_lc
 !
@@ -220,7 +219,7 @@
         if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+1)
         call load_sph_rj_mesh(sph_file_param,                           &
-     &      SPH_MESH%sph, SPH_MESH%comms, SPH_MESH%sph_grps)
+     &      SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
       else if(sph_maker%make_SPH_flag .eqv. .FALSE.) then
         call calypso_mpi_abort(ierr_file,                               &
@@ -229,18 +228,18 @@
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
         call mpi_gen_sph_grids(sph_maker%gen_sph, sph_maker%sph_tmp,    &
-     &      SPH_MESH%sph, SPH_MESH%comms, SPH_MESH%sph_grps)
+     &      SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
 !
         if(sph_maker%mesh_output_flag) then
           call output_sph_mesh(sph_file_param,                          &
-     &        SPH_MESH%sph, SPH_MESH%comms, SPH_MESH%sph_grps)
+     &        SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
         end if
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
       end if
 !
       call sph_rj_index_flags_and_params                                &
-     &   (SPH_MESH%sph_grps, SPH_MESH%sph%sph_params,                   &
-     &    SPH_MESH%sph%sph_rj, SPH_MESH%comms%comm_rj)
+     &   (SPH_MHD%groups, SPH_MHD%sph%sph_params,                       &
+     &    SPH_MHD%sph%sph_rj, SPH_MHD%comms%comm_rj)
 !
       call calypso_mpi_barrier
 !

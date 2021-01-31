@@ -16,6 +16,7 @@
 !
       use m_precision
       use t_SPH_mesh_data
+      use t_SPH_mesh_field_data
       use t_phys_data
       use t_field_data_IO
       use t_time_data
@@ -27,12 +28,10 @@
 !
       type spectr_data_4_assemble
         integer :: np_sph_org
-        type(sph_mesh_array) ::         org_sph_array
-        type(phys_data), allocatable :: org_sph_phys(:)
+        type(sph_mesh_array) :: org_sph_array
 !
         integer :: np_sph_new
-        type(sph_mesh_data) :: new_sph_mesh
-        type(phys_data) :: new_sph_phys
+        type(SPH_mesh_field_data) :: new_sph_data
 !
         type(rj_assemble_tbl), allocatable :: j_table(:)
 !
@@ -55,7 +54,6 @@
 !
       call alloc_sph_mesh_array(sph_asbl%np_sph_org,                    &
      &                          sph_asbl%org_sph_array)
-      allocate(sph_asbl%org_sph_phys(sph_asbl%np_sph_org))
       allocate(sph_asbl%j_table(sph_asbl%np_sph_org))
 !
       end subroutine alloc_spectr_data_4_assemble
@@ -74,7 +72,6 @@
       end do
       deallocate(sph_asbl%j_table)
 !
-      deallocate(sph_asbl%org_sph_phys)
       call dealloc_sph_mesh_array(sph_asbl%org_sph_array)
 !
       end subroutine dealloc_spectr_data_4_assemble

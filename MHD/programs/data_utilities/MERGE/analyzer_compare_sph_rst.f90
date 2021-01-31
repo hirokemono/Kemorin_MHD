@@ -83,33 +83,30 @@
 !
       call check_and_make_SPH_rj_mode                                   &
      &   (asbl_param_s%new_mesh_file, sph_asbl_maker_s,                 &
-     &    sph_asbl_s%new_sph_mesh)
+     &    sph_asbl_s%new_sph_data)
       call load_new_spectr_rj_data(sph_asbl_s%org_sph_array,            &
-     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%j_table)
+     &    sph_asbl_s%new_sph_data, sph_asbl_s%j_table)
 !
 !     Share number of nodes for new mesh
 !
       call s_count_nnod_4_asseble_sph(sph_asbl_s%np_sph_new,            &
-     &    sph_asbl_s%new_sph_mesh, sph_asbl_s%new_fst_IO)
+     &    sph_asbl_s%new_sph_data, sph_asbl_s%new_fst_IO)
       call dealloc_merged_field_stack(sph_asbl_s%new_fst_IO)
 !
 !     construct radial interpolation table
 !
       call const_r_interpolate_table                                    &
      &   (sph_asbl_s%org_sph_array%sph(1),                              &
-     &    sph_asbl_s%new_sph_mesh%sph, sph_asbl_s%r_itp)
+     &    sph_asbl_s%new_sph_data%sph, sph_asbl_s%r_itp)
 !
 !      Construct field list from spectr file
 !
-      call load_field_name_assemble_sph                                 &
-     &   (asbl_param_s%istep_start, sph_asbl_s%org_sph_array%num_pe,    &
-     &    asbl_param_s%org_fld_file, sph_asbl_s%org_sph_phys(1),        &
-     &    sph_asbl_s%new_sph_phys, sph_asbl_s%fst_time_IO)
+      call load_field_name_assemble_sph(asbl_param_s%istep_start,       &
+     &    asbl_param_s%org_fld_file, sph_asbl_s%org_sph_array,          &
+     &    sph_asbl_s%new_sph_data, sph_asbl_s%fst_time_IO)
 !
-      call share_org_spectr_field_names                                 &
-     &   (sph_asbl_s%org_sph_array, sph_asbl_s%org_sph_phys)
-      call share_new_spectr_field_names                                 &
-     &   (sph_asbl_s%new_sph_mesh, sph_asbl_s%new_sph_phys)
+      call share_org_spectr_field_names(sph_asbl_s%org_sph_array)
+      call share_new_spectr_field_names(sph_asbl_s%new_sph_data)
 !
       end subroutine init_compare_sph_restart
 !
@@ -136,7 +133,7 @@
 !
 !     Load original spectr data
         call load_org_sph_data(istep, asbl_param_s%org_fld_file,        &
-     &      sph_asbl_s%org_sph_array, init_t, sph_asbl_s%org_sph_phys)
+     &                         init_t, sph_asbl_s%org_sph_array)
 !
         istep_out = istep
         if(asbl_param_s%iflag_newtime .gt. 0) then
@@ -150,17 +147,16 @@
 !
 !     Copy spectr data to temporal array
         call set_assembled_sph_data                                     &
-     &     (sph_asbl_s%org_sph_array, sph_asbl_s%new_sph_mesh,          &
-     &      sph_asbl_s%j_table, sph_asbl_s%r_itp,                       &
-     &      sph_asbl_s%org_sph_phys, sph_asbl_s%new_sph_phys)
+     &     (sph_asbl_s%j_table, sph_asbl_s%r_itp,                       &
+     &      sph_asbl_s%org_sph_array, sph_asbl_s%new_sph_data)
 !
         call sel_read_alloc_step_SPH_file                               &
      &     (nprocs, my_rank, istep_out, asbl_param_s%new_fld_file,      &
      &      sph_asbl_s%fst_time_IO, sph_asbl_s%new_fst_IO)
 !
         iflag = compare_assembled_sph_data(my_rank, init_t,             &
-     &            sph_asbl_s%new_sph_mesh%sph, sph_asbl_s%new_sph_phys, &
-     &            sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
+     &        sph_asbl_s%new_sph_data%sph, sph_asbl_s%new_sph_data%fld, &
+     &        sph_asbl_s%new_fst_IO, sph_asbl_s%fst_time_IO)
 !
         call calypso_mpi_allreduce_one_int(iflag, iflag_gl, MPI_MAX)
         if(my_rank.eq.0) then
