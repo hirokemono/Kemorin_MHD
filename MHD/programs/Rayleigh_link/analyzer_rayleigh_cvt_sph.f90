@@ -99,9 +99,7 @@
 !  set new spectr data
       call check_and_make_SPH_rj_mode                                   &
      &   (asbl_param_s%new_mesh_file, sph_asbl_maker_s,                 &
-     &    sph_asbl_s%new_sph_mesh%sph,                                  &
-     &    sph_asbl_s%new_sph_mesh%comms,                                &
-     &    sph_asbl_s%new_sph_mesh%sph_grps)
+     &    sph_asbl_s%new_sph_mesh)
 !
 !     Share number of nodes for new mesh
 !
