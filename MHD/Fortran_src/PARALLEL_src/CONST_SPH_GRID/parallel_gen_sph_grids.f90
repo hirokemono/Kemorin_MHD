@@ -88,6 +88,7 @@
 !
       use m_elapsed_labels_gen_SPH
       use mpi_gen_sph_grids_modes
+      use para_gen_sph_grids_modes
       use set_comm_table_rtp_rj
       use const_global_sph_grids_modes
       use const_sph_radial_grid
@@ -127,7 +128,7 @@
      &         (sph_file_param, num_pe, sph_mesh, sph_maker)
 !
       use m_elapsed_labels_gen_SPH
-      use mpi_gen_sph_grids_modes
+      use para_gen_sph_grids_modes
       use set_comm_table_rtp_rj
       use const_global_sph_grids_modes
       use const_sph_radial_grid
@@ -181,6 +182,7 @@
 !
       use m_elapsed_labels_gen_SPH
       use mpi_gen_sph_grids_modes
+      use para_gen_sph_grids_modes
       use set_comm_table_rtp_rj
       use const_global_sph_grids_modes
       use const_sph_radial_grid
