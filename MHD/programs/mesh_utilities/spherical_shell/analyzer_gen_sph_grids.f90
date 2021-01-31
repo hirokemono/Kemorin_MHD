@@ -149,8 +149,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_FEM_mesh_4_SPH'
       call const_FEM_mesh_4_SPH                                         &
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups,                   &
-     &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
+     &    SPH_GEN, geofem, sph_files1%mesh_file_IO, sph_maker_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       call calypso_MPI_barrier
 !
