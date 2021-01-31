@@ -39,28 +39,10 @@
       use m_elapsed_labels_gen_SPH
 !
       use t_SPH_mesh_field_data
-      use t_spheric_parameter
-      use t_sph_trans_comm_tbl
-      use t_spheric_group
-      use t_const_spherical_grid
+      use t_sph_grid_maker_in_sim
       use t_file_IO_parameter
 !
       implicit none
-!
-!>      Structure to check and construct spherical shell mesh
-      type sph_grid_maker_in_sim
-!>        Switch to construct spherical shell grid
-        logical :: make_SPH_flag =    .FALSE.
-!>        Switch to output constructed spherical shell grid
-        logical :: mesh_output_flag = .FALSE.
-!
-!>        Structure to construct grid
-        type(construct_spherical_grid) :: gen_sph
-!>        Structure for temporal spherical grid
-        type(sph_grids) :: sph_tmp
-      end type sph_grid_maker_in_sim
-!
-      private :: load_FEM_mesh_4_SPH
 !
 ! ----------------------------------------------------------------------
 !
