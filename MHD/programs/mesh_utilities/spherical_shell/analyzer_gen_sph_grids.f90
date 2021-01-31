@@ -22,8 +22,7 @@
       use m_elapsed_labels_gen_SPH
 !
       use t_mesh_data
-      use t_spheric_parameter
-      use t_spheric_group
+      use t_SPH_mesh_data
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
@@ -41,12 +40,8 @@
 !>      Structure for file settings
       type(sph_mesh_generation_ctl), save, private :: SPH_MAKE_ctl
 !
-!>       Structure of grid and spectr data for spherical spectr method
-      type(sph_grids), save, private :: sph_const
-!>       Structure of communication table for spherical spectr method
-      type(sph_comm_tables), save, private :: comms_sph_const
-!>       Structure of group data for spherical spectr method
-      type(sph_group_data), save, private :: sph_grp_const
+!>      Structure of spherical transform mesh information
+      type(sph_mesh_data), save :: SPH_GEN
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
@@ -111,39 +106,39 @@
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
-     &    sph_const, comms_sph_const, sph_grp_const)
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps)
 !
 !
       call output_sph_mesh(sph_files1%sph_file_param,                   &
-     &    sph_const, comms_sph_const, sph_grp_const)
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps)
       if(iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
       call sph_index_flags_and_params                                   &
-     &   (sph_grp_const, sph_const, comms_sph_const)
+     &   (SPH_GEN%sph_grps, SPH_GEN%sph, SPH_GEN%comms)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
 !      if(my_rank .eq. 0) then
-!        write(*,*) 'nidx_rtp', sph_const%sph_rtp%nidx_rtp(1:3)
-!        write(*,*) 'istep_rtp', sph_const%sph_rtp%istep_rtp(1:3)
+!        write(*,*) 'nidx_rtp', SPH_GEN%sph%sph_rtp%nidx_rtp(1:3)
+!        write(*,*) 'istep_rtp', SPH_GEN%sph%sph_rtp%istep_rtp(1:3)
 !
-!        i2 = comms_sph_const%comm_rtp%item_sr(2)
-!        i1 = comms_sph_const%comm_rtp%item_sr(1)
+!        i2 = SPH_GEN%comms%comm_rtp%item_sr(2)
+!        i1 = SPH_GEN%comms%comm_rtp%item_sr(1)
 !        write(*,*) 'item_sr(1:2)', i1, i2
-!        write(*,*) 'idx_global_rtp_SR1', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
-!        write(*,*) 'idx_global_rtp_SR2', sph_const%sph_rtp%idx_global_rtp(i2,1:3)
-!        write(*,*) 'diff', sph_const%sph_rtp%idx_global_rtp(i2,1:3) - sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        write(*,*) 'idx_global_rtp_SR1', SPH_GEN%sph%sph_rtp%idx_global_rtp(i1,1:3)
+!        write(*,*) 'idx_global_rtp_SR2', SPH_GEN%sph%sph_rtp%idx_global_rtp(i2,1:3)
+!        write(*,*) 'diff', SPH_GEN%sph%sph_rtp%idx_global_rtp(i2,1:3) - SPH_GEN%sph%sph_rtp%idx_global_rtp(i1,1:3)
 !
-!        do i = 1, sph_const%sph_rtp%istep_rtp(2)+1
-!          i1 = comms_sph_const%comm_rtp%item_sr(i)
-!          write(*,*) i, 'idx_global_rtp', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        do i = 1, SPH_GEN%sph%sph_rtp%istep_rtp(2)+1
+!          i1 = SPH_GEN%comms%comm_rtp%item_sr(i)
+!          write(*,*) i, 'idx_global_rtp', SPH_GEN%sph%sph_rtp%idx_global_rtp(i1,1:3)
 !        end do
 !
-!        i2 = comms_sph_const%comm_rtp%item_sr(1+sph_const%sph_rtp%istep_rtp(2))
-!        i1 = comms_sph_const%comm_rtp%item_sr(1)
+!        i2 = SPH_GEN%comms%comm_rtp%item_sr(1+SPH_GEN%sph%sph_rtp%istep_rtp(2))
+!        i1 = SPH_GEN%comms%comm_rtp%item_sr(1)
 !
 !        write(*,*) 'item_sr(1:2)', i1, i2
-!        write(*,*) 'idx_global_rtp_SR1', sph_const%sph_rtp%idx_global_rtp(i1,1:3)
-!        write(*,*) 'idx_global_rtp_SR2', sph_const%sph_rtp%idx_global_rtp(i2,1:3)
-!        write(*,*) 'diff', sph_const%sph_rtp%idx_global_rtp(i2,1:3) - sph_const%sph_rtp%idx_global_rtp(i1,1:3)
+!        write(*,*) 'idx_global_rtp_SR1', SPH_GEN%sph%sph_rtp%idx_global_rtp(i1,1:3)
+!        write(*,*) 'idx_global_rtp_SR2', SPH_GEN%sph%sph_rtp%idx_global_rtp(i2,1:3)
+!        write(*,*) 'diff', SPH_GEN%sph%sph_rtp%idx_global_rtp(i2,1:3) - SPH_GEN%sph%sph_rtp%idx_global_rtp(i1,1:3)
 !      end if
 !
       if(sph_files1%FEM_mesh_flags%iflag_access_FEM .eq. 0) goto 99
@@ -154,7 +149,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_FEM_mesh_4_SPH'
       call const_FEM_mesh_4_SPH                                         &
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
-     &    sph_const, comms_sph_const, sph_grp_const,                    &
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps,                 &
      &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       call calypso_MPI_barrier
@@ -178,8 +173,8 @@
 !      if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+4)
 !
   99  continue
-      call dealloc_sph_modes(sph_const, comms_sph_const,                &
-     &    sph_grp_const)
+      call dealloc_sph_modes(SPH_GEN%sph, SPH_GEN%comms,                &
+     &                       SPH_GEN%sph_grps)
       call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
