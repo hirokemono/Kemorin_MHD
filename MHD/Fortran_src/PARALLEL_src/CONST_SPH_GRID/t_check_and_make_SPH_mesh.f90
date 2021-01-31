@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,           &
-!!     &          sph_file_param, sph, comms_sph, sph_grps, geofem,     &
-!!     &          mesh_file, sph_maker)
+!!     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
 !!      subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                 &
 !!     &          sph_file_param, sph, comms_sph, sph_grps, geofem,     &
 !!     &          mesh_file, sph_maker)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(field_IO_params), intent(in) ::  sph_file_param
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
@@ -77,10 +77,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,             &
-     &          sph_file_param, sph, comms_sph, sph_grps, geofem,       &
-     &          mesh_file, sph_maker)
+     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
 !
       use calypso_mpi
+      use t_SPH_mesh_field_data
       use t_mesh_data
       use copy_mesh_structures
       use mesh_file_name_by_param
@@ -89,10 +89,8 @@
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(field_IO_params), intent(in) ::  sph_file_param
-      type(sph_grids), intent(inout) :: sph
-      type(sph_comm_tables), intent(inout) :: comms_sph
-      type(sph_group_data), intent(inout) ::  sph_grps
 !
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(mesh_data), intent(inout) :: geofem
       type(field_IO_params), intent(inout) ::  mesh_file
 !
@@ -100,7 +98,7 @@
 !
 !  Check and construct spherical shell table
       call check_and_make_SPH_mesh(sph_file_param, sph_maker,           &
-     &                             sph, comms_sph, sph_grps)
+     &    SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
 !
 !  --  load geofem mesh data
       if(check_exist_mesh(my_rank, mesh_file)) then
@@ -108,13 +106,13 @@
         call mpi_input_mesh(mesh_file, nprocs, geofem)
         call set_fem_center_mode_4_SPH                                  &
      &     (geofem%mesh%node%internal_node,                             &
-     &      sph%sph_rtp, sph%sph_params)
+     &      SPH_MHD%sph%sph_rtp, SPH_MHD%sph%sph_params)
       else
-        call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
+        call copy_sph_radial_groups(SPH_MHD%groups, sph_maker%gen_sph)
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,             &
-     &                           sph, geofem, sph_maker%gen_sph)
+     &      SPH_MHD%sph, geofem, sph_maker%gen_sph)
         call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
       end if
 !
