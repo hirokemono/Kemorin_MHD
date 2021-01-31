@@ -77,7 +77,7 @@
 !
         if(id_rank .lt. num_pe) then
           call copy_sph_trans_rj_from_IO(sph_file_m,                    &
-     &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,   &
+     &       sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%comms%comm_rj,       &
      &       sph_mesh(ip)%sph_grps, sph_mesh(ip)%sph%sph_params)
           call count_num_rj_smp(sph_mesh(ip)%sph%sph_rj, ierr)
           call dealloc_rj_mode_IO(sph_file_m)
@@ -109,7 +109,7 @@
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
         call copy_sph_trans_rj_to_IO(sph_mesh(ip)%sph%sph_params,       &
-     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,    &
+     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%comms%comm_rj,        &
      &      sph_mesh(ip)%sph_grps, sph_file_m)
         if(id_rank .lt. num_pe) then
           call sel_write_spectr_modes_rj_file                           &
@@ -120,7 +120,7 @@
      &          id_rank, ' is done.'
 !
         call copy_sph_trans_rlm_to_IO(sph_mesh(ip)%sph%sph_params,      &
-     &      sph_mesh(ip)%sph%sph_rlm, sph_mesh(ip)%sph_comms%comm_rlm,  &
+     &      sph_mesh(ip)%sph%sph_rlm, sph_mesh(ip)%comms%comm_rlm,      &
      &      sph_file_m)
         if(id_rank .lt. num_pe) then
           call sel_write_modes_rlm_file                                 &
@@ -131,7 +131,7 @@
      &                      id_rank, ' is done.'
 !
         call copy_sph_trans_rtm_to_IO(sph_mesh(ip)%sph%sph_params,      &
-     &      sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%sph_comms%comm_rtm,  &
+     &      sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%comms%comm_rtm,      &
      &      sph_file_m)
         if(id_rank .lt. num_pe) then
           call sel_write_geom_rtm_file                                  &
@@ -144,7 +144,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                 'copy_sph_trans_rtp_to_IO', id_rank
         call copy_sph_trans_rtp_to_IO(sph_mesh(ip)%sph%sph_params,      &
-     &      sph_mesh(ip)%sph%sph_rtp, sph_mesh(ip)%sph_comms%comm_rtp,  &
+     &      sph_mesh(ip)%sph%sph_rtp, sph_mesh(ip)%comms%comm_rtp,      &
      &      sph_mesh(ip)%sph_grps, sph_file_m)
         if(id_rank .lt. num_pe) then
           call sel_write_geom_rtp_file                                  &
@@ -154,9 +154,8 @@
         write(*,'(a,i6,a)') 'Spherical grids for domain',               &
      &          id_rank, ' is done.'
 !
-        call dealloc_sph_modes                                          &
-     &     (sph_mesh(ip)%sph, sph_mesh(ip)%sph_comms,                   &
-     &      sph_mesh(ip)%sph_grps)
+        call dealloc_sph_modes(sph_mesh(ip)%sph, sph_mesh(ip)%comms,    &
+     &                         sph_mesh(ip)%sph_grps)
       end do
 !
       end subroutine para_output_sph_mode_grids
@@ -183,7 +182,7 @@
         if(mod(id_rank,nprocs) .ne. my_rank) cycle
 !
         call copy_sph_trans_rj_to_IO(sph_mesh(ip)%sph%sph_params,       &
-     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,    &
+     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%comms%comm_rj,        &
      &      sph_mesh(ip)%sph_grps, sph_file_m)
         if(id_rank .lt. num_pe) then
           call sel_write_spectr_modes_rj_file                           &

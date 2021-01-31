@@ -86,7 +86,7 @@
       call check_and_make_SPH_rj_mode                                   &
      &   (asbl_param_s%new_mesh_file, sph_asbl_maker_s,                 &
      &    sph_asbl_s%new_sph_mesh%sph,                                  &
-     &    sph_asbl_s%new_sph_mesh%sph_comms,                            &
+     &    sph_asbl_s%new_sph_mesh%comms,                                &
      &    sph_asbl_s%new_sph_mesh%sph_grps)
       call load_new_spectr_rj_data                                      &
      &   (sph_asbl_s%np_sph_org, sph_asbl_s%org_sph_mesh,               &

@@ -34,7 +34,7 @@
 !>         spherical harmonics indexing data
         type(sph_grids) ::       sph
 !>         communication tables for spherical transform
-        type(sph_comm_tables) :: sph_comms
+        type(sph_comm_tables) :: comms
 !>         grouping data for harmonics indices
         type(sph_group_data) ::  sph_grps
       end type sph_mesh_data

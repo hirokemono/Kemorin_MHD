@@ -63,9 +63,9 @@
         call const_sph_rlm_modes                                        &
      &   (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
      &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph_mesh(ip)%sph%sph_rlm, sph_mesh(ip)%sph_comms%comm_rlm)
+     &    sph_mesh(ip)%sph%sph_rlm, sph_mesh(ip)%comms%comm_rlm)
         call copy_sph_comm_neib                                         &
-     &     (sph_mesh(ip)%sph_comms%comm_rlm, comm_rlm_mul(ip))
+     &     (sph_mesh(ip)%comms%comm_rlm, comm_rlm_mul(ip))
       end do
 !
       call para_bcast_comm_stacks_sph(num_pe, comm_rlm_mul)
@@ -84,7 +84,7 @@
      &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
      &      sph_mesh(ip)%sph%sph_params, sph_mesh(ip)%sph%sph_rtp,      &
-     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%sph_comms%comm_rj,    &
+     &      sph_mesh(ip)%sph%sph_rj, sph_mesh(ip)%comms%comm_rj,        &
      &      sph_mesh(ip)%sph_grps)
       end do
       call dealloc_comm_stacks_sph(num_pe, comm_rlm_mul)
@@ -122,9 +122,9 @@
         call const_sph_rtm_grids                                        &
      &     (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,             &
      &      gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &      sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%sph_comms%comm_rtm)
+     &      sph_mesh(ip)%sph%sph_rtm, sph_mesh(ip)%comms%comm_rtm)
         call copy_sph_comm_neib                                         &
-     &     (sph_mesh(ip)%sph_comms%comm_rtm, comm_rtm_mul(ip))
+     &     (sph_mesh(ip)%comms%comm_rtm, comm_rtm_mul(ip))
       end do
       call para_bcast_comm_stacks_sph(num_pe, comm_rtm_mul)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
@@ -143,7 +143,7 @@
      &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
      &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
      &      sph_mesh(ip)%sph%sph_params, sph_mesh(ip)%sph%sph_rtp,      &
-     &      sph_mesh(ip)%sph_comms%comm_rtp, sph_mesh(ip)%sph_grps)
+     &      sph_mesh(ip)%comms%comm_rtp, sph_mesh(ip)%sph_grps)
       end do
       call dealloc_comm_stacks_sph(num_pe, comm_rtm_mul)
       deallocate(comm_rtm_mul)
