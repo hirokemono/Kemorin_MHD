@@ -136,7 +136,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'check_and_make_SPH_mesh'
       call check_and_make_SPH_mesh(MHD_files%sph_file_param,            &
-     &   sph_maker1, SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
+     &                             sph_maker1, SPH_MHD)
 !
       call dealloc_sph_mhd_ctl_data(DMHD_ctl)
 !

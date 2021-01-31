@@ -81,8 +81,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'check_and_make_SPH_mesh'
       call check_and_make_SPH_mesh                                      &
-     &   (test_sph_files%sph_file_param, sph_maker_T,                   &
-     &    SPH_TEST%sph, SPH_TEST%comms, SPH_TEST%groups)
+     &   (test_sph_files%sph_file_param, sph_maker_T, SPH_TEST)
 !
        end subroutine init_test_sph
 !
