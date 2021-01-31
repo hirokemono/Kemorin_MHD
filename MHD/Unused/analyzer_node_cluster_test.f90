@@ -36,7 +36,6 @@
 !
       subroutine initialize_node_cluster_test
 !
-      use m_array_for_send_recv
       use m_default_file_prefix
       use t_ctl_data_mesh_test
 !
@@ -106,7 +105,7 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(fem_T%mesh, vect1)
+      call init_nod_send_recv(fem_T%mesh)
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !

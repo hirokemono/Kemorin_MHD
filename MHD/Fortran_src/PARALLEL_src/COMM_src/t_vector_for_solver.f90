@@ -1,10 +1,14 @@
-!t_vector_for_solver.f90
-!     module   t_vector_for_solver
+!>@file   t_vector_for_solver.f90
+!!@brief  module t_vector_for_solver
+!!
+!!@author H. Matsui
+!!@date   Programmed  H. Matsui in Dec., 2008
 !
-!     Writen by H. Matsui  on Dec., 2008
-!
-! --------------------------------------------------------
-!
+!>@brief  Work vector for FEM data communication
+!!
+!!@verbatim
+!! --------------------------------------------------------
+!!
 !!      subroutine copy_communicator_4_solver(S_COMM)
 !!        type(mpi_4_solver), intent(inout) :: S_COMM
 !!      subroutine verify_iccgN_vec_type(NB, nnod, v_sol)
@@ -21,13 +25,13 @@
 !!       subroutine alloc_iccg_int8_vector(nnod, v_sol)
 !!       subroutine dealloc_iccg_int8_vector(v_sol)
 !!         type(vectors_4_solver), intent(inout) :: v_sol
+!!
+!! --------------------------------------------------------
+!!@endverbatim
 !
-! --------------------------------------------------------
-!
-      module   t_vector_for_solver
+      module t_vector_for_solver
 !
       use m_precision
-!      use calypso_mpi
 !
       implicit  none
 !

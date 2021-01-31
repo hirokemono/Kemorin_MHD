@@ -42,7 +42,6 @@
       subroutine initialize_reapart_by_vol
 !
       use t_ctl_file_volume_grouping
-      use m_array_for_send_recv
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -76,7 +75,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      call FEM_comm_initialization(fem_T%mesh, vect1)
+      call init_nod_send_recv(fem_T%mesh)
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !

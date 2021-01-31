@@ -48,7 +48,6 @@
       subroutine initialize_sleeve_extend
 !
       use m_phys_constants
-      use m_array_for_send_recv
       use m_default_file_prefix
 !
       use nod_phys_send_recv
@@ -78,8 +77,8 @@
 !
 !  ------  Initialize data communication for FEM data
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
-      call FEM_comm_initialization(fem_EXT%mesh, vect1)
+      if (iflag_debug.gt.0 ) write(*,*) 'init_nod_send_recv'
+      call init_nod_send_recv(fem_EXT%mesh)
 !
       end subroutine initialize_sleeve_extend
 !

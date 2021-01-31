@@ -32,8 +32,8 @@
       use t_rayleigh_field_IO
       use t_rayleigh_field_address
       use t_comm_table_4_assemble
+      use t_vector_for_solver
       use m_viz_4_rayleigh
-      use m_array_for_send_recv
 !
       implicit none
 !
@@ -54,7 +54,10 @@
 !>       Structure of data asssemble table
       type(comm_table_4_assemble), save :: asbl_comm_R
 !
-      private :: gen_sph_R, rayleigh_fem, sph_const
+!>      Structure for communicatiors for solver
+      type(vectors_4_solver) :: v_sol_R
+!
+      private :: gen_sph_R, rayleigh_fem, sph_const, v_sol_R
       private :: set_field_data_4_VIZ2
 !
 !-----------------------------------------------------------------------
@@ -109,7 +112,7 @@
       call dealloc_gen_sph_radial_groups(gen_sph_R)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(femmesh_VIZ%mesh, vect1)
+      call FEM_comm_initialization(femmesh_VIZ%mesh, v_sol_R)
       call FEM_mesh_initialization                                      &
      &   (femmesh_VIZ%mesh, femmesh_VIZ%group)
       call const_global_numele_list(femmesh_VIZ%mesh%ele)
@@ -219,7 +222,7 @@
       call overwrite_nodal_sph_2_xyz(fem%mesh%node, field)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(fem%mesh, field, vect1)
+      call nod_fields_send_recv(fem%mesh, field, v_sol_R)
 !
       end subroutine set_field_data_4_VIZ2
 !

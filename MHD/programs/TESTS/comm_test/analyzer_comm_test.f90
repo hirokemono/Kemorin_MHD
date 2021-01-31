@@ -21,7 +21,7 @@
       use t_belonged_element_4_node
       use t_file_IO_parameter
       use t_control_param_comm_test
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -35,6 +35,9 @@
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
       type(belonged_table), save :: blng
+!
+!>      Structure for communicatiors for solver
+      type(vectors_4_solver), save :: v_sol_T
 !
 ! ----------------------------------------------------------------------
 !
@@ -86,7 +89,7 @@
 !
       call resize_SR_flag(nprocs, 1, SR_sig_t)
 !
-      call FEM_comm_initialization(test_fem%mesh, vect1)
+      call FEM_comm_initialization(test_fem%mesh, v_sol_T)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
@@ -129,33 +132,33 @@
 !
       call calypso_mpi_barrier
 !
-      call alloc_iccgN_vec_type(12, test_fem%mesh%node%numnod,      &
-     &                          vect1)
-      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, vect1)
+      call alloc_iccgN_vec_type(12, test_fem%mesh%node%numnod,          &
+     &                          v_sol_T)
+      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, v_sol_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
       call node_send_recv4_test                                         &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, vect1)
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, v_sol_T)
 !
-      call dealloc_iccgN_vec_type(vect1)
-      call dealloc_iccg_int8_vector(vect1)
+      call dealloc_iccgN_vec_type(v_sol_T)
+      call dealloc_iccg_int8_vector(v_sol_T)
 !
       call alloc_iccgN_vec_type(ithree, test_fem%mesh%node%numnod,      &
-     &                          vect1)
-      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, vect1)
+     &                          v_sol_T)
+      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, v_sol_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
       call node_send_recv_test                                          &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, vect1)
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, v_sol_T)
       if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
-      call count_diff_node_comm_test(test_fem%mesh%node, vect1)
+      call count_diff_node_comm_test(test_fem%mesh%node, v_sol_T)
 !
       call allocate_diff_nod_comm_test
       if (iflag_debug.gt.0) write(*,*) 'set_diff_node_comm_test'
-      call set_diff_node_comm_test(test_fem%mesh%node, vect1)
+      call set_diff_node_comm_test(test_fem%mesh%node, v_sol_T)
 !
-      call dealloc_iccgN_vec_type(vect1)
-      call dealloc_iccg_int8_vector(vect1)
+      call dealloc_iccgN_vec_type(v_sol_T)
+      call dealloc_iccg_int8_vector(v_sol_T)
 !
       call allocate_nod_stack_ctest_IO
       if (iflag_debug.gt.0) write(*,*) 'count_diff_nod_comm_test'

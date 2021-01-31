@@ -24,7 +24,7 @@
       use t_control_param_repartition
       use t_time_data
       use t_VIZ_only_step_parameter
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
@@ -35,6 +35,9 @@
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
       type(calypso_comm_table), save :: org_to_new_tbl
+!
+!>      Structure for communicatiors for solver
+      type(vectors_4_solver), save :: v_sol_T
 !
       type(vol_partion_prog_param), save ::  part_p1
 !>        Structure for new time stepping
@@ -88,7 +91,7 @@
 !
 !  -------------------------------
 !
-      call FEM_comm_initialization(fem_T%mesh, vect1)
+      call FEM_comm_initialization(fem_T%mesh, v_sol_T)
 !
 !  -------------------------------
 !
@@ -137,7 +140,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call udt_field_to_new_partition(iflag_import_item,              &
      &      istep_ucd, part_p1%repart_p%viz_ucd_file, t_IO,             &
-     &      new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd, vect1)
+     &      new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd, v_sol_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
         call deallocate_ucd_phys_data(org_ucd)

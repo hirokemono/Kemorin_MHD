@@ -12,7 +12,7 @@
       use t_phys_data
       use t_ucd_data
       use t_file_IO_parameter
-      use m_array_for_send_recv
+      use t_vector_for_solver
       use m_file_format_switch
       use m_spheric_constants
 !
@@ -35,6 +35,9 @@
       type(mesh_groups) :: group
       type(phys_data) :: nod_fld
       type(ucd_data) :: ucd
+!
+!>      Structure for communicatiors for solver
+      type(vectors_4_solver) :: v_sol_n
 !
       integer(kind = kint) :: inod, ierr
 !
@@ -104,9 +107,9 @@
         end do
         write(*,*) 'copy data end'
 !
-      call alloc_iccgN_vec_type(isix, mesh%node%numnod, vect1)
+      call alloc_iccgN_vec_type(isix, mesh%node%numnod, v_sol_n)
       call init_nod_send_recv(mesh)
-      call fields_send_recv(mesh%nod_comm, nod_fld, vect1)
+      call fields_send_recv(mesh%nod_comm, nod_fld, v_sol_n)
 !
       call link_local_mesh_2_ucd(mesh%node, mesh%ele, ucd)
       call link_field_data_to_ucd(nod_fld, ucd)

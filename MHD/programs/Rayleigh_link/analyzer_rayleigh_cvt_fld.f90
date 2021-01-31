@@ -28,7 +28,7 @@
       use t_control_param_assemble
       use t_comm_table_4_assemble
       use t_rayleigh_field_IO
-      use m_array_for_send_recv
+      use t_vector_for_solver
 !
       use field_IO_select
       use assemble_nodal_fields
@@ -44,6 +44,8 @@
       type(comm_table_4_assemble), save :: asbl_comm_u
 !
       type(rayleigh_field), save :: rayleigh_rtp_A
+!>      Structure for communicatiors for solver
+      type(vectors_4_solver), save :: v_sol_A
 !
       type(time_data), save :: t_IO_m
 !
@@ -128,7 +130,7 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
       call alloc_iccgN_vec_type                                         &
-     &   (n_sym_tensor, geofem%mesh%node%numnod, vect1)
+     &   (n_sym_tensor, geofem%mesh%node%numnod, v_sol_A)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'
       call init_nod_send_recv(geofem%mesh)
@@ -230,7 +232,7 @@
      &     (nprocs, asbl_comm_u, new_fld, org_fIO)
 !
 !        write(*,*) 'nod_fields_send_recv'
-        call nod_fields_send_recv(geofem%mesh, new_fld, vect1)
+        call nod_fields_send_recv(geofem%mesh, new_fld, v_sol_A)
         call calypso_MPI_barrier
 !
 !        write(*,*) 'sel_write_parallel_ucd_file'
