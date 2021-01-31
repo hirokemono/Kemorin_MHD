@@ -54,7 +54,6 @@
       subroutine init_test_sph
 !
       use t_ctl_params_gen_sph_shell
-      use t_check_and_make_SPH_mesh
       use cmp_trans_sph_tests
       use set_control_platform_item
 !

@@ -26,7 +26,6 @@
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
-      use t_check_and_make_SPH_mesh
       use t_ctl_params_gen_sph_shell
 !
       use para_const_kemoview_mesh
@@ -91,7 +90,6 @@
 !
       use calypso_mpi_int
       use m_error_IDs
-      use t_check_and_make_SPH_mesh
       use mpi_gen_sph_grids_modes
       use compare_sph_with_IO
       use parallel_load_data_4_sph

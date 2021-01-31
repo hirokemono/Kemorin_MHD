@@ -33,7 +33,7 @@
       subroutine init_analyzer
 !
       use t_ctl_params_sph_trans
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
       use m_elapsed_labels_4_VIZ
 !
 !     --------------------- 

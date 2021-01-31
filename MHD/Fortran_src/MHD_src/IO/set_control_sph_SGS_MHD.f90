@@ -148,7 +148,7 @@
       use t_const_spherical_grid
       use t_sph_boundary_input_data
       use t_ctl_params_gen_sph_shell
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
 !
       use set_control_4_SGS
@@ -285,7 +285,7 @@
       use t_const_spherical_grid
       use t_sph_boundary_input_data
       use t_ctl_params_gen_sph_shell
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
       use t_work_4_sph_trans
       use t_sph_trans_arrays_MHD
 !

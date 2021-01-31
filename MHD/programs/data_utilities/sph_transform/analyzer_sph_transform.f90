@@ -35,7 +35,7 @@
 !
       subroutine initialize_sph_transform
 !
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
 !
 !
       call init_elapse_time_by_TOTAL

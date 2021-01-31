@@ -42,7 +42,6 @@
       use t_sph_boundary_input_data
       use t_bc_data_list
       use t_SPH_SGS_structure
-      use t_check_and_make_SPH_mesh
       use t_flex_delta_t_data
       use t_work_SPH_MHD
 !

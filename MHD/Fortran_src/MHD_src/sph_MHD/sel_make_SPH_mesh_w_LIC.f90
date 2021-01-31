@@ -34,7 +34,7 @@
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
       use t_sph_trans_arrays_MHD
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
 !
       implicit none
 !
@@ -51,7 +51,6 @@
      &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
 !
       use calypso_mpi
-      use t_SPH_mesh_field_data
       use t_mesh_data
       use copy_mesh_structures
       use mesh_file_name_by_param

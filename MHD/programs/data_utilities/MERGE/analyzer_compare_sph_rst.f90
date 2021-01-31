@@ -25,7 +25,6 @@
       use t_control_data_4_merge
       use t_control_param_assemble
       use t_spectr_data_4_assemble
-      use t_check_and_make_SPH_mesh
 !
       use new_SPH_restart
       use parallel_assemble_sph

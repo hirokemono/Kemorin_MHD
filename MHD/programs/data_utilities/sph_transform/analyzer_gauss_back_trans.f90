@@ -29,7 +29,7 @@
 !
       subroutine init_analyzer
 !
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
       use m_elapsed_labels_4_VIZ
 !
       call init_elapse_time_by_TOTAL

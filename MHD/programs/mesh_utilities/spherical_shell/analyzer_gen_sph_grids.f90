@@ -26,7 +26,6 @@
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
-      use t_check_and_make_SPH_mesh
       use t_ctl_params_gen_sph_shell
 !
       use para_const_kemoview_mesh
@@ -92,7 +91,6 @@
 !
       subroutine analyze_gen_sph_grids
 !
-      use t_check_and_make_SPH_mesh
       use parallel_FEM_mesh_init
       use mpi_gen_sph_grids_modes
       use output_gen_sph_grid_modes

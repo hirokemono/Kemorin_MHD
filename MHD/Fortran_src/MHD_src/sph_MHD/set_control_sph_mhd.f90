@@ -164,7 +164,7 @@
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
-      use t_check_and_make_SPH_mesh
+      use t_SPH_mesh_field_data
       use t_sph_trans_arrays_MHD
       use t_const_spherical_grid
       use t_sph_boundary_input_data
