@@ -7,6 +7,9 @@
 !!@brief  indexing table of speherical harmonics transform
 !!
 !!@verbatim
+!!      subroutine dealloc_sph_mesh_array(sph_array)
+!!      subroutine alloc_sph_mesh_array(num_pe, sph_array)
+!!        type(sph_mesh_array), intent(inout) :: sph_array
 !!@endverbatim
 !
 !
@@ -29,16 +32,6 @@
       use t_sph_grid_maker_in_sim
 !
       implicit none
-!
-!> Structure of spherical transform mesh information
-      type sph_mesh_data
-!>         spherical harmonics indexing data
-        type(sph_grids) ::       sph
-!>         communication tables for spherical transform
-        type(sph_comm_tables) :: comms
-!>         grouping data for harmonics indices
-        type(sph_group_data) ::  sph_grps
-      end type sph_mesh_data
 !
 !> Structure of spherical transform mesh information
       type sph_mesh_array

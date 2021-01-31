@@ -22,7 +22,7 @@
       use m_elapsed_labels_gen_SPH
 !
       use t_mesh_data
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_data
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
@@ -41,7 +41,7 @@
       type(sph_mesh_generation_ctl), save :: SPH_MAKE_ctl
 !
 !>      Structure of spherical transform mesh information
-      type(sph_mesh_data), save :: SPH_GEN
+      type(SPH_mesh_field_data), save :: SPH_GEN
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
@@ -103,9 +103,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps)
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
       iflag = s_compare_sph_with_IO(sph_files1%sph_file_param,          &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps)
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
       call calypso_mpi_allreduce_one_int(iflag, iflag_gl, MPI_MAX)
 !
       write(*,*) 'indexing', my_rank, iflag_gl
@@ -116,7 +116,7 @@
       end if
 !
       call dealloc_sph_modes(SPH_GEN%sph, SPH_GEN%comms,                &
-     &                       SPH_GEN%sph_grps)
+     &                       SPH_GEN%groups)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'

@@ -22,7 +22,7 @@
       use m_elapsed_labels_gen_SPH
 !
       use t_mesh_data
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_data
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
       use t_ctl_data_const_sph_mesh
@@ -41,7 +41,7 @@
       type(sph_mesh_generation_ctl), save, private :: SPH_MAKE_ctl
 !
 !>      Structure of spherical transform mesh information
-      type(sph_mesh_data), save :: SPH_GEN
+      type(SPH_mesh_field_data), save :: SPH_GEN
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
@@ -106,14 +106,14 @@
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
       call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps)
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
 !
 !
       call output_sph_mesh(sph_files1%sph_file_param,                   &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps)
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
       if(iflag_debug.gt.0) write(*,*) 'sph_index_flags_and_params'
       call sph_index_flags_and_params                                   &
-     &   (SPH_GEN%sph_grps, SPH_GEN%sph, SPH_GEN%comms)
+     &   (SPH_GEN%groups, SPH_GEN%sph, SPH_GEN%comms)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+2)
 !
 !      if(my_rank .eq. 0) then
@@ -149,7 +149,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_FEM_mesh_4_SPH'
       call const_FEM_mesh_4_SPH                                         &
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%sph_grps,                 &
+     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups,                   &
      &    geofem, sph_files1%mesh_file_IO, sph_maker_G)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       call calypso_MPI_barrier
@@ -174,7 +174,7 @@
 !
   99  continue
       call dealloc_sph_modes(SPH_GEN%sph, SPH_GEN%comms,                &
-     &                       SPH_GEN%sph_grps)
+     &                       SPH_GEN%groups)
       call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times

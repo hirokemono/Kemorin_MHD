@@ -25,7 +25,7 @@
 !!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!      subroutine check_and_make_SPH_rj_mode                           &
 !!     &         (sph_file_param, sph_maker, SPH_MHD)
-!!        type(sph_mesh_data), intent(inout) :: SPH_MHD
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!@endverbatim
 !
       module t_check_and_make_SPH_mesh
