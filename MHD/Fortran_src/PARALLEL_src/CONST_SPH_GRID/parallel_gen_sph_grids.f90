@@ -26,7 +26,7 @@
 !
       use m_work_time
 !
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_array
       use t_const_spherical_grid
       use t_check_and_make_SPH_mesh
 !

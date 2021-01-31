@@ -37,7 +37,7 @@
       use calypso_mpi
 !
       use t_sph_spectr_data
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_array
       use t_SPH_mesh_field_data
 !
       implicit none

@@ -31,7 +31,7 @@
 !
       use m_precision
 !
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_array
       use t_spheric_parameter
 !
       implicit  none

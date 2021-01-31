@@ -15,7 +15,7 @@
       module t_spectr_data_4_assemble
 !
       use m_precision
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_array
       use t_SPH_mesh_field_data
       use t_phys_data
       use t_field_data_IO

@@ -1,5 +1,5 @@
-!>@file   t_SPH_mesh_data.f90
-!!@brief  module t_SPH_mesh_data
+!>@file   t_SPH_mesh_field_array.f90
+!!@brief  module t_SPH_mesh_field_array
 !!
 !!@author H. Matsui
 !!@date Programmed on Sep., 2017
@@ -13,7 +13,7 @@
 !!@endverbatim
 !
 !
-      module t_SPH_mesh_data
+      module t_SPH_mesh_field_array
 !
       use m_precision
       use m_constants
@@ -88,4 +88,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_SPH_mesh_data
+      end module t_SPH_mesh_field_array

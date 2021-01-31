@@ -18,14 +18,15 @@
 !!     &                                 org_sph_array)
 !!        type(time_data), intent(inout) :: time_d
 !!        type(sph_mesh_array), intent(in) :: org_sph_array
-!!      subroutine set_assembled_sph_data                               &
-!!     &         (j_table, r_itp, org_sph_array, new_sph_data)
+!!      subroutine set_assembled_sph_data(num_org_pe, org_sph, j_table, &
+!!     &                                  r_itp, org_fld, new_sph_data)
 !!        type(SPH_mesh_field_data), intent(in) :: new_sph_data
 !!        type(rj_assemble_tbl), intent(in)                             &
 !!     &                      :: j_table(org_sph_array%num_pe)
 !!        type(sph_radial_itp_data), intent(in) :: r_itp
-!!        type(sph_mesh_array), intent(inout) :: org_sph_array
-!!        type(SPH_mesh_field_data), intent(in) :: new_sph_data
+!!        type(sph_grids), intent(in) :: org_sph(num_org_pe)
+!!        type(phys_data), intent(inout) :: org_fld(num_org_pe)
+!!        type(SPH_mesh_field_data), intent(inout) :: new_sph_data
 !!
 !!      subroutine const_assembled_sph_data(b_ratio, time_d,            &
 !!     &          r_itp, new_sph_data, new_fst_IO, t_IO)
@@ -42,7 +43,7 @@
 !
       use calypso_mpi
       use t_time_data
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_array
       use t_SPH_mesh_field_data
       use t_file_IO_parameter
       use t_time_data
@@ -193,50 +194,49 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_assembled_sph_data                                 &
-     &         (j_table, r_itp, org_sph_array, new_sph_data)
+      subroutine set_assembled_sph_data(num_org_pe, org_sph, j_table,   &
+     &                                  r_itp, org_fld, new_sph_data)
 !
-      use t_SPH_mesh_data
       use t_spheric_parameter
       use r_interpolate_marged_sph
 !
       use parallel_assemble_sph
       use share_field_data
 !
-      type(sph_mesh_array), intent(inout) :: org_sph_array
-!
-      type(rj_assemble_tbl), intent(in)                                 &
-     &                      :: j_table(org_sph_array%num_pe)
+      integer, intent(in) :: num_org_pe
+      type(sph_grids), intent(in) :: org_sph(num_org_pe)
+      type(rj_assemble_tbl), intent(in) :: j_table(num_org_pe)
       type(sph_radial_itp_data), intent(in) :: r_itp
 !
+      type(phys_data), intent(inout) :: org_fld(num_org_pe)
       type(SPH_mesh_field_data), intent(inout) :: new_sph_data
 !
       integer :: ip
 !
 !
-      do ip = 1, org_sph_array%num_pe
+      do ip = 1, num_org_pe
 !         Bloadcast original spectr data
-        call share_each_field_data(ip, org_sph_array%fld(ip))
+        call share_each_field_data(ip, org_fld(ip))
 !
 !         Copy spectr data to temporal array
         if(r_itp%iflag_same_rgrid .eq. 0) then
           call r_itp_field_data_sph_assemble                            &
-     &       (org_sph_array%sph(ip), new_sph_data%sph, r_itp,           &
-     &        j_table(ip), new_sph_data%fld%ntot_phys,                  &
-     &        org_sph_array%fld(ip)%d_fld, new_sph_data%fld%d_fld)
+     &       (org_sph(ip), new_sph_data%sph, r_itp, j_table(ip),        &
+     &        new_sph_data%fld%ntot_phys, org_fld(ip)%d_fld,            &
+     &        new_sph_data%fld%d_fld)
         else
           call copy_field_data_sph_assemble                             &
-     &       (org_sph_array%sph(ip), new_sph_data%sph, j_table(ip),     &
-     &        new_sph_data%fld%ntot_phys, org_sph_array%fld(ip)%d_fld,  &
+     &       (org_sph(ip), new_sph_data%sph, j_table(ip),               &
+     &        new_sph_data%fld%ntot_phys, org_fld(ip)%d_fld,            &
      &        new_sph_data%fld%d_fld)
         end if
 !
         call copy_field_data_sph_center                                 &
-     &     (org_sph_array%sph(ip), new_sph_data%sph, j_table(ip),       &
-     &      new_sph_data%fld%ntot_phys, org_sph_array%fld(ip)%d_fld,    &
+     &     (org_sph(ip), new_sph_data%sph, j_table(ip),                 &
+     &      new_sph_data%fld%ntot_phys, org_fld(ip)%d_fld,              &
      &      new_sph_data%fld%d_fld)
 !
-        call dealloc_phys_data_type(org_sph_array%fld(ip))
+        call dealloc_phys_data_type(org_fld(ip))
       end do
 !
       end subroutine set_assembled_sph_data

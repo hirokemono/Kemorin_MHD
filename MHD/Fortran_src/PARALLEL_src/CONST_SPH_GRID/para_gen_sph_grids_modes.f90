@@ -24,7 +24,7 @@
       use calypso_mpi
       use m_work_time
 !
-      use t_SPH_mesh_data
+      use t_SPH_mesh_field_array
       use t_const_spherical_grid
       use t_sph_local_index
 !

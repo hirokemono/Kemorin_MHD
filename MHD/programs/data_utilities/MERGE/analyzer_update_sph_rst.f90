@@ -152,9 +152,10 @@
         call share_time_step_data(init_t)
 !
 !     Copy spectr data to temporal array
-        call set_assembled_sph_data                                     &
-     &     (sph_asbl_s%j_table, sph_asbl_s%r_itp,                       &
-     &      sph_asbl_s%org_sph_array, sph_asbl_s%new_sph_data)
+        call set_assembled_sph_data(sph_asbl_s%org_sph_array%num_pe,    &
+     &      sph_asbl_s%org_sph_array%sph, sph_asbl_s%j_table,           &
+     &      sph_asbl_s%r_itp, sph_asbl_s%org_sph_array%fld,             &
+     &      sph_asbl_s%new_sph_data)
 !
         call const_assembled_sph_data(asbl_param_s%b_ratio, init_t,     &
      &      sph_asbl_s%r_itp, sph_asbl_s%new_sph_data,                  &
