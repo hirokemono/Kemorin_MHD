@@ -21,12 +21,12 @@
 !!
 !!      subroutine init_rayleigh_restart_params                         &
 !!     &         (istep_start, org_fld_file, ra_rst)
-!!      subroutine copy_rayleigh_radial_data(ra_rst, org_sph_mesh)
+!!      subroutine copy_rayleigh_radial_data(ra_rst, org_sph)
 !!        type(rayleigh_restart), intent(in) :: ra_rst
-!!        type(sph_mesh_data), intent(inout) :: org_sph_mesh
+!!        type(sph_grids), intent(inout) :: org_sph
 !!      subroutine chebyshev_fwd_mat_4_rayleigh                         &
-!!     &         (new_sph_mesh, r_itp, ra_rst)
-!!        type(sph_mesh_data), intent(in) :: new_sph_mesh
+!!     &         (new_sph, r_itp, ra_rst)
+!!        type(sph_grids), intent(in) :: new_sph
 !!        type(sph_radial_itp_data), intent(in) :: r_itp
 !!        type(rayleigh_restart), intent(inout) :: ra_rst
 !!
@@ -49,7 +49,7 @@
       use m_file_format_switch
 !
       use r_interpolate_marged_sph
-      use t_SPH_mesh_data
+      use t_spheric_parameter
       use t_time_data
       use t_field_data_IO
       use t_control_data_4_merge
@@ -174,20 +174,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_rayleigh_radial_data(ra_rst, org_sph_mesh)
+      subroutine copy_rayleigh_radial_data(ra_rst, org_sph)
 !
       type(rayleigh_restart), intent(in) :: ra_rst
-      type(sph_mesh_data), intent(inout) :: org_sph_mesh
+      type(sph_grids), intent(inout) :: org_sph
 !
       integer(kind = kint) :: k, kr
 !
 !
-      org_sph_mesh%sph%sph_rj%nidx_rj(1) = ra_rst%nri_org
-      org_sph_mesh%sph%sph_rj%nidx_rj(2) = 1
-      call alloc_sph_1d_index_rj(org_sph_mesh%sph%sph_rj)
-      do k = 1, org_sph_mesh%sph%sph_rj%nidx_rj(1)
+      org_sph%sph_rj%nidx_rj(1) = ra_rst%nri_org
+      org_sph%sph_rj%nidx_rj(2) = 1
+      call alloc_sph_1d_index_rj(org_sph%sph_rj)
+      do k = 1, org_sph%sph_rj%nidx_rj(1)
         kr = ra_rst%nri_org-k+1
-        org_sph_mesh%sph%sph_rj%radius_1d_rj_r(k) = ra_rst%r_org(kr)
+        org_sph%sph_rj%radius_1d_rj_r(k) = ra_rst%r_org(kr)
       end do
 !
       end subroutine copy_rayleigh_radial_data
@@ -195,11 +195,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine chebyshev_fwd_mat_4_rayleigh                           &
-     &         (new_sph_mesh, r_itp, ra_rst)
+     &         (new_sph, r_itp, ra_rst)
 !
       use calypso_mpi_real
 !
-      type(sph_mesh_data), intent(in) :: new_sph_mesh
+      type(sph_grids), intent(in) :: new_sph
       type(sph_radial_itp_data), intent(in) :: r_itp
 !
       type(rayleigh_restart), intent(inout) :: ra_rst
@@ -219,7 +219,7 @@
 !
         do k2 = 1, ra_rst%nri_org
           k_ICB = r_itp%kr_inner_domain
-          r_ICB = new_sph_mesh%sph%sph_rj%radius_1d_rj_r(k_ICB)
+          r_ICB = new_sph%sph_rj%radius_1d_rj_r(k_ICB)
           r_norm = two * (ra_rst%r_org(k2) - r_ICB) - one
           if(r_norm .gt.  one) r_norm =  one
           if(r_norm .lt. -one) r_norm = -one

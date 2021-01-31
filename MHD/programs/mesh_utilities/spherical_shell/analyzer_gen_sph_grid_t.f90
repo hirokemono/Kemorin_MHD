@@ -40,7 +40,7 @@
       type(sph_mesh_generation_ctl), save :: SPH_MAKE_ctl
 !
 !>       Structure of grid and spectr data for spherical spectr method
-      type(sph_mesh_data), allocatable :: sph_mesh_g(:)
+      type(sph_mesh_array), save :: sph_array_g
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
@@ -54,7 +54,7 @@
 !      type(parallel_make_vierwer_mesh), save, private :: para_v1
 !
       private :: control_file_name
-      private :: sph_mesh_g, SPH_MAKE_ctl
+      private :: sph_array_g, SPH_MAKE_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,17 +89,15 @@
       use parallel_load_data_4_sph
       use parallel_FEM_mesh_init
 !
-      integer(kind = kint) :: num_pe
-!
 !  ========= Generate spherical harmonics table ========================
 !
       sph_files1%sph_file_param%iflag_format = id_ascii_file_fmt
-      num_pe = sph_maker_G%gen_sph%s3d_ranks%ndomain_sph
-      allocate(sph_mesh_g(num_pe))
       if(iflag_debug .gt. 0) write(*,*) 's_para_gen_sph_grids'
+      call alloc_sph_mesh_array                                         &
+     &   (sph_maker_G%gen_sph%s3d_ranks%ndomain_sph, sph_array_g)
       call check_and_make_para_SPH_mesh                                 &
-     &   (sph_files1%sph_file_param, num_pe, sph_mesh_g, sph_maker_G)
-      deallocate(sph_mesh_g)
+     &   (sph_files1%sph_file_param, sph_maker_G, sph_array_g)
+      call dealloc_sph_mesh_array(sph_array_g)
 !
       call end_elapsed_time(ied_total_elapsed)
 !

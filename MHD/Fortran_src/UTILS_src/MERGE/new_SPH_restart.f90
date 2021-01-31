@@ -12,15 +12,15 @@
 !!
 !!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
 !!     &          org_fst_param, org_phys, new_phys, t_IO)
-!!      subroutine load_org_sph_data(id_rank, istep, np_sph_org,        &
-!!     &          org_fst_param, org_sph, init_d, org_phys)
-!!      subroutine load_old_fmt_sph_data(id_rank, istep, np_sph_org,    &
-!!     &          org_fst_param, org_sph, org_phys)
-!!        type(sph_grids), intent(in) :: org_sph
+!!      subroutine load_org_sph_data(istep, org_fst_param,              &
+!!     &                             org_sph_array, init_d, org_phys)
+!!      subroutine load_old_fmt_sph_data(istep, org_fst_param,          &
+!!     &                                 org_sph_array, org_phys)
 !!        type(time_data), intent(inout) :: time_d
-!!        type(phys_data), intent(inout) :: org_phys
+!!        type(sph_mesh_array), intent(in) :: org_sph_array
+!!        type(phys_data), intent(inout):: org_phys(org_sph_array%num_pe)
 !!      subroutine set_assembled_sph_data                               &
-!!     &         (org_sph_mesh, new_sph_mesh, j_table, r_itp,           &
+!!     &         (org_sph_array, new_sph_mesh, j_table, r_itp,          &
 !!     &          org_phys, new_phys)
 !!
 !!      subroutine const_assembled_sph_data(b_ratio, time_d,            &
@@ -39,9 +39,10 @@
 !
       use calypso_mpi
       use t_time_data
-      use t_SPH_mesh_field_data
+      use t_SPH_mesh_data
       use t_file_IO_parameter
       use t_time_data
+      use t_phys_data
       use t_field_data_IO
 !
       implicit none
@@ -99,80 +100,93 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_org_sph_data(id_rank, istep, np_sph_org,          &
-     &          org_fst_param, org_sph, init_d, org_phys)
+      subroutine load_org_sph_data(istep, org_fst_param,                &
+     &                             org_sph_array, init_d, org_phys)
 !
       use field_IO_select
       use copy_rj_phys_data_4_IO
 !
-      integer, intent(in) :: np_sph_org
-      integer, intent(in) :: id_rank
-!
       integer(kind = kint), intent(in) :: istep
-      type(sph_grids), intent(in) :: org_sph
       type(field_IO_params), intent(in) :: org_fst_param
+      type(sph_mesh_array), intent(in) :: org_sph_array
 !
       type(time_data), intent(inout) :: init_d
-      type(phys_data), intent(inout) :: org_phys
+      type(phys_data), intent(inout) :: org_phys(org_sph_array%num_pe)
 !
 !>      Field data IO structure for original data
       type(time_data) :: org_time_IO
       type(field_IO) :: org_fst_IO
 !
+      integer :: iloop, irank_new, ip
 !
-      call sel_read_alloc_step_SPH_file(np_sph_org, id_rank, istep,     &
-     &    org_fst_param, org_time_IO, org_fst_IO)
 !
-      if(id_rank .lt. np_sph_org) then
-        call copy_time_steps_from_restart(org_time_IO, init_d)
+      do iloop = 0, (org_sph_array%num_pe-1) / nprocs
+        irank_new = int(my_rank + iloop * nprocs)
+        ip = irank_new + 1
+        call sel_read_alloc_step_SPH_file                               &
+     &     (org_sph_array%num_pe, irank_new, istep,                     &
+     &      org_fst_param, org_time_IO, org_fst_IO)
 !
-        call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-        call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
+        if(irank_new .lt. org_sph_array%num_pe) then
+          call copy_time_steps_from_restart(org_time_IO, init_d)
 !
-        call dealloc_phys_data_IO(org_fst_IO)
-        call dealloc_phys_name_IO(org_fst_IO)
-      end if
+          call alloc_phys_data_type                                     &
+     &       (org_sph_array%sph(ip)%sph_rj%nnod_rj, org_phys(ip))
+          call copy_rj_phys_data_from_IO(org_fst_IO, org_phys(ip))
 !
+          call dealloc_phys_data_IO(org_fst_IO)
+          call dealloc_phys_name_IO(org_fst_IO)
+        end if
+!
+        call calypso_mpi_barrier
+      end do
+
       end subroutine load_org_sph_data
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_old_fmt_sph_data(id_rank, istep, np_sph_org,      &
-     &          org_fst_param, org_sph, org_phys)
+      subroutine load_old_fmt_sph_data(istep, org_fst_param,            &
+     &                                 org_sph_array, org_phys)
 !
       use input_old_file_sel_4_zlib
       use copy_rj_phys_data_4_IO
 !
-      integer, intent(in) :: np_sph_org
-      integer, intent(in) :: id_rank
-!
       integer(kind = kint), intent(in) :: istep
-      type(sph_grids), intent(in) :: org_sph
       type(field_IO_params), intent(in) :: org_fst_param
+      type(sph_mesh_array), intent(in) :: org_sph_array
 !
-      type(phys_data), intent(inout) :: org_phys
+      type(phys_data), intent(inout) :: org_phys(org_sph_array%num_pe)
 !
 !>      Field data IO structure for original data
       type(field_IO) :: org_fst_IO
+      integer :: irank_new, iloop, ip
 !
 !
-      call sel_read_alloc_field_file                                    &
-     &   (id_rank, istep, org_fst_param, org_fst_IO)
+      do iloop = 0, (org_sph_array%num_pe-1) / nprocs
+        irank_new = int(my_rank + iloop * nprocs)
+        ip = irank_new + 1
 !
-      if(id_rank .lt. np_sph_org) then
-        call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-        call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
+        call sel_read_alloc_field_file                                  &
+     &     (irank_new, istep, org_fst_param, org_fst_IO)
 !
-        call dealloc_phys_data_IO(org_fst_IO)
-        call dealloc_phys_name_IO(org_fst_IO)
-      end if
+        if(irank_new .lt. org_sph_array%num_pe) then
+          call alloc_phys_data_type                                     &
+     &       (org_sph_array%sph(ip)%sph_rj%nnod_rj, org_phys(ip))
+          call copy_rj_phys_data_from_IO(org_fst_IO, org_phys(ip))
+!
+          call dealloc_phys_data_IO(org_fst_IO)
+          call dealloc_phys_name_IO(org_fst_IO)
+        end if
+!
+        call calypso_mpi_barrier
+      end do
 !
       end subroutine load_old_fmt_sph_data
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_assembled_sph_data                                 &
-     &         (org_sph_mesh, new_sph_mesh, j_table, r_itp,             &
+     &         (org_sph_array, new_sph_mesh, j_table, r_itp,            &
      &          org_phys, new_phys)
 !
       use t_SPH_mesh_data
@@ -180,29 +194,41 @@
       use r_interpolate_marged_sph
 !
       use parallel_assemble_sph
+      use share_field_data
 !
-      type(sph_mesh_data), intent(in) :: org_sph_mesh
+      type(sph_mesh_array), intent(in) :: org_sph_array
       type(sph_mesh_data), intent(in) :: new_sph_mesh
-      type(rj_assemble_tbl), intent(in) :: j_table
+      type(rj_assemble_tbl), intent(in)                                 &
+     &                      :: j_table(org_sph_array%num_pe)
       type(sph_radial_itp_data), intent(in) :: r_itp
-      type(phys_data), intent(in) ::    org_phys
 !
+      type(phys_data), intent(inout) :: org_phys(org_sph_array%num_pe)
       type(phys_data), intent(inout) :: new_phys
 !
+      integer :: ip
 !
-      if(r_itp%iflag_same_rgrid .eq. 0) then
-        call r_itp_field_data_sph_assemble                              &
-     &     (org_sph_mesh%sph, new_sph_mesh%sph, r_itp, j_table,         &
-     &      new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
-      else
-        call copy_field_data_sph_assemble                               &
-     &     (org_sph_mesh%sph, new_sph_mesh%sph, j_table,                &
-     &      new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
-      end if
 !
-      call copy_field_data_sph_center                                   &
-     &   (org_sph_mesh%sph, new_sph_mesh%sph, j_table,                  &
-     &    new_phys%ntot_phys, org_phys%d_fld, new_phys%d_fld)
+      do ip = 1, org_sph_array%num_pe
+!         Bloadcast original spectr data
+        call share_each_field_data(ip, org_phys(ip))
+!
+!         Copy spectr data to temporal array
+        if(r_itp%iflag_same_rgrid .eq. 0) then
+          call r_itp_field_data_sph_assemble(org_sph_array%sph(ip),     &
+     &        new_sph_mesh%sph, r_itp, j_table(ip),                     &
+     &        new_phys%ntot_phys, org_phys(ip)%d_fld, new_phys%d_fld)
+        else
+          call copy_field_data_sph_assemble(org_sph_array%sph(ip),      &
+     &        new_sph_mesh%sph, j_table(ip),                            &
+     &        new_phys%ntot_phys, org_phys(ip)%d_fld, new_phys%d_fld)
+        end if
+!
+        call copy_field_data_sph_center                                 &
+     &     (org_sph_array%sph(ip), new_sph_mesh%sph, j_table(ip),       &
+     &      new_phys%ntot_phys, org_phys(ip)%d_fld, new_phys%d_fld)
+!
+        call dealloc_phys_data_type(org_phys(ip))
+      end do
 !
       end subroutine set_assembled_sph_data
 !

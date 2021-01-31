@@ -15,7 +15,7 @@
       module t_spectr_data_4_assemble
 !
       use m_precision
-      use t_SPH_mesh_field_data
+      use t_SPH_mesh_data
       use t_phys_data
       use t_field_data_IO
       use t_time_data
@@ -27,8 +27,8 @@
 !
       type spectr_data_4_assemble
         integer :: np_sph_org
-        type(sph_mesh_data), allocatable :: org_sph_mesh(:)
-        type(phys_data), allocatable ::     org_sph_phys(:)
+        type(sph_mesh_array) ::         org_sph_array
+        type(phys_data), allocatable :: org_sph_phys(:)
 !
         integer :: np_sph_new
         type(sph_mesh_data) :: new_sph_mesh
@@ -53,7 +53,8 @@
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !
 !
-      allocate(sph_asbl%org_sph_mesh(sph_asbl%np_sph_org))
+      call alloc_sph_mesh_array(sph_asbl%np_sph_org,                    &
+     &                          sph_asbl%org_sph_array)
       allocate(sph_asbl%org_sph_phys(sph_asbl%np_sph_org))
       allocate(sph_asbl%j_table(sph_asbl%np_sph_org))
 !
@@ -68,12 +69,13 @@
       integer(kind = kint) :: ip
 !
 !
-      do ip = 1, sph_asbl%np_sph_org
+      do ip = 1, sph_asbl%org_sph_array%num_pe
         call dealloc_mode_table_4_assemble(sph_asbl%j_table(ip))
       end do
       deallocate(sph_asbl%j_table)
 !
-      deallocate(sph_asbl%org_sph_mesh, sph_asbl%org_sph_phys)
+      deallocate(sph_asbl%org_sph_phys)
+      call dealloc_sph_mesh_array(sph_asbl%org_sph_array)
 !
       end subroutine dealloc_spectr_data_4_assemble
 !

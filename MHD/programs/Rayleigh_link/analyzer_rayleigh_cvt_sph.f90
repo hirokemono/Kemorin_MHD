@@ -94,7 +94,7 @@
         if(my_rank .eq. 0) call check_rayleigh_rst_params(6, ra_rst_s)
 !
       call copy_rayleigh_radial_data                                    &
-     &   (ra_rst_s, sph_asbl_s%org_sph_mesh(1))
+     &   (ra_rst_s, sph_asbl_s%org_sph_array%sph(1))
 !
 !  set new spectr data
       call check_and_make_SPH_rj_mode                                   &
@@ -109,11 +109,11 @@
 !     construct radial interpolation table
 !
       call const_r_interpolate_table                                    &
-     &   (sph_asbl_s%org_sph_mesh(1), sph_asbl_s%new_sph_mesh,          &
-     &    sph_asbl_s%r_itp)
+     &   (sph_asbl_s%org_sph_array%sph(1),                              &
+     &    sph_asbl_s%new_sph_mesh%sph, sph_asbl_s%r_itp)
 !
 !      call chebyshev_fwd_mat_4_rayleigh                                &
-!     &   (sph_asbl_s%new_sph_mesh, sph_asbl_s%r_itp, ra_rst_s)
+!     &   (sph_asbl_s%new_sph_mesh%sph, sph_asbl_s%r_itp, ra_rst_s)
 !
       call dealloc_rayleigh_radial_grid(ra_rst_s)
 !

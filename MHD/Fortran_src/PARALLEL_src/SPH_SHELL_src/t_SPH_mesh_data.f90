@@ -24,8 +24,7 @@
       use t_sph_trans_comm_tbl
       use t_spheric_group
 !
-      use t_const_spherical_grid
-      use t_sph_local_index
+      use t_sph_grid_maker_in_sim
 !
       implicit none
 !
@@ -38,5 +37,53 @@
 !>         grouping data for harmonics indices
         type(sph_group_data) ::  sph_grps
       end type sph_mesh_data
+!
+!> Structure of spherical transform mesh information
+      type sph_mesh_array
+!>         Nnumber of subdomain
+        integer :: num_pe
+!>         spherical harmonics indexing data
+        type(sph_grids), allocatable ::       sph(:)
+!>         communication tables for spherical transform
+        type(sph_comm_tables), allocatable :: comms(:)
+!>         grouping data for harmonics indices
+        type(sph_group_data), allocatable ::  sph_grps(:)
+!
+!>        Structure to check and construct spherical shell mesh
+!        type(sph_grid_maker_in_sim) :: sph_maker
+      end type sph_mesh_array
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_sph_mesh_array(num_pe, sph_array)
+!
+      integer, intent(in) :: num_pe
+      type(sph_mesh_array), intent(inout) :: sph_array
+!
+      sph_array%num_pe = num_pe
+      allocate(sph_array%sph(sph_array%num_pe))
+      allocate(sph_array%comms(sph_array%num_pe))
+      allocate(sph_array%sph_grps(sph_array%num_pe))
+!
+      end subroutine alloc_sph_mesh_array
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_sph_mesh_array(sph_array)
+!
+      type(sph_mesh_array), intent(inout) :: sph_array
+!
+!
+      deallocate(sph_array%sph)
+      deallocate(sph_array%comms)
+      deallocate(sph_array%sph_grps)
+!
+      end subroutine dealloc_sph_mesh_array
+!
+!  ---------------------------------------------------------------------
 !
       end module t_SPH_mesh_data
