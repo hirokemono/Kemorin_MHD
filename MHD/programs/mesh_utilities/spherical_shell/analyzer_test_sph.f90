@@ -59,7 +59,8 @@
 !
 !
       if (my_rank.eq.0) then
-        write(*,*) 'Construct commutation filter'
+        write(*,*) 'Test for communication ',                           &
+     &             'in spherical harmonics transform'
         write(*,*) 'Input file: mesh data'
       end if
 !
