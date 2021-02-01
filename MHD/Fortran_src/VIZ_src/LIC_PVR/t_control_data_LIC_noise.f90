@@ -16,11 +16,6 @@
 !!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!        type(buffer_for_control), intent(inout)  :: c_buf
 !!      subroutine reset_cube_noise_control_data(noise_ctl)
-!!      subroutine copy_cube_noise_control_data(org_noise_c, new_noise_c)
-!!        type(cube_noise_ctl), intent(in) :: org_noise_c
-!!        type(cube_noise_ctl), intent(inout) :: new_noise_c
-!!      subroutine bcast_cube_noise_control_data(noise_ctl)
-!!        type(cube_noise_ctl), intent(inout) :: noise_ctl
 !!
 !!      integer(kind = kint) function num_ctl_label_LIC_noise()
 !!      subroutine set_ctl_label_LIC_noise(names)
@@ -46,7 +41,6 @@
       module t_control_data_LIC_noise
 !
       use m_precision
-      use calypso_mpi
 !
       use m_machine_parameter
       use t_read_control_elements
@@ -168,7 +162,6 @@
       end subroutine read_cube_noise_control_data
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
       subroutine reset_cube_noise_control_data(noise_ctl)
 !
@@ -185,56 +178,6 @@
       noise_ctl%i_cube_noise_control = 0
 !
       end subroutine reset_cube_noise_control_data
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_cube_noise_control_data(noise_ctl)
-!
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
-      type(cube_noise_ctl), intent(inout) :: noise_ctl
-!
-!
-      call calypso_mpi_bcast_one_int(noise_ctl%i_cube_noise_control, 0)
-!
-      call bcast_ctl_type_c1(noise_ctl%noise_type_ctl)
-      call bcast_ctl_type_c1(noise_ctl%noise_file_name_ctl)
-      call bcast_ctl_type_c1(noise_ctl%noise_file_format_ctl)
-!
-      call bcast_ctl_type_i1(noise_ctl%noise_resolution_ctl)
-      call bcast_ctl_type_i1(noise_ctl%noise_stepping_ctl)
-!
-      call bcast_ctl_type_r1(noise_ctl%noise_cube_size_ctl)
-!
-      end subroutine bcast_cube_noise_control_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_cube_noise_control_data(org_noise_c, new_noise_c)
-!
-      type(cube_noise_ctl), intent(in) :: org_noise_c
-      type(cube_noise_ctl), intent(inout) :: new_noise_c
-!
-!
-      new_noise_c%i_cube_noise_control                                  &
-     &     = org_noise_c%i_cube_noise_control
-!
-      call copy_chara_ctl(org_noise_c%noise_type_ctl,                   &
-     &                    new_noise_c%noise_type_ctl)
-      call copy_chara_ctl(org_noise_c%noise_file_name_ctl,              &
-     &                    new_noise_c%noise_file_name_ctl)
-      call copy_chara_ctl(org_noise_c%noise_file_format_ctl,            &
-     &                    new_noise_c%noise_file_format_ctl)
-      call copy_integer_ctl(org_noise_c%noise_resolution_ctl,           &
-     &                      new_noise_c%noise_resolution_ctl)
-      call copy_integer_ctl(org_noise_c%noise_stepping_ctl,             &
-     &                      new_noise_c%noise_stepping_ctl)
-      call copy_real_ctl(org_noise_c%noise_cube_size_ctl,               &
-     &                   new_noise_c%noise_cube_size_ctl)
-!
-      end subroutine copy_cube_noise_control_data
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

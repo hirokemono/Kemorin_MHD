@@ -77,9 +77,6 @@
 !
       subroutine bcast_lic_control_data(lic_ctl)
 !
-      use calypso_mpi_int
-      use bcast_control_arrays
-!
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_real
@@ -87,6 +84,10 @@
       use t_control_data_LIC_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
+!
+      use calypso_mpi_int
+      use bcast_control_arrays
+      use bcast_ctl_data_LIC_noise
 !
       type(lic_parameter_ctl), intent(inout) :: lic_ctl
 !
@@ -130,6 +131,8 @@
       use t_control_data_LIC_masking
       use t_control_data_LIC_noise
       use t_control_data_LIC_kernel
+!
+      use bcast_ctl_data_LIC_noise
 !
       type(lic_parameter_ctl), intent(in) :: org_lic_c
       type(lic_parameter_ctl), intent(inout) :: new_lic_c

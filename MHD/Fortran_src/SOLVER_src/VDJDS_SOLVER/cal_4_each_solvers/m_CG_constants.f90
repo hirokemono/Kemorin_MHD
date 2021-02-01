@@ -15,8 +15,6 @@
       integer(kind=kint), parameter :: Z = 2
       integer(kind=kint), parameter :: ZQ= 4
 !
-      integer(kind=kint), parameter :: nWK_CG =  4
       integer(kind=kint), parameter :: iWK =     5
-      integer(kind=kint) :: ntotWK_CG = nWK_CG + 3
 !
       end module m_CG_constants

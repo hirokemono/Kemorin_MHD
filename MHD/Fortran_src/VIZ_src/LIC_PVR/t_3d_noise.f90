@@ -9,12 +9,12 @@
 !!
 !!@verbatim
 !!      subroutine set_control_3d_cube_noise(noise_ctl, nze)
+!!      subroutine sel_const_3d_cube_noise(my_rank, nze)
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        type(noise_cube), intent(inout) :: nze
-!!      subroutine sel_const_3d_cube_noise(nze)
+!!
+!!      subroutine alloc_3d_cube_noise(nze)
 !!      subroutine dealloc_3d_cube_noise(nze)
-!!      subroutine bcast_3d_cube_noise(nze)
-!!        type(noise_cube), intent(inout) :: nze
 !!        type(noise_cube), intent(inout) :: nze
 !!@endverbatim
 !
@@ -23,7 +23,6 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use calypso_mpi
 !
       implicit none
 !
@@ -65,7 +64,7 @@
         character(len = 1), allocatable :: cnoise(:)
       end type noise_cube
 !
-      private :: alloc_3d_cube_noise, alloc_3d_cube_noise_IO
+      private :: alloc_3d_cube_noise_IO
       private :: dealloc_3d_cube_noise_IO, set_3d_cube_resolution
       private :: write_3d_charanoise, read_alloc_3d_charanoise
 !
@@ -132,16 +131,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_const_3d_cube_noise(nze)
+      subroutine sel_const_3d_cube_noise(my_rank, nze)
 !
       use delete_data_files
       use cal_3d_noise
 !
+      integer, intent(in) :: my_rank
       type(noise_cube), intent(inout) :: nze
 !
 !
       if(check_file_exist(nze%noise_file_name)) then
-        call read_alloc_3d_charanoise(my_rank, nze%noise_file_name, nze)
+        call read_alloc_3d_charanoise                                   &
+     &     (my_rank, nze%noise_file_name, nze)
         call alloc_3d_cube_noise(nze)
       else
         call alloc_3d_cube_noise(nze)
@@ -170,39 +171,6 @@
       deallocate(nze%rnoise, nze%rnoise_grad)
 !
       end subroutine dealloc_3d_cube_noise
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_3d_cube_noise(nze)
-!
-      use calypso_mpi_real
-      use calypso_mpi_int
-      use calypso_mpi_int8
-      use calypso_mpi_char
-      use transfer_to_long_integers
-!
-      type(noise_cube), intent(inout) :: nze
-!
-      integer(kind = kint_gl) :: n3_cube
-!
-!
-      call calypso_mpi_bcast_one_int(nze%iflag_noise_type, 0)
-      call calypso_mpi_bcast_character                                  &
-     &   (nze%noise_file_name, cast_long(kchara), 0)
-!
-      call calypso_mpi_bcast_real(nze%size_cube, cast_long(ithree), 0)
-      call calypso_mpi_bcast_real(nze%asize_cube, cast_long(ithree), 0)
-!
-      call calypso_mpi_bcast_int(nze%nidx_xyz, cast_long(ithree), 0)
-      call calypso_mpi_bcast_one_int(nze%i_stepsize, 0)
-      call calypso_mpi_bcast_one_int8(nze%n_cube, 0)
-!
-      if(my_rank .ne. 0) call alloc_3d_cube_noise(nze)
-      n3_cube = 3 * nze%n_cube
-      call calypso_mpi_bcast_real(nze%rnoise(1), nze%n_cube, 0)
-      call calypso_mpi_bcast_real(nze%rnoise_grad(1,1), n3_cube, 0)
-!
-      end subroutine bcast_3d_cube_noise
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

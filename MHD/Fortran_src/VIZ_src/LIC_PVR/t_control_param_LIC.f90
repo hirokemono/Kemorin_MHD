@@ -105,6 +105,7 @@
       use set_components_flags
       use set_parallel_file_name
       use set_ucd_extensions
+      use bcast_3d_noise
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -198,7 +199,7 @@
       if(my_rank .eq. 0) then
         call set_control_3d_cube_noise                                  &
      &     (lic_ctl%noise_ctl, lic_p%noise_t)
-        call sel_const_3d_cube_noise(lic_p%noise_t)
+        call sel_const_3d_cube_noise(my_rank, lic_p%noise_t)
       end if
       call bcast_3d_cube_noise(lic_p%noise_t)
 !
