@@ -92,6 +92,7 @@
 !
       use set_local_sphere_by_global
 !
+!>       Structure of spherical shell parameters
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), intent(inout) :: sph_tmp
@@ -124,10 +125,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'start rlm table generation for', my_rank
-      call const_sph_rlm_modes                                          &
-     &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_rlm, comms_sph%comm_rlm)
+      call const_sph_rlm_modes(my_rank, gen_sph,                        &
+     &                         sph%sph_rlm, comms_sph%comm_rlm)
       call copy_sph_comm_neib                                           &
      &   (comms_sph%comm_rlm, comm_rlm_mul(my_rank+1))
 !
@@ -139,12 +138,9 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
 !
-      call const_sph_rj_modes                                           &
-     &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
-     &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    comms_sph%comm_rj, sph_grp)
+      call const_sph_rj_modes(my_rank, nprocs, comm_rlm_mul, gen_sph,   &
+     &                        sph%sph_params, sph%sph_rtp, sph%sph_rj,  &
+     &                        comms_sph%comm_rj, sph_grp)
 
 !
       call dealloc_comm_stacks_sph                                      &
@@ -159,9 +155,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'start rtm table generation for',  my_rank
       call const_sph_rtm_grids                                          &
-     &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_rtm, comms_sph%comm_rtm)
+     &   (my_rank, gen_sph, sph%sph_rtm, comms_sph%comm_rtm)
       call copy_sph_comm_neib                                           &
      &   (comms_sph%comm_rtm, comm_rtm_mul(my_rank+1))
 !
@@ -172,10 +166,7 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical grids for domain ',  my_rank
-      call const_sph_rtp_grids(my_rank, nprocs, comm_rtm_mul,           &
-     &    gen_sph%added_radial_grp, gen_sph%r_layer_grp,                &
-     &    gen_sph%med_layer_grp, gen_sph%s3d_ranks, gen_sph%s3d_radius, &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
+      call const_sph_rtp_grids(my_rank, nprocs, comm_rtm_mul, gen_sph,  &
      &    sph%sph_params, sph%sph_rtp, comms_sph%comm_rtp, sph_grp)
 !
       call dealloc_comm_stacks_sph                                      &
@@ -231,10 +222,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'start rlm table generation for', my_rank
-      call const_sph_rlm_modes                                          &
-     &   (my_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_rlm, comms_sph%comm_rlm)
+      call const_sph_rlm_modes(my_rank, gen_sph,                        &
+     &                         sph%sph_rlm, comms_sph%comm_rlm)
       ip = my_rank + 1
       call copy_sph_comm_neib(comms_sph%comm_rlm, comm_rlm_mul(ip))
 !
@@ -245,12 +234,9 @@
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+7)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
-      call const_sph_rj_modes                                           &
-     &   (my_rank, nprocs, comm_rlm_mul, gen_sph%added_radial_grp,      &
-     &    gen_sph%s3d_ranks, gen_sph%s3d_radius,                        &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    comms_sph%comm_rj, sph_grp)
+      call const_sph_rj_modes(my_rank, nprocs, comm_rlm_mul, gen_sph,   &
+     &                        sph%sph_params, sph%sph_rtp, sph%sph_rj,  &
+     &                        comms_sph%comm_rj, sph_grp)
 !
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)

@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine para_gen_sph_rlm_rj_modes(gen_sph, sph_array)
 !!      subroutine para_gen_sph_rtm_rtp_grids(gen_sph, sph_array)
-!!        type(construct_spherical_grid), intent(inout) :: gen_sph
+!!        type(construct_spherical_grid), intent(in) :: gen_sph
 !!        type(sph_mesh_array), intent(inout) :: sph_array
 !!@endverbatim
 !
@@ -43,7 +43,7 @@
       use gen_sph_grids_modes
       use bcast_comm_stacks_sph
 !
-      type(construct_spherical_grid), intent(inout) :: gen_sph
+      type(construct_spherical_grid), intent(in) :: gen_sph
       type(sph_mesh_array), intent(inout) :: sph_array
 !
 !>      Structure for parallel spherical mesh table
@@ -59,10 +59,8 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &      'start rlm table generation for', id_rank, ' on ', my_rank
-        call const_sph_rlm_modes                                        &
-     &   (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,               &
-     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,          &
-     &    sph_array%sph(ip)%sph_rlm, sph_array%comms(ip)%comm_rlm)
+        call const_sph_rlm_modes(id_rank, gen_sph,                      &
+     &      sph_array%sph(ip)%sph_rlm, sph_array%comms(ip)%comm_rlm)
         call copy_sph_comm_neib                                         &
      &     (sph_array%comms(ip)%comm_rlm, comm_rlm_mul(ip))
       end do
@@ -79,10 +77,7 @@
      &     'Construct spherical modes for domain ', id_rank,            &
      &     ' on ', my_rank
         call const_sph_rj_modes                                         &
-     &     (id_rank, sph_array%num_pe, comm_rlm_mul,                    &
-     &      gen_sph%added_radial_grp, gen_sph%s3d_ranks,                &
-     &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
+     &     (id_rank, sph_array%num_pe, comm_rlm_mul, gen_sph,           &
      &      sph_array%sph(ip)%sph_params, sph_array%sph(ip)%sph_rtp,    &
      &      sph_array%sph(ip)%sph_rj, sph_array%comms(ip)%comm_rj,      &
      &      sph_array%sph_grps(ip))
@@ -102,7 +97,7 @@
       use set_comm_table_rtp_rj
       use bcast_comm_stacks_sph
 !
-      type(construct_spherical_grid), intent(inout) :: gen_sph
+      type(construct_spherical_grid), intent(in) :: gen_sph
       type(sph_mesh_array), intent(inout) :: sph_array
 !
 !>      Structure for parallel spherical mesh table
@@ -118,9 +113,7 @@
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &      'start rtm table generation for', id_rank, ' on ', my_rank
-        call const_sph_rtm_grids                                        &
-     &     (id_rank, gen_sph%s3d_ranks, gen_sph%s3d_radius,             &
-     &      gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
+        call const_sph_rtm_grids(id_rank, gen_sph,                      &
      &      sph_array%sph(ip)%sph_rtm, sph_array%comms(ip)%comm_rtm)
         call copy_sph_comm_neib                                         &
      &     (sph_array%comms(ip)%comm_rtm, comm_rtm_mul(ip))
@@ -137,11 +130,7 @@
      &             'Construct spherical grids for domain ',  id_rank,   &
      &              ' on ',  my_rank
         call const_sph_rtp_grids                                        &
-     &     (id_rank, sph_array%num_pe, comm_rtm_mul,                    &
-     &      gen_sph%added_radial_grp, gen_sph%r_layer_grp,              &
-     &      gen_sph%med_layer_grp, gen_sph%s3d_ranks,                   &
-     &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
+     &     (id_rank, sph_array%num_pe, comm_rtm_mul, gen_sph,           &
      &      sph_array%sph(ip)%sph_params, sph_array%sph(ip)%sph_rtp,    &
      &      sph_array%comms(ip)%comm_rtp, sph_array%sph_grps(ip))
       end do
