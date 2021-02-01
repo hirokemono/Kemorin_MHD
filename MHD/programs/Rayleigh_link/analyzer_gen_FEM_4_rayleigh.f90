@@ -79,7 +79,7 @@
       sph_files1%mesh_file_IO%file_prefix = 'aho/in'
       sph_files1%mesh_file_IO%iflag_format = id_ascii_file_fmt
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
+      if (iflag_debug.gt.0) write(*,*) 'base_FEM_mesh_sph_mhd'
       call base_FEM_mesh_sph_mhd                                        &
      &   (sph_const%sph_params, sph_const%sph_rtp, sph_const%sph_rj,    &
      &    geofem%mesh, geofem%group, gen_sph_G)

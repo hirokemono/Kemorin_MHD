@@ -169,23 +169,6 @@
      &    mgd_ctl%assemble_plt%sph_file_prefix,                         &
      &    asbl_param%new_mesh_file, asbl_sph_maker, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
-      if(mgd_ctl%asbl_psph_ctl%iflag_sph_shell .gt. 0) then
-        asbl_sph_maker%make_SPH_flag = .TRUE.
-        asbl_sph_maker%mesh_output_flag = .TRUE.
-!
-        if(asbl_param%new_mesh_file%iflag_format .eq. id_no_file        &
-     &    .or. mgd_ctl%assemble_plt%sph_file_prefix%iflag .eq. 0) then
-          asbl_sph_maker%mesh_output_flag = .FALSE.
-        end if
-!
-        if(iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids new'
-        call set_control_4_shell_grids                                  &
-     &     (nprocs, mgd_ctl%asbl_psph_ctl%Fmesh_ctl,                    &
-     &      mgd_ctl%asbl_psph_ctl%spctl, mgd_ctl%asbl_psph_ctl%sdctl,   &
-     &      asbl_sph_maker%sph_tmp, asbl_sph_maker%gen_sph, ierr)
-        if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
-      end if
-!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &

@@ -10,7 +10,7 @@
 !!      subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,           &
 !!     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
 !!      subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                 &
-!!     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
+!!     &          sph_file_param, SPH_MHD, geofem, sph_maker)
 !!      subroutine check_and_make_SPH_mesh                              &
 !!     &         (sph_file_param, sph_maker, SPH_MHD)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
@@ -104,12 +104,10 @@
      &     (geofem%mesh%node%internal_node,                             &
      &      SPH_MHD%sph%sph_rtp, SPH_MHD%sph%sph_params)
       else
-        call copy_sph_radial_groups(SPH_MHD%groups, sph_maker%gen_sph)
-!  --  Construct FEM mesh
+!    --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,             &
-     &      SPH_MHD%sph, geofem, sph_maker%gen_sph)
-        call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
+     &      SPH_MHD%groups, SPH_MHD%sph, geofem, sph_maker)
       end if
 !
       end subroutine load_para_SPH_and_FEM_mesh
@@ -117,7 +115,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                   &
-     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
+     &          sph_file_param, SPH_MHD, geofem, sph_maker)
 !
       use calypso_mpi
       use t_mesh_data
@@ -132,17 +130,12 @@
 !
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(mesh_data), intent(inout) :: geofem
-      type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
-!
-      call copy_sph_radial_groups(SPH_MHD%groups, sph_maker%gen_sph)
-!  --  Construct FEM mesh
-      mesh_file%file_prefix = sph_file_param%file_prefix
-      call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,               &
-     &                         SPH_MHD%sph, geofem, sph_maker%gen_sph)
-      call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
+!    --  Construct FEM mesh
+      call load_FEM_mesh_4_SPH(FEM_mesh_flags, sph_file_param,         &
+     &    SPH_MHD%groups, SPH_MHD%sph, geofem, sph_maker)
 !
       end subroutine const_FEM_mesh_4_SPH
 !

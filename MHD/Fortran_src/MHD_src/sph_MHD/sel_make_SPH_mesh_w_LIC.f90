@@ -77,21 +77,18 @@
         call set_fem_center_mode_4_SPH(geofem%mesh%node%internal_node,  &
      &      SPH_MHD%sph%sph_rtp, SPH_MHD%sph%sph_params)
       else
-        call copy_sph_radial_groups                                     &
-     &     (SPH_MHD%groups, sph_maker%gen_sph)
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
-     &      SPH_MHD%sph, geofem, sph_maker%gen_sph)
-        call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
+     &      SPH_MHD%groups, SPH_MHD%sph, geofem, sph_maker)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH_w_LIC                              &
-     &         (FEM_mesh_flags, mesh_file, sph, geofem, gen_sph)
+      subroutine load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,   &
+     &          sph_grps, sph, geofem, sph_maker)
 !
       use calypso_mpi
       use t_mesh_data
@@ -108,11 +105,12 @@
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(field_IO_params), intent(in) ::  mesh_file
+      type(sph_group_data), intent(in) :: sph_grps
 !
       type(sph_grids), intent(inout) :: sph
       type(mesh_data), intent(inout) :: geofem
 !
-      type(construct_spherical_grid), intent(inout) :: gen_sph
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
       type(mesh_data) :: femmesh_s
 !
@@ -126,10 +124,12 @@
         end if
       end if
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
+      call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
+!
+if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
       call const_FEM_mesh_4_sph_MHD_w_LIC(FEM_mesh_flags, mesh_file,    &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    femmesh_s%mesh, femmesh_s%group, gen_sph)
+     &    femmesh_s%mesh, femmesh_s%group, sph_maker%gen_sph)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, geofem%mesh%nod_comm, mesh%node, mesh%ele,          &
 !     &    femmesh_s%mesh)
@@ -142,6 +142,7 @@
      &    geofem%mesh, geofem%group)
       call dealloc_groups_data(femmesh_s%group)
       call dealloc_mesh_geometry_base(femmesh_s%mesh)
+      call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
 !
       end subroutine load_FEM_mesh_4_SPH_w_LIC
 !

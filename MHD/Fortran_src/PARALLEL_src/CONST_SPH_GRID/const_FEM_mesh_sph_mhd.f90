@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,       &
-!!     &                               sph, geofem, gen_sph)
+!!     &                               sph_grps, sph, geofem, sph_maker)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(field_IO_params), intent(in) ::  mesh_file
+!!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(construct_spherical_grid), intent(inout) :: gen_sph
+!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!
 !!      subroutine const_FEM_mesh_4_sph_mhd                             &
 !!     &        (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj,&
@@ -40,9 +41,11 @@
       use calypso_mpi
       use t_file_IO_parameter
       use t_spheric_parameter
+      use t_spheric_group
       use t_mesh_data
       use t_group_data
       use t_gauss_points
+      use t_sph_grid_maker_in_sim
       use t_const_spherical_grid
       use t_sph_local_parameter
       use t_sph_mesh_1d_connect
@@ -52,6 +55,8 @@
       type(gauss_points), save, private :: gauss_SF
       type(comm_table_make_sph), save, private :: stbl_SF
 !
+      private :: const_FEM_mesh_4_sph_mhd
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -59,7 +64,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,         &
-     &                               sph, geofem, gen_sph)
+     &                               sph_grps, sph, geofem, sph_maker)
 !
       use m_spheric_constants
       use copy_mesh_structures
@@ -69,14 +74,17 @@
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
       type(field_IO_params), intent(in) ::  mesh_file
+      type(sph_group_data), intent(in) :: sph_grps
 !
       type(sph_grids), intent(inout) :: sph
       type(mesh_data), intent(inout) :: geofem
 !
-      type(construct_spherical_grid), intent(inout) :: gen_sph
+      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !
       type(mesh_data) :: femmesh_s
 !
+!
+      call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
 !
 !  --  Construct FEM mesh
       if(sph%sph_params%iflag_shell_mode .eq. iflag_no_FEMMESH) then
@@ -90,7 +98,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd(FEM_mesh_flags, mesh_file,          &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
-     &    femmesh_s%mesh, femmesh_s%group, gen_sph)
+     &    femmesh_s%mesh, femmesh_s%group, sph_maker%gen_sph)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, geofem%mesh%nod_comm, mesh%node, mesh%ele,          &
 !     &    femmesh_s%mesh)
@@ -103,7 +111,7 @@
      &   (femmesh_s%mesh, femmesh_s%group, geofem%mesh, geofem%group)
       call dealloc_groups_data(femmesh_s%group)
       call dealloc_mesh_geometry_base(femmesh_s%mesh)
-!
+      call dealloc_gen_sph_radial_groups(sph_maker%gen_sph)
 !
       end subroutine load_FEM_mesh_4_SPH
 !
