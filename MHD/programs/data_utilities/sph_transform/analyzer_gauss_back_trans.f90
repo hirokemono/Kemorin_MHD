@@ -41,14 +41,14 @@
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
       call read_control_data_sph_trans(spt_ctl1)
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS%fld,    &
+      call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS,        &
      &                                FEM_STR1, SPH_STR1)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
      &   (SPH_STR1%FEM_mesh_flags, SPH_STR1%sph_file_param, SPH_TRNS,   &
-     &    FEM_STR1%geofem, FEM_STR1%mesh_file_IO, SPH_STR1%sph_maker)
+     &    FEM_STR1%geofem, FEM_STR1%mesh_file_IO)
 !
 !  ------  initialize FEM data
 !

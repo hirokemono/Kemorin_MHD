@@ -3,17 +3,17 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!!      subroutine set_control_4_sph_transform                          &
-!!     &         (spt_ctl, time_STR,           &
-!!     &          rj_fld, FEM_STR, SPH_STR)
-!!      subroutine s_set_ctl_data_4_sph_trans                           &
-!!     &         (spt_ctl, time_STR,           &
-!!     &          rj_fld, FEM_STR, SPH_STR)
+!!      subroutine set_control_4_sph_transform(spt_ctl, time_STR,       &
+!!     &          SPH_TRNS, FEM_STR, SPH_STR)
+!!      subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,        &
+!!     &          SPH_TRNS, FEM_STR, SPH_STR)
 !!      subroutine set_ctl_data_4_zm_trans(spt_ctl, SPH_STR)
 !!      subroutine set_ctl_data_4_pick_zm(spt_ctl, zm_source_file_param)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
-!!        type(phys_data), intent(inout) :: rj_fld
+!!        type(time_step_param), intent(inout) :: time_STR
+!!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
+!!        type(SPH_mesh_field_data), intent(inout) :: SPH_TRNS
 !
       module t_ctl_params_sph_trans
 !
@@ -32,6 +32,7 @@
       use t_SPH_data_4_SPH_trans
       use t_ctl_params_gen_sph_shell
       use t_sph_grid_maker_in_sim
+      use t_SPH_mesh_field_data
 !
       implicit  none
 !
@@ -52,7 +53,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_sph_transform(spt_ctl, time_STR,         &
-     &          rj_fld, FEM_STR, SPH_STR)
+     &          SPH_TRNS, FEM_STR, SPH_STR)
 !
       use t_work_4_sph_trans
 !
@@ -70,9 +71,9 @@
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
-      type(phys_data), intent(inout) :: rj_fld
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
+      type(SPH_mesh_field_data), intent(inout) :: SPH_TRNS
 !
       integer(kind = kint) :: ierr
 !
@@ -128,7 +129,7 @@
 !   set physical values
 !
       call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
+     &   (spt_ctl%fld_ctl%field_ctl, SPH_TRNS%fld, ierr)
       call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, FEM_STR%field, ierr)
 !
@@ -149,7 +150,7 @@
 !   set spherical shell parameters
       call set_ctl_4_sph_grid_maker(nprocs, spt_ctl%psph_ctl,           &
      &    spt_ctl%plt%sph_file_prefix, SPH_STR%sph_file_param,          &
-     &    SPH_STR%sph_maker, ierr)
+     &    SPH_TRNS%sph_maker, ierr)
       call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine set_control_4_sph_transform
@@ -157,7 +158,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,          &
-     &          rj_fld, FEM_STR, SPH_STR)
+     &          SPH_TRNS, FEM_STR, SPH_STR)
 !
       use calypso_mpi
       use t_file_IO_parameter
@@ -175,9 +176,9 @@
 !
       type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
       type(time_step_param), intent(inout) :: time_STR
-      type(phys_data), intent(inout) :: rj_fld
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
+      type(SPH_mesh_field_data), intent(inout) :: SPH_TRNS
 !
       integer(kind = kint) :: ierr, iflag
 !
@@ -259,7 +260,7 @@
 !   set physical values
 !
       call set_SGS_field_ctl_by_viz                                     &
-     &   (spt_ctl%fld_ctl%field_ctl, rj_fld, ierr)
+     &   (spt_ctl%fld_ctl%field_ctl, SPH_TRNS%fld, ierr)
       call set_SGS_field_ctl_by_viz                                     &
      &   (spt_ctl%fld_ctl%field_ctl, FEM_STR%field, ierr)
 !
@@ -280,7 +281,7 @@
 !   set spherical shell parameters
       call set_ctl_4_sph_grid_maker(nprocs, spt_ctl%psph_ctl,           &
      &    spt_ctl%plt%sph_file_prefix, SPH_STR%sph_file_param,          &
-     &    SPH_STR%sph_maker, ierr)
+     &    SPH_TRNS%sph_maker, ierr)
       call dealloc_phys_control(spt_ctl%fld_ctl)
 !
       end subroutine s_set_ctl_data_4_sph_trans

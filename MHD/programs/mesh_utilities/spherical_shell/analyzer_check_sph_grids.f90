@@ -100,8 +100,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-      call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
-     &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
+      call mpi_gen_sph_grids                                            &
+     &   (sph_maker_G, SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
       iflag = s_compare_sph_with_IO(sph_files1%sph_file_param,          &
      &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
       call calypso_mpi_allreduce_one_int(iflag, iflag_gl, MPI_MAX)

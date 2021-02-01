@@ -68,7 +68,7 @@
       use t_control_data_dynamo_vizs
       use t_bc_data_list
       use t_flex_delta_t_data
-      use t_sph_grid_maker_in_sim
+      use t_SPH_mesh_field_data
 !
       implicit none
 !
@@ -159,7 +159,7 @@
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          Dmodel_ctl, smctl_ctl, nmtr_ctl, psph_ctl,              &
      &          MHD_files, bc_IO, MHD_step, MHD_prop, MHD_BC,           &
-     &          trans_p, WK, sph_maker)
+     &          trans_p, WK, SPH_MHD)
 !
       use t_spheric_parameter
       use t_phys_data
@@ -198,7 +198,7 @@
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(parameters_4_sph_trans), intent(inout) :: trans_p
       type(works_4_sph_trans_MHD), intent(inout) :: WK
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
+      type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       integer(kind = kint) :: ierr
 !
@@ -223,7 +223,7 @@
 !
       call set_ctl_4_sph_grid_maker(nprocs, psph_ctl,                   &
      &    plt%sph_file_prefix, MHD_files%sph_file_param,                &
-     &    sph_maker, ierr)
+     &    SPH_MHD%sph_maker, ierr)
 !
 !   set forces
 !

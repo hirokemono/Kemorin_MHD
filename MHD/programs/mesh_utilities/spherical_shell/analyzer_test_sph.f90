@@ -35,8 +35,6 @@
 !
 !>      Structure for file settings
       type(sph_mesh_generation_ctl), save :: SPH_TEST_ctl
-!>      Structure to check and construct spherical shell mesh
-      type(sph_grid_maker_in_sim), save :: sph_maker_T
 !
       type(SPH_mesh_field_data), save :: SPH_TEST
 !
@@ -76,11 +74,11 @@
       call read_control_4_const_shell(control_file_name, SPH_TEST_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_TEST_ctl%plt, SPH_TEST_ctl%psph_ctl,             &
-     &    test_sph_files, sph_maker_T, ierr)
+     &    test_sph_files, SPH_TEST%sph_maker, ierr)
 !
       if (iflag_debug.gt.0) write(*,*) 'check_and_make_SPH_mesh'
       call check_and_make_SPH_mesh                                      &
-     &   (test_sph_files%sph_file_param, sph_maker_T, SPH_TEST)
+     &   (test_sph_files%sph_file_param, SPH_TEST)
 !
        end subroutine init_test_sph
 !

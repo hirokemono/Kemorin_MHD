@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_w_LIC(FEM_mesh_flags,          &
-!!     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
+!!     &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !!        type(field_IO_params), intent(in) :: sph_file_param
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(mesh_data), intent(inout) ::   geofem
 !!        type(MHD_file_IO_params), intent(inout) ::  MHD_files
-!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!@endverbatim
 !
 !
@@ -48,7 +47,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_w_LIC(FEM_mesh_flags,            &
-     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
+     &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !
       use calypso_mpi
       use t_mesh_data
@@ -65,10 +64,8 @@
       type(mesh_data), intent(inout) :: geofem
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
 !  Check and construct spherical shell table
-      call check_and_make_SPH_mesh(sph_file_param, sph_maker, SPH_MHD)
+      call check_and_make_SPH_mesh(sph_file_param, SPH_MHD)
 !
 !  --  load geofem mesh data
       if(check_exist_mesh(my_rank, mesh_file)) then
@@ -80,7 +77,7 @@
 !  --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
-     &      SPH_MHD%groups, SPH_MHD%sph, geofem, sph_maker)
+     &      SPH_MHD%groups, SPH_MHD%sph, geofem, SPH_MHD%sph_maker)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC

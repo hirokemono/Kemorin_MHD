@@ -47,9 +47,6 @@
 !
       implicit none
 !
-!>      Structure to construct grid
-      type(sph_grid_maker_in_sim), save, private:: sph_maker2
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -87,7 +84,7 @@
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
      &    MHD_files, SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, &
      &    MHD_step, SPH_model%MHD_prop, SPH_model%MHD_BC,               &
-     &    SPH_WK%trans_p, SPH_WK%trns_WK, sph_maker2, part_param)
+     &    SPH_WK%trans_p, SPH_WK%trns_WK, SPH_MHD%sph_maker, part_param)
 !
       call set_control_SGS_SPH_MHD_field(MHD_ctl%model_ctl,             &
      &    MHD_ctl%psph_ctl, MHD_ctl%smonitor_ctl, MHD_ctl%zm_ctls,      &
@@ -98,7 +95,7 @@
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
       call load_para_SPH_and_FEM_w_LIC                                  &
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
-     &    SPH_MHD, FEM_dat%geofem, MHD_files%mesh_file_IO, sph_maker2)
+     &    SPH_MHD, FEM_dat%geofem, MHD_files%mesh_file_IO)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       call sph_boundary_IO_control                                      &

@@ -58,9 +58,6 @@
 !>        Structure for field data IO
         type(field_IO) :: fld_IO
 !
-!>        Structure to check and construct spherical shell mesh
-        type(sph_grid_maker_in_sim) :: sph_maker
-!
 !>        Structures of parameters for spherical transform
         type(parameters_4_sph_trans) :: trans_p
 !>        Work structures for various Legendre trasform

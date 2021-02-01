@@ -44,9 +44,6 @@
 !>      Structure of mesh file name and formats
       type(gen_sph_file_IO_params), save ::  sph_files1
 !
-!>      Structure to check and construct spherical shell mesh
-      type(sph_grid_maker_in_sim), save :: sph_maker_G
-!
 !>      Structure of FEM mesh
       type(mesh_data), save, private :: geofem
 !
@@ -72,15 +69,16 @@
       call read_control_4_const_shell(control_file_name, SPH_MAKE_ctl)
       call set_control_4_gen_shell_grids                                &
      &   (my_rank, SPH_MAKE_ctl%plt, SPH_MAKE_ctl%psph_ctl,             &
-     &    sph_files1, sph_maker_G, ierr)
-      sph_maker_G%mesh_output_flag = .TRUE.
+     &    sph_files1, SPH_GEN%sph_maker, ierr)
+      SPH_GEN%sph_maker%mesh_output_flag = .TRUE.
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
-      if(sph_maker_G%gen_sph%s3d_ranks%ndomain_sph .ne. nprocs) then
+      if(SPH_GEN%sph_maker%gen_sph%s3d_ranks%ndomain_sph                &
+     &     .ne. nprocs) then
         if(my_rank .eq. 0) write(*,*) 'The number of MPI processes ',   &
      &      'must be equal to the number of subdomains.', char(10),     &
      &      'Current subdomains: ',                                     &
-     &      sph_maker_G%gen_sph%s3d_ranks%ndomain_sph
+     &      SPH_GEN%sph_maker%gen_sph%s3d_ranks%ndomain_sph
         write(e_message,'(a)') 'Parallellization error'
         call calypso_mpi_abort(ierr_P_MPI, e_message)
       end if
@@ -103,7 +101,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'mpi_gen_sph_grids'
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-      call mpi_gen_sph_grids(sph_maker_G%gen_sph, sph_maker_G%sph_tmp,  &
+      call mpi_gen_sph_grids(SPH_GEN%sph_maker,                         &
      &    SPH_GEN%sph, SPH_GEN%comms, SPH_GEN%groups)
 !
 !
@@ -147,7 +145,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_FEM_mesh_4_SPH'
       call const_FEM_mesh_4_SPH                                         &
      &   (sph_files1%FEM_mesh_flags, sph_files1%sph_file_param,         &
-     &    SPH_GEN, geofem, sph_maker_G)
+     &    SPH_GEN, geofem)
       if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       call calypso_MPI_barrier
 !

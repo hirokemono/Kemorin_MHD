@@ -8,11 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,           &
-!!     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
+!!     &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !!      subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                 &
-!!     &          sph_file_param, SPH_MHD, geofem, sph_maker)
-!!      subroutine check_and_make_SPH_mesh                              &
-!!     &         (sph_file_param, sph_maker, SPH_MHD)
+!!     &          sph_file_param, SPH_MHD, geofem)
+!!      subroutine check_and_make_SPH_mesh(sph_file_param, SPH_MHD)
 !!        type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(sph_grids), intent(inout) :: sph
@@ -20,7 +19,6 @@
 !!        type(sph_group_data), intent(inout) ::  sph_grps
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
 !!      subroutine check_and_make_SPH_rj_mode(sph_file_param, SPH_MHD)
 !!        type(field_IO_params), intent(in) ::  sph_file_param
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
@@ -76,7 +74,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh(FEM_mesh_flags,             &
-     &          sph_file_param, SPH_MHD, geofem, mesh_file, sph_maker)
+     &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !
       use calypso_mpi
       use t_mesh_data
@@ -93,10 +91,8 @@
       type(mesh_data), intent(inout) :: geofem
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
 !  Check and construct spherical shell table
-      call check_and_make_SPH_mesh(sph_file_param, sph_maker, SPH_MHD)
+      call check_and_make_SPH_mesh(sph_file_param, SPH_MHD)
 !
 !  --  load geofem mesh data
       if(check_exist_mesh(my_rank, mesh_file)) then
@@ -109,7 +105,7 @@
 !    --  Construct FEM mesh
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH(FEM_mesh_flags, mesh_file,             &
-     &      SPH_MHD%groups, SPH_MHD%sph, geofem, sph_maker)
+     &      SPH_MHD%groups, SPH_MHD%sph, geofem, SPH_MHD%sph_maker)
       end if
 !
       end subroutine load_para_SPH_and_FEM_mesh
@@ -117,7 +113,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_FEM_mesh_4_SPH(FEM_mesh_flags,                   &
-     &          sph_file_param, SPH_MHD, geofem, sph_maker)
+     &          sph_file_param, SPH_MHD, geofem)
 !
       use calypso_mpi
       use t_mesh_data
@@ -133,18 +129,15 @@
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
       type(mesh_data), intent(inout) :: geofem
 !
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
-!
 !    --  Construct FEM mesh
       call load_FEM_mesh_4_SPH(FEM_mesh_flags, sph_file_param,         &
-     &    SPH_MHD%groups, SPH_MHD%sph, geofem, sph_maker)
+     &    SPH_MHD%groups, SPH_MHD%sph, geofem, SPH_MHD%sph_maker)
 !
       end subroutine const_FEM_mesh_4_SPH
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_and_make_SPH_mesh                                &
-     &         (sph_file_param, sph_maker, SPH_MHD)
+      subroutine check_and_make_SPH_mesh(sph_file_param, SPH_MHD)
 !
       use m_error_IDs
       use calypso_mpi_logical
@@ -156,8 +149,6 @@
       use check_sph_mhd_openmp_size
 !
       type(field_IO_params), intent(in) :: sph_file_param
-!
-      type(sph_grid_maker_in_sim), intent(inout) :: sph_maker
       type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !
       logical :: iflag_lc
@@ -177,15 +168,17 @@
         call load_sph_mesh(sph_file_param,                              &
      &      SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
         if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+1)
-      else if(sph_maker%make_SPH_flag .eqv. .FALSE.) then
+!
+      else if(SPH_MHD%sph_maker%make_SPH_flag .eqv. .FALSE.) then
         call calypso_mpi_abort(ierr_file,                               &
      &     'Set parameters for spherical shell')
+!
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-        call mpi_gen_sph_grids(sph_maker%gen_sph, sph_maker%sph_tmp,    &
+        call mpi_gen_sph_grids(SPH_MHD%sph_maker,                       &
      &      SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
-        if(sph_maker%mesh_output_flag) then
+        if(SPH_MHD%sph_maker%mesh_output_flag) then
           call output_sph_mesh(sph_file_param,                          &
      &        SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
         end if
@@ -241,8 +234,7 @@
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+2)
-        call mpi_gen_sph_grids                                          &
-     &     (SPH_MHD%sph_maker%gen_sph, SPH_MHD%sph_maker%sph_tmp,       &
+        call mpi_gen_sph_grids(SPH_MHD%sph_maker,                       &
      &      SPH_MHD%sph, SPH_MHD%comms, SPH_MHD%groups)
 !
         if(SPH_MHD%sph_maker%mesh_output_flag) then
