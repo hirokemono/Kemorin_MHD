@@ -42,6 +42,8 @@
       use t_field_4_dynamobench
       use t_work_SPH_MHD
 !
+      use calypso_mpi
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -55,7 +57,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use calypso_mpi
 !
       use t_sph_boundary_input_data
 !
@@ -121,8 +122,8 @@
 !
 !* -----  find mid-equator point -----------------
 !*
-      call set_mid_equator_point_global                                 &
-     &   (SPH_WK%trans_p, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rtp,  &
+      call set_mid_equator_point_global(my_rank, SPH_WK%trans_p,        &
+     &    SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rtp,                  &
      &    SPH_MHD%sph%sph_rj, cdat)
 !
       end subroutine SPH_init_sph_dbench

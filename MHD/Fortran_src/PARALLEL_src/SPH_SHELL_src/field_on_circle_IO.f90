@@ -8,17 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine write_field_data_on_circle                           &
-!!     &         (i_step, time, circle, d_circle)
+!!     &         (my_rank, i_step, time, circle, d_circle)
 !!      subroutine read_field_data_on_circle                            &
 !!     &         (i_step, time, ierr, circle, d_circle)
 !!
 !!      subroutine open_read_field_data_on_circle                       &
-!!     &         (sph_rtp, sph_rj, circle, d_circle)
+!!     &         (my_rank, sph_rtp, sph_rj, circle, d_circle)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fields_on_circle), intent(inout) :: circle
 !!        type(fields_on_circle), intent(inout) :: d_circle
-!!      subroutine close_field_data_on_circle
+!!      subroutine close_field_data_on_circle(my_rank)
 !!@endverbatim
 !
       module field_on_circle_IO
@@ -51,10 +51,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine write_field_data_on_circle                             &
-     &         (i_step, time, circle, d_circle)
+     &         (my_rank, i_step, time, circle, d_circle)
 !
-      use calypso_mpi
-!
+      integer, intent(in) :: my_rank
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: time
       type(fields_on_circle), intent(in) :: circle
@@ -88,7 +87,7 @@
      &             circle%vrtm_phase(mphi,1:d_circle%ntot_phys_viz)
       end do
 !
-      call close_field_data_on_circle
+      call close_field_data_on_circle(my_rank)
 !
       end subroutine write_field_data_on_circle
 !
@@ -131,7 +130,6 @@
 !
       subroutine open_field_data_on_circle(circle, d_circle)
 !
-      use calypso_mpi
       use m_phys_constants
       use sel_comp_labels_by_coord
       use write_field_labels
@@ -234,13 +232,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine open_read_field_data_on_circle                         &
-     &         (sph_rtp, sph_rj, circle, d_circle)
+     &         (my_rank, sph_rtp, sph_rj, circle, d_circle)
 !
       use skip_comment_f
 !
       use t_spheric_rtp_data
       use t_spheric_rj_data
 !
+      integer, intent(in) :: my_rank
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
@@ -273,7 +272,7 @@
       call alloc_phys_name_type(d_circle)
       write(*,*) 'alloc_circle_field'
       call alloc_circle_field                                           &
-     &   (sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),                &
+     &   (my_rank, sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),       &
      &    circle, d_circle)
 !
       d_circle%num_component = 1
@@ -291,9 +290,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine close_field_data_on_circle
+      subroutine close_field_data_on_circle(my_rank)
 !
-      use calypso_mpi
+      integer, intent(in) :: my_rank
 !
 !
       if(my_rank .gt. 0) return

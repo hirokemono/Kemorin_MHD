@@ -36,6 +36,10 @@
       module SPH_analyzer_sph_pick_circ
 !
       use m_precision
+      use m_constants
+      use m_machine_parameter
+      use calypso_mpi
+!
       use m_MHD_step_parameter
       use t_SPH_MHD_model_data
       use t_mesh_data
@@ -57,10 +61,6 @@
 !
       subroutine SPH_init_sph_pick_circle(MHD_files, iphys,             &
      &          SPH_model, SPH_SGS, SPH_MHD, SPH_WK, cdat)
-!
-      use m_constants
-      use calypso_mpi
-      use m_machine_parameter
 !
       use t_sph_boundary_input_data
 !
@@ -139,9 +139,10 @@
 !
 !* -----  find mid-equator point -----------------
 !
-      call const_circle_point_global(SPH_WK%trans_p%iflag_FFT,          &
+      call const_circle_point_global                                    &
+     &   (my_rank, SPH_WK%trans_p%iflag_FFT,                            &
      &    SPH_MHD%sph%sph_params%l_truncation, SPH_MHD%sph%sph_rtp,     &
-     &     SPH_MHD%sph%sph_rj, cdat)
+     &    SPH_MHD%sph%sph_rj, cdat)
 !
       end subroutine SPH_init_sph_pick_circle
 !
@@ -221,8 +222,8 @@
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
       call sph_transfer_on_circle(SPH_WK%trans_p%iflag_FFT,             &
      &    SPH_MHD%sph%sph_rj, SPH_MHD%fld, cdat)
-      call write_field_data_on_circle                                   &
-     &   (i_step, MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
+      call write_field_data_on_circle(my_rank, i_step,                  &
+     &    MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
       end subroutine SPH_analyze_pick_circle

@@ -152,7 +152,6 @@ main_zonal_mean_sph.o
 
 MOD_SPH_NEUTRAL = \
 neutral_point_by_pick_sph.o \
-t_spheric_data_sph_spetr.o \
 t_picked_sph_spectr_data_IO.o \
 m_spheric_data_sph_spetr.o \
 t_neutral_pt_by_pick_sph.o
