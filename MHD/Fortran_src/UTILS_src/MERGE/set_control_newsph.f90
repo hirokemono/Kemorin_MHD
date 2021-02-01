@@ -9,12 +9,12 @@
 !!@verbatim
 !!      subroutine bcast_ctl_param_newsph(asbl_param, sph_asbl)
 !!      subroutine set_control_4_newsph(mgd_ctl, asbl_param,            &
-!!     &          sph_asbl, org_sph_maker, asbl_sph_maker)
+!!     &          sph_asbl, org_sph_maker, new_sph_data)
 !!        type(control_data_4_merge), intent(in) :: mgd_ctl
 !!        type(control_param_assemble), intent(inout) :: asbl_param
 !!        type(spectr_data_4_assemble), intent(inout) :: sph_asbl
 !!        type(sph_grid_maker_in_sim), intent(inout) :: org_sph_maker
-!!        type(sph_grid_maker_in_sim), intent(inout) :: asbl_sph_maker
+!!      type(SPH_mesh_field_data), intent(inout) :: new_sph_data
 !!@endverbatim
 !
       module set_control_newsph
@@ -76,7 +76,7 @@
 !------------------------------------------------------------------
 !
       subroutine set_control_4_newsph(mgd_ctl, asbl_param,              &
-     &          sph_asbl, org_sph_maker, asbl_sph_maker)
+     &          sph_asbl, org_sph_maker, new_sph_data)
 !
       use m_error_IDs
       use t_control_data_4_merge
@@ -92,7 +92,7 @@
       type(control_param_assemble), intent(inout) :: asbl_param
       type(spectr_data_4_assemble), intent(inout) :: sph_asbl
       type(sph_grid_maker_in_sim), intent(inout) :: org_sph_maker
-      type(sph_grid_maker_in_sim), intent(inout) :: asbl_sph_maker
+      type(SPH_mesh_field_data), intent(inout) :: new_sph_data
 !
       integer(kind = kint) :: ierr
 !
@@ -167,7 +167,7 @@
 !
       call set_ctl_4_sph_grid_maker(nprocs, mgd_ctl%asbl_psph_ctl,      &
      &    mgd_ctl%assemble_plt%sph_file_prefix,                         &
-     &    asbl_param%new_mesh_file, asbl_sph_maker, ierr)
+     &    asbl_param%new_mesh_file, new_sph_data%sph_maker, ierr)
       if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
 !
       if(my_rank .eq. 0) write(*,*)                                     &

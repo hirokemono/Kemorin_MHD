@@ -11,9 +11,12 @@
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_grids), intent(inout) :: sph
 !!
-!!      subroutine mpi_gen_sph_grids(gen_sph, sph, comms_sph, sph_grp)
-!!      subroutine mpi_gen_sph_rj_mode(gen_sph, sph, comms_sph, sph_grp)
+!!      subroutine mpi_gen_sph_grids(gen_sph, sph_tmp,                  &
+!!     &                             sph, comms_sph, sph_grp)
+!!      subroutine mpi_gen_sph_rj_mode(gen_sph, sph_tmp,                &
+!!     &                               sph, comms_sph, sph_grp)
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
+!!        type(sph_grids), intent(inout) :: sph_tmp
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) :: sph_grp
@@ -76,8 +79,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_sph_grids                                      &
-     &         (gen_sph, sph_tmp, sph, comms_sph, sph_grp)
+      subroutine mpi_gen_sph_grids(gen_sph, sph_tmp,                    &
+     &                             sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !
@@ -188,7 +191,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mpi_gen_sph_rj_mode(gen_sph, sph_tmp,                  &
-     &          sph, comms_sph, sph_grp)
+     &                               sph, comms_sph, sph_grp)
 !
       use t_sph_local_index
 !

@@ -58,7 +58,6 @@
       use parallel_gen_sph_grids
 !
       type(control_data_4_merge) :: mgd_ctl_s
-      type(sph_grid_maker_in_sim) :: sph_asbl_maker_s
       type(sph_grid_maker_in_sim) :: sph_org_maker_s
 !      integer(kind = kint) :: ip
 !
@@ -68,7 +67,7 @@
       if(my_rank .eq. 0) call read_control_assemble_sph(mgd_ctl_s)
       call bcast_merge_control_data(mgd_ctl_s)
       call set_control_4_newsph(mgd_ctl_s, asbl_param_s, sph_asbl_s,    &
-     &                          sph_org_maker_s, sph_asbl_maker_s)
+     &    sph_org_maker_s, sph_asbl_s%new_sph_data)
 !
       call alloc_spectr_data_4_assemble(sph_asbl_s)
 !
@@ -81,8 +80,7 @@
 !  set new spectr data
 !
       call check_and_make_SPH_rj_mode                                   &
-     &   (asbl_param_s%new_mesh_file, sph_asbl_maker_s,                 &
-     &    sph_asbl_s%new_sph_data)
+     &   (asbl_param_s%new_mesh_file, sph_asbl_s%new_sph_data)
       call load_new_spectr_rj_data(sph_asbl_s%org_sph_array,            &
      &    sph_asbl_s%new_sph_data, sph_asbl_s%j_table)
 !
