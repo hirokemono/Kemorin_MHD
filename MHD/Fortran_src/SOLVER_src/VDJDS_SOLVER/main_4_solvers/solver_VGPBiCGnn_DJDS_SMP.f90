@@ -150,7 +150,7 @@
       subroutine init_VGPBiCGnn_DJDS_SMP                                &
      &         (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
-      use m_work_4_GPBiCG
+      use m_GPBiCG_constants
 !
       use djds_matrix_calcs_nn
       use incomplete_cholesky_nn
@@ -186,7 +186,7 @@
 !
       use solver_SR_N
 !
-      use m_work_4_GPBiCG
+      use m_GPBiCG_constants
       use m_solver_count_time
 !
       use cal_norm_products_nn
@@ -243,7 +243,19 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
-
+!
+!
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: ALPHA, BETA, QSI, ETA
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  RHO(1),  RHO1(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), RHO0(1), RHO10(1)
+      real(kind=kreal) :: COEF1(1)
+      real(kind=kreal) :: COEF10(1)
+      real(kind=kreal) :: C0(5), CG(5)
+      real(kind=kreal) :: EQ(2)
+!
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT
 !C

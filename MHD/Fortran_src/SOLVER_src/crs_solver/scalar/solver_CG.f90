@@ -29,6 +29,8 @@
       real(kind=kreal), allocatable, private :: ALUG(:)
       real(kind=kreal), allocatable, private :: SCALE(:)
 !
+      integer(kind=kint), parameter, private :: nWK_CG =  4
+      integer(kind = kint), private :: ntotWK_CG = nWK_CG + 3
       real(kind = kreal), allocatable :: W(:,:)
       private :: W
 !
@@ -47,7 +49,7 @@
 !
       use calypso_mpi
 !
-      use m_work_4_CG
+      use m_CG_constants
       use solver_SR
       use crs_matrix_calcs_11
       use incomplete_cholesky_crs_11
@@ -91,6 +93,13 @@
 
       integer(kind = kint) :: MAXIT, IFLAG
       data IFLAG/0/
+!
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: BNRM2,  DNRM2,  C1,  RHO, RHO1, ALPHA
+      real(kind=kreal) :: BNRM20, DNRM20, C10, RHO0
+!
 !C
 !C-- INIT. 
       ERROR= 0

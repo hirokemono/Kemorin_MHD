@@ -149,7 +149,7 @@
       subroutine init_VBiCGSTABnn_DJDS_SMP                              &
      &         (NP, NB, PEsmpTOT, PRECOND, iterPREmax)
 !
-      use m_work_4_BiCGSTAB
+      use m_BiCGSTAB_constants
 !
       use djds_matrix_calcs_nn
       use incomplete_cholesky_nn
@@ -159,8 +159,6 @@
       integer(kind=kint ), intent(in) :: NP, NB, PEsmpTOT
       character(len=kchara), intent(in) :: PRECOND
       integer(kind=kint ), intent(in)  :: iterPREmax
-!
-      integer(kind=kint ) :: nwk
 !
 !   allocate work arrays
 !
@@ -189,7 +187,7 @@
       use t_solver_SR
       use solver_SR_N
 !
-      use m_work_4_BiCGSTAB
+      use m_BiCGSTAB_constants
       use m_solver_count_time
 !
       use cal_norm_products_nn
@@ -247,6 +245,16 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: ALPHA, OMEGA
+      real(kind=kreal) :: RHO1
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  C2(1),  RHO(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), C20(1), RHO0(1)
+      real(kind=kreal) :: C0(2), CG(2)
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT

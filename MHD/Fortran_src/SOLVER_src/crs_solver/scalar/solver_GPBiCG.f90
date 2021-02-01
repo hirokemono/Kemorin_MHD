@@ -54,7 +54,7 @@
       use calypso_mpi
 !
       use m_constants
-      use m_work_4_GPBiCG
+      use m_GPBiCG_constants
       use solver_SR
       use crs_matrix_calcs_11
       use crs_norm_products_11
@@ -103,6 +103,17 @@
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
 
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: ALPHA, BETA, QSI, ETA
+      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  RHO(1),  RHO1(1)
+      real(kind=kreal) :: BNRM20(1), DNRM20(1), RHO0(1), RHO10(1)
+      real(kind=kreal) :: COEF1(1)
+      real(kind=kreal) :: COEF10(1)
+      real(kind=kreal) :: C0(5), CG(5)
+      real(kind=kreal) :: EQ(2)
+!
       integer(kind=kint ) :: IFLAG, MONITORFLAG
       integer(kind=kint ) :: MAXIT
       data IFLAG/0/

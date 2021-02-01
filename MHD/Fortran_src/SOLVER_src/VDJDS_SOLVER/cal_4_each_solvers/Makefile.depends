@@ -8,12 +8,12 @@ calcs_4_GPBiCG33.o: $(SOLVER_EACH_DIR)/calcs_4_GPBiCG33.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 calcs_4_GPBiCGnn.o: $(SOLVER_EACH_DIR)/calcs_4_GPBiCGnn.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
+m_BiCGSTAB_constants.o: $(SOLVER_EACH_DIR)/m_BiCGSTAB_constants.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_CG_constants.o: $(SOLVER_EACH_DIR)/m_CG_constants.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_GPBiCG_constants.o: $(SOLVER_EACH_DIR)/m_GPBiCG_constants.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
 m_solver_count_time.o: $(SOLVER_EACH_DIR)/m_solver_count_time.f90 m_precision.o calypso_mpi.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_work_4_BiCGSTAB.o: $(SOLVER_EACH_DIR)/m_work_4_BiCGSTAB.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_work_4_CG.o: $(SOLVER_EACH_DIR)/m_work_4_CG.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_work_4_GPBiCG.o: $(SOLVER_EACH_DIR)/m_work_4_GPBiCG.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

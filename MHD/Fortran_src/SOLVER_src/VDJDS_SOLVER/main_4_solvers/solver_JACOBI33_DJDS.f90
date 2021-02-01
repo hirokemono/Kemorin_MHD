@@ -43,8 +43,10 @@
 !
       implicit none
 !
-      real(kind = kreal), allocatable :: W(:,:)
-      private :: W
+      integer(kind=kint), parameter, private :: nWK_CG =  4
+      integer(kind = kint), private :: ntotWK_CG = nWK_CG + 3
+      real(kind = kreal), allocatable, private :: W(:,:)
+
       private :: verify_work_4_matvec33
 !
 !  ---------------------------------------------------------------------
@@ -142,13 +144,13 @@
 !
       subroutine init_VJACOBI33_DJDS_SMP(NP, PEsmpTOT)
 !
-      use m_work_4_CG
       use djds_matrix_calcs_33
       use jacobi_precondition_33
 !
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
 !
 !
+      ntotWK_CG = nWK_CG + 3
       call verify_work_4_matvec33(NP, ntotWK_CG)
 !
       end subroutine init_VJACOBI33_DJDS_SMP
@@ -168,7 +170,7 @@
 !
       use solver_SR_3
 !
-      use m_work_4_CG
+      use m_CG_constants
       use m_solver_count_time
 !
       use cal_norm_products_33
@@ -219,6 +221,13 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: BNRM2,  DNRM2
+      real(kind=kreal) :: BNRM20, DNRM20
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT

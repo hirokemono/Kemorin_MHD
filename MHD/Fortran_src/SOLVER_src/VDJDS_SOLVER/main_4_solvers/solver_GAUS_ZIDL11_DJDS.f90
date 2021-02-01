@@ -43,9 +43,11 @@
 !
       implicit none
 !
-       real(kind = kreal), allocatable :: W(:,:)
-       private :: W
-       private :: verify_work_4_matvec11
+      integer(kind=kint), parameter, private :: nWK_CG =  4
+      integer(kind = kint), private :: ntotWK_CG = nWK_CG + 3
+      real(kind = kreal), allocatable, private :: W(:,:)
+
+      private :: verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
 !
@@ -143,12 +145,12 @@
 !
       subroutine init_VGAUSS_ZEIDEL11_DJDS_SMP(NP, PEsmpTOT)
 !
-      use m_work_4_CG
       use djds_matrix_calcs_11
       use symmetric_gauss_zeidel_11
 !
       integer(kind=kint ), intent(in) :: NP, PEsmpTOT
 !
+      ntotWK_CG = nWK_CG + 3
       call verify_work_4_matvec11(NP, ntotWK_CG)
 !
       end subroutine init_VGAUSS_ZEIDEL11_DJDS_SMP
@@ -168,7 +170,7 @@
 !
       use solver_SR
 !
-      use m_work_4_CG
+      use m_CG_constants
       use m_solver_count_time
       use symmetric_gauss_zeidel_11
 !
@@ -221,6 +223,13 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 
       integer(kind=kint ), parameter :: iter_gauss = 1
+!
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: BNRM2,  DNRM2
+      real(kind=kreal) :: BNRM20, DNRM20
+!
 !
       integer(kind=kint ) :: npLX1, npUX1
       integer(kind=kint ) :: iter, MAXIT

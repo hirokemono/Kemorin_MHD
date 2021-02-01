@@ -1,5 +1,5 @@
 !
-!      module m_work_4_GPBiCG
+!      module m_GPBiCG_constants
 !
 !     Written by Kemorin on Dec., 2005
 !
@@ -7,22 +7,11 @@
 !      subroutine init_work_GPBiCG_33(NP, PEsmpTOT)
 !      subroutine deallocate_work_GPBiCG_33
 !
-      module m_work_4_GPBiCG
+      module m_GPBiCG_constants
 !
       use m_precision
 !
       implicit none
-!
-      integer(kind = kint) :: iterPRE
-!
-      real(kind=kreal) :: RESID, TOL
-      real(kind=kreal) :: ALPHA, BETA, QSI, ETA
-      real(kind=kreal) :: BNRM2(1),  DNRM2(1),  RHO(1),  RHO1(1)
-      real(kind=kreal) :: BNRM20(1), DNRM20(1), RHO0(1), RHO10(1)
-      real(kind=kreal) :: COEF1(1)
-      real(kind=kreal) :: COEF10(1)
-      real(kind=kreal) :: C0(5), CG(5)
-      real(kind=kreal) :: EQ(2)
 !
       integer(kind=kint), parameter ::  R =  1
       integer(kind=kint), parameter :: RT =  2
@@ -52,4 +41,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_work_4_GPBiCG
+      end module m_GPBiCG_constants

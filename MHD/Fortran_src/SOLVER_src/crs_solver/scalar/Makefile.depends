@@ -10,12 +10,12 @@ precond_crs_incomplete_lu.o: $(SOLVER_11_DIR)/precond_crs_incomplete_lu.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 solver.o: $(SOLVER_11_DIR)/solver.f90 m_precision.o t_solver_SR.o calypso_mpi.o solver_CG.o solver_BiCGSTAB.o solver_GPBiCG.o solver_GMRES.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_BiCGSTAB.o: $(SOLVER_11_DIR)/solver_BiCGSTAB.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_constants.o m_work_4_BiCGSTAB.o solver_SR.o crs_matrix_calcs_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o crs_norm_products_11.o
+solver_BiCGSTAB.o: $(SOLVER_11_DIR)/solver_BiCGSTAB.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_constants.o m_BiCGSTAB_constants.o solver_SR.o crs_matrix_calcs_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o crs_norm_products_11.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_CG.o: $(SOLVER_11_DIR)/solver_CG.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_work_4_CG.o solver_SR.o crs_matrix_calcs_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o calcs_4_crs_CG11.o crs_norm_products_11.o
+solver_CG.o: $(SOLVER_11_DIR)/solver_CG.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_CG_constants.o solver_SR.o crs_matrix_calcs_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o calcs_4_crs_CG11.o crs_norm_products_11.o
 	$(F90) -c $(F90OPTFLAGS) $<
 solver_GMRES.o: $(SOLVER_11_DIR)/solver_GMRES.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o solver_SR.o crs_matrix_calcs_11.o crs_norm_products_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_GPBiCG.o: $(SOLVER_11_DIR)/solver_GPBiCG.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_constants.o m_work_4_GPBiCG.o solver_SR.o crs_matrix_calcs_11.o crs_norm_products_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o
+solver_GPBiCG.o: $(SOLVER_11_DIR)/solver_GPBiCG.f90 m_precision.o t_solver_SR.o calypso_mpi.o m_constants.o m_GPBiCG_constants.o solver_SR.o crs_matrix_calcs_11.o crs_norm_products_11.o incomplete_cholesky_crs_11.o precond_crs_incomplete_lu.o
 	$(F90) -c $(F90OPTFLAGS) $<
 
