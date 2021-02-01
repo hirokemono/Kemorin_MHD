@@ -9,7 +9,7 @@
 !!      subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,      &
 !!     &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,         &
 !!     &          iter_mid, iter_lowest, EPS_MG,                        &
-!!     &          METHOD_MG, PRECOND_MG, IER, W)
+!!     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W)
 !!       integer(kind = kint), intent(in) :: num_MG_level
 !!       type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
 !!       type(DJDS_ordering_table), intent(in) :: djds_tbl(0:num_MG_level)
@@ -74,13 +74,12 @@
       subroutine s_MGCG33_V_cycle(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, mat33, MG_vect, PEsmpTOT, NP, B, X,           &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, W)
+     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W)
 !
       use calypso_mpi
 !
       use m_constants
       use m_solver_SR
-      use m_work_4_CG
       use t_comm_table
       use solver_DJDS33_struct
       use interpolate_by_module
@@ -103,6 +102,7 @@
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       integer(kind = kint), intent(inout) :: IER
 !
+      integer(kind = kint), intent(in) :: ntotWK_CG
       real(kind = kreal), intent(inout) :: W(3*NP*ntotWK_CG)
 !
       integer(kind = kint) :: NP_f, NP_c
@@ -135,7 +135,7 @@
 !C calculate residual
       if(print_residual_on_each_level) Then
         call cal_residual33_type(djds_tbl(0), mat33(0), MG_vect(0),     &
-     &      PEsmpTOT, resd, W(1))
+     &      PEsmpTOT, resd, ntotWK_CG, W(1))
         if(my_rank .eq. 0) write(*,*) '0-th level, pre ', resd
       end if
 !
@@ -179,7 +179,7 @@
 !C calculate residual
         if(print_residual_on_each_level) Then
           call cal_residual33_type(djds_tbl(i), mat33(i), MG_vect(i),   &
-     &      PEsmpTOT, resd, W(1))
+     &      PEsmpTOT, resd, ntotWK_CG, W(1))
           if(my_rank .eq. 0) write(*,*) i, 'th level, pre ', resd
         end if
 !
@@ -205,12 +205,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_residual33_type(djds_tbl, mat33, MG_vect,          &
-     &          PEsmpTOT, resd, W)
+     &          PEsmpTOT, resd, ntotWK_CG, W)
 !
       use calypso_mpi
 !
       use m_constants
-      use m_work_4_CG
+      use m_CG_constants
       use cal_norm_products_33
 !
       type(DJDS_ordering_table), intent(in) :: djds_tbl
@@ -218,9 +218,12 @@
 !
       type(vectors_4_solver), intent(inout) :: MG_vect
       integer(kind = kint), intent(in) :: PEsmpTOT
+      integer(kind = kint), intent(in) :: ntotWK_CG
       real(kind = kreal), intent(inout) :: resd
       real(kind = kreal), intent(inout)                                 &
      &           :: W(3*mat33%num_diag,ntotWK_CG)
+!
+      real(kind = kreal) :: BNRM20
 !
 !
       call change_order_2_solve_bx3(mat33%num_diag, PEsmpTOT,           &

@@ -55,9 +55,11 @@
 !
       implicit none
 !
-       real(kind = kreal), allocatable :: W(:,:)
-       private :: W
-       private :: verify_work_4_matvec11
+      integer(kind=kint), parameter, private :: nWK_CG =  4
+      integer(kind = kint), private :: ntotWK_CG = nWK_CG + 3
+      real(kind = kreal), allocatable, private :: W(:,:)
+
+      private :: verify_work_4_matvec11
 !
 !  ---------------------------------------------------------------------
 !
@@ -139,7 +141,6 @@
       subroutine init_VMGCG11_DJDS_SMP(NP, PEsmpTOT, PRECOND,           &
      &           METHOD_MG, PRECOND_MG, iterPREmax)
 !
-      use m_work_4_CG
       use djds_matrix_calcs_11
       use incomplete_cholesky_11
       use MGCG11_V_cycle
@@ -151,6 +152,7 @@
 !
 !   allocate work arrays
 !
+      ntotWK_CG = nWK_CG + 3
       if (PRECOND(1:2).eq.'IC'  .or.                                    &
      &    PRECOND(1:3).eq.'ILU' .or. PRECOND(1:4).eq.'SSOR') then
         if(iterPREmax .ge. 1) ntotWK_CG = ntotWK_CG + 2
@@ -176,7 +178,7 @@
       use t_solver_djds
       use t_vector_for_solver
 !
-      use m_work_4_CG
+      use m_CG_constants
       use m_solver_count_time
 !
       use djds_norm_products_11
@@ -214,6 +216,13 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
+!
+!
+      integer(kind = kint) :: iterPRE
+!
+      real(kind=kreal) :: RESID, TOL
+      real(kind=kreal) :: BNRM2,  DNRM2,  C1,  RHO, RHO1, ALPHA
+      real(kind=kreal) :: BNRM20, DNRM20, C10, RHO0
 !
       integer(kind=kint ) :: iter
 !
@@ -306,7 +315,7 @@
         call s_MGCG11_V_cycle(num_MG_level, MG_comm, MG_itp,            &
      &          djds_tbl, mat11, MG_vect, PEsmpTOT, NP, W(1,R), W(1,Z), &
      &          iter_mid, iter_lowest, EPS_MG,                          &
-     &          METHOD_MG, PRECOND_MG, IER, W(1,1))
+     &          METHOD_MG, PRECOND_MG, IER, ntotWK_CG, W(1,1))
       write(*,*) 'IER', IER
 !
 !C
