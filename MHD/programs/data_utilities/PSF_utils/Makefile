@@ -21,15 +21,19 @@ TARGET_FIX_SGS_MF_WK_PSF = psf_fix_reynolds_wk
 
 TARGET_UPDATE_PSF_BIN = update_psf_bin
 
+TARGET_COMPARE_PSF = compare_psf
+
 
 LIBS_PSF_UTIL = \
 '$$(LIB_UTILS)'   \
+'$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
 '$$(LIB_SOLVER)' \
 '$$(LIB_MESH)'
 
 LIB_FILES_PSF_UTIL = \
-'$$(LIB_UTILS_FILE)'   \
+'$$(LIB_UTILS_FILE)'  \
+'$$(LIB_VIZ_FILE)'    \
 '$$(LIB_PARA_FILE)'   \
 '$$(LIB_SOLVER_FILE)' \
 '$$(LIB_MESH_FILE)'
@@ -130,6 +134,11 @@ MOD_FIX_SGS_MF_WK_PSF = \
 psf_fix_reynods_work.o \
 m_psf_results.o
 
+
+MOD_COMPARE_PSF = \
+compare_psf_files.o \
+t_ctl_data_psf_compare.o
+
 #
 #  -------------------------------------------------------------------------
 #
@@ -147,6 +156,7 @@ target_list:
 	@echo 'TARGET_DRAW_MAP =     $$(BUILDDIR)/$(TARGET_DRAW_MAP)'         >> $(MAKENAME)
 	@echo 'TARGET_LINE_ON_PSF =  $$(BUILDDIR)/$(TARGET_LINE_ON_PSF)'      >> $(MAKENAME)
 	@echo 'TARGET_DBENCH_ON_PSF = $$(BUILDDIR)/$(TARGET_DBENCH_ON_PSF)'   >> $(MAKENAME)
+	@echo 'TARGET_COMPARE_PSF =   $$(BUILDDIR)/$(TARGET_COMPARE_PSF)'     >> $(MAKENAME)
 	@echo 'TARGET_FIX_TEMP_PSF =  $$(BUILDDIR)/$(TARGET_FIX_TEMP_PSF)'    >> $(MAKENAME)
 	@echo 'TARGET_FIX_SGS_MF_WK_PSF =  $$(BUILDDIR)/$(TARGET_FIX_SGS_MF_WK_PSF)'    >> $(MAKENAME)
 	@echo 'TARGET_UPDATE_PSF_BIN = $$(BUILDDIR)/$(TARGET_UPDATE_PSF_BIN)' >> $(MAKENAME)
@@ -156,7 +166,8 @@ target_task:
 	@echo psf_utils: \
 	'$$(TARGET_PSF_2_VTK)      $$(TARGET_PSF_AVES)'     \
 	'$$(TARGET_PSF_RANGE_AVES) $$(TARGET_LINE_ON_PSF)'  \
-	'$$(TARGET_DBENCH_ON_PSF)  $$(TARGET_UPDATE_PSF_BIN)' >> $(MAKENAME)
+	'$$(TARGET_DBENCH_ON_PSF)  $$(TARGET_UPDATE_PSF_BIN)' \
+	'$$(TARGET_COMPARE_PSF)'  >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo utils_pg: \
 	'$$(TARGET_DRAW_CZ) $$(TARGET_DRAW_MAP) ' \
@@ -259,6 +270,14 @@ target_task:
 	'$$(MOD_FIX_SGS_MF_WK_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_COMPARE_PSF)': '$$(MOD_COMPARE_PSF)' \
+	'$$(LIB_FILES_PSF_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90OPTFLAGS)' '$$(F90CPPFLAGS)' \
+	-o '$$(TARGET_COMPARE_PSF)' \
+	'$$(MOD_COMPARE_PSF)' '-L. $$(LIBS_PSF_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -293,6 +312,8 @@ mod_list:
 	@echo  $(MOD_LINE_ON_PSF)        >> $(MAKENAME)
 	@echo  MOD_DYNAMOBENCH_PSF =  \\ >> $(MAKENAME)
 	@echo  $(MOD_DYNAMOBENCH_PSF)    >> $(MAKENAME)
+	@echo  MOD_COMPARE_PSF =  \\     >> $(MAKENAME)
+	@echo  $(MOD_COMPARE_PSF)        >> $(MAKENAME)
 	@echo  MOD_FIX_TEMP_PSF =  \\    >> $(MAKENAME)
 	@echo  $(MOD_FIX_TEMP_PSF)       >> $(MAKENAME)
 	@echo  MOD_FIX_SGS_MF_WK_PSF =  \\    >> $(MAKENAME)
