@@ -232,7 +232,7 @@
       character(len=kchara)  :: vtk_fld_type, tmpchara
 !
 !
-      read(id_vtk,*,err=99) vtk_fld_type, field_name
+      read(id_vtk,*,err=99,end=99) vtk_fld_type, field_name
       if(vtk_fld_type .eq. 'TENSORS') then
         ncomp_field = n_sym_tensor
       else if(vtk_fld_type .eq. 'VECTORS') then
