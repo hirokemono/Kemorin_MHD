@@ -26,6 +26,8 @@
 !!        type(psf_parameters), intent(inout) :: psf_param
 !!        type(section_define), intent(inout) :: psf_def
 !!
+!!      subroutine set_read_psf_file_ctl(default_prefix,                &
+!!     &          file_prefix_ctl, file_format_ctl, ucd_param)
 !!      subroutine set_merged_psf_file_ctl(default_prefix,              &
 !!     &          file_prefix_ctl, file_format_ctl, ucd_param)
 !!        character(len = kchara), intent(in) :: default_prefix
@@ -297,6 +299,28 @@
       end subroutine set_control_4_field_on_psf
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine set_read_psf_file_ctl(default_prefix,                  &
+     &          file_prefix_ctl, file_format_ctl, ucd_param)
+!
+      use t_control_array_character
+      use t_file_IO_parameter
+      use m_file_format_switch
+!
+      character(len = kchara), intent(in) :: default_prefix
+      type(read_character_item), intent(in) :: file_prefix_ctl
+      type(read_character_item), intent(in) :: file_format_ctl
+      type(field_IO_params), intent(inout) :: ucd_param
+!
+!
+      call set_merged_psf_file_ctl(default_prefix,                      &
+     &    file_prefix_ctl, file_format_ctl, ucd_param)
+      ucd_param%iflag_format                                            &
+     &      = mod(ucd_param%iflag_format, iflag_single)
+!
+      end subroutine set_read_psf_file_ctl
+!
+! -----------------------------------------------------------------------
 !
       subroutine set_merged_psf_file_ctl(default_prefix,                &
      &          file_prefix_ctl, file_format_ctl, ucd_param)

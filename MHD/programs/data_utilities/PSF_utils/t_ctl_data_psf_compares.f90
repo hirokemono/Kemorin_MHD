@@ -6,24 +6,33 @@
 !>@brief control data to compare multiple sectiong data
 !!
 !!@verbatim
-!!      subroutine read_control_file_psf_compare(my_rank, psf_cmp_ctl)
-!!      subroutine read_ctl_data_psf_compare                            &
-!!     &         (id_control, hd_block, psf_cmp_ctl, c_buf)
-!!      subroutine reset_ctl_data_psf_compare(psf_cmp_ctl)
-!!        type(psf_file_control), intent(inout) :: psf_cmp_ctl
+!!      subroutine read_ctl_file_psf_compares(my_rank, psf_compares)
+!!      subroutine read_ctl_data_psf_compares                           &
+!!     &         (id_control, hd_block, psf_compares, c_buf)
+!!      subroutine dealloc_psf_compares_ctl(psf_compares)
+!!        type(psf_compare_controls), intent(inout) :: psf_compares
+!!        type(buffer_for_control), intent(inout)  :: c_buf
+!!        type(psf_compare_controls), intent(inout) :: psf_compares
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!  begin compare_surface_file
-!!    begin first_file_ctl
-!!      surface_file_prefix    'isosurface/iso_w10n'
-!!      surface_file_format            VTK
-!!    end first_file_ctl
-!!    begin second_file_ctl
-!!      surface_file_prefix    'isosurface/iso_w10n'
-!!      surface_file_format            VTK
-!!    end second_file_ctl
-!!
-!!    i_step_surface_ctl      10
-!!  end compare_surface_file
+!!  array compare_surface_file
+!!    begin compare_surface_file
+!!      begin first_file_ctl
+!!        surface_file_prefix    'isosurface/iso_w10n'
+!!        surface_file_format            VTK
+!!      end first_file_ctl
+!!      begin second_file_ctl
+!!        surface_file_prefix    'reference/iso_w10n'
+!!        surface_file_format            VTK_GZ
+!!      end second_file_ctl
+!!      i_step_surface_ctl      10
+!!    end compare_surface_file
+!
+!!    ...
+!
+!!    begin compare_surface_file
+!!      ...
+!!    end compare_surface_file
+!!  end array compare_surface_file
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
@@ -50,6 +59,8 @@
 !
       character(len=kchara), parameter, private                         &
      &             :: hd_compare_psf_file = 'compare_surface_file'
+!
+      private :: alloc_psf_compares_ctl, append_ctl_data_psf_compare
 !
 !   --------------------------------------------------------------------
 !
@@ -90,7 +101,6 @@
       subroutine read_ctl_data_psf_compares                             &
      &         (id_control, hd_block, psf_compares, c_buf)
 !
-      use t_read_control_elements
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_control
