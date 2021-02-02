@@ -1,16 +1,25 @@
-begin compare_surface_file
-  array surface_compare_set
-    begin surface_compare_set
-      begin first_file_ctl
-        surface_file_prefix    'isosurface/iso_w10n'
-        surface_file_format            VTK
-      end first_file_ctl
-      begin second_file_ctl
-        surface_file_prefix    'isosurface/iso_w10n'
-        surface_file_format            VTK
-      end second_file_ctl
-      i_step_surface_ctl      10
-    end surface_compare_set
-  end array surface_compare_set
+array compare_surface_file
+  begin compare_surface_file
+    begin first_file_ctl
+      surface_file_prefix    'isosurface/iso_w10n'
+      surface_file_format            VTK
+    end first_file_ctl
+    begin second_file_ctl
+      surface_file_prefix    'isosurface/iso_w10n'
+      surface_file_format            VTK
+    end second_file_ctl
+    i_step_surface_ctl      10
+  end compare_surface_file
 !
-end compare_surface_file
+  begin compare_surface_file
+    begin first_file_ctl
+      surface_file_prefix    'psf/iso_w10n'
+      surface_file_format            UDT
+    end first_file_ctl
+    begin second_file_ctl
+      surface_file_prefix    'psf/iso_w10n'
+      surface_file_format            UDT_GZ
+    end second_file_ctl
+    i_step_surface_ctl      10
+  end compare_surface_file
+end array compare_surface_file

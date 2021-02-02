@@ -1,6 +1,6 @@
 cal_psf_rms_aves.o: $(PSF_UTIL_MAINDIR)/cal_psf_rms_aves.f90 m_precision.o m_constants.o t_phys_data.o set_parallel_file_name.o t_norms_4_psf.o copy_field_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
-compare_psf_files.o: $(PSF_UTIL_MAINDIR)/compare_psf_files.f90 m_precision.o t_ctl_data_psf_compare.o t_file_IO_parameter.o t_control_params_4_psf.o t_control_array_character.o m_field_file_format.o
+compare_psf_files.o: $(PSF_UTIL_MAINDIR)/compare_psf_files.f90 m_precision.o t_ctl_data_psf_compares.o t_file_IO_parameter.o t_control_params_4_psf.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_section_from_triangle.o: $(PSF_UTIL_MAINDIR)/const_section_from_triangle.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -41,6 +41,8 @@ sel_read_old_binary_ucd.o: $(PSF_UTIL_MAINDIR)/sel_read_old_binary_ucd.F90 m_pre
 sel_write_old_binary_ucd.o: $(PSF_UTIL_MAINDIR)/sel_write_old_binary_ucd.F90 m_precision.o m_constants.o m_file_format_switch.o m_field_file_format.o m_error_IDs.o t_file_IO_parameter.o t_ucd_data.o set_ucd_file_names.o MPI_binary_head_IO.o MPI_ascii_data_IO.o ucd_file_MPI_IO.o gz_MPI_binary_datum_IO.o gz_ucd_file_MPI_IO.o
 	$(F90) -c $(F90OPTFLAGS) $(F90CPPFLAGS) $<
 t_ctl_data_psf_compare.o: $(PSF_UTIL_MAINDIR)/t_ctl_data_psf_compare.f90 m_precision.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_integer.o skip_comment_f.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_ctl_data_psf_compares.o: $(PSF_UTIL_MAINDIR)/t_ctl_data_psf_compares.f90 m_precision.o m_machine_parameter.o t_ctl_data_psf_compare.o skip_comment_f.o t_read_control_elements.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_norms_4_psf.o: $(PSF_UTIL_MAINDIR)/t_norms_4_psf.f90 m_precision.o t_geometry_data.o t_phys_data.o
 	$(F90) -c $(F90OPTFLAGS) $<

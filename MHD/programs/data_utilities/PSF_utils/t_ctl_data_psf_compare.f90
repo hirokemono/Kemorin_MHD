@@ -1,5 +1,5 @@
 !>@file   t_ctl_data_psf_compare.f90
-!!@brief  module t_ctl_data_psf_compare
+!!@brief  module  
 !!
 !!@date  Programmed by H.Matsui in Jan., 2021
 !
@@ -11,6 +11,9 @@
 !!     &         (id_control, hd_block, psf_cmp_ctl, c_buf)
 !!      subroutine reset_ctl_data_psf_compare(psf_cmp_ctl)
 !!        type(psf_file_control), intent(inout) :: psf_cmp_ctl
+!!      subroutine copy_ctl_data_psf_compare(org_psf_cmp, new_psf_cmp)
+!!        type(psf_compare_control), intent(in) :: org_psf_cmp
+!!        type(psf_compare_control), intent(inout) :: new_psf_cmp
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin compare_surface_file
 !!    begin first_file_ctl
@@ -48,9 +51,9 @@
 !>        Structures of surface data control
       type psf_file_control
 !>   Putput field file format
-        type(read_character_item) :: psf_file_prefix_ctl
+        type(read_character_item) :: file_prefix_ctl
 !>   Putput field file format
-        type(read_character_item) :: psf_file_format_ctl
+        type(read_character_item) :: file_format_ctl
 !
         integer (kind=kint) :: i_psf_file_control = 0
       end type psf_file_control
@@ -84,6 +87,7 @@
      &             :: hd_surface_file_format = 'surface_file_format'
 !
       private :: read_ctl_data_psf_file, reset_ctl_data_psf_file
+      private :: copy_ctl_data_psf_file
 !
 !   --------------------------------------------------------------------
 !
@@ -163,6 +167,26 @@
       end subroutine reset_ctl_data_psf_compare
 !
 !   --------------------------------------------------------------------
+!
+      subroutine copy_ctl_data_psf_compare(org_psf_cmp, new_psf_cmp)
+!
+      type(psf_compare_control), intent(in) :: org_psf_cmp
+      type(psf_compare_control), intent(inout) :: new_psf_cmp
+!
+!
+      call copy_ctl_data_psf_file(org_psf_cmp%first_psf,                &
+     &                            new_psf_cmp%first_psf)
+      call copy_ctl_data_psf_file(org_psf_cmp%second_psf,               &
+     &                            new_psf_cmp%second_psf)
+      call copy_integer_ctl(org_psf_cmp%i_step_surface_ctl,             &
+     &                      new_psf_cmp%i_step_surface_ctl)
+!
+      new_psf_cmp%i_psf_compare_control                                 &
+     &      = org_psf_cmp%i_psf_compare_control
+!
+      end subroutine copy_ctl_data_psf_compare
+!
+!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_ctl_data_psf_file                                 &
@@ -185,9 +209,9 @@
         if(check_end_flag(c_buf, hd_block)) exit
 !
         call read_chara_ctl_type(c_buf, hd_surface_file_prefix,         &
-     &      first_psf%psf_file_prefix_ctl)
+     &      first_psf%file_prefix_ctl)
         call read_chara_ctl_type(c_buf, hd_surface_file_format,         &
-     &      first_psf%psf_file_format_ctl)
+     &      first_psf%file_format_ctl)
       end do
       first_psf%i_psf_file_control = 1
 !
@@ -200,12 +224,29 @@
       type(psf_file_control), intent(inout) :: first_psf
 !
 !
-      first_psf%psf_file_prefix_ctl%iflag =   0
-      first_psf%psf_file_format_ctl%iflag =   0
+      first_psf%file_prefix_ctl%iflag =   0
+      first_psf%file_format_ctl%iflag =   0
 !
-      first_psf%i_psf_file_control =          0
+      first_psf%i_psf_file_control =      0
 !
       end subroutine reset_ctl_data_psf_file
+!
+!   --------------------------------------------------------------------
+!
+      subroutine copy_ctl_data_psf_file(first_psf, second_psf)
+!
+      type(psf_file_control), intent(in) :: first_psf
+      type(psf_file_control), intent(inout) :: second_psf
+!
+!
+      call copy_chara_ctl(first_psf%file_prefix_ctl,                    &
+     &                    second_psf%file_prefix_ctl)
+      call copy_chara_ctl(first_psf%file_format_ctl,                    &
+     &                    second_psf%file_format_ctl)
+!
+      second_psf%i_psf_file_control = first_psf%i_psf_file_control
+!
+      end subroutine copy_ctl_data_psf_file
 !
 !   --------------------------------------------------------------------
 !
