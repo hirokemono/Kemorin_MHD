@@ -4,7 +4,7 @@ cal_mesh_position.o: $(MESHDIR)/cal_mesh_position.f90 m_precision.o t_geometry_d
 	$(F90) -c $(F90OPTFLAGS) $<
 check_geometries.o: $(MESHDIR)/check_geometries.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_edge_data.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-compare_mesh_structures.o: $(MESHDIR)/compare_mesh_structures.f90 m_precision.o t_comm_table.o t_geometry_data.o t_mesh_data.o copy_communication_table.o
+compare_mesh_structures.o: $(MESHDIR)/compare_mesh_structures.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_mesh_data.o m_phys_constants.o compare_indices.o copy_communication_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_edge_4_viewer.o: $(MESHDIR)/const_edge_4_viewer.f90 m_precision.o m_geometry_constants.o t_viewer_mesh.o t_viewer_group.o t_sum_hash.o t_edge_data.o const_grp_edge_4_viewer.o set_edge_hash_by_sf.o set_edge_data_by_sf.o
 	$(F90) -c $(F90OPTFLAGS) $<
