@@ -93,9 +93,6 @@
       type(field_IO_params), intent(in) :: psf1_file_param
       type(field_IO_params), intent(in) :: psf2_file_param
 !
-      integer(kind = kint) :: compare_field_vector
-      external :: compare_field_vector
-!
       type(psf_results), save :: psf_1
       type(psf_results), save :: psf_2
       type(time_data), save :: t_IO_u
@@ -143,13 +140,11 @@
       use m_machine_parameter
       use m_phys_constants
       use t_geometry_data
+      use compare_indices
 !
       implicit none
 !
       type(node_data), intent(in) :: node1, node2
-!
-      integer(kind = kint) :: compare_field_vector
-      external :: compare_field_vector
 !
       character(len=kchara), parameter :: field_name = 'position'
       integer(kind = kint) :: iflag
@@ -225,6 +220,7 @@
       use m_precision
       use m_machine_parameter
       use t_phys_data
+      use compare_indices
 !
       implicit none
 !
@@ -232,9 +228,6 @@
 !
       integer(kind = kint) :: ifld, ist
       integer(kind = kint) :: iflag
-!
-      integer(kind = kint) :: compare_field_vector
-      external :: compare_field_vector
 !
 !
       if(iflag_debug .gt. 0) then
@@ -293,62 +286,4 @@
       compare_field_data = iflag
 !
       end function compare_field_data
-!
-!  --------------------------------------------------------------------
-!
-      integer(kind = kint) function compare_field_vector                &
-     &      (n_point, numdir, fld_name, d_fld1, d_fld2)
-!
-      use m_precision
-      use m_machine_parameter
-!
-      implicit none
-!
-      character(len=kchara), intent(in) :: fld_name
-      integer(kind = kint), intent(in) :: n_point, numdir
-      real(kind = kreal), intent(in) :: d_fld1(n_point,numdir)
-      real(kind = kreal), intent(in) :: d_fld2(n_point,numdir)
-!
-      real(kind = kreal), allocatable :: vmin(:), vmax(:), size(:)
-      real(kind = kreal) :: scale, diff
-      integer(kind = kint) :: inod, ifld, icomp
-      integer(kind = kint) :: iflag
-!
-      real(kind = kreal), parameter :: TINY = 1.0d-12
-!
-      iflag = 0
-      allocate(vmin(numdir))
-      allocate(vmax(numdir))
-      allocate(size(numdir))
-!
-!$omp parallel workshare
-      vmin(1:numdir) = minval(d_fld1(1:n_point,1:numdir),1)
-      vmax(1:numdir) = maxval(d_fld1(1:n_point,1:numdir),1)
-!$omp end parallel workshare
-      size(1:numdir) = vmax(1:numdir) - vmin(1:numdir)
-!
-      scale = 0.0d0
-      do icomp = 1, numdir
-        scale = scale + vmax(icomp)**2
-      end do
-      scale = sqrt(scale)
-      if(iflag_debug .gt. 0) write(*,*) ifld, 'scale for ',             &
-     &                                 trim(fld_name), ': ', scale
-!
-      do inod = 1, n_point
-        do icomp = 1, numdir
-          diff = d_fld2(inod,icomp) - d_fld1(inod,icomp)
-          if((abs(diff) / scale) .gt. TINY) then
-            write(*,*) icomp, '-component of ', trim(fld_name),     &
-     &                ' at ', inod, ' is different: ', diff
-            iflag = iflag + 1
-          end if
-        end do
-      end do
-      deallocate(vmin, vmax, size)
-      compare_field_vector = iflag
-!
-      end function compare_field_vector
-!
-!  --------------------------------------------------------------------
 !

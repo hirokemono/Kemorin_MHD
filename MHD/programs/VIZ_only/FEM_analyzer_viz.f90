@@ -177,8 +177,7 @@
       allocate(viz%nod_fld)
       call alloc_phys_name_type_by_output(viz%ucd, viz%nod_fld)
       call add_field_in_viz_ctls_w_SGS(viz%viz_fld_list, viz%nod_fld)
-      call alloc_phys_data_type(viz%geofem%mesh%node%numnod,            &
-     &                          viz%nod_fld)
+      call alloc_phys_data(viz%geofem%mesh%node%numnod, viz%nod_fld)
 !
 !     ---------------------
 !

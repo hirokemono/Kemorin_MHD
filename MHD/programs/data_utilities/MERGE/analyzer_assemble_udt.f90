@@ -137,7 +137,7 @@
       new_fld%num_phys_viz =  new_fld%num_phys
       new_fld%ntot_phys_viz = new_fld%ntot_phys
 !
-      call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
+      call alloc_phys_data(new_mesh%node%numnod, new_fld)
 !
       end subroutine init_assemble_udt
 !

@@ -83,7 +83,7 @@
 !
       nod_fld%num_phys =     ione
       nod_fld%num_phys_viz = ione
-      call alloc_phys_name_type(nod_fld)
+      call alloc_phys_name(nod_fld)
 !
       nod_fld%num_component(1) =    ncomp_4_result
       nod_fld%istack_component(1) = ncomp_4_result
@@ -93,7 +93,7 @@
       nod_fld%ntot_phys =     ncomp_4_result
       nod_fld%ntot_phys_viz = ncomp_4_result
 !
-      call alloc_phys_data_type(nod_fld%n_point, nod_fld)
+      call alloc_phys_data(nod_fld%n_point, nod_fld)
 !
       end subroutine allocate_product_result
 !

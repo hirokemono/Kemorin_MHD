@@ -184,7 +184,7 @@
 !
       if(my_rank .eq. 0) then
         field%num_phys = rayleigh_ftbl%num_field
-        call alloc_phys_name_type(field)
+        call alloc_phys_name(field)
 !
         field%phys_name(1:field%num_phys)                               &
      &          = rayleigh_ftbl%field_name(1:field%num_phys)
@@ -199,7 +199,7 @@
       field%num_phys_viz =  field%num_phys
       field%ntot_phys_viz = field%ntot_phys
 !
-      call alloc_phys_data_type(mesh%node%numnod, field)
+      call alloc_phys_data(mesh%node%numnod, field)
 !
       end subroutine init_fields_by_rayleigh
 !

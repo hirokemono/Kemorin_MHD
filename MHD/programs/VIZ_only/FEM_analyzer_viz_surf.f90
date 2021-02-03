@@ -155,8 +155,8 @@
      &                                    sfcing%nod_fld)
       call add_field_in_viz_controls(sfcing%viz_fld_list,               &
      &                               sfcing%nod_fld)
-      call alloc_phys_data_type(sfcing%geofem%mesh%node%numnod,         &
-     &                          sfcing%nod_fld)
+      call alloc_phys_data(sfcing%geofem%mesh%node%numnod,              &
+     &                     sfcing%nod_fld)
       call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
 !
       end subroutine FEM_initialize_surface
@@ -223,8 +223,8 @@
      &                        sfcing%ucd_time, sfcing%ucd_in)
       call alloc_phys_name_type_by_output(sfcing%ucd_in,                &
      &                                    sfcing%nod_fld)
-      call alloc_phys_data_type(sfcing%geofem%mesh%node%numnod,         &
-     &                          sfcing%nod_fld)
+      call alloc_phys_data(sfcing%geofem%mesh%node%numnod,              &
+     &                     sfcing%nod_fld)
       call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
 !
       end subroutine FEM_initialize_VTK_convert

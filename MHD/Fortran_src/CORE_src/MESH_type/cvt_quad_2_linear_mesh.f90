@@ -249,7 +249,7 @@
 !
 !
       call copy_field_name_type(nod_fld_q, nod_fld_l)
-      call alloc_phys_data_type(node_l%numnod, nod_fld_l)
+      call alloc_phys_data(node_l%numnod, nod_fld_l)
 !
       end subroutine init_linear_nod_phys
 !

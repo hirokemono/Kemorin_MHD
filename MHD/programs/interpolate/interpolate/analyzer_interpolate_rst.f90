@@ -87,9 +87,9 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
       call copy_field_name_type(itp_rst%org_fld, itp_rst%new_fld)
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(itp_rst%new_fem%mesh%node%numnod,       &
-     &                          itp_rst%new_fld)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data'
+      call alloc_phys_data(itp_rst%new_fem%mesh%node%numnod,            &
+     &                     itp_rst%new_fld)
 !
       end subroutine initialize_itp_rst
 !

@@ -16,7 +16,7 @@ cal_products_w_const_smp.o: $(BASEDIR)/cal_products_w_const_smp.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_subtract_smp.o: $(BASEDIR)/cal_subtract_smp.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-compare_indices.o: $(BASEDIR)/compare_indices.f90 m_precision.o
+compare_indices.o: $(BASEDIR)/compare_indices.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 coordinate_converter.o: $(BASEDIR)/coordinate_converter.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

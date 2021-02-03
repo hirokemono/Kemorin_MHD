@@ -110,7 +110,7 @@
       new_fld%num_phys_viz =   org_fld%num_phys_viz
       new_fld%ntot_phys_viz =  org_fld%ntot_phys_viz
 !
-      call alloc_phys_name_type(new_fld)
+      call alloc_phys_name(new_fld)
 !
       new_fld%num_component(1:new_fld%num_phys)                         &
      &             = org_fld%num_component(1:new_fld%num_phys)
@@ -123,7 +123,7 @@
       new_fld%istack_component(0:new_fld%num_phys)                      &
      &             = org_fld%istack_component(0:new_fld%num_phys)
 !
-      call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
+      call alloc_phys_data(new_mesh%node%numnod, new_fld)
 !
       end subroutine init_fld_to_new_partition
 !

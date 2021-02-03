@@ -155,8 +155,7 @@
      &                        pvr%ucd_time, pvr%ucd)
       call alloc_phys_name_type_by_output(pvr%ucd, pvr%nod_fld)
       call add_field_in_viz_ctls_w_SGS(pvr%viz_fld_list, pvr%nod_fld)
-      call alloc_phys_data_type(pvr%geofem%mesh%node%numnod,            &
-     &                          pvr%nod_fld)
+      call alloc_phys_data(pvr%geofem%mesh%node%numnod, pvr%nod_fld)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR

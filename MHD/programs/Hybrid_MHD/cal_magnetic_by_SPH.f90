@@ -105,8 +105,8 @@
       call FEM_mesh_initialization                                      &
      &   (mesh_sph%mesh, mesh_sph%group)
 !
-      call alloc_phys_name_type(sph_fld)
-      call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)
+      call alloc_phys_name(sph_fld)
+      call alloc_phys_data(mesh_sph%node%numnod, sph_fld)
 !
 !     ---------------------
 !

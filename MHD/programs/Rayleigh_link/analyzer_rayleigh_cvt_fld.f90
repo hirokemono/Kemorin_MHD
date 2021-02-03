@@ -149,7 +149,7 @@
 !
       if(my_rank .eq. 0) then
         new_fld%num_phys = 1
-        call alloc_phys_name_type(new_fld)
+        call alloc_phys_name(new_fld)
         new_fld%phys_name(1) = 'temperature'
         new_fld%num_component(1) = 1
         new_fld%istack_component(1) = 1
@@ -160,7 +160,7 @@
       new_fld%num_phys_viz =  new_fld%num_phys
       new_fld%ntot_phys_viz = new_fld%ntot_phys
 !
-      call alloc_phys_data_type(geofem%mesh%node%numnod, new_fld)
+      call alloc_phys_data(geofem%mesh%node%numnod, new_fld)
 !
       call calypso_MPI_barrier
 !

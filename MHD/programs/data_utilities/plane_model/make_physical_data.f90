@@ -129,8 +129,8 @@
      &    mgd_mesh_pm%merged_fld)
 !
 !      write(*,*) 'allocate_merged_field_data'
-      call alloc_phys_data_type                                         &
-     &   (mgd_mesh_pm%merged%node%numnod, mgd_mesh_pm%merged_fld)
+      call alloc_phys_data(mgd_mesh_pm%merged%node%numnod,              &
+     &                     mgd_mesh_pm%merged_fld)
 !
       npl_spec1%ncomp_nsp = plane_fft_wk1%num_fft
 !
@@ -337,8 +337,8 @@
       if ( i.gt. num_fft) exit
      end do
 !
-     write(*,*) 'alloc_phys_name_type', merged_fld%num_phys
-     call alloc_phys_name_type(merged_fld)
+     write(*,*) 'alloc_phys_name', merged_fld%num_phys
+     call alloc_phys_name(merged_fld)
 !
      iii = 0
      i = 1

@@ -78,7 +78,7 @@
 !
         nod_fld%num_phys =     2
         nod_fld%num_phys_viz = nod_fld%num_phys
-        call alloc_phys_name_type(nod_fld)
+        call alloc_phys_name(nod_fld)
 !
         nod_fld%phys_name(1) = 'noise'
         nod_fld%phys_name(2) = 'grad_noise'
@@ -93,7 +93,7 @@
 !
         nod_fld%ntot_phys =      nod_fld%istack_component(2)
         nod_fld%ntot_phys_viz = nod_fld%ntot_phys
-        call alloc_phys_data_type(mesh%node%numnod, nod_fld)
+        call alloc_phys_data(mesh%node%numnod, nod_fld)
 !
         do inod = 1, mesh%node%internal_node
           nod_fld%d_fld(inod,1)                                         &

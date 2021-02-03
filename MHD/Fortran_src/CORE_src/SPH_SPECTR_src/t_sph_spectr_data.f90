@@ -65,7 +65,7 @@
       type(sph_phys_data), intent(inout) :: sph_phys
 !
 !
-      call alloc_phys_name_type(sph_phys%rj_fld)
+      call alloc_phys_name(sph_phys%rj_fld)
 !
       end subroutine alloc_phys_rj_name_t
 !
@@ -78,7 +78,7 @@
       type(sph_phys_data), intent(inout) :: sph_phys
 !
 !
-      call alloc_phys_data_type(nnod_rj, sph_phys%rj_fld)
+      call alloc_phys_data(nnod_rj, sph_phys%rj_fld)
 !
       end subroutine alloc_phys_rj_data_t
 !

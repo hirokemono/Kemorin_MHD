@@ -53,8 +53,8 @@
 !
       call alloc_node_geometry_w_sph(psf_nod)
       call alloc_ele_connect(psf_ele)
-      call alloc_phys_name_type(psf_phys)
-      call alloc_phys_data_type(psf_nod%numnod, psf_phys)
+      call alloc_phys_name(psf_phys)
+      call alloc_phys_data(psf_nod%numnod, psf_phys)
 !
       do i = 1, psf_phys%num_phys
         psf_phys%num_component(i) = 1

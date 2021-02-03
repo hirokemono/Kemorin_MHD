@@ -80,9 +80,9 @@
       if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
       call copy_field_name_type(itp_udt%org_fld, itp_udt%new_fld)
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(itp_udt%new_fem%mesh%node%numnod,       &
-     &                          itp_udt%new_fld)
+      if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data'
+      call alloc_phys_data(itp_udt%new_fem%mesh%node%numnod,            &
+     &                     itp_udt%new_fld)
 !
       end subroutine initialize_itp_udt
 !

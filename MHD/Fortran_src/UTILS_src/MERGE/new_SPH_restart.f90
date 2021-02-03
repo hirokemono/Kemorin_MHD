@@ -138,7 +138,7 @@
           call copy_time_steps_from_restart(org_time_IO, init_d)
 !
           n_point = org_sph_array%sph(ip)%sph_rj%nnod_rj
-          call alloc_phys_data_type(n_point, org_sph_array%fld(ip))
+          call alloc_phys_data(n_point, org_sph_array%fld(ip))
           call copy_rj_phys_data_from_IO                                &
      &       (org_fst_IO, org_sph_array%fld(ip))
 !
@@ -179,7 +179,7 @@
 !
         if(irank_new .lt. org_sph_array%num_pe) then
           n_point = org_sph_array%sph(ip)%sph_rj%nnod_rj
-          call alloc_phys_data_type(n_point, org_sph_array%fld(ip))
+          call alloc_phys_data(n_point, org_sph_array%fld(ip))
           call copy_rj_phys_data_from_IO                                &
      &       (org_fst_IO, org_sph_array%fld(ip))
 !

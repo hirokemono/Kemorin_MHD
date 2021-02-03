@@ -93,8 +93,8 @@
 !
 !
       call share_phys_field_names(new_sph_data%fld)
-      call alloc_phys_data_type                                         &
-     &   (new_sph_data%sph%sph_rj%nnod_rj, new_sph_data%fld)
+      call alloc_phys_data(new_sph_data%sph%sph_rj%nnod_rj,             &
+     &                     new_sph_data%fld)
 !
       end subroutine share_new_spectr_field_names
 !

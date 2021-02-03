@@ -42,7 +42,7 @@
 !
 !
       fld%num_phys = 0
-      call alloc_phys_name_type(fld)
+      call alloc_phys_name(fld)
 !
       do i = 1, field_ctl%icou
         flag = .FALSE.
@@ -77,7 +77,7 @@
 !
 !
       fld%num_phys = 0
-      call alloc_phys_name_type(fld)
+      call alloc_phys_name(fld)
 !
       flag = .FALSE.
       do i = 1, field_ctl%icou

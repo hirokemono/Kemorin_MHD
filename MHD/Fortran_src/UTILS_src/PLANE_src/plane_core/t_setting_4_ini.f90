@@ -56,7 +56,7 @@
       write(*,*) 'number of physical values'
       read(*,*) merged_fld%num_phys
 !
-      call alloc_phys_name_type(merged_fld)
+      call alloc_phys_name(merged_fld)
 !
       write(*,*) ' select physical values'
 !       write(*,*) ' No. ', np

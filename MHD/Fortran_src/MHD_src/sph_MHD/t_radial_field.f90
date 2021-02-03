@@ -72,7 +72,7 @@
       call each_radial_field_num_by_model                               &
      &   (fl_prop, cd_prop, ref_param_T, ref_param_C, r_field%d_rad)
 !
-      call alloc_phys_name_type(r_field%d_rad)
+      call alloc_phys_name(r_field%d_rad)
 !
       icou = 0
       do i = 1, r_file%num_r_param_ctl
@@ -86,7 +86,7 @@
 !
       r_field%d_rad%ntot_phys                                           &
      &      = r_field%d_rad%istack_component(r_field%d_rad%num_phys)
-      call alloc_phys_data_type(nri_rj, r_field%d_rad)
+      call alloc_phys_data(nri_rj, r_field%d_rad)
 !
       icou = 0
       do i = 1, r_file%num_r_param_ctl

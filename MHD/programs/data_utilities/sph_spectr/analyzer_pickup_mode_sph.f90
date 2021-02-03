@@ -65,8 +65,8 @@
 !
 !  -------------------------------
 !
-      call alloc_phys_data_type                                         &
-     &   (SPH_dat_ss%sph%sph_rj%nnod_rj, SPH_dat_ss%fld)
+      call alloc_phys_data(SPH_dat_ss%sph%sph_rj%nnod_rj,               &
+     &                     SPH_dat_ss%fld)
 !
       end subroutine initialization
 !

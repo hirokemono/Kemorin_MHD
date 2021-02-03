@@ -114,7 +114,7 @@
 !
       call init_field_name_4_assemble_ucd                               &
      &   (asbl_tbl_u, fld_IO_m, new_fld)
-      call alloc_phys_data_type(mesh_m%node%numnod, new_fld)
+      call alloc_phys_data(mesh_m%node%numnod, new_fld)
 !
       call dealloc_phys_data_IO(fld_IO_m)
       call dealloc_phys_name_IO(fld_IO_m)

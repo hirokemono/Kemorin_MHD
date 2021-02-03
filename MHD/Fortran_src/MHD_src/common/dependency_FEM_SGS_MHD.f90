@@ -81,7 +81,7 @@
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    iphys_LES%filter_fld, iphys_LES%SGS_term, nod_fld)
 !
-      call alloc_phys_data_type(ele%numele, ele_fld)
+      call alloc_phys_data(ele%numele, ele_fld)
       call set_element_field_address                                    &
      &   (ele_fld, iphys_ele_base, iphys_ele_fil)
 !

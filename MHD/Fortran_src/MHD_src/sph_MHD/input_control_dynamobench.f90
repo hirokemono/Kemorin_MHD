@@ -149,7 +149,7 @@
 !
       d_circle%num_phys = bench%ibench_velo + bench%ibench_temp         &
      &                   + bench%ibench_magne
-      call alloc_phys_name_type(d_circle)
+      call alloc_phys_name(d_circle)
 !
       ifld = 0
       if(bench%ibench_temp .gt. 0) then

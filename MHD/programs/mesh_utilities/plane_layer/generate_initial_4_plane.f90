@@ -102,8 +102,8 @@
         call copy_node_geometry_types(mesh_IO_p%node, node_plane)
         call dealloc_node_geometry_IO(mesh_IO_p)
 !
-        call alloc_phys_data_type                                       &
-     &     (mgd_mesh_pl%merged%node%numnod, mgd_mesh_pl%merged_fld)
+        call alloc_phys_data(mgd_mesh_pl%merged%node%numnod,            &
+     &                       mgd_mesh_pl%merged_fld)
 !
 !   set up of physical values
 !

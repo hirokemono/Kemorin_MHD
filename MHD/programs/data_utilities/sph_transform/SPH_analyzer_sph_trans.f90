@@ -57,8 +57,7 @@
       call copy_sph_name_rj_to_rtp(SPH_MHD%fld, SPH_STR%fld_rtp)
       call calypso_mpi_barrier
 !
-      call alloc_phys_data_type                                         &
-     &   (SPH_MHD%sph%sph_rj%nnod_rj, SPH_MHD%fld)
+      call alloc_phys_data(SPH_MHD%sph%sph_rj%nnod_rj, SPH_MHD%fld)
       call calypso_mpi_barrier
 !
 !  ---- initialize spherical harmonics transform

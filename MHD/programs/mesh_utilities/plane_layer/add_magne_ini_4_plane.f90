@@ -106,7 +106,7 @@
       call add_initial_num_comp_mhd(mgd_mesh_pl%merged_fld, pini_p1)
 !
       mgd_mesh_pl%merged_fld%num_phys = pini_p1%num_rst_new
-      call alloc_phys_name_type(mgd_mesh_pl%merged_fld)
+      call alloc_phys_name(mgd_mesh_pl%merged_fld)
 !
       pini_p1%ntot_rst_org =  plane_fst_IO%ntot_comp_IO
       mgd_mesh_pl%merged_fld%phys_name(1:pini_p1%num_rst_org)           &
@@ -150,8 +150,8 @@
 !
         mgd_mesh_pl%merged_fld%num_phys =  pini_p1%num_rst_new
         mgd_mesh_pl%merged_fld%ntot_phys = pini_p1%ntot_rst_new
-        call alloc_phys_data_type                                       &
-     &     (mgd_mesh_pl%merged%node%numnod, mgd_mesh_pl%merged_fld)
+        call alloc_phys_data(mgd_mesh_pl%merged%node%numnod,            &
+     &                       mgd_mesh_pl%merged_fld)
 !
 !     read original restart data
 !

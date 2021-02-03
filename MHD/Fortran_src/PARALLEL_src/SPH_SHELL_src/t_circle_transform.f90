@@ -177,7 +177,7 @@
         circle%d_rj_circle = 0.0d0
       end if
 !
-      call alloc_phys_data_type(circle%mphi_circle, d_circle)
+      call alloc_phys_data(circle%mphi_circle, d_circle)
 !
       end subroutine alloc_circle_field
 !

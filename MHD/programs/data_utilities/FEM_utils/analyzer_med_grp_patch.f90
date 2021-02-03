@@ -59,7 +59,7 @@
      &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
 !
       FUTIL1%nod_fld%num_phys = 1
-      call alloc_phys_name_type(FUTIL1%nod_fld)
+      call alloc_phys_name(FUTIL1%nod_fld)
       FUTIL1%nod_fld%num_component(1) = 1
       FUTIL1%nod_fld%istack_component(1) = 1
       FUTIL1%nod_fld%phys_name(1) = 'temperature'

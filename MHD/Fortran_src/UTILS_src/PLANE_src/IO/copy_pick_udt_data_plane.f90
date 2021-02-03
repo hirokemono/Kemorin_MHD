@@ -49,7 +49,7 @@
       call deallocate_ucd_phys_data(ucd)
 !
       nod_fld%num_phys =    ucd%num_field
-      call alloc_phys_name_type(nod_fld)
+      call alloc_phys_name(nod_fld)
 !
       nod_fld%istack_component(0) = 0
       do i = 1, nod_fld%num_phys

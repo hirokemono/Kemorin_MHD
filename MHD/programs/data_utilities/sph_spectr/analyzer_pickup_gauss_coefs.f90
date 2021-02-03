@@ -66,8 +66,8 @@
 !
 !  -------------------------------
 !
-      call alloc_phys_data_type                                         &
-     &   (SPH_dat_ss%sph%sph_rj%nnod_rj, SPH_dat_ss%fld)
+      call alloc_phys_data(SPH_dat_ss%sph%sph_rj%nnod_rj,               &
+     &                     SPH_dat_ss%fld)
 !
       call init_field_data_w_SGS(SPH_dat_ss%sph%sph_rj%nnod_rj,         &
      &    SPH_dat_ss%fld, SPH_dat_ss%ipol, ipol_LES_ss)

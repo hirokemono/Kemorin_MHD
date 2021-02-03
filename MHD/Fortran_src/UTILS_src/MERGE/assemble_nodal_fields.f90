@@ -89,7 +89,7 @@
       call count_fields_4_assemble_ucd                                  &
      &   (asbl_tbl%nfld_label, asbl_tbl%ucd_on_label,                   &
      &    fld_IO, fld%num_phys)
-      call alloc_phys_name_type(fld)
+      call alloc_phys_name(fld)
 !
       call set_field_name_4_assemble_ucd                                &
      &   (asbl_tbl%nfld_label, asbl_tbl%ucd_on_label, fld_IO, fld)

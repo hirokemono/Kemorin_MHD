@@ -8,8 +8,8 @@
 !> @brief Structure of field data
 !!
 !!@verbatim
-!!      subroutine alloc_phys_name_type(fld)
-!!      subroutine alloc_phys_data_type(num, fld)
+!!      subroutine alloc_phys_name(fld)
+!!      subroutine alloc_phys_data(num, fld)
 !!        integer(kind = kint), intent(in) :: num
 !!
 !!      subroutine dealloc_phys_name_type(fld)
@@ -85,10 +85,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine alloc_phys_name_type(fld)
+      subroutine alloc_phys_name(fld)
 !
       type(phys_data), intent(inout) :: fld
 !
+!
+      if(allocated(fld%phys_name)) return
 !
       allocate( fld%phys_name(fld%num_phys) )
       allocate( fld%num_component(fld%num_phys) )
@@ -104,15 +106,17 @@
         fld%flag_monitor =  .FALSE.
       end if
 !
-      end subroutine alloc_phys_name_type
+      end subroutine alloc_phys_name
 !
 !  --------------------------------------------------------------------
 !
-      subroutine alloc_phys_data_type(num, fld)
+      subroutine alloc_phys_data(num, fld)
 !
       integer(kind = kint), intent(in) :: num
       type(phys_data), intent(inout) :: fld
 !
+!
+      if(allocated(fld%d_fld)) return
 !
       fld%n_point = num
       allocate( fld%d_fld(fld%n_point,fld%ntot_phys) )
@@ -122,7 +126,7 @@
         fld%iflag_update = 0
       end if
 !
-       end subroutine alloc_phys_data_type
+       end subroutine alloc_phys_data
 !
 ! --------------------------------------------------------------------
 ! -------------------------------------------------------------------
@@ -131,6 +135,8 @@
 !
       type(phys_data), intent(inout) :: fld
 !
+!
+      if(allocated(fld%phys_name) .eqv. .FALSE.) return
 !
       deallocate( fld%phys_name, fld%iorder_eletype, fld%flag_monitor)
       deallocate( fld%num_component, fld%istack_component )
@@ -144,6 +150,7 @@
       type(phys_data), intent(inout) :: fld
 !
 !
+      if(allocated(fld%d_fld) .eqv. .FALSE.) return
       deallocate( fld%d_fld, fld%iflag_update )
 !
       end subroutine dealloc_phys_data_type
@@ -174,12 +181,12 @@
         fld%num_phys_viz =  fld%num_phys_viz + 1
         fld%ntot_phys_viz = fld%ntot_phys_viz + numdir
 !
-        call alloc_phys_name_type(fld)
+        call alloc_phys_name(fld)
         call add_field_name_list_4_viz                                  &
      &     (field_name, numdir, flag_monitor, iorder_eletype,           &
      &      tmp_fld, fld)
       else
-        call alloc_phys_name_type(fld)
+        call alloc_phys_name(fld)
         call add_field_name_list_noviz                                  &
      &     (field_name, numdir, flag_monitor, iorder_eletype,           &
      &      tmp_fld, fld)
@@ -204,7 +211,7 @@
       new_fld%num_phys_viz =  org_fld%num_phys_viz
       new_fld%ntot_phys_viz = org_fld%ntot_phys_viz
 !
-      call alloc_phys_name_type(new_fld)
+      call alloc_phys_name(new_fld)
 !
       new_fld%num_component(1:new_fld%num_phys)                         &
      &             = org_fld%num_component(1:new_fld%num_phys)
@@ -226,7 +233,7 @@
       type(phys_data), intent(in) :: org_fld
       type(phys_data),intent(inout) :: new_fld
 !
-      call alloc_phys_data_type(org_fld%n_point, new_fld)
+      call alloc_phys_data(org_fld%n_point, new_fld)
       new_fld%iflag_update(1:new_fld%ntot_phys)                         &
      &           = org_fld%iflag_update(1:new_fld%ntot_phys)
 !
@@ -387,7 +394,6 @@
 !
       id = 50 + id_rank
 !
-
       call check_nodal_field_name(id, fld)
       call check_nodal_data(id, fld, fld%ntot_phys, ione)
 !

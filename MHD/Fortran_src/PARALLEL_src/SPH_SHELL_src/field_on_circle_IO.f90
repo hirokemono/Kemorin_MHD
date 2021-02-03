@@ -268,8 +268,8 @@
       d_circle%num_phys =     d_circle%ntot_phys_viz
       d_circle%ntot_phys =    d_circle%ntot_phys_viz
 !
-      write(*,*) 'alloc_phys_name_type'
-      call alloc_phys_name_type(d_circle)
+      write(*,*) 'alloc_phys_name'
+      call alloc_phys_name(d_circle)
       write(*,*) 'alloc_circle_field'
       call alloc_circle_field                                           &
      &   (my_rank, sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),       &

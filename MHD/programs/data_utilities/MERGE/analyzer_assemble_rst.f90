@@ -135,7 +135,7 @@
 !
       call share_phys_field_names(new_fld)
 !
-      call alloc_phys_data_type(new_mesh%node%numnod, new_fld)
+      call alloc_phys_data(new_mesh%node%numnod, new_fld)
 !
       call simple_init_fld_name_to_rst                                  &
      &   (new_mesh%node%numnod, new_fld, new_fIO)

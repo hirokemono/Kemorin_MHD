@@ -125,7 +125,7 @@
 !
 !  set number of components ( vector and scalar )
 !
-      call alloc_phys_name_type(ele_fld)
+      call alloc_phys_name(ele_fld)
 !
       j = 1
       do i = 1, nod_fld%num_phys

@@ -46,7 +46,7 @@
 !
       phys%num_phys =  fld_IO%num_field_IO
       phys%ntot_phys = fld_IO%ntot_comp_IO
-      call alloc_phys_name_type(phys)
+      call alloc_phys_name(phys)
 !
       phys%phys_name(1:phys%num_phys)                                   &
      &    = fld_IO%fld_name(1:phys%num_phys)

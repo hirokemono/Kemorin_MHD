@@ -111,8 +111,7 @@
       femmesh_p_REF%group%surf_grp => femmesh_p_FUT%group%surf_grp
 !
       call copy_field_name_type(FUTIL1%nod_fld, phys_ref)
-      call alloc_phys_data_type                                         &
-     &   (femmesh_p_REF%mesh%node%numnod, phys_ref)
+      call alloc_phys_data(femmesh_p_REF%mesh%node%numnod, phys_ref)
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !
       call set_component_add_4_correlate(FUTIL1%nod_fld)

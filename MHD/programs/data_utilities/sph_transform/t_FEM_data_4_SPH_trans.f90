@@ -96,9 +96,9 @@
       call FEM_mesh_initialization                                      &
      &   (FEM_STR%geofem%mesh, FEM_STR%geofem%group)
 !
-      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type                                         &
-     &   (FEM_STR%geofem%mesh%node%numnod, FEM_STR%field)
+      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data'
+      call alloc_phys_data(FEM_STR%geofem%mesh%node%numnod,             &
+     &                     FEM_STR%field)
 !
       end subroutine mesh_setup_4_SPH_TRANS
 !
