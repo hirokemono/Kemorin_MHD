@@ -226,7 +226,7 @@
      &         (id_vtk, iflag_end, ncomp_field, field_name)
 !
       integer(kind = kint), intent(in) ::  id_vtk
-      integer(kind=kint ), intent(inout) :: ncomp_field, iflag_end
+      integer(kind = kint), intent(inout) :: ncomp_field, iflag_end
       character(len=kchara), intent(inout) :: field_name
 !
       character(len=kchara)  :: vtk_fld_type, tmpchara
