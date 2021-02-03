@@ -6,7 +6,7 @@ check_geometries.o: $(MESH_TYPE_DIR)/check_geometries.f90 m_precision.o m_machin
 	$(F90) -c $(F90OPTFLAGS) $<
 check_surface_groups.o: $(MESH_TYPE_DIR)/check_surface_groups.f90 m_precision.o t_group_data.o t_surface_group_geometry.o m_machine_parameter.o t_surface_group_connect.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-compare_mesh_structures.o: $(MESH_TYPE_DIR)/compare_mesh_structures.f90 m_precision.o t_comm_table.o t_geometry_data.o t_mesh_data.o copy_communication_table.o
+compare_mesh_structures.o: $(MESH_TYPE_DIR)/compare_mesh_structures.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_mesh_data.o m_phys_constants.o compare_indices.o copy_communication_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_bc_infty_surf_type.o: $(MESH_TYPE_DIR)/const_bc_infty_surf_type.f90 m_precision.o t_group_data.o t_surface_boundary.o const_bc_infinity_surf.o t_mesh_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -32,7 +32,7 @@ copy_mesh_structures.o: $(MESH_TYPE_DIR)/copy_mesh_structures.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_near_node_ele_type.o: $(MESH_TYPE_DIR)/copy_near_node_ele_type.f90 m_precision.o t_next_node_ele_4_node.o t_near_mesh_id_4_node.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cvt_quad_2_linear_mesh.o: $(MESH_TYPE_DIR)/cvt_quad_2_linear_mesh.f90 m_precision.o t_mesh_data.o t_geometry_data.o t_surface_data.o set_geometry_4_quad27.o cal_mesh_position.o m_geometry_constants.o m_27quad_2_8x8linear.o t_group_data.o convert_group_2_linear.o m_machine_parameter.o t_edge_data.o set_internal_list_4_linear.o t_phys_data.o set_data_4_quad27.o
+cvt_quad_2_linear_mesh.o: $(MESH_TYPE_DIR)/cvt_quad_2_linear_mesh.f90 m_precision.o t_mesh_data.o t_geometry_data.o t_surface_data.o set_geometry_4_quad27.o cal_mesh_position.o m_geometry_constants.o m_27quad_2_8x8linear.o t_group_data.o convert_group_2_linear.o m_machine_parameter.o t_edge_data.o set_internal_list_4_linear.o t_phys_data.o append_phys_data.o set_data_4_quad27.o
 	$(F90) -c $(F90OPTFLAGS) $<
 expand_near_area.o: $(MESH_TYPE_DIR)/expand_near_area.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_near_mesh_id_4_node.o expand_near_element.o add_node_4_group.o expand_near_flag.o t_geometry_data.o m_constants.o copy_near_node_ele_type.o cal_minmax_and_stacks.o set_distance_near_nod.o
 	$(F90) -c $(F90OPTFLAGS) $<

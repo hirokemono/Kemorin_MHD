@@ -175,7 +175,7 @@
 !
 !
       call deallocate_vector_for_repart
-      call dealloc_phys_data_type(new_fld)
+      call dealloc_phys_data(new_fld)
 !
       end subroutine finalize_fld_to_new_partition
 !

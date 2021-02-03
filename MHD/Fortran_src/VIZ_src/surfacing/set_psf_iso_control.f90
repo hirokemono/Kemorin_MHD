@@ -52,7 +52,7 @@
       integer(kind = kint) :: i
 !
       do i = 1, num_psf
-        call dealloc_phys_name_type(psf_mesh(i)%field)
+        call dealloc_phys_name(psf_mesh(i)%field)
       end do
 !
       end subroutine dealloc_psf_field_name

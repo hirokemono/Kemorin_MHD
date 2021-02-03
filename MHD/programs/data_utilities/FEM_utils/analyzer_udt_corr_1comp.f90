@@ -52,6 +52,7 @@
       use mpi_load_mesh_data
       use const_mesh_information
       use nod_phys_send_recv
+      use append_phys_data
 !
       use const_ele_layering_table
       use int_volume_of_domain
@@ -110,7 +111,7 @@
       femmesh_p_REF%group%ele_grp =>  femmesh_p_FUT%group%ele_grp
       femmesh_p_REF%group%surf_grp => femmesh_p_FUT%group%surf_grp
 !
-      call copy_field_name_type(FUTIL1%nod_fld, phys_ref)
+      call copy_field_name(FUTIL1%nod_fld, phys_ref)
       call alloc_phys_data(femmesh_p_REF%mesh%node%numnod, phys_ref)
       call allocate_vec_transfer(femmesh_p_FUT%mesh%node%numnod)
 !

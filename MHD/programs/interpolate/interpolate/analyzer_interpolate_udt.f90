@@ -40,6 +40,7 @@
       use const_mesh_information
       use set_size_4_smp_types
       use nod_phys_send_recv
+      use append_phys_data
 !
       integer(kind = kint) :: ierr
 !
@@ -77,8 +78,8 @@
      &                           itp_udt%org_fld, itp_udt%iphys,        &
      &                           itp_udt%iphys_LES)
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
-      call copy_field_name_type(itp_udt%org_fld, itp_udt%new_fld)
+      if (iflag_debug.eq.1) write(*,*) 'copy_field_name'
+      call copy_field_name(itp_udt%org_fld, itp_udt%new_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(itp_udt%new_fem%mesh%node%numnod,            &

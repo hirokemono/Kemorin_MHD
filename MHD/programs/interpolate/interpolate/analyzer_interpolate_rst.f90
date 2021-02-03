@@ -40,6 +40,7 @@
       use nod_phys_send_recv
       use set_field_to_restart
       use field_IO_select
+      use append_phys_data
 !
 !
       integer(kind = kint) :: ierr, i_step
@@ -84,8 +85,8 @@
      &                           itp_rst%org_fld, itp_rst%iphys,        &
      &                           itp_rst%iphys_LES)
 !
-      if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
-      call copy_field_name_type(itp_rst%org_fld, itp_rst%new_fld)
+      if (iflag_debug.eq.1) write(*,*) 'copy_field_name'
+      call copy_field_name(itp_rst%org_fld, itp_rst%new_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data'
       call alloc_phys_data(itp_rst%new_fem%mesh%node%numnod,            &

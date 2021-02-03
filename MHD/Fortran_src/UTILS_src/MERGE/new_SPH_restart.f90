@@ -63,6 +63,7 @@
 !
       use calypso_mpi
       use t_spheric_parameter
+      use append_phys_data
       use copy_rj_phys_data_4_IO
       use field_IO_select
 !
@@ -93,8 +94,8 @@
         call copy_rj_phys_name_from_IO(org_fst_IO, new_sph_data%fld)
 !
         do ip = 1, org_sph_array%num_pe
-          call copy_field_name_type(new_sph_data%fld,                   &
-     &                              org_sph_array%fld(ip))
+          call copy_field_name(new_sph_data%fld,                        &
+     &                         org_sph_array%fld(ip))
         end do
       end if
 !
@@ -236,7 +237,7 @@
      &      new_sph_data%fld%ntot_phys, org_fld(ip)%d_fld,              &
      &      new_sph_data%fld%d_fld)
 !
-        call dealloc_phys_data_type(org_fld(ip))
+        call dealloc_phys_data(org_fld(ip))
       end do
 !
       end subroutine set_assembled_sph_data

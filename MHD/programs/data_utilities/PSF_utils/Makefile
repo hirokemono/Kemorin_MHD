@@ -137,6 +137,7 @@ m_psf_results.o
 
 MOD_COMPARE_PSF = \
 compare_psf_files.o \
+t_ctl_param_psf_compares.o \
 t_ctl_data_psf_compares.o \
 t_ctl_data_psf_compare.o
 

@@ -213,7 +213,7 @@
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)
 !
-        call dealloc_phys_data_type(mgd_mesh_pl%merged_fld)
+        call dealloc_phys_data(mgd_mesh_pl%merged_fld)
         call dealloc_node_geometry_base(node_plane)
       end do
 !

@@ -42,6 +42,7 @@
 !
       use set_MHD_field_address
       use set_SGS_MHD_field_address
+      use append_phys_data
 !
       character(len = kchara), intent(in) :: phys_name_ctl
       logical, intent(in) :: flag_viz, flag_monitor
@@ -74,6 +75,7 @@
       use m_energy_flux_labels
       use set_MHD_field_address
       use set_SGS_MHD_field_address
+      use append_phys_data
 !
       character(len = kchara), intent(in) :: phys_name_ctl
       logical, intent(in) :: flag_viz, flag_monitor
@@ -106,6 +108,7 @@
 !
       use set_MHD_field_address
       use set_SGS_MHD_field_address
+      use append_phys_data
 !
       character(len = kchara), intent(in) :: phys_name_ctl
       logical, intent(in) :: flag_viz, flag_monitor

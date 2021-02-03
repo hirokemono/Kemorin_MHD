@@ -12,6 +12,12 @@
 !!      subroutine load_psf_data(istep, psf_file_param, t_IO, psf_dat)
 !!
 !!      subroutine dealloc_psf_results(psf_nod, psf_ele, psf_phys)
+!!
+!!      integer(kind = kint) function compare_psf_data                  &
+!!     &                   (istep, psf1_file_param, psf2_file_param)
+!!        integer(kind = kint), intent(in) :: istep
+!!        type(field_IO_params), intent(in) :: psf1_file_param
+!!        type(field_IO_params), intent(in) :: psf2_file_param
 !!@endverbatim
 !
       module t_psf_results
@@ -100,8 +106,8 @@
       type(psf_results), intent(inout) :: psf_dat
 !
 !
-      call dealloc_phys_data_type(psf_dat%psf_phys)
-      call dealloc_phys_name_type(psf_dat%psf_phys)
+      call dealloc_phys_data(psf_dat%psf_phys)
+      call dealloc_phys_name(psf_dat%psf_phys)
       call dealloc_ele_connect(psf_dat%psf_ele)
       call dealloc_node_geometry_w_sph(psf_dat%psf_nod)
 !
@@ -123,6 +129,7 @@
 !
 !
       psf_nod%numnod =     int(ucd%nnod, KIND(psf_nod%numnod))
+      psf_nod%internal_node = psf_nod%numnod
       psf_ele%numele =     int(ucd%nele, KIND(psf_ele%numele))
       psf_ele%nnod_4_ele = num_triangle
       psf_phys%ntot_phys = ucd%ntot_comp

@@ -103,8 +103,8 @@
       type(radial_field_type), intent(inout) :: r_field
 !
 !
-      call dealloc_phys_data_type(r_field%d_rad)
-      call dealloc_phys_name_type(r_field%d_rad)
+      call dealloc_phys_data(r_field%d_rad)
+      call dealloc_phys_name(r_field%d_rad)
 !
       end subroutine dealloc_radial_field
 !

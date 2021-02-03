@@ -55,6 +55,7 @@
       use sph_mhd_rst_IO_control
       use input_control_sph_MHD
       use cal_rms_fields_by_sph
+      use append_phys_data
 !
       use cal_correlations_by_spectr
 !
@@ -72,8 +73,8 @@
      &    SPH_MHD%sph%sph_rj, SPH_MHD%ipol, SPH_MHD%fld,                &
      &    MHD_step%init_d)
 !
-      call copy_field_name_type(SPH_MHD%fld, ref_rj_fld)
-      call copy_field_data_type(SPH_MHD%fld, ref_rj_fld)
+      call copy_field_name(SPH_MHD%fld, ref_rj_fld)
+      call copy_field_data(SPH_MHD%fld, ref_rj_fld)
 !
 !       read second data
 !
@@ -93,8 +94,8 @@
      &    ref_rj_fld, SPH_MHD%fld, SPH_WK%trans_p, SPH_WK%monitor%pwr,  &
      &    SPH_WK%monitor%WK_pwr)
 !
-      call dealloc_phys_data_type(ref_rj_fld)
-      call dealloc_phys_name_type(ref_rj_fld)
+      call dealloc_phys_data(ref_rj_fld)
+      call dealloc_phys_name(ref_rj_fld)
 !
       call write_sph_vol_ms_file(my_rank, SPH_WK%monitor%ene_labels,    &
      &    time_d, SPH_MHD%sph%sph_params, SPH_MHD%sph%sph_rj,           &

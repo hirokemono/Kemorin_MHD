@@ -89,8 +89,8 @@
       type(sph_phys_data), intent(inout) :: sph_phys
 !
 !
-      call dealloc_phys_data_type(sph_phys%rj_fld)
-      call dealloc_phys_name_type(sph_phys%rj_fld)
+      call dealloc_phys_data(sph_phys%rj_fld)
+      call dealloc_phys_name(sph_phys%rj_fld)
 !
       end subroutine dealloc_phys_rj_name_t
 !

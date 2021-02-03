@@ -242,13 +242,14 @@
 !
       use t_mesh_data
       use t_phys_data
+      use append_phys_data
 !
       type(node_data), intent(in) ::    node_l
       type(phys_data), intent(in) :: nod_fld_q
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call copy_field_name_type(nod_fld_q, nod_fld_l)
+      call copy_field_name(nod_fld_q, nod_fld_l)
       call alloc_phys_data(node_l%numnod, nod_fld_l)
 !
       end subroutine init_linear_nod_phys

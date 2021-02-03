@@ -210,8 +210,8 @@
         deallocate(circle%d_rj_circle, circle%v_rtp_circle)
       end if
 !
-      call dealloc_phys_data_type(d_circle)
-      call dealloc_phys_name_type(d_circle)
+      call dealloc_phys_data(d_circle)
+      call dealloc_phys_name(d_circle)
 !
       end subroutine dealloc_circle_field
 !
