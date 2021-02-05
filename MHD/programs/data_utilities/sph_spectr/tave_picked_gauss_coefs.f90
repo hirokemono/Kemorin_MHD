@@ -2,15 +2,29 @@
 !
 !        programmed by H.Matsui on Dec., 2012
 !
+!! -----------------------------------------------------------------
+!!    Input control file:  control_sph_time_average
+!!
+!!  begin time_averaging_sph_monitor
+!!    start_time_ctl     1.0
+!!    end_time_ctl       2.0
+!!
+!!    gauss_coefs_prefix        'gauss_coefs_Re'
+!!  end time_averaging_sph_monitor
+!! -----------------------------------------------------------------
+!
       program tave_picked_gauss_coefs
 !
       use m_precision
       use m_constants
 !
       use t_gauss_coefs_monitor_IO
+      use t_ctl_data_tave_sph_monitor
 !
       implicit  none
 !
+!>      Structure for control data
+      type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
 !>      Structure for gauss coeffciients
       type(picked_gauss_coefs_IO), save :: gauss_IO
 !
@@ -29,8 +43,26 @@
       real(kind = kreal) :: start_time, end_time, true_start
 !
 !
-      write(*,*) 'input picked gauss coefficients file prefix'
-      read(5,*) gauss_IO%file_prefix
+      call read_control_file_psf_compare(0, tave_sph_ctl1)
+!
+      if(tave_sph_ctl1%gauss_coefs_prefix%iflag .eq. 0) then
+        write(*,*) 'Set File prefix for Gauss coefficients'
+        stop
+      end if
+      gauss_IO%file_prefix                                              &
+     &      = tave_sph_ctl1%gauss_coefs_prefix%charavalue
+!
+      if(tave_sph_ctl1%start_time_ctl%iflag .eq. 0) then
+        write(*,*) 'Set start time'
+        stop
+      end if
+      start_time = tave_sph_ctl1%start_time_ctl%realvalue
+!
+      if(tave_sph_ctl1%end_time_ctl%iflag .eq. 0) then
+        write(*,*) 'Set end time'
+        stop
+      end if
+      end_time = tave_sph_ctl1%end_time_ctl%realvalue
 !
       write(tave_pick_gauss_head,'(a6,a)')                              &
         't_ave_',  trim(gauss_IO%file_prefix)
@@ -39,8 +71,7 @@
       write(sdev_pick_gauss_head,'(a6,a)')                              &
         't_sdev_', trim(gauss_IO%file_prefix)
 !
-      write(*,*) 'Input start and end time'
-      read(5,*) start_time, end_time
+!       Open Nusselt data file
 !
       call open_gauss_coefs_read_monitor(id_pick, gauss_IO)
 !

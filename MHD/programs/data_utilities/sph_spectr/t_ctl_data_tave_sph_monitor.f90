@@ -18,7 +18,7 @@
 !!
 !!      control block for pickup spherical harmonics
 !!
-!!  begin sph_monitor_ctl
+!!  begin time_averaging_sph_monitor
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
@@ -40,7 +40,7 @@
 !!    order_spectr_switch          'On'
 !!    diff_lm_spectr_switch        'On'
 !!    axisymmetric_spectr_switch   'On'
-!!  end sph_monitor_ctl
+!!  end time_averaging_sph_monitor
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim

@@ -192,9 +192,11 @@ part_sum_sph_ene_spec.o
 
 MOD_T_AVE_GAUSS_COEFS = \
 t_gauss_coefs_monitor_IO.o \
+t_ctl_data_tave_sph_monitor.o \
 tave_picked_gauss_coefs.o
 
 MOD_T_AVE_PICK_SPH = \
+t_ctl_data_tave_sph_monitor.o \
 t_picked_sph_spectr_data_IO.o \
 tave_picked_sph_spec_data.o
 

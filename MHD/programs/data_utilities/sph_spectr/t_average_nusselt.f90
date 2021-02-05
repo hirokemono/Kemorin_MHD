@@ -7,12 +7,12 @@
 !! -----------------------------------------------------------------
 !!    Input control file:  control_sph_time_average
 !!
-!!  begin sph_monitor_ctl
+!!  begin time_averaging_sph_monitor
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
 !!    nusselt_number_prefix        'Nusselt'
-!!  end sph_monitor_ctl
+!!  end time_averaging_sph_monitor
 !! -----------------------------------------------------------------
 !
 
@@ -48,6 +48,8 @@
       write(*,*) ''
       write(*,*) 'Input picked harmonics coefficients file prefix'
 !
+      call read_control_file_psf_compare(0, tave_sph_ctl1)
+!
       if(tave_sph_ctl1%Nusselt_file_prefix%iflag .eq. 0) then
         write(*,*) 'Set File prefix for Nusselt number'
         stop
@@ -67,7 +69,7 @@
       end if
       end_time = tave_sph_ctl1%end_time_ctl%realvalue
 !
-!       Oopen Nusselt data file
+!       Open Nusselt data file
 !
       call open_read_no_heat_source_Nu(id_pick, Nu_t)
 !
