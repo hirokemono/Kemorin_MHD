@@ -78,6 +78,7 @@
       icou = 0
       time = start_time
       prev_time = start_time
+      ave_Nu(1:2) = 0.0d0
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', i_step,  ' averaging finished. Count=  ', icou
       do
@@ -122,6 +123,7 @@
       icou = 0
       time = start_time
       prev_time = start_time
+      sdev_Nu(1:2) = 0.0d0
       do
         call read_no_heat_source_Nu                                     &
      &     (id_pick, i_step, time, Nu_t, ierr)

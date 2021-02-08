@@ -22,24 +22,34 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    nusselt_number_prefix        'Nusselt'
+!!    old_format_flag     'Off'
 !!
-!!    array volume_average_prefix
-!!      volume_average_prefix        'sph_ave_volume'
-!!    end array volume_spectrum_ctl
+!!    array vol_time_series_prefix
+!!      vol_time_series_prefix     'sph_ave_volume'
+!!      vol_time_series_prefix     'sph_pwr_volume_s'
+!!      vol_time_series_prefix     'sph_pwr_volume_m0'
+!!    end array vol_time_series_prefix
 !!
-!!    begin volume_pwr_spectr_prefix
-!!      volume_pwr_spectr_prefix     'sph_pwr_volume'
-!!    end   volume_pwr_spectr_prefix
+!!    array vol_spectr_series_prefix
+!!      vol_spectr_series_prefix     'sph_pwr_volume_l'
+!!      vol_spectr_series_prefix     'sph_pwr_volume_m'
+!!      vol_spectr_series_prefix     'sph_pwr_volume_lm'
+!!    end array vol_spectr_series_prefix
 !!
-!!    layered_pwr_spectr_prefix    'sph_pwr_layer'
+!!    array layer_time_series_prefix
+!!      layer_time_series_prefix     'sph_pwr_layer_s'
+!!      layer_time_series_prefix     'sph_pwr_layer_m0'
+!!    end array layer_time_series_prefix
+!!
+!!    array layer_spectr_series_prefix
+!!      layer_spectr_series_prefix     'sph_pwr_layer_l'
+!!      layer_spectr_series_prefix     'sph_pwr_layer_m'
+!!      layer_spectr_series_prefix     'sph_pwr_layer_lm'
+!!    end array layer_spectr_series_prefix
+!!
 !!    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
 !!    picked_sph_prefix            'sph_spectr/picked_mode'
-!!
-!!    degree_spectr_switch         'On'
-!!    order_spectr_switch          'On'
-!!    diff_lm_spectr_switch        'On'
-!!    axisymmetric_spectr_switch   'On'
+!!    nusselt_number_prefix        'Nusselt'
 !!  end time_averaging_sph_monitor
 !!
 !! -----------------------------------------------------------------
@@ -68,29 +78,26 @@
 !>        Structure for end time
         type(read_real_item) :: end_time_ctl
 !
+!>        Character flag for old format
+        type(read_character_item) :: old_format_ctl
+!
 !>        Structure for picked spectrum file prefix
         type(read_character_item) :: Nusselt_file_prefix
 !
-!>        filew name for volume mean square
+!>        file prefix for volume time series
+        type(ctl_array_chara) :: volume_series_file_ctl
+!>        file prefix for volume spectr time series
         type(ctl_array_chara) :: volume_spec_file_ctl
-!>        filew name for volume average
-        type(ctl_array_chara) :: volume_ave_file_ctl
 !
-!>        Structure for layered spectrum file prefix
-        type(read_character_item) :: layered_pwr_spectr_prefix
+!>        file prefix for layered time series
+        type(ctl_array_chara) :: layered_series_file_ctl
+!>        file prefix for layered spectr time series
+        type(ctl_array_chara) :: layered_spec_file_ctl
+!
 !>        Structure for gauss coefficient file prefix
         type(read_character_item) :: gauss_coefs_prefix
 !>        Structure for picked spectrum file prefix
         type(read_character_item) :: picked_mode_head_ctl
-!
-!>        Structure for degree spectrum switch
-        type(read_character_item) :: degree_spectr_switch
-!>        Structure for order spectrum switch
-        type(read_character_item) :: order_spectr_switch
-!>        Structure for l-m spectrum switch
-        type(read_character_item) :: diff_lm_spectr_switch
-!>        Structure for l-m spectrum switch
-        type(read_character_item) :: axis_spectr_switch
 !
         integer (kind = kint) :: i_time_ave_sph = 0
       end type tave_sph_monitor_ctl
@@ -106,31 +113,26 @@
      &           :: hd_start_time_ctl = 'start_time_ctl'
       character(len=kchara), parameter, private                         &
      &           :: hd_end_time_ctl = 'end_time_ctl'
+      character(len=kchara), parameter, private                         &
+     &           :: hd_old_format =   'old_format_flag'
 !
       character(len=kchara), parameter, private                         &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
 !
       character(len=kchara), parameter, private                         &
-     &            :: hd_vol_pwr = 'volume_pwr_spectr_prefix'
+     &            :: hd_vol_time_series = 'vol_time_series_prefix'
       character(len=kchara), parameter, private                         &
-     &            :: hd_vol_ave = 'volume_average_prefix'
+     &            :: hd_vol_spec_series = 'vol_spectr_series_prefix'
 !
       character(len=kchara), parameter, private                         &
-     &           :: hd_layer_rms_head = 'layered_pwr_spectr_prefix'
+     &          :: hd_layer_time_series = 'layer_time_series_prefix'
+      character(len=kchara), parameter, private                         &
+     &          :: hd_layer_spec_series = 'layer_spectr_series_prefix'
+!
       character(len=kchara), parameter, private                         &
      &           :: hd_gauss_coefs_head = 'gauss_coefs_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_picked_mode_head = 'picked_sph_prefix'
-!
-      character(len=kchara), parameter, private                         &
-     &           :: hd_degree_spectr_switch = 'degree_spectr_switch'
-      character(len=kchara), parameter, private                         &
-     &           :: hd_order_spectr_switch = 'order_spectr_switch'
-      character(len=kchara), parameter, private                         &
-     &           :: hd_diff_lm_spectr_switch                            &
-     &                              = 'axisymmetric_spectr_switch'
-      character(len=kchara), parameter, private                         &
-     &           :: hd_axis_spectr_switch = 'diff_lm_spectr_switch'
 !
 ! -----------------------------------------------------------------------
 !
@@ -184,29 +186,26 @@
         call read_real_ctl_type                                         &
      &     (c_buf, hd_end_time_ctl, tave_sph_ctl%end_time_ctl)
 !
+        call read_real_ctl_type                                         &
+     &     (c_buf, hd_old_format, tave_sph_ctl%old_format_ctl)
+!
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
      &      tave_sph_ctl%Nusselt_file_prefix)
 !
-        call read_control_array_c1(id_control,                          &
-     &      hd_vol_pwr, tave_sph_ctl%volume_spec_file_ctl, c_buf)
-        call read_control_array_c1(id_control,                          &
-     &      hd_vol_ave, tave_sph_ctl%volume_ave_file_ctl, c_buf)
+        call read_control_array_c1(id_control,  hd_vol_time_series,     &
+     &      tave_sph_ctl%volume_series_file_ctl, c_buf)
+        call read_control_array_c1(id_control, hd_vol_spec_series,      &
+     &      tave_sph_ctl%volume_spec_file_ctl, c_buf)
 !
-        call read_chara_ctl_type(c_buf, hd_layer_rms_head,              &
-     &      tave_sph_ctl%layered_pwr_spectr_prefix)
+        call read_control_array_c1(id_control,  hd_layer_time_series,   &
+     &      tave_sph_ctl%layered_series_file_ctl, c_buf)
+        call read_control_array_c1(id_control, hd_layer_spec_series,    &
+     &      tave_sph_ctl%layered_spec_file_ctl, c_buf)
+!
         call read_chara_ctl_type(c_buf, hd_gauss_coefs_head,            &
      &      tave_sph_ctl%gauss_coefs_prefix)
         call read_chara_ctl_type(c_buf, hd_picked_mode_head,            &
      &      tave_sph_ctl%picked_mode_head_ctl)
-!
-        call read_chara_ctl_type(c_buf, hd_degree_spectr_switch,        &
-     &      tave_sph_ctl%degree_spectr_switch)
-        call read_chara_ctl_type(c_buf, hd_order_spectr_switch,         &
-     &      tave_sph_ctl%order_spectr_switch)
-        call read_chara_ctl_type(c_buf, hd_diff_lm_spectr_switch,       &
-     &      tave_sph_ctl%diff_lm_spectr_switch)
-        call read_chara_ctl_type(c_buf, hd_axis_spectr_switch,          &
-     &      tave_sph_ctl%axis_spectr_switch)
       end do
       tave_sph_ctl%i_time_ave_sph = 1
 !
@@ -221,22 +220,22 @@
 !
       tave_sph_ctl%start_time_ctl%iflag = 0
       tave_sph_ctl%end_time_ctl%iflag =   0
+      tave_sph_ctl%old_format_ctl =       0
 !
       tave_sph_ctl%Nusselt_file_prefix%iflag =      0
 !
       call dealloc_control_array_chara                                  &
      &   (tave_sph_ctl%volume_spec_file_ctl)
       call dealloc_control_array_chara                                  &
-     &   (tave_sph_ctl%volume_ave_file_ctl)
+     &   (tave_sph_ctl%volume_series_file_ctl)
 !
-      tave_sph_ctl%layered_pwr_spectr_prefix%iflag = 0
+      call dealloc_control_array_chara                                  &
+     &   (tave_sph_ctl%layered_spec_file_ctl)
+      call dealloc_control_array_chara                                  &
+     &   (tave_sph_ctl%layered_series_file_ctl)
+!
       tave_sph_ctl%gauss_coefs_prefix%iflag =        0
       tave_sph_ctl%picked_mode_head_ctl%iflag =      0
-!
-      tave_sph_ctl%degree_spectr_switch%iflag =    0
-      tave_sph_ctl%order_spectr_switch%iflag =     0
-      tave_sph_ctl%diff_lm_spectr_switch%iflag =   0
-      tave_sph_ctl%axis_spectr_switch%iflag =      0
 !
       tave_sph_ctl%i_time_ave_sph = 0
 !
