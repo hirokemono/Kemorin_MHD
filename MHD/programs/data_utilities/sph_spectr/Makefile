@@ -160,6 +160,7 @@ t_neutral_pt_by_pick_sph.o
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
 t_read_sph_spectra.o \
+t_ctl_data_tave_sph_monitor.o \
 m_tave_sph_ene_spectr.o \
 sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
@@ -177,6 +178,7 @@ simple_sph_spectr_data_IO.o
 MOD_SPH_ULI_LSCALE = \
 sph_uli_lengh_scale.o \
 t_read_sph_spectra.o \
+t_ctl_data_tave_sph_monitor.o \
 m_sph_uli_lengh_scale.o \
 sph_mean_square_IO_select.o \
 simple_sph_spectr_head_IO.o \
