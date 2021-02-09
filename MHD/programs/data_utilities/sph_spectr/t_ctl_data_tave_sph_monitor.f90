@@ -25,28 +25,28 @@
 !!    old_format_flag     'Off'
 !!    degree_range_ctl     1   12
 !!
-!!    array vol_time_series_prefix
-!!      vol_time_series_prefix     'sph_ave_volume'
-!!      vol_time_series_prefix     'sph_pwr_volume_s'
-!!      vol_time_series_prefix     'sph_pwr_volume_m0'
-!!    end array vol_time_series_prefix
+!!    array vol_integrate_prefix
+!!      vol_integrate_prefix     'sph_ave_volume'
+!!      vol_integrate_prefix     'sph_pwr_volume_s'
+!!      vol_integrate_prefix     'sph_pwr_volume_m0'
+!!    end array vol_integrate_prefix
 !!
-!!    array vol_spectr_series_prefix
-!!      vol_spectr_series_prefix     'sph_pwr_volume_l'
-!!      vol_spectr_series_prefix     'sph_pwr_volume_m'
-!!      vol_spectr_series_prefix     'sph_pwr_volume_lm'
-!!    end array vol_spectr_series_prefix
+!!    array vol_spectr_prefix
+!!      vol_spectr_prefix     'sph_pwr_volume_l'
+!!      vol_spectr_prefix     'sph_pwr_volume_m'
+!!      vol_spectr_prefix     'sph_pwr_volume_lm'
+!!    end array vol_spectr_prefix
 !!
-!!    array layer_time_series_prefix
-!!      layer_time_series_prefix     'sph_pwr_layer_s'
-!!      layer_time_series_prefix     'sph_pwr_layer_m0'
-!!    end array layer_time_series_prefix
+!!    array sph_integrate_prefix
+!!      sph_integrate_prefix     'sph_pwr_layer_s'
+!!      sph_integrate_prefix     'sph_pwr_layer_m0'
+!!    end array sph_integrate_prefix
 !!
-!!    array layer_spectr_series_prefix
-!!      layer_spectr_series_prefix     'sph_pwr_layer_l'
-!!      layer_spectr_series_prefix     'sph_pwr_layer_m'
-!!      layer_spectr_series_prefix     'sph_pwr_layer_lm'
-!!    end array layer_spectr_series_prefix
+!!    array layer_sph_spectr_prefix
+!!      layer_sph_spectr_prefix     'sph_pwr_layer_l'
+!!      layer_sph_spectr_prefix     'sph_pwr_layer_m'
+!!      layer_sph_spectr_prefix     'sph_pwr_layer_lm'
+!!    end array layer_sph_spectr_prefix
 !!
 !!    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
 !!    picked_sph_prefix            'sph_spectr/picked_mode'
@@ -122,22 +122,21 @@
      &           :: hd_degree_range = 'degree_range_ctl'
 !
       character(len=kchara), parameter, private                         &
-     &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
+     &            :: hd_vol_time_series = 'vol_integrate_prefix'
+      character(len=kchara), parameter, private                         &
+     &            :: hd_vol_spec_series = 'vol_spectr_prefix'
 !
       character(len=kchara), parameter, private                         &
-     &            :: hd_vol_time_series = 'vol_time_series_prefix'
+     &          :: hd_layer_time_series = 'sph_integrate_prefix'
       character(len=kchara), parameter, private                         &
-     &            :: hd_vol_spec_series = 'vol_spectr_series_prefix'
-!
-      character(len=kchara), parameter, private                         &
-     &          :: hd_layer_time_series = 'layer_time_series_prefix'
-      character(len=kchara), parameter, private                         &
-     &          :: hd_layer_spec_series = 'layer_spectr_series_prefix'
+     &          :: hd_layer_spec_series = 'layer_sph_spectr_prefix'
 !
       character(len=kchara), parameter, private                         &
      &           :: hd_gauss_coefs_head = 'gauss_coefs_prefix'
       character(len=kchara), parameter, private                         &
      &           :: hd_picked_mode_head = 'picked_sph_prefix'
+      character(len=kchara), parameter, private                         &
+     &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
 !
 ! -----------------------------------------------------------------------
 !

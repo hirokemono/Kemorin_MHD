@@ -17,28 +17,28 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    array vol_time_series_prefix
-!!      vol_time_series_prefix     'sph_ave_volume'
-!!      vol_time_series_prefix     'sph_pwr_volume_s'
-!!      vol_time_series_prefix     'sph_pwr_volume_m0'
-!!    end array vol_time_series_prefix
+!!    array vol_integrate_prefix
+!!      vol_integrate_prefix     'sph_ave_volume'
+!!      vol_integrate_prefix     'sph_pwr_volume_s'
+!!      vol_integrate_prefix     'sph_pwr_volume_m0'
+!!    end array vol_integrate_prefix
 !!
-!!    array vol_spectr_series_prefix
-!!      vol_spectr_series_prefix     'sph_pwr_volume_l'
-!!      vol_spectr_series_prefix     'sph_pwr_volume_m'
-!!      vol_spectr_series_prefix     'sph_pwr_volume_lm'
-!!    end array vol_spectr_series_prefix
+!!    array vol_spectr_prefix
+!!      vol_spectr_prefix     'sph_pwr_volume_l'
+!!      vol_spectr_prefix     'sph_pwr_volume_m'
+!!      vol_spectr_prefix     'sph_pwr_volume_lm'
+!!    end array vol_spectr_prefix
 !!
-!!    array layer_time_series_prefix
-!!      layer_time_series_prefix     'sph_pwr_layer_s'
-!!      layer_time_series_prefix     'sph_pwr_layer_m0'
-!!    end array layer_time_series_prefix
+!!    array sph_integrate_prefix
+!!      sph_integrate_prefix     'sph_pwr_layer_s'
+!!      sph_integrate_prefix     'sph_pwr_layer_m0'
+!!    end array sph_integrate_prefix
 !!
-!!    array layer_spectr_series_prefix
-!!      layer_spectr_series_prefix     'sph_pwr_layer_l'
-!!      layer_spectr_series_prefix     'sph_pwr_layer_m'
-!!      layer_spectr_series_prefix     'sph_pwr_layer_lm'
-!!    end array layer_spectr_series_prefix
+!!    array layer_sph_spectr_prefix
+!!      layer_sph_spectr_prefix     'sph_pwr_layer_l'
+!!      layer_sph_spectr_prefix     'sph_pwr_layer_m'
+!!      layer_sph_spectr_prefix     'sph_pwr_layer_lm'
+!!    end array layer_sph_spectr_prefix
 !!  end time_averaging_sph_monitor
 !!
 !! -----------------------------------------------------------------
