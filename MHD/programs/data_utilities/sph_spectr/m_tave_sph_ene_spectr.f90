@@ -71,8 +71,17 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_pwr_data(id_file_rms,                     &
-     &      spec_evo_p%iflag_old_fmt, sph_IN, ierr)
+!
+        if(sph_IN%iflag_spectr .gt. 0) then
+          call select_input_sph_pwr_data(id_file_rms,                   &
+     &        spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,           &
+     &        sph_IN, ierr)
+        else
+          call select_input_sph_series_data(id_file_rms,                &
+     &        spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,           &
+     &        sph_IN, ierr)
+        end if
+!
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -161,8 +170,16 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=  ', icou
       do
-        call select_input_sph_pwr_data(id_file_rms,                     &
-     &      spec_evo_p%iflag_old_fmt, sph_IN, ierr)
+        if(sph_IN%iflag_spectr .gt. 0) then
+          call select_input_sph_pwr_data(id_file_rms,                   &
+     &        spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,           &
+     &        sph_IN, ierr)
+        else
+          call select_input_sph_series_data(id_file_rms,                &
+     &        spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,           &
+     &        sph_IN, ierr)
+        end if
+!
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then

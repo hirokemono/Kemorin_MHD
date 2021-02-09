@@ -23,7 +23,6 @@
       type(sph_spectr_file_param), save :: spec_evo_p1
       type(read_sph_spectr_data), save :: sph_IN_m
 !
-      character(len = kchara) :: fname_org_rms
       integer :: i
 !
       call read_control_file_psf_compare(0, tave_sph_ctl1)
