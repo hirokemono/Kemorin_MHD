@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine sph_uli_lengh_scale_by_spectr                        &
-!!     &         (input_header, spec_evo_p, sph_IN)
+!!     &         (input_header, iflag_vol_ave, spec_evo_p, sph_IN)
 !!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
@@ -43,13 +43,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_uli_lengh_scale_by_spectr                          &
-     &         (input_header, spec_evo_p, sph_IN)
+     &         (input_header, iflag_vol_ave, spec_evo_p, sph_IN)
 !
       use t_ctl_param_sph_series_util
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: input_header
+        integer(kind = kint), intent(in) :: iflag_vol_ave
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -60,7 +61,7 @@
       file_name = add_dat_extension(input_header)
       open(id_file_rms_l, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_l,                     &
-     &    spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave, sph_IN)
+     &    spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
@@ -68,7 +69,7 @@
       file_name = add_dat_extension(fname_tmp)
       open(id_file_lscale, file=file_name)
       call select_output_sph_pwr_head                                   &
-     &   (id_file_lscale, sph_OUT1%iflag_vol_ave, sph_OUT1)
+     &   (id_file_lscale, iflag_vol_ave, sph_OUT1)
 !
       call allocate_lscale_espec_data(sph_IN)
 !
@@ -79,8 +80,7 @@
      &       ' averaging finished. Count=  ', icou
       do
         call select_input_sph_pwr_data(id_file_rms_l,                   &
-     &      spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,             &
-     &      sph_IN, ierr)
+     &      spec_evo_p%iflag_old_fmt, iflag_vol_ave, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -92,7 +92,7 @@
           icou = icou + 1
 !
           call select_output_sph_series_data                            &
-     &       (id_file_lscale, sph_OUT1%iflag_vol_ave, sph_OUT1)
+     &       (id_file_lscale, iflag_vol_ave, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

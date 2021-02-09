@@ -26,9 +26,6 @@
 !
 !
       type read_sph_spectr_data
-        integer(kind = kint) :: iflag_vol_ave
-        integer(kind = kint) :: iflag_spectr
-!
         integer(kind = kint) :: nfield_sph_spec
         integer(kind = kint) :: ntot_sph_spec
         integer(kind = kint) :: num_time_labels
@@ -111,7 +108,6 @@
 !
       integer(kind = kint) :: i
 !
-      sph_OUT%iflag_vol_ave = sph_IN%iflag_vol_ave
       sph_OUT%ltr_sph = sph_IN%ltr_sph
       sph_OUT%nri_sph = sph_IN%nri_sph
       sph_OUT%kr_ICB = sph_IN%kr_ICB

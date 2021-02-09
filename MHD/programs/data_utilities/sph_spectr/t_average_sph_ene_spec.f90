@@ -69,48 +69,44 @@
       call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      sph_IN_t%iflag_vol_ave = 1
       do i = 1, spec_evo_p1%nfile_vol_series_file
         write(*,*) i, trim(spec_evo_p1%vol_series_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%vol_series_prefix(i))
-        call sph_spectr_average(fname_org_rms, izero,                   &
+        call sph_spectr_average(fname_org_rms, izero,  ione,            &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, izero,             &
+        call sph_spectr_std_deviation(fname_org_rms, izero,  ione,      &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
-      sph_IN_t%iflag_vol_ave = 1
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
         write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%vol_spectr_prefix(i))
-        call sph_spectr_average(fname_org_rms, ione,                    &
+        call sph_spectr_average(fname_org_rms, ione,  ione,             &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, ione,              &
+        call sph_spectr_std_deviation(fname_org_rms, ione,  ione,       &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
 !
-      sph_IN_t%iflag_vol_ave = 0
       do i = 1, spec_evo_p1%nfile_layer_series_file
         write(*,*) i, trim(spec_evo_p1%layer_series_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%layer_series_prefix(i))
-        call sph_spectr_average(fname_org_rms, izero,                   &
+        call sph_spectr_average(fname_org_rms, izero, izero,            &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, izero,             &
+        call sph_spectr_std_deviation(fname_org_rms, izero, izero,      &
      &      spec_evo_p1, sph_IN_t)
       end do
 !
-      sph_IN_t%iflag_vol_ave = 0
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
         write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%layer_spectr_prefix(i))
-        call sph_spectr_average(fname_org_rms, ione,                    &
+        call sph_spectr_average(fname_org_rms, ione, izero,             &
      &      spec_evo_p1, sph_IN_t)
-        call sph_spectr_std_deviation(fname_org_rms, ione,              &
+        call sph_spectr_std_deviation(fname_org_rms, ione, izero,       &
      &      spec_evo_p1, sph_IN_t)
       end do
 !

@@ -10,6 +10,7 @@
       program maxmode_sph_ene_spec
 !
       use m_precision
+      use m_constants
 !
       use m_maxmode_sph_ene_spectr
       use t_read_sph_spectra
@@ -29,17 +30,14 @@
       call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      sph_IN_m%iflag_spectr =  1
-      sph_IN_m%iflag_vol_ave = 1
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
         call sph_maximum_pwr_spectr(spec_evo_p1%vol_spectr_prefix(i),   &
-     &      spec_evo_p1, sph_IN_m)
+     &      ione, spec_evo_p1, sph_IN_m)
       end do
 !
-      sph_IN_m%iflag_vol_ave = 0
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
         call sph_maximum_pwr_spectr(spec_evo_p1%layer_spectr_prefix(i), &
-     &      spec_evo_p1, sph_IN_m)
+     &      izero, spec_evo_p1, sph_IN_m)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)
