@@ -111,8 +111,17 @@
 !  Output average
       write(file_name, '(a6,a)') 't_ave_', trim(fname_org)
       open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head(id_file_rms, sph_IN)
-      call select_output_sph_pwr_data(id_file_rms, sph_IN)
+      call select_output_sph_pwr_head                                   &
+     &   (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
+!
+      if(sph_IN%iflag_spectr .gt. 0) then
+        call select_output_sph_pwr_data                                 &
+     &     (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
+      else
+        call select_output_sph_series_data                              &
+     &     (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
+      end if
+!
       close(id_file_rms)
 !
       call dealloc_sph_espec_data(sph_IN)
@@ -190,8 +199,17 @@
 !
       write(file_name, '(a8,a)') 't_sigma_', trim(fname_org)
       open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head(id_file_rms, sph_IN)
-      call select_output_sph_pwr_data(id_file_rms, sph_IN)
+      call select_output_sph_pwr_head                                   &
+     &   (id_file_rms, sph_IN%iflag_vol_ave,sph_IN)
+!
+      if(sph_IN%iflag_spectr .gt. 0) then
+        call select_output_sph_pwr_data                                 &
+     &     (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
+      else
+        call select_output_sph_series_data                              &
+     &     (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
+      end if
+!
       close(id_file_rms)
 !
       call dealloc_sph_espec_data(sph_IN)

@@ -63,13 +63,13 @@
       call select_input_sph_pwr_head(id_file_rms_l,                     &
      &    spec_evo_p%iflag_old_fmt, sph_IN)
 !
-      sph_OUT1%iflag_spectr =  0
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
       write(fname_tmp, '(a7,a)') 'lscale_', trim(input_header)
       file_name = add_dat_extension(fname_tmp)
       open(id_file_lscale, file=file_name)
-      call select_output_sph_pwr_head(id_file_lscale, sph_OUT1)
+      call select_output_sph_pwr_head                                   &
+     &   (id_file_lscale, sph_OUT1%iflag_vol_ave, sph_OUT1)
 !
       call allocate_lscale_espec_data(sph_IN)
 !
@@ -91,7 +91,8 @@
      &        sph_OUT1%spectr_IO)
           icou = icou + 1
 !
-          call select_output_sph_pwr_data(id_file_lscale, sph_OUT1)
+          call select_output_sph_series_data                            &
+     &       (id_file_lscale, sph_OUT1%iflag_vol_ave, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &

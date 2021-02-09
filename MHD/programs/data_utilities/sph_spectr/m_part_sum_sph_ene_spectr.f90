@@ -59,7 +59,6 @@
       call select_input_sph_pwr_head(id_file_rms_l,                     &
      &    spec_evo_p%iflag_old_fmt, sph_IN)
 !
-      sph_OUT1%iflag_spectr =  0
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
       write(fname_tmp, '(a5,a)') 'part_', trim(input_prefix)
@@ -67,7 +66,8 @@
       fname_tmp = add_int_suffix(spec_evo_p%led, file_name)
       file_name = add_dat_extension(fname_tmp)
       open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head(id_file_rms, sph_OUT1)
+      call select_output_sph_pwr_head                                   &
+     &   (id_file_rms, sph_OUT1%iflag_vol_ave, sph_OUT1)
 !
       icou = 0
       ist_true = -1
@@ -86,7 +86,8 @@
      &        sph_IN%spectr_IO, sph_OUT1%spectr_IO)
           icou = icou + 1
 !
-          call select_output_sph_pwr_data(id_file_rms, sph_OUT1)
+          call select_output_sph_series_data                            &
+     &       (id_file_rms, sph_OUT1%iflag_vol_ave, sph_OUT1)
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
