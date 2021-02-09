@@ -53,11 +53,10 @@
       integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !
-      sph_IN%iflag_spectr = 1
       file_name = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_l,                     &
-     &    spec_evo_p%iflag_old_fmt, sph_IN)
+     &    spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave, sph_IN)
 !
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !

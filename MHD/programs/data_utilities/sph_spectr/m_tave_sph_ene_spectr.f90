@@ -43,12 +43,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_average                                     &
-     &         (fname_org, spec_evo_p, sph_IN)
+     &         (fname_org, iflag_spectr, spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
+      integer(kind = kint), intent(in) :: iflag_spectr
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -58,10 +59,17 @@
 !
 !
       open(id_file_rms, file=fname_org)
-      call select_input_sph_pwr_head(id_file_rms,                       &
-     &    spec_evo_p%iflag_old_fmt, sph_IN)
 !
-      ltr = sph_IN%ltr_sph * sph_IN%iflag_spectr
+      if(iflag_spectr .gt. 0) then
+        call select_input_sph_pwr_head(id_file_rms,                     &
+     &      spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave, sph_IN)
+        ltr = sph_IN%ltr_sph
+      else
+        call select_input_sph_series_head(id_file_rms,                  &
+     &      spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave, sph_IN)
+        ltr = 0
+      end if
+!
       call allocate_tave_sph_data(ltr, sph_IN)
 !
       icou = 0
@@ -71,8 +79,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-!
-        if(sph_IN%iflag_spectr .gt. 0) then
+        if(iflag_spectr .gt. 0) then
           call select_input_sph_pwr_data(id_file_rms,                   &
      &        spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,           &
      &        sph_IN, ierr)
@@ -123,7 +130,7 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
 !
-      if(sph_IN%iflag_spectr .gt. 0) then
+      if(iflag_spectr .gt. 0) then
         call select_output_sph_pwr_data                                 &
      &     (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
       else
@@ -140,12 +147,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_std_deviation                               &
-     &         (fname_org, spec_evo_p, sph_IN)
+     &         (fname_org, iflag_spectr, spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
+      integer(kind = kint), intent(in) :: iflag_spectr
       type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -158,9 +166,15 @@
       write(*,*) 'Open file ', trim(fname_org)
       open(id_file_rms, file=fname_org)
 !
-      call select_input_sph_pwr_head(id_file_rms,                       &
-     &    spec_evo_p%iflag_old_fmt, sph_IN)
-      ltr = sph_IN%ltr_sph * sph_IN%iflag_spectr
+      if(iflag_spectr .gt. 0) then
+        call select_input_sph_pwr_head(id_file_rms,                     &
+     &      spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave, sph_IN)
+        ltr = sph_IN%ltr_sph
+      else
+        call select_input_sph_series_head(id_file_rms,                  &
+     &      spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave, sph_IN)
+        ltr = 0
+      end if
 !
       icou = 0
       ist_true = -1
@@ -170,7 +184,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=  ', icou
       do
-        if(sph_IN%iflag_spectr .gt. 0) then
+        if(iflag_spectr .gt. 0) then
           call select_input_sph_pwr_data(id_file_rms,                   &
      &        spec_evo_p%iflag_old_fmt, sph_IN%iflag_vol_ave,           &
      &        sph_IN, ierr)
@@ -219,7 +233,7 @@
       call select_output_sph_pwr_head                                   &
      &   (id_file_rms, sph_IN%iflag_vol_ave,sph_IN)
 !
-      if(sph_IN%iflag_spectr .gt. 0) then
+      if(iflag_spectr .gt. 0) then
         call select_output_sph_pwr_data                                 &
      &     (id_file_rms, sph_IN%iflag_vol_ave, sph_IN)
       else
