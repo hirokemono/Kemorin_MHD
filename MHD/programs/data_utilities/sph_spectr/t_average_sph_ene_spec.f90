@@ -47,6 +47,7 @@
       use m_tave_sph_ene_spectr
       use t_read_sph_spectra
       use t_ctl_data_tave_sph_monitor
+      use t_ctl_param_sph_series_util
       use set_parallel_file_name
 !
       implicit none

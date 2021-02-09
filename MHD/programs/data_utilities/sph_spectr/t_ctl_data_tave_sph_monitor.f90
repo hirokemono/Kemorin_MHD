@@ -23,6 +23,7 @@
 !!    end_time_ctl       2.0
 !!
 !!    old_format_flag     'Off'
+!!    degree_range_ctl     1   12
 !!
 !!    array vol_time_series_prefix
 !!      vol_time_series_prefix     'sph_ave_volume'
@@ -62,6 +63,7 @@
       use t_read_control_elements
       use t_control_array_character
       use t_control_array_real
+      use t_control_array_integer2
 !
       implicit  none
 !
@@ -80,9 +82,8 @@
 !
 !>        Character flag for old format
         type(read_character_item) :: old_format_ctl
-!
-!>        Structure for picked spectrum file prefix
-        type(read_character_item) :: Nusselt_file_prefix
+!>        Range of spherical harmonics degree
+        type(read_int2_item) :: degree_range_ctl
 !
 !>        file prefix for volume time series
         type(ctl_array_chara) :: volume_series_file_ctl
@@ -94,6 +95,8 @@
 !>        file prefix for layered spectr time series
         type(ctl_array_chara) :: layered_spec_file_ctl
 !
+!>        Structure for picked spectrum file prefix
+        type(read_character_item) :: Nusselt_file_prefix
 !>        Structure for gauss coefficient file prefix
         type(read_character_item) :: gauss_coefs_prefix
 !>        Structure for picked spectrum file prefix
@@ -115,6 +118,8 @@
      &           :: hd_end_time_ctl = 'end_time_ctl'
       character(len=kchara), parameter, private                         &
      &           :: hd_old_format =   'old_format_flag'
+      character(len=kchara), parameter, private                         &
+     &           :: hd_degree_range = 'degree_range_ctl'
 !
       character(len=kchara), parameter, private                         &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
@@ -186,8 +191,11 @@
         call read_real_ctl_type                                         &
      &     (c_buf, hd_end_time_ctl, tave_sph_ctl%end_time_ctl)
 !
-        call read_real_ctl_type                                         &
+        call read_chara_ctl_type                                        &
      &     (c_buf, hd_old_format, tave_sph_ctl%old_format_ctl)
+!
+        call read_integer2_ctl_type                                     &
+     &     (c_buf, hd_degree_range, tave_sph_ctl%degree_range_ctl)
 !
         call read_chara_ctl_type(c_buf, hd_Nusselt_file_head,           &
      &      tave_sph_ctl%Nusselt_file_prefix)
@@ -218,11 +226,10 @@
       type(tave_sph_monitor_ctl), intent(inout) :: tave_sph_ctl
 !
 !
-      tave_sph_ctl%start_time_ctl%iflag = 0
-      tave_sph_ctl%end_time_ctl%iflag =   0
-      tave_sph_ctl%old_format_ctl =       0
-!
-      tave_sph_ctl%Nusselt_file_prefix%iflag =      0
+      tave_sph_ctl%start_time_ctl%iflag =   0
+      tave_sph_ctl%end_time_ctl%iflag =     0
+      tave_sph_ctl%old_format_ctl%iflag =   0
+      tave_sph_ctl%degree_range_ctl%iflag = 0
 !
       call dealloc_control_array_chara                                  &
      &   (tave_sph_ctl%volume_spec_file_ctl)
@@ -234,8 +241,9 @@
       call dealloc_control_array_chara                                  &
      &   (tave_sph_ctl%layered_series_file_ctl)
 !
-      tave_sph_ctl%gauss_coefs_prefix%iflag =        0
-      tave_sph_ctl%picked_mode_head_ctl%iflag =      0
+      tave_sph_ctl%Nusselt_file_prefix%iflag =  0
+      tave_sph_ctl%gauss_coefs_prefix%iflag =   0
+      tave_sph_ctl%picked_mode_head_ctl%iflag = 0
 !
       tave_sph_ctl%i_time_ave_sph = 0
 !
