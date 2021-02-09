@@ -70,7 +70,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        ierr = select_input_sph_pwr_data(id_file_rms, sph_IN)
+        call select_input_sph_pwr_data(id_file_rms, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -149,7 +149,7 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=  ', icou
       do
-        ierr = select_input_sph_pwr_data(id_file_rms, sph_IN)
+        call select_input_sph_pwr_data(id_file_rms, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
