@@ -76,9 +76,9 @@
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%vol_series_prefix(i))
         call sph_spectr_average(fname_org_rms,                          &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
         call sph_spectr_std_deviation(fname_org_rms,                    &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
       end do
 !
       sph_IN_t%iflag_spectr = 1
@@ -88,9 +88,9 @@
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%vol_spectr_prefix(i))
         call sph_spectr_average(fname_org_rms,                          &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
         call sph_spectr_std_deviation(fname_org_rms,                    &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
       end do
 !
 !
@@ -101,9 +101,9 @@
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%layer_series_prefix(i))
         call sph_spectr_average(fname_org_rms,                          &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
         call sph_spectr_std_deviation(fname_org_rms,                    &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
       end do
 !
       sph_IN_t%iflag_spectr = 1
@@ -113,9 +113,9 @@
         fname_org_rms                                                   &
      &      = add_dat_extension(spec_evo_p1%layer_spectr_prefix(i))
         call sph_spectr_average(fname_org_rms,                          &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
         call sph_spectr_std_deviation(fname_org_rms,                    &
-     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_t)
+     &      spec_evo_p1, sph_IN_t)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)

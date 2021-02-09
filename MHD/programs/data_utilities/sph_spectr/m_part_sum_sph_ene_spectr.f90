@@ -9,7 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_part_pwr_spectr_sum                              &
-!!     &         (fname_org, start_time, end_time, lst, led, sph_IN)
+!!     &         (fname_org, spec_evo_p, sph_IN)
+!!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_part_sum_sph_ene_spectr
@@ -37,14 +39,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_part_pwr_spectr_sum                                &
-     &         (input_prefix, start_time, end_time, lst, led, sph_IN)
+     &         (input_prefix, spec_evo_p, sph_IN)
 !
+      use t_ctl_param_sph_series_util
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: lst, led
       character(len = kchara), intent(in) :: input_prefix
-      real(kind = kreal), intent(in) :: start_time, end_time
+      type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name, fname_tmp
@@ -60,8 +62,8 @@
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
       write(fname_tmp, '(a5,a)') 'part_', trim(input_prefix)
-      file_name = add_int_suffix(lst, fname_tmp)
-      fname_tmp = add_int_suffix(led, file_name)
+      file_name = add_int_suffix(spec_evo_p%lst, fname_tmp)
+      fname_tmp = add_int_suffix(spec_evo_p%led, file_name)
       file_name = add_dat_extension(fname_tmp)
       open(id_file_rms, file=file_name)
       call select_output_sph_pwr_head(id_file_rms, sph_OUT1)
@@ -75,9 +77,9 @@
         ierr = select_input_sph_pwr_data(id_file_rms_l, sph_IN)
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN%time .ge. start_time) then
+        if (sph_IN%time .ge. spec_evo_p%start_time) then
           call copy_read_ene_step_data(sph_IN, sph_OUT1)
-          call part_sum_ene_spectr(lst, led,                            &
+          call part_sum_ene_spectr(spec_evo_p%lst, spec_evo_p%led,      &
      &        sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
      &        sph_IN%spectr_IO, sph_OUT1%spectr_IO)
           icou = icou + 1
@@ -88,7 +90,7 @@
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=   ', icou
-        if (sph_IN%time .ge. end_time) exit
+        if (sph_IN%time .ge. spec_evo_p%end_time) exit
       end do
 !
    99 continue

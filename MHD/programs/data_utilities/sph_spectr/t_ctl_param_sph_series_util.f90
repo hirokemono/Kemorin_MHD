@@ -24,7 +24,8 @@
       type sph_spectr_file_param
         real(kind = kreal) :: start_time
         real(kind = kreal) :: end_time
-        logical :: flag_old_fmt = .FALSE.
+!
+        integer(kind = kint) :: iflag_old_fmt = 0
 !
         integer(kind = kint) :: lst = 0
         integer(kind = kint) :: led = 0
@@ -76,10 +77,10 @@
       end if
       spec_evo_p%end_time = tave_sph_ctl%end_time_ctl%realvalue
 !
-      spec_evo_p%flag_old_fmt = .FALSE.
+      spec_evo_p%iflag_old_fmt = 0
       if(tave_sph_ctl%old_format_ctl%iflag .gt. 0                       &
      &    .and. yes_flag(tave_sph_ctl%old_format_ctl%charavalue)) then
-        spec_evo_p%flag_old_fmt = .TRUE.
+        spec_evo_p%iflag_old_fmt = 1
       end if
 !
       if(tave_sph_ctl%degree_range_ctl%iflag .gt. 0) then

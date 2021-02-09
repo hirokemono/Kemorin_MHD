@@ -9,9 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine sph_spectr_average                                   &
-!!     &         (fname_org, start_time, end_time, sph_IN)
+!!     &         (fname_org, spec_evo_p, sph_IN)
 !!      subroutine sph_spectr_std_deviation                             &
-!!     &         (fname_org, start_time, end_time, sph_IN)
+!!     &         (fname_org, spec_evo_p, sph_IN)
+!!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_tave_sph_ene_spectr
@@ -19,6 +21,7 @@
       use m_precision
       use m_constants
       use t_read_sph_spectra
+      use t_ctl_param_sph_series_util
 !
       implicit none
 !
@@ -40,13 +43,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_average                                     &
-     &         (fname_org, start_time, end_time, sph_IN)
+     &         (fname_org, spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      real(kind = kreal), intent(in) :: start_time, end_time
+      type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
@@ -70,7 +73,7 @@
         ierr = select_input_sph_pwr_data(id_file_rms, sph_IN)
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN%time .ge. start_time) then
+        if (sph_IN%time .ge. spec_evo_p%start_time) then
           if (ist_true .eq. -1) then
             ist_true = sph_IN%i_step
             time_ini = sph_IN%time
@@ -91,7 +94,7 @@
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=   ', icou
-        if (sph_IN%time .ge. end_time) exit
+        if (sph_IN%time .ge. spec_evo_p%end_time) exit
       end do
 !
    99 continue
@@ -117,13 +120,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_std_deviation                               &
-     &         (fname_org, start_time, end_time, sph_IN)
+     &         (fname_org, spec_evo_p, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
-      real(kind = kreal), intent(in) :: start_time, end_time
+      type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
@@ -149,7 +152,7 @@
         ierr = select_input_sph_pwr_data(id_file_rms, sph_IN)
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN%time .ge. start_time) then
+        if (sph_IN%time .ge. spec_evo_p%start_time) then
           if (ist_true .eq. -1) then
             ist_true = sph_IN%i_step
             time_ini = sph_IN%time
@@ -171,7 +174,7 @@
         write(*,'(60a1,a6,i12,a30,i12)',advance="NO") (char(8),i=1,60), &
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=   ', icou
-        if (sph_IN%time .ge. end_time) exit
+        if (sph_IN%time .ge. spec_evo_p%end_time) exit
       end do
    99 continue
       write(*,*)

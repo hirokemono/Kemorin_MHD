@@ -40,17 +40,13 @@
       sph_IN_p%iflag_vol_ave = 1
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
         call sph_part_pwr_spectr_sum                                    &
-     &   (spec_evo_p1%vol_spectr_prefix(i),                             &
-     &    spec_evo_p1%start_time, spec_evo_p1%end_time,                 &
-     &    spec_evo_p1%lst, spec_evo_p1%led, sph_IN_p)
+     &     (spec_evo_p1%vol_spectr_prefix(i), spec_evo_p1, sph_IN_p)
       end do
 !
       sph_IN_p%iflag_vol_ave = 0
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
         call sph_part_pwr_spectr_sum                                    &
-     &   (spec_evo_p1%layer_spectr_prefix(i),                           &
-     &    spec_evo_p1%start_time, spec_evo_p1%end_time,                 &
-     &    spec_evo_p1%lst, spec_evo_p1%led, sph_IN_p)
+     &     (spec_evo_p1%layer_spectr_prefix(i), spec_evo_p1, sph_IN_p)
       end do
 !
       call dealloc_spec_series_file_param(spec_evo_p1)

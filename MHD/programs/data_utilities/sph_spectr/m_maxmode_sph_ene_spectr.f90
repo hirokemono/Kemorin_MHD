@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine sph_maximum_pwr_spectr                               &
-!!     &         (input_prefix, start_time, end_time, sph_IN)
+!!     &         (input_prefix, spec_evo_p, sph_IN)
+!!        type(sph_spectr_file_param), intent(in) :: spec_evo_p
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
@@ -43,13 +44,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_maximum_pwr_spectr                                 &
-     &         (input_prefix, start_time, end_time, sph_IN)
+     &         (input_prefix, spec_evo_p, sph_IN)
 !
+      use t_ctl_param_sph_series_util
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
       character(len = kchara), intent(in) :: input_prefix
-      real(kind = kreal), intent(in) :: start_time, end_time
+      type(sph_spectr_file_param), intent(in) :: spec_evo_p
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: fname_org, file_name
@@ -83,7 +85,7 @@
         ierr = select_input_sph_pwr_data(id_file_rms_l, sph_IN)
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN%time .ge. start_time) then
+        if (sph_IN%time .ge. spec_evo_p%start_time) then
           call copy_read_ene_step_data(sph_IN, sph_OUT1)
           call find_dominant_scale_sph                                  &
      &       (sph_IN%nri_sph, sph_IN%ltr_sph, sph_IN%ntot_sph_spec,     &
@@ -104,7 +106,7 @@
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=   ', icou
-        if (sph_IN%time .ge. end_time) exit
+        if (sph_IN%time .ge. spec_evo_p%end_time) exit
       end do
 !
    99 continue
