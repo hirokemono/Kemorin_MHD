@@ -17,24 +17,28 @@
 !!    start_time_ctl     1.0
 !!    end_time_ctl       2.0
 !!
-!!    nusselt_number_prefix        'Nusselt'
+!!    array vol_time_series_prefix
+!!      vol_time_series_prefix     'sph_ave_volume'
+!!      vol_time_series_prefix     'sph_pwr_volume_s'
+!!      vol_time_series_prefix     'sph_pwr_volume_m0'
+!!    end array vol_time_series_prefix
 !!
-!!    array volume_average_prefix
-!!      volume_average_prefix        'sph_ave_volume'
-!!    end array volume_spectrum_ctl
+!!    array vol_spectr_series_prefix
+!!      vol_spectr_series_prefix     'sph_pwr_volume_l'
+!!      vol_spectr_series_prefix     'sph_pwr_volume_m'
+!!      vol_spectr_series_prefix     'sph_pwr_volume_lm'
+!!    end array vol_spectr_series_prefix
 !!
-!!    begin volume_pwr_spectr_prefix
-!!      volume_pwr_spectr_prefix     'sph_pwr_volume'
-!!    end   volume_pwr_spectr_prefix
+!!    array layer_time_series_prefix
+!!      layer_time_series_prefix     'sph_pwr_layer_s'
+!!      layer_time_series_prefix     'sph_pwr_layer_m0'
+!!    end array layer_time_series_prefix
 !!
-!!    layered_pwr_spectr_prefix    'sph_pwr_layer'
-!!    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
-!!    picked_sph_prefix            'sph_spectr/picked_mode'
-!!
-!!    degree_spectr_switch         'On'
-!!    order_spectr_switch          'On'
-!!    diff_lm_spectr_switch        'On'
-!!    axisymmetric_spectr_switch   'On'
+!!    array layer_spectr_series_prefix
+!!      layer_spectr_series_prefix     'sph_pwr_layer_l'
+!!      layer_spectr_series_prefix     'sph_pwr_layer_m'
+!!      layer_spectr_series_prefix     'sph_pwr_layer_lm'
+!!    end array layer_spectr_series_prefix
 !!  end time_averaging_sph_monitor
 !!
 !! -----------------------------------------------------------------

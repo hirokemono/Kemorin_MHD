@@ -157,7 +157,11 @@
       do kr = 1, nri_sph
 !$omp do
         do nd = 1, ncomp
-          scale_uli(nd,0,kr) = spec_times_l(nd,kr) / total_msq(nd,kr)
+          if(total_msq(nd,kr) .le. 0.0d0) then
+            scale_uli(nd,0,kr) = 0.0d0
+          else
+            scale_uli(nd,0,kr) = spec_times_l(nd,kr) / total_msq(nd,kr)
+          end if
         end do
 !$omp end do nowait
       end do

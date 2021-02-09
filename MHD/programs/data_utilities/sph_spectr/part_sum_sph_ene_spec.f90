@@ -25,18 +25,21 @@
 !
 !
 !
-      call select_sph_ene_spec_data_file(sph_IN_p, input_header)
+      do
+        call select_sph_ene_spec_data_file(sph_IN_p, input_header)
+        if(sph_IN_p%iflag_vol_ave .lt. 0) exit
 !
-      write(*,*) 'Input start and end degree or order'
-      read(*,*) lst, led
+        write(*,*) 'Input start and end degree or order'
+        read(*,*) lst, led
 !
-      write(*,*) 'Input start and end time'
-      read(*,*) start_time, end_time
+        write(*,*) 'Input start and end time'
+        read(*,*) start_time, end_time
 !
 !    Evaluate time average
 !
-      call sph_part_pwr_spectr_sum                                      &
+        call sph_part_pwr_spectr_sum                                    &
      &   (input_header, start_time, end_time, lst, led, sph_IN_p)
+      end do
 !
       stop
 !

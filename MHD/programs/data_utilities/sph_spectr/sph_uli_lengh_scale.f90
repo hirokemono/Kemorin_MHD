@@ -22,15 +22,18 @@
       type(read_sph_spectr_data), save :: sph_IN_u
 !
 !
-      call select_sph_ene_spec_data_file(sph_IN_u, input_header)
+      do
+        call select_sph_ene_spec_data_file(sph_IN_u, input_header)
+        if(sph_IN_u%iflag_vol_ave .lt. 0) exit
 !
-      write(*,*) 'Input start and end time'
-      read(*,*) start_time, end_time
+        write(*,*) 'Input start and end time'
+        read(*,*) start_time, end_time
 !
 !    Evaluate length scale
 !
-      call sph_uli_lengh_scale_by_spectr                                &
-     &   (input_header, start_time, end_time, sph_IN_u)
+        call sph_uli_lengh_scale_by_spectr                              &
+     &     (input_header, start_time, end_time, sph_IN_u)
+      end do
 !
       stop
       end program sph_uli_lengh_scale

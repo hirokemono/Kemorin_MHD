@@ -13,56 +13,44 @@
 !
       use m_maxmode_sph_ene_spectr
       use t_read_sph_spectra
+      use t_ctl_data_tave_sph_monitor
+      use t_ctl_param_sph_series_util
       use set_parallel_file_name
 !
       implicit none
 !
-      integer(kind = kint) :: iflag_data_mode
-      character(len = kchara) :: input_header
-      character(len = kchara) :: fname_org_rms, fname_org_rms_l
-      real(kind = kreal) :: start_time, end_time
+      type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
+      type(sph_spectr_file_param), save :: spec_evo_p1
       type(read_sph_spectr_data), save :: sph_IN_m
 !
+      character(len = kchara) :: fname_org_rms
+      integer :: i
 !
-      write(*,*) ' Choose data to take average'
-      write(*,*)  ' 0: Total and all spectrum  '
-      write(*,*)  ' 1: Total average '
-      write(*,*)  ' 2: One spectrum data '
-      read(*,*) iflag_data_mode
+      call read_control_file_psf_compare(0, tave_sph_ctl1)
+      call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
+      call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      call select_sph_ene_spec_data_file(sph_IN_m, input_header)
+      sph_IN_m%iflag_old_fmt = 0
+      sph_IN_m%iflag_spectr =  1
+      sph_IN_m%iflag_vol_ave = 1
+      do i = 1, spec_evo_p1%nfile_vol_spectr_file
+        write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
+        fname_org_rms                                                   &
+     &      = add_dat_extension(spec_evo_p1%vol_spectr_prefix(i))
+        call sph_maximum_pwr_spectr(fname_org_rms,                      &
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_m)
+      end do
 !
-      if(iflag_data_mode .eq. 0) then
-        fname_org_rms = add_dat_extension(input_header)
-        write(fname_org_rms_l, '(a,a6)')                                &
-     &                        trim(input_header), '_l.dat'
-      else if(iflag_data_mode .eq. 1) then
-        fname_org_rms = add_dat_extension(input_header)
-      else if(iflag_data_mode .eq. 2) then
-        fname_org_rms_l =  add_dat_extension(input_header)
-      end if
+      sph_IN_m%iflag_vol_ave = 0
+      do i = 1, spec_evo_p1%nfile_layer_sprctr_file
+        write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
+        fname_org_rms                                                   &
+     &      = add_dat_extension(spec_evo_p1%layer_spectr_prefix(i))
+        call sph_maximum_pwr_spectr(fname_org_rms,                      &
+     &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_m)
+      end do
 !
-      write(*,*) 'Input start and end time'
-      read(*,*) start_time, end_time
-!
-!    Evaluate time average
-!
-      if(iflag_data_mode .eq. 0 .or. iflag_data_mode .eq. 2) then
-        call sph_maximum_pwr_spectr                                     &
-     &     (fname_org_rms_l, start_time, end_time, sph_IN_m)
-      end if
-!
-      if(iflag_data_mode .eq. 0) then
-        write(fname_org_rms, '(a,a6)')                                  &
-     &                        trim(input_header), '_m.dat'
-        call sph_maximum_pwr_spectr                                     &
-     &     (fname_org_rms, start_time, end_time, sph_IN_m)
-!
-        write(fname_org_rms,'(a,a7)')                                   &
-     &                        trim(input_header), '_lm.dat'
-        call sph_maximum_pwr_spectr                                     &
-     &     (fname_org_rms, start_time, end_time, sph_IN_m)
-      end if
-!
+      call dealloc_spec_series_file_param(spec_evo_p1)
       stop
+!
       end program maxmode_sph_ene_spec
