@@ -14,33 +14,46 @@
 !
       use m_part_sum_sph_ene_spectr
       use t_read_sph_spectra
+      use t_ctl_data_tave_sph_monitor
+      use t_ctl_param_sph_series_util
 !
       implicit none
 !
 !
-      character(len = kchara) :: input_header
-      real(kind = kreal) :: start_time, end_time
-      integer(kind = kint) :: lst, led
+      type(tave_sph_monitor_ctl), save :: tave_sph_ctl1
+      type(sph_spectr_file_param), save :: spec_evo_p1
       type(read_sph_spectr_data), save :: sph_IN_p
 !
+      integer :: i
 !
+      call read_control_file_psf_compare(0, tave_sph_ctl1)
+      if(tave_sph_ctl1%degree_range_ctl%iflag .eq. 0) then
+        write(*,*) 'Set spharical harmonics range'
+        stop
+      end if
 !
-      do
-        call select_sph_ene_spec_data_file(sph_IN_p, input_header)
-        if(sph_IN_p%iflag_vol_ave .lt. 0) exit
+      call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
+      call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-        write(*,*) 'Input start and end degree or order'
-        read(*,*) lst, led
-!
-        write(*,*) 'Input start and end time'
-        read(*,*) start_time, end_time
-!
-!    Evaluate time average
-!
+      sph_IN_p%iflag_old_fmt = 0
+      sph_IN_p%iflag_spectr =  1
+      sph_IN_p%iflag_vol_ave = 1
+      do i = 1, spec_evo_p1%nfile_vol_spectr_file
         call sph_part_pwr_spectr_sum                                    &
-     &   (input_header, start_time, end_time, lst, led, sph_IN_p)
+     &   (spec_evo_p1%vol_spectr_prefix(i),                             &
+     &    spec_evo_p1%start_time, spec_evo_p1%end_time,                 &
+     &    spec_evo_p1%lst, spec_evo_p1%led, sph_IN_p)
       end do
 !
+      sph_IN_p%iflag_vol_ave = 0
+      do i = 1, spec_evo_p1%nfile_layer_sprctr_file
+        call sph_part_pwr_spectr_sum                                    &
+     &   (spec_evo_p1%layer_spectr_prefix(i),                           &
+     &    spec_evo_p1%start_time, spec_evo_p1%end_time,                 &
+     &    spec_evo_p1%lst, spec_evo_p1%led, sph_IN_p)
+      end do
+!
+      call dealloc_spec_series_file_param(spec_evo_p1)
       stop
 !
       end program part_sum_sph_ene_spec

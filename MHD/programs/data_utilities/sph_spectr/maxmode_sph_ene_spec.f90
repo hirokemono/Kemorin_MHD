@@ -34,19 +34,13 @@
       sph_IN_m%iflag_spectr =  1
       sph_IN_m%iflag_vol_ave = 1
       do i = 1, spec_evo_p1%nfile_vol_spectr_file
-        write(*,*) i, trim(spec_evo_p1%vol_spectr_prefix(i))
-        fname_org_rms                                                   &
-     &      = add_dat_extension(spec_evo_p1%vol_spectr_prefix(i))
-        call sph_maximum_pwr_spectr(fname_org_rms,                      &
+        call sph_maximum_pwr_spectr(spec_evo_p1%vol_spectr_prefix(i),   &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_m)
       end do
 !
       sph_IN_m%iflag_vol_ave = 0
       do i = 1, spec_evo_p1%nfile_layer_sprctr_file
-        write(*,*) i, trim(spec_evo_p1%layer_spectr_prefix(i))
-        fname_org_rms                                                   &
-     &      = add_dat_extension(spec_evo_p1%layer_spectr_prefix(i))
-        call sph_maximum_pwr_spectr(fname_org_rms,                      &
+        call sph_maximum_pwr_spectr(spec_evo_p1%layer_spectr_prefix(i), &
      &      spec_evo_p1%start_time, spec_evo_p1%end_time, sph_IN_m)
       end do
 !

@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine sph_maximum_pwr_spectr                               &
-!!     &         (fname_org, start_time, end_time, sph_IN)
+!!     &         (input_prefix, start_time, end_time, sph_IN)
+!!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!@endverbatim
 !
       module m_maxmode_sph_ene_spectr
@@ -42,20 +43,21 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_maximum_pwr_spectr                                 &
-     &         (fname_org, start_time, end_time, sph_IN)
+     &         (input_prefix, start_time, end_time, sph_IN)
 !
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
-      character(len = kchara), intent(in) :: fname_org
+      character(len = kchara), intent(in) :: input_prefix
       real(kind = kreal), intent(in) :: start_time, end_time
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
-      character(len = kchara) :: file_name
+      character(len = kchara) :: fname_org, file_name
       integer(kind = kint) :: i, icou, ierr, ist_true
 !
 !
       sph_IN%iflag_spectr = 1
+      fname_org = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=fname_org)
       call select_input_sph_pwr_head(id_file_rms_l, sph_IN)
 !

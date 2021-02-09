@@ -37,13 +37,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine sph_part_pwr_spectr_sum                                &
-     &         (input_header, start_time, end_time, lst, led, sph_IN)
+     &         (input_prefix, start_time, end_time, lst, led, sph_IN)
 !
       use sph_mean_square_IO_select
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: lst, led
-      character(len = kchara), intent(in) :: input_header
+      character(len = kchara), intent(in) :: input_prefix
       real(kind = kreal), intent(in) :: start_time, end_time
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
@@ -52,14 +52,14 @@
 !
 !
       sph_IN%iflag_spectr = 1
-      file_name = add_dat_extension(input_header)
+      file_name = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=file_name)
       call select_input_sph_pwr_head(id_file_rms_l, sph_IN)
 !
       sph_OUT1%iflag_spectr =  0
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
 !
-      write(fname_tmp, '(a5,a)') 'part_', trim(input_header)
+      write(fname_tmp, '(a5,a)') 'part_', trim(input_prefix)
       file_name = add_int_suffix(lst, fname_tmp)
       fname_tmp = add_int_suffix(led, file_name)
       file_name = add_dat_extension(fname_tmp)
