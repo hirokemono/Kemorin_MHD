@@ -7,8 +7,10 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
-!!      subroutine select_input_sph_pwr_head(id_file, sph_IN)
-!!      subroutine select_input_sph_pwr_data(id_file, sph_IN, ierr)
+!!      subroutine select_input_sph_pwr_head(id_file,                   &
+!!     &          iflag_old_fmt, sph_IN)
+!!      subroutine select_input_sph_pwr_data(id_file,                   &
+!!     &          iflag_old_fmt, sph_IN, ierr)
 !!        type(read_sph_spectr_data), intent(inout) :: sph_IN
 !!
 !!      subroutine select_output_sph_pwr_head(id_file, sph_IN)
@@ -31,13 +33,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine select_input_sph_pwr_head(id_file, sph_IN)
+      subroutine select_input_sph_pwr_head(id_file,                     &
+     &          iflag_old_fmt, sph_IN)
 !
       integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_old_fmt
       type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
 !
-      if(sph_IN%iflag_old_fmt .gt. 0) then
+      if(iflag_old_fmt .gt. 0) then
         if(sph_IN%iflag_vol_ave .eq. 1) then
           if(sph_IN%iflag_spectr .eq. 0) then
             call input_sph_pwr_vol_head_old(id_file, sph_IN)
@@ -72,14 +76,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine select_input_sph_pwr_data(id_file, sph_IN, ierr)
+      subroutine select_input_sph_pwr_data(id_file,                     &
+     &          iflag_old_fmt, sph_IN, ierr)
 !
       integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: iflag_old_fmt
       type(read_sph_spectr_data), intent(inout) :: sph_IN
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(sph_IN%iflag_old_fmt .gt. 0) then
+      if(iflag_old_fmt .gt. 0) then
         if(sph_IN%iflag_vol_ave .eq. 1) then
           if(sph_IN%iflag_spectr .eq. 0) then
             call read_volume_pwr_sph(id_file, sph_IN, ierr)

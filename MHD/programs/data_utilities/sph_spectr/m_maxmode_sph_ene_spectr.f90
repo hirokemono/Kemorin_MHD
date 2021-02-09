@@ -61,7 +61,8 @@
       sph_IN%iflag_spectr = 1
       fname_org = add_dat_extension(input_prefix)
       open(id_file_rms_l, file=fname_org)
-      call select_input_sph_pwr_head(id_file_rms_l, sph_IN)
+      call select_input_sph_pwr_head(id_file_rms_l,                     &
+     &    spec_evo_p%iflag_old_fmt, sph_IN)
 !
       sph_OUT1%iflag_spectr =  0
       call copy_read_ene_params_4_sum(sph_IN, sph_OUT1)
@@ -82,7 +83,8 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_pwr_data(id_file_rms_l, sph_IN, ierr)
+        call select_input_sph_pwr_data(id_file_rms_l,                   &
+     &      spec_evo_p%iflag_old_fmt, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then

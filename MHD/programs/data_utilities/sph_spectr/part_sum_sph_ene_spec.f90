@@ -35,7 +35,6 @@
       call set_spec_series_file_param(tave_sph_ctl1, spec_evo_p1)
       call dealloc_ctl_tave_sph_monitor(tave_sph_ctl1)
 !
-      sph_IN_p%iflag_old_fmt = 0
       sph_IN_p%iflag_spectr =  1
       sph_IN_p%iflag_vol_ave = 1
       do i = 1, spec_evo_p1%nfile_vol_spectr_file

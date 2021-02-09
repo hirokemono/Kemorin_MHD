@@ -58,7 +58,8 @@
 !
 !
       open(id_file_rms, file=fname_org)
-      call select_input_sph_pwr_head(id_file_rms, sph_IN)
+      call select_input_sph_pwr_head(id_file_rms,                       &
+     &    spec_evo_p%iflag_old_fmt, sph_IN)
 !
       ltr = sph_IN%ltr_sph * sph_IN%iflag_spectr
       call allocate_tave_sph_data(ltr, sph_IN)
@@ -70,7 +71,8 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        call select_input_sph_pwr_data(id_file_rms, sph_IN, ierr)
+        call select_input_sph_pwr_data(id_file_rms,                     &
+     &      spec_evo_p%iflag_old_fmt, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
@@ -138,7 +140,8 @@
       write(*,*) 'Open file ', trim(fname_org)
       open(id_file_rms, file=fname_org)
 !
-      call select_input_sph_pwr_head(id_file_rms, sph_IN)
+      call select_input_sph_pwr_head(id_file_rms,                       &
+     &    spec_evo_p%iflag_old_fmt, sph_IN)
       ltr = sph_IN%ltr_sph * sph_IN%iflag_spectr
 !
       icou = 0
@@ -149,7 +152,8 @@
      &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=  ', icou
       do
-        call select_input_sph_pwr_data(id_file_rms, sph_IN, ierr)
+        call select_input_sph_pwr_data(id_file_rms,                     &
+     &      spec_evo_p%iflag_old_fmt, sph_IN, ierr)
         if(ierr .gt. 0) go to 99
 !
         if (sph_IN%time .ge. spec_evo_p%start_time) then
