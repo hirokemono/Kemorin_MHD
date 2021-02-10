@@ -48,7 +48,7 @@
 !
       use analyzer_sph_snap
       use FEM_analyzer_sph_MHD
-      use SPH_analyzer_snap
+      use SPH_analyzer_SGS_snap
       use output_viz_file_control
       use SGS_MHD_zonal_mean_viz
       use set_time_step_params

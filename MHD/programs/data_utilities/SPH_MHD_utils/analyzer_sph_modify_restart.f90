@@ -43,7 +43,7 @@
       subroutine evolution_sph_mod_restart
 !
       use FEM_analyzer_sph_MHD
-      use SPH_analyzer_snap
+      use SPH_analyzer_SGS_snap
       use set_time_step_params
 !
       type(field_IO), save  :: sph_fst_IO

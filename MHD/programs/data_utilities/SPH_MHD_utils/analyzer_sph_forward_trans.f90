@@ -30,7 +30,7 @@
       use t_step_parameter
 !
       use FEM_analyzer_sph_SGS_MHD
-      use SPH_analyzer_snap
+      use SPH_analyzer_SGS_snap
 !
       implicit none
 !
@@ -79,8 +79,8 @@
      &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, FEM_d1%iphys, SPH_model1,      &
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
+      call SPH_init_SGS_snap(MHD_files1, FEM_d1%iphys, SPH_model1,      &
      &    SPH_SGS1, SPH_MHD1, SPH_WK1)
 !
 !
@@ -112,8 +112,9 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_files1, &
+        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
+        call SPH_analyze_SGS_snap                                       &
+     &     (MHD_step1%time_d%i_time_step, MHD_files1,                   &
      &      SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1)
 !*
 !*  -----------  exit loop --------------
@@ -129,8 +130,8 @@
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
 !
-!      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
-!      call SPH_finalize_snap
+!      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
+!      call SPH_finalize_SGS_snap
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !

@@ -23,23 +23,23 @@
       use m_elapsed_labels_SEND_RECV
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
-      use m_SPH_SGS_structure
-      use t_ctl_data_SGS_MHD
+      use t_ctl_data_MHD
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_sph_trans_arrays_MHD
 !
       use FEM_analyzer_sph_MHD
-      use SPH_analyzer_snap
+      use SPH_analyzer_snap_w_psf
 !
       implicit none
 !
+!>      Structure of spectr grid and data
+      type(SPH_mesh_field_data), save, private :: SPH_MHD1
 !>      File name for control file
-      character(len=kchara), parameter                                  &
+      character(len=kchara), parameter, private                         &
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
-      type(sph_sgs_mhd_control), save :: MHD_ctl1
-      private :: snap_ctl_name, MHD_ctl1
+      type(DNS_mhd_simulation_control), save, private :: DNS_MHD_ctl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,9 +49,9 @@
 !
       subroutine initialize_noviz_sph_snap
 !
-      use t_ctl_data_SGS_MHD
+      use t_ctl_data_sph_MHD_psf
       use init_sph_MHD_elapsed_label
-      use input_control_sph_SGS_MHD
+      use input_control_sph_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -63,13 +63,13 @@
 !
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
-      call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_w_psf'
+      call read_control_4_sph_MHD_w_psf(snap_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
-      call input_control_SPH_SGS_dynamo                                 &
-     &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
-     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, repart_p1)
+      call input_control_SPH_MHD_psf                                    &
+     &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
+     &    SPH_WK1, SPH_MHD1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -77,13 +77,14 @@
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(MHD_files1, MHD_step1, FEM_d1%geofem, &
-     &    FEM_d1%field, FEM_d1%iphys, MHD_IO1, FEM_d1%v_sol)
+      call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
+     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys,                    &
+     &    MHD_IO1, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, FEM_d1%iphys, SPH_model1,      &
-     &    SPH_SGS1, SPH_MHD1, SPH_WK1)
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
+      call SPH_init_sph_snap_psf(MHD_files1, FEM_d1%iphys, SPH_model1,  &
+     &    SPH_MHD1, SPH_WK1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -117,11 +118,12 @@
      &                          MHD_step1)) then
           call alloc_sph_trans_area_snap                                &
      &       (SPH_MHD1%sph%sph_rtp, SPH_WK1%trns_WK)
-        end if
 !
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_files1, &
-     &      SPH_model1, MHD_step1, SPH_SGS1, SPH_MHD1, SPH_WK1)
+          if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_snap'
+          call SPH_analyze_snap_psf                                     &
+     &       (MHD_step1%time_d%i_time_step, MHD_files1,                 &
+     &        SPH_model1, MHD_step1, SPH_MHD1, SPH_WK1)
+        end if
 !*
 !*  -----------  output field data --------------
 !*
@@ -129,9 +131,8 @@
         if(lead_field_data_flag(MHD_step1%time_d%i_time_step,           &
      &                          MHD_step1)) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
-          call SPH_to_FEM_bridge_SGS_MHD                                &
-     &       (SPH_SGS1%SGS_par, SPH_MHD1%sph, SPH_WK1%trns_WK,          &
-     &        SPH_SGS1%trns_WK_LES, FEM_d1%geofem, FEM_d1%field)
+          call SPH_to_FEM_bridge_MHD(SPH_MHD1%sph, SPH_WK1%trns_WK,     &
+     &        FEM_d1%geofem, FEM_d1%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
@@ -158,8 +159,8 @@
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
 !
-!      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
-!      call SPH_finalize_snap
+!      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
+!      call SPH_finalize_SGS_snap
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !

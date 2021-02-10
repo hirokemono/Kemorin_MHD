@@ -58,7 +58,7 @@ SOURCES = $(shell ls *.f90)
 MOD_SPH_SNAP_MAIN =  \
 main_sph_snapshot.o \
 analyzer_sph_snap.o \
-SPH_analyzer_snap.o
+SPH_analyzer_SGS_snap.o
 
 MOD_SPH_SNAP_PSF_MAIN =  \
 main_sph_snapshot_w_psf.o \
@@ -68,20 +68,20 @@ SPH_analyzer_snap_w_psf.o
 MOD_SPH_SNAP_BADBOY =  \
 main_sph_snap_badboy.o \
 analyzer_sph_snap.o \
-SPH_analyzer_snap.o
+SPH_analyzer_SGS_snap.o
 
 
 MOD_SPH_SP_SNAP_MAIN = \
 main_sph_special_snap.o \
 analyzer_sph_special_snap.o \
 analyzer_sph_snap.o \
-SPH_analyzer_snap.o
+SPH_analyzer_SGS_snap.o
 
 
 MOD_SPH_SNAP_NOVIZ_MAIN =  \
 main_sph_snapshot_noviz.o \
 analyzer_noviz_sph_snap.o \
-SPH_analyzer_snap.o
+SPH_analyzer_snap_w_psf.o
 
 MOD_SPH_D_BENCH_MAIN = \
 main_sph_dynamobench.o \
@@ -106,7 +106,7 @@ SPH_analyzer_snap_w_psf.o
 MOD_SPH_FORWARD_TRANS = \
 main_sph_forward_transform.o \
 analyzer_sph_forward_trans.o \
-SPH_analyzer_snap.o
+SPH_analyzer_SGS_snap.o
 
 MOD_SPH_BACK_TRANS = \
 main_sph_back_transform.o \

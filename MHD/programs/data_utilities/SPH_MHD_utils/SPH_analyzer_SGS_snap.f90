@@ -1,5 +1,5 @@
-!>@file   SPH_analyzer_snap
-!!@brief  module SPH_analyzer_snap
+!>@file   SPH_analyzer_SGS_snap
+!!@brief  module SPH_analyzer_SGS_snap
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Oct., 2009
@@ -7,7 +7,7 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_snap(MHD_files, iphys, SPH_model,       &
+!!      subroutine SPH_init_SGS_snap(MHD_files, iphys, SPH_model,       &
 !!     &          SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
@@ -15,7 +15,7 @@
 !!        type(SPH_SGS_structure), intent(inout) :: SPH_SGS
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_MHD
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
-!!      subroutine SPH_analyze_snap(i_step, MHD_files, SPH_model,       &
+!!      subroutine SPH_analyze_SGS_snap(i_step, MHD_files, SPH_model,   &
 !!     &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -26,7 +26,7 @@
 !!        type(work_SPH_MHD), intent(inout) :: SPH_WK
 !!@endverbatim
 !
-      module SPH_analyzer_snap
+      module SPH_analyzer_SGS_snap
 !
       use m_precision
       use m_MHD_step_parameter
@@ -49,7 +49,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap(MHD_files, iphys, SPH_model,         &
+      subroutine SPH_init_SGS_snap(MHD_files, iphys, SPH_model,         &
      &          SPH_SGS, SPH_MHD, SPH_WK)
 !
       use m_constants
@@ -129,11 +129,11 @@
       call open_sph_vol_rms_file_SGS_mhd                                &
      &   (SPH_MHD%sph, SPH_MHD%ipol, SPH_MHD%fld, SPH_WK%monitor)
 !
-      end subroutine SPH_init_sph_snap
+      end subroutine SPH_init_SGS_snap
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_snap(i_step, MHD_files, SPH_model,         &
+      subroutine SPH_analyze_SGS_snap(i_step, MHD_files, SPH_model,     &
      &          MHD_step, SPH_SGS, SPH_MHD, SPH_WK)
 !
       use cal_SGS_nonlinear
@@ -219,14 +219,14 @@
      &    MHD_files%sph_file_IO, SPH_MHD%fld, MHD_step%ucd_step)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
-      end subroutine SPH_analyze_snap
+      end subroutine SPH_analyze_SGS_snap
 !
 ! ----------------------------------------------------------------------
 !
-!      subroutine SPH_finalize_snap
+!      subroutine SPH_finalize_SGS_snap
 !
-!      end subroutine SPH_finalize_snap
+!      end subroutine SPH_finalize_SGS_snap
 !
 ! ----------------------------------------------------------------------
 !
-      end module SPH_analyzer_snap
+      end module SPH_analyzer_SGS_snap
