@@ -71,6 +71,7 @@
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
+      call alloc_FEM_mesh_field_items(FEM_d1)
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
      &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, repart_p1)
@@ -199,6 +200,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
 !      call SPH_finalize_SGS_snap
@@ -334,6 +336,7 @@
 !    Loop end
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
 !      call SPH_finalize_SGS_snap

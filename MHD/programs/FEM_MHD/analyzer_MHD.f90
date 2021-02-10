@@ -49,6 +49,7 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
+      call alloc_FEM_mesh_field_items(FEM_MHD1)
       call input_control_4_FEM_MHD                                      &
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par, MHD_step1,  &
      &    FEM_model1%MHD_prop, FEM_model1%MHD_BC, FEM_MHD1%geofem,      &
@@ -112,11 +113,11 @@
 !  time evolution end
 !
       call FEM_finalize_MHD(MHD_files1, MHD_step1, MHD_IO1)
+      call dealloc_FEM_mesh_field_items(FEM_MHD1)
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
 !
       call output_elapsed_times
-      return
 !
       if (iflag_debug.eq.1) write(*,*) 'exit evolution'
 !

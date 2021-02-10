@@ -72,10 +72,12 @@
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
+      call alloc_FEM_mesh_field_items(FEM_d1)
       call input_control_4_SPH_make_init                                &
      &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
      &    SPH_WK1, SPH_MHD1, FEM_d1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
+      call dealloc_FEM_mesh_field_items(FEM_d1)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !        Initialize spherical transform dynamo

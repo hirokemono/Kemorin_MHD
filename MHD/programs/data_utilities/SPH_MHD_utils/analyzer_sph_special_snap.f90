@@ -80,12 +80,14 @@
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
           call SPH_to_FEM_bridge_special_snap                           &
-     &       (SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK)
+     &       (SPH_MHD1%sph, FEM_d1%geofem, SPH_WK1%trns_WK,             &
+     &        FEM_d1%field)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1, FEM_d1%v_sol)
+     &      FEM_d1%geofem, FEM_d1%field, MHD_step1,                     &
+     &      MHD_IO1, FEM_d1%v_sol)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -124,6 +126,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
@@ -244,7 +247,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_special_snap(sph, geofem, WK)
+      subroutine SPH_to_FEM_bridge_special_snap                         &
+     &         (sph, geofem, WK, nod_fld)
 !
       use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
@@ -253,15 +257,17 @@
       type(mesh_data), intent(in) :: geofem
       type(works_4_sph_trans_MHD), intent(in) :: WK
 !
+      type(phys_data), intent(inout) :: nod_fld
+!
 !*  -----------  data transfer to FEM array --------------
 !*
-      call SPH_to_FEM_bridge_MHD(sph, WK, geofem, FEM_d1%field)
+      call SPH_to_FEM_bridge_MHD(sph, WK, geofem, nod_fld)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
       call zonal_mean_all_rtp_field                                     &
-     &   (sph%sph_rtp, geofem%mesh%node, FEM_d1%field)
+     &   (sph%sph_rtp, geofem%mesh%node, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
 !

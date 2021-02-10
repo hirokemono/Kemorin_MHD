@@ -69,6 +69,7 @@
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
+      call alloc_FEM_mesh_field_items(FEM_d1)
       call input_control_SPH_MHD_psf                                    &
      &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
      &    SPH_WK1, SPH_MHD1, FEM_d1)
@@ -141,7 +142,8 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1, MHD_IO1, FEM_d1%v_sol)
+     &      FEM_d1%geofem, FEM_d1%field, MHD_step1,                     &
+     &      MHD_IO1, FEM_d1%v_sol)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -156,6 +158,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
 !      call SPH_finalize_MHD

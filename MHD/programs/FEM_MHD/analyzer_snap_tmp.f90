@@ -43,6 +43,7 @@
 !
 !     --------------------- 
 !
+      call alloc_FEM_mesh_field_items(FEM_MHD1)
       call input_control_4_FEM_snap                                     &
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par,             &
      &    MHD_step1, FEM_model1%MHD_prop, FEM_model1%MHD_BC,            &
@@ -97,7 +98,8 @@
       end do
 !
       call FEM_finalize_snap_tmp(MHD_files1, MHD_step1, MHD_IO1)
-
+      call dealloc_FEM_mesh_field_items(FEM_MHD1)
+!
       call output_elapsed_times
 !
       end subroutine analyze

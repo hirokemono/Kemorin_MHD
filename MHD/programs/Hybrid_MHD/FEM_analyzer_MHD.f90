@@ -86,7 +86,7 @@
 !
       call init_analyzer_fl(MHD_files, FEM_model%bc_FEM_IO,             &
      &    FEM_model%FEM_prm, FEM_SGS%SGS_par, flex_MHD, MHD_step,       &
-     &    FEM_MHD1%geofem, FEM_model%MHD_mesh,                          &
+     &    FEM_MHD%geofem, FEM_model%MHD_mesh,                           &
      &    FEM_SGS%FEM_filters, FEM_model%MHD_prop, FEM_model%MHD_BC,    &
      &    FEM_model%FEM_MHD_BCs, FEM_SGS%Csims,                         &
      &    FEM_MHD%iphys, FEM_SGS%iphys_LES, FEM_MHD%field,              &
@@ -94,7 +94,7 @@
      &    label_sim, FEM_MHD%v_sol)
 !
       call nod_fields_send_recv                                         &
-     &   (FEM_MHD1%geofem%mesh, FEM_MHD%field, FEM_MHD%v_sol)
+     &   (FEM_MHD%geofem%mesh, FEM_MHD%field, FEM_MHD%v_sol)
 !
 !   obtain elemental averages
 !
@@ -102,7 +102,7 @@
      &    FEM_SGS%Csims%sgs_coefs, FEM_SGS%Csims%diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_FEM_fields'
       call update_FEM_fields(MHD_step%time_d, FEM_model%FEM_prm,        &
-     &    FEM_SGS%SGS_par, FEM_MHD1%geofem, FEM_model%MHD_mesh,         &
+     &    FEM_SGS%SGS_par, FEM_MHD%geofem, FEM_model%MHD_mesh,          &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
      &    FEM_SGS%Csims, FEM_MHD%v_sol)
@@ -115,13 +115,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (FEM_MHD1%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,      &
+     &   (FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    SGS_MHD_wk%fem_int, MHD_CG%MGCG_WK, MHD_CG%MHD_mat_tbls,      &
      &    MHD_CG%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices                                           &
      &   (MHD_step%time_d%dt, FEM_model%FEM_prm, FEM_SGS%SGS_par,       &
-     &    FEM_MHD1%geofem, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,   &
+     &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%FEM_MHD_BCs,    &
      &    FEM_model%MHD_prop, SGS_MHD_wk%fem_int,                       &
      &    FEM_SGS%FEM_filters%FEM_elens, FEM_SGS%Csims,                 &
      &    SGS_MHD_wk%mk_MHD, SGS_MHD_wk%rhs_mat, MHD_CG)
@@ -130,13 +130,13 @@
 !
       call cal_FEM_model_coefficients                                   &
      &   (MHD_step%time_d, FEM_model%FEM_prm, FEM_SGS%SGS_par,          &
-     &    FEM_MHD1%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,      &
+     &    FEM_MHD%geofem, FEM_model%MHD_mesh, FEM_model%MHD_prop,       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    FEM_SGS%FEM_filters, SGS_MHD_wk, FEM_MHD%field,               &
      &    FEM_SGS%Csims, FEM_MHD%v_sol)
 !
       call lead_fields_by_FEM(MHD_step%flex_p%istep_max_dt, MHD_step,   &
-     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD1%geofem,          &
+     &    FEM_model%FEM_prm, FEM_SGS%SGS_par, FEM_MHD%geofem,           &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    FEM_model%FEM_MHD_BCs, FEM_MHD%iphys, FEM_SGS%iphys_LES,      &
      &    MHD_CG%ak_MHD, FEM_SGS%FEM_filters, SGS_MHD_wk,               &
@@ -146,7 +146,7 @@
 !
       FEM_SGS%SGS_par%iflag_SGS_initial = 0
 !
-      call s_check_deltat_by_prev_rms(MHD_step, FEM_MHD1%geofem%mesh,   &
+      call s_check_deltat_by_prev_rms(MHD_step, FEM_MHD%geofem%mesh,    &
      &    FEM_model%MHD_mesh, FEM_model%MHD_prop,                       &
      &    FEM_MHD%iphys, FEM_MHD%field, SGS_MHD_wk%fem_int,             &
      &    SGS_MHD_wk%rhs_mat, flex_MHD)
@@ -155,12 +155,12 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)
 !
       call output_grd_file_w_org_connect                                &
-     &   (MHD_step%ucd_step, FEM_MHD1%geofem%mesh, FEM_model%MHD_mesh,  &
+     &   (MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_model%MHD_mesh,   &
      &    FEM_MHD%field, ucd_param, MHD_IO%ucd)
 !
       call alloc_phys_range(FEM_MHD%field%ntot_phys_viz, MHD_IO%range)
 !       call s_open_boundary_monitor                                    &
-!     &    (my_rank, FEM_MHD1%geofem%group%sf_grp)
+!     &    (my_rank, FEM_MHD%geofem%group%sf_grp)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !

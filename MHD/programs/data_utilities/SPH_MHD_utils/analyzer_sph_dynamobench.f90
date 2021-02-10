@@ -73,6 +73,7 @@
       call read_control_4_sph_MHD_noviz(snap_ctl_name, DNS_MHD_ctl1)
 
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
+      call alloc_FEM_mesh_field_items(FEM_d1)
       call input_control_SPH_dynamobench                                &
      &   (MHD_files1, SPH_model1%bc_IO, DNS_MHD_ctl1, SPH_MHD1,         &
      &    FEM_d1%field, MHD_step1, SPH_model1%MHD_prop,                 &
@@ -92,6 +93,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
       call SPH_init_sph_dbench(MHD_files1, FEM_d1%iphys,                &
      &    SPH_model1, SPH_MHD1, SPH_WK1, cdat1)
+      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier

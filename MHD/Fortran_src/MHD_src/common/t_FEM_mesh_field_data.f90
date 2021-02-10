@@ -8,6 +8,11 @@
 !
 !> @brief Strcture for FEM mesh and nodal field
 !!
+!!@verbatim
+!!      subroutine alloc_FEM_mesh_field_items(FEM_mesh_data)
+!!      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_data)
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_data
+!!@endverbatim
       module t_FEM_mesh_field_data
 !
       use m_precision
@@ -22,19 +27,46 @@
 !>      Structure of FEM mesh and field structures
       type FEM_mesh_field_data
 !>        Label for simulation
-        character(len=kchara)   :: label_sim
+        character(len=kchara) :: label_sim
 !
 !>        Structure for FEM mesh data
 !!         (position, connectivity, communication, and groups)
-        type(mesh_data) :: geofem
-!
+        type(mesh_data), pointer :: geofem
 !>        Structure for nodal field data
-        type(phys_data) :: field
+        type(phys_data), pointer :: field
 !>        Address for nodal fields
         type(phys_address) :: iphys
 !
 !>        Structure for vectors for solver
         type(vectors_4_solver) :: v_sol
       end type FEM_mesh_field_data
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_FEM_mesh_field_items(FEM_mesh_data)
+!
+      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_data
+!
+!
+      allocate(FEM_mesh_data%geofem)
+      allocate(FEM_mesh_data%field)
+!
+      end subroutine alloc_FEM_mesh_field_items
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_data)
+!
+      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_data
+!
+      deallocate(FEM_mesh_data%geofem, FEM_mesh_data%field)
+!
+      end subroutine dealloc_FEM_mesh_field_items
+!
+! ----------------------------------------------------------------------
 !
       end module t_FEM_mesh_field_data
