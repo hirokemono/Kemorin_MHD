@@ -14,7 +14,7 @@
       use calypso_mpi
 !
       use t_control_data_vizs_pvr
-      use t_visualizer
+      use t_volume_rendering
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use FEM_analyzer_viz_pvr
@@ -25,13 +25,13 @@
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ3
 !>      Structure of control data for visualization
-      type(control_data_pvr_vizs), save :: vizs_ctl3
+      type(control_data_pvr_vizs), save :: pvr_ctl3
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz3
 !>      Structure of mesh and field for visualization only
       type(FEM_mesh_field_4_pvr), save :: pvr3
 !>      Structure of viualization modules
-      type(visualize_modules), save :: vizs_v3
+      type(volume_rendering_module), save :: vizs_pvr3
 !
 !  ---------------------------------------------------------------------
 !
@@ -55,8 +55,8 @@
 !
 !     read controls
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_pvr_vizs'
-      call read_control_file_pvr_vizs(vizs_ctl3)
-      call set_control_params_4_pvr(vizs_ctl3, pvr3, t_VIZ3, ierr)
+      call read_control_file_pvr_vizs(pvr_ctl3)
+      call set_control_params_4_pvr(pvr_ctl3, pvr3, t_VIZ3, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
@@ -66,8 +66,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(FEM_viz3%geofem, FEM_viz3%field,              &
-     &                    vizs_ctl3%viz_ctl_v, vizs_v3)
+      call PVR_initialize(FEM_viz3%geofem, FEM_viz3%field,              &
+     &                    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3)
 !
       end subroutine initialize_pvr
 !
@@ -90,11 +90,11 @@
      &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3, pvr3)
 !
 !  Rendering
-        if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
+        if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
-        call visualize_all(t_VIZ3%viz_step, t_VIZ3%time_d,              &
-     &      FEM_viz3%geofem, FEM_viz3%field,                            &
-     &      pvr3%ele_4_nod, pvr3%jacobians, vizs_v3)
+        call PVR_visualize                                              &
+     &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
+     &      FEM_viz3%geofem, pvr3%jacobians, FEM_viz3%field, vizs_pvr3)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

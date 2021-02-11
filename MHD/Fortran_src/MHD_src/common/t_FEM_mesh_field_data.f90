@@ -9,9 +9,6 @@
 !> @brief Strcture for FEM mesh and nodal field
 !!
 !!@verbatim
-!!      subroutine alloc_FEM_mesh_field_items(FEM_mesh_field)
-!!      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_field)
-!!        type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_field
 !!@endverbatim
       module t_FEM_mesh_field_data
 !
@@ -31,42 +28,14 @@
 !
 !>        Structure for FEM mesh data
 !!         (position, connectivity, communication, and groups)
-        type(mesh_data), pointer :: geofem
+        type(mesh_data) :: geofem
 !>        Structure for nodal field data
-        type(phys_data), pointer :: field
+        type(phys_data) :: field
 !>        Address for nodal fields
         type(phys_address) :: iphys
 !
 !>        Structure for vectors for solver
         type(vectors_4_solver) :: v_sol
       end type FEM_mesh_field_data
-!
-! ----------------------------------------------------------------------
-!
-      contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_FEM_mesh_field_items(FEM_mesh_field)
-!
-      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_field
-!
-!
-      allocate(FEM_mesh_field%geofem)
-      allocate(FEM_mesh_field%field)
-!
-      end subroutine alloc_FEM_mesh_field_items
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_field)
-!
-      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_field
-!
-      deallocate(FEM_mesh_field%geofem, FEM_mesh_field%field)
-!
-      end subroutine dealloc_FEM_mesh_field_items
-!
-! ----------------------------------------------------------------------
 !
       end module t_FEM_mesh_field_data

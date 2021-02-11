@@ -126,7 +126,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
-      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

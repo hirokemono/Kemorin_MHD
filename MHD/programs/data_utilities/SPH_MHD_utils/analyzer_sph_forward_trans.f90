@@ -64,7 +64,6 @@
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
-      call alloc_FEM_mesh_field_items(FEM_d1)
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
      &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, repart_p1)
@@ -83,7 +82,6 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
       call SPH_init_SGS_snap(MHD_files1, FEM_d1%iphys, SPH_model1,      &
      &    SPH_SGS1, SPH_MHD1, SPH_WK1)
-      call dealloc_FEM_mesh_field_items(FEM_d1)
 !
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)

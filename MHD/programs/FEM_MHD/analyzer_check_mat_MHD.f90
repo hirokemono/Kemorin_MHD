@@ -30,7 +30,6 @@
 !
         write(*,*) 'Simulation start: PE. ', my_rank
 !
-      call alloc_FEM_mesh_field_items(FEM_MHD1)
       call input_control_4_FEM_MHD                                      &
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par, MHD_step1,  &
      &    FEM_model1%MHD_prop, FEM_model1%MHD_BC, FEM_MHD1%geofem,      &
@@ -42,7 +41,6 @@
       call FEM_check_MHD_mat                                            &
      &   (MHD_files1, flex_MHD1, MHD_step1, FEM_model1, MHD_CG1,        &
      &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1)
-      call dealloc_FEM_mesh_field_items(FEM_MHD1)
 !
       end subroutine init_analyzer
 !
