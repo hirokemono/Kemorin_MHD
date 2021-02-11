@@ -58,7 +58,6 @@
 !  FEM Initialization
       call FEM_initialize_VTK_convert                                   &
      &   (t_VIZ5%ucd_step, t_VIZ5%init_d, sfcing5)
-      call dealloc_field_lists_for_vizs(sfcing5%viz_fld_list)
 !
 !  VIZ Initialization
       call init_visualize_convert_vtk                                   &

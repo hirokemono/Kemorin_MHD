@@ -107,8 +107,8 @@
       call set_ucd_file_define(sec_viz_ctl%sect_plt,                    &
      &    sfcing%ucd_file_IO)
 !
-      call set_viz_field_list_control(sec_viz_ctl%viz_field_ctl,        &
-     &                                sfcing%viz_fld_list)
+      call init_viz_field_list_control(sec_viz_ctl%viz_field_ctl,       &
+     &                                 sfcing%viz_fld_list)
 !
       call set_fixed_t_step_params_w_viz                                &
      &   (sec_viz_ctl%t_sect_ctl, t_viz_param, ierr, e_message)
@@ -153,8 +153,11 @@
      &                        sfcing%ucd_time, sfcing%ucd_in)
       call alloc_phys_name_type_by_output(sfcing%ucd_in,                &
      &                                    sfcing%nod_fld)
+!
       call add_field_in_viz_controls(sfcing%viz_fld_list,               &
      &                               sfcing%nod_fld)
+      call dealloc_field_lists_for_vizs(sfcing%viz_fld_list)
+!
       call alloc_phys_data(sfcing%geofem%mesh%node%numnod,              &
      &                     sfcing%nod_fld)
       call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
@@ -226,6 +229,7 @@
       call alloc_phys_data(sfcing%geofem%mesh%node%numnod,              &
      &                     sfcing%nod_fld)
       call deallocate_surface_geom_type(sfcing%geofem%mesh%surf)
+      call dealloc_field_lists_for_vizs(sfcing%viz_fld_list)
 !
       end subroutine FEM_initialize_VTK_convert
 !

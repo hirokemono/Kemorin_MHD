@@ -53,7 +53,6 @@
 !  FEM Initialization
       call FEM_initialize_pvr                                           &
      &   (t_VIZ4%init_d, t_VIZ4%ucd_step, t_VIZ4%viz_step, pvr4)
-      call dealloc_field_lists_for_vizs(pvr4%viz_fld_list)
 !
 !  VIZ Initialization
       call FLINE_initialize(pvr4%geofem, pvr4%nod_fld,                  &

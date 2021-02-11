@@ -122,8 +122,8 @@
       call set_control_mesh_def(vizs_ctl%viz_plt, viz%mesh_file_IO)
       call set_ucd_file_define(vizs_ctl%viz_plt, viz%ucd_file_IO)
 !
-      call set_viz_field_list_control(vizs_ctl%viz_field_ctl,           &
-     &                                viz%viz_fld_list)
+      call init_viz_field_list_control(vizs_ctl%viz_field_ctl,          &
+     &                                 viz%viz_fld_list)
 !
       call set_fixed_t_step_params_w_viz                                &
      &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
@@ -176,7 +176,10 @@
 !
       allocate(viz%nod_fld)
       call alloc_phys_name_type_by_output(viz%ucd, viz%nod_fld)
+!
       call add_field_in_viz_ctls_w_SGS(viz%viz_fld_list, viz%nod_fld)
+      call dealloc_field_lists_for_vizs(viz%viz_fld_list)
+!
       call alloc_phys_data(viz%geofem%mesh%node%numnod, viz%nod_fld)
 !
 !     ---------------------

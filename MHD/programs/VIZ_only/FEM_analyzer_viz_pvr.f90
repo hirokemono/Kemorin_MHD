@@ -109,8 +109,8 @@
       call set_control_mesh_def(pvr_vizs_c%viz_plt, pvr%mesh_file_IO)
       call set_ucd_file_define(pvr_vizs_c%viz_plt, pvr%ucd_file_IO)
 !
-      call set_viz_field_list_control(pvr_vizs_c%viz_field_ctl,         &
-     &                                pvr%viz_fld_list)
+      call init_viz_field_list_control(pvr_vizs_c%viz_field_ctl,        &
+     &                                 pvr%viz_fld_list)
 !
       call set_fixed_t_step_params_w_viz                                &
      &   (pvr_vizs_c%t_viz_ctl, t_viz_param, ierr, e_message)
@@ -154,7 +154,10 @@
       call sel_read_udt_param(my_rank, istep_ucd, pvr%ucd_file_IO,      &
      &                        pvr%ucd_time, pvr%ucd)
       call alloc_phys_name_type_by_output(pvr%ucd, pvr%nod_fld)
+!
       call add_field_in_viz_ctls_w_SGS(pvr%viz_fld_list, pvr%nod_fld)
+      call dealloc_field_lists_for_vizs(pvr%viz_fld_list)
+!
       call alloc_phys_data(pvr%geofem%mesh%node%numnod, pvr%nod_fld)
 !
 !     --------------------- Connection information for PVR and fieldline

@@ -59,7 +59,6 @@
 !  FEM Initialization
       call FEM_initialize_pvr                                           &
      &   (t_VIZ3%init_d, t_VIZ3%ucd_step, t_VIZ3%viz_step, pvr3)
-      call dealloc_field_lists_for_vizs(pvr3%viz_fld_list)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'

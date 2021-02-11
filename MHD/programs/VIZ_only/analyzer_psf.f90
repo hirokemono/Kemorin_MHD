@@ -58,7 +58,6 @@
 !  FEM Initialization
       call FEM_initialize_surface                                       &
      &   (t_VIZ2%ucd_step, t_VIZ2%init_d, sfcing2)
-      call dealloc_field_lists_for_vizs(sfcing2%viz_fld_list)
 !
 !  VIZ Initialization
       call init_visualize_surface(sfcing2%geofem, sfcing2%nod_fld,      &

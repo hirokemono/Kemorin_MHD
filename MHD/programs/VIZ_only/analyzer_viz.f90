@@ -62,7 +62,6 @@
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
       call FEM_initialize_viz                                          &
      &   (t_VIZ1%init_d, t_VIZ1%ucd_step, t_VIZ1%viz_step, viz1)
-      call dealloc_field_lists_for_vizs(viz1%viz_fld_list)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -92,8 +91,8 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
-     &     viz1%viz_fem, viz1%viz_fld, viz1%ele_4_nod, viz1%jacobians,  &
-     &     vizs_v)
+     &     viz1%viz_fem, viz1%viz_fld, viz1%ele_4_nod,                  &
+     &     viz1%jacobians, vizs_v)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
