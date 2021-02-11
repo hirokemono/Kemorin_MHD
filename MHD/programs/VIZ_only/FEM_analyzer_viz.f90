@@ -10,17 +10,21 @@
 !!      subroutine set_control_params_4_viz                             &
 !!     &         (vizs_ctl, viz, t_viz_param, ierr)
 !!        type(control_data_vizs), intent(in) :: vizs_ctl
-!!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
+!!        type(VIZ_mesh_field), intent(inout) :: viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_viz(init_d, ucd_step, viz_step, viz)
+!!      subroutine FEM_initialize_viz(init_d, ucd_step, viz_step,       &
+!!     &                              FEM_viz, viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
-!!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
-!!      subroutine FEM_analyze_viz(istep, ucd_step, time_d, viz)
+!!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+!!        type(VIZ_mesh_field), intent(inout) :: viz
+!!      subroutine FEM_analyze_viz(istep, ucd_step, time_d,             &
+!!     &                           FEM_viz, viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
-!!        type(FEM_mesh_field_4_viz), intent(inout) :: viz
+!!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+!!        type(VIZ_mesh_field), intent(inout) :: viz
 !!@endverbatim
 !
       module FEM_analyzer_viz
@@ -33,8 +37,7 @@
 !
       use t_step_parameter
       use t_time_data
-      use t_mesh_data
-      use t_phys_data
+      use t_FEM_mesh_field_4_viz
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_shape_functions
@@ -44,26 +47,16 @@
       use t_VIZ_step_parameter
       use t_control_param_vol_grping
       use t_calypso_comm_table
-      use t_vector_for_solver
 !
       implicit none
 !
 !
 !>      Structure of mesh and field for visualization only
-      type FEM_mesh_field_4_viz
+      type VIZ_mesh_field
 !>        Structure for mesh file IO paramters
         type(field_IO_params) :: mesh_file_IO
 !>        Structure for field file IO paramters
         type(field_IO_params) :: ucd_file_IO
-!
-!>       Structure for mesh data
-!>        (position, connectivity, group, and communication)
-        type(mesh_data), pointer :: geofem
-!>         Structure for nodal field data
-        type(phys_data), pointer :: nod_fld
-!
-!>        Structure for communicatiors for solver
-        type(vectors_4_solver) :: v_sol
 !
 !>          Instance of time data from data input
         type(time_data) :: ucd_time
@@ -88,7 +81,7 @@
         type(mesh_data), pointer :: viz_fem
 !>         Structure for nodal field data
         type(phys_data), pointer :: viz_fld
-      end type FEM_mesh_field_4_viz
+      end type VIZ_mesh_field
 !
       private :: add_field_in_viz_ctls_w_SGS, element_normals_4_VIZ
 !
@@ -112,7 +105,7 @@
 !
       type(control_data_vizs), intent(in) :: vizs_ctl
 !
-      type(FEM_mesh_field_4_viz), intent(inout) :: viz
+      type(VIZ_mesh_field), intent(inout) :: viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -136,7 +129,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_viz(init_d, ucd_step, viz_step, viz)
+      subroutine FEM_initialize_viz(init_d, ucd_step, viz_step,         &
+     &                              FEM_viz, viz)
 !
       use calypso_mpi_logical
       use mpi_load_mesh_data
@@ -151,7 +145,8 @@
       type(time_data), intent(in) :: init_d
 !
       type(VIZ_step_params), intent(inout) :: viz_step
-      type(FEM_mesh_field_4_viz), intent(inout) :: viz
+      type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+      type(VIZ_mesh_field), intent(inout) :: viz
 !
       integer(kind = kint) :: istep_ucd, iflag
       logical :: flag
@@ -160,42 +155,30 @@
 !       setup mesh information
 !   --------------------------------
 !
-      allocate(viz%geofem)
-      call mpi_input_mesh(viz%mesh_file_IO, nprocs, viz%geofem)
+      call mpi_input_mesh(viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
-      call FEM_comm_initialization(viz%geofem%mesh, viz%v_sol)
+      call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
 !
 !   --------------------------------
 !       setup field information
 !   --------------------------------
 !
-      viz%ucd%nnod = viz%geofem%mesh%node%numnod
+      viz%ucd%nnod = FEM_viz%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
       call sel_read_udt_param(my_rank, istep_ucd, viz%ucd_file_IO,      &
      &                        viz%ucd_time, viz%ucd)
 !
-      allocate(viz%nod_fld)
-      call alloc_phys_name_type_by_output(viz%ucd, viz%nod_fld)
+      call alloc_phys_name_type_by_output(viz%ucd, FEM_viz%field)
 !
-      call add_field_in_viz_ctls_w_SGS(viz%viz_fld_list, viz%nod_fld)
+      call add_field_in_viz_ctls_w_SGS(viz%viz_fld_list, FEM_viz%field)
       call dealloc_field_lists_for_vizs(viz%viz_fld_list)
 !
-      call alloc_phys_data(viz%geofem%mesh%node%numnod, viz%nod_fld)
+      call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
+     &                     FEM_viz%field)
 !
 !     ---------------------
 !
-      if(viz%repart_p%flag_repartition) then
-        allocate(viz%viz_fem)
-        call const_new_partition_mesh(viz%repart_p,                     &
-     &      viz%geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
-!
-        allocate(viz%viz_fld)
-        call init_fld_to_new_partition(viz%viz_fem%mesh,                &
-     &                                 viz%nod_fld, viz%viz_fld)
-      else
-        viz%viz_fem => viz%geofem
-        viz%viz_fld => viz%nod_fld
-      end if
+      call sel_repartition_for_viz(FEM_viz%geofem, FEM_viz%field, viz)
 !
 !     ---------------------
 !
@@ -221,7 +204,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_viz(istep, ucd_step, time_d, viz)
+      subroutine FEM_analyze_viz(istep, ucd_step, time_d,               &
+     &                           FEM_viz, viz)
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
@@ -232,25 +216,26 @@
       type(IO_step_param), intent(in) :: ucd_step
 !
       type(time_data), intent(inout) :: time_d
-      type(FEM_mesh_field_4_viz), intent(inout) :: viz
+      type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+      type(VIZ_mesh_field), intent(inout) :: viz
 !
       integer(kind = kint) :: istep_ucd
 !
 !
       istep_ucd = IO_step_exc_zero_inc(istep, ucd_step)
       call set_data_by_read_ucd(istep_ucd, viz%ucd_file_IO,             &
-     &    viz%ucd_time, viz%ucd, viz%nod_fld)
+     &    viz%ucd_time, viz%ucd, FEM_viz%field)
       call copy_time_step_size_data(viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv                                         &
-     &   (viz%geofem%mesh, viz%nod_fld, viz%v_sol)
+     &   (FEM_viz%geofem%mesh, FEM_viz%field, FEM_viz%v_sol)
 !
       if(viz%repart_p%flag_repartition) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call nod_field_to_new_partition                                 &
      &     (iflag_import_rev, viz%viz_fem%mesh, viz%mesh_to_viz_tbl,    &
-     &      viz%nod_fld, viz%viz_fld, viz%v_sol)
+     &      FEM_viz%field, viz%viz_fld, FEM_viz%v_sol)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
       end if
 !
@@ -335,6 +320,32 @@
       end do
 !
       end subroutine add_field_in_viz_ctls_w_SGS
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sel_repartition_for_viz(geofem, nod_fld, viz)
+!
+      use field_to_new_partition
+!
+      type(mesh_data), intent(inout), target :: geofem
+      type(phys_data), intent(inout), target :: nod_fld
+      type(VIZ_mesh_field), intent(inout) :: viz
+!
+!
+      if(viz%repart_p%flag_repartition) then
+        allocate(viz%viz_fem)
+        call const_new_partition_mesh(viz%repart_p,                     &
+     &      geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
+!
+        allocate(viz%viz_fld)
+        call init_fld_to_new_partition(viz%viz_fem%mesh,                &
+     &                                 nod_fld, viz%viz_fld)
+      else
+        viz%viz_fem => geofem
+        viz%viz_fld => nod_fld
+      end if
+!
+      end subroutine sel_repartition_for_viz
 !
 ! ----------------------------------------------------------------------
 !

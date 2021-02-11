@@ -16,6 +16,7 @@
       use t_control_data_vizs_pvr
       use t_visualizer
       use t_VIZ_only_step_parameter
+      use t_FEM_mesh_field_4_viz
       use FEM_analyzer_viz_pvr
 !
       implicit none
@@ -25,6 +26,8 @@
       type(time_step_param_w_viz), save :: t_VIZ3
 !>      Structure of control data for visualization
       type(control_data_pvr_vizs), save :: vizs_ctl3
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_for_viz), save :: FEM_viz3
 !>      Structure of mesh and field for visualization only
       type(FEM_mesh_field_4_pvr), save :: pvr3
 !>      Structure of viualization modules
@@ -58,12 +61,13 @@
 !
 !  FEM Initialization
       call FEM_initialize_pvr                                           &
-     &   (t_VIZ3%init_d, t_VIZ3%ucd_step, t_VIZ3%viz_step, pvr3)
+     &   (t_VIZ3%init_d, t_VIZ3%ucd_step, t_VIZ3%viz_step,              &
+     &    FEM_viz3, pvr3)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize                                               &
-     &   (pvr3%geofem, pvr3%nod_fld, vizs_ctl3%viz_ctl_v, vizs_v3)
+      call init_visualize(FEM_viz3%geofem, FEM_viz3%field,              &
+     &                    vizs_ctl3%viz_ctl_v, vizs_v3)
 !
       end subroutine initialize_pvr
 !
@@ -83,14 +87,14 @@
 !
 !  Load field data
         call FEM_analyze_pvr                                            &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, pvr3)
+     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3, pvr3)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
         call visualize_all(t_VIZ3%viz_step, t_VIZ3%time_d,              &
-     &     pvr3%geofem, pvr3%nod_fld, pvr3%ele_4_nod, pvr3%jacobians,   &
-     &     vizs_v3)
+     &      FEM_viz3%geofem, FEM_viz3%field,                            &
+     &      pvr3%ele_4_nod, pvr3%jacobians, vizs_v3)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

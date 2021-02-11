@@ -16,6 +16,7 @@
       use t_control_data_all_vizs
       use t_visualizer
       use t_VIZ_only_step_parameter
+      use t_FEM_mesh_field_4_viz
       use FEM_analyzer_viz
 !
       implicit none
@@ -26,8 +27,10 @@
 !
 !>      Structure of control data for visualization
       type(control_data_vizs), save :: vizs_ctl1
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_for_viz), save :: FEM_viz1
 !>      Structure of mesh and field for visualization only
-      type(FEM_mesh_field_4_viz), save :: viz1
+      type(VIZ_mesh_field), save :: viz1
 !>      Structure of viualization modules
       type(visualize_modules), save :: vizs_v
 !
@@ -60,8 +63,8 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
-      call FEM_initialize_viz                                          &
-     &   (t_VIZ1%init_d, t_VIZ1%ucd_step, t_VIZ1%viz_step, viz1)
+      call FEM_initialize_viz(t_VIZ1%init_d, t_VIZ1%ucd_step,           &
+     &                        t_VIZ1%viz_step, FEM_viz1, viz1)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -84,8 +87,8 @@
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
-        call FEM_analyze_viz                                           &
-     &     (i_step, t_VIZ1%ucd_step, t_VIZ1%time_d, viz1)
+        call FEM_analyze_viz                                            &
+     &     (i_step, t_VIZ1%ucd_step, t_VIZ1%time_d, FEM_viz1, viz1)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step

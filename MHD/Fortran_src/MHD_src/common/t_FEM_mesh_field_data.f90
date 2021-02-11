@@ -3,15 +3,15 @@
 !!
 !!@author H. Matsui
 !!@date Programmed by H. Okuda in July, 2006
-!!@n    Mmodified by H. Matsui in June, 2007
-!!@n    Mmodified by H. Matsui in Sep., 2017
+!!@n    Modified by H. Matsui in June, 2007
+!!@n    Modified by H. Matsui in Sep., 2017
 !
 !> @brief Strcture for FEM mesh and nodal field
 !!
 !!@verbatim
-!!      subroutine alloc_FEM_mesh_field_items(FEM_mesh_data)
-!!      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_data)
-!!        type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_data
+!!      subroutine alloc_FEM_mesh_field_items(FEM_mesh_field)
+!!      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_field)
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_field
 !!@endverbatim
       module t_FEM_mesh_field_data
 !
@@ -47,23 +47,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_FEM_mesh_field_items(FEM_mesh_data)
+      subroutine alloc_FEM_mesh_field_items(FEM_mesh_field)
 !
-      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_data
+      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_field
 !
 !
-      allocate(FEM_mesh_data%geofem)
-      allocate(FEM_mesh_data%field)
+      allocate(FEM_mesh_field%geofem)
+      allocate(FEM_mesh_field%field)
 !
       end subroutine alloc_FEM_mesh_field_items
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_data)
+      subroutine dealloc_FEM_mesh_field_items(FEM_mesh_field)
 !
-      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_data
+      type(FEM_mesh_field_data), intent(inout) :: FEM_mesh_field
 !
-      deallocate(FEM_mesh_data%geofem, FEM_mesh_data%field)
+      deallocate(FEM_mesh_field%geofem, FEM_mesh_field%field)
 !
       end subroutine dealloc_FEM_mesh_field_items
 !

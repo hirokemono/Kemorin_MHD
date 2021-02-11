@@ -14,6 +14,7 @@
       use t_viz_VTK_convert
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
+      use t_FEM_mesh_field_4_viz
       use FEM_analyzer_viz_surf
 !
       implicit none
@@ -23,6 +24,8 @@
       type(time_step_param_w_viz), save :: t_VIZ5
 !>      Structure of control data for sectioning only
       type(control_data_section_only), save :: sec_viz_ctl5
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_for_viz), save :: FEM_viz5
 !>      Structure of mesh and field for sectioning only
       type(FEM_mesh_field_4_surfacing), save :: sfcing5
 !>          FEM field data to VTK
@@ -57,11 +60,11 @@
 !
 !  FEM Initialization
       call FEM_initialize_VTK_convert                                   &
-     &   (t_VIZ5%ucd_step, t_VIZ5%init_d, sfcing5)
+     &   (t_VIZ5%ucd_step, t_VIZ5%init_d, FEM_viz5, sfcing5)
 !
 !  VIZ Initialization
       call init_visualize_convert_vtk                                   &
-     &   (sfcing5%geofem, sfcing5%nod_fld, t_VIZ5%ucd_step,             &
+     &   (FEM_viz5%geofem, FEM_viz5%field, t_VIZ5%ucd_step,             &
      &    sec_viz_ctl5%surfacing_ctls%output_ucd_fmt_s_ctl,             &
      &    sfcing5%ucd_file_IO, sfcing5%vtk_file_IO, vtk_out5)
 !
@@ -79,7 +82,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, sfcing5)
+     &     (i_step, t_VIZ5%ucd_step, t_VIZ5%time_d, FEM_viz5, sfcing5)
 !
 !  Generate field lines
         istep_ucd = istep_file_w_fix_dt(i_step, t_VIZ5%ucd_step)

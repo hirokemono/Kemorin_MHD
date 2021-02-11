@@ -15,6 +15,7 @@
       use t_fieldline
       use t_control_data_vizs_pvr
       use t_VIZ_only_step_parameter
+      use t_FEM_mesh_field_4_viz
       use FEM_analyzer_viz_pvr
 !
       implicit none
@@ -24,6 +25,8 @@
       type(time_step_param_w_viz), save :: t_VIZ4
 !>      Structure of control data for visualization
       type(control_data_pvr_vizs), save :: vizs_ctl4
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_for_viz), save :: FEM_viz4
 !>      Structure of mesh and field for visualization only
       type(FEM_mesh_field_4_pvr), save :: pvr4
 !>      Structure of field line module
@@ -52,10 +55,11 @@
 !
 !  FEM Initialization
       call FEM_initialize_pvr                                           &
-     &   (t_VIZ4%init_d, t_VIZ4%ucd_step, t_VIZ4%viz_step, pvr4)
+     &   (t_VIZ4%init_d, t_VIZ4%ucd_step, t_VIZ4%viz_step,              &
+     &    FEM_viz4, pvr4)
 !
 !  VIZ Initialization
-      call FLINE_initialize(pvr4%geofem, pvr4%nod_fld,                  &
+      call FLINE_initialize(FEM_viz4%geofem, FEM_viz4%field,            &
      &    vizs_ctl4%viz_ctl_v%fline_ctls, fline_v)
 !
       end subroutine initialize_fline
@@ -74,13 +78,13 @@
 !
 !  Load field data
         call FEM_analyze_pvr                                            &
-     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, pvr4)
+     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4, pvr4)
 !
 !  Generate field lines
         istep_fline                                                     &
      &      = istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
-        call FLINE_visualize(istep_fline, pvr4%geofem, pvr4%ele_4_nod,  &
-     &      pvr4%nod_fld, fline_v)
+        call FLINE_visualize(istep_fline, FEM_viz4%geofem,              &
+     &                       pvr4%ele_4_nod, FEM_viz4%field, fline_v)
       end do
 !
       end subroutine analyze_fline

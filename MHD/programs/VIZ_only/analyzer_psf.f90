@@ -14,6 +14,7 @@
       use t_viz_sections
       use t_VIZ_only_step_parameter
       use t_control_data_section_only
+      use t_FEM_mesh_field_4_viz
       use FEM_analyzer_viz_surf
 !
       implicit none
@@ -23,6 +24,8 @@
       type(time_step_param_w_viz), save :: t_VIZ2
 !>      Structure of control data for sectioning only
       type(control_data_section_only), save :: sec_viz_ctl2
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_for_viz), save :: FEM_viz2
 !>      Structure of mesh and field for sectioning only
       type(FEM_mesh_field_4_surfacing), save :: sfcing2
 !>      Structure of sectioning and isosurfaceing modules
@@ -57,10 +60,10 @@
 !
 !  FEM Initialization
       call FEM_initialize_surface                                       &
-     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, sfcing2)
+     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, sfcing2)
 !
 !  VIZ Initialization
-      call init_visualize_surface(sfcing2%geofem, sfcing2%nod_fld,      &
+      call init_visualize_surface(FEM_viz2%geofem, FEM_viz2%field,      &
      &    sec_viz_ctl2%surfacing_ctls, viz_psfs2)
 !
       end subroutine init_analyzer_psf
@@ -79,7 +82,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, sfcing2)
+     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, FEM_viz2, sfcing2)
 !
 !  Generate field lines
         t_VIZ2%viz_step%istep_psf                                       &
@@ -88,7 +91,7 @@
      &     = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%ISO_t)
 !
         call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
-     &      sfcing2%geofem, sfcing2%nod_fld, viz_psfs2)
+     &      FEM_viz2%geofem, FEM_viz2%field, viz_psfs2)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
