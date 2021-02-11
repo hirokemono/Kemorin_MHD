@@ -84,7 +84,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
      &   FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SPH_SGS1%iphys_LES, &
-     &   next_tbl_VIZ1, jacobians_VIZ1, MHD_IO1, FEM_d1%v_sol)
+     &   ele_4_nod_VIZ1, jacobians_VIZ1, MHD_IO1, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
@@ -168,7 +168,7 @@
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,      &
+     &        FEM_d1%geofem, FEM_d1%field, ele_4_nod_VIZ1,              &
      &        jacobians_VIZ1, vizs1)
 !*
 !*  ----------- Zonal means --------------
@@ -279,7 +279,7 @@
         call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,           &
      &                          MHD_step1%viz_step)
         call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,        &
-     &      FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,        &
+     &      FEM_d1%geofem, FEM_d1%field, ele_4_nod_VIZ1,                &
      &      jacobians_VIZ1, vizs1)
         call dealloc_pvr_data(vizs1%pvr)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)

@@ -100,7 +100,7 @@
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_d1%geofem, FEM_d1%field, next_tbl_VIZ1%neib_ele,      &
+     &        FEM_d1%geofem, FEM_d1%field, ele_4_nod_VIZ1,              &
      &        jacobians_VIZ1, vizs1)
 !*
 !*  ----------- Zonal means --------------

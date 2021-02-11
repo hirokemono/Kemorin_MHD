@@ -15,7 +15,7 @@
 !
 !
 !>   Structure of neighbouring node and element list for each node
-      type(next_nod_ele_table), save :: next_tbl_VIZ1
+      type(element_around_node), save :: ele_4_nod_VIZ1
 !
 !>     Stracture for Jacobians for FEM grid
       type(jacobians_type), save :: jacobians_VIZ1

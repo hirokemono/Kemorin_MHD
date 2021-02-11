@@ -10,14 +10,14 @@
 !!@verbatim
 !!      subroutine FEM_initialize_sph_SGS_MHD                           &
 !!     &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,&
-!!     &         next_tbl, jacobians, MHD_IO, v_sol)
+!!     &         ele_4_nod_VIZ, jacobians, MHD_IO, v_sol)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
 !!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(next_nod_ele_table), intent(inout) :: next_tbl
+!!        type(element_around_node), intent(inout) :: ele_4_nod_VIZ
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!        type(vectors_4_solver), intent(inout) :: v_sol
@@ -64,7 +64,7 @@
 !
       subroutine FEM_initialize_sph_SGS_MHD                             &
      &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,  &
-     &         next_tbl, jacobians, MHD_IO, v_sol)
+     &         ele_4_nod_VIZ, jacobians, MHD_IO, v_sol)
 !
       use t_phys_address
       use t_SGS_model_addresses
@@ -91,7 +91,7 @@
       type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
       type(phys_data), intent(inout) :: nod_fld
-      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(element_around_node), intent(inout) :: ele_4_nod_VIZ
       type(jacobians_type), intent(inout) :: jacobians
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(vectors_4_solver), intent(inout) :: v_sol
@@ -135,7 +135,7 @@
       if(MHD_step%viz_step%FLINE_t%increment .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
         call set_element_on_node_in_mesh                                &
-     &     (geofem%mesh, next_tbl%neib_ele)
+     &     (geofem%mesh, ele_4_nod_VIZ)
       end if
 !
 !  -----  If there is no volume rendering... return
