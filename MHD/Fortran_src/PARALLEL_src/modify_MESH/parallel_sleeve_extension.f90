@@ -100,6 +100,7 @@
       call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_mesh_infomations(mesh, group)
+      call dealloc_mesh_smp_stack(mesh, group)
       call dealloc_mesh_data(mesh, group)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'

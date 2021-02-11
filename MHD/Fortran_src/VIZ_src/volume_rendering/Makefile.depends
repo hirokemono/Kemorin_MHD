@@ -78,6 +78,8 @@ set_rgb_colors.o: $(PVR_DIR)/set_rgb_colors.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_rgba_4_each_pixel.o: $(PVR_DIR)/set_rgba_4_each_pixel.f90 m_precision.o m_constants.o t_control_params_4_pvr.o set_color_4_pvr.o
 	$(F90) -c $(F90OPTFLAGS) $<
+t_VIZ_mesh_field.o: $(PVR_DIR)/t_VIZ_mesh_field.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_phys_data.o t_next_node_ele_4_node.o t_shape_functions.o t_jacobians.o t_VIZ_step_parameter.o t_control_param_vol_grping.o t_calypso_comm_table.o field_to_new_partition.o t_fem_gauss_int_coefs.o int_volume_of_domain.o set_table_4_RHS_assemble.o
+	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_4_pvr.o: $(PVR_DIR)/t_control_data_4_pvr.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_view_transfer.o t_control_array_integer.o t_control_array_character.o t_control_array_chara2real.o t_ctl_data_pvr_colormap_bar.o t_ctl_data_pvr_light.o t_control_data_pvr_sections.o t_control_data_pvr_movie.o t_control_data_pvr_isosurfs.o t_control_data_pvr_area.o skip_comment_f.o t_control_array_character3.o add_nodal_fields_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_pvr_area.o: $(PVR_DIR)/t_control_data_pvr_area.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_control_array_character.o t_control_array_chara2real.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
