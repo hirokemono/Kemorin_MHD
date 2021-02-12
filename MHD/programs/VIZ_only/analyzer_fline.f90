@@ -23,15 +23,15 @@
 !
 !>         Structure for time stepping parameters
 !!          with field and visualization
-      type(time_step_param_w_viz), save :: t_VIZ4
+      type(time_step_param_w_viz), save :: t_VIZ6
 !>      Structure of control data for visualization
-      type(control_data_four_vizs), save :: vizs_ctl4
+      type(control_data_four_vizs), save :: vizs_ctl6
 !>      Structure of FEM mesh and field structures
-      type(FEM_mesh_field_for_viz), save :: FEM_viz4
+      type(FEM_mesh_field_for_viz), save :: FEM_viz6
 !>      Structure of mesh and field for visualization only
-      type(VIZ_mesh_field), save :: pvr4
+      type(VIZ_mesh_field), save :: VIZ6
 !>      Structure of field line module
-      type(fieldline_module), save :: fline_v
+      type(fieldline_module), save :: fline_v6
 !
 !  ---------------------------------------------------------------------
 !
@@ -49,18 +49,18 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_four_vizs'
-      call read_control_file_four_vizs(vizs_ctl4)
-      call set_ctl_params_four_vizs(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
+      call read_control_file_four_vizs(vizs_ctl6)
+      call set_ctl_params_four_vizs(vizs_ctl6, FEM_viz6, t_VIZ6, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
-     &                              t_VIZ4%viz_step, FEM_viz4, pvr4)
+      call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &
+     &                              t_VIZ6%viz_step, FEM_viz6, VIZ6)
 !
 !  VIZ Initialization
-      call FLINE_initialize(pvr4%viz_fem, pvr4%viz_fld,                 &
-     &    vizs_ctl4%viz_ctl_v%fline_ctls, fline_v)
+      call FLINE_initialize(VIZ6%viz_fem, VIZ6%viz_fld,                 &
+     &    vizs_ctl6%viz_ctl_v%fline_ctls, fline_v6)
 !
       end subroutine initialize_fline
 !
@@ -71,20 +71,20 @@
       integer(kind = kint) :: i_step, istep_fline
 !
 !
-      do i_step = t_VIZ4%init_d%i_time_step, t_VIZ4%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ4%ucd_step) .eqv. .FALSE.) cycle
-        if(output_IO_flag(i_step,t_VIZ4%viz_step%FLINE_t)               &
+      do i_step = t_VIZ6%init_d%i_time_step, t_VIZ6%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ6%ucd_step) .eqv. .FALSE.) cycle
+        if(output_IO_flag(i_step,t_VIZ6%viz_step%FLINE_t)               &
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
         call FEM_analyze_four_vizs                                      &
-     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4)
+     &     (i_step, t_VIZ6%ucd_step, t_VIZ6%time_d, FEM_viz6)
 !
 !  Generate field lines
         istep_fline                                                     &
-     &      = istep_file_w_fix_dt(i_step, t_VIZ4%viz_step%FLINE_t)
-        call FLINE_visualize(istep_fline, pvr4%viz_fem,                 &
-     &                       pvr4%ele_4_nod, pvr4%viz_fld, fline_v)
+     &      = istep_file_w_fix_dt(i_step, t_VIZ6%viz_step%FLINE_t)
+        call FLINE_visualize(istep_fline, VIZ6%viz_fem,                 &
+     &                       VIZ6%ele_4_nod, VIZ6%viz_fld, fline_v6)
       end do
 !
       end subroutine analyze_fline

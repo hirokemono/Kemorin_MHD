@@ -24,16 +24,16 @@
 !
 !>         Structure for time stepping parameters
 !!          with field and visualization
-      type(time_step_param_w_viz), save :: t_VIZ6
+      type(time_step_param_w_viz), save :: t_VIZ4
 !
 !>      Structure of control data for visualization
-      type(control_data_four_vizs), save :: pvr_ctls6
+      type(control_data_four_vizs), save :: vizs_ctl4
 !>      Structure of FEM mesh and field structures
-      type(FEM_mesh_field_for_viz), save :: FEM_viz6
+      type(FEM_mesh_field_for_viz), save :: FEM_viz4
 !>      Structure of data for visualization
-      type(VIZ_mesh_field), save :: viz6
+      type(VIZ_mesh_field), save :: VIZ4
 !>      Structure of viualization modules
-      type(four_visualize_modules), save :: vizs_v6
+      type(four_visualize_modules), save :: vizs_m4
 !
 !  ---------------------------------------------------------------------
 !
@@ -57,20 +57,20 @@
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_four_vizs(pvr_ctls6)
-      call set_ctl_params_four_vizs(pvr_ctls6, FEM_viz6, t_VIZ6, ierr)
+      call read_control_file_four_vizs(vizs_ctl4)
+      call set_ctl_params_four_vizs(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
-      call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &
-     &                              t_VIZ6%viz_step, FEM_viz6, viz6)
+      call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
+     &                              t_VIZ4%viz_step, FEM_viz4, VIZ4)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_four_visualize                                          &
-     &   (viz6%viz_fem, viz6%viz_fld, pvr_ctls6%viz_ctl_v, vizs_v6)
+     &   (VIZ4%viz_fem, VIZ4%viz_fld, vizs_ctl4%viz_ctl_v, vizs_m4)
 !
       end subroutine initialize_four_vizs
 !
@@ -81,22 +81,22 @@
       integer(kind=kint ) :: i_step
 !
 !
-      do i_step = t_VIZ6%init_d%i_time_step, t_VIZ6%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ6%ucd_step) .eqv. .FALSE.) cycle
-        if(iflag_vizs_w_fix_step(i_step, t_VIZ6%viz_step)               &
+      do i_step = t_VIZ4%init_d%i_time_step, t_VIZ4%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ4%ucd_step) .eqv. .FALSE.) cycle
+        if(iflag_vizs_w_fix_step(i_step, t_VIZ4%viz_step)               &
      &        .eqv. .FALSE.) cycle
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
         call FEM_analyze_four_vizs                                      &
-     &     (i_step, t_VIZ6%ucd_step, t_VIZ6%time_d, FEM_viz6)
+     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
-        call istep_viz_w_fix_dt(i_step, t_VIZ6%viz_step)
-        call visualize_four(t_VIZ6%viz_step, t_VIZ6%time_d,             &
-     &      viz6%viz_fem, viz6%viz_fld, viz6%ele_4_nod, viz6%jacobians, &
-     &      vizs_v6)
+        call istep_viz_w_fix_dt(i_step, t_VIZ4%viz_step)
+        call visualize_four(t_VIZ4%viz_step, t_VIZ4%time_d,             &
+     &      VIZ4%viz_fem, VIZ4%viz_fld, VIZ4%ele_4_nod, VIZ4%jacobians, &
+     &      vizs_m4)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
