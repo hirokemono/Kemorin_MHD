@@ -13,11 +13,11 @@
       use calypso_mpi
 !
       use t_fieldline
-      use t_control_data_vizs_pvr
+      use t_control_data_four_vizs
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
       use t_VIZ_mesh_field
-      use FEM_analyzer_viz_pvr
+      use FEM_analyzer_four_vizs
 !
       implicit none
 !
@@ -25,7 +25,7 @@
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ4
 !>      Structure of control data for visualization
-      type(control_data_pvr_vizs), save :: vizs_ctl4
+      type(control_data_four_vizs), save :: vizs_ctl4
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz4
 !>      Structure of mesh and field for visualization only
@@ -48,16 +48,15 @@
 !     read controls
 !
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_pvr'
-      call read_control_file_pvr_vizs(vizs_ctl4)
-      call set_control_params_4_pvr(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
+      if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_four_vizs'
+      call read_control_file_four_vizs(vizs_ctl4)
+      call set_ctl_params_four_vizs(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_pvr                                           &
-     &   (t_VIZ4%init_d, t_VIZ4%ucd_step, t_VIZ4%viz_step,              &
-     &    FEM_viz4, pvr4)
+      call FEM_initialize_four_vizs(t_VIZ4%init_d, t_VIZ4%ucd_step,     &
+     &                              t_VIZ4%viz_step, FEM_viz4, pvr4)
 !
 !  VIZ Initialization
       call FLINE_initialize(pvr4%viz_fem, pvr4%viz_fld,                 &
@@ -78,7 +77,7 @@
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call FEM_analyze_pvr                                            &
+        call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4)
 !
 !  Generate field lines

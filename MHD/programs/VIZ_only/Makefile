@@ -52,25 +52,25 @@ t_field_list_for_vizs.o
 MOD_FOUR_VIZS_PLUG =  \
 main_four_visualizations.o  \
 analyzer_four_vizs.o \
-FEM_analyzer_viz_pvr.o \
+FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
-t_control_data_vizs_pvr.o \
+t_control_data_four_vizs.o \
 t_field_list_for_vizs.o
 
 MOD_PVR_PLUG =  \
 main_pvr.o  \
 analyzer_pvr.o \
-FEM_analyzer_viz_pvr.o \
+FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
-t_control_data_vizs_pvr.o \
+t_control_data_four_vizs.o \
 t_field_list_for_vizs.o
 
 MOD_FLINE_PLUG = \
 main_fieldline.o \
 analyzer_fline.o \
-FEM_analyzer_viz_pvr.o \
+FEM_analyzer_four_vizs.o \
 t_FEM_mesh_field_4_viz.o \
-t_control_data_vizs_pvr.o \
+t_control_data_four_vizs.o \
 t_field_list_for_vizs.o
 
 MOD_VTK_CONVERT_PLUG = \

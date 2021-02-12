@@ -1,5 +1,5 @@
-!>@file   FEM_analyzer_viz_pvr.f90
-!!@brief  module FEM_analyzer_viz_pvr
+!>@file   FEM_analyzer_four_vizs.f90
+!!@brief  module FEM_analyzer_four_vizs
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -7,25 +7,26 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine set_control_params_4_pvr                             &
+!!      subroutine set_ctl_params_four_vizs                             &
 !!     &         (pvr_vizs_c, FEM_viz, t_viz_param, ierr)
-!!        type(control_data_pvr_vizs), intent(in) :: pvr_vizs_c
+!!        type(control_data_four_vizs), intent(in) :: pvr_vizs_c
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_pvr(init_d, ucd_step, viz_step,       &
-!!     &                              FEM_viz, pvr)
+!!      subroutine FEM_initialize_four_vizs(init_d, ucd_step, viz_step, &
+!!     &                                    FEM_viz, pvr)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(VIZ_mesh_field), intent(inout) :: pvr
-!!      subroutine FEM_analyze_pvr(istep, ucd_step, time_d, FEM_viz)
+!!      subroutine FEM_analyze_four_vizs                                &
+!!     &         (istep, ucd_step, time_d, FEM_viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!@endverbatim
 !
-      module FEM_analyzer_viz_pvr
+      module FEM_analyzer_four_vizs
 !
       use m_precision
       use m_machine_parameter
@@ -53,10 +54,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_params_4_pvr                               &
+      subroutine set_ctl_params_four_vizs                               &
      &         (pvr_vizs_c, FEM_viz, t_viz_param, ierr)
 !
-      use t_control_data_vizs_pvr
+      use t_control_data_four_vizs
       use t_VIZ_only_step_parameter
 !
       use m_file_format_switch
@@ -65,7 +66,7 @@
       use set_control_platform_data
       use ucd_IO_select
 !
-      type(control_data_pvr_vizs), intent(in) :: pvr_vizs_c
+      type(control_data_four_vizs), intent(in) :: pvr_vizs_c
 !
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
@@ -85,12 +86,12 @@
      &   (pvr_vizs_c%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
 !
-      end subroutine set_control_params_4_pvr
+      end subroutine set_ctl_params_four_vizs
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_pvr(init_d, ucd_step, viz_step,         &
-     &                              FEM_viz, pvr)
+      subroutine FEM_initialize_four_vizs(init_d, ucd_step, viz_step,   &
+     &                                    FEM_viz, pvr)
 !
       use t_VIZ_mesh_field
       use mpi_load_mesh_data
@@ -144,12 +145,13 @@
      &    pvr%ele_4_nod, pvr%jacobians)
       call calypso_mpi_barrier
 !
-      end subroutine FEM_initialize_pvr
+      end subroutine FEM_initialize_four_vizs
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_pvr(istep, ucd_step, time_d, FEM_viz)
+      subroutine FEM_analyze_four_vizs                                  &
+     &         (istep, ucd_step, time_d, FEM_viz)
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
@@ -172,7 +174,7 @@
       call nod_fields_send_recv                                         &
      &   (FEM_viz%geofem%mesh, FEM_viz%field, FEM_viz%v_sol)
 !
-      end subroutine FEM_analyze_pvr
+      end subroutine FEM_analyze_four_vizs
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -217,4 +219,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module FEM_analyzer_viz_pvr
+      end module FEM_analyzer_four_vizs

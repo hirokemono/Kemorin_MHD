@@ -13,12 +13,12 @@
       use m_work_time
       use calypso_mpi
 !
-      use t_control_data_vizs_pvr
+      use t_control_data_four_vizs
       use t_four_visualizers
       use t_VIZ_only_step_parameter
       use t_FEM_mesh_field_4_viz
-      use FEM_analyzer_viz_pvr
       use t_VIZ_mesh_field
+      use FEM_analyzer_four_vizs
 !
       implicit none
 !
@@ -27,7 +27,7 @@
       type(time_step_param_w_viz), save :: t_VIZ6
 !
 !>      Structure of control data for visualization
-      type(control_data_pvr_vizs), save :: pvr_ctls6
+      type(control_data_four_vizs), save :: pvr_ctls6
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz6
 !>      Structure of data for visualization
@@ -57,15 +57,15 @@
 !     read controls
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
-      call read_control_file_pvr_vizs(pvr_ctls6)
-      call set_control_params_4_pvr(pvr_ctls6, FEM_viz6, t_VIZ6, ierr)
+      call read_control_file_four_vizs(pvr_ctls6)
+      call set_ctl_params_four_vizs(pvr_ctls6, FEM_viz6, t_VIZ6, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz'
-      call FEM_initialize_pvr(t_VIZ6%init_d, t_VIZ6%ucd_step,           &
-     &                        t_VIZ6%viz_step, FEM_viz6, viz6)
+      call FEM_initialize_four_vizs(t_VIZ6%init_d, t_VIZ6%ucd_step,     &
+     &                              t_VIZ6%viz_step, FEM_viz6, viz6)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -88,7 +88,7 @@
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_viz', i_step
-        call FEM_analyze_pvr                                            &
+        call FEM_analyze_four_vizs                                      &
      &     (i_step, t_VIZ6%ucd_step, t_VIZ6%time_d, FEM_viz6)
 !
 !  Rendering
