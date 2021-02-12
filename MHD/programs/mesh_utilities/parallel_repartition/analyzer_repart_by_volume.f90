@@ -41,12 +41,17 @@
 !
       subroutine initialize_reapart_by_vol
 !
+      use t_next_node_ele_4_node
       use t_ctl_file_volume_grouping
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use nod_phys_send_recv
       use repartiton_by_volume
+      use const_element_comm_tables
+      use set_table_4_RHS_assemble
+      use int_volume_of_single_domain
+      use field_to_new_partition
 !
 !>     Stracture for Jacobians
 !
@@ -73,16 +78,10 @@
 !
 !  -------------------------------
 !
-      if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
+      if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      call init_nod_send_recv(fem_T%mesh)
-      call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
-!
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
-      call s_repartiton_by_volume(part_p1%repart_p, fem_T, new_fem,     &
-     &                            org_to_new_tbl)
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
+      call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
+&                                   new_fem, org_to_new_tbl)
 !
       end subroutine initialize_reapart_by_vol
 !

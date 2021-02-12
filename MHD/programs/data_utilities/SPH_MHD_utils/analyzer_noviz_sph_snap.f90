@@ -156,8 +156,8 @@
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
-      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
+      call FEM_finalize_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
 !      call SPH_finalize_SGS_snap

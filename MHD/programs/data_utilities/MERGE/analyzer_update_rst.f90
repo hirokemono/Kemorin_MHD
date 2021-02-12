@@ -118,8 +118,8 @@
       call load_local_node_4_merge                                      &
      &   (asbl_param_f%org_mesh_file, ndomain_org, org_mesh)
 !
-      call s_search_original_domain_node(ndomain_org, org_mesh,         &
-     &    new_mesh%node, asbl_comm_f)
+      call s_search_original_domain_node                                &
+     &   (ndomain_org, new_mesh%node, org_mesh, asbl_comm_f)
 !
 !   read field name and number of components
 !

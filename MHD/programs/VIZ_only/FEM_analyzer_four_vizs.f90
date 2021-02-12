@@ -100,6 +100,7 @@
       use set_parallel_file_name
       use set_ucd_data_to_type
       use ucd_IO_select
+      use FEM_to_VIZ_bridge
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -139,8 +140,7 @@
 !     --------------------- init for fieldline and PVR
 !
       call link_FEM_field_4_viz(FEM_viz%geofem, FEM_viz%field, pvr)
-      allocate(pvr%ele_4_nod)
-      allocate(pvr%jacobians)
+      call alloc_jacobians_4_viz(pvr)
       call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
      &    pvr%ele_4_nod, pvr%jacobians)
       call calypso_mpi_barrier

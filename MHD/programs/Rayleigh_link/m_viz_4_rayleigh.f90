@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,           &
-!!     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, ierr)
+!!     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, VIZ_DAT,    &
+!!     &          ierr)
 !!        type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vctl
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
 !!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
-!!      subroutine element_normals_viz_rayleigh                         &
-!!     &         (fem, ele_4_nod, spfs, jacobians)
+!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
       module m_viz_4_rayleigh
@@ -35,6 +35,7 @@
       use t_time_data
       use t_VIZ_only_step_parameter
       use t_control_param_vol_grping
+      use t_VIZ_mesh_field
 !
       implicit none
 !
@@ -47,9 +48,6 @@
 !>      Structure for field file IO paramters
       type(field_IO_params), save :: ucd_file_VIZ
 !
-!>        Structure for repartitioning parameters
-      type(volume_partioning_param), save :: repart_VIZ
-!
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_VIZ
@@ -60,13 +58,6 @@
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_VIZ
 !
-!>   Structure of included element list for each node
-      type(element_around_node), save :: ele_4_nod_VIZ
-!
-      type(shape_finctions_at_points), save :: spfs_VIZ
-!>      Stracture for Jacobians
-      type(jacobians_type), save :: jacobians_VIZ
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -74,7 +65,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,             &
-     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, ierr)
+     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, VIZ_DAT,      &
+     &          ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
@@ -92,6 +84,7 @@
 !
       type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
       type(rayleigh_field), intent(inout) :: rayleigh_rtp
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
       call turn_off_debug_flag_by_ctl                                   &
@@ -111,40 +104,9 @@
      &   (rayleigh_vctl%sdctl, rayleigh_rtp, e_message, ierr)
 !
       call set_ctl_param_vol_repart(rayleigh_vctl%repart_ctl,           &
-     &                              repart_VIZ)
+     &                              VIZ_DAT%repart_p)
 !
       end subroutine set_ctl_params_rayleigh_viz
-!
-! ----------------------------------------------------------------------
-!
-      subroutine element_normals_viz_rayleigh                           &
-     &         (fem, ele_4_nod, spfs, jacobians)
-!
-      use int_volume_of_domain
-      use set_table_4_RHS_assemble
-      use set_normal_vectors
-      use set_surf_grp_vectors
-      use sum_normal_4_surf_group
-!
-      type(mesh_data), intent(inout) :: fem
-      type(element_around_node), intent(inout) :: ele_4_nod
-      type(shape_finctions_at_points), intent(inout) :: spfs
-      type(jacobians_type), intent(inout) :: jacobians
-!
-!     --------------------- Connection information for PVR and fieldline
-!     --------------------- init for fieldline and PVR
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-      call set_element_on_node_in_mesh(fem%mesh, ele_4_nod)
-!
-      if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      allocate(jacobians%g_FEM)
-      call sel_max_int_point_by_etype                                   &
-     &   (fem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    fem%mesh, fem%group, spfs, jacobians)
-!
-      end subroutine element_normals_viz_rayleigh
 !
 ! ----------------------------------------------------------------------
 !

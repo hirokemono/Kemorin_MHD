@@ -17,6 +17,7 @@
       use t_FEM_data_4_SPH_trans
       use t_SPH_data_4_SPH_trans
       use t_SPH_mesh_field_data
+      use t_VIZ_mesh_field
       use t_step_parameter
       use t_file_IO_parameter
       use t_ctl_data_4_sph_trans
@@ -25,6 +26,7 @@
 !
       type(FEM_for_SPH_transforms) :: FEM_STR1
       type(SPH_for_SPH_transforms) :: SPH_STR1
+      type(VIZ_mesh_field) :: VIZ_D_STR1
 !
 !
 !       Structure for time stepping parameters

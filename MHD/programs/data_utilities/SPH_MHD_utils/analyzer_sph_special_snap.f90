@@ -28,6 +28,7 @@
       use t_MHD_file_parameter
       use t_work_SPH_MHD
       use t_viz_sections
+      use t_VIZ_mesh_field
 !
       implicit none
 !
@@ -47,11 +48,12 @@
       use t_MHD_step_parameter
 !
       use analyzer_sph_snap
-      use FEM_analyzer_sph_MHD
+      use FEM_analyzer_sph_SGS_MHD
       use SPH_analyzer_SGS_snap
       use output_viz_file_control
       use SGS_MHD_zonal_mean_viz
       use set_time_step_params
+      use FEM_to_VIZ_bridge
 !
 !*  -----------  set initial step data --------------
 !*
@@ -84,10 +86,9 @@
      &        FEM_d1%field)
         end if
 !
-        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1,                     &
-     &      MHD_IO1, FEM_d1%v_sol)
+        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
+        call FEM_analyze_sph_SGS_MHD                                    &
+     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1)
 !
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -99,9 +100,11 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
+          call s_FEM_to_VIZ_bridge                                      &
+     &       (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_d1%geofem, FEM_d1%field, ele_4_nod_VIZ1,              &
-     &        jacobians_VIZ1, vizs1)
+     &        VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,                       &
+     &        VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs1)
 !*
 !*  ----------- Zonal means --------------
 !*
@@ -124,8 +127,8 @@
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
-      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
+      call FEM_finalize_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

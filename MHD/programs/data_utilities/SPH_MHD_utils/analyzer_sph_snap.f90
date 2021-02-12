@@ -23,12 +23,12 @@
       use m_machine_parameter
       use m_MHD_step_parameter
       use m_SPH_MHD_model_data
-      use m_jacobians_VIZ
       use m_SPH_SGS_structure
       use t_ctl_data_SGS_MHD
       use t_step_parameter
       use t_visualizer
       use t_SPH_MHD_zonal_mean_viz
+      use t_VIZ_mesh_field
       use t_sph_trans_arrays_MHD
 !
       use SPH_analyzer_SGS_snap
@@ -55,6 +55,7 @@
 !
       use init_sph_MHD_elapsed_label
       use input_control_sph_SGS_MHD
+      use FEM_to_VIZ_bridge
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -73,7 +74,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
       call input_control_SPH_SGS_dynamo                                 &
      &   (MHD_files1, MHD_ctl1, MHD_step1, SPH_model1,                  &
-     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, repart_p1)
+     &    SPH_WK1, SPH_SGS1, SPH_MHD1, FEM_d1, VIZ_DAT1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -82,17 +83,24 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_SGS_MHD'
       call FEM_initialize_sph_SGS_MHD(MHD_files1, MHD_step1,            &
-     &   FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys, SPH_SGS1%iphys_LES, &
-     &   ele_4_nod_VIZ1, jacobians_VIZ1, MHD_IO1, FEM_d1%v_sol)
+     &    SPH_SGS1%iphys_LES, MHD_IO1, FEM_d1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_SGS_snap'
       call SPH_init_SGS_snap(MHD_files1, FEM_d1%iphys, SPH_model1,      &
      &    SPH_SGS1, SPH_MHD1, SPH_WK1)
+!
+!  -------------------------------------------
+!  ----   Mesh setting for visualization -----
+!  -------------------------------------------
+      if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
+      call init_FEM_to_VIZ_bridge(MHD_step1%viz_step,                   &
+     &    FEM_d1%geofem, FEM_d1%field, VIZ_DAT1)
+!
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize                                               &
-     &   (FEM_d1%geofem, FEM_d1%field, MHD_ctl1%viz_ctls, vizs1)
+      call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,           &
+     &                    MHD_ctl1%viz_ctls, vizs1)
       call init_zonal_mean_sections                                     &
      &   (FEM_d1%geofem, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
 !
@@ -106,11 +114,12 @@
 !
       subroutine evolution_sph_snap
 !
-      use FEM_analyzer_sph_MHD
+      use FEM_analyzer_sph_SGS_MHD
       use SGS_MHD_zonal_mean_viz
       use output_viz_file_control
       use t_sph_trans_arrays_SGS_MHD
       use set_time_step_params
+      use FEM_to_VIZ_bridge
 !
 !*  -----------  set initial step data --------------
 !*
@@ -151,11 +160,9 @@
      &        SPH_SGS1%trns_WK_LES, FEM_d1%geofem, FEM_d1%field)
         end if
 !
-        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1,                     &
-     &      MHD_IO1, FEM_d1%v_sol)
-!
+        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
+        call FEM_analyze_sph_SGS_MHD                                    &
+     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
 !*  ----------- Visualization --------------
@@ -166,9 +173,11 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
+          call s_FEM_to_VIZ_bridge                                      &
+     &       (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_d1%geofem, FEM_d1%field, ele_4_nod_VIZ1,              &
-     &        jacobians_VIZ1, vizs1)
+     &        VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,                       &
+     &        VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs1)
 !*
 !*  ----------- Zonal means --------------
 !*
@@ -197,8 +206,8 @@
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
-      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
+      call FEM_finalize_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
 !      call SPH_finalize_SGS_snap
@@ -221,8 +230,9 @@
       use t_sph_trans_arrays_SGS_MHD
 !
       use calypso_mpi_real
-      use FEM_analyzer_sph_MHD
+      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
+      use FEM_to_VIZ_bridge
 !
       integer(kind = kint) :: iflag_redraw
       real(kind = kreal) :: total_max, total_time, total_prev
@@ -263,10 +273,9 @@
         call dealloc_sph_trans_area_snap(SPH_WK1%trns_WK)
         call dealloc_SGS_sph_trns_area_snap(SPH_SGS1%trns_WK_LES)
 !
-        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(MHD_files1,                            &
-     &      FEM_d1%geofem, FEM_d1%field, MHD_step1,                     &
-     &      MHD_IO1, FEM_d1%v_sol)
+        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
+        call FEM_analyze_sph_SGS_MHD                                    &
+     &     (MHD_files1, MHD_step1, MHD_IO1, FEM_d1)
       end if
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -276,9 +285,11 @@
         if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
         call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,           &
      &                          MHD_step1%viz_step)
+        call s_FEM_to_VIZ_bridge                                        &
+     &     (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
         call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,        &
-     &      FEM_d1%geofem, FEM_d1%field, ele_4_nod_VIZ1,                &
-     &      jacobians_VIZ1, vizs1)
+     &        VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,                       &
+     &        VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs1)
         call dealloc_pvr_data(vizs1%pvr)
         if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
       end if
@@ -303,12 +314,15 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call read_ctl_pvr_files_4_update                              &
      &       (ctl_file_code, MHD_ctl1%viz_ctls%pvr_ctls)
-          call PVR_initialize(FEM_d1%geofem, FEM_d1%field,              &
+          call PVR_initialize(VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,       &
      &        MHD_ctl1%viz_ctls%pvr_ctls, vizs1%pvr)
           call calypso_MPI_barrier
+          call s_FEM_to_VIZ_bridge                                      &
+     &       (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
           call PVR_visualize                                            &
      &       (MHD_step1%viz_step%istep_pvr, MHD_step1%time_d%time,      &
-     &        FEM_d1%geofem, jacobians_VIZ1, FEM_d1%field, vizs1%pvr)
+     &        VIZ_DAT1%viz_fem, VIZ_DAT1%jacobians, VIZ_DAT1%viz_fld,   &
+     &        vizs1%pvr)
           call dealloc_pvr_data(vizs1%pvr)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if
@@ -332,8 +346,8 @@
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
 !    Loop end
-      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
+      call FEM_finalize_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
 !      call SPH_finalize_SGS_snap

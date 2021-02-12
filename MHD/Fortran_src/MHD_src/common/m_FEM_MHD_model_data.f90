@@ -19,6 +19,7 @@
       use t_FEM_SGS_structure
       use t_work_FEM_SGS_MHD
       use t_FEM_MHD_time_stepping
+      use t_VIZ_mesh_field
       use t_visualizer
       use t_control_data_vizs
       use t_ctl_data_volume_repart
@@ -58,6 +59,9 @@
 !
 !>        Structures of visualization
       type(visualize_modules), save :: vizs_F
+!
+!>      Structure of data for visualization
+      type(VIZ_mesh_field), save :: VIZ_DAT2
 !
       type(FEM_MHD_time_stepping), save :: flex_MHD1
 !

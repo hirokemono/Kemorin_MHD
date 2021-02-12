@@ -142,8 +142,8 @@
       call const_global_numele_list(geofem%mesh%ele)
 !
 !
-      call s_search_original_domain_node(nprocs, org_mesh,              &
-     &    geofem%mesh%node, asbl_comm_u)
+      call s_search_original_domain_node                                &
+     &   (nprocs, geofem%mesh%node, org_mesh, asbl_comm_u)
 !
 !
 !

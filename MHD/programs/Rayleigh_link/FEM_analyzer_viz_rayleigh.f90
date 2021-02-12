@@ -7,7 +7,7 @@
 !>@brief  Main loop of visualization of Rayleigh data
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_viz_rayleigh(viz_step)
+!!      subroutine FEM_initialize_viz_rayleigh(init_d, viz_step)
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!      subroutine FEM_analyze_viz_rayleigh(visval, i_step, time_d)
@@ -55,9 +55,9 @@
       type(comm_table_4_assemble), save :: asbl_comm_R
 !
 !>      Structure for communicatiors for solver
-      type(vectors_4_solver) :: v_sol_R
+      type(vectors_4_solver), save :: v_sol_R
 !
-      private :: gen_sph_R, rayleigh_fem, sph_const, v_sol_R
+      private :: gen_sph_R, rayleigh_fem, sph_const
       private :: set_field_data_4_VIZ2
 !
 !-----------------------------------------------------------------------
@@ -113,8 +113,6 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(femmesh_VIZ%mesh, v_sol_R)
-      call FEM_mesh_initialization                                      &
-     &   (femmesh_VIZ%mesh, femmesh_VIZ%group)
       call const_global_numele_list(femmesh_VIZ%mesh%ele)
 !
 !   --------------------------------
@@ -130,8 +128,8 @@
       call dealloc_node_geometry_base(rayleigh_fem%mesh%node)
       call dealloc_groups_data(rayleigh_fem%group)
 !
-      call s_search_original_domain_node(nprocs, rayleigh_pmesh,        &
-     &    femmesh_VIZ%mesh%node, asbl_comm_R)
+      call s_search_original_domain_node                                &
+     &   (nprocs, femmesh_VIZ%mesh%node, rayleigh_pmesh, asbl_comm_R)
 !
 !   --------------------------------
 !       setup field information
@@ -139,21 +137,6 @@
 !
       call init_fields_by_rayleigh                                      &
      &   (rayleigh_ftbl1, femmesh_VIZ%mesh, field_VIZ)
-!
-!     --------------------- Connection information for PVR and fieldline
-!     --------------------- init for fieldline and PVR
-!
-      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment     &
-     &       + viz_step%LIC_t%increment
-      if(iflag .gt. 0) then
-        call element_normals_viz_rayleigh                               &
-     &     (femmesh_VIZ, ele_4_nod_VIZ, spfs_VIZ, jacobians_VIZ)
-      end if
-!
-!     --------------------- 
-!
-      call dealloc_edge_geometory(femmesh_VIZ%mesh%edge)
-      call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_viz_rayleigh
 !
@@ -172,8 +155,9 @@
       time_d%i_time_step = i_step
       time_d%time = 0.0d0
       time_d%dt = 0.0d0
-      if(visval) call set_field_data_4_VIZ2(i_step,                     &
-     &                                      femmesh_VIZ, field_VIZ)
+      if(visval) then
+        call set_field_data_4_VIZ2(i_step, femmesh_VIZ, field_VIZ)
+      end if
 !
       end subroutine FEM_analyze_viz_rayleigh
 !

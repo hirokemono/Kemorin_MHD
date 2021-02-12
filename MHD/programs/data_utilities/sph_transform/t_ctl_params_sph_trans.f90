@@ -6,7 +6,7 @@
 !!      subroutine set_control_4_sph_transform(spt_ctl, time_STR,       &
 !!     &          SPH_TRNS, FEM_STR, SPH_STR)
 !!      subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,        &
-!!     &          SPH_TRNS, FEM_STR, SPH_STR)
+!!     &          SPH_TRNS, FEM_STR, SPH_STR, VIZ_DAT)
 !!      subroutine set_ctl_data_4_zm_trans(spt_ctl, SPH_STR)
 !!      subroutine set_ctl_data_4_pick_zm(spt_ctl, zm_source_file_param)
 !!        type(spherical_transform_util_ctl), intent(inout) :: spt_ctl
@@ -14,6 +14,7 @@
 !!        type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
 !!        type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
 !!        type(SPH_mesh_field_data), intent(inout) :: SPH_TRNS
+!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       module t_ctl_params_sph_trans
 !
@@ -60,6 +61,7 @@
       use calypso_mpi
       use m_FFT_selector
       use m_legendre_transform_list
+      use t_VIZ_mesh_field
 !
       use set_field_data_w_SGS
       use set_control_platform_item
@@ -86,9 +88,6 @@
       call set_control_restart_file_def                                 &
      &   (spt_ctl%plt, SPH_STR%fst_file_IO)
       call set_ucd_file_define(spt_ctl%plt, FEM_STR%ucd_file_IO)
-!
-      call set_ctl_param_vol_repart                                     &
-     &   (spt_ctl%repart_ctl, FEM_STR%repart)
 !
 !   setting for spherical transform
 !
@@ -158,10 +157,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_ctl_data_4_sph_trans(spt_ctl, time_STR,          &
-     &          SPH_TRNS, FEM_STR, SPH_STR)
+     &          SPH_TRNS, FEM_STR, SPH_STR, VIZ_DAT)
 !
       use calypso_mpi
       use t_file_IO_parameter
+      use t_VIZ_mesh_field
+!
       use m_machine_parameter
       use m_FFT_selector
       use m_legendre_transform_list
@@ -179,6 +180,7 @@
       type(FEM_for_SPH_transforms), intent(inout) :: FEM_STR
       type(SPH_for_SPH_transforms), intent(inout) :: SPH_STR
       type(SPH_mesh_field_data), intent(inout) :: SPH_TRNS
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       integer(kind = kint) :: ierr, iflag
 !
@@ -198,8 +200,9 @@
       call set_control_mesh_file_def(def_org_ucd_header,                &
      &    spt_ctl%org_plt, FEM_STR%org_ucd_file_IO)
 !
-      call set_ctl_param_vol_repart                                     &
-     &   (spt_ctl%repart_ctl, FEM_STR%repart)
+!   Set control for repartitioning for Visualizer
+      call set_ctl_param_vol_repart(spt_ctl%repart_ctl,                 &
+     &                              VIZ_DAT%repart_p)
 !
 !    file header for field data
 !

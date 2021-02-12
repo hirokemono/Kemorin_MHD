@@ -8,19 +8,19 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_sph_SGS_MHD                           &
-!!     &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,&
-!!     &         ele_4_nod_VIZ, jacobians, MHD_IO, v_sol)
+!!      subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,      &
+!!     &          iphys_LES, MHD_IO, FEM_MHD)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
-!!        type(mesh_data), intent(inout) :: geofem
-!!        type(phys_address), intent(in) :: iphys
 !!        type(SGS_model_addresses), intent(inout) :: iphys_LES
-!!        type(phys_data), intent(inout) :: nod_fld
-!!        type(element_around_node), intent(inout) :: ele_4_nod_VIZ
-!!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
-!!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+!!      subroutine FEM_analyze_sph_SGS_MHD                              &
+!!     &         (MHD_files, MHD_step, MHD_IO, FEM_MHD)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
+!!        type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
 !!     &        (SGS_par, sph, WK, WK_LES, geofem, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -29,6 +29,10 @@
 !!        type(works_4_sph_trans_SGS_MHD), intent(in) :: WK_LES
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(inout) :: nod_fld
+!!      subroutine FEM_finalize_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(MHD_step_param), intent(in) :: MHD_step
+!!        type(MHD_IO_data), intent(inout) :: MHD_IO
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -44,17 +48,13 @@
       use m_work_time
 !
       use t_time_data
-      use t_mesh_data
-      use t_phys_data
       use t_MHD_step_parameter
       use t_file_IO_parameter
 !
       use t_shape_functions
-      use t_vector_for_solver
+      use t_FEM_mesh_field_data
 !
       implicit none
-!
-      type(shape_finctions_at_points), save, private :: spfs_M
 !
 !-----------------------------------------------------------------------
 !
@@ -62,14 +62,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_SGS_MHD                             &
-     &        (MHD_files, MHD_step, geofem, nod_fld, iphys, iphys_LES,  &
-     &         ele_4_nod_VIZ, jacobians, MHD_IO, v_sol)
+      subroutine FEM_initialize_sph_SGS_MHD(MHD_files, MHD_step,        &
+     &          iphys_LES, MHD_IO, FEM_MHD)
 !
       use t_phys_address
       use t_SGS_model_addresses
-      use t_next_node_ele_4_node
-      use t_jacobians
       use t_VIZ_step_parameter
       use t_MHD_file_parameter
       use t_cal_max_indices
@@ -87,71 +84,65 @@
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
-      type(mesh_data), intent(inout) :: geofem
-      type(phys_address), intent(inout) :: iphys
       type(SGS_model_addresses), intent(inout) :: iphys_LES
-      type(phys_data), intent(inout) :: nod_fld
-      type(element_around_node), intent(inout) :: ele_4_nod_VIZ
-      type(jacobians_type), intent(inout) :: jacobians
       type(MHD_IO_data), intent(inout) :: MHD_IO
-      type(vectors_4_solver), intent(inout) :: v_sol
+      type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
 !
       integer(kind = kint) :: iflag
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
-      call set_local_nod_4_monitor(geofem%mesh, geofem%group)
+      call set_local_nod_4_monitor(FEM_MHD%geofem%mesh,                 &
+     &                             FEM_MHD%geofem%group)
 !
       if (iflag_debug.gt.0) write(*,*) 'init_field_data_w_SGS'
-      call init_field_data_w_SGS                                        &
-     &   (geofem%mesh%node%numnod, nod_fld, iphys, iphys_LES)
+      call init_field_data_w_SGS(FEM_MHD%geofem%mesh%node%numnod,       &
+     &    FEM_MHD%field, FEM_MHD%iphys, iphys_LES)
+!
+!  -------------------------------
+!      INIT communication buffer
+!  -------------------------------
+!
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
+      call FEM_comm_initialization(FEM_MHD%geofem%mesh, FEM_MHD%v_sol)
 !
 !  -------------------------------
 !  connect grid data to volume output
 !  -------------------------------
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call alloc_phys_range(nod_fld%ntot_phys_viz, MHD_IO%range)
+        call alloc_phys_range(FEM_MHD%field%ntot_phys_viz,              &
+     &                        MHD_IO%range)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot(MHD_files%ucd_file_IO,            &
-     &    MHD_step%ucd_step, geofem%mesh, nod_fld, MHD_IO%ucd)
-!
-!  -------------------------------
-!  -------------------------------
-!
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
-      call FEM_comm_initialization(geofem%mesh, v_sol)
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
-!  -------------------------------
-!  ----   Mesh setting for visualization -----
-!  -------------------------------
-!
-      if(MHD_step%viz_step%FLINE_t%increment .gt. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-        call set_element_on_node_in_mesh                                &
-     &     (geofem%mesh, ele_4_nod_VIZ)
-      end if
-!
-!  -----  If there is no volume rendering... return
-!
-      if (iflag_debug.eq.1) write(*,*)  'set_max_integration_points'
-      iflag = MHD_step%viz_step%PVR_t%increment                         &
-     &       + MHD_step%viz_step%LIC_t%increment
-      if(iflag .le. 0) Return
-!
-      allocate(jacobians%g_FEM)
-      call set_max_integration_points(ione, jacobians%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
-     &    geofem%mesh, geofem%group, spfs_M, jacobians)
+     &    MHD_step%ucd_step, FEM_MHD%geofem%mesh, FEM_MHD%field,        &
+     &    MHD_IO%ucd)
 !
       end subroutine FEM_initialize_sph_SGS_MHD
 !
+!-----------------------------------------------------------------------
+!
+      subroutine FEM_analyze_sph_SGS_MHD                                &
+     &         (MHD_files, MHD_step, MHD_IO, FEM_MHD)
+!
+      use FEM_analyzer_sph_MHD
+!
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+!
+      type(MHD_step_param), intent(inout) :: MHD_step
+      type(MHD_IO_data), intent(inout) :: MHD_IO
+      type(FEM_mesh_field_data), intent(inout) :: FEM_MHD
+!
+!
+      call FEM_analyze_sph_MHD                                          &
+     &   (MHD_files, FEM_MHD%geofem, FEM_MHD%field,                     &
+     &    MHD_step, MHD_IO, FEM_MHD%v_sol)
+!
+      end subroutine FEM_analyze_sph_SGS_MHD
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_SGS_MHD                              &
@@ -226,6 +217,22 @@
      &    WK_LES%trns_SGS_snap%forward, geofem%mesh, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_SGS_MHD
+!
+!-----------------------------------------------------------------------
+!
+      subroutine FEM_finalize_sph_SGS_MHD(MHD_files, MHD_step, MHD_IO)
+!
+      use FEM_analyzer_sph_MHD
+!
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(MHD_step_param), intent(in) :: MHD_step
+!
+      type(MHD_IO_data), intent(inout) :: MHD_IO
+!
+!
+      call FEM_finalize(MHD_files, MHD_step, MHD_IO)
+!
+      end subroutine FEM_finalize_sph_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !

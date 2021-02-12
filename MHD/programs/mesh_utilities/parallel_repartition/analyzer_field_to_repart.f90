@@ -95,8 +95,8 @@
 !
 !  -------------------------------
 !
-      call const_new_partition_mesh(part_p1%repart_p, fem_T, new_fem,   &
-     &                              org_to_new_tbl)
+      call load_or_const_new_partition                                  &
+     &   (part_p1%repart_p, fem_T, new_fem, org_to_new_tbl)
 !
       end subroutine initialize_field_to_repart
 !

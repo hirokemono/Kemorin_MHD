@@ -10,7 +10,7 @@
 !!      subroutine set_control_4_FEM_MHD(plt, org_plt, repart_ctl,      &
 !!     &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,            &
 !!     &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,&
-!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+!!     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld, VIZ_DAT)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(viz_repartition_ctl), intent(in) :: repart_ctl
@@ -27,6 +27,7 @@
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(phys_data), intent(inout) :: nod_fld, ele_fld
+!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
       module set_control_FEM_MHD
@@ -44,6 +45,7 @@
       use t_bc_data_list
       use t_flex_delta_t_data
       use t_control_param_vol_grping
+      use t_VIZ_mesh_field
 !
       implicit  none
 !
@@ -59,7 +61,7 @@
       subroutine set_control_4_FEM_MHD(plt, org_plt, repart_ctl,        &
      &          model_ctl, fmctl_ctl, nmtr_ctl, MHD_files,              &
      &          FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC, MGCG_WK,  &
-     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld)
+     &          MGCG_FEM, MGCG_MHD_FEM, nod_fld, ele_fld, VIZ_DAT)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -106,6 +108,7 @@
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(phys_data), intent(inout) :: nod_fld, ele_fld
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
 !   set parameters for data files
@@ -119,7 +122,7 @@
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_plt, MHD_files%org_ucd_file_IO)
 !
-      call set_ctl_param_vol_repart(repart_ctl, FEM_prm%repart_p)
+      call set_ctl_param_vol_repart(repart_ctl, VIZ_DAT%repart_p)
 !
 !   set parameters for general information
 !

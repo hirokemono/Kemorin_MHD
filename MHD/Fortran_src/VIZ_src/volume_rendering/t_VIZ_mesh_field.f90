@@ -7,20 +7,19 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine link_FEM_field_4_viz(geofem, nod_fld, viz)
-!!      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, viz)
-!!      subroutine unlink_FEM_field_4_viz(viz)
-!!      subroutine unlink_jacobians_4_viz(viz)
+!!      subroutine link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
+!!      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
+!!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
+!!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
+!!      subroutine alloc_FEM_field_4_viz(VIZ_DAT)
+!!      subroutine alloc_jacobians_4_viz(VIZ_DAT)
+!!      subroutine dealloc_FEM_field_4_viz(VIZ_DAT)
+!!      subroutine dealloc_jacobians_4_viz(VIZ_DAT)
 !!        type(mesh_data), intent(inout), target :: geofem
 !!        type(phys_data), intent(inout), target :: nod_fld
 !!        type(element_around_node), intent(in), target :: ele_4_nod
 !!        type(jacobians_type), intent(in), target :: jacobians
-!!        type(VIZ_mesh_field), intent(inout) :: viz
-!!
-!!      subroutine sel_repartition_for_viz(geofem, nod_fld, viz)
-!!        type(mesh_data), intent(inout) :: geofem
-!!        type(phys_data), intent(inout) :: nod_fld
-!!        type(VIZ_mesh_field), intent(inout) :: viz
+!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
       module t_VIZ_mesh_field
@@ -65,120 +64,92 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_FEM_field_4_viz(geofem, nod_fld, viz)
+      subroutine link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
 !
       type(mesh_data), intent(in), target :: geofem
       type(phys_data), intent(in), target :: nod_fld
-      type(VIZ_mesh_field), intent(inout) :: viz
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      viz%viz_fem => geofem
-      viz%viz_fld => nod_fld
+      VIZ_DAT%viz_fem => geofem
+      VIZ_DAT%viz_fld => nod_fld
 !
       end subroutine link_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, viz)
+      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
 !
       type(element_around_node), intent(in), target :: ele_4_nod
       type(jacobians_type), intent(in), target :: jacobians
-      type(VIZ_mesh_field), intent(inout) :: viz
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      viz%ele_4_nod => ele_4_nod
-      viz%jacobians => jacobians
+      VIZ_DAT%ele_4_nod => ele_4_nod
+      VIZ_DAT%jacobians => jacobians
 !
       end subroutine link_jacobians_4_viz
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine unlink_FEM_field_4_viz(viz)
+      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !
-      type(VIZ_mesh_field), intent(inout) :: viz
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      nullify(viz%viz_fem, viz%viz_fld)
+      nullify(VIZ_DAT%viz_fem, VIZ_DAT%viz_fld)
 !
       end subroutine unlink_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine unlink_jacobians_4_viz(viz)
+      subroutine unlink_jacobians_4_viz(VIZ_DAT)
 !
-      type(VIZ_mesh_field), intent(inout) :: viz
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      nullify(viz%jacobians, viz%ele_4_nod)
+      nullify(VIZ_DAT%jacobians, VIZ_DAT%ele_4_nod)
 !
       end subroutine unlink_jacobians_4_viz
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_repartition_for_viz(geofem, nod_fld, viz)
+      subroutine alloc_FEM_field_4_viz(VIZ_DAT)
 !
-      use field_to_new_partition
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      type(mesh_data), intent(inout) :: geofem
-      type(phys_data), intent(inout) :: nod_fld
-      type(VIZ_mesh_field), intent(inout) :: viz
+      allocate(VIZ_DAT%viz_fem)
+      allocate(VIZ_DAT%viz_fld)
 !
-!
-      if(viz%repart_p%flag_repartition) then
-        allocate(viz%viz_fem)
-        call const_new_partition_mesh(viz%repart_p,                     &
-     &      geofem, viz%viz_fem, viz%mesh_to_viz_tbl)
-!
-        allocate(viz%viz_fld)
-        call init_fld_to_new_partition(viz%viz_fem%mesh,                &
-     &                                 nod_fld, viz%viz_fld)
-      else
-        call link_FEM_field_4_viz(geofem, nod_fld, viz)
-      end if
-!
-      end subroutine sel_repartition_for_viz
+      end subroutine alloc_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, ele_4_nod, jacobians)
+      subroutine alloc_jacobians_4_viz(VIZ_DAT)
 !
-      use t_fem_gauss_int_coefs
-      use int_volume_of_domain
-      use set_table_4_RHS_assemble
-      use parallel_FEM_mesh_init
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      type(VIZ_step_params), intent(in) :: viz_step
-      type(mesh_data), intent(inout) :: geofem
-      type(element_around_node), intent(inout) :: ele_4_nod
-      type(jacobians_type), intent(inout) :: jacobians
+      allocate(VIZ_DAT%ele_4_nod)
+      allocate(VIZ_DAT%jacobians)
 !
-      integer(kind = kint) :: iflag
-      type(shape_finctions_at_points) :: spfs
+      end subroutine alloc_jacobians_4_viz
 !
+! ----------------------------------------------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
+      subroutine dealloc_FEM_field_4_viz(VIZ_DAT)
 !
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-!     --------------------- init for fieldline and PVR
+      deallocate(VIZ_DAT%viz_fem, VIZ_DAT%viz_fld)
 !
-      if(viz_step%FLINE_t%increment .gt. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
-        call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
-      end if
+      end subroutine dealloc_FEM_field_4_viz
 !
-      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
-      if(iflag .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-        allocate(jacobians%g_FEM)
-!        call sel_max_int_point_by_etype                                &
-!     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
-        call set_max_integration_points(ione, jacobians%g_FEM)
-        call const_jacobian_volume_normals(my_rank, nprocs,             &
-     &      geofem%mesh, geofem%group, spfs, jacobians)
-      end if
+! ----------------------------------------------------------------------
 !
-      end subroutine normals_and_jacobians_4_VIZ
+      subroutine dealloc_jacobians_4_viz(VIZ_DAT)
+!
+      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
+!
+      deallocate(VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+!
+      end subroutine dealloc_jacobians_4_viz
 !
 ! ----------------------------------------------------------------------
 !
