@@ -56,7 +56,7 @@
 !     read controls
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_pvr_vizs'
       call read_control_file_pvr_vizs(pvr_ctl3)
-      call set_control_params_4_pvr(pvr_ctl3, pvr3, t_VIZ3, ierr)
+      call set_control_params_4_pvr(pvr_ctl3, FEM_viz3, t_VIZ3, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
@@ -87,7 +87,7 @@
 !
 !  Load field data
         call FEM_analyze_pvr                                            &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3, pvr3)
+     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3)
 !
 !  Rendering
         if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step

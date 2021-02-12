@@ -21,6 +21,10 @@
       use t_mesh_data
       use t_phys_data
       use t_vector_for_solver
+      use t_field_list_for_vizs
+      use t_file_IO_parameter
+      use t_time_data
+      use t_ucd_data
 !
       implicit none
 !
@@ -28,6 +32,11 @@
       type FEM_mesh_field_for_viz
 !>        Label for simulation
         character(len=kchara) :: label_sim
+!
+!>        Structure for mesh file IO paramters
+        type(field_IO_params) :: mesh_file_IO
+!>        Structure for field file IO paramters
+        type(field_IO_params) :: ucd_file_IO
 !
 !>        Structure for FEM mesh data
 !!         (position, connectivity, communication, and groups)
@@ -37,6 +46,14 @@
 !
 !>        Structure for vectors for solver
         type(vectors_4_solver) :: v_sol
+!
+!>        Structure of field list for visualization
+        type(visulize_field_list) :: viz_fld_list
+!
+!>          Instance of time data from data input
+        type(time_data) :: ucd_time
+!>          Instance of FEM field data IO
+        type(ucd_data) :: ucd_in
       end type FEM_mesh_field_for_viz
 !
 ! ----------------------------------------------------------------------

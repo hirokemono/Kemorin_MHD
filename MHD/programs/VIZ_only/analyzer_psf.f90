@@ -26,8 +26,6 @@
       type(control_data_section_only), save :: sec_viz_ctl2
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz2
-!>      Structure of mesh and field for sectioning only
-      type(FEM_mesh_field_4_surfacing), save :: sfcing2
 !>      Structure of sectioning and isosurfaceing modules
       type(surfacing_modules), save :: viz_psfs2
 !
@@ -55,12 +53,12 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
       call read_control_file_section_only(sec_viz_ctl2)
       call set_control_params_4_sections(sec_viz_ctl2,                  &
-     &                                   sfcing2, t_VIZ2, ierr)
+     &                                   FEM_viz2, t_VIZ2, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
       call FEM_initialize_surface                                       &
-     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, sfcing2)
+     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2)
 !
 !  VIZ Initialization
       call init_visualize_surface(FEM_viz2%geofem, FEM_viz2%field,      &
@@ -82,7 +80,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, FEM_viz2, sfcing2)
+     &     (i_step, t_VIZ2%ucd_step, t_VIZ2%time_d, FEM_viz2)
 !
 !  Generate field lines
         t_VIZ2%viz_step%istep_psf                                       &

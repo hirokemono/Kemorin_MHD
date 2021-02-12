@@ -8,29 +8,25 @@
 !!
 !!@verbatim
 !!      subroutine set_control_params_4_sections                        &
-!!     &         (sec_viz_ctl, sfcing, t_viz_param, ierr)
+!!     &         (sec_viz_ctl, FEM_viz, t_viz_param, ierr)
 !!        type(control_data_section_only), intent(in) :: sec_viz_ctl
-!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
+!!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_surface(ucd_step, init_d,             &
-!!     &          FEM_viz, sfcing)
+!!      subroutine FEM_initialize_surface(ucd_step, init_d, FEM_viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !!      subroutine FEM_analyze_surface(i_step, ucd_step, time_d,        &
-!!     &                               FEM_viz, sfcing)
+!!     &                               FEM_viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !!
 !!      subroutine FEM_initialize_VTK_convert(ucd_step, init_d,         &
-!!     &                                      FEM_viz, sfcing)
+!!     &                                      FEM_viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-!!        type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !!@endverbatim
 !
       module FEM_analyzer_viz_surf
@@ -42,34 +38,12 @@
       use calypso_mpi
 !
       use t_time_data
-      use t_mesh_data
-      use t_phys_data
-      use t_ucd_data
-      use t_file_IO_parameter
       use t_field_list_for_vizs
       use t_VIZ_step_parameter
       use t_IO_step_parameter
       use t_FEM_mesh_field_4_viz
 !
       implicit none
-!
-!>      Structure of mesh and field for sectioning only
-      type FEM_mesh_field_4_surfacing
-!>        Structure for mesh file IO paramters
-        type(field_IO_params) :: mesh_file_IO
-!>        Structure for field file IO paramters
-        type(field_IO_params) :: ucd_file_IO
-!>        Structure for VTK file output paramters
-        type(field_IO_params) :: vtk_file_IO
-!
-!>          time data from data input
-        type(time_data) :: ucd_time
-!>          FEM field data IO
-        type(ucd_data) :: ucd_in
-!
-!>      structure of field list for visualization
-        type(visulize_field_list) :: viz_fld_list
-      end type FEM_mesh_field_4_surfacing
 !
 !-----------------------------------------------------------------------
 !
@@ -78,7 +52,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_control_params_4_sections                          &
-     &         (sec_viz_ctl, sfcing, t_viz_param, ierr)
+     &         (sec_viz_ctl, FEM_viz, t_viz_param, ierr)
 !
       use t_viz_sections
       use t_control_data_section_only
@@ -92,7 +66,7 @@
 !
       type(control_data_section_only), intent(in) :: sec_viz_ctl
 !
-      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
+      type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -100,12 +74,12 @@
       call turn_off_debug_flag_by_ctl(my_rank, sec_viz_ctl%sect_plt)
       call set_control_smp_def(my_rank, sec_viz_ctl%sect_plt)
       call set_control_mesh_def(sec_viz_ctl%sect_plt,                   &
-     &                          sfcing%mesh_file_IO)
+     &                          FEM_viz%mesh_file_IO)
       call set_ucd_file_define(sec_viz_ctl%sect_plt,                    &
-     &    sfcing%ucd_file_IO)
+     &                         FEM_viz%ucd_file_IO)
 !
       call init_viz_field_list_control(sec_viz_ctl%viz_field_ctl,       &
-     &                                 sfcing%viz_fld_list)
+     &                                 FEM_viz%viz_fld_list)
 !
       call set_fixed_t_step_params_w_viz                                &
      &   (sec_viz_ctl%t_sect_ctl, t_viz_param, ierr, e_message)
@@ -115,8 +89,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_surface(ucd_step, init_d,               &
-     &          FEM_viz, sfcing)
+      subroutine FEM_initialize_surface(ucd_step, init_d, FEM_viz)
 !
       use t_field_list_for_vizs
       use mpi_load_mesh_data
@@ -129,7 +102,6 @@
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
       integer(kind = kint) :: istep_ucd
 !
@@ -137,7 +109,7 @@
 !       setup mesh and field information
 !   --------------------------------
 !
-      call mpi_input_mesh(sfcing%mesh_file_IO, nprocs, FEM_viz%geofem)
+      call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
@@ -146,16 +118,16 @@
 !
 !     ---------------------
 !
-      sfcing%ucd_in%nnod = FEM_viz%geofem%mesh%node%numnod
+      FEM_viz%ucd_in%nnod = FEM_viz%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
-      call sel_read_udt_param(my_rank, istep_ucd, sfcing%ucd_file_IO,   &
-     &                        sfcing%ucd_time, sfcing%ucd_in)
-      call alloc_phys_name_type_by_output(sfcing%ucd_in,                &
+      call sel_read_udt_param(my_rank, istep_ucd, FEM_viz%ucd_file_IO,  &
+     &                        FEM_viz%ucd_time, FEM_viz%ucd_in)
+      call alloc_phys_name_type_by_output(FEM_viz%ucd_in,               &
      &                                    FEM_viz%field)
 !
-      call add_field_in_viz_controls(sfcing%viz_fld_list,               &
+      call add_field_in_viz_controls(FEM_viz%viz_fld_list,              &
      &                               FEM_viz%field)
-      call dealloc_field_lists_for_vizs(sfcing%viz_fld_list)
+      call dealloc_field_lists_for_vizs(FEM_viz%viz_fld_list)
 !
       call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
      &                     FEM_viz%field)
@@ -166,7 +138,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_surface(i_step, ucd_step, time_d,          &
-     &                               FEM_viz, sfcing)
+     &                               FEM_viz)
 !
       use output_parallel_ucd_file
       use nod_phys_send_recv
@@ -175,15 +147,14 @@
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(inout) :: time_d
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
       integer(kind = kint) :: istep_ucd
 !
 !
       istep_ucd = IO_step_exc_zero_inc(i_step, ucd_step)
-      call set_data_by_read_ucd(istep_ucd, sfcing%ucd_file_IO,          &
-     &    sfcing%ucd_time, sfcing%ucd_in, FEM_viz%field)
-      call copy_time_step_size_data(sfcing%ucd_time, time_d)
+      call set_data_by_read_ucd(istep_ucd, FEM_viz%ucd_file_IO,         &
+     &    FEM_viz%ucd_time, FEM_viz%ucd_in, FEM_viz%field)
+      call copy_time_step_size_data(FEM_viz%ucd_time, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(FEM_viz%geofem%mesh,                    &
@@ -195,7 +166,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_VTK_convert(ucd_step, init_d,           &
-     &                                      FEM_viz, sfcing)
+     &                                      FEM_viz)
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -207,14 +178,13 @@
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-      type(FEM_mesh_field_4_surfacing), intent(inout) :: sfcing
 !
       integer(kind = kint) :: istep_ucd
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
-      call mpi_input_mesh(sfcing%mesh_file_IO, nprocs, FEM_viz%geofem)
+      call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
@@ -223,16 +193,16 @@
 !
 !     ---------------------
 !
-      sfcing%ucd_in%nnod = FEM_viz%geofem%mesh%node%numnod
+      FEM_viz%ucd_in%nnod = FEM_viz%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
-      call sel_read_udt_param(my_rank, istep_ucd, sfcing%ucd_file_IO,   &
-     &                        sfcing%ucd_time, sfcing%ucd_in)
-      call alloc_phys_name_type_by_output(sfcing%ucd_in,                &
+      call sel_read_udt_param(my_rank, istep_ucd, FEM_viz%ucd_file_IO,  &
+     &                        FEM_viz%ucd_time, FEM_viz%ucd_in)
+      call alloc_phys_name_type_by_output(FEM_viz%ucd_in,               &
      &                                    FEM_viz%field)
       call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
      &                     FEM_viz%field)
       call deallocate_surface_geom_type(FEM_viz%geofem%mesh%surf)
-      call dealloc_field_lists_for_vizs(sfcing%viz_fld_list)
+      call dealloc_field_lists_for_vizs(FEM_viz%viz_fld_list)
 !
       end subroutine FEM_initialize_VTK_convert
 !

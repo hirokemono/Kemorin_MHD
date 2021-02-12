@@ -29,7 +29,7 @@
       type(control_data_vizs), save :: vizs_ctl1
 !>      Structure of FEM mesh and field structures
       type(FEM_mesh_field_for_viz), save :: FEM_viz1
-!>      Structure of mesh and field for visualization only
+!>      Structure of data for visualization
       type(VIZ_mesh_field), save :: viz1
 !>      Structure of viualization modules
       type(visualize_modules), save :: vizs_v
@@ -57,7 +57,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_file_vizs'
       call read_control_file_vizs(vizs_ctl1)
-      call set_control_params_4_viz(vizs_ctl1, viz1, t_VIZ1, ierr)
+      call set_control_params_4_viz(vizs_ctl1, FEM_viz1, viz1,          &
+     &                              t_VIZ1, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
@@ -94,8 +95,8 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ1%viz_step)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
-     &     viz1%viz_fem, viz1%viz_fld, viz1%ele_4_nod,                  &
-     &     viz1%jacobians, vizs_v)
+     &      viz1%viz_fem, viz1%viz_fld, viz1%ele_4_nod, viz1%jacobians, &
+     &      vizs_v)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

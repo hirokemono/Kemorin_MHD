@@ -49,7 +49,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_pvr'
       call read_control_file_pvr_vizs(vizs_ctl4)
-      call set_control_params_4_pvr(vizs_ctl4, pvr4, t_VIZ4, ierr)
+      call set_control_params_4_pvr(vizs_ctl4, FEM_viz4, t_VIZ4, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -78,7 +78,7 @@
 !
 !  Load field data
         call FEM_analyze_pvr                                            &
-     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4, pvr4)
+     &     (i_step, t_VIZ4%ucd_step, t_VIZ4%time_d, FEM_viz4)
 !
 !  Generate field lines
         istep_fline                                                     &
