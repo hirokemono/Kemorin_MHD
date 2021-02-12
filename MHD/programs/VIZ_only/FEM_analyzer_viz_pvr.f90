@@ -18,7 +18,7 @@
 !!        type(time_data), intent(in) :: init_d
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-!!        type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
+!!        type(VIZ_mesh_field), intent(inout) :: pvr
 !!      subroutine FEM_analyze_pvr(istep, ucd_step, time_d, FEM_viz)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(inout) :: time_d
@@ -44,15 +44,6 @@
       use t_vector_for_solver
 !
       implicit none
-!
-!
-!>      Structure of mesh and field for visualization only
-      type FEM_mesh_field_4_pvr
-!>        Structure of included element list for each node
-        type(element_around_node) :: ele_4_nod
-!>        Stracture for Jacobians
-        type(jacobians_type) :: jacobians
-      end type FEM_mesh_field_4_pvr
 !
       private :: add_field_in_viz_ctls_w_SGS
 !
@@ -114,7 +105,7 @@
 !
       type(VIZ_step_params), intent(inout) :: viz_step
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
-      type(FEM_mesh_field_4_pvr), intent(inout) :: pvr
+      type(VIZ_mesh_field), intent(inout) :: pvr
 !
       integer(kind = kint) :: istep_ucd, iflag
 !
@@ -146,6 +137,9 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
+      call link_FEM_field_4_viz(FEM_viz%geofem, FEM_viz%field, pvr)
+      allocate(pvr%ele_4_nod)
+      allocate(pvr%jacobians)
       call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
      &    pvr%ele_4_nod, pvr%jacobians)
       call calypso_mpi_barrier

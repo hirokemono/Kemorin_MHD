@@ -1,14 +1,15 @@
-!>@file   t_visualizer.f90
-!!@brief  module t_visualizer
+!>@file   t_four_visualizers.f90
+!!@brief  module t_four_visualizers
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2006
 !
-!>@brief Main module to access all visualization programs
+!>@brief Main module to access surfaceing, isosurfaceing,
+!!       fieldline, and volume rendering modules
 !!
 !!@verbatim
-!!      subroutine init_visualize(fem, nod_fld, viz_ctls, vizs)
-!!      subroutine visualize_all(viz_step, time_d,                     &
+!!      subroutine init_four_visualize(fem, nod_fld, viz_ctls, vizs)
+!!      subroutine visualize_four(viz_step, time_d,                     &
 !!     &          fem, nod_fld, ele_4_nod, jacs, vizs)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
@@ -17,10 +18,10 @@
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(jacobians_type), intent(in) :: jacs
 !!        type(visualization_controls), intent(inout) :: viz_ctls
-!!        type(visualize_modules), intent(inout) :: vizs
+!!        type(four_visualize_modules), intent(inout) :: vizs
 !!@endverbatim
 !
-      module t_visualizer
+      module t_four_visualizers
 !
       use m_precision
 !
@@ -41,17 +42,15 @@
       use t_isosurface
       use t_volume_rendering
       use t_fieldline
-      use t_lic_rendering
 !
       implicit  none
 !
-      type visualize_modules
+      type four_visualize_modules
         type(sectioning_module) :: psf
         type(isosurface_module) :: iso
         type(volume_rendering_module) :: pvr
         type(fieldline_module) :: fline
-        type(lic_volume_rendering_module) :: lic
-      end type visualize_modules
+      end type four_visualize_modules
 !
 !  ---------------------------------------------------------------------
 !
@@ -59,13 +58,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(fem, nod_fld, viz_ctls, vizs)
+      subroutine init_four_visualize(fem, nod_fld, viz_ctls, vizs)
 !
       type(mesh_data), intent(in) :: fem
       type(phys_data), intent(in) :: nod_fld
 !
       type(visualization_controls), intent(inout) :: viz_ctls
-      type(visualize_modules), intent(inout) :: vizs
+      type(four_visualize_modules), intent(inout) :: vizs
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
@@ -92,19 +91,13 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+4)
       call calypso_mpi_barrier
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+5)
-      call LIC_initialize                                               &
-     &   (fem, nod_fld, viz_ctls%lic_ctls, vizs%lic)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+5)
-      call calypso_mpi_barrier
-!
       call dealloc_viz_controls(viz_ctls)
 !
-      end subroutine init_visualize
+      end subroutine init_four_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(viz_step, time_d,                        &
+      subroutine visualize_four(viz_step, time_d,                       &
      &          fem, nod_fld, ele_4_nod, jacs, vizs)
 !
       type(time_data), intent(in) :: time_d
@@ -115,7 +108,7 @@
       type(element_around_node), intent(in) :: ele_4_nod
       type(jacobians_type), intent(in) :: jacs
 !
-      type(visualize_modules), intent(inout) :: vizs
+      type(four_visualize_modules), intent(inout) :: vizs
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+6)
@@ -133,18 +126,13 @@
      &                   fem, jacs, nod_fld, vizs%pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
-      if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+10)
-      call LIC_visualize(viz_step%istep_lic, time_d%time,               &
-     &                   fem, jacs, nod_fld, vizs%lic)
-      if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+10)
-!
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
       call FLINE_visualize                                              &
      &   (viz_step%istep_fline, fem, ele_4_nod, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
-      end subroutine visualize_all
+      end subroutine visualize_four
 !
 !  ---------------------------------------------------------------------
 !
-      end module t_visualizer
+      end module t_four_visualizers

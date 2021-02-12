@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date Programmed in June, 2006
 !
-!>@brief DAta structuresa for visualizers
+!>@brief Data structuresa for visualizers
 !!
 !!@verbatim
 !!      subroutine link_FEM_field_4_viz(geofem, nod_fld, viz)
