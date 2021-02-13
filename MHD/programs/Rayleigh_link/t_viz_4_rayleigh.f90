@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,           &
-!!     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, VIZ_DAT,    &
-!!     &          ierr)
+!!     &          t_viz_param, FEM_Rayleigh, VIZ_DAT, ierr)
 !!        type(control_data_rayleigh_vizs), intent(in) :: rayleigh_vctl
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!        type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
-!!        type(rayleigh_field), intent(inout) :: rayleigh_rtp
+!!        type(FEM_mesh_field_rayleigh_viz),                            &
+!!     &                  intent(inout) :: FEM_Rayleigh
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
@@ -27,13 +26,12 @@
       use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_next_node_ele_4_node
-      use t_shape_functions
-      use t_jacobians
-      use t_time_data
-      use t_control_param_vol_grping
       use t_VIZ_mesh_field
       use t_vector_for_solver
+      use t_VIZ_only_step_parameter
+!
+      use t_rayleigh_field_IO
+      use t_rayleigh_field_address
 !
       implicit none
 !
@@ -47,6 +45,9 @@
 !
 !>        Structure for vectors for solver
         type(vectors_4_solver) :: v_sol
+!
+        type(rayleigh_field) :: rayleigh_rtp
+        type(rayleigh_field_address) :: iphys_ftb
       end type FEM_mesh_field_rayleigh_viz
 !
 ! ----------------------------------------------------------------------
@@ -56,14 +57,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ctl_params_rayleigh_viz(rayleigh_vctl,             &
-     &          t_viz_param, rayleigh_ftbl, rayleigh_rtp, VIZ_DAT,      &
-     &          ierr)
+     &          t_viz_param, FEM_Rayleigh, VIZ_DAT, ierr)
 !
       use m_error_IDs
       use t_file_IO_parameter
       use t_ctl_data_rayleigh_vizs
-      use t_rayleigh_field_address
-      use t_rayleigh_field_IO
 !
       use m_file_format_switch
       use set_control_platform_item
@@ -73,8 +71,7 @@
       integer(kind = kint), intent(inout) :: ierr
       type(time_step_param_w_viz), intent(inout) :: t_viz_param
 !
-      type(rayleigh_field_address), intent(inout) :: rayleigh_ftbl
-      type(rayleigh_field), intent(inout) :: rayleigh_rtp
+      type(FEM_mesh_field_rayleigh_viz), intent(inout) :: FEM_Rayleigh
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
@@ -89,10 +86,11 @@
 !
       call set_ctl_rayleigh_field_address                               &
      &   (rayleigh_vctl%viz_plt, rayleigh_vctl%fld_ctl,                 &
-     &    rayleigh_ftbl, e_message, ierr)
+     &    FEM_Rayleigh%iphys_ftb, e_message, ierr)
 !
       call set_ctl_params_rayleigh_domains                              &
-     &   (rayleigh_vctl%sdctl, rayleigh_rtp, e_message, ierr)
+     &   (rayleigh_vctl%sdctl, FEM_Rayleigh%rayleigh_rtp,               &
+     &    e_message, ierr)
 !
       call set_ctl_param_vol_repart(rayleigh_vctl%repart_ctl,           &
      &                              VIZ_DAT%repart_p)
