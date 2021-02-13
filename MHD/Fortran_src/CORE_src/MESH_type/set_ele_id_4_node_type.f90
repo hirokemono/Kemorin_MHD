@@ -241,17 +241,13 @@
       type(element_around_node), intent(in) :: neib_ele
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
-      integer(kind = kint), allocatable ::nnod_next_old(:)
-      integer(kind = kint), allocatable ::inod_next_old(:)
-      integer(kind = kint), allocatable ::iweight_next_old(:)
-!
-      integer :: i
 !
       call alloc_num_next_node(node%numnod, neib_nod)
-      call allocate_work_next_node(np_smp, node%numnod)
+      call allocate_work_next_node(np_smp, node%istack_nod_smp,         &
+     &    ele%nnod_4_ele, node%numnod, neib_ele%istack_4_node)
 !
-      call count_nod_4_grp_smp(np_smp, node%numnod,                     &
-     &    ele%numele, ele%nnod_4_ele, ele%ie,                           &
+      call count_nod_4_grp_smp                                          &
+     &   (np_smp, ele%numele, ele%nnod_4_ele, ele%ie,                   &
      &    node%istack_nod_smp, node%numnod, neib_ele%ntot,              &
      &    neib_ele%istack_4_node,  neib_ele%iele_4_node,                &
      &    neib_nod%nnod_next)
@@ -263,33 +259,11 @@
 !
       call alloc_inod_next_node(neib_nod)
 !
-      write(*,*) my_rank, 'set_nod_4_grp_smp'
-      allocate( nnod_next_old(node%numnod) )
-      allocate( inod_next_old(neib_nod%ntot) )
-      allocate( iweight_next_old(neib_nod%ntot) )
-!
-      call set_nod_4_grp_smp_old(np_smp, node%numnod, ele%numele,       &
+      call set_nod_4_grp_smp(np_smp, ele%numele,                        &
      &    ele%nnod_4_ele, ele%ie, node%istack_nod_smp,                  &
      &    node%numnod, neib_ele%ntot, neib_ele%istack_4_node,           &
      &    neib_ele%iele_4_node, neib_nod%ntot, neib_nod%istack_next,    &
-     &    nnod_next_old, inod_next_old,                       &
-     &    iweight_next_old)
-!
-!
-      call set_nod_4_grp_smp(np_smp, node%numnod, ele%numele,           &
-     &    ele%nnod_4_ele, ele%ie, node%istack_nod_smp,                  &
-     &    node%numnod, neib_ele%ntot, neib_ele%istack_4_node,           &
-     &    neib_ele%iele_4_node, neib_nod%ntot, neib_nod%istack_next,    &
-     &    neib_nod%nnod_next, neib_nod%inod_next,                       &
-     &    neib_nod%iweight_next)
-!
-      do i = 1, neib_nod%ntot
-        if(neib_nod%inod_next(i) .ne. inod_next_old(i)) write(*,*)   &
-     & 'Failed in inod_next', i, neib_nod%inod_next(i), inod_next_old(i)
-        if(neib_nod%iweight_next(i) .ne. iweight_next_old(i)) write(*,*)   &
-     & 'Failed in iweight_next', i, neib_nod%iweight_next(i), inod_next_old(i)
-      end do
-      write(*,*) my_rank, 'check done'
+     &    neib_nod%inod_next, neib_nod%iweight_next)
 !
       call deallocate_work_next_node
 !
