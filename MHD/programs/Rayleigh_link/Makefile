@@ -65,7 +65,7 @@ const_fem_nodes_4_rayleigh.o
 
 
 MOD_RAYLEIGH_VIZ = \
-m_viz_4_rayleigh.o \
+t_viz_4_rayleigh.o \
 t_ctl_data_rayleigh_vizs.o \
 t_rayleigh_field_IO.o \
 t_rayleigh_field_address.o \

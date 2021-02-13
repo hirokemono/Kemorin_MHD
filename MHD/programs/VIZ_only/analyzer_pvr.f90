@@ -65,7 +65,7 @@
      &                              t_VIZ3%viz_step, FEM_viz3, pvr3)
 !
 !  VIZ Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
+      if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
       call PVR_initialize(pvr3%viz_fem, pvr3%viz_fld,                   &
      &                    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3)
 !

@@ -1,5 +1,5 @@
-!>@file   m_viz_4_rayleigh.f90
-!!@brief  module m_viz_4_rayleigh
+!>@file   t_viz_4_rayleigh.f90
+!!@brief  module t_viz_4_rayleigh
 !!
 !!@author H. Matsui
 !!@date Programmed in June, 2006
@@ -17,7 +17,7 @@
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
-      module m_viz_4_rayleigh
+      module t_viz_4_rayleigh
 !
       use m_precision
       use m_machine_parameter
@@ -27,36 +27,27 @@
       use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_ucd_data
       use t_next_node_ele_4_node
       use t_shape_functions
       use t_jacobians
-      use t_file_IO_parameter
       use t_time_data
-      use t_VIZ_only_step_parameter
       use t_control_param_vol_grping
       use t_VIZ_mesh_field
+      use t_vector_for_solver
 !
       implicit none
 !
-!>       Structure for time stepping parameters
-!!        with field and visualization
-      type(time_step_param_w_viz), save :: t_VIZ
-!
-!>      Structure for mesh file IO paramters
-      type(field_IO_params), save :: mesh_file_VIZ
-!>      Structure for field file IO paramters
-      type(field_IO_params), save :: ucd_file_VIZ
-!
-!>     Structure for mesh data
-!>        (position, connectivity, group, and communication)
-      type(mesh_data), save :: femmesh_VIZ
+!>      Structure of FEM mesh and field structures
+      type FEM_mesh_field_rayleigh_viz
+!>        Structure for FEM mesh data
+!!         (position, connectivity, communication, and groups)
+        type(mesh_data) :: geofem
 !>       Structure for nodal field data
-      type(phys_data), save :: field_VIZ
+        type(phys_data) :: field
 !
-!
-!>        Instance for FEM field data IO
-      type(ucd_data), save :: ucd_VIZ
+!>        Structure for vectors for solver
+        type(vectors_4_solver) :: v_sol
+      end type FEM_mesh_field_rayleigh_viz
 !
 ! ----------------------------------------------------------------------
 !
@@ -110,4 +101,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module m_viz_4_rayleigh
+      end module t_viz_4_rayleigh

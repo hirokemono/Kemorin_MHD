@@ -68,7 +68,7 @@
      &    t_VIZ4%viz_step, FEM_viz4, VIZ_DAT4)
 !
 !  VIZ Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
+      if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
       call init_four_visualize(VIZ_DAT4%viz_fem, VIZ_DAT4%viz_fld,      &
      &                         vizs_ctl4%viz_ctl_v, vizs_m4)
 !
