@@ -159,7 +159,6 @@
       allocate(jac_3d%dnx(numele,nnod_4_ele,jac_3d%ntot_int,3))
 !
       allocate(jac_3d%xjac(numele,jac_3d%ntot_int))
-      allocate(jac_3d%axjac(numele,jac_3d%ntot_int))
 !
       jac_3d%an = 0.0d0
       jac_3d%an_infty = 0.0d0
@@ -168,7 +167,6 @@
         jac_3d%dnx = 0.0d0
 !
         jac_3d%xjac = 0.0d0
-        jac_3d%axjac = 0.0d0
       end if
 !
       end subroutine alloc_jacobians
