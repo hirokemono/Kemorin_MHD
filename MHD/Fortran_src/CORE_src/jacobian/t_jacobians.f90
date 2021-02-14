@@ -318,10 +318,10 @@
 !
 !
       call dealloc_jacobians_type(jacs%jac_3d)
-      allocate(jacs%jac_3d)
+      deallocate(jacs%jac_3d)
 !
       if(ele%nnod_4_ele .eq. num_t_linear) then
-        jacs%jac_3d_l => jacs%jac_3d
+        nullify(jacs%jac_3d_l)
       else
         call dealloc_jacobians_type(jacs%jac_3d_l)
         deallocate(jacs%jac_3d_l)
