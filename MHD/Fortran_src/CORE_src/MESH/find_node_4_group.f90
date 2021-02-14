@@ -32,6 +32,8 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: LARGE_SORT = 8192
+!
       type work_to_find_next_node
         integer(kind = kint) :: nnod_mark
         integer(kind = kint), allocatable :: imark_4_node(:,:)
@@ -129,8 +131,7 @@
         do inum = ist, ied
           nele_grp = istack_grp(inum) - istack_grp(inum-1)
           ist_grp = istack_grp(inum-1)
-          if(my_rank .eq. 1) write(*,*) 'inum', inum, nele_grp
-          if(nele_grp .le. 8192) then
+          if(nele_grp .le. LARGE_SORT) then
             call count_each_nod_4_grp_smp                               &
      &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1),  &
      &          find_WK%nmax_list, find_WK%ilist_4_node(0,ip),          &
@@ -184,7 +185,7 @@
           nele_grp = istack_grp(inum) - istack_grp(inum-1)
           ist_grp = istack_grp(inum-1)
           jst = inod_stack_grp(inum-1)
-          if(nele_grp .le. 8192) then
+          if(nele_grp .le. LARGE_SORT) then
             call set_each_nod_4_grp_smp                                 &
      &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1),  &
      &          find_WK%nmax_list, find_WK%ilist_4_node(0,ip),          &
