@@ -30,7 +30,7 @@
 !!        type(element_around_node), intent(inout) :: neib_ele
 !!
 !!      subroutine const_next_nod_id_4_node(node, ele, neib_ele,        &
-!!     &          neib_nod)
+!!     &                                    neib_nod)
 !!        type(node_data),        intent(in) :: node
 !!        type(element_data),       intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
@@ -226,7 +226,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_next_nod_id_4_node(node, ele, neib_ele,          &
-     &          neib_nod)
+     &                                    neib_nod)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -271,19 +271,16 @@
       neib_nod%iweight_next(1:neib_nod%ntot)                            &
      &     = - neib_nod%iweight_next(1:neib_nod%ntot)
 !
-      write(*,*) my_rank, 'move_myself_2_first_smp'
       call move_myself_2_first_smp(np_smp, node%numnod,                 &
      &    neib_nod%ntot, node%istack_nod_smp, neib_nod%istack_next,     &
      &    neib_nod%inod_next, neib_nod%iweight_next)
 !
-      write(*,*) my_rank, 'sort_next_node_list_by_weight'
       call sort_next_node_list_by_weight(np_smp, node%numnod,           &
      &    neib_nod%ntot, node%istack_nod_smp, neib_nod%istack_next,     &
      &    neib_nod%inod_next, neib_nod%iweight_next)
 !
       neib_nod%iweight_next(1:neib_nod%ntot)                            &
      &     = - neib_nod%iweight_next(1:neib_nod%ntot)
-      write(*,*) my_rank, 'iweight_next'
 !
       end subroutine const_next_nod_id_4_node
 !
