@@ -24,7 +24,7 @@ find_grp_ele_id_4_node.o: $(MESHDIR)/find_grp_ele_id_4_node.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 find_node_4_each_group.o: $(MESHDIR)/find_node_4_each_group.f90 m_precision.o m_constants.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
-find_node_4_group.o: $(MESHDIR)/find_node_4_group.f90 m_precision.o m_constants.o calypso_mpi.o quicksort.o find_node_4_each_group.o
+find_node_4_group.o: $(MESHDIR)/find_node_4_group.f90 m_precision.o m_constants.o calypso_mpi.o find_node_4_each_group.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
 find_selected_domain_bd.o: $(MESHDIR)/find_selected_domain_bd.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
