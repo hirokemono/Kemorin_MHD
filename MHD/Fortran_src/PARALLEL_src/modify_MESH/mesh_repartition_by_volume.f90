@@ -96,7 +96,7 @@
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
-      if(i_level .le. 1) return
+      if(part_param%num_FEM_sleeve .le. 1) return
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
       do i_level = 2, part_param%num_FEM_sleeve
         if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
