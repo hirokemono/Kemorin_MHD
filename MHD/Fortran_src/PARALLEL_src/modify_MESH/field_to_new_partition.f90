@@ -41,8 +41,16 @@
       use t_phys_data
       use t_control_param_vol_grping
       use t_vector_for_solver
+      use t_next_node_ele_4_node
+      use t_jacobians
+      use t_shape_functions
 !
       implicit  none
+!
+      type(communication_table), save, private :: ele_comm_T
+      type(next_nod_ele_table), save, private :: next_tbl_T
+      type(jacobians_type), save, private :: jacobians_T
+      type(shape_finctions_at_points), save, private :: spfs_T
 !
 ! -----------------------------------------------------------------------
 !
@@ -53,9 +61,6 @@
       subroutine load_or_const_new_partition                            &
      &         (part_param, geofem, new_fem, org_to_new_tbl)
 !
-      use t_next_node_ele_4_node
-      use t_jacobians
-      use t_shape_functions
       use m_work_time
       use m_elapsed_labels_4_REPART
       use calypso_mpi_logical
@@ -74,10 +79,6 @@
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !
       logical :: flag
-      type(communication_table) :: ele_comm_T
-      type(next_nod_ele_table) :: next_tbl_T
-      type(jacobians_type) :: jacobians_T
-      type(shape_finctions_at_points) :: spfs_T
 !
 !
       if(my_rank .eq. 0) then
@@ -180,13 +181,6 @@
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !
-      logical :: flag
-      type(communication_table) :: ele_comm_T
-      type(next_nod_ele_table) :: next_tbl_T
-      type(jacobians_type) :: jacobians_T
-      type(shape_finctions_at_points) :: spfs_T
-!
-!
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_mesh_initialization'
@@ -205,6 +199,8 @@
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
       call const_jacobian_and_single_vol                              &
      &   (geofem%mesh, geofem%group, spfs_T, jacobians_T)
+      call finalize_jac_and_single_vol                                &
+     &     (geofem%mesh, spfs_T, jacobians_T)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -------------------------------
@@ -219,8 +215,6 @@
 !
 !   Clear work arrays
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
-      call finalize_jac_and_single_vol                                &
-     &     (geofem%mesh, spfs_T, jacobians_T)
       call dealloc_next_nod_ele_table(next_tbl_T)
       call dealloc_comm_table(ele_comm_T)
       call dealloc_mesh_infomations(geofem%mesh, geofem%group)
