@@ -8,16 +8,17 @@
 !> @brief  Structure of 3D Jacobian and difference of shape functions
 !!
 !!@verbatim
-!!      subroutine alloc_jacobians_type                                 &
+!!      subroutine alloc_jacobians                                      &
 !!     &         (numele, nnod_4_ele, ntot_int_3d, jac_3d)
-!!      subroutine alloc_dxi_dx_type(numele, jac_3d)
+!!      subroutine alloc_inv_jacobian(numele, jac_3d)
+!!      subroutine alloc_dxi_dx(numele, jac_3d)
 !!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !!        integer(kind = kint), intent(in) :: ntot_int_3d
 !!        type(jacobians_3d), intent(inout) :: jac_3d
 !!
-!!      subroutine dealloc_jacobians_type(jac_3d)
-!!      subroutine dealloc_inv_jac_type(jac_3d)
-!!      subroutine dealloc_dxi_dx_type(jac_3d)
+!!      subroutine dealloc_jacobians(jac_3d)
+!!      subroutine dealloc_inv_jacobian(jac_3d)
+!!      subroutine dealloc_dxi_dx(jac_3d)
 !!
 !!      subroutine copy_jacobians_3d(jac_org, jac_new)
 !!      subroutine copy_shape_func_infty(jac_org, jac_new)
@@ -140,7 +141,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_jacobians_type                                   &
+      subroutine alloc_jacobians                                        &
      &         (numele, nnod_4_ele, ntot_int_3d, jac_3d)
 !
       use m_geometry_constants
@@ -170,11 +171,24 @@
         jac_3d%axjac = 0.0d0
       end if
 !
-      end subroutine alloc_jacobians_type
+      end subroutine alloc_jacobians
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_dxi_dx_type(numele, jac_3d)
+      subroutine alloc_inv_jacobian(numele, jac_3d)
+!
+      integer(kind = kint), intent(in) :: numele
+      type(jacobians_3d), intent(inout) :: jac_3d
+!
+!
+      allocate(jac_3d%axjac(numele,jac_3d%ntot_int))
+      if(numele .gt. 0) jac_3d%axjac = 0.0d0
+!
+      end subroutine alloc_inv_jacobian
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_dxi_dx(numele, jac_3d)
 !
       integer(kind = kint), intent(in) :: numele
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -183,12 +197,12 @@
       allocate( jac_3d%dxidx_3d(numele,jac_3d%ntot_int,3,3) )
       if (numele .gt. 0) jac_3d%dxidx_3d = 0.0d0
 !
-      end subroutine alloc_dxi_dx_type
+      end subroutine alloc_dxi_dx
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_jacobians_type(jac_3d)
+      subroutine dealloc_jacobians(jac_3d)
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
@@ -197,31 +211,30 @@
       deallocate(jac_3d%dnx)
 !
       deallocate(jac_3d%xjac)
-      deallocate(jac_3d%axjac)
 !
-      end subroutine dealloc_jacobians_type
+      end subroutine dealloc_jacobians
 !
 !  ------------------------------------------------------------------
 !
-      subroutine dealloc_inv_jac_type(jac_3d)
+      subroutine dealloc_inv_jacobian(jac_3d)
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
       if(allocated(jac_3d%axjac) .eqv. .FALSE.) return
       deallocate(jac_3d%axjac)
 !
-      end subroutine dealloc_inv_jac_type
+      end subroutine dealloc_inv_jacobian
 !
 !  ------------------------------------------------------------------
 !
-      subroutine dealloc_dxi_dx_type(jac_3d)
+      subroutine dealloc_dxi_dx(jac_3d)
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
       if(allocated(jac_3d%dxidx_3d) .eqv. .FALSE.) return
       deallocate(jac_3d%dxidx_3d)
 !
-      end subroutine dealloc_dxi_dx_type
+      end subroutine dealloc_dxi_dx
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

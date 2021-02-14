@@ -139,9 +139,10 @@
 !
 !
       allocate(jacs%jac_3d)
-      call alloc_jacobians_type(ele%numele, ele%nnod_4_ele,             &
+      call alloc_jacobians(ele%numele, ele%nnod_4_ele,                  &
      &    jacs%g_FEM%maxtot_int_3d, jacs%jac_3d)
-      call alloc_dxi_dx_type(ele%numele, jacs%jac_3d)
+      call alloc_inv_jacobian(ele%numele, jacs%jac_3d)
+      call alloc_dxi_dx(ele%numele, jacs%jac_3d)
 !
       if(id_rank .lt. nprocs) then
         call sel_jacobian_type                                          &
@@ -149,15 +150,16 @@
         call sel_jacobian_infinity(node, ele, surf_grp,                 &
      &      infinity_list, jacs%g_FEM, spf_3d, jacs%jac_3d)
       end if
-      call dealloc_inv_jac_type(jacs%jac_3d)
+      call dealloc_inv_jacobian(jacs%jac_3d)
 !
       if(ele%nnod_4_ele .eq. num_t_linear) then
         jacs%jac_3d_l => jacs%jac_3d
       else
         allocate(jacs%jac_3d_l)
-        call alloc_jacobians_type(ele%numele, num_t_linear,             &
+        call alloc_jacobians(ele%numele, num_t_linear,                  &
      &      jacs%g_FEM%maxtot_int_3d, jacs%jac_3d_l)
-        call alloc_dxi_dx_type(ele%numele, jacs%jac_3d_l)
+        call alloc_inv_jacobian(ele%numele, jacs%jac_3d)
+        call alloc_dxi_dx(ele%numele, jacs%jac_3d_l)
 !
         if(id_rank .lt. nprocs) then
           call cal_jacobian_trilinear                                   &
@@ -166,7 +168,7 @@
      &        infinity_list, jacs%g_FEM, spf_3d, jacs%jac_3d_l)
         end if
 !
-        call dealloc_inv_jac_type(jacs%jac_3d_l)
+        call dealloc_inv_jacobian(jacs%jac_3d_l)
       end if
 !
       end subroutine const_jacobians_element
@@ -301,10 +303,10 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call dealloc_dxi_dx_type(jacs%jac_3d)
+      call dealloc_dxi_dx(jacs%jac_3d)
 !
       if(ele%nnod_4_ele .ne. num_t_linear) then
-        call dealloc_dxi_dx_type(jacs%jac_3d_l)
+        call dealloc_dxi_dx(jacs%jac_3d_l)
       end if
 !
       end subroutine dealloc_dxi_dx_element
@@ -317,15 +319,15 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call dealloc_jacobians_type(jacs%jac_3d)
-      deallocate(jacs%jac_3d)
-!
       if(ele%nnod_4_ele .eq. num_t_linear) then
         nullify(jacs%jac_3d_l)
       else
-        call dealloc_jacobians_type(jacs%jac_3d_l)
+        call dealloc_jacobians(jacs%jac_3d_l)
         deallocate(jacs%jac_3d_l)
       end if
+!
+      call dealloc_jacobians(jacs%jac_3d)
+      deallocate(jacs%jac_3d)
 !
       end subroutine dealloc_jacobians_element
 !
@@ -339,15 +341,15 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call dealloc_2d_jac_type(jacs%jac_2d)
-      deallocate(jacs%jac_2d)
-!
       if(surf%nnod_4_surf .eq. num_linear_sf) then
         nullify(jacs%jac_2d_l)
       else
         call dealloc_2d_jac_type(jacs%jac_2d_l)
         deallocate(jacs%jac_2d_l)
       end if
+!
+      call dealloc_2d_jac_type(jacs%jac_2d)
+      deallocate(jacs%jac_2d)
 !
       end subroutine dealloc_jacobians_surface
 !
@@ -359,15 +361,15 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      call dealloc_1d_jac_type(jacs%jac_1d)
-      deallocate(jacs%jac_1d)
-!
       if(edge%nnod_4_edge .eq. num_linear_edge) then
         nullify(jacs%jac_1d_l)
       else
         call dealloc_1d_jac_type(jacs%jac_1d_l)
         deallocate(jacs%jac_1d_l)
       end if
+!
+      call dealloc_1d_jac_type(jacs%jac_1d)
+      deallocate(jacs%jac_1d)
 !
       end subroutine dealloc_jacobians_edge
 !
