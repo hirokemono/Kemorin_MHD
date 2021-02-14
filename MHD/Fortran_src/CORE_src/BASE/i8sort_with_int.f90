@@ -1,18 +1,18 @@
-!C***BEGIN PROLOGUE  I8SORT
+!C***BEGIN PROLOGUE  I8SORT_W_INT
 !C***PURPOSE  Sort an array and optionally make the same interchanges in
 !C            an auxiliary array.  The array may be sorted in increasing
 !C            or decreasing order.  A slightly modified QUICKSORT
 !C            algorithm is used.
 !C***LIBRARY   SLATEC
 !C***CATEGORY  N6A2A
-!C***TYPE      INTEGER (SSORT-S, DSORT-D, I8SORT-I)
+!C***TYPE      INTEGER (SSORT-S, DSORT-D, ISORT-I)
 !C***KEYWORDS  SINGLETON QUICKSORT, SORT, SORTING
 !C***AUTHOR  Jones, R. E., (SNLA)
 !C           Kahaner, D. K., (NBS)
 !C           Wisniewski, J. A., (SNLA)
 !C***DESCRIPTION
 !C
-!C   I8SORT sorts array I8X and optionally makes the same interchanges in
+!C   I8SORT_W_INT sorts array I8X and optionally makes the same interchanges in
 !C   array IY.  The array I8X may be sorted in increasing order or
 !C   decreasing order.  A slightly modified quicksort algorithm is used.
 !C
@@ -44,38 +44,40 @@
 !C   920519  Clarified error messages.  (DWL)
 !C   920801  Declarations section rebuilt and code restructured to use
 !C           IF-THEN-ELSE-ENDIF.  (RWC, WRB)
-!C***END PROLOGUE  I8SORT
+!C***END PROLOGUE  I8SORT_W_INT
 !
-!      module i8sort_with_int
-!-----------------------------------------------------------------------
+      module i8sort_with_int
 !
-!      contains
-!
-!-----------------------------------------------------------------------
-!
-      SUBROUTINE I8SORT (I8X, IY, N, KFLAG)
+      use m_precision
 !
       implicit none
 !
+!-----------------------------------------------------------------------
+!
+      contains
+!
+!-----------------------------------------------------------------------
+!
+      SUBROUTINE I8SORT_W_INT (I8X, IY, N, KFLAG)
 !C     .. Scalar Arguments ..
-      INTEGER KFLAG, N
+      INTEGER(kind = kint) :: KFLAG, N
 !C     .. Array Arguments ..
-      INTEGER(8) I8X(N)
-      INTEGER    IY(N)
+      INTEGER(kind = kint_gl) :: I8X(N)
+      INTEGER(kind = kint) :: IY(N)
 !C     .. Local Scalars ..
       REAL R
-      INTEGER(8) T8, TT8
-      INTEGER I, IJ, J, K, KK, L, M, NN, TTY, TY
+      INTEGER(kind = kint_gl) :: T8, TT8
+      INTEGER(kind = kint) :: I, IJ, J, K, KK, L, M, NN, TY, TTY
 !C     .. Local Arrays ..
-      INTEGER IL(21), IU(21)
+      INTEGER(kind = kint) IL(21), IU(21)
 !C     .. External Subroutines ..
-      EXTERNAL XERMSG
+!      EXTERNAL XERMSG
 !C     .. Intrinsic Functions ..
       INTRINSIC ABS, INT
-!C***FIRST EXECUTABLE STATEMENT  I8SORT
+!C***FIRST EXECUTABLE STATEMENT  I8SORT_W_INT
       NN = N
       IF (NN .LT. 1) THEN
-!         CALL XERMSG ('SLATEC', 'I8SORT',
+!         CALL XERMSG ('SLATEC', 'I8SORT_W_INT',
 !     +      'The number of values to be sorted is not positive.', 1, 1)
          write(*,*) 'The number of values to be sorted',                &
      &             ' is not positive.'
@@ -84,7 +86,7 @@
 !C
       KK = ABS(KFLAG)
       IF (KK.NE.1 .AND. KK.NE.2) THEN
-!         CALL XERMSG ('SLATEC', 'I8SORT',
+!         CALL XERMSG ('SLATEC', 'I8SORT_W_INT',
 !     +      'The sort control parameter, K, is not 2, 1, -1, or -2.', 2,
 !     +      1)
          write(*,*) 'The sort control parameter, K,',                   &
@@ -226,7 +228,7 @@
 !C     Select a central element of the array and save it in location T8
 !C
       IJ = I + INT((J-I)*R)
-      T8 = I8X(IJ)
+      T8 =  I8X(IJ)
       TY = IY(IJ)
 !C
 !C     If first element of array is greater than T8, interchange with T8
@@ -336,8 +338,8 @@
   200    CONTINUE
       ENDIF
       RETURN
-      END SUBROUTINE I8SORT
+      END SUBROUTINE I8SORT_W_INT
 !
 !-----------------------------------------------------------------------
 !
-!      end module i8sort_with_int
+      end module i8sort_with_int

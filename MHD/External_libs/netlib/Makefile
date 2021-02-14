@@ -9,13 +9,8 @@ LIB_NETLIB =      -lnetlib
 LIB_NETLIB_FILE = libnetlib.a
 
 MOD_NETLIB = \
-dsort_with_double.o \
-dsort_with_int.o \
-dsort_with_int8.o \
-isort_with_int.o \
-isort_with_int8.o \
-i8sort_with_int.o \
-i8sort_with_int8.o
+dsort.o \
+isort.o
 
 #
 #  -------------------------------------------------------------------------
@@ -47,19 +42,9 @@ mod_list:
 
 
 module:
-	@echo 'dsort_with_double.o: $$(NETLIB_SRC_DIR)/dsort_with_double.f90' >> $(MAKENAME)
+	@echo 'dsort.o: $$(NETLIB_SRC_DIR)/dsort.f90' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'dsort_with_int.o: $$(NETLIB_SRC_DIR)/dsort_with_int.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'dsort_with_int8.o: $$(NETLIB_SRC_DIR)/dsort_with_int8.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'isort_with_int.o: $$(NETLIB_SRC_DIR)/isort_with_int.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'isort_with_int8.o: $$(NETLIB_SRC_DIR)/isort_with_int8.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'i8sort_with_int.o: $$(NETLIB_SRC_DIR)/i8sort_with_int.f90' >> $(MAKENAME)
-	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
-	@echo 'i8sort_with_int8.o: $$(NETLIB_SRC_DIR)/i8sort_with_int8.f90' >> $(MAKENAME)
+	@echo 'isort.o: $$(NETLIB_SRC_DIR)/isort.f90' >> $(MAKENAME)
 	@echo '	' '$$(F90) -c $$(F90OPTFLAGS) $$<' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 
