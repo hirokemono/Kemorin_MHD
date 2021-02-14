@@ -50,7 +50,7 @@ set_connects_4_surf_group.o: $(MESH_TYPE_DIR)/set_connects_4_surf_group.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 set_edge_data_4_IO.o: $(MESH_TYPE_DIR)/set_edge_data_4_IO.f90 m_precision.o t_edge_data.o t_comm_table.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_ele_id_4_node_type.o: $(MESH_TYPE_DIR)/set_ele_id_4_node_type.f90 m_precision.o m_constants.o t_geometry_data.o t_next_node_ele_4_node.o find_element_id_4_node.o cal_minmax_and_stacks.o t_surface_data.o t_edge_data.o find_grp_ele_id_4_node.o m_machine_parameter.o find_node_4_group.o
+set_ele_id_4_node_type.o: $(MESH_TYPE_DIR)/set_ele_id_4_node_type.f90 m_precision.o m_constants.o t_geometry_data.o t_next_node_ele_4_node.o find_element_id_4_node.o cal_minmax_and_stacks.o t_surface_data.o t_edge_data.o find_grp_ele_id_4_node.o calypso_mpi.o m_machine_parameter.o find_node_4_group.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_element_data_4_IO.o: $(MESH_TYPE_DIR)/set_element_data_4_IO.f90 m_precision.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o m_geometry_constants.o set_nnod_4_ele_by_type.o
 	$(F90) -c $(F90OPTFLAGS) $<

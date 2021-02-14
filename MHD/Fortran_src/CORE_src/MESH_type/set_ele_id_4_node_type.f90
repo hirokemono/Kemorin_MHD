@@ -241,16 +241,19 @@
       type(element_around_node), intent(in) :: neib_ele
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
+      type(work_to_find_next_node) :: find_WK1
+!
 !
       call alloc_num_next_node(node%numnod, neib_nod)
-      call allocate_work_next_node(np_smp, node%istack_nod_smp,         &
-     &    ele%nnod_4_ele, node%numnod, neib_ele%istack_4_node)
+      call alloc_work_next_node(np_smp, node%istack_nod_smp,            &
+     &    node%numnod, ele%nnod_4_ele, node%numnod,                     &
+     &    neib_ele%istack_4_node,  find_WK1)
 !
       call count_nod_4_grp_smp                                          &
      &   (np_smp, ele%numele, ele%nnod_4_ele, ele%ie,                   &
      &    node%istack_nod_smp, node%numnod, neib_ele%ntot,              &
      &    neib_ele%istack_4_node,  neib_ele%iele_4_node,                &
-     &    neib_nod%nnod_next)
+     &    neib_nod%nnod_next, find_WK1)
 !
       call s_cal_minmax_and_stacks(node%numnod,                         &
      &    neib_nod%nnod_next, izero, neib_nod%istack_next,              &
@@ -263,9 +266,10 @@
      &    ele%nnod_4_ele, ele%ie, node%istack_nod_smp,                  &
      &    node%numnod, neib_ele%ntot, neib_ele%istack_4_node,           &
      &    neib_ele%iele_4_node, neib_nod%ntot, neib_nod%istack_next,    &
-     &    neib_nod%inod_next, neib_nod%iweight_next)
+     &    neib_nod%nnod_next, neib_nod%inod_next,                       &
+     &    neib_nod%iweight_next, find_WK1)
 !
-      call deallocate_work_next_node
+      call dealloc_work_next_node(find_WK1)
 !
 !
       neib_nod%iweight_next(1:neib_nod%ntot)                            &
