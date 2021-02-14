@@ -35,11 +35,11 @@
       integer(kind = kint), parameter :: LARGE_SORT = 8192
 !
       type work_to_find_next_node
-        integer(kind = kint) :: nnod_mark
-        integer(kind = kint), allocatable :: imark_4_node(:,:)
-!
         integer(kind = kint) :: nmax_list
         integer(kind = kint), allocatable :: ilist_4_node(:,:)
+!
+!        integer(kind = kint) :: nnod_mark
+!        integer(kind = kint), allocatable :: imark_4_node(:,:)
       end type work_to_find_next_node
 !
 !-----------------------------------------------------------------------
@@ -80,13 +80,13 @@
 !$omp end parallel workshare
       end if
 !
-      find_WK%nnod_mark = numnod
-      allocate(find_WK%imark_4_node(find_WK%nnod_mark,np_smp))
-      if(find_WK%nmax_list .gt. 0) then
-!$omp parallel workshare
-        find_WK%imark_4_node(1:find_WK%nmax_list,1:np_smp) = 0
-!$omp end parallel workshare
-      end if
+!      find_WK%nnod_mark = numnod
+!      allocate(find_WK%imark_4_node(find_WK%nnod_mark,np_smp))
+!      if(find_WK%nmax_list .gt. 0) then
+!!$omp parallel workshare
+!        find_WK%imark_4_node(1:find_WK%nmax_list,1:np_smp) = 0
+!!$omp end parallel workshare
+!      end if
 !
       end subroutine alloc_work_next_node
 !
@@ -97,7 +97,8 @@
       type(work_to_find_next_node), intent(inout) :: find_WK
 !
 !
-      deallocate(find_WK%ilist_4_node, find_WK%imark_4_node)
+      deallocate(find_WK%ilist_4_node)
+!      deallocate(find_WK%imark_4_node)
 !
       end subroutine dealloc_work_next_node
 !
@@ -131,17 +132,17 @@
         do inum = ist, ied
           nele_grp = istack_grp(inum) - istack_grp(inum-1)
           ist_grp = istack_grp(inum-1)
-          if(nele_grp .le. LARGE_SORT) then
+!          if(nele_grp .le. LARGE_SORT) then
             call count_each_nod_4_grp_smp                               &
      &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1),  &
      &          find_WK%nmax_list, find_WK%ilist_4_node(0,ip),          &
      &          nnod_grp(inum))
-          else
-            call count_each_nod_4_grp_smp_old                           &
-     &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1),  &
-     &          find_WK%nnod_mark, find_WK%imark_4_node(1,ip),          &
-     &          nnod_grp(inum))
-          end if
+!          else
+!            call count_each_nod_4_grp_smp_old                          &
+!     &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1), &
+!     &          find_WK%nnod_mark, find_WK%imark_4_node(1,ip),         &
+!     &          nnod_grp(inum))
+!          end if
         end do
       end do
 !$omp end parallel do
@@ -185,17 +186,17 @@
           nele_grp = istack_grp(inum) - istack_grp(inum-1)
           ist_grp = istack_grp(inum-1)
           jst = inod_stack_grp(inum-1)
-          if(nele_grp .le. LARGE_SORT) then
+!          if(nele_grp .le. LARGE_SORT) then
             call set_each_nod_4_grp_smp                                 &
      &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1),  &
      &          find_WK%nmax_list, find_WK%ilist_4_node(0,ip),          &
      &          nnod_grp(inum), inod_grp(jst+1), iweight_grp(jst+1))
-          else
-            call set_each_nod_4_grp_smp_old                             &
-     &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1),  &
-     &          find_WK%nnod_mark, find_WK%imark_4_node(1,ip),          &
-     &          nnod_grp(inum), inod_grp(jst+1), iweight_grp(jst+1))
-          end if
+!          else
+!            call set_each_nod_4_grp_smp_old                            &
+!     &         (numele, nnod_4_ele, ie, nele_grp, iele_grp(ist_grp+1), &
+!     &          find_WK%nnod_mark, find_WK%imark_4_node(1,ip),         &
+!     &          nnod_grp(inum), inod_grp(jst+1), iweight_grp(jst+1))
+!          end if
         end do
       end do
 !$omp end parallel do
