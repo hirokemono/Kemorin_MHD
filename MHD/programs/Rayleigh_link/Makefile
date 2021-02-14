@@ -18,7 +18,8 @@ LIBS_RAYLEIGH_LINK = \
 '$$(LIB_SOLVER)'    \
 '$$(LIB_MESH)'      \
 '$$(LIB_MT_STREAM)' \
-'$$(LIB_FFTPACK)'
+'$$(LIB_FFTPACK)'   \
+'$$(LIB_NETLIB)'
 
 LIB_FILES_RAYLEIGH_LINK = \
 '$$(LIB_VIZ_FILE)'    \
@@ -26,8 +27,9 @@ LIB_FILES_RAYLEIGH_LINK = \
 '$$(LIB_PARA_FILE)'     \
 '$$(LIB_SOLVER_FILE)'   \
 '$$(LIB_MESH_FILE)'     \
-'$$(LIB_MT_STREAM_FILE)'     \
-'$$(LIB_FFTPACK_FILE)'
+'$$(LIB_MT_STREAM_FILE)' \
+'$$(LIB_FFTPACK_FILE)'   \
+'$$(LIB_NETLIB_FILE)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_RAYLEIGH_LINK+=        '$$(LIB_KEMO_C)'

@@ -42,13 +42,15 @@ LIBS_FFT_TEST = \
 '$$(LIB_MESH)'      \
 '$$(LIB_FFTPACK)'   \
 '$$(LIB_ISPACK)'    \
-'$$(LIB_ISPACK3)'
+'$$(LIB_ISPACK3)'   \
+'$$(LIB_NETLIB)'
 
 LIB_FILES_FFT_TEST = \
 '$$(LIB_MESH_FILE)'      \
 '$$(LIB_FFTPACK_FILE)'   \
 '$$(LIB_ISPACK_FILE)'    \
-'$$(LIB_ISPACK3_FILE)'
+'$$(LIB_ISPACK3_FILE)'   \
+'$$(LIB_NETLIB_FILE)'
 
 ifdef FORTRAN_C_CONNECT
   LIBS_FFT_TEST+=        '$$(LIB_KEMO_C)'

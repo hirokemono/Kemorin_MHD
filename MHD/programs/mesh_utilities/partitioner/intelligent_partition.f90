@@ -427,7 +427,7 @@
       subroutine choose_particles_from_eles                             &
      &         (elements, field_vec, nod_d_grp, particles, num_ptcls)
 !
-        use quicksort
+        use quicksort_okuda
         use cal_minmax_and_stacks
 !
         type(element_data), intent(in) :: elements
@@ -448,7 +448,7 @@
       
 !        allocate(particles(num_ptcls))
       
-        call quicksort_coord_w_index                                    &
+        call quicksort_coord_w_index_okd                                &
      &     (elements%numele, elexx, ione, elements%numele, eleidx)
         call cal_divide_and_rest                                        &
      &     (num, irest, elements%numele, num_ptcls)
