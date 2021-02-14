@@ -96,7 +96,7 @@
      &      next_tbl_T%neib_ele, org_to_new_tbl, itp_tbl_IO)
         call sel_mpi_write_interpolate_table(my_rank,                   &
      &      part_param%trans_tbl_file, itp_tbl_IO)
-        call dealloc_interpolate_table(itp_tbl_IO)
+        call dealloc_itp_tbl_for_repart(itp_tbl_IO)
       end if
       call calypso_MPI_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)

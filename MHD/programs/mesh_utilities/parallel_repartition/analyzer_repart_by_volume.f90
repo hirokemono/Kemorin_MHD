@@ -81,7 +81,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
-&                                   new_fem, org_to_new_tbl)
+     &                              new_fem, org_to_new_tbl)
 !
       end subroutine initialize_reapart_by_vol
 !
