@@ -22,7 +22,10 @@
 !
       implicit none
 !
-      private :: find_degraded_on_ele8
+      private :: find_degraded_on_ele8, find_degraded_on_surf4
+      private :: find_degraded_on_tri3, find_degraded_on_edge2
+      private :: find_degraded_on_ele20, find_degraded_on_surf8
+      private :: find_degraded_on_tri6
 !
 ! -----------------------------------------------------------------------
 !
@@ -35,7 +38,7 @@
 !
       use m_geometry_constants
 !
-      integer (kind=kint), intent(in) :: iele, nnod_4_ele
+      integer (kind=kint), intent(in) :: iele
       integer (kind=kint), intent(in) :: numele, nnod_4_ele
       integer (kind=kint), intent(in) :: ie(numele,nnod_4_ele)
 !
@@ -54,7 +57,7 @@
       else if(nnod_4_ele .eq. num_t_quad) then
         call find_degraded_on_ele20(iele, numele, ie, ie_degrade)
       else if(nnod_4_ele .eq. num_quad_sf) then
-        call find_degraded_on_surf4(iele, numele, ie, ie_degrade)
+        call find_degraded_on_surf8(iele, numele, ie, ie_degrade)
       else if(nnod_4_ele .eq. 6) then
         call find_degraded_on_tri6(iele, numele, ie, ie_degrade)
 !
@@ -69,11 +72,12 @@
       end subroutine find_degraded_node
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine find_degraded_on_ele8(iele, numele, ie, ie_degrade)
 !
       integer(kind = kint), intent(in) :: iele
-      integer(kind = kint), intent(in) :: numele, 8
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: ie(numele,8)
       integer(kind = kint), intent(inout) :: ie_degrade(8)
 !
@@ -95,34 +99,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine find_degraded_on_ele20(iele, numele, ie, ie_degrade)
-!
-      integer(kind = kint), intent(in) :: iele
-      integer(kind = kint), intent(in) :: numele, 20
-      integer(kind = kint), intent(in) :: ie(numele,20)
-      integer(kind = kint), intent(inout) :: ie_degrade(20)
-!
-      call find_degraded_on_ele8(iele, numele, ie_surf(1,1),            &
-     &                        ie_degrade(1))
-      ie_degrade(9:20) = 0
-      if(ie_degrade(2) .eq. 1) ie_degrade( 9) = 1
-      if(ie_degrade(3) .eq. 2) ie_degrade(10) = 2
-      if(ie_degrade(4) .eq. 3) ie_degrade(11) = 3
-      if(ie_degrade(4) .eq. 1) ie_degrade(12) = 1
-      if(ie_degrade(6) .eq. 1) ie_degrade(13) = 5
-      if(ie_degrade(7) .eq. 2) ie_degrade(14) = 6
-      if(ie_degrade(8) .eq. 3) ie_degrade(15) = 7
-      if(ie_degrade(8) .eq. 1) ie_degrade(16) = 5
-      if(ie_degrade(5) .eq. 1) ie_degrade(17) = 1
-      if(ie_degrade(6) .eq. 2) ie_degrade(18) = 2
-      if(ie_degrade(7) .eq. 3) ie_degrade(19) = 3
-      if(ie_degrade(8) .eq. 4) ie_degrade(20) = 4
-!
-      end subroutine find_degraded_on_ele20
-!
-! -----------------------------------------------------------------------
-!
-      subroutine find_degraded_on_surf4(iele, numele, ie_surf           &
+      subroutine find_degraded_on_surf4(iele, numele, ie_surf,          &
      &                                  ie_degrade)
 !
       integer(kind = kint), intent(in) :: iele
@@ -157,7 +134,49 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine find_degraded_on_surf4(iele, numele, ie_surf           &
+      subroutine find_degraded_on_edge2(iele, numele, ie_edge,          &
+     &                                 ie_degrade)
+!
+      integer(kind = kint), intent(in) :: iele
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie_edge(numele,2)
+      integer(kind = kint), intent(inout) :: ie_degrade(2)
+!
+      ie_degrade(1:2) = 0
+      if(ie_edge(iele,1) .eq. ie_edge(iele,2)) ie_degrade(2) = 1
+!
+      end subroutine find_degraded_on_edge2
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine find_degraded_on_ele20(iele, numele, ie, ie_degrade)
+!
+      integer(kind = kint), intent(in) :: iele
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,20)
+      integer(kind = kint), intent(inout) :: ie_degrade(20)
+!
+      call find_degraded_on_ele8(iele, numele, ie(1,1), ie_degrade(1))
+      ie_degrade(9:20) = 0
+      if(ie_degrade(2) .eq. 1) ie_degrade( 9) = 1
+      if(ie_degrade(3) .eq. 2) ie_degrade(10) = 2
+      if(ie_degrade(4) .eq. 3) ie_degrade(11) = 3
+      if(ie_degrade(4) .eq. 1) ie_degrade(12) = 1
+      if(ie_degrade(6) .eq. 1) ie_degrade(13) = 5
+      if(ie_degrade(7) .eq. 2) ie_degrade(14) = 6
+      if(ie_degrade(8) .eq. 3) ie_degrade(15) = 7
+      if(ie_degrade(8) .eq. 1) ie_degrade(16) = 5
+      if(ie_degrade(5) .eq. 1) ie_degrade(17) = 1
+      if(ie_degrade(6) .eq. 2) ie_degrade(18) = 2
+      if(ie_degrade(7) .eq. 3) ie_degrade(19) = 3
+      if(ie_degrade(8) .eq. 4) ie_degrade(20) = 4
+!
+      end subroutine find_degraded_on_ele20
+!
+! -----------------------------------------------------------------------
+!
+      subroutine find_degraded_on_surf8(iele, numele, ie_surf,          &
      &                                  ie_degrade)
 !
       integer(kind = kint), intent(in) :: iele

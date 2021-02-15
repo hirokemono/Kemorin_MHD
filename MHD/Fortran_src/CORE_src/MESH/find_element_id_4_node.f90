@@ -28,8 +28,6 @@
 !
       implicit none
 !
-      private :: find_degraded_on_ele8
-!
 ! -----------------------------------------------------------------------
 !
       contains
