@@ -61,6 +61,7 @@
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_repartition
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     ----- read control data
 !
@@ -79,7 +80,6 @@
 !  -------------------------------
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
       call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
      &                              new_fem, org_to_new_tbl)
 !
@@ -123,6 +123,7 @@
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !
       end subroutine analyze_reapart_by_vol

@@ -263,8 +263,6 @@
       subroutine nod_field_to_new_partition(iflag_recv,                 &
      &          new_mesh, org_to_new_tbl, org_fld, new_fld, v_sol)
 !
-      use m_work_time
-      use m_elapsed_labels_4_REPART
       use transfer_to_new_partition
 !
       integer(kind = kint), intent(in) :: iflag_recv
@@ -278,7 +276,6 @@
       integer(kind = kint) :: i_fld, i_comp
 !
 !
-      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
       do i_fld = 1, new_fld%num_phys_viz
         i_comp = new_fld%istack_component(i_fld) + 1
         if     (new_fld%num_component(i_fld) .eq. n_scalar) then
@@ -296,7 +293,6 @@
      &        org_fld%d_fld(1,i_comp), new_fld%d_fld(1,i_comp), v_sol)
         end if
       end do
-      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
       end subroutine nod_field_to_new_partition
 !

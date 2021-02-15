@@ -52,7 +52,10 @@
       use t_interpolate_table
 !
       use m_file_format_switch
+      use m_elapsed_labels_4_REPART
+      use m_work_time
 !
+      use parallel_sleeve_extension
       use parallel_FEM_mesh_init
       use mesh_repartition_by_volume
       use mesh_MPI_IO_select
@@ -67,14 +70,25 @@
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !
-!
+      integer(kind = kint) :: i_level
       type(interpolate_table) :: itp_tbl_IO
 !
 !  -------------------------------
 !
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm_T, next_tbl_T%neib_nod,                      &
      &    part_param, new_fem, org_to_new_tbl)
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
+!
+! Increase sleeve size
+      if(part_param%num_FEM_sleeve .le. 1) return
+      if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
+      do i_level = 2, part_param%num_FEM_sleeve
+        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
+        call para_sleeve_extension(new_fem%mesh, new_fem%group)
+      end do
+      if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
 !       Output new mesh file
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)

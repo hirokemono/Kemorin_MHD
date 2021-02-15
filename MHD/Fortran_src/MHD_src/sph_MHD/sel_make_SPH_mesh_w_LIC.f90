@@ -50,6 +50,8 @@
      &          sph_file_param, SPH_MHD, geofem, mesh_file)
 !
       use calypso_mpi
+      use m_elapsed_labels_gen_SPH
+      use m_work_time
       use t_mesh_data
       use copy_mesh_structures
       use mesh_file_name_by_param
@@ -70,14 +72,18 @@
 !  --  load geofem mesh data
       if(check_exist_mesh(my_rank, mesh_file)) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
+        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+6)
         call mpi_input_mesh(mesh_file, nprocs, geofem)
         call set_fem_center_mode_4_SPH(geofem%mesh%node%internal_node,  &
      &      SPH_MHD%sph%sph_rtp, SPH_MHD%sph%sph_params)
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+6)
       else
 !  --  Construct FEM mesh
+        if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+3)
         mesh_file%file_prefix = sph_file_param%file_prefix
         call load_FEM_mesh_4_SPH_w_LIC(FEM_mesh_flags, mesh_file,       &
      &      SPH_MHD%groups, SPH_MHD%sph, geofem, SPH_MHD%sph_maker)
+        if(iflag_GSP_time) call end_elapsed_time(ist_elapsed_GSP+3)
       end if
 !
       end subroutine load_para_SPH_and_FEM_w_LIC
@@ -123,7 +129,7 @@
 !
       call copy_sph_radial_groups(sph_grps, sph_maker%gen_sph)
 !
-if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
+      if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
       call const_FEM_mesh_4_sph_MHD_w_LIC(FEM_mesh_flags, mesh_file,    &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    femmesh_s%mesh, femmesh_s%group, sph_maker%gen_sph)
@@ -149,6 +155,8 @@ if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
      &         (FEM_mesh_flags, mesh_file, sph_params, sph_rtp, sph_rj, &
      &          mesh, group, gen_sph)
 !
+      use m_elapsed_labels_gen_SPH
+      use m_work_time
       use sph_file_IO_select
       use mpi_load_mesh_data
       use para_const_kemoview_mesh
@@ -170,14 +178,18 @@ if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_MHD_w_LIC'
       integer(kind = kint) :: i_level
 !
 !
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+9)
       call base_FEM_mesh_sph_mhd(sph_params, sph_rtp, sph_rj,           &
      &    mesh, group, gen_sph)
+      if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+9)
 !
 ! Increase sleeve size
+      if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+10)
       do i_level = 2, gen_sph%num_FEM_sleeve
         if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
         call para_sleeve_extension(mesh, group)
       end do
+      if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+10)
 !
 ! Output mesh data
       if(FEM_mesh_flags%iflag_access_FEM .gt. 0) then

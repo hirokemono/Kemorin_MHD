@@ -173,6 +173,8 @@
 !
       subroutine s_FEM_to_VIZ_bridge(nod_fld, v_sol, VIZ_DAT)
 !
+      use m_work_time
+      use m_elapsed_labels_4_REPART
       use field_to_new_partition
       use select_copy_from_recv
 !
@@ -182,9 +184,11 @@
 !
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
+        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call nod_field_to_new_partition(iflag_import_item,              &
      &      VIZ_DAT%viz_fem%mesh, VIZ_DAT%mesh_to_viz_tbl,              &
      &      nod_fld, VIZ_DAT%viz_fld, v_sol)
+        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
       end if
 !
       end subroutine s_FEM_to_VIZ_bridge
