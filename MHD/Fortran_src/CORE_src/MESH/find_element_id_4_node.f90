@@ -135,6 +135,7 @@
       integer (kind=kint), intent(inout) :: nele_4_node(numnod)
 !
       integer (kind = kint) :: inod, iele, k
+      integer(kind = kint) :: ie_degrade(nnod_4_ele)
 !
 !
 !$omp parallel workshare
@@ -177,6 +178,7 @@
      &                    :: iconn_4_node(ntot_ele_4_node)
 !
       integer (kind = kint) :: inod, iele, icou, k, ist
+      integer(kind = kint) :: ie_degrade(nnod_4_ele)
 !
 !
 !$omp parallel workshare
