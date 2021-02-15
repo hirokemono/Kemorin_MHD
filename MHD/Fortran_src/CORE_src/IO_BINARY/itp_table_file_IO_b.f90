@@ -68,6 +68,8 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Write Binary interpolation table file: ', trim(file_name)
       bbuf_tbl%id_binary = id_write_tbl
       call open_write_binary_file(file_name, bbuf_tbl)
       if(bbuf_tbl%ierr_bin .gt. 0) go to 99
@@ -109,6 +111,8 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Read Binary interpolation table file: ', trim(file_name)
       bbuf_tbl%id_binary = id_read_tbl
       call open_read_binary_file(file_name, id_rank, bbuf_tbl)
       if(bbuf_tbl%ierr_bin .ne. 0) goto 99

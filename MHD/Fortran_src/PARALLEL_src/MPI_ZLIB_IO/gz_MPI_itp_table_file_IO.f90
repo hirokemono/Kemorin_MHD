@@ -57,7 +57,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Write gzipped interpolation file: ', trim(gzip_name)
+     &   'Write merged gzipped interpolation file: ', trim(gzip_name)
 !
       call open_write_mpi_file(gzip_name, IO_param)
 !
@@ -93,7 +93,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read gzipped interpolation file: ', trim(gzip_name)
+     &   'Read merged gzipped interpolation file: ', trim(gzip_name)
 !
       call open_read_mpi_file                                           &
      &   (gzip_name, num_pe, id_rank, IO_param)

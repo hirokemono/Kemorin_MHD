@@ -61,7 +61,8 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Write gzipped binary interpolation file: ', trim(gzip_name)
+     &   'Write merged  gzipped binary interpolation file: ',           &
+     &    trim(gzip_name)
 !
       call open_write_gz_mpi_file_b(gzip_name, IO_param)
 !
@@ -98,7 +99,8 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read gzipped binary interpolation file: ', trim(gzip_name)
+     &   'Read merged gzipped binary interpolation file: ',             &
+     &    trim(gzip_name)
 !
       call open_read_gz_mpi_file_b                                      &
      &   (gzip_name, num_pe, id_rank, IO_param)

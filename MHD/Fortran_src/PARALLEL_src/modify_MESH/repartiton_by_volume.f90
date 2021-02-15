@@ -121,10 +121,10 @@
      &                                  org_to_new_tbl)
 !
       use t_interpolate_table
-!
       use m_file_format_switch
 !
       use mpi_load_mesh_data
+      use nod_and_ele_derived_info
       use const_element_comm_tables
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
@@ -142,8 +142,10 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh for new mesh'
       call mpi_input_mesh(part_param%viz_mesh_file, nprocs, new_fem)
+      call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
       call const_global_mesh_infos(new_fem%mesh)
 !
+      if (iflag_debug.gt.0) write(*,*) 'sel_mpi_read_interpolate_table'
       call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
      &    part_param%trans_tbl_file, itp_tbl_IO, ierr)
       call calypso_MPI_barrier

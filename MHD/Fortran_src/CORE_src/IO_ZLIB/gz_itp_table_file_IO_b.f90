@@ -61,6 +61,9 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Write gzipped binary interpolation table file: ',              &
+     &   trim(gzip_name)
       call open_wt_gzfile_b(gzip_name, zbuf_itp)
       if(zbuf_itp%ierr_zlib .gt. 0) go to 99
       call write_gz_itp_table_dest_b                                    &
@@ -104,6 +107,9 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Read gzipped binary interpolation table file: ',               &
+     &   trim(gzip_name)
       call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp)
       if(zbuf_itp%ierr_zlib .ne. 0) goto 99
       call read_gz_itp_domain_dest_b                                    &

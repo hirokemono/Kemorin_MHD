@@ -56,7 +56,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Write ascii interpolation file: ', trim(file_name)
+     &   'Write merged ascii interpolation file: ', trim(file_name)
 !
       call open_write_mpi_file(file_name, IO_param)
       call mpi_write_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)
@@ -90,7 +90,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read ascii interpolation file: ', trim(file_name)
+     &   'Read merged ascii interpolation file: ', trim(file_name)
 !
       call open_read_mpi_file(file_name, num_pe, id_rank, IO_param)
       call mpi_read_itp_domain_dest(IO_param, itp_tbl_IO%tbl_dest)

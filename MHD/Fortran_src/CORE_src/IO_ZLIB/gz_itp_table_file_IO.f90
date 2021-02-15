@@ -59,6 +59,8 @@
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Write gzipped interpolation table file: ', trim(gzip_name)
       call open_wt_gzfile_a(gzip_name, zbuf_itp)
 !
       call write_gz_itp_table_dest                                      &
@@ -96,6 +98,8 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Read gzipped interpolation table file: ', trim(gzip_name)
       call open_rd_gzfile_a(gzip_name, zbuf_itp)
 !
 !        write(*,*) 'read_gz_itp_domain_dest', trim(gzip_name)

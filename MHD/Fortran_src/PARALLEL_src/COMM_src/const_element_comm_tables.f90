@@ -84,6 +84,7 @@
       call const_global_numnod_list(mesh%node)
 !
       if(iflag_debug.gt.0) write(*,*) ' find_position_range'
+      call find_subdomain_position_range(mesh%node)
       call find_position_range(mesh%node)
 !
       end subroutine const_global_mesh_infos

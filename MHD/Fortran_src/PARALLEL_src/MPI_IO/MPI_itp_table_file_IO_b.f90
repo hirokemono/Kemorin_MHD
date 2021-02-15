@@ -59,7 +59,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Write binary interpolation file: ', trim(file_name)
+     &   'Write merged binary interpolation file: ', trim(file_name)
 !
       call open_write_mpi_file_b(file_name, IO_param)
       call mpi_write_itp_domain_dest_b(IO_param, itp_tbl_IO%tbl_dest)
@@ -93,7 +93,7 @@
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &   'Read binary interpolation file: ', trim(file_name)
+     &   'Read merged  binary interpolation file: ', trim(file_name)
 !
       call open_read_mpi_file_b(file_name, num_pe, id_rank, IO_param)
       call mpi_read_itp_domain_dest_b(IO_param, itp_tbl_IO%tbl_dest)
