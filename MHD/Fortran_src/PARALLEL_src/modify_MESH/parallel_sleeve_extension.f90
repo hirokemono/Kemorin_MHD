@@ -134,7 +134,6 @@
       call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_nod_and_ele_infos(mesh)
-      call dealloc_mesh_data(mesh, group)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       call alloc_sph_node_geometry(newmesh%node)
@@ -146,6 +145,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_extend_group_table'
       call s_extend_group_table(nprocs, newmesh%nod_comm, ele_comm,     &
      &    newmesh%node, newmesh%ele, group, newgroup)
+      call dealloc_mesh_data(mesh, group)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+4)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
