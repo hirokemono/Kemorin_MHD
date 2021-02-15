@@ -155,6 +155,8 @@
      &          iele_stack_4_node, nele_4_node, iele_4_node,            &
      &          iconn_4_node)
 !
+      use quicksort
+!
       integer (kind=kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind=kint), intent(in) :: ie(numele,nnod_4_ele)
       integer (kind=kint), intent(in) :: iele_st, iele_ed
