@@ -59,6 +59,7 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use field_to_new_partition
+      use parallel_sleeve_extension
 !
 !
 !>     Stracture for Jacobians
@@ -73,7 +74,9 @@
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_repartition
+      call elpsed_label_4_sleeve_ext
       call elpsed_label_field_send_recv
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     ----- read control data
 !
@@ -156,6 +159,7 @@
 !        write(*,*) 't_VIZ_T%viz_step%LIC_t', t_VIZ_T%viz_step%LIC_t
 !      end if
 !
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'

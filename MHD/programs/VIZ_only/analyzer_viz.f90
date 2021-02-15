@@ -45,14 +45,18 @@
 !
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use m_elapsed_labels_4_REPART
+      use parallel_sleeve_extension
       use FEM_to_VIZ_bridge
 !
       integer(kind = kint) :: ierr
 !
+!
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
       call elpsed_label_field_send_recv
-
+      call elpsed_label_4_repartition
+      call elpsed_label_4_sleeve_ext
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     read controls

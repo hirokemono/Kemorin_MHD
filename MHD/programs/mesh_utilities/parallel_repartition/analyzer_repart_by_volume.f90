@@ -52,6 +52,7 @@
       use set_table_4_RHS_assemble
       use int_volume_of_single_domain
       use field_to_new_partition
+      use parallel_sleeve_extension
 !
 !>     Stracture for Jacobians
 !
@@ -61,6 +62,7 @@
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_repartition
+      call elpsed_label_4_sleeve_ext
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     ----- read control data
