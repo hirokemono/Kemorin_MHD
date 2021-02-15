@@ -153,7 +153,7 @@
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    geofem%mesh, new_fem%mesh, itp_tbl_IO, org_to_new_tbl)
-      call dealloc_interpolate_table(itp_tbl_IO)
+      call dealloc_itp_tbl_for_repart(itp_tbl_IO)
       call calypso_MPI_barrier
 !
       end subroutine load_repartitoned_file
