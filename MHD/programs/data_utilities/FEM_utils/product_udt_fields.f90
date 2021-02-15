@@ -373,7 +373,6 @@
       type(ucd_data) :: local_ucd
 !
 !
-!
       local_ucd%nnod =      numnod
       call sel_read_alloc_para_udt_file                                 &
      &   (istep_ucd, ucd_param, t_IO, local_ucd)

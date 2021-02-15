@@ -19,7 +19,8 @@ main_field_to_repartition.o \
 analyzer_field_to_repart.o \
 \
 t_ctl_file_volume_grouping.o \
-t_control_param_repartition.o
+t_control_param_repartition.o \
+udt_to_new_partition.o
 
 SOURCES = $(shell ls *.f90)
 

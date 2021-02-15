@@ -192,24 +192,24 @@
 !
 !  -----  Const Neighboring information
       if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'
-      call set_belonged_ele_and_next_nod                              &
+      call set_belonged_ele_and_next_nod                                &
      &   (geofem%mesh, next_tbl_T%neib_ele, next_tbl_T%neib_nod)
 !
 !  -----  Const volume of each element
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_single_vol'
-      call const_jacobian_and_single_vol                              &
+      call const_jacobian_and_single_vol                                &
      &   (geofem%mesh, geofem%group, spfs_T, jacobians_T)
-      call finalize_jac_and_single_vol                                &
+      call finalize_jac_and_single_vol                                  &
      &     (geofem%mesh, spfs_T, jacobians_T)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+5)
 !
 !  -------------------------------
 !
-      write(e_message,*)                                              &
+      write(e_message,*)                                                &
      &      'Construct repartitioned mesh and transfer table'
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
-      call s_repartiton_by_volume                                     &
-     &   (part_param, geofem, ele_comm_T, next_tbl_T,                 &
+      call s_repartiton_by_volume                                       &
+     &   (part_param, geofem, ele_comm_T, next_tbl_T,                   &
      &    new_fem, org_to_new_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
 !
