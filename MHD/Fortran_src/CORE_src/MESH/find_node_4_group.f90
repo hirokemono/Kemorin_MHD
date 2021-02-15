@@ -278,8 +278,10 @@
         do inod = ist_nod, ied_nod
           ist = inod_next_stack(inod-1) + 2
           num = inod_next_stack(inod) - inod_next_stack(inod-1) - 1
-          call quicksort_w_index(num, iweight_next(ist), ione, num,     &
-     &        inod_next(ist) )
+          if(num .gt. 1) then
+            call quicksort_w_index(num, iweight_next(ist),             &
+     &                             ione, num, inod_next(ist))
+          end if
         end do
       end do
 !$omp end parallel do

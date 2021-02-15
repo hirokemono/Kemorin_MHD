@@ -111,7 +111,9 @@
 !
       jst = nele_near_org + 1
       jed = nele_near
-      call quicksort_int(nele_near, iele_near(1), jst, jed)
+      if(jed .gt. jst) then
+        call quicksort_int(nele_near, iele_near(1), jst, jed)
+      end if
 !
       end subroutine expand_near_ele_4_each_nod
 !
@@ -187,8 +189,10 @@
 !
       ist = nnod_grp_org + 1
       ied = nnod_grp
-      call quicksort_w_index(nnod_grp, iweight_grp(1), ist, ied,        &
-     &        inod_grp(1) )
+      if(ied .gt. ist) then
+        call quicksort_w_index(nnod_grp, iweight_grp(1),                &
+     &                         ist, ied, inod_grp(1))
+      end if
 !
       iweight_grp(1:nnod_grp) = - iweight_grp(1:nnod_grp)
 !
@@ -214,8 +218,10 @@
 !
       ist = nnod_grp_org + 1
       ied = nnod_grp
-      call quicksort_real_w_index(nnod_grp, weight_grp(1), ist, ied,    &
-     &    inod_grp(1) )
+      if(ied .gt. ist) then
+        call quicksort_real_w_index(nnod_grp, weight_grp(1),            &
+     &                              ist, ied, inod_grp(1) )
+      end if
 !
       end subroutine sort_added_nod_4_each_by_real
 !

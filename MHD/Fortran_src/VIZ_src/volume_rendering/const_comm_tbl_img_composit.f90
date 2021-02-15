@@ -231,8 +231,10 @@
         iref_pvr_start(inum) = id_pixel_start(inum)
       end do
 !
-      call quicksort_w_index(num_pvr_ray, iref_pvr_start,               &
-     &    ione, num_pvr_ray, index_pvr_start)
+      if(num_pvr_ray .gt. 1) then
+        call quicksort_w_index(num_pvr_ray, iref_pvr_start,             &
+     &      ione, num_pvr_ray, index_pvr_start)
+      end if
       deallocate(iref_pvr_start)
 !
       end subroutine sort_index_pvr_start

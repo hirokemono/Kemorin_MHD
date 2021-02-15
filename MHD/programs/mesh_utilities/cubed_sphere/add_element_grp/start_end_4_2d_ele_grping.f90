@@ -51,8 +51,11 @@
           wk1_4_sort(iele) = ref_ele(iele)
           iele_4_sort(iele) = iele
         end do
-        call quicksort_real_w_index(numele, wk1_4_sort, ione,           &
-     &      numele, iele_4_sort)
+!
+        if(numele .gt. 1) then
+            call quicksort_real_w_index(numele, wk1_4_sort,             &
+     &                                  ione, numele, iele_4_sort)
+        end if
       end if
 !
       call find_start_end_sorted_grping(ist_ele, numele,                &
@@ -96,9 +99,11 @@
           iele = iele_4_sort(inum)
           wk2_4_sort(inum) = ref_ele(iele)
         end do
-        call quicksort_real_w_index(item_ed, wk2_4_sort,                &
-     &      item_st, item_ed, iele_4_sort)
 !
+        if(item_ed .gt. item_st) then
+          call quicksort_real_w_index(item_ed, wk2_4_sort,              &
+     &        item_st, item_ed, iele_4_sort)
+        end if
       end if
 !
       call find_start_end_sorted_grping(jst_ele, item_ed,               &

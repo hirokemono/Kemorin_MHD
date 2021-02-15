@@ -46,8 +46,10 @@
       end do
 !$omp end parallel do
 !
-      call quicksort_real_w_index(pvr_bound%num_pvr_surf, ztmp, ione,   &
-     &    pvr_bound%num_pvr_surf, i_org)
+      if(pvr_bound%num_pvr_surf .gt. 1) then
+        call quicksort_real_w_index(pvr_bound%num_pvr_surf, ztmp,       &
+     &      ione, pvr_bound%num_pvr_surf, i_org)
+      end if
 !
 !
       call swap_int_items_sf_grp(itwo, pvr_bound%num_pvr_surf,          &

@@ -229,8 +229,10 @@
       do inod = 1, numnod
         ist = iele_stack_near_nod_w(inod-1) + nele_near_nod(inod) + 1
         ied = iele_stack_near_nod_w(inod)
-        call quicksort_int(ntot_ele_near_nod_w, iele_near_nod_w,        &
-     &      ist, ied)
+        if(ied .gt. ist) then
+          call quicksort_int(ntot_ele_near_nod_w, iele_near_nod_w,      &
+     &                       ist, ied)
+       end if
       end do
 !
       end subroutine set_expanded_near_element

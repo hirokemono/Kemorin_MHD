@@ -110,7 +110,7 @@
 !$omp parallel do private(inod,ist)
       do inod = 1, numnod
         ist = iele_stack_4_node(inod-1) + 1
-        if(nele_4_node(inod) .gt. 0) then
+        if(nele_4_node(inod) .gt. 1) then
           call quicksort_w_index(nele_4_node(inod), iele_4_node(ist),   &
      &        ione, nele_4_node(inod), iconn_4_node(ist))
         end if

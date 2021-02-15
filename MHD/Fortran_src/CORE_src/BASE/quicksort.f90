@@ -9,10 +9,10 @@
 !>@brief  Quick sort subroutines
 !!
 !!@verbatim
-!!      recursive subroutine quicksort_int(n,ix,l,r)
-!!      recursive subroutine quicksort_w_index(n,ix,l,r,idx)
-!!      recursive subroutine quicksort_int8_w_index(n,i8x,l,r,idx)
-!!      recursive subroutine quicksort_real_w_index(n,x,l,r,idx)
+!!      subroutine quicksort_int(n,ix,l,r)
+!!      subroutine quicksort_w_index(n,ix,l,r,idx)
+!!      subroutine quicksort_int8_w_index(n,i8x,l,r,idx)
+!!      subroutine quicksort_real_w_index(n,x,l,r,idx)
 !!@endverbatim
 !!
 !!@n @param  n        size of array
@@ -73,7 +73,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      recursive subroutine quicksort_int8_w_index(n,i8x,l,r,idx)
+      subroutine quicksort_int8_w_index(n,i8x,l,r,idx)
 !
       use i8sort_with_int
 !
@@ -91,7 +91,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      recursive subroutine quicksort_real_w_index(n,x,l,r,idx)
+      subroutine quicksort_real_w_index(n,x,l,r,idx)
 !
       use dsort_with_int
 !

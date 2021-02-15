@@ -97,8 +97,10 @@
           ist = inod_stack_grp(inum-1) + 1                              &
      &         + inod_stack_grp_org(inum) - inod_stack_grp_org(inum-1)
           ied = inod_stack_grp(inum)
-          call quicksort_w_index(ntot_nod_grp, iweight_grp,             &
-     &        ist, ied, inod_grp)
+          if(ied .gt. ist) then
+            call quicksort_w_index(ntot_nod_grp, iweight_grp,           &
+     &          ist, ied, inod_grp)
+          end if
         end if
       end do
 !

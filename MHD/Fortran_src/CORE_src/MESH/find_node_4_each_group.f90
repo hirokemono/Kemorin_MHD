@@ -80,7 +80,10 @@
         end do
       end do
 !
-      call quicksort_int(n_item, ilist_4_node(1), ione, n_item)
+      if(n_item .gt. ione) then
+        call quicksort_int(n_item, ilist_4_node(1), ione, n_item)
+      end if
+!
       nnod_grp = 0
       do jnum = 1, n_item
         if(ilist_4_node(jnum) .ne. ilist_4_node(jnum-1)) then
@@ -122,7 +125,9 @@
         end do
       end do
 !
-      call quicksort_int(n_item, ilist_4_node(1), ione, n_item)
+      if(n_item .gt. ione) then
+        call quicksort_int(n_item, ilist_4_node(1), ione, n_item)
+      end if
 !
       icou = 0
       do jnum = 1, n_item

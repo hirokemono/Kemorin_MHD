@@ -339,7 +339,7 @@
           end if
         end do
 !
-        if(iflag .gt. 0) then
+        if(iflag .gt. 0 .and. ntot_overlap .gt. 1) then
           call quicksort_real_w_index(ntot_overlap, depth_tmp,          &
      &        ione, ntot_overlap, ip_tmp)
         end if

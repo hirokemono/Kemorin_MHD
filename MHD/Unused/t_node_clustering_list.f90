@@ -286,7 +286,7 @@
       do inum = 1, num_gruped_nod
         ist = istack_tmp(inum-1)
         num = istack_tmp(inum) - istack_tmp(inum-1)
-        if(num .gt. 0) then
+        if(num .gt. 2) then
           call quicksort_int(num, inod_list2(ist+1), ione, num)
         end if
       end do

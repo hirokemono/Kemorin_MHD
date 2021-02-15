@@ -75,9 +75,11 @@
       end do
 !$omp end parallel do
 !
-      call quicksort_int8_w_index                                       &
-    &    (org_node%internal_node, iorg_gl_sorted,                       &
-    &     ione, org_node%internal_node, iorg_lc_sorted)
+      if(org_node%internal_node .gt. 0) then
+        call quicksort_int8_w_index                                     &
+     &      (org_node%internal_node, iorg_gl_sorted,                    &
+     &       ione, org_node%internal_node, iorg_lc_sorted)
+      end if
 !
       call find_node_by_global_id(irank_org,                            &
      &    org_node%internal_node, iorg_gl_sorted, iorg_lc_sorted,       &

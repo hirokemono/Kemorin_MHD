@@ -64,7 +64,9 @@
       call copy_cube_position_zonal_rcb(numnod, num_cube, inod_free,    &
      &    phi_cube, VAL, IS1)
 !
-      call quicksort_real_w_index(numnod, VAL, ione, num_cube, IS1)
+      if(num_cube .gt. 1) then
+        call quicksort_real_w_index(numnod, VAL, ione, num_cube, IS1)
+      end if
 !
       call sorting_by_2nd_direction(numnod, num_cube, phi_cube,         &
      &    neg_z_cube, VAL, IS1)
@@ -79,7 +81,9 @@
         call copy_cube_position_vert_rcb(numnod, num_cube, ip, ncou,    &
      &      IGROUP, inod_free, neg_z_cube, VAL, IS1)
 !
-        call quicksort_real_w_index(numnod, VAL(1), ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(numnod, VAL(1), ione, ncou, IS1)
+        end if
 !
         call sorting_by_2nd_direction(numnod, ncou, neg_z_cube,         &
      &      phi_cube, VAL, IS1)
