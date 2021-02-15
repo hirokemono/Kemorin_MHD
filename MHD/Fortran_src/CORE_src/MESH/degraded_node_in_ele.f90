@@ -45,14 +45,15 @@
       integer(kind = kint), intent(inout) :: ie_degrade(nnod_4_ele)
 !
 !
+      ie_degrade(1:nnod_4_ele) = 0
       if(nnod_4_ele .eq. num_t_linear) then
         call find_degraded_on_ele8(iele, numele, ie, ie_degrade)
       else if(nnod_4_ele .eq. num_linear_sf) then
         call find_degraded_on_surf4(iele, numele, ie, ie_degrade)
       else if(nnod_4_ele .eq. num_triangle) then
         call find_degraded_on_tri3(iele, numele, ie, ie_degrade)
-      else if(nnod_4_ele .eq. num_linear_edge) then
-        call find_degraded_on_edge2(iele, numele, ie, ie_degrade)
+!      else if(nnod_4_ele .eq. num_linear_edge) then
+!        call find_degraded_on_edge2(iele, numele, ie, ie_degrade)
 !
       else if(nnod_4_ele .eq. num_t_quad) then
         call find_degraded_on_ele20(iele, numele, ie, ie_degrade)
