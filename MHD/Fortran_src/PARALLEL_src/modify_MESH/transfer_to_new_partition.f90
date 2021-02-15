@@ -173,9 +173,10 @@
       end do
 !$omp end parallel do
 !
-      call calypso_SR_type_3(iflag_recv, transfer_tbl,                  &
+      call calypso_SR_type_N(iflag_recv, transfer_tbl, NB,              &
      &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1))
-      call SOLVER_SEND_RECV_3_type(nnod_new, new_nod_comm, x_new(1))
+      call SOLVER_SEND_RECV_N_type                                      &
+     &   (nnod_new, NB, new_nod_comm, x_new(1))
 !
 !$omp parallel private(nd)
       do nd = 1, NB
