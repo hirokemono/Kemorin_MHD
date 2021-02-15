@@ -59,6 +59,7 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_element_comm_tables
+      use nod_and_ele_derived_info
       use const_mesh_information
       use share_field_data
       use load_mesh_data_4_merge

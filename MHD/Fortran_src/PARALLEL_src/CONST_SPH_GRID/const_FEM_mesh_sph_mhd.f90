@@ -150,10 +150,7 @@
 !
 !! Increase sleeve size
 !      if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+10)
-!      do i_level = 2, gen_sph%num_FEM_sleeve
-!        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
-!        call para_sleeve_extension(mesh, group)
-!      end do
+!      call sleeve_extension_loop(gen_sph%num_FEM_sleeve, mesh, group)
 !      if(iflag_GSP_time) call start_elapsed_time(ied_elapsed_GSP+10)
 !
 ! Output mesh data

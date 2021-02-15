@@ -55,6 +55,7 @@
 !
       use t_shape_functions
 !
+      use nod_and_ele_derived_info
       use const_mesh_information
       use set_table_4_RHS_assemble
       use element_posi_2_nodal_array

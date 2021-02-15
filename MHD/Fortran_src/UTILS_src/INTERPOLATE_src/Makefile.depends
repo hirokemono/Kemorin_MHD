@@ -16,7 +16,7 @@ count_interpolate_type_8.o: $(ITP_SRCDIR)/count_interpolate_type_8.f90 m_precisi
 	$(F90) -c $(F90OPTFLAGS) $<
 count_number_with_overlap.o: $(ITP_SRCDIR)/count_number_with_overlap.f90 m_precision.o m_constants.o t_mesh_data.o t_file_IO_parameter.o t_mesh_data_4_merge.o mesh_IO_select.o set_element_data_4_IO.o copy_mesh_structures.o load_mesh_data.o t_merged_geometry_data.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-element_posi_2_nodal_array.o: $(ITP_SRCDIR)/element_posi_2_nodal_array.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o cal_minmax_and_stacks.o t_mesh_data.o const_mesh_information.o
+element_posi_2_nodal_array.o: $(ITP_SRCDIR)/element_posi_2_nodal_array.f90 m_precision.o m_constants.o m_machine_parameter.o t_geometry_data.o cal_minmax_and_stacks.o t_mesh_data.o nod_and_ele_derived_info.o
 	$(F90) -c $(F90OPTFLAGS) $<
 modify_local_positions.o: $(ITP_SRCDIR)/modify_local_positions.f90 m_precision.o solver_33_array.o cal_position_and_grad.o
 	$(F90) -c $(F90OPTFLAGS) $<

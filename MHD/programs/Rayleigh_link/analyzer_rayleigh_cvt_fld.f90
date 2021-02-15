@@ -66,7 +66,6 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_element_comm_tables
-      use const_mesh_information
       use share_field_data
       use load_mesh_data_4_merge
       use bcast_4_assemble_sph_ctl
@@ -75,6 +74,7 @@
       use const_fem_nodes_4_rayleigh
       use mpi_load_mesh_data
 !
+      use nod_and_ele_derived_info
       use copy_mesh_structures
 !
 !>       Structure of grid and spectr data for spherical spectr method

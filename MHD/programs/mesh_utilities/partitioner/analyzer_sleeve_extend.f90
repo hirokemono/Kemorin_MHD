@@ -97,12 +97,8 @@
       integer(kind = kint) :: ilevel
 !
 !
-      do ilevel = 1, part_p1%n_overlap
-        if(my_rank .eq. 0) write(*,*) 'para_sleeve_extension',          &
-     &                               iflag_debug
-        call para_sleeve_extension(fem_EXT%mesh, fem_EXT%group)
-      end do
-!
+      call sleeve_extension_loop(part_p1%n_overlap,                     &
+     &                           fem_EXT%mesh, fem_EXT%group)
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)

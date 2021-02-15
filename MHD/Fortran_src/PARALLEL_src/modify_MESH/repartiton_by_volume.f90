@@ -84,10 +84,8 @@
 ! Increase sleeve size
       if(part_param%num_FEM_sleeve .le. 1) return
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
-      do i_level = 2, part_param%num_FEM_sleeve
-        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
-        call para_sleeve_extension(new_fem%mesh, new_fem%group)
-      end do
+      call sleeve_extension_loop(part_param%num_FEM_sleeve,             &
+     &                           new_fem%mesh, new_fem%group)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
 !
 !       Output new mesh file

@@ -7,7 +7,7 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
-!!      subroutine para_sleeve_extension(mesh, group)
+!!      subroutine sleeve_extension_loop(num_level, mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
 !!      subroutine elpsed_label_4_sleeve_ext
@@ -33,18 +33,55 @@
 !
       private :: iflag_SLEX_time, ist_elapsed_SLEX, ied_elapsed_SLEX
 !
+      private :: para_sleeve_extension
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_sleeve_extension(mesh, group)
+      subroutine sleeve_extension_loop(num_level, mesh, group)
+!
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
+!
+      integer(kind = kint), intent(in) :: num_level
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
+!
+      type(communication_table) :: ele_comm
+      integer(kind = kint) :: i_level
+!
+!
+      if(num_level .le. 1) return
+!
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      call set_nod_and_ele_infos(mesh%node, mesh%ele)
+      call const_element_comm_tbl_only(mesh, ele_comm)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
+!
+      do i_level = 2, num_level
+        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
+        call para_sleeve_extension(mesh, group, ele_comm)
+      end do
+!
+      call dealloc_comm_table(ele_comm)
+      call dealloc_numele_stack(mesh%ele)
+      call dealloc_nod_and_ele_infos(mesh)
+!
+      end subroutine sleeve_extension_loop
+!
+! ----------------------------------------------------------------------
+!
+      subroutine para_sleeve_extension(mesh, group, ele_comm)
 !
       use t_para_double_numbering
       use t_next_node_ele_4_node
 !
-      use const_mesh_information
+      use nod_and_ele_derived_info
       use const_element_comm_tables
       use set_table_4_RHS_assemble
       use extend_comm_table
@@ -55,27 +92,19 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
+      type(communication_table), intent(inout) :: ele_comm
 !
-      type(communication_table), save :: ele_comm
-      type(communication_table), save :: new_ele_comm
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save :: newgroup
       type(next_nod_ele_table), save :: next_tbl
       type(parallel_double_numbering), save :: dbl_id1
 !
 !
-      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-      call const_mesh_infos(my_rank, mesh, group)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
-      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
-      call const_element_comm_tbl_only(mesh, ele_comm)
-      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
-!
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
      &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !
       call alloc_double_numbering(mesh%node%numnod, dbl_id1)
       if (iflag_debug.gt.0) write(*,*) 'set_para_double_numbering'
@@ -100,38 +129,31 @@
      &   = set_cube_eletype_from_num(newmesh%ele%nnod_4_ele)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
+      call dealloc_next_nod_ele_table(next_tbl)
       call dealloc_double_numbering(dbl_id1)
-!
-      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+4)
-      call alloc_sph_node_geometry(newmesh%node)
-      call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
+      call dealloc_comm_table(ele_comm)
+      call dealloc_numele_stack(mesh%ele)
+      call dealloc_nod_and_ele_infos(mesh)
+      call dealloc_mesh_data(mesh, group)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
-      call const_element_comm_tbl_only(newmesh, new_ele_comm)
+      call alloc_sph_node_geometry(newmesh%node)
+      call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
+      call const_element_comm_tbl_only(newmesh, ele_comm)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+4)
       if (iflag_debug.gt.0) write(*,*) 's_extend_group_table'
-      call s_extend_group_table                                         &
-     &   (nprocs, newmesh%nod_comm, new_ele_comm,                       &
+      call s_extend_group_table(nprocs, newmesh%nod_comm, ele_comm,     &
      &    newmesh%node, newmesh%ele, group, newgroup)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+4)
 !
-      call dealloc_next_nod_ele_table(next_tbl)
-      call dealloc_comm_table(ele_comm)
-      call dealloc_numele_stack(mesh%ele)
-      call dealloc_mesh_infomations(mesh, group)
-      call dealloc_mesh_smp_stack(mesh, group)
-      call dealloc_mesh_data(mesh, group)
-!
       if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
       call copy_mesh_and_group(newmesh, newgroup, mesh, group)
+      call dup_nod_and_ele_infos(newmesh, mesh)
 !
-      call dealloc_comm_table(new_ele_comm)
       call dealloc_numele_stack(newmesh%ele)
-      call dealloc_overlapped_ele(newmesh%ele)
-      call dealloc_ele_geometry(newmesh%ele)
-      call dealloc_ele_param_smp(newmesh%ele)
-      call dealloc_node_param_smp(newmesh%node)
+      call dealloc_nod_and_ele_infos(newmesh)
       call dealloc_mesh_data(newmesh, newgroup)
 !
       end subroutine para_sleeve_extension

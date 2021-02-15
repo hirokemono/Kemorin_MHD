@@ -48,7 +48,6 @@
       use const_repart_nod_and_comm
       use const_repart_ele_connect
       use redistribute_groups
-      use parallel_sleeve_extension
 !
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: org_fem

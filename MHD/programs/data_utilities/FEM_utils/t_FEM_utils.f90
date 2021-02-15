@@ -68,7 +68,7 @@
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv
-      use const_mesh_information
+      use nod_and_ele_derived_info
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_data), intent(inout) :: geofem
