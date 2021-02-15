@@ -132,9 +132,19 @@
 !
       integer (kind=kint), intent(inout) :: nele_4_node(numnod)
 !
+      integer (kind = kint) :: inod, iele, k
 !
-      call count_iele_4_node(numnod, numele, ione, ie(1,1),             &
-     &   iele_st, iele_ed, nele_4_node)
+!
+!$omp parallel workshare
+      nele_4_node(1:numnod) = 0
+!$omp end parallel workshare
+!
+      do iele = iele_st, iele_ed
+        do k = 1, nnod_4_ele
+          inod = ie(iele,k)
+          nele_4_node(inod) = nele_4_node(inod) + 1
+        end do
+      end do
 !
       end  subroutine count_belonged_ele_4_node
 !
@@ -157,10 +167,32 @@
       integer (kind=kint), intent(inout)                                &
      &                    :: iconn_4_node(ntot_ele_4_node)
 !
+      integer (kind = kint) :: inod, iele, icou, k, ist
 !
-      call set_iele_4_node(numnod, numele, ione, ie(1,1),               &
-     &          iele_st, iele_ed, ntot_ele_4_node, iele_stack_4_node,   &
-     &          nele_4_node, iele_4_node, iconn_4_node)
+!
+!$omp parallel workshare
+      nele_4_node(1:numnod) = 0
+!$omp end parallel workshare
+!
+      do iele = iele_st, iele_ed
+        do k = 1, nnod_4_ele
+          inod = ie(iele,k)
+          nele_4_node(inod) = nele_4_node(inod) + 1
+          icou = iele_stack_4_node(inod-1) + nele_4_node(inod)
+          iele_4_node(icou) = iele
+          iconn_4_node(icou) =  k
+        end do
+      end do
+!
+!$omp parallel do private(inod,ist)
+      do inod = 1, numnod
+        ist = iele_stack_4_node(inod-1) + 1
+        if(nele_4_node(inod) .gt. 0) then
+          call quicksort_w_index(nele_4_node(inod), iele_4_node(ist),   &
+     &        ione, nele_4_node(inod), iconn_4_node(ist))
+        end if
+      end do
+!$omp end parallel do
 !
       end  subroutine set_belonged_ele_4_node
 !

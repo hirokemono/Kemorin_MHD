@@ -7,9 +7,6 @@
 !> @brief Belonged element list for each node
 !!
 !!@verbatim
-!!      subroutine set_belonged_id_4_node(mesh, surf, edge, belongs)
-!!      subroutine dealloc_belonged_id_4_node(belongs)
-!!
 !!      subroutine alloc_x_ref_ele(node, belongs)
 !!      subroutine alloc_x_ref_surf(node, belongs)
 !!      subroutine alloc_x_ref_edge(node, belongs)
@@ -62,41 +59,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine set_belonged_id_4_node(mesh, surf, edge, belongs)
-!
-      use t_mesh_data
-      use t_surface_data
-      use t_edge_data
-!
-      type(mesh_geometry), intent(in) :: mesh
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-      type(belonged_table), intent(inout) :: belongs
-!
-!
-      call belonged_ele_id_4_node                                       &
-     &   (mesh%node, mesh%ele, belongs%host_ele)
-      call belonged_surf_id_4_node(mesh%node, surf, belongs%host_surf)
-      call belonged_edge_id_4_node(mesh%node, edge, belongs%host_edge)
-!
-      end subroutine set_belonged_id_4_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_belonged_id_4_node(belongs)
-!
-      type(belonged_table), intent(inout) :: belongs
-!
-!
-      call dealloc_iele_belonged(belongs%host_ele)
-      call dealloc_iele_belonged(belongs%host_surf)
-      call dealloc_iele_belonged(belongs%host_edge)
-!
-      end subroutine dealloc_belonged_id_4_node
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine alloc_x_ref_ele(node, belongs)
@@ -199,7 +161,7 @@
       call alloc_numele_belonged(node%numnod, host_ele)
 !
       call count_belonged_ele_4_node(node%numnod, ele%numele,           &
-     &    ele%nnod_4_ele, ele%ie, ione, ele%numele,                     &
+     &    ele%nnod_4_ele, ele%ie(1,1), ione, ele%numele,                &
      &    host_ele%nele_4_node)
       call s_cal_minmax_and_stacks(node%numnod,                         &
      &    host_ele%nele_4_node, izero, host_ele%istack_4_node,          &
@@ -209,7 +171,7 @@
       call alloc_iele_belonged(host_ele)
 !
       call set_belonged_ele_4_node(node%numnod, ele%numele,             &
-     &    ele%nnod_4_ele, ele%ie,  ione, ele%numele,                    &
+     &    ele%nnod_4_ele, ele%ie(1,1),  ione, ele%numele,               &
      &    host_ele%ntot, host_ele%istack_4_node, host_ele%nele_4_node,  &
      &    host_ele%iele_4_node, host_ele%iconn_4_node)
 !
@@ -232,7 +194,7 @@
       call alloc_numele_belonged(node%numnod, host_surf)
 !
       call count_belonged_ele_4_node(node%numnod, surf%numsurf,         &
-     &    surf%nnod_4_surf, surf%ie_surf, ione, surf%numsurf,           &
+     &    surf%nnod_4_surf, surf%ie_surf(1,1), ione, surf%numsurf,      &
      &    host_surf%nele_4_node)
       call s_cal_minmax_and_stacks(node%numnod,                         &
      &    host_surf%nele_4_node, izero, host_surf%istack_4_node,        &
@@ -242,7 +204,7 @@
       call alloc_iele_belonged(host_surf)
 !
       call set_belonged_ele_4_node(node%numnod, surf%numsurf,           &
-     &    surf%nnod_4_surf, surf%ie_surf,  ione, surf%numsurf,          &
+     &    surf%nnod_4_surf, surf%ie_surf(1,1),  ione, surf%numsurf,     &
      &    host_surf%ntot, host_surf%istack_4_node,                      &
      &    host_surf%nele_4_node, host_surf%iele_4_node,                 &
      &    host_surf%iconn_4_node)
@@ -266,7 +228,7 @@
       call alloc_numele_belonged(node%numnod, host_edge)
 !
       call count_belonged_ele_4_node(node%numnod, edge%numedge,         &
-     &    edge%nnod_4_edge, edge%ie_edge, ione, edge%numedge,           &
+     &    edge%nnod_4_edge, edge%ie_edge(1,1), ione, edge%numedge,      &
      &    host_edge%nele_4_node)
       call s_cal_minmax_and_stacks(node%numnod,                         &
      &    host_edge%nele_4_node, izero, host_edge%istack_4_node,        &
@@ -276,7 +238,7 @@
       call alloc_iele_belonged(host_edge)
 !
       call set_belonged_ele_4_node(node%numnod, edge%numedge,           &
-     &    edge%nnod_4_edge, edge%ie_edge,  ione, edge%numedge,          &
+     &    edge%nnod_4_edge, edge%ie_edge(1,1),  ione, edge%numedge,     &
      &    host_edge%ntot, host_edge%istack_4_node,                      &
      &    host_edge%nele_4_node, host_edge%iele_4_node,                 &
      &    host_edge%iconn_4_node)
