@@ -41,7 +41,6 @@
 !
       implicit none
 !
-      type(buffer_4_gzip), private :: zbuf_itp
       type(calypso_MPI_IO_params), save, private :: IO_param
 !
 !-----------------------------------------------------------------------

@@ -37,7 +37,6 @@
 !
       implicit none
 !
-      character(len=kchara), private  :: gzip_name
       type(calypso_MPI_IO_params), save, private :: IO_param
 !
 !-----------------------------------------------------------------------
