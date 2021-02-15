@@ -173,7 +173,7 @@
       end do
 !$omp end parallel do
 !
-      call calypso_SR_type_N(iflag_recv, transfer_tbl, NB,              &
+      call calypso_SR_type_N(iflag_recv, NB, transfer_tbl,              &
      &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1))
       call SOLVER_SEND_RECV_N_type                                      &
      &   (nnod_new, NB, new_nod_comm, x_new(1))
