@@ -53,6 +53,7 @@
       use int_volume_of_single_domain
       use field_to_new_partition
       use parallel_sleeve_extension
+      use const_element_comm_table
 !
 !>     Stracture for Jacobians
 !
@@ -63,6 +64,7 @@
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_repartition
       call elpsed_label_4_sleeve_ext
+      call elapsed_label_4_ele_comm_tbl
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     ----- read control data
