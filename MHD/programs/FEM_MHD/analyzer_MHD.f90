@@ -91,12 +91,12 @@
 !
       do
 !  Time evolution
-        call FEM_analyze_MHD(MHD_files1, FEM_model1, flex_MHD1,        &
-     &      MHD_step1, retval, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,         &
+        call FEM_analyze_MHD(MHD_files1, FEM_model1, flex_MHD1,         &
+     &      MHD_step1, retval, MHD_CG1, FEM_SGS1, SGS_MHD_wk1,          &
      &      FEM_MHD1, MHD_IO1, fem_sq1)
 !
 !  Visualization
-       visval = MHD_viz_routine_flag                                    &
+        visval = MHD_viz_routine_flag                                   &
      &       (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
         if (visval) then
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+3)

@@ -185,7 +185,6 @@
 !
       call dealloc_control_array_c3(viz4_c%viz_field_ctl)
       call reset_control_platforms(viz4_c%viz_plt)
-      call dealloc_viz_controls(viz4_c%viz_ctl_v)
       call reset_ctl_data_4_time_step(viz4_c%t_viz_ctl)
 !
       viz4_c%t_viz_ctl%i_tstep = 0

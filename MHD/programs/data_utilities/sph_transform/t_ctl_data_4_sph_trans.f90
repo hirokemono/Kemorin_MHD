@@ -248,7 +248,6 @@
 !
       call reset_control_platforms(spt_ctl%plt)
       call reset_control_platforms(spt_ctl%org_plt)
-      call dealloc_viz_controls(spt_ctl%viz_ctls)
       call bcast_control_vol_repart(spt_ctl%repart_ctl)
       call dealloc_control_vol_repart(spt_ctl%repart_ctl)
       call reset_FEM_mesh_control(spt_ctl%Fmesh_ctl)

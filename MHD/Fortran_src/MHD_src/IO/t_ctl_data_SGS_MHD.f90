@@ -165,7 +165,6 @@
       call dealloc_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call dealloc_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
-      call dealloc_viz_controls(MHD_ctl%viz_ctls)
       call dealloc_control_vol_repart(MHD_ctl%repart_ctl)
 !
       MHD_ctl%i_mhd_ctl = 0
