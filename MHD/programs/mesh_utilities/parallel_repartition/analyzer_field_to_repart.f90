@@ -100,6 +100,8 @@
 !
       call load_or_const_new_partition                                  &
      &   (part_p1%repart_p, fem_T, new_fem, org_to_new_tbl)
+      call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
+      call const_global_mesh_infos(new_fem%mesh)
 !
       end subroutine initialize_field_to_repart
 !
