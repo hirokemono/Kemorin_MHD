@@ -97,7 +97,7 @@
       use parallel_FEM_mesh_init
       use set_parallel_file_name
       use set_ucd_data_to_type
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -120,8 +120,8 @@
 !
       FEM_viz%ucd_in%nnod = FEM_viz%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
-      call sel_read_udt_param(my_rank, istep_ucd, FEM_viz%ucd_file_IO,  &
-     &                        FEM_viz%ucd_time, FEM_viz%ucd_in)
+      call sel_read_parallel_udt_param(istep_ucd,                       &
+     &    FEM_viz%ucd_file_IO, FEM_viz%ucd_time, FEM_viz%ucd_in)
       call alloc_phys_name_type_by_output(FEM_viz%ucd_in,               &
      &                                    FEM_viz%field)
 !
@@ -173,7 +173,7 @@
       use parallel_FEM_mesh_init
       use set_parallel_file_name
       use set_ucd_data_to_type
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -195,8 +195,8 @@
 !
       FEM_viz%ucd_in%nnod = FEM_viz%geofem%mesh%node%numnod
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
-      call sel_read_udt_param(my_rank, istep_ucd, FEM_viz%ucd_file_IO,  &
-     &                        FEM_viz%ucd_time, FEM_viz%ucd_in)
+      call sel_read_parallel_udt_param(istep_ucd,                       &
+     &    FEM_viz%ucd_file_IO, FEM_viz%ucd_time, FEM_viz%ucd_in)
       call alloc_phys_name_type_by_output(FEM_viz%ucd_in,               &
      &                                    FEM_viz%field)
       call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
