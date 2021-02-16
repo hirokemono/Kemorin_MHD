@@ -20,7 +20,7 @@ expand_near_element.o: $(MESHDIR)/expand_near_element.f90 m_precision.o quicksor
 	$(F90) -c $(F90OPTFLAGS) $<
 expand_near_flag.o: $(MESHDIR)/expand_near_flag.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-find_element_id_4_node.o: $(MESHDIR)/find_element_id_4_node.f90 m_precision.o m_constants.o degraded_node_in_ele.o quicksort.o
+find_element_id_4_node.o: $(MESHDIR)/find_element_id_4_node.f90 m_precision.o m_constants.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
 find_grp_ele_id_4_node.o: $(MESHDIR)/find_grp_ele_id_4_node.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

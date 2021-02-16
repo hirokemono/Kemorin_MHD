@@ -60,6 +60,8 @@
       use nod_phys_send_recv
       use field_to_new_partition
       use parallel_sleeve_extension
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
 !
 !
 !>     Stracture for Jacobians
