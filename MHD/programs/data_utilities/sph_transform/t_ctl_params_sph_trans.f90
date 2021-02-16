@@ -67,7 +67,7 @@
       use set_control_platform_item
       use set_control_platform_data
       use set_ctl_4_shell_grids
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       use sel_spherical_SRs
 !
@@ -87,7 +87,8 @@
      &    SPH_STR%sph_file_IO, SPH_STR%FEM_mesh_flags)
       call set_control_restart_file_def                                 &
      &   (spt_ctl%plt, SPH_STR%fst_file_IO)
-      call set_ucd_file_define(spt_ctl%plt, FEM_STR%ucd_file_IO)
+      call set_merged_ucd_file_define(spt_ctl%plt,                      &
+     &                                FEM_STR%ucd_file_IO)
 !
 !   setting for spherical transform
 !

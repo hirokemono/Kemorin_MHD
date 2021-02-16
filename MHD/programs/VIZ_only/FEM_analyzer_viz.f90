@@ -59,7 +59,7 @@
       use m_default_file_prefix
       use set_control_platform_item
       use set_control_platform_data
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       type(control_data_vizs), intent(in) :: vizs_ctl
 !
@@ -72,7 +72,8 @@
       call turn_off_debug_flag_by_ctl(my_rank, vizs_ctl%viz_plt)
       call set_control_smp_def(my_rank, vizs_ctl%viz_plt)
       call set_control_mesh_def(vizs_ctl%viz_plt, FEM_viz%mesh_file_IO)
-      call set_ucd_file_define(vizs_ctl%viz_plt, FEM_viz%ucd_file_IO)
+      call set_merged_ucd_file_define(vizs_ctl%viz_plt,                 &
+     &                                FEM_viz%ucd_file_IO)
 !
       call init_viz_field_list_control(vizs_ctl%viz_field_ctl,          &
      &                                 FEM_viz%viz_fld_list)
