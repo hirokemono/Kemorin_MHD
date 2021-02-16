@@ -37,7 +37,7 @@
       subroutine count_iele_4_node(numnod, numele, nnod_4_ele, ie,      &
      &          iele_st, iele_ed, nele_4_node)
 !
-      use degraded_node_in_ele
+!      use degraded_node_in_ele
 !
       integer (kind=kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind=kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -46,7 +46,6 @@
       integer (kind=kint), intent(inout) :: nele_4_node(numnod)
 !
       integer (kind = kint) :: inod, iele, k
-      integer(kind = kint) :: ie_degrade(nnod_4_ele)
 !
 !
 !$omp parallel workshare
@@ -54,10 +53,7 @@
 !$omp end parallel workshare
 !
       do iele = iele_st, iele_ed
-        call find_degraded_node(iele, numele, nnod_4_ele, ie,           &
-     &                          ie_degrade)
         do k = 1, nnod_4_ele
-          if(ie_degrade(k) .gt. 0) cycle
           inod = ie(iele,k)
           nele_4_node(inod) = nele_4_node(inod) + 1
         end do
@@ -72,7 +68,6 @@
      &          nele_4_node, iele_4_node, iconn_4_node)
 !
       use quicksort
-      use degraded_node_in_ele
 !
       integer (kind=kint), intent(in) :: numnod, numele, nnod_4_ele
       integer (kind=kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -87,7 +82,6 @@
      &                    :: iconn_4_node(ntot_ele_4_node)
 !
       integer (kind = kint) :: inod, iele, icou, k, ist
-      integer(kind = kint) :: ie_degrade(nnod_4_ele)
 !
 !
 !$omp parallel workshare
@@ -95,11 +89,7 @@
 !$omp end parallel workshare
 !
       do iele = iele_st, iele_ed
-        call find_degraded_node(iele, numele, nnod_4_ele, ie,           &
-     &                          ie_degrade)
         do k = 1, nnod_4_ele
-          if(ie_degrade(k) .gt. 0) cycle
-!
           inod = ie(iele,k)
           nele_4_node(inod) = nele_4_node(inod) + 1
           icou = iele_stack_4_node(inod-1) + nele_4_node(inod)
