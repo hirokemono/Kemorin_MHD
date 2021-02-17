@@ -54,7 +54,8 @@
       use collect_SR_int
       use collect_SR_N
       use m_geometry_filter_comm_test
-      use set_diff_filter_comm_test
+      use m_nod_filter_comm_table
+      use set_diff_geom_comm_test
       use write_diff_filter_comm_test
 !
 !
@@ -62,10 +63,14 @@
       call nod_filter_send_recv_test(filtering_test)
 !
 !
-      call count_filter_node_comm_test
+      call count_node_comm_test(nnod_filtering, inter_nod_3dfilter,     &
+     &    xx_filtering, xx_filter_comm, nnod_filter_diff_local)
 !
       call allocate_diff_filter_ctest
-      call set_diff_filter_nod_comm_test
+      call compare_nod_comm_test(nnod_filtering,                        &
+     &    inter_nod_3dfilter, xx_filtering, xx_filter_comm,             &
+     &    nnod_filter_diff_local, inod_filter_diff, xx_filter_diff)
+!
 !
       call deallocate_filter_nod_comm_test
 !
