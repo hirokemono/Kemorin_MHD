@@ -6,9 +6,10 @@
 !!        type(work_for_comm_check), intent(inout) :: wk_check
 !
 !      subroutine allocate_diff_nod_comm_test
-!      subroutine allocate_diff_geom_comm_test
+!      subroutine alloc_diff_ele_comm_test(wk_check)
 !      subroutine deallocate_diff_nod_comm_test
-!      subroutine deallocate_diff_geom_comm_test
+!!      subroutine dealloc_diff_ele_comm_test(wk_check)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
 !
 !      subroutine allocate_nod_stack_ctest_IO
 !      subroutine allocate_geom_stack_ctest_IO
@@ -31,6 +32,10 @@
 !
       type work_for_comm_check
         real(kind = kreal), allocatable :: xx_test(:,:)
+!
+        integer(kind = kint) :: num_diff
+        integer(kind = kint), allocatable :: i_diff(:)
+        real(kind = kreal), allocatable :: x_diff(:)
       end type work_for_comm_check
 !
       type(work_for_comm_check), save :: ele_check
@@ -38,19 +43,10 @@
       type(work_for_comm_check), save :: edge_check
 !
       integer(kind = kint) :: nnod_diff_local
-      integer(kind = kint) :: nele_diff_local
-      integer(kind = kint) :: nsurf_diff_local
-      integer(kind = kint) :: nedge_diff_local
 !
       integer(kind = kint), allocatable :: inod_diff(:)
-      integer(kind = kint), allocatable :: iele_diff(:)
-      integer(kind = kint), allocatable :: isurf_diff(:)
-      integer(kind = kint), allocatable :: iedge_diff(:)
 !
       real(kind = kreal), allocatable :: xx_diff(:)
-      real(kind = kreal), allocatable :: xele_diff(:)
-      real(kind = kreal), allocatable :: xsurf_diff(:)
-      real(kind = kreal), allocatable :: xedge_diff(:)
 !
       integer(kind = kint), allocatable :: istack_nod_diff_pe(:)
       integer(kind = kint), allocatable :: istack_ele_diff_pe(:)
@@ -110,26 +106,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_diff_geom_comm_test
+      subroutine alloc_diff_ele_comm_test(wk_check)
 !
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
-      allocate( iele_diff(nele_diff_local) )
-      allocate( xele_diff(6*nele_diff_local) )
+      allocate( wk_check%i_diff(wk_check%num_diff) )
+      allocate( wk_check%x_diff(6*wk_check%num_diff) )
 !
-      allocate( isurf_diff(nsurf_diff_local) )
-      allocate( xsurf_diff(6*nsurf_diff_local) )
+      if(wk_check%num_diff .le. 0) return
+      wk_check%i_diff =     0
+      wk_check%x_diff =     0.0d0
 !
-      allocate( iedge_diff(nedge_diff_local) )
-      allocate( xedge_diff(6*nedge_diff_local) )
-!
-      iele_diff =     0
-      xele_diff =     0.0d0
-      isurf_diff =    0
-      xsurf_diff =    0.0d0
-      iedge_diff =    0
-      xedge_diff =    0.0d0
-!
-      end subroutine allocate_diff_geom_comm_test
+      end subroutine alloc_diff_ele_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -143,19 +131,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_diff_geom_comm_test
+      subroutine dealloc_diff_ele_comm_test(wk_check)
 !
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
-      deallocate( iele_diff    )
-      deallocate( xele_diff    )
+      deallocate( wk_check%i_diff, wk_check%x_diff)
 !
-      deallocate( isurf_diff    )
-      deallocate( xsurf_diff    )
-!
-      deallocate( iedge_diff    )
-      deallocate( xedge_diff    )
-!
-      end subroutine deallocate_diff_geom_comm_test
+      end subroutine dealloc_diff_ele_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

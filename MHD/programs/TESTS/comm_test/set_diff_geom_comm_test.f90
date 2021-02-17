@@ -51,17 +51,15 @@
       type(communication_table), intent(in) :: edge_comm
 !
 !
-      nele_diff_local = count_ele_comm_test                             &
-     &   (ele%numele, ele%x_ele, ele_comm%ntot_import,                  &
-     &    ele_comm%item_import, ele_check%xx_test)
-      nsurf_diff_local =  count_ele_comm_test                           &
-     &   (surf%numsurf, surf%x_surf,               &
-     &    surf_comm%ntot_import, surf_comm%item_import,                 &
-     &    surf_check%xx_test)
-      nedge_diff_local =  count_ele_comm_test                       &
-     &   (edge%numedge, edge%x_edge,               &
-     &    edge_comm%ntot_import,  edge_comm%item_import,                &
-     &    edge_check%xx_test)
+      ele_check%num_diff = count_ele_comm_test                          &
+     &                   (ele%numele, ele%x_ele, ele_comm%ntot_import,  &
+     &                    ele_comm%item_import, ele_check%xx_test)
+      surf_check%num_diff =  count_ele_comm_test                        &
+     &               (surf%numsurf, surf%x_surf, surf_comm%ntot_import, &
+     &                surf_comm%item_import, surf_check%xx_test)
+      edge_check%num_diff =  count_ele_comm_test                        &
+     &               (edge%numedge, edge%x_edge, edge_comm%ntot_import, &
+     &                edge_comm%item_import, edge_check%xx_test)
 !
       end subroutine s_count_diff_geom_comm_test
 !
@@ -80,13 +78,16 @@
 !
       call compare_ele_comm_test(ele%numele, ele%x_ele,                 &
      &    ele_comm%ntot_import, ele_comm%item_import,                   &
-     &    ele_check%xx_test, nele_diff_local, iele_diff, xele_diff)
+     &    ele_check%xx_test, ele_check%num_diff,                        &
+     &    ele_check%i_diff, ele_check%x_diff)
       call compare_ele_comm_test(surf%numsurf, surf%x_surf,             &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
-     &    surf_check%xx_test, nsurf_diff_local, isurf_diff, xsurf_diff)
+     &    surf_check%xx_test, surf_check%num_diff,                      &
+     &    surf_check%i_diff, surf_check%x_diff)
       call compare_ele_comm_test(edge%numedge, edge%x_edge,             &
      &    edge_comm%ntot_import, edge_comm%item_import,                 &
-     &    edge_check%xx_test, nedge_diff_local, iedge_diff, xedge_diff)
+     &    edge_check%xx_test, edge_check%num_diff,                      &
+     &    edge_check%i_diff, edge_check%x_diff)
 !
       end subroutine s_set_diff_geom_comm_test
 !

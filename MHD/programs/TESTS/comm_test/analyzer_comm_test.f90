@@ -193,7 +193,9 @@
      &   (test_fem%mesh%ele, test_fem%mesh%surf, test_fem%mesh%edge,    &
      &    T_ele_comm, T_surf_comm, T_edge_comm)
 !
-      call allocate_diff_geom_comm_test
+      call alloc_diff_ele_comm_test(ele_check)
+      call alloc_diff_ele_comm_test(surf_check)
+      call alloc_diff_ele_comm_test(edge_check)
       if (iflag_debug.gt.0) write(*,*) 's_set_diff_geom_comm_test'
       call s_set_diff_geom_comm_test(test_fem%mesh%ele,                 &
      &   test_fem%mesh%surf, test_fem%mesh%edge,                        &
@@ -205,41 +207,43 @@
 !
       call allocate_geom_stack_ctest_IO
 !
-      write(*,*) 'nnod_diff_local, nele_diff_local, ',                  &
-     &                      'nsurf_diff_local, nedge_diff_local '
-      write(*,*) my_rank, nnod_diff_local, nele_diff_local,             &
-     &                      nsurf_diff_local, nedge_diff_local
+      write(*,*) 'nnod_diff_local, ele_check%num_diff, ',               &
+     &                      'surf_check%num_diff, edge_check%num_diff '
+      write(*,*) my_rank, nnod_diff_local, ele_check%num_diff,          &
+     &                      surf_check%num_diff, edge_check%num_diff
       call count_collect_SR_num                                         &
-     &   (nele_diff_local, istack_ele_diff_pe, SR_sig_t)
+     &   (ele_check%num_diff, istack_ele_diff_pe, SR_sig_t)
       call count_collect_SR_num                                         &
-     &   (nsurf_diff_local, istack_surf_diff_pe, SR_sig_t)
+     &   (surf_check%num_diff, istack_surf_diff_pe, SR_sig_t)
       call count_collect_SR_num                                         &
-     &   (nedge_diff_local, istack_edge_diff_pe, SR_sig_t)
+     &   (edge_check%num_diff, istack_edge_diff_pe, SR_sig_t)
 !
       call allocate_geom_comm_test_IO
       if (iflag_debug.gt.0) write(*,*) 's_collect_diff_4_comm_test'
 !
       call collect_send_recv_int                                        &
-     &   (0, nele_diff_local, iele_diff,                                &
+     &   (0, ele_check%num_diff, ele_check%i_diff,                      &
      &    istack_ele_diff_pe, iele_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
-     &   (0, isix, nele_diff_local, xele_diff,                          &
+     &   (0, isix, ele_check%num_diff, ele_check%x_diff,                &
      &    istack_ele_diff_pe, xele_diff_IO, SR_sig_t)
 !
       call collect_send_recv_int                                        &
-     &   (0, nsurf_diff_local, isurf_diff,                              &
+     &   (0, surf_check%num_diff, surf_check%i_diff,                    &
      &    istack_surf_diff_pe, isurf_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
-     &   (0, isix, nsurf_diff_local, xsurf_diff,                        &
+     &   (0, isix, surf_check%num_diff, surf_check%x_diff,              &
      &    istack_surf_diff_pe, xsurf_diff_IO, SR_sig_t)
 !
       call collect_send_recv_int                                        &
-     &   (0, nedge_diff_local, iedge_diff,                              &
+     &   (0, edge_check%num_diff, edge_check%i_diff,                    &
      &    istack_edge_diff_pe, iedge_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
-     &   (0, isix, nedge_diff_local, xedge_diff,                        &
+     &   (0, isix, edge_check%num_diff, edge_check%x_diff,              &
      &    istack_edge_diff_pe, xedge_diff_IO, SR_sig_t)
-      call deallocate_diff_geom_comm_test
+      call dealloc_diff_ele_comm_test(ele_check)
+      call dealloc_diff_ele_comm_test(surf_check)
+      call dealloc_diff_ele_comm_test(edge_check)
 !
       call dealloc_SR_flag(SR_sig_t)
 !
