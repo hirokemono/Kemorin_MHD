@@ -114,6 +114,7 @@
       subroutine analyze_communication_test
 !
       use t_vector_for_solver
+      use m_geometry_4_comm_test
 !
       use calypso_mpi
       use collect_SR_N
@@ -176,12 +177,17 @@
       call deallocate_diff_nod_comm_test
 !
 !
-      call allocate_geom_4_comm_test (test_fem%mesh%ele%numele,         &
-     &    test_fem%mesh%surf%numsurf, test_fem%mesh%edge%numedge)
+      call alloc_geom_4_comm_test                                       &
+     &   (test_fem%mesh%ele%numele, ele_check)
+      call alloc_geom_4_comm_test                                       &
+     &   (test_fem%mesh%surf%numsurf, surf_check)
+      call alloc_geom_4_comm_test                                       &
+     &   (test_fem%mesh%edge%numedge, edge_check)
+!
       if (iflag_debug.gt.0) write(*,*) 's_mesh_send_recv_test'
       call s_mesh_send_recv_test(test_fem%mesh%ele,                     &
      &    test_fem%mesh%surf, test_fem%mesh%edge,                       &
-     &    T_ele_comm, T_surf_comm, T_edge_comm)
+     &    T_ele_comm, T_surf_comm, T_edge_comm, v_sol_T)
       if (iflag_debug.gt.0) write(*,*) 's_count_diff_geom_comm_test'
       call s_count_diff_geom_comm_test                                  &
      &   (test_fem%mesh%ele, test_fem%mesh%surf, test_fem%mesh%edge,    &
@@ -192,7 +198,10 @@
       call s_set_diff_geom_comm_test(test_fem%mesh%ele,                 &
      &   test_fem%mesh%surf, test_fem%mesh%edge,                        &
      &   T_ele_comm, T_surf_comm, T_edge_comm)
-      call deallocate_geom_4_comm_test
+!
+      call dealloc_ele_4_comm_test(ele_check)
+      call dealloc_ele_4_comm_test(surf_check)
+      call dealloc_ele_4_comm_test(edge_check)
 !
       call allocate_geom_stack_ctest_IO
 !

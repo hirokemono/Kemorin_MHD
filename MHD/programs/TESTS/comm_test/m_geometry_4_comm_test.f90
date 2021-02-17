@@ -1,8 +1,9 @@
 !
 !      module m_geometry_4_comm_test
 !
-!      subroutine allocate_geom_4_comm_test(numele, numsurf, numedge)
-!      subroutine deallocate_geom_4_comm_test
+!!      subroutine alloc_geom_4_comm_test(numele, wk_check)
+!!      subroutine dealloc_ele_4_comm_test(wk_check)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
 !
 !      subroutine allocate_diff_nod_comm_test
 !      subroutine allocate_diff_geom_comm_test
@@ -28,10 +29,13 @@
 !
       implicit  none
 !
-      real(kind = kreal), allocatable :: x_ele_comm(:)
-      real(kind = kreal), allocatable :: x_surf_comm(:)
-      real(kind = kreal), allocatable :: x_edge_comm(:)
+      type work_for_comm_check
+        real(kind = kreal), allocatable :: xx_test(:,:)
+      end type work_for_comm_check
 !
+      type(work_for_comm_check), save :: ele_check
+      type(work_for_comm_check), save :: surf_check
+      type(work_for_comm_check), save :: edge_check
 !
       integer(kind = kint) :: nnod_diff_local
       integer(kind = kint) :: nele_diff_local
@@ -69,33 +73,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_geom_4_comm_test(numele, numsurf, numedge)
+      subroutine alloc_geom_4_comm_test(numele, wk_check)
 !
-      integer(kind = kint), intent(in) :: numele, numsurf, numedge
+      integer(kind = kint), intent(in) :: numele
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
 !
-      allocate(x_ele_comm(3*numele))
-      x_ele_comm = 0.0d0
+      allocate(wk_check%xx_test(numele,3))
+      if(numele .gt. 0) wk_check%xx_test = 0.0d0
 !
-      allocate(x_surf_comm(3*numsurf))
-      x_surf_comm = 0.0d0
-!
-      allocate(x_edge_comm(3*numedge))
-      x_edge_comm = 0.0d0
-!
-      end subroutine allocate_geom_4_comm_test
+      end subroutine alloc_geom_4_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_geom_4_comm_test
+      subroutine dealloc_ele_4_comm_test(wk_check)
 !
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
-      deallocate(x_ele_comm   )
-      deallocate(x_surf_comm  )
-      deallocate(x_edge_comm  )
+      deallocate(wk_check%xx_test)
 !
-      end subroutine deallocate_geom_4_comm_test
+      end subroutine dealloc_ele_4_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

@@ -51,15 +51,17 @@
       type(communication_table), intent(in) :: edge_comm
 !
 !
-      call count_ele_comm_test                                          &
+      nele_diff_local = count_ele_comm_test                             &
      &   (ele%numele, ele%x_ele, ele_comm%ntot_import,                  &
-     &    ele_comm%item_import, x_ele_comm, nele_diff_local)
-      call count_ele_comm_test(surf%numsurf, surf%x_surf,               &
+     &    ele_comm%item_import, ele_check%xx_test)
+      nsurf_diff_local =  count_ele_comm_test                           &
+     &   (surf%numsurf, surf%x_surf,               &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
-     &    x_surf_comm, nsurf_diff_local)
-      call count_ele_comm_test(edge%numedge, edge%x_edge,               &
+     &    surf_check%xx_test)
+      nedge_diff_local =  count_ele_comm_test                       &
+     &   (edge%numedge, edge%x_edge,               &
      &    edge_comm%ntot_import,  edge_comm%item_import,                &
-     &    x_edge_comm, nedge_diff_local)
+     &    edge_check%xx_test)
 !
       end subroutine s_count_diff_geom_comm_test
 !
@@ -78,13 +80,13 @@
 !
       call compare_ele_comm_test(ele%numele, ele%x_ele,                 &
      &    ele_comm%ntot_import, ele_comm%item_import,                   &
-     &    x_ele_comm, nele_diff_local, iele_diff, xele_diff)
+     &    ele_check%xx_test, nele_diff_local, iele_diff, xele_diff)
       call compare_ele_comm_test(surf%numsurf, surf%x_surf,             &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
-     &    x_surf_comm, nsurf_diff_local, isurf_diff, xsurf_diff)
+     &    surf_check%xx_test, nsurf_diff_local, isurf_diff, xsurf_diff)
       call compare_ele_comm_test(edge%numedge, edge%x_edge,             &
      &    edge_comm%ntot_import, edge_comm%item_import,                 &
-     &    x_edge_comm, nedge_diff_local, iedge_diff, xedge_diff)
+     &    edge_check%xx_test, nedge_diff_local, iedge_diff, xedge_diff)
 !
       end subroutine s_set_diff_geom_comm_test
 !
@@ -185,8 +187,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_ele_comm_test(num_d, x_org,                      &
-     &          ntot_import_e, item_import_e, x_comm, num_diff_l)
+      integer(kind = kint) function count_ele_comm_test                 &
+     &         (num_d, x_org, ntot_import_e, item_import_e, x_comm)
 !
       integer(kind = kint), intent(in) :: num_d
       real(kind = kreal), intent(in) :: x_org(num_d,3)
@@ -194,23 +196,23 @@
       integer(kind = kint), intent(in) :: ntot_import_e
       integer(kind = kint), intent(in) :: item_import_e(ntot_import_e)
 !
-      real(kind = kreal), intent(in) :: x_comm(3*num_d)
+      real(kind = kreal), intent(in) :: x_comm(num_d,3)
 !
-      integer(kind = kint), intent(inout) :: num_diff_l
-!
+      integer(kind = kint) :: num_diff_l
       integer(kind = kint) :: inum, iele
       real(kind = kreal) :: diff
 !
       num_diff_l = 0
       do inum = 1, ntot_import_e
         iele = item_import_e(inum)
-        diff =  abs(x_comm(3*iele-2) - x_org(iele,1))                   &
-     &        + abs(x_comm(3*iele-1) - x_org(iele,2))                   &
-     &        + abs(x_comm(3*iele  ) - x_org(iele,3))
+        diff =  abs(x_comm(iele,1) - x_org(iele,1))                     &
+     &        + abs(x_comm(iele,2) - x_org(iele,2))                     &
+     &        + abs(x_comm(iele,3) - x_org(iele,3))
         if (diff .gt. TINY) num_diff_l = num_diff_l + 1
       end do
+      count_ele_comm_test = num_diff_l
 !
-      end subroutine count_ele_comm_test
+      end function count_ele_comm_test
 !
 ! ----------------------------------------------------------------------
 !
@@ -224,7 +226,7 @@
       integer(kind = kint), intent(in) :: ntot_import_e
       integer(kind = kint), intent(in) :: item_import_e(ntot_import_e)
 !
-      real(kind = kreal), intent(in) :: x_comm(3*num_d)
+      real(kind = kreal), intent(in) :: x_comm(num_d,3)
 !
       integer(kind = kint), intent(in) :: num_diff_l
       integer(kind = kint), intent(inout) :: id_diff(num_diff_l)
@@ -236,18 +238,18 @@
       icou = 0
       do inum = 1, ntot_import_e
         iele = item_import_e(inum)
-        diff =  abs(x_comm(3*iele-2) - x_org(iele,1))                   &
-     &        + abs(x_comm(3*iele-1) - x_org(iele,2))                   &
-     &        + abs(x_comm(3*iele  ) - x_org(iele,3))
+        diff =  abs(x_comm(iele,1) - x_org(iele,1))                   &
+     &        + abs(x_comm(iele,2) - x_org(iele,2))                   &
+     &        + abs(x_comm(iele,3) - x_org(iele,3))
         if (diff .gt. TINY) then
           icou = icou + 1
           id_diff(icou) =        iele
           x_diff(6*icou-5) =      x_org(iele,1)
           x_diff(6*icou-4) =      x_org(iele,2)
           x_diff(6*icou-3) =      x_org(iele,3)
-          x_diff(6*icou-2) =      x_comm(3*iele-2)
-          x_diff(6*icou-1) =      x_comm(3*iele-1)
-          x_diff(6*icou  ) =      x_comm(3*iele  )
+          x_diff(6*icou-2) =      x_comm(iele,1)
+          x_diff(6*icou-1) =      x_comm(iele,2)
+          x_diff(6*icou  ) =      x_comm(iele,3)
         end if
       end do
 !
