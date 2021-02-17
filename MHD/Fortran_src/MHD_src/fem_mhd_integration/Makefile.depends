@@ -24,7 +24,7 @@ cal_rotation.o: $(MHD_RHS_DIR)/cal_rotation.f90 m_precision.o m_machine_paramete
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_stratification_by_temp.o: $(MHD_RHS_DIR)/cal_stratification_by_temp.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o t_geometry_data_MHD.o t_geometry_data.o t_phys_data.o t_phys_address.o t_fem_gauss_int_coefs.o t_finite_element_mat.o t_jacobians.o t_jacobian_3d.o t_table_FEM_const.o t_MHD_finite_element_mat.o nodal_fld_2_each_element.o cal_skv_to_ff_smp.o fem_skv_stratified.o
 	$(F90) -c $(F90OPTFLAGS) $<
-cal_volume_node_MHD.o: $(MHD_RHS_DIR)/cal_volume_node_MHD.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o t_SGS_control_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_boundary.o t_geometry_data_MHD.o t_mean_square_values.o t_jacobians.o t_layering_ele_list.o t_shape_functions.o const_jacobians_3d.o int_volume_of_domain.o cal_layered_volumes.o sum_volume_of_domain.o calypso_mpi_real.o
+cal_volume_node_MHD.o: $(MHD_RHS_DIR)/cal_volume_node_MHD.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o t_SGS_control_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_group_data.o t_surface_boundary.o t_geometry_data_MHD.o t_bc_data_list.o t_mean_square_values.o t_jacobians.o t_layering_ele_list.o t_shape_functions.o const_jacobians_3d.o int_volume_of_domain.o cal_layered_volumes.o sum_volume_of_domain.o const_bc_infty_surf_type.o calypso_mpi_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 fem_skv_div_asym_t_upw.o: $(MHD_RHS_DIR)/fem_skv_div_asym_t_upw.f90 m_precision.o m_constants.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -150,9 +150,7 @@
      &    spfs_f%spf_3d, spfs_f%spf_2d, spfs_f%spf_1d)
 !
       call const_jacobian_and_volume(my_rank, nprocs,                   &
-     &    fem_f%mesh%node, fem_f%group%surf_grp,                        &
-     &    fem_f%group%infty_grp, fem_f%mesh%ele,                        &
-     &    spfs_f%spf_3d, fem_int_f%jcs)
+     &    fem_f%mesh, fem_f%group, spfs_f%spf_3d, fem_int_f%jcs)
 !
 !      call check_jacobians_trilinear                                   &
 !     &   (my_rank, fem_f%mesh%ele, fem_int_f%jcs%jac_3d_l)

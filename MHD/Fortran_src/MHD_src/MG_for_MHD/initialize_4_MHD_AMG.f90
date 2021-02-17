@@ -183,11 +183,12 @@
         if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_bc_infinity_surf_grp', i_level
-          call const_bc_infinity_surf_grp(iflag_surf_infty,             &
+          call const_bc_infinity_surf_grp(MHD_BC%infty_BC,              &
      &        MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                 &
      &        MGCG_FEM%MG_mesh(i_level)%group%infty_grp)
         else
-          call empty_infty_surf_type(MGCG_FEM%MG_mesh(i_level)%group)
+          call empty_infty_surf_type                                    &
+     &       (MGCG_FEM%MG_mesh(i_level)%group%infty_grp)
         end if
       end do
 !

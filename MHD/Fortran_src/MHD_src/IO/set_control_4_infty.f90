@@ -8,8 +8,9 @@
 !> @brief set infinite radius boundary from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_infty(surf_bc_INF_ctl)
+!!     subroutine s_set_control_4_infty(surf_bc_INF_ctl, infty_BC)
 !!        type(ctl_array_c2r), intent(in) :: surf_bc_INF_ctl
+!!        type(boundary_condition_list), intent(inout) :: infty_BC
 !!@endverbatim
 !
       module set_control_4_infty
@@ -24,38 +25,40 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_infty(surf_bc_INF_ctl)
+      subroutine s_set_control_4_infty(surf_bc_INF_ctl, infty_BC)
 !
       use calypso_mpi
       use t_control_array_chara2real
+      use t_bc_data_list
       use const_bc_infinity_surf
       use set_surface_group_types
 !
       type(ctl_array_c2r), intent(in) :: surf_bc_INF_ctl
+      type(boundary_condition_list), intent(inout) :: infty_BC
 !
       integer (kind = kint) :: i
 !
 !
 !   set boundary_conditons for infinity
 !
-      if (num_bc_infty .lt. 0) then
-        num_bc_infty = 0
+      if(surf_bc_INF_ctl%num .lt. 0) then
+        infty_BC%num_bc = 0
       else
-        num_bc_infty = surf_bc_INF_ctl%num
+        infty_BC%num_bc = surf_bc_INF_ctl%num
       end if
 !
 !
-      if (num_bc_infty .gt. 0) then
-        call allocate_infty_surf_ctl
+      if (infty_BC%num_bc .gt. 0) then
+        call alloc_bc_type_ctl(infty_BC)
 !
-        bc_infty_name(1:num_bc_infty)                                   &
-     &        =  surf_bc_INF_ctl%c2_tbl(1:num_bc_infty)
-        bc_infty_magnitude(1:num_bc_infty)                              &
-     &        = surf_bc_INF_ctl%vect(1:num_bc_infty)
+        infty_BC%bc_name(1:infty_BC%num_bc)                             &
+     &        =  surf_bc_INF_ctl%c2_tbl(1:infty_BC%num_bc)
+        infty_BC%bc_magnitude(1:infty_BC%num_bc)                        &
+     &        = surf_bc_INF_ctl%vect(1:infty_BC%num_bc)
 !
-        do i = 1, num_bc_infty
+        do i = 1, infty_BC%num_bc
          call set_surf_infty_group_types(surf_bc_INF_ctl%c1_tbl(i),     &
-     &       ibc_infty_type(i))
+     &       infty_BC%ibc_type(i))
         end do
       end if
 !

@@ -123,8 +123,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_vol_layer'
       call const_jacobian_and_vol_layer(my_rank, nprocs,                &
-     &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%group%surf_grp,        &
-     &    femmesh_p_FUT%group%infty_grp, femmesh_p_FUT%mesh%ele,        &
+     &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%mesh%ele,              &
+     &    femmesh_p_FUT%group%surf_grp, femmesh_p_FUT%group%infty_grp,  &
      &    FUTIL1%spfs, FUTIL1%jacobians, layer_tbl_corr)
       call dealloc_vol_shape_func(FUTIL1%spfs%spf_3d)
 !

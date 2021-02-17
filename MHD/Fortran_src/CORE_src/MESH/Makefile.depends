@@ -4,7 +4,7 @@ add_nodes_elems_4_each_nod.o: $(MESHDIR)/add_nodes_elems_4_each_nod.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_local_position_by_tetra.o: $(MESHDIR)/cal_local_position_by_tetra.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_bc_infinity_surf.o: $(MESHDIR)/const_bc_infinity_surf.f90 m_precision.o
+const_bc_infinity_surf.o: $(MESHDIR)/const_bc_infinity_surf.f90 m_precision.o t_bc_data_list.o m_boundary_condition_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 convert_group_2_linear.o: $(MESHDIR)/convert_group_2_linear.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
