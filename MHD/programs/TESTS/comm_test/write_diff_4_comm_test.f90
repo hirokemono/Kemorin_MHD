@@ -30,7 +30,7 @@
 !
       subroutine output_diff_node_comm_test
 !
-      if(istack_nod_diff_pe(nprocs) .eq. 0) then
+      if(nod_check%istack_diff_pe(nprocs) .eq. 0) then
         write(*,*) 'No wrong communication for nodes'
         return
       end if
@@ -38,13 +38,13 @@
       open(id_comm_test, file = comm_test_name)
 !
       write(id_comm_test,*) 'ntot_nod_diff_pe',                         &
-     &                     istack_nod_diff_pe(nprocs)
+     &                     nod_check%istack_diff_pe(nprocs)
       write(id_comm_test,*) 'domain, local_nod_id, ',                   &
      &      'global_nod_org, global_nod_get, ',                         &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
 !
-      call write_diff_comm_test                                         &
-     &   (istack_nod_diff_pe, inod_diff_IO, xx_diff_IO)
+      call write_diff_comm_test(nod_check%istack_diff_pe,               &
+     &    nod_check%i_diff_IO, nod_check%x_diff_IO)
 !
       close(id_comm_test)
 !
@@ -56,10 +56,10 @@
 !
       integer(kind = kint) :: ntot_error
 !
-      ntot_error = istack_nod_diff_pe(nprocs)                           &
-     &            + istack_ele_diff_pe(nprocs)                          &
-     &            + istack_surf_diff_pe(nprocs)                         &
-     &            + istack_edge_diff_pe(nprocs)
+      ntot_error = nod_check%istack_diff_pe(nprocs)                     &
+     &            + ele_check%istack_diff_pe(nprocs)                    &
+     &            + surf_check%istack_diff_pe(nprocs)                   &
+     &            + edge_check%istack_diff_pe(nprocs)
       if(ntot_error .eq. 0) then
         write(*,*) 'No wrong communication for mesh'
         return
@@ -68,42 +68,42 @@
       open(id_comm_test, file = comm_test_name)
 !
       write(id_comm_test,*) 'ntot_nod_diff_pe ',                        &
-     &                     istack_nod_diff_pe(nprocs)
+     &                     nod_check%istack_diff_pe(nprocs)
       write(id_comm_test,*) 'ntot_ele_diff_pe ',                        &
-     &                     istack_ele_diff_pe(nprocs) 
+     &                     ele_check%istack_diff_pe(nprocs) 
       write(id_comm_test,*) 'ntot_surf_diff_pe',                        &
-     &                     istack_surf_diff_pe(nprocs)
+     &                     surf_check%istack_diff_pe(nprocs)
       write(id_comm_test,*) 'ntot_edge_diff_pe',                        &
-     &                     istack_edge_diff_pe(nprocs)
-      write(*,*) 'ntot_nod_diff_pe ', istack_nod_diff_pe(nprocs)
-      write(*,*) 'ntot_ele_diff_pe ', istack_ele_diff_pe(nprocs) 
-      write(*,*) 'ntot_surf_diff_pe', istack_surf_diff_pe(nprocs)
-      write(*,*) 'ntot_edge_diff_pe', istack_edge_diff_pe(nprocs)
+     &                     edge_check%istack_diff_pe(nprocs)
+      write(*,*) 'ntot_nod_diff_pe ', nod_check%istack_diff_pe(nprocs)
+      write(*,*) 'ntot_ele_diff_pe ', ele_check%istack_diff_pe(nprocs) 
+      write(*,*) 'ntot_surf_diff_pe', surf_check%istack_diff_pe(nprocs)
+      write(*,*) 'ntot_edge_diff_pe', edge_check%istack_diff_pe(nprocs)
 !
 !
       write(id_comm_test,*) 'domain, local_nod_id, ',                   &
      &      'global_nod_org, global_nod_get, ',                         &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test                                         &
-     &   (istack_nod_diff_pe, inod_diff_IO, xx_diff_IO)
+      call write_diff_comm_test(nod_check%istack_diff_pe,               &
+     &    nod_check%i_diff_IO, nod_check%x_diff_IO)
 !
       write(id_comm_test,*) 'domain, local_ele_id, ',                   &
      &      'global_ele_org, global_ele_get, ',                         &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test                                         &
-     &   (istack_ele_diff_pe, iele_diff_IO, xele_diff_IO)
+      call write_diff_comm_test(ele_check%istack_diff_pe,               &
+     &    ele_check%i_diff_IO, ele_check%x_diff_IO)
 !
       write(id_comm_test,*) 'domain, local_surf_id, ',                  &
      &      'global_surf_org, global_surf_get, ',                       &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test                                         &
-     &   (istack_surf_diff_pe, isurf_diff_IO, xsurf_diff_IO)
+      call write_diff_comm_test(surf_check%istack_diff_pe,              &
+     &    surf_check%i_diff_IO, surf_check%x_diff_IO)
 !
       write(id_comm_test,*) 'domain, local_edge_id, ',                  &
      &      'global_edge_org, global_edge_get, ',                       &
      &      'xx_org, yy_org, zz_org, xx_get, yy_get, zz_get'
-      call write_diff_comm_test                                         &
-     &   (istack_edge_diff_pe, iedge_diff_IO, xedge_diff_IO)
+      call write_diff_comm_test(edge_check%istack_diff_pe,              &
+     &    edge_check%i_diff_IO, edge_check%x_diff_IO)
 !
       close(id_comm_test)
 !

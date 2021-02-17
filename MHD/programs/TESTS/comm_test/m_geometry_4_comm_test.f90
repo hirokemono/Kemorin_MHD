@@ -4,22 +4,15 @@
 !!      subroutine alloc_geom_4_comm_test(numele, wk_check)
 !!      subroutine dealloc_ele_4_comm_test(wk_check)
 !!        type(work_for_comm_check), intent(inout) :: wk_check
-!
-!      subroutine allocate_diff_nod_comm_test
-!      subroutine alloc_diff_ele_comm_test(wk_check)
-!      subroutine deallocate_diff_nod_comm_test
+!!
+!!      subroutine alloc_diff_ele_comm_test(wk_check)
 !!      subroutine dealloc_diff_ele_comm_test(wk_check)
 !!        type(work_for_comm_check), intent(inout) :: wk_check
-!
-!      subroutine allocate_nod_stack_ctest_IO
-!      subroutine allocate_geom_stack_ctest_IO
-!      subroutine allocate_nod_comm_test_IO
-!      subroutine allocate_geom_comm_test_IO
-!
-!      subroutine deallocate_nod_stack_ctest_IO
-!      subroutine deallocate_geom_stack_ctest_IO
-!      subroutine deallocate_nod_comm_test_IO
-!      subroutine deallocate_geom_comm_test_IO
+!!
+!!      subroutine alloc_comm_stack_ctest_IO(wk_check)
+!!      subroutine alloc_ele_comm_test_IO(wk_check)
+!!      subroutine dealloc_ele_comm_test_IO(wk_check)
+!!        type(work_for_comm_check), intent(inout) :: wk_check
 !
 !     Written by H. Matsui on Sep., 2007
 !
@@ -36,32 +29,16 @@
         integer(kind = kint) :: num_diff
         integer(kind = kint), allocatable :: i_diff(:)
         real(kind = kreal), allocatable :: x_diff(:)
+!
+        integer(kind = kint), allocatable :: istack_diff_pe(:)
+        integer(kind = kint), allocatable :: i_diff_IO(:)
+        real(kind = kreal), allocatable :: x_diff_IO(:)
       end type work_for_comm_check
 !
+      type(work_for_comm_check), save :: nod_check
       type(work_for_comm_check), save :: ele_check
       type(work_for_comm_check), save :: surf_check
       type(work_for_comm_check), save :: edge_check
-!
-      integer(kind = kint) :: nnod_diff_local
-!
-      integer(kind = kint), allocatable :: inod_diff(:)
-!
-      real(kind = kreal), allocatable :: xx_diff(:)
-!
-      integer(kind = kint), allocatable :: istack_nod_diff_pe(:)
-      integer(kind = kint), allocatable :: istack_ele_diff_pe(:)
-      integer(kind = kint), allocatable :: istack_surf_diff_pe(:)
-      integer(kind = kint), allocatable :: istack_edge_diff_pe(:)
-!
-      integer(kind = kint), allocatable :: inod_diff_IO(:)
-      integer(kind = kint), allocatable :: iele_diff_IO(:)
-      integer(kind = kint), allocatable :: isurf_diff_IO(:)
-      integer(kind = kint), allocatable :: iedge_diff_IO(:)
-!
-      real(kind = kreal), allocatable :: xx_diff_IO(:)
-      real(kind = kreal), allocatable :: xele_diff_IO(:)
-      real(kind = kreal), allocatable :: xsurf_diff_IO(:)
-      real(kind = kreal), allocatable :: xedge_diff_IO(:)
 !
 !  ---------------------------------------------------------------------
 !
@@ -94,18 +71,6 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_diff_nod_comm_test
-!
-      allocate( inod_diff(nnod_diff_local) )
-      allocate( xx_diff(6*nnod_diff_local) )
-!
-      inod_diff =     0
-      xx_diff =       0.0d0
-!
-      end subroutine allocate_diff_nod_comm_test
-!
-! ----------------------------------------------------------------------
-!
       subroutine alloc_diff_ele_comm_test(wk_check)
 !
       type(work_for_comm_check), intent(inout) :: wk_check
@@ -122,135 +87,56 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_diff_nod_comm_test
-!
-      deallocate( inod_diff    )
-      deallocate( xx_diff      )
-!
-      end subroutine deallocate_diff_nod_comm_test
-!
-! ----------------------------------------------------------------------
-!
       subroutine dealloc_diff_ele_comm_test(wk_check)
 !
       type(work_for_comm_check), intent(inout) :: wk_check
 !
-      deallocate( wk_check%i_diff, wk_check%x_diff)
+      deallocate(wk_check%i_diff, wk_check%x_diff)
 !
       end subroutine dealloc_diff_ele_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_nod_stack_ctest_IO
+      subroutine alloc_comm_stack_ctest_IO(wk_check)
 !
       use calypso_mpi
 !
-      allocate( istack_nod_diff_pe(0:nprocs)  )
-      istack_nod_diff_pe =  0
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
-      end subroutine allocate_nod_stack_ctest_IO
+      allocate( wk_check%istack_diff_pe(0:nprocs)  )
+      wk_check%istack_diff_pe =  0
+!
+      end subroutine alloc_comm_stack_ctest_IO
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_geom_stack_ctest_IO
+      subroutine alloc_ele_comm_test_IO(wk_check)
 !
       use calypso_mpi
 !
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
-      allocate( istack_ele_diff_pe(0:nprocs)  )
-      allocate( istack_surf_diff_pe(0:nprocs) )
-      allocate( istack_edge_diff_pe(0:nprocs) )
-      istack_ele_diff_pe =  0
-      istack_surf_diff_pe = 0
-      istack_edge_diff_pe = 0
+      allocate(wk_check%i_diff_IO(wk_check%istack_diff_pe(nprocs)))
+      allocate(wk_check%x_diff_IO(6*wk_check%istack_diff_pe(nprocs)))
 !
-      end subroutine allocate_geom_stack_ctest_IO
+      if(wk_check%istack_diff_pe(nprocs) .le. 0) return
+      wk_check%i_diff_IO =     0
+      wk_check%x_diff_IO =     0.0d0
 !
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_nod_comm_test_IO
-!
-      use calypso_mpi
-!
-      allocate( inod_diff_IO(istack_nod_diff_pe(nprocs)) )
-      allocate( xx_diff_IO(6*istack_nod_diff_pe(nprocs)) )
-!
-      inod_diff_IO =     0
-      xx_diff_IO =       0.0d0
-!
-      end subroutine allocate_nod_comm_test_IO
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_geom_comm_test_IO
-!
-      use calypso_mpi
-!
-      allocate( iele_diff_IO(istack_ele_diff_pe(nprocs) ) )
-      allocate( xele_diff_IO(6*istack_ele_diff_pe(nprocs) ) )
-!
-      allocate( isurf_diff_IO(istack_surf_diff_pe(nprocs)) )
-      allocate( xsurf_diff_IO(6*istack_surf_diff_pe(nprocs)) )
-!
-      allocate( iedge_diff_IO(istack_edge_diff_pe(nprocs)) )
-      allocate( xedge_diff_IO(6*istack_edge_diff_pe(nprocs)) )
-!
-      iele_diff_IO =     0
-      xele_diff_IO =     0.0d0
-      isurf_diff_IO =    0
-      xsurf_diff_IO =    0.0d0
-      iedge_diff_IO =    0
-      xedge_diff_IO =    0.0d0
-!
-      end subroutine allocate_geom_comm_test_IO
+      end subroutine alloc_ele_comm_test_IO
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_nod_stack_ctest_IO
+      subroutine dealloc_ele_comm_test_IO(wk_check)
 !
-      deallocate( istack_nod_diff_pe )
+      type(work_for_comm_check), intent(inout) :: wk_check
 !
-      end subroutine deallocate_nod_stack_ctest_IO
+      deallocate(wk_check%i_diff_IO, wk_check%x_diff_IO)
+      deallocate(wk_check%istack_diff_pe)
 !
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_geom_stack_ctest_IO
-!
-!
-      call deallocate_nod_stack_ctest_IO
-!
-      deallocate( istack_ele_diff_pe  )
-      deallocate( istack_surf_diff_pe )
-      deallocate( istack_edge_diff_pe )
-!
-      end subroutine deallocate_geom_stack_ctest_IO
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_nod_comm_test_IO
-!
-      deallocate( inod_diff_IO    )
-      deallocate( xx_diff_IO      )
-!
-      end subroutine deallocate_nod_comm_test_IO
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_geom_comm_test_IO
-!
-!
-      deallocate( iele_diff_IO     )
-      deallocate( xele_diff_IO     )
-!
-      deallocate( isurf_diff_IO    )
-      deallocate( xsurf_diff_IO    )
-!
-      deallocate( iedge_diff_IO    )
-      deallocate( xedge_diff_IO    )
-!
-      end subroutine deallocate_geom_comm_test_IO
+      end subroutine dealloc_ele_comm_test_IO
 !
 ! ----------------------------------------------------------------------
 !

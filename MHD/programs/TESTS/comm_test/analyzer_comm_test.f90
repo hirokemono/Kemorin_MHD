@@ -154,27 +154,27 @@
       if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
       call count_diff_node_comm_test(test_fem%mesh%node, v_sol_T)
 !
-      call allocate_diff_nod_comm_test
+      call alloc_diff_ele_comm_test(nod_check)
       if (iflag_debug.gt.0) write(*,*) 'set_diff_node_comm_test'
       call set_diff_node_comm_test(test_fem%mesh%node, v_sol_T)
 !
       call dealloc_iccgN_vec_type(v_sol_T)
       call dealloc_iccg_int8_vector(v_sol_T)
 !
-      call allocate_nod_stack_ctest_IO
+      call alloc_comm_stack_ctest_IO(nod_check)
       if (iflag_debug.gt.0) write(*,*) 'count_diff_nod_comm_test'
       call count_collect_SR_num                                         &
-     &   (nnod_diff_local, istack_nod_diff_pe, SR_sig_t)
-      call allocate_nod_comm_test_IO
+     &   ( nod_check%num_diff, nod_check%istack_diff_pe, SR_sig_t)
+      call alloc_ele_comm_test_IO(nod_check)
 !
       if (iflag_debug.gt.0) write(*,*) 'collect_diff_nod_comm_test'
       call collect_send_recv_int                                        &
-     &   (0, nnod_diff_local, inod_diff,                                &
-     &    istack_nod_diff_pe, inod_diff_IO, SR_sig_t)
+     &   (0,  nod_check%num_diff, nod_check%i_diff,                     &
+     &    nod_check%istack_diff_pe, nod_check%i_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
-     &   (0, isix, nnod_diff_local, xx_diff,                            &
-     &    istack_nod_diff_pe, xx_diff_IO, SR_sig_t)
-      call deallocate_diff_nod_comm_test
+     &   (0, isix,  nod_check%num_diff, nod_check%x_diff,               &
+     &    nod_check%istack_diff_pe, nod_check%x_diff_IO, SR_sig_t)
+      call dealloc_diff_ele_comm_test(nod_check)
 !
 !
       call alloc_geom_4_comm_test                                       &
@@ -205,42 +205,46 @@
       call dealloc_ele_4_comm_test(surf_check)
       call dealloc_ele_4_comm_test(edge_check)
 !
-      call allocate_geom_stack_ctest_IO
+      call alloc_comm_stack_ctest_IO(ele_check)
+      call alloc_comm_stack_ctest_IO(surf_check)
+      call alloc_comm_stack_ctest_IO(edge_check)
 !
-      write(*,*) 'nnod_diff_local, ele_check%num_diff, ',               &
+      write(*,*) ' nod_check%num_diff, ele_check%num_diff, ',           &
      &                      'surf_check%num_diff, edge_check%num_diff '
-      write(*,*) my_rank, nnod_diff_local, ele_check%num_diff,          &
+      write(*,*) my_rank,  nod_check%num_diff, ele_check%num_diff,      &
      &                      surf_check%num_diff, edge_check%num_diff
       call count_collect_SR_num                                         &
-     &   (ele_check%num_diff, istack_ele_diff_pe, SR_sig_t)
+     &   (ele_check%num_diff,  ele_check%istack_diff_pe,  SR_sig_t)
       call count_collect_SR_num                                         &
-     &   (surf_check%num_diff, istack_surf_diff_pe, SR_sig_t)
+     &   (surf_check%num_diff, surf_check%istack_diff_pe, SR_sig_t)
       call count_collect_SR_num                                         &
-     &   (edge_check%num_diff, istack_edge_diff_pe, SR_sig_t)
+     &   (edge_check%num_diff, edge_check%istack_diff_pe, SR_sig_t)
 !
-      call allocate_geom_comm_test_IO
+      call alloc_ele_comm_test_IO(ele_check)
+      call alloc_ele_comm_test_IO(surf_check)
+      call alloc_ele_comm_test_IO(edge_check)
       if (iflag_debug.gt.0) write(*,*) 's_collect_diff_4_comm_test'
 !
       call collect_send_recv_int                                        &
      &   (0, ele_check%num_diff, ele_check%i_diff,                      &
-     &    istack_ele_diff_pe, iele_diff_IO, SR_sig_t)
+     &    ele_check%istack_diff_pe, ele_check%i_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
      &   (0, isix, ele_check%num_diff, ele_check%x_diff,                &
-     &    istack_ele_diff_pe, xele_diff_IO, SR_sig_t)
+     &    ele_check%istack_diff_pe, ele_check%x_diff_IO, SR_sig_t)
 !
       call collect_send_recv_int                                        &
      &   (0, surf_check%num_diff, surf_check%i_diff,                    &
-     &    istack_surf_diff_pe, isurf_diff_IO, SR_sig_t)
+     &    surf_check%istack_diff_pe, surf_check%i_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
      &   (0, isix, surf_check%num_diff, surf_check%x_diff,              &
-     &    istack_surf_diff_pe, xsurf_diff_IO, SR_sig_t)
+     &    surf_check%istack_diff_pe, surf_check%x_diff_IO, SR_sig_t)
 !
       call collect_send_recv_int                                        &
      &   (0, edge_check%num_diff, edge_check%i_diff,                    &
-     &    istack_edge_diff_pe, iedge_diff_IO, SR_sig_t)
+     &    edge_check%istack_diff_pe, edge_check%i_diff_IO, SR_sig_t)
       call collect_send_recv_N                                          &
      &   (0, isix, edge_check%num_diff, edge_check%x_diff,              &
-     &    istack_edge_diff_pe, xedge_diff_IO, SR_sig_t)
+     &    edge_check%istack_diff_pe, edge_check%x_diff_IO, SR_sig_t)
       call dealloc_diff_ele_comm_test(ele_check)
       call dealloc_diff_ele_comm_test(surf_check)
       call dealloc_diff_ele_comm_test(edge_check)
@@ -248,8 +252,10 @@
       call dealloc_SR_flag(SR_sig_t)
 !
       if (my_rank .eq. 0) call output_diff_mesh_comm_test
-      call deallocate_nod_comm_test_IO
-      call deallocate_geom_comm_test_IO
+      call dealloc_ele_comm_test_IO(nod_check)
+      call dealloc_ele_comm_test_IO(ele_check)
+      call dealloc_ele_comm_test_IO(surf_check)
+      call dealloc_ele_comm_test_IO(edge_check)
 !
       call output_elapsed_times
 !
