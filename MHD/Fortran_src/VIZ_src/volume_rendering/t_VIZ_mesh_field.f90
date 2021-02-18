@@ -57,8 +57,9 @@
         type(jacobians_type), pointer :: jacobians
 !>        Structure of included element list for each node
         type(element_around_node), pointer :: ele_4_nod
+!
 !>        Structure of edge communication table
-        type(communication_table), pointer :: edge_comm
+        type(communication_table) :: edge_comm
       end type VIZ_mesh_field
 !
 ! ----------------------------------------------------------------------
