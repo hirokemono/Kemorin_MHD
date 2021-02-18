@@ -40,9 +40,10 @@
 !
       module mesh_send_recv_check
 !
-      use m_work_time
       use m_precision
       use m_constants
+      use m_machine_parameter
+      use m_work_time
 !
       use calypso_mpi
 !
@@ -87,7 +88,13 @@
      &                             nod_check%xx_test)
 !
       call nod_send_recv_check(node, nod_check)
+!
+      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
+     &     'Failed communication for node', nod_check%num_diff
       call collect_failed_comm(nod_check, SR_sig)
+      if(my_rank .eq. 0) write(*,*) my_rank,                            &
+     &   'Total Failed communication for node',                         &
+     &    nod_check%istack_diff_pe(nprocs)
 !
       end subroutine node_send_recv_test
 !
@@ -118,7 +125,13 @@
 !
       call ele_send_recv_check                                          &
      &   (ele%numele, ele%iele_global, ele%x_ele, ele_check)
+!
+      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
+     &     'Failed communication for element', ele_check%num_diff
       call collect_failed_comm(ele_check, SR_sig)
+      if(my_rank .eq. 0) write(*,*) my_rank,                            &
+     &   'Total Failed communication for element',                      &
+     &    ele_check%istack_diff_pe(nprocs)
 !
       end subroutine ele_send_recv_test
 !
@@ -150,7 +163,13 @@
 !
       call ele_send_recv_check                                          &
      &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)
+!
+      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
+     &     'Failed communication for surface', surf_check%num_diff
       call collect_failed_comm(surf_check, SR_sig)
+      if(my_rank .eq. 0) write(*,*) my_rank,                            &
+     &   'Total Failed communication for surface',                      &
+     &    surf_check%istack_diff_pe(nprocs)
 !
       end subroutine surf_send_recv_test
 !
@@ -181,7 +200,13 @@
 !
       call ele_send_recv_check                                          &
      &   (edge%numedge, edge%iedge_global, edge%x_edge, edge_check)
+!
+      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
+     &     'Failed communication for edge', edge_check%num_diff
       call collect_failed_comm(edge_check, SR_sig)
+      if(my_rank .eq. 0) write(*,*) my_rank,                            &
+     &   'Total Failed communication for edge',                         &
+     &    edge_check%istack_diff_pe(nprocs)
 !
       end subroutine edge_send_recv_test
 !
@@ -205,7 +230,7 @@
       type(work_for_comm_check) :: org_check
 !
 !
-      call alloc_geom_4_comm_test(new_node%numnod, org_check)
+      call alloc_geom_4_comm_test(node%numnod, org_check)
       call set_node_4_comm_test                                         &
      &   (node%numnod, node%internal_node, node%inod_global, node%xx,   &
      &    org_check%i_gl_test, org_check%xx_test)
@@ -225,7 +250,13 @@
      &                             nod_check%xx_test)
 !
       call nod_send_recv_check(new_node, nod_check)
+!
+      if(i_debug .gt. 0)  write(*,*) my_rank,                           &
+     &     'Failed communication for node', nod_check%num_diff
       call collect_failed_comm(nod_check, SR_sig)
+      if(my_rank .eq. 0) write(*,*) my_rank,                            &
+     &   'Total Failed communication for node',                         &
+     &    nod_check%istack_diff_pe(nprocs)
 !
       end subroutine node_transfer_test
 !
@@ -290,7 +321,6 @@
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
-      write(*,*) my_rank, ' wk_check%num_diff', wk_check%num_diff
       call alloc_comm_stack_ctest_IO(wk_check)
       call count_collect_SR_num                                         &
      &   (wk_check%num_diff,  wk_check%istack_diff_pe,  SR_sig)
