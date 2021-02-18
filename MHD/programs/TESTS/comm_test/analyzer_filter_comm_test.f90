@@ -74,7 +74,6 @@
       call output_diff_node_comm_test(comm_test_name, filter_check)
 !
       call dealloc_ele_comm_test_IO(filter_check)
-      call dealloc_SR_flag(SR_sig_F)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !

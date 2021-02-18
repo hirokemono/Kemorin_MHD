@@ -184,8 +184,6 @@
       call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
      &    T_edge_comm, edge_check, SR_sig_t)
 !
-      call dealloc_SR_flag(SR_sig_t)
-!
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)
 !
