@@ -129,7 +129,6 @@
       subroutine surf_send_recv_test                                    &
      &         (node, surf, surf_comm, surf_check, v_sol)
 !
-      use nod_phys_send_recv
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
