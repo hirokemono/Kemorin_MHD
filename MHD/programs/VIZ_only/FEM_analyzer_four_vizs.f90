@@ -102,7 +102,6 @@
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use FEM_to_VIZ_bridge
-      use const_element_comm_tables
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -121,11 +120,6 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
-!
-      if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
-      call const_edge_comm_table                                        &
-     &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
-     &    pvr%edge_comm, FEM_viz%geofem%mesh%edge)
 !
 !     ---------------------
 !
@@ -149,7 +143,7 @@
       call link_FEM_field_4_viz(FEM_viz%geofem, FEM_viz%field, pvr)
       call alloc_jacobians_4_viz(pvr)
       call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
-     &    pvr%ele_4_nod, pvr%jacobians)
+     &    pvr%edge_comm, pvr%ele_4_nod, pvr%jacobians)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs

@@ -34,6 +34,7 @@
 !
       use t_time_data
       use t_mesh_data
+      use t_comm_table
       use t_phys_data
       use t_psf_geometry_list
       use t_psf_patch_data

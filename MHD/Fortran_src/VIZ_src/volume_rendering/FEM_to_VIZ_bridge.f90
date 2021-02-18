@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine normals_and_jacobians_4_VIZ                          &
-!!     &         (viz_step, geofem, ele_4_nod, jacobians)
+!!     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(inout) :: geofem
+!!        type(communication_table), intent(inout) :: edge_comm
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!
@@ -58,15 +59,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, ele_4_nod, jacobians)
+     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
       use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
+      use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: edge_comm
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_type), intent(inout) :: jacobians
 !
@@ -78,6 +81,14 @@
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
 !     --------------------- init for fieldline and PVR
+!
+      iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      edge_comm, geofem%mesh%edge)
+      end if
 !
       if(viz_step%FLINE_t%increment .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_element_on_node_in_mesh'
@@ -104,7 +115,6 @@
      &         (viz_step, geofem, nod_fld, VIZ_DAT)
 !
       use field_to_new_partition
-      use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
@@ -125,12 +135,7 @@
 !
       call alloc_jacobians_4_viz(VIZ_DAT)
       call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,       &
-     &    VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm,     &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
+     &    VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -151,6 +156,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
+      integer(kind = kint) :: iflag
+!
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
         call alloc_FEM_field_4_viz(VIZ_DAT)
@@ -162,19 +169,22 @@
      &                                 nod_fld, VIZ_DAT%viz_fld)
 !
         call alloc_jacobians_4_viz(VIZ_DAT)
-        call normals_and_jacobians_4_VIZ(viz_step,                      &
-     &      VIZ_DAT%viz_fem, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+        call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,     &
+     &      VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
       else
         call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
         call link_jacobians_4_viz                                       &
      &     (next_tbl%neib_ele, jacobians, VIZ_DAT)
+!
+        iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
+        if(iflag .gt. 0) then
+          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+          call const_edge_comm_table                                    &
+     &       (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm, &
+     &        VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
+        end if
       end if
       call calypso_mpi_barrier
-!
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm,     &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
 !
       end subroutine init_FEM_MHD_to_VIZ_bridge
 !
