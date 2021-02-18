@@ -28,17 +28,13 @@
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(work_for_comm_check), intent(inout) :: edge_check
 !!
-!!      subroutine node_transfer_test                                   &
-!!     &         (node, new_node, new_comm, trans_tbl, nod_check, v_sol)
+!!      subroutine node_transfer_test(node, new_node, new_comm,         &
+!!     &          trans_tbl, nod_check, v_sol, SR_sig)
 !!        type(node_data), intent(in) :: node, new_node
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
 !!        type(vectors_4_solver), intent(inout) :: v_sol
-!!
-!!      subroutine collect_failed_comm(wk_check, SR_sig)
-!!        type(work_for_comm_check), intent(inout) :: wk_check
-!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module mesh_send_recv_check
@@ -59,6 +55,9 @@
       use t_calypso_comm_table
 !
       implicit  none
+!
+      private :: collect_failed_comm, 
+      private :: nod_send_recv_check, ele_send_recv_check
 !
 ! ----------------------------------------------------------------------
 !
@@ -88,16 +87,8 @@
       call nod_vector_send_recv(node%numnod, nod_comm,                  &
      &                          nod_check%xx_test, v_sol)
 !
-      if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
-      nod_check%num_diff                                                &
-     &   = count_node_comm_test(node%numnod, node%inod_global, node%xx, &
-     &                          nod_check%i_gl_test, nod_check%xx_test)
-!
-      call alloc_diff_ele_comm_test(nod_check)
-      call compare_nod_comm_test                                        &
-     &   (node%numnod, node%inod_global, node%xx,                       &
-     &    nod_check%i_gl_test, nod_check%xx_test, nod_check%num_diff,   &
-     &    nod_check%i_diff, nod_check%x_diff)
+      call nod_send_recv_check(node, nod_check)
+      call collect_failed_comm(nod_check, SR_sig)
 !
       end subroutine node_send_recv_test
 !
@@ -115,6 +106,8 @@
       type(communication_table), intent(in) :: ele_comm
       type(work_for_comm_check), intent(inout) :: ele_check
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+!
 !
       call alloc_geom_4_comm_test(ele%numele, ele_check)
       call set_element_4_comm_test                                      &
@@ -125,15 +118,9 @@
       call nod_vector_send_recv(ele%numele, ele_comm,                   &
      &                          ele_check%xx_test, v_sol)
 !
-      ele_check%num_diff = count_ele_comm_test                          &
-     &                   (ele%numele, ele%x_ele, ele_comm%ntot_import,  &
-     &                    ele_comm%item_import, ele_check%xx_test)
-      call alloc_diff_ele_comm_test(ele_check)
-      call compare_ele_comm_test(ele%numele, ele%x_ele,                 &
-     &    ele_comm%ntot_import, ele_comm%item_import,                   &
-     &    ele_check%xx_test, ele_check%num_diff,                        &
-     &    ele_check%i_diff, ele_check%x_diff)
-      call dealloc_ele_4_comm_test(ele_check)
+      call ele_send_recv_check(ele%numele, ele%ie(1,1),                 &
+     &                         ele%iele_globa, ele%x_ele, ele_check)
+      call collect_failed_comm(ele_check, SR_sig)
 !
       end subroutine ele_send_recv_test
 !
@@ -152,6 +139,8 @@
       type(communication_table), intent(in) :: surf_comm
       type(work_for_comm_check), intent(inout) :: surf_check
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+!
 !
       call alloc_geom_4_comm_test(surf%numsurf, surf_check)
       call set_element_4_comm_test                                      &
@@ -163,15 +152,10 @@
       call nod_vector_send_recv(surf%numsurf, surf_comm,                &
      &                          surf_check%xx_test, v_sol)
 !
-      surf_check%num_diff =  count_ele_comm_test                        &
-     &               (surf%numsurf, surf%x_surf, surf_comm%ntot_import, &
-     &                surf_comm%item_import, surf_check%xx_test)
-      call alloc_diff_ele_comm_test(surf_check)
-      call compare_ele_comm_test(surf%numsurf, surf%x_surf,             &
-     &    surf_comm%ntot_import, surf_comm%item_import,                 &
-     &    surf_check%xx_test, surf_check%num_diff,                      &
-     &    surf_check%i_diff, surf_check%x_diff)
-      call dealloc_ele_4_comm_test(surf_check)
+      call ele_send_recv_check(surf%numsurf, surf%ie_surf(1,1),         &
+     &                         surf%isurf_global, surf%x_surf,          &
+     &                         surf_check)
+      call collect_failed_comm(surf_check, SR_sig)
 !
       end subroutine surf_send_recv_test
 !
@@ -189,6 +173,8 @@
       type(communication_table), intent(in) :: edge_comm
       type(work_for_comm_check), intent(inout) :: edge_check
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
+!
 !
       call alloc_geom_4_comm_test(edge%numedge, edge_check)
       call set_element_4_comm_test                                      &
@@ -200,23 +186,18 @@
       call nod_vector_send_recv(edge%numedge, edge_comm,                &
      &                          edge_check%xx_test, v_sol)
 !
-      edge_check%num_diff =  count_ele_comm_test                        &
-     &               (edge%numedge, edge%x_edge, edge_comm%ntot_import, &
-     &                edge_comm%item_import, edge_check%xx_test)
-      call alloc_diff_ele_comm_test(edge_check)
-      call compare_ele_comm_test(edge%numedge, edge%x_edge,             &
-     &    edge_comm%ntot_import, edge_comm%item_import,                 &
-     &    edge_check%xx_test, edge_check%num_diff,                      &
-     &    edge_check%i_diff, edge_check%x_diff)
-      call dealloc_ele_4_comm_test(edge_check)
+      call ele_send_recv_check(edge%numedge, edge%ie_edge(1,1),         &
+     &                         edge%iedge_global, edge%x_edge,          &
+     &                         edge_check)
+      call collect_failed_comm(edge_check, SR_sig)
 !
       end subroutine edge_send_recv_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine node_transfer_test                                     &
-     &         (node, new_node, new_comm, trans_tbl, nod_check, v_sol)
+      subroutine node_transfer_test(node, new_node, new_comm,           &
+     &          trans_tbl, nod_check, v_sol, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -229,6 +210,7 @@
       type(calypso_comm_table), intent(in) :: trans_tbl
       type(work_for_comm_check), intent(inout) :: nod_check
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call alloc_geom_4_comm_test(new_node%numnod, nod_check)
@@ -244,21 +226,64 @@
       call nod_vector_send_recv(new_node%numnod, new_comm,              &
      &                          nod_check%xx_test, v_sol)
 !
-      if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
-      nod_check%num_diff                                                &
-     &   = count_node_comm_test                                         &
-     &             (new_node%numnod, new_node%inod_global, new_node%xx, &
-     &              nod_check%i_gl_test, nod_check%xx_test)
-!
-      call alloc_diff_ele_comm_test(nod_check)
-      call compare_nod_comm_test                                        &
-     &   (new_node%numnod, new_node%inod_global, new_node%xx,           &
-     &    nod_check%i_gl_test, nod_check%xx_test, nod_check%num_diff,   &
-     &    nod_check%i_diff, nod_check%x_diff)
+      call nod_send_recv_check(new_node, nod_check)
+      call collect_failed_comm(nod_check, SR_sig)
 !
       end subroutine node_transfer_test
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine nod_send_recv_check(node, nod_check)
+!
+      use diff_geometory_comm_test
+      use nod_phys_send_recv
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(work_for_comm_check), intent(inout) :: nod_check
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
+      nod_check%num_diff                                                &
+     &   = count_node_comm_test(node%numnod, node%inod_global, node%xx, &
+     &                          nod_check%i_gl_test, nod_check%xx_test)
+!
+      call alloc_diff_ele_comm_test(nod_check)
+      call compare_nod_comm_test                                        &
+     &   (node%numnod, node%inod_global, node%xx,                       &
+     &    nod_check%i_gl_test, nod_check%xx_test, nod_check%num_diff,   &
+     &    nod_check%i_diff, nod_check%x_diff)
+!
+      end subroutine nod_send_recv_check
+!
+! ----------------------------------------------------------------------
+!
+      subroutine ele_send_recv_check(numnele, ie, iele_gl, x_ele,       &
+     &                               wk_check)
+!
+      use diff_geometory_comm_test
+      use nod_phys_send_recv
+      use solver_SR_type
+!
+      integer(kind = kint), intent(in) :: numnele
+      integer(kind = kint), intent(in) :: ie(numele,1)
+      integer(kind = kint_gl), intent(in) :: iele_gl(numele)
+      real(kind = kreal), intent(in) :: x_ele(numnele,3)
+!
+      type(work_for_comm_check), intent(inout) :: wk_check
+!
+!
+      wk_check%num_diff =  count_ele_comm_test                          &
+     &               (numnele, x_ele, wk_check%xx_test)
+      call alloc_diff_ele_comm_test(wk_check)
+      call compare_ele_comm_test(numnele, x_ele,                        &
+     &    wk_check%xx_test, wk_check%num_diff,                          &
+     &    wk_check%i_diff, wk_check%x_diff)
+      call dealloc_ele_4_comm_test(wk_check)
+!
+      end subroutine ele_send_recv_check
+!
 ! ----------------------------------------------------------------------
 !
       subroutine collect_failed_comm(wk_check, SR_sig)

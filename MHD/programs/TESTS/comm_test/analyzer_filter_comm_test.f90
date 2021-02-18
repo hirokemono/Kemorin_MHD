@@ -72,12 +72,11 @@
 !
       call resize_SR_flag(nprocs, 1, SR_sig_F)
       call node_send_recv_test(filter_nod1, filtering_test%comm,        &
-     &    filter_check, v_sol_F)
-      call collect_failed_comm(filter_check, SR_sig_F)
-      call dealloc_SR_flag(SR_sig_F)
+     &    filter_check, v_sol_F, SR_sig_F)
       call output_diff_node_comm_test(comm_test_name, filter_check)
 !
       call dealloc_ele_comm_test_IO(filter_check)
+      call dealloc_SR_flag(SR_sig_F)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !

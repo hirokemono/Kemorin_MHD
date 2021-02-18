@@ -19,10 +19,9 @@
 !!     &          num_diff_l, id_diff, x_diff)
 !!
 !!      integer(kind = kint) function count_ele_comm_test               &
-!!     &         (num_d, x_org, ntot_import_e, item_import_e, x_comm)
-!!      subroutine compare_ele_comm_test(num_d, x_org,                  &
-!!     &          ntot_import_e, item_import_e, x_comm,                 &
-!!     &          num_diff_l, id_diff, x_diff)
+!!     &                            (num_d, x_org, x_comm)
+!!      subroutine compare_ele_comm_test(num_d, x_org, x_comm,          &
+!!     &                                 num_diff_l, id_diff, x_diff)
 !!@endverbatim
 !
 !
@@ -158,6 +157,7 @@
       integer(kind = kint) :: inod, icou
       real(kind = kreal) :: diff
 !
+      if(num_diff_l .le. 0) return
       icou = 0
       do inod = 1, num_d
         diff =  abs(x_comm(inod,1) - x_org(inod,1))                   &
@@ -182,23 +182,19 @@
 ! ----------------------------------------------------------------------
 !
       integer(kind = kint) function count_ele_comm_test                 &
-     &         (num_d, x_org, ntot_import_e, item_import_e, x_comm)
+     &                            (num_d, x_org, x_comm)
 !
       integer(kind = kint), intent(in) :: num_d
       real(kind = kreal), intent(in) :: x_org(num_d,3)
 !
-      integer(kind = kint), intent(in) :: ntot_import_e
-      integer(kind = kint), intent(in) :: item_import_e(ntot_import_e)
-!
       real(kind = kreal), intent(in) :: x_comm(num_d,3)
 !
       integer(kind = kint) :: num_diff_l
-      integer(kind = kint) :: inum, iele
+      integer(kind = kint) :: iele
       real(kind = kreal) :: diff
 !
       num_diff_l = 0
-      do inum = 1, ntot_import_e
-        iele = item_import_e(inum)
+      do iele = 1, num_d
         diff =  abs(x_comm(iele,1) - x_org(iele,1))                     &
      &        + abs(x_comm(iele,2) - x_org(iele,2))                     &
      &        + abs(x_comm(iele,3) - x_org(iele,3))
@@ -210,15 +206,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine compare_ele_comm_test(num_d, x_org,                    &
-     &          ntot_import_e, item_import_e, x_comm,                   &
-     &          num_diff_l, id_diff, x_diff)
+      subroutine compare_ele_comm_test(num_d, x_org, x_comm,            &
+     &                                 num_diff_l, id_diff, x_diff)
 !
       integer(kind = kint), intent(in) :: num_d
       real(kind = kreal), intent(in) :: x_org(num_d,3)
-!
-      integer(kind = kint), intent(in) :: ntot_import_e
-      integer(kind = kint), intent(in) :: item_import_e(ntot_import_e)
 !
       real(kind = kreal), intent(in) :: x_comm(num_d,3)
 !
@@ -226,12 +218,13 @@
       integer(kind = kint), intent(inout) :: id_diff(num_diff_l)
       real(kind = kreal), intent(inout) :: x_diff(6*num_diff_l)
 !
-      integer(kind = kint) :: inum, iele, icou
+      integer(kind = kint) :: iele, icou
       real(kind = kreal) :: diff
 !
+!
+      if(num_diff_l .le. 0) return
       icou = 0
-      do inum = 1, ntot_import_e
-        iele = item_import_e(inum)
+      do iele = 1, num_d
         diff =  abs(x_comm(iele,1) - x_org(iele,1))                   &
      &        + abs(x_comm(iele,2) - x_org(iele,2))                   &
      &        + abs(x_comm(iele,3) - x_org(iele,3))

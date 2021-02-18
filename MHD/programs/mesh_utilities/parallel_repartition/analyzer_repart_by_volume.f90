@@ -175,20 +175,16 @@
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test                                           &
      &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    org_to_new_tbl, nod_check, v_sol_T)
-      call collect_failed_comm(nod_check, SR_sig_t)
+     &    org_to_new_tbl, nod_check, v_sol_T, SR_sig_t)
 !
       call alloc_iccg_int8_vector(new_fem%mesh%node%numnod, v_sol_T)
       call FEM_comm_initialization(new_fem%mesh, v_sol_T)
       call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
-     &    T_ele_comm, ele_check, v_sol_T)
-      call collect_failed_comm(ele_check, SR_sig_t)
+     &    T_ele_comm, ele_check, v_sol_T, SR_sig_t)
       call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check, v_sol_T)
-      call collect_failed_comm(surf_check, SR_sig_t)
+     &    T_surf_comm, surf_check, v_sol_T, SR_sig_t)
       call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check, v_sol_T)
-      call collect_failed_comm(surf_check, SR_sig_t)
+     &    T_edge_comm, edge_check, v_sol_T, SR_sig_t)
 !
       call dealloc_SR_flag(SR_sig_t)
       call dealloc_iccgN_vec_type(v_sol_T)
