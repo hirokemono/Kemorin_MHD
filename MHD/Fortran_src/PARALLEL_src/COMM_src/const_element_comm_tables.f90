@@ -230,7 +230,7 @@
       type(communication_table), intent(inout) :: ele_comm
       type(element_data), intent(inout) :: ele
 !
-      type(belonged_table) :: belongs
+      type(belonged_table), save :: belongs
 !
 !
       call set_ele_id_4_node(node, ele, belongs%blng_ele)
@@ -265,7 +265,7 @@
       type(communication_table), intent(inout) :: surf_comm
       type(surface_data), intent(inout) :: surf
 !
-      type(belonged_table) :: belongs
+      type(belonged_table), save :: belongs
 !
 !
       call set_surf_id_4_node(node, surf, belongs%blng_surf)
@@ -301,7 +301,7 @@
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
 !
-      type(belonged_table) :: belongs
+      type(belonged_table), save :: belongs
 !
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
