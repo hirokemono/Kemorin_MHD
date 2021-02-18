@@ -202,14 +202,22 @@
       type(work_for_comm_check), intent(inout) :: nod_check
       type(send_recv_status), intent(inout) :: SR_sig
 !
+      type(work_for_comm_check) :: org_check
+!
+!
+      call alloc_geom_4_comm_test(new_node%numnod, org_check)
+      call set_node_4_comm_test                                         &
+     &   (node%numnod, node%internal_node, node%inod_global, node%xx,   &
+     &    org_check%i_gl_test, org_check%xx_test)
 !
       call alloc_geom_4_comm_test(new_node%numnod, nod_check)
       call calypso_SR_type_int8(iflag_import_item, trans_tbl,           &
      &    node%numnod, new_node%numnod,                                 &
-     &    node%inod_global(1), nod_check%i_gl_test)
+     &    org_check%i_gl_test, nod_check%i_gl_test)
       call calypso_SR_type_3(iflag_import_item, trans_tbl,              &
      &    node%numnod, new_node%numnod,                                 &
-     &    node%xx, nod_check%xx_test)
+     &    org_check%xx_test, nod_check%xx_test)
+      call dealloc_ele_4_comm_test(org_check)
 !
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (new_node%numnod, new_comm, nod_check%i_gl_test)
