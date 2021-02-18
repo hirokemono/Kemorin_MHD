@@ -100,8 +100,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm,         &
      &    VIZ_DAT1%viz_fld, MHD_ctl1%viz_ctls, vizs1)
-      call init_zonal_mean_sections                                     &
-     &   (FEM_d1%geofem, FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
+      call init_zonal_mean_sections(FEM_d1%geofem, VIZ_DAT1%edge_comm,  &
+     &    FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
 !
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)

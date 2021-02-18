@@ -68,8 +68,8 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize                                        &
-     &   (geofem, nod_fld, surfacing_ctls%psf_s_ctls, viz_psfs%psf)
+      call SECTIONING_initialize(geofem, edge_comm, nod_fld,            &
+     &    surfacing_ctls%psf_s_ctls, viz_psfs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+2)
@@ -101,8 +101,8 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call ISOSURF_visualize                                            &
-     &   (viz_step%istep_iso, time_d, geofem, nod_fld, viz_psfs%iso)
+      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
+     &                       geofem, edge_comm, nod_fld, viz_psfs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       end subroutine visualize_surface

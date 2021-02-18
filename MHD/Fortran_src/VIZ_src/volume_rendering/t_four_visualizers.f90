@@ -73,8 +73,8 @@
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize                                        &
-     &   (geofem, nod_fld, viz_ctls%psf_ctls, vizs%psf)
+      call SECTIONING_initialize(geofem, edge_comm, nod_fld,            &
+     &                           viz_ctls%psf_ctls, vizs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
       call calypso_mpi_barrier
 !
@@ -123,8 +123,8 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call ISOSURF_visualize                                            &
-     &   (viz_step%istep_iso, time_d, geofem, nod_fld, vizs%iso)
+      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
+     &                       geofem, edge_comm, nod_fld, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)

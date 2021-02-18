@@ -14,11 +14,13 @@
       use m_machine_parameter
       use calypso_mpi
       use t_FEM_utils
+      use t_comm_table
 !
       implicit none
 !
 !       Structure for time stepping parameters
       type(FEM_utils), save :: FUTIL1
+      type(communication_table), save :: edge_comm_MG
 !
       private :: set_med_grp_patch_ctl
       private :: set_med_grp_patch_psf_def_ctl
@@ -36,6 +38,7 @@
       use nod_phys_send_recv
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
+      use const_element_comm_tables
 !
 !
       if (my_rank.eq.0) then
@@ -57,6 +60,10 @@
       call FEM_comm_initialization(FUTIL1%geofem%mesh, FUTIL1%v_sol)
       call FEM_mesh_initialization                                      &
      &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
+!
+      call const_edge_comm_table                                        &
+     &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
+     &    edge_comm_MG, FUTIL1%geofem%mesh%edge)
 !
       FUTIL1%nod_fld%num_phys = 1
       call alloc_phys_name(FUTIL1%nod_fld)
@@ -102,8 +109,8 @@
       call set_med_grp_patch_ctl(psf_ctls_md%num_psf_ctl,               &
      &     psf_ctls_md%fname_psf_ctl, psf_ctls_md%psf_ctl_struct)
 !
-      call SECTIONING_initialize                                        &
-     &   (FUTIL1%geofem, FUTIL1%nod_fld, psf_ctls_md, psf_md)
+      call SECTIONING_initialize(FUTIL1%geofem, edge_comm_MG,           &
+     &    FUTIL1%nod_fld, psf_ctls_md, psf_md)
 !
       end subroutine analyze_med_grp_patch
 !

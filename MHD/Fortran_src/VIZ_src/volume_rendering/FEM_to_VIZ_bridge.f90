@@ -44,6 +44,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_comm_table
       use t_next_node_ele_4_node
       use t_shape_functions
       use t_jacobians
