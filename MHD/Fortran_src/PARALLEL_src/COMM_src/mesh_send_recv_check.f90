@@ -27,6 +27,8 @@
 !!        type(edge_data), intent(in) :: edge
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(work_for_comm_check), intent(inout) :: edge_check
+!!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!
 !!      subroutine node_transfer_test(node, new_node, new_comm,         &
 !!     &          trans_tbl, nod_check, v_sol, SR_sig)
@@ -77,6 +79,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(work_for_comm_check), intent(inout) :: nod_check
       type(vectors_4_solver), intent(inout) :: v_sol
+      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call alloc_geom_4_comm_test(node%numnod, nod_check)
@@ -266,18 +269,18 @@
       use nod_phys_send_recv
       use solver_SR_type
 !
-      integer(kind = kint), intent(in) :: numnele
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: ie(numele,1)
       integer(kind = kint_gl), intent(in) :: iele_gl(numele)
-      real(kind = kreal), intent(in) :: x_ele(numnele,3)
+      real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
       type(work_for_comm_check), intent(inout) :: wk_check
 !
 !
       wk_check%num_diff =  count_ele_comm_test                          &
-     &               (numnele, x_ele, wk_check%xx_test)
+     &               (numele, x_ele, wk_check%xx_test)
       call alloc_diff_ele_comm_test(wk_check)
-      call compare_ele_comm_test(numnele, x_ele,                        &
+      call compare_ele_comm_test(numele, x_ele,                         &
      &    wk_check%xx_test, wk_check%num_diff,                          &
      &    wk_check%i_diff, wk_check%x_diff)
       call dealloc_ele_4_comm_test(wk_check)
