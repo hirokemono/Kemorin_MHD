@@ -82,8 +82,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(VIZ_DAT_r%viz_fem, VIZ_DAT_r%viz_fld,         &
-     &                    rayleigh_vizs_ctl1%viz_ctl_v, vizs_v)
+      call init_visualize(VIZ_DAT_r%viz_fem, VIZ_DAT_r%edge_comm,       &
+     &    VIZ_DAT_r%viz_fld, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine init_viz_rayleigh
 !
@@ -115,8 +115,8 @@
           call s_FEM_to_VIZ_bridge                                      &
      &       (FEM_Rayleigh1%field, FEM_Rayleigh1%v_sol, VIZ_DAT_r)
           call visualize_all(t_VIZ_r%viz_step, t_VIZ_r%time_d,          &
-     &        VIZ_DAT_r%viz_fem, VIZ_DAT_r%viz_fld,                     &
-     &        VIZ_DAT_r%ele_4_nod, VIZ_DAT_r%jacobians, vizs_v)
+     &       VIZ_DAT_r%viz_fem, VIZ_DAT_r%edge_comm, VIZ_DAT_r%viz_fld, &
+     &       VIZ_DAT_r%ele_4_nod, VIZ_DAT_r%jacobians, vizs_v)
         end if
       end do
 !

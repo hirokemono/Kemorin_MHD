@@ -28,6 +28,7 @@
       use m_machine_parameter
 !
       use t_mesh_data
+      use t_comm_table
       use t_phys_data
       use t_next_node_ele_4_node
       use t_shape_functions
@@ -56,6 +57,8 @@
         type(jacobians_type), pointer :: jacobians
 !>        Structure of included element list for each node
         type(element_around_node), pointer :: ele_4_nod
+!>        Structure of edge communication table
+        type(communication_table), pointer :: edge_comm
       end type VIZ_mesh_field
 !
 ! ----------------------------------------------------------------------

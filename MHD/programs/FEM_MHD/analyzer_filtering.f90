@@ -61,8 +61,8 @@
       call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
      &    FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2)
-      call init_visualize(VIZ_DAT2%viz_fem, VIZ_DAT2%viz_fld,           &
-     &                    vizs_rprt_c_F%vizs_ctl, vizs_F)
+      call init_visualize(VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm,         &
+     &   VIZ_DAT2%viz_fld, vizs_rprt_c_F%vizs_ctl, vizs_F)
 !
       end subroutine init_analyzer
 !
@@ -95,7 +95,7 @@
           call s_FEM_to_VIZ_bridge                                      &
      &       (FEM_MHD1%field, FEM_MHD1%v_sol, VIZ_DAT2)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        VIZ_DAT2%viz_fem, VIZ_DAT2%viz_fld,                       &
+     &        VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm, VIZ_DAT2%viz_fld,   &
      &        VIZ_DAT2%ele_4_nod, VIZ_DAT2%jacobians, vizs_F)
         end if
       end do

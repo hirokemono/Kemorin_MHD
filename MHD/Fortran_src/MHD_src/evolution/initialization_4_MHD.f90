@@ -165,9 +165,6 @@
       call FEM_comm_initialization(geofem%mesh, v_sol)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
 !     ---------------------
 !
       call const_FEM_3d_filtering_tables(SGS_par, geofem%mesh,          &

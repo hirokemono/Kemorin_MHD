@@ -115,7 +115,6 @@
       type(sectioning_list), intent(inout) :: psf_list
 !
       type(edge_data) :: edge_4_psf
-      type(belonged_table) :: belongs
 !
       integer(kind = kint) :: i, iedge, i1, i2, j
 !
@@ -156,7 +155,7 @@
       end do
 !$omp end parallel do
 !
-      call const_edge_comm_table(node, nod_comm, belongs,               &
+      call const_edge_comm_table(node, nod_comm,                        &
      &    psf_list%edge_comm_4_psf, edge_4_psf)
 !
       call dealloc_edge_geometory(edge_4_psf)

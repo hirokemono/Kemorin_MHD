@@ -37,7 +37,6 @@
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
-      type(belonged_table), save :: blng
 !
 !>      Structure for communicatiors for solver
       type(vectors_4_solver), save :: v_sol_T
@@ -97,17 +96,17 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
       call const_ele_comm_tbl                                           &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
      &    T_ele_comm, test_fem%mesh%ele)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
      &    T_surf_comm, test_fem%mesh%surf)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, blng,             &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
      &    T_edge_comm, test_fem%mesh%edge)
 !
       end subroutine initialize_communication_test

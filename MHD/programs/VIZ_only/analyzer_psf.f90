@@ -28,6 +28,8 @@
       type(FEM_mesh_field_for_viz), save :: FEM_viz2
 !>      Structure of sectioning and isosurfaceing modules
       type(surfacing_modules), save :: viz_psfs2
+!>      Edge communication table
+      type(communication_table), save :: edge_comm_PSF
 !
 !  ---------------------------------------------------------------------
 !
@@ -58,10 +60,11 @@
 !
 !  FEM Initialization
       call FEM_initialize_surface                                       &
-     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2)
+     &   (t_VIZ2%ucd_step, t_VIZ2%init_d, FEM_viz2, edge_comm_PSF)
 !
 !  VIZ Initialization
-      call init_visualize_surface(FEM_viz2%geofem, FEM_viz2%field,      &
+      call init_visualize_surface                                       &
+     &   (FEM_viz2%geofem, edge_comm_PSF, FEM_viz2%field,               &
      &    sec_viz_ctl2%surfacing_ctls, viz_psfs2)
 !
       end subroutine init_analyzer_psf
@@ -89,7 +92,8 @@
      &     = istep_file_w_fix_dt(i_step, t_VIZ2%viz_step%ISO_t)
 !
         call visualize_surface(t_VIZ2%viz_step, t_VIZ2%time_d,          &
-     &      FEM_viz2%geofem, FEM_viz2%field, viz_psfs2)
+     &      FEM_viz2%geofem, edge_comm_PSF, FEM_viz2%field,             &
+     &      viz_psfs2)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

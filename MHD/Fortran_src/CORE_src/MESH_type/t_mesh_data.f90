@@ -129,7 +129,7 @@
       call dealloc_grp_connect(group%tbls_ele_grp%node)
 !
 !
-      call deallocate_surface_geom_type(mesh%surf)
+      call dealloc_surface_geometory(mesh%surf)
       call dealloc_edge_geometory(mesh%edge)
 !
       call deallocate_iso_surface_type(mesh%surf)

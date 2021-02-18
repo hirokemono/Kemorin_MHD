@@ -77,9 +77,6 @@
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
 !     --------------------- init for fieldline and PVR
 !
       if(viz_step%FLINE_t%increment .gt. 0) then
@@ -107,6 +104,7 @@
      &         (viz_step, geofem, nod_fld, VIZ_DAT)
 !
       use field_to_new_partition
+      use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
@@ -129,6 +127,11 @@
       call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,       &
      &    VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      call const_edge_comm_table                                        &
+     &   (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm,     &
+     &    VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
+!
       end subroutine init_FEM_to_VIZ_bridge
 !
 ! ----------------------------------------------------------------------
@@ -138,6 +141,7 @@
      &          geofem, nod_fld, VIZ_DAT)
 !
       use field_to_new_partition
+      use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(next_nod_ele_table), intent(in), target :: next_tbl
@@ -166,6 +170,11 @@
      &     (next_tbl%neib_ele, jacobians, VIZ_DAT)
       end if
       call calypso_mpi_barrier
+!
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      call const_edge_comm_table                                        &
+     &   (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm,     &
+     &    VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
 !
       end subroutine init_FEM_MHD_to_VIZ_bridge
 !

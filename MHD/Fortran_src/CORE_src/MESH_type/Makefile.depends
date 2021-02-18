@@ -70,7 +70,7 @@ set_size_4_smp_types.o: $(MESH_TYPE_DIR)/set_size_4_smp_types.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 set_smp_4_group_types.o: $(MESH_TYPE_DIR)/set_smp_4_group_types.f90 m_precision.o m_machine_parameter.o t_group_data.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_surf_edge_mesh.o: $(MESH_TYPE_DIR)/set_surf_edge_mesh.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o const_surface_data.o const_edge_data.o set_size_4_smp_types.o cal_mesh_position.o
+set_surf_edge_mesh.o: $(MESH_TYPE_DIR)/set_surf_edge_mesh.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o cal_mesh_position.o const_surface_data.o const_edge_data.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_surface_data_4_IO.o: $(MESH_TYPE_DIR)/set_surface_data_4_IO.f90 m_precision.o t_surface_data.o t_comm_table.o t_geometry_data.o t_surf_edge_IO.o t_read_mesh_data.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

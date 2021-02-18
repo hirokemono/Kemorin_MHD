@@ -12,7 +12,8 @@
 !!        type(control_data_section_only), intent(in) :: sec_viz_ctl
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
 !!        type(time_step_param_w_viz), intent(inout) :: t_viz_param
-!!      subroutine FEM_initialize_surface(ucd_step, init_d, FEM_viz)
+!!      subroutine FEM_initialize_surface                               &
+!!     &         (ucd_step, init_d, FEM_viz, edge_comm)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(time_data), intent(in) :: init_d
 !!        type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
@@ -89,7 +90,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_surface(ucd_step, init_d, FEM_viz)
+      subroutine FEM_initialize_surface                                 &
+     &         (ucd_step, init_d, FEM_viz, edge_comm)
 !
       use t_field_list_for_vizs
       use mpi_load_mesh_data
@@ -98,10 +100,12 @@
       use set_parallel_file_name
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
+      use const_element_comm_tables
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
+      type(communication_table), intent(inout) :: edge_comm
 !
       integer(kind = kint) :: istep_ucd
 !
@@ -115,6 +119,11 @@
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
       call FEM_mesh_initialization(FEM_viz%geofem%mesh,                 &
      &                             FEM_viz%geofem%group)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      call const_edge_comm_table                                        &
+     &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
+     &    edge_comm, FEM_viz%geofem%mesh%edge)
 !
 !     ---------------------
 !
@@ -131,7 +140,6 @@
 !
       call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
      &                     FEM_viz%field)
-      call deallocate_surface_geom_type(FEM_viz%geofem%mesh%surf)
 !
       end subroutine FEM_initialize_surface
 !
@@ -201,8 +209,6 @@
      &                                    FEM_viz%field)
       call alloc_phys_data(FEM_viz%geofem%mesh%node%numnod,             &
      &                     FEM_viz%field)
-      call deallocate_surface_geom_type(FEM_viz%geofem%mesh%surf)
-      call dealloc_field_lists_for_vizs(FEM_viz%viz_fld_list)
 !
       end subroutine FEM_initialize_VTK_convert
 !

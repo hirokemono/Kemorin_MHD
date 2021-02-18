@@ -117,7 +117,6 @@
 !
       type(send_recv_status), save :: SR_sig_t
 !
-      type(belonged_table), save :: blng
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
@@ -156,17 +155,17 @@
       call FEM_mesh_initialization(new_fem%mesh, new_fem%group)
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
       call const_ele_comm_tbl                                           &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, blng,               &
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
      &    T_ele_comm, new_fem%mesh%ele)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
       call const_surf_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, blng,               &
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
      &    T_surf_comm, new_fem%mesh%surf)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table                                        &
-     &   (new_fem%mesh%node, new_fem%mesh%nod_comm, blng,               &
+     &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
      &    T_edge_comm, new_fem%mesh%edge)
 !
 !

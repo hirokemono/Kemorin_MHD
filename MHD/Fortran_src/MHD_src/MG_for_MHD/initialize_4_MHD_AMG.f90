@@ -130,9 +130,6 @@
           call empty_mesh_info(MGCG_FEM%MG_mesh(i_level)%mesh,          &
      &        MGCG_FEM%MG_mesh(i_level)%group)
         end if
-!
-        call dealloc_edge_geometory                                     &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh%edge)
       end do
 !
 !     ---------------------

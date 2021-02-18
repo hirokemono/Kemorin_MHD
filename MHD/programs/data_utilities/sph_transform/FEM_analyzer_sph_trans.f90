@@ -57,8 +57,6 @@
 !
       call mesh_setup_4_SPH_TRANS(FEM_STR)
 !
-      call dealloc_edge_geometory(FEM_STR%geofem%mesh%edge)
-!
 !  -------------------------------
 !
       input_ucd%nnod = ione

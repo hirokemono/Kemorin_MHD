@@ -12,7 +12,7 @@
 !!      subroutine allocate_surface_connect_type(surf, nele)
 !!      subroutine allocate_ext_surface_type(surf)
 !!      subroutine allocate_iso_surface_type(surf)
-!!      subroutine allocate_surface_geom_type(surf)
+!!      subroutine alloc_surface_geometory(surf)
 !!      subroutine allocate_normal_vect_type(surf)
 !!      subroutine alloc_surf_param_smp(surf)
 !!      subroutine alloc_ele_4_surf_type(surf)
@@ -22,7 +22,7 @@
 !!      subroutine deallocate_surface_connect_type(surf)
 !!      subroutine deallocate_ext_surface_type(surf)
 !!      subroutine deallocate_iso_surface_type(surf)
-!!      subroutine deallocate_surface_geom_type(surf)
+!!      subroutine dealloc_surface_geometory(surf)
 !!      subroutine deallocate_normal_vect_type(surf)
 !!      subroutine dealloc_surf_param_smp(surf)
 !!      subroutine dealloc_ele_4_surf_type(surf)
@@ -190,7 +190,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_surface_geom_type(surf)
+      subroutine alloc_surface_geometory(surf)
 !
       type(surface_data), intent(inout) :: surf
 !
@@ -198,13 +198,11 @@
 !
       if(surf%numsurf .gt. 0) then
 !$omp parallel workshare
-        surf%x_surf(1:surf%numsurf,1) = 0.0d0
-        surf%x_surf(1:surf%numsurf,2) = 0.0d0
-        surf%x_surf(1:surf%numsurf,3) = 0.0d0
+        surf%x_surf(1:surf%numsurf,1:3) = 0.0d0
 !$omp end parallel workshare
       end if
 !
-      end subroutine allocate_surface_geom_type
+      end subroutine alloc_surface_geometory
 !
 !  ---------------------------------------------------------------------
 !
@@ -317,14 +315,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine deallocate_surface_geom_type(surf)
+      subroutine dealloc_surface_geometory(surf)
 !
       type(surface_data), intent(inout) :: surf
 !
       if(allocated(surf%x_surf) .eqv. .FALSE.) return
       deallocate( surf%x_surf )
 !
-      end subroutine deallocate_surface_geom_type
+      end subroutine dealloc_surface_geometory
 !
 !  ---------------------------------------------------------------------
 !

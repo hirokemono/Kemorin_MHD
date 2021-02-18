@@ -78,8 +78,8 @@
       call init_FEM_to_VIZ_bridge                                       &
      &   (t_VIZ1%viz_step, FEM_viz1%geofem, FEM_viz1%field, VIZ_DAT1)
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,           &
-     &                    vizs_ctl1%viz_ctl_v, vizs_v)
+      call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm,         &
+     &    VIZ_DAT1%viz_fld, vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine initialize_vizs
 !
@@ -108,7 +108,7 @@
         call s_FEM_to_VIZ_bridge                                        &
      &     (FEM_viz1%field, FEM_viz1%v_sol, VIZ_DAT1)
         call visualize_all(t_VIZ1%viz_step, t_VIZ1%time_d,              &
-     &      VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,                         &
+     &      VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm, VIZ_DAT1%viz_fld,     &
      &      VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs_v)
       end do
 !

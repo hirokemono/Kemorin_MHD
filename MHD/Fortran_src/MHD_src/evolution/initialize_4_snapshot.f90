@@ -193,9 +193,6 @@
      &   (SGS_par, geofem%mesh, FEM_filters%layer_tbl,                  &
      &    MHD_prop, Csims_FEM_MHD, SGS_MHD_wk%FEM_SGS_wk)
 !
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
 !     --------------------- 
 !
       if (rst_step%increment .gt. 0) then

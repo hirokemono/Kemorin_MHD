@@ -54,7 +54,7 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      if (iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization                                      &
      &   (FEM_STR%geofem%mesh, FEM_STR%v_sol)
 !

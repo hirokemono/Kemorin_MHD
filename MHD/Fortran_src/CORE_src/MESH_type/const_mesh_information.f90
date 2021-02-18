@@ -171,6 +171,9 @@
      &    group%ele_grp, group%surf_grp,                                &
      &    group%tbls_ele_grp, group%tbls_surf_grp)
 !
+      call init_surface_and_edge_geometry                               &
+     &   (mesh%node, mesh%surf, mesh%edge)
+!
       end subroutine const_mesh_infos
 !
 ! ----------------------------------------------------------------------

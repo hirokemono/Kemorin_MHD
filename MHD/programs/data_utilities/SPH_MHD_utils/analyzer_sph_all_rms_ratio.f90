@@ -97,8 +97,8 @@
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,           &
-     &                    MHD_ctl1%viz_ctls, vizs1)
+      call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm,         &
+     &    VIZ_DAT1%viz_fld, MHD_ctl1%viz_ctls, vizs1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -162,7 +162,7 @@
           call s_FEM_to_VIZ_bridge                                      &
      &       (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        VIZ_DAT1%viz_fem, VIZ_DAT1%viz_fld,                       &
+     &        VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm, VIZ_DAT1%viz_fld,   &
      &        VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs1)
           if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+4)
         end if

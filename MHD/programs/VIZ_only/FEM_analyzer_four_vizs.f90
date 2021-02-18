@@ -102,6 +102,7 @@
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use FEM_to_VIZ_bridge
+      use const_element_comm_tables
 !
       type(IO_step_param), intent(in) :: ucd_step
       type(time_data), intent(in) :: init_d
@@ -118,8 +119,13 @@
 !
       call mpi_input_mesh(FEM_viz%mesh_file_IO, nprocs, FEM_viz%geofem)
 !
-      if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
+      if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(FEM_viz%geofem%mesh, FEM_viz%v_sol)
+!
+      if(iflag_debug.gt.0) write(*,*) 'FEM_comm_initialization'
+      call const_edge_comm_table                                        &
+     &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
+     &    pvr%edge_comm, FEM_viz%geofem%mesh%edge)
 !
 !     ---------------------
 !
