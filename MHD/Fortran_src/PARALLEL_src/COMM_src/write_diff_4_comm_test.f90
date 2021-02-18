@@ -1,10 +1,11 @@
 !
 !      module write_diff_4_comm_test
 !
-!      subroutine output_diff_node_comm_test
-!      subroutine output_diff_mesh_comm_test
-!      subroutine write_diff_comm_test                                  &
-!     &         (istack_diff_pe, id_diff_IO, x_diff_IO)
+!!     subroutine output_diff_node_comm_test(file_name, nod_check)
+!!     subroutine output_diff_mesh_comm_test(file_name,                 &
+!!    &          nod_check, ele_check, surf_check, edge_check)
+!!      subroutine write_diff_comm_test                                 &
+!!     &         (istack_diff_pe, id_diff_IO, x_diff_IO)
 !
 !     Written by H. Matsui on Sep., 2007
 !
@@ -13,14 +14,12 @@
       use m_precision
 !
       use calypso_mpi
-      use m_geometry_4_comm_test
+      use t_work_for_comm_check
 !
       implicit  none
 !
 !
       integer(kind = kint), parameter :: id_comm_test = 31
-      character(len=kchara), parameter                                  &
-     &      :: comm_test_name = 'comm_test.dat'
 !
 !  ---------------------------------------------------------------------
 !
@@ -28,14 +27,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_diff_node_comm_test
+      subroutine output_diff_node_comm_test(file_name, nod_check)
 !
+      character(len=kchara), intent(in) :: file_name
+      type(work_for_comm_check), intent(in) :: nod_check
+!
+      if(my_rank .gt. 0) return
       if(nod_check%istack_diff_pe(nprocs) .eq. 0) then
         write(*,*) 'No wrong communication for nodes'
         return
       end if
 !
-      open(id_comm_test, file = comm_test_name)
+      open(id_comm_test, file = file_name)
 !
       write(id_comm_test,*) 'ntot_nod_diff_pe',                         &
      &                     nod_check%istack_diff_pe(nprocs)
@@ -52,10 +55,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_diff_mesh_comm_test
+      subroutine output_diff_mesh_comm_test(file_name,                  &
+     &          nod_check, ele_check, surf_check, edge_check)
+!
+      character(len=kchara), intent(in) :: file_name
+      type(work_for_comm_check), intent(in) :: nod_check, ele_check
+      type(work_for_comm_check), intent(in) :: surf_check, edge_check
 !
       integer(kind = kint) :: ntot_error
 !
+      if(my_rank .gt. 0) return
       ntot_error = nod_check%istack_diff_pe(nprocs)                     &
      &            + ele_check%istack_diff_pe(nprocs)                    &
      &            + surf_check%istack_diff_pe(nprocs)                   &
@@ -65,7 +74,7 @@
         return
       end if
 !
-      open(id_comm_test, file = comm_test_name)
+      open(id_comm_test, file = file_name)
 !
       write(id_comm_test,*) 'ntot_nod_diff_pe ',                        &
      &                     nod_check%istack_diff_pe(nprocs)

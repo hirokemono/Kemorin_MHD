@@ -110,7 +110,7 @@
      &    rayleigh_fem%mesh, rayleigh_fem%group)
 !
       allocate( org_mesh(nprocs) )
-      call copy_node_geometry_types                                     &
+      call copy_node_geometry                                           &
      &   (rayleigh_fem%mesh%node, org_mesh(my_rank+1)%node)
       call const_global_numnod_list(org_mesh(my_rank+1)%node)
       call dealloc_node_geometry_base(rayleigh_fem%mesh%node)

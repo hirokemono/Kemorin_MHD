@@ -37,6 +37,7 @@
       type(partitioner_comm_tables), save :: comm_part1
       type(each_filter_coef), save :: fil_coef1
       type(filters_4_sorting), save :: fils_sort1
+      type(node_data), save :: filter_nod1
 !
 ! ----------------------------------------------------------------------
 !
@@ -105,7 +106,8 @@
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_para'
       call local_newdomain_filter_para                                  &
      &   (nprocs_2nd, newfil_p1, itl_nod_part1, domain_grp1%nod_d_grp,  &
-     &    comm_part1, orgmesh%node, orgmesh%ele, newmesh, fil_coef1,    &
+     &    comm_part1, orgmesh%node, orgmesh%ele,                        &
+     &    newmesh, filter_nod1, fil_coef1,                              &
      &    fils_sort1%whole_fil_sort, fils_sort1%fluid_fil_sort)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
@@ -119,7 +121,8 @@
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_para'
         call filters_4_newdomains_para                                  &
      &     (newfil_p1, filtering_nd, orgmesh%node, orgmesh%ele,         &
-     &      domain_grp1%nod_d_grp, newmesh, fil_coef1, fils_sort1)
+     &      domain_grp1%nod_d_grp, newmesh, filter_nod1,                &
+     &      fil_coef1, fils_sort1)
 !
         call dealloc_local_ne_id_tbl(domain_grp1)
       end if

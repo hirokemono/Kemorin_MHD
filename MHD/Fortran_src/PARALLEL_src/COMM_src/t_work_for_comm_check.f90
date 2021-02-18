@@ -1,7 +1,13 @@
+!>@file   t_work_for_comm_check.f90
+!!@brief  module t_work_for_comm_check
+!!
+!!@author H.Matsui
+!!@date     Programmed by H.Matsui in Sep., 2007
 !
-!      module m_geometry_4_comm_test
-!
-!!      subroutine alloc_geom_4_comm_test(numele, wk_check)
+!>@brief  Work area for communication check by position
+!!
+!!@verbatim
+!!      subroutine alloc_geom_4_comm_test(num, wk_check)
 !!      subroutine dealloc_ele_4_comm_test(wk_check)
 !!        type(work_for_comm_check), intent(inout) :: wk_check
 !!
@@ -13,10 +19,9 @@
 !!      subroutine alloc_ele_comm_test_IO(wk_check)
 !!      subroutine dealloc_ele_comm_test_IO(wk_check)
 !!        type(work_for_comm_check), intent(inout) :: wk_check
+!!@endverbatim
 !
-!     Written by H. Matsui on Sep., 2007
-!
-      module m_geometry_4_comm_test
+      module t_work_for_comm_check
 !
       use m_precision
       use m_constants
@@ -24,7 +29,9 @@
       implicit  none
 !
       type work_for_comm_check
-        real(kind = kreal), allocatable :: xx_test(:,:)
+        integer(kind = kint) :: nnod
+        integer(kind = kint_gl), allocatable :: i_gl_test(:)
+        real(kind = kreal), allocatable ::   xx_test(:,:)
 !
         integer(kind = kint) :: num_diff
         integer(kind = kint), allocatable :: i_diff(:)
@@ -35,25 +42,24 @@
         real(kind = kreal), allocatable :: x_diff_IO(:)
       end type work_for_comm_check
 !
-      type(work_for_comm_check), save :: nod_check
-      type(work_for_comm_check), save :: ele_check
-      type(work_for_comm_check), save :: surf_check
-      type(work_for_comm_check), save :: edge_check
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_geom_4_comm_test(numele, wk_check)
+      subroutine alloc_geom_4_comm_test(num, wk_check)
 !
-      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: num
       type(work_for_comm_check), intent(inout) :: wk_check
 !
 !
-      allocate(wk_check%xx_test(numele,3))
-      if(numele .gt. 0) wk_check%xx_test = 0.0d0
+      wk_check%nnod = num
+      allocate(wk_check%i_gl_test(wk_check%nnod))
+      allocate(wk_check%xx_test(wk_check%nnod,3))
+!
+      if(wk_check%nnod .gt. 0) wk_check%xx_test = 0.0d0
+      if(wk_check%nnod .gt. 0) wk_check%xx_test = 0.0d0
 !
       end subroutine alloc_geom_4_comm_test
 !
@@ -64,7 +70,7 @@
 !
       type(work_for_comm_check), intent(inout) :: wk_check
 !
-      deallocate(wk_check%xx_test)
+      deallocate(wk_check%xx_test, wk_check%i_gl_test)
 !
       end subroutine dealloc_ele_4_comm_test
 !
@@ -140,4 +146,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module m_geometry_4_comm_test
+      end module t_work_for_comm_check

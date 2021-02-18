@@ -121,7 +121,7 @@
       allocate(rayleigh_pmesh(nprocs))
       allocate(rayleigh_fIO(nprocs))
 !
-      call copy_node_geometry_types                                     &
+      call copy_node_geometry                                           &
      &   (rayleigh_fem%mesh%node, rayleigh_pmesh(my_rank+1)%node)
       call const_global_numnod_list(rayleigh_pmesh(my_rank+1)%node)
       call dealloc_node_geometry_base(rayleigh_fem%mesh%node)

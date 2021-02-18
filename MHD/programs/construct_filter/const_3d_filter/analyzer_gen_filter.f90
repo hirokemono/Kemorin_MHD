@@ -59,6 +59,7 @@
 !
       type(matrices_4_filter), save :: f_matrices1
       type(filtering_data_type), save :: filtering_gen
+      type(node_data), save :: filter_nod1
 !
 ! ----------------------------------------------------------------------
 !
@@ -177,7 +178,6 @@
 !
       subroutine generate_filter_analyze
 !
-      use m_nod_filter_comm_table
       use m_filter_file_names
       use m_file_format_switch
 !
@@ -189,7 +189,7 @@
       use filter_moment_IO_select
       use construct_filters
       use copy_mesh_structures
-      use set_filter_geometry_4_IO
+      use copy_mesh_structures
       use filter_moment_IO_select
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
@@ -231,11 +231,11 @@
 !  ---------------------------------------------------
 !
       if(gfil_p1%iflag_tgt_filter_type .gt. iflag_no_filter)  then
-        call copy_node_data_to_filter(fem_f%mesh%node)
+        call copy_node_geometry(fem_f%mesh%node, filter_nod1)
         call copy_comm_tbl_types                                        &
      &     (fem_f%mesh%nod_comm, filtering_gen%comm)
 !
-        call copy_filtering_geometry_to_IO(filter_IO%node)
+        call copy_node_geometry(filter_nod1, filter_IO%node)
         call copy_comm_tbl_type(filtering_gen%comm, filter_IO%nod_comm)
 !
         filter_file_head = filter_coef_head

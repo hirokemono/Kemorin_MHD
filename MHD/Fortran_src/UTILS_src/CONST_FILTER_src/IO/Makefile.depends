@@ -1,6 +1,6 @@
-filter_IO_for_newdomain.o: $(FILTER_3D_IODIR)/filter_IO_for_newdomain.f90 m_precision.o t_filter_coefs.o t_filter_func_4_sorting.o m_nod_filter_comm_table.o filter_IO_for_sorting.o write_filters_4_each_node.o skip_comment_f.o
+filter_IO_for_newdomain.o: $(FILTER_3D_IODIR)/filter_IO_for_newdomain.f90 m_precision.o t_filter_coefs.o t_filter_func_4_sorting.o t_geometry_data.o filter_IO_for_sorting.o write_filters_4_each_node.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
-filter_IO_for_sorting.o: $(FILTER_3D_IODIR)/filter_IO_for_sorting.f90 m_precision.o t_filter_coefs.o t_filter_coefficients.o t_filter_func_4_sorting.o t_binary_IO_buffer.o m_nod_filter_comm_table.o binary_IO.o skip_comment_f.o
+filter_IO_for_sorting.o: $(FILTER_3D_IODIR)/filter_IO_for_sorting.f90 m_precision.o t_geometry_data.o t_filter_coefs.o t_filter_coefficients.o t_filter_func_4_sorting.o t_binary_IO_buffer.o binary_IO.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_3d_filter.o: $(FILTER_3D_IODIR)/t_ctl_data_3d_filter.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_gen_filter.o t_control_array_character.o t_ctl_data_filter_files.o t_control_array_real.o t_control_array_integer.o skip_comment_f.o calypso_mpi_int.o bcast_control_arrays.o
 	$(F90) -c $(F90OPTFLAGS) $<

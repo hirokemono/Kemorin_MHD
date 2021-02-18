@@ -6,8 +6,6 @@ cal_line_filtering_vector.o: $(FILTER_DIR)/cal_line_filtering_vector.f90 m_preci
 	$(F90) -c $(F90OPTFLAGS) $<
 filter_moments_send_recv.o: $(FILTER_DIR)/filter_moments_send_recv.f90 m_precision.o t_comm_table.o t_vector_for_solver.o nod_phys_send_recv.o t_filter_dxdxi.o t_filter_elength.o t_filter_moments.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_nod_filter_comm_table.o: $(FILTER_DIR)/m_nod_filter_comm_table.f90 m_precision.o t_comm_table.o t_geometry_data.o
-	$(F90) -c $(F90OPTFLAGS) $<
 ordering_line_filter_smp.o: $(FILTER_DIR)/ordering_line_filter_smp.f90 m_precision.o m_machine_parameter.o t_l_filtering_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 prepare_field_2_filter.o: $(FILTER_DIR)/prepare_field_2_filter.f90 m_precision.o calypso_mpi.o m_work_time.o t_comm_table.o solver_SR_type.o
@@ -17,8 +15,6 @@ select_filtering.o: $(FILTER_DIR)/select_filtering.f90 m_precision.o t_SGS_contr
 send_recv_3d_filtering.o: $(FILTER_DIR)/send_recv_3d_filtering.f90 m_precision.o m_work_time.o calypso_mpi.o t_comm_table.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_3d_filtering_tbl_smp.o: $(FILTER_DIR)/set_3d_filtering_tbl_smp.f90 m_precision.o m_constants.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_filter_geometry_4_IO.o: $(FILTER_DIR)/set_filter_geometry_4_IO.f90 m_precision.o m_nod_filter_comm_table.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_istart_3d_filtering.o: $(FILTER_DIR)/set_istart_3d_filtering.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

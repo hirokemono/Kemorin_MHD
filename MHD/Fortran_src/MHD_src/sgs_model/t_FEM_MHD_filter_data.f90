@@ -13,6 +13,7 @@
       module t_FEM_MHD_filter_data
 !
       use m_precision
+      use t_geometry_data
       use t_layering_ele_list
       use t_filter_elength
       use t_filtering_data
@@ -28,6 +29,8 @@
 !>        Structure of element size for nonlinear gradient model
         type(gradient_model_data_type) :: FEM_elens
 !
+!>        node position
+        type(node_data) :: filter_node
 !>        Weights for filtering
         type(filtering_data_type) :: filtering
 !>        Weights for wide filtering

@@ -60,7 +60,6 @@
       subroutine sort_3dfilter_analyze
 !
       use m_filter_file_names
-      use m_nod_filter_comm_table
 !
       use t_filter_file_data
       use t_filter_coefficients
@@ -70,12 +69,13 @@
       use sorting_by_filtering_area
       use filter_moment_IO_select
       use read_filter_file_4_sorting
-      use set_filter_geometry_4_IO
+      use copy_mesh_structures
 !
       integer :: ip
       integer(kind = kint) :: ierr
       type (filter_file_data) :: filter_IO
       type(const_filter_coefs) :: fil_gen1
+      type(node_data), save :: filter_nod1
 !
 !
 !  ---------------------------------------------------
@@ -100,8 +100,8 @@
 !     read filtering information
 !
         call s_read_filter_file_4_sorting                               &
-     &     (ifmt_3d_filter, my_rank, filtering_gen, fil_gen1,           &
-     &      whole_fil_sort1, fluid_fil_sort1)
+     &     (ifmt_3d_filter, my_rank, filter_nod1, filtering_gen,        &
+     &      fil_gen1, whole_fil_sort1, fluid_fil_sort1)
 !
         call dealloc_filter_func_4_sort(whole_fil_sort1)
         call dealloc_filter_num_4_sort(whole_fil_sort1)
@@ -127,14 +127,14 @@
 !  ---------------------------------------------------
 !
         call copy_comm_tbl_type(filtering_gen%comm, filter_IO%nod_comm)
-        call copy_filtering_geometry_to_IO(filter_IO%node)
+        call copy_node_geometry(filter_nod1, filter_IO%node)
 !
         call copy_3d_filter_stacks                                      &
      &     (filtering_gen%filter, filter_IO%filters)
         call copy_3d_filter_weight_func                                 &
      &     (filtering_gen%filter, filter_IO%filters)
 !
-        call deallocate_globalnod_filter
+        call dealloc_node_geometry_base(filter_nod1)
         call dealloc_comm_table(filtering_gen%comm)
 !
         ifmt_filter_file = ifmt_3d_filter

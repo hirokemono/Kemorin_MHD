@@ -26,7 +26,6 @@
 !
       use m_precision
 !
-      use m_nod_filter_comm_table
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data

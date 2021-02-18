@@ -36,7 +36,7 @@ output_viz_file_control.o: $(MHD_IO_DIR)/output_viz_file_control.f90 m_machine_p
 	$(F90) -c $(F90OPTFLAGS) $<
 read_ctl_data_SGS_model.o: $(MHD_IO_DIR)/read_ctl_data_SGS_model.f90 m_precision.o m_constants.o m_machine_parameter.o skip_comment_f.o t_read_control_elements.o t_ctl_data_SGS_model.o t_ctl_data_SGS_filter.o t_ctl_data_filter_files.o t_ctl_data_ele_layering.o t_control_array_real.o bcast_4_filter_files_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
-read_filtering_data.o: $(MHD_IO_DIR)/read_filtering_data.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_SGS_control_parameter.o t_comm_table.o t_geometry_data.o t_FEM_MHD_filter_data.o m_nod_filter_comm_table.o m_filter_file_names.o t_filter_file_data.o filter_moment_IO_select.o set_filter_geometry_4_IO.o set_parallel_file_name.o m_error_IDs.o t_filter_elength.o m_field_file_format.o t_l_filtering_data.o filter_mom_type_data_IO.o
+read_filtering_data.o: $(MHD_IO_DIR)/read_filtering_data.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_SGS_control_parameter.o t_comm_table.o t_geometry_data.o t_FEM_MHD_filter_data.o m_filter_file_names.o t_filter_file_data.o filter_moment_IO_select.o copy_mesh_structures.o set_parallel_file_name.o m_error_IDs.o t_filter_elength.o m_field_file_format.o t_l_filtering_data.o filter_mom_type_data_IO.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_FEM_sgs_model_coefs_IO.o: $(MHD_IO_DIR)/set_FEM_sgs_model_coefs_IO.f90 m_precision.o calypso_mpi.o m_constants.o t_ele_info_4_dynamic.o t_SGS_model_coefs.o t_time_data.o t_field_data_IO.o cal_minmax_and_stacks.o const_global_element_ids.o t_geometry_data.o t_group_data.o t_geometry_data_MHD.o t_SGS_control_parameter.o set_sgs_diff_model_coefs.o
 	$(F90) -c $(F90OPTFLAGS) $<

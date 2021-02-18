@@ -5,17 +5,19 @@
 !
 !!      subroutine local_newdomain_filter_para(nprocs_2nd, newfil_p,    &
 !!     &          itl_nod_part, nod_d_grp, comm_part, org_node, org_ele,&
-!!     &          newmesh, fil_coef, whole_fil_sort, fluid_fil_sort)
+!!     &          newmesh, filter_node, fil_coef,                       &
+!!     &          whole_fil_sort, fluid_fil_sort)
 !!      subroutine local_newdomain_filter_sngl                          &
 !!     &         (nprocs_2nd, newfil_p, itl_nod_part,                   &
 !!     &          nod_d_grp, comm_part, org_node, org_ele, newmesh,     &
-!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+!!     &          filter_node, fil_coef, whole_fil_sort, fluid_fil_sort)
 !!        type(internal_4_partitioner), intent(inout)  :: itl_nod_part
 !!        type(domain_group_4_partition), intent(inout)  :: nod_d_grp
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!        type(node_data),    intent(inout) :: org_node
 !!        type(element_data), intent(inout) :: org_ele
 !!        type(mesh_geometry), intent(inout) :: newmesh
+!!        type(node_data), intent(inout) :: filter_node
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -49,7 +51,8 @@
 !
       subroutine local_newdomain_filter_para(nprocs_2nd, newfil_p,      &
      &          itl_nod_part, nod_d_grp, comm_part, org_node, org_ele,  &
-     &          newmesh, fil_coef, whole_fil_sort, fluid_fil_sort)
+     &          newmesh, filter_node, fil_coef,                         &
+     &          whole_fil_sort, fluid_fil_sort)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
@@ -63,6 +66,7 @@
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -81,19 +85,18 @@
         call alloc_id_4_subdomain(itl_nod_part)
 !
         write(*,*) 'set_inod_4_newdomain_filter'
-        call set_inod_4_newdomain_filter                                &
-     &     (nprocs_2nd, newfil_p, nod_d_grp,                            &
-     &      org_node, org_ele, newmesh%node, itl_nod_part, fil_coef,    &
-     &      whole_fil_sort, fluid_fil_sort, ierr)
+        call set_inod_4_newdomain_filter(nprocs_2nd, newfil_p, nod_d_grp,       &
+     &      org_node, org_ele, newmesh%node, filter_node,                       &
+     &      itl_nod_part, fil_coef, whole_fil_sort, fluid_fil_sort, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
         end if
 !
 !    construct communication table
 !
-        call gen_node_import_tables                                     &
+        call gen_node_import_tables                                             &
      &     (nprocs_2nd, itl_nod_part, nod_d_grp, comm_part)
-        call gen_node_export_tables                                     &
+        call gen_node_export_tables                                             &
      &     (nprocs_2nd, itl_nod_part, nod_d_grp, comm_part)
       end if
 !
@@ -107,7 +110,7 @@
       write(*,*) 'const_mesh_each_filter_domain', my_rank
       call const_mesh_each_filter_domain                                &
      &   (my_rank, newfil_p%new_filter_coef_head,                       &
-     &    itl_nod_part, newmesh%nod_comm, comm_part)
+     &    itl_nod_part, newmesh%nod_comm, filter_node, comm_part)
 !
       call dealloc_internal_4_part(itl_nod_part)
       call dealloc_num_4_subdomain(itl_nod_part)
@@ -123,7 +126,7 @@
       subroutine local_newdomain_filter_sngl                            &
      &         (nprocs_2nd, newfil_p, itl_nod_part,                     &
      &          nod_d_grp, comm_part, org_node, org_ele, newmesh,       &
-     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+     &          filter_node, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
@@ -135,6 +138,7 @@
       type(partitioner_comm_tables), intent(inout) :: comm_part
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
+      type(node_data), intent(inout) :: filter_node
       type(mesh_geometry), intent(inout) :: newmesh
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
@@ -152,8 +156,8 @@
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
       call set_inod_4_newdomain_filter                                  &
-     &   (nprocs_2nd, newfil_p, nod_d_grp,                              &
-     &    org_node, org_ele, newmesh%node, itl_nod_part, fil_coef,      &
+     &   (nprocs_2nd, newfil_p, nod_d_grp, org_node, org_ele,           &
+     &    newmesh%node, filter_node, itl_nod_part, fil_coef,            &
      &    whole_fil_sort, fluid_fil_sort, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Fileter is wrong!!')
@@ -169,8 +173,9 @@
       call alloc_internal_4_part(itl_nod_part)
 !
       write(*,*) 'const_mesh_newdomain_filter'
-      call const_mesh_newdomain_filter(newfil_p%new_filter_coef_head,   &
-     &    nprocs_2nd, itl_nod_part, newmesh%nod_comm, comm_part)
+      call const_mesh_newdomain_filter                                  &
+     &   (newfil_p%new_filter_coef_head, nprocs_2nd, itl_nod_part,      &
+     &    newmesh%nod_comm, filter_node, comm_part)
 !
       call dealloc_internal_4_part(itl_nod_part)
       call dealloc_num_4_subdomain(itl_nod_part)
