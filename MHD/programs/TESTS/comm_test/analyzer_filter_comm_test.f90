@@ -28,7 +28,6 @@
       type(work_for_comm_check), save :: filter_check
       type(node_data), save :: filter_nod1
 !>      Structure for communicatiors for solver
-      type(vectors_4_solver), save :: v_sol_F
       type(send_recv_status), save :: SR_sig_F
 !
       private :: filtering_test
@@ -53,7 +52,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_input_ctl_filter_comm_test'
       call s_input_ctl_filter_comm_test                                 &
      &   (filtering_test, filter_nod1, wk_filter_test)
-      call alloc_iccgN_vec_type(6, filter_nod1%numnod, v_sol_F)
       call init_send_recv(filtering_test%comm)
 !
        end subroutine init_analyzer
@@ -72,7 +70,7 @@
 !
       call resize_SR_flag(nprocs, 1, SR_sig_F)
       call node_send_recv_test(filter_nod1, filtering_test%comm,        &
-     &    filter_check, v_sol_F, SR_sig_F)
+     &    filter_check, SR_sig_F)
       call output_diff_node_comm_test(comm_test_name, filter_check)
 !
       call dealloc_ele_comm_test_IO(filter_check)

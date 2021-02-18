@@ -36,8 +36,6 @@
       type(mesh_data), save :: new_fem
 !
       type(calypso_comm_table), save :: org_to_new_tbl
-!>      Structure for communicatiors for solver
-      type(vectors_4_solver), save :: v_sol_T
 !
 ! ----------------------------------------------------------------------
 !
@@ -172,23 +170,21 @@
      &    T_edge_comm, new_fem%mesh%edge)
 !
 !
+      call resize_SR_flag(nprocs, 1, SR_sig_t)
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test                                           &
      &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    org_to_new_tbl, nod_check, v_sol_T, SR_sig_t)
+     &    org_to_new_tbl, nod_check, SR_sig_t)
 !
-      call alloc_iccg_int8_vector(new_fem%mesh%node%numnod, v_sol_T)
-      call FEM_comm_initialization(new_fem%mesh, v_sol_T)
+!
       call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
-     &    T_ele_comm, ele_check, v_sol_T, SR_sig_t)
+     &    T_ele_comm, ele_check, SR_sig_t)
       call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check, v_sol_T, SR_sig_t)
+     &    T_surf_comm, surf_check, SR_sig_t)
       call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check, v_sol_T, SR_sig_t)
+     &    T_edge_comm, edge_check, SR_sig_t)
 !
       call dealloc_SR_flag(SR_sig_t)
-      call dealloc_iccgN_vec_type(v_sol_T)
-      call dealloc_iccg_int8_vector(v_sol_T)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)

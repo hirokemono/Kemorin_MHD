@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine node_send_recv_test                                  &
-!!     &         (node, nod_comm, nod_check, v_sol, SR_sig)
+!!     &         (node, nod_comm, nod_check, SR_sig)
 !!      subroutine ele_send_recv_test                                   &
-!!     &         (node, ele, ele_comm, ele_check, v_sol, SR_sig)
+!!     &         (node, ele, ele_comm, ele_check, SR_sig)
 !!      subroutine surf_send_recv_test                                  &
-!!     &         (node, surf, surf_comm, surf_check, v_sol, SR_sig)
+!!     &         (node, surf, surf_comm, surf_check, SR_sig)
 !!      subroutine edge_send_recv_test                                  &
-!!     &         (node, edge, edge_comm, edge_check, v_sol, SR_sig)
+!!     &         (node, edge, edge_comm, edge_check, SR_sig)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(work_for_comm_check), intent(inout) :: nod_check
@@ -27,16 +27,14 @@
 !!        type(edge_data), intent(in) :: edge
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(work_for_comm_check), intent(inout) :: edge_check
-!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!
 !!      subroutine node_transfer_test(node, new_node, new_comm,         &
-!!     &          trans_tbl, nod_check, v_sol, SR_sig)
+!!     &          trans_tbl, nod_check, SR_sig)
 !!        type(node_data), intent(in) :: node, new_node
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
-!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
@@ -54,7 +52,6 @@
       use t_surface_data
       use t_edge_data
       use t_work_for_comm_check
-      use t_vector_for_solver
       use t_calypso_comm_table
 !
       implicit  none
@@ -69,16 +66,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine node_send_recv_test                                    &
-     &         (node, nod_comm, nod_check, v_sol, SR_sig)
+     &         (node, nod_comm, nod_check, SR_sig)
 !
       use diff_geometory_comm_test
-      use nod_phys_send_recv
       use solver_SR_type
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(work_for_comm_check), intent(inout) :: nod_check
-      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
@@ -88,8 +83,8 @@
      &    nod_check%i_gl_test, nod_check%xx_test)
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (node%numnod, nod_comm, nod_check%i_gl_test)
-      call nod_vector_send_recv(node%numnod, nod_comm,                  &
-     &                          nod_check%xx_test, v_sol)
+      call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,               &
+     &                             nod_check%xx_test)
 !
       call nod_send_recv_check(node, nod_check)
       call collect_failed_comm(nod_check, SR_sig)
@@ -99,7 +94,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine ele_send_recv_test                                     &
-     &         (node, ele, ele_comm, ele_check, v_sol, SR_sig)
+     &         (node, ele, ele_comm, ele_check, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -109,7 +104,6 @@
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: ele_comm
       type(work_for_comm_check), intent(inout) :: ele_check
-      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
@@ -119,8 +113,8 @@
      &    ele%x_ele, ele_check%i_gl_test, ele_check%xx_test)
       call SOLVER_SEND_RECV_int8_type(ele%numele, ele_comm,             &
      &                                ele_check%i_gl_test)
-      call nod_vector_send_recv(ele%numele, ele_comm,                   &
-     &                          ele_check%xx_test, v_sol)
+      call SOLVER_SEND_RECV_3_type(ele%numele, ele_comm,                &
+     &                             ele_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (ele%numele, ele%iele_global, ele%x_ele, ele_check)
@@ -131,7 +125,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine surf_send_recv_test                                    &
-     &         (node, surf, surf_comm, surf_check, v_sol, SR_sig)
+     &         (node, surf, surf_comm, surf_check, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -141,7 +135,6 @@
       type(surface_data), intent(in) :: surf
       type(communication_table), intent(in) :: surf_comm
       type(work_for_comm_check), intent(inout) :: surf_check
-      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
@@ -152,8 +145,8 @@
      &    surf_check%i_gl_test, surf_check%xx_test)
       call SOLVER_SEND_RECV_int8_type(surf%numsurf, surf_comm,          &
      &                                surf_check%i_gl_test)
-      call nod_vector_send_recv(surf%numsurf, surf_comm,                &
-     &                          surf_check%xx_test, v_sol)
+      call SOLVER_SEND_RECV_3_type(surf%numsurf, surf_comm,             &
+     &                             surf_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)
@@ -164,17 +157,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine edge_send_recv_test                                    &
-     &         (node, edge, edge_comm, edge_check, v_sol, SR_sig)
+     &         (node, edge, edge_comm, edge_check, SR_sig)
 !
       use diff_geometory_comm_test
-      use nod_phys_send_recv
       use solver_SR_type
 !
       type(node_data), intent(in) :: node
       type(edge_data), intent(in) :: edge
       type(communication_table), intent(in) :: edge_comm
       type(work_for_comm_check), intent(inout) :: edge_check
-      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
@@ -185,8 +176,8 @@
      &    edge_check%i_gl_test, edge_check%xx_test)
       call SOLVER_SEND_RECV_int8_type(edge%numedge, edge_comm,          &
      &                                edge_check%i_gl_test)
-      call nod_vector_send_recv(edge%numedge, edge_comm,                &
-     &                          edge_check%xx_test, v_sol)
+      call SOLVER_SEND_RECV_3_type(edge%numedge, edge_comm,             &
+     &                             edge_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (edge%numedge, edge%iedge_global, edge%x_edge, edge_check)
@@ -198,10 +189,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine node_transfer_test(node, new_node, new_comm,           &
-     &          trans_tbl, nod_check, v_sol, SR_sig)
+     &          trans_tbl, nod_check, SR_sig)
 !
       use diff_geometory_comm_test
-      use nod_phys_send_recv
       use solver_SR_type
       use calypso_SR_type
       use select_copy_from_recv
@@ -210,7 +200,6 @@
       type(communication_table), intent(in) :: new_comm
       type(calypso_comm_table), intent(in) :: trans_tbl
       type(work_for_comm_check), intent(inout) :: nod_check
-      type(vectors_4_solver), intent(inout) :: v_sol
       type(send_recv_status), intent(inout) :: SR_sig
 !
 !
@@ -224,8 +213,8 @@
 !
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (new_node%numnod, new_comm, nod_check%i_gl_test)
-      call nod_vector_send_recv(new_node%numnod, new_comm,              &
-     &                          nod_check%xx_test, v_sol)
+      call SOLVER_SEND_RECV_3_type(new_node%numnod, new_comm,           &
+     &                             nod_check%xx_test)
 !
       call nod_send_recv_check(new_node, nod_check)
       call collect_failed_comm(nod_check, SR_sig)
@@ -238,14 +227,12 @@
       subroutine nod_send_recv_check(node, nod_check)
 !
       use diff_geometory_comm_test
-      use nod_phys_send_recv
       use solver_SR_type
 !
       type(node_data), intent(in) :: node
       type(work_for_comm_check), intent(inout) :: nod_check
 !
 !
-      if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
       nod_check%num_diff                                                &
      &   = count_node_comm_test(node%numnod, node%inod_global, node%xx, &
      &                          nod_check%i_gl_test, nod_check%xx_test)
@@ -263,7 +250,6 @@
       subroutine ele_send_recv_check(numele, iele_gl, x_ele, wk_check)
 !
       use diff_geometory_comm_test
-      use nod_phys_send_recv
       use solver_SR_type
 !
       integer(kind = kint), intent(in) :: numele
@@ -288,7 +274,6 @@
       subroutine collect_failed_comm(wk_check, SR_sig)
 !
       use diff_geometory_comm_test
-      use nod_phys_send_recv
       use solver_SR_type
       use collect_SR_int
       use collect_SR_N

@@ -31,7 +31,7 @@
       type work_for_comm_check
         integer(kind = kint) :: nnod
         integer(kind = kint_gl), allocatable :: i_gl_test(:)
-        real(kind = kreal), allocatable ::   xx_test(:,:)
+        real(kind = kreal), allocatable ::   xx_test(:)
 !
         integer(kind = kint) :: num_diff
         integer(kind = kint), allocatable :: i_diff(:)
@@ -56,10 +56,10 @@
 !
       wk_check%nnod = num
       allocate(wk_check%i_gl_test(wk_check%nnod))
-      allocate(wk_check%xx_test(wk_check%nnod,3))
+      allocate(wk_check%xx_test(3*wk_check%nnod))
 !
-      if(wk_check%nnod .gt. 0) wk_check%xx_test = 0.0d0
-      if(wk_check%nnod .gt. 0) wk_check%xx_test = 0.0d0
+      if(wk_check%nnod .gt. 0) wk_check%i_gl_test = 0.0d0
+      if(wk_check%nnod .gt. 0) wk_check%xx_test =   0.0d0
 !
       end subroutine alloc_geom_4_comm_test
 !
