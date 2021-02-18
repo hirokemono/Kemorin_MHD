@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine node_send_recv_test                                  &
-!!     &         (node, nod_comm, nod_check, v_sol)
+!!     &         (node, nod_comm, nod_check, v_sol, SR_sig)
 !!      subroutine ele_send_recv_test                                   &
-!!     &         (node, ele, ele_comm, ele_check, v_sol)
+!!     &         (node, ele, ele_comm, ele_check, v_sol, SR_sig)
 !!      subroutine surf_send_recv_test                                  &
-!!     &         (node, surf, surf_comm, surf_check, v_sol)
+!!     &         (node, surf, surf_comm, surf_check, v_sol, SR_sig)
 !!      subroutine edge_send_recv_test                                  &
-!!     &         (node, edge, edge_comm, edge_check, v_sol)
+!!     &         (node, edge, edge_comm, edge_check, v_sol, SR_sig)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(work_for_comm_check), intent(inout) :: nod_check
@@ -35,6 +35,7 @@
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
 !!        type(vectors_4_solver), intent(inout) :: v_sol
+!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module mesh_send_recv_check
@@ -56,7 +57,7 @@
 !
       implicit  none
 !
-      private :: collect_failed_comm, 
+      private :: collect_failed_comm
       private :: nod_send_recv_check, ele_send_recv_check
 !
 ! ----------------------------------------------------------------------
@@ -66,7 +67,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine node_send_recv_test                                    &
-     &         (node, nod_comm, nod_check, v_sol)
+     &         (node, nod_comm, nod_check, v_sol, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -95,7 +96,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine ele_send_recv_test                                     &
-     &         (node, ele, ele_comm, ele_check, v_sol)
+     &         (node, ele, ele_comm, ele_check, v_sol, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -119,7 +120,7 @@
      &                          ele_check%xx_test, v_sol)
 !
       call ele_send_recv_check(ele%numele, ele%ie(1,1),                 &
-     &                         ele%iele_globa, ele%x_ele, ele_check)
+     &                         ele%iele_global, ele%x_ele, ele_check)
       call collect_failed_comm(ele_check, SR_sig)
 !
       end subroutine ele_send_recv_test
@@ -127,7 +128,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine surf_send_recv_test                                    &
-     &         (node, surf, surf_comm, surf_check, v_sol)
+     &         (node, surf, surf_comm, surf_check, v_sol, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -161,7 +162,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine edge_send_recv_test                                    &
-     &         (node, edge, edge_comm, edge_check, v_sol)
+     &         (node, edge, edge_comm, edge_check, v_sol, SR_sig)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -258,7 +259,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine ele_send_recv_check(numnele, ie, iele_gl, x_ele,       &
+      subroutine ele_send_recv_check(numele, ie, iele_gl, x_ele,        &
      &                               wk_check)
 !
       use diff_geometory_comm_test
