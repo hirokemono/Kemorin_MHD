@@ -169,22 +169,22 @@
       integer(kind = kint) :: i_fld, ist, num, jj
 !
 !
-      write(*,*) 'j_table%icenter', j_table%icenter
       if(new_sph%sph_rj%inod_rj_center .eq. 0) return
 !
       if(j_table%icenter .gt. 0) then
-          inod_org = org_sph%sph_rj%inod_rj_center
-          inod_new = j_table%icenter
+        inod_org = org_sph%sph_rj%inod_rj_center
+        inod_new = new_sph%sph_rj%inod_rj_center
 !$omp parallel workshare
-          new_fld%d_fld(inod_new,1:new_fld%ntot_phys)                   &
+        new_fld%d_fld(inod_new,1:new_fld%ntot_phys)                     &
      &          = org_fld%d_fld(inod_org,1:new_fld%ntot_phys)
 !$omp end parallel workshare
 !
       else if(j_table%icenter .eq. 0) then
         jj = find_local_sph_address(org_sph%sph_rj, 0, 0)
         if(jj .gt. 0) then
-          inod_org = local_sph_node_address(org_sph%sph_rj, 0, 1)
-          inod_new = j_table%icenter
+          inod_org = local_sph_node_address(org_sph%sph_rj, 1, jj)
+          inod_new = new_sph%sph_rj%inod_rj_center
+!$omp parallel do private(i_fld,ist,num)
           do i_fld = 1, new_fld%num_phys
             ist = new_fld%istack_component(i_fld-1)
             num = new_fld%istack_component(i_fld) - ist
@@ -195,6 +195,8 @@
               new_fld%d_fld(inod_new,ist+1) = 0.0d0
             end if
           end do
+!$omp end parallel do
+!
         end if
       end if
 !
