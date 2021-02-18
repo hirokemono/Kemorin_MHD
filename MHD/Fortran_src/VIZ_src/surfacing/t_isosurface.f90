@@ -162,7 +162,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
-     &   (iso%num_iso, geofem%mesh, iso%iso_case_tbls,                  &
+     &   (iso%num_iso, geofem%mesh, edge_comm, iso%iso_case_tbls,       &
      &    iso%iso_search, iso%iso_list, iso%iso_mesh)
       if(iflag_ISO_time) call end_elapsed_time(ist_elapsed_ISO+1)
 !

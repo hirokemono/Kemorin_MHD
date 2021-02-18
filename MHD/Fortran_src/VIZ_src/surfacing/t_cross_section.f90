@@ -148,7 +148,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (psf%num_psf, geofem%mesh, geofem%group,                       &
+     &   (psf%num_psf, geofem%mesh, geofem%group, edge_comm,            &
      &    psf%psf_case_tbls, psf%psf_def, psf%psf_search, psf%psf_list, &
      &    psf%psf_grp_list, psf%psf_mesh)
 !

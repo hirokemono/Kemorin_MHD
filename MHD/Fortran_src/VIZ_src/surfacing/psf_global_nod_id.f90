@@ -11,7 +11,7 @@
 !!      subroutine psf_global_nod_id_on_node                            &
 !!     &         (nod_comm, numnod, istack_internod, id_n_on_n)
 !!      subroutine const_edge_comm_table_4_psf                          &
-!!     &         (node, nod_comm, edge, psf_list)
+!!     &         (node, edge, nod_comm, edge_comm, psf_list)
 !!@endverbatim
 !
       module psf_global_nod_id
@@ -100,7 +100,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_edge_comm_table_4_psf                            &
-     &         (node, nod_comm, edge, psf_list)
+     &         (node, edge, nod_comm, edge_comm, psf_list)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -112,6 +112,7 @@
       type(node_data), intent(in) :: node
       type(edge_data), intent(in) :: edge
       type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: edge_comm
       type(sectioning_list), intent(inout) :: psf_list
 !
       type(edge_data) :: edge_4_psf
