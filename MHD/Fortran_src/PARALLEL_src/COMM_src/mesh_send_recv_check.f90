@@ -122,8 +122,8 @@
       call nod_vector_send_recv(ele%numele, ele_comm,                   &
      &                          ele_check%xx_test, v_sol)
 !
-      call ele_send_recv_check(ele%numele, ele%ie(1,1),                 &
-     &                         ele%iele_global, ele%x_ele, ele_check)
+      call ele_send_recv_check                                          &
+     &   (ele%numele, ele%iele_global, ele%x_ele, ele_check)
       call collect_failed_comm(ele_check, SR_sig)
 !
       end subroutine ele_send_recv_test
@@ -155,9 +155,8 @@
       call nod_vector_send_recv(surf%numsurf, surf_comm,                &
      &                          surf_check%xx_test, v_sol)
 !
-      call ele_send_recv_check(surf%numsurf, surf%ie_surf(1,1),         &
-     &                         surf%isurf_global, surf%x_surf,          &
-     &                         surf_check)
+      call ele_send_recv_check                                          &
+     &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)
       call collect_failed_comm(surf_check, SR_sig)
 !
       end subroutine surf_send_recv_test
@@ -189,9 +188,8 @@
       call nod_vector_send_recv(edge%numedge, edge_comm,                &
      &                          edge_check%xx_test, v_sol)
 !
-      call ele_send_recv_check(edge%numedge, edge%ie_edge(1,1),         &
-     &                         edge%iedge_global, edge%x_edge,          &
-     &                         edge_check)
+      call ele_send_recv_check                                          &
+     &   (edge%numedge, edge%iedge_global, edge%x_edge, edge_check)
       call collect_failed_comm(edge_check, SR_sig)
 !
       end subroutine edge_send_recv_test
@@ -262,15 +260,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine ele_send_recv_check(numele, ie, iele_gl, x_ele,        &
-     &                               wk_check)
+      subroutine ele_send_recv_check(numele, iele_gl, x_ele, wk_check)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
 !
       integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: ie(numele,1)
       integer(kind = kint_gl), intent(in) :: iele_gl(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
