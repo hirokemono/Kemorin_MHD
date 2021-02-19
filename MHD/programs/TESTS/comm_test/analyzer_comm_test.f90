@@ -80,10 +80,10 @@
      &          - test_fem%mesh%nod_comm%istack_import(i-1)
         num_ex = test_fem%mesh%nod_comm%istack_export(i) &
      &          - test_fem%mesh%nod_comm%istack_export(i-1)
-        write(50+my_rank,*) 'id_neib:',                                 &
-     &      test_fem%mesh%nod_comm%id_neib(i), num_in, num_ex
+!        write(50+my_rank,*) 'id_neib:',                                &
+!     &      test_fem%mesh%nod_comm%id_neib(i), num_in, num_ex
       end do
-      close(50+my_rank)
+!      close(50+my_rank)
 !
 !  -------------------------------------------
 !
@@ -133,13 +133,6 @@
 !
       call calypso_mpi_barrier
 !
-      if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
-      call node_send_recv4_test                                         &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, v_sol_T)
-!
-      call dealloc_iccgN_vector(v_sol_T)
-      call dealloc_iccg_int8_vector(v_sol_T)
-!
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
       call node_send_recv_test                                          &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, nod_check)
@@ -157,6 +150,17 @@
       call dealloc_ele_comm_test_IO(ele_check)
       call dealloc_ele_comm_test_IO(surf_check)
       call dealloc_ele_comm_test_IO(edge_check)
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
+      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, v_sol_T)
+      call verify_iccgN_vec_type                                        &
+     &   (N12, test_fem%mesh%node%numnod, v_sol_T)
+      call node_send_recv4_test                                         &
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, v_sol_T)
+!
+      call dealloc_iccgN_vector(v_sol_T)
+      call dealloc_iccg_int8_vector(v_sol_T)
 !
       call output_elapsed_times
 !

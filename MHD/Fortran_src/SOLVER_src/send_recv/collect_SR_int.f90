@@ -46,7 +46,7 @@
 !
       integer(kind = kint), allocatable :: nums_NP(:)
       integer(kind = kint) :: ntmp(1)
-      integer :: id_rank, nneib_recv, ip
+      integer :: id_rank, ip
 !
 !
       call resize_SR_flag(1, nprocs, SR_sig)
