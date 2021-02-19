@@ -107,7 +107,7 @@
         end do
         write(*,*) 'copy data end'
 !
-      call alloc_iccgN_vec_type(isix, mesh%node%numnod, v_sol_n)
+      call alloc_iccgN_vector(isix, mesh%node%numnod, v_sol_n)
       call init_nod_send_recv(mesh)
       call fields_send_recv(mesh%nod_comm, nod_fld, v_sol_n)
 !

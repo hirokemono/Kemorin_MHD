@@ -89,8 +89,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
+      if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
+      call alloc_iccgN_vector                                           &
      &   (isix, femmesh_p_FUT%mesh%node%numnod, FUTIL1%v_sol)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !

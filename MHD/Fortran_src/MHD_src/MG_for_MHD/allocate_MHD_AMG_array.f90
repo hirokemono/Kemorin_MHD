@@ -49,9 +49,9 @@
       call alloc_mass_mat_fluid(fem%mesh%node, mk_MHD)
       call alloc_mass_mat_conduct(fem%mesh%node, mk_MHD)
 !
-      if (iflag_debug.ge.1 ) write(*,*) 'alloc_iccgN_vec_type'
+      if (iflag_debug.ge.1 ) write(*,*) 'alloc_iccgN_vector'
       MG_vector%isize_solver_vect = -1
-      call alloc_iccgN_vec_type(isix, fem%mesh%node%numnod, MG_vector)
+      call alloc_iccgN_vector(isix, fem%mesh%node%numnod, MG_vector)
 !
       end subroutine s_allocate_MHD_AMG_array
 !

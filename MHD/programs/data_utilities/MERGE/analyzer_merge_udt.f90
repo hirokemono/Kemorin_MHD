@@ -100,8 +100,8 @@
 !
 !  Initialize communicator
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
+      if (iflag_debug.gt.0 ) write(*,*) 'alloc_iccgN_vector'
+      call alloc_iccgN_vector                                           &
      &   (n_sym_tensor, mesh_m%node%numnod, v_sol_u)
 !
       if(iflag_debug.gt.0) write(*,*)' init_nod_send_recv'

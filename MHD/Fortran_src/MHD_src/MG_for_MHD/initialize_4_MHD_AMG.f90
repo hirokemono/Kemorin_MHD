@@ -101,9 +101,9 @@
 !
       call split_multigrid_comms(MGCG_WK)
 !
-      if (iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vec_type'
+      if (iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vector'
       MGCG_WK%MG_vector(0)%isize_solver_vect = -1
-      call alloc_iccgN_vec_type                                         &
+      call alloc_iccgN_vector                                           &
      &   (isix, mesh_1st%node%numnod,  MGCG_WK%MG_vector(0))
 !
 !     --------------------- 

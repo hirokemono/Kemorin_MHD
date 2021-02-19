@@ -139,20 +139,12 @@
 !
       call calypso_mpi_barrier
 !
-      call alloc_iccgN_vec_type(12, test_fem%mesh%node%numnod,          &
-     &                          v_sol_T)
-      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, v_sol_T)
-!
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
       call node_send_recv4_test                                         &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm, N12, v_sol_T)
 !
-      call dealloc_iccgN_vec_type(v_sol_T)
+      call dealloc_iccgN_vector(v_sol_T)
       call dealloc_iccg_int8_vector(v_sol_T)
-!
-      call alloc_iccgN_vec_type(ithree, test_fem%mesh%node%numnod,      &
-     &                          v_sol_T)
-      call alloc_iccg_int8_vector(test_fem%mesh%node%numnod, v_sol_T)
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
       call node_send_recv_test                                          &

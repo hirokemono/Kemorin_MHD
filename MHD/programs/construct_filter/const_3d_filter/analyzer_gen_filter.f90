@@ -207,8 +207,8 @@
 !       set element size for each node
 !  ---------------------------------------------------
 !
-      if(iflag_debug.eq.1)  write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type(ithree, fem_f%mesh%node%numnod, v_sol)
+      if(iflag_debug.eq.1)  write(*,*) 'alloc_iccgN_vector'
+      call alloc_iccgN_vector(ithree, fem_f%mesh%node%numnod, v_sol)
 !
       call init_nod_send_recv(fem_f%mesh)
 !
@@ -260,7 +260,7 @@
         call sel_write_filter_moms_file                                 &
      &     (my_rank, FEM_elen_f, FEM_momenet1)
       end if
-      call dealloc_iccgN_vec_type(v_sol)
+      call dealloc_iccgN_vector(v_sol)
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !

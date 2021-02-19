@@ -80,8 +80,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vec_type'
-      call alloc_iccgN_vec_type                                         &
+      if (iflag_debug.eq.1) write(*,*) 'alloc_iccgN_vector'
+      call alloc_iccgN_vector                                           &
      &   (isix, geofem%mesh%node%numnod, v_sol)
       call init_nod_send_recv(geofem%mesh)
 !
