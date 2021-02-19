@@ -20,7 +20,8 @@ LIB_FILES_MERGE = \
 '$$(LIB_PARA_FILE)'     \
 '$$(LIB_SOLVER_FILE)'   \
 '$$(LIB_MESH_FILE)'     \
-'$$(LIB_FFTPACK_FILE)'
+'$$(LIB_FFTPACK_FILE)'  \
+'$$(LIB_NETLIB_FILE)'
 
 
 LIBS_MERGE = \
@@ -28,7 +29,9 @@ LIBS_MERGE = \
 '$$(LIB_PARA)'      \
 '$$(LIB_SOLVER)'    \
 '$$(LIB_MESH)'      \
-'$$(LIB_FFTPACK)'
+'$$(LIB_FFTPACK)'   \
+'$$(LIB_NETLIB)'
+
 
 ifdef FORTRAN_C_CONNECT
   LIBS_MERGE+=        '$$(LIB_KEMO_C)'

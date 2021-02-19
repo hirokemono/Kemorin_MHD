@@ -24,7 +24,6 @@
       use t_next_node_ele_4_node
       use t_jacobians
       use t_phys_name_4_sph_trans
-      use t_control_param_vol_grping
       use t_vector_for_solver
       use t_visualizer
       use t_field_data_IO
@@ -68,9 +67,6 @@
         type(VIZ_step_params) :: viz_step
 !>        Structure for visualization
         type(visualize_modules) :: vizs
-!
-!>        Structure for repartitioning parameters
-        type(volume_partioning_param) :: repart
       end type FEM_for_SPH_transforms
 !
 ! ----------------------------------------------------------------------

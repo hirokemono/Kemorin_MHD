@@ -66,7 +66,6 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_element_comm_tables
-      use const_mesh_information
       use share_field_data
       use load_mesh_data_4_merge
       use bcast_4_assemble_sph_ctl
@@ -75,6 +74,7 @@
       use const_fem_nodes_4_rayleigh
       use mpi_load_mesh_data
 !
+      use nod_and_ele_derived_info
       use copy_mesh_structures
 !
 !>       Structure of grid and spectr data for spherical spectr method
@@ -110,7 +110,7 @@
      &    rayleigh_fem%mesh, rayleigh_fem%group)
 !
       allocate( org_mesh(nprocs) )
-      call copy_node_geometry_types                                     &
+      call copy_node_geometry                                           &
      &   (rayleigh_fem%mesh%node, org_mesh(my_rank+1)%node)
       call const_global_numnod_list(org_mesh(my_rank+1)%node)
       call dealloc_node_geometry_base(rayleigh_fem%mesh%node)
@@ -142,8 +142,8 @@
       call const_global_numele_list(geofem%mesh%ele)
 !
 !
-      call s_search_original_domain_node(nprocs, org_mesh,              &
-     &    geofem%mesh%node, asbl_comm_u)
+      call s_search_original_domain_node                                &
+     &   (nprocs, geofem%mesh%node, org_mesh, asbl_comm_u)
 !
 !
 !

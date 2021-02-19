@@ -4,18 +4,19 @@
 !     Written by H. Matsui on May, 2008
 !
 !!      subroutine write_new_whole_filter_coef                          &
-!!     &         (file_name, whole_fil_sort, fil_coef)
+!!     &         (file_name, filter_node, whole_fil_sort, fil_coef)
 !!      subroutine write_new_fluid_filter_coef                          &
-!!     &         (file_name, fluid_fil_sort, fil_coef)
+!!     &         (file_name, filter_node, fluid_fil_sort, fil_coef)
 !!        type(filter_func_4_sorting), intent(in) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
-!!      subroutine read_filter_coef_4_newdomain                         &
-!!     &         (id_file, fil_coef, whole_fil_sort, fluid_fil_sort)
-!!      subroutine read_filter_coef_4_newdomain_b                       &
-!!     &         (bbuf, fil_coef, whole_fil_sort, fluid_fil_sort)
+!!      subroutine read_filter_coef_4_newdomain(id_file, filter_node,   &
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+!!      subroutine read_filter_coef_4_newdomain_b(bbuf, filter_node,    &
+!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !!        type(binary_IO_buffer), intent(inout) :: bbuf
+!!        type(node_data), intent(in) :: filter_node
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -26,7 +27,7 @@
 !
       use t_filter_coefs
       use t_filter_func_4_sorting
-      use m_nod_filter_comm_table
+      use t_geometry_data
       use filter_IO_for_sorting
       use write_filters_4_each_node
 !
@@ -46,16 +47,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_new_whole_filter_coef                            &
-     &         (file_name, whole_fil_sort, fil_coef)
+     &         (file_name, filter_node, whole_fil_sort, fil_coef)
 !
       character(len = kchara), intent(in) :: file_name
+      type(node_data), intent(in) :: filter_node
       type(filter_func_4_sorting), intent(in) :: whole_fil_sort
       type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: inod, ierr
 !
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call set_filter_item_4_IO(inod, whole_fil_sort, fil_coef)
         call write_each_filter_stack_coef                               &
      &     (file_name, inod, fil_coef, ierr)
@@ -66,16 +68,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_new_fluid_filter_coef                            &
-     &         (file_name, fluid_fil_sort, fil_coef)
+     &         (file_name, filter_node, fluid_fil_sort, fil_coef)
 !
       character(len = kchara), intent(in) :: file_name
+      type(node_data), intent(in) :: filter_node
       type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
       type(each_filter_coef), intent(inout) :: fil_coef
 !
       integer(kind = kint) :: inod, ierr
 !
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call set_filter_item_4_IO(inod, fluid_fil_sort, fil_coef)
         if (fil_coef%nnod_4_1nod_w .lt. 0) then
           fil_coef%nnod_4_1nod_w = -fil_coef%nnod_4_1nod_w
@@ -95,12 +98,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_newdomain                           &
-     &         (id_file, fil_coef, whole_fil_sort, fluid_fil_sort)
+      subroutine read_filter_coef_4_newdomain(id_file, filter_node,     &
+     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
+      type(node_data), intent(in) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -110,19 +114,21 @@
 !
       whole_fil_sort%ntot_nod_near_filter = 0
       call alloc_filter_func_4_sort(whole_fil_sort)
-      call alloc_filter_num_4_sort(inter_nod_3dfilter, whole_fil_sort)
+      call alloc_filter_num_4_sort(filter_node%internal_node,           &
+     &                             whole_fil_sort)
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each(id_file, fil_coef)
         call set_w_filter_item_4_newdomain                              &
      &     (inod, fil_coef, whole_fil_sort)
       end do
 !
       fluid_fil_sort%ntot_nod_near_filter = 0
-      call alloc_filter_num_4_sort(inter_nod_3dfilter, fluid_fil_sort)
+      call alloc_filter_num_4_sort(filter_node%internal_node,           &
+     &                             fluid_fil_sort)
       call alloc_filter_func_4_sort(fluid_fil_sort)
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each(id_file, fil_coef)
         call set_f_filter_item_4_newdomain                              &
      &     (inod, fil_coef, fluid_fil_sort)
@@ -132,10 +138,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_coef_4_newdomain_b                         &
-     &         (bbuf, fil_coef, whole_fil_sort, fluid_fil_sort)
+      subroutine read_filter_coef_4_newdomain_b(bbuf, filter_node,      &
+     &          fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       type(binary_IO_buffer), intent(inout) :: bbuf
+      type(node_data), intent(in) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -146,7 +153,7 @@
       whole_fil_sort%ntot_nod_near_filter = 0
       call alloc_filter_func_4_sort(whole_fil_sort)
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each_b(bbuf, fil_coef)
         if(bbuf%ierr_bin .gt. 0) return
 !
@@ -158,7 +165,7 @@
       fluid_fil_sort%ntot_nod_near_filter = 0
       call alloc_filter_func_4_sort(fluid_fil_sort)
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each_b(bbuf, fil_coef)
         if(bbuf%ierr_bin .gt. 0) return
 !

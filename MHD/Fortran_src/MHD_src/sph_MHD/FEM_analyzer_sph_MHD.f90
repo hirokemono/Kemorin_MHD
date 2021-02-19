@@ -9,10 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,          &
-!!     &          geofem, nod_fld, iphys, MHD_IO, v_sol)
+!!     &          geofem, edge_comm, nod_fld, iphys, MHD_IO, v_sol)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
+!!        type(communication_table), intent(inout) :: edge_comm
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
@@ -54,6 +55,7 @@
 !
       use t_time_data
       use t_mesh_data
+      use t_comm_table
       use t_phys_data
       use t_phys_address
       use t_MHD_step_parameter
@@ -71,7 +73,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,            &
-     &          geofem, nod_fld, iphys, MHD_IO, v_sol)
+     &          geofem, edge_comm, nod_fld, iphys, MHD_IO, v_sol)
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -81,10 +83,12 @@
       use nod_phys_send_recv
       use node_monitor_IO
       use parallel_FEM_mesh_init
+      use const_element_comm_tables
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: edge_comm
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_IO_data), intent(inout) :: MHD_IO
@@ -115,10 +119,11 @@
       call FEM_comm_initialization(geofem%mesh, v_sol)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      call const_edge_comm_table                                        &
+     &   (geofem%mesh%node, geofem%mesh%nod_comm,                       &
+     &    edge_comm, geofem%mesh%edge)
 !
-!  -------------------------------
       end subroutine FEM_initialize_sph_MHD
 !
 !-----------------------------------------------------------------------

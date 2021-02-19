@@ -4,7 +4,7 @@ add_nodes_elems_4_each_nod.o: $(MESHDIR)/add_nodes_elems_4_each_nod.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 cal_local_position_by_tetra.o: $(MESHDIR)/cal_local_position_by_tetra.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_bc_infinity_surf.o: $(MESHDIR)/const_bc_infinity_surf.f90 m_precision.o
+const_bc_infinity_surf.o: $(MESHDIR)/const_bc_infinity_surf.f90 m_precision.o t_bc_data_list.o m_boundary_condition_IDs.o
 	$(F90) -c $(F90OPTFLAGS) $<
 convert_group_2_linear.o: $(MESHDIR)/convert_group_2_linear.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -14,6 +14,8 @@ copy_local_position_2_ele.o: $(MESHDIR)/copy_local_position_2_ele.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 count_overlap.o: $(MESHDIR)/count_overlap.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
+degraded_node_in_ele.o: $(MESHDIR)/degraded_node_in_ele.f90 m_precision.o m_constants.o m_geometry_constants.o
+	$(F90) -c $(F90OPTFLAGS) $<
 expand_near_element.o: $(MESHDIR)/expand_near_element.f90 m_precision.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
 expand_near_flag.o: $(MESHDIR)/expand_near_flag.f90 m_precision.o
@@ -22,7 +24,9 @@ find_element_id_4_node.o: $(MESHDIR)/find_element_id_4_node.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 find_grp_ele_id_4_node.o: $(MESHDIR)/find_grp_ele_id_4_node.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-find_node_4_group.o: $(MESHDIR)/find_node_4_group.f90 m_precision.o m_constants.o quicksort.o
+find_node_4_each_group.o: $(MESHDIR)/find_node_4_each_group.f90 m_precision.o m_constants.o quicksort.o
+	$(F90) -c $(F90OPTFLAGS) $<
+find_node_4_group.o: $(MESHDIR)/find_node_4_group.f90 m_precision.o m_constants.o calypso_mpi.o find_node_4_each_group.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
 find_selected_domain_bd.o: $(MESHDIR)/find_selected_domain_bd.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

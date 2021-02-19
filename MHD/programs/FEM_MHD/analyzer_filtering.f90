@@ -17,6 +17,7 @@
       use m_elapsed_labels_SEND_RECV
       use FEM_analyzer_filtered
       use t_visualizer
+      use t_VIZ_mesh_field
 !
       implicit none
 !
@@ -31,6 +32,7 @@
       use FEM_analyzer_snapshot
       use input_control
       use m_elapsed_labels_4_VIZ
+      use FEM_to_VIZ_bridge
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -45,7 +47,7 @@
      &   (MHD_files1, FEM_model1%FEM_prm, FEM_SGS1%SGS_par,             &
      &    MHD_step1, FEM_model1%MHD_prop, FEM_model1%MHD_BC,            &
      &    FEM_MHD1%geofem, FEM_MHD1%field,                              &
-     &    SGS_MHD_wk1%ele_fld, FEM_model1%bc_FEM_IO,                    &
+     &    SGS_MHD_wk1%ele_fld, VIZ_DAT2, FEM_model1%bc_FEM_IO,          &
      &    FEM_SGS1%FEM_filters, SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,        &
      &    vizs_rprt_c_F%vizs_ctl, vizs_rprt_c_F%repart_ctl)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -56,8 +58,11 @@
      &   (MHD_files1, MHD_step1, FEM_model1, MHD_CG1%ak_MHD,            &
      &    FEM_MHD1, FEM_SGS1, SGS_MHD_wk1, MHD_IO1, fem_sq1)
 !
-      call init_visualize(FEM_MHD1%geofem, FEM_MHD1%field,              &
-     &                    vizs_rprt_c_F%vizs_ctl, vizs_F)
+      call init_FEM_MHD_to_VIZ_bridge(MHD_step1%viz_step,               &
+     &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
+     &    FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2)
+      call init_visualize(VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm,         &
+     &   VIZ_DAT2%viz_fld, vizs_rprt_c_F%vizs_ctl, vizs_F)
 !
       end subroutine init_analyzer
 !
@@ -67,6 +72,7 @@
 !
       use FEM_analyzer_snapshot
       use output_viz_file_control
+      use FEM_to_VIZ_bridge
 !
       integer(kind=kint ) :: i_step
       logical :: visval
@@ -86,10 +92,11 @@
         if (visval) then
           call MHD_viz_routine_step                                     &
      &     (MHD_step1%flex_p, MHD_step1%time_d, MHD_step1%viz_step)
+          call s_FEM_to_VIZ_bridge                                      &
+     &       (FEM_MHD1%field, FEM_MHD1%v_sol, VIZ_DAT2)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        FEM_MHD1%geofem, FEM_MHD1%field,                          &
-     &        SGS_MHD_wk1%fem_int%next_tbl%neib_ele,                    &
-     &        SGS_MHD_wk1%fem_int%jcs, vizs_F)
+     &        VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm, VIZ_DAT2%viz_fld,   &
+     &        VIZ_DAT2%ele_4_nod, VIZ_DAT2%jacobians, vizs_F)
         end if
       end do
 !

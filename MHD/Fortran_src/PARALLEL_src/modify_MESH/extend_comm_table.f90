@@ -186,7 +186,7 @@
       call set_nodes_by_extend_sleeve(recv_nbuf, org_node, dbl_idx,     &
      &    added_comm, new_node, dbl_id2)
 !
-!      call check_nodes_by_extend_sleeveorg_node, new_node, dbl_id2)
+!      call check_nodes_by_extend_sleeve(org_node, new_node, dbl_id2)
 !
       allocate(iflag_recv(0:nprocs-1))
       allocate(iflag_send(0:nprocs-1))

@@ -29,6 +29,7 @@
 
       use mesh_IO_select
       use load_mesh_data
+      use nod_and_ele_derived_info
       use const_mesh_information
 !
       integer, intent(in) :: num_pe

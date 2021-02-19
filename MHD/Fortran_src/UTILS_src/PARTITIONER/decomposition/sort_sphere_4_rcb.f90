@@ -65,7 +65,9 @@
      &    longitude, ncou, VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-      call quicksort_real_w_index(num_CMB, VAL, ione, num_CMB, IS1)
+      if(num_CMB .gt. 1) then
+        call quicksort_real_w_index(num_CMB, VAL, ione, num_CMB, IS1)
+      end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(num_CMB, ncou, longitude,           &
@@ -84,7 +86,9 @@
         call copy_position_sort_4_rcb(num_CMB, ip0, IGROUP_cmb,         &
      &      colatitude, ncou, VAL, IS1)
 !
-        call quicksort_real_w_index(num_CMB, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(num_CMB, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(num_CMB, ncou, colatitude,        &

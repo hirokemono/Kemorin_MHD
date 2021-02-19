@@ -130,6 +130,6 @@ sgs_terms_coef_each_element.o: $(MHD_SGS_DIR)/sgs_terms_coef_each_element.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 sgs_terms_cst_each_element.o: $(MHD_SGS_DIR)/sgs_terms_cst_each_element.f90 m_precision.o m_phys_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_FEM_MHD_filter_data.o: $(MHD_SGS_DIR)/t_FEM_MHD_filter_data.f90 m_precision.o t_layering_ele_list.o t_filter_elength.o t_filtering_data.o t_mesh_data.o t_SGS_control_parameter.o ordering_line_filter_smp.o
+t_FEM_MHD_filter_data.o: $(MHD_SGS_DIR)/t_FEM_MHD_filter_data.f90 m_precision.o t_geometry_data.o t_layering_ele_list.o t_filter_elength.o t_filtering_data.o t_mesh_data.o t_SGS_control_parameter.o ordering_line_filter_smp.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

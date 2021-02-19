@@ -3,7 +3,11 @@
 !
 !     Written by H. Matsui in May, 2008
 !
-!      subroutine s_input_ctl_filter_comm_test(filtering, wk_filter)
+!!      subroutine s_input_ctl_filter_comm_test                         &
+!!     &         (filtering, filter_node, wk_filter)
+!!       type(filtering_data_type), intent(inout) :: filtering
+!!       type(filtering_work_type), intent(inout) :: wk_filter
+!!       type(node_data), intent(inout) :: filter_node
 !
       module input_ctl_filter_comm_test
 !
@@ -19,21 +23,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_ctl_filter_comm_test(filtering, wk_filter)
+      subroutine s_input_ctl_filter_comm_test                           &
+     &         (filtering, filter_node, wk_filter)
 !
       use calypso_mpi
+      use t_geometry_data
       use t_filter_file_data
       use t_filtering_data
       use t_ctl_data_filter_comm_test
       use m_machine_parameter
-      use m_nod_filter_comm_table
       use m_filter_file_names
 !
       use filter_coefs_file_IO
-      use set_filter_geometry_4_IO
+      use copy_mesh_structures
 !
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(node_data), intent(inout) :: filter_node
 !
       type(ctl_data_filter_comm_test) :: fc_test_ctl
       type(filter_file_data) :: filter_IO_t
@@ -58,11 +64,11 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_filter_comm_tbl_from_IO'
-      call copy_filtering_geometry_from_IO(filter_IO_t%node)
+      call copy_node_geometry(filter_IO_t%node, filter_node)
       call copy_comm_tbl_type(filter_IO_t%nod_comm, filtering%comm)
       call dealloc_filter_geometry_data(filter_IO_t)
 !
-      call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
+      call alloc_nod_data_4_filter(filter_node%numnod, wk_filter)
 !
 !
       end subroutine s_input_ctl_filter_comm_test

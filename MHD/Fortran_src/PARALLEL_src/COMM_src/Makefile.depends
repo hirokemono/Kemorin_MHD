@@ -36,6 +36,8 @@ make_element_comm_table_SR.o: $(COMMDIR)/make_element_comm_table_SR.f90 m_precis
 	$(F90) -c $(F90OPTFLAGS) $<
 mark_export_nod_ele_extend.o: $(COMMDIR)/mark_export_nod_ele_extend.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
+mesh_send_recv_check.o: $(COMMDIR)/mesh_send_recv_check.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_solver_SR.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_work_for_comm_check.o t_calypso_comm_table.o diff_geometory_comm_test.o solver_SR_type.o nod_phys_send_recv.o calypso_SR_type.o select_copy_from_recv.o collect_SR_int.o collect_SR_N.o
+	$(F90) -c $(F90OPTFLAGS) $<
 nod_phys_send_recv.o: $(COMMDIR)/nod_phys_send_recv.f90 m_precision.o m_machine_parameter.o m_phys_constants.o calypso_mpi.o t_mesh_data.o t_phys_data.o t_vector_for_solver.o t_solver_SR.o m_solver_SR.o m_work_time.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 parallel_FEM_mesh_init.o: $(COMMDIR)/parallel_FEM_mesh_init.f90 m_precision.o m_constants.o m_machine_parameter.o m_phys_constants.o calypso_mpi.o t_mesh_data.o t_file_IO_parameter.o t_read_mesh_data.o const_mesh_information.o const_element_comm_tables.o mesh_file_name_by_param.o calypso_mpi_int.o t_geometry_data.o
@@ -55,5 +57,9 @@ t_para_double_numbering.o: $(COMMDIR)/t_para_double_numbering.f90 m_precision.o 
 t_read_djds_matrix_IO.o: $(COMMDIR)/t_read_djds_matrix_IO.f90 m_precision.o t_comm_table.o t_solver_djds.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_vector_for_solver.o: $(COMMDIR)/t_vector_for_solver.f90 m_precision.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_work_for_comm_check.o: $(COMMDIR)/t_work_for_comm_check.f90 m_precision.o m_constants.o calypso_mpi.o
+	$(F90) -c $(F90OPTFLAGS) $<
+write_diff_4_comm_test.o: $(COMMDIR)/write_diff_4_comm_test.f90 m_precision.o calypso_mpi.o t_work_for_comm_check.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

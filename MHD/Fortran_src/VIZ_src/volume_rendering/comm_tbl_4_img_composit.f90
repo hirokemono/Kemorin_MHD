@@ -255,9 +255,11 @@
       end do
 !$omp end parallel do
 !
-      call quicksort_w_index                                            &
-     &   (ntot_recv_pixel_composit, itmp_recv_pixel_composit,           &
-     &    ione, ntot_recv_pixel_composit, idx_recv_pixel_composit)
+      if(ntot_recv_pixel_composit .gt. 1) then
+        call quicksort_w_index                                          &
+     &     (ntot_recv_pixel_composit, itmp_recv_pixel_composit,         &
+     &      ione, ntot_recv_pixel_composit, idx_recv_pixel_composit)
+      end if
 !
 !$omp parallel workshare
       istack_composition(0:npixel_4_composit) = 0

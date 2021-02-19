@@ -33,7 +33,8 @@ LIBS_SPH_UTILS =  \
 '$$(LIB_MT_STREAM)' \
 '$$(LIB_FFTPACK)'   \
 '$$(LIB_ISPACK)'    \
-'$$(LIB_ISPACK3)'
+'$$(LIB_ISPACK3)'   \
+'$$(LIB_NETLIB)'
 
 
 LIB_FILES_SPH_UTILS = \
@@ -45,7 +46,8 @@ LIB_FILES_SPH_UTILS = \
 '$$(LIB_MT_STREAM_FILE)' \
 '$$(LIB_FFTPACK_FILE)'   \
 '$$(LIB_ISPACK_FILE)'    \
-'$$(LIB_ISPACK3_FILE)'
+'$$(LIB_ISPACK3_FILE)'   \
+'$$(LIB_NETLIB_FILE)'
 
 
 ifdef FORTRAN_C_CONNECT

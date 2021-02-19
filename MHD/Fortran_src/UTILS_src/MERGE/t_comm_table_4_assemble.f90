@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine dealloc_comm_table_4_assemble(asbl_comm)
-!!      subroutine s_search_original_domain_node(nprocs_org, org_mesh,  &
-!!     &          new_node, irank_from_org, inod_from_org)
+!!      subroutine s_search_original_domain_node                        &
+!!     &         (nprocs_org, new_node, org_mesh, asbl_comm)
 !!        type(node_data), intent(in) :: new_node
 !!        type(mesh_geometry), intent(inout) :: org_mesh(nprocs_org)
 !!        type(comm_table_4_assemble), intent(inout) :: asbl_comm
@@ -78,7 +78,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_search_original_domain_node                          &
-     &         (nprocs_org, org_mesh, new_node, asbl_comm)
+     &         (nprocs_org, new_node, org_mesh, asbl_comm)
 !
       use share_mesh_data
       use search_original_domain_node

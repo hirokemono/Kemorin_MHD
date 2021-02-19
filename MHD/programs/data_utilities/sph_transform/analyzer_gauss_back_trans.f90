@@ -31,6 +31,7 @@
 !
       use t_SPH_mesh_field_data
       use m_elapsed_labels_4_VIZ
+      use FEM_to_VIZ_bridge
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_VIZ
@@ -42,7 +43,7 @@
       call read_control_data_sph_trans(spt_ctl1)
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans(spt_ctl1, t_STR, SPH_TRNS,        &
-     &                                FEM_STR1, SPH_STR1)
+     &                                FEM_STR1, SPH_STR1, VIZ_D_STR1)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -60,14 +61,24 @@
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
       call SPH_init_gauss_back_trans(SPH_TRNS, SPH_STR1)
 !
-      call init_visualize(FEM_STR1%geofem, FEM_STR1%field,              &
-     &                    spt_ctl1%viz_ctls, FEM_STR1%vizs)
+!  -------------------------------------------
+!  ----   Mesh setting for visualization -----
+!  -------------------------------------------
+      if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
+      call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step,                    &
+     &    FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1)
+!
+!  ------  initialize visualization
+      call init_visualize(VIZ_D_STR1%viz_fem, VIZ_D_STR1%edge_comm,     &
+     &    VIZ_D_STR1%viz_fld, spt_ctl1%viz_ctls, FEM_STR1%vizs)
 !
       end subroutine init_analyzer
 !
 ! ----------------------------------------------------------------------
 !
       subroutine analyze
+!
+      use FEM_to_VIZ_bridge
 !
       integer(kind = kint) :: i_step
       logical :: visval
@@ -89,9 +100,12 @@
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
-          call visualize_all(FEM_STR1%viz_step, t_STR%time_d,           &
-     &        FEM_STR1%geofem, FEM_STR1%field, FEM_STR1%ele_4_nod,      &
-     &        FEM_STR1%jacobians, FEM_STR1%vizs)
+          call s_FEM_to_VIZ_bridge                                      &
+     &       (FEM_STR1%field, FEM_STR1%v_sol, VIZ_D_STR1)
+          call visualize_all                                            &
+     &       (FEM_STR1%viz_step, t_STR%time_d, VIZ_D_STR1%viz_fem,      &
+     &        VIZ_D_STR1%edge_comm, VIZ_D_STR1%viz_fld,                 &
+     &        FEM_STR1%ele_4_nod, VIZ_D_STR1%jacobians, FEM_STR1%vizs)
         end if
       end do
 !

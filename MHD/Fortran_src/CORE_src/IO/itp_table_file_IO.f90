@@ -56,6 +56,8 @@
       type(interpolate_table), intent(inout) :: itp_tbl_IO
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Write ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
       call write_interpolate_table_dest                                 &
      &   (id_tbl_file, id_rank, itp_tbl_IO%tbl_dest)
@@ -90,6 +92,8 @@
       integer(kind = kint) :: n_rank_file
 !
 !
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Read ASCII interpolation table file: ', trim(file_name)
       open (id_tbl_file, file = file_name, form = 'formatted')
 !        write(*,*) 'read_interpolate_domain_dest', trim(file_name)
       call read_interpolate_domain_dest                                 &

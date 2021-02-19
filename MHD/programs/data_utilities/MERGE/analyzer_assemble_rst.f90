@@ -59,6 +59,7 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_element_comm_tables
+      use nod_and_ele_derived_info
       use const_mesh_information
       use share_field_data
       use assemble_nodal_fields
@@ -117,8 +118,8 @@
       call load_local_node_4_merge                                      &
      &   (asbl_param_f%org_mesh_file, ndomain_org, org_mesh)
 !
-      call s_search_original_domain_node(ndomain_org, org_mesh,         &
-     &    new_mesh%node, asbl_comm_f)
+      call s_search_original_domain_node                                &
+     &   (ndomain_org, new_mesh%node, org_mesh, asbl_comm_f)
 !
 !   read field name and number of components
 !

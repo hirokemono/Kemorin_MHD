@@ -99,7 +99,7 @@
      &     (cube_mesh_file, id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
-        call copy_node_geometry_types(mesh_IO_p%node, node_plane)
+        call copy_node_geometry(mesh_IO_p%node, node_plane)
         call dealloc_node_geometry_IO(mesh_IO_p)
 !
         call alloc_phys_data(mgd_mesh_pl%merged%node%numnod,            &

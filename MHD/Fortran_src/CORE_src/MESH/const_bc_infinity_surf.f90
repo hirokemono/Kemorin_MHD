@@ -1,23 +1,25 @@
-!const_bc_infinity_surf.f90
-!     module const_bc_infinity_surf
+!>@file   const_bc_infinity_surf.f90
+!!@brief  module const_bc_infinity_surf
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!     written by H. Matsui on Dec., 2008
-!
-!      subroutine count_num_bc_infinity(iflag_surf_infty,               &
-!     &          num_surf, surf_name, ngrp_sf_infty)
-!      subroutine set_bc_infty_id(iflag_surf_infty, num_surf,           &
-!     &          surf_name, ngrp_sf_infty, id_grp_sf_infty)
+!>@brief Set group for infinity elements
+!!
+!!@verbatim
+!!      subroutine count_num_bc_infinity                                &
+!!     &         (infty_BC, num_surf, surf_name, ngrp_sf_infty)
+!!      subroutine set_bc_infty_id(infty_BC, num_surf, surf_name,       &
+!!     &                           ngrp_sf_infty, id_grp_sf_infty)
+!!        type(boundary_condition_list), intent(in) :: infty_BC
+!!@endverbatim
 !
       module const_bc_infinity_surf
 !
       use m_precision
+      use t_bc_data_list
 !
       implicit  none
-!
-      integer (kind=kint) :: num_bc_infty
-      real (kind=kreal), allocatable :: bc_infty_magnitude(:)
-      integer (kind=kint), allocatable :: ibc_infty_type(:)
-      character (len=kchara), allocatable :: bc_infty_name(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -25,36 +27,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_infty_surf_ctl
+      subroutine count_num_bc_infinity                                  &
+     &         (infty_BC, num_surf, surf_name, ngrp_sf_infty)
 !
-      allocate(bc_infty_magnitude(num_bc_infty))
-      allocate(ibc_infty_type(num_bc_infty))
-      allocate(bc_infty_name(num_bc_infty))
+      use m_boundary_condition_IDs
 !
-      if(num_bc_infty .gt. 0) then
-        ibc_infty_type =     0
-        bc_infty_magnitude = 0.0d0
-      end if
-!
-      end subroutine allocate_infty_surf_ctl
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_infty_surf_ctl
-!
-        deallocate(bc_infty_magnitude)
-        deallocate(ibc_infty_type)
-        deallocate(bc_infty_name)
-!
-      end subroutine deallocate_infty_surf_ctl
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_infinity(iflag_surf_infty,                &
-     &          num_surf, surf_name, ngrp_sf_infty)
-!
-      integer(kind=kint), intent(in) :: iflag_surf_infty
+      type(boundary_condition_list), intent(in) :: infty_BC
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
 !
@@ -67,10 +45,9 @@
       do igrp = 1, num_surf
 !
 !  ---  for infinity element
-!
-        do jgrp = 1, num_bc_infty
-          if (surf_name(igrp) .eq. bc_infty_name(jgrp)                  &
-     &           .and. ibc_infty_type(jgrp) .eq. iflag_surf_infty) then
+        do jgrp = 1, infty_BC%num_bc
+          if (surf_name(igrp) .eq. infty_BC%bc_name(jgrp)               &
+     &      .and. infty_BC%ibc_type(jgrp) .eq. iflag_surf_infty) then
               ngrp_sf_infty = ngrp_sf_infty + 1
           end if
         end do
@@ -80,10 +57,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_bc_infty_id(iflag_surf_infty, num_surf,            &
-     &          surf_name, ngrp_sf_infty, id_grp_sf_infty)
+      subroutine set_bc_infty_id(infty_BC, num_surf, surf_name,         &
+     &                           ngrp_sf_infty, id_grp_sf_infty)
 !
-      integer(kind=kint), intent(in) :: iflag_surf_infty
+      use m_boundary_condition_IDs
+!
+      type(boundary_condition_list), intent(in) :: infty_BC
       integer(kind=kint), intent(in) :: num_surf
       character(len=kchara), intent(in) :: surf_name(num_surf)
       integer (kind=kint), intent(in) :: ngrp_sf_infty
@@ -95,18 +74,15 @@
       integer (kind=kint) :: icou
 !
 ! ---------  boundary condition for temperature
-!
       icou = 0
       do igrp = 1, num_surf
 !
 ! ----------- loop for boundary conditions
-!
-        do jgrp = 1, num_bc_infty
+        do jgrp = 1, infty_BC%num_bc
 !
 ! ----------- check surface group
-!
-          if (surf_name(igrp) .eq. bc_infty_name(jgrp)                  &
-     &         .and. ibc_infty_type(jgrp) .eq. iflag_surf_infty) then
+          if (surf_name(igrp) .eq. infty_BC%bc_name(jgrp)               &
+     &       .and. infty_BC%ibc_type(jgrp) .eq. iflag_surf_infty) then
             icou = icou + 1
             id_grp_sf_infty(icou) = igrp
           end if

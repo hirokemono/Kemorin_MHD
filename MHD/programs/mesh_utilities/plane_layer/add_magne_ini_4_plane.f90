@@ -142,7 +142,7 @@
      &     (cube_mesh_file, id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
-        call copy_node_geometry_types(mesh_IO_p%node, node_plane)
+        call copy_node_geometry(mesh_IO_p%node, node_plane)
 !
         call dealloc_node_geometry_IO(mesh_IO_p)
 !
@@ -168,7 +168,7 @@
 !
         do np = 1, pini_p1%ntot_rst_org
           do inod = 1, mgd_mesh_pl%merged%node%numnod
-            mgd_mesh_pl%merged_fld%d_fld(inod,np)                      &
+            mgd_mesh_pl%merged_fld%d_fld(inod,np)                       &
      &           = plane_fst_IO%d_IO(inod,np)
           end do
         end do

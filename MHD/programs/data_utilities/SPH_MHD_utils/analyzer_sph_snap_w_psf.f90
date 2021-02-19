@@ -28,6 +28,7 @@
       use t_viz_sections
       use t_SPH_MHD_zonal_mean_viz
       use t_sph_trans_arrays_MHD
+      use t_comm_table
 !
       use SPH_analyzer_snap_w_psf
       use FEM_analyzer_sph_MHD
@@ -46,6 +47,8 @@
       type(surfacing_modules), save, private :: viz_psfs1
 !
       real (kind=kreal), private  ::  total_start
+!>      Structure of edge communication table
+      type(communication_table), save, private :: edge_comm_M
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +87,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
-     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys,                    &
+     &    FEM_d1%geofem, edge_comm_M, FEM_d1%field, FEM_d1%iphys,       &
      &    MHD_IO1, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
@@ -94,10 +97,11 @@
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface(FEM_d1%geofem, FEM_d1%field,          &
+      call init_visualize_surface                                       &
+     &   (FEM_d1%geofem, edge_comm_M, FEM_d1%field,                     &
      &    DNS_MHD_ctl1%surfacing_ctls, viz_psfs1)
-      call init_zonal_mean_sections                                     &
-     &   (FEM_d1%geofem, FEM_d1%field, DNS_MHD_ctl1%zm_ctls, zmeans1)
+      call init_zonal_mean_sections(FEM_d1%geofem, edge_comm_M,         &
+     &    FEM_d1%field, DNS_MHD_ctl1%zm_ctls, zmeans1)
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
       call calypso_MPI_barrier
@@ -154,12 +158,12 @@
 !*
         if(iflag_vizs_w_fix_step(MHD_step1%time_d%i_time_step,          &
      &                           MHD_step1%viz_step)) then
-          if (iflag_debug.eq.1) write(*,*) 'visualize_all'
+          if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
-     &        FEM_d1%geofem, FEM_d1%field, viz_psfs1)
+     &        FEM_d1%geofem, edge_comm_M, FEM_d1%field, viz_psfs1)
 !*
 !*  ----------- Zonal means --------------
 !*

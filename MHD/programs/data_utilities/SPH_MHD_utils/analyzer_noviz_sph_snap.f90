@@ -27,6 +27,7 @@
       use t_SPH_mesh_field_data
       use t_step_parameter
       use t_sph_trans_arrays_MHD
+      use t_comm_table
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap_w_psf
@@ -40,6 +41,8 @@
      &                      :: snap_ctl_name = 'control_snapshot'
 !>      Control struture for MHD simulation
       type(DNS_mhd_simulation_control), save, private :: DNS_MHD_ctl1
+!>      Structure of edge communication table
+      type(communication_table), save, private :: edge_comm_M
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,7 +69,7 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_w_psf'
       call read_control_4_sph_MHD_w_psf(snap_ctl_name, DNS_MHD_ctl1)
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_SGS_dynamo'
+      if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_MHD_psf'
       call input_control_SPH_MHD_psf                                    &
      &   (MHD_files1, DNS_MHD_ctl1, MHD_step1, SPH_model1,              &
      &    SPH_WK1, SPH_MHD1, FEM_d1)
@@ -78,7 +81,7 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
-     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys,                    &
+     &    FEM_d1%geofem, edge_comm_M, FEM_d1%field, FEM_d1%iphys,       &
      &    MHD_IO1, FEM_d1%v_sol)
 !
 !        Initialize spherical transform dynamo
@@ -156,8 +159,8 @@
 !
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+2)
 !
-      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1, MHD_step1, MHD_IO1)
+      if (iflag_debug.eq.1) write(*,*) 'FEM_finalize_sph_SGS_MHD'
+      call FEM_finalize_sph_SGS_MHD(MHD_files1, MHD_step1, MHD_IO1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_SGS_snap'
 !      call SPH_finalize_SGS_snap

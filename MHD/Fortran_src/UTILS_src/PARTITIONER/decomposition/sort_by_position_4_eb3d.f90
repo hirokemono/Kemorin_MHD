@@ -60,7 +60,9 @@
      &    VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-      call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      if(nnod .gt. 1) then
+        call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
@@ -117,7 +119,9 @@
       &    VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-      call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      if(nnod .gt. 1) then
+        call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
@@ -133,7 +137,9 @@
         &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
@@ -154,7 +160,9 @@
         &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
@@ -221,7 +229,9 @@
         end if
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+        if(nnod .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
@@ -270,7 +280,9 @@
      &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
@@ -292,7 +304,9 @@
      &      VAL, IS1)
 !
         write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
         write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
@@ -348,7 +362,9 @@
      &    VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-      call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      if(nnod .gt. 1) then
+        call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
@@ -365,7 +381,9 @@
      &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
@@ -385,7 +403,9 @@
      &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)
@@ -438,7 +458,9 @@
      &    VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-      call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      if(nnod .gt. 1) then
+        call quicksort_real_w_index(nnod, VAL, ione, nnod, IS1)
+      end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
       call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
@@ -455,7 +477,9 @@
      &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx2, xx3, VAL, IS1)
@@ -476,7 +500,9 @@
      &      VAL, IS1)
 !
 !        write(*,*) 'quicksort_real_w_index'
-        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        if(ncou .gt. 1) then
+          call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+        end if
 !
 !        write(*,*) 'sorting_by_2nd_direction'
         call sorting_by_2nd_direction(nnod, ncou, xx3, xx1, VAL, IS1)

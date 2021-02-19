@@ -17,17 +17,26 @@
       use m_machine_parameter
 !
       use m_work_time
-      use m_viz_4_rayleigh
 !
       use FEM_analyzer_viz_rayleigh
       use t_ctl_data_rayleigh_vizs
       use t_rayleigh_field_address
       use t_visualizer
+      use t_VIZ_mesh_field
+      use t_VIZ_only_step_parameter
+      use t_viz_4_rayleigh
 !
       implicit none
 !
+!>       Structure for time stepping parameters
+!!        with field and visualization
+      type(time_step_param_w_viz), save :: t_VIZ_r
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_rayleigh_viz), save :: FEM_Rayleigh1
+!
       type(control_data_rayleigh_vizs), save :: rayleigh_vizs_ctl1
       type(visualize_modules), save :: vizs_v
+      type(VIZ_mesh_field), save :: VIZ_DAT_r
 !
 !  ---------------------------------------------------------------------
 !
@@ -40,6 +49,7 @@
       use calypso_mpi
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
+      use FEM_to_VIZ_bridge
 !
       integer(kind = kint) :: ierr
 !
@@ -54,19 +64,26 @@
       if (iflag_debug.gt.0) write(*,*) 'read_ctl_file_rayleigh_viz'
       call read_ctl_file_rayleigh_viz(rayleigh_vizs_ctl1)
       call set_ctl_params_rayleigh_viz(rayleigh_vizs_ctl1,              &
-     &    t_VIZ, rayleigh_ftbl1, rayleigh_rtp_V, ierr)
+     &    t_VIZ_r, FEM_Rayleigh1, VIZ_DAT_r, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
-!      call check_rayleigh_field_address(rayleigh_ftbl1)
+!      call check_rayleigh_field_address(FEM_Rayleigh1%iphys_ftb)
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_viz_rayleigh'
-      call FEM_initialize_viz_rayleigh(t_VIZ%init_d, t_VIZ%viz_step)
+      call FEM_initialize_viz_rayleigh(t_VIZ_r%init_d, FEM_Rayleigh1)
+!
+!  -------------------------------------------
+!  ----   Mesh setting for visualization -----
+!  -------------------------------------------
+      if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
+      call init_FEM_to_VIZ_bridge(t_VIZ_r%viz_step,                     &
+     &    FEM_Rayleigh1%geofem, FEM_Rayleigh1%field, VIZ_DAT_r)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize                                               &
-     &   (femmesh_VIZ, field_VIZ, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v)
+      call init_visualize(VIZ_DAT_r%viz_fem, VIZ_DAT_r%edge_comm,       &
+     &    VIZ_DAT_r%viz_fld, rayleigh_vizs_ctl1%viz_ctl_v, vizs_v)
 !
       end subroutine init_viz_rayleigh
 !
@@ -74,26 +91,32 @@
 !
       subroutine analyze_viz_rayleigh
 !
+      use FEM_to_VIZ_bridge
+!
       integer(kind = kint) :: i_step
       logical :: visval
 !
 !
-      do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ%ucd_step) .eqv. .FALSE.) cycle
+      do i_step = t_VIZ_r%init_d%i_time_step,                           &
+     &              t_VIZ_r%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ_r%ucd_step) .eqv. .FALSE.) cycle
 !
 !  Load field data
         if(iflag_debug .gt. 0)                                          &
      &      write(*,*) 'FEM_analyze_viz_rayleigh', i_step
-        visval = iflag_vizs_w_fix_step(i_step, t_VIZ%viz_step)
-        call FEM_analyze_viz_rayleigh(visval, i_step, t_VIZ%time_d)
+        visval = iflag_vizs_w_fix_step(i_step, t_VIZ_r%viz_step)
+        call FEM_analyze_viz_rayleigh                                   &
+     &     (visval, i_step, t_VIZ_r%time_d, FEM_Rayleigh1)
 !
 !  Rendering
         if(visval) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call istep_viz_w_fix_dt(i_step, t_VIZ%viz_step)
-          call visualize_all                                            &
-     &       (t_VIZ%viz_step, t_VIZ%time_d, femmesh_VIZ,                &
-     &        field_VIZ, ele_4_nod_VIZ, jacobians_VIZ, vizs_v)
+          call istep_viz_w_fix_dt(i_step, t_VIZ_r%viz_step)
+          call s_FEM_to_VIZ_bridge                                      &
+     &       (FEM_Rayleigh1%field, FEM_Rayleigh1%v_sol, VIZ_DAT_r)
+          call visualize_all(t_VIZ_r%viz_step, t_VIZ_r%time_d,          &
+     &       VIZ_DAT_r%viz_fem, VIZ_DAT_r%edge_comm, VIZ_DAT_r%viz_fld, &
+     &       VIZ_DAT_r%ele_4_nod, VIZ_DAT_r%jacobians, vizs_v)
         end if
       end do
 !

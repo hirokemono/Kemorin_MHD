@@ -60,7 +60,10 @@
       end do
 !$omp end parallel do
 !
-      call quicksort_w_index(ntot, irank_sorted, ione, ntot, idx_sort)
+      if(ntot .gt. 1) then
+        call quicksort_w_index(ntot, irank_sorted,                      &
+     &                         ione, ntot, idx_sort)
+      end if
 !
 !$omp parallel do private(i,j)
       do i = 1, ntot

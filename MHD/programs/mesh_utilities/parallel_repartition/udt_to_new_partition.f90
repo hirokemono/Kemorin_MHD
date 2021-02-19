@@ -56,8 +56,6 @@
       call link_local_mesh_2_ucd(new_mesh%node, new_mesh%ele, new_ucd)
       call link_nnod_stacks_2_ucd(nprocs, new_mesh%node, new_ucd)
       call sel_write_parallel_ucd_mesh(new_ucd_file, new_ucd)
-      call deallocate_ucd_ele(new_ucd)
-      call deallocate_ucd_node(new_ucd)
 !
       end subroutine init_udt_to_new_partition
 !
@@ -109,6 +107,8 @@
       type(ucd_data), intent(inout) :: new_ucd
 !
 !
+      call deallocate_ucd_ele(new_ucd)
+      call deallocate_ucd_node(new_ucd)
       call deallocate_vector_for_repart
       call unlink_merged_ucd_nod_stack(new_ucd)
 !

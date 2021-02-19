@@ -76,7 +76,7 @@
       call cal_node_volue                                               &
      &   (mesh%node, mesh%ele, volume_nod)
 !
-      call copy_node_geometry_types(mesh%node, first_ctr%cluster_nod)
+      call copy_node_geometry(mesh%node, first_ctr%cluster_nod)
 !
       clusters%num_cluster = 1
       call alloc_mul_node_clusterings(clusters)

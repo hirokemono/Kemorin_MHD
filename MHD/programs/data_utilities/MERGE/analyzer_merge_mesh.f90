@@ -48,6 +48,7 @@
       use load_mesh_data_4_merge
       use nod_phys_send_recv
       use const_element_comm_tables
+      use nod_and_ele_derived_info
       use const_mesh_information
       use set_control_platform_data
       use bcast_4_assemble_sph_ctl

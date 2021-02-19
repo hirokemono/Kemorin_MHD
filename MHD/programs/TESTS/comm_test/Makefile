@@ -25,12 +25,6 @@ endif
 
 SOURCES = $(shell ls *.f90)
 
-MOD_COMM_TEST_CORE = \
-m_geometry_4_comm_test.o \
-\
-set_diff_geom_comm_test.o \
-write_diff_4_comm_test.o
-
 MOD_COMM_TEST = \
 t_ctl_data_comm_test.o \
 send_recv_loop_tests.o \
@@ -41,11 +35,8 @@ analyzer_comm_test.o \
 main_comm_test.o
 
 MOD_FILTER_COMM_TEST = \
-m_geometry_filter_comm_test.o \
 t_ctl_data_filter_comm_test.o \
 input_ctl_filter_comm_test.o \
-set_diff_filter_comm_test.o \
-write_diff_filter_comm_test.o \
 \
 analyzer_filter_comm_test.o \
 main_filter_comm_test.o
@@ -97,10 +88,8 @@ lib_name:
 	@echo  '#' >> $(MAKENAME)
 
 mod_list:
-	@echo  MOD_COMM_TEST=  \\ >> $(MAKENAME)
-	@echo  $(MOD_COMM_TEST) $(MOD_COMM_TEST_CORE) >> $(MAKENAME)
-	@echo  MOD_FILTER_COMM_TEST=  \\ >> $(MAKENAME)
-	@echo  $(MOD_FILTER_COMM_TEST) $(MOD_COMM_TEST_CORE) >> $(MAKENAME)
+	@echo  MOD_COMM_TEST = $(MOD_COMM_TEST) >> $(MAKENAME)
+	@echo  MOD_FILTER_COMM_TEST= $(MOD_FILTER_COMM_TEST) >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 

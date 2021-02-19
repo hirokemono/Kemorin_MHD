@@ -5,7 +5,8 @@
 !
 !!      subroutine read_original_filter_coefs(org_filter_coef_head,     &
 !!     &          ifile_type, id_rank, numnod, numele,                  &
-!!     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+!!     &          filter_node, fil_coef, whole_fil_sort, fluid_fil_sort)
+!!        type(node_data), intent(inout) :: filter_node
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -35,7 +36,7 @@
 !
       subroutine read_original_filter_coefs(org_filter_coef_head,       &
      &          ifile_type, id_rank, numnod, numele,                    &
-     &          fil_coef, whole_fil_sort, fluid_fil_sort)
+     &          filter_node, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
       use m_filter_file_names
       use t_filter_coefs
@@ -54,6 +55,7 @@
       integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: numnod, numele
 !
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -76,8 +78,9 @@
         call read_filter_geometry                                       &
      &     (id_org_filter_coef, id_rank, comm_IO, nod_IO, ierr)
 !
-        inter_nod_3dfilter = nod_IO%internal_node
-        call read_filter_coef_4_newdomain(id_org_filter_coef, fil_coef, &
+        filter_node%internal_node = nod_IO%internal_node
+        call read_filter_coef_4_newdomain                               &
+     &     (id_org_filter_coef, filter_node, fil_coef,                  &
      &      whole_fil_sort, fluid_fil_sort)
         close(id_org_filter_coef)
       else if(ifile_type .eq. 1) then
@@ -89,9 +92,9 @@
      &     (id_rank, bbuf_flt, comm_IO, nod_IO)
         if(bbuf_flt%ierr_bin .gt. 0) go to 98
 !
-        inter_nod_3dfilter = nod_IO%internal_node
-        call read_filter_coef_4_newdomain_b                             &
-     &     (bbuf_flt, fil_coef, whole_fil_sort, fluid_fil_sort)
+        filter_node%internal_node = nod_IO%internal_node
+        call read_filter_coef_4_newdomain_b(bbuf_flt, filter_node,      &
+     &      fil_coef, whole_fil_sort, fluid_fil_sort)
 !
   98    continue
         call close_binary_file(bbuf_flt)

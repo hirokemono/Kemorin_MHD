@@ -43,7 +43,7 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
-      use ucd_IO_select
+      use parallel_ucd_IO_select
       use const_mesh_information
       use const_element_comm_tables
 !
@@ -57,14 +57,12 @@
 !
       call mesh_setup_4_SPH_TRANS(FEM_STR)
 !
-      call dealloc_edge_geometory(FEM_STR%geofem%mesh%edge)
-!
 !  -------------------------------
 !
       input_ucd%nnod = ione
       istep_ucd = IO_step_exc_zero_inc(init_d%i_time_step, ucd_step)
-      call sel_read_udt_param(my_rank, istep_ucd, FEM_STR%ucd_file_IO,  &
-     &    FEM_STR%time_IO, input_ucd)
+      call sel_read_parallel_udt_param                                  &
+     &   (istep_ucd, FEM_STR%ucd_file_IO, FEM_STR%time_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !

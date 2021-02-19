@@ -61,7 +61,7 @@
       subroutine s_2nd_ele_posi_2_nodal_array(newmesh)
 !
       use t_mesh_data
-      use const_mesh_information
+      use nod_and_ele_derived_info
 !
       type(mesh_geometry), intent(inout) :: newmesh
 !

@@ -13,10 +13,12 @@
       use m_work_time
       use calypso_mpi
 !
-      use t_control_data_vizs_pvr
-      use t_visualizer
+      use t_control_data_four_vizs
+      use t_volume_rendering
       use t_VIZ_only_step_parameter
-      use FEM_analyzer_viz_pvr
+      use t_FEM_mesh_field_4_viz
+      use t_VIZ_mesh_field
+      use FEM_analyzer_four_vizs
 !
       implicit none
 !
@@ -24,11 +26,13 @@
 !!          with field and visualization
       type(time_step_param_w_viz), save :: t_VIZ3
 !>      Structure of control data for visualization
-      type(control_data_pvr_vizs), save :: vizs_ctl3
+      type(control_data_four_vizs), save :: pvr_ctl3
+!>      Structure of FEM mesh and field structures
+      type(FEM_mesh_field_for_viz), save :: FEM_viz3
 !>      Structure of mesh and field for visualization only
-      type(FEM_mesh_field_4_pvr), save :: pvr3
+      type(VIZ_mesh_field), save :: pvr3
 !>      Structure of viualization modules
-      type(visualize_modules), save :: vizs_v3
+      type(volume_rendering_module), save :: vizs_pvr3
 !
 !  ---------------------------------------------------------------------
 !
@@ -51,20 +55,19 @@
       if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     read controls
-      if (iflag_debug.gt.0) write(*,*) 'read_control_file_pvr_vizs'
-      call read_control_file_pvr_vizs(vizs_ctl3)
-      call set_control_params_4_pvr(vizs_ctl3, pvr3, t_VIZ3, ierr)
+      if (iflag_debug.gt.0) write(*,*) 'read_control_file_four_vizs'
+      call read_control_file_four_vizs(pvr_ctl3)
+      call set_ctl_params_four_vizs(pvr_ctl3, FEM_viz3, t_VIZ3, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_pvr                                           &
-     &   (t_VIZ3%init_d, t_VIZ3%ucd_step, t_VIZ3%viz_step, pvr3)
-      call dealloc_field_lists_for_vizs(pvr3%viz_fld_list)
+      call FEM_initialize_four_vizs(t_VIZ3%init_d, t_VIZ3%ucd_step,     &
+     &                              t_VIZ3%viz_step, FEM_viz3, pvr3)
 !
 !  VIZ Initialization
-      if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize                                               &
-     &   (pvr3%geofem, pvr3%nod_fld, vizs_ctl3%viz_ctl_v, vizs_v3)
+      if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
+      call PVR_initialize(pvr3%viz_fem, pvr3%viz_fld,                   &
+     &                    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3)
 !
       end subroutine initialize_pvr
 !
@@ -83,15 +86,15 @@
      &       .eqv. .FALSE.) cycle
 !
 !  Load field data
-        call FEM_analyze_pvr                                            &
-     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, pvr3)
+        call FEM_analyze_four_vizs                                      &
+     &     (i_step, t_VIZ3%ucd_step, t_VIZ3%time_d, FEM_viz3)
 !
 !  Rendering
-        if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
+        if(iflag_debug .gt. 0)  write(*,*) 'PVR_visualize', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
-        call visualize_all(t_VIZ3%viz_step, t_VIZ3%time_d,              &
-     &     pvr3%geofem, pvr3%nod_fld, pvr3%ele_4_nod, pvr3%jacobians,   &
-     &     vizs_v3)
+        call PVR_visualize                                              &
+     &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
+     &      pvr3%viz_fem, pvr3%jacobians, pvr3%viz_fld, vizs_pvr3)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

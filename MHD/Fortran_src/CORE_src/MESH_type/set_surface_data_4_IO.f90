@@ -165,7 +165,7 @@
 !
 !      surf%numsurf =       nod_IO%numnod
       surf%internal_surf = nod_IO%internal_node
-      call allocate_surface_geom_type(surf)
+      call alloc_surface_geometory(surf)
       call allocate_normal_vect_type(surf)
 !
 !

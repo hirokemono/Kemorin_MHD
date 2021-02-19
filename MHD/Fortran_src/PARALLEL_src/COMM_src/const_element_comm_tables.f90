@@ -14,25 +14,21 @@
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!
-!!      subroutine const_ele_comm_tbl                                   &
-!!     &         (node, nod_comm, belongs, ele_comm, ele)
+!!      subroutine const_ele_comm_tbl(node, nod_comm, ele_comm, ele)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(belonged_table), intent(inout) :: belongs
 !!        type(communication_table), intent(inout) :: ele_comm
 !!        type(element_data), intent(inout) :: ele
 !!      subroutine const_surf_comm_table                                &
-!!     &         (node, nod_comm, belongs, surf_comm, surf)
+!!     &         (node, nod_comm, surf_comm, surf)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(belonged_table), intent(inout) :: belongs
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
 !!      subroutine const_edge_comm_table                                &
-!!     &         (node, nod_comm, belongs, edge_comm, edge)
+!!     &         (node, nod_comm, edge_comm, edge)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(belonged_table), intent(inout) :: belongs
 !!        type(communication_table), intent(inout) :: edge_comm
 !!        type(edge_data), intent(inout) :: edge
 !!
@@ -55,8 +51,6 @@
       use m_machine_parameter
 !
       implicit none
-!
-      type(belonged_table), save, private :: blng_tbl
 !
       character(len=kchara), parameter :: txt_ele =  'element'
       character(len=kchara), parameter :: txt_edge = 'edge'
@@ -100,7 +94,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
       call const_ele_comm_tbl(mesh%node, mesh%nod_comm,                 &
-     &    blng_tbl, ele_comm, mesh%ele)
+     &                        ele_comm, mesh%ele)
 !
       end subroutine const_element_comm_tbl_only
 !
@@ -226,17 +220,17 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_tbl                                     &
-     &         (node, nod_comm, belongs, ele_comm, ele)
+      subroutine const_ele_comm_tbl(node, nod_comm, ele_comm, ele)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(belonged_table), intent(inout) :: belongs
       type(communication_table), intent(inout) :: ele_comm
       type(element_data), intent(inout) :: ele
+!
+      type(belonged_table), save :: belongs
 !
 !
       call set_ele_id_4_node(node, ele, belongs%blng_ele)
@@ -261,16 +255,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table                                  &
-     &         (node, nod_comm, belongs, surf_comm, surf)
+     &         (node, nod_comm, surf_comm, surf)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(belonged_table), intent(inout) :: belongs
       type(communication_table), intent(inout) :: surf_comm
       type(surface_data), intent(inout) :: surf
+!
+      type(belonged_table), save :: belongs
 !
 !
       call set_surf_id_4_node(node, surf, belongs%blng_surf)
@@ -295,7 +290,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_edge_comm_table                                  &
-     &         (node, nod_comm, belongs, edge_comm, edge)
+     &         (node, nod_comm, edge_comm, edge)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -303,9 +298,10 @@
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
 !
-      type(belonged_table), intent(inout) :: belongs
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
+!
+      type(belonged_table), save :: belongs
 !
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'

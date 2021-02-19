@@ -53,12 +53,15 @@
       use t_shape_functions
       use sum_volume_of_domain
       use const_jacobians_3d
+      use const_bc_infty_surf_type
 !
       type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(in) :: group
+      type(mesh_groups), intent(inout) :: group
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacs
 !
+!
+      call empty_infty_surf_type(group%infty_grp)
 !
       allocate(jacs%g_FEM)
       call sel_max_int_point_by_etype(mesh%ele%nnod_4_ele, jacs%g_FEM)

@@ -333,7 +333,7 @@
      &          i_field, ncomp_field, t_IO)
 !
       use set_and_cal_udt_data
-      use ucd_IO_select
+      use parallel_ucd_IO_select
 !
       integer, intent(in) :: id_rank
       integer(kind = kint),  intent(in) :: istep_ucd, numnod
@@ -347,8 +347,8 @@
 !
 !
       local_ucd%nnod = numnod
-      call sel_read_udt_param                                           &
-     &   (id_rank, istep_ucd, ucd_param, t_IO, local_ucd)
+      call sel_read_parallel_udt_param                                  &
+     &   (istep_ucd, ucd_param, t_IO, local_ucd)
       call find_field_id_in_ucd(local_ucd, field_name,                  &
      &    i_field, ncomp_field)
       call deallocate_ucd_data(local_ucd)
@@ -371,7 +371,6 @@
       type(time_data), intent(inout) :: t_IO
 !
       type(ucd_data) :: local_ucd
-!
 !
 !
       local_ucd%nnod =      numnod

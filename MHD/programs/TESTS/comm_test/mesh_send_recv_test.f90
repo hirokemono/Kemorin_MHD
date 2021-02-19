@@ -8,11 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine elpsed_label_4_comm_test
-!!
-!!      subroutine s_mesh_send_recv_test
 !!      subroutine node_send_recv4_test(node, nod_comm, N12, v_sol)
-!!
-!!      subroutine node_send_recv_test(node, nod_comm)
 !!@endverbatim
 !
       module mesh_send_recv_test
@@ -22,7 +18,6 @@
       use m_constants
 !
       use calypso_mpi
-      use m_geometry_4_comm_test
 !
       use t_comm_table
       use t_geometry_data
@@ -35,9 +30,6 @@
       logical, save, private :: iflag_elapsd = .FALSE.
       integer(kind = kint), save, private :: ist_elapsed =   0
       integer(kind = kint), save, private :: ied_elapsed =   0
-!
-      private :: ele_send_recv_test, surf_send_recv_test
-      private :: edge_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,54 +69,6 @@
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-!
-      subroutine s_mesh_send_recv_test(ele, surf, edge,                 &
-     &          ele_comm, surf_comm, edge_comm)
-!
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: ele_comm
-      type(communication_table), intent(in) :: surf_comm
-      type(communication_table), intent(in) :: edge_comm
-!
-      call ele_send_recv_test(ele, ele_comm)
-      call surf_send_recv_test(surf, surf_comm)
-      call edge_send_recv_test(edge, edge_comm)
-!
-      end subroutine s_mesh_send_recv_test
-!
-! ----------------------------------------------------------------------
-!
-      subroutine node_send_recv_test(node, nod_comm, v_sol)
-!
-      use solver_SR_type
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
-      type(vectors_4_solver), intent(inout) :: v_sol
-!
-      integer(kind = kint) :: inod
-!
-!
-!$omp parallel do
-      do inod = 1, node%internal_node
-        v_sol%i8x_vec(inod) =   node%inod_global(inod)
-        v_sol%x_vec(3*inod-2) = node%xx(inod,1)
-        v_sol%x_vec(3*inod-1) = node%xx(inod,2)
-        v_sol%x_vec(3*inod  ) = node%xx(inod,3)
-      end do
-!$omp end parallel do
-!
-      call SOLVER_SEND_RECV_int8_type                                   &
-     &   (node%numnod, nod_comm, v_sol%i8x_vec(1))
-!
-      call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,               &
-     &                             v_sol%x_vec(1))
-!
-      end subroutine node_send_recv_test
-!
-! ----------------------------------------------------------------------
 !
       subroutine node_send_recv4_test(node, nod_comm, N12, v_sol)
 !
@@ -236,93 +180,6 @@
       if(iflag_elapsd) call end_elapsed_time(ist_elapsed+8)
 !
       end subroutine node_send_recv4_test
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine ele_send_recv_test(ele, ele_comm)
-!
-      use solver_SR_type
-!
-      type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: ele_comm
-!
-      integer(kind = kint) :: iele, inum
-!
-!
-      do iele = 1, ele%numele
-        x_ele_comm(3*iele-2) = ele%x_ele(iele,1)
-        x_ele_comm(3*iele-1) = ele%x_ele(iele,2)
-        x_ele_comm(3*iele  ) = ele%x_ele(iele,3)
-      end do
-      do inum = 1, ele_comm%ntot_import
-        iele = ele_comm%item_import(inum)
-        x_ele_comm(3*iele-2) = 0.0d0
-        x_ele_comm(3*iele-1) = 0.0d0
-        x_ele_comm(3*iele  ) = 0.0d0
-      end do
-!
-      call SOLVER_SEND_RECV_3_type(ele%numele, ele_comm, x_ele_comm)
-!
-      end subroutine ele_send_recv_test
-!
-! ----------------------------------------------------------------------
-!
-      subroutine surf_send_recv_test(surf, surf_comm)
-!
-      use solver_SR_type
-!
-      type(surface_data), intent(in) :: surf
-      type(communication_table), intent(in) :: surf_comm
-!
-      integer(kind = kint) :: isurf, inum
-!
-!
-      do isurf = 1, surf%numsurf
-        x_surf_comm(3*isurf-2) = surf%x_surf(isurf,1)
-        x_surf_comm(3*isurf-1) = surf%x_surf(isurf,2)
-        x_surf_comm(3*isurf  ) = surf%x_surf(isurf,3)
-      end do
-      do inum = 1, surf_comm%ntot_import
-        isurf = surf_comm%item_import(inum)
-        x_surf_comm(3*isurf-2) = 0.0d0
-        x_surf_comm(3*isurf-1) = 0.0d0
-        x_surf_comm(3*isurf  ) = 0.0d0
-      end do
-!
-      call SOLVER_SEND_RECV_3_type                                      &
-     &   (surf%numsurf, surf_comm, x_surf_comm)
-!
-      end subroutine surf_send_recv_test
-!
-! ----------------------------------------------------------------------
-!
-      subroutine edge_send_recv_test(edge, edge_comm)
-!
-      use solver_SR_type
-!
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
-!
-      integer(kind = kint) :: iedge, inum
-!
-!
-      do iedge = 1, edge%numedge
-        x_edge_comm(3*iedge-2) = edge%x_edge(iedge,1)
-        x_edge_comm(3*iedge-1) = edge%x_edge(iedge,2)
-        x_edge_comm(3*iedge  ) = edge%x_edge(iedge,3)
-      end do
-      do inum = 1, edge_comm%ntot_import
-        iedge = edge_comm%item_import(inum)
-        x_edge_comm(3*iedge-2) = 0.0d0
-        x_edge_comm(3*iedge-1) = 0.0d0
-        x_edge_comm(3*iedge  ) = 0.0d0
-      end do
-!
-      call SOLVER_SEND_RECV_3_type                                      &
-     &   (edge%numedge, edge_comm, x_edge_comm)
-!
-      end subroutine edge_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !

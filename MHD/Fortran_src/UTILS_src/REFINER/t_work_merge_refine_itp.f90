@@ -162,7 +162,7 @@
       integer(kind = kint) :: inum, ist, num, iele, i
 !
 !
-      call copy_node_geometry_types(node, node_org_refine)
+      call copy_node_geometry(node, node_org_refine)
       call copy_element_connect_types(ele, ele_org_refine)
       call alloc_sph_node_geometry(node_org_refine)
 !

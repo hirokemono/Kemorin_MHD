@@ -286,8 +286,10 @@
       do igrp = ele_grp%num_grp+1, new_elegrp%num_grp
         ist = new_elegrp%istack_grp(igrp-1) + 1
         ied = new_elegrp%istack_grp(igrp)
-        call quicksort_int(new_elegrp%num_item, new_elegrp%item_grp,    &
-     &      ist, ied)
+        if(ied .gt. ist) then
+          call quicksort_int(new_elegrp%num_item, new_elegrp%item_grp,  &
+     &                       ist, ied)
+        end if
       end do
 !
       call dealloc_group(ele_grp)

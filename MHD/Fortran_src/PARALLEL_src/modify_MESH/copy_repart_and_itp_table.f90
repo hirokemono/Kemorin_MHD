@@ -18,6 +18,8 @@
 !!        type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_info
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
+!!      subroutine dealloc_itp_tbl_for_repart(itp_info)
+!!        type(interpolate_table), intent(inout) :: itp_info
 !!@endverbatim
 !
       module copy_repart_and_itp_table
@@ -82,6 +84,21 @@
       end subroutine copy_itp_table_to_repart_tbl
 !
 !-----------------------------------------------------------------------
+!
+      subroutine dealloc_itp_tbl_for_repart(itp_info)
+!
+      type(interpolate_table), intent(inout) :: itp_info
+!
+!
+      call dealloc_itp_table_dest(itp_info%tbl_dest)
+      call dealloc_itp_num_dest(itp_info%tbl_dest)
+!
+      call dealloc_itp_table_org(itp_info%tbl_org)
+      call dealloc_itp_num_org(itp_info%tbl_org)
+!
+      end subroutine dealloc_itp_tbl_for_repart
+!
+!------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine copy_repart_export_to_itp_org                          &

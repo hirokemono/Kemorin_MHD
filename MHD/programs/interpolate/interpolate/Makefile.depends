@@ -20,6 +20,6 @@ main_test_itp_tbl.o: $(ITP_FIELD_DIR)/main_test_itp_tbl.f90 m_precision.o calyps
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_interpolation.o: $(ITP_FIELD_DIR)/mesh_interpolation.f90 m_precision.o calypso_mpi.o m_machine_parameter.o interpolate_position.o t_interpolate_table.o t_mesh_data.o t_vector_for_solver.o check_ineterppolated_mesh.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_structure_4_interolation.o: $(ITP_FIELD_DIR)/t_structure_4_interolation.f90 m_precision.o t_ctl_data_gen_table.o t_ctl_params_4_gen_table.o t_step_parameter.o t_mesh_data.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_interpolate_table.o t_vector_for_solver.o t_IO_step_parameter.o m_interpolate_table_IO.o set_ctl_interpolation.o load_mesh_data.o const_mesh_information.o itp_table_IO_select_4_zlib.o copy_interpolate_types.o interpolate_nod_field_2_type.o read_ctl_data_gen_table.o calypso_mpi.o t_ctl_data_4_fields.o set_field_data_w_SGS.o
+t_structure_4_interolation.o: $(ITP_FIELD_DIR)/t_structure_4_interolation.f90 m_precision.o t_ctl_data_gen_table.o t_ctl_params_4_gen_table.o t_step_parameter.o t_mesh_data.o t_phys_data.o t_phys_address.o t_SGS_model_addresses.o t_interpolate_table.o t_vector_for_solver.o t_IO_step_parameter.o m_interpolate_table_IO.o set_ctl_interpolation.o load_mesh_data.o nod_and_ele_derived_info.o const_mesh_information.o itp_table_IO_select_4_zlib.o copy_interpolate_types.o interpolate_nod_field_2_type.o read_ctl_data_gen_table.o calypso_mpi.o t_ctl_data_4_fields.o set_field_data_w_SGS.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

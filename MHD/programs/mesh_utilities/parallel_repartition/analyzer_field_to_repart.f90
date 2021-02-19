@@ -41,7 +41,7 @@
 !
       type(vol_partion_prog_param), save ::  part_p1
 !>        Structure for new time stepping
-      type(time_step_param_w_viz), save :: t_VIZ1
+      type(time_step_param_w_viz), save :: t_VIZ_T
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,6 +59,9 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use field_to_new_partition
+      use parallel_sleeve_extension
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
 !
 !
 !>     Stracture for Jacobians
@@ -73,7 +76,9 @@
 !
       call init_elapse_time_by_TOTAL
       call elpsed_label_4_repartition
+      call elpsed_label_4_sleeve_ext
       call elpsed_label_field_send_recv
+      if(iflag_TOT_time) call start_elapsed_time(ied_total_elapsed)
 !
 !     ----- read control data
 !
@@ -82,8 +87,8 @@
       call set_control_param_repartition(part_tctl1, part_p1)
       
       call set_fixed_t_step_params_w_viz                                &
-     &   (part_tctl1%t_viz_ctl, t_VIZ1, ierr, e_message)
-      call copy_delta_t(t_VIZ1%init_d, t_VIZ1%time_d)
+     &   (part_tctl1%t_viz_ctl, t_VIZ_T, ierr, e_message)
+      call copy_delta_t(t_VIZ_T%init_d, t_VIZ_T%time_d)
 !
 !  --  read geometry
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
@@ -95,8 +100,10 @@
 !
 !  -------------------------------
 !
-      call const_new_partition_mesh(part_p1%repart_p, fem_T, new_fem,   &
-     &                              org_to_new_tbl)
+      call load_or_const_new_partition                                  &
+     &   (part_p1%repart_p, fem_T, new_fem, org_to_new_tbl)
+      call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
+      call const_global_mesh_infos(new_fem%mesh)
 !
       end subroutine initialize_field_to_repart
 !
@@ -125,14 +132,14 @@
       call init_udt_to_new_partition(part_p1%repart_p%viz_ucd_file,     &
      &                               new_fem%mesh, new_ucd)
 !
-      ist = t_VIZ1%init_d%i_time_step
-      ied = t_VIZ1%finish_d%i_end_step
+      ist = t_VIZ_T%init_d%i_time_step
+      ied = t_VIZ_T%finish_d%i_end_step
       do i_step = ist, ied
-        if(output_IO_flag(i_step,t_VIZ1%ucd_step) .eqv. .FALSE.) cycle
-!        if(iflag_vizs_w_fix_step(i_step, t_VIZ1%viz_step)
+        if(output_IO_flag(i_step,t_VIZ_T%ucd_step) .eqv. .FALSE.) cycle
+!        if(iflag_vizs_w_fix_step(i_step, t_VIZ_T%viz_step)
 !     &        .eqv. .FALSE.) cycle
 !
-        istep_ucd = IO_step_exc_zero_inc(i_step, t_VIZ1%ucd_step)
+        istep_ucd = IO_step_exc_zero_inc(i_step, t_VIZ_T%ucd_step)
         call alloc_merged_ucd_nod_stack(nprocs, org_ucd)
         call sel_read_alloc_para_udt_file                               &
      &     (istep_ucd, part_p1%org_ucd_file, t_IO, org_ucd)
@@ -149,13 +156,14 @@
       call finalize_udt_to_new_partition(new_ucd)
 !
 !      if(my_rank .eq. 0) then
-!        write(*,*) 't_VIZ1%viz_step%PSF_t', t_VIZ1%viz_step%PSF_t
-!        write(*,*) 't_VIZ1%viz_step%ISO_t', t_VIZ1%viz_step%ISO_t
-!        write(*,*) 't_VIZ1%viz_step%PVR_t', t_VIZ1%viz_step%PVR_t
-!        write(*,*) 't_VIZ1%viz_step%FLINE_t', t_VIZ1%viz_step%FLINE_t
-!        write(*,*) 't_VIZ1%viz_step%LIC_t', t_VIZ1%viz_step%LIC_t
+!        write(*,*) 't_VIZ_T%viz_step%PSF_t', t_VIZ_T%viz_step%PSF_t
+!        write(*,*) 't_VIZ_T%viz_step%ISO_t', t_VIZ_T%viz_step%ISO_t
+!        write(*,*) 't_VIZ_T%viz_step%PVR_t', t_VIZ_T%viz_step%PVR_t
+!        write(*,*) 't_VIZ_T%viz_step%FLINE_t',t_VIZ_T%viz_step%FLINE_t
+!        write(*,*) 't_VIZ_T%viz_step%LIC_t', t_VIZ_T%viz_step%LIC_t
 !      end if
 !
+      if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
 !
       if(iflag_debug.gt.0) write(*,*) 'exit analyze_field_to_repart'

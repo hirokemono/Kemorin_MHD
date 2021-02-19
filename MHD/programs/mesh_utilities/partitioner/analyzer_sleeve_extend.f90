@@ -27,8 +27,11 @@
       use t_partitioner_comm_table
       use t_ctl_param_partitioner
       use para_const_kemoview_mesh
+      use parallel_sleeve_extension
 !
       use mpi_load_mesh_data
+      use m_work_time
+
 !
       implicit none
 !
@@ -61,6 +64,11 @@
       use t_mesh_data
       use t_read_mesh_data
 !
+!
+      call init_elapse_time_by_TOTAL
+      call elpsed_label_4_sleeve_ext
+      call start_elapsed_time(ied_total_elapsed)
+!
 !     ----- read control data
 !
       if(my_rank .eq. 0) call read_control_data_4_part(part_ctl1)
@@ -86,17 +94,11 @@
 !
       subroutine analyze_sleeve_extend
 !
-      use parallel_sleeve_extension
-!
       integer(kind = kint) :: ilevel
 !
 !
-      do ilevel = 1, part_p1%n_overlap
-        if(my_rank .eq. 0) write(*,*) 'para_sleeve_extension',          &
-     &                               iflag_debug
-        call para_sleeve_extension(fem_EXT%mesh, fem_EXT%group)
-      end do
-!
+      call sleeve_extension_loop(part_p1%n_overlap,                     &
+     &                           fem_EXT%mesh, fem_EXT%group)
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
@@ -106,6 +108,8 @@
       call pickup_surface_mesh                                          &
      &   (part_p1%distribute_mesh_file, par_viexw_ex)
 !
+      call end_elapsed_time(ied_total_elapsed)
+      call output_elapsed_times
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
       end subroutine analyze_sleeve_extend

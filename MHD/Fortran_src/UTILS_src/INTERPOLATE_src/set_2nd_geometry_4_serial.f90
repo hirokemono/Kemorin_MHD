@@ -73,7 +73,7 @@
      &     (mesh_file, id_rank, mesh_IO_2, ierr)
         if(ierr .gt. 0) stop 'Error in Mesh data'
 !
-        call copy_node_geometry_types                                   &
+        call copy_node_geometry                                         &
      &     (mesh_IO_2%node, subdomains_2(ip)%node)
         call copy_ele_connect_from_IO                                   &
      &     (mesh_IO_2%ele, subdomains_2(ip)%ele)

@@ -90,7 +90,7 @@
      &   (isix, femmesh_p_FUT%mesh%node%numnod, FUTIL1%v_sol)
       call init_send_recv(femmesh_p_FUT%mesh%nod_comm)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos_p'
       call const_mesh_infos_p                                           &
      &   (my_rank, femmesh_p_FUT%mesh, femmesh_p_FUT%group)
       call const_global_numnod_list(femmesh_p_FUT%mesh%node)
@@ -121,8 +121,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_vol_layer'
       call const_jacobian_and_vol_layer(my_rank, nprocs,                &
-     &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%group%surf_grp,        &
-     &    femmesh_p_FUT%group%infty_grp, femmesh_p_FUT%mesh%ele,        &
+     &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%mesh%ele,              &
+     &    femmesh_p_FUT%group%surf_grp, femmesh_p_FUT%group%infty_grp,  &
      &    FUTIL1%spfs, FUTIL1%jacobians, layer_tbl_corr)
       call dealloc_vol_shape_func(FUTIL1%spfs%spf_3d)
 !

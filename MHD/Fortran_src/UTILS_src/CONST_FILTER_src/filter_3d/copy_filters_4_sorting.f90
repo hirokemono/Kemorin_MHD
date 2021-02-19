@@ -18,7 +18,6 @@
 !
       use m_precision
 !
-      use m_nod_filter_comm_table
       use t_filter_func_4_sorting
 !
       implicit none

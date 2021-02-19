@@ -73,8 +73,10 @@
       end do
 !$omp end parallel do
 !
-      call quicksort_real_w_index(node%numnod, data_sort,               &
-     &    ione, node%internal_node, inod_sort)
+      if(node%internal_node .gt. 1) then
+        call quicksort_real_w_index(node%numnod, data_sort,             &
+     &      ione, node%internal_node, inod_sort)
+      end if
 !
 !$omp parallel workshare
       istack_block_z(0:nblock_z) = 0

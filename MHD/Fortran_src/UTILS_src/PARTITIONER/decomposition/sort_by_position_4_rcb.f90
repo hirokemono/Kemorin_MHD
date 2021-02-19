@@ -82,7 +82,9 @@
       call copy_position_sort_4_rcb(nnod, ip0, IGROUP, xx1, ncou,       &
      &    VAL, IS1)
 !
-      call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+      if(ncou .gt. 1) then
+        call quicksort_real_w_index(nnod, VAL, ione, ncou, IS1)
+      end if
 !
       call sorting_by_2nd_direction(nnod, ncou, xx1, xx2, VAL, IS1)
 !

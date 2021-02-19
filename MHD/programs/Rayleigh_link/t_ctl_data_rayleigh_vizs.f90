@@ -221,7 +221,6 @@
      &                                 :: rayleigh_vizs_ctl
 !
       call reset_control_platforms(rayleigh_vizs_ctl%viz_plt)
-      call dealloc_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
       call dealloc_control_vol_repart(rayleigh_vizs_ctl%repart_ctl)
 !
       call dealloc_phys_control(rayleigh_vizs_ctl%fld_ctl)

@@ -22,7 +22,6 @@
       use calypso_mpi
       use m_work_time
       use t_comm_table
-!      use m_nod_filter_comm_table
 !
       implicit none
 !

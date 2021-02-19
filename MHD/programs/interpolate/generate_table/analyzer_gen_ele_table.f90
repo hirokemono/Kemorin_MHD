@@ -16,8 +16,6 @@
 !
       use t_mesh_data
       use t_next_node_ele_4_node
-      use t_shape_functions
-      use t_jacobians
       use t_interpolate_table
       use t_interpolate_coefs_dest
       use t_ctl_data_gen_table
@@ -33,9 +31,6 @@
 !
       type(mesh_data), save :: org_femmesh
       type(next_nod_ele_table), save :: next_tbl_i
-!
-      type(shape_finctions_at_points), save :: spfs_I
-      type(jacobians_type), save :: jacobians_I
 !
       type(interpolate_table), save :: itp_ele
       type(interpolate_coefs_dest), save :: itp_e_coef
@@ -55,6 +50,7 @@
 !
       use t_shape_functions
 !
+      use nod_and_ele_derived_info
       use const_mesh_information
       use set_table_4_RHS_assemble
       use element_posi_2_nodal_array
@@ -101,22 +97,6 @@
       if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
      &   (org_femmesh%mesh, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
-      allocate(jacobians_I%g_FEM)
-      call sel_max_int_point_by_etype                                   &
-     &   (org_femmesh%mesh%ele%nnod_4_ele, jacobians_I%g_FEM)
-      call initialize_FEM_integration(jacobians_I%g_FEM,                &
-     &    spfs_I%spf_3d, spfs_I%spf_2d, spfs_I%spf_1d)
-!
-      call alloc_vol_shape_func(org_femmesh%mesh%ele%nnod_4_ele,        &
-     &    jacobians_I%g_FEM, spfs_I%spf_3d)
-      call const_jacobians_element(my_rank, nprocs,                     &
-     &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
-     &    org_femmesh%group%surf_grp, org_femmesh%group%infty_grp,      &
-     &    spfs_I%spf_3d, jacobians_I)
-      call dealloc_vol_shape_func(spfs_I%spf_3d)
-      call dealloc_jacobians_element(org_femmesh%mesh%ele, jacobians_I)
 !
 !  -------------------------------
 !

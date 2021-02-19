@@ -2,7 +2,7 @@ cal_buoyancy_flux.o: $(MHD_COMMON_DIR)/cal_buoyancy_flux.f90 m_precision.o m_mac
 	$(F90) -c $(F90OPTFLAGS) $<
 check_dependency_SGS_MHD.o: $(MHD_COMMON_DIR)/check_dependency_SGS_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_SGS_control_parameter.o t_physical_property.o t_phys_address.o t_phys_data.o t_SGS_model_addresses.o t_base_force_labels.o check_dependency_for_MHD.o t_SGS_term_labels.o t_spheric_parameter.o set_field_data_w_SGS.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_dependency_for_MHD.o: $(MHD_COMMON_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_physical_property.o t_spheric_parameter.o set_control_field_data.o
+check_dependency_for_MHD.o: $(MHD_COMMON_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_spheric_parameter.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_physical_property.o t_SPH_mesh_field_data.o set_control_field_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_comm_table_fluid.o: $(MHD_COMMON_DIR)/const_comm_table_fluid.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data_MHD.o calypso_mpi.o t_comm_table.o t_geometry_data.o set_comm_table_fluid.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -20,7 +20,7 @@ initialize_element_field.o: $(MHD_COMMON_DIR)/initialize_element_field.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 itp_potential_on_edge.o: $(MHD_COMMON_DIR)/itp_potential_on_edge.f90 m_precision.o t_geometry_data.o t_edge_data.o t_phys_data.o m_geometry_constants.o m_base_field_labels.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_FEM_MHD_model_data.o: $(MHD_COMMON_DIR)/m_FEM_MHD_model_data.f90 m_precision.o t_FEM_MHD_model_data.o t_FEM_mesh_field_data.o t_FEM_MHD_mean_square.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_work_FEM_SGS_MHD.o t_FEM_MHD_time_stepping.o t_visualizer.o t_control_data_vizs.o t_ctl_data_volume_repart.o
+m_FEM_MHD_model_data.o: $(MHD_COMMON_DIR)/m_FEM_MHD_model_data.f90 m_precision.o t_FEM_MHD_model_data.o t_FEM_mesh_field_data.o t_FEM_MHD_mean_square.o t_FEM_MHD_solvers.o t_FEM_SGS_structure.o t_work_FEM_SGS_MHD.o t_FEM_MHD_time_stepping.o t_VIZ_mesh_field.o t_visualizer.o t_control_data_vizs.o t_ctl_data_volume_repart.o
 	$(F90) -c $(F90OPTFLAGS) $<
 m_MHD_step_parameter.o: $(MHD_COMMON_DIR)/m_MHD_step_parameter.f90 m_precision.o t_MHD_IO_data.o t_MHD_step_parameter.o t_MHD_file_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -58,7 +58,7 @@ t_FEM_SGS_model_coefs.o: $(MHD_COMMON_DIR)/t_FEM_SGS_model_coefs.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_SGS_structure.o: $(MHD_COMMON_DIR)/t_FEM_SGS_structure.f90 m_precision.o t_SGS_control_parameter.o t_FEM_SGS_model_coefs.o t_FEM_MHD_filter_data.o t_SGS_model_addresses.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_FEM_control_parameter.o: $(MHD_COMMON_DIR)/t_FEM_control_parameter.f90 m_precision.o m_constants.o t_physical_property.o t_iccg_parameter.o t_MGCG_parameter.o t_control_param_vol_grping.o m_machine_parameter.o
+t_FEM_control_parameter.o: $(MHD_COMMON_DIR)/t_FEM_control_parameter.f90 m_precision.o m_constants.o t_physical_property.o t_iccg_parameter.o t_MGCG_parameter.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_FEM_mesh_field_data.o: $(MHD_COMMON_DIR)/t_FEM_mesh_field_data.f90 m_precision.o t_mesh_data.o t_phys_data.o t_phys_address.o t_vector_for_solver.o
 	$(F90) -c $(F90OPTFLAGS) $<

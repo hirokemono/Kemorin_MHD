@@ -5,11 +5,12 @@
 !
 !!      subroutine marking_used_node_4_filtering                        &
 !!     &         (ip2, ifile_type, org_filter_coef_head, mesh_file,     &
-!!     &          nod_d_grp, node, numele, fil_coef, whole_fil_sort,    &
-!!     &          fluid_fil_sort)
+!!     &          nod_d_grp, node, numele, filter_node, fil_coef,       &
+!!     &          whole_fil_sort, fluid_fil_sort)
 !!      subroutine trans_filter_4_new_domains                           &
 !!     &         (ip2, ifile_type, org_filter_coef_head, mesh_file,     &
-!!     &          nod_d_grp, node, numele, fil_coef, fils_sort)
+!!     &          nod_d_grp, node, numele, filter_node,                 &
+!!     &          fil_coef, fils_sort)
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(node_data), intent(inout) :: node
 !!        type(filters_4_sorting), intent(inout) :: fils_sort
@@ -40,8 +41,8 @@
 !
       subroutine marking_used_node_4_filtering                          &
      &         (ip2, ifile_type, org_filter_coef_head, mesh_file,       &
-     &          nod_d_grp, node, numele, fil_coef, whole_fil_sort,      &
-     &          fluid_fil_sort)
+     &          nod_d_grp, node, numele, filter_node, fil_coef,         &
+     &          whole_fil_sort, fluid_fil_sort)
 !
       type(field_IO_params), intent(in) ::  mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
@@ -51,6 +52,7 @@
 !
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_func_4_sorting), intent(inout) :: whole_fil_sort
       type(filter_func_4_sorting), intent(inout) :: fluid_fil_sort
@@ -65,14 +67,14 @@
       do ip = 1, nprocs
         id_rank = ip - 1
 !
-        call sel_read_geometry_size                                     &
-     &     (mesh_file, id_rank, mesh_IO_f, ierr)
+        call sel_read_geometry_size(mesh_file, id_rank,                 &
+     &                              mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if
 !
 !
-        call copy_node_geometry_types(mesh_IO_f%node, node)
+        call copy_node_geometry(mesh_IO_f%node, node)
         numele = mesh_IO_f%ele%numele
 !
         call dealloc_node_geometry_IO(mesh_IO_f)
@@ -81,7 +83,7 @@
 !
         call read_original_filter_coefs(org_filter_coef_head,           &
      &      ifile_type, id_rank, node%numnod, numele,                   &
-     &      fil_coef, whole_fil_sort, fluid_fil_sort)
+     &      filter_node, fil_coef, whole_fil_sort, fluid_fil_sort)
 !
         call nod_marking_by_filtering_data                              &
      &     (node%numnod, node%internal_node, node%inod_global, node%xx, &
@@ -101,7 +103,8 @@
 !
       subroutine trans_filter_4_new_domains                             &
      &         (ip2, ifile_type, org_filter_coef_head, mesh_file,       &
-     &          nod_d_grp, node, numele, fil_coef, fils_sort)
+     &          nod_d_grp, node, numele, filter_node,                   &
+     &          fil_coef, fils_sort)
 !
       type(field_IO_params), intent(in) :: mesh_file
       type(domain_group_4_partition), intent(in)  :: nod_d_grp
@@ -111,6 +114,7 @@
 !
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filters_4_sorting), intent(inout) :: fils_sort
 !
@@ -123,14 +127,14 @@
       do ip = 1, nprocs
         id_rank = ip - 1
 !
-        call sel_read_geometry_size                                     &
-     &     (mesh_file, id_rank, mesh_IO_f, ierr)
+        call sel_read_geometry_size(mesh_file, id_rank,                 &
+     &                              mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if
 !
 !
-        call copy_node_geometry_types(mesh_IO_f%node, node)
+        call copy_node_geometry(mesh_IO_f%node, node)
         numele = mesh_IO_f%ele%numele
 !
         call dealloc_node_geometry_IO(mesh_IO_f)
@@ -138,8 +142,9 @@
 !     read filtering information
 !
         call read_original_filter_coefs(org_filter_coef_head,           &
-     &      ifile_type, id_rank, node%numnod, numele, fil_coef,         &
-     &      fils_sort%whole_fil_sort, fils_sort%fluid_fil_sort)
+     &      ifile_type, id_rank, node%numnod, numele, filter_node,      &
+     &      fil_coef, fils_sort%whole_fil_sort,                         &
+     &      fils_sort%fluid_fil_sort)
 !
         call set_filter_for_new_each_domain                             &
      &     (node%numnod, node%internal_node, node%inod_global, ip2,     &

@@ -288,7 +288,8 @@
 !C
 !C-- Finalize
 !      write(*,*) 'dealloc_nod_ele_infos'
-      call dealloc_nod_ele_infos(org_fem%mesh, org_fem%group)
+      call dealloc_nod_ele_infos(org_fem%mesh)
+      call dealloc_mesh_smp_stack(org_fem%mesh, org_fem%group)
       call dealloc_mesh_data(org_fem%mesh, org_fem%group)
 !
       call output_elapsed_times

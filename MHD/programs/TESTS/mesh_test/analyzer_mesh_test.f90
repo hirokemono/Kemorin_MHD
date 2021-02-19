@@ -68,7 +68,7 @@
       use const_jacobians_3d
       use parallel_FEM_mesh_init
       use load_element_mesh_data
-      use output_test_mesh
+!      use output_test_mesh
       use const_element_comm_table
 !
       use t_mesh_data
@@ -117,7 +117,6 @@
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call calypso_MPI_barrier
-      return
 !
 !  -------------------------------
 !
@@ -144,9 +143,9 @@
 !     output element, surface, edge data
 !  ---------------------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
-      call output_test_mesh_informations                               &
-     &   (my_rank, fem_T%mesh, mesh_IO, ele_mesh_IO)
+!      if (iflag_debug.gt.0) write(*,*) 'output_test_mesh_informations'
+!      call output_test_mesh_informations                               &
+!     &   (my_rank, fem_T%mesh, mesh_IO, ele_mesh_IO)
 !
       end subroutine initialize_mesh_test
 !

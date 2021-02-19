@@ -13,16 +13,20 @@
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
 !!        type(filter_func_4_sorting), intent(in) :: whole_fil_sort
 !!        type(filter_func_4_sorting), intent(in) :: fluid_fil_sort
-!!      subroutine set_global_nodid_4_newfilter(nod_d_grp)
+!!      subroutine set_global_nodid_4_newfilter(filter_node, nod_d_grp)
+!!        type(node_data), intent(in) :: filter_node
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!
 !!      subroutine set_num_globalnod_4_newdomain                        &
-!!     &         (ip2, nod_d_grp, itl_nod_part, new_node)
+!!     &         (ip2, nod_d_grp, filter_node, itl_nod_part, new_node)
 !!        type(domain_group_4_partition), intent(in) :: nod_d_grp
+!!        type(node_data), intent(inout) :: filter_node
 !!        type(internal_4_partitioner), intent(inout) :: itl_nod_part
 !!        type(node_data), intent(inout) :: new_node
-!!      subroutine set_newdomain_filtering_nod(ip2, itl_nod_part)
+!!      subroutine set_newdomain_filtering_nod                          &
+!!     &         (ip2, itl_nod_part, filter_node)
 !!        type(internal_4_partitioner), intent(in) :: itl_nod_part
+!!        type(node_data), intent(inout) :: filter_node
 !!
 !!      subroutine set_filter_for_new_each_domain                       &
 !!     &         (numnod, internal_node, inod_global, ip2, inter_nod_f, &
@@ -40,6 +44,7 @@
       use m_precision
 !
       use m_constants
+      use t_geometry_data
       use t_domain_group_4_partition
       use t_filter_func_4_sorting
 !
@@ -154,29 +159,30 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_num_globalnod_4_newdomain                          &
-     &         (ip2, nod_d_grp, itl_nod_part, new_node)
+     &         (ip2, nod_d_grp, filter_node, itl_nod_part, new_node)
 !
       use t_geometry_data
       use t_internal_4_partitioner
-      use m_nod_filter_comm_table
 !
       integer(kind = kint), intent(in) :: ip2
       type(domain_group_4_partition), intent(in) :: nod_d_grp
 !
+      type(node_data), intent(inout) :: filter_node
       type(internal_4_partitioner), intent(inout) :: itl_nod_part
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: inod, inod_g, ntot_tmp
 !
 !
-      nnod_filtering = 0
+      filter_node%numnod = 0
       do inod_g = 1, nod_d_grp%num_s_domin
-        nnod_filtering = nnod_filtering + imark_whole_nod(inod_g)
+        filter_node%numnod = filter_node%numnod                         &
+     &                      + imark_whole_nod(inod_g)
       end do
-      inter_nod_3dfilter = new_node%internal_node
+      filter_node%internal_node = new_node%internal_node
 !
-      itl_nod_part%num_inter_sub(ip2) =   inter_nod_3dfilter
-      itl_nod_part%num_4_subdomain(ip2) = nnod_filtering
+      itl_nod_part%num_inter_sub(ip2) =   filter_node%internal_node
+      itl_nod_part%num_4_subdomain(ip2) = filter_node%numnod
 !
       if(ip2 .eq. 1) then
         itl_nod_part%nmax_inter_sub = itl_nod_part%num_inter_sub(ip2)
@@ -273,13 +279,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_newdomain_filtering_nod(ip2, itl_nod_part)
+      subroutine set_newdomain_filtering_nod                            &
+     &         (ip2, itl_nod_part, filter_node)
 !
-      use m_nod_filter_comm_table
       use t_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: ip2
       type(internal_4_partitioner), intent(in) :: itl_nod_part
+      type(node_data), intent(inout) :: filter_node
 !
       integer(kind = kint) :: ist, inum
       integer(kind = kint_gl) :: inod_g
@@ -287,10 +294,10 @@
       ist = itl_nod_part%istack_4_subdomain(ip2-1)
       do inum = 1, itl_nod_part%num_4_subdomain(ip2)
         inod_g = itl_nod_part%id_4_subdomain(inum+ist)
-        id_globalnod_filtering(inum) = inod_g
-        xx_filtering(inum,1) = xx_whole_nod(inod_g,1)
-        xx_filtering(inum,2) = xx_whole_nod(inod_g,2)
-        xx_filtering(inum,3) = xx_whole_nod(inod_g,3)
+        filter_node%inod_global(inum) = inod_g
+        filter_node%xx(inum,1) = xx_whole_nod(inod_g,1)
+        filter_node%xx(inum,2) = xx_whole_nod(inod_g,2)
+        filter_node%xx(inum,3) = xx_whole_nod(inod_g,3)
       end do
 !
       end subroutine set_newdomain_filtering_nod
@@ -298,17 +305,16 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_global_nodid_4_newfilter(nod_d_grp)
+      subroutine set_global_nodid_4_newfilter(filter_node, nod_d_grp)
 !
-      use m_nod_filter_comm_table
-!
+      type(node_data), intent(in) :: filter_node
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
       integer(kind = kint) :: inod
       integer(kind = kint_gl) :: inod_g
 !
-      do inod = 1, nnod_filtering
-        inod_g = id_globalnod_filtering(inod)
+      do inod = 1, filter_node%numnod
+        inod_g = filter_node%inod_global(inod)
         nod_d_grp%id_local_part(inod_g) = inod
       end do
 !
@@ -450,7 +456,6 @@
      &          ip2, nod_d_grp, whole_fil_sort, fluid_fil_sort,         &
      &          whole_fil_sort2, fluid_fil_sort2, icou_gl)
 !
-      use m_nod_filter_comm_table
       use t_filter_func_4_sorting
 !
       type(domain_group_4_partition), intent(in) :: nod_d_grp

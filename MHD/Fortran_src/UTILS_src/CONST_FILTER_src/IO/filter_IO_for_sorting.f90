@@ -3,13 +3,14 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine read_filter_neib_4_sort                              &
-!!     &         (id_file, fil_area, f_sorting, nmax_nod_near_all)
+!!      subroutine read_filter_neib_4_sort(id_file, filter_node,        &
+!!     &          fil_area, f_sorting, nmax_nod_near_all)
 !!         type(filter_area_flag), intent(inout) :: fil_area
 !!         type(filter_func_4_sorting), intent(inout) :: f_sorting
 !!
 !!      subroutine read_filter_coef_4_sort                              &
-!!     &         (id_file, whole_area, fluid_area, fil_coef, fil_sorted)
+!!     &         (id_file, filter_node, whole_area, fluid_area,         &
+!!     &          fil_coef, fil_sorted)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!        type(filter_coefficients_type), intent(inout) :: fil_sorted
 !!
@@ -18,14 +19,16 @@
 !!      subroutine read_filter_coef_4_each(id_file, fil_coef)
 !!        type(each_filter_coef), intent(inout) :: fil_coef
 !!
-!!      subroutine read_filter_neib_4_sort_b                            &
-!!     &         (bbuf, fil_area, f_sorting, nmax_nod_near_all)
+!!      subroutine read_filter_neib_4_sort_b(filter_node,               &
+!!     &          fil_area, f_sorting, nmax_nod_near_all, bbuf)
+!!        type(node_data), intent(in) :: filter_node
 !!         type(binary_IO_buffer), intent(inout) :: bbuf
 !!         type(filter_area_flag), intent(inout) :: fil_area
 !!         type(filter_func_4_sorting), intent(inout) :: f_sorting
 !!      subroutine read_filter_coef_4_sort_b                            &
-!!     &         (bbuf, filter, whole_area, fluid_area,                 &
+!!     &         (bbuf, filter_node, filter, whole_area, fluid_area,    &
 !!     &          fil_coef, fil_sorted)
+!!        type(node_data), intent(in) :: filter_node
 !!      subroutine write_filter_coef_4_each_b(fil_coef, bbuf)
 !!        type(each_filter_coef), intent(in) :: fil_coef
 !!        type(filter_coefficients_type), intent(inout) :: fil_sorted
@@ -37,11 +40,11 @@
 !
       use m_precision
 !
+      use t_geometry_data
       use t_filter_coefs
       use t_filter_coefficients
       use t_filter_func_4_sorting
       use t_binary_IO_buffer
-      use m_nod_filter_comm_table
       use binary_IO
 !
       implicit none
@@ -56,12 +59,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_neib_4_sort                                &
-     &         (id_file, fil_area, f_sorting, nmax_nod_near_all)
+      subroutine read_filter_neib_4_sort(id_file, filter_node,          &
+     &          fil_area, f_sorting, nmax_nod_near_all)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
+      type(node_data), intent(in) :: filter_node
 !
       integer(kind = kint), intent(inout) :: nmax_nod_near_all
       type(filter_area_flag), intent(inout) :: fil_area
@@ -70,10 +74,11 @@
       integer(kind = kint) :: inod, itmp, jnod
 !
 !
-      call alloc_filter_num_sort(inter_nod_3dfilter, fil_area)
-      call alloc_filter_num_4_sort(inter_nod_3dfilter, f_sorting)
+      call alloc_filter_num_sort(filter_node%internal_node, fil_area)
+      call alloc_filter_num_4_sort(filter_node%internal_node,           &
+     &                             f_sorting)
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call skip_comment(character_4_read,id_file)
         read(character_4_read,*)                                        &
      &        itmp, f_sorting%nnod_near_nod_filter(inod),               &
@@ -91,11 +96,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_coef_4_sort                                &
-     &         (id_file, whole_area, fluid_area, fil_coef, fil_sorted)
+     &         (id_file, filter_node, whole_area, fluid_area,           &
+     &          fil_coef, fil_sorted)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
+      type(node_data), intent(in) :: filter_node
       type(filter_area_flag), intent(in) :: whole_area, fluid_area
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filter_coefficients_type), intent(inout) :: fil_sorted
@@ -103,14 +110,14 @@
       integer(kind = kint) :: inod, icou
 !
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each(id_file, fil_coef)
 !
         icou = whole_area%itbl_near_nod(inod)
         call set_filtering_item_4_sorting(icou, fil_coef, fil_sorted)
       end do
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each(id_file, fil_coef)
 !
         icou = fluid_area%itbl_near_nod(inod)
@@ -192,9 +199,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_filter_neib_4_sort_b                              &
-     &         (bbuf, fil_area, f_sorting, nmax_nod_near_all)
+      subroutine read_filter_neib_4_sort_b(filter_node,                 &
+     &          fil_area, f_sorting, nmax_nod_near_all, bbuf)
 !
+      type(node_data), intent(in) :: filter_node
       type(binary_IO_buffer), intent(inout) :: bbuf
       type(filter_area_flag), intent(inout) :: fil_area
       type(filter_func_4_sorting), intent(inout) :: f_sorting
@@ -204,10 +212,11 @@
       integer(kind = kint_gl) :: ioffset
 !
 !
-      call alloc_filter_num_sort(inter_nod_3dfilter, fil_area)
-      call alloc_filter_num_4_sort(inter_nod_3dfilter, f_sorting)
+      call alloc_filter_num_sort(filter_node%internal_node, fil_area)
+      call alloc_filter_num_4_sort(filter_node%internal_node,           &
+     &                             f_sorting)
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_one_integer_b                                         &
      &     (bbuf, f_sorting%nnod_near_nod_filter(inod))
         if(bbuf%ierr_bin .gt. 0) return
@@ -227,11 +236,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_filter_coef_4_sort_b                              &
-     &         (bbuf, filter, whole_area, fluid_area,                   &
+     &         (bbuf, filter_node, filter, whole_area, fluid_area,      &
      &          fil_coef, fil_sorted)
 !
       use t_filter_coefficients
 !
+      type(node_data), intent(in) :: filter_node
       type(filter_coefficients_type), intent(in) :: filter
       type(filter_area_flag), intent(in) :: whole_area, fluid_area
 !
@@ -242,7 +252,7 @@
       integer(kind = kint) :: inod, icou
 !
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         call read_filter_coef_4_each_b(bbuf, fil_coef)
         if(bbuf%ierr_bin .gt. 0) return
 !
@@ -250,7 +260,7 @@
         call set_filtering_item_4_sorting(icou, fil_coef, fil_sorted)
       end do
 !
-      do inod = 1, inter_nod_3dfilter
+      do inod = 1, filter_node%internal_node
         if (icou .le. filter%ntot_nod) then
           call read_filter_coef_4_each_b(bbuf, fil_coef)
           if(bbuf%ierr_bin .gt. 0) return

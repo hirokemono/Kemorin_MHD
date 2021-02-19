@@ -1,35 +1,23 @@
-analyzer_comm_test.o: $(COMM_TEST_DIR)/analyzer_comm_test.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o t_solver_SR.o t_ctl_data_comm_test.o t_mesh_data.o t_belonged_element_4_node.o t_file_IO_parameter.o t_control_param_comm_test.o t_vector_for_solver.o parallel_FEM_mesh_init.o mesh_send_recv_test.o nod_phys_send_recv.o mpi_load_mesh_data.o const_element_comm_tables.o const_element_comm_table.o collect_SR_N.o collect_SR_int.o m_geometry_4_comm_test.o set_diff_geom_comm_test.o write_diff_4_comm_test.o set_ele_id_4_node_type.o
+analyzer_comm_test.o: $(COMM_TEST_DIR)/analyzer_comm_test.f90 m_precision.o calypso_mpi.o m_machine_parameter.o m_work_time.o t_solver_SR.o t_ctl_data_comm_test.o t_mesh_data.o t_belonged_element_4_node.o t_file_IO_parameter.o t_control_param_comm_test.o t_vector_for_solver.o parallel_FEM_mesh_init.o mesh_send_recv_test.o nod_phys_send_recv.o mpi_load_mesh_data.o const_element_comm_tables.o const_element_comm_table.o t_work_for_comm_check.o collect_SR_N.o collect_SR_int.o diff_geometory_comm_test.o write_diff_4_comm_test.o mesh_send_recv_check.o set_ele_id_4_node_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-analyzer_filter_comm_test.o: $(COMM_TEST_DIR)/analyzer_filter_comm_test.f90 m_precision.o m_machine_parameter.o t_solver_SR.o t_filtering_data.o calypso_mpi.o input_ctl_filter_comm_test.o collect_SR_int.o collect_SR_N.o m_geometry_filter_comm_test.o set_diff_filter_comm_test.o write_diff_filter_comm_test.o m_nod_filter_comm_table.o solver_SR_type.o
+analyzer_filter_comm_test.o: $(COMM_TEST_DIR)/analyzer_filter_comm_test.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_solver_SR.o t_filtering_data.o t_work_for_comm_check.o t_vector_for_solver.o calypso_mpi.o nod_phys_send_recv.o input_ctl_filter_comm_test.o collect_SR_int.o collect_SR_N.o diff_geometory_comm_test.o mesh_send_recv_check.o write_diff_4_comm_test.o
 	$(F90) -c $(F90OPTFLAGS) $<
 hybrid_test.o: $(COMM_TEST_DIR)/hybrid_test.f90
 	$(F90) -c $(F90OPTFLAGS) $<
-input_ctl_filter_comm_test.o: $(COMM_TEST_DIR)/input_ctl_filter_comm_test.f90 m_precision.o calypso_mpi.o t_filter_file_data.o t_filtering_data.o t_ctl_data_filter_comm_test.o m_machine_parameter.o m_nod_filter_comm_table.o m_filter_file_names.o filter_coefs_file_IO.o set_filter_geometry_4_IO.o m_file_format_switch.o t_ctl_data_filter_files.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_geometry_4_comm_test.o: $(COMM_TEST_DIR)/m_geometry_4_comm_test.f90 m_precision.o m_constants.o calypso_mpi.o
-	$(F90) -c $(F90OPTFLAGS) $<
-m_geometry_filter_comm_test.o: $(COMM_TEST_DIR)/m_geometry_filter_comm_test.f90 m_precision.o m_nod_filter_comm_table.o calypso_mpi.o
+input_ctl_filter_comm_test.o: $(COMM_TEST_DIR)/input_ctl_filter_comm_test.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_filter_file_data.o t_filtering_data.o t_ctl_data_filter_comm_test.o m_machine_parameter.o m_filter_file_names.o filter_coefs_file_IO.o copy_mesh_structures.o m_file_format_switch.o t_ctl_data_filter_files.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_comm_test.o: $(COMM_TEST_DIR)/main_comm_test.f90 m_precision.o calypso_mpi.o analyzer_comm_test.o
 	$(F90) -c $(F90OPTFLAGS) $<
 main_filter_comm_test.o: $(COMM_TEST_DIR)/main_filter_comm_test.f90 m_precision.o calypso_mpi.o analyzer_filter_comm_test.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mesh_send_recv_test.o: $(COMM_TEST_DIR)/mesh_send_recv_test.f90 m_work_time.o m_precision.o m_constants.o calypso_mpi.o m_geometry_4_comm_test.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_vector_for_solver.o solver_SR_type.o m_solver_SR.o send_recv_loop_tests.o
+mesh_send_recv_test.o: $(COMM_TEST_DIR)/mesh_send_recv_test.f90 m_work_time.o m_precision.o m_constants.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_vector_for_solver.o m_solver_SR.o solver_SR_type.o send_recv_loop_tests.o
 	$(F90) -c $(F90OPTFLAGS) $<
 send_recv_loop_tests.o: $(COMM_TEST_DIR)/send_recv_loop_tests.f90 m_precision.o m_constants.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o m_solver_SR.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_diff_filter_comm_test.o: $(COMM_TEST_DIR)/set_diff_filter_comm_test.f90 m_precision.o m_nod_filter_comm_table.o m_geometry_filter_comm_test.o set_diff_geom_comm_test.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_diff_geom_comm_test.o: $(COMM_TEST_DIR)/set_diff_geom_comm_test.f90 m_precision.o m_constants.o t_geometry_data.o t_surface_data.o t_edge_data.o t_comm_table.o t_vector_for_solver.o m_geometry_4_comm_test.o calypso_mpi.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_param_comm_test.o: $(COMM_TEST_DIR)/t_control_param_comm_test.f90 m_precision.o t_file_IO_parameter.o calypso_mpi.o m_machine_parameter.o t_ctl_data_comm_test.o set_surface_data_4_IO.o set_edge_data_4_IO.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o set_control_platform_item.o set_control_platform_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_comm_test.o: $(COMM_TEST_DIR)/t_ctl_data_comm_test.f90 m_precision.o calypso_mpi.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_read_control_elements.o skip_comment_f.o calypso_mpi_int.o bcast_4_platform_ctl.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_ctl_data_filter_comm_test.o: $(COMM_TEST_DIR)/t_ctl_data_filter_comm_test.f90 m_precision.o calypso_mpi.o m_machine_parameter.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_filter_files.o skip_comment_f.o calypso_mpi_int.o bcast_4_platform_ctl.o bcast_4_filter_files_ctl.o
-	$(F90) -c $(F90OPTFLAGS) $<
-write_diff_4_comm_test.o: $(COMM_TEST_DIR)/write_diff_4_comm_test.f90 m_precision.o calypso_mpi.o m_geometry_4_comm_test.o
-	$(F90) -c $(F90OPTFLAGS) $<
-write_diff_filter_comm_test.o: $(COMM_TEST_DIR)/write_diff_filter_comm_test.f90 m_precision.o write_diff_4_comm_test.o m_geometry_filter_comm_test.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

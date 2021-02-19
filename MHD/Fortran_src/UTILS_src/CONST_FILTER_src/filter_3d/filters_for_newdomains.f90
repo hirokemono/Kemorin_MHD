@@ -5,16 +5,17 @@
 !
 !!      subroutine filters_4_newdomains_para                            &
 !!     &         (newfil_p, filtering, org_node, org_ele,               &
-!!     &          nod_d_grp, newmesh, fil_coef, fils_sort)
+!!     &          nod_d_grp, newmesh, filter_node, fil_coef, fils_sort)
 !!      subroutine filters_4_newdomains_single                          &
 !!     &         (nprocs_2nd, newfil_p, filtering, org_node, org_ele,   &
-!!     &          nod_d_grp, newmesh, fil_coef, fils_sort)
+!!     &          nod_d_grp, newmesh, filter_node, fil_coef, fils_sort)
 !!        type(ctl_param_newdom_filter), intent(in) :: newfil_p
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(node_data), intent(inout) :: org_node
 !!        type(element_data), intent(inout) :: org_ele
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !!        type(mesh_geometry), intent(inout) :: newmesh
+!!        type(node_data), intent(inout) :: filter_node
 !!        type(filters_4_sorting), intent(inout) :: fils_sort
 !
       module filters_for_newdomains
@@ -44,7 +45,7 @@
 !
       subroutine filters_4_newdomains_para                              &
      &         (newfil_p, filtering, org_node, org_ele,                 &
-     &          nod_d_grp, newmesh, fil_coef, fils_sort)
+     &          nod_d_grp, newmesh, filter_node, fil_coef, fils_sort)
 !
       use calypso_mpi
       use t_domain_group_4_partition
@@ -55,6 +56,7 @@
       type(element_data), intent(inout) :: org_ele
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filters_4_sorting), intent(inout) :: fils_sort
 !
@@ -63,7 +65,7 @@
 !
       call filters_4_each_newdomain(my_rank, newfil_p,                  &
      &    filtering, org_node, org_ele, nod_d_grp, newmesh%node,        &
-     &    newmesh%ele, fil_coef, fils_sort, ierr)
+     &    newmesh%ele, filter_node, fil_coef, fils_sort, ierr)
       if(ierr .gt. 0) then
         call calypso_mpi_abort(ierr, 'Mesh or filter data is wrong!!')
       end if
@@ -74,7 +76,7 @@
 !
       subroutine filters_4_newdomains_single                            &
      &         (nprocs_2nd, newfil_p, filtering, org_node, org_ele,     &
-     &          nod_d_grp, newmesh, fil_coef, fils_sort)
+     &          nod_d_grp, newmesh, filter_node, fil_coef, fils_sort)
 !
       use t_domain_group_4_partition
 !
@@ -85,6 +87,7 @@
       type(element_data), intent(inout) :: org_ele
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
       type(mesh_geometry), intent(inout) :: newmesh
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filters_4_sorting), intent(inout) :: fils_sort
 !
@@ -96,7 +99,8 @@
         my_rank_2nd = ip2 - 1
         call filters_4_each_newdomain(my_rank_2nd, newfil_p,            &
      &      filtering, org_node, org_ele, nod_d_grp,                    &
-     &      newmesh%node, newmesh%ele, fil_coef, fils_sort, ierr)
+     &      newmesh%node, newmesh%ele, filter_node,                     &
+     &      fil_coef, fils_sort, ierr)
         if(ierr .gt. 0) stop 'Mesh or filter data is wrong!!'
       end do
 !
@@ -107,11 +111,11 @@
 !
       subroutine filters_4_each_newdomain(my_rank2,                     &
      &          newfil_p, filtering, org_node, org_ele, nod_d_grp,      &
-     &          new_node, new_ele, fil_coef, fils_sort, ierr)
+     &          new_node, new_ele, filter_node,                         &
+     &          fil_coef, fils_sort, ierr)
 !
       use t_filter_func_4_sorting
 !
-      use m_nod_filter_comm_table
       use m_filter_file_names
       use m_field_file_format
 !
@@ -120,7 +124,7 @@
       use const_newdomain_filter
       use set_parallel_file_name
       use filter_IO_for_newdomain
-      use set_filter_geometry_4_IO
+      use copy_mesh_structures
       use filter_moment_IO_select
       use filter_coefs_file_IO
       use filter_coefs_file_IO_b
@@ -141,6 +145,7 @@
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
+      type(node_data), intent(inout) :: filter_node
       type(each_filter_coef), intent(inout) :: fil_coef
       type(filters_4_sorting), intent(inout) :: fils_sort
       integer(kind = kint), intent(inout) :: ierr
@@ -173,18 +178,19 @@
 !
 !        write(*,*) 'copy_filter_comm_tbl_from_IO'
         call copy_comm_tbl_type(filter_IO%nod_comm, filtering%comm)
-        call copy_filtering_geometry_from_IO(filter_IO%node)
+        call copy_node_geometry(filter_IO%node, filter_node)
 !
         call dealloc_filter_geometry_data(filter_IO)
 !
 !        write(*,*) 'set_global_nodid_4_newfilter'
-        call set_global_nodid_4_newfilter(nod_d_grp)
+        call set_global_nodid_4_newfilter(filter_node, nod_d_grp)
 !
-!        write(*,*) 'inter_nod_3dfilter', inter_nod_3dfilter
-        call alloc_whole_filter_stack2(inter_nod_3dfilter, fils_sort)
+!        write(*,*) 'inter_nod_3dfilter', filter_node%internal_node
+        call alloc_whole_filter_stack2(filter_node%internal_node, fils_sort)
         call trans_filter_4_new_domains(ip2, ifmt_3d_filter,            &
      &      newfil_p%org_filter_coef_head, newfil_p%org_mesh_file,      &
-     &      nod_d_grp, org_node, org_ele%numele, fil_coef, fils_sort)
+     &      nod_d_grp, org_node, org_ele%numele, filter_node,           &
+     &      fil_coef, fils_sort)
         call reorder_filter_new_domain(fils_sort)
 !
         call dealloc_whole_filter_stack2(fils_sort)
@@ -193,9 +199,9 @@
         call alloc_each_ele_filter_coef(new_ele%numele, fil_coef)
 !
         call write_new_whole_filter_coef                                &
-     &     (file_name, fils_sort%whole_fil_sort, fil_coef)
+     &     (file_name, filter_node, fils_sort%whole_fil_sort, fil_coef)
         call write_new_fluid_filter_coef                                &
-     &     (file_name, fils_sort%fluid_fil_sort, fil_coef)
+     &     (file_name, filter_node, fils_sort%fluid_fil_sort, fil_coef)
 !
 !
         call dealloc_each_ele_filter_coef(fil_coef)
@@ -205,7 +211,7 @@
         call dealloc_filter_func_4_sort(fils_sort%fluid_fil_sort)
         call dealloc_filter_num_4_sort(fils_sort%fluid_fil_sort)
 !
-        call deallocate_globalnod_filter
+        call dealloc_node_geometry_base(filter_node)
         call dealloc_comm_table(filtering%comm)
 !
       end subroutine filters_4_each_newdomain

@@ -92,7 +92,6 @@
       use const_ele_layering_table
       use estimate_stabilities
       use const_comm_table_fluid
-      use const_bc_infty_surf_type
       use set_reference_value
       use material_property
       use set_layers_4_MHD
@@ -166,9 +165,6 @@
       call FEM_comm_initialization(geofem%mesh, v_sol)
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
-      call deallocate_surface_geom_type(geofem%mesh%surf)
-      call dealloc_edge_geometory(geofem%mesh%edge)
-!
 !     ---------------------
 !
       call const_FEM_3d_filtering_tables(SGS_par, geofem%mesh,          &
@@ -239,17 +235,11 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*)  'const_bc_infinity_surf_grp'
-      call const_bc_infinity_surf_grp(iflag_surf_infty,                 &
-     &    geofem%group%surf_grp, geofem%group%infty_grp)
-!
-!  -------------------------------
-!
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
-     &   (SGS_par%model_p, geofem%group, fem_sq%i_msq, geofem%mesh,     &
-     &    FEM_filters%layer_tbl, spfs_1, SGS_MHD_wk%fem_int%jcs,        &
-     &    MHD_mesh, fem_sq%msq)
+     &   (SGS_par%model_p, fem_sq%i_msq, MHD_BC,                        &
+     &    geofem%mesh, geofem%group, FEM_filters%layer_tbl, spfs_1,     &
+     &    SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !

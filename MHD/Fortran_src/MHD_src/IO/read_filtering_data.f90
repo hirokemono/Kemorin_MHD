@@ -38,9 +38,7 @@
       subroutine s_read_filtering_data(SGS_param, filter_param,         &
      &          node, ele, FEM_filters, wk_filter)
 !
-      use m_nod_filter_comm_table
       use m_filter_file_names
-      use t_geometry_data
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -60,15 +58,17 @@
      &     (node%numnod, ele%numele, SGS_param, FEM_filters%FEM_elens)
         if(filter_param%iflag_SGS_filter .gt. id_turn_OFF) then
           call read_3d_filtering_data                                   &
-     &       (filter_3d_head, ifmt_3d_filter, FEM_filters%filtering)
-          call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
+     &       (filter_3d_head, ifmt_3d_filter, FEM_filters%filter_node,  &
+     &        FEM_filters%filtering)
+          call alloc_nod_data_4_filter(FEM_filters%filter_node%numnod,  &
+     &                                 wk_filter)
         end if
 !
         if       (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &      .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
           call read_3d_filtering_data                                   &
      &       (filter_wide_head, ifmt_wide_filter,                       &
-     &        FEM_filters%wide_filtering)
+     &        FEM_filters%filter_node, FEM_filters%wide_filtering)
         end if
       end if
 !
@@ -78,16 +78,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_3d_filtering_data                                 &
-     &         (filter_head, ifmt_filter, filtering)
+     &         (filter_head, ifmt_filter, filter_node, filtering)
 !
       use t_filter_file_data
 !
       use filter_moment_IO_select
-      use set_filter_geometry_4_IO
+      use copy_mesh_structures
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: filter_head
       integer(kind = kint) , intent(in) :: ifmt_filter
+      type(node_data), intent(inout) :: filter_node
       type(filtering_data_type), intent(inout) :: filtering
 !
       type(filter_file_data) :: filter_IO_t
@@ -103,7 +104,7 @@
 !
 !
       call copy_comm_tbl_type(filter_IO_t%nod_comm, filtering%comm)
-      call copy_filtering_geometry_from_IO(filter_IO_t%node)
+      call copy_node_geometry(filter_IO_t%node, filter_node)
 !
       call copy_3d_filter_stacks(filter_IO_t%filters, filtering%filter)
       call copy_3d_filter_weights(filter_IO_t%filters, filtering%filter)
@@ -111,7 +112,7 @@
       call dealloc_filter_geometry_data(filter_IO_t)
       call dealloc_3d_filter_func(filter_IO_t%filters)
 !
-      call deallocate_globalnod_filter
+      call dealloc_node_geometry_base(filter_node)
 !
       end subroutine read_3d_filtering_data
 !
