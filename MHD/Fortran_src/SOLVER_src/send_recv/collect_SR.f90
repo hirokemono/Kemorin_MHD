@@ -52,7 +52,7 @@
 !
       call dealloc_SR_flag(SR_sig_c)
 !
-      subroutine dealloc_collect_SR_flag
+      end subroutine dealloc_collect_SR_flag
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
