@@ -8,7 +8,7 @@
 !!@n      using reverse import table
 !!
 !!@verbatim
-!!      subroutine count_collect_SR(NP, istack_NP, SR_sig)
+!!      subroutine count_collect_SR_num(NP, istack_NP, SR_sig)
 !!        integer(kind = kint), intent(in) :: NP
 !!        integer(kind = kint), intent(inout) :: istack_NP(0:nprocs)
 !!        type(send_recv_status), intent(inout) :: SR_sig
@@ -37,7 +37,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_collect_SR(NP, istack_NP, SR_sig)
+      subroutine count_collect_SR_num(NP, istack_NP, SR_sig)
 !
       integer(kind = kint), intent(in) :: NP
 !
@@ -76,7 +76,7 @@
         deallocate(nums_NP)
       end if
 !
-      end subroutine count_collect_SR
+      end subroutine count_collect_SR_num
 !
 ! ----------------------------------------------------------------------
 !
