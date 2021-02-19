@@ -59,8 +59,6 @@
       subroutine analyze
 !
       use calypso_mpi
-      use collect_SR_int
-      use collect_SR_N
       use t_work_for_comm_check
       use diff_geometory_comm_test
       use mesh_send_recv_check
