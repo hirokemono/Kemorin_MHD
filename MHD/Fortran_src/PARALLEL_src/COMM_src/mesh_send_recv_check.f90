@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine node_send_recv_test                                  &
-!!     &         (node, nod_comm, nod_check, SR_sig)
+!!     &         (node, nod_comm, nod_check)
 !!      subroutine ele_send_recv_test                                   &
-!!     &         (node, ele, ele_comm, ele_check, SR_sig)
+!!     &         (node, ele, ele_comm, ele_check)
 !!      subroutine surf_send_recv_test                                  &
-!!     &         (node, surf, surf_comm, surf_check, SR_sig)
+!!     &         (node, surf, surf_comm, surf_check)
 !!      subroutine edge_send_recv_test                                  &
-!!     &         (node, edge, edge_comm, edge_check, SR_sig)
+!!     &         (node, edge, edge_comm, edge_check)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(work_for_comm_check), intent(inout) :: nod_check
@@ -27,15 +27,13 @@
 !!        type(edge_data), intent(in) :: edge
 !!        type(communication_table), intent(in) :: edge_comm
 !!        type(work_for_comm_check), intent(inout) :: edge_check
-!!        type(send_recv_status), intent(inout) :: SR_sig
 !!
 !!      subroutine node_transfer_test(node, new_node, new_comm,         &
-!!     &          trans_tbl, nod_check, SR_sig)
+!!     &          trans_tbl, nod_check)
 !!        type(node_data), intent(in) :: node, new_node
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(calypso_comm_table), intent(in) :: trans_tbl
 !!        type(work_for_comm_check), intent(inout) :: nod_check
-!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !
       module mesh_send_recv_check
@@ -67,7 +65,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine node_send_recv_test                                    &
-     &         (node, nod_comm, nod_check, SR_sig)
+     &         (node, nod_comm, nod_check)
 !
       use diff_geometory_comm_test
       use solver_SR_type
@@ -75,7 +73,6 @@
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(work_for_comm_check), intent(inout) :: nod_check
-      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call alloc_geom_4_comm_test(node%numnod, nod_check)
@@ -91,7 +88,7 @@
 !
       if(i_debug .gt. 0)  write(*,*) my_rank,                           &
      &     'Failed communication for node', nod_check%num_diff
-      call collect_failed_comm(nod_check, SR_sig)
+      call collect_failed_comm(nod_check)
       if(my_rank .eq. 0) write(*,*) my_rank,                            &
      &   'Total Failed communication for node',                         &
      &    nod_check%istack_diff_pe(nprocs)
@@ -101,7 +98,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine ele_send_recv_test                                     &
-     &         (node, ele, ele_comm, ele_check, SR_sig)
+     &         (node, ele, ele_comm, ele_check)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -111,7 +108,6 @@
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: ele_comm
       type(work_for_comm_check), intent(inout) :: ele_check
-      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call alloc_geom_4_comm_test(ele%numele, ele_check)
@@ -128,7 +124,7 @@
 !
       if(i_debug .gt. 0)  write(*,*) my_rank,                           &
      &     'Failed communication for element', ele_check%num_diff
-      call collect_failed_comm(ele_check, SR_sig)
+      call collect_failed_comm(ele_check)
       if(my_rank .eq. 0) write(*,*) my_rank,                            &
      &   'Total Failed communication for element',                      &
      &    ele_check%istack_diff_pe(nprocs)
@@ -138,7 +134,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine surf_send_recv_test                                    &
-     &         (node, surf, surf_comm, surf_check, SR_sig)
+     &         (node, surf, surf_comm, surf_check)
 !
       use diff_geometory_comm_test
       use nod_phys_send_recv
@@ -148,7 +144,6 @@
       type(surface_data), intent(in) :: surf
       type(communication_table), intent(in) :: surf_comm
       type(work_for_comm_check), intent(inout) :: surf_check
-      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call alloc_geom_4_comm_test(surf%numsurf, surf_check)
@@ -166,7 +161,7 @@
 !
       if(i_debug .gt. 0)  write(*,*) my_rank,                           &
      &     'Failed communication for surface', surf_check%num_diff
-      call collect_failed_comm(surf_check, SR_sig)
+      call collect_failed_comm(surf_check)
       if(my_rank .eq. 0) write(*,*) my_rank,                            &
      &   'Total Failed communication for surface',                      &
      &    surf_check%istack_diff_pe(nprocs)
@@ -176,7 +171,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine edge_send_recv_test                                    &
-     &         (node, edge, edge_comm, edge_check, SR_sig)
+     &         (node, edge, edge_comm, edge_check)
 !
       use diff_geometory_comm_test
       use solver_SR_type
@@ -185,7 +180,6 @@
       type(edge_data), intent(in) :: edge
       type(communication_table), intent(in) :: edge_comm
       type(work_for_comm_check), intent(inout) :: edge_check
-      type(send_recv_status), intent(inout) :: SR_sig
 !
 !
       call alloc_geom_4_comm_test(edge%numedge, edge_check)
@@ -203,7 +197,7 @@
 !
       if(i_debug .gt. 0)  write(*,*) my_rank,                           &
      &     'Failed communication for edge', edge_check%num_diff
-      call collect_failed_comm(edge_check, SR_sig)
+      call collect_failed_comm(edge_check)
       if(my_rank .eq. 0) write(*,*) my_rank,                            &
      &   'Total Failed communication for edge',                         &
      &    edge_check%istack_diff_pe(nprocs)
@@ -214,7 +208,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine node_transfer_test(node, new_node, new_comm,           &
-     &          trans_tbl, nod_check, SR_sig)
+     &          trans_tbl, nod_check)
 !
       use diff_geometory_comm_test
       use solver_SR_type
@@ -225,7 +219,6 @@
       type(communication_table), intent(in) :: new_comm
       type(calypso_comm_table), intent(in) :: trans_tbl
       type(work_for_comm_check), intent(inout) :: nod_check
-      type(send_recv_status), intent(inout) :: SR_sig
 !
       type(work_for_comm_check) :: org_check
 !
@@ -253,7 +246,7 @@
 !
       if(i_debug .gt. 0)  write(*,*) my_rank,                           &
      &     'Failed communication for node', nod_check%num_diff
-      call collect_failed_comm(nod_check, SR_sig)
+      call collect_failed_comm(nod_check)
       if(my_rank .eq. 0) write(*,*) my_rank,                            &
      &   'Total Failed communication for node',                         &
      &    nod_check%istack_diff_pe(nprocs)
@@ -310,7 +303,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine collect_failed_comm(wk_check, SR_sig)
+      subroutine collect_failed_comm(wk_check)
 !
       use diff_geometory_comm_test
       use solver_SR_type
@@ -318,21 +311,24 @@
       use collect_SR_N
 !
       type(work_for_comm_check), intent(inout) :: wk_check
-      type(send_recv_status), intent(inout) :: SR_sig
+!
+      type(send_recv_status), save :: SR_sig_T
 !
 !
+      call resize_SR_flag(nprocs, 1, SR_sig_T)
       call alloc_comm_stack_ctest_IO(wk_check)
       call count_collect_SR_num                                         &
-     &   (wk_check%num_diff,  wk_check%istack_diff_pe,  SR_sig)
+     &   (wk_check%num_diff,  wk_check%istack_diff_pe,  SR_sig_T)
 !
       call alloc_ele_comm_test_IO(wk_check)
       call collect_send_recv_int                                        &
      &   (0, wk_check%num_diff, wk_check%i_diff,                        &
-     &    wk_check%istack_diff_pe, wk_check%i_diff_IO, SR_sig)
+     &    wk_check%istack_diff_pe, wk_check%i_diff_IO, SR_sig_T)
       call collect_send_recv_N                                          &
      &   (0, isix, wk_check%num_diff, wk_check%x_diff,                  &
-     &    wk_check%istack_diff_pe, wk_check%x_diff_IO, SR_sig)
+     &    wk_check%istack_diff_pe, wk_check%x_diff_IO, SR_sig_T)
       call dealloc_diff_ele_comm_test(wk_check)
+      call dealloc_SR_flag(SR_sig_T)
 !
       end subroutine collect_failed_comm
 !

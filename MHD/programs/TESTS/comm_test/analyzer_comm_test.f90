@@ -27,8 +27,6 @@
 !
       character(len=kchara), parameter                                  &
      &      :: comm_test_name = 'comm_test.dat'
-
-      type(send_recv_status), save :: SR_sig_t
 !
       type(comm_test_control), save ::  comm_tctl1
       type(comm_test_files_param), save ::  T_files
@@ -89,8 +87,6 @@
 !
 !  -------------------------------------------
 !
-!
-      call resize_SR_flag(nprocs, 1, SR_sig_t)
       call FEM_comm_initialization(test_fem%mesh, v_sol_T)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
@@ -148,14 +144,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
       call node_send_recv_test                                          &
-     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    nod_check, SR_sig_T)
+     &   (test_fem%mesh%node, test_fem%mesh%nod_comm, nod_check)
       call ele_send_recv_test(test_fem%mesh%node, test_fem%mesh%ele,    &
-     &    T_ele_comm, ele_check, SR_sig_t)
+     &    T_ele_comm, ele_check)
       call surf_send_recv_test(test_fem%mesh%node, test_fem%mesh%surf,  &
-     &    T_surf_comm, surf_check, SR_sig_t)
+     &    T_surf_comm, surf_check)
       call edge_send_recv_test(test_fem%mesh%node, test_fem%mesh%edge,  &
-     &    T_edge_comm, edge_check, SR_sig_t)
+     &    T_edge_comm, edge_check)
 !
       call output_diff_mesh_comm_test(comm_test_name,                   &
      &    nod_check, ele_check, surf_check, edge_check)

@@ -114,8 +114,6 @@
 !
       type(interpolate_table) :: itp_tbl_IO2
 !
-      type(send_recv_status), save :: SR_sig_t
-!
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
       type(communication_table), save :: T_edge_comm
@@ -156,18 +154,17 @@
      &    T_edge_comm, new_fem%mesh%edge)
 !
 !
-      call resize_SR_flag(nprocs, 1, SR_sig_t)
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test                                           &
      &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    org_to_new_tbl, nod_check, SR_sig_t)
+     &    org_to_new_tbl, nod_check)
 !
       call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &
-     &    T_ele_comm, ele_check, SR_sig_t)
+     &    T_ele_comm, ele_check)
       call surf_send_recv_test(new_fem%mesh%node, new_fem%mesh%surf,    &
-     &    T_surf_comm, surf_check, SR_sig_t)
+     &    T_surf_comm, surf_check)
       call edge_send_recv_test(new_fem%mesh%node, new_fem%mesh%edge,    &
-     &    T_edge_comm, edge_check, SR_sig_t)
+     &    T_edge_comm, edge_check)
 !
       call output_diff_mesh_comm_test(repart_test_name,                 &
      &    nod_check, ele_check, surf_check, edge_check)
