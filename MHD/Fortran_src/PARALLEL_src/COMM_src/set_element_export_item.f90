@@ -104,7 +104,7 @@
               call search_target_element(numele, internal_flag, x_ele,  &
      &            num, iele_4_node(kst), x_ref_ele(kst),                &
      &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag, inum)
+     &            dist_min, iflag)
               exit
             end if
           end do
@@ -184,7 +184,7 @@
               call search_target_element(numele, internal_flag, x_ele,  &
      &            num, iele_4_node(kst), x_ref_ele(kst),                &
      &            xe_export(3*inum-2), item_export_e(inum),             &
-     &            dist_min, iflag, inum)
+     &            dist_min, iflag)
               exit
             end if
           end do
@@ -202,9 +202,9 @@
 !
       subroutine search_target_element(numele, internal_flag, x_ele,    &
      &          nele_4_node, iele_4_node, x_ref_ele,                    &
-     &          xe_export, item_export_e, dist_min, iflag, inum)
+     &          xe_export, item_export_e, dist_min, iflag)
 !
-      integer(kind = kint), intent(in) :: numele, inum
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
@@ -224,11 +224,11 @@
       else if(nele_4_node .ge. many) then
         call search_target_element3(numele, internal_flag, x_ele,       &
      &      nele_4_node, iele_4_node, x_ref_ele, xe_export,             &
-     &      item_export_e, dist_min, iflag, inum)
+     &      item_export_e, dist_min, iflag)
       else
         call search_target_element2(numele, internal_flag, x_ele,       &
      &       nele_4_node, iele_4_node, xe_export,                       &
-     &       item_export_e, dist_min, iflag, inum)
+     &       item_export_e, dist_min, iflag)
       end if
 !
       end subroutine search_target_element
@@ -238,9 +238,9 @@
 !
       subroutine search_target_element3(numele, internal_flag, x_ele,   &
      &          nele_4_node, iele_4_node, x_ref_ele, xe_export,         &
-     &          item_export_e, dist_min, iflag, inum)
+     &          item_export_e, dist_min, iflag)
 !
-      integer(kind = kint), intent(in) :: numele, inum
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
@@ -299,13 +299,13 @@
 !
           call search_target_element2(numele, internal_flag, x_ele,     &
      &        kknum, iele_4_node(kkst), xe_export,                      &
-     &        item_export_e, dist_min, iflag, inum)
+     &        item_export_e, dist_min, iflag)
           exit
         end if
         if((ked - kst) .lt. many) then
           call search_target_element2(numele, internal_flag, x_ele,     &
      &        many, iele_4_node(kst), xe_export,                        &
-     &        item_export_e, dist_min, iflag, inum)
+     &        item_export_e, dist_min, iflag)
           exit
         end if
       end do
@@ -316,9 +316,9 @@
 !
       subroutine search_target_element2(numele, internal_flag, x_ele,   &
      &          nele_4_node, iele_4_node, xe_export,                    &
-     &          item_export_e, dist_min, iflag, inum)
+     &          item_export_e, dist_min, iflag)
 !
-      integer(kind = kint), intent(in) :: numele, inum
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !

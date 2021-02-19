@@ -203,13 +203,8 @@
      &       (node%numnod, edge%numedge, edge%nnod_4_edge,              &
      &        edge%ie_edge, node%xx, psf_def(i)%const_psf, psf_list(i))
 !
-          call alloc_iedge_global_psf(psf_list(i))
-          call const_edge_comm_table_4_psf                              &
-     &       (node, edge, nod_comm, edge_comm, psf_list(i))
-!
-          call psf_global_nod_id_on_edge(edge%numedge,                  &
+          call psf_global_nod_id_on_edge(edge_comm, edge%numedge,       &
      &        psf_mesh(i)%node%istack_internod, psf_list(i))
-          call dealloc_iedge_global_psf(psf_list(i))
 !
           call set_position_4_psf(node%numnod,                          &
      &        edge%numedge, edge%nnod_4_edge, edge%ie_edge,             &
@@ -290,13 +285,8 @@
         call set_node_on_edge_int_linear_psf(node%numnod, edge%numedge, &
      &      edge%nnod_4_edge, edge%ie_edge, iso_list(i))
 !
-        call alloc_iedge_global_psf(iso_list(i))
-        call const_edge_comm_table_4_psf                                &
-     &     (node, edge, nod_comm, edge_comm, iso_list(i))
-!
-        call psf_global_nod_id_on_edge(edge%numedge,                    &
+        call psf_global_nod_id_on_edge(edge_comm, edge%numedge,         &
      &      iso_mesh(i)%node%istack_internod, iso_list(i))
-        call dealloc_iedge_global_psf(iso_list(i))
 !
 !
         call set_position_4_psf                                         &
