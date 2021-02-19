@@ -310,6 +310,7 @@
       use diff_geometory_comm_test
       use solver_SR_type
       use collect_SR_int
+      use collect_SR_N
 !
       type(work_for_comm_check), intent(inout) :: wk_check
 !
