@@ -48,6 +48,8 @@
      &          num_neib_e, istack_export_e, inod_export_l,             &
      &          xe_export, item_export_e)
 !
+      use calypso_mpi_int
+!
       character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
@@ -75,13 +77,14 @@
       integer(kind = kint), intent(inout)                               &
      &        :: item_export_e(istack_export_e(num_neib_e))
 !
-      integer(kind = kint) :: ip, iflag
+      integer(kind = kint) :: ip, iflag,  icou, num_gl
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
       integer(kind = kint) :: kst, num
       real(kind = kreal) :: dist_min
 !
 !
+      icou = 0
       do ip = 1, num_neib
         ist = istack_export_e(ip-1) + 1
         ied = istack_export_e(ip)
@@ -108,12 +111,19 @@
               exit
             end if
           end do
-!          if(iflag .eq. 0) write(*,*)                                  &
-!     &           'Missing imported ', trim(txt), ' by external: ',     &
+          if(iflag .eq. 0) then
+!             write(*,*) 'Missing imported ',                           &
+!     &                     trim(txt), ' by external: ',                &
 !     &                     my_rank, inum, item_export_e(inum),         &
 !     &                     xe_export(3*inum-2:3*inum), dist_min
+            icou = icou + 1
+          end if
         end do
       end do
+      call calypso_mpi_allreduce_one_int(icou, num_gl, MPI_SUM)
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &   'Failed export by s_set_element_export_item', num_gl
 !
       end subroutine s_set_element_export_item
 !
@@ -124,7 +134,10 @@
      &          x_ele, iele_stack_4_node, iele_4_node, x_ref_ele,       &
      &          num_neib, istack_export, item_export,                   &
      &          num_neib_e, istack_export_e, inod_export_e,             &
-     &          xe_export, item_export_e)
+     &          xe_export, item_export_e, fail_tbl)
+!
+      use calypso_mpi_int
+      use t_failed_export_list
 !
       character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numnod, numele
@@ -153,15 +166,18 @@
 !
       integer(kind = kint), intent(inout)                               &
      &        :: item_export_e(istack_export_e(num_neib_e))
+      type(failed_table), intent(inout) :: fail_tbl
 !
-      integer(kind = kint) :: ip, iflag
+      integer(kind = kint) :: ip, iflag, icou, num_gl
       integer(kind = kint) :: ist, ied, inum
       integer(kind = kint) :: jst, jed, jnum, jnod
       integer(kind = kint) :: kst, num
       integer(kind = kint_gl) :: inod_gl
       real(kind = kreal) :: dist_min
+      type(failed_item) :: fail_comm_t
 !
 !
+      icou = 0
       do ip = 1, num_neib
         ist = istack_export_e(ip-1) + 1
         ied = istack_export_e(ip)
@@ -188,12 +204,21 @@
               exit
             end if
           end do
-          if(iflag .eq. 0) write(*,*)                                   &
-     &           'Missing imported ', trim(txt), ' by internal: ',      &
-     &                     my_rank, inum, item_export_e(inum),          &
-     &                     xe_export(3*inum-2:3*inum), dist_min
+          if(iflag .eq. 0) then
+            icou = icou + 1
+            call set_failed_export(inum, item_export_e(inum), dist_min, &
+     &                             fail_comm_t)
+            call append_failed_export(fail_comm_t, fail_tbl)
+!            write(*,*) 'Missing imported ', trim(txt),                 &
+!     &          ' by internal: ', my_rank, inum, item_export_e(inum),  &
+!     &           xe_export(3*inum-2:3*inum), dist_min
+          end if
         end do
       end do
+      call calypso_mpi_allreduce_one_int(icou, num_gl, MPI_SUM)
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &   'Failed export by element_export_item_in_ext', num_gl
 !
       end subroutine element_export_item_in_ext
 !

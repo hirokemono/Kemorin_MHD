@@ -20,17 +20,19 @@
 !!        type(communication_table), intent(inout) :: ele_comm
 !!        type(element_data), intent(inout) :: ele
 !!      subroutine const_surf_comm_table                                &
-!!     &         (node, nod_comm, surf_comm, surf)
+!!     &         (node, nod_comm, surf_comm, surf, fail_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
+!!        type(failed_table), intent(inout) :: fail_tbl
 !!      subroutine const_edge_comm_table                                &
-!!     &         (node, nod_comm, edge_comm, edge)
+!!     &         (node, nod_comm, edge_comm, edge, fail_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: edge_comm
 !!        type(edge_data), intent(inout) :: edge
+!!        type(failed_table), intent(inout) :: fail_tbl
 !!
 !!      subroutine const_global_numnod_list(node)
 !!@endverbatim
@@ -47,6 +49,7 @@
       use t_comm_table
       use t_belonged_element_4_node
       use t_next_node_ele_4_node
+      use t_failed_export_list
 !
       use m_machine_parameter
 !
@@ -231,6 +234,7 @@
       type(element_data), intent(inout) :: ele
 !
       type(belonged_table), save :: belongs
+      type(failed_table), save :: fail_tbl_e
 !
 !
       call set_ele_id_4_node(node, ele, belongs%blng_ele)
@@ -238,12 +242,14 @@
       call sort_inod_4_ele_by_position(ione, ele%numele, ele%x_ele,     &
      &    node, belongs%blng_ele, belongs%x_ref_ele)
 !
+      call alloc_failed_export(0, fail_tbl_e)
       call belonged_ele_id_4_node(node, ele, belongs%host_ele)
       call const_comm_table_by_connenct                                 &
      &   (txt_ele, ele%numele, ele%nnod_4_ele, ele%ie,                  &
      &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
      &    belongs%blng_ele, belongs%x_ref_ele, belongs%host_ele,        &
-     &    ele_comm)
+     &    ele_comm, fail_tbl_e)
+      call dealloc_failed_export(fail_tbl_e)
       call dealloc_iele_belonged(belongs%host_ele)
       call dealloc_x_ref_ele(belongs)
       call dealloc_iele_belonged(belongs%blng_ele)
@@ -255,7 +261,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table                                  &
-     &         (node, nod_comm, surf_comm, surf)
+     &         (node, nod_comm, surf_comm, surf, fail_tbl)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -264,6 +270,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(inout) :: surf_comm
       type(surface_data), intent(inout) :: surf
+      type(failed_table), intent(inout) :: fail_tbl
 !
       type(belonged_table), save :: belongs
 !
@@ -278,7 +285,7 @@
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%interior_surf, surf%x_surf, node, nod_comm,              &
      &    belongs%blng_surf, belongs%x_ref_surf, belongs%host_surf,     &
-     &    surf_comm)
+     &    surf_comm, fail_tbl)
       call dealloc_iele_belonged(belongs%host_surf)
       call dealloc_x_ref_surf(belongs)
       call dealloc_iele_belonged(belongs%blng_surf)
@@ -290,7 +297,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_edge_comm_table                                  &
-     &         (node, nod_comm, edge_comm, edge)
+     &         (node, nod_comm, edge_comm, edge, fail_tbl)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -300,6 +307,7 @@
 !
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
+      type(failed_table), intent(inout) :: fail_tbl
 !
       type(belonged_table), save :: belongs
 !
@@ -320,7 +328,7 @@
      &    (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,      &
      &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
      &    belongs%blng_edge, belongs%x_ref_edge, belongs%host_edge,     &
-     &    edge_comm)
+     &    edge_comm, fail_tbl)
 !
       call dealloc_iele_belonged(belongs%host_edge)
       call dealloc_x_ref_edge(belongs)

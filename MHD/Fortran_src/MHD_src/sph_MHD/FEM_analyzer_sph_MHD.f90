@@ -78,6 +78,7 @@
       use m_work_time
       use m_elapsed_labels_4_MHD
       use t_cal_max_indices
+      use t_failed_export_list
 !
       use set_control_field_data
       use nod_phys_send_recv
@@ -93,6 +94,8 @@
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_IO_data), intent(inout) :: MHD_IO
       type(vectors_4_solver), intent(inout) :: v_sol
+!
+      type(failed_table), save :: fail_tbl_d
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_nod_4_monitor'
@@ -120,9 +123,11 @@
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      call alloc_failed_export(0, fail_tbl_d)
       call const_edge_comm_table                                        &
      &   (geofem%mesh%node, geofem%mesh%nod_comm,                       &
-     &    edge_comm, geofem%mesh%edge)
+     &    edge_comm, geofem%mesh%edge, fail_tbl_d)
+      call dealloc_failed_export(fail_tbl_d)
 !
       end subroutine FEM_initialize_sph_MHD
 !

@@ -11,12 +11,14 @@
 !!
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,    &
-!!     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
+!!     &          node, nod_comm, neib_e, x_ref_ele, host,              &
+!!     &          e_comm, fail_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_around_node), intent(in) :: host
 !!        type(element_around_node), intent(in) :: neib_e
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: e_comm
+!!        type(failed_table), intent(inout) :: fail_tbl
 !!@endverbatim
 !!
       module const_element_comm_table
@@ -30,6 +32,7 @@
       use t_geometry_data
       use t_comm_table
       use t_belonged_element_4_node
+      use t_failed_export_list
 !
       implicit none
 !
@@ -99,7 +102,8 @@
 !
       subroutine const_comm_table_by_connenct                           &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
-     &          node, nod_comm, neib_e, x_ref_ele, host, e_comm)
+     &          node, nod_comm, neib_e, x_ref_ele, host,                &
+     &          e_comm, fail_tbl)
 !
       use m_solver_SR
       use reverse_SR_int
@@ -122,6 +126,7 @@
      &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
 !
       type(communication_table), intent(inout) :: e_comm
+      type(failed_table), intent(inout) :: fail_tbl
 !
       type(work_4_ele_comm_table) :: wk_comm
 !
@@ -202,7 +207,8 @@
      &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    e_comm%num_neib, e_comm%istack_export,                        &
-     &    wk_comm%inod_export_e, wk_comm%xe_export, e_comm%item_export)
+     &    wk_comm%inod_export_e, wk_comm%xe_export, e_comm%item_export, &
+     &    fail_tbl)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+7)
 !
 !

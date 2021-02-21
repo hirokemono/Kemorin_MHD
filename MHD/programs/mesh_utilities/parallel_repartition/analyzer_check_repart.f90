@@ -101,6 +101,7 @@
       use t_interpolate_table
       use t_work_for_comm_check
       use t_belonged_element_4_node
+      use t_failed_export_list
 !
       use m_file_format_switch
       use parallel_itp_tbl_IO_select
@@ -123,6 +124,8 @@
       type(work_for_comm_check), save :: surf_check
       type(work_for_comm_check), save :: edge_check
 !
+      type(failed_table), save :: fail_tbl_s, fail_tbl_d
+!
       integer(kind = kint) :: irank_read
       integer(kind = kint) :: i, ierr
 !
@@ -144,14 +147,18 @@
      &    T_ele_comm, new_fem%mesh%ele)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_surf_comm_table'
+      call alloc_failed_export(0, fail_tbl_s)
       call const_surf_comm_table                                        &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_surf_comm, new_fem%mesh%surf)
+     &    T_surf_comm, new_fem%mesh%surf, fail_tbl_s)
+      call dealloc_failed_export(fail_tbl_s)
 !
       if(iflag_debug.gt.0) write(*,*) ' const_edge_comm_table'
+      call alloc_failed_export(0, fail_tbl_d)
       call const_edge_comm_table                                        &
      &   (new_fem%mesh%node, new_fem%mesh%nod_comm,                     &
-     &    T_edge_comm, new_fem%mesh%edge)
+     &    T_edge_comm, new_fem%mesh%edge, fail_tbl_d)
+      call dealloc_failed_export(fail_tbl_d)
 !
 !
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
