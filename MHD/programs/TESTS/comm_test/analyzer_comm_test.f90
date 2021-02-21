@@ -249,35 +249,37 @@
      &    .and. surf%ie_surf(isurf,2) .le. node%internal_node &
      &    .and. surf%ie_surf(isurf,3) .le. node%internal_node &
      &    .and. surf%ie_surf(isurf,4) .le. node%internal_node) then
-            iflag_fail(1:surf%numsurf) = isurf
+            iflag_fail(isurf) = isurf
         end if
       end do
 !
-      if(iflag_flip_sf(surf%numsurf) .gt. 0) then
-      if(iflag_ele(ele%numele) .gt. 0) then
+      allocate(iflag_ele(ele%numele))
+      allocate(iflag_flip_sf(surf%numsurf))
+      iflag_flip_sf(1:surf%numsurf) = 0
       do k = 1, 6
-        do iele = 1, numele
-          isurf = abs(surf%isf_4_ele(iele,k1))
+        iflag_ele(1:ele%numele) = 0
+        do iele = 1, ele%numele
+          isurf = abs(surf%isf_4_ele(iele,k))
           iflag_ele(iele) = iflag_fail(isurf)
         end do
         call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm,  &
      &                                   iflag_ele(1))
-        do iele = 1, numele
-          isurf = abs(surf%isf_4_ele(iele,k1))
+        do iele = 1, ele%numele
+          isurf = abs(surf%isf_4_ele(iele,k))
           iflag_flip_sf(isurf) = iflag_ele(iele)
         end do
       end do
 !
       i1 = 0
       i2 = 0
-      do isurf = 1, numsurf
+      do isurf = 1, surf%numsurf
         if(iflag_flip_sf(isurf) .eq. 0) then
           i1 = i1 + 1
           if(iflag_fail(isurf) .gt. 0) i2 = i2 + 1
         end if
       end do
 !
-      write(*,*) my_rank, 'FAiled and eliminated', i1, i2
+      write(*,*) my_rank, 'Failed and eliminated', i1, i2
 !
       call calypso_mpi_barrier
       call calypso_mpi_abort(2,'tako')
