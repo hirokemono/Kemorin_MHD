@@ -189,6 +189,7 @@
      &         (node, ele, nod_comm, ele_comm,                          &
      &          surf_comm, surf, fail_tbl)
 !
+      use m_geometry_constants
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
@@ -203,24 +204,21 @@
 !
       type(belonged_table), save :: belongs
 !
-      integer(kind = kint), allocatable :: inod_lc(:)
-      integer(kind = kint), allocatable :: ip_node(:)
-      integer(kind = kint), allocatable :: iele_lc(:)
-      integer(kind = kint), allocatable :: ip_ele(:)
+      integer(kind = kint), allocatable :: inod_dbl(:,:)
+      integer(kind = kint), allocatable :: iele_dbl(:,:)
 !
       integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
+      integer(kind = kint), allocatable :: ie_sf_tmp(:,:)
 !
       integer(kind = kint) :: isurf, i1, i2
 !
 !
-      allocate(inod_lc(node%numnod))
-      allocate(ip_node(node%numnod))
-      allocate(iele_lc(0:ele%numele))
-      allocate(ip_ele(0:ele%numele))
+      allocate(inod_dbl(node%numnod,2))
+      allocate(iele_dbl(0:ele%numele,2))
       call set_node_ele_double_address(node, ele, nod_comm, ele_comm,   &
-     &    inod_lc, ip_node, iele_lc, ip_ele)
+     &                                 inod_dbl, iele_dbl)
 !
       allocate(nnod_same(surf%numsurf))
       allocate(ip_ref(surf%numsurf))
@@ -233,7 +231,7 @@
 !
 !%omp parallel do private(isurf)
       do isurf = 1, surf%numsurf
-       call find_belonged_pe_4_surf(surf, node%numnod, ip_node,         &
+       call find_belonged_pe_4_surf(surf, node%numnod, inod_dbl(1,2),   &
      &     isurf, nnod_same(isurf), ip_ref(isurf), k_ref(isurf))
       end do
 !%omp end parallel do
@@ -247,22 +245,30 @@
         end if
       end do
       write(*,*) my_rank, 'Need to flip', i1, i2
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(0, 'tako')
 !
-      deallocate(inod_lc, ip_node)
-      deallocate(iele_lc, ip_ele)
+      do isurf = 1, surf%numsurf
+        if(k_ref(isurf) .ne. 1) then
+          call flip_surface_connenct(isurf, node, ele, surf)
+        end if
+      end do
+!
+      allocate(ie_sf_tmp(surf%numsurf,num_linear_sf))
+!      call tmp_surface_connent                                          &
+!     &   (surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
+!     &    k_ref, ie_sf_tmp)
+!
+      deallocate(inod_dbl, iele_dbl)
 !
       call set_surf_id_4_node(node, surf, belongs%blng_surf)
       call alloc_x_ref_surf(node, belongs)
       call sort_inod_4_ele_by_position(ione, surf%numsurf, surf%x_surf, &
      &    node, belongs%blng_surf, belongs%x_ref_surf)
 !
-      call belonged_surf_id_4_node                                      &
-     &   (node, surf, belongs%host_surf)
+      call belonged_surf_id_4_node2                                     &
+     &   (ione, node, surf, belongs%host_surf)
       deallocate(nnod_same, ip_ref, k_ref)
 !
-      call const_comm_table_by_connenct                                 &
+      call const_comm_table_by_connenct2                                &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%interior_surf, surf%x_surf, node, nod_comm,              &
      &    belongs%blng_surf, belongs%x_ref_surf, belongs%host_surf,     &
@@ -270,6 +276,7 @@
       call dealloc_iele_belonged(belongs%host_surf)
       call dealloc_x_ref_surf(belongs)
       call dealloc_iele_belonged(belongs%blng_surf)
+      deallocate(ie_sf_tmp)
 !
       call const_global_surface_id(surf_comm, surf)
 !
@@ -296,10 +303,8 @@
 !
       type(belonged_table), save :: belongs
 !
-      integer(kind = kint), allocatable :: inod_lc(:)
-      integer(kind = kint), allocatable :: ip_node(:)
-      integer(kind = kint), allocatable :: iele_lc(:)
-      integer(kind = kint), allocatable :: ip_ele(:)
+      integer(kind = kint), allocatable :: inod_dbl(:,:)
+      integer(kind = kint), allocatable :: iele_dbl(:,:)
 !
       integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
@@ -308,12 +313,10 @@
       integer(kind = kint) :: iedge
 !
 !
-      allocate(inod_lc(node%numnod))
-      allocate(ip_node(node%numnod))
-      allocate(iele_lc(0:ele%numele))
-      allocate(ip_ele(0:ele%numele))
+      allocate(inod_dbl(node%numnod,2))
+      allocate(iele_dbl(0:ele%numele,2))
       call set_node_ele_double_address(node, ele, nod_comm, ele_comm,   &
-     &    inod_lc, ip_node, iele_lc, ip_ele)
+     &                                 inod_dbl, iele_dbl)
 !
       allocate(nnod_same(edge%numedge))
       allocate(ip_ref(edge%numedge))
@@ -326,13 +329,12 @@
 !
 !%omp parallel do private(isurf)
       do iedge = 1, edge%numedge
-       call find_belonged_pe_4_edge(edge, node%numnod, ip_node,         &
+       call find_belonged_pe_4_edge(edge, node%numnod, inod_dbl(1,2),   &
      &     iedge, nnod_same(iedge), ip_ref(iedge), k_ref(iedge))
       end do
 !%omp end parallel do
       deallocate(nnod_same, ip_ref, k_ref)
-      deallocate(inod_lc, ip_node)
-      deallocate(iele_lc, ip_ele)
+      deallocate(inod_dbl, iele_dbl)
 !
 !
 !
@@ -344,11 +346,10 @@
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
      &          ' belonged_edge_id_4_node2 in edge'
-      call belonged_edge_id_4_node                                      &
-     &   (node, edge, belongs%host_edge)
+      call belonged_edge_id_4_node2                                     &
+     &   (1, node, edge, belongs%host_edge)
       deallocate(nnod_same, ip_ref, k_ref)
-      deallocate(inod_lc, ip_node)
-      deallocate(iele_lc, ip_ele)
+      deallocate(inod_dbl, iele_dbl)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
      &          ' const_comm_table_by_connenct in edge'
@@ -367,162 +368,9 @@
       end subroutine const_edge_comm_table2
 !
 !-----------------------------------------------------------------------
-!
-      subroutine belonged_surf_id_4_node2                               &
-     &         (node, surf, k_ref, host_surf)
-!
-      use t_geometry_data
-      use t_surface_data
-      use find_element_id_4_node
-      use cal_minmax_and_stacks
-!
-      type(node_data), intent(in) ::    node
-      type(surface_data), intent(in) :: surf
-      integer (kind=kint), intent(in) :: k_ref(surf%numsurf)
-      type(element_around_node), intent(inout) :: host_surf
-!
-!
-      call alloc_numele_belonged(node%numnod, host_surf)
-!
-      call count_belonged_ele_4_node2                                   &
-     &   (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,    &
-     &    k_ref, ione, surf%numsurf, host_surf%nele_4_node)
-      call s_cal_minmax_and_stacks(node%numnod,                         &
-     &    host_surf%nele_4_node, izero, host_surf%istack_4_node,        &
-     &    host_surf%ntot, host_surf%nmax, host_surf%nmin)
-!
-!
-      call alloc_iele_belonged(host_surf)
-!
-      call set_belonged_ele_4_node2                                     &
-     &   (node%numnod, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,    &
-     &    k_ref, ione, surf%numsurf, host_surf%ntot,                    &
-     &    host_surf%istack_4_node, host_surf%nele_4_node,               &
-     &    host_surf%iele_4_node, host_surf%iconn_4_node)
-!
-      end subroutine belonged_surf_id_4_node2
-!
-!-----------------------------------------------------------------------
-!
-      subroutine belonged_edge_id_4_node2                               &
-     &         (node, edge, k_ref, host_edge)
-!
-      use t_geometry_data
-      use t_edge_data
-      use find_element_id_4_node
-      use cal_minmax_and_stacks
-!
-      type(node_data), intent(in) ::    node
-      type(edge_data), intent(in) ::    edge
-      integer (kind=kint), intent(in) :: k_ref(edge%numedge)
-      type(element_around_node), intent(inout) :: host_edge
-!
-!
-      call alloc_numele_belonged(node%numnod, host_edge)
-!
-      call count_belonged_ele_4_node2                                   &
-     &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
-     &    k_ref, ione, edge%numedge, host_edge%nele_4_node)
-      call s_cal_minmax_and_stacks(node%numnod,                         &
-     &    host_edge%nele_4_node, izero, host_edge%istack_4_node,        &
-     &    host_edge%ntot, host_edge%nmax, host_edge%nmin)
-!
-!
-      call alloc_iele_belonged(host_edge)
-!
-      call set_belonged_ele_4_node2                                     &
-     &   (node%numnod, edge%numedge, edge%nnod_4_edge, edge%ie_edge,    &
-     &    k_ref, ione, edge%numedge, host_edge%ntot,                    &
-     &    host_edge%istack_4_node, host_edge%nele_4_node,               &
-     &    host_edge%iele_4_node, host_edge%iconn_4_node)
-!
-      end subroutine belonged_edge_id_4_node2
-!
-!-----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine count_belonged_ele_4_node2                             &
-     &         (numnod, numele, nnod_4_ele, ie, k_ref,                  &
-     &          iele_st, iele_ed, nele_4_node)
-!
-      integer (kind=kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer (kind=kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer (kind=kint), intent(in) :: k_ref(numele)
-!
-      integer (kind=kint), intent(in) :: iele_st, iele_ed
-!
-      integer (kind=kint), intent(inout) :: nele_4_node(numnod)
-!
-      integer (kind = kint) :: inod, iele, k
-!
-!
-!$omp parallel workshare
-      nele_4_node(1:numnod) = 0
-!$omp end parallel workshare
-!
-      do iele = iele_st, iele_ed
-        k = k_ref(iele)
-        inod = ie(iele,k)
-        nele_4_node(inod) = nele_4_node(inod) + 1
-      end do
-!
-      end  subroutine count_belonged_ele_4_node2
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_belonged_ele_4_node2                               &
-     &         (numnod, numele, nnod_4_ele, ie, k_ref,                  &
-     &          iele_st, iele_ed, ntot_ele_4_node, iele_stack_4_node,   &
-     &          nele_4_node, iele_4_node, iconn_4_node)
-!
-      use quicksort
-!
-      integer (kind=kint), intent(in) :: numnod, numele, nnod_4_ele
-      integer (kind=kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer (kind=kint), intent(in) :: k_ref(numele)
-!
-      integer (kind=kint), intent(in) :: iele_st, iele_ed
-      integer (kind=kint), intent(in) :: ntot_ele_4_node
-      integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
-!
-      integer (kind=kint), intent(inout) :: nele_4_node(numnod)
-      integer (kind=kint), intent(inout)                                &
-     &                    :: iele_4_node(ntot_ele_4_node)
-      integer (kind=kint), intent(inout)                                &
-     &                    :: iconn_4_node(ntot_ele_4_node)
-!
-      integer (kind = kint) :: inod, iele, icou, ist, k
-!
-!
-!$omp parallel workshare
-      nele_4_node(1:numnod) = 0
-!$omp end parallel workshare
-!
-      do iele = iele_st, iele_ed
-        k = k_ref(iele)
-        inod = ie(iele,k)
-        nele_4_node(inod) = nele_4_node(inod) + 1
-        icou = iele_stack_4_node(inod-1) + nele_4_node(inod)
-        iele_4_node(icou) = iele
-        iconn_4_node(icou) =  1
-      end do
-!
-!$omp parallel do private(inod,ist)
-      do inod = 1, numnod
-        ist = iele_stack_4_node(inod-1) + 1
-        if(nele_4_node(inod) .gt. 0) then
-          call quicksort_w_index(nele_4_node(inod), iele_4_node(ist),   &
-     &        ione, nele_4_node(inod), iconn_4_node(ist))
-        end if
-      end do
-!$omp end parallel do
-!
-      end  subroutine set_belonged_ele_4_node2
-!
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------!
       subroutine set_node_ele_double_address                            &
-     &         (node, ele, nod_comm, ele_comm,                          &
-     &          inod_lc, ip_node, iele_lc, ip_ele)
+     &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl)
 !
       use solver_SR_type
 !
@@ -531,33 +379,33 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
 !
-      integer(kind = kint), intent(inout) :: inod_lc(node%numnod)
-      integer(kind = kint), intent(inout) :: ip_node(node%numnod)
-      integer(kind = kint), intent(inout) :: iele_lc(0:ele%numele)
-      integer(kind = kint), intent(inout) :: ip_ele(0:ele%numele)
+      integer(kind = kint), intent(inout) :: inod_dbl(node%numnod,2)
+      integer(kind = kint), intent(inout) :: iele_dbl(0:ele%numele,2)
 !
       integer(kind = kint) :: i
 !
 !
 !$onp parallel do
       do i = 1, node%numnod
-        inod_lc(i) = i
-        ip_node(i) = my_rank
+        inod_dbl(i,1) = i
+        inod_dbl(i,2) = my_rank
       end do
 !$onp end parallel do
-      call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm, inod_lc(1))
-      call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm, ip_node(1))
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, inod_dbl(1,1))
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, inod_dbl(1,2))
 !
-!
-      iele_lc(0) = 0
-      ip_ele(0) = -1
+      iele_dbl(0,1) = 0
+      iele_dbl(0,2) = -1
 !$onp parallel do
       do i = 1, ele%numele
-        iele_lc(i) = i
-        ip_ele(i) = ip_node(ele%ie(i,1))
+        iele_dbl(i,1) = i
+        iele_dbl(i,2) = inod_dbl(ele%ie(i,1),2)
       end do
 !$onp end parallel do
-      call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iele_lc(1))
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (ele%numele, ele_comm, iele_dbl(1,1))
 !
       end subroutine set_node_ele_double_address
 !
@@ -682,5 +530,383 @@
        end subroutine find_belonged_pe_4_edge
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine belonged_surf_id_4_node2                               &
+     &         (k_ref, node, surf, host_surf)
+!
+      use t_geometry_data
+      use t_surface_data
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+      integer (kind=kint), intent(in) :: k_ref
+      type(node_data), intent(in) ::    node
+      type(surface_data), intent(in) :: surf
+      type(element_around_node), intent(inout) :: host_surf
+!
+!
+      call alloc_numele_belonged(node%numnod, host_surf)
+!
+      call count_belonged_ele_4_node2                                   &
+     &   (k_ref, node%numnod, surf%numsurf, surf%ie_surf(1,1),          &
+     &    ione, surf%numsurf, host_surf%nele_4_node)
+      call s_cal_minmax_and_stacks(node%numnod,                         &
+     &    host_surf%nele_4_node, izero, host_surf%istack_4_node,        &
+     &    host_surf%ntot, host_surf%nmax, host_surf%nmin)
+!
+!
+      call alloc_iele_belonged(host_surf)
+!
+      call set_belonged_ele_4_node2                                     &
+     &   (k_ref, node%numnod, surf%numsurf, surf%ie_surf(1,1),          &
+     &    ione, surf%numsurf, host_surf%ntot, host_surf%istack_4_node,  &
+     &    host_surf%nele_4_node, host_surf%iele_4_node,                 &
+     &    host_surf%iconn_4_node)
+!
+      end subroutine belonged_surf_id_4_node2
+!
+!-----------------------------------------------------------------------
+!
+      subroutine belonged_edge_id_4_node2                               &
+     &         (k_ref, node, edge, host_edge)
+!
+      use t_geometry_data
+      use t_edge_data
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+      integer (kind=kint), intent(in) :: k_ref
+      type(node_data), intent(in) ::    node
+      type(edge_data), intent(in) ::    edge
+      type(element_around_node), intent(inout) :: host_edge
+!
+!
+      call alloc_numele_belonged(node%numnod, host_edge)
+!
+      call count_belonged_ele_4_node2                                   &
+     &   (k_ref, node%numnod, edge%numedge, edge%ie_edge(1,1),          &
+     &    ione, edge%numedge, host_edge%nele_4_node)
+      call s_cal_minmax_and_stacks(node%numnod,                         &
+     &    host_edge%nele_4_node, izero, host_edge%istack_4_node,        &
+     &    host_edge%ntot, host_edge%nmax, host_edge%nmin)
+!
+      call alloc_iele_belonged(host_edge)
+!
+      call set_belonged_ele_4_node2                                     &
+     &   (k_ref, node%numnod, edge%numedge, edge%ie_edge(1,1),          &
+     &    ione, edge%numedge, host_edge%ntot, host_edge%istack_4_node,  &
+     &    host_edge%nele_4_node, host_edge%iele_4_node,                 &
+     &    host_edge%iconn_4_node)
+!
+      end subroutine belonged_edge_id_4_node2
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine count_belonged_ele_4_node2(k_ref, numnod, numele, ie,  &
+     &          iele_st, iele_ed, nele_4_node)
+!
+      integer (kind=kint), intent(in) :: k_ref
+      integer (kind=kint), intent(in) :: numnod, numele
+      integer (kind=kint), intent(in) :: ie(numele,1)
+      integer (kind=kint), intent(in) :: iele_st, iele_ed
+!
+      integer (kind=kint), intent(inout) :: nele_4_node(numnod)
+!
+      integer (kind = kint) :: inod, iele
+!
+!
+!$omp parallel workshare
+      nele_4_node(1:numnod) = 0
+!$omp end parallel workshare
+!
+      do iele = iele_st, iele_ed
+        inod = ie(iele,k_ref)
+        nele_4_node(inod) = nele_4_node(inod) + 1
+      end do
+!
+      end  subroutine count_belonged_ele_4_node2
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_belonged_ele_4_node2(k_ref, numnod, numele, ie,    &
+     &          iele_st, iele_ed, ntot_ele_4_node, iele_stack_4_node,   &
+     &          nele_4_node, iele_4_node, iconn_4_node)
+!
+      use quicksort
+!
+      integer (kind=kint), intent(in) :: k_ref
+      integer (kind=kint), intent(in) :: numnod, numele
+      integer (kind=kint), intent(in) :: ie(numele,1)
+      integer (kind=kint), intent(in) :: iele_st, iele_ed
+      integer (kind=kint), intent(in) :: ntot_ele_4_node
+      integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
+!
+      integer (kind=kint), intent(inout) :: nele_4_node(numnod)
+      integer (kind=kint), intent(inout)                                &
+     &                    :: iele_4_node(ntot_ele_4_node)
+      integer (kind=kint), intent(inout)                                &
+     &                    :: iconn_4_node(ntot_ele_4_node)
+!
+      integer (kind = kint) :: inod, iele, icou, ist
+!
+!
+!$omp parallel workshare
+      nele_4_node(1:numnod) = 0
+!$omp end parallel workshare
+!
+      do iele = iele_st, iele_ed
+        inod = ie(iele,k_ref)
+        nele_4_node(inod) = nele_4_node(inod) + 1
+        icou = iele_stack_4_node(inod-1) + nele_4_node(inod)
+        iele_4_node(icou) = iele
+        iconn_4_node(icou) =  1
+      end do
+!
+!$omp parallel do private(inod,ist)
+      do inod = 1, numnod
+        ist = iele_stack_4_node(inod-1) + 1
+        if(nele_4_node(inod) .gt. 0) then
+          call quicksort_w_index(nele_4_node(inod), iele_4_node(ist),   &
+     &        ione, nele_4_node(inod), iconn_4_node(ist))
+        end if
+      end do
+!$omp end parallel do
+!
+      end  subroutine set_belonged_ele_4_node2
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine const_comm_table_by_connenct2                          &
+     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
+     &          node, nod_comm, neib_e, x_ref_ele, host,                &
+     &          e_comm, fail_tbl)
+!
+      use m_solver_SR
+      use reverse_SR_int
+      use find_element_comm_table
+      use const_global_element_ids
+      use set_element_export_item
+      use make_element_comm_table_SR
+!
+      character(len=kchara), intent(in) :: txt
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
+      integer(kind = kint), intent(in) :: internal_flag(numele)
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+!
+      type(node_data), intent(in) :: node
+      type(element_around_node), intent(in) :: host
+      type(element_around_node), intent(in) :: neib_e
+      type(communication_table), intent(in) :: nod_comm
+      real(kind = kreal), intent(in)                                    &
+     &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
+!
+      type(communication_table), intent(inout) :: e_comm
+      type(failed_table), intent(inout) :: fail_tbl
+!
+      type(work_4_ele_comm_table) :: wk_comm
+      integer :: i
+!
+!
+      e_comm%num_neib = nod_comm%num_neib
+      call alloc_neighbouring_id(e_comm)
+      call alloc_import_num(e_comm)
+!
+!      write(*,*) 'count_element_import_num', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
+      call count_element_import_num(node%numnod, host%istack_4_node,    &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
+     &    e_comm%istack_import, e_comm%ntot_import)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+1)
+!
+      call alloc_element_rev_imports(node%numnod,                       &
+     &    nod_comm%ntot_export, e_comm%ntot_import, wk_comm)
+      call alloc_import_item(e_comm)
+!
+!      write(*,*) 'local_node_id_reverse_SR', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+2)
+      call local_node_id_reverse_SR                                     &
+     &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%istack_export, nod_comm%item_export,                 &
+     &    SR_sig1, wk_comm%item_local, wk_comm%inod_local)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
+!
+!      write(*,*) 'set_element_import_item', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
+      call set_element_import_item(node%numnod, node%internal_node,     &
+     &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
+     &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
+     &    nod_comm%num_neib, nod_comm%istack_import,                    &
+     &    nod_comm%item_import, e_comm%num_neib,                        &
+     &    e_comm%istack_import, e_comm%item_import,                     &
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
+!
+      call alloc_export_num(e_comm)
+!
+!      write(*,*) 'element_num_reverse_SR', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
+      call element_num_reverse_SR                                       &
+     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import, SR_sig1,  &
+     &    e_comm%num_export, e_comm%istack_export, e_comm%ntot_export)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
+!
+      call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
+      call alloc_export_item(e_comm)
+!
+!      write(*,*) 'element_data_reverse_SR', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)
+      call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
+     &    e_comm%istack_import, e_comm%istack_export,                   &
+     &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
+     &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
+     &    wk_comm%inod_export_l, wk_comm%xe_export)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+5)
+!
+!      write(*,*) 'set_element_export_item', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
+      call s_set_element_export_item(txt, node%numnod, numele,          &
+     &    internal_flag, x_ele, neib_e%istack_4_node,                   &
+     &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
+     &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    e_comm%num_neib, e_comm%istack_export,                        &
+     &    wk_comm%inod_export_l, wk_comm%xe_export, e_comm%item_export)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+6)
+!
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+7)
+      call element_export_item_in_ext                                   &
+     &   (txt, node%numnod, numele, node%inod_global,                   &
+     &    internal_flag, x_ele, neib_e%istack_4_node,                   &
+     &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
+     &    nod_comm%istack_export, nod_comm%item_export,                 &
+     &    e_comm%num_neib, e_comm%istack_export,                        &
+     &    wk_comm%inod_export_e, wk_comm%xe_export, e_comm%item_export, &
+     &    fail_tbl)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+7)
+!
+!
+      write(80+my_rank,*) 'Conunt, inum, item_export_e, dist'
+      do i = 1, fail_tbl%num_fail
+        write(80+my_rank,*) i, fail_tbl%fail_comm(i)%id_failed,   &
+     &             fail_tbl%fail_comm(i)%item_fail,    &
+     &             fail_tbl%fail_comm(i)%dist_fail
+      end do
+      close(80+my_rank)
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(0, 'tako')
+!
+      call dealloc_element_rev_exports(wk_comm)
+      call dealloc_element_rev_imports(wk_comm)
+!
+!      write(*,*) 'check_element_position', my_rank
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+8)
+      call check_element_position(txt, numele, x_ele, e_comm)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+8)
+!
+      end subroutine const_comm_table_by_connenct2
+!
+!-----------------------------------------------------------------------
+!
+      subroutine flip_surface_connenct(isurf, node, ele, surf)
+!
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: isurf
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      type(surface_data), intent(inout) :: surf
+!
+      integer :: k
+      integer(kind = kint) :: iele1, iele2, k_lc1, k_lc2
+      integer(kind = kint) :: ie_surf_new(surf%nnod_4_surf)
+!
+!
+!
+      iele1 = surf%iele_4_surf(isurf,1,1)
+      iele2 = surf%iele_4_surf(isurf,2,1)
+      k_lc1 = surf%iele_4_surf(isurf,1,2)
+      k_lc2 = surf%iele_4_surf(isurf,2,2)
+      if(iele2 .le. 0) return
+!
+      if(surf%nnod_4_surf .eq. num_quad_sf) then
+        do k = 1, num_quad_sf
+          ie_surf_new(k) = ele%ie(iele2,node_on_sf_8(k,k_lc2))
+        end do
+      else if(surf%nnod_4_surf .eq. num_lag_sf) then
+        do k = 1, num_lag_sf
+          ie_surf_new(k) = ele%ie(iele2,node_on_sf_9(k,k_lc2))
+        end do
+      else
+        do k = 1, num_linear_sf
+          ie_surf_new(k) = ele%ie(iele2,node_on_sf_4(k,k_lc2))
+        end do
+        end if
+!
+      surf%ie_surf(isurf,1:surf%nnod_4_surf)                            &
+     &      = ie_surf_new(1:surf%nnod_4_surf)
+      surf%isf_4_ele(iele1,k_lc1) = -isurf
+      surf%isf_4_ele(iele2,k_lc2) =  isurf
+!
+      surf%iele_4_surf(isurf,1,1) = iele2
+      surf%iele_4_surf(isurf,2,1) = iele1
+      surf%iele_4_surf(isurf,1,2) = k_lc2
+      surf%iele_4_surf(isurf,2,2) = k_lc1
+!
+      if(surf%ie_surf(isurf,1) .le. node%internal_node) then
+        surf%interior_surf(isurf) = 1
+      else
+        surf%interior_surf(isurf) = 0
+      end if
+!
+      end subroutine flip_surface_connenct
+!
+!-----------------------------------------------------------------------
+!
+      subroutine tmp_surface_connent(numsurf, nnod_4_surf, ie_surf,     &
+     &                               k_ref, ie_sf_tmp)
+!
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
+      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
+      integer(kind = kint), intent(in) :: k_ref(numsurf)
+!
+      integer(kind = kint), intent(inout)                               &
+     &       :: ie_sf_tmp(numsurf,num_linear_sf)
+!
+      integer(kind = kint) :: isurf
+!
+!
+!$omp parallel do
+      do isurf = 1, numsurf
+        if(k_ref(isurf) .eq. 2) then
+          ie_sf_tmp(isurf,1) = ie_surf(isurf,2)
+          ie_sf_tmp(isurf,2) = ie_surf(isurf,3)
+          ie_sf_tmp(isurf,3) = ie_surf(isurf,4)
+          ie_sf_tmp(isurf,4) = ie_surf(isurf,1)
+        else if(k_ref(isurf) .eq. 2) then
+          ie_sf_tmp(isurf,1) = ie_surf(isurf,3)
+          ie_sf_tmp(isurf,2) = ie_surf(isurf,4)
+          ie_sf_tmp(isurf,3) = ie_surf(isurf,1)
+          ie_sf_tmp(isurf,4) = ie_surf(isurf,2)
+        else
+          ie_sf_tmp(isurf,1) = ie_surf(isurf,1)
+          ie_sf_tmp(isurf,2) = ie_surf(isurf,2)
+          ie_sf_tmp(isurf,3) = ie_surf(isurf,3)
+          ie_sf_tmp(isurf,4) = ie_surf(isurf,4)
+        end if
+      end do
+!$omp end parallel do
+!
+      end subroutine tmp_surface_connent
+!
+!-----------------------------------------------------------------------
 !
       end module analyzer_comm_test
