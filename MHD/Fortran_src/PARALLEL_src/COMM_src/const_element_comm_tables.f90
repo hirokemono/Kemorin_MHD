@@ -60,8 +60,8 @@
       character(len=kchara), parameter :: txt_surf = 'surface'
 !
       private :: txt_ele, txt_edge, txt_surf
-      private :: const_global_element_id, const_global_surface_id
-      private :: const_global_edge_id
+      private :: const_global_element_id
+!      private :: const_global_surface_id, const_global_edge_id
 !
 !-----------------------------------------------------------------------
 !
