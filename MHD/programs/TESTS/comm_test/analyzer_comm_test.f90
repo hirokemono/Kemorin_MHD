@@ -212,7 +212,7 @@
       integer(kind = kint), allocatable :: k_ref(:)
       integer(kind = kint), allocatable :: ie_sf_tmp(:,:)
 !
-      integer(kind = kint) :: isurf, i1, i2
+      integer(kind = kint) :: isurf, i1, i2, i, inod, ip
 !
 !
       allocate(inod_dbl(node%numnod,2))
@@ -714,7 +714,30 @@
       integer(kind = kint), allocatable :: inod_lc_export(:,:)
       integer(kind = kint), allocatable :: ipe_lc_export(:,:)
 !
-      integer :: i
+      integer :: i, j, ip_org, ii, inod, ip, i1, isurf
+!
+      do inod = 1, node%numnod
+        if(inod_dbl(inod,2) .eq. 7   &
+     &      .and. inod_dbl(inod,1) .eq. 77318) then
+          write(*,*) 'Hit', my_rank, inod
+!
+          ip = -1
+          do i = 1, nod_comm%num_neib
+            do i1 = nod_comm%istack_import(i-1)+1, nod_comm%istack_import(i)
+              if(nod_comm%item_import(i1) .eq. inod) ip = i
+            end do
+        end do
+!
+        do i = host%istack_4_node(inod-1)+1, &
+     &         host%istack_4_node(inod)
+          isurf = host%iele_4_node(i)
+          write(*,*) 'Detail/w/pe', my_rank, inod, i,  &
+     &           ip, nod_comm%id_neib(ip), &
+     &           inod_dbl(ie(isurf,1:4),1),  &
+     &           inod_dbl(ie(isurf,1:4),2)
+        end do
+        end if
+      end do
 !
 !
       e_comm%num_neib = nod_comm%num_neib
@@ -805,15 +828,33 @@
      &    fail_tbl)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+7)
 !
+      if(fail_tbl%num_fail .gt. 0) then
+        write(80+my_rank,*) 'Conunt, inum, item_export_e, dist'
+        do i = 1, fail_tbl%num_fail
+          j  = fail_tbl%fail_comm(i)%id_failed
+!  
+          do ii = 1, e_comm%num_neib
+            if(j.gt.e_comm%istack_export(ii-1)    &
+     &          .and. j.le.e_comm%istack_export(ii))  &
+     &             ip_org = e_comm%id_neib(ii)
+          end do
+!
+          write(80+my_rank,*) i, ip_org, fail_tbl%fail_comm(i)%id_failed,   &
+     &     fail_tbl%fail_comm(i)%item_fail,    &
+     &     fail_tbl%fail_comm(i)%dist_fail,    &
+     &     'inod_lc_export', inod_lc_export(j,1:4), &
+     &     'ipe_lc_export', ipe_lc_export(j,1:4)
+!
+          if(my_rank .eq. ipe_lc_export(j,1)) then
+            write(80+my_rank,*) 'Hit self surface'
+          end if
+!
+        end do
+        close(80+my_rank)
+      end if  
+!
       deallocate(inod_lc_export, ipe_lc_export)
 !
-      write(80+my_rank,*) 'Conunt, inum, item_export_e, dist'
-      do i = 1, fail_tbl%num_fail
-        write(80+my_rank,*) i, fail_tbl%fail_comm(i)%id_failed,   &
-     &             fail_tbl%fail_comm(i)%item_fail,    &
-     &             fail_tbl%fail_comm(i)%dist_fail
-      end do
-      close(80+my_rank)
       call calypso_mpi_barrier
       call calypso_mpi_abort(0, 'tako')
 !
