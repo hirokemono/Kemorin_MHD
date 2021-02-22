@@ -106,7 +106,7 @@
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,    &
      &    T_surf_comm, test_fem%mesh%surf, fail_tbl_s)
 !
-      write(*,*) 'fail_tbl_s', fail_tbl_d%num_fail
+      write(*,*) 'fail_tbl_s', fail_tbl_s%num_fail
       call dealloc_failed_export(fail_tbl_s)
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
