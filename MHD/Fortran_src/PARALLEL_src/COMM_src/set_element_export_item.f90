@@ -32,7 +32,7 @@
 !>      many number
       integer(kind = kint), parameter, private :: many = 64
 !
-      private :: search_target_element
+!      private :: search_target_element
       private :: search_target_element2, search_target_element3
 !
 !-----------------------------------------------------------------------

@@ -179,6 +179,72 @@
       end subroutine analyze_communication_test
 !
 ! ----------------------------------------------------------------------
+!
+       subroutine find_belonged_pe_4_surf                               &
+      &         (surf, numnod, ip_node, isurf, nnod_same, ip_ref)
+!
+       type(surface_data), intent(in) :: surf
+       integer(kind = kint), intent(in) :: numnod
+       integer(kind = kint), intent(in) :: ip_node(numnod)
+       integer(kind = kint), intent(in) :: isurf
+!
+       integer(kind = kint), intent(inout) :: nnod_same, ip_ref
+!
+       integer(kind = kint) ::ip1, ip2, ip3, ip4
+!
+       ip1 = ip_node(surf%ie_surf(isurf,1))
+       ip2 = ip_node(surf%ie_surf(isurf,2))
+       ip3 = ip_node(surf%ie_surf(isurf,3))
+       ip4 = ip_node(surf%ie_surf(isurf,4))
+       if(ip1.eq.ip2 .and. ip1.eq.ip3 .and. ip1.eq.ip4) then
+         nnod_same = 4
+         ip_ref = ip1
+       else if(ip2.eq.ip3 .and. ip2.eq.ip4) then
+         nnod_same = 3
+         ip_ref = ip4
+       else if(ip1.eq.ip3 .and. ip1.eq.ip4) then
+         nnod_same = 3
+         ip_ref = ip1
+       else if(ip1.eq.ip2 .and. ip1.eq.ip4) then
+         nnod_same = 3
+         ip_ref = ip1
+       else if(ip1.eq.ip2 .and. ip1.eq.ip3) then
+         nnod_same = 2
+         ip_ref = ip1
+!
+       else if(ip1.eq.ip2 .and. ip3.eq.ip4) then
+         nnod_same = 2
+         ip_ref = min(ip1, ip4)
+       else if(ip2.eq.ip3 .and. ip4.eq.ip1) then
+         nnod_same = 2
+         ip_ref = min(ip1, ip2)
+       else if(ip1.eq.ip2) then
+         nnod_same = 2
+         ip_ref = ip1
+       else if(ip2.eq.ip3) then
+         nnod_same = 2
+         ip_ref = ip2
+       else if(ip3.eq.ip4) then
+         nnod_same = 2
+         ip_ref = ip3
+       else if(ip4.eq.ip1) then
+         nnod_same = 2
+         ip_ref = ip4
+       else if(ip1.eq.ip3) then
+         nnod_same = 2
+         ip_ref = ip1
+       else if(ip2.eq.ip4) then
+         nnod_same = 2
+         ip_ref = ip2
+       else
+         nnod_same = 1
+         ip_ref = min(ip1, ip2)
+         ip_ref = min(ip3, ip_ref)
+         ip_ref = min(ip4, ip_ref)
+       end if
+!
+       end subroutine find_belonged_pe_4_surf
+
 ! ----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table2                                 &
@@ -191,6 +257,10 @@
       use set_surface_data
       use solver_SR_type
       use reverse_SR_int
+      use reverse_SR_real
+      use calypso_mpi_int
+      use quicksort
+      use set_element_export_item
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -202,16 +272,43 @@
       type(belonged_table), save :: belongs
       type(failed_table), save :: fail_import
 !
-      integer :: i1, i2, i3
-      integer :: i, isurf, iele, k, ist, ied, ip
+      integer(kind = kint) :: jnod_ref(4),  jp_ref(4)
+      integer(kind = kint) :: jnod_sf(4),  jp_sf(4)
+      integer(kind = kint) :: n_search(4), inod_search(4)
+      real(kind = kreal) ::dist_min
+      integer :: i1, i2, i3, icou, iflag, jsurf, num_gl
+      integer :: i, isurf, iele, k, ist, ied, ip, inum, jst, jnum, jnod
       integer(kind = kint) :: iele1, iele2, k_lc1, k_lc2
       integer(kind = kint) :: ie_ele_one(ele%nnod_4_ele)
       integer(kind = kint) :: ie_surf_one(surf%nnod_4_surf)
       integer(kind = kint) :: ie_surf_new(surf%nnod_4_surf)
 !
+      integer(kind = kint), allocatable :: nneib_tmp(:)
+      integer(kind = kint), allocatable :: isteck_neib_tmp(:)
+!
+      integer(kind = kint), allocatable :: isend_id_import(:,:)
+      integer(kind = kint), allocatable :: irecv_ip_export(:,:,:)
+      real(kind = kreal), allocatable :: send_xe_import(:)
+      real(kind = kreal), allocatable :: recv_xe_export(:)
+!
+      integer(kind = kint) :: ip_1, ip_2
+      integer(kind = kint) :: iflag_sf(4), ip_min
+      integer(kind = kint), allocatable :: isurf_lc(:)
+      integer(kind = kint), allocatable :: ip_surf(:)
+      integer(kind = kint), allocatable :: isf_recv(:)
+      integer(kind = kint), allocatable :: ipe_recv(:)
+      integer(kind = kint), allocatable :: icou_recv(:)
+      integer(kind = kint), allocatable :: ip_ref(:)
+      integer(kind = kint), allocatable :: nnod_same(:)
+!
+      integer(kind = kint), allocatable :: iflag_e(:)
+      integer(kind = kint), allocatable :: ipe_ele(:)
+!
+      integer(kind = kint), allocatable :: iflag_ele(:)
       integer(kind = kint), allocatable :: iflag_fail(:)
       integer(kind = kint), allocatable :: iflag_flip_sf(:)
-      integer(kind = kint), allocatable :: iflag_ele(:)
+      integer(kind = kint), allocatable :: ip_fail(:)
+      integer(kind = kint), allocatable :: ip_flip_sf(:)
       integer, allocatable :: inod_lc(:), ip_node(:)
       integer, allocatable :: iele_lc(:), ip_ele(:)
       integer, allocatable :: idir_surf_ele(:,:)
@@ -220,6 +317,8 @@
       integer, allocatable :: idir_surf(:,:)
       integer, allocatable :: iflag_surf(:)
       integer, allocatable :: iflag_bound_send(:,:), iflag_bound_recv(:,:)
+!
+      type(work_4_ele_comm_table) :: wk_comm
 !
       allocate(inod_lc(node%numnod))
       allocate(ip_node(node%numnod))
@@ -245,45 +344,310 @@
       allocate(iflag_fail(surf%numsurf))
       iflag_fail(1:surf%numsurf) = 0
       do isurf = 1, surf%numsurf
-        if(     surf%ie_surf(isurf,1) .le. node%internal_node &
-     &    .and. surf%ie_surf(isurf,2) .le. node%internal_node &
-     &    .and. surf%ie_surf(isurf,3) .le. node%internal_node &
-     &    .and. surf%ie_surf(isurf,4) .le. node%internal_node) then
-            iflag_fail(isurf) = isurf
+        iele1 = surf%iele_4_surf(isurf,1,1)
+        iele2 = surf%iele_4_surf(isurf,2,1)
+        k_lc1 = surf%iele_4_surf(isurf,1,2)
+        k_lc2 = surf%iele_4_surf(isurf,2,2)
+        if(iele2 .eq. 0) cycle
+!
+        if(iele_lc(iele2) .lt. iele_lc(iele1)) then
+          iflag_fail(isurf) = 1
+        else if(iele_lc(iele2) .eq. iele_lc(iele1)) then
+          if(ip_ele(iele2) .lt. ip_ele(iele1)) then
+            iflag_fail(isurf) = 1
+          end if
+        end if
+      end do
+!      write(*,*) my_rank,  'flip!', sum(iflag_fail)
+!      call flip_surface_connenct(node, ele, iflag_fail, surf)
+!
+!
+
+!
+      allocate(isurf_lc(surf%numsurf))
+      allocate(ip_surf(surf%numsurf))
+      allocate(isf_recv(surf%numsurf))
+      allocate(ipe_recv(surf%numsurf))
+      allocate(icou_recv(surf%numsurf))
+      isurf_lc(1:surf%numsurf) =   0
+      ip_surf(1:surf%numsurf) =   -1
+      isf_recv(1:surf%numsurf) =   0
+      ipe_recv(1:surf%numsurf) =  -1
+      icou_recv(1:surf%numsurf) =  0
+!
+      allocate(iflag_e(ele%numele))
+      allocate(ipe_ele(ele%numele))
+!
+      allocate(nnod_same(surf%numsurf))
+      allocate(ip_ref(surf%numsurf))
+      ip_ref = -1
+!
+      surf%interior_surf(1:surf%numsurf) = 0
+       do isurf = 1, surf%numsurf
+        isurf_lc(isurf) = isurf
+        call find_belonged_pe_4_surf                                  &
+      &    (surf, node%numnod, ip_node, isurf,   &
+      &     nnod_same(isurf), ip_surf(isurf))
+        if(ip_surf(isurf) .eq. my_rank ) surf%interior_surf(isurf) = 1
+      end do
+!
+      do isurf = 1, surf%numsurf
+      end do
+!
+      call quicksort_w_index(surf%numsurf, ip_surf,                     &
+     &                       ione, surf%numsurf, isurf_lc)
+!
+      allocate(nneib_tmp(nprocs))
+      allocate(isteck_neib_tmp(0:nprocs))
+      nneib_tmp(1:nprocs) =       0
+      isteck_neib_tmp(0:nprocs) = 0
+!
+      do isurf = 1, surf%numsurf
+        ip = ip_surf(isurf)
+        nneib_tmp(ip+1) = nneib_tmp(ip+1) + 1
+      end do
+      nneib_tmp(my_rank+1) = 0
+      do ip = 1, nprocs
+        isteck_neib_tmp(ip) = isteck_neib_tmp(ip-1) + nneib_tmp(ip)
+      end do
+!
+      do ip = 1, nprocs
+        ist = isteck_neib_tmp(ip-1) + 1
+        ied = isteck_neib_tmp(ip)
+        if(ied .gt. ist) then
+          call quicksort_int(surf%numsurf, isurf_lc, ist, ied)
         end if
       end do
 !
-      allocate(iflag_ele(ele%numele))
-      allocate(iflag_flip_sf(surf%numsurf))
-      iflag_flip_sf(1:surf%numsurf) = 0
-      do k = 1, 6
-        iflag_ele(1:ele%numele) = 0
-        do iele = 1, ele%numele
-          isurf = abs(surf%isf_4_ele(iele,k))
-          iflag_ele(iele) = iflag_fail(isurf)
+      surf_comm%num_neib = nod_comm%num_neib
+      call alloc_neighbouring_id(surf_comm)
+      do i = 1, surf_comm%num_neib
+        surf_comm%id_neib(i) = nod_comm%id_neib(i)
+      end do
+!
+      call alloc_import_num(surf_comm)
+      do i = 1, surf_comm%num_neib
+        ip = surf_comm%id_neib(i)
+        surf_comm%num_import(i) = nneib_tmp(ip+1)
+        surf_comm%istack_import(i) = surf_comm%istack_import(i-1)       &
+     &                             + surf_comm%num_import(i)
+      end do
+      surf_comm%ntot_import                                             &
+     &       = surf_comm%istack_import(surf_comm%num_neib)
+!
+      call alloc_element_rev_imports(surf%numsurf,                      &
+     &    surf_comm%ntot_export, surf_comm%ntot_import, wk_comm)
+      call alloc_import_item(surf_comm)
+!
+      do i = 1, surf_comm%num_neib
+        ip = surf_comm%id_neib(i)
+        ist = surf_comm%istack_import(i-1)
+        jst = isteck_neib_tmp(ip)
+        do inum = 1, surf_comm%num_import(i)
+          surf_comm%item_import(ist+inum) = isurf_lc(jst+inum)
         end do
-        call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm,  &
-     &                                   iflag_ele(1))
+      end do
+!
+!
+      call alloc_export_num(surf_comm)
+      call element_num_reverse_SR                                       &
+     &   (surf_comm%num_neib, surf_comm%id_neib, surf_comm%num_import,  &
+     &    SR_sig1, surf_comm%num_export, surf_comm%istack_export,       &
+     &    surf_comm%ntot_export)
+!
+      call alloc_export_item(surf_comm)
+      allocate(isend_id_import(surf_comm%ntot_import,2))
+      allocate(irecv_ip_export(surf_comm%ntot_export,4,2))
+!
+      do k = 1, 4
+        do inum = 1, surf_comm%ntot_import
+          isurf = surf_comm%item_import(inum)
+          isend_id_import(inum,1) = inod_lc(surf%ie_surf(isurf,k))
+          isend_id_import(inum,2) = ip_node(surf%ie_surf(isurf,k))
+        end do
+        call reverse_send_recv_int                                      &
+     &     (surf_comm%num_neib, surf_comm%id_neib, &
+     &      surf_comm%istack_import, surf_comm%istack_export,           &
+     &      isend_id_import(1,1), SR_sig1, irecv_ip_export(1,k,1))
+        call reverse_send_recv_int                                      &
+     &     (surf_comm%num_neib, surf_comm%id_neib, &
+     &      surf_comm%istack_import, surf_comm%istack_export,           &
+     &      isend_id_import(1,2), SR_sig1, irecv_ip_export(1,k,2))
+      end do
+!
+      allocate(send_xe_import(3*surf_comm%ntot_import))
+      allocate(recv_xe_export(3*surf_comm%ntot_export))
+!
+      do inum = 1, surf_comm%ntot_import
+        isurf = surf_comm%item_import(inum)
+        send_xe_import(3*inum-2) = surf%x_surf(isurf,1)
+        send_xe_import(3*inum-1) = surf%x_surf(isurf,2)
+        send_xe_import(3*inum  ) = surf%x_surf(isurf,3)
+      end do
+      call reverse_send_recv_3(surf_comm%num_neib, surf_comm%id_neib,   &
+     &    surf_comm%istack_import, surf_comm%istack_export,             &
+     &    send_xe_import, SR_sig1, recv_xe_export)
+!
+!
+      call set_surf_id_4_node(node, surf, belongs%blng_surf)
+      call alloc_x_ref_surf(node, belongs)
+      call sort_inod_4_ele_by_position(ione, surf%numsurf, surf%x_surf, &
+     &    node, belongs%blng_surf, belongs%x_ref_surf)
+!
+      call alloc_failed_export(0, fail_import)
+      call belonged_surf_id_4_node(node, surf, belongs%host_surf)
+      call calypso_mpi_barrier
+!
+       write(*,*) my_rank, 'ntot_export: ', surf_comm%ntot_export
+!
+      icou = 0
+      do i = 1, surf_comm%num_neib
+        ip =  surf_comm%id_neib(i)
+        ist = surf_comm%istack_export(i-1) + 1
+        ied = surf_comm%istack_export(i)
+        do inum = ist, ied
+           jnod_ref(1:4) = irecv_ip_export(1,1:4,1)
+           jp_ref(1:4) =   irecv_ip_export(1,1:4,2)
+!          if(mod(inum,2500) .eq. 0) write(*,*) my_rank, 'inum', inum
+          iflag = 0
+          dist_min = 1.0d30
+!
+          do k = 1, 4
+            if(irecv_ip_export(inum,k,2) .eq. my_rank) then
+              inod_search(k) = irecv_ip_export(inum,k,1)
+              n_search(k) = belongs%blng_surf%nele_4_node(inod_search(k))
+            else
+              inod_search(k) = 0
+              n_search(k) =    0
+            end if
+          end do
+!
+          call quicksort_w_index(ifour, n_search,                       &
+     &                           ione, ifour, inod_search)
+!
+          do k = 1, 4
+            jnod = inod_search(k)
+            jst =  belongs%blng_surf%istack_4_node(jnod-1)
+            do jnum = 1, n_search(k)
+              jsurf = belongs%blng_surf%iele_4_node(jst+jnum)
+!
+              jnod_sf(1:4) = inod_lc(surf%ie_surf(jsurf,1:4))
+              jp_sf(1:4) =   ip_node(surf%ie_surf(jsurf,1:4))
+!
+              if(jnod_sf(1) .eq. jnod_ref(1)                            &
+     &            .and. jp_sf(1) .eq. jp_ref(1)) then
+                if(jnod_sf(2) .eq. jnod_ref(2)                          &
+     &              .and. jp_sf(2) .eq. jp_ref(2)) then
+                  if(jnod_sf(3) .eq. jnod_ref(3)                        &
+     &                .and. jp_sf(3) .eq. jp_ref(3)                     &
+     &              .and. jnod_sf(4) .eq. jnod_ref(4)                   &
+     &                .and. jp_sf(4) .eq. jp_ref(4)) then
+                    surf_comm%item_export(inum) = jsurf
+                    iflag = 1
+                    exit
+                  end if
+                else if(jnod_sf(2) .eq. jnod_ref(4)                     &
+     &              .and. jp_sf(2) .eq. jp_ref(4)) then
+                  if(jnod_sf(3) .eq. jnod_ref(3)                        &
+     &                .and. jp_sf(3) .eq. jp_ref(3)                     &
+     &              .and. jnod_sf(4) .eq. jnod_ref(2)                   &
+     &                .and. jp_sf(4) .eq. jp_ref(2)) then
+                    surf_comm%item_export(inum) = jsurf
+                    iflag = 1
+                    exit
+                  end if
+                end if
+              end if
+            end do
+            if(iflag .gt. 0) exit
+          end do
+          if(iflag .eq. 0) then
+!             write(*,*) 'Missing imported ',                           &
+!     &                     trim(txt), ' by external: ',                &
+!     &                     my_rank, inum, item_export_e(inum),         &
+!     &                     xe_export(3*inum-2:3*inum), dist_min
+            icou = icou + 1
+          end if
+        end do
+      end do
+       write(*,*) my_rank, 'Failed: ', icou, surf_comm%ntot_export
+!
+!      call calypso_mpi_allreduce_one_int(icou, num_gl, MPI_SUM)
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &   'Failed export by s_set_element_export_item', num_gl
+!
+      call dealloc_iele_belonged(belongs%host_surf)
+      call dealloc_x_ref_surf(belongs)
+      call dealloc_iele_belonged(belongs%blng_surf)
+      call calypso_mpi_barrier
+      call calypso_mpi_abort(100,'bakabakabaka')
+!
+
+
+
+
+
+      isf_recv(1:surf%numsurf) = isurf_lc(1:surf%numsurf)
+      ipe_recv(1:surf%numsurf) =  ip_surf(1:surf%numsurf)
+!
+       i1 = 0
+       i2 = 0
+       do isurf = 1, surf%numsurf
+         if(ip_ref(isurf) .lt. 0) i1 = i1 + 1
+         if(ip_ref(isurf) .eq. my_rank) i1 = i1 + 1
+       end do
+      write(*,*) my_rank, 'Missing source domain',  i1, i2, surf%numsurf
+!
+      do k = 1, 6
+        iflag_e(1:ele%numele) = 0
+        ipe_ele(1:ele%numele) = -1
         do iele = 1, ele%numele
           isurf = abs(surf%isf_4_ele(iele,k))
-          iflag_flip_sf(isurf) = iflag_ele(iele)
+          iflag_e(iele) = isurf_lc(isurf)
+          ipe_ele(iele) =  ip_surf(isurf)
+        end do
+        call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, iflag_e)
+        call SOLVER_SEND_RECV_int_type(ele%numele, ele_comm, ipe_ele)
+        do iele = 1, ele%numele
+          if(ip_ele(iele) .eq. my_rank) cycle
+          isurf = abs(surf%isf_4_ele(iele,k))
+          if(ipe_ele(iele) .ge. 0) then
+            if(ipe_recv(isurf) .eq. -1) then
+              isf_recv(isurf) =  iflag_e(iele)
+              ipe_recv(isurf) =  ipe_ele(iele)
+            else if(ipe_ele(iele) .ne. ipe_recv(isurf)) then
+              icou_recv(isurf) = 1
+            end if
+          end if
         end do
       end do
 !
       i1 = 0
       i2 = 0
+      i3 = 0
       do isurf = 1, surf%numsurf
-        if(iflag_flip_sf(isurf) .eq. 0) then
-          i1 = i1 + 1
-          if(iflag_fail(isurf) .gt. 0) i2 = i2 + 1
-        end if
+        if(ip_surf(isurf) .lt. 0)  i1 = i1 + 1
+        if(ipe_recv(isurf) .lt. 0) i2 = i2 + 1
+        if(icou_recv(isurf) .gt. 0)  i3 = i3 + 1
       end do
 !
-      write(*,*) my_rank, 'Failed and eliminated', i1, i2
+      write(*,*) my_rank, 'Original after full internal missing',  &
+     &   i1, i2, i3
+!
+      do isurf = 1, surf%numsurf
+        if(ipe_recv(isurf) .lt. 0) then
+          write(my_rank+80,*) isurf, ip_ref(isurf),   &
+     &      'local node_ID', inod_lc(surf%ie_surf(isurf,1:4)),  &
+     &      'locale node_PE', ip_node(surf%ie_surf(isurf,1:4)),  &
+     &      'local ele_ID', iele_lc(surf%iele_4_surf(isurf,1:2,1)), &
+     &      'local ele_PE', ip_ele(surf%iele_4_surf(isurf,1:2,1))
+        end if
+      end do
+      close(my_rank+80)
 !
       call calypso_mpi_barrier
       call calypso_mpi_abort(2,'tako')
-!
 !
       call check_surface_to_flip                                 &
      &         (ele, ele_comm, surf, iflag_fail)
