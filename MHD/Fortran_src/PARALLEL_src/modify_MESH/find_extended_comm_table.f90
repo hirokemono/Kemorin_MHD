@@ -79,7 +79,7 @@
       do inod = 1, org_node%numnod
         if(iflag_node(inod) .gt. 0) then
           icou = icou + 1
-          send_nbuf%inod_add(icou) =    dbl_id%inod_local(inod)
+          send_nbuf%inod_add(icou) =    dbl_id%id_local(inod)
           send_nbuf%irank_add(icou) =   dbl_id%ip_home(inod)
           send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
           send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
@@ -111,12 +111,12 @@
           if(iflag_ele(iele) .gt. 0) then
             icou = icou + 1
             send_ebuf%iele_lc(icou) =     iele
-            send_ebuf%iele_add(icou) =    dbl_ele%inod_local(iele)
+            send_ebuf%iele_add(icou) =    dbl_ele%id_local(iele)
             send_ebuf%irank_add(icou) =   dbl_ele%ip_home(iele)
             send_ebuf%iele_gl_add(icou) = org_ele%iele_global(iele)
             do k1 = 1, org_ele%nnod_4_ele
               inod = org_ele%ie(iele,k1)
-              send_ebuf%ie_added(icou,k1) = dbl_id%inod_local(inod)
+              send_ebuf%ie_added(icou,k1) = dbl_id%id_local(inod)
               send_ebuf%ip_added(icou,k1) = dbl_id%ip_home(inod)
             end do
           end if

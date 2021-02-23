@@ -156,7 +156,7 @@
      &    recv_nbuf%irank_add)
 !
       call mark_added_nod_import_to_del                                 &
-     &   (org_node%numnod, dbl_idx%inod_local, dbl_idx%ip_home,         &
+     &   (org_node%numnod, dbl_idx%id_local, dbl_idx%ip_home,           &
      &    nod_comm%num_neib, nod_comm%id_neib, nod_comm%ntot_import,    &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    added_comm%num_neib, added_comm%id_neib,                      &
@@ -245,7 +245,7 @@
 !
       do inum = 1, new_comm%ntot_import
         inod =  new_comm%item_import(inum)
-        inod_import_new(inum) =  dbl_id2%inod_local(inod)
+        inod_import_new(inum) =  dbl_id2%id_local(inod)
         irank_import_new(inum) = dbl_id2%ip_home(inod)
       end do
 !
@@ -305,11 +305,11 @@
       icou = 0
       do inod = new_node%internal_node+1, new_node%numnod
         if(dbl_id2%ip_home(inod) .ne. irank_lc_check(inod)              &
-     &    .and. dbl_id2%inod_local(inod) .ne. inod_lc_check(inod)) then
+     &    .and. dbl_id2%id_local(inod) .ne. inod_lc_check(inod)) then
           if(icou .eq. 0) write(50+my_rank,*) 'error list'
           write(50+my_rank,*) inod, my_rank,                            &
      &     dbl_id2%ip_home(inod), irank_lc_check(inod),                 &
-     &     dbl_id2%inod_local(inod), inod_lc_check(inod)
+     &     dbl_id2%id_local(inod), inod_lc_check(inod)
            icou = icou + 1
         end if
       end do

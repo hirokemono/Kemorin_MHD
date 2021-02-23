@@ -253,18 +253,18 @@
 !
       irank_org = int(mod(ip_org - 1,nprocs))
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
-      call calypso_mpi_bcast_one_int(dbl_id%nnod_local, irank_org)
+      call calypso_mpi_bcast_one_int(dbl_id%num_dbl, irank_org)
 !
       if(mod(ip_org-1,nprocs) .ne. my_rank) then
-        num = dbl_id%nnod_local
+        num = dbl_id%num_dbl
         call alloc_double_numbering(num, dbl_id)
       end if
 !
 !        write(*,*) 'MPI_Bcast num_neib', ip_org
       call calypso_mpi_bcast_int                                        &
-     &   (dbl_id%inod_local, cast_long(dbl_id%nnod_local), irank_org)
+     &   (dbl_id%id_local, cast_long(dbl_id%num_dbl), irank_org)
       call calypso_mpi_bcast_int                                        &
-     &   (dbl_id%ip_home, cast_long(dbl_id%nnod_local), irank_org)
+     &   (dbl_id%ip_home, cast_long(dbl_id%num_dbl), irank_org)
 !
       end subroutine share_doble_numbering
 !
