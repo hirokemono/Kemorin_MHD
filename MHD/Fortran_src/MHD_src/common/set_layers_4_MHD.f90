@@ -120,7 +120,7 @@
 !
       call count_node_4_layer(node%numnod, node%internal_node,          &
      &    conduct%iele_start_fld, conduct%iele_end_fld, ele%numele,     &
-     &     ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag,            &
+     &    ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag,             &
      &    conduct%numnod_fld, conduct%internal_node_fld)
 !
       call count_node_4_layer(node%numnod, node%internal_node,          &

@@ -198,6 +198,7 @@
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -220,27 +221,8 @@
 !
       allocate(ip_ref(ele%numele))
       allocate(k_ref(ele%numele))
-!$omp parallel workshare
-      ip_ref(1:ele%numele) =   -1
-      k_ref(1:ele%numele) =     0
-!$omp end parallel workshare
-!
-!%omp parallel do private(iele)
-      do iele = 1, ele%numele
-       call find_belonged_pe_4_ele(ele, node%numnod, inod_dbl(1,2),     &
-     &     iele, ip_ref(iele), k_ref(iele))
-      end do
-!%omp end parallel do
-!
-!%omp parallel do private(iele)
-      do iele = 1, ele%numele
-        if(ip_ref(iele) .eq. my_rank) then
-          ele%interior_ele(iele) = 1
-        else
-          ele%interior_ele(iele) = 0
-        end if
-      end do
-!%omp end parallel do
+      call find_belonged_pe_4_ele(my_rank, node, inod_dbl(1,2),         &
+     &                            ele, ip_ref, k_ref)
 !
       call set_ele_id_4_node(node, ele, belongs%blng_ele)
       call alloc_x_ref_ele(node, belongs)
@@ -271,6 +253,7 @@
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -283,7 +266,6 @@
 !
       integer(kind = kint), allocatable :: inod_dbl(:,:)
 !
-      integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
 !
@@ -293,31 +275,11 @@
       allocate(inod_dbl(node%numnod,2))
       call set_node_double_address(node, nod_comm, inod_dbl)
 !
-      allocate(nnod_same(surf%numsurf))
       allocate(ip_ref(surf%numsurf))
       allocate(k_ref(surf%numsurf))
-!$omp parallel workshare
-      nnod_same(1:surf%numsurf) = 0
-      ip_ref(1:surf%numsurf) =   -1
-      k_ref(1:surf%numsurf) =     0
-!$omp end parallel workshare
 !
-!%omp parallel do private(isurf)
-      do isurf = 1, surf%numsurf
-       call find_belonged_pe_4_surf(surf, node%numnod, inod_dbl(1,2),   &
-     &     isurf, nnod_same(isurf), ip_ref(isurf), k_ref(isurf))
-      end do
-!%omp end parallel do
-!
-!%omp parallel do private(isurf)
-      do isurf = 1, surf%numsurf
-        if(ip_ref(isurf) .eq. my_rank) then
-          surf%interior_surf(isurf) = 1
-        else
-          surf%interior_surf(isurf) = 0
-        end if
-      end do
-!%omp end parallel do
+      call find_belonged_pe_4_surf(my_rank, node, inod_dbl(1,2),        &
+     &                             surf, ip_ref, k_ref)
 !
       call set_surf_id_4_node(node, surf, belongs%blng_surf)
       call alloc_x_ref_surf(node, belongs)
@@ -329,7 +291,7 @@
      &    surf%x_surf, node, nod_comm, belongs%blng_surf,               &
      &    surf_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
       deallocate(inod_dbl)
-      deallocate(nnod_same, ip_ref, k_ref)
+      deallocate(ip_ref, k_ref)
 !
       call dealloc_x_ref_surf(belongs)
       call dealloc_iele_belonged(belongs%blng_surf)
@@ -346,6 +308,7 @@
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -359,7 +322,6 @@
 !
       integer(kind = kint), allocatable :: inod_dbl(:,:)
 !
-      integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
 !
@@ -369,31 +331,10 @@
       allocate(inod_dbl(node%numnod,2))
       call set_node_double_address(node, nod_comm, inod_dbl)
 !
-      allocate(nnod_same(edge%numedge))
       allocate(ip_ref(edge%numedge))
       allocate(k_ref(edge%numedge))
-!$omp parallel workshare
-      nnod_same(1:edge%numedge) = 0
-      ip_ref(1:edge%numedge) =   -1
-      k_ref(1:edge%numedge) =     0
-!$omp end parallel workshare
-!
-!%omp parallel do private(iedge)
-      do iedge = 1, edge%numedge
-       call find_belonged_pe_4_edge(edge, node%numnod, inod_dbl(1,2),   &
-     &     iedge, nnod_same(iedge), ip_ref(iedge), k_ref(iedge))
-      end do
-!%omp end parallel do
-!
-!%omp parallel do private(iedge)
-      do iedge = 1, edge%numedge
-        if(ip_ref(iedge) .eq. my_rank) then
-          edge%interior_edge(iedge) = 1
-        else
-          edge%interior_edge(iedge) = 0
-        end if
-      end do
-!%omp end parallel do
+      call find_belonged_pe_4_edge(my_rank, node, inod_dbl(1,2),        &
+     &                             edge, ip_ref, k_ref)
 !
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
@@ -409,7 +350,7 @@
      &    edge%x_edge, node, nod_comm, belongs%blng_edge,               &
      &    edge_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
       deallocate(inod_dbl)
-      deallocate(nnod_same, ip_ref, k_ref)
+      deallocate(ip_ref, k_ref)
 !
       call dealloc_x_ref_edge(belongs)
       call dealloc_iele_belonged(belongs%blng_edge)
@@ -444,6 +385,7 @@
       subroutine set_node_double_address(node, nod_comm, inod_dbl)
 !
       use solver_SR_type
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -453,16 +395,16 @@
       integer(kind = kint) :: i
 !
 !
-!$onp parallel do
+      call find_belonged_pe_4_node                                &
+     &   (my_rank, node, nod_comm, inod_dbl(1,2))
+!
+!$omp parallel do
       do i = 1, node%numnod
         inod_dbl(i,1) = i
-        inod_dbl(i,2) = my_rank
       end do
-!$onp end parallel do
+!$omp end parallel do
       call SOLVER_SEND_RECV_int_type                                    &
      &   (node%numnod, nod_comm, inod_dbl(1,1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_dbl(1,2))
 !
       end subroutine set_node_double_address
 !
@@ -484,162 +426,18 @@
 !
       iele_dbl(0,1) = 0
       iele_dbl(0,2) = -1
-!$onp parallel do
+!$omp parallel do
       do i = 1, ele%numele
         iele_dbl(i,1) = i
         iele_dbl(i,2) = ip_node(ele%ie(i,1))
       end do
-!$onp end parallel do
+!$omp end parallel do
       call SOLVER_SEND_RECV_int_type                                    &
      &   (ele%numele, ele_comm, iele_dbl(1,1))
 !
       end subroutine set_ele_double_address
 !
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------
-!
-      subroutine find_belonged_pe_4_ele(ele, numnod, ip_node,           &
-     &          iele, ip_ref, k_ref)
-!
-       type(element_data), intent(in) :: ele
-       integer(kind = kint), intent(in) :: numnod
-       integer(kind = kint), intent(in) :: ip_node(numnod)
-       integer(kind = kint), intent(in) :: iele
-!
-       integer(kind = kint), intent(inout) :: ip_ref
-       integer(kind = kint), intent(inout) :: k_ref
-!
-       integer(kind = kint) :: inod
-!
-!
-       inod = ele%ie(iele,1)
-       ip_ref = ip_node(inod)
-       k_ref = 1
- !
-       end subroutine find_belonged_pe_4_ele
-!
-! ----------------------------------------------------------------------
-!
-       subroutine find_belonged_pe_4_surf(surf, numnod, ip_node,        &
-      &          isurf, nnod_same, ip_ref, k_ref)
-!
-       type(surface_data), intent(in) :: surf
-       integer(kind = kint), intent(in) :: numnod
-       integer(kind = kint), intent(in) :: ip_node(numnod)
-       integer(kind = kint), intent(in) :: isurf
-!
-       integer(kind = kint), intent(inout) :: nnod_same
-       integer(kind = kint), intent(inout) :: ip_ref
-       integer(kind = kint), intent(inout) :: k_ref
-!
-       integer(kind = kint) :: ip1, ip2, ip3, ip4
-!
-!
-       ip1 = ip_node(surf%ie_surf(isurf,1))
-       ip2 = ip_node(surf%ie_surf(isurf,2))
-       ip3 = ip_node(surf%ie_surf(isurf,3))
-       ip4 = ip_node(surf%ie_surf(isurf,4))
-       if(ip1.eq.ip2 .and. ip1.eq.ip3 .and. ip1.eq.ip4) then
-         nnod_same = 4
-         ip_ref = ip1
-         k_ref = 1
-       else if(ip2.eq.ip3 .and. ip2.eq.ip4) then
-         nnod_same = 3
-         ip_ref = ip2
-         k_ref = 2
-       else if(ip1.eq.ip3 .and. ip1.eq.ip4) then
-         nnod_same = 3
-         ip_ref = ip1
-         k_ref = 1
-       else if(ip1.eq.ip2 .and. ip1.eq.ip4) then
-         nnod_same = 3
-         ip_ref = ip1
-         k_ref = 1
-       else if(ip1.eq.ip2 .and. ip1.eq.ip3) then
-         nnod_same = 2
-         ip_ref = ip1
-         k_ref = 1
-!
-       else if(ip1.eq.ip2 .and. ip3.eq.ip4) then
-         nnod_same = 2
-         ip_ref = min(ip1, ip3)
-         k_ref = 1
-         if(ip_ref .eq. ip4) k_ref = 3
-       else if(ip2.eq.ip3 .and. ip4.eq.ip1) then
-         nnod_same = 2
-         ip_ref = min(ip1, ip2)
-         k_ref = 1
-         if(ip_ref .eq. ip2) k_ref = 2
-       else if(ip1.eq.ip2) then
-         nnod_same = 2
-         ip_ref = ip1
-         k_ref = 1
-       else if(ip2.eq.ip3) then
-         nnod_same = 2
-         ip_ref = ip2
-         k_ref = 2
-       else if(ip3.eq.ip4) then
-         nnod_same = 2
-         ip_ref = ip3
-         k_ref = 3
-       else if(ip4.eq.ip1) then
-         nnod_same = 2
-         ip_ref = ip1
-         k_ref = 1
-       else if(ip1.eq.ip3) then
-         nnod_same = 2
-         ip_ref = ip1
-         k_ref = 1
-       else if(ip2.eq.ip4) then
-         nnod_same = 2
-         ip_ref = ip2
-         k_ref = 2
-       else
-         nnod_same = 1
-         ip_ref = min(ip1, ip2)
-         ip_ref = min(ip3, ip_ref)
-         ip_ref = min(ip4, ip_ref)
-         k_ref = 1
-         if(ip_ref .eq. ip2) k_ref = 2
-         if(ip_ref .eq. ip3) k_ref = 3
-         if(ip_ref .eq. ip4) k_ref = 4
-       end if
-!
-       end subroutine find_belonged_pe_4_surf
-!
-! ----------------------------------------------------------------------
-!
-       subroutine find_belonged_pe_4_edge(edge, numnod, ip_node,        &
-      &          iedge, nnod_same, ip_ref, k_ref)
-!
-       type(edge_data), intent(in) :: edge
-       integer(kind = kint), intent(in) :: numnod
-       integer(kind = kint), intent(in) :: ip_node(numnod)
-       integer(kind = kint), intent(in) :: iedge
-!
-       integer(kind = kint), intent(inout) :: nnod_same
-       integer(kind = kint), intent(inout) :: ip_ref
-       integer(kind = kint), intent(inout) :: k_ref
-!
-       integer(kind = kint) ::ip1, ip2
-!
-       ip1 = ip_node(edge%ie_edge(iedge,1))
-       ip2 = ip_node(edge%ie_edge(iedge,2))
-!
-       if(ip1.eq.ip2) then
-         nnod_same = 2
-         ip_ref = ip1
-         k_ref = 1
-       else
-         nnod_same = 1
-         ip_ref = min(ip1, ip2)
-         k_ref = 1
-         if(ip_ref .eq. ip2) k_ref = 2
-       end if
-!
-       end subroutine find_belonged_pe_4_edge
-!
-! ----------------------------------------------------------------------
-!
+! -----------------------------------------------------------------------!
       subroutine belonged_surf_id_4_node2                               &
      &         (k_ref, node, surf, host_surf)
 !
