@@ -96,9 +96,15 @@
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
       if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-      call const_ele_comm_tbl                                           &
+!      call const_ele_comm_tbl                                           &
+!     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
+!     &    T_ele_comm, test_fem%mesh%ele)
+      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table2'
+      call alloc_failed_export(0, fail_tbl_s)
+      call const_ele_comm_table2                                        &
      &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-     &    T_ele_comm, test_fem%mesh%ele)
+     &    T_ele_comm, test_fem%mesh%ele, fail_tbl_s)
+      call dealloc_failed_export(fail_tbl_s)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table2'
       call alloc_failed_export(0, fail_tbl_s)
@@ -184,6 +190,79 @@
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
+!
+      subroutine const_ele_comm_table2                                 &
+     &         (node, nod_comm, ele_comm, ele, fail_tbl)
+!
+      use m_geometry_constants
+      use set_ele_id_4_node_type
+      use const_element_comm_table
+      use const_element_comm_tables
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+      type(element_data), intent(inout) :: ele
+      type(communication_table), intent(inout) :: ele_comm
+      type(failed_table), intent(inout) :: fail_tbl
+!
+      type(belonged_table), save :: belongs
+!
+      integer(kind = kint), allocatable :: inod_dbl(:,:)
+!
+      integer(kind = kint), allocatable :: ip_ref(:)
+      integer(kind = kint), allocatable :: k_ref(:)
+!
+      integer(kind = kint) :: iele, i1, i2, i, inod, ip
+!
+!
+      allocate(inod_dbl(node%numnod,2))
+      call set_node_double_address(node, nod_comm, inod_dbl)
+!
+      allocate(ip_ref(ele%numele))
+      allocate(k_ref(ele%numele))
+!$omp parallel workshare
+      ip_ref(1:ele%numele) =   -1
+      k_ref(1:ele%numele) =     0
+!$omp end parallel workshare
+!
+!%omp parallel do private(iele)
+      do iele = 1, ele%numele
+       call find_belonged_pe_4_ele(ele, node%numnod, inod_dbl(1,2),     &
+     &     iele, ip_ref(iele), k_ref(iele))
+      end do
+!%omp end parallel do
+!
+!%omp parallel do private(iele)
+      do iele = 1, ele%numele
+        if(ip_ref(iele) .eq. my_rank) then
+          ele%interior_ele(iele) = 1
+        else
+          ele%interior_ele(iele) = 0
+        end if
+      end do
+!%omp end parallel do
+!
+      call set_ele_id_4_node(node, ele, belongs%blng_ele)
+      call alloc_x_ref_ele(node, belongs)
+      call sort_inod_4_ele_by_position(ione, ele%numele, ele%x_ele,     &
+     &    node, belongs%blng_ele, belongs%x_ref_ele)
+!
+      call const_comm_table_by_connenct2                                &
+     &   (txt_surf, ele%numele, ele%nnod_4_ele, ele%ie,                 &
+     &    ele%x_ele, node, nod_comm, belongs%blng_ele,                  &
+     &    ele_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
+      deallocate(inod_dbl)
+      deallocate(ip_ref, k_ref)
+!
+      call dealloc_x_ref_ele(belongs)
+      call dealloc_iele_belonged(belongs%blng_ele)
+!
+      call const_global_element_id(ele_comm, ele)
+      call calypso_mpi_barrier
+!
+      end subroutine const_ele_comm_table2
+!
+!-----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table2                                 &
      &         (node, ele, nod_comm, surf_comm, surf, fail_tbl)
@@ -416,7 +495,30 @@
 !
       end subroutine set_ele_double_address
 !
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
+! -----------------------------------------------------------------------! -----------------------------------------------------------------------
+!
+      subroutine find_belonged_pe_4_ele(ele, numnod, ip_node,           &
+     &          iele, ip_ref, k_ref)
+!
+       type(element_data), intent(in) :: ele
+       integer(kind = kint), intent(in) :: numnod
+       integer(kind = kint), intent(in) :: ip_node(numnod)
+       integer(kind = kint), intent(in) :: iele
+!
+       integer(kind = kint), intent(inout) :: ip_ref
+       integer(kind = kint), intent(inout) :: k_ref
+!
+       integer(kind = kint) :: inod
+!
+!
+       inod = ele%ie(iele,1)
+       ip_ref = ip_node(inod)
+       k_ref = 1
+ !
+       end subroutine find_belonged_pe_4_ele
+!
+! ----------------------------------------------------------------------
+!
        subroutine find_belonged_pe_4_surf(surf, numnod, ip_node,        &
       &          isurf, nnod_same, ip_ref, k_ref)
 !
