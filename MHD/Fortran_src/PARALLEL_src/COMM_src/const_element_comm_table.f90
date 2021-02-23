@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine elapsed_label_4_ele_comm_tbl
 !!
-!!      subroutine const_comm_table_by_connenct                         &
+!!      subroutine const_comm_table_by_connenct_old                     &
 !!     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,    &
 !!     &          node, nod_comm, neib_e, x_ref_ele, host,              &
 !!     &          e_comm, fail_tbl)
@@ -100,7 +100,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_comm_table_by_connenct                           &
+      subroutine const_comm_table_by_connenct_old                       &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
      &          node, nod_comm, neib_e, x_ref_ele, host,                &
      &          e_comm, fail_tbl)
@@ -135,9 +135,9 @@
       call alloc_neighbouring_id(e_comm)
       call alloc_import_num(e_comm)
 !
-!      write(*,*) 'count_element_import_num', my_rank
+!      write(*,*) 'count_element_import_num_old', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
-      call count_element_import_num(node%numnod, host%istack_4_node,    &
+      call count_element_import_num_old(node%numnod, host%istack_4_node, &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
@@ -157,9 +157,9 @@
      &    SR_sig1, wk_comm%item_local, wk_comm%inod_local)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
 !
-!      write(*,*) 'set_element_import_item', my_rank
+!      write(*,*) 'set_element_import_item_old', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
-      call set_element_import_item(node%numnod, node%internal_node,     &
+      call set_element_import_item_old(node%numnod, node%internal_node, &
      &    numele, nnod_4_ele, ie, node%inod_global, x_ele,              &
      &    host%istack_4_node, host%iele_4_node, wk_comm%inod_local,     &
      &    nod_comm%num_neib, nod_comm%istack_import,                    &
@@ -190,9 +190,9 @@
      &    wk_comm%inod_export_l, wk_comm%xe_export)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+5)
 !
-!      write(*,*) 'set_element_export_item', my_rank
+!      write(*,*) 's_set_element_export_item_old', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
-      call s_set_element_export_item(txt, node%numnod, numele,          &
+      call s_set_element_export_item_old(txt, node%numnod, numele,      &
      &    internal_flag, x_ele, neib_e%istack_4_node,                   &
      &    neib_e%iele_4_node, x_ref_ele, nod_comm%num_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
@@ -220,7 +220,7 @@
       call check_element_position(txt, numele, x_ele, e_comm)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+8)
 !
-      end subroutine const_comm_table_by_connenct
+      end subroutine const_comm_table_by_connenct_old
 !
 !-----------------------------------------------------------------------
 !------------------------------------------------------------------

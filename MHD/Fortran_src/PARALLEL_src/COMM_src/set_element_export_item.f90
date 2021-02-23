@@ -7,7 +7,7 @@
 !>@brief  Routines to construca element communication table
 !!
 !!@verbatim
-!!      subroutine s_set_element_export_item                            &
+!!      subroutine s_set_element_export_item_old                        &
 !!     &         (txt, numnod, numele, internal_flag, x_ele,            &
 !!     &          iele_stack_4_node, iele_4_node, x_ref_ele,            &
 !!     &          num_neib, istack_import, item_import,                 &
@@ -41,7 +41,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_element_export_item                              &
+      subroutine s_set_element_export_item_old                          &
      &         (txt, numnod, numele, internal_flag, x_ele,              &
      &          iele_stack_4_node, iele_4_node, x_ref_ele,              &
      &          num_neib, istack_import, item_import,                   &
@@ -123,9 +123,9 @@
       call calypso_mpi_allreduce_one_int(icou, num_gl, MPI_SUM)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &   'Failed export by s_set_element_export_item', num_gl
+     &   'Failed export by s_set_element_export_item_old', num_gl
 !
-      end subroutine s_set_element_export_item
+      end subroutine s_set_element_export_item_old
 !
 !-----------------------------------------------------------------------
 !

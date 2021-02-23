@@ -399,7 +399,6 @@
       use reverse_SR_int
       use find_element_comm_table
       use const_global_element_ids
-      use set_element_export_item
       use make_element_comm_table_SR
 !
       character(len=kchara), intent(in) :: txt
@@ -431,7 +430,7 @@
       call alloc_import_num(e_comm)
       call calypso_mpi_barrier
 !
-!      write(*,*) 'count_element_import_num', my_rank
+!      write(*,*) 'count_element_import_num2', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
       call count_element_import_num2                                    &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
@@ -476,7 +475,7 @@
       deallocate(inod_lc_import, ipe_lc_import, xe_import)
 !
       call alloc_export_item(e_comm)
-!      write(*,*) 'set_element_export_item', my_rank
+!      write(*,*) 's_set_element_export_item2', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
       call s_set_element_export_item2                                   &
      &   (txt, node%numnod, numele, nnod_4_ele,                         &

@@ -7,11 +7,11 @@
 !>@brief  Routines to construca element communication table
 !!
 !!@verbatim
-!!      subroutine count_element_import_num(numnod, iele_stack_ht_node, &
+!!      subroutine count_element_import_num_old(numnod, iele_stack_ht_node, &
 !!     &          num_neib, id_neib, istack_import, item_import,        &
 !!     &          num_neib_e, id_neib_e, num_import_e, istack_import_e, &
 !!     &          ntot_import_e)
-!!      subroutine set_element_import_item                              &
+!!      subroutine set_element_import_item_old                          &
 !!     &         (numnod, internal_node, numele, nnod_4_ele, ie,        &
 !!     &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node, &
 !!     &          inod_local, num_neib, istack_import, item_import,     &
@@ -33,7 +33,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_element_import_num(numnod, iele_stack_ht_node,   &
+      subroutine count_element_import_num_old(numnod, iele_stack_ht_node,   &
      &          num_neib, id_neib, istack_import, item_import,          &
      &          num_neib_e, id_neib_e, num_import_e, istack_import_e,   &
      &          ntot_import_e)
@@ -73,11 +73,11 @@
       end do
       ntot_import_e = istack_import_e(num_neib)
 !
-      end subroutine count_element_import_num
+      end subroutine count_element_import_num_old
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_element_import_item                                &
+      subroutine set_element_import_item_old                            &
      &         (numnod, internal_node, numele, nnod_4_ele, ie,          &
      &          inod_global, x_ele, iele_stack_ht_node, iele_ht_node,   &
      &          inod_local, num_neib, istack_import, item_import,       &
@@ -153,7 +153,7 @@
         end do
       end do
 !
-      end subroutine  set_element_import_item
+      end subroutine  set_element_import_item_old
 !
 !-----------------------------------------------------------------------
 !

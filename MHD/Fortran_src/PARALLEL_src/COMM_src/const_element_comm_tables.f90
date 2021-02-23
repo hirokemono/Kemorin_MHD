@@ -244,7 +244,7 @@
 !
       call alloc_failed_export(0, fail_tbl_e)
       call belonged_ele_id_4_node(node, ele, belongs%host_ele)
-      call const_comm_table_by_connenct                                 &
+      call const_comm_table_by_connenct_old                             &
      &   (txt_ele, ele%numele, ele%nnod_4_ele, ele%ie,                  &
      &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
      &    belongs%blng_ele, belongs%x_ref_ele, belongs%host_ele,        &
@@ -281,7 +281,7 @@
      &    node, belongs%blng_surf, belongs%x_ref_surf)
 !
       call belonged_surf_id_4_node(node, surf, belongs%host_surf)
-      call const_comm_table_by_connenct                                 &
+      call const_comm_table_by_connenct_old                             &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%interior_surf, surf%x_surf, node, nod_comm,              &
      &    belongs%blng_surf, belongs%x_ref_surf, belongs%host_surf,     &
@@ -323,8 +323,8 @@
       call belonged_edge_id_4_node(node, edge, belongs%host_edge)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
-     &          ' const_comm_table_by_connenct in edge'
-      call const_comm_table_by_connenct                                 &
+     &          ' const_comm_table_by_connenct_old in edge'
+      call const_comm_table_by_connenct_old                             &
      &    (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,      &
      &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
      &    belongs%blng_edge, belongs%x_ref_edge, belongs%host_edge,     &
