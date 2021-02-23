@@ -11,15 +11,16 @@
 !!      subroutine dealloc_double_numbering(dbl_id)
 !!        type(parallel_double_numbering), intent(inout) :: dbl_id
 !!
-!!      subroutine set_para_double_numbering                            &
-!!     &         (internal_node, nod_comm, dbl_id)
+!!      subroutine set_node_double_numbering(node, nod_comm, inod_dbl)
+!!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(parallel_double_numbering), intent(inout) :: dbl_id
-!!      subroutine set_para_ele_double_numbering                        &
-!!     &         (internal_node, ele_comm, ele, dbl_id)
-!!        type(communication_table), intent(in) :: ele_comm
+!!        type(parallel_double_numbering), intent(inout) :: inod_dbl
+!!      subroutine set_ele_double_numbering                             &
+!!     &         (ele, ele_comm, inod_dbl, iele_dbl)
 !!        type(element_data), intent(in) :: ele
-!!        type(parallel_double_numbering), intent(inout) :: dbl_id
+!!        type(communication_table), intent(in) :: ele_comm
+!!        type(parallel_double_numbering), intent(in) :: inod_dbl
+!!        type(parallel_double_numbering), intent(inout) :: iele_dbl
 !!@endverbatim
 !
       module t_para_double_numbering
@@ -77,74 +78,62 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_para_double_numbering                              &
-     &         (internal_node, nod_comm, dbl_id)
+      subroutine set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      use t_ucd_data
+      use t_geometry_data
       use t_comm_table
       use solver_SR_type
+      use find_belonged_process
 !
-      integer(kind = kint), intent(in) :: internal_node
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(parallel_double_numbering), intent(inout) :: dbl_id
+      type(parallel_double_numbering), intent(inout) :: inod_dbl
 !
       integer(kind = kint) :: inod
 !
+!
+      call find_belonged_pe_4_node                                      &
+     &   (my_rank, node, nod_comm, inod_dbl%ip_home)
+!
 !$omp parallel do
-      do inod = 1, internal_node
-        dbl_id%id_local(inod) = inod
-        dbl_id%ip_home(inod) = my_rank
+      do inod = 1, node%numnod
+        inod_dbl%id_local(inod) = inod
       end do
 !$omp end parallel do
-!$omp parallel do
-      do inod = internal_node+1, dbl_id%num_dbl
-        dbl_id%id_local(inod) =  0
-        dbl_id%ip_home(inod) = -1
-      end do
-!$omp end parallel do
-!
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (dbl_id%num_dbl, nod_comm, dbl_id%id_local)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (dbl_id%num_dbl, nod_comm, dbl_id%ip_home)
+     &   (node%numnod, nod_comm, inod_dbl%id_local(1))
 !
-      end subroutine set_para_double_numbering
+      end subroutine set_node_double_numbering
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_para_ele_double_numbering                          &
-     &         (internal_node, ele_comm, ele, dbl_id)
+      subroutine set_ele_double_numbering                               &
+     &         (ele, ele_comm, inod_dbl, iele_dbl)
+
 !
-      use t_ucd_data
-      use t_comm_table
       use t_geometry_data
+      use t_comm_table
       use solver_SR_type
 !
-      integer(kind = kint), intent(in) :: internal_node
-      type(communication_table), intent(in) :: ele_comm
       type(element_data), intent(in) :: ele
-      type(parallel_double_numbering), intent(inout) :: dbl_id
+      type(communication_table), intent(in) :: ele_comm
+      type(parallel_double_numbering), intent(in) :: inod_dbl
+!
+      type(parallel_double_numbering), intent(inout) :: iele_dbl
 !
       integer(kind = kint) :: iele
 !
 !$omp parallel do
-      do iele = 1, dbl_id%num_dbl
-        if(ele%ie(iele,1) .le. internal_node) then
-          dbl_id%id_local(iele) = iele
-          dbl_id%ip_home(iele) = my_rank
-        else
-          dbl_id%id_local(iele) = 0
-          dbl_id%ip_home(iele) = -1
-        end if
+      do iele = 1, ele%numele
+        iele_dbl%id_local(iele) = iele
+        iele_dbl%ip_home(iele) =  inod_dbl%ip_home(ele%ie(iele,1))
       end do
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, dbl_id%id_local)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, dbl_id%ip_home)
+     &   (ele%numele, ele_comm, iele_dbl%id_local(1))
 !
-      end subroutine set_para_ele_double_numbering
+      end subroutine set_ele_double_numbering
 !
 ! -----------------------------------------------------------------------
 !

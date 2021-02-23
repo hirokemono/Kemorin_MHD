@@ -86,8 +86,7 @@
 !
 !
       call alloc_double_numbering(node%numnod, dbl_id1)
-      call set_para_double_numbering                                    &
-     &   (node%internal_node, nod_comm, dbl_id1)
+      call set_node_double_numbering(node, nod_comm, dbl_id1)
 !
       ucd%nnod_4_ele = ele%nnod_4_ele
       call allocate_ucd_ele(ucd)

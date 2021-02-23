@@ -195,6 +195,7 @@
      &         (node, nod_comm, ele_comm, ele, fail_tbl)
 !
       use m_geometry_constants
+      use t_para_double_numbering
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
@@ -208,7 +209,7 @@
 !
       type(belonged_table), save :: belongs
 !
-      integer(kind = kint), allocatable :: inod_dbl(:,:)
+      type(parallel_double_numbering) :: inod_dbl
 !
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
@@ -216,12 +217,12 @@
       integer(kind = kint) :: iele, i1, i2, i, inod, ip
 !
 !
-      allocate(inod_dbl(node%numnod,2))
-      call set_node_double_address(node, nod_comm, inod_dbl)
+      call alloc_double_numbering(node%numnod, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
       allocate(ip_ref(ele%numele))
       allocate(k_ref(ele%numele))
-      call find_belonged_pe_4_ele(my_rank, node, inod_dbl(1,2),         &
+      call find_belonged_pe_4_ele(my_rank, node, inod_dbl%ip_home(1),   &
      &                            ele, ip_ref, k_ref)
 !
       call set_ele_id_4_node(node, ele, belongs%blng_ele)
@@ -231,9 +232,9 @@
 !
       call const_comm_table_by_connenct2                                &
      &   (txt_surf, ele%numele, ele%nnod_4_ele, ele%ie,                 &
-     &    ele%x_ele, node, nod_comm, belongs%blng_ele,                  &
-     &    ele_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
-      deallocate(inod_dbl)
+     &    ele%x_ele, node, nod_comm, inod_dbl, ip_ref, k_ref,           &
+     &    belongs%blng_ele, ele_comm, fail_tbl)
+      call dealloc_double_numbering(inod_dbl)
       deallocate(ip_ref, k_ref)
 !
       call dealloc_x_ref_ele(belongs)
@@ -250,6 +251,7 @@
      &         (node, ele, nod_comm, surf_comm, surf, fail_tbl)
 !
       use m_geometry_constants
+      use t_para_double_numbering
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
@@ -264,7 +266,7 @@
 !
       type(belonged_table), save :: belongs
 !
-      integer(kind = kint), allocatable :: inod_dbl(:,:)
+      type(parallel_double_numbering) :: inod_dbl
 !
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
@@ -272,13 +274,13 @@
       integer(kind = kint) :: isurf, i1, i2, i, inod, ip
 !
 !
-      allocate(inod_dbl(node%numnod,2))
-      call set_node_double_address(node, nod_comm, inod_dbl)
+      call alloc_double_numbering(node%numnod, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
       allocate(ip_ref(surf%numsurf))
       allocate(k_ref(surf%numsurf))
 !
-      call find_belonged_pe_4_surf(my_rank, node, inod_dbl(1,2),        &
+      call find_belonged_pe_4_surf(my_rank, node, inod_dbl%ip_home(1),  &
      &                             surf, ip_ref, k_ref)
 !
       call set_surf_id_4_node(node, surf, belongs%blng_surf)
@@ -288,9 +290,9 @@
 !
       call const_comm_table_by_connenct2                                &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
-     &    surf%x_surf, node, nod_comm, belongs%blng_surf,               &
-     &    surf_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
-      deallocate(inod_dbl)
+     &    surf%x_surf, node, nod_comm, inod_dbl, ip_ref, k_ref,         &
+     &    belongs%blng_surf, surf_comm, fail_tbl)
+      call dealloc_double_numbering(inod_dbl)
       deallocate(ip_ref, k_ref)
 !
       call dealloc_x_ref_surf(belongs)
@@ -305,6 +307,8 @@
       subroutine const_edge_comm_table2                                 &
      &         (node, ele, nod_comm, edge_comm, edge, fail_tbl)
 !
+      use m_geometry_constants
+      use t_para_double_numbering
       use set_ele_id_4_node_type
       use const_element_comm_table
       use const_element_comm_tables
@@ -320,7 +324,7 @@
 !
       type(belonged_table), save :: belongs
 !
-      integer(kind = kint), allocatable :: inod_dbl(:,:)
+      type(parallel_double_numbering) :: inod_dbl
 !
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
@@ -328,12 +332,12 @@
       integer(kind = kint) :: iedge
 !
 !
-      allocate(inod_dbl(node%numnod,2))
-      call set_node_double_address(node, nod_comm, inod_dbl)
+      call alloc_double_numbering(node%numnod, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
       allocate(ip_ref(edge%numedge))
       allocate(k_ref(edge%numedge))
-      call find_belonged_pe_4_edge(my_rank, node, inod_dbl(1,2),        &
+      call find_belonged_pe_4_edge(my_rank, node, inod_dbl%ip_home(1),  &
      &                             edge, ip_ref, k_ref)
 !
 !
@@ -347,9 +351,9 @@
      &          ' const_comm_table_by_connenct2 in edge'
       call const_comm_table_by_connenct2                                &
      &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
-     &    edge%x_edge, node, nod_comm, belongs%blng_edge,               &
-     &    edge_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
-      deallocate(inod_dbl)
+     &    edge%x_edge, node, nod_comm, inod_dbl, ip_ref, k_ref,         &
+     &    belongs%blng_edge, edge_comm, fail_tbl)
+      call dealloc_double_numbering(inod_dbl)
       deallocate(ip_ref, k_ref)
 !
       call dealloc_x_ref_edge(belongs)
@@ -360,10 +364,12 @@
       end subroutine const_edge_comm_table2
 !
 !-----------------------------------------------------------------------
-! -----------------------------------------------------------------------!
+! ----------------------------------------------------------------------
+!
       subroutine set_node_ele_double_address                            &
      &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl)
 !
+      use t_para_double_numbering
       use solver_SR_type
 !
       type(node_data), intent(in) :: node
@@ -371,78 +377,24 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
 !
-      integer(kind = kint), intent(inout) :: inod_dbl(node%numnod,2)
-      integer(kind = kint), intent(inout) :: iele_dbl(0:ele%numele,2)
+      type(parallel_double_numbering), intent(inout) :: inod_dbl
+      type(parallel_double_numbering), intent(inout) :: iele_dbl
 !
 !
-      call set_node_double_address(node, nod_comm, inod_dbl)
-      call set_ele_double_address                                       &
-     &   (node, ele, ele_comm, inod_dbl(1,2), iele_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
+      call set_ele_double_numbering                                     &
+     &   (ele, ele_comm, inod_dbl, iele_dbl)
 !
       end subroutine set_node_ele_double_address
 !
-! -----------------------------------------------------------------------!
-      subroutine set_node_double_address(node, nod_comm, inod_dbl)
-!
-      use solver_SR_type
-      use find_belonged_process
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
-!
-      integer(kind = kint), intent(inout) :: inod_dbl(node%numnod,2)
-!
-      integer(kind = kint) :: i
-!
-!
-      call find_belonged_pe_4_node                                &
-     &   (my_rank, node, nod_comm, inod_dbl(1,2))
-!
-!$omp parallel do
-      do i = 1, node%numnod
-        inod_dbl(i,1) = i
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_dbl(1,1))
-!
-      end subroutine set_node_double_address
-!
-! -----------------------------------------------------------------------!
-      subroutine set_ele_double_address                                 &
-     &         (node, ele, ele_comm, ip_node, iele_dbl)
-!
-      use solver_SR_type
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: ele_comm
-!
-      integer(kind = kint), intent(in) :: ip_node(node%numnod)
-      integer(kind = kint), intent(inout) :: iele_dbl(0:ele%numele,2)
-!
-      integer(kind = kint) :: i
-!
-!
-      iele_dbl(0,1) = 0
-      iele_dbl(0,2) = -1
-!$omp parallel do
-      do i = 1, ele%numele
-        iele_dbl(i,1) = i
-        iele_dbl(i,2) = ip_node(ele%ie(i,1))
-      end do
-!$omp end parallel do
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, iele_dbl(1,1))
-!
-      end subroutine set_ele_double_address
-!
-! -----------------------------------------------------------------------! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine const_comm_table_by_connenct2                          &
      &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,     &
-     &          neib_e, e_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
+     &          inod_dbl, ip_ref, k_ref, neib_e, e_comm, fail_tbl)
 !
+      use t_para_double_numbering
       use m_solver_SR
       use reverse_SR_int
       use find_element_comm_table
@@ -458,7 +410,7 @@
       type(node_data), intent(in) :: node
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
-      integer(kind = kint), intent(in) :: inod_dbl(node%numnod,2)
+      type(parallel_double_numbering), intent(in) :: inod_dbl
 !
       integer(kind = kint), intent(in) :: ip_ref(numele)
       integer(kind = kint), intent(in) :: k_ref(numele)
@@ -494,8 +446,8 @@
 !      write(*,*) 'set_element_import_item2', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call set_element_import_item2                                     &
-     &   (node%numnod, inod_dbl(1,1), inod_dbl(1,2), numele,            &
-     &    nnod_4_ele, ie,x_ele, ip_ref, k_ref, e_comm%num_neib,         &
+     &   (node%numnod, inod_dbl%id_local(1), inod_dbl%ip_home(1),       &
+     &    numele, nnod_4_ele, ie,x_ele, ip_ref, k_ref, e_comm%num_neib, &
      &    e_comm%id_neib, e_comm%istack_import, e_comm%item_import,     &
      &    inod_lc_import, ipe_lc_import, xe_import)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)

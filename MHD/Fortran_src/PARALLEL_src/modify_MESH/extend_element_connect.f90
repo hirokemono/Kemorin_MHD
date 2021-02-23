@@ -73,11 +73,11 @@
 !
 !
       call alloc_double_numbering(new_node%numnod, dbl_id2)
-      call set_para_double_numbering                                    &
-     &   (new_node%internal_node, new_comm, dbl_id2)
+      call set_node_double_numbering                                    &
+     &   (new_node, new_comm, dbl_id2)
       call alloc_double_numbering(ele%numele, dbl_ele)
-      call set_para_ele_double_numbering                                &
-     &   (new_node%internal_node, ele_comm, ele, dbl_ele)
+      call set_ele_double_numbering                                     &
+     &   (ele, ele_comm, dbl_id2, dbl_ele)
 !
       allocate(iflag_node(org_node%numnod))
       allocate(iflag_ele(ele%numele))

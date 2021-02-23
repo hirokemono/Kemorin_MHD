@@ -99,8 +99,8 @@
 !
 !
       call alloc_double_numbering(fem_m%mesh%node%numnod, dbl_nod)
-      call set_para_double_numbering                                    &
-     &   (fem_m%mesh%node%internal_node, fem_m%mesh%nod_comm, dbl_nod)
+      call set_node_double_numbering                                    &
+     &   (fem_m%mesh%node, fem_m%mesh%nod_comm, dbl_nod)
 !
       call s_const_internal_mesh_data                                   &
      &   (fem_m%mesh, fem_m%group, new_mesh, new_group)

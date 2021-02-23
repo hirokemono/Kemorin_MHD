@@ -107,9 +107,9 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !
       call alloc_double_numbering(mesh%node%numnod, dbl_id1)
-      if (iflag_debug.gt.0) write(*,*) 'set_para_double_numbering'
-      call set_para_double_numbering                                    &
-     &   (mesh%node%internal_node, mesh%nod_comm, dbl_id1)
+      if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
+      call set_node_double_numbering                                    &
+     &   (mesh%node, mesh%nod_comm, dbl_id1)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
