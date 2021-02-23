@@ -214,7 +214,6 @@
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
 !
-      type(communication_table) :: surf_comm2
       integer(kind = kint) :: isurf, i1, i2, i, inod, ip
 !
 !
@@ -254,18 +253,13 @@
       call sort_inod_4_ele_by_position(ione, surf%numsurf, surf%x_surf, &
      &    node, belongs%blng_surf, belongs%x_ref_surf)
 !
-      call belonged_surf_id_4_node2                                     &
-     &   (ione, node, surf, belongs%host_surf)
-!
       call const_comm_table_by_connenct2                                &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
-     &    surf%interior_surf, surf%x_surf, node, nod_comm,              &
-     &    belongs%blng_surf, belongs%x_ref_surf, belongs%host_surf,     &
-     &    surf_comm, surf_comm2, inod_dbl, fail_tbl, ip_ref, k_ref)
+     &    surf%x_surf, node, nod_comm, belongs%blng_surf,               &
+     &    surf_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
       deallocate(inod_dbl, iele_dbl)
       deallocate(nnod_same, ip_ref, k_ref)
 !
-      call dealloc_iele_belonged(belongs%host_surf)
       call dealloc_x_ref_surf(belongs)
       call dealloc_iele_belonged(belongs%blng_surf)
 !
@@ -670,9 +664,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_comm_table_by_connenct2                          &
-     &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
-     &          node, nod_comm, neib_e, x_ref_ele, host,                &
-     &          e_comm, e_comm2, inod_dbl, fail_tbl, ip_ref, k_ref)
+     &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,     &
+     &          neib_e, e_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
 !
       use m_solver_SR
       use reverse_SR_int
@@ -684,22 +677,17 @@
       character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
-      integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
       type(node_data), intent(in) :: node
-      type(element_around_node), intent(in) :: host
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
-      real(kind = kreal), intent(in)                                    &
-     &           :: x_ref_ele(neib_e%istack_4_node(node%numnod))
       integer(kind = kint), intent(in) :: inod_dbl(node%numnod,2)
 !
       integer(kind = kint), intent(in) :: ip_ref(numele)
       integer(kind = kint), intent(in) :: k_ref(numele)
 !
       type(communication_table), intent(inout) :: e_comm
-      type(communication_table), intent(inout) :: e_comm2
       type(failed_table), intent(inout) :: fail_tbl
 !
       integer(kind = kint), allocatable :: inod_lc_import(:,:)
@@ -708,8 +696,6 @@
       integer(kind = kint), allocatable :: ipe_lc_export(:,:)
       real(kind = kreal), allocatable :: xe_import(:)
       real(kind = kreal), allocatable :: xe_export(:)
-!
-      integer :: i, j, ip_org, ii, inod, ip, i1, isurf
 !
 !
       e_comm%num_neib = nod_comm%num_neib
@@ -753,7 +739,8 @@
 !
 !      write(*,*) 'element_data_reverse_SR2', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)
-      call element_data_reverse_SR2(nnod_4_ele, e_comm%num_neib, e_comm%id_neib,    &
+      call element_data_reverse_SR2                                     &
+     &   (nnod_4_ele, e_comm%num_neib, e_comm%id_neib,                  &
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    inod_lc_import, ipe_lc_import, xe_import,                     &
      &    inod_lc_export, ipe_lc_export, xe_export)
@@ -763,7 +750,8 @@
       call alloc_export_item(e_comm)
 !      write(*,*) 'set_element_export_item', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
-      call s_set_element_export_item2(txt, node%numnod, numele, nnod_4_ele, &
+      call s_set_element_export_item2                                   &
+     &   (txt, node%numnod, numele, nnod_4_ele,                         &
      &    x_ele, neib_e%istack_4_node, neib_e%iele_4_node,              &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    inod_lc_export, ipe_lc_export, xe_export, e_comm%item_export)
@@ -1152,9 +1140,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_element_export_item2                             &
-     &         (txt, numnod, numele, nnod_4_ele, x_ele,              &
-     &          iele_stack_4_node, iele_4_node,              &
-     &          num_neib_e, istack_export_e,             &
+     &         (txt, numnod, numele, nnod_4_ele, x_ele,                 &
+     &          iele_stack_4_node, iele_4_node,                         &
+     &          num_neib_e, istack_export_e,                            &
      &          inod_lc_export, ipe_lc_export, xe_export,               &
      &          item_export_e)
 !
@@ -1182,14 +1170,13 @@
       integer(kind = kint), intent(inout)                               &
      &        :: item_export_e(istack_export_e(num_neib_e))
 !
-      integer(kind = kint) :: ip, iflag,  icou, num_gl
+      integer(kind = kint) :: ip, iflag, icou, num_gl
       integer(kind = kint) :: ist, ied, inum, inod
-      integer(kind = kint) :: jst, jed, jnum, jnod, jele
-      integer(kind = kint) :: kst, num, k1, kk
-      real(kind = kreal) :: dist, dist_min, x_tgt(3)
+      integer(kind = kint) :: jst, jed, jnum, jele
+      integer(kind = kint) :: k1, kk
+      real(kind = kreal) :: dist, dist_min
 !
-      integer(kind = kint) :: inod_sf_lc(nnod_4_ele)
-      integer(kind = kint) :: ip_sf_lc(nnod_4_ele)
+      integer(kind = kint) :: inod_sf_lc
       integer(kind = kint) :: n_search(nnod_4_ele)
       integer(kind = kint) :: idx_sort(nnod_4_ele)
 !
@@ -1201,11 +1188,10 @@
         do inum = ist, ied
           do k1 = 1, nnod_4_ele
             idx_sort(k1) = k1
-            inod_sf_lc(k1) = inod_lc_export(inum,k1)
-            ip_sf_lc(k1) =   ipe_lc_export(inum,k1)
+            inod_sf_lc = inod_lc_export(inum,k1)
             if(ipe_lc_export(inum,k1) .eq. my_rank) then
-              n_search(k1) = iele_stack_4_node(inod_sf_lc(k1))          &
-     &                      - iele_stack_4_node(inod_sf_lc(k1)-1)
+              n_search(k1) = iele_stack_4_node(inod_sf_lc)              &
+     &                      - iele_stack_4_node(inod_sf_lc-1)
             else
               n_search(k1) = 0
             end if
@@ -1228,10 +1214,8 @@
               dist = sqrt((x_ele(jele,1)- xe_export(3*inum-2))**2 &
      &                + (x_ele(jele,2) - xe_export(3*inum-1))**2  &
      &                + (x_ele(jele,3) - xe_export(3*inum  ))**2)
-!              if(dist .le. TINY) write(*,*) my_rank, inum, 'dist', dist, jnum, jele, kk, inod, size(item_export_e)
 !
               if(dist .le. TINY) then
-!                 if(inum .gt. size(item_export_e)) write(*,*) 'Baka'
                 item_export_e(inum) = jele
                 iflag = 1
                 exit
