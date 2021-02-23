@@ -104,7 +104,7 @@
       call alloc_failed_export(0, fail_tbl_s)
       call const_surf_comm_table2                                      &
      &   (test_fem%mesh%node, test_fem%mesh%ele,                       &
-     &    test_fem%mesh%nod_comm, T_ele_comm, T_surf_comm,             &
+     &    test_fem%mesh%nod_comm, T_surf_comm,                         &
      &    test_fem%mesh%surf, fail_tbl_s)
 !
       call dealloc_failed_export(fail_tbl_s)
@@ -114,7 +114,7 @@
       call alloc_failed_export(0, fail_tbl_d)
       call const_edge_comm_table2                                      &
      &   (test_fem%mesh%node, test_fem%mesh%ele,                       &
-     &    test_fem%mesh%nod_comm, T_ele_comm, T_edge_comm,             &
+     &    test_fem%mesh%nod_comm, T_edge_comm,                         &
      &    test_fem%mesh%edge, fail_tbl_d)
       call dealloc_failed_export(fail_tbl_d)
 !
@@ -186,8 +186,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_surf_comm_table2                                 &
-     &         (node, ele, nod_comm, ele_comm,                          &
-     &          surf_comm, surf, fail_tbl)
+     &         (node, ele, nod_comm, surf_comm, surf, fail_tbl)
 !
       use m_geometry_constants
       use set_ele_id_4_node_type
@@ -197,7 +196,6 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(in) :: ele_comm
       type(communication_table), intent(inout) :: surf_comm
       type(surface_data), intent(inout) :: surf
       type(failed_table), intent(inout) :: fail_tbl
@@ -205,7 +203,6 @@
       type(belonged_table), save :: belongs
 !
       integer(kind = kint), allocatable :: inod_dbl(:,:)
-      integer(kind = kint), allocatable :: iele_dbl(:,:)
 !
       integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
@@ -215,9 +212,7 @@
 !
 !
       allocate(inod_dbl(node%numnod,2))
-      allocate(iele_dbl(0:ele%numele,2))
-      call set_node_ele_double_address(node, ele, nod_comm, ele_comm,   &
-     &                                 inod_dbl, iele_dbl)
+      call set_node_double_address(node, nod_comm, inod_dbl)
 !
       allocate(nnod_same(surf%numsurf))
       allocate(ip_ref(surf%numsurf))
@@ -254,7 +249,7 @@
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%x_surf, node, nod_comm, belongs%blng_surf,               &
      &    surf_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
-      deallocate(inod_dbl, iele_dbl)
+      deallocate(inod_dbl)
       deallocate(nnod_same, ip_ref, k_ref)
 !
       call dealloc_x_ref_surf(belongs)
@@ -267,8 +262,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_edge_comm_table2                                 &
-     &         (node, ele, nod_comm, ele_comm,                          &
-     &         edge_comm, edge, fail_tbl)
+     &         (node, ele, nod_comm, edge_comm, edge, fail_tbl)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -277,7 +271,6 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(in) :: ele_comm
 !
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
@@ -286,7 +279,6 @@
       type(belonged_table), save :: belongs
 !
       integer(kind = kint), allocatable :: inod_dbl(:,:)
-      integer(kind = kint), allocatable :: iele_dbl(:,:)
 !
       integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
@@ -296,9 +288,7 @@
 !
 !
       allocate(inod_dbl(node%numnod,2))
-      allocate(iele_dbl(0:ele%numele,2))
-      call set_node_ele_double_address(node, ele, nod_comm, ele_comm,   &
-     &                                 inod_dbl, iele_dbl)
+      call set_node_double_address(node, nod_comm, inod_dbl)
 !
       allocate(nnod_same(edge%numedge))
       allocate(ip_ref(edge%numedge))
@@ -339,7 +329,7 @@
      &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
      &    edge%x_edge, node, nod_comm, belongs%blng_edge,               &
      &    edge_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
-      deallocate(inod_dbl, iele_dbl)
+      deallocate(inod_dbl)
       deallocate(nnod_same, ip_ref, k_ref)
 !
       call dealloc_x_ref_edge(belongs)
@@ -364,6 +354,23 @@
       integer(kind = kint), intent(inout) :: inod_dbl(node%numnod,2)
       integer(kind = kint), intent(inout) :: iele_dbl(0:ele%numele,2)
 !
+!
+      call set_node_double_address(node, nod_comm, inod_dbl)
+      call set_ele_double_address                                       &
+     &   (node, ele, ele_comm, inod_dbl(1,2), iele_dbl)
+!
+      end subroutine set_node_ele_double_address
+!
+! -----------------------------------------------------------------------!
+      subroutine set_node_double_address(node, nod_comm, inod_dbl)
+!
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+!
+      integer(kind = kint), intent(inout) :: inod_dbl(node%numnod,2)
+!
       integer(kind = kint) :: i
 !
 !
@@ -378,18 +385,36 @@
       call SOLVER_SEND_RECV_int_type                                    &
      &   (node%numnod, nod_comm, inod_dbl(1,2))
 !
+      end subroutine set_node_double_address
+!
+! -----------------------------------------------------------------------!
+      subroutine set_ele_double_address                                 &
+     &         (node, ele, ele_comm, ip_node, iele_dbl)
+!
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: ele_comm
+!
+      integer(kind = kint), intent(in) :: ip_node(node%numnod)
+      integer(kind = kint), intent(inout) :: iele_dbl(0:ele%numele,2)
+!
+      integer(kind = kint) :: i
+!
+!
       iele_dbl(0,1) = 0
       iele_dbl(0,2) = -1
 !$onp parallel do
       do i = 1, ele%numele
         iele_dbl(i,1) = i
-        iele_dbl(i,2) = inod_dbl(ele%ie(i,1),2)
+        iele_dbl(i,2) = ip_node(ele%ie(i,1))
       end do
 !$onp end parallel do
       call SOLVER_SEND_RECV_int_type                                    &
      &   (ele%numele, ele_comm, iele_dbl(1,1))
 !
-      end subroutine set_node_ele_double_address
+      end subroutine set_ele_double_address
 !
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
        subroutine find_belonged_pe_4_surf(surf, numnod, ip_node,        &
