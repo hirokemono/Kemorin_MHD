@@ -114,7 +114,7 @@
 !
       call alloc_geom_4_comm_test(ele%numele, ele_check)
       call set_element_4_comm_test                                      &
-     &   (node%internal_node, ele%numele, ele%ie(1,1), ele%iele_global, &
+     &   (ele%numele, ele%interior_ele, ele%iele_global,                &
      &    ele%x_ele, ele_check%i_gl_test, ele_check%xx_test)
       call SOLVER_SEND_RECV_int8_type(ele%numele, ele_comm,             &
      &                                ele_check%i_gl_test)
@@ -149,8 +149,7 @@
 !
 !
       call alloc_geom_4_comm_test(surf%numsurf, surf_check)
-      call set_element_4_comm_test                                      &
-     &   (node%internal_node, surf%numsurf, surf%ie_surf(1,1),          &
+      call set_element_4_comm_test(surf%numsurf, surf%interior_surf,    &
      &    surf%isurf_global, surf%x_surf,                               &
      &    surf_check%i_gl_test, surf_check%xx_test)
       call SOLVER_SEND_RECV_int8_type(surf%numsurf, surf_comm,          &
@@ -185,8 +184,7 @@
 !
 !
       call alloc_geom_4_comm_test(edge%numedge, edge_check)
-      call set_element_4_comm_test                                      &
-     &   (node%internal_node, edge%numedge ,edge%ie_edge(1,1),          &
+      call set_element_4_comm_test(edge%numedge ,edge%interior_edge,    &
      &    edge%iedge_global, edge%x_edge,                               &
      &    edge_check%i_gl_test, edge_check%xx_test)
       call SOLVER_SEND_RECV_int8_type(edge%numedge, edge_comm,          &

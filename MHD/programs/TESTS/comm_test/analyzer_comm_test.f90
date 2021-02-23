@@ -107,10 +107,7 @@
      &    test_fem%mesh%nod_comm, T_ele_comm, T_surf_comm,             &
      &    test_fem%mesh%surf, fail_tbl_s)
 !
-      write(*,*) 'fail_tbl_s', fail_tbl_s%num_fail
       call dealloc_failed_export(fail_tbl_s)
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(1, 'tako')
 !
 !
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
@@ -121,8 +118,8 @@
      &    test_fem%mesh%edge, fail_tbl_d)
       call dealloc_failed_export(fail_tbl_d)
 !
-      call calypso_mpi_barrier
-      call calypso_mpi_abort(0, 'manuke')
+!      call calypso_mpi_barrier
+!      call calypso_mpi_abort(0, 'manuke')
 !
       end subroutine initialize_communication_test
 !
@@ -312,15 +309,22 @@
       k_ref(1:edge%numedge) =     0
 !$omp end parallel workshare
 !
-!%omp parallel do private(isurf)
+!%omp parallel do private(iedge)
       do iedge = 1, edge%numedge
        call find_belonged_pe_4_edge(edge, node%numnod, inod_dbl(1,2),   &
      &     iedge, nnod_same(iedge), ip_ref(iedge), k_ref(iedge))
       end do
 !%omp end parallel do
-      deallocate(nnod_same, ip_ref, k_ref)
-      deallocate(inod_dbl, iele_dbl)
 !
+!%omp parallel do private(iedge)
+      do iedge = 1, edge%numedge
+        if(ip_ref(iedge) .eq. my_rank) then
+          edge%interior_edge(iedge) = 1
+        else
+          edge%interior_edge(iedge) = 0
+        end if
+      end do
+!%omp end parallel do
 !
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
@@ -330,21 +334,14 @@
      &    node, belongs%blng_edge, belongs%x_ref_edge)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
-     &          ' belonged_edge_id_4_node2 in edge'
-      call belonged_edge_id_4_node2                                     &
-     &   (1, node, edge, belongs%host_edge)
-      deallocate(nnod_same, ip_ref, k_ref)
+     &          ' const_comm_table_by_connenct2 in edge'
+      call const_comm_table_by_connenct2                                &
+     &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
+     &    edge%x_edge, node, nod_comm, belongs%blng_edge,               &
+     &    edge_comm, inod_dbl, fail_tbl, ip_ref, k_ref)
       deallocate(inod_dbl, iele_dbl)
+      deallocate(nnod_same, ip_ref, k_ref)
 !
-      if(iflag_debug.gt.0) write(*,*)                                   &
-     &          ' const_comm_table_by_connenct in edge'
-      call const_comm_table_by_connenct                                 &
-     &    (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,      &
-     &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
-     &    belongs%blng_edge, belongs%x_ref_edge, belongs%host_edge,     &
-     &    edge_comm, fail_tbl)
-!
-      call dealloc_iele_belonged(belongs%host_edge)
       call dealloc_x_ref_edge(belongs)
       call dealloc_iele_belonged(belongs%blng_edge)
 !
