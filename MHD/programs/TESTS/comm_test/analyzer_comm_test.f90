@@ -210,7 +210,6 @@
       integer(kind = kint), allocatable :: nnod_same(:)
       integer(kind = kint), allocatable :: ip_ref(:)
       integer(kind = kint), allocatable :: k_ref(:)
-      integer(kind = kint), allocatable :: ie_sf_tmp(:,:)
 !
       integer(kind = kint) :: isurf, i1, i2, i, inod, ip
 !
@@ -246,17 +245,6 @@
       end do
       write(*,*) my_rank, 'Need to flip', i1, i2
 !
-      do isurf = 1, surf%numsurf
-        if(k_ref(isurf) .ne. 1) then
-          call flip_surface_connenct(isurf, node, ele, surf)
-        end if
-      end do
-!
-      allocate(ie_sf_tmp(surf%numsurf,num_linear_sf))
-!      call tmp_surface_connent                                          &
-!     &   (surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
-!     &    k_ref, ie_sf_tmp)
-!
 !
       call set_surf_id_4_node(node, surf, belongs%blng_surf)
       call alloc_x_ref_surf(node, belongs)
@@ -277,7 +265,6 @@
       call dealloc_iele_belonged(belongs%host_surf)
       call dealloc_x_ref_surf(belongs)
       call dealloc_iele_belonged(belongs%blng_surf)
-      deallocate(ie_sf_tmp)
 !
       call const_global_surface_id(surf_comm, surf)
 !
