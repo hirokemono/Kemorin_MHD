@@ -7,7 +7,7 @@
 !>@brief  Routines to construca element communication table
 !!
 !!@verbatim
-!!      subroutine element_data_reverse_SR(num_neib_e, id_neib_e,       &
+!!      subroutine element_data_reverse_SR_old(num_neib_e, id_neib_e,   &
 !!     &          istack_import_e, istack_export_e,                     &
 !!     &          inod_import_e, inod_import_l, xe_import,              &
 !!     &          inod_export_e, inod_export_l, xe_export)
@@ -28,7 +28,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine element_data_reverse_SR(num_neib_e, id_neib_e,         &
+      subroutine element_data_reverse_SR_old(num_neib_e, id_neib_e,     &
      &          istack_import_e, istack_export_e,                       &
      &          inod_import_e, inod_import_l, xe_import,                &
      &          inod_export_e, inod_export_l, xe_export)
@@ -77,7 +77,7 @@
      &    istack_import_e, istack_export_e, xe_import,                  &
      &    SR_sig1, xe_export)
 !
-      end subroutine element_data_reverse_SR
+      end subroutine element_data_reverse_SR_old
 !
 !-----------------------------------------------------------------------
 !

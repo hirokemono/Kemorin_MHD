@@ -181,9 +181,9 @@
       call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)
       call alloc_export_item(e_comm)
 !
-!      write(*,*) 'element_data_reverse_SR', my_rank
+!      write(*,*) 'element_data_reverse_SR_old', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)
-      call element_data_reverse_SR(e_comm%num_neib, e_comm%id_neib,     &
+      call element_data_reverse_SR_old(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export,                   &
      &    wk_comm%inod_import_e, wk_comm%inod_import_l,                 &
      &    wk_comm%xe_import, wk_comm%inod_export_e,                     &
