@@ -173,7 +173,7 @@
       call dealloc_ele_buffer_2_extend(send_ebuf)
 !
       call mark_added_ele_import_to_del                                 &
-     &   (nprocs, ele%numele, dbl_ele%inod_local, dbl_ele%irank_home,   &
+     &   (nprocs, ele%numele, dbl_ele%inod_local, dbl_ele%ip_home,      &
      &    added_comm%num_neib, added_comm%ntot_import,                  &
      &    added_comm%istack_import,                                     &
      &    recv_ebuf%iele_add, recv_ebuf%irank_add,                      &

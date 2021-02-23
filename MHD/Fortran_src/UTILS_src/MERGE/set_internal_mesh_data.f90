@@ -17,7 +17,6 @@
 !!     &         (ele, iele_to_org, new_ele)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(parallel_double_numbering), intent(in) :: dbl_nod
 !!        type(element_data), intent(inout) :: new_ele
 !!
 !!      subroutine count_internal_node_grp                              &

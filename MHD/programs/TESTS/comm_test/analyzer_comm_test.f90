@@ -494,8 +494,8 @@
 !      write(*,*) 'set_element_import_item2', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call set_element_import_item2                                     &
-     &   (node%numnod, inod_dbl, numele, nnod_4_ele, ie,                &
-     &    x_ele, ip_ref, k_ref, e_comm%num_neib,                        &
+     &   (node%numnod, inod_dbl(1,1), inod_dbl(1,2), numele,            &
+     &    nnod_4_ele, ie,x_ele, ip_ref, k_ref, e_comm%num_neib,         &
      &    e_comm%id_neib, e_comm%istack_import, e_comm%item_import,     &
      &    inod_lc_import, ipe_lc_import, xe_import)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
@@ -651,13 +651,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_element_import_item2(numnod, inod_dbl,             &
+      subroutine set_element_import_item2(numnod, inod_lc, ip_nod,      &
      &          numele, nnod_4_ele, ie, x_ele, ip_ref, k_ref,           &
      &          num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
      &          inod_lc_import, ipe_lc_import, xe_import)
 !
       integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: inod_dbl(numnod,2)
+      integer(kind = kint), intent(in) :: inod_lc(numnod)
+      integer(kind = kint), intent(in) :: ip_nod(numnod)
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
@@ -722,8 +723,8 @@
         xe_import(3*icou  ) = x_ele(iele,3)
         do k1 = 1, nnod_4_ele
           inod = ie(iele,k1)
-          inod_lc_import(icou,k1) = inod_dbl(inod,1)
-          ipe_lc_import(icou,k1) =  inod_dbl(inod,2)
+          inod_lc_import(icou,k1) = inod_lc(inod)
+          ipe_lc_import(icou,k1) =  ip_nod(inod)
         end do
       end do
 !
