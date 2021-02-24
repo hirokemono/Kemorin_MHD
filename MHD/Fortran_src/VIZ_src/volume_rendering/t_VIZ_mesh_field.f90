@@ -11,10 +11,6 @@
 !!      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
 !!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
-!!      subroutine link_self_FEM_field_4_viz(VIZ_DAT)
-!!      subroutine link_self_jacobians_4_viz(VIZ_DAT)
-!!      subroutine dealloc_FEM_field_4_viz(VIZ_DAT)
-!!      subroutine dealloc_jacobians_4_viz(VIZ_DAT)
 !!        type(mesh_data), intent(inout), target :: geofem
 !!        type(phys_data), intent(inout), target :: nod_fld
 !!        type(element_around_node), intent(in), target :: ele_4_nod
@@ -125,49 +121,6 @@
       nullify(VIZ_DAT%jacobians, VIZ_DAT%ele_4_nod)
 !
       end subroutine unlink_jacobians_4_viz
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine link_self_FEM_field_4_viz(VIZ_DAT)
-!
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      VIZ_DAT%viz_fem => VIZ_DAT%geofem_v
-      VIZ_DAT%viz_fld => VIZ_DAT%nod_fld_v
-!
-      end subroutine link_self_FEM_field_4_viz
-!
-! ----------------------------------------------------------------------
-!
-      subroutine link_self_jacobians_4_viz(VIZ_DAT)
-!
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      VIZ_DAT%ele_4_nod => VIZ_DAT%ele_4_nod_v
-      VIZ_DAT%jacobians =>  VIZ_DAT%jacobians_v
-!
-      end subroutine link_self_jacobians_4_viz
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_FEM_field_4_viz(VIZ_DAT)
-!
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      deallocate(VIZ_DAT%viz_fem, VIZ_DAT%viz_fld)
-!
-      end subroutine dealloc_FEM_field_4_viz
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_jacobians_4_viz(VIZ_DAT)
-!
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-      deallocate(VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
-!
-      end subroutine dealloc_jacobians_4_viz
 !
 ! ----------------------------------------------------------------------
 !

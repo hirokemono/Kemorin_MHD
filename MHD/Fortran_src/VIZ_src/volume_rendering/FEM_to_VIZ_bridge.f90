@@ -136,7 +136,8 @@
 !
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_self_FEM_field_4_viz(VIZ_DAT)
+        call link_FEM_field_4_viz                                       &
+     &     (VIZ_DAT%geofem_v, VIZ_DAT%nod_fld_v, VIZ_DAT)
         call load_or_const_new_partition(VIZ_DAT%repart_p,              &
      &      geofem, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
 !
@@ -146,7 +147,8 @@
         call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
       end if
 !
-      call link_self_jacobians_4_viz(VIZ_DAT)
+      call link_jacobians_4_viz                                         &
+     &   (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
       call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,       &
      &    VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                         &
      &    VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
@@ -174,7 +176,8 @@
 !
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_self_FEM_field_4_viz(VIZ_DAT)
+        call link_FEM_field_4_viz                                       &
+     &     (VIZ_DAT%geofem_v, VIZ_DAT%nod_fld_v, VIZ_DAT)
         call load_const_new_part_FEM_MHD(VIZ_DAT%repart_p, next_tbl,    &
      &      geofem, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
 !
@@ -182,7 +185,8 @@
         call init_fld_to_new_partition(VIZ_DAT%viz_fem%mesh,            &
      &                                 nod_fld, VIZ_DAT%viz_fld)
 !
-        call link_self_jacobians_4_viz(VIZ_DAT)
+        call link_jacobians_4_viz                                       &
+     &     (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
         call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,     &
      &      VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                       &
      &      VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
