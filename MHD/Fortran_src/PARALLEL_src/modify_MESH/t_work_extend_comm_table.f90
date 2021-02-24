@@ -26,7 +26,7 @@
 !!      subroutine check_added_impoert_items                            &
 !!     &         (id_rank, nod_comm, added_comm, dbl_id, recv_nbuf)
 !!        type(communication_table), intent(in) :: nod_comm, added_comm
-!!        type(parallel_double_numbering), intent(in) :: dbl_id
+!!        type(node_ele_double_number), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !!      subroutine check_delete_from_SR_list                            &
 !!     &         (id_rank, added_comm, send_nbuf, recv_nbuf)
@@ -213,7 +213,7 @@
 !
       integer, intent(in) :: id_rank
       type(communication_table), intent(in) :: nod_comm, added_comm
-      type(parallel_double_numbering), intent(in) :: dbl_id
+      type(node_ele_double_number), intent(in) :: dbl_id
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !
       integer(kind = kint) :: inum, inod, i, ist, ied

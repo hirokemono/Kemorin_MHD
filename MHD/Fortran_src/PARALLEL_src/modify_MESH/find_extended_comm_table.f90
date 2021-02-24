@@ -10,13 +10,13 @@
 !!      subroutine copy_node_to_extend_buffer(istack_pre,               &
 !!     &          org_node, dbl_id, iflag_node, send_nbuf)
 !!        type(node_data), intent(in) :: org_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_id
+!!        type(node_ele_double_number), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(inout) :: send_nbuf
 !!      subroutine copy_ele_to_extend_buffer(istack_pre,                &
 !!     &          org_ele, dbl_ele, dbl_id, iflag_ele, send_ebuf)
 !!        type(element_data), intent(in) :: org_ele
-!!        type(parallel_double_numbering), intent(in) :: dbl_id
-!!        type(parallel_double_numbering), intent(in) :: dbl_ele
+!!        type(node_ele_double_number), intent(in) :: dbl_id
+!!        type(node_ele_double_number), intent(in) :: dbl_ele
 !!        type(ele_buffer_2_extend), intent(inout) :: send_ebuf
 !!
 !!      subroutine mark_extended_nod_neib_pe                            &
@@ -68,7 +68,7 @@
 !
       integer(kind = kint), intent(in) :: istack_pre
       type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_id
+      type(node_ele_double_number), intent(in) :: dbl_id
       integer(kind = kint), intent(in) :: iflag_node(org_node%numnod)
 !
       type(node_buffer_2_extend), intent(inout) :: send_nbuf
@@ -97,8 +97,8 @@
 !
       integer(kind = kint), intent(in) :: istack_pre
       type(element_data), intent(in) :: org_ele
-      type(parallel_double_numbering), intent(in) :: dbl_id
-      type(parallel_double_numbering), intent(in) :: dbl_ele
+      type(node_ele_double_number), intent(in) :: dbl_id
+      type(node_ele_double_number), intent(in) :: dbl_ele
       integer(kind = kint), intent(in) :: iflag_ele(org_ele%numele)
 !
       type(ele_buffer_2_extend), intent(inout) :: send_ebuf

@@ -97,7 +97,7 @@
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save :: newgroup
       type(next_nod_ele_table), save :: next_tbl
-      type(parallel_double_numbering), save :: dbl_id1
+      type(node_ele_double_number), save :: dbl_id1
 !
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)

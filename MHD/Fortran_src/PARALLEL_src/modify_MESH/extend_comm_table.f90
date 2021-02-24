@@ -11,7 +11,7 @@
 !!     &          neib_nod, new_comm, new_node)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: org_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_idx
+!!        type(node_ele_double_number), intent(in) :: dbl_idx
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(communication_table), intent(inout) :: new_comm
 !!        type(node_data), intent(inout) :: new_node
@@ -53,14 +53,14 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_idx
+      type(node_ele_double_number), intent(in) :: dbl_idx
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       type(communication_table), intent(inout) :: new_comm
       type(node_data), intent(inout) :: new_node
 !
 !>      Structure of double numbering
-      type(parallel_double_numbering) :: dbl_id2
+      type(node_ele_double_number) :: dbl_id2
 !
 !>      added_comm%item_export :: export table or flag to be added
 !>      added_comm%item_import :: import table or flag to be added
@@ -276,7 +276,7 @@
 !
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
-      type(parallel_double_numbering), intent(in) :: dbl_id2
+      type(node_ele_double_number), intent(in) :: dbl_id2
 !
       integer(kind = kint), allocatable :: inod_lc_check(:)
       integer(kind = kint), allocatable :: irank_lc_check(:)

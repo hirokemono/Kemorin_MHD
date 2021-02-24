@@ -4,23 +4,26 @@
 !!@author H. Matsui
 !!@date Programmed in Feb., 2021
 !
-!>@brief  Routines to SEt communication table items for elements
+!>@brief  Routines to Set communication table items for elements
 !!
 !!@verbatim
-!!      subroutine count_element_import_num(num_neib, id_neib,          &
+!!      subroutine count_element_import_num(nod_comm, iele_dbl,         &
 !!     &          num_neib_e, id_neib_e, num_import_e, istack_import_e, &
-!!     &          ntot_import_e, numele, ip_ref)
-!!      subroutine set_element_import_item(numnod, inod_lc, ip_nod,     &
-!!     &          numele, nnod_4_ele, ie, x_ele, ip_ref, k_ref,         &
+!!     &          ntot_import_e)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_ele_double_number), intent(in) :: iele_dbl
+!!      subroutine set_element_import_item                              &
+!!     &         (inod_dbl, iele_dbl, numele, nnod_4_ele, ie, x_ele,    &
 !!     &          num_neib_e, id_neib_e, istack_import_e, item_import_e,&
 !!     &          inod_lc_import, ipe_lc_import, xe_import)
+!!        type(node_ele_double_number), intent(in) :: inod_dbl
+!!        type(node_ele_double_number), intent(in) :: iele_dbl
 !!
 !!      subroutine set_element_export_item                              &
-!!     &         (txt, numnod, numele, nnod_4_ele, x_ele,               &
-!!     &          iele_stack_4_node, iele_4_node,                       &
-!!     &          num_neib_e, istack_export_e,                          &
-!!     &          inod_lc_export, ipe_lc_export, xe_export,             &
-!!     &          item_export_e, fail_tbl)
+!!     &         (txt, neib_e, numele, nnod_4_ele, x_ele,               &
+!!     &          num_neib_e, istack_export_e, inod_lc_export,          &
+!!     &          ipe_lc_export, xe_export, item_export_e, fail_tbl)
+!!        type(element_around_node), intent(in) :: neib_e
 !!        type(failed_table), intent(inout) :: fail_tbl
 !!@endverbatim
 !!
@@ -38,15 +41,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_element_import_num(num_neib, id_neib,            &
+      subroutine count_element_import_num(nod_comm, iele_dbl,           &
      &          num_neib_e, id_neib_e, num_import_e, istack_import_e,   &
-     &          ntot_import_e, numele, ip_ref)
+     &          ntot_import_e)
 !
-      integer(kind = kint), intent(in) :: num_neib
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
+      use t_comm_table
+      use t_para_double_numbering
 !
-      integer(kind = kint), intent(in) :: numele
-      integer(kind = kint), intent(in) :: ip_ref(numele)
+      type(communication_table), intent(in) :: nod_comm
+      type(node_ele_double_number), intent(in) :: iele_dbl
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(inout) :: id_neib_e(num_neib_e)
@@ -65,22 +68,22 @@
       num_import_tmp(1:nprocs) = 0
 !$omp end parallel workshare
 !
-      do iele = 1, numele
-        ip = ip_ref(iele)
+      do iele = 1, iele_dbl%num_dbl
+        ip = iele_dbl%ip_home(iele)
         if(ip .ne. my_rank) then
           num_import_tmp(ip+1) = num_import_tmp(ip+1) + 1
         end if
       end do
 !
       istack_import_e(0) = 0
-      do inum = 1, num_neib
-        ip = id_neib(inum)
+      do inum = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(inum)
         id_neib_e(inum) =    ip
         num_import_e(inum) = num_import_tmp(ip+1)
         istack_import_e(inum) = istack_import_e(inum-1)                 &
      &                         + num_import_e(inum)
       end do
-      ntot_import_e = istack_import_e(num_neib)
+      ntot_import_e = istack_import_e(nod_comm%num_neib)
 !
       deallocate(num_import_tmp)
 !
@@ -88,20 +91,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_element_import_item(numnod, inod_lc, ip_nod,       &
-     &          numele, nnod_4_ele, ie, x_ele, ip_ref, k_ref,           &
+      subroutine set_element_import_item                                &
+     &         (inod_dbl, iele_dbl, numele, nnod_4_ele, ie, x_ele,      &
      &          num_neib_e, id_neib_e, istack_import_e, item_import_e,  &
      &          inod_lc_import, ipe_lc_import, xe_import)
 !
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: inod_lc(numnod)
-      integer(kind = kint), intent(in) :: ip_nod(numnod)
+      use t_para_double_numbering
+!
+      type(node_ele_double_number), intent(in) :: inod_dbl
+      type(node_ele_double_number), intent(in) :: iele_dbl
+!
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
-!
-      integer(kind = kint), intent(in) :: ip_ref(numele)
-      integer(kind = kint), intent(in) :: k_ref(numele)
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
@@ -117,8 +119,7 @@
      &        :: ipe_lc_import(istack_import_e(num_neib_e),nnod_4_ele)
 !
       integer(kind = kint) :: ip, icou, iele
-      integer(kind = kint) :: ist, inum, inod
-      integer(kind = kint) :: k1
+      integer(kind = kint) :: inum, inod, k1
 !
       integer(kind = kint), allocatable :: ip_rev_tmp(:)
       integer(kind = kint), allocatable :: num_import_tmp(:)
@@ -139,8 +140,8 @@
       end do
 !$omp end parallel do
 !
-      do iele = 1, numele
-        ip =   ip_ref(iele)
+      do iele = 1, iele_dbl%num_dbl
+        ip =   iele_dbl%ip_home(iele)
         if(ip .ne. my_rank) then
           inum = ip_rev_tmp(ip+1)
           num_import_tmp(ip+1) = num_import_tmp(ip+1) + 1
@@ -160,8 +161,8 @@
         xe_import(3*icou  ) = x_ele(iele,3)
         do k1 = 1, nnod_4_ele
           inod = ie(iele,k1)
-          inod_lc_import(icou,k1) = inod_lc(inod)
-          ipe_lc_import(icou,k1) =  ip_nod(inod)
+          inod_lc_import(icou,k1) = inod_dbl%id_local(inod)
+          ipe_lc_import(icou,k1) =  inod_dbl%ip_home(inod)
         end do
       end do
 !
@@ -170,32 +171,29 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_element_export_item                                &
-     &         (txt, numnod, numele, nnod_4_ele, x_ele,                 &
-     &          iele_stack_4_node, iele_4_node,                         &
-     &          num_neib_e, istack_export_e,                            &
-     &          inod_lc_export, ipe_lc_export, xe_export,               &
-     &          item_export_e, fail_tbl)
+     &         (txt, neib_e, numele, nnod_4_ele, x_ele,                 &
+     &          num_neib_e, istack_export_e, inod_lc_export,            &
+     &          ipe_lc_export, xe_export, item_export_e, fail_tbl)
 !
+      use t_next_node_ele_4_node
       use t_failed_export_list
       use calypso_mpi_int
       use quicksort
 !
       character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
-      real(kind = kreal), intent(in)  :: x_ele(numele,3)
+      type(element_around_node), intent(in) :: neib_e
 !
-      integer(kind = kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer(kind = kint), intent(in)                                  &
-     &        :: iele_4_node(iele_stack_4_node(numnod))
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      real(kind = kreal), intent(in)  :: x_ele(numele,3)
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(in) :: istack_export_e(0:num_neib_e)
 !
       real(kind = kreal), intent(in)                                    &
      &        :: xe_export(3*istack_export_e(num_neib_e))
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint), intent(in)                                  &
      &        :: inod_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
-      integer(kind = kint), intent(inout)                               &
+      integer(kind = kint), intent(in)                                  &
      &        :: ipe_lc_export(istack_export_e(num_neib_e),nnod_4_ele)
 !
       integer(kind = kint), intent(inout)                               &
@@ -223,8 +221,8 @@
             idx_sort(k1) = k1
             inod_sf_lc = inod_lc_export(inum,k1)
             if(ipe_lc_export(inum,k1) .eq. my_rank) then
-              n_search(k1) = iele_stack_4_node(inod_sf_lc)              &
-     &                      - iele_stack_4_node(inod_sf_lc-1)
+              n_search(k1) = neib_e%istack_4_node(inod_sf_lc)           &
+     &                      - neib_e%istack_4_node(inod_sf_lc-1)
             else
               n_search(k1) = 0
             end if
@@ -239,10 +237,10 @@
             if(ipe_lc_export(inum,kk) .ne. my_rank) cycle
 !
             inod = inod_lc_export(inum,kk)
-            jst = iele_stack_4_node(inod-1) + 1
-            jed = iele_stack_4_node(inod)
+            jst = neib_e%istack_4_node(inod-1) + 1
+            jed = neib_e%istack_4_node(inod)
             do jnum = jst, jed
-              jele = iele_4_node(jnum)
+              jele = neib_e%iele_4_node(jnum)
 !
               dist = sqrt((x_ele(jele,1)- xe_export(3*inum-2))**2 &
      &                + (x_ele(jele,2) - xe_export(3*inum-1))**2  &

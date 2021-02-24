@@ -9,13 +9,12 @@
 !!@verbatim
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,   &
-!!     &          inod_dbl, ip_ref, k_ref, neib_e, e_comm, fail_tbl)
+!!     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_around_node), intent(in) :: neib_e
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(parallel_double_numbering), intent(in) :: inod_dbl
-!!        integer(kind = kint), intent(in) :: ip_ref(numele)
-!!        integer(kind = kint), intent(in) :: k_ref(numele)
+!!        type(node_ele_double_number), intent(in) :: inod_dbl
+!!        type(node_ele_double_number), intent(in) :: iele_dbl
 !!        type(communication_table), intent(inout) :: e_comm
 !!        type(failed_table), intent(inout) :: fail_tbl
 !!@endverbatim
@@ -63,7 +62,7 @@
 !
       subroutine const_comm_table_by_connenct                           &
      &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,     &
-     &          inod_dbl, ip_ref, k_ref, neib_e, e_comm, fail_tbl)
+     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl)
 !
       use reverse_SR_int
       use find_element_comm_table
@@ -79,10 +78,8 @@
       type(node_data), intent(in) :: node
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
-      type(parallel_double_numbering), intent(in) :: inod_dbl
-!
-      integer(kind = kint), intent(in) :: ip_ref(numele)
-      integer(kind = kint), intent(in) :: k_ref(numele)
+      type(node_ele_double_number), intent(in) :: inod_dbl
+      type(node_ele_double_number), intent(in) :: iele_dbl
 !
       type(communication_table), intent(inout) :: e_comm
       type(failed_table), intent(inout) :: fail_tbl
@@ -97,19 +94,17 @@
 !
 !      write(*,*) 'count_element_import_num', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+1)
-      call count_element_import_num                                     &
-     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+      call count_element_import_num(nod_comm, iele_dbl,                 &
      &    e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
-     &    e_comm%istack_import, e_comm%ntot_import, numele, ip_ref)
+     &    e_comm%istack_import, e_comm%ntot_import)
 !
       call alloc_import_item(e_comm)
 !
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call alloc_element_rev_imports                                    &
      &   (e_comm%ntot_import, nnod_4_ele, wk_comm)
-      call set_element_import_item                                      &
-     &   (node%numnod, inod_dbl%id_local(1), inod_dbl%ip_home(1),       &
-     &    numele, nnod_4_ele, ie,x_ele, ip_ref, k_ref, e_comm%num_neib, &
+      call set_element_import_item(inod_dbl, iele_dbl,                  &
+     &    numele, nnod_4_ele, ie, x_ele, e_comm%num_neib,               &
      &    e_comm%id_neib, e_comm%istack_import, e_comm%item_import,     &
      &    wk_comm%inod_lc_import, wk_comm%ipe_lc_import,                &
      &    wk_comm%xe_import)
@@ -141,8 +136,7 @@
 !      write(*,*) 'set_element_export_item', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
       call set_element_export_item                                      &
-     &   (txt, node%numnod, numele, nnod_4_ele,                         &
-     &    x_ele, neib_e%istack_4_node, neib_e%iele_4_node,              &
+     &   (txt, neib_e, numele, nnod_4_ele, x_ele,                       &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_lc_export, wk_comm%ipe_lc_export,                &
      &    wk_comm%xe_export, e_comm%item_export, fail_tbl)

@@ -226,40 +226,36 @@
       use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
-      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(element_data), intent(inout) :: ele
       type(communication_table), intent(inout) :: ele_comm
 !
-      type(parallel_double_numbering) :: inod_dbl
+      type(node_ele_double_number) :: inod_dbl
+      type(node_ele_double_number) :: iele_dbl
       type(element_around_node) :: neib_ele
       type(failed_table) :: fail_tbl_e
-!
-      integer(kind = kint), allocatable :: ip_ref(:)
-      integer(kind = kint), allocatable :: k_ref(:)
 !
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      allocate(ip_ref(ele%numele))
-      allocate(k_ref(ele%numele))
-      call find_belonged_pe_4_ele(my_rank, node, inod_dbl%ip_home(1),   &
-     &                            ele, ip_ref, k_ref)
+      call alloc_double_numbering(ele%numele, iele_dbl)
+      call find_belonged_pe_4_ele(my_rank, inod_dbl,                    &
+     &    ele%numele, ele%ie(1,1), ele%interior_ele, iele_dbl)
 !
       call set_ele_id_4_node(node, ele, neib_ele)
 !
       call alloc_failed_export(0, fail_tbl_e)
       call const_comm_table_by_connenct                                 &
      &   (txt_surf, ele%numele, ele%nnod_4_ele, ele%ie,                 &
-     &    ele%x_ele, node, nod_comm, inod_dbl, ip_ref, k_ref,           &
+     &    ele%x_ele, node, nod_comm, inod_dbl, iele_dbl,                &
      &    neib_ele, ele_comm, fail_tbl_e)
+      call dealloc_double_numbering(iele_dbl)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
-      deallocate(ip_ref, k_ref)
 !
 !
       call const_global_element_id(ele_comm, ele)
@@ -277,41 +273,37 @@
       use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
-      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(inout) :: surf_comm
       type(surface_data), intent(inout) :: surf
 !
-      type(parallel_double_numbering) :: inod_dbl
+      type(node_ele_double_number) :: inod_dbl
+      type(node_ele_double_number) :: isurf_dbl
       type(element_around_node) :: neib_surf
       type(failed_table) :: fail_tbl_s
-!
-      integer(kind = kint), allocatable :: ip_ref(:)
-      integer(kind = kint), allocatable :: k_ref(:)
 !
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      allocate(ip_ref(surf%numsurf))
-      allocate(k_ref(surf%numsurf))
-!
-      call find_belonged_pe_4_surf(my_rank, node, inod_dbl%ip_home(1),  &
-     &                             surf, ip_ref, k_ref)
+      call alloc_double_numbering(surf%numsurf, isurf_dbl)
+      call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
+     &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
+     &    surf%interior_surf, isurf_dbl)
 !
       call set_surf_id_4_node(node, surf, neib_surf)
 !
       call alloc_failed_export(0, fail_tbl_s)
       call const_comm_table_by_connenct                                 &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
-     &    surf%x_surf, node, nod_comm, inod_dbl, ip_ref, k_ref,         &
+     &    surf%x_surf, node, nod_comm, inod_dbl, isurf_dbl,             &
      &    neib_surf, surf_comm, fail_tbl_s)
+      call dealloc_double_numbering(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_surf)
       call dealloc_failed_export(fail_tbl_s)
-      deallocate(ip_ref, k_ref)
 !
       call const_global_surface_id(surf_comm, surf)
 !
@@ -327,7 +319,6 @@
       use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
-      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -335,22 +326,19 @@
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
 !
-      type(parallel_double_numbering) :: inod_dbl
+      type(node_ele_double_number) :: inod_dbl
+      type(node_ele_double_number) :: iedge_dbl
       type(element_around_node) :: neib_edge
       type(failed_table) :: fail_tbl_d
-!
-      integer(kind = kint), allocatable :: ip_ref(:)
-      integer(kind = kint), allocatable :: k_ref(:)
 !
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      allocate(ip_ref(edge%numedge))
-      allocate(k_ref(edge%numedge))
-      call find_belonged_pe_4_edge(my_rank, node, inod_dbl%ip_home(1),  &
-     &                             edge, ip_ref, k_ref)
-!
+      call alloc_double_numbering(edge%numedge, iedge_dbl)
+      call find_belonged_pe_4_edge(my_rank, inod_dbl,                   &
+     &    edge%numedge, edge%nnod_4_edge, edge%ie_edge,                 &
+     &    edge%interior_edge, iedge_dbl)
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
       call set_edge_id_4_node(node, edge, neib_edge)
@@ -360,12 +348,12 @@
       call alloc_failed_export(0, fail_tbl_d)
       call const_comm_table_by_connenct                                 &
      &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
-     &    edge%x_edge, node, nod_comm, inod_dbl, ip_ref, k_ref,         &
+     &    edge%x_edge, node, nod_comm, inod_dbl, iedge_dbl,             &
      &    neib_edge, edge_comm, fail_tbl_d)
+      call dealloc_double_numbering(iedge_dbl)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_edge)
       call dealloc_failed_export(fail_tbl_d)
-      deallocate(ip_ref, k_ref)
 !
       call const_global_edge_id(edge_comm, edge)
 !
@@ -411,8 +399,8 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
 !
-      type(parallel_double_numbering), intent(inout) :: inod_dbl
-      type(parallel_double_numbering), intent(inout) :: iele_dbl
+      type(node_ele_double_number), intent(inout) :: inod_dbl
+      type(node_ele_double_number), intent(inout) :: iele_dbl
 !
 !
       call set_node_double_numbering(node, nod_comm, inod_dbl)

@@ -12,7 +12,7 @@
 !!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(parallel_double_numbering), intent(in) :: dbl_nod
+!!        type(node_ele_double_number), intent(in) :: dbl_nod
 !!@endverbatim
 !
       module MPI_write_single_mesh_file
@@ -54,7 +54,7 @@
       type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(parallel_double_numbering), intent(in) :: dbl_nod
+      type(node_ele_double_number), intent(in) :: dbl_nod
 !
       type(calypso_MPI_IO_params):: IO_param
       character(len=kchara) :: file_name
@@ -86,7 +86,7 @@
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(mesh_geometry), intent(in) :: mesh_IO
-      type(parallel_double_numbering), intent(in) :: dbl_nod
+      type(node_ele_double_number), intent(in) :: dbl_nod
 !
       character(len=1) :: chara_dat
 !
@@ -195,7 +195,7 @@
       type(calypso_MPI_IO_params), intent(inout) :: IO_param
       type(element_data), intent(in) :: ele_IO
       type(node_data), intent(in) :: node_IO
-      type(parallel_double_numbering), intent(in) :: dbl_nod
+      type(node_ele_double_number), intent(in) :: dbl_nod
 !
       integer(kind = kint_gl) :: istack_g(1)
 !

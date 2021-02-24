@@ -47,7 +47,7 @@
       integer(kind = kint), parameter, private :: id_vtk_file = 16
 !
 !>      Structure of double numbering
-      type(parallel_double_numbering), private, save :: dbl_id1
+      type(node_ele_double_number), private, save :: dbl_id1
 !
 !-----------------------------------------------------------------------
 !

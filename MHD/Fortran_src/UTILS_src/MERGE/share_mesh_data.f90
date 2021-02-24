@@ -20,7 +20,7 @@
 !!        type(surface_group_data), intent(inout) :: sf_group
 !!
 !!      subroutine share_doble_numbering(ip_org, dbl_id)
-!!        type(parallel_double_numbering), intent(inout) :: dbl_id
+!!        type(node_ele_double_number), intent(inout) :: dbl_id
 !!@endverbatim
 !
       module share_mesh_data
@@ -245,7 +245,7 @@
       use transfer_to_long_integers
 !
       integer(kind = kint), intent(in) :: ip_org
-      type(parallel_double_numbering), intent(inout) :: dbl_id
+      type(node_ele_double_number), intent(inout) :: dbl_id
 !
       integer(kind = kint) :: num
       integer :: irank_org

@@ -7,35 +7,35 @@
 !>@brief Find belonged pe for each node, element, surface, and edge
 !!
 !!@verbatim
-!!      subroutine find_belonged_pe_4_node                              &
-!!     &         (my_rank, node, nod_comm, ip_node)
-!!        type(node_data), intent(in) :: node
-!!        type(communication_table), intent(in) :: nod_comm
-!!        integer(kind = kint), intent(inout) :: ip_node(node%numnod)
-!!      subroutine find_belonged_pe_4_ele(my_rank, node, ip_node,       &
-!!     &                                  ele, ip_ref_ele, k_ref_ele)
+!!      integer(kind = kint) function                                   &
+!!     &                    set_each_interior_flag(my_rank, ip_ref)
 !!        integer, intent(in) :: my_rank
-!!        type(node_data), intent(in) :: node
-!!        integer(kind = kint), intent(in) :: ip_node(node%numnod)
-!!        type(element_data), intent(inout) :: ele
-!!        integer(kind = kint), intent(inout) :: ip_ref_ele(ele%numele)
-!!        integer(kind = kint), intent(inout) :: k_ref_ele(ele%numele)
-!!      subroutine find_belonged_pe_4_surf(my_rank, node, ip_node,      &
-!!     &                                   surf, ip_ref_sf, k_ref_sf)
-!!        integer, intent(in) :: my_rank
-!!        type(node_data), intent(in) :: node
-!!        integer(kind = kint), intent(in) :: ip_node(node%numnod)
-!!        type(surface_data), intent(inout) :: surf
-!!        integer(kind = kint), intent(inout) :: ip_ref_sf(surf%numsurf)
-!!        integer(kind = kint), intent(inout) :: k_ref_sf(surf%numsurf)
-!!      subroutine find_belonged_pe_4_edge(my_rank, node, ip_node,      &
-!!     &                                   edge, ip_ref_ed, k_ref_ed)
-!!        integer, intent(in) :: my_rank
-!!        type(node_data), intent(in) :: node
-!!        integer(kind = kint), intent(in) :: ip_node(node%numnod)
-!!        type(edge_data), intent(inout) :: edge
-!!        integer(kind = kint), intent(inout) :: ip_ref_ed(edge%numedge)
-!!        integer(kind = kint), intent(inout) :: k_ref_ed(edge%numedge)
+!!        integer(kind = kint), intent(in) :: ip_ref
+!!
+!!      subroutine find_belonged_pe_each_ele(numnod, ip_node,           &
+!!     &          ie_one, ip_ref, k_ref)
+!!         integer(kind = kint), intent(in) :: numnod
+!!         integer(kind = kint), intent(in) :: ip_node(numnod)
+!!         integer(kind = kint), intent(in) :: ie_one
+!!         integer(kind = kint), intent(inout) :: ip_ref
+!!         integer(kind = kint), intent(inout) :: k_ref
+!!       subroutine find_belonged_pe_each_surf(numnod, ip_node,         &
+!!      &          ie_surf_one, nnod_same, ip_ref, k_ref)
+!!         integer(kind = kint), intent(in) :: numnod
+!!         integer(kind = kint), intent(in) :: ip_node(numnod)
+!!         integer(kind = kint), intent(in) :: ie_surf_one(num_linear_sf)
+!!         integer(kind = kint), intent(inout) :: nnod_same
+!!         integer(kind = kint), intent(inout) :: ip_ref
+!!         integer(kind = kint), intent(inout) :: k_ref
+!!       subroutine find_belonged_pe_each_edge(numnod, ip_node,         &
+!!      &          ie_edge_one, nnod_same, ip_ref, k_ref)
+!!         integer(kind = kint), intent(in)                             &
+!!     &              :: ie_edge_one(num_linear_edge)
+!!         integer(kind = kint), intent(in) :: numnod
+!!         integer(kind = kint), intent(in) :: ip_node(numnod)
+!!         integer(kind = kint), intent(inout) :: nnod_same
+!!         integer(kind = kint), intent(inout) :: ip_ref
+!!         integer(kind = kint), intent(inout) :: k_ref
 !!@endverbatim
       module find_belonged_process
 !
@@ -44,13 +44,24 @@
 !
       implicit none
 !
-      private :: find_belonged_pe_each_ele, find_belonged_pe_each_surf
-      private :: find_belonged_pe_each_edge, set_each_interior_flag
-!
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &                    set_each_interior_flag(my_rank, ip_ref)
+!
+      integer, intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: ip_ref
+!
+      set_each_interior_flag = 0
+      if(ip_ref .eq. my_rank) set_each_interior_flag = 1
+!
+      end function set_each_interior_flag
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine find_belonged_pe_4_node                                &
@@ -87,132 +98,6 @@
       end subroutine find_belonged_pe_4_node
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine find_belonged_pe_4_ele(my_rank, node, ip_node,         &
-     &                                  ele, ip_ref_ele, k_ref_ele)
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: ip_node(node%numnod)
-!
-      type(element_data), intent(inout) :: ele
-      integer(kind = kint), intent(inout) :: ip_ref_ele(ele%numele)
-      integer(kind = kint), intent(inout) :: k_ref_ele(ele%numele)
-!
-      integer(kind = kint) :: iele
-      integer(kind = kint) :: ie_one
-!
-!
-!$omp parallel workshare
-      ip_ref_ele(1:ele%numele) =   -1
-      k_ref_ele(1:ele%numele) =     0
-!$omp end parallel workshare
-!
-!%omp parallel do private(iele,ie_one)
-      do iele = 1, ele%numele
-        ie_one = ele%ie(iele,1)
-        call find_belonged_pe_each_ele(node%numnod, ip_node,            &
-     &      ie_one, ip_ref_ele(iele), k_ref_ele(iele))
-!
-        ele%interior_ele(iele)                                          &
-     &     = set_each_interior_flag(my_rank, ip_ref_ele(iele))
-      end do
-!%omp end parallel do
-!
-      end subroutine find_belonged_pe_4_ele
-!
-! ----------------------------------------------------------------------
-!
-      subroutine find_belonged_pe_4_surf(my_rank, node, ip_node,        &
-     &                                   surf, ip_ref_sf, k_ref_sf)
-!
-      use t_surface_data
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: ip_node(node%numnod)
-!
-      type(surface_data), intent(inout) :: surf
-      integer(kind = kint), intent(inout) :: ip_ref_sf(surf%numsurf)
-      integer(kind = kint), intent(inout) :: k_ref_sf(surf%numsurf)
-!
-      integer(kind = kint) :: isurf, nnod_same
-      integer(kind = kint) :: ie_surf_one(num_linear_sf)
-!
-!
-!$omp parallel workshare
-      ip_ref_sf(1:surf%numsurf) =   -1
-      k_ref_sf(1:surf%numsurf) =     0
-!$omp end parallel workshare
-!
-!%omp parallel do private(isurf,ie_surf_one,nnod_same)
-      do isurf = 1, surf%numsurf
-        ie_surf_one(1:num_linear_sf)                                    &
-     &         = surf%ie_surf(isurf,1:num_linear_sf)
-        call find_belonged_pe_each_surf                                 &
-     &     (node%numnod, ip_node, ie_surf_one, nnod_same,               &
-     &      ip_ref_sf(isurf), k_ref_sf(isurf))
-!
-        surf%interior_surf(isurf)                                       &
-     &     = set_each_interior_flag(my_rank, ip_ref_sf(isurf))
-      end do
-!%omp end parallel do
-!
-      end subroutine find_belonged_pe_4_surf
-!
-! ----------------------------------------------------------------------
-!
-      subroutine find_belonged_pe_4_edge(my_rank, node, ip_node,        &
-     &                                   edge, ip_ref_ed, k_ref_ed)
-!
-      use t_edge_data
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      integer(kind = kint), intent(in) :: ip_node(node%numnod)
-!
-      type(edge_data), intent(inout) :: edge
-      integer(kind = kint), intent(inout) :: ip_ref_ed(edge%numedge)
-      integer(kind = kint), intent(inout) :: k_ref_ed(edge%numedge)
-!
-      integer(kind = kint) :: iedge, nnod_same
-      integer(kind = kint) :: ie_edge_one(num_linear_edge)
-!
-!$omp parallel workshare
-      ip_ref_ed(1:edge%numedge) =   -1
-      k_ref_ed(1:edge%numedge) =     0
-!$omp end parallel workshare
-!
-!%omp parallel do private(iedge,ie_edge_one,nnod_same)
-      do iedge = 1, edge%numedge
-        ie_edge_one(1) = edge%ie_edge(iedge,1)
-        ie_edge_one(2) = edge%ie_edge(iedge,2)
-        call find_belonged_pe_each_edge                                 &
-     &     (node%numnod, ip_node, ie_edge_one, nnod_same,               &
-     &      ip_ref_ed(iedge), k_ref_ed(iedge))
-!
-        edge%interior_edge(iedge)                                       &
-     &     = set_each_interior_flag(my_rank, ip_ref_ed(iedge))
-      end do
-!%omp end parallel do
-!
-      end subroutine find_belonged_pe_4_edge
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      integer(kind = kint) function                                     &
-     &                    set_each_interior_flag(my_rank, ip_ref)
-!
-      integer, intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: ip_ref
-!
-      set_each_interior_flag = 0
-      if(ip_ref .eq. my_rank) set_each_interior_flag = 1
-!
-      end function set_each_interior_flag
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine find_belonged_pe_each_ele(numnod, ip_node,             &
@@ -220,7 +105,7 @@
 !
        integer(kind = kint), intent(in) :: numnod
        integer(kind = kint), intent(in) :: ip_node(numnod)
-       integer(kind = kint) :: ie_one
+       integer(kind = kint), intent(in) :: ie_one
 !
        integer(kind = kint), intent(inout) :: ip_ref
        integer(kind = kint), intent(inout) :: k_ref
@@ -238,7 +123,7 @@
 !
        integer(kind = kint), intent(in) :: numnod
        integer(kind = kint), intent(in) :: ip_node(numnod)
-       integer(kind = kint) :: ie_surf_one(num_linear_sf)
+       integer(kind = kint), intent(in) :: ie_surf_one(num_linear_sf)
 !
        integer(kind = kint), intent(inout) :: nnod_same
        integer(kind = kint), intent(inout) :: ip_ref
@@ -325,7 +210,7 @@
        subroutine find_belonged_pe_each_edge(numnod, ip_node,           &
       &          ie_edge_one, nnod_same, ip_ref, k_ref)
 !
-       integer(kind = kint) :: ie_edge_one(num_linear_edge)
+       integer(kind = kint), intent(in) :: ie_edge_one(num_linear_edge)
        integer(kind = kint), intent(in) :: numnod
        integer(kind = kint), intent(in) :: ip_node(numnod)
 !

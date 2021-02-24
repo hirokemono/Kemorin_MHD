@@ -13,10 +13,10 @@
 !!     &          dbl_id, added_comm, new_node, dbl_id2)
 !!        type(communication_table), intent(in) :: added_comm
 !!        type(node_data), intent(in) :: org_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_id
+!!        type(node_ele_double_number), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !!        type(node_data), intent(inout) :: new_node
-!!        type(parallel_double_numbering), intent(inout) :: dbl_id2
+!!        type(node_ele_double_number), intent(inout) :: dbl_id2
 !!
 !!      subroutine count_ele_by_extend_sleeve                           &
 !!     &         (added_comm, org_ele, new_ele)
@@ -26,14 +26,14 @@
 !!        type(ele_buffer_2_extend), intent(in) :: recv_ebuf
 !!        type(element_data), intent(in) :: org_ele
 !!        type(node_data), intent(in) :: new_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_id2
+!!        type(node_ele_double_number), intent(in) :: dbl_id2
 !!        type(element_data), intent(inout) :: new_ele
 !!
 !!      subroutine check_nodes_by_extend_sleeve                         &
 !!     &         (org_node, new_node, dbl_id2)
 !!        type(node_data), intent(in) :: org_node
 !!        type(node_data), intent(in) :: new_node
-!!        type(parallel_double_numbering), intent(in) :: dbl_id2
+!!        type(node_ele_double_number), intent(in) :: dbl_id2
 !!@endverbatim
 !
       module find_extended_node_and_ele
@@ -82,12 +82,12 @@
      &          dbl_id, added_comm, new_node, dbl_id2)
 !
       type(node_data), intent(in) :: org_node
-      type(parallel_double_numbering), intent(in) :: dbl_id
+      type(node_ele_double_number), intent(in) :: dbl_id
       type(node_buffer_2_extend), intent(in) :: recv_nbuf
 !
       type(node_data), intent(inout) :: new_node
       type(communication_table), intent(inout) :: added_comm
-      type(parallel_double_numbering), intent(inout) :: dbl_id2
+      type(node_ele_double_number), intent(inout) :: dbl_id2
 !
       integer(kind = kint) :: inum, inod, icou
 !
@@ -153,7 +153,7 @@
       type(ele_buffer_2_extend), intent(in) :: recv_ebuf
       type(element_data), intent(in) :: org_ele
       type(node_data), intent(in) :: new_node
-      type(parallel_double_numbering), intent(in) :: dbl_id2
+      type(node_ele_double_number), intent(in) :: dbl_id2
 !
       type(element_data), intent(inout) :: new_ele
 !
@@ -216,7 +216,7 @@
 !
       type(node_data), intent(in) :: org_node
       type(node_data), intent(in) :: new_node
-      type(parallel_double_numbering), intent(in) :: dbl_id2
+      type(node_ele_double_number), intent(in) :: dbl_id2
 !
       integer(kind = kint) :: inod
 !

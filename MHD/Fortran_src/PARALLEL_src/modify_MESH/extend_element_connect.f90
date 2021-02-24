@@ -50,7 +50,7 @@
       type(communication_table), intent(in) :: ele_comm
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: ele
-      type(parallel_double_numbering), intent(in) :: dbl_id
+      type(node_ele_double_number), intent(in) :: dbl_id
       type(element_around_node), intent(in) :: neib_ele
 !
       type(communication_table), intent(in) :: new_comm
@@ -59,8 +59,8 @@
       type(element_data), intent(inout) :: new_ele
 !
 !>      Structure of double numbering
-      type(parallel_double_numbering) :: dbl_id2
-      type(parallel_double_numbering) :: dbl_ele
+      type(node_ele_double_number) :: dbl_id2
+      type(node_ele_double_number) :: dbl_ele
 !
       type(communication_table) :: added_comm
       type(ele_buffer_2_extend) :: send_ebuf

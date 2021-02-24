@@ -95,7 +95,7 @@
 !
       type(mesh_geometry), save :: new_mesh
       type(mesh_groups), save :: new_group
-      type(parallel_double_numbering), save :: dbl_nod
+      type(node_ele_double_number), save :: dbl_nod
 !
 !
       call alloc_double_numbering(fem_m%mesh%node%numnod, dbl_nod)
