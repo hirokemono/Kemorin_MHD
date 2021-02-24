@@ -141,7 +141,7 @@
 !     --------------------- init for fieldline and PVR
 !
       call link_FEM_field_4_viz(FEM_viz%geofem, FEM_viz%field, pvr)
-      call alloc_jacobians_4_viz(pvr)
+      call link_self_jacobians_4_viz(pvr)
       call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
      &    pvr%surf_comm, pvr%edge_comm, pvr%ele_4_nod, pvr%jacobians)
       call calypso_mpi_barrier

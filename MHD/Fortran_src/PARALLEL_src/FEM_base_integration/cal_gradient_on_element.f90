@@ -51,16 +51,16 @@
 !
       real(kind = kreal), intent(inout) :: d_ele(numele,3)
 !
-      integer (kind = kint) :: iproc, inod, iele
+      integer (kind = kint) :: ip, inod, iele
       integer (kind = kint) :: k1, ii, ix
       integer (kind = kint) :: ist, ied
 !
 ! --------- lead gradient in a element
 !
-!$omp parallel do private(k1,ii,ix,iele,ist,ied)
-      do iproc = 1, np_smp
-        ist = iele_fsmp_stack(iproc-1)+1
-        ied = iele_fsmp_stack(iproc)
+!$omp parallel do private(ip,k1,ii,ix,iele,ist,ied,inod)
+      do ip = 1, np_smp
+        ist = iele_fsmp_stack(ip-1)+1
+        ied = iele_fsmp_stack(ip)
 !
         d_ele(ist:ied,1) = zero
         d_ele(ist:ied,2) = zero
@@ -127,16 +127,16 @@
 !
       real(kind = kreal), intent(inout) :: d_ele(numele,3)
 !
-      integer (kind = kint) :: iproc, inod, inum, iele
+      integer (kind = kint) :: ip, inod, inum, iele
       integer (kind = kint) :: k1, ii, ix
       integer (kind = kint) :: ist, ied
 !
 ! --------- lead gradient in a element
 !
-!$omp parallel do private(k1,ii,ix,inum,iele,ist,ied)
-      do iproc = 1, np_smp
-        ist = iele_fsmp_stack(iproc-1)+1
-        ied = iele_fsmp_stack(iproc)
+!$omp parallel do private(ip,k1,ii,ix,inum,iele,ist,ied,inod)
+      do ip = 1, np_smp
+        ist = iele_fsmp_stack(ip-1)+1
+        ied = iele_fsmp_stack(ip)
         d_ele(ist:ied,1) = zero
         d_ele(ist:ied,2) = zero
         d_ele(ist:ied,3) = zero

@@ -11,8 +11,8 @@
 !!      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
 !!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
-!!      subroutine alloc_FEM_field_4_viz(VIZ_DAT)
-!!      subroutine alloc_jacobians_4_viz(VIZ_DAT)
+!!      subroutine link_self_FEM_field_4_viz(VIZ_DAT)
+!!      subroutine link_self_jacobians_4_viz(VIZ_DAT)
 !!      subroutine dealloc_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine dealloc_jacobians_4_viz(VIZ_DAT)
 !!        type(mesh_data), intent(inout), target :: geofem
@@ -42,6 +42,18 @@
 !
 !>      Structure of data for visualization
       type VIZ_mesh_field
+!>         Structure for mesh data for visualization
+        type(mesh_data) :: geofem_v
+!>         Structure for nodal field data
+        type(phys_data) :: nod_fld_v
+!!>        Structure of shape function for PVR and fieldline
+!        type(shape_finctions_at_points) :: spfs
+!>        Stracture for Jacobians
+        type(jacobians_type) :: jacobians_v
+!>        Structure of included element list for each node
+        type(element_around_node) :: ele_4_nod_v
+!
+!
 !>         Structure for mesh data for visualization
         type(mesh_data), pointer :: viz_fem
 !>         Structure for nodal field data
@@ -117,25 +129,25 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_FEM_field_4_viz(VIZ_DAT)
+      subroutine link_self_FEM_field_4_viz(VIZ_DAT)
 !
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      allocate(VIZ_DAT%viz_fem)
-      allocate(VIZ_DAT%viz_fld)
+      VIZ_DAT%viz_fem => VIZ_DAT%geofem_v
+      VIZ_DAT%viz_fld => VIZ_DAT%nod_fld_v
 !
-      end subroutine alloc_FEM_field_4_viz
+      end subroutine link_self_FEM_field_4_viz
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_jacobians_4_viz(VIZ_DAT)
+      subroutine link_self_jacobians_4_viz(VIZ_DAT)
 !
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      allocate(VIZ_DAT%ele_4_nod)
-      allocate(VIZ_DAT%jacobians)
+      VIZ_DAT%ele_4_nod => VIZ_DAT%ele_4_nod_v
+      VIZ_DAT%jacobians =>  VIZ_DAT%jacobians_v
 !
-      end subroutine alloc_jacobians_4_viz
+      end subroutine link_self_jacobians_4_viz
 !
 ! ----------------------------------------------------------------------
 !
