@@ -58,6 +58,7 @@
 !
       use t_ctl_data_sph_MHD_psf
       use input_control_sph_MHD
+      use FEM_to_PSF_bridge
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -85,8 +86,10 @@
       if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+1)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1, MHD_step1,                &
-     &    FEM_d1%geofem, edge_comm_M, FEM_d1%field, FEM_d1%iphys,       &
+     &    FEM_d1%geofem, FEM_d1%field, FEM_d1%iphys,                    &
      &    MHD_IO1, FEM_d1%v_sol)
+      call init_FEM_to_PSF_bridge                                       &
+     &   (MHD_step1%viz_step, FEM_d1%geofem, edge_comm_M)
 !
 !        Initialize spherical transform dynamo
 !

@@ -9,11 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,          &
-!!     &          geofem, edge_comm, nod_fld, iphys, MHD_IO, v_sol)
+!!     &          geofem, nod_fld, iphys, MHD_IO, v_sol)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(communication_table), intent(inout) :: edge_comm
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_IO_data), intent(inout) :: MHD_IO
@@ -73,7 +72,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_MHD(MHD_files, MHD_step,            &
-     &          geofem, edge_comm, nod_fld, iphys, MHD_IO, v_sol)
+     &          geofem, nod_fld, iphys, MHD_IO, v_sol)
 !
       use m_work_time
       use m_elapsed_labels_4_MHD
@@ -88,7 +87,6 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_data), intent(inout) :: geofem
-      type(communication_table), intent(inout) :: edge_comm
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(MHD_IO_data), intent(inout) :: MHD_IO
@@ -115,14 +113,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0 ) write(*,*) 'FEM_mesh_initialization'
+      if (iflag_debug.gt.0 ) write(*,*) 'FEM_comm_initialization'
       call FEM_comm_initialization(geofem%mesh, v_sol)
-      call FEM_mesh_initialization(geofem%mesh, geofem%group)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (geofem%mesh%node, geofem%mesh%nod_comm,                       &
-     &    edge_comm, geofem%mesh%edge)
 !
       end subroutine FEM_initialize_sph_MHD
 !
