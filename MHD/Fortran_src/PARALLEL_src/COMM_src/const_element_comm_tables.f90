@@ -8,11 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine const_global_mesh_infos(mesh)
-!!      subroutine const_element_comm_tbl_only(mesh, ele_comm)
-!!        type(mesh_geometry), intent(inout) :: mesh
-!!        type(communication_table), intent(inout) :: ele_comm
-!!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
-!!        type(mesh_geometry), intent(inout) ::    mesh
 !!
 !!      subroutine const_ele_comm_table(node, nod_comm, ele_comm, ele)
 !!        type(node_data), intent(in) :: node
@@ -81,19 +76,6 @@
       end subroutine const_global_mesh_infos
 !
 !-----------------------------------------------------------------------
-!
-      subroutine const_element_comm_tbl_only(mesh, ele_comm)
-!
-      type(mesh_geometry), intent(inout) :: mesh
-      type(communication_table), intent(inout) :: ele_comm
-!
-!
-      if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
-      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
-     &                          ele_comm, mesh%ele)
-!
-      end subroutine const_element_comm_tbl_only
-!
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
@@ -215,6 +197,7 @@
       type(element_around_node) :: neib_surf
       type(failed_table) :: fail_tbl_s
 !
+      integer(kind = kint_gl), allocatable :: istack_inersurf(:)
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
@@ -238,15 +221,15 @@
       call dealloc_failed_export(fail_tbl_s)
 !
 !
-      call alloc_numsurf_stack(nprocs, surf)
+      allocate(istack_inersurf(0:nprocs))
+      istack_inersurf(0:nprocs) = 0
+!
       call count_number_of_node_stack                                   &
-     &  (surf%numsurf, surf%istack_numsurf)
-      call count_number_of_node_stack                                   &
-     &  (surf%internal_surf(1), surf%istack_intersurf)
+     &  (surf%internal_surf(1), istack_inersurf)
       call set_global_ele_id                                            &
-     &   (txt_surf, surf%numsurf, surf%istack_intersurf,                &
+     &   (txt_surf, surf%numsurf, istack_inersurf,                      &
      &    surf%interior_surf, surf_comm, surf%isurf_global)
-      call dealloc_numsurf_stack(surf)
+      deallocate(istack_inersurf)
 !
       end subroutine const_surf_comm_table
 !
@@ -285,6 +268,8 @@
       type(element_around_node) :: neib_edge
       type(failed_table) :: fail_tbl_d
 !
+      integer(kind = kint_gl), allocatable :: istack_ineredge(:)
+!
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
@@ -312,16 +297,15 @@
       call dealloc_failed_export(fail_tbl_d)
 !
 !
+      allocate(istack_ineredge(0:nprocs))
+      istack_ineredge(0:nprocs) = 0
 !
-      call alloc_numedge_stack(nprocs, edge)
       call count_number_of_node_stack                                   &
-     &  (edge%numedge, edge%istack_numedge)
-      call count_number_of_node_stack                                   &
-     &  (edge%internal_edge(1), edge%istack_interedge)
+     &  (edge%internal_edge(1), istack_ineredge)
       call set_global_ele_id                                            &
-     &   (txt_edge, edge%numedge, edge%istack_interedge,                &
+     &   (txt_edge, edge%numedge, istack_ineredge,                      &
      &    edge%interior_edge, edge_comm, edge%iedge_global)
-      call dealloc_numedge_stack(edge)
+      deallocate(istack_ineredge)
 !
       end subroutine const_edge_comm_table
 !

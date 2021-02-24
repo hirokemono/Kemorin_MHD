@@ -59,7 +59,8 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       call set_nod_and_ele_infos(mesh%node, mesh%ele)
-      call const_element_comm_tbl_only(mesh, ele_comm)
+      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
+     &                          ele_comm, mesh%ele)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
@@ -138,7 +139,9 @@
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       call alloc_sph_node_geometry(newmesh%node)
       call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
-      call const_element_comm_tbl_only(newmesh, ele_comm)
+      call const_ele_comm_table(newmesh%node, newmesh%nod_comm,         &
+     &                          ele_comm, newmesh%ele)
+
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+4)

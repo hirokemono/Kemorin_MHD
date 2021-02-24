@@ -144,8 +144,9 @@
         write(e_message,*)                                              &
      &      'Construct repartitioned mesh and transfer table'
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
-        if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
-        call const_element_comm_tbl_only(geofem%mesh, ele_comm)
+        if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+        call const_ele_comm_table(geofem%mesh%node,                     &
+     &      geofem%mesh%nod_comm, ele_comm, geofem%mesh%ele)
         call s_repartiton_by_volume                                     &
      &     (part_param, geofem, ele_comm, next_tbl,                     &
      &      new_fem, org_to_new_tbl)
@@ -187,8 +188,9 @@
       call FEM_mesh_initialization(geofem%mesh, geofem%group)
 !
 !  -----  Const Element communication table
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbl_only'
-      call const_element_comm_tbl_only(geofem%mesh, ele_comm_T)
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_table'
+      call const_ele_comm_table(geofem%mesh%node, geofem%mesh%nod_comm, &
+     &                          ele_comm_T, geofem%mesh%ele)
 !
 !  -----  Const Neighboring information
       if(iflag_debug .gt. 0) write(*,*) 'set_belonged_ele_and_next_nod'

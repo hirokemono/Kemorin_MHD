@@ -7,7 +7,6 @@
 !> @brief Structure of edge geometry data
 !!
 !!@verbatim
-!!      subroutine alloc_numedge_stack(num_pe, edge)
 !!      subroutine alloc_inod_in_edge(edge)
 !!      subroutine alloc_edge_connect(edge, nsurf)
 !!      subroutine alloc_interior_edge(edge)
@@ -20,7 +19,6 @@
 !!        type(edge_data), intent(inout) :: edge
 !!        type(edge_position), intent(inout) :: edge_pt
 !!
-!!      subroutine dealloc_numedge_stack(edge)
 !!      subroutine dealloc_inod_in_edge(edge)
 !!      subroutine dealloc_edge_connect(edge)
 !!      subroutine dealloc_interior_edge(edge)
@@ -49,11 +47,6 @@
         integer(kind=kint) ::  nnod_4_edge
 !>     number of isolated edge
         integer(kind=kint) ::  numedge_iso
-!
-!>        Stack list of number of edge
-        integer(kind=kint_gl), allocatable  :: istack_numedge(:)
-!>        Stack list of number of internal edge
-        integer(kind=kint_gl), allocatable  :: istack_interedge(:)
 !
 !>     local index for edge on each element
         integer (kind=kint), allocatable :: node_on_edge(:,:)
@@ -99,21 +92,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_numedge_stack(num_pe, edge)
-!
-      integer, intent(in) :: num_pe
-      type(edge_data), intent(inout) :: edge
-!
-!
-      allocate(edge%istack_numedge(0:num_pe))
-      allocate(edge%istack_interedge(0:num_pe))
-      edge%istack_numedge =   0
-      edge%istack_interedge = 0
-!
-      end subroutine alloc_numedge_stack
 !
 !  ---------------------------------------------------------------------
 !
@@ -238,18 +216,6 @@
       end subroutine alloc_edge_param_smp
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_numedge_stack(edge)
-!
-      type(edge_data), intent(inout) :: edge
-!
-!
-      if(allocated(edge%istack_numedge) .eqv. .FALSE.) return
-      deallocate(edge%istack_numedge, edge%istack_interedge)
-!
-      end subroutine dealloc_numedge_stack
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_inod_in_edge(edge)

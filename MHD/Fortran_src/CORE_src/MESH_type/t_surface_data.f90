@@ -7,7 +7,6 @@
 !> @brief structure of surface data (geometry and connectivity)
 !!
 !!@verbatim
-!!      subroutine alloc_numsurf_stack(num_pe, surf)
 !!      subroutine allocate_inod_in_surf(surf)
 !!      subroutine alloc_surface_connect(surf, nele)
 !!      subroutine alloc_interior_surf(surf)
@@ -18,7 +17,6 @@
 !!      subroutine alloc_surf_param_smp(surf)
 !!      subroutine alloc_ele_4_surf_type(surf)
 !!
-!!      subroutine dealloc_numsurf_stack(surf)
 !!      subroutine dealloc_inod_in_surf(surf)
 !!      subroutine dealloc_surface_connect(surf)
 !!      subroutine dealloc_interior_surf(nele)
@@ -48,11 +46,6 @@
         integer(kind=kint) ::  numsurf_ext
 !>       number of isolated sueface
         integer(kind=kint) ::  numsurf_iso
-!
-!>        Stack list of number of surface
-        integer(kind=kint_gl), allocatable  :: istack_numsurf(:)
-!>        Stack list of number of internal surface
-        integer(kind=kint_gl), allocatable  :: istack_intersurf(:)
 !
 !>   local index for surface on each element
         integer (kind=kint), allocatable :: node_on_sf(:,:)
@@ -109,21 +102,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_numsurf_stack(num_pe, surf)
-!
-      integer, intent(in) :: num_pe
-      type(surface_data), intent(inout) :: surf
-!
-!
-      allocate(surf%istack_numsurf(0:num_pe))
-      allocate(surf%istack_intersurf(0:num_pe))
-      surf%istack_numsurf =   0
-      surf%istack_intersurf = 0
-!
-      end subroutine alloc_numsurf_stack
 !
 !  ---------------------------------------------------------------------
 !
@@ -267,18 +245,6 @@
       end subroutine alloc_ele_4_surf_type
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_numsurf_stack(surf)
-!
-      type(surface_data), intent(inout) :: surf
-!
-!
-      if(allocated(surf%istack_numsurf) .eqv. .FALSE.) return
-      deallocate (surf%istack_numsurf, surf%istack_intersurf)
-!
-      end subroutine dealloc_numsurf_stack
-!
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_inod_in_surf(surf)
