@@ -7,6 +7,8 @@
 !>@brief  Routines to Construct communication table for elements
 !!
 !!@verbatim
+!!      subroutine elapsed_label_4_ele_comm_tbl
+!!
 !!      subroutine const_comm_table_by_connenct                         &
 !!     &         (txt, numele, nnod_4_ele, ie, x_ele, node, nod_comm,   &
 !!     &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl)
@@ -23,6 +25,8 @@
 !
       use m_precision
       use m_constants
+      use m_work_time
+!
       use calypso_mpi
 !
       use t_geometry_data
@@ -51,6 +55,12 @@
         real(kind = kreal), allocatable :: xe_export(:)
       end type const_comm_table_work
 !
+      logical, save :: iflag_ecomm_time = .FALSE.
+      integer(kind = kint), save :: ist_elapsed
+      integer(kind = kint), save :: ied_elapsed
+!
+      private :: ist_elapsed, ied_elapsed, iflag_ecomm_time
+!
       private :: element_data_reverse_SR
       private :: alloc_element_rev_imports, dealloc_element_rev_imports
       private :: alloc_element_rev_exports, dealloc_element_rev_exports
@@ -59,6 +69,27 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine elapsed_label_4_ele_comm_tbl
+!
+      integer(kind = kint), parameter :: num_append = 6
+!
+!
+      call append_elapsed_times(num_append, ist_elapsed, ied_elapsed)
+!
+      elps1%labels(ist_elapsed+1) = 'count_element_import_num'
+      elps1%labels(ist_elapsed+2) = 'set_element_import_item'
+      elps1%labels(ist_elapsed+3) = 'element_num_reverse_SR'
+      elps1%labels(ist_elapsed+4) = 'element_data_reverse_SR'
+      elps1%labels(ist_elapsed+5) = 'set_element_export_item'
+      elps1%labels(ist_elapsed+6) = 'check_element_position'
+!
+      iflag_ecomm_time = .TRUE.
+!
+      end subroutine elapsed_label_4_ele_comm_tbl
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine const_comm_table_by_connenct                           &
@@ -101,7 +132,7 @@
 !
       call alloc_import_item(e_comm)
 !
-!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+2)
       call alloc_element_rev_imports                                    &
      &   (e_comm%ntot_import, nnod_4_ele, wk_comm)
       call set_element_import_item(inod_dbl, iele_dbl,                  &
@@ -109,19 +140,19 @@
      &    e_comm%id_neib, e_comm%istack_import, e_comm%item_import,     &
      &    wk_comm%inod_lc_import, wk_comm%ipe_lc_import,                &
      &    wk_comm%xe_import)
-!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
 !
       call alloc_export_num(e_comm)
 !
 !      write(*,*) 'element_num_reverse_SR', my_rank
-!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call element_num_reverse_SR                                       &
      &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import, SR_sig1,  &
      &    e_comm%num_export, e_comm%istack_export, e_comm%ntot_export)
-!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
 !
 !      write(*,*) 'element_data_reverse_SR2', my_rank
-!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
       call alloc_element_rev_exports                                    &
      &   (e_comm%ntot_export, nnod_4_ele, wk_comm)
       call element_data_reverse_SR                                      &
@@ -131,23 +162,23 @@
      &    wk_comm%xe_import, wk_comm%inod_lc_export,                    &
      &    wk_comm%ipe_lc_export, wk_comm%xe_export)
       call dealloc_element_rev_imports(wk_comm)
-!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+5)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
 !
       call alloc_export_item(e_comm)
 !      write(*,*) 'set_element_export_item', my_rank
-!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+5)
       call set_element_export_item                                      &
      &   (txt, neib_e, numele, nnod_4_ele, x_ele,                       &
      &    e_comm%num_neib, e_comm%istack_export,                        &
      &    wk_comm%inod_lc_export, wk_comm%ipe_lc_export,                &
      &    wk_comm%xe_export, e_comm%item_export, fail_tbl)
       call dealloc_element_rev_exports(wk_comm)
-!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+6)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+5)
 !
 !      write(*,*) 'check_element_position', my_rank
-!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+8)
+!      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+6)
       call check_element_position(txt, numele, x_ele, e_comm)
-!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+8)
+!      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+6)
 !
       end subroutine const_comm_table_by_connenct
 !
