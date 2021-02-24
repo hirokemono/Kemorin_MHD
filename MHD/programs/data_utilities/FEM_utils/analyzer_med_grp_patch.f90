@@ -64,7 +64,7 @@
      &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
 !
       call alloc_failed_export(0, fail_tbl_d)
-      call const_edge_comm_table                                        &
+      call const_edge_comm_table_old                                        &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
      &    edge_comm_MG, FUTIL1%geofem%mesh%edge, fail_tbl_d)
       call dealloc_failed_export(fail_tbl_d)

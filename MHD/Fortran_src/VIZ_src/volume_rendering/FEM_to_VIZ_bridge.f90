@@ -87,9 +87,9 @@
 !
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table_old'
         call alloc_failed_export(0, fail_tbl_d)
-        call const_edge_comm_table                                      &
+        call const_edge_comm_table_old                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
      &      edge_comm, geofem%mesh%edge, fail_tbl_d)
         call dealloc_failed_export(fail_tbl_d)
@@ -185,9 +185,9 @@
 !
         iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
         if(iflag .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table_old'
           call alloc_failed_export(0, fail_tbl_d)
-          call const_edge_comm_table                                    &
+          call const_edge_comm_table_old                                    &
      &       (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm, &
      &        VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge, fail_tbl_d)
           call dealloc_failed_export(fail_tbl_d)

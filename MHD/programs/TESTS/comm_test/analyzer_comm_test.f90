@@ -95,10 +95,6 @@
       call FEM_comm_initialization(test_fem%mesh, v_sol_T)
       call FEM_mesh_initialization(test_fem%mesh, test_fem%group)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-!      call const_ele_comm_tbl                                           &
-!     &   (test_fem%mesh%node, test_fem%mesh%nod_comm,                   &
-!     &    T_ele_comm, test_fem%mesh%ele)
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table2'
       call alloc_failed_export(0, fail_tbl_s)
       call const_ele_comm_table2                                        &
@@ -116,7 +112,7 @@
       call dealloc_failed_export(fail_tbl_s)
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table2'
       call alloc_failed_export(0, fail_tbl_d)
       call const_edge_comm_table2                                      &
      &   (test_fem%mesh%node, test_fem%mesh%ele,                       &

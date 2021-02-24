@@ -14,19 +14,19 @@
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!
-!!      subroutine const_ele_comm_tbl(node, nod_comm, ele_comm, ele)
+!!      subroutine const_ele_comm_tbl_old(node, nod_comm, ele_comm, ele)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: ele_comm
 !!        type(element_data), intent(inout) :: ele
-!!      subroutine const_surf_comm_table                                &
+!!      subroutine const_surf_comm_table_old                                &
 !!     &         (node, nod_comm, surf_comm, surf, fail_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
 !!        type(failed_table), intent(inout) :: fail_tbl
-!!      subroutine const_edge_comm_table                                &
+!!      subroutine const_edge_comm_table_old                                &
 !!     &         (node, nod_comm, edge_comm, edge, fail_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
@@ -95,8 +95,8 @@
       type(communication_table), intent(inout) :: ele_comm
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-      call const_ele_comm_tbl(mesh%node, mesh%nod_comm,                 &
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl_old'
+      call const_ele_comm_tbl_old(mesh%node, mesh%nod_comm,                 &
      &                        ele_comm, mesh%ele)
 !
       end subroutine const_element_comm_tbl_only
@@ -223,7 +223,7 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_tbl(node, nod_comm, ele_comm, ele)
+      subroutine const_ele_comm_tbl_old(node, nod_comm, ele_comm, ele)
 !
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -256,11 +256,11 @@
 !
       call const_global_element_id(ele_comm, ele)
 !
-      end subroutine const_ele_comm_tbl
+      end subroutine const_ele_comm_tbl_old
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_surf_comm_table                                  &
+      subroutine const_surf_comm_table_old                                  &
      &         (node, nod_comm, surf_comm, surf, fail_tbl)
 !
       use set_ele_id_4_node_type
@@ -292,11 +292,11 @@
 !
       call const_global_surface_id(surf_comm, surf)
 !
-      end subroutine const_surf_comm_table
+      end subroutine const_surf_comm_table_old
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_edge_comm_table                                  &
+      subroutine const_edge_comm_table_old                                  &
      &         (node, nod_comm, edge_comm, edge, fail_tbl)
 !
       use set_ele_id_4_node_type
@@ -336,7 +336,7 @@
 !
       call const_global_edge_id(edge_comm, edge)
 !
-      end subroutine const_edge_comm_table
+      end subroutine const_edge_comm_table_old
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

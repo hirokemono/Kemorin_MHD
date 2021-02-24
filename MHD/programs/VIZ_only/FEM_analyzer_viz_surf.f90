@@ -123,9 +123,9 @@
       call FEM_mesh_initialization(FEM_viz%geofem%mesh,                 &
      &                             FEM_viz%geofem%group)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table_old'
       call alloc_failed_export(0, fail_tbl_d)
-      call const_edge_comm_table                                        &
+      call const_edge_comm_table_old                                        &
      &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
      &    edge_comm, FEM_viz%geofem%mesh%edge, fail_tbl_d)
       call dealloc_failed_export(fail_tbl_d)
