@@ -226,7 +226,6 @@
       use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
-      use const_element_comm_table
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -274,7 +273,6 @@
       use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
-      use const_element_comm_table
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -321,7 +319,6 @@
       use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
-      use const_element_comm_table
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm

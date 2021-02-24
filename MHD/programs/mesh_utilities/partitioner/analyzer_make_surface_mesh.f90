@@ -38,6 +38,7 @@
 !
       use m_default_file_prefix
       use t_ctl_data_mesh_test
+      use t_const_comm_table
 !
       use set_control_platform_data
       use copy_mesh_structures
@@ -50,7 +51,6 @@
       use parallel_FEM_mesh_init
       use load_element_mesh_data
       use output_test_mesh
-      use const_element_comm_table
 !
       use t_file_IO_parameter
       use t_mesh_data

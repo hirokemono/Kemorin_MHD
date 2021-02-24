@@ -57,10 +57,10 @@
       use t_shape_functions
       use t_jacobians
       use t_fem_gauss_int_coefs
+      use t_const_comm_table
 !
       use t_repartition_test
 !
-      use const_element_comm_table
       use int_volume_of_single_domain
 !
 !>     Stracture for Jacobians

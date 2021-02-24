@@ -35,7 +35,6 @@
       use m_elapsed_labels_4_MHD
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_gen_SPH
-      use const_element_comm_table
 !      use parallel_sleeve_extension
 !
 !

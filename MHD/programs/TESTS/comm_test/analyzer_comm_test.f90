@@ -18,12 +18,11 @@
       use t_solver_SR
       use t_ctl_data_comm_test
       use t_mesh_data
-      use t_belonged_element_4_node
       use t_file_IO_parameter
       use t_control_param_comm_test
       use t_vector_for_solver
       use t_failed_export_list
-      use const_element_comm_table
+      use t_const_comm_table
 !
       implicit none
 !
@@ -56,7 +55,6 @@
       use nod_phys_send_recv
       use mpi_load_mesh_data
       use const_element_comm_tables
-      use const_element_comm_table
 !
       integer :: i, num_in, num_ex
 !

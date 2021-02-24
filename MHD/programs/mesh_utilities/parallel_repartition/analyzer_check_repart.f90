@@ -47,6 +47,7 @@
 !
       use t_next_node_ele_4_node
       use t_ctl_file_volume_grouping
+      use t_const_comm_table
 !
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
@@ -57,7 +58,6 @@
       use int_volume_of_single_domain
       use field_to_new_partition
       use parallel_sleeve_extension
-      use const_element_comm_table
 !
 !>     Stracture for Jacobians
 !
@@ -100,7 +100,6 @@
       use t_solver_SR
       use t_interpolate_table
       use t_work_for_comm_check
-      use t_belonged_element_4_node
 !
       use m_file_format_switch
       use parallel_itp_tbl_IO_select

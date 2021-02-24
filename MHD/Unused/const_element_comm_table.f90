@@ -78,28 +78,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine elapsed_label_4_ele_comm_tbl
-!
-      integer(kind = kint), parameter :: num_append = 8
-!
-!
-      call append_elapsed_times(num_append, ist_elapsed, ied_elapsed)
-!
-      elps1%labels(ist_elapsed+1) = 'count_element_import_num'
-      elps1%labels(ist_elapsed+2) = 'local_node_id_reverse_SR'
-      elps1%labels(ist_elapsed+3) = 'set_element_import_item'
-      elps1%labels(ist_elapsed+4) = 'element_num_reverse_SR'
-      elps1%labels(ist_elapsed+5) = 'element_data_reverse_SR'
-      elps1%labels(ist_elapsed+6) = 's_set_element_export_item'
-      elps1%labels(ist_elapsed+7) = 'element_export_item_in_ext'
-      elps1%labels(ist_elapsed+8) = 'check_element_position'
-!
-      iflag_ecomm_time = .TRUE.
-!
-      end subroutine elapsed_label_4_ele_comm_tbl
-!
-!-----------------------------------------------------------------------
-!
       subroutine const_comm_table_by_connenct_old                       &
      &         (txt, numele, nnod_4_ele, ie, internal_flag, x_ele,      &
      &          node, nod_comm, neib_e, x_ref_ele, host,                &

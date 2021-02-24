@@ -58,8 +58,8 @@
       use t_jacobians
       use t_fem_gauss_int_coefs
       use t_multi_node_clustering
+      use t_const_comm_table
 !
-      use const_element_comm_table
       use int_volume_of_single_domain
 !
 !>     Stracture for Jacobians

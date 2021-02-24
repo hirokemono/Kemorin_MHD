@@ -186,7 +186,8 @@
         call set_global_nodid_4_newfilter(filter_node, nod_d_grp)
 !
 !        write(*,*) 'inter_nod_3dfilter', filter_node%internal_node
-        call alloc_whole_filter_stack2(filter_node%internal_node, fils_sort)
+        call alloc_whole_filter_stack2                                  &
+     &     (filter_node%internal_node, fils_sort)
         call trans_filter_4_new_domains(ip2, ifmt_3d_filter,            &
      &      newfil_p%org_filter_coef_head, newfil_p%org_mesh_file,      &
      &      nod_d_grp, org_node, org_ele%numele, filter_node,           &

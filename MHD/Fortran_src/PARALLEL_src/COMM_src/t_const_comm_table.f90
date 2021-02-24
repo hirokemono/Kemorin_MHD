@@ -97,9 +97,7 @@
      &          inod_dbl, iele_dbl, neib_e, e_comm, fail_tbl)
 !
       use reverse_SR_int
-      use find_element_comm_table
       use const_global_element_ids
-      use make_element_comm_table_SR
       use set_element_comm_table
 !
       character(len=kchara), intent(in) :: txt
