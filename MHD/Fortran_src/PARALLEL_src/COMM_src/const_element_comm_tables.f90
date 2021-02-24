@@ -14,25 +14,23 @@
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!
-!!      subroutine const_ele_comm_tbl_old(node, nod_comm, ele_comm, ele)
+!!      subroutine const_ele_comm_table(node, nod_comm, ele_comm, ele)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: ele_comm
 !!        type(element_data), intent(inout) :: ele
-!!      subroutine const_surf_comm_table_old                                &
-!!     &         (node, nod_comm, surf_comm, surf, fail_tbl)
+!!      subroutine const_surf_comm_table                                &
+!!     &         (node, nod_comm, surf_comm, surf)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: surf_comm
 !!        type(surface_data), intent(inout) :: surf
-!!        type(failed_table), intent(inout) :: fail_tbl
-!!      subroutine const_edge_comm_table_old                                &
-!!     &         (node, nod_comm, edge_comm, edge, fail_tbl)
+!!      subroutine const_edge_comm_table                                &
+!!     &         (node, nod_comm, edge_comm, edge)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(inout) :: edge_comm
 !!        type(edge_data), intent(inout) :: edge
-!!        type(failed_table), intent(inout) :: fail_tbl
 !!
 !!      subroutine const_global_numnod_list(node)
 !!@endverbatim
@@ -47,7 +45,6 @@
       use t_surface_data
       use t_edge_data
       use t_comm_table
-      use t_belonged_element_4_node
       use t_next_node_ele_4_node
       use t_failed_export_list
 !
@@ -89,15 +86,13 @@
 !
       subroutine const_element_comm_tbl_only(mesh, ele_comm)
 !
-      use set_ele_id_4_node_type
-!
       type(mesh_geometry), intent(inout) :: mesh
       type(communication_table), intent(inout) :: ele_comm
 !
 !
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl_old'
-      call const_ele_comm_tbl_old(mesh%node, mesh%nod_comm,                 &
-     &                        ele_comm, mesh%ele)
+      if(iflag_debug.gt.0) write(*,*) ' const_ele_comm_table'
+      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
+     &                          ele_comm, mesh%ele)
 !
       end subroutine const_element_comm_tbl_only
 !
@@ -223,120 +218,158 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_tbl_old(node, nod_comm, ele_comm, ele)
+      subroutine const_ele_comm_table                                   &
+     &         (node, nod_comm, ele_comm, ele)
 !
+      use m_geometry_constants
+      use t_para_double_numbering
+      use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(inout) :: ele_comm
       type(element_data), intent(inout) :: ele
+      type(communication_table), intent(inout) :: ele_comm
 !
-      type(belonged_table), save :: belongs
-      type(failed_table), save :: fail_tbl_e
+      type(parallel_double_numbering) :: inod_dbl
+      type(element_around_node) :: neib_ele
+      type(failed_table) :: fail_tbl_e
+!
+      integer(kind = kint), allocatable :: ip_ref(:)
+      integer(kind = kint), allocatable :: k_ref(:)
 !
 !
-      call set_ele_id_4_node(node, ele, belongs%blng_ele)
-      call alloc_x_ref_ele(node, belongs)
-      call sort_inod_4_ele_by_position(ione, ele%numele, ele%x_ele,     &
-     &    node, belongs%blng_ele, belongs%x_ref_ele)
+      call alloc_double_numbering(node%numnod, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
+!
+      allocate(ip_ref(ele%numele))
+      allocate(k_ref(ele%numele))
+      call find_belonged_pe_4_ele(my_rank, node, inod_dbl%ip_home(1),   &
+     &                            ele, ip_ref, k_ref)
+!
+      call set_ele_id_4_node(node, ele, neib_ele)
 !
       call alloc_failed_export(0, fail_tbl_e)
-      call belonged_ele_id_4_node(node, ele, belongs%host_ele)
-      call const_comm_table_by_connenct_old                             &
-     &   (txt_ele, ele%numele, ele%nnod_4_ele, ele%ie,                  &
-     &    ele%interior_ele, ele%x_ele, node, nod_comm,                  &
-     &    belongs%blng_ele, belongs%x_ref_ele, belongs%host_ele,        &
-     &    ele_comm, fail_tbl_e)
+      call const_comm_table_by_connenct                                 &
+     &   (txt_surf, ele%numele, ele%nnod_4_ele, ele%ie,                 &
+     &    ele%x_ele, node, nod_comm, inod_dbl, ip_ref, k_ref,           &
+     &    neib_ele, ele_comm, fail_tbl_e)
+      call dealloc_double_numbering(inod_dbl)
+      call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
-      call dealloc_iele_belonged(belongs%host_ele)
-      call dealloc_x_ref_ele(belongs)
-      call dealloc_iele_belonged(belongs%blng_ele)
+      deallocate(ip_ref, k_ref)
+!
 !
       call const_global_element_id(ele_comm, ele)
+      call calypso_mpi_barrier
 !
-      end subroutine const_ele_comm_tbl_old
+      end subroutine const_ele_comm_table
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_surf_comm_table_old                                  &
-     &         (node, nod_comm, surf_comm, surf, fail_tbl)
+      subroutine const_surf_comm_table                                  &
+     &         (node, nod_comm, surf_comm, surf)
 !
+      use m_geometry_constants
+      use t_para_double_numbering
+      use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(inout) :: surf_comm
       type(surface_data), intent(inout) :: surf
-      type(failed_table), intent(inout) :: fail_tbl
 !
-      type(belonged_table), save :: belongs
+      type(parallel_double_numbering) :: inod_dbl
+      type(element_around_node) :: neib_surf
+      type(failed_table) :: fail_tbl_s
+!
+      integer(kind = kint), allocatable :: ip_ref(:)
+      integer(kind = kint), allocatable :: k_ref(:)
 !
 !
-      call set_surf_id_4_node(node, surf, belongs%blng_surf)
-      call alloc_x_ref_surf(node, belongs)
-      call sort_inod_4_ele_by_position(ione, surf%numsurf, surf%x_surf, &
-     &    node, belongs%blng_surf, belongs%x_ref_surf)
+      call alloc_double_numbering(node%numnod, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      call belonged_surf_id_4_node(node, surf, belongs%host_surf)
-      call const_comm_table_by_connenct_old                             &
+      allocate(ip_ref(surf%numsurf))
+      allocate(k_ref(surf%numsurf))
+!
+      call find_belonged_pe_4_surf(my_rank, node, inod_dbl%ip_home(1),  &
+     &                             surf, ip_ref, k_ref)
+!
+      call set_surf_id_4_node(node, surf, neib_surf)
+!
+      call alloc_failed_export(0, fail_tbl_s)
+      call const_comm_table_by_connenct                                 &
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
-     &    surf%interior_surf, surf%x_surf, node, nod_comm,              &
-     &    belongs%blng_surf, belongs%x_ref_surf, belongs%host_surf,     &
-     &    surf_comm, fail_tbl)
-      call dealloc_iele_belonged(belongs%host_surf)
-      call dealloc_x_ref_surf(belongs)
-      call dealloc_iele_belonged(belongs%blng_surf)
+     &    surf%x_surf, node, nod_comm, inod_dbl, ip_ref, k_ref,         &
+     &    neib_surf, surf_comm, fail_tbl_s)
+      call dealloc_double_numbering(inod_dbl)
+      call dealloc_iele_belonged(neib_surf)
+      call dealloc_failed_export(fail_tbl_s)
+      deallocate(ip_ref, k_ref)
 !
       call const_global_surface_id(surf_comm, surf)
 !
-      end subroutine const_surf_comm_table_old
+      end subroutine const_surf_comm_table
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_edge_comm_table_old                                  &
-     &         (node, nod_comm, edge_comm, edge, fail_tbl)
+      subroutine const_edge_comm_table                                  &
+     &         (node, nod_comm, edge_comm, edge)
 !
+      use m_geometry_constants
+      use t_para_double_numbering
+      use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
+      use find_belonged_process
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
 !
       type(communication_table), intent(inout) :: edge_comm
       type(edge_data), intent(inout) :: edge
-      type(failed_table), intent(inout) :: fail_tbl
 !
-      type(belonged_table), save :: belongs
+      type(parallel_double_numbering) :: inod_dbl
+      type(element_around_node) :: neib_edge
+      type(failed_table) :: fail_tbl_d
+!
+      integer(kind = kint), allocatable :: ip_ref(:)
+      integer(kind = kint), allocatable :: k_ref(:)
+!
+!
+      call alloc_double_numbering(node%numnod, inod_dbl)
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
+!
+      allocate(ip_ref(edge%numedge))
+      allocate(k_ref(edge%numedge))
+      call find_belonged_pe_4_edge(my_rank, node, inod_dbl%ip_home(1),  &
+     &                             edge, ip_ref, k_ref)
 !
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
-      call set_edge_id_4_node(node, edge, belongs%blng_edge)
-      call alloc_x_ref_edge(node, belongs)
-      call sort_inod_4_ele_by_position(ione, edge%numedge, edge%x_edge, &
-     &    node, belongs%blng_edge, belongs%x_ref_edge)
+      call set_edge_id_4_node(node, edge, neib_edge)
 !
       if(iflag_debug.gt.0) write(*,*)                                   &
-     &          ' belonged_edge_id_4_node in edge'
-      call belonged_edge_id_4_node(node, edge, belongs%host_edge)
-!
-      if(iflag_debug.gt.0) write(*,*)                                   &
-     &          ' const_comm_table_by_connenct_old in edge'
-      call const_comm_table_by_connenct_old                             &
-     &    (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,      &
-     &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
-     &    belongs%blng_edge, belongs%x_ref_edge, belongs%host_edge,     &
-     &    edge_comm, fail_tbl)
-!
-      call dealloc_iele_belonged(belongs%host_edge)
-      call dealloc_x_ref_edge(belongs)
-      call dealloc_iele_belonged(belongs%blng_edge)
+     &          ' const_comm_table_by_connenct in edge'
+      call alloc_failed_export(0, fail_tbl_d)
+      call const_comm_table_by_connenct                                 &
+     &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
+     &    edge%x_edge, node, nod_comm, inod_dbl, ip_ref, k_ref,         &
+     &    neib_edge, edge_comm, fail_tbl_d)
+      call dealloc_double_numbering(inod_dbl)
+      call dealloc_iele_belonged(neib_edge)
+      call dealloc_failed_export(fail_tbl_d)
+      deallocate(ip_ref, k_ref)
 !
       call const_global_edge_id(edge_comm, edge)
 !
-      end subroutine const_edge_comm_table_old
+      end subroutine const_edge_comm_table
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -365,5 +398,29 @@
       end subroutine find_position_range
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_node_ele_double_address                            &
+     &         (node, ele, nod_comm, ele_comm, inod_dbl, iele_dbl)
+!
+      use t_para_double_numbering
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: ele_comm
+!
+      type(parallel_double_numbering), intent(inout) :: inod_dbl
+      type(parallel_double_numbering), intent(inout) :: iele_dbl
+!
+!
+      call set_node_double_numbering(node, nod_comm, inod_dbl)
+      call set_ele_double_numbering                                     &
+     &   (ele, ele_comm, inod_dbl, iele_dbl)
+!
+      end subroutine set_node_ele_double_address
+!
+! -----------------------------------------------------------------------
 !
       end module const_element_comm_tables

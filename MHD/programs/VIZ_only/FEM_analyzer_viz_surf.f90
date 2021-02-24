@@ -94,7 +94,6 @@
      &         (ucd_step, init_d, FEM_viz, edge_comm)
 !
       use t_field_list_for_vizs
-      use t_failed_export_list
 !
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -109,7 +108,6 @@
       type(FEM_mesh_field_for_viz), intent(inout) :: FEM_viz
       type(communication_table), intent(inout) :: edge_comm
 !
-      type(failed_table), save :: fail_tbl_d
       integer(kind = kint) :: istep_ucd
 !
 !   --------------------------------
@@ -123,12 +121,10 @@
       call FEM_mesh_initialization(FEM_viz%geofem%mesh,                 &
      &                             FEM_viz%geofem%group)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table_old'
-      call alloc_failed_export(0, fail_tbl_d)
-      call const_edge_comm_table_old                                        &
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+      call const_edge_comm_table                                        &
      &   (FEM_viz%geofem%mesh%node, FEM_viz%geofem%mesh%nod_comm,       &
-     &    edge_comm, FEM_viz%geofem%mesh%edge, fail_tbl_d)
-      call dealloc_failed_export(fail_tbl_d)
+     &    edge_comm, FEM_viz%geofem%mesh%edge)
 !
 !     ---------------------
 !

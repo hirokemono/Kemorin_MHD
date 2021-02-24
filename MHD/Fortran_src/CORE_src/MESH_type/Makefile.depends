@@ -78,8 +78,6 @@ set_surface_data_4_IO.o: $(MESH_TYPE_DIR)/set_surface_data_4_IO.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 set_ucd_data_to_type.o: $(MESH_TYPE_DIR)/set_ucd_data_to_type.f90 m_precision.o m_constants.o t_geometry_data.o t_phys_data.o t_time_data.o t_ucd_data.o t_file_IO_parameter.o set_and_cal_udt_data.o set_ucd_data.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_belonged_element_4_node.o: $(MESH_TYPE_DIR)/t_belonged_element_4_node.f90 m_precision.o m_constants.o t_next_node_ele_4_node.o t_geometry_data.o find_element_id_4_node.o cal_minmax_and_stacks.o t_surface_data.o t_edge_data.o quicksort.o
-	$(F90) -c $(F90OPTFLAGS) $<
 t_comm_table.o: $(MESH_TYPE_DIR)/t_comm_table.f90 m_precision.o copy_communication_table.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_const_export_table.o: $(MESH_TYPE_DIR)/t_const_export_table.f90 m_precision.o t_comm_table.o

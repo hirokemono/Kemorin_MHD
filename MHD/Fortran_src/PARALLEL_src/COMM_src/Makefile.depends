@@ -22,7 +22,7 @@ const_ele_comm_table_para.o: $(COMMDIR)/const_ele_comm_table_para.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 const_element_comm_table.o: $(COMMDIR)/const_element_comm_table.f90 m_precision.o m_constants.o calypso_mpi.o m_solver_SR.o m_work_time.o t_geometry_data.o t_comm_table.o t_belonged_element_4_node.o t_failed_export_list.o reverse_SR_int.o find_element_comm_table.o const_global_element_ids.o set_element_export_item.o make_element_comm_table_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_element_comm_tables.o: $(COMMDIR)/const_element_comm_tables.f90 m_precision.o calypso_mpi.o t_next_node_ele_4_node.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_comm_table.o t_belonged_element_4_node.o t_failed_export_list.o m_machine_parameter.o set_ele_id_4_node_type.o const_global_element_ids.o const_element_comm_table.o calypso_mpi_real.o transfer_to_long_integers.o
+const_element_comm_tables.o: $(COMMDIR)/const_element_comm_tables.f90 m_precision.o calypso_mpi.o t_next_node_ele_4_node.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_comm_table.o t_failed_export_list.o m_machine_parameter.o set_ele_id_4_node_type.o const_global_element_ids.o m_geometry_constants.o t_para_double_numbering.o t_const_comm_table.o const_element_comm_table.o find_belonged_process.o calypso_mpi_real.o transfer_to_long_integers.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_global_element_ids.o: $(COMMDIR)/const_global_element_ids.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o calypso_mpi_int.o t_comm_table.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -52,7 +52,7 @@ solver_SR_type.o: $(COMMDIR)/solver_SR_type.f90 m_precision.o m_work_time.o m_el
 	$(F90) -c $(F90OPTFLAGS) $<
 t_calypso_comm_table.o: $(COMMDIR)/t_calypso_comm_table.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_const_comm_table.o: $(COMMDIR)/t_const_comm_table.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_para_double_numbering.o t_next_node_ele_4_node.o m_solver_SR.o reverse_SR_int.o find_element_comm_table.o const_global_element_ids.o make_element_comm_table_SR.o set_element_comm_table.o reverse_SR_real.o
+t_const_comm_table.o: $(COMMDIR)/t_const_comm_table.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_para_double_numbering.o t_next_node_ele_4_node.o t_failed_export_list.o m_solver_SR.o reverse_SR_int.o find_element_comm_table.o const_global_element_ids.o make_element_comm_table_SR.o set_element_comm_table.o reverse_SR_real.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_failed_export_list.o: $(COMMDIR)/t_failed_export_list.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -34,14 +34,11 @@
       subroutine initialize_med_grp_patch
 !
       use m_phys_constants
-      use t_failed_export_list
       use input_control_udt_diff
       use nod_phys_send_recv
       use mpi_load_mesh_data
       use parallel_FEM_mesh_init
       use const_element_comm_tables
-!
-      type(failed_table), save :: fail_tbl_d
 !
       if (my_rank.eq.0) then
         write(*,*) 'diff. udt files'
@@ -63,11 +60,9 @@
       call FEM_mesh_initialization                                      &
      &   (FUTIL1%geofem%mesh, FUTIL1%geofem%group)
 !
-      call alloc_failed_export(0, fail_tbl_d)
-      call const_edge_comm_table_old                                        &
+      call const_edge_comm_table                                        &
      &   (FUTIL1%geofem%mesh%node, FUTIL1%geofem%mesh%nod_comm,         &
-     &    edge_comm_MG, FUTIL1%geofem%mesh%edge, fail_tbl_d)
-      call dealloc_failed_export(fail_tbl_d)
+     &    edge_comm_MG, FUTIL1%geofem%mesh%edge)
 !
       FUTIL1%nod_fld%num_phys = 1
       call alloc_phys_name(FUTIL1%nod_fld)

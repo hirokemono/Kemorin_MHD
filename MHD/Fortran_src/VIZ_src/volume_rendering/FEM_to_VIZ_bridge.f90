@@ -63,7 +63,6 @@
      &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
 !
       use t_fem_gauss_int_coefs
-      use t_failed_export_list
       use int_volume_of_domain
       use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
@@ -77,7 +76,6 @@
 !
       integer(kind = kint) :: iflag
       type(shape_finctions_at_points) :: spfs
-      type(failed_table), save :: fail_tbl_d
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
@@ -87,12 +85,10 @@
 !
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
-        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table_old'
-        call alloc_failed_export(0, fail_tbl_d)
-        call const_edge_comm_table_old                                      &
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_edge_comm_table                                      &
      &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
-     &      edge_comm, geofem%mesh%edge, fail_tbl_d)
-        call dealloc_failed_export(fail_tbl_d)
+     &      edge_comm, geofem%mesh%edge)
       end if
 !
       if(viz_step%FLINE_t%increment .gt. 0) then
@@ -150,7 +146,6 @@
      &         (viz_step, next_tbl, jacobians,                          &
      &          geofem, nod_fld, VIZ_DAT)
 !
-      use t_failed_export_list
       use field_to_new_partition
       use const_element_comm_tables
 !
@@ -162,7 +157,6 @@
       type(phys_data), intent(inout) :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      type(failed_table), save :: fail_tbl_d
       integer(kind = kint) :: iflag
 !
 !
@@ -185,12 +179,10 @@
 !
         iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
         if(iflag .gt. 0) then
-          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table_old'
-          call alloc_failed_export(0, fail_tbl_d)
-          call const_edge_comm_table_old                                    &
+          if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+          call const_edge_comm_table                                    &
      &       (VIZ_DAT%viz_fem%mesh%node, VIZ_DAT%viz_fem%mesh%nod_comm, &
-     &        VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge, fail_tbl_d)
-          call dealloc_failed_export(fail_tbl_d)
+     &        VIZ_DAT%edge_comm, VIZ_DAT%viz_fem%mesh%edge)
         end if
       end if
       call calypso_mpi_barrier
