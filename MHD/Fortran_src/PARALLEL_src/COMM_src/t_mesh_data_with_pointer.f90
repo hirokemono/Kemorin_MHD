@@ -322,8 +322,6 @@
       call const_edge_connectivity(mesh_p%node, mesh_p%ele,             &
      &                             mesh_p%surf, mesh_p%edge)
 !
-      call count_overlap_surf(mesh_p%node, mesh_p%surf)
-!
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
       call const_ele_list_4_surface(mesh_p%ele, mesh_p%surf)
 !

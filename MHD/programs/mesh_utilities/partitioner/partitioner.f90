@@ -171,10 +171,8 @@
         write(*,*) 'numsurf', org_fem%mesh%surf%numsurf
         write(*,*) 'numele', org_fem%mesh%ele%numele
         write(*,*) 'nnod_4_surf',org_fem%mesh%surf%nnod_4_surf
-        write(*,*) 'isf_4_ele', shape(org_fem%mesh%surf%isf_4_ele)
-        write(*,*) 'iele_4_surf', shape(org_fem%mesh%surf%iele_4_surf)
-        write(*,*) 'interior_surf',                                     &
-     &            shape(org_fem%mesh%surf%interior_surf)
+        write(*,*) 'isf_4_ele', size(org_fem%mesh%surf%isf_4_ele)
+        write(*,*) 'iele_4_surf', size(org_fem%mesh%surf%iele_4_surf)
       end if
 !
 !  -------------------------------
@@ -237,8 +235,7 @@
      &      org_fem%mesh%node%numnod, org_fem%mesh%ele%numele,          &
      &      org_fem%mesh%surf%numsurf, org_fem%mesh%surf%nnod_4_surf,   &
      &      org_fem%mesh%surf%isf_4_ele, org_fem%mesh%surf%ie_surf,     &
-     &      org_fem%mesh%surf%iele_4_surf,                              &
-     &      org_fem%mesh%surf%interior_surf, org_fem%mesh%node%xx,      &
+     &      org_fem%mesh%surf%iele_4_surf, org_fem%mesh%node%xx,        &
      &      data_field_vec%d_ucd,                                       &
      &      particles, num_particle, part_p1%num_domain, time_cost)
 

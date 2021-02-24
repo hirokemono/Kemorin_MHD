@@ -67,14 +67,13 @@
       integer(kind = kint) :: num_int
 !
 !
-      call allocate_normal_vect_type(surf)
-!
+      call alloc_normal_vector(surf)
       num_int = g_FEM%max_int_point
       call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,      &
      &    g_FEM%max_int_point, g_FEM%maxtot_int_2d, g_FEM%int_start2,   &
-     &    g_FEM%owe2d, jac_2d%ntot_int, num_int, jac_2d%xj_sf,          &
-     &    jac_2d%xsf_sf, surf%area_surf, surf%a_area_surf,              &
-     &    surf%vnorm_surf)
+     &    g_FEM%owe2d, jac_2d%ntot_int, g_FEM%max_int_point,            &
+     &    jac_2d%xj_sf, jac_2d%xsf_sf, surf%area_surf,                  &
+     &    surf%a_area_surf, surf%vnorm_surf)
 !
       end subroutine int_normal_4_all_surface
 !

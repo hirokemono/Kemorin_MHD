@@ -120,7 +120,7 @@
       logical :: read_surface
 !
 !
-      read_surface = allocated(surf%isurf_global)
+      read_surface = allocated(surf%ie_surf)
 !
       if(read_surface .eqv. .false.) then
         if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'

@@ -26,9 +26,6 @@
 !!      subroutine count_overlap_ele(nod, ele)
 !!        type(node_data),    intent(in) :: nod
 !!        type(element_data), intent(inout) :: ele
-!!      subroutine count_overlap_surf(nod, surf)
-!!        type(node_data),    intent(in) :: nod
-!!        type(surface_data), intent(inout) :: surf
 !!@endverbatim
 !
       module set_size_4_smp_types
@@ -184,23 +181,6 @@
      &    ele%internal_ele, ele%interior_ele)
 !
       end subroutine count_overlap_ele
-!
-! ----------------------------------------------------------------------
-!
-      subroutine count_overlap_surf(nod, surf)
-!
-      use count_overlap
-!
-      type(node_data),    intent(in) :: nod
-      type(surface_data), intent(inout) :: surf
-!
-!
-      call set_overlap_flag(np_smp, surf%istack_surf_smp,               &
-     &    nod%internal_node, surf%numsurf,                              &
-     &    surf%ie_surf(1:surf%numsurf,1), surf%internal_surf,           &
-     &    surf%interior_surf)
-!
-      end subroutine count_overlap_surf
 !
 ! ----------------------------------------------------------------------
 !

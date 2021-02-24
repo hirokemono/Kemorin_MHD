@@ -38,7 +38,7 @@ set_import_items.o: $(PART_COMMONDIR)/set_import_items.f90 m_precision.o t_domai
 	$(F90) -c $(F90OPTFLAGS) $<
 set_internals_by_group_tbl.o: $(PART_COMMONDIR)/set_internals_by_group_tbl.f90 m_precision.o t_domain_group_4_partition.o t_internal_4_partitioner.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_local_by_subdomain_tbl.o: $(PART_COMMONDIR)/set_local_by_subdomain_tbl.f90 t_internal_4_partitioner.o t_domain_group_4_partition.o t_geometry_data.o t_surface_data.o
+set_local_by_subdomain_tbl.o: $(PART_COMMONDIR)/set_local_by_subdomain_tbl.f90 t_internal_4_partitioner.o t_domain_group_4_partition.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_subdomain_by_group_tbl.o: $(PART_COMMONDIR)/set_subdomain_by_group_tbl.f90 m_precision.o t_internal_4_partitioner.o t_geometry_data.o t_domain_group_4_partition.o
 	$(F90) -c $(F90OPTFLAGS) $<

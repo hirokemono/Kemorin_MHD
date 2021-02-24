@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine normals_and_jacobians_4_VIZ                          &
-!!     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
+!!     &         (viz_step, geofem, surf_comm, edge_comm,               &
+!!     &          ele_4_nod, jacobians)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(inout) :: geofem
+!!        type(communication_table), intent(inout) :: surf_comm
 !!        type(communication_table), intent(inout) :: edge_comm
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(jacobians_type), intent(inout) :: jacobians
@@ -60,7 +62,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
+     &         (viz_step, geofem, surf_comm, edge_comm,                 &
+     &          ele_4_nod, jacobians)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
@@ -70,6 +73,7 @@
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
+      type(communication_table), intent(inout) :: surf_comm
       type(communication_table), intent(inout) :: edge_comm
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_type), intent(inout) :: jacobians
@@ -83,6 +87,14 @@
 !
 !     --------------------- init for fieldline and PVR
 !
+      iflag = viz_step%LIC_t%increment + viz_step%FLINE_t%increment
+      if(iflag .gt. 0) then
+        if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
+        call const_surf_comm_table                                      &
+     &     (geofem%mesh%node, geofem%mesh%nod_comm,                     &
+     &      surf_comm, geofem%mesh%surf)
+      end if
+
       iflag = viz_step%PSF_t%increment + viz_step%ISO_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_edge_comm_table'
@@ -136,7 +148,8 @@
 !
       call alloc_jacobians_4_viz(VIZ_DAT)
       call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,       &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+     &    VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                         &
+     &    VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -171,7 +184,8 @@
 !
         call alloc_jacobians_4_viz(VIZ_DAT)
         call normals_and_jacobians_4_VIZ(viz_step, VIZ_DAT%viz_fem,     &
-     &      VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+     &      VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                       &
+     &      VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
       else
         call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
         call link_jacobians_4_viz                                       &

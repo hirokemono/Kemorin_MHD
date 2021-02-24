@@ -58,6 +58,8 @@
 !>        Structure of included element list for each node
         type(element_around_node), pointer :: ele_4_nod
 !
+!>        Structure of surface communication table
+        type(communication_table) :: surf_comm
 !>        Structure of edge communication table
         type(communication_table) :: edge_comm
       end type VIZ_mesh_field

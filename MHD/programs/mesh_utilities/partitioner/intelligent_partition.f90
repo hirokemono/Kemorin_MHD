@@ -7,11 +7,10 @@
 !> @brief According to vector field feature to partition data set to make a better load balance
 !!
 !!@verbatim
-!!      subroutine seed_particles                                      &
-!!     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,           &
-!!     &          isf_4_ele, ie_surf, iele_4_surf, interior_surf,      &
-!!     &          xx, field, particles, num_particle,                  &
-!!     &          num_domain, time_cost)
+!!      subroutine seed_particles                                       &
+!!     &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,            &
+!!     &          isf_4_ele, ie_surf, iele_4_surf, xx, field,           &
+!!     &          particles, num_particle, num_domain, time_cost)
 !!
 !!      function field_istack_nod_buffer(nprocs, istack_nod)
 !!      subroutine choose_particles_from_eles                           &
@@ -98,9 +97,9 @@
 !
       subroutine simulate_field_line_integral                           &
      &          (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,  &
-     &           iele_4_surf, ie_surf, interior_surf,                   &
-     &           iflag_dir, xx, field_vec, isurf_org, group_id,         &
-     &           x_start, v_start, line_len, itr_num, iflag_comm)
+     &           iele_4_surf, ie_surf, iflag_dir, xx, field_vec,        &
+     &           isurf_org, group_id, x_start, v_start, line_len,       &
+     &           itr_num, iflag_comm)
 !
 !
         type(domain_group_4_partition), intent(in)  :: nod_d_grp
@@ -110,7 +109,6 @@
         integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
         integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
         real(kind = kreal), intent(in) :: xx(nnod,3), field_vec(nnod,3)
-        integer(kind = kint), intent(in) :: interior_surf(nsurf)
         real(kind = kreal), intent(in) :: line_len
         real(kind = kreal), intent(inout) :: x_start(3), v_start(3)
         integer(kind = kint), intent(in) :: isurf_org(3)
@@ -136,10 +134,6 @@
           x_org(1:3) = x_start(1:3)
           if(isurf_start .lt. 1 .or. isurf_start .gt. nsurf) then
             iflag_comm = -10
-            return
-          end if
-          if(interior_surf(isurf_start) .eq. izero) then
-            iflag_comm = 10
             return
           end if
           isf_tgt = 0
@@ -210,9 +204,8 @@
 !
       subroutine seed_particles                                         &
      &         (nod_d_grp, nnod, nele, nsurf, nnod_4_surf,              &
-     &          isf_4_ele, ie_surf, iele_4_surf, interior_surf,         &
-     &          xx, field, particles, num_particle,                     &
-     &          num_domain, time_cost)
+     &          isf_4_ele, ie_surf, iele_4_surf, xx, field,             &
+     &          particles, num_particle, num_domain, time_cost)
 !
         type(domain_group_4_partition), intent(in)  :: nod_d_grp
         integer(kind = kint), intent(in) :: nnod, nele, nsurf
@@ -220,7 +213,6 @@
         integer(kind = kint), intent(in) :: ie_surf(nsurf,nnod_4_surf)
         integer(kind = kint), intent(in) :: isf_4_ele(nele,nsurf_4_ele)
         integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
-        integer(kind = kint), intent(in) :: interior_surf(nsurf)
         real(kind = kreal), intent(in) :: field(nnod,3), xx(nnod,3)
         integer(kind = kint), intent(in) :: num_particle
         type(simulate_particle), intent(in) :: particles(num_particle)
@@ -266,7 +258,7 @@
       &       ie_surf, isurf_hit, xi, field, new_vec)
           call simulate_field_line_integral                             &
       &      (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,     &
-      &       iele_4_surf, ie_surf, interior_surf, iflag_dir, xx,       &
+      &       iele_4_surf, ie_surf, iflag_dir, xx,                      &
       &       field, isurf_org, particles(i)%group_id,                  &
       &       new_pos, new_vec, particles(i)%line_len,                  &
       &       itr_num, iflag_comm)
@@ -291,7 +283,7 @@
       &       ie_surf, isurf_hit, xi, field, new_vec)
           call simulate_field_line_integral                             &
       &      (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,     &
-      &       iele_4_surf, ie_surf, interior_surf, iflag_dir, xx,       &
+      &       iele_4_surf, ie_surf, iflag_dir, xx,                      &
       &       field, isurf_org, particles(i)%group_id,                  &
       &       new_pos, new_vec, particles(i)%line_len, itr_num,         &
       &       iflag_comm)

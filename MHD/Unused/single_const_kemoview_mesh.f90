@@ -102,7 +102,7 @@ private :: collect_single_viewer_mesh
 !
         call deallocate_iso_surface_type(sgl_viewer%fem%mesh%surf)
         call deallocate_ext_surface_type(sgl_viewer%fem%mesh%surf)
-        call deallocate_surface_connect_type(sgl_viewer%fem%mesh%surf)
+        call dealloc_surface_connect(sgl_viewer%fem%mesh%surf)
         call dealloc_inod_in_surf(sgl_viewer%fem%mesh%surf)
 !
         call dealloc_mesh_data                                          &

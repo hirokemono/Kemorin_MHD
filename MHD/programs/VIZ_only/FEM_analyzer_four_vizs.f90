@@ -143,7 +143,7 @@
       call link_FEM_field_4_viz(FEM_viz%geofem, FEM_viz%field, pvr)
       call alloc_jacobians_4_viz(pvr)
       call normals_and_jacobians_4_VIZ(viz_step, FEM_viz%geofem,        &
-     &    pvr%edge_comm, pvr%ele_4_nod, pvr%jacobians)
+     &    pvr%surf_comm, pvr%edge_comm, pvr%ele_4_nod, pvr%jacobians)
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_four_vizs

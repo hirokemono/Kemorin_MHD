@@ -15,11 +15,6 @@
 !!        type(internal_4_partitioner), intent(in) :: itl_ele_part
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(domain_group_4_partition), intent(inout) :: ele_d_grp
-!!      subroutine set_local_surface                                    &
-!!     &         (ip, itl_surf_part, new_surf, surf_d_grp)
-!!        type(internal_4_partitioner), intent(in) :: itl_surf_part
-!!        type(surface_data), intent(inout) :: new_surf
-!!        type(domain_group_4_partition), intent(inout) :: surf_d_grp
 !!
 !!      subroutine set_local_id_4_export(ip, itl_part, domain_grp)
 !!        type(internal_4_partitioner), intent(in) :: itl_part
@@ -99,35 +94,6 @@
       end do
 !
       end subroutine set_local_element
-!
-!   --------------------------------------------------------------------
-!
-      subroutine set_local_surface                                      &
-     &         (ip, itl_surf_part, new_surf, surf_d_grp)
-!
-      use t_surface_data
-!
-      integer(kind = kint), intent(in) :: ip
-      type(surface_data), intent(inout) :: new_surf
-      type(internal_4_partitioner), intent(in) :: itl_surf_part
-!
-      type(domain_group_4_partition), intent(inout) :: surf_d_grp
-!
-      integer(kind = kint) :: ist, inum, isurf
-!
-!$omp parallel workshare
-      surf_d_grp%id_local_part(1:surf_d_grp%num_s_domin) = 0
-!$omp end parallel workshare
-!
-      ist = itl_surf_part%istack_4_subdomain(ip-1)
-      do inum = 1, itl_surf_part%num_4_subdomain(ip)
-        isurf = itl_surf_part%id_4_subdomain(inum+ist)
-        new_surf%isurf_global(inum) = isurf
-!
-        surf_d_grp%id_local_part(isurf)= inum 
-      end do
-!
-      end subroutine set_local_surface
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

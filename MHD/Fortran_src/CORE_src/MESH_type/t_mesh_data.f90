@@ -140,7 +140,7 @@
 !
       call dealloc_edge_4_ele(mesh%edge)
       call dealloc_edge_connect(mesh%edge)
-      call deallocate_surface_connect_type(mesh%surf)
+      call dealloc_surface_connect(mesh%surf)
       call dealloc_ele_4_surf_type(mesh%surf)
 !
       call dealloc_nod_ele_infos(mesh)
@@ -252,7 +252,7 @@
       type(mesh_geometry), intent(inout) :: mesh
 !
 !
-      call deallocate_surface_connect_type(mesh%surf)
+      call dealloc_surface_connect(mesh%surf)
 !
       call dealloc_edge_connect(mesh%edge)
       call dealloc_edge_4_ele(mesh%edge)

@@ -202,10 +202,7 @@
       allocate( edge%x_edge(edge%numedge,3) )
 !
 !
-      if (edge%numedge .gt. 0) then
-        edge%x_edge =      0.0d0
-!
-      end if
+      if (edge%numedge .gt. 0) edge%x_edge = 0.0d0
 !
       end subroutine alloc_edge_geometory
 !
@@ -248,6 +245,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
+      if(allocated(edge%istack_numedge) .eqv. .FALSE.) return
       deallocate(edge%istack_numedge, edge%istack_interedge)
 !
       end subroutine dealloc_numedge_stack
@@ -259,6 +257,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
+      if(allocated(edge%node_on_edge) .eqv. .FALSE.) return
       deallocate(edge%node_on_edge, edge%node_on_edge_sf)
 !
       end subroutine dealloc_inod_in_edge
@@ -269,8 +268,8 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      deallocate( edge%iedge_4_sf )
-      deallocate( edge%ie_edge )
+      if(allocated(edge%iedge_4_sf) .eqv. .FALSE.) return
+      deallocate(edge%iedge_4_sf, edge%ie_edge)
 !
       end subroutine dealloc_edge_connect
 !
@@ -280,6 +279,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
+      if(allocated(edge%internal_edge) .eqv. .FALSE.) return
       deallocate(edge%internal_edge)
       deallocate(edge%iedge_global, edge%interior_edge)
 !
@@ -291,8 +291,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-!
-      deallocate( edge%iedge_4_ele )
+      if(allocated(edge%iedge_4_ele)) deallocate(edge%iedge_4_ele)
 !
       end subroutine dealloc_edge_4_ele
 !
@@ -302,8 +301,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-!
-      deallocate( edge%iedge_isolate )
+      if(allocated(edge%iedge_isolate)) deallocate(edge%iedge_isolate)
 !
       end subroutine dealloc_isolate_edge
 !
@@ -313,7 +311,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      deallocate( edge%x_edge )
+      if(allocated(edge%x_edge)) deallocate(edge%x_edge)
 !
       end subroutine dealloc_edge_geometory
 !
@@ -323,9 +321,9 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      deallocate( edge%edge_length   )
-      deallocate( edge%a_edge_length )
-      deallocate( edge%edge_vect     )
+      if(allocated(edge%edge_length) .eqv. .FALSE.) return
+      deallocate(edge%edge_length, edge%a_edge_length)
+      deallocate(edge%edge_vect)
 !
       end subroutine dealloc_edge_vect
 !
@@ -335,7 +333,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      deallocate( edge%istack_edge_smp )
+      if(allocated(edge%x_edge)) deallocate(edge%istack_edge_smp)
 !
       end subroutine dealloc_edge_param_smp
 !

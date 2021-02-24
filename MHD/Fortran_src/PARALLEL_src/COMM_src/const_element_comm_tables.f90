@@ -57,7 +57,6 @@
       character(len=kchara), parameter :: txt_surf = 'surface'
 !
       private :: txt_ele, txt_edge, txt_surf
-!      private :: const_global_element_id
 !
 !-----------------------------------------------------------------------
 !
@@ -143,22 +142,6 @@
       end subroutine const_global_numele_list
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine const_global_element_id(ele_comm, ele)
-!
-      use const_global_element_ids
-!
-      type(communication_table), intent(in) :: ele_comm
-      type(element_data), intent(inout) :: ele
-!
-!
-      call const_global_numele_list(ele)
-      call set_global_ele_id(txt_ele, ele%numele, ele%istack_interele,  &
-     &   ele%interior_ele, ele_comm, ele%iele_global)
-!
-      end subroutine const_global_element_id
-!
-!  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine const_ele_comm_table                                   &
@@ -169,6 +152,7 @@
       use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
+      use const_global_element_ids
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -202,7 +186,9 @@
       call dealloc_failed_export(fail_tbl_e)
 !
 !
-      call const_global_element_id(ele_comm, ele)
+      call const_global_numele_list(ele)
+      call set_global_ele_id(txt_ele, ele%numele, ele%istack_interele,  &
+     &   ele%interior_ele, ele_comm, ele%iele_global)
       call calypso_mpi_barrier
 !
       end subroutine const_ele_comm_table
@@ -234,9 +220,10 @@
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
       call alloc_ele_double_number(surf%numsurf, isurf_dbl)
+      call alloc_interior_surf(surf)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
-     &    surf%internal_surf, surf%interior_surf, isurf_dbl)
+     &    surf%internal_surf(1), surf%interior_surf, isurf_dbl)
 !
       call set_surf_id_4_node(node, surf, neib_surf)
 !
@@ -251,20 +238,29 @@
       call dealloc_failed_export(fail_tbl_s)
 !
 !
-!
       call alloc_numsurf_stack(nprocs, surf)
-!
       call count_number_of_node_stack                                   &
      &  (surf%numsurf, surf%istack_numsurf)
       call count_number_of_node_stack                                   &
-     &  (surf%internal_surf, surf%istack_intersurf)
-!
+     &  (surf%internal_surf(1), surf%istack_intersurf)
       call set_global_ele_id                                            &
      &   (txt_surf, surf%numsurf, surf%istack_intersurf,                &
      &    surf%interior_surf, surf_comm, surf%isurf_global)
       call dealloc_numsurf_stack(surf)
 !
       end subroutine const_surf_comm_table
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_surf_comm_table(surf_comm, surf)
+!
+      type(communication_table), intent(inout) :: surf_comm
+      type(surface_data), intent(inout) :: surf
+!
+      call dealloc_comm_table(surf_comm)
+      call dealloc_interior_surf(surf)
+!
+      end subroutine dealloc_surf_comm_table
 !
 !-----------------------------------------------------------------------
 !
