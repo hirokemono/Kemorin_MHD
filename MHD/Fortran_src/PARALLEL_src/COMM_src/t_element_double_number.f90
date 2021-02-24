@@ -11,24 +11,35 @@
 !!      subroutine dealloc_ele_double_number(dbl_id)
 !!        type(element_double_number), intent(inout) :: dbl_id
 !!
+!!      subroutine find_belonged_pe_4_ele(my_rank, inod_dbl, numele, ie,&
+!!     &          internal_ele, interior_ele, iele_dbl)
+!!        integer, intent(in) :: my_rank
+!!        type(node_ele_double_number), intent(in) :: inod_dbl
+!!        integer(kind = kint), intent(in) :: numele
+!!        integer(kind = kint), intent(in) :: ie(numele,1)
+!!        type(element_double_number), intent(inout) :: iele_dbl
+!!        integer(kind = kint), intent(inout) :: internal_ele
+!!        integer(kind = kint), intent(inout) :: interior_ele(numele)
 !!      subroutine find_belonged_pe_4_surf(my_rank, inod_dbl,           &
-!!     &          numsurf, nnod_4_surf, ie_surf, interior_surf,         &
-!!     &          isurf_dbl)
+!!     &          numsurf, nnod_4_surf, ie_surf,                        &
+!!     &          internal_surf, interior_surf, isurf_dbl)
 !!        integer, intent(in) :: my_rank
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
 !!        integer(kind = kint), intent(in):: ie_surf(numsurf,nnod_4_surf)
 !!        type(element_double_number), intent(inout) :: isurf_dbl
+!!        integer(kind = kint), intent(inout) :: internal_surf
 !!        integer(kind = kint), intent(inout) :: interior_surf(numsurf)
 !!      subroutine find_belonged_pe_4_edge(my_rank, inod_dbl,           &
-!!     &          numedge, nnod_4_edge, ie_edge, interior_edge,         &
-!!     &          iedge_dbl)
+!!     &          numedge, nnod_4_edge, ie_edge,                        &
+!!     &          internal_edge, interior_edge, iedge_dbl)
 !!        integer, intent(in) :: my_rank
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        integer(kind = kint), intent(in) :: numedge, nnod_4_edge
 !!        integer(kind = kint), intent(in):: ie_edge(numedge,nnod_4_edge)
 !!        type(edge_data), intent(inout) :: edge
 !!        type(element_double_number), intent(inout) :: iedge_dbl
+!!        integer(kind = kint), intent(inout) :: internal_edge
 !!        integer(kind = kint), intent(inout) :: interior_edge(numedge)
 !!@endverbatim
 !
@@ -89,7 +100,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine find_belonged_pe_4_ele(my_rank, inod_dbl, numele, ie,  &
-     &                                  interior_ele, iele_dbl)
+     &          internal_ele, interior_ele, iele_dbl)
 !
       use find_belonged_process
 !
@@ -99,9 +110,10 @@
       integer(kind = kint), intent(in) :: ie(numele,1)
 !
       type(element_double_number), intent(inout) :: iele_dbl
+      integer(kind = kint), intent(inout) :: internal_ele
       integer(kind = kint), intent(inout) :: interior_ele(numele)
 !
-      integer(kind = kint) :: iele
+      integer(kind = kint) :: iele, icou
       integer(kind = kint) :: ie_one
 !
 !
@@ -122,13 +134,21 @@
       end do
 !%omp end parallel do
 !
+      icou = 0
+!%omp parallel do private(iele) reduction(+:icou)
+      do iele = 1, numele
+        if(iele_dbl%ip_home(iele) .eq. my_rank) icou = icou + 1
+      end do
+!%omp end parallel do
+      internal_ele = icou
+!
       end subroutine find_belonged_pe_4_ele
 !
 ! ----------------------------------------------------------------------
 !
       subroutine find_belonged_pe_4_surf(my_rank, inod_dbl,             &
-     &          numsurf, nnod_4_surf, ie_surf, interior_surf,           &
-     &          isurf_dbl)
+     &          numsurf, nnod_4_surf, ie_surf,                          &
+     &          internal_surf, interior_surf, isurf_dbl)
 !
       use t_surface_data
       use find_belonged_process
@@ -139,9 +159,10 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
 !
       type(element_double_number), intent(inout) :: isurf_dbl
+      integer(kind = kint), intent(inout) :: internal_surf
       integer(kind = kint), intent(inout) :: interior_surf(numsurf)
 !
-      integer(kind = kint) :: isurf, nnod_same
+      integer(kind = kint) :: isurf, nnod_same, icou
       integer(kind = kint) :: ie_surf_one(num_linear_sf)
 !
 !
@@ -162,13 +183,21 @@
       end do
 !%omp end parallel do
 !
+      icou = 0
+!%omp parallel do private(isurf) reduction(+:icou)
+      do isurf = 1, numsurf
+        if(isurf_dbl%ip_home(isurf) .eq. my_rank) icou = icou + 1
+      end do
+!%omp end parallel do
+      internal_surf = icou
+!
       end subroutine find_belonged_pe_4_surf
 !
 ! ----------------------------------------------------------------------
 !
       subroutine find_belonged_pe_4_edge(my_rank, inod_dbl,             &
-     &          numedge, nnod_4_edge, ie_edge, interior_edge,           &
-     &          iedge_dbl)
+     &          numedge, nnod_4_edge, ie_edge,                          &
+     &          internal_edge, interior_edge, iedge_dbl)
 !
       use t_edge_data
       use find_belonged_process
@@ -179,9 +208,10 @@
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
 !
       type(element_double_number), intent(inout) :: iedge_dbl
+      integer(kind = kint), intent(inout) :: internal_edge
       integer(kind = kint), intent(inout) :: interior_edge(numedge)
 !
-      integer(kind = kint) :: iedge, nnod_same
+      integer(kind = kint) :: iedge, nnod_same, icou
       integer(kind = kint) :: ie_edge_one(num_linear_edge)
 !
 !$omp parallel workshare
@@ -201,6 +231,14 @@
      &     = set_each_interior_flag(my_rank, iedge_dbl%ip_home(iedge))
       end do
 !%omp end parallel do
+!
+      icou = 0
+!%omp parallel do private(iedge) reduction(+:icou)
+      do iedge = 1, numedge
+        if(iedge_dbl%ip_home(iedge) .eq. my_rank) icou = icou + 1
+      end do
+!%omp end parallel do
+      internal_edge = icou
 !
       end subroutine find_belonged_pe_4_edge
 !

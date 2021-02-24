@@ -11,8 +11,10 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_vertical_filter_utils
-!
+      use t_mesh_data
+      use t_surface_data
+      use t_jacobians
+      use t_edge_data
       use t_iccg_parameter
       use t_crs_connect
       use t_crs_matrix
@@ -22,6 +24,15 @@
 !
       type(CRS_matrix_connect), save :: tbl_crs_z
       type(CRS_matrix), save :: mat_crs_z
+!
+!>     structure for node data (position)
+      type(mesh_geometry), save :: z_filter_mesh2
+!>     Structure for edge data
+      type(edge_data), save :: edge_z_filter2
+!>      structure of surface data (geometry and connectivity)
+      type(surface_data), save :: surf_z_filter2
+!>     Stracture for Jacobians
+      type(jacobians_type), save :: jacs_z2
 !
       type(CG_poarameter), save :: CG_param_z
       type(DJDS_poarameter), save :: DJDS_param_z
@@ -53,9 +64,9 @@
 !C
 !C
 !C-- CNTL DATA
-      call s_input_control_4_z_commute(z_filter_mesh%nod_comm,          &
-     &    z_filter_mesh%node, z_filter_mesh%ele,                        &
-     &    surf_z_filter, edge_z_filter, mat_crs_z,                      &
+      call s_input_control_4_z_commute(z_filter_mesh2%nod_comm,         &
+     &    z_filter_mesh2%node, z_filter_mesh2%ele,                      &
+     &    surf_z_filter2, edge_z_filter2, mat_crs_z,                    &
      &    CG_param_z, DJDS_param_z)
 !C
 !C     set gauss points
@@ -63,24 +74,23 @@
 !
       n_int = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 'const_jacobian_linear_1d'
-      call const_jacobian_linear_1d                                     &
-     &   (n_int, z_filter_mesh%node,                                    &
-     &    surf_z_filter, edge_z_filter, spf_1d_z, jacs_z)
+      call const_jacobian_linear_1d(n_int, z_filter_mesh2%node,         &
+     &    surf_z_filter2, edge_z_filter2, spf_1d_z, jacs_z2)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
-      call set_crs_connect_commute_z(z_filter_mesh%node, tbl_crs_z)
+      call set_crs_connect_commute_z(z_filter_mesh2%node, tbl_crs_z)
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
       call allocate_int_edge_data                                       &
-     &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
-      call set_spatial_difference(z_filter_mesh%ele%numele,             &
-     &    n_int, jacs_z%g_FEM, jacs_z%jac_1d_l)
+     &   (z_filter_mesh2%node%numnod, z_filter_mesh2%ele%numele)
+      call set_spatial_difference(z_filter_mesh2%ele%numele,            &
+     &    n_int, jacs_z2%g_FEM, jacs_z2%jac_1d_l)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
-     &   z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   edge_z_filter, spf_1d_z, jacs_z%g_FEM, jacs_z%jac_1d_l,        &
-     &   tbl_crs_z, mat_crs_z)
+     &   z_filter_mesh2%nod_comm, z_filter_mesh2%node,                  &
+     &   z_filter_mesh2%ele, edge_z_filter2, spf_1d_z,                  &
+     &   jacs_z2%g_FEM, jacs_z2%jac_1d_l, tbl_crs_z, mat_crs_z)
       call dealloc_edge_shape_func(spf_1d_z)
 !
 !C===
@@ -91,9 +101,9 @@
        open (id_delta_z,file='delta_z.0.dat')
 !
       write(id_delta_z,*) 'inod, z, delta z, diff.'
-      do i = 1, z_filter_mesh%node%numnod
+      do i = 1, z_filter_mesh2%node%numnod
         write(id_delta_z,'(i15,1p20E25.15e3)')                          &
-     &        i, z_filter_mesh%node%xx(i,3),                            &
+     &        i, z_filter_mesh2%node%xx(i,3),                           &
      &        delta_z(i), delta_dz(i), d2_dz(i)
       end do
 !

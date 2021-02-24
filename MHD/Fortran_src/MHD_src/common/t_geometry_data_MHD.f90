@@ -1,16 +1,18 @@
-!t_geometry_data_MHD.f90
-!      module t_geometry_data_MHD
-!
-!       Written by H. Matsui on Dec., 2008
-!
+!>@file  t_geometry_data_MHD.f90
+!!       module t_geometry_data_MHD
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui on Dec., 2008
+!!
 !> @brief structur for node and element list for MHD dynamo
 !
+!!@verbatim
 !!      subroutine count_smp_size_4_area(area)
 !!      subroutine count_empty_smp_area(area)
 !!
-!!       subroutine allocate_field_nod_list(fld)
-!!       subroutine allocate_field_ele_list(fld)
-!!       subroutine allocate_geometry_field_smp(fld)
+!!      subroutine allocate_field_nod_list(fld)
+!!      subroutine allocate_field_ele_list(fld)
+!!      subroutine allocate_geometry_field_smp(fld)
 !!
 !!      subroutine dealloc_conduct_node_list(MHD_mesh)
 !!      subroutine dealloc_fluid_node_list(MHD_mesh)
@@ -25,6 +27,13 @@
 !!
 !!      subroutine alloc_ele_connect_org_type(ele, MHD_mesh)
 !!      subroutine dealloc_ele_connect_org_type(MHD_mesh)
+!!        type(element_data), intent(in) :: ele
+!!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!!
+!!      logical function check_internal_ele_in_org(iele, node, MHD_mesh)
+!!        type(node_data), intent(in) :: node
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
+!!@endverbatim
 !
       module t_geometry_data_MHD
 !
@@ -97,13 +106,13 @@
 !>        edge communication table for insulator
         type(communication_table) :: edge_ins_comm
 !
-!>   geometry parameter for fluid
+!>        geometry parameter for fluid
         type(field_geometry_data) :: fluid
-!>   geometry parameter for conductor
+!>        geometry parameter for conductor
         type(field_geometry_data) :: conduct
-!>   geometry parameter for insulator
+!>        geometry parameter for insulator
         type(field_geometry_data) :: insulate
-!>   geometry parameter for inner core
+!>        geometry parameter for inner core
         type(field_geometry_data) :: inner_core
 !
 !>       global element id (where i:element id)
@@ -331,6 +340,25 @@
       deallocate(MHD_mesh%iele_global_org, MHD_mesh%ie_org)
 !
       end subroutine dealloc_ele_connect_org_type
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      logical function check_internal_ele_in_org(iele, node, MHD_mesh)
+!
+      use t_geometry_data
+!
+      integer(kind = kint), intent(in) :: iele
+      type(node_data), intent(in) :: node
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
+!
+      if(MHD_mesh%ie_org(iele,1) .le. node%internal_node)  then
+        check_internal_ele_in_org = .TRUE.
+      else
+        check_internal_ele_in_org = .FALSE.
+      end if
+!
+      end function check_internal_ele_in_org
 !
 ! ----------------------------------------------------------------------
 !

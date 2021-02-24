@@ -7,12 +7,20 @@
 !> @brief set surface and edge connectivity
 !!
 !!@verbatim
-!!      subroutine const_surface_and_edge(node, ele, surf, edge)
 !!      subroutine dealloc_surface_and_edge(node, ele, surf, edge)
 !!      subroutine empty_surface_and_edge(ele, surf, edge)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data), intent(inout) :: edge
+!!      subroutine const_surf_connectivity(node, ele, surf)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!      subroutine const_edge_connectivity(node, ele, surf, edge)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(inout) :: edge
 !!@endverbatim
 !
@@ -28,31 +36,9 @@
 !
       implicit  none
 !
-      private :: const_surf_connectivity, const_edge_connectivity
-!
 ! ----------------------------------------------------------------------
 !
      contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine const_surface_and_edge(node, ele, surf, edge)
-!
-      use cal_mesh_position
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-!
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_surf_connectivity'
-      call const_surf_connectivity(node, ele, surf)
-      if (iflag_debug.gt.0) write(*,*) 'const_edge_connectivity'
-      call const_edge_connectivity(node, ele, surf, edge)
-!
-      end subroutine const_surface_and_edge
 !
 ! ----------------------------------------------------------------------
 !
@@ -148,7 +134,6 @@
       if (iflag_debug.eq.1) write(*,*) 'count_overlap_surf_type'
       call alloc_surf_param_smp(surf)
       call count_surf_size_smp(surf)
-      call count_overlap_surf(node, surf)
 !
       end subroutine const_surf_connectivity
 !
@@ -169,7 +154,7 @@
       logical :: read_edge
 !
 !
-      read_edge =    allocated(edge%iedge_global)
+      read_edge =    allocated(edge%ie_edge)
 !
       if(read_edge .eqv. .false.) then
         if (iflag_debug.eq.1) write(*,*) 'construct_edge_data'
@@ -179,10 +164,8 @@
 !        call check_edge_hexa_data(id_rank, ele, edge)
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
       call alloc_edge_param_smp(edge)
       call count_edge_size_smp(edge)
-      call count_overlap_edge(node, edge)
 !
       end subroutine const_edge_connectivity
 !

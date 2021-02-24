@@ -36,7 +36,7 @@
 !
       implicit none
 !
-      private :: link_local_org_mesh_4_ucd
+      private :: link_local_org_mesh_4_ucd, count_interier_ele_in_org
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,6 +94,7 @@
 !
       use set_ucd_data_to_type
       use set_and_cal_udt_data
+      use count_overlap
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -102,9 +103,16 @@
 !
 !
       call link_node_data_2_ucd(mesh%node, ucd)
-      call const_udt_global_connect(mesh%node%internal_node,            &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele,                         &
+!
+      ucd%nnod_4_ele = mesh%ele%nnod_4_ele
+      ucd%nele = count_interier_ele_in_org(mesh%node, mesh%ele,        &
+     &                                     MHD_mesh)
+      call allocate_ucd_ele(ucd)
+!
+      call set_udt_global_connect(mesh%node%internal_node,             &
+     &    mesh%ele%numele, mesh%ele%nnod_4_ele,                        &
      &    MHD_mesh%iele_global_org, MHD_mesh%ie_org, ucd)
+!
 !
       end subroutine link_global_org_mesh_4_ucd
 !
@@ -114,6 +122,7 @@
       subroutine link_local_org_mesh_4_ucd(node, ele, MHD_mesh, ucd)
 !
       use set_and_cal_udt_data
+      use count_overlap
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -123,13 +132,41 @@
 !
 !
       ucd%nnod = node%numnod
-      call const_udt_local_nodes(node%numnod, node%xx, ucd)
-      call const_udt_local_connect                                      &
-     &   (node%internal_node, ele%numele, ele%nnod_4_ele,               &
-     &    MHD_mesh%ie_org, ucd)
+      call allocate_ucd_node(ucd)
+      call set_udt_local_nodes(node%numnod, node%xx, ucd)
+!
+      ucd%nnod_4_ele = ele%nnod_4_ele
+      ucd%nele = count_interier_ele_in_org(node, ele, MHD_mesh)
+      call allocate_ucd_ele(ucd)
+!
+      call set_udt_local_connect(node%internal_node,                    &
+     &    ele%numele, ele%nnod_4_ele, MHD_mesh%ie_org, ucd)
 !
       end subroutine link_local_org_mesh_4_ucd
 !
 !-----------------------------------------------------------------------
+!
+      integer(kind = kint) function                                     &
+     &              count_interier_ele_in_org(node, ele, MHD_mesh)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
+!
+      integer (kind = kint) :: icou, iele
+!
+!
+      icou = 0
+!$omp parallel do private(iele) reduction(+:icou)
+      do iele = 1, ele%numele
+        if(check_internal_ele_in_org(iele, node, MHD_mesh))             &
+     &     icou = icou + 1
+      end do
+!$omp end parallel do
+      count_interier_ele_in_org = icou
+!
+      end function count_interier_ele_in_org
+!
+! ----------------------------------------------------------------------
 !
       end module FEM_MHD_ucd_data

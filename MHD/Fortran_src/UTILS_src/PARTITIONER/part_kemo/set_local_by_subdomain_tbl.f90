@@ -20,11 +20,6 @@
 !!        type(internal_4_partitioner), intent(in) :: itl_surf_part
 !!        type(surface_data), intent(inout) :: new_surf
 !!        type(domain_group_4_partition), intent(inout) :: surf_d_grp
-!!      subroutine set_local_edge                                       &
-!!     &         (ip, itl_edge_part, new_edge, edge_d_grp)
-!!        type(internal_4_partitioner), intent(in) :: itl_edge_part
-!!        type(edge_data), intent(inout) :: new_edge
-!!        type(domain_group_4_partition), intent(inout) :: edge_d_grp
 !!
 !!      subroutine set_local_id_4_export(ip, itl_part, domain_grp)
 !!        type(internal_4_partitioner), intent(in) :: itl_part
@@ -133,35 +128,6 @@
       end do
 !
       end subroutine set_local_surface
-!
-!   --------------------------------------------------------------------
-!
-      subroutine set_local_edge                                         &
-     &         (ip, itl_edge_part, new_edge, edge_d_grp)
-!
-      use t_edge_data
-!
-      integer(kind = kint), intent(in) :: ip
-      type(internal_4_partitioner), intent(in) :: itl_edge_part
-!
-      type(edge_data), intent(inout) :: new_edge
-      type(domain_group_4_partition), intent(inout) :: edge_d_grp
-!
-      integer(kind = kint) :: ist, inum, iedge
-!
-!$omp parallel workshare
-      edge_d_grp%id_local_part(1:edge_d_grp%num_s_domin) = 0
-!$omp end parallel workshare
-!
-      ist = itl_edge_part%istack_4_subdomain(ip-1)
-      do inum = 1, itl_edge_part%num_4_subdomain(ip)
-        iedge = itl_edge_part%id_4_subdomain(inum+ist)
-        new_edge%iedge_global(inum) = iedge
-!
-        edge_d_grp%id_local_part(iedge)= inum 
-      end do
-!
-      end subroutine set_local_edge
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

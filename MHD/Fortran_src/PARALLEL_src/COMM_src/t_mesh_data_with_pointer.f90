@@ -300,6 +300,7 @@
       use set_surf_edge_mesh
       use set_connects_4_surf_group
       use const_mesh_information
+      use set_size_4_smp_types
 !      use check_surface_groups
 !
       integer, intent(in) :: id_rank
@@ -314,9 +315,14 @@
       if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
       call set_local_element_info(mesh_p%surf, mesh_p%edge)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_surface_and_edge'
-      call const_surface_and_edge                                       &
-     &   (mesh_p%node, mesh_p%ele, mesh_p%surf, mesh_p%edge)
+      if(iflag_debug .gt. 0) write(*,*) 'const_surf_connectivity'
+      call const_surf_connectivity(mesh_p%node, mesh_p%ele,             &
+     &                             mesh_p%surf)
+      if(iflag_debug .gt. 0) write(*,*) 'const_edge_connectivity'
+      call const_edge_connectivity(mesh_p%node, mesh_p%ele,             &
+     &                             mesh_p%surf, mesh_p%edge)
+!
+      call count_overlap_surf(mesh_p%node, mesh_p%surf)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
       call const_ele_list_4_surface(mesh_p%ele, mesh_p%surf)

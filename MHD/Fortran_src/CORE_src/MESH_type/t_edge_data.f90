@@ -10,6 +10,7 @@
 !!      subroutine alloc_numedge_stack(num_pe, edge)
 !!      subroutine alloc_inod_in_edge(edge)
 !!      subroutine alloc_edge_connect(edge, nsurf)
+!!      subroutine alloc_interior_edge(edge)
 !!      subroutine alloc_edge_4_ele(edge, nele)
 !!      subroutine alloc_isolate_edge(edge)
 !!      subroutine alloc_edge_geometory(edge)
@@ -22,6 +23,7 @@
 !!      subroutine dealloc_numedge_stack(edge)
 !!      subroutine dealloc_inod_in_edge(edge)
 !!      subroutine dealloc_edge_connect(edge)
+!!      subroutine dealloc_interior_edge(edge)
 !!      subroutine dealloc_edge_4_ele(edge)
 !!      subroutine dealloc_isolate_edge(edge)
 !!      subroutine dealloc_edge_geometory(edge)
@@ -43,8 +45,6 @@
       type edge_data
 !>     number of edge on local PE
         integer(kind=kint) ::  numedge
-!>     number of internal edge on local PE
-        integer(kind=kint) ::  internal_edge
 !>     number of nodes in each edge
         integer(kind=kint) ::  nnod_4_edge
 !>     number of isolated edge
@@ -67,8 +67,12 @@
 !>     maximum number of internal smp edge on local PE
         integer( kind=kint )  ::  max_internal_edge_smp
 !
+!>     number of internal edge on local PE
+        integer(kind=kint), allocatable ::  internal_edge(:)
 !>       global edge id (where i:edge id)
         integer(kind=kint_gl), allocatable  ::  iedge_global(:)
+!>    integer flag for interior edge 1...interior, 0...exterior
+        integer(kind = kint), allocatable :: interior_edge(:)
 !
 !>   edge connectivity ie_edge(i:edge ID,j:surface index)
         integer(kind=kint), allocatable  :: ie_edge(:,:)
@@ -79,8 +83,6 @@
 !
 !>     isolated edge list
         integer(kind=kint), allocatable  ::  iedge_isolate(:)
-!>    integer flag for interior edge 1...interior, 0...exterior
-        integer(kind = kint), allocatable :: interior_edge(:)
 !
 !>   position of center of edge
         real(kind = kreal), allocatable  :: x_edge(:,:)
@@ -138,17 +140,31 @@
 !
       allocate( edge%iedge_4_sf(nsurf,nedge_4_surf) )
       allocate( edge%ie_edge(edge%numedge,edge%nnod_4_edge) )
-      allocate( edge%iedge_global(edge%numedge) )
-      allocate( edge%interior_edge(edge%numedge) )
 !
-      if(nsurf .gt. 0) edge%iedge_4_sf =    0
+      if(nsurf .gt. 0)        edge%iedge_4_sf =    0
+      if(edge%numedge .gt. 0) edge%ie_edge =       0
+!
+      end subroutine alloc_edge_connect
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_interior_edge(edge)
+!
+      use m_geometry_constants
+!
+      type(edge_data), intent(inout) :: edge
+!
+      allocate(edge%internal_edge(1))
+      allocate(edge%iedge_global(edge%numedge))
+      allocate(edge%interior_edge(edge%numedge))
+!
+      edge%internal_edge(1) = 0
       if(edge%numedge .gt. 0) then
-        edge%ie_edge =       0
         edge%iedge_global =  0
         edge%interior_edge = 0
       end if
 !
-      end subroutine alloc_edge_connect
+      end subroutine alloc_interior_edge
 !
 !  ---------------------------------------------------------------------
 !
@@ -232,7 +248,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
-      deallocate ( edge%istack_numedge, edge%istack_interedge)
+      deallocate(edge%istack_numedge, edge%istack_interedge)
 !
       end subroutine dealloc_numedge_stack
 !
@@ -243,7 +259,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
-      deallocate ( edge%node_on_edge, edge%node_on_edge_sf)
+      deallocate(edge%node_on_edge, edge%node_on_edge_sf)
 !
       end subroutine dealloc_inod_in_edge
 !
@@ -255,10 +271,19 @@
 !
       deallocate( edge%iedge_4_sf )
       deallocate( edge%ie_edge )
-      deallocate( edge%iedge_global )
-      deallocate( edge%interior_edge )
 !
       end subroutine dealloc_edge_connect
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_interior_edge(edge)
+!
+      type(edge_data), intent(inout) :: edge
+!
+      deallocate(edge%internal_edge)
+      deallocate(edge%iedge_global, edge%interior_edge)
+!
+      end subroutine dealloc_interior_edge
 !
 !  ---------------------------------------------------------------------
 !

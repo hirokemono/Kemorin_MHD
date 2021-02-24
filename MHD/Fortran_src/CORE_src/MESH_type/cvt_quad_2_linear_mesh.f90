@@ -11,11 +11,6 @@
 !!      subroutine gen_linear_group_info                                &
 !!     &         (ele_grp, sf_grp, ele_grp_l, surf_grp_l)
 !!
-!!      subroutine set_internal_list_lin_20(node_q, ele_q, surf_q,      &
-!!     &          node_l, ele_l, surf_l, edge_l)
-!!      subroutine set_internal_list_lin_27                             &
-!!     &         (node_q,  node_l, ele_l, surf_l, edge_l)
-!!
 !!      subroutine init_linear_nod_phys(node_l, nod_fld_q, nod_fld_l)
 !!      subroutine copy_nod_phys_2_linear                               &
 !!     &         (node_q, nod_fld_q, node_l, nod_fld_l)
@@ -173,69 +168,6 @@
       end subroutine gen_linear_group_info
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_internal_list_lin_20(node_q, ele_q, surf_q,        &
-     &          node_l, ele_l, surf_l, edge_l)
-!
-      use m_machine_parameter
-      use t_geometry_data
-      use t_mesh_data
-      use t_surface_data
-      use t_edge_data
-!
-      use set_internal_list_4_linear
-!
-      type(node_data), intent(in) ::    node_q
-      type(element_data), intent(in) :: ele_q
-      type(surface_data), intent(in) :: surf_q
-!
-      type(node_data), intent(inout) ::    node_l
-      type(element_data), intent(inout) :: ele_l
-      type(surface_data), intent(inout) :: surf_l
-      type(edge_data),    intent(inout) :: edge_l
-!
-!
-      call set_internal_list_4_linear_20                                &
-     &   (node_q%numnod, node_q%internal_node, ele_q%numele,            &
-     &    surf_q%numsurf, ele_q%interior_ele, surf_q%interior_surf,     &
-     &    node_l%numnod, ele_l%numele, surf_l%numsurf,                  &
-     &    edge_l%numedge, ele_l%ie, surf_l%ie_surf,                     &
-     &    edge_l%ie_edge, ele_l%interior_ele,                           &
-     &    surf_l%interior_surf, edge_l%interior_edge)
-!
-      end subroutine set_internal_list_lin_20
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_internal_list_lin_27                               &
-     &         (node_q, node_l, ele_l, surf_l, edge_l)
-!
-      use m_machine_parameter
-      use t_geometry_data
-      use t_mesh_data
-      use t_surface_data
-      use t_edge_data
-!
-      use set_internal_list_4_linear
-!
-      type(node_data), intent(in) ::    node_q
-!
-      type(node_data), intent(inout) ::    node_l
-      type(element_data), intent(inout) :: ele_l
-      type(surface_data), intent(inout) :: surf_l
-      type(edge_data),    intent(inout) :: edge_l
-!
-!
-      call set_internal_list_4_linear_27(node_q%internal_node,          &
-     &    node_l%numnod, ele_l%numele, surf_l%numsurf,                  &
-     &    edge_l%numedge, ele_l%ie, surf_l%ie_surf,                     &
-     &    edge_l%ie_edge, ele_l%interior_ele,                           &
-     &    surf_l%interior_surf, edge_l%interior_edge)
-!
-      end subroutine set_internal_list_lin_27
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine init_linear_nod_phys(node_l, nod_fld_q, nod_fld_l)

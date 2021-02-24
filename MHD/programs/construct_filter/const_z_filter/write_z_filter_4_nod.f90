@@ -3,7 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine write_filter_4_nod(node, ele, edge)
+!!      subroutine write_filter_4_nod(node, ele, edge_z_filter)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(edge_data), intent(in) :: edge_z_filter
 !
       module write_z_filter_4_nod
 !
@@ -19,16 +22,17 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_filter_4_nod(node, ele, edge)
+      subroutine write_filter_4_nod(node, ele, edge_z_filter)
 !
       use m_int_commtative_filter
       use m_commute_filter_z
       use m_z_filter_values
       use m_int_edge_vart_width
+      use const_geometry_z_commute
 !
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(edge_data), intent(inout) :: edge
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge_z_filter
 !
       integer (kind= kint), parameter :: id_filter_z = 15
       integer (kind= kint) :: i, inod, iele, j, k, kf
@@ -111,8 +115,8 @@
 !
         do iele = 1, ele%numele
           write(id_filter_z,'(3i16,1p3E25.15e3)')                       &
-     &          edge%iedge_global(iele),                                &
-     &          edge%ie_edge(iele,1), edge%ie_edge(iele,2),             &
+     &          edge_z_filter%iedge_global(iele),                       &
+     &          edge_z_filter%ie_edge(iele,1:2),                        &
      &          delta_z_e(iele), delta_dz_e(iele), d2_dz_e(iele)
         end do
 !

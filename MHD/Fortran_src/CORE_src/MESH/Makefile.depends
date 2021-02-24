@@ -12,7 +12,7 @@ copy_communication_table.o: $(MESHDIR)/copy_communication_table.f90 m_precision.
 	$(F90) -c $(F90OPTFLAGS) $<
 copy_local_position_2_ele.o: $(MESHDIR)/copy_local_position_2_ele.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-count_overlap.o: $(MESHDIR)/count_overlap.f90 m_precision.o
+count_overlap.o: $(MESHDIR)/count_overlap.f90 m_precision.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 degraded_node_in_ele.o: $(MESHDIR)/degraded_node_in_ele.f90 m_precision.o m_constants.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -75,8 +75,6 @@ set_field_on_edge.o: $(MESHDIR)/set_field_on_edge.f90 m_precision.o m_constants.
 set_geometry_4_quad27.o: $(MESHDIR)/set_geometry_4_quad27.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_geometry_graph.o: $(MESHDIR)/set_geometry_graph.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
-set_internal_list_4_linear.o: $(MESHDIR)/set_internal_list_4_linear.f90 m_precision.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_layer_list_by_start_end.o: $(MESHDIR)/set_layer_list_by_start_end.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<

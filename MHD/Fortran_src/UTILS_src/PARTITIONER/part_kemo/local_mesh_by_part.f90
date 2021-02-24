@@ -43,7 +43,6 @@
       use m_precision
 !
       use const_local_mesh_id
-      use set_local_connectivities
       use const_local_groups
       use sel_part_nod_comm_input
       use delete_data_files

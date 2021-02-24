@@ -5,7 +5,7 @@
 !     Modified by Hiroaki Matsui on Apr., 2008
 !
 !!      subroutine set_geometry_z_commute                               &
-!!     &         (nod_comm, node, ele, surf, edge)
+!!     &         (nod_comm, node, ele, surf, edge_z_filter)
 !
       module const_geometry_z_commute
 !
@@ -33,7 +33,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_geometry_z_commute                                 &
-     &         (nod_comm, node, ele, surf, edge)
+     &         (nod_comm, node, ele, surf, edge_z_filter)
 !
       use m_spheric_constants
 !
@@ -41,7 +41,7 @@
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(inout) :: edge_z_filter
 !
 !
       ncomp_mat = ncomp_norm + 2
@@ -49,13 +49,14 @@
         ncomp_mat = ncomp_norm
       end if
 !
-      call set_numnod_z_commute(node, ele, surf, edge)
+      call set_numnod_z_commute(node, ele, surf, edge_z_filter)
 !
       call alloc_node_geometry_w_sph(node)
-      call alloc_edge_connect(edge, surf%numsurf)
+      call alloc_edge_connect(edge_z_filter, surf%numsurf)
+      call dealloc_interior_edge(edge_z_filter)
 !
-      call set_element_z_commute(node, edge)
-      call set_global_id_z_commute(node, ele, edge)
+      call set_element_z_commute(node, edge_z_filter)
+      call set_global_id_z_commute(node, ele, edge_z_filter)
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
         call set_chebyshev_grids                                        &
@@ -82,13 +83,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine  set_numnod_z_commute(node, ele, surf, edge)
+      subroutine  set_numnod_z_commute(node, ele, surf, edge_z_filter)
 !
 !      type(communication_table), intent(inout) :: nod_comm
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(inout) :: edge_z_filter
 !
 !
       node%internal_node = totalnod
@@ -103,8 +104,8 @@
 !
       ele%first_ele_type = 331
       surf%numsurf = ele%numele
-      edge%numedge = ele%numele
-      edge%nnod_4_edge = 2
+      edge_z_filter%numedge = ele%numele
+      edge_z_filter%nnod_4_edge = 2
 !
       nfilter2_1 = 2*numfilter+1
       nfilter2_2 = 2*numfilter+2
@@ -116,11 +117,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_global_id_z_commute(node, ele, edge)
+      subroutine set_global_id_z_commute(node, ele, edge_z_filter)
 !
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(inout) :: edge_z_filter
 !
       integer (kind = kint) :: i
 !
@@ -129,23 +130,24 @@
       end do
 !
       do i = 1, ele%numele
-        edge%iedge_global(i) = node%inod_global(edge%ie_edge(i,1))
+        edge_z_filter%iedge_global(i)                                   &
+     &     = node%inod_global(edge_z_filter%ie_edge(i,1))
       end do
 !
       end subroutine set_global_id_z_commute
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_element_z_commute(node, edge)
+      subroutine set_element_z_commute(node, edge_z_filter)
 !
       type(node_data), intent(inout) :: node
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(inout) :: edge_z_filter
 !
       integer (kind = kint) :: i
 !
       do i = 1, node%internal_node - 1
-        edge%ie_edge(i,1) = i
-        edge%ie_edge(i,2) = i+1
+        edge_z_filter%ie_edge(i,1) = i
+        edge_z_filter%ie_edge(i,2) = i+1
       end do
 !
       end subroutine set_element_z_commute

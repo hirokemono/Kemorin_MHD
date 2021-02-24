@@ -99,10 +99,6 @@
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
-      call set_internal_list_lin_20                                     &
-     &   (mesh_q%node, mesh_q%ele, mesh_q%surf,                         &
-     &    mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge)
-!
       call init_linear_nod_phys(mesh_l%node, nod_fld_q, nod_fld_l)
 !
       end subroutine set_linear_data_by_quad_data
@@ -155,10 +151,6 @@
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
-!
-      call set_internal_list_lin_27                                     &
-     &   (mesh_q%node, mesh_l%node, mesh_l%ele,                         &
-     &    mesh_l%surf, mesh_l%edge)
 !
       end subroutine const_linear_data_by_lag_data
 !

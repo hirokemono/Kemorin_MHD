@@ -10,7 +10,6 @@ TARGET_TEST_DZ =  test_dz
 SOURCES = $(shell ls *.f90)
 
 MOD_Z_FILTER_CTL = \
-m_vertical_filter_utils.o \
 t_ctl_data_gen_z_filter.o \
 set_ctl_gen_z_filter.o \
 \
