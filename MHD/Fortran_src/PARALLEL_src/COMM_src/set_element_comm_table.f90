@@ -11,13 +11,13 @@
 !!     &          num_neib_e, id_neib_e, num_import_e, istack_import_e, &
 !!     &          ntot_import_e)
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_ele_double_number), intent(in) :: iele_dbl
+!!        type(element_double_number), intent(in) :: iele_dbl
 !!      subroutine set_element_import_item                              &
 !!     &         (inod_dbl, iele_dbl, numele, nnod_4_ele, ie, x_ele,    &
 !!     &          num_neib_e, id_neib_e, istack_import_e, item_import_e,&
 !!     &          inod_lc_import, ipe_lc_import, xe_import)
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
-!!        type(node_ele_double_number), intent(in) :: iele_dbl
+!!        type(element_double_number), intent(in) :: iele_dbl
 !!
 !!      subroutine set_element_export_item                              &
 !!     &         (txt, neib_e, numele, nnod_4_ele, x_ele,               &
@@ -46,10 +46,10 @@
      &          ntot_import_e)
 !
       use t_comm_table
-      use t_para_double_numbering
+      use t_element_double_number
 !
       type(communication_table), intent(in) :: nod_comm
-      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(element_double_number), intent(in) :: iele_dbl
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(inout) :: id_neib_e(num_neib_e)
@@ -97,9 +97,10 @@
      &          inod_lc_import, ipe_lc_import, xe_import)
 !
       use t_para_double_numbering
+      use t_element_double_number
 !
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(element_double_number), intent(in) :: iele_dbl
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele, nnod_4_ele)

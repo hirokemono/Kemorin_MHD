@@ -14,7 +14,7 @@
 !!        type(element_around_node), intent(in) :: neib_e
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
-!!        type(node_ele_double_number), intent(in) :: iele_dbl
+!!        type(element_double_number), intent(in) :: iele_dbl
 !!        type(communication_table), intent(inout) :: e_comm
 !!        type(failed_table), intent(inout) :: fail_tbl
 !!@endverbatim
@@ -28,6 +28,7 @@
       use t_geometry_data
       use t_comm_table
       use t_para_double_numbering
+      use t_element_double_number
       use t_next_node_ele_4_node
       use t_failed_export_list
       use m_solver_SR
@@ -79,7 +80,7 @@
       type(element_around_node), intent(in) :: neib_e
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(element_double_number), intent(in) :: iele_dbl
 !
       type(communication_table), intent(inout) :: e_comm
       type(failed_table), intent(inout) :: fail_tbl

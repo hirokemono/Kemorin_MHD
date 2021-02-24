@@ -223,6 +223,7 @@
 !
       use m_geometry_constants
       use t_para_double_numbering
+      use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -233,7 +234,7 @@
       type(communication_table), intent(inout) :: ele_comm
 !
       type(node_ele_double_number) :: inod_dbl
-      type(node_ele_double_number) :: iele_dbl
+      type(element_double_number) :: iele_dbl
       type(element_around_node) :: neib_ele
       type(failed_table) :: fail_tbl_e
 !
@@ -241,7 +242,7 @@
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      call alloc_double_numbering(ele%numele, iele_dbl)
+      call alloc_ele_double_number(ele%numele, iele_dbl)
       call find_belonged_pe_4_ele(my_rank, inod_dbl,                    &
      &    ele%numele, ele%ie(1,1), ele%interior_ele, iele_dbl)
 !
@@ -252,7 +253,7 @@
      &   (txt_surf, ele%numele, ele%nnod_4_ele, ele%ie,                 &
      &    ele%x_ele, node, nod_comm, inod_dbl, iele_dbl,                &
      &    neib_ele, ele_comm, fail_tbl_e)
-      call dealloc_double_numbering(iele_dbl)
+      call dealloc_ele_double_number(iele_dbl)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_ele)
       call dealloc_failed_export(fail_tbl_e)
@@ -270,6 +271,7 @@
 !
       use m_geometry_constants
       use t_para_double_numbering
+      use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -280,7 +282,7 @@
       type(surface_data), intent(inout) :: surf
 !
       type(node_ele_double_number) :: inod_dbl
-      type(node_ele_double_number) :: isurf_dbl
+      type(element_double_number) :: isurf_dbl
       type(element_around_node) :: neib_surf
       type(failed_table) :: fail_tbl_s
 !
@@ -288,7 +290,7 @@
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      call alloc_double_numbering(surf%numsurf, isurf_dbl)
+      call alloc_ele_double_number(surf%numsurf, isurf_dbl)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
      &    surf%interior_surf, isurf_dbl)
@@ -300,7 +302,7 @@
      &   (txt_surf, surf%numsurf, surf%nnod_4_surf, surf%ie_surf,       &
      &    surf%x_surf, node, nod_comm, inod_dbl, isurf_dbl,             &
      &    neib_surf, surf_comm, fail_tbl_s)
-      call dealloc_double_numbering(isurf_dbl)
+      call dealloc_ele_double_number(isurf_dbl)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_surf)
       call dealloc_failed_export(fail_tbl_s)
@@ -316,6 +318,7 @@
 !
       use m_geometry_constants
       use t_para_double_numbering
+      use t_element_double_number
       use t_const_comm_table
       use set_ele_id_4_node_type
       use const_element_comm_table
@@ -327,7 +330,7 @@
       type(edge_data), intent(inout) :: edge
 !
       type(node_ele_double_number) :: inod_dbl
-      type(node_ele_double_number) :: iedge_dbl
+      type(element_double_number) :: iedge_dbl
       type(element_around_node) :: neib_edge
       type(failed_table) :: fail_tbl_d
 !
@@ -335,7 +338,7 @@
       call alloc_double_numbering(node%numnod, inod_dbl)
       call set_node_double_numbering(node, nod_comm, inod_dbl)
 !
-      call alloc_double_numbering(edge%numedge, iedge_dbl)
+      call alloc_ele_double_number(edge%numedge, iedge_dbl)
       call find_belonged_pe_4_edge(my_rank, inod_dbl,                   &
      &    edge%numedge, edge%nnod_4_edge, edge%ie_edge,                 &
      &    edge%interior_edge, iedge_dbl)
@@ -350,7 +353,7 @@
      &   (txt_edge, edge%numedge, edge%nnod_4_edge, edge%ie_edge,       &
      &    edge%x_edge, node, nod_comm, inod_dbl, iedge_dbl,             &
      &    neib_edge, edge_comm, fail_tbl_d)
-      call dealloc_double_numbering(iedge_dbl)
+      call dealloc_ele_double_number(iedge_dbl)
       call dealloc_double_numbering(inod_dbl)
       call dealloc_iele_belonged(neib_edge)
       call dealloc_failed_export(fail_tbl_d)
