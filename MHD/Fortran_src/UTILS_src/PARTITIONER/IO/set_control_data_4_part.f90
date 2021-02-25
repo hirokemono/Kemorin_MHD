@@ -198,7 +198,6 @@
 !
 !   set local data format
 !
-!
       if (part_ctl%single_plt%mesh_file_prefix%iflag .gt. 0) then
         part_p%global_mesh_file%file_prefix                             &
      &      = part_ctl%single_plt%mesh_file_prefix%charavalue
@@ -207,7 +206,7 @@
         stop
       end if
       part_p%global_mesh_file%iflag_format                              &
-     &   = choose_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
+     & = choose_para_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
      &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
