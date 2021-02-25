@@ -279,7 +279,7 @@
 !
 !
       do i_fld = 1, new_fld%num_phys_viz
-        i_comp = new_fld%istack_component(i_fld) + 1
+        i_comp = new_fld%istack_component(i_fld-1) + 1
         if     (new_fld%num_component(i_fld) .eq. n_scalar) then
           call scalar_to_new_partition(iflag_recv, org_to_new_tbl,      &
      &        new_mesh%nod_comm, org_fld%n_point, new_fld%n_point,      &

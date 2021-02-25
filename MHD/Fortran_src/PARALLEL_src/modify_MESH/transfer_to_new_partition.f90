@@ -89,9 +89,9 @@
 !
       call verify_iccgN_vec_type(n_scalar, nnod_org, v_sol)
 !
-      call calypso_SR_type_3(iflag_recv, transfer_tbl,                  &
+      call calypso_SR_type_1(iflag_recv, transfer_tbl,                  &
      &    nnod_org, nnod_new, vec_org(1), vec_new(1))
-      call SOLVER_SEND_RECV_3_type(nnod_new, new_nod_comm, vec_new(1))
+      call SOLVER_SEND_RECV_type(nnod_new, new_nod_comm, vec_new(1))
 !
       end subroutine scalar_to_new_partition
 !
