@@ -92,7 +92,7 @@
      &      nod_comm%istack_export, nod_comm%item_export,               &
      &      org_node%numnod, neib_ele%ntot, neib_ele%istack_4_node,     &
      &      neib_ele%iele_4_node, ele%numele, ele%nnod_4_ele, ele%ie,   &
-     &      iflag_node, iflag_ele)
+     &      iflag_ele)
 !
         do inod = 1, ele%numele
           added_comm%num_export(i) = added_comm%num_export(i)           &
@@ -116,7 +116,7 @@
      &      nod_comm%istack_export, nod_comm%item_export,               &
      &      org_node%numnod, neib_ele%ntot, neib_ele%istack_4_node,     &
      &      neib_ele%iele_4_node, ele%numele, ele%nnod_4_ele, ele%ie,   &
-     &      iflag_node, iflag_ele)
+     &      iflag_ele)
 !
         call copy_ele_to_extend_buffer(added_comm%istack_export(i-1),   &
      &      ele, dbl_ele, dbl_id, iflag_ele, send_ebuf)
