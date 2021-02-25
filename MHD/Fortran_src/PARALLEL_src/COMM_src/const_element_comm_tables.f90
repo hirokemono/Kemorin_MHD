@@ -197,6 +197,7 @@
       type(element_around_node) :: neib_surf
       type(failed_table) :: fail_tbl_s
 !
+      integer(kind = kint) :: internal_num = 0
       integer(kind = kint_gl), allocatable :: istack_inersurf(:)
 !
       call alloc_double_numbering(node%numnod, inod_dbl)
@@ -206,7 +207,7 @@
       call alloc_interior_surf(surf)
       call find_belonged_pe_4_surf(my_rank, inod_dbl,                   &
      &    surf%numsurf, surf%nnod_4_surf, surf%ie_surf,                 &
-     &    surf%internal_surf(1), surf%interior_surf, isurf_dbl)
+     &    internal_num, surf%interior_surf, isurf_dbl)
 !
       call set_surf_id_4_node(node, surf, neib_surf)
 !
@@ -224,8 +225,7 @@
       allocate(istack_inersurf(0:nprocs))
       istack_inersurf(0:nprocs) = 0
 !
-      call count_number_of_node_stack                                   &
-     &  (surf%internal_surf(1), istack_inersurf)
+      call count_number_of_node_stack(internal_num, istack_inersurf)
       call set_global_ele_id                                            &
      &   (txt_surf, surf%numsurf, istack_inersurf,                      &
      &    surf%interior_surf, surf_comm, surf%isurf_global)
@@ -268,6 +268,7 @@
       type(element_around_node) :: neib_edge
       type(failed_table) :: fail_tbl_d
 !
+      integer(kind = kint) :: internal_num = 0
       integer(kind = kint_gl), allocatable :: istack_ineredge(:)
 !
 !
@@ -278,7 +279,7 @@
       call alloc_interior_edge(edge)
       call find_belonged_pe_4_edge(my_rank, inod_dbl,                   &
      &    edge%numedge, edge%nnod_4_edge, edge%ie_edge,                 &
-     &    edge%internal_edge(1), edge%interior_edge, iedge_dbl)
+     &    internal_num, edge%interior_edge, iedge_dbl)
 !
 !
       if(iflag_debug.gt.0) write(*,*) ' set_edge_id_4_node in edge'
@@ -300,8 +301,7 @@
       allocate(istack_ineredge(0:nprocs))
       istack_ineredge(0:nprocs) = 0
 !
-      call count_number_of_node_stack                                   &
-     &  (edge%internal_edge(1), istack_ineredge)
+      call count_number_of_node_stack(internal_num, istack_ineredge)
       call set_global_ele_id                                            &
      &   (txt_edge, edge%numedge, istack_ineredge,                      &
      &    edge%interior_edge, edge_comm, edge%iedge_global)

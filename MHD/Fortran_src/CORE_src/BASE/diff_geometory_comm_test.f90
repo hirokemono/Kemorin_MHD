@@ -10,7 +10,7 @@
 !!      subroutine set_node_4_comm_test(numnod, internal_node,          &
 !!     &          inod_gl, xx, i_gl_test, xx_test)
 !!      subroutine set_element_4_comm_test(numele, interior_flag,       &
-!!     &          iele_gl, x_ele, i_gl_test, xx_test)
+!!     &                                   x_ele,  xx_test)
 !!
 !!      integer(kind = kint) function count_node_comm_test              &
 !!     &            (num_d, inod_gl, x_org, icomm_gl, x_comm)
@@ -75,15 +75,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_element_4_comm_test(numele, interior_flag,         &
-     &          iele_gl, x_ele, i_gl_test, xx_test)
+     &                                   x_ele, xx_test)
 !
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: interior_flag(numele)
 
-      integer(kind = kint_gl), intent(in) :: iele_gl(numele)
       real(kind = kreal), intent(in) :: x_ele(numele,3)
 !
-      integer(kind = kint_gl), intent(inout) :: i_gl_test(numele)
       real(kind = kreal), intent(inout) ::      xx_test(3*numele)
 !
 !
@@ -93,12 +91,10 @@
 !$omp parallel do
       do iele = 1, numele
         if(interior_flag(iele) .eq. 0) then
-          i_gl_test(iele) = 0
           xx_test(3*iele-2) = 0.0d0
           xx_test(3*iele-1) = 0.0d0
           xx_test(3*iele  ) = 0.0d0
         else
-          i_gl_test(iele) = iele_gl(iele)
           xx_test(3*iele-2) = x_ele(iele,1)
           xx_test(3*iele-1) = x_ele(iele,2)
           xx_test(3*iele  ) = x_ele(iele,3)

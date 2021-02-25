@@ -95,7 +95,7 @@
 !
 !
       nod_IO%numnod =        surf%numsurf
-      nod_IO%internal_node = surf%internal_surf(1)
+      nod_IO%internal_node = sum(surf%interior_surf)
 !
       call alloc_node_geometry_base(nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
@@ -159,8 +159,7 @@
       integer(kind = kint) :: isurf
 !
 !
-!      surf%numsurf =       nod_IO%numnod
-      surf%internal_surf(1) = nod_IO%internal_node
+      surf%numsurf =       nod_IO%numnod
       call alloc_surface_geometory(surf)
       call alloc_normal_vector(surf)
 !

@@ -60,8 +60,6 @@
 !>     maximum number of internal smp edge on local PE
         integer( kind=kint )  ::  max_internal_edge_smp
 !
-!>     number of internal edge on local PE
-        integer(kind=kint), allocatable ::  internal_edge(:)
 !>       global edge id (where i:edge id)
         integer(kind=kint_gl), allocatable  ::  iedge_global(:)
 !>    integer flag for interior edge 1...interior, 0...exterior
@@ -132,11 +130,9 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      allocate(edge%internal_edge(1))
       allocate(edge%iedge_global(edge%numedge))
       allocate(edge%interior_edge(edge%numedge))
 !
-      edge%internal_edge(1) = 0
       if(edge%numedge .gt. 0) then
         edge%iedge_global =  0
         edge%interior_edge = 0
@@ -245,8 +241,7 @@
 !
       type(edge_data), intent(inout) :: edge
 !
-      if(allocated(edge%internal_edge) .eqv. .FALSE.) return
-      deallocate(edge%internal_edge)
+      if(allocated(edge%interior_edge) .eqv. .FALSE.) return
       deallocate(edge%iedge_global, edge%interior_edge)
 !
       end subroutine dealloc_interior_edge

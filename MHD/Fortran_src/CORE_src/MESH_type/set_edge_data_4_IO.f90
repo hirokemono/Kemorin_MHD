@@ -108,7 +108,7 @@
 !
 !
       nod_IO%numnod =        edge%numedge
-      nod_IO%internal_node = edge%internal_edge(1)
+      nod_IO%internal_node = sum(edge%interior_edge)
 !
       call alloc_node_geometry_base(nod_IO)
       call alloc_ele_vector_IO(nod_IO, sfed_IO)
@@ -144,7 +144,6 @@
 !
 !
       edge%numedge = ele_IO%numele
-!
       call alloc_edge_connect(edge, nsurf)
       call alloc_edge_4_ele(edge, nele)
 !
@@ -170,7 +169,7 @@
       integer(kind = kint) :: iedge
 !
 !
-       edge%internal_edge(1) = nod_IO%internal_node
+       edge%numedge = nod_IO%numnod
        call alloc_edge_geometory(edge)
 !
 !omp parallel do

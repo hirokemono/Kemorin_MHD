@@ -59,8 +59,6 @@
 !>     maximum number of smp internal surface on local PE
         integer( kind=kint )  ::  max_internal_surf_smp
 !
-!>       number of internal surface on local PE
-        integer(kind = kint), allocatable  ::  internal_surf(:)
 !>       global surface id (where i:surface id)
         integer(kind=kint_gl), allocatable  ::  isurf_global(:)
 !>       integer flag for interior surface 1...interior, 0...exterior
@@ -147,11 +145,9 @@
 !
       type(surface_data), intent(inout) :: surf
 !
-      allocate(surf%internal_surf(1))
       allocate(surf%isurf_global(surf%numsurf))
       allocate(surf%interior_surf(surf%numsurf))
 !
-      surf%internal_surf(1) = 0
       if (surf%numsurf.gt. 0) then
         surf%isurf_global =  0
         surf%interior_surf = 0
@@ -276,8 +272,7 @@
 !
       type(surface_data), intent(inout) :: surf
 !
-      if(allocated(surf%internal_surf) .eqv. .FALSE.) return
-      deallocate(surf%internal_surf)
+      if(allocated(surf%interior_surf) .eqv. .FALSE.) return
       deallocate(surf%isurf_global, surf%interior_surf)
 !
       end subroutine dealloc_interior_surf
