@@ -112,7 +112,7 @@
       call dealloc_sorting_data(sort_nod)
 !
       call set_repart_node_position                                     &
-     &   (mesh%node, new_comm, new_node, part_tbl)
+     &   (part_tbl, mesh%node, new_comm, new_node)
       call check_repart_node_transfer                                   &
      &   (mesh%nod_comm, mesh%node, new_comm, new_node,                 &
      &    part_tbl, new_ids_on_org)

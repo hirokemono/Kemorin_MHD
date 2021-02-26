@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_repart_node_position                             &
-!!     &         (node, new_comm, new_node, part_tbl)
-!!        type(node_data), intent(in) :: node
+!!     &         (part_tbl, node, new_comm, new_node)
 !!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(inout) :: new_node
 !!      subroutine set_repart_element_connect                           &
@@ -43,7 +43,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_repart_node_position                               &
-     &         (node, new_comm, new_node, part_tbl)
+     &         (part_tbl, node, new_comm, new_node)
 !
       use calypso_mpi_int
       use calypso_SR_type
