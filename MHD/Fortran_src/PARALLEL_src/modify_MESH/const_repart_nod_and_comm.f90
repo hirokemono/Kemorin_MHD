@@ -84,8 +84,7 @@
 !       Re-partitioning for external node
       call const_ext_of_int_grp_new_part(mesh%node, neib_nod,           &
      &    part_param, part_grp, ext_grp, ext_int_grp)
-      call const_ext_comm_tbl_to_new_part                               &
-     &   (ext_int_grp, part_tbl, ext_tbl)
+      call const_ext_comm_tbl_to_new_part(ext_int_grp, ext_tbl)
       call dealloc_group(ext_int_grp)
       call dealloc_group(ext_grp)
 !

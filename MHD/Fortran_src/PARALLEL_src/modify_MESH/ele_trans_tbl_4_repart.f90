@@ -96,7 +96,7 @@
      &   (ele_tbl%ntot_import, ele_tbl%ntot_import,                     &
      &    ele_tbl%item_import, ele_tbl%irev_import)
 !
-      call set_import_ele_for_repart(node, ele, part_tbl, idomain_new,  &
+      call set_import_ele_for_repart(node, ele, idomain_new,            &
      &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
      &    ele_tbl%irank_export, ele_tbl%istack_export,                  &
      &    ele_tbl%item_export)
@@ -124,7 +124,7 @@
 !
 !
 !$omp parallel workshare
-        num_send_ele(1:nprocs) = 0
+      num_send_ele(1:nprocs) = 0
 !$omp end parallel workshare
 !
       allocate(iflag_ele(ele%numele))
@@ -161,14 +161,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_import_ele_for_repart                              &
-     &         (node, ele, part_tbl, idomain_new,                       &
+      subroutine set_import_ele_for_repart(node, ele, idomain_new,      &
      &          nrank_export, ntot_export, irank_export,                &
      &          istack_export, item_export)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(calypso_comm_table), intent(in) :: part_tbl
       integer(kind = kint), intent(in) :: idomain_new(node%numnod)
 !
       integer(kind = kint), intent(in) :: nrank_export, ntot_export
@@ -178,20 +176,12 @@
       integer(kind = kint), intent(inout) :: item_export(ntot_export)
 !
       integer(kind = kint), allocatable :: iflag_ele(:)
-      integer(kind = kint) :: i, j, icou, ip, inod, iele, k1, ipart
+      integer(kind = kint) :: i, j, icou, ip, inod, iele, k1
 !
 !
       allocate(iflag_ele(ele%numele))
 !
       do i = 1, nrank_export
-        ipart = 0
-        do j = i, part_tbl%nrank_export
-          if(irank_export(i) .eq. part_tbl%irank_export(i)) then
-            ipart = j
-            exit
-          end if
-        end do
-!
 !$omp parallel workshare
         iflag_ele(1:ele%numele) = 0
 !$omp end parallel workshare

@@ -10,8 +10,7 @@
 !!      subroutine const_int_comm_tbl_to_new_part(part_grp, part_tbl)
 !!        type(group_data), intent(in) :: part_grp
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
-!!      subroutine const_ext_comm_tbl_to_new_part                       &
-!!     &         (ext_int_grp, part_tbl, ext_tbl)
+!!      subroutine const_ext_comm_tbl_to_new_part(ext_int_grp, ext_tbl)
 !!        type(group_data), intent(in) :: ext_int_grp
 !!        type(calypso_comm_table), intent(in) :: part_tbl
 !!        type(calypso_comm_table), intent(inout) :: ext_tbl
@@ -64,11 +63,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_ext_comm_tbl_to_new_part                         &
-     &         (ext_int_grp, part_tbl, ext_tbl)
+      subroutine const_ext_comm_tbl_to_new_part(ext_int_grp, ext_tbl)
 !
       type(group_data), intent(in) :: ext_int_grp
-      type(calypso_comm_table), intent(in) :: part_tbl
+!      type(calypso_comm_table), intent(in) :: part_tbl
 !
       type(calypso_comm_table), intent(inout) :: ext_tbl
 !
