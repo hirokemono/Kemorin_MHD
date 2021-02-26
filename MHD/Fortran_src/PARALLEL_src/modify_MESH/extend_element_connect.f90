@@ -54,11 +54,11 @@
       type(node_ele_double_number), intent(in) :: dbl_id
       type(element_around_node), intent(in) :: neib_ele
 !
+      type(node_data), intent(in) :: new_node
       type(communication_table), intent(in) :: new_comm
       integer(kind = kint) :: ist_elapsed_SLEX
       logical :: iflag_SLEX_time
 !
-      type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
 !
 !>      Structure of double numbering

@@ -31,7 +31,7 @@
       integer(kind = kint), save :: ist_elapsed_SLEX =   0
       integer(kind = kint), save :: ied_elapsed_SLEX =   0
 !
-      private :: iflag_SLEX_time, ist_elapsed_SLEX, ied_elapsed_SLEX
+!      private :: iflag_SLEX_time, ist_elapsed_SLEX, ied_elapsed_SLEX
 !
       private :: para_sleeve_extension
 !
