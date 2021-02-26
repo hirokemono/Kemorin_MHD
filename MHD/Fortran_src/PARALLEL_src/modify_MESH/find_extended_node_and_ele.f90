@@ -99,7 +99,7 @@
         new_node%xx(inod,2) = org_node%xx(inod,2)
         new_node%xx(inod,3) = org_node%xx(inod,3)
         dbl_id2%id_local(inod) = dbl_id%id_local(inod)
-        dbl_id2%ip_home(inod) = dbl_id%ip_home(inod)
+        dbl_id2%irank(inod) = dbl_id%irank(inod)
       end do
 !$omp end parallel do
 !
@@ -113,7 +113,7 @@
           new_node%xx(icou,2) = recv_nbuf%xx_add(inum,2)
           new_node%xx(icou,3) = recv_nbuf%xx_add(inum,3)
           dbl_id2%id_local(icou) = recv_nbuf%inod_add(inum)
-          dbl_id2%ip_home(icou) = recv_nbuf%irank_add(inum)
+          dbl_id2%irank(icou) = recv_nbuf%irank_add(inum)
         end if
       end do
 !
@@ -195,7 +195,7 @@
           do k1 = 1, org_ele%nnod_4_ele
             do jnod = new_node%numnod, 1, -1
               if(recv_ebuf%ip_added(inum,k1)                            &
-     &              .eq. dbl_id2%ip_home(jnod)                          &
+     &              .eq. dbl_id2%irank(jnod)                            &
      &          .and. recv_ebuf%ie_added(inum,k1)                       &
      &              .eq. dbl_id2%id_local(jnod)) then
                 new_ele%ie(icou,k1) = jnod
@@ -225,7 +225,7 @@
      &             new_node%internal_node, org_node%numnod
       do inod = 1, new_node%numnod
         write(100+my_rank,*) inod, dbl_id2%id_local(inod),              &
-     &         dbl_id2%ip_home(inod), new_node%inod_global(inod) 
+     &         dbl_id2%irank(inod), new_node%inod_global(inod) 
       end do
 !
       end subroutine check_nodes_by_extend_sleeve

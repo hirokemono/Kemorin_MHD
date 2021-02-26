@@ -60,7 +60,7 @@
 !>        Reference node ID of each element to find  home domain
         integer(kind = kint), allocatable :: k_ref(:)
 !>        belonged subdomains ID for each node
-        integer(kind = kint), allocatable :: ip_home(:)
+        integer(kind = kint), allocatable :: irank(:)
       end type element_double_number
 !
 ! -----------------------------------------------------------------------
@@ -77,10 +77,10 @@
 !
       dbl_id%num_dbl = numnod
       allocate(dbl_id%k_ref(dbl_id%num_dbl))
-      allocate(dbl_id%ip_home(dbl_id%num_dbl))
+      allocate(dbl_id%irank(dbl_id%num_dbl))
       if(dbl_id%num_dbl .gt. 0) then
         dbl_id%k_ref = 0
-        dbl_id%ip_home =  0
+        dbl_id%irank =  0
       end if
 !
       end subroutine alloc_ele_double_number
@@ -92,7 +92,7 @@
       type(element_double_number), intent(inout) :: dbl_id
 !
 !
-      deallocate(dbl_id%k_ref, dbl_id%ip_home)
+      deallocate(dbl_id%k_ref, dbl_id%irank)
 !
       end subroutine dealloc_ele_double_number
 !
@@ -118,7 +118,7 @@
 !
 !
 !$omp parallel workshare
-      iele_dbl%ip_home(1:numele) = -1
+      iele_dbl%irank(1:numele) = -1
       iele_dbl%k_ref(1:numele) =    0
 !$omp end parallel workshare
 !
@@ -126,18 +126,18 @@
       do iele = 1, numele
         ie_one = ie(iele,1)
         call find_belonged_pe_each_ele                                  &
-     &     (inod_dbl%num_dbl, inod_dbl%ip_home, ie_one,                 &
-     &      iele_dbl%ip_home(iele), iele_dbl%k_ref(iele))
+     &     (inod_dbl%num_dbl, inod_dbl%irank, ie_one,                   &
+     &      iele_dbl%irank(iele), iele_dbl%k_ref(iele))
 !
         interior_ele(iele)                                              &
-     &     = set_each_interior_flag(my_rank, iele_dbl%ip_home(iele))
+     &     = set_each_interior_flag(my_rank, iele_dbl%irank(iele))
       end do
 !%omp end parallel do
 !
       icou = 0
 !%omp parallel do private(iele) reduction(+:icou)
       do iele = 1, numele
-        if(iele_dbl%ip_home(iele) .eq. my_rank) icou = icou + 1
+        if(iele_dbl%irank(iele) .eq. my_rank) icou = icou + 1
       end do
 !%omp end parallel do
       internal_ele = icou
@@ -167,7 +167,7 @@
 !
 !
 !$omp parallel workshare
-      isurf_dbl%ip_home(1:numsurf) = -1
+      isurf_dbl%irank(1:numsurf) = -1
       isurf_dbl%k_ref(1:numsurf) =    0
 !$omp end parallel workshare
 !
@@ -175,18 +175,18 @@
       do isurf = 1, numsurf
         ie_surf_one(1:num_linear_sf) = ie_surf(isurf,1:num_linear_sf)
         call find_belonged_pe_each_surf                                 &
-     &     (inod_dbl%num_dbl, inod_dbl%ip_home, ie_surf_one, nnod_same, &
-     &      isurf_dbl%ip_home(isurf), isurf_dbl%k_ref(isurf))
+     &     (inod_dbl%num_dbl, inod_dbl%irank, ie_surf_one, nnod_same,   &
+     &      isurf_dbl%irank(isurf), isurf_dbl%k_ref(isurf))
 !
         interior_surf(isurf)                                            &
-     &     = set_each_interior_flag(my_rank, isurf_dbl%ip_home(isurf))
+     &     = set_each_interior_flag(my_rank, isurf_dbl%irank(isurf))
       end do
 !%omp end parallel do
 !
       icou = 0
 !%omp parallel do private(isurf) reduction(+:icou)
       do isurf = 1, numsurf
-        if(isurf_dbl%ip_home(isurf) .eq. my_rank) icou = icou + 1
+        if(isurf_dbl%irank(isurf) .eq. my_rank) icou = icou + 1
       end do
 !%omp end parallel do
       internal_surf = icou
@@ -215,7 +215,7 @@
       integer(kind = kint) :: ie_edge_one(num_linear_edge)
 !
 !$omp parallel workshare
-      iedge_dbl%ip_home(1:numedge) = -1
+      iedge_dbl%irank(1:numedge) = -1
       iedge_dbl%k_ref(1:numedge) =    0
 !$omp end parallel workshare
 !
@@ -224,18 +224,18 @@
         ie_edge_one(1) = ie_edge(iedge,1)
         ie_edge_one(2) = ie_edge(iedge,2)
         call find_belonged_pe_each_edge                                 &
-     &     (inod_dbl%num_dbl, inod_dbl%ip_home, ie_edge_one, nnod_same, &
-     &      iedge_dbl%ip_home(iedge), iedge_dbl%k_ref(iedge))
+     &     (inod_dbl%num_dbl, inod_dbl%irank, ie_edge_one, nnod_same,   &
+     &      iedge_dbl%irank(iedge), iedge_dbl%k_ref(iedge))
 !
         interior_edge(iedge)                                            &
-     &     = set_each_interior_flag(my_rank, iedge_dbl%ip_home(iedge))
+     &     = set_each_interior_flag(my_rank, iedge_dbl%irank(iedge))
       end do
 !%omp end parallel do
 !
       icou = 0
 !%omp parallel do private(iedge) reduction(+:icou)
       do iedge = 1, numedge
-        if(iedge_dbl%ip_home(iedge) .eq. my_rank) icou = icou + 1
+        if(iedge_dbl%irank(iedge) .eq. my_rank) icou = icou + 1
       end do
 !%omp end parallel do
       internal_edge = icou

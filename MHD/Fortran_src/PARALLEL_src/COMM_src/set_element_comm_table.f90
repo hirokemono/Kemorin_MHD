@@ -69,7 +69,7 @@
 !$omp end parallel workshare
 !
       do iele = 1, iele_dbl%num_dbl
-        ip = iele_dbl%ip_home(iele)
+        ip = iele_dbl%irank(iele)
         if(ip .ne. my_rank) then
           num_import_tmp(ip+1) = num_import_tmp(ip+1) + 1
         end if
@@ -142,7 +142,7 @@
 !$omp end parallel do
 !
       do iele = 1, iele_dbl%num_dbl
-        ip =   iele_dbl%ip_home(iele)
+        ip =   iele_dbl%irank(iele)
         if(ip .ne. my_rank) then
           inum = ip_rev_tmp(ip+1)
           num_import_tmp(ip+1) = num_import_tmp(ip+1) + 1
@@ -163,7 +163,7 @@
         do k1 = 1, nnod_4_ele
           inod = ie(iele,k1)
           inod_lc_import(icou,k1) = inod_dbl%id_local(inod)
-          ipe_lc_import(icou,k1) =  inod_dbl%ip_home(inod)
+          ipe_lc_import(icou,k1) =  inod_dbl%irank(inod)
         end do
       end do
 !

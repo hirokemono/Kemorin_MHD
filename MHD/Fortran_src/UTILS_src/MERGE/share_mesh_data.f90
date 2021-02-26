@@ -264,7 +264,7 @@
       call calypso_mpi_bcast_int                                        &
      &   (dbl_id%id_local, cast_long(dbl_id%num_dbl), irank_org)
       call calypso_mpi_bcast_int                                        &
-     &   (dbl_id%ip_home, cast_long(dbl_id%num_dbl), irank_org)
+     &   (dbl_id%irank, cast_long(dbl_id%num_dbl), irank_org)
 !
       end subroutine share_doble_numbering
 !

@@ -213,7 +213,7 @@
       call mpi_write_merged_ele_connect(IO_param,                       &
      &    ele_IO%numele, ele_IO%nnod_4_ele, ele_IO%iele_global,         &
      &    ele_IO%ie, ele_IO%istack_interele, node_IO%istack_internod,   &
-     &    dbl_nod%num_dbl, dbl_nod%id_local, dbl_nod%ip_home)
+     &    dbl_nod%num_dbl, dbl_nod%id_local, dbl_nod%irank)
 !
       end subroutine mpi_write_merged_element
 !

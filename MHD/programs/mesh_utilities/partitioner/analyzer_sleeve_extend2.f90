@@ -240,6 +240,7 @@
      &         (mesh, neib_nod, part_param, part_grp, new_ids_on_org,   &
      &          new_comm, new_node, part_tbl, ext_tbl)
 !
+      use t_repart_double_numberings
       use t_control_param_vol_grping
       use t_sorting_for_repartition
       use external_group_4_new_part
@@ -299,8 +300,8 @@
         part_tbl%irev_import(i) = i
       end do
 !
-!      call node_dbl_numbering_to_repart                                 &
-!     &   (mesh%nod_comm, mesh%node, part_tbl, new_ids_on_org)
+      call node_dbl_numbering_sleeve_ext                                &
+     &   (mesh%nod_comm, mesh%node, new_ids_on_org)
 !
 !      call const_external_grp_4_new_part(new_ids_on_org%irank,         &
 !     &    mesh%node, part_param, part_grp, ext_grp)
@@ -342,6 +343,39 @@
 !     &    part_tbl, new_ids_on_org)
 !
       end subroutine const_extended_nod_and_comm
+!
+! ----------------------------------------------------------------------
+!
+      subroutine node_dbl_numbering_sleeve_ext                          &
+     &         (nod_comm, node, new_ids_on_org)
+!
+      use t_repart_double_numberings
+      use nod_phys_send_recv
+      use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+!
+      type(double_numbering_data), intent(inout) :: new_ids_on_org
+!
+      integer(kind = kint) :: inod
+!
+!
+!    Set local recieved_ids in internal node
+!$omp parallel do
+      do inod = 1, node%internal_node
+        new_ids_on_org%index(inod) =    inod
+        new_ids_on_org%irank(inod) = my_rank
+      end do
+!$omp end parallel do
+!
+!    Send localrecieved_ids into original domain new_ids_on_org
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, new_ids_on_org%irank)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (node%numnod, nod_comm, new_ids_on_org%index)
+!
+      end subroutine node_dbl_numbering_sleeve_ext
 !
 ! ----------------------------------------------------------------------
 !

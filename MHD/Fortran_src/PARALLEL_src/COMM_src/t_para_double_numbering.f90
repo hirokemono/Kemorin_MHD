@@ -45,7 +45,7 @@
 !>        local node ID
         integer(kind = kint), allocatable :: id_local(:)
 !>        belonged subdomains ID for each node
-        integer(kind = kint), allocatable :: ip_home(:)
+        integer(kind = kint), allocatable :: irank(:)
       end type node_ele_double_number
 !
 ! -----------------------------------------------------------------------
@@ -62,10 +62,10 @@
 !
       dbl_id%num_dbl = numnod
       allocate(dbl_id%id_local(dbl_id%num_dbl))
-      allocate(dbl_id%ip_home(dbl_id%num_dbl))
+      allocate(dbl_id%irank(dbl_id%num_dbl))
       if(dbl_id%num_dbl .gt. 0) then
         dbl_id%id_local = 0
-        dbl_id%ip_home =  0
+        dbl_id%irank =  0
       end if
 !
       end subroutine alloc_double_numbering
@@ -77,7 +77,7 @@
       type(node_ele_double_number), intent(inout) :: dbl_id
 !
 !
-      deallocate(dbl_id%id_local, dbl_id%ip_home)
+      deallocate(dbl_id%id_local, dbl_id%irank)
 !
       end subroutine dealloc_double_numbering
 !
@@ -99,7 +99,7 @@
 !
 !
       call find_belonged_pe_4_node                                      &
-     &   (my_rank, node, nod_comm, inod_dbl%ip_home)
+     &   (my_rank, node, nod_comm, inod_dbl%irank)
 !
 !$omp parallel do
       do inod = 1, node%numnod
@@ -132,7 +132,7 @@
 !$omp parallel do
       do iele = 1, ele%numele
         iele_dbl%id_local(iele) = iele
-        iele_dbl%ip_home(iele) =  inod_dbl%ip_home(ele%ie(iele,1))
+        iele_dbl%irank(iele) =  inod_dbl%irank(ele%ie(iele,1))
       end do
 !$omp end parallel do
 !

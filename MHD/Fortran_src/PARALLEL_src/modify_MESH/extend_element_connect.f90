@@ -181,7 +181,7 @@
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       call mark_added_ele_import_to_del                                 &
-     &   (nprocs, ele%numele, dbl_ele%id_local, dbl_ele%ip_home,        &
+     &   (nprocs, ele%numele, dbl_ele%id_local, dbl_ele%irank,          &
      &    added_comm%num_neib, added_comm%ntot_import,                  &
      &    added_comm%istack_import,                                     &
      &    recv_ebuf%iele_add, recv_ebuf%irank_add,                      &
