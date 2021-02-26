@@ -18,7 +18,7 @@
 !!        type(node_data), intent(inout) :: new_node
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!        type(calypso_comm_table), intent(inout) :: ext_tbl
-!!        type(double_numbering_data), intent(inout) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(inout) :: new_ids_on_org
 !!@endverbatim
 !
       module const_repart_nod_and_comm
@@ -33,6 +33,7 @@
       use t_calypso_comm_table
       use t_control_param_vol_grping
       use t_sorting_for_repartition
+      use t_para_double_numbering
       use t_repart_double_numberings
 !
       implicit none
@@ -63,12 +64,12 @@
       type(node_data), intent(inout) :: new_node
       type(calypso_comm_table), intent(inout) :: part_tbl
       type(calypso_comm_table), intent(inout) :: ext_tbl
-      type(double_numbering_data), intent(inout) :: new_ids_on_org
+      type(node_ele_double_number), intent(inout) :: new_ids_on_org
 !
       type(group_data) :: ext_int_grp
       type(group_data) :: ext_grp
       type(sorting_data_for_repartition) :: sort_nod
-      type(double_numbering_data) :: recieved_new_nod_ids
+      type(node_ele_double_number) :: recieved_new_nod_ids
 !
       integer(kind = kint) :: numnod, internal_node
 !
@@ -92,14 +93,14 @@
       internal_node =                part_tbl%ntot_import
       numnod = ext_tbl%ntot_import + part_tbl%ntot_import
 !
-      call alloc_double_numbering_data(numnod, recieved_new_nod_ids)
+      call alloc_double_numbering(numnod, recieved_new_nod_ids)
       call ext_node_dbl_numbering_by_SR(mesh%node, ext_tbl,             &
      &    new_ids_on_org, internal_node, recieved_new_nod_ids)
 !
       call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
       call sort_node_by_domain_and_index                                &
      &   (internal_node, recieved_new_nod_ids, ext_tbl, sort_nod)
-      call dealloc_double_numbering_data(recieved_new_nod_ids)
+      call dealloc_double_numbering(recieved_new_nod_ids)
 !
       call const_repartitioned_comm_tbl                                 &
      &   (internal_node, sort_nod%num_recv, sort_nod%nrecv_trim,        &

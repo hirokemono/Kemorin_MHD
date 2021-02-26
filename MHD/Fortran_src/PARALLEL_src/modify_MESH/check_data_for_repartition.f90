@@ -14,7 +14,7 @@
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
 !!        type(calypso_comm_table), intent(in) :: part_tbl
-!!        type(double_numbering_data), intent(in) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(in) :: new_ids_on_org
 !!      subroutine check_num_of_neighbourings                           &
 !!     &         (new_comm, ext_tbl, num_recv_tmp2)
 !!        type(communication_table), intent(in) :: new_comm
@@ -37,6 +37,7 @@
       use t_comm_table
       use t_geometry_data
       use t_calypso_comm_table
+      use t_para_double_numbering
       use t_repart_double_numberings
 !
       implicit none
@@ -59,15 +60,15 @@
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
       type(calypso_comm_table), intent(in) :: part_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
 !
       integer(kind = kint), allocatable :: inod_old_lc(:)
       integer(kind = kint), allocatable :: irank_old_lc(:)
       integer(kind = kint), allocatable :: inod_new_lc(:)
       integer(kind = kint), allocatable :: irank_new_lc(:)
 !
-      type(double_numbering_data) :: new_recved_id1
-      type(double_numbering_data) :: new_recved_id2
+      type(node_ele_double_number) :: new_recved_id1
+      type(node_ele_double_number) :: new_recved_id2
 !
       integer(kind = kint) :: inod
 !
@@ -88,8 +89,8 @@
 
       allocate(inod_new_lc(new_node%numnod))
       allocate(irank_new_lc(new_node%numnod))
-      call alloc_double_numbering_data(new_node%numnod, new_recved_id1)
-      call alloc_double_numbering_data(new_node%numnod, new_recved_id2)
+      call alloc_double_numbering(new_node%numnod, new_recved_id1)
+      call alloc_double_numbering(new_node%numnod, new_recved_id2)
 !
       do inod = 1, new_node%internal_node
         inod_new_lc(inod) =  inod
@@ -150,8 +151,8 @@
       end do
       deallocate(irank_old_lc, inod_old_lc)
       deallocate(irank_new_lc, inod_new_lc)
-      call dealloc_double_numbering_data(new_recved_id1)
-      call dealloc_double_numbering_data(new_recved_id2)
+      call dealloc_double_numbering(new_recved_id1)
+      call dealloc_double_numbering(new_recved_id2)
 !
       end subroutine check_repart_node_transfer
 !

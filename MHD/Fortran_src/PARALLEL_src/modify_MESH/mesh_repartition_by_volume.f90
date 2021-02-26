@@ -44,6 +44,7 @@
      &         (org_fem, ele_comm, neib_nod, part_param,                &
      &          new_mesh, new_groups, org_to_new_tbl)
 !
+      use t_para_double_numbering
       use t_control_param_vol_grping
       use t_repart_double_numberings
       use t_repartition_by_volume
@@ -66,13 +67,13 @@
       type(calypso_comm_table) :: ext_tbl
       type(calypso_comm_table) :: ele_tbl
 !
-      type(double_numbering_data) :: new_ids_on_org
+      type(node_ele_double_number) :: new_ids_on_org
 !
 !
 !       Re-partitioning
       call grouping_by_volume(org_fem%mesh, part_param, part_grp)
 !
-      call alloc_double_numbering_data                                  &
+      call alloc_double_numbering                                       &
      &   (org_fem%mesh%node%numnod, new_ids_on_org)
       call s_const_repart_nod_and_comm                                  &
      &   (org_fem%mesh, neib_nod, part_param, part_grp,                 &
@@ -87,7 +88,7 @@
      &   (org_fem%mesh, ele_comm, org_to_new_tbl,                       &
      &    new_ids_on_org, new_mesh%nod_comm, new_mesh%node,             &
      &    new_mesh%ele, ele_tbl, new_mesh%surf, new_mesh%edge)
-      call dealloc_double_numbering_data(new_ids_on_org)
+      call dealloc_double_numbering(new_ids_on_org)
 !
       call s_redistribute_groups(org_fem%mesh, org_fem%group, ele_comm, &
      &    new_mesh, org_to_new_tbl, ele_tbl, new_groups)

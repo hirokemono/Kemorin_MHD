@@ -19,7 +19,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
-!!        type(double_numbering_data), intent(in) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(in) :: new_ids_on_org
 !!        type(element_data), intent(inout) :: new_ele
 !!@endverbatim
 !
@@ -32,6 +32,7 @@
       use t_comm_table
       use t_geometry_data
       use t_calypso_comm_table
+      use t_para_double_numbering
       use t_repart_double_numberings
 !
       implicit none
@@ -100,7 +101,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
       integer(kind = kint), intent(in) :: new_numele
 !
       type(element_data), intent(inout) :: new_ele

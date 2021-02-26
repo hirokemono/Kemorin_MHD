@@ -7,26 +7,22 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine alloc_double_numbering_data(n_point, local_ids)
-!!      subroutine dealloc_double_numbering_data(local_ids)
-!!        integer(kind = kint), intent(in) :: n_point
-!!        type(calypso_comm_table), intent(inout) :: local_ids
 !!      subroutine node_dbl_numbering_to_repart                         &
 !!     &         (nod_comm, node, part_tbl, new_ids_on_org)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
-!!        type(double_numbering_data), intent(inout) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(inout) :: new_ids_on_org
 !!      subroutine ext_node_dbl_numbering_by_SR(node, ext_tbl,          &
 !!     &          new_ids_on_org, internal_node, recieved_nod_ids)
 !!        type(node_data), intent(in) :: node
 !!        type(calypso_comm_table), intent(in) :: ext_tbl
-!!        type(double_numbering_data), intent(in) :: new_ids_on_org
-!!        type(double_numbering_data), intent(inout) :: recieved_nod_ids
+!!        type(node_ele_double_number), intent(in) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(inout) :: recieved_nod_ids
 !!      subroutine double_numbering_4_element(ele, ele_comm, ele_ids)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: ele_comm
-!!        type(double_numbering_data), intent(inout) :: ele_ids
+!!        type(node_ele_double_number), intent(inout) :: ele_ids
 !!
 !!      subroutine calypso_rev_SR_type_int                              &
 !!     &         (cps_tbl, nnod_new, nnod_org, iX_new, iX_org)
@@ -44,48 +40,14 @@
       use t_comm_table
       use t_geometry_data
       use t_calypso_comm_table
+      use t_para_double_numbering
 !
       implicit none
-!
-      type double_numbering_data
-        integer(kind = kint) :: n_point
-        integer(kind = kint), allocatable :: index(:)
-        integer(kind = kint), allocatable :: irank(:)
-      end type double_numbering_data
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_double_numbering_data(n_point, local_ids)
-!
-      integer(kind = kint), intent(in) :: n_point
-      type(double_numbering_data), intent(inout) :: local_ids
-!
-      local_ids%n_point = n_point
-      allocate(local_ids%irank(local_ids%n_point))
-      allocate(local_ids%index(local_ids%n_point))
-!
-!$omp parallel workshare
-      local_ids%irank(1:local_ids%n_point) = -1
-      local_ids%index(1:local_ids%n_point) = 0
-!$omp end parallel workshare
-!
-      end subroutine alloc_double_numbering_data
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_double_numbering_data(local_ids)
-!
-      type(double_numbering_data), intent(inout) :: local_ids
-!
-      deallocate(local_ids%irank, local_ids%index)
-!
-      end subroutine dealloc_double_numbering_data
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine node_dbl_numbering_to_repart                           &
@@ -100,15 +62,14 @@
 !
       type(calypso_comm_table), intent(in) :: part_tbl
 !
-      type(double_numbering_data), intent(inout) :: new_ids_on_org
+      type(node_ele_double_number), intent(inout) :: new_ids_on_org
 !
-      type(double_numbering_data) :: recieved_ids
+      type(node_ele_double_number) :: recieved_ids
       integer(kind = kint) :: inod
 !
 !
 !    Set local recieved_ids in internal node
-      call alloc_double_numbering_data                                  &
-     &   (part_tbl%ntot_import, recieved_ids)
+      call alloc_double_numbering(part_tbl%ntot_import, recieved_ids)
 !$omp parallel do
       do inod = 1, part_tbl%ntot_import
         recieved_ids%index(inod) =    inod
@@ -128,7 +89,7 @@
      &   (node%numnod, nod_comm, new_ids_on_org%irank)
       call SOLVER_SEND_RECV_int_type                                    &
      &   (node%numnod, nod_comm, new_ids_on_org%index)
-      call dealloc_double_numbering_data(recieved_ids)
+      call dealloc_double_numbering(recieved_ids)
 !
       end subroutine node_dbl_numbering_to_repart
 !
@@ -142,10 +103,10 @@
 !
       type(node_data), intent(in) :: node
       type(calypso_comm_table), intent(in) :: ext_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
 !
       integer(kind = kint), intent(in) :: internal_node
-      type(double_numbering_data), intent(inout) :: recieved_nod_ids
+      type(node_ele_double_number), intent(inout) :: recieved_nod_ids
 !
       integer(kind = kint) :: inod
 !
@@ -175,7 +136,7 @@
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: ele_comm
-      type(double_numbering_data), intent(inout) :: ele_ids
+      type(node_ele_double_number), intent(inout) :: ele_ids
 !
       integer(kind = kint) :: iele
 !

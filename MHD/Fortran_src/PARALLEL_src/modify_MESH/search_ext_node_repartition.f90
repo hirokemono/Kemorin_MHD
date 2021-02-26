@@ -14,7 +14,7 @@
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
-!!        type(double_numbering_data), intent(in) :: element_ids
+!!        type(node_ele_double_number), intent(in) :: element_ids
 !!        type(element_data), intent(inout) :: new_ele
 !!@endverbatim
 !
@@ -42,6 +42,7 @@
      &         (ele, ele_tbl, element_ids, ie_newdomain,                &
      &          new_comm, new_node, new_ele)
 !
+      use t_para_double_numbering
       use t_repart_double_numberings
       use calypso_SR_type
       use solver_SR_type
@@ -52,7 +53,7 @@
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
-      type(double_numbering_data), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: element_ids
 !
       integer(kind = kint), intent(in)                                  &
      &              :: ie_newdomain(ele%numele,ele%nnod_4_ele)

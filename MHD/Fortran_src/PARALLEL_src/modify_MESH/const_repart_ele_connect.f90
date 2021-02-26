@@ -13,14 +13,14 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
-!!        type(double_numbering_data), intent(in) :: new_ids_on_org
+!!        type(node_ele_double_number), intent(in) :: new_ids_on_org
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(in) :: new_node
 !!        type(calypso_comm_table), intent(inout) :: ele_tbl
 !!        type(element_data), intent(inout) :: new_ele
 !!        type(surface_data), intent(inout) :: new_surf
 !!        type(edge_data), intent(inout) :: new_edge
-!!        type(double_numbering_data) :: element_ids
+!!        type(node_ele_double_number) :: element_ids
 !!@endverbatim
 !
       module const_repart_ele_connect
@@ -38,6 +38,7 @@
       use t_next_node_ele_4_node
       use t_calypso_comm_table
       use t_sorting_for_repartition
+      use t_para_double_numbering
       use t_repart_double_numberings
 !
       implicit none
@@ -60,7 +61,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(communication_table), intent(in) :: ele_comm
       type(calypso_comm_table), intent(in) :: part_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
 !
@@ -69,12 +70,12 @@
       type(surface_data), intent(inout) :: new_surf
       type(edge_data), intent(inout) :: new_edge
 !
-      type(double_numbering_data) :: element_ids
+      type(node_ele_double_number) :: element_ids
 !
       integer(kind = kint) :: new_numele
 !
 !
-      call alloc_double_numbering_data(mesh%ele%numele, element_ids)
+      call alloc_double_numbering(mesh%ele%numele, element_ids)
       call double_numbering_4_element(mesh%ele, ele_comm, element_ids)
 !
       call const_ele_trans_tbl_for_repart                               &
@@ -87,7 +88,7 @@
       call const_reparition_ele_connect                                 &
      &   (mesh%node, mesh%ele, ele_tbl, new_ids_on_org,                 &
      &    element_ids, new_numele, new_comm, new_node, new_ele)
-      call dealloc_double_numbering_data(element_ids)
+      call dealloc_double_numbering(element_ids)
 !
       call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
      &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
@@ -106,8 +107,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
-      type(double_numbering_data), intent(in) :: new_ids_on_org
-      type(double_numbering_data), intent(in) :: element_ids
+      type(node_ele_double_number), intent(in) :: new_ids_on_org
+      type(node_ele_double_number), intent(in) :: element_ids
 !
       type(communication_table), intent(in) :: new_comm
       type(node_data), intent(in) :: new_node
