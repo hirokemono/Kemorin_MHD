@@ -125,7 +125,7 @@
       call extend_ele_connectivity                                      &
      &   (mesh%nod_comm, ele_comm, mesh%node, mesh%ele,                 &
      &    dbl_id1, next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,   &
-     &    newmesh%ele)
+     &    newmesh%ele, iflag_SLEX_time, ist_elapsed_SLEX)
       newmesh%ele%first_ele_type                                        &
      &   = set_cube_eletype_from_num(newmesh%ele%nnod_4_ele)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
@@ -165,7 +165,7 @@
 !
       subroutine elpsed_label_4_sleeve_ext
 !
-      integer(kind = kint), parameter :: num_append = 5
+      integer(kind = kint), parameter :: num_append = 12
 !
 !
       call append_elapsed_times                                         &
@@ -181,6 +181,21 @@
      &                    = 'Construct groups for extended  '
       elps1%labels(ist_elapsed_SLEX+5)                                  &
      &                    = 'element comm. table in sleeve extension  '
+!
+      elps1%labels(ist_elapsed_SLEX+6)                                  &
+     &                    = 'mark_used_ele_of_export  '
+      elps1%labels(ist_elapsed_SLEX+7)                                  &
+     &                    = 'copy_ele_to_extend_buffer  '
+      elps1%labels(ist_elapsed_SLEX+8)                                  &
+     &                    = 'added_global_id_send_recv  '
+      elps1%labels(ist_elapsed_SLEX+9)                                  &
+     &                    = 'mark_added_ele_import_to_del  '
+      elps1%labels(ist_elapsed_SLEX+10)                                 &
+     &                    = 'added_nod_id_send_recv  '
+      elps1%labels(ist_elapsed_SLEX+11)                                 &
+     &                    = 'count_ele_by_extend_sleeve  '
+      elps1%labels(ist_elapsed_SLEX+12)                                 &
+     &                    = 'set_ele_by_extend_sleeve  '
 !
       iflag_SLEX_time = .TRUE.
 !

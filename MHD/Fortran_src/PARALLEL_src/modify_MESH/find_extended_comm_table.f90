@@ -7,8 +7,8 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
-!!      subroutine copy_node_to_extend_buffer(istack_pre,               &
-!!     &          org_node, dbl_id, iflag_node, send_nbuf)
+!!      subroutine copy_node_to_extend_buffer(istack_pre, org_node,     &
+!!     &          dbl_id, nnod_marked, inod_marked, send_nbuf)
 !!        type(node_data), intent(in) :: org_node
 !!        type(node_ele_double_number), intent(in) :: dbl_id
 !!        type(node_buffer_2_extend), intent(inout) :: send_nbuf
@@ -63,30 +63,31 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_node_to_extend_buffer(istack_pre,                 &
-     &          org_node, dbl_id, iflag_node, send_nbuf)
+      subroutine copy_node_to_extend_buffer(istack_pre, org_node,       &
+     &          dbl_id, nnod_marked, inod_marked, send_nbuf)
 !
       integer(kind = kint), intent(in) :: istack_pre
       type(node_data), intent(in) :: org_node
       type(node_ele_double_number), intent(in) :: dbl_id
-      integer(kind = kint), intent(in) :: iflag_node(org_node%numnod)
+      integer(kind = kint), intent(in) :: nnod_marked
+      integer(kind = kint), intent(in) :: inod_marked(org_node%numnod)
 !
       type(node_buffer_2_extend), intent(inout) :: send_nbuf
 !
-      integer(kind = kint) :: icou, inod
+      integer(kind = kint) :: icou, inod, inum
 !
-      icou = istack_pre
-      do inod = 1, org_node%numnod
-        if(iflag_node(inod) .gt. 0) then
-          icou = icou + 1
-          send_nbuf%inod_add(icou) =    dbl_id%id_local(inod)
-          send_nbuf%irank_add(icou) =   dbl_id%ip_home(inod)
-          send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
-          send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
-          send_nbuf%xx_add(icou,2) =    org_node%xx(inod,2)
-          send_nbuf%xx_add(icou,3) =    org_node%xx(inod,3)
-        end if
+!$omp parallel do private(inum,icou,inod)
+      do inum = 1, nnod_marked
+        inod = inod_marked(inum)
+        icou = inum + istack_pre
+        send_nbuf%inod_add(icou) =    dbl_id%id_local(inod)
+        send_nbuf%irank_add(icou) =   dbl_id%ip_home(inod)
+        send_nbuf%inod_gl_add(icou) = org_node%inod_global(inod)
+        send_nbuf%xx_add(icou,1) =    org_node%xx(inod,1)
+        send_nbuf%xx_add(icou,2) =    org_node%xx(inod,2)
+        send_nbuf%xx_add(icou,3) =    org_node%xx(inod,3)
       end do
+!$omp end parallel do
 !
       end subroutine copy_node_to_extend_buffer
 !

@@ -18,6 +18,7 @@
       use m_constants
       use m_phys_constants
       use m_machine_parameter
+      use m_work_time
 !
       use t_comm_table
       use t_geometry_data
@@ -34,7 +35,7 @@
 !
       subroutine extend_ele_connectivity                                &
      &         (nod_comm, ele_comm, org_node, ele, dbl_id, neib_ele,    &
-     &          new_comm, new_node, new_ele)
+     &          new_comm, new_node, new_ele, iflag_SLEX_time, ist_elapsed_SLEX)
 !
       use t_next_node_ele_4_node
       use solver_SR_type
@@ -54,6 +55,8 @@
       type(element_around_node), intent(in) :: neib_ele
 !
       type(communication_table), intent(in) :: new_comm
+      integer(kind = kint) :: ist_elapsed_SLEX
+      logical :: iflag_SLEX_time
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
@@ -86,13 +89,13 @@
 !
       call alloc_added_comm_table_num(nod_comm, added_comm)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+6)
       do i = 1, nod_comm%num_neib
         call mark_used_ele_of_export(i, nod_comm%num_neib,              &
      &      new_comm%istack_export, new_comm%item_export,               &
      &      nod_comm%istack_export, nod_comm%item_export,               &
      &      org_node%numnod, neib_ele%ntot, neib_ele%istack_4_node,     &
-     &      neib_ele%iele_4_node, ele%numele, ele%nnod_4_ele, ele%ie,   &
-     &      iflag_ele)
+     &      neib_ele%iele_4_node, ele%numele, iflag_ele)
 !
         do inod = 1, ele%numele
           added_comm%num_export(i) = added_comm%num_export(i)           &
@@ -103,6 +106,7 @@
       call s_cal_total_and_stacks                                       &
      &   (added_comm%num_neib, added_comm%num_export, izero,            &
      &    added_comm%istack_export, added_comm%ntot_export)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+6)
 !
 !      write(*,*) 'istack_send_added ele', added_comm%istack_export
 !
@@ -110,22 +114,24 @@
       call alloc_ele_buffer_2_extend                                    &
      &   (added_comm%ntot_export, ele, send_ebuf)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+7)
       do i = 1, nod_comm%num_neib
         call mark_used_ele_of_export(i, nod_comm%num_neib,              &
      &      new_comm%istack_export, new_comm%item_export,               &
      &      nod_comm%istack_export, nod_comm%item_export,               &
      &      org_node%numnod, neib_ele%ntot, neib_ele%istack_4_node,     &
-     &      neib_ele%iele_4_node, ele%numele, ele%nnod_4_ele, ele%ie,   &
-     &      iflag_ele)
+     &      neib_ele%iele_4_node, ele%numele, iflag_ele)
 !
         call copy_ele_to_extend_buffer(added_comm%istack_export(i-1),   &
      &      ele, dbl_ele, dbl_id, iflag_ele, send_ebuf)
       end do
       deallocate(iflag_node, iflag_ele)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+7)
 !
 !      call check_ie_send_added                                         &
 !     &   (my_rank, added_comm, ele, send_ebuf)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+8)
       call SOLVER_SEND_RECV_num_type                                    &
      &   (added_comm, added_comm%num_export, added_comm%num_import)
 !
@@ -166,31 +172,40 @@
      &      added_comm%istack_import, added_comm%ntot_import,           &
      &      recv_ebuf%ip_added(1,k1))
       end do
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+8)
 !
 !      call check_element_list_to_add                                   &
 !     &   (my_rank, added_comm, ele, send_ebuf, recv_ebuf)
 !
       call dealloc_ele_buffer_2_extend(send_ebuf)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+9)
       call mark_added_ele_import_to_del                                 &
      &   (nprocs, ele%numele, dbl_ele%id_local, dbl_ele%ip_home,        &
      &    added_comm%num_neib, added_comm%ntot_import,                  &
      &    added_comm%istack_import,                                     &
      &    recv_ebuf%iele_add, recv_ebuf%irank_add,                      &
      &    added_comm%item_import)
-!
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+9)
+
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+10)
       call added_nod_id_send_recv(added_comm%num_neib,                  &
      &    added_comm%id_neib, added_comm%istack_import,                 &
      &    added_comm%ntot_import, added_comm%item_import,               &
      &    added_comm%istack_export, added_comm%ntot_export,             &
      &    added_comm%item_export)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+10)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+11)
       call count_ele_by_extend_sleeve(added_comm, ele, new_ele)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+11)
 !
       call alloc_ele_connect(new_ele)
 !
+      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+12)
       call set_ele_by_extend_sleeve(added_comm, recv_ebuf, ele,         &
      &    new_node, dbl_id2, new_ele)
+      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+12)
 !
       call dealloc_ele_buffer_2_extend(recv_ebuf)
       call dealloc_comm_table(added_comm)

@@ -70,6 +70,8 @@
 !
       integer(kind = kint), allocatable :: iflag_recv(:)
       integer(kind = kint), allocatable :: iflag_send(:)
+      integer(kind = kint) :: nnod_marked
+      integer(kind = kint), allocatable :: inod_marked(:)
       integer(kind = kint), allocatable :: iflag_node(:)
 !
       integer(kind = kint), allocatable :: inod_import_new(:)
@@ -80,8 +82,12 @@
       integer(kind = kint) :: inum, inod, i, ip
 !
 !
+      allocate(inod_marked(org_node%numnod))
       allocate(iflag_node(org_node%numnod))
+!$omp parallel workshare
+      inod_marked(1:org_node%numnod) = 0
       iflag_node(1:org_node%numnod) = 0
+!$omp end parallel workshare
 !
       call alloc_added_comm_table_num(nod_comm, added_comm)
 !
@@ -90,12 +96,10 @@
      &      nod_comm%istack_import, nod_comm%item_import,               &
      &      nod_comm%istack_export, nod_comm%item_export,               &
      &      org_node%numnod, neib_nod%ntot, neib_nod%istack_next,       &
-     &      neib_nod%inod_next, iflag_node)
+     &      neib_nod%inod_next, nnod_marked, inod_marked, iflag_node)
 !
-        do inod = 1, org_node%numnod
-          added_comm%num_export(i) = added_comm%num_export(i)           &
-     &                              + iflag_node(inod)
-        end do
+        added_comm%num_export(i) = added_comm%num_export(i)             &
+     &                            + nnod_marked
       end do
 !
       call s_cal_total_and_stacks                                       &
@@ -111,11 +115,12 @@
      &      nod_comm%istack_import, nod_comm%item_import,               &
      &      nod_comm%istack_export, nod_comm%item_export,               &
      &      org_node%numnod, neib_nod%ntot, neib_nod%istack_next,       &
-     &      neib_nod%inod_next, iflag_node)
+     &      neib_nod%inod_next, nnod_marked, inod_marked, iflag_node)
 !
         call copy_node_to_extend_buffer(added_comm%istack_export(i-1),  &
-     &     org_node, dbl_idx, iflag_node, send_nbuf)
+     &     org_node, dbl_idx, nnod_marked, inod_marked, send_nbuf)
       end do
+      deallocate(inod_marked, iflag_node)
 !
 !
       call SOLVER_SEND_RECV_num_type                                    &

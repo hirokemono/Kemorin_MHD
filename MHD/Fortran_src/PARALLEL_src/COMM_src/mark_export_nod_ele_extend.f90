@@ -43,7 +43,10 @@
 !
       subroutine mark_next_node_of_export(id_neib, num_neib,            &
      &         istack_import, item_import, istack_export, item_export,  &
-     &         numnod, ntot_next, istack_next, inod_next, iflag_node)
+     &         numnod, ntot_next, istack_next, inod_next,               &
+     &         nnod_marked, inod_marked, iflag_node)
+!
+      use quicksort
 !
       integer(kind = kint), intent(in) :: id_neib, num_neib
       integer(kind = kint), intent(in) :: istack_import(0:num_neib)
@@ -58,6 +61,8 @@
       integer(kind = kint), intent(in) :: istack_next(0:numnod)
       integer(kind = kint), intent(in) :: inod_next(ntot_next)
 !
+      integer(kind = kint), intent(inout) :: nnod_marked
+      integer(kind = kint), intent(inout) :: inod_marked(numnod)
       integer(kind = kint), intent(inout) :: iflag_node(numnod)
 !
       integer(kind = kint) :: ist, ied, inum, inod
@@ -94,6 +99,16 @@
         iflag_node(inod) = 0
       end do
 !
+      nnod_marked = 0
+      do inod = 1, numnod
+        if(iflag_node(inod) .gt. 0) then
+          nnod_marked = nnod_marked + 1
+          inod_marked(nnod_marked) = inod
+        end if
+      end do
+!
+      call quicksort_int(numnod, inod_marked, ione, nnod_marked)
+!
       end subroutine mark_next_node_of_export
 !
 !  ---------------------------------------------------------------------
@@ -102,7 +117,7 @@
      &          istack_export_new, item_export_new,                     &
      &          istack_export, item_export,                             &
      &          numnod, ntot_ele, istack_4_node, iele_4_node,           &
-     &          numele, nnod_4_ele, ie, iflag_ele)
+     &          numele, iflag_ele)
 !
       integer(kind = kint), intent(in) :: id_neib, num_neib
       integer(kind = kint), intent(in) :: istack_export_new(0:num_neib)
@@ -112,18 +127,15 @@
       integer(kind = kint), intent(in)                                  &
      &                     :: item_export(istack_export(num_neib))
 !
-      integer(kind = kint), intent(in) :: numele, nnod_4_ele
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numele, numnod
       integer(kind = kint), intent(in) :: ntot_ele
       integer(kind = kint), intent(in) :: istack_4_node(0:numnod)
       integer(kind = kint), intent(in) :: iele_4_node(ntot_ele)
 !
       integer(kind = kint), intent(inout) :: iflag_ele(numele)
 !
-      integer(kind = kint) :: ist, ied, inum, inod, iflag
-      integer(kind = kint) :: jst, jed, jnum, jele, k1
+      integer(kind = kint) :: ist, ied, inum, inod
+      integer(kind = kint) :: jst, jed, jnum, jele
 !
 !
 !$omp parallel workshare
