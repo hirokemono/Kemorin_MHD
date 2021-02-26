@@ -78,7 +78,7 @@
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm_T, next_tbl_T%neib_nod,                      &
-     &    part_param, new_fem, org_to_new_tbl)
+     &    part_param, new_fem%mesh, new_fem%group, org_to_new_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size

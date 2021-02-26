@@ -8,13 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl, &
-!!     &          new_ids_on_org, ele_tbl, new_mesh)
+!!     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl, &
+!!     &          new_surf, new_edge)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: part_tbl
 !!        type(double_numbering_data), intent(in) :: new_ids_on_org
+!!        type(communication_table), intent(in) :: new_comm
+!!        type(node_data), intent(in) :: new_node
 !!        type(calypso_comm_table), intent(inout) :: ele_tbl
-!!        type(mesh_geometry), intent(inout) :: new_mesh
+!!        type(element_data), intent(inout) :: new_ele
+!!        type(surface_data), intent(inout) :: new_surf
+!!        type(edge_data), intent(inout) :: new_edge
 !!        type(double_numbering_data) :: element_ids
 !!@endverbatim
 !
@@ -27,6 +32,9 @@
       use calypso_mpi
 !
       use t_mesh_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use t_next_node_ele_4_node
       use t_calypso_comm_table
       use t_sorting_for_repartition
@@ -43,7 +51,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_const_repart_ele_connect(mesh, ele_comm, part_tbl,   &
-     &          new_ids_on_org, ele_tbl, new_mesh)
+     &          new_ids_on_org, new_comm, new_node, new_ele, ele_tbl,   &
+     &          new_surf, new_edge)
 !
       use ele_trans_tbl_4_repart
       use set_nnod_4_ele_by_type
@@ -52,9 +61,13 @@
       type(communication_table), intent(in) :: ele_comm
       type(calypso_comm_table), intent(in) :: part_tbl
       type(double_numbering_data), intent(in) :: new_ids_on_org
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
 !
       type(calypso_comm_table), intent(inout) :: ele_tbl
-      type(mesh_geometry), intent(inout) :: new_mesh
+      type(element_data), intent(inout) :: new_ele
+      type(surface_data), intent(inout) :: new_surf
+      type(edge_data), intent(inout) :: new_edge
 !
       type(double_numbering_data) :: element_ids
 !
@@ -73,19 +86,19 @@
 !
       call const_reparition_ele_connect                                 &
      &   (mesh%node, mesh%ele, ele_tbl, new_ids_on_org,                 &
-     &    element_ids, new_numele, new_mesh)
+     &    element_ids, new_numele, new_comm, new_node, new_ele)
       call dealloc_double_numbering_data(element_ids)
 !
-      call set_3D_nnod_4_sfed_by_ele(new_mesh%ele%nnod_4_ele,           &
-     &    new_mesh%surf%nnod_4_surf, new_mesh%edge%nnod_4_edge)
+      call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
+     &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
 !
       end subroutine s_const_repart_ele_connect
 !
 ! ----------------------------------------------------------------------
 !
       subroutine const_reparition_ele_connect                           &
-     &         (node, ele, ele_tbl, new_ids_on_org,                     &
-     &          element_ids, new_numele, new_mesh)
+     &         (node, ele, ele_tbl, new_ids_on_org, element_ids,        &
+     &          new_numele, new_comm, new_node, new_ele)
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
@@ -96,9 +109,11 @@
       type(double_numbering_data), intent(in) :: new_ids_on_org
       type(double_numbering_data), intent(in) :: element_ids
 !
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
       integer(kind = kint), intent(in) :: new_numele
 !
-      type(mesh_geometry), intent(inout) :: new_mesh
+      type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint), allocatable :: ie_newnod(:,:)
       integer(kind = kint), allocatable :: ie_newdomain(:,:)
@@ -112,11 +127,11 @@
 !$omp end parallel workshare
 !
       call set_repart_element_connect(new_numele, node, ele, ele_tbl,   &
-     &    new_ids_on_org, ie_newdomain, ie_newnod, new_mesh%ele)
+     &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele)
 !
       call s_search_ext_node_repartition                                &
      &   (ele, ele_tbl, element_ids, ie_newdomain,                      &
-     &    new_mesh%nod_comm, new_mesh%node, new_mesh%ele)
+     &    new_comm, new_node, new_ele)
       deallocate(ie_newnod, ie_newdomain)
 !
       end subroutine const_reparition_ele_connect
