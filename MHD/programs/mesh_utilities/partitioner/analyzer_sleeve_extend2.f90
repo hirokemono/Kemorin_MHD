@@ -236,4 +236,113 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine const_extended_nod_and_comm                            &
+     &         (mesh, neib_nod, part_param, part_grp, new_ids_on_org,   &
+     &          new_comm, new_node, part_tbl, ext_tbl)
+!
+      use t_control_param_vol_grping
+      use t_sorting_for_repartition
+      use external_group_4_new_part
+      use ext_of_int_grp_4_new_part
+      use const_comm_tbl_to_new_mesh
+      use const_repart_mesh_data
+      use const_repart_comm_tbl
+      use check_data_for_repartition
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      type(volume_partioning_param), intent(in) :: part_param
+      type(group_data), intent(in) :: part_grp
+!
+      type(communication_table), intent(inout) :: new_comm
+      type(node_data), intent(inout) :: new_node
+      type(calypso_comm_table), intent(inout) :: part_tbl
+      type(calypso_comm_table), intent(inout) :: ext_tbl
+      type(double_numbering_data), intent(inout) :: new_ids_on_org
+!
+      type(group_data) :: ext_int_grp
+      type(group_data) :: ext_grp
+      type(sorting_data_for_repartition) :: sort_nod
+      type(double_numbering_data) :: recieved_new_nod_ids
+!
+      integer(kind = kint) :: numnod, internal_node
+      integer(kind = kint) :: i
+!
+!
+      part_tbl%iflag_self_copy = 1
+      part_tbl%nrank_export = 1
+      call alloc_calypso_export_num(part_tbl)
+!
+      part_tbl%ntot_export = mesh%node%internal_node
+      part_tbl%irank_export = my_rank
+      part_tbl%num_export(1) = mesh%node%internal_node
+      part_tbl%istack_export(0) = 0
+      part_tbl%istack_export(1) = mesh%node%internal_node
+!
+      call alloc_calypso_export_item(part_tbl)
+      do i = 1, part_tbl%num_export(1)
+        part_tbl%item_export(i) = i
+      end do
+!
+      part_tbl%nrank_import = 1
+      call alloc_calypso_import_num(part_tbl)
+!
+      part_tbl%ntot_import = mesh%node%internal_node
+      part_tbl%irank_import = my_rank
+      part_tbl%num_import(1) = mesh%node%internal_node
+      part_tbl%istack_import(0) = 0
+      part_tbl%istack_import(1) = mesh%node%internal_node
+!
+      call alloc_calypso_import_item(mesh%node%internal_node, part_tbl)
+      do i = 1, part_tbl%num_export(1)
+        part_tbl%item_import(i) = i
+        part_tbl%irev_import(i) = i
+      end do
+!
+!      call node_dbl_numbering_to_repart                                 &
+!     &   (mesh%nod_comm, mesh%node, part_tbl, new_ids_on_org)
+!
+!      call const_external_grp_4_new_part(new_ids_on_org%irank,         &
+!     &    mesh%node, part_param, part_grp, ext_grp)
+!       Re-partitioning for external node
+!      call const_ext_of_int_grp_new_part(mesh%node, neib_nod,          &
+!     &    part_param, part_grp, ext_grp, ext_int_grp)
+!      call const_ext_comm_tbl_to_new_part                              &
+!     &   (ext_int_grp, part_tbl, ext_tbl)
+!      call dealloc_group(ext_int_grp)
+!      call dealloc_group(ext_grp)
+!
+!      Set local recieved_new_nod_ids in internal node
+!      internal_node =                part_tbl%ntot_import
+!      numnod = ext_tbl%ntot_import + part_tbl%ntot_import
+!
+!      call alloc_double_numbering_data(numnod, recieved_new_nod_ids)
+!      call ext_node_dbl_numbering_by_SR(mesh%node, ext_tbl,            &
+!     &    new_ids_on_org, internal_node, recieved_new_nod_ids)
+!
+!      call alloc_sorting_data(ext_tbl%ntot_import, sort_nod)
+!      call sort_node_by_domain_and_index                               &
+!     &   (internal_node, recieved_new_nod_ids, ext_tbl, sort_nod)
+!      call dealloc_double_numbering_data(recieved_new_nod_ids)
+!
+!      call const_repartitioned_comm_tbl                                &
+!     &   (internal_node, sort_nod%num_recv, sort_nod%nrecv_trim,       &
+!     &    ext_tbl%ntot_import, sort_nod%irank_sorted,                  &
+!     &    sort_nod%id_sorted, sort_nod%iflag_dup, new_comm)
+!
+!      call check_num_of_neighbourings                                  &
+!     &   (new_comm, ext_tbl, sort_nod%nrecv_trim)
+!      call check_new_node_comm_table(my_rank, new_comm)
+!      call dealloc_sorting_data(sort_nod)
+!
+!      call set_repart_node_position                                    &
+!     &   (part_tbl, mesh%node, new_comm, new_node)
+!      call check_repart_node_transfer                                  &
+!     &   (mesh%nod_comm, mesh%node, new_comm, new_node,                &
+!     &    part_tbl, new_ids_on_org)
+!
+      end subroutine const_extended_nod_and_comm
+!
+! ----------------------------------------------------------------------
+!
       end module analyzer_sleeve_extend2
