@@ -307,8 +307,8 @@
 !
       call const_ext_grp_sleeve_ext(mesh%node, mesh%nod_comm, ext_grp)
 !       Re-partitioning for external node
-!      call const_ext_of_int_grp_new_part(mesh%node, neib_nod,          &
-!     &    part_param, part_grp, ext_grp, ext_int_grp)
+      call const_ext_of_int_grp_slv_ext(mesh%node, mesh%nod_comm, neib_nod,            &
+     &    ext_int_grp)
 !      call const_ext_comm_tbl_to_new_part                              &
 !     &   (ext_int_grp, part_tbl, ext_tbl)
 !      call dealloc_group(ext_int_grp)
@@ -393,6 +393,177 @@
       end do
 !
       end subroutine const_ext_grp_sleeve_ext
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_ext_of_int_grp_slv_ext(node, nod_comm, neib_nod, &
+     &          ext_int_grp)
+!
+      use t_control_param_vol_grping
+!
+      use quicksort
+      use set_repartition_group_name
+      use set_parallel_file_name
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+!
+      type(group_data), intent(inout) :: ext_int_grp
+!
+      integer(kind = kint), allocatable :: iflag_nod(:)
+      character(len = kchara) :: chara_tmp
+      integer(kind = kint) :: i, ist, num
+!
+!
+      allocate(iflag_nod(node%numnod))
+!$omp parallel workshare
+      iflag_nod(1:node%numnod) = 1
+!$omp end parallel workshare
+!
+      ext_int_grp%num_grp = nprocs
+      call alloc_group_num(ext_int_grp)
+!
+      do i = 1, nprocs
+        write(chara_tmp,'(a)') 'ext_int_Domain_'
+        call add_index_after_name                                       &
+     &         ((i-1), chara_tmp, ext_int_grp%grp_name(i))
+      end do
+!
+!
+      call count_ext_of_int_grp_slv_exp                                &
+     &   (node, nod_comm, neib_nod,                            &
+     &    ext_int_grp%num_grp, ext_int_grp%num_item,                    &
+     &    ext_int_grp%istack_grp, iflag_nod)
+      call alloc_group_item(ext_int_grp)
+!
+      call set_ext_of_int_grp_elv_exp                                &
+     &   (node, nod_comm, neib_nod,                            &
+     &    ext_int_grp%num_grp, ext_int_grp%num_item,                    &
+     &    ext_int_grp%istack_grp, ext_int_grp%item_grp, iflag_nod)
+!
+!$omp parallel do private(i,ist,num)
+      do i = 1, ext_int_grp%num_grp
+        ist = ext_int_grp%istack_grp(i-1)
+        num = ext_int_grp%istack_grp(i  ) - ist
+        if(num .gt. 1) then
+          call quicksort_int(num, ext_int_grp%item_grp(ist+1),          &
+     &                       ione, num)
+        end if
+      end do
+!$omp end parallel do
+!
+      deallocate(iflag_nod)
+!
+      end subroutine const_ext_of_int_grp_slv_ext
+!
+! ----------------------------------------------------------------------
+!
+      subroutine count_ext_of_int_grp_slv_exp                           &
+     &         (node, nod_comm, neib_nod,                      &
+     &          num_ext_grp, ntot_ext_grp, istack_ext_grp, iflag_nod)
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      integer(kind = kint), intent(in) :: num_ext_grp
+!
+      integer(kind = kint), intent(inout) :: ntot_ext_grp
+      integer(kind = kint), intent(inout)                               &
+     &                     :: istack_ext_grp(0:num_ext_grp)
+      integer(kind = kint), intent(inout) :: iflag_nod(node%numnod)
+!
+      integer(kind = kint) :: inum, inod, ist, ied
+      integer(kind = kint) :: jnum, jnod, jst, jed
+      integer(kind = kint) :: i, ip, icou
+!
+!
+      istack_ext_grp(0:nprocs) = 0
+      istack_ext_grp(my_rank+1) = nod_comm%ntot_import
+!
+      do i = 1, nprocs
+        ip = nod_comm%id_neib(i) + 1
+!$omp parallel workshare
+        iflag_nod(1:node%internal_node) = 1
+!$omp end parallel workshare
+!
+        ist = nod_comm%istack_import(i-1) + 1
+        ied = nod_comm%istack_import(i)
+        do inum = ist, ied
+          inod = nod_comm%item_import(inum)
+          jst = neib_nod%istack_next(inod-1) + 1
+          jed = neib_nod%istack_next(inod)
+          do jnum = jst, jed
+            jnod = neib_nod%inod_next(jnum)
+            if(iflag_nod(jnod) .gt. 0) then
+              icou = icou + 1
+              iflag_nod(jnod) = 0
+            end if
+          end do
+        end do
+        istack_ext_grp(ip) = icou
+      end do
+!
+      do ip = 1, nprocs
+        istack_ext_grp(ip) = istack_ext_grp(ip-1) + istack_ext_grp(ip)
+      end do
+      ntot_ext_grp = istack_ext_grp(nprocs)
+!
+      end subroutine count_ext_of_int_grp_slv_exp
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_ext_of_int_grp_elv_exp                          &
+     &         (node, nod_comm, neib_nod,                      &
+     &          num_ext_grp, ntot_ext_grp, istack_ext_grp,              &
+     &          item_ext_grp, iflag_nod)
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      integer(kind = kint), intent(in) :: num_ext_grp
+      integer(kind = kint), intent(in) :: ntot_ext_grp
+      integer(kind = kint), intent(in) :: istack_ext_grp(0:num_ext_grp)
+!
+      integer(kind = kint), intent(inout) :: item_ext_grp(ntot_ext_grp)
+      integer(kind = kint), intent(inout) :: iflag_nod(node%numnod)
+!
+!
+      integer(kind = kint) :: inum, inod, ist, ied
+      integer(kind = kint) :: jnum, jnod, jst, jed
+      integer(kind = kint) :: i, ip, icou
+!
+!
+      ist = istack_ext_grp(my_rank)
+      do inum = 1, nod_comm%ntot_import
+        item_ext_grp(inum+ist) = nod_comm%item_import(inum)
+      end do
+!
+      do i = 1, nprocs
+        ip = nod_comm%id_neib(i)
+        icou = istack_ext_grp(ip)
+!$omp parallel workshare
+        iflag_nod(1:node%numnod) = 1
+!$omp end parallel workshare
+!
+        ist = nod_comm%istack_import(i-1) + 1
+        ied = nod_comm%istack_import(i)
+        do inum = ist, ied
+          inod = nod_comm%item_import(inum)
+          jst = neib_nod%istack_next(inod-1) + 1
+          jed = neib_nod%istack_next(inod)
+          do jnum = jst, jed
+            jnod = neib_nod%inod_next(jnum)
+            if(iflag_nod(jnod) .gt. 0) then
+              icou = icou + 1
+              item_ext_grp(icou) = jnod
+              iflag_nod(jnod) =    0
+            end if
+          end do
+        end do
+      end do
+!
+      end subroutine set_ext_of_int_grp_elv_exp
 !
 ! ----------------------------------------------------------------------
 !
