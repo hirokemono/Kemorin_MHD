@@ -94,7 +94,7 @@
       call set_internal_element_4_IO                                    &
      &   (nprocs, ucd%istack_merged_intnod, node%numnod,                &
      &    node%internal_node,  ele%numele, ele%nnod_4_ele, ele%ie,      &
-     &    dbl_id1%id_local, dbl_id1%irank,                              &
+     &    dbl_id1%index, dbl_id1%irank,                                 &
      &    ucd%nele, ucd%nnod_4_ele, ucd%ie)
       call dealloc_double_numbering(dbl_id1)
 !

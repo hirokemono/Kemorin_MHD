@@ -43,7 +43,7 @@
 !>        number of node for each subdomain
         integer(kind = kint) :: num_dbl
 !>        local node ID
-        integer(kind = kint), allocatable :: id_local(:)
+        integer(kind = kint), allocatable :: index(:)
 !>        belonged subdomains ID for each node
         integer(kind = kint), allocatable :: irank(:)
       end type node_ele_double_number
@@ -61,11 +61,13 @@
 !
 !
       dbl_id%num_dbl = numnod
-      allocate(dbl_id%id_local(dbl_id%num_dbl))
+      allocate(dbl_id%index(dbl_id%num_dbl))
       allocate(dbl_id%irank(dbl_id%num_dbl))
       if(dbl_id%num_dbl .gt. 0) then
-        dbl_id%id_local = 0
-        dbl_id%irank =  0
+!$omp parallel workshare
+        dbl_id%index(1:dbl_id%num_dbl) =  0
+        dbl_id%irank(1:dbl_id%num_dbl) = -1
+!$omp end parallel workshare
       end if
 !
       end subroutine alloc_double_numbering
@@ -77,7 +79,7 @@
       type(node_ele_double_number), intent(inout) :: dbl_id
 !
 !
-      deallocate(dbl_id%id_local, dbl_id%irank)
+      deallocate(dbl_id%index, dbl_id%irank)
 !
       end subroutine dealloc_double_numbering
 !
@@ -103,11 +105,11 @@
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        inod_dbl%id_local(inod) = inod
+        inod_dbl%index(inod) = inod
       end do
 !$omp end parallel do
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_dbl%id_local(1))
+     &   (node%numnod, nod_comm, inod_dbl%index(1))
 !
       end subroutine set_node_double_numbering
 !
@@ -131,13 +133,13 @@
 !
 !$omp parallel do
       do iele = 1, ele%numele
-        iele_dbl%id_local(iele) = iele
-        iele_dbl%irank(iele) =  inod_dbl%irank(ele%ie(iele,1))
+        iele_dbl%index(iele) = iele
+        iele_dbl%irank(iele) = inod_dbl%irank(ele%ie(iele,1))
       end do
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, iele_dbl%id_local(1))
+     &   (ele%numele, ele_comm, iele_dbl%index(1))
 !
       end subroutine set_ele_double_numbering
 !

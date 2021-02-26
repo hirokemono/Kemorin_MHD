@@ -227,7 +227,7 @@
         do inum = ist, ied
           inod = nod_comm%item_import(inum)
           write(120+id_rank,*) inum, inod,                              &
-     &        dbl_id%irank(inod), dbl_id%id_local(inod), '  '
+     &        dbl_id%irank(inod), dbl_id%index(inod), '  '
         end do
       end do
       do i = 1, nod_comm%num_neib

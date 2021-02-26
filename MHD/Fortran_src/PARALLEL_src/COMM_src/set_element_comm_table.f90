@@ -162,7 +162,7 @@
         xe_import(3*icou  ) = x_ele(iele,3)
         do k1 = 1, nnod_4_ele
           inod = ie(iele,k1)
-          inod_lc_import(icou,k1) = inod_dbl%id_local(inod)
+          inod_lc_import(icou,k1) = inod_dbl%index(inod)
           ipe_lc_import(icou,k1) =  inod_dbl%irank(inod)
         end do
       end do
