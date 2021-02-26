@@ -271,6 +271,9 @@
       integer(kind = kint) :: i
 !
 !
+      call set_node_double_numbering                                    &
+     &   (mesh%node, mesh%nod_comm, new_ids_on_org)
+!
       part_tbl%iflag_self_copy = 1
       part_tbl%nrank_export = 1
       call alloc_calypso_export_num(part_tbl)
@@ -301,11 +304,8 @@
         part_tbl%irev_import(i) = i
       end do
 !
-      call set_node_double_numbering                                    &
-     &   (mesh%node, mesh%nod_comm, new_ids_on_org)
 !
-!      call const_external_grp_4_new_part(new_ids_on_org%irank,         &
-!     &    mesh%node, part_param, part_grp, ext_grp)
+      call const_ext_grp_sleeve_ext(mesh%node, mesh%nod_comm, ext_grp)
 !       Re-partitioning for external node
 !      call const_ext_of_int_grp_new_part(mesh%node, neib_nod,          &
 !     &    part_param, part_grp, ext_grp, ext_int_grp)
@@ -344,6 +344,55 @@
 !     &    part_tbl, new_ids_on_org)
 !
       end subroutine const_extended_nod_and_comm
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_ext_grp_sleeve_ext(node, nod_comm, ext_grp)
+!
+      use set_parallel_file_name
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
+!
+      type(group_data), intent(inout) :: ext_grp
+!
+      character(len = kchara) :: chara_tmp
+      integer(kind = kint) :: i, inum, ip, ist, jst, num
+!
+!
+      ext_grp%num_grp = nprocs
+      call alloc_group_num(ext_grp)
+!
+      do i = 1, nprocs
+        write(chara_tmp,'(a)') 'ext_Domain_'
+        call add_index_after_name                                       &
+     &         ((i-1), chara_tmp, ext_grp%grp_name(i))
+      end do
+!
+      ext_grp%istack_grp(0:nod_comm%num_neib) = 0
+      do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i) + 1
+        ext_grp%istack_grp(ip) = nod_comm%istack_import(i)              &
+     &                        - nod_comm%istack_import(i-1)
+      end do
+      do ip = 1, ext_grp%num_grp
+        ext_grp%istack_grp(ip) = ext_grp%istack_grp(ip-1)               &
+     &                          + ext_grp%istack_grp(ip)
+      end do
+      ext_grp%num_item = ext_grp%istack_grp(ext_grp%num_grp)
+      call alloc_group_item(ext_grp)
+!
+      do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i)
+        jst = ext_grp%istack_grp(ip)
+        ist = nod_comm%istack_import(i-1)
+        num = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+        do inum = 1, num
+          ext_grp%item_grp(inum+jst) = nod_comm%item_import(inum+ist)
+        end do
+      end do
+!
+      end subroutine const_ext_grp_sleeve_ext
 !
 ! ----------------------------------------------------------------------
 !
