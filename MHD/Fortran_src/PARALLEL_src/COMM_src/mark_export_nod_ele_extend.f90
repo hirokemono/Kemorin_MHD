@@ -30,10 +30,24 @@
       module mark_export_nod_ele_extend
 !
       use m_precision
+      use t_next_node_ele_4_node
 !
       implicit none
 !
       integer(kind = kint), parameter, private :: many = 512
+!
+      type comm_table_for_each_pe
+        integer(kind = kint) :: num_each_import = 0
+        integer(kind = kint), allocatable :: item_each_import(:)
+!
+        integer(kind = kint) :: num_each_export = 0
+        integer(kind = kint), allocatable :: item_each_export(:)
+      end type comm_table_for_each_pe
+!
+      type mark_for_each_comm
+        integer(kind = kint) :: nnod_marked = 0
+        integer(kind = kint), allocatable :: inod_marked(:)
+      end type mark_for_each_comm
 !
 !  ---------------------------------------------------------------------
 !
@@ -41,29 +55,63 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine init_comm_table_for_each(ineib, nod_comm, each_comm)
+!
+      use t_comm_table
+!
+      integer(kind = kint), intent(in) :: ineib
+      type(communication_table), intent(in) ::       nod_comm
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
+!
+      integer(kind = kint) :: ist, i
+!
+!
+      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
+     &                           - nod_comm%istack_import(ineib-1)
+      allocate(each_comm%item_each_import(each_comm%num_each_import))
+!
+      ist = nod_comm%istack_import(ineib-1) 
+      do i = 1, each_comm%num_each_import
+        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
+      end do
+!
+      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
+     &                           - nod_comm%istack_export(ineib-1)
+      allocate(each_comm%item_each_export(each_comm%num_each_export))
+!
+      ist = nod_comm%istack_export(ineib-1) 
+      do i = 1, each_comm%num_each_export
+        each_comm%item_each_export(i) = nod_comm%item_export(i+ist)
+      end do
+!
+      end subroutine init_comm_table_for_each
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_comm_table_for_each(each_comm)
+!
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
+!
+      deallocate(each_comm%item_each_import)
+      deallocate(each_comm%item_each_export)
+!
+      end subroutine dealloc_comm_table_for_each
+!
+!  ---------------------------------------------------------------------
+!
       subroutine mark_next_node_of_export                               &
-     &         (numnod, nnod_mark_origin, inod_mark_origin,        &
-     &          nnod_mark_start, inod_mark_start,    &
-     &          ntot_next, istack_next, inod_next,               &
-     &          nnod_marked, inod_marked, iflag_node)
+     &         (neib_nod, each_comm, numnod, mark_nod, iflag_node)
 !
       use quicksort
 !
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      type(comm_table_for_each_pe), intent(in) :: each_comm
       integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: nnod_mark_origin
-      integer(kind = kint), intent(in) :: inod_mark_origin(numnod)
-      integer(kind = kint), intent(in) :: nnod_mark_start
-      integer(kind = kint), intent(in) :: inod_mark_start(numnod)
 !
-      integer(kind = kint), intent(in) :: ntot_next
-      integer(kind = kint), intent(in) :: istack_next(0:numnod)
-      integer(kind = kint), intent(in) :: inod_next(ntot_next)
-!
-      integer(kind = kint), intent(inout) :: nnod_marked
-      integer(kind = kint), intent(inout) :: inod_marked(numnod)
+      type(mark_for_each_comm), intent(inout) :: mark_nod
       integer(kind = kint), intent(inout) :: iflag_node(numnod)
 !
-      integer(kind = kint) :: inum, inod
+      integer(kind = kint) :: inum, inod, icou
       integer(kind = kint) :: jst, jed, jnum, jnod
 !
 !
@@ -71,37 +119,43 @@
       iflag_node(1:numnod) = 0
 !$omp end parallel workshare
 !
-      do inum = 1, nnod_mark_start
-        inod = inod_mark_start(inum)
-        jst = istack_next(inod-1) + 1
-        jed = istack_next(inod)
+      do inum = 1, each_comm%num_each_export
+        inod = each_comm%item_each_export(inum)
+        jst = neib_nod%istack_next(inod-1) + 1
+        jed = neib_nod%istack_next(inod)
 !        if((jed-jst) .ge. many) cycle
 !
         do jnum = jst, jed
-          jnod = inod_next(jnum)
+          jnod = neib_nod%inod_next(jnum)
           iflag_node(jnod) = 1
         end do
       end do
 !
-      do inum = 1, nnod_mark_start
-        inod = inod_mark_start(inum)
+      do inum = 1, each_comm%num_each_export
+        inod = each_comm%item_each_export(inum)
         iflag_node(inod) = 0
       end do
 !
-      do inum = 1, nnod_mark_origin
-        inod = inod_mark_origin(inum)
+      do inum = 1, each_comm%num_each_import
+        inod = each_comm%item_each_import(inum)
         iflag_node(inod) = 0
       end do
 !
-      nnod_marked = 0
+      mark_nod%nnod_marked = 0
       do inod = 1, numnod
         if(iflag_node(inod) .gt. 0) then
-          nnod_marked = nnod_marked + 1
-          inod_marked(nnod_marked) = inod
+          mark_nod%nnod_marked = mark_nod%nnod_marked + 1
         end if
       end do
+      allocate(mark_nod%inod_marked(inod))
 !
-      call quicksort_int(numnod, inod_marked, ione, nnod_marked)
+      icou = 0
+      do inod = 1, numnod
+        if(iflag_node(inod) .gt. 0) then
+          icou = icou + 1
+          mark_nod%inod_marked(icou) = inod
+        end if
+      end do
 !
       end subroutine mark_next_node_of_export
 !

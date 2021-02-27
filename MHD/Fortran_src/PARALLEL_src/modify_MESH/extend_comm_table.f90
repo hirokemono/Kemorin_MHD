@@ -70,8 +70,6 @@
 !
       integer(kind = kint), allocatable :: iflag_recv(:)
       integer(kind = kint), allocatable :: iflag_send(:)
-      integer(kind = kint) :: nnod_marked = 0
-      integer(kind = kint), allocatable :: inod_marked(:)
       integer(kind = kint), allocatable :: iflag_node(:)
       integer(kind = kint) :: nnod_mark_origin = 0
       integer(kind = kint), allocatable :: inod_mark_origin(:)
@@ -83,6 +81,9 @@
       integer(kind = kint), allocatable :: inod_export_new(:)
       integer(kind = kint), allocatable :: irank_export_new(:)
 !
+      type(mark_for_each_comm), allocatable :: mark_nod(:)
+      type(comm_table_for_each_pe) :: each_comm
+!
       integer(kind = kint) :: inum, inod, i, ip, ist
 !
 !
@@ -93,37 +94,24 @@
       inod_mark_start(1:org_node%numnod) = 0
 !$omp end parallel workshare
 !
-      allocate(inod_marked(org_node%numnod))
       allocate(iflag_node(org_node%numnod))
 !$omp parallel workshare
-      inod_marked(1:org_node%numnod) = 0
       iflag_node(1:org_node%numnod) = 0
 !$omp end parallel workshare
 !
       call alloc_added_comm_table_num(nod_comm, added_comm)
 !
+      allocate(mark_nod(nod_comm%num_neib))
       do i = 1, nod_comm%num_neib
-        nnod_mark_origin = nod_comm%istack_import(i)                    &
-     &                    - nod_comm%istack_import(i-1)
-        ist = nod_comm%istack_import(i-1) 
-        do inum = 1, nnod_mark_origin
-          inod_mark_origin(inum) = nod_comm%item_import(inum+ist)
-        end do
-        nnod_mark_start =  nod_comm%istack_export(i)                    &
-     &                    - nod_comm%istack_export(i-1)
-        ist = nod_comm%istack_export(i-1) 
-        do inum = 1, nnod_mark_start
-          inod_mark_start(inum) = nod_comm%item_export(inum+ist)
-        end do
+        call init_comm_table_for_each(i, nod_comm, each_comm)
+        call mark_next_node_of_export(neib_nod, each_comm,              &
+     &      org_node%numnod, mark_nod(i), iflag_node)
+        call dealloc_comm_table_for_each(each_comm)
+      end do
 !
-        call mark_next_node_of_export(org_node%numnod,                  &
-     &      nnod_mark_origin, inod_mark_origin,                         &
-     &      nnod_mark_start, inod_mark_start,                           &
-     &      neib_nod%ntot, neib_nod%istack_next,                        &
-     &      neib_nod%inod_next, nnod_marked, inod_marked, iflag_node)
-!
+      do i = 1, nod_comm%num_neib
         added_comm%num_export(i) = added_comm%num_export(i)             &
-     &                            + nnod_marked
+     &                            + mark_nod(i)%nnod_marked
       end do
 !
       call s_cal_total_and_stacks                                       &
@@ -135,29 +123,14 @@
      &   (added_comm%ntot_export, send_nbuf)
 !
       do i = 1, nod_comm%num_neib
-        nnod_mark_origin = nod_comm%istack_import(i)                    &
-     &                    - nod_comm%istack_import(i-1)
-        ist = nod_comm%istack_import(i-1) 
-        do inum = 1, nnod_mark_origin
-          inod_mark_origin(inum) = nod_comm%item_import(inum+ist)
-        end do
-        nnod_mark_start =  nod_comm%istack_export(i)                    &
-     &                    - nod_comm%istack_export(i-1)
-        ist = nod_comm%istack_export(i-1) 
-        do inum = 1, nnod_mark_start
-          inod_mark_start(inum) = nod_comm%item_export(inum+ist)
-        end do
-!
-        call mark_next_node_of_export(org_node%numnod,                  &
-     &      nnod_mark_origin, inod_mark_origin,                         &
-     &      nnod_mark_start, inod_mark_start,                           &
-     &      neib_nod%ntot, neib_nod%istack_next,                        &
-     &      neib_nod%inod_next, nnod_marked, inod_marked, iflag_node)
-!
-        call copy_node_to_extend_buffer(added_comm%istack_export(i-1),  &
-     &     org_node, dbl_idx, nnod_marked, inod_marked, send_nbuf)
+        call copy_node_to_extend_buffer                                 &
+     &    (added_comm%istack_export(i-1), org_node, dbl_idx,            &
+     &     mark_nod(i)%nnod_marked, mark_nod(i)%inod_marked, send_nbuf)
+        deallocate(mark_nod(i)%inod_marked)
       end do
-      deallocate(inod_marked, iflag_node)
+!
+      deallocate(mark_nod)
+      deallocate(iflag_node)
       deallocate(inod_mark_start, inod_mark_origin)
 !
 !
