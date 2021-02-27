@@ -41,22 +41,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_next_node_of_export(id_neib, num_neib,            &
-     &         istack_import, item_import, istack_export, item_export,  &
-     &         numnod, ntot_next, istack_next, inod_next,               &
-     &         nnod_marked, inod_marked, iflag_node)
+      subroutine mark_next_node_of_export                               &
+     &         (numnod, nnod_mark_origin, inod_mark_origin,        &
+     &          nnod_mark_start, inod_mark_start,    &
+     &          ntot_next, istack_next, inod_next,               &
+     &          nnod_marked, inod_marked, iflag_node)
 !
       use quicksort
 !
-      integer(kind = kint), intent(in) :: id_neib, num_neib
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: item_import(istack_import(num_neib))
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: item_export(istack_export(num_neib))
-!
       integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: nnod_mark_origin
+      integer(kind = kint), intent(in) :: inod_mark_origin(numnod)
+      integer(kind = kint), intent(in) :: nnod_mark_start
+      integer(kind = kint), intent(in) :: inod_mark_start(numnod)
+!
       integer(kind = kint), intent(in) :: ntot_next
       integer(kind = kint), intent(in) :: istack_next(0:numnod)
       integer(kind = kint), intent(in) :: inod_next(ntot_next)
@@ -65,7 +63,7 @@
       integer(kind = kint), intent(inout) :: inod_marked(numnod)
       integer(kind = kint), intent(inout) :: iflag_node(numnod)
 !
-      integer(kind = kint) :: ist, ied, inum, inod
+      integer(kind = kint) :: inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
 !
 !
@@ -73,10 +71,8 @@
       iflag_node(1:numnod) = 0
 !$omp end parallel workshare
 !
-      ist = istack_export(id_neib-1) + 1
-      ied = istack_export(id_neib)
-      do inum = ist, ied
-        inod = item_export(inum)
+      do inum = 1, nnod_mark_start
+        inod = inod_mark_start(inum)
         jst = istack_next(inod-1) + 1
         jed = istack_next(inod)
 !        if((jed-jst) .ge. many) cycle
@@ -87,15 +83,13 @@
         end do
       end do
 !
-      do inum = ist, ied
-        inod = item_export(inum)
+      do inum = 1, nnod_mark_start
+        inod = inod_mark_start(inum)
         iflag_node(inod) = 0
       end do
 !
-      ist = istack_import(id_neib-1) + 1
-      ied = istack_import(id_neib)
-      do inum = ist, ied
-        inod = item_import(inum)
+      do inum = 1, nnod_mark_origin
+        inod = inod_mark_origin(inum)
         iflag_node(inod) = 0
       end do
 !
