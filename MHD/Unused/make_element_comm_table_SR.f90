@@ -65,15 +65,15 @@
 !      end do
 !
 !
-      call reverse_send_recv_int8(num_neib_e, id_neib_e,                &
+      call int8_items_send_recv(num_neib_e, id_neib_e,                  &
      &    istack_import_e, istack_export_e, inod_import_e,              &
      &    SR_sig1, inod_export_e)
 !
-      call reverse_send_recv_int(num_neib_e, id_neib_e,                 &
+      call comm_items_send_recv(num_neib_e, id_neib_e,                  &
      &    istack_import_e, istack_export_e, inod_import_l,              &
      &    SR_sig1, inod_export_l)
 !
-      call reverse_send_recv_3(num_neib_e, id_neib_e,                   &
+      call real_items_send_recv_3(num_neib_e, id_neib_e,                &
      &    istack_import_e, istack_export_e, xe_import,                  &
      &    SR_sig1, xe_export)
 !

@@ -37,16 +37,20 @@
       integer(kind = kint), parameter, private :: many = 512
 !
       type comm_table_for_each_pe
+        integer(kind = kint) :: num_each_export = 0
+        integer(kind = kint), allocatable :: item_each_export(:)
+!
         integer(kind = kint) :: num_each_import = 0
         integer(kind = kint), allocatable :: item_each_import(:)
 !
-        integer(kind = kint) :: num_each_export = 0
-        integer(kind = kint), allocatable :: item_each_export(:)
+        integer(kind = kint) :: num_other_import = 0
+        integer(kind = kint), allocatable :: item_other_import(:)
       end type comm_table_for_each_pe
 !
       type mark_for_each_comm
         integer(kind = kint) :: nnod_marked = 0
         integer(kind = kint), allocatable :: inod_marked(:)
+        real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
 !
 !  ---------------------------------------------------------------------
@@ -55,33 +59,52 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_comm_table_for_each(ineib, nod_comm, each_comm)
+      subroutine init_comm_table_for_each                               &
+     &         (ineib, node, nod_comm, each_comm)
 !
+      use t_geometry_data
       use t_comm_table
 !
       integer(kind = kint), intent(in) :: ineib
+      type(node_data), intent(in) ::                 node
       type(communication_table), intent(in) ::       nod_comm
       type(comm_table_for_each_pe), intent(inout) :: each_comm
 !
-      integer(kind = kint) :: ist, i
+      integer(kind = kint) :: ist, ied, i, icou, ip
 !
+!
+      allocate(each_comm%item_each_export(node%numnod))
+      allocate(each_comm%item_each_import(node%numnod))
+      allocate(each_comm%item_other_import(node%numnod))
+!
+      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
+     &                           - nod_comm%istack_export(ineib-1)
+!
+      ist = nod_comm%istack_export(ineib-1) 
+      do i = 1, each_comm%num_each_export
+        each_comm%item_each_export(i) = nod_comm%item_export(i+ist)
+      end do
 !
       each_comm%num_each_import = nod_comm%istack_import(ineib)         &
      &                           - nod_comm%istack_import(ineib-1)
-      allocate(each_comm%item_each_import(each_comm%num_each_import))
 !
       ist = nod_comm%istack_import(ineib-1) 
       do i = 1, each_comm%num_each_import
         each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
       end do
 !
-      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
-     &                           - nod_comm%istack_export(ineib-1)
-      allocate(each_comm%item_each_export(each_comm%num_each_export))
+      each_comm%num_other_import = nod_comm%ntot_import                 &
+     &                            - each_comm%num_each_import
+      icou = 0
+      do ip = 1, nod_comm%num_neib
+        if(ip .eq. ineib) cycle
 !
-      ist = nod_comm%istack_export(ineib-1) 
-      do i = 1, each_comm%num_each_export
-        each_comm%item_each_export(i) = nod_comm%item_export(i+ist)
+        ist = nod_comm%istack_import(ip-1) + 1
+        ied = nod_comm%istack_import(ip)
+        do i = ist, ied
+          icou = icou + 1
+          each_comm%item_other_import(icou) = nod_comm%item_import(i)
+        end do
       end do
 !
       end subroutine init_comm_table_for_each
@@ -92,17 +115,17 @@
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
 !
+      deallocate(each_comm%item_other_import)
       deallocate(each_comm%item_each_import)
       deallocate(each_comm%item_each_export)
 !
       end subroutine dealloc_comm_table_for_each
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine mark_next_node_of_export                               &
      &         (neib_nod, each_comm, numnod, mark_nod, iflag_node)
-!
-      use quicksort
 !
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(comm_table_for_each_pe), intent(in) :: each_comm

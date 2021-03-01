@@ -7,12 +7,12 @@
 !>@brief  Routines to construca element communication table
 !!
 !!@verbatim
-!!      subroutine element_num_reverse_SR                               &
-!!     &         (num_neib, id_neib, num_import, SR_sig,                &
-!!     &          num_export, istack_export, ntot_export)
-!!      subroutine reverse_send_recv_int(num_neib, id_neib,             &
-!!     &          istack_import, istack_export, inod_import,            &
-!!     &          SR_sig, inod_export)
+!!      subroutine num_items_send_recv                                  &
+!!     &         (num_neib, id_neib, num_send, SR_sig,                  &
+!!     &          num_recv, istack_recv, ntot_recv)
+!!      subroutine comm_items_send_recv(num_neib, id_neib,              &
+!!     &          istack_send, istack_recv, item_send,                  &
+!!     &          SR_sig, item_recv)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!
 !!      subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,  &
@@ -36,19 +36,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine element_num_reverse_SR                                 &
-     &         (num_neib, id_neib, num_import, SR_sig,                  &
-     &          num_export, istack_export, ntot_export)
+      subroutine num_items_send_recv                                    &
+     &         (num_neib, id_neib, num_send, SR_sig,                    &
+     &          num_recv, istack_recv, ntot_recv)
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
-      integer(kind = kint), intent(in) :: num_import(num_neib)
+      integer(kind = kint), intent(in) :: num_send(num_neib)
 !
       type(send_recv_status), intent(inout) :: SR_sig
-      integer(kind = kint), intent(inout) :: ntot_export
-      integer(kind = kint), intent(inout) :: num_export(num_neib)
-      integer(kind = kint), intent(inout) :: istack_export(0:num_neib)
+      integer(kind = kint), intent(inout) :: ntot_recv
+      integer(kind = kint), intent(inout) :: num_recv(num_neib)
+      integer(kind = kint), intent(inout) :: istack_recv(0:num_neib)
 !
       integer(kind = kint) :: ip
 !
@@ -56,13 +56,13 @@
       call resize_SR_flag(num_neib, num_neib, SR_sig)
 !
       do ip = 1, num_neib
-        call MPI_ISEND(num_import(ip), 1, CALYPSO_INTEGER,              &
+        call MPI_ISEND(num_send(ip), 1, CALYPSO_INTEGER,                &
      &                 int(id_neib(ip)), 0, CALYPSO_COMM,               &
      &                 SR_sig%req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib
-        call MPI_IRECV (num_export(ip), 1, CALYPSO_INTEGER,             &
+        call MPI_IRECV (num_recv(ip), 1, CALYPSO_INTEGER,               &
      &                 int(id_neib(ip)), 0, CALYPSO_COMM,               &
      &                 SR_sig%req2(ip), ierr_MPI)
       end do
@@ -72,30 +72,30 @@
      &   (int(num_neib), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
 !
       do ip = 1, num_neib
-        istack_export(ip) = istack_export(ip-1) + num_export(ip)
+        istack_recv(ip) = istack_recv(ip-1) + num_recv(ip)
       end do
-      ntot_export = istack_export(num_neib)
+      ntot_recv = istack_recv(num_neib)
 !
-      end subroutine  element_num_reverse_SR
+      end subroutine  num_items_send_recv
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reverse_send_recv_int(num_neib, id_neib,               &
-     &          istack_import, istack_export, inod_import,              &
-     &          SR_sig, inod_export)
+      subroutine comm_items_send_recv(num_neib, id_neib,                &
+     &          istack_send, istack_recv, item_send,                    &
+     &          SR_sig, item_recv)
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
+      integer(kind = kint), intent(in) :: istack_send(0:num_neib)
+      integer(kind = kint), intent(in) :: istack_recv(0:num_neib)
 !
       integer(kind = kint), intent(in)                                  &
-     &                 :: inod_import(istack_import(num_neib))
+     &                 :: item_send(istack_send(num_neib))
 !
       type(send_recv_status), intent(inout) :: SR_sig
       integer(kind = kint), intent(inout)                               &
-     &                 :: inod_export(istack_export(num_neib))
+     &                 :: item_recv(istack_recv(num_neib))
 !
       integer(kind = kint) :: ip, ist
       integer :: num
@@ -104,17 +104,17 @@
       call resize_SR_flag(num_neib, num_neib, SR_sig)
 !
       do ip = 1, num_neib
-        ist = istack_import(ip-1)
-        num = int(istack_import(ip  ) - istack_import(ip-1))
-        call MPI_ISEND(inod_import(ist+1), num,                         &
+        ist = istack_send(ip-1)
+        num = int(istack_send(ip  ) - istack_send(ip-1))
+        call MPI_ISEND(item_send(ist+1), num,                           &
      &                 CALYPSO_INTEGER,int(id_neib(ip)), 0,             &
      &                 CALYPSO_COMM, SR_sig%req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib
-        ist = istack_export(ip-1)
-        num = int(istack_export(ip  ) - istack_export(ip-1))
-        call MPI_IRECV(inod_export(ist+1), num,                         &
+        ist = istack_recv(ip-1)
+        num = int(istack_recv(ip  ) - istack_recv(ip-1))
+        call MPI_IRECV(item_recv(ist+1), num,                           &
      &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
      &                 CALYPSO_COMM, SR_sig%req2(ip), ierr_MPI)
       end do
@@ -123,7 +123,7 @@
       call MPI_WAITALL                                                  &
      &   (int(num_neib), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
 !
-      end subroutine reverse_send_recv_int
+      end subroutine comm_items_send_recv
 !
 !-----------------------------------------------------------------------
 !

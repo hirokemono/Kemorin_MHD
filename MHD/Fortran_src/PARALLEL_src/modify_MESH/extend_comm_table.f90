@@ -71,10 +71,6 @@
       integer(kind = kint), allocatable :: iflag_recv(:)
       integer(kind = kint), allocatable :: iflag_send(:)
       integer(kind = kint), allocatable :: iflag_node(:)
-      integer(kind = kint) :: nnod_mark_origin = 0
-      integer(kind = kint), allocatable :: inod_mark_origin(:)
-      integer(kind = kint) :: nnod_mark_start = 0
-      integer(kind = kint), allocatable :: inod_mark_start(:)
 !
       integer(kind = kint), allocatable :: inod_import_new(:)
       integer(kind = kint), allocatable :: irank_import_new(:)
@@ -87,28 +83,21 @@
       integer(kind = kint) :: inum, inod, i, ip, ist
 !
 !
-      allocate(inod_mark_origin(org_node%numnod))
-      allocate(inod_mark_start(org_node%numnod))
-!$omp parallel workshare
-      inod_mark_origin(1:org_node%numnod) = 0
-      inod_mark_start(1:org_node%numnod) = 0
-!$omp end parallel workshare
-!
       allocate(iflag_node(org_node%numnod))
 !$omp parallel workshare
       iflag_node(1:org_node%numnod) = 0
 !$omp end parallel workshare
 !
-      call alloc_added_comm_table_num(nod_comm, added_comm)
-!
       allocate(mark_nod(nod_comm%num_neib))
       do i = 1, nod_comm%num_neib
-        call init_comm_table_for_each(i, nod_comm, each_comm)
+        call init_comm_table_for_each(i, org_node, nod_comm, each_comm)
         call mark_next_node_of_export(neib_nod, each_comm,              &
      &      org_node%numnod, mark_nod(i), iflag_node)
         call dealloc_comm_table_for_each(each_comm)
       end do
+      write(*,*) my_rank, 'mark_nod%nnod_marked', mark_nod(1:nod_comm%num_neib)%nnod_marked
 !
+      call alloc_added_comm_table_num(nod_comm, added_comm)
       do i = 1, nod_comm%num_neib
         added_comm%num_export(i) = added_comm%num_export(i)             &
      &                            + mark_nod(i)%nnod_marked
@@ -131,7 +120,6 @@
 !
       deallocate(mark_nod)
       deallocate(iflag_node)
-      deallocate(inod_mark_start, inod_mark_origin)
 !
 !
       call SOLVER_SEND_RECV_num_type                                    &

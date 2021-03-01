@@ -84,13 +84,13 @@
      &    new_comm%ntot_import, new_comm%item_import,                   &
      &    irank_external, inod_external)
 !
-      call element_num_reverse_SR                                       &
+      call num_items_send_recv                                          &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
      &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
      &    new_comm%ntot_export)
 !
       call alloc_export_item(new_comm)
-      call reverse_send_recv_int(new_comm%num_neib, new_comm%id_neib,   &
+      call comm_items_send_recv(new_comm%num_neib, new_comm%id_neib,    &
      &    new_comm%istack_import, new_comm%istack_export,               &
      &    inod_external, SR_sig1, new_comm%item_export)
       deallocate(inod_external, irank_external)
