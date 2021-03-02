@@ -36,6 +36,11 @@
 !
       integer(kind = kint), parameter, private :: many = 512
 !
+      type dist_from_wall_in_export
+        integer(kind = kint) :: ntot = 0
+        real(kind = kreal), allocatable :: distance_in_export(:)
+      end type dist_from_wall_in_export
+!
       type comm_table_for_each_pe
         integer(kind = kint) :: num_each_export = 0
         integer(kind = kint), allocatable :: item_each_export(:)

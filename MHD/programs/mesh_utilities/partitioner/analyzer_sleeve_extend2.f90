@@ -163,6 +163,7 @@
       use extend_group_table
       use copy_mesh_structures
       use set_nnod_4_ele_by_type
+      use mark_export_nod_ele_extend
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
@@ -172,6 +173,9 @@
       type(mesh_groups), save :: newgroup
       type(next_nod_ele_table), save :: next_tbl
       type(node_ele_double_number), save :: dbl_id1
+!
+      real(kind = kreal), allocatable :: distance_in_export(:)
+      type(dist_from_wall_in_export) :: dist_4_comm
 !
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
@@ -186,11 +190,19 @@
      &   (mesh%node, mesh%nod_comm, dbl_id1)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
+!
+      dist_4_comm%ntot = mesh%nod_comm%ntot_export
+      allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
+!$omp parallel workshare
+      dist_4_comm%distance_in_export(1:dist_4_comm%ntot) = 0.0d0
+!$omp end parallel workshare
+!
+
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       if (iflag_debug.gt.0) write(*,*) 'extend_node_comm_table2'
       call extend_node_comm_table2                                      &
      &   (mesh%nod_comm, mesh%node, dbl_id1, next_tbl%neib_nod,         &
-     &    newmesh%nod_comm, newmesh%node)
+     &    newmesh%nod_comm, newmesh%node, dist_4_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
@@ -237,7 +249,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extend_node_comm_table2(nod_comm, org_node, dbl_idx,   &
-     &          neib_nod, new_comm, new_node)
+     &          neib_nod, new_comm, new_node, dist_4_comm)
 !
       use t_para_double_numbering
       use t_next_node_ele_4_node
@@ -262,6 +274,7 @@
 !
       type(communication_table), intent(inout) :: new_comm
       type(node_data), intent(inout) :: new_node
+      type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
 !
 !>      Structure of double numbering
       type(node_ele_double_number) :: dbl_id2
@@ -346,7 +359,7 @@
       type(comm_table_for_each_pe) :: each_comm
 !
       integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp
-      real(kind = kreal) :: dist_max = 0.02d0
+      real(kind = kreal) :: dist_max = 0.2d0
 !
       integer(kind = kint) :: icou, jnum, jcou, jst, irank
 !
@@ -358,14 +371,15 @@
       distance(1:org_node%numnod) =   0
 !$omp end parallel workshare
 !
-!
       allocate(mark_nod(nod_comm%num_neib))
       do i = 1, nod_comm%num_neib
-        call init_comm_table_for_each(i, org_node, nod_comm, each_comm)
+        call init_comm_table_for_each2                                  &
+        (i, org_node, nod_comm, dist_4_comm, each_comm, distance)
         call mark_next_node_of_export2(dist_max, org_node, neib_nod,    &
      &      each_comm, mark_nod(i), iflag_node, distance)
         call dealloc_comm_table_for_each(each_comm)
       end do
+      deallocate(dist_4_comm%distance_in_export)
       write(*,*) my_rank, 'mark_nod%nnod_marked',   &
      &    mark_nod(1:nod_comm%num_neib)%nnod_marked
 !
@@ -672,11 +686,12 @@
 !
       write(*,*) my_rank, 'org_neib', nod_comm%id_neib
       write(*,*) my_rank, 'new_neib', new_nod_comm%id_neib
-      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
+      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,              &
      &                    sum(num_import_tmp), sum(num_import_trim)
       do ip = 1, nprocs
-        write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
-     &            num_import_tmp(ip), num_import_trim(ip), istack_import_trim(ip)
+        write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',         &
+     &            num_import_tmp(ip), num_import_trim(ip),             &
+     &            istack_import_trim(ip)
       end do
 !
       write(*,*) my_rank, 'new_nod_comm%num_neib', new_nod_comm%num_neib
@@ -763,8 +778,9 @@
       allocate(item_new_export_back(new_nod_comm%ntot_export))
       allocate(inod_lc_new_export_back(new_nod_comm%ntot_export))
       allocate(irank_new_export_back(new_nod_comm%ntot_export))
-      allocate(distance_new_export_back(new_nod_comm%ntot_export))
 !
+      dist_4_comm%ntot = new_nod_comm%ntot_export
+      allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
 !
       call comm_items_send_recv                                         &
      &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
@@ -781,7 +797,8 @@
       call real_items_send_recv                                         &
      &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
      &    new_nod_comm%istack_import, new_nod_comm%istack_export,       &
-     &    distance_new_import_trim, SR_sig1, distance_new_export_back)
+     &    distance_new_import_trim, SR_sig1,                            &
+     &    dist_4_comm%distance_in_export)
 !
       call real_items_send_recv_3                                       &
      &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
@@ -807,11 +824,45 @@
      &   icou = icou + 1
       end do
       write(*,*) my_rank, 'Failed communication data: ', icou
-!
+      write(*,*) my_rank, 'Extend again flag: ', iflag_process_extend
 !
       deallocate(mark_nod)
       deallocate(iflag_node)
 !
+!
+      new_node%numnod = org_node%internal_node                          &
+     &                 + new_nod_comm%ntot_import
+      new_node%internal_node = org_node%internal_node
+!
+      call alloc_node_geometry_base(new_node)
+      call alloc_double_numbering(new_node%numnod, dbl_id2)
+!
+!$omp parallel do
+      do inod = 1, org_node%internal_node
+        new_node%inod_global(inod) = org_node%inod_global(inod)
+        new_node%xx(inod,1) = org_node%xx(inod,1)
+        new_node%xx(inod,2) = org_node%xx(inod,2)
+        new_node%xx(inod,3) = org_node%xx(inod,3)
+        dbl_id2%index(inod) = dbl_idx%index(inod)
+        dbl_id2%irank(inod) = dbl_idx%irank(inod)
+      end do
+!$omp end parallel do
+!
+      ist = org_node%internal_node
+!$omp parallel do private(inum,icou)
+      do inum = 1, new_nod_comm%ntot_import
+        icou = inum + ist
+        new_node%inod_global(icou) = inod_gl_new_import_trim(inum)
+        new_node%xx(icou,1) = xx_new_import_trim(3*inum-2)
+        new_node%xx(icou,2) = xx_new_import_trim(3*inum-1)
+        new_node%xx(icou,3) = xx_new_import_trim(3*inum  )
+        dbl_id2%index(icou) = inod_lc_new_import_trim(inum)
+        dbl_id2%irank(icou) = irank_new_import_trim(inum)
+      end do
+!$omp end parallel do
+!
+      call check_new_node_and_comm2(new_nod_comm, new_node, dbl_id2)
+
       end subroutine extend_node_comm_table2
 !
 !  ---------------------------------------------------------------------
@@ -895,7 +946,6 @@
 !
 !$omp parallel workshare
       iflag_node(1:node%numnod) = 0
-      distance(1:node%numnod) = 0.0d0
 !$omp end parallel workshare
 !
 !$omp parallel do private(inum,inod)
@@ -994,6 +1044,68 @@
       end do
 !
       end subroutine mark_next_node_of_export2
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_comm_table_for_each2                              &
+     &         (ineib, node, nod_comm, dist_4_comm, each_comm, distance)
+!
+      use t_geometry_data
+      use t_comm_table
+      use mark_export_nod_ele_extend
+!
+      integer(kind = kint), intent(in) :: ineib
+      type(node_data), intent(in) ::                 node
+      type(communication_table), intent(in) ::       nod_comm
+      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
+!
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
+      real(kind = kreal), intent(inout) :: distance(node%numnod)
+!
+      integer(kind = kint) :: ist, ied, i, icou, ip, inod
+!
+!
+      allocate(each_comm%item_each_export(node%numnod))
+      allocate(each_comm%item_each_import(node%numnod))
+      allocate(each_comm%item_other_import(node%numnod))
+!
+      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
+     &                           - nod_comm%istack_export(ineib-1)
+!
+      ist = nod_comm%istack_export(ineib-1) 
+!$omp parallel do private(i,inod)
+      do i = 1, each_comm%num_each_export
+        inod = nod_comm%item_export(i+ist)
+        each_comm%item_each_export(i) = inod
+        distance(inod) = dist_4_comm%distance_in_export(i+ist)
+      end do
+!$omp end parallel do
+!
+      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
+     &                           - nod_comm%istack_import(ineib-1)
+!
+      ist = nod_comm%istack_import(ineib-1) 
+!$omp parallel do private(i)
+      do i = 1, each_comm%num_each_import
+        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
+      end do
+!$omp end parallel do
+!
+      each_comm%num_other_import = nod_comm%ntot_import                 &
+     &                            - each_comm%num_each_import
+      icou = 0
+      do ip = 1, nod_comm%num_neib
+        if(ip .eq. ineib) cycle
+!
+        ist = nod_comm%istack_import(ip-1) + 1
+        ied = nod_comm%istack_import(ip)
+        do i = ist, ied
+          icou = icou + 1
+          each_comm%item_other_import(icou) = nod_comm%item_import(i)
+        end do
+      end do
+!
+      end subroutine init_comm_table_for_each2
 !
 !  ---------------------------------------------------------------------
 !
