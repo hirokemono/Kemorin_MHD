@@ -43,7 +43,7 @@
 !
       implicit none
 !
-      private :: const_reparition_ele_connect
+!      private :: const_reparition_ele_connect
 !
 ! ----------------------------------------------------------------------
 !

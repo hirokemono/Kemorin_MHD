@@ -38,9 +38,9 @@
       integer(kind = kint), allocatable :: iflag_new(:)
       private :: iflag_org, iflag_new
 !
-      private :: allocate_group_flags, deallocate_group_flags
-      private :: repartition_node_group, repartition_element_group
-      private :: repartition_surface_group
+!      private :: allocate_group_flags, deallocate_group_flags
+!      private :: repartition_node_group, repartition_element_group
+!      private :: repartition_surface_group
 !
 ! ----------------------------------------------------------------------
 !

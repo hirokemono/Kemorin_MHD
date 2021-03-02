@@ -29,7 +29,7 @@
 !
       implicit none
 !
-      private :: count_num_send_ele_repart, set_import_ele_for_repart
+!      private :: count_num_send_ele_repart, set_import_ele_for_repart
 !
 ! ----------------------------------------------------------------------
 !

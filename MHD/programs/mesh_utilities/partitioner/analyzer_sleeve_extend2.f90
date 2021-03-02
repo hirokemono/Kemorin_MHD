@@ -100,13 +100,13 @@
       call sleeve_extension_loop2(part_p1%n_overlap,                    &
      &                           fem_EXT%mesh, fem_EXT%group)
 !
-!      call mpi_output_mesh                                             &
-!     &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
-!      call dealloc_mesh_data(fem_EXT%mesh, fem_EXT%group)
+      call mpi_output_mesh                                             &
+     &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
+      call dealloc_mesh_data(fem_EXT%mesh, fem_EXT%group)
 !
-!      if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh'
-!      call pickup_surface_mesh                                         &
-!     &   (part_p1%distribute_mesh_file, par_viexw_ex)
+      if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh'
+      call pickup_surface_mesh                                         &
+     &   (part_p1%distribute_mesh_file, par_viexw_ex)
 !
       call end_elapsed_time(ied_total_elapsed)
       call output_elapsed_times
@@ -143,8 +143,8 @@
       call para_sleeve_extension2(mesh, group, ele_comm)
 !
       call dealloc_comm_table(ele_comm)
-      call dealloc_numele_stack(mesh%ele)
-      call dealloc_nod_and_ele_infos(mesh)
+!      call dealloc_numele_stack(mesh%ele)
+!      call dealloc_nod_and_ele_infos(mesh)
 !
       end subroutine sleeve_extension_loop2
 !
@@ -164,6 +164,9 @@
       use copy_mesh_structures
       use set_nnod_4_ele_by_type
       use mark_export_nod_ele_extend
+      use t_calypso_comm_table
+      use redistribute_groups
+      use const_repart_ele_connect
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
@@ -176,7 +179,10 @@
 !
       real(kind = kreal), allocatable :: distance_in_export(:)
       type(dist_from_wall_in_export) :: dist_4_comm
+      type(calypso_comm_table) :: ele_tbl
+      type(calypso_comm_table) :: part_tbl
 !
+      integer :: i
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
@@ -205,19 +211,56 @@
      &    newmesh%nod_comm, newmesh%node, dist_4_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
+      part_tbl%nrank_export =    1
+      call alloc_calypso_export_num(part_tbl)
+      part_tbl%irank_export(1) = my_rank
+      part_tbl%istack_export(0) = 0
+      part_tbl%istack_export(1) = mesh%node%internal_node
+      part_tbl%num_export(1) =    mesh%node%internal_node
+      part_tbl%ntot_export =      mesh%node%internal_node
+      call alloc_calypso_export_item(part_tbl)
+!
+!$omp parallel do
+      do i = 1, mesh%node%internal_node
+        part_tbl%item_export(i) = i
+      end do
+!$omp end parallel do
+!
+      part_tbl%iflag_self_copy = 1
+      part_tbl%nrank_import =    1
+      call alloc_calypso_import_num(part_tbl)
+!
+      part_tbl%irank_import(1) = my_rank
+      part_tbl%istack_import(0) = 0
+      part_tbl%istack_import(1) = mesh%node%internal_node
+      part_tbl%num_import(1) =    mesh%node%internal_node
+      part_tbl%ntot_import =      mesh%node%internal_node
+      call alloc_calypso_import_item(mesh%node%internal_node, part_tbl)
+!
+!$omp parallel do
+      do i = 1, mesh%node%internal_node
+        part_tbl%item_import(i) = i
+        part_tbl%irev_import(i) = i
+      end do
+!$omp end parallel do
+!
+!
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
 !      if (iflag_debug.gt.0) write(*,*) 'extend_ele_connectivity'
-!      call extend_ele_connectivity                                     &
-!     &   (mesh%nod_comm, ele_comm, mesh%node, mesh%ele,                &
-!     &    dbl_id1, next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,  &
-!     &    newmesh%ele, iflag_SLEX_time, ist_elapsed_SLEX)
-!      newmesh%ele%first_ele_type                                       &
-!     &   = set_cube_eletype_from_num(newmesh%ele%nnod_4_ele)
+      call s_const_repart_ele_connect(mesh, ele_comm, part_tbl,  &
+     &    dbl_id1, newmesh%nod_comm, newmesh%node,               &
+     &    newmesh%ele, ele_tbl,   &
+     &          newmesh%surf, newmesh%edge)
+      newmesh%ele%first_ele_type                                       &
+     &   = set_cube_eletype_from_num(newmesh%ele%nnod_4_ele)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
+!
+      call s_redistribute_groups(mesh, group, ele_comm,                 &
+     &    newmesh, part_tbl, ele_tbl, newgroup)
 !
       call dealloc_next_nod_ele_table(next_tbl)
       call dealloc_double_numbering(dbl_id1)
-!      call dealloc_comm_table(ele_comm)
+      call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_nod_and_ele_infos(mesh)
 !
@@ -233,23 +276,25 @@
 !      if (iflag_debug.gt.0) write(*,*) 's_extend_group_table'
 !      call s_extend_group_table(nprocs, newmesh%nod_comm, ele_comm,    &
 !     &    newmesh%node, newmesh%ele, group, newgroup)
-!      call dealloc_mesh_data(mesh, group)
+!
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+4)
 !
 !      if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
-!      call copy_mesh_and_group(newmesh, newgroup, mesh, group)
-!      call dup_nod_and_ele_infos(newmesh, mesh)
+      call dealloc_mesh_data(mesh, group)
+      call copy_mesh_and_group(newmesh, newgroup, mesh, group)
+      return
+      call dup_nod_and_ele_infos(newmesh, mesh)
 !
-!      call dealloc_numele_stack(newmesh%ele)
-!      call dealloc_nod_and_ele_infos(newmesh)
-!      call dealloc_mesh_data(newmesh, newgroup)
+      call dealloc_numele_stack(newmesh%ele)
+      call dealloc_nod_and_ele_infos(newmesh)
+      call dealloc_mesh_data(newmesh, newgroup)
 !
       end subroutine para_sleeve_extension2
 !
 ! ----------------------------------------------------------------------
 !
       subroutine extend_node_comm_table2(nod_comm, org_node, dbl_idx,   &
-     &          neib_nod, new_comm, new_node, dist_4_comm)
+     &          neib_nod, new_nod_comm, new_node, dist_4_comm)
 !
       use t_para_double_numbering
       use t_next_node_ele_4_node
@@ -272,7 +317,7 @@
       type(node_ele_double_number), intent(in) :: dbl_idx
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
-      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_nod_comm
       type(node_data), intent(inout) :: new_node
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
 !
@@ -284,8 +329,6 @@
       type(communication_table) :: added_comm
       type(node_buffer_2_extend) :: send_nbuf
       type(node_buffer_2_extend) :: recv_nbuf
-!
-      type(communication_table) :: new_nod_comm
 !
       integer(kind = kint), allocatable :: iflag_recv(:)
       integer(kind = kint), allocatable :: iflag_send(:)
@@ -1108,5 +1151,179 @@
       end subroutine init_comm_table_for_each2
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine s_const_repart_ele_connect2(mesh, ele_comm,   &
+     &          dbl_id1, new_comm, new_node, new_ele, ele_tbl,   &
+     &          new_surf, new_edge)
+!
+      use t_mesh_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_para_double_numbering
+      use t_calypso_comm_table
+      use ele_trans_tbl_4_repart
+      use set_nnod_4_ele_by_type
+      use const_repart_ele_connect
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(communication_table), intent(in) :: ele_comm
+      type(node_ele_double_number), intent(in) :: dbl_id1
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+!
+      type(calypso_comm_table), intent(inout) :: ele_tbl
+      type(element_data), intent(inout) :: new_ele
+      type(surface_data), intent(inout) :: new_surf
+      type(edge_data), intent(inout) :: new_edge
+!
+      type(node_ele_double_number) :: element_ids
+!
+      integer(kind = kint) :: new_numele
+!
+!
+      call alloc_double_numbering(mesh%ele%numele, element_ids)
+      call double_numbering_4_element(mesh%ele, ele_comm, element_ids)
+!
+      call const_ele_trans_tbl_for_repart2                              &
+     &   (mesh%node, mesh%ele, dbl_id1%irank, ele_tbl)
+!      call check_element_transfer_tbl(mesh%ele, ele_tbl)
+! 
+      call trim_overlapped_ele_by_repart                                &
+     &   (mesh, element_ids, ele_tbl, new_numele)
+!
+      call const_reparition_ele_connect                                &
+     &   (mesh%node, mesh%ele, ele_tbl, dbl_id1,                 &
+     &    element_ids, new_numele, new_comm, new_node, new_ele)
+      call dealloc_double_numbering(element_ids)
+!
+      call set_3D_nnod_4_sfed_by_ele(new_ele%nnod_4_ele,                &
+     &    new_surf%nnod_4_surf, new_edge%nnod_4_edge)
+!
+      end subroutine s_const_repart_ele_connect2
+!
+! ----------------------------------------------------------------------
+!
+      subroutine const_ele_trans_tbl_for_repart2(node, ele,    &
+     &                                          idomain_new, ele_tbl)
+!
+      use t_geometry_data
+      use t_para_double_numbering
+      use t_calypso_comm_table
+      use calypso_mpi_int
+      use set_comm_tbl_to_new_part
+      use ele_trans_tbl_4_repart
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+!
+      type(calypso_comm_table), intent(inout) :: ele_tbl
+!
+      integer(kind = kint), allocatable :: num_send_ele(:)
+      integer(kind = kint), allocatable :: num_recv_ele(:)
+!
+!
+      allocate(num_send_ele(nprocs))
+      allocate(num_recv_ele(nprocs))
+!$omp parallel workshare
+      num_send_ele(1:nprocs) = 0
+      num_recv_ele(1:nprocs) = 0
+!$omp end parallel workshare
+!
+      call count_num_send_ele_repart2(nprocs, node, ele,                &
+     &    idomain_new, num_send_ele)
+!
+      call calypso_mpi_alltoall_one_int(num_send_ele, num_recv_ele)
+!
+!      write(*,*) my_rank, 'num_send_ele',  mesh%ele%internal_ele,      &
+!     &  sum(num_send_ele)
+!      write(100+my_rank,*) my_rank, 'num_send_ele', num_send_ele
+!      write(100+my_rank,*) my_rank, 'num_recv_ele', num_recv_ele
+!
+      ele_tbl%iflag_self_copy = 0
+      call count_num_export_for_repart(my_rank, nprocs, num_send_ele,   &
+     &    ele_tbl%iflag_self_copy, ele_tbl%nrank_export)
+      call count_num_import_for_repart                                  &
+     &   (nprocs, num_recv_ele, ele_tbl%nrank_import)
+!
+      call alloc_calypso_export_num(ele_tbl)
+      call alloc_calypso_import_num(ele_tbl)
+!
+      call set_istack_export_for_repart(my_rank, nprocs, num_send_ele,  &
+     &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
+     &    ele_tbl%irank_export, ele_tbl%num_export,                     &
+     &    ele_tbl%istack_export)
+      call set_istack_import_for_repart(my_rank, nprocs, num_recv_ele,  &
+     &    ele_tbl%nrank_import, ele_tbl%ntot_import,                    &
+     &    ele_tbl%irank_import, ele_tbl%num_import,                     &
+     &    ele_tbl%istack_import)
+!
+      call alloc_calypso_export_item(ele_tbl)
+      call alloc_calypso_import_item                                    &
+     &   (ele_tbl%ntot_import, ele_tbl)
+      call set_import_item_for_repart                                   &
+     &   (ele_tbl%ntot_import, ele_tbl%ntot_import,                     &
+     &    ele_tbl%item_import, ele_tbl%irev_import)
+!
+      call set_import_ele_for_repart(node, ele, idomain_new,            &
+     &    ele_tbl%nrank_export, ele_tbl%ntot_export,                    &
+     &    ele_tbl%irank_export, ele_tbl%istack_export,                  &
+     &    ele_tbl%item_export)
+      deallocate(num_send_ele, num_recv_ele)
+!
+      end subroutine const_ele_trans_tbl_for_repart2
+!
+! ----------------------------------------------------------------------
+!
+      subroutine count_num_send_ele_repart2(nprocs, node, ele,           &
+     &          idomain_new, num_send_ele)
+!
+      integer, intent(in) :: nprocs
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      integer(kind = kint), intent(in) :: idomain_new(node%numnod)
+!
+      integer(kind = kint), intent(inout) :: num_send_ele(nprocs)
+!
+      integer(kind = kint), allocatable :: iflag_ele(:)
+      integer(kind = kint) :: ntot_internal
+      integer(kind = kint) :: i, inod, iele, k1
+!
+!
+!$omp parallel workshare
+      num_send_ele(1:nprocs) = 0
+!$omp end parallel workshare
+!
+      allocate(iflag_ele(ele%numele))
+!$omp parallel workshare
+        iflag_ele(1:ele%numele) = 0
+!$omp end parallel workshare
+!
+        do iele = 1, ele%numele
+!          if(ele%ie(iele,1) .gt. node%internal_node) cycle
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            if(idomain_new(inod) .eq. my_rank) then
+              iflag_ele(iele) = 1
+              exit
+            end if
+          end do
+        end do
+!
+        ntot_internal = 0
+!$omp parallel do private(iele) reduction(+:ntot_internal)
+        do iele = 1, ele%numele
+          if(iflag_ele(iele) .gt. 0) then
+            ntot_internal = ntot_internal + 1
+          end if
+        end do
+!$omp end parallel do
+        num_send_ele(my_rank+1) = ntot_internal
+      deallocate(iflag_ele)
+!
+      end subroutine count_num_send_ele_repart2
+!
+! ----------------------------------------------------------------------
 !
       end module analyzer_sleeve_extend2
