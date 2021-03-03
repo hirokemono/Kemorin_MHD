@@ -175,7 +175,7 @@
           mark_nod%nnod_marked = mark_nod%nnod_marked + 1
         end if
       end do
-      allocate(mark_nod%inod_marked(inod))
+      allocate(mark_nod%inod_marked(numnod))
 !
       icou = 0
       do inod = 1, numnod
