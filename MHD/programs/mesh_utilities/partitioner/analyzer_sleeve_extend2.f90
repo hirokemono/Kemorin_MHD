@@ -176,7 +176,8 @@
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save :: newgroup
       type(next_nod_ele_table), save :: next_tbl
-      type(node_ele_double_number), save :: dbl_id1
+      type(node_ele_double_number), save :: inod_dbl_org
+      type(node_ele_double_number), save :: iele_dbl_org
 !
       real(kind = kreal), allocatable :: distance_in_export(:)
       type(dist_from_wall_in_export) :: dist_4_comm
@@ -191,10 +192,13 @@
      &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !
-      call alloc_double_numbering(mesh%node%numnod, dbl_id1)
+      call alloc_double_numbering(mesh%node%numnod, inod_dbl_org)
       if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
       call set_node_double_numbering                                    &
-     &   (mesh%node, mesh%nod_comm, dbl_id1)
+     &   (mesh%node, mesh%nod_comm, inod_dbl_org)
+!
+      call alloc_double_numbering(mesh%ele%numele, iele_dbl_org)
+      call double_numbering_4_element(mesh%ele, ele_comm, iele_dbl_org)
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
 !
@@ -208,7 +212,8 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       if (iflag_debug.gt.0) write(*,*) 'extend_node_comm_table2'
       call extend_node_comm_table2                                      &
-     &   (mesh%nod_comm, mesh%node, dbl_id1, next_tbl%neib_nod,         &
+     &   (mesh%nod_comm, mesh%node, inod_dbl_org, mesh%ele, iele_dbl_org, &
+     &    next_tbl%neib_nod,         &
      &    newmesh%nod_comm, newmesh%node, dist_4_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
@@ -250,7 +255,7 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
 !      if (iflag_debug.gt.0) write(*,*) 'extend_ele_connectivity'
 !      call s_const_repart_ele_connect(mesh, ele_comm, part_tbl,  &
-!     &    dbl_id1, newmesh%nod_comm, newmesh%node,               &
+!     &    inod_dbl_org, newmesh%nod_comm, newmesh%node,               &
 !     &    newmesh%ele, ele_tbl,   &
 !     &          newmesh%surf, newmesh%edge)
 !      newmesh%ele%first_ele_type                                       &
@@ -261,7 +266,7 @@
 !     &    newmesh, part_tbl, ele_tbl, newgroup)
 !
       call dealloc_next_nod_ele_table(next_tbl)
-      call dealloc_double_numbering(dbl_id1)
+      call dealloc_double_numbering(inod_dbl_org)
       call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_nod_and_ele_infos(mesh)
@@ -294,8 +299,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine extend_node_comm_table2(nod_comm, org_node, dbl_idx,   &
-     &          neib_nod, new_nod_comm, new_node, dist_4_comm)
+      subroutine extend_node_comm_table2(nod_comm, org_node, inod_dbl,  &
+     &          org_ele, iele_dbl, neib_nod, new_nod_comm, new_node, dist_4_comm)
 !
       use t_para_double_numbering
       use t_next_node_ele_4_node
@@ -315,7 +320,9 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: org_node
-      type(node_ele_double_number), intent(in) :: dbl_idx
+      type(element_data), intent(in) :: org_ele
+      type(node_ele_double_number), intent(in) :: inod_dbl
+      type(node_ele_double_number), intent(in) :: iele_dbl
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       type(communication_table), intent(inout) :: new_nod_comm
@@ -333,7 +340,9 @@
 !
       integer(kind = kint), allocatable :: iflag_recv(:)
       integer(kind = kint), allocatable :: iflag_send(:)
+      integer(kind = kint), allocatable :: iflag_ele(:)
       integer(kind = kint), allocatable :: iflag_node(:)
+      integer(kind = kint), allocatable :: iflag_node2(:)
       real(kind = kreal), allocatable :: distance(:)
 !
       integer(kind = kint), allocatable :: inod_import_new(:)
@@ -408,6 +417,7 @@
       integer(kind = kint), allocatable :: idx_home_for_import(:)
 !
       type(mark_for_each_comm), allocatable :: mark_nod(:)
+      type(mark_for_each_comm), allocatable :: mark_ele(:)
       type(comm_table_for_each_pe) :: each_comm
 !
       integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp
@@ -415,26 +425,81 @@
       real(kind = kreal) :: dist_max = 0.05d0
 !
       integer(kind = kint) :: icou, jnum, jcou, jst, jed, irank, ntot
+      integer(kind = kint) :: iele, k1
 !
 !
+      allocate(iflag_node2(org_node%numnod))
       allocate(iflag_node(org_node%numnod))
       allocate(distance(org_node%numnod))
 !$omp parallel workshare
+      iflag_node2(1:org_node%numnod) = 0
       iflag_node(1:org_node%numnod) = 0
       distance(1:org_node%numnod) =   0
 !$omp end parallel workshare
 !
+      allocate(iflag_ele(org_ele%numele))
+!$omp parallel workshare
+      iflag_ele(1:org_ele%numele) = 0
+!$omp end parallel workshare
+!
       allocate(mark_nod(nod_comm%num_neib))
+      allocate(mark_ele(nod_comm%num_neib))
       do i = 1, nod_comm%num_neib
         call init_comm_table_for_each2                                  &
         (i, org_node, nod_comm, dist_4_comm, each_comm, distance)
         call mark_next_node_of_export2(dist_max, org_node, neib_nod,    &
      &      each_comm, mark_nod(i), iflag_node, distance)
         call dealloc_comm_table_for_each(each_comm)
+!
+!$omp parallel do private(inod)
+        do inod = 1, org_node%numnod
+          if(iflag_node(inod) .ge. 0) then
+            iflag_node2(inod) = 0
+          else
+            iflag_node2(inod) = 1
+          end if
+        end do
+!$omp end parallel do
+!$omp parallel do private(iele,k1,inod)
+        do iele = 1, org_ele%numele
+          iflag_ele(iele) = 1
+          do k1 = 1, org_ele%nnod_4_ele
+            inod = org_ele%ie(iele,k1)
+            if(iflag_node(inod) .ge. 0) then
+              iflag_ele(iele) = 0
+              exit
+            end if
+          end do
+        end do
+!$omp end parallel do
+!
+        icou = 0
+        do iele = 1, org_ele%numele
+          if(iflag_ele(iele) .gt. 0) icou = icou + 1
+        end do
+        mark_ele(i)%nnod_marked = icou
+        allocate(mark_ele(i)%inod_marked(mark_ele(i)%nnod_marked))
+!
+        icou = 0
+        do iele = 1, org_ele%numele
+          if(iflag_ele(iele) .gt. 0) then
+            icou = icou + 1
+            mark_ele(i)%inod_marked(icou) = iele
+            do k1 = 1, org_ele%nnod_4_ele
+              inod = org_ele%ie(iele,k1)
+              iflag_node2(inod) = 0
+            end do
+          end if
+        end do
+        write(*,*) my_rank, i, 'Failed node for element count',   &
+     &            sum(iflag_node2)
+!
       end do
       deallocate(dist_4_comm%distance_in_export)
       write(*,*) my_rank, 'mark_nod%nnod_marked',   &
      &    mark_nod(1:nod_comm%num_neib)%nnod_marked
+      write(*,*) my_rank, 'mark_ele%nnod_marked',   &
+     &    mark_ele(1:nod_comm%num_neib)%nnod_marked
 !
 !
       allocate(iflag_send_pe(nprocs))
@@ -451,7 +516,7 @@
         np_new_export(i) = 0
         do inum = 1, mark_nod(i)%nnod_marked
           inod = mark_nod(i)%inod_marked(inum)
-          ip = dbl_idx%irank(inod)
+          ip = inod_dbl%irank(inod)
           if(iflag_send_pe(ip+1) .eq. 0) then
             np_new_export(i) = np_new_export(i) + 1
             iflag_send_pe(ip+1) = 1
@@ -480,7 +545,7 @@
         icou = istack_pe_new_export(i-1)
         do inum = 1, mark_nod(i)%nnod_marked
           inod = mark_nod(i)%inod_marked(inum)
-          ip = dbl_idx%irank(inod)
+          ip = inod_dbl%irank(inod)
           if(iflag_send_pe(ip+1) .eq. 0) then
             icou = icou + 1
             ip_new_export(icou) = ip
@@ -592,8 +657,8 @@
           xx_new_export(3*icou-2) =  org_node%xx(inod,1)
           xx_new_export(3*icou-1) =  org_node%xx(inod,2)
           xx_new_export(3*icou  ) =  org_node%xx(inod,3)
-          inod_lc_new_export(icou) =   dbl_idx%index(inod)
-          irank_nod_new_export(icou) = dbl_idx%irank(inod)
+          inod_lc_new_export(icou) =   inod_dbl%index(inod)
+          irank_nod_new_export(icou) = inod_dbl%irank(inod)
           distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
         end do
       end do
@@ -917,10 +982,6 @@
           xx_new_import_trim(3*jcou-1) = xx_new_import(3*jnum-1)
           xx_new_import_trim(3*jcou  ) = xx_new_import(3*jnum  )
           inod_gl_new_import_trim(jcou) = inod_gl_new_import(jnum)
-!
-           if(inum.le.3 .and. my_rank.eq.1 .and. i.eq.1) then
-             write(*,*) 'Tako', inum, jnum, inod_lc_new_import(jnum), irank_nod_new_import(jnum), ist
-           end if
         end do
       end do
 !
@@ -939,13 +1000,13 @@
 !     &       inod_lc_new_import(i), irank_nod_new_import(i)
 !      end do
 !
-        write(60+my_rank,*) 'check neib', new_nod_comm%id_neib
-        write(60+my_rank,*) 'check stack', new_nod_comm%istack_import
-      do i = 1, new_nod_comm%ntot_import
-        inod = new_nod_comm%item_import(i)
-        write(60+my_rank,*) 'irank_new_import_trim', i, inod, &
-     &       inod_lc_new_import_trim(i), irank_new_import_trim(i), item_new_import_trim(i)
-      end do
+!        write(60+my_rank,*) 'check neib', new_nod_comm%id_neib
+!        write(60+my_rank,*) 'check stack', new_nod_comm%istack_import
+!      do i = 1, new_nod_comm%ntot_import
+!        inod = new_nod_comm%item_import(i)
+!        write(60+my_rank,*) 'irank_new_import_trim', i, inod, &
+!     &       inod_lc_new_import_trim(i), irank_new_import_trim(i), item_new_import_trim(i)
+!      end do
       call calypso_mpi_barrier
 !
 !
@@ -996,16 +1057,15 @@
      &    inod_gl_new_import_trim, SR_sig1, inod_gl_new_export_back)
 !
 !
-        write(50+my_rank,*) 'check neib', new_nod_comm%id_neib
-        write(50+my_rank,*) 'check stack', new_nod_comm%istack_export
-!
+!        write(50+my_rank,*) 'check neib', new_nod_comm%id_neib
+!        write(50+my_rank,*) 'check stack', new_nod_comm%istack_export
       icou = 0
       do i = 1, new_nod_comm%ntot_export
         inod = new_nod_comm%item_export(i)
 !        write(50+my_rank,*) 'check', i, inod, &
-!     &       dbl_idx%irank(inod), irank_new_export_back(i),  &
-!     &       dbl_idx%index(inod)
-        if(dbl_idx%irank(inod) .ne. irank_new_export_back(i))     &
+!     &       inod_dbl%irank(inod), irank_new_export_back(i),  &
+!     &       inod_dbl%index(inod)
+        if(inod_dbl%irank(inod) .ne. irank_new_export_back(i))     &
      &   icou = icou + 1
       end do
       write(*,*) my_rank, 'Failed communication data: ', icou
@@ -1028,8 +1088,8 @@
         new_node%xx(inod,1) = org_node%xx(inod,1)
         new_node%xx(inod,2) = org_node%xx(inod,2)
         new_node%xx(inod,3) = org_node%xx(inod,3)
-        dbl_id2%index(inod) = dbl_idx%index(inod)
-        dbl_id2%irank(inod) = dbl_idx%irank(inod)
+        dbl_id2%index(inod) = inod_dbl%index(inod)
+        dbl_id2%irank(inod) = inod_dbl%irank(inod)
       end do
 !$omp end parallel do
 !
@@ -1215,8 +1275,8 @@
           mark_nod%nnod_marked = mark_nod%nnod_marked + 1
         end if
       end do
-      allocate(mark_nod%inod_marked(inod))
-      allocate(mark_nod%dist_marked(inod))
+      allocate(mark_nod%inod_marked(node%numnod))
+      allocate(mark_nod%dist_marked(node%numnod))
 !
       icou = 0
       do inod = 1, node%numnod
