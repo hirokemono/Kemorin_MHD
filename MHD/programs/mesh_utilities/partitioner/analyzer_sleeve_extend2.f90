@@ -369,14 +369,10 @@
 !
       integer(kind = kint), allocatable :: num_import_tmp(:)
       integer(kind = kint), allocatable :: istack_import_tmp(:)
-      integer(kind = kint), allocatable :: num_import_trim(:)
 !
-      integer(kind = kint), allocatable :: istack_import_trim(:)
-      integer(kind = kint), allocatable :: index_4_import_trim(:)
       integer(kind = kint), allocatable :: index_4_import_tmp(:)
       integer(kind = kint), allocatable :: inod_lc_import_tmp(:)
       integer(kind = kint), allocatable :: irank_import_tmp(:)
-      integer(kind = kint), allocatable :: iflag_nod_recv_pe(:)
       integer(kind = kint), allocatable :: irank_origin_new_import(:)
 !
       integer(kind = kint_gl), allocatable :: inod_gl_new_import_trim(:)
@@ -663,7 +659,6 @@
       istack_import_tmp(0:nprocs) = 0
 !
       allocate(irank_origin_new_import(ntot_new_import))
-      allocate(iflag_nod_recv_pe(ntot_new_import))
       allocate(index_4_import_tmp(ntot_new_import))
       allocate(irank_import_tmp(ntot_new_import))
       allocate(inod_lc_import_tmp(ntot_new_import))
@@ -684,13 +679,6 @@
         do inum = ist, ied
           jp = irank_nod_new_import(inum)
           irank_origin_new_import(inum) = ip
-          if(jp .eq. ip) then
-            iflag_nod_recv_pe(inum) =  1
-          else if(iflag_recv_pe(jp+1) .eq. 2) then
-            iflag_nod_recv_pe(inum) =  2
-          else
-            iflag_nod_recv_pe(inum) =  0
-          end if
         end do
       end do
 !
@@ -727,58 +715,6 @@
         end if
       end do
 !
-      allocate(num_import_trim(nprocs))
-      allocate(istack_import_trim(0:nprocs))
-      allocate(index_4_import_trim(ntot_new_import))
-      num_import_trim(1:nprocs) = 0
-      istack_import_trim(0:nprocs) = 0
-!
-      do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        icou = 0
-        if(iflag_recv_pe(ip) .eq. 1) then
-          do inum = 1, num_import_tmp(ip)
-            jnum = index_4_import_tmp(inum+ist)
-            if(iflag_nod_recv_pe(jnum) .eq. 1) icou = icou + 1
-          end do
-        else if(iflag_recv_pe(ip) .eq. 2) then
-          if(num_import_tmp(ip) .gt. 1) icou = 1
-          do inum = 2, num_import_tmp(ip)
-            if(inod_lc_import_tmp(inum)                                 &
-     &            .ne. inod_lc_import_tmp(inum-1)) icou = icou + 1
-          end do
-        end if
-        num_import_trim(ip) = icou
-        istack_import_trim(ip) = istack_import_trim(ip-1) + icou
-      end do
-!
-      do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        icou = istack_import_trim(ip-1)
-        if(iflag_recv_pe(ip) .eq. 1) then
-          do inum = 1, num_import_tmp(ip)
-            jnum = index_4_import_tmp(inum+ist)
-            if(iflag_nod_recv_pe(jnum) .eq. 1) then
-              icou = icou + 1
-              index_4_import_trim(icou) = jnum
-            end if
-          end do
-        else if(iflag_recv_pe(ip) .eq. 2) then
-          if(num_import_tmp(ip) .gt. 1) icou = 1
-          do inum = 2, num_import_tmp(ip)
-            if(inod_lc_import_tmp(inum)                                 &
-     &            .ne. inod_lc_import_tmp(inum-1)) then
-              icou = icou + 1
-              jnum = index_4_import_tmp(inum+ist)
-              index_4_import_trim(icou) = jnum
-            end if
-          end do
-        end if
-      end do
-!
-!
-!
-
       ntot = 0
       do ip = 1, nprocs
         ist = istack_import_tmp(ip-1)
@@ -825,7 +761,7 @@
           jed = istack_sorted_import_tmp(inum)
           do jnum = jst, jed
             kdx = index_4_import_tmp(jnum)
-            krank =     irank_origin_new_import(kdx)
+            krank = irank_origin_new_import(kdx)
             if(     irank_nod_new_import(kdx) .eq. krank                &
      &        .and. irank_nod_new_import(kdx) .eq. ip-1) then
               idx_home_sorted_import(inum) = kdx
@@ -899,12 +835,10 @@
       write(*,*) my_rank, 'org_neib', nod_comm%id_neib
       write(*,*) my_rank, 'new_neib', new_nod_comm%id_neib
       write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
-     &          sum(num_import_tmp), sum(num_import_trim),              &
-     &          ntot_sorted_import_tmp
+     &          sum(num_import_tmp),  ntot_sorted_import_tmp
       do ip = 1, nprocs
         write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
-     &            num_import_tmp(ip), num_import_trim(ip),              &
-     &            istack_import_trim(ip), istack_sorted_import_pe(ip)
+     &            num_import_tmp(ip), istack_sorted_import_pe(ip)
       end do
 !
       write(*,*) my_rank, 'new_nod_comm%num_neib', new_nod_comm%num_neib
