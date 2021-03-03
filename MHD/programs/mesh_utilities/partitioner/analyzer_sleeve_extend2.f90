@@ -316,6 +316,28 @@
       integer(kind = kint), allocatable :: ip_new_import(:)
       integer(kind = kint) :: iflag_process_extend = 0
 !
+      integer(kind = kint), allocatable :: istack_new_ele_export(:)
+      integer(kind = kint), allocatable :: num_new_ele_export(:)
+      integer(kind = kint) :: ntot_new_ele_export
+      integer(kind = kint), allocatable :: item_new_ele_export(:)
+      integer(kind = kint), allocatable :: iele_lc_new_export(:)
+      integer(kind = kint), allocatable :: irank_ele_new_export(:)
+      integer(kind = kint_gl), allocatable :: iele_gl_new_export(:)
+      integer(kind = kint), allocatable :: ie_new_export(:,:)
+      integer(kind = kint), allocatable :: ie_lc_new_export(:,:)
+      integer(kind = kint), allocatable :: ie_rank_new_export(:,:)
+!
+      integer(kind = kint), allocatable :: istack_new_ele_import(:)
+      integer(kind = kint), allocatable :: num_new_ele_import(:)
+      integer(kind = kint) :: ntot_new_ele_import
+      integer(kind = kint), allocatable :: item_new_ele_import(:)
+      integer(kind = kint), allocatable :: iele_lc_new_import(:)
+      integer(kind = kint), allocatable :: irank_ele_new_import(:)
+      integer(kind = kint_gl), allocatable :: iele_gl_new_import(:)
+      integer(kind = kint), allocatable :: ie_new_import(:,:)
+      integer(kind = kint), allocatable :: ie_lc_new_import(:,:)
+      integer(kind = kint), allocatable :: ie_rank_new_import(:,:)
+!
       integer(kind = kint), allocatable :: istack_new_export(:)
       integer(kind = kint), allocatable :: num_new_export(:)
       integer(kind = kint) :: ntot_new_export
@@ -335,6 +357,15 @@
       integer(kind = kint), allocatable :: inod_lc_new_import(:)
       integer(kind = kint), allocatable :: irank_nod_new_import(:)
       real(kind = kreal), allocatable :: distance_new_import(:)
+!
+      integer(kind = kint), allocatable :: nele_import_tmp(:)
+      integer(kind = kint), allocatable :: istack_ele_import_tmp(:)
+      integer(kind = kint), allocatable :: irank_org_ele_new_import(:)
+      integer(kind = kint), allocatable :: iflag_ele_recv_pe(:)
+      integer(kind = kint), allocatable :: index_ele_import_tmp(:)
+      integer(kind = kint), allocatable :: irank_ele_import_tmp(:)
+      integer(kind = kint), allocatable :: iele_lc_import_tmp(:)
+!
 !
       integer(kind = kint), allocatable :: num_import_tmp(:)
       integer(kind = kint), allocatable :: istack_import_tmp(:)
@@ -381,6 +412,8 @@
       integer(kind = kint) :: iele, k1, icou, jcou, kcou
       integer(kind = kint) :: jnum, jst, jed, irank, ntot
       integer(kind = kint) :: kdx, krank
+!
+      type(communication_table) :: new_ele_comm
 !
 !
       allocate(iflag_node(org_node%numnod))
@@ -549,9 +582,8 @@
           new_nod_comm%id_neib(icou) = ip
         end if
       end do
-!
-      write(*,*) my_rank, 'new_nod_comm%id_neib',                       &
-     &          new_nod_comm%id_neib
+!      write(*,*) my_rank, 'new_nod_comm%id_neib',                      &
+!     &          new_nod_comm%id_neib
 !
 !
       allocate(num_new_export(nod_comm%num_neib))
@@ -585,9 +617,10 @@
       allocate(distance_new_import(ntot_new_import))
       allocate(xx_new_import(3*ntot_new_import))
 !
-
+!$omp parallel private(i,ist)
       do i = 1, nod_comm%num_neib
         ist = istack_new_export(i-1)
+!$omp do private(inum,icou,inod)
         do inum = 1, mark_nod(i)%nnod_marked
           icou = ist + inum
           inod = mark_nod(i)%inod_marked(inum)
@@ -600,7 +633,9 @@
           irank_nod_new_export(icou) = inod_dbl%irank(inod)
           distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
         end do
+!$omp end do nowait
       end do
+!$omp end parallel
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    istack_new_export, istack_new_import, item_new_export,        &
@@ -621,12 +656,6 @@
       call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    istack_new_export, istack_new_import, inod_gl_new_export,     &
      &    SR_sig1, inod_gl_new_import)
-!
-!      icou = 0
-!      do i = 1, istack_new_import(nod_comm%num_neib)
-!        if(irank_nod_new_import(i) .eq. my_rank) icou = icou + 1
-!      end do
-!      write(*,*) my_rank, 'self domain', icou
 !
       allocate(num_import_tmp(nprocs))
       allocate(istack_import_tmp(0:nprocs))
@@ -924,13 +953,6 @@
         end do
       end do
 !
-!      write(80+my_rank,*) 'check neib', nod_comm%id_neib
-!      write(80+my_rank,*) 'check istack_import_trim', istack_import_trim
-!      do i = 1, ntot_new_import
-!        write(80+my_rank,*) 'item_new_import', i, &
-!     &       index_4_import_trim(i)
-!      end do
-!
 !      write(70+my_rank,*) 'check neib', nod_comm%id_neib
 !      write(70+my_rank,*) 'check istack_new_import', istack_new_import
 !      do i = 1, ntot_new_import
@@ -1046,6 +1068,125 @@
 !$omp end parallel do
 !
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
+!
+!
+!
+!
+      new_ele_comm%num_neib = new_nod_comm%num_neib
+      call alloc_comm_table_num(new_ele_comm)
+!
+!$omp parallel do private(i)
+      do i = 1, new_ele_comm%num_neib
+        new_ele_comm%id_neib(i) = new_nod_comm%id_neib(i)
+      end do
+!$omp end parallel do
+!
+      allocate(num_new_ele_export(nod_comm%num_neib))
+      allocate(istack_new_ele_export(0:nod_comm%num_neib))
+      allocate(num_new_ele_import(nod_comm%num_neib))
+      allocate(istack_new_ele_import(0:nod_comm%num_neib))
+!
+      istack_new_ele_export(0) = 0
+      do i = 1, nod_comm%num_neib
+        num_new_ele_export(i) = mark_ele(i)%nnod_marked
+        istack_new_ele_export(i) = istack_new_ele_export(i-1)           &
+     &                        + num_new_ele_export(i)
+      end do
+      ntot_new_ele_export = istack_new_ele_export(nod_comm%num_neib)
+
+      call num_items_send_recv                                          &
+     &   (nod_comm%num_neib, nod_comm%id_neib, num_new_ele_export,      &
+     &    SR_sig1, num_new_ele_import, istack_new_ele_import,           &
+     &    ntot_new_ele_import)
+!
+      allocate(item_new_ele_export(ntot_new_ele_export))
+      allocate(iele_gl_new_export(ntot_new_ele_export))
+      allocate(iele_lc_new_export(ntot_new_ele_export))
+      allocate(irank_ele_new_export(ntot_new_ele_export))
+      allocate(ie_new_export(ntot_new_ele_export,org_ele%nnod_4_ele))
+      allocate(ie_lc_new_export(ntot_new_ele_export,org_ele%nnod_4_ele))
+      allocate(ie_rank_new_export(ntot_new_ele_export,org_ele%nnod_4_ele))
+!
+      allocate(item_new_ele_import(ntot_new_ele_import))
+      allocate(iele_gl_new_import(ntot_new_ele_import))
+      allocate(iele_lc_new_import(ntot_new_ele_import))
+      allocate(irank_ele_new_import(ntot_new_ele_import))
+      allocate(ie_new_import(ntot_new_ele_import,org_ele%nnod_4_ele))
+      allocate(ie_lc_new_import(ntot_new_ele_import,org_ele%nnod_4_ele))
+      allocate(ie_rank_new_import(ntot_new_ele_import,org_ele%nnod_4_ele))
+!
+!$omp parallel private(i,ist)
+      do i = 1, nod_comm%num_neib
+        ist = istack_new_ele_export(i-1)
+!$omp do private(inum,icou,iele,k1,inod)
+        do inum = 1, mark_ele(i)%nnod_marked
+          icou = ist + inum
+          iele = mark_ele(i)%inod_marked(inum)
+          item_new_ele_export(icou) =      iele
+          iele_gl_new_export(icou) = org_ele%iele_global(iele)
+          iele_lc_new_export(icou) =   iele_dbl%index(iele)
+          irank_ele_new_export(icou) = iele_dbl%irank(iele)
+!
+          do k1 = 1, org_ele%nnod_4_ele
+            inod = org_ele%ie(iele,k1)
+            ie_new_export(icou,k1) =   inod
+            ie_lc_new_export(icou,k1) =   inod_dbl%index(inod)
+            ie_rank_new_export(icou,k1) = inod_dbl%irank(inod)
+          end do
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_ele_export, istack_new_ele_import,                 &
+     &    item_new_ele_export, SR_sig1, item_new_ele_import)
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_ele_export, istack_new_ele_import,                 &
+     &    iele_lc_new_export, SR_sig1, iele_lc_new_import)
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_ele_export, istack_new_ele_import,                 &
+     &    irank_ele_new_export, SR_sig1, irank_ele_new_import)
+!
+      call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_ele_export, istack_new_ele_import,                 &
+     &    iele_gl_new_export, SR_sig1, iele_gl_new_import)
+      do k1 = 1, org_ele%nnod_4_ele
+        call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
+     &      istack_new_ele_export, istack_new_ele_import,               &
+     &      ie_new_export(1,k1), SR_sig1, ie_new_import(1,k1))
+      end do
+      do k1 = 1, org_ele%nnod_4_ele
+        call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
+     &      istack_new_ele_export, istack_new_ele_import,               &
+     &      ie_lc_new_export(1,k1), SR_sig1, ie_lc_new_import(1,k1))
+      end do
+      do k1 = 1, org_ele%nnod_4_ele
+        call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
+     &      istack_new_ele_export, istack_new_ele_import,               &
+     &      ie_rank_new_export(1,k1), SR_sig1, ie_rank_new_import(1,k1))
+      end do
+!
+      allocate(nele_import_tmp(nprocs))
+      allocate(istack_ele_import_tmp(0:nprocs))
+      nele_import_tmp(1:nprocs) =    0
+      istack_ele_import_tmp(0:nprocs) = 0
+!
+      allocate(irank_org_ele_new_import(ntot_new_ele_import))
+      allocate(iflag_ele_recv_pe(ntot_new_ele_import))
+      allocate(index_ele_import_tmp(ntot_new_ele_import))
+      allocate(irank_ele_import_tmp(ntot_new_ele_import))
+      allocate(iele_lc_import_tmp(ntot_new_ele_import))
+!
+!$omp parallel do private(i,ip)
+      do i = 1, ntot_new_ele_import
+        index_ele_import_tmp(i) = i
+        iele_lc_import_tmp(i) =   0
+        irank_ele_import_tmp(i) = irank_ele_new_import(i)
+        irank_org_ele_new_import(i) = -1
+      end do
+!$omp end parallel do
+!
 !
       end subroutine extend_node_comm_table2
 !
