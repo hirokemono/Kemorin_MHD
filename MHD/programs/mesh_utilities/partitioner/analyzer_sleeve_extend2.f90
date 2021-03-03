@@ -252,12 +252,18 @@
 ! ----------------------------------------------------------------------
 !
       subroutine extend_node_comm_table2(nod_comm, org_node, inod_dbl,  &
-     &          org_ele, iele_dbl, neib_ele, new_comm, new_node, dist_4_comm)
+     &          org_ele, iele_dbl, neib_ele, new_nod_comm, new_node, dist_4_comm)
 !
       use t_next_node_ele_4_node
 !
+      use m_solver_SR
       use calypso_mpi_int
+      use reverse_SR_int
+      use reverse_SR_int8
+      use reverse_SR_real
       use solver_SR_type
+!
+      use quicksort
       use extend_comm_table_SR
       use mark_export_nod_ele_extend
       use cal_minmax_and_stacks
@@ -272,7 +278,7 @@
       type(node_ele_double_number), intent(in) :: iele_dbl
       type(element_around_node), intent(in) :: neib_ele
 !
-      type(communication_table), intent(inout) :: new_comm
+      type(communication_table), intent(inout) :: new_nod_comm
       type(node_data), intent(inout) :: new_node
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
 !
@@ -297,14 +303,84 @@
       integer(kind = kint), allocatable :: inod_export_new(:)
       integer(kind = kint), allocatable :: irank_export_new(:)
 !
+      integer(kind = kint), allocatable :: iflag_send_pe(:)
+      integer(kind = kint), allocatable :: iflag_recv_pe(:)
+!
+      integer(kind = kint), allocatable :: np_new_export(:)
+      integer(kind = kint), allocatable :: istack_pe_new_export(:)
+      integer(kind = kint) :: ntot_pe_new_export
+      integer(kind = kint), allocatable :: np_new_import(:)
+      integer(kind = kint), allocatable :: istack_pe_new_import(:)
+      integer(kind = kint) :: ntot_pe_new_import
+      integer(kind = kint), allocatable :: ip_new_export(:)
+      integer(kind = kint), allocatable :: ip_new_import(:)
+      integer(kind = kint) :: iflag_process_extend = 0
+!
+      integer(kind = kint), allocatable :: istack_new_export(:)
+      integer(kind = kint), allocatable :: num_new_export(:)
+      integer(kind = kint) :: ntot_new_export
+      integer(kind = kint_gl), allocatable :: inod_gl_new_export(:)
+      real(kind = kreal), allocatable :: xx_new_export(:)
+      integer(kind = kint), allocatable :: item_new_export(:)
+      integer(kind = kint), allocatable :: inod_lc_new_export(:)
+      integer(kind = kint), allocatable :: irank_nod_new_export(:)
+      real(kind = kreal), allocatable :: distance_new_export(:)
+!
+      integer(kind = kint), allocatable :: istack_new_import(:)
+      integer(kind = kint), allocatable :: num_new_import(:)
+      integer(kind = kint) :: ntot_new_import
+      integer(kind = kint_gl), allocatable :: inod_gl_new_import(:)
+      real(kind = kreal), allocatable :: xx_new_import(:)
+      integer(kind = kint), allocatable :: item_new_import(:)
+      integer(kind = kint), allocatable :: inod_lc_new_import(:)
+      integer(kind = kint), allocatable :: irank_nod_new_import(:)
+      real(kind = kreal), allocatable :: distance_new_import(:)
+!
+      integer(kind = kint), allocatable :: num_import_tmp(:)
+      integer(kind = kint), allocatable :: istack_import_tmp(:)
+      integer(kind = kint), allocatable :: num_import_trim(:)
+!
+      integer(kind = kint), allocatable :: istack_import_trim(:)
+      integer(kind = kint), allocatable :: index_4_import_trim(:)
+      integer(kind = kint), allocatable :: index_4_import_tmp(:)
+      integer(kind = kint), allocatable :: inod_lc_import_tmp(:)
+      integer(kind = kint), allocatable :: irank_import_tmp(:)
+      integer(kind = kint), allocatable :: iflag_nod_recv_pe(:)
+      integer(kind = kint), allocatable :: irank_origin_new_import(:)
+!
+      integer(kind = kint_gl), allocatable :: inod_gl_new_import_trim(:)
+      real(kind = kreal), allocatable :: xx_new_import_trim(:)
+      integer(kind = kint), allocatable :: item_new_import_trim(:)
+      integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
+      integer(kind = kint), allocatable :: irank_new_import_trim(:)
+      real(kind = kreal), allocatable :: distance_new_import_trim(:)
+!
+      integer(kind = kint_gl), allocatable :: inod_gl_new_export_back(:)
+      real(kind = kreal), allocatable :: xx_new_export_back(:)
+      integer(kind = kint), allocatable :: item_new_export_back(:)
+      integer(kind = kint), allocatable :: inod_lc_new_export_back(:)
+      integer(kind = kint), allocatable :: irank_new_export_back(:)
+      real(kind = kreal), allocatable :: distance_new_export_back(:)
+!
+      integer(kind = kint) :: ntot_sorted_import_tmp
+      integer(kind = kint), allocatable :: istack_sorted_import_tmp(:)
+      integer(kind = kint), allocatable :: istack_sorted_import_pe(:)
+!
+      integer(kind = kint), allocatable :: idx_home_sorted_import(:)
+      integer(kind = kint), allocatable :: idx_home_for_import(:)
+!
+!
+!
       type(mark_for_each_comm), allocatable :: mark_nod(:)
       type(mark_for_each_comm), allocatable :: mark_ele(:)
       type(comm_table_for_each_pe) :: each_comm
 !
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
-      integer(kind = kint) :: inum, inod, i, ip, ist
+      integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp
       integer(kind = kint) :: iele, k1, icou, jcou, kcou
+      integer(kind = kint) :: jnum, jst, jed, irank, ntot
+      integer(kind = kint) :: kdx, krank
 !
 !
       allocate(iflag_node(org_node%numnod))
@@ -351,6 +427,7 @@
       call calypso_mpi_reduce_one_int(jcou, nele_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Failed element list:',             &
      &                             ntot_failed_gl, nele_failed_gl
+      deallocate(dist_4_comm%distance_in_export)
 !
       write(*,*) my_rank, 'mark_nod%nnod_marked',                       &
      &          mark_nod(1:nod_comm%num_neib)%nnod_marked,              &
@@ -358,6 +435,615 @@
       write(*,*) my_rank, 'mark_ele%nnod_marked',                       &
      &          mark_ele(1:nod_comm%num_neib)%nnod_marked,              &
      &        ' of ', org_ele%numele
+!
+!
+!
+!
+!
+!
+      allocate(iflag_send_pe(nprocs))
+      allocate(np_new_export(nod_comm%num_neib))
+      allocate(istack_pe_new_export(0:nod_comm%num_neib))
+      allocate(np_new_import(nod_comm%num_neib))
+      allocate(istack_pe_new_import(0:nod_comm%num_neib))
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        iflag_send_pe(1:nprocs) = 0
+!$omp end parallel workshare
+!
+        np_new_export(i) = 0
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%inod_marked(inum)
+          ip = inod_dbl%irank(inod)
+          if(iflag_send_pe(ip+1) .eq. 0) then
+            np_new_export(i) = np_new_export(i) + 1
+            iflag_send_pe(ip+1) = 1
+          end if
+        end do
+      end do
+!
+      istack_pe_new_export(0) = 0
+      do i = 1, nod_comm%num_neib
+        istack_pe_new_export(i) = istack_pe_new_export(i-1)             &
+     &                           + np_new_export(i)
+      end do
+      ntot_pe_new_export = istack_pe_new_export(nod_comm%num_neib)
+!
+      call num_items_send_recv                                          &
+     &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export, SR_sig1,  &
+     &    np_new_import, istack_pe_new_import, ntot_pe_new_import)
+!
+      allocate(ip_new_export(ntot_pe_new_export))
+      allocate(ip_new_import(ntot_pe_new_import))
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        iflag_send_pe(1:nprocs) = 0
+!$omp end parallel workshare
+        icou = istack_pe_new_export(i-1)
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%inod_marked(inum)
+          ip = inod_dbl%irank(inod)
+          if(iflag_send_pe(ip+1) .eq. 0) then
+            icou = icou + 1
+            ip_new_export(icou) = ip
+            iflag_send_pe(ip+1) = 1
+          end if
+        end do
+      end do
+!
+      call comm_items_send_recv                                         &
+     &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
+     &    istack_pe_new_import, ip_new_export, SR_sig1, ip_new_import)
+!
+!      do i = 1, nod_comm%num_neib
+!        ist = istack_pe_new_export(i-1)+1
+!        ied = istack_pe_new_export(i)
+!        write(*,*) my_rank, i, nod_comm%id_neib(i), 'ip_new_export',   &
+!     &            ip_new_export(ist:ied)
+!      end do
+!
+!      do i = 1, nod_comm%num_neib
+!        ist = istack_pe_new_import(i-1)+1
+!        ied = istack_pe_new_import(i)
+!        write(*,*) my_rank, nod_comm%id_neib(i), 'ip_new_import',      &
+!     &            ip_new_import(ist:ied)
+!      end do
+!
+      allocate(iflag_recv_pe(nprocs))
+!$omp parallel workshare
+      iflag_recv_pe(1:nprocs) = 0
+!$omp end parallel workshare
+!
+!$omp parallel do private(i,ip)
+      do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i)
+        iflag_recv_pe(ip+1) = 1
+      end do
+!$omp end parallel do
+!
+      iflag_process_extend = 0
+      new_nod_comm%num_neib = nod_comm%num_neib
+      do i = 1, nod_comm%num_neib
+        ist = istack_pe_new_import(i-1)+1
+        ied = istack_pe_new_import(i)
+        do inum = ist, ied
+          ip = ip_new_import(inum)
+          if(iflag_recv_pe(ip+1) .eq. 0) then
+            iflag_recv_pe(ip+1) =  2
+            new_nod_comm%num_neib = new_nod_comm%num_neib + 1
+            iflag_process_extend = 1
+          end if
+        end do
+      end do
+      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
+     &           nod_comm%num_neib, new_nod_comm%num_neib
+!
+      call alloc_comm_table_num(new_nod_comm)
+      icou = 0
+      do i = 1, nprocs
+        ip = mod(my_rank+i,nprocs)
+        if(iflag_recv_pe(ip+1) .ge. 1) then
+          icou = icou + 1 
+          new_nod_comm%id_neib(icou) = ip
+        end if
+      end do
+!
+      write(*,*) my_rank, 'new_nod_comm%id_neib',                       &
+     &          new_nod_comm%id_neib
+!
+!
+      allocate(num_new_export(nod_comm%num_neib))
+      allocate(istack_new_export(0:nod_comm%num_neib))
+      allocate(num_new_import(nod_comm%num_neib))
+      allocate(istack_new_import(0:nod_comm%num_neib))
+!
+      istack_new_export(0) = 0
+      do i = 1, nod_comm%num_neib
+        num_new_export(i) = mark_nod(i)%nnod_marked
+        istack_new_export(i) = istack_new_export(i-1)                   &
+     &                        + num_new_export(i)
+      end do
+      ntot_new_export = istack_new_export(nod_comm%num_neib)
+
+      call num_items_send_recv                                          &
+     &   (nod_comm%num_neib, nod_comm%id_neib, num_new_export, SR_sig1, &
+     &    num_new_import, istack_new_import, ntot_new_import)
+!
+      allocate(item_new_export(ntot_new_export))
+      allocate(inod_gl_new_export(ntot_new_export))
+      allocate(inod_lc_new_export(ntot_new_export))
+      allocate(irank_nod_new_export(ntot_new_export))
+      allocate(distance_new_export(ntot_new_export))
+      allocate(xx_new_export(3*ntot_new_export))
+!
+      allocate(item_new_import(ntot_new_import))
+      allocate(inod_gl_new_import(ntot_new_import))
+      allocate(inod_lc_new_import(ntot_new_import))
+      allocate(irank_nod_new_import(ntot_new_import))
+      allocate(distance_new_import(ntot_new_import))
+      allocate(xx_new_import(3*ntot_new_import))
+!
+
+      do i = 1, nod_comm%num_neib
+        ist = istack_new_export(i-1)
+        do inum = 1, mark_nod(i)%nnod_marked
+          icou = ist + inum
+          inod = mark_nod(i)%inod_marked(inum)
+          item_new_export(icou) =      inod
+          inod_gl_new_export(icou) = org_node%inod_global(inod)
+          xx_new_export(3*icou-2) =  org_node%xx(inod,1)
+          xx_new_export(3*icou-1) =  org_node%xx(inod,2)
+          xx_new_export(3*icou  ) =  org_node%xx(inod,3)
+          inod_lc_new_export(icou) =   inod_dbl%index(inod)
+          irank_nod_new_export(icou) = inod_dbl%irank(inod)
+          distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
+        end do
+      end do
+!
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_export, istack_new_import, item_new_export,        &
+     &    SR_sig1, item_new_import)
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_export, istack_new_import, inod_lc_new_export,     &
+     &    SR_sig1, inod_lc_new_import)
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_export, istack_new_import, irank_nod_new_export,   &
+     &    SR_sig1, irank_nod_new_import)
+      call real_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_export, istack_new_import, distance_new_export,    &
+     &    SR_sig1, distance_new_import)
+!
+      call real_items_send_recv_3(nod_comm%num_neib, nod_comm%id_neib,  &
+     &    istack_new_export, istack_new_import, xx_new_export,          &
+     &    SR_sig1, xx_new_import)
+      call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    istack_new_export, istack_new_import, inod_gl_new_export,     &
+     &    SR_sig1, inod_gl_new_import)
+!
+!      icou = 0
+!      do i = 1, istack_new_import(nod_comm%num_neib)
+!        if(irank_nod_new_import(i) .eq. my_rank) icou = icou + 1
+!      end do
+!      write(*,*) my_rank, 'self domain', icou
+!
+      allocate(num_import_tmp(nprocs))
+      allocate(istack_import_tmp(0:nprocs))
+      num_import_tmp(1:nprocs) =    0
+      istack_import_tmp(0:nprocs) = 0
+!
+      allocate(irank_origin_new_import(ntot_new_import))
+      allocate(iflag_nod_recv_pe(ntot_new_import))
+      allocate(index_4_import_tmp(ntot_new_import))
+      allocate(irank_import_tmp(ntot_new_import))
+      allocate(inod_lc_import_tmp(ntot_new_import))
+!
+!$omp parallel do private(i,ip)
+      do i = 1, ntot_new_import
+        index_4_import_tmp(i) = i
+        inod_lc_import_tmp(i) = 0
+        irank_import_tmp(i) = irank_nod_new_import(i)
+        irank_origin_new_import(i) = -1
+      end do
+!$omp end parallel do
+!
+      do i = 1, nod_comm%num_neib
+        ip = nod_comm%id_neib(i)
+        ist = istack_new_import(i-1) + 1
+        ied = istack_new_import(i)
+        do inum = ist, ied
+          jp = irank_nod_new_import(inum)
+          irank_origin_new_import(inum) = ip
+          if(jp .eq. ip) then
+            iflag_nod_recv_pe(inum) =  1
+          else if(iflag_recv_pe(jp+1) .eq. 2) then
+            iflag_nod_recv_pe(inum) =  2
+          else
+            iflag_nod_recv_pe(inum) =  0
+          end if
+        end do
+      end do
+!
+      if(ntot_new_import .gt. 1) then
+        call quicksort_w_index(ntot_new_import, irank_import_tmp,       &
+     &      ione, ntot_new_import, index_4_import_tmp)
+      end if
+!
+!$omp parallel do private(i,icou)
+      do i = 1, ntot_new_import
+        icou = index_4_import_tmp(i)
+        inod_lc_import_tmp(i) = inod_lc_new_import(icou)
+      end do
+!$omp end parallel do
+!
+!$omp parallel workshare
+      num_import_tmp(1:nprocs) = 0
+!$omp end parallel workshare
+      do i = 1, ntot_new_import
+        irank = irank_import_tmp(i)
+        num_import_tmp(irank+1) = num_import_tmp(irank+1) + 1
+      end do
+      do ip = 1, nprocs
+        istack_import_tmp(ip) = istack_import_tmp(ip-1)                 &
+     &                         + num_import_tmp(ip)
+      end do
+!
+      do ip = 1, nprocs
+        ist = istack_import_tmp(ip-1)
+        if(num_import_tmp(ip) .gt. 1) then
+          call quicksort_w_index                                        &
+     &       (ntot_new_import, inod_lc_import_tmp(ist+1),               &
+     &        ione, num_import_tmp(ip), index_4_import_tmp(ist+1))
+        end if
+      end do
+!
+      allocate(num_import_trim(nprocs))
+      allocate(istack_import_trim(0:nprocs))
+      allocate(index_4_import_trim(ntot_new_import))
+      num_import_trim(1:nprocs) = 0
+      istack_import_trim(0:nprocs) = 0
+!
+      do ip = 1, nprocs
+        ist = istack_import_tmp(ip-1)
+        icou = 0
+        if(iflag_recv_pe(ip) .eq. 1) then
+          do inum = 1, num_import_tmp(ip)
+            jnum = index_4_import_tmp(inum+ist)
+            if(iflag_nod_recv_pe(jnum) .eq. 1) icou = icou + 1
+          end do
+        else if(iflag_recv_pe(ip) .eq. 2) then
+          if(num_import_tmp(ip) .gt. 1) icou = 1
+          do inum = 2, num_import_tmp(ip)
+            if(inod_lc_import_tmp(inum)                                 &
+     &            .ne. inod_lc_import_tmp(inum-1)) icou = icou + 1
+          end do
+        end if
+        num_import_trim(ip) = icou
+        istack_import_trim(ip) = istack_import_trim(ip-1) + icou
+      end do
+!
+      do ip = 1, nprocs
+        ist = istack_import_tmp(ip-1)
+        icou = istack_import_trim(ip-1)
+        if(iflag_recv_pe(ip) .eq. 1) then
+          do inum = 1, num_import_tmp(ip)
+            jnum = index_4_import_tmp(inum+ist)
+            if(iflag_nod_recv_pe(jnum) .eq. 1) then
+              icou = icou + 1
+              index_4_import_trim(icou) = jnum
+            end if
+          end do
+        else if(iflag_recv_pe(ip) .eq. 2) then
+          if(num_import_tmp(ip) .gt. 1) icou = 1
+          do inum = 2, num_import_tmp(ip)
+            if(inod_lc_import_tmp(inum)                                 &
+     &            .ne. inod_lc_import_tmp(inum-1)) then
+              icou = icou + 1
+              jnum = index_4_import_tmp(inum+ist)
+              index_4_import_trim(icou) = jnum
+            end if
+          end do
+        end if
+      end do
+!
+!
+!
+
+      ntot = 0
+      do ip = 1, nprocs
+        ist = istack_import_tmp(ip-1)
+        do inum = 1, num_import_tmp(ip) - 1
+          if(inod_lc_import_tmp(ist+inum)                               &
+     &        .ne. inod_lc_import_tmp(ist+inum+1)) ntot = ntot + 1
+        end do
+        if(num_import_tmp(ip) .gt. 0) ntot = ntot + 1
+      end do
+      ntot_sorted_import_tmp = ntot
+!
+      allocate(istack_sorted_import_pe(0:nprocs))
+      allocate(istack_sorted_import_tmp(0:ntot_sorted_import_tmp))
+      istack_sorted_import_pe(0) = 0
+      istack_sorted_import_tmp(0) = 0
+!
+      icou = 0
+      do ip = 1, nprocs
+        ist = istack_import_tmp(ip-1)
+        do inum = 1, num_import_tmp(ip)-1
+          if(inod_lc_import_tmp(ist+inum)                               &
+     &        .ne. inod_lc_import_tmp(ist+inum+1)) then
+            icou = icou + 1
+            istack_sorted_import_tmp(icou) = ist + inum
+          end if
+        end do
+        if(num_import_tmp(ip) .gt. 0) then
+          icou = icou + 1
+          istack_sorted_import_tmp(icou) = ist + num_import_tmp(ip)
+        end if
+        istack_sorted_import_pe(ip) =    icou
+      end do
+!
+      allocate(idx_home_sorted_import(istack_sorted_import_pe(nprocs)))
+      idx_home_sorted_import(1:istack_sorted_import_pe(nprocs)) = -1
+      allocate(idx_home_for_import(ntot_new_import))
+      idx_home_for_import(1:ntot_new_import) = -1
+!
+      do ip = 1, nprocs
+        ist = istack_sorted_import_pe(ip-1) + 1
+        ied = istack_sorted_import_pe(ip)
+        do inum = ist, ied
+          jst = istack_sorted_import_tmp(inum-1) + 1
+          jed = istack_sorted_import_tmp(inum)
+          do jnum = jst, jed
+            kdx = index_4_import_tmp(jnum)
+            krank =     irank_origin_new_import(kdx)
+            if(     irank_nod_new_import(kdx) .eq. krank                &
+     &        .and. irank_nod_new_import(kdx) .eq. ip-1) then
+              idx_home_sorted_import(inum) = kdx
+              exit
+            end if
+          end do
+        end do
+      end do
+!
+      icou = 0
+      do ip = 1, nprocs
+        ist = istack_sorted_import_pe(ip-1) + 1
+        ied = istack_sorted_import_pe(ip)
+        do inum = ist, ied
+          if(idx_home_sorted_import(inum) .gt. 0) cycle
+!
+          icou = icou + 1
+          jst = istack_sorted_import_tmp(inum-1) + 1
+          jed = istack_sorted_import_tmp(inum)
+          do jnum = jst, jed
+            kdx =   index_4_import_tmp(jnum)
+            if(irank_nod_new_import(kdx) .eq. ip-1) then
+              idx_home_sorted_import(inum) = kdx
+              exit
+            end if
+          end do
+        end do
+      end do
+      write(*,*) my_rank, 'Misisng in import list: ', icou
+!
+      icou = 0
+      do ip = 1, nprocs
+        ist = istack_sorted_import_pe(ip-1) + 1
+        ied = istack_sorted_import_pe(ip)
+        do inum = ist, ied
+          if(idx_home_sorted_import(inum) .gt. 0) cycle
+!
+          jst = istack_sorted_import_tmp(inum-1) + 1
+          jed = istack_sorted_import_tmp(inum)
+          kdx = index_4_import_tmp(jst)
+          idx_home_sorted_import(inum) = kdx
+          icou = icou + 1
+        end do
+      end do
+      write(*,*) my_rank, 'Required import from new domain : ', icou
+!
+      do ip = 1, nprocs
+        ist = istack_sorted_import_pe(ip-1) + 1
+        ied = istack_sorted_import_pe(ip)
+        do inum = ist, ied
+          jst = istack_sorted_import_tmp(inum-1) + 1
+          jed = istack_sorted_import_tmp(inum)
+          kdx = idx_home_sorted_import(inum)
+!
+          idx_home_for_import(jst:jed) = kdx
+        end do
+      end do
+!
+      write(70+my_rank,*) 'check neib', nod_comm%id_neib
+      write(70+my_rank,*) 'check istack_sorted_import_pe', istack_sorted_import_pe
+      do inum = 1, istack_sorted_import_pe(nprocs)
+        inod = idx_home_sorted_import(inum)
+          jst = istack_sorted_import_tmp(inum-1) + 1
+          jed = istack_sorted_import_tmp(inum)
+        write(70+my_rank,*) 'item_new_import', inum, inod, &
+     &       inod_lc_new_import(inod), irank_nod_new_import(inod), &
+     &       inod_lc_new_import(inod_lc_import_tmp(jst:jed)), &
+     &       irank_nod_new_import(inod_lc_import_tmp(jst:jed))
+      end do
+!
+      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
+      write(*,*) my_rank, 'new_neib', new_nod_comm%id_neib
+      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
+     &          sum(num_import_tmp), sum(num_import_trim),              &
+     &          ntot_sorted_import_tmp
+      do ip = 1, nprocs
+        write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
+     &            num_import_tmp(ip), num_import_trim(ip),              &
+     &            istack_import_trim(ip), istack_sorted_import_pe(ip)
+      end do
+!
+      write(*,*) my_rank, 'new_nod_comm%num_neib', new_nod_comm%num_neib
+      call alloc_import_num(new_nod_comm)
+!
+      new_nod_comm%istack_import(0) = 0
+      do i = 1, new_nod_comm%num_neib
+        irank = new_nod_comm%id_neib(i)
+        new_nod_comm%num_import(i) = istack_sorted_import_pe(irank+1)   &
+     &                              - istack_sorted_import_pe(irank)
+        new_nod_comm%istack_import(i) = new_nod_comm%istack_import(i-1) &
+     &                                 + new_nod_comm%num_import(i)
+      end do
+      new_nod_comm%ntot_import                                          &
+     &       = new_nod_comm%istack_import(new_nod_comm%num_neib)
+      write(*,*) my_rank, 'new_nod_comm%ntot_import', new_nod_comm%ntot_import
+      call alloc_import_item(new_nod_comm)
+!
+      allocate(inod_gl_new_import_trim(new_nod_comm%ntot_import))
+      allocate(xx_new_import_trim(3*new_nod_comm%ntot_import))
+      allocate(item_new_import_trim(new_nod_comm%ntot_import))
+      allocate(inod_lc_new_import_trim(new_nod_comm%ntot_import))
+      allocate(irank_new_import_trim(new_nod_comm%ntot_import))
+      allocate(distance_new_import_trim(new_nod_comm%ntot_import))
+!
+!
+      do i = 1, new_nod_comm%num_neib
+        irank = new_nod_comm%id_neib(i)
+        ist = istack_sorted_import_pe(irank)
+        jst = new_nod_comm%istack_import(i-1)
+        do inum = 1, new_nod_comm%num_import(i)
+          jcou = inum + jst
+          new_nod_comm%item_import(jcou)                                &
+     &         = jcou + org_node%internal_node
+!
+          jnum = idx_home_sorted_import(inum+ist)
+          item_new_import_trim(jcou) =    item_new_import(jnum)
+          inod_lc_new_import_trim(jcou) = inod_lc_new_import(jnum)
+          irank_new_import_trim(jcou) =   irank_nod_new_import(jnum)
+          distance_new_import_trim(jcou) = distance_new_import(jnum)
+!
+          xx_new_import_trim(3*jcou-2) = xx_new_import(3*jnum-2)
+          xx_new_import_trim(3*jcou-1) = xx_new_import(3*jnum-1)
+          xx_new_import_trim(3*jcou  ) = xx_new_import(3*jnum  )
+          inod_gl_new_import_trim(jcou) = inod_gl_new_import(jnum)
+        end do
+      end do
+!
+!      write(80+my_rank,*) 'check neib', nod_comm%id_neib
+!      write(80+my_rank,*) 'check istack_import_trim', istack_import_trim
+!      do i = 1, ntot_new_import
+!        write(80+my_rank,*) 'item_new_import', i, &
+!     &       index_4_import_trim(i)
+!      end do
+!
+!      write(70+my_rank,*) 'check neib', nod_comm%id_neib
+!      write(70+my_rank,*) 'check istack_new_import', istack_new_import
+!      do i = 1, ntot_new_import
+!        inod = item_new_import(i)
+!        write(70+my_rank,*) 'item_new_import', i, inod, &
+!     &       inod_lc_new_import(i), irank_nod_new_import(i)
+!      end do
+!
+!        write(60+my_rank,*) 'check neib', new_nod_comm%id_neib
+!        write(60+my_rank,*) 'check stack', new_nod_comm%istack_import
+!      do i = 1, new_nod_comm%ntot_import
+!        inod = new_nod_comm%item_import(i)
+!        write(60+my_rank,*) 'irank_new_import_trim', i, inod, &
+!     &       inod_lc_new_import_trim(i), irank_new_import_trim(i), item_new_import_trim(i)
+!      end do
+      call calypso_mpi_barrier
+!
+!
+      call alloc_export_num(new_nod_comm)
+      call num_items_send_recv                                          &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
+     &    new_nod_comm%num_import, SR_sig1, new_nod_comm%num_export,    &
+     &    new_nod_comm%istack_export, new_nod_comm%ntot_export)
+      call alloc_export_item(new_nod_comm)
+!
+!
+      call calypso_mpi_barrier
+!
+      allocate(inod_gl_new_export_back(new_nod_comm%ntot_export))
+      allocate(xx_new_export_back(3*new_nod_comm%ntot_export))
+      allocate(item_new_export_back(new_nod_comm%ntot_export))
+      allocate(inod_lc_new_export_back(new_nod_comm%ntot_export))
+      allocate(irank_new_export_back(new_nod_comm%ntot_export))
+!
+      dist_4_comm%ntot = new_nod_comm%ntot_export
+      allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
+!
+      call comm_items_send_recv                                         &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
+     &    new_nod_comm%istack_import, new_nod_comm%istack_export,       &
+     &    inod_lc_new_import_trim, SR_sig1, new_nod_comm%item_export)
+!      call comm_items_send_recv                                        &
+!     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                 &
+!     &    new_nod_comm%istack_import, new_nod_comm%istack_export,      &
+!     &    inod_lc_new_import_trim, SR_sig1, inod_lc_new_export_back)
+      call comm_items_send_recv                                         &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
+     &    new_nod_comm%istack_import, new_nod_comm%istack_export,       &
+     &    irank_new_import_trim, SR_sig1, irank_new_export_back)
+      call real_items_send_recv                                         &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
+     &    new_nod_comm%istack_import, new_nod_comm%istack_export,       &
+     &    distance_new_import_trim, SR_sig1,                            &
+     &    dist_4_comm%distance_in_export)
+!
+      call real_items_send_recv_3                                       &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
+     &    new_nod_comm%istack_import, new_nod_comm%istack_export,       &
+     &    xx_new_import_trim, SR_sig1, xx_new_export_back)
+      call int8_items_send_recv                                         &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,                  &
+     &    new_nod_comm%istack_import, new_nod_comm%istack_export,       &
+     &    inod_gl_new_import_trim, SR_sig1, inod_gl_new_export_back)
+!
+!
+!        write(50+my_rank,*) 'check neib', new_nod_comm%id_neib
+!        write(50+my_rank,*) 'check stack', new_nod_comm%istack_export
+      icou = 0
+      do i = 1, new_nod_comm%ntot_export
+        inod = new_nod_comm%item_export(i)
+!        write(50+my_rank,*) 'check', i, inod, &
+!     &       inod_dbl%irank(inod), irank_new_export_back(i),  &
+!     &       inod_dbl%index(inod)
+        if(inod_dbl%irank(inod) .ne. irank_new_export_back(i))     &
+     &   icou = icou + 1
+      end do
+      write(*,*) my_rank, 'Failed communication data: ', icou
+      write(*,*) my_rank, 'Extend again flag: ', iflag_process_extend
+!
+      deallocate(mark_nod)
+      deallocate(iflag_node)
+!
+!
+      new_node%numnod = org_node%internal_node                          &
+     &                 + new_nod_comm%ntot_import
+      new_node%internal_node = org_node%internal_node
+!
+      call alloc_node_geometry_base(new_node)
+      call alloc_double_numbering(new_node%numnod, dbl_id2)
+!
+!$omp parallel do
+      do inod = 1, org_node%internal_node
+        new_node%inod_global(inod) = org_node%inod_global(inod)
+        new_node%xx(inod,1) = org_node%xx(inod,1)
+        new_node%xx(inod,2) = org_node%xx(inod,2)
+        new_node%xx(inod,3) = org_node%xx(inod,3)
+        dbl_id2%index(inod) = inod_dbl%index(inod)
+        dbl_id2%irank(inod) = inod_dbl%irank(inod)
+      end do
+!$omp end parallel do
+!
+      ist = org_node%internal_node
+!$omp parallel do private(inum,icou)
+      do inum = 1, new_nod_comm%ntot_import
+        icou = inum + ist
+        new_node%inod_global(icou) = inod_gl_new_import_trim(inum)
+        new_node%xx(icou,1) = xx_new_import_trim(3*inum-2)
+        new_node%xx(icou,2) = xx_new_import_trim(3*inum-1)
+        new_node%xx(icou,3) = xx_new_import_trim(3*inum  )
+        dbl_id2%index(icou) = inod_lc_new_import_trim(inum)
+        dbl_id2%irank(icou) = irank_new_import_trim(inum)
+      end do
+!$omp end parallel do
 !
 !      call alloc_added_comm_table_num(nod_comm, added_comm)
 !      do i = 1, nod_comm%num_neib
@@ -528,7 +1214,7 @@
 !
 !      deallocate(inod_export_new, irank_export_new)
 !
-!      call check_new_node_and_comm(new_comm, new_node, dbl_id2)
+      call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !
       end subroutine extend_node_comm_table2
 !
