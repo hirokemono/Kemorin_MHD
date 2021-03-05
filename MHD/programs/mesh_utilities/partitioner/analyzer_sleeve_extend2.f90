@@ -624,9 +624,34 @@
       allocate(num_new_import(nod_comm%num_neib))
       allocate(istack_new_import(0:nod_comm%num_neib))
 !
+      allocate(inod_in_comm(org_node%numnod))
+!$omp parallel workshare
+      inod_in_comm(1:org_node%numnod) = 0
+!$omp end parallel workshare
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        inod_in_comm(1:org_node%numnod) = 0
+!$omp end parallel workshare
+        ist = nod_comm%istack_export(i-1)
+        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+        do inum = 1, num
+          inod = nod_comm%item_export(inum+ist)
+          inod_in_comm(inod) = inod
+        end do
+        icou = 0
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%inod_marked(inum)
+          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
+        end do
+!
+!        write(*,*) my_rank, nod_comm%id_neib(i),                       &
+!     &           'marked import node', icou, num
+        num_new_export(i) = mark_nod(i)%nnod_marked - icou
+      end do
+
       istack_new_export(0) = 0
       do i = 1, nod_comm%num_neib
-        num_new_export(i) = mark_nod(i)%nnod_marked
         istack_new_export(i) = istack_new_export(i-1)                   &
      &                        + num_new_export(i)
       end do
@@ -685,13 +710,7 @@
       allocate(ie_lc_new_import(ntot_new_ele_import,org_ele%nnod_4_ele))
       allocate(ie_rank_new_import(ntot_new_ele_import,org_ele%nnod_4_ele))
 !
-      allocate(inod_in_comm(org_node%numnod))
-!$omp parallel workshare
-      inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-!
       do i = 1, nod_comm%num_neib
-!
 !$omp parallel workshare
         inod_in_comm(1:org_node%numnod) = 0
 !$omp end parallel workshare
@@ -699,63 +718,17 @@
         num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
         do inum = 1, num
           inod = nod_comm%item_export(inum+ist)
-          inod_in_comm(inod) = inod
+          inod_in_comm(inod) = -inum
         end do
-        icou = 0
+!
+        icou = istack_new_export(i-1)
         do inum = 1, mark_nod(i)%nnod_marked
           inod = mark_nod(i)%inod_marked(inum)
-          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
-        end do
-        write(*,*) my_rank, nod_comm%id_neib(i),     &
-     &           'marked import node', icou, num
-      end do
-!
-      do i = 1, nod_comm%num_neib
-!
-!$omp parallel workshare
-        inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-        ist = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        do inum = 1, num
-          inod = nod_comm%item_export(inum+ist)
-          inod_in_comm(inod) = inod
-        end do
-        icou = 0
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
-        end do
-        write(*,*) my_rank, nod_comm%id_neib(i),     &
-     &           'marked import node', icou, num
-!
-!$omp parallel workshare
-        inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          inod_in_comm(inod) = inum
-        end do
-        ist = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        icou = 0
-        do inum = 1, num
-          inod = nod_comm%item_export(inum+ist)
-          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
-        end do
-        write(*,*) my_rank, nod_comm%id_neib(i),     &
-     &           'marked import node ahain', icou, num
-!
-!$omp parallel workshare
-        inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-!
-        ist = istack_new_export(i-1)
-!$omp parallel do private(inum,icou,inod)
-        do inum = 1, mark_nod(i)%nnod_marked
-          icou = ist + inum
-          inod = mark_nod(i)%inod_marked(inum)
-          item_new_export(icou) =      inod
+          if(inod_in_comm(inod) .lt. 0) cycle
+
+          icou = icou + 1
+          inod_in_comm(inod) =       icou
+          item_new_export(icou) =    inod
           inod_gl_new_export(icou) = org_node%inod_global(inod)
           xx_new_export(3*icou-2) =  org_node%xx(inod,1)
           xx_new_export(3*icou-1) =  org_node%xx(inod,2)
@@ -763,19 +736,7 @@
           inod_lc_new_export(icou) =   inod_dbl%index(inod)
           irank_nod_new_export(icou) = inod_dbl%irank(inod)
           distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
-!
-          inod_in_comm(inod) = inum
         end do
-!$omp end parallel do
-!
-        ist = nod_comm%istack_import(i-1)
-        num = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-!$omp parallel do private(inum,inod)
-        do inum = 1, num
-          inod = nod_comm%item_import(inum+ist)
-          inod_in_comm(inod) = -inum
-        end do
-!$omp end parallel do
 !
         ist = istack_new_ele_export(i-1)
 !$omp parallel do private(inum,icou,iele,k1,inod)
@@ -792,15 +753,13 @@
             ie_new_export(icou,k1) =      inod_in_comm(inod)
             ie_lc_new_export(icou,k1) =   inod_dbl%index(inod)
             ie_rank_new_export(icou,k1) = inod_dbl%irank(inod)
-            if(inod_in_comm(inod) .eq. 0) write(*,*) my_rank,   &
-     &        'Failed 759 inod_in_comm(inod)', inod,   &
-     &          inod_dbl%irank(inod), nod_comm%id_neib(i)
+!            if(inod_in_comm(inod) .eq. 0) write(*,*) my_rank,   &
+!     &        'Failed 759 inod_in_comm(inod)', inod,   &
+!     &          inod_dbl%irank(inod), nod_comm%id_neib(i)
           end do
         end do
 !$omp end parallel do
       end do
-!
-      return
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    istack_new_export, istack_new_import, item_new_export,        &
@@ -1054,7 +1013,6 @@
         write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
      &            num_import_tmp(ip), istack_sorted_import_pe(ip)
       end do
-      return
 !
       write(*,*) my_rank, 'new_nod_comm%num_neib', new_nod_comm%num_neib
       call alloc_import_num(new_nod_comm)
@@ -1088,7 +1046,7 @@
         do inum = 1, new_nod_comm%num_import(i)
           jcou = inum + jst
           new_nod_comm%item_import(jcou)                                &
-     &         = jcou + org_node%internal_node
+     &         = jcou + org_node%numnod
 !
           jnum = idx_home_sorted_import(inum+ist)
           item_import_to_new_import(jnum) = jcou
@@ -1205,7 +1163,7 @@
       deallocate(iflag_node)
 !
 !
-      new_node%numnod = org_node%internal_node                          &
+      new_node%numnod = org_node%numnod                                 &
      &                 + new_nod_comm%ntot_import
       new_node%internal_node = org_node%internal_node
 !
@@ -1213,7 +1171,7 @@
       call alloc_double_numbering(new_node%numnod, dbl_id2)
 !
 !$omp parallel do
-      do inod = 1, org_node%internal_node
+      do inod = 1, org_node%numnod
         new_node%inod_global(inod) = org_node%inod_global(inod)
         new_node%xx(inod,1) = org_node%xx(inod,1)
         new_node%xx(inod,2) = org_node%xx(inod,2)
@@ -1223,7 +1181,7 @@
       end do
 !$omp end parallel do
 !
-      ist = org_node%internal_node
+      ist = org_node%numnod
 !$omp parallel do private(inum,icou)
       do inum = 1, new_nod_comm%ntot_import
         icou = inum + ist
@@ -1238,6 +1196,10 @@
 !
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !
+      call calypso_mpi_reduce_one_int(nod_comm%ntot_import, ntot_failed_gl, MPI_SUM, 0)
+!
+      if(my_rank .eq. 0) write(*,*) ' tako', ntot_failed_gl
+      return
 !
 !
 !
@@ -2051,7 +2013,6 @@
         icou = icou + kcou
       end do
       write(*,*) my_rank, 'Failed conectivity:', icou, lcou, jcou
-      return
 !
       do k1 = 1, new_ele%nnod_4_ele
         do iele = 1, new_ele%numele
