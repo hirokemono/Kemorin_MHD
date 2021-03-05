@@ -210,6 +210,8 @@
      &    dist_4_comm)
       return
 !
+      write(*,*) my_rank, ' new_elements: ', newmesh%ele%numele - mesh%ele%numele
+!
       call check_extended_element                                       &
      &   (newmesh%nod_comm, newmesh%node, newmesh%ele, new_ele_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
@@ -448,6 +450,7 @@
       integer(kind = kint) :: iele, k1, icou, jcou, kcou
       integer(kind = kint) :: jnum, jst, jed, irank, ntot, jnod
       integer(kind = kint) :: kdx, krank, kst, idx, jele, jneib
+      integer(kind = kint) :: ist_org, ist_exp, ist_ele
 !
       type(communication_table) :: add_nod_comm
       type(communication_table) :: add_ele_comm
@@ -813,13 +816,6 @@
      &      ie_rank_new_export(1,k1), SR_sig1, ie_rank_new_import(1,k1))
       end do
 !
-      do k1 = 1, org_ele%nnod_4_ele
-        do i = 1, istack_new_ele_import(nod_comm%num_neib)
-          if(ie_new_import(i,k1) .eq. 0) write(*,*) my_rank,            &
-     &        'Failed 810 ie_new_import', i, k1
-        end do
-      end do
-!
 !
       allocate(num_import_tmp(nprocs))
       allocate(istack_import_tmp(0:nprocs))
@@ -1047,8 +1043,7 @@
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
-          add_nod_comm%item_import(jcou)                                &
-     &         = jcou + org_node%numnod
+          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
 !
           jnum = idx_home_sorted_import(inum+ist)
           item_import_to_new_import(jnum) = jcou
@@ -1080,6 +1075,32 @@
           end do
         end do
       end do
+!
+!!$omp parallel private(k1,i,ist_org,ist_exp,ist_ele)
+      do k1 = 1, org_ele%nnod_4_ele
+        do i = 1, nod_comm%num_neib
+          irank = nod_comm%id_neib(i)
+          ist_ele = istack_new_ele_import(i-1)
+          num =     istack_new_ele_import(i) - ist_ele
+          ist_org = nod_comm%istack_import(i-1)
+          ist_exp = istack_new_import(i-1)
+!!$omp do private(inum,jnum)
+          do inum = 1, num
+            jnum = ie_new_import(inum+ist_ele,k1)
+            if(jnum .lt. 0) then
+              ie_new_import(inum+ist_ele,k1)                            &
+     &           = nod_comm%item_import(-jnum+ist_org)
+            else if(jnum .gt. 0) then
+              idx = idx_home_for_import(jnum+ist_exp)
+              ie_new_import(inum+ist_ele,k1) = idx + org_node%numnod
+            else
+              write(*,*) my_rank, 'Failed 1235 ie_new_import_trim', inum, k1
+            end if
+          end do
+!!$omp end do nowait
+        end do
+      end do
+!!$omp end parallel
 !
 !
 !      write(70+my_rank,*) 'check neib', nod_comm%id_neib
@@ -1196,14 +1217,96 @@
       end do
 !$omp end parallel do
 !
+!
+      icou = 0
+      do inod = org_node%numnod+1, org_node%numnod
+        jcou = inod - org_node%numnod
+        if(dbl_id2%irank(inod) .ne. irank_new_import_trim(jcou)  &
+     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(jcou)) &
+     &    icou = icou + 1
+!        write(*,*) my_rank, 'idx_home_for_import', i, &
+!     &    dbl_id2%irank(jcou+org_node%numnod), irank_new_import_trim(jcou), &
+!     &    dbl_id2%index(jcou+org_node%numnod), inod_lc_new_import_trim(jcou)
+      end do
+      write(*,*) my_rank, 'Num. of failed ',                            &
+      'with inod_lc_new_import_trim:', icou 
+!
+      icou = 0
+      do i = 1, add_nod_comm%num_neib
+        jst = add_nod_comm%istack_import(i-1)
+        do inum = 1, add_nod_comm%num_import(i)
+          inod = inum + org_node%numnod
+          if(dbl_id2%irank(inod) .ne. irank_new_import_trim(inum)  &
+     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(inum)) &
+     &      icou = icou + 1
+!          write(*,*) my_rank, 'idx_home_for_import', i, &
+!     &      dbl_id2%irank(inum+org_node%numnod), irank_new_import_trim(inum), &
+!     &      dbl_id2%index(inum+org_node%numnod), inod_lc_new_import_trim(inum)
+        end do
+      end do
+      write(*,*) my_rank, 'Num. of ffailed ',                           &
+      'with inod_lc_new_import_trim:', icou 
+!
+      icou = 0
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_sorted_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1)
+        do inum = 1, add_nod_comm%num_import(i)
+          jcou = inum + jst
+          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
+!
+          jnum = idx_home_sorted_import(inum+ist)
+          item_import_to_new_import(jnum) = jcou
+          inod = jcou + org_node%numnod
+          if(dbl_id2%irank(inod) .ne. irank_nod_new_import(jnum)    &
+     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import(jnum)) &
+     &      icou = icou + 1
+        end do
+      end do
+      write(*,*) my_rank, 'Num. of fffailed ',                          &
+      'with inod_lc_new_import_trim:', icou 
+!
+      return
+!
+      icou = 0
+      do i = 1, add_nod_comm%num_neib
+        jst = add_nod_comm%istack_import(i-1)
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_sorted_import_pe(irank)
+        do inum = 1, add_nod_comm%num_import(i)
+          inod = inum + org_node%numnod
+          jnum = idx_home_sorted_import(inum+ist)
+          if(dbl_id2%irank(inod) .ne. irank_nod_new_import(jnum)  &
+     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import(jnum)) &
+     &      icou = icou + 1
+!          write(*,*) my_rank, 'idx_home_for_import', i, &
+!     &      dbl_id2%irank(inum+org_node%numnod), irank_new_import_trim(inum), &
+!     &      dbl_id2%index(inum+org_node%numnod), inod_lc_new_import(inum)
+        end do
+      end do
+      write(*,*) my_rank, 'Num. of fffailed ',                           &
+      'with inod_lc_new_import_trim:', icou 
+!
+      return
+!
+      icou = 0
+      do i = 1, ntot_new_import
+        jcou = idx_home_for_import(jnod)
+        if(dbl_id2%irank(jcou+org_node%numnod) .ne. irank_new_import_trim(jcou)  &
+     &   .or. dbl_id2%index(jcou+org_node%numnod) .ne. inod_lc_new_import_trim(jcou)) icou = icou + 1
+!        write(*,*) my_rank, 'idx_home_for_import', i, &
+!     &    dbl_id2%irank(jcou+org_node%numnod), irank_new_import_trim(jcou), &
+!     &    dbl_id2%index(jcou+org_node%numnod), inod_lc_new_import_trim(jcou)
+      end do
+!
+!
       call s_append_communication_table                                 &
      &   (nod_comm, add_nod_comm, new_nod_comm)
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !
-!      call calypso_mpi_reduce_one_int(nod_comm%ntot_import, ntot_failed_gl, MPI_SUM, 0)
+      call calypso_mpi_reduce_one_int(nod_comm%ntot_import, ntot_failed_gl, MPI_SUM, 0)
 !
-      if(my_rank .eq. 0) write(*,*) ' tako', ntot_failed_gl
-      return
 !
 !
 !
@@ -1216,35 +1319,9 @@
       end do
 !$omp end parallel do
 !
-!$omp parallel private(k1,i,kst,jst,ist,num)
-      do k1 = 1, org_ele%nnod_4_ele
-        do i = 1, nod_comm%num_neib
-          kst = nod_comm%istack_export(i-1)
-          jst = istack_new_import(i-1)
-          ist = istack_new_ele_import(i-1)
-          num = istack_new_ele_import(i) - istack_new_ele_import(i-1)
-!$omp do private(inum,jnum)
-          do inum = 1, num
-            jnum = ie_new_import(inum+ist,k1)
-            if(jnum .lt. 0) then
-              ie_new_import(inum+ist,k1) =  -jnum + kst
-            else if(jnum .gt. 0) then
-              ie_new_import(inum+ist,k1)                                &
-     &           =  idx_home_for_import(jnum+jst)                       &
-     &             + org_node%internal_node
-            end if
-          end do
-!$omp end do nowait
-        end do
-      end do
-!$omp end parallel
-!
-        ist = nod_comm%istack_import(i-1)
-        num = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
-!
       allocate(nele_import_tmp(nprocs))
       allocate(istack_ele_import_tmp(0:nprocs))
-      nele_import_tmp(1:nprocs) =    0
+      nele_import_tmp(1:nprocs) =       0
       istack_ele_import_tmp(0:nprocs) = 0
 !
       allocate(irank_org_ele_new_import(ntot_new_ele_import))
@@ -1452,8 +1529,7 @@
         jst = add_ele_comm%istack_import(i-1)
         do inum = 1, add_ele_comm%num_import(i)
           jcou = inum + jst
-          add_ele_comm%item_import(jcou)                                &
-     &         = jcou + org_ele%numele
+          add_ele_comm%item_import(jcou) = jcou + org_ele%numele
 !
           jnum = idx_home_sorted_ele_import(inum+ist)
           item_new_ele_import_trim(jcou) =    item_new_ele_import(jnum)
@@ -1462,12 +1538,7 @@
 !
           iele_gl_new_import_trim(jcou) = iele_gl_new_import(jnum)
           do k1 = 1, org_ele%nnod_4_ele
-            inod = ie_new_import(jnum,k1)
-            if(inod .lt. 0) then
-              ie_new_import_trim(jcou,k1) = -inod
-            else if(jnum .gt. 0) then
-              ie_new_import_trim(jcou,k1) = idx_home_for_import(inod)
-            end if
+            ie_new_import_trim(jcou,k1) =    ie_new_import(jnum,k1)
             ie_lc_new_import_trim(jcou,k1) = ie_lc_new_import(jnum,k1)
             ie_rank_new_import_trim(jcou,k1) = ie_rank_new_import(jnum,k1)
           end do
@@ -1585,12 +1656,13 @@
 !$omp end parallel do
 !
       do k1 = 1, org_ele%nnod_4_ele
-!$omp parallel do private(iele,jele)
-        do iele = 1, add_ele_comm%ntot_import
-          jele = iele +  org_ele%numele
-          new_ele%ie(jele,k1) = ie_new_import_trim(iele,k1)
+        do i = 1, add_ele_comm%num_neib
+          ist = add_ele_comm%istack_import(i-1)
+          do inum = 1, add_ele_comm%num_import(i)
+            jele = inum + ist + org_ele%numele
+            new_ele%ie(jele,k1) = ie_new_import_trim(inum+ist,k1)
+          end do
         end do
-!$omp end parallel do
       end do
 !
       end subroutine extend_node_comm_table2
@@ -1900,7 +1972,7 @@
         if(kcou .eq. new_ele%nnod_4_ele) lcou = lcou + 1
         icou = icou + kcou
       end do
-      write(*,*) my_rank, 'Failed conectivity:', icou, lcou, jcou
+      write(*,*) my_rank, 'Failed Node ID:', icou, lcou, jcou
 !
       do k1 = 1, new_ele%nnod_4_ele
         do iele = 1, new_ele%numele
@@ -1936,6 +2008,7 @@
         if(kcou .eq. new_ele%nnod_4_ele) lcou = lcou + 1
         icou = icou + kcou
       end do
+      write(*,*) my_rank, 'Failed connectivity ID:', icou, lcou, jcou
 !
       end subroutine check_extended_element
 !
