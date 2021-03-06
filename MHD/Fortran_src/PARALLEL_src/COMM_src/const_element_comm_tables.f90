@@ -40,7 +40,6 @@
       use t_surface_data
       use t_edge_data
       use t_comm_table
-      use t_next_node_ele_4_node
       use t_failed_export_list
 !
       use m_machine_parameter
