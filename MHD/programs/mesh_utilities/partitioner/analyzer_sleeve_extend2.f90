@@ -176,6 +176,8 @@
       use set_nnod_4_ele_by_type
       use mark_export_nod_ele_extend
 !
+      use extended_groups
+!
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
       type(communication_table), intent(inout) :: ele_comm
@@ -225,7 +227,7 @@
      &   (newmesh%nod_comm, newmesh%node, newmesh%ele, new_ele_comm)
 !
 !
-      call s_extend_groups                                              &
+      call s_extended_groups                                            &
      &   (mesh, group, newmesh, new_ele_comm, newgroup)
 !
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
@@ -294,7 +296,10 @@
       use find_extended_node_and_ele
       use find_extended_comm_table
       use extend_comm_table
+!
       use append_communication_table
+      use append_extended_node
+      use append_extended_element
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
@@ -1159,51 +1164,11 @@
       deallocate(mark_nod)
       deallocate(iflag_node)
 !
+      call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
+     &    inod_gl_new_import_trim, xx_new_import_trim,                  &
+     &    inod_lc_new_import_trim, irank_new_import_trim,               &
+     &    new_node, dbl_id2)
 !
-      new_node%numnod = org_node%numnod                                 &
-     &                 + add_nod_comm%ntot_import
-      new_node%internal_node = org_node%internal_node
-!
-      call alloc_node_geometry_base(new_node)
-      call alloc_double_numbering(new_node%numnod, dbl_id2)
-!
-!$omp parallel do
-      do inod = 1, org_node%numnod
-        new_node%inod_global(inod) = org_node%inod_global(inod)
-        new_node%xx(inod,1) = org_node%xx(inod,1)
-        new_node%xx(inod,2) = org_node%xx(inod,2)
-        new_node%xx(inod,3) = org_node%xx(inod,3)
-        dbl_id2%index(inod) = inod_dbl%index(inod)
-        dbl_id2%irank(inod) = inod_dbl%irank(inod)
-      end do
-!$omp end parallel do
-!
-      ist = org_node%numnod
-!$omp parallel do private(inum,icou)
-      do inum = 1, add_nod_comm%ntot_import
-        icou = inum + ist
-        new_node%inod_global(icou) = inod_gl_new_import_trim(inum)
-        new_node%xx(icou,1) = xx_new_import_trim(3*inum-2)
-        new_node%xx(icou,2) = xx_new_import_trim(3*inum-1)
-        new_node%xx(icou,3) = xx_new_import_trim(3*inum  )
-        dbl_id2%index(icou) = inod_lc_new_import_trim(inum)
-        dbl_id2%irank(icou) = irank_new_import_trim(inum)
-      end do
-!$omp end parallel do
-!
-!
-      icou = 0
-      do inod = org_node%numnod+1, org_node%numnod
-        jcou = inod - org_node%numnod
-        if(dbl_id2%irank(inod) .ne. irank_new_import_trim(jcou)  &
-     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(jcou)) &
-     &    icou = icou + 1
-!        write(*,*) my_rank, 'idx_home_for_import', i, &
-!     &    dbl_id2%irank(jcou+org_node%numnod), irank_new_import_trim(jcou), &
-!     &    dbl_id2%index(jcou+org_node%numnod), inod_lc_new_import_trim(jcou)
-      end do
-      write(*,*) my_rank, 'Num. of failed ',                            &
-      'with inod_lc_new_import_trim:', icou 
 !
       icou = 0
       do i = 1, add_nod_comm%num_neib
@@ -1644,6 +1609,14 @@
      &     ie_rank_new_import_trim(1,k1), SR_sig1, ie_rank_new_export_trim(1,k1))
       end do
 !
+      icou = 0
+      do k1 = 1, org_ele%nnod_4_ele
+        do inum = 1, add_ele_comm%ntot_import
+          if(ie_new_import_trim(inum,k1) .le. 0) icou = icou + 1
+        end do
+      end do
+      write(*,*) 'wrong ie_new_import_trim', my_rank, icou
+!
 !      icou = 0
 !      do inum = 1, add_ele_comm%ntot_export
 !        iele = iele_lc_new_export_trim(inum)
@@ -1668,57 +1641,8 @@
 !
       call s_append_communication_table                                 &
      &   (ele_comm, add_ele_comm, new_ele_comm)
-!
-      new_ele%numele =     org_ele%numele + add_ele_comm%ntot_import
-      new_ele%nnod_4_ele = org_ele%nnod_4_ele
-!
-      call alloc_element_types(new_ele)
-      call alloc_ele_connectivity(new_ele)
-!
-!$omp parallel do
-      do iele = 1, new_ele%numele
-        new_ele%elmtyp(iele) = org_ele%elmtyp(1)
-        new_ele%nodelm(iele) = org_ele%nodelm(1)
-      end do
-!$omp end parallel do
-!
-!$omp parallel do
-      do iele = 1, org_ele%numele
-        new_ele%iele_global(iele) = org_ele%iele_global(iele)
-      end do
-!$omp end parallel do
-      do k1 = 1, org_ele%nnod_4_ele
-!$omp parallel do
-        do iele = 1, org_ele%numele
-          new_ele%ie(iele,k1) = org_ele%ie(iele,k1)
-        end do
-!$omp end parallel do
-      end do
-!
-!$omp parallel do private(iele,jele)
-      do iele = 1, add_ele_comm%ntot_import
-          jele = iele +  org_ele%numele
-        new_ele%iele_global(jele) = iele_gl_new_import_trim(jele)
-      end do
-!$omp end parallel do
-!
-      icou = 0
-      do k1 = 1, org_ele%nnod_4_ele
-        do inum = 1, add_ele_comm%ntot_import
-          if(ie_new_import_trim(inum,k1) .le. 0) icou = icou + 1
-        end do
-      end do
-      write(*,*) 'wrong ie_new_import_trim', my_rank, icou
-!
-      do k1 = 1, org_ele%nnod_4_ele
-        do i = 1, add_ele_comm%num_neib
-          ist = add_ele_comm%istack_import(i-1)
-          do inum = 1, add_ele_comm%num_import(i)
-            jele = inum + ist + org_ele%numele
-            new_ele%ie(jele,k1) = ie_new_import_trim(inum+ist,k1)
-          end do
-        end do
-      end do
+      call s_append_extended_element(org_ele, add_ele_comm,             &
+     &    iele_gl_new_import_trim, ie_new_import_trim, new_ele)
 !
       end subroutine extend_node_comm_table2
 !
@@ -2069,193 +1993,6 @@
       end subroutine check_extended_element
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine s_extend_groups(org_mesh, org_groups,                  &
-     &          new_mesh, new_ele_comm, new_groups)
-!
-      type(mesh_geometry), intent(in) :: org_mesh
-      type(mesh_groups), intent(in) :: org_groups
-      type(mesh_geometry), intent(in) :: new_mesh
-      type(communication_table), intent(in) :: new_ele_comm
-!
-      type(mesh_groups), intent(inout) :: new_groups
-!
-!
-      call extended_node_group                                          &
-     &   (org_mesh%node, org_groups%nod_grp,                            &
-     &    new_mesh%node, new_mesh%nod_comm, new_groups%nod_grp)
-      call extended_element_group(org_groups%ele_grp,                   &
-     &    new_mesh%ele, new_ele_comm, new_groups%ele_grp)
-      call extended_surface_group(org_groups%surf_grp,                  &
-     &    new_mesh%ele, new_ele_comm, new_groups%surf_grp)
-!
-      end subroutine s_extend_groups
-!
-! ----------------------------------------------------------------------
-!
-      subroutine extended_node_group(node, nod_grp,                     &
-     &          new_node, new_comm, new_nod_grp)
-!
-      use solver_SR_type
-      use select_copy_from_recv
-      use redistribute_group_data
-!
-      type(node_data), intent(in) :: node
-      type(group_data), intent(in) :: nod_grp
-!
-      type(node_data), intent(in) :: new_node
-      type(communication_table), intent(in) :: new_comm
-!
-      type(group_data), intent(inout) :: new_nod_grp
-!
-      integer(kind = kint) :: igrp
-      integer(kind = kint), allocatable :: iflag_new(:)
-!
-!
-      allocate(iflag_new(new_node%numnod))
-!$omp parallel workshare
-      iflag_new(1:new_node%numnod) = 0
-!$omp end parallel workshare
-!
-      new_nod_grp%num_grp = nod_grp%num_grp
-      call alloc_group_num(new_nod_grp)
-!
-!$omp parallel do
-      do igrp = 1, nod_grp%num_grp
-        new_nod_grp%grp_name(igrp) = nod_grp%grp_name(igrp)
-      end do
-!$omp end parallel do
-!
-      new_nod_grp%istack_grp(0:new_nod_grp%num_grp) = 0
-      call alloc_group_item(new_nod_grp)
-      do igrp = 1, nod_grp%num_grp
-        call mark_org_group_repart                                      &
-     &     (igrp, node%numnod, nod_grp, iflag_new(1))
-!
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_new)
-!
-        call count_group_item_repart                                    &
-     &     (igrp, new_node%numnod, iflag_new(1), new_nod_grp)
-        call append_group_item_repart                                   &
-     &     (igrp, new_node%numnod, iflag_new(1), new_nod_grp)
-      end do
-      deallocate(iflag_new)
-!
-      end subroutine extended_node_group
-!
-! ----------------------------------------------------------------------
-!
-      subroutine extended_element_group                                 &
-     &         (ele_grp, new_ele, new_ele_comm, new_ele_grp)
-!
-      use calypso_SR_type
-      use solver_SR_type
-      use select_copy_from_recv
-      use redistribute_group_data
-!
-      type(group_data), intent(in) :: ele_grp
-!
-      type(element_data), intent(in) :: new_ele
-      type(communication_table), intent(in) :: new_ele_comm
-!
-      type(group_data), intent(inout) :: new_ele_grp
-!
-      integer(kind = kint) :: igrp
-      integer(kind = kint), allocatable :: iflag_new(:)
-!
-!
-      allocate(iflag_new(new_ele%numele))
-!$omp parallel workshare
-      iflag_new(1:new_ele%numele) = 0
-!$omp end parallel workshare
-!
-      new_ele_grp%num_grp = ele_grp%num_grp
-      call alloc_group_num(new_ele_grp)
-!
-!$omp parallel do
-      do igrp = 1, ele_grp%num_grp
-        new_ele_grp%grp_name(igrp) = ele_grp%grp_name(igrp)
-      end do
-!$omp end parallel do
-!
-      new_ele_grp%istack_grp(0:new_ele_grp%num_grp) = 0
-      call alloc_group_item(new_ele_grp)
-      do igrp = 1, ele_grp%num_grp
-        call mark_org_group_repart                                      &
-     &     (igrp, new_ele%numele, ele_grp, iflag_new)
-!
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, iflag_new(1))
-!
-        call count_group_item_repart                                    &
-     &     (igrp, new_ele%numele, iflag_new(1), new_ele_grp)
-        call append_group_item_repart                                   &
-     &     (igrp, new_ele%numele, iflag_new(1), new_ele_grp)
-      end do
-      deallocate(iflag_new)
-!
-      end subroutine extended_element_group
-!
-! ----------------------------------------------------------------------
-!
-      subroutine extended_surface_group                                 &
-     &         (surf_grp, new_ele, new_ele_comm, new_surf_grp)
-!
-      use calypso_SR_type
-      use solver_SR_type
-      use select_copy_from_recv
-      use redistribute_group_data
-!
-      type(surface_group_data), intent(in) :: surf_grp
-!
-      type(element_data), intent(in) :: new_ele
-      type(communication_table), intent(in) :: new_ele_comm
-!
-      type(surface_group_data), intent(inout) :: new_surf_grp
-!
-      integer(kind = kint) :: igrp
-      integer(kind = kint), allocatable :: iflag_new(:)
-!
-!
-      allocate(iflag_new(new_ele%numele))
-!$omp parallel workshare
-      iflag_new(1:new_ele%numele) = 0
-!$omp end parallel workshare
-!
-!
-      new_surf_grp%num_grp = surf_grp%num_grp
-      call alloc_sf_group_num(new_surf_grp)
-!
-!$omp parallel do
-      do igrp = 1, surf_grp%num_grp
-        new_surf_grp%grp_name(igrp) = surf_grp%grp_name(igrp)
-      end do
-!$omp end parallel do
-!
-      new_surf_grp%istack_grp(0:new_surf_grp%num_grp) = 0
-      call alloc_sf_group_item(new_surf_grp)
-!
-      do igrp = 1, surf_grp%num_grp
-        call mark_org_surf_group_repart                                 &
-     &     (igrp, new_ele%numele, surf_grp, iflag_new)
-!
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, iflag_new)
-!
-!        write(100+my_rank,*) igrp, new_ele%numele, 'iflag',            &
-!     &        sum(iflag_new), sum(iflag_new)
-
-        call count_surf_group_item_repart                               &
-     &    (igrp, new_ele%numele, iflag_new(1), new_surf_grp)
-        call append_surf_group_item_repart                              &
-     &    (igrp, new_ele%numele, iflag_new(1), new_surf_grp)
-      end do
-      deallocate(iflag_new)
-!
-      end subroutine extended_surface_group
-!
-! ----------------------------------------------------------------------
 !
       end module analyzer_sleeve_extend2
+!
