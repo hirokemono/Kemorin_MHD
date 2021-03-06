@@ -106,6 +106,7 @@
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, newfem_EXT%mesh, newfem_EXT%group)
       call dealloc_mesh_data(newfem_EXT%mesh, newfem_EXT%group)
+      return
 !
       if (iflag_debug.gt.0) write(*,*) 'pickup_surface_mesh'
       call pickup_surface_mesh                                          &
@@ -442,11 +443,11 @@
       integer(kind = kint), allocatable :: irank_new_export_back(:)
       real(kind = kreal), allocatable :: distance_new_export_back(:)
 !
-      integer(kind = kint) :: ntot_sorted_ele_import_tmp
+      integer(kind = kint) :: ntot_trimmed_ele_import
       integer(kind = kint), allocatable :: istack_sorted_ele_import_tmp(:)
       integer(kind = kint), allocatable :: istack_sorted_ele_import_pe(:)
 !
-      integer(kind = kint) :: ntot_sorted_import_tmp
+      integer(kind = kint) :: ntot_trimmed_nod_import
       integer(kind = kint), allocatable :: istack_sorted_import_tmp(:)
       integer(kind = kint), allocatable :: istack_sorted_import_pe(:)
 !
@@ -466,6 +467,7 @@
 
       type(comm_table_for_each_pe) :: each_comm
 !
+      integer(kind = kint), external :: count_ntot_trimmed_import
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
       integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp, num
@@ -849,74 +851,28 @@
       allocate(irank_import_tmp(ntot_new_import))
       allocate(inod_lc_import_tmp(ntot_new_import))
 !
-!$omp parallel do private(i,ip)
-      do i = 1, ntot_new_import
-        index_4_import_tmp(i) = i
-        inod_lc_import_tmp(i) = 0
-        irank_import_tmp(i) = irank_nod_new_import(i)
-        irank_origin_new_import(i) = -1
-      end do
-!$omp end parallel do
-!
-!$omp parallel private(i,ip,ist,ied)
-      do i = 1, nod_comm%num_neib
-        ip = nod_comm%id_neib(i)
-        ist = istack_new_import(i-1) + 1
-        ied = istack_new_import(i)
-!$omp do private(inum)
-        do inum = ist, ied
-          irank_origin_new_import(inum) = ip
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-      if(ntot_new_import .gt. 1) then
-        call quicksort_w_index(ntot_new_import, irank_import_tmp,       &
-     &      ione, ntot_new_import, index_4_import_tmp)
-      end if
-!
-!$omp parallel do private(i,icou)
-      do i = 1, ntot_new_import
-        icou = index_4_import_tmp(i)
-        inod_lc_import_tmp(i) = inod_lc_new_import(icou)
-      end do
-!$omp end parallel do
-!
-!$omp parallel workshare
-      num_import_tmp(1:nprocs) = 0
-!$omp end parallel workshare
-      do i = 1, ntot_new_import
-        irank = irank_import_tmp(i)
-        num_import_tmp(irank+1) = num_import_tmp(irank+1) + 1
-      end do
-      do ip = 1, nprocs
-        istack_import_tmp(ip) = istack_import_tmp(ip-1)                 &
-     &                         + num_import_tmp(ip)
-      end do
+      call sort_import_by_pe_and_local_id  &
+     &         (nprocs, nod_comm, istack_new_import, ntot_new_import,   &
+     &          irank_nod_new_import, inod_lc_new_import,    &
+     &          index_4_import_tmp, inod_lc_import_tmp, &
+     &          irank_import_tmp, irank_origin_new_import, &
+     &          num_import_tmp, istack_import_tmp)
 !
       do ip = 1, nprocs
         ist = istack_import_tmp(ip-1)
         if(num_import_tmp(ip) .gt. 1) then
-          call quicksort_w_index                                        &
-     &       (num_import_tmp(ip), inod_lc_import_tmp(ist+1),            &
+          call quicksort_w_index                                       &
+     &       (num_import_tmp(ip), inod_lc_import_tmp(ist+1),           &
      &        ione, num_import_tmp(ip), index_4_import_tmp(ist+1))
         end if
       end do
 !
-      ntot = 0
-      do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        do inum = 1, num_import_tmp(ip) - 1
-          if(inod_lc_import_tmp(ist+inum)                               &
-     &        .ne. inod_lc_import_tmp(ist+inum+1)) ntot = ntot + 1
-        end do
-        if(num_import_tmp(ip) .gt. 0) ntot = ntot + 1
-      end do
-      ntot_sorted_import_tmp = ntot
+      ntot_trimmed_nod_import = count_ntot_trimmed_import               &
+     &                    (nprocs, ntot_new_import, inod_lc_import_tmp, &
+     &                     num_import_tmp, istack_import_tmp)
 !
       allocate(istack_sorted_import_pe(0:nprocs))
-      allocate(istack_sorted_import_tmp(0:ntot_sorted_import_tmp))
+      allocate(istack_sorted_import_tmp(0:ntot_trimmed_nod_import))
       istack_sorted_import_pe(0) = 0
       istack_sorted_import_tmp(0) = 0
 !
@@ -1028,7 +984,7 @@
       write(*,*) my_rank, 'org_neib', nod_comm%id_neib
       write(*,*) my_rank, 'new_neib', add_nod_comm%id_neib
       write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
-     &          sum(num_import_tmp),  ntot_sorted_import_tmp
+     &          sum(num_import_tmp),  ntot_trimmed_nod_import
       do ip = 1, nprocs
         write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
      &            num_import_tmp(ip), istack_sorted_import_pe(ip)
@@ -1341,75 +1297,28 @@
       allocate(irank_ele_import_tmp(ntot_new_ele_import))
       allocate(iele_lc_import_tmp(ntot_new_ele_import))
 !
-!$omp parallel do private(i,ip)
-      do i = 1, ntot_new_ele_import
-        index_ele_import_tmp(i) = i
-        iele_lc_import_tmp(i) =   0
-        irank_ele_import_tmp(i) = irank_ele_new_import(i)
-        irank_org_ele_new_import(i) = -1
-      end do
-!$omp end parallel do
-!
-!$omp parallel private(i,ip,ist,ied)
-      do i = 1, nod_comm%num_neib
-        ip = nod_comm%id_neib(i)
-        ist = istack_new_ele_import(i-1) + 1
-        ied = istack_new_ele_import(i)
-!$omp do private(inum)
-        do inum = ist, ied
-          irank_org_ele_new_import(inum) = ip
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-      if(ntot_new_ele_import .gt. 1) then
-        call quicksort_w_index                                          &
-     &     (ntot_new_ele_import, irank_ele_import_tmp,                  &
-     &      ione, ntot_new_ele_import, index_ele_import_tmp)
-      end if
-!
-!$omp parallel do private(i,icou)
-      do i = 1, ntot_new_ele_import
-        icou = index_ele_import_tmp(i)
-        iele_lc_import_tmp(i) = iele_lc_new_import(icou)
-      end do
-!$omp end parallel do
-!
-!$omp parallel workshare
-      nele_import_tmp(1:nprocs) = 0
-!$omp end parallel workshare
-      do i = 1, ntot_new_ele_import
-        irank = irank_ele_import_tmp(i)
-        nele_import_tmp(irank+1) = nele_import_tmp(irank+1) + 1
-      end do
-      do ip = 1, nprocs
-        istack_ele_import_tmp(ip) = istack_ele_import_tmp(ip-1)         &
-     &                             + nele_import_tmp(ip)
-      end do
+      call sort_import_by_pe_and_local_id  &
+     &   (nprocs, nod_comm, istack_new_ele_import, ntot_new_ele_import, &
+     &          irank_ele_new_import, iele_lc_new_import,    &
+     &          index_ele_import_tmp, iele_lc_import_tmp, &
+     &          irank_ele_import_tmp, irank_org_ele_new_import, &
+     &          nele_import_tmp, istack_ele_import_tmp)
 !
       do ip = 1, nprocs
         ist = istack_ele_import_tmp(ip-1)
         if(nele_import_tmp(ip) .gt. 1) then
-          call quicksort_w_index                                        &
-     &       (nele_import_tmp(ip), iele_lc_import_tmp(ist+1),           &
+          call quicksort_w_index                                       &
+     &       (nele_import_tmp(ip), iele_lc_import_tmp(ist+1),          &
      &        ione, nele_import_tmp(ip), index_ele_import_tmp(ist+1))
         end if
       end do
 !
-      ntot = 0
-      do ip = 1, nprocs
-        ist = istack_ele_import_tmp(ip-1)
-        do inum = 1, nele_import_tmp(ip) - 1
-          if(iele_lc_import_tmp(ist+inum)                               &
-     &        .ne. iele_lc_import_tmp(ist+inum+1)) ntot = ntot + 1
-        end do
-        if(nele_import_tmp(ip) .gt. 0) ntot = ntot + 1
-      end do
-      ntot_sorted_ele_import_tmp = ntot
+      ntot_trimmed_ele_import = count_ntot_trimmed_import               &
+     &                (nprocs, ntot_new_ele_import, iele_lc_import_tmp, &
+     &                 nele_import_tmp, istack_ele_import_tmp)
 !
       allocate(istack_sorted_ele_import_pe(0:nprocs))
-      allocate(istack_sorted_ele_import_tmp(0:ntot_sorted_ele_import_tmp))
+      allocate(istack_sorted_ele_import_tmp(0:ntot_trimmed_ele_import))
       istack_sorted_ele_import_pe(0) =  0
       istack_sorted_ele_import_tmp(0) = 0
 !
@@ -1505,7 +1414,7 @@
       write(*,*) my_rank, 'org_neib', nod_comm%id_neib
       write(*,*) my_rank, 'new_neib', add_ele_comm%id_neib
       write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
-     &          sum(nele_import_tmp),  ntot_sorted_ele_import_tmp
+     &          sum(nele_import_tmp),  ntot_trimmed_ele_import
       do ip = 1, nprocs
         write(*,*) my_rank, ' to ', ip-1,  ' nele_import_tmp ',         &
      &            nele_import_tmp(ip), istack_sorted_ele_import_pe(ip)
@@ -1996,3 +1905,133 @@
 !
       end module analyzer_sleeve_extend2
 !
+!
+!
+!
+      subroutine sort_import_by_pe_and_local_id  &
+     &         (nprocs, nod_comm, istack_new_import, ntot_new_import,   &
+     &          irank_nod_new_import, inod_lc_new_import,    &
+     &          index_4_import_tmp, inod_lc_import_tmp, &
+     &          irank_import_tmp, irank_origin_new_import, &
+     &          num_import_tmp, istack_import_tmp)
+!
+      use m_precision
+      use t_comm_table
+      use quicksort
+!
+      implicit none
+!
+      type(communication_table), intent(in) :: nod_comm
+      integer, intent(in) :: nprocs
+      integer(kind= kint), intent(in)                                   &
+     &                    :: istack_new_import(0:nod_comm%num_neib)
+      integer(kind= kint), intent(in) :: ntot_new_import
+      integer(kind= kint), intent(in)                                &
+     &                    :: irank_nod_new_import(ntot_new_import)
+      integer(kind= kint), intent(in)                                &
+     &                    :: inod_lc_new_import(ntot_new_import)
+!
+      integer(kind= kint), intent(inout)                                &
+     &                    :: index_4_import_tmp(ntot_new_import)
+      integer(kind= kint), intent(inout)                                &
+     &                    :: inod_lc_import_tmp(ntot_new_import)
+      integer(kind= kint), intent(inout)                                &
+     &                    :: irank_import_tmp(ntot_new_import)
+      integer(kind= kint), intent(inout)                                &
+     &                    :: irank_origin_new_import(ntot_new_import)
+!
+      integer(kind= kint), intent(inout) :: num_import_tmp(nprocs)
+      integer(kind= kint), intent(inout) :: istack_import_tmp(0:nprocs)
+!
+      integer(kind = kint) :: i, irank, ist, ied, inum, icou, ip
+!
+!
+!$omp parallel do private(i)
+      do i = 1, ntot_new_import
+        index_4_import_tmp(i) = i
+        irank_import_tmp(i) = irank_nod_new_import(i)
+        irank_origin_new_import(i) = -1
+      end do
+!$omp end parallel do
+!
+!$omp parallel private(i,irank,ist,ied)
+      do i = 1, nod_comm%num_neib
+        irank = nod_comm%id_neib(i)
+        ist = istack_new_import(i-1) + 1
+        ied = istack_new_import(i)
+!$omp workshare
+        irank_origin_new_import(ist:ied) = irank
+!$omp end workshare nowait
+      end do
+!$omp end parallel
+!
+      if(ntot_new_import .gt. 1) then
+        call quicksort_w_index(ntot_new_import, irank_import_tmp,       &
+     &      ione, ntot_new_import, index_4_import_tmp)
+      end if
+!
+!$omp parallel do private(i,icou)
+      do i = 1, ntot_new_import
+        icou = index_4_import_tmp(i)
+        inod_lc_import_tmp(i) = inod_lc_new_import(icou)
+      end do
+!$omp end parallel do
+!
+!$omp parallel workshare
+      num_import_tmp(1:nprocs) = 0
+!$omp end parallel workshare
+      do i = 1, ntot_new_import
+        irank = irank_import_tmp(i)
+        num_import_tmp(irank+1) = num_import_tmp(irank+1) + 1
+      end do
+      do ip = 1, nprocs
+        istack_import_tmp(ip) = istack_import_tmp(ip-1)                 &
+     &                         + num_import_tmp(ip)
+      end do
+      return
+!
+!      do ip = 1, nprocs
+!        ist = istack_import_tmp(ip-1)
+!        if(num_import_tmp(ip) .gt. 1) then
+!          call quicksort_w_index                                        &
+!     &       (num_import_tmp(ip), inod_lc_import_tmp(ist+1),            &
+!     &        ione, num_import_tmp(ip), index_4_import_tmp(ist+1))
+!        end if
+!      end do
+!
+      end subroutine sort_import_by_pe_and_local_id
+
+
+
+      integer(kind = kint) function count_ntot_trimmed_import           &
+     &                   (nprocs, ntot_new_import, inod_lc_import_tmp,  &
+     &                    num_import_tmp, istack_import_tmp)
+!
+      use m_precision
+!
+      implicit none
+!
+      integer, intent(in) :: nprocs
+      integer(kind= kint), intent(in) :: ntot_new_import
+      integer(kind= kint), intent(in)                                &
+     &                    :: inod_lc_import_tmp(ntot_new_import)
+!
+      integer(kind= kint), intent(in) :: num_import_tmp(nprocs)
+      integer(kind= kint), intent(in) :: istack_import_tmp(0:nprocs)
+!
+      integer(kind = kint) :: ist, inum, ip, ntot
+!
+!
+      ntot = 0
+      do ip = 1, nprocs
+        ist = istack_import_tmp(ip-1)
+        do inum = 1, num_import_tmp(ip) - 1
+          if(inod_lc_import_tmp(ist+inum)                               &
+     &        .ne. inod_lc_import_tmp(ist+inum+1)) ntot = ntot + 1
+        end do
+        if(num_import_tmp(ip) .gt. 0) ntot = ntot + 1
+      end do
+      count_ntot_trimmed_import = ntot
+!
+      end function count_ntot_trimmed_import
+
