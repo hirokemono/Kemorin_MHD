@@ -88,6 +88,8 @@ t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 transfer_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/transfer_to_new_partition.f90 m_precision.o m_phys_constants.o calypso_mpi.o t_comm_table.o t_calypso_comm_table.o t_vector_for_solver.o calypso_SR_type.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
+trim_redundant_import_item.o: $(MODIFY_PARA_MESHDIR)/trim_redundant_import_item.f90 m_precision.o
+	$(F90) -c $(F90OPTFLAGS) $<
 xyz_block_id_by_nod_vol.o: $(MODIFY_PARA_MESHDIR)/xyz_block_id_by_nod_vol.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_group_data.o t_1d_repartitioning_work.o t_control_param_vol_grping.o calypso_mpi_real.o int_volume_of_single_domain.o solver_SR_type.o set_istack_4_domain_block.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

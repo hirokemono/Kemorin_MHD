@@ -301,6 +301,7 @@
       use append_communication_table
       use append_extended_node
       use append_extended_element
+      use trim_redundant_import_item
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
@@ -444,12 +445,12 @@
       real(kind = kreal), allocatable :: distance_new_export_back(:)
 !
       integer(kind = kint) :: ntot_trimmed_ele_import
-      integer(kind = kint), allocatable :: istack_sorted_ele_import_tmp(:)
-      integer(kind = kint), allocatable :: istack_sorted_ele_import_pe(:)
+      integer(kind = kint), allocatable :: istack_trimmed_ele_import_item(:)
+      integer(kind = kint), allocatable :: istack_trimmed_ele_import_pe(:)
 !
       integer(kind = kint) :: ntot_trimmed_nod_import
-      integer(kind = kint), allocatable :: istack_sorted_import_tmp(:)
-      integer(kind = kint), allocatable :: istack_sorted_import_pe(:)
+      integer(kind = kint), allocatable :: istack_trimmed_import_item(:)
+      integer(kind = kint), allocatable :: istack_trimmed_import_pe(:)
 !
       integer(kind = kint), allocatable :: idx_home_sorted_import(:)
       integer(kind = kint), allocatable :: idx_home_for_import(:)
@@ -467,7 +468,6 @@
 
       type(comm_table_for_each_pe) :: each_comm
 !
-      integer(kind = kint), external :: count_ntot_trimmed_import
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
       integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp, num
@@ -871,110 +871,64 @@
      &                    (nprocs, ntot_new_import, inod_lc_import_tmp, &
      &                     num_import_tmp, istack_import_tmp)
 !
-      allocate(istack_sorted_import_pe(0:nprocs))
-      allocate(istack_sorted_import_tmp(0:ntot_trimmed_nod_import))
-      istack_sorted_import_pe(0) = 0
-      istack_sorted_import_tmp(0) = 0
+      allocate(istack_trimmed_import_pe(0:nprocs))
+      allocate(istack_trimmed_import_item(0:ntot_trimmed_nod_import))
+      istack_trimmed_import_pe(:) = 0
+      istack_trimmed_import_item(:) = 0
 !
-      icou = 0
-      do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        do inum = 1, num_import_tmp(ip)-1
-          if(inod_lc_import_tmp(ist+inum)                               &
-     &        .ne. inod_lc_import_tmp(ist+inum+1)) then
-            icou = icou + 1
-            istack_sorted_import_tmp(icou) = ist + inum
-          end if
-        end do
-        if(num_import_tmp(ip) .gt. 0) then
-          icou = icou + 1
-          istack_sorted_import_tmp(icou) = ist + num_import_tmp(ip)
-        end if
-        istack_sorted_import_pe(ip) =    icou
-      end do
+      call count_trimmed_import_stack                                   &
+     &         (nprocs, ntot_new_import, inod_lc_import_tmp,            &
+     &          num_import_tmp, istack_import_tmp,                      &
+     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
+     &          istack_trimmed_import_item)
 !
-      allocate(idx_home_sorted_import(istack_sorted_import_pe(nprocs)))
-      idx_home_sorted_import(1:istack_sorted_import_pe(nprocs)) = -1
+      allocate(idx_home_sorted_import(istack_trimmed_import_pe(nprocs)))
+      idx_home_sorted_import(1:istack_trimmed_import_pe(nprocs)) = -1
+!
+      call trim_internal_import_items                                   &
+     &         (nprocs, ntot_new_import, irank_nod_new_import,          &
+     &          index_4_import_tmp, irank_origin_new_import,            &
+     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
+     &          istack_trimmed_import_item, idx_home_sorted_import, icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',    &
+     &                  ntot_failed_gl
+!
+      call trim_external_import_items(nprocs, ntot_new_import,          &
+     &          irank_nod_new_import, index_4_import_tmp,               &
+     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
+     &          istack_trimmed_import_item, idx_home_sorted_import, icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Missing import from external:',    &
+     &                  ntot_failed_gl
+!
+      call trim_orphaned_import_items                                   &
+     &         (nprocs, ntot_new_import, index_4_import_tmp,            &
+     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
+     &          istack_trimmed_import_item, idx_home_sorted_import,     &
+     &          icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Missing import from other domain:', ntot_failed_gl
+!
       allocate(idx_home_for_import(ntot_new_import))
       idx_home_for_import(1:ntot_new_import) = -1
 !
-      do ip = 1, nprocs
-        ist = istack_sorted_import_pe(ip-1) + 1
-        ied = istack_sorted_import_pe(ip)
-        do inum = ist, ied
-          jst = istack_sorted_import_tmp(inum-1) + 1
-          jed = istack_sorted_import_tmp(inum)
-          do jnum = jst, jed
-            kdx = index_4_import_tmp(jnum)
-            krank = irank_origin_new_import(kdx)
-            if(     irank_nod_new_import(kdx) .eq. krank                &
-     &        .and. irank_nod_new_import(kdx) .eq. ip-1) then
-              idx_home_sorted_import(inum) = kdx
-              exit
-            end if
-          end do
-        end do
-      end do
-!
-      icou = 0
-      do ip = 1, nprocs
-        ist = istack_sorted_import_pe(ip-1) + 1
-        ied = istack_sorted_import_pe(ip)
-        do inum = ist, ied
-          if(idx_home_sorted_import(inum) .gt. 0) cycle
-!
-          icou = icou + 1
-          jst = istack_sorted_import_tmp(inum-1) + 1
-          jed = istack_sorted_import_tmp(inum)
-          do jnum = jst, jed
-            kdx =   index_4_import_tmp(jnum)
-            if(irank_nod_new_import(kdx) .eq. ip-1) then
-              idx_home_sorted_import(inum) = kdx
-              exit
-            end if
-          end do
-        end do
-      end do
-      write(*,*) my_rank, 'Misisng node in import list: ', icou
-!
-      icou = 0
-      do ip = 1, nprocs
-        ist = istack_sorted_import_pe(ip-1) + 1
-        ied = istack_sorted_import_pe(ip)
-        do inum = ist, ied
-          if(idx_home_sorted_import(inum) .gt. 0) cycle
-!
-          jst = istack_sorted_import_tmp(inum-1) + 1
-          jed = istack_sorted_import_tmp(inum)
-          kdx = index_4_import_tmp(jst)
-          idx_home_sorted_import(inum) = kdx
-          icou = icou + 1
-        end do
-      end do
-      write(*,*) my_rank, 'Required import from new domain : ', icou
-!
-      do ip = 1, nprocs
-        ist = istack_sorted_import_pe(ip-1) + 1
-        ied = istack_sorted_import_pe(ip)
-        do inum = ist, ied
-          jst = istack_sorted_import_tmp(inum-1) + 1
-          jed = istack_sorted_import_tmp(inum)
-          kdx = idx_home_sorted_import(inum)
-!
-          do jnum = jst, jed
-            jnod = index_4_import_tmp(jnum)
-            idx_home_for_import(jnod) = kdx
-          end do
-        end do
-      end do
-!
+      call find_home_import_item_by_trim                                &
+     &         (nprocs, ntot_new_import, index_4_import_tmp,            &
+     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
+     &          istack_trimmed_import_item, idx_home_sorted_import,     &
+     &          idx_home_for_import, icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Missing import item in trimmed:', ntot_failed_gl
 !
 !      write(70+my_rank,*) 'check neib', nod_comm%id_neib
-!      write(70+my_rank,*) 'check istack_sorted_import_pe', istack_sorted_import_pe
-!      do inum = 1, istack_sorted_import_pe(nprocs)
+!      write(70+my_rank,*) 'check istack_trimmed_import_pe', istack_trimmed_import_pe
+!      do inum = 1, istack_trimmed_import_pe(nprocs)
 !        inod = idx_home_sorted_import(inum)
-!          jst = istack_sorted_import_tmp(inum-1) + 1
-!          jed = istack_sorted_import_tmp(inum)
+!          jst = istack_trimmed_import_item(inum-1) + 1
+!          jed = istack_trimmed_import_item(inum)
 !        write(70+my_rank,*) 'item_new_import', inum, inod, &
 !     &       inod_lc_new_import(inod), irank_nod_new_import(inod), &
 !     &       inod_lc_new_import(inod_lc_import_tmp(jst:jed)), &
@@ -987,7 +941,7 @@
      &          sum(num_import_tmp),  ntot_trimmed_nod_import
       do ip = 1, nprocs
         write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
-     &            num_import_tmp(ip), istack_sorted_import_pe(ip)
+     &            num_import_tmp(ip), istack_trimmed_import_pe(ip)
       end do
 !
       write(*,*) my_rank, 'add_nod_comm%num_neib', add_nod_comm%num_neib
@@ -996,8 +950,8 @@
       add_nod_comm%istack_import(0) = 0
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
-        add_nod_comm%num_import(i) = istack_sorted_import_pe(irank+1)   &
-     &                              - istack_sorted_import_pe(irank)
+        add_nod_comm%num_import(i) = istack_trimmed_import_pe(irank+1)  &
+     &                              - istack_trimmed_import_pe(irank)
         add_nod_comm%istack_import(i) = add_nod_comm%istack_import(i-1) &
      &                                 + add_nod_comm%num_import(i)
       end do
@@ -1017,7 +971,7 @@
 !
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
-        ist = istack_sorted_import_pe(irank)
+        ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
@@ -1147,7 +1101,7 @@
 !
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
-        ist = istack_sorted_import_pe(irank)
+        ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           jnum = idx_home_sorted_import(inum+ist)
@@ -1158,7 +1112,7 @@
       icou = 0
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
-        ist = istack_sorted_import_pe(irank)
+        ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
@@ -1190,7 +1144,7 @@
 !
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
-        ist = istack_sorted_import_pe(irank)
+        ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           jnum = idx_home_sorted_import(inum+ist)
@@ -1317,99 +1271,57 @@
      &                (nprocs, ntot_new_ele_import, iele_lc_import_tmp, &
      &                 nele_import_tmp, istack_ele_import_tmp)
 !
-      allocate(istack_sorted_ele_import_pe(0:nprocs))
-      allocate(istack_sorted_ele_import_tmp(0:ntot_trimmed_ele_import))
-      istack_sorted_ele_import_pe(0) =  0
-      istack_sorted_ele_import_tmp(0) = 0
+      allocate(istack_trimmed_ele_import_pe(0:nprocs))
+      allocate(istack_trimmed_ele_import_item(0:ntot_trimmed_ele_import))
+      istack_trimmed_ele_import_pe(:) =  0
+      istack_trimmed_ele_import_item(:) = 0
 !
-      icou = 0
-      do ip = 1, nprocs
-        ist = istack_ele_import_tmp(ip-1)
-        do inum = 1, nele_import_tmp(ip)-1
-          if(iele_lc_import_tmp(ist+inum)                               &
-     &        .ne. iele_lc_import_tmp(ist+inum+1)) then
-            icou = icou + 1
-            istack_sorted_ele_import_tmp(icou) = ist + inum
-          end if
-        end do
-        if(nele_import_tmp(ip) .gt. 0) then
-          icou = icou + 1
-          istack_sorted_ele_import_tmp(icou) = ist + nele_import_tmp(ip)
-        end if
-        istack_sorted_ele_import_pe(ip) =    icou
-      end do
+      call count_trimmed_import_stack                             &
+     &   (nprocs, ntot_new_ele_import, iele_lc_import_tmp,            &
+     &    nele_import_tmp, istack_ele_import_tmp,                      &
+     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,      &
+     &    istack_trimmed_ele_import_item)
 !
-      allocate(idx_home_sorted_ele_import(istack_sorted_ele_import_pe(nprocs)))
-      idx_home_sorted_ele_import(1:istack_sorted_ele_import_pe(nprocs)) = -1
+      allocate(idx_home_sorted_ele_import(istack_trimmed_ele_import_pe(nprocs)))
+      idx_home_sorted_ele_import(1:istack_trimmed_ele_import_pe(nprocs)) = 0
+!
+      call trim_internal_import_items                                   &
+     &   (nprocs, ntot_new_ele_import, irank_ele_new_import,          &
+     &    index_ele_import_tmp, irank_org_ele_new_import,            &
+     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,     &
+     &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
+     &    icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',    &
+     &                  ntot_failed_gl
+!
+      call trim_external_import_items(nprocs, ntot_new_ele_import,      &
+     &    irank_ele_new_import, index_ele_import_tmp,            &
+     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,  &
+     &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
+     &    icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Missing import from external:',    &
+     &                  ntot_failed_gl
+!
+      call trim_orphaned_import_items                                   &
+     &   (nprocs, ntot_new_ele_import, index_ele_import_tmp,            &
+     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,  &
+     &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
+     &    icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Missing import from other domain:', ntot_failed_gl
+!
       allocate(idx_home_for_ele_import(ntot_new_ele_import))
       idx_home_for_ele_import(1:ntot_new_ele_import) = -1
-!
-      do ip = 1, nprocs
-        ist = istack_sorted_ele_import_pe(ip-1) + 1
-        ied = istack_sorted_ele_import_pe(ip)
-        do inum = ist, ied
-          jst = istack_sorted_ele_import_tmp(inum-1) + 1
-          jed = istack_sorted_ele_import_tmp(inum)
-          do jnum = jst, jed
-            kdx = index_ele_import_tmp(jnum)
-            krank = irank_org_ele_new_import(kdx)
-            if(     irank_ele_new_import(kdx) .eq. krank                &
-     &        .and. irank_ele_new_import(kdx) .eq. ip-1) then
-              idx_home_sorted_ele_import(inum) = kdx
-              exit
-            end if
-          end do
-        end do
-      end do
-!
-      icou = 0
-      do ip = 1, nprocs
-        ist = istack_sorted_ele_import_pe(ip-1) + 1
-        ied = istack_sorted_ele_import_pe(ip)
-        do inum = ist, ied
-          if(idx_home_sorted_ele_import(inum) .gt. 0) cycle
-!
-          icou = icou + 1
-          jst = istack_sorted_ele_import_tmp(inum-1) + 1
-          jed = istack_sorted_ele_import_tmp(inum)
-          do jnum = jst, jed
-            kdx =   index_ele_import_tmp(jnum)
-            if(irank_ele_new_import(kdx) .eq. ip-1) then
-              idx_home_sorted_ele_import(inum) = kdx
-              exit
-            end if
-          end do
-        end do
-      end do
-      write(*,*) my_rank, 'Misisng element in import list: ', icou
-!
-      icou = 0
-      do ip = 1, nprocs
-        ist = istack_sorted_ele_import_pe(ip-1) + 1
-        ied = istack_sorted_ele_import_pe(ip)
-        do inum = ist, ied
-          if(idx_home_sorted_ele_import(inum) .gt. 0) cycle
-!
-          jst = istack_sorted_ele_import_tmp(inum-1) + 1
-          jed = istack_sorted_ele_import_tmp(inum)
-          kdx = index_ele_import_tmp(jst)
-          idx_home_sorted_ele_import(inum) = kdx
-          icou = icou + 1
-        end do
-      end do
-      write(*,*) my_rank, 'Required import element from new domain : ', icou
-!
-      do ip = 1, nprocs
-        ist = istack_sorted_ele_import_pe(ip-1) + 1
-        ied = istack_sorted_ele_import_pe(ip)
-        do inum = ist, ied
-          jst = istack_sorted_ele_import_tmp(inum-1) + 1
-          jed = istack_sorted_ele_import_tmp(inum)
-          kdx = idx_home_sorted_ele_import(inum)
-!
-          idx_home_for_ele_import(jst:jed) = kdx
-        end do
-      end do
+
+
+      call find_home_import_item_by_trim                          &
+     &   (nprocs, ntot_new_ele_import, index_ele_import_tmp,            &
+     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,      &
+     &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,  &
+     &    idx_home_for_ele_import, icou)
 !
       write(*,*) my_rank, 'org_neib', nod_comm%id_neib
       write(*,*) my_rank, 'new_neib', add_ele_comm%id_neib
@@ -1417,7 +1329,7 @@
      &          sum(nele_import_tmp),  ntot_trimmed_ele_import
       do ip = 1, nprocs
         write(*,*) my_rank, ' to ', ip-1,  ' nele_import_tmp ',         &
-     &            nele_import_tmp(ip), istack_sorted_ele_import_pe(ip)
+     &            nele_import_tmp(ip), istack_trimmed_ele_import_pe(ip)
       end do
 !
       write(*,*) my_rank, 'add_ele_comm%num_neib', add_ele_comm%num_neib
@@ -1426,8 +1338,8 @@
       add_ele_comm%istack_import(0) = 0
       do i = 1, add_ele_comm%num_neib
         irank = add_ele_comm%id_neib(i)
-        add_ele_comm%num_import(i) = istack_sorted_ele_import_pe(irank+1) &
-     &                              - istack_sorted_ele_import_pe(irank)
+        add_ele_comm%num_import(i) = istack_trimmed_ele_import_pe(irank+1) &
+     &                              - istack_trimmed_ele_import_pe(irank)
         add_ele_comm%istack_import(i) = add_ele_comm%istack_import(i-1) &
      &                                 + add_ele_comm%num_import(i)
       end do
@@ -1446,7 +1358,7 @@
 !
       do i = 1, add_ele_comm%num_neib
         irank = add_ele_comm%id_neib(i)
-        ist = istack_sorted_ele_import_pe(irank)
+        ist = istack_trimmed_ele_import_pe(irank)
         jst = add_ele_comm%istack_import(i-1)
         do inum = 1, add_ele_comm%num_import(i)
           jcou = inum + jst
@@ -1908,6 +1820,8 @@
 !
 !
 !
+!  ---------------------------------------------------------------------
+!
       subroutine sort_import_by_pe_and_local_id  &
      &         (nprocs, nod_comm, istack_new_import, ntot_new_import,   &
      &          irank_nod_new_import, inod_lc_new_import,    &
@@ -2000,38 +1914,5 @@
 !      end do
 !
       end subroutine sort_import_by_pe_and_local_id
-
-
-
-      integer(kind = kint) function count_ntot_trimmed_import           &
-     &                   (nprocs, ntot_new_import, inod_lc_import_tmp,  &
-     &                    num_import_tmp, istack_import_tmp)
 !
-      use m_precision
-!
-      implicit none
-!
-      integer, intent(in) :: nprocs
-      integer(kind= kint), intent(in) :: ntot_new_import
-      integer(kind= kint), intent(in)                                &
-     &                    :: inod_lc_import_tmp(ntot_new_import)
-!
-      integer(kind= kint), intent(in) :: num_import_tmp(nprocs)
-      integer(kind= kint), intent(in) :: istack_import_tmp(0:nprocs)
-!
-      integer(kind = kint) :: ist, inum, ip, ntot
-!
-!
-      ntot = 0
-      do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        do inum = 1, num_import_tmp(ip) - 1
-          if(inod_lc_import_tmp(ist+inum)                               &
-     &        .ne. inod_lc_import_tmp(ist+inum+1)) ntot = ntot + 1
-        end do
-        if(num_import_tmp(ip) .gt. 0) ntot = ntot + 1
-      end do
-      count_ntot_trimmed_import = ntot
-!
-      end function count_ntot_trimmed_import
-
+!  ---------------------------------------------------------------------
