@@ -808,8 +808,7 @@
      &    dist_4_comm%distance_in_export)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
-     &    trimmed_import_position%inod_gl_comm, trimmed_import_position%xx_comm,     &
-     &    inod_lc_new_import_trim, trimmed_import_position%irank_comm,  &
+     &    trimmed_import_position, inod_lc_new_import_trim,             &
      &    new_node, dbl_id2)
 !
 !

@@ -7,21 +7,16 @@
 !>@brief  Append extended sleeve element
 !!
 !!@verbatim
-!!      subroutine s_append_extended_node(node, add_nod_comm,           &
-!!     &          inod_gl_new_import_trim, xx_new_import_trim,          &
-!!     &          inod_lc_new_import_trim, irank_new_import_trim,       &
+!!      subroutine s_append_extended_node(node, inod_dbl, add_nod_comm, &
+!!     &          trimmed_import_position, inod_lc_new_import_trim,     &
 !!     &          new_node, new_inod_dbl)
 !!        type(node_data), intent(in) :: node
 !!        type(node_ele_double_number), intent(inout) :: inod_dbl
 !!        type(communication_table), intent(in) :: add_nod_comm
-!!        integer(kind = kint_gl), intent(in)                           &
-!!     &   :: inod_gl_new_import_trim(add_nod_comm%ntot_import)
-!!        real(kind = kreal), intent(in)                                &
-!!     &           :: xx_new_import_trim(3*add_nod_comm%ntot_import)
+!!        type(node_data_for_sleeve_ext), intent(in)                    &
+!!     &           :: trimmed_import_position
 !!        integer(kind = kint), intent(in)                              &
 !!     &           :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &           :: irank_new_import_trim(add_nod_comm%ntot_import)
 !!        type(node_data), intent(inout) :: new_node
 !!        type(node_ele_double_number) :: new_inod_dbl
 !!@endverbatim
@@ -31,6 +26,7 @@
       use t_comm_table
       use t_geometry_data
       use t_para_double_numbering
+      use t_mesh_for_sleeve_extend
 !
       implicit none
 !
@@ -44,24 +40,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_append_extended_node(node, inod_dbl, add_nod_comm,   &
-     &          inod_gl_new_import_trim, xx_new_import_trim,            &
-     &          inod_lc_new_import_trim, irank_new_import_trim,         &
+     &          trimmed_import_position, inod_lc_new_import_trim,       &
      &          new_node, new_inod_dbl)
 !
       type(node_data), intent(in) :: node
       type(node_ele_double_number), intent(in) :: inod_dbl
       type(communication_table), intent(in) :: add_nod_comm
-      integer(kind = kint_gl), intent(in)                               &
-     &           :: inod_gl_new_import_trim(add_nod_comm%ntot_import)
-      real(kind = kreal), intent(in)                                    &
-     &           :: xx_new_import_trim(3*add_nod_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
      &           :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &           :: irank_new_import_trim(add_nod_comm%ntot_import)
+      type(node_data_for_sleeve_ext), intent(in)                        &
+     &           :: trimmed_import_position
 !
       type(node_data), intent(inout) :: new_node
-      type(node_ele_double_number) :: new_inod_dbl
+      type(node_ele_double_number), intent(inout) :: new_inod_dbl
 !
 !
       call add_num_extended_node(node, add_nod_comm,                    &
@@ -69,12 +60,14 @@
 !
       call alloc_node_geometry_base(new_node)
       call append_extended_node_position(node, add_nod_comm,            &
-     &    inod_gl_new_import_trim, xx_new_import_trim,                  &
+     &    trimmed_import_position%inod_gl_comm,                         &
+     &    trimmed_import_position%xx_comm,                              &
      &    new_node%numnod, new_node%inod_global, new_node%xx)
 !
       call alloc_double_numbering(new_node%numnod, new_inod_dbl)
       call append_extended_dbl_nod_number(node, inod_dbl, add_nod_comm, &
-     &    inod_lc_new_import_trim, irank_new_import_trim, new_inod_dbl)
+     &    inod_lc_new_import_trim, trimmed_import_position%irank_comm,  &
+     &    new_inod_dbl)
 !
       end subroutine s_append_extended_node
 !
