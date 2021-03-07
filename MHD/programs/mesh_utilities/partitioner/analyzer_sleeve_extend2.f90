@@ -354,7 +354,6 @@
       integer(kind = kint), allocatable :: irank_nod_new_import(:)
       real(kind = kreal), allocatable :: distance_new_import(:)
 !
-      integer(kind = kint), allocatable :: inod_in_added_import(:)
       integer(kind = kint), allocatable :: item_import_to_new_import(:)
 !
       integer(kind = kint), allocatable :: nele_import_tmp(:)
@@ -818,19 +817,6 @@
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
      &        'trimmed_import_node:', ntot_failed_gl 
-!
-      allocate(inod_in_added_import(expand_nod_comm%ntot_import))
-      inod_in_added_import = 0
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jnum = idx_home_sorted_import(inum+ist)
-          inod_in_added_import(jnum) = inum + jst
-        end do
-      end do
 !
       icou = check_expand_nod_import_item                               &
      &             (dbl_id2, expand_nod_comm, add_nod_comm,             &
