@@ -8,8 +8,7 @@
 !!
 !!@verbatim
 !!      integer(kind = kint) function count_ntot_trimmed_import         &
-!!     &                   (nprocs, ntot_new_import, inod_lc_import_tmp,&
-!!     &                    num_import_tmp, istack_import_tmp)
+!!     &                            (nprocs, sorted_import)
 !!      subroutine count_trimmed_import_stack                           &
 !!     &         (nprocs, ntot_new_import, inod_lc_import_tmp,          &
 !!     &          num_import_tmp, istack_import_tmp,                    &
@@ -81,6 +80,7 @@
       module trim_redundant_import_item
 !
       use m_precision
+      use t_mesh_for_sleeve_extend
 !
       implicit none
 !
@@ -91,28 +91,24 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function count_ntot_trimmed_import           &
-     &                   (nprocs, ntot_new_import, inod_lc_import_tmp,  &
-     &                    num_import_tmp, istack_import_tmp)
+     &                            (nprocs, sorted_import)
 !
       integer, intent(in) :: nprocs
-      integer(kind= kint), intent(in) :: ntot_new_import
-      integer(kind= kint), intent(in)                                &
-     &                    :: inod_lc_import_tmp(ntot_new_import)
-!
-      integer(kind= kint), intent(in) :: num_import_tmp(nprocs)
-      integer(kind= kint), intent(in) :: istack_import_tmp(0:nprocs)
+      type(sort_data_for_sleeve_trim), intent(in) :: sorted_import
 !
       integer(kind = kint) :: ist, inum, ip, ntot
 !
 !
       ntot = 0
       do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        do inum = 1, num_import_tmp(ip) - 1
-          if(inod_lc_import_tmp(ist+inum)                               &
-     &        .ne. inod_lc_import_tmp(ist+inum+1)) ntot = ntot + 1
+        ist = sorted_import%istack_sorted_by_pe(ip-1)
+        do inum = 1, sorted_import%num_sorted_by_pe(ip) - 1
+          if(sorted_import%iref_lc_import(ist+inum)                     &
+     &        .ne. sorted_import%iref_lc_import(ist+inum+1)) then
+            ntot = ntot + 1
+          end if
         end do
-        if(num_import_tmp(ip) .gt. 0) ntot = ntot + 1
+        if(sorted_import%num_sorted_by_pe(ip) .gt. 0) ntot = ntot + 1
       end do
       count_ntot_trimmed_import = ntot
 !
@@ -120,20 +116,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_trimmed_import_stack                             &
-     &         (nprocs, ntot_new_import, inod_lc_import_tmp,            &
-     &          num_import_tmp, istack_import_tmp,                      &
+      subroutine count_trimmed_import_stack(nprocs, sorted_import,      &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item)
 !
+      type(sort_data_for_sleeve_trim), intent(in) :: sorted_import
       integer, intent(in) :: nprocs
-      integer(kind= kint), intent(in) :: ntot_new_import
 !
-      integer(kind= kint), intent(in)                                   &
-     &                    :: inod_lc_import_tmp(ntot_new_import)
-!
-      integer(kind= kint), intent(in) :: num_import_tmp(nprocs)
-      integer(kind= kint), intent(in) :: istack_import_tmp(0:nprocs)
       integer(kind= kint), intent(in) :: ntot_trimmed_nod_import
 !
       integer(kind= kint), intent(inout)                                &
@@ -148,17 +137,18 @@
       istack_trimmed_import_pe(0) =   0
       istack_trimmed_import_item(0) = 0
       do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        do inum = 1, num_import_tmp(ip)-1
-          if(inod_lc_import_tmp(ist+inum)                               &
-     &        .ne. inod_lc_import_tmp(ist+inum+1)) then
+        ist = sorted_import%istack_sorted_by_pe(ip-1)
+        do inum = 1, sorted_import%num_sorted_by_pe(ip) - 1
+          if(sorted_import%iref_lc_import(ist+inum)                   &
+     &        .ne. sorted_import%iref_lc_import(ist+inum+1)) then
             icou = icou + 1
             istack_trimmed_import_item(icou) = ist + inum
           end if
         end do
-        if(num_import_tmp(ip) .gt. 0) then
+        if(sorted_import%num_sorted_by_pe(ip) .gt. 0) then
           icou = icou + 1
-          istack_trimmed_import_item(icou) = ist + num_import_tmp(ip)
+          istack_trimmed_import_item(icou)                              &
+     &         = ist + sorted_import%num_sorted_by_pe(ip)
         end if
         istack_trimmed_import_pe(ip) =    icou
       end do

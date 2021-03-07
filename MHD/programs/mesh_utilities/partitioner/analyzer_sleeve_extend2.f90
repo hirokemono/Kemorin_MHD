@@ -591,28 +591,21 @@
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import)
 !
-      call sort_import_by_pe_and_local_id                               &
-     &   (nprocs, nod_comm, expand_nod_comm, expand_import_position%irank_comm,      &
-     &    sort_nod_import%isorted_to_org, sort_nod_import%iref_lc_import, &
-     &    sort_nod_import%irank_import_sort, sort_nod_import%irank_orgin_pe, &
-     &    sort_nod_import%num_sorted_by_pe, sort_nod_import%istack_sorted_by_pe)
+      call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
+     &    expand_nod_comm, expand_import_position%irank_comm,           &
+     &    sort_nod_import)
 !
-      ntot_trimmed_nod_import = count_ntot_trimmed_import               &
-     &                    (nprocs, expand_nod_comm%ntot_import,  &
-     &                     sort_nod_import%iref_lc_import, &
-     &                      sort_nod_import%num_sorted_by_pe, &
-     &                   sort_nod_import%istack_sorted_by_pe)
+      ntot_trimmed_nod_import                                           &
+     &     = count_ntot_trimmed_import(nprocs, sort_nod_import)
 !
       allocate(istack_trimmed_import_pe(0:nprocs))
       allocate(istack_trimmed_import_item(0:ntot_trimmed_nod_import))
       istack_trimmed_import_pe(:) = 0
       istack_trimmed_import_item(:) = 0
 !
-      call count_trimmed_import_stack                                   &
-     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import%iref_lc_import,      &
-     &          sort_nod_import%num_sorted_by_pe, sort_nod_import%istack_sorted_by_pe,    &
-     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
-     &          istack_trimmed_import_item)
+      call count_trimmed_import_stack(nprocs, sort_nod_import,          &
+     &    ntot_trimmed_nod_import, istack_trimmed_import_pe,            &
+     &    istack_trimmed_import_item)
 !
       allocate(idx_home_sorted_import(istack_trimmed_import_pe(nprocs)))
       idx_home_sorted_import(1:istack_trimmed_import_pe(nprocs)) = -1
@@ -844,26 +837,20 @@
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import)
 !
-      call sort_import_by_pe_and_local_id                               &
-     &   (nprocs, nod_comm, expand_ele_comm,                            &
-     &    expand_import_connect%irank_comm,                             &
-     &    sort_ele_import%isorted_to_org, sort_ele_import%iref_lc_import, &
-     &    sort_ele_import%irank_import_sort, sort_ele_import%irank_orgin_pe, &
-     &    sort_ele_import%num_sorted_by_pe, sort_ele_import%istack_sorted_by_pe)
+      call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
+     &    expand_ele_comm, expand_import_connect%irank_comm,            &
+     &    sort_ele_import)
 !
-      ntot_trimmed_ele_import = count_ntot_trimmed_import               &
-     &                (nprocs, expand_ele_comm%ntot_import, sort_ele_import%iref_lc_import, &
-     &                 sort_ele_import%num_sorted_by_pe, sort_ele_import%istack_sorted_by_pe)
+      ntot_trimmed_ele_import                                           &
+     &     = count_ntot_trimmed_import(nprocs, sort_ele_import)
 !
       allocate(istack_trimmed_ele_import_pe(0:nprocs))
       allocate(istack_trimmed_ele_import_item(0:ntot_trimmed_ele_import))
       istack_trimmed_ele_import_pe(:) =  0
       istack_trimmed_ele_import_item(:) = 0
 !
-      call count_trimmed_import_stack                             &
-     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%iref_lc_import,      &
-     &    sort_ele_import%num_sorted_by_pe, sort_ele_import%istack_sorted_by_pe,    &
-     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,      &
+      call count_trimmed_import_stack(nprocs, sort_ele_import,          &
+     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,        &
      &    istack_trimmed_ele_import_item)
 !
       allocate(idx_home_sorted_ele_import(istack_trimmed_ele_import_pe(nprocs)))
@@ -1348,12 +1335,11 @@
 !
       subroutine sort_import_by_pe_and_local_id                         &
      &         (nprocs, nod_comm, expand_comm, irank_nod_new_import,    &
-     &          index_4_import_tmp, inod_lc_import_tmp, &
-     &          irank_import_tmp, irank_origin_new_import, &
-     &          num_import_tmp, istack_import_tmp)
+     &          sort_import)
 !
       use m_precision
       use t_comm_table
+      use t_mesh_for_sleeve_extend
       use quicksort
 !
       implicit none
@@ -1364,26 +1350,16 @@
       integer(kind= kint), intent(in)                                   &
      &            :: irank_nod_new_import(expand_comm%ntot_import)
 !
-      integer(kind= kint), intent(inout)                                &
-     &            :: index_4_import_tmp(expand_comm%ntot_import)
-      integer(kind= kint), intent(inout)                                &
-     &            :: inod_lc_import_tmp(expand_comm%ntot_import)
-      integer(kind= kint), intent(inout)                                &
-     &            :: irank_import_tmp(expand_comm%ntot_import)
-      integer(kind= kint), intent(inout)                                &
-     &            :: irank_origin_new_import(expand_comm%ntot_import)
-!
-      integer(kind= kint), intent(inout) :: num_import_tmp(nprocs)
-      integer(kind= kint), intent(inout) :: istack_import_tmp(0:nprocs)
+      type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
 !
       integer(kind = kint) :: i, irank, ist, ied, inum, icou, ip
 !
 !
 !$omp parallel do private(i)
       do i = 1, expand_comm%ntot_import
-        index_4_import_tmp(i) = i
-        irank_import_tmp(i) = irank_nod_new_import(i)
-        irank_origin_new_import(i) = -1
+        sort_import%isorted_to_org(i) = i
+        sort_import%irank_import_sort(i) = irank_nod_new_import(i)
+        sort_import%irank_orgin_pe(i) = -1
       end do
 !$omp end parallel do
 !
@@ -1393,42 +1369,46 @@
         ist = expand_comm%istack_import(i-1) + 1
         ied = expand_comm%istack_import(i)
 !$omp workshare
-        irank_origin_new_import(ist:ied) = irank
+        sort_import%irank_orgin_pe(ist:ied) = irank
 !$omp end workshare nowait
       end do
 !$omp end parallel
 !
       if(expand_comm%ntot_import .gt. 1) then
         call quicksort_w_index                                          &
-     &     (expand_comm%ntot_import, irank_import_tmp,                  &
-     &      ione, expand_comm%ntot_import, index_4_import_tmp)
+     &     (expand_comm%ntot_import, sort_import%irank_import_sort,     &
+     &      ione, expand_comm%ntot_import, sort_import%isorted_to_org)
       end if
 !
 !$omp parallel do private(i,icou)
       do i = 1, expand_comm%ntot_import
-        icou = index_4_import_tmp(i)
-        inod_lc_import_tmp(i) = expand_comm%item_import(icou)
+        icou = sort_import%isorted_to_org(i)
+        sort_import%iref_lc_import(i) = expand_comm%item_import(icou)
       end do
 !$omp end parallel do
 !
 !$omp parallel workshare
-      num_import_tmp(1:nprocs) = 0
+      sort_import%num_sorted_by_pe(1:nprocs) = 0
 !$omp end parallel workshare
       do i = 1, expand_comm%ntot_import
-        irank = irank_import_tmp(i)
-        num_import_tmp(irank+1) = num_import_tmp(irank+1) + 1
+        irank = sort_import%irank_import_sort(i)
+        sort_import%num_sorted_by_pe(irank+1)                           &
+     &        = sort_import%num_sorted_by_pe(irank+1) + 1
       end do
       do ip = 1, nprocs
-        istack_import_tmp(ip) = istack_import_tmp(ip-1)                 &
-     &                         + num_import_tmp(ip)
+        sort_import%istack_sorted_by_pe(ip)                             &
+     &      = sort_import%istack_sorted_by_pe(ip-1)                     &
+     &       + sort_import%num_sorted_by_pe(ip)
       end do
 !
       do ip = 1, nprocs
-        ist = istack_import_tmp(ip-1)
-        if(num_import_tmp(ip) .gt. 1) then
+        ist = sort_import%istack_sorted_by_pe(ip-1)
+        if(sort_import%num_sorted_by_pe(ip) .gt. 1) then
           call quicksort_w_index                                        &
-     &       (num_import_tmp(ip), inod_lc_import_tmp(ist+1),            &
-     &        ione, num_import_tmp(ip), index_4_import_tmp(ist+1))
+     &       (sort_import%num_sorted_by_pe(ip),                         &
+     &        sort_import%iref_lc_import(ist+1),                        &
+     &        ione, sort_import%num_sorted_by_pe(ip),                   &
+     &        sort_import%isorted_to_org(ist+1))
         end if
       end do
 !

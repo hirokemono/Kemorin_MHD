@@ -92,7 +92,7 @@ t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 transfer_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/transfer_to_new_partition.f90 m_precision.o m_phys_constants.o calypso_mpi.o t_comm_table.o t_calypso_comm_table.o t_vector_for_solver.o calypso_SR_type.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
-trim_redundant_import_item.o: $(MODIFY_PARA_MESHDIR)/trim_redundant_import_item.f90 m_precision.o
+trim_redundant_import_item.o: $(MODIFY_PARA_MESHDIR)/trim_redundant_import_item.f90 m_precision.o t_mesh_for_sleeve_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
 unused_comms_4_sleeve_ext.o: $(MODIFY_PARA_MESHDIR)/unused_comms_4_sleeve_ext.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_para_double_numbering.o m_solver_SR.o reverse_SR_int.o reverse_SR_int8.o reverse_SR_real.o mark_export_nod_ele_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
