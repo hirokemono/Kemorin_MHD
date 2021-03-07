@@ -426,6 +426,9 @@
 
       type(comm_table_for_each_pe) :: each_comm
 !
+      integer(kind = kint), external :: check_negative_ie_new_import
+      integer(kind = kint), external :: check_zero_ie_new_import
+!
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
       integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp, num
@@ -949,24 +952,32 @@
         end do
       end do
 !
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1) + 1
+        jed = add_nod_comm%istack_import(i)
+        do inum = jst, jed
+          add_nod_comm%item_import(inum) = inum + org_node%numnod
+        end do
+      end do
+!
       icou = 0
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jcou = inum + jst
-          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
-!
+        jst = add_nod_comm%istack_import(i-1) + 1
+        jed = add_nod_comm%istack_import(i)
+        do inum = jst, jed
           jnum = idx_home_sorted_import(inum+ist)
-          inod = jcou + org_node%numnod
+          inod = add_nod_comm%item_import(inum)
           if(dbl_id2%irank(inod) .ne. irank_nod_new_import(jnum)    &
      &   .or. dbl_id2%index(inod) .ne. expand_nod_comm%item_import(jnum)) &
      &      icou = icou + 1
         end do
       end do
       write(*,*) my_rank, 'Num. of fffailed ',                          &
-      'with inod_lc_new_import_trim:', icou 
+      'with add_nod_comm%item_import:', icou 
 !
       icou = 0
       do i = 1, expand_nod_comm%ntot_import
@@ -982,23 +993,10 @@
 !
       inod_added_import(1:expand_nod_comm%ntot_import) = 0
 !
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jnum = idx_home_sorted_import(inum+ist)
-          inod = inum + jst + org_node%numnod
-          inod_added_import(jnum) = inod
-        end do
-      end do
-!
-      do jnum = 1, expand_nod_comm%ntot_import
-        if(inod_added_import(jnum) .eq. 0) then
-          kdx = idx_home_for_import(jnum)
-          inod_added_import(jnum) = inod_added_import(kdx)
-        end if
-      end do
+      call find_original_import_address                                 &
+     &   (nprocs, org_node, expand_nod_comm, add_nod_comm,              &
+     &    istack_trimmed_import_pe, idx_home_sorted_import,             &
+     &    idx_home_for_import, inod_added_import)
 !
       icou = 0
       jcou = 0
@@ -1014,53 +1012,34 @@
       'with expand_nod_comm%item_import:', icou , jcou
       call calypso_mpi_barrier
 
-      icou = 0
-      jcou = 0
-      do k1 = 1, org_ele%nnod_4_ele
-        do inum = 1, expand_ele_comm%ntot_import
-          if(ie_new_import(inum,k1) .eq. 0) jcou = jcou + 1
-          if(ie_new_import(inum,k1) .le. 0) icou = icou + 1
-        end do
-      end do
-      write(*,*) 'Baka ie_new_import', my_rank, icou, jcou
-      call calypso_mpi_barrier
+      icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
+     &                                ie_new_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &     'zero ie_new_import before fix', ntot_failed_gl
 !
-!$omp parallel private(k1,i,ist_org,ist_exp,ist_ele)
-      do k1 = 1, org_ele%nnod_4_ele
-        do i = 1, nod_comm%num_neib
-          ist_ele = expand_ele_comm%istack_import(i-1)
-          num =     expand_ele_comm%istack_import(i) - ist_ele
-          ist_org = nod_comm%istack_import(i-1)
-          ist_exp = expand_nod_comm%istack_import(i-1)
-!$omp do private(inum,jnum)
-          do inum = 1, num
-            jnum = ie_new_import(inum+ist_ele,k1)
-            if(jnum .lt. 0) then
-              ie_new_import(inum+ist_ele,k1)                            &
-     &           = nod_comm%item_import(-jnum+ist_org)
-            else if(jnum .gt. 0) then
-              inod = inod_added_import(jnum+ist_exp)
-              ie_new_import(inum+ist_ele,k1) = inod
-            else
-              write(*,*) my_rank, 'Failed 1314 ie_new_import', inum, k1
-            end if
-          end do
-!$omp end do
-        end do
-      end do
-!$omp end parallel
+      icou = check_negative_ie_new_import(org_ele, expand_ele_comm,     &
+     &                                    ie_new_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Negative ie_new_import before fix', ntot_failed_gl
 !
-      icou = 0
-      jcou = 0
-      do k1 = 1, org_ele%nnod_4_ele
-        do inum = 1, expand_ele_comm%ntot_import
-          if(ie_new_import(inum,k1) .eq. 0) jcou = jcou + 1
-          if(ie_new_import(inum,k1) .le. 0) icou = icou + 1
-        end do
-      end do
-      write(*,*) 'Tako ie_new_import', my_rank, icou, jcou
-      call calypso_mpi_barrier
+      call renumber_extended_ele_import                                 &
+     &   (my_rank, org_node, org_ele, nod_comm,                         &
+     &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
+     &    ie_new_import)
 !
+      icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
+     &                                ie_new_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &     'zero ie_new_import after fix', ntot_failed_gl
+!
+      icou = check_negative_ie_new_import(org_ele, expand_ele_comm,     &
+     &                                    ie_new_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Negative ie_new_import after fix', ntot_failed_gl
 !
 !
       call s_append_communication_table                                 &
@@ -1718,6 +1697,8 @@
       use t_para_double_numbering
       use mark_export_nod_ele_extend
 !
+      implicit none
+!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -1827,6 +1808,8 @@
       use t_geometry_data
       use mark_export_nod_ele_extend
 !
+      implicit none
+!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(mark_for_each_comm), intent(in)                              &
@@ -1873,3 +1856,169 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine renumber_extended_ele_import(my_rank,                  &
+     &          node, ele, nod_comm, expand_nod_comm, expand_ele_comm,  &
+     &          inod_added_import, ie_new_import)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+!
+      implicit none
+!
+      integer, intent(in) :: my_rank
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(communication_table), intent(in) :: expand_ele_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &     :: inod_added_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint), intent(inout)                               &
+     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: k1, i, ist_org, ist_exp, ist_ele, num
+      integer(kind = kint) :: inum, jnum
+!
+!
+!$omp parallel private(k1,i,ist_org,ist_exp,ist_ele,num)
+      do k1 = 1, ele%nnod_4_ele
+        do i = 1, nod_comm%num_neib
+          ist_ele = expand_ele_comm%istack_import(i-1)
+          num =     expand_ele_comm%istack_import(i) - ist_ele
+          ist_org = nod_comm%istack_import(i-1)
+          ist_exp = expand_nod_comm%istack_import(i-1)
+!$omp do private(inum,jnum)
+          do inum = 1, num
+            jnum = ie_new_import(inum+ist_ele,k1)
+            if(jnum .lt. 0) then
+              ie_new_import(inum+ist_ele,k1)                            &
+     &           = nod_comm%item_import(-jnum+ist_org)
+            else if(jnum .gt. 0) then
+              ie_new_import(inum+ist_ele,k1)                            &
+     &           = inod_added_import(jnum+ist_exp)
+            else
+              write(*,*) my_rank, 'Failed renumber ie_new_import',      &
+      &                 inum, k1
+            end if
+          end do
+!$omp end do
+        end do
+      end do
+!$omp end parallel
+!
+      end subroutine renumber_extended_ele_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine find_original_import_address                           &
+     &         (nprocs, node, expand_nod_comm, add_nod_comm,            &
+     &          istack_trimmed_import_pe, idx_home_sorted_import,       &
+     &          idx_home_for_import, inod_added_import)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+!
+      implicit none
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(communication_table), intent(in) :: add_nod_comm
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_trimmed_import_pe(0:nprocs)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_for_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint), intent(inout)                               &
+     &      :: inod_added_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: i, irank, ist, jst, inod, isort
+      integer(kind = kint) :: inum, jnum
+!
+!
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1)
+        do inum = 1, add_nod_comm%num_import(i)
+          jnum = idx_home_sorted_import(inum+ist)
+          inod = inum + jst + node%numnod
+          inod_added_import(jnum) = inod
+        end do
+      end do
+!
+      do jnum = 1, expand_nod_comm%ntot_import
+        if(inod_added_import(jnum) .eq. 0) then
+          isort = idx_home_for_import(jnum)
+          inod_added_import(jnum) = inod_added_import(isort)
+        end if
+      end do
+!
+      end subroutine find_original_import_address
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function check_negative_ie_new_import        &
+     &                   (ele, expand_ele_comm, ie_new_import)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+!
+      implicit none
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: expand_ele_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: icou, k1, inum
+!
+!
+      icou = 0
+      do k1 = 1, ele%nnod_4_ele
+        do inum = 1, expand_ele_comm%ntot_import
+          if(ie_new_import(inum,k1) .le. 0) icou = icou + 1
+        end do
+      end do
+      check_negative_ie_new_import = icou
+!
+      end function check_negative_ie_new_import
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function check_zero_ie_new_import            &
+     &                   (ele, expand_ele_comm, ie_new_import)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+!
+      implicit none
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: expand_ele_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: icou, k1, inum
+!
+!
+      icou = 0
+      do k1 = 1, ele%nnod_4_ele
+        do inum = 1, expand_ele_comm%ntot_import
+          if(ie_new_import(inum,k1) .eq. 0) icou = icou + 1
+        end do
+      end do
+      check_zero_ie_new_import = icou
+!
+      end function check_zero_ie_new_import
