@@ -298,6 +298,7 @@
       use find_extended_comm_table
       use extend_comm_table
 !
+      use cal_minmax_and_stacks
       use append_communication_table
       use append_extended_node
       use append_extended_element
@@ -430,7 +431,6 @@
       integer(kind = kint), allocatable :: idx_home_sorted_ele_import(:)
       integer(kind = kint), allocatable :: idx_home_for_ele_import(:)
 !
-      integer(kind = kint), allocatable :: inod_in_comm(:)
       integer(kind = kint), allocatable :: ineib_org_ele(:)
 !
       integer(kind = kint), allocatable :: inod_added_import(:)
@@ -625,57 +625,24 @@
       allocate(num_new_import(nod_comm%num_neib))
       allocate(istack_new_import(0:nod_comm%num_neib))
 !
-      allocate(inod_in_comm(org_node%numnod))
-!$omp parallel workshare
-      inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-!
-      do i = 1, nod_comm%num_neib
-!$omp parallel workshare
-        inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-        ist = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        do inum = 1, num
-          inod = nod_comm%item_export(inum+ist)
-          inod_in_comm(inod) = inod
-        end do
-        icou = 0
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
-        end do
-!
-!        write(*,*) my_rank, nod_comm%id_neib(i),                       &
-!     &           'marked import node', icou, num
-        num_new_export(i) = mark_nod(i)%nnod_marked - icou
-      end do
-
-      istack_new_export(0) = 0
-      do i = 1, nod_comm%num_neib
-        istack_new_export(i) = istack_new_export(i-1)                   &
-     &                        + num_new_export(i)
-      end do
-      ntot_new_export = istack_new_export(nod_comm%num_neib)
-
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib, num_new_export, SR_sig1, &
-     &    num_new_import, istack_new_import, ntot_new_import)
-!
-!
       allocate(num_new_ele_export(nod_comm%num_neib))
       allocate(istack_new_ele_export(0:nod_comm%num_neib))
       allocate(num_new_ele_import(nod_comm%num_neib))
       allocate(istack_new_ele_import(0:nod_comm%num_neib))
 !
-      istack_new_ele_export(0) = 0
-      do i = 1, nod_comm%num_neib
-        num_new_ele_export(i) = mark_ele(i)%nnod_marked
-        istack_new_ele_export(i) = istack_new_ele_export(i-1)           &
-     &                        + num_new_ele_export(i)
-      end do
-      ntot_new_ele_export = istack_new_ele_export(nod_comm%num_neib)
+      call count_export_4_expanded_mesh                                 &
+     &   (nod_comm, org_node, mark_nod, mark_ele,                       &
+     &    num_new_export, num_new_ele_export)
+      call s_cal_total_and_stacks                                       &
+     &   (nod_comm%num_neib, num_new_export, izero,                     &
+     &    istack_new_export, ntot_new_export)
+      call s_cal_total_and_stacks                                       &
+     &   (nod_comm%num_neib, num_new_ele_export, izero,                 &
+     &    istack_new_ele_export, ntot_new_ele_export)
 
+      call num_items_send_recv                                          &
+     &   (nod_comm%num_neib, nod_comm%id_neib, num_new_export, SR_sig1, &
+     &    num_new_import, istack_new_import, ntot_new_import)
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib, num_new_ele_export,      &
      &    SR_sig1, num_new_ele_import, istack_new_ele_import,           &
@@ -705,53 +672,16 @@
       allocate(irank_ele_new_import(ntot_new_ele_import))
       allocate(ie_new_import(ntot_new_ele_import,org_ele%nnod_4_ele))
 !
-      do i = 1, nod_comm%num_neib
-!$omp parallel workshare
-        inod_in_comm(1:org_node%numnod) = 0
-!$omp end parallel workshare
-        ist = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        do inum = 1, num
-          inod = nod_comm%item_export(inum+ist)
-          inod_in_comm(inod) = -inum
-        end do
-!
-        icou = istack_new_export(i-1)
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          if(inod_in_comm(inod) .lt. 0) cycle
-
-          icou = icou + 1
-          inod_in_comm(inod) =       icou - istack_new_export(i-1)
-          item_new_export(icou) =    inod
-          inod_gl_new_export(icou) = org_node%inod_global(inod)
-          xx_new_export(3*icou-2) =  org_node%xx(inod,1)
-          xx_new_export(3*icou-1) =  org_node%xx(inod,2)
-          xx_new_export(3*icou  ) =  org_node%xx(inod,3)
-          inod_lc_new_export(icou) =   inod_dbl%index(inod)
-          irank_nod_new_export(icou) = inod_dbl%irank(inod)
-          distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
-        end do
-!
-        ist = istack_new_ele_export(i-1)
-!$omp parallel do private(inum,icou,iele,k1,inod)
-        do inum = 1, mark_ele(i)%nnod_marked
-          icou = ist + inum
-          iele = mark_ele(i)%inod_marked(inum)
-          iele_gl_new_export(icou) = org_ele%iele_global(iele)
-          iele_lc_new_export(icou) =   iele_dbl%index(iele)
-          irank_ele_new_export(icou) = iele_dbl%irank(iele)
-!
-          do k1 = 1, org_ele%nnod_4_ele
-            inod = org_ele%ie(iele,k1)
-            ie_new_export(icou,k1) = inod_in_comm(inod)
-!            if(inod_in_comm(inod) .eq. 0) write(*,*) my_rank,   &
-!     &        'Failed 759 inod_in_comm(inod)', inod,   &
-!     &          inod_dbl%irank(inod), nod_comm%id_neib(i)
-          end do
-        end do
-!$omp end parallel do
-      end do
+      call set_export_4_expanded_mesh   &
+     &         (nod_comm, org_node, org_ele, inod_dbl, iele_dbl,       &
+     &          mark_nod, mark_ele,    &
+     &          ntot_new_export, istack_new_export, &
+     &          item_new_export, distance_new_export,   &
+     &          inod_lc_new_export, irank_nod_new_export,   &
+     &          inod_gl_new_export, xx_new_export,   &
+     &          ntot_new_ele_export, istack_new_ele_export,   &
+     &          iele_lc_new_export, irank_ele_new_export,   &
+     &          iele_gl_new_export, ie_new_export)
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    istack_new_export, istack_new_import, item_new_export,        &
@@ -896,17 +826,15 @@
       write(*,*) my_rank, 'add_nod_comm%num_neib', add_nod_comm%num_neib
       call alloc_import_num(add_nod_comm)
 !
-      add_nod_comm%istack_import(0) = 0
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         add_nod_comm%num_import(i) = istack_trimmed_import_pe(irank+1)  &
      &                              - istack_trimmed_import_pe(irank)
-        add_nod_comm%istack_import(i) = add_nod_comm%istack_import(i-1) &
-     &                                 + add_nod_comm%num_import(i)
       end do
-      add_nod_comm%ntot_import                                          &
-     &       = add_nod_comm%istack_import(add_nod_comm%num_neib)
-      write(*,*) my_rank, 'add_nod_comm%ntot_import', add_nod_comm%ntot_import
+!
+      call s_cal_total_and_stacks                                       &
+     &   (add_nod_comm%num_neib, add_nod_comm%num_import, izero,        &
+     &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
       call alloc_import_item(add_nod_comm)
 !
       allocate(inod_gl_new_import_trim(add_nod_comm%ntot_import))
@@ -1775,4 +1703,179 @@
 !      end do
 !
       end subroutine sort_import_by_pe_and_local_id
+!
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_export_4_expanded_mesh   &
+     &         (nod_comm, node, ele, inod_dbl, iele_dbl,       &
+     &          mark_nod, mark_ele,    &
+     &          ntot_new_export, istack_new_export, &
+     &          item_new_export, distance_new_export,   &
+     &          inod_lc_new_export, irank_nod_new_export,   &
+     &          inod_gl_new_export, xx_new_export,   &
+     &          ntot_new_ele_export, istack_new_ele_export,   &
+     &          iele_lc_new_export, irank_ele_new_export,   &
+     &          iele_gl_new_export, ie_new_export)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+      use t_para_double_numbering
+      use mark_export_nod_ele_extend
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(node_ele_double_number), intent(in) :: inod_dbl
+      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_nod(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_ele(nod_comm%num_neib)
+!
+      integer(kind = kint), intent(in) :: ntot_new_export
+      integer(kind = kint), intent(in)                                  &
+     &            :: istack_new_export(0:nod_comm%num_neib)
+!
+      integer(kind = kint), intent(in) :: ntot_new_ele_export
+      integer(kind = kint), intent(in)                                  &
+     &            :: istack_new_ele_export(0:nod_comm%num_neib)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: item_new_export(ntot_new_export)
+      real(kind = kreal), intent(inout)                                 &
+     &            :: distance_new_export(ntot_new_export)
+      integer(kind = kint), intent(inout)                               &
+     &            :: inod_lc_new_export(ntot_new_export)
+      integer(kind = kint), intent(inout)                               &
+     &            :: irank_nod_new_export(ntot_new_export)
+      integer(kind = kint_gl), intent(inout)                            &
+     &            :: inod_gl_new_export(ntot_new_export)
+      real(kind = kreal), intent(inout)                                 &
+     &            :: xx_new_export(3*ntot_new_export)
+!
+      integer(kind = kint_gl), intent(inout)                            &
+     &            :: iele_gl_new_export(ntot_new_ele_export)
+      integer(kind = kint), intent(inout)                               &
+     &            :: iele_lc_new_export(ntot_new_ele_export)
+      integer(kind = kint), intent(inout)                               &
+     &            :: irank_ele_new_export(ntot_new_ele_export)
+      integer(kind = kint), intent(inout)                               &
+     &            :: ie_new_export(ntot_new_ele_export,ele%nnod_4_ele)
+!
+      integer(kind = kint), allocatable :: inod_in_comm(:)
+      integer(kind = kint) :: i, ist, num, inod, inum, icou, iele, k1
+!
+!
+      allocate(inod_in_comm(node%numnod))
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        inod_in_comm(1:node%numnod) = 0
+!$omp end parallel workshare
+        ist = nod_comm%istack_export(i-1)
+        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+        do inum = 1, num
+          inod = nod_comm%item_export(inum+ist)
+          inod_in_comm(inod) = -inum
+        end do
+!
+        icou = istack_new_export(i-1)
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%inod_marked(inum)
+          if(inod_in_comm(inod) .lt. 0) cycle
+
+          icou = icou + 1
+          inod_in_comm(inod) =       icou - istack_new_export(i-1)
+          item_new_export(icou) =    inod
+          inod_gl_new_export(icou) = node%inod_global(inod)
+          xx_new_export(3*icou-2) =  node%xx(inod,1)
+          xx_new_export(3*icou-1) =  node%xx(inod,2)
+          xx_new_export(3*icou  ) =  node%xx(inod,3)
+          inod_lc_new_export(icou) =   inod_dbl%index(inod)
+          irank_nod_new_export(icou) = inod_dbl%irank(inod)
+          distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
+        end do
+!
+        ist = istack_new_ele_export(i-1)
+!$omp parallel do private(inum,icou,iele,k1,inod)
+        do inum = 1, mark_ele(i)%nnod_marked
+          icou = ist + inum
+          iele = mark_ele(i)%inod_marked(inum)
+          iele_gl_new_export(icou) = ele%iele_global(iele)
+          iele_lc_new_export(icou) =   iele_dbl%index(iele)
+          irank_ele_new_export(icou) = iele_dbl%irank(iele)
+!
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            ie_new_export(icou,k1) = inod_in_comm(inod)
+!            if(inod_in_comm(inod) .eq. 0) write(*,*) my_rank,   &
+!     &        'Failed 759 inod_in_comm(inod)', inod,   &
+!     &          inod_dbl%irank(inod), nod_comm%id_neib(i)
+          end do
+        end do
+!$omp end parallel do
+      end do
+!
+      deallocate(inod_in_comm)
+!
+      end subroutine set_export_4_expanded_mesh
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_export_4_expanded_mesh                           &
+     &         (nod_comm, node, mark_nod, mark_ele,                     &
+     &          num_new_export, num_new_ele_export)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+      use mark_export_nod_ele_extend
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_nod(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_ele(nod_comm%num_neib)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: num_new_export(nod_comm%num_neib)
+      integer(kind = kint), intent(inout)                               &
+     &            :: num_new_ele_export(nod_comm%num_neib)
+!
+      integer(kind = kint), allocatable :: inod_in_comm(:)
+      integer(kind = kint) :: i, ist, num, inod, inum, icou
+!
+!
+      allocate(inod_in_comm(node%numnod))
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        inod_in_comm(1:node%numnod) = 0
+!$omp end parallel workshare
+        ist = nod_comm%istack_export(i-1)
+        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+        do inum = 1, num
+          inod = nod_comm%item_export(inum+ist)
+          inod_in_comm(inod) = inod
+        end do
+        icou = 0
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%inod_marked(inum)
+          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
+        end do
+!
+!        write(*,*) my_rank, nod_comm%id_neib(i),                       &
+!     &           'marked import node', icou, num
+        num_new_export(i) =     mark_nod(i)%nnod_marked - icou
+        num_new_ele_export(i) = mark_ele(i)%nnod_marked
+      end do
+!
+      deallocate(inod_in_comm)
+!
+      end subroutine count_export_4_expanded_mesh
+!
+!  ---------------------------------------------------------------------
 !
