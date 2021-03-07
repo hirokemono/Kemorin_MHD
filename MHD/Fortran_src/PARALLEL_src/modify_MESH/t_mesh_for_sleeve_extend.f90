@@ -49,8 +49,6 @@
         integer(kind = kint_gl), allocatable :: iele_gl_comm(:)
 !>        element connectivity
         integer(kind = kint), allocatable :: ie_comm(:,:)
-!>        local element ID
-        integer(kind = kint), allocatable :: iele_lc_comm(:)
 !>        Home process
         integer(kind = kint), allocatable :: irank_comm(:)
       end type ele_data_for_sleeve_ext
@@ -101,7 +99,6 @@
 !
       allocate(comm_connect%iele_gl_comm(comm_connect%nele_comm))
       allocate(comm_connect%ie_comm(comm_connect%nele_comm,nnod_4_ele))
-      allocate(comm_connect%iele_lc_comm(comm_connect%nele_comm))
       allocate(comm_connect%irank_comm(comm_connect%nele_comm))
 !
       if(comm_connect%nele_comm .le. 0) return
@@ -109,7 +106,6 @@
 !$omp parallel workshare
       comm_connect%iele_gl_comm(1:comm_connect%nele_comm) =       0
       comm_connect%ie_comm(1:comm_connect%nele_comm,nnod_4_ele) = 0
-      comm_connect%iele_lc_comm(1:comm_connect%nele_comm) =       0
       comm_connect%irank_comm(1:comm_connect%nele_comm) =        -1
 !$omp end parallel workshare
 !
@@ -144,7 +140,6 @@
 !
       deallocate(comm_connect%iele_gl_comm)
       deallocate(comm_connect%ie_comm)
-      deallocate(comm_connect%iele_lc_comm)
       deallocate(comm_connect%irank_comm)
 !
       end subroutine dealloc_ele_data_sleeve_ext
