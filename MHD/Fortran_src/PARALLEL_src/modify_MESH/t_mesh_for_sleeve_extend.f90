@@ -31,8 +31,6 @@
         integer(kind = kint_gl), allocatable :: inod_gl_comm(:)
 !>        node position in 1D-array
         real(kind = kreal), allocatable :: xx_comm(:)
-!>        communication table item
-        integer(kind = kint), allocatable :: item_comm(:)
 !>        Home process
         integer(kind = kint), allocatable :: irank_comm(:)
 !>        Minimum distance from neighboring node
@@ -68,7 +66,6 @@
       comm_position%nnod_comm = ntot_comm
 !
       allocate(comm_position%inod_gl_comm(comm_position%nnod_comm))
-      allocate(comm_position%item_comm(comm_position%nnod_comm))
       allocate(comm_position%irank_comm(comm_position%nnod_comm))
       allocate(comm_position%distance(comm_position%nnod_comm))
       allocate(comm_position%xx_comm(3*comm_position%nnod_comm))
@@ -77,7 +74,6 @@
 !
 !$omp parallel workshare
       comm_position%inod_gl_comm(1:comm_position%nnod_comm) = 0
-      comm_position%item_comm(1:comm_position%nnod_comm) = 0
       comm_position%irank_comm(1:comm_position%nnod_comm) = -1
       comm_position%distance(1:comm_position%nnod_comm) =  0.0d0
       comm_position%xx_comm(1:3*comm_position%nnod_comm) = 0.0d0
@@ -122,7 +118,6 @@
       if(allocated(comm_position%xx_comm) .eqv. .FALSE.) return
 !
       allocate(comm_position%inod_gl_comm(comm_position%nnod_comm))
-      allocate(comm_position%item_comm(comm_position%nnod_comm))
       allocate(comm_position%irank_comm(comm_position%nnod_comm))
       allocate(comm_position%distance(comm_position%nnod_comm))
       allocate(comm_position%xx_comm(3*comm_position%nnod_comm))
