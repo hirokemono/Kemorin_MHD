@@ -410,6 +410,7 @@
 
       type(comm_table_for_each_pe) :: each_comm
 !
+      integer(kind = kint), external :: check_trimmed_import_node
       integer(kind = kint), external :: check_idx_home_for_import
       integer(kind = kint), external :: check_zero_inod_added_import
       integer(kind = kint), external :: check_wrong_inod_added_import
@@ -781,7 +782,6 @@
 !        write(60+my_rank,*) 'irank_new_import_trim', i, inod, &
 !     &       inod_lc_new_import_trim(i), irank_new_import_trim(i), item_new_import_trim(i)
 !      end do
-      call calypso_mpi_barrier
 !
 !
       call alloc_export_num(add_nod_comm)
@@ -813,21 +813,11 @@
      &    new_node, dbl_id2)
 !
 !
-      icou = 0
-      do i = 1, add_nod_comm%num_neib
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          inod = inum + org_node%numnod
-          if(dbl_id2%irank(inod) .ne. irank_new_import_trim(inum)  &
-     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(inum)) &
-     &      icou = icou + 1
-!          write(*,*) my_rank, 'idx_home_for_import', i, &
-!     &      dbl_id2%irank(inum+org_node%numnod), irank_new_import_trim(inum), &
-!     &      dbl_id2%index(inum+org_node%numnod), inod_lc_new_import_trim(inum)
-        end do
-      end do
-      write(*,*) my_rank, 'Num. of ffailed ',                           &
-      'with inod_lc_new_import_trim:', icou 
+      icou = check_trimmed_import_node(org_node, dbl_id2, add_nod_comm, &
+     &                  irank_new_import_trim, inod_lc_new_import_trim)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
+     &        'trimmed_import_node:', ntot_failed_gl 
 !
       allocate(inod_in_added_import(expand_nod_comm%ntot_import))
       inod_in_added_import = 0
@@ -2138,6 +2128,48 @@
       check_idx_home_for_import = icou
 
       end function check_idx_home_for_import
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_trimmed_import_node           &
+     &                (org_node, dbl_id2, add_nod_comm,                 &
+     &                 irank_new_import_trim, inod_lc_new_import_trim)
+!
+      use m_precision
+      use t_geometry_data
+      use t_comm_table
+      use t_para_double_numbering
+!
+      implicit none
+!
+      type(node_data) :: org_node
+      type(node_ele_double_number) :: dbl_id2
+      type(communication_table) :: add_nod_comm
+      integer(kind = kint), intent(in)                                  &
+     &      :: irank_new_import_trim(add_nod_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &      :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: icou, i, jst, inum, inod
+!
+      icou = 0
+      do i = 1, add_nod_comm%num_neib
+        jst = add_nod_comm%istack_import(i-1)
+        do inum = 1, add_nod_comm%num_import(i)
+          inod = inum + org_node%numnod
+          if(dbl_id2%irank(inod) .ne. irank_new_import_trim(inum)      &
+     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(inum))   &
+     &      icou = icou + 1
+!          write(*,*) my_rank, 'idx_home_for_import', i, &
+!     &      dbl_id2%irank(inum+org_node%numnod),                       &
+!     &      irank_new_import_trim(inum),                               &
+!     &      dbl_id2%index(inum+org_node%numnod),                       &
+!     &      inod_lc_new_import_trim(inum)
+        end do
+      end do
+      check_trimmed_import_node = icou
+
+      end function check_trimmed_import_node
 !
 ! ----------------------------------------------------------------------
 !
