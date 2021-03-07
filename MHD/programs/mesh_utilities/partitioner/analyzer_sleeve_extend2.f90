@@ -731,10 +731,13 @@
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1) + 1
-        jed = add_nod_comm%istack_import(i)
-        do inum = jst, jed
-          add_nod_comm%item_import(inum) = inum + org_node%numnod
+        jst = add_nod_comm%istack_import(i-1)
+        do inum = 1, add_nod_comm%num_import(i)
+          jcou = inum + jst
+          jnum = idx_home_sorted_import(inum+ist)
+          item_import_to_new_import(jnum) = jcou
+!
+          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
         end do
       end do
 !
@@ -745,7 +748,6 @@
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
           jnum = idx_home_sorted_import(inum+ist)
-          item_import_to_new_import(jnum) = jcou
 !
           trimmed_import_position%item_comm(jcou)                       &
      &           = item_new_import(jnum)
