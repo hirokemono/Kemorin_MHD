@@ -304,6 +304,7 @@
       use append_extended_node
       use append_extended_element
       use trim_redundant_import_item
+      use const_extended_neib_domain
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
@@ -333,17 +334,6 @@
       integer(kind = kint), allocatable :: iflag_node(:)
       real(kind = kreal), allocatable :: distance(:)
 !
-      integer(kind = kint), allocatable :: iflag_send_pe(:)
-      integer(kind = kint), allocatable :: iflag_recv_pe(:)
-!
-      integer(kind = kint), allocatable :: np_new_export(:)
-      integer(kind = kint), allocatable :: istack_pe_new_export(:)
-      integer(kind = kint) :: ntot_pe_new_export
-      integer(kind = kint), allocatable :: np_new_import(:)
-      integer(kind = kint), allocatable :: istack_pe_new_import(:)
-      integer(kind = kint) :: ntot_pe_new_import
-      integer(kind = kint), allocatable :: ip_new_export(:)
-      integer(kind = kint), allocatable :: ip_new_import(:)
       integer(kind = kint) :: iflag_process_extend = 0
 !
       type(communication_table) :: expand_ele_comm
@@ -438,8 +428,7 @@
       integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp, num
       integer(kind = kint) :: iele, k1, icou, jcou, kcou
       integer(kind = kint) :: jnum, jst, jed, irank, ntot, jnod
-      integer(kind = kint) :: kdx, krank, kst, idx, jele, jneib
-      integer(kind = kint) :: ist_org, ist_exp, ist_ele
+      integer(kind = kint) :: kdx
 !
       type(communication_table) :: add_nod_comm
       type(communication_table) :: add_ele_comm
@@ -501,116 +490,8 @@
      &        ' of ', org_ele%numele
 !
 !
-      allocate(iflag_send_pe(nprocs))
-      allocate(np_new_export(nod_comm%num_neib))
-      allocate(istack_pe_new_export(0:nod_comm%num_neib))
-      allocate(np_new_import(nod_comm%num_neib))
-      allocate(istack_pe_new_import(0:nod_comm%num_neib))
-!
-      do i = 1, nod_comm%num_neib
-!$omp parallel workshare
-        iflag_send_pe(1:nprocs) = 0
-!$omp end parallel workshare
-!
-        np_new_export(i) = 0
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          ip = inod_dbl%irank(inod)
-          if(iflag_send_pe(ip+1) .eq. 0) then
-            np_new_export(i) = np_new_export(i) + 1
-            iflag_send_pe(ip+1) = 1
-          end if
-        end do
-      end do
-!
-      istack_pe_new_export(0) = 0
-      do i = 1, nod_comm%num_neib
-        istack_pe_new_export(i) = istack_pe_new_export(i-1)             &
-     &                           + np_new_export(i)
-      end do
-      ntot_pe_new_export = istack_pe_new_export(nod_comm%num_neib)
-!
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export, SR_sig1,  &
-     &    np_new_import, istack_pe_new_import, ntot_pe_new_import)
-!
-      allocate(ip_new_export(ntot_pe_new_export))
-      allocate(ip_new_import(ntot_pe_new_import))
-!
-      do i = 1, nod_comm%num_neib
-!$omp parallel workshare
-        iflag_send_pe(1:nprocs) = 0
-!$omp end parallel workshare
-        icou = istack_pe_new_export(i-1)
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          ip = inod_dbl%irank(inod)
-          if(iflag_send_pe(ip+1) .eq. 0) then
-            icou = icou + 1
-            ip_new_export(icou) = ip
-            iflag_send_pe(ip+1) = 1
-          end if
-        end do
-      end do
-!
-      call comm_items_send_recv                                         &
-     &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
-     &    istack_pe_new_import, ip_new_export, SR_sig1, ip_new_import)
-!
-!      do i = 1, nod_comm%num_neib
-!        ist = istack_pe_new_export(i-1)+1
-!        ied = istack_pe_new_export(i)
-!        write(*,*) my_rank, i, nod_comm%id_neib(i), 'ip_new_export',   &
-!     &            ip_new_export(ist:ied)
-!      end do
-!
-!      do i = 1, nod_comm%num_neib
-!        ist = istack_pe_new_import(i-1)+1
-!        ied = istack_pe_new_import(i)
-!        write(*,*) my_rank, nod_comm%id_neib(i), 'ip_new_import',      &
-!     &            ip_new_import(ist:ied)
-!      end do
-!
-      allocate(iflag_recv_pe(nprocs))
-!$omp parallel workshare
-      iflag_recv_pe(1:nprocs) = -1
-!$omp end parallel workshare
-!
-!$omp parallel do private(i,ip)
-      do i = 1, nod_comm%num_neib
-        ip = nod_comm%id_neib(i)
-        iflag_recv_pe(ip+1) = i
-      end do
-!$omp end parallel do
-!
-      iflag_process_extend = 0
-      add_nod_comm%num_neib = nod_comm%num_neib
-      do i = 1, nod_comm%num_neib
-        ist = istack_pe_new_import(i-1)+1
-        ied = istack_pe_new_import(i)
-        do inum = ist, ied
-          ip = ip_new_import(inum)
-          if(iflag_recv_pe(ip+1) .eq. -1) then
-            add_nod_comm%num_neib = add_nod_comm%num_neib + 1
-            iflag_recv_pe(ip+1) =  add_nod_comm%num_neib
-            iflag_process_extend = 1
-          end if
-        end do
-      end do
-      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
-     &           nod_comm%num_neib, add_nod_comm%num_neib
-!
-      call alloc_comm_table_num(add_nod_comm)
-      icou = 0
-      do i = 1, nprocs
-        irank = mod(my_rank+i,nprocs)
-        if(iflag_recv_pe(irank+1) .gt. 0) then
-          icou = icou + 1 
-          add_nod_comm%id_neib(icou) = irank
-        end if
-      end do
-!      write(*,*) my_rank, 'add_nod_comm%id_neib',                      &
-!     &          add_nod_comm%id_neib
+      call s_const_extended_neib_domain(nod_comm, inod_dbl, mark_nod,   &
+     &    add_nod_comm, iflag_process_extend)
 !
 !
       expand_nod_comm%num_neib = nod_comm%num_neib
@@ -918,8 +799,6 @@
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
      &    distance_new_import_trim, SR_sig1,                            &
      &    dist_4_comm%distance_in_export)
-!
-      write(*,*) my_rank, 'Extend again flag: ', iflag_process_extend
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    inod_gl_new_import_trim, xx_new_import_trim,                  &

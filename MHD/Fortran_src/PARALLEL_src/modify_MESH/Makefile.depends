@@ -8,6 +8,8 @@ check_data_for_repartition.o: $(MODIFY_PARA_MESHDIR)/check_data_for_repartition.
 	$(F90) -c $(F90OPTFLAGS) $<
 const_comm_tbl_to_new_mesh.o: $(MODIFY_PARA_MESHDIR)/const_comm_tbl_to_new_mesh.f90 m_precision.o m_constants.o calypso_mpi.o t_group_data.o t_calypso_comm_table.o set_comm_tbl_to_new_part.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
+const_extended_neib_domain.o: $(MODIFY_PARA_MESHDIR)/const_extended_neib_domain.f90 m_precision.o t_comm_table.o t_para_double_numbering.o calypso_mpi.o m_solver_SR.o mark_export_nod_ele_extend.o reverse_SR_int.o cal_minmax_and_stacks.o
+	$(F90) -c $(F90OPTFLAGS) $<
 const_repart_comm_tbl.o: $(MODIFY_PARA_MESHDIR)/const_repart_comm_tbl.f90 m_precision.o m_constants.o m_machine_parameter.o t_comm_table.o calypso_mpi.o m_solver_SR.o reverse_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_repart_ele_connect.o: $(MODIFY_PARA_MESHDIR)/const_repart_ele_connect.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_surface_data.o t_edge_data.o t_next_node_ele_4_node.o t_calypso_comm_table.o t_sorting_for_repartition.o t_para_double_numbering.o t_repart_double_numberings.o ele_trans_tbl_4_repart.o set_nnod_4_ele_by_type.o search_ext_node_repartition.o const_repart_mesh_data.o
