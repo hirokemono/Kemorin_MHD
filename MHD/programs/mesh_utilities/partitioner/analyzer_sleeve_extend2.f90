@@ -703,16 +703,16 @@
 !     &       irank_nod_new_import(inod_lc_import_tmp(jst:jed))
 !      end do
 !
-      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
-      write(*,*) my_rank, 'new_neib', add_nod_comm%id_neib
-      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
-     &          sum(num_import_tmp),  ntot_trimmed_nod_import
-      do ip = 1, nprocs
-        write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',          &
-     &            num_import_tmp(ip), istack_trimmed_import_pe(ip)
-      end do
+!      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
+!      write(*,*) my_rank, 'new_neib', add_nod_comm%id_neib
+!      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,              &
+!     &          sum(num_import_tmp),  ntot_trimmed_nod_import
+!      do ip = 1, nprocs
+!        write(*,*) my_rank, ' to ', ip-1,  ' num_import_tmp ',         &
+!     &            num_import_tmp(ip), istack_trimmed_import_pe(ip)
+!      end do
+!      write(*,*) my_rank, 'add_nod_comm%num_neib', add_nod_comm%num_neib
 !
-      write(*,*) my_rank, 'add_nod_comm%num_neib', add_nod_comm%num_neib
       call alloc_import_num(add_nod_comm)
 !
       do i = 1, add_nod_comm%num_neib
@@ -738,11 +738,19 @@
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1) + 1
+        jed = add_nod_comm%istack_import(i)
+        do inum = jst, jed
+          add_nod_comm%item_import(inum) = inum + org_node%numnod
+        end do
+      end do
+!
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
-          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
-!
           jnum = idx_home_sorted_import(inum+ist)
           item_import_to_new_import(jnum) = jcou
 !
@@ -832,16 +840,6 @@
         do inum = 1, add_nod_comm%num_import(i)
           jnum = idx_home_sorted_import(inum+ist)
           inod_in_added_import(jnum) = inum + jst
-        end do
-      end do
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1) + 1
-        jed = add_nod_comm%istack_import(i)
-        do inum = jst, jed
-          add_nod_comm%item_import(inum) = inum + org_node%numnod
         end do
       end do
 !
@@ -1012,16 +1010,16 @@
      &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
      &    idx_home_for_ele_import, icou)
 !
-      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
-      write(*,*) my_rank, 'new_neib', add_ele_comm%id_neib
-      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
-     &          sum(nele_import_tmp),  ntot_trimmed_ele_import
-      do ip = 1, nprocs
-        write(*,*) my_rank, ' to ', ip-1,  ' nele_import_tmp ',         &
-     &            nele_import_tmp(ip), istack_trimmed_ele_import_pe(ip)
-      end do
+!      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
+!      write(*,*) my_rank, 'new_neib', add_ele_comm%id_neib
+!      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
+!     &          sum(nele_import_tmp),  ntot_trimmed_ele_import
+!      do ip = 1, nprocs
+!        write(*,*) my_rank, ' to ', ip-1,  ' nele_import_tmp ',         &
+!     &            nele_import_tmp(ip), istack_trimmed_ele_import_pe(ip)
+!      end do
+!      write(*,*) my_rank, 'add_ele_comm%num_neib', add_ele_comm%num_neib
 !
-      write(*,*) my_rank, 'add_ele_comm%num_neib', add_ele_comm%num_neib
       call alloc_import_num(add_ele_comm)
 !
       add_ele_comm%istack_import(0) = 0
