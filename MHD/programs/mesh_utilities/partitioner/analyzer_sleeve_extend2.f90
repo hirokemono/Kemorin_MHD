@@ -672,16 +672,15 @@
       allocate(irank_ele_new_import(expand_ele_comm%ntot_import))
       allocate(ie_new_import(expand_ele_comm%ntot_import,org_ele%nnod_4_ele))
 !
-      call set_export_4_expanded_mesh   &
-     &         (nod_comm, org_node, org_ele, inod_dbl, iele_dbl,       &
-     &          mark_nod, mark_ele,    &
+      call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
+     &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
-     &          item_new_export, distance_new_export,   &
+     &    item_new_export, distance_new_export,                         &
      &    expand_nod_comm%item_export, irank_nod_new_export,            &
-     &          inod_gl_new_export, xx_new_export,   &
+     &    inod_gl_new_export, xx_new_export,                            &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
-     &    expand_ele_comm%item_export, irank_ele_new_export,   &
-     &          iele_gl_new_export, ie_new_export)
+     &    expand_ele_comm%item_export, irank_ele_new_export,            &
+     &    iele_gl_new_export, ie_new_export)
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
@@ -732,9 +731,8 @@
       allocate(irank_import_tmp(expand_nod_comm%ntot_import))
       allocate(inod_lc_import_tmp(expand_nod_comm%ntot_import))
 !
-      call sort_import_by_pe_and_local_id  &
-     &   (nprocs, nod_comm, expand_nod_comm%istack_import, expand_nod_comm%ntot_import,   &
-     &    irank_nod_new_import, expand_nod_comm%item_import,    &
+      call sort_import_by_pe_and_local_id                               &
+     &   (nprocs, nod_comm, expand_nod_comm, irank_nod_new_import,      &
      &          index_4_import_tmp, inod_lc_import_tmp, &
      &          irank_import_tmp, irank_origin_new_import, &
      &          num_import_tmp, istack_import_tmp)
@@ -1093,9 +1091,8 @@
       allocate(irank_ele_import_tmp(expand_ele_comm%ntot_import))
       allocate(iele_lc_import_tmp(expand_ele_comm%ntot_import))
 !
-      call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
-     &    expand_ele_comm%istack_import, expand_ele_comm%ntot_import,   &
-     &    irank_ele_new_import, expand_ele_comm%item_import,            &
+      call sort_import_by_pe_and_local_id                               &
+     &   (nprocs, nod_comm, expand_ele_comm, irank_ele_new_import,      &
      &          index_ele_import_tmp, iele_lc_import_tmp, &
      &          irank_ele_import_tmp, irank_org_ele_new_import, &
      &          nele_import_tmp, istack_ele_import_tmp)
@@ -1616,9 +1613,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sort_import_by_pe_and_local_id  &
-     &         (nprocs, nod_comm, istack_new_import, ntot_new_import,   &
-     &          irank_nod_new_import, inod_lc_new_import,    &
+      subroutine sort_import_by_pe_and_local_id                         &
+     &         (nprocs, nod_comm, expand_comm, irank_nod_new_import,    &
      &          index_4_import_tmp, inod_lc_import_tmp, &
      &          irank_import_tmp, irank_origin_new_import, &
      &          num_import_tmp, istack_import_tmp)
@@ -1630,23 +1626,19 @@
       implicit none
 !
       type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: expand_comm
       integer, intent(in) :: nprocs
       integer(kind= kint), intent(in)                                   &
-     &                    :: istack_new_import(0:nod_comm%num_neib)
-      integer(kind= kint), intent(in) :: ntot_new_import
-      integer(kind= kint), intent(in)                                &
-     &                    :: irank_nod_new_import(ntot_new_import)
-      integer(kind= kint), intent(in)                                &
-     &                    :: inod_lc_new_import(ntot_new_import)
+     &            :: irank_nod_new_import(expand_comm%ntot_import)
 !
       integer(kind= kint), intent(inout)                                &
-     &                    :: index_4_import_tmp(ntot_new_import)
+     &            :: index_4_import_tmp(expand_comm%ntot_import)
       integer(kind= kint), intent(inout)                                &
-     &                    :: inod_lc_import_tmp(ntot_new_import)
+     &            :: inod_lc_import_tmp(expand_comm%ntot_import)
       integer(kind= kint), intent(inout)                                &
-     &                    :: irank_import_tmp(ntot_new_import)
+     &            :: irank_import_tmp(expand_comm%ntot_import)
       integer(kind= kint), intent(inout)                                &
-     &                    :: irank_origin_new_import(ntot_new_import)
+     &            :: irank_origin_new_import(expand_comm%ntot_import)
 !
       integer(kind= kint), intent(inout) :: num_import_tmp(nprocs)
       integer(kind= kint), intent(inout) :: istack_import_tmp(0:nprocs)
@@ -1655,7 +1647,7 @@
 !
 !
 !$omp parallel do private(i)
-      do i = 1, ntot_new_import
+      do i = 1, expand_comm%ntot_import
         index_4_import_tmp(i) = i
         irank_import_tmp(i) = irank_nod_new_import(i)
         irank_origin_new_import(i) = -1
@@ -1665,30 +1657,31 @@
 !$omp parallel private(i,irank,ist,ied)
       do i = 1, nod_comm%num_neib
         irank = nod_comm%id_neib(i)
-        ist = istack_new_import(i-1) + 1
-        ied = istack_new_import(i)
+        ist = expand_comm%istack_import(i-1) + 1
+        ied = expand_comm%istack_import(i)
 !$omp workshare
         irank_origin_new_import(ist:ied) = irank
 !$omp end workshare nowait
       end do
 !$omp end parallel
 !
-      if(ntot_new_import .gt. 1) then
-        call quicksort_w_index(ntot_new_import, irank_import_tmp,       &
-     &      ione, ntot_new_import, index_4_import_tmp)
+      if(expand_comm%ntot_import .gt. 1) then
+        call quicksort_w_index                                          &
+     &     (expand_comm%ntot_import, irank_import_tmp,                  &
+     &      ione, expand_comm%ntot_import, index_4_import_tmp)
       end if
 !
 !$omp parallel do private(i,icou)
-      do i = 1, ntot_new_import
+      do i = 1, expand_comm%ntot_import
         icou = index_4_import_tmp(i)
-        inod_lc_import_tmp(i) = inod_lc_new_import(icou)
+        inod_lc_import_tmp(i) = expand_comm%item_import(icou)
       end do
 !$omp end parallel do
 !
 !$omp parallel workshare
       num_import_tmp(1:nprocs) = 0
 !$omp end parallel workshare
-      do i = 1, ntot_new_import
+      do i = 1, expand_comm%ntot_import
         irank = irank_import_tmp(i)
         num_import_tmp(irank+1) = num_import_tmp(irank+1) + 1
       end do
