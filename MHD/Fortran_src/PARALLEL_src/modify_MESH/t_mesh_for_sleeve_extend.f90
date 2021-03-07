@@ -58,6 +58,8 @@
 !
 !
       type sort_data_for_sleeve_trim
+        integer(kind = kint), allocatable :: num_sorted_by_pe(:)
+        integer(kind = kint), allocatable :: istack_sorted_by_pe(:)
 !>        Numper of node
         integer(kind = kint) :: nitem_sort
         integer(kind = kint), allocatable :: iref_lc_import(:)
@@ -127,13 +129,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_sort_data_sleeve_ext(ntot_comm, sorted_import)
+      subroutine alloc_sort_data_sleeve_ext                             &
+     &         (nprocs, ntot_comm, sorted_import)
 !
+      integer, intent(in) :: nprocs
       integer(kind = kint), intent(in) :: ntot_comm
       type(sort_data_for_sleeve_trim), intent(inout) :: sorted_import
 !
 !
       sorted_import%nitem_sort =  ntot_comm
+!
+      allocate(sorted_import%num_sorted_by_pe(nprocs))
+      allocate(sorted_import%istack_sorted_by_pe(0:nprocs))
+!
+      sorted_import%num_sorted_by_pe(1:nprocs) =    0
+      sorted_import%istack_sorted_by_pe(0:nprocs) = 0
 !
       allocate(sorted_import%iref_lc_import(sorted_import%nitem_sort))
       allocate(sorted_import%irank_import_sort(sorted_import%nitem_sort))
@@ -190,10 +200,14 @@
       type(sort_data_for_sleeve_trim), intent(inout) :: sorted_import
 !
 !
+      if(allocated(sorted_import%isorted_to_org) .eqv. .FALSE.) return
       deallocate(sorted_import%iref_lc_import)
       deallocate(sorted_import%irank_import_sort)
       deallocate(sorted_import%isorted_to_org)
       deallocate(sorted_import%irank_orgin_pe)
+!
+      deallocate(sorted_import%num_sorted_by_pe)
+      deallocate(sorted_import%istack_sorted_by_pe)
 !
       end subroutine dealloc_sort_data_sleeve_ext
 !
