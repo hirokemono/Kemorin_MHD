@@ -348,11 +348,8 @@
       integer(kind = kint), allocatable :: irank_nod_new_export(:)
       real(kind = kreal), allocatable :: distance_new_export(:)
 !
-      integer(kind = kint_gl), allocatable :: inod_gl_new_import(:)
-      real(kind = kreal), allocatable :: xx_new_import(:)
+      type(node_data_for_sleeve_ext), save :: expand_import_position
       integer(kind = kint), allocatable :: item_new_import(:)
-      integer(kind = kint), allocatable :: irank_nod_new_import(:)
-      real(kind = kreal), allocatable :: distance_new_import(:)
 !
       integer(kind = kint), allocatable :: item_import_to_new_import(:)
 !
@@ -542,11 +539,9 @@
      &    expand_export_connect)
 !
       call alloc_import_item(expand_nod_comm)
+      call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_import,      &
+     &                                expand_import_position)
       allocate(item_new_import(expand_nod_comm%ntot_import))
-      allocate(inod_gl_new_import(expand_nod_comm%ntot_import))
-      allocate(irank_nod_new_import(expand_nod_comm%ntot_import))
-      allocate(distance_new_import(expand_nod_comm%ntot_import))
-      allocate(xx_new_import(3*expand_nod_comm%ntot_import))
 !
       call alloc_import_item(expand_ele_comm)
       call alloc_ele_data_sleeve_ext                                    &
@@ -571,17 +566,20 @@
      &    expand_nod_comm%item_import)
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    irank_nod_new_export, SR_sig1, irank_nod_new_import)
+     &    irank_nod_new_export, SR_sig1,                                &
+     &    expand_import_position%irank_comm)
       call real_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    distance_new_export, SR_sig1, distance_new_import)
+     &    distance_new_export, SR_sig1,                                 &
+     &    expand_import_position%distance)
 !
       call real_items_send_recv_3(nod_comm%num_neib, nod_comm%id_neib,  &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    xx_new_export, SR_sig1, xx_new_import)
+     &    xx_new_export, SR_sig1, expand_import_position%xx_comm)
       call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    inod_gl_new_export, SR_sig1, inod_gl_new_import)
+     &    inod_gl_new_export, SR_sig1,                                  &
+     &    expand_import_position%inod_gl_comm)
 !
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
@@ -616,7 +614,7 @@
       allocate(inod_lc_import_tmp(expand_nod_comm%ntot_import))
 !
       call sort_import_by_pe_and_local_id                               &
-     &   (nprocs, nod_comm, expand_nod_comm, irank_nod_new_import,      &
+     &   (nprocs, nod_comm, expand_nod_comm, expand_import_position%irank_comm,      &
      &          index_4_import_tmp, inod_lc_import_tmp, &
      &          irank_import_tmp, irank_origin_new_import, &
      &          num_import_tmp, istack_import_tmp)
@@ -649,7 +647,7 @@
       idx_home_sorted_import(1:istack_trimmed_import_pe(nprocs)) = -1
 !
       call trim_internal_import_items                                   &
-     &   (nprocs, expand_nod_comm%ntot_import, irank_nod_new_import,    &
+     &   (nprocs, expand_nod_comm%ntot_import, expand_import_position%irank_comm,    &
      &          index_4_import_tmp, irank_origin_new_import,            &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import, icou)
@@ -659,7 +657,7 @@
 !
       call trim_external_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import,                          &
-     &          irank_nod_new_import, index_4_import_tmp,               &
+     &    expand_import_position%irank_comm, index_4_import_tmp,        &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -694,9 +692,9 @@
 !          jst = istack_trimmed_import_item(inum-1) + 1
 !          jed = istack_trimmed_import_item(inum)
 !        write(70+my_rank,*) 'item_new_import', inum, inod, &
-!     &       expand_nod_comm%item_import(inod), irank_nod_new_import(inod), &
+!     &       expand_nod_comm%item_import(inod), expand_import_position%irank_comm(inod), &
 !     &       expand_nod_comm%item_import(inod_lc_import_tmp(jst:jed)), &
-!     &       irank_nod_new_import(inod_lc_import_tmp(jst:jed))
+!     &       expand_import_position%irank_comm(inod_lc_import_tmp(jst:jed))
 !      end do
 !
 !      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
@@ -752,18 +750,18 @@
           inod_lc_new_import_trim(jcou)                                 &
      &              = expand_nod_comm%item_import(jnum)
           trimmed_import_position%irank_comm(jcou)                      &
-     &              = irank_nod_new_import(jnum)
+     &              = expand_import_position%irank_comm(jnum)
           trimmed_import_position%distance(jcou)                        &
-     &              = distance_new_import(jnum)
+     &              = expand_import_position%distance(jnum)
 !
           trimmed_import_position%xx_comm(3*jcou-2)                     &
-     &              = xx_new_import(3*jnum-2)
+     &              = expand_import_position%xx_comm(3*jnum-2)
           trimmed_import_position%xx_comm(3*jcou-1)                     &
-     &              = xx_new_import(3*jnum-1)
+     &              = expand_import_position%xx_comm(3*jnum-1)
           trimmed_import_position%xx_comm(3*jcou  )                     &
-     &              = xx_new_import(3*jnum  )
+     &              = expand_import_position%xx_comm(3*jnum  )
           trimmed_import_position%inod_gl_comm(jcou)                    &
-     &              = inod_gl_new_import(jnum)
+     &              = expand_import_position%inod_gl_comm(jnum)
         end do
       end do
 !
@@ -772,7 +770,7 @@
 !      do i = 1, expand_nod_comm%ntot_import
 !        inod = item_new_import(i)
 !        write(70+my_rank,*) 'item_new_import', i, inod, &
-!     &       expand_nod_comm%item_import(i), irank_nod_new_import(i)
+!     &       expand_nod_comm%item_import(i), expand_import_position%irank_comm(i)
 !      end do
 !
 !        write(60+my_rank,*) 'check neib', add_nod_comm%id_neib
@@ -822,13 +820,13 @@
       icou = check_expand_nod_import_item                               &
      &             (dbl_id2, expand_nod_comm, add_nod_comm,             &
      &              istack_trimmed_import_pe, idx_home_sorted_import,   &
-     &              irank_nod_new_import)
+     &              expand_import_position%irank_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
       'with expand_nod_comm%item_import:', ntot_failed_gl 
 !
       icou = check_idx_home_for_import(expand_nod_comm,                 &
-     &        irank_nod_new_import, idx_home_for_import)
+     &        expand_import_position%irank_comm, idx_home_for_import)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
      &         'in idx_home_for_import ', ntot_failed_gl
@@ -849,7 +847,7 @@
      &           'in inod_added_import', ntot_failed_gl
 
       icou = check_wrong_inod_added_import(dbl_id2, expand_nod_comm,    &
-     &                         inod_added_import, irank_nod_new_import)
+     &            inod_added_import, expand_import_position%irank_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
      &           'in inod_added_import', ntot_failed_gl
