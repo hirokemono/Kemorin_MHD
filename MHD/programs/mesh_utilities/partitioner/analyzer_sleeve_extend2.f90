@@ -1067,10 +1067,6 @@
      &   (nod_comm, add_nod_comm, new_nod_comm)
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !
-      call calypso_mpi_reduce_one_int(nod_comm%ntot_import, ntot_failed_gl, MPI_SUM, 0)
-!
-!
-!
 !
       add_ele_comm%num_neib = add_nod_comm%num_neib
       call alloc_comm_table_num(add_ele_comm)
