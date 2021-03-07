@@ -410,6 +410,9 @@
 
       type(comm_table_for_each_pe) :: each_comm
 !
+      integer(kind = kint), external :: check_idx_home_for_import
+      integer(kind = kint), external :: check_zero_inod_added_import
+      integer(kind = kint), external :: check_wrong_inod_added_import
       integer(kind = kint), external :: check_expand_nod_import_item
       integer(kind = kint), external :: check_negative_ie_new_import
       integer(kind = kint), external :: check_zero_ie_new_import
@@ -844,18 +847,14 @@
      &              istack_trimmed_import_pe, idx_home_sorted_import,   &
      &              irank_nod_new_import)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      write(*,*) 'Num. of failed ',                                     &
+      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
       'with expand_nod_comm%item_import:', ntot_failed_gl 
 !
-      icou = 0
-      do i = 1, expand_nod_comm%ntot_import
-        kdx = idx_home_for_import(i)
-        if(irank_nod_new_import(i) .ne. irank_nod_new_import(kdx)    &
-     &   .or. expand_nod_comm%item_import(i) .ne. expand_nod_comm%item_import(kdx)) &
-     &      icou = icou + 1
-      end do
-      write(*,*) my_rank, 'Failled reference import ',                 &
-     &        'with expand_nod_comm%item_import:', icou
+      icou = check_idx_home_for_import(expand_nod_comm,                 &
+     &        irank_nod_new_import, idx_home_for_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
+     &         'in idx_home_for_import ', ntot_failed_gl
 !
       allocate(inod_added_import(expand_nod_comm%ntot_import))
 !
@@ -866,19 +865,17 @@
      &    istack_trimmed_import_pe, idx_home_sorted_import,             &
      &    idx_home_for_import, inod_added_import)
 !
-      icou = 0
-      jcou = 0
-      do i = 1, expand_nod_comm%ntot_import
-        inod = inod_added_import(i)
-        if(inod .eq. 0) jcou = jcou + 1
-        if(irank_nod_new_import(i) .ne. dbl_id2%irank(inod)    &
-     &   .or. expand_nod_comm%item_import(i) .ne. dbl_id2%index(inod)) then
-             icou = icou + 1
-        end if
-      end do
-      write(*,*) my_rank, 'Failled direct import ',                 &
-      'with expand_nod_comm%item_import:', icou , jcou
-      call calypso_mpi_barrier
+      jcou = check_zero_inod_added_import(expand_nod_comm%ntot_import,  &
+     &                                    inod_added_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Number of Zero address ',          &
+     &           'in inod_added_import', ntot_failed_gl
+
+      icou = check_wrong_inod_added_import(dbl_id2, expand_nod_comm,    &
+     &                         inod_added_import, irank_nod_new_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
+     &           'in inod_added_import', ntot_failed_gl
 
       icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
      &                                expand_import_connect%ie_comm)
@@ -2006,7 +2003,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-!
       integer(kind = kint) function check_expand_nod_import_item        &
      &             (inod_new_dbl, expand_nod_comm, add_nod_comm,        &
      &              istack_trimmed_import_pe, idx_home_sorted_import,   &
@@ -2050,3 +2046,98 @@
       check_expand_nod_import_item = icou
 !
       end function check_expand_nod_import_item
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_zero_inod_added_import        &
+     &                            (ntot, inod_added_import)
+!
+      use m_precision
+!
+      implicit none
+!
+      integer(kind = kint), intent(in) :: ntot
+      integer(kind = kint), intent(in) :: inod_added_import(ntot)
+!
+      integer(kind = kint) :: jcou, i
+!
+      jcou = 0
+      do i = 1, ntot
+        if(inod_added_import(i) .eq. 0) jcou = jcou + 1
+      end do
+      check_zero_inod_added_import = jcou
+
+      end function check_zero_inod_added_import
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_wrong_inod_added_import       &
+     &                   (inod_new_dbl, expand_nod_comm,                &
+     &                    inod_added_import, irank_nod_new_import)
+!
+      use m_precision
+      use t_comm_table
+      use t_para_double_numbering
+!
+      implicit none
+!
+      type(node_ele_double_number) :: inod_new_dbl
+      type(communication_table) :: expand_nod_comm
+      integer(kind = kint), intent(in)                                  &
+     &      :: inod_added_import(expand_nod_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &      :: irank_nod_new_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: icou, i, inod
+!
+      icou = 0
+      do i = 1, expand_nod_comm%ntot_import
+        inod = inod_added_import(i)
+        if(irank_nod_new_import(i) .ne. inod_new_dbl%irank(inod)        &
+     &   .or. expand_nod_comm%item_import(i)                            &
+     &                             .ne. inod_new_dbl%index(inod)) then
+             icou = icou + 1
+        end if
+      end do
+      check_wrong_inod_added_import = icou
+
+      end function check_wrong_inod_added_import
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_idx_home_for_import           &
+     &                   (expand_nod_comm, irank_nod_new_import,        &
+     &                    idx_home_for_import)
+!
+      use m_precision
+      use t_comm_table
+!
+      implicit none
+!
+      type(communication_table) :: expand_nod_comm
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_for_import(expand_nod_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &      :: irank_nod_new_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: icou, i, isort
+!
+      icou = 0
+      do i = 1, expand_nod_comm%ntot_import
+        isort = idx_home_for_import(i)
+        if(isort .gt. expand_nod_comm%ntot_import                       &
+     &      .or. isort .le. 0) then
+          icou = icou + 1
+        else if(irank_nod_new_import(i)                                 &
+     &        .ne. irank_nod_new_import(isort)                          &
+     &   .or. expand_nod_comm%item_import(i)                            &
+     &       .ne. expand_nod_comm%item_import(isort)) then
+          icou = icou + 1
+        end if
+      end do
+      check_idx_home_for_import = icou
+
+      end function check_idx_home_for_import
+!
+! ----------------------------------------------------------------------
+!
