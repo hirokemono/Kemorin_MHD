@@ -730,40 +730,24 @@
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1) + 1
-        jed = add_nod_comm%istack_import(i)
-        do inum = jst, jed
-          add_nod_comm%item_import(inum) = inum + org_node%numnod
-        end do
-      end do
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
+        jed = add_nod_comm%istack_import(i)
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
           jnum = idx_home_sorted_import(inum+ist)
           item_import_to_new_import(jnum) = jcou
 !
+          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
+!
           item_new_import_trim(jcou) =    item_new_import(jnum)
           inod_lc_new_import_trim(jcou)                                 &
      &              = expand_nod_comm%item_import(jnum)
-          trimmed_import_position%irank_comm(jcou)                      &
-     &              = expand_import_position%irank_comm(jnum)
-          trimmed_import_position%distance(jcou)                        &
-     &              = expand_import_position%distance(jnum)
-!
-          trimmed_import_position%xx_comm(3*jcou-2)                     &
-     &              = expand_import_position%xx_comm(3*jnum-2)
-          trimmed_import_position%xx_comm(3*jcou-1)                     &
-     &              = expand_import_position%xx_comm(3*jnum-1)
-          trimmed_import_position%xx_comm(3*jcou  )                     &
-     &              = expand_import_position%xx_comm(3*jnum  )
-          trimmed_import_position%inod_gl_comm(jcou)                    &
-     &              = expand_import_position%inod_gl_comm(jnum)
         end do
       end do
+!
+      call trim_imported_expand_node(add_nod_comm, nprocs,              &
+     &          istack_trimmed_import_pe, idx_home_sorted_import,       &
+     &          expand_import_position, trimmed_import_position)
 !
 !      write(70+my_rank,*) 'check neib', nod_comm%id_neib
 !      write(70+my_rank,*) 'check expand_nod_comm%istack_import', expand_nod_comm%istack_import
@@ -2158,3 +2142,59 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine trim_imported_expand_node(add_nod_comm, nprocs,        &
+     &          istack_trimmed_import_pe, idx_home_sorted_import,       &
+     &          expand_import_position, trimmed_import_position)
+!
+      use m_precision
+      use t_comm_table
+      use t_mesh_for_sleeve_extend
+!
+      implicit none
+!
+      type(communication_table), intent(in) :: add_nod_comm
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_trimmed_import_pe(0:nprocs)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
+!
+      type(node_data_for_sleeve_ext), intent(in)                        &
+     &                               :: expand_import_position
+      type(node_data_for_sleeve_ext), intent(inout)                     &
+     &                               :: trimmed_import_position
+!
+      integer(kind = kint) :: i, irank, ist, jst
+      integer(kind = kint) :: inum,jcou,jnum
+!
+!
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1)
+!$omp parallel do private(inum,jcou,jnum)
+        do inum = 1, add_nod_comm%num_import(i)
+          jcou = inum + jst
+          jnum = idx_home_sorted_import(inum+ist)
+!
+          trimmed_import_position%irank_comm(jcou)                      &
+     &              = expand_import_position%irank_comm(jnum)
+          trimmed_import_position%distance(jcou)                        &
+     &              = expand_import_position%distance(jnum)
+!
+          trimmed_import_position%xx_comm(3*jcou-2)                     &
+     &              = expand_import_position%xx_comm(3*jnum-2)
+          trimmed_import_position%xx_comm(3*jcou-1)                     &
+     &              = expand_import_position%xx_comm(3*jnum-1)
+          trimmed_import_position%xx_comm(3*jcou  )                     &
+     &              = expand_import_position%xx_comm(3*jnum  )
+          trimmed_import_position%inod_gl_comm(jcou)                    &
+     &              = expand_import_position%inod_gl_comm(jnum)
+        end do
+!$omp end parallel do
+      end do
+!
+      end subroutine trim_imported_expand_node
+!
+!  ---------------------------------------------------------------------
