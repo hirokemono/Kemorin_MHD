@@ -342,11 +342,8 @@
       type(ele_data_for_sleeve_ext) :: expand_import_connect
 !
       type(communication_table) :: expand_nod_comm
-      integer(kind = kint_gl), allocatable :: inod_gl_new_export(:)
-      real(kind = kreal), allocatable :: xx_new_export(:)
+      type(node_data_for_sleeve_ext), save :: expand_export_position
       integer(kind = kint), allocatable :: item_new_export(:)
-      integer(kind = kint), allocatable :: irank_nod_new_export(:)
-      real(kind = kreal), allocatable :: distance_new_export(:)
 !
       type(node_data_for_sleeve_ext), save :: expand_import_position
       integer(kind = kint), allocatable :: item_new_import(:)
@@ -527,11 +524,9 @@
      &    expand_ele_comm%ntot_import)
 !
       call alloc_export_item(expand_nod_comm)
+      call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_export,      &
+     &                                expand_export_position)
       allocate(item_new_export(expand_nod_comm%ntot_export))
-      allocate(inod_gl_new_export(expand_nod_comm%ntot_export))
-      allocate(irank_nod_new_export(expand_nod_comm%ntot_export))
-      allocate(distance_new_export(expand_nod_comm%ntot_export))
-      allocate(xx_new_export(3*expand_nod_comm%ntot_export))
 !
       call alloc_export_item(expand_ele_comm)
       call alloc_ele_data_sleeve_ext                                    &
@@ -551,9 +546,9 @@
       call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
      &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
-     &    item_new_export, distance_new_export,                         &
-     &    expand_nod_comm%item_export, irank_nod_new_export,            &
-     &    inod_gl_new_export, xx_new_export,                            &
+     &    item_new_export, expand_export_position%distance,             &
+     &    expand_nod_comm%item_export, expand_export_position%irank_comm,            &
+     &    expand_export_position%inod_gl_comm, expand_export_position%xx_comm, &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
      &    expand_ele_comm%item_export, expand_export_connect)
 !
@@ -566,19 +561,20 @@
      &    expand_nod_comm%item_import)
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    irank_nod_new_export, SR_sig1,                                &
+     &    expand_export_position%irank_comm, SR_sig1,                   &
      &    expand_import_position%irank_comm)
       call real_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    distance_new_export, SR_sig1,                                 &
+     &    expand_export_position%distance, SR_sig1,                     &
      &    expand_import_position%distance)
 !
       call real_items_send_recv_3(nod_comm%num_neib, nod_comm%id_neib,  &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    xx_new_export, SR_sig1, expand_import_position%xx_comm)
+     &    expand_export_position%xx_comm, SR_sig1,                      &
+     &    expand_import_position%xx_comm)
       call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    inod_gl_new_export, SR_sig1,                                  &
+     &    expand_export_position%inod_gl_comm, SR_sig1,                 &
      &    expand_import_position%inod_gl_comm)
 !
 !
@@ -1533,10 +1529,10 @@
       real(kind = kreal), intent(inout)                                 &
      &            :: xx_new_export(3*ntot_new_export)
 !
-      integer(kind = kint), intent(inout)                               &
-     &            :: iele_lc_new_export(ntot_new_ele_export)
       type(ele_data_for_sleeve_ext), intent(inout)                      &
      &                              :: expand_export_connect
+      integer(kind = kint), intent(inout)                               &
+     &            :: iele_lc_new_export(ntot_new_ele_export)
 !
       integer(kind = kint), allocatable :: inod_in_comm(:)
       integer(kind = kint) :: i, ist, num, inod, inum, icou, iele, k1
