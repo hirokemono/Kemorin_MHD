@@ -708,13 +708,10 @@
 !      write(*,*) my_rank, 'add_nod_comm%num_neib', add_nod_comm%num_neib
 !
       call alloc_import_num(add_nod_comm)
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        add_nod_comm%num_import(i) = istack_trimmed_import_pe(irank+1)  &
-     &                              - istack_trimmed_import_pe(irank)
-      end do
-!
+      call count_import_item_for_extend                                 &
+     &   (nprocs, istack_trimmed_import_pe,                             &
+     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%num_import)
       call s_cal_total_and_stacks                                       &
      &   (add_nod_comm%num_neib, add_nod_comm%num_import, izero,        &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
@@ -727,24 +724,13 @@
 !
       allocate(item_import_to_new_import(expand_nod_comm%ntot_import))
 !
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        jed = add_nod_comm%istack_import(i)
-        do inum = 1, add_nod_comm%num_import(i)
-          jcou = inum + jst
-          jnum = idx_home_sorted_import(inum+ist)
-          item_import_to_new_import(jnum) = jcou
-!
-          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
-!
-          item_new_import_trim(jcou) =    item_new_import(jnum)
-          inod_lc_new_import_trim(jcou)                                 &
-     &              = expand_nod_comm%item_import(jnum)
-        end do
-      end do
-!
+      call set_import_item_for_extend                                   &
+     &   (nprocs, org_node, expand_nod_comm, item_new_import,           &
+     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
+     &    istack_trimmed_import_pe, idx_home_sorted_import,             &
+     &    item_import_to_new_import, inod_lc_new_import_trim,           &
+     &    item_new_import_trim, add_nod_comm%item_import)
       call trim_imported_expand_node(add_nod_comm, nprocs,              &
      &          istack_trimmed_import_pe, idx_home_sorted_import,       &
      &          expand_import_position, trimmed_import_position)
@@ -2196,5 +2182,102 @@
       end do
 !
       end subroutine trim_imported_expand_node
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_import_item_for_extend                             &
+     &         (nprocs, node, expand_nod_comm, item_new_import,         &
+     &          num_added_neib, id_added_neib,                          &
+     &          istack_added_import, ntot_added_import,                 &
+     &          istack_trimmed_import_pe, idx_home_sorted_import,       &
+     &          item_import_to_new_import, inod_lc_new_import_trim,     &
+     &          item_new_import_trim, item_added_import)
+!
+      use m_precision
+      use t_geometry_data
+      use t_comm_table
+!
+      implicit none
+!
+      type(node_data), intent(in) :: node
+      type(communication_table) :: expand_nod_comm
+      integer(kind = kint), intent(in)                                  &
+     &      :: item_new_import(expand_nod_comm%ntot_import)
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_trimmed_import_pe(0:nprocs)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
+!
+      integer(kind = kint), intent(in) :: num_added_neib
+      integer(kind = kint), intent(in) :: ntot_added_import
+      integer(kind = kint), intent(in) :: id_added_neib(num_added_neib)
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_added_import(0:num_added_neib)
+!
+      integer(kind = kint), intent(inout)                               &
+     &      :: item_import_to_new_import(expand_nod_comm%ntot_import)
+      integer(kind = kint), intent(inout)                               &
+     &      :: item_new_import_trim(ntot_added_import)
+      integer(kind = kint), intent(inout)                               &
+     &      :: inod_lc_new_import_trim(ntot_added_import)
+      integer(kind = kint), intent(inout)                               &
+     &      :: item_added_import(ntot_added_import)
+!
+      integer(kind = kint) :: i, irank, ist, jst, num
+      integer(kind = kint) :: inum, jcou, jnum
+!
+!
+      do i = 1, num_added_neib
+        irank = id_added_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = istack_added_import(i-1)
+        num = istack_added_import(i) - istack_added_import(i-1)
+        do inum = 1, num
+          jcou = inum + jst
+          jnum = idx_home_sorted_import(inum+ist)
+          item_import_to_new_import(jnum) = jcou
+!
+          item_added_import(jcou) = jcou + node%numnod
+!
+          item_new_import_trim(jcou) = item_new_import(jnum)
+          inod_lc_new_import_trim(jcou)                                 &
+     &              = expand_nod_comm%item_import(jnum)
+        end do
+      end do
+!
+      end subroutine set_import_item_for_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_import_item_for_extend                           &
+     &         (nprocs, istack_trimmed_import_pe,                       &
+     &          num_added_neib, id_added_neib, num_added_import)
+!
+      use m_precision
+!
+      implicit none
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_trimmed_import_pe(0:nprocs)
+!
+      integer(kind = kint), intent(in) :: num_added_neib
+      integer(kind = kint), intent(in) :: id_added_neib(num_added_neib)
+ !
+     integer(kind = kint), intent(inout)                               &
+     &        :: num_added_import(num_added_neib)
+!
+      integer(kind = kint) :: i, irank
+!
+!
+      do i = 1, num_added_neib
+        irank = id_added_neib(i)
+        num_added_import(i) = istack_trimmed_import_pe(irank+1)         &
+     &                       - istack_trimmed_import_pe(irank)
+      end do
+!
+      end subroutine count_import_item_for_extend
 !
 !  ---------------------------------------------------------------------
