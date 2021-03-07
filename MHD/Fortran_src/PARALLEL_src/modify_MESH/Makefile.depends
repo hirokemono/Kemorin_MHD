@@ -1,6 +1,6 @@
 append_communication_table.o: $(MODIFY_PARA_MESHDIR)/append_communication_table.f90 m_precision.o t_comm_table.o calypso_mpi.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-append_extended_element.o: $(MODIFY_PARA_MESHDIR)/append_extended_element.f90 m_precision.o t_comm_table.o t_geometry_data.o
+append_extended_element.o: $(MODIFY_PARA_MESHDIR)/append_extended_element.f90 m_precision.o t_comm_table.o t_geometry_data.o t_mesh_for_sleeve_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
 append_extended_node.o: $(MODIFY_PARA_MESHDIR)/append_extended_node.f90 m_precision.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -8,13 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine s_append_extended_element(ele, add_ele_comm,         &
-!!     &          iele_gl_new_import_trim, ie_new_import_trim, new_ele)
+!!     &          trimmed_import_connect, new_ele)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: add_ele_comm
-!!        integer(kind = kint_gl), intent(in)                           &
-!!     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+!!        type(ele_data_for_sleeve_ext), intent(in)                     &
+!!     &                              :: trimmed_import_connect
 !!        type(element_data), intent(inout) :: new_ele
 !!@endverbatim
       module append_extended_element
@@ -22,11 +20,12 @@
       use m_precision
       use t_comm_table
       use t_geometry_data
+      use t_mesh_for_sleeve_extend
 !
       implicit none
 !
-!      private :: add_num_extended_element, copy_eletype_to_extended
-!      private :: append_extended_ele_connenct
+      private :: add_num_extended_element, copy_eletype_to_extended
+      private :: append_extended_ele_connenct
 !
 !  ---------------------------------------------------------------------
 !
@@ -35,14 +34,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_append_extended_element(ele, add_ele_comm,           &
-     &          iele_gl_new_import_trim, ie_new_import_trim, new_ele)
+     &          trimmed_import_connect, new_ele)
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: add_ele_comm
-      integer(kind = kint_gl), intent(in)                               &
-     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+      type(ele_data_for_sleeve_ext), intent(in)                         &
+     &                              :: trimmed_import_connect
 !
       type(element_data), intent(inout) :: new_ele
 !
@@ -56,7 +53,7 @@
 !
       call alloc_ele_connectivity(new_ele)
       call append_extended_ele_connenct(ele, add_ele_comm,              &
-     &    iele_gl_new_import_trim, ie_new_import_trim, new_ele%numele,  &
+     &    trimmed_import_connect, new_ele%numele,                       &
      &    new_ele%nnod_4_ele, new_ele%iele_global, new_ele%ie)
 !
       end subroutine s_append_extended_element
@@ -104,16 +101,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine append_extended_ele_connenct(ele, add_ele_comm,        &
-     &          iele_gl_new_import_trim, ie_new_import_trim,            &
+      subroutine append_extended_ele_connenct                           &
+     &         (ele, add_ele_comm, trimmed_import_connect,              &
      &          num_newele, nnod_4_ele_new, iele_new_global, ie_new)
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: add_ele_comm
-      integer(kind = kint_gl), intent(in)                               &
-     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+      type(ele_data_for_sleeve_ext), intent(in)                         &
+     &                              :: trimmed_import_connect
 !
       integer(kind = kint), intent(in) :: num_newele, nnod_4_ele_new
 !
@@ -140,8 +135,9 @@
 !
 !$omp parallel do private(iele,jele)
       do iele = 1, add_ele_comm%ntot_import
-          jele = iele +  ele%numele
-        iele_new_global(jele) = iele_gl_new_import_trim(jele)
+        jele = iele +  ele%numele
+        iele_new_global(jele)                                           &
+     &       = trimmed_import_connect%iele_gl_comm(jele)
       end do
 !$omp end parallel do
 !
@@ -151,7 +147,8 @@
 !$omp parallel do private(inum,jele)
           do inum = 1, add_ele_comm%num_import(i)
             jele = inum + ist + ele%numele
-            ie_new(jele,k1) = ie_new_import_trim(inum+ist,k1)
+            ie_new(jele,k1)                                             &
+     &           = trimmed_import_connect%ie_comm(inum+ist,k1)
           end do
 !$omp end parallel do
         end do

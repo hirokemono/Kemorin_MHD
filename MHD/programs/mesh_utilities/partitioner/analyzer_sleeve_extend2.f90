@@ -359,6 +359,7 @@
       integer(kind = kint), allocatable :: irank_nod_new_import(:)
       real(kind = kreal), allocatable :: distance_new_import(:)
 !
+      integer(kind = kint), allocatable :: inod_in_added_import(:)
       integer(kind = kint), allocatable :: item_import_to_new_import(:)
 !
       integer(kind = kint), allocatable :: nele_import_tmp(:)
@@ -378,17 +379,17 @@
       integer(kind = kint), allocatable :: irank_origin_new_import(:)
 !
 !
-      integer(kind = kint_gl), allocatable :: iele_gl_new_import_trim(:)
-      integer(kind = kint), allocatable :: ie_new_import_trim(:,:)
-      integer(kind = kint), allocatable :: iele_lc_new_import_trim(:)
-      integer(kind = kint), allocatable :: irank_new_ele_import_trim(:)
+      type(ele_data_for_sleeve_ext) :: trimmed_import_connect
 !
-      integer(kind = kint), allocatable :: iele_lc_new_export_trim(:)
       integer(kind = kint), allocatable :: irank_new_ele_export_trim(:)
 !
 !
-      type(node_data_for_sleeve_ext), save :: trimmed_import_position
+      integer(kind = kint_gl), allocatable :: inod_gl_new_import_trim(:)
+      real(kind = kreal), allocatable :: xx_new_import_trim(:)
+      integer(kind = kint), allocatable :: item_new_import_trim(:)
       integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
+      integer(kind = kint), allocatable :: irank_new_import_trim(:)
+      real(kind = kreal), allocatable :: distance_new_import_trim(:)
 !
       integer(kind = kint) :: ntot_trimmed_ele_import
       integer(kind = kint), allocatable :: istack_trimmed_ele_import_item(:)
@@ -722,22 +723,22 @@
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
       call alloc_import_item(add_nod_comm)
 !
-      call alloc_node_data_sleeve_ext                                   &
-     &   (add_nod_comm%ntot_import, trimmed_import_position)
+      allocate(inod_gl_new_import_trim(add_nod_comm%ntot_import))
+      allocate(xx_new_import_trim(3*add_nod_comm%ntot_import))
+      allocate(item_new_import_trim(add_nod_comm%ntot_import))
       allocate(inod_lc_new_import_trim(add_nod_comm%ntot_import))
+      allocate(irank_new_import_trim(add_nod_comm%ntot_import))
+      allocate(distance_new_import_trim(add_nod_comm%ntot_import))
 !
       allocate(item_import_to_new_import(expand_nod_comm%ntot_import))
 !
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jcou = inum + jst
-          jnum = idx_home_sorted_import(inum+ist)
-          item_import_to_new_import(jnum) = jcou
-!
-          add_nod_comm%item_import(jcou) = jcou + org_node%numnod
+        jst = add_nod_comm%istack_import(i-1) + 1
+        jed = add_nod_comm%istack_import(i)
+        do inum = jst, jed
+          add_nod_comm%item_import(inum) = inum + org_node%numnod
         end do
       end do
 !
@@ -748,24 +749,18 @@
         do inum = 1, add_nod_comm%num_import(i)
           jcou = inum + jst
           jnum = idx_home_sorted_import(inum+ist)
+          item_import_to_new_import(jnum) = jcou
 !
-          trimmed_import_position%item_comm(jcou)                       &
-     &           = item_new_import(jnum)
+          item_new_import_trim(jcou) =    item_new_import(jnum)
           inod_lc_new_import_trim(jcou)                                 &
      &           = expand_nod_comm%item_import(jnum)
-          trimmed_import_position%irank_comm(jcou)                      &
-     &           = irank_nod_new_import(jnum)
-          trimmed_import_position%distance(jcou)                        &
-     &           = distance_new_import(jnum)
+          irank_new_import_trim(jcou) =   irank_nod_new_import(jnum)
+          distance_new_import_trim(jcou) = distance_new_import(jnum)
 !
-          trimmed_import_position%xx_comm(3*jcou-2)                     &
-     &           = xx_new_import(3*jnum-2)
-          trimmed_import_position%xx_comm(3*jcou-1)                     &
-     &           = xx_new_import(3*jnum-1)
-          trimmed_import_position%xx_comm(3*jcou  )                     &
-     &           = xx_new_import(3*jnum  )
-          trimmed_import_position%inod_gl_comm(jcou)                    &
-     &           = inod_gl_new_import(jnum)
+          xx_new_import_trim(3*jcou-2) = xx_new_import(3*jnum-2)
+          xx_new_import_trim(3*jcou-1) = xx_new_import(3*jnum-1)
+          xx_new_import_trim(3*jcou  ) = xx_new_import(3*jnum  )
+          inod_gl_new_import_trim(jcou) = inod_gl_new_import(jnum)
         end do
       end do
 !
@@ -781,8 +776,8 @@
 !        write(60+my_rank,*) 'check stack', add_nod_comm%istack_import
 !      do i = 1, add_nod_comm%ntot_import
 !        inod = add_nod_comm%item_import(i)
-!        write(60+my_rank,*) 'trimmed_import_position%irank_comm', i, inod, &
-!     &       inod_lc_new_import_trim(i), trimmed_import_position%irank_comm(i), trimmed_import_position%item_comm(i)
+!        write(60+my_rank,*) 'irank_new_import_trim', i, inod, &
+!     &       inod_lc_new_import_trim(i), irank_new_import_trim(i), item_new_import_trim(i)
 !      end do
       call calypso_mpi_barrier
 !
@@ -807,13 +802,12 @@
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    trimmed_import_position%distance, SR_sig1,                    &
+     &    distance_new_import_trim, SR_sig1,                            &
      &    dist_4_comm%distance_in_export)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
-     &    trimmed_import_position%inod_gl_comm,                         &
-     &    trimmed_import_position%xx_comm,                              &
-     &    inod_lc_new_import_trim, trimmed_import_position%irank_comm,  &
+     &    inod_gl_new_import_trim, xx_new_import_trim,                  &
+     &    inod_lc_new_import_trim, irank_new_import_trim,               &
      &    new_node, dbl_id2)
 !
 !
@@ -822,16 +816,29 @@
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           inod = inum + org_node%numnod
-          if(dbl_id2%irank(inod) .ne. trimmed_import_position%irank_comm(inum)  &
+          if(dbl_id2%irank(inod) .ne. irank_new_import_trim(inum)  &
      &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(inum)) &
      &      icou = icou + 1
 !          write(*,*) my_rank, 'idx_home_for_import', i, &
-!     &      dbl_id2%irank(inum+org_node%numnod), trimmed_import_position%irank_comm(inum), &
+!     &      dbl_id2%irank(inum+org_node%numnod), irank_new_import_trim(inum), &
 !     &      dbl_id2%index(inum+org_node%numnod), inod_lc_new_import_trim(inum)
         end do
       end do
       write(*,*) my_rank, 'Num. of ffailed ',                           &
       'with inod_lc_new_import_trim:', icou 
+!
+      allocate(inod_in_added_import(expand_nod_comm%ntot_import))
+      inod_in_added_import = 0
+!
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1)
+        do inum = 1, add_nod_comm%num_import(i)
+          jnum = idx_home_sorted_import(inum+ist)
+          inod_in_added_import(jnum) = inum + jst
+        end do
+      end do
 !
       icou = check_expand_nod_import_item                               &
      &             (dbl_id2, expand_nod_comm, add_nod_comm,             &
@@ -1025,24 +1032,23 @@
       write(*,*) my_rank, 'add_ele_comm%ntot_import', add_ele_comm%ntot_import
       call alloc_import_item(add_ele_comm)
 !
-      allocate(iele_gl_new_import_trim(add_ele_comm%ntot_import))
-      allocate(ie_new_import_trim(add_ele_comm%ntot_import,org_ele%nnod_4_ele))
-      allocate(iele_lc_new_import_trim(add_ele_comm%ntot_import))
-      allocate(irank_new_ele_import_trim(add_ele_comm%ntot_import))
+      call alloc_ele_data_sleeve_ext                                    &
+     &   (add_ele_comm%ntot_import, org_ele%nnod_4_ele,                 &
+     &    trimmed_import_connect)
 !
       call set_trimmed_import_items                                     &
      &         (nprocs, org_ele, expand_ele_comm, add_ele_comm,         &
      &          istack_trimmed_ele_import_pe,                           &
      &          idx_home_sorted_ele_import, iele_gl_new_import,         &
      &          ie_new_import, irank_ele_new_import,                    &
-     &          iele_gl_new_import_trim, ie_new_import_trim,            &
-     &          iele_lc_new_import_trim, irank_new_ele_import_trim)
+     &    trimmed_import_connect)
 !
       icou = check_trim_import_ele_connect(org_ele, add_ele_comm,       &
-     &                                     ie_new_import_trim)
+     &                                  trimmed_import_connect%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &       'Number of wriong ie_new_import_trim', ntot_failed_gl
+     &         'Number of wriong trimmed_import_connect%ie_comm',       &
+     &          ntot_failed_gl
 !
 !
       call alloc_export_num(add_ele_comm)
@@ -1052,18 +1058,26 @@
      &    add_ele_comm%istack_export, add_ele_comm%ntot_export)
       call alloc_export_item(add_ele_comm)
 !
-      allocate(iele_lc_new_export_trim(add_ele_comm%ntot_export))
+      call comm_items_send_recv                                         &
+     &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
+     &    trimmed_import_connect%iele_lc_comm, SR_sig1,                 &
+     &    add_ele_comm%item_export)
+!
+      call s_append_communication_table                                 &
+     &   (ele_comm, add_ele_comm, new_ele_comm)
+      call s_append_extended_element(org_ele, add_ele_comm,             &
+     &    trimmed_import_connect, new_ele)
+!
+!
+!
       allocate(irank_new_ele_export_trim(add_ele_comm%ntot_export))
-!
       call comm_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    iele_lc_new_import_trim, SR_sig1, add_ele_comm%item_export)
-      call comm_items_send_recv                                         &
-     &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    irank_new_ele_import_trim, SR_sig1, irank_new_ele_export_trim)
-!
+     &    trimmed_import_connect%irank_comm, SR_sig1,                   &
+     &    irank_new_ele_export_trim)
+      call dealloc_ele_data_sleeve_ext(trimmed_import_connect)
 !
       icou = check_recieved_extended_ele_export(iele_dbl, add_ele_comm, &
      &                                      irank_new_ele_export_trim)
@@ -1071,11 +1085,6 @@
       if(my_rank .eq. 0) write(*,*) 'Failed double element ID ',        &
      &                            'from returnrd table', ntot_failed_gl
 !
-!
-      call s_append_communication_table                                 &
-     &   (ele_comm, add_ele_comm, new_ele_comm)
-      call s_append_extended_element(org_ele, add_ele_comm,             &
-     &    iele_gl_new_import_trim, ie_new_import_trim, new_ele)
 !
       end subroutine extend_node_comm_table2
 !
@@ -1876,12 +1885,12 @@
      &          istack_trimmed_ele_import_pe,       &
      &          idx_home_sorted_ele_import, iele_gl_new_import,       &
      &          ie_new_import, irank_ele_new_import,                    &
-     &          iele_gl_new_import_trim, ie_new_import_trim,            &
-     &          iele_lc_new_import_trim, irank_new_ele_import_trim)
+     &          trimmed_import_connect)
 !
       use m_precision
       use t_comm_table
       use t_geometry_data
+      use t_mesh_for_sleeve_extend
 !
       implicit none
 !
@@ -1902,16 +1911,8 @@
       integer(kind = kint), intent(in)                               &
      &   :: irank_ele_new_import(expand_ele_comm%ntot_import)
 !
-      integer(kind = kint_gl), intent(inout)                            &
-     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
-      integer(kind = kint), intent(inout)                               &
-     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
-      integer(kind = kint), intent(inout)                               &
-     &   :: iele_lc_new_import_trim(add_ele_comm%ntot_import)
-      integer(kind = kint), intent(inout)                               &
-     &   :: irank_new_ele_import_trim(add_ele_comm%ntot_import)
-!
-!
+      type(ele_data_for_sleeve_ext), intent(inout)                      &
+     &                              :: trimmed_import_connect
 !
       integer(kind = kint) :: i, irank, ist, jst, k1, inum, jnum, jcou
 !
@@ -1926,12 +1927,16 @@
           jcou = inum + jst
           add_ele_comm%item_import(jcou) = jcou + ele%numele
 !
-          iele_lc_new_import_trim(jcou) = expand_ele_comm%item_import(jnum)
-          irank_new_ele_import_trim(jcou) =   irank_ele_new_import(jnum)
+          trimmed_import_connect%iele_lc_comm(jcou)                     &
+     &              = expand_ele_comm%item_import(jnum)
+          trimmed_import_connect%irank_comm(jcou)                       &
+     &              = irank_ele_new_import(jnum)
 !
-          iele_gl_new_import_trim(jcou) = iele_gl_new_import(jnum)
+          trimmed_import_connect%iele_gl_comm(jcou)                     &
+     &          = iele_gl_new_import(jnum)
           do k1 = 1, ele%nnod_4_ele
-            ie_new_import_trim(jcou,k1) = ie_new_import(jnum,k1)
+            trimmed_import_connect%ie_comm(jcou,k1)                     &
+     &          = ie_new_import(jnum,k1)
           end do
         end do
 !$omp end parallel do
