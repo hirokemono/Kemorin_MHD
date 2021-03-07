@@ -282,6 +282,7 @@
      &          new_node, new_ele, new_ele_comm, dist_4_comm)
 !
       use t_next_node_ele_4_node
+      use t_para_double_numbering
 !
       use m_solver_SR
       use calypso_mpi_int
@@ -426,8 +427,11 @@
 
       type(comm_table_for_each_pe) :: each_comm
 !
+      integer(kind = kint), external :: check_expand_nod_import_item
       integer(kind = kint), external :: check_negative_ie_new_import
       integer(kind = kint), external :: check_zero_ie_new_import
+      integer(kind = kint), external :: check_recieved_extended_ele_export
+      integer(kind = kint), external :: check_trim_import_ele_connect
 !
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
@@ -962,22 +966,13 @@
         end do
       end do
 !
-      icou = 0
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1) + 1
-        jed = add_nod_comm%istack_import(i)
-        do inum = jst, jed
-          jnum = idx_home_sorted_import(inum+ist)
-          inod = add_nod_comm%item_import(inum)
-          if(dbl_id2%irank(inod) .ne. irank_nod_new_import(jnum)    &
-     &   .or. dbl_id2%index(inod) .ne. expand_nod_comm%item_import(jnum)) &
-     &      icou = icou + 1
-        end do
-      end do
-      write(*,*) my_rank, 'Num. of fffailed ',                          &
-      'with add_nod_comm%item_import:', icou 
+      icou = check_expand_nod_import_item                               &
+     &             (dbl_id2, expand_nod_comm, add_nod_comm,             &
+     &              istack_trimmed_import_pe, idx_home_sorted_import,   &
+     &              irank_nod_new_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      write(*,*) 'Num. of failed ',                                     &
+      'with expand_nod_comm%item_import:', ntot_failed_gl 
 !
       icou = 0
       do i = 1, expand_nod_comm%ntot_import
@@ -1168,32 +1163,19 @@
       allocate(iele_lc_new_import_trim(add_ele_comm%ntot_import))
       allocate(irank_new_ele_import_trim(add_ele_comm%ntot_import))
 !
-      do i = 1, add_ele_comm%num_neib
-        irank = add_ele_comm%id_neib(i)
-        ist = istack_trimmed_ele_import_pe(irank)
-        jst = add_ele_comm%istack_import(i-1)
-        do inum = 1, add_ele_comm%num_import(i)
-          jcou = inum + jst
-          add_ele_comm%item_import(jcou) = jcou + org_ele%numele
+      call set_trimmed_import_items                                     &
+     &         (nprocs, org_ele, expand_ele_comm, add_ele_comm,         &
+     &          istack_trimmed_ele_import_pe,                           &
+     &          idx_home_sorted_ele_import, iele_gl_new_import,         &
+     &          ie_new_import, irank_ele_new_import,                    &
+     &          iele_gl_new_import_trim, ie_new_import_trim,            &
+     &          iele_lc_new_import_trim, irank_new_ele_import_trim)
 !
-          jnum = idx_home_sorted_ele_import(inum+ist)
-          iele_lc_new_import_trim(jcou) = expand_ele_comm%item_import(jnum)
-          irank_new_ele_import_trim(jcou) =   irank_ele_new_import(jnum)
-!
-          iele_gl_new_import_trim(jcou) = iele_gl_new_import(jnum)
-          do k1 = 1, org_ele%nnod_4_ele
-            ie_new_import_trim(jcou,k1) =    ie_new_import(jnum,k1)
-          end do
-        end do
-      end do
-!
-      icou = 0
-      do k1 = 1, org_ele%nnod_4_ele
-        do inum = 1, add_ele_comm%ntot_import
-          if(ie_new_import_trim(inum,k1) .le. 0) icou = icou + 1
-        end do
-      end do
-      write(*,*) 'wrong ie_new_import_trim', my_rank, icou
+      icou = check_trim_import_ele_connect(org_ele, add_ele_comm,       &
+     &                                     ie_new_import_trim)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &       'Number of wriong ie_new_import_trim', ntot_failed_gl
 !
 !
       call alloc_export_num(add_ele_comm)
@@ -1216,14 +1198,11 @@
      &    irank_new_ele_import_trim, SR_sig1, irank_new_ele_export_trim)
 !
 !
-      icou = 0
-      do inum = 1, add_ele_comm%ntot_export
-        iele = add_ele_comm%item_export(inum)
-        if(iele_dbl%index(iele) .ne. add_ele_comm%item_export(inum)     &
-         .or. iele_dbl%irank(iele) .ne. irank_new_ele_export_trim(inum) &
-     &       )  icou = icou + 1
-      end do
-      write(*,*) my_rank, 'failed double element ID', icou
+      icou = check_recieved_extended_ele_export(iele_dbl, add_ele_comm, &
+     &                                      irank_new_ele_export_trim)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Failed double element ID ',        &
+     &                            'from returnrd table', ntot_failed_gl
 !
 !
       call s_append_communication_table                                 &
@@ -2022,3 +2001,181 @@
       check_zero_ie_new_import = icou
 !
       end function check_zero_ie_new_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_trimmed_import_items                               &
+     &         (nprocs, ele, expand_ele_comm, add_ele_comm,             &
+     &          istack_trimmed_ele_import_pe,       &
+     &          idx_home_sorted_ele_import, iele_gl_new_import,       &
+     &          ie_new_import, irank_ele_new_import,                    &
+     &          iele_gl_new_import_trim, ie_new_import_trim,            &
+     &          iele_lc_new_import_trim, irank_new_ele_import_trim)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+!
+      implicit none
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: expand_ele_comm
+      type(communication_table), intent(in) :: add_ele_comm
+!
+      integer, intent(in) :: nprocs
+      integer(kind = kint), intent(in)                                  &
+     &   :: istack_trimmed_ele_import_pe(0:nprocs)
+      integer(kind = kint), intent(in)                                  &
+     &   ::idx_home_sorted_ele_import(istack_trimmed_ele_import_pe(nprocs))
+!
+      integer(kind = kint_gl), intent(in)                            &
+     &   :: iele_gl_new_import(expand_ele_comm%ntot_import)
+      integer(kind = kint), intent(in)                               &
+     &   :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
+      integer(kind = kint), intent(in)                               &
+     &   :: irank_ele_new_import(expand_ele_comm%ntot_import)
+!
+      integer(kind = kint_gl), intent(inout)                            &
+     &   :: iele_gl_new_import_trim(add_ele_comm%ntot_import)
+      integer(kind = kint), intent(inout)                               &
+     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+      integer(kind = kint), intent(inout)                               &
+     &   :: iele_lc_new_import_trim(add_ele_comm%ntot_import)
+      integer(kind = kint), intent(inout)                               &
+     &   :: irank_new_ele_import_trim(add_ele_comm%ntot_import)
+!
+!
+!
+      integer(kind = kint) :: i, irank, ist, jst, k1, inum, jnum, jcou
+!
+!
+      do i = 1, add_ele_comm%num_neib
+        irank = add_ele_comm%id_neib(i)
+        ist = istack_trimmed_ele_import_pe(irank)
+        jst = add_ele_comm%istack_import(i-1)
+!$omp parallel do private(inum,jcou,jnum,k1)
+        do inum = 1, add_ele_comm%num_import(i)
+          jnum = idx_home_sorted_ele_import(inum+ist)
+          jcou = inum + jst
+          add_ele_comm%item_import(jcou) = jcou + ele%numele
+!
+          iele_lc_new_import_trim(jcou) = expand_ele_comm%item_import(jnum)
+          irank_new_ele_import_trim(jcou) =   irank_ele_new_import(jnum)
+!
+          iele_gl_new_import_trim(jcou) = iele_gl_new_import(jnum)
+          do k1 = 1, ele%nnod_4_ele
+            ie_new_import_trim(jcou,k1) = ie_new_import(jnum,k1)
+          end do
+        end do
+!$omp end parallel do
+      end do
+!
+      end subroutine set_trimmed_import_items
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_recieved_extended_ele_export  &
+     &         (iele_dbl, add_ele_comm, irank_new_ele_export_trim)
+!
+      use m_precision
+      use t_comm_table
+      use t_para_double_numbering
+!
+      implicit none
+!
+      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(communication_table), intent(in) :: add_ele_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &   :: irank_new_ele_export_trim(add_ele_comm%ntot_export)
+!
+      integer(kind = kint) :: icou, iele, inum
+!
+!
+      icou = 0
+      do inum = 1, add_ele_comm%ntot_export
+        iele = add_ele_comm%item_export(inum)
+        if(iele_dbl%index(iele) .ne. add_ele_comm%item_export(inum)     &
+         .or. iele_dbl%irank(iele) .ne. irank_new_ele_export_trim(inum) &
+     &       )  icou = icou + 1
+      end do
+      check_recieved_extended_ele_export = icou
+!
+      end function check_recieved_extended_ele_export
+!
+! ----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_trim_import_ele_connect       &
+     &                   (ele, add_ele_comm, ie_new_import_trim)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+!
+      implicit none
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: add_ele_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: icou, k1, inum
+!
+!
+      icou = 0
+      do k1 = 1, ele%nnod_4_ele
+        do inum = 1, add_ele_comm%ntot_import
+          if(ie_new_import_trim(inum,k1) .le. 0) icou = icou + 1
+        end do
+      end do
+      check_trim_import_ele_connect = icou
+!
+      end function check_trim_import_ele_connect
+!
+! ----------------------------------------------------------------------
+!
+!
+      integer(kind = kint) function check_expand_nod_import_item        &
+     &             (inod_new_dbl, expand_nod_comm, add_nod_comm,        &
+     &              istack_trimmed_import_pe, idx_home_sorted_import,   &
+     &              irank_nod_new_import)
+!
+      use m_precision
+      use t_comm_table
+      use t_para_double_numbering
+!
+      implicit none
+!
+      type(node_ele_double_number), intent(in) :: inod_new_dbl
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(communication_table), intent(in) :: add_nod_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &   :: istack_trimmed_import_pe(0:nprocs)
+      integer(kind = kint), intent(in)                                  &
+     &   :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
+      integer(kind = kint), intent(in)                                  &
+     &   :: irank_nod_new_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: i, icou, irank, ist, jst, jed
+      integer(kind = kint) :: inum, jnum, inod
+!
+!
+      icou = 0
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1) + 1
+        jed = add_nod_comm%istack_import(i)
+        do inum = jst, jed
+          jnum = idx_home_sorted_import(inum+ist)
+          inod = add_nod_comm%item_import(inum)
+          if(inod_new_dbl%irank(inod) .ne. irank_nod_new_import(jnum)    &
+     &   .or. inod_new_dbl%index(inod) .ne. expand_nod_comm%item_import(jnum)) &
+     &      icou = icou + 1
+        end do
+      end do
+      check_expand_nod_import_item = icou
+!
+      end function check_expand_nod_import_item
