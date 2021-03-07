@@ -283,6 +283,7 @@
 !
       use t_next_node_ele_4_node
       use t_para_double_numbering
+      use t_mesh_for_sleeve_extend
 !
       use m_solver_SR
       use calypso_mpi_int
@@ -358,7 +359,6 @@
       integer(kind = kint), allocatable :: irank_nod_new_import(:)
       real(kind = kreal), allocatable :: distance_new_import(:)
 !
-      integer(kind = kint), allocatable :: inod_in_added_import(:)
       integer(kind = kint), allocatable :: item_import_to_new_import(:)
 !
       integer(kind = kint), allocatable :: nele_import_tmp(:)
@@ -387,12 +387,8 @@
       integer(kind = kint), allocatable :: irank_new_ele_export_trim(:)
 !
 !
-      integer(kind = kint_gl), allocatable :: inod_gl_new_import_trim(:)
-      real(kind = kreal), allocatable :: xx_new_import_trim(:)
-      integer(kind = kint), allocatable :: item_new_import_trim(:)
+      type(node_data_for_sleeve_ext), save :: trimmed_import_position
       integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
-      integer(kind = kint), allocatable :: irank_new_import_trim(:)
-      real(kind = kreal), allocatable :: distance_new_import_trim(:)
 !
       integer(kind = kint) :: ntot_trimmed_ele_import
       integer(kind = kint), allocatable :: istack_trimmed_ele_import_item(:)
@@ -726,12 +722,9 @@
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
       call alloc_import_item(add_nod_comm)
 !
-      allocate(inod_gl_new_import_trim(add_nod_comm%ntot_import))
-      allocate(xx_new_import_trim(3*add_nod_comm%ntot_import))
-      allocate(item_new_import_trim(add_nod_comm%ntot_import))
+      call alloc_node_data_sleeve_ext                                   &
+     &   (add_nod_comm%ntot_import, trimmed_import_position)
       allocate(inod_lc_new_import_trim(add_nod_comm%ntot_import))
-      allocate(irank_new_import_trim(add_nod_comm%ntot_import))
-      allocate(distance_new_import_trim(add_nod_comm%ntot_import))
 !
       allocate(item_import_to_new_import(expand_nod_comm%ntot_import))
 !
@@ -754,16 +747,23 @@
           jnum = idx_home_sorted_import(inum+ist)
           item_import_to_new_import(jnum) = jcou
 !
-          item_new_import_trim(jcou) =    item_new_import(jnum)
+          trimmed_import_position%item_comm(jcou)                       &
+     &           = item_new_import(jnum)
           inod_lc_new_import_trim(jcou)                                 &
      &           = expand_nod_comm%item_import(jnum)
-          irank_new_import_trim(jcou) =   irank_nod_new_import(jnum)
-          distance_new_import_trim(jcou) = distance_new_import(jnum)
+          trimmed_import_position%irank_comm(jcou)                      &
+     &           = irank_nod_new_import(jnum)
+          trimmed_import_position%distance(jcou)                        &
+     &           = distance_new_import(jnum)
 !
-          xx_new_import_trim(3*jcou-2) = xx_new_import(3*jnum-2)
-          xx_new_import_trim(3*jcou-1) = xx_new_import(3*jnum-1)
-          xx_new_import_trim(3*jcou  ) = xx_new_import(3*jnum  )
-          inod_gl_new_import_trim(jcou) = inod_gl_new_import(jnum)
+          trimmed_import_position%xx_comm(3*jcou-2)                     &
+     &           = xx_new_import(3*jnum-2)
+          trimmed_import_position%xx_comm(3*jcou-1)                     &
+     &           = xx_new_import(3*jnum-1)
+          trimmed_import_position%xx_comm(3*jcou  )                     &
+     &           = xx_new_import(3*jnum  )
+          trimmed_import_position%inod_gl_comm(jcou)                    &
+     &           = inod_gl_new_import(jnum)
         end do
       end do
 !
@@ -779,8 +779,8 @@
 !        write(60+my_rank,*) 'check stack', add_nod_comm%istack_import
 !      do i = 1, add_nod_comm%ntot_import
 !        inod = add_nod_comm%item_import(i)
-!        write(60+my_rank,*) 'irank_new_import_trim', i, inod, &
-!     &       inod_lc_new_import_trim(i), irank_new_import_trim(i), item_new_import_trim(i)
+!        write(60+my_rank,*) 'trimmed_import_position%irank_comm', i, inod, &
+!     &       inod_lc_new_import_trim(i), trimmed_import_position%irank_comm(i), trimmed_import_position%item_comm(i)
 !      end do
       call calypso_mpi_barrier
 !
@@ -805,12 +805,13 @@
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    distance_new_import_trim, SR_sig1,                            &
+     &    trimmed_import_position%distance, SR_sig1,                    &
      &    dist_4_comm%distance_in_export)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
-     &    inod_gl_new_import_trim, xx_new_import_trim,                  &
-     &    inod_lc_new_import_trim, irank_new_import_trim,               &
+     &    trimmed_import_position%inod_gl_comm,                         &
+     &    trimmed_import_position%xx_comm,                              &
+     &    inod_lc_new_import_trim, trimmed_import_position%irank_comm,  &
      &    new_node, dbl_id2)
 !
 !
@@ -819,29 +820,16 @@
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           inod = inum + org_node%numnod
-          if(dbl_id2%irank(inod) .ne. irank_new_import_trim(inum)  &
+          if(dbl_id2%irank(inod) .ne. trimmed_import_position%irank_comm(inum)  &
      &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(inum)) &
      &      icou = icou + 1
 !          write(*,*) my_rank, 'idx_home_for_import', i, &
-!     &      dbl_id2%irank(inum+org_node%numnod), irank_new_import_trim(inum), &
+!     &      dbl_id2%irank(inum+org_node%numnod), trimmed_import_position%irank_comm(inum), &
 !     &      dbl_id2%index(inum+org_node%numnod), inod_lc_new_import_trim(inum)
         end do
       end do
       write(*,*) my_rank, 'Num. of ffailed ',                           &
       'with inod_lc_new_import_trim:', icou 
-!
-      allocate(inod_in_added_import(expand_nod_comm%ntot_import))
-      inod_in_added_import = 0
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jnum = idx_home_sorted_import(inum+ist)
-          inod_in_added_import(jnum) = inum + jst
-        end do
-      end do
 !
       icou = check_expand_nod_import_item                               &
      &             (dbl_id2, expand_nod_comm, add_nod_comm,             &
