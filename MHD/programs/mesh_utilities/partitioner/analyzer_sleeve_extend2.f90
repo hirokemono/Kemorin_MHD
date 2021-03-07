@@ -352,10 +352,7 @@
 !
       integer(kind = kint), allocatable :: nele_import_tmp(:)
       integer(kind = kint), allocatable :: istack_ele_import_tmp(:)
-      integer(kind = kint), allocatable :: irank_org_ele_new_import(:)
-      integer(kind = kint), allocatable :: index_ele_import_tmp(:)
-      integer(kind = kint), allocatable :: irank_ele_import_tmp(:)
-      integer(kind = kint), allocatable :: iele_lc_import_tmp(:)
+      type(sort_data_for_sleeve_trim), save :: sort_ele_import
 !
 !
       integer(kind = kint), allocatable :: num_import_tmp(:)
@@ -871,29 +868,27 @@
       nele_import_tmp(1:nprocs) =       0
       istack_ele_import_tmp(0:nprocs) = 0
 !
-      allocate(irank_org_ele_new_import(expand_ele_comm%ntot_import))
-      allocate(index_ele_import_tmp(expand_ele_comm%ntot_import))
-      allocate(irank_ele_import_tmp(expand_ele_comm%ntot_import))
-      allocate(iele_lc_import_tmp(expand_ele_comm%ntot_import))
+      call alloc_sort_data_sleeve_ext(expand_ele_comm%ntot_import,      &
+     &                                sort_ele_import)
 !
       call sort_import_by_pe_and_local_id                               &
      &   (nprocs, nod_comm, expand_ele_comm,                            &
      &    expand_import_connect%irank_comm,                             &
-     &          index_ele_import_tmp, iele_lc_import_tmp, &
-     &          irank_ele_import_tmp, irank_org_ele_new_import, &
+     &    sort_ele_import%isorted_to_org, sort_ele_import%iref_lc_import, &
+     &    sort_ele_import%irank_import_sort, sort_ele_import%irank_orgin_pe, &
      &          nele_import_tmp, istack_ele_import_tmp)
 !
       do ip = 1, nprocs
         ist = istack_ele_import_tmp(ip-1)
         if(nele_import_tmp(ip) .gt. 1) then
           call quicksort_w_index                                       &
-     &       (nele_import_tmp(ip), iele_lc_import_tmp(ist+1),          &
-     &        ione, nele_import_tmp(ip), index_ele_import_tmp(ist+1))
+     &       (nele_import_tmp(ip), sort_ele_import%iref_lc_import(ist+1),          &
+     &        ione, nele_import_tmp(ip), sort_ele_import%isorted_to_org(ist+1))
         end if
       end do
 !
       ntot_trimmed_ele_import = count_ntot_trimmed_import               &
-     &                (nprocs, expand_ele_comm%ntot_import, iele_lc_import_tmp, &
+     &                (nprocs, expand_ele_comm%ntot_import, sort_ele_import%iref_lc_import, &
      &                 nele_import_tmp, istack_ele_import_tmp)
 !
       allocate(istack_trimmed_ele_import_pe(0:nprocs))
@@ -902,7 +897,7 @@
       istack_trimmed_ele_import_item(:) = 0
 !
       call count_trimmed_import_stack                             &
-     &   (nprocs, expand_ele_comm%ntot_import, iele_lc_import_tmp,      &
+     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%iref_lc_import,      &
      &    nele_import_tmp, istack_ele_import_tmp,                      &
      &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,      &
      &    istack_trimmed_ele_import_item)
@@ -912,7 +907,7 @@
 !
       call trim_internal_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import, expand_import_connect%irank_comm,    &
-     &    index_ele_import_tmp, irank_org_ele_new_import,            &
+     &    sort_ele_import%isorted_to_org, sort_ele_import%irank_orgin_pe,            &
      &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,     &
      &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
      &    icou)
@@ -922,7 +917,7 @@
 !
       call trim_external_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import,                          &
-     &    expand_import_connect%irank_comm, index_ele_import_tmp,       &
+     &    expand_import_connect%irank_comm, sort_ele_import%isorted_to_org,       &
      &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,        &
      &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
      &    icou)
@@ -931,7 +926,7 @@
      &                  ntot_failed_gl
 !
       call trim_orphaned_import_items                                   &
-     &   (nprocs, expand_ele_comm%ntot_import, index_ele_import_tmp,    &
+     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
      &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,  &
      &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
      &    icou)
@@ -944,7 +939,7 @@
 
 
       call find_home_import_item_by_trim                          &
-     &   (nprocs, expand_ele_comm%ntot_import, index_ele_import_tmp,    &
+     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
      &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,        &
      &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
      &    idx_home_for_ele_import, icou)
