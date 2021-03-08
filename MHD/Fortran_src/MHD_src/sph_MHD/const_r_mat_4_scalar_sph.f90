@@ -178,7 +178,8 @@
         r_coef(sph_params%nlayer_ICB) = property%ICB_diffusie_reduction &
      &                                 * r_coef(sph_params%nlayer_ICB)
         if(my_rank .eq. 0) write(*,*) 'reduction of diffusivity at',    &
-     &    sph_params%nlayer_ICB, ' to ',  r_coef(sph_params%nlayer_ICB)
+     &    sph_params%nlayer_ICB, ' to ',  r_coef(sph_params%nlayer_ICB) &
+     &                         ' from ' , coef
       end if
 !
 !
