@@ -13,6 +13,8 @@
 !!     &         (sph_bc_B, sph, ipol, rj_fld)
 !!      subroutine set_initial_homogeneous_magne                        &
 !!     &         (sph_bc_B, sph, ipol, rj_fld)
+!!      subroutine add_inner_core_heat_sce_flatT                          &
+!!     &         (sph_bc_T, bcs_T, sph, ipol, rj_fld)
 !!       Poloidal magnetic field :: d_rj(:,ipol%base%i_magne  )
 !!       Toroidal magnetic field :: d_rj(:,ipol%base%i_magne+2)
 !!@endverbatim
@@ -217,6 +219,71 @@
       end if
 !
       end subroutine set_initial_homogeneous_magne
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_inner_core_heat_sce_flatT                          &
+     &         (sph_bc_T, bcs_T, sph, ipol, rj_fld)
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(sph_scalar_boundary_data), intent(in) :: bcs_T
+      type(sph_grids), intent(in) :: sph
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
+!
+      real (kind = kreal) :: rr, q, T_ICB, f_ICB
+      integer(kind = kint) :: inod, i_center
+      integer :: jj, k
+!
+!
+      if(ipol%base%i_heat_source * ipol%base%i_temp .eq. izero) return
+!
+!
+!$omp parallel do
+      do inod = 1, nnod_rj(sph)
+        rj_fld%d_fld(inod,ipol%base%i_heat_source) = zero
+      end do
+!$omp end parallel do
+!
+!
+!    Find address for l = m = 0
+      jj =  find_local_sph_mode_address(sph, 0, 0)
+!
+      if (jj .gt. 0) then
+        f_ICB = -bcs_T%CMB_Sspec%S_BC(jj)                               &
+     &         * (sph_bc_T%r_CMB(0) / r_ICB(sph))**2
+        q = three * f_ICB / r_ICB(sph)
+        write(*,*) 'Set inner core heat source and temperature', f_ICB, q
+!
+        inod = local_sph_data_address(sph, nlayer_ICB(sph), jj)
+        T_ICB = rj_fld%d_fld(inod,ipol%base%i_temp)
+        write(*,*) 'ICB temp ', nlayer_ICB(sph), T_ICB, r_ICB(sph)
+!
+        do k = 1, nlayer_ICB(sph)
+          inod = local_sph_data_address(sph, k, jj)
+          rr = radius_1d_rj_r(sph, k)
+!   Substitute initial heat source
+          rj_fld%d_fld(inod,ipol%base%i_heat_source) = q
+!   Fill inner core temperature
+          rj_fld%d_fld(inod,ipol%base%i_temp) = T_ICB
+          write(*,*) 'inner core temp ', k, rr, &
+     &               rj_fld%d_fld(inod,ipol%base%i_heat_source),  &
+     &               rj_fld%d_fld(inod,ipol%base%i_temp)
+        end do
+      end if
+!
+!    Center
+      i_center = inod_rj_center(sph)
+      if(i_center .gt. 0) then
+        rj_fld%d_fld(i_center,ipol%base%i_heat_source) = q
+        rj_fld%d_fld(i_center,ipol%base%i_temp)                         &
+     &         = T_ICB
+          write(*,*) 'center core temp ',  &
+     &               rj_fld%d_fld(i_center,ipol%base%i_heat_source),  &
+     &               rj_fld%d_fld(i_center,ipol%base%i_temp)
+      end if
+!
+      end subroutine add_inner_core_heat_sce_flatT
 !
 !-----------------------------------------------------------------------
 !
