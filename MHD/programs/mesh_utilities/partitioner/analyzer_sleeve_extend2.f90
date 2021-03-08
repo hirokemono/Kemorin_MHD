@@ -508,7 +508,6 @@
       call alloc_export_item(expand_nod_comm)
       call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_export,      &
      &                                expand_export_position)
-      allocate(item_new_export(expand_nod_comm%ntot_export))
 !
       call alloc_export_item(expand_ele_comm)
       call alloc_ele_data_sleeve_ext                                    &
@@ -533,8 +532,6 @@
      &    expand_export_position%xx_comm,                               &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
      &    expand_ele_comm%item_export, expand_export_connect)
-      call set_item_new_export(nod_comm, org_node, mark_nod,            &
-     &    expand_nod_comm, item_new_export)
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
@@ -643,7 +640,10 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Missing import item in trimmed:', ntot_failed_gl
 !
-      allocate(item_new_import(expand_nod_comm%ntot_import))
+!      allocate(item_new_export(expand_nod_comm%ntot_export))
+!      call set_item_new_export(nod_comm, org_node, mark_nod,           &
+!     &    expand_nod_comm, item_new_export)
+!      allocate(item_new_import(expand_nod_comm%ntot_import))
 !      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,   &
 !     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import,&
 !     &    item_new_export, SR_sig1, item_new_import)
@@ -696,7 +696,7 @@
 !     &          trimmed_import_position, item_new_import,              &
 !     &          istack_trimmed_import_pe, idx_home_sorted_import,      &
 !     &          inod_lc_new_import_trim, item_added_import)
-      deallocate(item_new_import)
+!      deallocate(item_new_import)
 !
       call alloc_export_num(add_nod_comm)
       call num_items_send_recv                                          &
