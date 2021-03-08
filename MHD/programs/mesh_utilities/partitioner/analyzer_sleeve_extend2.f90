@@ -351,8 +351,6 @@
       integer(kind = kint), allocatable :: item_import_to_new_import(:)
 !
       type(sort_data_for_sleeve_trim), save :: sort_ele_import
-!
-!
       type(sort_data_for_sleeve_trim), save :: sort_nod_import
 !
 !
@@ -378,9 +376,7 @@
       integer(kind = kint), allocatable :: idx_home_for_import(:)
 !
       integer(kind = kint), allocatable :: idx_home_sorted_ele_import(:)
-      integer(kind = kint), allocatable :: idx_home_for_ele_import(:)
-!
-      integer(kind = kint), allocatable :: ineib_org_ele(:)
+!      integer(kind = kint), allocatable :: idx_home_for_ele_import(:)
 !
       integer(kind = kint), allocatable :: inod_added_import(:)
 !
@@ -565,6 +561,8 @@
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
      &    expand_export_position%inod_gl_comm, SR_sig1,                 &
      &    expand_import_position%inod_gl_comm)
+      call dealloc_node_data_sleeve_ext(expand_export_position)
+      deallocate(item_new_export)
 !
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
@@ -587,6 +585,7 @@
      &    expand_export_connect%ie_comm(1,k1), SR_sig1,                 &
      &    expand_import_connect%ie_comm(1,k1))
       end do
+      call dealloc_ele_data_sleeve_ext(expand_export_connect)
 !
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import)
@@ -660,6 +659,7 @@
 !     &       expand_nod_comm%item_import(sort_nod_import%iref_lc_import(jst:jed)), &
 !     &       expand_import_position%irank_comm(sort_nod_import%iref_lc_import(jst:jed))
 !      end do
+      deallocate(istack_trimmed_import_item)
 !
 !      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
 !      write(*,*) my_rank, 'new_neib', add_nod_comm%id_neib
@@ -670,6 +670,7 @@
 !     &            sort_nod_import%num_sorted_by_pe(ip), istack_trimmed_import_pe(ip)
 !      end do
 !      write(*,*) my_rank, 'add_nod_comm%num_neib', add_nod_comm%num_neib
+      call dealloc_sort_data_sleeve_ext(sort_nod_import)
 !
       call alloc_import_num(add_nod_comm)
       call count_import_item_for_extend                                 &
@@ -695,6 +696,7 @@
      &    istack_trimmed_import_pe, idx_home_sorted_import,             &
      &    item_import_to_new_import, inod_lc_new_import_trim,           &
      &    item_new_import_trim, add_nod_comm%item_import)
+      deallocate(item_import_to_new_import)
       call trim_imported_expand_node(add_nod_comm, nprocs,              &
      &          istack_trimmed_import_pe, idx_home_sorted_import,       &
      &          expand_import_position, trimmed_import_position)
@@ -714,6 +716,8 @@
 !        write(60+my_rank,*) 'trimmed_import_position%irank_comm', i, inod, &
 !     &       inod_lc_new_import_trim(i), trimmed_import_position%irank_comm(i), item_new_import_trim(i)
 !      end do
+       deallocate(item_new_import_trim)
+      deallocate(item_new_import)
 !
 !
       call alloc_export_num(add_nod_comm)
@@ -765,6 +769,8 @@
       if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
      &         'in idx_home_for_import ', ntot_failed_gl
 !
+      deallocate(inod_lc_new_import_trim)
+!
       allocate(inod_added_import(expand_nod_comm%ntot_import))
 !
       inod_added_import(1:expand_nod_comm%ntot_import) = 0
@@ -773,6 +779,9 @@
      &   (nprocs, org_node, expand_nod_comm, add_nod_comm,              &
      &    istack_trimmed_import_pe, idx_home_sorted_import,             &
      &    idx_home_for_import, inod_added_import)
+      deallocate(istack_trimmed_import_pe)
+      deallocate(idx_home_sorted_import)
+      deallocate(idx_home_for_import)
 !
       jcou = check_zero_inod_added_import(expand_nod_comm%ntot_import,  &
      &                                    inod_added_import)
@@ -804,6 +813,7 @@
      &   (my_rank, org_node, org_ele, nod_comm,                         &
      &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
      &    expand_import_connect%ie_comm)
+      deallocate(inod_added_import)
 !
       icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
      &                                expand_import_connect%ie_comm)
@@ -885,15 +895,17 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Missing import from other domain:', ntot_failed_gl
 !
-      allocate(idx_home_for_ele_import(expand_ele_comm%ntot_import))
-      idx_home_for_ele_import(1:expand_ele_comm%ntot_import) = -1
+!      allocate(idx_home_for_ele_import(expand_ele_comm%ntot_import))
+!      idx_home_for_ele_import(1:expand_ele_comm%ntot_import) = -1
 
-
-      call find_home_import_item_by_trim                          &
-     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
-     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,        &
-     &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
-     &    idx_home_for_ele_import, icou)
+!
+!      call find_home_import_item_by_trim                          &
+!     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
+!     &    ntot_trimmed_ele_import, istack_trimmed_ele_import_pe,        &
+!     &    istack_trimmed_ele_import_item, idx_home_sorted_ele_import,   &
+!     &    idx_home_for_ele_import, icou)
+!      deallocate(istack_trimmed_ele_import_item)
+!      deallocate(idx_home_for_ele_import)
 !
 !      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
 !      write(*,*) my_rank, 'new_neib', add_ele_comm%id_neib
@@ -904,14 +916,17 @@
 !     &            sort_ele_import%num_sorted_by_pe(ip), istack_trimmed_ele_import_pe(ip)
 !      end do
 !      write(*,*) my_rank, 'add_ele_comm%num_neib', add_ele_comm%num_neib
+      call dealloc_sort_data_sleeve_ext(sort_nod_import)
 !
       call alloc_import_num(add_ele_comm)
+      call count_import_item_for_extend                                 &
+     &   (nprocs, istack_trimmed_ele_import_pe,                         &
+     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%num_import)
 !
       add_ele_comm%istack_import(0) = 0
       do i = 1, add_ele_comm%num_neib
         irank = add_ele_comm%id_neib(i)
-        add_ele_comm%num_import(i) = istack_trimmed_ele_import_pe(irank+1) &
-     &                              - istack_trimmed_ele_import_pe(irank)
         add_ele_comm%istack_import(i) = add_ele_comm%istack_import(i-1) &
      &                                 + add_ele_comm%num_import(i)
       end do
@@ -931,6 +946,8 @@
      &    idx_home_sorted_ele_import, expand_import_connect,            &
      &    iele_lc_import_trim, trimmed_import_connect)
       call dealloc_ele_data_sleeve_ext(expand_import_connect)
+      deallocate(istack_trimmed_ele_import_pe)
+      deallocate(idx_home_sorted_ele_import)
 !
       icou = check_trim_import_ele_connect(org_ele, add_ele_comm,       &
      &                                  trimmed_import_connect%ie_comm)
@@ -974,6 +991,7 @@
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Failed double element ID ',        &
      &                            'from returnrd table', ntot_failed_gl
+       deallocate(irank_new_ele_export_trim)
 !
 !
       end subroutine extend_node_comm_table2

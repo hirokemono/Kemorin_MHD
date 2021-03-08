@@ -171,10 +171,10 @@
 !
       if(allocated(comm_position%xx_comm) .eqv. .FALSE.) return
 !
-      allocate(comm_position%inod_gl_comm(comm_position%nnod_comm))
-      allocate(comm_position%irank_comm(comm_position%nnod_comm))
-      allocate(comm_position%distance(comm_position%nnod_comm))
-      allocate(comm_position%xx_comm(3*comm_position%nnod_comm))
+      deallocate(comm_position%inod_gl_comm)
+      deallocate(comm_position%irank_comm)
+      deallocate(comm_position%distance)
+      deallocate(comm_position%xx_comm)
 !
       end subroutine dealloc_node_data_sleeve_ext
 !
