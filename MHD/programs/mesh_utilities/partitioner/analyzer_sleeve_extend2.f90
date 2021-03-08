@@ -361,7 +361,6 @@
 !
 !
       type(node_data_for_sleeve_ext), save :: trimmed_import_position
-      integer(kind = kint), allocatable :: item_new_import_trim(:)
       integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
 !
       integer(kind = kint) :: ntot_trimmed_ele_import
@@ -684,18 +683,17 @@
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trimmed_import_position)
-      allocate(item_new_import_trim(add_nod_comm%ntot_import))
       allocate(inod_lc_new_import_trim(add_nod_comm%ntot_import))
 !
       allocate(item_import_to_new_import(expand_nod_comm%ntot_import))
 !
       call set_import_item_for_extend                                   &
-     &   (nprocs, org_node, expand_nod_comm, item_new_import,           &
+     &   (nprocs, org_node, expand_nod_comm,                            &
      &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
      &    istack_trimmed_import_pe, idx_home_sorted_import,             &
      &    item_import_to_new_import, inod_lc_new_import_trim,           &
-     &    item_new_import_trim, add_nod_comm%item_import)
+     &    add_nod_comm%item_import)
       deallocate(item_import_to_new_import)
       call trim_imported_expand_node(add_nod_comm, nprocs,              &
      &          istack_trimmed_import_pe, idx_home_sorted_import,       &
@@ -709,16 +707,12 @@
 !     &       expand_nod_comm%item_import(i), expand_import_position%irank_comm(i)
 !      end do
 !
-!        write(60+my_rank,*) 'check neib', add_nod_comm%id_neib
-!        write(60+my_rank,*) 'check stack', add_nod_comm%istack_import
-!      do i = 1, add_nod_comm%ntot_import
-!        inod = add_nod_comm%item_import(i)
-!        write(60+my_rank,*) 'trimmed_import_position%irank_comm', i, inod, &
-!     &       inod_lc_new_import_trim(i), trimmed_import_position%irank_comm(i), item_new_import_trim(i)
-!      end do
-       deallocate(item_new_import_trim)
+!      call check_trimmed_import_item                                   &
+!     &         (my_rank, nprocs, expand_nod_comm, add_nod_comm,        &
+!     &          trimmed_import_position, item_new_import,              &
+!     &          istack_trimmed_import_pe, idx_home_sorted_import,      &
+!     &          inod_lc_new_import_trim, item_added_import)
       deallocate(item_new_import)
-!
 !
       call alloc_export_num(add_nod_comm)
       call num_items_send_recv                                          &
@@ -2138,12 +2132,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_import_item_for_extend                             &
-     &         (nprocs, node, expand_nod_comm, item_new_import,         &
+     &         (nprocs, node, expand_nod_comm,                          &
      &          num_added_neib, id_added_neib,                          &
      &          istack_added_import, ntot_added_import,                 &
      &          istack_trimmed_import_pe, idx_home_sorted_import,       &
      &          item_import_to_new_import, inod_lc_new_import_trim,     &
-     &          item_new_import_trim, item_added_import)
+     &          item_added_import)
 !
       use m_precision
       use t_geometry_data
@@ -2153,8 +2147,6 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table) :: expand_nod_comm
-      integer(kind = kint), intent(in)                                  &
-     &      :: item_new_import(expand_nod_comm%ntot_import)
 !
       integer, intent(in) :: nprocs
       integer(kind = kint), intent(in)                                  &
@@ -2170,8 +2162,6 @@
 !
       integer(kind = kint), intent(inout)                               &
      &      :: item_import_to_new_import(expand_nod_comm%ntot_import)
-      integer(kind = kint), intent(inout)                               &
-     &      :: item_new_import_trim(ntot_added_import)
       integer(kind = kint), intent(inout)                               &
      &      :: inod_lc_new_import_trim(ntot_added_import)
       integer(kind = kint), intent(inout)                               &
@@ -2193,7 +2183,6 @@
 !
           item_added_import(jcou) = jcou + node%numnod
 !
-          item_new_import_trim(jcou) = item_new_import(jnum)
           inod_lc_new_import_trim(jcou)                                 &
      &              = expand_nod_comm%item_import(jnum)
         end do
@@ -2231,5 +2220,66 @@
       end do
 !
       end subroutine count_import_item_for_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_trimmed_import_item                              &
+     &         (my_rank, nprocs, expand_nod_comm, add_nod_comm,         &
+     &          trimmed_import_position, item_new_import,               &
+     &          istack_trimmed_import_pe, idx_home_sorted_import,       &
+     &          inod_lc_new_import_trim)
+!
+      use m_precision
+      use t_comm_table
+      use t_mesh_for_sleeve_extend
+!
+      implicit none
+!
+      type(communication_table) :: expand_nod_comm
+      type(communication_table) :: add_nod_comm
+      type(node_data_for_sleeve_ext), intent(in)                        &
+     &      :: trimmed_import_position
+      integer(kind = kint), intent(in)                                  &
+     &      :: item_new_import(expand_nod_comm%ntot_import)
+!
+      integer, intent(in) :: my_rank, nprocs
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_trimmed_import_pe(0:nprocs)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
+      integer(kind = kint), intent(in)                                  &
+     &      :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: i, irank, ist, jst, num, inod
+      integer(kind = kint) :: inum, jcou, jnum
+!
+      integer(kind = kint), allocatable :: item_new_import_trim(:)
+!
+!
+      allocate(item_new_import_trim(add_nod_comm%ntot_import))
+      do i = 1, add_nod_comm%num_neib
+        irank = add_nod_comm%id_neib(i)
+        ist = istack_trimmed_import_pe(irank)
+        jst = add_nod_comm%istack_import(i-1)
+        num = add_nod_comm%istack_import(i) - ist
+        do inum = 1, num
+          jcou = inum + jst
+          jnum = idx_home_sorted_import(inum+ist)
+          item_new_import_trim(jcou) = item_new_import(jnum)
+        end do
+      end do
+!
+      write(60+my_rank,*) 'check neib', add_nod_comm%id_neib
+      write(60+my_rank,*) 'check stack', add_nod_comm%istack_import
+      do i = 1, add_nod_comm%ntot_import
+        inod = add_nod_comm%item_import(i)
+        write(60+my_rank,*) 'trimmed_import_position%irank_comm',       &
+     &                      i, inod, inod_lc_new_import_trim(i),        &
+     &                      trimmed_import_position%irank_comm(i),      &
+     &                      item_new_import_trim(i)
+      end do
+      deallocate(item_new_import_trim)
+!
+      end subroutine check_trimmed_import_item
 !
 !  ---------------------------------------------------------------------
