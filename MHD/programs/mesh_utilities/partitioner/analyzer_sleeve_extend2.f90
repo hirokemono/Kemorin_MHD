@@ -284,6 +284,7 @@
       use t_next_node_ele_4_node
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
+      use t_trim_overlapped_import
 !
       use m_solver_SR
       use calypso_mpi_int
@@ -373,7 +374,7 @@
       integer(kind = kint), allocatable :: idx_home_for_import(:)
 !
       integer(kind = kint), allocatable :: idx_home_sorted_ele_import(:)
-!      integer(kind = kint), allocatable :: idx_home_for_ele_import(:)
+      integer(kind = kint), allocatable :: idx_home_for_ele_import(:)
 !
       integer(kind = kint), allocatable :: inod_added_import(:)
 !
