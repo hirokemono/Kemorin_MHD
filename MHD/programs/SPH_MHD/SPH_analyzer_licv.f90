@@ -117,7 +117,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
       call const_radial_mat_sph_mhd                                     &
      &   (MHD_step%time_d%dt, SPH_model%MHD_prop, SPH_model%sph_MHD_bc, &
-     &    SPH_MHD%sph%sph_rj, SPH_WK%r_2nd, SPH_WK%trans_p%leg,         &
+     &    SPH_MHD%sph, SPH_WK%r_2nd, SPH_WK%trans_p%leg,                &
      &    SPH_WK%MHD_mats)
 !*
 !* obtain linear terms for starting

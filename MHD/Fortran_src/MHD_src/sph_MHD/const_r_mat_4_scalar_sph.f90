@@ -10,9 +10,10 @@
 !!     &         (sph_rj, r_2nd, fl_prop, sph_bc_U, fdm2_center,        &
 !!     &          g_sph_rj, band_p_poisson)
 !!      subroutine const_radial_mat_4_scalar_sph                        &
-!!     &         (mat_name, dt, sph_rj, r_2nd, property,                &
+!!     &         (mat_name, dt, sph_params, sph_rj, r_2nd, property,    &
 !!     &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
 !!        type(scalar_property), intent(in) :: property
+!!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -28,6 +29,7 @@
       use m_machine_parameter
 !
       use t_physical_property
+      use t_spheric_parameter
       use t_spheric_rj_data
       use t_sph_matrices
       use t_fdm_coefs
@@ -117,7 +119,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_scalar_sph                          &
-     &         (mat_name, dt, sph_rj, r_2nd, property,                  &
+     &         (mat_name, dt, sph_params, sph_rj, r_2nd, property,      &
      &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
 !
       use m_ludcmp_3band
@@ -126,6 +128,7 @@
       use set_sph_scalar_mat_bc
       use check_sph_radial_mat
 !
+      type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: property
@@ -139,6 +142,7 @@
       type(band_matrices_type), intent(inout) :: band_s_evo
 !
       real(kind = kreal) :: coef
+      real(kind = kreal), allocatable :: r_coef(:)
 !
 !
       write(band_s_evo%mat_name,'(a)') trim(mat_name)
@@ -157,23 +161,34 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_s_evo%mat)
       end if
 !
+      allocate(r_coef(sph_rj%nidx_rj(1)))
+!$omp parallel workshare
+      r_coef(1:sph_rj%nidx_rj(1)) = coef
+!$omp end parallel workshare
+!
+      if(property%ICB_diffusie_reduction .lt. one) then
+        r_coef(sph_params%nlayer_ICB) = property%ICB_diffusie_reduction &
+     &                                 * r_coef(sph_params%nlayer_ICB)
+      end if
+!
+!
       call add_scalar_poisson_mat_sph                                   &
      &   (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj,        &
-     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, coef,                  &
+     &    g_sph_rj, sph_bc%kr_in, sph_bc%kr_out, r_coef(sph_bc%kr_in),  &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, band_s_evo%mat)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center               &
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc%r_ICB, fdm2_center%dmat_fix_fld, coef,               &
+     &      sph_bc%r_ICB, fdm2_center%dmat_fix_fld, r_coef(1),          &
      &      band_s_evo%mat)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux                   &
      &    .or. sph_bc%iflag_icb .eq. iflag_evolve_flux) then
         call add_fix_flux_icb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_dr_ICB, coef,   &
-     &      band_s_evo%mat)
+     &      sph_bc%kr_in, sph_bc%r_ICB, sph_bc%fdm2_fix_dr_ICB,         &
+     &      r_coef(sph_bc%kr_in), band_s_evo%mat)
 !      else if (sph_bc%iflag_icb .eq. iflag_fixed_field                 &
 !     &    .or. sph_bc%iflag_icb .eq. iflag_evolve_field) then
       else
@@ -186,8 +201,8 @@
      &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_flux) then
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_dr_CMB, coef,  &
-     &      band_s_evo%mat)
+     &      sph_bc%kr_out, sph_bc%r_CMB, sph_bc%fdm2_fix_dr_CMB,        &
+     &      r_coef(sph_bc%kr_out), band_s_evo%mat)
 !      else if (sph_bc%iflag_cmb .eq. iflag_fixed_field                 &
 !     &    .or. sph_bc%iflag_cmb .eq. iflag_evolve_field) then
       else
@@ -195,6 +210,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc%kr_out, band_s_evo%mat)
       end if
+      deallocate(r_coef)
 !
       call ludcmp_3band_mul_t                                           &
      &   (np_smp, sph_rj%istack_rj_j_smp, band_s_evo)

@@ -54,6 +54,7 @@
      &          ipol_base, ipol_exp, ipol_frc, ipol_dif, rj_fld)
 !
       use select_diff_adv_source
+      use cal_inner_core_rotation
 !
       real(kind = kreal), intent(in) :: dt
 !
@@ -67,7 +68,15 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
+!
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
+        if(ht_prop%ICB_diffusie_reduction .lt. one) then
+          call reduction_scalar_diffusion_ICB                           &
+     &       (ht_prop%ICB_diffusie_reduction, sph_rj%nidx_rj(2),        &
+     &        sph_params%nlayer_CMB, ipol_dif%i_t_diffuse,              &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
+!
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scalar_diff_adv_src_adams temperature'
         call sel_scalar_diff_adv_src_adams                              &
@@ -79,6 +88,13 @@
       end if
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if(cp_prop%ICB_diffusie_reduction .lt. one) then
+          call reduction_scalar_diffusion_ICB                           &
+     &       (cp_prop%ICB_diffusie_reduction, sph_rj%nidx_rj(2),        &
+     &        sph_params%nlayer_CMB, ipol_dif%i_c_diffuse,              &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
+!
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scalar_diff_adv_src_adams composition'
         call sel_scalar_diff_adv_src_adams                              &
