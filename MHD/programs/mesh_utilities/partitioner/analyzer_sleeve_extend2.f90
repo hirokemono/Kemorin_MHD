@@ -527,11 +527,14 @@
       call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
      &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
-     &    item_new_export, expand_export_position%distance,             &
-     &    expand_nod_comm%item_export, expand_export_position%irank_comm,            &
-     &    expand_export_position%inod_gl_comm, expand_export_position%xx_comm, &
+     &    expand_export_position%distance, expand_nod_comm%item_export, &
+     &    expand_export_position%irank_comm,                            &
+     &    expand_export_position%inod_gl_comm,                          &
+     &    expand_export_position%xx_comm,                               &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
      &    expand_ele_comm%item_export, expand_export_connect)
+      call set_item_new_export(nod_comm, org_node, mark_nod,            &
+     &    expand_nod_comm, item_new_export)
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
@@ -1414,7 +1417,7 @@
      &         (nod_comm, node, ele, inod_dbl, iele_dbl,       &
      &          mark_nod, mark_ele,    &
      &          ntot_new_export, istack_new_export, &
-     &          item_new_export, distance_new_export,   &
+     &          distance_new_export,   &
      &          inod_lc_new_export, irank_nod_new_export,   &
      &          inod_gl_new_export, xx_new_export,   &
      &          ntot_new_ele_export, istack_new_ele_export,   &
@@ -1447,8 +1450,6 @@
       integer(kind = kint), intent(in)                                  &
      &            :: istack_new_ele_export(0:nod_comm%num_neib)
 !
-      integer(kind = kint), intent(inout)                               &
-     &            :: item_new_export(ntot_new_export)
       real(kind = kreal), intent(inout)                                 &
      &            :: distance_new_export(ntot_new_export)
       integer(kind = kint), intent(inout)                               &
@@ -1489,7 +1490,6 @@
 
           icou = icou + 1
           inod_in_comm(inod) =       icou - istack_new_export(i-1)
-          item_new_export(icou) =    inod
           inod_gl_new_export(icou) = node%inod_global(inod)
           xx_new_export(3*icou-2) =  node%xx(inod,1)
           xx_new_export(3*icou-1) =  node%xx(inod,2)
@@ -2323,5 +2323,59 @@
       end do
 !
       end subroutine check_sort_nod_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_item_new_export(nod_comm, node, mark_nod,          &
+     &          expand_nod_comm, item_new_export)
+!
+      use m_precision
+      use t_comm_table
+      use t_geometry_data
+      use t_para_double_numbering
+      use mark_export_nod_ele_extend
+!
+      implicit none
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(node_data), intent(in) :: node
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_nod(nod_comm%num_neib)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: item_new_export(expand_nod_comm%ntot_export)
+!
+      integer(kind = kint), allocatable :: inod_in_comm(:)
+      integer(kind = kint) :: i, ist, num, inod, inum, icou
+!
+!
+      allocate(inod_in_comm(node%numnod))
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        inod_in_comm(1:node%numnod) = 0
+!$omp end parallel workshare
+        ist = nod_comm%istack_export(i-1)
+        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+        do inum = 1, num
+          inod = nod_comm%item_export(inum+ist)
+          inod_in_comm(inod) = -inum
+        end do
+!
+        icou = expand_nod_comm%istack_export(i-1)
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%inod_marked(inum)
+          if(inod_in_comm(inod) .lt. 0) cycle
+
+          icou = icou + 1
+          inod_in_comm(inod) = icou-expand_nod_comm%istack_export(i-1)
+          item_new_export(icou) = inod
+        end do
+      end do
+!
+      deallocate(inod_in_comm)
+!
+      end subroutine set_item_new_export
 !
 !  ---------------------------------------------------------------------
