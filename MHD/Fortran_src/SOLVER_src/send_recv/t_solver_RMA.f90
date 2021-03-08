@@ -140,7 +140,7 @@
       type(RMA_real_buffer), intent(inout) :: RMA_r
 !
 !
-      call MPI_WIN_FREE(RMA_r%win)
+      call MPI_WIN_FREE(RMA_r%win, ierr_MPI)
       deallocate(RMA_r%WRecieve, RMA_r%import_a)
 !
       RMA_r%iflag_win = 0
