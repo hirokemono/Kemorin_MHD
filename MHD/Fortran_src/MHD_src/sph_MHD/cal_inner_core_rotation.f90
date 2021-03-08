@@ -435,17 +435,16 @@
      &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: jmax, kr_in
-      integer(kind = kint), intent(in) :: ist, ied
       integer(kind = kint), intent(in) :: ipol_diffuse
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: reduction
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: j, inod
 !
 !
-!$omp parallel do private(inod)
+!$omp parallel do private(j,inod)
       do j = 1, jmax
         inod = j + (kr_in-1) * jmax
         d_rj(inod,ipol_diffuse) = reduction * d_rj(inod,ipol_diffuse)

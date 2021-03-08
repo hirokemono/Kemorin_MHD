@@ -72,7 +72,7 @@
 !
       if(sph%sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center                              &
-     &     (dt, sph_rj, MHD_prop, sph_MHD_bc, sph_MHD_mat)
+     &     (dt, sph%sph_rj, MHD_prop, sph_MHD_bc, sph_MHD_mat)
       end if
 !
       end subroutine const_radial_mat_sph_mhd

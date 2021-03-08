@@ -163,7 +163,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_comp_value = 'composition'
 !
-      private :: hd_filterd_advection, ICB_diffusivity_reduction_ctl
+      private :: hd_filterd_advection, hd_diffusivity_reduction
       private :: hd_ref_temp, hd_ref_comp
       private :: hd_strat_ctl, hd_strat_sigma
       private :: hd_strat_width, hd_strat_outer
