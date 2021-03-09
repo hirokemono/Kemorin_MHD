@@ -597,8 +597,8 @@
      &    ntot_trimmed_nod_import, ext_nod_trim%istack_trimmed_pe,      &
      &    ext_nod_trim%istack_trimmed_item)
 !
-      allocate(idx_home_sorted_import(ext_nod_trim%istack_trimmed_pe(nprocs)))
-      idx_home_sorted_import(1:ext_nod_trim%istack_trimmed_pe(nprocs)) = -1
+      allocate(idx_home_sorted_import(ntot_trimmed_nod_import))
+      idx_home_sorted_import(1:ntot_trimmed_nod_import) = -1
 !
       call trim_internal_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import, expand_import_position%irank_comm,    &
@@ -842,8 +842,8 @@
      &    ntot_trimmed_ele_import, ext_ele_trim%istack_trimmed_pe,      &
      &    ext_ele_trim%istack_trimmed_item)
 !
-      allocate(idx_home_sorted_ele_import(ext_ele_trim%istack_trimmed_pe(nprocs)))
-      idx_home_sorted_ele_import(1:ext_ele_trim%istack_trimmed_pe(nprocs)) = 0
+      allocate(idx_home_sorted_ele_import(ntot_trimmed_ele_import))
+      idx_home_sorted_ele_import(1:ntot_trimmed_ele_import) = 0
 !
       call trim_internal_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import, expand_import_connect%irank_comm,    &
