@@ -71,6 +71,11 @@
       allocate(mark_comm%inod_marked(mark_comm%nnod_marked))
       allocate(mark_comm%dist_marked(mark_comm%nnod_marked))
 !
+!$omp parallel workshare
+      mark_comm%inod_marked(1:mark_comm%nnod_marked) = 0
+      mark_comm%dist_marked(1:mark_comm%nnod_marked) = 0.0d0
+!$omp end parallel workshare
+!
       end subroutine alloc_mark_for_each_comm
 !
 !  ---------------------------------------------------------------------
@@ -236,7 +241,6 @@
 !$omp end parallel do
 !
       do idummy = 2, 100
-!
         do inum = 1, each_comm%num_each_export
           inod = each_comm%item_each_export(inum)
           jst = neib_ele%istack_4_node(inod-1) + 1
