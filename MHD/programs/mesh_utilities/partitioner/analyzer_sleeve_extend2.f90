@@ -362,10 +362,7 @@
       type(node_data_for_sleeve_ext), save :: trimmed_import_position
       integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
 !
-      integer(kind = kint) :: ntot_trimmed_ele_import
       type(data_for_trim_import), save :: ext_ele_trim
-!
-      integer(kind = kint) :: ntot_trimmed_nod_import
       type(data_for_trim_import), save :: ext_nod_trim
 !
       integer(kind = kint), allocatable :: inod_added_import(:)
@@ -579,25 +576,25 @@
      &    expand_nod_comm, expand_import_position%irank_comm,           &
      &    sort_nod_import)
 !
-      ntot_trimmed_nod_import                                           &
+      ext_nod_trim%ntot_trimmed                                         &
      &     = count_ntot_trimmed_import(nprocs, sort_nod_import)
 !
       allocate(ext_nod_trim%istack_trimmed_pe(0:nprocs))
-      allocate(ext_nod_trim%istack_trimmed_item(0:ntot_trimmed_nod_import))
+      allocate(ext_nod_trim%istack_trimmed_item(0:ext_nod_trim%ntot_trimmed))
       ext_nod_trim%istack_trimmed_pe(:) = 0
       ext_nod_trim%istack_trimmed_item(:) = 0
 !
       call count_trimmed_import_stack(nprocs, sort_nod_import,          &
-     &    ntot_trimmed_nod_import, ext_nod_trim%istack_trimmed_pe,      &
+     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
      &    ext_nod_trim%istack_trimmed_item)
 !
-      allocate(ext_nod_trim%idx_trimmed_to_sorted(ntot_trimmed_nod_import))
-      ext_nod_trim%idx_trimmed_to_sorted(1:ntot_trimmed_nod_import) = -1
+      allocate(ext_nod_trim%idx_trimmed_to_sorted(ext_nod_trim%ntot_trimmed))
+      ext_nod_trim%idx_trimmed_to_sorted(1:ext_nod_trim%ntot_trimmed) = -1
 !
       call trim_internal_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import, expand_import_position%irank_comm,    &
      &    sort_nod_import%isorted_to_org, sort_nod_import%irank_orgin_pe,            &
-     &     ntot_trimmed_nod_import, ext_nod_trim%istack_trimmed_pe,     &
+     &     ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,   &
      &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',    &
@@ -606,7 +603,7 @@
       call trim_external_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import,                          &
      &    expand_import_position%irank_comm, sort_nod_import%isorted_to_org,        &
-     &    ntot_trimmed_nod_import, ext_nod_trim%istack_trimmed_pe,      &
+     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
      &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Missing import from external:',    &
@@ -614,7 +611,7 @@
 !
       call trim_orphaned_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import%isorted_to_org,      &
-     &    ntot_trimmed_nod_import, ext_nod_trim%istack_trimmed_pe,      &
+     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
      &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted,     &
      &          icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -626,7 +623,7 @@
 !
       call find_home_import_item_by_trim                                &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import%isorted_to_org,      &
-     &    ntot_trimmed_nod_import, ext_nod_trim%istack_trimmed_pe,      &
+     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
      &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted,     &
      &    ext_nod_trim%idx_extend_to_trimmed, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -643,7 +640,7 @@
 !      deallocate(item_new_export)
 !      call check_sort_nod_import(my_rank, nprocs, nod_comm,            &
 !     &    expand_nod_comm, expand_import_position,                     &
-!     &    sort_nod_import, ntot_trimmed_nod_import,                    &
+!     &    sort_nod_import, ext_nod_trim%ntot_trimmed,                  &
 !     &    ext_nod_trim%istack_trimmed_pe, ext_nod_trim%istack_trimmed_item,        &
 !     &    item_new_import, ext_nod_trim%idx_trimmed_to_sorted)
 !
@@ -652,7 +649,8 @@
 !      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
 !      write(*,*) my_rank, 'new_neib', add_nod_comm%id_neib
 !      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,              &
-!     &          sum(sort_nod_import%num_sorted_by_pe),  ntot_trimmed_nod_import
+!     &          sum(sort_nod_import%num_sorted_by_pe),  &
+!     &          ext_nod_trim%ntot_trimmed
 !      do ip = 1, nprocs
 !        write(*,*) my_rank, ' to ', ip-1,  ' sort_nod_import%num_sorted_by_pe ',         &
 !     &            sort_nod_import%num_sorted_by_pe(ip), ext_nod_trim%istack_trimmed_pe(ip)
@@ -822,27 +820,27 @@
      &    expand_ele_comm, expand_import_connect%irank_comm,            &
      &    sort_ele_import)
 !
-      ntot_trimmed_ele_import                                           &
+      ext_ele_trim%ntot_trimmed                                         &
      &     = count_ntot_trimmed_import(nprocs, sort_ele_import)
 !
 !      call alloc_stack_to_trim_extend                                   &
-!     &   (nprocs, ntot_trimmed_ele_import, ext_ele_trim)
+!     &   (nprocs, ext_ele_trim%ntot_trimmed, ext_ele_trim)
       allocate(ext_ele_trim%istack_trimmed_pe(0:nprocs))
-      allocate(ext_ele_trim%istack_trimmed_item(0:ntot_trimmed_ele_import))
+      allocate(ext_ele_trim%istack_trimmed_item(0:ext_ele_trim%ntot_trimmed))
       ext_ele_trim%istack_trimmed_pe(:) =  0
       ext_ele_trim%istack_trimmed_item(:) = 0
 !
       call count_trimmed_import_stack(nprocs, sort_ele_import,          &
-     &    ntot_trimmed_ele_import, ext_ele_trim%istack_trimmed_pe,      &
+     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
      &    ext_ele_trim%istack_trimmed_item)
 !
-      allocate(ext_ele_trim%idx_trimmed_to_sorted(ntot_trimmed_ele_import))
-      ext_ele_trim%idx_trimmed_to_sorted(1:ntot_trimmed_ele_import) = 0
+      allocate(ext_ele_trim%idx_trimmed_to_sorted(ext_ele_trim%ntot_trimmed))
+      ext_ele_trim%idx_trimmed_to_sorted(1:ext_ele_trim%ntot_trimmed) = 0
 !
       call trim_internal_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import, expand_import_connect%irank_comm,    &
      &    sort_ele_import%isorted_to_org, sort_ele_import%irank_orgin_pe,            &
-     &    ntot_trimmed_ele_import, ext_ele_trim%istack_trimmed_pe,      &
+     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
      &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
      &    icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -852,7 +850,7 @@
       call trim_external_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import,                          &
      &    expand_import_connect%irank_comm, sort_ele_import%isorted_to_org,       &
-     &    ntot_trimmed_ele_import, ext_ele_trim%istack_trimmed_pe,      &
+     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
      &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
      &    icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -861,7 +859,7 @@
 !
       call trim_orphaned_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
-     &    ntot_trimmed_ele_import, ext_ele_trim%istack_trimmed_pe,      &
+     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
      &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
      &    icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -874,7 +872,7 @@
 !
 !      call find_home_import_item_by_trim                          &
 !     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
-!     &    ntot_trimmed_ele_import, ext_ele_trim%istack_trimmed_pe,        &
+!     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,   &
 !     &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted,   &
 !     &    ext_ele_trim%idx_extend_to_trimmed, icou)
 !      deallocate(ext_ele_trim%idx_extend_to_trimmed)
@@ -882,7 +880,7 @@
 !      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
 !      write(*,*) my_rank, 'new_neib', add_ele_comm%id_neib
 !      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
-!     &          sum(sort_ele_import%num_sorted_by_pe),  ntot_trimmed_ele_import
+!     &          sum(sort_ele_import%num_sorted_by_pe),  ext_ele_trim%ntot_trimmed
 !      do ip = 1, nprocs
 !        write(*,*) my_rank, ' to ', ip-1,  ' sort_ele_import%num_sorted_by_pe ',         &
 !     &            sort_ele_import%num_sorted_by_pe(ip), ext_ele_trim%istack_trimmed_pe(ip)
@@ -956,7 +954,6 @@
      &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
      &    trimmed_import_connect%irank_comm, SR_sig1,                   &
      &    irank_new_ele_export_trim)
-      call dealloc_ele_data_sleeve_ext(trimmed_import_connect)
 !
       icou = check_recieved_extended_ele_export(iele_dbl, add_ele_comm, &
      &                                      irank_new_ele_export_trim)
@@ -964,6 +961,7 @@
       if(my_rank .eq. 0) write(*,*) 'Failed double element ID ',        &
      &                            'from returnrd table', ntot_failed_gl
        deallocate(irank_new_ele_export_trim)
+      call dealloc_ele_data_sleeve_ext(trimmed_import_connect)
 !
 !
       end subroutine extend_node_comm_table2
