@@ -23,6 +23,7 @@
 !
       use t_comm_table
       use t_para_double_numbering
+      use t_mark_node_ele_to_extend
 !
       implicit none
 !
@@ -43,7 +44,6 @@
 !
       use calypso_mpi
       use m_solver_SR
-      use mark_export_nod_ele_extend
       use reverse_SR_int
       use cal_minmax_and_stacks
 !

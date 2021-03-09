@@ -285,6 +285,8 @@
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
+      use t_ctl_param_sleeve_extend
+      use t_mark_node_ele_to_extend
 !
       use m_solver_SR
       use calypso_mpi_int
@@ -307,6 +309,8 @@
       use append_extended_element
       use trim_redundant_import_item
       use const_extended_neib_domain
+      use set_mesh_for_sleeve_extend
+      use trim_mesh_for_sleeve_extend
       use check_slv_ext_local_node_id
 !
       type(communication_table), intent(in) :: nod_comm
@@ -323,7 +327,7 @@
       type(communication_table), intent(inout) :: new_ele_comm
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
 !
-      real(kind = kreal) :: dist_max = 0.05d0
+      type(sleeve_extension_param), save :: sleeve_exp_p
 !>      Structure of double numbering
       type(node_ele_double_number) :: dbl_id2
 !
@@ -340,25 +344,24 @@
       integer(kind = kint) :: iflag_process_extend = 0
 !
       type(communication_table) :: expand_ele_comm
-      type(ele_data_for_sleeve_ext) :: expand_export_connect
-      type(ele_data_for_sleeve_ext) :: expand_import_connect
+      type(ele_data_for_sleeve_ext) :: exp_export_ie
+      type(ele_data_for_sleeve_ext) :: exp_import_ie
+      type(ele_data_for_sleeve_ext) :: trim_import_ie
+      integer(kind = kint), allocatable :: iele_lc_import_trim(:)
 !
       type(communication_table) :: expand_nod_comm
-      type(node_data_for_sleeve_ext), save :: expand_export_position
-!
-      type(node_data_for_sleeve_ext), save :: expand_import_position
+      type(node_data_for_sleeve_ext), save :: exp_export_xx
+      type(node_data_for_sleeve_ext), save :: exp_import_xx
 !
       type(sort_data_for_sleeve_trim), save :: sort_ele_import
       type(sort_data_for_sleeve_trim), save :: sort_nod_import
 !
 !
-      type(ele_data_for_sleeve_ext) :: trimmed_import_connect
-      integer(kind = kint), allocatable :: iele_lc_import_trim(:)
 !
       integer(kind = kint), allocatable :: irank_new_ele_export_trim(:)
 !
 !
-      type(node_data_for_sleeve_ext), save :: trimmed_import_position
+      type(node_data_for_sleeve_ext), save :: trim_import_xx
       integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
 !
       type(data_for_trim_import), save :: ext_ele_trim
@@ -391,6 +394,8 @@
       type(communication_table) :: add_nod_comm
       type(communication_table) :: add_ele_comm
 !
+      real(kind = kreal), allocatable :: vect_tmp(:,:)
+!
 !
       allocate(iflag_node(org_node%numnod))
       allocate(distance(org_node%numnod))
@@ -404,6 +409,10 @@
       iflag_ele(1:org_ele%numele) = 0
 !$omp end parallel workshare
 !
+      sleeve_exp_p%iflag_expand = iflag_distance
+      sleeve_exp_p%dist_max =     0.05d0
+!
+      allocate(vect_tmp(org_node%numnod,3))
       allocate(mark_nod(nod_comm%num_neib))
       allocate(mark_ele(nod_comm%num_neib))
       icou = 0
@@ -411,9 +420,10 @@
       do i = 1, nod_comm%num_neib
         call init_comm_table_for_each2                                  &
      &     (i, org_node, nod_comm, dist_4_comm, each_comm, distance)
-        call mark_next_node_of_export2                                  &
-     &     (dist_max, org_node, org_ele, neib_ele, each_comm,           &
-     &      mark_nod(i), mark_ele(i), iflag_ele, iflag_node, distance)
+        call s_mark_node_ele_to_extend                                  &
+     &     (sleeve_exp_p, org_node, org_ele, neib_ele, vect_tmp,        &
+     &      each_comm, mark_nod(i), mark_ele(i),                        &
+     &      iflag_ele, iflag_node, distance)
         call dealloc_comm_table_for_each(each_comm)
 !
 !
@@ -432,6 +442,7 @@
           end if
         end do
       end do
+      deallocate(vect_tmp)
 !
 !
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -496,51 +507,33 @@
 !
       call alloc_export_item(expand_nod_comm)
       call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_export,      &
-     &                                expand_export_position)
+     &                                exp_export_xx)
 !
       call alloc_export_item(expand_ele_comm)
       call alloc_ele_data_sleeve_ext                                    &
-     &   (expand_ele_comm%ntot_export,org_ele%nnod_4_ele,               &
-     &    expand_export_connect)
+     &   (expand_ele_comm%ntot_export, org_ele%nnod_4_ele,              &
+     &    exp_export_ie)
 !
       call alloc_import_item(expand_nod_comm)
-      call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_import,      &
-     &                                expand_import_position)
-!
       call alloc_import_item(expand_ele_comm)
-      call alloc_ele_data_sleeve_ext                                    &
-     &   (expand_ele_comm%ntot_import, org_ele%nnod_4_ele,              &
-     &    expand_import_connect)
 !
       call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
      &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
-     &    expand_nod_comm%item_export, expand_export_position,          &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
-     &    expand_ele_comm%item_export, expand_export_connect)
+     &    expand_nod_comm%item_export, exp_export_xx,                   &
+     &    expand_ele_comm%item_export, exp_export_ie)
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
      &    expand_nod_comm%item_export, SR_sig1,                         &
      &    expand_nod_comm%item_import)
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    expand_export_position%irank_comm, SR_sig1,                   &
-     &    expand_import_position%irank_comm)
-      call real_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    expand_export_position%distance, SR_sig1,                     &
-     &    expand_import_position%distance)
 !
-      call real_items_send_recv_3(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    expand_export_position%xx_comm, SR_sig1,                      &
-     &    expand_import_position%xx_comm)
-      call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    expand_export_position%inod_gl_comm, SR_sig1,                 &
-     &    expand_import_position%inod_gl_comm)
-      call dealloc_node_data_sleeve_ext(expand_export_position)
+      call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_import,      &
+     &                                exp_import_xx)
+      call send_extended_node_position(expand_nod_comm,                 &
+     &                                 exp_export_xx, exp_import_xx)
+      call dealloc_node_data_sleeve_ext(exp_export_xx)
 !
 !
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
@@ -548,29 +541,18 @@
      &    expand_ele_comm%item_export, SR_sig1,                         &
      &    expand_ele_comm%item_import)
 !
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    expand_export_connect%irank_comm, SR_sig1,                    &
-     &    expand_import_connect%irank_comm)
-!
-      call int8_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    expand_export_connect%iele_gl_comm, SR_sig1,                  &
-     &    expand_import_connect%iele_gl_comm)
-      do k1 = 1, org_ele%nnod_4_ele
-        call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    expand_export_connect%ie_comm(1,k1), SR_sig1,                 &
-     &    expand_import_connect%ie_comm(1,k1))
-      end do
-      call dealloc_ele_data_sleeve_ext(expand_export_connect)
+      call alloc_ele_data_sleeve_ext                                    &
+     &   (expand_ele_comm%ntot_import, org_ele%nnod_4_ele,              &
+     &    exp_import_ie)
+      call send_extended_element_connect(org_ele, expand_ele_comm,      &
+     &    exp_export_ie, exp_import_ie)
+      call dealloc_ele_data_sleeve_ext(exp_export_ie)
 !
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import)
 !
       call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
-     &    expand_nod_comm, expand_import_position%irank_comm,           &
-     &    sort_nod_import)
+     &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
 !
       ext_nod_trim%ntot_trimmed                                         &
      &     = count_ntot_trimmed_import(nprocs, sort_nod_import)
@@ -588,7 +570,7 @@
       ext_nod_trim%idx_trimmed_to_sorted(1:ext_nod_trim%ntot_trimmed) = -1
 !
       call trim_internal_import_items                                   &
-     &   (nprocs, expand_nod_comm%ntot_import, expand_import_position%irank_comm,    &
+     &   (nprocs, expand_nod_comm%ntot_import, exp_import_xx%irank_comm,    &
      &    sort_nod_import%isorted_to_org, sort_nod_import%irank_orgin_pe,            &
      &     ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,   &
      &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted, icou)
@@ -598,7 +580,7 @@
 !
       call trim_external_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import,                          &
-     &    expand_import_position%irank_comm, sort_nod_import%isorted_to_org,        &
+     &    exp_import_xx%irank_comm, sort_nod_import%isorted_to_org,     &
      &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
      &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -649,7 +631,7 @@
       call alloc_import_item(add_nod_comm)
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
-     &                                trimmed_import_position)
+     &                                trim_import_xx)
       allocate(inod_lc_new_import_trim(add_nod_comm%ntot_import))
 !
       call set_import_item_for_extend                                   &
@@ -658,12 +640,12 @@
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
      &    inod_lc_new_import_trim, add_nod_comm%item_import)
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
-     &    expand_import_position, trimmed_import_position)
+     &                               exp_import_xx, trim_import_xx)
 !
 !      subroutine s_check_slv_ext_local_node_id                         &
 !     &         (org_node, nod_comm, mark_nod,                          &
 !     &          expand_nod_comm, add_nod_comm, sort_nod_import,        &
-!     &          expand_import_position, trimmed_import_position,       &
+!     &          exp_import_xx, trim_import_xx,                         &
 !     &          ext_nod_trim, inod_lc_new_import_trim)
 !
       call alloc_export_num(add_nod_comm)
@@ -686,17 +668,16 @@
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    trimmed_import_position%distance, SR_sig1,                    &
+     &    trim_import_xx%distance, SR_sig1,                             &
      &    dist_4_comm%distance_in_export)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
-     &    trimmed_import_position, inod_lc_new_import_trim,             &
-     &    new_node, dbl_id2)
+     &    trim_import_xx, inod_lc_new_import_trim, new_node, dbl_id2)
 !
 !
       icou = check_trimmed_import_node(org_node, dbl_id2, add_nod_comm, &
-     &                              trimmed_import_position%irank_comm, &
-     &                              inod_lc_new_import_trim)
+     &                                 trim_import_xx%irank_comm,       &
+     &                                 inod_lc_new_import_trim)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
      &        'trimmed_import_node:', ntot_failed_gl 
@@ -704,14 +685,13 @@
       icou = check_expand_nod_import_item                               &
      &       (dbl_id2, expand_nod_comm, add_nod_comm,                   &
      &        ext_nod_trim%istack_trimmed_pe, ext_nod_trim%idx_trimmed_to_sorted,   &
-     &        expand_import_position%irank_comm)
+     &        exp_import_xx%irank_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
       'with expand_nod_comm%item_import:', ntot_failed_gl 
 !
       icou = check_idx_home_for_import(expand_nod_comm,                 &
-     &      expand_import_position%irank_comm,                          &
-     &      ext_nod_trim%idx_extend_to_trimmed)
+     &    exp_import_xx%irank_comm, ext_nod_trim%idx_extend_to_trimmed)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
      &         'in ext_nod_trim%idx_extend_to_trimmed ', ntot_failed_gl
@@ -736,44 +716,39 @@
      &           'in inod_added_import', ntot_failed_gl
 
       icou = check_wrong_inod_added_import(dbl_id2, expand_nod_comm,    &
-     &            inod_added_import, expand_import_position%irank_comm)
+     &            inod_added_import, exp_import_xx%irank_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
      &           'in inod_added_import', ntot_failed_gl
 
       icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
-     &                                expand_import_connect%ie_comm)
+     &                                exp_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &     'zero expand_import_connect%ie_comm before fix',             &
-     &      ntot_failed_gl
+     &     'zero exp_import_ie%ie_comm before fix', ntot_failed_gl
 !
       icou = check_negative_ie_new_import(org_ele, expand_ele_comm,     &
-     &                                  expand_import_connect%ie_comm)
+     &                                    exp_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &      'Negative expand_import_connect%ie_comm before fix',        &
-     &        ntot_failed_gl
+     &     'Negative exp_import_ie%ie_comm before fix', ntot_failed_gl
 !
-      call renumber_extended_ele_import                                 &
-     &   (my_rank, org_node, org_ele, nod_comm,                         &
+      call renumber_extended_ele_import(my_rank, org_ele, nod_comm,     &
      &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
-     &    expand_import_connect%ie_comm)
+     &    exp_import_ie%ie_comm)
       deallocate(inod_added_import)
 !
       icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
-     &                                expand_import_connect%ie_comm)
+     &                                exp_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &     'zero expand_import_connect%ie_comm after fix',              &
-     &     ntot_failed_gl
+     &     'zero exp_import_ie%ie_comm after fix', ntot_failed_gl
 !
       icou = check_negative_ie_new_import(org_ele, expand_ele_comm,     &
-     &                                   expand_import_connect%ie_comm)
+     &                                    exp_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &      'Negative expand_import_connect%ie_comm after fix',         &
-     &       ntot_failed_gl
+     &      'Negative exp_import_ie%ie_comm after fix', ntot_failed_gl
 !
 !
       call s_append_communication_table                                 &
@@ -794,8 +769,7 @@
      &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import)
 !
       call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
-     &    expand_ele_comm, expand_import_connect%irank_comm,            &
-     &    sort_ele_import)
+     &    expand_ele_comm, exp_import_ie%irank_comm, sort_ele_import)
 !
       ext_ele_trim%ntot_trimmed                                         &
      &     = count_ntot_trimmed_import(nprocs, sort_ele_import)
@@ -815,7 +789,7 @@
       ext_ele_trim%idx_trimmed_to_sorted(1:ext_ele_trim%ntot_trimmed) = 0
 !
       call trim_internal_import_items                                   &
-     &   (nprocs, expand_ele_comm%ntot_import, expand_import_connect%irank_comm,    &
+     &  (nprocs, expand_ele_comm%ntot_import, exp_import_ie%irank_comm, &
      &    sort_ele_import%isorted_to_org, sort_ele_import%irank_orgin_pe,            &
      &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
      &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
@@ -826,7 +800,7 @@
 !
       call trim_external_import_items                                   &
      &   (nprocs, expand_ele_comm%ntot_import,                          &
-     &    expand_import_connect%irank_comm, sort_ele_import%isorted_to_org,       &
+     &    exp_import_ie%irank_comm, sort_ele_import%isorted_to_org,     &
      &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
      &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
      &    icou)
@@ -885,22 +859,21 @@
       allocate(iele_lc_import_trim(add_ele_comm%ntot_import))
       call alloc_ele_data_sleeve_ext                                    &
      &   (add_ele_comm%ntot_import, org_ele%nnod_4_ele,                 &
-     &    trimmed_import_connect)
+     &    trim_import_ie)
 !
       call set_trimmed_import_items                                     &
      &   (org_ele, expand_ele_comm, add_ele_comm,                       &
-     &    ext_ele_trim, expand_import_connect,                          &
-     &    iele_lc_import_trim, trimmed_import_connect)
-      call dealloc_ele_data_sleeve_ext(expand_import_connect)
+     &    ext_ele_trim, exp_import_ie,                                  &
+     &    iele_lc_import_trim, trim_import_ie)
+      call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_stack_to_trim_extend(ext_ele_trim)
       deallocate(ext_ele_trim%idx_trimmed_to_sorted)
 !
       icou = check_trim_import_ele_connect(org_ele, add_ele_comm,       &
-     &                                  trimmed_import_connect%ie_comm)
+     &                                     trim_import_ie%ie_comm)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &         'Number of wriong trimmed_import_connect%ie_comm',       &
-     &          ntot_failed_gl
+     &       'Number of wriong trim_import_ie%ie_comm', ntot_failed_gl
 !
 !
       call alloc_export_num(add_ele_comm)
@@ -920,7 +893,7 @@
       call s_append_communication_table                                 &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(org_ele, add_ele_comm,             &
-     &    trimmed_import_connect, new_ele)
+     &    trim_import_ie, new_ele)
 !
 !
 !
@@ -928,7 +901,7 @@
       call comm_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    trimmed_import_connect%irank_comm, SR_sig1,                   &
+     &    trim_import_ie%irank_comm, SR_sig1,                           &
      &    irank_new_ele_export_trim)
 !
       icou = check_recieved_extended_ele_export(iele_dbl, add_ele_comm, &
@@ -937,7 +910,7 @@
       if(my_rank .eq. 0) write(*,*) 'Failed double element ID ',        &
      &                            'from returnrd table', ntot_failed_gl
        deallocate(irank_new_ele_export_trim)
-      call dealloc_ele_data_sleeve_ext(trimmed_import_connect)
+      call dealloc_ele_data_sleeve_ext(trim_import_ie)
 !
 !
       end subroutine extend_node_comm_table2
@@ -1003,186 +976,6 @@
       end do
 !
       end subroutine init_comm_table_for_each2
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine mark_next_node_of_export2                              &
-     &         (dist_max, node, ele, neib_ele, each_comm, mark_nod,     &
-     &          mark_ele, iflag_ele, iflag_node, distance)
-!
-      use mark_export_nod_ele_extend
-!
-      real(kind = kreal), intent(in) :: dist_max
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(element_around_node), intent(in) :: neib_ele
-!
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
-      type(mark_for_each_comm), intent(inout) :: mark_nod
-      type(mark_for_each_comm), intent(inout) :: mark_ele
-      integer(kind = kint), intent(inout) :: iflag_ele(ele%numele)
-      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
-      real(kind = kreal), intent(inout) :: distance(node%numnod)
-!
-      integer(kind = kint) :: inum, inod, icou, idummy, jcou, iele
-      integer(kind = kint) :: jst, jed, jnum, jnod, jele, k1
-      real(kind = kreal) :: dist, anum
-!
-!
-!$omp parallel workshare
-      iflag_node(1:node%numnod) = 0
-!$omp end parallel workshare
-!
-!$omp parallel do private(inum,inod)
-      do inum = 1, each_comm%num_each_import
-        inod = each_comm%item_each_import(inum)
-        iflag_node(inod) = -2
-      end do
-!$omp end parallel do
-!
-!$omp parallel do private(iele,k1,inod)
-      do iele = 1, ele%numele
-        iflag_ele(iele) = 2
-        do k1 = 1, ele%nnod_4_ele
-          inod = ele%ie(iele,k1)
-          if(iflag_node(inod) .gt. -2) then
-            iflag_ele(iele) = 0
-            exit
-          end if
-        end do
-      end do
-!$omp end parallel do
-!
-      do inum = 1, each_comm%num_each_import
-        inod = each_comm%item_each_import(inum)
-        jst = neib_ele%istack_4_node(inod-1) + 1
-        jed = neib_ele%istack_4_node(inod)
-        do jnum = jst, jed
-          jele = neib_ele%iele_4_node(jnum)
-          if(iflag_ele(jele) .gt. 0) cycle
-!
-          iflag_ele(jele) = 2
-          do k1 = 1, ele%nnod_4_ele
-            jnod = ele%ie(jele,k1)
-            if(iflag_node(jnod) .eq. -2) cycle
-!
-            iflag_node(jnod) = 1
-!             dist = 1.0d0
-            dist = sqrt((node%xx(jnod,1) - node%xx(inod,1))**2         &
-     &                + (node%xx(jnod,2) - node%xx(inod,2))**2         &
-     &                + (node%xx(jnod,3) - node%xx(inod,3))**2)
-            if(distance(jnod) .eq. 0.0d0) then
-              distance(jnod) = dist + distance(inod)
-            else
-              distance(jnod)                                           &
-     &                     = min(dist+distance(inod), distance(jnod))
-            end if
-          end do
-        end do
-      end do
-!
-!$omp parallel do private(inum,inod)
-      do inum = 1, each_comm%num_each_export
-        inod = each_comm%item_each_export(inum)
-        iflag_node(inod) = -1
-      end do
-!$omp end parallel do
-!
-      do idummy = 2, 100
-!
-        do inum = 1, each_comm%num_each_export
-          inod = each_comm%item_each_export(inum)
-          jst = neib_ele%istack_4_node(inod-1) + 1
-          jed = neib_ele%istack_4_node(inod)
-          do jnum = jst, jed
-            jele = neib_ele%iele_4_node(jnum)
-            if(iflag_ele(jele) .gt. 0) cycle
-!
-            iflag_ele(jele) = 1
-            do k1 = 1, ele%nnod_4_ele
-              jnod = ele%ie(jele,k1)
-              if(iflag_node(jnod) .ge. 0) then
-!
-!                 dist = 1.0d0
-                dist = sqrt((node%xx(jnod,1) - node%xx(inod,1))**2     &
-     &                    + (node%xx(jnod,2) - node%xx(inod,2))**2     &
-     &                    + (node%xx(jnod,3) - node%xx(inod,3))**2)
-                if(iflag_node(jnod) .eq. 0) then
-                  iflag_node(jnod) = 1
-                  distance(jnod) = dist + distance(inod)
-                else
-                  distance(jnod)                                       &
-     &                   = min(dist+distance(inod), distance(jnod))
-                end if
-              end if
-            end do
-          end do
-        end do
-!
-        jcou = 0
-        do inod = 1, node%numnod
-          if(iflag_node(inod) .gt. 0) then
-            if(distance(inod) .lt. dist_max) then
-              jcou = jcou + 1
-              each_comm%item_each_export(jcou) = inod
-            end if
-            iflag_node(inod) = -1
-          end if
-        end do
-        each_comm%num_each_export = jcou
-!        write(*,*) my_rank, 'extend again for ', idummy, &
-!     &            each_comm%num_each_export
-        if(each_comm%num_each_export .le. 0) exit
-      end do
-!      write(*,*) my_rank, 'Maximum extend size is ', idummy
-!
-      mark_nod%nnod_marked = 0
-      do inod = 1, node%numnod
-        if(iflag_node(inod) .eq. -1) then
-          mark_nod%nnod_marked = mark_nod%nnod_marked + 1
-        end if
-      end do
-      allocate(mark_nod%inod_marked(mark_nod%nnod_marked))
-      allocate(mark_nod%dist_marked(mark_nod%nnod_marked))
-!
-      icou = 0
-      do inod = 1, node%numnod
-        if(iflag_node(inod) .eq. -1) then
-          icou = icou + 1
-          mark_nod%inod_marked(icou) = inod
-          mark_nod%dist_marked(icou) = distance(inod)
-!          write(*,*) my_rank, 'mark_nod', inod, mark_nod%inod_marked(icou), mark_nod%dist_marked(icou)
-        end if
-      end do
-!
-      mark_ele%nnod_marked = 0
-      do iele = 1, ele%numele
-        if(iflag_ele(iele) .eq. 1) then
-          mark_ele%nnod_marked = mark_ele%nnod_marked + 1
-        end if
-      end do
-      allocate(mark_ele%inod_marked(mark_ele%nnod_marked))
-      allocate(mark_ele%dist_marked(mark_ele%nnod_marked))
-!
-      anum = one / real(ele%nnod_4_ele)
-      icou = 0
-      do iele = 1, ele%numele
-        if(iflag_ele(iele) .eq. 1) then
-          icou = icou + 1
-          mark_ele%inod_marked(icou) = iele
-          mark_ele%dist_marked(icou) = 0.0d0
-          do k1 = 1, ele%nnod_4_ele
-            inod = ele%ie(iele,k1)
-            mark_ele%dist_marked(icou)                                  &
-                 = mark_ele%dist_marked(icou) + distance(inod)
-          end do
-          mark_ele%dist_marked(icou)                                    &
-                 = mark_ele%dist_marked(icou) * anum
-        end if
-      end do
-!
-!
-      end subroutine mark_next_node_of_export2
 !
 !  ---------------------------------------------------------------------
 !
@@ -1378,113 +1171,6 @@
 !
       end subroutine sort_import_by_pe_and_local_id
 !
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_export_4_expanded_mesh(nod_comm, node, ele,        &
-     &         inod_dbl, iele_dbl, mark_nod, mark_ele,                  &
-     &          ntot_new_export, istack_new_export,                     &
-     &          inod_lc_new_export, expand_export_position,             &
-     &          ntot_new_ele_export, istack_new_ele_export,             &
-     &          iele_lc_new_export, expand_export_connect)
-!
-      use m_precision
-      use t_comm_table
-      use t_geometry_data
-      use t_para_double_numbering
-      use t_mesh_for_sleeve_extend
-      use mark_export_nod_ele_extend
-!
-      implicit none
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(node_ele_double_number), intent(in) :: inod_dbl
-      type(node_ele_double_number), intent(in) :: iele_dbl
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_nod(nod_comm%num_neib)
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_ele(nod_comm%num_neib)
-!
-      integer(kind = kint), intent(in) :: ntot_new_export
-      integer(kind = kint), intent(in)                                  &
-     &            :: istack_new_export(0:nod_comm%num_neib)
-!
-      integer(kind = kint), intent(in) :: ntot_new_ele_export
-      integer(kind = kint), intent(in)                                  &
-     &            :: istack_new_ele_export(0:nod_comm%num_neib)
-!
-      type(node_data_for_sleeve_ext), intent(inout)                     &
-     &            :: expand_export_position
-      type(ele_data_for_sleeve_ext), intent(inout)                      &
-     &            :: expand_export_connect
-      integer(kind = kint), intent(inout)                               &
-     &            :: inod_lc_new_export(ntot_new_export)
-      integer(kind = kint), intent(inout)                               &
-     &            :: iele_lc_new_export(ntot_new_ele_export)
-!
-      integer(kind = kint), allocatable :: inod_in_comm(:)
-      integer(kind = kint) :: i, ist, num, inod, inum, icou, iele, k1
-!
-!
-      allocate(inod_in_comm(node%numnod))
-!
-      do i = 1, nod_comm%num_neib
-!$omp parallel workshare
-        inod_in_comm(1:node%numnod) = 0
-!$omp end parallel workshare
-        ist = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        do inum = 1, num
-          inod = nod_comm%item_export(inum+ist)
-          inod_in_comm(inod) = -inum
-        end do
-!
-        icou = istack_new_export(i-1)
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
-          if(inod_in_comm(inod) .lt. 0) cycle
-
-          icou = icou + 1
-          inod_in_comm(inod) =       icou - istack_new_export(i-1)
-          expand_export_position%inod_gl_comm(icou)                     &
-     &                                     = node%inod_global(inod)
-          expand_export_position%xx_comm(3*icou-2) =  node%xx(inod,1)
-          expand_export_position%xx_comm(3*icou-1) =  node%xx(inod,2)
-          expand_export_position%xx_comm(3*icou  ) =  node%xx(inod,3)
-          inod_lc_new_export(icou) = inod_dbl%index(inod)
-          expand_export_position%irank_comm(icou)                       &
-     &                             = inod_dbl%irank(inod)
-          expand_export_position%distance(icou)                         &
-     &                             =  mark_nod(i)%dist_marked(inum)
-        end do
-!
-        ist = istack_new_ele_export(i-1)
-!$omp parallel do private(inum,icou,iele,k1,inod)
-        do inum = 1, mark_ele(i)%nnod_marked
-          icou = ist + inum
-          iele = mark_ele(i)%inod_marked(inum)
-          expand_export_connect%iele_gl_comm(icou)                      &
-     &                             = ele%iele_global(iele)
-          expand_export_connect%irank_comm(icou) = iele_dbl%irank(iele)
-          iele_lc_new_export(icou) =   iele_dbl%index(iele)
-!
-          do k1 = 1, ele%nnod_4_ele
-            inod = ele%ie(iele,k1)
-            expand_export_connect%ie_comm(icou,k1) = inod_in_comm(inod)
-!            if(inod_in_comm(inod) .eq. 0) write(*,*) my_rank,   &
-!     &        'Failed 759 inod_in_comm(inod)', inod,   &
-!     &          inod_dbl%irank(inod), nod_comm%id_neib(i)
-          end do
-        end do
-!$omp end parallel do
-      end do
-!
-      deallocate(inod_in_comm)
-!
-      end subroutine set_export_4_expanded_mesh
-!
 !  ---------------------------------------------------------------------
 !
       subroutine count_export_4_expanded_mesh                           &
@@ -1541,63 +1227,6 @@
       deallocate(inod_in_comm)
 !
       end subroutine count_export_4_expanded_mesh
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine renumber_extended_ele_import(my_rank,                  &
-     &          node, ele, nod_comm, expand_nod_comm, expand_ele_comm,  &
-     &          inod_added_import, ie_new_import)
-!
-      use m_precision
-      use t_comm_table
-      use t_geometry_data
-!
-      implicit none
-!
-      integer, intent(in) :: my_rank
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(communication_table), intent(in) :: expand_ele_comm
-!
-      integer(kind = kint), intent(in)                                  &
-     &     :: inod_added_import(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint), intent(inout)                               &
-     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
-!
-      integer(kind = kint) :: k1, i, ist_org, ist_exp, ist_ele, num
-      integer(kind = kint) :: inum, jnum
-!
-!
-!$omp parallel private(k1,i,ist_org,ist_exp,ist_ele,num)
-      do k1 = 1, ele%nnod_4_ele
-        do i = 1, nod_comm%num_neib
-          ist_ele = expand_ele_comm%istack_import(i-1)
-          num =     expand_ele_comm%istack_import(i) - ist_ele
-          ist_org = nod_comm%istack_import(i-1)
-          ist_exp = expand_nod_comm%istack_import(i-1)
-!$omp do private(inum,jnum)
-          do inum = 1, num
-            jnum = ie_new_import(inum+ist_ele,k1)
-            if(jnum .lt. 0) then
-              ie_new_import(inum+ist_ele,k1)                            &
-     &           = nod_comm%item_import(-jnum+ist_org)
-            else if(jnum .gt. 0) then
-              ie_new_import(inum+ist_ele,k1)                            &
-     &           = inod_added_import(jnum+ist_exp)
-            else
-              write(*,*) my_rank, 'Failed renumber ie_new_import',      &
-      &                 inum, k1
-            end if
-          end do
-!$omp end do
-        end do
-      end do
-!$omp end parallel
-!
-      end subroutine renumber_extended_ele_import
 !
 !  ---------------------------------------------------------------------
 !
@@ -1705,62 +1334,6 @@
       end function check_zero_ie_new_import
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine set_trimmed_import_items                               &
-     &         (ele, expand_ele_comm, add_ele_comm,                     &
-     &          ext_ele_trim, expand_import_connect,                    &
-     &          iele_lc_import_trim, trimmed_import_connect)
-!
-      use m_precision
-      use t_comm_table
-      use t_geometry_data
-      use t_mesh_for_sleeve_extend
-      use t_trim_overlapped_import
-!
-      implicit none
-!
-      type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: expand_ele_comm
-      type(communication_table), intent(in) :: add_ele_comm
-      type(ele_data_for_sleeve_ext), intent(in)                         &
-     &      :: expand_import_connect
-      type(data_for_trim_import), intent(in) :: ext_ele_trim
-!
-      integer(kind = kint), intent(inout)                               &
-     &   :: iele_lc_import_trim(add_ele_comm%ntot_import)
-      type(ele_data_for_sleeve_ext), intent(inout)                      &
-     &                              :: trimmed_import_connect
-!
-      integer(kind = kint) :: i, irank, ist, jst, k1, inum, jnum, jcou
-!
-!
-      do i = 1, add_ele_comm%num_neib
-        irank = add_ele_comm%id_neib(i)
-        ist = ext_ele_trim%istack_trimmed_pe(irank)
-        jst = add_ele_comm%istack_import(i-1)
-!$omp parallel do private(inum,jcou,jnum,k1)
-        do inum = 1, add_ele_comm%num_import(i)
-          jnum = ext_ele_trim%idx_trimmed_to_sorted(inum+ist)
-          jcou = inum + jst
-          add_ele_comm%item_import(jcou) = jcou + ele%numele
-!
-          iele_lc_import_trim(jcou) = expand_ele_comm%item_import(jnum)
-          trimmed_import_connect%irank_comm(jcou)                       &
-     &              = expand_import_connect%irank_comm(jnum)
-!
-          trimmed_import_connect%iele_gl_comm(jcou)                     &
-     &          = expand_import_connect%iele_gl_comm(jnum)
-          do k1 = 1, ele%nnod_4_ele
-            trimmed_import_connect%ie_comm(jcou,k1)                     &
-     &          = expand_import_connect%ie_comm(jnum,k1)
-          end do
-        end do
-!$omp end parallel do
-      end do
-!
-      end subroutine set_trimmed_import_items
-!
-! ----------------------------------------------------------------------
 !
       integer(kind = kint) function check_recieved_extended_ele_export  &
      &         (iele_dbl, add_ele_comm, irank_new_ele_export_trim)
@@ -2002,59 +1575,6 @@
       end function check_trimmed_import_node
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine trim_imported_expand_node(add_nod_comm, ext_nod_trim,  &
-     &          expand_import_position, trimmed_import_position)
-!
-      use m_precision
-      use t_comm_table
-      use t_mesh_for_sleeve_extend
-      use t_trim_overlapped_import
-!
-      implicit none
-!
-      type(communication_table), intent(in) :: add_nod_comm
-!
-      type(node_data_for_sleeve_ext), intent(in)                        &
-     &                               :: expand_import_position
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-!
-      type(node_data_for_sleeve_ext), intent(inout)                     &
-     &                               :: trimmed_import_position
-!
-      integer(kind = kint) :: i, irank, ist, jst
-      integer(kind = kint) :: inum,jcou,jnum
-!
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-!$omp parallel do private(inum,jcou,jnum)
-        do inum = 1, add_nod_comm%num_import(i)
-          jcou = inum + jst
-          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-!
-          trimmed_import_position%irank_comm(jcou)                      &
-     &              = expand_import_position%irank_comm(jnum)
-          trimmed_import_position%distance(jcou)                        &
-     &              = expand_import_position%distance(jnum)
-!
-          trimmed_import_position%xx_comm(3*jcou-2)                     &
-     &              = expand_import_position%xx_comm(3*jnum-2)
-          trimmed_import_position%xx_comm(3*jcou-1)                     &
-     &              = expand_import_position%xx_comm(3*jnum-1)
-          trimmed_import_position%xx_comm(3*jcou  )                     &
-     &              = expand_import_position%xx_comm(3*jnum  )
-          trimmed_import_position%inod_gl_comm(jcou)                    &
-     &              = expand_import_position%inod_gl_comm(jnum)
-        end do
-!$omp end parallel do
-      end do
-!
-      end subroutine trim_imported_expand_node
-!
-!  ---------------------------------------------------------------------
 !
       subroutine set_import_item_for_extend                             &
      &         (node, expand_nod_comm, ext_nod_trim,                    &

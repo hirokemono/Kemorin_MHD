@@ -38,7 +38,7 @@
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
-      use mark_export_nod_ele_extend
+      use t_mark_node_ele_to_extend
 !
       implicit none
 !

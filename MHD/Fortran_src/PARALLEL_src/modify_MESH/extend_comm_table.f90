@@ -42,6 +42,7 @@
      &          neib_nod, new_comm, new_node)
 !
       use t_next_node_ele_4_node
+      use t_mark_node_ele_to_extend
 !
       use calypso_mpi_int
       use solver_SR_type

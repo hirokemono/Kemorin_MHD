@@ -172,9 +172,9 @@
      &          istack_trimmed_ele_import_pe, ntot_trimmed_ele_import,  &
      &           idx_home_sorted_ele_import)
 !
+      use t_mark_node_ele_to_extend
       use reverse_SR_int
       use reverse_SR_int8
-      use mark_export_nod_ele_extend
 !
       implicit none
 !
