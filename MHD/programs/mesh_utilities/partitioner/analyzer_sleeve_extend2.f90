@@ -176,7 +176,6 @@
       use copy_mesh_structures
       use set_nnod_4_ele_by_type
       use mark_export_nod_ele_extend
-      use check_slv_ext_local_node_id
 !
       use extended_groups
 !
@@ -308,6 +307,7 @@
       use append_extended_element
       use trim_redundant_import_item
       use const_extended_neib_domain
+      use check_slv_ext_local_node_id
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: ele_comm
@@ -515,10 +515,7 @@
       call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
      &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
-     &    expand_export_position%distance, expand_nod_comm%item_export, &
-     &    expand_export_position%irank_comm,                            &
-     &    expand_export_position%inod_gl_comm,                          &
-     &    expand_export_position%xx_comm,                               &
+     &    expand_nod_comm%item_export, expand_export_position,          &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
      &    expand_ele_comm%item_export, expand_export_connect)
 !
@@ -1384,14 +1381,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_export_4_expanded_mesh   &
-     &         (nod_comm, node, ele, inod_dbl, iele_dbl,       &
-     &          mark_nod, mark_ele,    &
-     &          ntot_new_export, istack_new_export, &
-     &          distance_new_export,   &
-     &          inod_lc_new_export, irank_nod_new_export,   &
-     &          inod_gl_new_export, xx_new_export,   &
-     &          ntot_new_ele_export, istack_new_ele_export,   &
+      subroutine set_export_4_expanded_mesh(nod_comm, node, ele,        &
+     &         inod_dbl, iele_dbl, mark_nod, mark_ele,                  &
+     &          ntot_new_export, istack_new_export,                     &
+     &          inod_lc_new_export, expand_export_position,             &
+     &          ntot_new_ele_export, istack_new_ele_export,             &
      &          iele_lc_new_export, expand_export_connect)
 !
       use m_precision
@@ -1421,19 +1415,12 @@
       integer(kind = kint), intent(in)                                  &
      &            :: istack_new_ele_export(0:nod_comm%num_neib)
 !
-      real(kind = kreal), intent(inout)                                 &
-     &            :: distance_new_export(ntot_new_export)
+      type(node_data_for_sleeve_ext), intent(inout)                     &
+     &            :: expand_export_position
+      type(ele_data_for_sleeve_ext), intent(inout)                      &
+     &            :: expand_export_connect
       integer(kind = kint), intent(inout)                               &
      &            :: inod_lc_new_export(ntot_new_export)
-      integer(kind = kint), intent(inout)                               &
-     &            :: irank_nod_new_export(ntot_new_export)
-      integer(kind = kint_gl), intent(inout)                            &
-     &            :: inod_gl_new_export(ntot_new_export)
-      real(kind = kreal), intent(inout)                                 &
-     &            :: xx_new_export(3*ntot_new_export)
-!
-      type(ele_data_for_sleeve_ext), intent(inout)                      &
-     &                              :: expand_export_connect
       integer(kind = kint), intent(inout)                               &
      &            :: iele_lc_new_export(ntot_new_ele_export)
 !
@@ -1461,13 +1448,16 @@
 
           icou = icou + 1
           inod_in_comm(inod) =       icou - istack_new_export(i-1)
-          inod_gl_new_export(icou) = node%inod_global(inod)
-          xx_new_export(3*icou-2) =  node%xx(inod,1)
-          xx_new_export(3*icou-1) =  node%xx(inod,2)
-          xx_new_export(3*icou  ) =  node%xx(inod,3)
-          inod_lc_new_export(icou) =   inod_dbl%index(inod)
-          irank_nod_new_export(icou) = inod_dbl%irank(inod)
-          distance_new_export(icou) =  mark_nod(i)%dist_marked(inum)
+          expand_export_position%inod_gl_comm(icou)                     &
+     &                                     = node%inod_global(inod)
+          expand_export_position%xx_comm(3*icou-2) =  node%xx(inod,1)
+          expand_export_position%xx_comm(3*icou-1) =  node%xx(inod,2)
+          expand_export_position%xx_comm(3*icou  ) =  node%xx(inod,3)
+          inod_lc_new_export(icou) = inod_dbl%index(inod)
+          expand_export_position%irank_comm(icou)                       &
+     &                             = inod_dbl%irank(inod)
+          expand_export_position%distance(icou)                         &
+     &                             =  mark_nod(i)%dist_marked(inum)
         end do
 !
         ist = istack_new_ele_export(i-1)
