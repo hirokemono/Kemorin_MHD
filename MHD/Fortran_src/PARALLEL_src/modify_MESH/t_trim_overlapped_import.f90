@@ -31,7 +31,7 @@
         integer(kind = kint), allocatable :: istack_trimmed_pe(:)
         integer(kind = kint), allocatable :: istack_trimmed_item(:)
 !
-        integer(kind = kint), allocatable :: idx_trimed_to_sorted(:)
+        integer(kind = kint), allocatable :: idx_trimmed_to_sorted(:)
         integer(kind = kint), allocatable :: idx_extend_to_trimmed(:)
       end type data_for_trim_import
 !
@@ -70,11 +70,11 @@
       type(data_for_trim_import), intent(inout) :: ext_trim
 !
 !
-      allocate(ext_trim%idx_trimed_to_sorted(ext_trim%ntot_trimmed))
+      allocate(ext_trim%idx_trimmed_to_sorted(ext_trim%ntot_trimmed))
 !
       if(ext_trim%ntot_trimmed .gt. 0) then
 !$omp parallel workshare
-        ext_trim%idx_trimed_to_sorted(1:ext_trim%ntot_trimmed) = 0
+        ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = 0
 !$omp end parallel workshare
       end if
 !
@@ -117,7 +117,7 @@
 !
       type(data_for_trim_import), intent(inout) :: ext_trim
 !
-      deallocate(ext_trim%idx_trimed_to_sorted)
+      deallocate(ext_trim%idx_trimmed_to_sorted)
 !
       end subroutine dealloc_idx_trimed_to_sorted
 !
