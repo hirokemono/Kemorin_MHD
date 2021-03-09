@@ -74,7 +74,7 @@
 !
       if(ext_trim%ntot_trimmed .gt. 0) then
 !$omp parallel workshare
-        ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = 0
+        ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = -1
 !$omp end parallel workshare
       end if
 !
@@ -93,7 +93,7 @@
 !
       if(ext_trim%ntot_w_overlap .gt. 0) then
 !$omp parallel workshare
-        ext_trim%idx_extend_to_trimmed(1:ext_trim%ntot_w_overlap) = 0
+        ext_trim%idx_extend_to_trimmed(1:ext_trim%ntot_w_overlap) = -1
 !$omp end parallel workshare
       end if
 !
