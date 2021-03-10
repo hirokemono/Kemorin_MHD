@@ -4,17 +4,13 @@
 !! @author  H. Matsui
 !! @date Programmed in Jan., 2009
 !
-!> @brief Control parameter for sleeve extension
+!> @brief Structure of marking and distance for sleeveextension
 !!
 !!@verbatim
 !!      subroutine alloc_mark_for_each_comm(num, mark_comm)
 !!      subroutine dealloc_mark_for_each_comm(mark_comm)
 !!        integer(kind = kint), intent(in) :: num
 !!        type(mark_for_each_comm), intent(inout) :: mark_comm
-!!
-!!      subroutine init_comm_table_for_each                             &
-!!     &         (ineib, node, nod_comm, each_comm)
-!!      subroutine dealloc_comm_table_for_each(each_comm)
 !!
 !!      subroutine s_mark_node_ele_to_extend                            &
 !!     &         (sleeve_exp_p, node, ele, neib_ele, d_vec, each_comm,  &
@@ -45,17 +41,6 @@
         integer(kind = kint), allocatable :: idx_marked(:)
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
-!
-      type comm_table_for_each_pe
-        integer(kind = kint) :: num_each_export = 0
-        integer(kind = kint), allocatable :: item_each_export(:)
-!
-        integer(kind = kint) :: num_each_import = 0
-        integer(kind = kint), allocatable :: item_each_import(:)
-!
-        integer(kind = kint) :: num_other_import = 0
-        integer(kind = kint), allocatable :: item_other_import(:)
-      end type comm_table_for_each_pe
 !
 !  ---------------------------------------------------------------------
 !
@@ -94,76 +79,12 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_comm_table_for_each                               &
-     &         (ineib, node, nod_comm, each_comm)
-!
-      use t_geometry_data
-      use t_comm_table
-!
-      integer(kind = kint), intent(in) :: ineib
-      type(node_data), intent(in) ::                 node
-      type(communication_table), intent(in) ::       nod_comm
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
-!
-      integer(kind = kint) :: ist, ied, i, icou, ip
-!
-!
-      allocate(each_comm%item_each_export(node%numnod))
-      allocate(each_comm%item_each_import(node%numnod))
-      allocate(each_comm%item_other_import(node%numnod))
-!
-      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
-     &                           - nod_comm%istack_export(ineib-1)
-!
-      ist = nod_comm%istack_export(ineib-1) 
-      do i = 1, each_comm%num_each_export
-        each_comm%item_each_export(i) = nod_comm%item_export(i+ist)
-      end do
-!
-      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
-     &                           - nod_comm%istack_import(ineib-1)
-!
-      ist = nod_comm%istack_import(ineib-1) 
-      do i = 1, each_comm%num_each_import
-        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
-      end do
-!
-      each_comm%num_other_import = nod_comm%ntot_import                 &
-     &                            - each_comm%num_each_import
-      icou = 0
-      do ip = 1, nod_comm%num_neib
-        if(ip .eq. ineib) cycle
-!
-        ist = nod_comm%istack_import(ip-1) + 1
-        ied = nod_comm%istack_import(ip)
-        do i = ist, ied
-          icou = icou + 1
-          each_comm%item_other_import(icou) = nod_comm%item_import(i)
-        end do
-      end do
-!
-      end subroutine init_comm_table_for_each
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_comm_table_for_each(each_comm)
-!
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
-!
-      deallocate(each_comm%item_other_import)
-      deallocate(each_comm%item_each_import)
-      deallocate(each_comm%item_each_export)
-!
-      end subroutine dealloc_comm_table_for_each
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine s_mark_node_ele_to_extend                              &
      &         (sleeve_exp_p, node, ele, neib_ele, d_vec, each_comm,    &
      &          mark_nod, mark_ele, iflag_ele, iflag_node, distance)
 !
       use t_ctl_param_sleeve_extend
+      use t_comm_table_for_each_pe
       use t_next_node_ele_4_node
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p

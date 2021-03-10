@@ -52,6 +52,8 @@
       subroutine mark_next_node_of_export                               &
      &         (neib_nod, each_comm, numnod, mark_nod, iflag_node)
 !
+      use t_comm_table_for_each_pe
+!
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(comm_table_for_each_pe), intent(in) :: each_comm
       integer(kind = kint), intent(in) :: numnod

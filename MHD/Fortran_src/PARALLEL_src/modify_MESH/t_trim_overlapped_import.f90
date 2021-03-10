@@ -132,5 +132,31 @@
       end subroutine dealloc_idx_extend_to_trimmed
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine trim_overlapped_sleeve_ext                             &
+     &         (nprocs, sort_import, ext_trim)
+!
+      use t_mesh_for_sleeve_extend
+      use trim_redundant_import_item
+!
+      integer, intent(in) :: nprocs
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+!
+      type(data_for_trim_import), intent(inout) :: ext_trim
+!
+!
+      ext_trim%ntot_trimmed                                             &
+     &     = count_ntot_trimmed_import(nprocs, sort_import)
+!
+      allocate(ext_trim%istack_trimmed_pe(0:nprocs))
+      allocate(ext_trim%istack_trimmed_item(0:ext_trim%ntot_trimmed))
+      ext_trim%istack_trimmed_pe(:) = 0
+      ext_trim%istack_trimmed_item(:) = 0
+!
+!
+      end subroutine trim_overlapped_sleeve_ext
+!
+! ----------------------------------------------------------------------
 !
       end module t_trim_overlapped_import

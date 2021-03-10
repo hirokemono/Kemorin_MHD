@@ -287,6 +287,7 @@
       use t_trim_overlapped_import
       use t_ctl_param_sleeve_extend
       use t_mark_node_ele_to_extend
+      use t_comm_table_for_each_pe
 !
       use m_solver_SR
       use calypso_mpi_int
@@ -418,6 +419,7 @@
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
+        call alloc_comm_table_for_each(org_node, each_comm)
         call init_comm_table_for_each2                                  &
      &     (i, org_node, nod_comm, dist_4_comm, each_comm, distance)
         call s_mark_node_ele_to_extend                                  &
@@ -541,13 +543,8 @@
       call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
      &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
 !
-      ext_nod_trim%ntot_trimmed                                         &
-     &     = count_ntot_trimmed_import(nprocs, sort_nod_import)
-!
-      allocate(ext_nod_trim%istack_trimmed_pe(0:nprocs))
-      allocate(ext_nod_trim%istack_trimmed_item(0:ext_nod_trim%ntot_trimmed))
-      ext_nod_trim%istack_trimmed_pe(:) = 0
-      ext_nod_trim%istack_trimmed_item(:) = 0
+      call trim_overlapped_sleeve_ext                                   &
+     &   (nprocs, sort_nod_import, ext_nod_trim)
 !
       call count_trimmed_import_stack(nprocs, sort_nod_import,          &
      &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
@@ -758,15 +755,9 @@
       call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
      &    expand_ele_comm, exp_import_ie%irank_comm, sort_ele_import)
 !
-      ext_ele_trim%ntot_trimmed                                         &
-     &     = count_ntot_trimmed_import(nprocs, sort_ele_import)
 !
-!      call alloc_stack_to_trim_extend                                   &
-!     &   (nprocs, ext_ele_trim%ntot_trimmed, ext_ele_trim)
-      allocate(ext_ele_trim%istack_trimmed_pe(0:nprocs))
-      allocate(ext_ele_trim%istack_trimmed_item(0:ext_ele_trim%ntot_trimmed))
-      ext_ele_trim%istack_trimmed_pe(:) =  0
-      ext_ele_trim%istack_trimmed_item(:) = 0
+      call trim_overlapped_sleeve_ext                                   &
+     &   (nprocs, sort_ele_import, ext_ele_trim)
 !
       call count_trimmed_import_stack(nprocs, sort_ele_import,          &
      &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
@@ -909,6 +900,7 @@
 !
       use t_geometry_data
       use t_comm_table
+      use t_comm_table_for_each_pe
       use mark_export_nod_ele_extend
 !
       integer(kind = kint), intent(in) :: ineib
@@ -921,10 +913,6 @@
 !
       integer(kind = kint) :: ist, ied, i, icou, ip, inod
 !
-!
-      allocate(each_comm%item_each_export(node%numnod))
-      allocate(each_comm%item_each_import(node%numnod))
-      allocate(each_comm%item_other_import(node%numnod))
 !
       each_comm%num_each_export = nod_comm%istack_export(ineib)         &
      &                           - nod_comm%istack_export(ineib-1)

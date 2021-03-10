@@ -26,7 +26,7 @@ extend_comm_table_SR.o: $(COMMDIR)/extend_comm_table_SR.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 m_sph_communicators.o: $(COMMDIR)/m_sph_communicators.f90 m_precision.o calypso_mpi.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-mark_export_nod_ele_extend.o: $(COMMDIR)/mark_export_nod_ele_extend.f90 m_precision.o t_next_node_ele_4_node.o t_mark_node_ele_to_extend.o
+mark_export_nod_ele_extend.o: $(COMMDIR)/mark_export_nod_ele_extend.f90 m_precision.o t_next_node_ele_4_node.o t_mark_node_ele_to_extend.o t_comm_table_for_each_pe.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_send_recv_check.o: $(COMMDIR)/mesh_send_recv_check.f90 m_precision.o m_constants.o m_machine_parameter.o m_work_time.o calypso_mpi.o t_solver_SR.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_work_for_comm_check.o t_calypso_comm_table.o diff_geometory_comm_test.o solver_SR_type.o nod_phys_send_recv.o calypso_SR_type.o select_copy_from_recv.o collect_SR_int.o collect_SR_N.o
 	$(F90) -c $(F90OPTFLAGS) $<

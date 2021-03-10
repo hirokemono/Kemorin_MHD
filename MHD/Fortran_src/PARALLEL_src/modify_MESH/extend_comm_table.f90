@@ -42,6 +42,7 @@
      &          neib_nod, new_comm, new_node)
 !
       use t_next_node_ele_4_node
+      use t_comm_table_for_each_pe
       use t_mark_node_ele_to_extend
 !
       use calypso_mpi_int
@@ -91,6 +92,7 @@
 !
       allocate(mark_nod(nod_comm%num_neib))
       do i = 1, nod_comm%num_neib
+        call alloc_comm_table_for_each(org_node, each_comm)
         call init_comm_table_for_each(i, org_node, nod_comm, each_comm)
         call mark_next_node_of_export(neib_nod, each_comm,              &
      &      org_node%numnod, mark_nod(i), iflag_node)
