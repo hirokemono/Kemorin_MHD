@@ -11,7 +11,9 @@
 !!      subroutine dealloc_comm_table_for_each(each_comm)
 !!        type(node_data), intent(in) ::                 node
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
-!!      subroutine init_comm_table_for_each                             &
+!!      subroutine init_comm_table_for_each(ineib, node, nod_comm,      &
+!!     &          dist_4_comm, each_comm, distance)
+!!      subroutine init_comm_table_for_each_old                         &
 !!     &         (ineib, node, nod_comm, each_comm)
 !!        integer(kind = kint), intent(in) :: ineib
 !!        type(node_data), intent(in) ::                 node
@@ -37,6 +39,11 @@
         integer(kind = kint) :: num_other_import = 0
         integer(kind = kint), allocatable :: item_other_import(:)
       end type comm_table_for_each_pe
+!
+      type dist_from_wall_in_export
+        integer(kind = kint) :: ntot = 0
+        real(kind = kreal), allocatable :: distance_in_export(:)
+      end type dist_from_wall_in_export
 !
 !  ---------------------------------------------------------------------
 !
@@ -76,7 +83,61 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_comm_table_for_each                               &
+      subroutine init_comm_table_for_each(ineib, node, nod_comm,        &
+     &          dist_4_comm, each_comm, distance)
+!
+      integer(kind = kint), intent(in) :: ineib
+      type(node_data), intent(in) ::                 node
+      type(communication_table), intent(in) ::       nod_comm
+      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
+!
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
+      real(kind = kreal), intent(inout) :: distance(node%numnod)
+!
+      integer(kind = kint) :: ist, ied, i, icou, ip, inod
+!
+!
+      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
+     &                           - nod_comm%istack_export(ineib-1)
+!
+      ist = nod_comm%istack_export(ineib-1) 
+!$omp parallel do private(i,inod)
+      do i = 1, each_comm%num_each_export
+        inod = nod_comm%item_export(i+ist)
+        each_comm%item_each_export(i) = inod
+        distance(inod) = dist_4_comm%distance_in_export(i+ist)
+      end do
+!$omp end parallel do
+!
+      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
+     &                           - nod_comm%istack_import(ineib-1)
+!
+      ist = nod_comm%istack_import(ineib-1) 
+!$omp parallel do private(i)
+      do i = 1, each_comm%num_each_import
+        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
+      end do
+!$omp end parallel do
+!
+      each_comm%num_other_import = nod_comm%ntot_import                 &
+     &                            - each_comm%num_each_import
+      icou = 0
+      do ip = 1, nod_comm%num_neib
+        if(ip .eq. ineib) cycle
+!
+        ist = nod_comm%istack_import(ip-1) + 1
+        ied = nod_comm%istack_import(ip)
+        do i = ist, ied
+          icou = icou + 1
+          each_comm%item_other_import(icou) = nod_comm%item_import(i)
+        end do
+      end do
+!
+      end subroutine init_comm_table_for_each
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine init_comm_table_for_each_old                           &
      &         (ineib, node, nod_comm, each_comm)
 !
       integer(kind = kint), intent(in) :: ineib
@@ -117,7 +178,7 @@
         end do
       end do
 !
-      end subroutine init_comm_table_for_each
+      end subroutine init_comm_table_for_each_old
 !
 !  ---------------------------------------------------------------------
 !

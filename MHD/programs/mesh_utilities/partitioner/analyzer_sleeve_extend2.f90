@@ -420,7 +420,7 @@
       jcou = 0
       do i = 1, nod_comm%num_neib
         call alloc_comm_table_for_each(org_node, each_comm)
-        call init_comm_table_for_each2                                  &
+        call init_comm_table_for_each                                   &
      &     (i, org_node, nod_comm, dist_4_comm, each_comm, distance)
         call s_mark_node_ele_to_extend                                  &
      &     (sleeve_exp_p, org_node, org_ele, neib_ele, vect_tmp,        &
@@ -545,13 +545,6 @@
 !
       call trim_overlapped_sleeve_ext                                   &
      &   (nprocs, sort_nod_import, ext_nod_trim)
-!
-      call count_trimmed_import_stack(nprocs, sort_nod_import,          &
-     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
-     &    ext_nod_trim%istack_trimmed_item)
-!
-      allocate(ext_nod_trim%idx_trimmed_to_sorted(ext_nod_trim%ntot_trimmed))
-      ext_nod_trim%idx_trimmed_to_sorted(1:ext_nod_trim%ntot_trimmed) = -1
 !
       call trim_internal_import_items                                   &
      &   (nprocs, expand_nod_comm%ntot_import, exp_import_xx%irank_comm,    &
@@ -759,13 +752,6 @@
       call trim_overlapped_sleeve_ext                                   &
      &   (nprocs, sort_ele_import, ext_ele_trim)
 !
-      call count_trimmed_import_stack(nprocs, sort_ele_import,          &
-     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
-     &    ext_ele_trim%istack_trimmed_item)
-!
-      allocate(ext_ele_trim%idx_trimmed_to_sorted(ext_ele_trim%ntot_trimmed))
-      ext_ele_trim%idx_trimmed_to_sorted(1:ext_ele_trim%ntot_trimmed) = 0
-!
       call trim_internal_import_items                                   &
      &  (nprocs, expand_ele_comm%ntot_import, exp_import_ie%irank_comm, &
      &    sort_ele_import%isorted_to_org, sort_ele_import%irank_orgin_pe,            &
@@ -892,65 +878,6 @@
 !
 !
       end subroutine extend_node_comm_table2
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_comm_table_for_each2                              &
-     &         (ineib, node, nod_comm, dist_4_comm, each_comm, distance)
-!
-      use t_geometry_data
-      use t_comm_table
-      use t_comm_table_for_each_pe
-      use mark_export_nod_ele_extend
-!
-      integer(kind = kint), intent(in) :: ineib
-      type(node_data), intent(in) ::                 node
-      type(communication_table), intent(in) ::       nod_comm
-      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
-!
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
-      real(kind = kreal), intent(inout) :: distance(node%numnod)
-!
-      integer(kind = kint) :: ist, ied, i, icou, ip, inod
-!
-!
-      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
-     &                           - nod_comm%istack_export(ineib-1)
-!
-      ist = nod_comm%istack_export(ineib-1) 
-!$omp parallel do private(i,inod)
-      do i = 1, each_comm%num_each_export
-        inod = nod_comm%item_export(i+ist)
-        each_comm%item_each_export(i) = inod
-        distance(inod) = dist_4_comm%distance_in_export(i+ist)
-      end do
-!$omp end parallel do
-!
-      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
-     &                           - nod_comm%istack_import(ineib-1)
-!
-      ist = nod_comm%istack_import(ineib-1) 
-!$omp parallel do private(i)
-      do i = 1, each_comm%num_each_import
-        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
-      end do
-!$omp end parallel do
-!
-      each_comm%num_other_import = nod_comm%ntot_import                 &
-     &                            - each_comm%num_each_import
-      icou = 0
-      do ip = 1, nod_comm%num_neib
-        if(ip .eq. ineib) cycle
-!
-        ist = nod_comm%istack_import(ip-1) + 1
-        ied = nod_comm%istack_import(ip)
-        do i = ist, ied
-          icou = icou + 1
-          each_comm%item_other_import(icou) = nod_comm%item_import(i)
-        end do
-      end do
-!
-      end subroutine init_comm_table_for_each2
 !
 !  ---------------------------------------------------------------------
 !

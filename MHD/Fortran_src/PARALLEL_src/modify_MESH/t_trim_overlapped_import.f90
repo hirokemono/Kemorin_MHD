@@ -154,6 +154,12 @@
       ext_trim%istack_trimmed_pe(:) = 0
       ext_trim%istack_trimmed_item(:) = 0
 !
+      call count_trimmed_import_stack(nprocs, sort_import,              &
+     &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
+     &    ext_trim%istack_trimmed_item)
+!
+      allocate(ext_trim%idx_trimmed_to_sorted(ext_trim%ntot_trimmed))
+      ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = -1
 !
       end subroutine trim_overlapped_sleeve_ext
 !

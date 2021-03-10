@@ -32,15 +32,11 @@
       use m_precision
       use t_next_node_ele_4_node
       use t_mark_node_ele_to_extend
+      use t_comm_table_for_each_pe
 !
       implicit none
 !
       integer(kind = kint), parameter, private :: many = 512
-!
-      type dist_from_wall_in_export
-        integer(kind = kint) :: ntot = 0
-        real(kind = kreal), allocatable :: distance_in_export(:)
-      end type dist_from_wall_in_export
 !
 !  ---------------------------------------------------------------------
 !
@@ -51,8 +47,6 @@
 !
       subroutine mark_next_node_of_export                               &
      &         (neib_nod, each_comm, numnod, mark_nod, iflag_node)
-!
-      use t_comm_table_for_each_pe
 !
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(comm_table_for_each_pe), intent(in) :: each_comm

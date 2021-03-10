@@ -93,7 +93,8 @@
       allocate(mark_nod(nod_comm%num_neib))
       do i = 1, nod_comm%num_neib
         call alloc_comm_table_for_each(org_node, each_comm)
-        call init_comm_table_for_each(i, org_node, nod_comm, each_comm)
+        call init_comm_table_for_each_old                               &
+     &     (i, org_node, nod_comm, each_comm)
         call mark_next_node_of_export(neib_nod, each_comm,              &
      &      org_node%numnod, mark_nod(i), iflag_node)
         call dealloc_comm_table_for_each(each_comm)

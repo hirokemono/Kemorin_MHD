@@ -98,7 +98,7 @@ t_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/t_repartition_by_volume.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sorting_for_repartition.o: $(MODIFY_PARA_MESHDIR)/t_sorting_for_repartition.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_para_double_numbering.o t_repart_double_numberings.o sort_for_repartition.o calypso_SR_type.o select_copy_from_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_trim_overlapped_import.o: $(MODIFY_PARA_MESHDIR)/t_trim_overlapped_import.f90 m_precision.o t_mesh_for_sleeve_extend.o
+t_trim_overlapped_import.o: $(MODIFY_PARA_MESHDIR)/t_trim_overlapped_import.f90 m_precision.o t_mesh_for_sleeve_extend.o trim_redundant_import_item.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o
 	$(F90) -c $(F90OPTFLAGS) $<
