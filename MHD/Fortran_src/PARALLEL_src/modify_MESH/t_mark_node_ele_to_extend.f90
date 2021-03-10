@@ -37,6 +37,9 @@
       use m_precision
       use m_constants
 !
+      use t_geometry_data
+      use t_comm_table
+!
       type mark_for_each_comm
         integer(kind = kint) :: nnod_marked = 0
         integer(kind = kint), allocatable :: idx_marked(:)
@@ -161,8 +164,6 @@
      &          mark_nod, mark_ele, iflag_ele, iflag_node, distance)
 !
       use t_ctl_param_sleeve_extend
-      use t_geometry_data
-      use t_comm_table
       use t_next_node_ele_4_node
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
@@ -333,6 +334,37 @@
 !
 !
       end subroutine s_mark_node_ele_to_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_missing_connect_to_extend                        &
+    &          (node, ele, mark_ele, iflag_node, icou_nod, icou_ele)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(mark_for_each_comm), intent(inout) :: mark_ele
+      integer(kind = kint), intent(in) :: iflag_node(node%numnod)
+!
+      integer(kind = kint), intent(inout) :: icou_nod, icou_ele
+!
+      integer(kind = kint) :: inum, iele, k1, kcou
+!
+      do inum = 1, mark_ele%nnod_marked
+        iele = mark_ele%idx_marked(inum)
+        kcou = 0
+        do k1 = 1, ele%nnod_4_ele
+          inod = ele%ie(iele,k1)
+          if(iflag_node(inod) .ge. 0) kcou = kcou + 1
+        end do
+        icou_nod = icou_nod + kcou
+        if(kcou .gt. 0) then
+          icou_ele = icou_ele + 1
+!          write(*,*) iele, ele%ie(iele,1:ele%nnod_4_ele),              &
+!     &                iflag_node(ele%ie(iele,1:ele%nnod_4_ele))
+        end if
+      end do
+!
+      end subroutine check_missing_connect_to_extend
 !
 !  ---------------------------------------------------------------------
 !

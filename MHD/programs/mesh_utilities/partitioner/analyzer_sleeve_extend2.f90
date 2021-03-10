@@ -426,21 +426,8 @@
      &      iflag_ele, iflag_node, distance)
         call dealloc_comm_table_for_each(each_comm)
 !
-!
-        do inum = 1, mark_ele(i)%nnod_marked
-          iele = mark_ele(i)%idx_marked(inum)
-          kcou = 0
-          do k1 = 1, org_ele%nnod_4_ele
-            inod = org_ele%ie(iele,k1)
-            if(iflag_node(inod) .ge. 0) kcou = kcou + 1
-          end do
-          icou = icou + kcou
-          if(kcou .gt. 0) then
-            jcou = jcou + 1
-!            write(*,*) iele, org_ele%ie(iele,1:org_ele%nnod_4_ele), &
-!     &                iflag_node(org_ele%ie(iele,1:org_ele%nnod_4_ele))
-          end if
-        end do
+        call check_missing_connect_to_extend                            &
+    &      (org_node, org_ele, mark_ele(i), iflag_node, icou, jcou)
       end do
       deallocate(vect_tmp)
 !
