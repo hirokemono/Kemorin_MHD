@@ -312,6 +312,7 @@
       use const_extended_neib_domain
       use set_mesh_for_sleeve_extend
       use trim_mesh_for_sleeve_extend
+      use set_expanded_comm_table
       use check_slv_ext_local_node_id
       use checks_for_sleeve_extend
 !
@@ -527,7 +528,6 @@
 !
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import)
-!
       call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
      &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
 !
@@ -541,13 +541,9 @@
 !
 !
       allocate(idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import))
-      idx_nod_extend_to_trimmed(1:expand_nod_comm%ntot_import) = -1
-!
       call find_home_import_item_by_trim                                &
-     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import%isorted_to_org,      &
-     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
-     &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted,     &
-     &    idx_nod_extend_to_trimmed, icou)
+     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import,         &
+     &    ext_nod_trim, idx_nod_extend_to_trimmed, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Missing import item in trimmed:', ntot_failed_gl
@@ -575,11 +571,10 @@
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
 !
-!      subroutine s_check_slv_ext_local_node_id                         &
-!     &         (org_node, nod_comm, mark_nod,                          &
-!     &          expand_nod_comm, add_nod_comm, sort_nod_import,        &
-!     &          exp_import_xx, trim_import_xx,                         &
-!     &          ext_nod_trim, inod_lc_new_import_trim)
+!      call s_check_slv_ext_local_node_id(org_node, nod_comm, mark_nod, &
+!     &    expand_nod_comm, add_nod_comm, sort_nod_import,              &
+!     &    ext_nod_trim, exp_import_xx, trim_import_xx,                 &
+!     &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
 !
       call alloc_export_num(add_nod_comm)
       call num_items_send_recv                                          &
@@ -642,47 +637,22 @@
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)
       deallocate(idx_nod_extend_to_trimmed)
 !
-      jcou = check_zero_inod_added_import(expand_nod_comm%ntot_import,  &
-     &                                    inod_added_import)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Number of Zero address ',          &
-     &           'in inod_added_import', ntot_failed_gl
-
-      icou = check_wrong_inod_added_import(dbl_id2, expand_nod_comm,    &
-     &            inod_added_import, exp_import_xx%irank_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
-     &           'in inod_added_import', ntot_failed_gl
-
-      icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
-     &                                exp_import_ie%ie_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &     'zero exp_import_ie%ie_comm before fix', ntot_failed_gl
-!
-      icou = check_negative_ie_new_import(org_ele, expand_ele_comm,     &
-     &                                    exp_import_ie%ie_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &     'Negative exp_import_ie%ie_comm before fix', ntot_failed_gl
+      if(i_debug .gt. 0) then
+        call check_expanded_import_node                                 &
+     &     (dbl_id2, expand_nod_comm, exp_import_xx, inod_added_import)
+        call check_expanded_import_ele                                  &
+     &    (org_ele, expand_ele_comm, exp_import_ie)
+      end if
 !
       call renumber_extended_ele_import(my_rank, org_ele, nod_comm,     &
      &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
      &    exp_import_ie%ie_comm)
       deallocate(inod_added_import)
 !
-      icou = check_zero_ie_new_import(org_ele, expand_ele_comm,         &
-     &                                exp_import_ie%ie_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &     'zero exp_import_ie%ie_comm after fix', ntot_failed_gl
-!
-      icou = check_negative_ie_new_import(org_ele, expand_ele_comm,     &
-     &                                    exp_import_ie%ie_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &      'Negative exp_import_ie%ie_comm after fix', ntot_failed_gl
-!
+      if(i_debug .gt. 0) then
+        call check_expanded_import_ele                                  &
+     &    (org_ele, expand_ele_comm, exp_import_ie)
+      end if
 !
       call s_append_communication_table                                 &
      &   (nod_comm, add_nod_comm, new_nod_comm)
@@ -713,16 +683,6 @@
      &    (nod_comm, add_ele_comm, sort_ele_import, ext_ele_trim)
       end if
 !
-!      allocate(ext_ele_trim%idx_extend_to_trimmed(expand_ele_comm%ntot_import))
-!      ext_ele_trim%idx_extend_to_trimmed(1:expand_ele_comm%ntot_import) = -1
-
-!
-!      call find_home_import_item_by_trim                          &
-!     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
-!     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,   &
-!     &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted,   &
-!     &    ext_ele_trim%idx_extend_to_trimmed, icou)
-!      deallocate(ext_ele_trim%idx_extend_to_trimmed)
       call dealloc_sort_data_sleeve_ext(sort_nod_import)
 !
       call alloc_import_num(add_ele_comm)
@@ -899,89 +859,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sort_import_by_pe_and_local_id                         &
-     &         (nprocs, nod_comm, expand_comm, irank_nod_new_import,    &
-     &          sort_import)
-!
-      use m_precision
-      use t_comm_table
-      use t_mesh_for_sleeve_extend
-      use quicksort
-!
-      implicit none
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(in) :: expand_comm
-      integer, intent(in) :: nprocs
-      integer(kind= kint), intent(in)                                   &
-     &            :: irank_nod_new_import(expand_comm%ntot_import)
-!
-      type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
-!
-      integer(kind = kint) :: i, irank, ist, ied, inum, icou, ip
-!
-!
-!$omp parallel do private(i)
-      do i = 1, expand_comm%ntot_import
-        sort_import%isorted_to_org(i) = i
-        sort_import%irank_import_sort(i) = irank_nod_new_import(i)
-        sort_import%irank_orgin_pe(i) = -1
-      end do
-!$omp end parallel do
-!
-!$omp parallel private(i,irank,ist,ied)
-      do i = 1, nod_comm%num_neib
-        irank = nod_comm%id_neib(i)
-        ist = expand_comm%istack_import(i-1) + 1
-        ied = expand_comm%istack_import(i)
-!$omp workshare
-        sort_import%irank_orgin_pe(ist:ied) = irank
-!$omp end workshare nowait
-      end do
-!$omp end parallel
-!
-      if(expand_comm%ntot_import .gt. 1) then
-        call quicksort_w_index                                          &
-     &     (expand_comm%ntot_import, sort_import%irank_import_sort,     &
-     &      ione, expand_comm%ntot_import, sort_import%isorted_to_org)
-      end if
-!
-!$omp parallel do private(i,icou)
-      do i = 1, expand_comm%ntot_import
-        icou = sort_import%isorted_to_org(i)
-        sort_import%iref_lc_import(i) = expand_comm%item_import(icou)
-      end do
-!$omp end parallel do
-!
-!$omp parallel workshare
-      sort_import%num_sorted_by_pe(1:nprocs) = 0
-!$omp end parallel workshare
-      do i = 1, expand_comm%ntot_import
-        irank = sort_import%irank_import_sort(i)
-        sort_import%num_sorted_by_pe(irank+1)                           &
-     &        = sort_import%num_sorted_by_pe(irank+1) + 1
-      end do
-      do ip = 1, nprocs
-        sort_import%istack_sorted_by_pe(ip)                             &
-     &      = sort_import%istack_sorted_by_pe(ip-1)                     &
-     &       + sort_import%num_sorted_by_pe(ip)
-      end do
-!
-      do ip = 1, nprocs
-        ist = sort_import%istack_sorted_by_pe(ip-1)
-        if(sort_import%num_sorted_by_pe(ip) .gt. 1) then
-          call quicksort_w_index                                        &
-     &       (sort_import%num_sorted_by_pe(ip),                         &
-     &        sort_import%iref_lc_import(ist+1),                        &
-     &        ione, sort_import%num_sorted_by_pe(ip),                   &
-     &        sort_import%isorted_to_org(ist+1))
-        end if
-      end do
-!
-      end subroutine sort_import_by_pe_and_local_id
-!
-!  ---------------------------------------------------------------------
-!
       subroutine count_export_4_expanded_mesh                           &
      &         (nod_comm, node, mark_nod, mark_ele,                     &
      &          num_new_export, num_new_ele_export)
@@ -1083,88 +960,5 @@
       end do
 !
       end subroutine find_original_import_address
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_import_item_for_extend                             &
-     &         (node, expand_nod_comm, ext_nod_trim,                    &
-     &          num_added_neib, id_added_neib,                          &
-     &          istack_added_import, ntot_added_import,                 &
-     &          inod_lc_new_import_trim, item_added_import)
-!
-      use m_precision
-      use t_geometry_data
-      use t_comm_table
-      use t_trim_overlapped_import
-!
-      implicit none
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-!
-      integer(kind = kint), intent(in) :: num_added_neib
-      integer(kind = kint), intent(in) :: ntot_added_import
-      integer(kind = kint), intent(in) :: id_added_neib(num_added_neib)
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_added_import(0:num_added_neib)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: inod_lc_new_import_trim(ntot_added_import)
-      integer(kind = kint), intent(inout)                               &
-     &      :: item_added_import(ntot_added_import)
-!
-      integer(kind = kint) :: i, irank, ist, jst, num
-      integer(kind = kint) :: inum, jcou, jnum
-!
-!
-      do i = 1, num_added_neib
-        irank = id_added_neib(i)
-        ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = istack_added_import(i-1)
-        num = istack_added_import(i) - istack_added_import(i-1)
-        do inum = 1, num
-          jcou = inum + jst
-          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-!
-          item_added_import(jcou) = jcou + node%numnod
-!
-          inod_lc_new_import_trim(jcou)                                 &
-     &              = expand_nod_comm%item_import(jnum)
-        end do
-      end do
-!
-      end subroutine set_import_item_for_extend
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_import_item_for_extend                           &
-     &         (nprocs, istack_trimmed_import_pe,                       &
-     &          num_added_neib, id_added_neib, num_added_import)
-!
-      use m_precision
-!
-      implicit none
-!
-      integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_trimmed_import_pe(0:nprocs)
-!
-      integer(kind = kint), intent(in) :: num_added_neib
-      integer(kind = kint), intent(in) :: id_added_neib(num_added_neib)
- !
-     integer(kind = kint), intent(inout)                               &
-     &        :: num_added_import(num_added_neib)
-!
-      integer(kind = kint) :: i, irank
-!
-!
-      do i = 1, num_added_neib
-        irank = id_added_neib(i)
-        num_added_import(i) = istack_trimmed_import_pe(irank+1)         &
-     &                       - istack_trimmed_import_pe(irank)
-      end do
-!
-      end subroutine count_import_item_for_extend
 !
 !  ---------------------------------------------------------------------

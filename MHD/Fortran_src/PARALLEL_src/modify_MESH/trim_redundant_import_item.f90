@@ -57,25 +57,6 @@
 !!        integer(kind = kint), intent(inout)                           &
 !!     &              :: idx_home_sorted_import(ntot_trimmed_nod_import)
 !!        integer(kind = kint), intent(inout) :: num_miss
-!!      subroutine find_home_import_item_by_trim                        &
-!!     &         (nprocs, ntot_new_import, index_4_import_tmp,          &
-!!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
-!!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
-!!     &          idx_home_for_import, num_miss)
-!!        integer, intent(in) :: nprocs
-!!        integer(kind = kint), intent(in) :: ntot_new_import
-!!        integer(kind = kint), intent(in)                              &
-!!     &                    :: index_4_import_tmp(ntot_new_import)
-!!        integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
-!!        integer(kind= kint), intent(in)                               &
-!!     &         :: istack_trimmed_import_pe(0:nprocs)
-!!        integer(kind= kint), intent(in)                               &
-!!     &         :: istack_trimmed_import_item(0:ntot_trimmed_nod_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &              :: idx_home_sorted_import(ntot_trimmed_nod_import)
-!!        integer(kind = kint), intent(inout)                           &
-!!     &              :: idx_home_for_import(ntot_new_import)
-!!        integer(kind = kint), intent(inout) :: num_miss
 !!@endverbatim
       module trim_redundant_import_item
 !
@@ -319,61 +300,6 @@
       end do
 !
       end subroutine trim_orphaned_import_items
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine find_home_import_item_by_trim                          &
-     &         (nprocs, ntot_new_import, index_4_import_tmp,            &
-     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
-     &          istack_trimmed_import_item, idx_home_sorted_import,     &
-     &          idx_home_for_import, num_miss)
-!
-      integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: ntot_new_import
-      integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(ntot_new_import)
-!
-      integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
-      integer(kind= kint), intent(in)                                   &
-     &         :: istack_trimmed_import_pe(0:nprocs)
-      integer(kind= kint), intent(in)                                   &
-     &         :: istack_trimmed_import_item(0:ntot_trimmed_nod_import)
-      integer(kind = kint), intent(in)                                  &
-     &              :: idx_home_sorted_import(ntot_trimmed_nod_import)
-!
-      integer(kind = kint), intent(inout)                               &
-     &              :: idx_home_for_import(ntot_new_import)
-      integer(kind = kint), intent(inout) :: num_miss
-!
-      integer(kind = kint) :: ist, ied, inum, ip
-      integer(kind = kint) :: jst, jed, jnum, jrank, jsort, jnod
-!
-!
-!$omp parallel workshare
-      idx_home_for_import(1:ntot_new_import) = -1
-!$omp end parallel workshare
-!
-      do ip = 1, nprocs
-        ist = istack_trimmed_import_pe(ip-1) + 1
-        ied = istack_trimmed_import_pe(ip)
-        do inum = ist, ied
-          jst = istack_trimmed_import_item(inum-1) + 1
-          jed = istack_trimmed_import_item(inum)
-!
-          do jnum = jst, jed
-            jnod = index_4_import_tmp(jnum)
-            idx_home_for_import(jnod) = idx_home_sorted_import(inum)
-          end do
-        end do
-      end do
-!
-      num_miss = 0
-      do inum = 1, ntot_new_import
-        if(idx_home_for_import(inum) .lt. 0) num_miss = num_miss + 1
-      end do
-!
-      end subroutine find_home_import_item_by_trim
 !
 !  ---------------------------------------------------------------------
 !

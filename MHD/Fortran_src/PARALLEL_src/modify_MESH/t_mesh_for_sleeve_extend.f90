@@ -22,6 +22,16 @@
 !!      subroutine dealloc_sort_data_sleeve_ext(sorted_import)
 !!        integer(kind = kint), intent(in) :: ntot_comm,
 !!        type(sort_data_for_sleeve_trim), intent(inout) :: sorted_import
+!!
+!!      subroutine sort_import_by_pe_and_local_id                       &
+!!     &         (nprocs, nod_comm, expand_comm, irank_comm_new_import, &
+!!     &          sort_import)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: expand_comm
+!!        integer, intent(in) :: nprocs
+!!        integer(kind= kint), intent(in)                               &
+!!     &            :: irank_comm_new_import(expand_comm%ntot_import)
+!!        type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
 !!@endverbatim
 !
       module t_mesh_for_sleeve_extend
@@ -212,5 +222,85 @@
       end subroutine dealloc_sort_data_sleeve_ext
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine sort_import_by_pe_and_local_id                         &
+     &         (nprocs, nod_comm, expand_comm, irank_comm_new_import,   &
+     &          sort_import)
+!
+      use t_comm_table
+      use quicksort
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: expand_comm
+      integer, intent(in) :: nprocs
+      integer(kind= kint), intent(in)                                   &
+     &            :: irank_comm_new_import(expand_comm%ntot_import)
+!
+      type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
+!
+      integer(kind = kint) :: i, irank, ist, ied, inum, icou, ip
+!
+!
+!$omp parallel do private(i)
+      do i = 1, expand_comm%ntot_import
+        sort_import%isorted_to_org(i) = i
+        sort_import%irank_import_sort(i) = irank_comm_new_import(i)
+        sort_import%irank_orgin_pe(i) = -1
+      end do
+!$omp end parallel do
+!
+!$omp parallel private(i,irank,ist,ied)
+      do i = 1, nod_comm%num_neib
+        irank = nod_comm%id_neib(i)
+        ist = expand_comm%istack_import(i-1) + 1
+        ied = expand_comm%istack_import(i)
+!$omp workshare
+        sort_import%irank_orgin_pe(ist:ied) = irank
+!$omp end workshare nowait
+      end do
+!$omp end parallel
+!
+      if(expand_comm%ntot_import .gt. 1) then
+        call quicksort_w_index                                          &
+     &     (expand_comm%ntot_import, sort_import%irank_import_sort,     &
+     &      ione, expand_comm%ntot_import, sort_import%isorted_to_org)
+      end if
+!
+!$omp parallel do private(i,icou)
+      do i = 1, expand_comm%ntot_import
+        icou = sort_import%isorted_to_org(i)
+        sort_import%iref_lc_import(i) = expand_comm%item_import(icou)
+      end do
+!$omp end parallel do
+!
+!$omp parallel workshare
+      sort_import%num_sorted_by_pe(1:nprocs) = 0
+!$omp end parallel workshare
+      do i = 1, expand_comm%ntot_import
+        irank = sort_import%irank_import_sort(i)
+        sort_import%num_sorted_by_pe(irank+1)                           &
+     &        = sort_import%num_sorted_by_pe(irank+1) + 1
+      end do
+      do ip = 1, nprocs
+        sort_import%istack_sorted_by_pe(ip)                             &
+     &      = sort_import%istack_sorted_by_pe(ip-1)                     &
+     &       + sort_import%num_sorted_by_pe(ip)
+      end do
+!
+      do ip = 1, nprocs
+        ist = sort_import%istack_sorted_by_pe(ip-1)
+        if(sort_import%num_sorted_by_pe(ip) .gt. 1) then
+          call quicksort_w_index                                        &
+     &       (sort_import%num_sorted_by_pe(ip),                         &
+     &        sort_import%iref_lc_import(ist+1),                        &
+     &        ione, sort_import%num_sorted_by_pe(ip),                   &
+     &        sort_import%isorted_to_org(ist+1))
+        end if
+      end do
+!
+      end subroutine sort_import_by_pe_and_local_id
+!
+!  ---------------------------------------------------------------------
 !
       end module t_mesh_for_sleeve_extend

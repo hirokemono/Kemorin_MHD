@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_check_slv_ext_local_node_id                        &
-!!     &         (org_node, nod_comm, mark_nod,                         &
-!!     &          expand_nod_comm, add_nod_comm, sort_nod_import,       &
+!!     &         (org_node, nod_comm, mark_nod, expand_nod_comm,        &
+!!     &          add_nod_comm, sort_nod_import, ext_nod_trim,          &
 !!     &          expand_import_position, trimmed_import_position,      &
-!!     &          ext_nod_trim, inod_lc_new_import_trim)
+!!     &          idx_trimmed_to_sorted, inod_lc_new_import_trim)
 !!        type(node_data), intent(in) :: org_node
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: expand_nod_comm
@@ -24,6 +24,8 @@
 !!        type(node_data_for_sleeve_ext), intent(in)                    &
 !!     &                          :: trimmed_import_position
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
+!!        integer(kind = kint), intent(in)                              &
+!!     &      :: idx_trimmed_to_sorted(expand_nod_comm%ntot_import)
 !!        integer(kind = kint), intent(in)                              &
 !!     &      :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
 !!@endverbatim
@@ -49,10 +51,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_check_slv_ext_local_node_id                          &
-     &         (org_node, nod_comm, mark_nod,                           &
-     &          expand_nod_comm, add_nod_comm, sort_nod_import,         &
+     &         (org_node, nod_comm, mark_nod, expand_nod_comm,          &
+     &          add_nod_comm, sort_nod_import, ext_nod_trim,            &
      &          expand_import_position, trimmed_import_position,        &
-     &          ext_nod_trim, inod_lc_new_import_trim)
+     &          idx_trimmed_to_sorted, inod_lc_new_import_trim)
 !
       use m_solver_SR
       use reverse_SR_int
@@ -71,6 +73,8 @@
 !
       integer(kind = kint), intent(in)                                  &
      &      :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_trimmed_to_sorted(expand_nod_comm%ntot_import)
 !
       integer(kind = kint), allocatable :: item_new_export(:)
       integer(kind = kint), allocatable :: item_new_import(:)
@@ -86,9 +90,9 @@
      &    item_new_export, SR_sig1, item_new_import)
       deallocate(item_new_export)
 !
-      call check_sort_nod_import                                        &
-     &   (nod_comm, expand_nod_comm, expand_import_position,            &
-     &    sort_nod_import, ext_nod_trim, item_new_import)
+      call check_sort_nod_import(nod_comm, expand_nod_comm,             &
+     &    expand_import_position, sort_nod_import, ext_nod_trim,        &
+     &    idx_trimmed_to_sorted, item_new_import)
 !
       call check_trimmed_import_item(expand_nod_comm, add_nod_comm,     &
      &    trimmed_import_position, ext_nod_trim, item_new_import,       &
@@ -146,9 +150,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_sort_nod_import                                  &
-     &         (nod_comm, expand_nod_comm, expand_import_position,      &
-     &          sort_nod_import, ext_nod_trim, item_new_import)
+      subroutine check_sort_nod_import(nod_comm, expand_nod_comm,       &
+     &          expand_import_position, sort_nod_import, ext_nod_trim,  &
+     &          idx_trimmed_to_sorted, item_new_import)
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
@@ -157,7 +161,8 @@
       type(sort_data_for_sleeve_trim), intent(in) :: sort_nod_import
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
-      integer(kind = kint), intent(in) :: idx_trimmed_to_sorted(:)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_trimmed_to_sorted(expand_nod_comm%ntot_import)
 !
       integer(kind = kint), intent(in)                                  &
      &      :: item_new_import(expand_nod_comm%ntot_import)

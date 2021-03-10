@@ -7,6 +7,18 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
+!!      subroutine check_expanded_import_node(inod_new_dbl,             &
+!!     &          expand_nod_comm, exp_import_xx, inod_added_import)
+!!        type(node_ele_double_number), intent(in) :: inod_new_dbl
+!!        type(communication_table), intent(in) :: expand_nod_comm
+!!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
+!!        integer(kind = kint), intent(in)                              &
+!!     &          :: inod_added_import(expand_nod_comm%ntot_import)
+!!      subroutine check_expanded_import_ele                            &
+!!     &         (ele, expand_ele_comm, exp_import_ie)
+!!        type(element_data), intent(in) :: ele
+!!        type(communication_table), intent(in) :: expand_ele_comm
+!!        type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !!      subroutine check_returned_extend_element                        &
 !!     &         (iele_dbl, add_ele_comm, trim_import_ie)
 !!        type(node_ele_double_number), intent(in) :: iele_dbl
@@ -14,10 +26,10 @@
 !!        type(ele_data_for_sleeve_ext), intent(in) :: trim_import_ie
 !!
 !!      integer(kind = kint) function check_trimmed_import_node         &
-!!     &                (org_node, dbl_id2, add_nod_comm,               &
+!!     &                (org_node, inod_new_dbl, add_nod_comm,          &
 !!     &                 irank_new_import_trim, inod_lc_new_import_trim)
 !!        type(node_data) :: org_node
-!!        type(node_ele_double_number) :: dbl_id2
+!!        type(node_ele_double_number) :: inod_new_dbl
 !!        type(communication_table) :: add_nod_comm
 !!        integer(kind = kint), intent(in)                              &
 !!     &      :: irank_new_import_trim(add_nod_comm%ntot_import)
@@ -31,31 +43,6 @@
 !!     &      :: idx_home_for_import(expand_nod_comm%ntot_import)
 !!        integer(kind = kint), intent(in)                              &
 !!     &      :: irank_nod_new_import(expand_nod_comm%ntot_import)
-!!        integer(kind = kint) function check_zero_inod_added_import    &
-!!     &                            (ntot, inod_added_import)
-!!        integer(kind = kint), intent(in) :: ntot
-!!        integer(kind = kint), intent(in) :: inod_added_import(ntot)
-!!      integer(kind = kint) function check_wrong_inod_added_import     &
-!!     &                   (inod_new_dbl, expand_nod_comm,              &
-!!     &                    inod_added_import, irank_nod_new_import)
-!!        type(node_ele_double_number) :: inod_new_dbl
-!!        type(communication_table) :: expand_nod_comm
-!!        integer(kind = kint), intent(in)                              &
-!!     &      :: inod_added_import(expand_nod_comm%ntot_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &      :: irank_nod_new_import(expand_nod_comm%ntot_import)
-!!      integer(kind = kint) function check_negative_ie_new_import      &
-!!     &                   (ele, expand_ele_comm, ie_new_import)
-!!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: expand_ele_comm
-!!        integer(kind = kint), intent(in)                              &
-!!     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
-!!      integer(kind = kint) function check_zero_ie_new_import          &
-!!     &                   (ele, expand_ele_comm, ie_new_import)
-!!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: expand_ele_comm
-!!        integer(kind = kint), intent(in)                              &
-!!     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !!      integer(kind = kint) function check_trim_import_ele_connect     &
 !!     &                   (ele, add_ele_comm, ie_new_import_trim)
 !!        type(element_data), intent(in) :: ele
@@ -88,11 +75,76 @@
 !
       implicit none
 !
+      private :: check_zero_inod_added_import
+      private :: check_wrong_inod_added_import
+      private :: check_zero_ie_new_import
+      private :: check_negative_ie_new_import
       private :: check_recieved_ext_ele_export
 !
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_expanded_import_node(inod_new_dbl,               &
+     &          expand_nod_comm, exp_import_xx, inod_added_import)
+!
+      use calypso_mpi
+      use calypso_mpi_int
+!
+      type(node_ele_double_number), intent(in) :: inod_new_dbl
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
+      integer(kind = kint), intent(in)                                  &
+     &          :: inod_added_import(expand_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: icou, ntot_gl
+!
+!
+      icou = check_zero_inod_added_import(expand_nod_comm%ntot_import,  &
+     &                                    inod_added_import)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Number of Zero address ',          &
+     &           'in inod_added_import', ntot_gl
+
+      icou = check_wrong_inod_added_import                              &
+     &           (inod_new_dbl, expand_nod_comm,                        &
+     &            inod_added_import, exp_import_xx%irank_comm)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
+     &           'in inod_added_import', ntot_gl
+
+      end subroutine check_expanded_import_node
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_expanded_import_ele                              &
+     &         (ele, expand_ele_comm, exp_import_ie)
+!
+      use calypso_mpi
+      use calypso_mpi_int
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: expand_ele_comm
+      type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
+!
+      integer(kind = kint) :: icou, ntot_gl
+!
+!
+      icou = check_zero_ie_new_import(ele, expand_ele_comm,             &
+     &                                exp_import_ie%ie_comm)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &     'zero exp_import_ie%ie_comm before fix', ntot_gl
+!
+      icou = check_negative_ie_new_import(ele, expand_ele_comm,         &
+     &                                    exp_import_ie%ie_comm)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &     'Negative exp_import_ie%ie_comm before fix', ntot_gl
+!
+      end subroutine check_expanded_import_ele
 !
 !  ---------------------------------------------------------------------
 !
@@ -134,11 +186,11 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_trimmed_import_node           &
-     &                (org_node, dbl_id2, add_nod_comm,                 &
+     &                (org_node, inod_new_dbl, add_nod_comm,            &
      &                 irank_new_import_trim, inod_lc_new_import_trim)
 !
       type(node_data) :: org_node
-      type(node_ele_double_number) :: dbl_id2
+      type(node_ele_double_number) :: inod_new_dbl
       type(communication_table) :: add_nod_comm
       integer(kind = kint), intent(in)                                  &
      &      :: irank_new_import_trim(add_nod_comm%ntot_import)
@@ -152,13 +204,13 @@
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           inod = inum + org_node%numnod
-          if(dbl_id2%irank(inod) .ne. irank_new_import_trim(inum)      &
-     &   .or. dbl_id2%index(inod) .ne. inod_lc_new_import_trim(inum))   &
-     &      icou = icou + 1
-!          write(*,*) my_rank, 'idx_home_for_import', i, &
-!     &      dbl_id2%irank(inum+org_node%numnod),                       &
+          if(inod_new_dbl%irank(inod) .ne. irank_new_import_trim(inum)  &
+     &        .or. inod_new_dbl%index(inod)                             &
+     &           .ne. inod_lc_new_import_trim(inum)) icou = icou + 1
+!          write(*,*) my_rank, 'idx_home_for_import', i,                &
+!     &      inod_new_dbl%irank(inum+org_node%numnod),                  &
 !     &      irank_new_import_trim(inum),                               &
-!     &      dbl_id2%index(inum+org_node%numnod),                       &
+!     &      inod_new_dbl%index(inum+org_node%numnod),                  &
 !     &      inod_lc_new_import_trim(inum)
         end do
       end do
@@ -221,8 +273,8 @@
      &                   (inod_new_dbl, expand_nod_comm,                &
      &                    inod_added_import, irank_nod_new_import)
 !
-      type(node_ele_double_number) :: inod_new_dbl
-      type(communication_table) :: expand_nod_comm
+      type(node_ele_double_number), intent(in) :: inod_new_dbl
+      type(communication_table), intent(in) :: expand_nod_comm
       integer(kind = kint), intent(in)                                  &
      &      :: inod_added_import(expand_nod_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
