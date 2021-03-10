@@ -544,34 +544,9 @@
      &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
 !
       call trim_overlapped_sleeve_ext                                   &
-     &   (nprocs, sort_nod_import, ext_nod_trim)
+     &   (expand_nod_comm%ntot_import, exp_import_xx%irank_comm,        &
+     &    sort_nod_import, ext_nod_trim)
 !
-      call trim_internal_import_items                                   &
-     &   (nprocs, expand_nod_comm%ntot_import, exp_import_xx%irank_comm,    &
-     &    sort_nod_import%isorted_to_org, sort_nod_import%irank_orgin_pe,            &
-     &     ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,   &
-     &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted, icou)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',    &
-     &                  ntot_failed_gl
-!
-      call trim_external_import_items                                   &
-     &   (nprocs, expand_nod_comm%ntot_import,                          &
-     &    exp_import_xx%irank_comm, sort_nod_import%isorted_to_org,     &
-     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
-     &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted, icou)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Missing import from external:',    &
-     &                  ntot_failed_gl
-!
-      call trim_orphaned_import_items                                   &
-     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import%isorted_to_org,      &
-     &    ext_nod_trim%ntot_trimmed, ext_nod_trim%istack_trimmed_pe,    &
-     &    ext_nod_trim%istack_trimmed_item, ext_nod_trim%idx_trimmed_to_sorted,     &
-     &          icou)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &      'Missing import from other domain:', ntot_failed_gl
 !
       allocate(ext_nod_trim%idx_extend_to_trimmed(expand_nod_comm%ntot_import))
       ext_nod_trim%idx_extend_to_trimmed(1:expand_nod_comm%ntot_import) = -1
@@ -750,36 +725,8 @@
 !
 !
       call trim_overlapped_sleeve_ext                                   &
-     &   (nprocs, sort_ele_import, ext_ele_trim)
-!
-      call trim_internal_import_items                                   &
-     &  (nprocs, expand_ele_comm%ntot_import, exp_import_ie%irank_comm, &
-     &    sort_ele_import%isorted_to_org, sort_ele_import%irank_orgin_pe,            &
-     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
-     &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
-     &    icou)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',    &
-     &                  ntot_failed_gl
-!
-      call trim_external_import_items                                   &
-     &   (nprocs, expand_ele_comm%ntot_import,                          &
-     &    exp_import_ie%irank_comm, sort_ele_import%isorted_to_org,     &
-     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
-     &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
-     &    icou)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Missing import from external:',    &
-     &                  ntot_failed_gl
-!
-      call trim_orphaned_import_items                                   &
-     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import%isorted_to_org,    &
-     &    ext_ele_trim%ntot_trimmed, ext_ele_trim%istack_trimmed_pe,    &
-     &    ext_ele_trim%istack_trimmed_item, ext_ele_trim%idx_trimmed_to_sorted, &
-     &    icou)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &      'Missing import from other domain:', ntot_failed_gl
+     &   (expand_ele_comm%ntot_import, exp_import_ie%irank_comm,        &
+     &    sort_ele_import, ext_ele_trim)
 !
 !      allocate(ext_ele_trim%idx_extend_to_trimmed(expand_ele_comm%ntot_import))
 !      ext_ele_trim%idx_extend_to_trimmed(1:expand_ele_comm%ntot_import) = -1
