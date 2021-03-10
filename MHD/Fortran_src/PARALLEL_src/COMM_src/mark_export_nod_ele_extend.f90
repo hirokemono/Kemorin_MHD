@@ -95,13 +95,13 @@
           mark_nod%nnod_marked = mark_nod%nnod_marked + 1
         end if
       end do
-      allocate(mark_nod%inod_marked(numnod))
+      allocate(mark_nod%idx_marked(numnod))
 !
       icou = 0
       do inod = 1, numnod
         if(iflag_node(inod) .gt. 0) then
           icou = icou + 1
-          mark_nod%inod_marked(icou) = inod
+          mark_nod%idx_marked(icou) = inod
         end if
       end do
 !

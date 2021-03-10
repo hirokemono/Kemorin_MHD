@@ -39,7 +39,7 @@
 !
       type mark_for_each_comm
         integer(kind = kint) :: nnod_marked = 0
-        integer(kind = kint), allocatable :: inod_marked(:)
+        integer(kind = kint), allocatable :: idx_marked(:)
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
 !
@@ -68,11 +68,11 @@
 !
       mark_comm%nnod_marked = num
 !
-      allocate(mark_comm%inod_marked(mark_comm%nnod_marked))
+      allocate(mark_comm%idx_marked(mark_comm%nnod_marked))
       allocate(mark_comm%dist_marked(mark_comm%nnod_marked))
 !
 !$omp parallel workshare
-      mark_comm%inod_marked(1:mark_comm%nnod_marked) = 0
+      mark_comm%idx_marked(1:mark_comm%nnod_marked) = 0
       mark_comm%dist_marked(1:mark_comm%nnod_marked) = 0.0d0
 !$omp end parallel workshare
 !
@@ -84,7 +84,7 @@
 !
       type(mark_for_each_comm), intent(inout) :: mark_comm
 !
-      deallocate(mark_comm%inod_marked, mark_comm%dist_marked)
+      deallocate(mark_comm%idx_marked, mark_comm%dist_marked)
 !
       end subroutine dealloc_mark_for_each_comm
 !
@@ -291,16 +291,17 @@
           mark_nod%nnod_marked = mark_nod%nnod_marked + 1
         end if
       end do
-      allocate(mark_nod%inod_marked(mark_nod%nnod_marked))
+      allocate(mark_nod%idx_marked(mark_nod%nnod_marked))
       allocate(mark_nod%dist_marked(mark_nod%nnod_marked))
 !
       icou = 0
       do inod = 1, node%numnod
         if(iflag_node(inod) .eq. -1) then
           icou = icou + 1
-          mark_nod%inod_marked(icou) = inod
+          mark_nod%idx_marked(icou) = inod
           mark_nod%dist_marked(icou) = distance(inod)
-!          write(*,*) my_rank, 'mark_nod', inod, mark_nod%inod_marked(icou), mark_nod%dist_marked(icou)
+!          write(*,*) my_rank, 'mark_nod', inod,                       &
+!     &           mark_nod%idx_marked(icou), mark_nod%dist_marked(icou)
         end if
       end do
 !
@@ -310,7 +311,7 @@
           mark_ele%nnod_marked = mark_ele%nnod_marked + 1
         end if
       end do
-      allocate(mark_ele%inod_marked(mark_ele%nnod_marked))
+      allocate(mark_ele%idx_marked(mark_ele%nnod_marked))
       allocate(mark_ele%dist_marked(mark_ele%nnod_marked))
 !
       anum = one / real(ele%nnod_4_ele)
@@ -318,7 +319,7 @@
       do iele = 1, ele%numele
         if(iflag_ele(iele) .eq. 1) then
           icou = icou + 1
-          mark_ele%inod_marked(icou) = iele
+          mark_ele%idx_marked(icou) = iele
           mark_ele%dist_marked(icou) = 0.0d0
           do k1 = 1, ele%nnod_4_ele
             inod = ele%ie(iele,k1)

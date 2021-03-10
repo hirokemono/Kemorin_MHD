@@ -428,7 +428,7 @@
 !
 !
         do inum = 1, mark_ele(i)%nnod_marked
-          iele = mark_ele(i)%inod_marked(inum)
+          iele = mark_ele(i)%idx_marked(inum)
           kcou = 0
           do k1 = 1, org_ele%nnod_4_ele
             inod = org_ele%ie(iele,k1)
@@ -1214,7 +1214,7 @@
         end do
         icou = 0
         do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
+          inod = mark_nod(i)%idx_marked(inum)
           if(inod_in_comm(inod) .gt. 0) icou = icou + 1
         end do
 !

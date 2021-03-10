@@ -235,7 +235,7 @@
 !
         np_new_export(i) = 0
         do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
+          inod = mark_nod(i)%idx_marked(inum)
           irank = inod_dbl%irank(inod)
           if(iflag_send_pe(irank+1) .eq. 0) then
             np_new_export(i) = np_new_export(i) + 1
@@ -278,7 +278,7 @@
 !
         icou = istack_pe_new_export(i-1)
         do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
+          inod = mark_nod(i)%idx_marked(inum)
           irank = inod_dbl%irank(inod)
           if(iflag_send_pe(irank+1) .eq. 0) then
             icou = icou + 1

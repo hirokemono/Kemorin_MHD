@@ -116,7 +116,7 @@
 !
         icou = istack_new_nod_export(i-1)
         do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%inod_marked(inum)
+          inod = mark_nod(i)%idx_marked(inum)
           if(inod_in_comm(inod) .lt. 0) cycle
 
           icou = icou + 1
@@ -134,7 +134,7 @@
 !$omp parallel do private(inum,icou,iele,k1,inod)
         do inum = 1, mark_ele(i)%nnod_marked
           icou = ist + inum
-          iele = mark_ele(i)%inod_marked(inum)
+          iele = mark_ele(i)%idx_marked(inum)
           exp_export_ie%iele_gl_comm(icou) = ele%iele_global(iele)
           exp_export_ie%irank_comm(icou) = iele_dbl%irank(iele)
           iele_lc_new_export(icou) =   iele_dbl%index(iele)

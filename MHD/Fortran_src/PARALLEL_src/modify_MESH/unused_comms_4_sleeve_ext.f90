@@ -230,7 +230,7 @@
 !$omp parallel do private(inum,icou,iele,k1,inod)
         do inum = 1, mark_ele(i)%nnod_marked
           icou = ist + inum
-          iele = mark_ele(i)%inod_marked(inum)
+          iele = mark_ele(i)%idx_marked(inum)
           item_new_ele_export(icou) = iele
 !
           do k1 = 1, ele%nnod_4_ele

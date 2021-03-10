@@ -115,8 +115,8 @@
       do i = 1, nod_comm%num_neib
         call copy_node_to_extend_buffer                                 &
      &    (added_comm%istack_export(i-1), org_node, dbl_idx,            &
-     &     mark_nod(i)%nnod_marked, mark_nod(i)%inod_marked, send_nbuf)
-        deallocate(mark_nod(i)%inod_marked)
+     &     mark_nod(i)%nnod_marked, mark_nod(i)%idx_marked, send_nbuf)
+        deallocate(mark_nod(i)%idx_marked)
       end do
 !
       deallocate(mark_nod)
