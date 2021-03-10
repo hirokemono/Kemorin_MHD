@@ -8,6 +8,8 @@ check_data_for_repartition.o: $(MODIFY_PARA_MESHDIR)/check_data_for_repartition.
 	$(F90) -c $(F90OPTFLAGS) $<
 check_slv_ext_local_node_id.o: $(MODIFY_PARA_MESHDIR)/check_slv_ext_local_node_id.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_para_double_numbering.o t_mesh_for_sleeve_extend.o t_trim_overlapped_import.o t_mark_node_ele_to_extend.o m_solver_SR.o reverse_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
+checks_for_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/checks_for_sleeve_extend.f90 m_precision.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_mesh_for_sleeve_extend.o calypso_mpi.o m_solver_SR.o calypso_mpi_int.o reverse_SR_int.o
+	$(F90) -c $(F90OPTFLAGS) $<
 const_comm_tbl_to_new_mesh.o: $(MODIFY_PARA_MESHDIR)/const_comm_tbl_to_new_mesh.f90 m_precision.o m_constants.o calypso_mpi.o t_group_data.o t_calypso_comm_table.o set_comm_tbl_to_new_part.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_extended_neib_domain.o: $(MODIFY_PARA_MESHDIR)/const_extended_neib_domain.f90 m_precision.o t_comm_table.o t_para_double_numbering.o t_mark_node_ele_to_extend.o calypso_mpi.o m_solver_SR.o reverse_SR_int.o cal_minmax_and_stacks.o mark_export_nod_ele_extend.o
@@ -98,7 +100,7 @@ t_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/t_repartition_by_volume.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 t_sorting_for_repartition.o: $(MODIFY_PARA_MESHDIR)/t_sorting_for_repartition.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_para_double_numbering.o t_repart_double_numberings.o sort_for_repartition.o calypso_SR_type.o select_copy_from_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_trim_overlapped_import.o: $(MODIFY_PARA_MESHDIR)/t_trim_overlapped_import.f90 m_precision.o t_mesh_for_sleeve_extend.o trim_redundant_import_item.o
+t_trim_overlapped_import.o: $(MODIFY_PARA_MESHDIR)/t_trim_overlapped_import.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_for_sleeve_extend.o calypso_mpi_int.o trim_redundant_import_item.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o
 	$(F90) -c $(F90OPTFLAGS) $<

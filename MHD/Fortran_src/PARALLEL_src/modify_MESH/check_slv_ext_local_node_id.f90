@@ -157,6 +157,8 @@
       type(sort_data_for_sleeve_trim), intent(in) :: sort_nod_import
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
+      integer(kind = kint), intent(in) :: idx_trimmed_to_sorted(:)
+!
       integer(kind = kint), intent(in)                                  &
      &      :: item_new_import(expand_nod_comm%ntot_import)
 !

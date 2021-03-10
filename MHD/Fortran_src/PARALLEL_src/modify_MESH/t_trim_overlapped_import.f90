@@ -8,17 +8,29 @@
 !!
 !!@verbatim
 !!      subroutine alloc_stack_to_trim_extend                           &
-!!      subroutine alloc_idx_trimed_to_sorted(ext_trim)
-!!      subroutine alloc_idx_extend_to_trimmed(ntot_w_overlap, ext_trim)
 !!     &         (nprocs, ntot_trimmed, ext_trim)
+!!      subroutine alloc_idx_trimed_to_sorted(ext_trim)
 !!        integer, intent(in) :: nprocs
 !!        integer(kind = kint), intent(in) :: ntot_trimmed
 !!        integer(kind = kint), intent(in) :: ntot_w_overlap
 !!        type(data_for_trim_import), intent(inout) :: ext_trim
 !!      subroutine dealloc_stack_to_trim_extend(ext_trim)
 !!      subroutine dealloc_idx_trimed_to_sorted(ext_trim)
-!!      subroutine dealloc_idx_extend_to_trimmed(ext_trim)
 !!        type(data_for_trim_import), intent(inout) :: ext_trim
+!!
+!!      subroutine trim_overlapped_sleeve_ext(ntot_new_import,          &
+!!     &          irank_nod_new_import, sort_import, ext_trim)
+!!        integer(kind = kint), intent(in) :: ntot_new_import
+!!        integer(kind = kint), intent(in)                              &
+!!     &                    :: irank_nod_new_import(ntot_new_import)
+!!        type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+!!        type(data_for_trim_import), intent(inout) :: ext_trim
+!!      subroutine check_overlapped_sleeve_ext                          &
+!!     &         (nod_comm, add_ele_comm, sort_import, ext_trim)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: add_ele_comm
+!!        type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+!!        type(data_for_trim_import), intent(in) :: ext_trim
 !!@endverbatim
 !
       module t_trim_overlapped_import
@@ -35,7 +47,6 @@
         integer(kind = kint), allocatable :: istack_trimmed_item(:)
 !
         integer(kind = kint), allocatable :: idx_trimmed_to_sorted(:)
-        integer(kind = kint), allocatable :: idx_extend_to_trimmed(:)
       end type data_for_trim_import
 !
 ! ----------------------------------------------------------------------
@@ -84,25 +95,6 @@
       end subroutine alloc_idx_trimed_to_sorted
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine alloc_idx_extend_to_trimmed(ntot_w_overlap, ext_trim)
-!
-      integer(kind = kint), intent(in) :: ntot_w_overlap
-      type(data_for_trim_import), intent(inout) :: ext_trim
-!
-!
-      ext_trim%ntot_w_overlap = ntot_w_overlap
-      allocate(ext_trim%idx_extend_to_trimmed(ext_trim%ntot_w_overlap))
-!
-      if(ext_trim%ntot_w_overlap .gt. 0) then
-!$omp parallel workshare
-        ext_trim%idx_extend_to_trimmed(1:ext_trim%ntot_w_overlap) = -1
-!$omp end parallel workshare
-      end if
-!
-      end subroutine alloc_idx_extend_to_trimmed
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_stack_to_trim_extend(ext_trim)
@@ -125,20 +117,10 @@
       end subroutine dealloc_idx_trimed_to_sorted
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine dealloc_idx_extend_to_trimmed(ext_trim)
-!
-      type(data_for_trim_import), intent(inout) :: ext_trim
-!
-      deallocate(ext_trim%idx_extend_to_trimmed)
-!
-      end subroutine dealloc_idx_extend_to_trimmed
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine trim_overlapped_sleeve_ext                             &
-     &         (ntot_new_import, irank_nod_new_import, sort_import, ext_trim)
+      subroutine trim_overlapped_sleeve_ext(ntot_new_import,            &
+     &          irank_nod_new_import, sort_import, ext_trim)
 !
       use calypso_mpi
       use t_mesh_for_sleeve_extend
@@ -209,6 +191,37 @@
       end if
 !
       end subroutine trim_overlapped_sleeve_ext
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_overlapped_sleeve_ext                            &
+     &         (nod_comm, add_comm, sort_import, ext_trim)
+!
+      use calypso_mpi
+      use t_comm_table
+      use t_mesh_for_sleeve_extend
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: add_comm
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+      type(data_for_trim_import), intent(in) :: ext_trim
+!
+      integer(kind = kint) :: ip
+!
+        write(*,*) my_rank, 'org_neib', nod_comm%id_neib
+        write(*,*) my_rank, 'new_neib', add_comm%id_neib
+        write(*,*) my_rank, 'Totals', nod_comm%ntot_import,             &
+     &                      sum(sort_import%num_sorted_by_pe),          &
+     &                      ext_trim%ntot_trimmed
+        do ip = 1, nprocs
+          write(*,*) my_rank, ' to ', ip-1,                             &
+      &             ' sort_import%num_sorted_by_pe ',                   &
+      &              sort_import%num_sorted_by_pe(ip),                  &
+      &              ext_trim%istack_trimmed_pe(ip)
+        end do
+        write(*,*) my_rank, 'add_comm%num_neib', add_comm%num_neib
+!
+      end subroutine check_overlapped_sleeve_ext
 !
 ! ----------------------------------------------------------------------
 !
