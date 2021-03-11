@@ -7,24 +7,17 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
-!!      subroutine alloc_stack_to_trim_extend                           &
-!!     &         (nprocs, ntot_trimmed, ext_trim)
-!!      subroutine alloc_idx_trimed_to_sorted(ext_trim)
-!!        integer, intent(in) :: nprocs
-!!        integer(kind = kint), intent(in) :: ntot_trimmed
-!!        integer(kind = kint), intent(in) :: ntot_w_overlap
-!!        type(data_for_trim_import), intent(inout) :: ext_trim
-!!      subroutine dealloc_stack_to_trim_extend(ext_trim)
-!!      subroutine dealloc_idx_trimed_to_sorted(ext_trim)
-!!        type(data_for_trim_import), intent(inout) :: ext_trim
-!!
 !!      subroutine trim_overlapped_sleeve_ext(ntot_new_import,          &
 !!     &          irank_nod_new_import, sort_import, ext_trim)
+!!      subroutine dealloc_stack_to_trim_extend(ext_trim)
+!!      subroutine dealloc_idx_trimed_to_sorted(ext_trim)
 !!        integer(kind = kint), intent(in) :: ntot_new_import
 !!        integer(kind = kint), intent(in)                              &
 !!     &                    :: irank_nod_new_import(ntot_new_import)
 !!        type(sort_data_for_sleeve_trim), intent(in) :: sort_import
 !!        type(data_for_trim_import), intent(inout) :: ext_trim
+!!        type(data_for_trim_import), intent(inout) :: ext_trim
+!!
 !!      subroutine check_overlapped_sleeve_ext                          &
 !!     &         (nod_comm, add_ele_comm, sort_import, ext_trim)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -42,81 +35,18 @@
 !
       type data_for_trim_import
         integer(kind = kint) :: ntot_trimmed
-        integer(kind = kint) :: ntot_w_overlap
         integer(kind = kint), allocatable :: istack_trimmed_pe(:)
         integer(kind = kint), allocatable :: istack_trimmed_item(:)
 !
         integer(kind = kint), allocatable :: idx_trimmed_to_sorted(:)
       end type data_for_trim_import
 !
+      private :: alloc_stack_to_trim_extend, alloc_idx_trimed_to_sorted
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_stack_to_trim_extend                             &
-     &         (nprocs, ntot_trimmed, ext_trim)
-!
-      integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: ntot_trimmed
-      type(data_for_trim_import), intent(inout) :: ext_trim
-!
-!
-      ext_trim%ntot_trimmed = ntot_trimmed
-!
-      allocate(ext_trim%istack_trimmed_pe(0:nprocs))
-      allocate(ext_trim%istack_trimmed_item(0:ext_trim%ntot_trimmed))
-!
-!$omp parallel workshare
-      ext_trim%istack_trimmed_pe(0:nprocs) = 0
-!$omp end parallel workshare
-!$omp parallel workshare
-      ext_trim%istack_trimmed_pe(0:ext_trim%ntot_trimmed) = 0
-!$omp end parallel workshare
-!
-      end subroutine alloc_stack_to_trim_extend
-!
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_idx_trimed_to_sorted(ext_trim)
-!
-      type(data_for_trim_import), intent(inout) :: ext_trim
-!
-!
-      allocate(ext_trim%idx_trimmed_to_sorted(ext_trim%ntot_trimmed))
-!
-      if(ext_trim%ntot_trimmed .gt. 0) then
-!$omp parallel workshare
-        ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = -1
-!$omp end parallel workshare
-      end if
-!
-      end subroutine alloc_idx_trimed_to_sorted
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_stack_to_trim_extend(ext_trim)
-!
-      type(data_for_trim_import), intent(inout) :: ext_trim
-!
-      deallocate(ext_trim%istack_trimmed_pe)
-      deallocate(ext_trim%istack_trimmed_item)
-!
-      end subroutine dealloc_stack_to_trim_extend
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_idx_trimed_to_sorted(ext_trim)
-!
-      type(data_for_trim_import), intent(inout) :: ext_trim
-!
-      deallocate(ext_trim%idx_trimmed_to_sorted)
-!
-      end subroutine dealloc_idx_trimed_to_sorted
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine trim_overlapped_sleeve_ext(ntot_new_import,            &
@@ -140,19 +70,13 @@
 !
       ext_trim%ntot_trimmed                                             &
      &     = count_ntot_trimmed_import(nprocs, sort_import)
-!
-      allocate(ext_trim%istack_trimmed_pe(0:nprocs))
-      allocate(ext_trim%istack_trimmed_item(0:ext_trim%ntot_trimmed))
-      ext_trim%istack_trimmed_pe(:) = 0
-      ext_trim%istack_trimmed_item(:) = 0
+      call alloc_stack_to_trim_extend(nprocs, ext_trim)
 !
       call count_trimmed_import_stack(nprocs, sort_import,              &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item)
 !
-      allocate(ext_trim%idx_trimmed_to_sorted(ext_trim%ntot_trimmed))
-      ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = -1
-!
+      call alloc_idx_trimed_to_sorted(ext_trim)
       call trim_internal_import_items                                   &
      &  (nprocs, ntot_new_import, irank_nod_new_import,                 &
      &    sort_import%isorted_to_org, sort_import%irank_orgin_pe,       &
@@ -194,6 +118,28 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine dealloc_stack_to_trim_extend(ext_trim)
+!
+      type(data_for_trim_import), intent(inout) :: ext_trim
+!
+      deallocate(ext_trim%istack_trimmed_pe)
+      deallocate(ext_trim%istack_trimmed_item)
+!
+      end subroutine dealloc_stack_to_trim_extend
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_idx_trimed_to_sorted(ext_trim)
+!
+      type(data_for_trim_import), intent(inout) :: ext_trim
+!
+      deallocate(ext_trim%idx_trimmed_to_sorted)
+!
+      end subroutine dealloc_idx_trimed_to_sorted
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
       subroutine check_overlapped_sleeve_ext                            &
      &         (nod_comm, add_comm, sort_import, ext_trim)
 !
@@ -222,6 +168,44 @@
         write(*,*) my_rank, 'add_comm%num_neib', add_comm%num_neib
 !
       end subroutine check_overlapped_sleeve_ext
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_stack_to_trim_extend(nprocs, ext_trim)
+!
+      integer, intent(in) :: nprocs
+      type(data_for_trim_import), intent(inout) :: ext_trim
+!
+!
+      allocate(ext_trim%istack_trimmed_pe(0:nprocs))
+      allocate(ext_trim%istack_trimmed_item(0:ext_trim%ntot_trimmed))
+!
+!$omp parallel workshare
+      ext_trim%istack_trimmed_pe(0:nprocs) = 0
+!$omp end parallel workshare
+!$omp parallel workshare
+      ext_trim%istack_trimmed_item(0:ext_trim%ntot_trimmed) = 0
+!$omp end parallel workshare
+!
+      end subroutine alloc_stack_to_trim_extend
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_idx_trimed_to_sorted(ext_trim)
+!
+      type(data_for_trim_import), intent(inout) :: ext_trim
+!
+!
+      allocate(ext_trim%idx_trimmed_to_sorted(ext_trim%ntot_trimmed))
+!
+      if(ext_trim%ntot_trimmed .gt. 0) then
+!$omp parallel workshare
+        ext_trim%idx_trimmed_to_sorted(1:ext_trim%ntot_trimmed) = -1
+!$omp end parallel workshare
+      end if
+!
+      end subroutine alloc_idx_trimed_to_sorted
 !
 ! ----------------------------------------------------------------------
 !

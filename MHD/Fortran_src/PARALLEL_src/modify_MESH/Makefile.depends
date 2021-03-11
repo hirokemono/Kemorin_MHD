@@ -10,7 +10,7 @@ check_sleeve_extend_mesh.o: $(MODIFY_PARA_MESHDIR)/check_sleeve_extend_mesh.f90 
 	$(F90) -c $(F90OPTFLAGS) $<
 check_slv_ext_local_node_id.o: $(MODIFY_PARA_MESHDIR)/check_slv_ext_local_node_id.f90 m_precision.o calypso_mpi.o t_geometry_data.o t_comm_table.o t_para_double_numbering.o t_mesh_for_sleeve_extend.o t_trim_overlapped_import.o t_mark_node_ele_to_extend.o m_solver_SR.o reverse_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
-checks_for_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/checks_for_sleeve_extend.f90 m_precision.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_mesh_for_sleeve_extend.o calypso_mpi.o calypso_mpi_int.o m_solver_SR.o reverse_SR_int.o
+checks_for_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/checks_for_sleeve_extend.f90 m_precision.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_mesh_for_sleeve_extend.o t_trim_overlapped_import.o calypso_mpi.o calypso_mpi_int.o m_solver_SR.o reverse_SR_int.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_comm_tbl_to_new_mesh.o: $(MODIFY_PARA_MESHDIR)/const_comm_tbl_to_new_mesh.f90 m_precision.o m_constants.o calypso_mpi.o t_group_data.o t_calypso_comm_table.o set_comm_tbl_to_new_part.o calypso_mpi_int.o
 	$(F90) -c $(F90OPTFLAGS) $<

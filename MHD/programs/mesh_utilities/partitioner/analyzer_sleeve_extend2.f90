@@ -419,6 +419,8 @@
     &      (org_node, org_ele, mark_ele(i), iflag_node, icou, jcou)
       end do
       deallocate(vect_tmp)
+      deallocate(iflag_node, iflag_ele)
+      deallocate(distance)
 !
 !
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
@@ -601,9 +603,9 @@
      &    trim_import_xx, inod_lc_new_import_trim, new_node, dbl_id2)
 !
 !
-      call check_appended_node_data                               &
+      call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
-     &    ext_nod_trim, trim_import_xx, dbl_id2,      &
+     &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
      &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
       deallocate(inod_lc_new_import_trim)
 !
@@ -644,11 +646,10 @@
       add_ele_comm%num_neib = add_nod_comm%num_neib
       call alloc_comm_table_num(add_ele_comm)
 !
-!$omp parallel do private(i)
-      do i = 1, add_ele_comm%num_neib
-        add_ele_comm%id_neib(i) = add_nod_comm%id_neib(i)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      add_ele_comm%id_neib(1:add_ele_comm%num_neib)                     &
+     &             = add_nod_comm%id_neib(1:add_ele_comm%num_neib)
+!$omp end parallel workshare
 !
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import)
