@@ -176,6 +176,7 @@
       use copy_mesh_structures
       use set_nnod_4_ele_by_type
       use mark_export_nod_ele_extend
+      use check_sleeve_extend_mesh
 !
       use extended_groups
 !
@@ -376,10 +377,7 @@
 !
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
-      integer(kind = kint) :: inum, inod, i, ip, ist, ied, jp, num
-      integer(kind = kint) :: iele, k1, icou, jcou, kcou
-      integer(kind = kint) :: jnum, jst, jed, irank, ntot, jnod
-      integer(kind = kint) :: kdx
+      integer(kind = kint) :: i, icou, jcou, ntot
 !
       type(communication_table) :: add_nod_comm
       type(communication_table) :: add_ele_comm
@@ -690,16 +688,9 @@
      &   (nprocs, ext_ele_trim%istack_trimmed_pe,                       &
      &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%num_import)
-!
-      add_ele_comm%istack_import(0) = 0
-      do i = 1, add_ele_comm%num_neib
-        irank = add_ele_comm%id_neib(i)
-        add_ele_comm%istack_import(i) = add_ele_comm%istack_import(i-1) &
-     &                                 + add_ele_comm%num_import(i)
-      end do
-      add_ele_comm%ntot_import                                          &
-     &       = add_ele_comm%istack_import(add_ele_comm%num_neib)
-      write(*,*) my_rank, 'add_ele_comm%ntot_import', add_ele_comm%ntot_import
+      call s_cal_total_and_stacks                                       &
+     &   (add_ele_comm%num_neib, add_ele_comm%num_import, izero,        &
+     &    add_ele_comm%istack_import, add_ele_comm%ntot_import)
       call alloc_import_item(add_ele_comm)
 !
       allocate(iele_lc_import_trim(add_ele_comm%ntot_import))
@@ -748,217 +739,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_extended_element                                 &
-     &         (new_nod_comm, new_node, new_ele, new_ele_comm)
-!
-      use t_next_node_ele_4_node
-      use t_para_double_numbering
-!
-      use m_solver_SR
-      use calypso_mpi_int
-      use reverse_SR_int
-      use reverse_SR_int8
-      use reverse_SR_real
-      use solver_SR_type
-!
-      use quicksort
-      use extend_comm_table_SR
-      use mark_export_nod_ele_extend
-      use cal_minmax_and_stacks
-      use find_extended_node_and_ele
-      use find_extended_comm_table
-      use extend_comm_table
-!
-      type(communication_table), intent(inout) :: new_nod_comm
-      type(node_data), intent(inout) :: new_node
-      type(element_data), intent(inout) :: new_ele
-      type(communication_table), intent(inout) :: new_ele_comm
-!
-      type(node_ele_double_number), save :: inod_dbl
-      type(node_ele_double_number), save :: iele_dbl
-!
-      integer(kind = kint), allocatable :: inod_lc_test(:,:)
-      integer(kind = kint), allocatable :: irank_lc_test(:,:)
-!
-      integer(kind = kint) inod, iele, k1
-      integer(kind = kint) icou, jcou, kcou, lcou
-!
-!
-      call alloc_double_numbering(new_node%numnod, inod_dbl)
-      if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
-      call set_node_double_numbering(new_node, new_nod_comm, inod_dbl)
-!
-      allocate(inod_lc_test(new_ele%numele,new_ele%nnod_4_ele))
-      allocate(irank_lc_test(new_ele%numele,new_ele%nnod_4_ele))
-!
-      icou = 0
-      jcou = 0
-      lcou = 0
-      do iele = 1, new_ele%numele
-        kcou = 0
-        do k1 = 1, new_ele%nnod_4_ele
-          if(new_ele%ie(iele,k1) .le. 0                                 &
-     &         .or. new_ele%ie(iele,k1) .gt. new_node%numnod)           &
-     &          kcou = kcou + 1
-        end do
-        if(kcou .gt. 0) then
-          jcou = jcou + 1
-          write(50+my_rank,*) new_node%numnod, iele,    &
-     &         'Failed conectivity:', new_ele%ie(iele,:)
-        end if
-        if(kcou .eq. new_ele%nnod_4_ele) lcou = lcou + 1
-        icou = icou + kcou
-      end do
-      write(*,*) my_rank, 'Failed Node ID:', icou, lcou, jcou
-      call calypso_mpi_barrier
-!
-      do k1 = 1, new_ele%nnod_4_ele
-        do iele = 1, new_ele%numele
-          if(new_ele%ie(iele,1) .le. new_node%internal_node) then
-            inod = new_ele%ie(iele,k1)
-            inod_lc_test(iele,k1) =  inod_dbl%index(inod)
-            irank_lc_test(iele,k1) = inod_dbl%irank(inod)
-          end if
-        end do
-      end do
-!
-      do k1 = 1, new_ele%nnod_4_ele
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, inod_lc_test(1,k1))
-      end do
-      do k1 = 1, new_ele%nnod_4_ele
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, irank_lc_test(1,k1))
-      end do
-!
-      icou = 0
-      jcou = 0
-      lcou = 0
-      do iele = 1, new_ele%numele
-        kcou = 0
-        do k1 = 1, new_ele%nnod_4_ele
-          inod = new_ele%ie(iele,k1)
-          if(inod_lc_test(iele,k1) .ne. inod_dbl%index(inod)            &
-     &      .or. irank_lc_test(iele,k1) .ne. inod_dbl%irank(inod))      &
-     &          kcou = kcou + 1
-        end do
-        if(kcou .gt. 0) jcou = jcou + 1
-        if(kcou .eq. new_ele%nnod_4_ele) lcou = lcou + 1
-        icou = icou + kcou
-      end do
-      write(*,*) my_rank, 'Failed connectivity ID:', icou, lcou, jcou
-!
-      end subroutine check_extended_element
-!
-!  ---------------------------------------------------------------------
-!
       end module analyzer_sleeve_extend2
-!
-!
-!
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_export_4_expanded_mesh                           &
-     &         (nod_comm, node, mark_nod, mark_ele,                     &
-     &          num_new_export, num_new_ele_export)
-!
-      use m_precision
-      use t_comm_table
-      use t_geometry_data
-      use mark_export_nod_ele_extend
-!
-      implicit none
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_nod(nod_comm%num_neib)
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_ele(nod_comm%num_neib)
-!
-      integer(kind = kint), intent(inout)                               &
-     &            :: num_new_export(nod_comm%num_neib)
-      integer(kind = kint), intent(inout)                               &
-     &            :: num_new_ele_export(nod_comm%num_neib)
-!
-      integer(kind = kint), allocatable :: inod_in_comm(:)
-      integer(kind = kint) :: i, ist, num, inod, inum, icou
-!
-!
-      allocate(inod_in_comm(node%numnod))
-!
-      do i = 1, nod_comm%num_neib
-!$omp parallel workshare
-        inod_in_comm(1:node%numnod) = 0
-!$omp end parallel workshare
-        ist = nod_comm%istack_export(i-1)
-        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-        do inum = 1, num
-          inod = nod_comm%item_export(inum+ist)
-          inod_in_comm(inod) = inod
-        end do
-        icou = 0
-        do inum = 1, mark_nod(i)%nnod_marked
-          inod = mark_nod(i)%idx_marked(inum)
-          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
-        end do
-!
-!        write(*,*) my_rank, nod_comm%id_neib(i),                       &
-!     &           'marked import node', icou, num
-        num_new_export(i) =     mark_nod(i)%nnod_marked - icou
-        num_new_ele_export(i) = mark_ele(i)%nnod_marked
-      end do
-!
-      deallocate(inod_in_comm)
-!
-      end subroutine count_export_4_expanded_mesh
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine find_original_import_address                           &
-     &         (node, expand_nod_comm, add_nod_comm, ext_nod_trim,      &
-     &          idx_nod_extend_to_trimmed, inod_added_import)
-!
-      use m_precision
-      use t_comm_table
-      use t_geometry_data
-      use t_trim_overlapped_import
-!
-      implicit none
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(communication_table), intent(in) :: add_nod_comm
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-      integer(kind = kint), intent(in)                                  &
-     &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: inod_added_import(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint) :: i, irank, ist, jst, inod, isort
-      integer(kind = kint) :: inum, jnum
-!
-!
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
-        ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-          inod = inum + jst + node%numnod
-          inod_added_import(jnum) = inod
-        end do
-      end do
-!
-      do jnum = 1, expand_nod_comm%ntot_import
-        if(inod_added_import(jnum) .eq. 0) then
-          isort = idx_nod_extend_to_trimmed(jnum)
-          inod_added_import(jnum) = inod_added_import(isort)
-        end if
-      end do
-!
-      end subroutine find_original_import_address
-!
-!  ---------------------------------------------------------------------

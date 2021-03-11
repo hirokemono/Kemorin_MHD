@@ -7,6 +7,20 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
+!!      subroutine count_export_4_expanded_mesh                         &
+!!     &         (nod_comm, node, mark_nod, mark_ele,                   &
+!!     &          num_new_export, num_new_ele_export)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(mark_for_each_comm), intent(in)                          &
+!!     &                         :: mark_nod(nod_comm%num_neib)
+!!        type(mark_for_each_comm), intent(in)                          &
+!!     &                         :: mark_ele(nod_comm%num_neib)
+!!        integer(kind = kint), intent(inout)                           &
+!!     &            :: num_new_export(nod_comm%num_neib)
+!!        integer(kind = kint), intent(inout)                           &
+!!     &            :: num_new_ele_export(nod_comm%num_neib)
+!
 !!      subroutine set_export_4_expanded_mesh(nod_comm, node, ele,      &
 !!     &          inod_dbl, iele_dbl, mark_nod, mark_ele,               &
 !!     &          ntot_new_nod_export, istack_new_nod_export,           &
@@ -62,6 +76,56 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine count_export_4_expanded_mesh                           &
+     &         (nod_comm, node, mark_nod, mark_ele,                     &
+     &          num_new_export, num_new_ele_export)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_nod(nod_comm%num_neib)
+      type(mark_for_each_comm), intent(in)                              &
+     &                         :: mark_ele(nod_comm%num_neib)
+!
+      integer(kind = kint), intent(inout)                               &
+     &            :: num_new_export(nod_comm%num_neib)
+      integer(kind = kint), intent(inout)                               &
+     &            :: num_new_ele_export(nod_comm%num_neib)
+!
+      integer(kind = kint), allocatable :: inod_in_comm(:)
+      integer(kind = kint) :: i, ist, num, inod, inum, icou
+!
+!
+      allocate(inod_in_comm(node%numnod))
+!
+      do i = 1, nod_comm%num_neib
+!$omp parallel workshare
+        inod_in_comm(1:node%numnod) = 0
+!$omp end parallel workshare
+        ist = nod_comm%istack_export(i-1)
+        num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+        do inum = 1, num
+          inod = nod_comm%item_export(inum+ist)
+          inod_in_comm(inod) = inod
+        end do
+        icou = 0
+        do inum = 1, mark_nod(i)%nnod_marked
+          inod = mark_nod(i)%idx_marked(inum)
+          if(inod_in_comm(inod) .gt. 0) icou = icou + 1
+        end do
+!
+!        write(*,*) my_rank, nod_comm%id_neib(i),                       &
+!     &           'marked import node', icou, num
+        num_new_export(i) =     mark_nod(i)%nnod_marked - icou
+        num_new_ele_export(i) = mark_ele(i)%nnod_marked
+      end do
+!
+      deallocate(inod_in_comm)
+!
+      end subroutine count_export_4_expanded_mesh
 !
 !  ---------------------------------------------------------------------
 !
