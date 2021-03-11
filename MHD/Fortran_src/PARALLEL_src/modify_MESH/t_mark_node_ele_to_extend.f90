@@ -129,31 +129,9 @@
       end do
 !$omp end parallel do
 !
-      do inum = 1, each_comm%num_each_import
-        inod = each_comm%item_each_import(inum)
-        jst = neib_ele%istack_4_node(inod-1) + 1
-        jed = neib_ele%istack_4_node(inod)
-        do jnum = jst, jed
-          jele = neib_ele%iele_4_node(jnum)
-          if(iflag_ele(jele) .gt. 0) cycle
-!
-          iflag_ele(jele) = 2
-          do k1 = 1, ele%nnod_4_ele
-            jnod = ele%ie(jele,k1)
-            if(iflag_node(jnod) .eq. -2) cycle
-!
-            iflag_node(jnod) = 1
-            dist = distance_select(sleeve_exp_p, inod, jnod,           &
-     &                             node, d_vec)
-            if(distance(jnod) .eq. 0.0d0) then
-              distance(jnod) = dist + distance(inod)
-            else
-              distance(jnod)                                           &
-     &                     = min(dist+distance(inod), distance(jnod))
-            end if
-          end do
-        end do
-      end do
+      call cal_min_dist_from_last_import                                &
+     &   (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,          &
+     &    iflag_ele, iflag_node, distance)
 !
 !$omp parallel do private(inum,inod)
       do inum = 1, each_comm%num_each_export
@@ -163,32 +141,9 @@
 !$omp end parallel do
 !
       do idummy = 2, 100
-        do inum = 1, each_comm%num_each_export
-          inod = each_comm%item_each_export(inum)
-          jst = neib_ele%istack_4_node(inod-1) + 1
-          jed = neib_ele%istack_4_node(inod)
-          do jnum = jst, jed
-            jele = neib_ele%iele_4_node(jnum)
-            if(iflag_ele(jele) .gt. 0) cycle
-!
-            iflag_ele(jele) = 1
-            do k1 = 1, ele%nnod_4_ele
-              jnod = ele%ie(jele,k1)
-              if(iflag_node(jnod) .ge. 0) then
-!
-                dist = distance_select(sleeve_exp_p, inod, jnod,        &
-     &                                 node, d_vec)
-                if(iflag_node(jnod) .eq. 0) then
-                  iflag_node(jnod) = 1
-                  distance(jnod) = dist + distance(inod)
-                else
-                  distance(jnod)                                        &
-     &                   = min(dist+distance(inod), distance(jnod))
-                end if
-              end if
-            end do
-          end do
-        end do
+        call cal_min_dist_from_last_export                              &
+     &     (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,        &
+     &      iflag_ele, iflag_node, distance)
 !
         jcou = 0
         do inod = 1, node%numnod
@@ -207,14 +162,11 @@
       end do
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
-      mark_nod%nnod_marked = 0
+      icou = 0
       do inod = 1, node%numnod
-        if(iflag_node(inod) .eq. -1) then
-          mark_nod%nnod_marked = mark_nod%nnod_marked + 1
-        end if
+        if(iflag_node(inod) .eq. -1) icou = icou + 1
       end do
-      allocate(mark_nod%idx_marked(mark_nod%nnod_marked))
-      allocate(mark_nod%dist_marked(mark_nod%nnod_marked))
+      call alloc_mark_for_each_comm(icou, mark_nod)
 !
       icou = 0
       do inod = 1, node%numnod
@@ -227,14 +179,11 @@
         end if
       end do
 !
-      mark_ele%nnod_marked = 0
+      icou = 0
       do iele = 1, ele%numele
-        if(iflag_ele(iele) .eq. 1) then
-          mark_ele%nnod_marked = mark_ele%nnod_marked + 1
-        end if
+        if(iflag_ele(iele) .eq. 1) icou = icou + 1
       end do
-      allocate(mark_ele%idx_marked(mark_ele%nnod_marked))
-      allocate(mark_ele%dist_marked(mark_ele%nnod_marked))
+      call alloc_mark_for_each_comm(icou, mark_ele)
 !
       anum = one / real(ele%nnod_4_ele)
       icou = 0
@@ -256,6 +205,7 @@
 !
       end subroutine s_mark_node_ele_to_extend
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine check_missing_connect_to_extend                        &
@@ -286,6 +236,110 @@
       end do
 !
       end subroutine check_missing_connect_to_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_min_dist_from_last_import                          &
+     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,    &
+     &          iflag_ele, iflag_node, distance)
+!
+      use t_ctl_param_sleeve_extend
+      use t_comm_table_for_each_pe
+      use t_next_node_ele_4_node
+!
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(element_around_node), intent(in) :: neib_ele
+      type(comm_table_for_each_pe), intent(in) :: each_comm
+      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+!
+      integer(kind = kint), intent(inout) :: iflag_ele(ele%numele)
+      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
+      real(kind = kreal), intent(inout) :: distance(node%numnod)
+!
+      integer(kind = kint) :: inum, inod
+      integer(kind = kint) :: jst, jed, jnum, jnod, jele, k1
+      real(kind = kreal) :: dist
+!
+      do inum = 1, each_comm%num_each_import
+        inod = each_comm%item_each_import(inum)
+        jst = neib_ele%istack_4_node(inod-1) + 1
+        jed = neib_ele%istack_4_node(inod)
+        do jnum = jst, jed
+          jele = neib_ele%iele_4_node(jnum)
+          if(iflag_ele(jele) .gt. 0) cycle
+!
+          iflag_ele(jele) = 2
+          do k1 = 1, ele%nnod_4_ele
+            jnod = ele%ie(jele,k1)
+            if(iflag_node(jnod) .eq. -2) cycle
+!
+            iflag_node(jnod) = 1
+            dist = distance_select(sleeve_exp_p, inod, jnod,           &
+     &                             node, d_vec)
+            if(distance(jnod) .eq. 0.0d0) then
+              distance(jnod) = dist + distance(inod)
+            else
+              distance(jnod)                                           &
+     &                     = min(dist+distance(inod), distance(jnod))
+            end if
+          end do
+        end do
+      end do
+!
+      end subroutine cal_min_dist_from_last_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine cal_min_dist_from_last_export                          &
+     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,    &
+     &          iflag_ele, iflag_node, distance)
+!
+      use t_ctl_param_sleeve_extend
+      use t_comm_table_for_each_pe
+      use t_next_node_ele_4_node
+!
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(element_around_node), intent(in) :: neib_ele
+      type(comm_table_for_each_pe), intent(in) :: each_comm
+      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+!
+      integer(kind = kint), intent(inout) :: iflag_ele(ele%numele)
+      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
+      real(kind = kreal), intent(inout) :: distance(node%numnod)
+!
+      integer(kind = kint) :: inum, inod, jst, jed, jnum, jele, jnod
+      real(kind = kreal) :: dist
+!
+      do inum = 1, each_comm%num_each_export
+        inod = each_comm%item_each_export(inum)
+        jst = neib_ele%istack_4_node(inod-1) + 1
+        jed = neib_ele%istack_4_node(inod)
+        do jnum = jst, jed
+          jele = neib_ele%iele_4_node(jnum)
+          if(iflag_ele(jele) .gt. 0) cycle
+!
+          iflag_ele(jele) = 1
+          do k1 = 1, ele%nnod_4_ele
+            jnod = ele%ie(jele,k1)
+            if(iflag_node(jnod) .lt. 0) cycle
+!
+            dist = distance_select(sleeve_exp_p, inod, jnod,            &
+     &                             node, d_vec)
+            if(iflag_node(jnod) .eq. 0) then
+              iflag_node(jnod) = 1
+              distance(jnod) = dist + distance(inod)
+            else
+              distance(jnod) = min(dist+distance(inod), distance(jnod))
+            end if
+          end do
+        end do
+      end do
+!
+      end subroutine cal_min_dist_from_last_export
 !
 !  ---------------------------------------------------------------------
 !
