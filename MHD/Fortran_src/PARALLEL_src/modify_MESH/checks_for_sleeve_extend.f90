@@ -25,43 +25,12 @@
 !!        type(communication_table), intent(in) :: add_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in) :: trim_import_ie
 !!
-!!      integer(kind = kint) function check_trimmed_import_node         &
-!!     &                (org_node, inod_new_dbl, add_nod_comm,          &
-!!     &                 irank_new_import_trim, inod_lc_new_import_trim)
-!!        type(node_data) :: org_node
-!!        type(node_ele_double_number) :: inod_new_dbl
-!!        type(communication_table) :: add_nod_comm
-!!        integer(kind = kint), intent(in)                              &
-!!     &      :: irank_new_import_trim(add_nod_comm%ntot_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &      :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
-!!      integer(kind = kint) function check_idx_home_for_import         &
-!!     &                   (expand_nod_comm, irank_nod_new_import,      &
-!!     &                    idx_home_for_import)
-!!        type(communication_table) :: expand_nod_comm
-!!        integer(kind = kint), intent(in)                              &
-!!     &      :: idx_home_for_import(expand_nod_comm%ntot_import)
-!!        integer(kind = kint), intent(in)                              &
-!!     &      :: irank_nod_new_import(expand_nod_comm%ntot_import)
-!!      integer(kind = kint) function check_trim_import_ele_connect     &
-!!     &                   (ele, add_ele_comm, ie_new_import_trim)
+!!      subroutine check_trim_import_ele_connect                        &
+!!     &         (ele, add_ele_comm, ie_new_import_trim)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: add_ele_comm
 !!        integer(kind = kint), intent(in)                              &
 !!     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
-!!      integer(kind = kint) function check_expand_nod_import_item      &
-!!     &             (inod_new_dbl, expand_nod_comm, add_nod_comm,      &
-!!     &              istack_trimmed_import_pe, idx_home_sorted_import, &
-!!     &              irank_nod_new_import)
-!!        type(node_ele_double_number), intent(in) :: inod_new_dbl
-!!        type(communication_table), intent(in) :: expand_nod_comm
-!!        type(communication_table), intent(in) :: add_nod_comm
-!!        integer(kind = kint), intent(in)                              &
-!!     &   :: istack_trimmed_import_pe(0:nprocs)
-!!        integer(kind = kint), intent(in)                              &
-!!     &   :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
-!!        integer(kind = kint), intent(in)                              &
-!!     &   :: irank_nod_new_import(expand_nod_comm%ntot_import)
 !!@endverbatim
 !
       module checks_for_sleeve_extend
@@ -75,6 +44,9 @@
 !
       implicit none
 !
+      private :: check_trimmed_import_node
+      private :: check_expand_nod_import_item
+      private :: check_idx_home_for_import
       private :: check_zero_inod_added_import
       private :: check_wrong_inod_added_import
       private :: check_zero_ie_new_import
@@ -84,6 +56,59 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine check_appended_node_data                               &
+     &         (node, expand_nod_comm, add_nod_comm, exp_import_xx,     &
+     &          ext_nod_trim, trim_import_xx, inod_new_dbl,             &
+     &          idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
+!
+      use t_para_double_numbering
+      use t_trim_overlapped_import
+      use t_mesh_for_sleeve_extend
+!
+      use calypso_mpi
+      use calypso_mpi_int
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(communication_table), intent(in) :: add_nod_comm
+      type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
+      type(node_data_for_sleeve_ext), intent(in) :: trim_import_xx
+      type(data_for_trim_import), intent(in) :: ext_nod_trim
+      type(node_ele_double_number), intent(in) :: inod_new_dbl
+      integer(kind = kint), intent(in)                                  &
+     &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &        :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
+!
+      integer(kind = kint) :: icou, ntot_gl
+!
+!
+      icou = check_trimmed_import_node                                  &
+     &             (node, inod_new_dbl, add_nod_comm,                   &
+     &              trim_import_xx%irank_comm, inod_lc_new_import_trim)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
+     &        'trimmed_import_node:', ntot_gl 
+!
+      icou = check_expand_nod_import_item                               &
+     &       (inod_new_dbl, expand_nod_comm, add_nod_comm,              &
+     &        ext_nod_trim%istack_trimmed_pe,                           &
+     &        ext_nod_trim%idx_trimmed_to_sorted,                       &
+     &        exp_import_xx%irank_comm)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
+      'with expand_nod_comm%item_import:', ntot_gl 
+!
+      icou = check_idx_home_for_import(expand_nod_comm,                 &
+     &    exp_import_xx%irank_comm, idx_nod_extend_to_trimmed)
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
+     &         'in idx_nod_extend_to_trimmed ', ntot_gl
+!
+      end subroutine check_appended_node_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -183,6 +208,37 @@
       end subroutine check_returned_extend_element
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine check_trim_import_ele_connect                          &
+     &         (ele, add_ele_comm, ie_new_import_trim)
+!
+      use calypso_mpi
+!
+      use m_solver_SR
+      use calypso_mpi_int
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: add_ele_comm
+!
+      integer(kind = kint), intent(in)                                  &
+     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
+!
+      integer(kind = kint) :: icou, k1, inum, ntot_gl
+!
+!
+      icou = 0
+      do k1 = 1, ele%nnod_4_ele
+        do inum = 1, add_ele_comm%ntot_import
+          if(ie_new_import_trim(inum,k1) .le. 0) icou = icou + 1
+        end do
+      end do
+      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &       'Number of wriong trim_import_ie%ie_comm', ntot_gl
+!
+      end subroutine check_trim_import_ele_connect
+!
+! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_trimmed_import_node           &
@@ -369,30 +425,6 @@
       end function check_zero_ie_new_import
 !
 !  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function check_trim_import_ele_connect       &
-     &                   (ele, add_ele_comm, ie_new_import_trim)
-!
-      type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
-!
-      integer(kind = kint), intent(in)                                  &
-     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
-!
-      integer(kind = kint) :: icou, k1, inum
-!
-!
-      icou = 0
-      do k1 = 1, ele%nnod_4_ele
-        do inum = 1, add_ele_comm%ntot_import
-          if(ie_new_import_trim(inum,k1) .le. 0) icou = icou + 1
-        end do
-      end do
-      check_trim_import_ele_connect = icou
-!
-      end function check_trim_import_ele_connect
-!
-! ----------------------------------------------------------------------
 !
       integer(kind = kint) function check_expand_nod_import_item        &
      &             (inod_new_dbl, expand_nod_comm, add_nod_comm,        &

@@ -601,27 +601,11 @@
      &    trim_import_xx, inod_lc_new_import_trim, new_node, dbl_id2)
 !
 !
-      icou = check_trimmed_import_node(org_node, dbl_id2, add_nod_comm, &
-     &                                 trim_import_xx%irank_comm,       &
-     &                                 inod_lc_new_import_trim)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
-     &        'trimmed_import_node:', ntot_failed_gl 
+      call check_appended_node_data                               &
+     &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
+     &    ext_nod_trim, trim_import_xx, dbl_id2,      &
+     &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
       deallocate(inod_lc_new_import_trim)
-!
-      icou = check_expand_nod_import_item                               &
-     &       (dbl_id2, expand_nod_comm, add_nod_comm,                   &
-     &        ext_nod_trim%istack_trimmed_pe, ext_nod_trim%idx_trimmed_to_sorted,   &
-     &        exp_import_xx%irank_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
-      'with expand_nod_comm%item_import:', ntot_failed_gl 
-!
-      icou = check_idx_home_for_import(expand_nod_comm,                 &
-     &    exp_import_xx%irank_comm, idx_nod_extend_to_trimmed)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
-     &         'in idx_nod_extend_to_trimmed ', ntot_failed_gl
 !
 !
       allocate(inod_added_import(expand_nod_comm%ntot_import))
@@ -706,11 +690,8 @@
       call dealloc_stack_to_trim_extend(ext_ele_trim)
       deallocate(ext_ele_trim%idx_trimmed_to_sorted)
 !
-      icou = check_trim_import_ele_connect(org_ele, add_ele_comm,       &
-     &                                     trim_import_ie%ie_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)                                     &
-     &       'Number of wriong trim_import_ie%ie_comm', ntot_failed_gl
+      call check_trim_import_ele_connect(org_ele, add_ele_comm,         &
+     &                                   trim_import_ie%ie_comm)
 !
 !
       call alloc_export_num(add_ele_comm)
