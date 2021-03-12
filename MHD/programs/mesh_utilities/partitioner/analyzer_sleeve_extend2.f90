@@ -287,6 +287,7 @@
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
       use t_ctl_param_sleeve_extend
+      use t_flags_each_comm_extend
       use t_mark_node_ele_to_extend
       use t_comm_table_for_each_pe
 !
@@ -599,7 +600,6 @@
 !
 !
       allocate(inod_added_import(expand_nod_comm%ntot_import))
-!
       inod_added_import(1:expand_nod_comm%ntot_import) = 0
 !
       call find_original_import_address                                 &
