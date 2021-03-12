@@ -35,9 +35,6 @@
 !
         integer(kind = kint) :: num_each_import = 0
         integer(kind = kint), allocatable :: item_each_import(:)
-!
-        integer(kind = kint) :: num_other_import = 0
-        integer(kind = kint), allocatable :: item_other_import(:)
       end type comm_table_for_each_pe
 !
       type dist_from_wall_in_export
@@ -58,12 +55,10 @@
 !
       allocate(each_comm%item_each_export(node%numnod))
       allocate(each_comm%item_each_import(node%numnod))
-      allocate(each_comm%item_other_import(node%numnod))
 !
 !$omp parallel workshare
       each_comm%item_each_export(1:node%numnod) =  0
       each_comm%item_each_import(1:node%numnod) =  0
-      each_comm%item_other_import(1:node%numnod) = 0
 !$omp end parallel workshare
 !
       end subroutine alloc_comm_table_for_each
@@ -74,7 +69,6 @@
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
 !
-      deallocate(each_comm%item_other_import)
       deallocate(each_comm%item_each_import)
       deallocate(each_comm%item_each_export)
 !
@@ -119,20 +113,6 @@
       end do
 !$omp end parallel do
 !
-      each_comm%num_other_import = nod_comm%ntot_import                 &
-     &                            - each_comm%num_each_import
-      icou = 0
-      do ip = 1, nod_comm%num_neib
-        if(ip .eq. ineib) cycle
-!
-        ist = nod_comm%istack_import(ip-1) + 1
-        ied = nod_comm%istack_import(ip)
-        do i = ist, ied
-          icou = icou + 1
-          each_comm%item_other_import(icou) = nod_comm%item_import(i)
-        end do
-      end do
-!
       end subroutine init_comm_table_for_each
 !
 !  ---------------------------------------------------------------------
@@ -162,20 +142,6 @@
       ist = nod_comm%istack_import(ineib-1) 
       do i = 1, each_comm%num_each_import
         each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
-      end do
-!
-      each_comm%num_other_import = nod_comm%ntot_import                 &
-     &                            - each_comm%num_each_import
-      icou = 0
-      do ip = 1, nod_comm%num_neib
-        if(ip .eq. ineib) cycle
-!
-        ist = nod_comm%istack_import(ip-1) + 1
-        ied = nod_comm%istack_import(ip)
-        do i = ist, ied
-          icou = icou + 1
-          each_comm%item_other_import(icou) = nod_comm%item_import(i)
-        end do
       end do
 !
       end subroutine init_comm_table_for_each_old

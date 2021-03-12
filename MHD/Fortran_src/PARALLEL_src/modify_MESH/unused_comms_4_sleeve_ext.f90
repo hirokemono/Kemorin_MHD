@@ -228,7 +228,7 @@
         icou = istack_new_export(i-1)
         ist = istack_new_ele_export(i-1)
 !$omp parallel do private(inum,icou,iele,k1,inod)
-        do inum = 1, mark_ele(i)%nnod_marked
+        do inum = 1, mark_ele(i)%num_marked
           icou = ist + inum
           iele = mark_ele(i)%idx_marked(inum)
           item_new_ele_export(icou) = iele

@@ -112,15 +112,15 @@
           inod_in_comm(inod) = inod
         end do
         icou = 0
-        do inum = 1, mark_nod(i)%nnod_marked
+        do inum = 1, mark_nod(i)%num_marked
           inod = mark_nod(i)%idx_marked(inum)
           if(inod_in_comm(inod) .gt. 0) icou = icou + 1
         end do
 !
 !        write(*,*) my_rank, nod_comm%id_neib(i),                       &
 !     &           'marked import node', icou, num
-        num_new_export(i) =     mark_nod(i)%nnod_marked - icou
-        num_new_ele_export(i) = mark_ele(i)%nnod_marked
+        num_new_export(i) =     mark_nod(i)%num_marked - icou
+        num_new_ele_export(i) = mark_ele(i)%num_marked
       end do
 !
       deallocate(inod_in_comm)
@@ -179,7 +179,7 @@
         end do
 !
         icou = istack_new_nod_export(i-1)
-        do inum = 1, mark_nod(i)%nnod_marked
+        do inum = 1, mark_nod(i)%num_marked
           inod = mark_nod(i)%idx_marked(inum)
           if(inod_in_comm(inod) .lt. 0) cycle
 
@@ -196,7 +196,7 @@
 !
         ist = istack_new_ele_export(i-1)
 !$omp parallel do private(inum,icou,iele,k1,inod)
-        do inum = 1, mark_ele(i)%nnod_marked
+        do inum = 1, mark_ele(i)%num_marked
           icou = ist + inum
           iele = mark_ele(i)%idx_marked(inum)
           exp_export_ie%iele_gl_comm(icou) = ele%iele_global(iele)

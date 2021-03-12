@@ -38,7 +38,7 @@
       use t_comm_table_for_each_pe
 !
       type mark_for_each_comm
-        integer(kind = kint) :: nnod_marked = 0
+        integer(kind = kint) :: num_marked = 0
         integer(kind = kint), allocatable :: idx_marked(:)
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
@@ -55,14 +55,14 @@
       type(mark_for_each_comm), intent(inout) :: mark_comm
 !
 !
-      mark_comm%nnod_marked = num
+      mark_comm%num_marked = num
 !
-      allocate(mark_comm%idx_marked(mark_comm%nnod_marked))
-      allocate(mark_comm%dist_marked(mark_comm%nnod_marked))
+      allocate(mark_comm%idx_marked(mark_comm%num_marked))
+      allocate(mark_comm%dist_marked(mark_comm%num_marked))
 !
 !$omp parallel workshare
-      mark_comm%idx_marked(1:mark_comm%nnod_marked) = 0
-      mark_comm%dist_marked(1:mark_comm%nnod_marked) = 0.0d0
+      mark_comm%idx_marked(1:mark_comm%num_marked) = 0
+      mark_comm%dist_marked(1:mark_comm%num_marked) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_mark_for_each_comm
@@ -168,7 +168,7 @@
 !
       integer(kind = kint) :: inum, iele, k1, kcou
 !
-      do inum = 1, mark_ele%nnod_marked
+      do inum = 1, mark_ele%num_marked
         iele = mark_ele%idx_marked(inum)
         kcou = 0
         do k1 = 1, ele%nnod_4_ele
@@ -288,8 +288,6 @@
       end do
 !
       end subroutine cal_min_dist_from_last_export
-!
-!  ---------------------------------------------------------------------
 !
 !  ---------------------------------------------------------------------
 !

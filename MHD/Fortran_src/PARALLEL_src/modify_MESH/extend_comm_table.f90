@@ -99,12 +99,13 @@
      &      org_node%numnod, mark_nod(i), iflag_node)
         call dealloc_comm_table_for_each(each_comm)
       end do
-      write(*,*) my_rank, 'mark_nod%nnod_marked', mark_nod(1:nod_comm%num_neib)%nnod_marked
+      write(*,*) my_rank, 'mark_nod%num_marked',                        &
+     &          mark_nod(1:nod_comm%num_neib)%num_marked
 !
       call alloc_added_comm_table_num(nod_comm, added_comm)
       do i = 1, nod_comm%num_neib
         added_comm%num_export(i) = added_comm%num_export(i)             &
-     &                            + mark_nod(i)%nnod_marked
+     &                            + mark_nod(i)%num_marked
       end do
 !
       call s_cal_total_and_stacks                                       &
@@ -118,7 +119,7 @@
       do i = 1, nod_comm%num_neib
         call copy_node_to_extend_buffer                                 &
      &    (added_comm%istack_export(i-1), org_node, dbl_idx,            &
-     &     mark_nod(i)%nnod_marked, mark_nod(i)%idx_marked, send_nbuf)
+     &     mark_nod(i)%num_marked, mark_nod(i)%idx_marked, send_nbuf)
         deallocate(mark_nod(i)%idx_marked)
       end do
 !

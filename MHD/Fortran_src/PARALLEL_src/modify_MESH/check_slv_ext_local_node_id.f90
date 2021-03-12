@@ -134,7 +134,7 @@
         end do
 !
         icou = expand_nod_comm%istack_export(i-1)
-        do inum = 1, mark_nod(i)%nnod_marked
+        do inum = 1, mark_nod(i)%num_marked
           inod = mark_nod(i)%idx_marked(inum)
           if(inod_in_comm(inod) .lt. 0) cycle
 

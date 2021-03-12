@@ -85,10 +85,10 @@
         iflag_node(inod) = 0
       end do
 !
-      mark_nod%nnod_marked = 0
+      mark_nod%num_marked = 0
       do inod = 1, numnod
         if(iflag_node(inod) .gt. 0) then
-          mark_nod%nnod_marked = mark_nod%nnod_marked + 1
+          mark_nod%num_marked = mark_nod%num_marked + 1
         end if
       end do
       allocate(mark_nod%idx_marked(numnod))

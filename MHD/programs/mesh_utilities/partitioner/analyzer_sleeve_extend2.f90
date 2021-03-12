@@ -429,11 +429,11 @@
      &                             ntot_failed_gl, nele_failed_gl
       deallocate(dist_4_comm%distance_in_export)
 !
-      write(*,*) my_rank, 'mark_nod%nnod_marked',                       &
-     &          mark_nod(1:nod_comm%num_neib)%nnod_marked,              &
+      write(*,*) my_rank, 'mark_nod%num_marked',                        &
+     &          mark_nod(1:nod_comm%num_neib)%num_marked,               &
      &        ' of ', org_node%numnod
-      write(*,*) my_rank, 'mark_ele%nnod_marked',                       &
-     &          mark_ele(1:nod_comm%num_neib)%nnod_marked,              &
+      write(*,*) my_rank, 'mark_ele%num_marked',                        &
+     &          mark_ele(1:nod_comm%num_neib)%num_marked,               &
      &        ' of ', org_ele%numele
 !
 !
