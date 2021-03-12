@@ -35,6 +35,7 @@
 !
       use t_geometry_data
       use t_comm_table
+      use t_comm_table_for_each_pe
 !
       type mark_for_each_comm
         integer(kind = kint) :: nnod_marked = 0
@@ -84,7 +85,6 @@
      &          mark_nod, mark_ele, iflag_ele, iflag_node, distance)
 !
       use t_ctl_param_sleeve_extend
-      use t_comm_table_for_each_pe
       use t_next_node_ele_4_node
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
@@ -105,57 +105,24 @@
       real(kind = kreal) :: dist, anum
 !
 !
-!$omp parallel workshare
-      iflag_node(1:node%numnod) = 0
-!$omp end parallel workshare
-!
-!$omp parallel do private(inum,inod)
-      do inum = 1, each_comm%num_each_import
-        inod = each_comm%item_each_import(inum)
-        iflag_node(inod) = -2
-      end do
-!$omp end parallel do
-!
-!$omp parallel do private(iele,k1,inod)
-      do iele = 1, ele%numele
-        iflag_ele(iele) = 2
-        do k1 = 1, ele%nnod_4_ele
-          inod = ele%ie(iele,k1)
-          if(iflag_node(inod) .gt. -2) then
-            iflag_ele(iele) = 0
-            exit
-          end if
-        end do
-      end do
-!$omp end parallel do
+      call mark_by_last_import(node, each_comm, iflag_node)
+      call mark_surround_ele_of_import                                  &
+     &         (node, ele, iflag_node, iflag_ele)
 !
       call cal_min_dist_from_last_import                                &
      &   (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,          &
      &    iflag_ele, iflag_node, distance)
-!
-!$omp parallel do private(inum,inod)
-      do inum = 1, each_comm%num_each_export
-        inod = each_comm%item_each_export(inum)
-        iflag_node(inod) = -1
-      end do
-!$omp end parallel do
+      call mark_by_last_export(node, each_comm, iflag_node)
 !
       do idummy = 2, 100
         call cal_min_dist_from_last_export                              &
      &     (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,        &
      &      iflag_ele, iflag_node, distance)
 !
-        jcou = 0
-        do inod = 1, node%numnod
-          if(iflag_node(inod) .gt. 0) then
-            if(distance(inod) .lt. sleeve_exp_p%dist_max) then
-              jcou = jcou + 1
-              each_comm%item_each_export(jcou) = inod
-            end if
-            iflag_node(inod) = -1
-          end if
-        end do
-        each_comm%num_each_export = jcou
+        call set_new_export_to_extend                                   &
+     &     (sleeve_exp_p%dist_max, node, distance,                      &
+     &     each_comm%num_each_export, each_comm%item_each_export,       &
+     &     iflag_node)
 !        write(*,*) my_rank, 'extend again for ', idummy, &
 !     &            each_comm%num_each_export
         if(each_comm%num_each_export .le. 0) exit
@@ -179,29 +146,10 @@
         end if
       end do
 !
-      icou = 0
-      do iele = 1, ele%numele
-        if(iflag_ele(iele) .eq. 1) icou = icou + 1
-      end do
+      icou = count_mark_ele_to_extend(ele, iflag_ele)
       call alloc_mark_for_each_comm(icou, mark_ele)
-!
-      anum = one / real(ele%nnod_4_ele)
-      icou = 0
-      do iele = 1, ele%numele
-        if(iflag_ele(iele) .eq. 1) then
-          icou = icou + 1
-          mark_ele%idx_marked(icou) = iele
-          mark_ele%dist_marked(icou) = 0.0d0
-          do k1 = 1, ele%nnod_4_ele
-            inod = ele%ie(iele,k1)
-            mark_ele%dist_marked(icou)                                  &
-                 = mark_ele%dist_marked(icou) + distance(inod)
-          end do
-          mark_ele%dist_marked(icou)                                    &
-                 = mark_ele%dist_marked(icou) * anum
-        end if
-      end do
-!
+      call set_mark_ele_to_extend                                       &
+     &   (node, ele, iflag_ele, distance, mark_ele)
 !
       end subroutine s_mark_node_ele_to_extend
 !
@@ -340,6 +288,169 @@
       end do
 !
       end subroutine cal_min_dist_from_last_export
+!
+!  ---------------------------------------------------------------------
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_by_last_import(node, each_comm, iflag_node)
+!
+      type(node_data), intent(in) :: node
+      type(comm_table_for_each_pe), intent(in) :: each_comm
+!
+      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
+!
+      integer(kind = kint) :: inum, inod
+!
+!
+!$omp parallel workshare
+      iflag_node(1:node%numnod) = 0
+!$omp end parallel workshare
+!
+!$omp parallel do private(inum,inod)
+      do inum = 1, each_comm%num_each_import
+        inod = each_comm%item_each_import(inum)
+        iflag_node(inod) = -2
+      end do
+!$omp end parallel do
+!
+      end subroutine mark_by_last_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_surround_ele_of_import                            &
+     &         (node, ele, iflag_node, iflag_ele)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      integer(kind = kint), intent(in) :: iflag_node(node%numnod)
+!
+      integer(kind = kint), intent(inout) :: iflag_ele(ele%numele)
+!
+      integer(kind = kint) :: iele, k1, inod
+!
+!
+!$omp parallel do private(iele,k1,inod)
+      do iele = 1, ele%numele
+        iflag_ele(iele) = 2
+        do k1 = 1, ele%nnod_4_ele
+          inod = ele%ie(iele,k1)
+          if(iflag_node(inod) .gt. -2) then
+            iflag_ele(iele) = 0
+            exit
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine mark_surround_ele_of_import
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine mark_by_last_export(node, each_comm, iflag_node)
+!
+      type(node_data), intent(in) :: node
+      type(comm_table_for_each_pe), intent(in) :: each_comm
+!
+      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
+!
+      integer(kind = kint) :: inum, inod
+!
+!
+!$omp parallel do private(inum,inod)
+      do inum = 1, each_comm%num_each_export
+        inod = each_comm%item_each_export(inum)
+        iflag_node(inod) = -1
+      end do
+!$omp end parallel do
+!
+      end subroutine mark_by_last_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_new_export_to_extend(dist_max, node, distance,     &
+     &          num_each_export, item_each_export, iflag_node)
+!
+      real(kind = kreal), intent(in) :: dist_max
+      type(node_data), intent(in) :: node
+      real(kind = kreal), intent(in) :: distance(node%numnod)
+!
+      integer(kind = kint), intent(inout) :: num_each_export
+      integer(kind = kint), intent(inout)                               &
+     &                     :: item_each_export(node%numnod)
+      integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
+!
+      integer(kind = kint) :: jcou, inod
+!
+!
+      jcou = 0
+      do inod = 1, node%numnod
+        if(iflag_node(inod) .gt. 0) then
+          if(distance(inod) .lt. dist_max) then
+            jcou = jcou + 1
+            item_each_export(jcou) = inod
+          end if
+          iflag_node(inod) = -1
+        end if
+      end do
+      num_each_export = jcou
+!
+      end subroutine set_new_export_to_extend
+!
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function count_mark_ele_to_extend            &
+     &                                          (ele, iflag_ele)
+!
+      type(element_data), intent(in) :: ele
+      integer(kind = kint), intent(in) :: iflag_ele(ele%numele)
+!
+      integer(kind = kint) :: icou, iele
+!
+!
+      icou = 0
+      do iele = 1, ele%numele
+        if(iflag_ele(iele) .eq. 1) icou = icou + 1
+      end do
+      count_mark_ele_to_extend = icou
+!
+      end function count_mark_ele_to_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_mark_ele_to_extend                                 &
+     &         (node, ele, iflag_ele, distance, mark_ele)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      integer(kind = kint), intent(in) :: iflag_ele(ele%numele)
+      real(kind = kreal), intent(in) :: distance(node%numnod)
+!
+      type(mark_for_each_comm), intent(inout) :: mark_ele
+!
+      integer(kind = kint) :: inod, icou, iele, k1
+      real(kind = kreal) :: anum
+!
+!
+      anum = one / real(ele%nnod_4_ele)
+      icou = 0
+      do iele = 1, ele%numele
+        if(iflag_ele(iele) .eq. 1) then
+          icou = icou + 1
+          mark_ele%idx_marked(icou) = iele
+          mark_ele%dist_marked(icou) = 0.0d0
+          do k1 = 1, ele%nnod_4_ele
+            inod = ele%ie(iele,k1)
+            mark_ele%dist_marked(icou)                                  &
+                 = mark_ele%dist_marked(icou) + distance(inod)
+          end do
+          mark_ele%dist_marked(icou)                                    &
+                 = mark_ele%dist_marked(icou) * anum
+        end if
+      end do
+!
+      end subroutine set_mark_ele_to_extend
 !
 !  ---------------------------------------------------------------------
 !
