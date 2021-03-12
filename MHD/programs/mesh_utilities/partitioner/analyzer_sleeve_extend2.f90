@@ -590,13 +590,15 @@
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, inod_lc_new_import_trim, new_node, dbl_id2)
-!
-!
       call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
      &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
       deallocate(inod_lc_new_import_trim)
+!
+      call s_append_communication_table                                 &
+     &   (nod_comm, add_nod_comm, new_nod_comm)
+      call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !
 !
       allocate(inod_added_import(expand_nod_comm%ntot_import))
@@ -612,6 +614,10 @@
       if(i_debug .gt. 0) then
         call check_expanded_import_node                                 &
      &     (dbl_id2, expand_nod_comm, exp_import_xx, inod_added_import)
+      end if
+!
+!
+      if(i_debug .gt. 0) then
         call check_expanded_import_ele                                  &
      &    (org_ele, expand_ele_comm, exp_import_ie)
       end if
@@ -626,10 +632,6 @@
      &    (org_ele, expand_ele_comm, exp_import_ie)
       end if
 !
-      call s_append_communication_table                                 &
-     &   (nod_comm, add_nod_comm, new_nod_comm)
-      call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
-!
 !
       add_ele_comm%num_neib = add_nod_comm%num_neib
       call alloc_comm_table_num(add_ele_comm)
@@ -641,7 +643,6 @@
 !
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import)
-!
       call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
      &    expand_ele_comm, exp_import_ie%irank_comm, sort_ele_import)
 !
@@ -654,7 +655,7 @@
      &    (nod_comm, add_ele_comm, sort_ele_import, ext_ele_trim)
       end if
 !
-      call dealloc_sort_data_sleeve_ext(sort_nod_import)
+      call dealloc_sort_data_sleeve_ext(sort_ele_import)
 !
       call alloc_import_num(add_ele_comm)
       call count_import_item_for_extend                                 &
