@@ -341,9 +341,7 @@
       type(node_buffer_2_extend) :: send_nbuf
       type(node_buffer_2_extend) :: recv_nbuf
 !
-      integer(kind = kint), allocatable :: iflag_ele(:)
-      integer(kind = kint), allocatable :: iflag_node(:)
-      real(kind = kreal), allocatable :: distance(:)
+      type(flags_each_comm_extend), save :: each_exp_flags
 !
       integer(kind = kint) :: iflag_process_extend = 0
 !
@@ -385,17 +383,8 @@
       real(kind = kreal), allocatable :: vect_tmp(:,:)
 !
 !
-      allocate(iflag_node(org_node%numnod))
-      allocate(distance(org_node%numnod))
-!$omp parallel workshare
-      iflag_node(1:org_node%numnod) = 0
-      distance(1:org_node%numnod) =   0.0d0
-!$omp end parallel workshare
-!
-      allocate(iflag_ele(org_ele%numele))
-!$omp parallel workshare
-      iflag_ele(1:org_ele%numele) = 0
-!$omp end parallel workshare
+      call alloc_flags_each_comm_extend                                 &
+     &   (org_node%numnod, org_ele%numele, each_exp_flags)
 !
       sleeve_exp_p%iflag_expand = iflag_distance
       sleeve_exp_p%dist_max =     0.05d0
@@ -407,20 +396,19 @@
       jcou = 0
       do i = 1, nod_comm%num_neib
         call alloc_comm_table_for_each(org_node, each_comm)
-        call init_comm_table_for_each                                   &
-     &     (i, org_node, nod_comm, dist_4_comm, each_comm, distance)
+        call init_comm_table_for_each(i, org_node, nod_comm,            &
+     &      dist_4_comm, each_comm, each_exp_flags%distance)
         call s_mark_node_ele_to_extend                                  &
      &     (sleeve_exp_p, org_node, org_ele, neib_ele, vect_tmp,        &
-     &      each_comm, mark_nod(i), mark_ele(i),                        &
-     &      iflag_ele, iflag_node, distance)
+     &      each_comm, mark_nod(i), mark_ele(i), each_exp_flags)
         call dealloc_comm_table_for_each(each_comm)
 !
         call check_missing_connect_to_extend                            &
-    &      (org_node, org_ele, mark_ele(i), iflag_node, icou, jcou)
+    &      (org_node, org_ele, mark_ele(i), each_exp_flags%iflag_node,  &
+    &       icou, jcou)
       end do
+      call dealloc_flags_each_comm_extend(each_exp_flags)
       deallocate(vect_tmp)
-      deallocate(iflag_node, iflag_ele)
-      deallocate(distance)
 !
 !
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
