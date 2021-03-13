@@ -468,11 +468,6 @@
      &    expand_nod_comm%num_export, SR_sig1,                          &
      &    expand_nod_comm%num_import, expand_nod_comm%istack_import,    &
      &    expand_nod_comm%ntot_import)
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_ele_comm%num_export, SR_sig1,                          &
-     &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
-     &    expand_ele_comm%ntot_import)
 !
       call alloc_export_item(expand_nod_comm)
       call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_export,      &
@@ -482,10 +477,6 @@
       call alloc_ele_data_sleeve_ext                                    &
      &   (expand_ele_comm%ntot_export, org_ele%nnod_4_ele,              &
      &    exp_export_ie)
-!
-      call alloc_import_item(expand_nod_comm)
-      call alloc_import_item(expand_ele_comm)
-!
       call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
      &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
@@ -493,6 +484,7 @@
      &    expand_nod_comm%item_export, exp_export_xx,                   &
      &    expand_ele_comm%item_export, exp_export_ie)
 !
+      call alloc_import_item(expand_nod_comm)
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
      &    expand_nod_comm%item_export, SR_sig1,                         &
@@ -504,18 +496,6 @@
      &                                 exp_export_xx, exp_import_xx)
       call dealloc_node_data_sleeve_ext(exp_export_xx)
 !
-!
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    expand_ele_comm%item_export, SR_sig1,                         &
-     &    expand_ele_comm%item_import)
-!
-      call alloc_ele_data_sleeve_ext                                    &
-     &   (expand_ele_comm%ntot_import, org_ele%nnod_4_ele,              &
-     &    exp_import_ie)
-      call send_extended_element_connect(org_ele, expand_ele_comm,      &
-     &    exp_export_ie, exp_import_ie)
-      call dealloc_ele_data_sleeve_ext(exp_export_ie)
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'start sort_nod_import'
@@ -641,25 +621,11 @@
 !
 !
 !
-!
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'renumber_extended_ele_import'
-!
-      if(i_debug .gt. 0) then
-        call check_expanded_import_ele                                  &
-     &    (org_ele, expand_ele_comm, exp_import_ie)
-      end if
-!
-      call renumber_extended_ele_import(my_rank, org_ele, nod_comm,     &
-     &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
-     &    exp_import_ie%ie_comm)
+      call const_extended_element_connect                               &
+     &   (nod_comm, org_ele, expand_nod_comm, inod_added_import,        &
+     &    expand_ele_comm, exp_export_ie, exp_import_ie)
+      call dealloc_ele_data_sleeve_ext(exp_export_ie)
       deallocate(inod_added_import)
-!
-      if(i_debug .gt. 0) then
-        call check_expanded_import_ele                                  &
-     &    (org_ele, expand_ele_comm, exp_import_ie)
-      end if
-!
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'const_extended_ele_comm_table'
@@ -684,6 +650,77 @@
 !
 !
 !
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine const_extended_element_connect                         &
+     &         (nod_comm, ele, expand_nod_comm, inod_added_import,      &
+     &          expand_ele_comm, exp_export_ie, exp_import_ie)
+!
+      use m_precision
+      use m_machine_parameter
+      use calypso_mpi
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_mesh_for_sleeve_extend
+!
+      use m_solver_SR
+      use calypso_mpi_int
+      use reverse_SR_int
+      use trim_mesh_for_sleeve_extend
+      use set_mesh_for_sleeve_extend
+      use checks_for_sleeve_extend
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: expand_nod_comm
+
+      integer(kind = kint), intent(in)                                  &
+     &            :: inod_added_import(expand_nod_comm%ntot_import)
+!
+      type(communication_table), intent(inout) :: expand_ele_comm
+      type(ele_data_for_sleeve_ext), intent(inout) :: exp_export_ie
+      type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
+!
+!
+      call num_items_send_recv                                          &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_ele_comm%num_export, SR_sig1,                          &
+     &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
+     &    expand_ele_comm%ntot_import)
+!
+      call alloc_import_item(expand_ele_comm)
+      call alloc_ele_data_sleeve_ext                                    &
+     &   (expand_ele_comm%ntot_import, ele%nnod_4_ele, exp_import_ie)
+!
+      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
+     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
+     &    expand_ele_comm%item_export, SR_sig1,                         &
+     &    expand_ele_comm%item_import)
+      call send_extended_element_connect(ele, expand_ele_comm,          &
+     &    exp_export_ie, exp_import_ie)
+!
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'renumber_extended_ele_import'
+!
+      if(i_debug .gt. 0) then
+        call check_expanded_import_ele                                  &
+     &    (ele, expand_ele_comm, exp_import_ie)
+      end if
+!
+      call renumber_extended_ele_import(my_rank, ele, nod_comm,         &
+     &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
+     &    exp_import_ie%ie_comm)
+!
+      if(i_debug .gt. 0) then
+        call check_expanded_import_ele                                  &
+     &    (ele, expand_ele_comm, exp_import_ie)
+      end if
+!
+      end subroutine const_extended_element_connect
+!
+!  ---------------------------------------------------------------------
 !
       subroutine const_extended_ele_comm_table                          &
      &         (nod_comm, ele, add_nod_comm, expand_ele_comm,           &
