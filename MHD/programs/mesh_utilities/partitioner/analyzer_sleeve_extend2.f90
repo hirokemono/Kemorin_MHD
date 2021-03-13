@@ -356,13 +356,11 @@
       type(node_data_for_sleeve_ext), save :: exp_export_xx
       type(node_data_for_sleeve_ext), save :: exp_import_xx
 !
-      type(sort_data_for_sleeve_trim), save :: sort_ele_import
       type(sort_data_for_sleeve_trim), save :: sort_nod_import
 !
 !
       type(node_data_for_sleeve_ext), save :: trim_import_xx
 !
-      type(data_for_trim_import), save :: ext_ele_trim
       type(data_for_trim_import), save :: ext_nod_trim
 !
       integer(kind = kint), allocatable :: idx_nod_extend_to_trimmed(:)
@@ -614,8 +612,6 @@
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
      &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'deallocate inod_lc_new_import_trim'
       deallocate(inod_lc_new_import_trim)
 !
       call calypso_mpi_barrier
@@ -666,7 +662,66 @@
 !
 !
       call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'start add_ele_comm'
+      if(iflag_debug .gt. 0) write(*,*) 'const_extended_ele_comm_table'
+      call const_extended_ele_comm_table                                &
+     &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
+     &    exp_import_ie, trim_import_ie, add_ele_comm)
+!
+      call s_append_communication_table                                 &
+     &   (ele_comm, add_ele_comm, new_ele_comm)
+      call s_append_extended_element(org_ele, add_ele_comm,             &
+     &    trim_import_ie, new_ele)
+!
+      call check_returned_extend_element                                &
+     &   (iele_dbl, add_ele_comm, trim_import_ie)
+!
+      end subroutine extend_node_comm_table2
+!
+!  ---------------------------------------------------------------------
+!
+      end module analyzer_sleeve_extend2
+!
+!
+!
+!
+      subroutine const_extended_ele_comm_table                          &
+     &         (nod_comm, ele, add_nod_comm, expand_ele_comm,           &
+     &          exp_import_ie, trim_import_ie, add_ele_comm)
+!
+      use m_precision
+      use m_machine_parameter
+      use calypso_mpi
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_mesh_for_sleeve_extend
+      use t_trim_overlapped_import
+!
+      use m_solver_SR
+      use calypso_mpi_int
+      use reverse_SR_int
+!
+      use cal_minmax_and_stacks
+      use set_expanded_comm_table
+      use trim_mesh_for_sleeve_extend
+      use checks_for_sleeve_extend
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: add_nod_comm
+!
+      type(communication_table), intent(inout) :: expand_ele_comm
+      type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
+      type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
+      type(communication_table), intent(inout) :: add_ele_comm
+!
+!
+!
+      type(sort_data_for_sleeve_trim), save :: sort_ele_import
+      type(data_for_trim_import), save :: ext_ele_trim
+!
+      integer(kind = kint), allocatable :: iele_lc_import_trim(:)
+!
 !
       add_ele_comm%num_neib = add_nod_comm%num_neib
       call alloc_comm_table_num(add_ele_comm)
@@ -702,19 +757,19 @@
       call alloc_import_item(add_ele_comm)
 !
       allocate(iele_lc_import_trim(add_ele_comm%ntot_import))
-      call alloc_ele_data_sleeve_ext                                    &
-     &   (add_ele_comm%ntot_import, org_ele%nnod_4_ele,                 &
-     &    trim_import_ie)
+      call alloc_ele_data_sleeve_ext(add_ele_comm%ntot_import,          &
+     &    ele%nnod_4_ele, trim_import_ie)
 !
       call set_trimmed_import_items                                     &
-     &   (org_ele, expand_ele_comm, add_ele_comm,                       &
-     &    ext_ele_trim, exp_import_ie,                                  &
-     &    iele_lc_import_trim, trim_import_ie)
+     &   (ele, expand_ele_comm, add_ele_comm, ext_ele_trim,             &
+     &    exp_import_ie, iele_lc_import_trim, trim_import_ie)
+!
+      call dealloc_comm_table(expand_ele_comm)
       call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_stack_to_trim_extend(ext_ele_trim)
       deallocate(ext_ele_trim%idx_trimmed_to_sorted)
 !
-      call check_trim_import_ele_connect(org_ele, add_ele_comm,         &
+      call check_trim_import_ele_connect(ele, add_ele_comm,             &
      &                                   trim_import_ie%ie_comm)
 !
 !
@@ -732,16 +787,6 @@
      &    add_ele_comm%item_export)
       deallocate(iele_lc_import_trim)
 !
-      call s_append_communication_table                                 &
-     &   (ele_comm, add_ele_comm, new_ele_comm)
-      call s_append_extended_element(org_ele, add_ele_comm,             &
-     &    trim_import_ie, new_ele)
-!
-      call check_returned_extend_element                                &
-     &   (iele_dbl, add_ele_comm, trim_import_ie)
-!
-      end subroutine extend_node_comm_table2
+      end subroutine const_extended_ele_comm_table
 !
 !  ---------------------------------------------------------------------
-!
-      end module analyzer_sleeve_extend2
