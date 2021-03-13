@@ -666,6 +666,7 @@
       call const_extended_ele_comm_table                                &
      &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
+      call dealloc_comm_table(expand_ele_comm)
 !
       call s_append_communication_table                                 &
      &   (ele_comm, add_ele_comm, new_ele_comm)
@@ -709,8 +710,8 @@
       type(communication_table), intent(in) :: nod_comm
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: add_nod_comm
+      type(communication_table), intent(in) :: expand_ele_comm
 !
-      type(communication_table), intent(inout) :: expand_ele_comm
       type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
       type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
       type(communication_table), intent(inout) :: add_ele_comm
@@ -764,7 +765,6 @@
      &   (ele, expand_ele_comm, add_ele_comm, ext_ele_trim,             &
      &    exp_import_ie, iele_lc_import_trim, trim_import_ie)
 !
-      call dealloc_comm_table(expand_ele_comm)
       call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_stack_to_trim_extend(ext_ele_trim)
       deallocate(ext_ele_trim%idx_trimmed_to_sorted)
