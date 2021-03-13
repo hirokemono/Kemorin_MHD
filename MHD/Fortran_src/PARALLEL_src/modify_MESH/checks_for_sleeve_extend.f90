@@ -91,7 +91,7 @@
      &              trim_import_xx%irank_comm, inod_lc_new_import_trim)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
-     &        'trimmed_import_node:', ntot_gl 
+     &        'trimmed_import_node:', ntot_gl
 !
       icou = check_expand_nod_import_item                               &
      &       (inod_new_dbl, expand_nod_comm, add_nod_comm,              &
@@ -442,7 +442,7 @@
       integer(kind = kint), intent(in)                                  &
      &   :: irank_nod_new_import(expand_nod_comm%ntot_import)
 !
-      integer(kind = kint) :: i, icou, irank, ist, jst, jed
+      integer(kind = kint) :: i, icou, irank, ist, jst, jed, num
       integer(kind = kint) :: inum, jnum, inod
 !
 !
@@ -450,11 +450,11 @@
       do i = 1, add_nod_comm%num_neib
         irank = add_nod_comm%id_neib(i)
         ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1) + 1
-        jed = add_nod_comm%istack_import(i)
-        do inum = jst, jed
+        jst = add_nod_comm%istack_import(i-1)
+        num = add_nod_comm%istack_import(i) - jst
+        do inum = 1, num
           jnum = idx_home_sorted_import(inum+ist)
-          inod = add_nod_comm%item_import(inum)
+          inod = add_nod_comm%item_import(inum+jst)
           if(inod_new_dbl%irank(inod) .ne. irank_nod_new_import(jnum)   &
      &       .or. inod_new_dbl%index(inod)                              &
      &          .ne. expand_nod_comm%item_import(jnum)) icou = icou + 1
