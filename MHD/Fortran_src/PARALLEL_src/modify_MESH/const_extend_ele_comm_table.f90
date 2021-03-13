@@ -14,18 +14,23 @@
 !!        type(communication_table), intent(inout) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_export_ie
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
-!!      subroutine const_extended_ele_comm_table                        &
-!!     &         (nod_comm, ele, add_nod_comm, expand_ele_comm,         &
-!!     &          exp_import_ie, trim_import_ie, add_ele_comm)
+!!      subroutine const_extended_element_connect                     &
+!!     &         (nod_comm, node, ele, inod_new_dbl,                  &
+!!     &          expand_nod_comm, add_nod_comm, exp_import_xx,       &
+!!     &          ext_nod_trim, idx_nod_extend_to_trimmed,            &
+!!     &          expand_ele_comm, exp_import_ie)
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(node_ele_double_number), intent(in) :: inod_new_dbl
+!!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(communication_table), intent(in) :: add_nod_comm
-!!        type(communication_table), intent(in) :: expand_ele_comm
+!!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
+!!        type(data_for_trim_import), intent(in) :: ext_nod_trim
+!!        integer(kind = kint), intent(in)                              &
+!!     &      :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
+!!        type(communication_table), intent(inout) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
-!!        type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
-!!        type(communication_table), intent(inout) :: add_ele_comm
-!!        type(sort_data_for_sleeve_trim), save :: sort_ele_import
-!!        type(data_for_trim_import), save :: ext_ele_trim
 !!      subroutine const_extended_ele_comm_table                        &
 !!     &         (nod_comm, ele, add_nod_comm, expand_ele_comm,         &
 !!     &          exp_import_ie, trim_import_ie, add_ele_comm)
@@ -101,7 +106,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_extended_element_connect                         &
-     &         (nod_comm, node, ele, dbl_id2,                           &
+     &         (nod_comm, node, ele, inod_new_dbl,                      &
      &          expand_nod_comm, add_nod_comm, exp_import_xx,           &
      &          ext_nod_trim, idx_nod_extend_to_trimmed,                &
      &          expand_ele_comm, exp_import_ie)
@@ -113,7 +118,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(node_ele_double_number), intent(in) :: dbl_id2
+      type(node_ele_double_number), intent(in) :: inod_new_dbl
       type(communication_table), intent(in) :: expand_nod_comm
       type(communication_table), intent(in) :: add_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
@@ -136,8 +141,8 @@
      &    idx_nod_extend_to_trimmed, inod_added_import)
 !
       if(i_debug .gt. 0) then
-        call check_expanded_import_node                                 &
-     &     (dbl_id2, expand_nod_comm, exp_import_xx, inod_added_import)
+        call check_expanded_import_node(inod_new_dbl, expand_nod_comm,  &
+     &      exp_import_xx, inod_added_import)
       end if
 !
       if(i_debug .gt. 0) then
@@ -176,8 +181,8 @@
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: add_nod_comm
       type(communication_table), intent(in) :: expand_ele_comm
+      type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !
-      type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
       type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
       type(communication_table), intent(inout) :: add_ele_comm
 !
@@ -226,9 +231,8 @@
      &   (ele, expand_ele_comm, add_ele_comm, ext_ele_trim,             &
      &    exp_import_ie, iele_lc_import_trim, trim_import_ie)
 !
-      call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_stack_to_trim_extend(ext_ele_trim)
-      deallocate(ext_ele_trim%idx_trimmed_to_sorted)
+      call dealloc_idx_trimed_to_sorted(ext_ele_trim)
 !
       call check_trim_import_ele_connect(ele, add_ele_comm,             &
      &                                   trim_import_ie%ie_comm)
