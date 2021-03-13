@@ -54,6 +54,7 @@
       use t_geometry_data
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
+      use t_sort_data_for_sleeve_trim
       use t_trim_overlapped_import
 !
       implicit none

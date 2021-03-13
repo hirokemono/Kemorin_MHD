@@ -54,6 +54,7 @@
 !
       use calypso_mpi
       use t_mesh_for_sleeve_extend
+      use t_sort_data_for_sleeve_trim
 !
       use calypso_mpi_int
       use trim_redundant_import_item
@@ -146,6 +147,7 @@
       use calypso_mpi
       use t_comm_table
       use t_mesh_for_sleeve_extend
+      use t_sort_data_for_sleeve_trim
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: add_comm

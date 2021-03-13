@@ -290,6 +290,7 @@
       use t_flags_each_comm_extend
       use t_mark_node_ele_to_extend
       use t_comm_table_for_each_pe
+      use t_sort_data_for_sleeve_trim
 !
       use m_solver_SR
       use calypso_mpi_int
@@ -352,7 +353,6 @@
       type(ele_data_for_sleeve_ext) :: exp_export_ie
       type(ele_data_for_sleeve_ext) :: exp_import_ie
       type(ele_data_for_sleeve_ext) :: trim_import_ie
-      integer(kind = kint), allocatable :: iele_lc_import_trim(:)
 !
       type(communication_table) :: expand_nod_comm
       type(node_data_for_sleeve_ext), save :: exp_export_xx
@@ -636,3 +636,4 @@
 !  ---------------------------------------------------------------------
 !
       end module analyzer_sleeve_extend2
+

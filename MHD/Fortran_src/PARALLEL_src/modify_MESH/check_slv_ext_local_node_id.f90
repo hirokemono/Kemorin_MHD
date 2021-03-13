@@ -39,6 +39,7 @@
       use t_comm_table
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
+      use t_sort_data_for_sleeve_trim
       use t_trim_overlapped_import
       use t_mark_node_ele_to_extend
 !
