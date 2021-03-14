@@ -214,18 +214,17 @@
      &   (sleeve_exp_p, mesh%nod_comm, ele_comm, mesh%node, mesh%ele,   &
      &    newmesh%nod_comm, newmesh%node, newmesh%ele, new_ele_comm,    &
      &    dist_4_comm, iflag_process_extend)
-!
       call s_extended_groups                                            &
      &   (mesh, group, newmesh, new_ele_comm, newgroup)
-!      call dealloc_comm_table(ele_comm)
+!
+      call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_nod_and_ele_infos(mesh)
 !
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
       call alloc_sph_node_geometry(newmesh%node)
       call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
-      call const_ele_comm_table(newmesh%node, newmesh%nod_comm,         &
-     &                          ele_comm, newmesh%ele)
+      call copy_comm_tbl_types(new_ele_comm, ele_comm)
 !
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !

@@ -137,7 +137,7 @@
       do iele = 1, add_ele_comm%ntot_import
         jele = iele +  ele%numele
         iele_new_global(jele)                                           &
-     &       = trimmed_import_connect%iele_gl_comm(jele)
+     &       = trimmed_import_connect%iele_gl_comm(iele)
       end do
 !$omp end parallel do
 !
