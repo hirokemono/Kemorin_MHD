@@ -24,6 +24,14 @@
 !!        type(mark_for_each_comm), intent(inout) :: mark_nod
 !!        type(mark_for_each_comm), intent(inout) :: mark_ele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
+!!
+!!      subroutine check_missing_connect_to_extend                      &
+!!    &          (node, ele, mark_ele, iflag_node, icou_nod, icou_ele)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(mark_for_each_comm), intent(inout) :: mark_ele
+!!        integer(kind = kint), intent(in) :: iflag_node(node%numnod)
+!!        integer(kind = kint), intent(inout) :: icou_nod, icou_ele
 !!@endverbatim
 !
       module t_mark_node_ele_to_extend

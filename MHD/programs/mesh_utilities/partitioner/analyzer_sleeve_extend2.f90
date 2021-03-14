@@ -193,8 +193,6 @@
       type(node_ele_double_number), save :: iele_dbl_org
       type(dist_from_wall_in_export) :: dist_4_comm
 !
-      integer :: i
-!
       if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
       if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
@@ -319,6 +317,7 @@
       use check_slv_ext_local_node_id
       use checks_for_sleeve_extend
 !
+      use const_nod_ele_to_extend
       use const_extend_nod_comm_table
       use const_extend_ele_comm_table
 !
@@ -340,14 +339,6 @@
 !>      Structure of double numbering
       type(node_ele_double_number) :: dbl_id2
 !
-!>      added_comm%item_export :: export table or flag to be added
-!>      added_comm%item_import :: import table or flag to be added
-      type(communication_table) :: added_comm
-      type(node_buffer_2_extend) :: send_nbuf
-      type(node_buffer_2_extend) :: recv_nbuf
-!
-      type(flags_each_comm_extend), save :: each_exp_flags
-!
       integer(kind = kint) :: iflag_process_extend = 0
 !
       type(communication_table) :: expand_ele_comm
@@ -365,132 +356,29 @@
 !
       type(mark_for_each_comm), allocatable :: mark_nod(:)
       type(mark_for_each_comm), allocatable :: mark_ele(:)
-
-      type(comm_table_for_each_pe) :: each_comm
-!
-      integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
-!
-      integer(kind = kint) :: i, icou, jcou
 !
       type(communication_table) :: add_nod_comm
       type(communication_table) :: add_ele_comm
 !
-      real(kind = kreal), allocatable :: vect_tmp(:,:)
-!
 !
       if(my_rank .eq. 0) iflag_debug = 1
-!
-      call alloc_flags_each_comm_extend                                 &
-     &   (org_node%numnod, org_ele%numele, each_exp_flags)
 !
       sleeve_exp_p%iflag_expand = iflag_distance
       sleeve_exp_p%dist_max =     0.05d0
 !
-      allocate(vect_tmp(org_node%numnod,3))
       allocate(mark_nod(nod_comm%num_neib))
       allocate(mark_ele(nod_comm%num_neib))
-      icou = 0
-      jcou = 0
-      do i = 1, nod_comm%num_neib
-        call alloc_comm_table_for_each(org_node, each_comm)
-        call init_comm_table_for_each(i, org_node, nod_comm,            &
-     &      dist_4_comm, each_comm, each_exp_flags%distance)
-        call s_mark_node_ele_to_extend                                  &
-     &     (sleeve_exp_p, org_node, org_ele, neib_ele, vect_tmp,        &
-     &      each_comm, mark_nod(i), mark_ele(i), each_exp_flags)
-        call dealloc_comm_table_for_each(each_comm)
-!
-        call check_missing_connect_to_extend                            &
-    &      (org_node, org_ele, mark_ele(i), each_exp_flags%iflag_node,  &
-    &       icou, jcou)
-      end do
-      call dealloc_flags_each_comm_extend(each_exp_flags)
-      deallocate(vect_tmp)
-!
-!
-      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
-      call calypso_mpi_reduce_one_int(jcou, nele_failed_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*) 'Failed element list:',             &
-     &                             ntot_failed_gl, nele_failed_gl
-      deallocate(dist_4_comm%distance_in_export)
-!
-      write(*,*) my_rank, 'mark_nod%num_marked',                        &
-     &          mark_nod(1:nod_comm%num_neib)%num_marked,               &
-     &        ' of ', org_node%numnod
-      write(*,*) my_rank, 'mark_ele%num_marked',                        &
-     &          mark_ele(1:nod_comm%num_neib)%num_marked,               &
-     &        ' of ', org_ele%numele
-!
+      call const_sleeve_expand_list                                     &
+     &   (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,          &
+     &    dist_4_comm, mark_nod, mark_ele)
 !
       call s_const_extended_neib_domain(nod_comm, inod_dbl, mark_nod,   &
      &    add_nod_comm, iflag_process_extend)
 !
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'start expand_nod_comm'
-!
-      expand_nod_comm%num_neib = nod_comm%num_neib
-      call alloc_neighbouring_id(expand_nod_comm)
-      call alloc_import_num(expand_nod_comm)
-      call alloc_export_num(expand_nod_comm)
-!
-!$omp parallel workshare
-      expand_nod_comm%id_neib(1:expand_nod_comm%num_neib)               &
-     &        = nod_comm%id_neib(1:expand_nod_comm%num_neib)
-!$omp end parallel workshare
-!
-!
-      expand_ele_comm%num_neib = nod_comm%num_neib
-      call alloc_neighbouring_id(expand_ele_comm)
-      call alloc_import_num(expand_ele_comm)
-      call alloc_export_num(expand_ele_comm)
-!
-!$omp parallel workshare
-      expand_ele_comm%id_neib(1:expand_ele_comm%num_neib)               &
-     &        = nod_comm%id_neib(1:expand_ele_comm%num_neib)
-!$omp end parallel workshare
-!
-      call count_export_4_expanded_mesh                                 &
-     &   (nod_comm, org_node, mark_nod, mark_ele,                       &
-     &    expand_nod_comm%num_export, expand_ele_comm%num_export)
-      call s_cal_total_and_stacks                                       &
-     &   (nod_comm%num_neib, expand_nod_comm%num_export, izero,         &
-     &    expand_nod_comm%istack_export, expand_nod_comm%ntot_export)
-      call s_cal_total_and_stacks                                       &
-     &   (nod_comm%num_neib, expand_ele_comm%num_export, izero,         &
-     &    expand_ele_comm%istack_export, expand_ele_comm%ntot_export)
-
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_nod_comm%num_export, SR_sig1,                          &
-     &    expand_nod_comm%num_import, expand_nod_comm%istack_import,    &
-     &    expand_nod_comm%ntot_import)
-!
-      call alloc_export_item(expand_nod_comm)
-      call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_export,      &
-     &                                exp_export_xx)
-!
-      call alloc_export_item(expand_ele_comm)
-      call alloc_ele_data_sleeve_ext                                    &
-     &   (expand_ele_comm%ntot_export, org_ele%nnod_4_ele,              &
-     &    exp_export_ie)
-      call set_export_4_expanded_mesh(nod_comm, org_node, org_ele,      &
-     &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
-     &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
-     &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
-     &    expand_nod_comm%item_export, exp_export_xx,                   &
-     &    expand_ele_comm%item_export, exp_export_ie)
-!
-      call alloc_import_item(expand_nod_comm)
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    expand_nod_comm%item_export, SR_sig1,                         &
-     &    expand_nod_comm%item_import)
-!
-      call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_import,      &
-     &                                exp_import_xx)
-      call send_extended_node_position(expand_nod_comm,                 &
-     &                                 exp_export_xx, exp_import_xx)
-      call dealloc_node_data_sleeve_ext(exp_export_xx)
+      call comm_extended_import_nod_ele                                 &
+     &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
+     &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
+     &    exp_import_xx, exp_import_ie)
 !
 !
       call const_extended_node_position                                 &
@@ -520,10 +408,6 @@
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !
 !
-!
-      call comm_extended_element_connect(nod_comm, org_ele,             &
-     &    expand_ele_comm, exp_export_ie, exp_import_ie)
-      call dealloc_ele_data_sleeve_ext(exp_export_ie)
 !
       call const_extended_element_connect                               &
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
@@ -555,5 +439,3 @@
 !  ---------------------------------------------------------------------
 !
       end module analyzer_sleeve_extend2
-
-

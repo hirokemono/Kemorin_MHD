@@ -7,13 +7,6 @@
 !> @brief Routines to constructu elment communication table
 !!
 !!@verbatim
-!!      subroutine comm_extended_element_connect(nod_comm, ele,         &
-!!     &          expand_ele_comm, exp_export_ie, exp_import_ie)
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(inout) :: expand_ele_comm
-!!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_export_ie
-!!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
 !!      subroutine const_extended_element_connect                     &
 !!     &         (nod_comm, node, ele, inod_new_dbl,                  &
 !!     &          expand_nod_comm, add_nod_comm, exp_import_xx,       &
@@ -66,43 +59,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine comm_extended_element_connect(nod_comm, ele,           &
-     &          expand_ele_comm, exp_export_ie, exp_import_ie)
-!
-      use m_solver_SR
-      use calypso_mpi_int
-      use reverse_SR_int
-      use set_mesh_for_sleeve_extend
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(element_data), intent(in) :: ele
-!
-      type(communication_table), intent(inout) :: expand_ele_comm
-      type(ele_data_for_sleeve_ext), intent(inout) :: exp_export_ie
-      type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
-!
-!
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_ele_comm%num_export, SR_sig1,                          &
-     &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
-     &    expand_ele_comm%ntot_import)
-!
-      call alloc_import_item(expand_ele_comm)
-      call alloc_ele_data_sleeve_ext                                    &
-     &   (expand_ele_comm%ntot_import, ele%nnod_4_ele, exp_import_ie)
-!
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    expand_ele_comm%item_export, SR_sig1,                         &
-     &    expand_ele_comm%item_import)
-      call send_extended_element_connect(ele, expand_ele_comm,          &
-     &    exp_export_ie, exp_import_ie)
-!
-      end subroutine comm_extended_element_connect
 !
 !  ---------------------------------------------------------------------
 !
