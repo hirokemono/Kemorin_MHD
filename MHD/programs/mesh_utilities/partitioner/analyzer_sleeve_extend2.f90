@@ -365,8 +365,7 @@
 !
       type(data_for_trim_import), save :: ext_nod_trim
 !
-      integer(kind = kint), allocatable :: idx_nod_extend_to_trimmed(:)
-      integer(kind = kint), allocatable :: inod_lc_new_import_trim(:)
+      type(import_extend_to_trim), save :: trim_nod_to_ext
 !
       type(mark_for_each_comm), allocatable :: mark_nod(:)
       type(mark_for_each_comm), allocatable :: mark_ele(:)
@@ -521,10 +520,10 @@
       if(iflag_debug .gt. 0) write(*,*) 'find_home_import_item_by_trim'
 !
 !
-      allocate(idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import))
+      allocate(trim_nod_to_ext%idx_extend_to_trim(expand_nod_comm%ntot_import))
       call find_home_import_item_by_trim                                &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import,         &
-     &    ext_nod_trim, idx_nod_extend_to_trimmed, icou)
+     &    ext_nod_trim, trim_nod_to_ext%idx_extend_to_trim, icou)
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Missing import item in trimmed:', ntot_failed_gl
@@ -545,20 +544,21 @@
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trim_import_xx)
-      allocate(inod_lc_new_import_trim(add_nod_comm%ntot_import))
+      allocate(trim_nod_to_ext%import_lc_trimmed(add_nod_comm%ntot_import))
 !
       call set_import_item_for_extend                                   &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
-     &    inod_lc_new_import_trim, add_nod_comm%item_import)
+     &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_import)
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
 !
 !      call s_check_slv_ext_local_node_id(org_node, nod_comm, mark_nod, &
 !     &    expand_nod_comm, add_nod_comm, sort_nod_import,              &
 !     &    ext_nod_trim, exp_import_xx, trim_import_xx,                 &
-!     &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
+!     &    trim_nod_to_ext%idx_extend_to_trim,                          &
+!     &    trim_nod_to_ext%import_lc_trimmed)
 !
       call alloc_export_num(add_nod_comm)
       call num_items_send_recv                                          &
@@ -574,7 +574,8 @@
       call comm_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    inod_lc_new_import_trim, SR_sig1, add_nod_comm%item_export)
+     &    trim_nod_to_ext%import_lc_trimmed, SR_sig1,                   &
+     &    add_nod_comm%item_export)
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
@@ -585,15 +586,17 @@
       if(iflag_debug .gt. 0) write(*,*) 'start new_node'
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
-     &    trim_import_xx, inod_lc_new_import_trim, new_node, dbl_id2)
+     &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
+     &    new_node, dbl_id2)
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'check_appended_node_data'
       call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
-     &    idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
-      deallocate(inod_lc_new_import_trim)
+     &    trim_nod_to_ext%idx_extend_to_trim,                           &
+     &    trim_nod_to_ext%import_lc_trimmed)
+      deallocate(trim_nod_to_ext%import_lc_trimmed)
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
@@ -610,8 +613,9 @@
       call const_extended_element_connect                               &
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
      &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
-     &    idx_nod_extend_to_trimmed, expand_ele_comm, exp_import_ie)
-      deallocate(idx_nod_extend_to_trimmed)
+     &    trim_nod_to_ext%idx_extend_to_trim,                           &
+     &    expand_ele_comm, exp_import_ie)
+      deallocate(trim_nod_to_ext%idx_extend_to_trim)
       call dealloc_node_data_sleeve_ext(exp_import_xx)
       call dealloc_stack_to_trim_extend(ext_nod_trim)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)
@@ -636,4 +640,5 @@
 !  ---------------------------------------------------------------------
 !
       end module analyzer_sleeve_extend2
+
 
