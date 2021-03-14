@@ -7,19 +7,33 @@
 !> @brief Routines to constructu elment communication table
 !!
 !!@verbatim
+!!      subroutine alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
+!!      subroutine dealloc_sleeve_extension_marks(marks_4_extend)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(marks_for_sleeve_extension),                             &
+!!     &                     intent(inout) :: marks_4_extend
+!!
+!!      subroutine const_sleeve_expand_list                             &
+!!     &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,          &
+!!     &          dist_4_comm, marks_4_extend)
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(element_around_node), intent(in) :: neib_ele
+!!        type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
+!!        type(marks_for_sleeve_extension),                             &
+!!     &                     intent(inout) :: marks_4_extend
 !!      subroutine comm_extended_import_nod_ele                         &
 !!     &         (nod_comm, node, inod_dbl, ele, iele_dbl,              &
-!!     &          mark_nod, mark_ele, expand_nod_comm, expand_ele_comm, &
+!!     &          marks_4_extend, expand_nod_comm, expand_ele_comm,     &
 !!     &          exp_import_xx, exp_import_ie)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(node_ele_double_number), intent(in) :: iele_dbl
-!!        type(mark_for_each_comm), intent(in)                          &
-!!     &                         :: mark_nod(nod_comm%num_neib)
-!!        type(mark_for_each_comm), intent(in)                          &
-!!     &                         :: mark_ele(nod_comm%num_neib)
+!!        type(marks_for_sleeve_extension) intent(in) :: marks_4_extend
 !!        type(communication_table), intent(inout) :: expand_nod_comm
 !!        type(communication_table), intent(inout) :: expand_ele_comm
 !!        type(node_data_for_sleeve_ext), intent(inout) :: exp_import_xx
@@ -43,16 +57,49 @@
 !
       implicit none
 !
+!
+      type marks_for_sleeve_extension
+        type(mark_for_each_comm), allocatable :: mark_nod(:)
+        type(mark_for_each_comm), allocatable :: mark_ele(:)
+      end type marks_for_sleeve_extension
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(marks_for_sleeve_extension),                                 &
+     &                     intent(inout) :: marks_4_extend
+!
+!
+      allocate(marks_4_extend%mark_nod(nod_comm%num_neib))
+      allocate(marks_4_extend%mark_ele(nod_comm%num_neib))
+!
+      end subroutine alloc_sleeve_extension_marks
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_sleeve_extension_marks(marks_4_extend)
+!
+      type(marks_for_sleeve_extension),                                 &
+     &                     intent(inout) :: marks_4_extend
+!
+!
+      deallocate(marks_4_extend%mark_nod)
+      deallocate(marks_4_extend%mark_ele)
+!
+      end subroutine dealloc_sleeve_extension_marks
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       subroutine const_sleeve_expand_list                               &
-     &         (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,    &
-     &          dist_4_comm, mark_nod, mark_ele)
+     &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,            &
+     &          dist_4_comm, marks_4_extend)
 !
       use m_precision
       use m_constants
@@ -66,15 +113,13 @@
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: org_node
-      type(element_data), intent(in) :: org_ele
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
 !
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
-      type(mark_for_each_comm), intent(inout)                           &
-     &                         :: mark_nod(nod_comm%num_neib)
-      type(mark_for_each_comm), intent(inout)                           &
-     &                         :: mark_ele(nod_comm%num_neib)
+      type(marks_for_sleeve_extension),                                 &
+     &                     intent(inout) :: marks_4_extend
 
       type(flags_each_comm_extend), save :: each_exp_flags
       type(comm_table_for_each_pe), save :: each_comm
@@ -83,23 +128,24 @@
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
 !
-      allocate(vect_tmp(org_node%numnod,3))
+      allocate(vect_tmp(node%numnod,3))
       call alloc_flags_each_comm_extend                                 &
-     &   (org_node%numnod, org_ele%numele, each_exp_flags)
+     &   (node%numnod, ele%numele, each_exp_flags)
 !
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
-        call alloc_comm_table_for_each(org_node, each_comm)
-        call init_comm_table_for_each(i, org_node, nod_comm,            &
+        call alloc_comm_table_for_each(node, each_comm)
+        call init_comm_table_for_each(i, node, nod_comm,                &
      &      dist_4_comm, each_comm, each_exp_flags%distance)
         call s_mark_node_ele_to_extend                                  &
-     &     (sleeve_exp_p, org_node, org_ele, neib_ele, vect_tmp,        &
-     &      each_comm, mark_nod(i), mark_ele(i), each_exp_flags)
+     &     (sleeve_exp_p, node, ele, neib_ele, vect_tmp, each_comm,     &
+     &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
+     &      each_exp_flags)
         call dealloc_comm_table_for_each(each_comm)
 !
-        call check_missing_connect_to_extend                            &
-    &      (org_node, org_ele, mark_ele(i), each_exp_flags%iflag_node,  &
+        call check_missing_connect_to_extend(node, ele,                 &
+    &       marks_4_extend%mark_ele(i), each_exp_flags%iflag_node,      &
     &       icou, jcou)
       end do
       call dealloc_flags_each_comm_extend(each_exp_flags)
@@ -113,11 +159,11 @@
       deallocate(dist_4_comm%distance_in_export)
 !
       write(*,*) my_rank, 'mark_nod%num_marked',                        &
-     &          mark_nod(1:nod_comm%num_neib)%num_marked,               &
-     &        ' of ', org_node%numnod
+     &         marks_4_extend%mark_nod(1:nod_comm%num_neib)%num_marked, &
+     &        ' of ', node%numnod
       write(*,*) my_rank, 'mark_ele%num_marked',                        &
-     &          mark_ele(1:nod_comm%num_neib)%num_marked,               &
-     &        ' of ', org_ele%numele
+     &         marks_4_extend%mark_ele(1:nod_comm%num_neib)%num_marked, &
+     &        ' of ', ele%numele
 !
       end subroutine const_sleeve_expand_list
 !
@@ -125,7 +171,7 @@
 !
       subroutine comm_extended_import_nod_ele                           &
      &         (nod_comm, node, inod_dbl, ele, iele_dbl,                &
-     &          mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,   &
+     &          marks_4_extend, expand_nod_comm, expand_ele_comm,       &
      &          exp_import_xx, exp_import_ie)
 !
       use m_solver_SR
@@ -139,11 +185,7 @@
       type(element_data), intent(in) :: ele
       type(node_ele_double_number), intent(in) :: inod_dbl
       type(node_ele_double_number), intent(in) :: iele_dbl
-!
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_nod(nod_comm%num_neib)
-      type(mark_for_each_comm), intent(in)                              &
-     &                         :: mark_ele(nod_comm%num_neib)
+      type(marks_for_sleeve_extension), intent(in) :: marks_4_extend
 !
       type(communication_table), intent(inout) :: expand_nod_comm
       type(communication_table), intent(inout) :: expand_ele_comm
@@ -172,8 +214,8 @@
      &        = nod_comm%id_neib(1:nod_comm%num_neib)
 !$omp end parallel workshare
 !
-      call count_export_4_expanded_mesh                                 &
-     &   (nod_comm, node, mark_nod, mark_ele,                           &
+      call count_export_4_expanded_mesh(nod_comm, node,                 &
+     &    marks_4_extend%mark_nod, marks_4_extend%mark_ele,             &
      &    expand_nod_comm%num_export, expand_ele_comm%num_export)
       call s_cal_total_and_stacks                                       &
      &   (nod_comm%num_neib, expand_nod_comm%num_export, izero,         &
@@ -201,8 +243,9 @@
       call alloc_ele_data_sleeve_ext                                    &
      &   (expand_ele_comm%ntot_export, ele%nnod_4_ele, exp_export_ie)
 !
-      call set_export_4_expanded_mesh(nod_comm, node, ele,              &
-     &    inod_dbl, iele_dbl, mark_nod, mark_ele,                       &
+      call set_export_4_expanded_mesh                                   &
+     &   (nod_comm, node, ele, inod_dbl, iele_dbl,                      &
+     &    marks_4_extend%mark_nod, marks_4_extend%mark_ele,             &
      &    expand_nod_comm%ntot_export, expand_nod_comm%istack_export,   &
      &    expand_ele_comm%ntot_export, expand_ele_comm%istack_export,   &
      &    expand_nod_comm%item_export, exp_export_xx,                   &

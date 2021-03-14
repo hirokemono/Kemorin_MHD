@@ -163,6 +163,7 @@
       subroutine para_sleeve_extension2(mesh, group, ele_comm,          &
      &          newmesh, newgroup, new_ele_comm)
 !
+      use t_ctl_param_sleeve_extend
       use t_para_double_numbering
       use t_repart_double_numberings
       use t_next_node_ele_4_node
@@ -177,6 +178,7 @@
       use set_nnod_4_ele_by_type
       use mark_export_nod_ele_extend
       use check_sleeve_extend_mesh
+      use sleeve_extend
 !
       use extended_groups
 !
@@ -188,24 +190,11 @@
       type(mesh_groups), intent(inout) :: newgroup
       type(communication_table), intent(inout) :: new_ele_comm
 !
-      type(next_nod_ele_table), save :: next_tbl
-      type(node_ele_double_number), save :: inod_dbl_org
-      type(node_ele_double_number), save :: iele_dbl_org
       type(dist_from_wall_in_export) :: dist_4_comm
 !
-      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-      if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
-      call set_belonged_ele_and_next_nod                                &
-     &   (mesh, next_tbl%neib_ele, next_tbl%neib_nod)
+      integer(kind = kint) :: iflag_process_extend = 0
 !
-      call alloc_double_numbering(mesh%node%numnod, inod_dbl_org)
-      if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
-      call set_node_double_numbering                                    &
-     &   (mesh%node, mesh%nod_comm, inod_dbl_org)
-!
-      call alloc_double_numbering(mesh%ele%numele, iele_dbl_org)
-      call double_numbering_4_element(mesh%ele, ele_comm, iele_dbl_org)
-      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
+      type(sleeve_extension_param), save :: sleeve_exp_p
 !
 !
       dist_4_comm%ntot = mesh%nod_comm%ntot_export
@@ -214,36 +203,20 @@
       dist_4_comm%distance_in_export(1:dist_4_comm%ntot) = 0.0d0
 !$omp end parallel workshare
 !
+      if(my_rank .eq. 0) iflag_debug = 1
 !
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
-      if (iflag_debug.gt.0) write(*,*) 'extend_node_comm_table2'
-      call extend_node_comm_table2                                      &
-     &   (mesh%nod_comm, ele_comm, mesh%node, inod_dbl_org,             &
-     &    mesh%ele, iele_dbl_org, next_tbl%neib_ele,                    &
+      sleeve_exp_p%iflag_expand = iflag_distance
+      sleeve_exp_p%dist_max =     0.05d0
+!
+!
+      if (iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve'
+      call extend_mesh_sleeve                                      &
+     &   (sleeve_exp_p, mesh%nod_comm, ele_comm, mesh%node, mesh%ele,   &
      &    newmesh%nod_comm, newmesh%node, newmesh%ele, new_ele_comm,    &
-     &    dist_4_comm)
-!
-      call check_extended_element                                       &
-     &   (newmesh%nod_comm, newmesh%node, newmesh%ele, new_ele_comm)
-!
+     &    dist_4_comm, iflag_process_extend)
 !
       call s_extended_groups                                            &
      &   (mesh, group, newmesh, new_ele_comm, newgroup)
-!
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
-!
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
-!      if (iflag_debug.gt.0) write(*,*) 'extend_ele_connectivity'
-!      call extend_ele_connectivity                                     &
-!     &   (mesh%nod_comm, ele_comm, mesh%node, mesh%ele,                &
-!     &    inod_dbl_org, next_tbl%neib_ele, newmesh%nod_comm, newmesh%node,  &
-!     &    newmesh%ele, iflag_SLEX_time, ist_elapsed_SLEX)
-!      newmesh%ele%first_ele_type                                       &
-!     &   = set_cube_eletype_from_num(newmesh%ele%nnod_4_ele)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
-!
-      call dealloc_next_nod_ele_table(next_tbl)
-      call dealloc_double_numbering(inod_dbl_org)
 !      call dealloc_comm_table(ele_comm)
       call dealloc_numele_stack(mesh%ele)
       call dealloc_nod_and_ele_infos(mesh)
@@ -256,186 +229,8 @@
 !
       if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
-!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+4)
-!      if (iflag_debug.gt.0) write(*,*) 's_extend_group_table'
-!      call s_extend_group_table(nprocs, newmesh%nod_comm, ele_comm,    &
-!     &    newmesh%node, newmesh%ele, group, newgroup)
-!      call dealloc_mesh_data(mesh, group)
-!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+4)
-!
-!      if (iflag_debug.gt.0) write(*,*) 'copy_mesh_and_group'
-!      call copy_mesh_and_group(newmesh, newgroup, mesh, group)
-!      call dup_nod_and_ele_infos(newmesh, mesh)
-!
-!      call dealloc_numele_stack(newmesh%ele)
-!      call dealloc_nod_and_ele_infos(newmesh)
-!      call dealloc_mesh_data(newmesh, newgroup)
-!
       end subroutine para_sleeve_extension2
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine extend_node_comm_table2                                &
-     &         (nod_comm, ele_comm, org_node, inod_dbl,                 &
-     &          org_ele, iele_dbl, neib_ele, new_nod_comm,              &
-     &          new_node, new_ele, new_ele_comm, dist_4_comm)
-!
-      use t_next_node_ele_4_node
-      use t_para_double_numbering
-      use t_mesh_for_sleeve_extend
-      use t_trim_overlapped_import
-      use t_ctl_param_sleeve_extend
-      use t_flags_each_comm_extend
-      use t_mark_node_ele_to_extend
-      use t_comm_table_for_each_pe
-      use t_sort_data_for_sleeve_trim
-!
-      use m_solver_SR
-      use calypso_mpi_int
-      use reverse_SR_int
-      use reverse_SR_int8
-      use reverse_SR_real
-      use solver_SR_type
-!
-      use quicksort
-      use extend_comm_table_SR
-      use mark_export_nod_ele_extend
-      use cal_minmax_and_stacks
-      use find_extended_node_and_ele
-      use find_extended_comm_table
-      use extend_comm_table
-!
-      use cal_minmax_and_stacks
-      use append_communication_table
-      use append_extended_node
-      use append_extended_element
-      use trim_redundant_import_item
-      use const_extended_neib_domain
-      use set_mesh_for_sleeve_extend
-      use trim_mesh_for_sleeve_extend
-      use set_expanded_comm_table
-      use check_slv_ext_local_node_id
-      use checks_for_sleeve_extend
-!
-      use const_nod_ele_to_extend
-      use const_extend_nod_comm_table
-      use const_extend_ele_comm_table
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(communication_table), intent(in) :: ele_comm
-      type(node_data), intent(in) :: org_node
-      type(element_data), intent(in) :: org_ele
-      type(node_ele_double_number), intent(in) :: inod_dbl
-      type(node_ele_double_number), intent(in) :: iele_dbl
-      type(element_around_node), intent(in) :: neib_ele
-!
-      type(communication_table), intent(inout) :: new_nod_comm
-      type(node_data), intent(inout) :: new_node
-      type(element_data), intent(inout) :: new_ele
-      type(communication_table), intent(inout) :: new_ele_comm
-      type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
-!
-      type(sleeve_extension_param), save :: sleeve_exp_p
-!>      Structure of double numbering
-      type(node_ele_double_number) :: dbl_id2
-!
-      integer(kind = kint) :: iflag_process_extend = 0
-!
-      type(communication_table) :: expand_ele_comm
-      type(ele_data_for_sleeve_ext) :: exp_export_ie
-      type(ele_data_for_sleeve_ext) :: exp_import_ie
-      type(ele_data_for_sleeve_ext) :: trim_import_ie
-!
-      type(communication_table) :: expand_nod_comm
-      type(node_data_for_sleeve_ext), save :: exp_export_xx
-      type(node_data_for_sleeve_ext), save :: exp_import_xx
-!
-      type(node_data_for_sleeve_ext), save :: trim_import_xx
-      type(data_for_trim_import), save :: ext_nod_trim
-      type(import_extend_to_trim), save :: trim_nod_to_ext
-!
-      type(mark_for_each_comm), allocatable :: mark_nod(:)
-      type(mark_for_each_comm), allocatable :: mark_ele(:)
-!
-      type(communication_table) :: add_nod_comm
-      type(communication_table) :: add_ele_comm
-!
-!
-      if(my_rank .eq. 0) iflag_debug = 1
-!
-      sleeve_exp_p%iflag_expand = iflag_distance
-      sleeve_exp_p%dist_max =     0.05d0
-!
-      allocate(mark_nod(nod_comm%num_neib))
-      allocate(mark_ele(nod_comm%num_neib))
-      call const_sleeve_expand_list                                     &
-     &   (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,          &
-     &    dist_4_comm, mark_nod, mark_ele)
-!
-      call s_const_extended_neib_domain(nod_comm, inod_dbl, mark_nod,   &
-     &    add_nod_comm, iflag_process_extend)
-!
-      call comm_extended_import_nod_ele                                 &
-     &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
-     &    mark_nod, mark_ele, expand_nod_comm, expand_ele_comm,         &
-     &    exp_import_xx, exp_import_ie)
-!
-!
-      call const_extended_node_position                                 &
-     &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
-     &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
-!
-      call const_extended_nod_comm_table                                &
-     &   (org_node, expand_nod_comm, ext_nod_trim,                      &
-     &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
-     &    dist_4_comm, add_nod_comm)
-!
-      call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
-     &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
-     &    new_node, dbl_id2)
-!
-      call check_appended_node_data                                     &
-     &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
-     &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
-     &    trim_nod_to_ext%idx_extend_to_trim,                           &
-     &    trim_nod_to_ext%import_lc_trimmed)
-      deallocate(trim_nod_to_ext%import_lc_trimmed)
-!
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
-      call s_append_communication_table                                 &
-     &   (nod_comm, add_nod_comm, new_nod_comm)
-      call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
-!
-!
-!
-      call const_extended_element_connect                               &
-     &   (nod_comm, org_node, org_ele, dbl_id2,                         &
-     &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
-     &    trim_nod_to_ext%idx_extend_to_trim,                           &
-     &    expand_ele_comm, exp_import_ie)
-      deallocate(trim_nod_to_ext%idx_extend_to_trim)
-      call dealloc_node_data_sleeve_ext(exp_import_xx)
-      call dealloc_stack_to_trim_extend(ext_nod_trim)
-      call dealloc_idx_trimed_to_sorted(ext_nod_trim)
-!
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'const_extended_ele_comm_table'
-      call const_extended_ele_comm_table                                &
-     &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
-     &    exp_import_ie, trim_import_ie, add_ele_comm)
-      call dealloc_comm_table(expand_ele_comm)
-!
-      call s_append_communication_table                                 &
-     &   (ele_comm, add_ele_comm, new_ele_comm)
-      call s_append_extended_element(org_ele, add_ele_comm,             &
-     &    trim_import_ie, new_ele)
-!
-      call check_returned_extend_element                                &
-     &   (iele_dbl, add_ele_comm, trim_import_ie)
-!
-      end subroutine extend_node_comm_table2
-!
-!  ---------------------------------------------------------------------
 !
       end module analyzer_sleeve_extend2
