@@ -117,7 +117,7 @@
       integer(kind = kint), intent(inout)                               &
      &                        :: ie_new(num_newele,nnod_4_ele_new)
 !
-      integer(kind = kint) :: i, iele, k1, ist, inum, jele
+      integer(kind = kint) :: iele, k1, inum, jele
 !
 !
 !$omp parallel do
@@ -135,23 +135,19 @@
 !
 !$omp parallel do private(iele,jele)
       do iele = 1, add_ele_comm%ntot_import
-        jele = iele +  ele%numele
+        jele = iele + ele%numele
         iele_new_global(jele)                                           &
      &       = trimmed_import_connect%iele_gl_comm(iele)
       end do
 !$omp end parallel do
 !
       do k1 = 1, ele%nnod_4_ele
-        do i = 1, add_ele_comm%num_neib
-          ist = add_ele_comm%istack_import(i-1)
 !$omp parallel do private(inum,jele)
-          do inum = 1, add_ele_comm%num_import(i)
-            jele = inum + ist + ele%numele
-            ie_new(jele,k1)                                             &
-     &           = trimmed_import_connect%ie_comm(inum+ist,k1)
-          end do
-!$omp end parallel do
+        do inum = 1, add_ele_comm%ntot_import
+          jele = inum + ele%numele
+          ie_new(jele,k1) = trimmed_import_connect%ie_comm(inum,k1)
         end do
+!$omp end parallel do
       end do
 !
       end subroutine append_extended_ele_connenct

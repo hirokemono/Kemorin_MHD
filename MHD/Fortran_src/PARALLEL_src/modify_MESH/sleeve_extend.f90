@@ -58,6 +58,7 @@
       use extended_groups
       use copy_mesh_structures
       use nod_and_ele_derived_info
+      use const_element_comm_tables
 !
       type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
       type(mesh_geometry), intent(inout) :: mesh
@@ -74,14 +75,19 @@
       integer(kind = kint) :: iloop
 !
 !
-      sleeve_exp_p%iflag_expand = iflag_distance
-      sleeve_exp_p%dist_max =     0.05d0
+!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
+!      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      call set_nod_and_ele_infos(mesh%node, mesh%ele)
+      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
+     &                          ele_comm, mesh%ele)
 !
       dist_4_comm%ntot = mesh%nod_comm%ntot_export
       allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
 !$omp parallel workshare
       dist_4_comm%distance_in_export(1:dist_4_comm%ntot) = 0.0d0
 !$omp end parallel workshare
+!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
+!      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
       do iloop = 1, 10
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
@@ -95,16 +101,13 @@
         call dealloc_comm_table(ele_comm)
         call dealloc_numele_stack(mesh%ele)
         call dealloc_nod_and_ele_infos(mesh)
-        call dealloc_groups_data(group)
+        call dealloc_mesh_data(mesh, group)
 !
 !        if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
         call alloc_sph_node_geometry(newmesh%node)
-        call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
+        call copy_mesh_and_group(newmesh, newgroup, mesh, group)
         call copy_comm_tbl_types(new_ele_comm, ele_comm)
-!
-        call copy_group_data(newgroup%nod_grp, group%nod_grp)
-        call copy_group_data(newgroup%ele_grp, group%ele_grp)
-        call copy_surface_group(newgroup%surf_grp, group%surf_grp)
+        call set_nod_and_ele_infos(mesh%node, mesh%ele)
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         if(iflag_process_extend .eq. 0) exit
