@@ -9,13 +9,13 @@
 !!@verbatim
 !!      subroutine rendering_image_4_lic                                &
 !!     &         (istep_pvr, time, node, ele, surf, lic_p, color_param, &
-!!     &          cbar_param, field_lic, field_pvr, view_param,         &
+!!     &          cbar_param, field_lic, draw_param, view_param,        &
 !!     &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(lic_field_data), intent(in) :: field_lic
-!!        type(pvr_projected_field), intent(in) :: field_pvr
+!!        type(pvr_projected_field), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !!        type(pvr_view_parameter), intent(in) :: view_param
@@ -45,7 +45,7 @@
 !
       subroutine rendering_image_4_lic                                  &
      &         (istep_pvr, time, node, ele, surf, lic_p, color_param,   &
-     &          cbar_param, field_lic, field_pvr, view_param,           &
+     &          cbar_param, field_lic, draw_param, view_param,          &
      &          pvr_screen, pvr_start, pvr_stencil, pvr_rgb)
 !
       use m_geometry_constants
@@ -73,7 +73,7 @@
       type(surface_data), intent(in) :: surf
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
-      type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_field), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_view_parameter), intent(in) :: view_param
@@ -90,7 +90,7 @@
       if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+3)
       if(iflag_debug .gt. 0) write(*,*) 'ray_trace_each_lic_image'
       call ray_trace_each_lic_image                                     &
-     &   (node, ele, surf, lic_p, pvr_screen, field_lic, field_pvr,     &
+     &   (node, ele, surf, lic_p, pvr_screen, field_lic, draw_param,    &
      &    color_param, view_param%viewpoint_vec, ray_vec,               &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_check,              &
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &

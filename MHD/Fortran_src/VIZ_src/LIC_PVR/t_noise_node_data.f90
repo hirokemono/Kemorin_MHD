@@ -96,7 +96,6 @@
         integer(kind=kint) :: num_ref
         real(kind=kreal), intent(in) :: min, max
         real(kind=kreal), intent(in) :: ref_data(num_ref)
-        !type(pvr_projected_field), intent(in) :: field_pvr
 
         n_mask%range_min = min
         n_mask%range_max = max

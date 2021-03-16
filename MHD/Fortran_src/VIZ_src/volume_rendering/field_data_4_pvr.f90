@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine cal_field_4_each_pvr(node, ele, g_FEM, jac_3d,       &
-!!     &          nod_fld, fld_params, field_pvr)
+!!     &          nod_fld, fld_params, draw_param)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(pvr_field_parameter), intent(in) :: fld_params
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_projected_field), intent(inout) :: field_pvr
+!!        type(pvr_projected_field), intent(inout) :: draw_param
 !!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
 !!        type(pvr_view_parameter), intent(in) :: view
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -37,7 +37,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_field_4_each_pvr(node, ele, g_FEM, jac_3d,         &
-     &          nod_fld, fld_params, field_pvr)
+     &          nod_fld, fld_params, draw_param)
 !
       use t_geometry_data
       use t_phys_data
@@ -54,7 +54,7 @@
       type(pvr_field_parameter), intent(in) :: fld_params
       type(phys_data), intent(in) :: nod_fld
 !
-      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(pvr_projected_field), intent(inout) :: draw_param
 !
 !
       integer(kind = kint) :: i_field, ist_fld, num_comp
@@ -67,13 +67,13 @@
      &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
      &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
      &    fld_params%id_component, nod_fld%d_fld(1,ist_fld+1),          &
-     &    field_pvr%d_pvr)
+     &    draw_param%d_pvr)
 !
       call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
      &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
      &    g_FEM%owe3d, jac_3d%ntot_int, ione, jac_3d%dnx, jac_3d%xjac,  &
-     &    field_pvr%grad_ele, field_pvr%d_pvr)
+     &    draw_param%grad_ele, draw_param%d_pvr)
 !
       end subroutine cal_field_4_each_pvr
 !

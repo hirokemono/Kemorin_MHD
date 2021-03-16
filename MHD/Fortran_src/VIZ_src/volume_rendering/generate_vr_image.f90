@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine transfer_to_screen                                   &
 !!     &        (node, ele, surf, surf_grp, surf_grp_v,                 &
-!!     &         field_pvr, view_param, projection_mat, pixel_xy,       &
+!!     &         draw_param, view_param, projection_mat, pixel_xy,      &
 !!     &         pvr_bound, pvr_screen, pvr_start)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -18,7 +18,7 @@
 !!        type (surface_node_grp_data), intent(in)  :: surf_nod_grp
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!!        type(pvr_projected_field), intent(in) :: field_pvr
+!!        type(pvr_projected_field), intent(in) :: draw_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -52,7 +52,7 @@
 !
       subroutine transfer_to_screen                                     &
      &        (node, ele, surf, surf_grp, surf_grp_v,                   &
-     &         field_pvr, view_param, projection_mat, pixel_xy,         &
+     &         draw_param, view_param, projection_mat, pixel_xy,        &
      &         pvr_bound, pvr_screen, pvr_start)
 !
       use m_geometry_constants
@@ -72,7 +72,7 @@
       type(surface_group_geometry), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_field), intent(in) :: draw_param
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_projected_position), intent(inout) :: pvr_screen
@@ -82,7 +82,7 @@
 !
       call set_opacity_for_boundaries                                   &
      &   (surf_grp, surf_grp_v, view_param,                             &
-     &    field_pvr%iflag_enhanse, field_pvr%enhansed_opacity,          &
+     &    draw_param%iflag_enhanse, draw_param%enhansed_opacity,        &
      &    ele%numele, surf%numsurf, surf%isf_4_ele,                     &
      &    pvr_screen%arccos_sf)
 !

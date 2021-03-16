@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image(node, ele, surf,            &
-!!     &          lic_p, pvr_screen, field_lic, field_pvr, color_param, &
+!!     &          lic_p, pvr_screen, field_lic, draw_param, color_param,&
 !!     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,  &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
@@ -17,7 +17,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(lic_field_data), intent(in) :: field_lic
-!!        type(pvr_projected_field), intent(in) :: field_pvr
+!!        type(pvr_projected_field), intent(in) :: draw_param
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!@endverbatim
@@ -49,7 +49,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_lic_image(node, ele, surf,              &
-     &          lic_p, pvr_screen, field_lic, field_pvr, color_param,   &
+     &          lic_p, pvr_screen, field_lic, draw_param, color_param,  &
      &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,    &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
@@ -64,7 +64,7 @@
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
-      type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_field), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
@@ -103,7 +103,7 @@
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
-!        if(id_pixel_check(inum)*field_pvr%num_sections .gt. 0) then
+!        if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
 !          write(*,*) 'check section trace for ', my_rank, inum
 !        end if
 !
@@ -113,7 +113,7 @@
      &      surf%isf_4_ele, surf%iele_4_surf, ele%interior_ele,         &
      &      node%xx, surf%vnorm_surf, surf%interior_surf,               &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
-     &      viewpoint_vec, lic_p, field_lic, field_pvr, color_param,    &
+     &      viewpoint_vec, lic_p, field_lic, draw_param, color_param,   &
      &      ray_vec, id_pixel_check(inum), isf_pvr_ray_start(1,inum),   &
      &      xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),             &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
@@ -132,7 +132,7 @@
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
-     &        lic_p, field_lic, field_pvr, color_param, ray_vec,        &
+     &        lic_p, field_lic, draw_param, color_param, ray_vec,       &
      &        iflag_check, isurf_org, screen_st, xx_st, xi, rgba_ray,   &
      &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
 !
@@ -163,7 +163,7 @@
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
-      type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_field), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
@@ -242,7 +242,7 @@
         iele =    isurf_org(1)
         isf_org = isurf_org(2)
 !
-        if(field_pvr%iflag_used_ele(iele).eq.0) then
+        if(draw_param%iflag_used_ele(iele) .eq. 0) then
           iflag_comm = 2
           exit
         end if

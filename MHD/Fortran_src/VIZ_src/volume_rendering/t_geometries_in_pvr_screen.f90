@@ -13,7 +13,7 @@
 !!      subroutine dealloc_projected_position(pvr_screen)
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
-!!     &         (numnod, numele, num_sf_grp, field_pvr)
+!!     &         (numnod, numele, num_sf_grp, draw_param)
 !!      subroutine dealloc_nod_data_4_pvr(fld)
 !!
 !!      subroutine alloc_pvr_sections(fld)
@@ -23,7 +23,7 @@
 !!      subroutine dealloc_data_4_pvr(fld)
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
-!!      &        (num_pvr, proj, field_pvr)
+!!      &        (num_pvr, proj, draw_param)
 !!      subroutine deallocate_pixel_position_pvr(pixel_xy)
 !!@endverbatim
 !
@@ -146,32 +146,32 @@
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_nod_data_4_pvr                                &
-     &         (numnod, numele, num_sf_grp, field_pvr)
+     &         (numnod, numele, num_sf_grp, draw_param)
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: num_sf_grp
-      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(pvr_projected_field), intent(inout) :: draw_param
 !
 !
         call alloc_nod_data_4_pvr                                       &
-     &     (numnod, numele, field_pvr)
-        call alloc_iflag_pvr_used_ele(numele, field_pvr)
+     &     (numnod, numele, draw_param)
+        call alloc_iflag_pvr_used_ele(numele, draw_param)
         call alloc_iflag_pvr_boundaries                                 &
-     &     (num_sf_grp, field_pvr)
+     &     (num_sf_grp, draw_param)
 !
       end subroutine allocate_nod_data_4_pvr
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_nod_data_4_pvr(field_pvr)
+      subroutine dealloc_nod_data_4_pvr(draw_param)
 !
-      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(pvr_projected_field), intent(inout) :: draw_param
 !
 !
-      deallocate(field_pvr%iflag_enhanse, field_pvr%enhansed_opacity)
-      deallocate(field_pvr%iflag_used_ele)
-      deallocate(field_pvr%d_pvr, field_pvr%grad_ele)
+      deallocate(draw_param%iflag_enhanse, draw_param%enhansed_opacity)
+      deallocate(draw_param%iflag_used_ele)
+      deallocate(draw_param%d_pvr, draw_param%grad_ele)
 !
       end subroutine dealloc_nod_data_4_pvr
 !

@@ -6,7 +6,7 @@
 !
 !!
 !!      subroutine s_ray_trace_4_each_image                             &
-!!     &         (node, ele, surf, pvr_screen, field_pvr, color_param,  &
+!!     &         (node, ele, surf, pvr_screen, draw_param, color_param, &
 !!     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,  &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
@@ -33,7 +33,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_ray_trace_4_each_image                               &
-     &         (node, ele, surf, pvr_screen, field_pvr, color_param,    &
+     &         (node, ele, surf, pvr_screen, draw_param, color_param,   &
      &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,    &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
@@ -46,7 +46,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
-      type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_field), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
@@ -72,7 +72,7 @@
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
-!        if(id_pixel_check(inum)*field_pvr%num_sections .gt. 0) then
+!        if(id_pixel_check(inum)*draw_param%num_sections .gt. 0) then
 !          write(*,*) 'check section trace for ', my_rank, inum
 !        end if
 !
@@ -82,7 +82,7 @@
      &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
      &       ele%interior_ele, node%xx, surf%vnorm_surf,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
-     &       viewpoint_vec, field_pvr, color_param, ray_vec,            &
+     &       viewpoint_vec, draw_param, color_param, ray_vec,           &
      &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),           &
      &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),            &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
@@ -99,7 +99,7 @@
       subroutine ray_trace_each_pixel                                   &
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
-     &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
+     &        arccos_sf, x_nod_model, viewpoint_vec, draw_param,        &
      &        color_param, ray_vec, iflag_check, isurf_org,             &
      &        screen_st, xx_st, xi, rgba_ray, icount_line, iflag_comm)
 !
@@ -123,7 +123,7 @@
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
 !
-      type(pvr_projected_field), intent(in) :: field_pvr
+      type(pvr_projected_field), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
@@ -148,7 +148,7 @@
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
      &    ie_surf, isurf_end, xi, xx, xx_st)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-     &    ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
+     &    ie_surf, isurf_end, xi, draw_param%d_pvr, c_org(1) )
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
@@ -169,7 +169,7 @@
         iele =    isurf_org(1)
         isf_org = isurf_org(2)
 !
-        if(field_pvr%iflag_used_ele(iele).eq.0) then
+        if(draw_param%iflag_used_ele(iele).eq.0) then
           iflag_comm = 2
           exit
         end if
@@ -204,7 +204,7 @@
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
+     &      ie_surf, isurf_end, xi, draw_param%d_pvr, c_tgt(1))
 !
         if(interior_ele(iele) .gt. 0) then
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
@@ -214,9 +214,10 @@
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
-          do i_psf = 1, field_pvr%num_sections
-            rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
-            rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
+          do i_psf = 1, draw_param%num_sections
+            rflag =  side_of_plane(draw_param%coefs(1:10,i_psf), xx_st)
+            rflag2                                                      &
+     &          = side_of_plane(draw_param%coefs(1:10,i_psf), xx_tgt)
             if     (rflag .ge. -TINY9 .and. rflag2 .le. TINY9) then
               iflag = 1
               iflag_hit = 1
@@ -229,28 +230,29 @@
 
             if(iflag .ne. 0) then
               call cal_normal_of_plane                                  &
-     &           (field_pvr%coefs(1:10,i_psf), xx_tgt, grad_tgt)
+     &           (draw_param%coefs(1:10,i_psf), xx_tgt, grad_tgt)
               call color_plane_with_light                               &
      &           (viewpoint_vec, xx_tgt, c_tgt(1), grad_tgt,            &
-     &            field_pvr%sect_opacity(i_psf), color_param, rgba_ray)
+     &            draw_param%sect_opacity(i_psf), color_param,          &
+     &            rgba_ray)
             end if
           end do
 !
-          do i_iso = 1, field_pvr%num_isosurf
-            rflag =  (c_org(1) - field_pvr%iso_value(i_iso))            &
-     &             * (c_tgt(1) - field_pvr%iso_value(i_iso))
-            if((c_tgt(1) - field_pvr%iso_value(i_iso)) .eq. zero        &
+          do i_iso = 1, draw_param%num_isosurf
+            rflag =  (c_org(1) - draw_param%iso_value(i_iso))           &
+     &             * (c_tgt(1) - draw_param%iso_value(i_iso))
+            if((c_tgt(1) - draw_param%iso_value(i_iso)) .eq. zero       &
      &        .or. rflag .lt. zero) then
-              grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
-     &                       * field_pvr%itype_isosurf(i_iso)
+              grad_tgt(1:3) = draw_param%grad_ele(iele,1:3)             &
+     &                       * draw_param%itype_isosurf(i_iso)
               call color_plane_with_light                               &
-     &           (viewpoint_vec, xx_tgt, field_pvr%iso_value(i_iso),    &
-     &            grad_tgt, field_pvr%iso_opacity(i_iso),               &
+     &           (viewpoint_vec, xx_tgt, draw_param%iso_value(i_iso),   &
+     &            grad_tgt, draw_param%iso_opacity(i_iso),              &
      &            color_param, rgba_ray)
             end if
           end do
 !
-          grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
+          grad_tgt(1:3) = draw_param%grad_ele(iele,1:3)
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
           call s_set_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,    &
      &        c_tgt(1), grad_tgt, color_param, rgba_ray)
@@ -266,7 +268,7 @@
         c_org(1) =   c_tgt(1)
       end do
 !
-!      if(iflag_check*field_pvr%num_sections .gt. 0) then
+!      if(iflag_check*draw_param%num_sections .gt. 0) then
 !        if(iflag_hit .eq. 0) then
 !          write(*,*) 'surface does not hit: ', my_rank, rgba_ray(1:4)
 !        else
