@@ -30,6 +30,8 @@
 !
       use t_geometry_data
 !
+      implicit none
+!
       character(len = kchara), parameter                                &
      &                        :: hd_vector_trace = 'vector_trace'
       character(len = kchara), parameter                                &
@@ -103,10 +105,12 @@
       integer(kind = kint), intent(inout) :: ierr
 !
       character(len = kchara) :: tmpchara
+      integer(kind = kint) :: i
 !
       ierr = 0
       sleeve_exp_p%iflag_expand = iflag_turn_off
       sleeve_exp_p%dist_max =     one
+      sleeve_exp_p%num_ref =  0
 !
       if(sleeve_ctl%sleeve_extension_mode_ctl%iflag .gt. 0) then
         tmpchara = sleeve_ctl%sleeve_extension_mode_ctl%charavalue
@@ -120,7 +124,7 @@
       end if
 !
       if(sleeve_exp_p%iflag_expand .eq. iflag_vector_trace              &
-     &   .and. sleeve_exp_p%iflag_expand .eq. iflag_distance) then
+     &   .or. sleeve_exp_p%iflag_expand .eq. iflag_distance) then
         if(sleeve_ctl%sleeve_size_ctl%iflag .eq. 0) then
           write(e_message,'(a)') 'Set size for sleeve extension'
           ierr = ierr_mesh
@@ -159,15 +163,16 @@
         end if
       end if
 !
-!      if(iflag_debug .gt. 0) then
-        write(*,*) 'sleeve_exp_p%iflag_expand', iflag_expand
-        write(*,*) 'sleeve_exp_p%dist_max', dist_max
-        write(*,*) 'sleeve_exp_p%num_ref', num_ref
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'sleeve_exp_p%iflag_expand',                         &
+     &            sleeve_exp_p%iflag_expand
+        write(*,*) 'sleeve_exp_p%dist_max', sleeve_exp_p%dist_max
+        write(*,*) 'sleeve_exp_p%num_ref', sleeve_exp_p%num_ref
         do i = 1, sleeve_exp_p%num_ref
           write(*,*) 'sleeve_exp_p%num_ref', i,                         &
      &              trim(sleeve_exp_p%ref_vector_name(i))
         end do
-!      end if
+      end if
 !
       end subroutine set_ctl_param_sleeve_extension
 !

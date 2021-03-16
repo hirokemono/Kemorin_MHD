@@ -10,10 +10,11 @@
 !!      subroutine s_set_control_data_4_part                            &
 !!     &         (part_ctl, comm_part, part_p)
 !!      subroutine set_control_4_extend_sleeve                          &
-!!     &         (id_rank, part_ctl, comm_part, part_p)
+!!     &         (id_rank, part_ctl, comm_part, part_p, sleeve_exp_p)
 !!        type(control_data_4_partitioner), intent(in) :: part_ctl
 !!        type(partitioner_comm_tables), intent(inout) :: comm_part
 !!        type(ctl_param_partitioner), intent(inout) :: part_p
+!!        type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
 !!@endverbatim
 !
       module set_control_data_4_part
@@ -89,7 +90,14 @@
      &    part_p)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &    part_ctl%sleeve_level_old, comm_part, part_p)
+     &                             comm_part, part_p)
+!
+      if(part_ctl%Fsleeve_c%sleeve_level_ctl%iflag .gt. 0) then
+        part_p%n_overlap = part_ctl%Fsleeve_c%sleeve_level_ctl%intvalue
+      else
+        part_p%n_overlap = 1
+      end if
+      if(part_p%n_overlap .lt. 1) part_p%n_overlap = 1
 !
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
@@ -169,10 +177,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_extend_sleeve                            &
-     &         (id_rank, part_ctl, comm_part, part_p)
+     &         (id_rank, part_ctl, comm_part, part_p, sleeve_exp_p)
 !
       use t_control_data_4_part
       use t_partitioner_comm_table
+      use t_ctl_param_sleeve_extend
       use m_default_file_prefix
 !
       use m_file_format_switch
@@ -185,6 +194,9 @@
 !
       type(partitioner_comm_tables), intent(inout) :: comm_part
       type(ctl_param_partitioner), intent(inout) :: part_p
+      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+!
+      integer(kind = kint) :: ierr
 !
 !
       call turn_off_debug_flag_by_ctl(id_rank, part_ctl%part_plt)
@@ -204,10 +216,12 @@
      & = choose_para_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &    part_ctl%sleeve_level_old, comm_part, part_p)
+     &                             comm_part, part_p)
+!
+      call set_ctl_param_sleeve_extension                               &
+     &   (part_ctl%Fsleeve_c, sleeve_exp_p, ierr)
 !
       if(id_rank .ne. 0) return
-      write(*,*) 'sleeve level :', part_p%n_overlap
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', part_p%iflag_viewer_output
@@ -217,10 +231,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_FEM_mesh_ctl_4_part                                &
-     &         (part_Fmesh, sleeve_level_old, comm_part, part_p)
+      subroutine set_FEM_mesh_ctl_4_part(part_Fmesh, comm_part, part_p)
 !
       use t_ctl_data_4_FEM_mesh
+      use t_ctl_data_FEM_sleeve_size
       use t_control_array_character
       use t_control_array_integer
       use t_partitioner_comm_table
@@ -230,7 +244,6 @@
       use skip_comment_f
 !
       type(FEM_mesh_control), intent(in) :: part_Fmesh
-      type(read_integer_item), intent(in) :: sleeve_level_old
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
@@ -249,13 +262,6 @@
      &   ) then
         part_p%iflag_viewer_output = 1
       end if
-!
-      if(sleeve_level_old%iflag .gt. 0) then
-        part_p%n_overlap = sleeve_level_old%intvalue
-      else
-        part_p%n_overlap = 1
-      end if
-      if(part_p%n_overlap .lt. 1) part_p%n_overlap = 1
 !
       end subroutine set_FEM_mesh_ctl_4_part
 !

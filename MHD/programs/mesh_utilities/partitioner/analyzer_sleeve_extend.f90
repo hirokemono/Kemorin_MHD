@@ -77,7 +77,7 @@
       call bcast_part_control_data(part_ctl1)
 !
       call set_control_4_extend_sleeve                                  &
-     &   (my_rank, part_ctl1, comm_part1, part_p1)
+     &   (my_rank, part_ctl1, comm_part1, part_p1, sleeve_exp_p1)
       call dealloc_ctl_data_4_part(part_ctl1)
 !
 !  --  read geometry
@@ -100,9 +100,6 @@
 !
       type(communication_table), save:: ele_comm
 !
-!
-      sleeve_exp_p1%iflag_expand = iflag_distance
-      sleeve_exp_p1%dist_max =     0.05d0
 !
       call sleeve_extension_loop                                        &
      &   (sleeve_exp_p1, fem_EXT%mesh, fem_EXT%group, ele_comm)
