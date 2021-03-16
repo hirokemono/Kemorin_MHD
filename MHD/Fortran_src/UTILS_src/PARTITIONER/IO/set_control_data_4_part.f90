@@ -250,9 +250,7 @@
         part_p%iflag_viewer_output = 1
       end if
 !
-      if(part_Fmesh%FEM_sleeve_level_ctl%iflag .gt. 0) then
-        part_p%n_overlap = part_Fmesh%FEM_sleeve_level_ctl%intvalue
-      else if(sleeve_level_old%iflag .gt. 0) then
+      if(sleeve_level_old%iflag .gt. 0) then
         part_p%n_overlap = sleeve_level_old%intvalue
       else
         part_p%n_overlap = 1

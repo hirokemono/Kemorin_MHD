@@ -53,8 +53,6 @@
 !
 !>      Structure of sleeve extension parameter
         type(sleeve_extension_param) :: sleeve_exp_p
-!>        Sleeve size level
-        integer(kind = kint) :: num_FEM_sleeve = 1
       end type volume_partioning_param
 !
       private :: set_ctl_param_vol_grping
@@ -142,12 +140,6 @@
      &      new_part_ctl%repart_table_head_ctl,                         &
      &      new_part_ctl%repart_table_fmt_ctl,                          &
      &      part_param%trans_tbl_file)
-      end if
-!
-      part_param%num_FEM_sleeve = 1
-      if(new_part_ctl%sleeve_level_ctl%iflag .gt. 0) then
-        part_param%num_FEM_sleeve                                       &
-     &      = max(new_part_ctl%sleeve_level_ctl%intvalue, 1)
       end if
 !
       part_param%new_nprocs = nprocs

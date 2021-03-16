@@ -86,8 +86,6 @@
       call bcast_ctl_type_c1(Fmesh_ctl%FEM_surface_output_switch)
       call bcast_ctl_type_c1(Fmesh_ctl%FEM_viewer_output_switch)
 !
-      call bcast_ctl_type_i1(Fmesh_ctl%FEM_sleeve_level_ctl)
-!
       call calypso_mpi_bcast_one_int(Fmesh_ctl%i_FEM_mesh, 0)
 !
       end subroutine bcast_FEM_mesh_control

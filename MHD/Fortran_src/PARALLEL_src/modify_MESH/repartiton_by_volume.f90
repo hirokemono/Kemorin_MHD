@@ -84,7 +84,7 @@
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
 ! Increase sleeve size
-      if(part_param%num_FEM_sleeve .gt. 1) then
+      if(part_param%sleeve_exp_p%iflag_expand .ne. iflag_turn_off) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
         call sleeve_extension_loop(part_param%sleeve_exp_p,             &
      &      new_fem%mesh, new_fem%group, new_ele_comm)

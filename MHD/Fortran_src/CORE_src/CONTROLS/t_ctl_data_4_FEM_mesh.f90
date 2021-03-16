@@ -22,8 +22,6 @@
 !!      FEM_mesh_output_switch         'NO'
 !!      FEM_surface_output_switch      'NO'
 !!      FEM_viewer_mesh_output_switch  'NO'
-!!
-!!      sleeve_level_ctl            2
 !!    end FEM_mesh_ctl
 !! ------------------------------------------------------------------
 !!@endverbatim
@@ -50,8 +48,6 @@
         type(read_character_item) :: FEM_surface_output_switch
         type(read_character_item) :: FEM_viewer_output_switch
 !
-        type(read_integer_item) ::   FEM_sleeve_level_ctl
-!
         integer(kind=kint) :: i_FEM_mesh =   0
       end type FEM_mesh_control
 !
@@ -65,9 +61,6 @@
      &       :: hd_FEM_surf_output = 'FEM_surface_output_switch'
       character(len=kchara), parameter, private                         &
      &       :: hd_FEM_viewer_output = 'FEM_viewer_mesh_output_switch'
-!
-      character(len=kchara), parameter, private                         &
-     &       :: hd_sleeve_level =  'sleeve_level_ctl'
 !
 !  ---------------------------------------------------------------------
 !
@@ -95,7 +88,6 @@
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
 !
-!
         call read_chara_ctl_type(c_buf, hd_mem_conserve,                &
      &      Fmesh_ctl%memory_conservation_ctl)
         call read_chara_ctl_type(c_buf, hd_FEM_mesh_output,             &
@@ -104,9 +96,6 @@
      &      Fmesh_ctl%FEM_surface_output_switch)
         call read_chara_ctl_type(c_buf, hd_FEM_viewer_output,           &
      &      Fmesh_ctl%FEM_viewer_output_switch)
-!
-        call read_integer_ctl_type                                      &
-     &     (c_buf, hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
        end do
        Fmesh_ctl%i_FEM_mesh = 1
 !
@@ -133,7 +122,6 @@
       maxlen = max(maxlen, len_trim(hd_FEM_mesh_output))
       maxlen = max(maxlen, len_trim(hd_FEM_surf_output))
       maxlen = max(maxlen, len_trim(hd_FEM_viewer_output))
-      maxlen = max(maxlen, len_trim(hd_sleeve_level))
 !
       write(id_file,'(a)') '!'
       call write_chara_ctl_type(id_file, level, maxlen,                 &
@@ -144,9 +132,6 @@
      &    hd_FEM_surf_output, Fmesh_ctl%FEM_surface_output_switch)
       call write_chara_ctl_type(id_file, level, maxlen,                 &
      &    hd_FEM_viewer_output, Fmesh_ctl%FEM_viewer_output_switch)
-!
-      call write_integer_ctl_type(id_file, level, maxlen,               &
-     &    hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
 !
       level =  write_end_flag_for_ctl(id_file, level, hd_block)
 !
@@ -159,7 +144,6 @@
       type(FEM_mesh_control), intent(inout) :: Fmesh_ctl
 !
 !
-      Fmesh_ctl%FEM_sleeve_level_ctl%iflag =      0
       Fmesh_ctl%memory_conservation_ctl%iflag =   0
       Fmesh_ctl%FEM_mesh_output_switch%iflag =    0
       Fmesh_ctl%FEM_surface_output_switch%iflag = 0
