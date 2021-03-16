@@ -24,6 +24,7 @@
       use calypso_mpi
 !
       use t_control_parameter
+      use t_ctl_param_sleeve_extend
       use t_MHD_file_parameter
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -174,6 +175,7 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
+      type(sleeve_extension_param), save :: sleeve_exp_p1
       type(communication_table) :: ele_comm
       type(parallel_make_vierwer_mesh) :: par_view
       integer(kind = kint) :: i_level

@@ -42,6 +42,7 @@
       use t_geometry_data
       use t_group_data
       use t_ctl_param_sleeve_extend
+      use t_para_double_numbering
       use t_comm_table_for_each_pe
 !
       implicit none
@@ -124,7 +125,6 @@
      &          dist_4_comm, iflag_process_extend)
 !
       use t_next_node_ele_4_node
-      use t_para_double_numbering
       use t_repart_double_numberings
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
