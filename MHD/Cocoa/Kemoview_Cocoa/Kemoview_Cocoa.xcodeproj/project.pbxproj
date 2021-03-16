@@ -1196,7 +1196,7 @@
 					/Users/matsui/local/lib,
 					/usr/X11/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				"OTHER_LDFLAGS[arch=*]" = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Kemoview_Cocoa;
@@ -1221,7 +1221,7 @@
 					/Users/matsui/local/lib,
 					/usr/X11/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				OTHER_LDFLAGS = "-L/opt/local/lib";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Kemoview_Cocoa;
