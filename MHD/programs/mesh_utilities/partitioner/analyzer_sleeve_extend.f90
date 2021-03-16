@@ -27,11 +27,11 @@
       use t_partitioner_comm_table
       use t_ctl_param_partitioner
       use para_const_kemoview_mesh
-      use parallel_sleeve_extension
       use t_ctl_param_sleeve_extend
 !
       use mpi_load_mesh_data
       use m_work_time
+      use m_work_time_4_sleeve_extend
 
 !
       implicit none

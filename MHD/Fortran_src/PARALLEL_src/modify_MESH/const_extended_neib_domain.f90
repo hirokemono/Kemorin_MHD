@@ -212,10 +212,6 @@
       subroutine count_domain_extended_export(nod_comm,                 &
      &          inod_dbl, mark_nod, np_new_export, iflag_send_pe)
 !
-      use mark_export_nod_ele_extend
-!
-      implicit none
-!
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl
       type(mark_for_each_comm),  intent(in)                             &
@@ -251,10 +247,6 @@
       subroutine set_domain_to_export_extend(nod_comm,                 &
      &          inod_dbl, mark_nod, istack_pe_new_export,              &
      &          ntot_pe_new_export, ip_new_export, iflag_send_pe)
-!
-      use mark_export_nod_ele_extend
-!
-      implicit none
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_ele_double_number), intent(in) :: inod_dbl

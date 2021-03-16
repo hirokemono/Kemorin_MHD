@@ -134,7 +134,6 @@
       use t_sort_data_for_sleeve_trim
 !
       use set_ele_id_4_node_type
-      use extend_comm_table
       use const_extended_neib_domain
       use const_nod_ele_to_extend
       use const_extend_nod_comm_table
@@ -182,7 +181,7 @@
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-      if (iflag_debug.gt.0) write(*,*) 'set_belonged_ele_and_next_nod'
+      if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
       call set_ele_id_4_node(org_node, org_ele, neib_ele)
 !
       call alloc_double_numbering(org_node%numnod, inod_dbl)
@@ -272,6 +271,62 @@
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
       end subroutine extend_mesh_sleeve
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
+!
+      use calypso_mpi_int
+      use solver_SR_type
+!
+      type(communication_table), intent(in) :: new_comm
+      type(node_data), intent(in) :: new_node
+      type(node_ele_double_number), intent(in) :: dbl_id2
+!
+      integer(kind = kint), allocatable :: inod_lc_check(:)
+      integer(kind = kint), allocatable :: irank_lc_check(:)
+!
+      integer(kind = kint) :: inod, icou
+      integer(kind = kint) :: nerror
+!
+!
+      allocate(inod_lc_check(new_node%numnod))
+      allocate(irank_lc_check(new_node%numnod))
+      inod_lc_check =   0
+      irank_lc_check = -1
+!
+!$omp parallel do
+      do inod = 1, new_node%internal_node
+        inod_lc_check(inod) = inod
+        irank_lc_check(inod) = my_rank
+      end do
+!$omp end parallel do
+!
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_node%numnod, new_comm, inod_lc_check)
+      call SOLVER_SEND_RECV_int_type                                    &
+     &   (new_node%numnod, new_comm, irank_lc_check)
+!
+      icou = 0
+      do inod = new_node%internal_node+1, new_node%numnod
+        if(dbl_id2%irank(inod) .ne. irank_lc_check(inod)                &
+     &    .and. dbl_id2%index(inod) .ne. inod_lc_check(inod)) then
+          if(icou .eq. 0) write(50+my_rank,*) 'error list'
+          write(50+my_rank,*) inod, my_rank,                            &
+     &     dbl_id2%irank(inod), irank_lc_check(inod),                   &
+     &     dbl_id2%index(inod), inod_lc_check(inod)
+           icou = icou + 1
+        end if
+      end do
+!
+      call calypso_mpi_allreduce_one_int(icou, nerror, MPI_SUM)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Number of wrong communication items:', nerror
+!
+      deallocate(inod_lc_check, irank_lc_check)
+!
+      end subroutine check_new_node_and_comm
 !
 !  ---------------------------------------------------------------------
 !

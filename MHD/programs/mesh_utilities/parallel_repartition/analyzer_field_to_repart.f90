@@ -28,6 +28,7 @@
 !
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
+      use m_work_time_4_sleeve_extend
       use m_work_time
 !
       implicit none
@@ -59,7 +60,6 @@
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use field_to_new_partition
-      use parallel_sleeve_extension
       use nod_and_ele_derived_info
       use const_element_comm_tables
 !

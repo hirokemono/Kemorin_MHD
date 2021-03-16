@@ -13,8 +13,6 @@
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
 !!      subroutine init_comm_table_for_each(ineib, node, nod_comm,      &
 !!     &          dist_4_comm, each_comm, distance)
-!!      subroutine init_comm_table_for_each_old                         &
-!!     &         (ineib, node, nod_comm, each_comm)
 !!        integer(kind = kint), intent(in) :: ineib
 !!        type(node_data), intent(in) ::                 node
 !!        type(communication_table), intent(in) ::       nod_comm
@@ -114,37 +112,6 @@
 !$omp end parallel do
 !
       end subroutine init_comm_table_for_each
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine init_comm_table_for_each_old                           &
-     &         (ineib, node, nod_comm, each_comm)
-!
-      integer(kind = kint), intent(in) :: ineib
-      type(node_data), intent(in) ::                 node
-      type(communication_table), intent(in) ::       nod_comm
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
-!
-      integer(kind = kint) :: ist, ied, i, icou, ip
-!
-!
-      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
-     &                           - nod_comm%istack_export(ineib-1)
-!
-      ist = nod_comm%istack_export(ineib-1) 
-      do i = 1, each_comm%num_each_export
-        each_comm%item_each_export(i) = nod_comm%item_export(i+ist)
-      end do
-!
-      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
-     &                           - nod_comm%istack_import(ineib-1)
-!
-      ist = nod_comm%istack_import(ineib-1) 
-      do i = 1, each_comm%num_each_import
-        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
-      end do
-!
-      end subroutine init_comm_table_for_each_old
 !
 !  ---------------------------------------------------------------------
 !

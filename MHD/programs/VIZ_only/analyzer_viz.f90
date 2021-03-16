@@ -46,7 +46,7 @@
       use m_elapsed_labels_4_VIZ
       use m_elapsed_labels_SEND_RECV
       use m_elapsed_labels_4_REPART
-      use parallel_sleeve_extension
+      use m_work_time_4_sleeve_extend
       use FEM_to_VIZ_bridge
 !
       integer(kind = kint) :: ierr

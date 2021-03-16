@@ -18,7 +18,7 @@ const_extend_ele_comm_table.o: $(MODIFY_PARA_MESHDIR)/const_extend_ele_comm_tabl
 	$(F90) -c $(F90OPTFLAGS) $<
 const_extend_nod_comm_table.o: $(MODIFY_PARA_MESHDIR)/const_extend_nod_comm_table.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_comm_table_for_each_pe.o t_mesh_for_sleeve_extend.o t_sort_data_for_sleeve_trim.o t_trim_overlapped_import.o calypso_mpi_int.o set_expanded_comm_table.o m_solver_SR.o reverse_SR_int.o reverse_SR_real.o cal_minmax_and_stacks.o trim_mesh_for_sleeve_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_extended_neib_domain.o: $(MODIFY_PARA_MESHDIR)/const_extended_neib_domain.f90 m_precision.o t_comm_table.o t_para_double_numbering.o t_mark_node_ele_to_extend.o calypso_mpi.o m_solver_SR.o reverse_SR_int.o cal_minmax_and_stacks.o mark_export_nod_ele_extend.o
+const_extended_neib_domain.o: $(MODIFY_PARA_MESHDIR)/const_extended_neib_domain.f90 m_precision.o t_comm_table.o t_para_double_numbering.o t_mark_node_ele_to_extend.o calypso_mpi.o m_solver_SR.o reverse_SR_int.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_nod_ele_to_extend.o: $(MODIFY_PARA_MESHDIR)/const_nod_ele_to_extend.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_next_node_ele_4_node.o t_ctl_param_sleeve_extend.o t_mark_node_ele_to_extend.o t_mesh_for_sleeve_extend.o t_comm_table_for_each_pe.o t_flags_each_comm_extend.o calypso_mpi_int.o m_solver_SR.o reverse_SR_int.o cal_minmax_and_stacks.o set_mesh_for_sleeve_extend.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -36,29 +36,19 @@ ele_trans_tbl_4_repart.o: $(MODIFY_PARA_MESHDIR)/ele_trans_tbl_4_repart.f90 m_pr
 	$(F90) -c $(F90OPTFLAGS) $<
 ext_of_int_grp_4_new_part.o: $(MODIFY_PARA_MESHDIR)/ext_of_int_grp_4_new_part.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_next_node_ele_4_node.o calypso_mpi.o t_control_param_vol_grping.o quicksort.o set_repartition_group_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o t_next_node_ele_4_node.o t_comm_table_for_each_pe.o t_mark_node_ele_to_extend.o calypso_mpi_int.o solver_SR_type.o extend_comm_table_SR.o mark_export_nod_ele_extend.o cal_minmax_and_stacks.o find_extended_node_and_ele.o find_extended_comm_table.o
-	$(F90) -c $(F90OPTFLAGS) $<
-extend_element_connect.o: $(MODIFY_PARA_MESHDIR)/extend_element_connect.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o m_work_time.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o t_next_node_ele_4_node.o solver_SR_type.o extend_comm_table_SR.o mark_export_nod_ele_extend.o const_mesh_information.o const_element_comm_tables.o cal_minmax_and_stacks.o find_extended_node_and_ele.o find_extended_comm_table.o
-	$(F90) -c $(F90OPTFLAGS) $<
-extend_group_table.o: $(MODIFY_PARA_MESHDIR)/extend_group_table.f90 m_precision.o m_constants.o m_phys_constants.o t_mesh_data.o t_geometry_data.o t_group_data.o t_comm_table.o copy_mesh_structures.o add_comm_table_in_node_grp.o solver_SR_type.o
-	$(F90) -c $(F90OPTFLAGS) $<
 extended_groups.o: $(MODIFY_PARA_MESHDIR)/extended_groups.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_geometry_data.o t_group_data.o solver_SR_type.o redistribute_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
 external_group_4_new_part.o: $(MODIFY_PARA_MESHDIR)/external_group_4_new_part.f90 m_precision.o m_constants.o t_geometry_data.o t_group_data.o t_control_param_vol_grping.o quicksort.o set_repartition_group_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
 field_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/field_to_new_partition.f90 m_precision.o calypso_mpi.o t_mesh_data.o t_calypso_comm_table.o t_phys_data.o t_control_param_vol_grping.o t_vector_for_solver.o t_next_node_ele_4_node.o t_jacobians.o t_shape_functions.o m_work_time.o m_elapsed_labels_4_REPART.o calypso_mpi_logical.o repartiton_by_volume.o mesh_file_name_by_param.o set_interpolate_file_name.o parallel_FEM_mesh_init.o const_element_comm_tables.o set_table_4_RHS_assemble.o int_volume_of_single_domain.o transfer_to_new_partition.o
 	$(F90) -c $(F90OPTFLAGS) $<
-find_extended_comm_table.o: $(MODIFY_PARA_MESHDIR)/find_extended_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o calypso_mpi.o
-	$(F90) -c $(F90OPTFLAGS) $<
-find_extended_node_and_ele.o: $(MODIFY_PARA_MESHDIR)/find_extended_node_and_ele.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o t_work_extend_comm_table.o
-	$(F90) -c $(F90OPTFLAGS) $<
 m_elapsed_labels_4_REPART.o: $(MODIFY_PARA_MESHDIR)/m_elapsed_labels_4_REPART.f90 m_precision.o m_work_time.o
+	$(F90) -c $(F90OPTFLAGS) $<
+m_work_time_4_sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/m_work_time_4_sleeve_extend.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_group_data.o t_comm_table.o m_work_time.o
 	$(F90) -c $(F90OPTFLAGS) $<
 mesh_repartition_by_volume.o: $(MODIFY_PARA_MESHDIR)/mesh_repartition_by_volume.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_comm_table.o t_calypso_comm_table.o t_next_node_ele_4_node.o t_para_double_numbering.o t_control_param_vol_grping.o t_repart_double_numberings.o t_repartition_by_volume.o const_repart_nod_and_comm.o const_repart_ele_connect.o redistribute_groups.o
 	$(F90) -c $(F90OPTFLAGS) $<
 para_const_kemoview_mesh.o: $(MODIFY_PARA_MESHDIR)/para_const_kemoview_mesh.f90 m_precision.o m_constants.o calypso_mpi.o m_machine_parameter.o m_file_format_switch.o t_mesh_data.o t_file_IO_parameter.o t_merged_viewer_mesh.o m_node_quad_2_linear_sf.o mpi_load_mesh_data.o parallel_FEM_mesh_init.o const_kemoview_mesh.o set_parallel_file_name.o viewer_file_IO.o add_comm_table_in_node_grp.o renumber_para_viewer_mesh.o viewer_mesh_MPI_IO_select.o const_global_element_ids.o
-	$(F90) -c $(F90OPTFLAGS) $<
-parallel_sleeve_extension.o: $(MODIFY_PARA_MESHDIR)/parallel_sleeve_extension.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_data.o t_group_data.o t_comm_table.o m_work_time.o nod_and_ele_derived_info.o const_element_comm_tables.o t_para_double_numbering.o t_next_node_ele_4_node.o set_table_4_RHS_assemble.o extend_comm_table.o extend_element_connect.o extend_group_table.o copy_mesh_structures.o set_nnod_4_ele_by_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 redistribute_group_data.o: $(MODIFY_PARA_MESHDIR)/redistribute_group_data.f90 m_precision.o m_constants.o m_machine_parameter.o t_group_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -84,7 +74,7 @@ set_num_domain_each_dir.o: $(MODIFY_PARA_MESHDIR)/set_num_domain_each_dir.f90 m_
 	$(F90) -c $(F90OPTFLAGS) $<
 set_repartition_group_name.o: $(MODIFY_PARA_MESHDIR)/set_repartition_group_name.f90 m_precision.o m_constants.o t_geometry_data.o t_control_param_vol_grping.o set_parallel_file_name.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/sleeve_extend.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_group_data.o t_ctl_param_sleeve_extend.o t_comm_table_for_each_pe.o extended_groups.o copy_mesh_structures.o nod_and_ele_derived_info.o const_element_comm_tables.o t_next_node_ele_4_node.o t_para_double_numbering.o t_repart_double_numberings.o t_mesh_for_sleeve_extend.o t_trim_overlapped_import.o t_flags_each_comm_extend.o t_mark_node_ele_to_extend.o t_sort_data_for_sleeve_trim.o set_ele_id_4_node_type.o extend_comm_table.o const_extended_neib_domain.o const_nod_ele_to_extend.o const_extend_nod_comm_table.o const_extend_ele_comm_table.o append_communication_table.o append_extended_node.o append_extended_element.o checks_for_sleeve_extend.o check_sleeve_extend_mesh.o
+sleeve_extend.o: $(MODIFY_PARA_MESHDIR)/sleeve_extend.f90 m_precision.o m_constants.o m_machine_parameter.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_group_data.o t_ctl_param_sleeve_extend.o t_comm_table_for_each_pe.o extended_groups.o copy_mesh_structures.o nod_and_ele_derived_info.o const_element_comm_tables.o t_next_node_ele_4_node.o t_para_double_numbering.o t_repart_double_numberings.o t_mesh_for_sleeve_extend.o t_trim_overlapped_import.o t_flags_each_comm_extend.o t_mark_node_ele_to_extend.o t_sort_data_for_sleeve_trim.o set_ele_id_4_node_type.o const_extended_neib_domain.o const_nod_ele_to_extend.o const_extend_nod_comm_table.o const_extend_ele_comm_table.o append_communication_table.o append_extended_node.o append_extended_element.o checks_for_sleeve_extend.o check_sleeve_extend_mesh.o calypso_mpi_int.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sort_for_repartition.o: $(MODIFY_PARA_MESHDIR)/sort_for_repartition.f90 m_precision.o m_constants.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -117,8 +107,6 @@ t_sort_data_for_sleeve_trim.o: $(MODIFY_PARA_MESHDIR)/t_sort_data_for_sleeve_tri
 t_sorting_for_repartition.o: $(MODIFY_PARA_MESHDIR)/t_sorting_for_repartition.f90 m_precision.o m_constants.o calypso_mpi.o t_mesh_data.o t_geometry_data.o t_calypso_comm_table.o t_para_double_numbering.o t_repart_double_numberings.o sort_for_repartition.o calypso_SR_type.o select_copy_from_recv.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_trim_overlapped_import.o: $(MODIFY_PARA_MESHDIR)/t_trim_overlapped_import.f90 m_precision.o m_machine_parameter.o calypso_mpi.o t_mesh_for_sleeve_extend.o t_sort_data_for_sleeve_trim.o calypso_mpi_int.o trim_redundant_import_item.o t_comm_table.o
-	$(F90) -c $(F90OPTFLAGS) $<
-t_work_extend_comm_table.o: $(MODIFY_PARA_MESHDIR)/t_work_extend_comm_table.f90 m_precision.o m_constants.o m_phys_constants.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_para_double_numbering.o
 	$(F90) -c $(F90OPTFLAGS) $<
 transfer_to_new_partition.o: $(MODIFY_PARA_MESHDIR)/transfer_to_new_partition.f90 m_precision.o m_phys_constants.o calypso_mpi.o t_comm_table.o t_calypso_comm_table.o t_vector_for_solver.o calypso_SR_type.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<

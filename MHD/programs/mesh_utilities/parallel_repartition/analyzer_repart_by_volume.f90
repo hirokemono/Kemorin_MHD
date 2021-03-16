@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_elapsed_labels_4_REPART
+      use m_work_time_4_sleeve_extend
       use calypso_mpi
 !
       use t_mesh_data
@@ -57,7 +58,6 @@
       use set_table_4_RHS_assemble
       use int_volume_of_single_domain
       use field_to_new_partition
-      use parallel_sleeve_extension
 !
 !>     Stracture for Jacobians
 !
