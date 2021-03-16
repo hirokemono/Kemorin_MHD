@@ -59,7 +59,7 @@
 !>        Structure for rough serch of subdomains
         type(pvr_domain_outline) :: outline
 !>        Field data for volume rendering
-        type(pvr_projected_field) :: field
+        type(rendering_parameter) :: draw_param
 !>        Structure for PVR colormap
         type(pvr_colorbar_parameter):: colorbar
 !
@@ -110,7 +110,7 @@
 !
 !
       call transfer_to_screen(node, ele, surf,                          &
-     &    group%surf_grp, group%surf_grp_geom, pvr_param%field,         &
+     &    group%surf_grp, group%surf_grp_geom, pvr_param%draw_param,    &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
@@ -147,7 +147,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image                                              &
      &   (istep_pvr, time, node, ele, surf, pvr_param%color,            &
-     &    pvr_param%colorbar, pvr_param%field, pvr_param%view,          &
+     &    pvr_param%colorbar, pvr_param%draw_param, pvr_param%view,     &
      &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
      &    pvr_rgb)
 !
@@ -195,16 +195,16 @@
 !
       call transfer_to_screen                                           &
      &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
-     &    pvr_param%field, pvr_param%view, pvr_proj%projection_mat,     &
-     &    pvr_param%pixel,  pvr_proj%bound, pvr_proj%screen,            &
-     &    pvr_proj%start_pt)
+     &    pvr_param%draw_param, pvr_param%view,                         &
+     &    pvr_proj%projection_mat, pvr_param%pixel,  pvr_proj%bound,    &
+     &    pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
       call rendering_image                                              &
      &   (istep_pvr, time, node, ele, surf, pvr_param%color,            &
-     &    pvr_param%colorbar, pvr_param%field, pvr_param%view,          &
+     &    pvr_param%colorbar, pvr_param%draw_param, pvr_param%view,     &
      &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
      &    pvr_rgb)
 !

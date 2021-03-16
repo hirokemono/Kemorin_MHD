@@ -82,11 +82,11 @@
 !
       call find_each_pvr_surf_domain                                    &
      &   (mesh%ele, mesh%surf, group%ele_grp, area_def,                 &
-     &    pvr_param%field, pvr_proj(1)%bound)
+     &    pvr_param%draw_param, pvr_proj(1)%bound)
       if(pvr_param%view%iflag_stereo_pvr .gt. 0) then
         call find_each_pvr_surf_domain                                  &
      &     (mesh%ele, mesh%surf, group%ele_grp, area_def,               &
-     &      pvr_param%field, pvr_proj(2)%bound)
+     &      pvr_param%draw_param, pvr_proj(2)%bound)
       end if
 !
       call pvr_mesh_outline(mesh%node, pvr_param%outline)
@@ -167,7 +167,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_param%field_def, pvr_param%field)
+     &    pvr_param%field_def, pvr_param%draw_param)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -231,7 +231,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_param%field_def, pvr_param%field)
+     &    pvr_param%field_def, pvr_param%draw_param)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -269,7 +269,7 @@
 !
       call deallocate_pixel_position_pvr(pvr_param%pixel)
 !
-      call dealloc_nod_data_4_pvr(pvr_param%field)
+      call dealloc_nod_data_4_pvr(pvr_param%draw_param)
       call flush_each_pvr_control(pvr_param)
 !
       end subroutine dealloc_each_pvr_data

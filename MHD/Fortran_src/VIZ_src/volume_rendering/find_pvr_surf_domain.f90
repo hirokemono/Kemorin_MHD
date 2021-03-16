@@ -10,7 +10,7 @@
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(viz_area_parameter), intent(in) :: pvr_area
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
-!!        type(pvr_projected_field), intent(inout) :: draw_param
+!!        type(rendering_parameter), intent(inout) :: draw_param
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
@@ -58,7 +58,7 @@
       type(group_data), intent(in) :: ele_grp
 !
       type(viz_area_parameter), intent(in) :: pvr_area
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
       integer(kind = kint) :: num_pvr_sf_local

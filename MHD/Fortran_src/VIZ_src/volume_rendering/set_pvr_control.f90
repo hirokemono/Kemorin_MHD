@@ -112,7 +112,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
      &     (pvr_ctl_type(i_pvr), group%ele_grp, group%surf_grp,         &
-     &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%field,          &
+     &      pvr_param(i_pvr)%area_def, pvr_param(i_pvr)%draw_param,     &
      &      pvr_param(i_pvr)%color, pvr_param(i_pvr)%colorbar)
 !
 !   set transfer matrix
@@ -134,12 +134,12 @@
       type(PVR_control_params), intent(inout) :: pvr_param
 !
 !
-      if(pvr_param%field%num_sections .gt. 0) then
-        call dealloc_pvr_sections(pvr_param%field)
+      if(pvr_param%draw_param%num_sections .gt. 0) then
+        call dealloc_pvr_sections(pvr_param%draw_param)
       end if
 !
-      if(pvr_param%field%num_isosurf .gt. 0) then
-        call dealloc_pvr_isosurfaces(pvr_param%field)
+      if(pvr_param%draw_param%num_isosurf .gt. 0) then
+        call dealloc_pvr_isosurfaces(pvr_param%draw_param)
       end if
 !
       call dealloc_pvr_element_group(pvr_param%area_def)

@@ -81,7 +81,7 @@
       call rendering_image_4_lic                                        &
      &   (istep_pvr, time, node, ele, surf, lic_p,                      &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
-     &    pvr_param%field, pvr_param%view, pvr_proj%screen,             &
+     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
@@ -115,7 +115,7 @@
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
       call transfer_to_screen(node, ele, surf,                          &
-     &    group%surf_grp, group%surf_grp_geom,  pvr_param%field,        &
+     &    group%surf_grp, group%surf_grp_geom,  pvr_param%draw_param,   &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
@@ -125,7 +125,7 @@
       call rendering_image_4_lic                                        &
      &   (istep_pvr, time, node, ele, surf, lic_p,                      &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
-     &    pvr_param%field, pvr_param%view, pvr_proj%screen,             &
+     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_lic_at_once

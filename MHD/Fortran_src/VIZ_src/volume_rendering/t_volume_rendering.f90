@@ -196,7 +196,7 @@
       do i_pvr = 1, pvr%num_pvr
         call allocate_nod_data_4_pvr                                    &
      &     (fem%mesh%node%numnod, fem%mesh%ele%numele,                  &
-     &      fem%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%field)
+     &      fem%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%draw_param)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
       end do
 !

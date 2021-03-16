@@ -14,13 +14,13 @@
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, num_sf_grp, draw_param)
-!!      subroutine dealloc_nod_data_4_pvr(fld)
+!!      subroutine dealloc_nod_data_4_pvr(draw_param)
 !!
-!!      subroutine alloc_pvr_sections(fld)
-!!      subroutine alloc_pvr_isosurfaces(fld)
+!!      subroutine alloc_pvr_sections(draw_param)
+!!      subroutine alloc_pvr_isosurfaces(draw_param)
 !!
 !!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
-!!      subroutine dealloc_data_4_pvr(fld)
+!!      subroutine dealloc_data_4_pvr(draw_param)
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
 !!      &        (num_pvr, proj, draw_param)
@@ -30,12 +30,9 @@
       module t_geometries_in_pvr_screen
 !
       use m_precision
-!
       use m_constants
 !
       implicit  none
-!
-!
 !
 !>  Structure for start points of ray tracing
       type pvr_projected_position
@@ -58,7 +55,7 @@
 !
 !
 !>  Structure for field data on projected coordinate
-      type pvr_projected_field
+      type rendering_parameter
 !>    Data for rendering
         real(kind = kreal), allocatable :: d_pvr(:)
 !>    Gradient for rendering
@@ -87,7 +84,7 @@
         real(kind = kreal), allocatable :: iso_value(:)
 !>    Opacity value for isosurfaces
         real(kind = kreal), allocatable :: iso_opacity(:)
-      end type pvr_projected_field
+      end type rendering_parameter
 !
 !>  Structure for pixel position
       type pvr_pixel_position_type
@@ -150,7 +147,7 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: num_sf_grp
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
         call alloc_nod_data_4_pvr                                       &
@@ -166,7 +163,7 @@
 !
       subroutine dealloc_nod_data_4_pvr(draw_param)
 !
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
       deallocate(draw_param%iflag_enhanse, draw_param%enhansed_opacity)
@@ -178,103 +175,103 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_nod_data_4_pvr(nnod, nele, fld)
+      subroutine alloc_nod_data_4_pvr(nnod, nele, draw_param)
 !
       integer(kind = kint), intent(in) :: nnod, nele
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      allocate(fld%d_pvr(nnod))
-      allocate(fld%grad_ele(nele,3))
+      allocate(draw_param%d_pvr(nnod))
+      allocate(draw_param%grad_ele(nele,3))
 !
-      if(nnod .gt. 0) fld%d_pvr =    0.0d0
-      if(nele .gt. 0) fld%grad_ele = 0.0d0
+      if(nnod .gt. 0) draw_param%d_pvr =    0.0d0
+      if(nele .gt. 0) draw_param%grad_ele = 0.0d0
 !
       end subroutine alloc_nod_data_4_pvr
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_iflag_pvr_used_ele(nele, fld)
+      subroutine alloc_iflag_pvr_used_ele(nele, draw_param)
 !
       integer(kind = kint), intent(in) :: nele
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      allocate(fld%iflag_used_ele(nele))
-      if(nele .gt. 0) fld%iflag_used_ele = 0
+      allocate(draw_param%iflag_used_ele(nele))
+      if(nele .gt. 0) draw_param%iflag_used_ele = 0
 !
       end subroutine alloc_iflag_pvr_used_ele
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_iflag_pvr_boundaries(num_sf_grp, fld)
+      subroutine alloc_iflag_pvr_boundaries(num_sf_grp, draw_param)
 !
       integer(kind = kint), intent(in) :: num_sf_grp
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      allocate(fld%iflag_enhanse(num_sf_grp))
-      allocate(fld%enhansed_opacity(num_sf_grp))
+      allocate(draw_param%iflag_enhanse(num_sf_grp))
+      allocate(draw_param%enhansed_opacity(num_sf_grp))
 !
-      if(num_sf_grp .gt. 0) fld%iflag_enhanse = 0
-      if(num_sf_grp .gt. 0) fld%enhansed_opacity = 0
+      if(num_sf_grp .gt. 0) draw_param%iflag_enhanse = 0
+      if(num_sf_grp .gt. 0) draw_param%enhansed_opacity = 0
 !
       end subroutine alloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pvr_sections(fld)
+      subroutine alloc_pvr_sections(draw_param)
 !
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      allocate(fld%coefs(10,fld%num_sections))
-      allocate(fld%sect_opacity(fld%num_sections))
+      allocate(draw_param%coefs(10,draw_param%num_sections))
+      allocate(draw_param%sect_opacity(draw_param%num_sections))
 !
-      if(fld%num_sections .gt. 0) fld%coefs =        0.0d0
-      if(fld%num_sections .gt. 0) fld%sect_opacity = 0.0d0
+      if(draw_param%num_sections .gt. 0) draw_param%coefs =        zero
+      if(draw_param%num_sections .gt. 0) draw_param%sect_opacity = zero
 !
       end subroutine alloc_pvr_sections
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_pvr_isosurfaces(fld)
+      subroutine alloc_pvr_isosurfaces(draw_param)
 !
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      allocate(fld%itype_isosurf(fld%num_isosurf))
-      allocate(fld%iso_value(fld%num_isosurf))
-      allocate(fld%iso_opacity(fld%num_isosurf))
+      allocate(draw_param%itype_isosurf(draw_param%num_isosurf))
+      allocate(draw_param%iso_value(draw_param%num_isosurf))
+      allocate(draw_param%iso_opacity(draw_param%num_isosurf))
 !
-      if(fld%num_isosurf .gt. 0) fld%itype_isosurf = 0
-      if(fld%num_isosurf .gt. 0) fld%iso_value = 0.0d0
-      if(fld%num_isosurf .gt. 0) fld%iso_opacity = 0.0d0
+      if(draw_param%num_isosurf .gt. 0) draw_param%itype_isosurf = 0
+      if(draw_param%num_isosurf .gt. 0) draw_param%iso_value = zero
+      if(draw_param%num_isosurf .gt. 0) draw_param%iso_opacity = zero
 !
       end subroutine alloc_pvr_isosurfaces
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_sections(fld)
+      subroutine dealloc_pvr_sections(draw_param)
 !
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      deallocate(fld%coefs, fld%sect_opacity)
+      deallocate(draw_param%coefs, draw_param%sect_opacity)
 !
       end subroutine dealloc_pvr_sections
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_pvr_isosurfaces(fld)
+      subroutine dealloc_pvr_isosurfaces(draw_param)
 !
-      type(pvr_projected_field), intent(inout) :: fld
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-      deallocate(fld%itype_isosurf)
-      deallocate(fld%iso_value, fld%iso_opacity)
+      deallocate(draw_param%itype_isosurf)
+      deallocate(draw_param%iso_value, draw_param%iso_opacity)
 !
       end subroutine dealloc_pvr_isosurfaces
 !

@@ -46,7 +46,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
-      type(pvr_projected_field), intent(in) :: draw_param
+      type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
@@ -123,7 +123,7 @@
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
 !
-      type(pvr_projected_field), intent(in) :: draw_param
+      type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)

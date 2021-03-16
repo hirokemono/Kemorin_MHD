@@ -18,7 +18,7 @@
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !!        type(pvr_field_parameter), intent(inout) :: fld_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
-!!        type(pvr_projected_field), intent(inout) :: draw_param
+!!        type(rendering_parameter), intent(inout) :: draw_param
 !!        type(viz_area_parameter), intent(inout) :: pvr_area
 !!        type(pvr_colormap_parameter), intent(inout) :: color_param
 !!        type(pvr_colorbar_parameter), intent(inout) :: cbar_param
@@ -128,7 +128,7 @@
       type(surface_group_data), intent(in) :: surf_grp
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl
 !
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
       type(viz_area_parameter), intent(inout) :: pvr_area
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_colorbar_parameter), intent(inout) :: cbar_param
@@ -167,7 +167,7 @@
       type(surface_group_data), intent(in) :: surf_grp
       type(pvr_render_area_ctl), intent(in) :: render_area_c
 !
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
       type(viz_area_parameter), intent(inout) :: pvr_area
 !
 !
@@ -214,7 +214,7 @@
 !
       type(pvr_sections_ctl), intent(in) :: pvr_scts_c
 !
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
 !
       integer(kind = kint) :: id_section_method, ierr, i
 !
@@ -249,7 +249,7 @@
 !
       type(pvr_isosurfs_ctl), intent(in) :: pvr_isos_c
 !
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
 !
       integer(kind = kint) ::  i
       character(len = kchara) :: tmpchara

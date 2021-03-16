@@ -126,7 +126,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
      &     (pvr_ctl_type(i_lic), group%ele_grp, group%surf_grp,         &
-     &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%field,          &
+     &      pvr_param(i_lic)%area_def, pvr_param(i_lic)%draw_param,     &
      &      pvr_param(i_lic)%color, pvr_param(i_lic)%colorbar)
         pvr_param(i_lic)%colorbar%iflag_opacity = 0
 !

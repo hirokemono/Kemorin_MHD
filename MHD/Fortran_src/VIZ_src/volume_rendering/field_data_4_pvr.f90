@@ -15,7 +15,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(pvr_field_parameter), intent(in) :: fld_params
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_projected_field), intent(inout) :: draw_param
+!!        type(rendering_parameter), intent(inout) :: draw_param
 !!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
 !!        type(pvr_view_parameter), intent(in) :: view
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -54,7 +54,7 @@
       type(pvr_field_parameter), intent(in) :: fld_params
       type(phys_data), intent(in) :: nod_fld
 !
-      type(pvr_projected_field), intent(inout) :: draw_param
+      type(rendering_parameter), intent(inout) :: draw_param
 !
 !
       integer(kind = kint) :: i_field, ist_fld, num_comp

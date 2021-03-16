@@ -18,7 +18,7 @@
 !!        type (surface_node_grp_data), intent(in)  :: surf_nod_grp
 !!        type(pvr_colormap_parameter), intent(in) :: color_param
 !!        type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!!        type(pvr_projected_field), intent(in) :: draw_param
+!!        type(rendering_parameter), intent(in) :: draw_param
 !!        type(pvr_view_parameter), intent(inout) :: view_param
 !!        type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
@@ -72,7 +72,7 @@
       type(surface_group_geometry), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_view_parameter), intent(in) :: view_param
-      type(pvr_projected_field), intent(in) :: draw_param
+      type(rendering_parameter), intent(in) :: draw_param
       real(kind = kreal), intent(in) :: projection_mat(4,4)
 !
       type(pvr_projected_position), intent(inout) :: pvr_screen
