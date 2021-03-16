@@ -51,6 +51,7 @@
       type(next_nod_ele_table), save, private :: next_tbl_T
       type(jacobians_type), save, private :: jacobians_T
       type(shape_finctions_at_points), save, private :: spfs_T
+      type(communication_table), save, private :: new_ele_comm_T
 !
 ! -----------------------------------------------------------------------
 !
@@ -149,7 +150,7 @@
      &      geofem%mesh%nod_comm, ele_comm, geofem%mesh%ele)
         call s_repartiton_by_volume                                     &
      &     (part_param, geofem, ele_comm, next_tbl,                     &
-     &      new_fem, org_to_new_tbl)
+     &      new_fem, new_ele_comm_T, org_to_new_tbl)
         call dealloc_comm_table(ele_comm)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
       end if
@@ -212,11 +213,12 @@
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+1)
       call s_repartiton_by_volume                                       &
      &   (part_param, geofem, ele_comm_T, next_tbl_T,                   &
-     &    new_fem, org_to_new_tbl)
+     &    new_fem, new_ele_comm_T, org_to_new_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+1)
 !
 !   Clear work arrays
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+5)
+      call dealloc_comm_table(new_ele_comm_T)
       call dealloc_next_nod_ele_table(next_tbl_T)
       call dealloc_comm_table(ele_comm_T)
       call dealloc_mesh_infomations(geofem%mesh, geofem%group)

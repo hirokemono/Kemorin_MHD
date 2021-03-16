@@ -160,7 +160,7 @@
       use sph_file_IO_select
       use mpi_load_mesh_data
       use para_const_kemoview_mesh
-      use parallel_sleeve_extension
+      use sleeve_extend
       use const_FEM_mesh_sph_mhd
 !
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags
@@ -174,6 +174,7 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
+      type(communication_table) :: ele_comm
       type(parallel_make_vierwer_mesh) :: par_view
       integer(kind = kint) :: i_level
 !
@@ -185,7 +186,10 @@
 !
 ! Increase sleeve size
       if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+10)
-      call sleeve_extension_loop(gen_sph%num_FEM_sleeve, mesh, group)
+      sleeve_exp_p1%iflag_expand = iflag_ele_count
+      sleeve_exp_p1%dist_max = real(gen_sph%num_FEM_sleeve) * 0.9
+      call sleeve_extension_loop(sleeve_exp_p1, mesh, group, ele_comm)
+      call dealloc_comm_table(ele_comm)
       if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+10)
 !
 ! Output mesh data

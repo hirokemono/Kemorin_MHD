@@ -9,12 +9,13 @@
 !!@verbatim
 !!      subroutine s_repartiton_by_volume                               &
 !!     &         (part_param, geofem, ele_comm_T, next_tbl_T,           &
-!!     &          new_fem, org_to_new_tbl)
+!!     &          new_fem, new_ele_comm, org_to_new_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm_T
 !!        type(next_nod_ele_table), intent(in) :: next_tbl_T
 !!        type(mesh_data), intent(inout) :: new_fem
+!!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !!      subroutine load_repartitoned_file(part_param, geofem, new_fem,  &
 !!     &                                  org_to_new_tbl)
@@ -46,7 +47,7 @@
 !
       subroutine s_repartiton_by_volume                                 &
      &         (part_param, geofem, ele_comm_T, next_tbl_T,             &
-     &          new_fem, org_to_new_tbl)
+     &          new_fem, new_ele_comm, org_to_new_tbl)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
@@ -55,7 +56,7 @@
       use m_elapsed_labels_4_REPART
       use m_work_time
 !
-      use parallel_sleeve_extension
+      use sleeve_extend
       use parallel_FEM_mesh_init
       use mesh_repartition_by_volume
       use mesh_MPI_IO_select
@@ -68,6 +69,7 @@
       type(next_nod_ele_table), intent(in) :: next_tbl_T
 !
       type(mesh_data), intent(inout) :: new_fem
+      type(communication_table), intent(inout) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !
       integer(kind = kint) :: i_level
@@ -84,8 +86,10 @@
 ! Increase sleeve size
       if(part_param%num_FEM_sleeve .gt. 1) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
-        call sleeve_extension_loop(part_param%num_FEM_sleeve,           &
-     &                             new_fem%mesh, new_fem%group)
+        sleeve_exp_p1%iflag_expand = iflag_ele_count
+        sleeve_exp_p1%dist_max = real(gen_sph%num_FEM_sleeve) * 0.9
+        call sleeve_extension_loop(sleeve_exp_p1,                      &
+     &      new_fem%mesh, new_fem%group, new_ele_comm)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
       end if
 !

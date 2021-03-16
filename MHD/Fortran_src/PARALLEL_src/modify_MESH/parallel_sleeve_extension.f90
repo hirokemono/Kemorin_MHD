@@ -41,42 +41,6 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sleeve_extension_loop(num_level, mesh, group)
-!
-      use nod_and_ele_derived_info
-      use const_element_comm_tables
-!
-      integer(kind = kint), intent(in) :: num_level
-      type(mesh_geometry), intent(inout) :: mesh
-      type(mesh_groups), intent(inout) :: group
-!
-      type(communication_table) :: ele_comm
-      integer(kind = kint) :: i_level
-!
-!
-      if(num_level .le. 1) return
-!
-      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
-      call set_nod_and_ele_infos(mesh%node, mesh%ele)
-      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
-     &                          ele_comm, mesh%ele)
-      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
-      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
-!
-      do i_level = 2, num_level
-        if(my_rank .eq. 0) write(*,*) 'extend sleeve:', i_level
-        call para_sleeve_extension(mesh, group, ele_comm)
-      end do
-!
-      call dealloc_comm_table(ele_comm)
-      call dealloc_numele_stack(mesh%ele)
-      call dealloc_nod_and_ele_infos(mesh)
-!
-      end subroutine sleeve_extension_loop
-!
-! ----------------------------------------------------------------------
-!
       subroutine para_sleeve_extension(mesh, group, ele_comm)
 !
       use t_para_double_numbering

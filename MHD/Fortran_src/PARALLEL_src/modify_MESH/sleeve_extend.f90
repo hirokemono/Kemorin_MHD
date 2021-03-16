@@ -7,7 +7,7 @@
 !> @brief Routines to constructu elment communication table
 !!
 !!@verbatim
-!!      subroutine extend_sleeve_loop                                   &
+!!      subroutine sleeve_extension_loop                                &
 !!     &         (sleeve_exp_p, mesh, group, ele_comm,                  &
 !!     &          newmesh, newgroup, new_ele_comm)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
@@ -52,12 +52,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine extend_sleeve_loop                                     &
+      subroutine sleeve_extension_loop                                  &
      &         (sleeve_exp_p, mesh, group, ele_comm)
 !
       use extended_groups
       use copy_mesh_structures
       use nod_and_ele_derived_info
+      use const_element_comm_tables
 !
       type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
       type(mesh_geometry), intent(inout) :: mesh
@@ -76,6 +77,11 @@
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      call set_nod_and_ele_infos(mesh%node, mesh%ele)
+      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
+     &                          ele_comm, mesh%ele)
+      call dealloc_numele_stack(mesh%ele)
+!
 !
       dist_4_comm%ntot = mesh%nod_comm%ntot_export
       allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
@@ -95,7 +101,6 @@
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
         call dealloc_comm_table(ele_comm)
-        call dealloc_numele_stack(mesh%ele)
         call dealloc_nod_and_ele_infos(mesh)
         call dealloc_mesh_data(mesh, group)
 !
@@ -103,13 +108,13 @@
         call alloc_sph_node_geometry(newmesh%node)
         call copy_mesh_and_group(newmesh, newgroup, mesh, group)
         call copy_comm_tbl_types(new_ele_comm, ele_comm)
-        call set_nod_and_ele_infos(mesh%node, mesh%ele)
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         if(iflag_process_extend .eq. 0) exit
+        call set_nod_and_ele_infos(mesh%node, mesh%ele)
       end do
 !
-      end subroutine extend_sleeve_loop
+      end subroutine sleeve_extension_loop
 !
 !  ---------------------------------------------------------------------
 !
@@ -160,12 +165,10 @@
 !
 !>      Structure of double numbering
       type(communication_table), save :: expand_ele_comm
-      type(ele_data_for_sleeve_ext), save :: exp_export_ie
       type(ele_data_for_sleeve_ext), save :: exp_import_ie
       type(ele_data_for_sleeve_ext), save :: trim_import_ie
 !
       type(communication_table), save :: expand_nod_comm
-      type(node_data_for_sleeve_ext), save :: exp_export_xx
       type(node_data_for_sleeve_ext), save :: exp_import_xx
       type(node_data_for_sleeve_ext), save :: trim_import_xx
 !
