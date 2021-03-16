@@ -58,7 +58,6 @@
       type(control_data_4_partitioner), intent(inout) :: part_ctl
 !
       call bcast_ctl_type_c1(part_ctl%part_method_ctl)
-      call bcast_ctl_type_c1(part_ctl%element_overlap_ctl)
       call bcast_ctl_type_i1(part_ctl%sleeve_level_old)
 !
       call bcast_ctl_array_ci(part_ctl%RCB_dir_ctl)

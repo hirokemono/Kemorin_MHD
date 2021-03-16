@@ -202,7 +202,7 @@
      &    spt_ctl%org_plt, FEM_STR%org_ucd_file_IO)
 !
 !   Set control for repartitioning for Visualizer
-      call set_ctl_param_vol_repart(spt_ctl%repart_ctl,                 &
+      call set_ctl_param_vol_repart(spt_ctl%viz_ctls%repart_ctl,        &
      &                              VIZ_DAT%repart_p)
 !
 !    file header for field data

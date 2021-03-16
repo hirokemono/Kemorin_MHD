@@ -31,7 +31,6 @@
 !!      group_ratio_to_domain_ctl    100
 !!
 !!      sleeve_level_ctl             2
-!!      element_overlap_ctl          Off
 !!    end new_partitioning_ctl
 !! -------------------------------------------------------------------
 !!@endverbatim
@@ -64,8 +63,6 @@
 !>        Ratio of reference division to subdomain
         type(read_integer_item) :: ratio_of_grouping_ctl
 !
-!>        Flag for element overlapping
-        type(read_character_item) :: element_overlap_ctl
 !>        Number of sleeve level
         type(read_integer_item) :: sleeve_level_ctl
 !
@@ -83,8 +80,6 @@
      &                 :: hd_part_method =  'partitioning_method_ctl'
       character(len=kchara), parameter, private                         &
      &                 :: hd_sleeve_level = 'sleeve_level_ctl'
-      character(len=kchara), parameter, private                         &
-     &                 :: hd_ele_overlap =  'element_overlap_ctl'
       character(len=kchara), parameter, private                         &
      &                 :: hd_num_es =       'dir_domain_ctl'
       character(len=kchara), parameter, private                         &
@@ -127,8 +122,6 @@
 !
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_part_method, new_part_ctl%new_part_method_ctl)
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_ele_overlap, new_part_ctl%element_overlap_ctl)
       end do
       new_part_ctl%i_new_patition_ctl = 1
 !
@@ -147,7 +140,6 @@
       new_part_ctl%repart_table_fmt_ctl%iflag =  0
 !
       new_part_ctl%new_part_method_ctl%iflag = 0
-      new_part_ctl%element_overlap_ctl%iflag = 0
       new_part_ctl%sleeve_level_ctl%iflag = 0
 !
       new_part_ctl%ratio_of_grouping_ctl%iflag = 0
@@ -171,7 +163,6 @@
 !
       call bcast_ctl_array_ci(new_part_ctl%ndomain_section_ctl)
       call bcast_ctl_type_c1(new_part_ctl%new_part_method_ctl)
-      call bcast_ctl_type_c1(new_part_ctl%element_overlap_ctl)
       call bcast_ctl_type_i1(new_part_ctl%sleeve_level_ctl)
       call bcast_ctl_type_i1(new_part_ctl%ratio_of_grouping_ctl)
 !

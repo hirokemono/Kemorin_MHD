@@ -50,6 +50,10 @@
         real(kind = kreal), allocatable :: dist_marked(:)
       end type mark_for_each_comm
 !
+      private :: mark_by_last_import
+      private :: mark_surround_ele_of_import, mark_by_last_export
+      private :: count_mark_ele_to_extend, set_mark_ele_to_extend
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -105,9 +109,7 @@
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
-      integer(kind = kint) :: inum, inod, icou, idummy, jcou, iele
-      integer(kind = kint) :: jst, jed, jnum, jnod, jele, k1
-      real(kind = kreal) :: dist, anum
+      integer(kind = kint) :: inod, icou, idummy
 !
 !
       call mark_by_last_import                                          &
@@ -155,7 +157,7 @@
 !
       icou = count_mark_ele_to_extend(ele, each_exp_flags%iflag_ele)
       call alloc_mark_for_each_comm(icou, mark_ele)
-      call set_mark_ele_to_extend(node, ele, each_exp_flags, mark_ele)
+      call set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
 !
       end subroutine s_mark_node_ele_to_extend
 !
@@ -191,6 +193,7 @@
 !
       end subroutine check_missing_connect_to_extend
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine mark_by_last_import(node, each_comm, iflag_node)
@@ -288,10 +291,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_mark_ele_to_extend                                 &
-     &         (node, ele, each_exp_flags, mark_ele)
+      subroutine set_mark_ele_to_extend(ele, each_exp_flags, mark_ele)
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(flags_each_comm_extend), intent(in) :: each_exp_flags
 !

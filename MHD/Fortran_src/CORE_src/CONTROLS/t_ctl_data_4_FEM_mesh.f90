@@ -24,7 +24,6 @@
 !!      FEM_viewer_mesh_output_switch  'NO'
 !!
 !!      sleeve_level_ctl            2
-!!      element_overlap_ctl        ON
 !!    end FEM_mesh_ctl
 !! ------------------------------------------------------------------
 !!@endverbatim
@@ -52,7 +51,6 @@
         type(read_character_item) :: FEM_viewer_output_switch
 !
         type(read_integer_item) ::   FEM_sleeve_level_ctl
-        type(read_character_item) :: FEM_element_overlap_ctl
 !
         integer(kind=kint) :: i_FEM_mesh =   0
       end type FEM_mesh_control
@@ -70,8 +68,6 @@
 !
       character(len=kchara), parameter, private                         &
      &       :: hd_sleeve_level =  'sleeve_level_ctl'
-      character(len=kchara), parameter, private                         &
-     &       :: hd_ele_overlap =   'element_overlap_ctl'
 !
 !  ---------------------------------------------------------------------
 !
@@ -111,9 +107,6 @@
 !
         call read_integer_ctl_type                                      &
      &     (c_buf, hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
-!
-        call read_chara_ctl_type                                        &
-     &     (c_buf, hd_ele_overlap, Fmesh_ctl%FEM_element_overlap_ctl)
        end do
        Fmesh_ctl%i_FEM_mesh = 1
 !
@@ -141,7 +134,6 @@
       maxlen = max(maxlen, len_trim(hd_FEM_surf_output))
       maxlen = max(maxlen, len_trim(hd_FEM_viewer_output))
       maxlen = max(maxlen, len_trim(hd_sleeve_level))
-      maxlen = max(maxlen, len_trim(hd_ele_overlap))
 !
       write(id_file,'(a)') '!'
       call write_chara_ctl_type(id_file, level, maxlen,                 &
@@ -155,8 +147,6 @@
 !
       call write_integer_ctl_type(id_file, level, maxlen,               &
      &    hd_sleeve_level, Fmesh_ctl%FEM_sleeve_level_ctl)
-      call write_chara_ctl_type(id_file, level, maxlen,                 &
-     &    hd_ele_overlap, Fmesh_ctl%FEM_element_overlap_ctl)
 !
       level =  write_end_flag_for_ctl(id_file, level, hd_block)
 !

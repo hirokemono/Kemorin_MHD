@@ -85,7 +85,6 @@
       type(shape_finctions_at_points) :: spfs_T
 !
       type(group_data) :: part_grp
-      type(group_data) :: ext_grp
 !
 !     --------------------- 
 !
@@ -138,7 +137,6 @@
 !
 !       Append group data
       call s_append_group_data(part_grp, fem_T%group%nod_grp)
-!      call s_append_group_data(ext_grp, fem_T%group%nod_grp)
 !
 !       Output appended mesh
       call mpi_output_mesh(part_prog_p1%repart_p%viz_mesh_file,         &

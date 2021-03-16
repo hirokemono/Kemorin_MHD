@@ -81,8 +81,7 @@
 ! extend overlap one by layer, new extend overlap layer is stored in near_ele_tmp
       if(part_p%iflag_new_ghost_cell .eq. 0) then
         call start_elapsed_time(ist_elapsed_PART+2)
-        call mark_extented_overlap                                      &
-     &     (ip, part_p%n_overlap, part_p%iflag_sleeve_ele, node%numnod, &
+        call mark_extented_overlap(ip, part_p%n_overlap, node%numnod,   &
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nod_d_grp%num_s_domin,            &
@@ -158,13 +157,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine mark_extented_overlap(ip, n_overlap, i_sleeve_ele,     &
-     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
+      subroutine mark_extented_overlap                                  &
+     &         (ip, n_overlap, numnod, numele, nnod_4_ele, ie, nodelm,  &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
      &          nnod_s_domin, IGROUP_nod)
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint), intent(in) :: n_overlap, i_sleeve_ele
+      integer(kind = kint), intent(in) :: n_overlap
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: nodelm(numele)
@@ -200,7 +199,7 @@
           do inum = 1, nele_subdomain
             icel = item_tmp_e(inum)
 !
-            if (iwidth.eq.2 .and. i_sleeve_ele.eq.1) then
+            if (iwidth.eq.2) then
 !
               inod = ie(icel,1)
               if (IGROUP_nod(inod) .eq. ip) then

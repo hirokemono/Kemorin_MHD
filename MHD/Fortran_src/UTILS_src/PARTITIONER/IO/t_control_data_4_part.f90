@@ -40,8 +40,6 @@
         type(FEM_mesh_control) :: part_Fmesh
 !>        Patitioning method
         type(read_character_item) :: part_method_ctl
-!>        Flag for element overlapping
-        type(read_character_item) :: element_overlap_ctl
 !>        Number of sleeve level
         type(read_integer_item) :: sleeve_level_old
 !
@@ -137,8 +135,6 @@
      &                      = 'partitioning_method_ctl'
       character(len=kchara), parameter :: hd_sleeve_level               &
      &                      = 'sleeve_level_ctl'
-      character(len=kchara), parameter :: hd_ele_overlap                &
-     &                      = 'element_overlap_ctl'
 !
 !     RCB
       character(len=kchara), parameter :: hd_num_rcb = 'RCB_dir_ctl'
@@ -180,7 +176,7 @@
       private :: hd_org_f_ctl, hd_platform, hd_org_data, hd_FEM_mesh
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
       private :: hd_nele_grp_ordering
-      private :: hd_part_method, hd_sleeve_level, hd_ele_overlap
+      private :: hd_part_method, hd_sleeve_level
       private :: hd_num_rcb, hd_num_es, hd_num_r_layerd, hd_sph_sf_file
       private :: hd_metis_in_file, hd_metis_dom_file
       private :: hd_domain_tbl_file, hd_fine_mesh_file
@@ -303,8 +299,6 @@
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_part_method, part_ctl%part_method_ctl)
         call read_chara_ctl_type                                        &
-     &     (c_buf, hd_ele_overlap, part_ctl%element_overlap_ctl)
-        call read_chara_ctl_type                                        &
      &     (c_buf, hd_sph_sf_file, part_ctl%sphere_file_name_ctl)
         call read_chara_ctl_type                                        &
      &     (c_buf, hd_metis_in_file, part_ctl%metis_input_file_ctl)
@@ -337,7 +331,6 @@
       call dealloc_control_array_chara(part_ctl%ele_grp_layering_ctl)
 !
       part_ctl%part_method_ctl%iflag = 0
-      part_ctl%element_overlap_ctl%iflag = 0
       part_ctl%sleeve_level_old%iflag = 0
 !
       part_ctl%sphere_file_name_ctl%iflag = 0

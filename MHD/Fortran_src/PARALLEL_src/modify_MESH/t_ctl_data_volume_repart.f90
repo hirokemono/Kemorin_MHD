@@ -45,6 +45,7 @@
 !
       use t_ctl_data_4_platforms
       use t_ctl_data_4_FEM_mesh
+      use t_ctl_data_FEM_sleeve_size
       use t_ctl_data_volume_grouping
 !
       implicit  none
@@ -56,9 +57,10 @@
 !
 !>        Structure of mesh IO controls and sleeve informations
         type(FEM_mesh_control) :: Fmesh_ctl
-!
 !>        Structure for new partitioning controls
         type(new_patition_control) :: new_part_ctl
+!>        Structure of Sleeve size controls
+        type(FEM_sleeve_control) :: Fsleeve_ctl
 !
         integer(kind = kint) :: i_viz_repartition_ctl = 0
       end type viz_repartition_ctl
@@ -71,6 +73,8 @@
      &                    :: hd_FEM_mesh =      'FEM_mesh_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_new_partition = 'new_partitioning_ctl'
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_FEM_sleeve =    'FEM_sleeve_ctl'
 !
 !   --------------------------------------------------------------------
 !
@@ -104,6 +108,8 @@
      &     (id_control, hd_FEM_mesh, viz_repart_c%Fmesh_ctl, c_buf)
         call read_ctl_data_new_partition(id_control, hd_new_partition,  &
      &      viz_repart_c%new_part_ctl, c_buf)
+        call read_FEM_sleeve_control                                    &
+     &     (id_control, hd_FEM_sleeve, viz_repart_c%Fsleeve_ctl, c_buf)
       end do
       viz_repart_c%i_viz_repartition_ctl = 1
 !
@@ -119,6 +125,7 @@
       call reset_control_platforms(viz_repart_c%viz_plt)
       call reset_FEM_mesh_control(viz_repart_c%Fmesh_ctl)
       call dealloc_ctl_data_new_decomp(viz_repart_c%new_part_ctl)
+      call dealloc_ctl_data_FEM_sleeve(viz_repart_c%Fsleeve_ctl)
 !
       viz_repart_c%i_viz_repartition_ctl =   0
 !
@@ -140,6 +147,7 @@
 !
       call bcast_FEM_mesh_control(viz_repart_c%Fmesh_ctl)
       call bcast_ctl_data_new_decomp(viz_repart_c%new_part_ctl)
+      call bcast_FEM_sleeve_control(viz_repart_c%Fsleeve_ctl)
 !
       call calypso_mpi_bcast_one_int                                    &
      &   (viz_repart_c%i_viz_repartition_ctl, 0)

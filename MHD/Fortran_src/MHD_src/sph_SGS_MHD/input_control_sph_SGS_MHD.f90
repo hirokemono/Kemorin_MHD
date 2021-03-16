@@ -81,7 +81,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
-     &    MHD_ctl%repart_ctl, MHD_ctl%model_ctl,                        &
+     &    MHD_ctl%viz_ctls%repart_ctl, MHD_ctl%model_ctl,               &
      &    MHD_ctl%smctl_ctl, MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,        &
      &    MHD_files, SPH_model%bc_IO, SPH_SGS%SGS_par, SPH_SGS%dynamic, &
      &    MHD_step, SPH_model%MHD_prop, SPH_model%MHD_BC,               &
@@ -97,7 +97,8 @@
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_w_LIC'
       call load_para_SPH_and_FEM_w_LIC                                  &
      &   (MHD_files%FEM_mesh_flags, MHD_files%sph_file_param,           &
-     &    SPH_MHD, FEM_dat%geofem, MHD_files%mesh_file_IO)
+     &    VIZ_DAT%repart_p, SPH_MHD, FEM_dat%geofem,                    &
+     &    MHD_files%mesh_file_IO)
       call dealloc_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       call sph_boundary_IO_control                                      &

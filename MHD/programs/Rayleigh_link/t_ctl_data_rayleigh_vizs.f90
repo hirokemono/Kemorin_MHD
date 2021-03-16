@@ -52,7 +52,6 @@
       use t_ctl_data_4_fields
       use t_ctl_data_4_divide_sphere
       use t_control_data_vizs
-      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -71,8 +70,6 @@
 !
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctl_v
-!>        Structure for new partitioning controls
-        type(viz_repartition_ctl) :: repart_ctl
 !
 !>        Structure of spherical shell domain decomposition
         type(sphere_domain_control) :: sdctl
@@ -94,8 +91,6 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_domains_sph = 'num_domain_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_partition = 'viz_repartition_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_viz_control = 'visual_control'
 !
@@ -179,8 +174,6 @@
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           rayleigh_vizs_ctl%viz_ctl_v, c_buf)
-        call read_control_vol_repart(id_control, hd_viz_partition,      &
-     &                           rayleigh_vizs_ctl%repart_ctl, c_buf)
       end do
       rayleigh_vizs_ctl%i_viz_only_file = 1
 !
@@ -203,7 +196,6 @@
       call bcast_ctl_data_4_platform(rayleigh_vizs_ctl%viz_plt)
       call bcast_ctl_data_4_time_step(rayleigh_vizs_ctl%t_viz_ctl)
       call bcast_viz_controls(rayleigh_vizs_ctl%viz_ctl_v)
-      call bcast_control_vol_repart(rayleigh_vizs_ctl%repart_ctl)
 !
       call bcast_phys_data_ctl(rayleigh_vizs_ctl%fld_ctl)
       call bcast_ctl_ndomain_4_shell(rayleigh_vizs_ctl%sdctl)
@@ -221,7 +213,6 @@
      &                                 :: rayleigh_vizs_ctl
 !
       call reset_control_platforms(rayleigh_vizs_ctl%viz_plt)
-      call dealloc_control_vol_repart(rayleigh_vizs_ctl%repart_ctl)
 !
       call dealloc_phys_control(rayleigh_vizs_ctl%fld_ctl)
       call dealloc_ndomain_rtp_ctl(rayleigh_vizs_ctl%sdctl)

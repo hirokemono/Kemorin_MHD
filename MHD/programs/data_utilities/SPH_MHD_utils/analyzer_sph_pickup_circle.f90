@@ -74,7 +74,7 @@
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,    &
-     &    MHD_ctl1%repart_ctl, MHD_ctl1%model_ctl,                      &
+     &    MHD_ctl1%viz_ctls%repart_ctl, MHD_ctl1%model_ctl,             &
      &    MHD_ctl1%smctl_ctl, MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,     &
      &    MHD_files1, SPH_model1%bc_IO, SPH_SGS1%SGS_par,               &
      &    SPH_SGS1%dynamic, MHD_step1, SPH_model1%MHD_prop,             &

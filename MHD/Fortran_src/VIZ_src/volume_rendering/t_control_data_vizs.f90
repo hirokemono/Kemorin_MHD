@@ -69,6 +69,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
+      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -84,6 +85,9 @@
         type(fieldline_controls) :: fline_ctls
 !>        Structures of LIC rendering controls
         type(lic_rendering_controls) :: lic_ctls
+!
+!>        Structure for new partitioning controls
+        type(viz_repartition_ctl) :: repart_ctl
 !
 !>   Increment for sectioning
         type(read_integer_item) :: i_step_psf_v_ctl
@@ -132,6 +136,8 @@
       type(visualization_controls), intent(inout) :: viz_ctls
 !
 !
+      call bcast_control_vol_repart(viz_ctls%repart_ctl)
+!
       call bcast_files_4_psf_ctl(viz_ctls%psf_ctls)
       call bcast_files_4_iso_ctl(viz_ctls%iso_ctls)
       call bcast_files_4_pvr_ctl(viz_ctls%pvr_ctls)
@@ -164,6 +170,8 @@
 !
       type(visualization_controls), intent(inout) :: viz_ctls
 !
+!
+      call dealloc_control_vol_repart(viz_ctls%repart_ctl)
 !
       call dealloc_psf_ctl_stract(viz_ctls%psf_ctls)
       call dealloc_iso_ctl_stract(viz_ctls%iso_ctls)

@@ -61,7 +61,8 @@
       use nod_and_ele_derived_info
       use const_element_comm_tables
 !
-      type(sleeve_extension_param), intent(inout) :: sleeve_exp_p
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
       type(communication_table), intent(inout) :: ele_comm

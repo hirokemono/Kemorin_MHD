@@ -82,7 +82,7 @@
      &   (vizs_ctl%t_viz_ctl, t_viz_param, ierr, e_message)
       call copy_delta_t(t_viz_param%init_d, t_viz_param%time_d)
 !
-      call set_ctl_param_vol_repart(vizs_ctl%repart_ctl,                &
+      call set_ctl_param_vol_repart(vizs_ctl%viz_ctl_v%repart_ctl,      &
      &                              VIZ_DAT%repart_p)
 !
       end subroutine set_control_params_4_viz

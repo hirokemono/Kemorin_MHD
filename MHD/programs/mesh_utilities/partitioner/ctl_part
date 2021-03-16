@@ -17,7 +17,6 @@ begin partitioner_control
     memory_conservation_ctl     'NO'
 !
     sleeve_level_ctl           2
-    element_overlap_ctl        ON
   end FEM_mesh_ctl
 !
 !    Example of order

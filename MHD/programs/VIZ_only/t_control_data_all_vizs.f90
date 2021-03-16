@@ -1,8 +1,12 @@
-!t_control_data_all_vizs.f90
-!      module t_control_data_all_vizs
-!
-!      Written by H. Matsui on July, 2006
-!
+!>@file   t_control_data_all_vizs.f90
+!!        module t_control_data_all_vizs
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
+!!
+!> @brief Control input routine for all visualizations
+!!
+!!@verbatim
 !!      subroutine read_control_file_vizs(vizs_ctl)
 !!      subroutine dealloc_vizs_control_data(vizs_ctl)
 !!        type(control_data_vizs), intent(inout) :: vizs_ctl
@@ -19,16 +23,13 @@
 !!      ...
 !!    end time_step_ctl
 !!
-!!    begin visual_domain_control
-!!      ....
-!!    end visual_domain_control
-!!
 !!    begin visual_control
 !!      ...
 !!    end  visual_control
 !!  end  visualizer
 !!
 !!    -------------------------------------------------------------------
+!!@endverbatim
 !
 !
       module t_control_data_all_vizs
@@ -40,7 +41,6 @@
       use t_ctl_data_4_time_steps
       use t_control_data_vizs
       use t_control_array_character3
-      use t_ctl_data_volume_repart
 !
       implicit  none
 !
@@ -57,8 +57,6 @@
 !
 !>        Structures of visualization controls
         type(visualization_controls) :: viz_ctl_v
-!>        Structure for new partitioning controls
-        type(viz_repartition_ctl) :: repart_ctl
 !
 !>        Structures of field used in visualization
         type(ctl_array_c3) :: viz_field_ctl
@@ -76,8 +74,6 @@
       character(len=kchara), parameter, private                         &
      &                    :: hd_time_step = 'time_step_ctl'
 !
-      character(len=kchara), parameter, private                         &
-     &                    :: hd_viz_partition = 'viz_repartition_ctl'
       character(len=kchara), parameter, private                         &
      &                    :: hd_viz_control = 'visual_control'
 !
@@ -151,8 +147,6 @@
 !
         call s_read_viz_controls(id_control, hd_viz_control,            &
      &                           vizs_ctl%viz_ctl_v, c_buf)
-        call read_control_vol_repart(id_control, hd_viz_partition,      &
-     &                               vizs_ctl%repart_ctl, c_buf)
       end do
       vizs_ctl%i_viz_only_file = 1
 !
@@ -175,7 +169,6 @@
       call bcast_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
 !
       call bcast_viz_controls(vizs_ctl%viz_ctl_v)
-      call bcast_control_vol_repart(vizs_ctl%repart_ctl)
 !
       call calypso_mpi_bcast_one_int(vizs_ctl%i_viz_only_file, 0)
 !
@@ -191,7 +184,6 @@
 !
       call dealloc_control_array_c3(vizs_ctl%viz_field_ctl)
       call reset_control_platforms(vizs_ctl%viz_plt)
-      call dealloc_control_vol_repart(vizs_ctl%repart_ctl)
       call reset_ctl_data_4_time_step(vizs_ctl%t_viz_ctl)
 !
       vizs_ctl%t_viz_ctl%i_tstep = 0

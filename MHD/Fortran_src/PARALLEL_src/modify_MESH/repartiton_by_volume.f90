@@ -74,7 +74,6 @@
       type(calypso_comm_table), intent(inout) :: org_to_new_tbl
 !
       type(interpolate_table) :: itp_tbl_IO
-      type(sleeve_extension_param), save :: sleeve_exp_p1
 !
 !  -------------------------------
 !
@@ -87,9 +86,7 @@
 ! Increase sleeve size
       if(part_param%num_FEM_sleeve .gt. 1) then
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+3)
-        sleeve_exp_p1%iflag_expand = iflag_ele_count
-        sleeve_exp_p1%dist_max = real(part_param%num_FEM_sleeve) * 0.9
-        call sleeve_extension_loop(sleeve_exp_p1,                       &
+        call sleeve_extension_loop(part_param%sleeve_exp_p,             &
      &      new_fem%mesh, new_fem%group, new_ele_comm)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+3)
       end if

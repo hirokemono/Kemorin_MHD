@@ -92,7 +92,7 @@
      &   (rayleigh_vctl%sdctl, FEM_Rayleigh%rayleigh_rtp,               &
      &    e_message, ierr)
 !
-      call set_ctl_param_vol_repart(rayleigh_vctl%repart_ctl,           &
+      call set_ctl_param_vol_repart(rayleigh_vctl%viz_ctl_v%repart_ctl, &
      &                              VIZ_DAT%repart_p)
 !
       end subroutine set_ctl_params_rayleigh_viz

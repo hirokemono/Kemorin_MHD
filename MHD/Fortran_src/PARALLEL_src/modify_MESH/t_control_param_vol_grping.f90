@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine set_ctl_param_vol_repart(viz_repart_c, part_param)
 !!        type(viz_repartition_ctl), intent(in) :: viz_repart_c
+!!        type(FEM_sleeve_control), intent(in) :: sleeve_c
 !!        type(volume_partioning_param), intent(inout) :: part_param
 !!@endverbatim
 !
@@ -19,6 +20,7 @@
 !
       use t_file_IO_parameter
       use t_ctl_data_volume_grouping
+      use t_ctl_param_sleeve_extend
 !
       implicit none
 !
@@ -49,6 +51,8 @@
 !>        number of blocks in each direction for new partition
         integer(kind = kint) :: ndivide_eb(3)
 !
+!>      Structure of sleeve extension parameter
+        type(sleeve_extension_param) :: sleeve_exp_p
 !>        Sleeve size level
         integer(kind = kint) :: num_FEM_sleeve = 1
       end type volume_partioning_param
@@ -68,6 +72,7 @@
       use m_machine_parameter
 !
       use t_ctl_data_volume_repart
+      use t_ctl_data_FEM_sleeve_size
       use m_machine_parameter
       use m_file_format_switch
       use set_control_platform_item
@@ -77,6 +82,8 @@
 !
       type(viz_repartition_ctl), intent(in) :: viz_repart_c
       type(volume_partioning_param), intent(inout) :: part_param
+!
+      integer(kind = kint) :: ierr
 !
 !
       call check_control_num_domains(viz_repart_c%viz_plt)
@@ -109,6 +116,9 @@
      &      'Number of subdomains should be num. of original mesh'
         call calypso_MPI_abort(ierr_P_MPI, e_message)
       end if
+!
+      call set_ctl_param_sleeve_extension                               &
+     &   (viz_repart_c%Fsleeve_ctl, part_param%sleeve_exp_p, ierr)
 !
       end subroutine set_ctl_param_vol_repart
 !

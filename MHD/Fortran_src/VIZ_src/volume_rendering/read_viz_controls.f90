@@ -49,6 +49,10 @@
 !!    delta_t_field_ctl        1.0e-3
 !!    i_step_field_ctl         800
 !!    output_field_file_fmt_ctl   'VTK'
+!!
+!!    begin viz_repartition_ctl
+!!      ....
+!!    end viz_repartition_ctl
 !!  end visual_control
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -69,6 +73,7 @@
       use t_control_array_character
       use t_control_array_real
       use t_control_array_integer
+      use t_ctl_data_FEM_sleeve_size
 !
       implicit  none
 !
@@ -115,6 +120,8 @@
       character(len=kchara), parameter, private                         &
      &       :: hd_output_fld_file_fmt = 'output_field_file_fmt_ctl'
 !
+      character(len=kchara), parameter, private                         &
+     &                    :: hd_viz_partition = 'viz_repartition_ctl'
 !
 !      Deprecated labels
       character(len=kchara), parameter, private                         &
@@ -123,9 +130,9 @@
      &             :: hd_iso_ctl = 'isosurf_rendering'
 !
       integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs = 18
+     &                      :: n_label_vizs = 19
       integer(kind = kint), parameter, private                          &
-     &                      :: n_label_vizs_w_dep = 20
+     &                      :: n_label_vizs_w_dep = 21
 !
 !   --------------------------------------------------------------------
 !
@@ -151,6 +158,9 @@
       do
         call load_one_line_from_control(id_control, c_buf)
         if(check_end_flag(c_buf, hd_block)) exit
+!
+        call read_control_vol_repart(id_control, hd_viz_partition,      &
+     &                           viz_ctls%repart_ctl, c_buf)
 !
         if(check_array_flag(c_buf, hd_psf_ctl)) then
           call read_files_4_psf_ctl(id_control, hd_psf_ctl,             &
@@ -267,8 +277,10 @@
       call set_control_labels(hd_delta_t_ucd,         names(17))
       call set_control_labels(hd_output_fld_file_fmt, names(18))
 !
-      call set_control_labels(hd_psf_ctl,             names(19))
-      call set_control_labels(hd_iso_ctl,             names(20))
+      call set_control_labels(hd_viz_partition,       names(19))
+!
+      call set_control_labels(hd_psf_ctl,             names(20))
+      call set_control_labels(hd_iso_ctl,             names(21))
 !
       end subroutine set_label_vizs
 !

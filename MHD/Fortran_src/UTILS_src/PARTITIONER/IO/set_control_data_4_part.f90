@@ -89,16 +89,11 @@
      &    part_p)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
-     &    comm_part, part_p)
+     &    part_ctl%sleeve_level_old, comm_part, part_p)
 !
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', part_p%iflag_viewer_output
-      if(part_p%n_overlap .eq. 1) then
-        write(*,*) 'element overlapping flag: ',                        &
-     &            part_p%iflag_sleeve_ele
-      end if
 !
 !
       if(part_p%NTYP_div .eq. iPART_RCB_XYZ) then
@@ -209,18 +204,13 @@
      & = choose_para_file_format(part_ctl%single_plt%mesh_file_fmt_ctl)
 !
       call set_FEM_mesh_ctl_4_part(part_ctl%part_Fmesh,                 &
-     &    part_ctl%sleeve_level_old, part_ctl%element_overlap_ctl,      &
-     &    comm_part, part_p)
+     &    part_ctl%sleeve_level_old, comm_part, part_p)
 !
       if(id_rank .ne. 0) return
       write(*,*) 'sleeve level :', part_p%n_overlap
       write(*,*) 'iflag_memory_conserve',                               &
      &          comm_part%iflag_memory_conserve
       write(*,*) 'iflag_viewer_output', part_p%iflag_viewer_output
-      if(part_p%n_overlap .eq. 1) then
-        write(*,*) 'element overlapping flag: ',                        &
-     &            part_p%iflag_sleeve_ele
-      end if
 !
       end subroutine set_control_4_extend_sleeve
 !
@@ -228,8 +218,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_FEM_mesh_ctl_4_part                                &
-     &         (part_Fmesh, sleeve_level_old, element_overlap_ctl,      &
-     &          comm_part, part_p)
+     &         (part_Fmesh, sleeve_level_old, comm_part, part_p)
 !
       use t_ctl_data_4_FEM_mesh
       use t_control_array_character
@@ -242,7 +231,6 @@
 !
       type(FEM_mesh_control), intent(in) :: part_Fmesh
       type(read_integer_item), intent(in) :: sleeve_level_old
-      type(read_character_item), intent(in)  :: element_overlap_ctl
       type(partitioner_comm_tables), intent(inout) :: comm_part
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
@@ -270,17 +258,6 @@
         part_p%n_overlap = 1
       end if
       if(part_p%n_overlap .lt. 1) part_p%n_overlap = 1
-!
-      part_p%iflag_sleeve_ele = 0
-      if(part_p%n_overlap .eq. 1) then
-        if(part_Fmesh%FEM_element_overlap_ctl%iflag .gt. 0) then
-          part_p%iflag_sleeve_ele = 1
-          part_p%n_overlap =    2
-        else if(element_overlap_ctl%iflag .gt. 0) then
-          part_p%iflag_sleeve_ele = 1
-          part_p%n_overlap =    2
-        end if
-      end if
 !
       end subroutine set_FEM_mesh_ctl_4_part
 !

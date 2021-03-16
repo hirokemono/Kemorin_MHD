@@ -56,8 +56,7 @@
      &    FEM_model1%MHD_prop, FEM_model1%MHD_BC, FEM_MHD1%geofem,      &
      &    FEM_MHD1%field, SGS_MHD_wk1%ele_fld, VIZ_DAT2,                &
      &    FEM_model1%bc_FEM_IO, FEM_SGS1%FEM_filters,                   &
-     &    SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1,                              &
-     &    vizs_rprt_c_F%vizs_ctl, vizs_rprt_c_F%repart_ctl)
+     &    SGS_MHD_wk1%FEM_SGS_wk, MHD_CG1, vizs_ctl_F)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+3)
 !
@@ -70,7 +69,7 @@
      &    SGS_MHD_wk1%fem_int%next_tbl, SGS_MHD_wk1%fem_int%jcs,        &
      &    FEM_MHD1%geofem, FEM_MHD1%field, VIZ_DAT2)
       call init_visualize(VIZ_DAT2%viz_fem, VIZ_DAT2%edge_comm,         &
-     &    VIZ_DAT2%viz_fld, vizs_rprt_c_F%vizs_ctl, vizs_F)
+     &    VIZ_DAT2%viz_fld, vizs_ctl_F, vizs_F)
       if(iflag_MHD_time) call end_elapsed_time(ist_elapsed_MHD+1)
 !
       end subroutine initialization_MHD
