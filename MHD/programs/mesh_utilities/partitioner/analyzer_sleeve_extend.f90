@@ -28,6 +28,7 @@
       use t_ctl_param_partitioner
       use para_const_kemoview_mesh
       use parallel_sleeve_extension
+      use t_ctl_param_sleeve_extend
 !
       use mpi_load_mesh_data
       use m_work_time
@@ -38,6 +39,7 @@
       type(ctl_param_partitioner), save, private :: part_p1
       type(control_data_4_partitioner), save, private :: part_ctl1
       type(partitioner_comm_tables), save, private :: comm_part1
+      type(sleeve_extension_param), save, private :: sleeve_exp_p1
 !
       type(mesh_data), save, private :: fem_EXT
       type(parallel_make_vierwer_mesh), save, private :: par_viexw_ex
@@ -94,11 +96,23 @@
 !
       subroutine analyze_sleeve_extend
 !
-      integer(kind = kint) :: ilevel
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
+      use sleeve_extend
+!
+      type(communication_table), save:: ele_comm
 !
 !
-      call sleeve_extension_loop(part_p1%n_overlap,                     &
-     &                           fem_EXT%mesh, fem_EXT%group)
+      sleeve_exp_p1%iflag_expand = iflag_distance
+      sleeve_exp_p1%dist_max =     0.05d0
+!
+      call set_nod_and_ele_infos(fem_EXT%mesh%node, fem_EXT%mesh%ele)
+      call const_ele_comm_table                                         &
+     &   (fem_EXT%mesh%node, fem_EXT%mesh%nod_comm,                     &
+     &    ele_comm, fem_EXT%mesh%ele)
+!
+      call extend_sleeve_loop                                           &
+     &   (sleeve_exp_p1, fem_EXT%mesh, fem_EXT%group, ele_comm)
 !
       call mpi_output_mesh                                              &
      &   (part_p1%distribute_mesh_file, fem_EXT%mesh, fem_EXT%group)
