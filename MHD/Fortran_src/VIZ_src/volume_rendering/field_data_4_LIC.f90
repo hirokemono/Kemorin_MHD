@@ -7,15 +7,13 @@
 !> @brief Set field data for volume rendering
 !!
 !!@verbatim
-!!      subroutine cal_field_4_each_lic(node, ele, g_FEM, jac_3d,       &
-!!     &          nod_fld, lic_p, field_pvr)
+!!      subroutine cal_field_4_each_lic                                 &
+!!     &         (node, ele, nod_fld, lic_p, field_lic)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-!!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(pvr_projected_field), intent(inout) :: field_pvr
+!!        type(lic_field_data), intent(inout) :: field_lic
 !!@endverbatim
 !
       module field_data_4_LIC
@@ -34,27 +32,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_field_4_each_lic(node, ele, g_FEM, jac_3d,         &
-     &          nod_fld, lic_p, field_pvr)
+      subroutine cal_field_4_each_lic                                   &
+     &         (node, ele, nod_fld, lic_p, field_lic)
 !
       use m_error_IDs
       use t_geometry_data
       use t_phys_data
-      use t_fem_gauss_int_coefs
-      use t_jacobian_3d
-      use t_geometries_in_pvr_screen
+      use t_lic_field_data
       use cal_gradient_on_element
       use convert_components_4_viz
       use set_components_flags
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(FEM_gauss_int_coefs), intent(in) :: g_FEM
-      type(jacobians_3d), intent(in) :: jac_3d
       type(lic_parameters), intent(in) :: lic_p
       type(phys_data), intent(in) :: nod_fld
 !
-      type(pvr_projected_field), intent(inout) :: field_pvr
+      type(lic_field_data), intent(inout) :: field_lic
 !
       integer(kind = kint) :: i_field, ist_fld, num_comp, i
 !
@@ -66,7 +60,7 @@
      &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
      &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
      &    icomp_VECTOR, nod_fld%d_fld(1,ist_fld+1),                     &
-     &    field_pvr%v_lic)
+     &    field_lic%v_lic)
 !
       i_field =  lic_p%lic_field%id_field
       ist_fld =  nod_fld%istack_component(i_field-1)
@@ -74,13 +68,7 @@
       call convert_comps_4_viz                                          &
      &   (node%numnod, node%istack_nod_smp, node%xx, node%rr,           &
      &    node%a_r, node%ss, node%a_s, ione, num_comp,                  &
-     &    icomp_NORM, nod_fld%d_fld(1,ist_fld+1), field_pvr%d_pvr)
-!
-      call fem_gradient_on_element(ele%istack_ele_smp, node%numnod,     &
-     &    ele%numele, ele%nnod_4_ele, ele%ie, ele%a_vol_ele,            &
-     &    g_FEM%max_int_point, g_FEM%maxtot_int_3d, g_FEM%int_start3,   &
-     &    g_FEM%owe3d, jac_3d%ntot_int, ione, jac_3d%dnx, jac_3d%xjac,  &
-     &    field_pvr%grad_ele, field_pvr%d_pvr)
+     &    icomp_NORM, nod_fld%d_fld(1,ist_fld+1), field_lic%d_lic)
 !
       if(lic_p%iflag_color_mode .eq. iflag_from_control) then
         i_field =  lic_p%color_field%id_field
@@ -90,7 +78,7 @@
      &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,         &
      &      node%a_r, node%ss, node%a_s, ione, num_comp,                &
      &      lic_p%color_field%id_component, nod_fld%d_fld(1,ist_fld+1), &
-     &      field_pvr%d_pvr)
+     &      field_lic%d_lic)
       end if
 !
       do i = 1, lic_p%num_masking
@@ -102,7 +90,7 @@
        &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,       &
        &      node%a_r, node%ss, node%a_s, ione, num_comp,              &
        &      lic_p%masking(i)%field_info%id_component,                 &
-       &      nod_fld%d_fld(1,ist_fld+1), field_pvr%s_lic(1,i))
+       &      nod_fld%d_fld(1,ist_fld+1), field_lic%s_lic(1,i))
         end if
       end do
 !

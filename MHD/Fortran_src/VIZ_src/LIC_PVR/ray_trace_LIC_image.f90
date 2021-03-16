@@ -8,17 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image(node, ele, surf,            &
-!!     &          lic_p, pvr_screen, field_pvr, color_param,            &
+!!     &          lic_p, pvr_screen, field_lic, field_pvr, color_param, &
 !!     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,  &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
-!!       type(node_data), intent(in) :: node
-!!       type(element_data), intent(in) :: ele
-!!       type(surface_data), intent(in) :: surf
-!!       type(lic_parameters), intent(in) :: lic_p
-!!       type(pvr_projected_field), intent(in) :: field_pvr
-!!       type(pvr_colormap_parameter), intent(in) :: color_param
-!!       type(pvr_projected_position), intent(in) :: pvr_screen
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(lic_parameters), intent(in) :: lic_p
+!!        type(lic_field_data), intent(in) :: field_lic
+!!        type(pvr_projected_field), intent(in) :: field_pvr
+!!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(pvr_projected_position), intent(in) :: pvr_screen
 !!@endverbatim
 !
       module ray_trace_LIC_image
@@ -32,6 +33,8 @@
 !
       use t_control_params_4_pvr
       use t_control_param_LIC
+      use t_geometries_in_pvr_screen
+      use t_lic_field_data
       use m_machine_parameter
       use cal_lic_on_surf_viz
 !
@@ -46,14 +49,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_lic_image(node, ele, surf,              &
-     &          lic_p, pvr_screen, field_pvr, color_param,              &
+     &          lic_p, pvr_screen, field_lic, field_pvr, color_param,   &
      &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,    &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !
       use t_geometry_data
       use t_surface_data
-      use t_geometries_in_pvr_screen
       use t_noise_node_data
 !
       type(node_data), intent(in) :: node
@@ -61,6 +63,7 @@
       type(surface_data), intent(in) :: surf
 !
       type(lic_parameters), intent(in) :: lic_p
+      type(lic_field_data), intent(in) :: field_lic
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
@@ -84,7 +87,7 @@
       integer(kind = kint) :: inum, iflag_comm
       real(kind = kreal) :: rgba_tmp(4)
 !
-      !type(noise_mask), allocatable :: n_mask
+!      type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: sample_cnt
       real(kind = kreal) :: range_max, range_min
 
@@ -92,10 +95,11 @@
 !
       sample_cnt = 0
 
-      !range_min = 3.0
-      !range_max = 14.0
-      !allocate(n_mask)
-      !call init_noise_mask(n_mask, range_min, range_max, field_pvr%s_lic, node%numnod)
+!      range_min = 3.0
+!      range_max = 14.0
+!      allocate(n_mask)
+!      call init_noise_mask(n_mask, range_min, range_max,              &
+!     &    field_lic%s_lic, node%numnod)
 !
 !$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
@@ -109,8 +113,8 @@
      &      surf%isf_4_ele, surf%iele_4_surf, ele%interior_ele,         &
      &      node%xx, surf%vnorm_surf, surf%interior_surf,               &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
-     &      viewpoint_vec, lic_p, field_pvr, color_param, ray_vec,      &
-     &      id_pixel_check(inum), isf_pvr_ray_start(1,inum),            &
+     &      viewpoint_vec, lic_p, field_lic, field_pvr, color_param,    &
+     &      ray_vec, id_pixel_check(inum), isf_pvr_ray_start(1,inum),   &
      &      xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),             &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
      &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
@@ -128,11 +132,10 @@
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
-     &        lic_p, field_pvr, color_param, ray_vec, iflag_check,      &
-     &        isurf_org, screen_st, xx_st, xi, rgba_ray, icount_line,   &
-     &        xyz_min_gl, xyz_max_gl, iflag_comm)
+     &        lic_p, field_lic, field_pvr, color_param, ray_vec,        &
+     &        iflag_check, isurf_org, screen_st, xx_st, xi, rgba_ray,   &
+     &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
 !
-      use t_geometries_in_pvr_screen
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
@@ -159,6 +162,7 @@
       real(kind = kreal), intent(in) :: xyz_max_gl(3)
 !
       type(lic_parameters), intent(in) :: lic_p
+      type(lic_field_data), intent(in) :: field_lic
       type(pvr_projected_field), intent(in) :: field_pvr
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
@@ -206,9 +210,9 @@
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
       &   ie_surf, isurf_end, xi, xx, xx_st)
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &   ie_surf, isurf_end, xi, field_pvr%v_lic, vec_org)
+      &   ie_surf, isurf_end, xi, field_lic%v_lic, vec_org)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-      &   ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_org)
+      &   ie_surf, isurf_end, xi, field_lic%d_lic, scl_org)
 
       allocate(r_org(lic_p%num_masking))
       allocate(r_tgt(lic_p%num_masking))
@@ -216,7 +220,7 @@
       do i = 1, lic_p%num_masking
         if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
           call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
-       &      ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_org(i) )
+       &      ie_surf, isurf_end, xi, field_lic%s_lic(1,i), r_org(i))
         end if
       end do
 !
@@ -280,14 +284,15 @@
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%v_lic, vec_tgt)
+     &      ie_surf, isurf_end, xi, field_lic%v_lic, vec_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, scl_tgt)
+     &      ie_surf, isurf_end, xi, field_lic%d_lic, scl_tgt)
 
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-            call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,   &
-       &        ie_surf, isurf_end, xi, field_pvr%s_lic(1,i), r_tgt(i) )
+            call cal_field_on_surf_scalar                               &
+     &         (numnod, numsurf, nnod_4_surf, ie_surf, isurf_end, xi,   &
+     &          field_lic%s_lic(1,i), r_tgt(i))
           end if
         end do
 
@@ -334,8 +339,8 @@
      &           (numnod, numsurf, numele, nnod_4_surf,                 &
      &            isf_4_ele, iele_4_surf, interior_surf, xx,            &
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
-     &            r_mid, vec_mid, field_pvr%s_lic,                      &
-     &            field_pvr%v_lic, xx_lic, isurf_end,                   &
+     &            r_mid, vec_mid, field_lic%s_lic,                      &
+     &            field_lic%v_lic, xx_lic, isurf_end,                   &
      &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
      &            lic_tgt(1), grad_tgt)
 !
@@ -351,7 +356,7 @@
 !
               if(lic_p%iflag_color_mode .eq. iflag_from_control) then
                 scl_mid(1)                                              &
-     &          = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
+     &            = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
                 call s_lic_rgba_4_each_pixel                            &
      &             (viewpoint_vec, xx_lic_last, xx_lic,                 &
      &              scl_mid(1), grad_tgt, lic_tgt(1),                   &
@@ -388,8 +393,8 @@
      &         (numnod, numsurf, numele, nnod_4_surf,                   &
      &          isf_4_ele, iele_4_surf, interior_surf, xx,              &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          r_mid, vec_mid, field_pvr%s_lic,                        &
-     &          field_pvr%v_lic, xx_lic, isurf_end,                     &
+     &          r_mid, vec_mid, field_lic%s_lic,                        &
+     &          field_lic%v_lic, xx_lic, isurf_end,                     &
      &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
      &          lic_tgt(1), grad_tgt)
 !

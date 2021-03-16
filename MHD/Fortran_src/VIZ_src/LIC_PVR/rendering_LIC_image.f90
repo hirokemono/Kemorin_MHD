@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine lic_rendering_with_fixed_view                        &
 !!     &         (istep_pvr, time, node, ele, surf,                     &
-!!     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+!!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine rendering_lic_at_once                                &
 !!     &         (istep_pvr, time, node, ele, surf, group,              &
-!!     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+!!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -20,6 +20,7 @@
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!        type(PVR_control_params), intent(in) :: pvr_param
+!!        type(lic_field_data), intent(in) :: field_lic
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
 !!@endverbatim
 !
@@ -38,6 +39,7 @@
       use t_group_data
       use t_control_params_4_pvr
       use t_control_param_LIC
+      use t_lic_field_data
       use t_geometries_in_pvr_screen
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
@@ -55,7 +57,7 @@
 !
       subroutine lic_rendering_with_fixed_view                          &
      &         (istep_pvr, time, node, ele, surf,                       &
-     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_LIC_image
 !
@@ -66,6 +68,7 @@
       type(surface_data), intent(in) :: surf
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
+      type(lic_field_data), intent(in) :: field_lic
 !
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -77,9 +80,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic                                        &
      &   (istep_pvr, time, node, ele, surf, lic_p,                      &
-     &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
-     &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
-     &    pvr_proj%stencil, pvr_rgb)
+     &    pvr_param%color, pvr_param%colorbar, field_lic,               &
+     &    pvr_param%field, pvr_param%view, pvr_proj%screen,             &
+     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine lic_rendering_with_fixed_view
 !
@@ -88,7 +91,7 @@
 !
       subroutine rendering_lic_at_once                                  &
      &         (istep_pvr, time, node, ele, surf, group,                &
-     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_LIC_image
@@ -102,6 +105,7 @@
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
+      type(lic_field_data), intent(in) :: field_lic
 !
       type(PVR_projection_data), intent(inout) :: pvr_proj
       type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -120,9 +124,9 @@
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
       call rendering_image_4_lic                                        &
      &   (istep_pvr, time, node, ele, surf, lic_p,                      &
-     &    pvr_param%color, pvr_param%colorbar, pvr_param%field,         &
-     &    pvr_param%view, pvr_proj%screen, pvr_proj%start_pt,           &
-     &    pvr_proj%stencil, pvr_rgb)
+     &    pvr_param%color, pvr_param%colorbar, field_lic,               &
+     &    pvr_param%field, pvr_param%view, pvr_proj%screen,             &
+     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_lic_at_once
 !

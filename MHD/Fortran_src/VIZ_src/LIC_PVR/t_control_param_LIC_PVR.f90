@@ -15,16 +15,16 @@
 !!        type(lic_parameter_ctl), intent(inout)                        &
 !!     &                        :: lic_ctl_type(num_lic_ctl)
 !!      subroutine s_set_lic_controls(group, nod_fld, num_lic,          &
-!!     &           pvr_ctl_type, lic_ctl_type, lic_fld, pvr_param)
+!!     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param)
 !!        integer(kind = kint), intent(in) :: num_lic
 !!        type(mesh_groups), intent(in) :: group
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
 !!        type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
-!!        type(LIC_field_params), intent(inout) :: lic_fld(num_lic)
+!!        type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
 !!        type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
-!!      subroutine flush_each_lic_control(lic_fld)
-!!        type(LIC_field_params), intent(inout) :: lic_fld
+!!      subroutine flush_each_lic_control(lic_fld_pm)
+!!        type(LIC_field_params), intent(inout) :: lic_fld_pm
 !!@endverbatim
 !
       module t_control_param_LIC_PVR
@@ -38,13 +38,16 @@
       use t_control_param_LIC
       use t_control_data_LIC
       use t_control_data_lic_pvr
+      use t_lic_field_data
 !
       implicit  none
 !
-!>      Structure of PVR field parameters
+!>      Structure of LIC field parameters
       type LIC_field_params
 !>        Structure for field parameter for PVR
         type(lic_parameters) :: lic_param
+!>        Structure for field data for LIC
+        type(lic_field_data) :: field_lic
       end type LIC_field_params
 !
 !  ---------------------------------------------------------------------
@@ -85,7 +88,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_lic_controls(group, nod_fld, num_lic,            &
-     &           pvr_ctl_type, lic_ctl_type, lic_fld, pvr_param)
+     &           pvr_ctl_type, lic_ctl_type, lic_fld_pm, pvr_param)
 !
       use m_error_IDs
       use t_phys_data
@@ -103,7 +106,7 @@
       type(pvr_parameter_ctl), intent(in) :: pvr_ctl_type(num_lic)
       type(lic_parameter_ctl), intent(in) :: lic_ctl_type(num_lic)
 !
-      type(LIC_field_params), intent(inout) :: lic_fld(num_lic)
+      type(LIC_field_params), intent(inout) :: lic_fld_pm(num_lic)
       type(PVR_control_params), intent(inout) :: pvr_param(num_lic)
 !
       integer(kind = kint) :: i_lic
@@ -118,7 +121,7 @@
 !
         call set_control_lic_parameter                                  &
      &     (nod_fld%num_phys, nod_fld%phys_name,                        &
-     &      lic_ctl_type(i_lic), lic_fld(i_lic)%lic_param)
+     &      lic_ctl_type(i_lic), lic_fld_pm(i_lic)%lic_param)
 !
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr'
         call set_control_pvr                                            &
@@ -138,17 +141,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine flush_each_lic_control(lic_fld)
+      subroutine flush_each_lic_control(lic_fld_pm)
 !
       use t_rendering_vr_image
       use t_geometries_in_pvr_screen
 !
-      type(LIC_field_params), intent(inout) :: lic_fld
+      type(LIC_field_params), intent(inout) :: lic_fld_pm
 !
 !
-      call dealloc_3d_cube_noise(lic_fld%lic_param%noise_t)
-      call dealloc_lic_masking_ranges(lic_fld%lic_param)
-      call dealloc_lic_kernel(lic_fld%lic_param%kernel_t)
+      call dealloc_3d_cube_noise(lic_fld_pm%lic_param%noise_t)
+      call dealloc_lic_masking_ranges(lic_fld_pm%lic_param)
+      call dealloc_lic_kernel(lic_fld_pm%lic_param%kernel_t)
 !
       end subroutine flush_each_lic_control
 !

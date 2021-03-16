@@ -14,12 +14,9 @@
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
 !!     &         (numnod, numele, num_sf_grp, field_pvr)
-!!      subroutine alloc_nod_vector_4_lic                               &
-!!     &         (numnod, num_masking, field_pvr)
 !!      subroutine dealloc_nod_data_4_pvr(fld)
-!!      subroutine dealloc_nod_data_4_lic(field_pvr)
 !!
-!!      subroutine g(fld)
+!!      subroutine alloc_pvr_sections(fld)
 !!      subroutine alloc_pvr_isosurfaces(fld)
 !!
 !!      subroutine allocate_pixel_position_pvr(n_pvr_pixel, pixel_xy)
@@ -66,15 +63,6 @@
         real(kind = kreal), allocatable :: d_pvr(:)
 !>    Gradient for rendering
         real(kind = kreal), allocatable :: grad_ele(:,:)
-!
-!>    Vector Data for LIC
-        real(kind = kreal), allocatable :: v_lic(:,:)
-!>    Vector Data for LIC opacity
-!        real(kind = kreal), allocatable :: o_pvr(:)
-!>    Number of LIC masking data fiels
-        integer(kind = kint) :: num_mask = 0
-!>    Vector Data for LIC masking data
-        real(kind = kreal), allocatable :: s_lic(:,:)
 !
 !>    flag for rendering element
         integer(kind = kint), allocatable :: iflag_used_ele(:)
@@ -174,26 +162,6 @@
       end subroutine allocate_nod_data_4_pvr
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine alloc_nod_vector_4_lic                                 &
-     &         (numnod, num_masking, field_pvr)
-!
-      integer(kind = kint), intent(in) :: numnod, num_masking
-      type(pvr_projected_field), intent(inout) :: field_pvr
-!
-!
-      allocate(field_pvr%v_lic(numnod,3))
-!      allocate(field_pvr%o_pvr(numnod))
-      if(numnod .gt. 0) field_pvr%v_lic =    0.0d0
-!      if(numnod .gt. 0) field_pvr%o_pvr =    0.0d0
-!
-      field_pvr%num_mask = num_masking
-      allocate(field_pvr%s_lic(numnod,field_pvr%num_mask))
-      if(numnod*num_masking .gt. 0) field_pvr%s_lic = 0.0d0
-!
-      end subroutine alloc_nod_vector_4_lic
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine dealloc_nod_data_4_pvr(field_pvr)
@@ -206,20 +174,6 @@
       deallocate(field_pvr%d_pvr, field_pvr%grad_ele)
 !
       end subroutine dealloc_nod_data_4_pvr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_nod_data_4_lic(field_pvr)
-!
-      type(pvr_projected_field), intent(inout) :: field_pvr
-!
-!
-      deallocate(field_pvr%v_lic)
-!      deallocate(field_pvr%o_pvr)
-!
-      deallocate(field_pvr%s_lic)
-!
-      end subroutine dealloc_nod_data_4_lic
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

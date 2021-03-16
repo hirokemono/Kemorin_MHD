@@ -10,16 +10,13 @@
 !!      subroutine check_LIC_update                                     &
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
-!!      subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
+!!      subroutine LIC_initialize(viz_fem, nod_fld, lic_ctls, lic)
 !!      subroutine LIC_visualize                                        &
-!!     &         (istep_lic, time, fem, jacs, nod_fld, lic)
+!!     &         (istep_lic, time, viz_fem, nod_fld, lic)
 !!      subroutine dealloc_LIC_data(lic)
-!!        type(mesh_data), intent(in) :: fem
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
+!!        type(mesh_data), intent(in) :: viz_fem
+!!        type(mesh_data), intent(in) :: viz_fem
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_type), intent(in) :: jacs
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
 !!      subroutine dealloc_LIC_data(lic)
@@ -37,7 +34,6 @@
 !
       use t_mesh_data
       use t_phys_data
-      use t_jacobians
 !
       use t_rendering_vr_image
       use t_control_params_4_pvr
@@ -61,7 +57,7 @@
 !
       type lic_volume_rendering_module
 !>        Structure of LIC field parameters
-        type(LIC_field_params), allocatable :: lic_fld(:)
+        type(LIC_field_params), allocatable :: lic_fld_pm(:)
 !
 !>        Structure for LIC images
         type(volume_rendering_module) :: pvr
@@ -141,14 +137,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine LIC_initialize(fem, nod_fld, lic_ctls, lic)
+      subroutine LIC_initialize(viz_fem, nod_fld, lic_ctls, lic)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
       use each_LIC_rendering
       use rendering_and_image_nums
 !
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: viz_fem
       type(phys_data), intent(in) :: nod_fld
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
@@ -177,15 +173,15 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call allocate_nod_data_4_pvr                                    &
-     &     (fem%mesh%node%numnod, fem%mesh%ele%numele,                  &
-     &      fem%group%surf_grp%num_grp, lic%pvr%pvr_param(i_lic)%field)
+        call alloc_nod_vector_4_lic(viz_fem%mesh%node%numnod,           &
+     &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
+     &      lic%lic_fld_pm(i_lic)%field_lic)
         call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
 !
-      call s_set_lic_controls(fem%group, nod_fld, lic%pvr%num_pvr,      &
+      call s_set_lic_controls(viz_fem%group, nod_fld, lic%pvr%num_pvr,  &
      &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_fld, lic%pvr%pvr_param)
+     &    lic%lic_fld_pm, lic%pvr%pvr_param)
 !
       do i_lic = 1, lic_ctls%num_lic_ctl
         if(lic_ctls%fname_lic_ctl(i_lic) .ne. 'NO_FILE'                 &
@@ -196,15 +192,9 @@
       end do
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call alloc_nod_vector_4_lic(fem%mesh%node%numnod,               &
-     &      lic%lic_fld(i_lic)%lic_param%num_masking,                   &
-     &      lic%pvr%pvr_param(i_lic)%field)
-      end do
-!
-      do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call each_PVR_initialize(i_lic, fem%mesh, fem%group,            &
+        call each_PVR_initialize(i_lic, viz_fem%mesh, viz_fem%group,    &
      &     lic%pvr%pvr_param(i_lic)%area_def, lic%pvr%pvr_param(i_lic), &
      &     lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
@@ -217,7 +207,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_visualize                                          &
-     &         (istep_lic, time, fem, jacs, nod_fld, lic)
+     &         (istep_lic, time, viz_fem, nod_fld, lic)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -227,9 +217,8 @@
       integer(kind = kint), intent(in) :: istep_lic
       real(kind = kreal), intent(in) :: time
 !
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: viz_fem
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_type), intent(in) :: jacs
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
@@ -243,8 +232,8 @@
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
         call s_each_LIC_rendering                                       &
-     &     (istep_lic, time, fem%mesh, jacs, nod_fld,                   &
-     &      lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),               &
+     &     (istep_lic, time, viz_fem%mesh, nod_fld,                     &
+     &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
      &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -268,9 +257,9 @@
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, fem%mesh, fem%group, jacs, nod_fld,      &
-     &        lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic),             &
+          call s_each_LIC_rendering_w_rot (istep_lic, time,             &
+     &        viz_fem%mesh, viz_fem%group, nod_fld,                     &
+     &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
      &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
         end if
       end do
@@ -287,7 +276,7 @@
 !
 !
       call alloc_pvr_data(lic%pvr)
-      allocate(lic%lic_fld(lic%pvr%num_pvr))
+      allocate(lic%lic_fld_pm(lic%pvr%num_pvr))
 !
       end subroutine alloc_LIC_data
 !
@@ -302,10 +291,9 @@
 !
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call dealloc_each_lic_data                                      &
-     &     (lic%lic_fld(i_lic), lic%pvr%pvr_param(i_lic))
+        call dealloc_each_lic_data(lic%lic_fld_pm(i_lic))
       end do
-      deallocate(lic%lic_fld)
+      deallocate(lic%lic_fld_pm)
 !
       call dealloc_pvr_data(lic%pvr)
 !

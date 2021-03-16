@@ -24,7 +24,7 @@ draw_pvr_colorbar_nums.o: $(PVR_DIR)/draw_pvr_colorbar_nums.f90 m_precision.o m_
 	$(F90) -c $(F90OPTFLAGS) $<
 each_volume_rendering.o: $(PVR_DIR)/each_volume_rendering.f90 m_precision.o calypso_mpi.o m_constants.o m_machine_parameter.o m_geometry_constants.o t_mesh_data.o t_phys_data.o t_jacobians.o t_rendering_vr_image.o t_control_params_4_pvr.o t_surf_grp_4_pvr_domain.o t_pvr_ray_startpoints.o t_pvr_image_array.o t_geometries_in_pvr_screen.o field_data_4_pvr.o set_default_pvr_params.o set_position_pvr_screen.o mesh_outline_4_pvr.o generate_vr_image.o rendering_streo_vr_image.o t_control_data_pvr_sections.o set_pvr_control.o cal_pvr_modelview_mat.o cal_pvr_projection_mat.o find_pvr_surf_domain.o
 	$(F90) -c $(F90OPTFLAGS) $<
-field_data_4_LIC.o: $(PVR_DIR)/field_data_4_LIC.f90 m_precision.o m_constants.o t_control_params_4_pvr.o t_control_param_LIC.o m_error_IDs.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_geometries_in_pvr_screen.o cal_gradient_on_element.o convert_components_4_viz.o set_components_flags.o
+field_data_4_LIC.o: $(PVR_DIR)/field_data_4_LIC.f90 m_precision.o m_constants.o t_control_params_4_pvr.o t_control_param_LIC.o m_error_IDs.o t_geometry_data.o t_phys_data.o t_lic_field_data.o cal_gradient_on_element.o convert_components_4_viz.o set_components_flags.o
 	$(F90) -c $(F90OPTFLAGS) $<
 field_data_4_pvr.o: $(PVR_DIR)/field_data_4_pvr.f90 m_precision.o m_constants.o t_control_params_4_pvr.o t_geometry_data.o t_phys_data.o t_fem_gauss_int_coefs.o t_jacobian_3d.o t_geometries_in_pvr_screen.o cal_gradient_on_element.o convert_components_4_viz.o t_pvr_image_array.o set_projection_matrix.o
 	$(F90) -c $(F90OPTFLAGS) $<

@@ -9,15 +9,16 @@
 !!@verbatim
 !!      subroutine lic_rendering_with_rotation                          &
 !!     &         (istep_pvr, time, node, ele, surf, group, lic_p,       &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          pvr_param, field_lic, pvr_proj, pvr_rgb)
 !!      subroutine anaglyph_lic_rendering_w_rot                         &
 !!     &         (istep_pvr, time, node, ele, surf, group,              &
-!!     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+!!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
 !!        type(lic_parameters), intent(in) :: lic_p
+!!        type(lic_field_data), intent(in) :: field_lic
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -39,6 +40,7 @@
       use t_rendering_vr_image
       use t_control_params_4_pvr
       use t_control_param_LIC
+      use t_lic_field_data
       use t_geometries_in_pvr_screen
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
@@ -55,7 +57,7 @@
 !
       subroutine lic_rendering_with_rotation                            &
      &         (istep_pvr, time, node, ele, surf, group,                &
-     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -71,6 +73,7 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
+      type(lic_field_data), intent(in) :: field_lic
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
@@ -87,7 +90,7 @@
 !
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, node, ele, surf, group,                    &
-     &      lic_p, pvr_param, pvr_proj, pvr_rgb)
+     &      lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
         if(iflag_LIC_time) call start_elapsed_time(ist_elapsed_LIC+2)
@@ -103,7 +106,7 @@
 !
       subroutine anaglyph_lic_rendering_w_rot                           &
      &         (istep_pvr, time, node, ele, surf, group,                &
-     &          lic_p, pvr_param, pvr_proj, pvr_rgb)
+     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -119,6 +122,7 @@
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
+      type(lic_field_data), intent(in) :: field_lic
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
@@ -136,13 +140,13 @@
 !    Left eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, node, ele, surf, group,                    &
-     &      lic_p, pvr_param, pvr_proj(1), pvr_rgb)
+     &      lic_p, field_lic, pvr_param, pvr_proj(1), pvr_rgb)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
         call rendering_lic_at_once                                      &
      &     (istep_pvr, time, node, ele, surf, group,                    &
-     &      lic_p, pvr_param, pvr_proj(2), pvr_rgb)
+     &      lic_p, field_lic, pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
         if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
