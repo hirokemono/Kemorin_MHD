@@ -7,15 +7,12 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine lic_rendering_with_fixed_view                        &
+!!      subroutine lic_rendering_with_fixed_view(istep_pvr, time, mesh, &
 !!     &         (istep_pvr, time, node, ele, surf,                     &
 !!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
-!!      subroutine rendering_lic_at_once                                &
-!!     &         (istep_pvr, time, node, ele, surf, group,              &
+!!      subroutine rendering_lic_at_once(istep_pvr, time, mesh, group,  &
 !!     &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj
@@ -55,17 +52,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine lic_rendering_with_fixed_view                          &
-     &         (istep_pvr, time, node, ele, surf,                       &
+      subroutine lic_rendering_with_fixed_view(istep_pvr, time, mesh,   &
      &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_LIC_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
       type(lic_field_data), intent(in) :: field_lic
@@ -78,8 +72,7 @@
      &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic                                        &
-     &   (istep_pvr, time, node, ele, surf, lic_p,                      &
+      call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
@@ -89,8 +82,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_lic_at_once                                  &
-     &         (istep_pvr, time, node, ele, surf, group,                &
+      subroutine rendering_lic_at_once(istep_pvr, time, mesh, group,    &
      &          lic_p, field_lic, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -99,9 +91,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(lic_parameters), intent(in) :: lic_p
       type(PVR_control_params), intent(in) :: pvr_param
@@ -114,7 +104,7 @@
       call deallocate_pvr_ray_start(pvr_proj%start_pt)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
-      call transfer_to_screen(node, ele, surf,                          &
+      call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_geom,  pvr_param%draw_param,   &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
@@ -122,8 +112,7 @@
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image_4_lic'
-      call rendering_image_4_lic                                        &
-     &   (istep_pvr, time, node, ele, surf, lic_p,                      &
+      call rendering_image_4_lic(istep_pvr, time, mesh, lic_p,          &
      &    pvr_param%color, pvr_param%colorbar, field_lic,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)

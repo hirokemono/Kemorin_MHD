@@ -9,14 +9,14 @@
 !!      subroutine check_PVR_update                                     &
 !!     &         (id_control, pvr_ctls, pvr, iflag_redraw)
 !!      subroutine read_ctl_pvr_files_4_update(id_control, pvr_ctls)
-!!      subroutine PVR_initialize(fem, nod_fld, pvr)
+!!      subroutine PVR_initialize(geofem, nod_fld, pvr)
 !!      subroutine PVR_visualize                                        &
-!!     &         (istep_pvr, time, fem, jacs, nod_fld, pvr)
+!!     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
 !!      subroutine alloc_pvr_data(pvr)
 !!
 !!      subroutine dealloc_pvr_data(pvr)
 !!      subroutine dealloc_pvr_and_lic_data(pvr)
-!!        type(mesh_data), intent(in) :: fem
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -161,13 +161,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine PVR_initialize(fem, nod_fld, pvr_ctls, pvr)
+      subroutine PVR_initialize(geofem, nod_fld, pvr_ctls, pvr)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
       use rendering_and_image_nums
 !
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(volume_rendering_controls), intent(inout) :: pvr_ctls
       type(volume_rendering_module), intent(inout) :: pvr
@@ -200,15 +200,15 @@
 !
       do i_pvr = 1, pvr%num_pvr
         call alloc_nod_data_4_pvr                                       &
-     &     (fem%mesh%node%numnod, fem%mesh%ele%numele,                  &
+     &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
      &      pvr%field_pvr(i_pvr))
         call allocate_nod_data_4_pvr                                    &
-     &     (fem%mesh%ele%numele, fem%group%surf_grp%num_grp,            &
+     &     (geofem%mesh%ele%numele, geofem%group%surf_grp%num_grp,      &
      &      pvr%pvr_param(i_pvr)%draw_param)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
       end do
 !
-      call s_set_pvr_controls(fem%group, nod_fld, pvr%num_pvr,          &
+      call s_set_pvr_controls(geofem%group, nod_fld, pvr%num_pvr,       &
      &    pvr_ctls%pvr_ctl_type, pvr%pvr_param)
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+6)
 !
@@ -216,7 +216,7 @@
       do i_pvr = 1, pvr%num_pvr
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
-        call each_PVR_initialize(i_pvr, fem%mesh, fem%group,            &
+        call each_PVR_initialize(i_pvr, geofem%mesh, geofem%group,      &
      &      pvr%pvr_param(i_pvr)%area_def,  pvr%pvr_param(i_pvr),       &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
       end do
@@ -237,14 +237,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine PVR_visualize                                          &
-     &         (istep_pvr, time, fem, jacs, nod_fld, pvr)
+     &         (istep_pvr, time, geofem, jacs, nod_fld, pvr)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
-      type(mesh_data), intent(in) :: fem
+      type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
 !
@@ -260,7 +260,7 @@
         ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_rendering                                         &
-     &     (istep_pvr, time, fem%mesh, jacs, nod_fld,                   &
+     &     (istep_pvr, time, geofem, jacs, nod_fld,                     &
      &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
      &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
       end do
@@ -289,7 +289,7 @@
           ist_rdr = pvr%istack_pvr_render(i_pvr-1) + 1
           ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering_w_rot                                 &
-     &       (istep_pvr, time, fem%mesh, fem%group, jacs, nod_fld,      &
+     &       (istep_pvr, time, geofem, jacs, nod_fld,                   &
      &        pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),               &
      &        pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         end if

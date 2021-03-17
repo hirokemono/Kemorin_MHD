@@ -7,19 +7,15 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
+!!      subroutine set_fixed_view_and_image(mesh, group,                &
 !!     &          pvr_param, pvr_rgb, pvr_proj)
-!!      subroutine rendering_with_fixed_view                            &
-!!     &         (istep_pvr, time, node, ele, surf,                     &
+!!      subroutine rendering_with_fixed_view(istep_pvr, time, mesh,     &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
-!!      subroutine rendering_at_once                                    &
-!!     &         (istep_pvr, time, node, ele, surf, group,              &
+!!      subroutine rendering_at_once(istep_pvr, time, mesh, group,      &
 !!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_data), intent(in) :: surf
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(PVR_control_params), intent(in) :: pvr_param
@@ -97,15 +93,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_view_and_image(node, ele, surf, group,       &
+      subroutine set_fixed_view_and_image(mesh, group,                  &
      &          pvr_param, pvr_rgb, pvr_proj)
 !
       use cal_pvr_modelview_mat
       use t_pvr_stencil_buffer
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(PVR_control_params), intent(in) :: pvr_param
       type(pvr_image_type), intent(in) :: pvr_rgb
@@ -113,7 +107,7 @@
       type(PVR_projection_data), intent(inout) :: pvr_proj
 !
 !
-      call transfer_to_screen(node, ele, surf,                          &
+      call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
      &    group%surf_grp, group%surf_grp_geom, pvr_param%draw_param,    &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
@@ -129,17 +123,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view                              &
-     &         (istep_pvr, time, node, ele, surf,                       &
+      subroutine rendering_with_fixed_view(istep_pvr, time, mesh,       &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_PVR_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(pvr_field_data), intent(in) :: field_pvr
       type(PVR_control_params), intent(in) :: pvr_param
 !
@@ -151,7 +142,7 @@
      &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, node, ele, surf,            &
+      call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
@@ -176,8 +167,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once                                      &
-     &         (istep_pvr, time, node, ele, surf, group,                &
+      subroutine rendering_at_once(istep_pvr, time, mesh, group,        &
      &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
@@ -186,9 +176,7 @@
 !
       integer(kind = kint), intent(in) :: istep_pvr
       real(kind = kreal), intent(in) :: time
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
+      type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
       type(pvr_field_data), intent(in) :: field_pvr
       type(PVR_control_params), intent(in) :: pvr_param
@@ -200,8 +188,8 @@
       call deallocate_pvr_ray_start(pvr_proj%start_pt)
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
-      call transfer_to_screen                                           &
-     &   (node, ele, surf, group%surf_grp, group%surf_grp_geom,         &
+      call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
+     &    group%surf_grp, group%surf_grp_geom,                          &
      &    pvr_param%draw_param, pvr_param%view,                         &
      &    pvr_proj%projection_mat, pvr_param%pixel,  pvr_proj%bound,    &
      &    pvr_proj%screen, pvr_proj%start_pt)
@@ -209,7 +197,7 @@
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image(istep_pvr, time, node, ele, surf,            &
+      call rendering_image(istep_pvr, time, mesh,                       &
      &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
      &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
      &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
