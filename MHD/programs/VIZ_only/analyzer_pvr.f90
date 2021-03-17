@@ -66,7 +66,7 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'PVR_initialize'
-      call PVR_initialize(pvr3%viz_fem, pvr3%viz_fld,                   &
+      call PVR_initialize(FEM_viz3%geofem, FEM_viz3%field,              &
      &                    pvr_ctl3%viz_ctl_v%pvr_ctls, vizs_pvr3)
 !
       end subroutine initialize_pvr
@@ -94,7 +94,7 @@
         call istep_viz_w_fix_dt(i_step, t_VIZ3%viz_step)
         call PVR_visualize                                              &
      &     (t_VIZ3%viz_step%istep_pvr, t_VIZ3%time_d%time,              &
-     &      pvr3%viz_fem, pvr3%jacobians, pvr3%viz_fld, vizs_pvr3)
+     &     FEM_viz3%geofem, pvr3%jacobians, FEM_viz3%field, vizs_pvr3)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)

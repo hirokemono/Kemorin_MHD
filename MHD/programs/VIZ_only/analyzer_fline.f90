@@ -59,7 +59,7 @@
      &    t_VIZ6%viz_step, FEM_viz6, VIZ_DAT6)
 !
 !  VIZ Initialization
-      call FLINE_initialize(VIZ_DAT6%viz_fem, VIZ_DAT6%viz_fld,         &
+      call FLINE_initialize(FEM_viz6%geofem, FEM_viz6%field,            &
      &    vizs_ctl6%viz_ctl_v%fline_ctls, fline_v6)
 !
       end subroutine initialize_fline
@@ -83,8 +83,8 @@
 !  Generate field lines
         istep_fline                                                     &
      &      = istep_file_w_fix_dt(i_step, t_VIZ6%viz_step%FLINE_t)
-        call FLINE_visualize(istep_fline, VIZ_DAT6%viz_fem,             &
-     &      VIZ_DAT6%ele_4_nod, VIZ_DAT6%viz_fld, fline_v6)
+        call FLINE_visualize(istep_fline, FEM_viz6%geofem,              &
+     &      VIZ_DAT6%ele_4_nod, FEM_viz6%field, fline_v6)
       end do
 !
       end subroutine analyze_fline

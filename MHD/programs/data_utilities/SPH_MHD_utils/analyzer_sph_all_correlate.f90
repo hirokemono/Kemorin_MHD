@@ -94,12 +94,12 @@
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge(MHD_step1%viz_step,                   &
-     &    FEM_d1%geofem, FEM_d1%field, VIZ_DAT1)
+     &                            FEM_d1%geofem, VIZ_DAT1)
 !
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm,         &
-     &    VIZ_DAT1%viz_fld, MHD_ctl1%viz_ctls, vizs1)
+      call init_visualize(FEM_d1%geofem, FEM_d1%field, VIZ_DAT1,        &
+     &                    MHD_ctl1%viz_ctls, vizs1)
       call init_zonal_mean_sections(FEM_d1%geofem, VIZ_DAT1%edge_comm,  &
      &    FEM_d1%field, MHD_ctl1%zm_ctls, zmeans1)
 !
@@ -164,11 +164,9 @@
           if(iflag_MHD_time) call start_elapsed_time(ist_elapsed_MHD+4)
           call istep_viz_w_fix_dt(MHD_step1%time_d%i_time_step,         &
      &                          MHD_step1%viz_step)
-          call s_FEM_to_VIZ_bridge                                      &
-     &       (FEM_d1%field, FEM_d1%v_sol, VIZ_DAT1)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
-     &        VIZ_DAT1%viz_fem, VIZ_DAT1%edge_comm, VIZ_DAT1%viz_fld,   &
-     &        VIZ_DAT1%ele_4_nod, VIZ_DAT1%jacobians, vizs1)
+     &                       FEM_d1%geofem, FEM_d1%field,               &
+     &                        VIZ_DAT1, vizs1, FEM_d1%v_sol)
 !*
 !*  ----------- Zonal means --------------
 !*

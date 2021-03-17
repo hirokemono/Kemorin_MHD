@@ -17,10 +17,9 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_field_data), intent(inout) :: field_lic
 !!      subroutine repartition_lic_field                                &
-!!     &         (node, nod_fld, repart_p, viz_mesh, mesh_to_viz_tbl,   &
+!!     &         (node, repart_p, viz_mesh, mesh_to_viz_tbl,            &
 !!     &          nod_fld_lic, field_lic, v_sol)
 !!        type(node_data), intent(in) :: node
-!!        type(phys_data), intent(in) :: nod_fld
 !!        type(volume_partioning_param), intent(in) :: repart_p
 !!        type(mesh_geometry), intent(in) :: viz_mesh
 !!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
@@ -161,7 +160,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine repartition_lic_field                                  &
-     &         (node, nod_fld, repart_p, viz_mesh, mesh_to_viz_tbl,     &
+     &         (node, repart_p, viz_mesh, mesh_to_viz_tbl,              &
      &          nod_fld_lic, field_lic, v_sol)
 !
       use m_error_IDs
@@ -173,7 +172,6 @@
       use transfer_to_new_partition
 !
       type(node_data), intent(in) :: node
-      type(phys_data), intent(in) :: nod_fld
 !
       type(volume_partioning_param), intent(in) :: repart_p
       type(mesh_geometry), intent(in) :: viz_mesh

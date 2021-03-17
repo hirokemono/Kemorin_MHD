@@ -17,25 +17,16 @@
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!
-!!      subroutine init_FEM_to_VIZ_bridge                               &
-!!     &         (viz_step, geofem, nod_fld, VIZ_DAT)
+!!      subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!      subroutine init_FEM_MHD_to_VIZ_bridge                           &
-!!     &         (viz_step, next_tbl, jacobians,                        &
-!!     &          geofem, nod_fld, VIZ_DAT)
+!!     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(next_nod_ele_table), intent(in), target :: next_tbl
 !!        type(jacobians_type), intent(in), target :: jacobians
 !!        type(mesh_data), intent(inout) :: geofem
-!!        type(phys_data), intent(inout) :: nod_fld
-!!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!!
-!!      subroutine s_FEM_to_VIZ_bridge(nod_fld, v_sol, VIZ_DAT)
-!!        type(phys_data), intent(inout) :: nod_fld
-!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !!@endverbatim
 !
@@ -45,7 +36,6 @@
       use m_machine_parameter
 !
       use t_mesh_data
-      use t_phys_data
       use t_comm_table
       use t_next_node_ele_4_node
       use t_shape_functions
@@ -124,27 +114,21 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine init_FEM_to_VIZ_bridge                                 &
-     &         (viz_step, geofem, nod_fld, VIZ_DAT)
+      subroutine init_FEM_to_VIZ_bridge(viz_step, geofem, VIZ_DAT)
 !
       use field_to_new_partition
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
-      type(phys_data), intent(inout) :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_FEM_field_4_viz                                       &
-     &     (VIZ_DAT%geofem_v, VIZ_DAT%nod_fld_v, VIZ_DAT)
+        call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
         call load_or_const_new_partition(VIZ_DAT%repart_p,              &
      &      geofem, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-!
-        call init_fld_to_new_partition(VIZ_DAT%viz_fem%mesh,            &
-     &                                 nod_fld, VIZ_DAT%viz_fld)
       else
-        call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
+        call link_FEM_field_4_viz(geofem, VIZ_DAT)
       end if
 !
       call link_jacobians_4_viz                                         &
@@ -158,8 +142,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_FEM_MHD_to_VIZ_bridge                             &
-     &         (viz_step, next_tbl, jacobians,                          &
-     &          geofem, nod_fld, VIZ_DAT)
+     &         (viz_step, next_tbl, jacobians, geofem, VIZ_DAT)
 !
       use field_to_new_partition
       use const_element_comm_tables
@@ -169,21 +152,15 @@
       type(jacobians_type), intent(in), target :: jacobians
 !
       type(mesh_data), intent(inout) :: geofem
-      type(phys_data), intent(inout) :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       integer(kind = kint) :: iflag
 !
 !
       if(VIZ_DAT%repart_p%flag_repartition) then
-        call link_FEM_field_4_viz                                       &
-     &     (VIZ_DAT%geofem_v, VIZ_DAT%nod_fld_v, VIZ_DAT)
+        call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
         call load_const_new_part_FEM_MHD(VIZ_DAT%repart_p, next_tbl,    &
      &      geofem, VIZ_DAT%viz_fem, VIZ_DAT%mesh_to_viz_tbl)
-!
-        allocate(VIZ_DAT%viz_fld)
-        call init_fld_to_new_partition(VIZ_DAT%viz_fem%mesh,            &
-     &                                 nod_fld, VIZ_DAT%viz_fld)
 !
         call link_jacobians_4_viz                                       &
      &     (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
@@ -191,7 +168,7 @@
      &      VIZ_DAT%surf_comm, VIZ_DAT%edge_comm,                       &
      &      VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
       else
-        call link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
+        call link_FEM_field_4_viz(geofem, VIZ_DAT)
         call link_jacobians_4_viz                                       &
      &     (next_tbl%neib_ele, jacobians, VIZ_DAT)
 !
@@ -206,30 +183,6 @@
       call calypso_mpi_barrier
 !
       end subroutine init_FEM_MHD_to_VIZ_bridge
-!
-! ----------------------------------------------------------------------
-!
-      subroutine s_FEM_to_VIZ_bridge(nod_fld, v_sol, VIZ_DAT)
-!
-      use m_work_time
-      use m_elapsed_labels_4_REPART
-      use field_to_new_partition
-      use select_copy_from_recv
-!
-      type(phys_data), intent(inout) :: nod_fld
-      type(vectors_4_solver), intent(inout) :: v_sol
-      type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
-!
-!
-      if(VIZ_DAT%repart_p%flag_repartition) then
-        if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
-        call nod_field_to_new_partition(iflag_import_item,              &
-     &      VIZ_DAT%viz_fem%mesh, VIZ_DAT%mesh_to_viz_tbl,              &
-     &      nod_fld, VIZ_DAT%viz_fld, v_sol)
-        if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
-      end if
-!
-      end subroutine s_FEM_to_VIZ_bridge
 !
 ! ----------------------------------------------------------------------
 !

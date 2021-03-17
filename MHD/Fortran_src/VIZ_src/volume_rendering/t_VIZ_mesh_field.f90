@@ -7,12 +7,11 @@
 !>@brief Data structuresa for visualizers
 !!
 !!@verbatim
-!!      subroutine link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
+!!      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
 !!      subroutine link_jacobians_4_viz(ele_4_nod, jacobians, VIZ_DAT)
 !!      subroutine unlink_FEM_field_4_viz(VIZ_DAT)
 !!      subroutine unlink_jacobians_4_viz(VIZ_DAT)
 !!        type(mesh_data), intent(inout), target :: geofem
-!!        type(phys_data), intent(inout), target :: nod_fld
 !!        type(element_around_node), intent(in), target :: ele_4_nod
 !!        type(jacobians_type), intent(in), target :: jacobians
 !!        type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
@@ -40,8 +39,6 @@
       type VIZ_mesh_field
 !>         Structure for mesh data for visualization
         type(mesh_data) :: geofem_v
-!>         Structure for nodal field data
-        type(phys_data) :: nod_fld_v
 !!>        Structure of shape function for PVR and fieldline
 !        type(shape_finctions_at_points) :: spfs
 !>        Stracture for Jacobians
@@ -52,8 +49,6 @@
 !
 !>         Structure for mesh data for visualization
         type(mesh_data), pointer :: viz_fem
-!>         Structure for nodal field data
-        type(phys_data), pointer :: viz_fld
 !>        Structure for repartitioning parameters
         type(volume_partioning_param) :: repart_p
 !>        Transfer table to visualization mesh
@@ -78,14 +73,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_FEM_field_4_viz(geofem, nod_fld, VIZ_DAT)
+      subroutine link_FEM_field_4_viz(geofem, VIZ_DAT)
 !
       type(mesh_data), intent(in), target :: geofem
-      type(phys_data), intent(in), target :: nod_fld
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
       VIZ_DAT%viz_fem => geofem
-      VIZ_DAT%viz_fld => nod_fld
 !
       end subroutine link_FEM_field_4_viz
 !
@@ -108,7 +101,7 @@
 !
       type(VIZ_mesh_field), intent(inout) :: VIZ_DAT
 !
-      nullify(VIZ_DAT%viz_fem, VIZ_DAT%viz_fld)
+      nullify(VIZ_DAT%viz_fem)
 !
       end subroutine unlink_FEM_field_4_viz
 !

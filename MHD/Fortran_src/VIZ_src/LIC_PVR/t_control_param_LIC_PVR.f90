@@ -47,7 +47,10 @@
 !>        Structure for field parameter for PVR
         type(lic_parameters) :: lic_param
 !>        Structure for field data for LIC
-        type(lic_field_data) :: field_lic
+        type(lic_field_data), pointer :: field_lic
+!
+!>        Structure for field data for LIC
+        type(lic_field_data), pointer :: nod_fld_lic
       end type LIC_field_params
 !
 !  ---------------------------------------------------------------------

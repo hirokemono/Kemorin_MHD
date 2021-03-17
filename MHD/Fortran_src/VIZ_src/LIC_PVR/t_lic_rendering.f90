@@ -10,16 +10,19 @@
 !!      subroutine check_LIC_update                                     &
 !!     &         (id_control, lic_ctls, lic, iflag_update)
 !!      subroutine read_ctl_lic_pvr_files_4_update(id_control, lic_ctls)
-!!      subroutine LIC_initialize(viz_fem, nod_fld, lic_ctls, lic)
+!!      subroutine LIC_initialize                                       &
+!!     &         (repart_p, viz_fem, geofem, nod_fld, lic_ctls, lic)
 !!      subroutine LIC_visualize                                        &
-!!     &         (istep_lic, time, viz_fem, nod_fld, lic)
-!!      subroutine dealloc_LIC_data(lic)
+!!     &         (istep_lic, time, repart_p, viz_fem, mesh_to_viz_tbl,  &
+!!     &          geofem, nod_fld, lic, v_sol)
+!!      subroutine dealloc_LIC_data(repart_p, lic)
 !!        type(mesh_data), intent(in) :: viz_fem
-!!        type(mesh_data), intent(in) :: viz_fem
+!!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+!!        type(mesh_data), intent(in) :: geofem
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_rendering_controls), intent(inout) :: lic_ctls
 !!        type(lic_volume_rendering_module), intent(inout) :: lic
-!!      subroutine dealloc_LIC_data(lic)
 !!@endverbatim
 !
       module t_lic_rendering
@@ -44,6 +47,9 @@
       use t_geometries_in_pvr_screen
       use t_control_data_LIC_pvrs
       use t_volume_rendering
+      use t_calypso_comm_table
+      use t_control_param_vol_grping
+      use t_vector_for_solver
 !
       use each_volume_rendering
 !
@@ -137,7 +143,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine LIC_initialize(viz_fem, nod_fld, lic_ctls, lic)
+      subroutine LIC_initialize                                         &
+     &         (repart_p, viz_fem, geofem, nod_fld, lic_ctls, lic)
 !
       use t_control_data_pvr_sections
       use set_pvr_control
@@ -145,6 +152,8 @@
       use rendering_and_image_nums
 !
       type(mesh_data), intent(in) :: viz_fem
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
       type(lic_rendering_controls), intent(inout) :: lic_ctls
       type(lic_volume_rendering_module), intent(inout) :: lic
@@ -173,9 +182,22 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call alloc_nod_vector_4_lic(viz_fem%mesh%node%numnod,           &
+        allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
+        call alloc_nod_vector_4_lic(geofem%mesh%node%numnod,            &
      &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
-     &      lic%lic_fld_pm(i_lic)%field_lic)
+     &      lic%lic_fld_pm(i_lic)%nod_fld_lic)
+!
+        if(repart_p%flag_repartition) then
+          call alloc_nod_vector_4_lic(viz_fem%mesh%node%numnod,         &
+     &        lic%lic_fld_pm(i_lic)%lic_param%num_masking,              &
+     &        lic%lic_fld_pm(i_lic)%field_lic)
+        else
+          lic%lic_fld_pm(i_lic)%field_lic                               &
+     &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
+        end if
+      end do
+!
+      do i_lic = 1, lic%pvr%num_pvr
         call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
 !
@@ -207,7 +229,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine LIC_visualize                                          &
-     &         (istep_lic, time, viz_fem, nod_fld, lic)
+     &         (istep_lic, time, repart_p, viz_fem, mesh_to_viz_tbl,    &
+     &          geofem, nod_fld, lic, v_sol)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -218,9 +241,14 @@
       real(kind = kreal), intent(in) :: time
 !
       type(mesh_data), intent(in) :: viz_fem
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+!
+      type(mesh_data), intent(in) :: geofem
       type(phys_data), intent(in) :: nod_fld
 !
       type(lic_volume_rendering_module), intent(inout) :: lic
+      type(vectors_4_solver), intent(inout) :: v_sol
 !
       integer(kind = kint) :: i_lic, ist_rdr, ist_img
 !
@@ -231,10 +259,10 @@
       do i_lic = 1, lic%pvr%num_pvr
         ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
         ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-        call s_each_LIC_rendering                                       &
-     &     (istep_lic, time, viz_fem, nod_fld,                          &
+        call s_each_LIC_rendering(istep_lic, time,                      &
+     &      repart_p, viz_fem, mesh_to_viz_tbl, geofem%mesh, nod_fld,   &
      &      lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),            &
-     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+     &      lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img), v_sol)
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
 !
@@ -257,10 +285,11 @@
         if(lic%pvr%pvr_param(i_lic)%view%iflag_rotate_snap .gt. 0) then
           ist_rdr = lic%pvr%istack_pvr_render(i_lic-1) + 1
           ist_img = lic%pvr%istack_pvr_images(i_lic-1) + 1
-          call s_each_LIC_rendering_w_rot                               &
-     &       (istep_lic, time, viz_fem, nod_fld,                        &
+          call s_each_LIC_rendering_w_rot(istep_lic, time,              &
+     &        repart_p, viz_fem, mesh_to_viz_tbl, geofem%mesh, nod_fld, &
      &        lic%lic_fld_pm(i_lic), lic%pvr%pvr_param(i_lic),          &
-     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img))
+     &        lic%pvr%pvr_proj(ist_rdr), lic%pvr%pvr_rgb(ist_img),      &
+     &        v_sol)
         end if
       end do
       if(iflag_LIC_time) call end_elapsed_time(ist_elapsed_LIC+1)
@@ -282,16 +311,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_LIC_data(lic)
+      subroutine dealloc_LIC_data(repart_p, lic)
 !
       use each_LIC_rendering
 !
-      integer(kind = kint) :: i_lic
+      type(volume_partioning_param), intent(in) :: repart_p
       type(lic_volume_rendering_module), intent(inout) :: lic
 !
+      integer(kind = kint) :: i_lic
 !
       do i_lic = 1, lic%pvr%num_pvr
-        call dealloc_each_lic_data(lic%lic_fld_pm(i_lic))
+        call dealloc_each_lic_data(repart_p, lic%lic_fld_pm(i_lic))
       end do
       deallocate(lic%lic_fld_pm)
 !

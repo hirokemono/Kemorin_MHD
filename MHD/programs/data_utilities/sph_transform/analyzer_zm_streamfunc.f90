@@ -74,12 +74,12 @@
 !  -------------------------------------------
       if(iflag_debug .gt. 0) write(*,*) 'init_FEM_to_VIZ_bridge'
       call init_FEM_to_VIZ_bridge(FEM_STR1%viz_step,                    &
-     &    FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1)
+     &                            FEM_STR1%geofem, VIZ_D_STR1)
 !
 !  ------  initialize visualization
       if (iflag_debug.gt.0) write(*,*) 'init_visualize'
-      call init_visualize(VIZ_D_STR1%viz_fem, VIZ_D_STR1%edge_comm,     &
-     &    VIZ_D_STR1%viz_fld, spt_ctl1%viz_ctls, FEM_STR1%vizs)
+      call init_visualize(FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,  &
+     &                    spt_ctl1%viz_ctls, FEM_STR1%vizs)
 !
       end subroutine init_zm_streamfunc
 !
@@ -109,13 +109,9 @@
 !
         if(visval) then
           call istep_viz_w_fix_dt(i_step, FEM_STR1%viz_step)
-          call s_FEM_to_VIZ_bridge(FEM_STR1%field, FEM_STR1%v_sol,      &
-     &                             VIZ_D_STR1)
-          call visualize_all                                            &
-     &       (FEM_STR1%viz_step, t_STR%time_d, VIZ_D_STR1%viz_fem,      &
-     &        VIZ_D_STR1%edge_comm, VIZ_D_STR1%viz_fld,                 &
-     &        VIZ_D_STR1%ele_4_nod, VIZ_D_STR1%jacobians,               &
-     &        FEM_STR1%vizs)
+          call visualize_all(FEM_STR1%viz_step, t_STR%time_d,           &
+     &        FEM_STR1%geofem, FEM_STR1%field, VIZ_D_STR1,              &
+     &        FEM_STR1%vizs, FEM_STR1%v_sol)
         end if
       end do
 !
