@@ -193,8 +193,8 @@
       if(iflag_GSP_time) call end_elapsed_time(ied_elapsed_GSP+9)
 !
 ! Increase sleeve size
-      if(flag_repartition .eqv. .FALSE.                                 &
-     &     .and. sleeve_exp_p%iflag_expand .ne. iflag_turn_off) then 
+      if((flag_repartition .eqv. .FALSE.)                               &
+     &     .and. (sleeve_exp_p%iflag_expand .ne. iflag_turn_off)) then 
         if(iflag_GSP_time) call start_elapsed_time(ist_elapsed_GSP+10)
         call sleeve_extension_loop(sleeve_exp_p, mesh, group, ele_comm)
         call dealloc_comm_table(ele_comm)

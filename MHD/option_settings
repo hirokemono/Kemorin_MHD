@@ -3,6 +3,13 @@ Settings for Makefiles
 
 # -------------------------------------------------------------------------------
 # Mac mini with Intel oneAPI
+#
+# make -j 12
+#     5792.70s user
+#     3419.02s system
+#       1042% cpu
+#    14:43.49 total
+#
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix=/Users/matsui/local/intel \
@@ -130,7 +137,14 @@ GLFW_LIBS=   -L/usr/local/Cellar/glfw/3.3.2/lib -lglfw
 
 
 # -------------------------------------------------------------------------------
-# Mac mini with Homebrew
+# Mac mini 2018 with Homebrew
+#
+# make -j 12
+#     2251.04s user
+#    207.20s system
+#       878% cpu
+#    4:39.82 total
+#
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix=/Users/matsui/local/gcc \
@@ -147,7 +161,21 @@ PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
 MPIRUN='mpirun --oversubscribe'
 
 # -------------------------------------------------------------------------------
-# Personal XEON cluster with Intel oneAPI
+# Personal cluster with Intel oneAPI
+#
+#  DEll T76810 with 2 X Xeon E5-2678 V3
+#   real    1m6.718s
+#   user    15m35.317s
+#    sys    3m12.441s
+#  ASRock Fatality X99m with Xeon E5-1650 V4
+#   real    1m43.235s
+#   user    17m18.701s
+#    sys    2m24.705s
+#  ASRock H470 ITX with Intel Core i3-10100
+#   real    1m47.791s
+#   user    12m4.576s
+#    sys    1m17.676s
+#
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix=/home/matsui/local/gcc \
@@ -161,7 +189,24 @@ PKG_CONFIG_PATH=/home/matsui/local/intel/lib/pkgconfig:/$PKG_CONFIG_PATH
 
 
 # -------------------------------------------------------------------------------
-# Personal XEON cluster with gfortran-gcc
+# Personal cluster with gfortran-gcc
+#
+#  DEll T76810 with 2 X Xeon E5-2678 V3
+#   real    2m49.258s
+#   user    27m10.284s
+#    sys    1m58.764s
+#  ASRock Fatality X99m with Xeon E5-1650 V4
+#   real    3m12.863s
+#   user    30m24.459s
+#    sys    1m31.611s
+#  ASRock H470 ITX with Intel Core i3-10100
+#   real    4m17.446s
+#   user    29m26.048s
+#    sys    1m6.153s
+#  Beelink with AMD Ryzen 3550H
+#   real    5m46.155s
+#   user    40m44.790s
+#    sys    1m27.818s
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix=/home/matsui/local/gcc \
