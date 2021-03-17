@@ -8,17 +8,15 @@
 !!       fieldline, and volume rendering modules
 !!
 !!@verbatim
-!!      subroutine init_four_visualize(geofem, edge_comm, nod_fld,      &
+!!      subroutine init_four_visualize(geofem, nod_fld, VIZ_DAT,        &
 !!     &                               viz_ctls, vizs)
-!!      subroutine visualize_four(viz_step, time_d, geofem, edge_comm,  &
-!!     &                          nod_fld, ele_4_nod, jacs, vizs)
+!!      subroutine visualize_four(viz_step, time_d, geofem,             &
+!!     &                          nod_fld, VIZ_DAT, vizs)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_data), intent(in) :: geofem
-!!        type(communication_table), intent(in) :: edge_comm
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(element_around_node), intent(in) :: ele_4_nod
-!!        type(jacobians_type), intent(in) :: jacs
+!!        type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !!        type(visualization_controls), intent(inout) :: viz_ctls
 !!        type(four_visualize_modules), intent(inout) :: vizs
 !!@endverbatim
@@ -38,7 +36,7 @@
       use t_comm_table
       use t_phys_data
       use t_next_node_ele_4_node
-      use t_jacobians
+      use t_VIZ_mesh_field
 !
       use t_control_data_vizs
       use t_cross_section
@@ -61,19 +59,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_four_visualize(geofem, edge_comm, nod_fld,        &
+      subroutine init_four_visualize(geofem, nod_fld, VIZ_DAT,          &
      &                               viz_ctls, vizs)
 !
       type(mesh_data), intent(in) :: geofem
-      type(communication_table), intent(in) :: edge_comm
       type(phys_data), intent(in) :: nod_fld
+      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(visualization_controls), intent(inout) :: viz_ctls
       type(four_visualize_modules), intent(inout) :: vizs
 !
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+1)
-      call SECTIONING_initialize(geofem, edge_comm, nod_fld,            &
+      call SECTIONING_initialize(geofem, VIZ_DAT%edge_comm, nod_fld,    &
      &                           viz_ctls%psf_ctls, vizs%psf)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+1)
       call calypso_mpi_barrier
@@ -102,17 +100,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_four(viz_step, time_d, geofem, edge_comm,    &
-     &                          nod_fld, ele_4_nod, jacs, vizs)
+      subroutine visualize_four(viz_step, time_d, geofem,               &
+     &                          nod_fld, VIZ_DAT, vizs)
 !
       type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(in) :: geofem
-      type(communication_table), intent(in) :: edge_comm
+      type(VIZ_mesh_field), intent(in) :: VIZ_DAT
 !
       type(phys_data), intent(in) :: nod_fld
-      type(element_around_node), intent(in) :: ele_4_nod
-      type(jacobians_type), intent(in) :: jacs
 !
       type(four_visualize_modules), intent(inout) :: vizs
 !
@@ -123,18 +119,18 @@
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+6)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+7)
-      call ISOSURF_visualize(viz_step%istep_iso, time_d,                &
-     &                       geofem, edge_comm, nod_fld, vizs%iso)
+      call ISOSURF_visualize(viz_step%istep_iso, time_d, geofem,        &
+     &                       VIZ_DAT%edge_comm, nod_fld, vizs%iso)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+7)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+8)
       call PVR_visualize(viz_step%istep_pvr, time_d%time,               &
-     &                   geofem, jacs, nod_fld, vizs%pvr)
+     &                   geofem, VIZ_DAT%jacobians, nod_fld, vizs%pvr)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+8)
 !
       if(iflag_VIZ_time) call start_elapsed_time(ist_elapsed_VIZ+9)
-      call FLINE_visualize                                              &
-     &   (viz_step%istep_fline, geofem, ele_4_nod, nod_fld, vizs%fline)
+      call FLINE_visualize(viz_step%istep_fline, geofem,                &
+     &                     VIZ_DAT%ele_4_nod, nod_fld, vizs%fline)
       if(iflag_VIZ_time) call end_elapsed_time(ist_elapsed_VIZ+9)
 !
       end subroutine visualize_four

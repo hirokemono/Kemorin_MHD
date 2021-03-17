@@ -69,8 +69,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_four_visualize'
-      call init_four_visualize(FEM_viz4%geofem, VIZ_DAT4%edge_comm,    &
-     &    FEM_viz4%field, vizs_ctl4%viz_ctl_v, vizs_m4)
+      call init_four_visualize(FEM_viz4%geofem, FEM_viz4%field,         &
+     &                         VIZ_DAT4, vizs_ctl4%viz_ctl_v, vizs_m4)
 !
       end subroutine initialize_four_vizs
 !
@@ -96,8 +96,7 @@
         if(iflag_debug .gt. 0)  write(*,*) 'visualize_four', i_step
         call istep_viz_w_fix_dt(i_step, t_VIZ4%viz_step)
         call visualize_four(t_VIZ4%viz_step, t_VIZ4%time_d,             &
-     &      FEM_viz4%geofem, VIZ_DAT4%edge_comm, FEM_viz4%field,     &
-     &      VIZ_DAT4%ele_4_nod, VIZ_DAT4%jacobians, vizs_m4)
+     &      FEM_viz4%geofem, FEM_viz4%field, VIZ_DAT4, vizs_m4)
       end do
 !
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
