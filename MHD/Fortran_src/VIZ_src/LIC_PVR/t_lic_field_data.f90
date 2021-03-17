@@ -16,6 +16,17 @@
 !!        type(lic_parameters), intent(in) :: lic_p
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(lic_field_data), intent(inout) :: field_lic
+!!      subroutine repartition_lic_field                                &
+!!     &         (node, nod_fld, repart_p, viz_mesh, mesh_to_viz_tbl,   &
+!!     &          nod_fld_lic, field_lic, v_sol)
+!!        type(node_data), intent(in) :: node
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(volume_partioning_param), intent(in) :: repart_p
+!!        type(mesh_geometry), intent(in) :: viz_mesh
+!!        type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+!!        type(lic_field_data), intent(inout) :: nod_fld_lic
+!!        type(lic_field_data), intent(inout) :: field_lic
+!!        type(vectors_4_solver), intent(inout) :: v_sol
 !!@endverbatim
 !
       module t_lic_field_data
@@ -92,7 +103,6 @@
       use t_control_param_LIC
       use t_geometry_data
       use t_phys_data
-      use cal_gradient_on_element
       use convert_components_4_viz
       use set_components_flags
 !
@@ -147,6 +157,58 @@
       end do
 !
       end subroutine cal_field_4_each_lic
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine repartition_lic_field                                  &
+     &         (node, nod_fld, repart_p, viz_mesh, mesh_to_viz_tbl,     &
+     &          nod_fld_lic, field_lic, v_sol)
+!
+      use m_error_IDs
+      use t_geometry_data
+      use t_phys_data
+      use t_vector_for_solver
+      use select_copy_from_recv
+      use field_to_new_partition
+      use transfer_to_new_partition
+!
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(in) :: nod_fld
+!
+      type(volume_partioning_param), intent(in) :: repart_p
+      type(mesh_geometry), intent(in) :: viz_mesh
+      type(calypso_comm_table), intent(in) :: mesh_to_viz_tbl
+!
+      type(lic_field_data), intent(inout) :: nod_fld_lic
+      type(lic_field_data), intent(inout) :: field_lic
+      type(vectors_4_solver), intent(inout) :: v_sol
+!
+      integer(kind = kint) :: i
+!
+!
+      if(repart_p%flag_repartition) then
+        call vector_to_new_partition                                    &
+     &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,      &
+     &      node%numnod, viz_mesh%node%numnod,                          &
+     &      nod_fld_lic%v_lic, field_lic%v_lic, v_sol)
+        call scalar_to_new_partition                                    &
+     &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,      &
+     &      node%numnod, viz_mesh%node%numnod,                          &
+     &      nod_fld_lic%d_lic, field_lic%d_lic, v_sol)
+!        call scalar_to_new_partition                                   &
+!     &     (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,     &
+!     &      node%numnod, viz_mesh%node%numnod,                         &
+!     &      nod_fld_lic%o_lic, field_lic%o_lic, v_sol)
+!
+        do i = 1, field_lic%num_mask
+          call scalar_to_new_partition                                  &
+     &       (iflag_import_item, mesh_to_viz_tbl, viz_mesh%nod_comm,    &
+     &        node%numnod, viz_mesh%node%numnod,                        &
+     &        nod_fld_lic%s_lic(1,i), field_lic%s_lic(1,i), v_sol)
+        end do
+      end if
+!
+      end subroutine repartition_lic_field
 !
 !  ---------------------------------------------------------------------
 !
