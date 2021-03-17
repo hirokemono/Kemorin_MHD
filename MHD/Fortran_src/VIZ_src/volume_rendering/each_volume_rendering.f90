@@ -7,10 +7,10 @@
 !!     &          area_def, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering                                   &
 !!     &         (istep_pvr, time, mesh, jacs, nod_fld,                 &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine each_PVR_rendering_w_rot                             &
 !!     &         (istep_pvr, time, mesh, group, jacs, nod_fld,          &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) :: group
 !!        type(viz_area_parameter), intent(in) :: area_def
@@ -19,11 +19,10 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_type), intent(in) :: jacs
+!!        type(pvr_field_data), intent(inout) :: field_pvr
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb(2)
-!!      subroutine dealloc_each_pvr_data(pvr_param)
-!!        type(PVR_control_params), intent(inout) :: pvr_param
 !
 !
       module each_volume_rendering
@@ -45,8 +44,8 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
+      use t_pvr_field_data
 !
-      use field_data_4_pvr
       use set_default_pvr_params
       use set_position_pvr_screen
       use mesh_outline_4_pvr
@@ -148,7 +147,7 @@
 !
       subroutine each_PVR_rendering                                     &
      &         (istep_pvr, time, mesh, jacs, nod_fld,                   &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -159,6 +158,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
 !
+      type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
@@ -167,7 +167,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_param%field_def, pvr_param%draw_param)
+     &    pvr_param%field_def, field_pvr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -179,30 +179,30 @@
 !   Left eye
           call rendering_with_fixed_view                                &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
-     &        pvr_param, pvr_proj(1), pvr_rgb(1))
+     &        field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
           call store_left_eye_image(pvr_rgb(1))
 !
 !   right eye
           call rendering_with_fixed_view                                &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
-     &        pvr_param, pvr_proj(2), pvr_rgb(1))
+     &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(1))
           call add_left_eye_image(pvr_rgb(1))
         else
 !
 !   Left eye
           call rendering_with_fixed_view                                &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
-     &        pvr_param, pvr_proj(1), pvr_rgb(1))
+     &        field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
 !
 !   right eye
           call rendering_with_fixed_view                                &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,          &
-     &        pvr_param, pvr_proj(2), pvr_rgb(2))
+     &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
       else
         call rendering_with_fixed_view                                  &
      &     (istep_pvr, time, mesh%node, mesh%ele, mesh%surf,            &
-     &      pvr_param, pvr_proj(1), pvr_rgb(1))
+     &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
       end if
 !
       end subroutine each_PVR_rendering
@@ -211,7 +211,7 @@
 !
       subroutine each_PVR_rendering_w_rot                               &
      &         (istep_pvr, time, mesh, group, jacs, nod_fld,            &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
 !
@@ -223,6 +223,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_type), intent(in) :: jacs
 !
+      type(pvr_field_data), intent(inout) :: field_pvr
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
       type(pvr_image_type), intent(inout) :: pvr_rgb(2)
@@ -231,7 +232,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_each_pvr                                         &
      &   (mesh%node, mesh%ele, jacs%g_FEM, jacs%jac_3d, nod_fld,        &
-     &    pvr_param%field_def, pvr_param%draw_param)
+     &    pvr_param%field_def, field_pvr)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
       call set_default_pvr_data_params                                  &
@@ -241,38 +242,22 @@
         if(pvr_param%view%iflag_anaglyph .gt. 0) then
           call anaglyph_rendering_w_rotation                            &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
-     &        pvr_param, pvr_proj, pvr_rgb(1))
+     &        field_pvr, pvr_param, pvr_proj, pvr_rgb(1))
         else
           call rendering_with_rotation                                  &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
-     &        pvr_param, pvr_proj(1), pvr_rgb(1))
+     &        field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
           call rendering_with_rotation                                  &
      &       (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,   &
-     &        pvr_param, pvr_proj(2), pvr_rgb(2))
+     &        field_pvr, pvr_param, pvr_proj(2), pvr_rgb(2))
         end if
       else
         call rendering_with_rotation                                    &
      &     (istep_pvr, time, mesh%node, mesh%ele, mesh%surf, group,     &
-     &      pvr_param, pvr_proj(1), pvr_rgb(1))
+     &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb(1))
       end if
 !
       end subroutine each_PVR_rendering_w_rot
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_each_pvr_data(pvr_param)
-!
-      use set_pvr_control
-!
-      type(PVR_control_params), intent(inout) :: pvr_param
-!
-!
-      call deallocate_pixel_position_pvr(pvr_param%pixel)
-!
-      call dealloc_nod_data_4_pvr(pvr_param%draw_param)
-      call flush_each_pvr_control(pvr_param)
-!
-      end subroutine dealloc_each_pvr_data
 !
 !  ---------------------------------------------------------------------
 !

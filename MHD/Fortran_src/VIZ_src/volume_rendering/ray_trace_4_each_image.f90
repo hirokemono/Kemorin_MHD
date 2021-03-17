@@ -1,16 +1,25 @@
-!ray_trace_4_each_image.f90
-!
-!      module ray_trace_4_each_image
-!
-!      Written by H. Matsui on Aug., 2011
-!
+!>@file   ray_trace_4_each_image.f90
+!!@brief  module ray_trace_4_each_image
 !!
-!!      subroutine s_ray_trace_4_each_image                             &
-!!     &         (node, ele, surf, pvr_screen, draw_param, color_param, &
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2011
+!
+!>@brief structure of control data for multiple volume rendering
+!!
+!!@verbatim
+!!      subroutine s_ray_trace_4_each_image(node, ele, surf,            &
+!!     &          pvr_screen, field_pvr, draw_param, color_param,       &
 !!     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,  &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
 !!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
-!
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(pvr_field_data), intent(in) :: field_pvr
+!!        type(rendering_parameter), intent(in) :: draw_param
+!!        type(pvr_colormap_parameter), intent(in) :: color_param
+!!        type(pvr_projected_position), intent(in) :: pvr_screen
+!!@endverbatim
       module ray_trace_4_each_image
 !
       use m_precision
@@ -21,6 +30,8 @@
       use set_rgba_4_each_pixel
 !
       use t_control_params_4_pvr
+      use t_pvr_field_data
+      use t_geometries_in_pvr_screen
 !
       implicit  none
 !
@@ -32,8 +43,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image                               &
-     &         (node, ele, surf, pvr_screen, draw_param, color_param,   &
+      subroutine s_ray_trace_4_each_image(node, ele, surf,              &
+     &          pvr_screen, field_pvr, draw_param, color_param,         &
      &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,    &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
@@ -46,6 +57,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
 !
+      type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_projected_position), intent(in) :: pvr_screen
@@ -82,8 +94,8 @@
      &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
      &       ele%interior_ele, node%xx, surf%vnorm_surf,                &
      &       pvr_screen%arccos_sf, pvr_screen%x_nod_model,              &
-     &       viewpoint_vec, draw_param, color_param, ray_vec,           &
-     &       id_pixel_check(inum), isf_pvr_ray_start(1,inum),           &
+     &       viewpoint_vec, field_pvr, draw_param, color_param,         &
+     &       ray_vec, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
      &       xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),            &
      &       xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum), &
      &       iflag_comm)
@@ -99,11 +111,10 @@
       subroutine ray_trace_each_pixel                                   &
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
-     &        arccos_sf, x_nod_model, viewpoint_vec, draw_param,        &
-     &        color_param, ray_vec, iflag_check, isurf_org,             &
+     &        arccos_sf, x_nod_model, viewpoint_vec, field_pvr,         &
+     &        draw_param, color_param, ray_vec, iflag_check, isurf_org, &
      &        screen_st, xx_st, xi, rgba_ray, icount_line, iflag_comm)
 !
-      use t_geometries_in_pvr_screen
       use cal_field_on_surf_viz
       use cal_fline_in_cube
       use set_coefs_of_sections
@@ -123,6 +134,7 @@
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
 !
+      type(pvr_field_data), intent(in) :: field_pvr
       type(rendering_parameter), intent(in) :: draw_param
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
@@ -148,7 +160,7 @@
       call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
      &    ie_surf, isurf_end, xi, xx, xx_st)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
-     &    ie_surf, isurf_end, xi, draw_param%d_pvr, c_org(1) )
+     &    ie_surf, isurf_end, xi, field_pvr%d_pvr, c_org(1) )
 !
       if(iflag_check .gt. 0) then
         iflag_hit = 0
@@ -204,7 +216,7 @@
         call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, xx, xx_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, draw_param%d_pvr, c_tgt(1))
+     &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
         if(interior_ele(iele) .gt. 0) then
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
@@ -243,7 +255,7 @@
      &             * (c_tgt(1) - draw_param%iso_value(i_iso))
             if((c_tgt(1) - draw_param%iso_value(i_iso)) .eq. zero       &
      &        .or. rflag .lt. zero) then
-              grad_tgt(1:3) = draw_param%grad_ele(iele,1:3)             &
+              grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)              &
      &                       * draw_param%itype_isosurf(i_iso)
               call color_plane_with_light                               &
      &           (viewpoint_vec, xx_tgt, draw_param%iso_value(i_iso),   &
@@ -252,7 +264,7 @@
             end if
           end do
 !
-          grad_tgt(1:3) = draw_param%grad_ele(iele,1:3)
+          grad_tgt(1:3) = field_pvr%grad_ele(iele,1:3)
           c_tgt(1) = half*(c_tgt(1) + c_org(1))
           call s_set_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,    &
      &        c_tgt(1), grad_tgt, color_param, rgba_ray)

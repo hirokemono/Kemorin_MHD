@@ -13,7 +13,9 @@
 !!      subroutine PVR_visualize                                        &
 !!     &         (istep_pvr, time, fem, jacs, nod_fld, pvr)
 !!      subroutine alloc_pvr_data(pvr)
+!!
 !!      subroutine dealloc_pvr_data(pvr)
+!!      subroutine dealloc_pvr_and_lic_data(pvr)
 !!        type(mesh_data), intent(in) :: fem
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -44,6 +46,7 @@
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
+      use t_pvr_field_data
       use t_geometries_in_pvr_screen
       use t_control_data_pvrs
 !
@@ -65,6 +68,8 @@
         integer(kind = kint) :: num_pvr = 0
 !>        Structure of PVR control parameters
         type(PVR_control_params), allocatable :: pvr_param(:)
+!>        Structure of field for PVRs
+        type(pvr_field_data), allocatable :: field_pvr(:)
 !
 !>        Number of rendering for volume rendering
         integer(kind = kint) :: num_pvr_rendering = 0
@@ -194,9 +199,12 @@
 !
 !
       do i_pvr = 1, pvr%num_pvr
-        call allocate_nod_data_4_pvr                                    &
+        call alloc_nod_data_4_pvr                                       &
      &     (fem%mesh%node%numnod, fem%mesh%ele%numele,                  &
-     &      fem%group%surf_grp%num_grp, pvr%pvr_param(i_pvr)%draw_param)
+     &      pvr%field_pvr(i_pvr))
+        call allocate_nod_data_4_pvr                                    &
+     &     (fem%mesh%ele%numele, fem%group%surf_grp%num_grp,            &
+     &      pvr%pvr_param(i_pvr)%draw_param)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)
       end do
 !
@@ -253,8 +261,8 @@
         ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
         call each_PVR_rendering                                         &
      &     (istep_pvr, time, fem%mesh, jacs, nod_fld,                   &
-     &      pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),                &
-     &      pvr%pvr_rgb(ist_img))
+     &      pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),                 &
+     &      pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
 !
@@ -282,8 +290,8 @@
           ist_img = pvr%istack_pvr_images(i_pvr-1) + 1
           call each_PVR_rendering_w_rot                                 &
      &       (istep_pvr, time, fem%mesh, fem%group, jacs, nod_fld,      &
-     &        pvr%pvr_param(i_pvr), pvr%pvr_proj(ist_rdr),              &
-     &        pvr%pvr_rgb(ist_img))
+     &        pvr%field_pvr(i_pvr), pvr%pvr_param(i_pvr),               &
+     &        pvr%pvr_proj(ist_rdr), pvr%pvr_rgb(ist_img))
         end if
       end do
       if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
@@ -304,6 +312,7 @@
       pvr%istack_pvr_images = 0
 !
       allocate(pvr%pvr_param(pvr%num_pvr))
+      allocate(pvr%field_pvr(pvr%num_pvr))
       allocate(pvr%pvr_proj(pvr%num_pvr_rendering))
       allocate(pvr%pvr_rgb(pvr%num_pvr_images))
 !
@@ -313,14 +322,30 @@
 !
       subroutine dealloc_pvr_data(pvr)
 !
-      use set_pvr_control
-!
-      integer(kind = kint) :: i_pvr
       type(volume_rendering_module), intent(inout) :: pvr
+      integer(kind = kint) :: i_pvr
 !
 !
       do i_pvr = 1, pvr%num_pvr
-        call dealloc_each_pvr_data(pvr%pvr_param(i_pvr))
+        call dealloc_nod_data_4_pvr(pvr%field_pvr(i_pvr))
+      end do
+      call dealloc_pvr_and_lic_data(pvr)
+!
+      end subroutine dealloc_pvr_data
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_pvr_and_lic_data(pvr)
+!
+      use set_pvr_control
+!
+      type(volume_rendering_module), intent(inout) :: pvr
+      integer(kind = kint) :: i_pvr
+!
+!
+      do i_pvr = 1, pvr%num_pvr
+        call dealloc_rendering_params_4_pvr                             &
+     &     (pvr%pvr_param(i_pvr)%draw_param)
       end do
       deallocate(pvr%pvr_param)
 !
@@ -339,7 +364,7 @@
       deallocate(pvr%istack_pvr_render)
       deallocate(pvr%istack_pvr_images)
 !
-      end subroutine dealloc_pvr_data
+      end subroutine dealloc_pvr_and_lic_data
 !
 !  ---------------------------------------------------------------------
 !

@@ -9,14 +9,15 @@
 !!@verbatim
 !!      subroutine rendering_with_rotation                              &
 !!     &         (istep_pvr, time, node, ele, surf, group,              &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine anaglyph_rendering_w_rotation                        &
 !!     &         (istep_pvr, time, node, ele, surf, group,              &
-!!     &          pvr_param, pvr_proj, pvr_rgb)
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
+!!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj(2)
 !!        type(PVR_control_params), intent(inout) :: pvr_param
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -41,6 +42,7 @@
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
+      use t_pvr_field_data
       use generate_vr_image
 !
       implicit  none
@@ -53,7 +55,7 @@
 !
       subroutine rendering_with_rotation                                &
      &         (istep_pvr, time, node, ele, surf, group,                &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -66,6 +68,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
+      type(pvr_field_data), intent(in) :: field_pvr
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj
@@ -81,7 +84,7 @@
      &     (i_rot, pvr_param%outline, pvr_param%view, pvr_param%color)
 !
         call rendering_at_once(istep_pvr, time, node, ele, surf, group, &
-     &      pvr_param, pvr_proj, pvr_rgb)
+     &      field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)
         if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+2)
@@ -96,7 +99,7 @@
 !
       subroutine anaglyph_rendering_w_rotation                          &
      &         (istep_pvr, time, node, ele, surf, group,                &
-     &          pvr_param, pvr_proj, pvr_rgb)
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use m_elapsed_labels_4_VIZ
       use cal_pvr_modelview_mat
@@ -109,6 +112,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
+      type(pvr_field_data), intent(in) :: field_pvr
 !
       type(PVR_control_params), intent(inout) :: pvr_param
       type(PVR_projection_data), intent(inout) :: pvr_proj(2)
@@ -125,12 +129,12 @@
 !
 !    Left eye
         call rendering_at_once(istep_pvr, time, node, ele, surf, group, &
-     &      pvr_param, pvr_proj(1), pvr_rgb)
+     &      field_pvr, pvr_param, pvr_proj(1), pvr_rgb)
         call store_left_eye_image(pvr_rgb)
 !
 !    Right eye
         call rendering_at_once(istep_pvr, time, node, ele, surf, group, &
-     &      pvr_param, pvr_proj(2), pvr_rgb)
+     &      field_pvr, pvr_param, pvr_proj(2), pvr_rgb)
         call add_left_eye_image(pvr_rgb)
 !
         if(iflag_PVR_time) call end_elapsed_time(ist_elapsed_PVR+1)

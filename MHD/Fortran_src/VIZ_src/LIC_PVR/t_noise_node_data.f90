@@ -52,7 +52,6 @@
         integer(kind=kint), intent(in) :: level, dim
 !
         integer(kind=kint) :: i, size
-        real(kind=kreal) :: rand_v
 
         n_node%n_value = 0.0
 

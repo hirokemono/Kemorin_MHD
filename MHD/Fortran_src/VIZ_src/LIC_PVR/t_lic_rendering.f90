@@ -295,7 +295,7 @@
       end do
       deallocate(lic%lic_fld_pm)
 !
-      call dealloc_pvr_data(lic%pvr)
+      call dealloc_pvr_and_lic_data(lic%pvr)
 !
       end subroutine dealloc_LIC_data
 !

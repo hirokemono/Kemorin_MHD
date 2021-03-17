@@ -45,6 +45,7 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
+      use t_lic_field_data
 !
       use set_default_pvr_params
       use set_position_pvr_screen
@@ -63,7 +64,6 @@
      &          lic_fld_pm, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
-      use field_data_4_LIC
       use rendering_LIC_image
       use rendering_streo_LIC_image
 !
@@ -80,7 +80,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_each_lic(mesh%node, mesh%ele, nod_fld,           &
+      call cal_field_4_each_lic(mesh%node, nod_fld,                     &
      &    lic_fld_pm%lic_param, lic_fld_pm%field_lic)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
@@ -133,7 +133,6 @@
      &          lic_fld_pm, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
-      use field_data_4_LIC
       use rendering_LIC_image
       use rendering_streo_LIC_image
 !
@@ -151,7 +150,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_each_lic(mesh%node, mesh%ele, nod_fld,           &
+      call cal_field_4_each_lic(mesh%node, nod_fld,                     &
      &    lic_fld_pm%lic_param, lic_fld_pm%field_lic)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'

@@ -9,16 +9,19 @@
 !!@verbatim
 !!      subroutine set_fixed_view_and_image(node, ele, surf, group,     &
 !!     &          pvr_param, pvr_rgb, pvr_proj)
-!!      subroutine rendering_with_fixed_view(istep_pvr, time,           &
-!!     &          node, ele, surf, pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine rendering_with_fixed_view                            &
+!!     &         (istep_pvr, time, node, ele, surf,                     &
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!      subroutine flush_rendering_4_fixed_view(pvr_proj)
 !!
-!!      subroutine rendering_at_once(istep_pvr, time,                   &
-!!     &          node, ele, surf, group, pvr_param, pvr_proj, pvr_rgb)
+!!      subroutine rendering_at_once                                    &
+!!     &         (istep_pvr, time, node, ele, surf, group,              &
+!!     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(mesh_groups), intent(in) :: group
+!!        type(pvr_field_data), intent(in) :: field_pvr
 !!        type(PVR_control_params), intent(in) :: pvr_param
 !!        type(PVR_projection_data), intent(inout) :: pvr_proj
 !!        type(pvr_image_type), intent(inout) :: pvr_rgb
@@ -43,6 +46,7 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_pvr_stencil_buffer
+      use t_pvr_field_data
       use generate_vr_image
 !
       implicit  none
@@ -125,8 +129,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_with_fixed_view(istep_pvr, time,             &
-     &          node, ele, surf, pvr_param, pvr_proj, pvr_rgb)
+      subroutine rendering_with_fixed_view                              &
+     &         (istep_pvr, time, node, ele, surf,                       &
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use write_PVR_image
 !
@@ -135,6 +140,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(pvr_field_data), intent(in) :: field_pvr
       type(PVR_control_params), intent(in) :: pvr_param
 !
       type(PVR_projection_data), intent(inout) :: pvr_proj
@@ -145,11 +151,10 @@
      &   (pvr_proj%start_save, pvr_proj%start_pt)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image                                              &
-     &   (istep_pvr, time, node, ele, surf, pvr_param%color,            &
-     &    pvr_param%colorbar, pvr_param%draw_param, pvr_param%view,     &
-     &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
-     &    pvr_rgb)
+      call rendering_image(istep_pvr, time, node, ele, surf,            &
+     &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
+     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_with_fixed_view
 !
@@ -171,8 +176,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine rendering_at_once(istep_pvr, time,                     &
-     &          node, ele, surf, group, pvr_param, pvr_proj, pvr_rgb)
+      subroutine rendering_at_once                                      &
+     &         (istep_pvr, time, node, ele, surf, group,                &
+     &          field_pvr, pvr_param, pvr_proj, pvr_rgb)
 !
       use cal_pvr_modelview_mat
       use write_PVR_image
@@ -184,6 +190,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(mesh_groups), intent(in) :: group
+      type(pvr_field_data), intent(in) :: field_pvr
       type(PVR_control_params), intent(in) :: pvr_param
 !
       type(PVR_projection_data), intent(inout) :: pvr_proj
@@ -202,11 +209,10 @@
      &   (pvr_rgb, pvr_proj%start_pt, pvr_proj%stencil)
 !
       if(iflag_debug .gt. 0) write(*,*) 'rendering_image'
-      call rendering_image                                              &
-     &   (istep_pvr, time, node, ele, surf, pvr_param%color,            &
-     &    pvr_param%colorbar, pvr_param%draw_param, pvr_param%view,     &
-     &    pvr_proj%screen, pvr_proj%start_pt, pvr_proj%stencil,         &
-     &    pvr_rgb)
+      call rendering_image(istep_pvr, time, node, ele, surf,            &
+     &    pvr_param%color, pvr_param%colorbar, field_pvr,               &
+     &    pvr_param%draw_param, pvr_param%view, pvr_proj%screen,        &
+     &    pvr_proj%start_pt, pvr_proj%stencil, pvr_rgb)
 !
       end subroutine rendering_at_once
 !

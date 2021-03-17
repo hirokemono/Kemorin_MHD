@@ -13,8 +13,8 @@
 !!      subroutine dealloc_projected_position(pvr_screen)
 !!
 !!      subroutine allocate_nod_data_4_pvr                              &
-!!     &         (numnod, numele, num_sf_grp, draw_param)
-!!      subroutine dealloc_nod_data_4_pvr(draw_param)
+!!     &         (numele, num_sf_grp, draw_param)
+!!      subroutine dealloc_rendering_params_4_pvr(draw_param)
 !!
 !!      subroutine alloc_pvr_sections(draw_param)
 !!      subroutine alloc_pvr_isosurfaces(draw_param)
@@ -25,6 +25,9 @@
 !!      subroutine deallocate_projected_data_pvr                        &
 !!      &        (num_pvr, proj, draw_param)
 !!      subroutine deallocate_pixel_position_pvr(pixel_xy)
+!!      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+!!        type(pvr_view_parameter), intent(in) :: view
+!!        type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !!@endverbatim
 !
       module t_geometries_in_pvr_screen
@@ -56,11 +59,6 @@
 !
 !>  Structure for field data on projected coordinate
       type rendering_parameter
-!>    Data for rendering
-        real(kind = kreal), allocatable :: d_pvr(:)
-!>    Gradient for rendering
-        real(kind = kreal), allocatable :: grad_ele(:,:)
-!
 !>    flag for rendering element
         integer(kind = kint), allocatable :: iflag_used_ele(:)
 !
@@ -98,7 +96,7 @@
         real(kind = kreal), allocatable :: pixel_point_y(:)
       end type pvr_pixel_position_type
 !
-      private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
+      private :: alloc_iflag_pvr_used_ele
       private :: alloc_iflag_pvr_boundaries
 !
 ! -----------------------------------------------------------------------
@@ -143,15 +141,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_nod_data_4_pvr                                &
-     &         (numnod, numele, num_sf_grp, draw_param)
+     &         (numele, num_sf_grp, draw_param)
 !
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: num_sf_grp
       type(rendering_parameter), intent(inout) :: draw_param
 !
 !
-        call alloc_nod_data_4_pvr                                       &
-     &     (numnod, numele, draw_param)
         call alloc_iflag_pvr_used_ele(numele, draw_param)
         call alloc_iflag_pvr_boundaries                                 &
      &     (num_sf_grp, draw_param)
@@ -161,34 +157,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine dealloc_nod_data_4_pvr(draw_param)
+      subroutine dealloc_rendering_params_4_pvr(draw_param)
 !
       type(rendering_parameter), intent(inout) :: draw_param
 !
 !
       deallocate(draw_param%iflag_enhanse, draw_param%enhansed_opacity)
       deallocate(draw_param%iflag_used_ele)
-      deallocate(draw_param%d_pvr, draw_param%grad_ele)
 !
-      end subroutine dealloc_nod_data_4_pvr
+      end subroutine dealloc_rendering_params_4_pvr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_nod_data_4_pvr(nnod, nele, draw_param)
-!
-      integer(kind = kint), intent(in) :: nnod, nele
-      type(rendering_parameter), intent(inout) :: draw_param
-!
-!
-      allocate(draw_param%d_pvr(nnod))
-      allocate(draw_param%grad_ele(nele,3))
-!
-      if(nnod .gt. 0) draw_param%d_pvr =    0.0d0
-      if(nele .gt. 0) draw_param%grad_ele = 0.0d0
-!
-      end subroutine alloc_nod_data_4_pvr
-!
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_iflag_pvr_used_ele(nele, draw_param)
@@ -295,7 +274,6 @@
       end subroutine allocate_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine deallocate_pixel_position_pvr(pixel_xy)
 !
@@ -307,5 +285,25 @@
       end subroutine deallocate_pixel_position_pvr
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_pixel_on_pvr_screen(view, pixel_xy)
+!
+      use t_control_params_4_pvr
+      use set_projection_matrix
+!
+      type(pvr_view_parameter), intent(in) :: view
+      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
+!
+!
+      call allocate_pixel_position_pvr(view%n_pvr_pixel, pixel_xy)
+!
+      call set_pixel_points_on_project                                  &
+     &   (view%n_pvr_pixel(1), view%n_pvr_pixel(2),                     &
+          pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
+!
+      end subroutine set_pixel_on_pvr_screen
+!
+!  ---------------------------------------------------------------------
 !
       end module t_geometries_in_pvr_screen
