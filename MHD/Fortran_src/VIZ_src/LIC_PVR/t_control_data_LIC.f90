@@ -26,7 +26,6 @@
 !!
 !!    vr_sample_mode:         'fixed_size' or 'element_count'
 !!    normalization_type:     'set_by_control' or 'set_by_range'
-!!    reflection_reference:   'noise_file''color_field'
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  begin LIC_ctl
