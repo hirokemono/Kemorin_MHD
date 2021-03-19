@@ -59,7 +59,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_lic_masking                              &
+      subroutine set_control_lic_masking                                &
      &         (num_nod_phys, phys_nod_name, mask_ctl, masking)
 !
       use t_control_data_LIC_masking
@@ -93,7 +93,8 @@
         call calypso_mpi_abort(ierr_fld, e_message)
       end if
 !
-      if(mask_ctl%mask_type_ctl%charavalue .eq. hd_masking_geometry) then
+      if(mask_ctl%mask_type_ctl%charavalue                              &
+     &                     .eq. hd_masking_geometry) then
         masking%mask_type = iflag_geometrymask
       else
         masking%mask_type = iflag_fieldmask
