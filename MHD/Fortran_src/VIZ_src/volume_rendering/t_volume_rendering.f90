@@ -202,7 +202,7 @@
         call alloc_nod_data_4_pvr                                       &
      &     (geofem%mesh%node%numnod, geofem%mesh%ele%numele,            &
      &      pvr%field_pvr(i_pvr))
-        call allocate_nod_data_4_pvr                                    &
+        call alloc_rendering_params_4_pvr                               &
      &     (geofem%mesh%ele%numele, geofem%group%surf_grp%num_grp,      &
      &      pvr%pvr_param(i_pvr)%draw_param)
         call reset_pvr_view_parameteres(pvr%pvr_param(i_pvr)%view)

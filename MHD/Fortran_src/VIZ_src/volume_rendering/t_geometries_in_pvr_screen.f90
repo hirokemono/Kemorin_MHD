@@ -12,7 +12,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!      subroutine dealloc_projected_position(pvr_screen)
 !!
-!!      subroutine allocate_nod_data_4_pvr                              &
+!!      subroutine alloc_rendering_params_4_pvr                         &
 !!     &         (numele, num_sf_grp, draw_param)
 !!      subroutine dealloc_rendering_params_4_pvr(draw_param)
 !!
@@ -140,7 +140,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_nod_data_4_pvr                                &
+      subroutine alloc_rendering_params_4_pvr                           &
      &         (numele, num_sf_grp, draw_param)
 !
       integer(kind = kint), intent(in) :: numele
@@ -152,7 +152,7 @@
         call alloc_iflag_pvr_boundaries                                 &
      &     (num_sf_grp, draw_param)
 !
-      end subroutine allocate_nod_data_4_pvr
+      end subroutine alloc_rendering_params_4_pvr
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

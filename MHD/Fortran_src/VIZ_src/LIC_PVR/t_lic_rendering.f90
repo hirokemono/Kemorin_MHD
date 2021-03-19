@@ -182,6 +182,13 @@
      &    lic%pvr%pvr_rgb)
 !
       do i_lic = 1, lic%pvr%num_pvr
+        call alloc_rendering_params_4_pvr                               &
+     &     (viz_fem%mesh%ele%numele, viz_fem%group%surf_grp%num_grp,    &
+     &      lic%pvr%pvr_param(i_lic)%draw_param)
+        call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
+      end do
+!
+      do i_lic = 1, lic%pvr%num_pvr
         allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
         call alloc_nod_vector_4_lic(geofem%mesh%node%numnod,            &
      &      lic%lic_fld_pm(i_lic)%lic_param%num_masking,                &
@@ -195,10 +202,6 @@
           lic%lic_fld_pm(i_lic)%field_lic                               &
      &           => lic%lic_fld_pm(i_lic)%nod_fld_lic
         end if
-      end do
-!
-      do i_lic = 1, lic%pvr%num_pvr
-        call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
 !
       call s_set_lic_controls(viz_fem%group, nod_fld, lic%pvr%num_pvr,  &
