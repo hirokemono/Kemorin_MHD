@@ -1,5 +1,5 @@
-!>@file  t_surface_group_geometry.f90
-!!       module t_surface_group_geometry
+!>@file  t_surface_group_normals.f90
+!!       module t_surface_group_normals
 !!
 !!@author H. Matsui
 !!@date   Programmed in Dec., 2008
@@ -22,7 +22,7 @@
 !!         type(surface_group_normals), intent(inout) :: sf_grp_v
 !!@endverbatim
 !
-      module t_surface_group_geometry
+      module t_surface_group_normals
 !
       use m_precision
 !
@@ -198,4 +198,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module t_surface_group_geometry
+      end module t_surface_group_normals

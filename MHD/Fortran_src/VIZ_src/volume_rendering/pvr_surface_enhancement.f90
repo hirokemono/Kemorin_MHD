@@ -26,7 +26,7 @@
       use m_machine_parameter
       use m_geometry_constants
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_surface_group_connect
       use t_control_params_4_pvr
 !

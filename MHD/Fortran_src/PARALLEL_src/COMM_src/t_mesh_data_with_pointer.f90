@@ -292,7 +292,7 @@
       use t_group_data
       use t_group_connects
       use t_surface_group_connect
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_surface_data
       use t_edge_data
 !

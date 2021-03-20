@@ -44,7 +44,7 @@ t_element_double_number.o: $(COMMDIR)/t_element_double_number.f90 m_precision.o 
 	$(F90) -c $(F90OPTFLAGS) $<
 t_failed_export_list.o: $(COMMDIR)/t_failed_export_list.f90 m_precision.o m_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_mesh_data_with_pointer.o: $(COMMDIR)/t_mesh_data_with_pointer.f90 m_precision.o m_machine_parameter.o t_mesh_data.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_file_IO_parameter.o mesh_MPI_IO_select.o set_nnod_4_ele_by_type.o load_mesh_data.o mesh_IO_select.o t_group_connects.o t_surface_group_connect.o t_surface_group_geometry.o const_surface_data.o set_surf_edge_mesh.o set_connects_4_surf_group.o const_mesh_information.o set_size_4_smp_types.o
+t_mesh_data_with_pointer.o: $(COMMDIR)/t_mesh_data_with_pointer.f90 m_precision.o m_machine_parameter.o t_mesh_data.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_file_IO_parameter.o mesh_MPI_IO_select.o set_nnod_4_ele_by_type.o load_mesh_data.o mesh_IO_select.o t_group_connects.o t_surface_group_connect.o t_surface_group_normals.o const_surface_data.o set_surf_edge_mesh.o set_connects_4_surf_group.o const_mesh_information.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_para_double_numbering.o: $(COMMDIR)/t_para_double_numbering.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_comm_table.o solver_SR_type.o find_belonged_process.o
 	$(F90) -c $(F90OPTFLAGS) $<

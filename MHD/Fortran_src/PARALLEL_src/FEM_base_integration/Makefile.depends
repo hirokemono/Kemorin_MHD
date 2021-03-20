@@ -162,11 +162,11 @@ set_normal_vectors.o: $(FEM_INT_DIR)/set_normal_vectors.f90 m_precision.o m_mach
 	$(F90) -c $(F90OPTFLAGS) $<
 set_off_diagonal.o: $(FEM_INT_DIR)/set_off_diagonal.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_surf_grp_vectors.o: $(FEM_INT_DIR)/set_surf_grp_vectors.f90 m_precision.o m_machine_parameter.o t_surface_data.o t_group_data.o t_group_connects.o t_surface_group_geometry.o sum_normal_4_surf_group.o m_geometry_constants.o coordinate_converter.o
+set_surf_grp_vectors.o: $(FEM_INT_DIR)/set_surf_grp_vectors.f90 m_precision.o m_machine_parameter.o t_surface_data.o t_group_data.o t_group_connects.o t_surface_group_normals.o sum_normal_4_surf_group.o m_geometry_constants.o coordinate_converter.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_table_4_RHS_assemble.o: $(FEM_INT_DIR)/set_table_4_RHS_assemble.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_next_node_ele_4_node.o t_table_FEM_const.o set_ele_id_4_node_type.o ordering_rhs_assemble_type.o t_geometry_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o calypso_mpi_real.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_geometry.o
+sum_normal_4_surf_group.o: $(FEM_INT_DIR)/sum_normal_4_surf_group.f90 m_precision.o calypso_mpi.o calypso_mpi_real.o m_machine_parameter.o t_geometry_data.o t_group_data.o t_surface_group_normals.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sum_volume_of_domain.o: $(FEM_INT_DIR)/sum_volume_of_domain.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<

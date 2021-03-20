@@ -38,7 +38,7 @@
       use t_surface_data
       use t_group_data
       use t_group_connects
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       use sum_normal_4_surf_group
 !
@@ -78,7 +78,7 @@
       use t_surface_data
       use t_group_data
       use t_group_connects
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       use coordinate_converter
 !

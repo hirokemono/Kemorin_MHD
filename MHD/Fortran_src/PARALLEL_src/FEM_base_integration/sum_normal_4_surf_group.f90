@@ -32,7 +32,7 @@
       use m_machine_parameter
       use t_geometry_data
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp

@@ -59,7 +59,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use set_position_pvr_screen
       use find_pvr_surf_domain
       use pvr_surface_enhancement

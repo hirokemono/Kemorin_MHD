@@ -53,7 +53,7 @@
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_connect
-      use t_surface_group_geometry
+      use t_surface_group_normals
       use t_phys_data
       use t_phys_address
       use t_boundary_field_IO

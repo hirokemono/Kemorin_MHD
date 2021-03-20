@@ -116,7 +116,7 @@
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, sgs_sf, norm_sf)
 !
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node

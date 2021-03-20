@@ -29,7 +29,7 @@
      &         (id_check, sf_grp, sf_grp_v)
 !
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       integer(kind = kint), intent(in) :: id_check
       type(surface_group_data), intent(in) :: sf_grp
@@ -55,7 +55,7 @@
      &          (id_check, sf_grp, sf_grp_v)
 !
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       integer(kind = kint), intent(in) :: id_check
       type(surface_group_data), intent(in) :: sf_grp
@@ -121,7 +121,7 @@
 !
       use t_geometry_data
       use t_group_data
-      use t_surface_group_geometry
+      use t_surface_group_normals
 !
       integer(kind = kint), intent(in) :: id_check
       type(element_data), intent(in) :: ele
