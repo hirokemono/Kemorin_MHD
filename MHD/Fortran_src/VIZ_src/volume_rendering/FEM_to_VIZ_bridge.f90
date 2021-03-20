@@ -86,7 +86,8 @@
         call set_element_on_node_in_mesh(geofem%mesh, ele_4_nod)
       end if
 !
-      if(viz_step%PVR_t%increment .gt. 0) then
+      iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
+      if(iflag .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
         allocate(jacobians%g_FEM)
 !        call sel_max_int_point_by_etype                                &

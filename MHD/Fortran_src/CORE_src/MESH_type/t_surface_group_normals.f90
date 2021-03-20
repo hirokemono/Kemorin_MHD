@@ -12,7 +12,6 @@
 !!      subroutine dealloc_vectors_surf_group(sf_grp_v)
 !!         type(surface_group_data), intent(in) :: sf_grp
 !!         type(surface_group_normals), intent(inout) :: sf_grp_v
-!!         type(surface_group_normals), intent(inout) :: sf_grp_v
 !!
 !!      subroutine pick_normal_of_surf_group                            &
 !!     &         (surf, sf_grp, sf_grp_tbl, sf_grp_v)
