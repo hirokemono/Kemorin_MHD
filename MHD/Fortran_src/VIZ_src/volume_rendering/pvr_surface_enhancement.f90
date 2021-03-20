@@ -109,7 +109,7 @@
       use set_position_pvr_screen
 !
       type(surface_group_data), intent(in) :: surf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
       type(pvr_view_parameter), intent(in) :: view_param
       integer(kind = kint), intent(in) :: numele, numsurf
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)

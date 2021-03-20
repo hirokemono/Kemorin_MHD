@@ -36,7 +36,7 @@
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
       integer(kind = kint) :: i
       integer(kind = kint_gl) :: num64

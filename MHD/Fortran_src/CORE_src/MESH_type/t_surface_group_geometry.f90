@@ -13,13 +13,13 @@
 !!      subroutine alloc_normal_sf_grp_type_sph(num_item, sf_grp_v)
 !!      subroutine alloc_normal_sf_grp_type_cyl(num_item, sf_grp_v)
 !!         type(surface_group_data), intent(in) :: sf_grp
-!!         type(surface_group_geometry), intent(inout) :: sf_grp_v
+!!         type(surface_group_normals), intent(inout) :: sf_grp_v
 !!
 !!      subroutine dealloc_surf_grp_type_geom(sf_grp_v)
 !!      subroutine dealloc_vectors_surf_group(sf_grp_v)
 !!      subroutine dealloc_normal_sf_grp_type_sph(sf_grp_v)
 !!      subroutine dealloc_normal_sf_grp_type_cyl(sf_grp_v)
-!!         type(surface_group_geometry), intent(inout) :: sf_grp_v
+!!         type(surface_group_normals), intent(inout) :: sf_grp_v
 !!@endverbatim
 !
       module t_surface_group_geometry
@@ -29,7 +29,7 @@
       implicit  none
 !
 !>   Structure of geometry data for surface group
-      type surface_group_geometry
+      type surface_group_normals
 !>   position of surface group items
         real(kind=kreal),   allocatable :: x_sf_grp(:,:)
 !
@@ -60,7 +60,7 @@
 !
 !>   total area of each surface group
         real(kind=kreal),   allocatable :: tot_area_sf_grp(:)
-      end type surface_group_geometry
+      end type surface_group_normals
 !
 ! -----------------------------------------------------------------------
 !
@@ -71,7 +71,7 @@
       subroutine alloc_surf_grp_type_geom(num_item, sf_grp_v)
 !
       integer(kind = kint), intent(in) :: num_item
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       allocate(sf_grp_v%x_sf_grp    (num_item,3) )
@@ -101,7 +101,7 @@
      &         (num_grp, num_item, sf_grp_v)
 !
       integer(kind = kint), intent(in) :: num_grp, num_item
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       allocate ( sf_grp_v%vnorm_sf_grp(num_item,3)   )
@@ -124,7 +124,7 @@
       subroutine alloc_normal_sf_grp_type_sph(num_item, sf_grp_v)
 !
       integer(kind = kint), intent(in) :: num_item
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       allocate( sf_grp_v%vnorm_sf_grp_sph(num_item,3) )
@@ -137,7 +137,7 @@
       subroutine alloc_normal_sf_grp_type_cyl(num_item, sf_grp_v)
 !
       integer(kind = kint), intent(in) :: num_item
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       allocate( sf_grp_v%vnorm_sf_grp_cyl(num_item,3) )
@@ -150,7 +150,7 @@
 !
       subroutine dealloc_surf_grp_type_geom(sf_grp_v)
 !
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       deallocate(sf_grp_v%x_sf_grp)
@@ -164,7 +164,7 @@
 !
        subroutine dealloc_vectors_surf_group(sf_grp_v)
 !
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
        deallocate ( sf_grp_v%vnorm_sf_grp )
@@ -178,7 +178,7 @@
 !
       subroutine dealloc_normal_sf_grp_type_sph(sf_grp_v)
 !
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       deallocate( sf_grp_v%vnorm_sf_grp_sph )
@@ -189,7 +189,7 @@
 !
       subroutine dealloc_normal_sf_grp_type_cyl(sf_grp_v)
 !
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       deallocate( sf_grp_v%vnorm_sf_grp_cyl )

@@ -18,7 +18,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
-!!        type(surface_group_geometry), intent(in) :: sf_grp_v
+!!        type(surface_group_normals), intent(in) :: sf_grp_v
 !!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !!@endverbatim
@@ -80,7 +80,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
       type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs

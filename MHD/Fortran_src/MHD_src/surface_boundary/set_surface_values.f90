@@ -77,7 +77,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
       integer(kind = kint), intent(in) :: igrp, i_dest, id_sf_dat
       integer(kind = kint), intent(in) :: ngrp_sf, nnod_surf
 !

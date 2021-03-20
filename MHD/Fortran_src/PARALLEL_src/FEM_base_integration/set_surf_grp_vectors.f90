@@ -10,7 +10,7 @@
 !        type(surface_data), intent(in) :: surf
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(surface_group_table), intent(in) :: sf_grp_tbl
-!        type(surface_group_geometry), intent(inout) :: sf_grp_v
+!        type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !      subroutine pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,   &
 !     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,          &
@@ -45,7 +45,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_table), intent(in) :: sf_grp_tbl
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
       call alloc_vectors_surf_group                                     &
@@ -85,7 +85,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_table), intent(in) :: sf_grp_tbl
-      type(surface_group_geometry), intent(inout) :: sf_grp_v
+      type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
 !    set center of surface

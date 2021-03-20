@@ -69,7 +69,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: surf_grp
-      type(surface_group_geometry), intent(in) :: surf_grp_v
+      type(surface_group_normals), intent(in) :: surf_grp_v
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_view_parameter), intent(in) :: view_param
       type(rendering_parameter), intent(in) :: draw_param

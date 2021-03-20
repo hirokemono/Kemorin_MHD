@@ -62,7 +62,7 @@
 !>     Structure for node data on surface group
         type (surface_node_grp_data) ::   surf_nod_grp
 !>     Structure for grometry data for surface group
-        type (surface_group_geometry) ::  surf_grp_geom
+        type (surface_group_normals) ::  surf_grp_geom
 !
 !>     Structure for element group connectivity
         type (element_group_table), pointer :: tbls_ele_grp

@@ -31,7 +31,7 @@
 !        type(element_data),           intent(in) :: ele
 !        type(surface_data),           intent(in) :: surf
 !        type(surface_group_data),     intent(in) :: sf_grp
-!        type(surface_group_geometry), intent(in) :: sf_grp_v
+!        type(surface_group_normals), intent(in) :: sf_grp_v
 !        type(surface_node_grp_data), intent(inout) :: sf_nod
 !
 !      subroutine empty_sf_ed_nod_surf_grp_type(surf_grp, sf_grp_tbl)
@@ -194,7 +194,7 @@
       type(element_data),           intent(in) :: ele
       type(surface_data),           intent(in) :: surf
       type(surface_group_data),     intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
       type(surface_node_grp_data), intent(inout) :: sf_nod
 !
 !

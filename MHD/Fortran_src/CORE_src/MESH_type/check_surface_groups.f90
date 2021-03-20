@@ -33,7 +33,7 @@
 !
       integer(kind = kint), intent(in) :: id_check
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
 !
       integer(kind = kint) :: i_grp, ist, ied, inum
 !
@@ -59,7 +59,7 @@
 !
       integer(kind = kint), intent(in) :: id_check
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
 !
       integer(kind = kint) :: i_grp, ist, ied, inum
 !
@@ -126,7 +126,7 @@
       integer(kind = kint), intent(in) :: id_check
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(surface_group_normals), intent(in) :: sf_grp_v
 !
       integer(kind = kint) :: isurf, iele
 !
