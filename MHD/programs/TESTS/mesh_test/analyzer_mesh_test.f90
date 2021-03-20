@@ -56,7 +56,6 @@
       use element_file_IO
       use check_jacobians
       use int_volume_of_domain
-      use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
@@ -117,13 +116,6 @@
       call FEM_mesh_initialization(fem_T%mesh, fem_T%group)
       if(iflag_TOT_time) call end_elapsed_time(ied_total_elapsed)
       call calypso_MPI_barrier
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(fem_T%mesh%surf,                 &
-     &   fem_T%group%surf_grp, fem_T%group%tbls_surf_grp,               &
-     &   fem_T%group%surf_grp_geom)
 !
 !  -------------------------------
 !  -------------------------------

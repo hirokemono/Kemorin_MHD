@@ -55,8 +55,8 @@
       subroutine const_jacobian_volume_normals(id_rank, nprocs,         &
      &          mesh, group, spfs, jacs)
 !
+      use t_surface_group_normals
       use set_normal_vectors
-      use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use set_connects_4_surf_group
       use const_jacobians_3d

@@ -4,7 +4,7 @@ cal_mesh_position.o: $(MESH_TYPE_DIR)/cal_mesh_position.f90 m_precision.o t_geom
 	$(F90) -c $(F90OPTFLAGS) $<
 check_geometries.o: $(MESH_TYPE_DIR)/check_geometries.f90 m_precision.o m_machine_parameter.o t_geometry_data.o t_surface_data.o t_edge_data.o m_geometry_constants.o
 	$(F90) -c $(F90OPTFLAGS) $<
-check_surface_groups.o: $(MESH_TYPE_DIR)/check_surface_groups.f90 m_precision.o t_group_data.o t_surface_group_normals.o m_machine_parameter.o t_surface_group_connect.o t_geometry_data.o
+check_surface_groups.o: $(MESH_TYPE_DIR)/check_surface_groups.f90 m_precision.o m_machine_parameter.o t_group_data.o t_surface_group_connect.o t_geometry_data.o t_surface_group_normals.o
 	$(F90) -c $(F90OPTFLAGS) $<
 compare_mesh_structures.o: $(MESH_TYPE_DIR)/compare_mesh_structures.f90 m_precision.o m_machine_parameter.o t_comm_table.o t_geometry_data.o t_mesh_data.o m_phys_constants.o compare_indices.o copy_communication_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -120,6 +120,8 @@ t_surface_data.o: $(MESH_TYPE_DIR)/t_surface_data.f90 m_precision.o m_geometry_c
 	$(F90) -c $(F90OPTFLAGS) $<
 t_surface_group_connect.o: $(MESH_TYPE_DIR)/t_surface_group_connect.f90 m_precision.o m_machine_parameter.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_surface_group_normals.o: $(MESH_TYPE_DIR)/t_surface_group_normals.f90 m_precision.o
+t_surface_group_geometry.o: $(MESH_TYPE_DIR)/t_surface_group_geometry.f90 m_precision.o m_machine_parameter.o m_geometry_constants.o t_surface_data.o t_group_data.o t_group_connects.o t_surface_group_normals.o coordinate_converter.o
+	$(F90) -c $(F90OPTFLAGS) $<
+t_surface_group_normals.o: $(MESH_TYPE_DIR)/t_surface_group_normals.f90 m_precision.o m_machine_parameter.o t_surface_data.o t_group_data.o t_group_connects.o
 	$(F90) -c $(F90OPTFLAGS) $<
 

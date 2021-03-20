@@ -7,52 +7,32 @@
 !>   @brief Structure of geometry data for surface group
 !!
 !!@verbatim
-!!      subroutine alloc_surf_grp_type_geom(num_item, sf_grp_v)
 !!      subroutine alloc_vectors_surf_group                             &
 !!     &         (num_grp, num_item, sf_grp_v)
-!!      subroutine alloc_normal_sf_grp_type_sph(num_item, sf_grp_v)
-!!      subroutine alloc_normal_sf_grp_type_cyl(num_item, sf_grp_v)
+!!      subroutine dealloc_vectors_surf_group(sf_grp_v)
 !!         type(surface_group_data), intent(in) :: sf_grp
 !!         type(surface_group_normals), intent(inout) :: sf_grp_v
-!!
-!!      subroutine dealloc_surf_grp_type_geom(sf_grp_v)
-!!      subroutine dealloc_vectors_surf_group(sf_grp_v)
-!!      subroutine dealloc_normal_sf_grp_type_sph(sf_grp_v)
-!!      subroutine dealloc_normal_sf_grp_type_cyl(sf_grp_v)
 !!         type(surface_group_normals), intent(inout) :: sf_grp_v
+!!
+!!      subroutine pick_normal_of_surf_group                            &
+!!     &         (surf, sf_grp, sf_grp_tbl, sf_grp_v)
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_group_table), intent(in) :: sf_grp_tbl
+!!        type(surface_group_normals), intent(inout) :: sf_grp_v
 !!@endverbatim
 !
       module t_surface_group_normals
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit  none
 !
 !>   Structure of geometry data for surface group
       type surface_group_normals
-!>   position of surface group items
-        real(kind=kreal),   allocatable :: x_sf_grp(:,:)
-!
-!>   radius of surface group items
-        real(kind=kreal),   allocatable :: r_sf_grp(:)
-!>   colatitude of surface group items
-        real(kind=kreal),   allocatable :: theta_sf_grp(:)
-!>   longitude of surface group items
-        real(kind=kreal),   allocatable :: phi_sf_grp(:)
-!>   cylindrical radius of surface group items
-        real(kind=kreal),   allocatable :: s_sf_grp(:)
-!>   1 / r_sf_grp
-        real(kind=kreal),   allocatable :: ar_sf_grp(:)
-!>   1 / s_sf_grp
-        real(kind=kreal),   allocatable :: as_sf_grp(:)
-!
-!
 !>   normal vector of surface group items
         real(kind=kreal),   allocatable :: vnorm_sf_grp(:,:)
-!>   normal vector of surface group items (spherical coordinate)
-        real(kind=kreal),   allocatable :: vnorm_sf_grp_sph(:,:)
-!>   normal vector of surface group items (cylindrical coordinate)
-        real(kind=kreal),   allocatable :: vnorm_sf_grp_cyl(:,:)
 !>   area of surface group items
         real(kind=kreal),   allocatable :: area_sf_grp(:)
 !>   1 / area_sf_grp
@@ -62,38 +42,11 @@
         real(kind=kreal),   allocatable :: tot_area_sf_grp(:)
       end type surface_group_normals
 !
+      private :: pick_vect_by_surf_grp_w_side, pick_scalar_by_surf_grp
+!
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_surf_grp_type_geom(num_item, sf_grp_v)
-!
-      integer(kind = kint), intent(in) :: num_item
-      type(surface_group_normals), intent(inout) :: sf_grp_v
-!
-!
-      allocate(sf_grp_v%x_sf_grp    (num_item,3) )
-      allocate(sf_grp_v%r_sf_grp    (num_item)   )
-      allocate(sf_grp_v%theta_sf_grp(num_item)   )
-      allocate(sf_grp_v%phi_sf_grp  (num_item)   )
-      allocate(sf_grp_v%s_sf_grp    (num_item)   )
-      allocate(sf_grp_v%ar_sf_grp   (num_item)   )
-      allocate(sf_grp_v%as_sf_grp   (num_item)   )
-!
-      if( num_item .gt. 0) then
-        sf_grp_v%x_sf_grp =     0.0d0
-!
-        sf_grp_v%r_sf_grp =     0.0d0
-        sf_grp_v%theta_sf_grp = 0.0d0
-        sf_grp_v%phi_sf_grp =   0.0d0
-        sf_grp_v%s_sf_grp =     0.0d0
-        sf_grp_v%ar_sf_grp =    0.0d0
-        sf_grp_v%as_sf_grp =    0.0d0
-      end if
-!
-      end subroutine alloc_surf_grp_type_geom
 !
 ! -----------------------------------------------------------------------
 !
@@ -121,47 +74,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_normal_sf_grp_type_sph(num_item, sf_grp_v)
-!
-      integer(kind = kint), intent(in) :: num_item
-      type(surface_group_normals), intent(inout) :: sf_grp_v
-!
-!
-      allocate( sf_grp_v%vnorm_sf_grp_sph(num_item,3) )
-      if(num_item .gt. 0) sf_grp_v%vnorm_sf_grp_sph = 0.0d0
-!
-      end subroutine alloc_normal_sf_grp_type_sph
-!
-!-----------------------------------------------------------------------
-!
-      subroutine alloc_normal_sf_grp_type_cyl(num_item, sf_grp_v)
-!
-      integer(kind = kint), intent(in) :: num_item
-      type(surface_group_normals), intent(inout) :: sf_grp_v
-!
-!
-      allocate( sf_grp_v%vnorm_sf_grp_cyl(num_item,3) )
-      if(num_item .gt. 0) sf_grp_v%vnorm_sf_grp_cyl = 0.0d0
-!
-      end subroutine alloc_normal_sf_grp_type_cyl
-!
-!-----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_surf_grp_type_geom(sf_grp_v)
-!
-      type(surface_group_normals), intent(inout) :: sf_grp_v
-!
-!
-      deallocate(sf_grp_v%x_sf_grp)
-      deallocate(sf_grp_v%r_sf_grp    , sf_grp_v%ar_sf_grp )
-      deallocate(sf_grp_v%theta_sf_grp, sf_grp_v%phi_sf_grp)
-      deallocate(sf_grp_v%s_sf_grp    , sf_grp_v%as_sf_grp )
-!
-      end subroutine dealloc_surf_grp_type_geom
-!
-! -----------------------------------------------------------------------
-!
        subroutine dealloc_vectors_surf_group(sf_grp_v)
 !
       type(surface_group_normals), intent(inout) :: sf_grp_v
@@ -175,26 +87,124 @@
       end subroutine dealloc_vectors_surf_group
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine dealloc_normal_sf_grp_type_sph(sf_grp_v)
+      subroutine pick_normal_of_surf_group                              &
+     &         (surf, sf_grp, sf_grp_tbl, sf_grp_v)
 !
+      use t_surface_data
+      use t_group_data
+      use t_group_connects
+!
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_group_table), intent(in) :: sf_grp_tbl
       type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
-      deallocate( sf_grp_v%vnorm_sf_grp_sph )
+      call alloc_vectors_surf_group                                     &
+     &   (sf_grp%num_grp, sf_grp%num_item, sf_grp_v)
 !
-      end subroutine dealloc_normal_sf_grp_type_sph
+      if (sf_grp%num_grp .le. 0) return
+!
+      call pick_vect_by_surf_grp_w_side                                 &
+     &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%num_grp_smp,          &
+     &    sf_grp%istack_grp_smp, sf_grp_tbl%isurf_grp,                  &
+     &    surf%numsurf, surf%vnorm_surf, sf_grp_v%vnorm_sf_grp)
+!
+      call pick_scalar_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%area_surf,           &
+     &    sf_grp_v%area_sf_grp)
+      call pick_scalar_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%a_area_surf,         &
+     &    sf_grp_v%a_area_sf_grp)
+!
+      end subroutine pick_normal_of_surf_group
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,    &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
+!
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: num_surf_smp
+      integer(kind = kint), intent(in)                                  &
+     &                 :: isurf_grp_smp_stack(0:num_surf_smp)
+      integer (kind = kint), intent(in) :: isurf_grp(num_surf_bc)
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf,3)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+!
+      integer (kind = kint) :: i_grp, ip, i, ist, ied, inum, isurf
+      real(kind = kreal) :: side
+!
+!
+      do i_grp = 1, num_surf
+!
+!$omp parallel do private(i,ist,ied,inum,isurf)
+        do ip = 1, np_smp
+          i = (i_grp-1)*np_smp + ip
+          ist = isurf_grp_smp_stack(i-1) + 1
+          ied = isurf_grp_smp_stack(i)
+!
+!poption parallel
+          do inum = ist, ied
+            isurf = abs( isurf_grp(inum) )
+            side =  dble(isurf_grp(inum) / isurf)
+            x_sf_grp(inum,1) = x_surf(isurf,1) * side
+            x_sf_grp(inum,2) = x_surf(isurf,2) * side
+            x_sf_grp(inum,3) = x_surf(isurf,3) * side
+          end do
+        end do
+!poption parallel
+      end do
+!
+      end subroutine pick_vect_by_surf_grp_w_side
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_normal_sf_grp_type_cyl(sf_grp_v)
+      subroutine pick_scalar_by_surf_grp(num_surf, num_surf_bc,         &
+     &          num_surf_smp, isurf_grp_smp_stack, isurf_grp,           &
+     &          numsurf, x_surf, x_sf_grp)
 !
-      type(surface_group_normals), intent(inout) :: sf_grp_v
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: num_surf_smp
+      integer(kind = kint), intent(in)                                  &
+     &                 :: isurf_grp_smp_stack(0:num_surf_smp)
+      integer(kind = kint), intent(in) :: isurf_grp(num_surf_bc)
+!
+      integer(kind = kint), intent(in) :: numsurf
+      real(kind=kreal), intent(in) :: x_surf(numsurf)
+!
+      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc)
+!
+      integer (kind = kint) :: i_grp, ip, i, ist, ied, inum, isurf
 !
 !
-      deallocate( sf_grp_v%vnorm_sf_grp_cyl )
+      do i_grp = 1, num_surf
 !
-      end subroutine dealloc_normal_sf_grp_type_cyl
+!$omp parallel do private(i,ist,ied,inum,isurf)
+        do ip = 1, np_smp
+          i = (i_grp-1)*np_smp + ip
+          ist = isurf_grp_smp_stack(i-1) + 1
+          ied = isurf_grp_smp_stack(i)
+!
+!poption parallel
+          do inum = ist, ied
+            isurf = abs( isurf_grp(inum) )
+            x_sf_grp(inum) = x_surf(isurf)
+          end do
+        end do
+!poption parallel
+      end do
+!
+      end subroutine pick_scalar_by_surf_grp
 !
 !-----------------------------------------------------------------------
 !

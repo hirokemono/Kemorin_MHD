@@ -36,7 +36,6 @@
 !
 !
       use position_of_each_surface
-      use set_surf_grp_vectors
       use set_connects_4_surf_group
       use sum_normal_4_surf_group
 !

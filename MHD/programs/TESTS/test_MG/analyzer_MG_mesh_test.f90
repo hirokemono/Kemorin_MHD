@@ -41,7 +41,6 @@
       use set_edge_data_4_IO
       use check_jacobians
       use int_volume_of_domain
-      use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
@@ -82,13 +81,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, fem_MG%mesh, fem_MG%group)
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(fem_MG%mesh%surf,                &
-     &    fem_MG%group%surf_grp, fem_MG%group%tbls_surf_grp,            &
-     &    fem_MG%group%surf_grp_geom)
 !
 !  -------------------------------
 !  -------------------------------

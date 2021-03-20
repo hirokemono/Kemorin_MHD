@@ -80,7 +80,6 @@
       use check_jacobians
       use int_volume_of_domain
       use int_element_length
-      use set_surf_grp_vectors
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
@@ -133,12 +132,6 @@
       call alloc_vectors_surf_group                                     &
      &  (fem_f%group%surf_grp%num_grp, fem_f%group%surf_grp%num_item,   &
      &   fem_f%group%surf_grp_geom)
-!
-      if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
-     &   write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry                                  &
-     &   (fem_f%mesh%surf, fem_f%group%surf_grp,                        &
-     &    fem_f%group%tbls_surf_grp, fem_f%group%surf_grp_geom)
 !
 !  -------------------------------
 !  -------------------------------

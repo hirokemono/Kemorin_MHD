@@ -16,7 +16,7 @@
       real(kind= kreal), allocatable :: area_sf_grp_l(:)
       real(kind= kreal), allocatable :: area_grp_smp(:)
 !
-      private :: area_sf_grp_l, area_grp_smp
+      private :: area_sf_grp_l, area_grp_smp, sum_norm_of_surf_group
 !
 ! ----------------------------------------------------------------------
 !

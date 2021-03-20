@@ -43,7 +43,6 @@
       use nod_phys_send_recv
       use int_volume_of_domain
       use set_normal_vectors
-      use set_surf_grp_vectors
       use output_parallel_ucd_file
       use const_mesh_information
       use const_element_comm_tables

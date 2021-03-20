@@ -40,7 +40,6 @@
       use nod_phys_send_recv
       use int_volume_of_domain
       use set_normal_vectors
-      use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
       use parallel_ucd_IO_select

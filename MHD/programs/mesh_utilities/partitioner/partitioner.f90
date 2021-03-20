@@ -47,8 +47,6 @@
       use const_mesh_information
 !
       use int_volume_of_single_domain
-      use set_surf_grp_vectors
-!
       use mesh_IO_select
       use set_nnod_4_ele_by_type
 !
@@ -174,13 +172,6 @@
         write(*,*) 'isf_4_ele', size(org_fem%mesh%surf%isf_4_ele)
         write(*,*) 'iele_4_surf', size(org_fem%mesh%surf%iele_4_surf)
       end if
-!
-!  -------------------------------
-!
-!      if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-!      call pick_surface_group_geometry(org_fem%mesh%surf,              &
-!     &   org_fem%group%surf_grp, org_fem%group%tbls_surf_grp,          &
-!     &   org_fem%group%surf_grp_geom)
 !
 !  -------------------------------
 !  ========= compute element volume ===============
