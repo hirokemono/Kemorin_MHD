@@ -46,17 +46,17 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group(mesh%surf, group%surf_grp,         &
-     &   group%tbls_surf_grp, group%surf_grp_geom)
+     &   group%tbls_surf_grp, group%surf_grp_norm)
 !
       if (group%surf_grp%num_grp .le. 0) return
 !
       if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
       call s_sum_normal_4_surf_group                                    &
-     &   (mesh%ele, group%surf_grp, group%surf_grp_geom)
+     &   (mesh%ele, group%surf_grp, group%surf_grp_norm)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
       call cal_surf_normal_at_nod(mesh%node, mesh%ele, mesh%surf,       &
-     &   group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
+     &   group%surf_grp, group%surf_grp_norm, group%surf_nod_grp)
 !
 !
       call alloc_int_surf_data                                          &

@@ -131,7 +131,7 @@
      &   write(*,*) 'alloc_vectors_surf_group'
       call alloc_vectors_surf_group                                     &
      &  (fem_f%group%surf_grp%num_grp, fem_f%group%surf_grp%num_item,   &
-     &   fem_f%group%surf_grp_geom)
+     &   fem_f%group%surf_grp_norm)
 !
 !  -------------------------------
 !  -------------------------------

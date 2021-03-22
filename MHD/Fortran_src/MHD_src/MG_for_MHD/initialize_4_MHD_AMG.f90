@@ -258,7 +258,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp,               &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_geom,              &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm,              &
      &      MHD_prop, MHD_BC, MGCG_MHD_FEM%MG_surf_bc(i_level) )
 !
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'

@@ -108,7 +108,7 @@
 !
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
-     &    group%surf_grp, group%surf_grp_geom, pvr_param%draw_param,    &
+     &    group%surf_grp, group%surf_grp_norm, pvr_param%draw_param,    &
      &    pvr_param%view, pvr_proj%projection_mat, pvr_param%pixel,     &
      &    pvr_proj%bound, pvr_proj%screen, pvr_proj%start_pt)
       call const_pvr_stencil_buffer                                     &
@@ -189,7 +189,7 @@
       call dealloc_pvr_stencil_buffer(pvr_proj%stencil)
 !
       call transfer_to_screen(mesh%node, mesh%ele, mesh%surf,           &
-     &    group%surf_grp, group%surf_grp_geom,                          &
+     &    group%surf_grp, group%surf_grp_norm,                          &
      &    pvr_param%draw_param, pvr_param%view,                         &
      &    pvr_proj%projection_mat, pvr_param%pixel,  pvr_proj%bound,    &
      &    pvr_proj%screen, pvr_proj%start_pt)

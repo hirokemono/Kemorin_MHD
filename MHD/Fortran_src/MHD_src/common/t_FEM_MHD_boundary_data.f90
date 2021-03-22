@@ -93,7 +93,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_bc_surface_data'
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, mesh%surf,                        &
-     &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
+     &    group%surf_grp, group%surf_nod_grp, group%surf_grp_norm,      &
      &    MHD_prop, MHD_BC, FEM_MHD_BCs%surf_bcs)
 !
 !     set normal velocity
