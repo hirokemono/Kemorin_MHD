@@ -24,9 +24,7 @@
 !!      subroutine eb_spherical(part_p, nnod, inter_nod,                &
 !!     &          radius, colatitude, longitude, nod_d_grp)
 !!      subroutine eb_spherical_w_egrp(part_p, nnod, inter_nod, num_mat,&
-!!     &          mat_name, ntot_node_ele_grp, inod_stack_ele_grp,      &
-!!     &          inod_ele_grp, radius, colatitude, longitude,          &
-!!     &          nod_d_grp)
+!!     &          mat_name, radius, colatitude, longitude, nod_d_grp)
 !!        type(ctl_param_partitioner), intent(in) :: part_p
 !!        type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
@@ -238,17 +236,14 @@
 !   --------------------------------------------------------------------
 !
       subroutine eb_spherical_w_egrp(part_p, nnod, inter_nod, num_mat,  &
-     &          mat_name, ntot_node_ele_grp, inod_stack_ele_grp,        &
-     &          inod_ele_grp, radius, colatitude, longitude,            &
-     &          nod_d_grp)
+     &          mat_name, radius, colatitude, longitude, nod_d_grp)
+!
+      use t_element_group_table
 !
       type(ctl_param_partitioner), intent(in) :: part_p
       integer(kind = kint), intent(in) :: nnod, inter_nod
 !
-      integer(kind = kint), intent(in) :: num_mat, ntot_node_ele_grp
-      integer(kind = kint), intent(in) :: inod_stack_ele_grp(0:num_mat)
-      integer(kind = kint), intent(in)                                  &
-     &                     :: inod_ele_grp(ntot_node_ele_grp)
+      integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
 !
       real(kind= kreal), intent(in) :: radius(nnod)
@@ -257,6 +252,11 @@
 !
       type(domain_group_4_partition), intent(inout) :: nod_d_grp
 !
+      type(element_group_table) :: ele_grp_tbl
+!
+!
+      call const_element_group_table                                    &
+     &   (node, ele, surf, edge, ele_grp, ele_grp_tbl)
 !C
 !C +-----+
 !C | EB  |
@@ -267,14 +267,15 @@
       nod_d_grp%IGROUP(1:nnod)= 0
       nod_d_grp%IGROUP(1:inter_nod)= 1
 
-      call s_sort_by_position_w_grp                                     &
-     &   (inter_nod, part_p%ndivide_eb, num_mat,                        &
-     &    mat_name, ntot_node_ele_grp, inod_stack_ele_grp,              &
-     &    inod_ele_grp, part_p%num_egrp_layer, part_p%grp_layer_name,   &
+      call s_sort_by_position_w_grp(inter_nod, part_p%ndivide_eb,       &
+     &    num_mat, mat_name, ele_grp_tbl%node%ntot_e_grp,               &
+     &    ele_grp_tbl%node%istack_e_grp, ele_grp_tbl%node%item_e_grp,   &
+     &    part_p%num_egrp_layer, part_p%grp_layer_name,                 &
      &    nod_d_grp%IGROUP, radius(1), colatitude(1), longitude(1),     &
      &    part_comm%VAL, part_comm%IS1)
 !
       call dealloc_work_4_rcb(part_comm)
+      call dealloc_element_group_table(ele_grp_tbl)
 !
       end subroutine eb_spherical_w_egrp
 !

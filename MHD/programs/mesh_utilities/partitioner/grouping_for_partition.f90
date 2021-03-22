@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine grouping_for_partitioner                             &
 !!     &         (node, ele, edge, nod_grp, ele_grp,                    &
-!!     &          ele_grp_data, node_volume, part_p, domain_grp)
+!!     &          node_volume, part_p, domain_grp)
 !!        type(domain_groups_4_partitioner), intent(inout)  :: domain_grp
 !!      subroutine regrouping_for_partition(part_p, node, ele,          &
 !!      &         part_tbl, part_volume, n_volume, domain_grp)
@@ -33,7 +33,7 @@
 !
       subroutine grouping_for_partitioner                               &
      &         (node, ele, edge, nod_grp, ele_grp,                      &
-     &          ele_grp_data, node_volume, part_p, domain_grp)
+     &          node_volume, part_p, domain_grp)
 !
       use m_constants
       use m_error_IDs
@@ -59,7 +59,6 @@
       type(edge_data), intent(in) :: edge
       type(group_data), intent(in) :: nod_grp
       type(group_data), intent(in) :: ele_grp
-      type(element_group_table), intent(in) :: ele_grp_data
       real(kind = kreal), intent(in) :: node_volume(node%numnod)
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
@@ -112,8 +111,6 @@
         call eb_spherical_w_egrp                                        &
      &   (part_p, node%numnod, node%internal_node,                      &
      &    ele_grp%num_grp, ele_grp%grp_name,                            &
-     &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
-     &    ele_grp_data%node%item_e_grp,                                 &
      &    node%rr, node%theta, node%phi, domain_grp%nod_d_grp)
 !
 !

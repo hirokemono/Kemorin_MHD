@@ -72,9 +72,6 @@
 !>     Structure for grometry data for surface group
         type (surface_group_normals) ::  surf_grp_norm
 !
-!>     Structure for element group connectivity
-        type (element_group_table) ::    tbls_ele_grp
-!
 !>     Structure for infinity surface
         type (scalar_surf_BC_list) ::    infty_grp
       end type mesh_groups
@@ -119,11 +116,6 @@
 !
       call dealloc_num_surf_grp_nod_smp(group%surf_nod_grp)
       call dealloc_surf_grp_nod(group%surf_nod_grp)
-!
-      call dealloc_grp_connect(group%tbls_ele_grp%surf)
-      call dealloc_grp_connect(group%tbls_ele_grp%edge)
-      call dealloc_grp_connect(group%tbls_ele_grp%node)
-!
 !
       call dealloc_surface_geometory(mesh%surf)
       call dealloc_edge_geometory(mesh%edge)

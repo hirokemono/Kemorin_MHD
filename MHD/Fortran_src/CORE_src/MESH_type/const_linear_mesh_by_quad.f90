@@ -48,6 +48,7 @@
      &          mesh_l, group_l, nod_fld_l)
 !
       use t_surface_data
+      use t_element_group_table
 !
       use const_mesh_information
       use cvt_quad_2_linear_mesh
@@ -90,11 +91,6 @@
       call construct_edge_data(mesh_l%node,                             &
      &    mesh_l%ele, mesh_l%surf, mesh_l%edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_element_group_type_info'
-      call const_element_group_type_info                                &
-     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
-     &    group_l%ele_grp, group_l%tbls_ele_grp)
-!
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
 !
@@ -107,6 +103,7 @@
       subroutine const_linear_data_by_lag_data                          &
      &         (mesh_q, group_q, mesh_l, group_l)
 !
+      use t_element_group_table
       use const_surface_data
       use const_edge_data
       use const_mesh_information
@@ -141,11 +138,6 @@
      &    mesh_l%ele, mesh_l%surf)
       call construct_edge_data(mesh_l%node,                             &
      &    mesh_l%ele, mesh_l%surf, mesh_l%edge)
-!
-      if (iflag_debug.eq.1) write(*,*) 'const_element_group_type_info'
-      call const_element_group_type_info                                &
-     &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
-     &    group_l%ele_grp, group_l%tbls_ele_grp)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)

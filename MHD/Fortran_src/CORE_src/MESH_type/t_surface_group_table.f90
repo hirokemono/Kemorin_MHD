@@ -28,6 +28,7 @@
       use t_group_data
       use t_surface_data
       use t_edge_data
+      use t_group_connects
 !
       implicit  none
 !

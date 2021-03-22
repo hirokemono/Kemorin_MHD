@@ -32,17 +32,6 @@
         integer(kind=kint), allocatable :: item_e_grp(:)
       end type group_connect_data
 !
-!
-!>   Structure of connectivities for element group
-      type element_group_table
-!>   local surface connectivity for element group
-        type(group_connect_data) :: surf
-!>   local edge connectivity for element group
-        type(group_connect_data) :: edge
-!>   local node connectivity for element group
-        type(group_connect_data) :: node
-      end type element_group_table
-!
 !-----------------------------------------------------------------------
 !
       contains

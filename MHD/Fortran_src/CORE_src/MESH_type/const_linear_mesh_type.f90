@@ -26,7 +26,6 @@
 !!        type(group_data), intent(in) :: nod_grp_q
 !!        type(group_data), intent(in) :: ele_grp_q
 !!        type(surface_group_data), intent(in) :: sf_grp_q
-!!        type(element_group_table), intent(in) :: ele_grp_tbl_q
 !!@endverbatim
 !
       module const_linear_mesh_type
