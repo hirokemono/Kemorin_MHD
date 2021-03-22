@@ -17,7 +17,7 @@
 !!      subroutine dealloc_mesh_type(mesh)
 !!      subroutine dealloc_mesh_geometry_base(mesh)
 !!      subroutine dealloc_groups_data(group)
-!!      subroutine dealloc_ele_surf_edge_type(mesh)
+!!      subroutine dealloc_surf_edge(mesh)
 !!      subroutine check_mesh_smp_size(id_rank, mesh)
 !!      subroutine check_surf_edge_smp_size(mesh)
 !!
@@ -126,10 +126,7 @@
       call dealloc_edge_param_smp(mesh%edge)
       call dealloc_surf_param_smp(mesh%surf)
 !
-      call dealloc_edge_4_ele(mesh%edge)
-      call dealloc_edge_connect(mesh%edge)
-      call dealloc_surface_connect(mesh%surf)
-      call dealloc_ele_4_surf_type(mesh%surf)
+      call dealloc_surf_edge(mesh)
 !
       call dealloc_nod_ele_infos(mesh)
 !
@@ -235,17 +232,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_ele_surf_edge_type(mesh)
+      subroutine dealloc_surf_edge(mesh)
 !
       type(mesh_geometry), intent(inout) :: mesh
 !
 !
+      call dealloc_ele_4_surf_type(mesh%surf)
       call dealloc_surface_connect(mesh%surf)
 !
       call dealloc_edge_connect(mesh%edge)
       call dealloc_edge_4_ele(mesh%edge)
 !
-      end subroutine dealloc_ele_surf_edge_type
+      end subroutine dealloc_surf_edge
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
