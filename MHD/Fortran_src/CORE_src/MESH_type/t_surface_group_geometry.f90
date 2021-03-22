@@ -64,7 +64,6 @@
       use t_surface_data
       use t_group_data
       use t_group_connects
-      use t_surface_group_normals
 !
       use coordinate_converter
 !
