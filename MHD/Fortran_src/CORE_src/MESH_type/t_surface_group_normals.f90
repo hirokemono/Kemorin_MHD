@@ -14,10 +14,12 @@
 !!         type(surface_group_normals), intent(inout) :: sf_grp_v
 !!
 !!      subroutine pick_normal_of_surf_group                            &
-!!     &         (surf, sf_grp, sf_grp_tbl, sf_grp_v)
+!!     &         (node, ele, surf, edge, sf_grp, sf_grp_v)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(edge_data),    intent(in) :: edge
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(surface_group_table), intent(in) :: sf_grp_tbl
 !!        type(surface_group_normals), intent(inout) :: sf_grp_v
 !!@endverbatim
 !
@@ -89,22 +91,32 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pick_normal_of_surf_group                              &
-     &         (surf, sf_grp, sf_grp_tbl, sf_grp_v)
+     &         (node, ele, surf, edge, sf_grp, sf_grp_v)
 !
-      use t_surface_data
+      use t_geometry_data
       use t_group_data
+      use t_surface_data
+      use t_edge_data
       use t_group_connects
+      use t_surface_group_table
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(edge_data),    intent(in) :: edge
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_table), intent(in) :: sf_grp_tbl
       type(surface_group_normals), intent(inout) :: sf_grp_v
+!
+      type(surface_group_table) :: sf_grp_tbl
 !
 !
       call alloc_vectors_surf_group                                     &
      &   (sf_grp%num_grp, sf_grp%num_item, sf_grp_v)
 !
       if (sf_grp%num_grp .le. 0) return
+!
+      call const_surface_group_table                                    &
+     &   (node, ele, surf, edge, surf_grp, sf_grp_tbl)
 !
       call pick_vect_by_surf_grp_w_side                                 &
      &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%num_grp_smp,          &
@@ -119,6 +131,7 @@
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%a_area_surf,         &
      &    sf_grp_v%a_area_sf_grp)
+      call dealloc_surf_item_sf_grp(sf_grp_tbl)
 !
       end subroutine pick_normal_of_surf_group
 !

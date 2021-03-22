@@ -1,8 +1,12 @@
-!const_linear_mesh_type.f90
-!      module const_linear_mesh_type
+!>@file   const_linear_mesh_type.f90
+!!@brief  module const_linear_mesh_type
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2006
 !
-!      Written by H. Matsui on Apr., 2006
-!
+!> @brief Construct tri-linear mesh informations
+!!
+!!@verbatim
 !!      subroutine const_linear_mesh_type_by_t                          &
 !!     &         (femmesh_q, nod_fld_q, femmesh_l)
 !!      subroutine set_linear_type_phys_from_t                          &
@@ -23,7 +27,7 @@
 !!        type(group_data), intent(in) :: ele_grp_q
 !!        type(surface_group_data), intent(in) :: sf_grp_q
 !!        type(element_group_table), intent(in) :: ele_grp_tbl_q
-!!        type(surface_group_table), intent(in) :: sf_grp_tbl_q
+!!@endverbatim
 !
       module const_linear_mesh_type
 !

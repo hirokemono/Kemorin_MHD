@@ -7,11 +7,9 @@
 !>@brief Structure of connectivity data for group items
 !!
 !!@verbatim
-!!      subroutine alloc_surf_item_sf_grp_type(nitem_grp, sf_grp_data)
 !!      subroutine alloc_num_other_grp(num_grp, e_grp)
 !!      subroutine alloc_item_other_grp(e_grp)
 !!
-!!      subroutine dealloc_surf_item_sf_grp_type(sf_grp_data)
 !!      subroutine dealloc_grp_connect(e_grp)
 !!@endverbatim
 !
@@ -45,39 +43,9 @@
         type(group_connect_data) :: node
       end type element_group_table
 !
-!
-!>   Structure of connectivities for surface group
-      type surface_group_table
-!>   local surface ID for surface group
-        integer(kind=kint), allocatable :: isurf_grp(:)
-!>   local surface ID for opposite side of surface group
-        integer(kind=kint), allocatable :: isurf_grp_n(:)
-!
-!>   local edge connectivity for surface group
-        type(group_connect_data) :: edge
-      end type surface_group_table
-!
-!
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine alloc_surf_item_sf_grp_type(nitem_grp, sf_grp_data)
-!
-      integer(kind = kint), intent(in) :: nitem_grp
-      type(surface_group_table), intent(inout) :: sf_grp_data
-!
-      allocate(sf_grp_data%isurf_grp(nitem_grp)  )
-      allocate(sf_grp_data%isurf_grp_n(nitem_grp))
-!
-      if(nitem_grp .gt. 0) then
-        sf_grp_data%isurf_grp =   0
-        sf_grp_data%isurf_grp_n = 0
-      end if
-!
-      end subroutine alloc_surf_item_sf_grp_type
 !
 !-----------------------------------------------------------------------
 !
@@ -107,17 +75,6 @@
       end subroutine alloc_item_other_grp
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_surf_item_sf_grp_type(sf_grp_data)
-!
-      type(surface_group_table), intent(inout) :: sf_grp_data
-!
-      deallocate(sf_grp_data%isurf_grp  )
-      deallocate(sf_grp_data%isurf_grp_n)
-!
-      end subroutine dealloc_surf_item_sf_grp_type
-!
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_grp_connect(e_grp)

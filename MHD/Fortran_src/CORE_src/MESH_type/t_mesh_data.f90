@@ -74,8 +74,6 @@
 !
 !>     Structure for element group connectivity
         type (element_group_table) ::    tbls_ele_grp
-!>     Structure for surface group connectivity
-        type (surface_group_table) ::    tbls_surf_grp
 !
 !>     Structure for infinity surface
         type (scalar_surf_BC_list) ::    infty_grp
@@ -119,8 +117,6 @@
       type(mesh_groups), intent(inout) ::   group
 !
 !
-      call dealloc_grp_connect(group%tbls_surf_grp%edge)
-      call dealloc_surf_item_sf_grp_type(group%tbls_surf_grp)
       call dealloc_num_surf_grp_nod_smp(group%surf_nod_grp)
       call dealloc_surf_grp_nod(group%surf_nod_grp)
 !

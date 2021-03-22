@@ -66,8 +66,6 @@
 !
 !>     Structure for element group connectivity
         type (element_group_table), pointer :: tbls_ele_grp
-!>     Structure for surface group connectivity
-        type (surface_group_table), pointer :: tbls_surf_grp
 !
 !>     Structure for infinity surface
         type (scalar_surf_BC_list) ::    infty_grp
@@ -120,7 +118,6 @@
       allocate(group_p%surf_grp)
 !
       allocate(group_p%tbls_ele_grp)
-      allocate(group_p%tbls_surf_grp)
 !
       end subroutine init_mesh_group_type
 !
@@ -131,7 +128,7 @@
       type(mesh_groups_p), intent(inout) :: group_p
 !
       deallocate(group_p%nod_grp, group_p%ele_grp, group_p%surf_grp)
-      deallocate(group_p%tbls_surf_grp, group_p%tbls_ele_grp)
+      deallocate(group_p%tbls_ele_grp)
 !
       end subroutine finalize_mesh_group_type
 !
@@ -181,7 +178,6 @@
       group_p%surf_grp => group_org%surf_grp
 !
       group_p%tbls_ele_grp =>  group_org%tbls_ele_grp
-      group_p%tbls_surf_grp => group_org%tbls_surf_grp
 !
       end subroutine link_pointer_mesh
 !
@@ -194,7 +190,7 @@
       type(mesh_groups_p), intent(inout) :: group_p
 !
 !
-      nullify(group_p%tbls_ele_grp, group_p%tbls_surf_grp)
+      nullify(group_p%tbls_ele_grp)
       nullify(group_p%surf_grp, group_p%ele_grp, group_p%nod_grp)
 
       nullify(mesh_p%surf, mesh_p%edge)
@@ -337,11 +333,10 @@
 !      end if
 !
 !
-       if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
-      call const_group_type_info                                        &
+       if (iflag_debug.eq.1) write(*,*) 'const_element_group_type_info'
+      call const_element_group_type_info                                &
      &   (mesh_p%node, mesh_p%ele, mesh_p%surf, mesh_p%edge,            &
-     &    group_p%ele_grp, group_p%surf_grp,                            &
-     &    group_p%tbls_ele_grp, group_p%tbls_surf_grp)
+     &    group_p%ele_grp, group_p%tbls_ele_grp)
 !
       call init_surface_and_edge_geometry                               &
      &   (mesh_p%node, mesh_p%surf, mesh_p%edge)

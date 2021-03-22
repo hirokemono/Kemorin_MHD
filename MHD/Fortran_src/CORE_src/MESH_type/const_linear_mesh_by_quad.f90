@@ -90,11 +90,10 @@
       call construct_edge_data(mesh_l%node,                             &
      &    mesh_l%ele, mesh_l%surf, mesh_l%edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_group_type_info'
-      call const_group_type_info                                        &
+      if (iflag_debug.eq.1) write(*,*) 'const_element_group_type_info'
+      call const_element_group_type_info                                &
      &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
-     &    group_l%ele_grp, group_l%surf_grp,                            &
-     &    group_l%tbls_ele_grp, group_l%tbls_surf_grp)
+     &    group_l%ele_grp, group_l%tbls_ele_grp)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)
@@ -143,11 +142,10 @@
       call construct_edge_data(mesh_l%node,                             &
      &    mesh_l%ele, mesh_l%surf, mesh_l%edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_group_type_info'
-      call const_group_type_info                                        &
+      if (iflag_debug.eq.1) write(*,*) 'const_element_group_type_info'
+      call const_element_group_type_info                                &
      &   (mesh_l%node, mesh_l%ele, mesh_l%surf, mesh_l%edge,            &
-     &    group_l%ele_grp, group_l%surf_grp,                            &
-     &    group_l%tbls_ele_grp, group_l%tbls_surf_grp)
+     &    group_l%ele_grp, group_l%tbls_ele_grp)
 !
       call count_size_4_smp_mesh(mesh_l%node, mesh_l%ele)
       call count_size_4_smp_surf_edge(mesh_l%surf, mesh_l%edge)

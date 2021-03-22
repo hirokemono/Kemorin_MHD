@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine pick_surface_group_geometry                          &
-!!     &         (surf, sf_grp, sf_grp_tbl, sf_grp_xyz)
+!!     &         (node, ele, surf, edge, sf_grp, sf_grp_xyz)
 !!      subroutine dealloc_surf_grp_geometory(sf_grp_xyz)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(edge_data),    intent(in) :: edge
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(surface_group_table), intent(in) :: sf_grp_tbl
 !!        type(surface_group_geometry), intent(inout) :: sf_grp_xyz
 !!
 !!      subroutine check_center_of_surface_grp                          &
@@ -58,20 +60,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pick_surface_group_geometry                            &
-     &         (surf, sf_grp, sf_grp_tbl, sf_grp_xyz)
+     &         (node, ele, surf, edge, sf_grp, sf_grp_xyz)
 !
       use m_geometry_constants
+      use t_geometry_data
       use t_surface_data
+      use t_edge_data
       use t_group_data
       use t_group_connects
+      use t_surface_group_table
 !
       use coordinate_converter
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(edge_data),    intent(in) :: edge
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_group_table), intent(in) :: sf_grp_tbl
       type(surface_group_geometry), intent(inout) :: sf_grp_xyz
 !
+      type(surface_group_table) :: sf_grp_tbl
+!
+!
+      call const_surface_group_table(node, ele, surf, edge,             &
+     &                               surf_grp, sf_grp_tbl)
 !
 !    set center of surface
       call alloc_surf_grp_geometory(sf_grp%num_item, sf_grp_xyz)
@@ -80,6 +92,7 @@
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    sf_grp_tbl%isurf_grp, surf%numsurf, surf%x_surf,              &
      &    sf_grp_xyz%x_sf_grp)
+      call dealloc_surf_item_sf_grp(sf_grp_tbl)
 !
       call position_2_sph                                               &
      &   (sf_grp%num_item, sf_grp_xyz%x_sf_grp, sf_grp_xyz%r_sf_grp,    &

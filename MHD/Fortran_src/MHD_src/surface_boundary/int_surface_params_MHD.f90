@@ -45,8 +45,9 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group(mesh%surf, group%surf_grp,         &
-     &   group%tbls_surf_grp, group%surf_grp_norm)
+      call pick_normal_of_surf_group                                    &
+     &   (mesh%node, mesh%ele, mesh%surf, mesh%edge,                    &
+     &    group%surf_grp, group%surf_grp_norm)
 !
       if (group%surf_grp%num_grp .le. 0) return
 !

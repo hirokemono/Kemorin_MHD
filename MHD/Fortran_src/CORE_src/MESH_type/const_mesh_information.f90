@@ -27,20 +27,15 @@
 !!        type(group_data), intent(inout) :: nod_grp
 !!        type(group_data), intent(inout) :: ele_grp
 !!        type(surface_group_data), intent(inout) :: surf_grp
-!!        type(element_group_table), intent(inout) :: tbls_ele_grp
-!!        type(surface_group_table), intent(inout) :: tbls_sf_grp
 !!
-!!      subroutine const_group_type_info                                &
-!!     &         (node, ele, surf, edge, ele_grp, surf_grp,             &
-!!     &          tbls_ele_grp, tbls_surf_grp)
+!!      subroutine const_element_group_type_info                        &
+!!     &         (node, ele, surf, edge, ele_grp, tbls_ele_grp)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data),    intent(inout) :: edge
 !!        type(group_data), intent(in) ::         ele_grp
-!!        type(surface_group_data), intent(in) :: surf_grp
 !!        type (element_group_table), intent(inout) :: tbls_ele_grp
-!!        type (surface_group_table), intent(inout) :: tbls_surf_grp
 !!@endverbatim
 !
       module const_mesh_information
@@ -83,6 +78,7 @@
 !
       call empty_surface_and_edge(mesh%ele, mesh%surf, mesh%edge)
 !
+      group%surf_grp%num_item = 0
       group%nod_grp%num_grp_smp =  0
       group%ele_grp%num_grp_smp =  0
       group%surf_grp%num_grp_smp = 0
@@ -96,11 +92,6 @@
       if (iflag_debug.eq.1) write(*,*) 'empty_sf_ed_nod_ele_grp_type'
       call empty_sf_ed_nod_ele_grp_type                                 &
      &   (group%ele_grp, group%tbls_ele_grp)
-!
-      group%surf_grp%num_item = 0
-      if (iflag_debug.eq.1) write(*,*) 'empty_sf_ed_nod_surf_grp_type'
-      call empty_sf_ed_nod_surf_grp_type                                &
-     &   (group%surf_grp, group%tbls_surf_grp)
 !
       end subroutine empty_mesh_info
 !
@@ -168,11 +159,10 @@
 !      end if
 !
 !     set surface and element group conectivity
-       if (iflag_debug.eq.1) write(*,*) 'const_group_connectiviy_1st'
-      call const_group_type_info                                        &
+       if (iflag_debug.eq.1) write(*,*) 'const_element_group_type_info'
+      call const_element_group_type_info                                &
      &   (mesh%node, mesh%ele, mesh%surf, mesh%edge,                    &
-     &    group%ele_grp, group%surf_grp,                                &
-     &    group%tbls_ele_grp, group%tbls_surf_grp)
+     &    group%ele_grp, group%tbls_ele_grp)
 !
       call init_surface_and_edge_geometry                               &
      &   (mesh%node, mesh%surf, mesh%edge)
@@ -238,9 +228,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_group_type_info                                  &
-     &         (node, ele, surf, edge, ele_grp, surf_grp,               &
-     &          tbls_ele_grp, tbls_surf_grp)
+      subroutine const_element_group_type_info                          &
+     &         (node, ele, surf, edge, ele_grp, tbls_ele_grp)
 !
       use set_connects_4_ele_group
       use set_connects_4_surf_group
@@ -250,10 +239,8 @@
       type(surface_data), intent(in) :: surf
       type(edge_data),    intent(in) :: edge
       type(group_data), intent(in) ::         ele_grp
-      type(surface_group_data), intent(in) :: surf_grp
 !
       type (element_group_table), intent(inout) :: tbls_ele_grp
-      type (surface_group_table), intent(inout) :: tbls_surf_grp
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_group'
@@ -265,14 +252,7 @@
        if (iflag_debug.eq.1) write(*,*) 'set_node_4_ele_group'
       call set_node_4_ele_group(ele, node, ele_grp, tbls_ele_grp)
 !
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_group'
-      call set_surf_id_4_surf_group(ele, surf, surf_grp, tbls_surf_grp)
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_group'
-      call set_edge_4_surf_group(surf, edge, surf_grp, tbls_surf_grp)
-!
-      end subroutine const_group_type_info
+      end subroutine const_element_group_type_info
 !
 ! ----------------------------------------------------------------------
 !
