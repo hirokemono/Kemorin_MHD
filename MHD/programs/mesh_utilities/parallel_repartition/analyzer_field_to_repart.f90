@@ -35,7 +35,8 @@
 !
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
-      type(calypso_comm_table), save :: org_to_new_tbl
+      type(calypso_comm_table), save :: repart_nod_tbl1
+      type(calypso_comm_table), save :: repart_ele_tbl1
 !
 !>      Structure for communicatiors for solver
       type(vectors_4_solver), save :: v_sol_T
@@ -100,8 +101,8 @@
 !
 !  -------------------------------
 !
-      call load_or_const_new_partition                                  &
-     &   (part_p1%repart_p, fem_T, new_fem, org_to_new_tbl)
+      call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
+     &    new_fem, repart_nod_tbl1, repart_ele_tbl1)
       call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
       call const_global_mesh_infos(new_fem%mesh)
 !
@@ -147,7 +148,7 @@
         if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+4)
         call udt_field_to_new_partition(iflag_import_item,              &
      &      istep_ucd, part_p1%repart_p%viz_ucd_file, t_IO,             &
-     &      new_fem%mesh, org_to_new_tbl, org_ucd, new_ucd, v_sol_T)
+     &      new_fem%mesh, repart_nod_tbl1, org_ucd, new_ucd, v_sol_T)
         if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+4)
 !
         call deallocate_ucd_phys_data(org_ucd)

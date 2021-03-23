@@ -29,14 +29,15 @@
 !
       implicit none
 !
-      character(len=kchara), parameter                                          &
+      character(len=kchara), parameter                                  &
      &     :: repart_test_name = 'repart_check.dat'
 !
       type(vol_partion_prog_param), save ::  part_p1
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
 !
-      type(calypso_comm_table), save :: org_to_new_tbl
+      type(calypso_comm_table), save :: repart_nod_tbl1
+      type(calypso_comm_table), save :: repart_ele_tbl1
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +90,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
       call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
-     &                              new_fem, org_to_new_tbl)
+     &    new_fem, repart_nod_tbl1, repart_ele_tbl1)
 !
       end subroutine initialize_reapart_by_vol
 !
@@ -104,6 +105,7 @@
       use m_file_format_switch
       use parallel_itp_tbl_IO_select
       use copy_repart_and_itp_table
+      use copy_repart_ele_and_itp_tbl
       use const_element_comm_tables
       use check_data_for_repartition
       use mesh_send_recv_check
@@ -111,8 +113,8 @@
       use nod_phys_send_recv
       use parallel_FEM_mesh_init
 !
-      type(calypso_comm_table) :: part_tbl_2
-      type(interpolate_table) :: itp_tbl_IO2
+      type(calypso_comm_table) :: part_nod_tbl2, repart_ele_tbl2
+      type(interpolate_table) :: itp_nod_tbl_IO, itp_ele_tbl_IO
 !
       type(communication_table), save :: T_ele_comm
       type(communication_table), save :: T_surf_comm
@@ -134,16 +136,21 @@
       end if
 !
 !
-      call sel_mpi_read_interpolate_table(my_rank, nprocs,              &
-     &    part_p1%repart_p%trans_tbl_file, itp_tbl_IO2, ierr)
+      call sel_mpi_read_dbl_itp_table                                   &
+     &   (my_rank, nprocs, part_p1%repart_p%trans_tbl_file,             &
+     &    itp_nod_tbl_IO, itp_ele_tbl_IO, ierr)
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
-     &    fem_T%mesh, new_fem%mesh, itp_tbl_IO2, part_tbl_2)
+     &    fem_T%mesh, new_fem%mesh, itp_nod_tbl_IO, part_nod_tbl2)
+      call copy_itp_tbl_to_repart_ele_tbl                               &
+     &   (irank_read, new_fem%mesh, itp_ele_tbl_IO, repart_ele_tbl2)
+      call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
+      call dealloc_itp_tbl_after_write(itp_ele_tbl_IO)
       call calypso_MPI_barrier
 !
       if(my_rank .eq. 0) write(*,*) 'check table reading...'
-      call compare_calypso_comm_tbls(org_to_new_tbl, part_tbl_2)
+      call compare_calypso_comm_tbls(repart_nod_tbl1, part_nod_tbl2)
       call calypso_MPI_barrier
       if(my_rank .eq. 0) write(*,*) 'check table reading end!'
 !
@@ -169,7 +176,7 @@
       if(my_rank .eq. 0) write(*,*) 'check communication table...'
       call node_transfer_test                                           &
      &   (fem_T%mesh%node, new_fem%mesh%node,  new_fem%mesh%nod_comm,   &
-     &    org_to_new_tbl, nod_check)
+     &    repart_nod_tbl1, nod_check)
 !
 !
       call ele_send_recv_test(new_fem%mesh%node, new_fem%mesh%ele,      &

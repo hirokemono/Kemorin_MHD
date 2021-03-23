@@ -44,7 +44,6 @@
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
       use itp_table_file_IO_select
-      use itp_work_file_IO_select
 !
       implicit none
 !
@@ -184,8 +183,6 @@
      &     (id_rank, table_file_IO, itp_tbl_IO)
       end if
 !
-      call dealloc_itp_tbl_after_write(itp_tbl_IO)
-!
       end subroutine sel_mpi_write_interpolate_table
 !
 !-----------------------------------------------------------------------
@@ -230,9 +227,6 @@
         call sel_write_dbl_interpolate_tbl                              &
      &     (id_rank, table_file_IO, itp_tbl1_IO, itp_tbl2_IO)
       end if
-!
-      call dealloc_itp_tbl_after_write(itp_tbl1_IO)
-      call dealloc_itp_tbl_after_write(itp_tbl2_IO)
 !
       end subroutine sel_mpi_write_dbl_itp_table
 !

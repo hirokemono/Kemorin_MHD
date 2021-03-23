@@ -188,9 +188,9 @@
         ied = tbl_org%istack_itp_type_org(itype  )
         ist_smp = np_smp * (itype-1)
         ied_smp = np_smp *  itype
-        call count_number_4_smp( np_smp, ist, ied,                      &
-     &        tbl_org%istack_tbl_type_org_smp(ist_smp:ied_smp),         &
-     &        tbl_org%imax_tbl_wtype_org_smp)
+        call count_number_4_smp(np_smp, ist, ied,                       &
+     &      tbl_org%istack_tbl_type_org_smp(ist_smp:ied_smp),           &
+     &      tbl_org%imax_tbl_wtype_org_smp)
       end do
 !
       end subroutine set_stack_tbl_wtype_org_smp

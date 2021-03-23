@@ -18,8 +18,15 @@
 !!        type(mesh_geometry), intent(in) :: org_mesh, dest_mesh
 !!        type(interpolate_table), intent(in) :: itp_info
 !!        type(calypso_comm_table), intent(inout) :: part_tbl
-!!      subroutine dealloc_itp_tbl_for_repart(itp_info)
-!!        type(interpolate_table), intent(inout) :: itp_info
+!!
+!!      subroutine copy_repart_import_to_itp_dest(part_tbl, itp_dest)
+!!        type(calypso_comm_table), intent(in) :: part_tbl
+!!        type(interpolate_table_dest), intent(inout) :: itp_dest
+!!      subroutine copy_itp_dest_to_repart_import                       &
+!!     &         (itp_dest, nnod, part_tbl)
+!!        integer(kind = kint), intent(in) :: nnod
+!!        type(interpolate_table_dest), intent(in) :: itp_dest
+!!        type(calypso_comm_table), intent(inout) :: part_tbl
 !!@endverbatim
 !
       module copy_repart_and_itp_table
@@ -39,9 +46,7 @@
       implicit none
 !
       private :: copy_repart_export_to_itp_org
-      private :: copy_repart_import_to_itp_dest
       private :: copy_itp_org_to_repart_export
-      private :: copy_itp_dest_to_repart_import
 !
 !-----------------------------------------------------------------------
 !
@@ -79,26 +84,11 @@
       call copy_itp_org_to_repart_export                                &
      &   (irank_read, itp_info%tbl_org, org_mesh%ele, part_tbl)
       call copy_itp_dest_to_repart_import                               &
-     &   (itp_info%tbl_dest, dest_mesh%node, part_tbl)
+     &   (itp_info%tbl_dest, dest_mesh%node%numnod, part_tbl)
 !
       end subroutine copy_itp_table_to_repart_tbl
 !
 !-----------------------------------------------------------------------
-!
-      subroutine dealloc_itp_tbl_for_repart(itp_info)
-!
-      type(interpolate_table), intent(inout) :: itp_info
-!
-!
-      call dealloc_itp_table_dest(itp_info%tbl_dest)
-      call dealloc_itp_num_dest(itp_info%tbl_dest)
-!
-      call dealloc_itp_table_org(itp_info%tbl_org)
-      call dealloc_itp_num_org(itp_info%tbl_org)
-!
-      end subroutine dealloc_itp_tbl_for_repart
-!
-!------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine copy_repart_export_to_itp_org                          &
@@ -130,7 +120,7 @@
       end if
 !
       itp_org%istack_itp_type_org(0) =   0
-      itp_org%istack_itp_type_org(1:4) = part_tbl%ntot_import
+      itp_org%istack_itp_type_org(1:4) = part_tbl%ntot_export
       call set_stack_tbl_wtype_org_smp(itp_org)
 !
       itp_org%ntot_table_org = part_tbl%ntot_export
@@ -252,9 +242,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_itp_dest_to_repart_import                         &
-     &         (itp_dest, dest_node, part_tbl)
+     &         (itp_dest, nnod, part_tbl)
 !
-      type(node_data), intent(in) :: dest_node
+      integer(kind = kint), intent(in) :: nnod
       type(interpolate_table_dest), intent(in) :: itp_dest
       type(calypso_comm_table), intent(inout) :: part_tbl
 !
@@ -275,7 +265,7 @@
       end if
 !
       part_tbl%ntot_import = itp_dest%ntot_table_dest
-      call alloc_calypso_import_item(dest_node%numnod, part_tbl)
+      call alloc_calypso_import_item(nnod, part_tbl)
 !
 !$omp parallel do private(inum,inod)
       do inum = 1, part_tbl%ntot_import
@@ -284,8 +274,8 @@
         part_tbl%irev_import(inod) =     inum
       end do
 !$omp end parallel do
-!$omp parallel do private(inum,inod)
-      do inum = part_tbl%ntot_import+1, dest_node%numnod
+!$omp parallel do private(inum)
+      do inum = part_tbl%ntot_import+1, nnod
         part_tbl%irev_import(inum) = part_tbl%ntot_import + 1
       end do
 !$omp end parallel do
