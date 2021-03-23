@@ -54,8 +54,7 @@
       use MPI_binary_head_IO
 !
       character(len=kchara), intent(in) :: file_name
-!
-      type(interpolate_table), intent(inout) :: itp_tbl_IO
+      type(interpolate_table), intent(in) :: itp_tbl_IO
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -69,11 +68,6 @@
       call mpi_write_itp_table_org_b(IO_param, itp_tbl_IO%tbl_org)
       call mpi_write_itp_coefs_org_b(IO_param, itp_tbl_IO%tbl_org)
       call close_mpi_file(IO_param)
-!
-      call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
-      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
-      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
       end subroutine mpi_write_itp_table_file_b
 !
@@ -118,8 +112,8 @@
 !
       character(len=kchara), intent(in) :: file_name
 !
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -131,11 +125,6 @@
       call mpi_write_itp_coefs_dest_b                                   &
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
-!
-      call dealloc_itp_coef_dest(IO_itp_c_dest)
-      call dealloc_itp_table_dest(IO_itp_dest)
-      call dealloc_itp_coef_stack(IO_itp_c_dest)
-      call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine mpi_wrt_itp_coefs_dest_file_b
 !

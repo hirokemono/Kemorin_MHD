@@ -118,7 +118,7 @@
      &              tmp_tbl_IO%file_prefix
           call sel_write_interpolate_table                              &
      &       (my_rank_2nd, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
-!
+          call dealloc_itp_tbl_after_write(itp_tbl_IO_c)
         end if
       end do
 !
@@ -135,7 +135,7 @@
 !
         call sel_write_interpolate_table                                &
      &     (my_rank, gen_itp_p%itp_file_IO, itp_tbl_IO_c)
-!
+        call dealloc_itp_tbl_after_write(itp_tbl_IO_c)
       end if
 !
       end subroutine const_interpolate_table_4_orgin

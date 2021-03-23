@@ -7,15 +7,15 @@
 !>@brief  Make grouping with respect to volume
 !!
 !!@verbatim
-!!      subroutine sel_write_interpolate_table                          &
-!!     &         (id_rank, table_file_IO, itp_tbl_IO)
 !!      subroutine sel_read_interpolate_table                           &
 !!     &         (id_rank, table_file_IO, itp_tbl_IO, ierr)
+!!      subroutine sel_write_interpolate_table                          &
+!!     &         (id_rank, table_file_IO, itp_tbl_IO)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
+!!        type(interpolate_table), intent(in) :: itp_tbl_IO
+!!      subroutine dealloc_itp_tbl_after_write(itp_tbl_IO)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
-!!      subroutine sel_write_itp_coefs_dest                             &
-!!     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !!      subroutine sel_read_itp_coefs_dest(id_rank, table_file_IO,      &
 !!     &          IO_itp_dest, IO_itp_c_dest, ierr)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
@@ -23,8 +23,15 @@
 !!     &         (id_rank, table_file_IO, IO_itp_dest, ierr)
 !!      subroutine sel_read_itp_domain_dest                             &
 !!     &         (id_rank, table_file_IO, IO_itp_dest, ierr)
+!!      subroutine sel_write_itp_coefs_dest                             &
+!!     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
 !!        type(field_IO_params), intent(in) ::  table_file_IO
+!!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+!!      subroutine dealloc_itp_dest_after_write                         &
+!!     &         (IO_itp_dest, IO_itp_c_dest)
 !!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
 !!@endverbatim
 !
       module itp_table_IO_select_4_zlib
@@ -48,42 +55,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine sel_write_interpolate_table                            &
-     &         (id_rank, table_file_IO, itp_tbl_IO)
-!
-      use set_interpolate_file_name
-!
-      integer, intent(in) :: id_rank
-      type(field_IO_params), intent(in) ::  table_file_IO
-      type(interpolate_table), intent(inout) :: itp_tbl_IO
-!
-      character(len=kchara) :: file_name
-      integer(kind = kint) :: ierr = 0
-!
-!
-      file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
-!
-      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call write_itp_table_file_b                                     &
-     &     (file_name, id_rank, itp_tbl_IO, ierr)
-!
-#ifdef ZLIB_IO
-      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call gz_write_itp_table_file(file_name, id_rank, itp_tbl_IO)
-      else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
-        call write_gz_itp_table_file_b                                  &
-     &     (file_name, id_rank, itp_tbl_IO, ierr)
-#endif
-!
-      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
-        call write_itp_table_file_a                                     &
-     &     (file_name, id_rank, itp_tbl_IO)
-      end if
-!
-      end subroutine sel_write_interpolate_table
 !
 !-----------------------------------------------------------------------
 !
@@ -124,44 +95,58 @@
       end subroutine sel_read_interpolate_table
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
-      subroutine sel_write_itp_coefs_dest                               &
-     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
+      subroutine sel_write_interpolate_table                            &
+     &         (id_rank, table_file_IO, itp_tbl_IO)
 !
       use set_interpolate_file_name
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+      type(interpolate_table), intent(in) :: itp_tbl_IO
 !
       character(len=kchara) :: file_name
       integer(kind = kint) :: ierr = 0
 !
 !
-      file_name = set_interpolate_work_name(id_rank, table_file_IO)
+      file_name = s_set_interpolate_file_name(id_rank, table_file_IO)
 !
       if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
-        call  write_itp_coefs_dest_file_b                               &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+        call write_itp_table_file_b                                     &
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 !
 #ifdef ZLIB_IO
       else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
-        call  gz_write_itp_coefs_dest_file                              &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+        call gz_write_itp_table_file(file_name, id_rank, itp_tbl_IO)
       else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
-        call  write_gz_itp_coefs_dest_file_b                            &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+        call write_gz_itp_table_file_b                                  &
+     &     (file_name, id_rank, itp_tbl_IO, ierr)
 #endif
 !
       else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
-        call  write_itp_coefs_dest_file_a                               &
-     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+        call write_itp_table_file_a(file_name, id_rank, itp_tbl_IO)
       end if
 !
-      end subroutine sel_write_itp_coefs_dest
+      end subroutine sel_write_interpolate_table
 !
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_itp_tbl_after_write(itp_tbl_IO)
+!
+      type(interpolate_table), intent(inout) :: itp_tbl_IO
+!
+!
+      if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
+        call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
+      end if
+      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
+!
+      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
+      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
+!
+      end subroutine dealloc_itp_tbl_after_write
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sel_read_itp_coefs_dest(id_rank, table_file_IO,        &
@@ -276,6 +261,61 @@
       end if
 !
       end subroutine sel_read_itp_domain_dest
+!
+!-----------------------------------------------------------------------
+!
+      subroutine sel_write_itp_coefs_dest                               &
+     &         (id_rank, table_file_IO, IO_itp_dest, IO_itp_c_dest)
+!
+      use set_interpolate_file_name
+!
+      integer, intent(in) :: id_rank
+      type(field_IO_params), intent(in) ::  table_file_IO
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
+!
+      character(len=kchara) :: file_name
+      integer(kind = kint) :: ierr = 0
+!
+!
+      file_name = set_interpolate_work_name(id_rank, table_file_IO)
+!
+      if (table_file_IO%iflag_format .eq. id_binary_file_fmt) then
+        call  write_itp_coefs_dest_file_b                               &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!
+#ifdef ZLIB_IO
+      else if(table_file_IO%iflag_format.eq.id_gzip_txt_file_fmt) then
+        call  gz_write_itp_coefs_dest_file                              &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+      else if(table_file_IO%iflag_format.eq.id_gzip_bin_file_fmt) then
+        call  write_gz_itp_coefs_dest_file_b                            &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+#endif
+!
+      else if(table_file_IO%iflag_format .eq. id_ascii_file_fmt) then
+        call  write_itp_coefs_dest_file_a                               &
+     &     (file_name, id_rank, IO_itp_dest, IO_itp_c_dest)
+      end if
+!
+      end subroutine sel_write_itp_coefs_dest
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_itp_dest_after_write                           &
+     &         (IO_itp_dest, IO_itp_c_dest)
+!
+      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+!
+      if(IO_itp_dest%num_org_domain .gt. 0) then
+        call dealloc_itp_coef_dest(IO_itp_c_dest)
+        call dealloc_itp_coef_stack(IO_itp_c_dest)
+      end if
+      call dealloc_itp_table_dest(IO_itp_dest)
+      call dealloc_itp_num_dest(IO_itp_dest)
+!
+      end subroutine dealloc_itp_dest_after_write
 !
 !-----------------------------------------------------------------------
 !
