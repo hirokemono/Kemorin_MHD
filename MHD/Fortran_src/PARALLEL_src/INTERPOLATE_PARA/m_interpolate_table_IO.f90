@@ -104,6 +104,7 @@
 !
       call sel_write_interpolate_table                                  &
      &   (id_rank, table_file_IO, itp_tbl_IO)
+      call dealloc_itp_tbl_after_write(itp_tbl_IO)
 !
       end subroutine output_interpolate_table
 !

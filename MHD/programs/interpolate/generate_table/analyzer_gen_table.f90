@@ -153,6 +153,7 @@
       tmp_tbl_IO%file_prefix = work_header
       call sel_write_itp_coefs_dest                                     &
      &   (my_rank, tmp_tbl_IO, IO_itp_dest1, IO_itp_c_dest)
+      call dealloc_itp_dest_after_write(IO_itp_dest1, IO_itp_c_dest)
 !
 !   construct table for originate domain
 !

@@ -9,12 +9,15 @@
 !!@verbatim
 !!      subroutine write_gz_itp_table_file_b                            &
 !!     &         (gzip_name, id_rank, itp_tbl_IO, ierr)
+!!        type(interpolate_table), intent(in) :: itp_tbl_IO
 !!      subroutine read_gz_itp_table_file_b                             &
 !!     &          (gzip_name, id_rank, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
 !!
 !!      subroutine write_gz_itp_coefs_dest_file_b                       &
 !!     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
+!!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
+!!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !!      subroutine read_gz_itp_coefs_dest_file_b                        &
 !!     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
 !!      subroutine read_gz_itp_table_dest_file_b                        &
@@ -56,8 +59,8 @@
 !
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
+      type(interpolate_table), intent(in) :: itp_tbl_IO
 !
-      type(interpolate_table), intent(inout) :: itp_tbl_IO
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -79,14 +82,6 @@
   99  continue
       call close_gzfile_b
       ierr = zbuf_itp%ierr_zlib
-!
-      if (itp_tbl_IO%tbl_org%num_dest_domain .gt. 0) then
-        call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
-      end if
-      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
-!
-      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
 !
       end subroutine write_gz_itp_table_file_b
 !
@@ -148,8 +143,8 @@
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -164,13 +159,6 @@
   99  continue
       call close_gzfile_b
       ierr = zbuf_itp%ierr_zlib
-!
-      if (IO_itp_dest%num_org_domain .gt. 0) then
-        call dealloc_itp_coef_dest(IO_itp_c_dest)
-        call dealloc_itp_coef_stack(IO_itp_c_dest)
-      end if
-      call dealloc_itp_table_dest(IO_itp_dest)
-      call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine write_gz_itp_coefs_dest_file_b
 !

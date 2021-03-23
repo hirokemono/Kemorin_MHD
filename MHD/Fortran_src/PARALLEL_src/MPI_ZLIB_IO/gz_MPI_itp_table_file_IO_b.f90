@@ -75,12 +75,6 @@
 !
       call close_mpi_file(IO_param)
 !
-      call dealloc_itp_table_org(itp_tbl_IO%tbl_org)
-      call dealloc_itp_num_org(itp_tbl_IO%tbl_org)
-!
-      call dealloc_itp_table_dest(itp_tbl_IO%tbl_dest)
-      call dealloc_itp_num_dest(itp_tbl_IO%tbl_dest)
-!
       end subroutine write_gz_mpi_itp_table_file_b
 !
 !-----------------------------------------------------------------------
@@ -127,8 +121,8 @@
       character(len=kchara), intent(in) :: gzip_name
       integer, intent(in) :: id_rank
 !
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+      type(interpolate_table_dest), intent(in) :: IO_itp_dest
+      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -140,11 +134,6 @@
       call gz_mpi_write_itp_coefs_dest_b                                &
      &   (IO_param, IO_itp_dest, IO_itp_c_dest)
       call close_mpi_file(IO_param)
-!
-      call dealloc_itp_coef_dest(IO_itp_c_dest)
-      call dealloc_itp_coef_stack(IO_itp_c_dest)
-      call dealloc_itp_table_dest(IO_itp_dest)
-      call dealloc_itp_num_dest(IO_itp_dest)
 !
       end subroutine wrt_gz_mpi_itp_coef_dest_file_b
 !
