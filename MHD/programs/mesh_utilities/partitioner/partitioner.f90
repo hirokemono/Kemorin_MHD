@@ -193,7 +193,8 @@
      &    org_fem%mesh, org_fem%group, domain_grp1)
 !      write(*,*) 'grouping_for_partitioner'
       call grouping_for_partitioner                                     &
-     &   (org_fem%mesh%node, org_fem%mesh%ele, org_fem%mesh%edge,       &
+     &   (org_fem%mesh%node, org_fem%mesh%ele,                          &
+     &    org_fem%mesh%surf, org_fem%mesh%edge,                         &
      &    org_fem%group%nod_grp, org_fem%group%ele_grp, node_volume,    &
      &    part_p1, domain_grp1)
 !

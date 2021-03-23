@@ -82,8 +82,8 @@
       type(surface_group_table) :: sf_grp_tbl
 !
 !
-      call const_surface_group_table(node, ele, surf, edge,             &
-     &                               surf_grp, sf_grp_tbl)
+      call const_surface_group_table(ele, surf, edge,                   &
+     &                               sf_grp, sf_grp_tbl)
 !
 !    set center of surface
       call alloc_surf_grp_geometory(sf_grp%num_item, sf_grp_xyz)

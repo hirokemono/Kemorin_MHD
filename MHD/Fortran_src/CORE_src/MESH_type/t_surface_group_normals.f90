@@ -97,6 +97,7 @@
       use t_group_data
       use t_surface_data
       use t_edge_data
+      use t_group_data
       use t_group_connects
       use t_surface_group_table
 !
@@ -115,8 +116,8 @@
 !
       if (sf_grp%num_grp .le. 0) return
 !
-      call const_surface_group_table                                    &
-     &   (node, ele, surf, edge, surf_grp, sf_grp_tbl)
+      call const_surface_group_table(ele, surf, edge,                   &
+     &                               sf_grp, sf_grp_tbl)
 !
       call pick_vect_by_surf_grp_w_side                                 &
      &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%num_grp_smp,          &

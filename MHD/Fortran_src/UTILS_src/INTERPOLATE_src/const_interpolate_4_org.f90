@@ -56,6 +56,7 @@
       use m_interpolate_table_IO
 !
       use itp_work_file_IO_select
+      use itp_table_file_IO_select
       use copy_interpolate_types
 !
       integer, intent(in) :: nprocs_2nd
