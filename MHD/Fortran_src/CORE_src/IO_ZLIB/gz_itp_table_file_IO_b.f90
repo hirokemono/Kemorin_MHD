@@ -10,22 +10,18 @@
 !!      subroutine write_gz_itp_table_file_b                            &
 !!     &         (gzip_name, id_rank, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(in) :: itp_tbl_IO
+!!      subroutine write_gz_dbl_itp_table_file_b                        &
+!!     &         (gzip_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
+!!        type(interpolate_table), intent(in) :: itp_tbl1_IO
+!!        type(interpolate_table), intent(in) :: itp_tbl2_IO
+!!
 !!      subroutine read_gz_itp_table_file_b                             &
 !!     &          (gzip_name, id_rank, itp_tbl_IO, ierr)
 !!        type(interpolate_table), intent(inout) :: itp_tbl_IO
-!!
-!!      subroutine write_gz_itp_coefs_dest_file_b                       &
-!!     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-!!        type(interpolate_table_dest), intent(in) :: IO_itp_dest
-!!        type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
-!!      subroutine read_gz_itp_coefs_dest_file_b                        &
-!!     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-!!      subroutine read_gz_itp_table_dest_file_b                        &
-!!     &         (gzip_name, id_rank, IO_itp_dest, ierr)
-!!      subroutine read_gz_itp_domain_dest_file_b                       &
-!!     &         (gzip_name, id_rank, IO_itp_dest, ierr)
-!!        type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-!!        type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
+!!      subroutine read_gz_dbl_itp_table_file_b                         &
+!!     &          (gzip_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
+!!        type(interpolate_table), intent(inout) :: itp_tbl1_IO
+!!        type(interpolate_table), intent(inout) :: itp_tbl2_IO
 !!@endverbatim
 !
       module gz_itp_table_file_IO_b
@@ -43,7 +39,9 @@
 !
       implicit none
 !
-      type(buffer_4_gzip), private :: zbuf_itp
+      type(buffer_4_gzip), private :: zbuf_itp1
+!
+      private :: write_gz_each_itp_table_b, read_gz_each_itp_table_b
 !
 !-----------------------------------------------------------------------
 !
@@ -67,24 +65,51 @@
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Write gzipped binary interpolation table file: ',              &
      &   trim(gzip_name)
-      call open_wt_gzfile_b(gzip_name, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .gt. 0) go to 99
-      call write_gz_itp_table_dest_b                                    &
-     &   (id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .gt. 0) go to 99
+      call open_wt_gzfile_b(gzip_name, zbuf_itp1)
+      if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
 !
-      call write_gz_itp_table_org_b                                     &
-     &    (id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .gt. 0) go to 99
-      call write_gz_itp_coefs_org_b(itp_tbl_IO%tbl_org, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .gt. 0) go to 99
+      call write_gz_each_itp_table_b(id_rank, itp_tbl_IO, zbuf_itp1)
 !
   99  continue
       call close_gzfile_b
-      ierr = zbuf_itp%ierr_zlib
+      ierr = zbuf_itp1%ierr_zlib
 !
       end subroutine write_gz_itp_table_file_b
 !
+!-----------------------------------------------------------------------
+!
+      subroutine write_gz_dbl_itp_table_file_b                          &
+     &         (gzip_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
+!
+      use gz_itp_table_data_IO_b
+      use gzip_file_access
+!
+      character(len=kchara), intent(in) :: gzip_name
+      integer, intent(in) :: id_rank
+      type(interpolate_table), intent(in) :: itp_tbl1_IO
+      type(interpolate_table), intent(in) :: itp_tbl2_IO
+!
+      integer(kind = kint), intent(inout) :: ierr
+!
+!
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Write gzipped binary interpolation table file: ',              &
+     &   trim(gzip_name)
+      call open_wt_gzfile_b(gzip_name, zbuf_itp1)
+      if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
+!
+      call write_gz_each_itp_table_b(id_rank, itp_tbl1_IO, zbuf_itp1)
+      if(zbuf_itp1%ierr_zlib .gt. 0) go to 99
+!
+      call write_gz_each_itp_table_b(id_rank, itp_tbl2_IO, zbuf_itp1)
+!
+  99  continue
+      call close_gzfile_b
+      ierr = zbuf_itp1%ierr_zlib
+!
+      end subroutine write_gz_dbl_itp_table_file_b
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine read_gz_itp_table_file_b                               &
@@ -99,169 +124,113 @@
       type(interpolate_table), intent(inout) :: itp_tbl_IO
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: n_rank_file
+!
+      if(id_rank .eq. 0) write(*,*)                                     &
+     &  'Read gzipped binary interpolation table file: ',               &
+     &   trim(gzip_name)
+      call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp1)
+      if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
+!
+      call read_gz_each_itp_table_b(id_rank, itp_tbl_IO, zbuf_itp1)
+!
+  99  continue
+      call close_gzfile_b
+      ierr = zbuf_itp1%ierr_zlib
+!
+      end subroutine read_gz_itp_table_file_b
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_gz_dbl_itp_table_file_b                           &
+     &          (gzip_name, id_rank, itp_tbl1_IO, itp_tbl2_IO, ierr)
+!
+      use gz_itp_table_data_IO_b
+      use gzip_file_access
+!
+      character(len=kchara), intent(in) :: gzip_name
+      integer, intent(in) :: id_rank
+!
+      type(interpolate_table), intent(inout) :: itp_tbl1_IO
+      type(interpolate_table), intent(inout) :: itp_tbl2_IO
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
       if(id_rank .eq. 0) write(*,*)                                     &
      &  'Read gzipped binary interpolation table file: ',               &
      &   trim(gzip_name)
-      call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
+      call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp1)
+      if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
+!
+      call read_gz_each_itp_table_b(id_rank, itp_tbl1_IO, zbuf_itp1)
+      if(zbuf_itp1%ierr_zlib .ne. 0) go to 99
+!
+      call read_gz_each_itp_table_b(id_rank, itp_tbl2_IO, zbuf_itp1)
+!
+  99  continue
+      call close_gzfile_b
+      ierr = zbuf_itp1%ierr_zlib
+!
+      end subroutine read_gz_dbl_itp_table_file_b
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine write_gz_each_itp_table_b                              &
+     &         (id_rank, itp_tbl_IO, zbuf_itp)
+!
+      use gz_itp_table_data_IO_b
+      use gzip_file_access
+!
+      integer, intent(in) :: id_rank
+      type(interpolate_table), intent(in) :: itp_tbl_IO
+      type(buffer_4_gzip), intent(inout) :: zbuf_itp
+!
+!
+      call write_gz_itp_table_dest_b                                    &
+     &   (id_rank, itp_tbl_IO%tbl_dest, zbuf_itp)
+      if(zbuf_itp%ierr_zlib .gt. 0) return
+!
+      call write_gz_itp_table_org_b                                     &
+     &    (id_rank, itp_tbl_IO%tbl_org, zbuf_itp)
+      if(zbuf_itp%ierr_zlib .gt. 0) return
+      call write_gz_itp_coefs_org_b(itp_tbl_IO%tbl_org, zbuf_itp)
+!
+      end subroutine write_gz_each_itp_table_b
+!
+!-----------------------------------------------------------------------
+!
+      subroutine read_gz_each_itp_table_b                               &
+     &         (id_rank, itp_tbl_IO, zbuf_itp)
+!
+      use gz_itp_table_data_IO_b
+      use gzip_file_access
+!
+      integer, intent(in) :: id_rank
+!
+      type(interpolate_table), intent(inout) :: itp_tbl_IO
+      type(buffer_4_gzip), intent(inout) :: zbuf_itp
+!
+      integer(kind = kint) :: n_rank_file
+!
+!
       call read_gz_itp_domain_dest_b                                    &
      &   (zbuf_itp, n_rank_file, itp_tbl_IO%tbl_dest)
-      if(zbuf_itp%ierr_zlib .gt. 0) goto 99
+      if(zbuf_itp%ierr_zlib .gt. 0) return
 !
       call read_gz_itp_table_dest_b(zbuf_itp, itp_tbl_IO%tbl_dest)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
+      if(zbuf_itp%ierr_zlib .ne. 0) return
 !
       call read_gz_itp_domain_org_b                                     &
      &    (zbuf_itp, n_rank_file, itp_tbl_IO%tbl_org)
-      if(zbuf_itp%ierr_zlib .gt. 0) goto 99
+      if(zbuf_itp%ierr_zlib .gt. 0) return
 !
       call read_gz_itp_table_org_b(zbuf_itp, itp_tbl_IO%tbl_org)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
+      if(zbuf_itp%ierr_zlib .ne. 0) return
 !
       call read_gz_itp_coefs_org_b(zbuf_itp, itp_tbl_IO%tbl_org)
+      if (n_rank_file .ne. id_rank) zbuf_itp%ierr_zlib = n_rank_file
 !
-  99  continue
-      call close_gzfile_b
-      ierr = zbuf_itp%ierr_zlib
-!
-      if (n_rank_file .ne. id_rank) ierr = n_rank_file
-!
-      end subroutine read_gz_itp_table_file_b
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine write_gz_itp_coefs_dest_file_b                         &
-     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-!
-      use gz_itp_table_data_IO_b
-      use gzip_file_access
-!
-      character(len=kchara), intent(in) :: gzip_name
-      integer, intent(in) :: id_rank
-!
-      type(interpolate_table_dest), intent(in) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(in) :: IO_itp_c_dest
-      integer(kind = kint), intent(inout) :: ierr
-!
-!
-      call open_wt_gzfile_b(gzip_name, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .gt. 0) go to 99
-      call write_gz_itp_table_dest_b(id_rank, IO_itp_dest, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .gt. 0) go to 99
-!
-      call write_gz_itp_coefs_dest_b                                    &
-     &   (IO_itp_dest, IO_itp_c_dest, zbuf_itp)
-!
-  99  continue
-      call close_gzfile_b
-      ierr = zbuf_itp%ierr_zlib
-!
-      end subroutine write_gz_itp_coefs_dest_file_b
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_gz_itp_coefs_dest_file_b                          &
-     &         (gzip_name, id_rank, IO_itp_dest, IO_itp_c_dest, ierr)
-!
-      use gz_itp_table_data_IO_b
-      use gzip_file_access
-!
-      character(len=kchara), intent(in) :: gzip_name
-      integer, intent(in) :: id_rank
-!
-      integer(kind = kint), intent(inout) :: ierr
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-      type(interpolate_coefs_dest), intent(inout) :: IO_itp_c_dest
-!
-      integer(kind = kint) :: n_rank_file
-! 
-!
-      call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
-      call read_gz_itp_domain_dest_b                                    &
-     &   (zbuf_itp, n_rank_file, IO_itp_dest)
-      if(zbuf_itp%ierr_zlib .gt. 0) goto 99
-!
-      call read_gz_itp_table_dest_b(zbuf_itp, IO_itp_dest)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
-!
-      call read_gz_itp_coefs_dest_b                                     &
-     &   (zbuf_itp, IO_itp_dest, IO_itp_c_dest)
-!
-  99  continue
-      call close_gzfile_b
-      ierr = zbuf_itp%ierr_zlib
-!
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
-!
-      end subroutine read_gz_itp_coefs_dest_file_b
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_gz_itp_table_dest_file_b                          &
-     &         (gzip_name, id_rank, IO_itp_dest, ierr)
-!
-      use gz_itp_table_data_IO_b
-      use gzip_file_access
-!
-      character(len=kchara), intent(in) :: gzip_name
-      integer, intent(in) :: id_rank
-!
-      integer(kind = kint), intent(inout) :: ierr
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-!
-      integer(kind = kint) :: n_rank_file
-!
-!
-      call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
-      call read_gz_itp_domain_dest_b                                    &
-     &   (zbuf_itp, n_rank_file, IO_itp_dest)
-      if(zbuf_itp%ierr_zlib .gt. 0) goto 99
-!
-      call read_gz_itp_table_dest_b(zbuf_itp, IO_itp_dest)
-!
-  99  continue
-      call close_gzfile_b
-      ierr = zbuf_itp%ierr_zlib
-!
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
-!
-      end subroutine read_gz_itp_table_dest_file_b
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_gz_itp_domain_dest_file_b                         &
-     &         (gzip_name, id_rank, IO_itp_dest, ierr)
-!
-      use gz_itp_table_data_IO_b
-      use gzip_file_access
-!
-      character(len=kchara), intent(in) :: gzip_name
-      integer, intent(in) :: id_rank
-!
-      integer(kind = kint), intent(inout) :: ierr
-      type(interpolate_table_dest), intent(inout) :: IO_itp_dest
-!
-      integer(kind = kint) :: n_rank_file
-!
-!
-      call open_rd_gzfile_b(gzip_name, id_rank, zbuf_itp)
-      if(zbuf_itp%ierr_zlib .ne. 0) goto 99
-      call read_gz_itp_domain_dest_b                                    &
-     &   (zbuf_itp, n_rank_file, IO_itp_dest)
-!
-  99  continue
-      call close_gzfile_b
-      ierr = zbuf_itp%ierr_zlib
-!
-      if (n_rank_file .ne. id_rank) ierr = ierr_file
-!
-      end subroutine read_gz_itp_domain_dest_file_b
+      end subroutine read_gz_each_itp_table_b
 !
 !-----------------------------------------------------------------------
 !

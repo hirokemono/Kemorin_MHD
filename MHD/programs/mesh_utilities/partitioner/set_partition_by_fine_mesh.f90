@@ -38,7 +38,7 @@
       use m_interpolate_table_IO
 !
       use load_mesh_data
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
 !
       type(ctl_param_partitioner), intent(inout) :: part_p
       type(domain_groups_4_partitioner), intent(inout) :: domain_grp

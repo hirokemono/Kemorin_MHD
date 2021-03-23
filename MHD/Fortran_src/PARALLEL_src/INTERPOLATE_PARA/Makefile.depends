@@ -6,7 +6,7 @@ interpolate_field_type.o: $(ITP_PARA_DIR)/interpolate_field_type.f90 m_precision
 	$(F90) -c $(F90OPTFLAGS) $<
 interpolate_nod_field_2_type.o: $(ITP_PARA_DIR)/interpolate_nod_field_2_type.f90 m_precision.o m_machine_parameter.o m_phys_constants.o t_geometry_data.o t_comm_table.o t_phys_data.o t_interpolate_table.o t_vector_for_solver.o calypso_mpi.o m_solver_SR.o interpolate_by_module.o
 	$(F90) -c $(F90OPTFLAGS) $<
-m_interpolate_table_IO.o: $(ITP_PARA_DIR)/m_interpolate_table_IO.f90 m_precision.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o copy_interpolate_types.o itp_table_IO_select_4_zlib.o
+m_interpolate_table_IO.o: $(ITP_PARA_DIR)/m_interpolate_table_IO.f90 m_precision.o m_machine_parameter.o t_interpolate_table.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_interpolate_coefs_dest.o t_file_IO_parameter.o copy_interpolate_types.o itp_table_file_IO_select.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_interpolate_table.o: $(ITP_PARA_DIR)/t_interpolate_table.f90 m_precision.o m_constants.o t_comm_table.o t_geometry_data.o t_interpolate_tbl_org.o t_interpolate_tbl_dest.o t_solver_ordered_crs.o select_copy_from_recv.o m_machine_parameter.o interpolate_matrix_para.o
 	$(F90) -c $(F90OPTFLAGS) $<

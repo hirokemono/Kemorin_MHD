@@ -44,7 +44,7 @@
       use m_default_file_prefix
 !
       use m_file_format_switch
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
       use set_control_platform_item
       use set_control_platform_data
       use set_num_domain_each_dir
@@ -185,7 +185,7 @@
       use m_default_file_prefix
 !
       use m_file_format_switch
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
       use set_control_platform_item
       use set_control_platform_data
 !

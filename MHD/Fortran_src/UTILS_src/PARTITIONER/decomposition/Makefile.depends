@@ -6,7 +6,7 @@ find_shell_information.o: $(DECOMP_DIR)/find_shell_information.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 grouping_by_sphere.o: $(DECOMP_DIR)/grouping_by_sphere.f90 m_precision.o cal_minmax_and_stacks.o
 	$(F90) -c $(F90OPTFLAGS) $<
-node_equaly_sectioning.o: $(DECOMP_DIR)/node_equaly_sectioning.f90 m_precision.o t_ctl_param_partitioner.o t_domain_group_4_partition.o sort_by_position_4_rcb.o sort_by_position_4_eb3d.o
+node_equaly_sectioning.o: $(DECOMP_DIR)/node_equaly_sectioning.f90 m_precision.o t_ctl_param_partitioner.o t_domain_group_4_partition.o sort_by_position_4_rcb.o sort_by_position_4_eb3d.o t_element_group_table.o
 	$(F90) -c $(F90OPTFLAGS) $<
 recursive_bisection.o: $(DECOMP_DIR)/recursive_bisection.f90 m_precision.o t_ctl_param_partitioner.o t_domain_group_4_partition.o sort_by_position_4_rcb.o
 	$(F90) -c $(F90OPTFLAGS) $<

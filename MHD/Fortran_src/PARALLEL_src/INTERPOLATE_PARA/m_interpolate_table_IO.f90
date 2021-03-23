@@ -44,7 +44,7 @@
      &         (id_rank, table_file_IO, itp_table)
 !
       use copy_interpolate_types
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO
@@ -87,7 +87,7 @@
      &         (id_rank, table_file_IO, itp_table)
 !
       use copy_interpolate_types
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
 !
       integer, intent(in) :: id_rank
       type(field_IO_params), intent(in) ::  table_file_IO

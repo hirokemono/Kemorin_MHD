@@ -44,7 +44,8 @@
       use MPI_itp_table_file_IO_b
       use gz_MPI_itp_table_file_IO
       use gz_MPI_itp_table_file_IO_b
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
+      use itp_work_file_IO_select
 !
       implicit none
 !

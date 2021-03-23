@@ -22,6 +22,7 @@
       module t_surface_group_table
 !
       use m_precision
+      use m_machine_parameter
       use m_geometry_constants
 !
       use t_geometry_data

@@ -27,7 +27,7 @@
       use t_work_merge_refine_itp
       use t_file_IO_parameter
 !
-      use itp_table_IO_select_4_zlib
+      use itp_table_file_IO_select
       use set_parallel_file_name
 !
       implicit none

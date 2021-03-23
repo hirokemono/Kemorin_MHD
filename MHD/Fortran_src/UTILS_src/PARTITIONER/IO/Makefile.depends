@@ -8,7 +8,7 @@ output_test_mesh.o: $(PART_IODIR)/output_test_mesh.f90 m_precision.o m_machine_p
 	$(F90) -c $(F90OPTFLAGS) $<
 quick_mesh_check_for_part.o: $(PART_IODIR)/quick_mesh_check_for_part.f90 m_precision.o m_constants.o m_error_IDs.o t_geometry_data.o t_group_data.o set_nnod_for_ele_by_type.o check_domain_prop_4_part.o error_exit_4_part.o
 	$(F90) -c $(F90OPTFLAGS) $<
-set_control_data_4_part.o: $(PART_IODIR)/set_control_data_4_part.f90 m_precision.o m_constants.o t_ctl_param_partitioner.o t_control_data_4_part.o t_partitioner_comm_table.o m_default_file_prefix.o m_file_format_switch.o itp_table_IO_select_4_zlib.o set_control_platform_item.o set_control_platform_data.o set_num_domain_each_dir.o t_ctl_param_sleeve_extend.o t_ctl_data_4_FEM_mesh.o t_ctl_data_FEM_sleeve_size.o t_control_array_character.o t_control_array_integer.o skip_comment_f.o t_control_array_charaint.o
+set_control_data_4_part.o: $(PART_IODIR)/set_control_data_4_part.f90 m_precision.o m_constants.o t_ctl_param_partitioner.o t_control_data_4_part.o t_partitioner_comm_table.o m_default_file_prefix.o m_file_format_switch.o itp_table_file_IO_select.o set_control_platform_item.o set_control_platform_data.o set_num_domain_each_dir.o t_ctl_param_sleeve_extend.o t_ctl_data_4_FEM_mesh.o t_ctl_data_FEM_sleeve_size.o t_control_array_character.o t_control_array_integer.o skip_comment_f.o t_control_array_charaint.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_control_data_4_part.o: $(PART_IODIR)/t_control_data_4_part.f90 m_precision.o t_read_control_elements.o t_ctl_data_4_platforms.o t_ctl_data_4_FEM_mesh.o t_ctl_data_FEM_sleeve_size.o t_control_array_integer.o t_control_array_character.o t_control_array_charaint.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
