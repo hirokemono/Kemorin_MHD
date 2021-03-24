@@ -97,14 +97,6 @@
      &    spfs%spf_3d, jacs)
       call dealloc_vol_shape_func(spfs%spf_3d)
 !
-      if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
-      call alloc_surf_shape_func                                        &
-     &   (mesh%surf%nnod_4_surf, jacs%g_FEM, spfs%spf_2d)
-      call const_jacobians_surf_group(my_rank, nprocs,                  &
-     &    mesh%node, mesh%ele, mesh%surf, group%surf_grp,               &
-     &    spfs%spf_2d, jacs)
-      call dealloc_surf_shape_func(spfs%spf_2d)
-!
 !    Construct volumes
 !
       call allocate_volume_4_smp

@@ -47,8 +47,6 @@
       real(kind= kreal), allocatable :: sum_sf_grp_l(:)
 !
 !
-      call allocate_sum_local_area_grp(sf_grp%num_grp)
-!
       allocate(sum_sf_grp_l(sf_grp%num_grp))
       sum_sf_grp_l(1:sf_grp%num_grp) = 0.0d0
 !

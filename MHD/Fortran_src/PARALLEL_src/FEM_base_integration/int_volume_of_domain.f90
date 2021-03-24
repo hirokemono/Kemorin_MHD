@@ -229,8 +229,15 @@
 !     --------------------- Surface jacobian for fieldline
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(id_rank, nprocs,                         &
-     &    mesh%node, mesh%surf, spfs%spf_2d, jacs)
+      call alloc_surf_shape_func(mesh%surf%nnod_4_surf,          &
+     &    jacs%g_FEM, spfs%spf_2d)
+      call const_jacobians_surface                                      &
+     &   (id_rank, nprocs, mesh%node, mesh%surf,          &
+     &    spfs%spf_2d, jacs)
+      call int_normal_4_all_surface(jacs%g_FEM,       &
+     &    mesh%surf, jacs%jac_2d)
+      call dealloc_jacobians_surface                                    &
+     &   (mesh%surf, jacs)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group(mesh%ele, mesh%surf, mesh%edge,    &

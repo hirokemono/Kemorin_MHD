@@ -234,6 +234,28 @@
      &     (MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM,                     &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs%jac_2d)
+!
+        if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+        call pick_normal_of_surf_group                                  &
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele,     &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,     &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%edge,      &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp, &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm)
+        if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+        call s_sum_normal_4_surf_group                                  &
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele,                   &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,       &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm)
+        if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
+        call cal_surf_normal_at_nod                                       &
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%node,   &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,    &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,          &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,     &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm,            &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp)
+!
         call int_surface_parameters(MGCG_FEM%MG_mesh(i_level)%mesh,     &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
      &      MGCG_FEM%MG_FEM_mat(i_level)%surf_wk)

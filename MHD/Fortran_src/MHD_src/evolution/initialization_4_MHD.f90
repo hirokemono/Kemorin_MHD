@@ -249,13 +249,41 @@
      &    geofem%mesh, geofem%group, FEM_filters%layer_tbl, spfs_1,     &
      &    SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
-!     --------------------- 
+      if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
+      call alloc_surf_shape_func                                        &
+     &   (geofem%mesh%surf%nnod_4_surf, SGS_MHD_wk%fem_int%jcs%g_FEM,   &
+     &    spfs_1%spf_2d)
+      call const_jacobians_surf_group(my_rank, nprocs,                  &
+     &    geofem%mesh%node, geofem%mesh%ele, geofem%mesh%surf,          &
+     &    geofem%group%surf_grp, spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
+      call dealloc_surf_shape_func(spfs_1%spf_2d)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector                                          &
+      call alloc_surf_shape_func(geofem%mesh%surf%nnod_4_surf,          &
+     &    SGS_MHD_wk%fem_int%jcs%g_FEM, spfs_1%spf_2d)
+      call const_jacobians_surface                                      &
      &   (my_rank, nprocs, geofem%mesh%node, geofem%mesh%surf,          &
      &    spfs_1%spf_2d, SGS_MHD_wk%fem_int%jcs)
+      call int_normal_4_all_surface(SGS_MHD_wk%fem_int%jcs%g_FEM,       &
+     &    geofem%mesh%surf, SGS_MHD_wk%fem_int%jcs%jac_2d)
+      call dealloc_jacobians_surface                                    &
+     &   (geofem%mesh%surf, SGS_MHD_wk%fem_int%jcs)
       call dealloc_surf_shape_func(spfs_1%spf_2d)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+      call pick_normal_of_surf_group                                    &
+     &   (geofem%mesh%ele, geofem%mesh%surf, geofem%mesh%edge,          &
+     &    geofem%group%surf_grp, geofem%group%surf_grp_norm)
+      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(geofem%mesh%ele,                   &
+     &    geofem%group%surf_grp, geofem%group%surf_grp_norm)
+      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
+      call cal_surf_normal_at_nod                                       &
+     &   (geofem%mesh%node, geofem%mesh%ele, geofem%mesh%surf,          &
+     &    geofem%group%surf_grp, geofem%group%surf_grp_norm,            &
+     &    geofem%group%surf_nod_grp)
+!
+!     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters                                       &
