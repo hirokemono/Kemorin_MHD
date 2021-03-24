@@ -204,6 +204,13 @@
 !
 !     ---------------------
 !
+      if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
+      call s_set_RHS_assemble_table                                     &
+     &   (geofem%mesh, SGS_MHD_wk%fem_int%next_tbl,                     &
+     &    SGS_MHD_wk%fem_int%rhs_tbl)
+!
+!     ---------------------
+!
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
      &    fem_sq%i_msq, MHD_BC, geofem%mesh, geofem%group,              &
@@ -211,13 +218,6 @@
      &    MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
-      call s_set_RHS_assemble_table                                     &
-     &   (geofem%mesh, SGS_MHD_wk%fem_int%next_tbl,                     &
-     &    SGS_MHD_wk%fem_int%rhs_tbl)
-!
-!     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
