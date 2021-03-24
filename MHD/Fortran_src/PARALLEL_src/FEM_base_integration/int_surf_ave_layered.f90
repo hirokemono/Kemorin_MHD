@@ -132,11 +132,8 @@
         do igrp = 1, n_layer_d
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_area_1_surf_grp(ele%numele, surf%numsurf,       &
-     &        surf%isf_4_ele, ele%interior_ele, g_FEM%max_int_point,    &
-     &        g_FEM%maxtot_int_2d, g_FEM%int_start2, g_FEM%owe2d,       &
-     &        jac_2d_q%ntot_int, num_int, jac_2d_q%xj_sf,               &
-     &        num_sgrp, item_layer(1,ist), area_l(igrp))
+          call int_surf_area_1_surf_grp(ele, surf, g_FEM, jac_2d_q,     &
+     &        num_int, num_sgrp, item_layer(1,ist), area_l(igrp))
         end do
 !$omp end parallel do
 !
@@ -146,11 +143,8 @@
         do igrp = 1, n_layer_d
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_area_1_surf_grp(ele%numele, surf%numsurf,       &
-     &        surf%isf_4_ele, ele%interior_ele, g_FEM%max_int_point,    &
-     &        g_FEM%maxtot_int_2d, g_FEM%int_start2, g_FEM%owe2d,       &
-     &        jac_2d_l%ntot_int, num_int, jac_2d_l%xj_sf,               &
-     &        num_sgrp, item_layer(1,ist), area_l(igrp))
+          call int_surf_area_1_surf_grp(ele, surf, g_FEM, jac_2d_l,     &
+     &        num_int, num_sgrp, item_layer(1,ist), area_l(igrp))
         end do
 !$omp end parallel do
 !

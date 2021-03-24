@@ -228,33 +228,12 @@
         call dealloc_vol_shape_func(spfs%spf_3d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &         'int_normal_4_all_surface', i_level
-        call alloc_normal_vector(MGCG_FEM%MG_mesh(i_level)%mesh%surf)
-        call int_normal_4_all_surface                                   &
-     &     (MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM,                     &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jcs%jac_2d)
-!
-        if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-        call pick_normal_of_surf_group                                  &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele,     &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,     &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh%edge,      &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp, &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm)
-        if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-        call s_sum_normal_4_surf_group                                  &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele,                   &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,       &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm)
-        if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-        call cal_surf_normal_at_nod                                       &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh%node,   &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,    &
-     &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,          &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,     &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_norm,            &
-     &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp)
+     &         'surf_jacobian_sf_grp_normal', i_level
+        call surf_jacobian_sf_grp_normal                                &
+     &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
+     &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
+     &      MGCG_FEM%MG_mesh(i_level)%group,                            &
+     &      spfs, MGCG_FEM%MG_FEM_int(i_level)%jcs)
 !
         call int_surface_parameters(MGCG_FEM%MG_mesh(i_level)%mesh,     &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
