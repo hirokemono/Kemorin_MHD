@@ -200,11 +200,7 @@
           call empty_infty_surf_type                                    &
      &       (MGCG_FEM%MG_mesh(i_level)%group%infty_grp)
         end if
-      end do
 !
-!     --------------------- 
-!
-      do i_level = 1, MGCG_WK%num_MG_level
         call copy_fem_gauss_int_coefs                                   &
      &     (jacs_1st%g_FEM, MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM)
         call alloc_vol_shape_func                                       &
@@ -230,11 +226,7 @@
      &      spfs%spf_2d, MGCG_FEM%MG_FEM_int(i_level)%jcs)
         call dealloc_surf_shape_func(spfs%spf_2d)
         call dealloc_vol_shape_func(spfs%spf_3d)
-      end do
 !
-!     --------------------- 
-!
-      do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &         'int_normal_4_all_surface', i_level
         call alloc_normal_vector(MGCG_FEM%MG_mesh(i_level)%mesh%surf)
