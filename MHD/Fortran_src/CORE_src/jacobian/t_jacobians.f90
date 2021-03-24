@@ -7,10 +7,6 @@
 !>@brief  Structure of Jacobian and difference of shape functions
 !!
 !!@verbatim
-!!      subroutine dealloc_3d_linear_jac_type(jacs)
-!!      subroutine unlink_3d_linear_jac_type(jacs)
-!!        type(jacobians_type), intent(inout) :: jacs
-!!
 !!      subroutine const_jacobians_element(id_rank, nprocs,             &
 !!     &          node, ele, surf_grp, infinity_list, jacs)
 !!      subroutine const_jacobians_surf_group (id_rank, nprocs,         &
@@ -63,13 +59,13 @@
         type(FEM_gauss_int_coefs) :: g_FEM
 !
 !>     Stracture for Jacobians for element
-        type(jacobians_3d), pointer :: jac_3d
+        type(jacobians_3d) :: jac_3d
 !>     Stracture for Jacobians for surface
-        type(jacobians_2d), pointer :: jac_2d
+        type(jacobians_2d) :: jac_2d
 !>     Stracture for Jacobians for edge
-        type(jacobians_1d), pointer :: jac_1d
+        type(jacobians_1d) :: jac_1d
 !>     Stracture for Jacobians for surafce group
-        type(jacobians_2d), pointer :: jac_sf_grp
+        type(jacobians_2d) :: jac_sf_grp
 !
 !>     Stracture for Jacobians for linear element
         type(jacobians_3d), pointer ::  jac_3d_l
@@ -81,40 +77,16 @@
         type(jacobians_2d), pointer :: jac_sf_grp_l
       end type jacobians_type
 !
+      private :: link_linear_jacobians_element
+      private :: link_linear_jacobians_sf_grp
+      private :: link_linear_jacobians_surface
+      private :: link_linear_jacobians_edge
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine dealloc_3d_linear_jac_type(jacs)
-!
-      type(jacobians_type), intent(inout) :: jacs
-!
-      if(associated(jacs%jac_3d_l) .eqv. .FALSE.) return
-      deallocate(jacs%jac_3d_l)
-      deallocate(jacs%jac_2d_l)
-      deallocate(jacs%jac_1d_l)
-      deallocate(jacs%jac_sf_grp_l)
-!
-      end subroutine dealloc_3d_linear_jac_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine unlink_3d_linear_jac_type(jacs)
-!
-      type(jacobians_type), intent(inout) :: jacs
-!
-      if(associated(jacs%jac_3d_l) .eqv. .FALSE.) return
-      nullify(jacs%jac_3d_l)
-      nullify(jacs%jac_2d_l)
-      nullify(jacs%jac_1d_l)
-      nullify(jacs%jac_sf_grp_l)
-!
-      end subroutine unlink_3d_linear_jac_type
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
 !
       subroutine const_jacobians_element(id_rank, nprocs,               &
      &          node, ele, surf_grp, infinity_list, spf_3d, jacs)
@@ -131,7 +103,6 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      allocate(jacs%jac_3d)
       call alloc_jacobians(ele%numele, ele%nnod_4_ele,                  &
      &    jacs%g_FEM%maxtot_int_3d, jacs%jac_3d)
       call alloc_inv_jacobian(ele%numele, jacs%jac_3d)
@@ -146,7 +117,7 @@
       call dealloc_inv_jacobian(jacs%jac_3d)
 !
       if(ele%nnod_4_ele .eq. num_t_linear) then
-        jacs%jac_3d_l => jacs%jac_3d
+        call link_linear_jacobians_element(jacs%jac_3d, jacs)
       else
         allocate(jacs%jac_3d_l)
         call alloc_jacobians(ele%numele, num_t_linear,                  &
@@ -184,8 +155,6 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-!
-      allocate(jacs%jac_sf_grp)
       call alloc_2d_jac_type(surf_grp%num_item,                         &
      &    surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, jacs%jac_sf_grp)
 !
@@ -195,7 +164,7 @@
       end if
 !
       if(surf%nnod_4_surf .eq. num_linear_sf) then
-        jacs%jac_sf_grp_l => jacs%jac_sf_grp
+        call link_linear_jacobians_sf_grp(jacs%jac_sf_grp, jacs)
       else
         allocate(jacs%jac_sf_grp_l)
         call alloc_2d_jac_type(surf_grp%num_item, num_linear_sf,        &
@@ -225,7 +194,6 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      allocate(jacs%jac_2d)
       call alloc_2d_jac_type(surf%numsurf,                              &
      &    surf%nnod_4_surf, jacs%g_FEM%maxtot_int_2d, jacs%jac_2d)
 !
@@ -235,7 +203,7 @@
       end if
 !
       if(surf%nnod_4_surf .eq. num_linear_sf) then
-        jacs%jac_2d_l => jacs%jac_2d
+        call link_linear_jacobians_surface(jacs%jac_2d, jacs)
       else
         allocate(jacs%jac_2d_l)
         call alloc_2d_jac_type(surf%numsurf, num_linear_sf,             &
@@ -264,7 +232,6 @@
       type(jacobians_type), intent(inout) :: jacs
 !
 !
-      allocate(jacs%jac_1d)
       call alloc_1d_jac_type(edge%numedge, edge%nnod_4_edge,            &
      &    jacs%g_FEM%maxtot_int_1d, jacs%jac_1d)
 !
@@ -274,7 +241,7 @@
       end if
 !
       if(edge%nnod_4_edge .eq. num_linear_edge) then
-        jacs%jac_1d_l => jacs%jac_1d
+        call link_linear_jacobians_edge(jacs%jac_1d, jacs)
       else
         allocate(jacs%jac_1d_l)
         call alloc_1d_jac_type(edge%numedge, num_linear_edge,           &
@@ -286,6 +253,103 @@
       end if
 !
       end subroutine const_jacobians_edge
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_dxi_dx_element(ele, jacs)
+!
+      type(element_data), intent(in) :: ele
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      call dealloc_dxi_dx(jacs%jac_3d)
+!
+      if(ele%nnod_4_ele .ne. num_t_linear) then
+        call dealloc_dxi_dx(jacs%jac_3d_l)
+      end if
+!
+      end subroutine dealloc_dxi_dx_element
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_element(ele, jacs)
+!
+      type(element_data), intent(in) :: ele
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      if(ele%nnod_4_ele .eq. num_t_linear) then
+        nullify(jacs%jac_3d_l)
+      else
+        call dealloc_jacobians(jacs%jac_3d_l)
+        deallocate(jacs%jac_3d_l)
+      end if
+!
+      call dealloc_jacobians(jacs%jac_3d)
+!
+      end subroutine dealloc_jacobians_element
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_surf_grp(surf, jacs)
+!
+      use const_jacobians_2d
+!
+      type(surface_data), intent(in)  :: surf
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      if(surf%nnod_4_surf .eq. num_linear_sf) then
+        nullify(jacs%jac_sf_grp_l)
+      else
+        call dealloc_2d_jac_type(jacs%jac_sf_grp_l)
+        deallocate(jacs%jac_sf_grp_l)
+      end if
+!
+      call dealloc_2d_jac_type(jacs%jac_sf_grp)
+!
+      end subroutine dealloc_jacobians_surf_grp
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_surface(surf, jacs)
+!
+      use const_jacobians_2d
+!
+      type(surface_data), intent(in)  :: surf
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      if(surf%nnod_4_surf .eq. num_linear_sf) then
+        nullify(jacs%jac_2d_l)
+      else
+        call dealloc_2d_jac_type(jacs%jac_2d_l)
+        deallocate(jacs%jac_2d_l)
+      end if
+!
+      call dealloc_2d_jac_type(jacs%jac_2d)
+!
+      end subroutine dealloc_jacobians_surface
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_edge(edge, jacs)
+!
+      type(edge_data), intent(in)  :: edge
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      if(edge%nnod_4_edge .eq. num_linear_edge) then
+        nullify(jacs%jac_1d_l)
+      else
+        call dealloc_1d_jac_type(jacs%jac_1d_l)
+        deallocate(jacs%jac_1d_l)
+      end if
+!
+      call dealloc_1d_jac_type(jacs%jac_1d)
+!
+      end subroutine dealloc_jacobians_edge
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -325,114 +389,13 @@
 !
       subroutine link_linear_jacobians_edge(jac_1d, jacs)
 !
-      type(jacobians_2d), intent(in), target :: jac_1d
+      type(jacobians_1d), intent(in), target :: jac_1d
       type(jacobians_type), intent(inout) :: jacs
 !
-      jacs%jac_2d_l => jac_1d
+      jacs%jac_1d_l => jac_1d
 !
       end subroutine link_linear_jacobians_edge
 !
 ! ----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_dxi_dx_element(ele, jacs)
-!
-      type(element_data), intent(in) :: ele
-      type(jacobians_type), intent(inout) :: jacs
-!
-!
-      call dealloc_dxi_dx(jacs%jac_3d)
-!
-      if(ele%nnod_4_ele .ne. num_t_linear) then
-        call dealloc_dxi_dx(jacs%jac_3d_l)
-      end if
-!
-      end subroutine dealloc_dxi_dx_element
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_jacobians_element(ele, jacs)
-!
-      type(element_data), intent(in) :: ele
-      type(jacobians_type), intent(inout) :: jacs
-!
-!
-      if(ele%nnod_4_ele .eq. num_t_linear) then
-        nullify(jacs%jac_3d_l)
-      else
-        call dealloc_jacobians(jacs%jac_3d_l)
-        deallocate(jacs%jac_3d_l)
-      end if
-!
-      call dealloc_jacobians(jacs%jac_3d)
-      deallocate(jacs%jac_3d)
-!
-      end subroutine dealloc_jacobians_element
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_jacobians_surf_grp(surf, jacs)
-!
-      use const_jacobians_2d
-!
-      type(surface_data), intent(in)  :: surf
-      type(jacobians_type), intent(inout) :: jacs
-!
-!
-      if(surf%nnod_4_surf .eq. num_linear_sf) then
-        nullify(jacs%jac_sf_grp_l)
-      else
-        call dealloc_2d_jac_type(jacs%jac_sf_grp_l)
-        deallocate(jacs%jac_sf_grp_l)
-      end if
-!
-      call dealloc_2d_jac_type(jacs%jac_sf_grp)
-      deallocate(jacs%jac_sf_grp)
-!
-      end subroutine dealloc_jacobians_surf_grp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_jacobians_surface(surf, jacs)
-!
-      use const_jacobians_2d
-!
-      type(surface_data), intent(in)  :: surf
-      type(jacobians_type), intent(inout) :: jacs
-!
-!
-      if(surf%nnod_4_surf .eq. num_linear_sf) then
-        nullify(jacs%jac_2d_l)
-      else
-        call dealloc_2d_jac_type(jacs%jac_2d_l)
-        deallocate(jacs%jac_2d_l)
-      end if
-!
-      call dealloc_2d_jac_type(jacs%jac_2d)
-      deallocate(jacs%jac_2d)
-!
-      end subroutine dealloc_jacobians_surface
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_jacobians_edge(edge, jacs)
-!
-      type(edge_data), intent(in)  :: edge
-      type(jacobians_type), intent(inout) :: jacs
-!
-!
-      if(edge%nnod_4_edge .eq. num_linear_edge) then
-        nullify(jacs%jac_1d_l)
-      else
-        call dealloc_1d_jac_type(jacs%jac_1d_l)
-        deallocate(jacs%jac_1d_l)
-      end if
-!
-      call dealloc_1d_jac_type(jacs%jac_1d)
-      deallocate(jacs%jac_1d)
-!
-      end subroutine dealloc_jacobians_edge
-!
-!-----------------------------------------------------------------------
 !
       end module t_jacobians
