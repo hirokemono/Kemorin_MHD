@@ -237,6 +237,7 @@
       do i_level = 1, MGCG_WK%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &         'int_normal_4_all_surface', i_level
+        call alloc_normal_vector(MGCG_FEM%MG_mesh(i_level)%mesh%surf)
         call int_normal_4_all_surface                                   &
      &     (MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM,                     &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%surf,                        &

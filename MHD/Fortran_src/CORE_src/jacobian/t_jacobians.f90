@@ -30,6 +30,7 @@
 !!
 !!      subroutine dealloc_dxi_dx_element(ele, jacs)
 !!      subroutine dealloc_jacobians_element(ele, jacs)
+!!      subroutine dealloc_jacobians_surf_grp(surf, jacs)
 !!      subroutine dealloc_jacobians_surface(surf, jacs)
 !!      subroutine dealloc_jacobians_edge(edge, jacs)
 !!        type(element_data), intent(in) :: ele
@@ -330,6 +331,28 @@
       deallocate(jacs%jac_3d)
 !
       end subroutine dealloc_jacobians_element
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_surf_grp(surf, jacs)
+!
+      use const_jacobians_2d
+!
+      type(surface_data), intent(in)  :: surf
+      type(jacobians_type), intent(inout) :: jacs
+!
+!
+      if(surf%nnod_4_surf .eq. num_linear_sf) then
+        nullify(jacs%jac_sf_grp_l)
+      else
+        call dealloc_2d_jac_type(jacs%jac_sf_grp_l)
+        deallocate(jacs%jac_sf_grp_l)
+      end if
+!
+      call dealloc_2d_jac_type(jacs%jac_sf_grp)
+      deallocate(jacs%jac_sf_grp)
+!
+      end subroutine dealloc_jacobians_surf_grp
 !
 !-----------------------------------------------------------------------
 !
