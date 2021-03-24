@@ -59,6 +59,7 @@
       use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
       use const_element_comm_tables
+      use set_normal_vectors
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
@@ -113,6 +114,7 @@
       use set_table_4_RHS_assemble
       use parallel_FEM_mesh_init
       use const_element_comm_tables
+      use set_normal_vectors
 !
       type(volume_partioning_param), intent(in) :: repart_p
       type(VIZ_step_params), intent(in) :: viz_step
