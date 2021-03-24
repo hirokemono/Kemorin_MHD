@@ -60,7 +60,7 @@
 !>     Stracture for Jacobians for FEM grid
       type jacobians_type
 !>     Gauss points and weights
-        type(FEM_gauss_int_coefs), pointer :: g_FEM
+        type(FEM_gauss_int_coefs) :: g_FEM
 !
 !>     Stracture for Jacobians for element
         type(jacobians_3d), pointer :: jac_3d
@@ -79,14 +79,6 @@
         type(jacobians_1d), pointer  :: jac_1d_l
 !>     Stracture for Jacobians for linear surafce group
         type(jacobians_2d), pointer :: jac_sf_grp_l
-!
-        type(jacobians_3d), pointer ::  jac_3d_lq
-!>     Stracture for quadrature Jacobians for surface
-        type(jacobians_2d), pointer ::  jac_2d_lq
-!>     Stracture for quadrature Jacobians for edge
-        type(jacobians_1d), pointer  :: jac_1d_lq
-!>     Stracture for quadrature Jacobians for surafce group
-        type(jacobians_2d), pointer :: jac_sf_grp_lq
       end type jacobians_type
 !
 !  ---------------------------------------------------------------------
@@ -296,6 +288,51 @@
       end subroutine const_jacobians_edge
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine link_linear_jacobians_element(jac_3d, jacs)
+!
+      type(jacobians_3d), intent(in), target :: jac_3d
+      type(jacobians_type), intent(inout) :: jacs
+!
+      jacs%jac_3d_l => jac_3d
+!
+      end subroutine link_linear_jacobians_element
+!
+! ----------------------------------------------------------------------
+!
+      subroutine link_linear_jacobians_sf_grp(jac_sf_grp, jacs)
+!
+      type(jacobians_2d), intent(in), target :: jac_sf_grp
+      type(jacobians_type), intent(inout) :: jacs
+!
+      jacs%jac_sf_grp_l => jac_sf_grp
+!
+      end subroutine link_linear_jacobians_sf_grp
+!
+! ----------------------------------------------------------------------
+!
+      subroutine link_linear_jacobians_surface(jac_2d, jacs)
+!
+      type(jacobians_2d), intent(in), target :: jac_2d
+      type(jacobians_type), intent(inout) :: jacs
+!
+      jacs%jac_2d_l => jac_2d
+!
+      end subroutine link_linear_jacobians_surface
+!
+! ----------------------------------------------------------------------
+!
+      subroutine link_linear_jacobians_edge(jac_1d, jacs)
+!
+      type(jacobians_2d), intent(in), target :: jac_1d
+      type(jacobians_type), intent(inout) :: jacs
+!
+      jacs%jac_2d_l => jac_1d
+!
+      end subroutine link_linear_jacobians_edge
+!
+! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_dxi_dx_element(ele, jacs)

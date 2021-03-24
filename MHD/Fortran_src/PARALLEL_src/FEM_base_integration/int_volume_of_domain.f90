@@ -156,7 +156,6 @@
 !
       call empty_infty_surf_type(infty_grp)
 !
-      allocate(jacs%g_FEM)
       call sel_max_int_point_by_etype(ele%nnod_4_ele, jacs%g_FEM)
       call initialize_FEM_integration                                   &
      &   (jacs%g_FEM, spfs%spf_3d, spfs%spf_2d, spfs%spf_1d)

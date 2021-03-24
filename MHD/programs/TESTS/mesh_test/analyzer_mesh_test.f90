@@ -121,7 +121,6 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-      allocate(jacobians_T%g_FEM)
       call sel_max_int_point_by_etype                                   &
      &   (fem_T%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
       call const_jacobian_volume_normals(my_rank, nprocs,               &

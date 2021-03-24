@@ -192,7 +192,8 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK%num_MG_level
-        MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM => jacs_1st%g_FEM
+        call copy_fem_gauss_int_coefs                                   &
+     &     (jacs_1st%g_FEM, MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM)
         call alloc_vol_shape_func                                       &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,              &
      &      MGCG_FEM%MG_FEM_int(i_level)%jcs%g_FEM, spfs%spf_3d)

@@ -137,7 +137,6 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
-      allocate(fem_int_f%jcs%g_FEM)
       call set_max_integration_points                                   &
      &   (gfil_p1%num_int_points, fem_int_f%jcs%g_FEM)
       call initialize_FEM_integration(fem_int_f%jcs%g_FEM,              &

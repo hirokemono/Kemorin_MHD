@@ -89,7 +89,6 @@
       iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
-        allocate(jacobians%g_FEM)
 !        call sel_max_int_point_by_etype                                &
 !     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
         call set_max_integration_points(ione, jacobians%g_FEM)
