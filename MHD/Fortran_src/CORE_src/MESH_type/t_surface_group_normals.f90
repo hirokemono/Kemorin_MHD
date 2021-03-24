@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date   Programmed in Dec., 2008
 !
-!>   @brief Structure of geometry data for surface group
+!>@brief Structure of geometry data for surface group
 !!
 !!@verbatim
 !!      subroutine alloc_vectors_surf_group                             &
