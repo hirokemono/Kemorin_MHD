@@ -9,13 +9,15 @@
 !!@verbatim
 !!      subroutine s_mesh_repartition_by_volume                         &
 !!     &         (org_fem, ele_comm, neib_nod, part_param,              &
-!!     &          new_mesh, new_groups, repart_nod_tbl, repart_ele_tbl)
+!!     &          new_mesh, new_groups, new_ele_comm,                   &
+!!     &          repart_nod_tbl, repart_ele_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: org_fem
 !!        type(communication_table), intent(in) :: ele_comm
 !!        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !!        type(mesh_geometry), intent(inout) :: new_mesh
 !!        type(mesh_groups), intent(inout) :: new_groups
+!!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
 !!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !!@endverbatim
@@ -43,7 +45,8 @@
 !
       subroutine s_mesh_repartition_by_volume                           &
      &         (org_fem, ele_comm, neib_nod, part_param,                &
-     &          new_mesh, new_groups, repart_nod_tbl, repart_ele_tbl)
+     &          new_mesh, new_groups, new_ele_comm,                     &
+     &          repart_nod_tbl, repart_ele_tbl)
 !
       use t_para_double_numbering
       use t_control_param_vol_grping
@@ -61,6 +64,7 @@
 !
       type(mesh_geometry), intent(inout) :: new_mesh
       type(mesh_groups), intent(inout) :: new_groups
+      type(communication_table), intent(inout) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
       type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !
@@ -89,8 +93,13 @@
      &    new_mesh%ele, repart_ele_tbl, new_mesh%surf, new_mesh%edge)
       call dealloc_double_numbering(new_ids_on_org)
 !
-      call s_redistribute_groups(org_fem%mesh, org_fem%group, ele_comm, &
-     &    new_mesh, repart_nod_tbl, repart_ele_tbl, new_groups)
+       call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+       call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,      &
+      &                          new_ele_comm, new_mesh%ele)
+!
+      call s_redistribute_groups                                        &
+     &   (org_fem%mesh, org_fem%group, new_mesh, new_ele_comm,          &
+     &    repart_nod_tbl, repart_ele_tbl, new_groups)
 !
       end subroutine s_mesh_repartition_by_volume
 !

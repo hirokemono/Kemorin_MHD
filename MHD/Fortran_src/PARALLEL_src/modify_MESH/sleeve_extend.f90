@@ -79,12 +79,6 @@
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
-      call set_nod_and_ele_infos(mesh%node, mesh%ele)
-      call const_ele_comm_table(mesh%node, mesh%nod_comm,               &
-     &                          ele_comm, mesh%ele)
-      call dealloc_numele_stack(mesh%ele)
-!
-!
       dist_4_comm%ntot = mesh%nod_comm%ntot_export
       allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
 !$omp parallel workshare
