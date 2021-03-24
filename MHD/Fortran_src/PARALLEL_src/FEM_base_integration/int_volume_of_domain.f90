@@ -12,8 +12,8 @@
 !> @brief Construct jacobians and volume integrations
 !!
 !!@verbatim
-!!      subroutine const_jacobian_volume_normals(id_rank, nprocs,       &
-!!     &          mesh, group, spfs, jacs)
+!!      subroutine jacobian_and_element_volume                          &
+!!     &         (id_rank, nprocs, mesh, group, spfs, jacs)
 !!      subroutine const_jacobian_and_volume                            &
 !!     &         (id_rank, nprocs, mesh, group, spf_3d, jacs)
 !!      subroutine const_jacobian_and_vol_layer(id_rank, nprocs,        &
@@ -52,13 +52,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_jacobian_volume_normals(id_rank, nprocs,         &
-     &          mesh, group, spfs, jacs)
+      subroutine jacobian_and_element_volume                            &
+     &         (id_rank, nprocs, mesh, group, spfs, jacs)
 !
       use t_surface_group_normals
       use set_normal_vectors
-      use sum_normal_4_surf_group
-      use set_connects_4_surf_group
       use const_jacobians_3d
 !
       integer, intent(in) :: id_rank, nprocs
@@ -79,15 +77,7 @@
 !      call check_jacobians_trilinear                                   &
 !     &   (id_rank, mesh%ele, jacs%jac_3d_l)
 !
-!     --------------------- Surface jacobian for fieldline
-!
-      if (iflag_debug.eq.1) write(*,*)                                  &
-     &   'surf_jacobian_sf_grp_normal'
-      call surf_jacobian_sf_grp_normal(id_rank, nprocs,                 &
-     &    mesh, group, spfs, jacs)
-      call dealloc_surf_shape_func(spfs%spf_2d)
-!
-      end subroutine const_jacobian_volume_normals
+      end subroutine jacobian_and_element_volume
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

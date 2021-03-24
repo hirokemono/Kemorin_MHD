@@ -85,11 +85,16 @@
 !  -------------------------------
 !  -------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
+      if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
       call sel_max_int_point_by_etype                                   &
      &   (fem_MG%mesh%ele%nnod_4_ele, jacobians_T%g_FEM)
-      call const_jacobian_volume_normals(my_rank, nprocs,               &
+      call jacobian_and_element_volume(my_rank, nprocs,                 &
      &    fem_MG%mesh, fem_MG%group, spfs_T, jacobians_T)
+!
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &   'surf_jacobian_sf_grp_normal'
+      call surf_jacobian_sf_grp_normal(my_rank, nprocs,                 &
+     &    fem_MG%mesh, fem_MG%grou, spfs_T, jacobians_T)
 !
 !  -------------------------------
 !

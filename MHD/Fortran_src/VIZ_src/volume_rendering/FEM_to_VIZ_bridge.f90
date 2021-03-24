@@ -49,8 +49,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine normals_and_jacobians_4_VIZ                            &
-     &         (viz_step, geofem, edge_comm, ele_4_nod, jacobians)
+      subroutine normals_and_jacobians_4_VIZ(repart_p, viz_step,        &
+     &          geofem, edge_comm, ele_4_nod, jacobians, viz_fem)
 !
       use t_fem_gauss_int_coefs
       use int_volume_of_domain
@@ -58,14 +58,17 @@
       use parallel_FEM_mesh_init
       use const_element_comm_tables
 !
+      type(volume_partioning_param), intent(in) :: repart_p
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_data), intent(inout) :: geofem
       type(communication_table), intent(inout) :: edge_comm
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_type), intent(inout) :: jacobians
+      type(mesh_data), intent(inout) :: viz_fem
 !
       integer(kind = kint) :: iflag
       type(shape_finctions_at_points) :: spfs
+      type(jacobians_type) :: jac_viz
 !
 !
       if(iflag_debug.gt.0) write(*,*) 'FEM_mesh_initialization'
@@ -88,12 +91,21 @@
 !
       iflag = viz_step%PVR_t%increment + viz_step%LIC_t%increment
       if(iflag .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'const_jacobian_volume_normals'
+        if(iflag_debug.gt.0) write(*,*) 'jacobian_and_element_volume'
 !        call sel_max_int_point_by_etype                                &
 !     &     (geofem%mesh%ele%nnod_4_ele, jacobians%g_FEM)
         call set_max_integration_points(ione, jacobians%g_FEM)
-        call const_jacobian_volume_normals(my_rank, nprocs,             &
+        call jacobian_and_element_volume(my_rank, nprocs,               &
      &      geofem%mesh, geofem%group, spfs, jacobians)
+        if (iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
+        call surf_jacobian_sf_grp_normal(my_rank, nprocs,               &
+     &      geofem%mesh, geofem%group, spfs, jacobians)
+!
+        if(repart_p%flag_repartition) then
+          if(iflag_debug.eq.1) write(*,*) 'surf_jacobian_sf_grp_normal'
+          call surf_jacobian_sf_grp_normal(my_rank, nprocs,             &
+     &        viz_fem%mesh, viz_fem%group, spfs, jac_viz)
+        end if
       end if
 !
       end subroutine normals_and_jacobians_4_VIZ
@@ -124,8 +136,9 @@
 !
       call link_jacobians_4_viz                                         &
      &   (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-      call normals_and_jacobians_4_VIZ(viz_step, geofem,                &
-     &    VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+      call normals_and_jacobians_4_VIZ                                  &
+     &   (VIZ_DAT%repart_p, viz_step, geofem, VIZ_DAT%edge_comm,        &
+     &    VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians, VIZ_DAT%viz_fem)
 !
       end subroutine init_FEM_to_VIZ_bridge
 !
@@ -158,8 +171,9 @@
 !
         call link_jacobians_4_viz                                       &
      &     (VIZ_DAT%ele_4_nod_v, VIZ_DAT%jacobians_v, VIZ_DAT)
-        call normals_and_jacobians_4_VIZ(viz_step, geofem,              &
-     &      VIZ_DAT%edge_comm, VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians)
+        call normals_and_jacobians_4_VIZ                                &
+     &     (VIZ_DAT%repart_p, viz_step, geofem, VIZ_DAT%edge_comm,      &
+     &      VIZ_DAT%ele_4_nod, VIZ_DAT%jacobians, VIZ_DAT%viz_fem)
       else
         call link_FEM_field_4_viz(geofem, VIZ_DAT)
         call link_jacobians_4_viz                                       &
