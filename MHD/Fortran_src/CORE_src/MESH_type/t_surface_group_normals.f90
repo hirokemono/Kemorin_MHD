@@ -58,11 +58,11 @@
       type(surface_group_normals), intent(inout) :: sf_grp_v
 !
 !
-      allocate ( sf_grp_v%vnorm_sf_grp(num_item,3)   )
+      allocate(sf_grp_v%vnorm_sf_grp(num_item,3))
 !
-      allocate ( sf_grp_v%tot_area_sf_grp(num_grp) )
-      allocate ( sf_grp_v%area_sf_grp  (num_item)   )
-      allocate ( sf_grp_v%a_area_sf_grp(num_item)   )
+      allocate(sf_grp_v%tot_area_sf_grp(num_grp))
+      allocate(sf_grp_v%area_sf_grp(num_item)   )
+      allocate(sf_grp_v%a_area_sf_grp(num_item) )
 !
       if(num_grp .gt. 0) sf_grp_v%tot_area_sf_grp = 0.0d0
       if(num_item .gt. 0) then
