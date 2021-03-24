@@ -235,6 +235,14 @@
 !
 !  -------------------------------
 !
+      if (iflag_debug.eq.1) write(*,*) 'set_MHD_connectivities'
+      call set_MHD_connectivities                                       &
+     &   (FEM_prm%DJDS_param, geofem%mesh, MHD_mesh%fluid,              &
+     &    MHD_CG%solver_C, SGS_MHD_wk%fem_int,                          &
+     &    MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
+!
+!     ---------------------
+!
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
      &   (SGS_par%model_p, fem_sq%i_msq, MHD_BC,                        &
@@ -242,14 +250,6 @@
      &    SGS_MHD_wk%fem_int%jcs, MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
-      call set_MHD_connectivities                                       &
-     &   (FEM_prm%DJDS_param, geofem%mesh, MHD_mesh%fluid,              &
-     &    MHD_CG%solver_C, SGS_MHD_wk%fem_int,                          &
-     &    MHD_CG%MHD_mat, MHD_CG%DJDS_comm_fl)
-!
-!     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &

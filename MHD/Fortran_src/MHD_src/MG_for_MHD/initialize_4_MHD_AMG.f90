@@ -174,6 +174,19 @@
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm)
       end do
 !
+!     -----  set DJDS matrix connectivity
+!
+      if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
+      call set_MG_djds_connect_type(DJDS_param,                         &
+     &    MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_mat)
+!
+!     --------------------- 
+!
+      if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
+      call s_link_MG_MHD_mesh_data                                      &
+     &   (MGCG_WK, MGCG_FEM%MG_mesh, MGCG_MHD_FEM%MG_MHD_mesh,          &
+     &    mesh_1st%ele, MHD_mat)
+!
 !     ---------------------
 !
       do i_level = 1, MGCG_WK%num_MG_level
@@ -218,20 +231,6 @@
         call dealloc_surf_shape_func(spfs%spf_2d)
         call dealloc_vol_shape_func(spfs%spf_3d)
       end do
-!
-!
-!     -----  set DJDS matrix connectivity
-!
-      if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
-      call set_MG_djds_connect_type(DJDS_param,                         &
-     &    MGCG_WK, MGCG_MHD_FEM, MGCG_FEM, MHD_mat)
-!
-!     --------------------- 
-!
-      if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
-      call s_link_MG_MHD_mesh_data                                      &
-     &   (MGCG_WK, MGCG_FEM%MG_mesh, MGCG_MHD_FEM%MG_MHD_mesh,          &
-     &    mesh_1st%ele, MHD_mat)
 !
 !     --------------------- 
 !
