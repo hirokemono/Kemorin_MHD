@@ -88,7 +88,7 @@
      &    repart_nod_tbl, repart_ele_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
-      call dealloc_numele_stack(new_fem%ele)
+      call dealloc_numele_stack(new_fem%mesh%ele)
 !
 ! Increase sleeve size
       if(part_param%sleeve_exp_p%iflag_expand .ne. iflag_turn_off) then

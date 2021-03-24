@@ -111,6 +111,7 @@
       use solver_SR_type
       use select_copy_from_recv
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -149,7 +150,7 @@
         call SOLVER_SEND_RECV_int_type                                  &
      &     (new_node%numnod, new_comm, iflag_new)
 !
-        new_ele_grp%nitem_grp(igrp) = sum(iflag_new)
+        new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
 !
       call s_cal_total_and_stacks                                       &
@@ -187,6 +188,7 @@
       use solver_SR_type
       use select_copy_from_recv
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
@@ -264,6 +266,7 @@
       use solver_SR_type
       use select_copy_from_recv
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: surf_grp
@@ -306,12 +309,12 @@
       end do
 !
       call s_cal_total_and_stacks                                       &
-     &   (surf_grp%num_grp, new_surf_grp%nitem_grp, izero,              &
-     &    new_sf_grp%istack_grp, new_sf_grp%num_item)
+     &   (new_surf_grp%num_grp, new_surf_grp%nitem_grp, izero,          &
+     &    new_surf_grp%istack_grp, new_surf_grp%num_item)
       call alloc_sf_group_item(new_surf_grp)
 
       do igrp = 1, surf_grp%num_grp
-        icou = new_sf_grp%istack_grp(igrp-1)
+        icou = new_surf_grp%istack_grp(igrp-1)
         do k1 = 1, ele%nnod_4_ele
 !$omp parallel workshare
           iflag_new(1:new_ele%numele) = 0

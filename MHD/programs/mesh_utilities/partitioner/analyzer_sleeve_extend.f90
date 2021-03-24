@@ -97,14 +97,17 @@
       subroutine analyze_sleeve_extend
 !
       use sleeve_extend
+      use nod_and_ele_derived_info
+      use const_element_comm_tables
 !
       type(communication_table), save:: ele_comm
 !
 !
-      call set_nod_and_ele_infos(fem_EXT%node, fem_EXT%ele)
-      call const_ele_comm_table(fem_EXT%node, fem_EXT%nod_comm,         &
-     &                          ele_comm, fem_EXT%ele)
-      call dealloc_numele_stack(fem_EXT%ele)
+      call set_nod_and_ele_infos(fem_EXT%mesh%node, fem_EXT%mesh%ele)
+      call const_ele_comm_table                                         &
+     &   (fem_EXT%mesh%node, fem_EXT%mesh%nod_comm,                     &
+     &    ele_comm, fem_EXT%mesh%ele)
+      call dealloc_numele_stack(fem_EXT%mesh%ele)
 !
       call sleeve_extension_loop                                        &
      &   (sleeve_exp_p1, fem_EXT%mesh, fem_EXT%group, ele_comm)

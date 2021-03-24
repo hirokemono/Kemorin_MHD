@@ -94,6 +94,7 @@
 !
       use solver_SR_type
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -122,7 +123,7 @@
      &     (igrp, node%numnod, nod_grp, iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
      &     (new_node%numnod, new_comm, iflag_new)
-        new_ele_grp%nitem_grp(igrp) = sum(iflag_new)
+        new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
 !
       call s_cal_total_and_stacks                                       &
@@ -150,6 +151,7 @@
 !
       use solver_SR_type
       use redistribute_group_data
+      use cal_minmax_and_stacks
 !
       type(group_data), intent(in) :: ele_grp
 !
@@ -231,7 +233,7 @@
 !
       do igrp = 1, surf_grp%num_grp
         new_surf_grp%nitem_grp(igrp) = 0
-        do k1 = 1, ele%nnod_4_ele
+        do k1 = 1, new_ele%nnod_4_ele
           call mark_org_surf_group_repart                               &
      &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
           call SOLVER_SEND_RECV_int_type                                &
@@ -242,13 +244,13 @@
       end do
 !
       call s_cal_total_and_stacks                                       &
-     &   (new_sf_grp%num_grp, new_surf_grp%nitem_grp, izero,            &
-     &    new_sf_grp%istack_grp, new_sf_grp%num_item)
+     &   (new_surf_grp%num_grp, new_surf_grp%nitem_grp, izero,          &
+     &    new_surf_grp%istack_grp, new_surf_grp%num_item)
       call alloc_sf_group_item(new_surf_grp)
 
       do igrp = 1, surf_grp%num_grp
-        icou = new_sf_grp%istack_grp(igrp-1)
-        do k1 = 1, ele%nnod_4_ele
+        icou = new_surf_grp%istack_grp(igrp-1)
+        do k1 = 1, new_ele%nnod_4_ele
           call mark_org_surf_group_repart                               &
      &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
           call SOLVER_SEND_RECV_int_type                                &

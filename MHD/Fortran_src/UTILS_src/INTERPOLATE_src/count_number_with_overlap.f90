@@ -76,7 +76,7 @@
       integer :: ip, id_rank
       integer(kind = kint) :: ierr
 !
-       type(mesh_data) :: fem_IO_o
+      type(mesh_data) :: fem_IO_o
 !
 !
       do ip = 1, num_pe
@@ -93,7 +93,7 @@
         call dealloc_groups_data(fem_IO_o%group)
       end do
 !
-      nnod_4_ele = fem_IO_o%mesh%ele%nnod_4_ele
+      if(num_pe .gt. 0) nnod_4_ele = fem_IO_o%mesh%ele%nnod_4_ele
 !
       end subroutine count_numbers_4_mesh_merge
 !

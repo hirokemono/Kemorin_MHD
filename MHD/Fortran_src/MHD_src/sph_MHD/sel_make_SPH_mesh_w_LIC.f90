@@ -169,6 +169,8 @@
       use para_const_kemoview_mesh
       use sleeve_extend
       use const_FEM_mesh_sph_mhd
+      use const_element_comm_tables
+      use nod_and_ele_derived_info
 !
       logical, intent(in) :: flag_repartition
       type(FEM_file_IO_flags), intent(in) :: FEM_mesh_flags

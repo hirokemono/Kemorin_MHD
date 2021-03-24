@@ -14,8 +14,7 @@
 !!         type(surface_group_normals), intent(inout) :: sf_grp_v
 !!
 !!      subroutine pick_normal_of_surf_group                            &
-!!     &         (node, ele, surf, edge, sf_grp, sf_grp_v)
-!!        type(node_data), intent(in) :: node
+!!     &         (ele, surf, edge, sf_grp, sf_grp_v)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data),    intent(in) :: edge
@@ -91,7 +90,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine pick_normal_of_surf_group                              &
-     &         (node, ele, surf, edge, sf_grp, sf_grp_v)
+     &         (ele, surf, edge, sf_grp, sf_grp_v)
 !
       use t_geometry_data
       use t_group_data
@@ -101,7 +100,6 @@
       use t_group_connects
       use t_surface_group_table
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(edge_data),    intent(in) :: edge

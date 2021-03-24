@@ -56,6 +56,8 @@
       use const_repart_nod_and_comm
       use const_repart_ele_connect
       use redistribute_groups
+      use const_element_comm_tables
+      use nod_and_ele_derived_info
 !
       type(volume_partioning_param), intent(in) ::  part_param
       type(mesh_data), intent(in) :: org_fem

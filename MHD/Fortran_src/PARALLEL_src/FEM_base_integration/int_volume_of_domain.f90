@@ -29,6 +29,14 @@
 !!        type(jacobians_type), intent(inout) :: jacs
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!      subroutine s_int_volume_of_domain(ele, g_FEM, jac_3d)
+!!
+!!      subroutine const_sf_grp_jacobian_normals(id_rank, nprocs,       &
+!!     &          mesh, group, spfs, jacs)
+!!        integer, intent(in) :: id_rank, nprocs
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) :: group
+!!        type(shape_finctions_at_points), intent(inout) :: spfs
+!!        type(jacobians_type), intent(inout) :: jacs
 !!@endverbatim
 !
       module int_volume_of_domain
@@ -76,28 +84,15 @@
      &   (id_rank, nprocs, mesh, group, spfs%spf_3d, jacs)
       call dealloc_vol_shape_func(spfs%spf_3d)
 !
-!     --------------------- Surface jacobian for fieldline
-!
-      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(id_rank, nprocs,                         &
-     &    mesh%node, mesh%surf, spfs%spf_2d, jacs)
-      call dealloc_surf_shape_func(spfs%spf_2d)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group                                    &
-     &   (mesh%node, mesh%ele, mesh%surf, mesh%edge,                    &
-     &    group%surf_grp, group%surf_grp_norm)
-!
-      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group(mesh%ele,                          &
-     &    group%surf_grp, group%surf_grp_norm)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-      call cal_surf_normal_at_nod(mesh%node, mesh%ele, mesh%surf,       &
-     &    group%surf_grp, group%surf_grp_norm, group%surf_nod_grp)
-!
 !      call check_jacobians_trilinear                                   &
 !     &   (id_rank, mesh%ele, jacs%jac_3d_l)
+!
+!     --------------------- Surface jacobian for fieldline
+!
+      if (iflag_debug.eq.1) write(*,*)  'const_sf_grp_jacobian_normals'
+      call const_sf_grp_jacobian_normals(id_rank, nprocs,               &
+     &    mesh, group, spfs, jacs)
+      call dealloc_surf_shape_func(spfs%spf_2d)
 !
       end subroutine const_jacobian_volume_normals
 !
@@ -152,7 +147,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(inout) :: ele
-      type(surface_group_data), intent(in) :: surf_grp
+      type(surface_group_data), intent(inout) :: surf_grp
       type(scalar_surf_BC_list), intent(inout) :: infty_grp
       type(shape_finctions_at_points), intent(inout) :: spfs
       type(jacobians_type), intent(inout) :: jacs
@@ -215,6 +210,42 @@
       end if
 !
       end subroutine s_int_volume_of_domain
+!
+!-----------------------------------------------------------------------
+!
+      subroutine const_sf_grp_jacobian_normals(id_rank, nprocs,         &
+     &          mesh, group, spfs, jacs)
+!
+      use t_surface_group_normals
+      use set_normal_vectors
+      use sum_normal_4_surf_group
+      use set_connects_4_surf_group
+!
+      integer, intent(in) :: id_rank, nprocs
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
+      type(shape_finctions_at_points), intent(inout) :: spfs
+      type(jacobians_type), intent(inout) :: jacs
+!
+!     --------------------- Surface jacobian for fieldline
+!
+      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
+      call const_normal_vector(id_rank, nprocs,                         &
+     &    mesh%node, mesh%surf, spfs%spf_2d, jacs)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+      call pick_normal_of_surf_group(mesh%ele, mesh%surf, mesh%edge,    &
+     &    group%surf_grp, group%surf_grp_norm)
+!
+      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(mesh%ele,                          &
+     &    group%surf_grp, group%surf_grp_norm)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
+      call cal_surf_normal_at_nod(mesh%node, mesh%ele, mesh%surf,       &
+     &    group%surf_grp, group%surf_grp_norm, group%surf_nod_grp)
+!
+      end subroutine const_sf_grp_jacobian_normals
 !
 !-----------------------------------------------------------------------
 !
