@@ -1,9 +1,13 @@
-!cal_noise_value.f90
-!
-!      module cal_noise_value
-!
-!      Written by H. Matsui in May, 2020
-!
+!>@file   cal_noise_value.f90
+!!@brief  module cal_noise_value
+!!
+!!@author Y. Liao and H. Matsui
+!!@date Programmed by Y. Liao in Apr. 2018
+!!      Modified by H. Matsui in Apr. 2020
+!!
+!> @brief Get noise value for each point by interpolation
+!!
+!!@verbatim
 !!      subroutine interpolate_kernel(iflag_dir, x, knl, value)
 !!        type(LIC_kernel), intent(in) :: knl
 !!      subroutine interpolate_noise_at_node                            &
@@ -14,7 +18,7 @@
 !!        type(noise_cube), intent(in) :: nze
 !!        real(kind = kreal), intent(inout) :: point_noise
 !!        real(kind = kreal), intent(inout) :: point_grad_noise(3)
-!
+!!@endverbatim
 !
       module cal_noise_value
 !
