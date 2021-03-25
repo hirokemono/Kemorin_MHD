@@ -181,16 +181,16 @@
      &    lic%pvr%istack_pvr_render, lic%pvr%istack_pvr_images,         &
      &    lic%pvr%pvr_rgb)
 !
-      call s_set_lic_controls(viz_fem%group, nod_fld, lic%pvr%num_pvr,  &
-     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
-     &    lic%lic_fld_pm, lic%pvr%pvr_param)
-!
       do i_lic = 1, lic%pvr%num_pvr
         call alloc_rendering_params_4_pvr                               &
      &     (viz_fem%mesh%ele%numele, viz_fem%group%surf_grp%num_grp,    &
      &      lic%pvr%pvr_param(i_lic)%draw_param)
         call reset_pvr_view_parameteres(lic%pvr%pvr_param(i_lic)%view)
       end do
+!
+      call s_set_lic_controls(viz_fem%group, nod_fld, lic%pvr%num_pvr,  &
+     &    lic_ctls%pvr_ctl_type, lic_ctls%lic_ctl_type,                 &
+     &    lic%lic_fld_pm, lic%pvr%pvr_param)
 !
       do i_lic = 1, lic%pvr%num_pvr
         allocate(lic%lic_fld_pm(i_lic)%nod_fld_lic)
