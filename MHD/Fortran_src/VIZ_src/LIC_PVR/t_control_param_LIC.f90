@@ -200,7 +200,7 @@
         call set_control_3d_cube_noise                                  &
      &     (lic_ctl%noise_ctl, lic_p%noise_t)
         call sel_const_3d_cube_noise(my_rank, lic_p%noise_t, ierr)
-        if(ierr .gt. 0) calypso_mpi_abort(ierr, e_message)
+        if(ierr .gt. 0) call calypso_mpi_abort(ierr, e_message)
       end if
 !
       call bcast_3d_cube_noise(lic_p%noise_t)
