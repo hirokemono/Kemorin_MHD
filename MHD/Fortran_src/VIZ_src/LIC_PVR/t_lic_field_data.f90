@@ -148,10 +148,10 @@
           ist_fld =  nod_fld%istack_component(i_field-1)
           num_comp = nod_fld%istack_component(i_field) - ist_fld
           call convert_comps_4_viz                                      &
-       &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,       &
-       &      node%a_r, node%ss, node%a_s, ione, num_comp,              &
-       &      lic_p%masking(i)%field_info%id_component,                 &
-       &      nod_fld%d_fld(1,ist_fld+1), field_lic%s_lic(1,i))
+     &     (node%numnod, node%istack_nod_smp, node%xx, node%rr,         &
+     &      node%a_r, node%ss, node%a_s, ione, num_comp,                &
+     &      lic_p%masking(i)%field_info%id_component,                   &
+     &      nod_fld%d_fld(1,ist_fld+1), field_lic%s_lic(1,i))
         end if
       end do
 !
