@@ -119,7 +119,7 @@
       character(len = kchara) :: tmpfield(1), tmpcomp(1)
       character(len = kchara) :: tmpchara
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, ierr
 !
 !
       if(lic_ctl%LIC_field_ctl%iflag .ne. 0) then
