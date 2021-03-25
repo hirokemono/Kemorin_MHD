@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine set_control_3d_cube_noise(noise_ctl, nze)
-!!      subroutine sel_const_3d_cube_noise(my_rank, nze)
+!!      subroutine sel_const_3d_cube_noise(my_rank, nze, ierr)
 !!        type(cube_noise_ctl), intent(in) :: noise_ctl
 !!        type(noise_cube), intent(inout) :: nze
 !!
@@ -30,6 +30,9 @@
      &                        :: cflag_from_file = 'file'
       character(len = kchara), parameter, private                       &
      &                        :: cflag_randum = 'randum'
+!
+      character(len = kchara), parameter, private                       &
+     &                        :: no_file_name = 'NO_FILE'
 !
       integer(kind = kint), parameter :: iflag_from_file =    0
       integer(kind = kint), parameter :: iflag_randum =       1
@@ -87,12 +90,12 @@
       real(kind = kreal)  :: c_size(3)
 !
 !
-      nze%noise_file_name = 'noise'
+      nze%noise_file_name = no_file_name
       nze%i_stepsize = ione
       num_1d(1:3) = 256
       c_size(1:3) = one
 !
-      nze%iflag_noise_type = iflag_from_file
+      nze%iflag_noise_type = iflag_randum
       if(noise_ctl%noise_type_ctl%iflag .gt. 0) then
         tmpchara = noise_ctl%noise_type_ctl%charavalue
         if(cmp_no_case(tmpchara, cflag_from_file)) then
@@ -131,19 +134,28 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_const_3d_cube_noise(my_rank, nze)
+      subroutine sel_const_3d_cube_noise(my_rank, nze, ierr)
 !
+      use m_error_IDs
       use delete_data_files
       use cal_3d_noise
 !
       integer, intent(in) :: my_rank
       type(noise_cube), intent(inout) :: nze
+      integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(check_file_exist(nze%noise_file_name)) then
-        call read_alloc_3d_charanoise                                   &
-     &     (my_rank, nze%noise_file_name, nze)
-        call alloc_3d_cube_noise(nze)
+      ierr = 0
+      if(nze%iflag_noise_type .eq. iflag_from_file) then
+        if(check_file_exist(nze%noise_file_name)) then
+          call read_alloc_3d_charanoise                                 &
+     &       (my_rank, nze%noise_file_name, nze)
+          call alloc_3d_cube_noise(nze)
+        else
+          write(e_message,'(3a)') 'noise file ',                        &
+     &       trim(nze%noise_file_name), ' is missing'
+          ierr = ierr_file
+        end if
       else
         call alloc_3d_cube_noise(nze)
         call const_3d_noise                                             &
@@ -151,7 +163,9 @@
 !
         call alloc_3d_cube_noise_IO(nze)
         call cvt_rnoise_to_chara(nze%n_cube, nze%rnoise, nze%cnoise)
-        call write_3d_charanoise(nze%noise_file_name, nze)
+        if(nze%noise_file_name .ne. no_file_name) then
+          call write_3d_charanoise(nze%noise_file_name, nze)
+        end if
       end if
       call cvt_cnoise_to_real(nze%n_cube, nze%cnoise, nze%rnoise)
       call dealloc_3d_cube_noise_IO(nze)

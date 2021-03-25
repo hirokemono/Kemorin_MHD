@@ -45,7 +45,7 @@
       type(ucd_data) :: ucd
       type(vectors_4_solver) :: v_sol_n
 !
-      integer(kind = kint) :: inod
+      integer(kind = kint) :: inod, ierr
 !
 !
       iflag_debug = 0
@@ -53,7 +53,8 @@
       call  read_cube_noise_control_file(id_control, ctl_file_name,     &
      &    hd_cube_noise, noise_c1)
       call set_control_3d_cube_noise(noise_c1, noise_t1)
-      call sel_const_3d_cube_noise(my_rank, noise_t1)
+      call sel_const_3d_cube_noise(my_rank, noise_t1, ierr)
+      if(ierr .gt. 0) stop e_message
 !
 !
       vtk_file_name = add_vtk_extension(noise_t1%noise_file_name)
