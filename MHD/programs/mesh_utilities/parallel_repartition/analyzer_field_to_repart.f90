@@ -36,7 +36,6 @@
       type(mesh_data), save :: fem_T
       type(mesh_data), save :: new_fem
       type(calypso_comm_table), save :: repart_nod_tbl1
-      type(calypso_comm_table), save :: repart_ele_tbl1
 !
 !>      Structure for communicatiors for solver
       type(vectors_4_solver), save :: v_sol_T
@@ -102,7 +101,7 @@
 !  -------------------------------
 !
       call load_or_const_new_partition(part_p1%repart_p, fem_T,         &
-     &    new_fem, repart_nod_tbl1, repart_ele_tbl1)
+     &    new_fem, repart_nod_tbl1)
       call set_nod_and_ele_infos(new_fem%mesh%node, new_fem%mesh%ele)
       call const_global_mesh_infos(new_fem%mesh)
 !

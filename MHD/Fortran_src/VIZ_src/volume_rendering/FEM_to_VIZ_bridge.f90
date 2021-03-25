@@ -158,7 +158,7 @@
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
         call load_or_const_new_partition                                &
      &     (VIZ_DAT%repart_p, geofem, VIZ_DAT%viz_fem,                  &
-     &      VIZ_DAT%mesh_to_viz_tbl, VIZ_DAT%ele_to_viz_tbl)
+     &      VIZ_DAT%mesh_to_viz_tbl)
         call FEM_mesh_initialization(VIZ_DAT%viz_fem%mesh,              &
      &                               VIZ_DAT%viz_fem%group)
       else
@@ -196,7 +196,7 @@
         call link_FEM_field_4_viz(VIZ_DAT%geofem_v, VIZ_DAT)
         call load_const_new_part_FEM_MHD                                &
      &     (VIZ_DAT%repart_p, next_tbl, geofem, VIZ_DAT%viz_fem,        &
-     &      VIZ_DAT%mesh_to_viz_tbl, VIZ_DAT%ele_to_viz_tbl)
+     &      VIZ_DAT%mesh_to_viz_tbl)
         call FEM_mesh_initialization(VIZ_DAT%viz_fem%mesh,              &
      &                               VIZ_DAT%viz_fem%group)
 !

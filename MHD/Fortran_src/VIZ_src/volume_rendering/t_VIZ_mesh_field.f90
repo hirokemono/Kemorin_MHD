@@ -53,8 +53,6 @@
         type(volume_partioning_param) :: repart_p
 !>        Transfer table to visualization mesh
         type(calypso_comm_table) :: mesh_to_viz_tbl
-!>        Transfer table to visualization element
-        type(calypso_comm_table) :: ele_to_viz_tbl
 !
 !!>        Structure of shape function for PVR and fieldline
 !        type(shape_finctions_at_points) :: spfs

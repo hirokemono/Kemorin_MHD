@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine s_mesh_repartition_by_volume                         &
 !!     &         (org_fem, ele_comm, neib_nod, part_param,              &
-!!     &          new_mesh, new_groups, new_ele_comm,                   &
-!!     &          repart_nod_tbl, repart_ele_tbl)
+!!     &          new_mesh, new_groups, new_ele_comm, repart_nod_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: org_fem
 !!        type(communication_table), intent(in) :: ele_comm
@@ -19,7 +18,6 @@
 !!        type(mesh_groups), intent(inout) :: new_groups
 !!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-!!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !!@endverbatim
 !
       module mesh_repartition_by_volume
@@ -45,8 +43,7 @@
 !
       subroutine s_mesh_repartition_by_volume                           &
      &         (org_fem, ele_comm, neib_nod, part_param,                &
-     &          new_mesh, new_groups, new_ele_comm,                     &
-     &          repart_nod_tbl, repart_ele_tbl)
+     &          new_mesh, new_groups, new_ele_comm, repart_nod_tbl)
 !
       use t_para_double_numbering
       use t_control_param_vol_grping
@@ -68,10 +65,10 @@
       type(mesh_groups), intent(inout) :: new_groups
       type(communication_table), intent(inout) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !
       type(group_data) :: part_grp
       type(calypso_comm_table) :: ext_tbl
+      type(calypso_comm_table) :: repart_ele_tbl
       type(node_ele_double_number) :: new_ids_on_org
 !
 !

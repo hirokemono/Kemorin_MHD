@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_repartiton_by_volume                               &
 !!     &         (part_param, geofem, ele_comm_T, next_tbl_T,           &
-!!     &          new_fem, new_ele_comm, repart_nod_tbl, repart_ele_tbl)
+!!     &          new_fem, new_ele_comm, repart_nod_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(communication_table), intent(in) :: ele_comm_T
@@ -17,9 +17,8 @@
 !!        type(mesh_data), intent(inout) :: new_fem
 !!        type(communication_table), intent(inout) :: new_ele_comm
 !!        type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-!!        type(calypso_comm_table), intent(inout) :: repart_ele_tbl
-!!      subroutine load_repartitoned_file(part_param, geofem, new_fem,  &
-!!     &                                  repart_nod_tbl)
+!!      subroutine load_repartitoned_file                               &
+!!     &         (part_param, geofem, new_fem, repart_nod_tbl)
 !!        type(volume_partioning_param), intent(in) ::  part_param
 !!        type(mesh_data), intent(in) :: geofem
 !!        type(mesh_data), intent(inout) :: new_fem
@@ -49,7 +48,7 @@
 !
       subroutine s_repartiton_by_volume                                 &
      &         (part_param, geofem, ele_comm_T, next_tbl_T,             &
-     &          new_fem, new_ele_comm, repart_nod_tbl, repart_ele_tbl)
+     &          new_fem, new_ele_comm, repart_nod_tbl)
 !
       use t_next_node_ele_4_node
       use t_interpolate_table
@@ -75,17 +74,15 @@
       type(mesh_data), intent(inout) :: new_fem
       type(communication_table), intent(inout) :: new_ele_comm
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !
-      type(interpolate_table) :: itp_nod_tbl_IO, itp_ele_tbl_IO
+      type(interpolate_table) :: itp_nod_tbl_IO
 !
 !  -------------------------------
 !
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+2)
       call s_mesh_repartition_by_volume                                 &
      &   (geofem, ele_comm_T, next_tbl_T%neib_nod, part_param,          &
-     &    new_fem%mesh, new_fem%group, new_ele_comm,                    &
-     &    repart_nod_tbl, repart_ele_tbl)
+     &    new_fem%mesh, new_fem%group, new_ele_comm, repart_nod_tbl)
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+2)
 !
       call dealloc_numele_stack(new_fem%mesh%ele)
@@ -118,12 +115,9 @@
       else
         call copy_repart_tbl_to_itp_table(geofem%mesh,                  &
      &      next_tbl_T%neib_ele, repart_nod_tbl, itp_nod_tbl_IO)
-        call copy_repart_ele_tbl_to_itp_tbl                             &
-     &     (geofem%mesh, repart_ele_tbl, itp_ele_tbl_IO)
-        call sel_mpi_write_dbl_itp_table(my_rank,                       &
-     &      part_param%trans_tbl_file, itp_nod_tbl_IO, itp_ele_tbl_IO)
+        call sel_mpi_write_interpolate_table(my_rank,                   &
+     &      part_param%trans_tbl_file, itp_nod_tbl_IO)
         call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
-        call dealloc_itp_tbl_after_write(itp_ele_tbl_IO)
       end if
       call calypso_MPI_barrier
       if(iflag_RPRT_time) call end_elapsed_time(ist_elapsed_RPRT+6)
@@ -132,8 +126,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine load_repartitoned_file(part_param, geofem, new_fem,    &
-     &          repart_nod_tbl, repart_ele_tbl)
+      subroutine load_repartitoned_file                                 &
+     &         (part_param, geofem, new_fem, repart_nod_tbl)
 !
       use t_interpolate_table
       use m_file_format_switch
@@ -148,9 +142,8 @@
 !
       type(mesh_data), intent(inout) :: new_fem
       type(calypso_comm_table), intent(inout) :: repart_nod_tbl
-      type(calypso_comm_table), intent(inout) :: repart_ele_tbl
 !
-      type(interpolate_table) :: itp_nod_tbl_IO, itp_ele_tbl_IO
+      type(interpolate_table) :: itp_nod_tbl_IO
 !
       integer(kind= kint) :: irank_read
 !
@@ -159,18 +152,15 @@
       call mpi_input_mesh(part_param%viz_mesh_file, nprocs, new_fem)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_mpi_read_dbl_itp_table'
-      call sel_mpi_read_dbl_itp_table                                   &
+      call sel_mpi_read_interpolate_table                               &
      &   (my_rank, nprocs, part_param%trans_tbl_file,                   &
-     &    itp_nod_tbl_IO, itp_ele_tbl_IO, ierr)
+     &    itp_nod_tbl_IO, ierr)
       call calypso_MPI_barrier
 !
       irank_read = my_rank
       call copy_itp_table_to_repart_tbl(irank_read,                     &
      &    geofem%mesh, new_fem%mesh, itp_nod_tbl_IO, repart_nod_tbl)
-      call copy_itp_tbl_to_repart_ele_tbl                               &
-     &   (irank_read, new_fem%mesh, itp_ele_tbl_IO, repart_ele_tbl)
       call dealloc_itp_tbl_after_write(itp_nod_tbl_IO)
-      call dealloc_itp_tbl_after_write(itp_ele_tbl_IO)
       call calypso_MPI_barrier
 !
       end subroutine load_repartitoned_file
