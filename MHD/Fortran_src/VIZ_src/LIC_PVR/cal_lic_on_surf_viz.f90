@@ -258,6 +258,7 @@
       real(kind = kreal), intent(inout) :: lic_v, k_area, grad_v(3)
 !
       integer(kind = kint) :: isf_tgt, isurf_end, isurf_start
+      integer(kind = kint) :: nstep_int
       integer(kind = kint) :: iele, isf_org
       real(kind = kreal) :: x4_org(4), x4_tgt(4), v4_tgt(4), xi(2)
       integer(kind = kint) :: i_iter, i_n, i
@@ -356,7 +357,8 @@
         step_len = sqrt( (x4_tgt(1) - x4_org(1))**2                     &
        &               + (x4_tgt(2) - x4_org(2))**2                     &
        &               + (x4_tgt(3) - x4_org(3))**2)
-!        nstep_int = step_len * adelta_noise + 1
+        nstep_int = step_len * adelta_noise + 1
+        write(*,*) 'nstep_int', nstep_int
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
        &                  isurf_end, "at elem", iele, "local", isf_tgt
         if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x4_tgt
