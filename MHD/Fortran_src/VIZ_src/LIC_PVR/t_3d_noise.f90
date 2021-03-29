@@ -50,6 +50,10 @@
         real(kind = kreal) :: size_cube(3)
 !>         1 / asize_cube
         real(kind = kreal) :: asize_cube(3)
+!>         size of delta x of noise in physical space
+        real(kind = kreal) :: deltax_noise(3)
+!>         1 / delta_x
+        real(kind = kreal) :: adeltax_noise(3)
 !
 !>         step size of noise
         integer(kind = kint) :: i_stepsize
@@ -114,7 +118,11 @@
       if(noise_ctl%noise_resolution_ctl%iflag .gt. 0) then
         num_1d(1:3) = noise_ctl%noise_resolution_ctl%intvalue
       end if
-      if(noise_ctl%noise_cube_size_ctl%iflag .gt. 0) then
+!
+      if(noise_ctl%noise_deltax_ctl%iflag .gt. 0) then)
+        c_size(1:3) = noise_ctl%noise_deltax_ctl%realvalue              &
+     &               * dble(num_1d(1:3))
+      else if(noise_ctl%noise_cube_size_ctl%iflag .gt. 0) then
         c_size(1:3) = noise_ctl%noise_cube_size_ctl%realvalue
       end if
 !
@@ -254,11 +262,16 @@
       nze%size_cube(1) = x_size
       nze%size_cube(2) = y_size
       nze%size_cube(3) = z_size
+      nze%deltax_noise(1:3) = nze%size_cube(1:3)                        &
+     &                      / dble(nze%nidx_xyz(1:3))
       do i = 1, 3
         if(nze%size_cube(i) .le. 0.0d0) then
           nze%asize_cube(i) = 1.0d0
+          nze%adeltax_noise(i) = dble(nze%nidx_xyz(1:3))
         else
           nze%asize_cube(i) = 1.0d0 / nze%size_cube(i)
+          nze%adeltax_noise(i) = dble(nze%nidx_xyz(i))                  &
+     &                          / nze%size_cube(i)
         end if
       end do
 !

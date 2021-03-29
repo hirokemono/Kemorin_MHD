@@ -27,6 +27,7 @@
 !!    noise_step_size            20
 !!
 !!    noise_cube_size          0.4
+!!    noise_delta_x            0.01
 !!  end cube_noise_ctl
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -67,6 +68,7 @@
       call bcast_ctl_type_i1(noise_ctl%noise_stepping_ctl)
 !
       call bcast_ctl_type_r1(noise_ctl%noise_cube_size_ctl)
+      call bcast_ctl_type_r1(noise_ctl%noise_deltax_ctl)
 !
       end subroutine bcast_cube_noise_control_data
 !
@@ -93,6 +95,8 @@
      &                      new_noise_c%noise_stepping_ctl)
       call copy_real_ctl(org_noise_c%noise_cube_size_ctl,               &
      &                   new_noise_c%noise_cube_size_ctl)
+      call copy_real_ctl(org_noise_c%noise_deltax_ctl,                  &
+     &                   new_noise_c%noise_deltax_ctl)
 !
       end subroutine copy_cube_noise_control_data
 !
