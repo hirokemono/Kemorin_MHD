@@ -39,7 +39,7 @@
         real(kind = kreal),   allocatable :: flux_start(:)
 !
         integer(kind = kint) :: num_line_local = 0
-        real(kind = kreal), allocatable :: xx_start_fline(:,:)
+        real(kind = kreal), allocatable :: xx4_initial_fline(:,:)
         real(kind = kreal), allocatable :: flux_start_fline(:)
       end type each_fieldline_source
 !
@@ -105,10 +105,10 @@
 !
 !
       num = fln_prm%num_each_field_line
-      allocate(fln_src%xx_start_fline(3,num))
+      allocate(fln_src%xx4_initial_fline(4,num))
       allocate(fln_src%flux_start_fline(num))
 !
-      fln_src%xx_start_fline = 0.0d0
+      fln_src%xx4_initial_fline = 0.0d0
       fln_src%flux_start_fline =  0.0d0
 !
       end subroutine alloc_start_point_fline
@@ -136,8 +136,8 @@
       allocate(fln_tce%icount_fline(num))
       allocate(fln_tce%isf_fline_start(3,num))
 !
-      allocate(fln_tce%xx_fline_start(3,num))
-      allocate(fln_tce%v_fline_start(3,num))
+      allocate(fln_tce%xx_fline_start(4,num))
+      allocate(fln_tce%v_fline_start(4,num))
       allocate(fln_tce%c_fline_start(num))
 !
       fln_tce%iflag_fline =  0
@@ -148,7 +148,7 @@
       fln_tce%xx_fline_start = 0.0d0
 !
       allocate(fln_tce%id_fline_export(7,num))
-      allocate(fln_tce%fline_export(7,num))
+      allocate(fln_tce%fline_export(9,num))
       fln_tce%id_fline_export = 0
       fln_tce%fline_export = 0.0d0
 !
@@ -183,7 +183,7 @@
 !
       type(each_fieldline_source), intent(inout) :: fln_src
 !
-      deallocate(fln_src%xx_start_fline, fln_src%flux_start_fline)
+      deallocate(fln_src%xx4_initial_fline, fln_src%flux_start_fline)
 !
       end subroutine dealloc_start_point_fline
 !

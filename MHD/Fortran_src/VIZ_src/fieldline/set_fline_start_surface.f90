@@ -60,10 +60,10 @@
         isf_1ele = fln_prm%id_surf_start_fline(2,i)
         isurf = abs(isf_4_ele(iele,isf_1ele))
 !
-        fln_tce%xx_fline_start(1:3,inum1)                               &
-     &       = fln_src%xx_start_fline(1:3,i)
+        fln_tce%xx_fline_start(1:4,inum1)                               &
+     &       = fln_src%xx4_initial_fline(1:4,i)
 !
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
+        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
      &      ie_surf, isurf, xi, fln_src%vector_nod_fline,               &
      &      fln_tce%v_fline_start(1,inum1))
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
@@ -96,10 +96,10 @@
      &          fln_tce%isf_fline_start(1,inum1))
 !
           inum2 = inum1 + fln_src%num_line_local
-          fln_tce%xx_fline_start(1:3,inum2)                             &
-     &          = fln_tce%xx_fline_start(1:3,inum1)
-          fln_tce%v_fline_start(1:3,inum2)                              &
-     &          = fln_tce%v_fline_start(1:3,inum1)
+          fln_tce%xx_fline_start(1:4,inum2)                             &
+     &          = fln_tce%xx_fline_start(1:4,inum1)
+          fln_tce%v_fline_start(1:4,inum2)                              &
+     &          = fln_tce%v_fline_start(1:4,inum1)
           fln_tce%c_fline_start(inum2) = fln_tce%c_fline_start(inum1)
 !
            call set_backward_fline_start_surf                           &

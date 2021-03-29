@@ -146,7 +146,7 @@
 !
       call count_temporal_pvr_ray_start                                 &
      &   (pvr_bound%num_pvr_surf, pvr_bound%screen_norm,                &
-     &    pvr_bound%isurf_xrng, pvr_bound%jsurf_yrng, ray_vec,          &
+     &    pvr_bound%isurf_xrng, pvr_bound%jsurf_yrng, ray_vec4,         &
      &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st)
 !
       call allocate_tmp_pvr_ray_start(pvr_start)
@@ -158,7 +158,7 @@
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_norm, pvr_bound%isurf_xrng,                  &
-     &    pvr_bound%jsurf_yrng, ray_vec, num_ray_local,                 &
+     &    pvr_bound%jsurf_yrng, ray_vec4, num_ray_local,                &
      &    pvr_start%istack_pvr_ray_sf, pvr_start%ntot_tmp_pvr_ray,      &
      &    pvr_start%istack_tmp_pvr_ray_st, pvr_start%ipix_start_tmp,    &
      &    pvr_start%iflag_start_tmp, pvr_start%xi_start_tmp)
@@ -173,14 +173,14 @@
      &   pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                    &
      &   pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,                &
      &   pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,               &
-     &   pvr_bound%screen_norm, view_param%viewpoint_vec, ray_vec,      &
+     &   pvr_bound%screen_norm, view_param%viewpoint_vec, ray_vec4,     &
      &   pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,   &
      &   pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,           &
      &   pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,           &
      &   pvr_start%num_pvr_ray, pvr_start%id_pixel_start,               &
      &   pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,       &
-     &   pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,                &
-     &   pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
+     &   pvr_start%xi_pvr_start, pvr_start%xx4_pvr_start,               &
+     &   pvr_start%xx4_pvr_ray_start)
 !
 !      if(iflag_debug .gt. 0) then
 !        call check_pvr_ray_startpoint                                  &

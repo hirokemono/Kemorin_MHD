@@ -75,6 +75,8 @@
         integer(kind = kint_gl) :: cnt
       end type time_esti
 !
+      private :: simulate_field_line_integral
+!
 ! -------------------------------------------------------------------
 !
       contains
@@ -98,7 +100,7 @@
       subroutine simulate_field_line_integral                           &
      &          (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,  &
      &           iele_4_surf, ie_surf, iflag_dir, xx, field_vec,        &
-     &           isurf_org, group_id, x_start, v_start, line_len,       &
+     &           isurf_org, group_id, x4_start, v4_start, line_len,     &
      &           itr_num, iflag_comm)
 !
 !
@@ -110,7 +112,8 @@
         integer(kind = kint), intent(in) :: iele_4_surf(nsurf, 2, 2)
         real(kind = kreal), intent(in) :: xx(nnod,3), field_vec(nnod,3)
         real(kind = kreal), intent(in) :: line_len
-        real(kind = kreal), intent(inout) :: x_start(3), v_start(3)
+        real(kind = kreal), intent(inout) :: x4_start(4)
+        real(kind = kreal), intent(inout) :: v4_start(4)
         integer(kind = kint), intent(in) :: isurf_org(3)
         integer(kind=kint), intent(inout) :: itr_num
         integer(kind=kint), intent(inout) :: iflag_comm, iflag_dir
@@ -120,7 +123,7 @@
         integer(kind = kint) ::  isf_org, isf_tgt, iele
         real(kind = kreal) :: xi(2)
         real(kind = kreal) :: step_len, integral_len
-        real(kind = kreal) :: x_org(3), x_tgt(3), v_tgt(3)
+        real(kind = kreal) :: x4_org(4), x4_tgt(4), v4_tgt(4)
 !
 !itr_num = 0
         integral_len = 0.0
@@ -131,7 +134,7 @@
         do
           itr_num = itr_num + 1
           step_len = 0.0
-          x_org(1:3) = x_start(1:3)
+          x4_org(1:4) = x4_start(1:4)
           if(isurf_start .lt. 1 .or. isurf_start .gt. nsurf) then
             iflag_comm = -10
             return
@@ -143,7 +146,7 @@
             if(iele .gt. 0) then
               call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,  &
      &            nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,   &
-     &             v_start, x_start, isf_tgt, x_tgt, xi)
+     &             v4_start, x4_start, isf_tgt, x4_tgt, xi)
               if(isf_tgt .gt. 0) then
 ! find hit surface
                 exit
@@ -156,27 +159,27 @@
             return
           end if
           isurf_end = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-    &         ie_surf, isurf_end, xi, field_vec, v_tgt)
+          call cal_field_on_surf_vect4(nnod, nsurf, nnod_4_surf,        &
+    &         ie_surf, isurf_end, xi, field_vec, v4_tgt)
           isf_org =  0
-          x_start(1:3) = half * (x_start(1:3) + x_tgt(1:3))
-          v_start(1:3) = half * (v_start(1:3) + v_tgt(1:3))
+          x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
+          v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
           call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,      &
     &         nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,       &
-    &         v_start, x_start, isf_tgt, x_tgt, xi)
+    &         v4_start, x4_start, isf_tgt, x4_tgt, xi)
           if(isf_tgt .eq. 0) then
             iflag_comm = -12
             return
           end if
 ! exit point after 2nd field line trace
           isurf_end = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-    &         ie_surf, isurf_end, xi, field_vec, v_start)
-          step_len = sqrt( (x_tgt(1) - x_org(1))**2                     &
-    &               + (x_tgt(2) - x_org(2))**2                          &
-    &               + (x_tgt(3) - x_org(3))**2)
+          call cal_field_on_surf_vect4(nnod, nsurf, nnod_4_surf,        &
+    &         ie_surf, isurf_end, xi, field_vec, v4_start)
+          step_len = sqrt( (x4_tgt(1) - x4_org(1))**2                   &
+    &                    + (x4_tgt(2) - x4_org(2))**2                   &
+    &                    + (x4_tgt(3) - x4_org(3))**2)
           integral_len = integral_len + step_len
-          x_start(1:3) =  x_tgt(1:3)
+          x4_start(1:4) =  x4_tgt(1:4)
 
           do i = 1, nnod_4_surf
             node_id = ie_surf(isurf_end,i)
@@ -224,8 +227,8 @@
         integer(kind = kint) :: i, iele
         integer(kind = kint) :: iflag_dir, iflag_found_sf, iflag_comm
         integer(kind = kint) :: isf_tgt, itr_num, cnt
-        real(kind = kreal) :: xx_org(3), vec_org(3)
-        real(kind = kreal) :: new_pos(3), new_vec(3), xi(2)
+        real(kind = kreal) :: xx4_org(4), vec4_org(4)
+        real(kind = kreal) :: new_pos4(4), new_vec4(4), xi(2)
         real(kind = kreal) :: time_cost_cnt(num_domain), aver_time_cost
 !
         time_cost(:)%total_time = 0.0
@@ -239,12 +242,14 @@
           itr_num = 0
 ! forward integral
           iflag_dir = 1
-          xx_org(1:3) = particles(i)%pos(1:3)
-          vec_org(1:3) = particles(i)%vec(1:3)
+          xx4_org(1:3) = particles(i)%pos(1:3)
+          xx4_org(4) =   0.0d0
+          vec4_org(1:3) = particles(i)%vec(1:3)
+          vec4_org(4) =   0.0d0
       
           call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,      &
       &       nnod_4_surf, isf_4_ele, ie_surf, xx, iele, izero,         &
-      &       vec_org, xx_org, isf_tgt, new_pos, xi)
+      &       vec4_org, xx4_org, isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             iflag_found_sf = 1
           else
@@ -254,22 +259,24 @@
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
           isurf_hit = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-      &       ie_surf, isurf_hit, xi, field, new_vec)
+          call cal_field_on_surf_vect4(nnod, nsurf, nnod_4_surf,        &
+      &       ie_surf, isurf_hit, xi, field, new_vec4)
           call simulate_field_line_integral                             &
       &      (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,     &
       &       iele_4_surf, ie_surf, iflag_dir, xx,                      &
       &       field, isurf_org, particles(i)%group_id,                  &
-      &       new_pos, new_vec, particles(i)%line_len,                  &
+      &       new_pos4, new_vec4, particles(i)%line_len,                &
       &       itr_num, iflag_comm)
 !            write(*,*) 'foward iter_num ', itr_num, 'forward res ', iflag_comm
 !              backward integral
           iflag_dir = -1
-          xx_org(1:3) = particles(i)%pos(1:3)
-          vec_org(1:3) = particles(i)%vec(1:3)
+          xx4_org(1:3) = particles(i)%pos(1:3)
+          xx4_org(4) =   0.0d0
+          vec4_org(1:3) = particles(i)%vec(1:3)
+          vec4_org(4) =    0.0d0
           call find_line_end_in_1ele(iflag_dir, nnod, nele, nsurf,      &
       &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, izero,          &
-      &      vec_org, xx_org, isf_tgt, new_pos, xi)
+      &      vec4_org, xx4_org, isf_tgt, new_pos4, xi)
           if(isf_tgt .gt. 0) then
             iflag_found_sf = 1
           else
@@ -279,13 +286,13 @@
           isurf_org(1) = iele
           isurf_org(2) = isf_tgt
           isurf_hit = abs(isf_4_ele(iele,isf_tgt))
-          call cal_field_on_surf_vector(nnod, nsurf, nnod_4_surf,       &
-      &       ie_surf, isurf_hit, xi, field, new_vec)
+          call cal_field_on_surf_vect4(nnod, nsurf, nnod_4_surf,        &
+      &       ie_surf, isurf_hit, xi, field, new_vec4)
           call simulate_field_line_integral                             &
       &      (nod_d_grp, nnod, nele, nsurf, nnod_4_surf, isf_4_ele,     &
       &       iele_4_surf, ie_surf, iflag_dir, xx,                      &
       &       field, isurf_org, particles(i)%group_id,                  &
-      &       new_pos, new_vec, particles(i)%line_len, itr_num,         &
+      &       new_pos4, new_vec4, particles(i)%line_len, itr_num,       &
       &       iflag_comm)
 !          write(*,*) 'total iter_num ', itr_num, 'backward res ', iflag_comm
           time_cost(particles(i)%group_id)%cnt                          &

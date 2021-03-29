@@ -8,7 +8,7 @@
 !!     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                  &
 !!     &          iele_4_surf, interior_surf, vnorm_surf,               &
 !!     &          max_line_step, iflag_used_ele, iflag_dir,             &
-!!     &          vect_nod, color_nod, isurf_org, x_start, v_start,     &
+!!     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,   &
 !!     &          c_field, icount_line, iflag_comm, fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !
@@ -32,7 +32,7 @@
      &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
      &          iele_4_surf, interior_surf, vnorm_surf,                 &
      &          max_line_step, iflag_used_ele, iflag_dir,               &
-     &          vect_nod, color_nod, isurf_org, x_start, v_start,       &
+     &          vect_nod, color_nod, isurf_org, x4_start, v4_start,     &
      &          c_field, icount_line, iflag_comm, fline_lc)
 !
       use t_local_fline
@@ -55,13 +55,14 @@
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
-      real(kind = kreal), intent(inout) ::   v_start(3), x_start(3)
+      real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
       real(kind = kreal), intent(inout) ::   c_field(1)
 !
       type(local_fieldline), intent(inout) :: fline_lc
 !
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      real(kind = kreal) :: x_tgt(3), v_tgt(3), c_tgt(1), xi(2), flux
+      real(kind = kreal) :: x4_tgt(4), v4_tgt(4), c_tgt(1)
+      real(kind = kreal) :: xi(2), flux
 !
 !
       if(isurf_org(1) .eq. 0) then
@@ -69,7 +70,7 @@
         return
       end if
 !
-      call add_fline_start(x_start, c_field(1), fline_lc)
+      call add_fline_start(x4_start, c_field(1), fline_lc)
 !
        do
         icount_line = icount_line + 1
@@ -80,7 +81,7 @@
 !
         call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-     &      v_start, x_start, isf_tgt, x_tgt, xi)
+     &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -88,23 +89,23 @@
         end if
 !
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, vect_nod, v_tgt)
+        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
+     &      ie_surf, isurf_end, xi, vect_nod, v4_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, color_nod, c_tgt(1))
 !
         isf_org =  0
-        x_start(1:3) = half * (x_start(1:3) + x_tgt(1:3))
-        v_start(1:3) = half * (v_start(1:3) + v_tgt(1:3))
+        x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
+        v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
         c_field(1) =   half * (c_field(1) + c_tgt(1))
 !
-        call add_fline_list(x_start, c_field(1), fline_lc)
+        call add_fline_list(x4_start, c_field(1), fline_lc)
 !
 !   extend to surface of element
 !
         call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-     &      v_start, x_start, isf_tgt, x_tgt, xi)
+     &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -112,22 +113,22 @@
         end if
 !
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, vect_nod, v_start)
+        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
+     &      ie_surf, isurf_end, xi, vect_nod, v4_start)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, color_nod, c_field(1))
-        x_start(1:3) =  x_tgt(1:3)
+        x4_start(1:4) =  x4_tgt(1:4)
 !
-        call add_fline_list(x_start, c_field(1), fline_lc)
+        call add_fline_list(x4_start, c_field(1), fline_lc)
 !
-        flux = (v_start(1) * vnorm_surf(isurf_end,1)                    &
-     &        + v_start(2) * vnorm_surf(isurf_end,2)                    &
-     &        + v_start(3) * vnorm_surf(isurf_end,3))                   &
+        flux = (v4_start(1) * vnorm_surf(isurf_end,1)                   &
+     &        + v4_start(2) * vnorm_surf(isurf_end,2)                   &
+     &        + v4_start(3) * vnorm_surf(isurf_end,3))                  &
      &         * dble(isf_4_ele(iele,isf_tgt) / isurf_end)              &
      &         *(-one)**iflag_dir
 !
 !         write(60+my_rank,'(a6,i8,1p4e16.7)')  'x_tgt: ', icount_line, &
-!     &          v_start(1:3), flux
+!     &          v4_start(1:4), flux
 !
         if(interior_surf(isurf_end) .eq. izero) then
           isurf_org(1) = iele

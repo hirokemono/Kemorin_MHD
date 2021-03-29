@@ -108,7 +108,7 @@
 !
 !$omp parallel workshare
       img_stack%depth_pvr_ray_start(1:pvr_start%num_pvr_ray)            &
-     &      = - pvr_start%xx_pvr_ray_start(3,1:pvr_start%num_pvr_ray)
+     &      = - pvr_start%xx4_pvr_ray_start(3,1:pvr_start%num_pvr_ray)
 !$omp end parallel workshare
 !
       if(iflag_PVR_time) call start_elapsed_time(ist_elapsed_PVR+10)
@@ -232,9 +232,9 @@
      &        ip, img_composit_tbl%irank_export(ip), ist, num
         do inum = 1, num
           icou = img_composit_tbl%item_export(ist+inum)
-          write(id_file,*) inum, icou,   &
-     &                pvr_start%id_pixel_start(icou), &
-     &                pvr_start%xx_pvr_ray_start(3,icou)
+          write(id_file,*) inum, icou,                                  &
+     &                pvr_start%id_pixel_start(icou),                   &
+     &                pvr_start%xx4_pvr_ray_start(3,icou)
         end do
       end do
 !

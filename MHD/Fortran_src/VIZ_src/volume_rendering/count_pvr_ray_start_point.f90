@@ -10,14 +10,14 @@
 !!@verbatim
 !!      subroutine count_temporal_pvr_ray_start                         &
 !!     &         (num_pvr_surf, screen_norm_pvr_domain,                 &
-!!     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec,&
-!!     &          ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
+!!     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain,         &
+!!     &          ray_vec4, ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
 !!      subroutine count_each_pvr_ray_start (numnod, numele, numsurf,   &
 !!     &         nnod_4_surf, ie_surf, isf_4_ele,                       &
 !!     &         x_nod_screen, npixel_x, npixel_y,                      &
 !!     &         pixel_point_x, pixel_point_y,num_pvr_surf,             &
 !!     &         item_pvr_surf_domain, screen_norm_pvr_domain,          &
-!!     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec, &
+!!     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec4,&
 !!     &         num_pvr_ray, istack_pvr_ray_sf, ntot_tmp_pvr_ray,      &
 !!     &         istack_tmp_pvr_ray_st, ipix_start_tmp, iflag_start_tmp,&
 !!     &         xi_pvr_start_tmp)
@@ -43,8 +43,8 @@
 !
       subroutine count_temporal_pvr_ray_start                           &
      &         (num_pvr_surf, screen_norm_pvr_domain,                   &
-     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec,  &
-     &          ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
+     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain,           &
+     &          ray_vec4, ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -54,7 +54,7 @@
       real(kind = kreal), intent(in)                                    &
      &                    :: screen_norm_pvr_domain(3,num_pvr_surf)
 !
-      real(kind = kreal), intent(in) :: ray_vec(3)
+      real(kind = kreal), intent(in) :: ray_vec4(4)
 !
       integer(kind = kint), intent(inout) :: ntot_tmp_pvr_ray_sf
       integer(kind = kint), intent(inout)                               &
@@ -65,7 +65,7 @@
 !
 !$omp parallel do private(inum)
       do inum = 1, num_pvr_surf
-        if((screen_norm_pvr_domain(3,inum)*ray_vec(3))                  &
+        if((screen_norm_pvr_domain(3,inum)*ray_vec4(3))                 &
      &       .gt. SMALL_NORM) then
           istack_tmp_pvr_ray_st(inum) = (isurf_xrng_pvr_domain(2,inum)  &
      &                            - isurf_xrng_pvr_domain(1,inum)+1)    &
@@ -93,7 +93,7 @@
      &         x_nod_screen, npixel_x, npixel_y,                        &
      &         pixel_point_x, pixel_point_y,num_pvr_surf,               &
      &         item_pvr_surf_domain, screen_norm_pvr_domain,            &
-     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec,   &
+     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec4,  &
      &         num_pvr_ray, istack_pvr_ray_sf, ntot_tmp_pvr_ray,        &
      &         istack_tmp_pvr_ray_st, ipix_start_tmp, iflag_start_tmp,  &
      &         xi_pvr_start_tmp)
@@ -119,7 +119,7 @@
       integer(kind = kint), intent(in)                                  &
      &                    :: jsurf_yrng_pvr_domain(2,num_pvr_surf)
 !
-      real(kind = kreal), intent(in) :: ray_vec(3)
+      real(kind = kreal), intent(in) :: ray_vec4(4)
 !
       integer(kind = kint), intent(in) :: ntot_tmp_pvr_ray
       integer(kind = kint), intent(in)                                  &
@@ -155,7 +155,7 @@
         isurf = abs(isf_4_ele(iele,k1))
         icou = istack_tmp_pvr_ray_st(inum-1)
 !
-        if((screen_norm_pvr_domain(3,inum)*ray_vec(3))                  &
+        if((screen_norm_pvr_domain(3,inum)*ray_vec4(3))                 &
      &       .gt. SMALL_NORM) then
           i1 = ie_surf(isurf,1)
           i2 = ie_surf(isurf,2)

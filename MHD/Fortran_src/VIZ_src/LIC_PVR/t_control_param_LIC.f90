@@ -14,6 +14,9 @@
 !!      subroutine dealloc_lic_noise_data(lic_p)
 !!      subroutine dealloc_lic_masking_ranges(lic_p)
 !!        type(lic_parameter_ctl), intent(inout) :: lic_p
+!!      real(kind = kreal) function get_geometry_reference              &
+!!     &                          (lic_p, mask_idx, xx4)
+!!        type(lic_parameters), intent(in) :: lic_p
 !!@endverbatim
 !
       module t_control_param_LIC
@@ -283,29 +286,30 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine get_geometry_reference                                 &
-     &         (lic_p, mask_idx, geo_coord, ref_value)
+      real(kind = kreal) function get_geometry_reference                &
+     &                          (lic_p, mask_idx, xx4)
 !
       type(lic_parameters), intent(in) :: lic_p
       integer(kind=kint), intent(in):: mask_idx
-      real(kind=kreal), intent(in) :: geo_coord(:)
-      real(kind=kreal), intent(inout) :: ref_value
+      real(kind=kreal), intent(in) :: xx4(4)
 !
       integer(kind=kint) :: idx
-      real(kind=kreal) :: temp
+      real(kind=kreal) :: ref_value
 !
       idx = lic_p%masking(mask_idx)%comp_idx
       if(idx .le. 3) then
-        ref_value = geo_coord(lic_p%masking(mask_idx)%comp_idx)
+        ref_value = xx4(lic_p%masking(mask_idx)%comp_idx)
       else
-        temp = geo_coord(1)**2 + geo_coord(2)**2 + geo_coord(3)**2
-        if(temp .gt. 0.001) then
-          ref_value = sqrt(temp)
+        ref_value = xx4(1)**2 + xx4(2)**2 + xx4(3)**2
+        if(ref_value .gt. 0.001) then
+          ref_value = sqrt(ref_value)
         else
           ref_value = 0.0
         end if
       end if
-      end subroutine get_geometry_reference
+      get_geometry_reference = ref_value
+!
+      end function get_geometry_reference
 !
 !-----------------------------------------------------------------------
 !

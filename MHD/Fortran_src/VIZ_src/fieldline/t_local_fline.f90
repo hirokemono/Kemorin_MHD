@@ -5,10 +5,10 @@
 !      Written by H. Matsui on Aug., 2011
 !
 !!      subroutine reset_fline_start(fline_lc)
-!!      subroutine add_fline_start(xx_add, col_add, fline_lc)
+!!      subroutine add_fline_start(xx4_add, col_add, fline_lc)
 !!      subroutine alloc_local_fline(fline_lc)
 !!      subroutine dealloc_local_fline(fline_lc)
-!!      subroutine add_fline_list(xx_add, col_add, fline_lc)
+!!      subroutine add_fline_list(xx4_add, col_add, fline_lc)
 !!        type(local_fieldline), intent(inout) :: fline_lc
 !!
 !!      subroutine check_local_fline(id_file, fline_lc)
@@ -64,9 +64,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fline_start(xx_add, col_add, fline_lc)
+      subroutine add_fline_start(xx4_add, col_add, fline_lc)
 !
-      real(kind = kreal), intent(in) :: xx_add(3), col_add
+      real(kind = kreal), intent(in) :: xx4_add(4), col_add
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
@@ -75,16 +75,16 @@
       end if
       fline_lc%nnod_line_l = fline_lc%nnod_line_l + 1
 !
-      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx_add(1:3)
+      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
       fline_lc%col_line_l(fline_lc%nnod_line_l) =    col_add
 !
       end subroutine add_fline_start
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine add_fline_list(xx_add, col_add, fline_lc)
+      subroutine add_fline_list(xx4_add, col_add, fline_lc)
 !
-      real(kind = kreal), intent(in) :: xx_add(3), col_add
+      real(kind = kreal), intent(in) :: xx4_add(4), col_add
       type(local_fieldline), intent(inout) :: fline_lc
 !
 !
@@ -103,7 +103,7 @@
       fline_lc%iedge_line_l(2,fline_lc%nele_line_l)                     &
      &      = fline_lc%nnod_line_l
 !
-      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx_add(1:3)
+      fline_lc%xx_line_l(1:3,fline_lc%nnod_line_l) = xx4_add(1:3)
       fline_lc%col_line_l(fline_lc%nnod_line_l) =    col_add
 !
       end subroutine add_fline_list

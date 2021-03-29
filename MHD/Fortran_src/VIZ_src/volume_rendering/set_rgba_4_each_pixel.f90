@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_rgba_4_each_pixel(viewpoint_vec,               &
-!!     &          xin_model, xout_model, c_data, grad,                  &
+!!     &          x4in_model, x4out_model, c_data, grad,                &
 !!     &          color_param, rgba_pixel)
 !!      subroutine color_plane_with_light                               &
 !!     &         (viewpoint_vec, xout_model, c_data, grad,              &
@@ -62,7 +62,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_set_rgba_4_each_pixel(viewpoint_vec,                 &
-     &          xin_model, xout_model, c_data, grad,                    &
+     &          x4in_model, x4out_model, c_data, grad,                  &
      &          color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
@@ -70,7 +70,7 @@
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: c_data, grad(3)
-      real(kind = kreal), intent(in) :: xin_model(3), xout_model(3)
+      real(kind = kreal), intent(in) :: x4in_model(4), x4out_model(4)
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
       real(kind = kreal), intent(inout) :: rgba_pixel(4)
@@ -81,9 +81,9 @@
       real(kind = kreal), allocatable :: rgb(:)
 !
 !
-      ray_length = sqrt((xout_model(1)-xin_model(1))**2                 &
-    &                 + (xout_model(2)-xin_model(2))**2                 &
-    &                 + (xout_model(3)-xin_model(3))**2)
+      ray_length = sqrt((x4out_model(1)-x4in_model(1))**2               &
+    &                 + (x4out_model(2)-x4in_model(2))**2               &
+    &                 + (x4out_model(3)-x4in_model(3))**2)
 !
       num_of_features = color_param%num_opacity_pnt
       anb_opacity = color_param%pvr_opacity_param(1,num_of_features)
@@ -101,7 +101,7 @@
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
      &    grad, color_param%pvr_lighting_real,                          &
-     &    xin_model, xout_model, color, rgb(1))
+     &    x4in_model(1), x4out_model(1), color, rgb(1))
 !
       rgb(1:3) = rgb(1:3) * opa_current * ray_length
       rgb(4) =   opa_current*ray_length
@@ -116,7 +116,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine color_plane_with_light                                 &
-     &         (viewpoint_vec, xout_model, c_data, grad,                &
+     &         (viewpoint_vec, x4out_model, c_data, grad,               &
      &          opa_current, color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
@@ -124,7 +124,7 @@
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: c_data, grad(3)
-      real(kind = kreal), intent(in) :: xout_model(3)
+      real(kind = kreal), intent(in) :: x4out_model(4)
       real(kind = kreal), intent(in) :: opa_current
       type(pvr_colormap_parameter), intent(in) :: color_param
 !
@@ -143,7 +143,7 @@
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
      &    grad, color_param%pvr_lighting_real,                          &
-     &    xout_model, xout_model, color, rgb(1))
+     &    x4out_model(1), x4out_model(1), color, rgb(1))
 !
       rgb(1:3) = rgb(1:3) * opa_current
       rgb(4) =   opa_current
@@ -156,14 +156,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine plane_rendering_with_light                             &
-     &         (viewpoint_vec, xout_model, surf_normal,                 &
+     &         (viewpoint_vec, x4_model, surf_normal,                   &
      &          opa_current, color_param, rgba_pixel)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: xout_model(3)
+      real(kind = kreal), intent(in) :: x4_model(4)
       real(kind = kreal), intent(in) :: surf_normal(3)
       real(kind = kreal), intent(in) :: opa_current
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -180,7 +180,7 @@
       call phong_reflection(viewpoint_vec,                              &
      &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
      &    surf_normal, color_param%pvr_lighting_real,                   &
-     &    xout_model, xout_model, color, rgb(1))
+     &    x4_model(1), x4_model(1), color, rgb(1))
 !
       rgb(1:3) = rgb(1:3) * opa_current
       rgb(4) =   opa_current
@@ -264,7 +264,7 @@
 !
       subroutine phong_reflection(view_point_d,                         &
      &          num_of_lights, light_point, norm_v, k_ads,              &
-     &          in_point, out_point, color, rgb)
+     &          in_point4, out_point4, color, rgb)
 !
       real(kind = kreal), intent(in) :: view_point_d(3)
       real(kind = kreal), intent(in) :: k_ads(3)
@@ -272,8 +272,8 @@
       integer(kind = kint), intent(in) :: num_of_lights
       real(kind = kreal), intent(in) :: light_point(3,num_of_lights)
 !
-      real(kind = kreal), intent(in) :: in_point(3)
-      real(kind = kreal), intent(in) :: out_point(3)
+      real(kind = kreal), intent(in) :: in_point4(4)
+      real(kind = kreal), intent(in) :: out_point4(4)
 !
       real(kind = kreal), intent(in) :: color(3)
 !
@@ -284,19 +284,19 @@
       real(kind = kreal) :: lp_norm, vp_norm, hp_norm, norm
       real(kind = kreal) :: inprodLN, inprodVN, inprodHN
       real(kind = kreal) :: coef
-      real(kind = kreal), allocatable :: lp(:), vp(:), hp(:)
-      real(kind = kreal), allocatable :: vo(:), x_mid(:)
+      real(kind = kreal), allocatable :: lp(:), vp(:), hp(:), vo(:)
+      real(kind = kreal) :: x4_mid(4)
 !
-      allocate(vo(3), x_mid(3))
+      allocate(vo(3))
       allocate(lp(3), vp(3), hp(3))
 !
       rgb(1:3) = zero
-      x_mid(1:3) = half*(out_point(1:3) +  in_point(1:3))
+      x4_mid(1:4) = half*(out_point4(1:4) +  in_point4(1:4))
       vo(1:3) = view_point_d(1:3) - norm_v(1:3)
 !
       do j = 1, num_of_lights
-        lp(1:3) = light_point(1:3,j) - x_mid(1:3)
-        vp(1:3) = - x_mid(1:3)
+        lp(1:3) = light_point(1:3,j) - x4_mid(1:3)
+        vp(1:3) = - x4_mid(1:3)
         hp(1:3) = (lp(1:3) + vp(1:3)) / two
 !
         lp_norm = sqrt( lp(1)*lp(1) + lp(2)*lp(2) + lp(3)*lp(3) )
@@ -326,7 +326,7 @@
         end if
         rgb(1:3) = rgb(1:3) + color(1:3) * coef
       end do
-      deallocate(vo, x_mid, lp, vp, hp)
+      deallocate(vo, lp, vp, hp)
 !
       end subroutine phong_reflection
 !

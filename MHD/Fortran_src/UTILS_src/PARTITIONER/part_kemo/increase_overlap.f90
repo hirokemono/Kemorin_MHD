@@ -270,7 +270,7 @@
       integer(kind = kint) :: iwidth, inum, icel, inod, k, icou, i, iele
       integer(kind = kint) :: ist, ied, isf_tgt, isurf_end
       integer(kind = kint), allocatable :: iflag_ele_tmp(:)
-      real(kind = kreal) :: x_start(3), v_start(3), x_tgt(3), xi(2)
+      real(kind = kreal) :: x4_start(4), v4_start(4), x4_tgt(4), xi(2)
 !
 !      write(*,*) 'selective extend overlap:', 'n_overlap:', n_overlap
       icou = 0
@@ -293,21 +293,23 @@
             iflag_ele_tmp(icel) = iflag_ele(icel)
       ! start a vector from center of current element, get the hitting surface
       ! the element on the other side of the surface will be the extended element
-            x_start(1:3) = ele%x_ele(icel,1:3)
+            x4_start(1:3) = ele%x_ele(icel,1:3)
+            x4_start(4) =   0.0d0
       ! interpolate center field data
-            v_start(1:3) = 0.0
+            v4_start(1:4) = 0.0
             do k = 1, ele%nodelm(icel)
               inod = ele%ie(icel,k)
-              v_start(1:3) = v_start(1:3) + field%d_ucd(inod,1:3)
+              v4_start(1:3) = v4_start(1:3) + field%d_ucd(inod,1:3)
+              v4_start(4) = 0.0d0
             end do
-            v_start(1:3) = v_start(1:3)/k
+            v4_start(1:4) = v4_start(1:4) / k
             if(iwidth .eq. 2 .and. iflag_ele(icel) .eq. 1) then
               ! forward
               call find_line_end_in_1ele(iflag_forward_line,            &
      &            node%numnod, ele%numele, surf%numsurf,                &
      &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
-     &            node%xx, icel, izero, v_start, x_start,               &
-     &            isf_tgt, x_tgt, xi)
+     &            node%xx, icel, izero, v4_start, x4_start,             &
+     &            isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -321,8 +323,8 @@
               call find_line_end_in_1ele(iflag_backward_line,           &
      &            node%numnod, ele%numele, surf%numsurf,                &
      &            surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,       &
-     &            node%xx, icel, izero, v_start, x_start,               &
-     &            isf_tgt, x_tgt, xi)
+     &            node%xx, icel, izero, v4_start, x4_start,             &
+     &            isf_tgt, x4_tgt, xi)
               !
               if(isf_tgt .ne. 0) then
                 isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -339,8 +341,8 @@
                 call find_line_end_in_1ele(iflag_forward_line,          &
      &              node%numnod, ele%numele, surf%numsurf,              &
      &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
-     &              node%xx, icel, izero, v_start, x_start,             &
-     &              isf_tgt, x_tgt, xi)
+     &              node%xx, icel, izero, v4_start, x4_start,           &
+     &              isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))
@@ -355,8 +357,8 @@
                 call find_line_end_in_1ele(iflag_backward_line,         &
      &              node%numnod, ele%numele, surf%numsurf,              &
      &              surf%nnod_4_surf, surf%isf_4_ele, surf%ie_surf,     &
-     &              node%xx, icel, izero, v_start, x_start,             &
-     &              isf_tgt, x_tgt, xi)
+     &              node%xx, icel, izero, v4_start, x4_start,           &
+     &              isf_tgt, x4_tgt, xi)
                 !
                 if(isf_tgt .ne. 0) then
                   isurf_end = abs(surf%isf_4_ele(icel,isf_tgt))

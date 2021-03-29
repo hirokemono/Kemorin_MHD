@@ -9,9 +9,9 @@
 !!@verbatim
 !!      subroutine ray_trace_each_lic_image(node, ele, surf,            &
 !!     &          lic_p, pvr_screen, field_lic, draw_param, color_param,&
-!!     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,  &
+!!     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check, &
 !!     &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,    &
-!!     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
+!!     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -50,9 +50,9 @@
 !
       subroutine ray_trace_each_lic_image(node, ele, surf,              &
      &          lic_p, pvr_screen, field_lic, draw_param, color_param,  &
-     &          viewpoint_vec, ray_vec, num_pvr_ray, id_pixel_check,    &
+     &          viewpoint_vec, ray_vec4, num_pvr_ray, id_pixel_check,   &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
-     &          xx_pvr_start, xx_pvr_ray_start, rgba_ray)
+     &          xx4_pvr_start, xx4_pvr_ray_start, rgba_ray)
 !
       use t_geometry_data
       use t_surface_data
@@ -69,7 +69,7 @@
       type(pvr_projected_position), intent(in) :: pvr_screen
 !
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: ray_vec(3)
+      real(kind = kreal), intent(in) :: ray_vec4(4)
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(in)                                  &
      &                    :: id_pixel_check(num_pvr_ray)
@@ -78,9 +78,9 @@
       integer(kind = kint), intent(inout)                               &
      &                    :: isf_pvr_ray_start(3,num_pvr_ray)
       real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
-      real(kind = kreal), intent(inout) :: xx_pvr_start(3,num_pvr_ray)
+      real(kind = kreal), intent(inout) :: xx4_pvr_start(4,num_pvr_ray)
       real(kind = kreal), intent(inout)                                 &
-     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+     &                    ::  xx4_pvr_ray_start(4,num_pvr_ray)
       real(kind = kreal), intent(inout)                                 &
      &                    ::  rgba_ray(4,num_pvr_ray)
 !
@@ -114,8 +114,8 @@
      &      node%xx, surf%vnorm_surf, surf%interior_surf,               &
      &      pvr_screen%arccos_sf, pvr_screen%x_nod_model,               &
      &      viewpoint_vec, lic_p, field_lic, draw_param, color_param,   &
-     &      ray_vec, id_pixel_check(inum), isf_pvr_ray_start(1,inum),   &
-     &      xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),             &
+     &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
+     &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
      &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
@@ -132,8 +132,8 @@
      &       (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
      &        isf_4_ele, iele_4_surf, interior_ele, xx, vnorm_surf,     &
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
-     &        lic_p, field_lic, draw_param, color_param, ray_vec,       &
-     &        iflag_check, isurf_org, screen_st, xx_st, xi, rgba_ray,   &
+     &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
+     &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
      &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
 !
       use cal_field_on_surf_viz
@@ -156,7 +156,7 @@
       real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
       real(kind = kreal), intent(in) :: arccos_sf(numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
-      real(kind = kreal), intent(in) :: ray_vec(3)
+      real(kind = kreal), intent(in) :: ray_vec4(4)
 !
       real(kind = kreal), intent(in) :: xyz_min_gl(3)
       real(kind = kreal), intent(in) :: xyz_max_gl(3)
@@ -168,8 +168,8 @@
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
-      real(kind = kreal), intent(inout) :: screen_st(3)
-      real(kind = kreal), intent(inout) :: xx_st(3), xi(2)
+      real(kind = kreal), intent(inout) :: screen4_st(4)
+      real(kind = kreal), intent(inout) :: xx4_st(4), xi(2)
       real(kind = kreal), intent(inout) :: rgba_ray(4)
 !
 !      type(noise_mask), intent(inout) :: n_mask
@@ -177,14 +177,14 @@
       integer(kind = kint) :: iflag_notrace
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
       integer(kind = kint) :: iflag_hit
-      real(kind = kreal) :: screen_tgt(3)
+      real(kind = kreal) :: screen4_tgt(4)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
-      real(kind = kreal) :: grad_tgt(3), xx_tgt(3), grad_len
+      real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), grad_len
 
       real(kind = kreal) :: lic_tgt(1)
-      real(kind = kreal) :: xx_lic(3), xx_lic_last(3)
+      real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
-      real(kind = kreal) :: vec_org(3), vec_tgt(3), vec_mid(3)
+      real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
       integer(kind = kint) :: isurf_orgs(2,3), i, iflag_lic
 
       real(kind = kreal) :: ray_total_len = zero, ave_ray_len, step_size
@@ -207,10 +207,10 @@
         iflag_hit = 0
       end if
 !   get original value of sampling point
-      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &   ie_surf, isurf_end, xi, xx, xx_st)
-      call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,       &
-      &   ie_surf, isurf_end, xi, field_lic%v_lic, vec_org)
+      call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,        &
+      &   ie_surf, isurf_end, xi, xx, xx4_st)
+      call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,        &
+      &   ie_surf, isurf_end, xi, field_lic%v_lic, vec4_org)
       call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,       &
       &   ie_surf, isurf_end, xi, field_lic%d_lic, scl_org)
 
@@ -230,7 +230,7 @@
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
           grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
-     &       (viewpoint_vec, xx_st, grad_tgt,                           &
+     &       (viewpoint_vec, xx4_st, grad_tgt,                          &
      &        arccos_sf(isurf_end),  color_param, rgba_ray)
         end if
       end if
@@ -253,9 +253,9 @@
         call find_line_end_in_1ele                                      &
      &     (iflag_backward_line, numnod, numele, numsurf, nnod_4_surf,  &
      &      isf_4_ele, ie_surf, x_nod_model, iele, isf_org,             &
-     &      ray_vec, screen_st, isf_tgt, screen_tgt, xi)
-!        if(iflag_check .gt. 0) write(*,*) 'screen_tgt',                &
-!     &                        my_rank, xx_st(1:3), interior_ele(iele)
+     &      ray_vec4, screen4_st, isf_tgt, screen4_tgt, xi)
+!        if(iflag_check .gt. 0) write(*,*) 'screen4_tgt',               &
+!     &                  my_rank, screen4_tgt(1:3), interior_ele(iele)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -1
@@ -281,10 +281,10 @@
           isurf_orgs(i,3) = isurf_org(3)
         end do
 !   find 3D coordinate of exit point on exit surface
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, xx, xx_tgt)
-        call cal_field_on_surf_vector(numnod, numsurf, nnod_4_surf,     &
-     &      ie_surf, isurf_end, xi, field_lic%v_lic, vec_tgt)
+        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
+     &      ie_surf, isurf_end, xi, xx, xx4_tgt)
+        call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
+     &      ie_surf, isurf_end, xi, field_lic%v_lic, vec4_tgt)
         call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf,     &
      &      ie_surf, isurf_end, xi, field_lic%d_lic, scl_tgt)
 
@@ -303,24 +303,25 @@
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
-     &         (viewpoint_vec, xx_tgt, grad_tgt,                        &
+     &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
 !   3d lic calculation at current xx position
 !   if sampling by fixed step size
-          ray_len = sqrt( (xx_tgt(1) - xx_st(1))**2                     &
-       &                + (xx_tgt(2) - xx_st(2))**2                     &
-       &                + (xx_tgt(3) - xx_st(3))**2)
+          ray_len = sqrt( (xx4_tgt(1) - xx4_st(1))**2                   &
+     &                  + (xx4_tgt(2) - xx4_st(2))**2                   &
+     &                  + (xx4_tgt(3) - xx4_st(3))**2)
           if(lic_p%iflag_vr_sample_mode .eq. iflag_fixed_size) then
             ray_len_left = ray_left + ray_len
 
-            xx_lic_last = xx_st
+            xx4_lic_last(1:4) = xx4_st(1:4)
             step_cnt = 0
             do while(ray_len_left .gt. zero)
               ray_len_left = ray_len_left - step_size
               ratio = (step_size*step_cnt - ray_left) / ray_len
-              xx_lic = xx_st + ratio * (xx_tgt - xx_st)
+              xx4_lic(1:4) = xx4_st(1:4)                                &
+     &                    + ratio * (xx4_tgt(1:4) - xx4_st(1:4))
 !
               do i = 1, lic_p%num_masking
                 if(lic_p%masking(i)%mask_type                           &
@@ -333,14 +334,14 @@
 ! masking on sampling point
 !              if(mask_flag(lic_p, r_mid)) then
 
-              vec_mid(1:3)                                              &
-     &          = vec_org(1:3) * (1.0d0 - ratio) + vec_tgt(1:3) * ratio
+              vec4_mid(1:4) = vec4_org(1:4) * (1.0d0 - ratio)           &
+     &                       + vec4_tgt(1:4) * ratio
               call cal_lic_on_surf_vector                               &
      &           (numnod, numsurf, numele, nnod_4_surf,                 &
      &            isf_4_ele, iele_4_surf, interior_surf, xx,            &
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
-     &            r_mid, vec_mid, field_lic%s_lic,                      &
-     &            field_lic%v_lic, xx_lic, isurf_end,                   &
+     &            r_mid, vec4_mid, field_lic%s_lic,                     &
+     &            field_lic%v_lic, xx4_lic, isurf_end,                  &
      &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
      &            lic_tgt(1), grad_tgt)
 !
@@ -358,17 +359,17 @@
                 scl_mid(1)                                              &
      &            = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
                 call s_lic_rgba_4_each_pixel                            &
-     &             (viewpoint_vec, xx_lic_last, xx_lic,                 &
+     &             (viewpoint_vec, xx4_lic_last, xx4_lic,               &
      &              scl_mid(1), grad_tgt, lic_tgt(1),                   &
      &              color_param, step_size, rgba_ray)
               else
                 call s_lic_rgba_4_each_pixel                            &
-     &             (viewpoint_vec, xx_lic_last, xx_lic,                 &
+     &             (viewpoint_vec, xx4_lic_last, xx4_lic,               &
      &              lic_tgt(1), grad_tgt, lic_tgt(1),                   &
      &              color_param, step_size, rgba_ray)
               end if
 
-              xx_lic_last = xx_lic
+              xx4_lic_last(1:4) = xx4_lic(1:4)
               step_cnt = step_cnt + 1
             end do
             ray_left = ray_len_left
@@ -377,7 +378,7 @@
           else
             ray_total_len = ray_total_len + ray_len
 !   find mid point between xx_st and xx_tgt, this mid point will be actual sample point
-            xx_lic = half*(xx_st + xx_tgt)
+            xx4_lic(1:4) = half*(xx4_st(1:4) + xx4_tgt(1:4))
 !
 !   reference data at origin of lic iteration
             do i = 1, lic_p%num_masking
@@ -386,15 +387,15 @@
               end if
             end do
 !   the vector interpolate from entry and exit point
-            vec_mid(1:3) = half*(vec_org(1:3) + vec_tgt(1:3))
+            vec4_mid(1:4) = half*(vec4_org(1:4) + vec4_tgt(1:4))
 !   calculate lic value at current location, lic value will be used as intensity
 !   as volume rendering
             call cal_lic_on_surf_vector                                 &
      &         (numnod, numsurf, numele, nnod_4_surf,                   &
      &          isf_4_ele, iele_4_surf, interior_surf, xx,              &
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
-     &          r_mid, vec_mid, field_lic%s_lic,                        &
-     &          field_lic%v_lic, xx_lic, isurf_end,                     &
+     &          r_mid, vec4_mid, field_lic%s_lic,                       &
+     &          field_lic%v_lic, xx4_lic, isurf_end,                    &
      &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
      &          lic_tgt(1), grad_tgt)
 !
@@ -411,12 +412,12 @@
             if(lic_p%iflag_color_mode .eq. iflag_from_control) then
               scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
               call s_lic_rgba_4_each_pixel                              &
-     &           (viewpoint_vec, xx_st, xx_tgt,                         &
+     &           (viewpoint_vec, xx4_st, xx4_tgt,                       &
      &            scl_mid(1), grad_tgt, lic_tgt(1),                     &
      &            color_param, ave_ray_len, rgba_ray)
             else
               call s_lic_rgba_4_each_pixel                              &
-     &           (viewpoint_vec, xx_st, xx_tgt,                         &
+     &           (viewpoint_vec, xx4_st, xx4_tgt,                       &
      &            lic_tgt(1), grad_tgt, lic_tgt(1),                     &
      &            color_param, ave_ray_len, rgba_ray)
             end if
@@ -429,15 +430,15 @@
           exit
         end if
 !
-        screen_st(1:3) = screen_tgt(1:3)
-        xx_st(1:3) = xx_tgt(1:3)
+        screen4_st(1:4) = screen4_tgt(1:4)
+        xx4_st(1:4) =     xx4_tgt(1:4)
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
             r_org(i) = r_tgt(i)
           end if
         end do
-        scl_org(1) =   scl_tgt(1)
-        vec_org(1:3) = vec_tgt(1:3)
+        scl_org(1) =    scl_tgt(1)
+        vec4_org(1:4) = vec4_tgt(1:4)
       end do
       end subroutine lic_ray_trace_each_pixel
 !
