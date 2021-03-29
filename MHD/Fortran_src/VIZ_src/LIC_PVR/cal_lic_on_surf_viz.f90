@@ -358,7 +358,7 @@
        &               + (x4_tgt(2) - x4_org(2))**2                     &
        &               + (x4_tgt(3) - x4_org(3))**2)
         nstep_int = step_len * lic_p%noise_t%adelta_noise + 1
-        write(*,*) 'nstep_int', nstep_int
+        if(nstep_int .gt. 1) write(*,*) 'nstep_int', nstep_int
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
        &                  isurf_end, "at elem", iele, "local", isf_tgt
         if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x4_tgt
