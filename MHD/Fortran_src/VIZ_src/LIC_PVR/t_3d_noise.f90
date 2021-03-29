@@ -123,7 +123,7 @@
         num_1d(1:3) = noise_ctl%noise_resolution_ctl%intvalue
       end if
 !
-      if(noise_ctl%noise_deltax_ctl%iflag .gt. 0) then)
+      if(noise_ctl%noise_deltax_ctl%iflag .gt. 0) then
         c_size(1:3) = noise_ctl%noise_deltax_ctl%realvalue              &
      &               * dble(num_1d(1:3))
       else if(noise_ctl%noise_cube_size_ctl%iflag .gt. 0) then
