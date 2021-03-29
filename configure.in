@@ -2,8 +2,8 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-# AC_PREREQ(2.61)
-AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
+# AC_PREREQ([2.71])
+AC_INIT([FULL-PACKAGE-NAME],[VERSION],[BUG-REPORT-ADDRESS])
 
 AM_INIT_AUTOMAKE
 AM_CONDITIONAL([am__fastdepOBJC], false)
@@ -47,7 +47,7 @@ builtin(include,MHD/confdb/pkg.m4)
 #
 
 AC_CONFIG_SRCDIR([MHD/programs/SPH_MHD/main_sph_MHD.f90])
-# AC_CONFIG_HEADER([config.h])
+# AC_CONFIG_HEADERS([config.h])
 
 AC_ARG_ENABLE(cocoa,
 	[  --enable-cocoa          Use Cocoa framework],[USE_Cocoa='yes'],[USE_Cocoa='no'])
@@ -214,7 +214,15 @@ fi
 AC_SUBST(BLAS_LIBS)
 
 # Checks for header files.
-AC_HEADER_STDC
+m4_warn([obsolete],
+[The preprocessor macro `STDC_HEADERS' is obsolete.
+  Except in unusual embedded environments, you can safely include all
+  ISO C90 headers unconditionally.])dnl
+# Autoupdate added the next two lines to ensure that your configure
+# script's behavior did not change.  They are probably safe to remove.
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_CHECK_HEADERS([stdlib.h string.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -265,7 +273,7 @@ fi
 # Check zlib
 if test ${with_zlib} != "no"
 then
-	PKG_CHECK_MODULES([ZLIB], zlib, have_zlib=yes, AC_MSG_ERROR(Cannot find zlib))
+#	PKG_CHECK_MODULES([ZLIB], zlib, have_zlib=yes, AC_MSG_ERROR(Cannot find zlib))
 	echo "have_zlib=$have_zlib"
 	if test ${have_zlib} = "yes"
 	then
@@ -409,7 +417,7 @@ AC_SUBST(GLFW_CFLAGS)
 AC_SUBST(GLFW_LIBS)
 
 # Check pgplot for Fortran compiler
-LIBS="${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
+LIBS="${ZLIB_LIBS} ${PNG_LIBS} ${X_LIBS} ${AQUATERM_LIBS}"
 LDFLAGS=""
 AX_CHECK_PGPLOT
 AC_SUBST(HAVE_LIBPGPLOT)
