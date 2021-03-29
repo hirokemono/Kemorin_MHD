@@ -183,7 +183,7 @@
         end if
       end if
 !
-      call noise_normalization(nze%n_cube, nze%size_cube, nze%rnoise)
+      call noise_normalization(nze%n_cube, nze%nidx_xyz, nze%rnoise)
       call grad_3d_noise                                                &
      &   (nze%n_cube, nze%nidx_xyz, nze%asize_cube, nze%rnoise,         &
      &    nze%rnoise_grad)

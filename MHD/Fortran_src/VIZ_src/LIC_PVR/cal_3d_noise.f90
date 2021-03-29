@@ -12,9 +12,9 @@
 !!        integer(kind = kint), intent(in) :: nidx(3)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
 !!        real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
-!!      subroutine noise_normalization(nnod_gl, size_cube, rnoise)
+!!      subroutine noise_normalization(nnod_gl, nidx, rnoise)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
-!!        real(kind = kreal), intent(in) :: size_cube(3)
+!!        integer(kind = kint), intent(in) :: nidx(3)
 !!        real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
 !!      subroutine grad_3d_noise                                        &
 !!     &         (nnod_gl, nidx, asize_cube, rnoise, rnoise_grad)
@@ -107,10 +107,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine noise_normalization(nnod_gl, size_cube, rnoise)
+      subroutine noise_normalization(nnod_gl, nidx, rnoise)
 !
       integer(kind = kint_gl), intent(in) :: nnod_gl
-      real(kind = kreal), intent(in) :: size_cube(3)
+      integer(kind = kint), intent(in) :: nidx(3)
       real(kind = kreal), intent(inout) :: rnoise(nnod_gl)
 !
       integer(kind = kint_gl) :: i0
@@ -123,7 +123,7 @@
         anoise = anoise + rnoise(i0)
       end do
 !$omp end parallel do
-      anoise = (size_cube(1)*size_cube(2)*size_cube(3)) / anoise
+      anoise = dble(nidx(1)) * dble(nidx(2)) * dble(nidx(3)) / anoise
       write(*,*) 'anoise', anoise
 !
 !$omp parallel do
