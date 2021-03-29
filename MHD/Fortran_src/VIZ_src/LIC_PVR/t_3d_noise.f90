@@ -54,6 +54,10 @@
         real(kind = kreal) :: deltax_noise(3)
 !>         1 / delta_x
         real(kind = kreal) :: adeltax_noise(3)
+!>         size of delta x of noise in physical space
+        real(kind = kreal) :: delta_noise
+!>         1 / delta_x
+        real(kind = kreal) :: adelta_noise
 !
 !>         step size of noise
         integer(kind = kint) :: i_stepsize
@@ -274,6 +278,8 @@
      &                          / nze%size_cube(i)
         end if
       end do
+      nze%delta_noise =  sum(nze%deltax_noise) /  dble(ithree)
+      nze%adelta_noise = sum(nze%adeltax_noise) / dble(ithree)
 !
       end subroutine set_3d_cube_size
 !

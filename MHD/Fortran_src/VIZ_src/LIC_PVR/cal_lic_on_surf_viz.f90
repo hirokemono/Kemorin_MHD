@@ -360,6 +360,7 @@
         step_len = sqrt( (x_tgt(1) - x_org(1))**2                       &
        &               + (x_tgt(2) - x_org(2))**2                       &
        &               + (x_tgt(3) - x_org(3))**2)
+!        nstep_int = step_len * adelta_noise + 1
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
        &                  isurf_end, "at elem", iele, "local", isf_tgt
         if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x_tgt
