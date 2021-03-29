@@ -163,6 +163,8 @@
           call read_alloc_3d_charanoise                                 &
      &       (my_rank, nze%noise_file_name, nze)
           call alloc_3d_cube_noise(nze)
+          call cvt_cnoise_to_real(nze%n_cube, nze%cnoise, nze%rnoise)
+          call dealloc_3d_cube_noise_IO(nze)
         else
           write(e_message,'(3a)') 'noise file ',                        &
      &       trim(nze%noise_file_name), ' is missing'
@@ -173,15 +175,15 @@
         call const_3d_noise                                             &
      &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise)
 !
-        call alloc_3d_cube_noise_IO(nze)
-        call cvt_rnoise_to_chara(nze%n_cube, nze%rnoise, nze%cnoise)
         if(nze%noise_file_name .ne. no_file_name) then
+          call alloc_3d_cube_noise_IO(nze)
+          call cvt_rnoise_to_chara(nze%n_cube, nze%rnoise, nze%cnoise)
           call write_3d_charanoise(nze%noise_file_name, nze)
+          call dealloc_3d_cube_noise_IO(nze)
         end if
       end if
-      call cvt_cnoise_to_real(nze%n_cube, nze%cnoise, nze%rnoise)
-      call dealloc_3d_cube_noise_IO(nze)
 !
+      call noise_normalization(nze%n_cube, nze%size_cube, nze%rnoise)
       call grad_3d_noise                                                &
      &   (nze%n_cube, nze%nidx_xyz, nze%asize_cube, nze%rnoise,         &
      &    nze%rnoise_grad)
