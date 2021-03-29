@@ -271,7 +271,7 @@
       do i = 1, 3
         if(nze%size_cube(i) .le. 0.0d0) then
           nze%asize_cube(i) = 1.0d0
-          nze%adeltax_noise(i) = dble(nze%nidx_xyz(1:3))
+          nze%adeltax_noise(i) = dble(nze%nidx_xyz(i))
         else
           nze%asize_cube(i) = 1.0d0 / nze%size_cube(i)
           nze%adeltax_noise(i) = dble(nze%nidx_xyz(i))                  &
