@@ -110,12 +110,11 @@
         end do
         if(mask_flag(lic_p, r_org)) then
           call interpolate_noise_at_node                                &
-     &       (xx4_org(1), lic_p%noise_t, n_v, n_grad)
+     &       (xx4_org(1), lic_p%noise_t, rlic_grad_v(0), rlic_grad_v(1:3))
         end if
         k_mid = (lic_p%kernel_t%n_knl + 1) / 2
-        o_tgt = o_tgt + n_v * lic_p%kernel_t%k_ary(k_mid)
-        n_grad(1:3) = n_grad(1:3) + n_grad(1:3)                         &
-     &               * lic_p%kernel_t%k_ary(k_mid)
+        o_tgt = rlic_grad_v(0) * lic_p%kernel_t%k_ary(k_mid)
+        n_grad(1:3) = rlic_grad_v(1:3) * lic_p%kernel_t%k_ary(k_mid)
 
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "--------------------Forward iter begin----------------"
