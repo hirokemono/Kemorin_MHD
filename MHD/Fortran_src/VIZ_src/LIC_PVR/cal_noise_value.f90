@@ -11,7 +11,7 @@
 !!      subroutine interpolate_kernel(iflag_dir, x, knl, value)
 !!        type(LIC_kernel), intent(in) :: knl
 !!      subroutine interpolate_noise_at_node(xyz, nze, point_noise_grad)
-!!      subroutine pick_noise_at_node(xyz, nze, point_grad_noise)
+!!      subroutine pick_noise_at_node(xyz, nze, point_noise_grad)
 !!        real(kind = kreal), intent(in) :: xyz(3)
 !!        type(noise_cube), intent(in) :: nze
 !!        real(kind = kreal), intent(inout) :: point_noise_grad(0:3)
@@ -90,7 +90,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pick_noise_at_node(xyz, nze, point_grad_noise)
+      subroutine pick_noise_at_node(xyz, nze, point_noise_grad)
 !
       real(kind = kreal), intent(in) :: xyz(3)
       type(noise_cube), intent(in) :: nze
