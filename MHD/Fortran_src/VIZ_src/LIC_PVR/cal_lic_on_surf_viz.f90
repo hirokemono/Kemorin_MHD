@@ -434,8 +434,8 @@
 !          end do
 !
 !          s_int = len_sum + step_len(1) + step_len(2)
-!          call interpolate_noise_at_node                               &
-!     &       (x4_tgt(1), lic_p%noise_t, n_v, g_v)
+          call interpolate_noise_at_node                               &
+     &       (x4_tgt(1), lic_p%noise_t, n_v, g_v)
 !          call interpolate_kernel                                      &
 !     &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !          nv_sum = nv_sum + n_v * step_rst(2)
@@ -446,10 +446,8 @@
 !     &                    i_iter, step_len, len_sum, "k_v: ", k_value
         end if
         len_sum = len_sum + step_len(1) + step_len(2)
-        call interpolate_noise_at_node                               &
-     &     (x4_tgt(1), lic_p%noise_t, n_v, g_v)
         call interpolate_kernel                                      &
-     &     (iflag_dir, len_sum, lic_p%kernel_t, k_value)
+     &     (iflag_dir, len_sum, lic_p%kernel_t, k_value) 
         nv_sum = nv_sum + n_v
         lic_v = lic_v + n_v * k_value
         grad_v = grad_v + g_v * k_value
