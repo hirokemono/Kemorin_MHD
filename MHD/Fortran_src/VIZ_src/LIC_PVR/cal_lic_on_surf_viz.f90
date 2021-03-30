@@ -369,8 +369,8 @@
         step_unit(1:4,2) = (x4_tgt(1:4) - x4_mid(1:4)) / step_len(2)
 !
         nstep_int(1:2) = int(step_len(1:2)*lic_p%noise_t%adelta_noise)
-        step_rst(1:2) = step_len(1:2) * lic_p%noise_t%adelta_noise      &
-       &               - dble(nstep_int(1:2))
+        step_rst(1:2) = step_len(1:2)                                   &
+       &           - lic_p%noise_t%adelta_noise * dble(nstep_int(1:2))
 !
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
        &                  isurf_end, "at elem", iele, "local", isf_tgt
