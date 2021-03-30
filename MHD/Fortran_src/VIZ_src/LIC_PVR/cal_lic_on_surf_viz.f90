@@ -262,7 +262,8 @@
       real(kind = kreal) :: v4_org(4), x4_org(4), xi(2)
       real(kind = kreal) :: v4_mid(4), x4_mid(4)
       real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
-      real(kind = kreal) :: step_len(2), step_rst(2)
+      real(kind = kreal) :: step_seg(2), residual(2)
+      real(kind = kreal) :: step_len, astep_len
       real(kind = kreal) :: step_unit(4,2), x4(4)
       integer(kind = kint) :: nstep_int(2)
       integer(kind = kint) :: i_iter, i_n, i
@@ -293,7 +294,7 @@
 
 !write(50 + my_rank, *) "start ele: ", isurf_org(1), "surf:", isurf_org(2)
       do
-        step_len(1:2) = 0.0d0
+        step_seg(1:2) = 0.0d0
         x4_org(1:4) = x4_start(1:4)
         v4_org(1:4) = v4_start(1:4)
         i_iter = i_iter + 1
@@ -358,18 +359,25 @@
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
        &    ie_surf, isurf_end, xi, vect_nod, v4_tgt)
-        step_len(1) = sqrt( (x4_mid(1) - x4_org(1))**2                  &
+        step_seg(1) = sqrt( (x4_mid(1) - x4_org(1))**2                  &
        &                  + (x4_mid(2) - x4_org(2))**2                  &
        &                  + (x4_mid(3) - x4_org(3))**2)
-        step_len(2) = sqrt( (x4_tgt(1) - x4_mid(1))**2                  &
+        step_seg(2) = sqrt( (x4_tgt(1) - x4_mid(1))**2                  &
        &                  + (x4_tgt(2) - x4_mid(2))**2                  &
        &                  + (x4_tgt(3) - x4_mid(3))**2)
 !
-        step_unit(1:4,1) = (x4_mid(1:4) - x4_org(1:4)) / step_len(1)
-        step_unit(1:4,2) = (x4_tgt(1:4) - x4_mid(1:4)) / step_len(2)
+        step_len = step_seg(1) + step_seg(2)
+        if(step_len .eq. 0.0d0) then
+          astep_len = 1.0d7
+        else
+          astep_len = 1.0d0 / step_len
+        end do
 !
-        nstep_int(1:2) = int(step_len(1:2)*lic_p%noise_t%adelta_noise)
-        step_rst(1:2) = step_len(1:2)                                   &
+        step_unit(1:4,1) = (x4_mid(1:4) - x4_org(1:4)) / step_seg(1)
+        step_unit(1:4,2) = (x4_tgt(1:4) - x4_mid(1:4)) / step_seg(2)
+!
+        nstep_int(1:2) = int(step_seg(1:2)*lic_p%noise_t%adelta_noise)
+        residual(1:2) = step_seg(1:2)                                   &
        &           - lic_p%noise_t%adelta_noise * dble(nstep_int(1:2))
 !
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
@@ -399,52 +407,59 @@
      &         (x4(1), lic_p%noise_t, n_v, g_v)
             call interpolate_kernel                                     &
      &         (iflag_dir, s_int, lic_p%kernel_t, k_value)
-            nv_sum = nv_sum + n_v * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
-            lic_v = lic_v + n_v * k_value * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
-            grad_v = grad_v + g_v * k_value * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
-            k_area = k_area + k_value * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
+!
+            nv_sum = nv_sum                                             &
+     &         + n_v * lic_p%noise_t%delta_noise * astep_len
+            lic_v = lic_v                                               &
+     &         + n_v * k_value * lic_p%noise_t%delta_noise * astep_len
+            grad_v = grad_v                                             &
+     &         + g_v * k_value * lic_p%noise_t%delta_noise * astep_len
+            k_area = k_area                                             &
+     &         + k_value * lic_p%noise_t%delta_noise * astep_len
           end do
 !
-          s_int = len_sum + step_len(1)
+          s_int = len_sum + step_seg(1)
           call interpolate_noise_at_node                                &
      &       (x4_mid(1), lic_p%noise_t, n_v, g_v)
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
-          nv_sum = nv_sum + n_v * step_rst(1)/(step_len(1) + step_len(2))
-          lic_v = lic_v + n_v * k_value * step_rst(1)/(step_len(1) + step_len(2))
-          grad_v = grad_v + g_v * k_value * step_rst(1)/(step_len(1) + step_len(2))
-          k_area = k_area + k_value * step_rst(1)/(step_len(1) + step_len(2))
+!
+          nv_sum = nv_sum + n_v * residual(1) *　astep_len
+          lic_v = lic_v + n_v * k_value * residual(1) * astep_len
+          grad_v = grad_v + g_v * k_value * residual(1) * astep_len
+          k_area = k_area + k_value * residual(1) * astep_len
 !
           do i = 1, nstep_int(2)
             x4(1:4) = x4_mid(1:4)                                       &
      &               + lic_p%noise_t%delta_noise * step_unit(1:4,2)
-            s_int = len_sum + step_len(1)                               &
+            s_int = len_sum + step_seg(1)                               &
      &                      + dble(i) * lic_p%noise_t%delta_noise
             call interpolate_noise_at_node                              &
      &         (x4(1), lic_p%noise_t, n_v, g_v)
             call interpolate_kernel                                     &
      &         (iflag_dir, s_int, lic_p%kernel_t, k_value)
-            nv_sum = nv_sum + n_v * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
-            lic_v = lic_v + n_v * k_value * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
-            grad_v = grad_v + g_v * k_value * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
-            k_area = k_area + k_value * lic_p%noise_t%delta_noise/(step_len(1) + step_len(2))
+!
+            nv_sum = nv_sum                                             &
+     &          + n_v * lic_p%noise_t%delta_noise * astep_len
+            lic_v = lic_v                                               &
+     &          + n_v * k_value * lic_p%noise_t%delta_noise * astep_len
+            grad_v = grad_v                                             &
+     &          + g_v * k_value * lic_p%noise_t%delta_noise * astep_len
+            k_area = k_area                                             &
+     &          + k_value * lic_p%noise_t%delta_noise * astep_len
           end do
 !
-          s_int = len_sum + step_len(1) + step_len(2)
+          s_int = len_sum + step_len
           call interpolate_noise_at_node                                &
      &       (x4_tgt(1), lic_p%noise_t, n_v, g_v)
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
-          nv_sum = nv_sum + n_v * step_rst(2)/(step_len(1) + step_len(2))
-          lic_v = lic_v + n_v * k_value * step_rst(2)/(step_len(1) + step_len(2))
-          grad_v = grad_v + g_v * k_value * step_rst(2)/(step_len(1) + step_len(2))
-          k_area = k_area + k_value * step_rst(2)/(step_len(1) + step_len(2))
-!          nv_sum = nv_sum + n_v * step_rst(2)
-!          lic_v = lic_v + n_v * k_value * step_rst(2)
-!          grad_v = grad_v + g_v * k_value * step_rst(2)
-!          k_area = k_area + k_value * step_rst(2)
+          nv_sum = nv_sum + n_v * residual(2) * astep_len
+          lic_v = lic_v + n_v * k_value * residual(2) * astep_len
+          grad_v = grad_v + g_v * k_value * residual(2) * astep_len
+          k_area = k_area + k_value * residual(2) * astep_len
         else
-          s_int = len_sum + step_len(1) + step_len(2)
+          s_int = len_sum + step_len
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
           nv_sum = nv_sum + n_v
@@ -474,7 +489,8 @@
         end if
         if(i_iter .gt. 200) then
           !write(*,*) 'iteration too large in 1: ', i_iter
-          !write(*,*) 'total length: ', len_sum, 'kernel', k_value, 'step', step_len
+          !write(*,*) 'total length: ', len_sum, 'kernel', k_value,     &
+!     &              'step', step_seg
           return
         end if
       end do
