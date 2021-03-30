@@ -117,7 +117,7 @@
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
      &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
-     &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
+     &      iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
         sample_cnt = sample_cnt + icount_pvr_trace(inum)
       end do
@@ -134,7 +134,7 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
-     &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
+     &        icount_line, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -157,9 +157,6 @@
       real(kind = kreal), intent(in) :: arccos_sf(numsurf)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
-!
-      real(kind = kreal), intent(in) :: xyz_min_gl(3)
-      real(kind = kreal), intent(in) :: xyz_max_gl(3)
 !
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
@@ -271,15 +268,12 @@
           isurf_org(1) = iele_4_surf(isurf_end,1,1) ! element on one side share the surface
           isurf_org(2) = iele_4_surf(isurf_end,1,2) ! the surface id of one side element(1-6)
         else
-          isurf_org(1) = iele_4_surf(isurf_end,2,1)
-          isurf_org(2) = iele_4_surf(isurf_end,2,2)
+          isurf_org(1:2) = iele_4_surf(isurf_end,2,1:2)
         end if
         ! new element surface info
-        do i = 1, 2
-          isurf_orgs(i,1) = iele_4_surf(isurf_end,i,1)
-          isurf_orgs(i,2) = iele_4_surf(isurf_end,i,2)
-          isurf_orgs(i,3) = isurf_org(3)
-        end do
+        isurf_orgs(1:2,1) = iele_4_surf(isurf_end,1:2,1)
+        isurf_orgs(1:2,2) = iele_4_surf(isurf_end,1:2,2)
+         isurf_orgs(1:2,3) = isurf_org(3)
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
      &      ie_surf, isurf_end, xi, xx, xx4_tgt)
@@ -342,8 +336,7 @@
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
-     &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
-     &            lic_tgt(1), grad_tgt)
+     &            iflag_lic, lic_tgt(1), grad_tgt)
 !
   !   normalize gradient
               grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                   &
@@ -396,8 +389,7 @@
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_mid, vec4_mid, field_lic%s_lic,                       &
      &          field_lic%v_lic, xx4_lic, isurf_end,                    &
-     &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
-     &          lic_tgt(1), grad_tgt)
+     &          iflag_lic, lic_tgt(1), grad_tgt)
 !
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
