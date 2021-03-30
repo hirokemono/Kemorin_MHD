@@ -89,8 +89,7 @@
 !
 !      type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: sample_cnt
-!
-!      real(kind = kreal) :: range_max, range_min
+      real(kind = kreal) :: range_max, range_min
 
       iflag_debug = 0
 !
@@ -118,7 +117,7 @@
      &      ray_vec4, id_pixel_check(inum), isf_pvr_ray_start(1,inum),  &
      &      xx4_pvr_ray_start(1,inum), xx4_pvr_start(1,inum),           &
      &      xi_pvr_start(1,inum), rgba_tmp(1), icount_pvr_trace(inum),  &
-     &      iflag_comm)
+     &      node%xyz_min_gl, node%xyz_max_gl, iflag_comm)
         rgba_ray(1:4,inum) = rgba_tmp(1:4)
         sample_cnt = sample_cnt + icount_pvr_trace(inum)
       end do
@@ -135,7 +134,7 @@
      &        interior_surf, arccos_sf, x_nod_model, viewpoint_vec,     &
      &        lic_p, field_lic, draw_param, color_param, ray_vec4,      &
      &        iflag_check, isurf_org, screen4_st, xx4_st, xi, rgba_ray, &
-     &        icount_line, iflag_comm)
+     &        icount_line, xyz_min_gl, xyz_max_gl, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -159,6 +158,9 @@
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec4(4)
 !
+      real(kind = kreal), intent(in) :: xyz_min_gl(3)
+      real(kind = kreal), intent(in) :: xyz_max_gl(3)
+!
       type(lic_parameters), intent(in) :: lic_p
       type(lic_field_data), intent(in) :: field_lic
       type(rendering_parameter), intent(in) :: draw_param
@@ -177,9 +179,9 @@
       integer(kind = kint) :: iflag_hit
       real(kind = kreal) :: screen4_tgt(4)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
-      real(kind = kreal) :: xx4_tgt(4), grad_len
+      real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), grad_len
 
-      real(kind = kreal) :: lic_grad_tgt(0:3)
+      real(kind = kreal) :: lic_tgt(1)
       real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
@@ -226,9 +228,9 @@
 !        Set color if starting surface is colourd
       if(interior_ele(iele) .gt. 0) then
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-          lic_grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+          grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
-     &       (viewpoint_vec, xx4_st, lic_grad_tgt(1),                   &
+     &       (viewpoint_vec, xx4_st, grad_tgt,                          &
      &        arccos_sf(isurf_end),  color_param, rgba_ray)
         end if
       end if
@@ -269,12 +271,15 @@
           isurf_org(1) = iele_4_surf(isurf_end,1,1) ! element on one side share the surface
           isurf_org(2) = iele_4_surf(isurf_end,1,2) ! the surface id of one side element(1-6)
         else
-          isurf_org(1:2) = iele_4_surf(isurf_end,2,1:2)
+          isurf_org(1) = iele_4_surf(isurf_end,2,1)
+          isurf_org(2) = iele_4_surf(isurf_end,2,2)
         end if
         ! new element surface info
-        isurf_orgs(1:2,1) = iele_4_surf(isurf_end,1:2,1)
-        isurf_orgs(1:2,2) = iele_4_surf(isurf_end,1:2,2)
-         isurf_orgs(1:2,3) = isurf_org(3)
+        do i = 1, 2
+          isurf_orgs(i,1) = iele_4_surf(isurf_end,i,1)
+          isurf_orgs(i,2) = iele_4_surf(isurf_end,i,2)
+          isurf_orgs(i,3) = isurf_org(3)
+        end do
 !   find 3D coordinate of exit point on exit surface
         call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
      &      ie_surf, isurf_end, xi, xx, xx4_tgt)
@@ -291,14 +296,14 @@
           end if
         end do
 
-        lic_grad_tgt(0) = 0.0
+        lic_tgt(1) = 0.0
 !
         if(interior_ele(iele) .gt. 0) then
-!    Set color if exit surface is colourd
+!   rendering boundery
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-            lic_grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+            grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
-     &         (viewpoint_vec, xx4_tgt, lic_grad_tgt(1),                &
+     &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
@@ -337,14 +342,15 @@
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
-     &            iflag_lic, lic_grad_tgt)
+     &            xyz_min_gl, xyz_max_gl, iflag_lic,                    &
+     &            lic_tgt(1), grad_tgt)
 !
   !   normalize gradient
-              grad_len = sqrt(lic_grad_tgt(1)*lic_grad_tgt(1)           &
-     &                      + lic_grad_tgt(2)*lic_grad_tgt(2)           &
-     &                      + lic_grad_tgt(3)*lic_grad_tgt(3))
+              grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                   &
+     &                      + grad_tgt(2)*grad_tgt(2)                   &
+     &                      + grad_tgt(3)*grad_tgt(3))
               if(grad_len .ne. 0.0) then
-                lic_grad_tgt(1:3) = lic_grad_tgt(1:3) / grad_len
+                grad_tgt(1:3) = grad_tgt(1:3) / grad_len
               endif
 ! render section (clipping surface)
 
@@ -354,12 +360,12 @@
      &            = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
                 call s_lic_rgba_4_each_pixel                            &
      &             (viewpoint_vec, xx4_lic_last, xx4_lic,               &
-     &              scl_mid(1), lic_grad_tgt(1), lic_grad_tgt(0),       &
+     &              scl_mid(1), grad_tgt, lic_tgt(1),                   &
      &              color_param, step_size, rgba_ray)
               else
                 call s_lic_rgba_4_each_pixel                            &
      &             (viewpoint_vec, xx4_lic_last, xx4_lic,               &
-     &              lic_grad_tgt(0), lic_grad_tgt(1), lic_grad_tgt(0),  &
+     &              lic_tgt(1), grad_tgt, lic_tgt(1),                   &
      &              color_param, step_size, rgba_ray)
               end if
 
@@ -390,28 +396,29 @@
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_mid, vec4_mid, field_lic%s_lic,                       &
      &          field_lic%v_lic, xx4_lic, isurf_end,                    &
-     &          iflag_lic, lic_grad_tgt)
+     &          xyz_min_gl, xyz_max_gl, iflag_lic,                      &
+     &          lic_tgt(1), grad_tgt)
 !
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
 !   normalize gradient
-            grad_len = sqrt(lic_grad_tgt(1)*lic_grad_tgt(1)             &
-     &                    + lic_grad_tgt(2)*lic_grad_tgt(2)             &
-     &                    + lic_grad_tgt(3)*lic_grad_tgt(3))
+            grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                     &
+     &                    + grad_tgt(2)*grad_tgt(2)                     &
+     &                    + grad_tgt(3)*grad_tgt(3))
             if(grad_len .ne. 0.0) then
-              lic_grad_tgt(1:3) = lic_grad_tgt(1:3) / grad_len
+              grad_tgt(1:3) = grad_tgt(1:3) / grad_len
             endif
 
             if(lic_p%iflag_color_mode .eq. iflag_from_control) then
               scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
               call s_lic_rgba_4_each_pixel                              &
      &           (viewpoint_vec, xx4_st, xx4_tgt,                       &
-     &            scl_mid(1), lic_grad_tgt(1), lic_grad_tgt(0),         &
+     &            scl_mid(1), grad_tgt, lic_tgt(1),                     &
      &            color_param, ave_ray_len, rgba_ray)
             else
               call s_lic_rgba_4_each_pixel                              &
      &           (viewpoint_vec, xx4_st, xx4_tgt,                       &
-     &            lic_grad_tgt(0), lic_grad_tgt(1), lic_grad_tgt(0),    &
+     &            lic_tgt(1), grad_tgt, lic_tgt(1),                     &
      &            color_param, ave_ray_len, rgba_ray)
             end if
           end if

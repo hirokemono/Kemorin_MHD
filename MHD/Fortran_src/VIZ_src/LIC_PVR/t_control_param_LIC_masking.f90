@@ -39,7 +39,7 @@
 !>        Structure of soure decision field parameter for LIC
         type(pvr_field_parameter) :: field_info
 !>        Geometry mask component index 1:x 2:y 3:z 4:magnitude
-        integer(kind = kint) :: idx_dir =   1
+        integer(kind = kint) :: comp_idx =   1
 !>        Number of masking range
         integer(kind = kint) :: num_range =   1
 !>        minimum value of source point range
@@ -102,11 +102,18 @@
       end if
 !
       if(masking%mask_type .eq. iflag_geometrymask) then
-        call s_set_components_flags(mask_ctl%component_ctl%charavalue,  &
-     &      position_name, icomp_tmp(1), icheck_ncomp(1),               &
-     &      ncomp_tmp(1), fldname_tmp(1))
-        masking%idx_dir = icomp_tmp(1)
-      else if(masking%mask_type .eq. iflag_fieldmask) then
+        if(mask_ctl%component_ctl%charavalue .eq. 'x') then
+          masking%comp_idx = 1
+        else if(mask_ctl%component_ctl%charavalue .eq. 'y') then
+          masking%comp_idx = 2
+        else if(mask_ctl%component_ctl%charavalue .eq. 'z') then
+          masking%comp_idx = 3
+        else if(mask_ctl%component_ctl%charavalue .eq. 'magnitude') then
+          masking%comp_idx = 4
+        end if
+      end if
+!
+      if(masking%mask_type .eq. iflag_fieldmask) then
         tmpfield(1) = mask_ctl%field_name_ctl%charavalue
         tmpcomp(1) =  mask_ctl%component_ctl%charavalue
         call set_components_4_viz(num_nod_phys, phys_nod_name,          &
