@@ -67,7 +67,7 @@
         real(kind = kreal) :: step_vec4(4), new_pos4(4)
         integer(kind = kint) :: ilic_suf_org(3), icur_sf
         integer(kind = kint) :: i, isf_tgt, k_mid
-        real(kind = kreal) :: lic_v, n_v, k_area
+        real(kind = kreal) :: lic_v, rnoise_grad(0:3), k_area
         integer(kind = kint) :: iflag_found_sf, iele, isf_org
 
 
@@ -79,7 +79,7 @@
         o_tgt = 0.0
         n_grad(1:3) = 0.0
         icur_sf = isurf
-        n_v = 0.0
+        rnoise_grad(0) = 0.0
         do i = 1, 2
           iele = isurf_orgs(i,1)
           isf_org = isurf_orgs(i,2)
@@ -104,11 +104,12 @@
         end do
         if(mask_flag(lic_p, r_org)) then
           call interpolate_noise_at_node                                &
-     &       (xx4_org(1), lic_p%noise_t, n_v, n_grad)
+     &       (xx4_org(1), lic_p%noise_t, rnoise_grad)
         end if
         k_mid = (lic_p%kernel_t%n_knl + 1) / 2
-        o_tgt = o_tgt + n_v * lic_p%kernel_t%k_ary(k_mid)
-        n_grad = n_grad + n_grad * lic_p%kernel_t%k_ary(k_mid)
+        o_tgt = o_tgt + rnoise_grad(0) * lic_p%kernel_t%k_ary(k_mid)
+        n_grad(1:3) = n_grad(1:3)                                       &
+     &               + rnoise_grad(1:3) * lic_p%kernel_t%k_ary(k_mid)
 
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "--------------------Forward iter begin----------------"
@@ -259,16 +260,18 @@
       real(kind = kreal) :: step_len, astep_len
 !
       integer(kind = kint) :: i_iter, i_n, i, j
-      real(kind = kreal) :: n_v, nv_sum, len_sum, s_int
+      real(kind = kreal) :: rnoise_grad(0:3)
+      real(kind = kreal) :: nv_sum, len_sum, s_int
       real(kind = kreal) ::  k_value, avg_stepsize
-      real(kind = kreal) :: g_v(3), ref_value(lic_p%num_masking)
+      real(kind = kreal) :: ref_value(lic_p%num_masking)
 !
 !
 !init local variables
       i_iter = 0
-      i_n = 0 ! index of noise value
-      n_v = 0.0 ! noise value
-      g_v(1:3) = 0.0
+! index of noise value
+      i_n = 0 
+ ! noise and gradient
+      rnoise_grad(0:3) = 0.0
       nv_sum = 0.0
       lic_v = 0.0
       avg_stepsize = 0.01
@@ -377,8 +380,7 @@
         x4_start(1:4) =  x4_tgt(1:4,2)
         v4_start(1:4) =  v4_tgt(1:4,2)
 !
-        n_v = 0.0
-        g_v(1:3) = 0.0
+        rnoise_grad(0:3) = 0.0
         ref_value(:) = 0.0
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
@@ -397,15 +399,15 @@
      &                 + lic_p%noise_t%delta_noise * step_unit(1:4,j)
               s_int = len_sum + dble(i) * lic_p%noise_t%delta_noise
               call interpolate_noise_at_node                            &
-     &           (x4(1), lic_p%noise_t, n_v, g_v)
+     &           (x4(1), lic_p%noise_t, rnoise_grad)
               call interpolate_kernel                                   &
      &           (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !
-              nv_sum = nv_sum + n_v                                     &
+              nv_sum = nv_sum + rnoise_grad(0)                          &
      &                         * lic_p%noise_t%delta_noise * astep_len
-              lic_v = lic_v + n_v * k_value                             &
+              lic_v = lic_v + rnoise_grad(0) * k_value                  &
      &                       * lic_p%noise_t%delta_noise * astep_len
-              grad_v = grad_v + g_v * k_value                           &
+              grad_v(1:3) = grad_v(1:3) + rnoise_grad(1:3) * k_value    &
      &                       * lic_p%noise_t%delta_noise * astep_len
               k_area = k_area + k_value                                 &
      &                       * lic_p%noise_t%delta_noise * astep_len
@@ -413,27 +415,29 @@
 !
             len_sum = len_sum + step_seg(j)
             call interpolate_noise_at_node                              &
-     &         (x4_tgt(1,j), lic_p%noise_t, n_v, g_v)
+     &         (x4_tgt(1,j), lic_p%noise_t, rnoise_grad(0))
             call interpolate_kernel                                     &
      &         (iflag_dir, len_sum, lic_p%kernel_t, k_value)
 !
-            nv_sum = nv_sum + n_v * residual(j) * astep_len
-            lic_v = lic_v + n_v * k_value * residual(j) * astep_len
-            grad_v = grad_v + g_v * k_value * residual(j) * astep_len
+            nv_sum = nv_sum + rnoise_grad(0) * residual(j) * astep_len
+            lic_v = lic_v + rnoise_grad(0) * k_value                    &
+     &                     * residual(j) * astep_len
+            grad_v(1:3) = grad_v(1:3) + rnoise_grad(1:3) * k_value      &
+     &                     * residual(j) * astep_len
             k_area = k_area + k_value * residual(j) * astep_len
           end do
         else
           s_int = len_sum + step_len
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
-          nv_sum = nv_sum + n_v
-          lic_v = lic_v + n_v * k_value
-          grad_v = grad_v + g_v * k_value
+          nv_sum = nv_sum + rnoise_grad(0)
+          lic_v = lic_v + rnoise_grad(0) * k_value
+          grad_v(1:3) = grad_v(1:3) + rnoise_grad(1:3) * k_value
           k_area = k_area + k_value
         end if
         len_sum = s_int
 !
-        if(i_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v,          &
+        if(i_debug .eq. 1) write(50+my_rank,*) "nv: ", rnoise_grad(0),  &
      &     "nv sum:", nv_sum, "kernel area: ", k_area, "lic_v: ", lic_v
 
 !        if(interior_surf(isurf_end) .eq. izero) then

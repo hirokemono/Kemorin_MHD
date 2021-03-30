@@ -10,14 +10,11 @@
 !!@verbatim
 !!      subroutine interpolate_kernel(iflag_dir, x, knl, value)
 !!        type(LIC_kernel), intent(in) :: knl
-!!      subroutine interpolate_noise_at_node                            &
-!!     &         (xyz, nze, point_noise, point_grad_noise)
-!!      subroutine pick_noise_at_node                                   &
-!!     &         (xyz, nze, point_noise, point_grad_noise)
+!!      subroutine interpolate_noise_at_node(xyz, nze, point_noise_grad)
+!!      subroutine pick_noise_at_node(xyz, nze, point_grad_noise)
 !!        real(kind = kreal), intent(in) :: xyz(3)
 !!        type(noise_cube), intent(in) :: nze
-!!        real(kind = kreal), intent(inout) :: point_noise
-!!        real(kind = kreal), intent(inout) :: point_grad_noise(3)
+!!        real(kind = kreal), intent(inout) :: point_noise_grad(0:3)
 !!@endverbatim
 !
       module cal_noise_value
@@ -66,14 +63,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine interpolate_noise_at_node                              &
-     &         (xyz, nze, point_noise, point_grad_noise)
+      subroutine interpolate_noise_at_node(xyz, nze, point_noise_grad)
 !
       real(kind = kreal), intent(in) :: xyz(3)
       type(noise_cube), intent(in) :: nze
 !
-      real(kind = kreal), intent(inout) :: point_noise
-      real(kind = kreal), intent(inout) :: point_grad_noise(3)
+      real(kind = kreal), intent(inout) :: point_noise_grad(0:3)
 !
       integer(kind = kint_gl) :: ie_cube(8)
       real(kind = kreal) :: an(8)
@@ -82,27 +77,25 @@
       call cal_data_noise_interpolation                                 &
      &   (xyz, nze%nidx_xyz, nze%asize_cube, ie_cube, an)
 !
-      point_noise = interpolate_noise(ie_cube, an, nze%n_cube,          &
+      point_noise_grad(0) = interpolate_noise(ie_cube, an, nze%n_cube,  &
      &                                nze%rnoise)
-      point_grad_noise(1) = interpolate_noise(ie_cube, an, nze%n_cube,  &
+      point_noise_grad(1) = interpolate_noise(ie_cube, an, nze%n_cube,  &
      &                                nze%rnoise_grad(1,1))
-      point_grad_noise(2) = interpolate_noise(ie_cube, an, nze%n_cube,  &
+      point_noise_grad(2) = interpolate_noise(ie_cube, an, nze%n_cube,  &
      &                                nze%rnoise_grad(1,2))
-      point_grad_noise(3) = interpolate_noise(ie_cube, an, nze%n_cube,  &
+      point_noise_grad(3) = interpolate_noise(ie_cube, an, nze%n_cube,  &
      &                                nze%rnoise_grad(1,3))
 !
       end subroutine interpolate_noise_at_node
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pick_noise_at_node                                     &
-     &         (xyz, nze, point_noise, point_grad_noise)
+      subroutine pick_noise_at_node(xyz, nze, point_grad_noise)
 !
       real(kind = kreal), intent(in) :: xyz(3)
       type(noise_cube), intent(in) :: nze
 !
-      real(kind = kreal), intent(inout) :: point_noise
-      real(kind = kreal), intent(inout) :: point_grad_noise(3)
+      real(kind = kreal), intent(inout) :: point_noise_grad(0:3)
 !
       integer(kind = kint_gl) :: ie_cube(8)
       real(kind = kreal) :: an(8)
@@ -111,13 +104,13 @@
       call cal_data_noise_interpolation                                 &
      &   (xyz, nze%nidx_xyz, nze%asize_cube, ie_cube, an)
 !
-      point_noise = pick_noise_at_point(ie_cube, nze%n_cube,            &
+      point_noise_grad(0) = pick_noise_at_point(ie_cube, nze%n_cube,    &
      &                                nze%rnoise)
-      point_grad_noise(1) = pick_noise_at_point(ie_cube, nze%n_cube,    &
+      point_noise_grad(1) = pick_noise_at_point(ie_cube, nze%n_cube,    &
      &                                nze%rnoise_grad(1,1))
-      point_grad_noise(2) = pick_noise_at_point(ie_cube, nze%n_cube,    &
+      point_noise_grad(2) = pick_noise_at_point(ie_cube, nze%n_cube,    &
      &                                nze%rnoise_grad(1,2))
-      point_grad_noise(3) = pick_noise_at_point(ie_cube, nze%n_cube,    &
+      point_noise_grad(3) = pick_noise_at_point(ie_cube, nze%n_cube,    &
      &                                nze%rnoise_grad(1,3))
 !
       end subroutine pick_noise_at_node
