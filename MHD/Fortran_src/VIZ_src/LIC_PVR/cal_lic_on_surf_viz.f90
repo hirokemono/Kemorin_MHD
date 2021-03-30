@@ -393,8 +393,8 @@
         if(mask_flag(lic_p, ref_value)) then
           do i = 1, nstep_int(1)
             x4(1:4) = x4_org(1:4)                                       &
-     &               + lic_p%noise_t%adelta_noise * step_unit(1:4,1)
-            s_int = len_sum + dble(i) * lic_p%noise_t%adelta_noise
+     &               + lic_p%noise_t%delta_noise * step_unit(1:4,1)
+            s_int = len_sum + dble(i) * lic_p%noise_t%delta_noise
 !
             call interpolate_noise_at_node                              &
      &         (x4(1), lic_p%noise_t, n_v, g_v)
@@ -419,9 +419,9 @@
 !
           do i = 1, nstep_int(2)
             x4(1:4) = x4_mid(1:4)                                       &
-     &               + lic_p%noise_t%adelta_noise * step_unit(1:4,2)
+     &               + lic_p%noise_t%delta_noise * step_unit(1:4,2)
             s_int = len_sum + step_len(1)                               &
-     &                    + dble(i) * lic_p%noise_t%adelta_noise
+     &                      + dble(i) * lic_p%noise_t%delta_noise
             call interpolate_noise_at_node                              &
      &         (x4(1), lic_p%noise_t, n_v, g_v)
             call interpolate_kernel                                     &
