@@ -177,9 +177,9 @@
       integer(kind = kint) :: iflag_hit
       real(kind = kreal) :: screen4_tgt(4)
       real(kind = kreal), allocatable :: r_org(:), r_tgt(:), r_mid(:)
-      real(kind = kreal) :: grad_tgt(3), xx4_tgt(4), grad_len
+      real(kind = kreal) :: xx4_tgt(4), grad_len
 
-      real(kind = kreal) :: lic_tgt(1)
+      real(kind = kreal) :: lic_grad_tgt(0:3)
       real(kind = kreal) :: xx4_lic(4), xx4_lic_last(4)
       real(kind = kreal) :: scl_org(1), scl_tgt(1), scl_mid(1)
       real(kind = kreal) :: vec4_org(4), vec4_tgt(4), vec4_mid(4)
@@ -226,9 +226,9 @@
 !        Set color if starting surface is colourd
       if(interior_ele(iele) .gt. 0) then
         if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-          grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+          lic_grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
           call plane_rendering_with_light                               &
-     &       (viewpoint_vec, xx4_st, grad_tgt,                          &
+     &       (viewpoint_vec, xx4_st, lic_grad_tgt(1),                   &
      &        arccos_sf(isurf_end),  color_param, rgba_ray)
         end if
       end if
@@ -291,14 +291,14 @@
           end if
         end do
 
-        lic_tgt(1) = 0.0
+        lic_grad_tgt(0) = 0.0
 !
         if(interior_ele(iele) .gt. 0) then
 !   rendering boundery
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
-            grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
+            lic_grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
-     &         (viewpoint_vec, xx4_tgt, grad_tgt,                       &
+     &         (viewpoint_vec, xx4_tgt, lic_grad_tgt(1),                &
      &          arccos_sf(isurf_end),  color_param, rgba_ray)
           end if
 !
@@ -337,14 +337,14 @@
      &            isurf_orgs, ie_surf, xi, lic_p,                       &
      &            r_mid, vec4_mid, field_lic%s_lic,                     &
      &            field_lic%v_lic, xx4_lic, isurf_end,                  &
-     &            iflag_lic, lic_tgt(1), grad_tgt)
+     &            iflag_lic, lic_grad_tgt)
 !
   !   normalize gradient
-              grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                   &
-     &                      + grad_tgt(2)*grad_tgt(2)                   &
-     &                      + grad_tgt(3)*grad_tgt(3))
+              grad_len = sqrt(lic_grad_tgt(1)*lic_grad_tgt(1)           &
+     &                      + lic_grad_tgt(2)*lic_grad_tgt(2)           &
+     &                      + lic_grad_tgt(3)*lic_grad_tgt(3))
               if(grad_len .ne. 0.0) then
-                grad_tgt(1:3) = grad_tgt(1:3) / grad_len
+                lic_grad_tgt(1:3) = lic_grad_tgt(1:3) / grad_len
               endif
 ! render section (clipping surface)
 
@@ -354,12 +354,12 @@
      &            = scl_org(1) * (1.0d0 - ratio) + scl_tgt(1) * ratio
                 call s_lic_rgba_4_each_pixel                            &
      &             (viewpoint_vec, xx4_lic_last, xx4_lic,               &
-     &              scl_mid(1), grad_tgt, lic_tgt(1),                   &
+     &              scl_mid(1), lic_grad_tgt(1), lic_grad_tgt(0),       &
      &              color_param, step_size, rgba_ray)
               else
                 call s_lic_rgba_4_each_pixel                            &
      &             (viewpoint_vec, xx4_lic_last, xx4_lic,               &
-     &              lic_tgt(1), grad_tgt, lic_tgt(1),                   &
+     &              lic_grad_tgt(0), lic_grad_tgt(1), lic_grad_tgt(0),  &
      &              color_param, step_size, rgba_ray)
               end if
 
@@ -390,28 +390,28 @@
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_mid, vec4_mid, field_lic%s_lic,                       &
      &          field_lic%v_lic, xx4_lic, isurf_end,                    &
-     &          iflag_lic, lic_tgt(1), grad_tgt)
+     &          iflag_lic, lic_grad_tgt)
 !
             ave_ray_len = ray_total_len / icount_line_cur_ray
 !
 !   normalize gradient
-            grad_len = sqrt(grad_tgt(1)*grad_tgt(1)                     &
-     &                    + grad_tgt(2)*grad_tgt(2)                     &
-     &                    + grad_tgt(3)*grad_tgt(3))
+            grad_len = sqrt(lic_grad_tgt(1)*lic_grad_tgt(1)             &
+     &                    + lic_grad_tgt(2)*lic_grad_tgt(2)             &
+     &                    + lic_grad_tgt(3)*lic_grad_tgt(3))
             if(grad_len .ne. 0.0) then
-              grad_tgt(1:3) = grad_tgt(1:3) / grad_len
+              lic_grad_tgt(1:3) = lic_grad_tgt(1:3) / grad_len
             endif
 
             if(lic_p%iflag_color_mode .eq. iflag_from_control) then
               scl_mid(1) = half*(scl_org(1) + scl_tgt(1))
               call s_lic_rgba_4_each_pixel                              &
      &           (viewpoint_vec, xx4_st, xx4_tgt,                       &
-     &            scl_mid(1), grad_tgt, lic_tgt(1),                     &
+     &            scl_mid(1), lic_grad_tgt(1), lic_grad_tgt(0),         &
      &            color_param, ave_ray_len, rgba_ray)
             else
               call s_lic_rgba_4_each_pixel                              &
      &           (viewpoint_vec, xx4_st, xx4_tgt,                       &
-     &            lic_tgt(1), grad_tgt, lic_tgt(1),                     &
+     &            lic_grad_tgt(0), lic_grad_tgt(1), lic_grad_tgt(0),    &
      &            color_param, ave_ray_len, rgba_ray)
             end if
           end if
