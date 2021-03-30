@@ -220,6 +220,7 @@
      &      ie_surf, isurf_end, xi, field_pvr%d_pvr, c_tgt(1))
 !
         if(interior_ele(iele) .gt. 0) then
+!    Set color if exit surface is colourd
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &

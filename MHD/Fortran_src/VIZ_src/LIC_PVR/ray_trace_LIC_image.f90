@@ -294,7 +294,7 @@
         lic_grad_tgt(0) = 0.0
 !
         if(interior_ele(iele) .gt. 0) then
-!   rendering boundery
+!    Set color if exit surface is colourd
           if(arccos_sf(isurf_end) .gt. SMALL_RAY_TRACE) then
             lic_grad_tgt(1:3) = vnorm_surf(isurf_end,1:3)
             call plane_rendering_with_light                             &
