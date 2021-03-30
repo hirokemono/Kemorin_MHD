@@ -433,21 +433,23 @@
 !            k_area = k_area + k_value
 !          end do
 !
-!          s_int = len_sum + step_len(1) + step_len(2)
-          call interpolate_noise_at_node                               &
+          s_int = len_sum + step_len(1) + step_len(2)
+          call interpolate_noise_at_node                                &
      &       (x4_tgt(1), lic_p%noise_t, n_v, g_v)
-!          call interpolate_kernel                                      &
-!     &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
+          call interpolate_kernel                                       &
+     &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !          nv_sum = nv_sum + n_v * step_rst(2)
 !          lic_v = lic_v + n_v * k_value * step_rst(2)
 !          grad_v = grad_v + g_v * k_value * step_rst(2)
 !          k_area = k_area + k_value * step_rst(2)
 !          if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",        &
 !     &                    i_iter, step_len, len_sum, "k_v: ", k_value
+        else
+          s_int = len_sum + step_len(1) + step_len(2)
+          call interpolate_kernel                                       &
+     &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
         end if
-        len_sum = len_sum + step_len(1) + step_len(2)
-        call interpolate_kernel                                      &
-     &     (iflag_dir, len_sum, lic_p%kernel_t, k_value) 
+        len_sum = s_int
         nv_sum = nv_sum + n_v
         lic_v = lic_v + n_v * k_value
         grad_v = grad_v + g_v * k_value
