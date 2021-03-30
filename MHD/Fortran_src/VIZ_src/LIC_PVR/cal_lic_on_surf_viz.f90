@@ -371,7 +371,7 @@
           astep_len = 1.0d7
         else
           astep_len = 1.0d0 / step_len
-        end do
+        end if
 !
         step_unit(1:4,1) = (x4_mid(1:4) - x4_org(1:4)) / step_seg(1)
         step_unit(1:4,2) = (x4_tgt(1:4) - x4_mid(1:4)) / step_seg(2)
