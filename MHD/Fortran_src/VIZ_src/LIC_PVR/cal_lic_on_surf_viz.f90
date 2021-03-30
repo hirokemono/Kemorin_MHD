@@ -247,7 +247,7 @@
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: iflag_comm
-      real(kind = kreal), intent(inout) ::   v4_start(4), x4_start(4)
+      real(kind = kreal), intent(inout) :: v4_start(4), x4_start(4)
 !
 !      type(noise_node), intent(in) :: n_node(n_size)
 !      type(noise_mask), intent(inout) :: n_mask
@@ -258,11 +258,15 @@
       real(kind = kreal), intent(inout) :: lic_v, k_area, grad_v(3)
 !
       integer(kind = kint) :: isf_tgt, isurf_end, isurf_start
-      integer(kind = kint) :: nstep_int
       integer(kind = kint) :: iele, isf_org
-      real(kind = kreal) :: x4_org(4), x4_tgt(4), v4_tgt(4), xi(2)
+      real(kind = kreal) :: v4_org(4), x4_org(4), xi(2)
+      real(kind = kreal) :: v4_mid(4), x4_mid(4)
+      real(kind = kreal) :: v4_tgt(4), x4_tgt(4)
+      real(kind = kreal) :: step_len(2), step_rst(2)
+      real(kind = kreal) :: step_unit(4,2), x4(4)
+      integer(kind = kint) :: nstep_int(2)
       integer(kind = kint) :: i_iter, i_n, i
-      real(kind = kreal) :: n_v, nv_sum, step_len, len_sum
+      real(kind = kreal) :: n_v, nv_sum, len_sum, s_int
       real(kind = kreal) ::  k_value, avg_stepsize
       real(kind = kreal) :: g_v(3), ref_value(lic_p%num_masking)
 !
@@ -274,7 +278,6 @@
       g_v(1:3) = 0.0
       nv_sum = 0.0
       lic_v = 0.0
-      step_len = 0.0
       avg_stepsize = 0.01
       len_sum = 0.0
 
@@ -290,8 +293,9 @@
 
 !write(50 + my_rank, *) "start ele: ", isurf_org(1), "surf:", isurf_org(2)
       do
-        step_len = 0.0
+        step_len(1:2) = 0.0d0
         x4_org(1:4) = x4_start(1:4)
+        v4_org(1:4) = v4_start(1:4)
         i_iter = i_iter + 1
         if(isurf_start .lt. 1 .or. isurf_start .gt. numsurf) then
           iflag_comm = -10
@@ -311,9 +315,9 @@
             call find_line_end_in_1ele                                  &
      &         (iflag_dir, numnod, numele, numsurf,                     &
      &          nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,     &
-     &          v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &          v4_org, x4_org, isf_tgt, x4_tgt, xi)
             if(isf_tgt .gt. 0) then
-            ! find hit surface
+! find hit surface
               exit
             end if
           end if
@@ -326,25 +330,25 @@
 ! find next point on one surface
         if(i_debug .eq. 1) write(50 + my_rank, *)                       &
      &         "From", isurf_start, "at elem", iele, "local", isf_org
-        if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x4_start
+        if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x4_org
 !
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
      &      ie_surf, isurf_end, xi, vect_nod, v4_tgt)
 !
         isf_org =  0
-        x4_start(1:4) = half * (x4_start(1:4) + x4_tgt(1:4))
-        v4_start(1:4) = half * (v4_start(1:4) + v4_tgt(1:4))
+        x4_mid(1:4) = half * (x4_org(1:4) + x4_tgt(1:4))
+        v4_mid(1:4) = half * (v4_mid(1:4) + v4_tgt(1:4))
         if(i_debug .eq. 1) write(50 + my_rank, *)                       &
      &      "first hit pos:", x4_tgt
         if(i_debug .eq. 1) write(50 + my_rank, *)                       &
-     &      "middle pos:", x4_start
+     &      "middle pos:", x4_mid
 !
 !   extend to surface of element
 !
         call find_line_end_in_1ele(iflag_dir, numnod, numele, numsurf,  &
      &      nnod_4_surf, isf_4_ele, ie_surf, xx, iele, isf_org,         &
-     &      v4_start, x4_start, isf_tgt, x4_tgt, xi)
+     &      v4_mid, x4_mid, isf_tgt, x4_tgt, xi)
 !
         if(isf_tgt .eq. 0) then
           iflag_comm = -12
@@ -353,16 +357,26 @@
 ! exit point after 2nd field line trace
         isurf_end = abs(isf_4_ele(iele,isf_tgt))
         call cal_field_on_surf_vect4(numnod, numsurf, nnod_4_surf,      &
-       &    ie_surf, isurf_end, xi, vect_nod, v4_start)
-        step_len = sqrt( (x4_tgt(1) - x4_org(1))**2                     &
-       &               + (x4_tgt(2) - x4_org(2))**2                     &
-       &               + (x4_tgt(3) - x4_org(3))**2)
-        nstep_int = step_len * lic_p%noise_t%adelta_noise + 1
-        if(nstep_int .gt. 1) write(*,*) 'nstep_int', nstep_int
+       &    ie_surf, isurf_end, xi, vect_nod, v4_tgt)
+        step_len(1) = sqrt( (x4_mid(1) - x4_org(1))**2                  &
+       &                  + (x4_mid(2) - x4_org(2))**2                  &
+       &                  + (x4_mid(3) - x4_org(3))**2)
+        step_len(2) = sqrt( (x4_tgt(1) - x4_mid(1))**2                  &
+       &                  + (x4_tgt(2) - x4_mid(2))**2                  &
+       &                  + (x4_tgt(3) - x4_mid(3))**2)
+!
+        step_unit(1:4,1) = (x4_mid(1:4) - x4_org(1:4)) / step_len(1)
+        step_unit(1:4,2) = (x4_tgt(1:4) - x4_mid(1:4)) / step_len(2)
+!
+        nstep_int(1:2) = int(step_len(1:2)*lic_p%noise_t%adelta_noise)
+        step_rst(1:2) = step_len(1:2) * lic_p%noise_t%adelta_noise      &
+       &               - dble(nstep_int(1:2))
+!
         if(i_debug .eq. 1) write(50 + my_rank, *) "To  ",               &
        &                  isurf_end, "at elem", iele, "local", isf_tgt
         if(i_debug .eq. 1) write(50 + my_rank, *) "pos:", x4_tgt
         x4_start(1:4) =  x4_tgt(1:4)
+        v4_start(1:4) =  v4_tgt(1:4)
 !
         n_v = 0.0
         g_v(1:3) = 0.0
@@ -375,20 +389,62 @@
             ref_value(i) = get_geometry_reference(lic_p, i, x4_tgt)
           end if
         end do
+!
         if(mask_flag(lic_p, ref_value)) then
+          do i = 1, nstep_int(1)
+            x4(1:4) = x4_org(1:4)                                       &
+     &               + lic_p%noise_t%adelta_noise * step_unit(1:4,1)
+            s_int = len_sum + dble(i) * lic_p%noise_t%adelta_noise
+!
+            call interpolate_noise_at_node                              &
+     &         (x4(1), lic_p%noise_t, n_v, g_v)
+            call interpolate_kernel                                     &
+     &         (iflag_dir, s_int, lic_p%kernel_t, k_value)
+            nv_sum = nv_sum + n_v
+            lic_v = lic_v + n_v * k_value
+            grad_v = grad_v + g_v * k_value
+            k_area = k_area + k_value
+          end do
+          s_int = len_sum + step_len(1)
+          call interpolate_noise_at_node                                &
+     &       (x4_mid(1), lic_p%noise_t, n_v, g_v)
+          call interpolate_kernel                                       &
+     &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
+          nv_sum = nv_sum + n_v * step_rst(1)
+          lic_v = lic_v + n_v * k_value * step_rst(1)
+          grad_v = grad_v + g_v * k_value * step_rst(1)
+          k_area = k_area + k_value * step_rst(1)
+          if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",         &
+     &                    i_iter, step_len, len_sum, "k_v: ", k_value
+!
+          do i = 1, nstep_int(2)
+            x4(1:4) = x4_mid(1:4)                                       &
+     &               + lic_p%noise_t%adelta_noise * step_unit(1:4,2)
+            s_int = len_sum + step_len(1)                               &
+     &                    + dble(i) * lic_p%noise_t%adelta_noise
+            call interpolate_noise_at_node                              &
+     &         (x4(1), lic_p%noise_t, n_v, g_v)
+            call interpolate_kernel                                     &
+     &         (iflag_dir, s_int, lic_p%kernel_t, k_value)
+            nv_sum = nv_sum + n_v
+            lic_v = lic_v + n_v * k_value
+            grad_v = grad_v + g_v * k_value
+            k_area = k_area + k_value
+          end do
+          s_int = len_sum + step_len(1) + step_len(2)
           call interpolate_noise_at_node                                &
      &       (x4_tgt(1), lic_p%noise_t, n_v, g_v)
-        end if
-        nv_sum = nv_sum + n_v
-        len_sum = len_sum + step_len
-        call interpolate_kernel                                         &
-     &     (iflag_dir, len_sum, lic_p%kernel_t, k_value)
-!
-        if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",           &
+          call interpolate_kernel                                       &
+     &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
+          nv_sum = nv_sum + n_v * step_rst(2)
+          lic_v = lic_v + n_v * k_value * step_rst(2)
+          grad_v = grad_v + g_v * k_value * step_rst(2)
+          k_area = k_area + k_value * step_rst(2)
+          if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ",         &
      &                    i_iter, step_len, len_sum, "k_v: ", k_value
-        lic_v = lic_v + n_v * k_value
-        grad_v = grad_v + g_v * k_value
-        k_area = k_area + k_value
+        end if
+        len_sum = len_sum + step_len(1) + step_len(2)
+!
         if(i_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v,          &
      &     "nv sum:", nv_sum, "kernel area: ", k_area, "lic_v: ", lic_v
 
@@ -415,65 +471,6 @@
       end do
 !
       return
-!      if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter) .eq. izero) then
-!      if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter) .eq. 2) then ! never enter this loop
-        avg_stepsize = len_sum / i_iter
-        if (avg_stepsize .lt. 0.005) then
-          avg_stepsize = 0.005
-        end if
-        if(i_debug .eq. 1) write(50 + my_rank, *)                       &
-     &                    "----dis is short for", i_iter, "iteration"
-        do
-          if(i_iter .gt. 200) then
-!        write(*,*) 'iteration too large in 2: ', i_iter
-!        write(*,*) 'total length: ', len_sum, 'kernel', k_value,       &
-!     &           'step', step_len
-            return
-          end if
-          i_iter = i_iter + 1
-          len_sum = len_sum + avg_stepsize
-          len_sum = min(len_sum, lic_p%kernel_t%half_lengh)
-          x4_tgt(1:4) = x4_start(1:4) + avg_stepsize * v4_start(1:4)    &
-     &                     / sqrt(v4_start(1)*v4_start(1)               &
-     &                          + v4_start(2)*v4_start(2)               &
-     &                          + v4_start(3)*v4_start(3))
-          n_v = 0.0
-          g_v(1:3) = 0.0
-          do i = 1, lic_p%num_masking
-            if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
-              call cal_field_on_surf_scalar                             &
-     &           (numnod, numsurf, nnod_4_surf, ie_surf, isurf_end,     &
-     &            xi, ref_nod(1,i), ref_value(i))
-            else
-              ref_value(i) = get_geometry_reference(lic_p, i, x4_tgt)
-            end if
-          end do
-          if(mask_flag(lic_p, ref_value)) then
-            call interpolate_noise_at_node                              &
-     &         (x4_tgt(1), lic_p%noise_t, n_v, g_v)
-          end if
-!
-          call interpolate_kernel                                       &
-     &       (iflag_dir, len_sum, lic_p%kernel_t, k_value)
-          if(i_debug .eq. 1) write(50 + my_rank, *) "--step: ", i_iter, &
-     &                      step_len, len_sum, "k_v: ", k_value
-          lic_v = lic_v + n_v*k_value
-          grad_v = grad_v + g_v * k_value
-          k_area = k_area + k_value
-          x4_start(1:4) = x4_tgt(1:4)
-          if(i_debug .eq. 1) write(50 + my_rank, *) "nv: ", n_v,        &
-     &                    "nv sum:", nv_sum, "kernel area: ", k_area, " &
-     &                    lic_v: ", lic_v
-          if(flag_lic_end(lic_p%kernel_t, len_sum, i_iter)) then
-            iflag_comm = 1
-            exit
-          end if
-        end do
-!      end if
-
-      if(i_debug .eq. 1) write(50 + my_rank, *) "---------",            &
-     &                 "lic_v: ", lic_v
-      if(i_debug .eq. 1) write(50 + my_rank, *) "len_sum", len_sum
 !
       end subroutine s_cal_lic_from_point
 !
