@@ -442,18 +442,18 @@
 !          lic_v = lic_v + n_v * k_value * step_rst(2)
 !          grad_v = grad_v + g_v * k_value * step_rst(2)
 !          k_area = k_area + k_value * step_rst(2)
-          nv_sum = nv_sum + n_v * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
-          lic_v = lic_v + n_v * k_value * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
-          grad_v = grad_v + g_v * k_value * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
-          k_area = k_area + k_value * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
+          nv_sum = nv_sum + n_v * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
+          lic_v = lic_v + n_v * k_value * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
+          grad_v = grad_v + g_v * k_value * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
+          k_area = k_area + k_value * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
         else
           s_int = len_sum + step_len(1) + step_len(2)
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
-          nv_sum = nv_sum + n_v * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
-          lic_v = lic_v + n_v * k_value * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
-          grad_v = grad_v + g_v * k_value * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
-          k_area = k_area + k_value * (step_len(1) + step_len(2))*lic_p%noise_t%adelta_noise
+          nv_sum = nv_sum + n_v * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
+          lic_v = lic_v + n_v * k_value * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
+          grad_v = grad_v + g_v * k_value * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
+          k_area = k_area + k_value * (step_len(1) + step_len(2))/(step_len(1) + step_len(2))
         end if
         len_sum = s_int
 !
