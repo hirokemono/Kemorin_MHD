@@ -89,7 +89,8 @@
 !
 !      type(noise_mask), allocatable :: n_mask
       integer(kind = kint) :: sample_cnt
-      real(kind = kreal) :: range_max, range_min
+!
+!      real(kind = kreal) :: range_max, range_min
 
       iflag_debug = 0
 !

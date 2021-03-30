@@ -43,6 +43,7 @@
         use calypso_mpi
         use t_noise_node_data
         use cal_noise_value
+        use get_geometry_reference
 
         integer(kind = kint), intent(in) :: isurf_orgs(2,3)
         integer(kind = kint), intent(in) :: nnod, nsurf, nelem
@@ -97,7 +98,8 @@
 
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
-            r_org(i) = get_geometry_reference(lic_p, i, xx4_org)
+            r_org(i) = s_get_geometry_reference                         &
+     &               (lic_p%masking(i)%idx_dir, xx4_org(1))
           end if
         end do
         if(mask_flag(lic_p, r_org)) then
@@ -221,6 +223,7 @@
 
       use t_noise_node_data
       use cal_noise_value
+      use get_geometry_reference
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -378,12 +381,12 @@
         g_v(1:3) = 0.0
         ref_value(:) = 0.0
         do i = 1, lic_p%num_masking
-          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+          if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
+            ref_value(i) = s_get_geometry_reference                     &
+      &                  (lic_p%masking(i)%idx_dir, x4_tgt(1,2))
+          else
             call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf, &
       &         ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
-          else
-            ref_value(i)                                                &
-      &        = get_geometry_reference(lic_p, i, x4_tgt(1,2))
           end if
         end do
 !
