@@ -110,7 +110,7 @@
         end do
         if(mask_flag(lic_p, r_org)) then
           call interpolate_noise_at_node                                &
-     &       (xx4_org(1), lic_p%noise_t, rlic_grad_v(0), rlic_grad_v(1:3))
+     &       (xx4_org(1), lic_p%noise_t, rlic_grad_v)
         end if
         k_mid = (lic_p%kernel_t%n_knl + 1) / 2
         o_tgt = rlic_grad_v(0) * lic_p%kernel_t%k_ary(k_mid)
@@ -403,7 +403,7 @@
      &               + lic_p%noise_t%delta_noise * step_unit(1:4,1)
             s_int = len_sum + dble(i) * lic_p%noise_t%delta_noise
             call interpolate_noise_at_node                              &
-     &         (x4(1), lic_p%noise_t, rnoise_grad(0), rnoise_grad(1))
+     &         (x4(1), lic_p%noise_t, rnoise_grad)
             call interpolate_kernel                                     &
      &         (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !
@@ -420,7 +420,7 @@
 !
           s_int = len_sum + step_seg(1)
           call interpolate_noise_at_node                                &
-     &       (x4_mid(1), lic_p%noise_t, rnoise_grad(0), rnoise_grad(1))
+     &       (x4_mid(1), lic_p%noise_t, rnoise_grad)
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !
@@ -438,7 +438,7 @@
             s_int = len_sum + step_seg(1)                               &
      &                      + dble(i) * lic_p%noise_t%delta_noise
             call interpolate_noise_at_node                              &
-     &         (x4(1), lic_p%noise_t, rnoise_grad(0), rnoise_grad(1))
+     &         (x4(1), lic_p%noise_t, rnoise_grad)
             call interpolate_kernel                                     &
      &         (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !
@@ -455,7 +455,7 @@
 !
           s_int = len_sum + step_len
           call interpolate_noise_at_node                                &
-     &       (x4_tgt(1), lic_p%noise_t, rnoise_grad(0), rnoise_grad(1))
+     &       (x4_tgt(1), lic_p%noise_t, rnoise_grad)
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
           nv_sum = nv_sum + rnoise_grad(0) * residual(2) * astep_len
