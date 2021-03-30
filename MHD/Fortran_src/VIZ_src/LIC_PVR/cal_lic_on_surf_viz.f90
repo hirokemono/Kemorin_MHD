@@ -424,7 +424,7 @@
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !
-          nv_sum = nv_sum + n_v * residual(1) *　astep_len
+          nv_sum = nv_sum + n_v * residual(1) * astep_len
           lic_v = lic_v + n_v * k_value * residual(1) * astep_len
           grad_v = grad_v + g_v * k_value * residual(1) * astep_len
           k_area = k_area + k_value * residual(1) * astep_len
