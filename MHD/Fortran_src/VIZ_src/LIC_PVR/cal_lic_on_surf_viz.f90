@@ -10,7 +10,7 @@
 !!     &          isurf_orgs, ie_surf, xi, lic_p,                       &
 !!     &          r_org, vec4_org, ref_nod,                             &
 !!     &          v_nod, xx4_org, isurf, xyz_min, xyz_max, iflag_comm,  &
-!!     &          o_tgt, n_grad)
+!!     &          rlic_grad)
 !!
 !!      subroutine cal_surf_field_value_2d(nd, xi, fd, ft)
 !
@@ -41,7 +41,7 @@
      &          isurf_orgs, ie_surf, xi, lic_p,                         &
      &          r_org, vec4_org, ref_nod,                               &
      &          v_nod, xx4_org, isurf, xyz_min, xyz_max, iflag_comm,    &
-     &          o_tgt, n_grad)
+     &          rlic_grad)
 
         use m_geometry_constants
         use calypso_mpi
@@ -64,7 +64,7 @@
         real(kind = kreal), intent(in) :: v_nod(nnod,3), xx(nnod, 3)
         real(kind = kreal), intent(in) :: ref_nod(nnod,lic_p%num_masking)
         real(kind = kreal), intent(in) :: xx4_org(4), vec4_org(4)
-        real(kind = kreal), intent(inout) :: o_tgt, n_grad(3), r_org(:)
+        real(kind = kreal), intent(inout) :: rlic_grad(0:3), r_org(:)
         integer(kind = kint), intent(inout) :: iflag_comm
 !        type(noise_mask), intent(inout) :: n_mask
 
@@ -84,8 +84,7 @@
 
 !     initial convolution integration at origin point
         rlic_grad_v(0) = 0.0
-        o_tgt = 0.0
-        n_grad(1:3) = 0.0
+        rlic_grad(0:3) = 0.0
         icur_sf = isurf
         n_v = 0.0
         do i = 1, 2
@@ -115,8 +114,7 @@
      &       (xx4_org(1), lic_p%noise_t, rlic_grad_v)
         end if
         k_mid = (lic_p%kernel_t%n_knl + 1) / 2
-        o_tgt = rlic_grad_v(0) * lic_p%kernel_t%k_ary(k_mid)
-        n_grad(1:3) = rlic_grad_v(1:3) * lic_p%kernel_t%k_ary(k_mid)
+        rlic_grad(0:3) = rlic_grad_v(0:3) * lic_p%kernel_t%k_ary(k_mid)
 
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "--------------------Forward iter begin----------------"
@@ -163,8 +161,7 @@
      &        iele_4_surf, interior_surf, lic_p, iflag_forward_line,    &
      &        v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,        &
      &        rlic_grad_v, k_area, iflag_comm)
-          o_tgt = o_tgt + rlic_grad_v(0)
-          n_grad(1:3) = n_grad(1:3) + rlic_grad_v(1:3)
+          rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "-----------------------Forward iter end-------------with:", &
@@ -206,19 +203,19 @@
      &          iele_4_surf, interior_surf, lic_p, iflag_backward_line, &
      &          v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,      &
      &          rlic_grad_v, k_area, iflag_comm)
-          o_tgt = o_tgt + rlic_grad_v(0)
-          n_grad(1:3) = n_grad(1:3) + rlic_grad_v(1:3)
+          rlic_grad(0:3) = rlic_grad(0:3) + rlic_grad_v(0:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "-----------------------Backward iter end------------with:", &
      &     iflag_comm
 
         if(k_area .gt. 0.0) then
-          o_tgt = o_tgt / k_area
+          rlic_grad(0) = rlic_grad(0) / k_area
         end if
-        o_tgt = o_tgt * lic_p%factor_normal
+        rlic_grad(0) = rlic_grad(0) * lic_p%factor_normal
 
-        if(i_debug .eq. 1) write(50+my_rank,*) "Get lic value: ", o_tgt
+        if(i_debug .eq. 1) write(50+my_rank,*)                          &
+     &                   "Get lic value: ", rlic_grad(0)
         if(i_debug .eq. 1) write(50+my_rank, *)"   "
 
     end subroutine cal_lic_on_surf_vector

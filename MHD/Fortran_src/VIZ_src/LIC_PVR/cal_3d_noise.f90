@@ -26,7 +26,7 @@
 !!
 !!      subroutine cvt_rnoise_to_chara(nnod_gl, rnoise_grad, cnoise)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
-!!        real(kind = kreal), intent(inout) :: rnoise_grad(0:3,nnod_gl)
+!!        real(kind = kreal), intent(in) :: rnoise_grad(0:3,nnod_gl)
 !!        character(len = 1), intent(inout) :: cnoise(nnod_gl)
 !!      subroutine cvt_cnoise_to_real(nnod_gl, cnoise, rnoise_grad)
 !!        integer(kind = kint_gl), intent(in) :: nnod_gl
