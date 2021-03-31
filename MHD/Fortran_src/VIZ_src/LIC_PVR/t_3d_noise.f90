@@ -66,8 +66,6 @@
 !>         nobe of nodes of noise cube
         integer(kind = kint_gl) :: n_cube
 !
-!>         noise data
-        real(kind = kreal), allocatable :: rnoise(:)
 !>         gradient of noise
         real(kind = kreal), allocatable :: rnoise_grad(:,:)
 !
@@ -163,7 +161,8 @@
           call read_alloc_3d_charanoise                                 &
      &       (my_rank, nze%noise_file_name, nze)
           call alloc_3d_cube_noise(nze)
-          call cvt_cnoise_to_real(nze%n_cube, nze%cnoise, nze%rnoise)
+          call cvt_cnoise_to_real                                       &
+     &       (nze%n_cube, nze%cnoise, nze%rnoise_grad)
           call dealloc_3d_cube_noise_IO(nze)
         else
           write(e_message,'(3a)') 'noise file ',                        &
@@ -173,20 +172,21 @@
       else
         call alloc_3d_cube_noise(nze)
         call const_3d_noise                                             &
-     &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise)
+     &     (nze%i_stepsize, nze%nidx_xyz, nze%n_cube, nze%rnoise_grad)
 !
         if(nze%noise_file_name .ne. no_file_name) then
           call alloc_3d_cube_noise_IO(nze)
-          call cvt_rnoise_to_chara(nze%n_cube, nze%rnoise, nze%cnoise)
+          call cvt_rnoise_to_chara                                      &
+     &       (nze%n_cube, nze%rnoise_grad, nze%cnoise)
           call write_3d_charanoise(nze%noise_file_name, nze)
           call dealloc_3d_cube_noise_IO(nze)
         end if
       end if
 !
-      call noise_normalization(nze%n_cube, nze%nidx_xyz, nze%rnoise)
+      call noise_normalization                                          &
+     &   (nze%n_cube, nze%nidx_xyz, nze%rnoise_grad)
       call grad_3d_noise                                                &
-     &   (nze%n_cube, nze%nidx_xyz, nze%asize_cube, nze%rnoise,         &
-     &    nze%rnoise_grad)
+     &   (nze%n_cube, nze%nidx_xyz, nze%asize_cube, nze%rnoise_grad)
 !
       end subroutine sel_const_3d_cube_noise
 !
@@ -196,7 +196,7 @@
 !
       type(noise_cube), intent(inout) :: nze
 !
-      deallocate(nze%rnoise, nze%rnoise_grad)
+      deallocate(nze%rnoise_grad)
 !
       end subroutine dealloc_3d_cube_noise
 !
@@ -208,14 +208,10 @@
       type(noise_cube), intent(inout) :: nze
 !
 !
-      allocate(nze%rnoise(nze%n_cube))
-      allocate(nze%rnoise_grad(nze%n_cube,3))
+      allocate(nze%rnoise_grad(0:3,nze%n_cube))
 !
 !$omp parallel workshare
-      nze%rnoise(1:nze%n_cube) = 0.0d0
-      nze%rnoise_grad(1:nze%n_cube,1) = 0.0d0
-      nze%rnoise_grad(1:nze%n_cube,2) = 0.0d0
-      nze%rnoise_grad(1:nze%n_cube,3) = 0.0d0
+      nze%rnoise_grad(0:3,1:nze%n_cube) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine alloc_3d_cube_noise

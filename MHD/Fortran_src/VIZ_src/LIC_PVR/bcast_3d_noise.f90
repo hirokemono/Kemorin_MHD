@@ -39,7 +39,7 @@
 !
       type(noise_cube), intent(inout) :: nze
 !
-      integer(kind = kint_gl) :: n3_cube
+      integer(kind = kint_gl) :: n4_cube
 !
 !
       call calypso_mpi_bcast_one_int(nze%iflag_noise_type, 0)
@@ -54,9 +54,8 @@
       call calypso_mpi_bcast_one_int8(nze%n_cube, 0)
 !
       if(my_rank .ne. 0) call alloc_3d_cube_noise(nze)
-      n3_cube = 3 * nze%n_cube
-      call calypso_mpi_bcast_real(nze%rnoise(1), nze%n_cube, 0)
-      call calypso_mpi_bcast_real(nze%rnoise_grad(1,1), n3_cube, 0)
+      n4_cube = 4 * nze%n_cube
+      call calypso_mpi_bcast_real(nze%rnoise_grad(1,1), n4_cube, 0)
 !
       end subroutine bcast_3d_cube_noise
 !

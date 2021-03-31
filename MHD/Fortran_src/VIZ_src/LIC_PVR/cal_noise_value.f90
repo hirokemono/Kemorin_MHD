@@ -30,7 +30,7 @@
 !
       private :: cal_1d_local_id_and_position
       private :: cal_data_noise_interpolation
-      private :: interpolate_noise, pick_noise_at_point
+      private :: interpolate_noise_grad
 !
 !  ---------------------------------------------------------------------
 !
@@ -76,15 +76,8 @@
 !
       call cal_data_noise_interpolation                                 &
      &   (xyz, nze%nidx_xyz, nze%asize_cube, ie_cube, an)
-!
-      point_noise_grad(0) = interpolate_noise(ie_cube, an, nze%n_cube,  &
-     &                                nze%rnoise)
-      point_noise_grad(1) = interpolate_noise(ie_cube, an, nze%n_cube,  &
-     &                                nze%rnoise_grad(1,1))
-      point_noise_grad(2) = interpolate_noise(ie_cube, an, nze%n_cube,  &
-     &                                nze%rnoise_grad(1,2))
-      point_noise_grad(3) = interpolate_noise(ie_cube, an, nze%n_cube,  &
-     &                                nze%rnoise_grad(1,3))
+      call interpolate_noise_grad                                       &
+     &   (ie_cube, an, nze%n_cube, nze%rnoise_grad, point_noise_grad)
 !
       end subroutine interpolate_noise_at_node
 !
@@ -104,14 +97,7 @@
       call cal_data_noise_interpolation                                 &
      &   (xyz, nze%nidx_xyz, nze%asize_cube, ie_cube, an)
 !
-      point_noise_grad(0) = pick_noise_at_point(ie_cube, nze%n_cube,    &
-     &                                nze%rnoise)
-      point_noise_grad(1) = pick_noise_at_point(ie_cube, nze%n_cube,    &
-     &                                nze%rnoise_grad(1,1))
-      point_noise_grad(2) = pick_noise_at_point(ie_cube, nze%n_cube,    &
-     &                                nze%rnoise_grad(1,2))
-      point_noise_grad(3) = pick_noise_at_point(ie_cube, nze%n_cube,    &
-     &                                nze%rnoise_grad(1,3))
+      point_noise_grad(0:3) = nze%rnoise_grad(0:3,ie_cube(1))
 !
       end subroutine pick_noise_at_node
 !
@@ -194,39 +180,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      real(kind = kreal) function interpolate_noise                     &
-     &                          (ie_cube, an, n_cube, noise_cube)
+      subroutine interpolate_noise_grad                                 &
+     &         (ie_cube, an, n_cube, noise_grad, point_noise_grad)
 !
       integer(kind = kint_gl), intent(in) :: ie_cube(8)
       integer(kind = kint_gl), intent(in) :: n_cube
-      real(kind = kreal), intent(in) :: noise_cube(n_cube)
+      real(kind = kreal), intent(in) :: noise_grad(0:3,n_cube)
       real(kind = kreal), intent(in) :: an(8)
 !
-!
-      interpolate_noise =  an(1) * noise_cube(ie_cube(1))               &
-     &                   + an(2) * noise_cube(ie_cube(2))               &
-     &                   + an(3) * noise_cube(ie_cube(3))               &
-     &                   + an(4) * noise_cube(ie_cube(4))               &
-     &                   + an(5) * noise_cube(ie_cube(5))               &
-     &                   + an(6) * noise_cube(ie_cube(6))               &
-     &                   + an(7) * noise_cube(ie_cube(7))               &
-     &                   + an(8) * noise_cube(ie_cube(8))
-!
-      end function interpolate_noise
-!
-!  ---------------------------------------------------------------------
-!
-      real(kind = kreal) function pick_noise_at_point                   &
-     &                          (ie_cube, n_cube, noise_cube)
-!
-      integer(kind = kint_gl), intent(in) :: ie_cube(8)
-      integer(kind = kint_gl), intent(in) :: n_cube
-      real(kind = kreal), intent(in) :: noise_cube(n_cube)
+      real(kind = kreal), intent(inout) :: point_noise_grad(0:3)
 !
 !
-      pick_noise_at_point =  noise_cube(ie_cube(1))
+      point_noise_grad(0:3) = an(1) * noise_grad(0:3,ie_cube(1))        &
+     &                      + an(2) * noise_grad(0:3,ie_cube(2))        &
+     &                      + an(3) * noise_grad(0:3,ie_cube(3))        &
+     &                      + an(4) * noise_grad(0:3,ie_cube(4))        &
+     &                      + an(5) * noise_grad(0:3,ie_cube(5))        &
+     &                      + an(6) * noise_grad(0:3,ie_cube(6))        &
+     &                      + an(7) * noise_grad(0:3,ie_cube(7))        &
+     &                      + an(8) * noise_grad(0:3,ie_cube(8))
 !
-      end function pick_noise_at_point
+      end subroutine interpolate_noise_grad
 !
 !  ---------------------------------------------------------------------
 !

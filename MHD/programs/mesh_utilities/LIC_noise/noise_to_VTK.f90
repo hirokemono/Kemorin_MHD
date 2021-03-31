@@ -106,10 +106,10 @@
 !
 !$omp parallel do
         do inod = 1, mesh%node%internal_node
-          nod_fld%d_fld(inod,1) = noise_t1%rnoise(inod)
-          nod_fld%d_fld(inod,2) = noise_t1%rnoise_grad(inod,1)
-          nod_fld%d_fld(inod,3) = noise_t1%rnoise_grad(inod,2)
-          nod_fld%d_fld(inod,4) = noise_t1%rnoise_grad(inod,3)
+          nod_fld%d_fld(inod,1) = noise_t1%rnoise_grad(0,inod)
+          nod_fld%d_fld(inod,2) = noise_t1%rnoise_grad(1,inod)
+          nod_fld%d_fld(inod,3) = noise_t1%rnoise_grad(2,inod)
+          nod_fld%d_fld(inod,4) = noise_t1%rnoise_grad(3,inod)
         end do
 !$omp end parallel do
 !
