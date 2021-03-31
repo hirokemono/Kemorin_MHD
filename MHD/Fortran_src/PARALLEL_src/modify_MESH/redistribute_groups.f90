@@ -201,9 +201,6 @@
 !
       integer(kind = kint) :: igrp, icou, i
 !
-      write(*,*) my_rank, 'new_numele', new_ele%numele
-      write(*,*) my_rank, 'ele_tbl%ntot_import', ele_tbl%ntot_import
-!
       call allocate_group_flags(ele%numele, ele_tbl%ntot_import)
 !
       new_ele_grp%num_grp = ele_grp%num_grp
@@ -253,7 +250,7 @@
      &     (igrp, ele%numele, ele_grp, iflag_org)
 !
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (ele%numele, ele_comm, iflag_new(1))
+     &     (ele%numele, ele_comm, iflag_org(1))
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1))
