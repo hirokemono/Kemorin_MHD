@@ -47,6 +47,7 @@
         use calypso_mpi
         use t_noise_node_data
         use cal_noise_value
+        use get_geometry_reference
 
         integer(kind = kint), intent(in) :: isurf_orgs(2,3)
         integer(kind = kint), intent(in) :: nnod, nsurf, nelem
@@ -105,7 +106,8 @@
 
         do i = 1, lic_p%num_masking
           if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
-            r_org(i) = get_geometry_reference(lic_p, i, xx4_org)
+            r_org(i) = s_get_geometry_reference                         &
+     &               (lic_p%masking(i)%idx_comp, xx4_org)
           end if
         end do
         if(mask_flag(lic_p, r_org)) then
@@ -162,7 +164,7 @@
      &        v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,        &
      &        rlic_grad_v, k_area, iflag_comm)
           o_tgt = o_tgt + rlic_grad_v(0)
-          n_grad(1:3) = rlic_grad_v(1:3)
+          n_grad(1:3) = n_grad(1:3) + rlic_grad_v(1:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "-----------------------Forward iter end-------------with:", &
@@ -205,7 +207,7 @@
      &          v_nod, ilic_suf_org, new_pos4, step_vec4, ref_nod,      &
      &          rlic_grad_v, k_area, iflag_comm)
           o_tgt = o_tgt + rlic_grad_v(0)
-          n_grad(1:3) = rlic_grad_v(1:3)
+          n_grad(1:3) = n_grad(1:3) + rlic_grad_v(1:3)
         end if
         if(i_debug .eq. 1) write(50+my_rank,*)                          &
      &     "-----------------------Backward iter end------------with:", &
@@ -231,6 +233,7 @@
 
       use t_noise_node_data
       use cal_noise_value
+      use get_geometry_reference
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -277,7 +280,7 @@
       i_n = 0
 ! noise value
       rnoise_grad(0:3) = 0.0
-      rlic_grad_v(0) = 0.0
+      rlic_grad_v(0:3) = 0.0
       nv_sum = 0.0
       avg_stepsize = 0.01
       len_sum = 0.0
@@ -389,11 +392,12 @@
         rnoise_grad(0:3) = 0.0
         ref_value(:) = 0.0
         do i = 1, lic_p%num_masking
-          if(lic_p%masking(i)%mask_type .eq. iflag_fieldmask) then
+          if(lic_p%masking(i)%mask_type .eq. iflag_geometrymask) then
+            ref_value(i) = s_get_geometry_reference                     &
+      &                  (lic_p%masking(i)%idx_comp, x4_tgt)
+          else
             call cal_field_on_surf_scalar(numnod, numsurf, nnod_4_surf, &
       &         ie_surf, isurf_end, xi, ref_nod(1,i), ref_value(i))
-          else
-            ref_value(i) = get_geometry_reference(lic_p, i, x4_tgt)
           end if
         end do
 !
@@ -409,11 +413,9 @@
 !
             nv_sum = nv_sum + rnoise_grad(0)                            &
      &              * lic_p%noise_t%delta_noise * astep_len
-            rlic_grad_v(0) = rlic_grad_v(0) + rnoise_grad(0) * k_value  &
-     &              * lic_p%noise_t%delta_noise * astep_len
-            rlic_grad_v(1:3) = rlic_grad_v(1:3)                         &
-     &         + rnoise_grad(1:3) * k_value                             &
-     &          * lic_p%noise_t%delta_noise * astep_len
+            rlic_grad_v(0:3) = rlic_grad_v(0:3)                         &
+     &                      + rnoise_grad(0:3) * k_value                &
+     &                       * lic_p%noise_t%delta_noise * astep_len
             k_area = k_area                                             &
      &         + k_value * lic_p%noise_t%delta_noise * astep_len
           end do
@@ -425,10 +427,8 @@
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
 !
           nv_sum = nv_sum + rnoise_grad(0) * residual(1) * astep_len
-          rlic_grad_v(0) = rlic_grad_v(0) + rnoise_grad(0) * k_value    &
-     &                   * residual(1) * astep_len
-          rlic_grad_v(1:3) = rlic_grad_v(1:3)                           &
-     &                     + rnoise_grad(1:3) * k_value        &
+          rlic_grad_v(0:3) = rlic_grad_v(0:3)                           &
+     &                    + rnoise_grad(0:3) * k_value                  &
      &                     * residual(1) * astep_len
           k_area = k_area + k_value * residual(1) * astep_len
 !
@@ -444,11 +444,9 @@
 !
             nv_sum = nv_sum + rnoise_grad(0)                            &
      &                     * lic_p%noise_t%delta_noise * astep_len
-            rlic_grad_v(0) = rlic_grad_v(0) + rnoise_grad(0) * k_value  &
-     &                     * lic_p%noise_t%delta_noise * astep_len
-            rlic_grad_v(1:3) = rlic_grad_v(1:3)                         &
-     &          + rnoise_grad(1:3) * k_value                            &
-     &           * lic_p%noise_t%delta_noise * astep_len
+            rlic_grad_v(0:3) = rlic_grad_v(0:3)                         &
+     &                      + rnoise_grad(0:3) * k_value                &
+     &                       * lic_p%noise_t%delta_noise * astep_len
             k_area = k_area                                             &
      &          + k_value * lic_p%noise_t%delta_noise * astep_len
           end do
@@ -459,19 +457,17 @@
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value)
           nv_sum = nv_sum + rnoise_grad(0) * residual(2) * astep_len
-          rlic_grad_v(0) = rlic_grad_v(0) + rnoise_grad(0) * k_value    &
-     &                    * residual(2) * astep_len
-          rlic_grad_v(1:3) = rlic_grad_v(1:3) + rnoise_grad(1:3)        &
-     &                 * k_value * residual(2) * astep_len
+          rlic_grad_v(0:3) = rlic_grad_v(0:3)                           &
+     &                    + rnoise_grad(0:3) * k_value                  &
+     &                     * residual(2) * astep_len
           k_area = k_area + k_value * residual(2) * astep_len
         else
           s_int = len_sum + step_len
           call interpolate_kernel                                       &
      &       (iflag_dir, s_int, lic_p%kernel_t, k_value) 
           nv_sum = nv_sum + rnoise_grad(0)
-          rlic_grad_v(0) = rlic_grad_v(0) + rnoise_grad(0) * k_value
-          rlic_grad_v(1:3) = rlic_grad_v(1:3)                           &
-     &                      + rnoise_grad(1:3) * k_value
+          rlic_grad_v(0:3) = rlic_grad_v(0:3)                           &
+     &                      + rnoise_grad(0:3) * k_value
           k_area = k_area + k_value
         end if
         len_sum = s_int
