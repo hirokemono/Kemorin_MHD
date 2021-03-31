@@ -92,12 +92,12 @@
      &    new_mesh%ele, repart_ele_tbl, new_mesh%surf, new_mesh%edge)
       call dealloc_double_numbering(new_ids_on_org)
 !
-       call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
-       call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,      &
-      &                          new_ele_comm, new_mesh%ele)
+      call set_nod_and_ele_infos(new_mesh%node, new_mesh%ele)
+      call const_ele_comm_table(new_mesh%node, new_mesh%nod_comm,       &
+     &                          new_ele_comm, new_mesh%ele)
 !
       call s_redistribute_groups                                        &
-     &   (org_fem%mesh, org_fem%group, new_mesh, new_ele_comm,          &
+     &   (org_fem%mesh, org_fem%group, ele_comm, new_mesh,              &
      &    repart_nod_tbl, repart_ele_tbl, new_groups)
 !
       end subroutine s_mesh_repartition_by_volume

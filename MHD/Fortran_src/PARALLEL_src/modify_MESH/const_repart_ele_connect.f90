@@ -81,7 +81,7 @@
       call const_ele_trans_tbl_for_repart                               &
      &   (mesh%node, mesh%ele, part_tbl, new_ids_on_org%irank, ele_tbl)
 !      call check_element_transfer_tbl(mesh%ele, ele_tbl)
-! 
+!
       call trim_overlapped_ele_by_repart                                &
      &   (mesh, element_ids, ele_tbl, new_numele)
 !
