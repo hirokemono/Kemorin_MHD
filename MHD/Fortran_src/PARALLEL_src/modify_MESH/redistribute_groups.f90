@@ -246,7 +246,7 @@
       do igrp = 1, ele_grp%num_grp
         icou = new_ele_grp%istack_grp(igrp-1)
 !$omp parallel workshare
-        iflag_new(1:new_ele%numele) = 0
+        iflag_new(1:ele_tbl%ntot_import) = 0
 !$omp end parallel workshare
 !
         call mark_org_group_repart                                      &
