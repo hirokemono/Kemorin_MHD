@@ -36,9 +36,18 @@ begin repartition_test
         dir_domain_ctl  z     8
       end array dir_domain_ctl
       group_ratio_to_domain_ctl    200
-!
-      sleeve_level_ctl         2
     end new_partitioning_ctl
+!
+    begin FEM_sleeve_ctl
+!!         sleeve_extension_mode:
+!!             element_count, sleeve_length, vector_trace
+      sleeve_extension_mode        sleeve_length
+!      sleeve_level_ctl              2
+      sleeve_size_ctl               0.2
+!      array reference_vector_ctl
+!        reference_vector_ctl        magnetic_field
+!      end array reference_vector_ctl
+    end FEM_sleeve_ctl
   end viz_repartition_ctl
 !
   begin time_step_ctl

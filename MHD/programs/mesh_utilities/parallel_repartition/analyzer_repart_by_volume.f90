@@ -90,6 +90,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'const_new_partition_mesh'
       call const_new_partition_mesh(part_p1%repart_p, fem_T,            &
      &    new_fem, repart_nod_tbl1)
+      call dealloc_node_param_smp(new_fem%mesh%node)
+      call dealloc_ele_param_smp(new_fem%mesh%ele)
 !
       end subroutine initialize_reapart_by_vol
 !

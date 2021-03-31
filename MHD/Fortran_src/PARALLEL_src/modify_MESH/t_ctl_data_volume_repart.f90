@@ -34,6 +34,10 @@
 !!    begin new_partitioning_ctl
 !!      ...
 !!    end new_partitioning_ctl
+!!
+!!    begin FEM_sleeve_ctl
+!!      ...
+!!    end FEM_sleeve_ctl
 !!  end viz_repartition_ctl
 !!
 !! -------------------------------------------------------------------

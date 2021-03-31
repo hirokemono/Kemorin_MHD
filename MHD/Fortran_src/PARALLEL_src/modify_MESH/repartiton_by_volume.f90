@@ -96,8 +96,6 @@
       end if
 !
 !       Output new mesh file
-      write(*,*) 'outout', part_param%viz_mesh_file%iflag_format , &
-     &         part_param%trans_tbl_file%iflag_format
       if(iflag_RPRT_time) call start_elapsed_time(ist_elapsed_RPRT+6)
       if(part_param%viz_mesh_file%iflag_format .eq. id_no_file) then
         if(my_rank .eq. 0) write(*,*)                                   &
