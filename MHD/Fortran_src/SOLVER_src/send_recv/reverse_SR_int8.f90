@@ -12,8 +12,7 @@
 !!@verbatim
 !!      subroutine int8_items_send_recv                                 &
 !!     &         (num_neib, id_neib, istack_send, istack_recv,          &
-!!     &          item8_send, SR_sig, item8_recv)
-!!      type(send_recv_status), intent(inout) :: SR_sig
+!!     &          item8_send, item8_recv)
 !!@endverbatim
 !
       module reverse_SR_int8
@@ -33,7 +32,7 @@
 !
       subroutine int8_items_send_recv                                   &
      &         (num_neib, id_neib, istack_send, istack_recv,            &
-     &          item8_send, SR_sig, item8_recv)
+     &          item8_send, item8_recv)
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
@@ -46,20 +45,20 @@
 !
       integer(kind = kint_gl), intent(inout)                            &
      &                 :: item8_recv(istack_recv(num_neib))
-      type(send_recv_status), intent(inout) :: SR_sig
 !
+      type(send_recv_status) :: iSR_sig
       integer(kind = kint) :: ip, ist
       integer :: num
 !
 !
-      call resize_SR_flag(num_neib, num_neib, SR_sig)
+      call resize_SR_flag(num_neib, num_neib, iSR_sig)
 !
       do ip = 1, num_neib
         ist = istack_send(ip-1)
         num = int(istack_send(ip  ) - istack_send(ip-1))
         call MPI_ISEND(item8_send(ist+1), num,                          &
      &                 CALYPSO_GLOBAL_INT, int(id_neib(ip)), 0,         &
-     &                 CALYPSO_COMM, SR_sig%req1(ip), ierr_MPI)
+     &                 CALYPSO_COMM, iSR_sig%req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib
@@ -67,12 +66,13 @@
         num = int(istack_recv(ip  ) - istack_recv(ip-1))
         call MPI_IRECV(item8_recv(ist+1), num,                          &
      &                 CALYPSO_GLOBAL_INT, int(id_neib(ip)), 0,         &
-     &                 CALYPSO_COMM, SR_sig%req2(ip), ierr_MPI)
+     &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
       end do
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
+     &   (int(num_neib), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
+     &   (int(num_neib), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+      call dealloc_SR_flag(iSR_sig)
 !
       end subroutine int8_items_send_recv
 !

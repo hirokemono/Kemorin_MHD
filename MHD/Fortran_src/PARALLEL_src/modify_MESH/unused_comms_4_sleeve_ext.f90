@@ -81,7 +81,7 @@
       call int8_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    inod_gl_new_import_trim, SR_sig1, inod_gl_new_export_back)
+     &    inod_gl_new_import_trim, inod_gl_new_export_back)
       call real_items_send_recv_3                                       &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
@@ -141,7 +141,7 @@
       call int8_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    iele_gl_new_import_trim, SR_sig1, iele_gl_new_export_trim)
+     &    iele_gl_new_import_trim, iele_gl_new_export_trim)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (add_ele_comm%num_neib, add_ele_comm%id_neib,                &

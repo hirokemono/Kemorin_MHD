@@ -249,8 +249,7 @@
       call int8_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%inod_gl_comm, SR_sig1,                          &
-     &    exp_import_xx%inod_gl_comm)
+     &    exp_export_xx%inod_gl_comm, exp_import_xx%inod_gl_comm)
 !
       end subroutine send_extended_node_position
 !
@@ -259,7 +258,6 @@
       subroutine send_extended_element_connect(ele, expand_ele_comm,    &
      &          exp_export_ie, exp_import_ie)
 !
-      use m_solver_SR
       use reverse_SR_int
       use reverse_SR_int8
 !
@@ -279,8 +277,7 @@
       call int8_items_send_recv                                         &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
      &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    exp_export_ie%iele_gl_comm, SR_sig1,                          &
-     &    exp_import_ie%iele_gl_comm)
+     &    exp_export_ie%iele_gl_comm, exp_import_ie%iele_gl_comm)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &

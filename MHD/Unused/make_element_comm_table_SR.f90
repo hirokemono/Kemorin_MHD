@@ -66,8 +66,8 @@
 !
 !
       call int8_items_send_recv(num_neib_e, id_neib_e,                  &
-     &    istack_import_e, istack_export_e, inod_import_e,              &
-     &    SR_sig1, inod_export_e)
+     &    istack_import_e, istack_export_e,                             &
+     &    inod_import_e, inod_export_e)
 !
       call comm_items_send_recv(num_neib_e, id_neib_e,                  &
      &    istack_import_e, istack_export_e, inod_import_l,              &
