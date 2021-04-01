@@ -71,7 +71,7 @@
 !
       call comm_items_send_recv(num_neib_e, id_neib_e,                  &
      &    istack_import_e, istack_export_e, inod_import_l,              &
-     &    SR_sig1, inod_export_l)
+     &    inod_export_l)
 !
       call real_items_send_recv_3(num_neib_e, id_neib_e,                &
      &    istack_import_e, istack_export_e, xe_import,                  &

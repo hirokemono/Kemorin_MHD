@@ -178,7 +178,6 @@
 !
       use calypso_mpi
 !
-      use m_solver_SR
       use calypso_mpi_int
       use reverse_SR_int
 !
@@ -195,8 +194,7 @@
       call comm_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    trim_import_ie%irank_comm, SR_sig1,                           &
-     &    irank_new_ele_export_trim)
+     &    trim_import_ie%irank_comm, irank_new_ele_export_trim)
 !
       icou = check_recieved_ext_ele_export(iele_dbl, add_ele_comm,      &
      &                                      irank_new_ele_export_trim)

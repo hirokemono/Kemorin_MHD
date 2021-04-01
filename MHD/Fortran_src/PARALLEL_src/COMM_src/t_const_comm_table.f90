@@ -223,10 +223,10 @@
       do k1 = 1, nnod_4_ele
         call comm_items_send_recv(num_neib_e, id_neib_e,                &
      &      istack_import_e, istack_export_e, inod_lc_import(1,k1),     &
-     &      SR_sig1, inod_lc_export(1,k1))
+     &      inod_lc_export(1,k1))
         call comm_items_send_recv(num_neib_e, id_neib_e,                &
      &      istack_import_e, istack_export_e, ipe_lc_import(1,k1),      &
-     &      SR_sig1, ipe_lc_export(1,k1))
+     &      ipe_lc_export(1,k1))
       end do
 !
       end subroutine element_data_reverse_SR

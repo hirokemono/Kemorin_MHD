@@ -57,7 +57,6 @@
      &          expand_import_position, trimmed_import_position,        &
      &          idx_trimmed_to_sorted, inod_lc_new_import_trim)
 !
-      use m_solver_SR
       use reverse_SR_int
 !
       type(node_data), intent(in) :: org_node
@@ -88,7 +87,7 @@
       allocate(item_new_import(expand_nod_comm%ntot_import))
       call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    item_new_export, SR_sig1, item_new_import)
+     &    item_new_export, item_new_import)
       deallocate(item_new_export)
 !
       call check_sort_nod_import(nod_comm, expand_nod_comm,             &

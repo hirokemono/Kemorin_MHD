@@ -157,8 +157,7 @@
       call comm_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    trim_nod_to_ext%import_lc_trimmed, SR_sig1,                   &
-     &    add_nod_comm%item_export)
+     &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_export)
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &

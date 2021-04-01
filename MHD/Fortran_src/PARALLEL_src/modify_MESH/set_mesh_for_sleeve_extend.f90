@@ -236,7 +236,7 @@
       call comm_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%irank_comm, SR_sig1, exp_import_xx%irank_comm)
+     &    exp_export_xx%irank_comm, exp_import_xx%irank_comm)
       call real_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
@@ -274,7 +274,7 @@
       call comm_items_send_recv                                         &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
      &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    exp_export_ie%irank_comm, SR_sig1, exp_import_ie%irank_comm)
+     &    exp_export_ie%irank_comm, exp_import_ie%irank_comm)
 !
       call int8_items_send_recv                                         &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
@@ -285,8 +285,7 @@
         call comm_items_send_recv                                       &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
      &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    exp_export_ie%ie_comm(1,k1), SR_sig1,                         &
-     &    exp_import_ie%ie_comm(1,k1))
+     &    exp_export_ie%ie_comm(1,k1), exp_import_ie%ie_comm(1,k1))
       end do
 !
       end subroutine send_extended_element_connect

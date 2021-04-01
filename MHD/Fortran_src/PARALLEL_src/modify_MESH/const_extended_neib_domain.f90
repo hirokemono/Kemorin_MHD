@@ -95,7 +95,7 @@
      &    ntot_pe_new_export, ip_new_export, iflag_send_pe)
       call comm_items_send_recv                                         &
      &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
-     &    istack_pe_new_import, ip_new_export, SR_sig1, ip_new_import)
+     &    istack_pe_new_import, ip_new_export, ip_new_import)
 !
 !      do i = 1, nod_comm%num_neib
 !        ist = istack_pe_new_export(i-1)+1
