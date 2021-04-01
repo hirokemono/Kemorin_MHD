@@ -215,6 +215,8 @@
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
      &    dist_4_comm, add_nod_comm)
 !
+!      call calypso_mpi_barrier
+      write(*,*) my_rank, 's_append_extended_node'
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
      &    new_node, dbl_id2)
