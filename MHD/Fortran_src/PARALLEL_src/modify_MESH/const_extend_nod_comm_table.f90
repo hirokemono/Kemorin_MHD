@@ -101,7 +101,6 @@
      &          exp_import_xx, trim_import_xx, trim_nod_to_ext,         &
      &          dist_4_comm, add_nod_comm)
 !
-      use m_solver_SR
       use calypso_mpi_int
       use reverse_SR_int
       use reverse_SR_real
@@ -120,6 +119,8 @@
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
       type(communication_table), intent(inout) :: add_nod_comm
 !
+      integer(kind = kint) :: num
+!
 !
       call alloc_import_num(add_nod_comm)
       call count_import_item_for_extend                                 &
@@ -133,7 +134,8 @@
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trim_import_xx)
-      allocate(trim_nod_to_ext%import_lc_trimmed(add_nod_comm%ntot_import))
+      num = add_nod_comm%ntot_import
+      allocate(trim_nod_to_ext%import_lc_trimmed(num))
 !
       call set_import_item_for_extend                                   &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
@@ -161,8 +163,7 @@
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
      &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    trim_import_xx%distance, SR_sig1,                             &
-     &    dist_4_comm%distance_in_export)
+     &    trim_import_xx%distance, dist_4_comm%distance_in_export)
 !
       end subroutine const_extended_nod_comm_table
 !

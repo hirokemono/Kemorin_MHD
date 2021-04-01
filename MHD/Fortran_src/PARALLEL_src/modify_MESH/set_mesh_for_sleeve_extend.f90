@@ -223,7 +223,6 @@
       subroutine send_extended_node_position(expand_nod_comm,           &
      &          exp_export_xx, exp_import_xx)
 !
-      use m_solver_SR
       use reverse_SR_int
       use reverse_SR_int8
       use reverse_SR_real
@@ -240,12 +239,12 @@
       call real_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%distance, SR_sig1, exp_import_xx%distance)
+     &    exp_export_xx%distance, exp_import_xx%distance)
 !
       call real_items_send_recv_3                                       &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%xx_comm, SR_sig1, exp_import_xx%xx_comm)
+     &    exp_export_xx%xx_comm, exp_import_xx%xx_comm)
       call int8_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &

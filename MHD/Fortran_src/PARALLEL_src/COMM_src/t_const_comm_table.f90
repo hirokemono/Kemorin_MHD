@@ -188,7 +188,6 @@
      &          inod_lc_import, ipe_lc_import, xe_import,               &
      &          inod_lc_export, ipe_lc_export,xe_export)
 !
-      use m_solver_SR
       use reverse_SR_real
       use reverse_SR_int
 !
@@ -217,8 +216,7 @@
 !
 !
       call real_items_send_recv_3(num_neib_e, id_neib_e,                &
-     &    istack_import_e, istack_export_e, xe_import,                  &
-     &    SR_sig1, xe_export)
+     &    istack_import_e, istack_export_e, xe_import, xe_export)
 !
       do k1 = 1, nnod_4_ele
         call comm_items_send_recv(num_neib_e, id_neib_e,                &
