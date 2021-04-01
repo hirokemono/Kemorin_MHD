@@ -195,6 +195,11 @@
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
      &    marks_4_extend%mark_nod, add_nod_comm, iflag_process_extend)
 !
+      call calypso_mpi_barrier
+      write(*,*) my_rank, add_nod_comm%id_neib,                         &
+     &         'add_nod_comm%num_neib', add_nod_comm%id_neib
+      call calypso_mpi_barrier
+!
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
      &    marks_4_extend, expand_nod_comm, expand_ele_comm,             &

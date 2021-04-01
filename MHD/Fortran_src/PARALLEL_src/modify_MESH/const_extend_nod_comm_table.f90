@@ -155,9 +155,6 @@
       call alloc_export_num(add_nod_comm)
       call calypso_mpi_barrier
       write(*,*) my_rank, 'num_items_send_recv'
-      if(my_rank .eq. 5 .or. my_rank .eq. 11 .or. my_rank .eq. 1        &
-     &  .or. my_rank .eq. 15 .or. my_rank .eq. 17 .eq. my_rank .eq. 21) &
-     &  write(*,*) my_rank, 'add_nod_comm%id_neib', add_nod_comm%id_neib
       call calypso_mpi_barrier
 !
       call num_items_send_recv                                          &
