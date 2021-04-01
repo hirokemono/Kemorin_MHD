@@ -113,8 +113,13 @@
      &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
      &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
       end do
+
+      write(*,*) my_rank, my_rank, 'MPI_WAITALL_2'
       call MPI_WAITALL                                                  &
      &   (int(num_neib), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
+
+   write(*,*) my_rank, my_rank, 'MPI_WAITALL_1'
+
       call MPI_WAITALL                                                  &
      &   (int(num_neib), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
       call dealloc_SR_flag(iSR_sig)
