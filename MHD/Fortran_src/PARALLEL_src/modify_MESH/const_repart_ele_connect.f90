@@ -86,7 +86,7 @@
      &   (mesh, element_ids, ele_tbl, new_numele)
 !
       call const_reparition_ele_connect                                 &
-     &   (mesh%node, mesh%ele, ele_tbl, new_ids_on_org,                 &
+     &   (mesh%ele, ele_tbl, new_ids_on_org,                            &
      &    element_ids, new_numele, new_comm, new_node, new_ele)
       call dealloc_double_numbering(element_ids)
 !
@@ -98,13 +98,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_reparition_ele_connect                           &
-     &         (node, ele, ele_tbl, new_ids_on_org, element_ids,        &
+     &         (ele, ele_tbl, new_ids_on_org, element_ids,              &
      &          new_numele, new_comm, new_node, new_ele)
 !
       use search_ext_node_repartition
       use const_repart_mesh_data
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org
@@ -127,7 +126,7 @@
       ie_newdomain(1:ele%numele,1:ele%nnod_4_ele) = 0
 !$omp end parallel workshare
 !
-      call set_repart_element_connect(new_numele, node, ele, ele_tbl,   &
+      call set_repart_element_connect(new_numele, ele, ele_tbl,         &
      &    new_ids_on_org, ie_newdomain, ie_newnod, new_ele)
 !
       call s_search_ext_node_repartition                                &

@@ -146,7 +146,7 @@
       call alloc_export_num(add_nod_comm)
       call num_items_send_recv                                          &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%num_import, SR_sig1, add_nod_comm%num_export,    &
+     &    add_nod_comm%num_import, add_nod_comm%num_export,             &
      &    add_nod_comm%istack_export, add_nod_comm%ntot_export)
       call alloc_export_item(add_nod_comm)
 !

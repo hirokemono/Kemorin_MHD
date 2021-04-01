@@ -40,8 +40,6 @@
      &          new_comm)
 !
       use calypso_mpi
-      use m_solver_SR
-!
       use reverse_SR_int
 !
       integer(kind = kint), intent(in) :: internal_node
@@ -86,7 +84,7 @@
 !
       call num_items_send_recv                                          &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
-     &    SR_sig1, new_comm%num_export, new_comm%istack_export,         &
+     &    new_comm%num_export, new_comm%istack_export,                  &
      &    new_comm%ntot_export)
 !
       call alloc_export_item(new_comm)

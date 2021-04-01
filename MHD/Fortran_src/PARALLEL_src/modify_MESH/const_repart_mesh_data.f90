@@ -14,9 +14,8 @@
 !!        type(communication_table), intent(in) :: new_comm
 !!        type(node_data), intent(inout) :: new_node
 !!      subroutine set_repart_element_connect                           &
-!!     &         (new_numele, node, ele, ele_tbl, new_ids_on_org,       &
+!!     &         (new_numele, ele, ele_tbl, new_ids_on_org,             &
 !!     &          ie_newdomain, ie_newnod, new_ele)
-!!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(calypso_comm_table), intent(in) :: ele_tbl
 !!        type(node_ele_double_number), intent(in) :: new_ids_on_org
@@ -92,13 +91,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_repart_element_connect                             &
-     &         (new_numele, node, ele, ele_tbl, new_ids_on_org,         &
+     &         (new_numele, ele, ele_tbl, new_ids_on_org,               &
      &          ie_newdomain, ie_newnod, new_ele)
 !
       use calypso_SR_type
       use select_copy_from_recv
 !
-      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: ele_tbl
       type(node_ele_double_number), intent(in) :: new_ids_on_org

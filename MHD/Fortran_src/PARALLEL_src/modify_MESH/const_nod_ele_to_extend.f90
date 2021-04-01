@@ -174,7 +174,6 @@
      &          marks_4_extend, expand_nod_comm, expand_ele_comm,       &
      &          exp_import_xx, exp_import_ie)
 !
-      use m_solver_SR
       use calypso_mpi_int
       use reverse_SR_int
       use cal_minmax_and_stacks
@@ -226,14 +225,12 @@
 
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_nod_comm%num_export, SR_sig1,                          &
-     &    expand_nod_comm%num_import, expand_nod_comm%istack_import,    &
-     &    expand_nod_comm%ntot_import)
+     &    expand_nod_comm%num_export, expand_nod_comm%num_import,       &
+     &    expand_nod_comm%istack_import, expand_nod_comm%ntot_import)
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_ele_comm%num_export, SR_sig1,                          &
-     &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
-     &    expand_ele_comm%ntot_import)
+     &    expand_ele_comm%num_export, expand_ele_comm%num_import,       &
+     &    expand_ele_comm%istack_import, expand_ele_comm%ntot_import)
 !
 !
       call alloc_export_item(expand_nod_comm)

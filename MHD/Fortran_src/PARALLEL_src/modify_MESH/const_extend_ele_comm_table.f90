@@ -125,7 +125,6 @@
      &         (nod_comm, ele, add_nod_comm, expand_ele_comm,           &
      &          exp_import_ie, trim_import_ie, add_ele_comm)
 !
-      use m_solver_SR
       use calypso_mpi_int
       use reverse_SR_int
 !
@@ -198,7 +197,7 @@
       call alloc_export_num(add_ele_comm)
       call num_items_send_recv                                          &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%num_import, SR_sig1, add_ele_comm%num_export,    &
+     &    add_ele_comm%num_import, add_ele_comm%num_export,             &
      &    add_ele_comm%istack_export, add_ele_comm%ntot_export)
       call alloc_export_item(add_ele_comm)
 !

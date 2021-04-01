@@ -7,17 +7,14 @@
 !>@brief  Routines to construca element communication table
 !!
 !!@verbatim
-!!      subroutine num_items_send_recv                                  &
-!!     &         (num_neib, id_neib, num_send, SR_sig,                  &
-!!     &          num_recv, istack_recv, ntot_recv)
-!!        type(send_recv_status), intent(inout) :: SR_sig
+!!      subroutine num_items_send_recv(num_neib, id_neib, num_send,     &
+!!     &                               num_recv, istack_recv, ntot_recv)
 !!      subroutine comm_items_send_recv(num_neib, id_neib,              &
 !!     &          istack_send, istack_recv, item_send, item_recv)
 !!
 !!      subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,  &
 !!     &         istack_import, item_import, istack_export, item_export,&
-!!     &         SR_sig, item_local, inod_local)
-!!        type(send_recv_status), intent(inout) :: SR_sig
+!!     &         item_local, inod_local)
 !!@endverbatim
 !!
       module reverse_SR_int
@@ -35,40 +32,40 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine num_items_send_recv                                    &
-     &         (num_neib, id_neib, num_send, SR_sig,                    &
-     &          num_recv, istack_recv, ntot_recv)
+      subroutine num_items_send_recv(num_neib, id_neib, num_send,       &
+     &                               num_recv, istack_recv, ntot_recv)
 !
       integer(kind = kint), intent(in) :: num_neib
       integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
       integer(kind = kint), intent(in) :: num_send(num_neib)
 !
-      type(send_recv_status), intent(inout) :: SR_sig
       integer(kind = kint), intent(inout) :: ntot_recv
       integer(kind = kint), intent(inout) :: num_recv(num_neib)
       integer(kind = kint), intent(inout) :: istack_recv(0:num_neib)
 !
+      type(send_recv_status) :: iSR_sig
       integer(kind = kint) :: ip
 !
 !
-      call resize_SR_flag(num_neib, num_neib, SR_sig)
+      call resize_SR_flag(num_neib, num_neib, iSR_sig)
 !
       do ip = 1, num_neib
         call MPI_ISEND(num_send(ip), 1, CALYPSO_INTEGER,                &
      &                 int(id_neib(ip)), 0, CALYPSO_COMM,               &
-     &                 SR_sig%req1(ip), ierr_MPI)
+     &                 iSR_sig%req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib
         call MPI_IRECV (num_recv(ip), 1, CALYPSO_INTEGER,               &
      &                 int(id_neib(ip)), 0, CALYPSO_COMM,               &
-     &                 SR_sig%req2(ip), ierr_MPI)
+     &                 iSR_sig%req2(ip), ierr_MPI)
       end do
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
+     &   (int(num_neib), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
+     &   (int(num_neib), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+      call dealloc_SR_flag(iSR_sig)
 !
       do ip = 1, num_neib
         istack_recv(ip) = istack_recv(ip-1) + num_recv(ip)
@@ -128,7 +125,7 @@
 !
       subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,    &
      &         istack_import, item_import, istack_export, item_export,  &
-     &         SR_sig, item_local, inod_local)
+     &         item_local, inod_local)
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: num_neib
@@ -142,23 +139,23 @@
       integer(kind = kint), intent(in)                                  &
      &                 :: item_export(istack_export(num_neib))
 !
-      type(send_recv_status), intent(inout) :: SR_sig
       integer(kind = kint), intent(inout)                               &
      &                 :: item_local(istack_export(num_neib))
       integer(kind = kint), intent(inout) :: inod_local(numnod)
 !
+      type(send_recv_status) :: iSR_sig
       integer(kind = kint) :: ip, ist, i, inod
       integer :: num
 !
 !
-      call resize_SR_flag(num_neib, num_neib, SR_sig)
+      call resize_SR_flag(num_neib, num_neib, iSR_sig)
 !
       do ip = 1, num_neib
         ist = istack_import(ip-1)
         num = int(istack_import(ip  ) - istack_import(ip-1))
         call MPI_ISEND(item_import(ist+1), num,                         &
      &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
-     &                 CALYPSO_COMM, SR_sig%req1(ip), ierr_MPI)
+     &                 CALYPSO_COMM, iSR_sig%req1(ip), ierr_MPI)
       end do
 !
       do ip = 1, num_neib
@@ -166,12 +163,13 @@
         num = int(istack_export(ip  ) - istack_export(ip-1))
         call MPI_IRECV(item_local(ist+1), num,                          &
      &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
-     &                 CALYPSO_COMM, SR_sig%req2(ip), ierr_MPI)
+     &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
       end do
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
+     &   (int(num_neib), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
+     &   (int(num_neib), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+      call dealloc_SR_flag(iSR_sig)
 !
       inod_local = 0
       do i = 1, istack_export(num_neib)

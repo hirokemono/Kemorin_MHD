@@ -145,7 +145,7 @@
 !      write(*,*) 'num_items_send_recv', my_rank
 !      if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+3)
       call num_items_send_recv                                          &
-     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import, SR_sig1,  &
+     &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
      &    e_comm%num_export, e_comm%istack_export, e_comm%ntot_export)
 !      if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+3)
 !
