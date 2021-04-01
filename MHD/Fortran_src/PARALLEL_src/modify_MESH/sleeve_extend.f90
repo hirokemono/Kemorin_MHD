@@ -208,6 +208,8 @@
      &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
 !
+!      call calypso_mpi_barrier
+      write(*,*) my_rank, 'const_extended_nod_comm_table'
       call const_extended_nod_comm_table                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &

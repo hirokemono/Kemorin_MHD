@@ -67,7 +67,7 @@
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
 !
       type(sort_data_for_sleeve_trim), save :: sort_nod_import
-      integer(kind = kint) :: icou, ntot_failed_gl
+      integer(kind = kint) :: num, icou, ntot_failed_gl
 !
 !
       call alloc_sort_data_sleeve_ext                                   &
@@ -83,7 +83,8 @@
      &     (nod_comm, add_nod_comm, sort_nod_import, ext_nod_trim)
       end if
 !
-      allocate(trim_nod_to_ext%idx_extend_to_trim(expand_nod_comm%ntot_import))
+      num = expand_nod_comm%ntot_import
+      allocate(trim_nod_to_ext%idx_extend_to_trim(num))
       call find_home_import_item_by_trim                                &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import,         &
      &    ext_nod_trim, trim_nod_to_ext%idx_extend_to_trim, icou)
