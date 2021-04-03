@@ -300,9 +300,9 @@
       integer(kind = kint) :: i, ist, ied, inum, irank
 !
 !
-!$omp parallelworkshare
+!$omp parallel workshare
       iflag_pe(1:nprocs) = -2
-!$omp parallelworkshare
+!$omp end parallel workshare
 !
 !$omp parallel do private(i,irank)
       do i = 1, nod_comm%num_neib
