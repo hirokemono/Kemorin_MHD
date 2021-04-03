@@ -68,7 +68,7 @@
 !
       integer(kind = kint), allocatable :: iflag_recv_pe(:)
 !
-!      integer(kind = kint) :: i, ist, ied
+      integer(kind = kint) :: i, ist, ied
 !
 !
       allocate(iflag_send_pe(nprocs))
