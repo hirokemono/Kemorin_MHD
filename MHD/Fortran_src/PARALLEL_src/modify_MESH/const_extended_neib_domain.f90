@@ -314,8 +314,8 @@
       iflag_process_extend = 0
       num_add_neib =         0
       do i = 1, nod_comm%num_neib
-        ist = istack_pe_new_import(i-1)+1
-        ied = istack_pe_new_import(i)
+        ist = istack_pe_new_neib(i-1)+1
+        ied = istack_pe_new_neib(i)
         do inum = ist, ied
           irank = ip_new_neib(inum)
           if(iflag_pe(irank+1) .le. -1) then
