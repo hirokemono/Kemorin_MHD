@@ -22,6 +22,7 @@
       use m_precision
 !
       use t_comm_table
+      use t_calypso_comm_table
       use t_para_double_numbering
       use t_mark_node_ele_to_extend
 !
