@@ -343,19 +343,8 @@
 !
       integer(kind = kint), intent(inout) :: num_add_neib
 !
-      integer(kind = kint) :: i, ist, ied, inum, irank
+      integer(kind = kint) :: i, irank
 !
-!
-!$omp parallelworkshare
-      iflag_pe(1:nprocs) = -2
-!$omp parallelworkshare
-!
-!$omp parallel do private(i,irank)
-      do i = 1, nod_comm%num_neib
-        irank = nod_comm%id_neib(i)
-        iflag_pe(irank) = -1
-      end do
-!$omp end parallel do
 !
       iflag_process_extend = 0
       num_add_neib =         0
