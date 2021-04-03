@@ -182,11 +182,14 @@
       allocate(np_new_import(nod_comm%num_neib))
       allocate(istack_pe_new_import(0:nod_comm%num_neib))
 !
+      call calypso_mpi_barrier
+      write(*,*) 'count_domain_extended_export'
       call count_domain_extended_export(nod_comm,                       &
      &    inod_dbl, mark_nod, np_new_export, iflag_send_pe)
       call s_cal_total_and_stacks(nod_comm%num_neib, np_new_export,     &
      &    izero, istack_pe_new_export, ntot_pe_new_export)
 !
+      call calypso_mpi_barrier
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export,           &
      &    np_new_import, istack_pe_new_import, ntot_pe_new_import)
@@ -194,10 +197,12 @@
       allocate(ip_new_export(ntot_pe_new_export))
       allocate(ip_new_import(ntot_pe_new_import))
 !
+      call calypso_mpi_barrier
       write(*,*) 'set_domain_to_export_extend'
       call set_domain_to_export_extend(nod_comm,                        &
      &    inod_dbl, mark_nod, istack_pe_new_export,                     &
      &    ntot_pe_new_export, ip_new_export, iflag_send_pe)
+      call calypso_mpi_barrier
       write(*,*) 'comm_items_send_recv'
       call comm_items_send_recv                                         &
      &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
