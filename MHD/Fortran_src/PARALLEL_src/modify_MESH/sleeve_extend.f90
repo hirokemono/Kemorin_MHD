@@ -206,14 +206,16 @@
 !
       do i = 1, nprocs
         call calypso_mpi_barrier
-        write(*,*) my_rank, nod_comm%num_neib,                          &
+        if(i .eq. my_rank+1) then
+          write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,          &
      &           'nod_comm%id_neib', nod_comm%id_neib
-        write(*,*) my_rank, add_nod_comm_org%num_neib,                  &
+          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm_org%num_neib,  &
      &           'add_nod_comm_org%id_neib', add_nod_comm_org%id_neib
-        write(*,*) my_rank, add_nod_comm%nrank_import,                  &
+          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,  &
      &           'add_nod_comm%irank_import', add_nod_comm%irank_import
-        write(*,*) my_rank, add_nod_comm%nrank_export,                  &
+          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,  &
      &           'add_nod_comm%irank_export', add_nod_comm%irank_export
+        end if
         call calypso_mpi_barrier
       end do
 !
