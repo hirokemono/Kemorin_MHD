@@ -43,6 +43,7 @@
      &          add_nod_comm, iflag_process_extend)
 !
       use calypso_mpi
+      use calypso_mpi_int
       use reverse_SR_int
       use cal_minmax_and_stacks
 !
@@ -113,6 +114,7 @@
       allocate(iflag_recv_pe(nprocs))
 !$omp parallel workshare
       iflag_recv_pe(1:nprocs) = -1
+      iflag_send_pe(1:nprocs) = -1
 !$omp end parallel workshare
 !
       call count_extended_neib_domain(nprocs, nod_comm,                 &
@@ -120,6 +122,8 @@
      &    iflag_recv_pe, add_nod_comm%num_neib, iflag_process_extend)
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
+!
+      call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
 !
       do i = 1, nprocs
         if(i .eq. my_rank+1) then
