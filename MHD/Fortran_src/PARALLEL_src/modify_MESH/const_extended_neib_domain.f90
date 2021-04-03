@@ -216,10 +216,6 @@
 !      end do
 !
       allocate(iflag_recv_pe(nprocs))
-!$omp parallel workshare
-      iflag_recv_pe(1:nprocs) = -1
-      iflag_send_pe(1:nprocs) = -1
-!$omp end parallel workshare
 !
       call count_extended_neib_domain_org(nprocs, nod_comm,             &
      &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
