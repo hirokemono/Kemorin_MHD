@@ -126,6 +126,7 @@
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
 !
       do i = 1, nprocs
+        call calypso_mpi_barrier
         if(i .eq. my_rank+1) then
           write(*,*) my_rank, 'iflag_process_extend', nod_comm%id_neib
           write(*,*) my_rank, nod_comm%num_neib, 'nod_comm%id_neib',    &
