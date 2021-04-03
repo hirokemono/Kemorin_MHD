@@ -29,7 +29,7 @@
       implicit none
 !
       private :: set_neighbour_domain_by_flag
-      private :: count_extended_neib_domain
+      private :: count_extended_neib_import, count_extended_neib_export
       private :: count_domain_extended_export
       private :: set_domain_to_export_extend
 !
