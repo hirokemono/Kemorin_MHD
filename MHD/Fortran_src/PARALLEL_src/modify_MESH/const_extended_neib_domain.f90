@@ -40,7 +40,7 @@
 !
       subroutine s_const_extended_neib_domain                           &
      &         (nod_comm, inod_dbl, mark_nod,                           &
-     &          add_nod_comm, iflag_process_extend)
+     &          add_nod_comm_org, iflag_process_extend)
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -54,7 +54,7 @@
       type(mark_for_each_comm),  intent(in)                             &
      &                           :: mark_nod(nod_comm%num_neib)
 !
-      type(communication_table), intent(inout) :: add_nod_comm
+      type(communication_table), intent(inout) :: add_nod_comm_org
       integer(kind = kint), intent(inout) :: iflag_process_extend
 !
       integer(kind = kint), allocatable :: np_new_export(:)
@@ -65,8 +65,8 @@
       integer(kind = kint) :: ntot_pe_new_import
       integer(kind = kint), allocatable :: ip_new_export(:)
       integer(kind = kint), allocatable :: ip_new_import(:)
-      integer(kind = kint), allocatable :: iflag_send_pe(:)
 !
+      integer(kind = kint), allocatable :: iflag_send_pe(:)
       integer(kind = kint), allocatable :: iflag_recv_pe(:)
 !
       integer(kind = kint) :: i, ist, ied
@@ -119,14 +119,17 @@
 !
       call count_extended_neib_domain(nprocs, nod_comm,                 &
      &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
-     &    iflag_recv_pe, add_nod_comm%num_neib, iflag_process_extend)
+     &    iflag_recv_pe, add_nod_comm_org%num_neib, iflag_process_extend)
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
-!     &           nod_comm%num_neib, add_nod_comm%num_neib
+!     &           nod_comm%num_neib, add_nod_comm_org%num_neib
 !
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
 !
       do i = 1, nprocs
         if(i .eq. my_rank+1) then
+          write(*,*) my_rank, 'iflag_process_extend', nod_comm%id_neib
+          write(*,*) my_rank, nod_comm%num_neib, 'nod_comm%id_neib',    &
+     &              nod_comm%id_neib
           write(*,*) my_rank, 'iflag_send_pe', iflag_send_pe
           write(*,*) my_rank, 'iflag_recv_pe', iflag_recv_pe
         end if
@@ -134,9 +137,9 @@
       end do
 !
 !
-      call alloc_comm_table_num(add_nod_comm)
+      call alloc_comm_table_num(add_nod_comm_org)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
-     &    add_nod_comm%num_neib, add_nod_comm%id_neib)
+     &    add_nod_comm_org%num_neib, add_nod_comm_org%id_neib)
       deallocate(ip_new_export, ip_new_import, istack_pe_new_import)
       deallocate(iflag_recv_pe)
 !
