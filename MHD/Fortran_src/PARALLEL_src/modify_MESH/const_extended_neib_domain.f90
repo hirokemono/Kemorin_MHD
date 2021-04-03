@@ -126,7 +126,7 @@
           write(*,*) my_rank, 'iflag_send_pe', iflag_send_pe
           write(*,*) my_rank, 'iflag_recv_pe', iflag_recv_pe
         end if
-        call calypso_mpi_abort
+        call calypso_mpi_barrier
       end if
 !
 !
