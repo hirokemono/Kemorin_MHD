@@ -219,6 +219,7 @@
 !
       allocate(iflag_recv_pe(nprocs))
 !
+      call calypso_mpi_barrier
       write(*,*) 'count_extended_neib_domain_org'
       call count_extended_neib_domain_org(nprocs, nod_comm,             &
      &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
@@ -226,8 +227,7 @@
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm_org%num_neib
 !
-      call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
-!
+      call calypso_mpi_barrier
       call alloc_comm_table_num(add_nod_comm_org)
       write(*,*) 'set_neighbour_domain_by_flag'
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
