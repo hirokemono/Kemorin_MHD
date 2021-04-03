@@ -121,8 +121,13 @@
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
-      write(*,*) my_rank, 'iflag_send_pe', iflag_send_pe
-      write(*,*) my_rank, 'iflag_recv_pe', iflag_recv_pe
+      do i = 1, nprocs
+        if(i .eq. my_rank+1) then
+          write(*,*) my_rank, 'iflag_send_pe', iflag_send_pe
+          write(*,*) my_rank, 'iflag_recv_pe', iflag_recv_pe
+        end if
+        call calypso_mpi_abort
+      end if
 !
 !
       call alloc_comm_table_num(add_nod_comm)
