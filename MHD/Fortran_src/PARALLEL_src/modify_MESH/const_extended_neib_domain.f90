@@ -124,14 +124,17 @@
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
+      write(*,*) 'calypso_mpi_alltoall_one_int'
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
       call count_extended_neib_export(nprocs, nod_comm,                 &
      &    iflag_send_pe, add_nod_comm%nrank_export)
 !
+      write(*,*) 'set_neighbour_domain_by_flag import'
       call alloc_calypso_import_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import)
 !
+      write(*,*) 'set_neighbour_domain_by_flag export'
       call alloc_calypso_export_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_send_pe, &
      &    add_nod_comm%nrank_export, add_nod_comm%irank_export)
