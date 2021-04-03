@@ -121,6 +121,10 @@
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
+      write(*,*) my_rank, 'iflag_send_pe', iflag_send_pe
+      write(*,*) my_rank, 'iflag_recv_pe', iflag_recv_pe
+!
+!
       call alloc_comm_table_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
      &    add_nod_comm%num_neib, add_nod_comm%id_neib)
@@ -161,7 +165,7 @@
       subroutine count_extended_neib_domain                             &
      &         (nprocs, nod_comm, istack_pe_new_import,                 &
      &          ntot_pe_new_import, ip_new_import,                      &
-     &          iflag_recv_pe, num_add_neib, iflag_process_extend)
+     &          iflag_pe, num_add_neib, iflag_process_extend)
 !
       use t_comm_table
 !
@@ -175,7 +179,7 @@
      &              :: ip_new_import(ntot_pe_new_import)
       integer, intent(in) :: nprocs
 !
-      integer(kind = kint), intent(inout) :: iflag_recv_pe(nprocs)
+      integer(kind = kint), intent(inout) :: iflag_pe(nprocs)
       integer(kind = kint), intent(inout) :: num_add_neib
       integer(kind = kint), intent(inout) :: iflag_process_extend
 !
@@ -185,7 +189,7 @@
 !$omp parallel do private(i,irank)
       do i = 1, nod_comm%num_neib
         irank = nod_comm%id_neib(i)
-        iflag_recv_pe(irank+1) = i
+        iflag_pe(irank+1) = i
       end do
 !$omp end parallel do
 !
@@ -196,9 +200,9 @@
         ied = istack_pe_new_import(i)
         do inum = ist, ied
           irank = ip_new_import(inum)
-          if(iflag_recv_pe(irank+1) .eq. -1) then
+          if(iflag_pe(irank+1) .eq. -1) then
             num_add_neib = num_add_neib + 1
-            iflag_recv_pe(irank+1) =  num_add_neib
+            iflag_pe(irank+1) =  num_add_neib
             iflag_process_extend = 1
           end if
         end do
