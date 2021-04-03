@@ -127,7 +127,7 @@
           write(*,*) my_rank, 'iflag_recv_pe', iflag_recv_pe
         end if
         call calypso_mpi_barrier
-      end if
+      end do
 !
 !
       call alloc_comm_table_num(add_nod_comm)
