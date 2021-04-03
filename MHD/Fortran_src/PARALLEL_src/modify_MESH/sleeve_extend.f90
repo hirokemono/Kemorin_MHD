@@ -172,9 +172,12 @@
 !
       type(marks_for_sleeve_extension), save :: marks_4_extend
 !
+      integer(kind = kint) :: iflag_process_extend
       type(calypso_comm_table), save :: add_nod_comm
       type(communication_table), save :: add_nod_comm_org
       type(communication_table), save :: add_ele_comm
+!
+      integer(kind = kint) :: i
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
