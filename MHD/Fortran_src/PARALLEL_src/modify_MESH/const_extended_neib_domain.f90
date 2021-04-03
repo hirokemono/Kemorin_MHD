@@ -124,17 +124,14 @@
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
-      write(*,*) 'calypso_mpi_alltoall_one_int'
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
       call count_extended_neib_export(nprocs, nod_comm,                 &
      &    iflag_send_pe, add_nod_comm%nrank_export)
 !
-      write(*,*) 'set_neighbour_domain_by_flag import'
       call alloc_calypso_import_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import)
 !
-      write(*,*) 'set_neighbour_domain_by_flag export'
       call alloc_calypso_export_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_send_pe, &
      &    add_nod_comm%nrank_export, add_nod_comm%irank_export)
@@ -197,9 +194,11 @@
       allocate(ip_new_export(ntot_pe_new_export))
       allocate(ip_new_import(ntot_pe_new_import))
 !
+      write(*,*) 'set_domain_to_export_extend'
       call set_domain_to_export_extend(nod_comm,                        &
      &    inod_dbl, mark_nod, istack_pe_new_export,                     &
      &    ntot_pe_new_export, ip_new_export, iflag_send_pe)
+      write(*,*) 'comm_items_send_recv'
       call comm_items_send_recv                                         &
      &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
      &    istack_pe_new_import, ip_new_export, ip_new_import)
@@ -220,6 +219,7 @@
 !
       allocate(iflag_recv_pe(nprocs))
 !
+      write(*,*) 'count_extended_neib_domain_org'
       call count_extended_neib_domain_org(nprocs, nod_comm,             &
      &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
      &    iflag_recv_pe, add_nod_comm_org%num_neib, iflag_process_extend)
@@ -229,6 +229,7 @@
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
 !
       call alloc_comm_table_num(add_nod_comm_org)
+      write(*,*) 'set_neighbour_domain_by_flag'
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
      &    add_nod_comm_org%num_neib, add_nod_comm_org%id_neib)
       deallocate(ip_new_export, ip_new_import, istack_pe_new_import)
