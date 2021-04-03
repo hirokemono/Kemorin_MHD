@@ -343,16 +343,12 @@
 !
       integer(kind = kint), intent(inout) :: num_add_neib
 !
-      integer(kind = kint) :: i, irank
+      integer(kind = kint) :: i
 !
 !
-      iflag_process_extend = 0
-      num_add_neib =         0
+      num_add_neib = 0
       do i = 1, nprocs
-        if(iflag_pe(irank+1) .le. -1) then
-          num_add_neib = num_add_neib + 1
-          iflag_pe(irank+1) =  num_add_neib
-        end if
+        if(iflag_pe(i) .ge. 0) num_add_neib = num_add_neib + 1
       end do
 !
       end subroutine count_extended_neib_export
