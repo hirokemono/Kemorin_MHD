@@ -41,6 +41,7 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
+      use t_calypso_comm_table
       use t_ctl_param_sleeve_extend
       use t_para_double_numbering
       use t_comm_table_for_each_pe
@@ -117,7 +118,7 @@
       subroutine extend_mesh_sleeve                                     &
      &         (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,    &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
-     &          dist_4_comm, iflag_process_extend)
+     &          dist_4_comm, iflag_process_extend_org)
 !
       use t_next_node_ele_4_node
       use t_repart_double_numberings
@@ -150,7 +151,7 @@
       type(element_data), intent(inout) :: new_ele
       type(communication_table), intent(inout) :: new_ele_comm
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
-      integer(kind = kint), intent(inout) :: iflag_process_extend
+      integer(kind = kint), intent(inout) :: iflag_process_extend_org
 !
       type(node_ele_double_number), save :: inod_dbl
       type(node_ele_double_number), save :: iele_dbl
@@ -171,7 +172,8 @@
 !
       type(marks_for_sleeve_extension), save :: marks_4_extend
 !
-      type(communication_table), save :: add_nod_comm
+      type(calypso_comm_table), save :: add_nod_comm
+      type(communication_table), save :: add_nod_comm_org
       type(communication_table), save :: add_ele_comm
 !
 !
@@ -192,15 +194,25 @@
      &    dist_4_comm, marks_4_extend)
       call dealloc_iele_belonged(neib_ele)
 !
+!
+!
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
      &    marks_4_extend%mark_nod, add_nod_comm, iflag_process_extend)
+      call const_extended_neib_domain_org(nod_comm, inod_dbl,           &
+     &    marks_4_extend%mark_nod, add_nod_comm_org, iflag_process_extend_org)
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, nod_comm%num_neib,                            &
-     &         'nod_comm%id_neib', nod_comm%id_neib
-      write(*,*) my_rank, add_nod_comm%num_neib,                        &
-     &         'add_nod_comm%id_neib', add_nod_comm%id_neib
-      call calypso_mpi_barrier
+      do i = 1, nprocs
+        call calypso_mpi_barrier
+        write(*,*) my_rank, nod_comm%num_neib,                          &
+     &           'nod_comm%id_neib', nod_comm%id_neib
+        write(*,*) my_rank, add_nod_comm_org%num_neib,                  &
+     &           'add_nod_comm_org%id_neib', add_nod_comm_org%id_neib
+        write(*,*) my_rank, add_nod_comm%nrank_import,                  &
+     &           'add_nod_comm%irank_import', add_nod_comm%irank_import
+        write(*,*) my_rank, add_nod_comm%nrank_export,                  &
+     &           'add_nod_comm%irank_export', add_nod_comm%irank_export
+        call calypso_mpi_barrier
+      end do
 !
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
@@ -213,24 +225,24 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       call const_extended_node_position                                 &
      &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
-     &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
+     &    add_nod_comm_org, ext_nod_trim, trim_nod_to_ext)
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 'const_extended_nod_comm_table'
       call const_extended_nod_comm_table                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
-     &    dist_4_comm, add_nod_comm)
+     &    dist_4_comm, add_nod_comm_org)
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 's_append_extended_node'
-      call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
+      call s_append_extended_node(org_node, inod_dbl, add_nod_comm_org, &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
      &    new_node, dbl_id2)
       call dealloc_double_numbering(inod_dbl)
 !
       call check_appended_node_data                                     &
-     &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
+     &   (org_node, expand_nod_comm, add_nod_comm_org, exp_import_xx,   &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
      &    trim_nod_to_ext%idx_extend_to_trim,                           &
      &    trim_nod_to_ext%import_lc_trimmed)
@@ -239,7 +251,7 @@
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
       call s_append_communication_table                                 &
-     &   (nod_comm, add_nod_comm, new_nod_comm)
+     &   (nod_comm, add_nod_comm_org, new_nod_comm)
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
@@ -248,7 +260,7 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
       call const_extended_element_connect                               &
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
-     &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
+     &    expand_nod_comm, add_nod_comm_org, exp_import_xx, ext_nod_trim,   &
      &    trim_nod_to_ext%idx_extend_to_trim,                           &
      &    expand_ele_comm, exp_import_ie)
       deallocate(trim_nod_to_ext%idx_extend_to_trim)
@@ -259,7 +271,7 @@
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'const_extended_ele_comm_table'
       call const_extended_ele_comm_table                                &
-     &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
+     &   (nod_comm, org_ele, add_nod_comm_org, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_comm_table(expand_ele_comm)
 !
