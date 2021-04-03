@@ -128,18 +128,6 @@
       call count_extended_neib_export(nprocs, nod_comm,                 &
      &    iflag_send_pe, add_nod_comm%nrank_export)
 !
-      do i = 1, nprocs
-        call calypso_mpi_barrier
-        if(i .eq. my_rank+1) then
-          write(*,'(i6,a,i6)') my_rank, ' iflag_process_extend ', iflag_process_extend
-          write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib, ' nod_comm%id_neib ',    &
-     &              nod_comm%id_neib
-          write(*,'(i6,a,200i6)') my_rank, ' iflag_send_pe ', iflag_send_pe
-          write(*,'(i6,a,200i6)') my_rank, ' iflag_recv_pe ', iflag_recv_pe
-        end if
-        call calypso_mpi_barrier
-      end do
-!
       call alloc_calypso_import_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import)
