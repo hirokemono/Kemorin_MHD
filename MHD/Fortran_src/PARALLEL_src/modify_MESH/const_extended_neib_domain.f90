@@ -128,11 +128,11 @@
       do i = 1, nprocs
         call calypso_mpi_barrier
         if(i .eq. my_rank+1) then
-          write(*,'(i6,a,i6') my_rank, 'iflag_process_extend', nod_comm%id_neib
-          write(*,'(2i6,a,200i6') my_rank, nod_comm%num_neib, 'nod_comm%id_neib',    &
+          write(*,'(i6,a,i6)') my_rank, 'iflag_process_extend', nod_comm%id_neib
+          write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib, 'nod_comm%id_neib',    &
      &              nod_comm%id_neib
-          write(*,'(i6,a,200i6') my_rank, 'iflag_send_pe', iflag_send_pe
-          write(*,'(i6,a,200i6') my_rank, 'iflag_recv_pe', iflag_recv_pe
+          write(*,'(i6,a,200i6)') my_rank, 'iflag_send_pe', iflag_send_pe
+          write(*,'(i6,a,200i6)') my_rank, 'iflag_recv_pe', iflag_recv_pe
         end if
         call calypso_mpi_barrier
       end do
