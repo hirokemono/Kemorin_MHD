@@ -201,8 +201,11 @@
 !
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
      &    marks_4_extend%mark_nod, add_nod_comm, iflag_process_extend)
+      call calypso_mpi_barrier
+      write(*,*) 'const_extended_neib_domain_org'
       call const_extended_neib_domain_org(nod_comm, inod_dbl,           &
      &    marks_4_extend%mark_nod, add_nod_comm_org, iflag_process_extend_org)
+      call calypso_mpi_barrier
 !
       do i = 1, nprocs
         call calypso_mpi_barrier
