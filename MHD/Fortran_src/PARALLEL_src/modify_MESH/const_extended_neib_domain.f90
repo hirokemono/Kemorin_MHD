@@ -253,7 +253,7 @@
 !$omp parallel do private(i,irank)
       do i = 1, nod_comm%num_neib
         irank = nod_comm%id_neib(i)
-        iflag_pe(irank) = -1
+        iflag_pe(irank+1) = -1
       end do
 !$omp end parallel do
 !
