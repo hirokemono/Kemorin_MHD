@@ -143,101 +143,55 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_extended_neib_domain_org                         &
-     &         (nod_comm, inod_dbl, mark_nod,                           &
-     &          add_nod_comm_org, iflag_process_extend)
+     &         (nod_comm, add_nod_comm, add_nod_comm_org)
 !
       use calypso_mpi
       use calypso_mpi_int
       use reverse_SR_int
-      use cal_minmax_and_stacks
 !
       implicit none
 !
       type(communication_table), intent(in) :: nod_comm
-      type(node_ele_double_number), intent(in) :: inod_dbl
-      type(mark_for_each_comm),  intent(in)                             &
-     &                           :: mark_nod(nod_comm%num_neib)
+      type(calypso_comm_table), intent(in) :: add_nod_comm
 !
       type(communication_table), intent(inout) :: add_nod_comm_org
-      integer(kind = kint), intent(inout) :: iflag_process_extend
 !
-      integer(kind = kint), allocatable :: np_new_export(:)
-      integer(kind = kint), allocatable :: istack_pe_new_export(:)
-      integer(kind = kint) :: ntot_pe_new_export
-      integer(kind = kint), allocatable :: np_new_import(:)
-      integer(kind = kint), allocatable :: istack_pe_new_import(:)
-      integer(kind = kint) :: ntot_pe_new_import
-      integer(kind = kint), allocatable :: ip_new_export(:)
-      integer(kind = kint), allocatable :: ip_new_import(:)
-!
-      integer(kind = kint), allocatable :: iflag_send_pe(:)
       integer(kind = kint), allocatable :: iflag_recv_pe(:)
 !
-      integer(kind = kint) :: i, ist, ied
+      integer(kind = kint) :: i, ist, ied, ip, irank, icou
 !
-!
-      allocate(iflag_send_pe(nprocs))
-      allocate(np_new_export(nod_comm%num_neib))
-      allocate(istack_pe_new_export(0:nod_comm%num_neib))
-      allocate(np_new_import(nod_comm%num_neib))
-      allocate(istack_pe_new_import(0:nod_comm%num_neib))
-!
-      call calypso_mpi_barrier
-      write(*,*) 'count_domain_extended_export'
-      call count_domain_extended_export(nod_comm,                       &
-     &    inod_dbl, mark_nod, np_new_export, iflag_send_pe)
-      call s_cal_total_and_stacks(nod_comm%num_neib, np_new_export,     &
-     &    izero, istack_pe_new_export, ntot_pe_new_export)
-!
-      call calypso_mpi_barrier
-      call num_items_send_recv                                          &
-     &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export,           &
-     &    np_new_import, istack_pe_new_import, ntot_pe_new_import)
-!
-      allocate(ip_new_export(ntot_pe_new_export))
-      allocate(ip_new_import(ntot_pe_new_import))
-!
-      call calypso_mpi_barrier
-      write(*,*) 'set_domain_to_export_extend'
-      call set_domain_to_export_extend(nod_comm,                        &
-     &    inod_dbl, mark_nod, istack_pe_new_export,                     &
-     &    ntot_pe_new_export, ip_new_export, iflag_send_pe)
-      call calypso_mpi_barrier
-      write(*,*) 'comm_items_send_recv'
-      call comm_items_send_recv                                         &
-     &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
-     &    istack_pe_new_import, ip_new_export, ip_new_import)
-!
-!      do i = 1, nod_comm%num_neib
-!        ist = istack_pe_new_export(i-1)+1
-!        ied = istack_pe_new_export(i)
-!        write(*,*) my_rank, i, nod_comm%id_neib(i), 'ip_new_export',   &
-!     &            ip_new_export(ist:ied)
-!      end do
-!
-!      do i = 1, nod_comm%num_neib
-!        ist = istack_pe_new_import(i-1)+1
-!        ied = istack_pe_new_import(i)
-!        write(*,*) my_rank, nod_comm%id_neib(i), 'ip_new_import',      &
-!     &            ip_new_import(ist:ied)
-!      end do
 !
       allocate(iflag_recv_pe(nprocs))
 !
-      call calypso_mpi_barrier
-      write(*,*) 'count_extended_neib_domain_org'
-      call count_extended_neib_domain_org(nprocs, nod_comm,             &
-     &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
-     &    iflag_recv_pe, add_nod_comm_org%num_neib, iflag_process_extend)
-!      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
-!     &           nod_comm%num_neib, add_nod_comm_org%num_neib
+!$omp parallel workshare
+      iflag_recv_pe(1:nprocs) = -1
+!$omp end parallel workshare
+!$omp parallel do private(i,irank)
+      do i = 1, nod_comm%num_neib
+        irank = nod_comm%id_neib(i)
+        iflag_recv_pe(irank+1) = i
+      end do
+!$omp end parallel do
 !
-      call calypso_mpi_barrier
+      add_nod_comm_org%num_neib = nod_comm%num_neib
+      do i = 1, add_nod_comm%nrank_import
+          irank = add_nod_comm%irank_import(i)
+          if(iflag_recv_pe(irank+1) .eq. -1) then
+            add_nod_comm_org%num_neib = add_nod_comm_org%num_neib + 1
+            iflag_recv_pe(irank+1) =  add_nod_comm_org%num_neib
+          end if
+        end do
+      end do
+!
       call alloc_comm_table_num(add_nod_comm_org)
-      write(*,*) 'set_neighbour_domain_by_flag'
-      call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_recv_pe, &
-     &    add_nod_comm_org%num_neib, add_nod_comm_org%id_neib)
-      deallocate(ip_new_export, ip_new_import, istack_pe_new_import)
+      icou = 0
+      do ip = 1, nprocs
+        irank = mod(my_rank+ip,nprocs)
+        if(iflag_recv_pe(irank+1) .gt. 0) then
+          icou = icou + 1 
+          add_nod_comm_org%id_neib(icou) = irank
+        end if
+      end do
       deallocate(iflag_recv_pe)
 !
       end subroutine const_extended_neib_domain_org
