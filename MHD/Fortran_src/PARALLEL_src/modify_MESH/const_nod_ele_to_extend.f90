@@ -101,11 +101,6 @@
      &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,            &
      &          dist_4_comm, marks_4_extend)
 !
-      use m_precision
-      use m_constants
-      use m_machine_parameter
-      use calypso_mpi
-!
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
 !
@@ -226,13 +221,13 @@
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    expand_nod_comm%num_export,                                   &
-     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
      &    expand_nod_comm%num_import, expand_nod_comm%istack_import,    &
      &    expand_nod_comm%ntot_import)
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    expand_ele_comm%num_export,                                   &
-     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    nod_comm%num_neib, nod_comm%id_neib, izero,                   &
      &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
      &    expand_ele_comm%ntot_import)
 !

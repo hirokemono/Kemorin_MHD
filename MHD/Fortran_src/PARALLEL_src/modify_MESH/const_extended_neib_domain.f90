@@ -20,6 +20,7 @@
       module const_extended_neib_domain
 !
       use m_precision
+      use m_constants
 !
       use t_comm_table
       use t_calypso_comm_table
@@ -86,7 +87,7 @@
 !
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export,           &
-     &    nod_comm%num_neib, nod_comm%id_neib, np_new_import,           &
+     &    nod_comm%num_neib, nod_comm%id_neib, izero, np_new_import,    &
      &    istack_pe_new_import, ntot_pe_new_import)
 !
       allocate(ip_new_export(ntot_pe_new_export))

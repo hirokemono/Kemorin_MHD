@@ -198,7 +198,7 @@
       call num_items_send_recv                                          &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
      &    add_ele_comm%num_import,                                      &
-     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%num_neib, add_ele_comm%id_neib, izero,           &
      &    add_ele_comm%num_export, add_ele_comm%istack_export,          &
      &    add_ele_comm%ntot_export)
       call alloc_export_item(add_ele_comm)
