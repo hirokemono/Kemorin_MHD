@@ -211,15 +211,15 @@
         call calypso_mpi_barrier
         if(i .eq. my_rank+1) then
           write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,          &
-     &           ' nod_comm%id_neib ', nod_comm%id_neib
+     &           ' nod_comm%id_neib          ', nod_comm%id_neib
           write(*,'(2i6,a,200i6)') my_rank, add_nod_comm_org%num_neib,  &
-     &           ' add_nod_comm_org%id_neib ', add_nod_comm_org%id_neib
+     &           ' add_nod_comm_org%id_neib  ', add_nod_comm_org%id_neib
           write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,  &
      &           ' add_nod_comm%irank_import ', add_nod_comm%irank_import
           write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,  &
      &           ' add_nod_comm%irank_export ', add_nod_comm%irank_export
           write(*,'(i6,a,200i6)') my_rank,  &
-     &           ' iflag_process_extend_org ', iflag_process_extend_org
+     &           ' iflag_process_extend_org  ', iflag_process_extend_org
         end if
         call calypso_mpi_barrier
       end do
