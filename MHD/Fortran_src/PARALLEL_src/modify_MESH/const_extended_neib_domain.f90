@@ -180,7 +180,6 @@
             add_nod_comm_org%num_neib = add_nod_comm_org%num_neib + 1
             iflag_recv_pe(irank+1) =  add_nod_comm_org%num_neib
           end if
-        end do
       end do
 !
       call alloc_comm_table_num(add_nod_comm_org)
