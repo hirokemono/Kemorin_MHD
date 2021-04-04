@@ -19,7 +19,6 @@
 !!
 !!      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, iX)
 !!      subroutine SOLVER_SEND_RECV_int8_type(NP, comm_tbl, i8X)
-!!      subroutine SOLVER_SEND_RECV_num_type(comm_tbl, nSEND, nRECV)
 !!        type(communication_table), intent(in) :: comm_tbl
 !!        integer(kind = kint), intent(in) :: NP
 !!        real(kind = kreal), intent(inout) :: X(NP)
@@ -281,28 +280,6 @@
       if(iflag_FSR_time) call end_elapsed_time(ist_elapsed_FSR+1)
 !
       end subroutine SOLVER_SEND_RECV_int8_type
-!
-! ----------------------------------------------------------------------
-!
-      subroutine SOLVER_SEND_RECV_num_type(comm_tbl, nSEND, nRECV)
-!
-      use t_comm_table
-      use t_solver_SR
-      use m_solver_SR
-      use solver_SR_int
-!
-      type(communication_table), intent(in) :: comm_tbl
-!
-      integer(kind = kint), intent(in) :: nSEND(comm_tbl%num_neib)
-      integer(kind = kint), intent(inout) :: nRECV(comm_tbl%num_neib)
-!
-!
-      if(iflag_FSR_time) call start_elapsed_time(ist_elapsed_FSR+1)
-      call SOLVER_SEND_RECV_num(comm_tbl%num_neib, comm_tbl%id_neib,    &
-     &                          nSEND(1), nRECV(1), SR_sig1)
-      if(iflag_FSR_time) call end_elapsed_time(ist_elapsed_FSR+1)
-!
-      end subroutine SOLVER_SEND_RECV_num_type
 !
 ! ----------------------------------------------------------------------
 !

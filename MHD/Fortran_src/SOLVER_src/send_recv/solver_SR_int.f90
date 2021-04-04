@@ -14,6 +14,12 @@
 !!     &         (npe_send, isend_self, id_pe_send, istack_send,        &
 !!     &          npe_recv, irecv_self, id_pe_recv, istack_recv,        &
 !!     &          SR_sig, SR_i)
+!!      subroutine calypso_send_recv_num(npe_send, irank_send, num_send,&
+!!     &                               npe_recv, irank_recv, irecv_self,&
+!!     &                               num_recv, SR_sig)
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
+!!
 !!      subroutine calypso_AllToAllv_intcore                            &
 !!     &         (npe_sr, istack_send, istack_recv,                     &
 !!     &          CALYPSO_SUB_COMM, SR_i)
@@ -27,10 +33,6 @@
 !!     &           STACK_EXPORT, NOD_EXPORT, SR_sig, SR_i, ix)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
-!!
-!!      subroutine  solver_send_recv_num                                &
-!!     &          (NEIBPETOT, NEIBPE, nSEND, nRECV, SR_sig)
-!!        type(send_recv_status), intent(inout) :: SR_sig
 !!@endverbatim
 !!
 !!@n @param  NP     Number of data points
@@ -132,6 +134,49 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine calypso_send_recv_num(npe_send, irank_send, num_send,  &
+     &                               npe_recv, irank_recv, irecv_self,  &
+     &                               num_recv, SR_sig)
+!
+      integer(kind = kint), intent(in) :: npe_send
+      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: irank_send(npe_send)
+      integer(kind = kint), intent(in) :: irank_recv(npe_recv)
+!
+      integer(kind = kint), intent(in) :: num_send(npe_send)
+!
+      integer(kind = kint), intent(inout) :: num_recv(npe_recv)
+      type(send_recv_status), intent(inout) :: SR_sig
+!
+      integer :: ncomm_send, ncomm_recv, ip
+!
+!
+      ncomm_send = int(npe_send - irecv_self)
+      ncomm_recv = int(npe_recv - irecv_self)
+!
+      do ip = 1, ncomm_send
+        call MPI_ISEND(num_send(ip), 1, CALYPSO_INTEGER,                &
+     &                 int(irank_send(ip)), 0, CALYPSO_COMM,            &
+     &                 SR_sig%req1(ip), ierr_MPI)
+      end do
+!
+      do ip = 1, ncomm_recv
+        call MPI_IRECV (num_recv(ip), 1, CALYPSO_INTEGER,               &
+     &                 int(irank_recv(ip)), 0, CALYPSO_COMM,            &
+     &                 SR_sig%req2(ip), ierr_MPI)
+      end do
+      call MPI_WAITALL                                                  &
+     &   (ncomm_recv, SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
+      call MPI_WAITALL                                                  &
+     &   (ncomm_send, SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
+!
+      if(irecv_self .gt. 0) num_recv(npe_recv) = num_send(npe_send)
+!
+      end subroutine  calypso_send_recv_num
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine calypso_AllToAllv_intcore                              &
      &         (npe_sr, istack_send, istack_recv,                       &
      &          CALYPSO_SUB_COMM, SR_i)
@@ -220,7 +265,6 @@
      &    SR_sig , SR_i)
 !
 !C-- SEND
-      
       do neib= 1, NEIBPETOT
         istart= STACK_EXPORT(neib-1)
         iend =  STACK_EXPORT(neib  ) 
@@ -239,7 +283,6 @@
 
 !C
 !C-- RECEIVE
-      
       do neib= 1, NEIBPETOT
         istart= STACK_IMPORT(neib-1)
         inum  = int(STACK_IMPORT(neib  ) - istart)
@@ -267,53 +310,6 @@
      &   (int(NEIBPETOT), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
 
       end subroutine solver_send_recv_i
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine  solver_send_recv_num                                  &
-     &          (NEIBPETOT, NEIBPE, nSEND, nRECV, SR_sig)
-!
-!>       total neighboring pe count
-      integer(kind=kint )                , intent(in)   ::  NEIBPETOT
-!>       neighboring pe id                        (i-th pe)
-      integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
-!>       imported node count for each neighbor pe (i-th pe)
-!
-!>       Number of componennt to send
-      integer (kind=kint), dimension(NEIBPETOT), intent(in):: nSEND
-!>       Number of componennt to recv
-      integer (kind=kint), dimension(NEIBPETOT), intent(inout):: nRECV
-!>      Structure of communication flags
-      type(send_recv_status), intent(inout) :: SR_sig
-!C
-!
-      integer (kind = kint) :: neib
-!
-!
-      call resize_SR_flag(NEIBPETOT, NEIBPETOT, SR_sig)
-!
-!C-- SEND
-      
-      do neib= 1, NEIBPETOT
-        call MPI_ISEND(nSEND(neib), 1, CALYPSO_INTEGER,                 &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
-     &                 SR_sig%req1(neib), ierr_MPI)
-      end do
-!C
-!C-- RECEIVE
-      
-      do neib= 1, NEIBPETOT
-        call MPI_IRECV(nRECV(neib), 1, CALYPSO_INTEGER,                 &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
-     &                 SR_sig%req2(neib), ierr_MPI)
-      end do
-!
-      call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
-      call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
-!
-      end subroutine solver_send_recv_num
 !
 !  ---------------------------------------------------------------------
 !

@@ -37,6 +37,9 @@
      &                               npe_recv, irank_recv, irecv_self,  &
      &                               num_recv, istack_recv, ntot_recv)
 !
+      use solver_SR_int
+      use cal_minmax_and_stacks
+!
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: npe_recv, irecv_self
       integer(kind = kint), intent(in) :: irank_send(npe_send)
@@ -49,40 +52,15 @@
       integer(kind = kint), intent(inout) :: istack_recv(0:npe_recv)
 !
       type(send_recv_status) :: iSR_sig
-      integer :: ncomm_send, ncomm_recv, ip
 !
 !
       call resize_SR_flag(npe_send, npe_recv, iSR_sig)
-!
-      ncomm_send = int(npe_send - irecv_self)
-      ncomm_recv = int(npe_recv - irecv_self)
-!
-      do ip = 1, ncomm_send
-        call MPI_ISEND(num_send(ip), 1, CALYPSO_INTEGER,                &
-     &                 int(irank_send(ip)), 0, CALYPSO_COMM,            &
-     &                 iSR_sig%req1(ip), ierr_MPI)
-      end do
-!
-      do ip = 1, ncomm_recv
-        call MPI_IRECV (num_recv(ip), 1, CALYPSO_INTEGER,               &
-     &                 int(irank_recv(ip)), 0, CALYPSO_COMM,            &
-     &                 iSR_sig%req2(ip), ierr_MPI)
-      end do
-      write(*,*) my_rank, my_rank, 'MPI_WAITALL_2'
-      call MPI_WAITALL                                                  &
-     &   (ncomm_recv, iSR_sig%req2(1), iSR_sig%sta2(1,1), ierr_MPI)
-      write(*,*) my_rank, my_rank, 'MPI_WAITALL_1'
-      call MPI_WAITALL                                                  &
-     &   (ncomm_send, iSR_sig%req1(1), iSR_sig%sta1(1,1), ierr_MPI)
+      call calypso_send_recv_num(npe_send, irank_send, num_send,        &
+     &                           npe_recv, irank_recv, irecv_self,      &
+     &                           num_recv, iSR_sig)
+      call s_cal_total_and_stacks(npe_recv, num_recv, izero,            &
+     &                            istack_recv, ntot_recv)
       call dealloc_SR_flag(iSR_sig)
-!
-      if(irecv_self .gt. 0) num_recv(npe_recv) = num_send(npe_send)
-!
-      istack_recv(0) = 0
-      do ip = 1, ncomm_recv
-        istack_recv(ip) = istack_recv(ip-1) + num_recv(ip)
-      end do
-      ntot_recv = istack_recv(npe_recv)
 !
       end subroutine  num_items_send_recv
 !
