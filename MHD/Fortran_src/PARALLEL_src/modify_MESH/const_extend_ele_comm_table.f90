@@ -164,7 +164,7 @@
      &   (expand_ele_comm%ntot_import, exp_import_ie%irank_comm,        &
      &    sort_ele_import, ext_ele_trim)
       if(i_debug .gt. 0) then
-        call check_overlapped_sleeve_ext                                &
+        call check_overlapped_sleeve_ext_org                            &
      &    (nod_comm, add_ele_comm, sort_ele_import, ext_ele_trim)
       end if
       call dealloc_sort_data_sleeve_ext(sort_ele_import)

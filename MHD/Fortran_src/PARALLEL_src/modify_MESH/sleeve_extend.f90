@@ -235,7 +235,7 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       call const_extended_node_position                                 &
      &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
-     &    add_nod_comm_org, ext_nod_trim, trim_nod_to_ext)
+     &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 'const_extended_nod_comm_table'

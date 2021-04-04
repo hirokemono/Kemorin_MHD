@@ -13,7 +13,7 @@
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
-!!        type(communication_table), intent(in) :: add_nod_comm
+!!        type(calypso_comm_table), intent(in) :: add_nod_comm
 !!        type(data_for_trim_import), intent(inout) :: ext_nod_trim
 !!        type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
 !!      subroutine const_extended_nod_comm_table                        &
@@ -38,6 +38,7 @@
       use calypso_mpi
 !
       use t_comm_table
+      use t_calypso_comm_table
       use t_comm_table_for_each_pe
       use t_mesh_for_sleeve_extend
       use t_sort_data_for_sleeve_trim
@@ -61,7 +62,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
 !
       type(data_for_trim_import), intent(inout) :: ext_nod_trim
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext

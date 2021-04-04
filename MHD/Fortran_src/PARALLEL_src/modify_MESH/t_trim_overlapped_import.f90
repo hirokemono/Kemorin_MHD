@@ -19,9 +19,9 @@
 !!        type(data_for_trim_import), intent(inout) :: ext_trim
 !!
 !!      subroutine check_overlapped_sleeve_ext                          &
-!!     &         (nod_comm, add_ele_comm, sort_import, ext_trim)
+!!     &         (nod_comm, add_comm, sort_import, ext_trim)
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(communication_table), intent(in) :: add_ele_comm
+!!        type(calypso_comm_table), intent(in) :: add_comm
 !!        type(sort_data_for_sleeve_trim), intent(in) :: sort_import
 !!        type(data_for_trim_import), intent(in) :: ext_trim
 !!@endverbatim
@@ -151,6 +151,43 @@
 !
       use calypso_mpi
       use t_comm_table
+      use t_calypso_comm_table
+      use t_mesh_for_sleeve_extend
+      use t_sort_data_for_sleeve_trim
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(calypso_comm_table), intent(in) :: add_comm
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+      type(data_for_trim_import), intent(in) :: ext_trim
+!
+      integer(kind = kint) :: ip
+!
+      write(*,*) my_rank, add_comm%num_neib,                            &
+     &         'org_neib', nod_comm%id_neib
+      write(*,*) my_rank, add_comm%nrank_import,                        &
+     &         'new_irank_import', add_comm%irank_import
+      write(*,*) my_rank, add_comm%nrank_export,                        &
+     &         'new_irank_export', add_comm%irank_export
+      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
+     &                    sum(sort_import%num_sorted_by_pe),            &
+     &                    ext_trim%ntot_trimmed
+      do ip = 1, nprocs
+        write(*,*) my_rank, ' to ', ip-1,                               &
+     &             ' sort_import%num_sorted_by_pe ',                    &
+     &              sort_import%num_sorted_by_pe(ip),                   &
+     &              ext_trim%istack_trimmed_pe(ip)
+      end do
+!
+      end subroutine check_overlapped_sleeve_ext
+!
+! ----------------------------------------------------------------------
+!
+      subroutine check_overlapped_sleeve_ext_org                        &
+     &         (nod_comm, add_comm, sort_import, ext_trim)
+!
+      use calypso_mpi
+      use t_comm_table
+      use t_calypso_comm_table
       use t_mesh_for_sleeve_extend
       use t_sort_data_for_sleeve_trim
 !
@@ -161,20 +198,20 @@
 !
       integer(kind = kint) :: ip
 !
-        write(*,*) my_rank, 'org_neib', nod_comm%id_neib
-        write(*,*) my_rank, 'new_neib', add_comm%id_neib
-        write(*,*) my_rank, 'Totals', nod_comm%ntot_import,             &
-     &                      sum(sort_import%num_sorted_by_pe),          &
-     &                      ext_trim%ntot_trimmed
-        do ip = 1, nprocs
-          write(*,*) my_rank, ' to ', ip-1,                             &
-      &             ' sort_import%num_sorted_by_pe ',                   &
-      &              sort_import%num_sorted_by_pe(ip),                  &
-      &              ext_trim%istack_trimmed_pe(ip)
-        end do
-        write(*,*) my_rank, 'add_comm%num_neib', add_comm%num_neib
+      write(*,*) my_rank, 'org_neib', nod_comm%id_neib
+      write(*,*) my_rank, 'new_neib', add_comm%id_neib
+      write(*,*) my_rank, 'Totals', nod_comm%ntot_import,               &
+     &                    sum(sort_import%num_sorted_by_pe),            &
+     &                    ext_trim%ntot_trimmed
+      do ip = 1, nprocs
+        write(*,*) my_rank, ' to ', ip-1,                               &
+     &             ' sort_import%num_sorted_by_pe ',                    &
+     &              sort_import%num_sorted_by_pe(ip),                   &
+     &              ext_trim%istack_trimmed_pe(ip)
+      end do
+      write(*,*) my_rank, 'add_comm%num_neib', add_comm%num_neib
 !
-      end subroutine check_overlapped_sleeve_ext
+      end subroutine check_overlapped_sleeve_ext_org
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
