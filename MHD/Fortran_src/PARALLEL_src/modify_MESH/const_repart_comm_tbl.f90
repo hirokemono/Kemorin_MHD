@@ -84,8 +84,8 @@
 !
       call num_items_send_recv                                          &
      &   (new_comm%num_neib, new_comm%id_neib, new_comm%num_import,     &
-     &    new_comm%num_export, new_comm%istack_export,                  &
-     &    new_comm%ntot_export)
+     &    new_comm%num_neib, new_comm%id_neib, new_comm%num_export,     &
+     &    new_comm%istack_export, new_comm%ntot_export)
 !
       call alloc_export_item(new_comm)
       call comm_items_send_recv(new_comm%num_neib, new_comm%id_neib,    &

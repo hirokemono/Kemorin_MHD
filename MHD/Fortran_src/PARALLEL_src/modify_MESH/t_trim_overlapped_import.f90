@@ -162,7 +162,7 @@
 !
       integer(kind = kint) :: ip
 !
-      write(*,*) my_rank, add_comm%num_neib,                            &
+      write(*,*) my_rank, nod_comm%num_neib,                            &
      &         'org_neib', nod_comm%id_neib
       write(*,*) my_rank, add_comm%nrank_import,                        &
      &         'new_irank_import', add_comm%irank_import

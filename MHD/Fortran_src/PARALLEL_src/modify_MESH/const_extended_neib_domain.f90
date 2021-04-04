@@ -86,7 +86,8 @@
 !
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib, np_new_export,           &
-     &    np_new_import, istack_pe_new_import, ntot_pe_new_import)
+     &    nod_comm%num_neib, nod_comm%id_neib, np_new_import,           &
+     &    istack_pe_new_import, ntot_pe_new_import)
 !
       allocate(ip_new_export(ntot_pe_new_export))
       allocate(ip_new_import(ntot_pe_new_import))

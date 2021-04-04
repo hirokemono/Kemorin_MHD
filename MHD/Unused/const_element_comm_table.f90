@@ -152,7 +152,8 @@
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+4)
       call num_items_send_recv                                          &
      &   (e_comm%num_neib, e_comm%id_neib, e_comm%num_import,           &
-     &    e_comm%num_export, e_comm%istack_export, e_comm%ntot_export)
+     &    e_comm%num_neib, e_comm%id_neib, e_comm%num_export,           &
+     &    e_comm%istack_export, e_comm%ntot_export)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+4)
 !
       call alloc_element_rev_exports(e_comm%ntot_export, wk_comm)

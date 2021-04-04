@@ -225,12 +225,16 @@
 
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_nod_comm%num_export, expand_nod_comm%num_import,       &
-     &    expand_nod_comm%istack_import, expand_nod_comm%ntot_import)
+     &    expand_nod_comm%num_export,                                   &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_nod_comm%num_import, expand_nod_comm%istack_import,    &
+     &    expand_nod_comm%ntot_import)
       call num_items_send_recv                                          &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
-     &    expand_ele_comm%num_export, expand_ele_comm%num_import,       &
-     &    expand_ele_comm%istack_import, expand_ele_comm%ntot_import)
+     &    expand_ele_comm%num_export,                                   &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_ele_comm%num_import, expand_ele_comm%istack_import,    &
+     &    expand_ele_comm%ntot_import)
 !
 !
       call alloc_export_item(expand_nod_comm)
