@@ -383,10 +383,10 @@
 !     communication
 !
       call calypso_send_recv_int(iflag_recv,                            &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+     &    tbl_org%ntot_table_org, NP_dest,                              &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
+     &    tbl_dest%iflag_self_itp_recv, tbl_dest%num_org_domain,        &
      &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
      &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
      &    SR_sig, SR_i, itp_WORK%i_inter_org, v_2nd_sol%ix_vec(1))

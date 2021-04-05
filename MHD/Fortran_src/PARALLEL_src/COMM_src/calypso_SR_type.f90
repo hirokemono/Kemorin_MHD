@@ -185,10 +185,9 @@
 !
 !
       call calypso_send_recv_int(iflag_recv, nnod_org, nnod_new,        &
-     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
-     &    cps_tbl%item_export,                                          &
-     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
+     &    cps_tbl%nrank_export, cps_tbl%irank_export,                   &
+     &    cps_tbl%istack_export, cps_tbl%item_export,                   &
+     &    cps_tbl%iflag_self_copy, cps_tbl%nrank_import,                &
      &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
      &    cps_tbl%item_import, cps_tbl%irev_import,                     &
      &    SR_sig1, SR_i1, iX_org, iX_new)

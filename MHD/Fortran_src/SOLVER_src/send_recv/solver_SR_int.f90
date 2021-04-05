@@ -5,17 +5,18 @@
 !!@date coded by K.Nakajima (RIST) in jul. 1999 (ver 1.0)
 !!@n    modified by H. Matsui (U. of Chicago) in july 2007 (ver 1.1)
 !!@n    modified by H. Matsui (UC Davis) in june 2015 (ver 1.2)
+!!@n    modified by H. Matsui (UC Davis) in Apr. 2021 (ver 1.3)
 !
 !>@brief  MPI SEND and RECEIVE routine for integer field
 !!        in overlapped partitioning
 !!
 !!@verbatim
 !!      subroutine calypso_send_recv_intcore                            &
-!!     &         (npe_send, isend_self, id_pe_send, istack_send,        &
-!!     &          npe_recv, irecv_self, id_pe_recv, istack_recv,        &
+!!     &         (npe_send, id_pe_send, istack_send,                    &
+!!     &          npe_recv, iflag_self, id_pe_recv, istack_recv,        &
 !!     &          SR_sig, SR_i)
 !!      subroutine calypso_send_recv_num(npe_send, irank_send, num_send,&
-!!     &                               npe_recv, irank_recv, irecv_self,&
+!!     &                               npe_recv, irank_recv, iflag_self,&
 !!     &                               num_recv, SR_sig)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -71,15 +72,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine calypso_send_recv_intcore                              &
-     &         (npe_send, isend_self, id_pe_send, istack_send,          &
-     &          npe_recv, irecv_self, id_pe_recv, istack_recv,          &
+     &         (npe_send, id_pe_send, istack_send,                      &
+     &          npe_recv, iflag_self, id_pe_recv, istack_recv,          &
      &          SR_sig, SR_i)
 !
-      integer(kind = kint), intent(in) :: npe_send, isend_self
+      integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
 !
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
@@ -92,8 +93,8 @@
       integer (kind = kint) :: ist_send, ist_recv
 !
 !
-      ncomm_send = int(npe_send - isend_self)
-      ncomm_recv = int(npe_recv - irecv_self)
+      ncomm_send = int(npe_send - iflag_self)
+      ncomm_recv = int(npe_recv - iflag_self)
 !
       do neib = 1, ncomm_send
         ist= istack_send(neib-1) + 1
@@ -119,7 +120,7 @@
      &     (ncomm_recv, SR_sig%req2, SR_sig%sta2, ierr_MPI)
       end if
 !
-      if (isend_self .eq. 0) return
+      if(iflag_self .eq. 0) return
 !
       ist_send= istack_send(npe_send-1)
       ist_recv= istack_recv(npe_recv-1)
@@ -135,11 +136,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine calypso_send_recv_num(npe_send, irank_send, num_send,  &
-     &                               npe_recv, irank_recv, irecv_self,  &
+     &                               npe_recv, irank_recv, iflag_self,  &
      &                               num_recv, SR_sig)
 !
       integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: irank_send(npe_send)
       integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
@@ -151,8 +152,8 @@
       integer :: ncomm_send, ncomm_recv, ip
 !
 !
-      ncomm_send = int(npe_send - irecv_self)
-      ncomm_recv = int(npe_recv - irecv_self)
+      ncomm_send = int(npe_send - iflag_self)
+      ncomm_recv = int(npe_recv - iflag_self)
 !
       do ip = 1, ncomm_send
         call MPI_ISEND(num_send(ip), 1, CALYPSO_INTEGER,                &
@@ -170,7 +171,7 @@
       call MPI_WAITALL                                                  &
      &   (ncomm_send, SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
 !
-      if(irecv_self .gt. 0) num_recv(npe_recv) = num_send(npe_send)
+      if(iflag_self .gt. 0) num_recv(npe_recv) = num_send(npe_send)
 !
       end subroutine  calypso_send_recv_num
 !

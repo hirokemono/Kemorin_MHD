@@ -217,10 +217,10 @@
       integer (kind=kint), intent(inout):: iX_recv(nnod_recv)
 !
 !
-      call calypso_send_recv_int(iflag_recv, nnod_send, nnod_recv,      &
-     &    send_comm%nneib_domain, send_comm%iflag_self,                 &
+      call calypso_send_recv_int                                        &
+     &   (iflag_recv, nnod_send, nnod_recv, send_comm%nneib_domain,     &
      &    send_comm%id_domain, send_comm%istack_sr, send_comm%item_sr,  &
-     &    recv_comm%nneib_domain, recv_comm%iflag_self,                 &
+     &    recv_comm%iflag_self, recv_comm%nneib_domain,                 &
      &    recv_comm%id_domain, recv_comm%istack_sr, recv_comm%item_sr,  &
      &    recv_comm%irev_sr, SR_sig1, SR_i1, iX_send, iX_recv)
 !
