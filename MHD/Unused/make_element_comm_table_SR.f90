@@ -35,7 +35,6 @@
 !
       use reverse_SR_real
       use reverse_SR_int
-      use reverse_SR_int8
 !
       integer(kind = kint), intent(in) :: num_neib_e
       integer(kind = kint), intent(in) :: id_neib_e(num_neib_e)
@@ -64,9 +63,9 @@
 !      end do
 !
 !
-      call int8_items_send_recv(num_neib_e, id_neib_e,                  &
-     &    istack_import_e, istack_export_e,                             &
-     &    inod_import_e, inod_export_e)
+      call int8_items_send_recv                                         &
+     &   (num_neib_e, id_neib_e, istack_import_e, inod_import_e,        &
+     &    num_neib_e, id_neib_e, istack_export_e, izero, inod_export_e)
 !
       call comm_items_send_recv                                         &
      &   (num_neib_e, id_neib_e, istack_import_e, inod_import_l,        &
