@@ -87,22 +87,23 @@
       subroutine calypso_send_recv_core                                 &
      &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
      &              npe_recv, irecv_self, id_pe_recv, istack_recv,      &
-     &              SR_sig, SR_r)
+     &              SR_sig, Wsend, Wrecv)
 !
       integer(kind = kint), intent(in) :: NB
 !
       integer(kind = kint), intent(in) :: npe_send, isend_self
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      real(kind = kreal), intent(in) :: Wsend(NB*istack_send(npe_send))
 !
       integer(kind = kint), intent(in) :: npe_recv, irecv_self
       integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: Wrecv(NB*istack_recv(npe_recv))
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
-!>      Structure of communication buffer for 8-byte real
-      type(send_recv_real_buffer), intent(inout) :: SR_r
 !
       integer (kind = kint) :: ist
       integer :: ncomm_send, ncomm_recv, neib
@@ -114,20 +115,20 @@
       ncomm_recv = int(npe_recv - irecv_self)
 !
       do neib = 1, ncomm_send
-        ist = NB * istack_send(neib-1) + 1
+        ist = NB * istack_send(neib-1)
         num = int(NB * (istack_send(neib  ) - istack_send(neib-1)))
         call MPI_ISEND                                                  &
-     &      (SR_r%WS(ist), num, CALYPSO_REAL, int(id_pe_send(neib)),    &
+     &      (Wsend(ist+1), num, CALYPSO_REAL, int(id_pe_send(neib)),    &
      &       0, CALYPSO_COMM, SR_sig%req1(neib), ierr_MPI)
       end do
 !C
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
         do neib = ncomm_recv, 1, -1
-          ist= NB * istack_recv(neib-1) + 1
+          ist= NB * istack_recv(neib-1)
           num  = int(NB * (istack_recv(neib  ) - istack_recv(neib-1)))
           call MPI_IRECV                                                &
-     &       (SR_r%WR(ist), num, CALYPSO_REAL, int(id_pe_recv(neib)),   &
+     &       (Wrecv(ist+1), num, CALYPSO_REAL, int(id_pe_recv(neib)),   &
      &        0, CALYPSO_COMM, SR_sig%req2(neib), ierr_MPI)
         end do
       end if
@@ -143,7 +144,7 @@
       num = int(NB * (istack_send(npe_send) - istack_send(npe_send-1)))
 !$omp parallel do
       do i = 1, num
-        SR_r%WR(ist_recv+i) = SR_r%WS(ist_send+i)
+        Wrecv(ist_recv+i) = Wsend(ist_send+i)
       end do
 !$omp end parallel do
 !
