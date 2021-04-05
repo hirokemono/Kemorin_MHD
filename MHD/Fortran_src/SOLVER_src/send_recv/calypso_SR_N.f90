@@ -118,7 +118,7 @@
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &   (NB, npe_send, isend_self, id_pe_send, istack_send,            &
+     &   (NB, npe_send, id_pe_send, istack_send,                        &
      &        npe_recv, irecv_self, id_pe_recv, istack_recv,            &
      &        SR_sig, SR_r%WS(1), SR_r%WR(1))
 !
@@ -198,7 +198,7 @@
 !C
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &   ((3*NB), npe_send, isend_self, id_pe_send, istack_send,        &
+     &   ((3*NB), npe_send, id_pe_send, istack_send,                    &
      &            npe_recv, irecv_self, id_pe_recv, istack_recv,        &
      &            SR_sig, SR_r%WS(1), SR_r%WR(1))
 !

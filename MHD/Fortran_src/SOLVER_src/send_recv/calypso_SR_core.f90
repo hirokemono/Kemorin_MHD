@@ -85,18 +85,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine calypso_send_recv_core                                 &
-     &         (NB, npe_send, isend_self, id_pe_send, istack_send,      &
-     &              npe_recv, irecv_self, id_pe_recv, istack_recv,      &
+     &         (NB, npe_send, id_pe_send, istack_send,      &
+     &              npe_recv, iflag_self, id_pe_recv, istack_recv,      &
      &              SR_sig, Wsend, Wrecv)
 !
       integer(kind = kint), intent(in) :: NB
 !
-      integer(kind = kint), intent(in) :: npe_send, isend_self
+      integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
       real(kind = kreal), intent(in) :: Wsend(NB*istack_send(npe_send))
 !
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
@@ -111,8 +111,8 @@
       integer (kind = kint) :: ist_send, ist_recv
 !
 !
-      ncomm_send = int(npe_send - isend_self)
-      ncomm_recv = int(npe_recv - irecv_self)
+      ncomm_send = int(npe_send - iflag_self)
+      ncomm_recv = int(npe_recv - iflag_self)
 !
       do neib = 1, ncomm_send
         ist = NB * istack_send(neib-1)
@@ -138,7 +138,7 @@
      &     (ncomm_recv, SR_sig%req2, SR_sig%sta2, ierr_MPI)
       end if
 !
-      if (isend_self .eq. 0) return
+      if (iflag_self .eq. 0) return
       ist_send= NB * istack_send(npe_send-1)
       ist_recv= NB * istack_recv(npe_recv-1)
       num = int(NB * (istack_send(npe_send) - istack_send(npe_send-1)))
