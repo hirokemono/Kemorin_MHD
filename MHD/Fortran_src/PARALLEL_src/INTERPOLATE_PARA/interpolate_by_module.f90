@@ -126,13 +126,13 @@
       end if
 !
 !   communication
-      call calypso_send_recv(iflag_recv,                                &
-     &    tbl_org%ntot_table_org, NP_dest, tbl_org%num_dest_domain,     &
-     &    tbl_org%iflag_self_itp_send, tbl_org%id_dest_domain,          &
+      call calypso_send_recv                                            &
+     &   (iflag_recv, tbl_org%ntot_table_org, NP_dest,                  &
+     &    tbl_org%num_dest_domain, tbl_org%id_dest_domain,              &
      &    tbl_org%istack_nod_tbl_org, tbl_org%inod_itp_send,            &
-     &    tbl_dest%num_org_domain, tbl_dest%iflag_self_itp_recv,        &
-     &    tbl_dest%id_org_domain, tbl_dest%istack_nod_tbl_dest,         &
-     &    tbl_dest%inod_dest_4_dest, tbl_dest%irev_dest_4_dest,         &
+     &    tbl_dest%num_org_domain, tbl_dest%id_org_domain,              &
+     &    tbl_dest%istack_nod_tbl_dest, tbl_dest%inod_dest_4_dest,      &
+     &    tbl_dest%irev_dest_4_dest, tbl_dest%iflag_self_itp_recv,      &
      &    SR_sig, SR_r, itp_WORK%x_inter_org, X_dest(1))
 !
       if (comm_dest%num_neib .gt. 0) then
