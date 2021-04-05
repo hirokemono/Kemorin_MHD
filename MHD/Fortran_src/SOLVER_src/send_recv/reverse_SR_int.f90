@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine num_items_send_recv(npe_send, irank_send, num_send,  &
-!!     &                               npe_recv, irank_recv, irecv_self,&
+!!     &                               npe_recv, irank_recv, iflag_self,&
 !!     &                               num_recv, istack_recv, ntot_recv)
 !!      subroutine comm_items_send_recv                                 &
 !!     &         (npe_send, irank_send, istack_send, item_send,         &
-!!     &          npe_recv, irank_recv, istack_recv, irecv_self,        &
+!!     &          npe_recv, irank_recv, istack_recv, iflag_self,        &
 !!     &          item_recv)
 !!
 !!      subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,  &
@@ -36,14 +36,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine num_items_send_recv(npe_send, irank_send, num_send,    &
-     &                               npe_recv, irank_recv, irecv_self,  &
+     &                               npe_recv, irank_recv, iflag_self,  &
      &                               num_recv, istack_recv, ntot_recv)
 !
       use solver_SR_int
       use cal_minmax_and_stacks
 !
       integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: irank_send(npe_send)
       integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
@@ -58,7 +58,7 @@
 !
       call resize_SR_flag(npe_send, npe_recv, iSR_sig)
       call calypso_send_recv_num(npe_send, irank_send, num_send,        &
-     &                           npe_recv, irank_recv, irecv_self,      &
+     &                           npe_recv, irank_recv, iflag_self,      &
      &                           num_recv, iSR_sig)
       call s_cal_total_and_stacks(npe_recv, num_recv, izero,            &
      &                            istack_recv, ntot_recv)
@@ -70,11 +70,13 @@
 !
       subroutine comm_items_send_recv                                   &
      &         (npe_send, irank_send, istack_send, item_send,           &
-     &          npe_recv, irank_recv, istack_recv, irecv_self,          &
+     &          npe_recv, irank_recv, istack_recv, iflag_self,          &
      &          item_recv)
 !
+      use solver_SR_int
+!
       integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: irank_send(npe_send)
       integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
@@ -88,31 +90,13 @@
      &                 :: item_recv(istack_recv(npe_recv))
 !
       type(send_recv_status) :: iSR_sig
-      integer(kind = kint) :: ip, ist
-      integer :: num
 !
 !
       call resize_SR_flag(npe_send, npe_recv, iSR_sig)
-!
-      do ip = 1, npe_send
-        ist = istack_send(ip-1)
-        num = int(istack_send(ip  ) - istack_send(ip-1))
-        call MPI_ISEND(item_send(ist+1), num,                           &
-     &                 CALYPSO_INTEGER,int(irank_send(ip)), 0,          &
-     &                 CALYPSO_COMM, iSR_sig%req1(ip), ierr_MPI)
-      end do
-!
-      do ip = 1, npe_recv
-        ist = istack_recv(ip-1)
-        num = int(istack_recv(ip  ) - istack_recv(ip-1))
-        call MPI_IRECV(item_recv(ist+1), num,                           &
-     &                 CALYPSO_INTEGER, int(irank_recv(ip)), 0,         &
-     &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
-      end do
-      call MPI_WAITALL                                                  &
-     &   (int(npe_recv), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
-      call MPI_WAITALL                                                  &
-     &   (int(npe_send), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+      call calypso_send_recv_intcore                                    &
+     &   (npe_send, irank_send, istack_send, item_send, iflag_self,     &
+     &    npe_recv, irank_recv, istack_recv, item_recv, iSR_sig)
+      call calypso_send_recv_fin(npe_send, iflag_self, iSR_sig)
       call dealloc_SR_flag(iSR_sig)
 !
       end subroutine comm_items_send_recv
