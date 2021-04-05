@@ -113,9 +113,9 @@
      &    istack_send(npe_send), inod_export, iX_org, SR_i%iWS)
 !C
 !C-- COMM
-      call calypso_send_recv_intcore(npe_send, id_pe_send, istack_send, &
-     &    npe_recv, iflag_self, id_pe_recv, istack_recv,                &
-     &    SR_sig, SR_i)
+      call calypso_send_recv_intcore                                    &
+     &   (npe_send, id_pe_send, istack_send, SR_i%iWS(1), iflag_self,   &
+     &    npe_recv, id_pe_recv, istack_recv, SR_i%iWR(1), SR_sig)
 !
 !C-- RECV
       call sel_cppy_from_recv_buf_int(iflag_recv, nnod_new,             &

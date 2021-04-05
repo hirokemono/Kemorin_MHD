@@ -12,14 +12,12 @@
 !!
 !!@verbatim
 !!      subroutine calypso_send_recv_intcore                            &
-!!     &         (npe_send, id_pe_send, istack_send,                    &
-!!     &          npe_recv, iflag_self, id_pe_recv, istack_recv,        &
-!!     &          SR_sig, SR_i)
+!!     &         (npe_send, id_pe_send, istack_send, iWsend, iflag_self,&
+!!     &          npe_recv, id_pe_recv, istack_recv, iWrecv, SR_sig)
 !!      subroutine calypso_send_recv_num(npe_send, irank_send, num_send,&
 !!     &                               npe_recv, irank_recv, iflag_self,&
 !!     &                               num_recv, SR_sig)
 !!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!
 !!      subroutine calypso_AllToAllv_intcore                            &
 !!     &         (npe_sr, istack_send, istack_recv,                     &
@@ -72,20 +70,22 @@
 ! ----------------------------------------------------------------------
 !
       subroutine calypso_send_recv_intcore                              &
-     &         (npe_send, id_pe_send, istack_send,                      &
-     &          npe_recv, iflag_self, id_pe_recv, istack_recv,          &
-     &          SR_sig, SR_i)
+     &         (npe_send, id_pe_send, istack_send, iWsend, iflag_self,  &
+     &          npe_recv, id_pe_recv, istack_recv, iWrecv, SR_sig)
 !
       integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in) :: iWsend(istack_send(npe_send))
 !
       integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
+!
+      integer(kind = kint), intent(inout)                               &
+     &                                 :: iWrecv(istack_recv(npe_recv))
       type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
       integer (kind = kint) :: ist
       integer :: num, i
@@ -97,9 +97,9 @@
       ncomm_recv = int(npe_recv - iflag_self)
 !
       do neib = 1, ncomm_send
-        ist= istack_send(neib-1) + 1
-        num  = int(istack_send(neib  ) - istack_send(neib-1))
-        call MPI_ISEND(SR_i%iWS(ist), num, CALYPSO_INTEGER,             &
+        ist = istack_send(neib-1)
+        num = int(istack_send(neib  ) - istack_send(neib-1))
+        call MPI_ISEND(iWsend(ist+1), num, CALYPSO_INTEGER,             &
      &                 int(id_pe_send(neib)), 0, CALYPSO_COMM,          &
      &                 SR_sig%req1(neib), ierr_MPI)
       end do
@@ -107,9 +107,9 @@
 !C-- RECEIVE
       if(ncomm_recv .gt. 0) then
         do neib = ncomm_recv, 1, -1
-          ist= istack_recv(neib-1) + 1
-          num  = int(istack_recv(neib  ) - istack_recv(neib-1))
-          call MPI_IRECV(SR_i%iWR(ist), num, CALYPSO_INTEGER,           &
+          ist = istack_recv(neib-1)
+          num = int(istack_recv(neib  ) - istack_recv(neib-1))
+          call MPI_IRECV(iWrecv(ist+1), num, CALYPSO_INTEGER,           &
      &                   int(id_pe_recv(neib)), 0, CALYPSO_COMM,        &
      &                   SR_sig%req2(neib), ierr_MPI)
         end do
@@ -127,7 +127,7 @@
       num  =   int(istack_send(npe_send  ) - istack_send(npe_send-1))
 !$omp parallel do
       do i = 1, num
-        SR_i%iWR(ist_recv+i) = SR_i%iWS(ist_send+i)
+        iWrecv(ist_recv+i) = iWsend(ist_send+i)
       end do
 !$omp end parallel do
 !
