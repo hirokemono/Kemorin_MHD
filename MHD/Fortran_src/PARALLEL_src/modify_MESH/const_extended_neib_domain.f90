@@ -97,8 +97,10 @@
      &    inod_dbl, mark_nod, istack_pe_new_export,                     &
      &    ntot_pe_new_export, ip_new_export, iflag_send_pe)
       call comm_items_send_recv                                         &
-     &   (nod_comm%num_neib, nod_comm%id_neib, istack_pe_new_export,    &
-     &    istack_pe_new_import, ip_new_export, ip_new_import)
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    istack_pe_new_export, ip_new_export,                          &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    istack_pe_new_import, izero, ip_new_import)
 !
 !      do i = 1, nod_comm%num_neib
 !        ist = istack_pe_new_export(i-1)+1

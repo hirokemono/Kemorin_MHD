@@ -89,9 +89,11 @@
      &    new_comm%ntot_export)
 !
       call alloc_export_item(new_comm)
-      call comm_items_send_recv(new_comm%num_neib, new_comm%id_neib,    &
-     &    new_comm%istack_import, new_comm%istack_export,               &
-     &    inod_external, new_comm%item_export)
+      call comm_items_send_recv                                         &
+     &   (new_comm%num_neib, new_comm%id_neib,                          &
+     &    new_comm%istack_import, inod_external,                        &
+     &    new_comm%num_neib, new_comm%id_neib,                          &
+     &    new_comm%istack_export, izero, new_comm%item_export)
       deallocate(inod_external, irank_external)
 !
       end subroutine const_repartitioned_comm_tbl

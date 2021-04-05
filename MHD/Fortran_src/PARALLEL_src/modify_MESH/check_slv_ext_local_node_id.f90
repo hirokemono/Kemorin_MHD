@@ -33,6 +33,7 @@
       module check_slv_ext_local_node_id
 !
       use m_precision
+      use m_constants
       use calypso_mpi
 !
       use t_geometry_data
@@ -85,9 +86,11 @@
      &    expand_nod_comm, item_new_export)
 !
       allocate(item_new_import(expand_nod_comm%ntot_import))
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    item_new_export, item_new_import)
+      call comm_items_send_recv                                         &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_nod_comm%istack_export, item_new_export,               &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_nod_comm%istack_import, izero, item_new_import)
       deallocate(item_new_export)
 !
       call check_sort_nod_import(nod_comm, expand_nod_comm,             &

@@ -249,9 +249,12 @@
 !
 !
       call alloc_import_item(expand_nod_comm)
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    expand_nod_comm%item_export, expand_nod_comm%item_import)
+      call comm_items_send_recv                                         &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_nod_comm%istack_export, expand_nod_comm%item_export,   &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_nod_comm%istack_import, izero,                         &
+     &    expand_nod_comm%item_import)
 !
       call alloc_node_data_sleeve_ext(expand_nod_comm%ntot_import,      &
      &                                exp_import_xx)
@@ -264,9 +267,12 @@
       call alloc_ele_data_sleeve_ext                                    &
      &   (expand_ele_comm%ntot_import, ele%nnod_4_ele, exp_import_ie)
 !
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    expand_ele_comm%item_export, expand_ele_comm%item_import)
+      call comm_items_send_recv                                         &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_ele_comm%istack_export, expand_ele_comm%item_export,   &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    expand_ele_comm%istack_import, izero,                         &
+     &    expand_ele_comm%item_import)
       call send_extended_element_connect(ele, expand_ele_comm,          &
      &    exp_export_ie, exp_import_ie)
       call dealloc_ele_data_sleeve_ext(exp_export_ie)

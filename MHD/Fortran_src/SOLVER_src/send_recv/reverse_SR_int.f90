@@ -10,8 +10,10 @@
 !!      subroutine num_items_send_recv(npe_send, irank_send, num_send,  &
 !!     &                               npe_recv, irank_recv, irecv_self,&
 !!     &                               num_recv, istack_recv, ntot_recv)
-!!      subroutine comm_items_send_recv(num_neib, id_neib,              &
-!!     &          istack_send, istack_recv, item_send, item_recv)
+!!      subroutine comm_items_send_recv                                 &
+!!     &         (npe_send, irank_send, istack_send, item_send,         &
+!!     &          npe_recv, irank_recv, istack_recv, irecv_self,        &
+!!     &          item_recv)
 !!
 !!      subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,  &
 !!     &         istack_import, item_import, istack_export, item_export,&
@@ -66,47 +68,51 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine comm_items_send_recv(num_neib, id_neib,                &
-     &          istack_send, istack_recv, item_send, item_recv)
+      subroutine comm_items_send_recv                                   &
+     &         (npe_send, irank_send, istack_send, item_send,           &
+     &          npe_recv, irank_recv, istack_recv, irecv_self,          &
+     &          item_recv)
 !
-      integer(kind = kint), intent(in) :: num_neib
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
+      integer(kind = kint), intent(in) :: npe_send
+      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: irank_send(npe_send)
+      integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
-      integer(kind = kint), intent(in) :: istack_send(0:num_neib)
-      integer(kind = kint), intent(in) :: istack_recv(0:num_neib)
+      integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
       integer(kind = kint), intent(in)                                  &
-     &                 :: item_send(istack_send(num_neib))
+     &                 :: item_send(istack_send(npe_send))
 !
       integer(kind = kint), intent(inout)                               &
-     &                 :: item_recv(istack_recv(num_neib))
+     &                 :: item_recv(istack_recv(npe_recv))
 !
       type(send_recv_status) :: iSR_sig
       integer(kind = kint) :: ip, ist
       integer :: num
 !
 !
-      call resize_SR_flag(num_neib, num_neib, iSR_sig)
+      call resize_SR_flag(npe_send, npe_recv, iSR_sig)
 !
-      do ip = 1, num_neib
+      do ip = 1, npe_send
         ist = istack_send(ip-1)
         num = int(istack_send(ip  ) - istack_send(ip-1))
         call MPI_ISEND(item_send(ist+1), num,                           &
-     &                 CALYPSO_INTEGER,int(id_neib(ip)), 0,             &
+     &                 CALYPSO_INTEGER,int(irank_send(ip)), 0,          &
      &                 CALYPSO_COMM, iSR_sig%req1(ip), ierr_MPI)
       end do
 !
-      do ip = 1, num_neib
+      do ip = 1, npe_recv
         ist = istack_recv(ip-1)
         num = int(istack_recv(ip  ) - istack_recv(ip-1))
         call MPI_IRECV(item_recv(ist+1), num,                           &
-     &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
+     &                 CALYPSO_INTEGER, int(irank_recv(ip)), 0,         &
      &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
       end do
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
+     &   (int(npe_recv), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+     &   (int(npe_send), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
       call dealloc_SR_flag(iSR_sig)
 !
       end subroutine comm_items_send_recv

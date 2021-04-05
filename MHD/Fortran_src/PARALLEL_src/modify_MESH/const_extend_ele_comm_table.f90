@@ -205,8 +205,10 @@
 !
       call comm_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    iele_lc_import_trim, add_ele_comm%item_export)
+     &    add_ele_comm%istack_import, iele_lc_import_trim,              &
+     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%istack_export, izero,                            &
+     &    add_ele_comm%item_export)
       deallocate(iele_lc_import_trim)
 !
       end subroutine const_extended_ele_comm_table

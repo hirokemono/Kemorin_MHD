@@ -36,6 +36,7 @@
       module checks_for_sleeve_extend
 !
       use m_precision
+      use m_constants
 !
       use t_comm_table
       use t_geometry_data
@@ -193,8 +194,10 @@
       allocate(irank_new_ele_export_trim(add_ele_comm%ntot_export))
       call comm_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    trim_import_ie%irank_comm, irank_new_ele_export_trim)
+     &    add_ele_comm%istack_import, trim_import_ie%irank_comm,        &
+     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%istack_export, izero,                            &
+     &    irank_new_ele_export_trim)
 !
       icou = check_recieved_ext_ele_export(iele_dbl, add_ele_comm,      &
      &                                      irank_new_ele_export_trim)

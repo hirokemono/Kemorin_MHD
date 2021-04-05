@@ -173,9 +173,10 @@
       call calypso_mpi_barrier
       write(*,*) my_rank, 'comm_items_send_recv'
       call comm_items_send_recv                                         &
-     &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_export)
+     &  (add_nod_comm%num_neib, add_nod_comm%id_neib,                   &
+     &   add_nod_comm%istack_import, trim_nod_to_ext%import_lc_trimmed, &
+     &   add_nod_comm%num_neib, add_nod_comm%id_neib,                   &
+     &   add_nod_comm%istack_export, izero, add_nod_comm%item_export)
       call calypso_mpi_barrier
       write(*,*) my_rank, 'real_items_send_recv'
       call real_items_send_recv                                         &

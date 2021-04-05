@@ -20,7 +20,7 @@
 !!     &            :: num_new_export(nod_comm%num_neib)
 !!        integer(kind = kint), intent(inout)                           &
 !!     &            :: num_new_ele_export(nod_comm%num_neib)
-!
+!!
 !!      subroutine set_export_4_expanded_mesh(nod_comm, node, ele,      &
 !!     &          inod_dbl, iele_dbl, mark_nod, mark_ele,               &
 !!     &          ntot_new_nod_export, istack_new_nod_export,           &
@@ -65,6 +65,7 @@
       module set_mesh_for_sleeve_extend
 !
       use m_precision
+      use m_constants
       use t_comm_table
       use t_geometry_data
       use t_para_double_numbering
@@ -234,8 +235,10 @@
 !
       call comm_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%irank_comm, exp_import_xx%irank_comm)
+     &    expand_nod_comm%istack_export, exp_export_xx%irank_comm,      &
+     &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
+     &    expand_nod_comm%istack_import, izero,                         &
+     &    exp_import_xx%irank_comm)
       call real_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
@@ -270,8 +273,10 @@
 !
       call comm_items_send_recv                                         &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    exp_export_ie%irank_comm, exp_import_ie%irank_comm)
+     &    expand_ele_comm%istack_export, exp_export_ie%irank_comm,      &
+     &    expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
+     &    expand_ele_comm%istack_import, izero,                         &
+     &    exp_import_ie%irank_comm)
 !
       call int8_items_send_recv                                         &
      &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
@@ -279,9 +284,11 @@
      &    exp_export_ie%iele_gl_comm, exp_import_ie%iele_gl_comm)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
-     &   (expand_ele_comm%num_neib, expand_ele_comm%id_neib,            &
-     &    expand_ele_comm%istack_export, expand_ele_comm%istack_import, &
-     &    exp_export_ie%ie_comm(1,k1), exp_import_ie%ie_comm(1,k1))
+     &     (expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
+     &      expand_ele_comm%istack_export, exp_export_ie%ie_comm(1,k1), &
+     &      expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
+     &      expand_ele_comm%istack_import, izero,                       &
+     &      exp_import_ie%ie_comm(1,k1))
       end do
 !
       end subroutine send_extended_element_connect

@@ -32,7 +32,7 @@
       module unused_comms_4_sleeve_ext
 !
       use m_precision
-      use m_precision
+      use m_constants
       use calypso_mpi
       use t_geometry_data
       use t_comm_table
@@ -89,8 +89,9 @@
 !
       call comm_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    irank_new_import_trim, irank_new_export_back)
+     &    add_nod_comm%istack_import, irank_new_import_trim,            &
+     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%istack_export, izero, irank_new_export_back)
 !
       icou = 0
       do i = 1, add_nod_comm%ntot_export
@@ -145,8 +146,10 @@
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (add_ele_comm%num_neib, add_ele_comm%id_neib,                &
-     &      add_ele_comm%istack_import, add_ele_comm%istack_export,     &
-     &     ie_new_import_trim(1,k1), ie_new_export_trim(1,k1))
+     &      add_ele_comm%istack_import, ie_new_import_trim(1,k1),       &
+     &      add_ele_comm%num_neib, add_ele_comm%id_neib,                &
+     &      add_ele_comm%istack_export, izero,                          &
+     &      ie_new_export_trim(1,k1))
       end do
 !
 !      icou = 0
@@ -246,18 +249,24 @@
       allocate(ie_lc_new_import(ntot_new_ele_import,ele%nnod_4_ele))
       allocate(ie_rank_new_import(ntot_new_ele_import,ele%nnod_4_ele))
 !
-      call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,    &
-     &    istack_new_ele_export, istack_new_ele_import,                 &
-     &    item_new_ele_export, item_new_ele_import)
+      call comm_items_send_recv                                         &
+     &   (nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    istack_new_ele_export, item_new_ele_export,                   &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
+     &    istack_new_ele_import, izero, item_new_ele_import)
       do k1 = 1, ele%nnod_4_ele
-        call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &      istack_new_ele_export, istack_new_ele_import,               &
-     &      ie_lc_new_export(1,k1), ie_lc_new_import(1,k1))
+        call comm_items_send_recv                                       &
+     &     (nod_comm%num_neib, nod_comm%id_neib,                        &
+     &      istack_new_ele_export, ie_lc_new_export(1,k1),              &
+     &      nod_comm%num_neib, nod_comm%id_neib,                        &
+     &      istack_new_ele_import, izero, ie_lc_new_import(1,k1))
       end do
       do k1 = 1, ele%nnod_4_ele
-        call comm_items_send_recv(nod_comm%num_neib, nod_comm%id_neib,  &
-     &      istack_new_ele_export, istack_new_ele_import,               &
-     &      ie_rank_new_export(1,k1), ie_rank_new_import(1,k1))
+        call comm_items_send_recv                                       &
+     &     (nod_comm%num_neib, nod_comm%id_neib,                        &
+     &      istack_new_ele_export, ie_rank_new_export(1,k1),            &
+     &      nod_comm%num_neib, nod_comm%id_neib,                        &
+     &      istack_new_ele_import, izero, ie_rank_new_import(1,k1))
       end do
 !
       deallocate(item_new_ele_export)
@@ -292,19 +301,23 @@
 
       call comm_items_send_recv                                         &
      &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_import, add_ele_comm%istack_export,       &
-     &    item_new_ele_import_trim, item_new_ele_export_trim)
+     &    add_ele_comm%istack_import, item_new_ele_import_trim,         &
+     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%istack_export, izero, item_new_ele_export_trim)
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (add_ele_comm%num_neib, add_ele_comm%id_neib,                &
-     &      add_ele_comm%istack_import, add_ele_comm%istack_export,     &
-     &     ie_lc_new_import_trim(1,k1), ie_lc_new_export_trim(1,k1))
+     &      add_ele_comm%istack_import, ie_lc_new_import_trim(1,k1),    &
+     &      add_ele_comm%num_neib, add_ele_comm%id_neib,                &
+     &      add_ele_comm%istack_export, izero,                          &
+     &      ie_lc_new_export_trim(1,k1))
       end do
       do k1 = 1, ele%nnod_4_ele
         call comm_items_send_recv                                       &
      &     (add_ele_comm%num_neib, add_ele_comm%id_neib,                &
-     &      add_ele_comm%istack_import, add_ele_comm%istack_export,     &
-     &      ie_rank_new_import_trim(1,k1),                              &
+     &      add_ele_comm%istack_import, ie_rank_new_import_trim(1,k1),  &
+     &      add_ele_comm%num_neib, add_ele_comm%id_neib,                &
+     &      add_ele_comm%istack_export, izero,                          &
      &      ie_rank_new_export_trim(1,k1))
       end do
 !
