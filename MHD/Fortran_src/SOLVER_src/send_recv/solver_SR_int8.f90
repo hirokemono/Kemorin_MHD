@@ -11,11 +11,10 @@
 !!
 !!@verbatim
 !!      subroutine calypso_send_recv_i8core                             &
-!!     &         (npe_send, isend_self, id_pe_send, istack_send,        &
-!!     &          npe_recv, irecv_self, id_pe_recv, istack_recv,        &
-!!     &          SR_sig, SR_il)
+!!     &         (npe_send, id_pe_send, istack_send, i8Wsend,           &
+!!     &          iflag_self, npe_recv, id_pe_recv, istack_recv,        &
+!!     &          i8Wrecv, SR_sig)
 !!        type(send_recv_status), intent(inout) :: SR_sig
-!!        type(send_recv_int8_buffer), intent(inout) :: SR_il
 !!
 !!      subroutine  solver_send_recv_i8                                 &
 !!     &          (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,     &
@@ -49,20 +48,23 @@
 ! ----------------------------------------------------------------------
 !
       subroutine calypso_send_recv_i8core                               &
-     &         (npe_send, isend_self, id_pe_send, istack_send,          &
-     &          npe_recv, irecv_self, id_pe_recv, istack_recv,          &
-     &          SR_sig, SR_il)
+     &         (npe_send, id_pe_send, istack_send, i8Wsend,             &
+     &          iflag_self, npe_recv, id_pe_recv, istack_recv,          &
+     &          i8Wrecv, SR_sig)
 !
-      integer(kind = kint), intent(in) :: npe_send, isend_self
+      integer(kind = kint), intent(in) :: npe_send
       integer(kind = kint), intent(in) :: id_pe_send(npe_send)
       integer(kind = kint), intent(in) :: istack_send(0:npe_send)
+      integer(kind = kint_gl), intent(in)                               &
+     &                        :: i8Wsend(istack_send(npe_send))
 !
-      integer(kind = kint), intent(in) :: npe_recv, irecv_self
+      integer(kind = kint), intent(in) :: npe_recv, iflag_self
       integer(kind = kint), intent(in) :: id_pe_recv(npe_recv)
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
+      integer(kind = kint_gl), intent(inout)                            &
+     &                        :: i8Wrecv(istack_recv(npe_recv))
       type(send_recv_status), intent(inout) :: SR_sig
-      type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
       integer(kind = kint) :: ist
       integer :: num, i
@@ -70,13 +72,13 @@
       integer(kind = kint) :: ist_send, ist_recv
 !
 !
-      ncomm_send = int(npe_send - isend_self)
-      ncomm_recv = int(npe_recv - irecv_self)
+      ncomm_send = int(npe_send - iflag_self)
+      ncomm_recv = int(npe_recv - iflag_self)
 !
       do neib = 1, ncomm_send
         ist= istack_send(neib-1) + 1
         num  = int(istack_send(neib  ) - istack_send(neib-1))
-        call MPI_ISEND(SR_il%i8WS(ist), num, CALYPSO_GLOBAL_INT,        &
+        call MPI_ISEND(i8Wsend(ist), num, CALYPSO_GLOBAL_INT,           &
      &                 int(id_pe_send(neib)), 0, CALYPSO_COMM,          &
      &                 SR_sig%req1(neib), ierr_MPI)
       end do
@@ -86,7 +88,7 @@
         do neib = ncomm_recv, 1, -1
           ist= istack_recv(neib-1) + 1
           num  = int(istack_recv(neib  ) - istack_recv(neib-1))
-          call MPI_IRECV(SR_il%i8WR(ist), num, CALYPSO_GLOBAL_INT,      &
+          call MPI_IRECV(i8Wrecv(ist), num, CALYPSO_GLOBAL_INT,         &
      &                   int(id_pe_recv(neib)),0, CALYPSO_COMM,         &
      &                   SR_sig%req2(neib), ierr_MPI)
         end do
@@ -97,14 +99,14 @@
      &    (ncomm_recv, SR_sig%req2, SR_sig%sta2, ierr_MPI)
       end if
 !
-      if (isend_self .eq. 0) return
+      if (iflag_self .eq. 0) return
 !
       ist_send= istack_send(npe_send-1)
       ist_recv= istack_recv(npe_recv-1)
       num  =  int(istack_send(npe_send  ) - istack_send(npe_send-1))
 !$omp parallel do
       do i = 1, num
-        SR_il%i8WR(ist_recv+i) = SR_il%i8WS(ist_send+i)
+        i8Wrecv(ist_recv+i) = i8Wsend(ist_send+i)
       end do
 !$omp end parallel do
 !
