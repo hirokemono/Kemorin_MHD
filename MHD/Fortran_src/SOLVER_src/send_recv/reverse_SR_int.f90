@@ -103,24 +103,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine local_node_id_reverse_SR(numnod, num_neib, id_neib,    &
-     &         istack_import, item_import, istack_export, item_export,  &
-     &         item_local, inod_local)
+      subroutine local_node_id_reverse_SR(numnod,                       &
+     &         npe_import, irank_import, istack_import, item_import,    &
+     &         npe_export, irank_export, istack_export, item_export,    &
+     &         iflag_self, item_local, inod_local)
 !
       integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: num_neib
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
 !
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in)                                  &
-     &                 :: item_import(istack_import(num_neib))
+      integer(kind = kint), intent(in) :: npe_import
+      integer(kind = kint), intent(in) :: npe_export, iflag_self
+      integer(kind = kint), intent(in) :: irank_import(npe_import)
+      integer(kind = kint), intent(in) :: irank_export(npe_export)
 !
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
+      integer(kind = kint), intent(in) :: istack_import(0:npe_import)
       integer(kind = kint), intent(in)                                  &
-     &                 :: item_export(istack_export(num_neib))
+     &                 :: item_import(istack_import(npe_import))
+!
+      integer(kind = kint), intent(in) :: istack_export(0:npe_export)
+      integer(kind = kint), intent(in)                                  &
+     &                 :: item_export(istack_export(npe_export))
 !
       integer(kind = kint), intent(inout)                               &
-     &                 :: item_local(istack_export(num_neib))
+     &                 :: item_local(istack_export(npe_export))
       integer(kind = kint), intent(inout) :: inod_local(numnod)
 !
       type(send_recv_status) :: iSR_sig
@@ -128,31 +132,31 @@
       integer :: num
 !
 !
-      call resize_SR_flag(num_neib, num_neib, iSR_sig)
+      call resize_SR_flag(npe_import, npe_export, iSR_sig)
 !
-      do ip = 1, num_neib
+      do ip = 1, npe_import
         ist = istack_import(ip-1)
         num = int(istack_import(ip  ) - istack_import(ip-1))
         call MPI_ISEND(item_import(ist+1), num,                         &
-     &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
+     &                 CALYPSO_INTEGER, int(irank_import(ip)), 0,       &
      &                 CALYPSO_COMM, iSR_sig%req1(ip), ierr_MPI)
       end do
 !
-      do ip = 1, num_neib
+      do ip = 1, npe_export
         ist = istack_export(ip-1)
         num = int(istack_export(ip  ) - istack_export(ip-1))
         call MPI_IRECV(item_local(ist+1), num,                          &
-     &                 CALYPSO_INTEGER, int(id_neib(ip)), 0,            &
+     &                 CALYPSO_INTEGER, int(irank_export(ip)), 0,       &
      &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
       end do
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
+     &   (int(npe_export), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
       call MPI_WAITALL                                                  &
-     &   (int(num_neib), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+     &   (int(npe_import), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
       call dealloc_SR_flag(iSR_sig)
 !
       inod_local = 0
-      do i = 1, istack_export(num_neib)
+      do i = 1, istack_export(npe_export)
         inod = item_export(i)
         inod_local(inod) = item_local(i)
       end do

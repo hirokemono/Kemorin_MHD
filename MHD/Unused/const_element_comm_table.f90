@@ -127,11 +127,12 @@
 !
 !      write(*,*) 'local_node_id_reverse_SR', my_rank
       if(iflag_ecomm_time) call start_elapsed_time(ist_elapsed+2)
-      call local_node_id_reverse_SR                                     &
-     &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
+      call local_node_id_reverse_SR(node%numnod,                        &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
+     &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    wk_comm%item_local, wk_comm%inod_local)
+     &    izero, wk_comm%item_local, wk_comm%inod_local)
       if(iflag_ecomm_time) call end_elapsed_time(ist_elapsed+2)
 !
 !      write(*,*) 'set_element_import_item_old', my_rank
