@@ -38,6 +38,7 @@
       module reverse_SR_real
 !
       use m_precision
+      use m_constants
       use calypso_mpi
       use t_solver_SR
 !
@@ -53,7 +54,7 @@
      &         (npe_send, irank_send, istack_send, x_send,              &
      &          npe_recv, irank_recv, istack_recv, iflag_self, x_recv)
 !
-      use t_solver_SR
+      use calypso_SR_core
 !
       integer(kind = kint), intent(in) :: iflag_self
       integer(kind = kint), intent(in) :: npe_send, npe_recv
@@ -69,31 +70,14 @@
      &                 :: x_recv(istack_recv(npe_recv))
 !
       type(send_recv_status) :: rSR_sig
-      integer(kind = kint) :: ip, ist
-      integer :: num
 !
 !
       call resize_SR_flag(npe_send, npe_recv, rSR_sig)
-!
-      do ip = 1, npe_send
-        ist = istack_send(ip-1)
-        num = int((istack_send(ip  ) - istack_send(ip-1)))
-        call MPI_ISEND(x_send(ist+1), num, CALYPSO_REAL,                &
-     &                 int(irank_send(ip)), 0, CALYPSO_COMM,            &
-     &                 rSR_sig%req1(ip), ierr_MPI)
-      end do
-!
-      do ip = 1, npe_recv
-        ist = istack_recv(ip-1)
-        num = int((istack_recv(ip  ) - istack_recv(ip-1)))
-        call MPI_IRECV(x_recv(ist+1), num, CALYPSO_REAL,                &
-     &                 int(irank_recv(ip)), 0, CALYPSO_COMM,            &
-     &                 rSR_sig%req2(ip), ierr_MPI)
-      end do
-      call MPI_WAITALL                                                  &
-     &   (int(npe_recv), rSR_sig%req2, rSR_sig%sta2, ierr_MPI)
-      call MPI_WAITALL                                                  &
-     &   (int(npe_send), rSR_sig%req1, rSR_sig%sta1, ierr_MPI)
+      call calypso_send_recv_core                                       &
+     &   (ione, npe_send, irank_send, istack_send, x_send(1),           &
+     &          npe_recv, irank_recv, istack_recv, iflag_self,          &
+     &          x_recv(1), rSR_sig)
+      call calypso_send_recv_fin(npe_send, iflag_self, rSR_sig)
       call dealloc_SR_flag(rSR_sig)
 !
       end subroutine real_items_send_recv
@@ -104,7 +88,7 @@
      &         (npe_send, irank_send, istack_send, x_send,              &
      &          npe_recv, irank_recv, istack_recv, iflag_self, x_recv)
 !
-      use t_solver_SR
+      use calypso_SR_core
 !
       integer(kind = kint), intent(in) :: iflag_self
       integer(kind = kint), intent(in) :: npe_send, npe_recv
@@ -121,31 +105,14 @@
      &                 :: x_recv(3*istack_recv(npe_recv))
 !
       type(send_recv_status) :: rSR_sig
-      integer(kind = kint) :: ip, ist
-      integer :: num
 !
 !
       call resize_SR_flag(npe_send, npe_recv, rSR_sig)
-!
-      do ip = 1, npe_send
-        ist = 3*istack_send(ip-1)
-        num = int(3*(istack_send(ip  ) - istack_send(ip-1)))
-        call MPI_ISEND(x_send(ist+1), num, CALYPSO_REAL,                &
-     &                 int(irank_send(ip)), 0, CALYPSO_COMM,            &
-     &                 rSR_sig%req1(ip), ierr_MPI)
-      end do
-!
-      do ip = 1, npe_recv
-        ist = 3* istack_recv(ip-1)
-        num = int(3*(istack_recv(ip  ) - istack_recv(ip-1)))
-        call MPI_IRECV(x_recv(ist+1), num, CALYPSO_REAL,                &
-     &                 int(irank_recv(ip)), 0, CALYPSO_COMM,            &
-     &                 rSR_sig%req2(ip), ierr_MPI)
-      end do
-      call MPI_WAITALL                                                  &
-     &   (int(npe_recv), rSR_sig%req2, rSR_sig%sta2, ierr_MPI)
-      call MPI_WAITALL                                                  &
-     &   (int(npe_send), rSR_sig%req1, rSR_sig%sta1, ierr_MPI)
+      call calypso_send_recv_core                                       &
+     &   (ithree, npe_send, irank_send, istack_send, x_send(1),         &
+     &            npe_recv, irank_recv, istack_recv, iflag_self,        &
+     &            x_recv(1), rSR_sig)
+      call calypso_send_recv_fin(npe_send, iflag_self, rSR_sig)
       call dealloc_SR_flag(rSR_sig)
 !
       end subroutine real_items_send_recv_3
