@@ -108,6 +108,8 @@
      &         npe_export, irank_export, istack_export, item_export,    &
      &         iflag_self, item_local, inod_local)
 !
+      use solver_SR_int
+!
       integer(kind = kint), intent(in) :: numnod
 !
       integer(kind = kint), intent(in) :: npe_import
@@ -128,31 +130,15 @@
       integer(kind = kint), intent(inout) :: inod_local(numnod)
 !
       type(send_recv_status) :: iSR_sig
-      integer(kind = kint) :: ip, ist, i, inod
-      integer :: num
+      integer(kind = kint) :: i, inod
 !
 !
       call resize_SR_flag(npe_import, npe_export, iSR_sig)
-!
-      do ip = 1, npe_import
-        ist = istack_import(ip-1)
-        num = int(istack_import(ip  ) - istack_import(ip-1))
-        call MPI_ISEND(item_import(ist+1), num,                         &
-     &                 CALYPSO_INTEGER, int(irank_import(ip)), 0,       &
-     &                 CALYPSO_COMM, iSR_sig%req1(ip), ierr_MPI)
-      end do
-!
-      do ip = 1, npe_export
-        ist = istack_export(ip-1)
-        num = int(istack_export(ip  ) - istack_export(ip-1))
-        call MPI_IRECV(item_local(ist+1), num,                          &
-     &                 CALYPSO_INTEGER, int(irank_export(ip)), 0,       &
-     &                 CALYPSO_COMM, iSR_sig%req2(ip), ierr_MPI)
-      end do
-      call MPI_WAITALL                                                  &
-     &   (int(npe_export), iSR_sig%req2, iSR_sig%sta2, ierr_MPI)
-      call MPI_WAITALL                                                  &
-     &   (int(npe_import), iSR_sig%req1, iSR_sig%sta1, ierr_MPI)
+      call calypso_send_recv_intcore(npe_import, irank_import,          &
+     &    istack_import, item_import, iflag_self,                       &
+     &    npe_export, irank_export, istack_export, item_local,          &
+     &    iSR_sig)
+      call calypso_send_recv_fin(npe_import, izero, iSR_sig)
       call dealloc_SR_flag(iSR_sig)
 !
       inod_local = 0
