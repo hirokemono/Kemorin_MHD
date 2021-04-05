@@ -84,8 +84,9 @@
      &    add_nod_comm%istack_export, izero, inod_gl_new_export_back)
       call real_items_send_recv_3                                       &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    xx_new_import_trim, xx_new_export_back)
+     &    add_nod_comm%istack_import, xx_new_import_trim,               &
+     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%istack_export, izero, xx_new_export_back)
 !
       call comm_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &

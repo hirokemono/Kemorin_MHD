@@ -181,8 +181,10 @@
       write(*,*) my_rank, 'real_items_send_recv'
       call real_items_send_recv                                         &
      &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
-     &    add_nod_comm%istack_import, add_nod_comm%istack_export,       &
-     &    trim_import_xx%distance, dist_4_comm%distance_in_export)
+     &    add_nod_comm%istack_import, trim_import_xx%distance,          &
+     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%istack_export, izero,                            &
+     &    dist_4_comm%distance_in_export)
 !
       end subroutine const_extended_nod_comm_table
 !

@@ -240,13 +240,15 @@
      &    exp_import_xx%irank_comm)
       call real_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%distance, exp_import_xx%distance)
+     &    expand_nod_comm%istack_export, exp_export_xx%distance,        &
+     &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
+     &    expand_nod_comm%istack_import, izero, exp_import_xx%distance)
 !
       call real_items_send_recv_3                                       &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
-     &    expand_nod_comm%istack_export, expand_nod_comm%istack_import, &
-     &    exp_export_xx%xx_comm, exp_import_xx%xx_comm)
+     &    expand_nod_comm%istack_export, exp_export_xx%xx_comm,         &
+     &    expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
+     &    expand_nod_comm%istack_import, izero, exp_import_xx%xx_comm)
       call int8_items_send_recv                                         &
      &   (expand_nod_comm%num_neib, expand_nod_comm%id_neib,            &
      &    expand_nod_comm%istack_export, exp_export_xx%inod_gl_comm,    &

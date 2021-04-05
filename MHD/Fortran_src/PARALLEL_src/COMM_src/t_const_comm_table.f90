@@ -216,8 +216,9 @@
       integer(kind = kint) :: k1
 !
 !
-      call real_items_send_recv_3(num_neib_e, id_neib_e,                &
-     &    istack_import_e, istack_export_e, xe_import, xe_export)
+      call real_items_send_recv_3                                       &
+     &   (num_neib_e, id_neib_e, istack_import_e, xe_import,            &
+     &    num_neib_e, id_neib_e, istack_export_e, izero, xe_export)
 !
       do k1 = 1, nnod_4_ele
         call comm_items_send_recv(num_neib_e, id_neib_e,                &

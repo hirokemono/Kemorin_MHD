@@ -46,8 +46,8 @@
       use solver_SR_int
       use cal_minmax_and_stacks
 !
-      integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: npe_recv, iflag_self
+      integer(kind = kint), intent(in) :: iflag_self
+      integer(kind = kint), intent(in) :: npe_send, npe_recv
       integer(kind = kint), intent(in) :: irank_send(npe_send)
       integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
@@ -79,8 +79,8 @@
 !
       use solver_SR_int
 !
-      integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: npe_recv, iflag_self
+      integer(kind = kint), intent(in) :: iflag_self
+      integer(kind = kint), intent(in) :: npe_send, npe_recv
       integer(kind = kint), intent(in) :: irank_send(npe_send)
       integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
@@ -114,8 +114,8 @@
 !
       use solver_SR_int8
 !
-      integer(kind = kint), intent(in) :: npe_send
-      integer(kind = kint), intent(in) :: npe_recv, iflag_self
+      integer(kind = kint), intent(in) :: iflag_self
+      integer(kind = kint), intent(in) :: npe_send, npe_recv
       integer(kind = kint), intent(in) :: irank_send(npe_send)
       integer(kind = kint), intent(in) :: irank_recv(npe_recv)
 !
@@ -152,8 +152,8 @@
 !
       integer(kind = kint), intent(in) :: numnod
 !
-      integer(kind = kint), intent(in) :: npe_import
-      integer(kind = kint), intent(in) :: npe_export, iflag_self
+      integer(kind = kint), intent(in) :: iflag_self
+      integer(kind = kint), intent(in) :: npe_import, npe_export
       integer(kind = kint), intent(in) :: irank_import(npe_import)
       integer(kind = kint), intent(in) :: irank_export(npe_export)
 !
