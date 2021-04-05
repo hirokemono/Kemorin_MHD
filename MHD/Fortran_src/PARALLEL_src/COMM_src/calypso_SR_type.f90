@@ -122,12 +122,11 @@
 !
 !
       call calypso_send_recv_N(iflag_recv, NB, nnod_org, nnod_new,      &
-     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
-     &    cps_tbl%item_export,                                          &
-     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
-     &    cps_tbl%item_import, cps_tbl%irev_import,                     &
+     &    cps_tbl%nrank_export, cps_tbl%irank_export,                   &
+     &    cps_tbl%istack_export, cps_tbl%item_export,                   &
+     &    cps_tbl%nrank_import, cps_tbl%irank_import,                   &
+     &    cps_tbl%istack_import, cps_tbl%item_import,                   &
+     &    cps_tbl%irev_import, cps_tbl%iflag_self_copy,                 &
      &    SR_sig1, SR_r1, X_org, X_new)
 !
       end subroutine calypso_SR_type_N
@@ -156,12 +155,11 @@
 !
 !
       call calypso_send_recv_3xN(iflag_recv, NB, nnod_org, nnod_new,    &
-     &    cps_tbl%nrank_export, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_export, cps_tbl%istack_export,                  &
-     &    cps_tbl%item_export,                                          &
-     &    cps_tbl%nrank_import, cps_tbl%iflag_self_copy,                &
-     &    cps_tbl%irank_import, cps_tbl%istack_import,                  &
-     &    cps_tbl%item_import, cps_tbl%irev_import,                     &
+     &    cps_tbl%nrank_export, cps_tbl%irank_export,                   &
+     &    cps_tbl%istack_export, cps_tbl%item_export,                   &
+     &    cps_tbl%nrank_import, cps_tbl%irank_import,                   &
+     &    cps_tbl%istack_import, cps_tbl%item_import,                   &
+     &    cps_tbl%irev_import, cps_tbl%iflag_self_copy,                 &
      &    SR_sig1, SR_r1, X1_org, X2_org, X3_org,                       &
      &                    X1_new, X2_new, X3_new)
 !
