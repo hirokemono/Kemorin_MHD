@@ -194,8 +194,8 @@
      &    ele%nnod_4_ele, trim_import_ie)
 !
       call set_trimmed_import_items                                     &
-     &   (ele, expand_ele_comm, add_ele_comm, ext_ele_trim,             &
-     &    exp_import_ie, iele_lc_import_trim, trim_import_ie)
+     &   (ele, expand_ele_comm, ext_ele_trim, exp_import_ie,            &
+     &    iele_lc_import_trim, add_ele_comm, trim_import_ie)
 !
       call dealloc_stack_to_trim_extend(ext_ele_trim)
       call dealloc_idx_trimed_to_sorted(ext_ele_trim)

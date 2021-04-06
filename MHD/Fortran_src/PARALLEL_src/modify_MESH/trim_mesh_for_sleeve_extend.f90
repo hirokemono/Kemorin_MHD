@@ -14,15 +14,15 @@
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
 !!      subroutine set_trimmed_import_items                             &
-!!     &         (ele, expand_ele_comm, add_ele_comm, ext_ele_trim,     &
-!!     &          exp_import_ie, iele_lc_import_trim, trim_import_ie)
+!!     &         (ele, expand_ele_comm, ext_ele_trim, exp_import_ie,    &
+!!     &          iele_lc_import_trim, add_ele_comm, trim_import_ie)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: expand_ele_comm
-!!        type(calypso_comm_table), intent(in) :: add_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !!        type(data_for_trim_import), intent(in) :: ext_ele_trim
 !!        integer(kind = kint), intent(inout)                           &
 !!     &   :: iele_lc_import_trim(add_ele_comm%ntot_import)
+!!        type(calypso_comm_table), intent(inout) :: add_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
 !!
 !!      subroutine renumber_extended_ele_import(my_rank,                &
@@ -113,18 +113,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_trimmed_import_items                               &
-     &         (ele, expand_ele_comm, add_ele_comm, ext_ele_trim,       &
-     &          exp_import_ie, iele_lc_import_trim, trim_import_ie)
+     &         (ele, expand_ele_comm, ext_ele_trim, exp_import_ie,      &
+     &          iele_lc_import_trim, add_ele_comm, trim_import_ie)
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: expand_ele_comm
-      type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
       type(data_for_trim_import), intent(in) :: ext_ele_trim
 !
+      type(calypso_comm_table), intent(inout) :: add_ele_comm
+      type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
       integer(kind = kint), intent(inout)                               &
      &   :: iele_lc_import_trim(add_ele_comm%ntot_import)
-      type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
 !
       integer(kind = kint) :: i, irank, ist, jst, k1, inum, jnum, jcou
 !
