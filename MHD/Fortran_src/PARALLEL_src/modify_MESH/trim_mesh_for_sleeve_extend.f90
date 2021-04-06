@@ -18,7 +18,7 @@
 !!     &          exp_import_ie, iele_lc_import_trim, trim_import_ie)
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: expand_ele_comm
-!!        type(communication_table), intent(in) :: add_ele_comm
+!!        type(calypso_comm_table), intent(in) :: add_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !!        type(data_for_trim_import), intent(in) :: ext_ele_trim
 !!        integer(kind = kint), intent(inout)                           &
@@ -118,7 +118,7 @@
 !
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: expand_ele_comm
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
       type(data_for_trim_import), intent(in) :: ext_ele_trim
 !
@@ -129,8 +129,8 @@
       integer(kind = kint) :: i, irank, ist, jst, k1, inum, jnum, jcou
 !
 !
-      do i = 1, add_ele_comm%num_neib
-        irank = add_ele_comm%id_neib(i)
+      do i = 1, add_ele_comm%nrank_import
+        irank = add_ele_comm%irank_import(i)
         ist = ext_ele_trim%istack_trimmed_pe(irank)
         jst = add_ele_comm%istack_import(i-1)
 !$omp parallel do private(inum,jcou,jnum,k1)

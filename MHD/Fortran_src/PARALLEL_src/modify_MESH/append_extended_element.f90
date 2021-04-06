@@ -10,7 +10,7 @@
 !!      subroutine s_append_extended_element(ele, add_ele_comm,         &
 !!     &          trimmed_import_connect, new_ele)
 !!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: add_ele_comm
+!!        type(calypso_comm_table), intent(in) :: add_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(in)                     &
 !!     &                              :: trimmed_import_connect
 !!        type(element_data), intent(inout) :: new_ele
@@ -18,8 +18,8 @@
       module append_extended_element
 !
       use m_precision
-      use t_comm_table
       use t_geometry_data
+      use t_calypso_comm_table
       use t_mesh_for_sleeve_extend
 !
       implicit none
@@ -37,7 +37,7 @@
      &          trimmed_import_connect, new_ele)
 !
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in)                         &
      &                              :: trimmed_import_connect
 !
@@ -65,7 +65,7 @@
      &                                   num_newele, nnod_4_ele_new)
 !
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
 !
       integer(kind = kint), intent(inout) :: num_newele
       integer(kind = kint), intent(inout) :: nnod_4_ele_new
@@ -106,7 +106,7 @@
      &          num_newele, nnod_4_ele_new, iele_new_global, ie_new)
 !
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in)                         &
      &                              :: trimmed_import_connect
 !

@@ -28,7 +28,7 @@
 !!      subroutine check_trim_import_ele_connect                        &
 !!     &         (ele, add_ele_comm, ie_new_import_trim)
 !!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: add_ele_comm
+!!        type(calypso_comm_table), intent(in) :: add_ele_comm
 !!        integer(kind = kint), intent(in)                              &
 !!     &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
 !!@endverbatim
@@ -185,7 +185,7 @@
       use reverse_SR_int
 !
       type(node_ele_double_number), intent(in) :: iele_dbl
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: trim_import_ie
 !
       integer(kind = kint), allocatable :: irank_new_ele_export_trim(:)
@@ -195,10 +195,10 @@
 
       allocate(irank_new_ele_export_trim(add_ele_comm%ntot_export))
       call comm_items_send_recv                                         &
-     &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &   (add_ele_comm%nrank_import, add_ele_comm%irank_import,         &
      &    add_ele_comm%istack_import, trim_import_ie%irank_comm,        &
-     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_export, izero,                            &
+     &    add_ele_comm%nrank_export, add_ele_comm%irank_export,         &
+     &    add_ele_comm%istack_export, add_ele_comm%iflag_self_copy,     &
      &    irank_new_ele_export_trim)
 !
       icou = check_recieved_ext_ele_export(iele_dbl, add_ele_comm,      &
@@ -221,7 +221,7 @@
       use calypso_mpi_int
 !
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
 !
       integer(kind = kint), intent(in)                                  &
      &   :: ie_new_import_trim(add_ele_comm%ntot_import,ele%nnod_4_ele)
@@ -360,7 +360,7 @@
      &         (iele_dbl, add_ele_comm, irank_new_ele_export_trim)
 !
       type(node_ele_double_number), intent(in) :: iele_dbl
-      type(communication_table), intent(in) :: add_ele_comm
+      type(calypso_comm_table), intent(in) :: add_ele_comm
 !
       integer(kind = kint), intent(in)                                  &
      &   :: irank_new_ele_export_trim(add_ele_comm%ntot_export)

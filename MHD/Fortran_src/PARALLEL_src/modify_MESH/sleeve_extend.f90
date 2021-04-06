@@ -173,7 +173,7 @@
       type(marks_for_sleeve_extension), save :: marks_4_extend
 !
       type(calypso_comm_table), save :: add_nod_comm
-      type(communication_table), save :: add_ele_comm
+      type(calypso_comm_table), save :: add_ele_comm
 !
       integer(kind = kint) :: i
 !
@@ -205,10 +205,13 @@
           write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,          &
      &           ' nod_comm%id_neib          ', nod_comm%id_neib
           write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,  &
-     &           ' add_nod_comm%irank_import ', add_nod_comm%irank_import
+     &         ' add_nod_comm%irank_import ', add_nod_comm%irank_import
           write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,  &
-     &           ' add_nod_comm%irank_export ', add_nod_comm%irank_export
-          write(*,'(i6,a,200i6)') my_rank,  &
+     &         ' add_nod_comm%irank_export ', add_nod_comm%irank_export
+          write(*,'(i6,a,i6)') my_rank,                                 &
+     &         ' add_nod_comm%iflag_self_copy  ',                       &
+     &            add_nod_comm%iflag_self_copy
+          write(*,'(i6,a,i6)') my_rank,                                 &
      &           ' iflag_process_extend  ', iflag_process_extend
         end if
         call calypso_mpi_barrier
@@ -274,8 +277,9 @@
      &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_comm_table(expand_ele_comm)
+      call dealloc_calypso_comm_table(add_nod_comm)
 !
-      call append_communication_table_org                               &
+      call s_append_communication_table                                 &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(org_ele, add_ele_comm,             &
      &    trim_import_ie, new_ele)
@@ -283,6 +287,7 @@
       call check_returned_extend_element                                &
      &   (iele_dbl, add_ele_comm, trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
+      call dealloc_calypso_comm_table(add_ele_comm)
 !
       call check_extended_element                                       &
      &   (new_nod_comm, new_node, new_ele, new_ele_comm)

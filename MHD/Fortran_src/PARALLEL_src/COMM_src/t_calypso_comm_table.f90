@@ -43,7 +43,7 @@
 !>    total number of import data 
         integer(kind = kint) :: ntot_import
 !>    integer flag for self copy
-        integer(kind = kint) :: iflag_self_copy
+        integer(kind = kint) :: iflag_self_copy = 0
 !>     neighboring pe id
         integer(kind = kint), pointer :: irank_import(:)
 !>     import data count for each neighbor pe (i-th pe)

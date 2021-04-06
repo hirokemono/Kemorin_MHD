@@ -124,7 +124,8 @@
 !
       call count_extended_neib_import(nprocs, nod_comm,                 &
      &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
-     &    iflag_recv_pe, add_nod_comm%nrank_import, iflag_process_extend)
+     &    iflag_recv_pe, add_nod_comm%nrank_import,                     &
+     &    iflag_process_extend)
 !      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
@@ -139,6 +140,10 @@
       call alloc_calypso_export_num(add_nod_comm)
       call set_neighbour_domain_by_flag(my_rank, nprocs, iflag_send_pe, &
      &    add_nod_comm%nrank_export, add_nod_comm%irank_export)
+!
+      if(add_nod_comm%irank_import(add_nod_comm%nrank_import)           &
+     &    .eq. my_rank) add_nod_comm%iflag_self_copy = 1
+!
       deallocate(ip_new_export, ip_new_import, istack_pe_new_import)
       deallocate(iflag_recv_pe, iflag_send_pe)
 !

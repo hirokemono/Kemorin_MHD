@@ -33,7 +33,7 @@
 !!        type(communication_table), intent(in) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
-!!        type(communication_table), intent(inout) :: add_ele_comm
+!!        type(calypso_comm_table), intent(inout) :: add_ele_comm
 !!@endverbatim
 !
       module const_extend_ele_comm_table
@@ -141,19 +141,28 @@
       type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !
       type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
-      type(communication_table), intent(inout) :: add_ele_comm
+      type(calypso_comm_table), intent(inout) :: add_ele_comm
 !
       type(sort_data_for_sleeve_trim), save :: sort_ele_import
       type(data_for_trim_import), save :: ext_ele_trim
 !
 !
-      add_ele_comm%num_neib = add_nod_comm%nrank_import
-      call alloc_comm_table_num(add_ele_comm)
+      add_ele_comm%iflag_self_copy = add_nod_comm%iflag_self_copy
+      add_ele_comm%nrank_import =    add_nod_comm%nrank_import
+      add_ele_comm%nrank_export =    add_nod_comm%nrank_export
+!
+      call alloc_calypso_import_num(add_ele_comm)
+      call alloc_calypso_export_num(add_ele_comm)
 !
 !$omp parallel workshare
-      add_ele_comm%id_neib(1:add_ele_comm%num_neib)                     &
-     &             = add_nod_comm%irank_import(1:add_ele_comm%num_neib)
+      add_ele_comm%irank_import(1:add_ele_comm%nrank_import)            &
+     &         = add_nod_comm%irank_import(1:add_ele_comm%nrank_import)
 !$omp end parallel workshare
+!$omp parallel workshare
+      add_ele_comm%irank_export(1:add_ele_comm%nrank_export)            &
+     &         = add_nod_comm%irank_export(1:add_ele_comm%nrank_export)
+!$omp end parallel workshare
+!
 !
       call alloc_sort_data_sleeve_ext                                   &
      &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import)
@@ -165,20 +174,20 @@
      &   (expand_ele_comm%ntot_import, exp_import_ie%irank_comm,        &
      &    sort_ele_import, ext_ele_trim)
       if(i_debug .gt. 0) then
-        call check_overlapped_sleeve_ext_org                            &
+        call check_overlapped_sleeve_ext                                &
      &    (nod_comm, add_ele_comm, sort_ele_import, ext_ele_trim)
       end if
       call dealloc_sort_data_sleeve_ext(sort_ele_import)
 !
-      call alloc_import_num(add_ele_comm)
       call count_import_item_for_extend                                 &
      &   (nprocs, ext_ele_trim%istack_trimmed_pe,                       &
-     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &    add_ele_comm%nrank_import, add_ele_comm%irank_import,         &
      &    add_ele_comm%num_import)
       call s_cal_total_and_stacks                                       &
-     &   (add_ele_comm%num_neib, add_ele_comm%num_import, izero,        &
+     &   (add_ele_comm%nrank_import, add_ele_comm%num_import, izero,    &
      &    add_ele_comm%istack_import, add_ele_comm%ntot_import)
-      call alloc_import_item(add_ele_comm)
+      call alloc_calypso_import_item                                    &
+     &   (add_ele_comm%ntot_import, add_ele_comm)
 !
       allocate(iele_lc_import_trim(add_ele_comm%ntot_import))
       call alloc_ele_data_sleeve_ext(add_ele_comm%ntot_import,          &
@@ -195,20 +204,19 @@
      &                                   trim_import_ie%ie_comm)
 !
 !
-      call alloc_export_num(add_ele_comm)
       call num_items_send_recv                                          &
-     &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &   (add_ele_comm%nrank_import, add_ele_comm%irank_import,         &
      &    add_ele_comm%num_import,                                      &
-     &    add_ele_comm%num_neib, add_ele_comm%id_neib, izero,           &
+     &    add_ele_comm%nrank_export, add_ele_comm%irank_export, izero,  &
      &    add_ele_comm%num_export, add_ele_comm%istack_export,          &
      &    add_ele_comm%ntot_export)
-      call alloc_export_item(add_ele_comm)
+      call alloc_calypso_export_item(add_ele_comm)
 !
       call comm_items_send_recv                                         &
-     &   (add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
+     &   (add_ele_comm%nrank_import, add_ele_comm%irank_import,         &
      &    add_ele_comm%istack_import, iele_lc_import_trim,              &
-     &    add_ele_comm%num_neib, add_ele_comm%id_neib,                  &
-     &    add_ele_comm%istack_export, izero,                            &
+     &    add_ele_comm%nrank_export, add_ele_comm%irank_export,         &
+     &    add_ele_comm%istack_export, add_ele_comm%iflag_self_copy,     &
      &    add_ele_comm%item_export)
       deallocate(iele_lc_import_trim)
 !
