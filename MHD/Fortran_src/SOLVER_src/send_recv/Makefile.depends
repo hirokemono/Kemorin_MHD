@@ -44,7 +44,7 @@ m_work_time.o: $(SR_DIR)/m_work_time.f90 m_precision.o m_constants.o t_work_time
 	$(F90) -c $(F90OPTFLAGS) $<
 reverse_SR_int.o: $(SR_DIR)/reverse_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o solver_SR_int.o cal_minmax_and_stacks.o solver_SR_int8.o
 	$(F90) -c $(F90OPTFLAGS) $<
-reverse_SR_real.o: $(SR_DIR)/reverse_SR_real.f90 m_precision.o calypso_mpi.o t_solver_SR.o
+reverse_SR_real.o: $(SR_DIR)/reverse_SR_real.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o calypso_SR_core.o
 	$(F90) -c $(F90OPTFLAGS) $<
 sel_spherical_SRs.o: $(SR_DIR)/sel_spherical_SRs.f90 m_precision.o m_work_time.o m_elapsed_labels_SEND_RECV.o select_copy_from_recv.o t_solver_SR.o m_solver_SR.o set_to_send_buffer.o calypso_SR_core.o set_from_recv_buf_rev.o field_to_send_buffer.o set_from_recv_buffer.o
 	$(F90) -c $(F90OPTFLAGS) $<

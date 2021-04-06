@@ -38,8 +38,10 @@
       use m_precision
       use m_constants
 !
-      use t_comm_table
+      use t_calypso_comm_table
       use t_geometry_data
+      use t_comm_table
+      use t_calypso_comm_table
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
 !
@@ -74,7 +76,7 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: expand_nod_comm
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
       type(node_data_for_sleeve_ext), intent(in) :: trim_import_xx
       type(data_for_trim_import), intent(in) :: ext_nod_trim
@@ -246,9 +248,9 @@
      &                (org_node, inod_new_dbl, add_nod_comm,            &
      &                 irank_new_import_trim, inod_lc_new_import_trim)
 !
-      type(node_data) :: org_node
-      type(node_ele_double_number) :: inod_new_dbl
-      type(communication_table) :: add_nod_comm
+      type(node_data), intent(in) :: org_node
+      type(node_ele_double_number), intent(in) :: inod_new_dbl
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       integer(kind = kint), intent(in)                                  &
      &      :: irank_new_import_trim(add_nod_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
@@ -257,7 +259,7 @@
       integer(kind = kint) :: icou, i, jst, inum, inod
 !
       icou = 0
-      do i = 1, add_nod_comm%num_neib
+      do i = 1, add_nod_comm%nrank_import
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)
           inod = inum + org_node%numnod
@@ -434,7 +436,7 @@
 !
       type(node_ele_double_number), intent(in) :: inod_new_dbl
       type(communication_table), intent(in) :: expand_nod_comm
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
 !
       integer(kind = kint), intent(in)                                  &
      &   :: istack_trimmed_import_pe(0:nprocs)
@@ -448,8 +450,8 @@
 !
 !
       icou = 0
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
+      do i = 1, add_nod_comm%nrank_import
+        irank = add_nod_comm%irank_import(i)
         ist = istack_trimmed_import_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         num = add_nod_comm%istack_import(i) - jst

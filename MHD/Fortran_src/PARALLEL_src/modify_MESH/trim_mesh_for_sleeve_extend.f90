@@ -55,8 +55,9 @@
       module trim_mesh_for_sleeve_extend
 !
       use m_precision
-      use t_comm_table
       use t_geometry_data
+      use t_comm_table
+      use t_calypso_comm_table
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
 !
@@ -71,7 +72,7 @@
       subroutine trim_imported_expand_node(add_nod_comm, ext_nod_trim,  &
      &          exp_import_xx, trim_import_xx)
 !
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
@@ -81,8 +82,8 @@
       integer(kind = kint) :: inum,jcou,jnum
 !
 !
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
+      do i = 1, add_nod_comm%nrank_import
+        irank = add_nod_comm%irank_import(i)
         ist = ext_nod_trim%istack_trimmed_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
 !$omp parallel do private(inum,jcou,jnum)

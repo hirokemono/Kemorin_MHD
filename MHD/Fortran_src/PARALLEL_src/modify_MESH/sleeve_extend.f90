@@ -242,17 +242,17 @@
       call const_extended_nod_comm_table                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
-     &    dist_4_comm, add_nod_comm_org)
+     &    dist_4_comm, add_nod_comm)
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 's_append_extended_node'
-      call s_append_extended_node(org_node, inod_dbl, add_nod_comm_org, &
+      call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
      &    new_node, dbl_id2)
       call dealloc_double_numbering(inod_dbl)
 !
       call check_appended_node_data                                     &
-     &   (org_node, expand_nod_comm, add_nod_comm_org, exp_import_xx,   &
+     &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
      &    trim_nod_to_ext%idx_extend_to_trim,                           &
      &    trim_nod_to_ext%import_lc_trimmed)

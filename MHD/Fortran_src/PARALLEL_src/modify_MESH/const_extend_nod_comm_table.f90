@@ -27,7 +27,7 @@
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
 !!        type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
 !!        type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
-!!        type(communication_table), intent(inout) :: add_nod_comm
+!!        type(calypso_comm_table), intent(inout) :: add_nod_comm
 !!@endverbatim
 !
       module const_extend_nod_comm_table
@@ -119,24 +119,24 @@
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
       type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
-      type(communication_table), intent(inout) :: add_nod_comm
+      type(calypso_comm_table), intent(inout) :: add_nod_comm
 !
       integer(kind = kint) :: num
 !
 !
-      call alloc_import_num(add_nod_comm)
       call calypso_mpi_barrier
       write(*,*) my_rank, 'count_import_item_for_extend'
       call count_import_item_for_extend                                 &
      &   (nprocs, ext_nod_trim%istack_trimmed_pe,                       &
-     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%num_import)
       call calypso_mpi_barrier
       write(*,*) my_rank, 's_cal_total_and_stacks'
       call s_cal_total_and_stacks                                       &
-     &   (add_nod_comm%num_neib, add_nod_comm%num_import, izero,        &
+     &   (add_nod_comm%nrank_import, add_nod_comm%num_import, izero,    &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
-      call alloc_import_item(add_nod_comm)
+      call alloc_calypso_import_item                                    &
+     &   (add_nod_comm%ntot_import, add_nod_comm)
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trim_import_xx)
@@ -147,25 +147,19 @@
       write(*,*) my_rank, 'set_import_item_for_extend'
       call set_import_item_for_extend                                   &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
-     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
      &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_import)
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
 !
-      call alloc_export_num(add_nod_comm)
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'num_items_send_recv'
-      call calypso_mpi_barrier
-!
       call num_items_send_recv                                          &
-     &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%num_import,                                      &
-     &    add_nod_comm%num_neib, add_nod_comm%id_neib, izero,           &
+     &    add_nod_comm%nrank_export, add_nod_comm%irank_export, izero,  &
      &    add_nod_comm%num_export, add_nod_comm%istack_export,          &
      &    add_nod_comm%ntot_export)
-      call alloc_export_item(add_nod_comm)
-!
+      call alloc_calypso_export_item(add_nod_comm)
 !
       dist_4_comm%ntot = add_nod_comm%ntot_export
       allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
@@ -173,16 +167,16 @@
       call calypso_mpi_barrier
       write(*,*) my_rank, 'comm_items_send_recv'
       call comm_items_send_recv                                         &
-     &  (add_nod_comm%num_neib, add_nod_comm%id_neib,                   &
+     &  (add_nod_comm%nrank_import, add_nod_comm%irank_import,          &
      &   add_nod_comm%istack_import, trim_nod_to_ext%import_lc_trimmed, &
-     &   add_nod_comm%num_neib, add_nod_comm%id_neib,                   &
+     &   add_nod_comm%nrank_export, add_nod_comm%irank_export,          &
      &   add_nod_comm%istack_export, izero, add_nod_comm%item_export)
       call calypso_mpi_barrier
       write(*,*) my_rank, 'real_items_send_recv'
       call real_items_send_recv                                         &
-     &   (add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%istack_import, trim_import_xx%distance,          &
-     &    add_nod_comm%num_neib, add_nod_comm%id_neib,                  &
+     &    add_nod_comm%nrank_export, add_nod_comm%irank_export,         &
      &    add_nod_comm%istack_export, izero,                            &
      &    dist_4_comm%distance_in_export)
 !

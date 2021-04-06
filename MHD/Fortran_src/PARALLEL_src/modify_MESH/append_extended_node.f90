@@ -12,7 +12,7 @@
 !!     &          new_node, new_inod_dbl)
 !!        type(node_data), intent(in) :: node
 !!        type(node_ele_double_number), intent(inout) :: inod_dbl
-!!        type(communication_table), intent(in) :: add_nod_comm
+!!        type(calypso_comm_table), intent(in) :: add_nod_comm
 !!        type(node_data_for_sleeve_ext), intent(in)                    &
 !!     &           :: trimmed_import_position
 !!        integer(kind = kint), intent(in)                              &
@@ -23,7 +23,7 @@
       module append_extended_node
 !
       use m_precision
-      use t_comm_table
+      use t_calypso_comm_table
       use t_geometry_data
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
@@ -45,7 +45,7 @@
 !
       type(node_data), intent(in) :: node
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       integer(kind = kint), intent(in)                                  &
      &           :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
       type(node_data_for_sleeve_ext), intent(in)                        &
@@ -78,7 +78,7 @@
      &                                 num_newnod, internal_newnod)
 !
       type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
 !
       integer(kind = kint), intent(inout) :: num_newnod
       integer(kind = kint), intent(inout) :: internal_newnod
@@ -96,7 +96,7 @@
      &          num_newnod, inod_new_global, xx_new)
 !
       type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       integer(kind = kint_gl), intent(in)                               &
      &           :: inod_gl_new_import_trim(add_nod_comm%ntot_import)
       real(kind = kreal), intent(in)                                    &
@@ -141,7 +141,7 @@
 !
       type(node_data), intent(in) :: node
       type(node_ele_double_number), intent(in) :: inod_dbl
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       integer(kind = kint), intent(in)                                  &
      &           :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
       integer(kind = kint), intent(in)                                  &
