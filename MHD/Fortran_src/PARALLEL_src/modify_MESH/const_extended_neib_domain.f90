@@ -71,7 +71,7 @@
       integer(kind = kint), allocatable :: iflag_send_pe(:)
       integer(kind = kint), allocatable :: iflag_recv_pe(:)
 !
-      integer(kind = kint) :: i, ist, ied
+      integer(kind = kint) :: i, ist, ied, iflag_local
 !
 !
       allocate(iflag_send_pe(nprocs))
@@ -125,8 +125,10 @@
       call count_extended_neib_import(nprocs, nod_comm,                 &
      &    istack_pe_new_import, ntot_pe_new_import, ip_new_import,      &
      &    iflag_recv_pe, add_nod_comm%nrank_import,                     &
-     &    iflag_process_extend)
-!      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',   &
+     &    iflag_local)
+      call calypso_mpi_allreduce_one_int                                &
+     &   (iflag_local, iflag_process_extend, MPI_MAX)
+!      write(*,*) my_rank, iflag_process_extend, 'new_num_neib',        &
 !     &           nod_comm%num_neib, add_nod_comm%num_neib
 !
       call calypso_mpi_alltoall_one_int(iflag_recv_pe, iflag_send_pe)
