@@ -213,7 +213,7 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: expand_nod_comm
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       type(data_for_trim_import), intent(in) :: ext_nod_trim
       integer(kind = kint), intent(in)                                  &
      &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
@@ -225,8 +225,8 @@
       integer(kind = kint) :: inum, jnum
 !
 !
-      do i = 1, add_nod_comm%num_neib
-        irank = add_nod_comm%id_neib(i)
+      do i = 1, add_nod_comm%nrank_import
+        irank = add_nod_comm%irank_import(i)
         ist = ext_nod_trim%istack_trimmed_pe(irank)
         jst = add_nod_comm%istack_import(i-1)
         do inum = 1, add_nod_comm%num_import(i)

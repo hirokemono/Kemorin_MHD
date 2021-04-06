@@ -17,7 +17,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(node_ele_double_number), intent(in) :: inod_new_dbl
 !!        type(communication_table), intent(in) :: expand_nod_comm
-!!        type(communication_table), intent(in) :: add_nod_comm
+!!        type(calypso_comm_table), intent(in) :: add_nod_comm
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
 !!        integer(kind = kint), intent(in)                              &
@@ -29,7 +29,7 @@
 !!     &          exp_import_ie, trim_import_ie, add_ele_comm)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(element_data), intent(in) :: ele
-!!        type(communication_table), intent(in) :: add_nod_comm
+!!        type(calypso_comm_table), intent(in) :: add_nod_comm
 !!        type(communication_table), intent(in) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
@@ -43,8 +43,9 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use t_comm_table
       use t_geometry_data
+      use t_comm_table
+      use t_calypso_comm_table
       use t_para_double_numbering
       use t_mesh_for_sleeve_extend
       use t_sort_data_for_sleeve_trim
@@ -77,7 +78,7 @@
       type(element_data), intent(in) :: ele
       type(node_ele_double_number), intent(in) :: inod_new_dbl
       type(communication_table), intent(in) :: expand_nod_comm
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 
@@ -135,7 +136,7 @@
 !
       type(communication_table), intent(in) :: nod_comm
       type(element_data), intent(in) :: ele
-      type(communication_table), intent(in) :: add_nod_comm
+      type(calypso_comm_table), intent(in) :: add_nod_comm
       type(communication_table), intent(in) :: expand_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
 !
@@ -146,12 +147,12 @@
       type(data_for_trim_import), save :: ext_ele_trim
 !
 !
-      add_ele_comm%num_neib = add_nod_comm%num_neib
+      add_ele_comm%num_neib = add_nod_comm%nrank_import
       call alloc_comm_table_num(add_ele_comm)
 !
 !$omp parallel workshare
       add_ele_comm%id_neib(1:add_ele_comm%num_neib)                     &
-     &             = add_nod_comm%id_neib(1:add_ele_comm%num_neib)
+     &             = add_nod_comm%irank_import(1:add_ele_comm%num_neib)
 !$omp end parallel workshare
 !
       call alloc_sort_data_sleeve_ext                                   &

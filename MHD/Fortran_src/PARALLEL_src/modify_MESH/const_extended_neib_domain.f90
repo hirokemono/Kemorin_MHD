@@ -145,61 +145,6 @@
       end subroutine s_const_extended_neib_domain
 !
 ! ----------------------------------------------------------------------
-!
-      subroutine const_extended_neib_domain_org                         &
-     &         (nod_comm, add_nod_comm, add_nod_comm_org)
-!
-      use calypso_mpi
-      use calypso_mpi_int
-      use reverse_SR_int
-!
-      implicit none
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(calypso_comm_table), intent(in) :: add_nod_comm
-!
-      type(communication_table), intent(inout) :: add_nod_comm_org
-!
-      integer(kind = kint), allocatable :: iflag_recv_pe(:)
-!
-      integer(kind = kint) :: i, ist, ied, ip, irank, icou
-!
-!
-      allocate(iflag_recv_pe(nprocs))
-!
-!$omp parallel workshare
-      iflag_recv_pe(1:nprocs) = -1
-!$omp end parallel workshare
-!$omp parallel do private(i,irank)
-      do i = 1, nod_comm%num_neib
-        irank = nod_comm%id_neib(i)
-        iflag_recv_pe(irank+1) = i
-      end do
-!$omp end parallel do
-!
-      add_nod_comm_org%num_neib = nod_comm%num_neib
-      do i = 1, add_nod_comm%nrank_import
-          irank = add_nod_comm%irank_import(i)
-          if(iflag_recv_pe(irank+1) .eq. -1) then
-            add_nod_comm_org%num_neib = add_nod_comm_org%num_neib + 1
-            iflag_recv_pe(irank+1) =  add_nod_comm_org%num_neib
-          end if
-      end do
-!
-      call alloc_comm_table_num(add_nod_comm_org)
-      icou = 0
-      do ip = 1, nprocs
-        irank = mod(my_rank+ip,nprocs)
-        if(iflag_recv_pe(irank+1) .gt. 0) then
-          icou = icou + 1 
-          add_nod_comm_org%id_neib(icou) = irank
-        end if
-      end do
-      deallocate(iflag_recv_pe)
-!
-      end subroutine const_extended_neib_domain_org
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_neighbour_domain_by_flag(my_rank, nprocs,          &
@@ -302,56 +247,6 @@
       end do
 !
       end subroutine count_extended_neib_export
-!
-! ----------------------------------------------------------------------
-!
-      subroutine count_extended_neib_domain_org                         &
-     &         (nprocs, nod_comm, istack_pe_new_import,                 &
-     &          ntot_pe_new_import, ip_new_import,                      &
-     &          iflag_pe, num_add_neib, iflag_process_extend)
-!
-      use t_comm_table
-!
-      implicit none
-!
-      type(communication_table), intent(in) :: nod_comm
-      integer(kind = kint), intent(in)                               &
-     &              :: istack_pe_new_import(0:nod_comm%num_neib)
-      integer(kind = kint), intent(in) :: ntot_pe_new_import
-      integer(kind = kint), intent(in)                               &
-     &              :: ip_new_import(ntot_pe_new_import)
-      integer, intent(in) :: nprocs
-!
-      integer(kind = kint), intent(inout) :: iflag_pe(nprocs)
-      integer(kind = kint), intent(inout) :: num_add_neib
-      integer(kind = kint), intent(inout) :: iflag_process_extend
-!
-      integer(kind = kint) :: i, ist, ied, inum, irank
-!
-!
-!$omp parallel do private(i,irank)
-      do i = 1, nod_comm%num_neib
-        irank = nod_comm%id_neib(i)
-        iflag_pe(irank+1) = i
-      end do
-!$omp end parallel do
-!
-      iflag_process_extend = 0
-      num_add_neib = nod_comm%num_neib
-      do i = 1, nod_comm%num_neib
-        ist = istack_pe_new_import(i-1)+1
-        ied = istack_pe_new_import(i)
-        do inum = ist, ied
-          irank = ip_new_import(inum)
-          if(iflag_pe(irank+1) .eq. -1) then
-            num_add_neib = num_add_neib + 1
-            iflag_pe(irank+1) =  num_add_neib
-            iflag_process_extend = 1
-          end if
-        end do
-      end do
-!
-      end subroutine count_extended_neib_domain_org
 !
 ! ----------------------------------------------------------------------
 !
