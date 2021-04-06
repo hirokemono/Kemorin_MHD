@@ -261,7 +261,7 @@
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
       call s_append_communication_table                                 &
-     &   (nod_comm, add_nod_comm_org, new_nod_comm)
+     &   (nod_comm, add_nod_comm, new_nod_comm)
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
@@ -285,7 +285,7 @@
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_comm_table(expand_ele_comm)
 !
-      call s_append_communication_table                                 &
+      call append_communication_table_org                               &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(org_ele, add_ele_comm,             &
      &    trim_import_ie, new_ele)
