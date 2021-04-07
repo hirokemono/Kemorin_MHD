@@ -108,6 +108,8 @@
         call dealloc_mesh_data(newmesh, newgroup)
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
+        call calypso_mpi_barrier
+        write(*,*) my_rank, 'iflag_process_extend', iflag_process_extend
         if(iflag_process_extend .eq. 0) exit
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
       end do
@@ -249,6 +251,8 @@
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
+      call calypso_mpi_barrier
+      write(*,*) 'const_extended_element_connect' 
       call const_extended_element_connect                               &
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
      &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
@@ -261,7 +265,7 @@
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)
 !
       call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'const_extended_ele_comm_table'
+      write(*,*) my_rank, 'const_extended_ele_comm_table'
       call const_extended_ele_comm_table                                &
      &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
@@ -270,14 +274,20 @@
 !
       call append_ele_communication_table                               &
      &   (ele_comm, add_ele_comm, new_ele_comm)
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 's_append_extended_element'
       call s_append_extended_element(org_ele, add_ele_comm,             &
      &    trim_import_ie, new_ele)
 !
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'check_returned_extend_element'
       call check_returned_extend_element                                &
      &   (iele_dbl, add_ele_comm, trim_import_ie)
       call dealloc_ele_data_sleeve_ext(trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
 !
+      call calypso_mpi_barrier
+      write(*,*) my_rank, 'check_extended_element'
       call check_extended_element                                       &
      &   (new_nod_comm, new_node, new_ele, new_ele_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
