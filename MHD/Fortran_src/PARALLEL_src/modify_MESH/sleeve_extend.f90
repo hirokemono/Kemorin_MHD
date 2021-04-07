@@ -102,6 +102,10 @@
         call alloc_sph_node_geometry(newmesh%node)
         call copy_mesh_and_group(newmesh, newgroup, mesh, group)
         call copy_comm_tbl_types(new_ele_comm, ele_comm)
+!
+        call dealloc_comm_table(new_ele_comm)
+        call dealloc_nod_and_ele_infos(newmesh)
+        call dealloc_mesh_data(newmesh, newgroup)
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         if(iflag_process_extend .eq. 0) exit
