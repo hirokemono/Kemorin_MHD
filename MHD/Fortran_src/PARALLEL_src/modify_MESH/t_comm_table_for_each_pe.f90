@@ -13,7 +13,7 @@
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
 !!      subroutine alloc_dist_from_wall_export(ntot_export, dist)
 !!      subroutine dealloc_dist_from_wall_export(dist)
-!!        type(node_data), intent(in) :: ntot_export
+!!        integer(kind = kint), intent(in) :: ntot_export
 !!        type(dist_from_wall_in_export), intent(inout) :: dist
 !!
 !!      subroutine init_comm_table_for_each(ineib, node, nod_comm,      &
