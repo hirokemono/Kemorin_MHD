@@ -275,6 +275,7 @@
 !
       call check_returned_extend_element                                &
      &   (iele_dbl, add_ele_comm, trim_import_ie)
+      call dealloc_ele_data_sleeve_ext(trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
 !
       call check_extended_element                                       &
