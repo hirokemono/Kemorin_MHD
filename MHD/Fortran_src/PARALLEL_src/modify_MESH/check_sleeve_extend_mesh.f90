@@ -48,7 +48,6 @@
       type(communication_table), intent(inout) :: new_ele_comm
 !
       type(node_ele_double_number), save :: inod_dbl
-      type(node_ele_double_number), save :: iele_dbl
 !
       integer(kind = kint), allocatable :: inod_lc_test(:,:)
       integer(kind = kint), allocatable :: irank_lc_test(:,:)
@@ -122,6 +121,7 @@
       write(*,*) my_rank, 'Failed connectivity ID:', icou, lcou, jcou
 !
       deallocate(inod_lc_test, irank_lc_test)
+      call dealloc_double_numbering(inod_dbl)
 !
       end subroutine check_extended_element
 !
