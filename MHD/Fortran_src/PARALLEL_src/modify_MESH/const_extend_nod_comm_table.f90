@@ -26,7 +26,7 @@
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
 !!        type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
-!!        type(calypso_comm_table), intent(inout) :: add_nod_comm
+!!        type(dist_from_wall_in_export), intent(inout) :: dist_add
 !!@endverbatim
 !
       module const_extend_nod_comm_table
@@ -157,6 +157,7 @@
      &    add_nod_comm%num_export, add_nod_comm%istack_export,          &
      &    add_nod_comm%ntot_export)
       call alloc_calypso_export_item(add_nod_comm)
+!
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 'comm_items_send_recv'

@@ -11,6 +11,11 @@
 !!      subroutine dealloc_comm_table_for_each(each_comm)
 !!        type(node_data), intent(in) ::                 node
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
+!!      subroutine alloc_dist_from_wall_export(ntot_export, dist)
+!!      subroutine dealloc_dist_from_wall_export(dist)
+!!        type(node_data), intent(in) :: ntot_export
+!!        type(dist_from_wall_in_export), intent(inout) :: dist
+!!
 !!      subroutine init_comm_table_for_each(ineib, node, nod_comm,      &
 !!     &          dist_4_comm, each_comm, distance)
 !!        integer(kind = kint), intent(in) :: ineib
@@ -73,6 +78,32 @@
       end subroutine dealloc_comm_table_for_each
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine alloc_dist_from_wall_export(ntot_export, dist)
+!
+      integer(kind = kint), intent(in) :: ntot_export
+      type(dist_from_wall_in_export), intent(inout) :: dist
+!
+      dist%ntot = ntot_export
+      allocate(dist%distance_in_export(dist%ntot))
+!
+!$omp parallel workshare
+      dist%distance_in_export(1:dist%ntot) =  0.0d0
+!$omp end parallel workshare
+!
+      end subroutine alloc_dist_from_wall_export
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_dist_from_wall_export(dist)
+!
+      type(dist_from_wall_in_export), intent(inout) :: dist
+!
+      deallocate(dist%distance_in_export)
+!
+      end subroutine dealloc_dist_from_wall_export
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine init_comm_table_for_each(ineib, node, nod_comm,        &
@@ -86,7 +117,7 @@
       type(comm_table_for_each_pe), intent(inout) :: each_comm
       real(kind = kreal), intent(inout) :: distance(node%numnod)
 !
-      integer(kind = kint) :: ist, ied, i, icou, ip, inod
+      integer(kind = kint) :: ist, i, inod
 !
 !
       each_comm%num_each_export = nod_comm%istack_export(ineib)         &

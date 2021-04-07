@@ -80,11 +80,8 @@
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
-      dist_4_comm%ntot = mesh%nod_comm%ntot_export
-      allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
-!$omp parallel workshare
-      dist_4_comm%distance_in_export(1:dist_4_comm%ntot) = 0.0d0
-!$omp end parallel workshare
+      call alloc_dist_from_wall_export                                  &
+     &   (mesh%nod_comm%ntot_export, dist_4_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
@@ -110,6 +107,7 @@
         if(iflag_process_extend .eq. 0) exit
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
       end do
+      call dealloc_dist_from_wall_export(dist_4_comm)
 !
       end subroutine sleeve_extension_loop
 !
@@ -195,7 +193,6 @@
      &   (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,          &
      &    dist_4_comm, marks_4_extend)
       call dealloc_iele_belonged(neib_ele)
-      deallocate(dist_4_comm%distance_in_export)
 !
 !
 !
@@ -219,8 +216,7 @@
       write(*,*) my_rank, 'const_extended_nod_comm_table'
       call const_extended_nod_comm_table                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
-     &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
-     &    add_nod_comm)
+     &    exp_import_xx, trim_import_xx, trim_nod_to_ext, add_nod_comm)
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 's_append_extended_node'
@@ -238,19 +234,9 @@
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
-      call s_append_communication_table                                 &
-     &   (nod_comm, add_nod_comm, new_nod_comm)
-!
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'real_items_send_recv trim_import_xx'
-      dist_4_comm%ntot = new_nod_comm%ntot_export
-      allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
-      call real_items_send_recv                                         &
-     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,         &
-     &    new_nod_comm%istack_import, trim_import_xx%distance,          &
-     &    new_nod_comm%num_neib, new_nod_comm%id_neib,         &
-     &    new_nod_comm%istack_export, izero,                            &
-     &    dist_4_comm%distance_in_export)
+      call append_nod_communication_table                               &
+     &   (nod_comm, add_nod_comm, exp_import_xx,                        &
+     &    new_nod_comm, dist_4_comm)
 !
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
@@ -275,7 +261,7 @@
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_comm_table(expand_ele_comm)
 !
-      call s_append_communication_table                                 &
+      call append_ele_communication_table                               &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(org_ele, add_ele_comm,             &
      &    trim_import_ie, new_ele)
