@@ -259,6 +259,7 @@
       call const_extended_ele_comm_table                                &
      &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
+      call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_comm_table(expand_ele_comm)
 !
       call append_ele_communication_table                               &
