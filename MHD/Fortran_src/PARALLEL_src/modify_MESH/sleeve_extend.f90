@@ -251,7 +251,8 @@
      &    trim_nod_to_ext%idx_extend_to_trim,                           &
      &    expand_ele_comm, exp_import_ie)
       deallocate(trim_nod_to_ext%idx_extend_to_trim)
-      call dealloc_node_data_sleeve_ext(exp_import_xx)
+      call dealloc_double_numbering(inod_dbl)
+      call dealloc_node_data_sleeve_ext(dbl_id2)
       call dealloc_stack_to_trim_extend(ext_nod_trim)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)
 !
