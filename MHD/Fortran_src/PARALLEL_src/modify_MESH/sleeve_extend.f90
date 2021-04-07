@@ -231,6 +231,7 @@
      &    trim_nod_to_ext%idx_extend_to_trim,                           &
      &    trim_nod_to_ext%import_lc_trimmed)
       deallocate(trim_nod_to_ext%import_lc_trimmed)
+      call dealloc_node_data_sleeve_ext(trim_import_xx)
 !
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
