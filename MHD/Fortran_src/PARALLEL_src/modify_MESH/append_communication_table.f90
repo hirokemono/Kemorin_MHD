@@ -33,6 +33,7 @@
       implicit none
 !
       private :: append_communication_tbl, append_distance_in_export
+      private :: set_pe_flags_to_merge_comm
       private :: count_added_neib_processes, merge_neib_processes
 !
 !  ---------------------------------------------------------------------
@@ -216,6 +217,49 @@
       end subroutine append_distance_in_export
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_pe_flags_to_merge_comm(nprocs, org_comm, add_comm, &
+     &          ineib_org, ineib_add_import, ineib_add_export)
+!
+      integer, intent(in) :: nprocs
+      type(communication_table), intent(in) :: org_comm
+      type(calypso_comm_table), intent(in) :: add_comm
+      integer(kind = kint), intent(inout) :: ineib_org(nprocs)
+      integer(kind = kint), intent(inout) :: ineib_add_import(nprocs)
+      integer(kind = kint), intent(inout) :: ineib_add_export(nprocs)
+!
+      integer :: i, irank
+!
+!$omp parallel workshare
+      ineib_org(1:nprocs) = 0
+      ineib_add_import(1:nprocs) = 0
+      ineib_add_export(1:nprocs) = 0
+!$omp end parallel workshare
+!
+!$omp parallel do private(i,irank)
+      do i = 1, org_comm%num_neib
+        irank = org_comm%id_neib(i)
+        ineib_org(irank+1) = i
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(i,irank)
+      do i = 1, add_comm%nrank_import
+        irank = add_comm%irank_import(i)
+        ineib_add_import(irank+1) = i
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(i,irank)
+      do i = 1, add_comm%nrank_export
+        irank = add_comm%irank_export(i)
+        ineib_add_export(irank+1) = i
+      end do
+!$omp end parallel do
+!
+      end subroutine set_pe_flags_to_merge_comm
+!
 ! ----------------------------------------------------------------------
 !
       subroutine count_added_neib_processes(nprocs, ineib_org,          &
