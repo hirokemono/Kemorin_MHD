@@ -21,7 +21,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
-!!        type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
+!!        type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !!        type(marks_for_sleeve_extension),                             &
 !!     &                     intent(inout) :: marks_4_extend
 !!      subroutine comm_extended_import_nod_ele                         &
@@ -111,8 +111,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
+      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !
-      type(dist_from_wall_in_export), intent(inout) :: dist_4_comm
       type(marks_for_sleeve_extension),                                 &
      &                     intent(inout) :: marks_4_extend
 
@@ -151,7 +151,6 @@
       call calypso_mpi_reduce_one_int(jcou, nele_failed_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Failed element list:',             &
      &                             ntot_failed_gl, nele_failed_gl
-      deallocate(dist_4_comm%distance_in_export)
 !
       write(*,*) my_rank, 'mark_nod%num_marked',                        &
      &         marks_4_extend%mark_nod(1:nod_comm%num_neib)%num_marked, &

@@ -7,6 +7,17 @@
 !> @brief Control parameter for sleeve extension
 !!
 !!@verbatim
+!!      subroutine check_appended_node_data                             &
+!!     &         (node, expand_nod_comm, add_nod_comm, exp_import_xx,   &
+!!     &          ext_nod_trim, trim_import_xx, inod_new_dbl,           &
+!!     &          idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
+!!        type(node_data), intent(in) :: node
+!!        type(communication_table), intent(in) :: expand_nod_comm
+!!        type(calypso_comm_table), intent(in) :: add_nod_comm
+!!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
+!!        type(node_data_for_sleeve_ext), intent(in) :: trim_import_xx
+!!        type(data_for_trim_import), intent(in) :: ext_nod_trim
+!!        type(node_ele_double_number), intent(in) :: inod_new_dbl
 !!      subroutine check_expanded_import_node(inod_new_dbl,             &
 !!     &          expand_nod_comm, exp_import_xx, inod_added_import)
 !!        type(node_ele_double_number), intent(in) :: inod_new_dbl

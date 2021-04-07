@@ -139,6 +139,7 @@
       use append_extended_element
       use checks_for_sleeve_extend
       use check_sleeve_extend_mesh
+      use reverse_SR_real
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(communication_table), intent(in) :: nod_comm
@@ -194,28 +195,12 @@
      &   (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,          &
      &    dist_4_comm, marks_4_extend)
       call dealloc_iele_belonged(neib_ele)
+      deallocate(dist_4_comm%distance_in_export)
 !
 !
 !
       call s_const_extended_neib_domain(nod_comm, inod_dbl,             &
      &    marks_4_extend%mark_nod, add_nod_comm, iflag_process_extend)
-      do i = 1, nprocs
-        call calypso_mpi_barrier
-        if(i .eq. my_rank+1) then
-          write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,          &
-     &           ' nod_comm%id_neib          ', nod_comm%id_neib
-          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,  &
-     &         ' add_nod_comm%irank_import ', add_nod_comm%irank_import
-          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,  &
-     &         ' add_nod_comm%irank_export ', add_nod_comm%irank_export
-          write(*,'(i6,a,i6)') my_rank,                                 &
-     &         ' add_nod_comm%iflag_self_copy  ',                       &
-     &            add_nod_comm%iflag_self_copy
-          write(*,'(i6,a,i6)') my_rank,                                 &
-     &           ' iflag_process_extend  ', iflag_process_extend
-        end if
-        call calypso_mpi_barrier
-      end do
 !
       call comm_extended_import_nod_ele                                 &
      &   (nod_comm, org_node, inod_dbl, org_ele, iele_dbl,              &
@@ -235,7 +220,7 @@
       call const_extended_nod_comm_table                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
-     &    dist_4_comm, add_nod_comm)
+     &    add_nod_comm)
 !
       call calypso_mpi_barrier
       write(*,*) my_rank, 's_append_extended_node'
@@ -255,6 +240,18 @@
       if(iflag_debug .gt. 0) write(*,*) 'start new_nod_comm'
       call s_append_communication_table                                 &
      &   (nod_comm, add_nod_comm, new_nod_comm)
+!
+      call calypso_mpi_barrier
+      write(*,*) my_rank, 'real_items_send_recv trim_import_xx'
+      dist_4_comm%ntot = new_nod_comm%ntot_export
+      allocate(dist_4_comm%distance_in_export(dist_4_comm%ntot))
+      call real_items_send_recv                                         &
+     &   (new_nod_comm%num_neib, new_nod_comm%id_neib,         &
+     &    new_nod_comm%istack_import, trim_import_xx%distance,          &
+     &    new_nod_comm%num_neib, new_nod_comm%id_neib,         &
+     &    new_nod_comm%istack_export, izero,                            &
+     &    dist_4_comm%distance_in_export)
+!
       call check_new_node_and_comm(new_nod_comm, new_node, dbl_id2)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
@@ -277,7 +274,6 @@
      &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_comm_table(expand_ele_comm)
-      call dealloc_calypso_comm_table(add_nod_comm)
 !
       call s_append_communication_table                                 &
      &   (ele_comm, add_ele_comm, new_ele_comm)
@@ -287,11 +283,34 @@
       call check_returned_extend_element                                &
      &   (iele_dbl, add_ele_comm, trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
-      call dealloc_calypso_comm_table(add_ele_comm)
 !
       call check_extended_element                                       &
      &   (new_nod_comm, new_node, new_ele, new_ele_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
+!
+      do i = 1, nprocs
+        call calypso_mpi_barrier
+        if(i .eq. my_rank+1) then
+          write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,          &
+     &           ' nod_comm%id_neib          ', nod_comm%id_neib
+          write(*,'(2i6,a,200i6)') my_rank, new_nod_comm%num_neib,      &
+     &           ' new_nod_comm%id_neib    ', new_nod_comm%id_neib
+          write(*,'(2i6,a,200i6)') my_rank, new_ele_comm%num_neib,      &
+     &           ' new_ele_comm%id_neib    ', new_ele_comm%id_neib
+          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,  &
+     &         ' add_nod_comm%irank_import ', add_nod_comm%irank_import
+          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,  &
+     &         ' add_nod_comm%irank_export ', add_nod_comm%irank_export
+          write(*,'(i6,a,i6)') my_rank,                                 &
+     &         ' add_nod_comm%iflag_self_copy  ',                       &
+     &            add_nod_comm%iflag_self_copy
+          write(*,'(i6,a,i6)') my_rank,                                 &
+     &           ' iflag_process_extend  ', iflag_process_extend
+        end if
+        call calypso_mpi_barrier
+      end do
+      call dealloc_calypso_comm_table(add_ele_comm)
+      call dealloc_calypso_comm_table(add_nod_comm)
 !
       end subroutine extend_mesh_sleeve
 !

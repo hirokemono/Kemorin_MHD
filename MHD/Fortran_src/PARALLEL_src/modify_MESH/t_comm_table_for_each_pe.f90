@@ -92,6 +92,10 @@
       each_comm%num_each_export = nod_comm%istack_export(ineib)         &
      &                           - nod_comm%istack_export(ineib-1)
 !
+!$omp parallel workshare
+      distance(1:node%numnod) = 0.0d0
+!$omp end parallel workshare
+!
       ist = nod_comm%istack_export(ineib-1) 
 !$omp parallel do private(i,inod)
       do i = 1, each_comm%num_each_export
