@@ -174,6 +174,7 @@
 !
       use calypso_mpi
       use reverse_SR_real
+      use append_comm_items
 !
       type(communication_table), intent(in) :: nod_comm
       type(calypso_comm_table), intent(in) :: add_nod_comm
