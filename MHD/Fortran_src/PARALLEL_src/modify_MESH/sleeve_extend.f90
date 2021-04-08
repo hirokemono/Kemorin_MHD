@@ -92,7 +92,6 @@
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    vect_tmp, dist_4_comm%distance_in_export)
-      call dealloc_iele_belonged(neib_ele)
       deallocate(vect_tmp)
 !
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
@@ -100,13 +99,15 @@
 !
       do iloop = 1, 10
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
-        call extend_mesh_sleeve                                         &
-     &     (sleeve_exp_p, mesh%nod_comm, ele_comm, mesh%node, mesh%ele, &
-     &      newmesh%nod_comm, newmesh%node, newmesh%ele, new_ele_comm,  &
-     &      dist_4_comm, iflag_process_extend)
+        call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
+     &      mesh%node, mesh%ele, neib_ele, vect_tmp,                    &
+     &      newmesh%nod_comm, newmesh%node, newmesh%ele,                &
+     &      new_ele_comm, dist_4_comm, iflag_process_extend)
         call s_extended_groups                                          &
      &     (mesh, group, newmesh, new_ele_comm, newgroup)
 !
+        deallocate(vect_tmp)
+        call dealloc_iele_belonged(neib_ele)
         call dealloc_comm_table(ele_comm)
         call dealloc_nod_and_ele_infos(mesh)
         call dealloc_mesh_data(mesh, group)
@@ -124,7 +125,11 @@
         call calypso_mpi_barrier
         write(*,*) my_rank, 'iflag_process_extend', iflag_process_extend
         if(iflag_process_extend .eq. 0) exit
+!
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
+        if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
+        call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
+        allocate(vect_tmp(mesh%node%numnod,3))
       end do
       call dealloc_dist_from_wall_export(dist_4_comm)
 !
@@ -132,8 +137,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine extend_mesh_sleeve                                     &
-     &         (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,    &
+      subroutine extend_mesh_sleeve(sleeve_exp_p, nod_comm, ele_comm,   &
+     &          org_node, org_ele, neib_ele, vect_ref,                  &
      &          new_nod_comm, new_node, new_ele, new_ele_comm,          &
      &          dist_4_comm, iflag_process_extend)
 !
@@ -146,7 +151,6 @@
       use t_comm_table_for_each_pe
       use t_sort_data_for_sleeve_trim
 !
-      use set_ele_id_4_node_type
       use const_extended_neib_domain
       use const_nod_ele_to_extend
       use const_extend_nod_comm_table
@@ -163,6 +167,8 @@
       type(communication_table), intent(in) :: ele_comm
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
+      type(element_around_node), intent(in) :: neib_ele
+      real(kind = kreal), intent(in) :: vect_ref(org_node%numnod,3)
 !
       type(communication_table), intent(inout) :: new_nod_comm
       type(node_data), intent(inout) :: new_node
@@ -174,7 +180,6 @@
       type(node_ele_double_number), save :: inod_dbl
       type(node_ele_double_number), save :: iele_dbl
       type(node_ele_double_number), save :: dbl_id2
-      type(element_around_node), save :: neib_ele
 !
 !>      Structure of double numbering
       type(communication_table), save :: expand_ele_comm
@@ -197,11 +202,7 @@
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
-      if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-      call set_ele_id_4_node(org_node, org_ele, neib_ele)
-!
       call alloc_double_numbering(org_node%numnod, inod_dbl)
-      if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
       call set_node_double_numbering(org_node, nod_comm, inod_dbl)
 !
       call alloc_double_numbering(org_ele%numele, iele_dbl)
@@ -210,8 +211,7 @@
       call alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
       call const_sleeve_expand_list                                     &
      &   (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,          &
-     &    dist_4_comm, marks_4_extend)
-      call dealloc_iele_belonged(neib_ele)
+     &    dist_4_comm, vect_ref, marks_4_extend)
 !
 !
 !
