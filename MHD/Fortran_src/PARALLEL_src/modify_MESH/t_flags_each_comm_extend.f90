@@ -13,6 +13,15 @@
 !!        integer(kind = kint), intent(in) :: numnod, numele
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
+!!      subroutine init_min_dist_from_import(sleeve_exp_p,              &
+!!     &          nod_comm, node, ele, neib_ele, d_vec, dist_export)
+!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(element_around_node), intent(in) :: neib_ele
+!!        real(kind = kreal), intent(inout)                             &
+!!     &                   :: dist_export(nod_comm%ntot_export)
 !!      subroutine cal_min_dist_from_last_import                        &
 !!     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,  &
 !!     &          each_exp_flags)
@@ -49,10 +58,13 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_geometry_data
       use t_comm_table
       use t_comm_table_for_each_pe
+!
+      implicit none
 !
       type flags_each_comm_extend
         integer(kind = kint), allocatable :: iflag_ele(:)
@@ -101,6 +113,78 @@
       end subroutine dealloc_flags_each_comm_extend
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine init_min_dist_from_import(sleeve_exp_p,                &
+     &          nod_comm, node, ele, neib_ele, d_vec, dist_export)
+!
+      use t_ctl_param_sleeve_extend
+      use t_next_node_ele_4_node
+!
+      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(element_around_node), intent(in) :: neib_ele
+      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: dist_export(nod_comm%ntot_export)
+!
+      integer(kind = kint) :: ip, i, igrp, k1, jele
+      integer(kind = kint) :: ist, ied, inum, inod
+      integer(kind = kint) :: jst, jed, jnum, jnod
+      real(kind= kreal), allocatable :: dist_tmp(:,:)
+      real(kind= kreal) :: dist
+!
+      allocate(dist_tmp(node%numnod,np_smp))
+!
+!
+!$omp parallel do private(ip,i,igrp,ist,ied,inum,inod,                  &
+!$omp&                    jst,jed,jnum,jele,k1,jnod,dist)
+      do ip = 1, np_smp
+        do i = 1, nod_comm%num_neib/np_smp + 1
+          igrp = ip + (i-1) * np_smp
+          if(igrp .gt. nod_comm%num_neib) cycle
+            dist_tmp(1:node%numnod,ip) = 0.0d0
+!
+          ist = nod_comm%istack_import(igrp-1) + 1
+          ied = nod_comm%istack_import(igrp)
+          do inum = ist, ied
+            inod = nod_comm%item_import(inum)
+            jst = neib_ele%istack_4_node(inod-1) + 1
+            jed = neib_ele%istack_4_node(inod)
+            do jnum = jst, jed
+              jele = neib_ele%iele_4_node(jnum)
+              do k1 = 1, ele%nnod_4_ele
+                jnod = ele%ie(jele,k1)
+                if(jnod .gt. node%internal_node) cycle
+!
+                dist = distance_select(sleeve_exp_p, inod, jnod,        &
+     &                                 node, d_vec)
+                if(dist_tmp(jnod,ip) .eq. 0.0d0) then
+                  dist_tmp(jnod,ip) = dist + dist_tmp(inod,ip)
+                else
+                  dist_tmp(jnod,ip)                                     &
+     &                = min(dist+dist_tmp(inod,ip), dist_tmp(jnod,ip))
+                end if
+              end do
+            end do
+          end do
+!
+          ist = nod_comm%istack_export(igrp-1) + 1
+          ied = nod_comm%istack_export(igrp)
+          do inum = ist, ied
+            inod = nod_comm%item_export(inum)
+            dist_export(inum) = dist_tmp(inod,ip)
+          end do
+        end do
+      end do
+!$omp end parallel do
+      deallocate(dist_tmp)
+!
+      end subroutine init_min_dist_from_import
+!
 !  ---------------------------------------------------------------------
 !
       subroutine cal_min_dist_from_last_import                          &
@@ -173,7 +257,8 @@
 !
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
-      integer(kind = kint) :: inum, inod, jst, jed, jnum, jele, jnod
+      integer(kind = kint) :: inum, inod
+      integer(kind = kint) :: jst, jed, jnum, jele, jnod, k1
       real(kind = kreal) :: dist
 !
       do inum = 1, each_comm%num_each_export

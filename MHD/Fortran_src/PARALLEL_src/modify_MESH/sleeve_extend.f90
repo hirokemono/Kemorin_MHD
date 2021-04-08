@@ -57,6 +57,9 @@
       subroutine sleeve_extension_loop                                  &
      &         (sleeve_exp_p, mesh, group, ele_comm)
 !
+      use t_next_node_ele_4_node
+      use t_flags_each_comm_extend
+      use set_ele_id_4_node_type
       use extended_groups
       use copy_mesh_structures
       use nod_and_ele_derived_info
@@ -76,12 +79,22 @@
 !
       integer(kind = kint) :: iflag_process_extend = 0
       integer(kind = kint) :: iloop
+      type(element_around_node), save :: neib_ele
+      real(kind = kreal), allocatable :: vect_tmp(:,:)
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+5)
+      allocate(vect_tmp(mesh%node%numnod,3))
       call alloc_dist_from_wall_export                                  &
      &   (mesh%nod_comm%ntot_export, dist_4_comm)
+      call set_ele_id_4_node(mesh%node, mesh%ele, neib_ele)
+      call init_min_dist_from_import                                    &
+     &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
+     &    vect_tmp, dist_4_comm%distance_in_export)
+      call dealloc_iele_belonged(neib_ele)
+      deallocate(vect_tmp)
+!
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
