@@ -15,7 +15,7 @@
 !!
 !!      subroutine const_sleeve_expand_list                             &
 !!     &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,          &
-!!     &          dist_4_comm, marks_4_extend)
+!!     &          dist_4_comm, vect_ref, marks_4_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -99,7 +99,7 @@
 !
       subroutine const_sleeve_expand_list                               &
      &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,            &
-     &          dist_4_comm, marks_4_extend)
+     &          dist_4_comm, vect_ref, marks_4_extend)
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
@@ -112,18 +112,17 @@
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
       type(dist_from_wall_in_export), intent(in) :: dist_4_comm
+      real(kind = kreal), intent(in) :: vect_ref(node%numnod,3)
 !
       type(marks_for_sleeve_extension),                                 &
      &                     intent(inout) :: marks_4_extend
 
       type(flags_each_comm_extend), save :: each_exp_flags
       type(comm_table_for_each_pe), save :: each_comm
-      real(kind = kreal), allocatable :: vect_tmp(:,:)
       integer(kind = kint) :: i, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
 !
-      allocate(vect_tmp(node%numnod,3))
       call alloc_flags_each_comm_extend                                 &
      &   (node%numnod, ele%numele, each_exp_flags)
 !
@@ -134,7 +133,7 @@
         call init_comm_table_for_each(i, node, nod_comm,                &
      &      dist_4_comm, each_comm, each_exp_flags%distance)
         call s_mark_node_ele_to_extend                                  &
-     &     (sleeve_exp_p, node, ele, neib_ele, vect_tmp, each_comm,     &
+     &     (sleeve_exp_p, node, ele, neib_ele, vect_ref, each_comm,     &
      &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
      &      each_exp_flags)
         call dealloc_comm_table_for_each(each_comm)
@@ -144,7 +143,6 @@
     &       icou, jcou)
       end do
       call dealloc_flags_each_comm_extend(each_exp_flags)
-      deallocate(vect_tmp)
 !
 !
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)

@@ -112,6 +112,8 @@
       integer(kind = kint) :: inod, icou, idummy
 !
 !
+!       Set each_exp_flags%iflag_node = -2 (exclude for check)
+!          for imported nodes
       call mark_by_last_import                                          &
      &   (node, each_comm, each_exp_flags%iflag_node)
       call mark_surround_ele_of_import(node, ele,                       &
