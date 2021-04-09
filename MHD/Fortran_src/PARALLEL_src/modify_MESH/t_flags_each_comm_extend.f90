@@ -135,7 +135,7 @@
       integer(kind = kint) :: ist, ied, inum, inod
       integer(kind = kint) :: jst, jed, jnum, jnod
       real(kind= kreal), allocatable :: dist_tmp(:,:)
-      real(kind= kreal) :: dist
+      real(kind= kreal) :: dist, dist_start
 !
       allocate(dist_tmp(node%numnod,np_smp))
 !
@@ -146,23 +146,33 @@
         do i = 1, nod_comm%num_neib/np_smp + 1
           igrp = ip + (i-1) * np_smp
           if(igrp .gt. nod_comm%num_neib) cycle
-            dist_tmp(1:node%numnod,ip) = 0.0d0
+          dist_tmp(1:node%numnod,ip) = 0.0d0
 !
           ist = nod_comm%istack_import(igrp-1) + 1
           ied = nod_comm%istack_import(igrp)
           do inum = ist, ied
             inod = nod_comm%item_import(inum)
+            dist_tmp(inod,ip) = -1.0d0
+          end do
+          do inum = ist, ied
+            inod = nod_comm%item_import(inum)
+            if(dist_tmp(inod,ip) .eq. -1.0d0) then
+              dist_start = 0.0d0
+            else
+              dist_start = dist_tmp(inod,ip)
+            end if
+!
             jst = neib_ele%istack_4_node(inod-1) + 1
             jed = neib_ele%istack_4_node(inod)
             do jnum = jst, jed
               jele = neib_ele%iele_4_node(jnum)
               do k1 = 1, ele%nnod_4_ele
                 jnod = ele%ie(jele,k1)
-                if(jnod .gt. node%internal_node) cycle
+                if(dist_tmp(jnod,ip) .eq. -1.0d0) cycle
 !
                 dist = distance_select(sleeve_exp_p, inod, jnod,        &
      &                                 node, d_vec)
-                if(dist_tmp(jnod,ip) .eq. 0.0d0) then
+                if(dist_tmp(jnod,ip) .eq. -1.0d0) then
                   dist_tmp(jnod,ip) = dist + dist_tmp(inod,ip)
                 else
                   dist_tmp(jnod,ip)                                     &
