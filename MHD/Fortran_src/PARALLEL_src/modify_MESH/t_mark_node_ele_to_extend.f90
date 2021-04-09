@@ -120,7 +120,8 @@
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
       call alloc_comm_table_for_each(node, each_comm)
-      call init_comm_table_for_each(ineib, node, nod_comm,              &
+      call init_comm_table_for_each(ineib, nod_comm, each_comm)
+      call copy_dist_in_export_for_each(ineib, node, nod_comm,          &
      &    dist_4_comm, each_comm, each_exp_flags%distance)
       call mark_by_last_import                                          &
      &   (node, each_comm%num_each_import, each_comm%item_each_import,  &
