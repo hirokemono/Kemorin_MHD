@@ -115,20 +115,24 @@
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
       call mark_by_last_import                                          &
-     &   (node, each_comm, each_exp_flags%iflag_node)
+     &   (node, each_comm%num_each_import, each_comm%item_each_import,  &
+     &    each_exp_flags%iflag_node)
       call mark_surround_ele_of_import(node, ele,                       &
      &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !
       call cal_min_dist_from_last_import                                &
-     &   (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,          &
-     &    each_exp_flags)
+     &   (sleeve_exp_p, node, ele, neib_ele,                            &
+     &    each_comm%num_each_import, each_comm%item_each_import,        &
+     &    d_vec, each_exp_flags)
       call mark_by_last_export                                          &
-     &   (node, each_comm, each_exp_flags%iflag_node)
+     &   (node, each_comm%num_each_export, each_comm%item_each_export,  &
+     &    each_exp_flags%iflag_node)
 !
       do idummy = 2, 100
         call cal_min_dist_from_last_export                              &
-     &     (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,        &
-     &      each_exp_flags)
+     &     (sleeve_exp_p, node, ele, neib_ele,                          &
+     &      each_comm%num_each_export, each_comm%item_each_export,      &
+     &      d_vec, each_exp_flags)
 !
         call set_new_export_to_extend                                   &
      &     (sleeve_exp_p%dist_max, node, each_exp_flags%distance,       &
@@ -198,10 +202,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_by_last_import(node, each_comm, iflag_node)
+      subroutine mark_by_last_import                                    &
+     &         (node, num_each_import, item_each_import, iflag_node)
 !
       type(node_data), intent(in) :: node
-      type(comm_table_for_each_pe), intent(in) :: each_comm
+      integer(kind = kint), intent(in) :: num_each_import
+      integer(kind = kint), intent(in)                                  &
+     &                     :: item_each_import(num_each_import)
 !
       integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
 !
@@ -213,8 +220,8 @@
 !$omp end parallel workshare
 !
 !$omp parallel do private(inum,inod)
-      do inum = 1, each_comm%num_each_import
-        inod = each_comm%item_each_import(inum)
+      do inum = 1, num_each_import
+        inod = item_each_import(inum)
         iflag_node(inod) = -2
       end do
 !$omp end parallel do
@@ -253,10 +260,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_by_last_export(node, each_comm, iflag_node)
+      subroutine mark_by_last_export                                    &
+     &         (node, num_each_export, item_each_export, iflag_node)
 !
       type(node_data), intent(in) :: node
-      type(comm_table_for_each_pe), intent(in) :: each_comm
+      integer(kind = kint), intent(in) :: num_each_export
+      integer(kind = kint), intent(in)                                  &
+     &                     :: item_each_export(num_each_export)
 !
       integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
 !
@@ -264,8 +274,8 @@
 !
 !
 !$omp parallel do private(inum,inod)
-      do inum = 1, each_comm%num_each_export
-        inod = each_comm%item_each_export(inum)
+      do inum = 1, num_each_export
+        inod = item_each_export(inum)
         iflag_node(inod) = -1
       end do
 !$omp end parallel do

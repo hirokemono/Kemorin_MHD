@@ -150,4 +150,37 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine copy_dist_in_export_for_each(ineib, node, nod_comm,    &
+     &          dist_4_comm, each_comm, distance)
+!
+      integer(kind = kint), intent(in) :: ineib
+      type(node_data), intent(in) ::                 node
+      type(communication_table), intent(in) ::       nod_comm
+      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
+!
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
+      real(kind = kreal), intent(inout) :: distance(node%numnod)
+!
+      integer(kind = kint) :: ist, i, inod
+!
+!
+      each_comm%num_each_export = nod_comm%istack_export(ineib)         &
+     &                           - nod_comm%istack_export(ineib-1)
+!
+!$omp parallel workshare
+      distance(1:node%numnod) = 0.0d0
+!$omp end parallel workshare
+!
+      ist = nod_comm%istack_export(ineib-1) 
+!$omp parallel do private(i,inod)
+      do i = 1, each_comm%num_each_export
+        inod = each_comm%item_each_export(i)
+        distance(inod) = dist_4_comm%distance_in_export(i+ist)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_dist_in_export_for_each
+!
+!  ---------------------------------------------------------------------
+!
       end module t_comm_table_for_each_pe

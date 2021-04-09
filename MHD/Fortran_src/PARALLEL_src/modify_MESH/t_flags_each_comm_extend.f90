@@ -22,19 +22,18 @@
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: dist_export(nod_comm%ntot_export)
-!!      subroutine cal_min_dist_from_last_import                        &
-!!     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,  &
-!!     &          each_exp_flags)
+!!      subroutine cal_min_dist_from_last_import(sleeve_exp_p,          &
+!!     &         node, ele, neib_ele, num_each_import, item_each_import,&
+!!     &         d_vec, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
-!!        type(comm_table_for_each_pe), intent(in) :: each_comm
 !!        real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
-!!      subroutine cal_min_dist_from_last_export                        &
-!!     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,  &
-!!     &          each_exp_flags)
+!!      subroutine cal_min_dist_from_last_export(sleeve_exp_p,          &
+!!     &         node, ele, neib_ele, num_each_export, item_each_export,&
+!!     &         d_vec, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -197,19 +196,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_min_dist_from_last_import                          &
-     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,    &
-     &          each_exp_flags)
+      subroutine cal_min_dist_from_last_import(sleeve_exp_p,            &
+     &         node, ele, neib_ele, num_each_import, item_each_import,  &
+     &         d_vec, each_exp_flags)
 !
       use t_ctl_param_sleeve_extend
-      use t_comm_table_for_each_pe
       use t_next_node_ele_4_node
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
-      type(comm_table_for_each_pe), intent(in) :: each_comm
+      integer(kind = kint), intent(in) :: num_each_import
+      integer(kind = kint), intent(in)                                  &
+     &                     :: item_each_import(num_each_import)
       real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
@@ -218,8 +218,8 @@
       integer(kind = kint) :: jst, jed, jnum, jnod, jele, k1
       real(kind = kreal) :: dist
 !
-      do inum = 1, each_comm%num_each_import
-        inod = each_comm%item_each_import(inum)
+      do inum = 1, num_each_import
+        inod = item_each_import(inum)
         jst = neib_ele%istack_4_node(inod-1) + 1
         jed = neib_ele%istack_4_node(inod)
         do jnum = jst, jed
@@ -250,19 +250,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_min_dist_from_last_export                          &
-     &         (sleeve_exp_p, node, ele, neib_ele, each_comm, d_vec,    &
-     &          each_exp_flags)
+      subroutine cal_min_dist_from_last_export(sleeve_exp_p,            &
+     &         node, ele, neib_ele, num_each_export, item_each_export,  &
+     &         d_vec, each_exp_flags)
 !
       use t_ctl_param_sleeve_extend
-      use t_comm_table_for_each_pe
       use t_next_node_ele_4_node
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
-      type(comm_table_for_each_pe), intent(in) :: each_comm
+      integer(kind = kint), intent(in) :: num_each_export
+      integer(kind = kint), intent(in)                                  &
+     &                     :: item_each_export(num_each_export)
       real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
@@ -271,8 +272,8 @@
       integer(kind = kint) :: jst, jed, jnum, jele, jnod, k1
       real(kind = kreal) :: dist
 !
-      do inum = 1, each_comm%num_each_export
-        inod = each_comm%item_each_export(inum)
+      do inum = 1, num_each_export
+        inod = item_each_export(inum)
         jst = neib_ele%istack_4_node(inod-1) + 1
         jed = neib_ele%istack_4_node(inod)
         do jnum = jst, jed
