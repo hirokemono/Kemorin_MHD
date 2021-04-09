@@ -101,7 +101,6 @@
      &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,            &
      &          dist_4_comm, vect_ref, marks_4_extend)
 !
-      use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
 !
       use calypso_mpi_int
@@ -118,7 +117,6 @@
      &                     intent(inout) :: marks_4_extend
 
       type(flags_each_comm_extend), save :: each_exp_flags
-      type(comm_table_for_each_pe), save :: each_comm
       integer(kind = kint) :: i, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
 !
@@ -129,14 +127,10 @@
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
-        call alloc_comm_table_for_each(node, each_comm)
-        call init_comm_table_for_each(i, node, nod_comm,                &
-     &      dist_4_comm, each_comm, each_exp_flags%distance)
-        call s_mark_node_ele_to_extend                                  &
-     &     (sleeve_exp_p, node, ele, neib_ele, vect_ref, each_comm,     &
+        call s_mark_node_ele_to_extend(i, sleeve_exp_p,                 &
+     &      nod_comm, node, ele, neib_ele, dist_4_comm, vect_ref,       &
      &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
      &      each_exp_flags)
-        call dealloc_comm_table_for_each(each_comm)
 !
         call check_missing_connect_to_extend(node, ele,                 &
     &       marks_4_extend%mark_ele(i), each_exp_flags%iflag_node,      &

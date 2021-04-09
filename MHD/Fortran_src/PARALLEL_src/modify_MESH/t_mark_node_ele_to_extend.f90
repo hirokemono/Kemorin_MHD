@@ -12,13 +12,15 @@
 !!        integer(kind = kint), intent(in) :: num
 !!        type(mark_for_each_comm), intent(inout) :: mark_comm
 !!
-!!      subroutine s_mark_node_ele_to_extend                            &
-!!     &         (sleeve_exp_p, node, ele, neib_ele, d_vec, each_comm,  &
+!!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
+!!     &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,    &
 !!     &          mark_nod, mark_ele, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+!!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
+!!        type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !!        real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !!        type(comm_table_for_each_pe), intent(inout) :: each_comm
 !!        type(mark_for_each_comm), intent(inout) :: mark_nod
@@ -91,29 +93,35 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_mark_node_ele_to_extend                              &
-     &         (sleeve_exp_p, node, ele, neib_ele, d_vec, each_comm,    &
+      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
+     &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,      &
      &          mark_nod, mark_ele, each_exp_flags)
 !
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
 !
+      integer(kind = kint), intent(in) :: ineib
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
+      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
+      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
       real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !
-      type(comm_table_for_each_pe), intent(inout) :: each_comm
       type(mark_for_each_comm), intent(inout) :: mark_nod
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
+      type(comm_table_for_each_pe), save :: each_comm
       integer(kind = kint) :: inod, icou, idummy
 !
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
+      call alloc_comm_table_for_each(node, each_comm)
+      call init_comm_table_for_each(ineib, node, nod_comm,              &
+     &    dist_4_comm, each_comm, each_exp_flags%distance)
       call mark_by_last_import                                          &
      &   (node, each_comm%num_each_import, each_comm%item_each_import,  &
      &    each_exp_flags%iflag_node)
@@ -142,6 +150,7 @@
 !     &            each_comm%num_each_export
         if(each_comm%num_each_export .le. 0) exit
       end do
+      call dealloc_comm_table_for_each(each_comm)
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
       icou = 0
