@@ -161,11 +161,11 @@
 !
                 dist = distance_select(sleeve_exp_p, inod, jnod,        &
      &                                 node, d_vec)
-                if(dist_tmp(jnod,ip) .eq. -1.0d0) then
-                  dist_tmp(jnod,ip) = dist + dist_tmp(inod,ip)
+                if(dist_tmp(jnod,ip) .eq. 0.0d0) then
+                  dist_tmp(jnod,ip) = dist + dist_start
                 else
                   dist_tmp(jnod,ip)                                     &
-     &                = min(dist+dist_tmp(inod,ip), dist_tmp(jnod,ip))
+     &                = min(dist+dist_start, dist_tmp(jnod,ip))
                 end if
               end do
             end do

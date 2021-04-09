@@ -235,7 +235,7 @@
       end do
 !$omp end parallel do
 !
-      ist = nod_comm%istack_export(ineib-1) 
+      ist = nod_comm%istack_export(ineib-1) + 1
       ied = nod_comm%istack_export(ineib)
 !$omp parallel do private(inum,inod)
       do inum = ist, ied
