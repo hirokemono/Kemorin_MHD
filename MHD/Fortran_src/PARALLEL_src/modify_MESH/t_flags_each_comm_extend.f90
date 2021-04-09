@@ -22,15 +22,6 @@
 !!        type(element_around_node), intent(in) :: neib_ele
 !!        real(kind = kreal), intent(inout)                             &
 !!     &                   :: dist_export(nod_comm%ntot_export)
-!!      subroutine cal_min_dist_from_last_import(sleeve_exp_p,          &
-!!     &         node, ele, neib_ele, num_each_import, item_each_import,&
-!!     &         d_vec, each_exp_flags)
-!!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(element_around_node), intent(in) :: neib_ele
-!!        real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
-!!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!      subroutine cal_min_dist_from_last_export(sleeve_exp_p,          &
 !!     &         node, ele, neib_ele, num_each_export, item_each_export,&
 !!     &         d_vec, each_exp_flags)
@@ -38,7 +29,6 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
-!!        type(comm_table_for_each_pe), intent(in) :: each_comm
 !!        real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !!        type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !!
@@ -193,60 +183,6 @@
       deallocate(dist_tmp)
 !
       end subroutine init_min_dist_from_import
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine cal_min_dist_from_last_import(sleeve_exp_p,            &
-     &         node, ele, neib_ele, num_each_import, item_each_import,  &
-     &         d_vec, each_exp_flags)
-!
-      use t_ctl_param_sleeve_extend
-      use t_next_node_ele_4_node
-!
-      type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(element_around_node), intent(in) :: neib_ele
-      integer(kind = kint), intent(in) :: num_each_import
-      integer(kind = kint), intent(in)                                  &
-     &                     :: item_each_import(num_each_import)
-      real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
-!
-      type(flags_each_comm_extend), intent(inout) :: each_exp_flags
-!
-      integer(kind = kint) :: inum, inod
-      integer(kind = kint) :: jst, jed, jnum, jnod, jele, k1
-      real(kind = kreal) :: dist
-!
-      do inum = 1, num_each_import
-        inod = item_each_import(inum)
-        jst = neib_ele%istack_4_node(inod-1) + 1
-        jed = neib_ele%istack_4_node(inod)
-        do jnum = jst, jed
-          jele = neib_ele%iele_4_node(jnum)
-          if(each_exp_flags%iflag_ele(jele) .gt. 0) cycle
-!
-          each_exp_flags%iflag_ele(jele) = 2
-          do k1 = 1, ele%nnod_4_ele
-            jnod = ele%ie(jele,k1)
-            if(each_exp_flags%iflag_node(jnod) .eq. -2) cycle
-!
-            each_exp_flags%iflag_node(jnod) = 1
-            dist = distance_select(sleeve_exp_p, inod, jnod,           &
-     &                             node, d_vec)
-            if(each_exp_flags%distance(jnod) .eq. 0.0d0) then
-              each_exp_flags%distance(jnod)                            &
-     &                = dist + each_exp_flags%distance(inod)
-            else
-              each_exp_flags%distance(jnod)                            &
-     &                = min(dist+each_exp_flags%distance(inod),        &
-     &                      each_exp_flags%distance(jnod))
-            end if
-          end do
-        end do
-      end do
-!
-      end subroutine cal_min_dist_from_last_import
 !
 !  ---------------------------------------------------------------------
 !

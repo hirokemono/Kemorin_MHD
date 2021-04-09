@@ -34,9 +34,6 @@
       type comm_table_for_each_pe
         integer(kind = kint) :: num_each_export = 0
         integer(kind = kint), allocatable :: item_each_export(:)
-!
-        integer(kind = kint) :: num_each_import = 0
-        integer(kind = kint), allocatable :: item_each_import(:)
       end type comm_table_for_each_pe
 !
       type dist_from_wall_in_export
@@ -56,11 +53,9 @@
       type(comm_table_for_each_pe), intent(inout) :: each_comm
 !
       allocate(each_comm%item_each_export(node%numnod))
-      allocate(each_comm%item_each_import(node%numnod))
 !
 !$omp parallel workshare
       each_comm%item_each_export(1:node%numnod) =  0
-      each_comm%item_each_import(1:node%numnod) =  0
 !$omp end parallel workshare
 !
       end subroutine alloc_comm_table_for_each
@@ -71,7 +66,6 @@
 !
       type(comm_table_for_each_pe), intent(inout) :: each_comm
 !
-      deallocate(each_comm%item_each_import)
       deallocate(each_comm%item_each_export)
 !
       end subroutine dealloc_comm_table_for_each
@@ -126,47 +120,7 @@
       end do
 !$omp end parallel do
 !
-      each_comm%num_each_import = nod_comm%istack_import(ineib)         &
-     &                           - nod_comm%istack_import(ineib-1)
-!
-      ist = nod_comm%istack_import(ineib-1) 
-!$omp parallel do private(i)
-      do i = 1, each_comm%num_each_import
-        each_comm%item_each_import(i) = nod_comm%item_import(i+ist)
-      end do
-!$omp end parallel do
-!
       end subroutine init_comm_table_for_each
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_dist_in_export_for_each(ineib, node, nod_comm,    &
-     &          dist_4_comm, each_comm, distance)
-!
-      integer(kind = kint), intent(in) :: ineib
-      type(node_data), intent(in) ::                 node
-      type(communication_table), intent(in) ::       nod_comm
-      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
-      type(comm_table_for_each_pe), intent(in) :: each_comm
-!
-      real(kind = kreal), intent(inout) :: distance(node%numnod)
-!
-      integer(kind = kint) :: ist, i, inod
-!
-!
-!$omp parallel workshare
-      distance(1:node%numnod) = 0.0d0
-!$omp end parallel workshare
-!
-      ist = nod_comm%istack_export(ineib-1) 
-!$omp parallel do private(i,inod)
-      do i = 1, each_comm%num_each_export
-        inod = each_comm%item_each_export(i)
-        distance(inod) = dist_4_comm%distance_in_export(i+ist)
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_dist_in_export_for_each
 !
 !  ---------------------------------------------------------------------
 !
