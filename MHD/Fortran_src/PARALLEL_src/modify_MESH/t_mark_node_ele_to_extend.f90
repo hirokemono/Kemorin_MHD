@@ -46,6 +46,8 @@
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
 !
+      implicit none
+!
       type mark_for_each_comm
         integer(kind = kint) :: num_marked = 0
         integer(kind = kint), allocatable :: idx_marked(:)
@@ -97,6 +99,7 @@
      &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,      &
      &          mark_nod, mark_ele, each_exp_flags)
 !
+      use calypso_mpi
       use t_ctl_param_sleeve_extend
       use t_next_node_ele_4_node
 !
@@ -179,7 +182,7 @@
 !
       integer(kind = kint), intent(inout) :: icou_nod, icou_ele
 !
-      integer(kind = kint) :: inum, iele, k1, kcou
+      integer(kind = kint) :: inum, iele, k1, kcou, inod
 !
       do inum = 1, mark_ele%num_marked
         iele = mark_ele%idx_marked(inum)
@@ -215,7 +218,7 @@
       real(kind = kreal), intent(inout) :: distance(node%numnod)
       integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
 !
-      integer(kind = kint) :: inum, inod, ist, jcou
+      integer(kind = kint) :: inum, inod, ist, ied, jcou
 !
 !
 !$omp parallel workshare
