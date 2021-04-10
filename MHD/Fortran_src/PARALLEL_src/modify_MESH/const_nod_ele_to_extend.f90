@@ -101,6 +101,7 @@
      &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,            &
      &          dist_4_comm, vect_ref, marks_4_extend)
 !
+      use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
 !
       use calypso_mpi_int
@@ -116,6 +117,7 @@
       type(marks_for_sleeve_extension),                                 &
      &                     intent(inout) :: marks_4_extend
 
+      type(comm_table_for_each_pe), save :: each_comm
       type(flags_each_comm_extend), save :: each_exp_flags
       integer(kind = kint) :: i, icou, jcou
       integer(kind = kint) :: ntot_failed_gl, nele_failed_gl
@@ -123,12 +125,14 @@
 !
       call alloc_flags_each_comm_extend                                 &
      &   (node%numnod, ele%numele, each_exp_flags)
+      call alloc_comm_table_for_each(node, each_comm)
 !
       icou = 0
       jcou = 0
       do i = 1, nod_comm%num_neib
-        call s_mark_node_ele_to_extend(i, sleeve_exp_p,                 &
-     &      nod_comm, node, ele, neib_ele, dist_4_comm, vect_ref,       &
+        call s_mark_node_ele_to_extend                                  &
+     &     (i, sleeve_exp_p, nod_comm, node, ele, neib_ele,             &
+     &      dist_4_comm, vect_ref, each_comm,                           &
      &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
      &      each_exp_flags)
 !
@@ -137,6 +141,7 @@
     &       icou, jcou)
       end do
       call dealloc_flags_each_comm_extend(each_exp_flags)
+      call dealloc_comm_table_for_each(each_comm)
 !
 !
       call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)

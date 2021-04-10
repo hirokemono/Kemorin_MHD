@@ -14,7 +14,7 @@
 !!
 !!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
 !!     &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,    &
-!!     &          mark_nod, mark_ele, each_exp_flags)
+!!     &          each_comm, mark_nod, mark_ele, each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -75,6 +75,7 @@
       allocate(mark_comm%idx_marked(mark_comm%num_marked))
       allocate(mark_comm%dist_marked(mark_comm%num_marked))
 !
+      if(mark_comm%num_marked .le. 0) return
 !$omp parallel workshare
       mark_comm%idx_marked(1:mark_comm%num_marked) = 0
       mark_comm%dist_marked(1:mark_comm%num_marked) = 0.0d0
@@ -97,7 +98,7 @@
 !
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
      &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,      &
-     &          mark_nod, mark_ele, each_exp_flags)
+     &          each_comm, mark_nod, mark_ele, each_exp_flags)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -112,17 +113,16 @@
       type(dist_from_wall_in_export), intent(in) :: dist_4_comm
       real(kind = kreal), intent(in) :: d_vec(node%numnod,3)
 !
+      type(comm_table_for_each_pe), intent(inout) :: each_comm
       type(mark_for_each_comm), intent(inout) :: mark_nod
       type(mark_for_each_comm), intent(inout) :: mark_ele
       type(flags_each_comm_extend), intent(inout) :: each_exp_flags
 !
-      type(comm_table_for_each_pe), save :: each_comm
       integer(kind = kint) :: inod, icou, idummy
 !
 !
 !       Set each_exp_flags%iflag_node = -2 (exclude for check)
 !          for imported nodes
-      call alloc_comm_table_for_each(node, each_comm)
       call mark_by_last_import                                          &
      &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,     &
      &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
@@ -143,7 +143,6 @@
      &     each_comm%num_each_export, each_comm%item_each_export,       &
      &     each_exp_flags%iflag_node)
       end do
-      call dealloc_comm_table_for_each(each_comm)
 !      write(*,*) my_rank, 'Maximum extend size is ', idummy
 !
       icou = 0
