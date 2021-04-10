@@ -211,11 +211,10 @@
       integer(kind = kint), intent(in) :: ineib
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
-      type(dist_from_wall_in_export), intent(in) :: dist_4_comm
 !
       integer(kind = kint), intent(inout) :: iflag_node(node%numnod)
 !
-      integer(kind = kint) :: inum, inod, ist, ied, jcou
+      integer(kind = kint) :: inum, inod, ist, ied
 !
 !
 !$omp parallel workshare
