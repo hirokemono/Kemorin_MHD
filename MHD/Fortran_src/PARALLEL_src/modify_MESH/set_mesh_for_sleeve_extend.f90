@@ -227,8 +227,8 @@
               exp_export_ie%itype_comm(icou,k1) =  iflag_from_import
               exp_export_ie%ie_comm(icou,k1) = iflag_import(inod)
             else if(inod_in_comm(inod) .lt. 0) then
-              exp_export_ie%itype_comm(icou,k1) = -iflag_org_export
-              exp_export_ie%ie_comm(icou,k1) = inod_in_comm(inod)
+              exp_export_ie%itype_comm(icou,k1) = iflag_org_export
+              exp_export_ie%ie_comm(icou,k1) = -inod_in_comm(inod)
             else
               exp_export_ie%itype_comm(icou,k1) =  iflag_add_export
               exp_export_ie%ie_comm(icou,k1) = inod_in_comm(inod)
