@@ -110,7 +110,7 @@
 !
       call renumber_extended_ele_import(my_rank, ele, nod_comm,         &
      &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
-     &    exp_import_ie%ie_comm)
+     &    exp_export_ie%itype_comm, exp_import_ie%ie_comm)
       deallocate(inod_added_import)
 !
       if(i_debug .gt. 0) then

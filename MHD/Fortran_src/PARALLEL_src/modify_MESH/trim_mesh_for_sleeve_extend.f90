@@ -26,18 +26,19 @@
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: trim_import_ie
 !!
 !!      subroutine renumber_extended_ele_import(my_rank,                &
-!!     &          node, ele, nod_comm, expand_nod_comm, expand_ele_comm,&
-!!     &          inod_added_import, ie_new_import)
+!!     &          ele, nod_comm, expand_nod_comm, expand_ele_comm,      &
+!!     &          inod_added_import, itype_new_import, ie_new_import)
 !!        integer, intent(in) :: my_rank
-!!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(communication_table), intent(in) :: expand_ele_comm
 !!        integer(kind = kint), intent(in)                              &
-!!     &     :: inod_added_import(expand_nod_comm%ntot_import)
+!!     &  :: inod_added_import(expand_nod_comm%ntot_import)
+!!        integer(kind = kint), intent(in)                              &
+!!     &  :: itype_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !!        integer(kind = kint), intent(inout)                           &
-!!     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
+!!     &  :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !!
 !!      subroutine find_original_import_address                         &
 !!     &         (node, expand_nod_comm, add_nod_comm, ext_nod_trim,    &
@@ -158,8 +159,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine renumber_extended_ele_import(my_rank,                  &
-     &          ele, nod_comm, expand_nod_comm, expand_ele_comm,  &
-     &          inod_added_import, ie_new_import)
+     &          ele, nod_comm, expand_nod_comm, expand_ele_comm,        &
+     &          inod_added_import, itype_new_import, ie_new_import)
 !
       integer, intent(in) :: my_rank
       type(element_data), intent(in) :: ele
@@ -168,31 +169,38 @@
       type(communication_table), intent(in) :: expand_ele_comm
 !
       integer(kind = kint), intent(in)                                  &
-     &     :: inod_added_import(expand_nod_comm%ntot_import)
+     &  :: inod_added_import(expand_nod_comm%ntot_import)
+      integer(kind = kint), intent(in)                                  &
+     &  :: itype_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !
       integer(kind = kint), intent(inout)                               &
-     &     :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
+     &  :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !
-      integer(kind = kint) :: k1, i, ist_org, ist_exp, ist_ele, num
-      integer(kind = kint) :: inum, jnum
+      integer(kind = kint) :: k1, i, ist_org, ist_imp, ist_exp, ist_ele, num
+      integer(kind = kint) :: inum, jnum, itype
 !
 !
-!$omp parallel private(k1,i,ist_org,ist_exp,ist_ele,num)
+!$omp parallel private(k1,i,ist_org,ist_imp,ist_exp,ist_ele,num)
       do k1 = 1, ele%nnod_4_ele
         do i = 1, nod_comm%num_neib
           ist_ele = expand_ele_comm%istack_import(i-1)
           num =     expand_ele_comm%istack_import(i) - ist_ele
           ist_org = nod_comm%istack_import(i-1)
-          ist_exp = expand_nod_comm%istack_import(i-1)
-!$omp do private(inum,jnum)
+          ist_exp = expand_nod_comm%istack_export(i-1)
+          ist_imp = expand_nod_comm%istack_import(i-1)
+!$omp do private(inum,jnum,itype)
           do inum = 1, num
-            jnum = ie_new_import(inum+ist_ele,k1)
-            if(jnum .lt. 0) then
+            itype = itype_new_import(inum+ist_ele,k1) 
+            jnum =  ie_new_import(inum+ist_ele,k1)
+            if(itype_new_import .eq. iflag_from_import) then
               ie_new_import(inum+ist_ele,k1)                            &
-     &           = nod_comm%item_import(-jnum+ist_org)
+     &           = nod_comm%item_export(jnum+ist_exp)
+            if(itype_new_import .eq. iflag_org_export) then
+              ie_new_import(inum+ist_ele,k1)                            &
+     &           = nod_comm%item_import(jnum+ist_org)
             else if(jnum .gt. 0) then
               ie_new_import(inum+ist_ele,k1)                            &
-     &           = inod_added_import(jnum+ist_exp)
+     &           = inod_added_import(jnum+ist_imp)
             else
               write(*,*) my_rank, 'Failed renumber ie_new_import',      &
       &                 inum, k1

@@ -162,22 +162,37 @@
       integer(kind = kint), intent(inout)                               &
      &            :: iele_lc_new_export(ntot_new_ele_export)
 !
+      integer(kind = kint), allocatable :: iflag_import(:)
       integer(kind = kint), allocatable :: inod_in_comm(:)
       integer(kind = kint) :: i, ist, num, inod, inum, icou, iele, k1
 !
 !
+      allocate(iflag_import(node%numnod))
       allocate(inod_in_comm(node%numnod))
 !
       do i = 1, nod_comm%num_neib
 !$omp parallel workshare
+        iflag_import(1:node%numnod) = 0
         inod_in_comm(1:node%numnod) = 0
 !$omp end parallel workshare
+!
+        ist = nod_comm%istack_import(i-1)
+        num = nod_comm%istack_import(i) - nod_comm%istack_import(i-1)
+!$omp parallel do private(inum,inod)
+        do inum = 1, num
+          inod = nod_comm%item_import(inum+ist)
+          iflag_import(inod) = inum
+        end do
+!$omp end parallel do
+!
         ist = nod_comm%istack_export(i-1)
         num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
+!$omp parallel do private(inum,inod)
         do inum = 1, num
           inod = nod_comm%item_export(inum+ist)
           inod_in_comm(inod) = -inum
         end do
+!$omp end parallel do
 !
         icou = istack_new_nod_export(i-1)
         do inum = 1, mark_nod(i)%num_marked
@@ -206,16 +221,26 @@
 !
           do k1 = 1, ele%nnod_4_ele
             inod = ele%ie(iele,k1)
-            exp_export_ie%ie_comm(icou,k1) = inod_in_comm(inod)
-!            if(inod_in_comm(inod) .eq. 0) write(*,*) my_rank,          &
-!     &        'Failed inod_in_comm(inod)', inod,                       &
-!     &          inod_dbl%irank(inod), nod_comm%id_neib(i)
+            if(iflag_import(inod) .gt. 0) then
+              exp_export_ie%itype_comm(icou,k1) =  iflag_from_import
+              exp_export_ie%ie_comm(icou,k1) = iflag_import(inod)
+            else if(inod_in_comm(inod) .lt. 0) then
+              exp_export_ie%itype_comm(icou,k1) = -iflag_org_export
+              exp_export_ie%ie_comm(icou,k1) = inod_in_comm(inod)
+            else
+              exp_export_ie%itype_comm(icou,k1) =  iflag_add_export
+              exp_export_ie%ie_comm(icou,k1) = inod_in_comm(inod)
+            end if
+!
+            if(exp_export_ie%ie_comm(inod) .eq. 0) write(*,*) my_rank,  &
+     &        'Failed ie_comm(iele,k1)', iele, k1, inod,                &
+     &        inod_dbl%irank(inod), nod_comm%id_neib(i)
           end do
         end do
 !$omp end parallel do
       end do
 !
-      deallocate(inod_in_comm)
+      deallocate(inod_in_comm, iflag_import)
 !
       end subroutine set_export_4_expanded_mesh
 !
@@ -287,6 +312,13 @@
      &    expand_ele_comm%istack_import, izero,                         &
      &    exp_import_ie%iele_gl_comm)
       do k1 = 1, ele%nnod_4_ele
+        call comm_items_send_recv                                       &
+     &     (expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
+     &      expand_ele_comm%istack_export,                              &
+     &      exp_export_ie%itype_comm(1,k1),                             &
+     &      expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
+     &      expand_ele_comm%istack_import, izero,                       &
+     &      exp_import_ie%itype_comm(1,k1))
         call comm_items_send_recv                                       &
      &     (expand_ele_comm%num_neib, expand_ele_comm%id_neib,          &
      &      expand_ele_comm%istack_export, exp_export_ie%ie_comm(1,k1), &

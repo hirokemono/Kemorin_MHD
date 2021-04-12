@@ -45,11 +45,18 @@
         integer(kind = kint) :: nnod_4_ele
 !>        global element ID
         integer(kind = kint_gl), allocatable :: iele_gl_comm(:)
+!>        refered element type
+!!         (0:added_data, 1: exsited in origianl, 2: exsited in import)
+        integer(kind = kint), allocatable :: itype_comm(:,:)
 !>        element connectivity
         integer(kind = kint), allocatable :: ie_comm(:,:)
 !>        Home process
         integer(kind = kint), allocatable :: irank_comm(:)
       end type ele_data_for_sleeve_ext
+!
+      integer(kidn = kint), parameter :: iflag_add_export =  0
+      integer(kidn = kint), parameter :: iflag_org_export =  1
+      integer(kidn = kint), parameter :: iflag_from_import = 2
 !
 ! ----------------------------------------------------------------------
 !
@@ -93,19 +100,21 @@
       comm_connect%nele_comm =  ntot_comm
       comm_connect%nnod_4_ele = nnod_4_ele
 !
-      allocate(comm_connect%iele_gl_comm(comm_connect%nele_comm))
-      allocate(comm_connect%ie_comm(comm_connect%nele_comm,nnod_4_ele))
-      allocate(comm_connect%irank_comm(comm_connect%nele_comm))
+      allocate(comm_connect%iele_gl_comm(ntot_comm))
+      allocate(comm_connect%itype_comm(ntot_comm,nnod_4_ele))
+      allocate(comm_connect%ie_comm(ntot_comm,nnod_4_ele))
+      allocate(comm_connect%irank_comm(ntot_comm))
 !
       if(comm_connect%nele_comm .le. 0) return
 !
 !$omp parallel workshare
-      comm_connect%iele_gl_comm(1:comm_connect%nele_comm) =       0
-      comm_connect%irank_comm(1:comm_connect%nele_comm) =        -1
+      comm_connect%iele_gl_comm(1:ntot_comm) =       0
+      comm_connect%irank_comm(1:ntot_comm) =        -1
 !$omp end parallel workshare
 !
 !$omp parallel workshare
-      comm_connect%ie_comm(1:comm_connect%nele_comm,1:nnod_4_ele) = 0
+      comm_connect%itype_comm(1:ntot_comm,1:nnod_4_ele) = -1
+      comm_connect%ie_comm(1:ntot_comm,1:nnod_4_ele) = 0
 !$omp end parallel workshare
 !
       end subroutine alloc_ele_data_sleeve_ext
@@ -137,7 +146,7 @@
       if(allocated(comm_connect%ie_comm) .eqv. .FALSE.) return
 !
       deallocate(comm_connect%iele_gl_comm)
-      deallocate(comm_connect%ie_comm)
+      deallocate(comm_connect%ie_comm, comm_connect%itype_comm)
       deallocate(comm_connect%irank_comm)
 !
       end subroutine dealloc_ele_data_sleeve_ext
