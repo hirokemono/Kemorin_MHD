@@ -232,8 +232,8 @@
               exp_export_ie%ie_comm(icou,k1) = inod_in_comm(inod)
             end if
 !
-            if(exp_export_ie%ie_comm(inod) .eq. 0) write(*,*) my_rank,  &
-     &        'Failed ie_comm(iele,k1)', iele, k1, inod,                &
+            if(exp_export_ie%ie_comm(iele,k1) .eq. 0) write(*,*)        &
+     &        my_rank, 'Failed ie_comm(iele,k1)', iele, k1, inod,       &
      &        inod_dbl%irank(inod), nod_comm%id_neib(i)
           end do
         end do
