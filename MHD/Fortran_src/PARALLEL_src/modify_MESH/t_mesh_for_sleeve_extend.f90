@@ -54,9 +54,9 @@
         integer(kind = kint), allocatable :: irank_comm(:)
       end type ele_data_for_sleeve_ext
 !
-      integer(kidn = kint), parameter :: iflag_add_export =  0
-      integer(kidn = kint), parameter :: iflag_org_export =  1
-      integer(kidn = kint), parameter :: iflag_from_import = 2
+      integer(kind = kint), parameter :: iflag_add_export =  0
+      integer(kind = kint), parameter :: iflag_org_export =  1
+      integer(kind = kint), parameter :: iflag_from_import = 2
 !
 ! ----------------------------------------------------------------------
 !
