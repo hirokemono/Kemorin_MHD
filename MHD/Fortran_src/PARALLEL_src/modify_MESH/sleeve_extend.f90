@@ -92,7 +92,6 @@
       call init_min_dist_from_import                                    &
      &   (sleeve_exp_p, mesh%nod_comm, mesh%node, mesh%ele, neib_ele,   &
      &    vect_tmp, dist_4_comm%distance_in_export)
-      deallocate(vect_tmp)
 !
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
