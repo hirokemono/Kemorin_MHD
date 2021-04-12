@@ -11,6 +11,9 @@
 !!      subroutine count_number_of_node_stack4(nnod, istack_nod_list)
 !!      subroutine set_global_ele_id(txt, nele, istack_internal_e,      &
 !!     &         internal_flag, e_comm, iele_global)
+!!      subroutine check_global_ele_id                                  &
+!!     &         (txt, nele, internal_flag, e_comm, iele_global)
+!!        type(communication_table), intent(in) :: e_comm
 !!      subroutine check_element_position(txt, nele, x_ele, e_comm)
 !!@endverbatim
 !!
@@ -124,6 +127,48 @@
       end do
 !
       end subroutine set_global_ele_id
+!
+!-----------------------------------------------------------------------
+!
+      subroutine check_global_ele_id                                    &
+     &         (txt, nele, internal_flag, e_comm, iele_global)
+!
+      use t_comm_table
+      use solver_SR_type
+!
+      character(len=kchara), intent(in) :: txt
+      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint), intent(in) :: internal_flag(nele)
+!
+      type(communication_table), intent(in) :: e_comm
+!
+      integer(kind = kint_gl), intent(in)  :: iele_global(nele)
+!
+      integer(kind = kint_gl), allocatable :: iele_comm(:)
+      integer(kind = kint) :: iele
+!
+!
+      allocate(iele_comm(nele))
+!
+!$omp parallel do private(iele)
+      do iele = 1, nele
+        if(internal_flag(iele) .gt. 0) then
+          iele_comm(iele) = iele_global(iele)
+        else
+          iele_comm(iele) = 0
+        end if
+      end do
+!$omp end parallel do
+!
+      call SOLVER_SEND_RECV_int8_type(nele, e_comm, iele_comm)
+!
+      do iele = 1, nele
+        if(iele_comm(iele) .ne. iele_global(iele))  write(*,*)          &
+     &        'Failed communication for ', trim(txt), ': ', iele
+      end do
+      deallocate(iele_comm)
+!
+      end subroutine check_global_ele_id
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
