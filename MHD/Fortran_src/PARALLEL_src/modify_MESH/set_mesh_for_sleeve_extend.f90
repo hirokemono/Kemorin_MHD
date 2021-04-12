@@ -137,6 +137,8 @@
      &          inod_lc_new_export, exp_export_xx,                      &
      &          iele_lc_new_export, exp_export_ie)
 !
+      use t_mesh_for_sleeve_extend
+!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
