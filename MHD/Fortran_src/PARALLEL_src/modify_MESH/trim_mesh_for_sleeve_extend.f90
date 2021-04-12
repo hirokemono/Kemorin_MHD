@@ -192,10 +192,10 @@
           do inum = 1, num
             itype = itype_new_import(inum+ist_ele,k1) 
             jnum =  ie_new_import(inum+ist_ele,k1)
-            if(itype_new_import .eq. iflag_from_import) then
+            if(itype .eq. iflag_from_import) then
               ie_new_import(inum+ist_ele,k1)                            &
      &           = nod_comm%item_export(jnum+ist_exp)
-            if(itype_new_import .eq. iflag_org_export) then
+            if(itype .eq. iflag_org_export) then
               ie_new_import(inum+ist_ele,k1)                            &
      &           = nod_comm%item_import(jnum+ist_org)
             else if(jnum .gt. 0) then
