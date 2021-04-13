@@ -122,7 +122,8 @@
 !        if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !
         call calypso_mpi_barrier
-        write(*,*) my_rank, 'iflag_process_extend', iflag_process_extend
+        if(my_rank .eq. 0) write(*,*) 'iflag_process_extend',           &
+     &                    iflag_process_extend
         if(iflag_process_extend .eq. 0) exit
 !
         call set_nod_and_ele_infos(mesh%node, mesh%ele)
