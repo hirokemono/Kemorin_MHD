@@ -149,6 +149,7 @@
       if(my_rank .eq. 0) write(*,*) 'Failed element list:',             &
      &                             ntot_failed_gl, nele_failed_gl
 !
+      if(i_debug .eq. 0) return
       write(*,*) my_rank, 'mark_nod%num_marked',                        &
      &         marks_4_extend%mark_nod(1:nod_comm%num_neib)%num_marked, &
      &        ' of ', node%numnod
