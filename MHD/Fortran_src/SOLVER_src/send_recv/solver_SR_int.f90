@@ -256,59 +256,30 @@
 !>      Structure of communication buffer for integer
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !C
-!
-      integer (kind = kint) :: neib, istart, iend, k
-      integer :: inum
+      integer (kind = kint) :: k
 !
 !
       call resize_iwork_SR_t(NEIBPETOT, NEIBPETOT,                      &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
      &    SR_sig , SR_i)
 !
-!C-- SEND
-      do neib= 1, NEIBPETOT
-        istart= STACK_EXPORT(neib-1)
-        iend =  STACK_EXPORT(neib  ) 
-        inum  = int(iend - istart)
-!
 !$omp parallel do
-        do k= istart+1, iend
-           SR_i%iWS(k)= iX(NOD_EXPORT(k))
-        end do
+      do k= 1,  STACK_EXPORT(NEIBPETOT)
+        SR_i%iWS(k)= iX(NOD_EXPORT(k))
+      end do
 !$omp end parallel do
 !
-        call MPI_ISEND(SR_i%iWS(istart+1), inum, CALYPSO_INTEGER,       &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
-     &                 SR_sig%req1(neib), ierr_MPI)
-      enddo
+      call calypso_send_recv_intcore                                    &
+     &   (NEIBPETOT, NEIBPE, STACK_EXPORT, SR_i%iWS(1), izero,          &
+     &    NEIBPETOT, NEIBPE, STACK_IMPORT, SR_i%iWR(1), SR_sig)
 
-!C
-!C-- RECEIVE
-      do neib= 1, NEIBPETOT
-        istart= STACK_IMPORT(neib-1)
-        inum  = int(STACK_IMPORT(neib  ) - istart)
-        call MPI_IRECV(SR_i%iWR(istart+1), inum, CALYPSO_INTEGER,       &
-     &                  int(NEIBPE(neib)), 0, CALYPSO_COMM,             &
-     &                  SR_sig%req2(neib), ierr_MPI)
-      enddo
-
-      call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
-   
-!$omp parallel private(neib,istart,inum)
-      do neib = 1, NEIBPETOT
-        istart= STACK_IMPORT(neib-1)
-        iend =  STACK_IMPORT(neib  ) 
-!$omp do
-        do k= istart+1, iend
-          iX(NOD_IMPORT(k))= SR_i%iWR(k)
-        end do
-!$omp end do nowait
+!$omp parallel do private(k)
+      do k = 1, STACK_IMPORT(NEIBPETOT) 
+        iX(NOD_IMPORT(k)) = SR_i%iWR(k)
       end do
-!$omp end parallel
+!$omp end parallel do
 
-      call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
+      call calypso_send_recv_fin(NEIBPETOT, izero, SR_sig)
 
       end subroutine solver_send_recv_i
 !
