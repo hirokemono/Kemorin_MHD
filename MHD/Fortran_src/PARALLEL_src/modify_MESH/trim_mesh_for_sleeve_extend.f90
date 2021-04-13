@@ -202,7 +202,7 @@
               ie_new_import(inum+ist_ele,k1)                            &
      &           = inod_added_import(jnum+ist_add)
             end if
-            if(ie_new_import(inum+ist_ele,k1) .le 0) then
+if(ie_new_import(inum+ist_ele,k1) .le. 0) then
               write(*,*) my_rank, 'Failed renumber ie_new_import',      &
       &                 inum, k1, itype, jnum
             end if
