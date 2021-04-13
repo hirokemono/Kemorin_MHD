@@ -143,57 +143,30 @@
 !>      Structure of communication buffer for 8-byte integer
       type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
-      integer (kind = kint) :: neib, istart, iend, k
-      integer :: inum
+      integer (kind = kint) :: k
 !
 !
       call resize_i8work_SR(NEIBPETOT, NEIBPETOT,                       &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
      &    SR_sig, SR_il)
 !
-!C-- SEND
-      do neib= 1, NEIBPETOT
-        istart= STACK_EXPORT(neib-1)
-        iend  = STACK_EXPORT(neib  )
-        inum  = int(iend - istart)
-
 !$omp parallel do
-        do k= istart+1, iend
-          SR_il%i8WS(k)= iX8(NOD_EXPORT(k))
-        end do
+      do k = 1, STACK_EXPORT(NEIBPETOT)
+        SR_il%i8WS(k)= iX8(NOD_EXPORT(k))
+      end do
 !$omp end parallel do
 !
-        call MPI_ISEND(SR_il%i8WS(istart+1), inum, CALYPSO_GLOBAL_INT,  &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
-     &                 SR_sig%req1(neib), ierr_MPI)
-      end do
-!C
-!C-- RECEIVE
-      do neib = 1, NEIBPETOT
-        istart= STACK_IMPORT(neib-1)
-        inum  = int(STACK_IMPORT(neib  ) - istart)
-        call MPI_IRECV(SR_il%i8WR(istart+1), inum, CALYPSO_GLOBAL_INT,  &
-     &                 int(NEIBPE(neib)), 0, CALYPSO_COMM,              &
-     &                 SR_sig%req2(neib), ierr_MPI)
-      end do
+      call calypso_send_recv_i8core                                     &
+     &   (NEIBPETOT, NEIBPE, STACK_EXPORT, SR_il%i8WS(1), izero,        &
+     &    NEIBPETOT, NEIBPE, STACK_IMPORT, SR_il%i8WR(1), SR_sig)
 
-      call MPI_WAITALL                                                  &
-     &  (int(NEIBPETOT), SR_sig%req2(1), SR_sig%sta2(1,1), ierr_MPI)
-
-!$omp parallel private(neib,istart,inum)
-      do neib = 1, NEIBPETOT
-        istart= STACK_IMPORT(neib-1)
-        iend  = STACK_IMPORT(neib  )
-!$omp do
-        do k = istart+1, iend
-          iX8(NOD_IMPORT(k))= SR_il%i8WR(k)
-        end do
-!$omp end do nowait
+!$omp parallel do private(k)
+      do k = 1, STACK_IMPORT(NEIBPETOT)
+        iX8(NOD_IMPORT(k))= SR_il%i8WR(k)
       end do
-!$omp end parallel
+!$omp end parallel do
 
-      call MPI_WAITALL                                                  &
-     &   (int(NEIBPETOT), SR_sig%req1(1), SR_sig%sta1(1,1), ierr_MPI)
+      call calypso_send_recv_fin(NEIBPETOT, izero, SR_sig)
 
       end subroutine solver_send_recv_i8
 !
