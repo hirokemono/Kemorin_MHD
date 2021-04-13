@@ -121,14 +121,10 @@
       integer(kind = kint) :: num
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'count_import_item_for_extend'
       call count_import_item_for_extend                                 &
      &   (nprocs, ext_nod_trim%istack_trimmed_pe,                       &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%num_import)
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 's_cal_total_and_stacks'
       call s_cal_total_and_stacks                                       &
      &   (add_nod_comm%nrank_import, add_nod_comm%num_import, izero,    &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
@@ -140,8 +136,6 @@
       num = add_nod_comm%ntot_import
       allocate(trim_nod_to_ext%import_lc_trimmed(num))
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'set_import_item_for_extend'
       call set_import_item_for_extend                                   &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
@@ -159,8 +153,6 @@
       call alloc_calypso_export_item(add_nod_comm)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'comm_items_send_recv'
       call comm_items_send_recv                                         &
      &  (add_nod_comm%nrank_import, add_nod_comm%irank_import,          &
      &   add_nod_comm%istack_import, trim_nod_to_ext%import_lc_trimmed, &
