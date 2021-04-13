@@ -74,6 +74,7 @@
      &         (iflag_recv, transfer_tbl, new_nod_comm,                 &
      &          nnod_org, nnod_new, vec_org, vec_new, v_sol)
 !
+      use m_solver_SR
       use calypso_SR_type
       use solver_SR_type
 !
@@ -91,7 +92,8 @@
 !
       call calypso_SR_type_1(iflag_recv, transfer_tbl,                  &
      &    nnod_org, nnod_new, vec_org(1), vec_new(1))
-      call SOLVER_SEND_RECV_type(nnod_new, new_nod_comm, vec_new(1))
+      call SOLVER_SEND_RECV_type(nnod_new, new_nod_comm,                &
+     &                           SR_sig1, SR_r1, vec_new(1))
 !
       end subroutine scalar_to_new_partition
 !

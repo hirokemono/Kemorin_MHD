@@ -220,6 +220,7 @@
      &                                scl_nod, v_sol)
 !
       use m_work_time
+      use m_solver_SR
       use solver_SR_type
 !
       integer(kind = kint), intent(in) :: numnod
@@ -237,7 +238,8 @@
        end do
 !$omp end parallel do
 !
-      call SOLVER_SEND_RECV_type(numnod, nod_comm, v_sol%x_vec(1))
+      call SOLVER_SEND_RECV_type(numnod, nod_comm,                      &
+     &                           SR_sig1, SR_r1, v_sol%x_vec(1))
 !
 !$omp parallel do
       do inod=1, numnod

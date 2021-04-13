@@ -50,6 +50,7 @@
 !
       subroutine set_volume_at_node(mesh, volume_nod, volume_nod_tot)
 !
+      use m_solver_SR
       use calypso_mpi_real
       use int_volume_of_single_domain
       use solver_SR_type
@@ -63,8 +64,8 @@
 !
 !
       call cal_node_volue(mesh%node, mesh%ele, volume_nod)
-      call SOLVER_SEND_RECV_type                                        &
-     &   (mesh%node%numnod, mesh%nod_comm, volume_nod)
+      call SOLVER_SEND_RECV_type(mesh%node%numnod, mesh%nod_comm,       &
+     &                           SR_sig1, SR_r1, volume_nod)
 !
       vol_lc = 0.0d0
       do inod = 1, mesh%node%internal_node

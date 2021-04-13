@@ -45,6 +45,7 @@
       subroutine set_repart_node_position                               &
      &         (part_tbl, node, new_comm, new_node)
 !
+      use m_solver_SR
       use calypso_mpi_int
       use calypso_SR_type
       use select_copy_from_recv
@@ -80,11 +81,11 @@
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (new_node%numnod, new_comm, new_node%inod_global)
       call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,1))
+     &   (new_node%numnod, new_comm, SR_sig1, SR_r1, new_node%xx(1,1))
       call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,2))
+     &   (new_node%numnod, new_comm, SR_sig1, SR_r1, new_node%xx(1,2))
       call SOLVER_SEND_RECV_type                                        &
-     &   (new_node%numnod, new_comm, new_node%xx(1,3))
+     &   (new_node%numnod, new_comm, SR_sig1, SR_r1, new_node%xx(1,3))
 !
       end subroutine set_repart_node_position
 !
