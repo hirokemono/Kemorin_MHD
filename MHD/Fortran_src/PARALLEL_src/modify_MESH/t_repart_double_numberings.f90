@@ -53,6 +53,7 @@
       subroutine node_dbl_numbering_to_repart                           &
      &         (nod_comm, node, part_tbl, new_ids_on_org)
 !
+      use m_solver_SR
       use nod_phys_send_recv
       use reverse_SR_int
       use solver_SR_type
@@ -86,9 +87,9 @@
      &    recieved_ids%irank, new_ids_on_org%irank)
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, new_ids_on_org%irank)
+     &   (node%numnod, nod_comm, SR_sig1, SR_i1, new_ids_on_org%irank)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, new_ids_on_org%index)
+     &   (node%numnod, nod_comm, SR_sig1, SR_i1, new_ids_on_org%index)
       call dealloc_double_numbering(recieved_ids)
 !
       end subroutine node_dbl_numbering_to_repart
@@ -132,6 +133,7 @@
 !
       subroutine double_numbering_4_element(ele, ele_comm, ele_ids)
 !
+      use m_solver_SR
       use solver_SR_type
 !
       type(element_data), intent(in) :: ele
@@ -149,9 +151,9 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, ele_ids%index)
+     &   (ele%numele, ele_comm, SR_sig1, SR_i1, ele_ids%index)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (ele%numele, ele_comm, ele_ids%irank)
+     &   (ele%numele, ele_comm, SR_sig1, SR_i1, ele_ids%irank)
 !
       end subroutine double_numbering_4_element
 !

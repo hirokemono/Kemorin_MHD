@@ -107,6 +107,7 @@
       subroutine repartition_node_group(node, nod_grp, part_tbl,        &
      &          new_node, new_comm, new_nod_grp)
 !
+      use m_solver_SR
       use calypso_SR_type
       use solver_SR_type
       use select_copy_from_recv
@@ -148,7 +149,7 @@
      &      node%numnod, new_node%internal_node,                        &
      &      iflag_org(1), iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
 !
         new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
@@ -170,7 +171,7 @@
      &      node%numnod, new_node%internal_node,                        &
      &      iflag_org(1), iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
 !
         call set_group_item_repart                                      &
      &     (new_node%numnod, iflag_new(1), new_nod_grp, icou)
@@ -184,6 +185,7 @@
       subroutine repartition_element_group(ele, ele_grp, ele_comm,      &
      &          ele_tbl, new_ele, new_ele_grp)
 !
+      use m_solver_SR
       use calypso_SR_type
       use solver_SR_type
       use select_copy_from_recv
@@ -221,7 +223,7 @@
      &     (igrp, ele%numele, ele_grp, iflag_org)
 !
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, ele_comm, iflag_org(1))
+     &     (new_ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org(1))
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1))
@@ -250,7 +252,7 @@
      &     (igrp, ele%numele, ele_grp, iflag_org)
 !
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (ele%numele, ele_comm, iflag_org(1))
+     &     (ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org(1))
         call calypso_SR_type_int(iflag_import_item, ele_tbl,            &
      &      ele%numele, ele_tbl%ntot_import,                            &
      &      iflag_org(1), iflag_new(1))
@@ -267,6 +269,7 @@
       subroutine repartition_surface_group(ele, surf_grp, ele_comm,     &
      &          ele_tbl, new_ele, new_surf_grp)
 !
+      use m_solver_SR
       use calypso_SR_type
       use solver_SR_type
       use select_copy_from_recv
@@ -306,7 +309,7 @@
      &       (igrp, k1, ele%numele, surf_grp, iflag_org)
 !
           call SOLVER_SEND_RECV_int_type                                &
-     &       (ele%numele, ele_comm, iflag_org)
+     &       (ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org)
           call calypso_SR_type_int(iflag_import_item, ele_tbl,          &
      &        ele%numele, ele_tbl%ntot_import,                          &
      &        iflag_org(1), iflag_new(1))
@@ -338,7 +341,7 @@
      &       (igrp, k1, ele%numele, surf_grp, iflag_org)
 !
           call SOLVER_SEND_RECV_int_type                                &
-     &       (ele%numele, ele_comm, iflag_org)
+     &       (ele%numele, ele_comm, SR_sig1, SR_i1, iflag_org)
           call calypso_SR_type_int(iflag_import_item, ele_tbl,          &
      &        ele%numele, ele_tbl%ntot_import,                          &
      &        iflag_org(1), iflag_new(1))

@@ -4,7 +4,7 @@ check_dependency_SGS_MHD.o: $(MHD_COMMON_DIR)/check_dependency_SGS_MHD.f90 m_pre
 	$(F90) -c $(F90OPTFLAGS) $<
 check_dependency_for_MHD.o: $(MHD_COMMON_DIR)/check_dependency_for_MHD.f90 m_precision.o m_error_IDs.o m_machine_parameter.o calypso_mpi.o t_control_parameter.o t_spheric_parameter.o t_phys_data.o t_phys_address.o t_base_field_labels.o t_physical_property.o t_SPH_mesh_field_data.o set_control_field_data.o
 	$(F90) -c $(F90OPTFLAGS) $<
-const_comm_table_fluid.o: $(MHD_COMMON_DIR)/const_comm_table_fluid.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data_MHD.o calypso_mpi.o t_comm_table.o t_geometry_data.o set_comm_table_fluid.o solver_SR_type.o
+const_comm_table_fluid.o: $(MHD_COMMON_DIR)/const_comm_table_fluid.f90 m_precision.o m_machine_parameter.o t_mesh_data.o t_geometry_data_MHD.o calypso_mpi.o m_solver_SR.o t_comm_table.o t_geometry_data.o set_comm_table_fluid.o solver_SR_type.o
 	$(F90) -c $(F90OPTFLAGS) $<
 const_layering_table.o: $(MHD_COMMON_DIR)/const_layering_table.f90 m_precision.o t_FEM_control_parameter.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<

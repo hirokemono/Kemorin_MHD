@@ -34,12 +34,12 @@
       subroutine check_extended_element                                 &
      &         (new_nod_comm, new_node, new_ele, new_ele_comm)
 !
+      use m_solver_SR
       use t_comm_table
       use t_geometry_data
       use t_next_node_ele_4_node
       use t_para_double_numbering
 !
-      use m_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(inout) :: new_nod_comm
@@ -96,12 +96,12 @@
       end do
 !
       do k1 = 1, new_ele%nnod_4_ele
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, inod_lc_test(1,k1))
+        call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
+     &      SR_sig1, SR_i1, inod_lc_test(1,k1))
       end do
       do k1 = 1, new_ele%nnod_4_ele
-        call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, irank_lc_test(1,k1))
+        call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
+     &      SR_sig1, SR_i1, irank_lc_test(1,k1))
       end do
 !
       icou = 0

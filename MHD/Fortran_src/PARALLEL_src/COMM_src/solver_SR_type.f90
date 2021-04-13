@@ -25,9 +25,11 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
-!!      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, iX)
+!!      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, SR_sig, SR_i, iX)
 !!      subroutine SOLVER_SEND_RECV_int8_type(NP, comm_tbl, i8X)
 !!        type(communication_table), intent(in) :: comm_tbl
+!!        type(send_recv_status), intent(inout) :: SR_sig
+!!        type(send_recv_int_buffer), intent(inout) :: SR_i
 !!        integer(kind = kint), intent(in) :: NP
 !!        real(kind = kreal), intent(inout) :: X(NP)
 !!        integer(kind = kint), intent(inout) :: iX(NP)
@@ -261,17 +263,21 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, iX)
+      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, SR_sig, SR_i, iX)
 !
       use t_comm_table
+      use t_solver_SR
       use t_solver_SR_int
       use solver_SR_int
-      use m_solver_SR
 !
       type(communication_table), intent(in) :: comm_tbl
       integer(kind = kint), intent(in) :: NP
 !
       integer(kind = kint), intent(inout) :: iX(NP)
+!>      Structure of communication flags
+      type(send_recv_status), intent(inout) :: SR_sig
+!>      Structure of communication buffer for integer
+      type(send_recv_int_buffer), intent(inout) :: SR_i
 !
 !
       if(iflag_FSR_time) call start_elapsed_time(ist_elapsed_FSR+1)
@@ -279,7 +285,7 @@
      &   (NP, comm_tbl%num_neib, comm_tbl%id_neib,                      &
      &    comm_tbl%istack_import, comm_tbl%item_import,                 &
      &    comm_tbl%istack_export, comm_tbl%item_export,                 &
-     &    SR_sig1, SR_i1, iX(1))
+     &    SR_sig, SR_i, iX(1))
       if(iflag_FSR_time) call end_elapsed_time(ist_elapsed_FSR+1)
 !
       end subroutine SOLVER_SEND_RECV_int_type

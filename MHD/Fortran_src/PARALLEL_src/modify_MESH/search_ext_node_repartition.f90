@@ -112,7 +112,7 @@
       end do
 !$omp end parallel do
       call SOLVER_SEND_RECV_int_type                                    &
-     &  (new_node%numnod, new_comm, inod_recv)
+     &  (new_node%numnod, new_comm, SR_sig1, SR_i1, inod_recv)
 !
       allocate(item_import_recv(new_comm%ntot_import))
 !$omp parallel do private(jnum,jnod)

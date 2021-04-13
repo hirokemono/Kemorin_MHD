@@ -92,6 +92,7 @@
       subroutine extended_node_group(node, nod_grp,                     &
      &          new_node, new_comm, new_nod_grp)
 !
+      use m_solver_SR
       use solver_SR_type
       use redistribute_group_data
       use cal_minmax_and_stacks
@@ -122,7 +123,7 @@
         call mark_org_group_repart                                      &
      &     (igrp, node%numnod, nod_grp, iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
         new_nod_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
 !
@@ -136,7 +137,7 @@
         call mark_org_group_repart                                      &
      &     (igrp, node%numnod, nod_grp, iflag_new(1))
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_node%numnod, new_comm, iflag_new)
+     &     (new_node%numnod, new_comm, SR_sig1, SR_i1, iflag_new)
         call set_group_item_repart                                      &
      &     (new_node%numnod, iflag_new(1), new_nod_grp, icou)
       end do
@@ -149,6 +150,7 @@
       subroutine extended_element_group                                 &
      &         (ele_grp, new_ele, new_ele_comm, new_ele_grp)
 !
+      use m_solver_SR
       use solver_SR_type
       use redistribute_group_data
       use cal_minmax_and_stacks
@@ -178,7 +180,7 @@
         call mark_org_group_repart                                      &
      &     (igrp, new_ele%numele, ele_grp, iflag_new)
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, iflag_new(1))
+     &     (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new(1))
           new_ele_grp%nitem_grp(igrp) = sum(iflag_new)
       end do
 !
@@ -193,7 +195,7 @@
      &     (igrp, new_ele%numele, ele_grp, iflag_new)
 !
         call SOLVER_SEND_RECV_int_type                                  &
-     &     (new_ele%numele, new_ele_comm, iflag_new(1))
+     &     (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new(1))
 !
         call set_group_item_repart                                      &
      &     (new_ele%numele, iflag_new(1), new_ele_grp, icou)
@@ -207,6 +209,7 @@
       subroutine extended_surface_group                                 &
      &         (surf_grp, new_ele, new_ele_comm, new_surf_grp)
 !
+      use m_solver_SR
       use solver_SR_type
       use redistribute_group_data
       use cal_minmax_and_stacks
@@ -237,7 +240,7 @@
           call mark_org_surf_group_repart                               &
      &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
           call SOLVER_SEND_RECV_int_type                                &
-     &       (new_ele%numele, new_ele_comm, iflag_new)
+     &       (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new)
           new_surf_grp%nitem_grp(igrp) = new_surf_grp%nitem_grp(igrp)   &
      &                                  + sum(iflag_new)
         end do
@@ -254,7 +257,7 @@
           call mark_org_surf_group_repart                               &
      &       (igrp, k1, new_ele%numele, surf_grp, iflag_new)
           call SOLVER_SEND_RECV_int_type                                &
-     &       (new_ele%numele, new_ele_comm, iflag_new)
+     &       (new_ele%numele, new_ele_comm, SR_sig1, SR_i1, iflag_new)
           call set_surf_group_item_repart                               &
      &      (k1, new_ele%numele, iflag_new(1), new_surf_grp, icou)
         end do

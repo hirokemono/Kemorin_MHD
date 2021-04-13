@@ -63,6 +63,7 @@
      &          node, ele, nod_comm, fluid_comm)
 !
       use calypso_mpi
+      use m_solver_SR
       use t_comm_table
       use t_geometry_data
 !
@@ -84,7 +85,8 @@
       call mark_4_fluid_nod_by_ele(ele%numele, ele%nnod_4_ele, ele%ie,  &
      &    iele_fl_smp_stack(0), iele_fl_smp_stack(np_smp) )
 !
-      call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm, iflag_nod)
+      call SOLVER_SEND_RECV_int_type(node%numnod, nod_comm,             &
+     &                               SR_sig1, SR_i1, iflag_nod)
 !
 !
       call mark_reduced_neib_domain(nod_comm%num_neib,                  &

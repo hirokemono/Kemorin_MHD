@@ -329,6 +329,7 @@
      &         PEsmpTOT, NP_org, NP_dest, i_vector_org,                 &
      &         SR_sig, SR_i, i_vector_dest)
 !
+      use m_solver_SR
       use t_solver_SR_int
       use t_geometry_data
       use t_interpolate_tbl_org
@@ -394,7 +395,7 @@
 !
       if (comm_dest%num_neib.gt.0) then
         call SOLVER_SEND_RECV_int_type(NP_dest, comm_dest,              &
-     &                                 v_2nd_sol%ix_vec(1))
+     &      SR_sig1, SR_i1, v_2nd_sol%ix_vec(1))
       end if
 !
 !$omp parallel workshare

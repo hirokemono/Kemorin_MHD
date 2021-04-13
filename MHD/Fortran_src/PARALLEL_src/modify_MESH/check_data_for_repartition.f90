@@ -51,6 +51,7 @@
       subroutine check_repart_node_transfer(nod_comm, node,             &
      &          new_comm, new_node, part_tbl, new_ids_on_org)
 !
+      use m_solver_SR
       use calypso_SR_type
       use solver_SR_type
       use select_copy_from_recv
@@ -82,9 +83,9 @@
       end do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, irank_old_lc)
+     &   (node%numnod, nod_comm, SR_sig1, SR_i1, irank_old_lc)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (node%numnod, nod_comm, inod_old_lc)
+     &   (node%numnod, nod_comm, SR_sig1, SR_i1, inod_old_lc)
 !
 
       allocate(inod_new_lc(new_node%numnod))
@@ -98,9 +99,9 @@
       end do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, irank_new_lc)
+     &   (new_node%numnod, new_comm, SR_sig1, SR_i1, irank_new_lc)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, inod_new_lc)
+     &   (new_node%numnod, new_comm, SR_sig1, SR_i1, inod_new_lc)
 !
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
@@ -110,10 +111,10 @@
      &    node%numnod, new_node%internal_node,                          &
      &    new_ids_on_org%irank(1), new_recved_id1%irank(1))
 !
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, new_recved_id1%index)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, new_recved_id1%irank)
+      call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
+     &    SR_sig1, SR_i1, new_recved_id1%index)
+      call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
+     &    SR_sig1, SR_i1, new_recved_id1%irank)
 !
 !
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
@@ -122,10 +123,10 @@
       call calypso_SR_type_int(iflag_import_item, part_tbl,             &
      &    node%numnod, new_node%internal_node,                          &
      &    new_ids_on_org%irank(1), new_recved_id2%irank(1))
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, new_recved_id2%index)
-      call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, new_recved_id2%irank)
+      call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
+     &    SR_sig1, SR_i1, new_recved_id2%index)
+      call SOLVER_SEND_RECV_int_type(new_node%numnod, new_comm,         &
+     &    SR_sig1, SR_i1, new_recved_id2%irank)
 !
 !      write(*,*) 'Check new_recved_id2%irank, new_recved_id2%index'
       do inod = 1, new_node%internal_node

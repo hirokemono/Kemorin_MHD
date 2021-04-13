@@ -321,6 +321,7 @@
 !
       subroutine check_new_node_and_comm(new_comm, new_node, dbl_id2)
 !
+      use m_solver_SR
       use calypso_mpi_int
       use solver_SR_type
 !
@@ -348,9 +349,9 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, inod_lc_check)
+     &   (new_node%numnod, new_comm, SR_sig1, SR_i1, inod_lc_check)
       call SOLVER_SEND_RECV_int_type                                    &
-     &   (new_node%numnod, new_comm, irank_lc_check)
+     &   (new_node%numnod, new_comm, SR_sig1, SR_i1, irank_lc_check)
 !
       icou = 0
       do inod = new_node%internal_node+1, new_node%numnod

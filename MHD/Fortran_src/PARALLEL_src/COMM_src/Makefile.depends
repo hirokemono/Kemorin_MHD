@@ -34,7 +34,7 @@ set_ctl_parallel_platform.o: $(COMMDIR)/set_ctl_parallel_platform.f90 m_precisio
 	$(F90) -c $(F90OPTFLAGS) $<
 set_element_comm_table.o: $(COMMDIR)/set_element_comm_table.f90 m_precision.o m_constants.o calypso_mpi.o t_comm_table.o t_element_double_number.o t_para_double_numbering.o t_next_node_ele_4_node.o t_failed_export_list.o calypso_mpi_int.o quicksort.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_type.o: $(COMMDIR)/solver_SR_type.f90 m_precision.o m_work_time.o m_elapsed_labels_SEND_RECV.o t_comm_table.o t_solver_SR.o solver_SR.o solver_SR_3.o m_solver_SR.o solver_SR_6.o solver_SR_N.o t_solver_SR_int.o solver_SR_int.o t_solver_SR_int8.o solver_SR_int8.o
+solver_SR_type.o: $(COMMDIR)/solver_SR_type.f90 m_precision.o m_work_time.o m_elapsed_labels_SEND_RECV.o t_comm_table.o t_solver_SR.o solver_SR.o solver_SR_3.o solver_SR_6.o solver_SR_N.o t_solver_SR_int.o solver_SR_int.o m_solver_SR.o t_solver_SR_int8.o solver_SR_int8.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_calypso_comm_table.o: $(COMMDIR)/t_calypso_comm_table.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
@@ -46,7 +46,7 @@ t_failed_export_list.o: $(COMMDIR)/t_failed_export_list.f90 m_precision.o m_cons
 	$(F90) -c $(F90OPTFLAGS) $<
 t_mesh_data_with_pointer.o: $(COMMDIR)/t_mesh_data_with_pointer.f90 m_precision.o m_machine_parameter.o t_mesh_data.o calypso_mpi.o t_comm_table.o t_geometry_data.o t_surface_data.o t_edge_data.o t_group_data.o t_file_IO_parameter.o mesh_MPI_IO_select.o set_nnod_4_ele_by_type.o load_mesh_data.o mesh_IO_select.o t_group_connects.o t_surface_group_connect.o t_surface_group_normals.o t_element_group_table.o const_surface_data.o set_surf_edge_mesh.o set_connects_4_surf_group.o const_mesh_information.o set_size_4_smp_types.o
 	$(F90) -c $(F90OPTFLAGS) $<
-t_para_double_numbering.o: $(COMMDIR)/t_para_double_numbering.f90 m_precision.o m_constants.o calypso_mpi.o t_geometry_data.o t_comm_table.o solver_SR_type.o find_belonged_process.o
+t_para_double_numbering.o: $(COMMDIR)/t_para_double_numbering.f90 m_precision.o m_constants.o calypso_mpi.o m_solver_SR.o t_geometry_data.o t_comm_table.o solver_SR_type.o find_belonged_process.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_read_djds_matrix_IO.o: $(COMMDIR)/t_read_djds_matrix_IO.f90 m_precision.o t_comm_table.o t_solver_djds.o skip_comment_f.o
 	$(F90) -c $(F90OPTFLAGS) $<
