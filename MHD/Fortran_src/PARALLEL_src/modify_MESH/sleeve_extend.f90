@@ -283,32 +283,34 @@
      &   (iele_dbl, add_ele_comm, trim_import_ie)
       call dealloc_ele_data_sleeve_ext(trim_import_ie)
       call dealloc_double_numbering(iele_dbl)
-!
-      call check_extended_element                                       &
-     &   (new_nod_comm, new_node, new_ele, new_ele_comm)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
-      do i = 1, nprocs
-        call calypso_mpi_barrier
-        if(i .eq. my_rank+1) then
-          write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,          &
+      if(i_debug .gt. 0) then
+        call check_extended_element                                     &
+     &     (new_nod_comm, new_node, new_ele, new_ele_comm)
+!
+        do i = 1, nprocs
+          call calypso_mpi_barrier
+          if(i .eq. my_rank+1) then
+            write(*,'(2i6,a,200i6)') my_rank, nod_comm%num_neib,        &
      &           ' nod_comm%id_neib          ', nod_comm%id_neib
-          write(*,'(2i6,a,200i6)') my_rank, new_nod_comm%num_neib,      &
+            write(*,'(2i6,a,200i6)') my_rank, new_nod_comm%num_neib,    &
      &           ' new_nod_comm%id_neib    ', new_nod_comm%id_neib
-          write(*,'(2i6,a,200i6)') my_rank, new_ele_comm%num_neib,      &
+            write(*,'(2i6,a,200i6)') my_rank, new_ele_comm%num_neib,    &
      &           ' new_ele_comm%id_neib    ', new_ele_comm%id_neib
-          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,  &
+            write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_import,&
      &         ' add_nod_comm%irank_import ', add_nod_comm%irank_import
-          write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,  &
+            write(*,'(2i6,a,200i6)') my_rank, add_nod_comm%nrank_export,&
      &         ' add_nod_comm%irank_export ', add_nod_comm%irank_export
-          write(*,'(i6,a,i6)') my_rank,                                 &
-     &         ' add_nod_comm%iflag_self_copy  ',                       &
+            write(*,'(i6,a,i6)') my_rank,                               &
+     &           ' add_nod_comm%iflag_self_copy  ',                     &
      &            add_nod_comm%iflag_self_copy
-          write(*,'(i6,a,i6)') my_rank,                                 &
+            write(*,'(i6,a,i6)') my_rank,                               &
      &           ' iflag_process_extend  ', iflag_process_extend
-        end if
-        call calypso_mpi_barrier
-      end do
+          end if
+          call calypso_mpi_barrier
+        end do
+      end if
       call dealloc_calypso_comm_table(add_ele_comm)
       call dealloc_calypso_comm_table(add_nod_comm)
 !

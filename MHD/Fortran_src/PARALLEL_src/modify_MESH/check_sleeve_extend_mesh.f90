@@ -81,6 +81,7 @@
         if(kcou .eq. new_ele%nnod_4_ele) lcou = lcou + 1
         icou = icou + kcou
       end do
+!
       write(*,*) my_rank, 'Failed Node ID:', icou, lcou, jcou
       call calypso_mpi_barrier
 !
