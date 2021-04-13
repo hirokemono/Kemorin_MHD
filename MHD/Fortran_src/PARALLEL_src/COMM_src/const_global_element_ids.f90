@@ -175,6 +175,7 @@
 !
       subroutine check_element_position(txt, nele, x_ele, e_comm)
 !
+      use m_solver_SR
       use t_comm_table
       use calypso_mpi_int
       use solver_SR_type
@@ -212,7 +213,8 @@
       end do
 !$omp end parallel do
 !
-      call SOLVER_SEND_RECV_3_type(nele, e_comm, x_test(1))
+      call SOLVER_SEND_RECV_3_type(nele, e_comm,                        &
+     &                             SR_sig1, SR_r1, x_test(1))
 !
       iflag = 0
       do iele = 1, nele

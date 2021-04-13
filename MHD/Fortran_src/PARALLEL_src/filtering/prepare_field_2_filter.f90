@@ -74,6 +74,7 @@
      &         (flt_comm, numnod, internal_node, ntot_comp,             &
      &          id_phys, d_nod, nnod_filtering, x_vec_filtering)
 !
+      use m_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(in) :: flt_comm
@@ -112,8 +113,8 @@
 !      write(*,*) 'flt_comm%item_import', size(flt_comm%item_import)
 !      write(*,*) 'flt_comm%item_export', size(flt_comm%item_export)
 !
-      call SOLVER_SEND_RECV_3_type                                      &
-     &    (nnod_filtering, flt_comm, x_vec_filtering(1))
+      call SOLVER_SEND_RECV_3_type(nnod_filtering, flt_comm,            &
+     &                             SR_sig1, SR_r1, x_vec_filtering(1))
 !
       end subroutine prepare_vector_2_filter
 !

@@ -69,6 +69,7 @@
       subroutine node_send_recv_test                                    &
      &         (node, nod_comm, nod_check)
 !
+      use m_solver_SR
       use diff_geometory_comm_test
       use solver_SR_type
 !
@@ -84,7 +85,7 @@
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (node%numnod, nod_comm, nod_check%i_gl_test)
       call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,               &
-     &                             nod_check%xx_test)
+     &                             SR_sig1, SR_r1, nod_check%xx_test)
 !
       call nod_send_recv_check(node, nod_check)
 !
@@ -102,6 +103,7 @@
       subroutine ele_send_recv_test                                     &
      &         (node, ele, ele_comm, ele_check)
 !
+      use m_solver_SR
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
@@ -116,7 +118,7 @@
       call set_element_4_comm_test(ele%numele, ele%interior_ele,        &
      &                             ele%x_ele, ele_check%xx_test)
       call SOLVER_SEND_RECV_3_type(ele%numele, ele_comm,                &
-     &                             ele_check%xx_test)
+     &                             SR_sig1, SR_r1, ele_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (ele%numele, ele%iele_global, ele%x_ele, ele_check)
@@ -135,6 +137,7 @@
       subroutine surf_send_recv_test                                    &
      &         (node, surf, surf_comm, surf_check)
 !
+      use m_solver_SR
       use diff_geometory_comm_test
       use nod_phys_send_recv
       use solver_SR_type
@@ -149,7 +152,7 @@
       call set_element_4_comm_test(surf%numsurf, surf%interior_surf,    &
      &                             surf%x_surf, surf_check%xx_test)
       call SOLVER_SEND_RECV_3_type(surf%numsurf, surf_comm,             &
-     &                             surf_check%xx_test)
+     &                             SR_sig1, SR_r1, surf_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (surf%numsurf, surf%isurf_global, surf%x_surf, surf_check)
@@ -168,6 +171,7 @@
       subroutine edge_send_recv_test                                    &
      &         (node, edge, edge_comm, edge_check)
 !
+      use m_solver_SR
       use diff_geometory_comm_test
       use solver_SR_type
 !
@@ -181,7 +185,7 @@
       call set_element_4_comm_test(edge%numedge ,edge%interior_edge,    &
      &                             edge%x_edge, edge_check%xx_test)
       call SOLVER_SEND_RECV_3_type(edge%numedge, edge_comm,             &
-     &                             edge_check%xx_test)
+     &                             SR_sig1, SR_r1, edge_check%xx_test)
 !
       call ele_send_recv_check                                          &
      &   (edge%numedge, edge%iedge_global, edge%x_edge, edge_check)
@@ -201,6 +205,7 @@
       subroutine node_transfer_test(node, new_node, new_comm,           &
      &          trans_tbl, nod_check)
 !
+      use m_solver_SR
       use diff_geometory_comm_test
       use solver_SR_type
       use calypso_SR_type
@@ -231,7 +236,7 @@
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (new_node%numnod, new_comm, nod_check%i_gl_test)
       call SOLVER_SEND_RECV_3_type(new_node%numnod, new_comm,           &
-     &                             nod_check%xx_test)
+     &                             SR_sig1, SR_r1, nod_check%xx_test)
 !
       call nod_send_recv_check(new_node, nod_check)
 !
