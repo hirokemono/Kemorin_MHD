@@ -176,18 +176,18 @@
       integer(kind = kint), intent(inout)                               &
      &  :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !
-      integer(kind = kint) :: k1, i, ist_org, ist_imp, ist_exp, ist_ele, num
-      integer(kind = kint) :: inum, jnum, itype
+      integer(kind = kint) :: k1, i, ist_imp, ist_add, ist_exp, ist_ele
+      integer(kind = kint) :: inum, jnum, itype, num
 !
 !
-!$omp parallel private(k1,i,ist_org,ist_imp,ist_exp,ist_ele,num)
+!$omp parallel private(k1,i,ist_imp,ist_add,ist_exp,ist_ele,num)
       do k1 = 1, ele%nnod_4_ele
         do i = 1, nod_comm%num_neib
           ist_ele = expand_ele_comm%istack_import(i-1)
           num =     expand_ele_comm%istack_import(i) - ist_ele
-          ist_org = nod_comm%istack_import(i-1)
-          ist_exp = expand_nod_comm%istack_export(i-1)
-          ist_imp = expand_nod_comm%istack_import(i-1)
+          ist_imp = nod_comm%istack_import(i-1)
+          ist_exp = nod_comm%istack_export(i-1)
+          ist_add = expand_nod_comm%istack_import(i-1)
 !$omp do private(inum,jnum,itype)
           do inum = 1, num
             itype = itype_new_import(inum+ist_ele,k1) 
@@ -197,13 +197,14 @@
      &           = nod_comm%item_export(jnum+ist_exp)
             else if(itype .eq. iflag_org_export) then
               ie_new_import(inum+ist_ele,k1)                            &
-     &           = nod_comm%item_import(jnum+ist_org)
-            else if(jnum .gt. 0) then
-              ie_new_import(inum+ist_ele,k1)                            &
-     &           = inod_added_import(jnum+ist_imp)
+     &           = nod_comm%item_import(jnum+ist_imp)
             else
+              ie_new_import(inum+ist_ele,k1)                            &
+     &           = inod_added_import(jnum+ist_add)
+            end if
+            if(ie_new_import(inum+ist_ele,k1) .le 0) then
               write(*,*) my_rank, 'Failed renumber ie_new_import',      &
-      &                 inum, k1
+      &                 inum, k1, itype, jnum
             end if
           end do
 !$omp end do

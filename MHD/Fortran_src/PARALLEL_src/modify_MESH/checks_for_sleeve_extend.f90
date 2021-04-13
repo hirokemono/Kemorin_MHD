@@ -248,7 +248,7 @@
       end do
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)                                     &
-     &       'Number of wriong trim_import_ie%ie_comm', ntot_gl
+     &       'Number of wrong trim_import_ie%ie_comm', ntot_gl
 !
       end subroutine check_trim_import_ele_connect
 !
