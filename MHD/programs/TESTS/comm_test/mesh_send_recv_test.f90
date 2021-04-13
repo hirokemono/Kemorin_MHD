@@ -109,8 +109,8 @@
       call SOLVER_SEND_RECV_int8_type                                   &
      &   (node%numnod, nod_comm, v_sol%i8x_vec(1))
 !
-      call SOLVER_SEND_RECV_N_type                                      &
-     &   (node%numnod, N12, nod_comm, v_sol%x_vec(1))
+      call SOLVER_SEND_RECV_N_type(node%numnod, N12, nod_comm,          &
+     &                             SR_sig1, SR_r1, v_sol%x_vec(1))
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
         k = nod_comm%item_import(ii) - node%internal_node

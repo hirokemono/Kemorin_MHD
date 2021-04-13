@@ -151,6 +151,7 @@
      &         (iflag_recv, transfer_tbl, new_nod_comm,                 &
      &          NB, nnod_org, nnod_new, vec_org, vec_new, v_sol)
 !
+      use m_solver_SR
       use calypso_SR_type
       use solver_SR_type
 !
@@ -179,8 +180,8 @@
 !
       call calypso_SR_type_N(iflag_recv, NB, transfer_tbl,              &
      &    nnod_org, nnod_new, v_sol%x_vec(1), x_new(1))
-      call SOLVER_SEND_RECV_N_type                                      &
-     &   (nnod_new, NB, new_nod_comm, x_new(1))
+      call SOLVER_SEND_RECV_N_type(nnod_new, NB, new_nod_comm,          &
+     &                             SR_sig1, SR_r1, x_new(1))
 !
 !$omp parallel private(nd)
       do nd = 1, NB
