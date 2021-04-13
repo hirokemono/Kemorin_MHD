@@ -87,6 +87,7 @@
       subroutine tensor_send_recv_3d_filter                             &
      &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
 !
+      use m_solver_SR
       use solver_SR_type
 !
       type(communication_table), intent(in) :: nod_comm
@@ -97,7 +98,8 @@
       integer(kind = kint) :: inod
 !
 !
-      call SOLVER_SEND_RECV_6_type(nnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_6_type(nnod, nod_comm,                      &
+     &                             SR_sig1, SR_r1, x_vec(1))
 !
 !$omp parallel do
       do inod =1, nnod
