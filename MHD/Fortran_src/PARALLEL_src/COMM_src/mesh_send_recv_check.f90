@@ -83,7 +83,7 @@
      &   (node%numnod, node%internal_node, node%inod_global, node%xx,   &
      &    nod_check%i_gl_test, nod_check%xx_test)
       call SOLVER_SEND_RECV_int8_type                                   &
-     &   (node%numnod, nod_comm, nod_check%i_gl_test)
+     &   (node%numnod, nod_comm, SR_sig1, SR_il1, nod_check%i_gl_test)
       call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm,               &
      &                             SR_sig1, SR_r1, nod_check%xx_test)
 !
@@ -233,8 +233,8 @@
      &    org_check%xx_test, nod_check%xx_test)
       call dealloc_ele_4_comm_test(org_check)
 !
-      call SOLVER_SEND_RECV_int8_type                                   &
-     &   (new_node%numnod, new_comm, nod_check%i_gl_test)
+      call SOLVER_SEND_RECV_int8_type(new_node%numnod, new_comm,        &
+     &    SR_sig1, SR_il1, nod_check%i_gl_test)
       call SOLVER_SEND_RECV_3_type(new_node%numnod, new_comm,           &
      &                             SR_sig1, SR_r1, nod_check%xx_test)
 !

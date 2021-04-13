@@ -78,8 +78,8 @@
      &    node%numnod, new_node%internal_node,                          &
      &    node%xx(1,3), new_node%xx(1,3))
 !
-      call SOLVER_SEND_RECV_int8_type                                   &
-     &   (new_node%numnod, new_comm, new_node%inod_global)
+      call SOLVER_SEND_RECV_int8_type(new_node%numnod, new_comm,        &
+     &    SR_sig1, SR_il1, new_node%inod_global)
       call SOLVER_SEND_RECV_type                                        &
      &   (new_node%numnod, new_comm, SR_sig1, SR_r1, new_node%xx(1,1))
       call SOLVER_SEND_RECV_type                                        &

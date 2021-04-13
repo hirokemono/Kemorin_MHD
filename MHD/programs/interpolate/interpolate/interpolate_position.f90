@@ -219,7 +219,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'SOLVER_SEND_RECV_int8_type '
       if (comm_dest%num_neib.gt.0) then
         call SOLVER_SEND_RECV_int8_type                                 &
-     &                (NP_dest, comm_dest,  v_2nd_sol%i8x_vec(1))
+     &     (NP_dest, comm_dest, SR_sig1, SR_il1, v_2nd_sol%i8x_vec(1))
       end if
 !
 !$omp parallel workshare

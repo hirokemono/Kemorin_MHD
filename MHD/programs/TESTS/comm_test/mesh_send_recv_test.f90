@@ -107,7 +107,7 @@
 !$omp end parallel do
 !
       call SOLVER_SEND_RECV_int8_type                                   &
-     &   (node%numnod, nod_comm, v_sol%i8x_vec(1))
+     &   (node%numnod, nod_comm, SR_sig1, SR_il1, v_sol%i8x_vec(1))
 !
       call SOLVER_SEND_RECV_N_type(node%numnod, N12, nod_comm,          &
      &                             SR_sig1, SR_r1, v_sol%x_vec(1))

@@ -93,6 +93,7 @@
       subroutine set_global_ele_id(txt, nele, istack_internal_e,        &
      &          internal_flag, e_comm, iele_global)
 !
+      use m_solver_SR
       use t_comm_table
       use solver_SR_type
 !
@@ -119,7 +120,8 @@
         end if
       end do
 !
-      call SOLVER_SEND_RECV_int8_type(nele, e_comm, iele_global)
+      call SOLVER_SEND_RECV_int8_type(nele, e_comm,                     &
+     &                                SR_sig1, SR_il1, iele_global)
 !
       do iele = 1, nele
         if(iele_global(iele) .eq. 0)  write(*,*)                        &
@@ -133,6 +135,7 @@
       subroutine check_global_ele_id                                    &
      &         (txt, nele, internal_flag, e_comm, iele_global)
 !
+      use m_solver_SR
       use t_comm_table
       use solver_SR_type
 !
@@ -160,7 +163,8 @@
       end do
 !$omp end parallel do
 !
-      call SOLVER_SEND_RECV_int8_type(nele, e_comm, iele_comm)
+      call SOLVER_SEND_RECV_int8_type(nele, e_comm,                     &
+     &                                SR_sig1, SR_il1, iele_comm)
 !
       do iele = 1, nele
         if(iele_comm(iele) .ne. iele_global(iele))  write(*,*)          &
