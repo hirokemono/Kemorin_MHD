@@ -210,8 +210,8 @@
 !
       call alloc_sleeve_extension_marks(nod_comm, marks_4_extend)
       call const_sleeve_expand_list                                     &
-     &   (sleeve_exp_p, nod_comm, org_node, org_ele, neib_ele,          &
-     &    dist_4_comm, vect_ref, marks_4_extend)
+     &   (sleeve_exp_p, nod_comm, ele_comm, org_node, org_ele,          &
+     &    neib_ele, dist_4_comm, vect_ref, marks_4_extend)
 !
 !
 !

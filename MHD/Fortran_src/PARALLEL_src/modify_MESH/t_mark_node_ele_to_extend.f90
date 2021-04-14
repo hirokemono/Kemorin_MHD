@@ -13,10 +13,11 @@
 !!        type(mark_for_each_comm), intent(inout) :: mark_comm
 !!
 !!      subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,       &
-!!     &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,    &
-!!     &          each_comm, mark_nod, mark_ele, each_exp_flags)
+!!     &          nod_comm, ele_comm, node, ele, neib_ele,              &
+!!     &          dist_4_comm, d_vec, each_comm, mark_nod, mark_ele,    &
+!!     &          each_exp_flags)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
@@ -97,8 +98,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_mark_node_ele_to_extend(ineib, sleeve_exp_p,         &
-     &          nod_comm, node, ele, neib_ele, dist_4_comm, d_vec,      &
-     &          each_comm, mark_nod, mark_ele, each_exp_flags)
+     &          nod_comm, ele_comm, node, ele, neib_ele,                &
+     &          dist_4_comm, d_vec, each_comm, mark_nod, mark_ele,      &
+     &          each_exp_flags)
 !
       use calypso_mpi
       use t_ctl_param_sleeve_extend
@@ -106,7 +108,7 @@
 !
       integer(kind = kint), intent(in) :: ineib
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: nod_comm, ele_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
@@ -128,7 +130,7 @@
       call mark_by_last_export                                          &
      &  (sleeve_exp_p%dist_max, ineib, node, nod_comm, dist_4_comm,     &
      &   each_comm, each_exp_flags%distance, each_exp_flags%iflag_node)
-      call mark_surround_ele_of_import(node, ele,                       &
+      call mark_surround_ele_of_import(ineib, ele_comm, node, ele,      &
      &    each_exp_flags%iflag_node, each_exp_flags%iflag_ele)
 !
       do idummy = 2, 100
@@ -284,8 +286,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mark_surround_ele_of_import                            &
-     &         (node, ele, iflag_node, iflag_ele)
+     &         (ineib, ele_comm, node, ele, iflag_node, iflag_ele)
 !
+      integer(kind = kint), intent(in) :: ineib
+      type(communication_table), intent(in) :: ele_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
@@ -293,12 +297,15 @@
 !
       integer(kind = kint), intent(inout) :: iflag_ele(ele%numele)
 !
-      integer(kind = kint) :: iele, k1, inod
+      integer(kind = kint) :: iele, k1, inod, ist, ied, inum
 !
+!
+!$omp parallel workshare
+      iflag_ele(1:ele%numele) = 2
+!$omp end parallel workshare
 !
 !$omp parallel do private(iele,k1,inod)
       do iele = 1, ele%numele
-        iflag_ele(iele) = 2
         do k1 = 1, ele%nnod_4_ele
           inod = ele%ie(iele,k1)
           if(iflag_node(inod) .gt. -2) then
@@ -306,6 +313,15 @@
             exit
           end if
         end do
+      end do
+!$omp end parallel do
+!
+      ist = ele_comm%istack_import(ineib-1) + 1
+      ied = ele_comm%istack_import(ineib)
+!$omp parallel do private(iele,inum)
+      do inum = ist, ied
+        iele = ele_comm%item_import(inum)
+        iflag_ele(iele) = 2
       end do
 !$omp end parallel do
 !

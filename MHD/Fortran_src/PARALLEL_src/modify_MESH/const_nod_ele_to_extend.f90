@@ -14,10 +14,10 @@
 !!     &                     intent(inout) :: marks_4_extend
 !!
 !!      subroutine const_sleeve_expand_list                             &
-!!     &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,          &
-!!     &          dist_4_comm, vect_ref, marks_4_extend)
+!!     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,          &
+!!     &          neib_ele, dist_4_comm, vect_ref, marks_4_extend)
 !!        type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: nod_comm, ele_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(element_around_node), intent(in) :: neib_ele
@@ -98,8 +98,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_sleeve_expand_list                               &
-     &         (sleeve_exp_p, nod_comm, node, ele, neib_ele,            &
-     &          dist_4_comm, vect_ref, marks_4_extend)
+     &         (sleeve_exp_p, nod_comm, ele_comm, node, ele,            &
+     &          neib_ele, dist_4_comm, vect_ref, marks_4_extend)
 !
       use t_comm_table_for_each_pe
       use t_flags_each_comm_extend
@@ -107,7 +107,7 @@
       use calypso_mpi_int
 !
       type(sleeve_extension_param), intent(in) :: sleeve_exp_p
-      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: nod_comm, ele_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: neib_ele
@@ -131,7 +131,7 @@
       jcou = 0
       do i = 1, nod_comm%num_neib
         call s_mark_node_ele_to_extend                                  &
-     &     (i, sleeve_exp_p, nod_comm, node, ele, neib_ele,             &
+     &     (i, sleeve_exp_p, nod_comm, ele_comm, node, ele, neib_ele,   &
      &      dist_4_comm, vect_ref, each_comm,                           &
      &      marks_4_extend%mark_nod(i), marks_4_extend%mark_ele(i),     &
      &      each_exp_flags)
