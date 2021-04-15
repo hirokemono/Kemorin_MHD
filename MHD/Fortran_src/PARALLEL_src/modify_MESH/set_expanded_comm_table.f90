@@ -183,7 +183,7 @@
           jcou = inum + jst
           jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
 !
-          item_added_import(jcou) = jcou + node%numnod
+          item_added_import(jcou) = jcou + node%internal_node
 !
           inod_lc_new_import_trim(jcou)                                 &
      &              = expand_nod_comm%item_import(jnum)

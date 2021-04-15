@@ -120,7 +120,7 @@
 !
 !        write(*,*) my_rank, nod_comm%id_neib(i),                       &
 !     &           'marked import node', icou, num
-        num_new_export(i) =     mark_nod(i)%num_marked - icou
+        num_new_export(i) =     mark_nod(i)%num_marked + num - icou
         num_new_ele_export(i) = mark_ele(i)%num_marked
       end do
 !
@@ -189,14 +189,21 @@
 !
         ist = nod_comm%istack_export(i-1)
         num = nod_comm%istack_export(i) - nod_comm%istack_export(i-1)
-!$omp parallel do private(inum,inod)
+        icou = istack_new_nod_export(i-1)
         do inum = 1, num
           inod = nod_comm%item_export(inum+ist)
+
+          icou = icou + 1
           inod_in_comm(inod) = -inum
+          exp_export_xx%inod_gl_comm(icou) = node%inod_global(inod)
+          exp_export_xx%xx_comm(3*icou-2) =  node%xx(inod,1)
+          exp_export_xx%xx_comm(3*icou-1) =  node%xx(inod,2)
+          exp_export_xx%xx_comm(3*icou  ) =  node%xx(inod,3)
+          inod_lc_new_export(icou) = inod_dbl%index(inod)
+          exp_export_xx%irank_comm(icou) = inod_dbl%irank(inod)
+          exp_export_xx%distance(icou) =  mark_nod(i)%dist_marked(inum)
         end do
-!$omp end parallel do
 !
-        icou = istack_new_nod_export(i-1)
         do inum = 1, mark_nod(i)%num_marked
           inod = mark_nod(i)%idx_marked(inum)
           if(inod_in_comm(inod) .lt. 0) cycle
