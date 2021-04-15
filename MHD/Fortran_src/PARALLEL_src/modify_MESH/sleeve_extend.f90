@@ -240,6 +240,12 @@
      &    new_node, dbl_id2)
       call dealloc_double_numbering(inod_dbl)
 !
+      do i = 1, new_node%numnod
+        if(new_node%inod_global(i) .eq. 3036027) then
+          write(*,*) my_rank, 'new_node%inod_global(i) = 3036027 at', i
+        end if
+      end do
+!
       call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
