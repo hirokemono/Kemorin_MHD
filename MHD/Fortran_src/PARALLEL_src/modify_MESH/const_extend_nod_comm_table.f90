@@ -51,6 +51,52 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine const_trimmed_expand_import                            &
+     &         (nod_comm, expand_nod_comm, exp_import_xx,               &
+     &          add_nod_comm, ext_nod_trim, trim_nod_to_ext)
+!
+      use calypso_mpi_int
+      use set_expanded_comm_table
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
+      type(calypso_comm_table), intent(in) :: add_nod_comm
+!
+      type(data_for_trim_import), intent(inout) :: ext_nod_trim
+      type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
+!
+      type(sort_data_for_sleeve_trim), save :: sort_nod_import
+      integer(kind = kint) :: num, icou, ntot_failed_gl
+!
+!
+      call alloc_sort_data_sleeve_ext                                   &
+     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import)
+      call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
+     &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
+!
+      call trim_overlapped_sleeve_ext                                   &
+     &   (expand_nod_comm%ntot_import, exp_import_xx%irank_comm,        &
+     &    sort_nod_import, ext_nod_trim)
+      if(i_debug .gt. 0) then
+        call check_overlapped_sleeve_ext                                &
+     &     (nod_comm, add_nod_comm, sort_nod_import, ext_nod_trim)
+      end if
+!
+      num = expand_nod_comm%ntot_import
+      allocate(trim_nod_to_ext%idx_extend_to_trim(num))
+      call find_home_import_item_by_trim                                &
+     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import,         &
+     &    ext_nod_trim, trim_nod_to_ext%idx_extend_to_trim, icou)
+      call calypso_mpi_reduce_one_int(icou, ntot_failed_gl, MPI_SUM, 0)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Missing import item in trimmed:', ntot_failed_gl
+      call dealloc_sort_data_sleeve_ext(sort_nod_import)
+
+      end subroutine const_trimmed_expand_import
+!
+!  ---------------------------------------------------------------------
+!
       subroutine const_extended_node_position                           &
      &         (nod_comm, expand_nod_comm, exp_import_xx,               &
      &          add_nod_comm, ext_nod_trim, trim_nod_to_ext)
@@ -95,6 +141,7 @@
 
       end subroutine const_extended_node_position
 !
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine const_extended_nod_comm_table                          &
