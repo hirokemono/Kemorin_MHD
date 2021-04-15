@@ -245,7 +245,7 @@
 !const_extended_node_position_org
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       call const_trimmed_expand_import                                  &
-     &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
+     &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim_neo, trim_nod_to_ext_neo)
       call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)

@@ -52,12 +52,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_trimmed_expand_import                            &
-     &         (nod_comm, expand_nod_comm, exp_import_xx,               &
+     &         (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,     &
      &          add_nod_comm, ext_nod_trim, trim_nod_to_ext)
 !
+      use t_para_double_numbering
       use calypso_mpi_int
       use set_expanded_comm_table
 !
+      type(node_ele_double_number), intent(in) :: inod_dbl
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
@@ -67,15 +69,19 @@
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
 !
       type(sort_data_for_sleeve_trim), save :: sort_nod_import
-      integer(kind = kint) :: num, icou, ntot_failed_gl
+!
+      integer(kind = kint) :: num, ntot_mix, icou, ntot_failed_gl
 !
 !
+      ntot_mix = nod_comm%ntot_import + expand_nod_comm%ntot_import
       call alloc_sort_data_sleeve_ext                                   &
-     &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import)
-      call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
+     &   (nprocs, ntot_mix, sort_nod_import)
+      call sort_mix_import_by_pe_inod_lc(inod_dbl, nod_comm,            &
      &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
+      call dealloc_sort_data_sleeve_ext(sort_nod_import)
+      return
 !
-      call trim_overlapped_sleeve_ext                                   &
+      call trim_overlap_expanded_import                                 &
      &   (expand_nod_comm%ntot_import, exp_import_xx%irank_comm,        &
      &    sort_nod_import, ext_nod_trim)
       if(i_debug .gt. 0) then

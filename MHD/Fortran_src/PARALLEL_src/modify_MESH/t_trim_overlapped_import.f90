@@ -54,6 +54,76 @@
 !
 ! ----------------------------------------------------------------------
 !
+      subroutine trim_overlap_expanded_import(ntot_new_import,          &
+     &          irank_nod_new_import, sort_import, ext_trim)
+!
+      use calypso_mpi
+      use t_mesh_for_sleeve_extend
+      use t_sort_data_for_sleeve_trim
+!
+      use calypso_mpi_int
+      use trim_redundant_import_item
+!
+      integer(kind = kint), intent(in) :: ntot_new_import
+      integer(kind = kint), intent(in)                                  &
+     &                    :: irank_nod_new_import(ntot_new_import)
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+!
+      type(data_for_trim_import), intent(inout) :: ext_trim
+!
+      integer(kind = kint) :: icou, ntot_gl
+!
+!
+      ext_trim%ntot_trimmed                                             &
+     &     = count_ntot_trimmed_import(nprocs, sort_import)
+      call alloc_stack_to_trim_extend(nprocs, ext_trim)
+!
+      call count_trimmed_import_stack(nprocs, sort_import,              &
+     &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
+     &    ext_trim%istack_trimmed_item)
+!
+      call alloc_idx_trimed_to_sorted(ext_trim)
+      call trim_internal_import_items                                   &
+     &  (nprocs, ntot_new_import, irank_nod_new_import,                 &
+     &    sort_import%isorted_to_org, sort_import%irank_orgin_pe,       &
+     &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
+     &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
+     &    icou)
+!
+      if(i_debug .gt. 0) then
+        call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+        if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',  &
+     &                               ntot_gl
+      end if
+!
+      call trim_external_import_items                                   &
+     &   (nprocs, ntot_new_import, irank_nod_new_import,                &
+     &    sort_import%isorted_to_org, ext_trim%ntot_trimmed,            &
+     &    ext_trim%istack_trimmed_pe, ext_trim%istack_trimmed_item,     &
+     &    ext_trim%idx_trimmed_to_sorted, icou)
+!
+      if(i_debug .gt. 0) then
+        call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+        if(my_rank .eq. 0) write(*,*) 'Missing import from external:',  &
+     &                               ntot_gl
+      end if
+!
+      call trim_orphaned_import_items                                   &
+     &   (nprocs, ntot_new_import, sort_import%isorted_to_org,          &
+     &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
+     &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
+     &    icou)
+!
+      if(i_debug .gt. 0) then
+        call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
+       if(my_rank .eq. 0) write(*,*)                                    &
+     &      'Missing import from other domain:', ntot_gl
+      end if
+!
+      end subroutine trim_overlap_expanded_import
+!
+! ----------------------------------------------------------------------
+!
       subroutine trim_overlapped_sleeve_ext(ntot_new_import,            &
      &          irank_nod_new_import, sort_import, ext_trim)
 !
