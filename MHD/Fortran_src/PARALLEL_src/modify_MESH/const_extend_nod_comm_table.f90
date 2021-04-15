@@ -79,7 +79,6 @@
       call sort_mix_import_by_pe_inod_lc(inod_dbl, nod_comm,            &
      &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
       call dealloc_sort_data_sleeve_ext(sort_nod_import)
-      return
 !
       call trim_overlap_expanded_import                                 &
      &   (expand_nod_comm%ntot_import, exp_import_xx%irank_comm,        &
@@ -88,6 +87,7 @@
         call check_overlapped_sleeve_ext                                &
      &     (nod_comm, add_nod_comm, sort_nod_import, ext_nod_trim)
       end if
+      return
 !
       num = expand_nod_comm%ntot_import
       allocate(trim_nod_to_ext%idx_extend_to_trim(num))

@@ -247,8 +247,8 @@
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim_neo, trim_nod_to_ext_neo)
-!      call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
-!      call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)
+      call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
+      call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)
 !      deallocate(trim_nod_to_ext_neo%idx_extend_to_trim)
 !
       call const_extended_node_position                                 &
