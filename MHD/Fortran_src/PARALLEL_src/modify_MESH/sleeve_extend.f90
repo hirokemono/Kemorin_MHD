@@ -226,7 +226,7 @@
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
       do i = 1, nod_comm%ntot_import
-        inod = nod_comm%itemt_import(i)
+        inod = nod_comm%item_import(i)
         if(org_node%inod_global(inod) .eq. 3036027) then
           write(*,*) my_rank,                                           &
      &        'org_node%inod_global(inod) = 3036027 at', inod, i
