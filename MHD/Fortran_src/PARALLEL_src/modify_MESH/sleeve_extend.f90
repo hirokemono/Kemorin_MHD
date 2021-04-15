@@ -199,6 +199,7 @@
       type(calypso_comm_table), save :: add_ele_comm
 !
       integer(kind = kint) :: i
+      integer :: j, ist, jst, num, inum, idiff
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
@@ -234,6 +235,22 @@
       call const_extended_nod_comm_table                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext, add_nod_comm)
+!
+      do i = 1, add_nod_comm%nrank_import
+        do j = 1, nod_comm%num_neib
+          if(add_nod_comm%irank_import(i) .eq. nod_comm%id_neib(j)) then
+            ist = add_nod_comm%istack_import(i-1)
+            jst = nod_comm%istack_import(j-1)
+            num = nod_comm%istack_import(j) - jst
+            do inum = 1, num
+              idiff = trim_import_xx%inod_gl_comm(inum+ist) &
+     &               - org_node%inod_global(nod_comm%item_import(inum+jst))
+              write(*,*) 'import', my_rank, i, j, inum, idiff
+            end do
+            exit
+          end if
+        end do
+      end do
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
