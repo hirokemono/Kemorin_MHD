@@ -198,7 +198,7 @@
       type(calypso_comm_table), save :: add_nod_comm
       type(calypso_comm_table), save :: add_ele_comm
 !
-      integer(kind = kint) :: i
+      integer(kind = kint) :: i, inod
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
@@ -224,6 +224,20 @@
      &    exp_import_xx, exp_import_ie)
       call dealloc_sleeve_extension_marks(marks_4_extend)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
+!
+      do i = 1, nod_comm%ntot_import
+        inod = nod_comm%itemt_import(i)
+        if(org_node%inod_global(inod) .eq. 3036027) then
+          write(*,*) my_rank,                                           &
+     &        'org_node%inod_global(inod) = 3036027 at', inod, i
+        end if
+      end do
+      do i = 1, add_nod_comm%ntot_import
+        if(exp_import_xx%inod_gl_comm(i) .eq. 3036027) then
+          write(*,*) my_rank,                                           &
+     &        'exp_import_xx%inod_gl_comm(i) = 3036027 at', i
+        end if
+      end do
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
