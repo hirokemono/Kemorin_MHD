@@ -232,7 +232,7 @@
      &        'org_node%inod_global(inod) = 3036027 at', inod, i
         end if
       end do
-      do i = 1, add_nod_comm%ntot_import
+      do i = 1, expand_nod_comm%ntot_import
         if(exp_import_xx%inod_gl_comm(i) .eq. 3036027) then
           write(*,*) my_rank,                                           &
      &        'exp_import_xx%inod_gl_comm(i) = 3036027 at', i
