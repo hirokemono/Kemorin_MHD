@@ -88,7 +88,6 @@
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
-      return
 !
       if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
