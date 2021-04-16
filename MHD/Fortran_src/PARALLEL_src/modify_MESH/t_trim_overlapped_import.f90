@@ -76,7 +76,6 @@
 !
       ext_trim%ntot_trimmed                                             &
      &     = count_ntot_trimmed_import(nprocs, sort_import)
-      return
       call alloc_stack_to_trim_extend(nprocs, ext_trim)
 !
       call count_trimmed_import_stack(nprocs, sort_import,              &
