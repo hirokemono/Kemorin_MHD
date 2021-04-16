@@ -83,11 +83,11 @@
       call trim_overlap_expanded_import                                 &
      &   (expand_nod_comm%ntot_import, exp_import_xx%irank_comm,        &
      &    sort_nod_import, ext_nod_trim)
+      return
       if(i_debug .gt. 0) then
         call check_overlapped_sleeve_ext                                &
      &     (nod_comm, add_nod_comm, sort_nod_import, ext_nod_trim)
       end if
-      return
 !
       num = expand_nod_comm%ntot_import
       allocate(trim_nod_to_ext%idx_extend_to_trim(num))
