@@ -25,19 +25,21 @@
 !!     &         :: istack_trimmed_import_pe(0:nprocs)
 !!        integer(kind= kint), intent(inout)                            &
 !!     &         :: istack_trimmed_import_item(0:ntot_trimmed_nod_import)
+!!      subroutine trim_original_import_items(nprocs, sort_import,      &
+!!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
+!!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
+!!     &          num_miss)
 !!      subroutine trim_internal_import_items(nprocs,                   &
-!!     &          ntot_new_import, irank_nod_new_import, nitem_sort,    &
-!!     &          index_4_import_tmp, irank_origin_new_import,          &
+!!     &          ntot_new_import, irank_nod_new_import, sort_import,   &
 !!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
 !!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
 !!     &          num_miss)
-!!      subroutine trim_external_import_items(nprocs, ntot_new_import,  &
-!!     &          irank_nod_new_import, nitem_sort, index_4_import_tmp, &
+!!      subroutine trim_external_import_items(nprocs,                   &
+!!     &          ntot_new_import, irank_nod_new_import, sort_import,   &
 !!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
 !!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
 !!     &          num_miss)
-!!      subroutine trim_orphaned_import_items                           &
-!!     &         (nprocs, nitem_sort, index_4_import_tmp,               &
+!!      subroutine trim_orphaned_import_items(nprocs, sort_import,      &
 !!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
 !!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
 !!     &          num_miss)
@@ -46,6 +48,7 @@
 !!        integer(kind = kint), intent(in)                              &
 !!     &                    :: irank_nod_new_import(ntot_new_import)
 !!        integer(kind = kint), intent(in)                              &
+!!        type(sort_data_for_sleeve_trim), intent(in) :: sort_import
 !!        integer(kind = kint), intent(in) :: nitem_sort
 !!     &                    :: index_4_import_tmp(nitem_sort)
 !!        integer(kind = kint), intent(in)                              &
@@ -141,9 +144,55 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine trim_original_import_items(nprocs, sort_import,        &
+     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
+     &          istack_trimmed_import_item, idx_home_sorted_import,     &
+     &          num_miss)
+!
+      integer, intent(in) :: nprocs
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+!
+      integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
+      integer(kind= kint), intent(in)                                   &
+     &         :: istack_trimmed_import_pe(0:nprocs)
+      integer(kind= kint), intent(in)                                   &
+     &         :: istack_trimmed_import_item(0:ntot_trimmed_nod_import)
+!
+      integer(kind = kint), intent(inout)                               &
+     &              :: idx_home_sorted_import(ntot_trimmed_nod_import)
+      integer(kind = kint), intent(inout) :: num_miss
+!
+      integer(kind = kint) :: ist, ied, inum, ip
+      integer(kind = kint) :: jst, jed, jnum
+!
+!
+      do ip = 1, nprocs
+        ist = istack_trimmed_import_pe(ip-1) + 1
+        ied = istack_trimmed_import_pe(ip)
+        do inum = ist, ied
+          jst = istack_trimmed_import_item(inum-1) + 1
+          jed = istack_trimmed_import_item(inum)
+          do jnum = jst, jed
+            if(sort_import%isorted_to_org(jnum) .lt. 0) then
+              idx_home_sorted_import(inum)                              &
+     &            = sort_import%isorted_to_org(jnum)
+              exit
+            end if
+          end do
+        end do
+      end do
+!
+      num_miss = 0
+      do inum = 1, ntot_trimmed_nod_import
+        if(idx_home_sorted_import(inum) .eq. 0) num_miss = num_miss + 1
+      end do
+!
+      end subroutine trim_original_import_items
+!
+!  ---------------------------------------------------------------------
+!
       subroutine trim_internal_import_items(nprocs,                     &
-     &          ntot_new_import, irank_nod_new_import, nitem_sort,      &
-     &          index_4_import_tmp, irank_origin_new_import,            &
+     &          ntot_new_import, irank_nod_new_import, sort_import,     &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
      &          num_miss)
@@ -152,12 +201,7 @@
       integer(kind = kint), intent(in) :: ntot_new_import
       integer(kind = kint), intent(in)                                  &
      &                    :: irank_nod_new_import(ntot_new_import)
-!
-      integer(kind = kint), intent(in) :: nitem_sort
-      integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(nitem_sort)
-      integer(kind = kint), intent(in)                                  &
-     &                    :: irank_origin_new_import(nitem_sort)
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
@@ -182,12 +226,13 @@
           jst = istack_trimmed_import_item(inum-1) + 1
           jed = istack_trimmed_import_item(inum)
           do jnum = jst, jed
-            jsort = abs(index_4_import_tmp(jnum))
-            jrank = irank_origin_new_import(jsort)
+            jsort = abs(sort_import%isorted_to_org(jnum))
+            jrank = sort_import%irank_orgin_pe(jsort)
             if(     irank_nod_new_import(jsort) .eq. jrank              &
      &        .and. irank_nod_new_import(jsort) .eq. ip-1               &
-     &        .and. index_4_import_tmp(jnum) .gt. 0) then
-              idx_home_sorted_import(inum) = index_4_import_tmp(jnum)
+     &        .and. sort_import%isorted_to_org(jnum) .gt. 0) then
+              idx_home_sorted_import(inum)                              &
+     &            = sort_import%isorted_to_org(jnum)
               exit
             end if
           end do
@@ -203,57 +248,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine trim_original_import_items                             &
-     &         (nprocs, nitem_sort, index_4_import_tmp,                 &
-     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
-     &          istack_trimmed_import_item, idx_home_sorted_import,     &
-     &          num_miss)
-!
-      integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: nitem_sort
-      integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(nitem_sort)
-!
-      integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
-      integer(kind= kint), intent(in)                                   &
-     &         :: istack_trimmed_import_pe(0:nprocs)
-      integer(kind= kint), intent(in)                                   &
-     &         :: istack_trimmed_import_item(0:ntot_trimmed_nod_import)
-!
-      integer(kind = kint), intent(inout)                               &
-     &              :: idx_home_sorted_import(ntot_trimmed_nod_import)
-      integer(kind = kint), intent(inout) :: num_miss
-!
-      integer(kind = kint) :: ist, ied, inum, ip
-      integer(kind = kint) :: jst, jed, jnum
-!
-!
-      do ip = 1, nprocs
-        ist = istack_trimmed_import_pe(ip-1) + 1
-        ied = istack_trimmed_import_pe(ip)
-        do inum = ist, ied
-          jst = istack_trimmed_import_item(inum-1) + 1
-          jed = istack_trimmed_import_item(inum)
-          do jnum = jst, jed
-            if(index_4_import_tmp(jnum) .lt. 0) then
-              idx_home_sorted_import(inum) = index_4_import_tmp(jnum)
-              exit
-            end if
-          end do
-        end do
-      end do
-!
-      num_miss = 0
-      do inum = 1, ntot_trimmed_nod_import
-        if(idx_home_sorted_import(inum) .eq. 0) num_miss = num_miss + 1
-      end do
-!
-      end subroutine trim_original_import_items
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine trim_external_import_items(nprocs, ntot_new_import,    &
-     &          irank_nod_new_import, nitem_sort, index_4_import_tmp,   &
+      subroutine trim_external_import_items(nprocs,                     &
+     &          ntot_new_import, irank_nod_new_import, sort_import,     &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
      &          num_miss)
@@ -262,10 +258,7 @@
       integer(kind = kint), intent(in) :: ntot_new_import
       integer(kind = kint), intent(in)                                  &
      &                    :: irank_nod_new_import(ntot_new_import)
-!
-      integer(kind = kint), intent(in) :: nitem_sort
-      integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(nitem_sort)
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
@@ -290,9 +283,9 @@
           jst = istack_trimmed_import_item(inum-1) + 1
           jed = istack_trimmed_import_item(inum)
           do jnum = jst, jed
-            jsort = abs(index_4_import_tmp(jnum))
+            jsort = abs(sort_import%isorted_to_org(jnum))
             if(irank_nod_new_import(jsort) .eq. (ip-1)                  &
-     &           .and. index_4_import_tmp(jnum) .gt. 0) then
+     &           .and. sort_import%isorted_to_org(jnum) .gt. 0) then
               idx_home_sorted_import(inum) = jsort
               exit
             end if
@@ -309,16 +302,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine trim_orphaned_import_items                             &
-     &         (nprocs, nitem_sort, index_4_import_tmp,                 &
+      subroutine trim_orphaned_import_items(nprocs, sort_import,        &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
      &          num_miss)
 !
       integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: nitem_sort
-      integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(nitem_sort)
+      type(sort_data_for_sleeve_trim), intent(in) :: sort_import
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
@@ -342,7 +332,8 @@
 !
           jst = istack_trimmed_import_item(inum-1) + 1
           jed = istack_trimmed_import_item(inum)
-          idx_home_sorted_import(inum) = abs(index_4_import_tmp(jst))
+          idx_home_sorted_import(inum)                                  &
+     &        = abs(sort_import%isorted_to_org(jst))
         end do
       end do
 !
