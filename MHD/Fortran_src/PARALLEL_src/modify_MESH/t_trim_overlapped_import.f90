@@ -89,11 +89,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
         if(my_rank .eq. 0) write(*,*) 'Missing import from original:',  &
      &                               ntot_gl
-      end if
+!      end if
 !
       call trim_internal_import_items(nprocs, ntot_new_import,          &
      &    irank_nod_new_import, sort_import%nitem_sort,                 &
@@ -102,11 +102,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
         if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',  &
      &                               ntot_gl
-      end if
+!      end if
 !
       call trim_external_import_items                                   &
      &   (nprocs, ntot_new_import, irank_nod_new_import,                &
@@ -115,11 +115,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
         if(my_rank .eq. 0) write(*,*) 'Missing import from external:',  &
      &                               ntot_gl
-      end if
+!      end if
 !
       call trim_orphaned_import_items                                   &
      &   (nprocs, sort_import%nitem_sort, sort_import%isorted_to_org,   &
@@ -127,11 +127,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
        if(my_rank .eq. 0) write(*,*)                                    &
      &      'Missing import from other domain:', ntot_gl
-      end if
+!      end if
 !
       end subroutine trim_overlap_expanded_import
 !
@@ -173,11 +173,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
         if(my_rank .eq. 0) write(*,*) 'Missing import from internal:',  &
      &                               ntot_gl
-      end if
+!      end if
 !
       call trim_external_import_items                                   &
      &   (nprocs, ntot_new_import, irank_nod_new_import,                &
@@ -186,11 +186,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
         if(my_rank .eq. 0) write(*,*) 'Missing import from external:',  &
      &                               ntot_gl
-      end if
+!      end if
 !
       call trim_orphaned_import_items                                   &
      &   (nprocs, sort_import%nitem_sort, sort_import%isorted_to_org,   &
@@ -198,11 +198,11 @@
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
 !
-      if(i_debug .gt. 0) then
+!      if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
        if(my_rank .eq. 0) write(*,*)                                    &
      &      'Missing import from other domain:', ntot_gl
-      end if
+!      end if
 !
       end subroutine trim_overlapped_sleeve_ext
 !
