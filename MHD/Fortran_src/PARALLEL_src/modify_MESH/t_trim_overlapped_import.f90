@@ -83,10 +83,8 @@
      &    ext_trim%istack_trimmed_item)
 !
       call alloc_idx_trimed_to_sorted(ext_trim)
-      return
       call trim_original_import_items                                   &
-     &   (nprocs, ntot_new_import, irank_nod_new_import,                &
-     &    sort_import%isorted_to_org, sort_import%irank_orgin_pe,       &
+     &   (nprocs, sort_import%nitem_sort, sort_import%isorted_to_org,   &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
@@ -98,8 +96,8 @@
      &                               ntot_gl
       end if
 !
-      call trim_internal_import_items                                   &
-     &   (nprocs, ntot_new_import, irank_nod_new_import,                &
+      call trim_internal_import_items(nprocs, ntot_new_import,          &
+     &    irank_nod_new_import, sort_import%nitem_sort,                 &
      &    sort_import%isorted_to_org, sort_import%irank_orgin_pe,       &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
@@ -113,9 +111,10 @@
 !
       call trim_external_import_items                                   &
      &   (nprocs, ntot_new_import, irank_nod_new_import,                &
-     &    sort_import%isorted_to_org, ext_trim%ntot_trimmed,            &
-     &    ext_trim%istack_trimmed_pe, ext_trim%istack_trimmed_item,     &
-     &    ext_trim%idx_trimmed_to_sorted, icou)
+     &    sort_import%nitem_sort, sort_import%isorted_to_org,           &
+     &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
+     &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
+     &    icou)
 !
       if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
@@ -124,7 +123,7 @@
       end if
 !
       call trim_orphaned_import_items                                   &
-     &   (nprocs, ntot_new_import, sort_import%isorted_to_org,          &
+     &   (nprocs, sort_import%nitem_sort, sort_import%isorted_to_org,   &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)
@@ -168,8 +167,8 @@
      &    ext_trim%istack_trimmed_item)
 !
       call alloc_idx_trimed_to_sorted(ext_trim)
-      call trim_internal_import_items                                   &
-     &   (nprocs, ntot_new_import, irank_nod_new_import,                &
+      call trim_internal_import_items(nprocs, ntot_new_import,          &
+     &    irank_nod_new_import, sort_import%nitem_sort,                 &
      &    sort_import%isorted_to_org, sort_import%irank_orgin_pe,       &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
@@ -183,9 +182,10 @@
 !
       call trim_external_import_items                                   &
      &   (nprocs, ntot_new_import, irank_nod_new_import,                &
-     &    sort_import%isorted_to_org, ext_trim%ntot_trimmed,            &
-     &    ext_trim%istack_trimmed_pe, ext_trim%istack_trimmed_item,     &
-     &    ext_trim%idx_trimmed_to_sorted, icou)
+     &    sort_import%nitem_sort, sort_import%isorted_to_org,           &
+     &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
+     &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
+     &    icou)
 !
       if(i_debug .gt. 0) then
         call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
@@ -194,7 +194,7 @@
       end if
 !
       call trim_orphaned_import_items                                   &
-     &   (nprocs, ntot_new_import, sort_import%isorted_to_org,          &
+     &   (nprocs, sort_import%nitem_sort, sort_import%isorted_to_org,   &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item, ext_trim%idx_trimmed_to_sorted, &
      &    icou)

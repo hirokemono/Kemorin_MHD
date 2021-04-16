@@ -25,19 +25,19 @@
 !!     &         :: istack_trimmed_import_pe(0:nprocs)
 !!        integer(kind= kint), intent(inout)                            &
 !!     &         :: istack_trimmed_import_item(0:ntot_trimmed_nod_import)
-!!      subroutine trim_internal_import_items                           &
-!!     &         (nprocs, ntot_new_import, irank_nod_new_import,        &
+!!      subroutine trim_internal_import_items(nprocs,                   &
+!!     &          ntot_new_import, irank_nod_new_import, nitem_sort,    &
 !!     &          index_4_import_tmp, irank_origin_new_import,          &
 !!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
 !!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
 !!     &          num_miss)
 !!      subroutine trim_external_import_items(nprocs, ntot_new_import,  &
-!!     &          irank_nod_new_import, index_4_import_tmp,             &
+!!     &          irank_nod_new_import, nitem_sort, index_4_import_tmp, &
 !!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
 !!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
 !!     &          num_miss)
 !!      subroutine trim_orphaned_import_items                           &
-!!     &         (nprocs, ntot_new_import, index_4_import_tmp,          &
+!!     &         (nprocs, nitem_sort, index_4_import_tmp,               &
 !!     &          ntot_trimmed_nod_import, istack_trimmed_import_pe,    &
 !!     &          istack_trimmed_import_item, idx_home_sorted_import,   &
 !!     &          num_miss)
@@ -46,9 +46,10 @@
 !!        integer(kind = kint), intent(in)                              &
 !!     &                    :: irank_nod_new_import(ntot_new_import)
 !!        integer(kind = kint), intent(in)                              &
-!!     &                    :: index_4_import_tmp(ntot_new_import)
+!!        integer(kind = kint), intent(in) :: nitem_sort
+!!     &                    :: index_4_import_tmp(nitem_sort)
 !!        integer(kind = kint), intent(in)                              &
-!!     &                    :: irank_origin_new_import(ntot_new_import)
+!!     &                    :: irank_origin_new_import(nitem_sort)
 !!        integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
 !!        integer(kind= kint), intent(in)                               &
 !!     &         :: istack_trimmed_import_pe(0:nprocs)
@@ -140,8 +141,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine trim_internal_import_items                             &
-     &         (nprocs, ntot_new_import, irank_nod_new_import,          &
+      subroutine trim_internal_import_items(nprocs,                     &
+     &          ntot_new_import, irank_nod_new_import, nitem_sort,      &
      &          index_4_import_tmp, irank_origin_new_import,            &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
@@ -152,10 +153,11 @@
       integer(kind = kint), intent(in)                                  &
      &                    :: irank_nod_new_import(ntot_new_import)
 !
+      integer(kind = kint), intent(in) :: nitem_sort
       integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(ntot_new_import)
+     &                    :: index_4_import_tmp(nitem_sort)
       integer(kind = kint), intent(in)                                  &
-     &                    :: irank_origin_new_import(ntot_new_import)
+     &                    :: irank_origin_new_import(nitem_sort)
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
@@ -202,21 +204,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine trim_original_import_items                             &
-     &         (nprocs, ntot_new_import, irank_nod_new_import,          &
-     &          index_4_import_tmp, irank_origin_new_import,            &
+     &         (nprocs, nitem_sort, index_4_import_tmp,                 &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
      &          num_miss)
 !
       integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: ntot_new_import
+      integer(kind = kint), intent(in) :: nitem_sort
       integer(kind = kint), intent(in)                                  &
-     &                    :: irank_nod_new_import(ntot_new_import)
-!
-      integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(ntot_new_import)
-      integer(kind = kint), intent(in)                                  &
-     &                    :: irank_origin_new_import(ntot_new_import)
+     &                    :: index_4_import_tmp(nitem_sort)
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
@@ -229,7 +225,7 @@
       integer(kind = kint), intent(inout) :: num_miss
 !
       integer(kind = kint) :: ist, ied, inum, ip
-      integer(kind = kint) :: jst, jed, jnum, jrank, jsort
+      integer(kind = kint) :: jst, jed, jnum
 !
 !
       do ip = 1, nprocs
@@ -239,11 +235,7 @@
           jst = istack_trimmed_import_item(inum-1) + 1
           jed = istack_trimmed_import_item(inum)
           do jnum = jst, jed
-            jsort = abs(index_4_import_tmp(jnum))
-            jrank = irank_origin_new_import(jsort)
-            if(     irank_nod_new_import(jsort) .eq. jrank              &
-     &        .and. irank_nod_new_import(jsort) .eq. ip-1               &
-     &        .and. index_4_import_tmp(jnum) .lt. 0) then
+            if(index_4_import_tmp(jnum) .lt. 0) then
               idx_home_sorted_import(inum) = index_4_import_tmp(jnum)
               exit
             end if
@@ -261,7 +253,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine trim_external_import_items(nprocs, ntot_new_import,    &
-     &          irank_nod_new_import, index_4_import_tmp,               &
+     &          irank_nod_new_import, nitem_sort, index_4_import_tmp,   &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
      &          num_miss)
@@ -271,8 +263,9 @@
       integer(kind = kint), intent(in)                                  &
      &                    :: irank_nod_new_import(ntot_new_import)
 !
+      integer(kind = kint), intent(in) :: nitem_sort
       integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(ntot_new_import)
+     &                    :: index_4_import_tmp(nitem_sort)
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
@@ -317,15 +310,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine trim_orphaned_import_items                             &
-     &         (nprocs, ntot_new_import, index_4_import_tmp,            &
+     &         (nprocs, nitem_sort, index_4_import_tmp,                 &
      &          ntot_trimmed_nod_import, istack_trimmed_import_pe,      &
      &          istack_trimmed_import_item, idx_home_sorted_import,     &
      &          num_miss)
 !
       integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in) :: ntot_new_import
+      integer(kind = kint), intent(in) :: nitem_sort
       integer(kind = kint), intent(in)                                  &
-     &                    :: index_4_import_tmp(ntot_new_import)
+     &                    :: index_4_import_tmp(nitem_sort)
 !
       integer(kind = kint), intent(in) :: ntot_trimmed_nod_import
       integer(kind= kint), intent(in)                                   &
