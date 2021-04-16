@@ -81,6 +81,7 @@
       call count_trimmed_import_stack(nprocs, sort_import,              &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
      &    ext_trim%istack_trimmed_item)
+      return
 !
       call alloc_idx_trimed_to_sorted(ext_trim)
       call trim_original_import_items                                   &
