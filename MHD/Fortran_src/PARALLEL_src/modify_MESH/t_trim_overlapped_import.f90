@@ -77,6 +77,12 @@
       ext_trim%ntot_trimmed                                             &
      &     = count_ntot_trimmed_import(nprocs, sort_import)
       call alloc_stack_to_trim_extend(nprocs, ext_trim)
+!      if(i_debug .gt. 0) then
+        call calypso_mpi_reduce_one_int                                 &
+     &     (ext_trim%ntot_trimmed, ntot_gl, MPI_SUM, 0)
+        if(my_rank .eq. 0) write(*,*) 'Total ext_trim%ntot_trimmed:',   &
+     &                               ntot_gl
+!      end if
 !
       call count_trimmed_import_stack(nprocs, sort_import,              &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
@@ -160,6 +166,13 @@
       ext_trim%ntot_trimmed                                             &
      &     = count_ntot_trimmed_import(nprocs, sort_import)
       call alloc_stack_to_trim_extend(nprocs, ext_trim)
+!      if(i_debug .gt. 0) then
+        call calypso_mpi_reduce_one_int                                 &
+     &     (ext_trim%ntot_trimmed, ntot_gl, MPI_SUM, 0)
+        if(my_rank .eq. 0) write(*,*) 'Total ext_trim%ntot_trimmed:',   &
+     &                               ntot_gl
+!      end if
+!
 !
       call count_trimmed_import_stack(nprocs, sort_import,              &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
