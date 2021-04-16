@@ -93,7 +93,7 @@
 !
 !
 !$omp parallel workshare
-      idx_home_for_import(1:ntot_new_import) = -1
+      idx_home_for_import(1:ntot_new_import) = 0
 !$omp end parallel workshare
 !
       do ip = 1, nprocs
@@ -103,17 +103,28 @@
           jst = ext_trim%istack_trimmed_item(inum-1) + 1
           jed = ext_trim%istack_trimmed_item(inum)
 !
-          do jnum = jst, jed
-            jnod = sort_import%isorted_to_org(jnum)
-            idx_home_for_import(jnod)                                   &
+          if(ext_trim%idx_trimmed_to_sorted(inum) .lt. 0) then
+            do jnum = jst, jed
+              jnod = sort_import%isorted_to_org(jnum)
+              if(jnod .gt. 0) then
+                idx_home_for_import(jnod)                               &
+     &                    = ext_trim%idx_trimmed_to_sorted(inum)
+              end if
+            end do
+          else
+            do jnum = jst, jed
+              jnod = sort_import%isorted_to_org(jnum)
+              idx_home_for_import(jnod)                                 &
      &           = ext_trim%idx_trimmed_to_sorted(inum)
-          end do
+            end do
+          end if
+!
         end do
       end do
 !
       num_miss = 0
       do inum = 1, ntot_new_import
-        if(idx_home_for_import(inum) .lt. 0) num_miss = num_miss + 1
+        if(idx_home_for_import(inum) .eq. 0) num_miss = num_miss + 1
       end do
 !
       end subroutine find_home_import_item_by_trim
