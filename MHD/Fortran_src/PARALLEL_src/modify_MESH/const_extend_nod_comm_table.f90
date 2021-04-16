@@ -78,11 +78,11 @@
      &   (nprocs, ntot_mix, sort_nod_import)
       call sort_mix_import_by_pe_inod_lc(inod_dbl, nod_comm,            &
      &    expand_nod_comm, exp_import_xx%irank_comm, sort_nod_import)
-      call dealloc_sort_data_sleeve_ext(sort_nod_import)
 !
       call trim_overlap_expanded_import                                 &
      &   (expand_nod_comm%ntot_import, exp_import_xx%irank_comm,        &
      &    sort_nod_import, ext_nod_trim)
+      call dealloc_sort_data_sleeve_ext(sort_nod_import)
       return
       if(i_debug .gt. 0) then
         call check_overlapped_sleeve_ext                                &
