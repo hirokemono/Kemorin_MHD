@@ -83,6 +83,7 @@
      &    ext_trim%istack_trimmed_item)
 !
       call alloc_idx_trimed_to_sorted(ext_trim)
+      return
       call trim_original_import_items                                   &
      &   (nprocs, ntot_new_import, irank_nod_new_import,                &
      &    sort_import%isorted_to_org, sort_import%irank_orgin_pe,       &
