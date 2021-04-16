@@ -74,10 +74,10 @@
       integer(kind = kint) :: icou, ntot_gl
 !
 !
+      return
       ext_trim%ntot_trimmed                                             &
      &     = count_ntot_trimmed_import(nprocs, sort_import)
       call alloc_stack_to_trim_extend(nprocs, ext_trim)
-      return
 !
       call count_trimmed_import_stack(nprocs, sort_import,              &
      &    ext_trim%ntot_trimmed, ext_trim%istack_trimmed_pe,            &
