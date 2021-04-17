@@ -7,9 +7,13 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
-!!      subroutine trim_imported_expand_node(add_nod_comm, ext_nod_trim,&
+!!      subroutine trim_imported_expand_node                            &
+!!     &         (node, inod_dbl, nod_comm, new_nod_comm, ext_nod_trim, &
 !!     &          exp_import_xx, trim_import_xx)
-!!        type(communication_table), intent(in) :: add_nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(node_ele_double_number), intent(in) :: inod_dbl
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: new_nod_comm
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
@@ -59,6 +63,7 @@
       use t_geometry_data
       use t_comm_table
       use t_calypso_comm_table
+      use t_para_double_numbering
       use t_mesh_for_sleeve_extend
       use t_trim_overlapped_import
 !
@@ -70,41 +75,56 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine trim_imported_expand_node(add_nod_comm, ext_nod_trim,  &
+      subroutine trim_imported_expand_node                              &
+     &         (node, inod_dbl, nod_comm, new_nod_comm, ext_nod_trim,   &
      &          exp_import_xx, trim_import_xx)
 !
-      type(calypso_comm_table), intent(in) :: add_nod_comm
+      type(node_data), intent(in) :: node
+      type(node_ele_double_number), intent(in) :: inod_dbl
+      type(communication_table), intent(in) :: nod_comm
+      type(calypso_comm_table), intent(in) :: new_nod_comm
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
 !
       integer(kind = kint) :: i, irank, ist, jst
-      integer(kind = kint) :: inum,jcou,jnum
+      integer(kind = kint) :: inum, jcou, jnum, jnod
 !
 !
-      do i = 1, add_nod_comm%nrank_import
-        irank = add_nod_comm%irank_import(i)
+      do i = 1, new_nod_comm%nrank_import
+        irank = new_nod_comm%irank_import(i)
         ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-!$omp parallel do private(inum,jcou,jnum)
-        do inum = 1, add_nod_comm%num_import(i)
+        jst = new_nod_comm%istack_import(i-1)
+!$omp parallel do private(inum,jcou,jnum,jnod)
+        do inum = 1, new_nod_comm%num_import(i)
           jcou = inum + jst
           jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
+          if(jnum .lt. 0) then
+            jnod = nod_comm%item_import(-jnum)
 !
-          trim_import_xx%irank_comm(jcou)                               &
+            trim_import_xx%irank_comm(jcou) = inod_dbl%irank(jnod)
+            trim_import_xx%distance(jcou) =   0.0d0
+!
+            trim_import_xx%xx_comm(3*jcou-2) =  node%xx(jnod,1)
+            trim_import_xx%xx_comm(3*jcou-1) =  node%xx(jnod,2)
+            trim_import_xx%xx_comm(3*jcou  ) =  node%xx(jnod,3)
+            trim_import_xx%inod_gl_comm(jcou) = node%inod_global(jnod)
+          else
+            trim_import_xx%irank_comm(jcou)                             &
      &              = exp_import_xx%irank_comm(jnum)
-          trim_import_xx%distance(jcou)                                 &
+            trim_import_xx%distance(jcou)                               &
      &              = exp_import_xx%distance(jnum)
 !
-          trim_import_xx%xx_comm(3*jcou-2)                              &
+            trim_import_xx%xx_comm(3*jcou-2)                            &
      &              = exp_import_xx%xx_comm(3*jnum-2)
-          trim_import_xx%xx_comm(3*jcou-1)                              &
+            trim_import_xx%xx_comm(3*jcou-1)                            &
      &              = exp_import_xx%xx_comm(3*jnum-1)
-          trim_import_xx%xx_comm(3*jcou  )                              &
+            trim_import_xx%xx_comm(3*jcou  )                            &
      &              = exp_import_xx%xx_comm(3*jnum  )
-          trim_import_xx%inod_gl_comm(jcou)                             &
+            trim_import_xx%inod_gl_comm(jcou)                           &
      &              = exp_import_xx%inod_gl_comm(jnum)
+          end if
         end do
 !$omp end parallel do
       end do

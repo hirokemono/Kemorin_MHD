@@ -247,6 +247,17 @@
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim_neo, trim_nod_to_ext_neo)
+      call const_extended_nod_comm_table(org_node, inod_dbl,            &
+     &    nod_comm, expand_nod_comm, ext_nod_trim_neo,                  &
+     &    exp_import_xx, trim_import_xx, trim_nod_to_ext_neo,           &
+     &    add_nod_comm)
+!
+      do i = 1, add_nod_comm%ntot_import
+        if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
+          write(*,*) my_rank,                                           &
+     &        'trim_import_xx%inod_gl_comm(i) = 3036027 at', i
+        end if
+      end do
       call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)
       deallocate(trim_nod_to_ext_neo%idx_extend_to_trim)
@@ -254,9 +265,8 @@
       call const_extended_node_position                                 &
      &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
-!
-      call const_extended_nod_comm_table                                &
-     &   (org_node, expand_nod_comm, ext_nod_trim,                      &
+      call const_extend_nod_comm_tbl_old                                &
+     &   (org_node, inod_dbl, nod_comm, expand_nod_comm, ext_nod_trim,  &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext, add_nod_comm)
 !
       do i = 1, add_nod_comm%ntot_import

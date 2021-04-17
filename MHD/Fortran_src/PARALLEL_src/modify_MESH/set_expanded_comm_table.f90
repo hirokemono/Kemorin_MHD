@@ -38,11 +38,12 @@
 !!        integer(kind = kint), intent(inout)                           &
 !!     &        :: num_added_import(num_added_neib)
 !!      subroutine set_import_item_for_extend                           &
-!!     &         (node, expand_nod_comm, ext_nod_trim,                  &
+!!     &         (node, nod_comm, expand_nod_comm, ext_nod_trim,        &
 !!     &          num_added_neib, id_added_neib,                        &
 !!     &          istack_added_import, ntot_added_import,               &
 !!     &          inod_lc_new_import_trim, item_added_import)
 !!        type(node_data), intent(in) :: node
+!!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
 !!        integer(kind = kint), intent(in) :: num_added_neib
@@ -160,12 +161,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_import_item_for_extend                             &
-     &         (node, expand_nod_comm, ext_nod_trim,                    &
+     &         (node, nod_comm, expand_nod_comm, ext_nod_trim,          &
      &          num_added_neib, id_added_neib,                          &
      &          istack_added_import, ntot_added_import,                 &
      &          inod_lc_new_import_trim, item_added_import)
 !
       type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
@@ -194,10 +196,15 @@
           jcou = inum + jst
           jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
 !
-          item_added_import(jcou) = jcou + node%numnod
-!
-          inod_lc_new_import_trim(jcou)                                 &
+          if(jnum .lt. 0) then
+            item_added_import(jcou) = nod_comm%item_import(-jnum)
+            inod_lc_new_import_trim(jcou) = -item_added_import(jcou)
+          else
+            item_added_import(jcou) = jcou + node%numnod
+            inod_lc_new_import_trim(jcou)                               &
      &              = expand_nod_comm%item_import(jnum)
+          end if
+!
         end do
       end do
 !
