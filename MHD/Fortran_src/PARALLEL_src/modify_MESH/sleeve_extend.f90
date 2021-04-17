@@ -251,6 +251,7 @@
      &    nod_comm, expand_nod_comm, ext_nod_trim_neo,                  &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext_neo,           &
      &    add_nod_comm)
+      call dealloc_calypso_comm_table(add_nod_comm)
 !
       do i = 1, add_nod_comm%ntot_import
         if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
