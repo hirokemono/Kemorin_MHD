@@ -251,17 +251,18 @@
      &    nod_comm, expand_nod_comm, ext_nod_trim_neo,                  &
      &    exp_import_xx, trim_import_xx, trim_nod_to_ext_neo,           &
      &    add_nod_comm)
+      do i = 1, add_nod_comm%ntot_import
+        if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
+          write(*,*) my_rank,                                          &
+     &        'trim_import_xx%inod_gl_comm(i) = 3036027 at', i,        &
+     &        trim_nod_to_ext_neo%import_lc_trimmed(i)
+        end if
+      end do
         deallocate(add_nod_comm%irev_import)
         deallocate(add_nod_comm%item_import)
         deallocate(add_nod_comm%item_export)
       deallocate(trim_nod_to_ext_neo%import_lc_trimmed)
 !
-      do i = 1, add_nod_comm%ntot_import
-        if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
-          write(*,*) my_rank,                                          &
-     &        'trim_import_xx%inod_gl_comm(i) = 3036027 at', i
-        end if
-      end do
       call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)
       call dealloc_node_data_sleeve_ext(trim_import_xx)
