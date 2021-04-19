@@ -469,9 +469,11 @@
         do inum = 1, num
           jnum = idx_home_sorted_import(inum+ist)
           inod = add_nod_comm%item_import(inum+jst)
-          if(inod_new_dbl%irank(inod) .ne. irank_nod_new_import(jnum)   &
+          if(jnum .gt. 0) then
+            if(inod_new_dbl%irank(inod) .ne. irank_nod_new_import(jnum) &
      &       .or. inod_new_dbl%index(inod)                              &
      &          .ne. expand_nod_comm%item_import(jnum)) icou = icou + 1
+          end if
         end do
       end do
       check_expand_nod_import_item = icou
