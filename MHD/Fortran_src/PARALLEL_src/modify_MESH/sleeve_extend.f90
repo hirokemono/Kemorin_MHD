@@ -258,29 +258,6 @@
      &        trim_nod_to_ext_neo%import_lc_trimmed(i)
         end if
       end do
-!
-      do i = 1, add_nod_comm%nrank_import
-        do j = 1, nod_comm%num_neib
-          if(nod_comm%id_neib(j) .eq. add_nod_comm%irank_import(i)) then
-            ist = add_nod_comm%istack_import(i-1)
-            jst = nod_comm%istack_import(j-1)
-            num = nod_comm%istack_import(j) - nod_comm%istack_import(j-1)
-            do inum = 1, num
-              idiff = add_nod_comm%item_import(inum+ist)       &
-     &               - nod_comm%item_import(inum+jst)
-              write(*,*) my_rank, 'original import', i, j, ist, jst, &
-     &                  inum,  idiff
-            end do
-          end if
-        end do
-      end do
-      do i = 1, add_nod_comm%ntot_import
-        if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
-          write(*,*) my_rank,                                          &
-     &        'trim_import_xx%inod_gl_comm(i) = 3036027 at', i,        &
-     &        trim_nod_to_ext_neo%import_lc_trimmed(i)
-        end if
-      end do
         deallocate(add_nod_comm%irev_import)
         deallocate(add_nod_comm%item_import)
         deallocate(add_nod_comm%item_export)
