@@ -199,7 +199,8 @@
      &         (node, nod_comm, expand_nod_comm, ext_nod_trim,          &
      &          num_added_neib, id_added_neib,                          &
      &          istack_added_import, ntot_added_import,                 &
-     &          idx_home_for_import, inod_lc_new_import_trim, item_added_import, inod_added_import)
+     &          idx_home_for_import, inod_lc_new_import_trim,           &
+     &          item_added_import, inod_added_import)
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
