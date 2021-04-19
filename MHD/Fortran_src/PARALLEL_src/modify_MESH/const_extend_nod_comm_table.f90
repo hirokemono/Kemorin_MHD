@@ -151,8 +151,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_extend_nod_comm_tbl_old(org_node, inod_dbl,      &
-     &          nod_comm, expand_nod_comm, ext_nod_trim,                &
+      subroutine const_extend_nod_comm_tbl_old(org_node,                &
+     &          expand_nod_comm, ext_nod_trim,                          &
      &          exp_import_xx, trim_import_xx, trim_nod_to_ext,         &
      &          add_nod_comm)
 !
@@ -164,8 +164,6 @@
       use trim_mesh_for_sleeve_extend
 !
       type(node_data), intent(in) :: org_node
-      type(node_ele_double_number), intent(in) :: inod_dbl
-      type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(data_for_trim_import), intent(in) :: ext_nod_trim
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
@@ -177,8 +175,7 @@
       integer(kind = kint) :: num
 !
 !
-      call count_import_item_for_extend                                 &
-     &   (nprocs, ext_nod_trim%istack_trimmed_pe,                       &
+      call count_import_item_for_extend_org(ext_nod_trim,               &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%num_import)
       call s_cal_total_and_stacks                                       &
@@ -192,14 +189,13 @@
       num = add_nod_comm%ntot_import
       allocate(trim_nod_to_ext%import_lc_trimmed(num))
 !
-      call set_import_item_for_extend                                   &
-     &   (org_node, nod_comm, expand_nod_comm, ext_nod_trim,            &
+      call set_import_item_for_extend_org                               &
+     &   (org_node, expand_nod_comm, ext_nod_trim,                      &
      &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
      &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_import)
-      call trim_imported_expand_node                                    &
-     &   (org_node, inod_dbl, nod_comm, add_nod_comm, ext_nod_trim,     &
-     &    exp_import_xx, trim_import_xx)
+      call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
+     &                               exp_import_xx, trim_import_xx)
 !
       call num_items_send_recv                                          &
      &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
@@ -221,10 +217,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_extended_nod_comm_table(org_node, inod_dbl,      &
-     &          nod_comm, expand_nod_comm, ext_nod_trim,                &
-     &          exp_import_xx, trim_import_xx, trim_nod_to_ext,         &
-     &          new_nod_comm)
+      subroutine const_extended_nod_comm_table(org_node, nod_comm,      &
+     &          expand_nod_comm, ext_nod_trim, exp_import_xx,           &
+     &          trim_import_xx, trim_nod_to_ext, add_nod_comm)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -234,7 +229,6 @@
       use trim_mesh_for_sleeve_extend
 !
       type(node_data), intent(in) :: org_node
-      type(node_ele_double_number), intent(in) :: inod_dbl
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(data_for_trim_import), intent(in) :: ext_nod_trim
@@ -242,50 +236,48 @@
 !
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
-      type(calypso_comm_table), intent(inout) :: new_nod_comm
+      type(calypso_comm_table), intent(inout) :: add_nod_comm
 !
       integer(kind = kint) :: num
 !
 !
-      call count_import_item_for_extend                                 &
-     &   (nprocs, ext_nod_trim%istack_trimmed_pe,                       &
-     &    new_nod_comm%nrank_import, new_nod_comm%irank_import,         &
-     &    new_nod_comm%num_import)
+      call count_import_item_for_extend(nod_comm, ext_nod_trim,         &
+     &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
+     &    add_nod_comm%num_import)
       call s_cal_total_and_stacks                                       &
-     &   (new_nod_comm%nrank_import, new_nod_comm%num_import, izero,    &
-     &    new_nod_comm%istack_import, new_nod_comm%ntot_import)
+     &   (add_nod_comm%nrank_import, add_nod_comm%num_import, izero,    &
+     &    add_nod_comm%istack_import, add_nod_comm%ntot_import)
       call alloc_calypso_import_item                                    &
-     &   (new_nod_comm%ntot_import, new_nod_comm)
+     &   (add_nod_comm%ntot_import, add_nod_comm)
 !
-      call alloc_node_data_sleeve_ext(new_nod_comm%ntot_import,         &
+      call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trim_import_xx)
-      num = new_nod_comm%ntot_import
+      num = add_nod_comm%ntot_import
       allocate(trim_nod_to_ext%import_lc_trimmed(num))
 !
       call set_import_item_for_extend                                   &
-     &   (org_node, nod_comm, expand_nod_comm, ext_nod_trim,            &
-     &    new_nod_comm%nrank_import, new_nod_comm%irank_import,         &
-     &    new_nod_comm%istack_import, new_nod_comm%ntot_import,         &
-     &    trim_nod_to_ext%import_lc_trimmed, new_nod_comm%item_import)
-      call trim_imported_expand_node                                    &
-     &   (org_node, inod_dbl, nod_comm, new_nod_comm, ext_nod_trim,     &
-     &    exp_import_xx, trim_import_xx)
+     &   (org_node, expand_nod_comm, ext_nod_trim,                      &
+     &    add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
+     &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
+     &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_import)
+      call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
+     &                               exp_import_xx, trim_import_xx)
 !
       call num_items_send_recv                                          &
-     &   (new_nod_comm%nrank_import, new_nod_comm%irank_import,         &
-     &    new_nod_comm%num_import,                                      &
-     &    new_nod_comm%nrank_export, new_nod_comm%irank_export, izero,  &
-     &    new_nod_comm%num_export, new_nod_comm%istack_export,          &
-     &    new_nod_comm%ntot_export)
-      call alloc_calypso_export_item(new_nod_comm)
+     &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
+     &    add_nod_comm%num_import,                                      &
+     &    add_nod_comm%nrank_export, add_nod_comm%irank_export, izero,  &
+     &    add_nod_comm%num_export, add_nod_comm%istack_export,          &
+     &    add_nod_comm%ntot_export)
+      call alloc_calypso_export_item(add_nod_comm)
 !
 !
       call comm_items_send_recv                                         &
-     &  (new_nod_comm%nrank_import, new_nod_comm%irank_import,          &
-     &   new_nod_comm%istack_import, trim_nod_to_ext%import_lc_trimmed, &
-     &   new_nod_comm%nrank_export, new_nod_comm%irank_export,          &
-     &   new_nod_comm%istack_export, new_nod_comm%iflag_self_copy,      &
-     &   new_nod_comm%item_export)
+     &  (add_nod_comm%nrank_import, add_nod_comm%irank_import,          &
+     &   add_nod_comm%istack_import, trim_nod_to_ext%import_lc_trimmed, &
+     &   add_nod_comm%nrank_export, add_nod_comm%irank_export,          &
+     &   add_nod_comm%istack_export, add_nod_comm%iflag_self_copy,      &
+     &   add_nod_comm%item_export)
 !
       end subroutine const_extended_nod_comm_table
 !

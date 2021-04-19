@@ -179,8 +179,7 @@
       end if
       call dealloc_sort_data_sleeve_ext(sort_ele_import)
 !
-      call count_import_item_for_extend                                 &
-     &   (nprocs, ext_ele_trim%istack_trimmed_pe,                       &
+      call count_import_item_for_extend_org(ext_ele_trim,               &
      &    add_ele_comm%nrank_import, add_ele_comm%irank_import,         &
      &    add_ele_comm%num_import)
       call s_cal_total_and_stacks                                       &

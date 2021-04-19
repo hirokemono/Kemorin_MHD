@@ -132,13 +132,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_import_item_for_extend                           &
-     &         (nprocs, istack_trimmed_import_pe,                       &
+      subroutine count_import_item_for_extend_org(ext_nod_trim,         &
      &          num_added_neib, id_added_neib, num_added_import)
 !
-      integer, intent(in) :: nprocs
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_trimmed_import_pe(0:nprocs)
+      type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
       integer(kind = kint), intent(in) :: num_added_neib
       integer(kind = kint), intent(in)                                  &
@@ -152,22 +149,21 @@
 !
       do i = 1, num_added_neib
         irank = id_added_neib(i)
-        num_added_import(i) = istack_trimmed_import_pe(irank+1)         &
-     &                       - istack_trimmed_import_pe(irank)
+        num_added_import(i) = ext_nod_trim%istack_trimmed_pe(irank+1)   &
+     &                       - ext_nod_trim%istack_trimmed_pe(irank)
       end do
 !
-      end subroutine count_import_item_for_extend
+      end subroutine count_import_item_for_extend_org
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_import_item_for_extend                             &
-     &         (node, nod_comm, expand_nod_comm, ext_nod_trim,          &
+      subroutine set_import_item_for_extend_org                         &
+     &         (node, expand_nod_comm, ext_nod_trim,                    &
      &          num_added_neib, id_added_neib,                          &
      &          istack_added_import, ntot_added_import,                 &
      &          inod_lc_new_import_trim, item_added_import)
 !
       type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
@@ -196,10 +192,93 @@
           jcou = inum + jst
           jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
 !
-          if(jnum .lt. 0) then
-            item_added_import(jcou) = nod_comm%item_import(-jnum)
-            inod_lc_new_import_trim(jcou) = -item_added_import(jcou)
-          else
+          if(jnum .gt. 0) then
+            item_added_import(jcou) = jcou + node%numnod
+            inod_lc_new_import_trim(jcou)                               &
+     &              = expand_nod_comm%item_import(jnum)
+          end if
+!
+        end do
+      end do
+!
+      end subroutine set_import_item_for_extend_org
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine count_import_item_for_extend(nod_comm, ext_nod_trim,   &
+     &          num_added_neib, id_added_neib, num_added_import)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(data_for_trim_import), intent(in) :: ext_nod_trim
+!
+      integer(kind = kint), intent(in) :: num_added_neib
+      integer(kind = kint), intent(in)                                  &
+     &        :: id_added_neib(num_added_neib)
+ !
+      integer(kind = kint), intent(inout)                               &
+     &        :: num_added_import(num_added_neib)
+!
+      integer(kind = kint) :: i, irank, j0, j, jrank, num
+!
+!
+      do i = 1, num_added_neib
+        irank = id_added_neib(i)
+        num_added_import(i) = ext_nod_trim%istack_trimmed_pe(irank+1)   &
+     &                       - ext_nod_trim%istack_trimmed_pe(irank)
+!
+        do j0 = 1, nod_comm%num_neib
+          j = mod(i+j0-2,nod_comm%num_neib) + 1
+          jrank = nod_comm%id_neib(j)
+          if(irank .eq. jrank) then
+            num = nod_comm%istack_import(j)                             &
+     &           - nod_comm%istack_import(j-1)
+            num_added_import(i) = num_added_import(i) - num
+            exit
+          end if
+        end do
+      end do
+!
+      end subroutine count_import_item_for_extend
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_import_item_for_extend                             &
+     &         (node, expand_nod_comm, ext_nod_trim,                    &
+     &          num_added_neib, id_added_neib,                          &
+     &          istack_added_import, ntot_added_import,                 &
+     &          inod_lc_new_import_trim, item_added_import)
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: expand_nod_comm
+      type(data_for_trim_import), intent(in) :: ext_nod_trim
+!
+      integer(kind = kint), intent(in) :: num_added_neib
+      integer(kind = kint), intent(in) :: ntot_added_import
+      integer(kind = kint), intent(in)                                  &
+     &      :: id_added_neib(num_added_neib)
+      integer(kind = kint), intent(in)                                  &
+     &      :: istack_added_import(0:num_added_neib)
+!
+      integer(kind = kint), intent(inout)                               &
+     &      :: inod_lc_new_import_trim(ntot_added_import)
+      integer(kind = kint), intent(inout)                               &
+     &      :: item_added_import(ntot_added_import)
+!
+      integer(kind = kint) :: i, irank, ist, num
+      integer(kind = kint) :: inum, jcou, jnum
+!
+!
+      do i = 1, num_added_neib
+        irank = id_added_neib(i)
+        ist = ext_nod_trim%istack_trimmed_pe(irank)
+        num = ext_nod_trim%istack_trimmed_pe(irank+1) - ist
+        jcou = istack_added_import(i-1)
+        do inum = 1, num
+          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
+!
+          if(jnum .gt. 0) then
+            jcou = jcou + 1
             item_added_import(jcou) = jcou + node%numnod
             inod_lc_new_import_trim(jcou)                               &
      &              = expand_nod_comm%item_import(jnum)

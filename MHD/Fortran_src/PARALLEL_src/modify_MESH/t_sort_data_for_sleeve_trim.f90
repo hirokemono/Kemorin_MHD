@@ -113,7 +113,7 @@
 !
       type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
 !
-      integer(kind = kint) :: i, irank, ist, ied, inum, icou, ip
+      integer(kind = kint) :: i, irank, ist, ied, icou, ip
 !
 !
 !$omp parallel do private(i)
