@@ -243,20 +243,14 @@
 !
 !const_extended_node_position_org
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'const_trimmed_expand_import'
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'const_extended_nod_comm_table'
       allocate(inod_added_import(expand_nod_comm%ntot_import))
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
      &    trim_import_xx, trim_nod_to_ext, add_nod_comm, inod_added_import)
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 's_append_extended_node'
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
      &    new_node, dbl_id2)
@@ -268,8 +262,6 @@
         end if
       end do
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'check_appended_node_data'
       call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
      &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
@@ -280,8 +272,6 @@
       deallocate(trim_nod_to_ext%idx_extend_to_trim)
 !
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'append_nod_communication_table'
       call append_nod_communication_table                               &
      &   (nod_comm, add_nod_comm, exp_import_xx,                        &
      &    new_nod_comm, dist_4_comm)
@@ -291,8 +281,6 @@
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'const_extended_element_connect'
       call const_extended_element_connect                               &
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
      &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
@@ -303,23 +291,17 @@
       call dealloc_stack_to_trim_extend(ext_nod_trim)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'const_extended_ele_comm_table'
       call const_extended_ele_comm_table                                &
      &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_comm_table(expand_ele_comm)
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'append_ele_communication_table'
       call append_ele_communication_table                               &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(org_ele, add_ele_comm,             &
      &    trim_import_ie, new_ele)
 !
-      call calypso_mpi_barrier
-      write(*,*) my_rank, 'check_returned_extend_element'
       call check_returned_extend_element                                &
      &   (iele_dbl, add_ele_comm, trim_import_ie)
       call dealloc_ele_data_sleeve_ext(trim_import_ie)
