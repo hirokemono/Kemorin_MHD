@@ -254,7 +254,7 @@
       do i = 1, add_nod_comm%ntot_import
         if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
           write(*,*) my_rank,                                          &
-     &        'trim_import_xx%inod_gl_comm(i) = 3036027 at', i,        &
+     &        'new trim_import_xx%inod_gl_comm(i) = 3036027 at', i,        &
      &        trim_nod_to_ext_neo%import_lc_trimmed(i)
         end if
       end do
