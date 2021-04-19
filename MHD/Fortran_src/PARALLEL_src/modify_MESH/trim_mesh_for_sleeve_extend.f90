@@ -234,6 +234,10 @@ if(ie_new_import(inum+ist_ele,k1) .le. 0) then
       integer(kind = kint) :: inum, jnum
 !
 !
+!$omp parallel workshare
+      inod_added_import(1:expand_nod_comm%ntot_import) = 0
+!$omp end parallel workshare
+!
       do i = 1, add_nod_comm%nrank_import
         irank = add_nod_comm%irank_import(i)
         ist = ext_nod_trim%istack_trimmed_pe(irank)

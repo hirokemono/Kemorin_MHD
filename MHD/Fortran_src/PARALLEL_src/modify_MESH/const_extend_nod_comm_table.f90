@@ -154,7 +154,7 @@
       subroutine const_extend_nod_comm_tbl_old(org_node,                &
      &          expand_nod_comm, ext_nod_trim,                          &
      &          exp_import_xx, trim_import_xx, trim_nod_to_ext,         &
-     &          add_nod_comm)
+     &          add_nod_comm, inod_added_import)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -171,6 +171,8 @@
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
       type(calypso_comm_table), intent(inout) :: add_nod_comm
+      integer(kind = kint), intent(inout)                               &
+     &  :: inod_added_import(expand_nod_comm%ntot_import)
 !
       integer(kind = kint) :: num
 !
@@ -213,13 +215,17 @@
      &   add_nod_comm%istack_export, add_nod_comm%iflag_self_copy,      &
      &   add_nod_comm%item_export)
 !
+      call find_original_import_address                                 &
+     &   (org_node, expand_nod_comm, add_nod_comm, ext_nod_trim,        &
+     &    trim_nod_to_ext%idx_extend_to_trim, inod_added_import)
+!
       end subroutine const_extend_nod_comm_tbl_old
 !
 !  ---------------------------------------------------------------------
 !
       subroutine const_extended_nod_comm_table(org_node, nod_comm,      &
      &          expand_nod_comm, ext_nod_trim, exp_import_xx,           &
-     &          trim_import_xx, trim_nod_to_ext, add_nod_comm)
+     &          trim_import_xx, trim_nod_to_ext, add_nod_comm, inod_added_import)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -237,6 +243,8 @@
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
       type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
       type(calypso_comm_table), intent(inout) :: add_nod_comm
+      integer(kind = kint), intent(inout)                               &
+     &  :: inod_added_import(expand_nod_comm%ntot_import)
 !
       integer(kind = kint) :: num
 !
@@ -278,6 +286,10 @@
      &   add_nod_comm%nrank_export, add_nod_comm%irank_export,          &
      &   add_nod_comm%istack_export, add_nod_comm%iflag_self_copy,      &
      &   add_nod_comm%item_export)
+!
+      call find_original_import_address                                 &
+     &   (org_node, expand_nod_comm, add_nod_comm, ext_nod_trim,        &
+     &    trim_nod_to_ext%idx_extend_to_trim, inod_added_import)
 !
       end subroutine const_extended_nod_comm_table
 !

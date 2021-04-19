@@ -200,6 +200,7 @@
 !
       type(calypso_comm_table), save :: add_nod_comm
       type(calypso_comm_table), save :: add_ele_comm
+      integer(kind = kint), allocatable :: inod_added_import(:)
 !
       integer(kind = kint) :: i, inod
       integer(kind = kint) :: j, ist, jst, num, inum, idiff
@@ -248,20 +249,16 @@
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim_neo, trim_nod_to_ext_neo)
+      allocate(inod_added_import(expand_nod_comm%ntot_import))
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim_neo, exp_import_xx,             &
-     &    trim_import_xx, trim_nod_to_ext_neo, add_nod_comm)
-      do i = 1, add_nod_comm%ntot_import
-        if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
-          write(*,*) my_rank,                                          &
-     &        'new trim_import_xx%inod_gl_comm(i) = 3036027 at', i,        &
-     &        trim_nod_to_ext_neo%import_lc_trimmed(i)
-        end if
-      end do
+     &    trim_import_xx, trim_nod_to_ext_neo, add_nod_comm, inod_added_import)
+
         deallocate(add_nod_comm%irev_import)
         deallocate(add_nod_comm%item_import)
         deallocate(add_nod_comm%item_export)
       deallocate(trim_nod_to_ext_neo%import_lc_trimmed)
+      deallocate(inod_added_import)
 !
       call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)
@@ -271,9 +268,11 @@
       call const_extended_node_position                                 &
      &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
+      allocate(inod_added_import(expand_nod_comm%ntot_import))
       call const_extend_nod_comm_tbl_old                                &
      &   (org_node, expand_nod_comm, ext_nod_trim,                      &
-     &    exp_import_xx, trim_import_xx, trim_nod_to_ext, add_nod_comm)
+     &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
+     &    add_nod_comm, inod_added_import)
 !
       do i = 1, add_nod_comm%ntot_import
         if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
@@ -300,6 +299,8 @@
      &    trim_nod_to_ext%import_lc_trimmed)
       deallocate(trim_nod_to_ext%import_lc_trimmed)
       call dealloc_node_data_sleeve_ext(trim_import_xx)
+      deallocate(trim_nod_to_ext%idx_extend_to_trim)
+!
 !
       call append_nod_communication_table                               &
      &   (nod_comm, add_nod_comm, exp_import_xx,                        &
@@ -309,14 +310,12 @@
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+2)
 !
 !
-!
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
       call const_extended_element_connect                               &
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
      &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
-     &    trim_nod_to_ext%idx_extend_to_trim,                           &
-     &    expand_ele_comm, exp_import_ie)
-      deallocate(trim_nod_to_ext%idx_extend_to_trim)
+     &    inod_added_import, expand_ele_comm, exp_import_ie)
+      deallocate(inod_added_import)
       call dealloc_double_numbering(dbl_id2)
       call dealloc_node_data_sleeve_ext(exp_import_xx)
       call dealloc_stack_to_trim_extend(ext_nod_trim)

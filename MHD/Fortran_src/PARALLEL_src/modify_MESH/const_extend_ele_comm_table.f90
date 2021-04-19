@@ -53,9 +53,8 @@
 !
       implicit none
 !
-      integer(kind = kint), allocatable :: inod_added_import(:)
       integer(kind = kint), allocatable :: iele_lc_import_trim(:)
-      private :: inod_added_import, iele_lc_import_trim
+      private :: iele_lc_import_trim
 !
 !  ---------------------------------------------------------------------
 !
@@ -66,7 +65,7 @@
       subroutine const_extended_element_connect                         &
      &         (nod_comm, node, ele, inod_new_dbl,                      &
      &          expand_nod_comm, add_nod_comm, exp_import_xx,           &
-     &          ext_nod_trim, idx_nod_extend_to_trimmed,                &
+     &          ext_nod_trim, inod_added_import,                        &
      &          expand_ele_comm, exp_import_ie)
 !
       use trim_mesh_for_sleeve_extend
@@ -83,20 +82,11 @@
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 
       integer(kind = kint), intent(in)                                  &
-     &      :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
+     &      :: inod_added_import(expand_nod_comm%ntot_import)
 !
       type(communication_table), intent(inout) :: expand_ele_comm
       type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
 !
-!
-      allocate(inod_added_import(expand_nod_comm%ntot_import))
-!$omp parallel workshare
-      inod_added_import(1:expand_nod_comm%ntot_import) = 0
-!$omp end parallel workshare
-!
-      call find_original_import_address                                 &
-     &   (node, expand_nod_comm, add_nod_comm, ext_nod_trim,            &
-     &    idx_nod_extend_to_trimmed, inod_added_import)
 !
       if(i_debug .gt. 0) then
         call check_expanded_import_node(inod_new_dbl, expand_nod_comm,  &
@@ -111,7 +101,6 @@
       call renumber_extended_ele_import(my_rank, ele, nod_comm,         &
      &    expand_nod_comm, expand_ele_comm, inod_added_import,          &
      &    exp_import_ie%itype_comm, exp_import_ie%ie_comm)
-      deallocate(inod_added_import)
 !
       if(i_debug .gt. 0) then
         call check_expanded_import_ele                                  &
