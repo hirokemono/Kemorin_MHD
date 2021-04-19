@@ -244,12 +244,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_import_item_for_extend                             &
-     &         (node, expand_nod_comm, ext_nod_trim,                    &
+     &         (node, nod_comm, expand_nod_comm, ext_nod_trim,          &
      &          num_added_neib, id_added_neib,                          &
      &          istack_added_import, ntot_added_import,                 &
-     &          inod_lc_new_import_trim, item_added_import)
+     &          idx_home_for_import, inod_lc_new_import_trim, item_added_import, inod_added_import)
 !
       type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: expand_nod_comm
       type(data_for_trim_import), intent(in) :: ext_nod_trim
 !
@@ -259,15 +260,23 @@
      &      :: id_added_neib(num_added_neib)
       integer(kind = kint), intent(in)                                  &
      &      :: istack_added_import(0:num_added_neib)
+      integer(kind = kint), intent(in)                                  &
+     &      :: idx_home_for_import(expand_nod_comm%ntot_import)
 !
       integer(kind = kint), intent(inout)                               &
      &      :: inod_lc_new_import_trim(ntot_added_import)
       integer(kind = kint), intent(inout)                               &
      &      :: item_added_import(ntot_added_import)
+      integer(kind = kint), intent(inout)                               &
+     &      :: inod_added_import(expand_nod_comm%ntot_import)
 !
       integer(kind = kint) :: i, irank, ist, num
-      integer(kind = kint) :: inum, jcou, jnum
+      integer(kind = kint) :: inum, jcou, jnum, isort
 !
+!
+!$omp parallel workshare
+      inod_added_import(1:expand_nod_comm%ntot_import) = 0
+!$omp end parallel workshare
 !
       do i = 1, num_added_neib
         irank = id_added_neib(i)
@@ -282,10 +291,24 @@
             item_added_import(jcou) = jcou + node%numnod
             inod_lc_new_import_trim(jcou)                               &
      &              = expand_nod_comm%item_import(jnum)
+            inod_added_import(jnum) = jcou
           end if
 !
         end do
       end do
+!
+!$omp parallel do private(jnum,isort)
+      do jnum = 1, expand_nod_comm%ntot_import
+        if(inod_added_import(jnum) .eq. 0) then
+          isort = idx_home_for_import(jnum)
+          if(isort .lt. 0) then
+            inod_added_import(jnum) = nod_comm%item_import(-isort)
+          else
+            inod_added_import(jnum) = inod_added_import(isort)
+          end if
+        end if
+      end do
+!$omp end parallel do
 !
       end subroutine set_import_item_for_extend
 !
