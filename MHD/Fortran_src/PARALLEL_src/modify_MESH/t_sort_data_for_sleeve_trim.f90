@@ -21,6 +21,15 @@
 !!        integer(kind= kint), intent(in)                               &
 !!     &            :: irank_comm_new_import(expand_comm%ntot_import)
 !!        type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
+!!      subroutine sort_mix_import_by_pe_inod_lc                        &
+!!     &         (inod_dbl, nod_comm, expand_comm,                      &
+!!     &          irank_comm_new_import, sort_import)
+!!        type(node_ele_double_number), intent(in) :: inod_dbl
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: expand_comm
+!!        integer(kind= kint), intent(in)                               &
+!!     &            :: irank_comm_new_import(expand_comm%ntot_import)
+!!        type(sort_data_for_sleeve_trim), intent(inout) :: sort_import
 !!@endverbatim
 !
       module t_sort_data_for_sleeve_trim

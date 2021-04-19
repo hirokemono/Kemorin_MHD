@@ -193,9 +193,6 @@
       type(data_for_trim_import), save :: ext_nod_trim
       type(import_extend_to_trim), save :: trim_nod_to_ext
 !
-      type(data_for_trim_import), save :: ext_nod_trim_neo
-      type(import_extend_to_trim), save :: trim_nod_to_ext_neo
-!
       type(marks_for_sleeve_extension), save :: marks_4_extend
 !
       type(calypso_comm_table), save :: add_nod_comm
@@ -248,38 +245,11 @@
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
-     &    add_nod_comm, ext_nod_trim_neo, trim_nod_to_ext_neo)
-      allocate(inod_added_import(expand_nod_comm%ntot_import))
-      call const_extended_nod_comm_table(org_node, nod_comm,            &
-     &    expand_nod_comm, ext_nod_trim_neo, exp_import_xx,             &
-     &    trim_import_xx, trim_nod_to_ext_neo, add_nod_comm, inod_added_import)
-
-        deallocate(add_nod_comm%irev_import)
-        deallocate(add_nod_comm%item_import)
-        deallocate(add_nod_comm%item_export)
-      deallocate(trim_nod_to_ext_neo%import_lc_trimmed)
-      deallocate(inod_added_import)
-!
-      call dealloc_stack_to_trim_extend(ext_nod_trim_neo)
-      call dealloc_idx_trimed_to_sorted(ext_nod_trim_neo)
-      call dealloc_node_data_sleeve_ext(trim_import_xx)
-      deallocate(trim_nod_to_ext_neo%idx_extend_to_trim)
-!
-      call const_extended_node_position                                 &
-     &   (nod_comm, expand_nod_comm, exp_import_xx,                     &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
       allocate(inod_added_import(expand_nod_comm%ntot_import))
-      call const_extend_nod_comm_tbl_old                                &
-     &   (org_node, expand_nod_comm, ext_nod_trim,                      &
-     &    exp_import_xx, trim_import_xx, trim_nod_to_ext,               &
-     &    add_nod_comm, inod_added_import)
-!
-      do i = 1, add_nod_comm%ntot_import
-        if(trim_import_xx%inod_gl_comm(i) .eq. 3036027) then
-          write(*,*) my_rank,                                           &
-     &        'trim_import_xx%inod_gl_comm(i) = 3036027 at', i
-        end if
-      end do
+      call const_extended_nod_comm_table(org_node, nod_comm,            &
+     &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
+     &    trim_import_xx, trim_nod_to_ext, add_nod_comm, inod_added_import)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &

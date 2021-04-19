@@ -39,18 +39,6 @@
 !!     &  :: itype_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !!        integer(kind = kint), intent(inout)                           &
 !!     &  :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
-!!
-!!      subroutine find_original_import_address                         &
-!!     &         (node, expand_nod_comm, add_nod_comm, ext_nod_trim,    &
-!!     &          idx_nod_extend_to_trimmed, inod_added_import)
-!!        type(node_data), intent(in) :: node
-!!        type(communication_table), intent(in) :: expand_nod_comm
-!!        type(communication_table), intent(in) :: add_nod_comm
-!!        type(data_for_trim_import), intent(in) :: ext_nod_trim
-!!        integer(kind = kint), intent(in)                              &
-!!     &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
-!!        integer(kind = kint), intent(inout)                           &
-!!     &      :: inod_added_import(expand_nod_comm%ntot_import)
 !!@endverbatim
 !
       module trim_mesh_for_sleeve_extend
@@ -213,94 +201,6 @@ if(ie_new_import(inum+ist_ele,k1) .le. 0) then
 !$omp end parallel
 !
       end subroutine renumber_extended_ele_import
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine find_org_import_address_org                            &
-     &         (node, expand_nod_comm, add_nod_comm, ext_nod_trim,      &
-     &          idx_nod_extend_to_trimmed, inod_added_import)
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(calypso_comm_table), intent(in) :: add_nod_comm
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-      integer(kind = kint), intent(in)                                  &
-     &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: inod_added_import(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint) :: i, irank, ist, jst, inod, isort
-      integer(kind = kint) :: inum, jnum
-!
-!
-!$omp parallel workshare
-      inod_added_import(1:expand_nod_comm%ntot_import) = 0
-!$omp end parallel workshare
-!
-      do i = 1, add_nod_comm%nrank_import
-        irank = add_nod_comm%irank_import(i)
-        ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-          inod = inum + jst + node%numnod
-          inod_added_import(jnum) = inod
-        end do
-      end do
-!
-      do jnum = 1, expand_nod_comm%ntot_import
-        if(inod_added_import(jnum) .eq. 0) then
-          isort = idx_nod_extend_to_trimmed(jnum)
-          inod_added_import(jnum) = inod_added_import(isort)
-        end if
-      end do
-!
-      end subroutine find_org_import_address_org
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine find_original_import_address                           &
-     &         (node, expand_nod_comm, add_nod_comm, ext_nod_trim,      &
-     &          idx_nod_extend_to_trimmed, inod_added_import)
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(calypso_comm_table), intent(in) :: add_nod_comm
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-      integer(kind = kint), intent(in)                                  &
-     &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: inod_added_import(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint) :: i, irank, ist, jst, inod, isort
-      integer(kind = kint) :: inum, jnum
-!
-!
-!$omp parallel workshare
-      inod_added_import(1:expand_nod_comm%ntot_import) = 0
-!$omp end parallel workshare
-!
-      do i = 1, add_nod_comm%nrank_import
-        irank = add_nod_comm%irank_import(i)
-        ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        do inum = 1, add_nod_comm%num_import(i)
-          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-          inod = inum + jst + node%numnod
-          inod_added_import(jnum) = inod
-        end do
-      end do
-!
-      do jnum = 1, expand_nod_comm%ntot_import
-        if(inod_added_import(jnum) .eq. 0) then
-          isort = idx_nod_extend_to_trimmed(jnum)
-          inod_added_import(jnum) = inod_added_import(isort)
-        end if
-      end do
-!
-      end subroutine find_original_import_address
 !
 !  ---------------------------------------------------------------------
 !

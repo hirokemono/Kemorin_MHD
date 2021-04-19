@@ -156,54 +156,6 @@
       end subroutine count_import_item_for_extend_org
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine set_import_item_for_extend_org                         &
-     &         (node, expand_nod_comm, ext_nod_trim,                    &
-     &          num_added_neib, id_added_neib,                          &
-     &          istack_added_import, ntot_added_import,                 &
-     &          inod_lc_new_import_trim, item_added_import)
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-!
-      integer(kind = kint), intent(in) :: num_added_neib
-      integer(kind = kint), intent(in) :: ntot_added_import
-      integer(kind = kint), intent(in)                                  &
-     &      :: id_added_neib(num_added_neib)
-      integer(kind = kint), intent(in)                                  &
-     &      :: istack_added_import(0:num_added_neib)
-!
-      integer(kind = kint), intent(inout)                               &
-     &      :: inod_lc_new_import_trim(ntot_added_import)
-      integer(kind = kint), intent(inout)                               &
-     &      :: item_added_import(ntot_added_import)
-!
-      integer(kind = kint) :: i, irank, ist, jst, num
-      integer(kind = kint) :: inum, jcou, jnum
-!
-!
-      do i = 1, num_added_neib
-        irank = id_added_neib(i)
-        ist = ext_nod_trim%istack_trimmed_pe(irank)
-        jst = istack_added_import(i-1)
-        num = istack_added_import(i) - istack_added_import(i-1)
-        do inum = 1, num
-          jcou = inum + jst
-          jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-!
-          if(jnum .gt. 0) then
-            item_added_import(jcou) = jcou + node%numnod
-            inod_lc_new_import_trim(jcou)                               &
-     &              = expand_nod_comm%item_import(jnum)
-          end if
-!
-        end do
-      end do
-!
-      end subroutine set_import_item_for_extend_org
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine count_import_item_for_extend(nod_comm, ext_nod_trim,   &
