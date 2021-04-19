@@ -199,6 +199,10 @@
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
 !
+      call find_original_import_address                                 &
+     &   (org_node, expand_nod_comm, add_nod_comm, ext_nod_trim,        &
+     &    trim_nod_to_ext%idx_extend_to_trim, inod_added_import)
+!
       call num_items_send_recv                                          &
      &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%num_import,                                      &
@@ -214,10 +218,6 @@
      &   add_nod_comm%nrank_export, add_nod_comm%irank_export,          &
      &   add_nod_comm%istack_export, add_nod_comm%iflag_self_copy,      &
      &   add_nod_comm%item_export)
-!
-      call find_original_import_address                                 &
-     &   (org_node, expand_nod_comm, add_nod_comm, ext_nod_trim,        &
-     &    trim_nod_to_ext%idx_extend_to_trim, inod_added_import)
 !
       end subroutine const_extend_nod_comm_tbl_old
 !
@@ -271,6 +271,10 @@
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
 !
+      call find_original_import_address                                 &
+     &   (org_node, expand_nod_comm, add_nod_comm, ext_nod_trim,        &
+     &    trim_nod_to_ext%idx_extend_to_trim, inod_added_import)
+!
       call num_items_send_recv                                          &
      &   (add_nod_comm%nrank_import, add_nod_comm%irank_import,         &
      &    add_nod_comm%num_import,                                      &
@@ -286,10 +290,6 @@
      &   add_nod_comm%nrank_export, add_nod_comm%irank_export,          &
      &   add_nod_comm%istack_export, add_nod_comm%iflag_self_copy,      &
      &   add_nod_comm%item_export)
-!
-      call find_original_import_address                                 &
-     &   (org_node, expand_nod_comm, add_nod_comm, ext_nod_trim,        &
-     &    trim_nod_to_ext%idx_extend_to_trim, inod_added_import)
 !
       end subroutine const_extended_nod_comm_table
 !
