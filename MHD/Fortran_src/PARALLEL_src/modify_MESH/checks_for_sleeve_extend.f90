@@ -59,7 +59,6 @@
       implicit none
 !
       private :: check_trimmed_import_node
-      private :: check_expand_nod_import_item
       private :: check_idx_home_for_import
       private :: check_zero_inod_added_import
       private :: check_wrong_inod_added_import
@@ -106,15 +105,6 @@
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
      &        'trimmed_import_node:', ntot_gl
-!
-      icou = check_expand_nod_import_item                               &
-     &       (inod_new_dbl, expand_nod_comm, add_nod_comm,              &
-     &        ext_nod_trim%istack_trimmed_pe,                           &
-     &        ext_nod_trim%idx_trimmed_to_sorted,                       &
-     &        exp_import_xx%irank_comm)
-      call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
-      if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
-      'with expand_nod_comm%item_import:', ntot_gl 
 !
       icou = check_idx_home_for_import(expand_nod_comm,                 &
      &    exp_import_xx%irank_comm, idx_nod_extend_to_trimmed)
@@ -439,47 +429,5 @@
       end function check_zero_ie_new_import
 !
 !  ---------------------------------------------------------------------
-!
-      integer(kind = kint) function check_expand_nod_import_item        &
-     &             (inod_new_dbl, expand_nod_comm, add_nod_comm,        &
-     &              istack_trimmed_import_pe, idx_home_sorted_import,   &
-     &              irank_nod_new_import)
-!
-      type(node_ele_double_number), intent(in) :: inod_new_dbl
-      type(communication_table), intent(in) :: expand_nod_comm
-      type(calypso_comm_table), intent(in) :: add_nod_comm
-!
-      integer(kind = kint), intent(in)                                  &
-     &   :: istack_trimmed_import_pe(0:nprocs)
-      integer(kind = kint), intent(in)                                  &
-     &   :: idx_home_sorted_import(istack_trimmed_import_pe(nprocs))
-      integer(kind = kint), intent(in)                                  &
-     &   :: irank_nod_new_import(expand_nod_comm%ntot_import)
-!
-      integer(kind = kint) :: i, icou, irank, ist, jst, jed, num
-      integer(kind = kint) :: inum, jnum, inod
-!
-!
-      icou = 0
-      do i = 1, add_nod_comm%nrank_import
-        irank = add_nod_comm%irank_import(i)
-        ist = istack_trimmed_import_pe(irank)
-        jst = add_nod_comm%istack_import(i-1)
-        num = add_nod_comm%istack_import(i) - jst
-        do inum = 1, num
-          jnum = idx_home_sorted_import(inum+ist)
-          inod = add_nod_comm%item_import(inum+jst)
-          if(jnum .gt. 0) then
-            if(inod_new_dbl%irank(inod) .ne. irank_nod_new_import(jnum) &
-     &       .or. inod_new_dbl%index(inod)                              &
-     &          .ne. expand_nod_comm%item_import(jnum)) icou = icou + 1
-          end if
-        end do
-      end do
-      check_expand_nod_import_item = icou
-!
-      end function check_expand_nod_import_item
-!
-! ----------------------------------------------------------------------
 !
       end module checks_for_sleeve_extend

@@ -7,6 +7,13 @@
 !> @brief Mark node and element to extend export table
 !!
 !!@verbatim
+!!      subroutine trim_overlap_expanded_import(ntot_new_import,        &
+!!     &          irank_nod_new_import, sort_import, ext_trim)
+!!        integer(kind = kint), intent(in) :: ntot_new_import
+!!        integer(kind = kint), intent(in)                              &
+!!     &                    :: irank_nod_new_import(ntot_new_import)
+!!        type(sort_data_for_sleeve_trim), intent(in) :: sort_import
+!!        type(data_for_trim_import), intent(inout) :: ext_trim
 !!      subroutine trim_overlapped_sleeve_ext(ntot_new_import,          &
 !!     &          irank_nod_new_import, sort_import, ext_trim)
 !!      subroutine dealloc_stack_to_trim_extend(ext_trim)
