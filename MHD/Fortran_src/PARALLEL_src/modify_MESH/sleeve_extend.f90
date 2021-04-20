@@ -150,6 +150,7 @@
       use t_mark_node_ele_to_extend
       use t_comm_table_for_each_pe
       use t_sort_data_for_sleeve_trim
+      use t_work_nod_import_extend
 !
       use const_extended_neib_domain
       use const_nod_ele_to_extend
@@ -191,13 +192,12 @@
       type(node_data_for_sleeve_ext), save :: trim_import_xx
 !
       type(data_for_trim_import), save :: ext_nod_trim
-      type(import_extend_to_trim), save :: trim_nod_to_ext
+      type(work_nod_import_extend), save :: trim_nod_to_ext
 !
       type(marks_for_sleeve_extension), save :: marks_4_extend
 !
       type(calypso_comm_table), save :: add_nod_comm
       type(calypso_comm_table), save :: add_ele_comm
-      integer(kind = kint), allocatable :: inod_added_import(:)
 !
       integer(kind = kint) :: i
 !
@@ -228,14 +228,14 @@
 !
 !const_extended_node_position_org
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
+      call alloc_idx_extend_to_trim(expand_nod_comm%ntot_import,        &
+     &                              trim_nod_to_ext)
       call const_trimmed_expand_import                                  &
      &   (inod_dbl, nod_comm, expand_nod_comm, exp_import_xx,           &
      &    add_nod_comm, ext_nod_trim, trim_nod_to_ext)
-      allocate(inod_added_import(expand_nod_comm%ntot_import))
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
-     &    trim_import_xx, trim_nod_to_ext,                              &
-     &    add_nod_comm, inod_added_import)
+     &    trim_import_xx, trim_nod_to_ext, add_nod_comm)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
@@ -244,12 +244,9 @@
 !
       call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
-     &    ext_nod_trim, trim_import_xx, dbl_id2,                        &
-     &    trim_nod_to_ext%idx_extend_to_trim,                           &
-     &    trim_nod_to_ext%import_lc_trimmed)
-      deallocate(trim_nod_to_ext%import_lc_trimmed)
+     &    ext_nod_trim, trim_import_xx, dbl_id2, trim_nod_to_ext)
+      call dealloc_import_lc_trimmed(trim_nod_to_ext)
       call dealloc_node_data_sleeve_ext(trim_import_xx)
-      deallocate(trim_nod_to_ext%idx_extend_to_trim)
 !
 !
       call append_nod_communication_table                               &
@@ -261,13 +258,13 @@
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+3)
-      call const_extended_element_connect                               &
-     &   (nod_comm, org_node, org_ele, dbl_id2,                         &
-     &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
-     &    inod_added_import, expand_ele_comm, exp_import_ie)
+      call const_extended_element_connect(nod_comm, org_ele, dbl_id2,   &
+     &    expand_nod_comm, exp_import_xx,                               &
+     &    trim_nod_to_ext%inod_added_import,                            &
+     &    expand_ele_comm, exp_import_ie)
 !
-      deallocate(inod_added_import)
       call dealloc_double_numbering(dbl_id2)
+      call dealloc_idx_extend_to_trim(trim_nod_to_ext)
       call dealloc_node_data_sleeve_ext(exp_import_xx)
       call dealloc_stack_to_trim_extend(ext_nod_trim)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)

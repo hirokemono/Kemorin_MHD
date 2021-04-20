@@ -16,19 +16,18 @@
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(calypso_comm_table), intent(in) :: add_nod_comm
 !!        type(data_for_trim_import), intent(inout) :: ext_nod_trim
-!!        type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
+!!        type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
 !!        type(sort_data_for_sleeve_trim), save :: sort_nod_import
-!!      subroutine const_extended_nod_comm_table(org_node, inod_dbl,    &
-!!     &          nod_comm, expand_nod_comm, ext_nod_trim,              &
-!!     &          trim_import_xx, trim_nod_to_ext,                      &
-!!     &          add_nod_comm, inod_added_import)
+!!      subroutine const_extended_nod_comm_table(org_node, nod_comm,    &
+!!     &          expand_nod_comm, ext_nod_trim, exp_import_xx,         &
+!!     &          trim_import_xx, trim_nod_to_ext, add_nod_comm)
 !!        type(node_data), intent(in) :: org_node
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
 !!        type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !!        type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
-!!        type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
+!!        type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
 !!        type(dist_from_wall_in_export), intent(inout) :: dist_add
 !!@endverbatim
 !
@@ -47,6 +46,7 @@
       use t_mesh_for_sleeve_extend
       use t_sort_data_for_sleeve_trim
       use t_trim_overlapped_import
+      use t_work_nod_import_extend
 !
       implicit none
 !
@@ -71,11 +71,11 @@
       type(calypso_comm_table), intent(in) :: add_nod_comm
 !
       type(data_for_trim_import), intent(inout) :: ext_nod_trim
-      type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
+      type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
 !
       type(sort_data_for_sleeve_trim), save :: sort_nod_import
 !
-      integer(kind = kint) :: num, ntot_mix, icou, ntot_failed_gl
+      integer(kind = kint) :: ntot_mix, icou, ntot_failed_gl
 !
 !
       ntot_mix = nod_comm%ntot_import + expand_nod_comm%ntot_import
@@ -92,8 +92,6 @@
      &     (nod_comm, add_nod_comm, sort_nod_import, ext_nod_trim)
       end if
 !
-      num = expand_nod_comm%ntot_import
-      allocate(trim_nod_to_ext%idx_extend_to_trim(num))
       call find_home_import_item_by_trim                                &
      &   (nprocs, expand_nod_comm%ntot_import, sort_nod_import,         &
      &    ext_nod_trim, trim_nod_to_ext%idx_extend_to_trim, icou)
@@ -109,8 +107,7 @@
 !
       subroutine const_extended_nod_comm_table(org_node, nod_comm,      &
      &          expand_nod_comm, ext_nod_trim, exp_import_xx,           &
-     &          trim_import_xx, trim_nod_to_ext,                        &
-     &          add_nod_comm, inod_added_import)
+     &          trim_import_xx, trim_nod_to_ext, add_nod_comm)
 !
       use calypso_mpi_int
       use reverse_SR_int
@@ -126,10 +123,8 @@
       type(node_data_for_sleeve_ext), intent(in) :: exp_import_xx
 !
       type(node_data_for_sleeve_ext), intent(inout) :: trim_import_xx
-      type(import_extend_to_trim), intent(inout) :: trim_nod_to_ext
+      type(work_nod_import_extend), intent(inout) :: trim_nod_to_ext
       type(calypso_comm_table), intent(inout) :: add_nod_comm
-      integer(kind = kint), intent(inout)                               &
-     &  :: inod_added_import(expand_nod_comm%ntot_import)
 !
       integer(kind = kint) :: num
 !
@@ -145,8 +140,8 @@
 !
       call alloc_node_data_sleeve_ext(add_nod_comm%ntot_import,         &
      &                                trim_import_xx)
-      num = add_nod_comm%ntot_import
-      allocate(trim_nod_to_ext%import_lc_trimmed(num))
+      call alloc_import_lc_trimmed(add_nod_comm%ntot_import,            &
+     &                             trim_nod_to_ext)
 !
       call set_import_item_for_extend                                   &
      &   (org_node, nod_comm, expand_nod_comm, ext_nod_trim,            &
@@ -154,7 +149,7 @@
      &    add_nod_comm%istack_import, add_nod_comm%ntot_import,         &
      &    trim_nod_to_ext%idx_extend_to_trim,                           &
      &    trim_nod_to_ext%import_lc_trimmed, add_nod_comm%item_import,  &
-     &    inod_added_import)
+     &    trim_nod_to_ext%inod_added_import)
       call trim_imported_expand_node(add_nod_comm, ext_nod_trim,        &
      &                               exp_import_xx, trim_import_xx)
 !

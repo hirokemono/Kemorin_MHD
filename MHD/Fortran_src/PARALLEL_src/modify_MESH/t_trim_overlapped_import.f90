@@ -38,11 +38,6 @@
         integer(kind = kint), allocatable :: idx_trimmed_to_sorted(:)
       end type data_for_trim_import
 !
-      type import_extend_to_trim
-        integer(kind = kint), allocatable :: idx_extend_to_trim(:)
-        integer(kind = kint), allocatable :: import_lc_trimmed(:)
-      end type import_extend_to_trim
-!
       private :: alloc_stack_to_trim_extend, alloc_idx_trimed_to_sorted
 !
 ! ----------------------------------------------------------------------

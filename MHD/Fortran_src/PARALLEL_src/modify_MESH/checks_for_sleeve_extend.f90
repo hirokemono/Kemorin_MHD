@@ -10,7 +10,7 @@
 !!      subroutine check_appended_node_data                             &
 !!     &         (node, expand_nod_comm, add_nod_comm, exp_import_xx,   &
 !!     &          ext_nod_trim, trim_import_xx, inod_new_dbl,           &
-!!     &          idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
+!!     &          trim_nod_to_ext)
 !!        type(node_data), intent(in) :: node
 !!        type(communication_table), intent(in) :: expand_nod_comm
 !!        type(calypso_comm_table), intent(in) :: add_nod_comm
@@ -18,6 +18,7 @@
 !!        type(node_data_for_sleeve_ext), intent(in) :: trim_import_xx
 !!        type(data_for_trim_import), intent(in) :: ext_nod_trim
 !!        type(node_ele_double_number), intent(in) :: inod_new_dbl
+!!        type(work_nod_import_extend), intent(in) :: trim_nod_to_ext
 !!      subroutine check_expanded_import_node(inod_new_dbl,             &
 !!     &          expand_nod_comm, exp_import_xx, inod_added_import)
 !!        type(node_ele_double_number), intent(in) :: inod_new_dbl
@@ -75,11 +76,12 @@
       subroutine check_appended_node_data                               &
      &         (node, expand_nod_comm, add_nod_comm, exp_import_xx,     &
      &          ext_nod_trim, trim_import_xx, inod_new_dbl,             &
-     &          idx_nod_extend_to_trimmed, inod_lc_new_import_trim)
+     &          trim_nod_to_ext)
 !
       use t_para_double_numbering
       use t_trim_overlapped_import
       use t_mesh_for_sleeve_extend
+      use t_work_nod_import_extend
 !
       use calypso_mpi
       use calypso_mpi_int
@@ -91,26 +93,23 @@
       type(node_data_for_sleeve_ext), intent(in) :: trim_import_xx
       type(data_for_trim_import), intent(in) :: ext_nod_trim
       type(node_ele_double_number), intent(in) :: inod_new_dbl
-      integer(kind = kint), intent(in)                                  &
-     &        :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
-      integer(kind = kint), intent(in)                                  &
-     &        :: inod_lc_new_import_trim(add_nod_comm%ntot_import)
+      type(work_nod_import_extend), intent(in) :: trim_nod_to_ext
 !
       integer(kind = kint) :: icou, ntot_gl
 !
 !
-      icou = check_trimmed_import_node                                  &
-     &             (node, inod_new_dbl, add_nod_comm,                   &
-     &              trim_import_xx%irank_comm, inod_lc_new_import_trim)
+      icou                                                              &
+     &   = check_trimmed_import_node(node, inod_new_dbl, add_nod_comm,  &
+     &    trim_import_xx%irank_comm, trim_nod_to_ext%import_lc_trimmed)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*)  'Num. of failed ',                 &
      &        'trimmed_import_node:', ntot_gl
 !
       icou = check_idx_home_for_import(expand_nod_comm,                 &
-     &    exp_import_xx%irank_comm, idx_nod_extend_to_trimmed)
+     &    exp_import_xx%irank_comm, trim_nod_to_ext%idx_extend_to_trim)
       call calypso_mpi_reduce_one_int(icou, ntot_gl, MPI_SUM, 0)
       if(my_rank .eq. 0) write(*,*) 'Number of Wrong address ',         &
-     &         'in idx_nod_extend_to_trimmed ', ntot_gl
+     &         'in trim_nod_to_ext%idx_extend_to_trim ', ntot_gl
 !
       end subroutine check_appended_node_data
 !
