@@ -165,7 +165,7 @@
      &  :: ie_new_import(expand_ele_comm%ntot_import,ele%nnod_4_ele)
 !
       integer(kind = kint) :: k1, i, ist_imp, ist_add, ist_exp, ist_ele
-      integer(kind = kint) :: inum, jnum, itype, num, icou
+      integer(kind = kint) :: inum, jnum, itype, num
 !
 !
 !$omp parallel private(k1,i,ist_imp,ist_add,ist_exp,ist_ele,num)
@@ -176,7 +176,7 @@
           ist_imp = nod_comm%istack_import(i-1)
           ist_exp = nod_comm%istack_export(i-1)
           ist_add = expand_nod_comm%istack_import(i-1)
-!$omp do private(inum,jnum,itype,icou)
+!$omp do private(inum,jnum,itype)
           do inum = 1, num
             itype = itype_new_import(inum+ist_ele,k1) 
             jnum =  ie_new_import(inum+ist_ele,k1)

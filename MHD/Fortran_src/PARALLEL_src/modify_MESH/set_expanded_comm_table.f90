@@ -244,7 +244,7 @@
             item_added_import(jcou) = jcou + node%numnod
             inod_lc_new_import_trim(jcou)                               &
      &              = expand_nod_comm%item_import(jnum)
-            inod_added_import(jnum) = jcou
+            inod_added_import(jnum) = item_added_import(jcou)
           end if
 !
         end do

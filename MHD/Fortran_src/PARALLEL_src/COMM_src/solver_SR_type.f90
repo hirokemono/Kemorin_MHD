@@ -8,9 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine SOLVER_SEND_RECV_type(NP, comm_tbl, SR_sig, SR_r, X)
-!!      subroutine SOLVER_SEND_RECV_3_type(NP, comm_tbl, SR_sig, SR_r, X)
-!!      subroutine SOLVER_SEND_RECV_6_type(NP, comm_tbl, SR_sig, SR_r, X)
-!!      subroutine SOLVER_SEND_RECV_N_type(NP, NB, comm_tbl, SR_sig, SR_r, X)
+!!      subroutine SOLVER_SEND_RECV_3_type                              &
+!!     &         (NP, comm_tbl, SR_sig, SR_r, X)
+!!      subroutine SOLVER_SEND_RECV_6_type                              &
+!!     &         (NP, comm_tbl, SR_sig, SR_r, X)
+!!      subroutine SOLVER_SEND_RECV_N_type                              &
+!!     &         (NP, NB, comm_tbl, SR_sig, SR_r, X)
 !!        type(communication_table), intent(in) :: comm_tbl
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
@@ -25,8 +28,10 @@
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!
-!!      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, SR_sig, SR_i, iX)
-!!      subroutine SOLVER_SEND_RECV_int8_type(NP, comm_tbl, SR_sig, SR_il, i8X)
+!!      subroutine SOLVER_SEND_RECV_int_type                            &
+!!     &         (NP, comm_tbl, SR_sig, SR_i, iX)
+!!      subroutine SOLVER_SEND_RECV_int8_type                           &
+!!     &         (NP, comm_tbl, SR_sig, SR_il, i8X)
 !!        type(communication_table), intent(in) :: comm_tbl
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_int_buffer), intent(inout) :: SR_i
@@ -84,7 +89,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_3_type(NP, comm_tbl, SR_sig, SR_r, X)
+      subroutine SOLVER_SEND_RECV_3_type                                &
+     &         (NP, comm_tbl, SR_sig, SR_r, X)
 !
       use t_comm_table
       use t_solver_SR
@@ -112,7 +118,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_6_type(NP, comm_tbl, SR_sig, SR_r, X)
+      subroutine SOLVER_SEND_RECV_6_type                                &
+     &         (NP, comm_tbl, SR_sig, SR_r, X)
 !
       use t_comm_table
       use t_solver_SR
@@ -140,7 +147,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_N_type(NP, NB, comm_tbl, SR_sig, SR_r, X)
+      subroutine SOLVER_SEND_RECV_N_type                                &
+     &         (NP, NB, comm_tbl, SR_sig, SR_r, X)
 !
       use t_comm_table
       use t_solver_SR
@@ -263,7 +271,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_int_type(NP, comm_tbl, SR_sig, SR_i, iX)
+      subroutine SOLVER_SEND_RECV_int_type                              &
+     &         (NP, comm_tbl, SR_sig, SR_i, iX)
 !
       use t_comm_table
       use t_solver_SR
@@ -292,7 +301,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SOLVER_SEND_RECV_int8_type(NP, comm_tbl, SR_sig, SR_il, i8X)
+      subroutine SOLVER_SEND_RECV_int8_type                             &
+     &         (NP, comm_tbl, SR_sig, SR_il, i8X)
 !
       use t_comm_table
       use t_solver_SR
