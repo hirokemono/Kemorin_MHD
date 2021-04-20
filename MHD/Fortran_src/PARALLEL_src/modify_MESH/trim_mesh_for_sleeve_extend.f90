@@ -115,7 +115,8 @@
       integer(kind = kint), intent(inout)                               &
      &   :: iele_lc_import_trim(add_ele_comm%ntot_import)
 !
-      integer(kind = kint) :: i, irank, ist, jst, k1, inum, jnum, jcou
+      integer(kind = kint) :: i, irank, ist, jst, k1, inum
+      integer(kind = kint) :: jnum, jcou, num
 !
 !
       do i = 1, add_ele_comm%nrank_import
