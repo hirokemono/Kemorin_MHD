@@ -96,8 +96,7 @@
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
-!      do iloop = 1, 10
-      do iloop = 1, 1
+      do iloop = 1, 10
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, vect_tmp,                    &
