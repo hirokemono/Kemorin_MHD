@@ -24,11 +24,13 @@
 !!     &      :: idx_nod_extend_to_trimmed(expand_nod_comm%ntot_import)
 !!        type(communication_table), intent(inout) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
-!!      subroutine const_extended_ele_comm_table                        &
-!!     &         (nod_comm, ele, add_nod_comm, expand_ele_comm,         &
+!!      subroutine const_extended_ele_comm_table(ele, iele_dbl,         &
+!!     &          nod_comm, ele_comm, add_nod_comm, expand_ele_comm,    &
 !!     &          exp_import_ie, trim_import_ie, add_ele_comm)
-!!        type(communication_table), intent(in) :: nod_comm
 !!        type(element_data), intent(in) :: ele
+!!        type(node_ele_double_number), intent(in) :: iele_dbl
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: ele_comm
 !!        type(calypso_comm_table), intent(in) :: add_nod_comm
 !!        type(communication_table), intent(in) :: expand_ele_comm
 !!        type(ele_data_for_sleeve_ext), intent(inout) :: exp_import_ie
@@ -111,8 +113,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_extended_ele_comm_table                          &
-     &         (nod_comm, ele, add_nod_comm, expand_ele_comm,           &
+      subroutine const_extended_ele_comm_table(ele, iele_dbl,           &
+     &          nod_comm, ele_comm, add_nod_comm, expand_ele_comm,      &
      &          exp_import_ie, trim_import_ie, add_ele_comm)
 !
       use calypso_mpi_int
@@ -123,8 +125,10 @@
       use trim_mesh_for_sleeve_extend
       use checks_for_sleeve_extend
 !
-      type(communication_table), intent(in) :: nod_comm
       type(element_data), intent(in) :: ele
+      type(node_ele_double_number), intent(in) :: iele_dbl
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: ele_comm
       type(calypso_comm_table), intent(in) :: add_nod_comm
       type(communication_table), intent(in) :: expand_ele_comm
       type(ele_data_for_sleeve_ext), intent(in) :: exp_import_ie
@@ -134,6 +138,8 @@
 !
       type(sort_data_for_sleeve_trim), save :: sort_ele_import
       type(data_for_trim_import), save :: ext_ele_trim
+!
+      integer(kind = kint) :: ntot_mix
 !
 !
       add_ele_comm%iflag_self_copy = add_nod_comm%iflag_self_copy
@@ -153,13 +159,13 @@
 !$omp end parallel workshare
 !
 !
+      ntot_mix = ele_comm%ntot_import + expand_ele_comm%ntot_import
       call alloc_sort_data_sleeve_ext                                   &
-     &   (nprocs, expand_ele_comm%ntot_import, sort_ele_import)
-      call sort_import_by_pe_and_local_id(nprocs, nod_comm,             &
+     &   (nprocs, ntot_mix, sort_ele_import)
+      call sort_mix_import_by_pe_inod_lc(iele_dbl, ele_comm,            &
      &    expand_ele_comm, exp_import_ie%irank_comm, sort_ele_import)
 !
-!
-      call trim_overlapped_sleeve_ext                                   &
+      call trim_overlap_expanded_import                                 &
      &   (expand_ele_comm%ntot_import, exp_import_ie%irank_comm,        &
      &    sort_ele_import, ext_ele_trim)
       if(i_debug .gt. 0) then
@@ -168,7 +174,7 @@
       end if
       call dealloc_sort_data_sleeve_ext(sort_ele_import)
 !
-      call count_import_item_for_extend_org(ext_ele_trim,               &
+      call count_import_item_for_extend(ele_comm, ext_ele_trim,         &
      &    add_ele_comm%nrank_import, add_ele_comm%irank_import,         &
      &    add_ele_comm%num_import)
       call s_cal_total_and_stacks                                       &

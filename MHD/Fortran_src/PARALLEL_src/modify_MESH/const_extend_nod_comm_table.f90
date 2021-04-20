@@ -20,8 +20,8 @@
 !!        type(sort_data_for_sleeve_trim), save :: sort_nod_import
 !!      subroutine const_extended_nod_comm_table(org_node, inod_dbl,    &
 !!     &          nod_comm, expand_nod_comm, ext_nod_trim,              &
-!!     &          exp_import_xx, trim_import_xx, trim_nod_to_ext,       &
-!!     &          new_nod_comm)
+!!     &          trim_import_xx, trim_nod_to_ext,                      &
+!!     &          add_nod_comm, inod_added_import)
 !!        type(node_data), intent(in) :: org_node
 !!        type(node_ele_double_number), intent(in) :: inod_dbl
 !!        type(communication_table), intent(in) :: expand_nod_comm
@@ -109,7 +109,8 @@
 !
       subroutine const_extended_nod_comm_table(org_node, nod_comm,      &
      &          expand_nod_comm, ext_nod_trim, exp_import_xx,           &
-     &          trim_import_xx, trim_nod_to_ext, add_nod_comm, inod_added_import)
+     &          trim_import_xx, trim_nod_to_ext,                        &
+     &          add_nod_comm, inod_added_import)
 !
       use calypso_mpi_int
       use reverse_SR_int

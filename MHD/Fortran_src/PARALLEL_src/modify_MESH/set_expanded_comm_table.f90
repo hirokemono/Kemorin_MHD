@@ -131,31 +131,6 @@
       end subroutine find_home_import_item_by_trim
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine count_import_item_for_extend_org(ext_nod_trim,         &
-     &          num_added_neib, id_added_neib, num_added_import)
-!
-      type(data_for_trim_import), intent(in) :: ext_nod_trim
-!
-      integer(kind = kint), intent(in) :: num_added_neib
-      integer(kind = kint), intent(in)                                  &
-     &        :: id_added_neib(num_added_neib)
- !
-      integer(kind = kint), intent(inout)                               &
-     &        :: num_added_import(num_added_neib)
-!
-      integer(kind = kint) :: i, irank
-!
-!
-      do i = 1, num_added_neib
-        irank = id_added_neib(i)
-        num_added_import(i) = ext_nod_trim%istack_trimmed_pe(irank+1)   &
-     &                       - ext_nod_trim%istack_trimmed_pe(irank)
-      end do
-!
-      end subroutine count_import_item_for_extend_org
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine count_import_item_for_extend(nod_comm, ext_nod_trim,   &

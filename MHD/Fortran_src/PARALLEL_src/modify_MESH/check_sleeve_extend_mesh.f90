@@ -49,6 +49,7 @@
 !
       type(node_ele_double_number), save :: inod_dbl
 !
+      integer(kind = kint_gl), allocatable :: iele_gl_test(:)
       integer(kind = kint), allocatable :: inod_lc_test(:,:)
       integer(kind = kint), allocatable :: irank_lc_test(:,:)
 !
@@ -60,6 +61,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_node_double_numbering'
       call set_node_double_numbering(new_node, new_nod_comm, inod_dbl)
 !
+      allocate(iele_gl_test(new_ele%numele))
       allocate(inod_lc_test(new_ele%numele,new_ele%nnod_4_ele))
       allocate(irank_lc_test(new_ele%numele,new_ele%nnod_4_ele))
 !
@@ -85,6 +87,11 @@
       write(*,*) my_rank, 'Failed Node ID:', icou, lcou, jcou
       call calypso_mpi_barrier
 !
+      do iele = 1, new_ele%numele
+        if(new_ele%ie(iele,1) .le. new_node%internal_node) then
+          iele_gl_test(iele) = new_ele%iele_global(iele)
+        end if
+      end do
       do k1 = 1, new_ele%nnod_4_ele
         do iele = 1, new_ele%numele
           if(new_ele%ie(iele,1) .le. new_node%internal_node) then
@@ -95,6 +102,8 @@
         end do
       end do
 !
+      call SOLVER_SEND_RECV_int8_type(new_ele%numele, new_ele_comm,     &
+     &    SR_sig1, SR_il1, iele_gl_test(1))
       do k1 = 1, new_ele%nnod_4_ele
         call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
      &      SR_sig1, SR_i1, inod_lc_test(1,k1))
@@ -103,6 +112,17 @@
         call SOLVER_SEND_RECV_int_type(new_ele%numele, new_ele_comm,    &
      &      SR_sig1, SR_i1, irank_lc_test(1,k1))
       end do
+!
+          if(my_rank.eq.0) then
+            write(*,*) 'test iele_gl_test', iele_gl_test(117645), &
+     &                new_ele%iele_global(117645)
+            write(*,*) 'test inod_lc_test', inod_lc_test(117645,1:new_ele%nnod_4_ele)
+            write(*,*) 'test inod_lc_test', inod_lc_test(117645,1:new_ele%nnod_4_ele)
+            write(*,*) 'test new_ele%ie', new_ele%ie(117645,1:new_ele%nnod_4_ele)
+            write(*,*) 'test inod_dbl%index', inod_dbl%index(new_ele%ie(117645,1:new_ele%nnod_4_ele))
+            write(*,*) 'test irank_lc_test', irank_lc_test(117645,1:new_ele%nnod_4_ele)
+            write(*,*) 'test inod_dbl%irank', inod_dbl%irank(new_ele%ie(117645,1:new_ele%nnod_4_ele))
+          end if
 !
       icou = 0
       jcou = 0
@@ -121,7 +141,7 @@
       end do
       write(*,*) my_rank, 'Failed connectivity ID:', icou, lcou, jcou
 !
-      deallocate(inod_lc_test, irank_lc_test)
+      deallocate(inod_lc_test, irank_lc_test, iele_gl_test)
       call dealloc_double_numbering(inod_dbl)
 !
       end subroutine check_extended_element

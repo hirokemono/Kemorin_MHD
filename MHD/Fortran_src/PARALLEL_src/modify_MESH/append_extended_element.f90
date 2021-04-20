@@ -34,15 +34,44 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_append_extended_element(ele, add_ele_comm,           &
-     &          trimmed_import_connect, new_ele)
+     &          trimmed_import_connect, new_node, new_ele)
+!
+      use calypso_mpi
+      use quicksort
 !
       type(element_data), intent(in) :: ele
       type(calypso_comm_table), intent(in) :: add_ele_comm
       type(ele_data_for_sleeve_ext), intent(in)                         &
      &                              :: trimmed_import_connect
+      type(node_data), intent(in) :: new_node
 !
       type(element_data), intent(inout) :: new_ele
 !
+      integer(kind = kint), allocatable :: iele_lc_tmp(:)
+      integer(kind = kint), allocatable :: iele_gl_tmp(:)
+      integer :: iele, icou
+      logical :: flag2(2)
+!
+      allocate(iele_lc_tmp(add_ele_comm%ntot_import))
+      allocate(iele_gl_tmp(add_ele_comm%ntot_import))
+      do iele = 1, add_ele_comm%ntot_import
+        iele_lc_tmp(iele) = iele
+        iele_gl_tmp(iele) = trimmed_import_connect%iele_gl_comm(iele)
+      end do
+      call quicksort_w_index(add_ele_comm%ntot_import, iele_gl_tmp,  &
+     &                   ione, add_ele_comm%ntot_import, iele_lc_tmp)
+!
+      icou = 0
+      do iele = 2, add_ele_comm%ntot_import
+        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) icou = icou+1
+!        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) then
+!          write(*,*) my_rank, 'address', iele_gl_tmp(iele-1:iele), &
+!     &              iele_lc_tmp(iele-1:iele), &
+!     &    (new_ele%ie(iele_lc_tmp(iele-1:iele),1) .le. new_node%internal_node)
+!        end if
+      end do
+      write(*,*) my_rank, 'overlapped in add_ele_comm: ', icou
+      deallocate(iele_lc_tmp, iele_gl_tmp)
 !
       call add_num_extended_element(ele, add_ele_comm,                  &
      &                              new_ele%numele, new_ele%nnod_4_ele)
@@ -55,6 +84,28 @@
       call append_extended_ele_connenct(ele, add_ele_comm,              &
      &    trimmed_import_connect, new_ele%numele,                       &
      &    new_ele%nnod_4_ele, new_ele%iele_global, new_ele%ie)
+!
+!
+      allocate(iele_lc_tmp(new_ele%numele))
+      allocate(iele_gl_tmp(new_ele%numele))
+      do iele = 1, new_ele%numele
+        iele_lc_tmp(iele) = iele
+        iele_gl_tmp(iele) = new_ele%iele_global(iele)
+      end do
+      call quicksort_w_index(new_ele%numele, iele_gl_tmp,  &
+     &                   ione, new_ele%numele, iele_lc_tmp)
+!
+      icou = 0
+      do iele = 2, new_ele%numele
+        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) icou = icou+1
+!        if(iele_gl_tmp(iele).eq.iele_gl_tmp(iele-1)) then
+!          write(*,*) my_rank, 'address', iele_gl_tmp(iele-1:iele), &
+!     &              iele_lc_tmp(iele-1:iele), &
+!     &    (new_ele%ie(iele_lc_tmp(iele-1:iele),1) .le. new_node%internal_node)
+!        end if
+      end do
+      write(*,*) my_rank, 'overlapped in new_ele: ', icou
+      deallocate(iele_lc_tmp, iele_gl_tmp)
 !
       end subroutine s_append_extended_element
 !

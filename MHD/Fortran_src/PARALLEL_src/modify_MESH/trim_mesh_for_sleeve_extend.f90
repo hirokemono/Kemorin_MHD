@@ -78,22 +78,22 @@
         jcou = add_nod_comm%istack_import(i-1)
         do inum = 1, num
           jnum = ext_nod_trim%idx_trimmed_to_sorted(inum+ist)
-          if(jnum .gt. 0) then
-            jcou = jcou + 1
-            trim_import_xx%irank_comm(jcou)                             &
+          if(jnum .le. 0) cycle
+!
+          jcou = jcou + 1
+          trim_import_xx%irank_comm(jcou)                               &
      &              = exp_import_xx%irank_comm(jnum)
-            trim_import_xx%distance(jcou)                               &
+          trim_import_xx%distance(jcou)                                 &
      &              = exp_import_xx%distance(jnum)
 !
-            trim_import_xx%xx_comm(3*jcou-2)                            &
+          trim_import_xx%xx_comm(3*jcou-2)                              &
      &              = exp_import_xx%xx_comm(3*jnum-2)
-            trim_import_xx%xx_comm(3*jcou-1)                            &
+          trim_import_xx%xx_comm(3*jcou-1)                              &
      &              = exp_import_xx%xx_comm(3*jnum-1)
-            trim_import_xx%xx_comm(3*jcou  )                            &
+          trim_import_xx%xx_comm(3*jcou  )                              &
      &              = exp_import_xx%xx_comm(3*jnum  )
-            trim_import_xx%inod_gl_comm(jcou)                           &
+          trim_import_xx%inod_gl_comm(jcou)                             &
      &              = exp_import_xx%inod_gl_comm(jnum)
-          end if
         end do
       end do
 !
@@ -121,16 +121,18 @@
       do i = 1, add_ele_comm%nrank_import
         irank = add_ele_comm%irank_import(i)
         ist = ext_ele_trim%istack_trimmed_pe(irank)
-        jst = add_ele_comm%istack_import(i-1)
-!$omp parallel do private(inum,jcou,jnum,k1)
-        do inum = 1, add_ele_comm%num_import(i)
+        num = ext_ele_trim%istack_trimmed_pe(irank+1) - ist
+        jcou = add_ele_comm%istack_import(i-1)
+        do inum = 1, num
           jnum = ext_ele_trim%idx_trimmed_to_sorted(inum+ist)
-          jcou = inum + jst
+          if(jnum .le. 0) cycle
+!
+          jcou = jcou + 1
           add_ele_comm%item_import(jcou) = jcou + ele%numele
 !
           iele_lc_import_trim(jcou) = expand_ele_comm%item_import(jnum)
           trim_import_ie%irank_comm(jcou)                               &
-     &              = exp_import_ie%irank_comm(jnum)
+     &          = exp_import_ie%irank_comm(jnum)
 !
           trim_import_ie%iele_gl_comm(jcou)                             &
      &          = exp_import_ie%iele_gl_comm(jnum)
@@ -139,7 +141,6 @@
      &          = exp_import_ie%ie_comm(jnum,k1)
           end do
         end do
-!$omp end parallel do
       end do
 !
       end subroutine set_trimmed_import_items

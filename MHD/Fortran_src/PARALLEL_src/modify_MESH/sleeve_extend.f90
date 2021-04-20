@@ -96,7 +96,8 @@
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+5)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
-      do iloop = 1, 10
+!      do iloop = 1, 10
+      do iloop = 1, 1
         if(iflag_debug.gt.0) write(*,*) 'extend_mesh_sleeve', iloop
         call extend_mesh_sleeve(sleeve_exp_p, mesh%nod_comm, ele_comm,  &
      &      mesh%node, mesh%ele, neib_ele, vect_tmp,                    &
@@ -249,7 +250,8 @@
       allocate(inod_added_import(expand_nod_comm%ntot_import))
       call const_extended_nod_comm_table(org_node, nod_comm,            &
      &    expand_nod_comm, ext_nod_trim, exp_import_xx,                 &
-     &    trim_import_xx, trim_nod_to_ext, add_nod_comm, inod_added_import)
+     &    trim_import_xx, trim_nod_to_ext,                              &
+     &    add_nod_comm, inod_added_import)
 !
       call s_append_extended_node(org_node, inod_dbl, add_nod_comm,     &
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
@@ -285,22 +287,31 @@
      &   (nod_comm, org_node, org_ele, dbl_id2,                         &
      &    expand_nod_comm, add_nod_comm, exp_import_xx, ext_nod_trim,   &
      &    inod_added_import, expand_ele_comm, exp_import_ie)
+!
       deallocate(inod_added_import)
       call dealloc_double_numbering(dbl_id2)
       call dealloc_node_data_sleeve_ext(exp_import_xx)
       call dealloc_stack_to_trim_extend(ext_nod_trim)
       call dealloc_idx_trimed_to_sorted(ext_nod_trim)
 !
-      call const_extended_ele_comm_table                                &
-     &   (nod_comm, org_ele, add_nod_comm, expand_ele_comm,             &
+      call const_extended_ele_comm_table(org_ele, iele_dbl,             &
+     &    nod_comm, ele_comm, add_nod_comm, expand_ele_comm,            &
      &    exp_import_ie, trim_import_ie, add_ele_comm)
       call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_comm_table(expand_ele_comm)
 !
+      do i = 1, add_ele_comm%ntot_import
+        if(trim_import_ie%iele_gl_comm(i) .eq. 1923326) then
+          write(*,*) my_rank, 'trim_import_ie', i, &
+     &              trim_import_ie%iele_gl_comm(i), &
+     &              trim_import_ie%ie_comm(i,1:org_ele%nnod_4_ele)
+        end if
+      end do
+!
       call append_ele_communication_table                               &
      &   (ele_comm, add_ele_comm, new_ele_comm)
       call s_append_extended_element(org_ele, add_ele_comm,             &
-     &    trim_import_ie, new_ele)
+     &    trim_import_ie, new_node, new_ele)
 !
       call check_returned_extend_element                                &
      &   (iele_dbl, add_ele_comm, trim_import_ie)
@@ -308,10 +319,10 @@
       call dealloc_double_numbering(iele_dbl)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
-      if(i_debug .gt. 0) then
         call check_extended_element                                     &
      &     (new_nod_comm, new_node, new_ele, new_ele_comm)
 !
+      if(i_debug .gt. 0) then
         do i = 1, nprocs
           call calypso_mpi_barrier
           if(i .eq. my_rank+1) then
