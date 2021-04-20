@@ -298,10 +298,9 @@
         if(isort .gt. expand_nod_comm%ntot_import) then
           icou = icou + 1
         else if(isort .gt. 0) then
-          else if(irank_nod_new_import(i)                               &
-     &        .ne. irank_nod_new_import(isort)                          &
-     &   .or. expand_nod_comm%item_import(i)                            &
-     &       .ne. expand_nod_comm%item_import(isort)) then
+          if(irank_nod_new_import(i) .ne. irank_nod_new_import(isort)   &
+     &       .or. expand_nod_comm%item_import(i)                        &
+     &          .ne. expand_nod_comm%item_import(isort)) then
             icou = icou + 1
           end if
         end if
