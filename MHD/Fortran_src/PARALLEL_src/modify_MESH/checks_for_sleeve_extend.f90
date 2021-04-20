@@ -295,14 +295,15 @@
       icou = 0
       do i = 1, expand_nod_comm%ntot_import
         isort = idx_home_for_import(i)
-        if(isort .gt. expand_nod_comm%ntot_import                       &
-     &      .or. isort .le. 0) then
+        if(isort .gt. expand_nod_comm%ntot_import) then
           icou = icou + 1
-        else if(irank_nod_new_import(i)                                 &
+        else if(isort .gt. 0) then
+          else if(irank_nod_new_import(i)                               &
      &        .ne. irank_nod_new_import(isort)                          &
      &   .or. expand_nod_comm%item_import(i)                            &
      &       .ne. expand_nod_comm%item_import(isort)) then
-          icou = icou + 1
+            icou = icou + 1
+          end if
         end if
       end do
       check_idx_home_for_import = icou
