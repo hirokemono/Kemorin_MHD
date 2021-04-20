@@ -199,8 +199,7 @@
       type(calypso_comm_table), save :: add_ele_comm
       integer(kind = kint), allocatable :: inod_added_import(:)
 !
-      integer(kind = kint) :: i, inod
-      integer(kind = kint) :: j, ist, jst, num, inum, idiff
+      integer(kind = kint) :: i
 !
 !
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+1)
@@ -227,20 +226,6 @@
       call dealloc_sleeve_extension_marks(marks_4_extend)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+1)
 !
-      do i = 1, nod_comm%ntot_import
-        inod = nod_comm%item_import(i)
-        if(org_node%inod_global(inod) .eq. 3036027) then
-          write(*,*) my_rank,                                           &
-     &        'org_node%inod_global(inod) = 3036027 at', inod, i
-        end if
-      end do
-      do i = 1, expand_nod_comm%ntot_import
-        if(exp_import_xx%inod_gl_comm(i) .eq. 3036027) then
-          write(*,*) my_rank,                                           &
-     &        'exp_import_xx%inod_gl_comm(i) = 3036027 at', i
-        end if
-      end do
-!
 !const_extended_node_position_org
 !      if(iflag_SLEX_time) call start_elapsed_time(ist_elapsed_SLEX+2)
       call const_trimmed_expand_import                                  &
@@ -256,12 +241,6 @@
      &    trim_import_xx, trim_nod_to_ext%import_lc_trimmed,            &
      &    new_node, dbl_id2)
       call dealloc_double_numbering(inod_dbl)
-!
-      do i = 1, new_node%numnod
-        if(new_node%inod_global(i) .eq. 3036027) then
-          write(*,*) my_rank, 'new_node%inod_global(i) = 3036027 at', i
-        end if
-      end do
 !
       call check_appended_node_data                                     &
      &   (org_node, expand_nod_comm, add_nod_comm, exp_import_xx,       &
@@ -299,17 +278,10 @@
       call dealloc_ele_data_sleeve_ext(exp_import_ie)
       call dealloc_comm_table(expand_ele_comm)
 !
-      do i = 1, add_ele_comm%ntot_import
-        if(trim_import_ie%iele_gl_comm(i) .eq. 1923326) then
-          write(*,*) my_rank, 'trim_import_ie', i, &
-     &              trim_import_ie%iele_gl_comm(i), &
-     &              trim_import_ie%ie_comm(i,1:org_ele%nnod_4_ele)
-        end if
-      end do
 !
       call append_ele_communication_table                               &
      &   (ele_comm, add_ele_comm, new_ele_comm)
-      call s_append_extended_element(org_ele, add_ele_comm,             &
+      call s_append_extended_element(my_rank, org_ele, add_ele_comm,    &
      &    trim_import_ie, new_node, new_ele)
 !
       call check_returned_extend_element                                &
@@ -318,10 +290,10 @@
       call dealloc_double_numbering(iele_dbl)
 !      if(iflag_SLEX_time) call end_elapsed_time(ist_elapsed_SLEX+3)
 !
+      if(i_debug .gt. 0) then
         call check_extended_element                                     &
      &     (new_nod_comm, new_node, new_ele, new_ele_comm)
 !
-      if(i_debug .gt. 0) then
         do i = 1, nprocs
           call calypso_mpi_barrier
           if(i .eq. my_rank+1) then
