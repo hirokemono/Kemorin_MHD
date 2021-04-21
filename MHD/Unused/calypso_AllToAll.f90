@@ -110,14 +110,14 @@
       call resize_work_SR(NB, npe_send, npe_recv,                       &
      &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
 !
-       call sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,            &
+       call sel_copy_to_send_buf_N(iflag_recv, NB, nnod_org,            &
       &    npe_send, istack_send(npe_send), istack_send, inod_export,   &
       &    X_org, SR_r%WS)
 !C
       call calypso_AllToAllv_Ncore                                      &
      &   (NB, npe_send, istack_send, istack_recv, CALYPSO_SUB_COMM)
 !
-       call sel_cppy_from_recv_buf_N                                    &
+       call sel_copy_from_recv_buf_N                                    &
       &   (iflag_recv, NB, nnod_new, npe_recv,                          &
       &    istack_recv(npe_recv), istack_recv, inod_import,             &
       &    irev_import, SR_r%WR(1), X_new)

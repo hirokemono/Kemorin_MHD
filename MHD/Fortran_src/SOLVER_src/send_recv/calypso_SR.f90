@@ -108,7 +108,7 @@
      &          SR_r%WR(1), SR_sig)
 !
 !C-- RECV
-      call sel_cppy_from_recv_buf_1(iflag_recv, nnod_new,               &
+      call sel_copy_from_recv_buf_1(iflag_recv, nnod_new,               &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
      &    SR_r%WR(1), X_new)
 !
@@ -174,7 +174,7 @@
      &            SR_r%WR(1), SR_sig)
 !
 !C-- RECV
-      call sel_cppy_from_recv_buf_3x1(iflag_recv, nnod_new,             &
+      call sel_copy_from_recv_buf_3x1(iflag_recv, nnod_new,             &
      &    istack_recv(npe_recv), inod_import, irev_import,              &
      &    SR_r%WR(1), X1_new, X2_new, X3_new)
 !

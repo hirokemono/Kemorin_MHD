@@ -369,6 +369,10 @@
 !
       if(iflag_CSR_time) call start_elapsed_time(ist_elapsed_CSR+3)
       if(iflag_recv .eq. iflag_import_item) then
+!$omp parallel workshare
+        X_new(1:NB*nnod_new) = 0.0d0
+!$omp end parallel workshare
+!
         call set_from_recv_buf_N(NB, nnod_new,                          &
      &      istack_recv(npe_recv), inod_import, WR(1), X_new)
       else

@@ -15,6 +15,8 @@
 !!     &          nnod_recv, inod_import, WR, X1_new, X2_new, X3_new)
 !!      subroutine set_from_recv_buf_3x6(nnod_new,                      &
 !!     &          nnod_recv, inod_import, WR, X1_new, X2_new, X3_new)
+!!      subroutine set_from_recv_buf_3x8(nnod_new,                      &
+!!     &          nnod_recv, inod_import, WR, X1_new, X2_new, X3_new)
 !!      subroutine set_from_recv_buf_3xN(NB, nnod_new,                  &
 !!     &          npe_recv, nnod_recv, istack_recv, inod_import,        &
 !!     &          WR, X1_new, X2_new, X3_new)
@@ -177,6 +179,34 @@
 !$omp end parallel do
 !
       end subroutine set_from_recv_buf_3x6
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_from_recv_buf_3x8(nnod_new,                        &
+     &          nnod_recv, inod_import, WR, X1_new, X2_new, X3_new)
+!
+      integer(kind = kint), intent(in) :: nnod_new, nnod_recv
+      integer(kind = kint), intent(in) :: inod_import(nnod_recv)
+!
+      real (kind=kreal), intent(in):: WR(24*nnod_recv)
+!
+      real (kind=kreal), intent(inout):: X1_new(8*nnod_new)
+      real (kind=kreal), intent(inout):: X2_new(8*nnod_new)
+      real (kind=kreal), intent(inout):: X3_new(8*nnod_new)
+!
+      integer (kind = kint) :: k, j
+!
+!
+!$omp parallel do private(k,j)
+      do k= 1, nnod_recv
+        j = inod_import(k)
+        X1_new(8*j-23:8*j-16) = WR(24*k-23:8*j-16)
+        X1_new(8*j-15:8*j- 8) = WR(24*k-15:8*j- 8)
+        X1_new(8*j- 7:8*j   ) = WR(24*k- 7:8*j   )
+      end do
+!$omp end parallel do
+!
+      end subroutine set_from_recv_buf_3x8
 !
 ! ----------------------------------------------------------------------
 !

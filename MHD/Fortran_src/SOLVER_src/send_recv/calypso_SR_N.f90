@@ -102,7 +102,7 @@
      &    istack_send(npe_send), istack_recv(npe_recv), SR_sig, SR_r)
 !
 !C-- SEND
-      call sel_cppy_to_send_buf_N(iflag_recv, NB, nnod_org,             &
+      call sel_copy_to_send_buf_N(iflag_recv, NB, nnod_org,             &
      &    npe_send, istack_send(npe_send), istack_send, inod_export,    &
      &    X_org, SR_r%WS)
 !C
@@ -113,7 +113,7 @@
      &        SR_r%WR(1), SR_sig)
 !
 !C-- RECV
-      call sel_cppy_from_recv_buf_N(iflag_recv, NB, nnod_new, npe_recv, &
+      call sel_copy_from_recv_buf_N(iflag_recv, NB, nnod_new, npe_recv, &
      &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
      &    SR_r%WR(1), X_new)
 !
@@ -190,7 +190,7 @@
      &            SR_r%WR(1), SR_sig)
 !
 !C-- RECV
-      call sel_cppy_from_recv_buf_3xN                                   &
+      call sel_copy_from_recv_buf_3xN                                   &
      &   (iflag_recv, NB, nnod_new, npe_recv,                           &
      &    istack_recv(npe_recv), istack_recv, inod_import, irev_import, &
      &    SR_r%WR(1), X1_new, X2_new, X3_new)
