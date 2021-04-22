@@ -128,7 +128,7 @@
 !
       use calypso_SR_core
       use set_to_send_buf_tri
-      use select_copy_from_recv
+      use select_copy_from_recv_tri
 !
       integer(kind = kint), intent(in) :: iflag_recv
       integer(kind = kint), intent(in) :: nnod_org
