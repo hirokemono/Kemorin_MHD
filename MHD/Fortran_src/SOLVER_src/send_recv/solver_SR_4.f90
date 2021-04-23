@@ -1,23 +1,22 @@
-!>@file   solver_SR.f90
-!!@brief  module solver_SR
+!>@file   solver_SR_4.f90
+!!@brief  module solver_SR_4
 !!
 !!@author coded by K.Nakajima (RIST)
 !!@date coded by K.Nakajima (RIST) on jul. 1999 (ver 1.0)
 !!@n    modified by H. Matsui (U. of Chicago) on july 2007 (ver 1.1)
-!!@n    modified by H. Matsui (UC Davis) on Sep. 2013 (ver 1.2)
 !
-!>@brief  MPI SEND and RECEIVE routine for scalar fields
+!>@brief  MPI SEND and RECEIVE routine for vector fields
 !!        in overlapped partitioning
 !!
 !!@verbatim
-!!      subroutine  SOLVER_SEND_RECV(NP, NEIBPETOT, NEIBPE,             &
-!!     &                             STACK_IMPORT, NOD_IMPORT,          &
-!!     &                             STACK_EXPORT, NOD_EXPORT,          &
-!!     &                             SR_sig, SR_r, X)
-!!      subroutine  SOLVER_SEND_RECVx3(NP, NEIBPETOT, NEIBPE,           &
+!!      subroutine  SOLVER_SEND_RECV_4(NP, NEIBPETOT, NEIBPE,           &
 !!     &                               STACK_IMPORT, NOD_IMPORT,        &
 !!     &                               STACK_EXPORT, NOD_EXPORT,        &
-!!     &                               SR_sig, SR_r, X1, X2, X3)
+!!     &                               SR_sig, SR_r, X)
+!!      subroutine  solver_send_recv_3x4(NP, NEIBPETOT, NEIBPE,         &
+!!     &                                 STACK_IMPORT, NOD_IMPORT,      &
+!!     &                                 STACK_EXPORT, NOD_EXPORT,      &
+!!     &                                 SR_sig, SR_r, X1, X2, X3)
 !!        type(send_recv_status), intent(inout) :: SR_sig
 !!        type(send_recv_real_buffer), intent(inout) :: SR_r
 !!@endverbatim
@@ -35,17 +34,17 @@
 !!@n @param  NOD_EXPORT(STACK_IMPORT(NEIBPETOT))
 !!                    local node ID to copy in export buffer
 !!
-!!@n @param  X(NP)   scalar field data
-!!@n @param  X1(NP)  1st scalar field data
-!!@n @param  X2(NP)  2nd scalar field data
-!!@n @param  X3(NP)  3rd scalar field data
+!!@n @param  X(4*NP)   vector field data
+!!@n @param  X1(4*NP)  1st vector field data
+!!@n @param  X2(4*NP)  2nd vector field data
+!!@n @param  X3(4*NP)  3rd vector field data
 !
-      module solver_SR
+      module solver_SR_4
 !
       use m_precision
       use m_constants
-      use calypso_mpi
       use t_solver_SR
+      use calypso_mpi
 !
       implicit none
 !
@@ -55,11 +54,11 @@
 !
 ! ----------------------------------------------------------------------
 !C
-!C*** SOLVER_SEND_RECV
-      subroutine  SOLVER_SEND_RECV(NP, NEIBPETOT, NEIBPE,               &
-     &                             STACK_IMPORT, NOD_IMPORT,            &
-     &                             STACK_EXPORT, NOD_EXPORT,            &
-     &                             SR_sig, SR_r, X)
+!C*** SOLVER_SEND_RECV_4
+      subroutine  SOLVER_SEND_RECV_4(NP, NEIBPETOT, NEIBPE,             &
+     &                               STACK_IMPORT, NOD_IMPORT,          &
+     &                               STACK_EXPORT, NOD_EXPORT,          &
+     &                               SR_sig, SR_r, X)
 !
       use calypso_SR_core
       use set_to_send_buffer
@@ -82,7 +81,7 @@
       integer(kind=kint ), intent(in)                                   &
      &        :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 !>       communicated result vector
-      real   (kind=kreal), intent(inout):: X(NP)
+      real   (kind=kreal), dimension(4*NP), intent(inout):: X
 !
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
@@ -90,40 +89,39 @@
       type(send_recv_real_buffer), intent(inout) :: SR_r
 !
 !
-      call resize_work_SR(ione, NEIBPETOT, NEIBPETOT,                   &
+      call resize_work_SR(ifour, NEIBPETOT, NEIBPETOT,                  &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
      &    SR_sig, SR_r)
-!
+!C
 !C-- SEND
-      call set_to_send_buf_1(NP, STACK_EXPORT(NEIBPETOT), NOD_EXPORT,   &
+      call set_to_send_buf_4(NP, STACK_EXPORT(NEIBPETOT), NOD_EXPORT,   &
      &                       X(1), SR_r%WS(1))
 !
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &   (ione, NEIBPETOT, NEIBPE, STACK_EXPORT, SR_r%WS(1),            &
+     &   (ifour, NEIBPETOT, NEIBPE, STACK_EXPORT, SR_r%WS(1),           &
      &            NEIBPETOT, NEIBPE, STACK_IMPORT, izero,               &
      &            SR_r%WR(1), SR_sig)
-
+!C
 !C-- RECEIVE
-      call set_from_recv_buf_1(NP, STACK_IMPORT(NEIBPETOT), NOD_IMPORT, &
+      call set_from_recv_buf_4(NP, STACK_IMPORT(NEIBPETOT), NOD_IMPORT, &
      &                         SR_r%WR(1), X(1))
 
       call calypso_send_recv_fin(NEIBPETOT, izero, SR_sig)
 
-      end subroutine solver_send_recv
+      end subroutine SOLVER_SEND_RECV_4
 !
-! ----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine  SOLVER_SEND_RECVx3(NP, NEIBPETOT, NEIBPE,             &
-     &                               STACK_IMPORT, NOD_IMPORT,          &
-     &                               STACK_EXPORT, NOD_EXPORT,          &
-     &                               SR_sig, SR_r, X1, X2, X3)
+      subroutine  solver_send_recv_3x4(NP, NEIBPETOT, NEIBPE,           &
+     &                                 STACK_IMPORT, NOD_IMPORT,        &
+     &                                 STACK_EXPORT, NOD_EXPORT,        &
+     &                                 SR_sig, SR_r, X1, X2, X3)
 !
       use calypso_SR_core
       use set_to_send_buf_tri
       use set_from_recv_buff_tri
 !
-!>       number of nodes
       integer(kind=kint )                , intent(in)   ::  NP
 !>       total neighboring pe count
       integer(kind=kint ), intent(in)   ::  NEIBPETOT
@@ -140,38 +138,39 @@
       integer(kind=kint ), intent(in)                                   &
      &        :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 !
-      real   (kind=kreal), intent(inout):: X1(NP)
-      real   (kind=kreal), intent(inout):: X2(NP)
-      real   (kind=kreal), intent(inout):: X3(NP)
+      real   (kind=kreal), dimension(4*NP), intent(inout):: X1
+      real   (kind=kreal), dimension(4*NP), intent(inout):: X2
+      real   (kind=kreal), dimension(4*NP), intent(inout):: X3
 !
 !>      Structure of communication flags
       type(send_recv_status), intent(inout) :: SR_sig
 !>      Structure of communication buffer for 8-byte real
       type(send_recv_real_buffer), intent(inout) :: SR_r
-!C
 !
-      call resize_work_SR(ithree, NEIBPETOT, NEIBPETOT,                 &
+!
+      call resize_work_SR(itwelve, NEIBPETOT, NEIBPETOT,                &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
      &    SR_sig, SR_r)
-!
+!C
 !C-- SEND
-      call set_to_send_buf_3x1(NP, STACK_EXPORT(NEIBPETOT), NOD_EXPORT, &
+      call set_to_send_buf_3x4(NP, STACK_EXPORT(NEIBPETOT), NOD_EXPORT, &
      &                         X1(1), X1(2), X1(3), SR_r%WS(1))
 !
 !C-- COMM
       call calypso_send_recv_core                                       &
-     &   (ithree, NEIBPETOT, NEIBPE, STACK_EXPORT, SR_r%WS(1),          &
+     &   (itwelve, NEIBPETOT, NEIBPE, STACK_EXPORT, SR_r%WS(1),         &
      &            NEIBPETOT, NEIBPE, STACK_IMPORT, izero,               &
      &            SR_r%WR(1), SR_sig)
 !C
 !C-- RECEIVE
-      call set_from_recv_buf_3x1                                        &
+      call set_from_recv_buf_3x4                                        &
      &   (NP, STACK_IMPORT(NEIBPETOT), NOD_IMPORT,                      &
      &    SR_r%WR(1), X1(1), X2(1), X3(1))
+!
       call calypso_send_recv_fin(NEIBPETOT, izero, SR_sig)
-
-      end subroutine solver_send_recvx3
+!
+      end subroutine solver_send_recv_3x4
 !
 !  ---------------------------------------------------------------------
 !
-      end module     solver_SR
+      end module solver_SR_4

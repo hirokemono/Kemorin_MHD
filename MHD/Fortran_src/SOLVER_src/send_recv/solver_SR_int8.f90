@@ -119,22 +119,26 @@
      &          (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
      &           STACK_EXPORT, NOD_EXPORT, SR_sig, SR_il, iX8)
 !
-!>       number of nodes
-      integer(kind=kint )                , intent(in)   ::  NP
+      use calypso_SR_core
+      use set_to_send_buffer
+      use set_from_recv_buffer
+!
+!>       number of nodes and components
+      integer(kind=kint ), intent(in)   ::  NP
 !>       total neighboring pe count
-      integer(kind=kint )                , intent(in)   ::  NEIBPETOT
+      integer(kind=kint ), intent(in)   ::  NEIBPETOT
 !>       neighboring pe id                        (i-th pe)
-      integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
+      integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
 !>       imported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
+      integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
 !>       imported node                            (i-th dof)
-      integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
-     &        :: NOD_IMPORT
+      integer(kind=kint ), intent(in)                                   &
+     &        :: NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
 !>       exported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
+      integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
 !>       exported node                            (i-th dof)
-      integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
-     &        :: NOD_EXPORT
+      integer(kind=kint ), intent(in)                                   &
+     &        :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 !
 !>       communicated result vector
       integer (kind=kint_gl), dimension(NP)  , intent(inout):: iX8
@@ -143,29 +147,20 @@
 !>      Structure of communication buffer for 8-byte integer
       type(send_recv_int8_buffer), intent(inout) :: SR_il
 !
-      integer (kind = kint) :: k
-!
 !
       call resize_i8work_SR(NEIBPETOT, NEIBPETOT,                       &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
      &    SR_sig, SR_il)
 !
-!$omp parallel do
-      do k = 1, STACK_EXPORT(NEIBPETOT)
-        SR_il%i8WS(k)= iX8(NOD_EXPORT(k))
-      end do
-!$omp end parallel do
+      call set_to_send_buf_i8(NP, STACK_EXPORT(NEIBPETOT),              &
+     &                        NOD_EXPORT, iX8(1), SR_il%i8WS(1))
 !
       call calypso_send_recv_i8core                                     &
      &   (NEIBPETOT, NEIBPE, STACK_EXPORT, SR_il%i8WS(1), izero,        &
      &    NEIBPETOT, NEIBPE, STACK_IMPORT, SR_il%i8WR(1), SR_sig)
 
-!$omp parallel do private(k)
-      do k = 1, STACK_IMPORT(NEIBPETOT)
-        iX8(NOD_IMPORT(k))= SR_il%i8WR(k)
-      end do
-!$omp end parallel do
-
+      call set_from_recv_buf_i8(NP, STACK_IMPORT(NEIBPETOT),            &
+     &                          NOD_IMPORT, SR_il%i8WR(1), iX8(1))
       call calypso_send_recv_fin(NEIBPETOT, izero, SR_sig)
 
       end subroutine solver_send_recv_i8

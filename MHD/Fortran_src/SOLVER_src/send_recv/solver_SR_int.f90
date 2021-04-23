@@ -233,22 +233,26 @@
      &          (NP, NEIBPETOT, NEIBPE, STACK_IMPORT, NOD_IMPORT,       &
      &           STACK_EXPORT, NOD_EXPORT, SR_sig, SR_i, ix)
 !
-!>       number of nodes
-      integer(kind=kint )                , intent(in)   ::  NP
+      use calypso_SR_core
+      use set_to_send_buffer
+      use set_from_recv_buffer
+!
+!>       number of nodes and components
+      integer(kind=kint ), intent(in)   ::  NP
 !>       total neighboring pe count
-      integer(kind=kint )                , intent(in)   ::  NEIBPETOT
+      integer(kind=kint ), intent(in)   ::  NEIBPETOT
 !>       neighboring pe id                        (i-th pe)
-      integer(kind=kint ), dimension(NEIBPETOT) :: NEIBPE
+      integer(kind=kint ), intent(in) :: NEIBPE(NEIBPETOT)
 !>       imported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_IMPORT
+      integer(kind=kint ), intent(in) :: STACK_IMPORT(0:NEIBPETOT)
 !>       imported node                            (i-th dof)
-      integer(kind=kint ), dimension(STACK_IMPORT(NEIBPETOT))           &
-     &        :: NOD_IMPORT
+      integer(kind=kint ), intent(in)                                   &
+     &        :: NOD_IMPORT(STACK_IMPORT(NEIBPETOT))
 !>       exported node count for each neighbor pe (i-th pe)
-      integer(kind=kint ), dimension(0:NEIBPETOT) :: STACK_EXPORT
+      integer(kind=kint ), intent(in) :: STACK_EXPORT(0:NEIBPETOT)
 !>       exported node                            (i-th dof)
-      integer(kind=kint ), dimension(STACK_EXPORT(NEIBPETOT))           &
-     &        :: NOD_EXPORT
+      integer(kind=kint ), intent(in)                                   &
+     &        :: NOD_EXPORT(STACK_EXPORT(NEIBPETOT))
 !>       communicated result vector
       integer (kind=kint), dimension(NP)  , intent(inout):: iX
 !>      Structure of communication flags
@@ -256,29 +260,20 @@
 !>      Structure of communication buffer for integer
       type(send_recv_int_buffer), intent(inout) :: SR_i
 !C
-      integer (kind = kint) :: k
-!
 !
       call resize_iwork_SR_t(NEIBPETOT, NEIBPETOT,                      &
      &    STACK_EXPORT(NEIBPETOT), STACK_IMPORT(NEIBPETOT),             &
      &    SR_sig , SR_i)
 !
-!$omp parallel do
-      do k= 1,  STACK_EXPORT(NEIBPETOT)
-        SR_i%iWS(k)= iX(NOD_EXPORT(k))
-      end do
-!$omp end parallel do
+      call set_to_send_buf_int(NP, STACK_EXPORT(NEIBPETOT),             &
+     &                        NOD_EXPORT, iX(1), SR_i%iWS(1))
 !
       call calypso_send_recv_intcore                                    &
      &   (NEIBPETOT, NEIBPE, STACK_EXPORT, SR_i%iWS(1), izero,          &
      &    NEIBPETOT, NEIBPE, STACK_IMPORT, SR_i%iWR(1), SR_sig)
 
-!$omp parallel do private(k)
-      do k = 1, STACK_IMPORT(NEIBPETOT) 
-        iX(NOD_IMPORT(k)) = SR_i%iWR(k)
-      end do
-!$omp end parallel do
-
+      call set_from_recv_buf_int(NP, STACK_IMPORT(NEIBPETOT),           &
+     &                           NOD_IMPORT, SR_i%iWR(1), iX(1))
       call calypso_send_recv_fin(NEIBPETOT, izero, SR_sig)
 
       end subroutine solver_send_recv_i

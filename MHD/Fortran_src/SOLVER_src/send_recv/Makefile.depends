@@ -30,8 +30,6 @@ collect_SR_N.o: $(SR_DIR)/collect_SR_N.f90 m_precision.o calypso_mpi.o t_solver_
 	$(F90) -c $(F90OPTFLAGS) $<
 collect_SR_int.o: $(SR_DIR)/collect_SR_int.f90 m_precision.o calypso_mpi.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
-copy_to_send_buf_tri.o: $(SR_DIR)/copy_to_send_buf_tri.f90 m_precision.o
-	$(F90) -c $(F90OPTFLAGS) $<
 copy_to_send_buffer.o: $(SR_DIR)/copy_to_send_buffer.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 field_to_send_buffer.o: $(SR_DIR)/field_to_send_buffer.f90 m_precision.o
@@ -64,17 +62,19 @@ set_to_send_buf_tri.o: $(SR_DIR)/set_to_send_buf_tri.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
 set_to_send_buffer.o: $(SR_DIR)/set_to_send_buffer.f90 m_precision.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR.o: $(SR_DIR)/solver_SR.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o
+solver_SR.o: $(SR_DIR)/solver_SR.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o calypso_SR_core.o set_to_send_buffer.o set_from_recv_buffer.o set_to_send_buf_tri.o set_from_recv_buff_tri.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_3.o: $(SR_DIR)/solver_SR_3.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o
+solver_SR_3.o: $(SR_DIR)/solver_SR_3.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o calypso_SR_core.o set_to_send_buffer.o set_from_recv_buffer.o set_to_send_buf_tri.o set_from_recv_buff_tri.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_6.o: $(SR_DIR)/solver_SR_6.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o
+solver_SR_4.o: $(SR_DIR)/solver_SR_4.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o calypso_SR_core.o set_to_send_buffer.o set_from_recv_buffer.o set_to_send_buf_tri.o set_from_recv_buff_tri.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_N.o: $(SR_DIR)/solver_SR_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o
+solver_SR_6.o: $(SR_DIR)/solver_SR_6.f90 m_precision.o m_constants.o t_solver_SR.o calypso_mpi.o calypso_SR_core.o set_to_send_buffer.o set_from_recv_buffer.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_int.o: $(SR_DIR)/solver_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o t_solver_SR_int.o
+solver_SR_N.o: $(SR_DIR)/solver_SR_N.f90 m_precision.o calypso_mpi.o t_solver_SR.o calypso_SR_core.o set_to_send_buffer.o set_from_recv_buffer.o set_to_send_buf_tri.o set_from_recv_buff_tri.o
 	$(F90) -c $(F90OPTFLAGS) $<
-solver_SR_int8.o: $(SR_DIR)/solver_SR_int8.f90 m_precision.o calypso_mpi.o t_solver_SR.o t_solver_SR_int8.o
+solver_SR_int.o: $(SR_DIR)/solver_SR_int.f90 m_precision.o m_constants.o calypso_mpi.o t_solver_SR.o t_solver_SR_int.o calypso_SR_core.o set_to_send_buf_tri.o set_from_recv_buff_tri.o
+	$(F90) -c $(F90OPTFLAGS) $<
+solver_SR_int8.o: $(SR_DIR)/solver_SR_int8.f90 m_precision.o calypso_mpi.o t_solver_SR.o t_solver_SR_int8.o calypso_SR_core.o set_to_send_buf_tri.o set_from_recv_buff_tri.o
 	$(F90) -c $(F90OPTFLAGS) $<
 t_solver_RMA.o: $(SR_DIR)/t_solver_RMA.f90 calypso_mpi.o m_precision.o t_solver_SR.o
 	$(F90) -c $(F90OPTFLAGS) $<
