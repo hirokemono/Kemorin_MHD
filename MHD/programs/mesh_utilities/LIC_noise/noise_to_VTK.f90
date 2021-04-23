@@ -54,7 +54,10 @@
      &    hd_cube_noise, noise_c1)
       call set_control_3d_cube_noise(noise_c1, noise_t1)
       call sel_const_3d_cube_noise(my_rank, noise_t1, ierr)
-      if(ierr .gt. 0) stop e_message
+      if(ierr .gt. 0) then
+        write(*,'(a)') e_message
+        stop
+      end if
 !
 !
       vtk_file_name = add_vtk_extension(noise_t1%noise_file_name)
