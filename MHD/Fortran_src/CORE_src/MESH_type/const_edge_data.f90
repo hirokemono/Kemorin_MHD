@@ -7,7 +7,8 @@
 !>@brief Construct edge connectivity by element connectivity
 !!
 !!@verbatim
-!!      subroutine construct_edge_data(nod, ele, surf, edge)
+!!      subroutine construct_edge_data                                  &
+!!     &         (nod, ele, surf, irank_local, inod_local, edge)
 !!      subroutine empty_edge_connect_type(ele, surf, edge)
 !!        type(node_data),    intent(in) :: nod
 !!        type(element_data), intent(in) :: ele
@@ -30,13 +31,16 @@
 !
       type(sum_hash_tbl), save, private :: edge_ele_tbl
 !
+      private :: const_edge_hash_4_ele
+!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_data(nod, ele, surf, edge)
+      subroutine construct_edge_data                                    &
+     &         (nod, ele, surf, irank_local, inod_local, edge)
 !
       use m_machine_parameter
       use set_edge_hash_by_ele
@@ -45,6 +49,9 @@
       type(node_data),    intent(in) :: nod
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      integer(kind = kint), intent(in) :: irank_local(nod%numnod)
+      integer(kind = kint), intent(in) :: inod_local(nod%numnod)
+!
       type(edge_data),    intent(inout) :: edge
 !
 !
@@ -67,8 +74,9 @@
       call alloc_edge_4_ele(edge, ele%numele)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
-      call set_edges_connect_by_ele(ele%numele, edge%numedge,           &
-     &    ele%nnod_4_ele, edge%nnod_4_edge, ele%ie,                     &
+      call set_edges_connect_by_ele                                     &
+     &   (nod%numnod, ele%numele, edge%numedge, ele%nnod_4_ele,         &
+     &    edge%nnod_4_edge, ele%ie, irank_local, inod_local,            &
      &    edge_ele_tbl%ntot_id, edge_ele_tbl%ntot_list,                 &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &

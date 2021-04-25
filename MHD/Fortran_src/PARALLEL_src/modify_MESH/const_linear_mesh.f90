@@ -1,5 +1,5 @@
-!>@file   const_linear_mesh_type.f90
-!!@brief  module const_linear_mesh_type
+!>@file   const_linear_mesh.f90
+!!@brief  module const_linear_mesh
 !!
 !!@author H. Matsui
 !!@date Programmed in Apr., 2006
@@ -7,17 +7,17 @@
 !> @brief Construct tri-linear mesh informations
 !!
 !!@verbatim
-!!      subroutine const_linear_mesh_type_by_t                          &
+!!      subroutine const_linear_mesh_by_t                               &
 !!     &         (femmesh_q, nod_fld_q, femmesh_l)
-!!      subroutine set_linear_type_phys_from_t                          &
+!!      subroutine set_linear_phys_from_t                               &
 !!     &         (femmesh_q, nod_fld_q, femmesh_l, nod_fld_l)
 !!        type(mesh_data_p), intent(in) :: femmesh_q
 !!        type(phys_data), intent(in) :: nod_fld_q
 !!        type(mesh_data_p), intent(inout) :: femmesh_l
 !!        type(phys_data), intent(inout) :: nod_fld_l
 !!
-!!      subroutine set_linear_phys_data_type(node_q, ele_q, surf_q,     &
-!!     &         nod_fld_q, femmesh_l, nod_fld_l)
+!!      subroutine set_linear_phys_data(node_q, ele_q, surf_q,          &
+!!     &          nod_fld_q, femmesh_l, nod_fld_l)
 !!        type(node_data), intent(in) ::    node_q
 !!        type(element_data), intent(in) :: ele_q
 !!        type(surface_data), intent(in) :: surf_q
@@ -28,7 +28,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp_q
 !!@endverbatim
 !
-      module const_linear_mesh_type
+      module const_linear_mesh
 !
       use m_precision
       use m_geometry_constants
@@ -50,7 +50,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_linear_mesh_type_by_t                            &
+      subroutine const_linear_mesh_by_t                                 &
      &         (femmesh_q, nod_fld_q, femmesh_l)
 !
       type(mesh_data), intent(in), target :: femmesh_q
@@ -65,11 +65,11 @@
      &   (femmesh_q%mesh, femmesh_q%group, nod_fld_q,                   &
      &    femmesh_l%mesh, femmesh_l%group)
 !
-      end subroutine const_linear_mesh_type_by_t
+      end subroutine const_linear_mesh_by_t
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_linear_type_phys_from_t                            &
+      subroutine set_linear_phys_from_t                                 &
      &         (femmesh_q, nod_fld_q, femmesh_l, nod_fld_l)
 !
       use cvt_quad_2_linear_mesh
@@ -81,11 +81,11 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call set_linear_phys_data_type                                    &
+      call set_linear_phys_data                                         &
      &   (femmesh_q%mesh%node, femmesh_q%mesh%ele, femmesh_q%mesh%surf, &
      &     nod_fld_q, femmesh_l, nod_fld_l)
 !
-      end subroutine set_linear_type_phys_from_t
+      end subroutine set_linear_phys_from_t
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -129,7 +129,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_linear_phys_data_type(node_q, ele_q, surf_q,       &
+      subroutine set_linear_phys_data(node_q, ele_q, surf_q,            &
      &          nod_fld_q, femmesh_l, nod_fld_l)
 !
       use t_geometry_data
@@ -154,8 +154,8 @@
      &      femmesh_l%mesh%node, nod_fld_l)
       end if
 !
-      end subroutine set_linear_phys_data_type
+      end subroutine set_linear_phys_data
 !
 !  ---------------------------------------------------------------------
 !
-      end module const_linear_mesh_type
+      end module const_linear_mesh
